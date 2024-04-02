@@ -404,9 +404,7 @@ export class LedgerIdentity extends SignIdentity {
       }
     }
 
-    // There is an issue with the Ledger App when the neuron flag is set to true and `signWithReadState`.
-    // TODO: Check app version and use `signWithReadState` only if the app version has the issue fixed.
-    if (request.endpoint === "call" && !this.neuronStakeFlag) {
+    if (request.endpoint === "call") {
       return this.createSignAndStoreCallRequests(request);
     }
 

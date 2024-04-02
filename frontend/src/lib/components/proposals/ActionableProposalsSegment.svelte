@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Segment, SegmentButton } from "@dfinity/gix-components";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 
@@ -21,7 +20,7 @@
       ))();
 </script>
 
-<TestIdWrapper testId="actionable-proposals-segment-component">
+<div data-tid="actionable-proposals-segment-component">
   <Segment bind:selectedSegmentId>
     <SegmentButton testId="all-proposals" segmentId={allProposalsSegmentId}
       >{$i18n.voting.all_proposals}</SegmentButton
@@ -32,4 +31,18 @@
       >{$i18n.voting.actionable_proposals}</SegmentButton
     >
   </Segment>
-</TestIdWrapper>
+</div>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
+  div {
+    display: contents;
+
+    --segment-width: 100%;
+    @include media.min-width(medium) {
+      --segment-width: fit-content;
+      --segment-button-width: calc(var(--padding) * 23);
+    }
+  }
+</style>
