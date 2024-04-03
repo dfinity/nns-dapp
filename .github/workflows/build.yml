@@ -119,7 +119,7 @@ jobs:
           sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
           cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
       - name: Start dfx
-        run: dfx start --clean --background &>test-upgrade-map-dfx.log
+        run: dfx start --clean --background &>test-downgrade-upgrade.log
       - name: Get the production Wasm and args for deploying it locally.
         run: |
           mkdir prod
