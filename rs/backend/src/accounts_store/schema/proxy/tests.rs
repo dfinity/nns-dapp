@@ -372,19 +372,19 @@ fn migration_should_be_aborted_if_the_new_db_has_a_different_first_account() {
     accounts_db.start_migrating_accounts_to(new_accounts_db);
     // Migrate account 0:
     accounts_db.step_migration(AccountsDbAsProxy::MIGRATION_STEP_SIZE);
-    let key_to_remove = [0u8; 32];
+    let key_to_change = [0u8; 32];
     assert!(
         accounts_db
             .migration
             .as_ref()
             .unwrap()
             .db
-            .db_get_account(&key_to_remove)
+            .db_get_account(&key_to_change)
             .is_some(),
         "Expected the first account to have been migrated"
     );
     // Breaks the invariant by altering the first account in the authoritative db but not the new db.
-    let original_account = accounts_db.authoritative_db.db_get_account(&key_to_remove).unwrap();
+    let original_account = accounts_db.authoritative_db.db_get_account(&key_to_change).unwrap();
     let altered_account = toy_account(0, 1);
     assert_ne!(
         original_account, altered_account,
@@ -392,7 +392,7 @@ fn migration_should_be_aborted_if_the_new_db_has_a_different_first_account() {
     );
     accounts_db
         .authoritative_db
-        .db_insert_account(&key_to_remove, altered_account.clone());
+        .db_insert_account(&key_to_change, altered_account.clone());
     // Finish the migration.
     // ... Limit the number of steps, just so that we don't get an infinite loop if there is a bug and migration never finishes.
     let plenty_of_steps = u32::from(number_of_accounts_to_migrate) + AccountsDbAsProxy::MIGRATION_FINALIZATION_BLOCKS;
@@ -403,13 +403,13 @@ fn migration_should_be_aborted_if_the_new_db_has_a_different_first_account() {
         } else {
             // Note: This is called at least once as the number of accounts is greater than the step size.
             assert_ne!(
-                accounts_db.authoritative_db.db_get_account(&key_to_remove),
+                accounts_db.authoritative_db.db_get_account(&key_to_change),
                 accounts_db
                     .migration
                     .as_ref()
                     .unwrap()
                     .db
-                    .db_get_account(&key_to_remove),
+                    .db_get_account(&key_to_change),
                 "Expected the first account still to be different in the migration db."
             );
         }
@@ -421,7 +421,7 @@ fn migration_should_be_aborted_if_the_new_db_has_a_different_first_account() {
     );
     // The first account should be as for the old database.
     assert_eq!(
-        accounts_db.authoritative_db.db_get_account(&key_to_remove),
+        accounts_db.authoritative_db.db_get_account(&key_to_change),
         Some(altered_account),
         "The first account should be as for the old database"
     );
