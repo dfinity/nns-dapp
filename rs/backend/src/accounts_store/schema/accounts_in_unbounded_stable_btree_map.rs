@@ -72,14 +72,10 @@ where
         Box::new(iterator)
     }
     fn first_key_value(&self) -> Option<(Vec<u8>, Account)> {
-        self.accounts
-            .first_key_value()
-            .map(|(key, value)| (key.clone(), value.clone()))
+        self.accounts.first_key_value()
     }
     fn last_key_value(&self) -> Option<(Vec<u8>, Account)> {
-        self.accounts
-            .last_key_value()
-            .map(|(key, value)| (key.clone(), value.clone()))
+        self.accounts.last_key_value()
     }
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         let iterator = self.accounts.iter().map(|(_key, value)| value);

@@ -1,3 +1,4 @@
+use candid::types::number;
 use ic_stable_structures::memory_manager;
 use pretty_assertions::assert_eq;
 use proptest::proptest;
@@ -255,4 +256,53 @@ proptest! {
         assert_stable_to_map_migration_works_with_other_operations(&mut rng);
     }
 
+}
+
+/// Migration should not be finalized if the account databases have a different number of accounts.
+#[test]
+fn migration_should_be_aborted_if_the_new_db_has_a_different_number_of_accounts() {
+    // Creates a database with some accounts.
+    let mut accounts_db = AccountsDbAsProxy::default();
+    let number_of_accounts_to_migrate: u8 = 10;
+    for i in 0..number_of_accounts_to_migrate {
+        let key = [i; 32];
+        let account = toy_account(u64::from(i), 0);
+        accounts_db.db_insert_account(&key, account);
+    }
+    assert_eq!(
+        accounts_db.db_accounts_len(),
+        u64::from(number_of_accounts_to_migrate),
+        "The test should have created the expected number of accounts"
+    );
+    // Starts the migration.
+    let new_accounts_db = AccountsDb::Map(AccountsDbAsMap::default());
+    accounts_db.start_migrating_accounts_to(new_accounts_db);
+    // Breaks the invariant by adding an account to the old database but not the new one.
+    let key = [0xffu8; 32];
+    let account = toy_account(0, 0);
+    accounts_db.authoritative_db.db_insert_account(&key, account);
+    assert_ne!(
+        accounts_db.authoritative_db.db_accounts_len(),
+        accounts_db.migration.as_ref().unwrap().db.db_accounts_len(),
+        "The test should have broken the invariant"
+    );
+    for _ in 0..u32::from(number_of_accounts_to_migrate) + AccountsDbAsProxy::MIGRATION_FINALIZATION_BLOCKS
+    /* Plenty of steps */
+    {
+        accounts_db.step_migration(AccountsDbAsProxy::MIGRATION_STEP_SIZE);
+        if accounts_db.migration.is_none() {
+            break;
+        }
+    }
+    // The migration should have been cancelled:
+    assert!(
+        accounts_db.migration.is_none(),
+        "The migration should have been cancelled"
+    );
+    // The number of accounts should be as for the old database.
+    assert_eq!(
+        accounts_db.authoritative_db.db_accounts_len(),
+        number_of_accounts_to_migrate as u64 + 1,
+        "The number of accounts should be as for the old database"
+    );
 }
