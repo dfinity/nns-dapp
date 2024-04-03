@@ -93,31 +93,31 @@ impl AccountsDbAsProxy {
                 let old = self.authoritative_db.db_accounts_len();
                 let new = migration.db.db_accounts_len();
                 if old != new {
-                    eprintln!(
-                    "ERROR ERROR ERROR: Account migration failed: Old and new account databases have different lengths: {old} -> {new}\n Migration will be aborted.",
-                );
+                    eprintln!("MIGRATION ERROR: Account migration failed: Old and new account databases have different lengths: {old} -> {new}\n Migration will be aborted.");
                     return;
                 }
             }
             {
                 // The first account in the BTreeMap should be the same.
                 // Given that keys are random this effectively a random account.
+                //
+                // Note: IF the migration intentionally modifies accounts, this check will have to be adjusted to compare just the invariant aspects of the account.
                 let old = self.authoritative_db.first_key_value();
                 let new = migration.db.first_key_value();
                 if old != new {
-                    eprintln!(
-                    "Old and new account databases have different first entries: {old:?} -> {new:?}\n Migration will be aborted.");
+                    eprintln!("MIGRATION ERROR: Old and new account databases have different first entries: {old:?} -> {new:?}\n Migration will be aborted.");
                     return;
                 }
             }
             {
                 // The last account in the BTreeMap should be the same.
                 // Given that keys are random this effectively a random account.
+                //
+                // Note: IF the migration intentionally modifies accounts, this check will have to be adjusted to compare just the invariant aspects of the account.
                 let old = self.authoritative_db.last_key_value();
                 let new = migration.db.last_key_value();
                 if old != new {
-                    eprintln!(
-                        "Old and new account databases have different last entries: {old:?} -> {new:?}\n Migration will be aborted.");
+                    eprintln!("MIGRATION ERROR: Old and new account databases have different last entries: {old:?} -> {new:?}\n Migration will be aborted.");
                     return;
                 }
             }
