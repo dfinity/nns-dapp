@@ -41,6 +41,7 @@ proposal is successful, the changes it released will be moved from this file to
 ### Operations
 
 #### Added
+* Added a test that stats are not recomputed on upgrade but rather serialized and de-serialized.
 
 #### Changed
 
