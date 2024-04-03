@@ -36,8 +36,6 @@ impl Partitions {
     }
     /// Gets the memory partitioned appropriately for the given schema.
     ///
-    /// If a schema uses raw memory, the memory is returned.
-    ///
     /// # Panics
     /// - If the schema label is not supported:
     ///   - The `Map` schema does not use partitions, so may not be used with this method.
