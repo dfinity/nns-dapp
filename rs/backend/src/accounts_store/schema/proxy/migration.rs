@@ -1,7 +1,6 @@
 //! Code for migration from the authoritative database to a new database.
 use super::{AccountsDb, AccountsDbAsProxy, AccountsDbTrait, Migration};
-use ic_cdk::println;
-use pretty_assertions::assert_eq;
+use ic_cdk::{eprintln, println};
 
 impl AccountsDbAsProxy {
     /// The default number of accounts to move in a migration step.
@@ -82,24 +81,47 @@ impl AccountsDbAsProxy {
     }
 
     /// Completes any migration in progress.
+    ///
+    /// The migration will be cancelled, instead of completed, if an invariant check fails:
+    ///     - The old and new databases have different lengths.
+    ///     - (More checks MAY be added in future.)
     pub fn complete_migration(&mut self) {
         if let Some(migration) = self.migration.take() {
-            // Sanity check before calling migration complete:  Has all the data been migrated?
-            assert_eq!(
-                self.authoritative_db.db_accounts_len(),
-                migration.db.db_accounts_len(),
-                "Old and new account databases have different lengths"
-            );
-            assert_eq!(
-                self.authoritative_db.first_key_value(), // Given that keys are random this efefctively a random account.
-                migration.db.first_key_value(),
-                "Old and new account databases have different first entries"
-            );
-            assert_eq!(
-                self.authoritative_db.last_key_value(), // Given that keys are random this efefctively a random account.
-                migration.db.last_key_value(),
-                "Old and new account databases have different last entries"
-            );
+            // Sanity check before calling migration complete:
+            {
+                // Number of accounts should be the same:
+                let old = self.authoritative_db.db_accounts_len();
+                let new = migration.db.db_accounts_len();
+                if old != new {
+                    eprintln!(
+                    "ERROR ERROR ERROR: Account migration failed: Old and new account databases have different lengths: {old} -> {new}\n Migration will be aborted.",
+                );
+                    return;
+                }
+            }
+            {
+                // The first account in the BTreeMap should be the same.
+                // Given that keys are random this effectively a random account.
+                let old = self.authoritative_db.first_key_value();
+                let new = migration.db.first_key_value();
+                if old != new {
+                    eprintln!(
+                    "Old and new account databases have different first entries: {old:?} -> {new:?}\n Migration will be aborted.");
+                    return;
+                }
+            }
+            {
+                // The last account in the BTreeMap should be the same.
+                // Given that keys are random this effectively a random account.
+                let old = self.authoritative_db.last_key_value();
+                let new = migration.db.last_key_value();
+                if old != new {
+                    eprintln!(
+                        "Old and new account databases have different last entries: {old:?} -> {new:?}\n Migration will be aborted.");
+                    return;
+                }
+            }
+            // Sanity checks passed.  Make the new database authoritative:
             println!(
                 "Account migration complete: {:?} -> {:?}",
                 self.authoritative_db, migration.db
