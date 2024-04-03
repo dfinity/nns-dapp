@@ -1,3 +1,4 @@
+use candid::types::number;
 use ic_stable_structures::memory_manager;
 use pretty_assertions::assert_eq;
 use proptest::proptest;
@@ -255,4 +256,173 @@ proptest! {
         assert_stable_to_map_migration_works_with_other_operations(&mut rng);
     }
 
+}
+
+/// Migration should not be finalized if the account databases have a different number of accounts.
+#[test]
+fn migration_should_be_aborted_if_the_new_db_has_a_different_number_of_accounts() {
+    // Creates a database with some accounts.
+    let mut accounts_db = AccountsDbAsProxy::default();
+    let number_of_accounts_to_migrate: u8 = u8::try_from(2 * AccountsDbAsProxy::MIGRATION_STEP_SIZE)
+        .expect("Default step size too big for this test; use a custom step size instead.");
+    for i in 0..number_of_accounts_to_migrate {
+        let key = [i; 32];
+        let account = toy_account(u64::from(i), 0);
+        accounts_db.db_insert_account(&key, account);
+    }
+    assert_eq!(
+        accounts_db.db_accounts_len(),
+        u64::from(number_of_accounts_to_migrate),
+        "The test should have created the expected number of accounts"
+    );
+    // Starts the migration.
+    let new_accounts_db = AccountsDb::Map(AccountsDbAsMap::default());
+    accounts_db.start_migrating_accounts_to(new_accounts_db);
+    // Migrate account 0:
+    accounts_db.step_migration(AccountsDbAsProxy::MIGRATION_STEP_SIZE);
+    let key_to_remove = [0u8; 32];
+    assert!(
+        accounts_db
+            .migration
+            .as_ref()
+            .unwrap()
+            .db
+            .db_get_account(&key_to_remove)
+            .is_some(),
+        "Expected the first account to have been migrated"
+    );
+    // Breaks the invariant by deleting account zero from the old db.  The migration will not move it back unless the account is changed, hence updated in both the authoritative and new db, and we will not update it.  Thus sanity checks should fail on finalization.
+    accounts_db.authoritative_db.db_remove_account(&key_to_remove);
+    assert!(
+        accounts_db.authoritative_db.db_get_account(&key_to_remove).is_none(),
+        "Account zero should have been removed from the authoritative db."
+    );
+    assert_eq!(
+        accounts_db.authoritative_db.db_accounts_len(),
+        number_of_accounts_to_migrate as u64 - 1,
+        "The number of accounts in the authoritative db should be the original number minus one"
+    );
+    assert!(
+        accounts_db
+            .migration
+            .as_ref()
+            .unwrap()
+            .db
+            .db_get_account(&key_to_remove)
+            .is_some(),
+        "Expected the first account still to be in the migration db."
+    );
+    // Finish the migration.
+    // ... Limit the number of steps, just so that we don't get an infinite loop if there is a bug and migration never finishes.
+    let plenty_of_steps = u32::from(number_of_accounts_to_migrate) + AccountsDbAsProxy::MIGRATION_FINALIZATION_BLOCKS;
+    for _ in 0..plenty_of_steps {
+        accounts_db.step_migration(AccountsDbAsProxy::MIGRATION_STEP_SIZE);
+        if accounts_db.migration.is_none() {
+            break;
+        } else {
+            // Note: This is called at least once as the number of accounts is greater than the step size.
+            assert!(
+                accounts_db.authoritative_db.db_get_account(&key_to_remove).is_none(),
+                "Account zero should still be missing in the authoritative db."
+            );
+            assert_eq!(
+                accounts_db.authoritative_db.db_accounts_len(),
+                number_of_accounts_to_migrate as u64 - 1,
+                "The number of accounts in the authoritative db should be the original number minus one"
+            );
+            assert!(
+                accounts_db
+                    .migration
+                    .as_ref()
+                    .unwrap()
+                    .db
+                    .db_get_account(&key_to_remove)
+                    .is_some(),
+                "Expected the first account still to be in the migration db."
+            );
+        }
+    }
+    // The migration should have been cancelled:
+    assert!(
+        accounts_db.migration.is_none(),
+        "The migration should have been cancelled"
+    );
+    // The number of accounts should be as for the old database.
+    assert_eq!(
+        accounts_db.authoritative_db.db_accounts_len(),
+        number_of_accounts_to_migrate as u64 - 1,
+        "The number of accounts should be as for the old database"
+    );
+}
+
+/// Migration should not be finalized if the first account differs in the two databases.
+#[test]
+fn migration_should_be_aborted_if_the_new_db_has_a_different_first_account() {
+    // Creates a database with some accounts.
+    let mut accounts_db = AccountsDbAsProxy::default();
+    let number_of_accounts_to_migrate: u8 = u8::try_from(2 * AccountsDbAsProxy::MIGRATION_STEP_SIZE)
+        .expect("Default step size too big for this test; use a custom step size instead.");
+    for i in 0..number_of_accounts_to_migrate {
+        let key = [i; 32];
+        let account = toy_account(u64::from(i), 0);
+        accounts_db.db_insert_account(&key, account);
+    }
+    // Starts the migration.
+    let new_accounts_db = AccountsDb::Map(AccountsDbAsMap::default());
+    accounts_db.start_migrating_accounts_to(new_accounts_db);
+    // Migrate account 0:
+    accounts_db.step_migration(AccountsDbAsProxy::MIGRATION_STEP_SIZE);
+    let key_to_change = [0u8; 32];
+    assert!(
+        accounts_db
+            .migration
+            .as_ref()
+            .unwrap()
+            .db
+            .db_get_account(&key_to_change)
+            .is_some(),
+        "Expected the first account to have been migrated"
+    );
+    // Breaks the invariant by altering the first account in the authoritative db but not the new db.
+    let original_account = accounts_db.authoritative_db.db_get_account(&key_to_change).unwrap();
+    let altered_account = toy_account(0, 1);
+    assert_ne!(
+        original_account, altered_account,
+        "The original and altered accounts should differ"
+    );
+    accounts_db
+        .authoritative_db
+        .db_insert_account(&key_to_change, altered_account.clone());
+    // Finish the migration.
+    // ... Limit the number of steps, just so that we don't get an infinite loop if there is a bug and migration never finishes.
+    let plenty_of_steps = u32::from(number_of_accounts_to_migrate) + AccountsDbAsProxy::MIGRATION_FINALIZATION_BLOCKS;
+    for _ in 0..plenty_of_steps {
+        accounts_db.step_migration(AccountsDbAsProxy::MIGRATION_STEP_SIZE);
+        if accounts_db.migration.is_none() {
+            break;
+        } else {
+            // Note: This is called at least once as the number of accounts is greater than the step size.
+            assert_ne!(
+                accounts_db.authoritative_db.db_get_account(&key_to_change),
+                accounts_db
+                    .migration
+                    .as_ref()
+                    .unwrap()
+                    .db
+                    .db_get_account(&key_to_change),
+                "Expected the first account still to be different in the migration db."
+            );
+        }
+    }
+    // The migration should have been cancelled:
+    assert!(
+        accounts_db.migration.is_none(),
+        "The migration should have been cancelled"
+    );
+    // The first account should be as for the old database.
+    assert_eq!(
+        accounts_db.authoritative_db.db_get_account(&key_to_change),
+        Some(altered_account),
+        "The first account should be as for the old database"
+    );
 }
