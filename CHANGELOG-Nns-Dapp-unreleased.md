@@ -15,20 +15,24 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Add feature flag `ENABLE_HIDE_ZERO_BALANCE`.
+* Setting to hide tokens with zero balance.
 
 #### Changed
 
-* Adjusted table colors in dark theme.
+* Always omit the account parameter in the URL when navigating to a main account.
+* Display the block timestamp instead of created timestamp on ICP transaction.
+* Minor style changes for mobile project selector.
 
 #### Deprecated
 
 #### Removed
 
+* Remove `protobuf` dependency for Ledger hardware wallet.
+
 #### Fixed
 
-* Min ckBTC withdrawal amount was unknown when withdrawing directly from My Tokens.
-* Fix menu width in collapsed state.
+* Make token table rows always clickable. A few edge cases were missing.
+* Don't require double hardware approval on neuron staking.
 
 #### Security
 
@@ -37,6 +41,7 @@ proposal is successful, the changes it released will be moved from this file to
 ### Operations
 
 #### Added
+* Added a test that stats are not recomputed on upgrade but rather serialized and de-serialized.
 
 #### Changed
 
@@ -45,5 +50,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 #### Fixed
+
+* Reinstall xz in reproducible assets workflow to get consistent archives.
 
 #### Security

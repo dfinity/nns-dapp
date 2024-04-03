@@ -22,7 +22,7 @@
       "archives": ["zmbi7-fyaaa-aaaaq-aaahq-cai"]
     },
     "meta": {
-      "url": "https://dragginz.io",
+      "url": "https://dragginz.io/",
       "name": "Dragginz",
       "description": "A virtual pets game from the creators of Neopets.  Non-profit, 100% on-chain.  We've got baby dragons, crowdsourced world building, magic spells, and a prince in disguise!",
       "logo": "/v1/sns/root/zxeu2-7aaaa-aaaaq-aaafa-cai/logo.png"
@@ -289,7 +289,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999999401694000,
+    "icrc1_total_supply": 799999998433494000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -385,7 +385,8 @@
         "tktqu-nyaaa-aaaar-qackq-cai",
         "4bkt6-4aaaa-aaaaf-aaaiq-cai",
         "lxq5i-mqaaa-aaaaf-bih7q-cai",
-        "6ofpc-2aaaa-aaaaf-biibq-cai"
+        "6ofpc-2aaaa-aaaaf-biibq-cai",
+        "6klfq-niaaa-aaaar-qadbq-cai"
       ],
       "archives": ["2sqpr-ciaaa-aaaaq-aaaoq-cai"]
     },
@@ -396,7 +397,7 @@
       "logo": "/v1/sns/root/3e3x2-xyaaa-aaaaq-aaalq-cai/logo.png"
     },
     "parameters": {
-      "reserved_ids": [1005, 1006, 1007, 5000],
+      "reserved_ids": [1005, 1006, 1007, 5000, 100000, 100001, 100002, 100003],
       "functions": [
         {
           "id": 0,
@@ -909,58 +910,6 @@
           }
         },
         {
-          "id": 100000,
-          "name": "Call receive_tokens on InfinitySwap's CHAT/ICP Swap canister",
-          "description": "After transferring CHAT or ICP to InfinitySwap, the OpenChat SNS needs to call `receive_tokens` to notify InfinitySwap of the transfer.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "wkype-7qaaa-aaaar-ajfyq-cai",
-              "target_canister_id": "vahkw-kaaaa-aaaal-acaza-cai",
-              "validator_method_name": "infinity_swap_receive_tokens_validate",
-              "target_method_name": "receive_tokens"
-            }
-          }
-        },
-        {
-          "id": 100001,
-          "name": "Call mint on InfinitySwap's CHAT/ICP Swap canister",
-          "description": "Calling `mint` on InfinitySwap's CHAT/ICP Swap canister instructs it to 'mint' new liquidity from the tokens it has been transferred.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "wkype-7qaaa-aaaar-ajfyq-cai",
-              "target_canister_id": "vahkw-kaaaa-aaaal-acaza-cai",
-              "validator_method_name": "infinity_swap_mint_validate",
-              "target_method_name": "mint"
-            }
-          }
-        },
-        {
-          "id": 100002,
-          "name": "Call burn on InfinitySwap's CHAT/ICP Swap canister",
-          "description": "Calling `burn` on InfinitySwap's CHAT/ICP Swap canister instructs it to 'burn' any liquidity previously added by the SNS.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "wkype-7qaaa-aaaar-ajfyq-cai",
-              "target_canister_id": "vahkw-kaaaa-aaaal-acaza-cai",
-              "validator_method_name": "infinity_swap_burn_validate",
-              "target_method_name": "burn"
-            }
-          }
-        },
-        {
-          "id": 100003,
-          "name": "Call refund_transfer on InfinitySwap's CHAT/ICP Swap canister",
-          "description": "Calling `refund_transfer` on InfinitySwap's CHAT/ICP Swap canister instructs it to refund the SNS's CHAT and ICP.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "wkype-7qaaa-aaaar-ajfyq-cai",
-              "target_canister_id": "vahkw-kaaaa-aaaal-acaza-cai",
-              "validator_method_name": "infinity_swap_refund_transfer_validate",
-              "target_method_name": "refund_transfer"
-            }
-          }
-        },
-        {
           "id": 101000,
           "name": "Call trade_tokens on the CHAT/CYCLES trading pair canister at the CYCLES-TRANSFER-STATION.",
           "description": null,
@@ -983,6 +932,19 @@
               "target_canister_id": "w7lbn-qyaaa-aaaar-qacuq-cai",
               "validator_method_name": "sns_validate_void_position",
               "target_method_name": "void_position"
+            }
+          }
+        },
+        {
+          "id": 102000,
+          "name": "Call manage_neuron on the NNS Governance canister",
+          "description": "This will enable the OpenChat SNS Governance canister to manage NNS neurons, allowing it to perform actions such as voting on NNS proposals",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "wkype-7qaaa-aaaar-ajfyq-cai",
+              "target_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+              "validator_method_name": "nns_governance_manage_neuron_validate",
+              "target_method_name": "manage_neuron"
             }
           }
         }
@@ -1111,7 +1073,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10055439678035912,
+    "icrc1_total_supply": 10056085751809602,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1748,7 +1710,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 600206712382330,
+    "icrc1_total_supply": 600232200168905,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2106,7 +2068,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100126511672236820,
+    "icrc1_total_supply": 100128336270781890,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2595,6 +2557,14 @@
           }
         },
         {
+          "id": 14,
+          "name": "Manage dapp canister settings",
+          "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1000,
           "name": "burn",
           "description": null,
@@ -2745,7 +2715,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 921374822463622500,
+    "icrc1_total_supply": 921535353479666000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

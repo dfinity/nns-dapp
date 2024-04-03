@@ -270,7 +270,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98001021428239250,
+    "icrc1_total_supply": 98001124979615820,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -704,7 +704,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100437582703235600,
+    "icrc1_total_supply": 100455012984018160,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1348,7 +1348,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50005656799415670,
+    "icrc1_total_supply": 50008286786645870,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2144,7 +2144,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10007041553611116,
+    "icrc1_total_supply": 10007066406253498,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3095,7 +3095,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10000827010020214,
+    "icrc1_total_supply": 10000892006987812,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4059,7 +4059,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12545426947019952,
+    "icrc1_total_supply": 12545717398918152,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5365,7 +5365,8 @@
         "oh54a-baaaa-aaaap-abryq-cai",
         "oo6x4-xiaaa-aaaap-abrza-cai",
         "o4yaf-3yaaa-aaaap-abr2a-cai",
-        "bojx2-iaaaa-aaaag-ab3jq-cai"
+        "bojx2-iaaaa-aaaag-ab3jq-cai",
+        "j4jiq-sqaaa-aaaap-ab23a-cai"
       ],
       "archives": ["fgzua-6iaaa-aaaaq-aacgq-cai"]
     },
@@ -5496,6 +5497,19 @@
           "description": "Proposal to change canister settings for some dapp canisters.",
           "function_type": {
             "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 1001,
+          "name": "Manage NNS neuron",
+          "description": "Proposal to manage an ICP neuron under control of the Gold DAO.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "j4jiq-sqaaa-aaaap-ab23a-cai",
+              "target_canister_id": "j4jiq-sqaaa-aaaap-ab23a-cai",
+              "validator_method_name": "manage_nns_neuron_validate",
+              "target_method_name": "manage_nns_neuron"
+            }
           }
         }
       ]
@@ -5921,7 +5935,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100000387721259650,
+    "icrc1_total_supply": 100000508629235040,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

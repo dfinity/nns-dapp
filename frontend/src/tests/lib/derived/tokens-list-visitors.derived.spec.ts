@@ -57,12 +57,14 @@ describe("tokens-list-base.derived", () => {
     actions: [UserTokenAction.GoToDetail],
     rowHref: `/accounts/?u=${OWN_CANISTER_ID_TEXT}`,
   });
+  const tetrisHref = `/wallet/?u=${snsTetris.rootCanisterId.toText()}`;
   const tetrisTokenLoading: UserTokenLoading = {
     universeId: snsTetris.rootCanisterId,
     title: snsTetris.projectName,
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/g3pce-2iaae/logo.png",
     balance: "loading",
     actions: [],
+    rowHref: tetrisHref,
   };
   const tetrisVisitorToken: UserTokenData = {
     ...tetrisTokenLoading,
@@ -73,14 +75,16 @@ describe("tokens-list-base.derived", () => {
       amount: snsTetris.tokenMetadata.fee,
       token: snsTetris.tokenMetadata,
     }),
-    rowHref: `/wallet/?u=${snsTetris.rootCanisterId.toText()}`,
+    rowHref: tetrisHref,
   };
+  const pacmanHref = `/wallet/?u=${snsPacman.rootCanisterId.toText()}`;
   const pacmanTokenLoading: UserTokenLoading = {
     universeId: snsPacman.rootCanisterId,
     title: snsPacman.projectName,
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/f7crg-kabae/logo.png",
     balance: "loading",
     actions: [],
+    rowHref: pacmanHref,
   };
   const pacmanVisitorToken: UserTokenData = {
     ...pacmanTokenLoading,
@@ -91,17 +95,21 @@ describe("tokens-list-base.derived", () => {
       amount: snsPacman.tokenMetadata.fee,
       token: snsPacman.tokenMetadata,
     }),
-    rowHref: `/wallet/?u=${snsPacman.rootCanisterId.toText()}`,
+    rowHref: pacmanHref,
   };
+  const ckBTCHref = `/wallet/?u=${CKBTC_UNIVERSE_CANISTER_ID.toText()}`;
   const ckBTCTokenLoading: UserTokenLoading = {
     ...ckBTCTokenBase,
     balance: "loading",
     actions: [],
+    rowHref: ckBTCHref,
   };
+  const ckTESTBTCHref = `/wallet/?u=${CKTESTBTC_UNIVERSE_CANISTER_ID.toText()}`;
   const ckTESTBTCTokenLoading: UserTokenLoading = {
     ...ckTESTBTCTokenBase,
     balance: "loading",
     actions: [],
+    rowHref: ckTESTBTCHref,
   };
   const ckTESTBTCVisitorToken: UserTokenData = {
     ...ckTESTBTCTokenBase,
@@ -112,7 +120,7 @@ describe("tokens-list-base.derived", () => {
       amount: mockCkTESTBTCToken.fee,
       token: mockCkTESTBTCToken,
     }),
-    rowHref: `/wallet/?u=${CKTESTBTC_UNIVERSE_CANISTER_ID.toText()}`,
+    rowHref: ckTESTBTCHref,
   };
   const ckBTCVisitorToken: UserTokenData = {
     ...ckBTCTokenBase,
@@ -123,7 +131,7 @@ describe("tokens-list-base.derived", () => {
       amount: mockCkBTCToken.fee,
       token: mockCkBTCToken,
     }),
-    rowHref: `/wallet/?u=${CKBTC_UNIVERSE_CANISTER_ID.toText()}`,
+    rowHref: ckBTCHref,
   };
   const ckETHVisitorToken: UserTokenData = {
     ...ckETHTokenBase,

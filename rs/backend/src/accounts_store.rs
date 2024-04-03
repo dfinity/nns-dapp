@@ -44,6 +44,10 @@ type TransactionIndex = u64;
 const PRE_MIGRATION_LIMIT: u64 = 300_000;
 
 /// Accounts, transactions and related data.
+///
+/// Note: Some monitoring fields are not included in the `Eq` and `PartialEq` implementations.  Additionally, please note
+/// that the `ic_stable_structures::BTreeMap` does not have an implementation of `Eq`, so special care needs to be taken when comparing
+/// data backed by stable structures.
 #[derive(Default)]
 #[cfg_attr(test, derive(Eq, PartialEq))]
 pub struct AccountsStore {
@@ -58,9 +62,26 @@ pub struct AccountsStore {
     block_height_synced_up_to: Option<BlockIndex>,
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
     accounts_db_stats: AccountsDbStats,
+    accounts_db_stats_recomputed_on_upgrade: IgnoreEq<Option<bool>>,
     last_ledger_sync_timestamp_nanos: u64,
     neurons_topped_up_count: u64,
 }
+
+/// A wrapper around a value that returns true for `PartialEq` and `Eq` equality checks, regardless of the value.
+///
+/// This is intended to be used on incidental, volatile fields.  A structure containing such a field will typically wish to disregard the field in any comparison.
+#[derive(Default)]
+struct IgnoreEq<T>(T)
+where
+    T: Default;
+
+impl<T: Default> PartialEq for IgnoreEq<T> {
+    fn eq(&self, _: &Self) -> bool {
+        true
+    }
+}
+
+impl<T: Default> Eq for IgnoreEq<T> {}
 
 impl fmt::Debug for AccountsStore {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -1112,6 +1133,7 @@ impl AccountsStore {
         stats.transactions_to_process_queue_length = self.multi_part_transactions_processor.get_queue_length();
         stats.schema = Some(self.accounts_db.schema_label() as u32);
         stats.migration_countdown = Some(self.accounts_db.migration_countdown());
+        stats.accounts_db_stats_recomputed_on_upgrade = self.accounts_db_stats_recomputed_on_upgrade.0;
     }
 
     #[must_use]
@@ -1629,10 +1651,8 @@ impl StableState for AccountsStore {
             }
         }
 
-        let accounts_db_stats = if let Some(counts) = accounts_db_stats_maybe {
-            println!("Using de-serialized accounts_db stats");
-            counts
-        } else {
+        let accounts_db_stats_recomputed_on_upgrade = IgnoreEq(Some(accounts_db_stats_maybe.is_none()));
+        let accounts_db_stats = accounts_db_stats_maybe.unwrap_or_else(|| {
             println!("Re-counting accounts_db stats...");
             let mut sub_accounts_count: u64 = 0;
             let mut hardware_wallet_accounts_count: u64 = 0;
@@ -1644,7 +1664,7 @@ impl StableState for AccountsStore {
                 sub_accounts_count,
                 hardware_wallet_accounts_count,
             }
-        };
+        });
 
         let accounts_db = AccountsDb::Map(AccountsDbAsMap::from_map(accounts));
 
@@ -1657,6 +1677,7 @@ impl StableState for AccountsStore {
             block_height_synced_up_to,
             multi_part_transactions_processor,
             accounts_db_stats,
+            accounts_db_stats_recomputed_on_upgrade,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
         })

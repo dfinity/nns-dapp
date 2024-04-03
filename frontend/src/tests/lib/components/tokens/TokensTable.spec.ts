@@ -12,7 +12,6 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   createUserToken,
   createUserTokenLoading,
-  userTokenPageMock,
 } from "$tests/mocks/tokens-page.mock";
 import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -127,29 +126,19 @@ describe("TokensTable", () => {
     expect(await row2Po.getSubtitle()).toBeNull();
   });
 
-  it("should render href link if rowHref is present", async () => {
+  it("should render href link", async () => {
     const href = "/accounts";
     const token1 = createUserToken({
       universeId: OWN_CANISTER_ID,
       balance: TokenAmount.fromE8s({ amount: 314000000n, token: ICPToken }),
       rowHref: href,
     });
-    const token2 = createUserToken({
-      universeId: principal(0),
-      balance: TokenAmount.fromE8s({
-        amount: 114000000n,
-        token: { name: "Tetris", symbol: "TETRIS", decimals: 8 },
-      }),
-      rowHref: undefined,
-    });
-    const po = renderTable({ userTokensData: [token1, token2] });
+    const po = renderTable({ userTokensData: [token1] });
 
     const rows = await po.getRows();
     const row1Po = rows[0];
-    const row2Po = rows[1];
 
     expect(await row1Po.getHref()).toBe(href);
-    expect(await row2Po.getHref()).toBeNull();
   });
 
   it("should render specific text if balance not available", async () => {
@@ -229,25 +218,6 @@ describe("TokensTable", () => {
     expect(await rowPo.hasGoToDetailIcon()).toBe(true);
     expect(await rowPo.hasReceiveButton()).toBe(false);
     expect(await rowPo.hasSendButton()).toBe(false);
-  });
-
-  it("should trigger event when clicking in the row", async () => {
-    const handleAction = vi.fn();
-    const po = renderTable({
-      userTokensData: [userTokenPageMock],
-      onAction: handleAction,
-    });
-
-    const rows = await po.getRows();
-    await rows[0].click();
-
-    expect(handleAction).toHaveBeenCalledTimes(1);
-    expect(handleAction).toHaveBeenCalledWith(
-      createActionEvent({
-        type: ActionType.GoToTokenDetail,
-        data: userTokenPageMock,
-      })
-    );
   });
 
   it("should trigger event when clicking in Send action", async () => {
