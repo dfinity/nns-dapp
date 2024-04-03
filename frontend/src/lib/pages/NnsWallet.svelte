@@ -217,10 +217,10 @@
 
   const accountDidUpdate = async () => {
     const account = $selectedAccountStore.account;
-    if (account !== undefined) {
-      await reloadTransactions(account.identifier);
+    if (account === undefined) {
       return;
     }
+    await reloadTransactions(account.identifier);
   };
 
   const handleUnknownAccount = () => {
