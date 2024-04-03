@@ -252,6 +252,7 @@
         createSwapCanisterAccountsStore(accountPrincipal);
     } else if (accounts.length > 0) {
       // Accounts are loaded but we haven't found the account we're looking for.
+      // There is always at least a main account if accounts are loaded.
       handleUnknownAccount();
       return;
     }
