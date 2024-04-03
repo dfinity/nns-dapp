@@ -1,4 +1,4 @@
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-03-14_23-01-p2p/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-03-27_23-01-p2p/rs/registry/canister/canister/registry.did>
 type AddApiBoundaryNodePayload = record { node_id : principal; version : text };
 type AddFirewallRulesPayload = record {
   expected_hash : text;
@@ -17,15 +17,15 @@ type AddNodeOperatorPayload = record {
 type AddNodePayload = record {
   prometheus_metrics_endpoint : text;
   http_endpoint : text;
-  idkg_dealing_encryption_pk : opt vec nat8;
+  idkg_dealing_encryption_pk : opt blob;
   domain : opt text;
   public_ipv4_config : opt IPv4Config;
   xnet_endpoint : text;
-  chip_id : opt vec nat8;
-  committee_signing_pk : vec nat8;
-  node_signing_pk : vec nat8;
-  transport_tls_cert : vec nat8;
-  ni_dkg_dealing_encryption_pk : vec nat8;
+  chip_id : opt blob;
+  committee_signing_pk : blob;
+  node_signing_pk : blob;
+  transport_tls_cert : blob;
+  ni_dkg_dealing_encryption_pk : blob;
   p2p_flow_endpoints : vec text;
 };
 type AddNodesToSubnetPayload = record {
@@ -141,10 +141,10 @@ type IPv4Config = record {
 };
 type NodeOperatorRecord = record {
   ipv6 : opt text;
-  node_operator_principal_id : vec nat8;
+  node_operator_principal_id : blob;
   node_allowance : nat64;
   rewardable_nodes : vec record { text; nat32 };
-  node_provider_principal_id : vec nat8;
+  node_provider_principal_id : blob;
   dc_id : text;
 };
 type NodeProvidersMonthlyXdrRewards = record {
@@ -166,7 +166,7 @@ type RecoverSubnetPayload = record {
   subnet_id : principal;
   registry_store_uri : opt record { text; text; nat64 };
   ecdsa_config : opt EcdsaInitialConfig;
-  state_hash : vec nat8;
+  state_hash : blob;
   time_ns : nat64;
 };
 type RemoveApiBoundaryNodesPayload = record { node_ids : vec principal };
@@ -177,7 +177,7 @@ type RemoveFirewallRulesPayload = record {
 };
 type RemoveNodeDirectlyPayload = record { node_id : principal };
 type RemoveNodeOperatorsPayload = record {
-  node_operators_to_remove : vec vec nat8;
+  node_operators_to_remove : vec blob;
 };
 type RemoveNodesPayload = record { node_ids : vec principal };
 type RerouteCanisterRangesPayload = record {
@@ -185,14 +185,13 @@ type RerouteCanisterRangesPayload = record {
   reassigned_canister_ranges : vec CanisterIdRange;
   destination_subnet : principal;
 };
-type Result = variant { Ok : principal; Err : text };
-type Result_1 = variant { Ok; Err : text };
-type Result_2 = variant {
+type Result = variant {
   Ok : vec record { DataCenterRecord; NodeOperatorRecord };
   Err : text;
 };
-type Result_3 = variant { Ok : NodeProvidersMonthlyXdrRewards; Err : text };
-type Result_4 = variant { Ok : GetSubnetForCanisterResponse; Err : text };
+type Result_1 = variant { Ok : NodeProvidersMonthlyXdrRewards; Err : text };
+type Result_2 = variant { Ok : GetSubnetForCanisterResponse; Err : text };
+type Result_3 = variant { Ok; Err : text };
 type RetireReplicaVersionPayload = record { replica_version_ids : vec text };
 type SetFirewallConfigPayload = record {
   ipv4_prefixes : vec text;
@@ -223,7 +222,7 @@ type UpdateElectedReplicaVersionsPayload = record {
   release_package_sha256_hex : opt text;
 };
 type UpdateNodeDirectlyPayload = record {
-  idkg_dealing_encryption_pk : opt vec nat8;
+  idkg_dealing_encryption_pk : opt blob;
 };
 type UpdateNodeDomainDirectlyPayload = record {
   node_id : principal;
@@ -297,23 +296,21 @@ type UpdateUnassignedNodesConfigPayload = record {
 service : {
   add_api_boundary_node : (AddApiBoundaryNodePayload) -> ();
   add_firewall_rules : (AddFirewallRulesPayload) -> ();
-  add_node : (AddNodePayload) -> (Result);
+  add_node : (AddNodePayload) -> (principal);
   add_node_operator : (AddNodeOperatorPayload) -> ();
   add_nodes_to_subnet : (AddNodesToSubnetPayload) -> ();
   add_or_remove_data_centers : (AddOrRemoveDataCentersProposalPayload) -> ();
   bless_replica_version : (BlessReplicaVersionPayload) -> ();
   change_subnet_membership : (ChangeSubnetMembershipPayload) -> ();
   clear_provisional_whitelist : () -> ();
-  complete_canister_migration : (CompleteCanisterMigrationPayload) -> (
-      Result_1,
-    );
+  complete_canister_migration : (CompleteCanisterMigrationPayload) -> ();
   create_subnet : (CreateSubnetPayload) -> ();
   delete_subnet : (DeleteSubnetPayload) -> ();
   get_build_metadata : () -> (text) query;
-  get_node_operators_and_dcs_of_node_provider : (principal) -> (Result_2) query;
-  get_node_providers_monthly_xdr_rewards : () -> (Result_3) query;
-  get_subnet_for_canister : (GetSubnetForCanisterRequest) -> (Result_4) query;
-  prepare_canister_migration : (PrepareCanisterMigrationPayload) -> (Result_1);
+  get_node_operators_and_dcs_of_node_provider : (principal) -> (Result) query;
+  get_node_providers_monthly_xdr_rewards : () -> (Result_1) query;
+  get_subnet_for_canister : (GetSubnetForCanisterRequest) -> (Result_2) query;
+  prepare_canister_migration : (PrepareCanisterMigrationPayload) -> ();
   recover_subnet : (RecoverSubnetPayload) -> ();
   remove_api_boundary_nodes : (RemoveApiBoundaryNodesPayload) -> ();
   remove_firewall_rules : (RemoveFirewallRulesPayload) -> ();
@@ -321,7 +318,7 @@ service : {
   remove_node_operators : (RemoveNodeOperatorsPayload) -> ();
   remove_nodes : (RemoveNodesPayload) -> ();
   remove_nodes_from_subnet : (RemoveNodesPayload) -> ();
-  reroute_canister_ranges : (RerouteCanisterRangesPayload) -> (Result_1);
+  reroute_canister_ranges : (RerouteCanisterRangesPayload) -> ();
   retire_replica_version : (RetireReplicaVersionPayload) -> ();
   set_firewall_config : (SetFirewallConfigPayload) -> ();
   update_api_boundary_nodes_version : (
@@ -330,10 +327,10 @@ service : {
   update_elected_hostos_versions : (UpdateElectedHostosVersionsPayload) -> ();
   update_elected_replica_versions : (UpdateElectedReplicaVersionsPayload) -> ();
   update_firewall_rules : (AddFirewallRulesPayload) -> ();
-  update_node_directly : (UpdateNodeDirectlyPayload) -> (Result_1);
-  update_node_domain_directly : (UpdateNodeDomainDirectlyPayload) -> (Result_1);
+  update_node_directly : (UpdateNodeDirectlyPayload) -> ();
+  update_node_domain_directly : (UpdateNodeDomainDirectlyPayload) -> (Result_3);
   update_node_ipv4_config_directly : (UpdateNodeIPv4ConfigDirectlyPayload) -> (
-      Result_1,
+      Result_3,
     );
   update_node_operator_config : (UpdateNodeOperatorConfigPayload) -> ();
   update_node_operator_config_directly : (
