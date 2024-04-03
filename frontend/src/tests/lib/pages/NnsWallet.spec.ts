@@ -211,6 +211,36 @@ describe("NnsWallet", () => {
       expect(await po.getSendButtonPo().isPresent()).toBe(false);
       expect(await po.getReceiveButtonPo().isPresent()).toBe(false);
     });
+
+    it("should navigate to accounts when account identifier is invalid after signing in", async () => {
+      await renderWallet({
+        accountIdentifier: "invalid-account-identifier",
+      });
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: OWN_CANISTER_ID_TEXT,
+      });
+      expect(get(toastsStore)).toEqual([]);
+
+      // When signing in, the component will load accounts. Mock the result.
+      vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(
+        mockAccountDetails
+      );
+      // Sign in.
+      resetIdentity();
+      await runResolvedPromises();
+
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Accounts,
+        universe: OWN_CANISTER_ID_TEXT,
+      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: 'Sorry, the account "invalid-account-identifier" was not found',
+        },
+      ]);
+    });
   });
 
   describe("no accounts", () => {
@@ -762,7 +792,7 @@ describe("NnsWallet", () => {
       expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
     });
 
-    it("should navigate to accounts when account identifier is missing", async () => {
+    it("should default to main account when account identifier is missing", async () => {
       expect(get(pageStore)).toEqual({
         path: AppPath.Wallet,
         universe: OWN_CANISTER_ID_TEXT,

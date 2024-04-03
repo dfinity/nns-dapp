@@ -12,7 +12,6 @@
     loadBalance,
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
   import { Island, Spinner } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
@@ -39,7 +38,6 @@
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { pageStore } from "$lib/derived/page.derived";
   import Separator from "$lib/components/ui/Separator.svelte";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
   import {
@@ -223,21 +221,15 @@
       await reloadTransactions(account.identifier);
       return;
     }
+  };
 
-    // handle unknown accountIdentifier from URL
-    if (
-      account === undefined &&
-      $icpAccountsStore.main !== undefined &&
-      $pageStore.path === AppPath.Wallet
-    ) {
-      toastsError({
-        labelKey: replacePlaceholders($i18n.error.account_not_found, {
-          $account_identifier: accountIdentifier ?? "",
-        }),
-      });
-
-      await goBack();
-    }
+  const handleUnknownAccount = () => {
+    toastsError({
+      labelKey: replacePlaceholders($i18n.error.account_not_found, {
+        $account_identifier: accountIdentifier ?? "",
+      }),
+    });
+    goBack();
   };
 
   const setSelectedAccount = ({
@@ -258,7 +250,12 @@
       // Set the swapCanistersStore only once we have an account.
       swapCanisterAccountsStore =
         createSwapCanisterAccountsStore(accountPrincipal);
+    } else if (accounts.length > 0) {
+      // Accounts are loaded but we haven't found the account we're looking for.
+      handleUnknownAccount();
+      return;
     }
+
     selectedAccountStore.set({
       account,
       neurons: [],
