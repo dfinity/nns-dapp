@@ -1,6 +1,7 @@
 //! Code for migration from the authoritative database to a new database.
 use super::{AccountsDb, AccountsDbAsProxy, AccountsDbTrait, Migration};
 use ic_cdk::println;
+use pretty_assertions::assert_eq;
 
 impl AccountsDbAsProxy {
     /// The default number of accounts to move in a migration step.
