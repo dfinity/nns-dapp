@@ -8,7 +8,6 @@ impl AccountsDbAsProxy {
     /// The maximum number of accounts to move in a migration step.
     pub const MIGRATION_STEP_SIZE_MAX: u32 = 1000;
     /// The progress meter count reserved for finalizing a migration.
-    /// Note: This must be positive and should correspond to a reasonable estimate of the number of blocks needed to complete the migration.
     pub const MIGRATION_FINALIZATION_BLOCKS: u32 = 1;
 
     /// Determines whether a migration is in progress.
@@ -26,6 +25,7 @@ impl AccountsDbAsProxy {
     ///         When performing CRUD, apply the operation to the new database ONLY if either:
     ///         - `next_to_migrate` is `None` (i.e. the migration is complete)
     ///         - The key is strictly less than `next_to_migrate`.
+    ///       - If the migration encounters a batch of extremely large accounts, migration slows down.
     #[must_use]
     pub fn migration_countdown(&self) -> u32 {
         self.migration.as_ref().map_or(0, |migration| {
