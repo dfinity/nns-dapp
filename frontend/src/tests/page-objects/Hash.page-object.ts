@@ -18,7 +18,7 @@ export class HashPo extends BasePageObject {
     return this.getButton("copy-component");
   }
 
-  getText(): Promise<string> {
+  getFullText(): Promise<string> {
     return this.getTooltipPo().getText();
   }
 
