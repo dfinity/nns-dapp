@@ -31,6 +31,7 @@ struct TestEnv {
     pub canister_id: ic_principal::Principal,
     pub reference_canister_id: ic_principal::Principal,
     pub controller: ic_principal::Principal,
+    expected_
 }
 impl TestEnv {
     /// Path to the Wasm
