@@ -29,7 +29,7 @@ pub struct Partitions {
     /// provide when we convert back.
     ///
     /// Update: `into_memory()` [has now been implemented in stable structures](https://github.com/dfinity/stable-structures/pull/188), so
-    /// after the next release of stable_structures we should be able to delete this field.  The current version of stable structurws is
+    /// after the next release of `stable_structures` we should be able to delete this field.  The current version of stable structures is
     /// 0.6.3 so anything strictly after that is probably fine.
     #[cfg(test)]
     memory: DefaultMemoryImpl,
