@@ -33,6 +33,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Make token table rows always clickable. A few edge cases were missing.
 * Don't require double hardware approval on neuron staking.
+* Fixed duplicate tooltip IDs to be unique.
 
 #### Security
 
