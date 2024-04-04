@@ -59,6 +59,22 @@ impl AccountsDbTrait for AccountsDb {
             AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => unbounded_stable_btree_map_db.iter(),
         }
     }
+    fn first_key_value(&self) -> Option<(Vec<u8>, Account)> {
+        match self {
+            AccountsDb::Map(map_db) => map_db.first_key_value(),
+            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
+                unbounded_stable_btree_map_db.first_key_value()
+            }
+        }
+    }
+    fn last_key_value(&self) -> Option<(Vec<u8>, Account)> {
+        match self {
+            AccountsDb::Map(map_db) => map_db.last_key_value(),
+            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
+                unbounded_stable_btree_map_db.last_key_value()
+            }
+        }
+    }
     fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
         match self {
             AccountsDb::Map(map_db) => map_db.range(key_range),

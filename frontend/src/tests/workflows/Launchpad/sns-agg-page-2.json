@@ -1475,7 +1475,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100002393087226000,
+    "icrc1_total_supply": 100002656148704480,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3351,7 +3351,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100002452449859,
+    "icrc1_total_supply": 100002642633003,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -3754,7 +3754,11 @@
       "ledger": "hvgxa-wqaaa-aaaaq-aacia-cai",
       "index": "h3e2i-naaaa-aaaaq-aacja-cai",
       "governance": "fi3zi-fyaaa-aaaaq-aachq-cai",
-      "dapps": ["5ceyv-syaaa-aaaag-qc43q-cai", "ok64y-uiaaa-aaaag-qdcbq-cai"],
+      "dapps": [
+        "5ceyv-syaaa-aaaag-qc43q-cai",
+        "ok64y-uiaaa-aaaag-qdcbq-cai",
+        "iczfn-iiaaa-aaaan-qltcq-cai"
+      ],
       "archives": ["h4f44-ayaaa-aaaaq-aacjq-cai"]
     },
     "meta": {
@@ -3911,6 +3915,19 @@
               "target_method_name": "burn_old_tokens"
             }
           }
+        },
+        {
+          "id": 2002,
+          "name": "send_icrc1_tokens",
+          "description": "Send the specified amount of icrc1 tokens from the DeFi canister to the specified principal and subaccount. Burn tokens by sending them to the icrc1 token ledger's burn address and specify a null expected fee.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "ok64y-uiaaa-aaaag-qdcbq-cai",
+              "target_canister_id": "ok64y-uiaaa-aaaag-qdcbq-cai",
+              "validator_method_name": "validate_send_icrc1_tokens",
+              "target_method_name": "send_icrc1_tokens"
+            }
+          }
         }
       ]
     },
@@ -4050,7 +4067,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 999984615000,
+    "icrc1_total_supply": 999982859000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4150,7 +4167,7 @@
       "logo": "/v1/sns/root/hjcnr-bqaaa-aaaaq-aacka-cai/logo.png"
     },
     "parameters": {
-      "reserved_ids": [],
+      "reserved_ids": [1015],
       "functions": [
         {
           "id": 0,
@@ -4468,19 +4485,6 @@
           }
         },
         {
-          "id": 1015,
-          "name": "grant_permission",
-          "description": "add asset canister permission",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
-              "target_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
-              "validator_method_name": "validate_grant_permission",
-              "target_method_name": "7vkf4-jqaaa-aaaaj-azrua-cai"
-            }
-          }
-        },
-        {
           "id": 1016,
           "name": "backup",
           "description": "Backs up and saves a snapshot of a trading pair.",
@@ -4555,6 +4559,552 @@
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorUpdate",
               "target_method_name": "update"
+            }
+          }
+        },
+        {
+          "id": 1022,
+          "name": "reinstall",
+          "description": "Reinstall a trading pair canister which is paused.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorReinstall",
+              "target_method_name": "reinstall"
+            }
+          }
+        },
+        {
+          "id": 1023,
+          "name": "removeSnapshot",
+          "description": "Removes all snapshots prior to the specified timestamp of the trading pair.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorRemoveSnapshot",
+              "target_method_name": "removeSnapshot"
+            }
+          }
+        },
+        {
+          "id": 1024,
+          "name": "recovery",
+          "description": "\"Recover data for a trading pair.   Note: You need to check the wasm version and the status of the trading pair, the operation may lead to data loss.\"",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorRecovery",
+              "target_method_name": "recovery"
+            }
+          }
+        },
+        {
+          "id": 1025,
+          "name": "snapshotToTempCanister",
+          "description": "\"Save the data of snapshot to another canister.   Note: Canister `_pairTo` is created only for backing up data and should not be used for trading. It needs to implement the recover() method like ICDexPair.\"",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorSnapshotToTempCanister",
+              "target_method_name": "snapshotToTempCanister"
+            }
+          }
+        },
+        {
+          "id": 1026,
+          "name": "put",
+          "description": "Puts a pair into a list of trading pairs.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPut",
+              "target_method_name": "put"
+            }
+          }
+        },
+        {
+          "id": 1027,
+          "name": "remove",
+          "description": "Removes a pair from the list of trading pairs.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorRemove",
+              "target_method_name": "remove"
+            }
+          }
+        },
+        {
+          "id": 1028,
+          "name": "pair_setAuctionMode",
+          "description": "Enable/disable Auction Mode",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairSetAuctionMode",
+              "target_method_name": "pair_setAuctionMode"
+            }
+          }
+        },
+        {
+          "id": 1029,
+          "name": "pair_IDOSetFunder",
+          "description": "Open IDO of a trading pair and configure parameters",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairIDOSetFunder",
+              "target_method_name": "pair_IDOSetFunder"
+            }
+          }
+        },
+        {
+          "id": 1030,
+          "name": "pair_config",
+          "description": "Configure the trading pair parameters and configure its DRC205 parameters.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairConfig",
+              "target_method_name": "pair_config"
+            }
+          }
+        },
+        {
+          "id": 1031,
+          "name": "pair_setUpgradeMode",
+          "description": "When the data is too large to be backed up, you can set the UpgradeMode to #Base.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairSetUpgradeMode",
+              "target_method_name": "pair_setUpgradeMode"
+            }
+          }
+        },
+        {
+          "id": 1032,
+          "name": "pair_setOrderFail",
+          "description": "Sets an order with #Todo status as an error order.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairSetOrderFail",
+              "target_method_name": "pair_setOrderFail"
+            }
+          }
+        },
+        {
+          "id": 1033,
+          "name": "pair_enableStratOrder",
+          "description": "Enable strategy orders for a trading pair.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairEnableStratOrder",
+              "target_method_name": "pair_enableStratOrder"
+            }
+          }
+        },
+        {
+          "id": 1034,
+          "name": "sto_config",
+          "description": "Configuring strategy order parameters for a trading pair.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorStoConfig",
+              "target_method_name": "sto_config"
+            }
+          }
+        },
+        {
+          "id": 1035,
+          "name": "pair_pendingAll",
+          "description": "Query all orders in pending status.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairPendingAll",
+              "target_method_name": "pair_pendingAll"
+            }
+          }
+        },
+        {
+          "id": 1036,
+          "name": "pair_withdrawCycles",
+          "description": "Withdraw cycles.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairWithdrawCycles",
+              "target_method_name": "pair_withdrawCycles"
+            }
+          }
+        },
+        {
+          "id": 1037,
+          "name": "pair_ictcSetAdmin",
+          "description": "Add/Remove ICTC Administrator",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairIctcSetAdmin",
+              "target_method_name": "pair_ictcSetAdmin"
+            }
+          }
+        },
+        {
+          "id": 1038,
+          "name": "pair_ictcClearLog",
+          "description": "Clear logs of transaction orders and transaction tasks. ",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairIctcClearLog",
+              "target_method_name": "pair_ictcClearLog"
+            }
+          }
+        },
+        {
+          "id": 1039,
+          "name": "pair_ictcRedoTT",
+          "description": "Try the task again.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairIctcRedoTT",
+              "target_method_name": "pair_ictcRedoTT"
+            }
+          }
+        },
+        {
+          "id": 1040,
+          "name": "pair_ictcCompleteTO",
+          "description": "Complete a blocking order.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairIctcCompleteTO",
+              "target_method_name": "pair_ictcCompleteTO"
+            }
+          }
+        },
+        {
+          "id": 1041,
+          "name": "ConversionTrader.setWhitelist",
+          "description": "Add a whitelist trading pair (only these pairs are allowed to be traded)",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "3jd4g-jyaaa-aaaar-qaeba-cai",
+              "validator_method_name": "validatorTraderSetWhitelist",
+              "target_method_name": "setWhitelist"
+            }
+          }
+        },
+        {
+          "id": 1042,
+          "name": "grant_permission",
+          "description": "Add asset canister permission",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
+              "target_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
+              "validator_method_name": "validate_grant_permission",
+              "target_method_name": "grant_permission"
+            }
+          }
+        },
+        {
+          "id": 1043,
+          "name": "pair_ictcDoneTT",
+          "description": "Set status of a pending task.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairIctcDoneTT",
+              "target_method_name": "pair_ictcDoneTT"
+            }
+          }
+        },
+        {
+          "id": 1044,
+          "name": "pair_ictcDoneTO",
+          "description": "Set status of a pending order.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairIctcDoneTO",
+              "target_method_name": "pair_ictcDoneTO"
+            }
+          }
+        },
+        {
+          "id": 1045,
+          "name": "pair_ictcRunTO",
+          "description": "Run the ICTC actuator and check the status of the transaction order `toid`.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairIctcRunTO",
+              "target_method_name": "pair_ictcRunTO"
+            }
+          }
+        },
+        {
+          "id": 1046,
+          "name": "pair_ictcBlockTO",
+          "description": "Change the status of a transaction order to #Blocking.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairIctcBlockTO",
+              "target_method_name": "pair_ictcBlockTO"
+            }
+          }
+        },
+        {
+          "id": 1047,
+          "name": "pair_sync",
+          "description": "Synchronizing token0 and token1 transfer fees.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairSync",
+              "target_method_name": "pair_sync"
+            }
+          }
+        },
+        {
+          "id": 1048,
+          "name": "pair_removeVipMaker",
+          "description": "Removes vip-maker qualification.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairRemoveVipMaker",
+              "target_method_name": "pair_removeVipMaker"
+            }
+          }
+        },
+        {
+          "id": 1049,
+          "name": "pair_fallbackByTxid",
+          "description": "Retrieve missing funds from the order's TxAccount. The funds of the TxAccount will be refunded to the ICDexRouter canister-id.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairFallbackByTxid",
+              "target_method_name": "pair_fallbackByTxid"
+            }
+          }
+        },
+        {
+          "id": 1050,
+          "name": "pair_cancelByTxid",
+          "description": "Cancels an order.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairCancelByTxid",
+              "target_method_name": "pair_cancelByTxid"
+            }
+          }
+        },
+        {
+          "id": 1051,
+          "name": "pair_taSetDescription",
+          "description": "Submit a text description of the Trading Ambassadors (referral) system.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorPairTaSetDescription",
+              "target_method_name": "pair_taSetDescription"
+            }
+          }
+        },
+        {
+          "id": 1052,
+          "name": "sys_withdraw",
+          "description": "Withdraw the token to the specified account.Withdrawals can only be made to a DAO address, or to a blackhole address (destruction), not to a private address.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorSysWithdraw",
+              "target_method_name": "sys_withdraw"
+            }
+          }
+        },
+        {
+          "id": 1053,
+          "name": "sys_order",
+          "description": "Placing an order in a trading pair as a trader.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorSysOrder",
+              "target_method_name": "sys_order"
+            }
+          }
+        },
+        {
+          "id": 1054,
+          "name": "sys_cancelOrder",
+          "description": "Cancel own orders as a trader.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorSysCancelOrder",
+              "target_method_name": "sys_cancelOrder"
+            }
+          }
+        },
+        {
+          "id": 1055,
+          "name": "maker_reinstall",
+          "description": "Reinstall an ICDexMaker canister which is paused. Note: Operate with caution. Consider calling this method only if upgrading is not possible.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorMakerReinstall",
+              "target_method_name": "maker_reinstall"
+            }
+          }
+        },
+        {
+          "id": 1056,
+          "name": "maker_update",
+          "description": "Upgrade an ICDexMaker canister. Permissions: Dao, Private Maker Creator",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorMakerUpdate",
+              "target_method_name": "maker_update"
+            }
+          }
+        },
+        {
+          "id": 1057,
+          "name": "maker_remove",
+          "description": "Remove an Automated Market Maker (ICDexMaker).Permissions: Dao, Private Maker Creator",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorMakerRemove",
+              "target_method_name": "maker_remove"
+            }
+          }
+        },
+        {
+          "id": 1058,
+          "name": "maker_config",
+          "description": "Configure an Automated Market Maker (ICDexMaker).",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorMakerConfig",
+              "target_method_name": "maker_config"
+            }
+          }
+        },
+        {
+          "id": 1059,
+          "name": "maker_resetLocalBalance",
+          "description": "Reset Automated Market Maker (ICDexMaker) local account balance.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorMakerResetLocalBalance",
+              "target_method_name": "maker_resetLocalBalance"
+            }
+          }
+        },
+        {
+          "id": 1060,
+          "name": "maker_dexWithdraw",
+          "description": "Withdraw funds from the trading pair to an Automated Market Maker (ICDexMaker) local account.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorMakerDexWithdraw",
+              "target_method_name": "maker_dexWithdraw"
+            }
+          }
+        },
+        {
+          "id": 1061,
+          "name": "maker_dexDeposit",
+          "description": "Deposit from Automated Market Maker (ICDexMaker) to TraderAccount for the trading pair.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorMakerDexDeposit",
+              "target_method_name": "maker_dexDeposit"
+            }
+          }
+        },
+        {
+          "id": 1062,
+          "name": "maker_deleteGridOrder",
+          "description": "Deletes grid order from Automated Market Maker (ICDexMaker).",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorMakerDeleteGridOrder",
+              "target_method_name": "maker_deleteGridOrder"
+            }
+          }
+        },
+        {
+          "id": 1063,
+          "name": "maker_createGridOrder",
+          "description": "Creates a grid order for Automated Market Maker (ICDexMaker) on the trading pair.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorMakerCreateGridOrder",
+              "target_method_name": "maker_createGridOrder"
             }
           }
         }
@@ -5984,7 +6534,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20001021491994332,
+    "icrc1_total_supply": 20003229625485664,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7360,9 +7910,8 @@
       "dapps": [
         "ev7jo-jaaaa-aaaah-adthq-cai",
         "n4ahg-pqaaa-aaaah-advla-cai",
-        "gpdbs-xqaaa-aaaah-adtiq-cai",
-        "gichg-2iaaa-aaaah-adtia-cai",
-        "bpsjh-6yaaa-aaaah-adyjq-cai"
+        "bpsjh-6yaaa-aaaah-adyjq-cai",
+        "gichg-2iaaa-aaaah-adtia-cai"
       ],
       "archives": ["dyxt2-fqaaa-aaaaq-aacsa-cai"]
     },
@@ -7982,7 +8531,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 24999999093800000,
+    "icrc1_total_supply": 25000219551449240,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -8418,11 +8967,15 @@
       "ledger": "ddsp7-7iaaa-aaaaq-aacqq-cai",
       "index": "dnqcx-eyaaa-aaaaq-aacrq-cai",
       "governance": "detjl-sqaaa-aaaaq-aacqa-cai",
-      "dapps": ["bboqb-jiaaa-aaaal-qb6ea-cai", "bgpwv-eqaaa-aaaal-qb6eq-cai"],
-      "archives": []
+      "dapps": [
+        "bboqb-jiaaa-aaaal-qb6ea-cai",
+        "bgpwv-eqaaa-aaaal-qb6eq-cai",
+        "hqfmc-cqaaa-aaaal-qitcq-cai"
+      ],
+      "archives": ["aiez4-zqaaa-aaaaq-aac2a-cai"]
     },
     "meta": {
-      "url": "https://openfpl.xyz",
+      "url": "https://openfpl.xyz/",
       "name": "OpenFPL",
       "description": "Decentralised fantasy football\n",
       "logo": "/v1/sns/root/gyito-zyaaa-aaaaq-aacpq-cai/logo.png"
@@ -8549,6 +9102,201 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 1000,
+          "name": "RevaluePlayerUp",
+          "description": "Proposal to create the endpoint for adding the callback function for increasing a Premier League player's value.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validateRevaluePlayerUp",
+              "target_method_name": "executeRevaluePlayerUp"
+            }
+          }
+        },
+        {
+          "id": 5000,
+          "name": "MoveFixture",
+          "description": "Proposal to create the endpoint for adding the callback function to move a fixture.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validateMoveFixture",
+              "target_method_name": "executeMoveFixture"
+            }
+          }
+        },
+        {
+          "id": 8000,
+          "name": "TransferPlayer",
+          "description": "Proposal to create the endpoint for adding the callback function to transfer a player.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validateTransferPlayer",
+              "target_method_name": "executeTransferPlayer"
+            }
+          }
+        },
+        {
+          "id": 9000,
+          "name": "LoanPlayer",
+          "description": "Proposal to create the endpoint for adding the callback function to loan a player.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validateLoanPlayer",
+              "target_method_name": "executeLoanPlayer"
+            }
+          }
+        },
+        {
+          "id": 10000,
+          "name": "RecallPlayer",
+          "description": "Proposal to create the endpoint for adding the callback function to recall a player.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validateRecallPlayer",
+              "target_method_name": "executeRecallPlayer"
+            }
+          }
+        },
+        {
+          "id": 11000,
+          "name": "CreatePlayer",
+          "description": "Proposal to create the endpoint for adding the callback function to create a new player.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validateAddNewPlayer",
+              "target_method_name": "executeAddNewPlayer"
+            }
+          }
+        },
+        {
+          "id": 12000,
+          "name": "UpdatePlayer",
+          "description": "Proposal to create the endpoint for adding the callback function to update a player.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validateUpdatePlayer",
+              "target_method_name": "executeUpdatePlayer"
+            }
+          }
+        },
+        {
+          "id": 13000,
+          "name": "SetPlayerInjury",
+          "description": "Proposal to create the endpoint for adding the callback function to set a player's injury.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validateSetPlayerInjury",
+              "target_method_name": "executeSetPlayerInjury"
+            }
+          }
+        },
+        {
+          "id": 14000,
+          "name": "RetirePlayer",
+          "description": "Proposal to create the endpoint for adding the callback function to retire a player.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validateRetirePlayer",
+              "target_method_name": "executeRetirePlayer"
+            }
+          }
+        },
+        {
+          "id": 15000,
+          "name": "UnretirePlayer",
+          "description": "Proposal to create the endpoint for adding the callback function to unretire a player.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validateUnretirePlayer",
+              "target_method_name": "executeUnretirePlayer"
+            }
+          }
+        },
+        {
+          "id": 16000,
+          "name": "PromoteFormerTeam",
+          "description": "Proposal to create the endpoint for adding the callback function to promote a former club into the Premier League.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validatePromoteFormerTeam",
+              "target_method_name": "executePromoteFormerTeam"
+            }
+          }
+        },
+        {
+          "id": 17000,
+          "name": "PromoteNewTeam",
+          "description": "Proposal to create the endpoint for adding the callback function to promote a new club into the Premier League.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validatePromoteNewTeam",
+              "target_method_name": "executePromoteNewTeam"
+            }
+          }
+        },
+        {
+          "id": 18000,
+          "name": "UpdateTeam",
+          "description": "Proposal to create the endpoint for adding the callback function to update a Premier League club's details.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validateUpdateTeam",
+              "target_method_name": "executeUpdateTeam"
+            }
+          }
+        },
+        {
+          "id": 19000,
+          "name": "CreateDAONeuron",
+          "description": "Proposal to create the endpoint for adding the callback function for creating the DAO controlled neuron.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validateCreateDAONeuron",
+              "target_method_name": "executeCreateDAONeuron"
+            }
+          }
+        },
+        {
+          "id": 20000,
+          "name": "ManageDAONeuron",
+          "description": "Proposal to create the endpoint for adding the callback function for managing the DAO controlled neuron.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validateManageDAONeuron",
+              "target_method_name": "executeManageDAONeuron"
+            }
+          }
         }
       ]
     },
@@ -8587,7 +9335,7 @@
     },
     "swap_state": {
       "swap": {
-        "lifecycle": 2,
+        "lifecycle": 3,
         "init": {
           "nns_proposal_id": 128311,
           "sns_root_canister_id": "gyito-zyaaa-aaaaq-aacpq-cai",
@@ -9089,8 +9837,8 @@
         "decentralization_sale_open_timestamp_seconds": 1710681300
       },
       "derived": {
-        "buyer_total_icp_e8s": 7556190385655,
-        "sns_tokens_per_icp": 330.85455
+        "buyer_total_icp_e8s": 8129418390315,
+        "sns_tokens_per_icp": 307.5251
       }
     },
     "icrc1_metadata": [
@@ -9132,7 +9880,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 1e16,
+    "icrc1_total_supply": 9999999312300000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9635,17 +10383,17 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 330.85455322265625,
-      "buyer_total_icp_e8s": 7556190385655,
-      "cf_participant_count": 0,
-      "neurons_fund_participation_icp_e8s": 3773630253730,
-      "direct_participation_icp_e8s": 3782560131925,
-      "direct_participant_count": 619,
-      "cf_neuron_count": 0
+      "sns_tokens_per_icp": 307.52508544921875,
+      "buyer_total_icp_e8s": 8129418390315,
+      "cf_participant_count": 22,
+      "neurons_fund_participation_icp_e8s": 4052870178265,
+      "direct_participation_icp_e8s": 4076548212050,
+      "direct_participant_count": 774,
+      "cf_neuron_count": 37
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1710681300,
-      "lifecycle": 2
+      "lifecycle": 3
     }
   },
   {
@@ -9798,6 +10546,45 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 1000,
+          "name": "Commit proposed assets for upgrading the frontend canister",
+          "description": "Commit proposed assets for upgrading the frontend canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "c63a7-6yaaa-aaaap-ab3gq-cai",
+              "target_canister_id": "c63a7-6yaaa-aaaap-ab3gq-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
+            }
+          }
+        },
+        {
+          "id": 1001,
+          "name": "Set managers for the Lucky Pool canister",
+          "description": "Managers can currently manage the addition, modification, and deletion of app notifications, and can update the balance for airdrop.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "a7cug-2qaaa-aaaap-ab3la-cai",
+              "target_canister_id": "a7cug-2qaaa-aaaap-ab3la-cai",
+              "validator_method_name": "validate_admin_set_managers",
+              "target_method_name": "admin_set_managers"
+            }
+          }
+        },
+        {
+          "id": 1002,
+          "name": "Collect ICP into the Treasury",
+          "description": "Transfer the ICP tokens obtained from the Lucky Draw to the ICPanda DAO treasury.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "a7cug-2qaaa-aaaap-ab3la-cai",
+              "target_canister_id": "a7cug-2qaaa-aaaap-ab3la-cai",
+              "validator_method_name": "validate_admin_collect_icp",
+              "target_method_name": "admin_collect_icp"
+            }
+          }
         }
       ]
     },
@@ -9836,7 +10623,7 @@
     },
     "swap_state": {
       "swap": {
-        "lifecycle": 2,
+        "lifecycle": 3,
         "init": {
           "nns_proposal_id": 128355,
           "sns_root_canister_id": "d7wvo-iiaaa-aaaaq-aacsq-cai",
@@ -10060,8 +10847,8 @@
         "decentralization_sale_open_timestamp_seconds": 1710936000
       },
       "derived": {
-        "buyer_total_icp_e8s": 1020816282118,
-        "sns_tokens_per_icp": 11755.299
+        "buyer_total_icp_e8s": 1328107981470,
+        "sns_tokens_per_icp": 9035.41
       }
     },
     "icrc1_metadata": [
@@ -10103,7 +10890,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1e17,
+    "icrc1_total_supply": 99999999978790000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -10328,17 +11115,17 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 11755.298828125,
-      "buyer_total_icp_e8s": 1020816282118,
-      "cf_participant_count": 0,
-      "neurons_fund_participation_icp_e8s": 11089669018,
-      "direct_participation_icp_e8s": 1009726613100,
-      "direct_participant_count": 212,
-      "cf_neuron_count": 0
+      "sns_tokens_per_icp": 9035.41015625,
+      "buyer_total_icp_e8s": 1328107981470,
+      "cf_participant_count": 4,
+      "neurons_fund_participation_icp_e8s": 76156296762,
+      "direct_participation_icp_e8s": 1251951684708,
+      "direct_participant_count": 319,
+      "cf_neuron_count": 18
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1710936000,
-      "lifecycle": 2
+      "lifecycle": 3
     }
   },
   {
@@ -10992,8 +11779,8 @@
         "decentralization_sale_open_timestamp_seconds": 1711203300
       },
       "derived": {
-        "buyer_total_icp_e8s": 18131189232131,
-        "sns_tokens_per_icp": 1433.993
+        "buyer_total_icp_e8s": 28773606259907,
+        "sns_tokens_per_icp": 903.6059
       }
     },
     "icrc1_metadata": [
@@ -11499,12 +12286,12 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 1433.9930419921875,
-      "buyer_total_icp_e8s": 18131189232131,
+      "sns_tokens_per_icp": 903.6058959960938,
+      "buyer_total_icp_e8s": 28773606259907,
       "cf_participant_count": 0,
-      "neurons_fund_participation_icp_e8s": 7288101172536,
-      "direct_participation_icp_e8s": 10843088059595,
-      "direct_participant_count": 982,
+      "neurons_fund_participation_icp_e8s": 7473761955801,
+      "direct_participation_icp_e8s": 21299844304106,
+      "direct_participant_count": 1460,
       "cf_neuron_count": 0
     },
     "lifecycle": {
@@ -12154,8 +12941,8 @@
         "decentralization_sale_open_timestamp_seconds": 1711570500
       },
       "derived": {
-        "buyer_total_icp_e8s": 292670917910,
-        "sns_tokens_per_icp": 30751.262
+        "buyer_total_icp_e8s": 12343353609733,
+        "sns_tokens_per_icp": 729.1373
       }
     },
     "icrc1_metadata": [
@@ -12656,12 +13443,12 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 30751.26171875,
-      "buyer_total_icp_e8s": 292670917910,
+      "sns_tokens_per_icp": 729.1373291015625,
+      "buyer_total_icp_e8s": 12343353609733,
       "cf_participant_count": 0,
-      "neurons_fund_participation_icp_e8s": 0,
-      "direct_participation_icp_e8s": 292670917910,
-      "direct_participant_count": 93,
+      "neurons_fund_participation_icp_e8s": 5831767704701,
+      "direct_participation_icp_e8s": 6511585905032,
+      "direct_participant_count": 493,
       "cf_neuron_count": 0
     },
     "lifecycle": {
