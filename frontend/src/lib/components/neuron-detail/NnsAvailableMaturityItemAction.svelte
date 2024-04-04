@@ -32,7 +32,7 @@
     >{$i18n.neuron_detail.available_description}
     <TooltipIcon
       text={$i18n.neuron_detail.nns_available_maturity_tooltip}
-      tooltipId="sns-staked-maturity-tooltip"
+      tooltipId="available-maturity-tooltip"
     /></svelte:fragment
   >
   {#if isControllable}

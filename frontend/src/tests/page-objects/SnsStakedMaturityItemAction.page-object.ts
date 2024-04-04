@@ -1,3 +1,4 @@
+import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -8,6 +9,10 @@ export class SnsStakedMaturityItemActionPo extends BasePageObject {
     return new SnsStakedMaturityItemActionPo(
       element.byTestId(SnsStakedMaturityItemActionPo.TID)
     );
+  }
+
+  getTooltipIconPo(): TooltipIconPo {
+    return TooltipIconPo.under(this.root);
   }
 
   getStakedMaturity(): Promise<string> {
