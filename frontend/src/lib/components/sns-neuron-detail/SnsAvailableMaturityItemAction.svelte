@@ -45,7 +45,7 @@
           $token: token.symbol,
         }
       )}
-      tooltipId="sns-staked-maturity-tooltip"
+      tooltipId="sns-available-maturity-tooltip"
     /></svelte:fragment
   >
   {#if allowedToStakeMaturity}
