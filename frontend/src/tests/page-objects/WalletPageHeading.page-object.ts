@@ -33,6 +33,6 @@ export class WalletPageHeadingPo extends BasePageObject {
   getPrincipal(): Promise<string> {
     return HashPo.under(
       this.root.byTestId("wallet-page-heading-principal")
-    ).getText();
+    ).getFullText();
   }
 }
