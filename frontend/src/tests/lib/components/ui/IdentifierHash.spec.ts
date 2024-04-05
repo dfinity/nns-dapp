@@ -7,7 +7,10 @@ describe("IdentifierHash", () => {
   const identifier = "12345678901234567890";
 
   const renderComponent = (props) => {
-    const { container } = render(IdentifierHash, props);
+    // By default, render() reuses the container element between different calls
+    // from the same test.
+    const container = document.createElement("div");
+    render(IdentifierHash, props, { container });
     return IdentifierHashPo.under(new JestPageObjectElement(container));
   };
 
@@ -24,5 +27,18 @@ describe("IdentifierHash", () => {
     expect(await po.getCopyButtonPo().getAriaLabel()).toBe(
       `Copy to clipboard: ${identifier}`
     );
+  });
+
+  it("should use a unique tooltip ID each time", async () => {
+    const po1 = renderComponent({ identifier });
+    const po2 = renderComponent({ identifier });
+
+    const id1 = await po1.getTooltipPo().getTooltipId();
+    const id2 = await po2.getTooltipPo().getTooltipId();
+
+    expect(id1).toMatch(/^identifier-\d+$/);
+    expect(id2).toMatch(/^identifier-\d+$/);
+
+    expect(id1).not.toBe(id2);
   });
 });
