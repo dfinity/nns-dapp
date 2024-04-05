@@ -4,7 +4,7 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class HashPo extends BasePageObject {
-  private static readonly TID = "hash-component";
+  static readonly TID = "hash-component";
 
   static under(element: PageObjectElement): HashPo {
     return new HashPo(element.byTestId(HashPo.TID));
