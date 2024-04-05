@@ -8,7 +8,8 @@
   export let identifier: string;
   export let splitLength: number | undefined = undefined;
 
-  let elementId = `identifier-${nextElementIdNumber++}`;
+  let elementId = `identifier-${nextElementIdNumber}`;
+  ++nextElementIdNumber;
 </script>
 
 <Hash
