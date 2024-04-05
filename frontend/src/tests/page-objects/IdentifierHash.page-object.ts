@@ -7,6 +7,6 @@ export class IdentifierHashPo extends HashPo {
   }
 
   getDisplayedText(): Promise<string> {
-    return super.getText("identifier");
+    return this.getText("identifier");
   }
 }
