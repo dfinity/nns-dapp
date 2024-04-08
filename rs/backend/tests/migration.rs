@@ -17,7 +17,7 @@ fn args_with_schema(schema: Option<SchemaLabel>) -> Vec<u8> {
 /// Data that should be unaffected by migration.
 #[derive(Debug, Eq, PartialEq)]
 struct InvariantStats {
-    pub num_accounts: u64,
+    pub accounts_count: u64,
     // TODO: Are there any more invariants that should be checked?
 }
 
@@ -102,19 +102,25 @@ impl TestEnv {
     }
     /// Gets the invariants from either the main or the reference canister.
     fn get_invariants_from_canister(&self, canister_id: ic_principal::Principal) -> InvariantStats {
-        let stats: Stats = self.get_stats_from_canister(canister_id);
-        InvariantStats {
-            num_accounts: u64::from(stats.accounts_count),
-        }
+        let Stats { accounts_count, .. } = self.get_stats_from_canister(canister_id);
+        InvariantStats { accounts_count }
     }
-    /// Asserts that the number of accounts is as expected.
+    /// Performs some checks that the reference canister and the test canister are identical in relevant ways.
+    ///
+    /// Tests:
+    /// - The number of accounts is the same.
+    /// - All test accounts are the same, assuming that test account keys are `Principal::new_user_test_id(index)` for index in `0..num_accounts-1` without gaps.
+    ///   - If non-test accounts are created, the test will still check all test accounts.
+    ///   - If there are "holes" in the test account indices, we have no efficient way of finding test accounts, so the test will be less useful.  Please avoid doing this.
     pub fn assert_invariants_match(&self) {
-        let expected = self.get_invariants_from_canister(self.reference_canister_id);
-        let actual = self.get_invariants_from_canister(self.canister_id);
-        assert_eq!(
-            expected, actual,
-            "Account stats do not match for the main and reference canisters"
-        );
+        {
+            let expected = self.get_invariants_from_canister(self.reference_canister_id);
+            let actual = self.get_invariants_from_canister(self.canister_id);
+            assert_eq!(
+                expected, actual,
+                "Account stats do not match for the main and reference canisters"
+            );
+        }
     }
     /// Creates accounts in the main and reference canisters.
     ///
