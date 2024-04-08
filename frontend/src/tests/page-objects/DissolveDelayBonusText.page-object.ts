@@ -1,10 +1,9 @@
 import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { assertNonNullish } from "$tests/utils/utils.test-utils";
 
 export class DissolveDelayBonusTextPo extends TooltipPo {
-  private static readonly DISSOLVE_DELAY_BONUS_TEXT_TID = "dissolve-delay-bonus-text-component";
+  private static readonly DISSOLVE_DELAY_BONUS_TEXT_TID =
+    "dissolve-delay-bonus-text-component";
 
   static under(element: PageObjectElement): DissolveDelayBonusTextPo {
     return new DissolveDelayBonusTextPo(
