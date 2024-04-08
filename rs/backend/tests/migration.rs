@@ -7,6 +7,7 @@ use pocket_ic::{PocketIc, PocketIcBuilder, WasmResult};
 use proptest::prelude::*;
 use std::fs;
 use strum_macros::EnumIter;
+use pretty_assertions::assert_eq;
 
 fn args_with_schema(schema: Option<SchemaLabel>) -> Vec<u8> {
     let mut args = nns_dapp::arguments::CanisterArguments::default();
