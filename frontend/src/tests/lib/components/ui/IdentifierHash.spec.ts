@@ -10,6 +10,7 @@ describe("IdentifierHash", () => {
     // By default, render() reuses the container element between different calls
     // from the same test.
     const container = document.createElement("div");
+    document.body.appendChild(container);
     render(IdentifierHash, props, { container });
     return IdentifierHashPo.under(new JestPageObjectElement(container));
   };
