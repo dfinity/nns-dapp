@@ -128,20 +128,25 @@ export const createMockSendTransactionWithId = ({
   amount?: bigint;
   fee?: bigint;
   to?: string;
-}): TransactionWithId => ({
-  ...mockTransactionWithId,
-  transaction: {
+}): TransactionWithId => {
+  const transfer = {
+    ...mockTransactionWithId.transaction["Transfer"],
+    to,
+    fee: { e8s: fee },
+    amount: { e8s: amount },
+  };
+  const operation = {
+    Transfer: transfer,
+  };
+  const transaction = {
     ...mockTransactionWithId.transaction,
-    operation: {
-      Transfer: {
-        ...mockTransactionWithId.transaction.operation["Transfer"],
-        to,
-        fee: { e8s: fee },
-        amount: { e8s: amount },
-      },
-    },
-  },
-});
+    operation,
+  };
+  return {
+    ...mockTransactionWithId,
+    transaction,
+  };
+};
 
 export const mockEmptyGetTransactionsResponse: GetTransactionsResponse = {
   transactions: [],
