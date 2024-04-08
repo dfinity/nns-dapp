@@ -19,7 +19,7 @@ export class HashPo extends BasePageObject {
   }
 
   getFullText(): Promise<string> {
-    return this.getTooltipPo().getText();
+    return this.getTooltipPo().getTooltipText();
   }
 
   hasCopyButton(): Promise<boolean> {

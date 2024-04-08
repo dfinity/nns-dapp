@@ -9,7 +9,7 @@ export class TooltipPo extends BasePageObject {
     return new TooltipPo(element.byTestId(TooltipPo.TID));
   }
 
-  getText(): Promise<string> {
+  getTooltipText(): Promise<string> {
     return assertNonNullish(this.root.querySelector(".tooltip")).getText();
   }
 

@@ -19,7 +19,7 @@ export class WalletPageHeadingPo extends BasePageObject {
   }
 
   getTooltipText(): Promise<string> {
-    return TooltipPo.under(this.root).getText();
+    return TooltipPo.under(this.root).getTooltipText();
   }
 
   hasBalancePlaceholder(): Promise<boolean> {
