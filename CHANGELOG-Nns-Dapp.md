@@ -11,6 +11,39 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 129030
+
+### Application
+
+#### Added
+
+* Setting to hide tokens with zero balance.
+
+#### Changed
+
+* Always omit the account parameter in the URL when navigating to a main account.
+* Display the block timestamp instead of created timestamp on ICP transaction.
+* Minor style changes for mobile project selector.
+
+#### Removed
+
+* Remove `protobuf` dependency for Ledger hardware wallet.
+
+#### Fixed
+
+* Make token table rows always clickable. A few edge cases were missing.
+* Don't require double hardware approval on neuron staking.
+
+#### Not Published
+
+* Hide tokens with zero balance based on setting behind feature flag.
+
+### Operations
+
+#### Fixed
+
+* Reinstall xz in reproducible assets workflow to get consistent archives.
+
 ## Proposal 128768
 
 ### Application
