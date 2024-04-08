@@ -1,18 +1,15 @@
+import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { assertNonNullish } from "$tests/utils/utils.test-utils";
 
-export class DissolveDelayBonusTextPo extends BasePageObject {
-  private static readonly TID = "dissolve-delay-bonus-text-component";
+export class DissolveDelayBonusTextPo extends TooltipPo {
+  private static readonly DISSOLVE_DELAY_BONUS_TEXT_TID = "dissolve-delay-bonus-text-component";
 
   static under(element: PageObjectElement): DissolveDelayBonusTextPo {
     return new DissolveDelayBonusTextPo(
-      element.byTestId(DissolveDelayBonusTextPo.TID)
+      element.byTestId(DissolveDelayBonusTextPo.DISSOLVE_DELAY_BONUS_TEXT_TID)
     );
-  }
-
-  getTooltipText(): Promise<string> {
-    return assertNonNullish(this.root.querySelector(".tooltip")).getText();
   }
 
   getText(): Promise<string> {
