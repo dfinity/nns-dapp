@@ -35,7 +35,7 @@ describe("VestingTooltipWrapper", () => {
     const po = renderComponent(vestingNeuron);
 
     expect(await po.getTooltipPo().isPresent()).toBe(true);
-    expect(await po.getTooltipPo().getText()).toBe(
+    expect(await po.getTooltipPo().getTooltipText()).toBe(
       "This function is not available during your vesting period. Vesting will last another 29 days, 10 hours"
     );
   });

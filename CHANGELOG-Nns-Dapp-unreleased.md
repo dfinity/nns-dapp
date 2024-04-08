@@ -15,24 +15,17 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Setting to hide tokens with zero balance.
-
 #### Changed
-
-* Always omit the account parameter in the URL when navigating to a main account.
-* Display the block timestamp instead of created timestamp on ICP transaction.
-* Minor style changes for mobile project selector.
 
 #### Deprecated
 
 #### Removed
 
-* Remove `protobuf` dependency for Ledger hardware wallet.
-
 #### Fixed
 
-* Make token table rows always clickable. A few edge cases were missing.
-* Don't require double hardware approval on neuron staking.
+* Fixed duplicate tooltip IDs to be unique.
+* Redirect to accounts page after signing in on wallet page with incorrect account identifier.
+* Make sure `IdentifierHash` uses a unique `id` and `aria-describedby` attribute.
 * Place tooltip in document body to avoid overflow issues.
 
 #### Security
@@ -42,6 +35,7 @@ proposal is successful, the changes it released will be moved from this file to
 ### Operations
 
 #### Added
+* Added a test that stats are not recomputed on upgrade but rather serialized and de-serialized.
 
 #### Changed
 
@@ -50,7 +44,5 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 #### Fixed
-
-* Reinstall xz in reproducible assets workflow to get consistent archives.
 
 #### Security

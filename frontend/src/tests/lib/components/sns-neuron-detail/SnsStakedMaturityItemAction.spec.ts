@@ -32,4 +32,15 @@ describe("SnsStakedMaturityItemAction", () => {
 
     expect(await po.getStakedMaturity()).toBe("3.14");
   });
+
+  it("should have an appropriate tooltip ID", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+    });
+    const po = renderComponent(neuron);
+
+    expect(await po.getTooltipIconPo().getTooltipPo().getTooltipId()).toBe(
+      "sns-staked-maturity-tooltip"
+    );
+  });
 });
