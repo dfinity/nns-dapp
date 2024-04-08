@@ -37,4 +37,5 @@ export interface PageObjectElement {
   blur(): Promise<void>;
   innerHtmlForDebugging(): Promise<string>;
   addEventListener(eventType: string, fn: (e: Event) => void): Promise<void>;
+  getDocumentBody(): Promise<PageObjectElement>;
 }
