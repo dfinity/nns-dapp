@@ -151,7 +151,7 @@ impl AccountsStore {
     /// canisters.  For example, account IDs can be complete nonsense compared with ledger data.
     ///
     /// Note: The principal of a toy account is `PrincipalId::new_user_test_id(toy_account_index)`;
-    /// 
+    ///
     /// # Returns
     /// - The index of the first account created by this call.  The account indices are `first...first+num_accounts-1`.
     pub fn create_toy_accounts(&mut self, num_accounts: u64) -> u64 {

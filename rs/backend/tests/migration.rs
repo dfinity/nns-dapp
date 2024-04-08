@@ -31,7 +31,6 @@ struct TestEnv {
     pub canister_id: ic_principal::Principal,
     pub reference_canister_id: ic_principal::Principal,
     pub controller: ic_principal::Principal,
-    expected_
 }
 impl TestEnv {
     /// Path to the Wasm
@@ -118,6 +117,12 @@ impl TestEnv {
         );
     }
     /// Creates accounts in the main and reference canisters.
+    ///
+    /// Note: The account keys are `Principal::new_user_test_id(index)` for index in `0..num_accounts-1`.
+    ///       The bulk account creation assumes that the account indices are contiguous, starting at zero,
+    ///       for good practical reasons, so we will keep that rule.  Note that consecutive indices do NOT
+    ///       generally yield consecutive principals, so the accounts are scattered around the BTreeMap in
+    ///       a slightly random way.
     pub fn create_toy_accounts(&self, num_accounts: u128) {
         for canister_id in &[self.canister_id, self.reference_canister_id] {
             self.pic
