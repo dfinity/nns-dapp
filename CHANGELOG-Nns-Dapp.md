@@ -34,10 +34,6 @@ here after a successful release.
 * Make token table rows always clickable. A few edge cases were missing.
 * Don't require double hardware approval on neuron staking.
 
-#### Not Published
-
-* Hide tokens with zero balance based on setting behind feature flag.
-
 ### Operations
 
 #### Fixed
