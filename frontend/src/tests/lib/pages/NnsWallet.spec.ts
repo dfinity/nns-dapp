@@ -80,6 +80,7 @@ describe("NnsWallet", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.clearAllTimers();
+    vi.unstubAllGlobals();
     cancelPollAccounts();
     resetAccountsForTesting();
     neuronsStore.reset();

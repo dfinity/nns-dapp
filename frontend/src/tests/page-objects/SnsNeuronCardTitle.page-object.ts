@@ -12,6 +12,6 @@ export class SnsNeuronCardTitlePo extends BasePageObject {
   getNeuronId(): Promise<string> {
     return HashPo.under(
       this.root.querySelector("[data-tid=neuron-id-container]")
-    ).getText();
+    ).getFullText();
   }
 }
