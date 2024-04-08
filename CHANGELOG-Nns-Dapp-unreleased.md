@@ -33,16 +33,18 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Make token table rows always clickable. A few edge cases were missing.
 * Don't require double hardware approval on neuron staking.
+* Fixed duplicate tooltip IDs to be unique.
+* Redirect to accounts page after signing in on wallet page with incorrect account identifier.
+* Make sure `IdentifierHash` uses a unique `id` and `aria-describedby` attribute.
 
 #### Security
 
 #### Not Published
 
-* Hide tokens with zero balance based on setting behind feature flag.
-
 ### Operations
 
 #### Added
+* Added a test that stats are not recomputed on upgrade but rather serialized and de-serialized.
 
 #### Changed
 

@@ -1,6 +1,6 @@
 //! Code for migration from the authoritative database to a new database.
 use super::{AccountsDb, AccountsDbAsProxy, AccountsDbTrait, Migration};
-use ic_cdk::println;
+use ic_cdk::{eprintln, println};
 
 impl AccountsDbAsProxy {
     /// The default number of accounts to move in a migration step.
@@ -8,7 +8,6 @@ impl AccountsDbAsProxy {
     /// The maximum number of accounts to move in a migration step.
     pub const MIGRATION_STEP_SIZE_MAX: u32 = 1000;
     /// The progress meter count reserved for finalizing a migration.
-    /// Note: This must be positive and should correspond to a reasonable estimate of the number of blocks needed to complete the migration.
     pub const MIGRATION_FINALIZATION_BLOCKS: u32 = 1;
 
     /// Determines whether a migration is in progress.
@@ -26,6 +25,7 @@ impl AccountsDbAsProxy {
     ///         When performing CRUD, apply the operation to the new database ONLY if either:
     ///         - `next_to_migrate` is `None` (i.e. the migration is complete)
     ///         - The key is strictly less than `next_to_migrate`.
+    ///       - If the migration encounters a batch of extremely large accounts, migration slows down.
     #[must_use]
     pub fn migration_countdown(&self) -> u32 {
         self.migration.as_ref().map_or(0, |migration| {
@@ -81,8 +81,47 @@ impl AccountsDbAsProxy {
     }
 
     /// Completes any migration in progress.
+    ///
+    /// The migration will be cancelled, instead of completed, if an invariant check fails:
+    ///     - The old and new databases have different lengths.
+    ///     - (More checks MAY be added in future.)
     pub fn complete_migration(&mut self) {
         if let Some(migration) = self.migration.take() {
+            // Sanity check before calling migration complete:
+            {
+                // Number of accounts should be the same:
+                let old = self.authoritative_db.db_accounts_len();
+                let new = migration.db.db_accounts_len();
+                if old != new {
+                    eprintln!("MIGRATION ERROR: Account migration failed: Old and new account databases have different lengths: {old} -> {new}\n Migration will be aborted.");
+                    return;
+                }
+            }
+            {
+                // The first account in the BTreeMap should be the same.
+                // Given that keys are random this effectively a random account.
+                //
+                // Note: IF the migration intentionally modifies accounts, this check will have to be adjusted to compare just the invariant aspects of the account.
+                let old = self.authoritative_db.first_key_value();
+                let new = migration.db.first_key_value();
+                if old != new {
+                    eprintln!("MIGRATION ERROR: Old and new account databases have different first entries: {old:?} -> {new:?}\n Migration will be aborted.");
+                    return;
+                }
+            }
+            {
+                // The last account in the BTreeMap should be the same.
+                // Given that keys are random this effectively a random account.
+                //
+                // Note: IF the migration intentionally modifies accounts, this check will have to be adjusted to compare just the invariant aspects of the account.
+                let old = self.authoritative_db.last_key_value();
+                let new = migration.db.last_key_value();
+                if old != new {
+                    eprintln!("MIGRATION ERROR: Old and new account databases have different last entries: {old:?} -> {new:?}\n Migration will be aborted.");
+                    return;
+                }
+            }
+            // Sanity checks passed.  Make the new database authoritative:
             println!(
                 "Account migration complete: {:?} -> {:?}",
                 self.authoritative_db, migration.db
