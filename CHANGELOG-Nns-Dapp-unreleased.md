@@ -17,6 +17,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Sort neurons by decreasing dissolve delay when stakes are equal.
+
 #### Deprecated
 
 #### Removed

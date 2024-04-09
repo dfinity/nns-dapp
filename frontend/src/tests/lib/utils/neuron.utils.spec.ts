@@ -668,10 +668,7 @@ describe("neuron-utils", () => {
     it("should sort neurons by dissolve delay for equal stake", () => {
       const neuron1 = {
         ...mockNeuron,
-        fullNeuron: {
-          ...mockNeuron.fullNeuron,
-          dissolveDelaySeconds: 100_000_000n,
-        },
+        dissolveDelaySeconds: 100_000_000n,
       };
       const neuron2 = {
         ...mockNeuron,
@@ -689,6 +686,53 @@ describe("neuron-utils", () => {
         neuron1,
       ]);
       expect(sortNeuronsByStake([neuron2, neuron1, neuron3])).toEqual([
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
+    });
+
+    it("should sort neurons by stake first and then dissolve delay", () => {
+      const neuron1 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 500_000_000n,
+        },
+        dissolveDelaySeconds: 100_000_000n,
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 500_000_000n,
+        },
+        dissolveDelaySeconds: 200_000_000n,
+      };
+      const neuron3 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 700_000_000n,
+        },
+        dissolveDelaySeconds: 100_000_000n,
+      };
+      const neuron4 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 700_000_000n,
+        },
+        dissolveDelaySeconds: 200_000_000n,
+      };
+      expect(sortNeuronsByStake([neuron3, neuron4, neuron2, neuron1])).toEqual([
+        neuron4,
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
+      expect(sortNeuronsByStake([neuron1, neuron2, neuron3, neuron4])).toEqual([
+        neuron4,
         neuron3,
         neuron2,
         neuron1,
