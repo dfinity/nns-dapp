@@ -664,6 +664,36 @@ describe("neuron-utils", () => {
         neuron1,
       ]);
     });
+
+    it("should sort neurons by dissolve delay for equal stake", () => {
+      const neuron1 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          dissolveDelaySeconds: 100_000_000n,
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        dissolveDelaySeconds: 200_000_000n,
+      };
+      const neuron3 = {
+        ...mockNeuron,
+        dissolveDelaySeconds: 300_000_000n,
+      };
+      expect(sortNeuronsByStake([])).toEqual([]);
+      expect(sortNeuronsByStake([neuron1])).toEqual([neuron1]);
+      expect(sortNeuronsByStake([neuron3, neuron2, neuron1])).toEqual([
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
+      expect(sortNeuronsByStake([neuron2, neuron1, neuron3])).toEqual([
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
+    });
   });
 
   describe("isNeuronControllable", () => {
