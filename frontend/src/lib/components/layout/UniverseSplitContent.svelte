@@ -32,8 +32,4 @@
       --nav-component-title-display: block;
     }
   }
-
-  .nav {
-    margin-top: var(--padding-2x);
-  }
 </style>

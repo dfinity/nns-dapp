@@ -29,6 +29,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Redirect to accounts page after signing in on wallet page with incorrect account identifier.
 * Make sure `IdentifierHash` uses a unique `id` and `aria-describedby` attribute.
 * Place tooltip in document body to avoid overflow issues.
+* Align "Nervous System" and universe title on the neurons tab.
 
 #### Security
 
