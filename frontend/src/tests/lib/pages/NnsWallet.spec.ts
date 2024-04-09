@@ -1,10 +1,8 @@
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
-import * as accountsApi from "$lib/api/accounts.api";
 import * as governanceApi from "$lib/api/governance.api";
 import * as indexApi from "$lib/api/icp-index.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
-import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -32,7 +30,8 @@ import { IntersectionObserverActive } from "$tests/mocks/infinitescroll.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
-  createMockSendTransaction,
+  createMockSendTransactionWithId,
+  mockEmptyGetTransactionsResponse,
   mockTransactionWithId,
 } from "$tests/mocks/transaction.mock";
 import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.page-object";
@@ -97,7 +96,6 @@ describe("NnsWallet", () => {
       oldestTxId,
       balance: mainBalanceE8s,
     });
-    vi.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
 
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT },
@@ -146,15 +144,16 @@ describe("NnsWallet", () => {
 
   const pauseGetTransactions = () => {
     let resolveGetTransactions;
-    vi.spyOn(accountsApi, "getTransactions").mockImplementation(
+    vi.spyOn(indexApi, "getTransactions").mockImplementation(
       () =>
-        new Promise<Transaction[]>((resolve) => {
-          resolveGetTransactions = (transactions?: Transaction[]) =>
-            resolve(transactions ?? []);
+        new Promise<indexApi.GetTransactionsResponse>((resolve) => {
+          resolveGetTransactions = (
+            response?: indexApi.GetTransactionsResponse
+          ) => resolve(response ?? mockEmptyGetTransactionsResponse);
         })
     );
-    return (transactions?: Transaction[]) =>
-      resolveGetTransactions(transactions);
+    return (response?: indexApi.GetTransactionsResponse) =>
+      resolveGetTransactions(response);
   };
 
   describe("user not signed in", () => {
@@ -255,14 +254,18 @@ describe("NnsWallet", () => {
       const balanceE8s = 30_000_000n;
       const balanceFormatted = "0.30 ICP";
       vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(balanceE8s);
-      vi.spyOn(accountsApi, "getTransactions").mockResolvedValue([
-        createMockSendTransaction({
-          amount: 100_000_000n,
-          to: accountIdentifier,
-        }),
-      ]);
+      vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
+        transactions: [
+          createMockSendTransactionWithId({
+            amount: 100_000_000n,
+            to: accountIdentifier,
+          }),
+        ],
+        oldestTxId: 0n,
+        balance: balanceE8s,
+      });
 
-      expect(accountsApi.getTransactions).not.toBeCalled();
+      expect(indexApi.getTransactions).not.toBeCalled();
       expect(ledgerApi.queryAccountBalance).not.toBeCalled();
 
       const po = await renderWallet(props);
@@ -274,27 +277,19 @@ describe("NnsWallet", () => {
         identity: mockIdentity,
       });
 
-      expect(accountsApi.getTransactions).toBeCalledTimes(2);
-      const expectedGetTransactionParams = {
-        icpAccountIdentifier: accountIdentifier,
+      expect(indexApi.getTransactions).toBeCalledTimes(1);
+      expect(indexApi.getTransactions).toBeCalledWith({
+        accountIdentifier: accountIdentifier,
         identity: mockIdentity,
-        offset: 0,
-        pageSize: 100,
-      };
-      expect(accountsApi.getTransactions).toBeCalledWith({
-        certified: false,
-        ...expectedGetTransactionParams,
-      });
-      expect(accountsApi.getTransactions).toBeCalledWith({
-        certified: true,
-        ...expectedGetTransactionParams,
+        start: undefined,
+        maxResults: 20n,
       });
 
       expect(await po.getWalletPageHeadingPo().getTitle()).toBe(
         balanceFormatted
       );
       expect(
-        await po.getTransactionListPo().getTransactionCardPos()
+        await po.getUiTransactionsListPo().getTransactionCardPos()
       ).toHaveLength(1);
     });
 
@@ -397,7 +392,7 @@ describe("NnsWallet", () => {
 
       const resolveQueryBalance = pauseQueryAccountBalance();
 
-      expect(accountsApi.getTransactions).not.toBeCalled();
+      expect(indexApi.getTransactions).not.toBeCalled();
       expect(ledgerApi.queryAccountBalance).not.toBeCalled();
 
       const po = await renderWallet(props);
@@ -433,8 +428,6 @@ describe("NnsWallet", () => {
     });
 
     it("should render transactions from ICP Index canister", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
-
       const po = await renderWallet(props);
 
       expect(
@@ -443,7 +436,6 @@ describe("NnsWallet", () => {
     });
 
     it("should render second page of transactions from ICP Index canister", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
       vi.stubGlobal("IntersectionObserver", IntersectionObserverActive);
       const resolveFunctions = [];
       vi.spyOn(indexApi, "getTransactions").mockImplementation(
@@ -489,7 +481,6 @@ describe("NnsWallet", () => {
     });
 
     it("should render 'Staked' transaction from ICP Index canister", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
       const stakeNeuronTransaction: TransactionWithId = {
         id: 1234n,
         transaction: {
@@ -524,7 +515,6 @@ describe("NnsWallet", () => {
     });
 
     it("should render 'Decentralization Swap' transaction from ICP Index canister", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
       const rootCanisterId = principal(0);
       const swapCanisterId = principal(1);
       setSnsProjects([
@@ -572,7 +562,6 @@ describe("NnsWallet", () => {
     });
 
     it("should display SkeletonCard while loading transactions from ICP Index canister", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
       let resolveGetTransactions;
       vi.spyOn(indexApi, "getTransactions").mockImplementation(
         () =>
@@ -595,12 +584,11 @@ describe("NnsWallet", () => {
 
       await runResolvedPromises();
       expect(
-        await po.getTransactionListPo().getSkeletonCardPo().isPresent()
+        await po.getUiTransactionsListPo().getSkeletonCardPo().isPresent()
       ).toBe(false);
     });
 
     it("should not display SkeletonCard while loading transactions if there are transactions present in the store from ICP Index canister", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
       let resolveGetTransactions;
       vi.spyOn(indexApi, "getTransactions").mockImplementation(
         () =>
@@ -632,7 +620,7 @@ describe("NnsWallet", () => {
 
       await runResolvedPromises();
       expect(
-        await po.getTransactionListPo().getSkeletonCardPo().isPresent()
+        await po.getUiTransactionsListPo().getSkeletonCardPo().isPresent()
       ).toBe(false);
     });
 
@@ -662,23 +650,6 @@ describe("NnsWallet", () => {
       expect(await transactionModalPo.getTransactionFormPo().isPresent()).toBe(
         true
       );
-    });
-
-    it("should display SkeletonCard while loading transactions", async () => {
-      const resolveGetTransactions = pauseGetTransactions();
-      const po = await renderWallet(props);
-
-      await runResolvedPromises();
-      expect(
-        await po.getTransactionListPo().getSkeletonCardPo().isPresent()
-      ).toBe(true);
-
-      resolveGetTransactions();
-
-      await runResolvedPromises();
-      expect(
-        await po.getTransactionListPo().getSkeletonCardPo().isPresent()
-      ).toBe(false);
     });
 
     it("should open receive modal", async () => {
@@ -720,13 +691,13 @@ describe("NnsWallet", () => {
 
       await walletPo.clickReceive();
 
-      expect(accountsApi.getTransactions).toBeCalledTimes(2);
-      vi.mocked(accountsApi.getTransactions).mockClear();
+      expect(indexApi.getTransactions).toBeCalledTimes(1);
+      vi.mocked(indexApi.getTransactions).mockClear();
 
       expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
       vi.mocked(ledgerApi.queryAccountBalance).mockClear();
 
-      expect(accountsApi.getTransactions).not.toBeCalled();
+      expect(indexApi.getTransactions).not.toBeCalled();
       expect(ledgerApi.queryAccountBalance).not.toBeCalled();
 
       await receiveModalPo.clickFinish();
@@ -757,39 +728,39 @@ describe("NnsWallet", () => {
       );
 
       // Transactions should be reloaded.
-      expect(accountsApi.getTransactions).toBeCalledTimes(2);
+      expect(indexApi.getTransactions).toBeCalledTimes(1);
       const expectedGetTransactionParams = {
-        ...expectedQueryBalanceParams,
-        offset: 0,
-        pageSize: 100,
+        accountIdentifier: mockAccountsStoreData.main.identifier,
+        identity: mockIdentity,
+        start: undefined,
+        maxResults: 20n,
       };
-      expect(accountsApi.getTransactions).toBeCalledWith({
-        certified: false,
-        ...expectedGetTransactionParams,
-      });
-      expect(accountsApi.getTransactions).toBeCalledWith({
-        certified: true,
+      expect(indexApi.getTransactions).toBeCalledWith({
         ...expectedGetTransactionParams,
       });
 
       // New transactions should be displayed.
       expect(
-        await walletPo.getTransactionListPo().getTransactionCardPos()
+        await walletPo.getUiTransactionsListPo().getTransactionCardPos()
       ).toHaveLength(0);
-      resolveGetTransactions([
-        createMockSendTransaction({
-          amount: newBalance - oldBalance,
-          to: accountIdentifier,
-        }),
-      ]);
+      resolveGetTransactions({
+        transactions: [
+          createMockSendTransactionWithId({
+            amount: newBalance - oldBalance,
+            to: accountIdentifier,
+          }),
+        ],
+        oldestTxId: 0n,
+        balance: newBalance,
+      });
       await runResolvedPromises();
       expect(
-        await walletPo.getTransactionListPo().getTransactionCardPos()
+        await walletPo.getUiTransactionsListPo().getTransactionCardPos()
       ).toHaveLength(1);
 
       // Reloading the balance should not have resulted in additional calls to
       // getTransactions.
-      expect(accountsApi.getTransactions).toBeCalledTimes(2);
+      expect(indexApi.getTransactions).toBeCalledTimes(1);
       expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
     });
 
