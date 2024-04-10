@@ -15,6 +15,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Tooltip with exact voting power in voting card.
+
 #### Changed
 
 * Sort neurons by decreasing dissolve delay when stakes are equal.

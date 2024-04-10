@@ -14,7 +14,7 @@ describe("VotableNeuronList", () => {
   const neuron1 = {
     ...mockNeuron,
     neuronId: 111n,
-    votingPower: 10_000_000_000n,
+    votingPower: 10_000_000_123n,
   };
   const neuron2 = {
     ...mockNeuron,
@@ -58,6 +58,11 @@ describe("VotableNeuronList", () => {
   it("should display total voting power of ballots not of neurons", async () => {
     const po = renderComponent();
     expect(await po.getDisplayedTotalSelectedVotingPower()).toBe("897.00");
+  });
+
+  it("should have a tooltip with exact voting power", async () => {
+    const po = renderComponent();
+    expect(await po.getTooltipPo().getTooltipText()).toBe("897.00000123");
   });
 
   it("should not display total voting power of neurons", async () => {
