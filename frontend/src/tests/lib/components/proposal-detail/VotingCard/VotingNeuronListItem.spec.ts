@@ -86,7 +86,7 @@ describe("VotingNeuronListItem", () => {
     expect(toggleSelection).toBeCalledTimes(1);
   });
 
-  it("should call dissable checkbox", async () => {
+  it("should disable checkbox", async () => {
     const votingNeuron = createVotingNeuron({});
 
     const po = renderComponent({
