@@ -26,6 +26,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* Remove the possibility to dissable `ENABLE_ICP_INDEX`.
+
 #### Fixed
 
 * Fixed duplicate tooltip IDs to be unique.
