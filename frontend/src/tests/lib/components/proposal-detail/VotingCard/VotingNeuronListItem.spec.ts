@@ -79,10 +79,22 @@ describe("VotingNeuronListItem", () => {
 
     expect(toggleSelection).not.toBeCalled();
 
+    expect(await po.getCheckboxPo().isDisabled()).toBe(false);
     await po.getCheckboxPo().click();
 
     expect(toggleSelection).toBeCalledWith("1133");
     expect(toggleSelection).toBeCalledTimes(1);
+  });
+
+  it("should call dissable checkbox", async () => {
+    const votingNeuron = createVotingNeuron({});
+
+    const po = renderComponent({
+      votingNeuron,
+      disabled: true,
+    });
+
+    expect(await po.getCheckboxPo().isDisabled()).toBe(true);
   });
 
   it("should render voting power", async () => {
