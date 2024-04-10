@@ -240,6 +240,9 @@ impl Partitions {
 ///
 /// Note: Would prefer to use `TryFrom`, but that causes a conflict.  `DefaultMemoryImpl` a type alias which
 /// may refer to a type that has a generic implementation of `TryFrom`.  This is frustrating.
+///
+/// # Panics
+/// - If the memory is managed but does not have a schema label.
 impl Partitions {
     pub fn try_from_memory(memory: DefaultMemoryImpl) -> Result<Self, DefaultMemoryImpl> {
         if Self::is_managed(&memory) {
@@ -249,9 +252,7 @@ impl Partitions {
                 #[cfg(test)]
                 memory,
             };
-            // TODO: Assert that the schema label is defined.
-            //       Motivation: Partitions SHOULD always have a defined schema.
-            //       Note: Some tests that create artificial scenarios will have to be adapted.
+            let _ = partitions.schema_label(); // Panics if the schema label is missing.
             Ok(partitions)
         } else {
             Err(memory)
