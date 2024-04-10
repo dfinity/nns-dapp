@@ -1,8 +1,11 @@
 <script lang="ts">
   import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
   import { i18n } from "$lib/stores/i18n";
-  import { Value } from "@dfinity/gix-components";
-  import { formatVotingPower } from "$lib/utils/neuron.utils";
+  import { Tooltip, Value } from "@dfinity/gix-components";
+  import {
+    formatVotingPower,
+    formatVotingPowerDetailed,
+  } from "$lib/utils/neuron.utils";
   import {
     type VoteRegistrationStoreEntry,
     votingNeuronSelectStore,
@@ -42,11 +45,18 @@
     <svelte:fragment slot="end">
       <span class="label">{$i18n.proposal_detail__vote.voting_power_label}</span
       >
-      <Value testId="voting-collapsible-toolbar-voting-power"
-        >{formatVotingPower(
+      <Tooltip
+        id="voting-power-tooltip"
+        text={formatVotingPowerDetailed(
           totalNeuronsVotingPower === undefined ? 0n : totalNeuronsVotingPower
-        )}</Value
+        )}
       >
+        <Value testId="voting-collapsible-toolbar-voting-power"
+          >{formatVotingPower(
+            totalNeuronsVotingPower === undefined ? 0n : totalNeuronsVotingPower
+          )}</Value
+        >
+      </Tooltip>
     </svelte:fragment>
     <VotingNeuronSelectList disabled={voteRegistration !== undefined} />
   </ExpandableProposalNeurons>

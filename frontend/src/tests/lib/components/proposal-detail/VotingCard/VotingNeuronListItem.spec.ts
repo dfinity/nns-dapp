@@ -120,4 +120,16 @@ describe("VotingNeuronListItem", () => {
 
     expect(await po.getDisplayedVotingPower()).toBe("1.23");
   });
+
+  it("should have tooltip with exact voting power", async () => {
+    const votingPower = 123_456_000n;
+
+    const votingNeuron = createVotingNeuron({ votingPower });
+
+    const po = renderComponent({
+      votingNeuron,
+    });
+
+    expect(await po.getTooltipPo().getTooltipText()).toBe("1.23456000");
+  });
 });
