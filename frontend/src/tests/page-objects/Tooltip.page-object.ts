@@ -29,4 +29,8 @@ export class TooltipPo extends BasePageObject {
     const tooltipElemenet = body.querySelector(`#${id}`);
     return tooltipElemenet;
   }
+
+  async getDisplayedText(): Promise<string> {
+    return this.root.querySelector(".tooltip-target").getText();
+  }
 }

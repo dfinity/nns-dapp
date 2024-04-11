@@ -62,7 +62,9 @@ describe("VotableNeuronList", () => {
 
   it("should have a tooltip with exact voting power", async () => {
     const po = renderComponent();
-    expect(await po.getTooltipPo().getTooltipText()).toBe("897.00000123");
+    expect(await po.getVotingPowerDisplayPo().getTooltipText()).toBe(
+      "897.00000123"
+    );
   });
 
   it("should not display total voting power of neurons", async () => {
