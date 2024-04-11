@@ -1,5 +1,5 @@
-import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import { VotingNeuronSelectListPo } from "$tests/page-objects/VotingNeuronSelectList.page-object";
+import { VotingPowerDisplayPo } from "$tests/page-objects/VotingPowerDisplay.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -14,8 +14,8 @@ export class VotableNeuronListPo extends BasePageObject {
     return VotingNeuronSelectListPo.under(this.root);
   }
 
-  getTooltipPo(): TooltipPo {
-    return TooltipPo.under(this.root);
+  getVotingPowerDisplayPo(): VotingPowerDisplayPo {
+    return VotingPowerDisplayPo.under(this.root);
   }
 
   getTitle() {

@@ -1,5 +1,5 @@
 import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
-import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
+import { VotingPowerDisplayPo } from "$tests/page-objects/VotingPowerDisplay.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -24,8 +24,8 @@ export class VotingNeuronListItemPo extends BasePageObject {
     return CheckboxPo.under({ element: this.root });
   }
 
-  getTooltipPo(): TooltipPo {
-    return TooltipPo.under(this.root);
+  getVotingPowerDisplayPo(): VotingPowerDisplayPo {
+    return VotingPowerDisplayPo.under(this.root);
   }
 
   getNeuronId(): Promise<string> {

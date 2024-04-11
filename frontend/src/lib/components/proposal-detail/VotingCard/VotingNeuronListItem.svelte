@@ -1,15 +1,13 @@
 <script lang="ts">
   import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
+  import VotingPowerDisplay from "$lib/components/ic/VotingPowerDisplay.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
   import type { VotingNeuron } from "$lib/types/proposals";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import {
-    formatVotingPower,
-    formatVotingPowerDetailed,
-  } from "$lib/utils/neuron.utils";
-  import { Checkbox, KeyValuePair, Tooltip } from "@dfinity/gix-components";
+  import { formatVotingPower } from "$lib/utils/neuron.utils";
+  import { Checkbox, KeyValuePair } from "@dfinity/gix-components";
   import { fade } from "svelte/transition";
 
   export let neuron: VotingNeuron;
@@ -44,21 +42,16 @@
         on:nnsChange={() => toggleSelection(neuron.neuronIdString)}
         {disabled}
       >
-        <Tooltip
-          id="voting-power-tooltip"
-          text={formatVotingPowerDetailed(neuron.votingPower)}
-        >
-          <span
-            class="value"
-            data-tid="voting-neuron-select-voting-power"
-            aria-label={replacePlaceholders(
-              $i18n.proposal_detail__vote.cast_vote_votingPower,
-              {
-                $votingPower: formatVotingPower(neuron.votingPower),
-              }
-            )}>{formatVotingPower(neuron.votingPower)}</span
-          >
-        </Tooltip>
+        <VotingPowerDisplay
+          valueTestId="voting-neuron-select-voting-power"
+          valueAriaLabel={replacePlaceholders(
+            $i18n.proposal_detail__vote.cast_vote_votingPower,
+            {
+              $votingPower: formatVotingPower(neuron.votingPower),
+            }
+          )}
+          votingPowerE8s={neuron.votingPower}
+        />
       </Checkbox>
     </span>
   </KeyValuePair>

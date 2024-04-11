@@ -130,6 +130,8 @@ describe("VotingNeuronListItem", () => {
       votingNeuron,
     });
 
-    expect(await po.getTooltipPo().getTooltipText()).toBe("1.23456000");
+    expect(await po.getVotingPowerDisplayPo().getTooltipText()).toBe(
+      "1.23456000"
+    );
   });
 });
