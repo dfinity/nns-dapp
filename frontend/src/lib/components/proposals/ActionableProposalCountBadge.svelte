@@ -1,10 +1,25 @@
 <script lang="ts">
+  import { scale } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
+  import { onMount } from "svelte";
+
   export let count: number;
+
+  // Always rerender to trigger animation start
+  let mounted = false;
+  onMount(() => (mounted = true));
 </script>
 
-<span data-tid="actionable-proposal-count-badge-component" class="tag"
-  >{count}</span
->
+{#if mounted}
+  <span
+    transition:scale={{
+      duration: 250,
+      easing: cubicOut,
+    }}
+    data-tid="actionable-proposal-count-badge-component"
+    class="tag">{count}</span
+  >
+{/if}
 
 <style lang="scss">
   span {
