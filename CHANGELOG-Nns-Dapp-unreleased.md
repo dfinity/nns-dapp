@@ -16,6 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Tooltip with exact voting power in voting card.
+* Message informing about proposal topic changes.
 
 #### Changed
 
