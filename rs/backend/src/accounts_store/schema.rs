@@ -97,6 +97,12 @@ pub trait AccountsDbTrait {
     /// Iterates over entries in the data store.
     fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_>;
 
+    /// Returns the first key-value pair in the map. The key in this pair is the maximum key in the map.
+    fn first_key_value(&self) -> Option<(Vec<u8>, Account)>;
+
+    /// Returns the last key-value pair in the map. The key in this pair is the maximum key in the map.
+    fn last_key_value(&self) -> Option<(Vec<u8>, Account)>;
+
     /// Iterates over accounts in the data store.
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         let iterator = self.iter().map(|(_key, value)| value);

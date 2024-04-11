@@ -4,6 +4,7 @@ use super::{PartitionType, Partitions};
 use crate::accounts_store::schema::SchemaLabelBytes;
 use crate::state::SchemaLabel;
 use ic_cdk::println;
+use ic_stable_structures::memory_manager::MemoryManager;
 #[cfg(test)]
 mod tests;
 
@@ -36,8 +37,6 @@ impl Partitions {
     }
     /// Gets the memory partitioned appropriately for the given schema.
     ///
-    /// If a schema uses raw memory, the memory is returned.
-    ///
     /// # Panics
     /// - If the schema label is not supported:
     ///   - The `Map` schema does not use partitions, so may not be used with this method.
@@ -46,7 +45,12 @@ impl Partitions {
         match schema {
             SchemaLabel::Map => panic!("Map schema does not use partitions"),
             SchemaLabel::AccountsInStableMemory => {
-                let partitions = Partitions::from(memory);
+                let memory_manager = MemoryManager::init(Self::copy_memory_reference(&memory));
+                let partitions = Partitions {
+                    memory_manager,
+                    #[cfg(test)]
+                    memory,
+                };
                 partitions.set_schema_label(schema);
                 partitions
             }

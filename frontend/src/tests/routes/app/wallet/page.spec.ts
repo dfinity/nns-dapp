@@ -1,4 +1,5 @@
 import * as accountsApi from "$lib/api/accounts.api";
+import * as icpLedgerApi from "$lib/api/icp-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { page } from "$mocks/$app/stores";
@@ -18,6 +19,7 @@ describe("Wallet page", () => {
     resetIdentity();
 
     vi.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
+    vi.spyOn(icpLedgerApi, "queryAccountBalance").mockResolvedValue(0n);
 
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT },

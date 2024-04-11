@@ -300,7 +300,9 @@ describe("ParticipateButton", () => {
       expect(button.getAttribute("disabled")).not.toBeNull();
 
       const tooltipPo = new TooltipPo(new JestPageObjectElement(container));
-      expect(await tooltipPo.getText()).toBe("Maximum commitment reached");
+      expect(await tooltipPo.getTooltipText()).toBe(
+        "Maximum commitment reached"
+      );
     });
 
     it("should disable button if user is from a restricted country", async () => {
@@ -328,7 +330,7 @@ describe("ParticipateButton", () => {
       expect(button.getAttribute("disabled")).not.toBeNull();
 
       const tooltipPo = new TooltipPo(new JestPageObjectElement(container));
-      expect(await tooltipPo.getText()).toBe(
+      expect(await tooltipPo.getTooltipText()).toBe(
         "You are not eligible to participate in this swap."
       );
     });

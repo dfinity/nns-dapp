@@ -40,7 +40,7 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
     featureFlags: JSON.stringify({
       ENABLE_CKBTC: true,
       ENABLE_CKTESTBTC: true,
-      ENABLE_ICP_INDEX: false,
+      ENABLE_ICP_INDEX: true,
       ENABLE_VOTING_INDICATION: true,
       ENABLE_HIDE_ZERO_BALANCE: true,
       TEST_FLAG_EDITABLE: true,
@@ -110,6 +110,8 @@ vi.mock("$app/stores", () => ({
 }));
 
 // Issue: https://github.com/testing-library/svelte-testing-library/issues/206
-vi.stubGlobal("requestAnimationFrame", (fn) => {
-  return window.setTimeout(() => fn(Date.now()), 0);
+Object.defineProperty(global, "requestAnimationFrame", {
+  value: (fn) => {
+    return window.setTimeout(() => fn(Date.now()), 0);
+  },
 });

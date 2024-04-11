@@ -10,7 +10,7 @@ export class BuyICPModalPo extends ModalPo {
   }
 
   getAccountIdentifier(): Promise<string> {
-    return HashPo.under(this.root).getText();
+    return HashPo.under(this.root).getFullText();
   }
 
   getBanxaUrl(): Promise<string> {
