@@ -26,7 +26,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
-* Remove the possibility to disable `ENABLE_ICP_INDEX`.
+* Deprecate the feature flag `ENABLE_ICP_INDEX`.
 
 #### Fixed
 
