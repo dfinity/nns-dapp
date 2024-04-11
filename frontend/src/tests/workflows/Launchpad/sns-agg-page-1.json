@@ -270,7 +270,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98001322522581570,
+    "icrc1_total_supply": 98001411909172800,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -712,7 +712,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100468475122832750,
+    "icrc1_total_supply": 100475264260782190,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1356,7 +1356,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50008727809306810,
+    "icrc1_total_supply": 50009208580560536,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2152,7 +2152,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10007113538997908,
+    "icrc1_total_supply": 10007149869770002,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3103,7 +3103,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10000905030831542,
+    "icrc1_total_supply": 10000989761304096,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4067,7 +4067,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12554126196221538,
+    "icrc1_total_supply": 12559599510500254,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5519,6 +5519,19 @@
               "target_method_name": "manage_nns_neuron"
             }
           }
+        },
+        {
+          "id": 1002,
+          "name": "Manage NNS neuron maturity recipients",
+          "description": "Proposal to manage the recipients of the disbursed maturity of the NNS neurons.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "j4jiq-sqaaa-aaaap-ab23a-cai",
+              "target_canister_id": "j4jiq-sqaaa-aaaap-ab23a-cai",
+              "validator_method_name": "manage_reward_recipients_validate",
+              "target_method_name": "manage_reward_recipients"
+            }
+          }
         }
       ]
     },
@@ -5943,7 +5956,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100000555338790190,
+    "icrc1_total_supply": 100000699662701540,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,
