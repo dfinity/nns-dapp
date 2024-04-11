@@ -24,7 +24,7 @@ import {
 } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
-import { cleanup, render } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import { describe } from "vitest";
 
 describe("SelectUniverseCard", () => {
@@ -32,7 +32,6 @@ describe("SelectUniverseCard", () => {
   const mockSnsUniverse: Universe = createUniverse(mockSummary);
 
   const renderComponent = async (props) => {
-    cleanup();
     const { container } = render(SelectUniverseCard, props);
     await runResolvedPromises();
     return SelectUniverseCardPo.under(new JestPageObjectElement(container));

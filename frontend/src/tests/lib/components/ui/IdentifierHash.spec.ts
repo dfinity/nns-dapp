@@ -1,17 +1,13 @@
 import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
 import { IdentifierHashPo } from "$tests/page-objects/IdentifierHash.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { render } from "@testing-library/svelte";
+import { render } from "$tests/utils/svelte.test-utils";
 
 describe("IdentifierHash", () => {
   const identifier = "12345678901234567890";
 
   const renderComponent = (props) => {
-    // By default, render() reuses the container element between different calls
-    // from the same test.
-    const container = document.createElement("div");
-    document.body.appendChild(container);
-    render(IdentifierHash, props, { container });
+    const { container } = render(IdentifierHash, props);
     return IdentifierHashPo.under(new JestPageObjectElement(container));
   };
 
