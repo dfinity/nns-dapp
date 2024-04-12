@@ -1,5 +1,7 @@
+import * as governanceApi from "$lib/api/governance.api";
 import EditFollowNeurons from "$lib/components/neurons/EditFollowNeurons.svelte";
 import { neuronsStore } from "$lib/stores/neurons.store";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { EditFollowNeuronsPo } from "$tests/page-objects/EditFollowNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -28,6 +30,10 @@ describe("EditFollowNeurons", () => {
 
   beforeEach(() => {
     neuronsStore.reset();
+    resetIdentity();
+    const spyQueryKnownNeurons = vi
+      .spyOn(governanceApi, "queryKnownNeurons")
+      .mockResolvedValue([]);
     fillNeuronStore();
   });
 
