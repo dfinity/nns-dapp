@@ -31,9 +31,7 @@ describe("EditFollowNeurons", () => {
   beforeEach(() => {
     neuronsStore.reset();
     resetIdentity();
-    const spyQueryKnownNeurons = vi
-      .spyOn(governanceApi, "queryKnownNeurons")
-      .mockResolvedValue([]);
+    vi.spyOn(governanceApi, "queryKnownNeurons").mockResolvedValue([]);
     fillNeuronStore();
   });
 
