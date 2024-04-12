@@ -29,7 +29,7 @@
       <span>
         {$i18n.neurons.rename_topic_message}
         <a
-          href=""
+          href="https://forum.dfinity.org/t/bringing-clarity-to-icp-upgrade-proposals/29626"
           rel="noopener noreferrer"
           aria-label={$i18n.neurons.rename_topic_learn_more_label}
           target="_blank">{$i18n.core.learn_more}</a
