@@ -2783,11 +2783,11 @@ describe("neuron-utils", () => {
           topic: Topic.SubnetReplicaVersionManagement,
           i18n: en,
         })
-      ).toBe("xProposals handling updates of a subnet's replica version");
+      ).toBe("Proposals handling updates of a subnet's replica version");
       expect(
         getTopicSubtitle({ topic: Topic.ReplicaVersionManagement, i18n: en })
       ).toBe(
-        "xProposals dealing with blessing and retirement of replica versions"
+        "Proposals dealing with blessing and retirement of replica versions"
       );
       expect(
         getTopicSubtitle({ topic: Topic.SnsAndCommunityFund, i18n: en })
