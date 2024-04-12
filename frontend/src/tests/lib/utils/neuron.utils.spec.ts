@@ -2711,10 +2711,10 @@ describe("neuron-utils", () => {
       ).toBe("SNS Decentralization Swap");
       expect(
         getTopicTitle({ topic: Topic.SubnetReplicaVersionManagement, i18n: en })
-      ).toBe("Subnet Replica Version Management");
+      ).toBe("IC OS Version Deployment");
       expect(
         getTopicTitle({ topic: Topic.ReplicaVersionManagement, i18n: en })
-      ).toBe("Replica Version Management");
+      ).toBe("IC OS Version Election");
       expect(
         getTopicTitle({ topic: Topic.SnsAndCommunityFund, i18n: en })
       ).toBe("SNS & Neurons' Fund");
@@ -2783,11 +2783,11 @@ describe("neuron-utils", () => {
           topic: Topic.SubnetReplicaVersionManagement,
           i18n: en,
         })
-      ).toBe("Proposals handling updates of a subnet's replica version");
+      ).toBe("xProposals handling updates of a subnet's replica version");
       expect(
         getTopicSubtitle({ topic: Topic.ReplicaVersionManagement, i18n: en })
       ).toBe(
-        "Proposals dealing with blessing and retirement of replica versions"
+        "xProposals dealing with blessing and retirement of replica versions"
       );
       expect(
         getTopicSubtitle({ topic: Topic.SnsAndCommunityFund, i18n: en })
