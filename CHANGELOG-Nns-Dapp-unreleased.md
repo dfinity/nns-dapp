@@ -27,6 +27,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 * Deprecate the feature flag `ENABLE_ICP_INDEX`.
+* Removed `get_transactions` method from nns-dapp canister.
 
 #### Fixed
 
