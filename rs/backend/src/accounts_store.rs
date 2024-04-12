@@ -783,6 +783,7 @@ impl AccountsStore {
     /// Gets all the transactions to or from the caller.
     #[must_use]
     #[allow(clippy::needless_pass_by_value)] // The pattern is to pass a request by value.
+    #[allow(dead_code)]
     pub fn get_transactions(&self, caller: PrincipalId, request: GetTransactionsRequest) -> GetTransactionsResponse {
         let account_identifier = AccountIdentifier::from(caller);
         let empty_transaction_response = GetTransactionsResponse {
@@ -1811,6 +1812,7 @@ pub struct TransactionResult {
 }
 
 #[derive(CandidType, Debug, PartialEq)]
+#[allow(dead_code)]
 pub enum TransferResult {
     Burn {
         amount: Tokens,
