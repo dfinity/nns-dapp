@@ -11,6 +11,33 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 129080
+
+### Application
+
+#### Added
+
+* Tooltip with exact voting power in voting card.
+
+#### Changed
+
+* Sort neurons by decreasing dissolve delay when stakes are equal.
+* Make the progress bar on the swap page straight instead of rounded.
+
+#### Fixed
+
+* Fixed duplicate tooltip IDs to be unique.
+* Redirect to accounts page after signing in on wallet page with incorrect account identifier.
+* Make sure `IdentifierHash` uses a unique `id` and `aria-describedby` attribute.
+* Place tooltip in document body to avoid overflow issues.
+* Align "Nervous System" and universe title on the neurons tab.
+
+### Operations
+
+#### Added
+
+* Added a test that stats are not recomputed on upgrade but rather serialized and de-serialized.
+
 ## Proposal 129030
 
 ### Application
