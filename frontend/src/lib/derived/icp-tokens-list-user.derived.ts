@@ -8,6 +8,7 @@ import type { Account, AccountType } from "$lib/types/account";
 import { UserTokenAction, type UserToken } from "$lib/types/tokens-page";
 import type { Universe } from "$lib/types/universe";
 import { buildWalletUrl } from "$lib/utils/navigation.utils";
+import { sortUserTokens } from "$lib/utils/token.utils";
 import { Principal } from "@dfinity/principal";
 import { isNullish, TokenAmountV2 } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
@@ -77,11 +78,15 @@ export const icpTokensListUser = derived<
       i18nObj,
       account: icpAccounts.main,
     }),
-    ...(icpAccounts.subAccounts ?? []).map((account) =>
-      convertAccountToUserTokenData({ nnsUniverse, i18nObj, account })
+    ...sortUserTokens(
+      (icpAccounts.subAccounts ?? []).map((account) =>
+        convertAccountToUserTokenData({ nnsUniverse, i18nObj, account })
+      )
     ),
-    ...(icpAccounts.hardwareWallets ?? []).map((account) =>
-      convertAccountToUserTokenData({ nnsUniverse, i18nObj, account })
+    ...sortUserTokens(
+      (icpAccounts.hardwareWallets ?? []).map((account) =>
+        convertAccountToUserTokenData({ nnsUniverse, i18nObj, account })
+      )
     ),
   ]
 );
