@@ -28,7 +28,7 @@
     <Tooltip
       id="actionable-count-tooltip"
       text={replacePlaceholders(tooltipText, {
-        $count: count,
+        $count: `${count}`,
         $snsName: universe.title,
       })}
       top={true}
