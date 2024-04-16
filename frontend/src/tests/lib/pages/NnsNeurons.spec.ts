@@ -73,6 +73,12 @@ describe("NnsNeurons", () => {
 
       expect(await po.hasEmptyMessage()).toBe(false);
     });
+
+    it("should render topic rename message", async () => {
+      const po = await renderComponent();
+
+      expect(await po.hasTopicRenameMessage()).toBe(true);
+    });
   });
 
   describe("no neurons", () => {
@@ -87,6 +93,37 @@ describe("NnsNeurons", () => {
       const po = await renderComponent();
 
       expect(await po.hasEmptyMessage()).toBe(true);
+    });
+
+    it("should not render topic rename message", async () => {
+      const po = await renderComponent();
+
+      expect(await po.hasTopicRenameMessage()).toBe(false);
+    });
+  });
+
+  describe("while loading", () => {
+    beforeEach(() => {
+      vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+        mockIdentity
+      );
+      vi.spyOn(api, "queryNeurons").mockReturnValue(
+        new Promise(() => {
+          // Don't resolve the promise to keep the component in loading state.
+        })
+      );
+    });
+
+    it("should not render an empty message", async () => {
+      const po = await renderComponent();
+
+      expect(await po.hasEmptyMessage()).toBe(false);
+    });
+
+    it("should not render topic rename message", async () => {
+      const po = await renderComponent();
+
+      expect(await po.hasTopicRenameMessage()).toBe(false);
     });
   });
 
