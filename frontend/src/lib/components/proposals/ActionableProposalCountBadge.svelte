@@ -23,8 +23,8 @@
   onMount(() => (mounted = true));
 </script>
 
-{#if mounted}
-  <TestIdWrapper testId="actionable-proposal-count-badge-component">
+<TestIdWrapper testId="actionable-proposal-count-badge-component">
+  {#if mounted}
     <Tooltip
       id="actionable-count-tooltip"
       text={replacePlaceholders(tooltipText, {
@@ -32,17 +32,16 @@
         $snsName: universe.title,
       })}
       top={true}
-    >
-      <span
+      ><span
         transition:scale={{
           duration: 250,
           easing: cubicOut,
         }}
         class="tag">{count}</span
-      >
-    </Tooltip>
-  </TestIdWrapper>
-{/if}
+      ></Tooltip
+    >
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   span {
