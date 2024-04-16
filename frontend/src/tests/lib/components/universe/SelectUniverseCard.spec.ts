@@ -1,6 +1,7 @@
 import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import type { Universe } from "$lib/types/universe";
@@ -13,6 +14,7 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { mockSummary } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
@@ -235,7 +237,37 @@ describe("SelectUniverseCard", () => {
           expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
             true
           );
-          expect(await po.getActionableProposalCount()).toBe("2");
+          expect((await po.getActionableProposalCount()).trim()).toBe("2");
+          expect(
+            await po
+              .getActionableProposalCountBadgePo()
+              .getTooltipPo()
+              .getTooltipText()
+          ).toBe("There are 2 Tetris proposals you can vote on.");
+        });
+
+        it("should display actionable proposal count tooltip for NNS", async () => {
+          page.mock({
+            data: { universe: OWN_CANISTER_ID_TEXT },
+            routeId: AppPath.Proposals,
+          });
+
+          actionableNnsProposalsStore.setProposals([...mockProposals]);
+
+          const po = await renderComponent({
+            props: { universe: nnsUniverseMock, selected: false },
+          });
+
+          expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
+            true
+          );
+          expect((await po.getActionableProposalCount()).trim()).toBe("2");
+          expect(
+            await po
+              .getActionableProposalCountBadgePo()
+              .getTooltipPo()
+              .getTooltipText()
+          ).toBe("There are 2 NNS proposals you can vote on.");
         });
 
         it("should not display actionable proposal count when the feature flag is disabled", async () => {
@@ -348,6 +380,11 @@ describe("SelectUniverseCard", () => {
           expect(
             await po.getActionableProposalNotSupportedBadge().isPresent()
           ).toBe(true);
+          expect(
+            await po
+              .getActionableProposalNotSupportedTooltipPo()
+              .getTooltipText()
+          ).toBe("This SNS doesn't yet support actionable proposals.");
         });
       });
     });

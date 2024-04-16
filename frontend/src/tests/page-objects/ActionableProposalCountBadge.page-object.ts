@@ -1,3 +1,4 @@
+import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -8,5 +9,9 @@ export class ActionableProposalCountBadgePo extends BasePageObject {
     return new ActionableProposalCountBadgePo(
       element.byTestId(ActionableProposalCountBadgePo.TID)
     );
+  }
+
+  getTooltipPo(): TooltipPo {
+    return TooltipPo.under(this.root);
   }
 }
