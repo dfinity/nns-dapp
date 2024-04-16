@@ -85,13 +85,6 @@ describe("SelectUniverseCard", () => {
   });
 
   describe("icon", () => {
-    it("display an icon if role button and selected", async () => {
-      const po = await renderComponent({
-        props: { ...props, role: "button", selected: true },
-      });
-      expect(await po.hasIcon()).toBe(true);
-    });
-
     it("display no icon if role button but not selected", async () => {
       const po = await renderComponent({
         props: { ...props, role: "button", selected: false },

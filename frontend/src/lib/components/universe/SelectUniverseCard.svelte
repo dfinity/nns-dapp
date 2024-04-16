@@ -26,12 +26,7 @@
     role === "button" ? "framed" : role === "link" ? "transparent" : undefined;
 
   let icon: "expand" | "check" | undefined = undefined;
-  $: icon =
-    role === "button" && selected
-      ? "check"
-      : role === "dropdown"
-      ? "expand"
-      : undefined;
+  $: icon = role === "dropdown" ? "expand" : undefined;
 
   let displayProjectAccountsBalance = false;
   $: displayProjectAccountsBalance =
