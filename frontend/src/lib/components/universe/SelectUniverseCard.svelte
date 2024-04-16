@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Card } from "@dfinity/gix-components";
+  import { Card, Tooltip } from "@dfinity/gix-components";
   import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import UniverseAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
   import { pageStore } from "$lib/derived/page.derived";
@@ -15,6 +15,7 @@
   import ActionableProposalCountBadge from "$lib/components/proposals/ActionableProposalCountBadge.svelte";
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { nonNullish } from "@dfinity/utils";
+  import { i18n } from "$lib/stores/i18n";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
@@ -78,7 +79,13 @@
               {universe}
             />
           {:else if actionableProposalSupported === false}
-            <span class="not-supported-badge" data-tid="not-supported-badge" />
+            <Tooltip
+              id="actionable-not-supported-tooltip"
+              text={$i18n.actionable_proposals_not_supported.dot_tooltip}
+              top={true}
+            >
+              <div class="not-supported-badge" data-tid="not-supported-badge" />
+            </Tooltip>
           {/if}
         {/if}
       </span>
