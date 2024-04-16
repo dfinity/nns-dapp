@@ -30,6 +30,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Sns selector gaps.
+
 #### Security
 
 #### Not Published
