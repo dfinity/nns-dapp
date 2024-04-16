@@ -375,7 +375,9 @@
     "uncheck_all": "Clear",
     "nothing_found": "No proposals found for the filters.",
     "all_proposals": "All Proposals",
-    "actionable_proposals": "Actionable Proposals"
+    "actionable_proposals": "Actionable Proposals",
+    "nns_actionable_proposal_tooltip": "There are $count NNS proposals you can vote on.",
+    "sns_actionable_proposal_tooltip": "There are $count $snsName proposals you can vote on."
   },
   "actionable_proposals_sign_in": {
     "title": "You are not signed in.",
@@ -387,7 +389,8 @@
   },
   "actionable_proposals_not_supported": {
     "title": "$snsName doesn't yet support actionable proposals.",
-    "text": "Because it is running an older version of the SNS governance canister."
+    "text": "Because it is running an older version of the SNS governance canister.",
+    "dot_tooltip": "This SNS doesn't yet support actionable proposals."
   },
   "canisters": {
     "aria_label_canister_card": "Go to canister details",

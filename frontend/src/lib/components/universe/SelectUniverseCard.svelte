@@ -73,7 +73,10 @@
         {universe.title}
         {#if $ENABLE_VOTING_INDICATION && $actionableProposalIndicationEnabledStore}
           {#if nonNullish(actionableProposalCount) && actionableProposalCount > 0}
-            <ActionableProposalCountBadge count={actionableProposalCount} />
+            <ActionableProposalCountBadge
+              count={actionableProposalCount}
+              {universe}
+            />
           {:else if actionableProposalSupported === false}
             <span class="not-supported-badge" data-tid="not-supported-badge" />
           {/if}
