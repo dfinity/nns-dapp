@@ -16,6 +16,7 @@
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
@@ -79,13 +80,15 @@
               {universe}
             />
           {:else if actionableProposalSupported === false}
-            <Tooltip
-              id="actionable-not-supported-tooltip"
-              text={$i18n.actionable_proposals_not_supported.dot_tooltip}
-              top={true}
-            >
-              <div class="not-supported-badge" data-tid="not-supported-badge" />
-            </Tooltip>
+            <TestIdWrapper testId="not-supported-badge">
+              <Tooltip
+                id="actionable-not-supported-tooltip"
+                text={$i18n.actionable_proposals_not_supported.dot_tooltip}
+                top={true}
+              >
+                <div class="not-supported-badge" />
+              </Tooltip>
+            </TestIdWrapper>
           {/if}
         {/if}
       </span>

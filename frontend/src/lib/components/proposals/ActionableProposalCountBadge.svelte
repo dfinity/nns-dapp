@@ -8,6 +8,7 @@
   import { isUniverseNns } from "$lib/utils/universe.utils";
   import type { Universe } from "$lib/types/universe";
   import { Principal } from "@dfinity/principal";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let count: number;
   export let universe: Universe;
@@ -23,23 +24,24 @@
 </script>
 
 {#if mounted}
-  <Tooltip
-    id="actionable-count-tooltip"
-    text={replacePlaceholders(tooltipText, {
-      $count: count,
-      $snsName: universe.title,
-    })}
-    top={true}
-  >
-    <span
-      transition:scale={{
-        duration: 250,
-        easing: cubicOut,
-      }}
-      data-tid="actionable-proposal-count-badge-component"
-      class="tag">{count}</span
+  <TestIdWrapper testId="actionable-proposal-count-badge-component">
+    <Tooltip
+      id="actionable-count-tooltip"
+      text={replacePlaceholders(tooltipText, {
+        $count: count,
+        $snsName: universe.title,
+      })}
+      top={true}
     >
-  </Tooltip>
+      <span
+        transition:scale={{
+          duration: 250,
+          easing: cubicOut,
+        }}
+        class="tag">{count}</span
+      >
+    </Tooltip>
+  </TestIdWrapper>
 {/if}
 
 <style lang="scss">
