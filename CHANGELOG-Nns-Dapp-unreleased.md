@@ -38,6 +38,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Install `pocket-ic` in `scripts/setup`.
+
 #### Changed
 
 #### Deprecated
