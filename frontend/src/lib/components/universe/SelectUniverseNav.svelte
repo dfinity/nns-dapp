@@ -31,19 +31,21 @@
 
 <svelte:window bind:innerWidth />
 
-<Nav>
-  <p class="title" slot="title" data-tid="select-universe-nav-title">
-    {$titleTokenSelectorStore}
-  </p>
+<div class="container">
+  <Nav>
+    <p class="title" slot="title" data-tid="select-universe-nav-title">
+      {$titleTokenSelectorStore}
+    </p>
 
-  {#if list}
-    <SelectUniverseNavList />
-  {:else}
-    <div>
-      <SelectUniverseDropdown />
-    </div>
-  {/if}
-</Nav>
+    {#if list}
+      <SelectUniverseNavList />
+    {:else}
+      <div class="select-universe">
+        <SelectUniverseDropdown />
+      </div>
+    {/if}
+  </Nav>
+</div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
@@ -57,8 +59,15 @@
     }
   }
 
-  div {
-    // Add some gap, because the title is hidden on mobile
+  // 1. hide Nav title on mobile
+  .container {
+    --nav-component-title-display: none;
+    @include media.min-width(large) {
+      --nav-component-title-display: block;
+    }
+  }
+  // 2. add some gap, because the Nav title is hidden on mobile
+  .select-universe {
     margin-top: var(--padding-1_5x);
   }
 </style>
