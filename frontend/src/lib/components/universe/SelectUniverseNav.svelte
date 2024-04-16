@@ -39,7 +39,9 @@
   {#if list}
     <SelectUniverseNavList />
   {:else}
-    <SelectUniverseDropdown />
+    <div>
+      <SelectUniverseDropdown />
+    </div>
   {/if}
 </Nav>
 
@@ -53,5 +55,10 @@
     @include media.min-width(large) {
       @include fonts.h3(true);
     }
+  }
+
+  div {
+    // Add some gap, because the title is hidden on mobile
+    margin-top: var(--padding-1_5x);
   }
 </style>
