@@ -20,6 +20,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Rename some topics and proposal types.
+* Reorder launchpad sections.
 
 #### Deprecated
 
