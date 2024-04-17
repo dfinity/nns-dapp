@@ -1,11 +1,10 @@
 import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
 import { ProposalStatusTagPo } from "$tests/page-objects/ProposalStatusTag.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { cleanup, render } from "@testing-library/svelte";
+import { render } from "$tests/utils/svelte.test-utils";
 
 describe("ProposalStatusTag", () => {
   const renderComponent = (props) => {
-    cleanup();
     const { container } = render(ProposalStatusTag, {
       props,
     });

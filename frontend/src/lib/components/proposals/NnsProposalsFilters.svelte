@@ -123,7 +123,7 @@
   .proposal-filters {
     display: flex;
     flex-direction: column;
-    gap: var(--padding);
+    gap: var(--padding-2x);
     margin-bottom: var(--padding-3x);
 
     @include media.min-width(medium) {

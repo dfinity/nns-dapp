@@ -21,6 +21,6 @@ export class DisburseMaturityButtonPo extends BasePageObject {
   }
 
   getTooltipText(): Promise<string> {
-    return TooltipPo.under(this.root).getText();
+    return TooltipPo.under(this.root).getTooltipText();
   }
 }

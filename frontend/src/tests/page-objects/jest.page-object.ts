@@ -177,4 +177,8 @@ export class JestPageObjectElement implements PageObjectElement {
     await this.waitFor();
     this.getElement()?.addEventListener(eventType, fn);
   }
+
+  async getDocumentBody(): Promise<JestPageObjectElement> {
+    return new JestPageObjectElement(document.body);
+  }
 }

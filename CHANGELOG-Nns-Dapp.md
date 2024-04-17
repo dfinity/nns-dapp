@@ -11,6 +11,62 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 129080
+
+### Application
+
+#### Added
+
+* Tooltip with exact voting power in voting card.
+
+#### Changed
+
+* Sort neurons by decreasing dissolve delay when stakes are equal.
+* Make the progress bar on the swap page straight instead of rounded.
+
+#### Fixed
+
+* Fixed duplicate tooltip IDs to be unique.
+* Redirect to accounts page after signing in on wallet page with incorrect account identifier.
+* Make sure `IdentifierHash` uses a unique `id` and `aria-describedby` attribute.
+* Place tooltip in document body to avoid overflow issues.
+* Align "Nervous System" and universe title on the neurons tab.
+
+### Operations
+
+#### Added
+
+* Added a test that stats are not recomputed on upgrade but rather serialized and de-serialized.
+
+## Proposal 129030
+
+### Application
+
+#### Added
+
+* Setting to hide tokens with zero balance.
+
+#### Changed
+
+* Always omit the account parameter in the URL when navigating to a main account.
+* Display the block timestamp instead of created timestamp on ICP transaction.
+* Minor style changes for mobile project selector.
+
+#### Removed
+
+* Remove `protobuf` dependency for Ledger hardware wallet.
+
+#### Fixed
+
+* Make token table rows always clickable. A few edge cases were missing.
+* Don't require double hardware approval on neuron staking.
+
+### Operations
+
+#### Fixed
+
+* Reinstall xz in reproducible assets workflow to get consistent archives.
+
 ## Proposal 128768
 
 ### Application

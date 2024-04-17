@@ -2,12 +2,16 @@
 //!
 //! Assumes that the NNS Dapp Wasm has already been compiled and is available in the `out/` directory in the repository root.
 use candid::{decode_one, encode_one};
-use nns_dapp::{accounts_store::schema::SchemaLabel, arguments::CanisterArguments, stats::{wasm_memory_size_bytes, Stats}};
+use nns_dapp::{
+    accounts_store::schema::SchemaLabel,
+    arguments::CanisterArguments,
+    stats::{wasm_memory_size_bytes, Stats},
+};
 use pocket_ic::{PocketIc, PocketIcBuilder, WasmResult};
+use pretty_assertions::assert_eq;
 use proptest::prelude::*;
 use std::fs;
 use strum_macros::EnumIter;
-use pretty_assertions::assert_eq;
 
 fn args_with_schema(schema: Option<SchemaLabel>) -> Vec<u8> {
     let mut args = nns_dapp::arguments::CanisterArguments::default();

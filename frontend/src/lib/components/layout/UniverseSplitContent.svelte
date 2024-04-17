@@ -26,14 +26,5 @@
   .container {
     display: contents;
     --content-start-height: calc(92px + var(--padding-2x));
-    --nav-component-title-display: none;
-
-    @include media.min-width(large) {
-      --nav-component-title-display: block;
-    }
-  }
-
-  .nav {
-    margin-top: var(--padding-2x);
   }
 </style>
