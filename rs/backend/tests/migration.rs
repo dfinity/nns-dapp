@@ -184,16 +184,18 @@ impl TestEnv {
             .map(|index| self.get_toy_account_from_canister(canister_id, index))
             .collect();
         let last_range = num_toy_accounts.saturating_sub(InvariantStats::MAX_SAMPLE_LENGTH)..num_toy_accounts;
-        let last_toy_accounts = last_range.map(|index| self.get_toy_account_from_canister(canister_id, index)).collect();
+        let last_toy_accounts = last_range
+            .map(|index| self.get_toy_account_from_canister(canister_id, index))
+            .collect();
 
-            InvariantStats {
+        InvariantStats {
             stats,
             first_toy_accounts,
             last_toy_accounts,
         }
     }
     /// Performs some checks that the reference canister and the test canister are identical in relevant ways.
-    /// 
+    ///
     /// Please see `TestEnv::get_invariants_from_canister(..)` for details on what should be identical.
     pub fn assert_invariants_match(&self) {
         let expected = self.get_invariants_from_canister(self.reference_canister_id);
