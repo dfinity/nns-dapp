@@ -50,7 +50,7 @@ export const queryProposals = async ({
               obj: Topic as unknown as Topic,
               values: topics,
             }),
-      // all reward statuses
+      // fallback to all reward statuses
       includeRewardStatus: includeRewardStatus ?? [],
       includeStatus: status,
       includeAllManageNeuronProposals: false,

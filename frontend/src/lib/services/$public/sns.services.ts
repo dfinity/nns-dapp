@@ -89,7 +89,6 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
         identity,
         filters: {
           topics: [Topic.SnsAndCommunityFund],
-          rewards: [],
           status: [ProposalStatus.Open],
           excludeVotedProposals: false,
           lastAppliedFilter: undefined,
