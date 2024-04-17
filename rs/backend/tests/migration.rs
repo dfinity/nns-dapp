@@ -26,9 +26,9 @@ struct InvariantStats {
     ///
     /// Please see `TestEnv::get_invariants_from_canister(..)` for more details.
     pub stats: Stats,
-    /// Toy account indices `0..InvariantStats::MAX_SAMPLE_LENGTH`.
+    /// The first few toy accounts (indices `0..InvariantStats::MAX_SAMPLE_LENGTH`).
     pub first_toy_accounts: Vec<AccountDetails>,
-    /// Toy account indices `num_accounts-InvariantStats::MAX_SAMPLE_LENGTH..num_accounts`.
+    /// The last few toy accounts (indices `num_accounts-InvariantStats::MAX_SAMPLE_LENGTH..num_accounts`).
     pub last_toy_accounts: Vec<AccountDetails>,
 }
 impl InvariantStats {
