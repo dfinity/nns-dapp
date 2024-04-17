@@ -22,7 +22,6 @@ describe("SnsProposalsFilters", () => {
     const po = await renderComponent();
 
     expect(await po.getFilterByTypesButton().isPresent()).toBe(true);
-    expect(await po.getFilterByRewardsButton().isPresent()).toBe(true);
     expect(await po.getFilterByStatusButton().isPresent()).toBe(true);
   });
 
@@ -40,15 +39,6 @@ describe("SnsProposalsFilters", () => {
     expect(await po.getFilterModalPo().isPresent()).toBe(false);
 
     await po.clickFiltersByStatusButton();
-    await runResolvedPromises();
-    expect(await po.getFilterModalPo().isPresent()).toBe(true);
-  });
-
-  it("should open filter modal when rewards filter is clicked", async () => {
-    const po = await renderComponent();
-    expect(await po.getFilterModalPo().isPresent()).toBe(false);
-
-    await po.clickFiltersByRewardsButton();
     await runResolvedPromises();
     expect(await po.getFilterModalPo().isPresent()).toBe(true);
   });
@@ -100,17 +90,14 @@ describe("SnsProposalsFilters", () => {
 
         expect(await po.getFilterByTypesButton().isPresent()).toEqual(true);
         expect(await po.getFilterByStatusButton().isPresent()).toEqual(true);
-        expect(await po.getFilterByRewardsButton().isPresent()).toEqual(true);
 
         await segmentPo.clickActionableProposals();
         expect(await po.getFilterByTypesButton().isPresent()).toEqual(false);
         expect(await po.getFilterByStatusButton().isPresent()).toEqual(false);
-        expect(await po.getFilterByRewardsButton().isPresent()).toEqual(false);
 
         await segmentPo.clickAllProposals();
         expect(await po.getFilterByTypesButton().isPresent()).toEqual(true);
         expect(await po.getFilterByStatusButton().isPresent()).toEqual(true);
-        expect(await po.getFilterByRewardsButton().isPresent()).toEqual(true);
       });
     });
   });
@@ -131,7 +118,6 @@ describe("SnsProposalsFilters", () => {
       const po = await renderComponent();
       expect(await po.getFilterByTypesButton().isPresent()).toEqual(true);
       expect(await po.getFilterByStatusButton().isPresent()).toEqual(true);
-      expect(await po.getFilterByRewardsButton().isPresent()).toEqual(true);
     });
   });
 });

@@ -25,7 +25,6 @@ vi.mock("$lib/api/governance.api");
 const proposal = {
   ...mockProposalInfo,
   topic: DEFAULT_PROPOSALS_FILTERS.topics[0],
-  rewardStatus: DEFAULT_PROPOSALS_FILTERS.rewards[0],
   status: DEFAULT_PROPOSALS_FILTERS.status[0],
   ballots: [
     {

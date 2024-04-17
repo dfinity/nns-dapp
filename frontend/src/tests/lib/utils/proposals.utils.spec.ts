@@ -314,7 +314,6 @@ describe("proposals-utils", () => {
           }),
           filters: {
             ...DEFAULT_PROPOSALS_FILTERS,
-            rewards: [],
             excludeVotedProposals: false,
           },
           neurons,
@@ -361,7 +360,6 @@ describe("proposals-utils", () => {
           }),
           filters: {
             ...DEFAULT_PROPOSALS_FILTERS,
-            rewards: [ProposalRewardStatus.ReadyToSettle],
             excludeVotedProposals: false,
           },
           neurons,

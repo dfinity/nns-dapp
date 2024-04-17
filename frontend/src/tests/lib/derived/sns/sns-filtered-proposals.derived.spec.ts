@@ -162,30 +162,6 @@ describe("snsFilteredProposalsStore", () => {
       certified: true,
       completed: true,
     });
-    const rewardStatus = [
-      {
-        id: "1",
-        name: "status-1",
-        value: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
-        checked: true,
-      },
-      {
-        id: "2",
-        name: "status-2",
-        value: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE,
-        checked: false,
-      },
-      {
-        id: "3",
-        name: "status-3",
-        value: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED,
-        checked: false,
-      },
-    ];
-    snsFiltersStore.setRewardStatus({
-      rootCanisterId,
-      rewardStatus,
-    });
 
     expect(getProposals()).toMatchObject([acceptVotesProposal]);
   });
