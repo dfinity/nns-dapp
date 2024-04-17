@@ -57,7 +57,6 @@ const queryProposals = async (): Promise<ProposalInfo[]> => {
   const identity = getCurrentIdentity();
   const filters: ProposalsFiltersStore = {
     // We just want to fetch proposals that are accepting votes, so we don't need to filter by rest of the filters.
-    rewards: [ProposalRewardStatus.AcceptVotes],
     topics: [],
     status: [],
     excludeVotedProposals: false,
@@ -75,6 +74,7 @@ const queryProposals = async (): Promise<ProposalInfo[]> => {
       beforeProposal: lastProposalId(sortedProposals),
       identity,
       filters,
+      includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
       certified: false,
     });
     // Sort proposals by id in descending order to be sure that "lastProposalId" returns correct id.

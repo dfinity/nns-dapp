@@ -10,18 +10,20 @@ import type {
   ProposalId,
   ProposalInfo,
 } from "@dfinity/nns";
-import { GovernanceCanister, Topic } from "@dfinity/nns";
+import { GovernanceCanister, ProposalRewardStatus, Topic } from "@dfinity/nns";
 import { nnsDappCanister } from "./nns-dapp.api";
 
 export const queryProposals = async ({
   beforeProposal,
   identity,
   filters,
+  includeRewardStatus,
   certified,
 }: {
   beforeProposal: ProposalId | undefined;
   identity: Identity;
   filters: ProposalsFiltersStore;
+  includeRewardStatus?: ProposalRewardStatus[];
   certified: boolean;
 }): Promise<ProposalInfo[]> => {
   logWithTimestamp(
@@ -34,7 +36,7 @@ export const queryProposals = async ({
     agent: await createAgent({ identity, host: HOST }),
   });
 
-  const { rewards, status, topics }: ProposalsFiltersStore = filters;
+  const { status, topics }: ProposalsFiltersStore = filters;
 
   const { proposals }: ListProposalsResponse = await governance.listProposals({
     request: {
@@ -48,7 +50,8 @@ export const queryProposals = async ({
               obj: Topic as unknown as Topic,
               values: topics,
             }),
-      includeRewardStatus: rewards,
+      // all reward statuses
+      includeRewardStatus: includeRewardStatus ?? [],
       includeStatus: status,
       includeAllManageNeuronProposals: false,
     },
