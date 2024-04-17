@@ -78,15 +78,13 @@ export const icpTokensListUser = derived<
       i18nObj,
       account: icpAccounts.main,
     }),
-    ...sortUserTokens(
-      (icpAccounts.subAccounts ?? []).map((account) =>
+    ...sortUserTokens([
+      ...(icpAccounts.subAccounts ?? []).map((account) =>
         convertAccountToUserTokenData({ nnsUniverse, i18nObj, account })
-      )
-    ),
-    ...sortUserTokens(
-      (icpAccounts.hardwareWallets ?? []).map((account) =>
+      ),
+      ...(icpAccounts.hardwareWallets ?? []).map((account) =>
         convertAccountToUserTokenData({ nnsUniverse, i18nObj, account })
-      )
-    ),
+      ),
+    ]),
   ]
 );
