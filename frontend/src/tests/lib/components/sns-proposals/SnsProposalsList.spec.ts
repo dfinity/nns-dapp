@@ -235,15 +235,15 @@ describe("SnsProposalsList", () => {
       await runResolvedPromises();
 
       const cards = await po.getProposalCardPos();
-      expect(await cards[0].getProposalStatusTagPo().hasActionableMark()).toBe(
-        false
-      );
-      expect(await cards[1].getProposalStatusTagPo().hasActionableMark()).toBe(
-        true
-      );
-      expect(await cards[2].getProposalStatusTagPo().hasActionableMark()).toBe(
-        true
-      );
+      expect(
+        await cards[0].getProposalStatusTagPo().hasActionableStatusBadge()
+      ).toBe(false);
+      expect(
+        await cards[1].getProposalStatusTagPo().hasActionableStatusBadge()
+      ).toBe(true);
+      expect(
+        await cards[2].getProposalStatusTagPo().hasActionableStatusBadge()
+      ).toBe(true);
     });
   });
 });
