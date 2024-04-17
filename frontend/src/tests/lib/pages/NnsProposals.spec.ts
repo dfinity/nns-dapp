@@ -167,7 +167,7 @@ describe("NnsProposals", () => {
         expect(
           await (await po.getProposalCardPos())[0]
             .getProposalStatusTagPo()
-            .hasActionableMark()
+            .hasActionableStatusBadge()
         ).toEqual(false);
         // actionable proposal
         expect(
@@ -176,7 +176,7 @@ describe("NnsProposals", () => {
         expect(
           await (await po.getProposalCardPos())[1]
             .getProposalStatusTagPo()
-            .hasActionableMark()
+            .hasActionableStatusBadge()
         ).toEqual(true);
       });
 

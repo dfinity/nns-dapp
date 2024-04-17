@@ -4,6 +4,7 @@
   import { Tooltip } from "@dfinity/gix-components";
   import { cubicOut } from "svelte/easing";
   import { scale } from "svelte/transition";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let status: UniversalProposalStatus;
   export let actionable: boolean | undefined = undefined;
@@ -13,23 +14,23 @@
 </script>
 
 <div data-tid="proposal-status-tag" class={`tag ${status}`}>
-  {label}
-  {#if actionable}
-    <div class="badge-container">
-      <Tooltip
-        id="is-actionable-tooltip"
-        text={$i18n.voting.is_actionable_status_badge_tooltip}
-        top={true}
-      >
-        <div
-          data-tid="is-actionable-status-badge"
-          class="is-actionable-status-badge"
-          role="status"
-          transition:scale={{ duration: 250, easing: cubicOut }}
-        />
-      </Tooltip>
-    </div>
-  {/if}
+  {label}<TestIdWrapper testId="actionable-status-badge">
+    {#if actionable}
+      <div class="badge-container">
+        <Tooltip
+          id="actionable-status-tooltip"
+          text={$i18n.voting.is_actionable_status_badge_tooltip}
+          top={true}
+        >
+          <div
+            class="actionable-status-badge"
+            role="status"
+            transition:scale={{ duration: 250, easing: cubicOut }}
+          />
+        </Tooltip>
+      </div>
+    {/if}
+  </TestIdWrapper>
 </div>
 
 <style lang="scss">
@@ -67,7 +68,7 @@
       background-color: var(--orange-tint);
     }
 
-    // The container is used for positioning because of Tooltip wrapper.
+    // Because of Tooltip wrapper the badge needs a container for positioning.
     .badge-container {
       position: absolute;
       top: calc(-1 * var(--padding-0_5x));

@@ -48,11 +48,15 @@ describe("ProposalStatusTag", () => {
     expect(await po.hasStatusClass("failed")).toBe(true);
   });
 
-  it("should render actionable mark", async () => {
+  it("should render actionable badge", async () => {
     const po = await renderComponent({ status: "open", actionable: true });
-    expect(await po.hasActionableMark()).toBe(true);
+    expect(await po.hasActionableStatusBadge()).toBe(true);
+    expect(await po.getActionableStatusBadgeTooltip().isPresent()).toBe(true);
+    expect(await po.getActionableStatusBadgeTooltip().getTooltipText()).toBe(
+      "You can still vote on this proposal."
+    );
 
     const po2 = await renderComponent({ status: "open" });
-    expect(await po2.hasActionableMark()).toBe(false);
+    expect(await po2.hasActionableStatusBadge()).toBe(false);
   });
 });
