@@ -16,7 +16,7 @@
 <div data-tid="proposal-status-tag" class={`tag ${status}`}>
   {label}<TestIdWrapper testId="actionable-status-badge">
     {#if actionable}
-      <div class="badge-container">
+      <div class="actionable-status-container">
         <Tooltip
           id="actionable-status-tooltip"
           text={$i18n.voting.is_actionable_status_badge_tooltip}
@@ -69,12 +69,12 @@
     }
 
     // Because of Tooltip wrapper the badge needs a container for positioning.
-    .badge-container {
+    .actionable-status-container {
       position: absolute;
       top: calc(-1 * var(--padding-0_5x));
       right: calc(-1 * var(--padding-0_5x));
     }
-    .is-actionable-status-badge {
+    .actionable-status-badge {
       width: var(--padding-1_5x);
       height: var(--padding-1_5x);
 
