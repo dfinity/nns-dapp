@@ -16,6 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Message informing about proposal topic changes.
+* Order ICP subaccounts based on balance.
 
 #### Changed
 
