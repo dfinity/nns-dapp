@@ -134,7 +134,7 @@ describe("icp-tokens-list-user.derived", () => {
       ]);
     });
 
-    it.only("should sort user tokens", () => {
+    it("should sort user tokens", () => {
       const subAccount1 = {
         ...mockSubAccount,
         identifier: "1",
