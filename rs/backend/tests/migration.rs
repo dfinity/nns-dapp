@@ -2,7 +2,7 @@
 //!
 //! Assumes that the NNS Dapp Wasm has already been compiled and is available in the `out/` directory in the repository root.
 use candid::{decode_one, encode_one};
-use nns_dapp::{accounts_store::schema::SchemaLabel, arguments::CanisterArguments, stats::Stats};
+use nns_dapp::{accounts_store::schema::SchemaLabel, arguments::CanisterArguments, stats::{wasm_memory_size_bytes, Stats}};
 use pocket_ic::{PocketIc, PocketIcBuilder, WasmResult};
 use proptest::prelude::*;
 use std::fs;
@@ -105,9 +105,14 @@ impl TestEnv {
     fn get_invariants_from_canister(&self, canister_id: ic_principal::Principal) -> InvariantStats {
         let stats = {
             let mut stats = self.get_stats_from_canister(canister_id);
-            // These fields may change:
+            // These fields may change and are not expected to be invariant, so we will set them to default values.
             stats.migration_countdown = None;
             stats.accounts_db_stats_recomputed_on_upgrade = None;
+            stats.periodic_tasks_count = None;
+            stats.wasm_memory_size_bytes = None;
+            stats.stable_memory_size_bytes = None;
+            stats.performance_counts.truncate(0);
+            stats.schema = None;
             // The rest should be invariant:
             stats
         };
@@ -134,7 +139,7 @@ impl TestEnv {
     ///       The bulk account creation assumes that the account indices are contiguous, starting at zero,
     ///       for good practical reasons, so we will keep that rule.  Note that consecutive indices do NOT
     ///       generally yield consecutive principals, so the accounts are scattered around the BTreeMap in
-    ///       a slightly random way.
+    ///       a slightly random way.    
     pub fn create_toy_accounts(&self, num_accounts: u128) {
         for canister_id in &[self.canister_id, self.reference_canister_id] {
             self.pic
