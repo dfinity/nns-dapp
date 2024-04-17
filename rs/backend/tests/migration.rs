@@ -3,13 +3,13 @@
 //! Assumes that the NNS Dapp Wasm has already been compiled and is available in the `out/` directory in the repository root.
 use candid::{decode_one, encode_one};
 use nns_dapp::{
-    accounts_store::{schema::SchemaLabel, Account, AccountDetails, GetAccountResponse},
+    accounts_store::{schema::SchemaLabel, AccountDetails, GetAccountResponse},
     arguments::CanisterArguments,
-    stats::{wasm_memory_size_bytes, Stats},
+    stats::Stats,
 };
 use pocket_ic::{PocketIc, PocketIcBuilder, WasmResult};
 use pretty_assertions::assert_eq;
-use proptest::{num, prelude::*};
+use proptest::prelude::*;
 use std::fs;
 use strum_macros::EnumIter;
 
