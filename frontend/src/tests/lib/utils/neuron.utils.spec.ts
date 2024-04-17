@@ -30,6 +30,7 @@ import {
   followeesByTopic,
   followeesNeurons,
   formatVotingPower,
+  formatVotingPowerDetailed,
   formattedMaturity,
   formattedStakedMaturity,
   formattedTotalMaturity,
@@ -213,6 +214,18 @@ describe("neuron-utils", () => {
       expect(formatVotingPower(0n)).toBe("0.00");
       expect(formatVotingPower(100_000_000n)).toBe("1.00");
       expect(formatVotingPower(9_999_900_000n)).toBe("100.00");
+    });
+  });
+
+  describe("formatVotingPowerDetailed", () => {
+    it("should format", () => {
+      expect(formatVotingPowerDetailed(0n)).toBe("0.00000000");
+      expect(formatVotingPowerDetailed(1n)).toBe("0.00000001");
+      expect(formatVotingPowerDetailed(100_000_000n)).toBe("1.00000000");
+      expect(formatVotingPowerDetailed(100_000_001n)).toBe("1.00000001");
+      expect(formatVotingPowerDetailed(999_999_999_999_999n)).toBe(
+        "9’999’999.99999999"
+      );
     });
   });
 
@@ -2698,10 +2711,10 @@ describe("neuron-utils", () => {
       ).toBe("SNS Decentralization Swap");
       expect(
         getTopicTitle({ topic: Topic.SubnetReplicaVersionManagement, i18n: en })
-      ).toBe("Subnet Replica Version Management");
+      ).toBe("IC OS Version Deployment");
       expect(
         getTopicTitle({ topic: Topic.ReplicaVersionManagement, i18n: en })
-      ).toBe("Replica Version Management");
+      ).toBe("IC OS Version Election");
       expect(
         getTopicTitle({ topic: Topic.SnsAndCommunityFund, i18n: en })
       ).toBe("SNS & Neurons' Fund");

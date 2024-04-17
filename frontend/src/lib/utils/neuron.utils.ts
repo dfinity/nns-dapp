@@ -249,6 +249,9 @@ export const getSpawningTimeInSeconds = (
 export const formatVotingPower = (value: bigint | number): string =>
   formatNumber(Number(value) / E8S_PER_ICP);
 
+export const formatVotingPowerDetailed = (value: bigint | number): string =>
+  formatNumber(Number(value) / E8S_PER_ICP, { minFraction: 8, maxFraction: 8 });
+
 export const isSeedNeuron = (neuron: NeuronInfo): boolean =>
   neuron.neuronType === NeuronType.Seed;
 
