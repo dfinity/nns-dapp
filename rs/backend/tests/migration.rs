@@ -105,7 +105,26 @@ impl TestEnv {
     pub fn get_stats(&self) -> Stats {
         self.get_stats_from_canister(self.canister_id)
     }
-    /// Gets the invariants from either the main or the reference canister.
+    /// Gets the upgrade invariants from either the main or the reference canister.
+    /// 
+    /// All `Stats` are assumed to be invariant, except for the following:
+    /// - migration_countdown
+    /// - accounts_db_stats_recomputed_on_upgrade
+    /// - periodic_tasks_count
+    /// - wasm_memory_size_bytes
+    /// - stable_memory_size_bytes
+    /// - performance_counts
+    /// - schema
+    /// 
+    /// In particular, the accounts count should be unaffected by an upgrade:
+    /// - `accounts_count`
+    /// 
+    /// Some stats are stored rather than recomputed on upgrade, so while they should be invariant doesn't mean that the underlying data has indeed been preserved and additional checks are needed.  For example:
+    /// - `sub_accounts_count`
+    /// - `hardware_wallet_accounts_count`
+    /// - `neurons_created_count`
+    /// 
+    /// We also collect the first 10 and last 10 accounts in full.
     fn get_invariants_from_canister(&self, canister_id: ic_principal::Principal) -> InvariantStats {
         let stats = {
             let mut stats = self.get_stats_from_canister(canister_id);
