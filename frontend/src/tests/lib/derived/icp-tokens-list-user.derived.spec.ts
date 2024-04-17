@@ -52,6 +52,7 @@ describe("icp-tokens-list-user.derived", () => {
   const subaccountUserTokenData = (
     balanceUlps: bigint = mockSubAccount.balanceUlps
   ): UserTokenData => {
+    // Use balance (when explicitly provided) as identifier to have unique sub-accounts
     const accountIdentifier =
       balanceUlps === mockSubAccount.balanceUlps
         ? mockSubAccount.identifier
@@ -74,6 +75,7 @@ describe("icp-tokens-list-user.derived", () => {
   const hardwareWalletUserTokenData = (
     balanceUlps: bigint = mockHardwareWalletAccount.balanceUlps
   ): UserTokenData => {
+    // Use balance (when explicitly provided) as identifier to have unique sub-accounts
     const accountIdentifier =
       balanceUlps === mockHardwareWalletAccount.balanceUlps
         ? mockHardwareWalletAccount.identifier
