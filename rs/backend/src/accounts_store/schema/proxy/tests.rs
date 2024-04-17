@@ -1,4 +1,3 @@
-use candid::types::number;
 use ic_stable_structures::memory_manager;
 use pretty_assertions::assert_eq;
 use proptest::proptest;
