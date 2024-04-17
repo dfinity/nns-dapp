@@ -6,7 +6,6 @@ import { generateSnsProposalTypesFilterData } from "$lib/utils/sns-proposals.uti
 import type { Principal } from "@dfinity/principal";
 import {
   SnsProposalDecisionStatus,
-  SnsProposalRewardStatus,
   type SnsNervousSystemFunction,
 } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
@@ -44,34 +43,6 @@ const loadDecisionStatusFilters = (rootCanisterId: Principal) => {
   snsFiltersStore.setDecisionStatus({
     rootCanisterId,
     decisionStatus,
-  });
-};
-
-// Load reward status, these are hardcoded based on enum values
-const loadRewardStatusFilters = (rootCanisterId: Principal) => {
-  const i18nKeys = get(i18n);
-  const mapRewardStatus = (
-    value: SnsProposalRewardStatus
-  ): Filter<SnsProposalRewardStatus> => {
-    return {
-      id: String(value),
-      value,
-      name: i18nKeys.sns_rewards_status[value] ?? i18nKeys.core.unspecified,
-      checked: defaultFiltersProjectData.rewardStatus.some(
-        ({ checked, id }) => checked && id === String(value)
-      ),
-    };
-  };
-  const rewardStatus = enumValues(SnsProposalRewardStatus)
-    .filter(
-      (status) =>
-        SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_UNSPECIFIED !== status
-    )
-    .map(mapRewardStatus);
-
-  snsFiltersStore.setRewardStatus({
-    rootCanisterId,
-    rewardStatus,
   });
 };
 
@@ -120,7 +91,6 @@ export const loadSnsFilters = async ({
     // Do not re-initialise decision status and reward status to not override user selection.
     // We assume that the enums are not going to change.
     loadDecisionStatusFilters(rootCanisterId);
-    loadRewardStatusFilters(rootCanisterId);
   }
 
   // It's safe to reload types filters as the `loadTypesFilters` respects user selection,

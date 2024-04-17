@@ -2,16 +2,12 @@ import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
 import { mapEntries } from "$lib/utils/utils";
 import type { Principal } from "@dfinity/principal";
-import type {
-  SnsProposalDecisionStatus,
-  SnsProposalRewardStatus,
-} from "@dfinity/sns";
+import type { SnsProposalDecisionStatus } from "@dfinity/sns";
 import { derived, type Readable } from "svelte/store";
 import { writableStored } from "./writable-stored";
 
 export interface ProjectFiltersStoreData {
   types: Filter<SnsProposalTypeFilterId>[];
-  rewardStatus: Filter<SnsProposalRewardStatus>[];
   decisionStatus: Filter<SnsProposalDecisionStatus>[];
 }
 
@@ -36,20 +32,11 @@ export interface SnsFiltersStore extends Readable<SnsFiltersStoreData> {
     rootCanisterId: Principal;
     checkedDecisionStatus: SnsProposalDecisionStatus[];
   }) => void;
-  setRewardStatus: (data: {
-    rootCanisterId: Principal;
-    rewardStatus: Filter<SnsProposalRewardStatus>[];
-  }) => void;
-  setCheckRewardStatus: (data: {
-    rootCanisterId: Principal;
-    checkedRewardStatus: SnsProposalRewardStatus[];
-  }) => void;
   reset: () => void;
 }
 
 const defaultProjectData: ProjectFiltersStoreData = {
   types: [],
-  rewardStatus: [],
   decisionStatus: [],
 };
 
@@ -159,51 +146,6 @@ export const initSnsFiltersStore = (): SnsFiltersStore => {
       });
     },
 
-    setRewardStatus({
-      rootCanisterId,
-      rewardStatus,
-    }: {
-      rootCanisterId: Principal;
-      rewardStatus: Filter<SnsProposalRewardStatus>[];
-    }) {
-      update((currentState: SnsFiltersStoreData) => {
-        const projectFilters =
-          currentState[rootCanisterId.toText()] || defaultProjectData;
-
-        return {
-          ...currentState,
-          [rootCanisterId.toText()]: {
-            ...projectFilters,
-            rewardStatus,
-          },
-        };
-      });
-    },
-
-    setCheckRewardStatus({
-      rootCanisterId,
-      checkedRewardStatus,
-    }: {
-      rootCanisterId: Principal;
-      checkedRewardStatus: SnsProposalRewardStatus[];
-    }) {
-      update((currentState: SnsFiltersStoreData) => {
-        const projectFilters =
-          currentState[rootCanisterId.toText()] || defaultProjectData;
-
-        return {
-          ...currentState,
-          [rootCanisterId.toText()]: {
-            ...projectFilters,
-            rewardStatus: projectFilters.rewardStatus.map((status) => ({
-              ...status,
-              checked: checkedRewardStatus.includes(status.value),
-            })),
-          },
-        };
-      });
-    },
-
     reset: () => set({}),
   };
 };
@@ -220,7 +162,6 @@ export const snsSelectedFiltersStore = derived<
       rootCanisterIdText,
       {
         types: filters.types.filter(({ checked }) => checked),
-        rewardStatus: filters.rewardStatus.filter(({ checked }) => checked),
         decisionStatus: filters.decisionStatus.filter(({ checked }) => checked),
       },
     ],

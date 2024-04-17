@@ -165,7 +165,6 @@ export const loadSnsProposals = async ({
           includeStatus:
             filters?.decisionStatus.map(({ value }) => value) ?? [],
           excludeType,
-          // TODO: add filter by reward status
         },
         identity,
         certified,

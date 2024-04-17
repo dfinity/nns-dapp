@@ -1,9 +1,6 @@
-import type { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
+import type { ProposalStatus, Topic } from "@dfinity/nns";
 
-export type ProposalsFilters =
-  | typeof Topic
-  | typeof ProposalRewardStatus
-  | typeof ProposalStatus;
+export type ProposalsFilters = typeof Topic | typeof ProposalStatus;
 
 export type UniversalProposalStatus =
   | "unknown"
@@ -14,9 +11,9 @@ export type UniversalProposalStatus =
   | "failed";
 
 export interface ProposalsFilterModalProps {
-  category: "topics" | "rewards" | "status";
+  category: "topics" | "status";
   filters: ProposalsFilters;
-  selectedFilters: (Topic | ProposalRewardStatus | ProposalStatus)[];
+  selectedFilters: (Topic | ProposalStatus)[];
 }
 
 export const PROPOSAL_FILTER_UNSPECIFIED_VALUE = 0;
