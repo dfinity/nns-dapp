@@ -10,7 +10,7 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import type { HttpAgent } from "@dfinity/agent";
-import { GovernanceCanister } from "@dfinity/nns";
+import { GovernanceCanister, ProposalRewardStatus } from "@dfinity/nns";
 import { mock } from "vitest-mock-extended";
 
 describe("proposals-api", () => {
@@ -60,6 +60,7 @@ describe("proposals-api", () => {
           ...DEFAULT_PROPOSALS_FILTERS,
           topics: [],
         },
+        includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
         identity: mockIdentity,
         certified: true,
       });
@@ -69,7 +70,31 @@ describe("proposals-api", () => {
         request: {
           beforeProposal: mockProposals[mockProposals.length - 1].id,
           excludeTopic: [],
-          includeRewardStatus: DEFAULT_PROPOSALS_FILTERS.rewards,
+          includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
+          includeStatus: DEFAULT_PROPOSALS_FILTERS.status,
+          includeAllManageNeuronProposals: false,
+          limit: 100,
+        },
+      });
+    });
+
+    it("should call with empty includeRewardStatus by default", async () => {
+      await queryProposals({
+        beforeProposal: mockProposals[mockProposals.length - 1].id,
+        filters: {
+          ...DEFAULT_PROPOSALS_FILTERS,
+          topics: [],
+        },
+        identity: mockIdentity,
+        certified: true,
+      });
+
+      expect(spyListProposals).toHaveBeenCalledWith({
+        certified: true,
+        request: {
+          beforeProposal: mockProposals[mockProposals.length - 1].id,
+          excludeTopic: [],
+          includeRewardStatus: [],
           includeStatus: DEFAULT_PROPOSALS_FILTERS.status,
           includeAllManageNeuronProposals: false,
           limit: 100,
