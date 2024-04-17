@@ -8,13 +8,12 @@ import {
 import { mockSnsCanisterIdText } from "$tests/mocks/sns.api.mock";
 import { SnsProposalListPo } from "$tests/page-objects/SnsProposalList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsProposalDecisionStatus, type SnsProposalData } from "@dfinity/sns";
-import { cleanup, render } from "@testing-library/svelte";
 
 describe("SnsProposalsList", () => {
   const renderComponent = async (props) => {
-    cleanup();
     const { container } = render(SnsProposalsList, { props });
     await runResolvedPromises();
     return SnsProposalListPo.under(new JestPageObjectElement(container));

@@ -1,3 +1,4 @@
+import type { GetTransactionsResponse } from "$lib/api/icp-index.api";
 import type { Transaction as NnsTransaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Transaction, UiTransaction } from "$lib/types/transaction";
 import { AccountTransactionType } from "$lib/types/transaction";
@@ -117,4 +118,38 @@ export const mockTransactionWithId: TransactionWithId = {
     created_at_time: [],
     timestamp: [],
   },
+};
+
+export const createMockSendTransactionWithId = ({
+  amount = 110_000_023n,
+  fee = 10_000n,
+  to = mockSubAccount.identifier,
+}: {
+  amount?: bigint;
+  fee?: bigint;
+  to?: string;
+}): TransactionWithId => {
+  const transfer = {
+    ...mockTransactionWithId.transaction["Transfer"],
+    to,
+    fee: { e8s: fee },
+    amount: { e8s: amount },
+  };
+  const operation = {
+    Transfer: transfer,
+  };
+  const transaction = {
+    ...mockTransactionWithId.transaction,
+    operation,
+  };
+  return {
+    ...mockTransactionWithId,
+    transaction,
+  };
+};
+
+export const mockEmptyGetTransactionsResponse: GetTransactionsResponse = {
+  transactions: [],
+  oldestTxId: 0n,
+  balance: 0n,
 };

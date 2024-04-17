@@ -30,6 +30,7 @@ import {
   followeesByTopic,
   followeesNeurons,
   formatVotingPower,
+  formatVotingPowerDetailed,
   formattedMaturity,
   formattedStakedMaturity,
   formattedTotalMaturity,
@@ -213,6 +214,18 @@ describe("neuron-utils", () => {
       expect(formatVotingPower(0n)).toBe("0.00");
       expect(formatVotingPower(100_000_000n)).toBe("1.00");
       expect(formatVotingPower(9_999_900_000n)).toBe("100.00");
+    });
+  });
+
+  describe("formatVotingPowerDetailed", () => {
+    it("should format", () => {
+      expect(formatVotingPowerDetailed(0n)).toBe("0.00000000");
+      expect(formatVotingPowerDetailed(1n)).toBe("0.00000001");
+      expect(formatVotingPowerDetailed(100_000_000n)).toBe("1.00000000");
+      expect(formatVotingPowerDetailed(100_000_001n)).toBe("1.00000001");
+      expect(formatVotingPowerDetailed(999_999_999_999_999n)).toBe(
+        "9’999’999.99999999"
+      );
     });
   });
 
@@ -659,6 +672,80 @@ describe("neuron-utils", () => {
         neuron1,
       ]);
       expect(sortNeuronsByStake([neuron2, neuron1, neuron3])).toEqual([
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
+    });
+
+    it("should sort neurons by dissolve delay for equal stake", () => {
+      const neuron1 = {
+        ...mockNeuron,
+        dissolveDelaySeconds: 100_000_000n,
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        dissolveDelaySeconds: 200_000_000n,
+      };
+      const neuron3 = {
+        ...mockNeuron,
+        dissolveDelaySeconds: 300_000_000n,
+      };
+      expect(sortNeuronsByStake([])).toEqual([]);
+      expect(sortNeuronsByStake([neuron1])).toEqual([neuron1]);
+      expect(sortNeuronsByStake([neuron3, neuron2, neuron1])).toEqual([
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
+      expect(sortNeuronsByStake([neuron2, neuron1, neuron3])).toEqual([
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
+    });
+
+    it("should sort neurons by stake first and then dissolve delay", () => {
+      const neuron1 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 500_000_000n,
+        },
+        dissolveDelaySeconds: 100_000_000n,
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 500_000_000n,
+        },
+        dissolveDelaySeconds: 200_000_000n,
+      };
+      const neuron3 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 700_000_000n,
+        },
+        dissolveDelaySeconds: 100_000_000n,
+      };
+      const neuron4 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 700_000_000n,
+        },
+        dissolveDelaySeconds: 200_000_000n,
+      };
+      expect(sortNeuronsByStake([neuron3, neuron4, neuron2, neuron1])).toEqual([
+        neuron4,
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
+      expect(sortNeuronsByStake([neuron1, neuron2, neuron3, neuron4])).toEqual([
+        neuron4,
         neuron3,
         neuron2,
         neuron1,
@@ -2624,10 +2711,10 @@ describe("neuron-utils", () => {
       ).toBe("SNS Decentralization Swap");
       expect(
         getTopicTitle({ topic: Topic.SubnetReplicaVersionManagement, i18n: en })
-      ).toBe("Subnet Replica Version Management");
+      ).toBe("IC OS Version Deployment");
       expect(
         getTopicTitle({ topic: Topic.ReplicaVersionManagement, i18n: en })
-      ).toBe("Replica Version Management");
+      ).toBe("IC OS Version Election");
       expect(
         getTopicTitle({ topic: Topic.SnsAndCommunityFund, i18n: en })
       ).toBe("SNS & Neurons' Fund");

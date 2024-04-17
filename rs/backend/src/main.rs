@@ -1,9 +1,8 @@
 use crate::accounts_store::histogram::AccountsStoreHistogram;
 use crate::accounts_store::{
     AccountDetails, AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest,
-    DetachCanisterResponse, GetTransactionsRequest, GetTransactionsResponse, NamedCanister,
-    RegisterHardwareWalletRequest, RegisterHardwareWalletResponse, RenameCanisterRequest, RenameCanisterResponse,
-    RenameSubAccountRequest, RenameSubAccountResponse,
+    DetachCanisterResponse, NamedCanister, RegisterHardwareWalletRequest, RegisterHardwareWalletResponse,
+    RenameCanisterRequest, RenameCanisterResponse, RenameSubAccountRequest, RenameSubAccountResponse,
 };
 use crate::arguments::{set_canister_arguments, CanisterArguments, CANISTER_ARGUMENTS};
 use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
@@ -142,20 +141,6 @@ fn add_account_impl() -> AccountIdentifier {
     let principal = dfn_core::api::caller();
     STATE.with(|s| s.accounts_store.borrow_mut().add_account(principal));
     AccountIdentifier::from(principal)
-}
-
-/// Returns a page of transactions for a given `AccountIdentifier`.
-///
-/// The `AccountIdentifier` must be linked to the caller's account, else an empty `Vec` will be
-/// returned.
-#[export_name = "canister_query get_transactions"]
-pub fn get_transactions() {
-    over(candid_one, get_transactions_impl);
-}
-
-fn get_transactions_impl(request: GetTransactionsRequest) -> GetTransactionsResponse {
-    let principal = dfn_core::api::caller();
-    STATE.with(|s| s.accounts_store.borrow().get_transactions(principal, request))
 }
 
 /// Creates a new ledger sub account and links it to the user's account.

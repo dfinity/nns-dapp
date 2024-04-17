@@ -127,9 +127,9 @@ jobs:
           curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp_test.wasm.gz > prod/nns-dapp_test.wasm.gz
           curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp-arg-local.did > prod/nns-dapp-arg-local.did
       - name: Downgrade nns-dapp to prod and upgrade back again
-        run: scripts/nns-dapp/migration-test --wasm1 out/nns-dapp_test.wasm.gz --args1 out/nns-dapp-arg-local.did --wasm2 prod/nns-dapp_test.wasm.gz --args2 prod/nns-dapp-arg-local.did --accounts 20 --chunk 20
+        run: scripts/nns-dapp/migration-test --wasm1 out/nns-dapp_test.wasm.gz --args1 out/nns-dapp-arg-local.did --wasm2 prod/nns-dapp_test.wasm.gz --args2 prod/nns-dapp-arg-local.did --accounts 94 --chunk 30
       - name: Repeat with more data
-        run: scripts/nns-dapp/migration-test --wasm1 out/nns-dapp_test.wasm.gz --args1 out/nns-dapp-arg-local.did --wasm2 prod/nns-dapp_test.wasm.gz --args2 prod/nns-dapp-arg-local.did --accounts 30 --chunk 20
+        run: scripts/nns-dapp/migration-test --wasm1 out/nns-dapp_test.wasm.gz --args1 out/nns-dapp-arg-local.did --wasm2 prod/nns-dapp_test.wasm.gz --args2 prod/nns-dapp-arg-local.did --accounts 201 --chunk 20
       - name: Count upgrade cycles
         run: scripts/nns-dapp/estimate-upgrade-cycles | tee -a $GITHUB_STEP_SUMMARY
   test-upgrade-map:
@@ -499,6 +499,21 @@ jobs:
           scripts/sns/aggregator/test-fast
       - name: Stop replica
         run: dfx stop
+  integration:
+    name: "Integration tests"
+    needs: build
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get docker build outputs
+        uses: actions/download-artifact@v4
+        with:
+          name: out
+          path: out
+      - name: Install pocket-ic
+        run: curl -sSL https://github.com/dfinity/pocketic/releases/download/3.0.1/pocket-ic-x86_64-linux.gz | gunzip | install -m 755 /dev/stdin pocket-ic
+      - name: Run integration tests
+        run: ./scripts/test-integration
   assets:
     name: "Upload assets"
     needs: build
@@ -571,7 +586,7 @@ jobs:
           ) | tee -a $GITHUB_STEP_SUMMARY
           (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
   build-pass:
-    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-downgrade-upgrade", "test-test-account-api", "test-upgrade-map", "test-upgrade-stable", "test-upgrade-map-stable"]
+    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-downgrade-upgrade", "test-test-account-api", "test-upgrade-map", "test-upgrade-stable", "test-upgrade-map-stable", "integration"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

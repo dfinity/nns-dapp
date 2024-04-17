@@ -68,10 +68,10 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-1
       - name: Lint rust code
         run: ./scripts/lint-rs
-      - name: Run Tests
+      - name: Run Unit Tests
         shell: bash
         run: |
-          cargo test --all-targets --all-features
+          cargo test --lib --bins --benches --examples --all-features
         env:
           RUST_BACKTRACE: 1
       - name: Lint rustdoc

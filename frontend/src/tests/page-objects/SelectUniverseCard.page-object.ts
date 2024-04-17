@@ -1,5 +1,6 @@
 import { ActionableProposalCountBadgePo } from "$tests/page-objects/ActionableProposalCountBadge.page-object";
 import { CardPo } from "$tests/page-objects/Card.page-object";
+import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import { UniverseAccountsBalancePo } from "$tests/page-objects/UniverseAccountsBalance.page-object";
 import { UniverseLogoPo } from "$tests/page-objects/UniverseLogo.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -68,6 +69,10 @@ export class SelectUniverseCardPo extends CardPo {
 
   getActionableProposalNotSupportedBadge(): PageObjectElement {
     return this.root.byTestId("not-supported-badge");
+  }
+
+  getActionableProposalNotSupportedTooltipPo(): TooltipPo {
+    return TooltipPo.under(this.getActionableProposalNotSupportedBadge());
   }
 
   getActionableProposalCount(): Promise<string> {

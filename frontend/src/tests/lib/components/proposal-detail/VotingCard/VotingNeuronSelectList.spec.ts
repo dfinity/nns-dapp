@@ -1,11 +1,12 @@
 import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
 import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
-import { formatVotingPower } from "$lib/utils/neuron.utils";
 import { nnsNeuronToVotingNeuron } from "$lib/utils/proposals.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import { VotingNeuronSelectListPo } from "$tests/page-objects/VotingNeuronSelectList.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { Vote, type NeuronInfo } from "@dfinity/nns";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("VotingNeuronSelectList", () => {
@@ -42,6 +43,11 @@ describe("VotingNeuronSelectList", () => {
       },
     });
 
+  const renderPo = () => {
+    const { container } = renderComponent();
+    return VotingNeuronSelectListPo.under(new JestPageObjectElement(container));
+  };
+
   beforeEach(() => {
     votingNeuronSelectStore.set(
       neurons.map((neuron) =>
@@ -50,45 +56,32 @@ describe("VotingNeuronSelectList", () => {
     );
   });
 
-  it("should render checkbox per neuron", () => {
-    const { container, getByText } = renderComponent();
-
-    expect(container.querySelectorAll('[type="checkbox"]')?.length).toBe(3);
-    neurons.forEach(({ neuronId }) =>
-      expect(
-        getByText(neuronId.toString(), { exact: false })
-      ).toBeInTheDocument()
-    );
-  });
-
-  it("should not display total voting power of neurons", async () => {
-    const { queryByText } = renderComponent();
-    const neuronsVotingPower = formatVotingPower(
-      neurons[0].votingPower + neurons[1].votingPower + neurons[2].votingPower
-    );
-    expect(queryByText(neuronsVotingPower)).toBeNull();
+  it("should render checkbox per neuron", async () => {
+    const po = renderPo();
+    const items = await po.getVotingNeuronListItemPos();
+    expect(items).toHaveLength(3);
+    expect(await items[0].getCheckboxPo().isPresent()).toBe(true);
+    expect(await items[1].getCheckboxPo().isPresent()).toBe(true);
+    expect(await items[2].getCheckboxPo().isPresent()).toBe(true);
   });
 
   it("should toggle store state on click", async () => {
-    const { container } = renderComponent();
-    const checkboxes = container.querySelectorAll('[type="checkbox"]');
-    fireEvent.click(checkboxes[0]);
-    fireEvent.click(checkboxes[0]);
-    fireEvent.click(checkboxes[1]);
+    const po = renderPo();
+    const items = await po.getVotingNeuronListItemPos();
+    expect(items).toHaveLength(3);
+
+    expect(get(votingNeuronSelectStore).selectedIds.sort()).toEqual(
+      [neurons[0].neuronId, neurons[1].neuronId, neurons[2].neuronId].map(
+        String
+      )
+    );
+
+    await items[0].getCheckboxPo().click();
+    await items[0].getCheckboxPo().click();
+    await items[1].getCheckboxPo().click();
 
     expect(get(votingNeuronSelectStore).selectedIds.sort()).toEqual(
       [neurons[0].neuronId, neurons[2].neuronId].map(String)
     );
-  });
-
-  it("should recalculate total voting power after selection", async () => {
-    const { getByText } = renderComponent();
-
-    votingNeuronSelectStore.toggleSelection(`${neurons[1].neuronId}`);
-    const total = formatVotingPower(
-      ballots[0].votingPower + ballots[2].votingPower
-    );
-
-    waitFor(() => expect(getByText(total)).toBeInTheDocument());
   });
 });
