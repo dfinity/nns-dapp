@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { UniversalProposalStatus } from "$lib/types/proposals";
   import { i18n } from "$lib/stores/i18n";
+  import { Tooltip } from "@dfinity/gix-components";
+  import { cubicOut } from "svelte/easing";
+  import { scale } from "svelte/transition";
 
   export let status: UniversalProposalStatus;
   export let actionable: boolean | undefined = undefined;
@@ -9,9 +12,25 @@
   $: label = $i18n.universal_proposal_status[status];
 </script>
 
-<span data-tid="proposal-status-tag" class={`tag ${status}`} class:actionable
-  >{label}</span
->
+<div data-tid="proposal-status-tag" class={`tag ${status}`}>
+  {label}
+  {#if actionable}
+    <div class="badge-container">
+      <Tooltip
+        id="is-actionable-tooltip"
+        text={$i18n.voting.is_actionable_status_badge_tooltip}
+        top={true}
+      >
+        <div
+          data-tid="is-actionable-status-badge"
+          class="is-actionable-status-badge"
+          role="status"
+          transition:scale={{ duration: 250, easing: cubicOut }}
+        />
+      </Tooltip>
+    </div>
+  {/if}
+</div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
@@ -48,20 +67,20 @@
       background-color: var(--orange-tint);
     }
 
-    &.actionable {
-      &:after {
-        content: "";
-        position: absolute;
-        top: calc(-1 * var(--padding-0_5x));
-        right: calc(-1 * var(--padding-0_5x));
-        width: var(--padding-1_5x);
-        height: var(--padding-1_5x);
+    // The container is used for positioning because of Tooltip wrapper.
+    .badge-container {
+      position: absolute;
+      top: calc(-1 * var(--padding-0_5x));
+      right: calc(-1 * var(--padding-0_5x));
+    }
+    .is-actionable-status-badge {
+      width: var(--padding-1_5x);
+      height: var(--padding-1_5x);
 
-        box-sizing: border-box;
-        border: 1.5px solid var(--card-background);
-        border-radius: var(--padding-1_5x);
-        background: var(--primary);
-      }
+      box-sizing: border-box;
+      border: 1.5px solid var(--card-background);
+      border-radius: var(--padding-1_5x);
+      background: var(--primary);
     }
   }
 </style>

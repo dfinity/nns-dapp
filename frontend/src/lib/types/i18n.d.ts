@@ -392,6 +392,7 @@ interface I18nVoting {
   actionable_proposals: string;
   nns_actionable_proposal_tooltip: string;
   sns_actionable_proposal_tooltip: string;
+  is_actionable_status_badge_tooltip: string;
 }
 
 interface I18nActionable_proposals_sign_in {
