@@ -31,8 +31,7 @@
     "receive_with_token": "Receive $token",
     "receive": "Receive",
     "send_with_token": "Send $token",
-    "collapse_all": "Collapse All",
-    "learn_more": "Learn more"
+    "collapse_all": "Collapse All"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -240,8 +239,6 @@
   "neurons": {
     "title": "Neurons",
     "text": "Earn voting rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by submitting and voting on Network Nervous System (NNS) proposals.",
-    "rename_topic_message": "There were changes made to proposal topics. Review your neuron following to confirm it is set up according to your preferences.",
-    "rename_topic_learn_more_label": "Learn more about the changes made to proposal topics.",
     "stake_token": "Stake $token",
     "merge_neurons": "Merge Neurons",
     "merge_neurons_modal_title": "Select two neurons to merge",
