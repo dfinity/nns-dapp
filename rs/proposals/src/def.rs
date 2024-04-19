@@ -470,3 +470,26 @@ pub type RemoveApiBoundaryNodesPayload = crate::canisters::nns_registry::api::Re
 // https://github.com/dfinity/ic/blob/04c9c04c7a1f52ab5529531691a7c1bcf289c30d/rs/registry/canister/src/mutations/do_update_api_boundary_nodes_version.rs#L14
 pub type UpdateApiBoundaryNodesVersionPayload =
     crate::canisters::nns_registry::api::UpdateApiBoundaryNodesVersionPayload;
+
+// NNS function 47 - UpdateApiBoundaryNodesVersion
+// TODO: add a link to the real type
+pub type DeployGuestosToSomeApiBoundaryNodesPayload =
+    crate::canisters::nns_registry::api::UpdateApiBoundaryNodesVersionPayload;
+
+// NNS function 48 - DeployGuestosToAllUnassignedNodes
+// https://github.com/dfinity/ic/blob/3343a9ec1ea3170dcfd0cc4f4298d5ce09abb036/rs/registry/canister/src/mutations/do_deploy_guestos_to_all_unassigned_nodes.rs#L36
+pub type DeployGuestosToAllUnassignedNodesPayload =
+    crate::canisters::nns_registry::api::DeployGuestosToAllUnassignedNodesPayload;
+
+// NNS function 49 - UpdateSshReadonlyAccessForAllUnassignedNodes
+// https://github.com/dfinity/ic/blob/3343a9ec1ea3170dcfd0cc4f4298d5ce09abb036/rs/registry/canister/src/mutations/do_deploy_guestos_to_all_unassigned_nodes.rs#L36
+pub type UpdateSshReadOnlyAccessForAllUnassignedNodesPayload =
+    crate::canisters::nns_registry::api::UpdateSshReadOnlyAccessForAllUnassignedNodesPayload;
+
+// NNS function 50 - ReviseElectedHostosVersions
+// TODO: add a link to the real type
+pub type ReviseElectedHostosVersionsPayload = crate::canisters::nns_registry::api::UpdateElectedHostosVersionsPayload;
+
+// NNS function 51 - DeployHostosToSomeNodes
+// TODO: add a link to the real type
+pub type DeployHostosToSomeNodesPayload = crate::canisters::nns_registry::api::UpdateNodesHostosVersionPayload;
