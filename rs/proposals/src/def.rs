@@ -212,7 +212,7 @@ pub type UpdateNodeOperatorConfigPayload = crate::canisters::nns_registry::api::
 
 /// NNS function 17 - `StopOrStartNNSCanister`
 /// <https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nervous_system/root/src/lib.rs#L258>
-pub type StopOrStartNnsCanisterProposal = ic_nervous_system_root::change_canister::StopOrStartCanisterProposal;
+pub type StopOrStartNnsCanisterProposal = ic_nervous_system_root::change_canister::StopOrStartCanisterRequest;
 
 /// NNS function 18 - `RemoveNodes`
 /// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/node_management/do_remove_nodes.rs#L96>
@@ -479,12 +479,12 @@ pub type DeployGuestosToSomeApiBoundaryNodesPayload =
 // NNS function 48 - DeployGuestosToAllUnassignedNodes
 // https://github.com/dfinity/ic/blob/3343a9ec1ea3170dcfd0cc4f4298d5ce09abb036/rs/registry/canister/src/mutations/do_deploy_guestos_to_all_unassigned_nodes.rs#L36
 pub type DeployGuestosToAllUnassignedNodesPayload =
-    crate::canisters::nns_registry::api::DeployGuestosToAllUnassignedNodesPayload;
+    crate::canisters::nns_registry::DeployGuestosToAllUnassignedNodesPayload;
 
 // NNS function 49 - UpdateSshReadonlyAccessForAllUnassignedNodes
 // https://github.com/dfinity/ic/blob/3343a9ec1ea3170dcfd0cc4f4298d5ce09abb036/rs/registry/canister/src/mutations/do_deploy_guestos_to_all_unassigned_nodes.rs#L36
 pub type UpdateSshReadOnlyAccessForAllUnassignedNodesPayload =
-    crate::canisters::nns_registry::api::UpdateSshReadOnlyAccessForAllUnassignedNodesPayload;
+    crate::canisters::nns_registry::UpdateSshReadOnlyAccessForAllUnassignedNodesPayload;
 
 // NNS function 50 - ReviseElectedHostosVersions
 // TODO: add a link to the real type
