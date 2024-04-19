@@ -139,7 +139,7 @@
     "UpdateAllowedPrincipals": "Update Allowed Principals",
     "RetireReplicaVersion": "Retire Replica Version",
     "InsertSnsWasmUpgradePathEntries": "Insert SNS-WASM Upgrade Path Entries",
-    "UpdateElectedReplicaVersions": "Revise Elected GuestOS Version",
+    "UpdateElectedReplicaVersions": "Revise Elected GuestOS Versions",
     "BitcoinSetConfig": "Set Bitcoin Config",
     "UpdateElectedHostosVersions": "Update Elected HostOS Versions",
     "UpdateNodesHostosVersion": "Update Nodes HostOS Version",
