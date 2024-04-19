@@ -46,7 +46,7 @@ fn health_check() -> String {
 #[candid_method(update)]
 #[ic_cdk_macros::update]
 #[allow(clippy::panic)] // This is a readonly function, only a rather arcane reason prevents it from being a query call.
-async fn get_canister_status() -> ic_ic00_types::CanisterStatusResultV2 {
+async fn get_canister_status() -> ic_management_canister_types::CanisterStatusResultV2 {
     let own_canister_id = dfn_core::api::id();
     let result = ic_nervous_system_common::get_canister_status(own_canister_id.get()).await;
     result.unwrap_or_else(|err| panic!("Couldn't get canister_status of {own_canister_id}.  Err: {err:#?}"))

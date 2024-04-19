@@ -13,7 +13,7 @@ use crate::{decode_arg, Json};
 use candid::{CandidType, Principal};
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_crypto_sha2::Sha256;
-use ic_ic00_types::CanisterInstallMode;
+use ic_management_canister_types::CanisterInstallMode;
 use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 use std::fmt::Write;
