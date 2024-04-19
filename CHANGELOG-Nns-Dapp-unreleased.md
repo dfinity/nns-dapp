@@ -15,12 +15,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Message informing about proposal topic changes.
 * Order ICP sub-accounts based on balance.
 
 #### Changed
 
-* Rename some topics and proposal types.
 * Reorder launchpad sections.
 * Improve launchpad card text alignment.
 * Store account data in stable structures instead of on the heap.
