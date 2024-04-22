@@ -18,6 +18,7 @@
     <SelectUniverseCard
       {universe}
       {role}
+      forceTheme="transparent"
       selected={universe.canisterId === selectedCanisterId}
       on:click={() => dispatch("nnsSelectUniverse", universe.canisterId)}
     />

@@ -26,6 +26,7 @@
     universe={$selectedUniverseStore}
     selected={true}
     role="dropdown"
+    forceTheme="transparent"
     on:click={() => (showProjectPicker = true)}
   />
 

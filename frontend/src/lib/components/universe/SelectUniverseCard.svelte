@@ -21,11 +21,19 @@
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
   export let universe: Universe;
+  export let forceTheme: "transparent" | undefined = undefined;
 
   let theme: "transparent" | "framed" | "highlighted" | undefined =
     "transparent";
   $: theme =
-    role === "button" ? "framed" : role === "link" ? "transparent" : undefined;
+    forceTheme ??
+    (role === "button"
+      ? "framed"
+      : role === "link"
+      ? "transparent"
+      : undefined);
+
+  $: console.log("theme", forceTheme, theme);
 
   let icon: "expand" | "check" | undefined = undefined;
   $: icon = role === "dropdown" ? "expand" : undefined;
