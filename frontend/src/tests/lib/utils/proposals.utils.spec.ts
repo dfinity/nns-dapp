@@ -727,6 +727,7 @@ describe("proposals-utils", () => {
       ).toBe(true);
     });
 
+    // TODO: remove the whole block when ENABLE_VOTING_INDICATION is removed
     describe("with ENABLE_VOTING_INDICATION disabled", () => {
       beforeEach(() => {
         overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
