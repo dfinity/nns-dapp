@@ -1,5 +1,7 @@
+import * as governanceApi from "$lib/api/governance.api";
 import FollowNeuronsModal from "$lib/modals/neurons/FollowNeuronsModal.svelte";
 import { neuronsStore } from "$lib/stores/neurons.store";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { FollowNeuronsModalPo } from "$tests/page-objects/FollowNeuronsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -28,6 +30,8 @@ describe("FollowNeuronsModal", () => {
 
   beforeEach(() => {
     neuronsStore.reset();
+    resetIdentity();
+    vi.spyOn(governanceApi, "queryKnownNeurons").mockResolvedValue([]);
     fillNeuronStore();
   });
 
