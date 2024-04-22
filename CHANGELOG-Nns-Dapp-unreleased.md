@@ -15,24 +15,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Order ICP sub-accounts based on balance.
-
 #### Changed
-
-* Reorder launchpad sections.
-* Improve launchpad card text alignment.
-* Store account data in stable structures instead of on the heap.
 
 #### Deprecated
 
 #### Removed
 
-* Deprecate the feature flag `ENABLE_ICP_INDEX`.
-* Removed `get_transactions` method from nns-dapp canister.
-
 #### Fixed
-
-* SNS selector gaps.
 
 #### Security
 
@@ -41,8 +30,6 @@ proposal is successful, the changes it released will be moved from this file to
 ### Operations
 
 #### Added
-
-* Install `pocket-ic` in `scripts/setup`.
 
 #### Changed
 
