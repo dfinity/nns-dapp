@@ -4292,7 +4292,7 @@ version = "2.0.73"
 dependencies = [
  "anyhow",
  "base64 0.21.5",
- "candid 0.8.4",
+ "candid 0.10.6",
  "chrono",
  "cycles-minting-canister 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "dfn_candid 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
@@ -4927,7 +4927,7 @@ name = "proposals"
 version = "2.0.73"
 dependencies = [
  "anyhow",
- "candid 0.8.4",
+ "candid 0.10.6",
  "cycles-minting-canister 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
  "dfn_candid 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
  "dfn_core 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
@@ -5775,7 +5775,7 @@ version = "2.0.73"
 dependencies = [
  "anyhow",
  "base64 0.21.5",
- "candid 0.8.4",
+ "candid 0.10.6",
  "dfn_core 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-06-07_23-01)",
  "ic-cdk 0.9.2",
  "ic-cdk-macros 0.6.10",
