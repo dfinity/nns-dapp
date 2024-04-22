@@ -10,7 +10,6 @@ use ic_base_types::{CanisterId, PrincipalId};
 use ic_cdk::println;
 use ic_crypto_sha::Sha256;
 use ic_ledger_core::timestamp::TimeStamp;
-use ic_ledger_core::tokens::SignedTokens;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
 use ic_stable_structures::{storable::Bound, Storable};
@@ -778,109 +777,6 @@ impl AccountsStore {
         );
 
         self.block_height_synced_up_to = Some(block_height);
-    }
-
-    /// Gets all the transactions to or from the caller.
-    /// TODO(NNS1-2905): Delete this.
-    #[must_use]
-    #[allow(clippy::needless_pass_by_value)] // The pattern is to pass a request by value.
-    #[allow(dead_code)]
-    pub fn get_transactions(&self, caller: PrincipalId, request: GetTransactionsRequest) -> GetTransactionsResponse {
-        let account_identifier = AccountIdentifier::from(caller);
-        let empty_transaction_response = GetTransactionsResponse {
-            transactions: vec![],
-            total: 0,
-        };
-
-        let account = self.accounts_db.db_get_account(&account_identifier.to_vec());
-        let transactions: &Vec<u64> = match &account {
-            None => {
-                return empty_transaction_response;
-            }
-            Some(account) => {
-                if account_identifier == request.account_identifier {
-                    &account.default_account_transactions
-                } else if let Some(hardware_wallet_account) = account
-                    .hardware_wallet_accounts
-                    .iter()
-                    .find(|a| request.account_identifier == AccountIdentifier::from(a.principal))
-                {
-                    &hardware_wallet_account.transactions
-                } else if let Some(sub_account) = account
-                    .sub_accounts
-                    .values()
-                    .find(|a| a.account_identifier == request.account_identifier)
-                {
-                    &sub_account.transactions
-                } else {
-                    return empty_transaction_response;
-                }
-            }
-        };
-
-        let results: Vec<TransactionResult> = transactions
-            .iter()
-            .rev()
-            .skip(request.offset as usize)
-            .take(request.page_size as usize)
-            .map(|transaction_index| {
-                let transaction = self.get_transaction(*transaction_index).unwrap_or_else(|| {
-                    unreachable!(
-                        "If transaction {transaction_index} is in the list for user {caller}, it must also be in the global transaction list."
-                    )
-                });
-                let transaction_type = transaction.transaction_type;
-                let used_transaction_type = if let Some(TransactionType::TransferFrom) = transaction_type {
-                    Some(TransactionType::Transfer)
-                } else {
-                    transaction_type
-                };
-
-                TransactionResult {
-                    block_height: transaction.block_height,
-                    timestamp: transaction.timestamp,
-                    memo: transaction.memo,
-                    transfer: match transaction.transfer {
-                        Burn { amount, from: _ } => TransferResult::Burn { amount },
-                        Mint { amount, to: _ } => TransferResult::Mint { amount },
-                        Transfer { from, to, amount, fee }
-                        | TransferFrom {
-                            from,
-                            to,
-                            spender: _,
-                            amount,
-                            fee,
-                        } => {
-                            if from == request.account_identifier {
-                                TransferResult::Send { to, amount, fee }
-                            } else {
-                                TransferResult::Receive { from, amount, fee }
-                            }
-                        }
-                        Approve {
-                            from,
-                            spender,
-                            allowance,
-                            expires_at,
-                            fee,
-                        } => TransferResult::Approve {
-                            from,
-                            spender,
-                            allowance,
-                            expires_at,
-                            fee,
-                        },
-                    },
-                    transaction_type: used_transaction_type,
-                }
-            })
-            .collect();
-
-        GetTransactionsResponse {
-            transactions: results,
-            total: u32::try_from(transactions.len())
-                .unwrap_or_else(|_| unreachable!("The number of transactions is well below u32")),
-        }
     }
 
     fn find_canister_index(account: &Account, canister_id: CanisterId) -> Option<usize> {
@@ -1788,57 +1684,6 @@ fn convert_byte_to_sub_account(byte: u8) -> Subaccount {
     let mut bytes = [0u8; 32];
     bytes[31] = byte;
     Subaccount(bytes)
-}
-
-#[derive(CandidType, Deserialize)]
-pub struct GetTransactionsRequest {
-    account_identifier: AccountIdentifier,
-    offset: u32,
-    page_size: u8,
-}
-
-#[derive(CandidType)]
-pub struct GetTransactionsResponse {
-    transactions: Vec<TransactionResult>,
-    total: u32,
-}
-
-#[derive(CandidType)]
-pub struct TransactionResult {
-    block_height: BlockIndex,
-    timestamp: TimeStamp,
-    memo: Memo,
-    transfer: TransferResult,
-    transaction_type: Option<TransactionType>,
-}
-
-/// TODO(NNS1-2905): Delete this.
-#[derive(CandidType, Debug, PartialEq)]
-#[allow(dead_code)]
-pub enum TransferResult {
-    Burn {
-        amount: Tokens,
-    },
-    Mint {
-        amount: Tokens,
-    },
-    Send {
-        to: AccountIdentifier,
-        amount: Tokens,
-        fee: Tokens,
-    },
-    Receive {
-        from: AccountIdentifier,
-        amount: Tokens,
-        fee: Tokens,
-    },
-    Approve {
-        from: AccountIdentifier,
-        spender: AccountIdentifier,
-        allowance: SignedTokens,
-        expires_at: Option<TimeStamp>,
-        fee: Tokens,
-    },
 }
 
 #[cfg(test)]
