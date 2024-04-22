@@ -31,8 +31,7 @@
     "receive_with_token": "Receive $token",
     "receive": "Receive",
     "send_with_token": "Send $token",
-    "collapse_all": "Collapse All",
-    "learn_more": "Learn more"
+    "collapse_all": "Collapse All"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -240,8 +239,6 @@
   "neurons": {
     "title": "Neurons",
     "text": "Earn voting rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by submitting and voting on Network Nervous System (NNS) proposals.",
-    "rename_topic_message": "There were changes made to proposal topics. Review your neuron following to confirm it is set up according to your preferences.",
-    "rename_topic_learn_more_label": "Learn more about the changes made to proposal topics.",
     "stake_token": "Stake $token",
     "merge_neurons": "Merge Neurons",
     "merge_neurons_modal_title": "Select two neurons to merge",
@@ -354,9 +351,9 @@
     "topic_10_subtitle": "Proposals that reward node providers",
     "topic_11_title": "SNS Decentralization Swap",
     "topic_11_subtitle": "Proposals for SNS",
-    "topic_12_title": "IC OS Version Deployment",
+    "topic_12_title": "Subnet Replica Version Management",
     "topic_12_subtitle": "Proposals handling updates of a subnet's replica version",
-    "topic_13_title": "IC OS Version Election",
+    "topic_13_title": "Replica Version Management",
     "topic_13_subtitle": "Proposals dealing with blessing and retirement of replica versions",
     "topic_14_title": "SNS & Neurons' Fund",
     "topic_14_subtitle": "Proposals related to SNS and Neurons' Fund",
@@ -375,7 +372,10 @@
     "uncheck_all": "Clear",
     "nothing_found": "No proposals found for the filters.",
     "all_proposals": "All Proposals",
-    "actionable_proposals": "Actionable Proposals"
+    "actionable_proposals": "Actionable Proposals",
+    "nns_actionable_proposal_tooltip": "There are $count NNS proposals you can vote on.",
+    "sns_actionable_proposal_tooltip": "There are $count $snsName proposals you can vote on.",
+    "is_actionable_status_badge_tooltip": "You can still vote on this proposal."
   },
   "actionable_proposals_sign_in": {
     "title": "You are not signed in.",
@@ -387,7 +387,8 @@
   },
   "actionable_proposals_not_supported": {
     "title": "$snsName doesn't yet support actionable proposals.",
-    "text": "Because it is running an older version of the SNS governance canister."
+    "text": "Because it is running an older version of the SNS governance canister.",
+    "dot_tooltip": "This SNS doesn't yet support actionable proposals."
   },
   "canisters": {
     "aria_label_canister_card": "Go to canister details",

@@ -35,7 +35,6 @@ interface I18nCore {
   receive: string;
   send_with_token: string;
   collapse_all: string;
-  learn_more: string;
 }
 
 interface I18nError {
@@ -251,8 +250,6 @@ interface I18nNeuron_types {
 interface I18nNeurons {
   title: string;
   text: string;
-  rename_topic_message: string;
-  rename_topic_learn_more_label: string;
   stake_token: string;
   merge_neurons: string;
   merge_neurons_modal_title: string;
@@ -390,6 +387,9 @@ interface I18nVoting {
   nothing_found: string;
   all_proposals: string;
   actionable_proposals: string;
+  nns_actionable_proposal_tooltip: string;
+  sns_actionable_proposal_tooltip: string;
+  is_actionable_status_badge_tooltip: string;
 }
 
 interface I18nActionable_proposals_sign_in {
@@ -405,6 +405,7 @@ interface I18nActionable_proposals_empty {
 interface I18nActionable_proposals_not_supported {
   title: string;
   text: string;
+  dot_tooltip: string;
 }
 
 interface I18nCanisters {

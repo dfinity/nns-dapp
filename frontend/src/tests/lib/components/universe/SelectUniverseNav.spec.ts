@@ -187,7 +187,7 @@ describe("SelectUniverseNav", () => {
 
     // nns is the current universe
     expect(
-      await po.getSelectUniverseCardPo().getActionableProposalCount()
+      (await po.getSelectUniverseCardPo().getActionableProposalCount()).trim()
     ).toEqual("1");
 
     // open project list
@@ -198,7 +198,7 @@ describe("SelectUniverseNav", () => {
       .getSelectUniverseListPo()
       .getSelectUniverseCardPos();
     expect(cardPos.length).toEqual(2);
-    expect(await cardPos[0].getActionableProposalCount()).toEqual("1");
-    expect(await cardPos[1].getActionableProposalCount()).toEqual("2");
+    expect((await cardPos[0].getActionableProposalCount()).trim()).toEqual("1");
+    expect((await cardPos[1].getActionableProposalCount()).trim()).toEqual("2");
   });
 });

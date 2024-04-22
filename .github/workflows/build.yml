@@ -106,16 +106,30 @@ jobs:
       - name: Checkout nns-dapp
         uses: actions/checkout@v4
       - name: Get nns-dapp_test
+        # Note: This may be performed manually with ./scripts/docker-build --network local
         uses: actions/download-artifact@v4
         with:
-          name: nns-dapp_test
-      - name: Start snapshot environment
-        uses: ./.github/actions/start_dfx_snapshot
-        with:
-          nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
-          logfile: 'dfx-test-downgrade-upgrade.log'
+          name: out
+          path: out
+      - name: Install ic-wasm
+        uses: ./.github/actions/install_ic_wasm
+      - name: Install dfx
+        uses: dfinity/setup-dfx@main
+      - name: Install tools
+        run: |
+          sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
+      - name: Start dfx
+        run: dfx start --clean --background &>test-downgrade-upgrade.log
+      - name: Get the production Wasm and args for deploying it locally.
+        run: |
+          mkdir prod
+          curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp_test.wasm.gz > prod/nns-dapp_test.wasm.gz
+          curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp-arg-local.did > prod/nns-dapp-arg-local.did
       - name: Downgrade nns-dapp to prod and upgrade back again
-        run: ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_test.wasm.gz
+        run: scripts/nns-dapp/migration-test --wasm1 out/nns-dapp_test.wasm.gz --args1 out/nns-dapp-arg-local.did --wasm2 prod/nns-dapp_test.wasm.gz --args2 prod/nns-dapp-arg-local.did --accounts 94 --chunk 30
+      - name: Repeat with more data
+        run: scripts/nns-dapp/migration-test --wasm1 out/nns-dapp_test.wasm.gz --args1 out/nns-dapp-arg-local.did --wasm2 prod/nns-dapp_test.wasm.gz --args2 prod/nns-dapp-arg-local.did --accounts 201 --chunk 20
       - name: Count upgrade cycles
         run: scripts/nns-dapp/estimate-upgrade-cycles | tee -a $GITHUB_STEP_SUMMARY
   test-upgrade-map:

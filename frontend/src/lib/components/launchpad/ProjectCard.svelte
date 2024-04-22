@@ -89,6 +89,8 @@
 
   p {
     margin: 0 0 var(--padding-1_5x);
+    // Occupy all available space to shift blocks after the description down
+    flex-grow: 1;
   }
 
   .spinner {
