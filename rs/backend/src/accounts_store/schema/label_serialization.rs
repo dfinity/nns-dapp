@@ -1,6 +1,6 @@
 //! Methods for serializing and deserializing schema labels.
 use super::{SchemaLabel, SchemaLabelBytes, SchemaLabelError};
-use ic_crypto_sha::Sha256;
+use ic_crypto_sha2::Sha256;
 use std::convert::{TryFrom, TryInto};
 
 #[cfg(test)]
