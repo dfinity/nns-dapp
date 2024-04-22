@@ -11,6 +11,35 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 129396
+
+### Application
+
+#### Added
+
+* Order ICP sub-accounts based on balance.
+
+#### Changed
+
+* Reorder launchpad sections.
+* Improve launchpad card text alignment.
+* Store account data in stable structures instead of on the heap.
+
+#### Removed
+
+* Deprecate the feature flag `ENABLE_ICP_INDEX`.
+* Removed `get_transactions` method from nns-dapp canister.
+
+#### Fixed
+
+* SNS selector gaps.
+
+### Operations
+
+#### Added
+
+* Install `pocket-ic` in `scripts/setup`.
+
 ## Proposal 129080
 
 ### Application
