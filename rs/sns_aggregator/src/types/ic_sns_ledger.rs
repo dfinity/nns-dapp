@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_ledger --out ic_sns_ledger.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-03-14_23-01-p2p/rs/rosetta-api/icrc1/ledger/ledger.did>
+//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-03_23-01-base/rs/rosetta-api/icrc1/ledger/ledger.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -332,6 +332,31 @@ pub enum TransferFromResult {
     Err(TransferFromError),
 }
 
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct GetArchivesArgs {
+    pub from: Option<Principal>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct GetArchivesResultItem {
+    pub end: candid::Nat,
+    pub canister_id: Principal,
+    pub start: candid::Nat,
+}
+
+pub type GetArchivesResult = Vec<GetArchivesResultItem>;
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Icrc3DataCertificate {
+    pub certificate: serde_bytes::ByteBuf,
+    pub hash_tree: serde_bytes::ByteBuf,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Icrc3SupportedBlockTypesRetItem {
+    pub url: String,
+    pub block_type: String,
+}
+
 pub struct Service(pub Principal);
 impl Service {
     pub async fn archives(&self) -> CallResult<(Vec<ArchiveInfo>,)> {
@@ -384,5 +409,14 @@ impl Service {
     }
     pub async fn icrc_2_transfer_from(&self, arg0: TransferFromArgs) -> CallResult<(TransferFromResult,)> {
         ic_cdk::call(self.0, "icrc2_transfer_from", (arg0,)).await
+    }
+    pub async fn icrc_3_get_archives(&self, arg0: GetArchivesArgs) -> CallResult<(GetArchivesResult,)> {
+        ic_cdk::call(self.0, "icrc3_get_archives", (arg0,)).await
+    }
+    pub async fn icrc_3_get_tip_certificate(&self) -> CallResult<(Option<Icrc3DataCertificate>,)> {
+        ic_cdk::call(self.0, "icrc3_get_tip_certificate", ()).await
+    }
+    pub async fn icrc_3_supported_block_types(&self) -> CallResult<(Vec<Icrc3SupportedBlockTypesRetItem>,)> {
+        ic_cdk::call(self.0, "icrc3_supported_block_types", ()).await
     }
 }
