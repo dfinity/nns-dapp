@@ -4293,7 +4293,6 @@ dependencies = [
  "anyhow",
  "base64 0.21.5",
  "candid 0.8.4",
- "chrono",
  "cycles-minting-canister 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "dfn_candid 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "dfn_core 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
