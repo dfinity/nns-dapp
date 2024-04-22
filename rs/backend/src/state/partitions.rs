@@ -60,15 +60,6 @@ pub enum PartitionsMaybe {
 }
 
 impl PartitionsMaybe {
-    /// Gets the schema label.
-    #[cfg(test)]
-    pub fn schema_label(&self) -> SchemaLabel {
-        match self {
-            #[cfg(test)]
-            PartitionsMaybe::Partitions(partitions) => partitions.schema_label(),
-            PartitionsMaybe::None(_) => SchemaLabel::Map,
-        }
-    }
     /// Gets or creates partitions.
     ///
     /// WARNING: Partitioning overwrites the memory.  Please be sure that you have extracted all useful data from raw memory before calling this.
