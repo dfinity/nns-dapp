@@ -152,7 +152,7 @@ fn maybe_process_transaction_detects_neuron_transactions() {
         fee: Tokens::from_e8s(10000),
     };
     store
-        .maybe_process_transaction(transfer, neuron_memo, block_height)
+        .maybe_process_transaction(&transfer, neuron_memo, block_height)
         .unwrap();
 
     if let Some((_, MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo))) =
@@ -171,7 +171,7 @@ fn maybe_process_transaction_detects_neuron_transactions() {
         fee: Tokens::from_e8s(10000),
     };
     store
-        .maybe_process_transaction(topup1, Memo(0), block_height + 1)
+        .maybe_process_transaction(&topup1, Memo(0), block_height + 1)
         .unwrap();
 
     // The neuron should be queued for refreshing
@@ -191,7 +191,7 @@ fn maybe_process_transaction_detects_neuron_transactions() {
         fee: Tokens::from_e8s(10000),
     };
     store
-        .maybe_process_transaction(topup2, Memo(0), block_height + 2)
+        .maybe_process_transaction(&topup2, Memo(0), block_height + 2)
         .unwrap();
 
     // The neuron should be queued for refreshing
@@ -221,7 +221,7 @@ fn maybe_process_transaction_detects_neuron_transactions_from_external_accounts(
         fee: Tokens::from_e8s(10000),
     };
     store
-        .maybe_process_transaction(transfer, neuron_memo, block_height)
+        .maybe_process_transaction(&transfer, neuron_memo, block_height)
         .unwrap();
 
     let topup = Transfer {
@@ -231,7 +231,7 @@ fn maybe_process_transaction_detects_neuron_transactions_from_external_accounts(
         fee: Tokens::from_e8s(10000),
     };
     store
-        .maybe_process_transaction(topup, Memo(0), block_height + 1)
+        .maybe_process_transaction(&topup, Memo(0), block_height + 1)
         .unwrap();
 
     // The neuron should be queued for refreshing
@@ -271,7 +271,7 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
         fee: Tokens::from_e8s(10000),
     };
     store
-        .maybe_process_transaction(stake_neuron_transfer, neuron_memo, block_height)
+        .maybe_process_transaction(&stake_neuron_transfer, neuron_memo, block_height)
         .unwrap();
 
     let topup = Transfer {
@@ -281,7 +281,7 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
         fee: Tokens::from_e8s(10000),
     };
     store
-        .maybe_process_transaction(topup, Memo(0), block_height + 1)
+        .maybe_process_transaction(&topup, Memo(0), block_height + 1)
         .unwrap();
 
     if let Some((_, MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo))) =
@@ -1008,21 +1008,21 @@ pub(crate) fn setup_test_store() -> AccountsStore {
             amount: Tokens::from_e8s(1_000_000_000),
             to: account_identifier1,
         };
-        store.maybe_process_transaction(transfer, Memo(0), 0).unwrap();
+        store.maybe_process_transaction(&transfer, Memo(0), 0).unwrap();
     }
     {
         let transfer = Mint {
             amount: Tokens::from_e8s(1_000_000_000),
             to: account_identifier1,
         };
-        store.maybe_process_transaction(transfer, Memo(0), 1).unwrap();
+        store.maybe_process_transaction(&transfer, Memo(0), 1).unwrap();
     }
     {
         let transfer = Burn {
             amount: Tokens::from_e8s(500_000_000),
             from: account_identifier1,
         };
-        store.maybe_process_transaction(transfer, Memo(0), 2).unwrap();
+        store.maybe_process_transaction(&transfer, Memo(0), 2).unwrap();
     }
     {
         let transfer = Transfer {
@@ -1031,7 +1031,7 @@ pub(crate) fn setup_test_store() -> AccountsStore {
             from: account_identifier1,
             to: account_identifier2,
         };
-        store.maybe_process_transaction(transfer, Memo(0), 3).unwrap();
+        store.maybe_process_transaction(&transfer, Memo(0), 3).unwrap();
     }
     store
 }
