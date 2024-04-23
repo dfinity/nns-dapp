@@ -19,19 +19,9 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let selected: boolean;
+  // "link" for desktop, "button" for mobile, "dropdown" to open the modal
   export let role: "link" | "button" | "dropdown" = "link";
   export let universe: Universe;
-  export let forceTheme: "transparent" | undefined = undefined;
-
-  let theme: "transparent" | "framed" | "highlighted" | undefined =
-    "transparent";
-  $: theme =
-    forceTheme ??
-    (role === "button"
-      ? "framed"
-      : role === "link"
-      ? "transparent"
-      : undefined);
 
   let icon: "expand" | "check" | undefined = undefined;
   $: icon = role === "dropdown" ? "expand" : undefined;
@@ -58,7 +48,7 @@
 <Card
   role="button"
   {selected}
-  {theme}
+  theme="transparent"
   on:click
   {icon}
   testId="select-universe-card"
