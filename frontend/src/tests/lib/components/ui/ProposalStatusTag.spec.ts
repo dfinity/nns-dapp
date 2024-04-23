@@ -1,11 +1,10 @@
 import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
 import { ProposalStatusTagPo } from "$tests/page-objects/ProposalStatusTag.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { cleanup, render } from "@testing-library/svelte";
+import { render } from "$tests/utils/svelte.test-utils";
 
 describe("ProposalStatusTag", () => {
   const renderComponent = (props) => {
-    cleanup();
     const { container } = render(ProposalStatusTag, {
       props,
     });
@@ -49,11 +48,15 @@ describe("ProposalStatusTag", () => {
     expect(await po.hasStatusClass("failed")).toBe(true);
   });
 
-  it("should render actionable mark", async () => {
+  it("should render actionable badge", async () => {
     const po = await renderComponent({ status: "open", actionable: true });
-    expect(await po.hasActionableMark()).toBe(true);
+    expect(await po.hasActionableStatusBadge()).toBe(true);
+    expect(await po.getActionableStatusBadgeTooltip().isPresent()).toBe(true);
+    expect(await po.getActionableStatusBadgeTooltip().getTooltipText()).toBe(
+      "You can still vote on this proposal."
+    );
 
     const po2 = await renderComponent({ status: "open" });
-    expect(await po2.hasActionableMark()).toBe(false);
+    expect(await po2.hasActionableStatusBadge()).toBe(false);
   });
 });

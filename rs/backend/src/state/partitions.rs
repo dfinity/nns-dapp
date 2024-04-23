@@ -21,11 +21,16 @@ pub mod tests;
 
 /// Stable memory layout: A wrapper for a memory manager with additional safety checks and functionality.
 pub struct Partitions {
+    /// A memory manager with a schema label in one of the virtual memories.
     pub memory_manager: MemoryManager<DefaultMemoryImpl>,
     /// Note: DO NOT USE THIS.  The memory manager consumes a memory instance
     /// but has no method for returning it.  If we wish to convert a `DefaultMemoryImpl`
     /// to `Partitions` and back again, we need to keep a reference to the memory to
     /// provide when we convert back.
+    ///
+    /// Update: `into_memory()` [has now been implemented in stable structures](https://github.com/dfinity/stable-structures/pull/188), so
+    /// after the next release of `stable_structures` we should be able to delete this field.  The current version of stable structures is
+    /// 0.6.3 so anything strictly after that is probably fine.
     #[cfg(test)]
     memory: DefaultMemoryImpl,
 }
@@ -55,15 +60,6 @@ pub enum PartitionsMaybe {
 }
 
 impl PartitionsMaybe {
-    /// Gets the schema label.
-    #[cfg(test)]
-    pub fn schema_label(&self) -> SchemaLabel {
-        match self {
-            #[cfg(test)]
-            PartitionsMaybe::Partitions(partitions) => partitions.schema_label(),
-            PartitionsMaybe::None(_) => SchemaLabel::Map,
-        }
-    }
     /// Gets or creates partitions.
     ///
     /// WARNING: Partitioning overwrites the memory.  Please be sure that you have extracted all useful data from raw memory before calling this.
@@ -226,21 +222,6 @@ impl Partitions {
     }
 }
 
-impl From<DefaultMemoryImpl> for Partitions {
-    /// Gets an existing memory manager, if there is one.  If not, creates a new memory manager,
-    /// obliterating any existing memory.
-    ///
-    /// Note: This is equivalent to `MemoryManager::init()`.
-    fn from(memory: DefaultMemoryImpl) -> Self {
-        let memory_manager = MemoryManager::init(Self::copy_memory_reference(&memory));
-        Partitions {
-            memory_manager,
-            #[cfg(test)]
-            memory,
-        }
-    }
-}
-
 /// Gets an existing memory manager, if there is one.  If not, returns the unmodified memory.
 ///
 /// Typical usage:
@@ -253,7 +234,16 @@ impl From<DefaultMemoryImpl> for Partitions {
 impl Partitions {
     pub fn try_from_memory(memory: DefaultMemoryImpl) -> Result<Self, DefaultMemoryImpl> {
         if Self::is_managed(&memory) {
-            Ok(Self::from(memory))
+            let memory_manager = MemoryManager::init(Self::copy_memory_reference(&memory));
+            let partitions = Partitions {
+                memory_manager,
+                #[cfg(test)]
+                memory,
+            };
+            // TODO: Assert that the schema label is defined.
+            //       Motivation: Partitions SHOULD always have a defined schema.
+            //       Note: Some tests that create artificial scenarios will have to be adapted.
+            Ok(partitions)
         } else {
             Err(memory)
         }

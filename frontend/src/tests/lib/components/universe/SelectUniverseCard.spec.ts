@@ -1,6 +1,7 @@
 import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import type { Universe } from "$lib/types/universe";
@@ -13,6 +14,7 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { mockSummary } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
@@ -24,7 +26,7 @@ import {
 } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
-import { cleanup, render } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import { describe } from "vitest";
 
 describe("SelectUniverseCard", () => {
@@ -32,7 +34,6 @@ describe("SelectUniverseCard", () => {
   const mockSnsUniverse: Universe = createUniverse(mockSummary);
 
   const renderComponent = async (props) => {
-    cleanup();
     const { container } = render(SelectUniverseCard, props);
     await runResolvedPromises();
     return SelectUniverseCardPo.under(new JestPageObjectElement(container));
@@ -61,38 +62,7 @@ describe("SelectUniverseCard", () => {
     });
   });
 
-  describe("theme", () => {
-    it("display theme framed if role button", async () => {
-      const po = await renderComponent({
-        props: { ...props, role: "button" },
-      });
-      expect(await po.isFramed()).toBe(true);
-    });
-
-    it("display theme transparent if role link", async () => {
-      const po = await renderComponent({
-        props: { ...props, role: "link" },
-      });
-      expect(await po.isTransparent()).toBe(true);
-    });
-
-    it("display no theme if role dropdown", async () => {
-      const po = await renderComponent({
-        props: { ...props, role: "dropdown" },
-      });
-      expect(await po.isFramed()).toBe(false);
-      expect(await po.isTransparent()).toBe(false);
-    });
-  });
-
   describe("icon", () => {
-    it("display an icon if role button and selected", async () => {
-      const po = await renderComponent({
-        props: { ...props, role: "button", selected: true },
-      });
-      expect(await po.hasIcon()).toBe(true);
-    });
-
     it("display no icon if role button but not selected", async () => {
       const po = await renderComponent({
         props: { ...props, role: "button", selected: false },
@@ -243,7 +213,37 @@ describe("SelectUniverseCard", () => {
           expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
             true
           );
-          expect(await po.getActionableProposalCount()).toBe("2");
+          expect((await po.getActionableProposalCount()).trim()).toBe("2");
+          expect(
+            await po
+              .getActionableProposalCountBadgePo()
+              .getTooltipPo()
+              .getTooltipText()
+          ).toBe("There are 2 Tetris proposals you can vote on.");
+        });
+
+        it("should display actionable proposal count tooltip for NNS", async () => {
+          page.mock({
+            data: { universe: OWN_CANISTER_ID_TEXT },
+            routeId: AppPath.Proposals,
+          });
+
+          actionableNnsProposalsStore.setProposals([...mockProposals]);
+
+          const po = await renderComponent({
+            props: { universe: nnsUniverseMock, selected: false },
+          });
+
+          expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
+            true
+          );
+          expect((await po.getActionableProposalCount()).trim()).toBe("2");
+          expect(
+            await po
+              .getActionableProposalCountBadgePo()
+              .getTooltipPo()
+              .getTooltipText()
+          ).toBe("There are 2 NNS proposals you can vote on.");
         });
 
         it("should not display actionable proposal count when the feature flag is disabled", async () => {
@@ -356,6 +356,11 @@ describe("SelectUniverseCard", () => {
           expect(
             await po.getActionableProposalNotSupportedBadge().isPresent()
           ).toBe(true);
+          expect(
+            await po
+              .getActionableProposalNotSupportedTooltipPo()
+              .getTooltipText()
+          ).toBe("This SNS doesn't yet support actionable proposals.");
         });
       });
     });

@@ -27,4 +27,8 @@ export class ButtonPo extends SimpleBasePageObject {
   getClasses(): Promise<string[]> {
     return this.root.getClasses();
   }
+
+  getAriaLabel(): Promise<string> {
+    return this.root.getAttribute("aria-label");
+  }
 }

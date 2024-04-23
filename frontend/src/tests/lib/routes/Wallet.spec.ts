@@ -1,4 +1,5 @@
 import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
+import * as governanceApi from "$lib/api/governance.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -126,6 +127,7 @@ describe("Wallet", () => {
         throw new Error(`Unexpected canisterId: ${canisterId.toText()}`);
       }
     );
+    vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
   });
 
   beforeAll(() => {

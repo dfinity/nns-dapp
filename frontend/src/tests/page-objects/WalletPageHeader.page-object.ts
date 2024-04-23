@@ -23,6 +23,6 @@ export class WalletPageHeaderPo extends BasePageObject {
   }
 
   getWalletAddress(): Promise<string> {
-    return this.getHashPo().getText();
+    return this.getHashPo().getFullText();
   }
 }

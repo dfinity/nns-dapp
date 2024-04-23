@@ -27,9 +27,9 @@
 </script>
 
 <main data-tid="launchpad-component">
-  <div class="open-projects">
-    <h2>{$i18n.sns_launchpad.open_projects}</h2>
-    <Projects testId="open-projects" status={SnsSwapLifecycle.Open} />
+  <div class="proposals">
+    <h2>{$i18n.sns_launchpad.proposals}</h2>
+    <Proposals />
   </div>
 
   {#if showAdopted}
@@ -38,6 +38,11 @@
       <Projects testId="upcoming-projects" status={SnsSwapLifecycle.Adopted} />
     </div>
   {/if}
+
+  <div class="open-projects">
+    <h2>{$i18n.sns_launchpad.open_projects}</h2>
+    <Projects testId="open-projects" status={SnsSwapLifecycle.Open} />
+  </div>
 
   {#if showCommitted}
     <div class="committed-projects">
@@ -48,33 +53,12 @@
       />
     </div>
   {/if}
-
-  <div class="proposals">
-    <h2>{$i18n.sns_launchpad.proposals}</h2>
-    <Proposals />
-  </div>
 </main>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-
   main {
     display: grid;
     gap: var(--padding-4x);
-
-    // display "proposals" before "committed-projects" on mobile
-    .committed-projects {
-      order: 2;
-      @include media.min-width(medium) {
-        order: 1;
-      }
-    }
-    .proposals {
-      order: 1;
-      @include media.min-width(medium) {
-        order: 2;
-      }
-    }
   }
 
   h2 {

@@ -270,7 +270,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98001124979615820,
+    "icrc1_total_supply": 98001424056288880,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -484,6 +484,14 @@
           "id": 13,
           "name": "Manage ledger parameters",
           "description": "Proposal to change some parameters in the ledger canister.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 14,
+          "name": "Manage dapp canister settings",
+          "description": "Proposal to change canister settings for some dapp canisters.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -704,7 +712,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100455012984018160,
+    "icrc1_total_supply": 100481897367016020,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1348,7 +1356,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50008286786645870,
+    "icrc1_total_supply": 50009249019372184,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2144,7 +2152,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10007066406253498,
+    "icrc1_total_supply": 10007249900095542,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3095,7 +3103,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10000892006987812,
+    "icrc1_total_supply": 10001089724511576,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4059,7 +4067,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12545717398918152,
+    "icrc1_total_supply": 12561411087429330,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5511,6 +5519,19 @@
               "target_method_name": "manage_nns_neuron"
             }
           }
+        },
+        {
+          "id": 1002,
+          "name": "Manage NNS neuron maturity recipients",
+          "description": "Proposal to manage the recipients of the disbursed maturity of the NNS neurons.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "j4jiq-sqaaa-aaaap-ab23a-cai",
+              "target_canister_id": "j4jiq-sqaaa-aaaap-ab23a-cai",
+              "validator_method_name": "manage_reward_recipients_validate",
+              "target_method_name": "manage_reward_recipients"
+            }
+          }
         }
       ]
     },
@@ -5935,7 +5956,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100000508629235040,
+    "icrc1_total_supply": 100001385962641540,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

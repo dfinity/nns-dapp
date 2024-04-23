@@ -1,5 +1,5 @@
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-03-14_23-01-p2p/rs/nns/governance/canister/governance.did>
-type AccountIdentifier = record { hash : vec nat8 };
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-03_23-01-base/rs/nns/governance/canister/governance.did>
+type AccountIdentifier = record { hash : blob };
 type Action = variant {
   RegisterKnownNeuron : KnownNeuron;
   ManageNeuron : ManageNeuron;
@@ -34,7 +34,7 @@ type CanisterStatusResultV2 = record {
   memory_size : opt nat64;
   cycles : opt nat64;
   idle_cycles_burned_per_day : opt nat64;
-  module_hash : vec nat8;
+  module_hash : blob;
 };
 type CanisterSummary = record {
   status : opt CanisterStatusResultV2;
@@ -148,7 +148,7 @@ type DissolveState = variant {
   WhenDissolvedTimestampSeconds : nat64;
 };
 type Duration = record { seconds : opt nat64 };
-type ExecuteNnsFunction = record { nns_function : int32; payload : vec nat8 };
+type ExecuteNnsFunction = record { nns_function : int32; payload : blob };
 type Follow = record { topic : int32; followees : vec NeuronId };
 type Followees = record { followees : vec NeuronId };
 type Followers = record { followers : vec NeuronId };
@@ -344,7 +344,7 @@ type Neuron = record {
   auto_stake_maturity : opt bool;
   aging_since_timestamp_seconds : nat64;
   hot_keys : vec principal;
-  account : vec nat8;
+  account : blob;
   joined_community_fund_timestamp_seconds : opt nat64;
   dissolve_state : opt DissolveState;
   followees : vec record { int32; Followees };
@@ -369,10 +369,7 @@ type NeuronDistribution = record {
   stake : opt Tokens;
 };
 type NeuronId = record { id : nat64 };
-type NeuronIdOrSubaccount = variant {
-  Subaccount : vec nat8;
-  NeuronId : NeuronId;
-};
+type NeuronIdOrSubaccount = variant { Subaccount : blob; NeuronId : NeuronId };
 type NeuronInFlightCommand = record {
   command : opt Command_2;
   timestamp : nat64;
@@ -391,11 +388,11 @@ type NeuronInfo = record {
   age_seconds : nat64;
 };
 type NeuronStakeTransfer = record {
-  to_subaccount : vec nat8;
+  to_subaccount : blob;
   neuron_stake_e8s : nat64;
   from : opt principal;
   memo : nat64;
-  from_subaccount : vec nat8;
+  from_subaccount : blob;
   transfer_timestamp : nat64;
   block_height : nat64;
 };

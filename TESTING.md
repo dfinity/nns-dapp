@@ -172,10 +172,14 @@ Tests are found in `rs/backend/src/accounts_store/tests.rs`.
 
 ### Running Tests
 
-```bash
-$ cargo test
-```
-
 ### Unit Tests
 
-At the moment we have only unit tests.
+```bash
+$ cargo test --lib
+```
+
+### Integration tests
+
+```bash
+$ ./scripts/test-integration
+```
