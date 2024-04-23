@@ -15,7 +15,7 @@
   };
 </script>
 
-<div>
+<div class="container">
   <Modal testId="select-universe-modal" on:nnsClose>
     <span slot="title" data-tid="select-universe-modal-title"
       >{$titleTokenSelectorStore}</span
@@ -29,7 +29,7 @@
 </div>
 
 <style lang="scss">
-  div {
+  .container {
     display: contents;
     // change dropdown list background (modal)
     --overlay-content-background: var(--menu-selected-background);
