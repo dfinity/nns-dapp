@@ -164,25 +164,6 @@ fn append_transaction_detects_neuron_transactions() {
         TransactionType::StakeNeuron
     ));
 
-    let notification = Transfer {
-        from: AccountIdentifier::new(neuron_principal, None),
-        to: neuron_account,
-        amount: Tokens::from_tokens(0).unwrap(),
-        fee: Tokens::from_e8s(10000),
-    };
-    store
-        .append_transaction(
-            notification,
-            Memo(block_height),
-            block_height + 1,
-            TimeStamp::from_nanos_since_unix_epoch(100),
-        )
-        .unwrap();
-    assert!(matches!(
-        store.transactions.back().unwrap().transaction_type.unwrap(),
-        TransactionType::StakeNeuronNotification
-    ));
-
     let topup1 = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
@@ -193,7 +174,7 @@ fn append_transaction_detects_neuron_transactions() {
         .append_transaction(
             topup1,
             Memo(0),
-            block_height + 2,
+            block_height + 1,
             TimeStamp::from_nanos_since_unix_epoch(100),
         )
         .unwrap();
@@ -212,7 +193,7 @@ fn append_transaction_detects_neuron_transactions() {
         .append_transaction(
             topup2,
             Memo(0),
-            block_height + 3,
+            block_height + 2,
             TimeStamp::from_nanos_since_unix_epoch(100),
         )
         .unwrap();

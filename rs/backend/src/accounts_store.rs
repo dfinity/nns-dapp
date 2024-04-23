@@ -509,7 +509,6 @@ impl AccountsStore {
                             let transaction_type = self.get_transaction_type(
                                 from,
                                 to,
-                                amount,
                                 memo,
                                 &caller,
                                 &canister_ids,
@@ -712,7 +711,6 @@ impl AccountsStore {
                         transaction_type = Some(self.get_transaction_type(
                             from,
                             to,
-                            amount,
                             memo,
                             &principal,
                             &canister_ids,
@@ -1244,26 +1242,11 @@ impl AccountsStore {
         }
     }
 
-    fn get_transaction_index(&self, block_height: BlockIndex) -> Option<TransactionIndex> {
-        if let Some(latest_transaction) = self.transactions.back() {
-            let max_block_height = latest_transaction.block_height;
-            if block_height <= max_block_height {
-                return self
-                    .transactions
-                    .binary_search_by_key(&block_height, |t| t.block_height)
-                    .ok()
-                    .map(|i| i as u64);
-            }
-        }
-        None
-    }
-
     #[allow(clippy::too_many_arguments)]
     fn get_transaction_type(
         &self,
         from: AccountIdentifier,
         to: AccountIdentifier,
-        amount: Tokens,
         memo: Memo,
         principal: &PrincipalId,
         canister_ids: &[CanisterId],
@@ -1274,11 +1257,7 @@ impl AccountsStore {
         if from == to {
             default_transaction_type
         } else if self.neuron_accounts.contains_key(&to) {
-            if self.is_stake_neuron_notification(memo, &from, &to, amount) {
-                TransactionType::StakeNeuronNotification
-            } else {
-                TransactionType::TopUpNeuron
-            }
+            TransactionType::TopUpNeuron
         } else if memo.0 > 0 {
             if Self::is_create_canister_transaction(memo, &to, principal) {
                 TransactionType::CreateCanister
@@ -1358,37 +1337,6 @@ impl AccountsStore {
         if memo.0 > 0 {
             let expected_to = Self::generate_stake_neuron_address(principal, memo);
             *to == expected_to
-        } else {
-            false
-        }
-    }
-
-    fn is_stake_neuron_notification(
-        &self,
-        memo: Memo,
-        from: &AccountIdentifier,
-        to: &AccountIdentifier,
-        amount: Tokens,
-    ) -> bool {
-        if memo.0 > 0 && amount.get_e8s() == 0 {
-            self.get_transaction_index(memo.0)
-                .and_then(|index| self.get_transaction(index))
-                .filter(|&t| {
-                    t.transaction_type.is_some() && matches!(t.transaction_type.unwrap(), TransactionType::StakeNeuron)
-                })
-                .map_or(false, |t| {
-                    if let Transfer {
-                        from: original_transaction_from,
-                        to: original_transaction_to,
-                        amount: _,
-                        fee: _,
-                    } = t.transfer
-                    {
-                        from == &original_transaction_from && to == &original_transaction_to
-                    } else {
-                        false
-                    }
-                })
         } else {
             false
         }
