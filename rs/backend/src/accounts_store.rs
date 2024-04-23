@@ -966,24 +966,6 @@ impl AccountsStore {
         }
     }
 
-    #[cfg(test)]
-    fn get_transaction(&self, transaction_index: TransactionIndex) -> Option<&Transaction> {
-        match self.transactions.front() {
-            Some(t) => {
-                if t.transaction_index > transaction_index {
-                    None
-                } else {
-                    let offset = t.transaction_index;
-                    self.transactions
-                        .get(usize::try_from(transaction_index - offset).unwrap_or_else(|_| {
-                            unreachable!("The number of transactions is far below the size of memory.")
-                        }))
-                }
-            }
-            None => None,
-        }
-    }
-
     fn link_hardware_wallet_to_account(
         &mut self,
         account_identifier: AccountIdentifier,
