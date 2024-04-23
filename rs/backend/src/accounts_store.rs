@@ -1040,6 +1040,7 @@ impl AccountsStore {
         }
     }
 
+    #[cfg(test)]
     fn get_transaction(&self, transaction_index: TransactionIndex) -> Option<&Transaction> {
         match self.transactions.front() {
             Some(t) => {
