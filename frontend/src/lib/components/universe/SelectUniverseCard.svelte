@@ -33,8 +33,6 @@
       ? "transparent"
       : undefined);
 
-  $: console.log("theme", forceTheme, theme);
-
   let icon: "expand" | "check" | undefined = undefined;
   $: icon = role === "dropdown" ? "expand" : undefined;
 
