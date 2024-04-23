@@ -136,7 +136,7 @@ fn register_hardware_wallet_hardware_wallet_already_registered() {
 }
 
 #[test]
-fn append_transaction_detects_neuron_transactions() {
+fn maybe_process_transaction_detects_neuron_transactions() {
     let mut store = setup_test_store();
 
     let block_height = store.get_block_height_synced_up_to().unwrap_or(0) + 1;
@@ -152,17 +152,17 @@ fn append_transaction_detects_neuron_transactions() {
         fee: Tokens::from_e8s(10000),
     };
     store
-        .append_transaction(
-            transfer,
-            neuron_memo,
-            block_height,
-            TimeStamp::from_nanos_since_unix_epoch(100),
-        )
+        .maybe_process_transaction(&transfer, neuron_memo, block_height)
         .unwrap();
-    assert!(matches!(
-        store.transactions.back().unwrap().transaction_type.unwrap(),
-        TransactionType::StakeNeuron
-    ));
+
+    if let Some((_, MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo))) =
+        store.multi_part_transactions_processor.take_next()
+    {
+        assert_eq!(principal, neuron_principal);
+        assert_eq!(memo, neuron_memo);
+    } else {
+        panic!();
+    }
 
     let topup1 = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
@@ -171,17 +171,18 @@ fn append_transaction_detects_neuron_transactions() {
         fee: Tokens::from_e8s(10000),
     };
     store
-        .append_transaction(
-            topup1,
-            Memo(0),
-            block_height + 1,
-            TimeStamp::from_nanos_since_unix_epoch(100),
-        )
+        .maybe_process_transaction(&topup1, Memo(0), block_height + 1)
         .unwrap();
-    assert!(matches!(
-        store.transactions.back().unwrap().transaction_type.unwrap(),
-        TransactionType::TopUpNeuron
-    ));
+
+    // The neuron should be queued for refreshing
+    if let Some((_, MultiPartTransactionToBeProcessed::TopUpNeuron(principal, memo))) =
+        store.multi_part_transactions_processor.take_next()
+    {
+        assert_eq!(principal, neuron_principal);
+        assert_eq!(memo, neuron_memo);
+    } else {
+        panic!();
+    }
 
     let topup2 = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
@@ -190,21 +191,22 @@ fn append_transaction_detects_neuron_transactions() {
         fee: Tokens::from_e8s(10000),
     };
     store
-        .append_transaction(
-            topup2,
-            Memo(0),
-            block_height + 2,
-            TimeStamp::from_nanos_since_unix_epoch(100),
-        )
+        .maybe_process_transaction(&topup2, Memo(0), block_height + 2)
         .unwrap();
-    assert!(matches!(
-        store.transactions.back().unwrap().transaction_type.unwrap(),
-        TransactionType::TopUpNeuron
-    ));
+
+    // The neuron should be queued for refreshing
+    if let Some((_, MultiPartTransactionToBeProcessed::TopUpNeuron(principal, memo))) =
+        store.multi_part_transactions_processor.take_next()
+    {
+        assert_eq!(principal, neuron_principal);
+        assert_eq!(memo, neuron_memo);
+    } else {
+        panic!();
+    }
 }
 
 #[test]
-fn append_transaction_detects_neuron_transactions_from_external_accounts() {
+fn maybe_process_transaction_detects_neuron_transactions_from_external_accounts() {
     let mut store = setup_test_store();
 
     let block_height = store.get_block_height_synced_up_to().unwrap_or(0) + 1;
@@ -219,17 +221,8 @@ fn append_transaction_detects_neuron_transactions_from_external_accounts() {
         fee: Tokens::from_e8s(10000),
     };
     store
-        .append_transaction(
-            transfer,
-            neuron_memo,
-            block_height,
-            TimeStamp::from_nanos_since_unix_epoch(100),
-        )
+        .maybe_process_transaction(&transfer, neuron_memo, block_height)
         .unwrap();
-    assert!(matches!(
-        store.transactions.back().unwrap().transaction_type.unwrap(),
-        TransactionType::StakeNeuron
-    ));
 
     let topup = Transfer {
         from: AccountIdentifier::new(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap(), None),
@@ -237,19 +230,11 @@ fn append_transaction_detects_neuron_transactions_from_external_accounts() {
         amount: Tokens::from_tokens(2).unwrap(),
         fee: Tokens::from_e8s(10000),
     };
-    let previous_transaction_count = store.transactions.len();
     store
-        .append_transaction(
-            topup,
-            Memo(0),
-            block_height + 1,
-            TimeStamp::from_nanos_since_unix_epoch(100),
-        )
+        .maybe_process_transaction(&topup, Memo(0), block_height + 1)
         .unwrap();
 
-    // No new transaction should have been added, but the neuron should be queued for refreshing
-    assert_eq!(store.transactions.len(), previous_transaction_count);
-
+    // The neuron should be queued for refreshing
     if let Some((_, MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo))) =
         store.multi_part_transactions_processor.take_next()
     {
@@ -286,17 +271,8 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
         fee: Tokens::from_e8s(10000),
     };
     store
-        .append_transaction(
-            stake_neuron_transfer,
-            neuron_memo,
-            block_height,
-            TimeStamp::from_nanos_since_unix_epoch(100),
-        )
+        .maybe_process_transaction(&stake_neuron_transfer, neuron_memo, block_height)
         .unwrap();
-    assert!(matches!(
-        store.transactions.back().unwrap().transaction_type.unwrap(),
-        TransactionType::StakeNeuron
-    ));
 
     let topup = Transfer {
         from: AccountIdentifier::new(other_principal, None),
@@ -305,17 +281,8 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
         fee: Tokens::from_e8s(10000),
     };
     store
-        .append_transaction(
-            topup,
-            Memo(0),
-            block_height + 1,
-            TimeStamp::from_nanos_since_unix_epoch(100),
-        )
+        .maybe_process_transaction(&topup, Memo(0), block_height + 1)
         .unwrap();
-    assert!(matches!(
-        store.transactions.back().unwrap().transaction_type.unwrap(),
-        TransactionType::TopUpNeuron
-    ));
 
     if let Some((_, MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo))) =
         store.multi_part_transactions_processor.take_next()
@@ -806,122 +773,6 @@ fn detach_canister_canister_not_found() {
 }
 
 #[test]
-fn prune_transactions() {
-    let mut store = setup_test_store();
-    let principal1 = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-    let principal2 = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
-
-    let default_account = AccountIdentifier::from(principal1);
-    let hw_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
-    let hw_account = AccountIdentifier::from(hw_principal);
-    let unknown_account = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap());
-
-    let sub_account =
-        if let CreateSubAccountResponse::Ok(response) = store.create_sub_account(principal2, "SUB1".to_string()) {
-            response.account_identifier
-        } else {
-            panic!("Unable to create sub account");
-        };
-
-    store.register_hardware_wallet(
-        principal1,
-        RegisterHardwareWalletRequest {
-            name: "HW".to_string(),
-            principal: hw_principal,
-        },
-    );
-
-    let timestamp = TimeStamp::from_nanos_since_unix_epoch(100);
-    for _ in 0..10 {
-        let transfer1 = Burn {
-            amount: Tokens::from_e8s(100_000),
-            from: default_account,
-        };
-        store
-            .append_transaction(
-                transfer1,
-                Memo(0),
-                store.get_block_height_synced_up_to().unwrap_or(0) + 1,
-                timestamp,
-            )
-            .unwrap();
-
-        let transfer2 = Transfer {
-            amount: Tokens::from_e8s(10_000),
-            from: default_account,
-            to: sub_account,
-            fee: Tokens::from_e8s(1_000),
-        };
-        store
-            .append_transaction(
-                transfer2,
-                Memo(0),
-                store.get_block_height_synced_up_to().unwrap() + 1,
-                timestamp,
-            )
-            .unwrap();
-
-        let transfer3 = Mint {
-            amount: Tokens::from_e8s(1_000_000_000),
-            to: hw_account,
-        };
-        store
-            .append_transaction(
-                transfer3,
-                Memo(0),
-                store.get_block_height_synced_up_to().unwrap() + 1,
-                timestamp,
-            )
-            .unwrap();
-
-        let transfer4 = Mint {
-            amount: Tokens::from_e8s(1_000_000_000),
-            to: unknown_account,
-        };
-        store
-            .append_transaction(
-                transfer4,
-                Memo(0),
-                store.get_block_height_synced_up_to().unwrap() + 1,
-                timestamp,
-            )
-            .unwrap();
-    }
-
-    let original_block_heights = store.transactions.iter().map(|t| t.block_height).collect_vec();
-    assert_eq!(20, store.prune_transactions(20));
-    let pruned_block_heights = store.transactions.iter().map(|t| t.block_height).collect_vec();
-
-    assert_eq!(
-        original_block_heights[20..].iter().cloned().collect_vec(),
-        pruned_block_heights
-    );
-
-    let mut transaction_indexes_remaining = Vec::new();
-    for account in store.accounts_db.values() {
-        transaction_indexes_remaining.append(account.default_account_transactions.clone().as_mut());
-
-        for sub_account in account.sub_accounts.values() {
-            transaction_indexes_remaining.append(sub_account.transactions.clone().as_mut());
-        }
-
-        for hw_account in account.hardware_wallet_accounts.iter() {
-            transaction_indexes_remaining.append(hw_account.transactions.clone().as_mut());
-        }
-    }
-
-    transaction_indexes_remaining.sort_unstable();
-    transaction_indexes_remaining.dedup();
-
-    let block_heights_remaining = transaction_indexes_remaining
-        .iter()
-        .map(|t| store.get_transaction(*t).unwrap().block_height)
-        .collect_vec();
-
-    assert_eq!(pruned_block_heights, block_heights_remaining);
-}
-
-#[test]
 fn sub_account_name_too_long() {
     let mut store = setup_test_store();
 
@@ -967,10 +818,8 @@ pub(crate) fn assert_initial_test_store_stats_are_correct(stats: &Stats) {
     assert_eq!(2, stats.accounts_count);
     assert_eq!(0, stats.sub_accounts_count);
     assert_eq!(0, stats.hardware_wallet_accounts_count);
-    assert_eq!(4, stats.transactions_count);
     assert_eq!(3, stats.block_height_synced_up_to.unwrap());
     assert_eq!(0, stats.earliest_transaction_block_height);
-    assert_eq!(3, stats.latest_transaction_block_height);
     assert!(stats.seconds_since_last_ledger_sync > 1_000_000_000);
 }
 
@@ -1154,27 +1003,26 @@ pub(crate) fn setup_test_store() -> AccountsStore {
     let mut store = AccountsStore::default();
     store.add_account(principal1);
     store.add_account(principal2);
-    let timestamp = TimeStamp::from_nanos_since_unix_epoch(100);
     {
         let transfer = Mint {
             amount: Tokens::from_e8s(1_000_000_000),
             to: account_identifier1,
         };
-        store.append_transaction(transfer, Memo(0), 0, timestamp).unwrap();
+        store.maybe_process_transaction(&transfer, Memo(0), 0).unwrap();
     }
     {
         let transfer = Mint {
             amount: Tokens::from_e8s(1_000_000_000),
             to: account_identifier1,
         };
-        store.append_transaction(transfer, Memo(0), 1, timestamp).unwrap();
+        store.maybe_process_transaction(&transfer, Memo(0), 1).unwrap();
     }
     {
         let transfer = Burn {
             amount: Tokens::from_e8s(500_000_000),
             from: account_identifier1,
         };
-        store.append_transaction(transfer, Memo(0), 2, timestamp).unwrap();
+        store.maybe_process_transaction(&transfer, Memo(0), 2).unwrap();
     }
     {
         let transfer = Transfer {
@@ -1183,7 +1031,7 @@ pub(crate) fn setup_test_store() -> AccountsStore {
             from: account_identifier1,
             to: account_identifier2,
         };
-        store.append_transaction(transfer, Memo(0), 3, timestamp).unwrap();
+        store.maybe_process_transaction(&transfer, Memo(0), 3).unwrap();
     }
     store
 }
