@@ -4,8 +4,10 @@ import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import { NnsNeuronsPo } from "$tests/page-objects/NnsNeurons.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
@@ -18,6 +20,12 @@ describe("NnsNeurons", () => {
     resetNeuronsApiService();
     neuronsStore.reset();
   });
+
+  const renderComponent = async () => {
+    const { container } = render(NnsNeurons);
+    await runResolvedPromises();
+    return NnsNeuronsPo.under(new JestPageObjectElement(container));
+  };
 
   describe("with enough neurons", () => {
     const mockNeuron2 = {
@@ -43,26 +51,27 @@ describe("NnsNeurons", () => {
     });
 
     it("should render spawning neurons as disabled", async () => {
-      const { queryAllByTestId } = render(NnsNeurons);
+      const po = await renderComponent();
 
-      // Wait for the neurons to be loaded and rendered
-      await waitFor(() => {
-        const neuronCards = queryAllByTestId("neuron-card");
-        return expect(neuronCards.length).toBe(neurons.length);
-      });
-      const neuronCards = queryAllByTestId("neuron-card");
-      const disabledCards = neuronCards.filter(
-        (card) => card.getAttribute("aria-disabled") === "true"
-      );
-      expect(disabledCards.length).toBe(1);
+      const neuronCards = await po.getNeuronCardPos();
+      expect(neuronCards.length).toBe(3);
+
+      expect(await neuronCards[0].isDisabled()).toBe(false);
+      expect(await neuronCards[1].isDisabled()).toBe(true);
+      expect(await neuronCards[2].isDisabled()).toBe(false);
     });
 
     it("should render the NeuronCards", async () => {
-      const { getAllByTestId } = render(NnsNeurons);
+      const po = await renderComponent();
 
-      await waitFor(() =>
-        expect(getAllByTestId("neuron-card").length).toEqual(neurons.length)
-      );
+      const neuronCards = await po.getNeuronCardPos();
+      expect(neuronCards.length).toBe(neurons.length);
+    });
+
+    it("should not render an empty message", async () => {
+      const po = await renderComponent();
+
+      expect(await po.hasEmptyMessage()).toBe(false);
     });
   });
 
@@ -75,11 +84,9 @@ describe("NnsNeurons", () => {
     });
 
     it("should render an empty message", async () => {
-      const { getByText } = render(NnsNeurons);
+      const po = await renderComponent();
 
-      await waitFor(() =>
-        expect(getByText(en.neurons.text)).toBeInTheDocument()
-      );
+      expect(await po.hasEmptyMessage()).toBe(true);
     });
   });
 
@@ -92,7 +99,7 @@ describe("NnsNeurons", () => {
     });
 
     it("should call query neurons twice when rendered", async () => {
-      render(NnsNeurons);
+      await renderComponent();
 
       await waitFor(() =>
         expect(api.queryNeurons).toHaveBeenCalledWith({
@@ -107,7 +114,7 @@ describe("NnsNeurons", () => {
     });
 
     it("should NOT call query neurons after being visited", async () => {
-      render(NnsNeurons);
+      await renderComponent();
 
       await waitFor(() =>
         expect(api.queryNeurons).toHaveBeenCalledWith({
@@ -120,7 +127,7 @@ describe("NnsNeurons", () => {
         certified: false,
       });
 
-      render(NnsNeurons);
+      await renderComponent();
 
       // We wait to make sure there are no more calls
       await tick();

@@ -8,17 +8,14 @@
   import Footer from "$lib/components/layout/Footer.svelte";
   import {
     cancelPollAccounts,
-    getAccountTransactions,
     loadBalance,
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
   import { Island, Spinner } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { writable, type Readable } from "svelte/store";
-  import TransactionList from "$lib/components/accounts/TransactionList.svelte";
   import NoTransactions from "$lib/components/accounts/NoTransactions.svelte";
   import {
     WALLET_CONTEXT_KEY,
@@ -30,16 +27,11 @@
     findAccountOrDefaultToMain,
     isAccountHardwareWallet,
   } from "$lib/utils/accounts.utils";
-  import {
-    debugSelectedAccountStore,
-    debugTransactions,
-  } from "$lib/derived/debug.derived";
+  import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
-  import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { pageStore } from "$lib/derived/page.derived";
   import Separator from "$lib/components/ui/Separator.svelte";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
   import {
@@ -61,7 +53,6 @@
     loadIcpAccountNextTransactions,
     loadIcpAccountTransactions,
   } from "$lib/services/icp-transactions.services";
-  import { ENABLE_ICP_INDEX } from "$lib/stores/feature-flags.store";
   import type { UiTransaction } from "$lib/types/transaction";
   import {
     icpTransactionsStore,
@@ -80,9 +71,7 @@
 
   $: if ($authSignedInStore) {
     pollAccounts();
-    if ($ENABLE_ICP_INDEX) {
-      listNeurons();
-    }
+    listNeurons();
   }
 
   onMount(() => {
@@ -103,7 +92,6 @@
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
   let loadingTransactions = false;
-  let transactions: Transaction[] | undefined;
   // Used to identify transactions related to a Swap.
   let swapCanisterAccountsStore: Readable<Set<string>> | undefined = undefined;
   let completedTransactions = false;
@@ -172,25 +160,11 @@
   const reloadTransactions = async (
     accountIdentifier: AccountIdentifierText
   ) => {
-    if ($ENABLE_ICP_INDEX) {
-      // Don't show the loading spinner if the transactions are already loaded.
-      loadingTransactions = isNullish($icpTransactionsStore[accountIdentifier]);
-      // But we still load them to get the latest transactions.
-      await loadIcpAccountTransactions({ accountIdentifier });
-      loadingTransactions = false;
-      return;
-    }
-    return getAccountTransactions({
-      accountIdentifier: accountIdentifier,
-      onLoad: ({ accountIdentifier, transactions: loadedTransactions }) => {
-        // avoid using outdated transactions
-        if (accountIdentifier !== $selectedAccountStore.account?.identifier) {
-          return;
-        }
-
-        transactions = loadedTransactions;
-      },
-    });
+    // Don't show the loading spinner if the transactions are already loaded.
+    loadingTransactions = isNullish($icpTransactionsStore[accountIdentifier]);
+    // But we still load them to get the latest transactions.
+    await loadIcpAccountTransactions({ accountIdentifier });
+    loadingTransactions = false;
   };
 
   const loadNextTransactions = async () => {
@@ -209,7 +183,6 @@
   });
 
   debugSelectedAccountStore(selectedAccountStore);
-  $: debugTransactions(transactions);
 
   setContext<WalletContext>(WALLET_CONTEXT_KEY, {
     store: selectedAccountStore,
@@ -219,25 +192,19 @@
 
   const accountDidUpdate = async () => {
     const account = $selectedAccountStore.account;
-    if (account !== undefined) {
-      await reloadTransactions(account.identifier);
+    if (account === undefined) {
       return;
     }
+    await reloadTransactions(account.identifier);
+  };
 
-    // handle unknown accountIdentifier from URL
-    if (
-      account === undefined &&
-      $icpAccountsStore.main !== undefined &&
-      $pageStore.path === AppPath.Wallet
-    ) {
-      toastsError({
-        labelKey: replacePlaceholders($i18n.error.account_not_found, {
-          $account_identifier: accountIdentifier ?? "",
-        }),
-      });
-
-      await goBack();
-    }
+  const handleUnknownAccount = () => {
+    toastsError({
+      labelKey: replacePlaceholders($i18n.error.account_not_found, {
+        $account_identifier: accountIdentifier ?? "",
+      }),
+    });
+    goBack();
   };
 
   const setSelectedAccount = ({
@@ -258,7 +225,14 @@
       // Set the swapCanistersStore only once we have an account.
       swapCanisterAccountsStore =
         createSwapCanisterAccountsStore(accountPrincipal);
+    } else if (accounts.length > 0) {
+      // Accounts are loaded but we haven't found the account we're looking for
+      // because the user asked for an account that doesn't exist.
+      // There is always at least a main account if accounts are loaded.
+      handleUnknownAccount();
+      return;
     }
+
     selectedAccountStore.set({
       account,
       neurons: [],
@@ -354,16 +328,12 @@
           <Separator spacing="none" />
 
           {#if $selectedAccountStore.account !== undefined}
-            {#if $ENABLE_ICP_INDEX}
-              <UiTransactionsList
-                on:nnsIntersect={loadNextTransactions}
-                transactions={uiTransactions ?? []}
-                loading={loadingTransactions}
-                completed={completedTransactions}
-              />
-            {:else}
-              <TransactionList {transactions} />
-            {/if}
+            <UiTransactionsList
+              on:nnsIntersect={loadNextTransactions}
+              transactions={uiTransactions ?? []}
+              loading={loadingTransactions}
+              completed={completedTransactions}
+            />
           {:else}
             <NoTransactions />
           {/if}

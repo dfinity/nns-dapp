@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Card } from "@dfinity/gix-components";
+  import { Card, Tooltip } from "@dfinity/gix-components";
   import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import UniverseAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
   import { pageStore } from "$lib/derived/page.derived";
@@ -15,23 +15,16 @@
   import ActionableProposalCountBadge from "$lib/components/proposals/ActionableProposalCountBadge.svelte";
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { nonNullish } from "@dfinity/utils";
+  import { i18n } from "$lib/stores/i18n";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let selected: boolean;
+  // "link" for desktop, "button" for mobile, "dropdown" to open the modal
   export let role: "link" | "button" | "dropdown" = "link";
   export let universe: Universe;
 
-  let theme: "transparent" | "framed" | "highlighted" | undefined =
-    "transparent";
-  $: theme =
-    role === "button" ? "framed" : role === "link" ? "transparent" : undefined;
-
   let icon: "expand" | "check" | undefined = undefined;
-  $: icon =
-    role === "button" && selected
-      ? "check"
-      : role === "dropdown"
-      ? "expand"
-      : undefined;
+  $: icon = role === "dropdown" ? "expand" : undefined;
 
   let displayProjectAccountsBalance = false;
   $: displayProjectAccountsBalance =
@@ -55,7 +48,7 @@
 <Card
   role="button"
   {selected}
-  {theme}
+  theme="transparent"
   on:click
   {icon}
   testId="select-universe-card"
@@ -73,9 +66,20 @@
         {universe.title}
         {#if $ENABLE_VOTING_INDICATION && $actionableProposalIndicationEnabledStore}
           {#if nonNullish(actionableProposalCount) && actionableProposalCount > 0}
-            <ActionableProposalCountBadge count={actionableProposalCount} />
+            <ActionableProposalCountBadge
+              count={actionableProposalCount}
+              {universe}
+            />
           {:else if actionableProposalSupported === false}
-            <span class="not-supported-badge" data-tid="not-supported-badge" />
+            <TestIdWrapper testId="not-supported-badge">
+              <Tooltip
+                id="actionable-not-supported-tooltip"
+                text={$i18n.actionable_proposals_not_supported.dot_tooltip}
+                top={true}
+              >
+                <div class="not-supported-badge" />
+              </Tooltip>
+            </TestIdWrapper>
           {/if}
         {/if}
       </span>

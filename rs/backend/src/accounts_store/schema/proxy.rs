@@ -111,6 +111,14 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
         self.authoritative_db.iter()
     }
+    /// Gets the first key-value pair in the authoritative database.
+    fn first_key_value(&self) -> Option<(Vec<u8>, Account)> {
+        self.authoritative_db.first_key_value()
+    }
+    /// Gets the last key-value pair in the authoritative database.
+    fn last_key_value(&self) -> Option<(Vec<u8>, Account)> {
+        self.authoritative_db.last_key_value()
+    }
     /// Iterates over the values of the authoritative database.
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         self.authoritative_db.values()

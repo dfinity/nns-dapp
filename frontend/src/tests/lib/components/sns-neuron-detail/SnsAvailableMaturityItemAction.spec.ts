@@ -128,4 +128,12 @@ describe("SnsAvailableMaturityItemAction", () => {
       "Available maturity can be staked, or burned to disburse an amount of REAL that is subject to a non-deterministic process, called maturity modulation."
     );
   });
+
+  it("should have an appropriate tooltip ID", async () => {
+    const po = renderComponent(controlledNeuron);
+
+    expect(await po.getTooltipIconPo().getTooltipPo().getTooltipId()).toBe(
+      "sns-available-maturity-tooltip"
+    );
+  });
 });

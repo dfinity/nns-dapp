@@ -7,7 +7,7 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "2.0.71"
+version = "2.0.74"
 
 [workspace.dependencies]
 ic-cdk = "0.9.2"

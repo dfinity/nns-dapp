@@ -8,13 +8,12 @@ import {
 import { mockSnsCanisterIdText } from "$tests/mocks/sns.api.mock";
 import { SnsProposalListPo } from "$tests/page-objects/SnsProposalList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsProposalDecisionStatus, type SnsProposalData } from "@dfinity/sns";
-import { cleanup, render } from "@testing-library/svelte";
 
 describe("SnsProposalsList", () => {
   const renderComponent = async (props) => {
-    cleanup();
     const { container } = render(SnsProposalsList, { props });
     await runResolvedPromises();
     return SnsProposalListPo.under(new JestPageObjectElement(container));
@@ -236,15 +235,15 @@ describe("SnsProposalsList", () => {
       await runResolvedPromises();
 
       const cards = await po.getProposalCardPos();
-      expect(await cards[0].getProposalStatusTagPo().hasActionableMark()).toBe(
-        false
-      );
-      expect(await cards[1].getProposalStatusTagPo().hasActionableMark()).toBe(
-        true
-      );
-      expect(await cards[2].getProposalStatusTagPo().hasActionableMark()).toBe(
-        true
-      );
+      expect(
+        await cards[0].getProposalStatusTagPo().hasActionableStatusBadge()
+      ).toBe(false);
+      expect(
+        await cards[1].getProposalStatusTagPo().hasActionableStatusBadge()
+      ).toBe(true);
+      expect(
+        await cards[2].getProposalStatusTagPo().hasActionableStatusBadge()
+      ).toBe(true);
     });
   });
 });

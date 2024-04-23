@@ -96,4 +96,12 @@ describe("NnsAvailableMaturityItemAction", () => {
     expect(await po.hasSpawnButton()).toBe(false);
     expect(await po.hasStakeButton()).toBe(false);
   });
+
+  it("should have an appropriate tooltip ID", async () => {
+    const po = renderComponent(mockNeuron);
+
+    expect(await po.getTooltipIconPo().getTooltipPo().getTooltipId()).toBe(
+      "available-maturity-tooltip"
+    );
+  });
 });

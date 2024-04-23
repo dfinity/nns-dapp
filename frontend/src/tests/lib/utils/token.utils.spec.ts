@@ -1,19 +1,28 @@
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
+import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
+import { UserTokenAction, type UserToken } from "$lib/types/tokens-page";
+import { buildWalletUrl } from "$lib/utils/navigation.utils";
 import {
   convertIcpToTCycles,
   convertTCyclesToIcpNumber,
-  formattedTransactionFeeICP,
   formatTokenE8s,
   formatTokenV2,
+  formattedTransactionFeeICP,
   getMaxTransactionAmount,
   numberToE8s,
   numberToUlps,
+  sortUserTokens,
   sumAmounts,
   toTokenAmountV2,
   ulpsToNumber,
 } from "$lib/utils/token.utils";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
+import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
+import { icpTokenBase } from "$tests/mocks/tokens-page.mock";
+import { nnsUniverseMock } from "$tests/mocks/universe.mock";
+import { Principal } from "@dfinity/principal";
 import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 
 describe("token-utils", () => {
@@ -651,6 +660,59 @@ describe("token-utils", () => {
           token,
         })
       ).toBe(1142);
+    });
+  });
+
+  describe("sortUserTokens", () => {
+    const loadingUserToken: UserToken = {
+      ...icpTokenBase,
+      title: "Main",
+      balance: "loading",
+      actions: [],
+      rowHref: buildWalletUrl({
+        universe: OWN_CANISTER_ID_TEXT,
+      }),
+    };
+    const userToken = (balanceUlps: bigint): UserToken => ({
+      universeId: Principal.fromText(nnsUniverseMock.canisterId),
+      title: "a title",
+      subtitle: undefined,
+      balance: TokenAmountV2.fromUlps({
+        amount: balanceUlps,
+        token: NNS_TOKEN_DATA,
+      }),
+      logo: nnsUniverseMock.logo,
+      token: NNS_TOKEN_DATA,
+      fee: TokenAmountV2.fromUlps({
+        amount: NNS_TOKEN_DATA.fee,
+        token: NNS_TOKEN_DATA,
+      }),
+      rowHref: "row href",
+      accountIdentifier: mockSubAccount.identifier,
+      actions: [UserTokenAction.Receive, UserTokenAction.Send],
+    });
+    const token1 = userToken(1n);
+    const token3 = userToken(3n);
+    const token5 = userToken(5n);
+
+    it("should sort tokens", () => {
+      expect(sortUserTokens([token3, token1, token5])).toEqual([
+        token5,
+        token3,
+        token1,
+      ]);
+    });
+
+    it("should place use tokens w/o a balance at the end of the list", () => {
+      expect(
+        sortUserTokens([
+          loadingUserToken,
+          token3,
+          token1,
+          loadingUserToken,
+          token5,
+        ])
+      ).toEqual([token5, token3, token1, loadingUserToken, loadingUserToken]);
     });
   });
 });

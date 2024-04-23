@@ -249,6 +249,9 @@ export const getSpawningTimeInSeconds = (
 export const formatVotingPower = (value: bigint | number): string =>
   formatNumber(Number(value) / E8S_PER_ICP);
 
+export const formatVotingPowerDetailed = (value: bigint | number): string =>
+  formatNumber(Number(value) / E8S_PER_ICP, { minFraction: 8, maxFraction: 8 });
+
 export const isSeedNeuron = (neuron: NeuronInfo): boolean =>
   neuron.neuronType === NeuronType.Seed;
 
@@ -294,8 +297,31 @@ export const formatMaturity = (value?: bigint): string =>
     value: isNullish(value) ? 0n : value,
   });
 
+// Used to sort neurons by:
+// * decreasing stake, or when stake is equal by
+// * decreasing dissolve delay
+const compareNeurons = (a: NeuronInfo, b: NeuronInfo): number => {
+  const stakeA = neuronStake(a);
+  const stakeB = neuronStake(b);
+  if (stakeA > stakeB) {
+    return -1;
+  }
+  if (stakeA < stakeB) {
+    return 1;
+  }
+  const dissolveDelayA = a.dissolveDelaySeconds;
+  const dissolveDelayB = b.dissolveDelaySeconds;
+  if (dissolveDelayA > dissolveDelayB) {
+    return -1;
+  }
+  if (dissolveDelayA < dissolveDelayB) {
+    return 1;
+  }
+  return 0;
+};
+
 export const sortNeuronsByStake = (neurons: NeuronInfo[]): NeuronInfo[] =>
-  [...neurons].sort((a, b) => Number(neuronStake(b) - neuronStake(a)));
+  [...neurons].sort(compareNeurons);
 
 /*
  * Returns true if the neuron can be controlled by current user

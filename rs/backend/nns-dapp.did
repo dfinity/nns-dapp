@@ -1,6 +1,5 @@
 type AccountIdentifier = text;
 type BlockHeight = nat64;
-type CanisterId = principal;
 type ICPTs = record { e8s: nat64; };
 type Memo = nat64;
 type NeuronId = nat64;
@@ -32,68 +31,6 @@ type GetAccountResponse =
     variant {
         Ok: AccountDetails;
         AccountNotFound;
-    };
-
-type Timestamp =
-    record {
-        timestamp_nanos: nat64;
-    };
-
-type GetTransactionsRequest =
-    record {
-        account_identifier: AccountIdentifier;
-        offset: nat32;
-        page_size: nat8;
-    };
-
-type GetTransactionsResponse =
-    record {
-        transactions: vec Transaction;
-        total: nat32;
-    };
-
-type Send =
-    record {
-        to: AccountIdentifier;
-        amount: ICPTs;
-        fee: ICPTs;
-    };
-
-type Receive =
-    record {
-        from: AccountIdentifier;
-        amount: ICPTs;
-        fee: ICPTs;
-    };
-
-type Transfer =
-    variant {
-        Burn: record { amount: ICPTs; };
-        Mint: record { amount: ICPTs; };
-        Send: Send;
-        Receive: Receive;
-    };
-
-type Transaction =
-    record {
-        block_height: BlockHeight;
-        timestamp: Timestamp;
-        memo: nat64;
-        transfer: Transfer;
-        transaction_type: opt TransactionType;
-    };
-
-type TransactionType =
-    variant {
-        Burn;
-        Mint;
-        Transfer;
-        StakeNeuron;
-        StakeNeuronNotification;
-        TopUpNeuron;
-        CreateCanister;
-        TopUpCanister: CanisterId;
-        ParticipateSwap: CanisterId;
     };
 
 type CreateSubAccountResponse =
@@ -206,6 +143,7 @@ type Stats =
         wasm_memory_size_bytes: opt nat64;
         schema: opt nat32;
         migration_countdown: opt nat32;
+        accounts_db_stats_recomputed_on_upgrade: opt bool;
     };
 
 type PerformanceCount =
@@ -263,7 +201,6 @@ type SchemaLabel = variant {
 service: (opt Config) -> {
     get_account: () -> (GetAccountResponse) query;
     add_account: () -> (AccountIdentifier);
-    get_transactions: (GetTransactionsRequest) -> (GetTransactionsResponse) query;
     create_sub_account: (text) -> (CreateSubAccountResponse);
     rename_sub_account: (RenameSubAccountRequest) -> (RenameSubAccountResponse);
     register_hardware_wallet: (RegisterHardwareWalletRequest) -> (RegisterHardwareWalletResponse);

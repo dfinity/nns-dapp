@@ -46,4 +46,8 @@ export class NnsNeuronsPo extends BasePageObject {
 
     throw new Error(`Neuron card with id ${neuronId} not found`);
   }
+
+  hasEmptyMessage(): Promise<boolean> {
+    return this.isPresent("empty-message-component");
+  }
 }

@@ -14,230 +14,6 @@ const TEST_ACCOUNT_5: &str = "2fzwl-cu3hl-bawo2-idwrw-7yygk-uccms-cbo3a-c6kqt-ln
 const TEST_ACCOUNT_6: &str = "4gb44-uya57-c2v6u-fcz5v-qrpwl-wqkmf-o3fd3-esjio-kpysm-r5xxh-fqe";
 
 #[test]
-fn get_non_existant_account_produces_empty_results() {
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-    let store = AccountsStore::default();
-
-    let results = store.get_transactions(
-        principal,
-        GetTransactionsRequest {
-            account_identifier: AccountIdentifier::from(principal),
-            offset: 0,
-            page_size: 10,
-        },
-    );
-
-    assert_eq!(0, results.total);
-    assert_eq!(0, results.transactions.len());
-}
-
-#[test]
-fn get_transactions_1() {
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-    let store = setup_test_store();
-
-    let results = store.get_transactions(
-        principal,
-        GetTransactionsRequest {
-            account_identifier: AccountIdentifier::from(principal),
-            offset: 0,
-            page_size: 10,
-        },
-    );
-
-    assert_eq!(4, results.total);
-    assert_eq!(4, results.transactions.len());
-}
-
-#[test]
-fn get_transactions_2() {
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
-    let store = setup_test_store();
-
-    let results = store.get_transactions(
-        principal,
-        GetTransactionsRequest {
-            account_identifier: AccountIdentifier::from(principal),
-            offset: 0,
-            page_size: 10,
-        },
-    );
-
-    assert_eq!(1, results.total);
-    assert_eq!(1, results.transactions.len());
-}
-
-#[test]
-fn get_transactions_returns_expected_page() {
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-    let store = setup_test_store();
-
-    let results = store.get_transactions(
-        principal,
-        GetTransactionsRequest {
-            account_identifier: AccountIdentifier::from(principal),
-            offset: 2,
-            page_size: 2,
-        },
-    );
-
-    assert_eq!(4, results.total);
-    assert_eq!(2, results.transactions.len());
-}
-
-#[test]
-fn get_transactions_transfer_from() {
-    let principal1 = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-    let principal2 = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
-    let account_identifier1 = AccountIdentifier::from(principal1);
-    let account_identifier2 = AccountIdentifier::from(principal2);
-    let timestamp = TimeStamp::from_nanos_since_unix_epoch(100);
-    let fee = Tokens::from_e8s(1_000);
-    let amount = Tokens::from_e8s(350_000_000);
-
-    let mut store = AccountsStore::default();
-    store.add_account(principal1);
-    store.add_account(principal2);
-    let transfer_from = TransferFrom {
-        amount,
-        fee,
-        from: account_identifier1,
-        to: account_identifier2,
-        spender: account_identifier2,
-    };
-    store.append_transaction(transfer_from, Memo(0), 0, timestamp).unwrap();
-
-    let results = store.get_transactions(
-        principal2,
-        GetTransactionsRequest {
-            account_identifier: account_identifier2,
-            offset: 0,
-            page_size: 10,
-        },
-    );
-
-    assert_eq!(1, results.total);
-    assert_eq!(1, results.transactions.len());
-    let transaction = &results.transactions[0];
-    assert_eq!(Some(TransactionType::Transfer), transaction.transaction_type);
-    assert_eq!(
-        TransferResult::Receive {
-            from: account_identifier1,
-            amount,
-            fee
-        },
-        transaction.transfer
-    );
-}
-
-#[test]
-fn add_account_adds_principal_and_sets_transaction_types() {
-    let mut store = setup_test_store();
-
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
-    let account_identifier = AccountIdentifier::new(principal, None);
-
-    let account = Account {
-        principal: None,
-        account_identifier,
-        default_account_transactions: Vec::default(),
-        sub_accounts: HashMap::default(),
-        hardware_wallet_accounts: Vec::default(),
-        canisters: Vec::default(),
-    };
-
-    store
-        .accounts_db
-        .db_insert_account(&account_identifier.to_vec(), account);
-
-    let transfer = Transfer {
-        from: account_identifier,
-        to: AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap()),
-        amount: Tokens::from_tokens(1).unwrap(),
-        fee: Tokens::from_e8s(10000),
-    };
-    store
-        .append_transaction(
-            transfer,
-            Memo(0),
-            store.get_block_height_synced_up_to().unwrap_or(0) + 1,
-            TimeStamp::from_nanos_since_unix_epoch(100),
-        )
-        .unwrap();
-
-    let stake_neuron = Transfer {
-        from: account_identifier,
-        to: AccountIdentifier::from_hex("b562a2afa304d08f7aaa42194459ff4c0e8ddb1596045a7b3b3396d97852f982").unwrap(),
-        amount: Tokens::from_tokens(2).unwrap(),
-        fee: Tokens::from_e8s(10000),
-    };
-    store
-        .append_transaction(
-            stake_neuron,
-            Memo(1678183231181200159),
-            store.get_block_height_synced_up_to().unwrap_or(0) + 1,
-            TimeStamp::from_nanos_since_unix_epoch(100),
-        )
-        .unwrap();
-
-    let topup_neuron = Transfer {
-        from: account_identifier,
-        to: AccountIdentifier::from_hex("b562a2afa304d08f7aaa42194459ff4c0e8ddb1596045a7b3b3396d97852f982").unwrap(),
-        amount: Tokens::from_tokens(3).unwrap(),
-        fee: Tokens::from_e8s(10000),
-    };
-    store
-        .append_transaction(
-            topup_neuron,
-            Memo(0),
-            store.get_block_height_synced_up_to().unwrap_or(0) + 1,
-            TimeStamp::from_nanos_since_unix_epoch(100),
-        )
-        .unwrap();
-
-    let original_transaction_types: Vec<_> = store
-        .get_transactions(
-            principal,
-            GetTransactionsRequest {
-                account_identifier,
-                page_size: 10,
-                offset: 0,
-            },
-        )
-        .transactions
-        .into_iter()
-        .map(|t| t.transaction_type)
-        .collect();
-
-    assert!(original_transaction_types.iter().all(|t| t.is_none()));
-
-    store.add_account(principal);
-
-    let transaction_types: Vec<_> = store
-        .get_transactions(
-            principal,
-            GetTransactionsRequest {
-                account_identifier,
-                page_size: 10,
-                offset: 0,
-            },
-        )
-        .transactions
-        .into_iter()
-        .map(|t| t.transaction_type.unwrap())
-        .collect();
-
-    let expected_transaction_types = [
-        TransactionType::TopUpNeuron,
-        TransactionType::StakeNeuron,
-        TransactionType::Transfer,
-    ];
-    for i in 0..expected_transaction_types.len() {
-        assert_eq!(expected_transaction_types[i], transaction_types[i]);
-    }
-}
-
-#[test]
 fn create_sub_account() {
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let mut store = setup_test_store();
@@ -357,61 +133,6 @@ fn register_hardware_wallet_hardware_wallet_already_registered() {
         AccountIdentifier::from(hw1),
         account.hardware_wallet_accounts[0].account_identifier
     );
-}
-
-#[test]
-fn hardware_wallet_transactions_tracked_correctly() {
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-    let mut store = setup_test_store();
-
-    let hw_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
-    let hw_account_identifier = AccountIdentifier::from(hw_principal);
-
-    store.register_hardware_wallet(
-        principal,
-        RegisterHardwareWalletRequest {
-            name: "HW".to_string(),
-            principal: hw_principal,
-        },
-    );
-
-    let transfer = Mint {
-        amount: Tokens::from_tokens(1).unwrap(),
-        to: hw_account_identifier,
-    };
-    store
-        .append_transaction(
-            transfer,
-            Memo(0),
-            store.get_block_height_synced_up_to().unwrap_or(0) + 1,
-            TimeStamp::from_nanos_since_unix_epoch(100),
-        )
-        .unwrap();
-
-    let transfer = Mint {
-        amount: Tokens::from_tokens(2).unwrap(),
-        to: hw_account_identifier,
-    };
-    store
-        .append_transaction(
-            transfer,
-            Memo(0),
-            store.get_block_height_synced_up_to().unwrap_or(0) + 1,
-            TimeStamp::from_nanos_since_unix_epoch(100),
-        )
-        .unwrap();
-
-    let get_transactions_request = GetTransactionsRequest {
-        account_identifier: hw_account_identifier,
-        offset: 0,
-        page_size: 10,
-    };
-
-    let response = store.get_transactions(principal, get_transactions_request);
-
-    assert_eq!(2, response.total);
-    assert_eq!(5, response.transactions[0].block_height);
-    assert_eq!(4, response.transactions[1].block_height);
 }
 
 #[test]
@@ -1368,11 +1089,8 @@ fn get_histogram() {
 
         // These new accounts are empty, so the 0 bucket should be incremented in each histogram:
         expected_histogram.accounts_count += 2;
-        *expected_histogram.default_account_transactions(0) += 2;
         *expected_histogram.sub_accounts(0) += 2;
-        *expected_histogram.total_sub_account_transactions(0) += 2;
         *expected_histogram.hardware_wallet_accounts(0) += 2;
-        *expected_histogram.total_hardware_wallet_transactions(0) += 2;
         *expected_histogram.canisters(0) += 2;
 
         let actual_histogram = store.get_histogram();
@@ -1389,8 +1107,6 @@ fn get_histogram() {
         // The histogram entry for the number of sub-accounts will have changed from 0 to 1, 2 etc for one account:
         *expected_histogram.sub_accounts(i) -= 1;
         *expected_histogram.sub_accounts(i + 1) += 1;
-        // Also, all these sub-accounts have no transactions:
-        *expected_histogram.sub_account_transactions(0) += 1;
         // Check:
         let actual_histogram = store.get_histogram();
         expected_histogram.remove_empty_buckets();
@@ -1422,7 +1138,6 @@ fn get_histogram() {
         // The two accounts (principal3 and principal4) have 1 hardware wallet each, so the 1 bucket should be incremented in each histogram:
         *expected_histogram.hardware_wallet_accounts(0) -= 2;
         *expected_histogram.hardware_wallet_accounts(1) += 2;
-        *expected_histogram.hardware_wallet_transactions(0) += 2;
 
         let actual_histogram = store.get_histogram();
         assert_eq!(
@@ -1448,82 +1163,6 @@ fn get_histogram() {
             "Canisters are not counted correctly"
         );
     }
-}
-
-fn assert_queue_item_eq_stake_neuron(
-    expected_block_index: BlockIndex,
-    expected_principal: PrincipalId,
-    expected_memo: Memo,
-    actual_queue: VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)>,
-) {
-    assert_eq!(actual_queue.len(), 1);
-    let actual_queue_item = actual_queue.get(0).unwrap();
-    assert_eq!(expected_block_index, actual_queue_item.0);
-    if let MultiPartTransactionToBeProcessed::StakeNeuron(actual_principal, actual_memo) = actual_queue_item.1 {
-        assert_eq!(expected_principal, actual_principal);
-        assert_eq!(expected_memo, actual_memo);
-    } else {
-        panic!("Queue item should be stake neuron transaction.");
-    }
-}
-
-#[test]
-fn encode_decode_stable_state() {
-    let mut store = AccountsStore::default();
-    let block_index = 312;
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-    let account_identifier = AccountIdentifier::from(principal);
-    let memo = Memo(789);
-    let queue_item: (BlockIndex, MultiPartTransactionToBeProcessed) = (
-        block_index,
-        MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo),
-    );
-    store
-        .multi_part_transactions_processor
-        .get_mut_queue_for_testing()
-        .push_back(queue_item);
-    let timestamp = TimeStamp::from_nanos_since_unix_epoch(100);
-    {
-        // We need an account to then retrieve the accounts' transactions
-        store.add_account(principal);
-        let transfer = Mint {
-            amount: Tokens::from_e8s(1_000_000_000),
-            to: account_identifier,
-        };
-        store.append_transaction(transfer, Memo(0), 0, timestamp).unwrap();
-    }
-    let results = store.get_transactions(
-        principal,
-        GetTransactionsRequest {
-            account_identifier,
-            offset: 0,
-            page_size: 10,
-        },
-    );
-    assert_eq!(1, results.transactions.len(), "Initial transaction should be added");
-
-    let bytes = store.encode();
-    let decoded_store = AccountsStore::decode(bytes).unwrap();
-
-    assert_queue_item_eq_stake_neuron(
-        block_index,
-        principal,
-        memo,
-        decoded_store.multi_part_transactions_processor.get_queue_for_testing(),
-    );
-    let decoded_results = decoded_store.get_transactions(
-        principal,
-        GetTransactionsRequest {
-            account_identifier,
-            offset: 0,
-            page_size: 10,
-        },
-    );
-    assert_eq!(
-        results.transactions.len(),
-        decoded_results.transactions.len(),
-        "Decoded transactions should match encoded ones."
-    );
 }
 
 pub(crate) fn setup_test_store() -> AccountsStore {
@@ -1575,12 +1214,8 @@ pub(crate) fn setup_test_store() -> AccountsStore {
 pub fn test_store_histogram() -> AccountsStoreHistogram {
     let mut ans = AccountsStoreHistogram::default();
     ans.accounts_count = 2;
-    *ans.default_account_transactions(4) += 1; // Account ID 1 makes 4 transactions.
-    *ans.default_account_transactions(1) += 1; // Account ID 2 makes 1 transaction.
     *ans.sub_accounts(0) += 2; // Neither test account has sub-accounts.
-    *ans.total_sub_account_transactions(0) += 2; // Both accounts therefore also have no sub-account transactions.
     *ans.hardware_wallet_accounts(0) += 2; // Neither test account has hardware wallets.
-    *ans.total_hardware_wallet_transactions(0) += 2; // Therefore neither has any hardware wallet transactions.
     *ans.canisters(0) += 2; // Neither test account has canisters.
     ans
 }

@@ -9,8 +9,8 @@ export class TooltipPo extends BasePageObject {
     return new TooltipPo(element.byTestId(TooltipPo.TID));
   }
 
-  getText(): Promise<string> {
-    return assertNonNullish(this.root.querySelector(".tooltip")).getText();
+  async getTooltipText(): Promise<string> {
+    return assertNonNullish(await this.getTooltipElement()).getText();
   }
 
   getAriaDescribedBy(): Promise<string> {
@@ -19,7 +19,18 @@ export class TooltipPo extends BasePageObject {
       .getAttribute("aria-describedby");
   }
 
-  getTooltipId(): Promise<string> {
-    return this.root.querySelector(".tooltip").getAttribute("id");
+  async getTooltipId(): Promise<string> {
+    return (await this.getTooltipElement()).getAttribute("id");
+  }
+
+  async getTooltipElement(): Promise<PageObjectElement> {
+    const id = await this.getAriaDescribedBy();
+    const body = await this.root.getDocumentBody();
+    const tooltipElemenet = body.querySelector(`#${id}`);
+    return tooltipElemenet;
+  }
+
+  async getDisplayedText(): Promise<string> {
+    return this.root.querySelector(".tooltip-target").getText();
   }
 }

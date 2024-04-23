@@ -15,36 +15,29 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Setting to hide tokens with zero balance.
 * Actionable proposal indication.
 
 #### Changed
 
-* Always omit the account parameter in the URL when navigating to a main account.
-* Display the block timestamp instead of created timestamp on ICP transaction.
-* Minor style changes for mobile project selector.
+* Update main navigation style on mobile. 
 
 #### Deprecated
 
 #### Removed
 
-* Remove `protobuf` dependency for Ledger hardware wallet.
-
 #### Fixed
-
-* Make token table rows always clickable. A few edge cases were missing.
 
 #### Security
 
 #### Not Published
-
-* Hide tokens with zero balance based on setting behind feature flag.
 
 ### Operations
 
 #### Added
 
 #### Changed
+
+* Disallow build warnings for Rust.
 
 #### Deprecated
 

@@ -138,4 +138,8 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   async addEventListener(): Promise<void> {
     throw new Error("Not implement");
   }
+
+  async getDocumentBody(): Promise<PlaywrightPageObjectElement> {
+    throw new Error("Not implemented");
+  }
 }

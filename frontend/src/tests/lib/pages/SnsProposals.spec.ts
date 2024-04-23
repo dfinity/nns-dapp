@@ -18,6 +18,7 @@ import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { SnsProposalListPo } from "$tests/page-objects/SnsProposalList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
@@ -26,7 +27,7 @@ import {
   SnsSwapLifecycle,
   type SnsProposalData,
 } from "@dfinity/sns";
-import { cleanup, fireEvent, render, waitFor } from "@testing-library/svelte";
+import { fireEvent, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/sns-governance.api");
@@ -359,7 +360,6 @@ describe("SnsProposals", () => {
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
     });
     const renderComponent = async () => {
-      cleanup();
       const { container } = render(SnsProposals);
       await runResolvedPromises();
       return SnsProposalListPo.under(new JestPageObjectElement(container));
@@ -546,6 +546,11 @@ describe("SnsProposals", () => {
         expect(
           await po.getActionableNotSupportedBanner().getTitleText()
         ).toEqual(`${projectName} doesn't yet support actionable proposals.`);
+        expect(
+          await po.getActionableNotSupportedBanner().getDescriptionText()
+        ).toEqual(
+          `${projectName} SNS governance canister needs to be updated to the latest version to show actionable proposals. You can still vote on all proposals, but they will not have the visual indication.`
+        );
 
         // select to all proposals
         await po

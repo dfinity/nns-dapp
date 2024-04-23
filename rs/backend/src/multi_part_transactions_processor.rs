@@ -39,18 +39,6 @@ impl MultiPartTransactionsProcessor {
         u32::try_from(self.queue.len())
             .unwrap_or_else(|err| unreachable!("MultiPartTransactionsProcessor queue length has length greater than u32::MAX.  Transactions are pruned by the periodic_tasks_runner if they consume more than 1Gb of data, so this should never happen. Error: {:?}", err))
     }
-
-    #[cfg(test)]
-    #[must_use]
-    pub fn get_queue_for_testing(&self) -> VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)> {
-        self.queue.clone()
-    }
-
-    #[cfg(test)]
-    #[must_use]
-    pub fn get_mut_queue_for_testing(&mut self) -> &mut VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)> {
-        &mut self.queue
-    }
 }
 
 #[cfg(test)]

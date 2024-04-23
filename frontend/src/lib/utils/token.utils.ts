@@ -4,6 +4,7 @@ import {
   ICP_DISPLAYED_DECIMALS_DETAILED,
   ICP_DISPLAYED_HEIGHT_DECIMALS,
 } from "$lib/constants/icp.constants";
+import type { UserToken } from "$lib/types/tokens-page";
 import {
   ICPToken,
   TokenAmount,
@@ -272,3 +273,17 @@ export class UnavailableTokenAmount {
     this.token = token;
   }
 }
+
+export const sortUserTokens = (tokens: UserToken[]): UserToken[] => [
+  // sort only tokens with valid balance
+  ...tokens
+    .filter(({ balance }) => balance instanceof TokenAmountV2)
+    .sort(({ balance: balanceA }, { balance: balanceB }) =>
+      (balanceA as TokenAmountV2).toUlps() >
+      (balanceB as TokenAmountV2).toUlps()
+        ? -1
+        : 1
+    ),
+  // tokens without balance
+  ...tokens.filter(({ balance }) => !(balance instanceof TokenAmountV2)),
+];
