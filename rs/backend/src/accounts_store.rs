@@ -576,13 +576,12 @@ impl AccountsStore {
         }
     }
 
-    pub fn append_transaction(
+    pub fn maybe_process_transaction(
         &mut self,
         transfer: Operation,
         memo: Memo,
         block_height: BlockIndex,
-        timestamp: TimeStamp,
-    ) -> Result<bool, String> {
+    ) -> Result<(), String> {
         if let Some(block_height_synced_up_to) = self.get_block_height_synced_up_to() {
             let expected_block_height = block_height_synced_up_to + 1;
             if block_height != block_height_synced_up_to + 1 {
@@ -592,23 +591,9 @@ impl AccountsStore {
             }
         }
 
-        let transaction_index = self.get_next_transaction_index();
-        let mut should_store_transaction = false;
-        let mut transaction_type: Option<TransactionType> = None;
-
         match transfer {
-            Burn { from, amount: _ } => {
-                if self.try_add_transaction_to_account(from, transaction_index) {
-                    should_store_transaction = true;
-                    transaction_type = Some(TransactionType::Burn);
-                }
-            }
-            Mint { to, amount: _ } => {
-                if self.try_add_transaction_to_account(to, transaction_index) {
-                    should_store_transaction = true;
-                    transaction_type = Some(TransactionType::Mint);
-                }
-            }
+            Burn { from: _, amount: _ } => {}
+            Mint { to: _, amount: _ } => {}
             Transfer {
                 from,
                 to,
@@ -628,16 +613,12 @@ impl AccountsStore {
                     TransactionType::TransferFrom
                 };
 
-                if self.try_add_transaction_to_account(to, transaction_index) {
-                    self.try_add_transaction_to_account(from, transaction_index);
-                    should_store_transaction = true;
-                    transaction_type = Some(default_transaction_type);
-                } else if self.try_add_transaction_to_account(from, transaction_index) {
-                    should_store_transaction = true;
+                if self.store_has_account(to) {
+                } else if self.store_has_account(from) {
                     if let Some(principal) = self.try_get_principal(&from) {
                         let canister_ids: Vec<CanisterId> =
                             self.get_canisters(principal).iter().map(|c| c.canister_id).collect();
-                        transaction_type = Some(self.get_transaction_type(
+                        let transaction_type = Some(self.get_transaction_type(
                             from,
                             to,
                             memo,
@@ -664,23 +645,12 @@ impl AccountsStore {
                     );
                 }
             }
-            Approve { .. } => {} // TODO do we want to show Approvals in the NNS Dapp?
-        }
-
-        if should_store_transaction {
-            self.transactions.push_back(Transaction::new(
-                transaction_index,
-                block_height,
-                timestamp,
-                memo,
-                transfer,
-                transaction_type,
-            ));
+            Approve { .. } => {}
         }
 
         self.block_height_synced_up_to = Some(block_height);
 
-        Ok(should_store_transaction)
+        Ok(())
     }
 
     pub fn mark_ledger_sync_complete(&mut self) {
@@ -844,14 +814,6 @@ impl AccountsStore {
     }
 
     #[must_use]
-    pub fn get_next_transaction_index(&self) -> TransactionIndex {
-        match self.transactions.back() {
-            Some(t) => t.transaction_index + 1,
-            None => 0,
-        }
-    }
-
-    #[must_use]
     pub fn get_block_height_synced_up_to(&self) -> Option<BlockIndex> {
         self.block_height_synced_up_to
     }
@@ -976,42 +938,9 @@ impl AccountsStore {
             })
     }
 
-    fn try_add_transaction_to_account(
-        &mut self,
-        account_identifier: AccountIdentifier,
-        transaction_index: TransactionIndex,
-    ) -> bool {
-        if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
-            account.append_default_account_transaction(transaction_index);
-            self.accounts_db
-                .db_insert_account(&account_identifier.to_vec(), account);
-        } else {
-            match self.hardware_wallets_and_sub_accounts.get(&account_identifier) {
-                Some(AccountWrapper::SubAccount(parent_account_identifier, sub_account_index)) => {
-                    let mut account = self
-                        .accounts_db
-                        .db_get_account(&parent_account_identifier.to_vec())
-                        .unwrap();
-                    account.append_sub_account_transaction(*sub_account_index, transaction_index);
-                    self.accounts_db
-                        .db_insert_account(&parent_account_identifier.to_vec(), account);
-                }
-                Some(AccountWrapper::HardwareWallet(linked_account_identifiers)) => {
-                    for linked_account_identifier in linked_account_identifiers {
-                        let mut account = self
-                            .accounts_db
-                            .db_get_account(&linked_account_identifier.to_vec())
-                            .unwrap();
-                        account.append_hardware_wallet_transaction(account_identifier, transaction_index);
-                        self.accounts_db
-                            .db_insert_account(&linked_account_identifier.to_vec(), account);
-                    }
-                }
-                None => return false,
-            }
-        }
-
-        true
+    fn store_has_account(&mut self, account_identifier: AccountIdentifier) -> bool {
+        self.accounts_db.db_get_account(&account_identifier.to_vec()).is_some()
+            || self.hardware_wallets_and_sub_accounts.contains_key(&account_identifier)
     }
 
     fn try_get_principal(&self, account_identifier: &AccountIdentifier) -> Option<PrincipalId> {
@@ -1507,26 +1436,6 @@ impl Account {
             .chain(self.sub_accounts.values().flat_map(|a| a.transactions.iter().copied()))
             .sorted()
             .collect()
-    }
-}
-
-impl Transaction {
-    pub fn new(
-        transaction_index: TransactionIndex,
-        block_height: BlockIndex,
-        timestamp: TimeStamp,
-        memo: Memo,
-        transfer: Operation,
-        transaction_type: Option<TransactionType>,
-    ) -> Transaction {
-        Transaction {
-            transaction_index,
-            block_height,
-            timestamp,
-            memo,
-            transfer,
-            transaction_type,
-        }
     }
 }
 
