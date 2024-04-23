@@ -1089,11 +1089,8 @@ fn get_histogram() {
 
         // These new accounts are empty, so the 0 bucket should be incremented in each histogram:
         expected_histogram.accounts_count += 2;
-        *expected_histogram.default_account_transactions(0) += 2;
         *expected_histogram.sub_accounts(0) += 2;
-        *expected_histogram.total_sub_account_transactions(0) += 2;
         *expected_histogram.hardware_wallet_accounts(0) += 2;
-        *expected_histogram.total_hardware_wallet_transactions(0) += 2;
         *expected_histogram.canisters(0) += 2;
 
         let actual_histogram = store.get_histogram();
@@ -1110,8 +1107,6 @@ fn get_histogram() {
         // The histogram entry for the number of sub-accounts will have changed from 0 to 1, 2 etc for one account:
         *expected_histogram.sub_accounts(i) -= 1;
         *expected_histogram.sub_accounts(i + 1) += 1;
-        // Also, all these sub-accounts have no transactions:
-        *expected_histogram.sub_account_transactions(0) += 1;
         // Check:
         let actual_histogram = store.get_histogram();
         expected_histogram.remove_empty_buckets();
@@ -1143,7 +1138,6 @@ fn get_histogram() {
         // The two accounts (principal3 and principal4) have 1 hardware wallet each, so the 1 bucket should be incremented in each histogram:
         *expected_histogram.hardware_wallet_accounts(0) -= 2;
         *expected_histogram.hardware_wallet_accounts(1) += 2;
-        *expected_histogram.hardware_wallet_transactions(0) += 2;
 
         let actual_histogram = store.get_histogram();
         assert_eq!(
@@ -1220,12 +1214,8 @@ pub(crate) fn setup_test_store() -> AccountsStore {
 pub fn test_store_histogram() -> AccountsStoreHistogram {
     let mut ans = AccountsStoreHistogram::default();
     ans.accounts_count = 2;
-    *ans.default_account_transactions(4) += 1; // Account ID 1 makes 4 transactions.
-    *ans.default_account_transactions(1) += 1; // Account ID 2 makes 1 transaction.
     *ans.sub_accounts(0) += 2; // Neither test account has sub-accounts.
-    *ans.total_sub_account_transactions(0) += 2; // Both accounts therefore also have no sub-account transactions.
     *ans.hardware_wallet_accounts(0) += 2; // Neither test account has hardware wallets.
-    *ans.total_hardware_wallet_transactions(0) += 2; // Therefore neither has any hardware wallet transactions.
     *ans.canisters(0) += 2; // Neither test account has canisters.
     ans
 }
