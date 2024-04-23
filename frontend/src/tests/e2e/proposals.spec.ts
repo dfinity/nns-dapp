@@ -40,55 +40,6 @@ test("Test neuron voting", async ({ page, context }) => {
   await appPo.goToProposals();
   await nnsProposalListPo.waitForContentLoaded();
 
-  step("Filter proposals by Votable only");
-  // Hide proposals that are not votable
-  await appPo
-    .getProposalsPo()
-    .getNnsProposalFiltersPo()
-    .setVotableProposalsOnlyValue(true);
-  await nnsProposalListPo.waitForContentLoaded();
-  const proposalIdsBeforeVoting =
-    await nnsProposalListPo.getVisibleProposalIds(proposerNeuronId);
-  step("Vote for a proposal");
-  const proposalCardForVoting =
-    await nnsProposalListPo.getFirstProposalCardPoForProposer(proposerNeuronId);
-  const proposalIdForVoting = await proposalCardForVoting.getProposalId();
-  // Open proposal details
-  await proposalCardForVoting.click();
-  await appPo.getProposalDetailPo().getNnsProposalPo().waitForContentLoaded();
-  // Vote on proposal
-  await appPo.getProposalDetailPo().getNnsProposalPo().waitForContentLoaded();
-  await appPo
-    .getProposalDetailPo()
-    .getNnsProposalPo()
-    .getVotingCardPo()
-    .voteYes();
-  // Back to proposals list
-  await appPo.goBack();
-  await nnsProposalListPo.waitForContentLoaded();
-  const proposalIdsAfterVoting =
-    await nnsProposalListPo.getVisibleProposalIds(proposerNeuronId);
-
-  step("Voted proposal should be hidden");
-  expect(proposalIdsAfterVoting).toHaveLength(
-    proposalIdsBeforeVoting.length - 1
-  );
-  expect(proposalIdsBeforeVoting).toContain(proposalIdForVoting);
-  expect(proposalIdsAfterVoting).not.toContain(proposalIdForVoting);
-
-  // switch filter back
-  await appPo
-    .getProposalsPo()
-    .getNnsProposalFiltersPo()
-    .setVotableProposalsOnlyValue(false);
-  await nnsProposalListPo.waitForContentLoaded();
-  // check that all proposals are visible again
-
-  step("Voted proposal should be visible again");
-  expect(
-    await nnsProposalListPo.getVisibleProposalIds(proposerNeuronId)
-  ).toEqual(proposalIdsBeforeVoting);
-
   step("Filter proposals by Topic");
   const getVisibleCardTopics = () => nnsProposalListPo.getCardTopics();
 
@@ -146,11 +97,6 @@ test("Test neuron voting", async ({ page, context }) => {
     .getNnsProposalFiltersPo()
     .selectStatusFilter([ProposalStatus.Open]);
   await nnsProposalListPo.waitForContentLoaded();
-  // be sure that "votable proposals only" filter is off
-  await appPo
-    .getProposalsPo()
-    .getNnsProposalFiltersPo()
-    .setVotableProposalsOnlyValue(false);
   await nnsProposalListPo.waitForContentLoaded();
 
   step("Open proposal details");
