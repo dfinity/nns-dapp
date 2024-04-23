@@ -55,7 +55,7 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
                 .unwrap_or_else(|_| unreachable!("It will be a very long time before we have this many blocks"));
             for (block_height, block) in blocks {
                 let transaction = block.transaction().into_owned();
-                store.maybe_process_transaction(transaction.operation, transaction.memo, block_height)?;
+                store.maybe_process_transaction(&transaction.operation, transaction.memo, block_height)?;
             }
             store.mark_ledger_sync_complete();
 

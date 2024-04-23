@@ -578,7 +578,7 @@ impl AccountsStore {
 
     pub fn maybe_process_transaction(
         &mut self,
-        transfer: Operation,
+        transfer: &Operation,
         memo: Memo,
         block_height: BlockIndex,
     ) -> Result<(), String> {
@@ -591,9 +591,8 @@ impl AccountsStore {
             }
         }
 
-        match transfer {
-            Burn { from: _, amount: _ } => {}
-            Mint { to: _, amount: _ } => {}
+        match *transfer {
+            Burn { from: _, amount: _ } | Mint { to: _, amount: _ } | Approve { .. } => {}
             Transfer {
                 from,
                 to,
@@ -618,17 +617,16 @@ impl AccountsStore {
                     if let Some(principal) = self.try_get_principal(&from) {
                         let canister_ids: Vec<CanisterId> =
                             self.get_canisters(principal).iter().map(|c| c.canister_id).collect();
-                        let transaction_type = Some(self.get_transaction_type(
+                        let transaction_type = self.get_transaction_type(
                             from,
                             to,
                             memo,
                             &principal,
                             &canister_ids,
                             default_transaction_type,
-                        ));
+                        );
                         self.process_transaction_type(
-                            transaction_type
-                                .unwrap_or_else(|| unreachable!("Transaction type is set to Some a few lines above")),
+                            transaction_type,
                             principal,
                             from,
                             to,
@@ -645,7 +643,6 @@ impl AccountsStore {
                     );
                 }
             }
-            Approve { .. } => {}
         }
 
         self.block_height_synced_up_to = Some(block_height);
