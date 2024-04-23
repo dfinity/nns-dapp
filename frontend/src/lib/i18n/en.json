@@ -387,7 +387,7 @@
   },
   "actionable_proposals_not_supported": {
     "title": "$snsName doesn't yet support actionable proposals.",
-    "text": "Because it is running an older version of the SNS governance canister.",
+    "text": "$snsName SNS governance canister needs to be updated to the latest version to show actionable proposals. You can still vote on all proposals, but they will not have the visual indication.",
     "dot_tooltip": "This SNS doesn't yet support actionable proposals."
   },
   "canisters": {
