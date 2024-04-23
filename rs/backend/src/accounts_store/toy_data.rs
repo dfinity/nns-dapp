@@ -2,8 +2,7 @@
 
 use crate::accounts_store::{
     schema::AccountsDbTrait, Account, AccountIdentifier, AccountsStore, AttachCanisterRequest, CanisterId, Memo,
-    NeuronDetails, NeuronId, Operation, PrincipalId, RegisterHardwareWalletRequest, TimeStamp, Tokens, Transaction,
-    TransactionType,
+    NeuronDetails, NeuronId, PrincipalId, RegisterHardwareWalletRequest,
 };
 
 #[cfg(test)]
@@ -16,7 +15,6 @@ const MAX_SUB_ACCOUNTS_PER_ACCOUNT: u64 = 3; // Toy accounts have between 0 and 
 const MAX_HARDWARE_WALLETS_PER_ACCOUNT: u64 = 1; // Toy accounts have between 0 and this many hardware wallets.
 const MAX_CANISTERS_PER_ACCOUNT: u64 = 2; // Toy accounts have between 0 and this many canisters.
 const NEURONS_PER_ACCOUNT: f32 = 0.3;
-const TRANSACTIONS_PER_ACCOUNT: f32 = 3.0;
 
 /// A specification for how large a toy account should be.
 ///
@@ -158,8 +156,6 @@ impl AccountsStore {
         let (index_range_start, index_range_end) = (num_existing_accounts, (num_existing_accounts + num_accounts));
         let mut neurons_needed: f32 = 0.0;
         let mut neurons_created: f32 = 0.0;
-        let mut transactions_needed: f32 = 0.0;
-        let mut transactions_created: f32 = 0.0;
         // Creates accounts:
         for toy_account_index in index_range_start..index_range_end {
             let account = PrincipalId::new_user_test_id(toy_account_index);
@@ -205,25 +201,6 @@ impl AccountsStore {
                     AccountIdentifier::from(PrincipalId::new_user_test_id(toy_account_index)),
                     neuron,
                 );
-            }
-            // Creates transactions
-            transactions_needed += TRANSACTIONS_PER_ACCOUNT;
-            while transactions_created < transactions_needed {
-                transactions_created += 1.0;
-                // Warning: This is in no way semantically meaningful or correct.  It is just data to fill up memory and exercise upgrades.
-                self.transactions.push_back(Transaction {
-                    transaction_index: 9,
-                    block_height: 10,
-                    timestamp: TimeStamp::from_nanos_since_unix_epoch(341),
-                    memo: Memo(11),
-                    transfer: Operation::Transfer {
-                        to: AccountIdentifier::from(PrincipalId::new_user_test_id(12)),
-                        amount: Tokens::from_e8s(10_000),
-                        from: AccountIdentifier::from(PrincipalId::new_user_test_id(14)),
-                        fee: Tokens::from_e8s(10_001),
-                    },
-                    transaction_type: Some(TransactionType::Transfer),
-                });
             }
         }
         index_range_start

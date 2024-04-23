@@ -81,29 +81,6 @@ check_state_size() {
   fi
 }
 
-# Verifies that the number of transactions is reasonable.  Some may be pruned, but not a lot.
-# TODO: Unit Test
-check_num_transactions() {
-  # The toy state creates 3 transactions per account; see TRANSACTIONS_PER_ACCOUNT
-  # in: rs/backend/src/accounts_store/toy_data.rs
-  toy_transactions="$((NUM_TOY_ACCOUNTS * 3))"
-  # Note: Transactions MAY be pruned if the state is large enough, however in tests
-  # we should not make the state so large that, say, half the transactions are pruned.
-  # If that many are pruned, either the test is unrealistic or we should increase the
-  # amount of storage available.
-  expected_min_transactions="$((toy_transactions / 2))"
-  transactions_count="$(get_transactions_count)"
-  if ((transactions_count < expected_min_transactions)); then
-    {
-      echo "ERROR: 'transactions_count' is smaller than expected."
-      printf "  Expected at least: %10d\n" "$expected_min_transactions"
-      printf "  Actual:            %10d\n" "$transactions_count"
-      printf "  Note: Transactions MAY be pruned but if a lot are being pruned, there is insufficient memory."
-      exit 1
-    } >&2
-  fi
-}
-
 # Wait for the migration countdown to complete.
 wait_for_migration() {
   local migration_countdown
