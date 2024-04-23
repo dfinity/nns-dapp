@@ -174,7 +174,7 @@ fn append_transaction_detects_neuron_transactions() {
         .append_transaction(
             topup1,
             Memo(0),
-            block_height + 2,
+            block_height + 1,
             TimeStamp::from_nanos_since_unix_epoch(100),
         )
         .unwrap();
@@ -193,7 +193,7 @@ fn append_transaction_detects_neuron_transactions() {
         .append_transaction(
             topup2,
             Memo(0),
-            block_height + 3,
+            block_height + 2,
             TimeStamp::from_nanos_since_unix_epoch(100),
         )
         .unwrap();
