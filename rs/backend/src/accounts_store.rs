@@ -450,7 +450,6 @@ impl AccountsStore {
                 // This is an old account that needs a one-off fix to set the principal and update the transactions.
                 let mut account = account.clone();
                 account.principal = Some(caller);
-                self.fix_transactions_for_early_user(&account, caller);
                 self.accounts_db
                     .db_insert_account(&account_identifier.to_vec(), account);
             }
@@ -461,76 +460,6 @@ impl AccountsStore {
                 .db_insert_account(&account_identifier.to_vec(), new_account);
 
             true
-        }
-    }
-
-    /// Migrates transactions for users who were created before we started storing the principal.
-    ///
-    /// TODO: Monitor how many accounts still need to be migrated and remove this function when the number is 0.
-    fn fix_transactions_for_early_user(&mut self, account: &Account, caller: PrincipalId) {
-        let canister_ids: Vec<dfn_core::CanisterId> = account.canisters.iter().map(|c| c.canister_id).collect();
-        let transactions: Vec<TransactionIndex> = account.get_all_transactions_linked_to_principal_sorted();
-
-        // Now that we know the principal we can set the transaction types. The
-        // transactions must be sorted since some transaction types can only be
-        // determined based on earlier transactions (eg. we can only detect
-        // TopUpNeuron transactions that happen after StakeNeuron transactions).
-        for transaction_index in transactions {
-            let transaction = self.get_transaction(transaction_index).unwrap();
-            if transaction.transaction_type.is_none() {
-                let transaction_type = match transaction.transfer {
-                    Burn { from: _, amount: _ } => TransactionType::Burn,
-                    Mint { to: _, amount: _ } => TransactionType::Mint,
-                    Transfer {
-                        from,
-                        to,
-                        amount,
-                        fee: _,
-                    }
-                    | TransferFrom {
-                        spender: _,
-                        from,
-                        to,
-                        amount,
-                        fee: _,
-                    } => {
-                        let default_transaction_type = if matches!(transaction.transfer, Transfer { .. }) {
-                            TransactionType::Transfer
-                        } else {
-                            TransactionType::TransferFrom
-                        };
-
-                        if self.accounts_db.db_get_account(&to.to_vec()).is_some() {
-                            // If the recipient is a known account then the transaction must be either Transfer or TransferFrom,
-                            // since for all the 'special' transaction types the recipient is not a user account
-                            default_transaction_type
-                        } else {
-                            let memo = transaction.memo;
-                            let transaction_type = self.get_transaction_type(
-                                from,
-                                to,
-                                memo,
-                                &caller,
-                                &canister_ids,
-                                default_transaction_type,
-                            );
-                            let block_height = transaction.block_height;
-                            self.process_transaction_type(
-                                transaction_type,
-                                caller,
-                                from,
-                                to,
-                                memo,
-                                amount,
-                                block_height,
-                            );
-                            transaction_type
-                        }
-                    }
-                    Approve { .. } => TransactionType::Approve,
-                };
-                self.get_transaction_mut(transaction_index).unwrap().transaction_type = Some(transaction_type);
-            }
         }
     }
 
