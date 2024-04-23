@@ -19,10 +19,10 @@ use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::borrow::Cow;
-use std::cmp::{min, Ordering};
+use std::cmp::Ordering;
 use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use std::fmt;
-use std::ops::{RangeBounds, RangeTo};
+use std::ops::RangeBounds;
 use std::time::{Duration, SystemTime};
 
 pub mod constructors;
@@ -832,57 +832,6 @@ impl AccountsStore {
         self.neurons_topped_up_count += 1;
     }
 
-    #[cfg(not(target_arch = "wasm32"))]
-    pub fn get_transactions_count(&self) -> u32 {
-        self.transactions.len() as u32
-    }
-
-    pub fn prune_transactions(&mut self, count_to_prune: u32) -> u32 {
-        let count_to_prune = min(count_to_prune, u32::try_from(self.transactions.len()).unwrap_or_else(|_| unreachable!("The number of transactions is well below 2**32.  Transactions are pruned if the heap, where they are stored, exceeds 1Gb of data.")));
-
-        if count_to_prune > 0 {
-            let transactions: Vec<_> = self
-                .transactions
-                .drain(RangeTo {
-                    end: count_to_prune as usize,
-                })
-                .collect();
-
-            // Note: This SHOULD always be true, as transactions.len() should equal count_to_prune and we have already checked that that is greater than 0.
-            if let Some(min_transaction_index) = self
-                .transactions
-                .front()
-                .map(|transaction| transaction.transaction_index)
-            {
-                for transaction in transactions {
-                    let accounts = match transaction.transfer {
-                        Burn { from, amount: _ } => vec![from],
-                        Mint { to, amount: _ } => vec![to],
-                        Transfer {
-                            from,
-                            to,
-                            amount: _,
-                            fee: _,
-                        }
-                        | TransferFrom {
-                            from,
-                            to,
-                            spender: _,
-                            amount: _,
-                            fee: _,
-                        } => vec![from, to],
-                        Approve { .. } => vec![],
-                    };
-                    for account in accounts {
-                        self.prune_transactions_from_account(account, min_transaction_index);
-                    }
-                }
-            }
-        }
-
-        count_to_prune
-    }
-
     pub fn enqueue_multi_part_transaction(
         &mut self,
         block_height: BlockIndex,
@@ -991,75 +940,6 @@ impl AccountsStore {
         const CANISTER_NAME_MAX_LENGTH: usize = 24;
 
         name.len() <= CANISTER_NAME_MAX_LENGTH
-    }
-
-    fn prune_transactions_from_account(
-        &mut self,
-        account_identifier: AccountIdentifier,
-        prune_blocks_previous_to: TransactionIndex,
-    ) {
-        fn prune_transactions_impl(
-            transactions: &mut Vec<TransactionIndex>,
-            prune_blocks_previous_to: TransactionIndex,
-        ) {
-            let index = transactions
-                .iter()
-                .enumerate()
-                .take_while(|(_, &block_height)| block_height < prune_blocks_previous_to)
-                .map(|(index, _)| index)
-                .last();
-
-            if let Some(index) = index {
-                transactions.drain(0..=index);
-            }
-
-            if transactions.capacity() >= transactions.len() * 2 {
-                transactions.shrink_to_fit();
-            }
-        }
-
-        if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
-            let transactions = &mut account.default_account_transactions;
-            prune_transactions_impl(transactions, prune_blocks_previous_to);
-            self.accounts_db
-                .db_insert_account(&account_identifier.to_vec(), account);
-        } else {
-            match self.hardware_wallets_and_sub_accounts.get(&account_identifier) {
-                Some(AccountWrapper::SubAccount(parent_account_identifier, sub_account_index)) => {
-                    let mut account = self
-                        .accounts_db
-                        .db_get_account(&parent_account_identifier.to_vec())
-                        .unwrap();
-
-                    if let Some(sub_account) = account.sub_accounts.get_mut(sub_account_index) {
-                        let transactions = &mut sub_account.transactions;
-                        prune_transactions_impl(transactions, prune_blocks_previous_to);
-                    }
-
-                    self.accounts_db
-                        .db_insert_account(&parent_account_identifier.to_vec(), account);
-                }
-                Some(AccountWrapper::HardwareWallet(linked_account_identifiers)) => {
-                    for linked_account_identifier in linked_account_identifiers {
-                        let mut account = self
-                            .accounts_db
-                            .db_get_account(&linked_account_identifier.to_vec())
-                            .unwrap();
-                        if let Some(hardware_wallet_account) = account
-                            .hardware_wallet_accounts
-                            .iter_mut()
-                            .find(|a| account_identifier == AccountIdentifier::from(a.principal))
-                        {
-                            let transactions = &mut hardware_wallet_account.transactions;
-                            prune_transactions_impl(transactions, prune_blocks_previous_to);
-                            self.accounts_db
-                                .db_insert_account(&linked_account_identifier.to_vec(), account);
-                        }
-                    }
-                }
-                None => {}
-            }
-        }
     }
 
     #[allow(clippy::too_many_arguments)]
