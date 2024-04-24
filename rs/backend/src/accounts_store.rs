@@ -12,7 +12,7 @@ use ic_crypto_sha2::Sha256;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
 use ic_stable_structures::{storable::Bound, Storable};
-use icp_ledger::Operation::{self, Approve, Burn, Mint, Transfer, TransferFrom};
+use icp_ledger::Operation::{self, Approve, Burn, Mint, Transfer};
 use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
@@ -581,12 +581,6 @@ impl AccountsStore {
         match *transfer {
             Burn { from: _, amount: _ } | Mint { to: _, amount: _ } | Approve { .. } => {}
             Transfer {
-                from,
-                to,
-                amount,
-                fee: _,
-            }
-            | TransferFrom {
                 from,
                 to,
                 spender: _,

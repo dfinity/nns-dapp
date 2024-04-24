@@ -148,6 +148,7 @@ fn maybe_process_transaction_detects_neuron_transactions() {
     let transfer = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
+        spender: None,
         amount: Tokens::from_tokens(1).unwrap(),
         fee: Tokens::from_e8s(10000),
     };
@@ -167,6 +168,7 @@ fn maybe_process_transaction_detects_neuron_transactions() {
     let topup1 = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
+        spender: None,
         amount: Tokens::from_tokens(2).unwrap(),
         fee: Tokens::from_e8s(10000),
     };
@@ -187,6 +189,7 @@ fn maybe_process_transaction_detects_neuron_transactions() {
     let topup2 = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
+        spender: None,
         amount: Tokens::from_tokens(3).unwrap(),
         fee: Tokens::from_e8s(10000),
     };
@@ -217,6 +220,7 @@ fn maybe_process_transaction_detects_neuron_transactions_from_external_accounts(
     let transfer = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
+        spender: None,
         amount: Tokens::from_tokens(1).unwrap(),
         fee: Tokens::from_e8s(10000),
     };
@@ -227,6 +231,7 @@ fn maybe_process_transaction_detects_neuron_transactions_from_external_accounts(
     let topup = Transfer {
         from: AccountIdentifier::new(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap(), None),
         to: neuron_account,
+        spender: None,
         amount: Tokens::from_tokens(2).unwrap(),
         fee: Tokens::from_e8s(10000),
     };
@@ -267,6 +272,7 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
     let stake_neuron_transfer = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
+        spender: None,
         amount: Tokens::from_tokens(1).unwrap(),
         fee: Tokens::from_e8s(10000),
     };
@@ -277,6 +283,7 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
     let topup = Transfer {
         from: AccountIdentifier::new(other_principal, None),
         to: neuron_account,
+        spender: None,
         amount: Tokens::from_tokens(2).unwrap(),
         fee: Tokens::from_e8s(10000),
     };
@@ -1028,6 +1035,7 @@ pub(crate) fn setup_test_store() -> AccountsStore {
         let transfer = Transfer {
             amount: Tokens::from_e8s(300_000_000),
             fee: Tokens::from_e8s(1_000),
+            spender: None,
             from: account_identifier1,
             to: account_identifier2,
         };

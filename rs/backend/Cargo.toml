@@ -22,23 +22,23 @@ strum = "0.25.0"
 strum_macros = "0.25.3"
 tar = "0.4.40"
 
-cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
+cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+dfn_candid = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+dfn_core = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
 ic-cdk = { workspace = true }
 ic-cdk-macros = { workspace = true }
 ic-certified-map = "0.3.4" # == https://github.com/dfinity/cdk-rs 6a15aa1616bcfdfdc4c120d17d37a089f5700c36
-ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
+ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
 ic-stable-structures = "0.6.0"
-icp-ledger = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-on_wire = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
+icp-ledger = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+on_wire = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
 
 proposals = { path = "../proposals" }
 
