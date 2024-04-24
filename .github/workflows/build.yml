@@ -76,7 +76,7 @@ jobs:
           retention-days: 3
   test-playwright-e2e-shard-1-of-2:
     needs: build
-    runs-on: ubuntu-latest-m
+    runs-on: ubuntu-20.04
     timeout-minutes: 30
     steps:
       - name: Checkout nns-dapp
@@ -88,7 +88,7 @@ jobs:
           shard_count: 2
   test-playwright-e2e-shard-2-of-2:
     needs: build
-    runs-on: ubuntu-latest-m
+    runs-on: ubuntu-20.04
     timeout-minutes: 30
     steps:
       - name: Checkout nns-dapp
