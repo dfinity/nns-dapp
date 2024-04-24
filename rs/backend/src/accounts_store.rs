@@ -56,7 +56,6 @@ pub struct AccountsStore {
     // pending_transactions: HashMap<(from, to), (TransactionType, timestamp_ms_since_epoch)>
     pending_transactions: HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
 
-    transactions: VecDeque<Transaction>,
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
     block_height_synced_up_to: Option<BlockIndex>,
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
@@ -86,11 +85,10 @@ impl fmt::Debug for AccountsStore {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "AccountsStore{{accounts_db: {:?}, hardware_wallets_and_sub_accounts: HashMap[{:?}], pending_transactions: HashMap[{:?}], transactions: VecDeque[{:?}], neuron_accounts: HashMap[{:?}], block_height_synced_up_to: {:?}, multi_part_transactions_processor: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
+            "AccountsStore{{accounts_db: {:?}, hardware_wallets_and_sub_accounts: HashMap[{:?}], pending_transactions: HashMap[{:?}], neuron_accounts: HashMap[{:?}], block_height_synced_up_to: {:?}, multi_part_transactions_processor: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
             self.accounts_db,
             self.hardware_wallets_and_sub_accounts.len(),
             self.pending_transactions.len(),
-            self.transactions.len(),
             self.neuron_accounts.len(),
             self.block_height_synced_up_to,
             self.multi_part_transactions_processor,
@@ -841,8 +839,6 @@ impl AccountsStore {
     }
 
     pub fn get_stats(&self, stats: &mut Stats) {
-        let earliest_transaction = self.transactions.front();
-        let latest_transaction = self.transactions.back();
         let timestamp_now_nanos = u64::try_from(
             dfn_core::api::now()
                 .duration_since(SystemTime::UNIX_EPOCH)
@@ -858,14 +854,7 @@ impl AccountsStore {
         stats.accounts_count = self.accounts_db.db_accounts_len();
         stats.sub_accounts_count = self.accounts_db_stats.sub_accounts_count;
         stats.hardware_wallet_accounts_count = self.accounts_db_stats.hardware_wallet_accounts_count;
-        stats.transactions_count = self.transactions.len() as u64;
         stats.block_height_synced_up_to = self.block_height_synced_up_to;
-        stats.earliest_transaction_timestamp_nanos =
-            earliest_transaction.map_or(0, |t| t.timestamp.as_nanos_since_unix_epoch());
-        stats.earliest_transaction_block_height = earliest_transaction.map_or(0, |t| t.block_height);
-        stats.latest_transaction_timestamp_nanos =
-            latest_transaction.map_or(0, |t| t.timestamp.as_nanos_since_unix_epoch());
-        stats.latest_transaction_block_height = latest_transaction.map_or(0, |t| t.block_height);
         stats.seconds_since_last_ledger_sync = duration_since_last_sync.as_secs();
         stats.neurons_created_count = self.neuron_accounts.len() as u64;
         stats.neurons_topped_up_count = self.neurons_topped_up_count;
@@ -1151,7 +1140,9 @@ impl StableState for AccountsStore {
             &self.hardware_wallets_and_sub_accounts,
             // TODO: Remove pending_transactions
             HashMap::<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>::new(),
-            &self.transactions,
+            // Transactions are unused but we need to encode them for backwards
+            // compatibility.
+            VecDeque::<Transaction>::new(),
             &self.neuron_accounts,
             &self.block_height_synced_up_to,
             &self.multi_part_transactions_processor,
@@ -1169,7 +1160,9 @@ impl StableState for AccountsStore {
             mut accounts,
             mut hardware_wallets_and_sub_accounts,
             pending_transactions,
-            transactions,
+            // Transactions are unused but we need to decode something for backwards
+            // compatibility.
+            _transactions,
             neuron_accounts,
             block_height_synced_up_to,
             multi_part_transactions_processor,
@@ -1180,7 +1173,7 @@ impl StableState for AccountsStore {
             BTreeMap<Vec<u8>, Account>,
             HashMap<AccountIdentifier, AccountWrapper>,
             HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
-            VecDeque<Transaction>,
+            candid::types::reserved::Reserved,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockIndex>,
             MultiPartTransactionsProcessor,
@@ -1224,7 +1217,6 @@ impl StableState for AccountsStore {
             accounts_db: AccountsDbAsProxy::from(accounts_db),
             hardware_wallets_and_sub_accounts,
             pending_transactions,
-            transactions,
             neuron_accounts,
             block_height_synced_up_to,
             multi_part_transactions_processor,
