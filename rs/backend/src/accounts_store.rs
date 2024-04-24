@@ -9,7 +9,6 @@ use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_cdk::println;
 use ic_crypto_sha2::Sha256;
-use ic_ledger_core::timestamp::TimeStamp;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
 use ic_stable_structures::{storable::Bound, Storable};
@@ -219,16 +218,6 @@ impl PartialOrd for NamedCanister {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
-}
-
-#[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
-struct Transaction {
-    transaction_index: TransactionIndex,
-    block_height: BlockIndex,
-    timestamp: TimeStamp,
-    memo: Memo,
-    transfer: Operation,
-    transaction_type: Option<TransactionType>,
 }
 
 #[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
@@ -1142,7 +1131,7 @@ impl StableState for AccountsStore {
             HashMap::<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>::new(),
             // Transactions are unused but we need to encode them for backwards
             // compatibility.
-            VecDeque::<Transaction>::new(),
+            VecDeque::<candid::Empty>::new(),
             &self.neuron_accounts,
             &self.block_height_synced_up_to,
             &self.multi_part_transactions_processor,
