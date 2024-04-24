@@ -20,7 +20,6 @@ impl State {
                         trap_with(&format!(
                             "The serialized memory takes more than 2**64 bytes.  Amazing: {e:?}"
                         ));
-                        unreachable!();
                     })
                     .to_be_bytes();
                 partitions.growing_write(PartitionType::Heap.memory_id(), 0, &length_field);
@@ -29,7 +28,6 @@ impl State {
             PartitionsMaybe::None(_) => {
                 println!("END state::save_heap: ()");
                 trap_with("No memory manager found.  Cannot save heap.");
-                unreachable!();
             }
         }
     }
@@ -49,7 +47,6 @@ impl State {
         };
         State::decode(candid_bytes).unwrap_or_else(|e| {
             trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
-            unreachable!();
         })
     }
 }
