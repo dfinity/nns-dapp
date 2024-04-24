@@ -15,13 +15,18 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Actionable proposal indication.
+
 #### Changed
 
+* Update main navigation style on mobile. 
 * Update IC dependencies in nns-dapp crates.
 
 #### Deprecated
 
 #### Removed
+
+* Stop storing transactions in the nns-dapp canister.
 
 #### Fixed
 

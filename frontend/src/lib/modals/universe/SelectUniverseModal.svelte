@@ -15,13 +15,23 @@
   };
 </script>
 
-<Modal testId="select-universe-modal" on:nnsClose>
-  <span slot="title" data-tid="select-universe-modal-title"
-    >{$titleTokenSelectorStore}</span
-  >
+<div class="container">
+  <Modal testId="select-universe-modal" on:nnsClose>
+    <span slot="title" data-tid="select-universe-modal-title"
+      >{$titleTokenSelectorStore}</span
+    >
 
-  <SelectUniverseList
-    role="button"
-    on:nnsSelectUniverse={({ detail }) => select(detail)}
-  />
-</Modal>
+    <SelectUniverseList
+      role="button"
+      on:nnsSelectUniverse={({ detail }) => select(detail)}
+    />
+  </Modal>
+</div>
+
+<style lang="scss">
+  .container {
+    display: contents;
+    // change dropdown list background (modal)
+    --overlay-content-background: var(--menu-selected-background);
+  }
+</style>

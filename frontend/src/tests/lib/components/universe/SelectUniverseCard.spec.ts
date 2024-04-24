@@ -62,30 +62,6 @@ describe("SelectUniverseCard", () => {
     });
   });
 
-  describe("theme", () => {
-    it("display theme framed if role button", async () => {
-      const po = await renderComponent({
-        props: { ...props, role: "button" },
-      });
-      expect(await po.isFramed()).toBe(true);
-    });
-
-    it("display theme transparent if role link", async () => {
-      const po = await renderComponent({
-        props: { ...props, role: "link" },
-      });
-      expect(await po.isTransparent()).toBe(true);
-    });
-
-    it("display no theme if role dropdown", async () => {
-      const po = await renderComponent({
-        props: { ...props, role: "dropdown" },
-      });
-      expect(await po.isFramed()).toBe(false);
-      expect(await po.isTransparent()).toBe(false);
-    });
-  });
-
   describe("icon", () => {
     it("display no icon if role button but not selected", async () => {
       const po = await renderComponent({

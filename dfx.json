@@ -341,7 +341,7 @@
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "ENABLE_ICP_INDEX": true,
-          "ENABLE_VOTING_INDICATION": false,
+          "ENABLE_VOTING_INDICATION": true,
           "ENABLE_HIDE_ZERO_BALANCE": true
         }
       }
@@ -353,7 +353,7 @@
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
         "BINSTALL_VERSION": "1.3.0",
-        "DIDC_VERSION": "2024-02-27",
+        "DIDC_VERSION": "2024-04-11",
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2024-04-17",
