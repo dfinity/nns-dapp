@@ -38,7 +38,7 @@
     "NodeProviderRewards": "Topic for proposals to reward node providers.",
     "SnsDecentralizationSale": "SNS Decentralization Swap.",
     "ReplicaVersionManagement": "All proposals dealing with blessing and retirement of replica versions.",
-    "SubnetReplicaVersionManagement": "Proposals handling updates of a subnet’s replica version.",
+    "SubnetReplicaVersionManagement": "Proposals handling deployments of IC OS versions.",
     "SnsAndCommunityFund": "Proposals relating to service nervous systems (SNS) and Neurons' Fund.",
     "ApiBoundaryNodeManagement": "Proposals related to the management of API boundary nodes."
   },
@@ -146,7 +146,7 @@
     "AddApiBoundaryNode": "Add API Boundary Node",
     "RemoveApiBoundaryNodes": "Remove API Boundary Node",
     "UpdateApiBoundaryNodesVersion": "Update API Boundary Nodes Version",
-    "DeployGuestosToSomeApiBoundaryNodes": "Deploy GuestOS To Some Api Boundary Nodes",
+    "DeployGuestosToSomeApiBoundaryNodes": "Deploy GuestOS To Some API Boundary Nodes",
     "DeployGuestosToAllUnassignedNodes": "Deploy GuestOS To All Unassigned Nodes",
     "UpdateSshReadOnlyAccessForAllUnassignedNodes": "Update SSH Read Only Access For All Unassigned Nodes",
     "ReviseElectedHostosVersions": "Revise Elected HostOS Versions",
