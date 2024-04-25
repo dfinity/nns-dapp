@@ -36,7 +36,7 @@ ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70e
 ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
 ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
 ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
-ic-stable-structures = "0.6.0"
+ic-stable-structures = "0.6.4"
 icp-ledger = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
 on_wire = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
 
