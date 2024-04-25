@@ -146,11 +146,11 @@
     "AddApiBoundaryNode": "Add API Boundary Node",
     "RemoveApiBoundaryNodes": "Remove API Boundary Node",
     "UpdateApiBoundaryNodesVersion": "Update API Boundary Nodes Version",
-    "DeployGuestosToSomeApiBoundaryNodesPayload": "DeployGuestosToSomeApiBoundaryNodesPayload",
-    "DeployGuestosToAllUnassignedNodesPayload": "DeployGuestosToAllUnassignedNodesPayload",
-    "UpdateSshReadOnlyAccessForAllUnassignedNodesPayload": "UpdateSshReadOnlyAccessForAllUnassignedNodesPayload",
-    "ReviseElectedHostosVersionsPayload": "ReviseElectedHostosVersionsPayload",
-    "DeployHostosToSomeNodesPayload": "DeployHostosToSomeNodesPayload"
+    "DeployGuestosToSomeApiBoundaryNodes": "DeployGuestosToSomeApiBoundaryNodes",
+    "DeployGuestosToAllUnassignedNodes": "DeployGuestosToAllUnassignedNodes",
+    "UpdateSshReadOnlyAccessForAllUnassignedNodes": "UpdateSshReadOnlyAccessForAllUnassignedNodes",
+    "ReviseElectedHostosVersions": "ReviseElectedHostosVersions",
+    "DeployHostosToSomeNodes": "DeployHostosToSomeNodes"
   },
   "nns_functions_description": {
     "Unspecified": "",
@@ -198,10 +198,10 @@
     "AddApiBoundaryNode": "A proposal to add a new API Boundary Node using an assigned node",
     "RemoveApiBoundaryNodes": "A proposal to remove a set of API Boundary Nodes, which will designate them as unassigned nodes",
     "UpdateApiBoundaryNodesVersion": "A proposal to update the version of a set of API Boundary Nodes",
-    "DeployGuestosToSomeApiBoundaryNodesPayload": "Description of the proposal type DeployGuestosToSomeApiBoundaryNodesPayload.",
-    "DeployGuestosToAllUnassignedNodesPayload": "Description of the proposal type DeployGuestosToAllUnassignedNodesPayload.",
-    "UpdateSshReadOnlyAccessForAllUnassignedNodesPayload": "Description of the proposal type UpdateSshReadOnlyAccessForAllUnassignedNodesPayload.",
-    "ReviseElectedHostosVersionsPayload": "Description of the proposal type ReviseElectedHostosVersionsPayload.",
-    "DeployHostosToSomeNodesPayload": "Description of the proposal type DeployHostosToSomeNodesPayload."
+    "DeployGuestosToSomeApiBoundaryNodes": "Description of the proposal type DeployGuestosToSomeApiBoundaryNodes.",
+    "DeployGuestosToAllUnassignedNodes": "Description of the proposal type DeployGuestosToAllUnassignedNodes.",
+    "UpdateSshReadOnlyAccessForAllUnassignedNodes": "Description of the proposal type UpdateSshReadOnlyAccessForAllUnassignedNodes.",
+    "ReviseElectedHostosVersions": "Description of the proposal type ReviseElectedHostosVersions.",
+    "DeployHostosToSomeNodes": "Description of the proposal type DeployHostosToSomeNodes."
   }
 }
