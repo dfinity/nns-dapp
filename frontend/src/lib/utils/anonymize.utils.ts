@@ -1,7 +1,4 @@
-import type {
-  CanisterDetails,
-  Transaction,
-} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { CanisterDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { IcrcTransactions } from "$lib/stores/icrc-transactions.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
@@ -34,7 +31,6 @@ import {
   getSnsNeuronIdAsHexString,
   subaccountToHexString,
 } from "./sns-neuron.utils";
-import { mapNnsTransaction } from "./transactions.utils";
 import { mapPromises } from "./utils";
 
 const anonymiseAvailability = (value: unknown): "yes" | "no" =>
@@ -384,49 +380,6 @@ export const anonymizeCanister = async (
     // TODO: what to do with principals
     // canister_id: await anonymize(canister_id),
     canister_id: anonymiseAvailability(canister_id),
-  };
-};
-
-// TODO(NNS1-2906): Delete this file.
-export const anonymizeTransaction = async ({
-  transaction,
-  account,
-}: {
-  transaction: Transaction | undefined;
-  account: Account | undefined;
-}): Promise<
-  undefined | { [key in keyof Required<Transaction>]: unknown } | "no account"
-> => {
-  if (isNullish(transaction)) {
-    return transaction;
-  }
-
-  if (account === undefined) {
-    return "no account";
-  }
-
-  const { transaction_type, memo, timestamp, block_height } = transaction;
-
-  const { isReceive, isSend, type, from, to, displayAmount, date } =
-    mapNnsTransaction({
-      transaction,
-      account,
-    });
-
-  return {
-    transaction_type,
-    memo,
-    timestamp,
-    block_height,
-    transfer: {
-      isReceive,
-      isSend,
-      type,
-      from: from !== undefined ? undefined : await cutAndAnonymize(from),
-      to: to !== undefined ? undefined : await cutAndAnonymize(to),
-      displayAmount: await anonymizeAmount(displayAmount),
-      date,
-    },
   };
 };
 
