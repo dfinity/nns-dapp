@@ -387,6 +387,7 @@ export const anonymizeCanister = async (
   };
 };
 
+// TODO(NNS1-2906): Delete this file.
 export const anonymizeTransaction = async ({
   transaction,
   account,
