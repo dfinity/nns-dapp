@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-03_23-01-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-17_23-01-hotfix-bitcoin-query-stats/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -237,6 +237,11 @@ pub struct DeleteSubnetPayload {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct DeployGuestosToAllUnassignedNodesPayload {
+    pub elected_replica_version: String,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct NodeOperatorRecord {
     pub ipv6: Option<String>,
     pub node_operator_principal_id: serde_bytes::ByteBuf,
@@ -423,6 +428,11 @@ pub struct UpdateNodesHostosVersionPayload {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct UpdateSshReadOnlyAccessForAllUnassignedNodesPayload {
+    pub ssh_readonly_keys: Vec<String>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct EcdsaConfig {
     pub quadruples_to_create_in_advance: u32,
     pub max_queue_size: Option<u32>,
@@ -516,6 +526,12 @@ impl Service {
     pub async fn delete_subnet(&self, arg0: DeleteSubnetPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "delete_subnet", (arg0,)).await
     }
+    pub async fn deploy_guestos_to_all_unassigned_nodes(
+        &self,
+        arg0: DeployGuestosToAllUnassignedNodesPayload,
+    ) -> CallResult<()> {
+        ic_cdk::call(self.0, "deploy_guestos_to_all_unassigned_nodes", (arg0,)).await
+    }
     pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
         ic_cdk::call(self.0, "get_build_metadata", ()).await
     }
@@ -602,6 +618,12 @@ impl Service {
     }
     pub async fn update_nodes_hostos_version(&self, arg0: UpdateNodesHostosVersionPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_nodes_hostos_version", (arg0,)).await
+    }
+    pub async fn update_ssh_readonly_access_for_all_unassigned_nodes(
+        &self,
+        arg0: UpdateSshReadOnlyAccessForAllUnassignedNodesPayload,
+    ) -> CallResult<()> {
+        ic_cdk::call(self.0, "update_ssh_readonly_access_for_all_unassigned_nodes", (arg0,)).await
     }
     pub async fn update_subnet(&self, arg0: UpdateSubnetPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_subnet", (arg0,)).await
