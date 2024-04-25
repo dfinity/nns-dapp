@@ -6,64 +6,6 @@ import {
 import { isNullish } from "@dfinity/utils";
 import { stringifyJson } from "./utils";
 
-export const transactionType = ({
-  transaction,
-  swapCanisterAccounts = new Set(),
-}: {
-  transaction: NnsTransaction;
-  swapCanisterAccounts?: Set<string>;
-}): AccountTransactionType => {
-  const { transaction_type, transfer } = transaction;
-  if (transaction_type.length === 0) {
-    // This should never be hit since people running the latest front end code should have had their principal stored in
-    // the NNS UI canister and therefore will have all of their transaction types set.
-    if ("Burn" in transaction) {
-      return AccountTransactionType.Burn;
-    } else if ("Mint" in transaction) {
-      return AccountTransactionType.Mint;
-    }
-    return AccountTransactionType.Send;
-  }
-
-  if ("Send" in transfer) {
-    const { to } = transfer.Send;
-    if (swapCanisterAccounts.has(to)) {
-      return AccountTransactionType.ParticipateSwap;
-    }
-  }
-
-  if ("Receive" in transfer) {
-    const { from } = transfer.Receive;
-    if (swapCanisterAccounts.has(from)) {
-      return AccountTransactionType.RefundSwap;
-    }
-  }
-
-  if ("Transfer" in transaction_type[0]) {
-    return AccountTransactionType.Send;
-  } else if ("StakeNeuron" in transaction_type[0]) {
-    return AccountTransactionType.StakeNeuron;
-  } else if ("StakeNeuronNotification" in transaction_type[0]) {
-    return AccountTransactionType.StakeNeuronNotification;
-  } else if ("TopUpNeuron" in transaction_type[0]) {
-    return AccountTransactionType.TopUpNeuron;
-  } else if ("CreateCanister" in transaction_type[0]) {
-    return AccountTransactionType.CreateCanister;
-  } else if ("TopUpCanister" in transaction_type[0]) {
-    return AccountTransactionType.TopUpCanister;
-  } else if ("Burn" in transaction_type[0]) {
-    return AccountTransactionType.Burn;
-  } else if ("Mint" in transaction_type[0]) {
-    return AccountTransactionType.Mint;
-  } else if ("ParticipateSwap" in transaction_type[0]) {
-    return AccountTransactionType.ParticipateSwap;
-  }
-
-  throw new Error(
-    "Unknown TransactionType: " + JSON.stringify(transactionType)
-  );
-};
-
 export const transactionDisplayAmount = ({
   useFee,
   amount,
