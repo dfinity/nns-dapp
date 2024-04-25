@@ -1,15 +1,9 @@
-import type {
-  AccountIdentifierString,
-  Transaction as NnsTransaction,
-} from "$lib/canisters/nns-dapp/nns-dapp.types";
-import type { Account } from "$lib/types/account";
-import type { Transaction, UiTransaction } from "$lib/types/transaction";
+import type { Transaction as NnsTransaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import {
   AccountTransactionType,
   TransactionNetwork,
 } from "$lib/types/transaction";
-import type { Token } from "@dfinity/utils";
-import { TokenAmount, isNullish } from "@dfinity/utils";
+import { isNullish } from "@dfinity/utils";
 import { stringifyJson } from "./utils";
 
 export const transactionType = ({
@@ -86,99 +80,6 @@ export const transactionDisplayAmount = ({
     return amount + fee;
   }
   return amount;
-};
-
-// TODO(NNS1-2906): Delete this.
-export const mapNnsTransaction = ({
-  transaction,
-  account,
-  toSelfTransaction,
-  swapCanisterAccounts,
-}: {
-  transaction: NnsTransaction;
-  account: Account;
-  toSelfTransaction?: boolean;
-  swapCanisterAccounts?: Set<string>;
-}): Transaction => {
-  const { transfer, timestamp } = transaction;
-  let from: AccountIdentifierString | undefined;
-  let to: AccountIdentifierString | undefined;
-  let amount: bigint | undefined;
-  let fee: bigint | undefined;
-
-  if ("Send" in transfer) {
-    from = account.identifier;
-    to = transfer.Send.to;
-    amount = transfer.Send.amount.e8s;
-    fee = transfer.Send.fee.e8s;
-  } else if ("Receive" in transfer) {
-    to = account.identifier;
-    from = transfer.Receive.from;
-    amount = transfer.Receive.amount.e8s;
-    fee = transfer.Receive.fee.e8s;
-  } else if ("Burn" in transfer) {
-    amount = transfer.Burn.amount.e8s;
-  } else if ("Mint" in transfer) {
-    amount = transfer.Mint.amount.e8s;
-  } else {
-    throw new Error("Unsupported transfer type");
-  }
-
-  const type = transactionType({
-    transaction,
-    swapCanisterAccounts,
-  });
-  const date = new Date(Number(timestamp.timestamp_nanos / BigInt(1e6)));
-  const isReceive = toSelfTransaction === true || from !== account.identifier;
-  const isSend = to !== account.identifier;
-  const useFee = !isReceive;
-  const displayAmount = transactionDisplayAmount({ useFee, amount, fee });
-
-  return {
-    isReceive,
-    isSend,
-    type,
-    from,
-    to,
-    displayAmount,
-    date,
-  };
-};
-
-// TODO(NNS1-2906): Delete this.
-export const toUiTransaction = ({
-  transaction,
-  transactionId,
-  toSelfTransaction,
-  token,
-  i18n,
-}: {
-  transaction: Transaction;
-  transactionId: bigint;
-  toSelfTransaction: boolean;
-  token: Token;
-  i18n: I18n;
-}): UiTransaction => {
-  const isIncoming = transaction.isReceive || toSelfTransaction;
-  const headline = transactionName({
-    type: transaction.type,
-    isReceive: isIncoming,
-    i18n,
-  });
-  const otherParty = isIncoming ? transaction.from : transaction.to;
-
-  return {
-    domKey: `${transactionId}-${toSelfTransaction ? "0" : "1"}`,
-    isIncoming,
-    isPending: false,
-    headline,
-    otherParty,
-    tokenAmount: TokenAmount.fromE8s({
-      amount: transaction.displayAmount,
-      token,
-    }),
-    timestamp: transaction.date,
-  };
 };
 
 /**
