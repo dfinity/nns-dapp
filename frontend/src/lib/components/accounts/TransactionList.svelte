@@ -1,4 +1,5 @@
 <script lang="ts">
+  // TODO(NNS1-2906): Delete this file.
   import type { Transaction as NnsTransaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import type { Account } from "$lib/types/account";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";

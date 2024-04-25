@@ -1,4 +1,3 @@
-import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { canistersStore } from "$lib/stores/canisters.store";
@@ -79,10 +78,6 @@ let selectedSnsNeuronStore: Readable<SelectedSnsNeuronStore> = readable({
 export const debugSelectedSnsNeuronStore = (
   store: Readable<SelectedSnsNeuronStore>
 ) => (selectedSnsNeuronStore = createDerivedStore(store));
-const transactionsStore = writable<Transaction[] | undefined>(undefined);
-export const debugTransactions = (transactions: Transaction[] | undefined) => {
-  transactionsStore.set(transactions);
-};
 const snsProposalStore = writable<SnsProposalData | undefined>(undefined);
 export const debugSnsProposalStore = (
   proposal: SnsProposalData | undefined
@@ -116,7 +111,6 @@ export const initDebugStore = () =>
       snsNeuronsStore,
       icrcTransactionsStore,
       selectedSnsNeuronStore,
-      transactionsStore,
       snsProjectsStore,
       snsFunctionsStore,
       snsProposalStore,
@@ -145,7 +139,6 @@ export const initDebugStore = () =>
       $snsNeuronsStore,
       $snsTransactionsStore,
       $selectedSnsNeuronStore,
-      $transactionsStore,
       $projectsStore,
       $snsFunctionsStore,
       $snsProposalStore,
@@ -173,7 +166,6 @@ export const initDebugStore = () =>
       snsNeurons: $snsNeuronsStore,
       snsTransactions: $snsTransactionsStore,
       selectedSnsNeuron: $selectedSnsNeuronStore,
-      transactions: $transactionsStore,
       snsProposal: $snsProposalStore,
       projects: $projectsStore,
       snsFunctions: $snsFunctionsStore,

@@ -354,6 +354,7 @@ const transferError = ({
   return { success: false, err: labelKey };
 };
 
+// TODO(NNS1-2906): Delete this.
 export const getAccountTransactions = async ({
   accountIdentifier,
   onLoad,
