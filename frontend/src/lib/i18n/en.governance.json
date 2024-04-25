@@ -146,11 +146,11 @@
     "AddApiBoundaryNode": "Add API Boundary Node",
     "RemoveApiBoundaryNodes": "Remove API Boundary Node",
     "UpdateApiBoundaryNodesVersion": "Update API Boundary Nodes Version",
-    "DeployGuestosToSomeApiBoundaryNodes": "DeployGuestosToSomeApiBoundaryNodes",
-    "DeployGuestosToAllUnassignedNodes": "DeployGuestosToAllUnassignedNodes",
-    "UpdateSshReadOnlyAccessForAllUnassignedNodes": "UpdateSshReadOnlyAccessForAllUnassignedNodes",
-    "ReviseElectedHostosVersions": "ReviseElectedHostosVersions",
-    "DeployHostosToSomeNodes": "DeployHostosToSomeNodes"
+    "DeployGuestosToSomeApiBoundaryNodes": "Deploy GuestOS To Some Api Boundary Nodes",
+    "DeployGuestosToAllUnassignedNodes": "Deploy GuestOS To All Unassigned Nodes",
+    "UpdateSshReadOnlyAccessForAllUnassignedNodes": "Update SSH Read Only Access For All Unassigned Nodes",
+    "ReviseElectedHostosVersions": "Revise Elected HostOS Versions",
+    "DeployHostosToSomeNodes": "Deploy HostOS To Some Nodes"
   },
   "nns_functions_description": {
     "Unspecified": "",
@@ -198,10 +198,10 @@
     "AddApiBoundaryNode": "A proposal to add a new API Boundary Node using an assigned node",
     "RemoveApiBoundaryNodes": "A proposal to remove a set of API Boundary Nodes, which will designate them as unassigned nodes",
     "UpdateApiBoundaryNodesVersion": "A proposal to update the version of a set of API Boundary Nodes",
-    "DeployGuestosToSomeApiBoundaryNodes": "Description of the proposal type DeployGuestosToSomeApiBoundaryNodes.",
-    "DeployGuestosToAllUnassignedNodes": "Description of the proposal type DeployGuestosToAllUnassignedNodes.",
-    "UpdateSshReadOnlyAccessForAllUnassignedNodes": "Description of the proposal type UpdateSshReadOnlyAccessForAllUnassignedNodes.",
-    "ReviseElectedHostosVersions": "Description of the proposal type ReviseElectedHostosVersions.",
-    "DeployHostosToSomeNodes": "Description of the proposal type DeployHostosToSomeNodes."
+    "DeployGuestosToSomeApiBoundaryNodes": "A proposal to update the version of a set of API Boundary Nodes",
+    "DeployGuestosToAllUnassignedNodes": "A proposal to update the version of all unassigned nodes",
+    "UpdateSshReadOnlyAccessForAllUnassignedNodes": "A proposal to update SSH readonly access for all unassigned nodes",
+    "ReviseElectedHostosVersions": "A proposal to change the set of currently elected HostOS versions, by electing a new version, and/or unelecting some priorly elected versions. HostOS versions are identified by the hash of the installation image. The version to elect is added to the Registry, and the versions to unelect are removed from the Registry, ensuring that HostOS cannot upgrade to these versions anymore. This proposal does not actually perform the upgrade; for deployment of an elected version, please refer to `NNS_FUNCTION_DEPLOY_HOSTOS_TO_SOME_NODES`",
+    "DeployHostosToSomeNodes": "Deploy a HostOS version to a given set of nodes. The proposal changes the HostOS version that is used on the specified nodes."
   }
 }
