@@ -70,7 +70,6 @@ interface I18nError {
   accounts_not_found_poll: string;
   account_not_found: string;
   account_not_reload: string;
-  transactions_not_found: string;
   canister_not_found: string;
   fail: string;
   dummy_proposal: string;

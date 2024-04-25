@@ -1,6 +1,5 @@
 import {
   createSubAccount,
-  getTransactions,
   renameSubAccount as renameSubAccountApi,
 } from "$lib/api/accounts.api";
 import {
@@ -10,15 +9,11 @@ import {
 } from "$lib/api/icp-ledger.api";
 import { addAccount, queryAccount } from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
-import type {
-  AccountDetails,
-  Transaction,
-} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import {
   SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
   SYNC_ACCOUNTS_RETRY_SECONDS,
 } from "$lib/constants/accounts.constants";
-import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
@@ -44,10 +39,7 @@ import {
   invalidIcrcAddress,
   toIcpAccountIdentifier,
 } from "$lib/utils/accounts.utils";
-import {
-  isForceCallStrategy,
-  notForceCallStrategy,
-} from "$lib/utils/env.utils";
+import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import {
   cancelPoll,
@@ -353,44 +345,6 @@ const transferError = ({
 
   return { success: false, err: labelKey };
 };
-
-// TODO(NNS1-2906): Delete this.
-export const getAccountTransactions = async ({
-  accountIdentifier,
-  onLoad,
-}: {
-  accountIdentifier: AccountIdentifierText;
-  onLoad: (params: {
-    accountIdentifier: AccountIdentifierText;
-    transactions: Transaction[];
-  }) => void;
-}): Promise<void> =>
-  queryAndUpdate<Transaction[], unknown>({
-    strategy: FORCE_CALL_STRATEGY,
-    request: ({ certified, identity }) =>
-      getTransactions({
-        identity,
-        certified,
-        icpAccountIdentifier: toIcpAccountIdentifier(accountIdentifier),
-        pageSize: DEFAULT_TRANSACTION_PAGE_LIMIT,
-        offset: 0,
-      }),
-    onLoad: ({ response: transactions }) =>
-      onLoad({ accountIdentifier, transactions }),
-    onError: ({ error: err, certified }) => {
-      console.error(err);
-
-      if (!certified && notForceCallStrategy()) {
-        return;
-      }
-
-      toastsError({
-        labelKey: "error.transactions_not_found",
-        err,
-      });
-    },
-    logMessage: "Syncing Transactions",
-  });
 
 export const getAccountIdentity = async (
   identifier: string
