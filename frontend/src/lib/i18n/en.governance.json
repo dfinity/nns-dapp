@@ -145,7 +145,12 @@
     "UpdateNodesHostosVersion": "Update Nodes HostOS Version",
     "AddApiBoundaryNode": "Add API Boundary Node",
     "RemoveApiBoundaryNodes": "Remove API Boundary Node",
-    "UpdateApiBoundaryNodesVersion": "Update API Boundary Nodes Version"
+    "UpdateApiBoundaryNodesVersion": "Update API Boundary Nodes Version",
+    "DeployGuestosToSomeApiBoundaryNodesPayload": "DeployGuestosToSomeApiBoundaryNodesPayload",
+    "DeployGuestosToAllUnassignedNodesPayload": "DeployGuestosToAllUnassignedNodesPayload",
+    "UpdateSshReadOnlyAccessForAllUnassignedNodesPayload": "UpdateSshReadOnlyAccessForAllUnassignedNodesPayload",
+    "ReviseElectedHostosVersionsPayload": "ReviseElectedHostosVersionsPayload",
+    "DeployHostosToSomeNodesPayload": "DeployHostosToSomeNodesPayload"
   },
   "nns_functions_description": {
     "Unspecified": "",
@@ -192,6 +197,11 @@
     "UpdateNodesHostosVersion": "Update the HostOS version running on a given list of nodes. The proposal changes the HostOS version that is used on the specified nodes. The version must be contained in the list of HostOS versions.",
     "AddApiBoundaryNode": "A proposal to add a new API Boundary Node using an assigned node",
     "RemoveApiBoundaryNodes": "A proposal to remove a set of API Boundary Nodes, which will designate them as unassigned nodes",
-    "UpdateApiBoundaryNodesVersion": "A proposal to update the version of a set of API Boundary Nodes"
+    "UpdateApiBoundaryNodesVersion": "A proposal to update the version of a set of API Boundary Nodes",
+    "DeployGuestosToSomeApiBoundaryNodesPayload": "Description of the proposal type DeployGuestosToSomeApiBoundaryNodesPayload.",
+    "DeployGuestosToAllUnassignedNodesPayload": "Description of the proposal type DeployGuestosToAllUnassignedNodesPayload.",
+    "UpdateSshReadOnlyAccessForAllUnassignedNodesPayload": "Description of the proposal type UpdateSshReadOnlyAccessForAllUnassignedNodesPayload.",
+    "ReviseElectedHostosVersionsPayload": "Description of the proposal type ReviseElectedHostosVersionsPayload.",
+    "DeployHostosToSomeNodesPayload": "Description of the proposal type DeployHostosToSomeNodesPayload."
   }
 }
