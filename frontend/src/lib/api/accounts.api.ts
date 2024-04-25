@@ -24,6 +24,7 @@ export const createSubAccount = async ({
   logWithTimestamp(`Creating SubAccount ${hashCode(name)} complete.`);
 };
 
+// TODO(NNS1-2906): Delete this.
 export const getTransactions = async ({
   identity,
   icpAccountIdentifier,
