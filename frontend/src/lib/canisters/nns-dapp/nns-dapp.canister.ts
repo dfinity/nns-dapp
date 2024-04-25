@@ -302,6 +302,7 @@ export class NNSDappCanister {
     throw new Error(`Error detaching canister ${JSON.stringify(response)}`);
   };
 
+  // TODO(NNS1-2906): Delete this.
   public async getTransactions({
     accountIdentifier,
     pageSize,

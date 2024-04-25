@@ -1,7 +1,4 @@
-import type {
-  AccountIdentifierString,
-  Transaction,
-} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { AccountIdentifierString } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
 import { nnsDappCanister } from "./nns-dapp.api";
@@ -22,40 +19,6 @@ export const createSubAccount = async ({
   });
 
   logWithTimestamp(`Creating SubAccount ${hashCode(name)} complete.`);
-};
-
-// TODO(NNS1-2906): Delete this.
-export const getTransactions = async ({
-  identity,
-  icpAccountIdentifier,
-  pageSize,
-  offset,
-  certified,
-}: {
-  identity: Identity;
-  icpAccountIdentifier: AccountIdentifierString;
-  pageSize: number;
-  offset: number;
-  certified: boolean;
-}): Promise<Transaction[]> => {
-  logWithTimestamp(
-    `Loading Transactions ${hashCode(icpAccountIdentifier)} call...`
-  );
-
-  const { canister } = await nnsDappCanister({ identity });
-
-  const { transactions } = await canister.getTransactions({
-    accountIdentifier: icpAccountIdentifier,
-    pageSize,
-    offset,
-    certified,
-  });
-
-  logWithTimestamp(
-    `Loading Transactions ${hashCode(icpAccountIdentifier)} complete.`
-  );
-
-  return transactions;
 };
 
 export const renameSubAccount = async ({
