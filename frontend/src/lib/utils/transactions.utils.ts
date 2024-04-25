@@ -88,6 +88,7 @@ export const transactionDisplayAmount = ({
   return amount;
 };
 
+// TODO(NNS1-2906): Delete this.
 export const mapNnsTransaction = ({
   transaction,
   account,
@@ -144,6 +145,7 @@ export const mapNnsTransaction = ({
   };
 };
 
+// TODO(NNS1-2906): Delete this.
 export const toUiTransaction = ({
   transaction,
   transactionId,
