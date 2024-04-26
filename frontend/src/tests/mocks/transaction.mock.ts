@@ -5,8 +5,6 @@ import { TokenAmount } from "@dfinity/utils";
 import { mockSubAccount } from "./icp-accounts.store.mock";
 import { mockSnsToken } from "./sns-projects.mock";
 
-const displayAmount = 11_000_000_000_000_000n;
-
 export const createMockUiTransaction = ({
   domKey = "123-1",
   isIncoming = false,
