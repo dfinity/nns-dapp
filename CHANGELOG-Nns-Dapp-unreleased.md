@@ -15,11 +15,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Actionable proposal indication.
-
 #### Changed
 
-* Update main navigation style on mobile. 
 * Update IC dependencies in nns-dapp crates.
 * Update `ic-stable-structures` dependency to 0.6.4.
 
@@ -40,8 +37,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 #### Changed
-
-* Disallow build warnings for Rust.
 
 #### Deprecated
 
