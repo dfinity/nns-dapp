@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+DEFAULT_WASM_FILENAME="nns-dapp_test.wasm.gz"
+
+print_help() {
+  cat <<-EOF
+
+	Installs the production NNS dapp WASM, upgrades to the given WASM, and then
+	downgrades back to the production WASM.
+
+	EOF
+}
+
+TOP_DIR=$(git rev-parse --show-toplevel)
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../clap.bash"
+# Define options
+clap.define short=w long=wasm desc="WASM to test" variable=WASM default="nns-dapp_test.wasm.gz"
+clap.define short=a long=args desc="Args file for WASM installation" variable=ARGS_FILE default="nns-dapp-arg-local.did"
+clap.define long=github_step_summary desc="File to append stats to" variable=GITHUB_STEP_SUMMARY default=""
+
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+# Check if the WASM file exists:
+if ! [ -f "$WASM" ]; then
+  echo "WASM file $WASM does not exist" >&2
+  exit 1
+fi
+
+# Check if the ARGS_FILE file exists:
+if ! [ -f "$ARGS_FILE" ]; then
+  echo "Args file $ARGS_FILE does not exist" >&2
+  exit 1
+fi
+
+# Check if a replica is running:
+if pgrep replica; then
+  echo "A replica is already running. Shut it down first." >&2
+  exit 1
+fi
+
+dfx start --clean --background
+
+prod_dir="$(mktemp -d prod-XXXXXX)"
+
+cleanup() {
+  dfx stop
+  rm -rf "$prod_dir"
+}
+
+trap cleanup EXIT
+
+echo "Downloading production WASM and args file to temporary directory $prod_dir"
+
+curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp_test.wasm.gz >"$prod_dir/nns-dapp_test.wasm.gz"
+curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp-arg-local.did >"$prod_dir/nns-dapp-arg-local.did"
+
+PROD_WASM="$prod_dir/nns-dapp_test.wasm.gz"
+PROD_ARGS_FILE="$prod_dir/nns-dapp-arg-local.did"
+
+"$SOURCE_DIR/migration-test" --wasm1 "$PROD_WASM" --args1 "$PROD_ARGS_FILE" --wasm2 "$WASM" --args2 "$ARGS_FILE" --accounts 94 --chunk 30
+"$SOURCE_DIR/migration-test" --wasm1 "$PROD_WASM" --args1 "$PROD_ARGS_FILE" --wasm2 "$WASM" --args2 "$ARGS_FILE" --accounts 201 --chunk 20
+
+# If GITHUB_STEP_SUMMARY is non-empty, append the summary to the file:
+if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+  "$SOURCE_DIR/estimate-upgrade-cycles" | tee -a "$GITHUB_STEP_SUMMARY"
+fi
