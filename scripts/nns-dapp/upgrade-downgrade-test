@@ -2,7 +2,6 @@
 set -euo pipefail
 
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-DEFAULT_WASM_FILENAME="nns-dapp_test.wasm.gz"
 
 print_help() {
   cat <<-EOF
@@ -12,8 +11,6 @@ print_help() {
 
 	EOF
 }
-
-TOP_DIR=$(git rev-parse --show-toplevel)
 
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/../clap.bash"
