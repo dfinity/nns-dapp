@@ -37,7 +37,7 @@
     "Kyc": "Proposals that update KYC information for regulatory purposes — for example, during the initial Genesis distribution of ICP in the form of neurons.",
     "NodeProviderRewards": "Topic for proposals to reward node providers.",
     "SnsDecentralizationSale": "SNS Decentralization Swap.",
-    "ReplicaVersionManagement": "All proposals dealing with blessing and retirement of replica versions.",
+    "ReplicaVersionManagement": "Proposals handling election of IC OS versions.",
     "SubnetReplicaVersionManagement": "Proposals handling deployments of IC OS versions.",
     "SnsAndCommunityFund": "Proposals relating to service nervous systems (SNS) and Neurons' Fund.",
     "ApiBoundaryNodeManagement": "Proposals related to the management of API boundary nodes."
