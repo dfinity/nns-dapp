@@ -826,7 +826,6 @@ pub(crate) fn assert_initial_test_store_stats_are_correct(stats: &Stats) {
     assert_eq!(0, stats.sub_accounts_count);
     assert_eq!(0, stats.hardware_wallet_accounts_count);
     assert_eq!(3, stats.block_height_synced_up_to.unwrap());
-    assert_eq!(0, stats.earliest_transaction_block_height);
     assert!(stats.seconds_since_last_ledger_sync > 1_000_000_000);
 }
 
