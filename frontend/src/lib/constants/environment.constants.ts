@@ -40,7 +40,6 @@ export const SNS_AGGREGATOR_CANISTER_URL: string | undefined =
 export interface FeatureFlags<T> {
   ENABLE_CKBTC: T;
   ENABLE_CKTESTBTC: T;
-  ENABLE_ICP_INDEX: T;
   ENABLE_VOTING_INDICATION: T;
   ENABLE_HIDE_ZERO_BALANCE: T;
   // Used only in tests and set up in jest-setup.ts
@@ -57,7 +56,7 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
   envVars?.featureFlags ??
-    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_ICP_INDEX": false, "ENABLE_SNS_TYPES_FILTER": false, "ENABLE_HIDE_ZERO_BALANCE": false}'
+    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_SNS_TYPES_FILTER": false, "ENABLE_HIDE_ZERO_BALANCE": false}'
 );
 
 export const IS_TESTNET: boolean =

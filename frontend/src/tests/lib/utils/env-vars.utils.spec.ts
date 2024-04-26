@@ -20,7 +20,7 @@ describe("env-vars-utils", () => {
     vi.stubEnv("VITE_FETCH_ROOT_KEY", "true");
     vi.stubEnv(
       "VITE_FEATURE_FLAGS",
-      '{\\"ENABLE_CKBTC\\":true,\\"ENABLE_CKTESTBTC\\":false,\\"ENABLE_ICP_INDEX\\":false,\\"ENABLE_SNS\\":true,\\"ENABLE_SNS_2\\":true,\\"ENABLE_VOTING_INDICATION\\":false}'
+      '{\\"ENABLE_CKBTC\\":true,\\"ENABLE_CKTESTBTC\\":false,\\"ENABLE_SNS\\":true,\\"ENABLE_SNS_2\\":true,\\"ENABLE_VOTING_INDICATION\\":false}'
     );
     vi.stubEnv("VITE_HOST", "http://localhost:8080");
     vi.stubEnv(
@@ -48,7 +48,7 @@ describe("env-vars-utils", () => {
     cyclesMintingCanisterId: "rkp4c-7iaaa-aaaaa-aaaca-cai",
     dfxNetwork: "local",
     featureFlags:
-      '{"ENABLE_CKBTC":true,"ENABLE_CKTESTBTC":false,"ENABLE_ICP_INDEX":false,"ENABLE_SNS":true,"ENABLE_SNS_2":true,"ENABLE_VOTING_INDICATION":false}',
+      '{"ENABLE_CKBTC":true,"ENABLE_CKTESTBTC":false,"ENABLE_SNS":true,"ENABLE_SNS_2":true,"ENABLE_VOTING_INDICATION":false}',
     fetchRootKey: "true",
     governanceCanisterId: "rrkah-fqaaa-aaaaa-aaaaq-cai",
     host: "http://localhost:8080",

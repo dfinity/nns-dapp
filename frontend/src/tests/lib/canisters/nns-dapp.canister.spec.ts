@@ -232,22 +232,6 @@ describe("NNSDapp", () => {
       ));
   });
 
-  describe("NNSDapp.getTransactions", () => {
-    it("should call get_transactions", async () => {
-      const service = mock<NNSDappService>();
-      const nnsDapp = await createNnsDapp(service);
-
-      await nnsDapp.getTransactions({
-        accountIdentifier: "",
-        pageSize: 1,
-        offset: 0,
-        certified: true,
-      });
-
-      expect(service.get_transactions).toBeCalled();
-    });
-  });
-
   describe("NNSDapp.attachCanister", () => {
     it("should call attach_canister", async () => {
       const service = mock<NNSDappService>();

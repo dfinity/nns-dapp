@@ -23,11 +23,9 @@ import type { NNSDappService } from "./nns-dapp.idl";
 import { idlFactory } from "./nns-dapp.idl";
 import type {
   AccountDetails,
-  AccountIdentifierString,
   CanisterDetails,
   CreateSubAccountResponse,
   GetAccountResponse,
-  GetTransactionsResponse,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
   RenameSubAccountRequest,
@@ -301,24 +299,6 @@ export class NNSDappCanister {
     // Edge case
     throw new Error(`Error detaching canister ${JSON.stringify(response)}`);
   };
-
-  public async getTransactions({
-    accountIdentifier,
-    pageSize,
-    offset,
-    certified,
-  }: {
-    accountIdentifier: AccountIdentifierString;
-    pageSize: number;
-    offset: number;
-    certified: boolean;
-  }): Promise<GetTransactionsResponse> {
-    return this.getNNSDappService(certified).get_transactions({
-      page_size: pageSize,
-      offset,
-      account_identifier: accountIdentifier,
-    });
-  }
 
   public async getProposalPayload({
     proposalId,

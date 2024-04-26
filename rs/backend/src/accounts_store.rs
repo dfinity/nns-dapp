@@ -1140,7 +1140,7 @@ impl StableState for AccountsStore {
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
         #[allow(clippy::type_complexity)]
         let (
-            mut accounts,
+            accounts,
             mut hardware_wallets_and_sub_accounts,
             pending_transactions,
             // Transactions are unused but we need to decode something for backwards
@@ -1164,12 +1164,6 @@ impl StableState for AccountsStore {
             u64,
             Option<AccountsDbStats>,
         ) = Candid::from_bytes(bytes).map(|c| c.0)?;
-
-        // Remove duplicate transactions from hardware wallet accounts
-        for hw_account in accounts.values_mut().flat_map(|a| &mut a.hardware_wallet_accounts) {
-            let mut unique = HashSet::new();
-            hw_account.transactions.retain(|t| unique.insert(*t));
-        }
 
         // Remove duplicate links between hardware wallets and user accounts
         for hw_or_sub in hardware_wallets_and_sub_accounts.values_mut() {
@@ -1222,54 +1216,6 @@ impl Account {
             hardware_wallet_accounts: Vec::new(),
             canisters: Vec::new(),
         }
-    }
-
-    pub fn append_default_account_transaction(&mut self, transaction_index: TransactionIndex) {
-        self.default_account_transactions.push(transaction_index);
-    }
-
-    /// Records a transaction in a sub-account.
-    ///
-    /// TODO: Once we use the ledger index canister, this can be deleted.
-    ///
-    /// # Panics
-    /// - If we are unable to get a lock on the sub-accounts map.  This may happen if a previous update call locked the map, but has made an async call and so hasn't released the lock yet.
-    pub fn append_sub_account_transaction(&mut self, sub_account: u8, transaction_index: TransactionIndex) {
-        self.sub_accounts
-            .get_mut(&sub_account)
-            .expect("Unable to lock the sub-account transactions map")
-            .transactions
-            .push(transaction_index);
-    }
-
-    /// Records a transaction in a hardware wallet account.
-    ///
-    /// TODO: Use the index canister instead.
-    ///
-    /// # Panics
-    /// - If the account does not have a hardware wallet sub-account with the given identifier.
-    pub fn append_hardware_wallet_transaction(
-        &mut self,
-        account_identifier: AccountIdentifier,
-        transaction_index: TransactionIndex,
-    ) {
-        let account = self
-            .hardware_wallet_accounts
-            .iter_mut()
-            .find(|a| account_identifier == AccountIdentifier::from(a.principal))
-            .expect("This account does not have a hardware wallet with the given identifier.");
-
-        account.transactions.push(transaction_index);
-    }
-
-    #[must_use]
-    pub fn get_all_transactions_linked_to_principal_sorted(&self) -> Vec<TransactionIndex> {
-        self.default_account_transactions
-            .iter()
-            .copied()
-            .chain(self.sub_accounts.values().flat_map(|a| a.transactions.iter().copied()))
-            .sorted()
-            .collect()
     }
 }
 
