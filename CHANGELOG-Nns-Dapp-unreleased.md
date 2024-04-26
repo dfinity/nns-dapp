@@ -20,7 +20,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Update IC dependencies in nns-dapp crates.
 * Update `ic-stable-structures` dependency to 0.6.4.
 * New main menu selection style.
-* Rename `ReplicaVersionManagement` and `SubnetReplicaVersionManagement` topics.
+* Rename some topics and proposal types.
 
 #### Deprecated
 
