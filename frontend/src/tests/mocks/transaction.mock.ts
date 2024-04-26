@@ -1,32 +1,11 @@
 import type { GetTransactionsResponse } from "$lib/api/icp-index.api";
-import type { Transaction, UiTransaction } from "$lib/types/transaction";
-import { AccountTransactionType } from "$lib/types/transaction";
+import type { UiTransaction } from "$lib/types/transaction";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
 import { TokenAmount } from "@dfinity/utils";
 import { mockSubAccount } from "./icp-accounts.store.mock";
 import { mockSnsToken } from "./sns-projects.mock";
 
 const displayAmount = 11_000_000_000_000_000n;
-
-export const mockTransactionReceiveDataFromMain: Transaction = {
-  type: AccountTransactionType.Send,
-  isReceive: true,
-  isSend: false,
-  from: "aaaaa-aa",
-  to: "bbbbb-bb",
-  displayAmount,
-  date: new Date("03-14-2021"),
-};
-
-export const mockTransactionSendDataFromMain: Transaction = {
-  type: AccountTransactionType.Send,
-  isReceive: false,
-  isSend: true,
-  from: "aaaaa-aa",
-  to: "bbbbb-bb",
-  displayAmount,
-  date: new Date("03-14-2021"),
-};
 
 export const createMockUiTransaction = ({
   domKey = "123-1",
