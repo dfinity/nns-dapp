@@ -10,4 +10,3 @@ nns_dapp_wasm_memory_size_gib
 periodic_tasks_count
 seconds_since_last_ledger_sync
 sub_accounts_count
-transactions_count
