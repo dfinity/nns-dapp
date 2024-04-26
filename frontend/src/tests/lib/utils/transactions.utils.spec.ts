@@ -12,10 +12,6 @@ import {
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
-import {
-  mockReceivedFromMainAccountTransaction,
-  mockSentToSubAccountTransaction,
-} from "$tests/mocks/transaction.mock";
 
 describe("transactions-utils", () => {
   describe("transactionDisplayAmount", () => {

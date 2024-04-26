@@ -1,4 +1,3 @@
-import type { Transaction as NnsTransaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import {
   AccountTransactionType,
   TransactionNetwork,
