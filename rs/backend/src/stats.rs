@@ -3,7 +3,6 @@ use crate::perf::PerformanceCount;
 use crate::state::State;
 use crate::STATE;
 use candid::CandidType;
-use icp_ledger::BlockIndex;
 use serde::Deserialize;
 #[cfg(test)]
 mod tests;
@@ -32,12 +31,7 @@ pub struct Stats {
     pub accounts_count: u64,
     pub sub_accounts_count: u64,
     pub hardware_wallet_accounts_count: u64,
-    pub transactions_count: u64,
     pub block_height_synced_up_to: Option<u64>,
-    pub earliest_transaction_timestamp_nanos: u64,
-    pub earliest_transaction_block_height: BlockIndex,
-    pub latest_transaction_timestamp_nanos: u64,
-    pub latest_transaction_block_height: BlockIndex,
     pub seconds_since_last_ledger_sync: u64,
     pub neurons_created_count: u64,
     pub neurons_topped_up_count: u64,
@@ -73,11 +67,6 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
         "neurons_topped_up_count",
         stats.neurons_topped_up_count as f64,
         "Number of neurons topped up by the canister.",
-    )?;
-    w.encode_gauge(
-        "transactions_count",
-        stats.transactions_count as f64,
-        "Number of transactions processed by the canister.",
     )?;
     w.encode_gauge(
         "accounts_count",
