@@ -1,5 +1,4 @@
 import type { BlockHeight } from "@dfinity/ledger-icp";
-import type { E8s } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 export interface AccountDetails {
   principal: Principal;
@@ -38,15 +37,6 @@ export type GetAccountResponse =
   | { Ok: AccountDetails }
   | { AccountNotFound: null };
 export type GetProposalPayloadResponse = { Ok: string } | { Err: string };
-export interface GetTransactionsRequest {
-  page_size: number;
-  offset: number;
-  account_identifier: AccountIdentifierString;
-}
-export interface GetTransactionsResponse {
-  total: number;
-  transactions: Array<Transaction>;
-}
 export interface HardwareWalletAccountDetails {
   principal: Principal;
   name: string;
@@ -63,14 +53,6 @@ export interface HttpResponse {
   body: Array<number>;
   headers: Array<HeaderField>;
   status_code: number;
-}
-export interface ICPTs {
-  e8s: E8s;
-}
-export interface Receive {
-  fee: ICPTs;
-  from: AccountIdentifierString;
-  amount: ICPTs;
 }
 export interface RegisterHardwareWalletRequest {
   principal: Principal;
@@ -101,11 +83,6 @@ export type RenameSubAccountResponse =
   | { AccountNotFound: null }
   | { SubAccountNotFound: null }
   | { NameTooLong: null };
-export interface Send {
-  to: AccountIdentifierString;
-  fee: ICPTs;
-  amount: ICPTs;
-}
 export interface Stats {
   latest_transaction_block_height: BlockHeight;
   seconds_since_last_ledger_sync: bigint;
@@ -129,31 +106,6 @@ export interface SubAccountDetails {
   sub_account: SubAccountArray;
   account_identifier: AccountIdentifierString;
 }
-export interface Timestamp {
-  timestamp_nanos: bigint;
-}
-export interface Transaction {
-  transaction_type: [] | [TransactionType];
-  memo: bigint;
-  timestamp: Timestamp;
-  block_height: BlockHeight;
-  transfer: Transfer;
-}
-export type TransactionType =
-  | { Burn: null }
-  | { Mint: null }
-  | { StakeNeuronNotification: null }
-  | { TopUpCanister: CanisterId }
-  | { ParticipateSwap: CanisterId }
-  | { CreateCanister: null }
-  | { Transfer: null }
-  | { TopUpNeuron: null }
-  | { StakeNeuron: null };
-export type Transfer =
-  | { Burn: { amount: ICPTs } }
-  | { Mint: { amount: ICPTs } }
-  | { Send: Send }
-  | { Receive: Receive };
 export default interface _SERVICE {
   add_account: () => Promise<AccountIdentifierString>;
   add_stable_asset: (arg_0: Array<number>) => Promise<undefined>;
@@ -171,9 +123,6 @@ export default interface _SERVICE {
   get_canisters: () => Promise<Array<CanisterDetails>>;
   get_proposal_payload: (arg_0: bigint) => Promise<GetProposalPayloadResponse>;
   get_stats: () => Promise<Stats>;
-  get_transactions: (
-    arg_0: GetTransactionsRequest
-  ) => Promise<GetTransactionsResponse>;
   http_request: (arg_0: HttpRequest) => Promise<HttpResponse>;
   register_hardware_wallet: (
     arg_0: RegisterHardwareWalletRequest
