@@ -1,4 +1,3 @@
-import type { BlockHeight } from "@dfinity/ledger-icp";
 import type { Principal } from "@dfinity/principal";
 export interface AccountDetails {
   principal: Principal;
