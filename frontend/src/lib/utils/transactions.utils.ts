@@ -1,10 +1,8 @@
-import type { Transaction as NnsTransaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import {
   AccountTransactionType,
   TransactionNetwork,
 } from "$lib/types/transaction";
 import { isNullish } from "@dfinity/utils";
-import { stringifyJson } from "./utils";
 
 export const transactionDisplayAmount = ({
   useFee,
@@ -64,30 +62,6 @@ export const transactionName = ({
       return i18n.transaction_names.refundSwap;
   }
   return type;
-};
-
-/** (from==to workaround) Set `mapToSelfNnsTransaction: true` when sender and receiver are the same account (e.g. transmitting from `main` to `main` account) */
-export const mapToSelfTransaction = (
-  transactions: NnsTransaction[]
-): { transaction: NnsTransaction; toSelfTransaction: boolean }[] => {
-  const resultTransactions = transactions.map((transaction) => ({
-    transaction: { ...transaction },
-    toSelfTransaction: false,
-  }));
-
-  // We rely on self transactions to be one next to each other.
-  // We only set the first transaction to `toSelfTransaction: true`
-  // because the second one will be `toSelfTransaction: false` and it will be displayed as `Sent` transaction.
-  for (let i = 0; i < resultTransactions.length - 1; i++) {
-    const { transaction } = resultTransactions[i];
-    const { transaction: nextTransaction } = resultTransactions[i + 1];
-
-    if (stringifyJson(transaction) === stringifyJson(nextTransaction)) {
-      resultTransactions[i].toSelfTransaction = true;
-    }
-  }
-
-  return resultTransactions;
 };
 
 export const isTransactionNetworkBtc = (

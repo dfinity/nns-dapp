@@ -6,56 +6,14 @@ import { enumKeys } from "$lib/utils/enum.utils";
 import {
   getUniqueTransactions,
   isTransactionNetworkBtc,
-  mapToSelfTransaction,
   transactionDisplayAmount,
   transactionName,
 } from "$lib/utils/transactions.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
-import {
-  mockReceivedFromMainAccountTransaction,
-  mockSentToSubAccountTransaction,
-} from "$tests/mocks/transaction.mock";
 
 describe("transactions-utils", () => {
-  describe("mapToSelfTransaction", () => {
-    it("should map to self transactions", () => {
-      const transactions = mapToSelfTransaction([
-        {
-          ...mockSentToSubAccountTransaction,
-          timestamp: { timestamp_nanos: 111n },
-        },
-        mockReceivedFromMainAccountTransaction,
-        mockReceivedFromMainAccountTransaction,
-        {
-          ...mockSentToSubAccountTransaction,
-          timestamp: { timestamp_nanos: 222n },
-        },
-        {
-          ...mockSentToSubAccountTransaction,
-          timestamp: { timestamp_nanos: 333n },
-        },
-        mockSentToSubAccountTransaction,
-        mockSentToSubAccountTransaction,
-      ]);
-
-      const toSelfTransactions = transactions.map(
-        ({ toSelfTransaction }) => toSelfTransaction
-      );
-
-      expect(toSelfTransactions).toEqual([
-        false,
-        true,
-        false,
-        false,
-        false,
-        true,
-        false,
-      ]);
-    });
-  });
-
   describe("transactionDisplayAmount", () => {
     it("should calculate with fee", () => {
       expect(
