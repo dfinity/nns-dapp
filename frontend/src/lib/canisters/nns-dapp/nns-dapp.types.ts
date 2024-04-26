@@ -1,4 +1,3 @@
-import type { BlockHeight } from "@dfinity/ledger-icp";
 import type { Principal } from "@dfinity/principal";
 export interface AccountDetails {
   principal: Principal;
@@ -84,7 +83,6 @@ export type RenameSubAccountResponse =
   | { SubAccountNotFound: null }
   | { NameTooLong: null };
 export interface Stats {
-  latest_transaction_block_height: BlockHeight;
   seconds_since_last_ledger_sync: bigint;
   sub_accounts_count: bigint;
   neurons_topped_up_count: bigint;
@@ -92,11 +90,7 @@ export interface Stats {
   neurons_created_count: bigint;
   hardware_wallet_accounts_count: bigint;
   accounts_count: bigint;
-  earliest_transaction_block_height: BlockHeight;
-  transactions_count: bigint;
   block_height_synced_up_to: [] | [bigint];
-  latest_transaction_timestamp_nanos: bigint;
-  earliest_transaction_timestamp_nanos: bigint;
 }
 // ledger and account canisters in nns-js define a SubAccount as an object that contains the bytes array as a variable
 // nns-dapp canister returns a string
