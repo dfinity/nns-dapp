@@ -4949,6 +4949,7 @@ dependencies = [
  "anyhow",
  "base64 0.21.5",
  "candid 0.8.4",
+ "dfn_candid",
  "dfn_core",
  "ic-cdk 0.9.2",
  "ic-cdk-macros 0.6.10",

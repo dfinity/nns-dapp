@@ -17,9 +17,11 @@ use std::time::Duration;
 
 use assets::{insert_favicon, insert_home_page, AssetHashes, HttpRequest, HttpResponse};
 use candid::{candid_method, export_service};
+use dfn_core::api::{call, CanisterId};
 use fast_scheduler::FastScheduler;
 use ic_cdk::api::call::{self};
 use ic_cdk_timers::{clear_timer, set_timer, set_timer_interval};
+use ic_ic00_types::{CanisterIdRecord, IC_00};
 use state::{Config, StableState, STATE};
 use types::Icrc1Value;
 
@@ -48,7 +50,10 @@ fn health_check() -> String {
 #[allow(clippy::panic)] // This is a readonly function, only a rather arcane reason prevents it from being a query call.
 async fn get_canister_status() -> ic_ic00_types::CanisterStatusResultV2 {
     let own_canister_id = dfn_core::api::id();
-    let result = ic_nervous_system_common::get_canister_status(own_canister_id.get()).await;
+    let canister_id_record: CanisterIdRecord = CanisterId::new(own_canister_id.get())
+        .unwrap_or_else(|err| panic!("Couldn't get canister_status of {own_canister_id}.  Err: {err:#?}"))
+        .into();
+    let result = call(IC_00, "canister_status", dfn_candid::candid, (canister_id_record,)).await;
     result.unwrap_or_else(|err| panic!("Couldn't get canister_status of {own_canister_id}.  Err: {err:#?}"))
 }
 
