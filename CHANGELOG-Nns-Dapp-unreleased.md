@@ -19,12 +19,14 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Update IC dependencies in nns-dapp crates.
 * Update `ic-stable-structures` dependency to 0.6.4.
+* New main menu selection style.
 
 #### Deprecated
 
 #### Removed
 
 * Stop storing transactions in the nns-dapp canister.
+* Removed metrics that were derived from transactions stored in the canister.
 
 #### Fixed
 
