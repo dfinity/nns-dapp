@@ -2711,10 +2711,10 @@ describe("neuron-utils", () => {
       ).toBe("SNS Decentralization Swap");
       expect(
         getTopicTitle({ topic: Topic.SubnetReplicaVersionManagement, i18n: en })
-      ).toBe("Subnet Replica Version Management");
+      ).toBe("IC OS Version Deployment");
       expect(
         getTopicTitle({ topic: Topic.ReplicaVersionManagement, i18n: en })
-      ).toBe("Replica Version Management");
+      ).toBe("IC OS Version Election");
       expect(
         getTopicTitle({ topic: Topic.SnsAndCommunityFund, i18n: en })
       ).toBe("SNS & Neurons' Fund");
