@@ -384,7 +384,7 @@
     "text": "Sign in to see actionable proposals"
   },
   "actionable_proposals_empty": {
-    "title": "There are no actionable proposals you can vote for.",
+    "title": "There are no actionable proposals you can vote on.",
     "text": "Check back later!"
   },
   "actionable_proposals_not_supported": {
