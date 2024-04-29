@@ -1233,6 +1233,11 @@ interface I18nNns_functions {
   AddApiBoundaryNode: string;
   RemoveApiBoundaryNodes: string;
   UpdateApiBoundaryNodesVersion: string;
+  DeployGuestosToSomeApiBoundaryNodes: string;
+  DeployGuestosToAllUnassignedNodes: string;
+  UpdateSshReadOnlyAccessForAllUnassignedNodes: string;
+  ReviseElectedHostosVersions: string;
+  DeployHostosToSomeNodes: string;
 }
 
 interface I18nNns_functions_description {
@@ -1281,6 +1286,11 @@ interface I18nNns_functions_description {
   AddApiBoundaryNode: string;
   RemoveApiBoundaryNodes: string;
   UpdateApiBoundaryNodesVersion: string;
+  DeployGuestosToSomeApiBoundaryNodes: string;
+  DeployGuestosToAllUnassignedNodes: string;
+  UpdateSshReadOnlyAccessForAllUnassignedNodes: string;
+  ReviseElectedHostosVersions: string;
+  DeployHostosToSomeNodes: string;
 }
 
 interface I18n {
