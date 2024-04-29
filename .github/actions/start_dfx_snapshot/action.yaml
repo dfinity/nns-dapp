@@ -71,11 +71,14 @@ runs:
     - name: Get test environment
       shell: bash
       run: |
+        set -x
         curl -fL --retry 5 ${{ steps.snsdemo_snapshot.outputs.url }} > state.tar.xz
         # We need to set the version explicitly because the config file dfxvm
         # uses to determine the version will be replaced by the snapshot.
         export DFX_VERSION="$(dfx --version | sed 's/dfx //')"
         scripts/dfx-snapshot-install --snapshot state.tar.xz
+        dfx canister id nns-index
+        cat .dfx/local/canister_ids.json
         # Change to $HOME to avoid using nns-dapp dfx.json.
         pushd "$HOME"
         dfx start --background &> '${{ inputs.logfile }}'
