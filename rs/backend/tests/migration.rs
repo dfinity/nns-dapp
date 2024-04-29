@@ -172,7 +172,7 @@ impl TestEnv {
             stats.periodic_tasks_count = None;
             stats.wasm_memory_size_bytes = None;
             stats.stable_memory_size_bytes = None;
-            stats.performance_counts.truncate(0);
+            stats.performance_counts.clear();
             stats.schema = None;
             // The remaining fields should be invariant.
             stats
