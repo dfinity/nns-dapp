@@ -71,7 +71,6 @@ interface I18nError {
   accounts_not_found_poll: string;
   account_not_found: string;
   account_not_reload: string;
-  transactions_not_found: string;
   canister_not_found: string;
   fail: string;
   dummy_proposal: string;
@@ -1237,6 +1236,11 @@ interface I18nNns_functions {
   AddApiBoundaryNode: string;
   RemoveApiBoundaryNodes: string;
   UpdateApiBoundaryNodesVersion: string;
+  DeployGuestosToSomeApiBoundaryNodes: string;
+  DeployGuestosToAllUnassignedNodes: string;
+  UpdateSshReadOnlyAccessForAllUnassignedNodes: string;
+  ReviseElectedHostosVersions: string;
+  DeployHostosToSomeNodes: string;
 }
 
 interface I18nNns_functions_description {
@@ -1285,6 +1289,11 @@ interface I18nNns_functions_description {
   AddApiBoundaryNode: string;
   RemoveApiBoundaryNodes: string;
   UpdateApiBoundaryNodesVersion: string;
+  DeployGuestosToSomeApiBoundaryNodes: string;
+  DeployGuestosToAllUnassignedNodes: string;
+  UpdateSshReadOnlyAccessForAllUnassignedNodes: string;
+  ReviseElectedHostosVersions: string;
+  DeployHostosToSomeNodes: string;
 }
 
 interface I18n {

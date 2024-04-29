@@ -22,29 +22,23 @@ strum = "0.25.0"
 strum_macros = "0.25.3"
 tar = "0.4.40"
 
-# chrono 0.4.19 has vulnerabilities fixed in 0.4.20
-# but, 0.4.20 doesn't satisfy ic. We get the followig error when deploying the canister:
-# The Replica returned an error: code 5, message: "Wasm module of canister vo5te-2aaaa-aaaaa-aaazq-cai is not valid: Wasm module has an invalid import section. Module imports function '__wbindgen_describe' from '__wbindgen_placeholder__' that is not exported by the runtime."
-# 0.4.19 works and satisfies ic.
-chrono = "=0.4.19"
-
-cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-dfn_candid = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-dfn_core = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-ic-base-types = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
+cycles-minting-canister = { workspace = true }
+dfn_candid = { workspace = true }
+dfn_core = { workspace = true }
+dfn_protobuf = { workspace = true }
+ic-base-types = { workspace = true }
 ic-cdk = { workspace = true }
 ic-cdk-macros = { workspace = true }
 ic-certified-map = "0.3.4" # == https://github.com/dfinity/cdk-rs 6a15aa1616bcfdfdc4c120d17d37a089f5700c36
-ic-crypto-sha = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-ic-stable-structures = "0.6.0"
-icp-ledger = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-on_wire = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
+ic-crypto-sha2 = { workspace = true }
+ic-ledger-core = { workspace = true }
+ic-nns-common = { workspace = true }
+ic-nns-constants = { workspace = true }
+ic-nns-governance = { workspace = true }
+ic-sns-swap = { workspace = true }
+ic-stable-structures = "0.6.4"
+icp-ledger = { workspace = true }
+on_wire = { workspace = true }
 
 proposals = { path = "../proposals" }
 

@@ -18,7 +18,6 @@ impl State {
         let bytes = stable::get();
         State::decode(bytes).unwrap_or_else(|e| {
             trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
-            unreachable!();
         })
     }
 }

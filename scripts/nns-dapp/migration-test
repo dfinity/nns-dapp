@@ -100,20 +100,19 @@ populate() {
   done
   verify_healthy
   check_state_size
-  check_num_transactions
   test -z "${SCHEMA1:-}" || assert_schema_is "${SCHEMA1}"
 }
 upgrade_to_wasm2() {
   echo "Upgrading to $(working_wasm 2)..."
   upgrade_nnsdapp "$(working_wasm 2)" "$(working_arguments 2)"
-  check_num_transactions
+  check_state_size
   test -z "${SCHEMA2:-}" || assert_schema_is "${SCHEMA2}"
 }
 downgrade_to_wasm1() {
   echo "Reverting to $(working_wasm 1)..."
   upgrade_nnsdapp "$(working_wasm 1)" "$(working_arguments 1)"
   verify_healthy
-  check_num_transactions
+  check_state_size
   test -z "${SCHEMA1:-}" || assert_schema_is "${SCHEMA1}"
 }
 

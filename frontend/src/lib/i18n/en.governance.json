@@ -19,8 +19,8 @@
     "Kyc": "KYC",
     "NodeProviderRewards": "Node Provider Rewards",
     "SnsDecentralizationSale": "SNS Decentralization Swap",
-    "ReplicaVersionManagement": "IC OS Version Election",
-    "SubnetReplicaVersionManagement": "IC OS Version Deployment",
+    "ReplicaVersionManagement": "Replica Version Management",
+    "SubnetReplicaVersionManagement": "Subnet Replica Version Management",
     "SnsAndCommunityFund": "SNS & Neurons' Fund",
     "ApiBoundaryNodeManagement": "API Boundary Node Management"
   },
@@ -112,7 +112,7 @@
     "AssignNoid": "Assign Node Operator ID (NOID)",
     "NnsRootUpgrade": "NNS Root Canister Upgrade",
     "IcpXdrConversionRate": "ICP/XDR Conversion Rate",
-    "UpdateSubnetReplicaVersion": "Deploy GuestOS For All Subnet Nodes",
+    "UpdateSubnetReplicaVersion": "Update Subnet Replica Version",
     "ClearProvisionalWhitelist": "Clear Provisional Whitelist",
     "RemoveNodesFromSubnet": "Remove Node from Subnet",
     "SetAuthorizedSubnetworks": "Set Authorized Subnets",
@@ -139,13 +139,18 @@
     "UpdateAllowedPrincipals": "Update Allowed Principals",
     "RetireReplicaVersion": "Retire Replica Version",
     "InsertSnsWasmUpgradePathEntries": "Insert SNS-WASM Upgrade Path Entries",
-    "UpdateElectedReplicaVersions": "Revise Elected GuestOS Version",
+    "UpdateElectedReplicaVersions": "Update Elected Replica Versions",
     "BitcoinSetConfig": "Set Bitcoin Config",
     "UpdateElectedHostosVersions": "Update Elected HostOS Versions",
     "UpdateNodesHostosVersion": "Update Nodes HostOS Version",
     "AddApiBoundaryNode": "Add API Boundary Node",
     "RemoveApiBoundaryNodes": "Remove API Boundary Node",
-    "UpdateApiBoundaryNodesVersion": "Update API Boundary Nodes Version"
+    "UpdateApiBoundaryNodesVersion": "Update API Boundary Nodes Version",
+    "DeployGuestosToSomeApiBoundaryNodes": "Deploy GuestOS To Some API Boundary Nodes",
+    "DeployGuestosToAllUnassignedNodes": "Deploy GuestOS To All Unassigned Nodes",
+    "UpdateSshReadOnlyAccessForAllUnassignedNodes": "Update SSH Read Only Access For All Unassigned Nodes",
+    "ReviseElectedHostosVersions": "Revise Elected HostOS Versions",
+    "DeployHostosToSomeNodes": "Deploy HostOS To Some Nodes"
   },
   "nns_functions_description": {
     "Unspecified": "",
@@ -192,6 +197,11 @@
     "UpdateNodesHostosVersion": "Update the HostOS version running on a given list of nodes. The proposal changes the HostOS version that is used on the specified nodes. The version must be contained in the list of HostOS versions.",
     "AddApiBoundaryNode": "A proposal to add a new API Boundary Node using an assigned node",
     "RemoveApiBoundaryNodes": "A proposal to remove a set of API Boundary Nodes, which will designate them as unassigned nodes",
-    "UpdateApiBoundaryNodesVersion": "A proposal to update the version of a set of API Boundary Nodes"
+    "UpdateApiBoundaryNodesVersion": "A proposal to update the version of a set of API Boundary Nodes",
+    "DeployGuestosToSomeApiBoundaryNodes": "A proposal to update the version of a set of API Boundary Nodes",
+    "DeployGuestosToAllUnassignedNodes": "A proposal to update the version of all unassigned nodes",
+    "UpdateSshReadOnlyAccessForAllUnassignedNodes": "A proposal to update SSH readonly access for all unassigned nodes",
+    "ReviseElectedHostosVersions": "A proposal to change the set of currently elected HostOS versions, by electing a new version, and/or unelecting some priorly elected versions.<br/><br/>HostOS versions are identified by the hash of the installation image.<br/><br/>The version to elect is added to the Registry, and the versions to unelect are removed from the Registry, ensuring that HostOS cannot upgrade to these versions anymore.<br/><br/>This proposal does not actually perform the upgrade; for deployment of an elected version, please refer to `NNS_FUNCTION_DEPLOY_HOSTOS_TO_SOME_NODES`",
+    "DeployHostosToSomeNodes": "Deploy a HostOS version to a given set of nodes. The proposal changes the HostOS version that is used on the specified nodes."
   }
 }

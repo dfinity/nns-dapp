@@ -40,14 +40,6 @@ export class NnsProposalFiltersPo extends BasePageObject {
     });
   }
 
-  async setVotableProposalsOnlyValue(checked: boolean): Promise<void> {
-    if (
-      (await this.getVotableProposalsOnlyCheckboxPo().isChecked()) !== checked
-    ) {
-      return await this.getVotableProposalsOnlyCheckboxPo().click();
-    }
-  }
-
   async selectEntriesInFilterModal(ids: string[]): Promise<void> {
     // deselect all
     await this.getFilterModalPo().clickClearSelectionButton();

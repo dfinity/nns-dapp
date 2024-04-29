@@ -1,4 +1,4 @@
-//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-03_23-01-base/rs/nns/sns-wasm/canister/sns-wasm.did>
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-17_23-01-hotfix-bitcoin-query-stats/rs/nns/sns-wasm/canister/sns-wasm.did>
 type AddWasmRequest = record { hash : blob; wasm : opt SnsWasm };
 type AddWasmResponse = record { result : opt Result };
 type AirdropDistribution = record { airdrop_neurons : vec NeuronDistribution };
@@ -59,6 +59,8 @@ type GetNextSnsVersionRequest = record {
 };
 type GetNextSnsVersionResponse = record { next_version : opt SnsVersion };
 type GetSnsSubnetIdsResponse = record { sns_subnet_ids : vec principal };
+type GetWasmMetadataRequest = record { hash : opt blob };
+type GetWasmMetadataResponse = record { result : opt Result_1 };
 type GetWasmRequest = record { hash : blob };
 type GetWasmResponse = record { wasm : opt SnsWasm };
 type IdealMatchedParticipationFunction = record {
@@ -90,6 +92,11 @@ type ListUpgradeStepsRequest = record {
   sns_governance_canister_id : opt principal;
 };
 type ListUpgradeStepsResponse = record { steps : vec ListUpgradeStep };
+type MetadataSection = record {
+  contents : opt blob;
+  name : opt text;
+  visibility : opt text;
+};
 type NeuronBasketConstructionParameters = record {
   dissolve_delay_interval_seconds : nat64;
   count : nat64;
@@ -108,6 +115,7 @@ type NeuronsFundParticipationConstraints = record {
   min_direct_participation_threshold_icp_e8s : opt nat64;
   ideal_matched_participation_function : opt IdealMatchedParticipationFunction;
 };
+type Ok = record { sections : vec MetadataSection };
 type PrettySnsVersion = record {
   archive_wasm_hash : text;
   root_wasm_hash : text;
@@ -117,6 +125,7 @@ type PrettySnsVersion = record {
   index_wasm_hash : text;
 };
 type Result = variant { Error : SnsWasmError; Hash : blob };
+type Result_1 = variant { Ok : Ok; Error : SnsWasmError };
 type SnsCanisterIds = record {
   root : opt principal;
   swap : opt principal;
@@ -218,6 +227,9 @@ service : (SnsWasmCanisterInitPayload) -> {
     ) query;
   get_sns_subnet_ids : (record {}) -> (GetSnsSubnetIdsResponse) query;
   get_wasm : (GetWasmRequest) -> (GetWasmResponse) query;
+  get_wasm_metadata : (GetWasmMetadataRequest) -> (
+      GetWasmMetadataResponse,
+    ) query;
   insert_upgrade_path_entries : (InsertUpgradePathEntriesRequest) -> (
       InsertUpgradePathEntriesResponse,
     );

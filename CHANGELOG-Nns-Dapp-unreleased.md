@@ -15,26 +15,23 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Add new proposal types support (47-51)
 * Message informing about proposal topic changes.
-* Order ICP sub-accounts based on balance.
 
 #### Changed
 
-* Rename some topics and proposal types.
-* Reorder launchpad sections.
-* Improve launchpad card text alignment.
-* Store account data in stable structures instead of on the heap.
+* Update IC dependencies in nns-dapp crates.
+* Update `ic-stable-structures` dependency to 0.6.4.
+* New main menu selection style.
 
 #### Deprecated
 
 #### Removed
 
-* Deprecate the feature flag `ENABLE_ICP_INDEX`.
-* Removed `get_transactions` method from nns-dapp canister.
+* Stop storing transactions in the nns-dapp canister.
+* Removed metrics that were derived from transactions stored in the canister.
 
 #### Fixed
-
-* SNS selector gaps.
 
 #### Security
 
@@ -43,8 +40,6 @@ proposal is successful, the changes it released will be moved from this file to
 ### Operations
 
 #### Added
-
-* Install `pocket-ic` in `scripts/setup`.
 
 #### Changed
 

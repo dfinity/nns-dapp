@@ -34,8 +34,8 @@
       "functions": [
         {
           "id": 0,
-          "name": "All Topics",
-          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "name": "All non-critical topics",
+          "description": "Catch-all w.r.t to following for non-critical proposals.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -124,6 +124,22 @@
           "id": 11,
           "name": "Deregister Dapp Canisters",
           "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 12,
+          "name": "Mint SNS Tokens",
+          "description": "Proposal to mint SNS tokens to a specified recipient.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 13,
+          "name": "Manage ledger parameters",
+          "description": "Proposal to change some parameters in the ledger canister.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -270,7 +286,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98001411909172800,
+    "icrc1_total_supply": 98001565771054430,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -712,7 +728,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100475264260782190,
+    "icrc1_total_supply": 100491543426221420,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1229,6 +1245,14 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 14,
+          "name": "Manage dapp canister settings",
+          "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
         }
       ]
     },
@@ -1356,7 +1380,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50009208580560536,
+    "icrc1_total_supply": 50079508677948660,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2152,7 +2176,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10007149869770002,
+    "icrc1_total_supply": 9964466140162172,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3103,7 +3127,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10000989761304096,
+    "icrc1_total_supply": 10001095521839754,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4067,7 +4091,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12559599510500254,
+    "icrc1_total_supply": 12566740773611236,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5956,7 +5980,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100000699662701540,
+    "icrc1_total_supply": 100001747714357630,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

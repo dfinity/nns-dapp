@@ -7,11 +7,29 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "2.0.73"
+version = "2.0.75"
 
 [workspace.dependencies]
 ic-cdk = "0.9.2"
 ic-cdk-macros = "0.6.10"
+
+cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+dfn_candid = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+dfn_core = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+ic-ic00-types = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+icp-ledger = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
+on_wire = { git = "https://github.com/dfinity/ic", rev = "3ae40dbfd32be70eff0941d7d793856d45c28fc0" }
 
 [profile.release]
 lto = false

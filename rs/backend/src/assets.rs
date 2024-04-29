@@ -324,7 +324,6 @@ fn security_headers() -> Vec<HeaderField> {
 fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> (String, String) {
     let certificate = dfn_core::api::data_certificate().unwrap_or_else(|| {
         dfn_core::api::trap_with("data certificate is only available in query calls");
-        unreachable!()
     });
     let witness = asset_hashes.0.witness(asset_name.as_bytes());
     let tree = labeled(LABEL_ASSETS, witness);
@@ -425,7 +424,6 @@ pub fn insert_tar_xz(compressed: Vec<u8>) {
                     String::from_utf8_lossy(&name_bytes),
                     e
                 ));
-                unreachable!()
             });
 
             let mut bytes = Vec::new();

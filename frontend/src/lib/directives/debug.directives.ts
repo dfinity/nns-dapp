@@ -19,7 +19,6 @@ import {
   anonymizeSnsSummary,
   anonymizeSnsSwapCommitment,
   anonymizeSnsTypeStore,
-  anonymizeTransaction,
   anonymizeTransactionStore,
   anonymizeVotingNeuron,
   cutAndAnonymize,
@@ -221,7 +220,6 @@ const anonymiseStoreState = async () => {
     selectedSnsNeuron,
     snsFunctions,
     snsTransactions,
-    transactions,
     aggregatorStore,
     tokensStore,
     icrcAccountsStore,
@@ -286,9 +284,6 @@ const anonymiseStoreState = async () => {
       selected: selectedSnsNeuron.selected,
       neuron: await anonymizeSnsNeuron(selectedSnsNeuron.neuron),
     },
-    transactions: await mapPromises(transactions, (transaction) =>
-      anonymizeTransaction({ transaction, account: accounts?.main })
-    ),
     snsFunctions,
     snsTransactions: await anonymizeSnsTypeStore(
       snsTransactions,

@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_root --out ic_sns_root.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-03-14_23-01-p2p/rs/sns/root/canister/root.did>
+//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-03_23-01-base/rs/sns/root/canister/root.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -74,7 +74,6 @@ pub struct ChangeCanisterRequest {
     pub stop_before_installing: bool,
     pub mode: CanisterInstallMode,
     pub canister_id: Principal,
-    pub query_allocation: Option<candid::Nat>,
     pub memory_allocation: Option<candid::Nat>,
     pub compute_allocation: Option<candid::Nat>,
 }

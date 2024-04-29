@@ -196,7 +196,6 @@ impl From<Partitions> for State {
                 trap_with(
                     "Decoding stable memory failed: Found label 'Map' in managed memory, but these are incompatible.",
                 );
-                unreachable!()
             }
             // Accounts are in stable structures in one partition, the rest of the heap is serialized as candid in another partition.
             SchemaLabel::AccountsInStableMemory => {
