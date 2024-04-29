@@ -1,8 +1,9 @@
 use crate::accounts_store::histogram::AccountsStoreHistogram;
 use crate::accounts_store::{
-    AccountDetails, AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest,
-    DetachCanisterResponse, NamedCanister, RegisterHardwareWalletRequest, RegisterHardwareWalletResponse,
-    RenameCanisterRequest, RenameCanisterResponse, RenameSubAccountRequest, RenameSubAccountResponse,
+    AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest,
+    DetachCanisterResponse, GetAccountResponse, NamedCanister, RegisterHardwareWalletRequest,
+    RegisterHardwareWalletResponse, RenameCanisterRequest, RenameCanisterResponse, RenameSubAccountRequest,
+    RenameSubAccountResponse,
 };
 use crate::arguments::{set_canister_arguments, CanisterArguments, CANISTER_ARGUMENTS};
 use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
@@ -435,10 +436,4 @@ fn get_exceptional_transactions_impl() -> Option<Vec<u64>> {
             .as_ref()
             .map(|transactions| transactions.iter().copied().collect::<Vec<u64>>())
     })
-}
-
-#[derive(CandidType)]
-pub enum GetAccountResponse {
-    Ok(AccountDetails),
-    AccountNotFound,
 }

@@ -305,7 +305,7 @@ pub enum RegisterHardwareWalletResponse {
     NameTooLong,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize, Eq, PartialEq, Debug)]
 pub struct AccountDetails {
     pub principal: PrincipalId,
     pub account_identifier: AccountIdentifier,
@@ -313,14 +313,20 @@ pub struct AccountDetails {
     pub hardware_wallet_accounts: Vec<HardwareWalletAccountDetails>,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize, Eq, PartialEq, Debug)]
+pub enum GetAccountResponse {
+    Ok(AccountDetails),
+    AccountNotFound,
+}
+
+#[derive(CandidType, Deserialize, PartialEq, Eq, Debug)]
 pub struct SubAccountDetails {
     name: String,
     sub_account: Subaccount,
     account_identifier: AccountIdentifier,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize, Eq, PartialEq, Debug)]
 pub struct HardwareWalletAccountDetails {
     pub name: String,
     pub principal: PrincipalId,
