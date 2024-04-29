@@ -84,18 +84,34 @@ describe("Layout", () => {
         .mockResolvedValue();
     });
 
-    it("should call loadActionableProposals", async () => {
+    it("should call loadActionableProposals on startup", async () => {
+      expect(spyLoadActionableProposals).toHaveBeenCalledTimes(0);
+      resetIdentity();
+      render(App);
+      await runResolvedPromises();
+      expect(spyLoadActionableProposals).toHaveBeenCalledTimes(1);
+    });
+
+    it("should call loadActionableProposals after sign-in", async () => {
       expect(spyLoadActionableProposals).toHaveBeenCalledTimes(0);
       render(App);
       await runResolvedPromises();
       expect(spyLoadActionableProposals).toHaveBeenCalledTimes(0);
-      // mockSignIn();
       resetIdentity();
       await runResolvedPromises();
       expect(spyLoadActionableProposals).toHaveBeenCalledTimes(1);
     });
 
-    it("should call loadActionableSnsProposals", async () => {
+    it("should call loadActionableSnsProposals on startup", async () => {
+      expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(0);
+      resetIdentity();
+      setSnsProjects([{ lifecycle: SnsSwapLifecycle.Committed }]);
+      render(App);
+      await runResolvedPromises();
+      expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(1);
+    });
+
+    it("should call loadActionableSnsProposals after sign-in and sns availability", async () => {
       expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(0);
       render(App);
       await runResolvedPromises();
