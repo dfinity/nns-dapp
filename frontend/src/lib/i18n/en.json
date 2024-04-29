@@ -31,7 +31,8 @@
     "receive_with_token": "Receive $token",
     "receive": "Receive",
     "send_with_token": "Send $token",
-    "collapse_all": "Collapse All"
+    "collapse_all": "Collapse All",
+    "learn_more": "Learn more"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -238,6 +239,8 @@
   "neurons": {
     "title": "Neurons",
     "text": "Earn voting rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by submitting and voting on Network Nervous System (NNS) proposals.",
+    "rename_topic_message": "There were changes made to proposal topics. Review your neuron following to confirm it is set up according to your preferences.",
+    "rename_topic_learn_more_label": "Learn more about the changes made to proposal topics.",
     "stake_token": "Stake $token",
     "merge_neurons": "Merge Neurons",
     "merge_neurons_modal_title": "Select two neurons to merge",
@@ -350,9 +353,9 @@
     "topic_10_subtitle": "Proposals that reward node providers",
     "topic_11_title": "SNS Decentralization Swap",
     "topic_11_subtitle": "Proposals for SNS",
-    "topic_12_title": "Subnet Replica Version Management",
+    "topic_12_title": "IC OS Version Deployment",
     "topic_12_subtitle": "Proposals handling updates of a subnet's replica version",
-    "topic_13_title": "Replica Version Management",
+    "topic_13_title": "IC OS Version Election",
     "topic_13_subtitle": "Proposals dealing with blessing and retirement of replica versions",
     "topic_14_title": "SNS & Neurons' Fund",
     "topic_14_subtitle": "Proposals related to SNS and Neurons' Fund",
@@ -381,7 +384,7 @@
     "text": "Sign in to see actionable proposals"
   },
   "actionable_proposals_empty": {
-    "title": "There are no actionable proposals you can vote for.",
+    "title": "There are no actionable proposals you can vote on.",
     "text": "Check back later!"
   },
   "actionable_proposals_not_supported": {

@@ -15,11 +15,15 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Add new proposal types support (47-51)
+* Message informing about proposal topic changes.
+
 #### Changed
 
 * Update IC dependencies in nns-dapp crates.
 * Update `ic-stable-structures` dependency to 0.6.4.
 * New main menu selection style.
+* Rename some topics and proposal types.
 
 #### Deprecated
 
@@ -37,6 +41,8 @@ proposal is successful, the changes it released will be moved from this file to
 ### Operations
 
 #### Added
+
+* Added `upgrade-downgrade-test` script.
 
 #### Changed
 

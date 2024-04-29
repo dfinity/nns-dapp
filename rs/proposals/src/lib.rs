@@ -7,15 +7,17 @@ use crate::def::{
     AddWasmRequestTrimmed, BitcoinSetConfigProposal, BitcoinSetConfigProposalHumanReadable, BlessReplicaVersionPayload,
     ChangeNnsCanisterProposal, ChangeNnsCanisterProposalTrimmed, ChangeSubnetMembershipPayload,
     ChangeSubnetTypeAssignmentArgs, CompleteCanisterMigrationPayload, CreateSubnetPayload,
-    InsertUpgradePathEntriesRequest, InsertUpgradePathEntriesRequestHumanReadable, PrepareCanisterMigrationPayload,
-    RecoverSubnetPayload, RemoveApiBoundaryNodesPayload, RemoveFirewallRulesPayload, RemoveNodeOperatorsPayload,
-    RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload, RemoveNodesPayload,
-    RerouteCanisterRangesPayload, RetireReplicaVersionPayload, SetAuthorizedSubnetworkListArgs,
-    SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, UpdateAllowedPrincipalsRequest,
-    UpdateApiBoundaryNodesVersionPayload, UpdateElectedHostosVersionsPayload, UpdateElectedReplicaVersionsPayload,
-    UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload,
-    UpdateNodeRewardsTableProposalPayload, UpdateNodesHostosVersionPayload, UpdateSnsSubnetListRequest,
-    UpdateSubnetPayload, UpdateSubnetReplicaVersionPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload,
+    DeployGuestosToAllUnassignedNodesPayload, DeployGuestosToSomeApiBoundaryNodesPayload,
+    DeployHostosToSomeNodesPayload, InsertUpgradePathEntriesRequest, InsertUpgradePathEntriesRequestHumanReadable,
+    PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveApiBoundaryNodesPayload, RemoveFirewallRulesPayload,
+    RemoveNodeOperatorsPayload, RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload,
+    RemoveNodesPayload, RerouteCanisterRangesPayload, RetireReplicaVersionPayload, ReviseElectedHostosVersionsPayload,
+    SetAuthorizedSubnetworkListArgs, SetFirewallConfigPayload, StopOrStartNnsCanisterProposal,
+    UpdateAllowedPrincipalsRequest, UpdateApiBoundaryNodesVersionPayload, UpdateElectedHostosVersionsPayload,
+    UpdateElectedReplicaVersionsPayload, UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload,
+    UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload, UpdateNodesHostosVersionPayload,
+    UpdateSnsSubnetListRequest, UpdateSshReadOnlyAccessForAllUnassignedNodesPayload, UpdateSubnetPayload,
+    UpdateSubnetReplicaVersionPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload,
     UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
 };
 use candid::parser::types::{self as parser_types, IDLType, IDLTypes};
@@ -318,6 +320,11 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         44 => identity::<RemoveApiBoundaryNodesPayload>(payload_bytes),
         // 45 reserved ("NNS_FUNCTION_UPDATE_API_BOUNDARY_NODE_DOMAIN") - https://github.com/dfinity/ic/blob/cd8ad64ed63e38db0d40386ba226df25767d4cd6/rs/nns/governance/proto/ic_nns_governance/pb/v1/governance.proto#L616
         46 => identity::<UpdateApiBoundaryNodesVersionPayload>(payload_bytes),
+        47 => identity::<DeployGuestosToSomeApiBoundaryNodesPayload>(payload_bytes),
+        48 => identity::<DeployGuestosToAllUnassignedNodesPayload>(payload_bytes),
+        49 => identity::<UpdateSshReadOnlyAccessForAllUnassignedNodesPayload>(payload_bytes),
+        50 => identity::<ReviseElectedHostosVersionsPayload>(payload_bytes),
+        51 => identity::<DeployHostosToSomeNodesPayload>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
