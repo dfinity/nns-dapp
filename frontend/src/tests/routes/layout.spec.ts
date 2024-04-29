@@ -3,13 +3,8 @@ import * as actionableProposalsServices from "$lib/services/actionable-proposals
 import * as actionableSnsProposalsServices from "$lib/services/actionable-sns-proposals.services";
 import { initAuthWorker } from "$lib/services/worker-auth.services";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-import { authStore } from "$lib/stores/auth.store";
 import App from "$routes/+layout.svelte";
-import {
-  authStoreMock,
-  mockIdentity,
-  mutableMockAuthStoreSubscribe,
-} from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
@@ -36,12 +31,9 @@ describe("Layout", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
 
-    vi.spyOn(authStore, "subscribe").mockImplementation(
-      mutableMockAuthStoreSubscribe
-    );
-
-    vi.spyOn(authStore, "sync").mockImplementation(() => Promise.resolve());
     actionableNnsProposalsStore.reset();
+
+    setNoIdentity();
   });
 
   it("should init the app after sign in", async () => {
@@ -49,9 +41,7 @@ describe("Layout", () => {
 
     render(App);
 
-    authStoreMock.next({
-      identity: mockIdentity,
-    });
+    resetIdentity();
     await runResolvedPromises();
 
     expect(initAppPrivateDataProxy).toHaveBeenCalled();
@@ -62,9 +52,7 @@ describe("Layout", () => {
 
     render(App);
 
-    authStoreMock.next({
-      identity: mockIdentity,
-    });
+    resetIdentity();
     await runResolvedPromises();
 
     expect(initAuthWorker).toHaveBeenCalled();
@@ -76,9 +64,7 @@ describe("Layout", () => {
 
     render(App);
 
-    authStoreMock.next({
-      identity: mockIdentity,
-    });
+    resetIdentity();
     await runResolvedPromises();
 
     expect(spy).toBeCalled();
@@ -99,50 +85,27 @@ describe("Layout", () => {
     });
 
     it("should call loadActionableProposals", async () => {
-      authStoreMock.next({
-        identity: mockIdentity,
-      });
       expect(spyLoadActionableProposals).toHaveBeenCalledTimes(0);
       render(App);
+      await runResolvedPromises();
+      expect(spyLoadActionableProposals).toHaveBeenCalledTimes(0);
+      // mockSignIn();
+      resetIdentity();
+      await runResolvedPromises();
       expect(spyLoadActionableProposals).toHaveBeenCalledTimes(1);
     });
 
-    it("should not call loadActionableProposals when not signedIn", async () => {
-      authStoreMock.next({
-        identity: undefined,
-      });
-      expect(spyLoadActionableProposals).toHaveBeenCalledTimes(0);
-      render(App);
-      expect(spyLoadActionableProposals).toHaveBeenCalledTimes(0);
-    });
-
     it("should call loadActionableSnsProposals", async () => {
-      authStoreMock.next({
-        identity: mockIdentity,
-      });
-      setSnsProjects([{ lifecycle: SnsSwapLifecycle.Committed }]);
       expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(0);
       render(App);
+      await runResolvedPromises();
+      expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(0);
+      resetIdentity();
+      await runResolvedPromises();
+      expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(0);
+      setSnsProjects([{ lifecycle: SnsSwapLifecycle.Committed }]);
+      await runResolvedPromises();
       expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(1);
-    });
-
-    it("should not call loadActionableSnsProposals when not signedIn", async () => {
-      authStoreMock.next({
-        identity: undefined,
-      });
-      setSnsProjects([{ lifecycle: SnsSwapLifecycle.Committed }]);
-      expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(0);
-      render(App);
-      expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(0);
-    });
-
-    it("should not call loadActionableSnsProposals when no committed Sns available", async () => {
-      authStoreMock.next({
-        identity: mockIdentity,
-      });
-      expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(0);
-      render(App);
-      expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(0);
     });
   });
 });
