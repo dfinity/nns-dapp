@@ -753,32 +753,32 @@ describe("neuron-utils", () => {
     });
 
     it("should sort neurons by createdTimestamp when stake and dissolve delay are equal", () => {
-      const neuron1 = {
+      const neuronA = {
         ...mockNeuron,
-        dissolveDelaySeconds: 100_000_000n,
+        dissolveDelaySeconds: 200_000_000n,
         createdTimestampSeconds: 1n,
       };
-      const neuron2 = {
-        ...mockNeuron,
-        dissolveDelaySeconds: 100_000_000n,
-        createdTimestampSeconds: 2n,
-      };
-      const neuron3 = {
+      const neuronB = {
         ...mockNeuron,
         dissolveDelaySeconds: 100_000_000n,
         createdTimestampSeconds: 3n,
       };
+      const neuronC = {
+        ...mockNeuron,
+        dissolveDelaySeconds: 100_000_000n,
+        createdTimestampSeconds: 2n,
+      };
       expect(sortNeuronsByStake([])).toEqual([]);
-      expect(sortNeuronsByStake([neuron1])).toEqual([neuron1]);
-      expect(sortNeuronsByStake([neuron3, neuron2, neuron1])).toEqual([
-        neuron3,
-        neuron2,
-        neuron1,
+      expect(sortNeuronsByStake([neuronA])).toEqual([neuronA]);
+      expect(sortNeuronsByStake([neuronB, neuronC, neuronA])).toEqual([
+        neuronA,
+        neuronB,
+        neuronC,
       ]);
-      expect(sortNeuronsByStake([neuron1, neuron2, neuron3])).toEqual([
-        neuron3,
-        neuron2,
-        neuron1,
+      expect(sortNeuronsByStake([neuronA, neuronB, neuronC])).toEqual([
+        neuronA,
+        neuronB,
+        neuronC,
       ]);
     });
   });
