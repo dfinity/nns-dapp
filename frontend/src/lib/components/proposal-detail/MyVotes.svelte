@@ -3,13 +3,11 @@
   import { i18n } from "$lib/stores/i18n";
   import { KeyValuePair } from "@dfinity/gix-components";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import {
-    formatVotingPower,
-    type CompactNeuronInfo,
-  } from "$lib/utils/neuron.utils";
+  import type { CompactNeuronInfo } from "$lib/utils/neuron.utils";
   import { getVoteDisplay } from "$lib/utils/proposals.utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
+  import VotingPowerDisplay from "$lib/components/ic/VotingPowerDisplay.svelte";
   import VotingCardNeuronList from "$lib/components/proposal-detail/VotingCard/VotingCardNeuronList.svelte";
   import { fade } from "svelte/transition";
   import VoteResultIcon from "$lib/components/proposal-detail/VotingCard/VoteResultIcon.svelte";
@@ -55,9 +53,10 @@
               class="vote-details"
               class:rejected={neuron.vote === Vote.No}
             >
-              <span data-tid="my-votes-voting-power"
-                >{formatVotingPower(neuron.votingPower)}</span
-              >
+              <VotingPowerDisplay
+                valueTestId="my-votes-voting-power"
+                votingPowerE8s={neuron.votingPower}
+              />
               <VoteResultIcon vote={neuron.vote} />
             </span>
           </KeyValuePair>

@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Add new proposal types support (47-51)
 * Message informing about proposal topic changes.
+* Tooltips with exact voting power on voted neurons.
 
 #### Changed
 
