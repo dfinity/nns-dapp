@@ -11,13 +11,19 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let count: number;
-  export let universe: Universe;
+  export let universe: Universe | "all";
   export let noAnimation = false;
 
   let tooltipText = "";
-  $: tooltipText = isUniverseNns(Principal.fromText(universe.canisterId))
-    ? $i18n.voting.nns_actionable_proposal_tooltip
-    : $i18n.voting.sns_actionable_proposal_tooltip;
+  $: tooltipText =
+    universe === "all"
+      ? $i18n.voting.total_actionable_proposal_tooltip
+      : isUniverseNns(Principal.fromText(universe.canisterId))
+      ? $i18n.voting.nns_actionable_proposal_tooltip
+      : $i18n.voting.sns_actionable_proposal_tooltip;
+
+  let snsName = "";
+  $: snsName = universe === "all" ? "" : universe.title;
 
   // Always rerender to trigger animation start
   let mounted = false;
@@ -30,7 +36,7 @@
       id="actionable-count-tooltip"
       text={replacePlaceholders(tooltipText, {
         $count: `${count}`,
-        $snsName: universe.title,
+        $snsName: snsName,
       })}
       top={true}
       ><span
