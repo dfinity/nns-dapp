@@ -136,5 +136,18 @@ describe("MenuItems", () => {
           .getTooltipText()
       ).toEqual("There are a total of 3 proposals you can vote on.");
     });
+
+    it("should not display actionable proposal count when no proposal available", async () => {
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Neurons,
+      });
+
+      const po = renderComponent();
+
+      expect(await po.getProposalsActionableCountBadgePo().isPresent()).toBe(
+        false
+      );
+    });
   });
 });
