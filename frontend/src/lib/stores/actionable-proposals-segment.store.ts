@@ -3,7 +3,7 @@ import { writable, type Readable } from "svelte/store";
 export type ActionableSegmentSelection = "all" | "actionable";
 
 export interface ActionableProposalsSegmentStoreData {
-  selected: ActionableSegmentSelection;
+  selected: ActionableSegmentSelection | undefined;
 }
 
 export interface ActionableProposalsSegmentStore
@@ -19,7 +19,7 @@ export interface ActionableProposalsSegmentStore
 const initActionableProposalsSegmentStore =
   (): ActionableProposalsSegmentStore => {
     const { subscribe, set } = writable<ActionableProposalsSegmentStoreData>({
-      selected: "all",
+      selected: undefined,
     });
 
     return {
@@ -30,7 +30,7 @@ const initActionableProposalsSegmentStore =
       },
 
       resetForTesting(): void {
-        set({ selected: "all" });
+        set({ selected: undefined });
       },
     };
   };

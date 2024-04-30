@@ -2,14 +2,23 @@
   import { Segment, SegmentButton } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { isNullish } from "@dfinity/utils";
 
   const actionableProposalsSegmentId = Symbol();
   const allProposalsSegmentId = Symbol();
 
-  let selectedSegmentId: symbol =
-    $actionableProposalsSegmentStore.selected !== "all"
+  let selectedSegmentId: symbol = isNullish(
+    $actionableProposalsSegmentStore.selected
+  )
+    ? // If the store is not initialized (by user selection), we need to determine the initial value,
+      // which is "Actionables" for signed-in users and "All" for others.
+      $authSignedInStore
       ? actionableProposalsSegmentId
-      : allProposalsSegmentId;
+      : allProposalsSegmentId
+    : $actionableProposalsSegmentStore.selected !== "all"
+    ? actionableProposalsSegmentId
+    : allProposalsSegmentId;
 
   $: selectedSegmentId,
     (() =>
