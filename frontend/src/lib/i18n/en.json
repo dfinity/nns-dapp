@@ -377,7 +377,7 @@
     "actionable_proposals": "Actionable Proposals",
     "nns_actionable_proposal_tooltip": "There are $count NNS proposals you can vote on.",
     "sns_actionable_proposal_tooltip": "There are $count $snsName proposals you can vote on.",
-    "total_actionable_proposal_tooltip": "There are a total of $count proposals on which you can vote.",
+    "total_actionable_proposal_tooltip": "There are a total of $count proposals you can vote on.",
     "is_actionable_status_badge_tooltip": "You can still vote on this proposal."
   },
   "actionable_proposals_sign_in": {
