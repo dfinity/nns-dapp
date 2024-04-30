@@ -751,6 +751,36 @@ describe("neuron-utils", () => {
         neuron1,
       ]);
     });
+
+    it("should sort neurons by createdTimestamp when stake and dissolve delay are equal", () => {
+      const neuronA = {
+        ...mockNeuron,
+        dissolveDelaySeconds: 200_000_000n,
+        createdTimestampSeconds: 1n,
+      };
+      const neuronB = {
+        ...mockNeuron,
+        dissolveDelaySeconds: 100_000_000n,
+        createdTimestampSeconds: 3n,
+      };
+      const neuronC = {
+        ...mockNeuron,
+        dissolveDelaySeconds: 100_000_000n,
+        createdTimestampSeconds: 2n,
+      };
+      expect(sortNeuronsByStake([])).toEqual([]);
+      expect(sortNeuronsByStake([neuronA])).toEqual([neuronA]);
+      expect(sortNeuronsByStake([neuronB, neuronC, neuronA])).toEqual([
+        neuronA,
+        neuronB,
+        neuronC,
+      ]);
+      expect(sortNeuronsByStake([neuronA, neuronB, neuronC])).toEqual([
+        neuronA,
+        neuronB,
+        neuronC,
+      ]);
+    });
   });
 
   describe("isNeuronControllable", () => {

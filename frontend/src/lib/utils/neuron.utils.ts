@@ -299,7 +299,8 @@ export const formatMaturity = (value?: bigint): string =>
 
 // Used to sort neurons by:
 // * decreasing stake, or when stake is equal by
-// * decreasing dissolve delay
+// * decreasing dissolve delay, or when dissolve delay is equal by
+// * decreasing created timestamp
 const compareNeurons = (a: NeuronInfo, b: NeuronInfo): number => {
   const stakeA = neuronStake(a);
   const stakeB = neuronStake(b);
@@ -315,6 +316,14 @@ const compareNeurons = (a: NeuronInfo, b: NeuronInfo): number => {
     return -1;
   }
   if (dissolveDelayA < dissolveDelayB) {
+    return 1;
+  }
+  const createdTimestampA = a.createdTimestampSeconds;
+  const createdTimestampB = b.createdTimestampSeconds;
+  if (createdTimestampA > createdTimestampB) {
+    return -1;
+  }
+  if (createdTimestampA < createdTimestampB) {
     return 1;
   }
   return 0;
