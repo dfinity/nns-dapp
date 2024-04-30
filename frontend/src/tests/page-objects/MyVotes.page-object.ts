@@ -9,7 +9,7 @@ export class MyVotesPo extends BasePageObject {
     return new MyVotesPo(element.byTestId(MyVotesPo.TID));
   }
 
-  getVotingPowerDisplayPosition(): Promise<VotingPowerDisplayPo[]> {
+  getVotingPowerDisplayPos(): Promise<VotingPowerDisplayPo[]> {
     return VotingPowerDisplayPo.allUnder(this.root);
   }
 
@@ -19,14 +19,14 @@ export class MyVotesPo extends BasePageObject {
   }
 
   async getDisplayedVotingPowers(): Promise<string[]> {
-    const votingPowerDisplaydPos = await this.getVotingPowerDisplayPosition();
+    const votingPowerDisplaydPos = await this.getVotingPowerDisplayPos();
     return Promise.all(
       votingPowerDisplaydPos.map((po) => po.getDisplayedVotingPower())
     );
   }
 
   async getExactVotingPowers(): Promise<string[]> {
-    const votingPowerDisplaydPos = await this.getVotingPowerDisplayPosition();
+    const votingPowerDisplaydPos = await this.getVotingPowerDisplayPos();
     return Promise.all(
       votingPowerDisplaydPos.map((po) => po.getExactVotingPower())
     );
