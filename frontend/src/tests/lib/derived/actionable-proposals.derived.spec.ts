@@ -186,7 +186,8 @@ describe("actionable proposals derived stores", () => {
         });
         actionableSnsProposalsStore.set({
           rootCanisterId: principal2,
-          proposals: [],
+          proposals: snsProposals,
+          // this flag produces undefined count
           includeBallotsByCaller: false,
         });
 
