@@ -35,6 +35,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Inconsistency in similar Nns neuron sorting.
+
 #### Security
 
 #### Not Published
