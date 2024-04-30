@@ -1,12 +1,11 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Value } from "@dfinity/gix-components";
   import {
     type CompactNeuronInfo,
-    formatVotingPower,
     neuronsVotingPower,
   } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import VotingPowerDisplay from "$lib/components/ic/VotingPowerDisplay.svelte";
   import ExpandableProposalNeurons from "$lib/components/proposal-detail/VotingCard/ExpandableProposalNeurons.svelte";
   import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
   import { Vote } from "@dfinity/nns";
@@ -52,9 +51,10 @@
     <svelte:fragment slot="end">
       <span class="label">{$i18n.proposal_detail__vote.voting_power_label}</span
       >
-      <Value testId="voted-voting-power"
-        >{formatVotingPower(votedVotingPower)}</Value
-      >
+      <VotingPowerDisplay
+        valueTestId="voted-voting-power"
+        votingPowerE8s={votedVotingPower}
+      />
     </svelte:fragment>
     <MyVotes {neuronsVotedForProposal} />
   </ExpandableProposalNeurons>

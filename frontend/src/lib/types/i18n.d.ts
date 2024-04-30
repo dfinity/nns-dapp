@@ -71,7 +71,6 @@ interface I18nError {
   accounts_not_found_poll: string;
   account_not_found: string;
   account_not_reload: string;
-  transactions_not_found: string;
   canister_not_found: string;
   fail: string;
   dummy_proposal: string;
@@ -392,6 +391,7 @@ interface I18nVoting {
   actionable_proposals: string;
   nns_actionable_proposal_tooltip: string;
   sns_actionable_proposal_tooltip: string;
+  is_actionable_status_badge_tooltip: string;
 }
 
 interface I18nActionable_proposals_sign_in {
@@ -1236,6 +1236,11 @@ interface I18nNns_functions {
   AddApiBoundaryNode: string;
   RemoveApiBoundaryNodes: string;
   UpdateApiBoundaryNodesVersion: string;
+  DeployGuestosToSomeApiBoundaryNodes: string;
+  DeployGuestosToAllUnassignedNodes: string;
+  UpdateSshReadOnlyAccessForAllUnassignedNodes: string;
+  ReviseElectedHostosVersions: string;
+  DeployHostosToSomeNodes: string;
 }
 
 interface I18nNns_functions_description {
@@ -1284,6 +1289,11 @@ interface I18nNns_functions_description {
   AddApiBoundaryNode: string;
   RemoveApiBoundaryNodes: string;
   UpdateApiBoundaryNodesVersion: string;
+  DeployGuestosToSomeApiBoundaryNodes: string;
+  DeployGuestosToAllUnassignedNodes: string;
+  UpdateSshReadOnlyAccessForAllUnassignedNodes: string;
+  ReviseElectedHostosVersions: string;
+  DeployHostosToSomeNodes: string;
 }
 
 interface I18n {

@@ -68,18 +68,6 @@ export enum AccountTransactionType {
   RefundSwap = "refundSwap",
 }
 
-export interface Transaction {
-  type: AccountTransactionType;
-  isReceive: boolean;
-  isSend: boolean;
-  // Account string representation
-  from: string | undefined;
-  // Account string representation
-  to: string | undefined;
-  displayAmount: bigint;
-  date: Date;
-}
-
 export type TransactionIconType = "sent" | "received" | "failed" | "reimbursed";
 
 export interface UiTransaction {

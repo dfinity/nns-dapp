@@ -5,7 +5,6 @@ import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as nnsdappApi from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
-import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
@@ -15,7 +14,6 @@ import {
   cancelPollAccounts,
   getAccountIdentity,
   getAccountIdentityByPrincipal,
-  getAccountTransactions,
   getOrCreateAccount,
   initAccounts,
   loadBalance,
@@ -48,7 +46,6 @@ import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
-import { mockSentToSubAccountTransaction } from "$tests/mocks/transaction.mock";
 import {
   resetAccountsForTesting,
   setAccountsForTesting,
@@ -772,88 +769,6 @@ describe("icp-accounts.services", () => {
       });
 
       spyToastError.mockClear();
-    });
-  });
-
-  describe("getAccountTransactions", () => {
-    const onLoad = vi.fn();
-    const mockResponse = [mockSentToSubAccountTransaction];
-    let spyGetTransactions;
-
-    beforeEach(() => {
-      vi.clearAllMocks();
-      spyGetTransactions = vi
-        .spyOn(accountsApi, "getTransactions")
-        .mockImplementation(() => Promise.resolve(mockResponse));
-    });
-
-    it("should call getTransactions", async () => {
-      await getAccountTransactions({
-        accountIdentifier: "",
-        onLoad,
-      });
-      expect(spyGetTransactions).toBeCalled();
-      expect(spyGetTransactions).toBeCalledTimes(2);
-    });
-
-    it("should call getTransactions for Icrc address", async () => {
-      await getAccountTransactions({
-        accountIdentifier: mockSnsMainAccount.identifier,
-        onLoad,
-      });
-
-      const params = {
-        identity: mockIdentity,
-        icpAccountIdentifier: mockSnsAccountIcpAccountIdentifier,
-        certified: true,
-        offset: 0,
-        pageSize: DEFAULT_TRANSACTION_PAGE_LIMIT,
-      };
-
-      expect(spyGetTransactions).toHaveBeenCalledWith(params);
-      expect(spyGetTransactions).toHaveBeenCalledWith({
-        ...params,
-        certified: false,
-      });
-    });
-
-    it("should call onLoad", async () => {
-      await getAccountTransactions({
-        accountIdentifier: "",
-        onLoad,
-      });
-      expect(onLoad).toBeCalled();
-      expect(onLoad).toBeCalledTimes(2);
-      expect(onLoad).toBeCalledWith({
-        accountIdentifier: "",
-        transactions: mockResponse,
-      });
-    });
-
-    describe("getAccountTransactions errors", () => {
-      beforeEach(() => {
-        spyGetTransactions = vi
-          .spyOn(accountsApi, "getTransactions")
-          .mockImplementation(async () => {
-            throw new Error("test");
-          });
-      });
-
-      it("should display toast error", async () => {
-        const spyToastError = vi.spyOn(toastsFunctions, "toastsError");
-
-        await getAccountTransactions({
-          accountIdentifier: "",
-          onLoad,
-        });
-
-        expect(spyToastError).toBeCalledTimes(1);
-        expect(spyToastError).toBeCalledWith({
-          labelKey: "error.transactions_not_found",
-          err: new Error("test"),
-        });
-        expect(onLoad).not.toBeCalled();
-      });
     });
   });
 

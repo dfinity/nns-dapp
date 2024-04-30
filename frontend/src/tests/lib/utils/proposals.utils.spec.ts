@@ -1,4 +1,5 @@
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
   concatenateUniqueProposals,
@@ -114,6 +115,10 @@ describe("proposals-utils", () => {
         neuronId: 0n,
       } as NeuronInfo,
     ];
+
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
+    });
 
     it("hideProposal", () => {
       expect(
@@ -430,6 +435,81 @@ describe("proposals-utils", () => {
         })
       ).toBeTruthy();
     });
+
+    describe("with ENABLE_VOTING_INDICATION enabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
+      });
+
+      it("should show proposals with or without ballots when excludeVotedProposals enabled", () => {
+        expect(
+          hideProposal({
+            proposalInfo: {
+              ...mockProposals[0],
+              ballots: [],
+            },
+            filters: {
+              ...DEFAULT_PROPOSALS_FILTERS,
+              excludeVotedProposals: true,
+            },
+            neurons,
+            identity: mockIdentity,
+          })
+        ).toBe(false);
+
+        expect(
+          hideProposal({
+            proposalInfo: {
+              ...mockProposals[0],
+              ballots: [
+                {
+                  neuronId: 0n,
+                  vote: Vote.Unspecified,
+                } as Ballot,
+              ],
+            },
+            filters: {
+              ...DEFAULT_PROPOSALS_FILTERS,
+              excludeVotedProposals: true,
+            },
+            neurons,
+            identity: mockIdentity,
+          })
+        ).toBe(false);
+      });
+
+      it("should check for matched filter", () => {
+        expect(
+          hideProposal({
+            proposalInfo: proposalWithBallot({
+              proposal: mockProposals[0],
+            }),
+            filters: {
+              ...DEFAULT_PROPOSALS_FILTERS,
+              topics: [Topic.Kyc],
+              excludeVotedProposals: true,
+            },
+            neurons,
+            identity: mockIdentity,
+          })
+        ).toBe(true);
+
+        expect(
+          hideProposal({
+            proposalInfo: proposalWithBallot({
+              proposal: mockProposals[0],
+            }),
+            filters: {
+              ...DEFAULT_PROPOSALS_FILTERS,
+              topics: [Topic.Governance],
+              excludeVotedProposals: true,
+            },
+            neurons,
+            identity: mockIdentity,
+          })
+        ).toBe(false);
+      });
+    });
   });
 
   describe("hasMatchingProposals", () => {
@@ -620,7 +700,7 @@ describe("proposals-utils", () => {
           neurons,
           identity: mockIdentity,
         })
-      ).toBe(false);
+      ).toBe(true);
 
       expect(
         hasMatchingProposals({
@@ -642,7 +722,220 @@ describe("proposals-utils", () => {
           neurons,
           identity: mockIdentity,
         })
-      ).toBe(false);
+      ).toBe(true);
+    });
+
+    // TODO: remove the whole block when ENABLE_VOTING_INDICATION is removed
+    describe("with ENABLE_VOTING_INDICATION disabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
+      });
+
+      it("should have matching proposals", () => {
+        expect(
+          hasMatchingProposals({
+            proposals: mockProposals,
+            filters: {
+              ...DEFAULT_PROPOSALS_FILTERS,
+              excludeVotedProposals: false,
+            },
+            neurons,
+            identity: mockIdentity,
+          })
+        ).toBeTruthy();
+
+        expect(
+          hasMatchingProposals({
+            proposals: mockProposals.map((proposal) => ({
+              ...proposal,
+              ballots: [
+                {
+                  neuronId: 0n,
+                  vote: Vote.Unspecified,
+                } as Ballot,
+              ],
+            })),
+            filters: {
+              ...DEFAULT_PROPOSALS_FILTERS,
+              excludeVotedProposals: true,
+            },
+            neurons,
+            identity: mockIdentity,
+          })
+        ).toBeTruthy();
+
+        expect(
+          hasMatchingProposals({
+            proposals: [
+              ...mockProposals,
+              {
+                ...mockProposals[0],
+                ballots: [
+                  {
+                    neuronId: 0n,
+                    vote: Vote.Unspecified,
+                  } as Ballot,
+                ],
+              },
+            ],
+            filters: {
+              ...DEFAULT_PROPOSALS_FILTERS,
+              excludeVotedProposals: false,
+            },
+            neurons,
+            identity: mockIdentity,
+          })
+        ).toBeTruthy();
+
+        expect(
+          hasMatchingProposals({
+            proposals: [
+              ...mockProposals,
+              {
+                ...mockProposals[1],
+                ballots: [
+                  {
+                    neuronId: 0n,
+                    vote: Vote.Unspecified,
+                  } as Ballot,
+                ],
+              },
+            ],
+            filters: {
+              ...DEFAULT_PROPOSALS_FILTERS,
+              excludeVotedProposals: false,
+            },
+            neurons,
+            identity: mockIdentity,
+          })
+        ).toBeTruthy();
+
+        expect(
+          hasMatchingProposals({
+            proposals: [
+              ...mockProposals,
+              {
+                ...mockProposals[0],
+                ballots: [
+                  {
+                    neuronId: 0n,
+                    vote: Vote.Unspecified,
+                  } as Ballot,
+                ],
+              },
+            ],
+            filters: {
+              ...DEFAULT_PROPOSALS_FILTERS,
+              excludeVotedProposals: true,
+            },
+            neurons,
+            identity: mockIdentity,
+          })
+        ).toBeTruthy();
+
+        expect(
+          hasMatchingProposals({
+            proposals: [
+              ...mockProposals,
+              {
+                ...mockProposals[1],
+                ballots: [
+                  {
+                    neuronId: 0n,
+                    vote: Vote.Unspecified,
+                  } as Ballot,
+                ],
+              },
+            ],
+            filters: {
+              ...DEFAULT_PROPOSALS_FILTERS,
+              excludeVotedProposals: true,
+            },
+            neurons,
+            identity: mockIdentity,
+          })
+        ).toBeTruthy();
+
+        expect(
+          hasMatchingProposals({
+            proposals: [
+              {
+                ...mockProposals[0],
+                ballots: [
+                  {
+                    neuronId: 0n,
+                    vote: Vote.Yes,
+                  } as Ballot,
+                ],
+              },
+            ],
+            filters: {
+              ...DEFAULT_PROPOSALS_FILTERS,
+              excludeVotedProposals: true,
+            },
+            neurons,
+            identity: null,
+          })
+        ).toBeTruthy();
+      });
+
+      it("should not have matching proposals", () => {
+        expect(
+          hasMatchingProposals({
+            proposals: [],
+            filters: {
+              ...DEFAULT_PROPOSALS_FILTERS,
+              excludeVotedProposals: false,
+            },
+            neurons,
+            identity: mockIdentity,
+          })
+        ).toBe(false);
+
+        expect(
+          hasMatchingProposals({
+            proposals: [
+              {
+                ...mockProposals[0],
+                ballots: [
+                  {
+                    neuronId: 0n,
+                    vote: Vote.Yes,
+                  } as Ballot,
+                ],
+              },
+            ],
+            filters: {
+              ...DEFAULT_PROPOSALS_FILTERS,
+              excludeVotedProposals: true,
+            },
+            neurons,
+            identity: mockIdentity,
+          })
+        ).toBe(false);
+
+        expect(
+          hasMatchingProposals({
+            proposals: [
+              {
+                ...mockProposals[0],
+                ballots: [
+                  {
+                    neuronId: 0n,
+                    vote: Vote.No,
+                  } as Ballot,
+                ],
+              },
+            ],
+            filters: {
+              ...DEFAULT_PROPOSALS_FILTERS,
+              excludeVotedProposals: true,
+            },
+            neurons,
+            identity: mockIdentity,
+          })
+        ).toBe(false);
+      });
     });
   });
 

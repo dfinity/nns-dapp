@@ -166,7 +166,7 @@ describe("NnsProposals", () => {
         expect(
           await (await po.getProposalCardPos())[0]
             .getProposalStatusTagPo()
-            .hasActionableMark()
+            .hasActionableStatusBadge()
         ).toEqual(false);
         // actionable proposal
         expect(
@@ -175,11 +175,11 @@ describe("NnsProposals", () => {
         expect(
           await (await po.getProposalCardPos())[1]
             .getProposalStatusTagPo()
-            .hasActionableMark()
+            .hasActionableStatusBadge()
         ).toEqual(true);
       });
 
-      it("should hide proposal card if already voted", async () => {
+      it("should not hide proposal card if already voted", async () => {
         neuronsStore.setNeurons({ neurons: [mockNeuron], certified: true });
 
         const { queryAllByTestId } = render(NnsProposals);
@@ -188,7 +188,7 @@ describe("NnsProposals", () => {
 
         await waitFor(() =>
           expect(queryAllByTestId("proposal-card").length).toBe(
-            mockProposals.length - 1
+            mockProposals.length
           )
         );
       });
@@ -452,7 +452,7 @@ describe("NnsProposals", () => {
       await selectActionableProposals(po);
       expect(await po.getActionableEmptyBanner().isPresent()).toEqual(true);
       expect(await po.getActionableEmptyBanner().getTitleText()).toEqual(
-        "There are no actionable proposals you can vote for."
+        "There are no actionable proposals you can vote on."
       );
       expect(await po.getActionableEmptyBanner().getDescriptionText()).toEqual(
         "Check back later!"

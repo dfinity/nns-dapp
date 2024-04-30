@@ -28,7 +28,7 @@
       "logo": "/v1/sns/root/zxeu2-7aaaa-aaaaq-aaafa-cai/logo.png"
     },
     "parameters": {
-      "reserved_ids": [],
+      "reserved_ids": [1001],
       "functions": [
         {
           "id": 0,
@@ -148,19 +148,6 @@
           "description": "Proposal to change canister settings for some dapp canisters.",
           "function_type": {
             "NativeNervousSystemFunction": {}
-          }
-        },
-        {
-          "id": 1001,
-          "name": "addNewSnsToTaggrBot",
-          "description": "Adds a new SNS to the @snsproposals Taggr bot",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "thhc2-kiaaa-aaaao-ajnha-cai",
-              "target_canister_id": "thhc2-kiaaa-aaaao-ajnha-cai",
-              "validator_method_name": "snsDataValidator",
-              "target_method_name": "addNewSns"
-            }
           }
         }
       ]
@@ -295,7 +282,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999996881694000,
+    "icrc1_total_supply": 799999995756694000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -395,7 +382,8 @@
         "6klfq-niaaa-aaaar-qadbq-cai",
         "64dy3-wqaaa-aaaaf-biicq-cai",
         "2notu-qyaaa-aaaar-qaeha-cai",
-        "2kpva-5aaaa-aaaar-qaehq-cai"
+        "2kpva-5aaaa-aaaar-qaehq-cai",
+        "zi2i7-nqaaa-aaaar-qaemq-cai"
       ],
       "archives": ["2sqpr-ciaaa-aaaaq-aaaoq-cai"]
     },
@@ -1082,7 +1070,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10059104581211054,
+    "icrc1_total_supply": 10063962847839844,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1459,8 +1447,8 @@
       "functions": [
         {
           "id": 0,
-          "name": "All Topics",
-          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "name": "All non-critical topics",
+          "description": "Catch-all w.r.t to following for non-critical proposals.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1549,6 +1537,22 @@
           "id": 11,
           "name": "Deregister Dapp Canisters",
           "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 12,
+          "name": "Mint SNS Tokens",
+          "description": "Proposal to mint SNS tokens to a specified recipient.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 13,
+          "name": "Manage ledger parameters",
+          "description": "Proposal to change some parameters in the ledger canister.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1719,7 +1723,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 600336453598579,
+    "icrc1_total_supply": 600691535220326,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1804,7 +1808,8 @@
       "dapps": [
         "jwktp-qyaaa-aaaag-abcfa-cai",
         "efsfj-sqaaa-aaaap-qatwa-cai",
-        "vyatz-hqaaa-aaaam-qauea-cai"
+        "vyatz-hqaaa-aaaam-qauea-cai",
+        "74zq4-iqaaa-aaaam-ab53a-cai"
       ],
       "archives": ["4zzzg-yyaaa-aaaaq-aaazq-cai"]
     },
@@ -1951,6 +1956,19 @@
               "target_method_name": "reset_user_individual_canisters"
             }
           }
+        },
+        {
+          "id": 4002,
+          "name": "Generic Function Platform Orchestrator ",
+          "description": "Generic proposal to execute commands from platform orchestrator",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "74zq4-iqaaa-aaaam-ab53a-cai",
+              "target_canister_id": "74zq4-iqaaa-aaaam-ab53a-cai",
+              "validator_method_name": "validate_platform_orchestrator_generic_function",
+              "target_method_name": "platform_orchestrator_generic_function"
+            }
+          }
         }
       ]
     },
@@ -2077,7 +2095,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100431488953154140,
+    "icrc1_total_supply": 100741185269922930,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2724,7 +2742,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 922780042930430100,
+    "icrc1_total_supply": 923006021191953400,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

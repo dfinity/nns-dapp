@@ -1,5 +1,6 @@
 import { goto } from "$app/navigation";
 import { pageStore } from "$lib/derived/page.derived";
+import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
 import { i18n } from "$lib/stores/i18n";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
 import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
@@ -92,7 +93,8 @@ export const hideProposal = ({
   identity: Identity | undefined | null;
 }): boolean =>
   !matchFilters({ proposalInfo, filters }) ||
-  (nonNullish(identity) &&
+  (!get(ENABLE_VOTING_INDICATION) &&
+    nonNullish(identity) &&
     !identity.getPrincipal().isAnonymous() &&
     isExcludedVotedProposal({ proposalInfo, filters, neurons }));
 

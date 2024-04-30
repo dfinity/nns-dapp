@@ -1,8 +1,6 @@
 // TODO: Synchronize with `rs/nns-dapp.did`. Check how scripts/nns-dapp.update.sh works.
 type AccountIdentifier = text;
 type BlockHeight = nat64;
-type CanisterId = principal;
-type ICPTs = record { e8s: nat64; };
 type Memo = nat64;
 type NeuronId = nat64;
 type SubAccount = vec nat8;
@@ -33,68 +31,6 @@ type GetAccountResponse =
     variant {
         Ok: AccountDetails;
         AccountNotFound;
-    };
-
-type Timestamp =
-    record {
-        timestamp_nanos: nat64;
-    };
-
-type GetTransactionsRequest =
-    record {
-        account_identifier: AccountIdentifier;
-        offset: nat32;
-        page_size: nat8;
-    };
-
-type GetTransactionsResponse =
-    record {
-        transactions: vec Transaction;
-        total: nat32;
-    };
-
-type Send =
-    record {
-        to: AccountIdentifier;
-        amount: ICPTs;
-        fee: ICPTs;
-    };
-
-type Receive =
-    record {
-        from: AccountIdentifier;
-        amount: ICPTs;
-        fee: ICPTs;
-    };
-
-type Transfer =
-    variant {
-        Burn: record { amount: ICPTs; };
-        Mint: record { amount: ICPTs; };
-        Send: Send;
-        Receive: Receive;
-    };
-
-type Transaction =
-    record {
-        block_height: BlockHeight;
-        timestamp: Timestamp;
-        memo: nat64;
-        transfer: Transfer;
-        transaction_type: opt TransactionType;
-    };
-
-type TransactionType =
-    variant {
-        Burn;
-        Mint;
-        Transfer;
-        StakeNeuron;
-        StakeNeuronNotification;
-        TopUpNeuron;
-        CreateCanister;
-        TopUpCanister: CanisterId;
-        ParticipateSwap: CanisterId;
     };
 
 type CreateSubAccountResponse =
@@ -192,12 +128,7 @@ type Stats =
         accounts_count: nat64;
         sub_accounts_count: nat64;
         hardware_wallet_accounts_count: nat64;
-        transactions_count: nat64;
         block_height_synced_up_to: opt nat64;
-        earliest_transaction_timestamp_nanos: nat64;
-        earliest_transaction_block_height: BlockHeight;
-        latest_transaction_timestamp_nanos: nat64;
-        latest_transaction_block_height: BlockHeight;
         seconds_since_last_ledger_sync: nat64;
         neurons_created_count: nat64;
         neurons_topped_up_count: nat64;
@@ -227,7 +158,6 @@ type HttpResponse =
 service : {
     get_account: () -> (GetAccountResponse) query;
     add_account: () -> (AccountIdentifier);
-    get_transactions: (GetTransactionsRequest) -> (GetTransactionsResponse) query;
     create_sub_account: (text) -> (CreateSubAccountResponse);
     rename_sub_account: (RenameSubAccountRequest) -> (RenameSubAccountResponse);
     register_hardware_wallet: (RegisterHardwareWalletRequest) -> (RegisterHardwareWalletResponse);

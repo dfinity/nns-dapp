@@ -11,6 +11,14 @@ export class VotingPowerDisplayPo extends TooltipPo {
     );
   }
 
+  static async allUnder(
+    element: PageObjectElement
+  ): Promise<VotingPowerDisplayPo[]> {
+    return Array.from(
+      await element.allByTestId(VotingPowerDisplayPo.VOTING_POWER_DISPLAY_TID)
+    ).map((el) => new VotingPowerDisplayPo(el));
+  }
+
   getDisplayedVotingPower(): Promise<string> {
     return this.getDisplayedText();
   }

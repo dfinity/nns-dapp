@@ -15,25 +15,27 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Add new proposal types support (47-51)
 * Message informing about proposal topic changes.
+* Tooltips with exact voting power on voted neurons.
 
 #### Changed
 
+* Update IC dependencies in nns-dapp crates.
+* Update `ic-stable-structures` dependency to 0.6.4.
+* New main menu selection style.
 * Rename some topics and proposal types.
-* Reorder launchpad sections.
-* Improve launchpad card text alignment.
-* Store account data in stable structures instead of on the heap.
 
 #### Deprecated
 
 #### Removed
 
-* Deprecate the feature flag `ENABLE_ICP_INDEX`.
-* Removed `get_transactions` method from nns-dapp canister.
+* Stop storing transactions in the nns-dapp canister.
+* Removed metrics that were derived from transactions stored in the canister.
 
 #### Fixed
 
-* SNS selector gaps.
+* Adjust Metrics block visibility for certain screen widths.
 
 #### Security
 
@@ -43,7 +45,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Install `pocket-ic` in `scripts/setup`.
+* Added `upgrade-downgrade-test` script.
 
 #### Changed
 

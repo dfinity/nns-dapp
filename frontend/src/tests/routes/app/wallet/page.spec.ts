@@ -1,4 +1,5 @@
-import * as accountsApi from "$lib/api/accounts.api";
+import * as governanceApi from "$lib/api/governance.api";
+import * as indexApi from "$lib/api/icp-index.api";
 import * as icpLedgerApi from "$lib/api/icp-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -9,6 +10,7 @@ import {
   mockAccountsStoreData,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { mockEmptyGetTransactionsResponse } from "$tests/mocks/transaction.mock";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
@@ -18,8 +20,11 @@ describe("Wallet page", () => {
   beforeEach(() => {
     resetIdentity();
 
-    vi.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
+    vi.spyOn(indexApi, "getTransactions").mockResolvedValue(
+      mockEmptyGetTransactionsResponse
+    );
     vi.spyOn(icpLedgerApi, "queryAccountBalance").mockResolvedValue(0n);
+    vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
 
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT },

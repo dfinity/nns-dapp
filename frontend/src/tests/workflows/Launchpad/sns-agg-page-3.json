@@ -190,7 +190,7 @@
     },
     "swap_state": {
       "swap": {
-        "lifecycle": 5,
+        "lifecycle": 2,
         "init": {
           "nns_proposal_id": 129037,
           "sns_root_canister_id": "bxmkl-2iaaa-aaaaq-aac6q-cai",
@@ -624,8 +624,8 @@
         "decentralization_sale_open_timestamp_seconds": 1712954700
       },
       "derived": {
-        "buyer_total_icp_e8s": 0,
-        "sns_tokens_per_icp": 0
+        "buyer_total_icp_e8s": 1639364699569,
+        "sns_tokens_per_icp": 1280.984
       }
     },
     "icrc1_metadata": [
@@ -1102,17 +1102,17 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 0,
-      "buyer_total_icp_e8s": 0,
+      "sns_tokens_per_icp": 1280.9840087890625,
+      "buyer_total_icp_e8s": 1639364699569,
       "cf_participant_count": 0,
-      "neurons_fund_participation_icp_e8s": 0,
-      "direct_participation_icp_e8s": 0,
-      "direct_participant_count": 0,
+      "neurons_fund_participation_icp_e8s": 245999855418,
+      "direct_participation_icp_e8s": 1393364844151,
+      "direct_participant_count": 376,
       "cf_neuron_count": 0
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1712954700,
-      "lifecycle": 5
+      "lifecycle": 2
     }
   }
 ]

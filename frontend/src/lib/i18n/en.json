@@ -67,7 +67,6 @@
     "accounts_not_found_poll": "An error occurred while loading the accounts information. The Internet Computer seems to be under high load, please try in a few minutes.",
     "account_not_found": "Sorry, the account \"$account_identifier\" was not found",
     "account_not_reload": "Sorry, the account \"$account_identifier\" cannot be reloaded",
-    "transactions_not_found": "An error occurred while loading the transactions.",
     "canister_not_found": "Sorry, the canister \"$canister_id\" was not found",
     "fail": "fail",
     "dummy_proposal": "There was an error creating the proposals. Check the console for more details.",
@@ -377,19 +376,20 @@
     "all_proposals": "All Proposals",
     "actionable_proposals": "Actionable Proposals",
     "nns_actionable_proposal_tooltip": "There are $count NNS proposals you can vote on.",
-    "sns_actionable_proposal_tooltip": "There are $count $snsName proposals you can vote on."
+    "sns_actionable_proposal_tooltip": "There are $count $snsName proposals you can vote on.",
+    "is_actionable_status_badge_tooltip": "You can still vote on this proposal."
   },
   "actionable_proposals_sign_in": {
     "title": "You are not signed in.",
     "text": "Sign in to see actionable proposals"
   },
   "actionable_proposals_empty": {
-    "title": "There are no actionable proposals you can vote for.",
+    "title": "There are no actionable proposals you can vote on.",
     "text": "Check back later!"
   },
   "actionable_proposals_not_supported": {
     "title": "$snsName doesn't yet support actionable proposals.",
-    "text": "Because it is running an older version of the SNS governance canister.",
+    "text": "$snsName SNS governance canister needs to be updated to the latest version to show actionable proposals. You can still vote on all proposals, but they will not have the visual indication.",
     "dot_tooltip": "This SNS doesn't yet support actionable proposals."
   },
   "canisters": {

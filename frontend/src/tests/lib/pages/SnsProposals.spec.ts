@@ -511,6 +511,11 @@ describe("SnsProposals", () => {
         expect(
           await po.getActionableNotSupportedBanner().getTitleText()
         ).toEqual(`${projectName} doesn't yet support actionable proposals.`);
+        expect(
+          await po.getActionableNotSupportedBanner().getDescriptionText()
+        ).toEqual(
+          `${projectName} SNS governance canister needs to be updated to the latest version to show actionable proposals. You can still vote on all proposals, but they will not have the visual indication.`
+        );
 
         // select to all proposals
         await po

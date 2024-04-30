@@ -14,6 +14,8 @@
     })}</svelte:fragment
   >
   <p class="description" slot="description">
-    {$i18n.actionable_proposals_not_supported.text}
+    {replacePlaceholders($i18n.actionable_proposals_not_supported.text, {
+      $snsName: snsName,
+    })}
   </p>
 </PageBanner>

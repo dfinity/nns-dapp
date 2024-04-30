@@ -49,33 +49,51 @@ describe("icp-tokens-list-user.derived", () => {
     }),
     accountIdentifier: mockMainAccount.identifier,
   };
-  const subaccountUserTokenData: UserTokenData = {
-    ...icpTokenUser,
-    balance: TokenAmountV2.fromUlps({
-      amount: mockSubAccount.balanceUlps,
-      token: NNS_TOKEN_DATA,
-    }),
-    title: mockSubAccount.name,
-    subtitle: undefined,
-    rowHref: buildWalletUrl({
-      universe: OWN_CANISTER_ID_TEXT,
-      account: mockSubAccount.identifier,
-    }),
-    accountIdentifier: mockSubAccount.identifier,
+  const subaccountUserTokenData = (
+    balanceUlps: bigint = mockSubAccount.balanceUlps
+  ): UserTokenData => {
+    // Use balance (when explicitly provided) as identifier to have unique sub-accounts
+    const accountIdentifier =
+      balanceUlps === mockSubAccount.balanceUlps
+        ? mockSubAccount.identifier
+        : `${balanceUlps}`;
+    return {
+      ...icpTokenUser,
+      balance: TokenAmountV2.fromUlps({
+        amount: balanceUlps,
+        token: NNS_TOKEN_DATA,
+      }),
+      title: mockSubAccount.name,
+      subtitle: undefined,
+      rowHref: buildWalletUrl({
+        universe: OWN_CANISTER_ID_TEXT,
+        account: accountIdentifier,
+      }),
+      accountIdentifier,
+    };
   };
-  const hardwareWalletUserTokenData: UserTokenData = {
-    ...icpTokenUser,
-    balance: TokenAmountV2.fromUlps({
-      amount: mockHardwareWalletAccount.balanceUlps,
-      token: NNS_TOKEN_DATA,
-    }),
-    title: mockHardwareWalletAccount.name,
-    subtitle: "Hardware Wallet Controlled",
-    rowHref: buildWalletUrl({
-      universe: OWN_CANISTER_ID_TEXT,
-      account: mockHardwareWalletAccount.identifier,
-    }),
-    accountIdentifier: mockHardwareWalletAccount.identifier,
+  const hardwareWalletUserTokenData = (
+    balanceUlps: bigint = mockHardwareWalletAccount.balanceUlps
+  ): UserTokenData => {
+    // Use balance (when explicitly provided) as identifier to have unique sub-accounts
+    const accountIdentifier =
+      balanceUlps === mockHardwareWalletAccount.balanceUlps
+        ? mockHardwareWalletAccount.identifier
+        : `${balanceUlps}`;
+    return {
+      ...icpTokenUser,
+      balance: TokenAmountV2.fromUlps({
+        amount: balanceUlps,
+        token: NNS_TOKEN_DATA,
+      }),
+      title: mockHardwareWalletAccount.name,
+      subtitle: "Hardware Wallet Controlled",
+      rowHref: buildWalletUrl({
+        universe: OWN_CANISTER_ID_TEXT,
+        account: accountIdentifier,
+      }),
+      accountIdentifier,
+    };
   };
 
   describe("icpTokensListVisitors", () => {
@@ -101,7 +119,7 @@ describe("icp-tokens-list-user.derived", () => {
       });
       expect(get(icpTokensListUser)).toEqual([
         mainUserTokenData,
-        subaccountUserTokenData,
+        subaccountUserTokenData(),
       ]);
     });
 
@@ -113,8 +131,44 @@ describe("icp-tokens-list-user.derived", () => {
       });
       expect(get(icpTokensListUser)).toEqual([
         mainUserTokenData,
-        subaccountUserTokenData,
-        hardwareWalletUserTokenData,
+        subaccountUserTokenData(),
+        hardwareWalletUserTokenData(),
+      ]);
+    });
+
+    it("should sort user tokens", () => {
+      const subAccount1 = {
+        ...mockSubAccount,
+        identifier: "1",
+        balanceUlps: 1n,
+      };
+      const subAccount5 = {
+        ...mockSubAccount,
+        identifier: "5",
+        balanceUlps: 5n,
+      };
+      const hwAccount3 = {
+        ...mockHardwareWalletAccount,
+        identifier: "3",
+        balanceUlps: 3n,
+      };
+      const hwAccount7 = {
+        ...mockHardwareWalletAccount,
+        identifier: "7",
+        balanceUlps: 7n,
+      };
+      setAccountsForTesting({
+        main: mockMainAccount,
+        subAccounts: [subAccount5, subAccount1],
+        hardwareWallets: [hwAccount3, hwAccount7],
+      });
+
+      expect(get(icpTokensListUser)).toEqual([
+        mainUserTokenData,
+        hardwareWalletUserTokenData(7n),
+        subaccountUserTokenData(5n),
+        hardwareWalletUserTokenData(3n),
+        subaccountUserTokenData(1n),
       ]);
     });
   });

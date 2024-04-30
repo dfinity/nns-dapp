@@ -30,7 +30,6 @@ impl Partitions {
         println!("Read schema label bytes as: {:?}", schema_label_bytes);
         let schema_label = SchemaLabel::try_from(&schema_label_bytes[..]).unwrap_or_else(|err| {
             dfn_core::api::trap_with(&format!("Unknown schema: {err:?}"));
-            unreachable!()
         });
         println!("Partitions schema label: {schema_label:?}");
         schema_label

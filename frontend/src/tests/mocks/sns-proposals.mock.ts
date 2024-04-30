@@ -55,6 +55,7 @@ export const mockSnsProposal: SnsProposalData = {
   reward_event_end_timestamp_seconds: [],
   minimum_yes_proportion_of_exercised: [],
   minimum_yes_proportion_of_total: [],
+  action_auxiliary: [],
 };
 
 const acceptedTally: SnsTally = {

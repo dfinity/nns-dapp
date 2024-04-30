@@ -37,7 +37,8 @@
           duration: 250,
           easing: cubicOut,
         }}
-        class="tag">{count}</span
+        class="tag"
+        role="status">{count}</span
       ></Tooltip
     >
   {/if}

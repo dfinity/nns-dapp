@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_wasm --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-03_23-01-base/rs/nns/sns-wasm/canister/sns-wasm.did>
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-17_23-01-hotfix-bitcoin-query-stats/rs/nns/sns-wasm/canister/sns-wasm.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -301,6 +301,34 @@ pub struct GetWasmResponse {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct GetWasmMetadataRequest {
+    pub hash: Option<serde_bytes::ByteBuf>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct MetadataSection {
+    pub contents: Option<serde_bytes::ByteBuf>,
+    pub name: Option<String>,
+    pub visibility: Option<String>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct Ok {
+    pub sections: Vec<MetadataSection>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
+pub enum Result1 {
+    Ok(Ok),
+    Error(SnsWasmError),
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct GetWasmMetadataResponse {
+    pub result: Option<Result1>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct SnsUpgrade {
     pub next_version: Option<SnsVersion>,
     pub current_version: Option<SnsVersion>,
@@ -415,6 +443,9 @@ impl Service {
     }
     pub async fn get_wasm(&self, arg0: GetWasmRequest) -> CallResult<(GetWasmResponse,)> {
         ic_cdk::call(self.0, "get_wasm", (arg0,)).await
+    }
+    pub async fn get_wasm_metadata(&self, arg0: GetWasmMetadataRequest) -> CallResult<(GetWasmMetadataResponse,)> {
+        ic_cdk::call(self.0, "get_wasm_metadata", (arg0,)).await
     }
     pub async fn insert_upgrade_path_entries(
         &self,

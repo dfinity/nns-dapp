@@ -76,7 +76,7 @@ jobs:
           retention-days: 3
   test-playwright-e2e-shard-1-of-2:
     needs: build
-    runs-on: ubuntu-latest-m
+    runs-on: ubuntu-20.04
     timeout-minutes: 30
     steps:
       - name: Checkout nns-dapp
@@ -88,7 +88,7 @@ jobs:
           shard_count: 2
   test-playwright-e2e-shard-2-of-2:
     needs: build
-    runs-on: ubuntu-latest-m
+    runs-on: ubuntu-20.04
     timeout-minutes: 30
     steps:
       - name: Checkout nns-dapp
@@ -98,7 +98,7 @@ jobs:
         with:
           shard_number: 2
           shard_count: 2
-  test-downgrade-upgrade:
+  test-upgrade-downgrade:
     needs: build
     runs-on: ubuntu-20.04
     timeout-minutes: 40
@@ -106,18 +106,21 @@ jobs:
       - name: Checkout nns-dapp
         uses: actions/checkout@v4
       - name: Get nns-dapp_test
+        # Note: This may be performed manually with ./scripts/docker-build --network local
         uses: actions/download-artifact@v4
         with:
-          name: nns-dapp_test
-      - name: Start snapshot environment
-        uses: ./.github/actions/start_dfx_snapshot
-        with:
-          nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
-          logfile: 'dfx-test-downgrade-upgrade.log'
-      - name: Downgrade nns-dapp to prod and upgrade back again
-        run: ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_test.wasm.gz --accounts 100 --chunk 30
-      - name: Count upgrade cycles
-        run: scripts/nns-dapp/estimate-upgrade-cycles | tee -a $GITHUB_STEP_SUMMARY
+          name: out
+          path: out
+      - name: Install ic-wasm
+        uses: ./.github/actions/install_ic_wasm
+      - name: Install dfx
+        uses: dfinity/setup-dfx@main
+      - name: Install tools
+        run: |
+          sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
+      - name: Run uprade-downgrade test
+        run: ./scripts/nns-dapp/upgrade-downgrade-test --wasm out/nns-dapp_test.wasm.gz --args out/nns-dapp-arg-local.did --github_step_summary "$GITHUB_STEP_SUMMARY"
   test-upgrade-map:
     needs: build
     runs-on: ubuntu-20.04
@@ -572,7 +575,7 @@ jobs:
           ) | tee -a $GITHUB_STEP_SUMMARY
           (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
   build-pass:
-    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-downgrade-upgrade", "test-test-account-api", "test-upgrade-map", "test-upgrade-stable", "test-upgrade-map-stable", "integration"]
+    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-upgrade-downgrade", "test-test-account-api", "test-upgrade-map", "test-upgrade-stable", "test-upgrade-map-stable", "integration"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
