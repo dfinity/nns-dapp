@@ -40,6 +40,13 @@ export const actionableProposalCountStore: Readable<ActionableProposalCountData>
     })
   );
 
+/** A store that contains a total count of all actionable proposals (nns + snses) */
+export const actionableProposalTotalCountStore: Readable<number> = derived(
+  actionableProposalCountStore,
+  (map) =>
+    Object.values(map).reduce((acc: number, count) => acc + (count ?? 0), 0)
+);
+
 export interface ActionableProposalSupportData {
   // We use the root canister id as the key to identify the actionable proposals support for a specific project.
   [rootCanisterId: string]: boolean | undefined;
