@@ -35,6 +35,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Adjust Metrics block visibility for certain screen widths.
+
 #### Security
 
 #### Not Published
