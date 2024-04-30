@@ -4,6 +4,7 @@ import {
   actionableProposalCountStore,
   actionableProposalIndicationEnabledStore,
   actionableProposalSupportedStore,
+  actionableProposalTotalCountStore,
 } from "$lib/derived/actionable-proposals.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
@@ -145,6 +146,53 @@ describe("actionable proposals derived stores", () => {
         [OWN_CANISTER_ID_TEXT]: true,
         [principal0.toText()]: true,
         [principal1.toText()]: false,
+      });
+    });
+
+    describe("actionableProposalTotalCountStore", () => {
+      const nnsProposals: ProposalInfo[] = [
+        {
+          ...mockProposalInfo,
+          id: 0n,
+        },
+        {
+          ...mockProposalInfo,
+          id: 1n,
+        },
+      ];
+      const snsProposals = [mockSnsProposal];
+      const principal0 = principal(0);
+      const principal1 = principal(1);
+      const principal2 = principal(2);
+
+      beforeEach(() => {
+        actionableNnsProposalsStore.reset();
+        actionableSnsProposalsStore.resetForTesting();
+      });
+
+      it("returns total actionable proposal count", async () => {
+        expect(get(actionableProposalTotalCountStore)).toEqual(0);
+
+        actionableNnsProposalsStore.setProposals(nnsProposals);
+        actionableSnsProposalsStore.set({
+          rootCanisterId: principal0,
+          proposals: snsProposals,
+          includeBallotsByCaller: true,
+        });
+        actionableSnsProposalsStore.set({
+          rootCanisterId: principal1,
+          proposals: snsProposals,
+          includeBallotsByCaller: true,
+        });
+        actionableSnsProposalsStore.set({
+          rootCanisterId: principal2,
+          proposals: [],
+          includeBallotsByCaller: false,
+        });
+
+        expect(get(actionableProposalTotalCountStore)).toEqual(
+          nnsProposals.length + snsProposals.length * 2
+        );
       });
     });
   });
