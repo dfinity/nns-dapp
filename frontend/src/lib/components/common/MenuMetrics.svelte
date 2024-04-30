@@ -50,8 +50,8 @@
     }
 
     &.sticky {
-      // On xlarge screen the menu can be always open
-      @include media.min-width(xlarge) {
+      // On large screen the menu can be always open
+      @include media.min-width(large) {
         @include open;
       }
     }
