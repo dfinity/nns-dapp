@@ -36,6 +36,11 @@ describe("VotedNeuronList", () => {
     expect(await po.getDisplayedTotalVotingPower()).toBe("300.00");
   });
 
+  it("should have tooltip with exact total voting power of neurons", async () => {
+    const po = renderComponent([neuron1, neuron2]);
+    expect(await po.getExactTotalVotingPower()).toBe("300.00000123");
+  });
+
   it("should display neuron ID of individual neurons", async () => {
     const po = renderComponent([neuron1, neuron2]);
     expect(await po.getMyVotesPo().getNeuronIds()).toEqual(["111", "222"]);
@@ -46,6 +51,14 @@ describe("VotedNeuronList", () => {
     expect(await po.getMyVotesPo().getDisplayedVotingPowers()).toEqual([
       "100.00",
       "200.00",
+    ]);
+  });
+
+  it("should have tooltips with exact voting power of neurons", async () => {
+    const po = renderComponent([neuron1, neuron2]);
+    expect(await po.getMyVotesPo().getExactVotingPowers()).toEqual([
+      "100.00000123",
+      "200.00000000",
     ]);
   });
 });
