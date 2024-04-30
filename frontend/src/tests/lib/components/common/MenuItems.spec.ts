@@ -129,6 +129,12 @@ describe("MenuItems", () => {
       expect(
         (await po.getProposalsActionableCountBadgePo().getText()).trim()
       ).toEqual("3");
+      expect(
+        await po
+          .getProposalsActionableCountBadgePo()
+          .getTooltipPo()
+          .getTooltipText()
+      ).toEqual("There are a total of 3 proposals you can vote on.");
     });
   });
 });
