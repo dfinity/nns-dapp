@@ -12,6 +12,7 @@
 
   export let count: number;
   export let universe: Universe;
+  export let noAnimation = false;
 
   let tooltipText = "";
   $: tooltipText = isUniverseNns(Principal.fromText(universe.canisterId))
@@ -24,7 +25,7 @@
 </script>
 
 <TestIdWrapper testId="actionable-proposal-count-badge-component">
-  {#if mounted}
+  {#if noAnimation || mounted}
     <Tooltip
       id="actionable-count-tooltip"
       text={replacePlaceholders(tooltipText, {
