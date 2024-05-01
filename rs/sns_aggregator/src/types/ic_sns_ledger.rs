@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_ledger --out ic_sns_ledger.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-03_23-01-base/rs/rosetta-api/icrc1/ledger/ledger.did>
+//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-17_23-01-hotfix-bitcoin-query-stats/rs/rosetta-api/icrc1/ledger/ledger.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -15,6 +15,18 @@ use ic_cdk::api::call::CallResult;
 // #![allow(dead_code, unused_imports)]
 // use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
 // use ic_cdk::api::call::CallResult as Result;
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ChangeArchiveOptions {
+    pub num_blocks_to_archive: Option<u64>,
+    pub max_transactions_per_response: Option<u64>,
+    pub trigger_threshold: Option<u64>,
+    pub more_controller_ids: Option<Vec<Principal>>,
+    pub max_message_size_bytes: Option<u64>,
+    pub cycles_for_archive_creation: Option<u64>,
+    pub node_max_memory_size_bytes: Option<u64>,
+    pub controller_id: Option<Principal>,
+}
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum MetadataValue {
@@ -44,6 +56,7 @@ pub struct FeatureFlags {
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct UpgradeArgs {
+    pub change_archive_options: Option<ChangeArchiveOptions>,
     pub token_symbol: Option<String>,
     pub transfer_fee: Option<candid::Nat>,
     pub metadata: Option<Vec<(String, MetadataValue)>>,
@@ -346,6 +359,36 @@ pub struct GetArchivesResultItem {
 
 pub type GetArchivesResult = Vec<GetArchivesResultItem>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum Icrc3Value {
+    Int(candid::Int),
+    Map(Vec<(String, Box<Icrc3Value>)>),
+    Nat(candid::Nat),
+    Blob(serde_bytes::ByteBuf),
+    Text(String),
+    Array(Vec<Box<Icrc3Value>>),
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct GetBlocksResultBlocksItem {
+    pub id: candid::Nat,
+    pub block: Box<Icrc3Value>,
+}
+
+pub type GetBlocksResultArchivedBlocksItemCallback = candid::Func;
+#[derive(CandidType, Deserialize)]
+pub struct GetBlocksResultArchivedBlocksItem {
+    pub args: Vec<GetBlocksArgs>,
+    pub callback: GetBlocksResultArchivedBlocksItemCallback,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct GetBlocksResult {
+    pub log_length: candid::Nat,
+    pub blocks: Vec<GetBlocksResultBlocksItem>,
+    pub archived_blocks: Vec<GetBlocksResultArchivedBlocksItem>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Icrc3DataCertificate {
     pub certificate: serde_bytes::ByteBuf,
     pub hash_tree: serde_bytes::ByteBuf,
@@ -412,6 +455,9 @@ impl Service {
     }
     pub async fn icrc_3_get_archives(&self, arg0: GetArchivesArgs) -> CallResult<(GetArchivesResult,)> {
         ic_cdk::call(self.0, "icrc3_get_archives", (arg0,)).await
+    }
+    pub async fn icrc_3_get_blocks(&self, arg0: Vec<GetBlocksArgs>) -> CallResult<(GetBlocksResult,)> {
+        ic_cdk::call(self.0, "icrc3_get_blocks", (arg0,)).await
     }
     pub async fn icrc_3_get_tip_certificate(&self) -> CallResult<(Option<Icrc3DataCertificate>,)> {
         ic_cdk::call(self.0, "icrc3_get_tip_certificate", ()).await
