@@ -1,20 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_ledger.rs a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-index c68feb87d..e482df83a 100644
+index 6b8559267..fb6f8d68e 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_ledger.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-@@ -113,17 +113,15 @@ pub struct BlockRange {
-     pub blocks: Vec<Block>,
- }
- 
--candid::define_function!(pub QueryBlockArchiveFn : (GetBlocksArgs) -> (
--    BlockRange,
--  ) query);
--#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-+pub type QueryBlockArchiveFn = candid::Func;
-+#[derive(CandidType, Deserialize)]
- pub struct GetBlocksResponseArchivedBlocksItem {
-     pub callback: QueryBlockArchiveFn,
-     pub start: BlockIndex,
+@@ -130,7 +130,7 @@ pub struct GetBlocksResponseArchivedBlocksItem {
      pub length: candid::Nat,
  }
  
@@ -23,19 +11,7 @@ index c68feb87d..e482df83a 100644
  pub struct GetBlocksResponse {
      pub certificate: Option<serde_bytes::ByteBuf>,
      pub first_index: BlockIndex,
-@@ -201,17 +199,15 @@ pub struct TransactionRange {
-     pub transactions: Vec<Transaction>,
- }
- 
--candid::define_function!(pub QueryArchiveFn : (GetTransactionsRequest) -> (
--    TransactionRange,
--  ) query);
--#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-+pub type QueryArchiveFn = candid::Func;
-+#[derive(CandidType, Deserialize)]
- pub struct GetTransactionsResponseArchivedTransactionsItem {
-     pub callback: QueryArchiveFn,
-     pub start: TxIndex,
+@@ -216,7 +216,7 @@ pub struct GetTransactionsResponseArchivedTransactionsItem {
      pub length: candid::Nat,
  }
  
