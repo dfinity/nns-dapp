@@ -1,8 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_ledger.rs a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-index 6b8559267..fb6f8d68e 100644
+index 8ffaeb573..182a57e26 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_ledger.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-@@ -130,7 +130,7 @@ pub struct GetBlocksResponseArchivedBlocksItem {
+@@ -143,7 +143,7 @@ pub struct GetBlocksResponseArchivedBlocksItem {
      pub length: candid::Nat,
  }
  
@@ -11,7 +11,7 @@ index 6b8559267..fb6f8d68e 100644
  pub struct GetBlocksResponse {
      pub certificate: Option<serde_bytes::ByteBuf>,
      pub first_index: BlockIndex,
-@@ -216,7 +216,7 @@ pub struct GetTransactionsResponseArchivedTransactionsItem {
+@@ -229,7 +229,7 @@ pub struct GetTransactionsResponseArchivedTransactionsItem {
      pub length: candid::Nat,
  }
  
@@ -20,3 +20,12 @@ index 6b8559267..fb6f8d68e 100644
  pub struct GetTransactionsResponse {
      pub first_index: TxIndex,
      pub log_length: candid::Nat,
+@@ -381,7 +381,7 @@ pub struct GetBlocksResultArchivedBlocksItem {
+     pub callback: GetBlocksResultArchivedBlocksItemCallback,
+ }
+ 
+-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
++#[derive(CandidType, Deserialize)]
+ pub struct GetBlocksResult {
+     pub log_length: candid::Nat,
+     pub blocks: Vec<GetBlocksResultBlocksItem>,
