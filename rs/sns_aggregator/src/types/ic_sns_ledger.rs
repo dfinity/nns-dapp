@@ -381,7 +381,7 @@ pub struct GetBlocksResultArchivedBlocksItem {
     pub callback: GetBlocksResultArchivedBlocksItemCallback,
 }
 
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+#[derive(CandidType, Deserialize)]
 pub struct GetBlocksResult {
     pub log_length: candid::Nat,
     pub blocks: Vec<GetBlocksResultBlocksItem>,
