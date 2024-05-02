@@ -2,6 +2,12 @@
 set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../.."
 
+if [[ "$(uname)" == "Darwin" ]]; then
+  sed="gsed"
+else
+  sed="sed"
+fi
+
 # Checks whether we have the .did file for a canister.
 #
 # # Input
@@ -21,7 +27,7 @@ filter_has_canister_did() {
 #
 # E.g. rs/sns_aggregator/src/types/ic_sns_governance.rs -> sns_governance
 canister_name_from_aggregator_type_path() {
-  sed -nr 's@.*/ic_(.*).rs$@\1@g;ta;b;:a;p'
+  "$sed" -nr 's@.*/ic_(.*).rs$@\1@g;ta;b;:a;p'
 }
 
 GIT_ROOT="$(git rev-parse --show-toplevel)"

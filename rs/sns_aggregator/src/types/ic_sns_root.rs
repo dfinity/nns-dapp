@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_root --out ic_sns_root.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-03_23-01-base/rs/sns/root/canister/root.did>
+//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-17_23-01-hotfix-bitcoin-query-stats/rs/sns/root/canister/root.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -45,7 +45,11 @@ pub enum CanisterStatusType {
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DefiniteCanisterSettings {
+    pub freezing_threshold: Option<candid::Nat>,
     pub controllers: Vec<Principal>,
+    pub reserved_cycles_limit: Option<candid::Nat>,
+    pub memory_allocation: Option<candid::Nat>,
+    pub compute_allocation: Option<candid::Nat>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -54,7 +58,9 @@ pub struct CanisterStatusResult {
     pub memory_size: candid::Nat,
     pub cycles: candid::Nat,
     pub settings: DefiniteCanisterSettings,
+    pub idle_cycles_burned_per_day: Option<candid::Nat>,
     pub module_hash: Option<serde_bytes::ByteBuf>,
+    pub reserved_cycles: Option<candid::Nat>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
