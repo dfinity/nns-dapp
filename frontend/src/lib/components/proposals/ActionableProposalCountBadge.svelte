@@ -20,25 +20,23 @@
 
   let tooltipId = `actionable-count-tooltip-${nextTooltipIdNumber++}`;
 
-  let isTotal = false;
-  $: isTotal = universe === "all";
-
   let tooltipText = "";
-  $: tooltipText = isTotal
-    ? // Total
-      replacePlaceholders($i18n.voting.total_actionable_proposal_tooltip, {
-        $count: `${count}`,
-      })
-    : isUniverseNns(Principal.fromText(universe.canisterId))
-    ? // NNS
-      replacePlaceholders($i18n.voting.nns_actionable_proposal_tooltip, {
-        $count: `${count}`,
-      })
-    : // SNS
-      replacePlaceholders($i18n.voting.sns_actionable_proposal_tooltip, {
-        $count: `${count}`,
-        $snsName: universe.title,
-      });
+  $: tooltipText =
+    universe === "all"
+      ? // Total
+        replacePlaceholders($i18n.voting.total_actionable_proposal_tooltip, {
+          $count: `${count}`,
+        })
+      : isUniverseNns(Principal.fromText(universe.canisterId))
+      ? // NNS
+        replacePlaceholders($i18n.voting.nns_actionable_proposal_tooltip, {
+          $count: `${count}`,
+        })
+      : // SNS
+        replacePlaceholders($i18n.voting.sns_actionable_proposal_tooltip, {
+          $count: `${count}`,
+          $snsName: universe.title,
+        });
 
   // Always rerender to trigger animation start
   let mounted = false;
