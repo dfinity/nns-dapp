@@ -11,6 +11,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Added
 
 - Include SNS nervous system parameters.
+- Add common code snippets for developers to the "Documentation" chapter on the landing page.
 
 ### Changed
 ### Deprecated
