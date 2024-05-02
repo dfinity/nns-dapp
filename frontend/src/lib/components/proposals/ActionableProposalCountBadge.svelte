@@ -17,13 +17,18 @@
   let tooltipText = "";
   $: tooltipText =
     universe === "all"
-      ? $i18n.voting.total_actionable_proposal_tooltip
-      : isUniverseNns(Principal.fromText(universe.canisterId))
-      ? $i18n.voting.nns_actionable_proposal_tooltip
-      : $i18n.voting.sns_actionable_proposal_tooltip;
-
-  let snsName = "";
-  $: snsName = universe === "all" ? "" : universe.title;
+      ? replacePlaceholders($i18n.voting.total_actionable_proposal_tooltip, {
+          $count: `${count}`,
+        })
+      : replacePlaceholders(
+          isUniverseNns(Principal.fromText(universe.canisterId))
+            ? $i18n.voting.nns_actionable_proposal_tooltip
+            : $i18n.voting.sns_actionable_proposal_tooltip,
+          {
+            $count: `${count}`,
+            $snsName: universe.title,
+          }
+        );
 
   // Always rerender to trigger animation start
   let mounted = false;
@@ -32,13 +37,7 @@
 
 <TestIdWrapper testId="actionable-proposal-count-badge-component">
   {#if noAnimation || mounted}
-    <Tooltip
-      id="actionable-count-tooltip"
-      text={replacePlaceholders(tooltipText, {
-        $count: `${count}`,
-        $snsName: snsName,
-      })}
-      top={true}
+    <Tooltip id="actionable-count-tooltip" text={tooltipText} top={true}
       ><span
         transition:scale={{
           duration: 250,
