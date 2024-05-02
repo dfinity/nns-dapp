@@ -19,7 +19,7 @@ ic-cdk = { version = "0.9.2" }
 ic-cdk-macros = { version = "0.6.10" }
 ic-cdk-timers = "0.6.0"
 ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "58791941b72471e09e3d9e733f2a3d4d54e52b5a" }
-ic-ic00-types = { workspace = true }
+ic-management-canister-types = { workspace = true }
 ic-nervous-system-common = { workspace = true }
 lazy_static = "1.4.0"
 num-traits = "0.2.15"

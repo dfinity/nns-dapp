@@ -26,7 +26,6 @@ cycles-minting-canister = { workspace = true }
 dfn_candid = { workspace = true }
 dfn_core = { workspace = true }
 dfn_protobuf = { workspace = true }
-ic-base-types = { workspace = true }
 ic-cdk = { workspace = true }
 ic-cdk-macros = { workspace = true }
 ic-certified-map = "0.3.4" # == https://github.com/dfinity/cdk-rs 6a15aa1616bcfdfdc4c120d17d37a089f5700c36

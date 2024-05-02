@@ -21,7 +21,7 @@ use dfn_core::api::{call, CanisterId};
 use fast_scheduler::FastScheduler;
 use ic_cdk::api::call::{self};
 use ic_cdk_timers::{clear_timer, set_timer, set_timer_interval};
-use ic_ic00_types::{CanisterIdRecord, IC_00};
+use management_canister_types::{CanisterIdRecord, IC_00};
 use state::{Config, StableState, STATE};
 use types::Icrc1Value;
 
