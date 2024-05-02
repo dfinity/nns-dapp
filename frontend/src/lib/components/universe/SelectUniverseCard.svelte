@@ -17,6 +17,7 @@
   import { nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { onMount } from "svelte";
 
   export let selected: boolean;
   // "link" for desktop, "button" for mobile, "dropdown" to open the modal
@@ -43,6 +44,10 @@
   $: actionableProposalSupported = $ENABLE_VOTING_INDICATION
     ? $actionableProposalSupportedStore[universe.canisterId]
     : undefined;
+
+  // Always rerender to trigger animation start
+  let mounted = false;
+  onMount(() => (mounted = true));
 </script>
 
 <Card
@@ -65,7 +70,7 @@
       <span class="name">
         {universe.title}
         {#if $ENABLE_VOTING_INDICATION && $actionableProposalIndicationEnabledStore}
-          {#if nonNullish(actionableProposalCount) && actionableProposalCount > 0}
+          {#if nonNullish(actionableProposalCount) && actionableProposalCount > 0 && mounted}
             <ActionableProposalCountBadge
               count={actionableProposalCount}
               {universe}

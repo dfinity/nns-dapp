@@ -21,6 +21,7 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
+  import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
 
   let routes: {
     context: string;
@@ -65,6 +66,7 @@
       }),
       title: $i18n.navigation.voting,
       icon: IconVote,
+      statusIcon: ActionableProposalTotalCountBadge,
     },
     {
       context: "launchpad",
