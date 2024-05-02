@@ -5,7 +5,6 @@
 <script lang="ts">
   import { scale } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
-  import { onMount } from "svelte";
   import { Tooltip } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -16,7 +15,6 @@
 
   export let count: number;
   export let universe: Universe | "all";
-  export let noAnimation = false;
 
   let tooltipId = `actionable-count-tooltip-${nextTooltipIdNumber++}`;
 
@@ -37,25 +35,19 @@
           $count: `${count}`,
           $snsName: universe.title,
         });
-
-  // Always rerender to trigger animation start
-  let mounted = false;
-  onMount(() => (mounted = true));
 </script>
 
 <TestIdWrapper testId="actionable-proposal-count-badge-component">
-  {#if noAnimation || mounted}
-    <Tooltip id={tooltipId} text={tooltipText} top={true}
-      ><span
-        transition:scale={{
-          duration: 250,
-          easing: cubicOut,
-        }}
-        class="tag"
-        role="status">{count}</span
-      ></Tooltip
-    >
-  {/if}
+  <Tooltip id={tooltipId} text={tooltipText} top={true}
+    ><span
+      transition:scale={{
+        duration: 250,
+        easing: cubicOut,
+      }}
+      class="tag"
+      role="status">{count}</span
+    ></Tooltip
+  >
 </TestIdWrapper>
 
 <style lang="scss">
