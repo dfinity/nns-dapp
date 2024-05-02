@@ -109,6 +109,7 @@ fi
   #     These are changed to legal Rust: `StopDissolving(EmptyRecord),`
   #     where "EmptyRecord" is defined as the name suggests.
   #   - Deprecated: Uses `candid::Principal` instead of `Principal`.
+  #   - Change creating callback types with `candid::define_function!` to `pub type ... = candid::Func;`
   #
   # Final tweaks are defined manually and encoded as patch files.  The changes typically include:
   #   - Replacing the anonymous result{} type in enums with EmptyRecord.  didc produces valid rust code, but
