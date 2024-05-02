@@ -50,10 +50,14 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Automatically handle `candid::define_function` in `did2rs`.
+
 #### Deprecated
 
 #### Removed
 
 #### Fixed
+
+* Make `did2rs` work on Mac.
 
 #### Security
