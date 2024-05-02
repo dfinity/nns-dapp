@@ -1,3 +1,7 @@
+<script lang="ts" context="module">
+  let nextTooltipIdNumber = 0;
+</script>
+
 <script lang="ts">
   import { scale } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
@@ -13,6 +17,8 @@
   export let count: number;
   export let universe: Universe | "all";
   export let noAnimation = false;
+
+  let tooltipId = `actionable-count-tooltip-${nextTooltipIdNumber++}`;
 
   let isTotal = false;
   $: isTotal = universe === "all";
@@ -41,7 +47,7 @@
 
 <TestIdWrapper testId="actionable-proposal-count-badge-component">
   {#if noAnimation || mounted}
-    <Tooltip id="actionable-count-tooltip" text={tooltipText} top={true}
+    <Tooltip id={tooltipId} text={tooltipText} top={true}
       ><span
         transition:scale={{
           duration: 250,
