@@ -14,21 +14,25 @@
   export let universe: Universe | "all";
   export let noAnimation = false;
 
+  let isTotal = false;
+  $: isTotal = universe === "all";
+
   let tooltipText = "";
-  $: tooltipText =
-    universe === "all"
-      ? replacePlaceholders($i18n.voting.total_actionable_proposal_tooltip, {
-          $count: `${count}`,
-        })
-      : replacePlaceholders(
-          isUniverseNns(Principal.fromText(universe.canisterId))
-            ? $i18n.voting.nns_actionable_proposal_tooltip
-            : $i18n.voting.sns_actionable_proposal_tooltip,
-          {
-            $count: `${count}`,
-            $snsName: universe.title,
-          }
-        );
+  $: tooltipText = isTotal
+    ? // Total
+      replacePlaceholders($i18n.voting.total_actionable_proposal_tooltip, {
+        $count: `${count}`,
+      })
+    : isUniverseNns(Principal.fromText(universe.canisterId))
+    ? // NNS
+      replacePlaceholders($i18n.voting.nns_actionable_proposal_tooltip, {
+        $count: `${count}`,
+      })
+    : // SNS
+      replacePlaceholders($i18n.voting.sns_actionable_proposal_tooltip, {
+        $count: `${count}`,
+        $snsName: universe.title,
+      });
 
   // Always rerender to trigger animation start
   let mounted = false;
