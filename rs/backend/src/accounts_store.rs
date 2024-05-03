@@ -1176,16 +1176,9 @@ impl StableState for AccountsStore {
         }
 
         let accounts_db_stats_recomputed_on_upgrade = IgnoreEq(Some(accounts_db_stats_maybe.is_none()));
-        let accounts_db_stats = accounts_db_stats_maybe.unwrap_or_else(|| {
-            // The stable structures migration is finished so we always have
-            // accounts_db_stats and it doesn't matter what we return here.
-            let sub_accounts_count: u64 = 0;
-            let hardware_wallet_accounts_count: u64 = 0;
-            AccountsDbStats {
-                sub_accounts_count,
-                hardware_wallet_accounts_count,
-            }
-        });
+        let Some(accounts_db_stats) = accounts_db_stats_maybe else {
+            return Err("Accounts DB stats should be present since the stable structures migration.".to_string());
+        };
 
         Ok(AccountsStore {
             // Because the stable structures migration is finished, accounts_db
