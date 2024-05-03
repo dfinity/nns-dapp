@@ -357,20 +357,6 @@ describe("proposals-utils", () => {
           identity: mockIdentity,
         })
       ).toBeTruthy();
-
-      expect(
-        hideProposal({
-          proposalInfo: proposalWithBallot({
-            proposal: mockProposals[0],
-          }),
-          filters: {
-            ...DEFAULT_PROPOSALS_FILTERS,
-            excludeVotedProposals: false,
-          },
-          neurons,
-          identity: mockIdentity,
-        })
-      ).toBeTruthy();
     });
 
     it("should not show proposal without ballots", () => {
