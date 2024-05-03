@@ -286,7 +286,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98001565771054430,
+    "icrc1_total_supply": 98008936004613380,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -728,7 +728,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100491543426221420,
+    "icrc1_total_supply": 100509762731999300,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1380,7 +1380,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50079508677948660,
+    "icrc1_total_supply": 50104574505773560,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2176,7 +2176,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9964466140162172,
+    "icrc1_total_supply": 9958459561546560,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3127,7 +3127,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10001095521839754,
+    "icrc1_total_supply": 10001199620477736,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4091,7 +4091,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12566740773611236,
+    "icrc1_total_supply": 12570233883547638,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5398,7 +5398,8 @@
         "oo6x4-xiaaa-aaaap-abrza-cai",
         "o4yaf-3yaaa-aaaap-abr2a-cai",
         "bojx2-iaaaa-aaaag-ab3jq-cai",
-        "j4jiq-sqaaa-aaaap-ab23a-cai"
+        "j4jiq-sqaaa-aaaap-ab23a-cai",
+        "iyehc-lqaaa-aaaap-ab25a-cai"
       ],
       "archives": ["fgzua-6iaaa-aaaaq-aacgq-cai"]
     },
@@ -5554,6 +5555,19 @@
               "target_canister_id": "j4jiq-sqaaa-aaaap-ab23a-cai",
               "validator_method_name": "manage_reward_recipients_validate",
               "target_method_name": "manage_reward_recipients"
+            }
+          }
+        },
+        {
+          "id": 1003,
+          "name": "Set GLDGov daily reserve transfer amount",
+          "description": "Proposal to adjust the daily amount of GLDGov transferred from the reserve pool to the rewards pool of the sns_rewards canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "iyehc-lqaaa-aaaap-ab25a-cai",
+              "target_canister_id": "iyehc-lqaaa-aaaap-ab25a-cai",
+              "validator_method_name": "set_reserve_transfer_amounts_validate",
+              "target_method_name": "set_reserve_transfer_amounts"
             }
           }
         }
@@ -5980,7 +5994,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100001747714357630,
+    "icrc1_total_supply": 100002155703834080,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

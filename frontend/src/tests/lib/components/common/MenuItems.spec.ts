@@ -1,9 +1,18 @@
 import MenuItems from "$lib/components/common/MenuItems.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
+import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
+import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
+import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import type { ProposalInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/services/$public/worker-metrics.services", () => ({
@@ -20,6 +29,10 @@ vi.mock("$lib/services/$public/worker-metrics.services", () => ({
 }));
 
 describe("MenuItems", () => {
+  const renderComponent = (): MenuItemsPo => {
+    const { container } = render(MenuItems);
+    return MenuItemsPo.under(new JestPageObjectElement(container));
+  };
   const shouldRenderMenuItem = ({
     context,
     labelKey,
@@ -73,6 +86,68 @@ describe("MenuItems", () => {
 
       const accountsLink = getByTestId("menuitem-accounts");
       expect(accountsLink.classList.contains("selected")).toBe(true);
+    });
+  });
+
+  describe("actionable proposal count badge", () => {
+    const nnsProposals: ProposalInfo[] = [
+      {
+        ...mockProposalInfo,
+        id: 0n,
+      },
+      {
+        ...mockProposalInfo,
+        id: 1n,
+      },
+    ];
+    const snsProposals = [mockSnsProposal];
+    const snsRootCanisterId = principal(0);
+
+    beforeEach(() => {
+      resetIdentity();
+      actionableNnsProposalsStore.reset();
+      actionableSnsProposalsStore.resetForTesting();
+    });
+
+    it("should display actionable proposal count", async () => {
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Neurons,
+      });
+      actionableNnsProposalsStore.setProposals(nnsProposals);
+      actionableSnsProposalsStore.set({
+        rootCanisterId: snsRootCanisterId,
+        proposals: snsProposals,
+        includeBallotsByCaller: true,
+      });
+
+      const po = renderComponent();
+
+      expect(await po.getProposalsActionableCountBadgePo().isPresent()).toBe(
+        true
+      );
+      expect(
+        (await po.getProposalsActionableCountBadgePo().getText()).trim()
+      ).toEqual("3");
+      expect(
+        await po
+          .getProposalsActionableCountBadgePo()
+          .getTooltipPo()
+          .getTooltipText()
+      ).toEqual("There are a total of 3 proposals you can vote on.");
+    });
+
+    it("should not display actionable proposal count when no proposal available", async () => {
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Neurons,
+      });
+
+      const po = renderComponent();
+
+      expect(await po.getProposalsActionableCountBadgePo().isPresent()).toBe(
+        false
+      );
     });
   });
 });

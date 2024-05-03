@@ -18,6 +18,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Add new proposal types support (47-51)
 * Message informing about proposal topic changes.
 * Tooltips with exact voting power on voted neurons.
+* Display the total count of actionable proposals.
 
 #### Changed
 
@@ -35,6 +36,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Inconsistency in similar NNS neuron sorting.
 * Adjust Metrics block visibility for certain screen widths.
 
 #### Security
@@ -49,10 +51,14 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Automatically handle `candid::define_function` in `did2rs`.
+
 #### Deprecated
 
 #### Removed
 
 #### Fixed
+
+* Make `did2rs` work on Mac.
 
 #### Security

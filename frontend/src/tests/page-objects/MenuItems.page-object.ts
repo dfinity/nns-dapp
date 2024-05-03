@@ -1,5 +1,6 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { ActionableProposalCountBadgePo } from "$tests/page-objects/ActionableProposalCountBadge.page-object";
 import { GetTokensPo } from "$tests/page-objects/GetTokens.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class MenuItemsPo extends BasePageObject {
@@ -7,6 +8,10 @@ export class MenuItemsPo extends BasePageObject {
 
   static under(element: PageObjectElement): MenuItemsPo {
     return new MenuItemsPo(element.byTestId(MenuItemsPo.TID));
+  }
+
+  getProposalsActionableCountBadgePo(): ActionableProposalCountBadgePo {
+    return ActionableProposalCountBadgePo.under(this.root);
   }
 
   clickAccounts(): Promise<void> {

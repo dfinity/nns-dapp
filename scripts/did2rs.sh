@@ -52,6 +52,12 @@ DID_PATH="${DID_PATH:-${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}
 
 cd "$GIT_ROOT"
 
+if [[ "$(uname)" == "Darwin" ]]; then
+  sed="gsed"
+else
+  sed="sed"
+fi
+
 : "Ensure that tools are installed and working.  Rustfmt in particular can self-upgrade when called and the self-upgrade can fail."
 {
   didc --version
@@ -67,7 +73,7 @@ cd "$GIT_ROOT"
 
   # We preserve lines starting `//!` at the head of the .did file.
   # These are used to provide information about provenance.
-  sed -nE '/\/\/!/{p;b;};q' "${DID_PATH}"
+  "$sed" -nE '/\/\/!/{p;b;};q' "${DID_PATH}"
 
   # Here we write the next few lines of the Rust file.
   #
@@ -103,6 +109,7 @@ cd "$GIT_ROOT"
   #     These are changed to legal Rust: `StopDissolving(EmptyRecord),`
   #     where "EmptyRecord" is defined as the name suggests.
   #   - Deprecated: Uses `candid::Principal` instead of `Principal`.
+  #   - Change creating callback types with `candid::define_function!` to `pub type ... = candid::Func;`
   #
   # Final tweaks are defined manually and encoded as patch files.  The changes typically include:
   #   - Replacing the anonymous result{} type in enums with EmptyRecord.  didc produces valid rust code, but
@@ -113,7 +120,7 @@ cd "$GIT_ROOT"
   # shellcheck disable=SC2016
   didc bind "${DID_PATH}" --target rs |
     rustfmt --edition 2021 |
-    sed -E '
+    "$sed" -E '
             # Comment out the header "use", "//!" and "#!" lines.
 	    s@^(use |//!|#!)@// &@;
 
@@ -130,6 +137,7 @@ cd "$GIT_ROOT"
 	    # Replace invalid "{}" in generated Rust code with "EmptyRecord":
 	    /^pub (struct|enum) /,/^}/{s/ *\{\},$/(EmptyRecord),/g};
 	    ' |
+    "$sed" -z 's/candid::define_function!(pub \([^ ]*\) [^;]*;\n#\[derive([^)]*)\]/pub type \1 = candid::Func;\n#[derive(CandidType, Deserialize)]/g' |
     rustfmt --edition 2021
 } >"${RUST_PATH}"
 if test -f "${EDIT_PATH}"; then

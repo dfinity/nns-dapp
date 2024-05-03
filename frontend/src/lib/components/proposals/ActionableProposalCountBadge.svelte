@@ -1,7 +1,6 @@
 <script lang="ts">
   import { scale } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
-  import { onMount } from "svelte";
   import { Tooltip } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -11,37 +10,38 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let count: number;
-  export let universe: Universe;
+  export let universe: Universe | "all";
 
   let tooltipText = "";
-  $: tooltipText = isUniverseNns(Principal.fromText(universe.canisterId))
-    ? $i18n.voting.nns_actionable_proposal_tooltip
-    : $i18n.voting.sns_actionable_proposal_tooltip;
-
-  // Always rerender to trigger animation start
-  let mounted = false;
-  onMount(() => (mounted = true));
+  $: tooltipText =
+    universe === "all"
+      ? // Total
+        replacePlaceholders($i18n.voting.total_actionable_proposal_tooltip, {
+          $count: `${count}`,
+        })
+      : isUniverseNns(Principal.fromText(universe.canisterId))
+      ? // NNS
+        replacePlaceholders($i18n.voting.nns_actionable_proposal_tooltip, {
+          $count: `${count}`,
+        })
+      : // SNS
+        replacePlaceholders($i18n.voting.sns_actionable_proposal_tooltip, {
+          $count: `${count}`,
+          $snsName: universe.title,
+        });
 </script>
 
 <TestIdWrapper testId="actionable-proposal-count-badge-component">
-  {#if mounted}
-    <Tooltip
-      id="actionable-count-tooltip"
-      text={replacePlaceholders(tooltipText, {
-        $count: `${count}`,
-        $snsName: universe.title,
-      })}
-      top={true}
-      ><span
-        transition:scale={{
-          duration: 250,
-          easing: cubicOut,
-        }}
-        class="tag"
-        role="status">{count}</span
-      ></Tooltip
-    >
-  {/if}
+  <Tooltip id="actionable-count-tooltip" text={tooltipText} top={true}
+    ><span
+      transition:scale={{
+        duration: 250,
+        easing: cubicOut,
+      }}
+      class="tag"
+      role="status">{count}</span
+    ></Tooltip
+  >
 </TestIdWrapper>
 
 <style lang="scss">
