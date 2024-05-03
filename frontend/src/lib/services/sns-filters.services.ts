@@ -13,7 +13,6 @@ import { get } from "svelte/store";
 
 const defaultFiltersProjectData = {
   types: [],
-  rewardStatus: [],
   decisionStatus: [],
 };
 

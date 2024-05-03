@@ -5,10 +5,7 @@ import {
 import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { Principal } from "@dfinity/principal";
-import {
-  SnsProposalDecisionStatus,
-  SnsProposalRewardStatus,
-} from "@dfinity/sns";
+import { SnsProposalDecisionStatus } from "@dfinity/sns";
 import { get } from "svelte/store";
 
 describe("sns-filters store", () => {
@@ -29,24 +26,6 @@ describe("sns-filters store", () => {
     },
   ];
   const unCheckedDecisionStatus = decisionStatus.map((status) => ({
-    ...status,
-    checked: false,
-  }));
-  const rewardStatus = [
-    {
-      id: "1",
-      name: "status-1",
-      value: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
-      checked: true,
-    },
-    {
-      id: "2",
-      name: "status-2",
-      value: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE,
-      checked: true,
-    },
-  ];
-  const unCheckedRewardStatus = rewardStatus.map((status) => ({
     ...status,
     checked: false,
   }));
