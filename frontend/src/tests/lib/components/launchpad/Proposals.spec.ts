@@ -31,7 +31,6 @@ describe("Proposals", () => {
       identity: new AnonymousIdentity(),
       filters: {
         topics: [Topic.SnsAndCommunityFund],
-        rewards: [],
         status: [ProposalStatus.Open],
         excludeVotedProposals: false,
         lastAppliedFilter: undefined,

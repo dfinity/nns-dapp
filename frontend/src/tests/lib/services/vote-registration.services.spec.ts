@@ -301,10 +301,10 @@ describe("vote-registration-services", () => {
         expect(spyQueryProposals).toBeCalledWith({
           beforeProposal: undefined,
           certified: false,
+          includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
           filters: {
             excludeVotedProposals: false,
             lastAppliedFilter: undefined,
-            rewards: [ProposalRewardStatus.AcceptVotes],
             status: [],
             topics: [],
           },

@@ -104,10 +104,10 @@ describe("actionable-proposals.services", () => {
         expect.objectContaining({
           beforeProposal: undefined,
           certified: false,
+          includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
           filters: {
             excludeVotedProposals: false,
             lastAppliedFilter: undefined,
-            rewards: [ProposalRewardStatus.AcceptVotes],
             status: [],
             topics: [],
           },
@@ -132,10 +132,10 @@ describe("actionable-proposals.services", () => {
         identity: mockIdentity,
         beforeProposal: undefined,
         certified: false,
+        includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
         filters: {
           excludeVotedProposals: false,
           lastAppliedFilter: undefined,
-          rewards: [ProposalRewardStatus.AcceptVotes],
           status: [],
           topics: [],
         },
@@ -145,10 +145,10 @@ describe("actionable-proposals.services", () => {
         beforeProposal:
           firstResponseProposals[firstResponseProposals.length - 1].id,
         certified: false,
+        includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
         filters: {
           excludeVotedProposals: false,
           lastAppliedFilter: undefined,
-          rewards: [ProposalRewardStatus.AcceptVotes],
           status: [],
           topics: [],
         },
