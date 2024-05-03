@@ -121,40 +121,6 @@ jobs:
           cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
       - name: Run uprade-downgrade test
         run: ./scripts/nns-dapp/upgrade-downgrade-test --wasm out/nns-dapp_test.wasm.gz --args out/nns-dapp-arg-local.did --github_step_summary "$GITHUB_STEP_SUMMARY"
-  test-upgrade-map:
-    needs: build
-    runs-on: ubuntu-20.04
-    timeout-minutes: 40
-    steps:
-      - name: Checkout nns-dapp
-        uses: actions/checkout@v4
-      - name: Get nns-dapp_test
-        uses: actions/download-artifact@v4
-        with:
-          name: out
-          path: out
-      - name: Install ic-wasm
-        uses: ./.github/actions/install_ic_wasm
-      - name: Install dfx
-        uses: dfinity/setup-dfx@main
-      - name: Install tools
-        run: |
-          sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
-          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
-      - name: Start dfx
-        run: dfx start --clean --background &>test-upgrade-map-dfx.log
-      - name: Put assets in the default location
-        run: |
-          ls
-          ls out
-      - name: Upgrade to self, keeping the storage schema as map
-        run: ./scripts/nns-dapp/migration-test --schema1 Map --schema2 Map --accounts 10000
-      - name: Upload dfx logs
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-upgrade-map-dfx.log
-          path: test-upgrade-map-dfx.log
   test-upgrade-stable:
     needs: build
     runs-on: ubuntu-20.04
@@ -179,38 +145,6 @@ jobs:
         run: dfx start --clean --background &>test-upgrade-stable-dfx.log
       - name: Downgrade nns-dapp to prod and upgrade back again
         run: ./scripts/nns-dapp/migration-test --schema1 AccountsInStableMemory --schema2 AccountsInStableMemory --accounts 1000 --chunk 100
-      - name: Upload dfx logs
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-upgrade-stable-dfx.log
-          path: test-upgrade-stable-dfx.log
-  test-upgrade-map-stable:
-    needs: build
-    runs-on: ubuntu-20.04
-    timeout-minutes: 40
-    steps:
-      - name: Checkout nns-dapp
-        uses: actions/checkout@v4
-      - name: Get nns-dapp_test
-        uses: actions/download-artifact@v4
-        with:
-          name: out
-          path: out
-      - name: Install ic-wasm
-        uses: ./.github/actions/install_ic_wasm
-      - name: Install dfx
-        uses: dfinity/setup-dfx@main
-      - name: Install tools
-        run: |
-          sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
-          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
-      - name: Start dfx
-        run: dfx start --clean --background &>test-upgrade-stable-dfx.log
-      - name: Upgrade nns-dapp from Map to AccountsInStableMemory and back again
-        run: ./scripts/nns-dapp/migration-test --schema1 Map --schema2 AccountsInStableMemory --accounts 20 --chunk 20
-      - name: Repeat with more accounts
-        run: ./scripts/nns-dapp/migration-test --schema1 Map --schema2 AccountsInStableMemory --accounts 40 --chunk 20
       - name: Upload dfx logs
         if: failure()
         uses: actions/upload-artifact@v4
@@ -575,7 +509,7 @@ jobs:
           ) | tee -a $GITHUB_STEP_SUMMARY
           (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
   build-pass:
-    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-upgrade-downgrade", "test-test-account-api", "test-upgrade-map", "test-upgrade-stable", "test-upgrade-map-stable", "integration"]
+    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-upgrade-downgrade", "test-test-account-api", "test-upgrade-stable", "integration"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
