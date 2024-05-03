@@ -13,6 +13,7 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
+import { ProposalRewardStatus } from "@dfinity/nns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
@@ -20,6 +21,7 @@ import type { Subscriber } from "svelte/store";
 const proposal = {
   ...mockProposalInfo,
   topic: DEFAULT_PROPOSALS_FILTERS.topics[0],
+  rewardStatus: ProposalRewardStatus.AcceptVotes,
   status: DEFAULT_PROPOSALS_FILTERS.status[0],
 };
 
