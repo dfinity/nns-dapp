@@ -7,7 +7,6 @@ use candid::CandidType;
 use dfn_candid::Candid;
 use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
-use ic_cdk::println;
 use ic_crypto_sha2::Sha256;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
@@ -28,9 +27,8 @@ pub mod constructors;
 pub mod histogram;
 pub mod schema;
 use schema::{
-    map::AccountsDbAsMap,
     proxy::{AccountsDb, AccountsDbAsProxy},
-    AccountsDbBTreeMapTrait, AccountsDbTrait,
+    AccountsDbTrait,
 };
 
 use self::schema::SchemaLabel;
@@ -1117,9 +1115,11 @@ impl AccountsStore {
 
 impl StableState for AccountsStore {
     fn encode(&self) -> Vec<u8> {
-        let empty_accounts = BTreeMap::<Vec<u8>, Account>::new();
+        // Accounts are now in stable structures and no longer in a simple map
+        // on the heap. So we don't need to encode them here.
+        let empty_accounts = BTreeMap::<Vec<u8>, candid::Empty>::new();
         Candid((
-            &self.accounts_db.as_map_maybe().unwrap_or(&empty_accounts),
+            empty_accounts,
             &self.hardware_wallets_and_sub_accounts,
             // TODO: Remove pending_transactions
             HashMap::<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>::new(),
@@ -1140,7 +1140,9 @@ impl StableState for AccountsStore {
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
         #[allow(clippy::type_complexity)]
         let (
-            accounts,
+            // Accounts are now in stable structures and no longer in a simple
+            // map on the heap. So we don't need to decode them here.
+            _accounts,
             mut hardware_wallets_and_sub_accounts,
             pending_transactions,
             // Transactions are unused but we need to decode something for backwards
@@ -1153,10 +1155,10 @@ impl StableState for AccountsStore {
             neurons_topped_up_count,
             accounts_db_stats_maybe,
         ): (
-            BTreeMap<Vec<u8>, Account>,
+            candid::Reserved,
             HashMap<AccountIdentifier, AccountWrapper>,
             HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
-            candid::types::reserved::Reserved,
+            candid::Reserved,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockIndex>,
             MultiPartTransactionsProcessor,
@@ -1175,23 +1177,21 @@ impl StableState for AccountsStore {
 
         let accounts_db_stats_recomputed_on_upgrade = IgnoreEq(Some(accounts_db_stats_maybe.is_none()));
         let accounts_db_stats = accounts_db_stats_maybe.unwrap_or_else(|| {
-            println!("Re-counting accounts_db stats...");
-            let mut sub_accounts_count: u64 = 0;
-            let mut hardware_wallet_accounts_count: u64 = 0;
-            for account in accounts.values() {
-                sub_accounts_count += account.sub_accounts.len() as u64;
-                hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
-            }
+            // The stable structures migration is finished so we always have
+            // accounts_db_stats and it doesn't matter what we return here.
+            let sub_accounts_count: u64 = 0;
+            let hardware_wallet_accounts_count: u64 = 0;
             AccountsDbStats {
                 sub_accounts_count,
                 hardware_wallet_accounts_count,
             }
         });
 
-        let accounts_db = AccountsDb::Map(AccountsDbAsMap::from_map(accounts));
-
         Ok(AccountsStore {
-            accounts_db: AccountsDbAsProxy::from(accounts_db),
+            // Because the stable structures migration is finished, accounts_db
+            // will be replaced with an AccountsDbAsUnboundedStableBTreeMap in
+            // State::from(Partitions) so it doesn't matter what we set here.
+            accounts_db: AccountsDbAsProxy::default(),
             hardware_wallets_and_sub_accounts,
             pending_transactions,
             neuron_accounts,

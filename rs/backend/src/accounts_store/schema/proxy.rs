@@ -2,12 +2,11 @@
 //!
 //! The proxy manages migrations from one implementation to another.
 use super::accounts_in_unbounded_stable_btree_map::{AccountsDbAsUnboundedStableBTreeMap, ProductionMemoryType};
-use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
+use super::{map::AccountsDbAsMap, Account, AccountsDbTrait, SchemaLabel};
 use core::fmt;
 use core::ops::RangeBounds;
 #[cfg(test)]
 use ic_stable_structures::DefaultMemoryImpl;
-use std::collections::BTreeMap;
 
 mod enum_boilerplate;
 mod migration;
@@ -65,19 +64,6 @@ impl From<AccountsDb> for AccountsDbAsProxy {
 pub enum AccountsDb {
     Map(AccountsDbAsMap),
     UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap<ProductionMemoryType>),
-}
-
-// Constructors
-impl AccountsDbAsProxy {
-    /// Provides a reference to the underlying map, if that is how accounts are stored.
-    #[must_use]
-    #[allow(clippy::unnecessary_wraps)] // The option will be needed when the stable memory is taken from behind the test flag.
-    pub fn as_map_maybe(&self) -> Option<&BTreeMap<Vec<u8>, Account>> {
-        match &self.authoritative_db {
-            AccountsDb::Map(map_db) => Some(map_db.as_map()),
-            AccountsDb::UnboundedStableBTreeMap(_) => None,
-        }
-    }
 }
 
 impl AccountsDbTrait for AccountsDbAsProxy {
