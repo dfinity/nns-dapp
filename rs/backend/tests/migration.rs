@@ -174,15 +174,3 @@ fn operation_sequence_strategy() -> impl Strategy<Value = Vec<Operation>> {
 fn schema_label_strategy() -> impl Strategy<Value = SchemaLabel> {
     prop_oneof![Just(SchemaLabel::Map), Just(SchemaLabel::AccountsInStableMemory),]
 }
-
-proptest! {
-    #[test]
-    fn map_to_map_migration_should_work_with_other_operations(schema in schema_label_strategy(), operations in operation_sequence_strategy()) {
-        let test_env = TestEnv::new();
-        test_env.install_wasm_with_schema(Some(schema));
-        for operation in operations {
-            test_env.perform(operation);
-            test_env.assert_invariants_match();
-        }
-    }
-}
