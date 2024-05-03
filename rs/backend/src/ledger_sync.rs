@@ -102,6 +102,7 @@ async fn get_blocks(from: BlockIndex, tip_of_chain: BlockIndex) -> Result<Vec<(B
                                 operation: Operation::Burn {
                                     from: AccountIdentifier::new(Principal::management_canister().into(), None),
                                     amount: Tokens::from_e8s(1234),
+                                    spender: None,
                                 },
                             },
                         };
@@ -140,7 +141,7 @@ fn determine_canister_for_blocks(
         let range_start = max(from, archive_index_entry.height_from);
         let range_end = min(tip_of_chain, archive_index_entry.height_to);
         return (
-            CanisterId::new(archive_index_entry.canister_id.unwrap()).unwrap(),
+            CanisterId::unchecked_from_principal(archive_index_entry.canister_id.unwrap()),
             range_start..=range_end,
         );
     }

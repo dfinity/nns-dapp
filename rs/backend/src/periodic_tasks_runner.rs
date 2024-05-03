@@ -214,6 +214,8 @@ async fn create_canister_v2(
         block_index,
         controller,
         subnet_type: None,
+        subnet_selection: None,
+        settings: None,
     };
 
     cmc::notify_create_canister(notify_request).await
@@ -239,6 +241,8 @@ async fn create_canister(principal: PrincipalId, amount: Tokens) -> Result<Resul
         block_index,
         controller: principal,
         subnet_type: None,
+        subnet_selection: None,
+        settings: None,
     };
 
     cmc::notify_create_canister(notify_request).await

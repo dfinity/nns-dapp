@@ -579,7 +579,7 @@ impl AccountsStore {
         }
 
         match *transfer {
-            Burn { from: _, amount: _ } | Mint { to: _, amount: _ } | Approve { .. } => {}
+            Burn { .. } | Mint { .. } | Approve { .. } => {}
             Transfer {
                 from,
                 to,

@@ -21,7 +21,7 @@ use dfn_core::api::{call, CanisterId};
 use fast_scheduler::FastScheduler;
 use ic_cdk::api::call::{self};
 use ic_cdk_timers::{clear_timer, set_timer, set_timer_interval};
-use management_canister_types::{CanisterIdRecord, IC_00};
+use ic_management_canister_types::{CanisterIdRecord, IC_00};
 use state::{Config, StableState, STATE};
 use types::Icrc1Value;
 
@@ -48,11 +48,9 @@ fn health_check() -> String {
 #[candid_method(update)]
 #[ic_cdk_macros::update]
 #[allow(clippy::panic)] // This is a readonly function, only a rather arcane reason prevents it from being a query call.
-async fn get_canister_status() -> ic_ic00_types::CanisterStatusResultV2 {
+async fn get_canister_status() -> ic_management_canister_types::CanisterStatusResultV2 {
     let own_canister_id = dfn_core::api::id();
-    let canister_id_record: CanisterIdRecord = CanisterId::new(own_canister_id.get())
-        .unwrap_or_else(|err| panic!("Couldn't get canister_status of {own_canister_id}.  Err: {err:#?}"))
-        .into();
+    let canister_id_record: CanisterIdRecord = CanisterId::unchecked_from_principal(own_canister_id.get()).into();
     let result = call(IC_00, "canister_status", dfn_candid::candid, (canister_id_record,)).await;
     result.unwrap_or_else(|err| panic!("Couldn't get canister_status of {own_canister_id}.  Err: {err:#?}"))
 }
@@ -100,7 +98,7 @@ fn tail_log(limit: Option<u16>) -> String {
 fn http_request(/* req: HttpRequest */) /* -> HttpResponse */
 {
     ic_cdk::setup();
-    let request = call::arg_data::<(HttpRequest,)>().0;
+    let request = call::arg_data::<(HttpRequest,)>(ic_cdk::api::call::ArgDecoderConfig::default()).0;
     let response = match request.url.as_ref() {
         "/__candid" => HttpResponse::from(__export_service()),
         _ => assets::http_request(request),

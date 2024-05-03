@@ -13,7 +13,7 @@ use crate::{decode_arg, Json};
 use candid::{CandidType, Principal};
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_crypto_sha2::Sha256;
-use management_canister_types::CanisterInstallMode;
+use ic_management_canister_types::CanisterInstallMode;
 use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 use std::fmt::Write;
@@ -212,7 +212,7 @@ pub type UpdateNodeOperatorConfigPayload = crate::canisters::nns_registry::api::
 
 /// NNS function 17 - `StopOrStartNNSCanister`
 /// <https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nervous_system/root/src/lib.rs#L258>
-pub type StopOrStartNnsCanisterProposal = ic_nervous_system_root::change_canister::StopOrStartCanisterProposal;
+pub type StopOrStartNnsCanisterProposal = ic_nervous_system_root::change_canister::StopOrStartCanisterRequest;
 
 /// NNS function 18 - `RemoveNodes`
 /// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/node_management/do_remove_nodes.rs#L96>
