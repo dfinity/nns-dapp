@@ -1,8 +1,8 @@
 //! Tests for the argument parsing code.
 use crate::decode_arg;
 use anyhow::Context;
-use candid::parser::types::{IDLType, IDLTypes};
-use candid::{IDLArgs, IDLProg};
+use candid::IDLArgs;
+use candid_parser::types::{IDLProg, IDLType, IDLTypes};
 use std::str::FromStr;
 
 /// Sample argument and expected corresponding output.
@@ -159,7 +159,7 @@ fn arg_should_be_parsed(test_vector: &TestVector) -> anyhow::Result<()> {
     } = *test_vector;
     let did: IDLTypes =
         arg_types_from_did(did).context("Test error: Failed to get args from candid interface description.")?;
-    let args_parsed: IDLArgs = IDLArgs::from_str(args).context("Test error: Failed to parse arg value")?;
+    let args_parsed: IDLArgs = candid_parser::parse_idl_args(args).context("Test error: Failed to parse arg value")?;
     let args_bytes = args_parsed.to_bytes().context("Failed to convert args to bytes")?;
     let expected = status_quo;
     let actual = decode_arg(&args_bytes, &did); // Note: This does NOT match the current code.

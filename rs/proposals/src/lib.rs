@@ -144,6 +144,8 @@ const IDL2JSON_OPTIONS: Idl2JsonOptions = Idl2JsonOptions {
 ///
 /// # Errors
 /// - Does not support: `Type::Empty`, `Type::Knot(_)`, `Type::Unknown`
+// Type is Rc<TypeInner> and Rc is designed to be passed by value.
+#[allow(clippy::needless_pass_by_value)]
 fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
     match (*ty).clone() {
         TypeInner::Null => Ok(IDLType::PrimT(parser_types::PrimType::Null)),

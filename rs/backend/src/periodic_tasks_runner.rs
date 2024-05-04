@@ -210,6 +210,7 @@ async fn create_canister_v2(
     block_index: BlockIndex,
     controller: PrincipalId,
 ) -> Result<Result<CanisterId, NotifyError>, String> {
+    #[allow(deprecated)]
     let notify_request = NotifyCreateCanister {
         block_index,
         controller,
@@ -237,6 +238,7 @@ async fn create_canister(principal: PrincipalId, amount: Tokens) -> Result<Resul
 
     let block_index = ledger::send(send_request.clone()).await?;
 
+    #[allow(deprecated)]
     let notify_request = NotifyCreateCanister {
         block_index,
         controller: principal,
