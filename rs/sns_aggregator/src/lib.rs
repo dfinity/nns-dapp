@@ -16,12 +16,13 @@ use std::collections::VecDeque;
 use std::time::Duration;
 
 use assets::{insert_favicon, insert_home_page, AssetHashes, HttpRequest, HttpResponse};
-use candid::{candid_method, export_service};
+use candid::{candid_method, export_service, CandidType, Principal};
 use dfn_core::api::{call, CanisterId};
 use fast_scheduler::FastScheduler;
 use ic_cdk::api::call::{self};
 use ic_cdk_timers::{clear_timer, set_timer, set_timer_interval};
 use ic_management_canister_types::{CanisterIdRecord, IC_00};
+use serde::Deserialize;
 use state::{Config, StableState, STATE};
 use types::Icrc1Value;
 
@@ -44,11 +45,43 @@ fn health_check() -> String {
     })
 }
 
+#[derive(CandidType, Deserialize)]
+enum CanisterStatusType {
+    #[serde(rename = "stopped")]
+    Stopped,
+    #[serde(rename = "stopping")]
+    Stopping,
+    #[serde(rename = "running")]
+    Running,
+}
+
+#[derive(CandidType, Deserialize)]
+struct DefiniteCanisterSettingsArgs {
+    controller: Principal,
+    freezing_threshold: candid::Nat,
+    controllers: Vec<Principal>,
+    memory_allocation: candid::Nat,
+    compute_allocation: candid::Nat,
+}
+
+#[derive(CandidType, Deserialize)]
+struct CanisterStatusResultV2 {
+    controller: Principal,
+    status: CanisterStatusType,
+    freezing_threshold: candid::Nat,
+    balance: Vec<(serde_bytes::ByteBuf, candid::Nat)>,
+    memory_size: candid::Nat,
+    cycles: candid::Nat,
+    settings: DefiniteCanisterSettingsArgs,
+    idle_cycles_burned_per_day: candid::Nat,
+    module_hash: Option<serde_bytes::ByteBuf>,
+}
+
 /// API method to get cycle balance and burn rate.
 #[candid_method(update)]
 #[ic_cdk_macros::update]
 #[allow(clippy::panic)] // This is a readonly function, only a rather arcane reason prevents it from being a query call.
-async fn get_canister_status() -> ic_management_canister_types::CanisterStatusResultV2 {
+async fn get_canister_status() -> CanisterStatusResultV2 {
     let own_canister_id = dfn_core::api::id();
     let canister_id_record: CanisterIdRecord = CanisterId::unchecked_from_principal(own_canister_id.get()).into();
     let result = call(IC_00, "canister_status", dfn_candid::candid, (canister_id_record,)).await;
