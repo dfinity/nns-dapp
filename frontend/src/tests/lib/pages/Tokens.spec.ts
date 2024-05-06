@@ -77,132 +77,117 @@ describe("Tokens page", () => {
     expect(await po.getTokensTable().getRows()).toHaveLength(2);
   });
 
-  describe("with feature flag ENABLE_HIDE_ZERO_BALANCE enabled", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_HIDE_ZERO_BALANCE", true);
-    });
-
-    it("should show settings button with feature flag enabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_HIDE_ZERO_BALANCE", true);
-
-      const po = renderPage([token1, token2]);
-      expect(await po.getSettingsButtonPo().isPresent()).toBe(true);
-    });
-
-    it("should open settings popup when clicking on settings button", async () => {
-      const po = renderPage([token1, token2]);
-
-      expect(await po.getHideZeroBalancesTogglePo().isPresent()).toBe(false);
-      expect(await po.getBackdropPo().isPresent()).toBe(false);
-      await po.getSettingsButtonPo().click();
-      expect(await po.getHideZeroBalancesTogglePo().isPresent()).toBe(true);
-      expect(await po.getBackdropPo().isPresent()).toBe(true);
-    });
-
-    it("should close settings popup when clicking on backdrop", async () => {
-      const po = renderPage([token1, token2]);
-
-      await po.getSettingsButtonPo().click();
-      expect(await po.getHideZeroBalancesTogglePo().isPresent()).toBe(true);
-      expect(await po.getBackdropPo().isPresent()).toBe(true);
-
-      await po.getBackdropPo().click();
-
-      // Finish transitions
-      await advanceTime();
-
-      expect(await po.getHideZeroBalancesTogglePo().isPresent()).toBe(false);
-      expect(await po.getBackdropPo().isPresent()).toBe(false);
-    });
-
-    it("should hide tokens with zero balance", async () => {
-      const po = renderPage([positiveBalance, zeroBalance]);
-
-      expect(await po.getTokensTable().getTokenNames()).toEqual([
-        "Positive balance",
-        "Zero balance",
-      ]);
-
-      await po.getSettingsButtonPo().click();
-      await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
-
-      // Finish transitions
-      await advanceTime();
-
-      expect(await po.getTokensTable().getTokenNames()).toEqual([
-        "Positive balance",
-      ]);
-    });
-
-    it("should hide tokens without balance", async () => {
-      const po = renderPage([unavailableBalance, positiveBalance]);
-
-      expect(await po.getTokensTable().getTokenNames()).toEqual([
-        "Unavailable balance",
-        "Positive balance",
-      ]);
-
-      await po.getSettingsButtonPo().click();
-      await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
-
-      // Finish transitions
-      await advanceTime();
-
-      expect(await po.getTokensTable().getTokenNames()).toEqual([
-        "Positive balance",
-      ]);
-    });
-
-    it("should not hide ICP even with zero balance", async () => {
-      const po = renderPage([icpZeroBalance, positiveBalance]);
-
-      expect(await po.getTokensTable().getTokenNames()).toEqual([
-        "Internet Computer",
-        "Positive balance",
-      ]);
-
-      await po.getSettingsButtonPo().click();
-      await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
-
-      expect(await po.getTokensTable().getTokenNames()).toEqual([
-        "Internet Computer",
-        "Positive balance",
-      ]);
-    });
-
-    it("show-all button should show all tokens", async () => {
-      const po = renderPage([positiveBalance, zeroBalance]);
-
-      expect(await po.getShowAllButtonPo().isPresent()).toBe(false);
-
-      await po.getSettingsButtonPo().click();
-      await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
-
-      // Finish transitions
-      await advanceTime();
-
-      expect(await po.getTokensTable().getTokenNames()).toEqual([
-        "Positive balance",
-      ]);
-
-      expect(await po.getShowAllButtonPo().isPresent()).toBe(true);
-      await po.getShowAllButtonPo().click();
-
-      // Finish transitions
-      await advanceTime();
-
-      expect(await po.getShowAllButtonPo().isPresent()).toBe(false);
-      expect(await po.getTokensTable().getTokenNames()).toEqual([
-        "Positive balance",
-        "Zero balance",
-      ]);
-    });
+  it("should show settings button", async () => {
+    const po = renderPage([token1, token2]);
+    expect(await po.getSettingsButtonPo().isPresent()).toBe(true);
   });
 
-  it("should not show settings button with feature flag disabled", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_HIDE_ZERO_BALANCE", false);
-
+  it("should open settings popup when clicking on settings button", async () => {
     const po = renderPage([token1, token2]);
-    expect(await po.getSettingsButtonPo().isPresent()).toBe(false);
+
+    expect(await po.getHideZeroBalancesTogglePo().isPresent()).toBe(false);
+    expect(await po.getBackdropPo().isPresent()).toBe(false);
+    await po.getSettingsButtonPo().click();
+    expect(await po.getHideZeroBalancesTogglePo().isPresent()).toBe(true);
+    expect(await po.getBackdropPo().isPresent()).toBe(true);
+  });
+
+  it("should close settings popup when clicking on backdrop", async () => {
+    const po = renderPage([token1, token2]);
+
+    await po.getSettingsButtonPo().click();
+    expect(await po.getHideZeroBalancesTogglePo().isPresent()).toBe(true);
+    expect(await po.getBackdropPo().isPresent()).toBe(true);
+
+    await po.getBackdropPo().click();
+
+    // Finish transitions
+    await advanceTime();
+
+    expect(await po.getHideZeroBalancesTogglePo().isPresent()).toBe(false);
+    expect(await po.getBackdropPo().isPresent()).toBe(false);
+  });
+
+  it("should hide tokens with zero balance", async () => {
+    const po = renderPage([positiveBalance, zeroBalance]);
+
+    expect(await po.getTokensTable().getTokenNames()).toEqual([
+      "Positive balance",
+      "Zero balance",
+    ]);
+
+    await po.getSettingsButtonPo().click();
+    await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
+
+    // Finish transitions
+    await advanceTime();
+
+    expect(await po.getTokensTable().getTokenNames()).toEqual([
+      "Positive balance",
+    ]);
+  });
+
+  it("should hide tokens without balance", async () => {
+    const po = renderPage([unavailableBalance, positiveBalance]);
+
+    expect(await po.getTokensTable().getTokenNames()).toEqual([
+      "Unavailable balance",
+      "Positive balance",
+    ]);
+
+    await po.getSettingsButtonPo().click();
+    await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
+
+    // Finish transitions
+    await advanceTime();
+
+    expect(await po.getTokensTable().getTokenNames()).toEqual([
+      "Positive balance",
+    ]);
+  });
+
+  it("should not hide ICP even with zero balance", async () => {
+    const po = renderPage([icpZeroBalance, positiveBalance]);
+
+    expect(await po.getTokensTable().getTokenNames()).toEqual([
+      "Internet Computer",
+      "Positive balance",
+    ]);
+
+    await po.getSettingsButtonPo().click();
+    await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
+
+    expect(await po.getTokensTable().getTokenNames()).toEqual([
+      "Internet Computer",
+      "Positive balance",
+    ]);
+  });
+
+  it("show-all button should show all tokens", async () => {
+    const po = renderPage([positiveBalance, zeroBalance]);
+
+    expect(await po.getShowAllButtonPo().isPresent()).toBe(false);
+
+    await po.getSettingsButtonPo().click();
+    await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
+
+    // Finish transitions
+    await advanceTime();
+
+    expect(await po.getTokensTable().getTokenNames()).toEqual([
+      "Positive balance",
+    ]);
+
+    expect(await po.getShowAllButtonPo().isPresent()).toBe(true);
+    await po.getShowAllButtonPo().click();
+
+    // Finish transitions
+    await advanceTime();
+
+    expect(await po.getShowAllButtonPo().isPresent()).toBe(false);
+    expect(await po.getTokensTable().getTokenNames()).toEqual([
+      "Positive balance",
+      "Zero balance",
+    ]);
   });
 });
