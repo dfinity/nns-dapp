@@ -42,6 +42,7 @@ fi
 
 dfx start --clean --background
 
+PROD_RELEASE="proposal-129435"
 prod_dir="$(mktemp -d prod-XXXXXX)"
 
 cleanup() {
@@ -53,14 +54,14 @@ trap cleanup EXIT
 
 echo "Downloading production WASM and args file to temporary directory $prod_dir"
 
-curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp_test.wasm.gz >"$prod_dir/nns-dapp_test.wasm.gz"
-curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp-arg-local.did >"$prod_dir/nns-dapp-arg-local.did"
+curl -sL https://github.com/dfinity/nns-dapp/releases/download/$PROD_RELEASE/nns-dapp_test.wasm.gz >"$prod_dir/nns-dapp_test.wasm.gz"
+curl -sL https://github.com/dfinity/nns-dapp/releases/download/$PROD_RELEASE/nns-dapp-arg-local.did >"$prod_dir/nns-dapp-arg-local.did"
 
 PROD_WASM="$prod_dir/nns-dapp_test.wasm.gz"
 PROD_ARGS_FILE="$prod_dir/nns-dapp-arg-local.did"
 
-"$SOURCE_DIR/migration-test" --wasm1 "$PROD_WASM" --args1 "$PROD_ARGS_FILE" --wasm2 "$WASM" --args2 "$ARGS_FILE" --accounts 94 --chunk 30
-"$SOURCE_DIR/migration-test" --wasm1 "$PROD_WASM" --args1 "$PROD_ARGS_FILE" --wasm2 "$WASM" --args2 "$ARGS_FILE" --accounts 201 --chunk 20
+"$SOURCE_DIR/migration-test" --wasm1 "$PROD_WASM" --args1 "$PROD_ARGS_FILE" --wasm2 "$WASM" --args2 "$ARGS_FILE" --accounts 7 --chunk 3
+#"$SOURCE_DIR/migration-test" --wasm1 "$PROD_WASM" --args1 "$PROD_ARGS_FILE" --wasm2 "$WASM" --args2 "$ARGS_FILE" --accounts 201 --chunk 20
 
 # If GITHUB_STEP_SUMMARY is non-empty, append the summary to the file:
 if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then

@@ -1138,6 +1138,10 @@ impl StableState for AccountsStore {
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
+        ic_cdk::println!("dskloetx decode 1");
+        let hex_bytes = hex::encode(&bytes);
+        ic_cdk::println!("dskloetx decode 2 {}", hex_bytes.len());
+        ic_cdk::println!("dskloetx decode 3 {}", hex_bytes);
         #[allow(clippy::type_complexity)]
         let (
             // Accounts are now in stable structures and no longer in a simple
@@ -1166,6 +1170,7 @@ impl StableState for AccountsStore {
             u64,
             Option<AccountsDbStats>,
         ) = Candid::from_bytes(bytes).map(|c| c.0)?;
+        ic_cdk::println!("dskloetx decode 3");
 
         // Remove duplicate links between hardware wallets and user accounts
         for hw_or_sub in hardware_wallets_and_sub_accounts.values_mut() {
