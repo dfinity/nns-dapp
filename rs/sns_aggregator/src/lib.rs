@@ -1,5 +1,6 @@
 //! Entry points for the caching canister.
 #![warn(missing_docs)]
+#![allow(clippy::missing_docs_in_private_items)]
 #![deny(clippy::panic)]
 #![deny(clippy::expect_used)]
 #![deny(clippy::unwrap_used)]
