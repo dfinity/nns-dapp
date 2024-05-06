@@ -23,7 +23,6 @@
     WizardModal,
     type WizardSteps,
     type WizardStep,
-    busy,
   } from "@dfinity/gix-components";
   import TextInputForm from "$lib/components/common/TextInputForm.svelte";
   import { ICPToken, nonNullish } from "@dfinity/utils";
@@ -110,7 +109,6 @@
   bind:currentStep
   bind:this={modal}
   on:nnsClose
-  disablePointerEvents={$busy}
 >
   <svelte:fragment slot="title"
     ><span data-tid="create-canister-modal-title"

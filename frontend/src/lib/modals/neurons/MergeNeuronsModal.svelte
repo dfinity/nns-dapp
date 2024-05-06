@@ -4,7 +4,6 @@
     WizardModal,
     type WizardSteps,
     type WizardStep,
-    busy,
   } from "@dfinity/gix-components";
   import SelectNeuronsToMerge from "$lib/components/neurons/SelectNeuronsToMerge.svelte";
   import ConfirmNeuronsMerge from "$lib/components/neurons/ConfirmNeuronsMerge.svelte";
@@ -67,7 +66,6 @@
   bind:currentStep
   bind:this={modal}
   on:nnsClose
-  disablePointerEvents={$busy}
 >
   <svelte:fragment slot="title"
     >{currentStep?.title ??

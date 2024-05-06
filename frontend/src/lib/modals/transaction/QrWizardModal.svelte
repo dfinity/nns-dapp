@@ -3,7 +3,6 @@
   import TransactionQRCode from "$lib/components/transaction/TransactionQRCode.svelte";
   import { toastsError } from "$lib/stores/toasts.store";
   import {
-    busy,
     WizardModal,
     type WizardStep,
     type WizardSteps,
@@ -128,7 +127,7 @@
   bind:currentStep
   bind:this={modal}
   on:nnsClose
-  disablePointerEvents={$busy || disablePointerEvents}
+  {disablePointerEvents}
 >
   <slot name="title" slot="title" />
   <slot />

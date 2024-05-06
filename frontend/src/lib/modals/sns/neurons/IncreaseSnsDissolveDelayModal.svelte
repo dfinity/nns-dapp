@@ -4,7 +4,6 @@
     WizardModal,
     type WizardSteps,
     type WizardStep,
-    busy,
   } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
   import type { SnsNeuron } from "@dfinity/sns";
@@ -92,7 +91,6 @@
   bind:this={modal}
   on:nnsClose
   testId="increase-sns-dissolve-delay-modal-component"
-  disablePointerEvents={$busy}
 >
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
   {#if currentStep?.name === "SetSnsDissolveDelay"}

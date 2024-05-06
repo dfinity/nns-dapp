@@ -7,7 +7,6 @@
     Html,
     type WizardSteps,
     type WizardStep,
-    busy,
   } from "@dfinity/gix-components";
   import { stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher } from "svelte";
@@ -92,7 +91,7 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep on:nnsClose disablePointerEvents={$busy}>
+<WizardModal {steps} bind:currentStep on:nnsClose>
   <svelte:fragment slot="title"
     >{currentStep?.title ?? steps[0].title}</svelte:fragment
   >

@@ -5,7 +5,6 @@
     WizardModal,
     type WizardSteps,
     type WizardStep,
-    busy,
   } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import HardwareWalletName from "$lib/components/accounts/HardwareWalletName.svelte";
@@ -92,7 +91,6 @@
   bind:currentStep
   bind:this={modal}
   on:nnsClose
-  disablePointerEvents={$busy}
 >
   <svelte:fragment slot="title"
     >{currentStep?.title ?? $i18n.accounts.add_account}</svelte:fragment
