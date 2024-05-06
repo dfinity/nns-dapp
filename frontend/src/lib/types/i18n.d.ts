@@ -381,7 +381,6 @@ interface I18nFollow_neurons {
 interface I18nVoting {
   topics: string;
   types: string;
-  rewards: string;
   status: string;
   hide_unavailable_proposals: string;
   check_all: string;

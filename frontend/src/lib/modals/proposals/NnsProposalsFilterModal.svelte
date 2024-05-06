@@ -7,11 +7,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { enumValues } from "$lib/utils/enum.utils";
   import { proposalsFiltersStore } from "$lib/stores/proposals.store";
-  import type {
-    ProposalRewardStatus,
-    ProposalStatus,
-    Topic,
-  } from "@dfinity/nns";
+  import type { ProposalStatus, Topic } from "@dfinity/nns";
   import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
   import { keyOf, keyOfOptional } from "$lib/utils/utils";
   import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
@@ -28,13 +24,13 @@
       ? keyOf({ obj: $i18n, key: props?.category })
       : undefined;
   let filters: ProposalsFilters | undefined;
-  let filtersValues: Filter<Topic | ProposalRewardStatus | ProposalStatus>[];
-  let selectedFilters: (Topic | ProposalRewardStatus | ProposalStatus)[];
+  let filtersValues: Filter<Topic | ProposalStatus>[];
+  let selectedFilters: (Topic | ProposalStatus)[];
 
   let mapToFilter: (
-    value: Topic | ProposalRewardStatus | ProposalStatus
-  ) => Filter<Topic | ProposalRewardStatus | ProposalStatus>;
-  $: mapToFilter = (value: Topic | ProposalRewardStatus | ProposalStatus) => {
+    value: Topic | ProposalStatus
+  ) => Filter<Topic | ProposalStatus>;
+  $: mapToFilter = (value: Topic | ProposalStatus) => {
     return {
       id: String(value),
       value,
@@ -64,13 +60,10 @@
   const close = () => dispatch("nnsClose", { selectedFilters });
 
   // Update list of selected filters with filter - i.e. toggle the checked or not checked of the filter that has been clicked
-  const applyFilterChange = (
-    filter: Topic | ProposalRewardStatus | ProposalStatus
-  ) =>
+  const applyFilterChange = (filter: Topic | ProposalStatus) =>
     (selectedFilters = selectedFilters.includes(filter)
       ? selectedFilters.filter(
-          (activeTopic: Topic | ProposalRewardStatus | ProposalStatus) =>
-            activeTopic !== filter
+          (activeTopic: Topic | ProposalStatus) => activeTopic !== filter
         )
       : [...selectedFilters, filter]);
 
@@ -79,11 +72,6 @@
       case "topics":
         proposalsFiltersStore.filterTopics(
           selectedFilters as unknown as Topic[]
-        );
-        return;
-      case "rewards":
-        proposalsFiltersStore.filterRewards(
-          selectedFilters as unknown as ProposalRewardStatus[]
         );
         return;
       case "status":
@@ -97,7 +85,7 @@
   const onChange = ({
     detail: { filter },
   }: CustomEvent<{
-    filter: Filter<Topic | ProposalRewardStatus | ProposalStatus> | undefined;
+    filter: Filter<Topic | ProposalStatus> | undefined;
   }>) => {
     // `undefined` is added to be type safe, but it should never happen
     // checkboxes are shown only for filters that are defined

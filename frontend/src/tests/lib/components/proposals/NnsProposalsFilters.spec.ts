@@ -17,7 +17,7 @@ import en from "$tests/mocks/i18n.mock";
 import { NnsProposalFiltersPo } from "$tests/page-objects/NnsProposalFilters.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
+import { ProposalStatus, Topic } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 describe("NnsProposalsFilters", () => {
@@ -59,17 +59,6 @@ describe("NnsProposalsFilters", () => {
         activeFilters: DEFAULT_PROPOSALS_FILTERS.topics.length,
         totalFilters: enumSize(Topic) - nonShownTopicsLength,
         text: en.voting.topics,
-      });
-    });
-
-    it("should render rewards filters", () => {
-      const { container } = render(NnsProposalsFilters);
-
-      shouldRenderFilter({
-        container,
-        activeFilters: DEFAULT_PROPOSALS_FILTERS.rewards.length,
-        totalFilters: enumSize(ProposalRewardStatus) - 1,
-        text: en.voting.rewards,
       });
     });
 

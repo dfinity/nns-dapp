@@ -9,21 +9,20 @@
   import type { Principal } from "@dfinity/principal";
   import FiltersWrapper from "../proposals/FiltersWrapper.svelte";
   import FiltersButton from "../ui/FiltersButton.svelte";
-  import SnsFilterRewardsModal from "$lib/modals/sns/proposals/SnsFilterRewardsModal.svelte";
   import SnsFilterTypesModal from "$lib/modals/sns/proposals/SnsFilterTypesModal.svelte";
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
   import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
-  let modal: "types" | "rewards" | "status" | undefined = undefined;
+  let modal: "types" | "status" | undefined = undefined;
 
   let rootCanisterId: Principal;
   $: rootCanisterId = $selectedUniverseIdStore;
   let filtersStore: ProjectFiltersStoreData | undefined;
   $: filtersStore = $snsFiltersStore[rootCanisterId.toText()];
 
-  const openFilters = (filtersModal: "types" | "rewards" | "status") => {
+  const openFilters = (filtersModal: "types" | "status") => {
     modal = filtersModal;
   };
 
@@ -50,15 +49,6 @@
           {$i18n.voting.types}
         </FiltersButton>
         <FiltersButton
-          testId="filters-by-rewards"
-          totalFilters={filtersStore?.rewardStatus.length ?? 0}
-          activeFilters={filtersStore?.rewardStatus.filter(
-            ({ checked }) => checked
-          ).length ?? 0}
-          on:nnsFilter={() => openFilters("rewards")}
-          >{$i18n.voting.rewards}</FiltersButton
-        >
-        <FiltersButton
           testId="filters-by-status"
           totalFilters={filtersStore?.decisionStatus.length ?? 0}
           activeFilters={filtersStore?.decisionStatus.filter(
@@ -82,14 +72,6 @@
   {#if modal === "status"}
     <SnsFilterStatusModal
       filters={filtersStore?.decisionStatus}
-      {rootCanisterId}
-      on:nnsClose={close}
-    />
-  {/if}
-
-  {#if modal === "rewards"}
-    <SnsFilterRewardsModal
-      filters={filtersStore?.rewardStatus}
       {rootCanisterId}
       on:nnsClose={close}
     />

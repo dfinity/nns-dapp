@@ -5,21 +5,12 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
   import { isNullish } from "@dfinity/utils";
-  import type {
-    SnsProposalDecisionStatus,
-    SnsProposalRewardStatus,
-  } from "@dfinity/sns";
-  import type {
-    ProposalRewardStatus,
-    ProposalStatus,
-    Topic,
-  } from "@dfinity/nns";
+  import type { SnsProposalDecisionStatus } from "@dfinity/sns";
+  import type { ProposalStatus, Topic } from "@dfinity/nns";
 
   type FiltersData =
     | SnsProposalTypeFilterId
-    | SnsProposalRewardStatus
     | Topic
-    | ProposalRewardStatus
     | ProposalStatus
     | SnsProposalDecisionStatus;
   // `undefined` means the filters are not loaded yet.

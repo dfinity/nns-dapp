@@ -13,6 +13,7 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
+import { ProposalRewardStatus } from "@dfinity/nns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
@@ -20,7 +21,7 @@ import type { Subscriber } from "svelte/store";
 const proposal = {
   ...mockProposalInfo,
   topic: DEFAULT_PROPOSALS_FILTERS.topics[0],
-  rewardStatus: DEFAULT_PROPOSALS_FILTERS.rewards[0],
+  rewardStatus: ProposalRewardStatus.AcceptVotes,
   status: DEFAULT_PROPOSALS_FILTERS.status[0],
 };
 
@@ -35,11 +36,8 @@ vi.mock("$lib/api/proposals.api", () => {
 vi.mock("$lib/api/governance.api");
 
 describe("NnsProposals", () => {
-  const {
-    topics: defaultIncludeTopcis,
-    rewards: defaultIncludeRewardStatus,
-    status: defaultIncludeStatus,
-  } = DEFAULT_PROPOSALS_FILTERS;
+  const { topics: defaultIncludeTopcis, status: defaultIncludeStatus } =
+    DEFAULT_PROPOSALS_FILTERS;
 
   afterEach(() => {
     vi.clearAllMocks();
@@ -69,7 +67,6 @@ describe("NnsProposals", () => {
         certified: false,
         includeTopics: defaultIncludeTopcis,
         includeStatus: defaultIncludeStatus,
-        includeRewardStatus: defaultIncludeRewardStatus,
         identity: mockIdentity,
       });
       expect(queryProposals).toHaveBeenCalledWith({
@@ -77,7 +74,6 @@ describe("NnsProposals", () => {
         certified: true,
         includeTopics: defaultIncludeTopcis,
         includeStatus: defaultIncludeStatus,
-        includeRewardStatus: defaultIncludeRewardStatus,
         identity: mockIdentity,
       });
     });
@@ -125,7 +121,6 @@ describe("NnsProposals", () => {
         certified: false,
         includeTopics: defaultIncludeTopcis,
         includeStatus: defaultIncludeStatus,
-        includeRewardStatus: defaultIncludeRewardStatus,
         identity: new AnonymousIdentity(),
       });
     });

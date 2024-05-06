@@ -10,18 +10,15 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import type { HttpAgent } from "@dfinity/agent";
-import { GovernanceCanister } from "@dfinity/nns";
+import { GovernanceCanister, ProposalRewardStatus } from "@dfinity/nns";
 import { mock } from "vitest-mock-extended";
 
 describe("proposals-api", () => {
   const mockGovernanceCanister: MockGovernanceCanister =
     new MockGovernanceCanister(mockProposals);
 
-  const {
-    topics: defaultIncludeTopcis,
-    rewards: defaultIncludeRewardStatus,
-    status: defaultIncludeStatus,
-  } = DEFAULT_PROPOSALS_FILTERS;
+  const { topics: defaultIncludeTopics, status: defaultIncludeStatus } =
+    DEFAULT_PROPOSALS_FILTERS;
 
   let spyListProposals;
 
@@ -40,9 +37,9 @@ describe("proposals-api", () => {
     it("should call the canister to list proposals", async () => {
       await queryProposals({
         beforeProposal: undefined,
-        includeTopics: defaultIncludeTopcis,
+        includeTopics: defaultIncludeTopics,
         includeStatus: defaultIncludeStatus,
-        includeRewardStatus: defaultIncludeRewardStatus,
+        includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
         identity: mockIdentity,
         certified: true,
       });
@@ -53,9 +50,9 @@ describe("proposals-api", () => {
     it("should call the canister to list the next proposals", async () => {
       await queryProposals({
         beforeProposal: mockProposals[mockProposals.length - 1].id,
-        includeTopics: defaultIncludeTopcis,
+        includeTopics: defaultIncludeTopics,
         includeStatus: defaultIncludeStatus,
-        includeRewardStatus: defaultIncludeRewardStatus,
+        includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
         identity: mockIdentity,
         certified: true,
       });
@@ -68,7 +65,7 @@ describe("proposals-api", () => {
         beforeProposal: mockProposals[mockProposals.length - 1].id,
         includeTopics: [],
         includeStatus: defaultIncludeStatus,
-        includeRewardStatus: defaultIncludeRewardStatus,
+        includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
         identity: mockIdentity,
         certified: true,
       });
@@ -78,8 +75,28 @@ describe("proposals-api", () => {
         request: {
           beforeProposal: mockProposals[mockProposals.length - 1].id,
           excludeTopic: [],
-          includeRewardStatus: DEFAULT_PROPOSALS_FILTERS.rewards,
-          includeStatus: DEFAULT_PROPOSALS_FILTERS.status,
+          includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
+          includeStatus: defaultIncludeStatus,
+          includeAllManageNeuronProposals: false,
+          limit: 100,
+        },
+      });
+    });
+
+    it("should call with empty includeRewardStatus by default", async () => {
+      await queryProposals({
+        beforeProposal: mockProposals[mockProposals.length - 1].id,
+        identity: mockIdentity,
+        certified: true,
+      });
+
+      expect(spyListProposals).toHaveBeenCalledWith({
+        certified: true,
+        request: {
+          beforeProposal: mockProposals[mockProposals.length - 1].id,
+          excludeTopic: [],
+          includeRewardStatus: [],
+          includeStatus: [],
           includeAllManageNeuronProposals: false,
           limit: 100,
         },
@@ -104,7 +121,6 @@ describe("proposals-api", () => {
         certified: false,
         request: {
           beforeProposal: BigInt(404 + 1),
-          // TODO: check filters
           excludeTopic: [],
           includeRewardStatus: [],
           includeStatus: [],

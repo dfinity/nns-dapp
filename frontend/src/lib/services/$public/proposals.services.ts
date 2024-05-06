@@ -165,7 +165,6 @@ const findProposals = async ({
         identity,
         includeTopics: filters.topics,
         includeStatus: filters.status,
-        includeRewardStatus: filters.rewards,
         certified,
       }),
     onLoad: ({ response: proposals, certified }) => {

@@ -108,17 +108,12 @@ const matchFilters = ({
   proposalInfo: ProposalInfo;
   filters: ProposalsFiltersStore;
 }): boolean => {
-  const { topics, rewards, status } = filters;
+  const { topics, status } = filters;
 
-  const {
-    topic: proposalTopic,
-    status: proposalStatus,
-    rewardStatus,
-  } = proposalInfo;
+  const { topic: proposalTopic, status: proposalStatus } = proposalInfo;
 
   return (
     (topics.length === 0 || topics.includes(proposalTopic)) &&
-    (rewards.length === 0 || rewards.includes(rewardStatus)) &&
     (status.length === 0 || status.includes(proposalStatus))
   );
 };

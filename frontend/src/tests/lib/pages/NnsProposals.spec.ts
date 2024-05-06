@@ -117,7 +117,6 @@ describe("NnsProposals", () => {
         const { getByText } = render(NnsProposals);
 
         expect(getByText("Topics")).toBeInTheDocument();
-        expect(getByText("Reward Status")).toBeInTheDocument();
         expect(getByText("Proposal Status")).toBeInTheDocument();
         expect(
           getByText("Show only proposals", {
