@@ -45,7 +45,7 @@ fn health_check() -> String {
     })
 }
 
-/// Generated with `didc bind`.
+/// Generated with `didc bind` from `sns_aggregator.did`.
 #[derive(CandidType, Deserialize)]
 enum CanisterStatusType {
     #[serde(rename = "stopped")]
@@ -56,7 +56,7 @@ enum CanisterStatusType {
     Running,
 }
 
-/// Generated with `didc bind`.
+/// Generated with `didc bind` from `sns_aggregator.did`.
 #[derive(CandidType, Deserialize)]
 struct DefiniteCanisterSettingsArgs {
     controller: Principal,
@@ -66,7 +66,7 @@ struct DefiniteCanisterSettingsArgs {
     compute_allocation: candid::Nat,
 }
 
-/// Generated with `didc bind`.
+/// Generated with `didc bind` from `sns_aggregator.did`.
 #[derive(CandidType, Deserialize)]
 struct CanisterStatusResultV2 {
     controller: Principal,
