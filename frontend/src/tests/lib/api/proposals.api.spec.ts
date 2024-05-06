@@ -19,7 +19,6 @@ describe("proposals-api", () => {
 
   const { topics: defaultIncludeTopcis, status: defaultIncludeStatus } =
     DEFAULT_PROPOSALS_FILTERS;
-  const defaultIncludeRewardStatus = [ProposalRewardStatus.AcceptVotes];
 
   let spyListProposals;
 
@@ -40,7 +39,7 @@ describe("proposals-api", () => {
         beforeProposal: undefined,
         includeTopics: defaultIncludeTopcis,
         includeStatus: defaultIncludeStatus,
-        includeRewardStatus: defaultIncludeRewardStatus,
+        includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
         identity: mockIdentity,
         certified: true,
       });
@@ -53,7 +52,7 @@ describe("proposals-api", () => {
         beforeProposal: mockProposals[mockProposals.length - 1].id,
         includeTopics: defaultIncludeTopcis,
         includeStatus: defaultIncludeStatus,
-        includeRewardStatus: defaultIncludeRewardStatus,
+        includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
         identity: mockIdentity,
         certified: true,
       });
@@ -66,7 +65,7 @@ describe("proposals-api", () => {
         beforeProposal: mockProposals[mockProposals.length - 1].id,
         includeTopics: [],
         includeStatus: defaultIncludeStatus,
-        includeRewardStatus: defaultIncludeRewardStatus,
+        includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
         identity: mockIdentity,
         certified: true,
       });
@@ -122,7 +121,6 @@ describe("proposals-api", () => {
         certified: false,
         request: {
           beforeProposal: BigInt(404 + 1),
-          // TODO: check filters
           excludeTopic: [],
           includeRewardStatus: [],
           includeStatus: [],
