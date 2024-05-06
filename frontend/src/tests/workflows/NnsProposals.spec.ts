@@ -36,11 +36,8 @@ vi.mock("$lib/api/proposals.api", () => {
 vi.mock("$lib/api/governance.api");
 
 describe("NnsProposals", () => {
-  const {
-    topics: defaultIncludeTopcis,
-    rewards: defaultIncludeRewardStatus,
-    status: defaultIncludeStatus,
-  } = DEFAULT_PROPOSALS_FILTERS;
+  const { topics: defaultIncludeTopcis, status: defaultIncludeStatus } =
+    DEFAULT_PROPOSALS_FILTERS;
 
   afterEach(() => {
     vi.clearAllMocks();
@@ -70,7 +67,6 @@ describe("NnsProposals", () => {
         certified: false,
         includeTopics: defaultIncludeTopcis,
         includeStatus: defaultIncludeStatus,
-        includeRewardStatus: defaultIncludeRewardStatus,
         identity: mockIdentity,
       });
       expect(queryProposals).toHaveBeenCalledWith({
@@ -78,7 +74,6 @@ describe("NnsProposals", () => {
         certified: true,
         includeTopics: defaultIncludeTopcis,
         includeStatus: defaultIncludeStatus,
-        includeRewardStatus: defaultIncludeRewardStatus,
         identity: mockIdentity,
       });
     });
@@ -126,7 +121,6 @@ describe("NnsProposals", () => {
         certified: false,
         includeTopics: defaultIncludeTopcis,
         includeStatus: defaultIncludeStatus,
-        includeRewardStatus: defaultIncludeRewardStatus,
         identity: new AnonymousIdentity(),
       });
     });
