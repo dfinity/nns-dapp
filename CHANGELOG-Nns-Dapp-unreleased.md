@@ -26,6 +26,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Update `ic-stable-structures` dependency to 0.6.4.
 * New main menu selection style.
 * Rename some topics and proposal types.
+* Update IC, Candid, and `ic-cdk` dependencies.
 
 #### Deprecated
 
