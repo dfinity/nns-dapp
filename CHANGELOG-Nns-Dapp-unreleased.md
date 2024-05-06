@@ -34,6 +34,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Stop storing transactions in the nns-dapp canister.
 * Removed metrics that were derived from transactions stored in the canister.
 * Proposal filtering by reward status.
+* Stop encoding the accounts map in the `AccountsStore`.
 
 #### Fixed
 

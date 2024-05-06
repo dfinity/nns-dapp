@@ -1,29 +1,33 @@
 import { createAgent } from "$lib/api/agent.api";
 import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
 import { HOST } from "$lib/constants/environment.constants";
-import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import { enumsExclude } from "$lib/utils/enum.utils";
 import type { Identity } from "@dfinity/agent";
-import type {
-  ListProposalsResponse,
-  ProposalId,
-  ProposalInfo,
+import {
+  GovernanceCanister,
+  ProposalRewardStatus,
+  ProposalStatus,
+  Topic,
+  type ListProposalsResponse,
+  type ProposalId,
+  type ProposalInfo,
 } from "@dfinity/nns";
-import { GovernanceCanister, ProposalRewardStatus, Topic } from "@dfinity/nns";
 import { nnsDappCanister } from "./nns-dapp.api";
 
 export const queryProposals = async ({
   beforeProposal,
   identity,
-  filters,
-  includeRewardStatus,
+  includeTopics = [],
+  includeRewardStatus = [],
+  includeStatus = [],
   certified,
 }: {
   beforeProposal: ProposalId | undefined;
   identity: Identity;
-  filters: ProposalsFiltersStore;
+  includeTopics?: Topic[];
   includeRewardStatus?: ProposalRewardStatus[];
+  includeStatus?: ProposalStatus[];
   certified: boolean;
 }): Promise<ProposalInfo[]> => {
   logWithTimestamp(
@@ -36,23 +40,20 @@ export const queryProposals = async ({
     agent: await createAgent({ identity, host: HOST }),
   });
 
-  const { status, topics }: ProposalsFiltersStore = filters;
-
   const { proposals }: ListProposalsResponse = await governance.listProposals({
     request: {
       limit: DEFAULT_LIST_PAGINATION_LIMIT,
       beforeProposal,
       excludeTopic:
         // We want all topics if the filter is empty
-        topics.length === 0
+        includeTopics.length === 0
           ? []
           : enumsExclude<Topic>({
               obj: Topic as unknown as Topic,
-              values: topics,
+              values: includeTopics,
             }),
-      // fallback to all reward statuses
-      includeRewardStatus: includeRewardStatus ?? [],
-      includeStatus: status,
+      includeRewardStatus,
+      includeStatus,
       includeAllManageNeuronProposals: false,
     },
     certified,

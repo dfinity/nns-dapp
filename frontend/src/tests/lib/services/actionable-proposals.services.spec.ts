@@ -105,12 +105,6 @@ describe("actionable-proposals.services", () => {
           beforeProposal: undefined,
           certified: false,
           includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
-          filters: {
-            excludeVotedProposals: false,
-            lastAppliedFilter: undefined,
-            status: [],
-            topics: [],
-          },
         })
       );
     });
@@ -133,12 +127,6 @@ describe("actionable-proposals.services", () => {
         beforeProposal: undefined,
         certified: false,
         includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
-        filters: {
-          excludeVotedProposals: false,
-          lastAppliedFilter: undefined,
-          status: [],
-          topics: [],
-        },
       });
       expect(spyQueryProposals).toHaveBeenCalledWith({
         identity: mockIdentity,
@@ -146,12 +134,6 @@ describe("actionable-proposals.services", () => {
           firstResponseProposals[firstResponseProposals.length - 1].id,
         certified: false,
         includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
-        filters: {
-          excludeVotedProposals: false,
-          lastAppliedFilter: undefined,
-          status: [],
-          topics: [],
-        },
       });
       expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(101);
       expect(get(actionableNnsProposalsStore)?.proposals).toEqual([

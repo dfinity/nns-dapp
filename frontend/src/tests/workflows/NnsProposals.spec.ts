@@ -36,6 +36,12 @@ vi.mock("$lib/api/proposals.api", () => {
 vi.mock("$lib/api/governance.api");
 
 describe("NnsProposals", () => {
+  const {
+    topics: defaultIncludeTopcis,
+    rewards: defaultIncludeRewardStatus,
+    status: defaultIncludeStatus,
+  } = DEFAULT_PROPOSALS_FILTERS;
+
   afterEach(() => {
     vi.clearAllMocks();
     neuronsStore.reset();
@@ -62,13 +68,17 @@ describe("NnsProposals", () => {
       expect(queryProposals).toHaveBeenCalledWith({
         beforeProposal: undefined,
         certified: false,
-        filters: DEFAULT_PROPOSALS_FILTERS,
+        includeTopics: defaultIncludeTopcis,
+        includeStatus: defaultIncludeStatus,
+        includeRewardStatus: defaultIncludeRewardStatus,
         identity: mockIdentity,
       });
       expect(queryProposals).toHaveBeenCalledWith({
         beforeProposal: undefined,
         certified: true,
-        filters: DEFAULT_PROPOSALS_FILTERS,
+        includeTopics: defaultIncludeTopcis,
+        includeStatus: defaultIncludeStatus,
+        includeRewardStatus: defaultIncludeRewardStatus,
         identity: mockIdentity,
       });
     });
@@ -114,7 +124,9 @@ describe("NnsProposals", () => {
       expect(queryProposals).toHaveBeenCalledWith({
         beforeProposal: undefined,
         certified: false,
-        filters: DEFAULT_PROPOSALS_FILTERS,
+        includeTopics: defaultIncludeTopcis,
+        includeStatus: defaultIncludeStatus,
+        includeRewardStatus: defaultIncludeRewardStatus,
         identity: new AnonymousIdentity(),
       });
     });

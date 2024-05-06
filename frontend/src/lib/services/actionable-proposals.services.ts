@@ -7,7 +7,6 @@ import { getCurrentIdentity } from "$lib/services/auth.services";
 import { listNeurons } from "$lib/services/neurons.services";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
-import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
 import { lastProposalId } from "$lib/utils/proposals.utils";
 import type { ProposalInfo } from "@dfinity/nns";
 import {
@@ -55,14 +54,6 @@ const queryNeurons = async (): Promise<NeuronInfo[]> => {
 /// Fetch all (500 max) proposals that are accepting votes.
 const queryProposals = async (): Promise<ProposalInfo[]> => {
   const identity = getCurrentIdentity();
-  const filters: ProposalsFiltersStore = {
-    // We just want to fetch proposals that are accepting votes, so we don't need to filter by rest of the filters.
-    topics: [],
-    status: [],
-    excludeVotedProposals: false,
-    lastAppliedFilter: undefined,
-  };
-
   let sortedProposals: ProposalInfo[] = [];
   for (
     let pagesLoaded = 0;
@@ -73,7 +64,6 @@ const queryProposals = async (): Promise<ProposalInfo[]> => {
     const page = await queryNnsProposals({
       beforeProposal: lastProposalId(sortedProposals),
       identity,
-      filters,
       includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
       certified: false,
     });

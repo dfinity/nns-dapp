@@ -1,8 +1,8 @@
 use crate::{
-    accounts_store::schema::{AccountsDbTrait, SchemaLabel},
+    accounts_store::schema::{proxy::AccountsDb, AccountsDbTrait, SchemaLabel},
     state::{
         partitions::{Partitions, PartitionsMaybe},
-        AssetHashes, Assets, PerformanceCounts, StableState, State,
+        AccountsDbAsMap, AssetHashes, Assets, PerformanceCounts, StableState, State,
     },
 };
 use ic_stable_structures::{DefaultMemoryImpl, VectorMemory};
@@ -27,6 +27,13 @@ fn state_heap_contents_can_be_serialized_and_deserialized() {
     let toy_state = setup_test_state();
     let bytes: Vec<u8> = toy_state.encode();
     let parsed = State::decode(bytes).expect("Failed to parse");
+    // Drop the accounts DB from the accounts store before comparing. We use
+    // stable structures to store the accounts DB, which are stored separately
+    // so we don't encode/decode them as part of the accounts store.
+    let _dropped_accounts_db = toy_state
+        .accounts_store
+        .borrow_mut()
+        .replace_accounts_db(AccountsDb::Map(AccountsDbAsMap::default()));
     // This is the highly valuable state:
     assert_eq!(
         toy_state.accounts_store, parsed.accounts_store,

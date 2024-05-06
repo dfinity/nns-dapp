@@ -302,12 +302,6 @@ describe("vote-registration-services", () => {
           beforeProposal: undefined,
           certified: false,
           includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
-          filters: {
-            excludeVotedProposals: false,
-            lastAppliedFilter: undefined,
-            status: [],
-            topics: [],
-          },
           identity: mockIdentity,
         });
 

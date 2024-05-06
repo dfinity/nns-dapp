@@ -1,6 +1,8 @@
 //! An accounts DB implemented as a hash map.
 
-use super::{Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
+#[cfg(test)]
+use super::AccountsDbBTreeMapTrait;
+use super::{Account, AccountsDbTrait, SchemaLabel};
 use core::fmt;
 use core::ops::RangeBounds;
 use std::collections::BTreeMap;
@@ -57,10 +59,13 @@ impl AccountsDbTrait for AccountsDbAsMap {
     }
 }
 
+#[cfg(test)]
 impl AccountsDbBTreeMapTrait for AccountsDbAsMap {
+    #[cfg(test)]
     fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
         Self { accounts: map }
     }
+    #[cfg(test)]
     fn as_map(&self) -> &BTreeMap<Vec<u8>, Account> {
         &self.accounts
     }
