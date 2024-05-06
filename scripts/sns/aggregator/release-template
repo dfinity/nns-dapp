@@ -2,11 +2,9 @@
 set -euo pipefail
 cd "$(dirname "$0")/../../.."
 
-./scripts/docker-build
+WASM="release/ci/sns_aggregator.wasm.gz"
 mkdir -p release/ci
-mkdir -p release/docker
-WASM="sns_aggregator.wasm.gz"
-cp "$WASM" release/docker/
+./scripts/nns-dapp/download-ci-wasm --commit aggregator-release-candidate --wasm-filename sns_aggregator.wasm.gz
 
 if test -f "$WASM"; then
   SHA="$(sha256sum "$WASM" | awk '{print $1}')"

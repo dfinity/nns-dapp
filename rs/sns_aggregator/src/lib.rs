@@ -1,6 +1,6 @@
 //! Entry points for the caching canister.
 #![warn(missing_docs)]
-#![warn(clippy::missing_docs_in_private_items)]
+#![allow(clippy::missing_docs_in_private_items)]
 #![deny(clippy::panic)]
 #![deny(clippy::expect_used)]
 #![deny(clippy::unwrap_used)]
@@ -45,6 +45,7 @@ fn health_check() -> String {
     })
 }
 
+/// Generated with `didc bind` from `sns_aggregator.did`.
 #[derive(CandidType, Deserialize)]
 enum CanisterStatusType {
     #[serde(rename = "stopped")]
@@ -55,6 +56,7 @@ enum CanisterStatusType {
     Running,
 }
 
+/// Generated with `didc bind` from `sns_aggregator.did`.
 #[derive(CandidType, Deserialize)]
 struct DefiniteCanisterSettingsArgs {
     controller: Principal,
@@ -64,6 +66,7 @@ struct DefiniteCanisterSettingsArgs {
     compute_allocation: candid::Nat,
 }
 
+/// Generated with `didc bind` from `sns_aggregator.did`.
 #[derive(CandidType, Deserialize)]
 struct CanisterStatusResultV2 {
     controller: Principal,
