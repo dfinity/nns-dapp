@@ -96,7 +96,7 @@ describe("proposals-api", () => {
           beforeProposal: mockProposals[mockProposals.length - 1].id,
           excludeTopic: [],
           includeRewardStatus: [],
-          includeStatus: defaultIncludeStatus,
+          includeStatus: [],
           includeAllManageNeuronProposals: false,
           limit: 100,
         },
