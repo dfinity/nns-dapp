@@ -4,6 +4,7 @@ export enum AppPath {
   Neurons = "/neurons",
   Neuron = "/neuron",
   Proposals = "/proposals",
+  ProposalsActionable = "/proposals/actionable",
   Proposal = "/proposal",
   Canisters = "/canisters",
   Canister = "/canister",

@@ -62,7 +62,11 @@
       href: $proposalsPathStore,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
-        paths: [AppPath.Proposals, AppPath.Proposal],
+        paths: [
+          AppPath.Proposals,
+          AppPath.ProposalsActionable,
+          AppPath.Proposal,
+        ],
       }),
       title: $i18n.navigation.voting,
       icon: IconVote,
