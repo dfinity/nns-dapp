@@ -7,6 +7,7 @@
     WizardModal,
     type WizardSteps,
     type WizardStep,
+    busy,
   } from "@dfinity/gix-components";
 
   const steps: WizardSteps = [
@@ -27,7 +28,13 @@
   const next = () => modal.next();
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal
+  {steps}
+  bind:currentStep
+  bind:this={modal}
+  on:nnsClose
+  disablePointerEvents={$busy}
+>
   <svelte:fragment slot="title"
     ><span data-tid="add-controller-canister-modal-title"
       >{currentStep?.title ?? $i18n.canister_detail.add_controller}</span

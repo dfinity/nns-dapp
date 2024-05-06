@@ -1,5 +1,6 @@
 <script lang="ts">
   import {
+    busy,
     Checkbox,
     WizardModal,
     type WizardStep,
@@ -84,7 +85,13 @@
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal
+  {steps}
+  bind:currentStep
+  bind:this={modal}
+  on:nnsClose
+  disablePointerEvents={$busy}
+>
   <svelte:fragment slot="title"
     >{`${currentStep?.title} - TESTNET ONLY`}</svelte:fragment
   >

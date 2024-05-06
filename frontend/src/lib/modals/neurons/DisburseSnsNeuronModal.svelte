@@ -22,6 +22,7 @@
     WizardModal,
     type WizardSteps,
     type WizardStep,
+    busy,
   } from "@dfinity/gix-components";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { snsProjectMainAccountStore } from "$lib/derived/sns/sns-project-accounts.derived";
@@ -109,7 +110,7 @@
   };
 </script>
 
-<WizardModal bind:currentStep on:nnsClose {steps}>
+<WizardModal bind:currentStep on:nnsClose {steps} disablePointerEvents={$busy}>
   <svelte:fragment slot="title"
     ><span data-tid="disburse-sns-neuron-modal">{currentStep?.title}</span
     ></svelte:fragment

@@ -10,6 +10,7 @@
     WizardModal,
     type WizardSteps,
     type WizardStep,
+    busy,
   } from "@dfinity/gix-components";
 
   export let availableMaturityE8s: bigint;
@@ -44,6 +45,7 @@
   on:nnsClose
   bind:this={modal}
   testId="stake-maturity-modal-component"
+  disablePointerEvents={$busy}
 >
   <svelte:fragment slot="title"
     >{currentStep?.title ?? steps[0].title}</svelte:fragment

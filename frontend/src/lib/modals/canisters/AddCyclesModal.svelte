@@ -14,6 +14,7 @@
     Html,
     type WizardSteps,
     type WizardStep,
+    busy,
   } from "@dfinity/gix-components";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -103,6 +104,7 @@
   bind:currentStep
   bind:this={modal}
   on:nnsClose
+  disablePointerEvents={$busy}
 >
   <svelte:fragment slot="title"
     ><span data-tid="top-up-canister-modal-title"
