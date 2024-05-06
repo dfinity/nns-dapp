@@ -15,7 +15,7 @@ import {
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
-import { Vote } from "@dfinity/nns";
+import { ProposalRewardStatus, Vote } from "@dfinity/nns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
@@ -25,7 +25,7 @@ vi.mock("$lib/api/governance.api");
 const proposal = {
   ...mockProposalInfo,
   topic: DEFAULT_PROPOSALS_FILTERS.topics[0],
-  rewardStatus: DEFAULT_PROPOSALS_FILTERS.rewards[0],
+  rewardStatus: ProposalRewardStatus.AcceptVotes,
   status: DEFAULT_PROPOSALS_FILTERS.status[0],
   ballots: [
     {

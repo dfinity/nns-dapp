@@ -319,7 +319,6 @@ describe("proposals-utils", () => {
           }),
           filters: {
             ...DEFAULT_PROPOSALS_FILTERS,
-            rewards: [],
             excludeVotedProposals: false,
           },
           neurons,
@@ -352,21 +351,6 @@ describe("proposals-utils", () => {
           filters: {
             ...DEFAULT_PROPOSALS_FILTERS,
             status: [ProposalStatus.Executed],
-            excludeVotedProposals: false,
-          },
-          neurons,
-          identity: mockIdentity,
-        })
-      ).toBeTruthy();
-
-      expect(
-        hideProposal({
-          proposalInfo: proposalWithBallot({
-            proposal: mockProposals[0],
-          }),
-          filters: {
-            ...DEFAULT_PROPOSALS_FILTERS,
-            rewards: [ProposalRewardStatus.ReadyToSettle],
             excludeVotedProposals: false,
           },
           neurons,

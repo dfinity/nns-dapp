@@ -9,7 +9,6 @@ import {
 import type {
   ProposalId,
   ProposalInfo,
-  ProposalRewardStatus,
   ProposalStatus,
   Topic,
 } from "@dfinity/nns";
@@ -18,15 +17,9 @@ import { writableStored } from "./writable-stored";
 
 export interface ProposalsFiltersStore {
   topics: Topic[];
-  rewards: ProposalRewardStatus[];
   status: ProposalStatus[];
   excludeVotedProposals: boolean;
-  lastAppliedFilter:
-    | undefined
-    | "topics"
-    | "rewards"
-    | "status"
-    | "excludeVotedProposals";
+  lastAppliedFilter: undefined | "topics" | "status" | "excludeVotedProposals";
 }
 
 export interface ProposalsStore {
@@ -120,7 +113,6 @@ const initProposalsStore = () => {
  * That's why above limitation leads to a separate store.
  *
  * - filterTopics: set the filter topics (enum Topic)
- * - filterRewards: set the filter for the status of the rewards (enum ProposalRewardStatus)
  * - filterStatus: set the filter for the status of the proposals (enum ProposalStatus)
  * - excludeVotedProposals: "Show only proposals you can still vote for"
  *
@@ -139,14 +131,6 @@ const initProposalsFiltersStore = () => {
         ...filters,
         topics,
         lastAppliedFilter: "topics",
-      }));
-    },
-
-    filterRewards(rewards: ProposalRewardStatus[]) {
-      update((filters: ProposalsFiltersStore) => ({
-        ...filters,
-        rewards,
-        lastAppliedFilter: "rewards",
       }));
     },
 

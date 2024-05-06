@@ -285,41 +285,6 @@ describe("SnsProposals", () => {
       expect(queryAllByTestId("proposal-card").length).toBe(1);
     });
 
-    it("should filter by reward status", async () => {
-      const { getByTestId, queryAllByTestId, queryByTestId } =
-        render(SnsProposals);
-
-      await waitFor(() =>
-        expect(queryByTestId("proposals-loading")).not.toBeInTheDocument()
-      );
-
-      fireEvent.click(getByTestId("filters-by-rewards"));
-
-      await waitFor(() =>
-        expect(queryByTestId("filter-modal")).toBeInTheDocument()
-      );
-
-      const openCheckbox = queryAllByTestId("checkbox").find(
-        (element) =>
-          element.getAttribute("id") ===
-          String(SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES)
-      );
-      expect(openCheckbox).not.toBeUndefined();
-
-      // Select Open status checkbox
-      fireEvent.click(openCheckbox);
-
-      // Apply filters
-      fireEvent.click(getByTestId("apply-filters"));
-
-      // Wait for modal to close
-      await waitFor(() =>
-        expect(queryByTestId("filter-modal")).not.toBeInTheDocument()
-      );
-
-      expect(queryAllByTestId("proposal-card").length).toBe(1);
-    });
-
     it("should filter by types", async () => {
       const { getByTestId, queryAllByTestId, queryByTestId } =
         render(SnsProposals);

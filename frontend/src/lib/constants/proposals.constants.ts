@@ -1,5 +1,5 @@
 import type { BasisPoints } from "$lib/types/proposals";
-import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
+import { ProposalStatus, Topic } from "@dfinity/nns";
 
 // TODO: suggest to move into the store and add typing
 export const DEFAULT_PROPOSALS_FILTERS = {
@@ -12,12 +12,6 @@ export const DEFAULT_PROPOSALS_FILTERS = {
     Topic.NetworkCanisterManagement,
     Topic.NodeProviderRewards,
     Topic.SnsAndCommunityFund,
-  ],
-  rewards: [
-    ProposalRewardStatus.AcceptVotes,
-    ProposalRewardStatus.ReadyToSettle,
-    ProposalRewardStatus.Settled,
-    ProposalRewardStatus.Ineligible,
   ],
   status: [ProposalStatus.Open],
   excludeVotedProposals: false,

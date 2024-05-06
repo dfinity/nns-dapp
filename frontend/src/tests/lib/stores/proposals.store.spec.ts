@@ -5,7 +5,7 @@ import {
   proposalsStore,
 } from "$lib/stores/proposals.store";
 import { generateMockProposals } from "$tests/mocks/proposal.mock";
-import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
+import { ProposalStatus, Topic } from "@dfinity/nns";
 import { get } from "svelte/store";
 
 describe("proposals-store", () => {
@@ -92,7 +92,6 @@ describe("proposals-store", () => {
   describe("filter", () => {
     beforeEach(() => {
       proposalsFiltersStore.filterTopics(DEFAULT_PROPOSALS_FILTERS.topics);
-      proposalsFiltersStore.filterRewards(DEFAULT_PROPOSALS_FILTERS.rewards);
       proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
     });
 
@@ -122,21 +121,6 @@ describe("proposals-store", () => {
         ...DEFAULT_PROPOSALS_FILTERS,
         lastAppliedFilter: "topics",
         topics: filter,
-      });
-    });
-
-    it("should update topic rewards", () => {
-      const filter = [
-        ProposalRewardStatus.AcceptVotes,
-        ProposalRewardStatus.ReadyToSettle,
-      ];
-      proposalsFiltersStore.filterRewards(filter);
-
-      const filters = get(proposalsFiltersStore);
-      expect(filters).toEqual({
-        ...DEFAULT_PROPOSALS_FILTERS,
-        lastAppliedFilter: "rewards",
-        rewards: filter,
       });
     });
 

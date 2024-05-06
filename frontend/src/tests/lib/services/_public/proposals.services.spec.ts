@@ -310,7 +310,6 @@ describe("proposals-services", () => {
 
     it("should load proposals if filters are empty", async () => {
       proposalsFiltersStore.filterStatus([]);
-      proposalsFiltersStore.filterRewards([]);
       proposalsFiltersStore.filterTopics([]);
       expect(spyQueryProposals).not.toHaveBeenCalled();
 

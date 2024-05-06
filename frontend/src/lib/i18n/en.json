@@ -367,7 +367,6 @@
   "voting": {
     "topics": "Topics",
     "types": "Types",
-    "rewards": "Reward Status",
     "status": "Proposal Status",
     "hide_unavailable_proposals": "Show only proposals you can still vote for",
     "check_all": "Select All",

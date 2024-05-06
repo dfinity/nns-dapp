@@ -5,7 +5,6 @@ import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { nativeNervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import {
   SnsProposalDecisionStatus,
-  SnsProposalRewardStatus,
   type SnsNervousSystemFunction,
 } from "@dfinity/sns";
 import { get } from "svelte/store";
@@ -33,24 +32,6 @@ describe("sns-filters services", () => {
         getFiltersStoreData().decisionStatus.map(({ value }) => value)
       ).not.toContainEqual(
         SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_UNSPECIFIED
-      );
-    });
-
-    it("should load the sns reward status filters store but not Unspecified", async () => {
-      expect(getFiltersStoreData()?.rewardStatus).toBeUndefined();
-      await loadSnsFilters({
-        rootCanisterId: mockPrincipal,
-        nsFunctions: [nativeNervousSystemFunctionMock],
-        snsName: "sns-name",
-      });
-
-      expect(getFiltersStoreData().rewardStatus).toHaveLength(
-        enumSize(SnsProposalRewardStatus) - 1
-      );
-      expect(
-        getFiltersStoreData().rewardStatus.map(({ value }) => value)
-      ).not.toContainEqual(
-        SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_UNSPECIFIED
       );
     });
 

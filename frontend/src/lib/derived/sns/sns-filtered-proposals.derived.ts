@@ -8,10 +8,7 @@ import {
   type SnsProposalsStoreData,
 } from "$lib/stores/sns-proposals.store";
 import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
-import {
-  snsDecisionStatus,
-  snsRewardStatus,
-} from "$lib/utils/sns-proposals.utils";
+import { snsDecisionStatus } from "$lib/utils/sns-proposals.utils";
 import { isSnsGenericNervousSystemTypeProposal } from "$lib/utils/sns.utils";
 import { isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
@@ -38,12 +35,6 @@ export const snsFilteredProposalsStore = derived<
                 .map(({ value }) => value)
                 .includes(snsDecisionStatus(proposal));
 
-            const rewardStatusMatch =
-              projectSelectedFilters.rewardStatus.length === 0 ||
-              projectSelectedFilters.rewardStatus
-                .map(({ value }) => value)
-                .includes(snsRewardStatus(proposal));
-
             const nervousFunctionsMatch =
               projectSelectedFilters.types.length === 0 ||
               projectSelectedFilters.types
@@ -55,7 +46,7 @@ export const snsFilteredProposalsStore = derived<
                     : `${proposal.action}`
                 );
 
-            return statusMatch && rewardStatusMatch && nervousFunctionsMatch;
+            return statusMatch && nervousFunctionsMatch;
           }
         );
         return {

@@ -54,7 +54,6 @@ const queryNeurons = async (): Promise<NeuronInfo[]> => {
 /// Fetch all (500 max) proposals that are accepting votes.
 const queryProposals = async (): Promise<ProposalInfo[]> => {
   const identity = getCurrentIdentity();
-
   let sortedProposals: ProposalInfo[] = [];
   for (
     let pagesLoaded = 0;
