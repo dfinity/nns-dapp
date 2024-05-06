@@ -3481,7 +3481,7 @@ dependencies = [
 
 [[package]]
 name = "nns-dapp"
-version = "2.0.75"
+version = "2.0.76"
 dependencies = [
  "anyhow",
  "base64 0.21.5",
@@ -4097,7 +4097,7 @@ dependencies = [
 
 [[package]]
 name = "proposals"
-version = "2.0.75"
+version = "2.0.76"
 dependencies = [
  "anyhow",
  "candid 0.8.4",
@@ -4944,7 +4944,7 @@ checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 
 [[package]]
 name = "sns_aggregator"
-version = "2.0.75"
+version = "2.0.76"
 dependencies = [
  "anyhow",
  "base64 0.21.5",

@@ -11,6 +11,48 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 129618
+
+### Application
+
+#### Added
+
+* Add new proposal types support (47-51)
+* Message informing about proposal topic changes.
+* Tooltips with exact voting power on voted neurons.
+* Display the total count of actionable proposals.
+
+#### Changed
+
+* Update IC dependencies in nns-dapp crates.
+* Update `ic-stable-structures` dependency to 0.6.4.
+* New main menu selection style.
+* Rename some topics and proposal types.
+
+#### Removed
+
+* Stop storing transactions in the nns-dapp canister.
+* Removed metrics that were derived from transactions stored in the canister.
+
+#### Fixed
+
+* Inconsistency in similar NNS neuron sorting.
+* Adjust Metrics block visibility for certain screen widths.
+
+### Operations
+
+#### Added
+
+* Added `upgrade-downgrade-test` script.
+
+#### Changed
+
+* Automatically handle `candid::define_function` in `did2rs`.
+
+#### Fixed
+
+* Make `did2rs` work on Mac.
+
 ## Proposal 129435
 
 ### Application
