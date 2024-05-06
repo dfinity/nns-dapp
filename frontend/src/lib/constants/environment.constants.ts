@@ -42,6 +42,7 @@ export interface FeatureFlags<T> {
   ENABLE_CKTESTBTC: T;
   ENABLE_VOTING_INDICATION: T;
   ENABLE_HIDE_ZERO_BALANCE: T;
+  ENABLE_ACTIONABLE_TAB: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;
