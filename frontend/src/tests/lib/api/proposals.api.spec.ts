@@ -17,6 +17,12 @@ describe("proposals-api", () => {
   const mockGovernanceCanister: MockGovernanceCanister =
     new MockGovernanceCanister(mockProposals);
 
+  const {
+    topics: defaultIncludeTopcis,
+    rewards: defaultIncludeRewardStatus,
+    status: defaultIncludeStatus,
+  } = DEFAULT_PROPOSALS_FILTERS;
+
   let spyListProposals;
 
   beforeEach(() => {
@@ -34,7 +40,9 @@ describe("proposals-api", () => {
     it("should call the canister to list proposals", async () => {
       await queryProposals({
         beforeProposal: undefined,
-        filters: DEFAULT_PROPOSALS_FILTERS,
+        includeTopics: defaultIncludeTopcis,
+        includeStatus: defaultIncludeStatus,
+        includeRewardStatus: defaultIncludeRewardStatus,
         identity: mockIdentity,
         certified: true,
       });
@@ -45,7 +53,9 @@ describe("proposals-api", () => {
     it("should call the canister to list the next proposals", async () => {
       await queryProposals({
         beforeProposal: mockProposals[mockProposals.length - 1].id,
-        filters: DEFAULT_PROPOSALS_FILTERS,
+        includeTopics: defaultIncludeTopcis,
+        includeStatus: defaultIncludeStatus,
+        includeRewardStatus: defaultIncludeRewardStatus,
         identity: mockIdentity,
         certified: true,
       });
@@ -56,10 +66,9 @@ describe("proposals-api", () => {
     it("should call with no excluded topics if topics filter is empty", async () => {
       await queryProposals({
         beforeProposal: mockProposals[mockProposals.length - 1].id,
-        filters: {
-          ...DEFAULT_PROPOSALS_FILTERS,
-          topics: [],
-        },
+        includeTopics: [],
+        includeStatus: defaultIncludeStatus,
+        includeRewardStatus: defaultIncludeRewardStatus,
         identity: mockIdentity,
         certified: true,
       });

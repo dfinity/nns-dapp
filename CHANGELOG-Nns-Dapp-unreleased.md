@@ -19,6 +19,8 @@ proposal is successful, the changes it released will be moved from this file to
 * Message informing about proposal topic changes.
 * Tooltips with exact voting power on voted neurons.
 * Display the total count of actionable proposals.
+* Close modal on ESC key press.
+* Add `ENABLE_ACTIONABLE_TAB` feature flag.
 
 #### Changed
 
@@ -35,6 +37,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Stop storing transactions in the nns-dapp canister.
 * Removed metrics that were derived from transactions stored in the canister.
 * Stop encoding the accounts map in the `AccountsStore`.
+* Removed `ENABLE_HIDE_ZERO_BALANCE` feature flag.
 
 #### Fixed
 

@@ -160,7 +160,14 @@ const findProposals = async ({
     strategy: FORCE_CALL_STRATEGY,
     identityType: "current",
     request: ({ certified, identity }) =>
-      queryProposals({ beforeProposal, identity, filters, certified }),
+      queryProposals({
+        beforeProposal,
+        identity,
+        includeTopics: filters.topics,
+        includeStatus: filters.status,
+        includeRewardStatus: filters.rewards,
+        certified,
+      }),
     onLoad: ({ response: proposals, certified }) => {
       if (!certified) {
         uncertifiedProposals = proposals;
