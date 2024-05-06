@@ -87,13 +87,8 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
       queryProposals({
         beforeProposal: undefined,
         identity,
-        filters: {
-          topics: [Topic.SnsAndCommunityFund],
-          rewards: [],
-          status: [ProposalStatus.Open],
-          excludeVotedProposals: false,
-          lastAppliedFilter: undefined,
-        },
+        includeTopics: [Topic.SnsAndCommunityFund],
+        includeStatus: [ProposalStatus.Open],
         certified,
       }),
     onLoad: ({ response: proposals, certified }) =>
