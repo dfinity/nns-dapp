@@ -145,9 +145,8 @@ const IDL2JSON_OPTIONS: Idl2JsonOptions = Idl2JsonOptions {
 /// # Errors
 /// - Does not support: `Type::Empty`, `Type::Knot(_)`, `Type::Unknown`
 // Type is Rc<TypeInner> and Rc is designed to be passed by value.
-#[allow(clippy::needless_pass_by_value)]
-fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
-    match (*ty).clone() {
+fn type_2_idltype(ty: &Type) -> Result<IDLType, String> {
+    match (**ty).clone() {
         TypeInner::Null => Ok(IDLType::PrimT(parser_types::PrimType::Null)),
         TypeInner::Bool => Ok(IDLType::PrimT(parser_types::PrimType::Bool)),
         TypeInner::Nat => Ok(IDLType::PrimT(parser_types::PrimType::Nat)),
@@ -164,14 +163,14 @@ fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
         TypeInner::Float64 => Ok(IDLType::PrimT(parser_types::PrimType::Float64)),
         TypeInner::Text => Ok(IDLType::PrimT(parser_types::PrimType::Text)),
         TypeInner::Reserved => Ok(IDLType::PrimT(parser_types::PrimType::Reserved)),
-        TypeInner::Opt(ty) => Ok(IDLType::OptT(Box::new(type_2_idltype(ty)?))),
-        TypeInner::Vec(ty) => Ok(IDLType::VecT(Box::new(type_2_idltype(ty)?))),
+        TypeInner::Opt(ty) => Ok(IDLType::OptT(Box::new(type_2_idltype(&ty)?))),
+        TypeInner::Vec(ty) => Ok(IDLType::VecT(Box::new(type_2_idltype(&ty)?))),
         TypeInner::Record(fields) => {
             let mut idl_fields = Vec::with_capacity(fields.len());
             for field in fields {
                 idl_fields.push(parser_types::TypeField {
                     label: (*field.id).clone(),
-                    typ: type_2_idltype(field.ty)?,
+                    typ: type_2_idltype(&field.ty)?,
                 });
             }
             Ok(IDLType::RecordT(idl_fields))
@@ -181,7 +180,7 @@ fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
             for variant in variants {
                 idl_variants.push(parser_types::TypeField {
                     label: (*variant.id).clone(),
-                    typ: type_2_idltype(variant.ty)?,
+                    typ: type_2_idltype(&variant.ty)?,
                 });
             }
             Ok(IDLType::VariantT(idl_variants))
@@ -190,17 +189,17 @@ fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
         TypeInner::Var(name) => Ok(IDLType::VarT(name)),
         TypeInner::Func(candid_types::Function { modes, args, rets }) => Ok(IDLType::FuncT(parser_types::FuncType {
             modes,
-            args: args.into_iter().map(type_2_idltype).collect::<Result<Vec<_>, _>>()?,
-            rets: rets.into_iter().map(type_2_idltype).collect::<Result<Vec<_>, _>>()?,
+            args: args.iter().map(type_2_idltype).collect::<Result<Vec<_>, _>>()?,
+            rets: rets.iter().map(type_2_idltype).collect::<Result<Vec<_>, _>>()?,
         })),
         TypeInner::Class(yin, yang) => Ok(IDLType::ClassT(
-            yin.into_iter().map(type_2_idltype).collect::<Result<Vec<_>, _>>()?,
-            Box::new(type_2_idltype(yang)?),
+            yin.iter().map(type_2_idltype).collect::<Result<Vec<_>, _>>()?,
+            Box::new(type_2_idltype(&yang)?),
         )),
         TypeInner::Service(bindings) => Ok(IDLType::ServT(
             bindings
                 .into_iter()
-                .map(|(id, typ)| type_2_idltype(typ).map(|typ| parser_types::Binding { id, typ }))
+                .map(|(id, typ)| type_2_idltype(&typ).map(|typ| parser_types::Binding { id, typ }))
                 .collect::<Result<Vec<_>, _>>()?,
         )),
         TypeInner::Empty | TypeInner::Knot(_) | TypeInner::Unknown | TypeInner::Future => {
@@ -223,7 +222,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         In: CandidType,
     {
         let candid_type = IDLTypes {
-            args: vec![type_2_idltype(In::ty())?],
+            args: vec![type_2_idltype(&In::ty())?],
         };
         let payload_idl = IDLArgs::from_bytes(payload_bytes).map_err(debug)?;
         let json_value = idl_args2json_with_weak_names(&payload_idl, &candid_type, &IDL2JSON_OPTIONS);
