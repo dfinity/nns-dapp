@@ -96,8 +96,9 @@ local_deployment_data="$(
   : "Get the ledger canister ID -it should be defined"
   LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-ledger)"
   export LEDGER_CANISTER_ID
-  : "Try to find the NNS Index canister ID"
-  INDEX_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-index 2>/dev/null || true)"
+
+  : "Get the NNS Index canister ID - it should be defined"
+  INDEX_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-index)"
   export INDEX_CANISTER_ID
 
   : "Get the minter canister ID - it should be defined"

@@ -34,7 +34,8 @@
       "type": "custom",
       "remote": {
         "id": {
-          "mainnet": "qhbym-qaaaa-aaaaa-aaafq-cai"
+          "mainnet": "qhbym-qaaaa-aaaaa-aaafq-cai",
+          "__default": "qhbym-qaaaa-aaaaa-aaafq-cai"
         }
       }
     },
