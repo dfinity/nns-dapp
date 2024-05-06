@@ -17,7 +17,7 @@ describe("proposals-api", () => {
   const mockGovernanceCanister: MockGovernanceCanister =
     new MockGovernanceCanister(mockProposals);
 
-  const { topics: defaultIncludeTopcis, status: defaultIncludeStatus } =
+  const { topics: defaultIncludeTopics, status: defaultIncludeStatus } =
     DEFAULT_PROPOSALS_FILTERS;
 
   let spyListProposals;
@@ -37,7 +37,7 @@ describe("proposals-api", () => {
     it("should call the canister to list proposals", async () => {
       await queryProposals({
         beforeProposal: undefined,
-        includeTopics: defaultIncludeTopcis,
+        includeTopics: defaultIncludeTopics,
         includeStatus: defaultIncludeStatus,
         includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
         identity: mockIdentity,
@@ -50,7 +50,7 @@ describe("proposals-api", () => {
     it("should call the canister to list the next proposals", async () => {
       await queryProposals({
         beforeProposal: mockProposals[mockProposals.length - 1].id,
-        includeTopics: defaultIncludeTopcis,
+        includeTopics: defaultIncludeTopics,
         includeStatus: defaultIncludeStatus,
         includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
         identity: mockIdentity,
@@ -76,7 +76,7 @@ describe("proposals-api", () => {
           beforeProposal: mockProposals[mockProposals.length - 1].id,
           excludeTopic: [],
           includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
-          includeStatus: DEFAULT_PROPOSALS_FILTERS.status,
+          includeStatus: defaultIncludeStatus,
           includeAllManageNeuronProposals: false,
           limit: 100,
         },
@@ -96,7 +96,7 @@ describe("proposals-api", () => {
           beforeProposal: mockProposals[mockProposals.length - 1].id,
           excludeTopic: [],
           includeRewardStatus: [],
-          includeStatus: DEFAULT_PROPOSALS_FILTERS.status,
+          includeStatus: defaultIncludeStatus,
           includeAllManageNeuronProposals: false,
           limit: 100,
         },
