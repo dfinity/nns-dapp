@@ -104,13 +104,7 @@ describe("actionable-proposals.services", () => {
         expect.objectContaining({
           beforeProposal: undefined,
           certified: false,
-          filters: {
-            excludeVotedProposals: false,
-            lastAppliedFilter: undefined,
-            rewards: [ProposalRewardStatus.AcceptVotes],
-            status: [],
-            topics: [],
-          },
+          includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
         })
       );
     });
@@ -132,26 +126,14 @@ describe("actionable-proposals.services", () => {
         identity: mockIdentity,
         beforeProposal: undefined,
         certified: false,
-        filters: {
-          excludeVotedProposals: false,
-          lastAppliedFilter: undefined,
-          rewards: [ProposalRewardStatus.AcceptVotes],
-          status: [],
-          topics: [],
-        },
+        includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
       });
       expect(spyQueryProposals).toHaveBeenCalledWith({
         identity: mockIdentity,
         beforeProposal:
           firstResponseProposals[firstResponseProposals.length - 1].id,
         certified: false,
-        filters: {
-          excludeVotedProposals: false,
-          lastAppliedFilter: undefined,
-          rewards: [ProposalRewardStatus.AcceptVotes],
-          status: [],
-          topics: [],
-        },
+        includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
       });
       expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(101);
       expect(get(actionableNnsProposalsStore)?.proposals).toEqual([
