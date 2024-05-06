@@ -29,13 +29,8 @@ describe("Proposals", () => {
       beforeProposal: undefined,
       certified: false,
       identity: new AnonymousIdentity(),
-      filters: {
-        topics: [Topic.SnsAndCommunityFund],
-        rewards: [],
-        status: [ProposalStatus.Open],
-        excludeVotedProposals: false,
-        lastAppliedFilter: undefined,
-      },
+      includeTopics: [Topic.SnsAndCommunityFund],
+      includeStatus: [ProposalStatus.Open],
     });
   });
 

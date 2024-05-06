@@ -5,7 +5,6 @@
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { UserToken } from "$lib/types/tokens-page";
-  import { ENABLE_HIDE_ZERO_BALANCE } from "$lib/stores/feature-flags.store";
   import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
   import { heightTransition } from "$lib/utils/transition.utils";
   import { IconSettings } from "@dfinity/gix-components";
@@ -49,15 +48,13 @@
     firstColumnHeader={$i18n.tokens.projects_header}
   >
     <div slot="header-icon">
-      {#if $ENABLE_HIDE_ZERO_BALANCE}
-        <button
-          data-tid="settings-button"
-          class="settings-button icon-only"
-          aria-label={$i18n.tokens.settings_button}
-          bind:this={settingsButton}
-          on:click={openSettings}><IconSettings /></button
-        >
-      {/if}
+      <button
+        data-tid="settings-button"
+        class="settings-button icon-only"
+        aria-label={$i18n.tokens.settings_button}
+        bind:this={settingsButton}
+        on:click={openSettings}><IconSettings /></button
+      >
     </div>
     <div slot="last-row">
       {#if shouldHideZeroBalances}

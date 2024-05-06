@@ -78,6 +78,7 @@ pub trait AccountsDbTrait {
     /// # Returns
     /// - `None`, if the account does not exist.
     /// - `Some(result)`, where `result` is the value returned by `f`, if the account exists.
+    #[cfg(test)]
     fn db_try_with_account<F, RS, RF>(&mut self, account_key: &[u8], f: F) -> Option<Result<RS, RF>>
     where
         // The closure takes an account as an argument.  It may return any type.
@@ -149,9 +150,12 @@ pub enum SchemaLabelError {
 }
 
 /// A trait for data stores that support `BTreeMap` for account storage.
+#[cfg(test)]
 pub trait AccountsDbBTreeMapTrait {
     /// Creates a database from a map of accounts.
+    #[cfg(test)]
     fn from_map(map: std::collections::BTreeMap<Vec<u8>, Account>) -> Self;
     /// Provides the accounts as a map.
+    #[cfg(test)]
     fn as_map(&self) -> &std::collections::BTreeMap<Vec<u8>, Account>;
 }
