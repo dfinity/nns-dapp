@@ -5,7 +5,6 @@
     lastProposalId,
   } from "$lib/utils/proposals.utils";
   import {
-    type ProposalsFiltersStore,
     proposalsFiltersStore,
     proposalsStore,
   } from "$lib/stores/proposals.store";
@@ -126,8 +125,6 @@
   // goes back into loading state immediately after proposals are loaded.
   // TODO: Fix NnsProposals to load proposals only once and remove the
   // work-around from NnsProposalList.page-object.ts
-
-  $: $authStore.identity, (() => proposalsFiltersStore.reload())();
   $: $definedNeuronsStore, applyFilter();
 
   const updateNothingFound = () => {

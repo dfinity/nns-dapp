@@ -14,7 +14,6 @@ export const DEFAULT_PROPOSALS_FILTERS = {
     Topic.SnsAndCommunityFund,
   ],
   status: [ProposalStatus.Open],
-  lastAppliedFilter: undefined,
 };
 
 export const DEPRECATED_TOPICS = [Topic.SnsDecentralizationSale];

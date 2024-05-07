@@ -18,7 +18,6 @@ import { writableStored } from "./writable-stored";
 export interface ProposalsFiltersStore {
   topics: Topic[];
   status: ProposalStatus[];
-  lastAppliedFilter: undefined | "topics" | "status" | "excludeVotedProposals";
 }
 
 export interface ProposalsStore {
@@ -127,7 +126,6 @@ const initProposalsFiltersStore = () => {
       update((filters: ProposalsFiltersStore) => ({
         ...filters,
         topics,
-        lastAppliedFilter: "topics",
       }));
     },
 
@@ -135,19 +133,12 @@ const initProposalsFiltersStore = () => {
       update((filters: ProposalsFiltersStore) => ({
         ...filters,
         status,
-        lastAppliedFilter: "status",
-      }));
-    },
-
       }));
     },
 
     reset() {
       set(DEFAULT_PROPOSALS_FILTERS);
     },
-
-    reload: () =>
-      update((state) => ({ ...state, lastAppliedFilter: undefined })),
   };
 };
 
