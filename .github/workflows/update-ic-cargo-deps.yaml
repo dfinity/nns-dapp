@@ -20,7 +20,7 @@ jobs:
           echo "Latest IC release:  $latest_release"
           echo "latest_release=$latest_release" >> "$GITHUB_OUTPUT"
       - name: Update IC Cargo Dependencies
-        run: scripts/scripts/update-ic-cargo-deps --ref "${{ steps.latest.outputs.latest_release }}"
+        run: scripts/update-ic-cargo-deps --ref "${{ steps.latest.outputs.latest_release }}"
       - name: Check if there are changes
         run: if git diff --quiet --exit-code; then echo "updated=0" >> "$GITHUB_OUTPUT"; else echo "updated=1" >> "$GITHUB_OUTPUT"; fi
       - name: Create Pull Request
