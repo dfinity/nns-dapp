@@ -15,11 +15,9 @@ import {
   authStoreMock,
   mockAuthStoreSubscribe,
   mockIdentity,
-  mutableMockAuthStoreSubscribe,
 } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import en from "$tests/mocks/i18n.mock";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
 import {
   mockEmptyProposalsStoreSubscribe,
   mockProposals,
@@ -118,11 +116,6 @@ describe("NnsProposals", () => {
 
         expect(getByText("Topics")).toBeInTheDocument();
         expect(getByText("Proposal Status")).toBeInTheDocument();
-        expect(
-          getByText("Show only proposals", {
-            exact: false,
-          })
-        ).toBeInTheDocument();
       });
 
       it("should render a spinner while searching proposals", async () => {
@@ -177,20 +170,6 @@ describe("NnsProposals", () => {
             .getProposalStatusTagPo()
             .hasActionableStatusBadge()
         ).toEqual(true);
-      });
-
-      it("should not hide proposal card if already voted", async () => {
-        neuronsStore.setNeurons({ neurons: [mockNeuron], certified: true });
-
-        const { queryAllByTestId } = render(NnsProposals);
-
-        proposalsFiltersStore.toggleExcludeVotedProposals();
-
-        await waitFor(() =>
-          expect(queryAllByTestId("proposal-card").length).toBe(
-            mockProposals.length
-          )
-        );
       });
 
       it("should disable infinite scroll when all proposals loaded", async () => {
@@ -301,68 +280,6 @@ describe("NnsProposals", () => {
           getByText((secondProposal.proposal as Proposal).title as string)
         ).toBeInTheDocument();
       });
-
-      it("should render proposals also when ", () => {
-        mockLoadProposals();
-
-        const { getByText } = render(NnsProposals);
-
-        const firstProposal = mockProposals[0] as ProposalInfo;
-        const secondProposal = mockProposals[1] as ProposalInfo;
-        expect(
-          getByText((firstProposal.proposal as Proposal).title as string)
-        ).toBeInTheDocument();
-        expect(
-          getByText((secondProposal.proposal as Proposal).title as string)
-        ).toBeInTheDocument();
-
-        proposalsFiltersStore.toggleExcludeVotedProposals();
-      });
-    });
-  });
-
-  describe("log in and out", () => {
-    let spyReload;
-
-    beforeEach(() => {
-      spyReload = vi.spyOn(proposalsFiltersStore, "reload");
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mutableMockAuthStoreSubscribe
-      );
-
-      vi.spyOn(proposalsStore, "subscribe").mockImplementation(
-        mockProposalsStoreSubscribe
-      );
-    });
-
-    it("should reload filters on sign-in", () => {
-      expect(spyReload).not.toHaveBeenCalled();
-      authStoreMock.next({
-        identity: undefined,
-      });
-
-      render(NnsProposals);
-
-      authStoreMock.next({
-        identity: mockIdentity,
-      });
-
-      expect(spyReload).toHaveBeenCalledTimes(1);
-    });
-
-    it("should reload filters after sign-out", () => {
-      expect(spyReload).not.toHaveBeenCalled();
-      authStoreMock.next({
-        identity: mockIdentity,
-      });
-
-      render(NnsProposals);
-
-      authStoreMock.next({
-        identity: undefined,
-      });
-
-      expect(spyReload).toHaveBeenCalledTimes(1);
     });
   });
 

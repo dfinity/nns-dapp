@@ -18,8 +18,6 @@ import { writableStored } from "./writable-stored";
 export interface ProposalsFiltersStore {
   topics: Topic[];
   status: ProposalStatus[];
-  excludeVotedProposals: boolean;
-  lastAppliedFilter: undefined | "topics" | "status" | "excludeVotedProposals";
 }
 
 export interface ProposalsStore {
@@ -114,8 +112,6 @@ const initProposalsStore = () => {
  *
  * - filterTopics: set the filter topics (enum Topic)
  * - filterStatus: set the filter for the status of the proposals (enum ProposalStatus)
- * - excludeVotedProposals: "Show only proposals you can still vote for"
- *
  */
 const initProposalsFiltersStore = () => {
   const { subscribe, update, set } = writableStored<ProposalsFiltersStore>({
@@ -130,7 +126,6 @@ const initProposalsFiltersStore = () => {
       update((filters: ProposalsFiltersStore) => ({
         ...filters,
         topics,
-        lastAppliedFilter: "topics",
       }));
     },
 
@@ -138,24 +133,12 @@ const initProposalsFiltersStore = () => {
       update((filters: ProposalsFiltersStore) => ({
         ...filters,
         status,
-        lastAppliedFilter: "status",
-      }));
-    },
-
-    toggleExcludeVotedProposals() {
-      update((filters: ProposalsFiltersStore) => ({
-        ...filters,
-        excludeVotedProposals: !filters.excludeVotedProposals,
-        lastAppliedFilter: "excludeVotedProposals",
       }));
     },
 
     reset() {
       set(DEFAULT_PROPOSALS_FILTERS);
     },
-
-    reload: () =>
-      update((state) => ({ ...state, lastAppliedFilter: undefined })),
   };
 };
 

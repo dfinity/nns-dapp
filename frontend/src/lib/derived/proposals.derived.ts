@@ -1,17 +1,11 @@
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-import { authStore } from "$lib/stores/auth.store";
-import { definedNeuronsStore } from "$lib/stores/neurons.store";
-import type {
-  ProposalsFiltersStore,
-  ProposalsStore,
-} from "$lib/stores/proposals.store";
+import type { ProposalsStore } from "$lib/stores/proposals.store";
 import {
   proposalsFiltersStore,
   proposalsStore,
 } from "$lib/stores/proposals.store";
 import { hideProposal } from "$lib/utils/proposals.utils";
-import type { Identity } from "@dfinity/agent";
-import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
+import type { ProposalInfo } from "@dfinity/nns";
 import { derived, type Readable } from "svelte/store";
 
 /**
@@ -34,47 +28,19 @@ export const sortedProposals: Readable<ProposalsStore> = derived(
   })
 );
 
-// HACK:
-//
-// 1. the governance canister does not implement a filter to hide proposals where all neurons have voted or are ineligible.
-// 2. the app does not simply display nothing when a filter is empty but re-filter the results provided by the backend.
-//
-// In addition, we have implemented an "optimistic voting" feature.
-//
-// That's why we hide and re-process these proposals delivered by the backend on the client side.
-const hide = ({
-  proposalInfo,
-  filters,
-  neurons,
-  identity,
-}: {
-  proposalInfo: ProposalInfo;
-  filters: ProposalsFiltersStore;
-  neurons: NeuronInfo[];
-  identity: Identity | undefined | null;
-}): boolean =>
-  hideProposal({
-    filters,
-    proposalInfo,
-    neurons,
-    identity,
-  });
-
 export interface UIProposalsStore {
   proposals: (ProposalInfo & { hidden: boolean })[];
   certified: boolean | undefined;
 }
 
 export const uiProposals: Readable<UIProposalsStore> = derived(
-  [sortedProposals, proposalsFiltersStore, definedNeuronsStore, authStore],
-  ([{ proposals, certified }, filters, neurons, { identity }]) => ({
+  [sortedProposals, proposalsFiltersStore],
+  ([{ proposals, certified }, filters]) => ({
     proposals: proposals.map((proposalInfo) => ({
       ...proposalInfo,
-      hidden: hide({
+      hidden: hideProposal({
         proposalInfo,
         filters,
-        neurons,
-        identity,
       }),
     })),
     certified,

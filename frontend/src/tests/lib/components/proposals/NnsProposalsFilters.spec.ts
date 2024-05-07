@@ -72,39 +72,6 @@ describe("NnsProposalsFilters", () => {
         text: en.voting.status,
       });
     });
-
-    describe("signed in", () => {
-      beforeAll(() => {
-        authStoreMock.next({
-          identity: mockIdentity,
-        });
-        overrideFeatureFlagsStore.reset();
-      });
-
-      it("should render a checkbox", () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
-        const { container } = render(NnsProposalsFilters);
-
-        const input: HTMLInputElement | null = container.querySelector("input");
-
-        expect(input?.getAttribute("type")).toEqual("checkbox");
-        expect(input?.getAttribute("id")).toEqual("hide-unavailable-proposals");
-      });
-    });
-
-    describe("not signed in", () => {
-      beforeAll(() => {
-        authStoreMock.next({
-          identity: undefined,
-        });
-      });
-
-      it("should not render a checkbox", () => {
-        const { getByTestId } = render(NnsProposalsFilters);
-
-        expect(() => getByTestId("hide-unavailable-proposals")).toThrow();
-      });
-    });
   });
 
   describe("custom filter selection", () => {
@@ -228,14 +195,6 @@ describe("NnsProposalsFilters", () => {
           ).toEqual(true);
         });
 
-        it("should hide votable proposals checkbox", async () => {
-          const po = await renderComponent();
-
-          expect(
-            await po.getVotableProposalsOnlyCheckboxPo().isPresent()
-          ).toEqual(false);
-        });
-
         it('should "all" be preselected by default', async () => {
           const po = await renderComponent();
           expect(
@@ -300,13 +259,6 @@ describe("NnsProposalsFilters", () => {
         it("should render proposal filters", async () => {
           const po = await renderComponent();
           expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
-        });
-
-        it("should display votable proposals checkbox", async () => {
-          const po = await renderComponent();
-          expect(
-            await po.getVotableProposalsOnlyCheckboxPo().isPresent()
-          ).toEqual(true);
         });
       });
     });
