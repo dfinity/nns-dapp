@@ -29,6 +29,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Stop encoding the accounts map in the `AccountsStore`.
 * Removed `ENABLE_HIDE_ZERO_BALANCE` feature flag.
 * Proposal filtering by reward status.
+* Removed transactions from accounts stored in nns-dapp.
 
 #### Fixed
 
