@@ -368,7 +368,6 @@
     "topics": "Topics",
     "types": "Types",
     "status": "Proposal Status",
-    "hide_unavailable_proposals": "Show only proposals you can still vote for",
     "check_all": "Select All",
     "uncheck_all": "Clear",
     "nothing_found": "No proposals found for the filters.",
