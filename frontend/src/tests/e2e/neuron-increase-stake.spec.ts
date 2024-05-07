@@ -1,7 +1,6 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import { getNnsNeuronCardsIds } from "$tests/utils/e2e.nns-neuron.test-utils";
-import { createDummyProposal } from "$tests/utils/e2e.nns-proposals.test-utils";
 import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
@@ -77,10 +76,10 @@ test("Test neuron increase stake", async ({ page, context }) => {
   step("Increase neuron stake with transfer to neuron account");
   const increase2 = 3;
   const neuronAccount = await appPo
-      .getNeuronDetailPo()
-      .getNnsNeuronDetailPo()
-      .getAdvancedSectionPo()
-      .neuronAccount();
+    .getNeuronDetailPo()
+    .getNnsNeuronDetailPo()
+    .getAdvancedSectionPo()
+    .neuronAccount();
 
   await appPo.goBack();
   await appPo.goToAccounts();
@@ -90,7 +89,7 @@ test("Test neuron increase stake", async ({ page, context }) => {
     amount: increase2,
   });
 
-  await appPo.goBack({waitAbsent: false});
+  await appPo.goBack({ waitAbsent: false });
   //await new Promise((r) => setTimeout(r, 5000));
   await appPo.getAccountsPo().waitFor();
   await appPo.goBack();
