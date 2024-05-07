@@ -452,7 +452,7 @@ describe("NnsProposals", () => {
       await selectActionableProposals(po);
       expect(await po.getActionableEmptyBanner().isPresent()).toEqual(true);
       expect(await po.getActionableEmptyBanner().getTitleText()).toEqual(
-        "There are no actionable proposals you can vote on."
+        "You're all caught up."
       );
       expect(await po.getActionableEmptyBanner().getDescriptionText()).toEqual(
         "Check back later!"
