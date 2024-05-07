@@ -1,8 +1,5 @@
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-import type {
-  ProposalsFiltersStore,
-  ProposalsStore,
-} from "$lib/stores/proposals.store";
+import type { ProposalsStore } from "$lib/stores/proposals.store";
 import {
   proposalsFiltersStore,
   proposalsStore,
@@ -31,26 +28,6 @@ export const sortedProposals: Readable<ProposalsStore> = derived(
   })
 );
 
-// HACK:
-//
-// 1. the governance canister does not implement a filter to hide proposals where all neurons have voted or are ineligible.
-// 2. the app does not simply display nothing when a filter is empty but re-filter the results provided by the backend.
-//
-// In addition, we have implemented an "optimistic voting" feature.
-//
-// That's why we hide and re-process these proposals delivered by the backend on the client side.
-const hide = ({
-  proposalInfo,
-  filters,
-}: {
-  proposalInfo: ProposalInfo;
-  filters: ProposalsFiltersStore;
-}): boolean =>
-  hideProposal({
-    filters,
-    proposalInfo,
-  });
-
 export interface UIProposalsStore {
   proposals: (ProposalInfo & { hidden: boolean })[];
   certified: boolean | undefined;
@@ -61,7 +38,7 @@ export const uiProposals: Readable<UIProposalsStore> = derived(
   ([{ proposals, certified }, filters]) => ({
     proposals: proposals.map((proposalInfo) => ({
       ...proposalInfo,
-      hidden: hide({
+      hidden: hideProposal({
         proposalInfo,
         filters,
       }),
