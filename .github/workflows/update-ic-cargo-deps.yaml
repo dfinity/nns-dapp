@@ -4,9 +4,6 @@ on:
   schedule:
     # Check for new IC releases every wednesday at 7:30.
     - cron: '30 7 * * MON'
-  push:
-    branches:
-      - kloet/update-ic-repo
   workflow_dispatch:
 jobs:
   update-ic-cargo-deps:
