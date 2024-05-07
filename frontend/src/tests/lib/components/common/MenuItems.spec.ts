@@ -134,7 +134,7 @@ describe("MenuItems", () => {
           .getProposalsActionableCountBadgePo()
           .getTooltipPo()
           .getTooltipText()
-      ).toEqual("There are a total of 3 proposals you can vote on.");
+      ).toEqual("You can still vote on 3 proposals.");
     });
 
     it("should not display actionable proposal count when no proposal available", async () => {

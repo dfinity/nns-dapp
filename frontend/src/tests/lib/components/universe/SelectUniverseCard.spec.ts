@@ -219,7 +219,7 @@ describe("SelectUniverseCard", () => {
               .getActionableProposalCountBadgePo()
               .getTooltipPo()
               .getTooltipText()
-          ).toBe("There are 2 Tetris proposals you can vote on.");
+          ).toBe("You can still vote on 2 Tetris proposals.");
         });
 
         it("should display actionable proposal count tooltip for NNS", async () => {
@@ -243,7 +243,7 @@ describe("SelectUniverseCard", () => {
               .getActionableProposalCountBadgePo()
               .getTooltipPo()
               .getTooltipText()
-          ).toBe("There are 2 NNS proposals you can vote on.");
+          ).toBe("You can still vote on 2 NNS proposals.");
         });
 
         it("should not display actionable proposal count when the feature flag is disabled", async () => {
