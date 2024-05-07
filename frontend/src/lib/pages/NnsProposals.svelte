@@ -124,7 +124,7 @@
   // goes back into loading state immediately after proposals are loaded.
   // TODO: Fix NnsProposals to load proposals only once and remove the
   // work-around from NnsProposalList.page-object.ts
-  $: $definedNeuronsStore, applyFilter();
+  $: $definedNeuronsStore, $proposalsFiltersStore, applyFilter();
 
   const updateNothingFound = () => {
     // Update the "nothing found" UI information only when the results of the certified query has been received to minimize UI glitches
