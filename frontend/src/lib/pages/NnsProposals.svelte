@@ -22,7 +22,6 @@
     sortedProposals,
     filteredProposals,
   } from "$lib/derived/proposals.derived";
-  import { authStore } from "$lib/stores/auth.store";
   import { listNeurons } from "$lib/services/neurons.services";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { notForceCallStrategy } from "$lib/utils/env.utils";
@@ -140,8 +139,6 @@
       !hasMatchingProposals({
         proposals: $filteredProposals.proposals,
         filters: $proposalsFiltersStore,
-        neurons: $definedNeuronsStore,
-        identity: $authStore.identity,
       });
   };
 

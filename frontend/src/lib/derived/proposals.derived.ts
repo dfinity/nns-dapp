@@ -1,6 +1,4 @@
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-import { authStore } from "$lib/stores/auth.store";
-import { definedNeuronsStore } from "$lib/stores/neurons.store";
 import type {
   ProposalsFiltersStore,
   ProposalsStore,
@@ -10,8 +8,7 @@ import {
   proposalsStore,
 } from "$lib/stores/proposals.store";
 import { hideProposal } from "$lib/utils/proposals.utils";
-import type { Identity } from "@dfinity/agent";
-import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
+import type { ProposalInfo } from "@dfinity/nns";
 import { derived, type Readable } from "svelte/store";
 
 /**
@@ -45,19 +42,13 @@ export const sortedProposals: Readable<ProposalsStore> = derived(
 const hide = ({
   proposalInfo,
   filters,
-  neurons,
-  identity,
 }: {
   proposalInfo: ProposalInfo;
   filters: ProposalsFiltersStore;
-  neurons: NeuronInfo[];
-  identity: Identity | undefined | null;
 }): boolean =>
   hideProposal({
     filters,
     proposalInfo,
-    neurons,
-    identity,
   });
 
 export interface UIProposalsStore {
@@ -66,15 +57,13 @@ export interface UIProposalsStore {
 }
 
 export const uiProposals: Readable<UIProposalsStore> = derived(
-  [sortedProposals, proposalsFiltersStore, definedNeuronsStore, authStore],
-  ([{ proposals, certified }, filters, neurons, { identity }]) => ({
+  [sortedProposals, proposalsFiltersStore],
+  ([{ proposals, certified }, filters]) => ({
     proposals: proposals.map((proposalInfo) => ({
       ...proposalInfo,
       hidden: hide({
         proposalInfo,
         filters,
-        neurons,
-        identity,
       }),
     })),
     certified,

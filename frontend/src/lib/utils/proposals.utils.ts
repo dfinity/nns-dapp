@@ -80,19 +80,10 @@ export const getNnsFunctionKey = (
 export const hideProposal = ({
   proposalInfo,
   filters,
-  neurons,
-  identity,
 }: {
   proposalInfo: ProposalInfo;
   filters: ProposalsFiltersStore;
-  neurons: NeuronInfo[];
-  identity: Identity | undefined | null;
-}): boolean =>
-  !matchFilters({ proposalInfo, filters }) ||
-  (!get(ENABLE_VOTING_INDICATION) &&
-    nonNullish(identity) &&
-    !identity.getPrincipal().isAnonymous() &&
-    isExcludedVotedProposal({ proposalInfo, filters, neurons }));
+}): boolean => !matchFilters({ proposalInfo, filters });
 
 /**
  * Does the proposal returned by the backend really matches the filter selected by the user?
@@ -120,13 +111,9 @@ const matchFilters = ({
 export const hasMatchingProposals = ({
   proposals,
   filters,
-  neurons,
-  identity,
 }: {
   proposals: ProposalInfo[];
   filters: ProposalsFiltersStore;
-  neurons: NeuronInfo[];
-  identity: Identity | undefined | null;
 }): boolean => {
   if (proposals.length === 0) {
     return false;
@@ -134,8 +121,7 @@ export const hasMatchingProposals = ({
 
   return (
     proposals.find(
-      (proposalInfo: ProposalInfo) =>
-        !hideProposal({ proposalInfo, filters, neurons, identity })
+      (proposalInfo: ProposalInfo) => !hideProposal({ proposalInfo, filters })
     ) !== undefined
   );
 };
