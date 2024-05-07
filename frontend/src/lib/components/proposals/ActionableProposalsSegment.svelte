@@ -7,9 +7,9 @@
   const allProposalsSegmentId = Symbol();
 
   let selectedSegmentId: symbol =
-    $actionableProposalsSegmentStore.selected !== "all"
-      ? actionableProposalsSegmentId
-      : allProposalsSegmentId;
+    $actionableProposalsSegmentStore.selected !== "actionable"
+      ? allProposalsSegmentId
+      : actionableProposalsSegmentId;
 
   $: selectedSegmentId,
     (() =>
@@ -22,13 +22,13 @@
 
 <div data-tid="actionable-proposals-segment-component">
   <Segment bind:selectedSegmentId>
-    <SegmentButton testId="all-proposals" segmentId={allProposalsSegmentId}
-      >{$i18n.voting.all_proposals}</SegmentButton
-    >
     <SegmentButton
       testId="actionable-proposals"
       segmentId={actionableProposalsSegmentId}
       >{$i18n.voting.actionable_proposals}</SegmentButton
+    >
+    <SegmentButton testId="all-proposals" segmentId={allProposalsSegmentId}
+      >{$i18n.voting.all_proposals}</SegmentButton
     >
   </Segment>
 </div>

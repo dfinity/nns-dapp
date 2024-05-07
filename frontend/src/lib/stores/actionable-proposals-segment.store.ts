@@ -14,12 +14,12 @@ export interface ActionableProposalsSegmentStore
 
 /**
  * A store that contains selected state of actionable proposals segment.
- * By default, it's "all" and not stored in LocalStorage.
+ * By default, it's "actionable" and not stored in LocalStorage.
  */
 const initActionableProposalsSegmentStore =
   (): ActionableProposalsSegmentStore => {
     const { subscribe, set } = writable<ActionableProposalsSegmentStoreData>({
-      selected: "all",
+      selected: "actionable",
     });
 
     return {
@@ -30,7 +30,7 @@ const initActionableProposalsSegmentStore =
       },
 
       resetForTesting(): void {
-        set({ selected: "all" });
+        set({ selected: "actionable" });
       },
     };
   };
