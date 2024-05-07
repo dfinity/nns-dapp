@@ -1,0 +1,58 @@
+# A GitHub Actions workflow that regularly checks for new `ic` releases and updates the Cargo.toml dependencies.
+name: Update IC Cargo Dependencies
+on:
+  schedule:
+    # Check for new IC releases every wednesday at 7:30.
+    - cron: '30 7 * * MON'
+  workflow_dispatch:
+jobs:
+  update-ic-cargo-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find latest IC release
+        id: latest
+        run: |
+          latest_release=$(curl -sSL https://api.github.com/repos/dfinity/ic/releases/latest | jq .tag_name -r)
+          echo "Latest IC release:  $latest_release"
+          echo "latest_release=$latest_release" >> "$GITHUB_OUTPUT"
+      - name: Update IC Cargo Dependencies
+        run: scripts/scripts/update-ic-cargo-deps --ref "${{ steps.latest.outputs.latest_release }}"
+      - name: Check if there are changes
+        run: if git diff --quiet --exit-code; then echo "updated=0" >> "$GITHUB_OUTPUT"; else echo "updated=1" >> "$GITHUB_OUTPUT"; fi
+      - name: Create Pull Request
+        if: ${{ steps.update.outputs.updated == '1' }}
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GIX_BOT_PAT }}
+          base: main
+          reviewers: mstrasinskis, dskloetd, nns-team
+          # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
+          add-paths: |
+            Cargo.toml
+            rs/
+          commit-message: Update IC Cargo Dependencies
+          committer: GitHub <noreply@github.com>
+          author: gix-bot <gix-bot@users.noreply.github.com>
+          branch: bot-ic-update
+          branch-suffix: timestamp
+          delete-branch: true
+          title: 'Update IC Cargo Dependencies to ${{ steps.latest.outputs.latest_release }}'
+          body: |
+            # Motivation
+            A newer release of the internet computer is available.
+            We want to keep our Cargo dependencies up to date.
+
+            # Changes
+            * Ran `scripts/update-ic-cargo-deps` to update the Cargo.toml dependencies to the latest IC release.
+
+            # Tests
+            * See CI
+          # Since this is a scheduled job, a failure won't be shown on any
+          # PR status. To notify the team, we send a message to our Slack channel on failure.
+      - name: Notify Slack on failure
+        uses: dfinity/internet-identity/.github/actions/slack@release-2023-08-28
+        if: ${{ failure() }}
+        with:
+          WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          MESSAGE: "IC Cargo dependencies update failed for release ${{ steps.latest.outputs.latest_release }}"
