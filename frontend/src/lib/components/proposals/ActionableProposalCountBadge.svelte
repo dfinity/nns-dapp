@@ -55,5 +55,7 @@
     background: var(--primary);
     color: var(--primary-contrast);
     border-radius: var(--padding-8x);
+    min-width: 7px;
+    justify-content: center;
   }
 </style>
