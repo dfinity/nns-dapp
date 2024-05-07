@@ -96,4 +96,20 @@ export class NnsWalletPo extends BasePageObject {
     });
     await modal.waitForAbsent();
   }
+
+  async transferToAddress({
+    destinationAddress,
+    amount,
+  }: {
+    destinationAddress: string;
+    amount: number;
+  }): Promise<void> {
+    await this.clickSend();
+    const modal = this.getIcpTransactionModalPo();
+    await modal.transferToAddress({
+      destinationAddress,
+      amount,
+    });
+    await modal.waitForAbsent();
+  }
 }

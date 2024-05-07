@@ -1,5 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { HashPo } from "./Hash.page-object";
 import { NnsNeuronAgePo } from "./NnsNeuronAge.page-object";
 
 export class NnsNeuronAdvancedSectionPo extends BasePageObject {
@@ -32,7 +33,7 @@ export class NnsNeuronAdvancedSectionPo extends BasePageObject {
   }
 
   neuronAccount(): Promise<string> {
-    return this.getText("neuron-account");
+    return HashPo.under(this.root.byTestId("neuron-account-row")).getFullText();
   }
 
   lastRewardsDistribution(): Promise<string> {
