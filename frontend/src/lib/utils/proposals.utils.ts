@@ -1,6 +1,5 @@
 import { goto } from "$app/navigation";
 import { pageStore } from "$lib/derived/page.derived";
-import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
 import { i18n } from "$lib/stores/i18n";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
 import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
@@ -9,7 +8,6 @@ import type {
   VotingNeuron,
 } from "$lib/types/proposals";
 import { buildProposalUrl } from "$lib/utils/navigation.utils";
-import type { Identity } from "@dfinity/agent";
 import type {
   Ballot,
   ExecuteNnsFunction,
@@ -28,7 +26,7 @@ import {
   Vote,
 } from "@dfinity/nns";
 import type { SnsVote } from "@dfinity/sns";
-import { isNullish, nonNullish } from "@dfinity/utils";
+import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { nowInSeconds } from "./date.utils";
 import { errorToString } from "./error.utils";
@@ -78,8 +76,6 @@ export const getNnsFunctionKey = (
 
 /**
  * Hide proposal that don't match filters
- *
- * And check whether we hide it because the user has already voted on it and doesn't want to see them.
  */
 export const hideProposal = ({
   proposalInfo,
@@ -116,38 +112,6 @@ const matchFilters = ({
     (topics.length === 0 || topics.includes(proposalTopic)) &&
     (status.length === 0 || status.includes(proposalStatus))
   );
-};
-
-/**
- * Hide a proposal if checkbox "excludeVotedProposals" is selected and the proposal's voting period has ended or has no UNSPECIFIED ballots' vote.
- */
-const isExcludedVotedProposal = ({
-  proposalInfo,
-  filters,
-  neurons,
-}: {
-  proposalInfo: ProposalInfo;
-  filters: ProposalsFiltersStore;
-  neurons: NeuronInfo[];
-}): boolean => {
-  const { excludeVotedProposals } = filters;
-
-  const { ballots } = proposalInfo;
-  const belongsToValidNeuron = (id: NeuronId) =>
-    neurons.find(({ neuronId }) => neuronId === id) !== undefined;
-  const containsUnspecifiedBallot = (): boolean =>
-    ballots.find(
-      ({ vote, neuronId }) =>
-        // TODO: This is temporary solution. Will be replaced with L2-507
-        // ignore neuronIds in ballots that are not in the neuron list of the user.
-        // Otherwise it is confusing that there are proposals in the filtered list that can't vote.
-        belongsToValidNeuron(neuronId) && vote === Vote.Unspecified
-    ) !== undefined;
-
-  const isOpen: boolean =
-    isProposalDeadlineInTheFuture(proposalInfo) && containsUnspecifiedBallot();
-
-  return excludeVotedProposals && !isOpen;
 };
 
 /**
