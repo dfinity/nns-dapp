@@ -1,4 +1,3 @@
-canister_global_timer
 canister_heartbeat
 canister_init
 canister_post_upgrade
@@ -9,7 +8,6 @@ canister_query get_exceptional_transactions
 canister_query get_histogram
 canister_query get_stats
 canister_query http_request
-canister_update <ic-cdk internal> timer_executor
 canister_update add_account
 canister_update add_assets_tar_xz
 canister_update add_stable_asset

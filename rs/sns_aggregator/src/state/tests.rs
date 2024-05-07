@@ -77,7 +77,7 @@ fn serializing_and_deserializing_returns_original() {
 #[test]
 #[ignore] // Should be fixed in candid 0.9.x (current 0.8.4; version 0.9.0 is in beta; other dependencies will have to be bumped to match.)
 fn nat_serde_json_works() {
-    let test_vectors = [Nat::from(0)];
+    let test_vectors = [Nat::from(0_u128)];
     for number in test_vectors {
         let serialized = serde_json::to_string(&number).expect("Failed to serialize Nat");
         let parsed: Nat = serde_json::from_str(&serialized).expect("Failed to parse Nat");
@@ -88,7 +88,7 @@ fn nat_serde_json_works() {
 #[test]
 #[ignore] // Should be fixed in candid 0.9.x (current 0.8.4; version 0.9.0 is in beta; other dependencies will have to be bumped to match.)
 fn nat_serde_cbor_works() {
-    let test_vectors = [Nat::from(0)];
+    let test_vectors = [Nat::from(0_u128)];
     for number in test_vectors {
         let serialized = serde_cbor::to_vec(&number).expect("Failed to serialize Nat");
         let parsed: Nat = serde_json::from_slice(&serialized).expect("Failed to parse Nat");
@@ -98,7 +98,7 @@ fn nat_serde_cbor_works() {
 
 #[test]
 fn nat_candid_works() {
-    let test_vectors = [Nat::from(0)];
+    let test_vectors = [Nat::from(0_u128)];
     for number in test_vectors {
         let serialized = {
             let mut ser = candid::ser::IDLBuilder::new();

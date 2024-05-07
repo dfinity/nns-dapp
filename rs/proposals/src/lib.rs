@@ -20,9 +20,9 @@ use crate::def::{
     UpdateSubnetReplicaVersionPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload,
     UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
 };
-use candid::parser::types::{self as parser_types, IDLType, IDLTypes};
-use candid::types::{self as candid_types, Type};
+use candid::types::{self as candid_types, Type, TypeInner};
 use candid::{CandidType, IDLArgs};
+use candid_parser::types::{self as parser_types, IDLType, IDLTypes};
 use ic_base_types::CanisterId;
 use ic_nns_constants::{GOVERNANCE_CANISTER_ID, IDENTITY_CANISTER_ID};
 use idl2json::candid_types::internal_candid_type_to_idl_type;
@@ -128,6 +128,7 @@ pub fn process_proposal_payload(proposal_info: &ProposalInfo) -> Json {
 ///
 /// Note: The priority here is human readable JSON for proposal verification.
 const IDL2JSON_OPTIONS: Idl2JsonOptions = Idl2JsonOptions {
+    compact: false,
     // Express byte arrays as hex, not as arrays of integers.
     bytes_as: Some(BytesFormat::Hex),
     // Truncate long byte arrays but provide a SHA256 hash of the full value, so that the payload can be verified.
@@ -143,64 +144,67 @@ const IDL2JSON_OPTIONS: Idl2JsonOptions = Idl2JsonOptions {
 ///
 /// # Errors
 /// - Does not support: `Type::Empty`, `Type::Knot(_)`, `Type::Unknown`
-fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
-    match ty {
-        Type::Null => Ok(IDLType::PrimT(parser_types::PrimType::Null)),
-        Type::Bool => Ok(IDLType::PrimT(parser_types::PrimType::Bool)),
-        Type::Nat => Ok(IDLType::PrimT(parser_types::PrimType::Nat)),
-        Type::Int => Ok(IDLType::PrimT(parser_types::PrimType::Int)),
-        Type::Nat8 => Ok(IDLType::PrimT(parser_types::PrimType::Nat8)),
-        Type::Nat16 => Ok(IDLType::PrimT(parser_types::PrimType::Nat16)),
-        Type::Nat32 => Ok(IDLType::PrimT(parser_types::PrimType::Nat32)),
-        Type::Nat64 => Ok(IDLType::PrimT(parser_types::PrimType::Nat64)),
-        Type::Int8 => Ok(IDLType::PrimT(parser_types::PrimType::Int8)),
-        Type::Int16 => Ok(IDLType::PrimT(parser_types::PrimType::Int16)),
-        Type::Int32 => Ok(IDLType::PrimT(parser_types::PrimType::Int32)),
-        Type::Int64 => Ok(IDLType::PrimT(parser_types::PrimType::Int64)),
-        Type::Float32 => Ok(IDLType::PrimT(parser_types::PrimType::Float32)),
-        Type::Float64 => Ok(IDLType::PrimT(parser_types::PrimType::Float64)),
-        Type::Text => Ok(IDLType::PrimT(parser_types::PrimType::Text)),
-        Type::Reserved => Ok(IDLType::PrimT(parser_types::PrimType::Reserved)),
-        Type::Opt(ty) => Ok(IDLType::OptT(Box::new(type_2_idltype(*ty)?))),
-        Type::Vec(ty) => Ok(IDLType::VecT(Box::new(type_2_idltype(*ty)?))),
-        Type::Record(fields) => {
+// Type is Rc<TypeInner> and Rc is designed to be passed by value.
+fn type_2_idltype(ty: &Type) -> Result<IDLType, String> {
+    match (**ty).clone() {
+        TypeInner::Null => Ok(IDLType::PrimT(parser_types::PrimType::Null)),
+        TypeInner::Bool => Ok(IDLType::PrimT(parser_types::PrimType::Bool)),
+        TypeInner::Nat => Ok(IDLType::PrimT(parser_types::PrimType::Nat)),
+        TypeInner::Int => Ok(IDLType::PrimT(parser_types::PrimType::Int)),
+        TypeInner::Nat8 => Ok(IDLType::PrimT(parser_types::PrimType::Nat8)),
+        TypeInner::Nat16 => Ok(IDLType::PrimT(parser_types::PrimType::Nat16)),
+        TypeInner::Nat32 => Ok(IDLType::PrimT(parser_types::PrimType::Nat32)),
+        TypeInner::Nat64 => Ok(IDLType::PrimT(parser_types::PrimType::Nat64)),
+        TypeInner::Int8 => Ok(IDLType::PrimT(parser_types::PrimType::Int8)),
+        TypeInner::Int16 => Ok(IDLType::PrimT(parser_types::PrimType::Int16)),
+        TypeInner::Int32 => Ok(IDLType::PrimT(parser_types::PrimType::Int32)),
+        TypeInner::Int64 => Ok(IDLType::PrimT(parser_types::PrimType::Int64)),
+        TypeInner::Float32 => Ok(IDLType::PrimT(parser_types::PrimType::Float32)),
+        TypeInner::Float64 => Ok(IDLType::PrimT(parser_types::PrimType::Float64)),
+        TypeInner::Text => Ok(IDLType::PrimT(parser_types::PrimType::Text)),
+        TypeInner::Reserved => Ok(IDLType::PrimT(parser_types::PrimType::Reserved)),
+        TypeInner::Opt(ty) => Ok(IDLType::OptT(Box::new(type_2_idltype(&ty)?))),
+        TypeInner::Vec(ty) => Ok(IDLType::VecT(Box::new(type_2_idltype(&ty)?))),
+        TypeInner::Record(fields) => {
             let mut idl_fields = Vec::with_capacity(fields.len());
             for field in fields {
                 idl_fields.push(parser_types::TypeField {
-                    label: field.id,
-                    typ: type_2_idltype(field.ty)?,
+                    label: (*field.id).clone(),
+                    typ: type_2_idltype(&field.ty)?,
                 });
             }
             Ok(IDLType::RecordT(idl_fields))
         }
-        Type::Variant(variants) => {
+        TypeInner::Variant(variants) => {
             let mut idl_variants = Vec::with_capacity(variants.len());
             for variant in variants {
                 idl_variants.push(parser_types::TypeField {
-                    label: variant.id,
-                    typ: type_2_idltype(variant.ty)?,
+                    label: (*variant.id).clone(),
+                    typ: type_2_idltype(&variant.ty)?,
                 });
             }
             Ok(IDLType::VariantT(idl_variants))
         }
-        Type::Principal => Ok(IDLType::PrincipalT),
-        Type::Var(name) => Ok(IDLType::VarT(name)),
-        Type::Func(candid_types::Function { modes, args, rets }) => Ok(IDLType::FuncT(parser_types::FuncType {
+        TypeInner::Principal => Ok(IDLType::PrincipalT),
+        TypeInner::Var(name) => Ok(IDLType::VarT(name)),
+        TypeInner::Func(candid_types::Function { modes, args, rets }) => Ok(IDLType::FuncT(parser_types::FuncType {
             modes,
-            args: args.into_iter().map(type_2_idltype).collect::<Result<Vec<_>, _>>()?,
-            rets: rets.into_iter().map(type_2_idltype).collect::<Result<Vec<_>, _>>()?,
+            args: args.iter().map(type_2_idltype).collect::<Result<Vec<_>, _>>()?,
+            rets: rets.iter().map(type_2_idltype).collect::<Result<Vec<_>, _>>()?,
         })),
-        Type::Class(yin, yang) => Ok(IDLType::ClassT(
-            yin.into_iter().map(type_2_idltype).collect::<Result<Vec<_>, _>>()?,
-            Box::new(type_2_idltype(*yang)?),
+        TypeInner::Class(yin, yang) => Ok(IDLType::ClassT(
+            yin.iter().map(type_2_idltype).collect::<Result<Vec<_>, _>>()?,
+            Box::new(type_2_idltype(&yang)?),
         )),
-        Type::Service(bindings) => Ok(IDLType::ServT(
+        TypeInner::Service(bindings) => Ok(IDLType::ServT(
             bindings
                 .into_iter()
-                .map(|(id, typ)| type_2_idltype(typ).map(|typ| parser_types::Binding { id, typ }))
+                .map(|(id, typ)| type_2_idltype(&typ).map(|typ| parser_types::Binding { id, typ }))
                 .collect::<Result<Vec<_>, _>>()?,
         )),
-        Type::Empty | Type::Knot(_) | Type::Unknown => Err(format!("Unsupported type: {ty:.30}")),
+        TypeInner::Empty | TypeInner::Knot(_) | TypeInner::Unknown | TypeInner::Future => {
+            Err(format!("Unsupported type: {ty:.30}"))
+        }
     }
 }
 
@@ -218,7 +222,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         In: CandidType,
     {
         let candid_type = IDLTypes {
-            args: vec![type_2_idltype(In::ty())?],
+            args: vec![type_2_idltype(&In::ty())?],
         };
         let payload_idl = IDLArgs::from_bytes(payload_bytes).map_err(debug)?;
         let json_value = idl_args2json_with_weak_names(&payload_idl, &candid_type, &IDL2JSON_OPTIONS);

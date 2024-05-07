@@ -1027,6 +1027,7 @@ pub(crate) fn setup_test_store() -> AccountsStore {
         let transfer = Burn {
             amount: Tokens::from_e8s(500_000_000),
             from: account_identifier1,
+            spender: None,
         };
         store.maybe_process_transaction(&transfer, Memo(0), 2).unwrap();
     }

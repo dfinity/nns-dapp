@@ -12,7 +12,7 @@ pub mod slow;
 pub mod upstream;
 
 // Re-export commonly used types to ensure that different versions of the same type are not used.
-pub use ic_cdk::export::candid::{CandidType, Deserialize};
+pub use candid::{CandidType, Deserialize};
 pub use ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunctionsResponse};
 pub use ic_sns_ledger::{Tokens as SnsTokens, Value as Icrc1Value};
 pub use ic_sns_root::ListSnsCanistersResponse;

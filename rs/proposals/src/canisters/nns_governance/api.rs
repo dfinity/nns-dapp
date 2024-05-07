@@ -5,8 +5,9 @@
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
 #![allow(dead_code, unused_imports)]
-use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
+use candid::{self, CandidType, Decode, Deserialize, Encode};
 use ic_cdk::api::call::CallResult;
+use ic_principal::Principal;
 use serde::Serialize;
 
 #[derive(Serialize, CandidType, Deserialize)]
