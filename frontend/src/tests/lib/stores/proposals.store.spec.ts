@@ -136,26 +136,6 @@ describe("proposals-store", () => {
       });
     });
 
-    it("should toggle excluded vote proposals back and forth", () => {
-      proposalsFiltersStore.toggleExcludeVotedProposals();
-
-      let filters = get(proposalsFiltersStore);
-      expect(filters).toEqual({
-        ...DEFAULT_PROPOSALS_FILTERS,
-        lastAppliedFilter: "excludeVotedProposals",
-        excludeVotedProposals: true,
-      });
-
-      proposalsFiltersStore.toggleExcludeVotedProposals();
-
-      filters = get(proposalsFiltersStore);
-      expect(filters).toEqual({
-        ...DEFAULT_PROPOSALS_FILTERS,
-        lastAppliedFilter: "excludeVotedProposals",
-        excludeVotedProposals: false,
-      });
-    });
-
     it("should reload filters", () => {
       const filter = [Topic.NetworkEconomics, Topic.SubnetManagement];
       proposalsFiltersStore.filterTopics(filter);

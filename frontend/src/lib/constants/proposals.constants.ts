@@ -14,7 +14,6 @@ export const DEFAULT_PROPOSALS_FILTERS = {
     Topic.SnsAndCommunityFund,
   ],
   status: [ProposalStatus.Open],
-  excludeVotedProposals: false,
   lastAppliedFilter: undefined,
 };
 
