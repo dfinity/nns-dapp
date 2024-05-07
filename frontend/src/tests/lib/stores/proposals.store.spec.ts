@@ -97,8 +97,6 @@ describe("proposals-store", () => {
 
     it("should be initialized with default filters", () => {
       const filters = get(proposalsFiltersStore);
-      // reset because of beforeEach
-      filters.lastAppliedFilter = undefined;
       expect(filters).toEqual(DEFAULT_PROPOSALS_FILTERS);
     });
 
@@ -119,7 +117,6 @@ describe("proposals-store", () => {
       const filters = get(proposalsFiltersStore);
       expect(filters).toEqual({
         ...DEFAULT_PROPOSALS_FILTERS,
-        lastAppliedFilter: "topics",
         topics: filter,
       });
     });
@@ -131,23 +128,8 @@ describe("proposals-store", () => {
       const filters = get(proposalsFiltersStore);
       expect(filters).toEqual({
         ...DEFAULT_PROPOSALS_FILTERS,
-        lastAppliedFilter: "status",
         status: filter,
       });
-    });
-
-    it("should reload filters", () => {
-      const filter = [Topic.NetworkEconomics, Topic.SubnetManagement];
-      proposalsFiltersStore.filterTopics(filter);
-
-      proposalsFiltersStore.reload();
-
-      const filters = get(proposalsFiltersStore);
-      expect(filters).toEqual({
-        ...DEFAULT_PROPOSALS_FILTERS,
-        topics: filter,
-      });
-      expect(filters.lastAppliedFilter).toBeUndefined();
     });
   });
 
