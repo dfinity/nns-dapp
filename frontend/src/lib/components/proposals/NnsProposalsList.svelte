@@ -8,7 +8,6 @@
   import ListLoader from "./ListLoader.svelte";
   import { building } from "$app/environment";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
   import { fade } from "svelte/transition";
   import type { ProposalInfo } from "@dfinity/nns";
@@ -36,7 +35,7 @@
   <NnsProposalsFilters />
 
   {#if display}
-    {#if !$ENABLE_VOTING_INDICATION || $actionableProposalsSegmentStore.selected !== "actionable"}
+    {#if $actionableProposalsSegmentStore.selected !== "actionable"}
       <div in:fade data-tid="all-proposal-list">
         {#if loadingAnimation === "skeleton"}
           <LoadingProposals />

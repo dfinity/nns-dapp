@@ -9,7 +9,6 @@
   import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
   import FiltersWrapper from "./FiltersWrapper.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 
@@ -41,11 +40,9 @@
 
 <TestIdWrapper testId="nns-proposals-filters-component">
   <div class="proposal-filters">
-    {#if $ENABLE_VOTING_INDICATION}
-      <ActionableProposalsSegment />
-    {/if}
+    <ActionableProposalsSegment />
 
-    {#if !$ENABLE_VOTING_INDICATION || $actionableProposalsSegmentStore.selected !== "actionable"}
+    {#if $actionableProposalsSegmentStore.selected !== "actionable"}
       <FiltersWrapper>
         <FiltersButton
           testId="filters-by-topics"
