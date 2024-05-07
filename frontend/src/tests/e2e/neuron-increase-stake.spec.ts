@@ -27,10 +27,6 @@ test("Test neuron increase stake", async ({ page, context }) => {
   expect(neuronIds).toHaveLength(1);
   const neuronId = neuronIds[0];
 
-  step("Go to the neurons tab");
-  await appPo.goToNeurons();
-  await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
-
   step("Open neuron details");
   await appPo.goToNeuronDetails(neuronId);
 
@@ -90,7 +86,6 @@ test("Test neuron increase stake", async ({ page, context }) => {
   });
 
   await appPo.goBack({ waitAbsent: false });
-  //await new Promise((r) => setTimeout(r, 5000));
   await appPo.getAccountsPo().waitFor();
   await appPo.goBack();
   await appPo.goToNeuronDetails(neuronId);
