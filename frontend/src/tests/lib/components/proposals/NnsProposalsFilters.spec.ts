@@ -228,14 +228,6 @@ describe("NnsProposalsFilters", () => {
           ).toEqual(true);
         });
 
-        it("should hide votable proposals checkbox", async () => {
-          const po = await renderComponent();
-
-          expect(
-            await po.getVotableProposalsOnlyCheckboxPo().isPresent()
-          ).toEqual(false);
-        });
-
         it('should "all" be preselected by default', async () => {
           const po = await renderComponent();
           expect(
@@ -300,13 +292,6 @@ describe("NnsProposalsFilters", () => {
         it("should render proposal filters", async () => {
           const po = await renderComponent();
           expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
-        });
-
-        it("should display votable proposals checkbox", async () => {
-          const po = await renderComponent();
-          expect(
-            await po.getVotableProposalsOnlyCheckboxPo().isPresent()
-          ).toEqual(true);
         });
       });
     });
