@@ -40,6 +40,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Added workflow to update IC cargo dependencies.
+
 #### Changed
 
 #### Deprecated
