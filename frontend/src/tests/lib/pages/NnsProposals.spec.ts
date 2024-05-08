@@ -129,7 +129,7 @@ describe("NnsProposals", () => {
         proposalsFiltersStore.filterTopics(DEFAULT_PROPOSALS_FILTERS.topics);
         await runResolvedPromises();
 
-        expect(await po.getListLoaderSpinnerPo().isPresent()).toEqual(true);
+        expect(await po.hasListLoaderSpinner()).toEqual(true);
       });
 
       it("should render proposals", async () => {
@@ -137,13 +137,14 @@ describe("NnsProposals", () => {
         const firstProposal = mockProposals[0] as ProposalInfo;
         const secondProposal = mockProposals[1] as ProposalInfo;
 
-        expect(await po.getProposalCardPos()).toHaveLength(2);
-        expect(
-          await (await po.getProposalCardPos())[0].getProposalId()
-        ).toEqual(`ID: ${firstProposal.id}`);
-        expect(
-          await (await po.getProposalCardPos())[1].getProposalId()
-        ).toEqual(`ID: ${secondProposal.id}`);
+        const cardPos = await po.getProposalCardPos();
+        expect(cardPos).toHaveLength(2);
+        expect(await cardPos[0].getProposalId()).toEqual(
+          `ID: ${firstProposal.id}`
+        );
+        expect(await cardPos[1].getProposalId()).toEqual(
+          `ID: ${secondProposal.id}`
+        );
       });
 
       it("should display actionable mark on all proposals view", async () => {
@@ -270,16 +271,17 @@ describe("NnsProposals", () => {
         mockLoadProposals();
 
         const po = await renderComponent();
+        const cardPos = await po.getProposalCardPos();
         const firstProposal = mockProposals[0] as ProposalInfo;
         const secondProposal = mockProposals[1] as ProposalInfo;
 
-        expect(await po.getProposalCardPos()).toHaveLength(2);
-        expect(
-          await (await po.getProposalCardPos())[0].getProposalId()
-        ).toEqual(`ID: ${firstProposal.id}`);
-        expect(
-          await (await po.getProposalCardPos())[1].getProposalId()
-        ).toEqual(`ID: ${secondProposal.id}`);
+        expect(cardPos).toHaveLength(2);
+        expect(await cardPos[0].getProposalId()).toEqual(
+          `ID: ${firstProposal.id}`
+        );
+        expect(await cardPos[1].getProposalId()).toEqual(
+          `ID: ${secondProposal.id}`
+        );
       });
     });
   });
