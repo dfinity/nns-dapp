@@ -7,7 +7,6 @@
   import LoadingProposals from "../proposals/LoadingProposals.svelte";
   import ListLoader from "../proposals/ListLoader.svelte";
   import SnsProposalsFilters from "./SnsProposalsFilters.svelte";
-  import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { fade } from "svelte/transition";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -28,7 +27,7 @@
 <TestIdWrapper testId="sns-proposal-list-component">
   <SnsProposalsFilters />
 
-  {#if !$ENABLE_VOTING_INDICATION || !actionableSelected}
+  {#if !actionableSelected}
     <div in:fade data-tid="all-proposal-list">
       {#if proposals === undefined}
         <LoadingProposals />
@@ -52,9 +51,7 @@
         </ListLoader>
       {/if}
     </div>
-  {/if}
-
-  {#if $ENABLE_VOTING_INDICATION && actionableSelected}
+  {:else}
     <div in:fade data-tid="actionable-proposal-list">
       {#if !$authSignedInStore}
         <ActionableProposalsSignIn />

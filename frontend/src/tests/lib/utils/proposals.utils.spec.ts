@@ -1,5 +1,4 @@
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
   concatenateUniqueProposals,
@@ -94,10 +93,6 @@ describe("proposals-utils", () => {
     ));
 
   describe("hideProposal", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
-    });
-
     it("hideProposal", () => {
       expect(
         hideProposal({
@@ -223,32 +218,26 @@ describe("proposals-utils", () => {
       ).toBeTruthy();
     });
 
-    describe("with ENABLE_VOTING_INDICATION enabled", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
-      });
+    it("should check for matched filter", () => {
+      expect(
+        hideProposal({
+          proposalInfo: mockProposals[0],
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            topics: [Topic.Kyc],
+          },
+        })
+      ).toBe(true);
 
-      it("should check for matched filter", () => {
-        expect(
-          hideProposal({
-            proposalInfo: mockProposals[0],
-            filters: {
-              ...DEFAULT_PROPOSALS_FILTERS,
-              topics: [Topic.Kyc],
-            },
-          })
-        ).toBe(true);
-
-        expect(
-          hideProposal({
-            proposalInfo: mockProposals[0],
-            filters: {
-              ...DEFAULT_PROPOSALS_FILTERS,
-              topics: [Topic.Governance],
-            },
-          })
-        ).toBe(false);
-      });
+      expect(
+        hideProposal({
+          proposalInfo: mockProposals[0],
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            topics: [Topic.Governance],
+          },
+        })
+      ).toBe(false);
     });
   });
 
@@ -313,35 +302,6 @@ describe("proposals-utils", () => {
           },
         })
       ).toBe(false);
-    });
-
-    // TODO: remove the whole block when ENABLE_VOTING_INDICATION is removed
-    describe("with ENABLE_VOTING_INDICATION disabled", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
-      });
-
-      it("should have matching proposals", () => {
-        expect(
-          hasMatchingProposals({
-            proposals: mockProposals,
-            filters: {
-              ...DEFAULT_PROPOSALS_FILTERS,
-            },
-          })
-        ).toBeTruthy();
-      });
-
-      it("should not have matching proposals when no proposals", () => {
-        expect(
-          hasMatchingProposals({
-            proposals: [],
-            filters: {
-              ...DEFAULT_PROPOSALS_FILTERS,
-            },
-          })
-        ).toBe(false);
-      });
     });
   });
 

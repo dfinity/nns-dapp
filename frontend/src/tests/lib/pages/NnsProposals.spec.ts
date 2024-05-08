@@ -110,8 +110,6 @@ describe("NnsProposals", () => {
       });
 
       it("should render filters", () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
-
         const { getByText } = render(NnsProposals);
 
         expect(getByText("Topics")).toBeInTheDocument();
@@ -298,7 +296,6 @@ describe("NnsProposals", () => {
       authStoreMock.next({
         identity: mockIdentity,
       });
-      overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
     });
 
     it("should render all proposals by default", async () => {
