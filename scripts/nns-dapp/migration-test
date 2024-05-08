@@ -124,7 +124,7 @@ test_upgrade_downgrade() {
   install_wasm1
   populate $((NUM_TOY_ACCOUNTS / 2))
   upgrade_to_wasm2
-  populate $NUM_TOY_ACCOUNTS
+  populate "$NUM_TOY_ACCOUNTS"
   downgrade_to_wasm1
   echo SUCCESS
 }
