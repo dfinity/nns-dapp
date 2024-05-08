@@ -6,7 +6,7 @@ import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
 import { ProposalStatus, Topic } from "@dfinity/nns";
 import { expect, test } from "@playwright/test";
 
-test("Test neuron voting", async ({ page, context }) => {
+test("Test proposals", async ({ page, context }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("Tokens / NNS Dapp");
   await signInWithNewUser({ page, context });
