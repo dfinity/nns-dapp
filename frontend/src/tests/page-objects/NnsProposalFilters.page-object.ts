@@ -11,12 +11,20 @@ export class NnsProposalFiltersPo extends BasePageObject {
     return new NnsProposalFiltersPo(element.byTestId(NnsProposalFiltersPo.TID));
   }
 
+  getFilterByTopicsButtonPo(): PageObjectElement {
+    return this.root.byTestId("filters-by-topics");
+  }
+
+  getFilterByStatusButtonPo(): PageObjectElement {
+    return this.root.byTestId("filters-by-status");
+  }
+
   clickFiltersByTopicsButton(): Promise<void> {
-    return this.click("filters-by-topics");
+    return this.getFilterByTopicsButtonPo().click();
   }
 
   clickFiltersByStatusButton(): Promise<void> {
-    return this.click("filters-by-status");
+    return this.getFilterByStatusButtonPo().click();
   }
 
   getActionableProposalsSegmentPo(): ActionableProposalsSegmentPo {
