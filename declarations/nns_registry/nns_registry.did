@@ -1,4 +1,4 @@
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-24_23-01-storage-layer/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-05-01_23-01-storage-layer/rs/registry/canister/canister/registry.did>
 type AddApiBoundaryNodePayload = record { node_id : principal; version : text };
 type AddFirewallRulesPayload = record {
   expected_hash : text;
@@ -135,6 +135,7 @@ type FirewallRule = record {
 type FirewallRulesScope = variant {
   Node : principal;
   ReplicaNodes;
+  ApiBoundaryNodes;
   Subnet : principal;
   Global;
 };
