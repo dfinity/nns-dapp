@@ -120,97 +120,90 @@ describe("NnsProposalsFilters", () => {
       });
     });
 
-    // TODO(max): to unwrap after feature flag is removed
-    describe("when feature flag true", () => {
-      describe("when signed out", () => {
-        beforeEach(() => {
-          authStoreMock.next({
-            identity: undefined,
-          });
-        });
-
-        it("should render actionable proposals segment", async () => {
-          const po = await renderComponent();
-
-          expect(
-            await po.getActionableProposalsSegmentPo().isPresent()
-          ).toEqual(true);
-        });
-
-        it('should "all" be preselected by default', async () => {
-          const po = await renderComponent();
-          expect(
-            await po.getActionableProposalsSegmentPo().isAllProposalsSelected()
-          ).toEqual(true);
-        });
-
-        it("should switch segment on click", async () => {
-          const po = await renderComponent();
-          const segmentPo = po.getActionableProposalsSegmentPo();
-          expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
-          expect(await segmentPo.isActionableProposalsSelected()).toEqual(
-            false
-          );
-
-          await segmentPo.clickActionableProposals();
-          expect(await segmentPo.isAllProposalsSelected()).toEqual(false);
-          expect(await segmentPo.isActionableProposalsSelected()).toEqual(true);
-
-          await segmentPo.clickAllProposals();
-          expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
-          expect(await segmentPo.isActionableProposalsSelected()).toEqual(
-            false
-          );
-        });
-
-        it("should hide and show proposal filters", async () => {
-          const po = await renderComponent();
-          const segmentPo = po.getActionableProposalsSegmentPo();
-
-          expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
-
-          await segmentPo.clickActionableProposals();
-          expect(await po.getFiltersWrapper().isPresent()).toEqual(false);
-
-          await segmentPo.clickAllProposals();
-          expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
+    describe("when signed out", () => {
+      beforeEach(() => {
+        authStoreMock.next({
+          identity: undefined,
         });
       });
 
-      describe("when signed in", () => {
-        beforeEach(() => {
-          authStoreMock.next({
-            identity: mockIdentity,
-          });
+      it("should render actionable proposals segment", async () => {
+        const po = await renderComponent();
+
+        expect(await po.getActionableProposalsSegmentPo().isPresent()).toEqual(
+          true
+        );
+      });
+
+      it('should "all" be preselected by default', async () => {
+        const po = await renderComponent();
+        expect(
+          await po.getActionableProposalsSegmentPo().isAllProposalsSelected()
+        ).toEqual(true);
+      });
+
+      it("should switch segment on click", async () => {
+        const po = await renderComponent();
+        const segmentPo = po.getActionableProposalsSegmentPo();
+        expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
+        expect(await segmentPo.isActionableProposalsSelected()).toEqual(false);
+
+        await segmentPo.clickActionableProposals();
+        expect(await segmentPo.isAllProposalsSelected()).toEqual(false);
+        expect(await segmentPo.isActionableProposalsSelected()).toEqual(true);
+
+        await segmentPo.clickAllProposals();
+        expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
+        expect(await segmentPo.isActionableProposalsSelected()).toEqual(false);
+      });
+
+      it("should hide and show proposal filters", async () => {
+        const po = await renderComponent();
+        const segmentPo = po.getActionableProposalsSegmentPo();
+
+        expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
+
+        await segmentPo.clickActionableProposals();
+        expect(await po.getFiltersWrapper().isPresent()).toEqual(false);
+
+        await segmentPo.clickAllProposals();
+        expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
+      });
+    });
+
+    describe("when signed in", () => {
+      beforeEach(() => {
+        authStoreMock.next({
+          identity: mockIdentity,
         });
+      });
 
-        it("should render actionable proposals segment", async () => {
-          const po = await renderComponent();
+      it("should render actionable proposals segment", async () => {
+        const po = await renderComponent();
 
-          expect(
-            await po.getActionableProposalsSegmentPo().isPresent()
-          ).toEqual(true);
-        });
+        expect(await po.getActionableProposalsSegmentPo().isPresent()).toEqual(
+          true
+        );
+      });
 
-        it('should "all" be preselected by default', async () => {
-          const po = await renderComponent();
-          expect(
-            await po.getActionableProposalsSegmentPo().isAllProposalsSelected()
-          ).toEqual(true);
-        });
+      it('should "all" be preselected by default', async () => {
+        const po = await renderComponent();
+        expect(
+          await po.getActionableProposalsSegmentPo().isAllProposalsSelected()
+        ).toEqual(true);
+      });
 
-        it("should hide and show proposal filters", async () => {
-          const po = await renderComponent();
-          const segmentPo = po.getActionableProposalsSegmentPo();
+      it("should hide and show proposal filters", async () => {
+        const po = await renderComponent();
+        const segmentPo = po.getActionableProposalsSegmentPo();
 
-          expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
+        expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
 
-          await segmentPo.clickActionableProposals();
-          expect(await po.getFiltersWrapper().isPresent()).toEqual(false);
+        await segmentPo.clickActionableProposals();
+        expect(await po.getFiltersWrapper().isPresent()).toEqual(false);
 
-          await segmentPo.clickAllProposals();
-          expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
-        });
+        await segmentPo.clickAllProposals();
+        expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
       });
     });
   });
