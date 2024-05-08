@@ -218,26 +218,29 @@ describe("proposals-utils", () => {
       ).toBeTruthy();
     });
 
-    it("should check for matched filter", () => {
-      expect(
-        hideProposal({
-          proposalInfo: mockProposals[0],
-          filters: {
-            ...DEFAULT_PROPOSALS_FILTERS,
-            topics: [Topic.Kyc],
-          },
-        })
-      ).toBe(true);
+    // TODO(max): to unwrap after feature flag is removed
+    describe("with ENABLE_VOTING_INDICATION enabled", () => {
+      it("should check for matched filter", () => {
+        expect(
+          hideProposal({
+            proposalInfo: mockProposals[0],
+            filters: {
+              ...DEFAULT_PROPOSALS_FILTERS,
+              topics: [Topic.Kyc],
+            },
+          })
+        ).toBe(true);
 
-      expect(
-        hideProposal({
-          proposalInfo: mockProposals[0],
-          filters: {
-            ...DEFAULT_PROPOSALS_FILTERS,
-            topics: [Topic.Governance],
-          },
-        })
-      ).toBe(false);
+        expect(
+          hideProposal({
+            proposalInfo: mockProposals[0],
+            filters: {
+              ...DEFAULT_PROPOSALS_FILTERS,
+              topics: [Topic.Governance],
+            },
+          })
+        ).toBe(false);
+      });
     });
   });
 

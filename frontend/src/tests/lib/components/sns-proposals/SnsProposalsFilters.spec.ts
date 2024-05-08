@@ -46,51 +46,54 @@ describe("SnsProposalsFilters", () => {
       proposalsFiltersStore.reset();
     });
 
-    it("should render actionable proposals segment", async () => {
-      const po = await renderComponent();
+    // TODO(max): to unwrap after feature flag is removed
+    describe('when "ENABLE_VOTING_INDICATION" feature flag true', () => {
+      it("should render actionable proposals segment", async () => {
+        const po = await renderComponent();
 
-      expect(await po.getActionableProposalsSegmentPo().isPresent()).toEqual(
-        true
-      );
-    });
+        expect(await po.getActionableProposalsSegmentPo().isPresent()).toEqual(
+          true
+        );
+      });
 
-    it('should "all" be preselected by default', async () => {
-      const po = await renderComponent();
-      expect(
-        await po.getActionableProposalsSegmentPo().isAllProposalsSelected()
-      ).toEqual(true);
-    });
+      it('should "all" be preselected by default', async () => {
+        const po = await renderComponent();
+        expect(
+          await po.getActionableProposalsSegmentPo().isAllProposalsSelected()
+        ).toEqual(true);
+      });
 
-    it("should switch proposal lists on segment change", async () => {
-      const po = await renderComponent();
-      const segmentPo = po.getActionableProposalsSegmentPo();
+      it("should switch proposal lists on segment change", async () => {
+        const po = await renderComponent();
+        const segmentPo = po.getActionableProposalsSegmentPo();
 
-      expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
-      expect(await segmentPo.isActionableProposalsSelected()).toEqual(false);
+        expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
+        expect(await segmentPo.isActionableProposalsSelected()).toEqual(false);
 
-      await segmentPo.clickActionableProposals();
-      expect(await segmentPo.isAllProposalsSelected()).toEqual(false);
-      expect(await segmentPo.isActionableProposalsSelected()).toEqual(true);
+        await segmentPo.clickActionableProposals();
+        expect(await segmentPo.isAllProposalsSelected()).toEqual(false);
+        expect(await segmentPo.isActionableProposalsSelected()).toEqual(true);
 
-      await segmentPo.clickAllProposals();
-      expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
-      expect(await segmentPo.isActionableProposalsSelected()).toEqual(false);
-    });
+        await segmentPo.clickAllProposals();
+        expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
+        expect(await segmentPo.isActionableProposalsSelected()).toEqual(false);
+      });
 
-    it("should hide and show proposal filters", async () => {
-      const po = await renderComponent();
-      const segmentPo = po.getActionableProposalsSegmentPo();
+      it("should hide and show proposal filters", async () => {
+        const po = await renderComponent();
+        const segmentPo = po.getActionableProposalsSegmentPo();
 
-      expect(await po.getFilterByTypesButton().isPresent()).toEqual(true);
-      expect(await po.getFilterByStatusButton().isPresent()).toEqual(true);
+        expect(await po.getFilterByTypesButton().isPresent()).toEqual(true);
+        expect(await po.getFilterByStatusButton().isPresent()).toEqual(true);
 
-      await segmentPo.clickActionableProposals();
-      expect(await po.getFilterByTypesButton().isPresent()).toEqual(false);
-      expect(await po.getFilterByStatusButton().isPresent()).toEqual(false);
+        await segmentPo.clickActionableProposals();
+        expect(await po.getFilterByTypesButton().isPresent()).toEqual(false);
+        expect(await po.getFilterByStatusButton().isPresent()).toEqual(false);
 
-      await segmentPo.clickAllProposals();
-      expect(await po.getFilterByTypesButton().isPresent()).toEqual(true);
-      expect(await po.getFilterByStatusButton().isPresent()).toEqual(true);
+        await segmentPo.clickAllProposals();
+        expect(await po.getFilterByTypesButton().isPresent()).toEqual(true);
+        expect(await po.getFilterByStatusButton().isPresent()).toEqual(true);
+      });
     });
   });
 });
