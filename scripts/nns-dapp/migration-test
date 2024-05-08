@@ -95,24 +95,25 @@ install_wasm1() {
 }
 populate() {
   echo "Installing state..."
-  while (("$(dfx canister call nns-dapp get_stats | idl2json | jq -r .accounts_count)" < NUM_TOY_ACCOUNTS)); do
+  target_accounts_count="$1"
+  while (("$(get_accounts_count)" < target_accounts_count)); do
     dfx canister call nns-dapp create_toy_accounts "($TOY_ACCOUNT_CHUNK_SIZE: nat)"
   done
   verify_healthy
-  check_state_size
+  check_state_size "$target_accounts_count"
   test -z "${SCHEMA1:-}" || assert_schema_is "${SCHEMA1}"
 }
 upgrade_to_wasm2() {
   echo "Upgrading to $(working_wasm 2)..."
   upgrade_nnsdapp "$(working_wasm 2)" "$(working_arguments 2)"
-  check_state_size
+  check_state_size "$((NUM_TOY_ACCOUNTS / 2))"
   test -z "${SCHEMA2:-}" || assert_schema_is "${SCHEMA2}"
 }
 downgrade_to_wasm1() {
   echo "Reverting to $(working_wasm 1)..."
   upgrade_nnsdapp "$(working_wasm 1)" "$(working_arguments 1)"
   verify_healthy
-  check_state_size
+  check_state_size "$NUM_TOY_ACCOUNTS"
   test -z "${SCHEMA1:-}" || assert_schema_is "${SCHEMA1}"
 }
 
@@ -121,8 +122,9 @@ test_upgrade_downgrade() {
   get_assets
   find "$WORKDIR"
   install_wasm1
-  populate
+  populate $((NUM_TOY_ACCOUNTS / 2))
   upgrade_to_wasm2
+  populate "$NUM_TOY_ACCOUNTS"
   downgrade_to_wasm1
   echo SUCCESS
 }

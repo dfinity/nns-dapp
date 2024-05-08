@@ -49,9 +49,13 @@ assert_accounts_db_stats_are_not_recomputed_on_upgrade() {
   }
 }
 
+get_accounts_count() {
+  dfx canister call nns-dapp get_stats | idl2json | jq -r .accounts_count
+}
+
 # Gets some sample accounts
 sample_toy_accounts() {
-  seq 0 "$TOY_ACCOUNT_CHUNK_SIZE" "$((NUM_TOY_ACCOUNTS - 1))" | xargs -I{} dfx canister call nns-dapp get_toy_account "({})" --query
+  seq 0 "$TOY_ACCOUNT_CHUNK_SIZE" "$(($(get_accounts_count) - 1))" | xargs -I{} dfx canister call nns-dapp get_toy_account "({})" --query
 }
 
 # Gets data that should be invariant across upgrades
@@ -67,7 +71,7 @@ get_upgrade_invariants() {
 # Verifies that the state is at least as large as expected.
 check_state_size() {
   local invariants accounts_count expected_min_accounts
-  expected_min_accounts="$NUM_TOY_ACCOUNTS"
+  expected_min_accounts="$1"
   invariants="$(get_upgrade_invariant_stats)"
   accounts_count="$(jq -r .accounts_count <<<"$invariants")"
   if ((accounts_count < expected_min_accounts)); then
