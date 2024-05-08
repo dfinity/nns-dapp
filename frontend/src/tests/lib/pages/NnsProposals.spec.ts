@@ -24,10 +24,11 @@ import {
 } from "$tests/mocks/proposals.store.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NnsProposalListPo } from "$tests/page-objects/NnsProposalList.page-object";
+import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import { GovernanceCanister, type ProposalInfo } from "@dfinity/nns";
-import { render, waitFor } from "@testing-library/svelte";
+import { waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
