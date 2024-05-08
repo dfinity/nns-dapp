@@ -17,8 +17,8 @@ export class NnsProposalListPo extends BasePageObject {
     return SkeletonCardPo.under(this.root);
   }
 
-  getListLoaderSpinnerPo(): PageObjectElement {
-    return this.root.byTestId("next-page-sns-proposals-spinner");
+  hasListLoaderSpinner(): Promise<boolean> {
+    return this.isPresent("next-page-sns-proposals-spinner");
   }
 
   getAllProposalList(): PageObjectElement {
