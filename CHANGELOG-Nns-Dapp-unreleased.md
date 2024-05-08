@@ -30,6 +30,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Removed `ENABLE_HIDE_ZERO_BALANCE` feature flag.
 * Proposal filtering by reward status.
 * Intermediate step to remove transactions from accounts stored in nns-dapp.
+* Remove transactions fields from accounts types in nns-dapp.
 
 #### Fixed
 
