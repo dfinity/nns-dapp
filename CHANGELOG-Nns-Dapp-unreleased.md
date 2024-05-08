@@ -44,6 +44,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* In `migration-test`, also populate some accounts between upgrade and downgrade.
+
 #### Deprecated
 
 #### Removed
