@@ -1,13 +1,12 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-17_23-01-hotfix-bitcoin-query-stats/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-05-01_23-01-storage-layer/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
 #![allow(dead_code, unused_imports)]
-use candid::{self, CandidType, Decode, Deserialize, Encode};
+use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
 use ic_cdk::api::call::CallResult;
-use ic_principal::Principal;
 use serde::Serialize;
 
 #[derive(Serialize, CandidType, Deserialize)]
@@ -545,6 +544,20 @@ pub struct GovernanceCachedMetrics {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct RestoreAgingNeuronGroup {
+    pub count: Option<u64>,
+    pub previous_total_stake_e8s: Option<u64>,
+    pub current_total_stake_e8s: Option<u64>,
+    pub group_type: i32,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct RestoreAgingSummary {
+    pub groups: Vec<RestoreAgingNeuronGroup>,
+    pub timestamp_seconds: Option<u64>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct RewardEvent {
     pub rounds_since_last_distribution: Option<u64>,
     pub day_after_genesis: u64,
@@ -808,6 +821,7 @@ pub struct Governance {
     pub node_providers: Vec<NodeProvider>,
     pub cached_daily_maturity_modulation_basis_points: Option<i32>,
     pub economics: Option<NetworkEconomics>,
+    pub restore_aging_summary: Option<RestoreAgingSummary>,
     pub spawning_neurons: Option<bool>,
     pub latest_reward_event: Option<RewardEvent>,
     pub to_claim_transfers: Vec<NeuronStakeTransfer>,
@@ -1160,6 +1174,9 @@ impl Service {
     }
     pub async fn get_proposal_info(&self, arg0: u64) -> CallResult<(Option<ProposalInfo>,)> {
         ic_cdk::call(self.0, "get_proposal_info", (arg0,)).await
+    }
+    pub async fn get_restore_aging_summary(&self) -> CallResult<(RestoreAgingSummary,)> {
+        ic_cdk::call(self.0, "get_restore_aging_summary", ()).await
     }
     pub async fn list_known_neurons(&self) -> CallResult<(ListKnownNeuronsResponse,)> {
         ic_cdk::call(self.0, "list_known_neurons", ()).await
