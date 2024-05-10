@@ -157,6 +157,7 @@ verify_payload() {
   fi
 }
 
+# Find and run declared test functions.
 declare -F | grep test_nns_function_ | sed -e 's/declare -f //' | while read -r test; do
   echo "Running $test"
   $test
