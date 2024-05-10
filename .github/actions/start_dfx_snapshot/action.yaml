@@ -81,6 +81,7 @@ runs:
         dfx start --background &> '${{ inputs.logfile }}'
         popd
         dfx identity use snsdemo8
+        sleep 60
         dfx-sns-demo-healthcheck
     - name: Wait before installing canisters
       if: ${{ inputs.nns_dapp_wasm }} || ${{ inputs.sns_aggregator_wasm }}
