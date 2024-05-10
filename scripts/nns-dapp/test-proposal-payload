@@ -1,0 +1,188 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+
+print_help() {
+  cat <<-EOF
+
+	Create proposals of different types and test that nns-dapp can get their payloads.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=i long=identity desc="Identity to use to create proposals" variable=DFX_IDENTITY default="snsdemo8"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+# Check if a replica is running:
+if ! pgrep replica; then
+  echo "A replica must be running to submit proposals to." >&2
+  exit 1
+fi
+
+IDENTITY_PATH="$HOME/.config/dfx/identity/${DFX_IDENTITY}"
+
+# Check that the identity exists
+if ! [ -d "$IDENTITY_PATH" ]; then
+  echo "Identity $IDENTITY_PATH does not exist" >&2
+  exit 1
+fi
+
+PEM="${IDENTITY_PATH}/identity.pem"
+NNS_URL="http://localhost:$(
+  cd ~
+  dfx info replica-port
+)"
+NEURON_ID="$(cat "${IDENTITY_PATH}/neurons/local")"
+SUMMARY="Testing proposal payloads"
+
+NODE_ID="ynkov-ujzr4-rgyrv-ou4yf-orw6f-rrslu-w65tu-agnfu-xwdrv-xmayj-qae"
+SUBNET_ID="52o7h-ke47f-b5z7i-ah4wu-qhruc-kfdcl-xzzhl-sjmfh-3ryrf-xxtei-bae"
+REPLICA_VERSION_ID="48da85ee6c03e8c15f3e90b21bf9ccae7b753ee6"
+
+test_nns_function_11() {
+  subcommand="propose-to-deploy-guestos-to-all-subnet-nodes"
+
+  PROPOSAL_ID="$(run_ic_admin \
+    "$subcommand" \
+    $SUBNET_ID $REPLICA_VERSION_ID)"
+
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
+  EXPECTED_PAYLOAD="{\"subnet_id\":\"$SUBNET_ID\",\"replica_version_id\":\"$REPLICA_VERSION_ID\"}"
+
+  verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
+}
+
+test_nns_function_38() {
+  subcommand="propose-to-revise-elected-guestos-versions"
+
+  PROPOSAL_ID="$(run_ic_admin \
+    "$subcommand" \
+    --replica-versions-to-unelect $REPLICA_VERSION_ID)"
+
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
+  EXPECTED_PAYLOAD="{\"release_package_urls\":[],\"replica_versions_to_unelect\":[\"$REPLICA_VERSION_ID\"],\"replica_version_to_elect\":null,\"guest_launch_measurement_sha256_hex\":null,\"release_package_sha256_hex\":null}"
+
+  verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
+}
+
+test_nns_function_47() {
+  subcommand="propose-to-deploy-guestos-to-some-api-boundary-nodes"
+
+  PROPOSAL_ID="$(run_ic_admin \
+    "$subcommand" \
+    --nodes $NODE_ID \
+    --version $REPLICA_VERSION_ID)"
+
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
+  EXPECTED_PAYLOAD="{\"version\":\"$REPLICA_VERSION_ID\",\"node_ids\":[\"$NODE_ID\"]}"
+
+  verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
+}
+
+test_nns_function_48() {
+  subcommand="propose-to-deploy-guestos-to-all-unassigned-nodes"
+
+  PROPOSAL_ID="$(run_ic_admin \
+    "$subcommand" \
+    --replica-version-id $REPLICA_VERSION_ID)"
+
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
+  EXPECTED_PAYLOAD="{\"elected_replica_version\":\"$REPLICA_VERSION_ID\"}"
+
+  verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
+}
+
+test_nns_function_49() {
+  subcommand="propose-to-update-ssh-readonly-access-for-all-unassigned-nodes"
+
+  PROPOSAL_ID="$(run_ic_admin "$subcommand")"
+
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
+  EXPECTED_PAYLOAD="{\"ssh_readonly_keys\":[]}"
+
+  verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
+}
+
+test_nns_function_50() {
+  subcommand="propose-to-revise-elected-hostos-versions"
+
+  PROPOSAL_ID="$(run_ic_admin \
+    "$subcommand" \
+    --hostos-versions-to-unelect $REPLICA_VERSION_ID)"
+
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
+  EXPECTED_PAYLOAD="{\"release_package_urls\":[],\"hostos_version_to_elect\":null,\"hostos_versions_to_unelect\":[\"$REPLICA_VERSION_ID\"],\"release_package_sha256_hex\":null}"
+
+  verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
+}
+
+test_nns_function_51() {
+  subcommand="propose-to-deploy-hostos-to-some-nodes"
+
+  PROPOSAL_ID="$(run_ic_admin "$subcommand" $NODE_ID)"
+
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
+  EXPECTED_PAYLOAD="{\"hostos_version_id\":null,\"node_ids\":[\"$NODE_ID\"]}"
+
+  verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
+}
+
+run_ic_admin() {
+  ic-admin \
+    --secret-key-pem "$PEM" \
+    --nns-url "$NNS_URL" \
+    "$@" \
+    --summary "$SUMMARY" \
+    --proposer "$NEURON_ID" |
+    grep -E '^proposal [0-9]+$' | sed 's/proposal //'
+}
+
+get_payload() {
+  proposal_id="$1"
+  dfx canister call nns-dapp get_proposal_payload "($proposal_id : nat64)" | idl2json | jq -r '.Ok'
+}
+
+verify_payload() {
+  subcommand="$1"
+  ACTUAL_PAYLOAD="$2"
+  EXPECTED_PAYLOAD="$3"
+
+  if ! jq --exit-status -n "$ACTUAL_PAYLOAD | contains($EXPECTED_PAYLOAD)"; then
+    {
+      echo "Unexpected payload for $subcommand."
+      echo "EXPECTED_PAYLOAD='$EXPECTED_PAYLOAD'"
+      echo "  ACTUAL_PAYLOAD='$ACTUAL_PAYLOAD'"
+    } >&2
+    exit 1
+  else
+    echo "Payload for $subcommand is as expected."
+  fi
+}
+
+# Find and run declared test functions.
+declare -F | grep test_nns_function_ | sed -e 's/declare -f //' | while read -r test; do
+  echo "Running $test"
+  $test
+done
+
+# Make sure that we add tests for new NNS function.
+FIRST_UNDEFINED_NNS_FUNCTION=52
+
+for i in $(seq 0 5); do
+  undefined_nns_function=$((FIRST_UNDEFINED_NNS_FUNCTION + i))
+
+  ERROR=$(dfx canister call nns-governance manage_neuron "(record {id=opt record{id=$NEURON_ID : nat64}; command=opt variant{MakeProposal=record{url=\"https://forum.dfinity.org/\"; title=opt \"title\"; summary=\"summary\"; action=opt variant{ExecuteNnsFunction=record{nns_function = $undefined_nns_function : int32; payload=blob \"payload\" } } } } })" | idl2json | jq -c '.command[0].Error.error_message')
+
+  if [[ "$ERROR" != "\"Topic not specified."* ]]; then
+    {
+      echo "NNS function $undefined_nns_function is no longer undefined."
+      echo "Please add a test for it."
+    } >&2
+    exit 1
+  else
+    echo "NNS function $undefined_nns_function is still undefined as expected."
+  fi
+done
