@@ -1475,7 +1475,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100003559699047140,
+    "icrc1_total_supply": 100003858928734460,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2728,7 +2728,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1702750500,
-      "lifecycle": 3
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": null
     }
   },
   {
@@ -3351,7 +3352,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100098401238881,
+    "icrc1_total_supply": 100112015910184,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -3736,7 +3737,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1703053800,
-      "lifecycle": 3
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": null
     }
   },
   {
@@ -3757,7 +3759,8 @@
       "dapps": [
         "5ceyv-syaaa-aaaag-qc43q-cai",
         "ok64y-uiaaa-aaaag-qdcbq-cai",
-        "iczfn-iiaaa-aaaan-qltcq-cai"
+        "iczfn-iiaaa-aaaan-qltcq-cai",
+        "7tvr6-fqaaa-aaaan-qmira-cai"
       ],
       "archives": ["h4f44-ayaaa-aaaaq-aacjq-cai"]
     },
@@ -4067,7 +4070,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995777194000,
+    "icrc1_total_supply": 995774796000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4134,7 +4137,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1705968900,
-      "lifecycle": 3
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": 1706404965
     }
   },
   {
@@ -6690,7 +6694,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20009484415156852,
+    "icrc1_total_supply": 20011363646405004,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -8045,7 +8049,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1709121600,
-      "lifecycle": 3
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": 1710417602
     }
   },
   {
@@ -8687,7 +8692,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25045644425535616,
+    "icrc1_total_supply": 25051223024374716,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -9105,7 +9110,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1709380800,
-      "lifecycle": 3
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": 1710590400
     }
   },
   {
@@ -10114,7 +10120,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10000770813530052,
+    "icrc1_total_supply": 10001081017087644,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -10627,7 +10633,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1710681300,
-      "lifecycle": 3
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": 1711890903
     }
   },
   {
@@ -11151,7 +11158,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100405194394332420,
+    "icrc1_total_supply": 100457214978690370,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -11386,7 +11393,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1710936000,
-      "lifecycle": 3
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": 1712145601
     }
   },
   {
@@ -12083,7 +12091,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99878705307028500,
+    "icrc1_total_supply": 99883899837619900,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -12557,7 +12565,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1711203300,
-      "lifecycle": 3
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": 1712412902
     }
   },
   {
@@ -12575,7 +12584,17 @@
       "ledger": "atbfz-diaaa-aaaaq-aacyq-cai",
       "index": "a5dir-yyaaa-aaaaq-aaczq-cai",
       "governance": "auadn-oqaaa-aaaaq-aacya-cai",
-      "dapps": ["udtw4-baaaa-aaaah-abc3q-cai", "pczmq-maaaa-aaaah-abhwa-cai"],
+      "dapps": [
+        "udtw4-baaaa-aaaah-abc3q-cai",
+        "pczmq-maaaa-aaaah-abhwa-cai",
+        "56www-tyaaa-aaaap-aai4q-cai",
+        "6f7n5-4iaaa-aaaah-adwpq-cai",
+        "5lnqo-qyaaa-aaaah-abqdq-cai",
+        "xehin-vyaaa-aaaah-abo4a-cai",
+        "wakh7-myaaa-aaaah-abo2a-cai",
+        "utve7-eaaaa-aaaah-abouq-cai",
+        "qca2u-aaaaa-aaaah-abomq-cai"
+      ],
       "archives": ["bqnm7-xqaaa-aaaaq-aac6a-cai"]
     },
     "meta": {
@@ -13245,7 +13264,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99999989496000000,
+    "icrc1_total_supply": 100000697379757490,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -13714,7 +13733,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1711570500,
-      "lifecycle": 3
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": 1712780100
     }
   },
   {
@@ -14416,7 +14436,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99999999419600000,
+    "icrc1_total_supply": 99999999349800000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14899,7 +14919,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1712577600,
-      "lifecycle": 3
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": 1713787201
     }
   }
 ]

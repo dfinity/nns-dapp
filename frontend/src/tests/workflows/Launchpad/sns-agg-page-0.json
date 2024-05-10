@@ -282,7 +282,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999995260794000,
+    "icrc1_total_supply": 799999994714894000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -345,7 +345,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": null,
-      "lifecycle": 3
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": null
     }
   },
   {
@@ -1070,7 +1071,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10074824335945600,
+    "icrc1_total_supply": 10076244983357120,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1132,7 +1133,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1677826762,
-      "lifecycle": 3
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": null
     }
   },
   {
@@ -1409,7 +1411,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": null,
-      "lifecycle": 4
+      "lifecycle": 4,
+      "decentralization_swap_termination_timestamp_seconds": null
     }
   },
   {
@@ -1723,7 +1726,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 600842291642859,
+    "icrc1_total_supply": 600921211481922,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1787,7 +1790,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1686150901,
-      "lifecycle": 3
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": null
     }
   },
   {
@@ -1824,8 +1828,8 @@
       "functions": [
         {
           "id": 0,
-          "name": "All Topics",
-          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "name": "All non-critical topics",
+          "description": "Catch-all w.r.t to following for non-critical proposals.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1914,6 +1918,22 @@
           "id": 11,
           "name": "Deregister Dapp Canisters",
           "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 12,
+          "name": "Mint SNS Tokens",
+          "description": "Proposal to mint SNS tokens to a specified recipient.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 13,
+          "name": "Manage ledger parameters",
+          "description": "Proposal to change some parameters in the ledger canister.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -2095,7 +2115,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100790337265082610,
+    "icrc1_total_supply": 100791060229844130,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2157,7 +2177,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1687832383,
-      "lifecycle": 3
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": null
     }
   },
   {
@@ -2434,7 +2455,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": null,
-      "lifecycle": 4
+      "lifecycle": 4,
+      "decentralization_swap_termination_timestamp_seconds": null
     }
   },
   {
@@ -2742,7 +2764,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 923236893327636200,
+    "icrc1_total_supply": 923295013718162600,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2804,7 +2826,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1690203041,
-      "lifecycle": 3
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": null
     }
   },
   {
@@ -3117,7 +3140,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1690786778,
-      "lifecycle": 4
+      "lifecycle": 4,
+      "decentralization_swap_termination_timestamp_seconds": null
     }
   },
   {
@@ -3390,7 +3414,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": null,
-      "lifecycle": 4
+      "lifecycle": 4,
+      "decentralization_swap_termination_timestamp_seconds": null
     }
   },
   {
@@ -3675,7 +3700,8 @@
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": null,
-      "lifecycle": 4
+      "lifecycle": 4,
+      "decentralization_swap_termination_timestamp_seconds": null
     }
   }
 ]
