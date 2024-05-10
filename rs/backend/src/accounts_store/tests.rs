@@ -1113,7 +1113,7 @@ fn old_account_can_be_decoded_to_new_account() {
     let expected_new_account = create_new_test_account_for_encoding();
     let old_account = OldAccount::from(expected_new_account.clone());
 
-    let bytes = Candid((old_account,)).into_bytes().unwrap();
+    let bytes = candid::encode_one(old_account).unwrap();
     let decoded_new_account = Account::from_bytes(Cow::Owned(bytes));
 
     assert_eq!(decoded_new_account, expected_new_account);
@@ -1139,7 +1139,7 @@ fn new_account_can_be_decoded_to_old_account() {
     let expected_old_account = OldAccount::from(new_account.clone());
 
     let bytes = new_account.to_bytes();
-    let (decoded_old_account,): (OldAccount,) = Candid::from_bytes(bytes.into_owned()).map(|c| c.0).unwrap();
+    let decoded_old_account: OldAccount = candid::decode_one(&bytes.into_owned()).unwrap();
 
     assert_eq!(decoded_old_account, expected_old_account);
 }
