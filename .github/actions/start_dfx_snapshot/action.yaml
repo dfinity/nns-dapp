@@ -82,7 +82,7 @@ runs:
         popd
         dfx identity use snsdemo8
         if ! dfx-sns-demo-healthcheck; then
-          : Wait to see if the replica becomes healthy.
+          echo "Wait to see if the replica becomes healthy."
           sleep 20
           dfx-sns-demo-healthcheck
         fi
