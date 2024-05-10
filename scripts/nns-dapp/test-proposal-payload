@@ -49,7 +49,7 @@ test_nns_function_11() {
     "$subcommand" \
     $SUBNET_ID $REPLICA_VERSION_ID)"
 
-  ACTUAL_PAYLOAD="$(dfx canister call nns-dapp get_proposal_payload "($PROPOSAL_ID : nat64)" | idl2json | jq -c .)"
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
   EXPECTED_PAYLOAD="{\"Ok\":\"{\\\"subnet_id\\\":\\\"$SUBNET_ID\\\",\\\"replica_version_id\\\":\\\"$REPLICA_VERSION_ID\\\"}\"}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
@@ -62,7 +62,7 @@ test_nns_function_38() {
     "$subcommand" \
     --replica-versions-to-unelect $REPLICA_VERSION_ID)"
 
-  ACTUAL_PAYLOAD="$(dfx canister call nns-dapp get_proposal_payload "($PROPOSAL_ID : nat64)" | idl2json | jq -c .)"
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
   EXPECTED_PAYLOAD="{\"Ok\":\"{\\\"release_package_urls\\\":[],\\\"replica_versions_to_unelect\\\":[\\\"$REPLICA_VERSION_ID\\\"],\\\"replica_version_to_elect\\\":null,\\\"guest_launch_measurement_sha256_hex\\\":null,\\\"release_package_sha256_hex\\\":null}\"}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
@@ -76,7 +76,7 @@ test_nns_function_47() {
     --nodes $NODE_ID \
     --version $REPLICA_VERSION_ID)"
 
-  ACTUAL_PAYLOAD="$(dfx canister call nns-dapp get_proposal_payload "($PROPOSAL_ID : nat64)" | idl2json | jq -c .)"
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
   EXPECTED_PAYLOAD="{\"Ok\":\"{\\\"version\\\":\\\"$REPLICA_VERSION_ID\\\",\\\"node_ids\\\":[\\\"$NODE_ID\\\"]}\"}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
@@ -89,7 +89,7 @@ test_nns_function_48() {
     "$subcommand" \
     --replica-version-id $REPLICA_VERSION_ID)"
 
-  ACTUAL_PAYLOAD="$(dfx canister call nns-dapp get_proposal_payload "($PROPOSAL_ID : nat64)" | idl2json | jq -c .)"
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
   EXPECTED_PAYLOAD="{\"Ok\":\"{\\\"elected_replica_version\\\":\\\"$REPLICA_VERSION_ID\\\"}\"}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
@@ -100,7 +100,7 @@ test_nns_function_49() {
 
   PROPOSAL_ID="$(run_ic_admin "$subcommand")"
 
-  ACTUAL_PAYLOAD="$(dfx canister call nns-dapp get_proposal_payload "($PROPOSAL_ID : nat64)" | idl2json | jq -c .)"
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
   EXPECTED_PAYLOAD="{\"Ok\":\"{\\\"ssh_readonly_keys\\\":[]}\"}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
@@ -113,7 +113,7 @@ test_nns_function_50() {
     "$subcommand" \
     --hostos-versions-to-unelect $REPLICA_VERSION_ID)"
 
-  ACTUAL_PAYLOAD="$(dfx canister call nns-dapp get_proposal_payload "($PROPOSAL_ID : nat64)" | idl2json | jq -c .)"
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
   EXPECTED_PAYLOAD="{\"Ok\":\"{\\\"release_package_urls\\\":[],\\\"hostos_version_to_elect\\\":null,\\\"hostos_versions_to_unelect\\\":[\\\"$REPLICA_VERSION_ID\\\"],\\\"release_package_sha256_hex\\\":null}\"}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
@@ -124,7 +124,7 @@ test_nns_function_51() {
 
   PROPOSAL_ID="$(run_ic_admin "$subcommand" $NODE_ID)"
 
-  ACTUAL_PAYLOAD="$(dfx canister call nns-dapp get_proposal_payload "($PROPOSAL_ID : nat64)" | idl2json | jq -c .)"
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
   EXPECTED_PAYLOAD="{\"Ok\":\"{\\\"hostos_version_id\\\":null,\\\"node_ids\\\":[\\\"$NODE_ID\\\"]}\"}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
@@ -138,6 +138,11 @@ run_ic_admin() {
     --summary "$SUMMARY" \
     --proposer "$NEURON_ID" |
     grep -E '^proposal [0-9]+$' | sed 's/proposal //'
+}
+
+get_payload() {
+  proposal_id="$1"
+  dfx canister call nns-dapp get_proposal_payload "($proposal_id : nat64)" | idl2json | jq -c .
 }
 
 verify_payload() {
