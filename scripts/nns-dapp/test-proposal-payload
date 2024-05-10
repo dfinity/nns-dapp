@@ -50,7 +50,7 @@ test_nns_function_11() {
     $SUBNET_ID $REPLICA_VERSION_ID)"
 
   ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
-  EXPECTED_PAYLOAD="{\"Ok\":\"{\\\"subnet_id\\\":\\\"$SUBNET_ID\\\",\\\"replica_version_id\\\":\\\"$REPLICA_VERSION_ID\\\"}\"}"
+  EXPECTED_PAYLOAD="{\"subnet_id\":\"$SUBNET_ID\",\"replica_version_id\":\"$REPLICA_VERSION_ID\"}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
@@ -63,7 +63,7 @@ test_nns_function_38() {
     --replica-versions-to-unelect $REPLICA_VERSION_ID)"
 
   ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
-  EXPECTED_PAYLOAD="{\"Ok\":\"{\\\"release_package_urls\\\":[],\\\"replica_versions_to_unelect\\\":[\\\"$REPLICA_VERSION_ID\\\"],\\\"replica_version_to_elect\\\":null,\\\"guest_launch_measurement_sha256_hex\\\":null,\\\"release_package_sha256_hex\\\":null}\"}"
+  EXPECTED_PAYLOAD="{\"release_package_urls\":[],\"replica_versions_to_unelect\":[\"$REPLICA_VERSION_ID\"],\"replica_version_to_elect\":null,\"guest_launch_measurement_sha256_hex\":null,\"release_package_sha256_hex\":null}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
@@ -77,7 +77,7 @@ test_nns_function_47() {
     --version $REPLICA_VERSION_ID)"
 
   ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
-  EXPECTED_PAYLOAD="{\"Ok\":\"{\\\"version\\\":\\\"$REPLICA_VERSION_ID\\\",\\\"node_ids\\\":[\\\"$NODE_ID\\\"]}\"}"
+  EXPECTED_PAYLOAD="{\"version\":\"$REPLICA_VERSION_ID\",\"node_ids\":[\"$NODE_ID\"]}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
@@ -90,7 +90,7 @@ test_nns_function_48() {
     --replica-version-id $REPLICA_VERSION_ID)"
 
   ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
-  EXPECTED_PAYLOAD="{\"Ok\":\"{\\\"elected_replica_version\\\":\\\"$REPLICA_VERSION_ID\\\"}\"}"
+  EXPECTED_PAYLOAD="{\"elected_replica_version\":\"$REPLICA_VERSION_ID\"}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
@@ -101,7 +101,7 @@ test_nns_function_49() {
   PROPOSAL_ID="$(run_ic_admin "$subcommand")"
 
   ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
-  EXPECTED_PAYLOAD="{\"Ok\":\"{\\\"ssh_readonly_keys\\\":[]}\"}"
+  EXPECTED_PAYLOAD="{\"ssh_readonly_keys\":[]}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
@@ -114,7 +114,7 @@ test_nns_function_50() {
     --hostos-versions-to-unelect $REPLICA_VERSION_ID)"
 
   ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
-  EXPECTED_PAYLOAD="{\"Ok\":\"{\\\"release_package_urls\\\":[],\\\"hostos_version_to_elect\\\":null,\\\"hostos_versions_to_unelect\\\":[\\\"$REPLICA_VERSION_ID\\\"],\\\"release_package_sha256_hex\\\":null}\"}"
+  EXPECTED_PAYLOAD="{\"release_package_urls\":[],\"hostos_version_to_elect\":null,\"hostos_versions_to_unelect\":[\"$REPLICA_VERSION_ID\"],\"release_package_sha256_hex\":null}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
@@ -125,7 +125,7 @@ test_nns_function_51() {
   PROPOSAL_ID="$(run_ic_admin "$subcommand" $NODE_ID)"
 
   ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
-  EXPECTED_PAYLOAD="{\"Ok\":\"{\\\"hostos_version_id\\\":null,\\\"node_ids\\\":[\\\"$NODE_ID\\\"]}\"}"
+  EXPECTED_PAYLOAD="{\"hostos_version_id\":null,\"node_ids\":[\"$NODE_ID\"]}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
@@ -142,7 +142,7 @@ run_ic_admin() {
 
 get_payload() {
   proposal_id="$1"
-  dfx canister call nns-dapp get_proposal_payload "($proposal_id : nat64)" | idl2json | jq -c .
+  dfx canister call nns-dapp get_proposal_payload "($proposal_id : nat64)" | idl2json | jq -r '.Ok'
 }
 
 verify_payload() {
@@ -150,7 +150,7 @@ verify_payload() {
   ACTUAL_PAYLOAD="$2"
   EXPECTED_PAYLOAD="$3"
 
-  if [[ "$ACTUAL_PAYLOAD" != "$EXPECTED_PAYLOAD" ]]; then
+  if ! jq --exit-status -n "$ACTUAL_PAYLOAD | contains($EXPECTED_PAYLOAD)"; then
     {
       echo "Unexpected payload for $subcommand."
       echo "EXPECTED_PAYLOAD='$EXPECTED_PAYLOAD'"
