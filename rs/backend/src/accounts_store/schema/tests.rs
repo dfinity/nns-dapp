@@ -21,7 +21,6 @@ pub fn toy_account(account_index: u64, num_canisters: u64) -> Account {
     let mut account = Account {
         principal: Some(principal),
         account_identifier,
-        default_account_transactions: Vec::new(),
         sub_accounts: HashMap::new(),
         hardware_wallet_accounts: Vec::new(),
         canisters: Vec::new(),

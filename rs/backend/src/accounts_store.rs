@@ -153,19 +153,58 @@ pub struct Account {
     /// Note: The principal was not stored for early users.  When early users log in, we discover their principal and set this field.
     principal: Option<PrincipalId>,
     account_identifier: AccountIdentifier,
-    default_account_transactions: Vec<TransactionIndex>,
     sub_accounts: HashMap<u8, NamedSubAccount>,
     hardware_wallet_accounts: Vec<NamedHardwareWalletAccount>,
     canisters: Vec<NamedCanister>,
+    // default_account_transactions: Do not reuse this field. There are still accounts in stable memor with this unused field.
 }
 
 impl Storable for Account {
     const BOUND: Bound = Bound::Unbounded;
     fn to_bytes(&self) -> Cow<'_, [u8]> {
-        candid::encode_one(self).expect("Failed to serialize account").into()
+        // Encode Account in a way that can still be restored if we need to
+        // roll back the release.
+        let old_account = OldAccount::from(self.clone());
+        candid::encode_one(old_account)
+            .expect("Failed to serialize account")
+            .into()
+        // TODO(NNS1-2905): Restore direct encoding once OldAccount is deleted.
+        // candid::encode_one(self).expect("Failed to serialize account").into()
     }
     fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
         candid::decode_one(&bytes).expect("Failed to parse account from store.")
+    }
+}
+
+// TODO(NNS1-2905): Delete this after it has been on mainnet for at least 1 release.
+#[derive(CandidType, Deserialize, Debug, Eq, PartialEq, Clone)]
+struct OldAccount {
+    principal: Option<PrincipalId>,
+    account_identifier: AccountIdentifier,
+    default_account_transactions: Vec<TransactionIndex>,
+    sub_accounts: HashMap<u8, OldNamedSubAccount>,
+    hardware_wallet_accounts: Vec<OldNamedHardwareWalletAccount>,
+    canisters: Vec<NamedCanister>,
+}
+
+impl From<Account> for OldAccount {
+    fn from(account: Account) -> Self {
+        OldAccount {
+            principal: account.principal,
+            account_identifier: account.account_identifier,
+            default_account_transactions: Vec::new(),
+            sub_accounts: account
+                .sub_accounts
+                .into_iter()
+                .map(|(id, sa)| (id, sa.into()))
+                .collect(),
+            hardware_wallet_accounts: account
+                .hardware_wallet_accounts
+                .into_iter()
+                .map(NamedHardwareWalletAccount::into)
+                .collect(),
+            canisters: account.canisters,
+        }
     }
 }
 
@@ -173,14 +212,50 @@ impl Storable for Account {
 struct NamedSubAccount {
     name: String,
     account_identifier: AccountIdentifier,
+    // transactions: Do not reuse this field. There are still accounts in stable memory with this unused field.
+}
+
+// TODO(NNS1-2905): Delete this after it has been on mainnet for at least 1 release.
+#[derive(CandidType, Deserialize, Debug, Eq, PartialEq, Clone)]
+struct OldNamedSubAccount {
+    name: String,
+    account_identifier: AccountIdentifier,
     transactions: Vec<TransactionIndex>,
+}
+
+impl From<NamedSubAccount> for OldNamedSubAccount {
+    fn from(sub_account: NamedSubAccount) -> Self {
+        OldNamedSubAccount {
+            name: sub_account.name,
+            account_identifier: sub_account.account_identifier,
+            transactions: Vec::new(),
+        }
+    }
 }
 
 #[derive(CandidType, Deserialize, Debug, Eq, PartialEq, Clone)]
 struct NamedHardwareWalletAccount {
     name: String,
     principal: PrincipalId,
+    // transactions: Do not reuse this field. There are still accounts in stable memor with this unused field.
+}
+
+// TODO(NNS1-2905): Delete this after it has been on mainnet for at least 1 release.
+#[derive(CandidType, Deserialize, Debug, Eq, PartialEq, Clone)]
+struct OldNamedHardwareWalletAccount {
+    name: String,
+    principal: PrincipalId,
     transactions: Vec<TransactionIndex>,
+}
+
+impl From<NamedHardwareWalletAccount> for OldNamedHardwareWalletAccount {
+    fn from(hw_account: NamedHardwareWalletAccount) -> Self {
+        OldNamedHardwareWalletAccount {
+            name: hw_account.name,
+            principal: hw_account.principal,
+            transactions: Vec::new(),
+        }
+    }
 }
 
 #[derive(CandidType, Deserialize, Clone, Debug, PartialEq, Eq)]
@@ -544,7 +619,6 @@ impl AccountsStore {
                 account.hardware_wallet_accounts.push(NamedHardwareWalletAccount {
                     name: request.name,
                     principal: request.principal,
-                    transactions: Vec::new(),
                 });
                 account
                     .hardware_wallet_accounts
@@ -1204,7 +1278,6 @@ impl Account {
         Account {
             principal: Some(principal),
             account_identifier,
-            default_account_transactions: Vec::new(),
             sub_accounts: HashMap::new(),
             hardware_wallet_accounts: Vec::new(),
             canisters: Vec::new(),
@@ -1217,7 +1290,6 @@ impl NamedSubAccount {
         NamedSubAccount {
             name,
             account_identifier,
-            transactions: Vec::new(),
         }
     }
 }

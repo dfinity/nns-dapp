@@ -1067,14 +1067,81 @@ fn accounts_should_implement_storable() {
         ToyAccountSize {
             sub_accounts: 2,
             canisters: 3,
-            default_account_transactions: 4,
-            sub_account_transactions: 5,
             hardware_wallets: 6,
         },
     );
     let bytes = account.to_bytes();
     let parsed = Account::from_bytes(bytes);
     assert_eq!(account, parsed);
+}
+
+fn create_new_test_account_for_encoding() -> Account {
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let account_identifier = AccountIdentifier::from(principal);
+
+    let sub_principal = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
+    let sub_account_identifier = AccountIdentifier::from(sub_principal);
+
+    let hw_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+
+    let new_sub_account = NamedSubAccount {
+        name: "Sub1".to_string(),
+        account_identifier: sub_account_identifier,
+    };
+
+    let mut new_sub_accounts = HashMap::new();
+    new_sub_accounts.insert(1, new_sub_account);
+
+    let new_hw_account = NamedHardwareWalletAccount {
+        name: "HW1".to_string(),
+        principal: hw_principal,
+    };
+
+    Account {
+        principal: Some(principal),
+        account_identifier,
+        sub_accounts: new_sub_accounts,
+        hardware_wallet_accounts: vec![new_hw_account],
+        canisters: vec![],
+    }
+}
+
+#[test]
+fn old_account_can_be_decoded_to_new_account() {
+    // Test that after upgrading to the next release, we are able to decode the
+    // old accounts from stable memory.
+    let expected_new_account = create_new_test_account_for_encoding();
+    let old_account = OldAccount::from(expected_new_account.clone());
+
+    let bytes = candid::encode_one(old_account).unwrap();
+    let decoded_new_account = Account::from_bytes(Cow::Owned(bytes));
+
+    assert_eq!(decoded_new_account, expected_new_account);
+}
+
+#[test]
+fn new_account_can_be_decoded_to_new_account() {
+    // Test that after upgrading to the next release after the next release, we
+    // are able to decode the new accounts that were encoded as old accounts.
+    let expected_new_account = create_new_test_account_for_encoding();
+
+    let bytes = expected_new_account.to_bytes();
+    let decoded_new_account = Account::from_bytes(bytes);
+
+    assert_eq!(decoded_new_account, expected_new_account);
+}
+
+#[test]
+fn new_account_can_be_decoded_to_old_account() {
+    // Test that, in case we need to roll back after the next release, the
+    // previous version is able to decode accounts written by the next version.
+    let new_account = create_new_test_account_for_encoding();
+    let expected_old_account = OldAccount::from(new_account.clone());
+
+    let bytes = new_account.to_bytes();
+    let decoded_old_account: OldAccount = candid::decode_one(&bytes.into_owned()).unwrap();
+
+    assert_eq!(decoded_old_account, expected_old_account);
 }
 
 crate::accounts_store::schema::tests::test_accounts_db!(AccountsStore::default());
