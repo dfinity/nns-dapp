@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Close modal on ESC key press.
 * Add `ENABLE_ACTIONABLE_TAB` feature flag.
+* Support `ApiBoundaryNodes` in `FirewallRulesScope` of `AddFirewallRulesPayload`.
 
 #### Changed
 
