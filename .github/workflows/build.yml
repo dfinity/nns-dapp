@@ -204,6 +204,10 @@ jobs:
         run: |
           go install github.com/ericchiang/pup@latest
           pup --version
+      - name: Install IC tools
+        run: bin/dfx-sns-demo-install
+      - name: Test getting proposal payloads
+        run: scripts/nns-dapp/test-proposal-payloads
       - name: Verify that arguments are set in index.html
         run: |
           for ((i=5; i>0; i--)); do
@@ -413,9 +417,6 @@ jobs:
           fi
       - name: Verify that fast data is updated fast
         run: |
-          # Which tools are we using?
-          type sns
-          type ic-admin
           pushd snsdemo
           # Install tools such as quill
           bin/dfx-sns-demo-install
