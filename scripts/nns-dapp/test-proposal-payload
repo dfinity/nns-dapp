@@ -137,7 +137,7 @@ run_ic_admin() {
     "$@" \
     --summary "$SUMMARY" \
     --proposer "$NEURON_ID" |
-    grep -o -E '^proposal \d+$' | sed 's/proposal //'
+    grep -E '^proposal [0-9]+$' | sed 's/proposal //'
 }
 
 verify_payload() {
