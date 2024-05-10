@@ -55,6 +55,32 @@ test_nns_function_11() {
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
 
+test_nns_function_25() {
+  subcommand="propose-to-add-firewall-rules"
+
+  rules_json='[{
+    "ipv4_prefixes": [],
+    "ipv6_prefixes": [ "fd1a:f125:8573::/64" ],
+    "ports": [ 1234 ],
+    "action": 1,
+    "comment": "This is a test rule"
+  }]'
+  expected_hash="8CD8BDC28D2C572CB26391C60B83CD40FF15DA206FF2A893C7233E54E7055ABE"
+
+  PROPOSAL_ID="$(run_ic_admin \
+    "$subcommand" \
+    --proposal-title "Proposal to modify firewall rules" \
+    api_boundary_nodes \
+    <(echo $rules_json) \
+    0 \
+    "$expected_hash")"
+
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
+  EXPECTED_PAYLOAD="{\"expected_hash\":\"$expected_hash\",\"scope\":\"ApiBoundaryNodes\",\"positions\":[0],\"rules\":$rules_json}"
+
+  verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
+}
+
 test_nns_function_38() {
   subcommand="propose-to-revise-elected-guestos-versions"
 
