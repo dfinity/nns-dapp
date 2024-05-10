@@ -210,7 +210,7 @@ jobs:
           bin/dfx-sns-demo-install
           popd
       - name: Test getting proposal payloads
-        run: scripts/nns-dapp/test-proposal-payloads
+        run: scripts/nns-dapp/test-proposal-payload
       - name: Verify that arguments are set in index.html
         run: |
           for ((i=5; i>0; i--)); do

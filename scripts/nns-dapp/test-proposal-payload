@@ -55,7 +55,7 @@ test_nns_function_11() {
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
 
-te_st_nns_function_38() {
+test_nns_function_38() {
   subcommand="propose-to-revise-elected-guestos-versions"
 
   PROPOSAL_ID="$(run_ic_admin \
@@ -68,7 +68,7 @@ te_st_nns_function_38() {
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
 
-te__st_nns_function_47() {
+test_nns_function_47() {
   subcommand="propose-to-deploy-guestos-to-some-api-boundary-nodes"
 
   PROPOSAL_ID="$(run_ic_admin \
@@ -82,7 +82,7 @@ te__st_nns_function_47() {
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
 
-te___st_nns_function_48() {
+test_nns_function_48() {
   subcommand="propose-to-deploy-guestos-to-all-unassigned-nodes"
 
   PROPOSAL_ID="$(run_ic_admin \
@@ -95,7 +95,7 @@ te___st_nns_function_48() {
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
 
-te___st_nns_function_49() {
+test_nns_function_49() {
   subcommand="propose-to-update-ssh-readonly-access-for-all-unassigned-nodes"
 
   PROPOSAL_ID="$(run_ic_admin "$subcommand")"
@@ -106,7 +106,7 @@ te___st_nns_function_49() {
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
 
-te__st_nns_function_50() {
+test_nns_function_50() {
   subcommand="propose-to-revise-elected-hostos-versions"
 
   PROPOSAL_ID="$(run_ic_admin \
@@ -119,7 +119,7 @@ te__st_nns_function_50() {
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
 
-te_st_nns_function_51() {
+test_nns_function_51() {
   subcommand="propose-to-deploy-hostos-to-some-nodes"
 
   PROPOSAL_ID="$(run_ic_admin "$subcommand" $NODE_ID)"
@@ -162,6 +162,7 @@ declare -F | grep test_nns_function_ | sed -e 's/declare -f //' | while read -r 
   $test
 done
 
+# Make sure that we add tests for new NNS function.
 FIRST_UNDEFINED_NNS_FUNCTION=52
 
 for i in $(seq 0 5); do
