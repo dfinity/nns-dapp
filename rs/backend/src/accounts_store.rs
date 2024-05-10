@@ -212,7 +212,7 @@ impl From<Account> for OldAccount {
 struct NamedSubAccount {
     name: String,
     account_identifier: AccountIdentifier,
-    // transactions: Do not reuse this field. There are still accounts in stable memor with this unused field.
+    // transactions: Do not reuse this field. There are still accounts in stable memory with this unused field.
 }
 
 // TODO(NNS1-2905): Delete this after it has been on mainnet for at least 1 release.
