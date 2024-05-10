@@ -205,7 +205,10 @@ jobs:
           go install github.com/ericchiang/pup@latest
           pup --version
       - name: Install IC tools
-        run: bin/dfx-sns-demo-install
+        run: |
+          pushd snsdemo
+          bin/dfx-sns-demo-install
+          popd
       - name: Test getting proposal payloads
         run: scripts/nns-dapp/test-proposal-payloads
       - name: Verify that arguments are set in index.html
