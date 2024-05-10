@@ -46,6 +46,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * In `migration-test`, also populate some accounts between upgrade and downgrade.
+* Update `dfx` version from 0.15.3 to 0.19.0.
 
 #### Deprecated
 
