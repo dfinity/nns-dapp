@@ -67,11 +67,14 @@ test_nns_function_25() {
   }]'
   expected_hash="8CD8BDC28D2C572CB26391C60B83CD40FF15DA206FF2A893C7233E54E7055ABE"
 
+  rules_json_file="$(mktemp rules.json.XXXXXX)"
+  echo "$rules_json" >"$rules_json_file"
+
   PROPOSAL_ID="$(run_ic_admin \
     "$subcommand" \
     --proposal-title "Proposal to modify firewall rules" \
     api_boundary_nodes \
-    <(echo $rules_json) \
+    "$rules_json_file" \
     0 \
     "$expected_hash")"
 
