@@ -192,7 +192,8 @@ pub struct UpdateIcpXdrConversionRatePayload {
 
 /// NNS function 11 - `UpdateSubnetReplicaVersion`
 /// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_subnet_replica.rs#L58>
-pub type DeployGuestosToAllSubnetNodesPayload = crate::canisters::nns_registry::api::DeployGuestosToAllSubnetNodesPayload;
+pub type DeployGuestosToAllSubnetNodesPayload =
+    crate::canisters::nns_registry::api::DeployGuestosToAllSubnetNodesPayload;
 
 /// NNS function 13 - `RemoveNodesFromSubnet`
 /// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_remove_nodes_from_subnet.rs#L57>
