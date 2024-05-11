@@ -78,6 +78,8 @@ test_nns_function_25() {
     0 \
     "$expected_hash")"
 
+  rm "$rules_json_file"
+
   ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
   EXPECTED_PAYLOAD="{\"expected_hash\":\"$expected_hash\",\"scope\":\"ApiBoundaryNodes\",\"positions\":[0],\"rules\":$rules_json}"
 
