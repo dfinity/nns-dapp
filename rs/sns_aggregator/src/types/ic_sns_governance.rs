@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-24_23-01-storage-layer/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-05-01_23-01-storage-layer/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -228,6 +228,7 @@ pub struct ManageDappCanisterSettings {
     pub canister_ids: Vec<Principal>,
     pub reserved_cycles_limit: Option<u64>,
     pub log_visibility: Option<i32>,
+    pub wasm_memory_limit: Option<u64>,
     pub memory_allocation: Option<u64>,
     pub compute_allocation: Option<u64>,
 }
@@ -284,7 +285,10 @@ pub struct ExecuteGenericNervousSystemFunction {
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ManageLedgerParameters {
+    pub token_symbol: Option<String>,
     pub transfer_fee: Option<u64>,
+    pub token_logo: Option<String>,
+    pub token_name: Option<String>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
