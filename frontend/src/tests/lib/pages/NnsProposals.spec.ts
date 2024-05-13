@@ -17,7 +17,6 @@ import {
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
-import en from "$tests/mocks/i18n.mock";
 import {
   mockEmptyProposalsStoreSubscribe,
   mockProposals,
@@ -25,14 +24,11 @@ import {
 } from "$tests/mocks/proposals.store.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NnsProposalListPo } from "$tests/page-objects/NnsProposalList.page-object";
+import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
-import {
-  GovernanceCanister,
-  type Proposal,
-  type ProposalInfo,
-} from "@dfinity/nns";
-import { render, waitFor } from "@testing-library/svelte";
+import { GovernanceCanister, type ProposalInfo } from "@dfinity/nns";
+import { waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
@@ -44,12 +40,13 @@ describe("NnsProposals", () => {
     await runResolvedPromises();
     return NnsProposalListPo.under(new JestPageObjectElement(container));
   };
-  const nothingFound = (
-    container: HTMLElement
-  ): HTMLParagraphElement | undefined =>
-    Array.from(container.querySelectorAll("p")).filter(
-      (p) => p.textContent === en.voting.nothing_found
-    )[0];
+  const selectActionableProposals = async (po: NnsProposalListPo) => {
+    await po
+      .getNnsProposalFiltersPo()
+      .getActionableProposalsSegmentPo()
+      .clickActionableProposals();
+    await runResolvedPromises();
+  };
 
   beforeEach(() => {
     vi.restoreAllMocks();
@@ -78,7 +75,7 @@ describe("NnsProposals", () => {
       });
 
       it("should load neurons", async () => {
-        render(NnsProposals);
+        await renderComponent();
 
         await waitFor(() =>
           expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
@@ -109,34 +106,45 @@ describe("NnsProposals", () => {
         vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
       });
 
-      it("should render filters", () => {
-        const { getByText } = render(NnsProposals);
+      it("should render filters", async () => {
+        const po = await renderComponent();
 
-        expect(getByText("Topics")).toBeInTheDocument();
-        expect(getByText("Proposal Status")).toBeInTheDocument();
+        expect(
+          await po
+            .getNnsProposalFiltersPo()
+            .getFilterByTopicsButtonPo()
+            .isPresent()
+        ).toBe(true);
+        expect(
+          await po
+            .getNnsProposalFiltersPo()
+            .getFilterByStatusButtonPo()
+            .isPresent()
+        ).toBe(true);
       });
 
       it("should render a spinner while searching proposals", async () => {
-        const { getByTestId } = render(NnsProposals);
+        const po = await renderComponent();
 
         proposalsFiltersStore.filterTopics(DEFAULT_PROPOSALS_FILTERS.topics);
+        await runResolvedPromises();
 
-        await waitFor(() =>
-          expect(getByTestId("next-page-sns-proposals-spinner")).not.toBeNull()
-        );
+        expect(await po.hasListLoaderSpinner()).toEqual(true);
       });
 
-      it("should render proposals", () => {
-        const { getByText } = render(NnsProposals);
-
+      it("should render proposals", async () => {
+        const po = await renderComponent();
         const firstProposal = mockProposals[0] as ProposalInfo;
         const secondProposal = mockProposals[1] as ProposalInfo;
-        expect(
-          getByText((firstProposal.proposal as Proposal).title as string)
-        ).toBeInTheDocument();
-        expect(
-          getByText((secondProposal.proposal as Proposal).title as string)
-        ).toBeInTheDocument();
+
+        const cardPos = await po.getProposalCardPos();
+        expect(cardPos).toHaveLength(2);
+        expect(await cardPos[0].getProposalId()).toEqual(
+          `ID: ${firstProposal.id}`
+        );
+        expect(await cardPos[1].getProposalId()).toEqual(
+          `ID: ${secondProposal.id}`
+        );
       });
 
       it("should display actionable mark on all proposals view", async () => {
@@ -182,12 +190,10 @@ describe("NnsProposals", () => {
         );
       });
 
-      it("should not render not found text on init", () => {
-        const { container } = render(NnsProposals);
+      it("should not render not found text on init", async () => {
+        const po = await renderComponent();
 
-        const p: HTMLParagraphElement | undefined = nothingFound(container);
-
-        expect(p).toBeUndefined();
+        expect(await po.getNoProposalsPo().isPresent()).toBe(false);
       });
     });
 
@@ -208,12 +214,9 @@ describe("NnsProposals", () => {
           mockEmptyProposalsStoreSubscribe
         );
 
-        const { container } = render(NnsProposals);
+        const po = await renderComponent();
 
-        await waitFor(() => {
-          const p: HTMLParagraphElement | undefined = nothingFound(container);
-          expect(p).not.toBeUndefined();
-        });
+        expect(await po.getNoProposalsPo().isPresent()).toBe(true);
       });
     });
   });
@@ -241,7 +244,7 @@ describe("NnsProposals", () => {
       });
 
       it("should NOT load neurons", async () => {
-        render(NnsProposals);
+        await renderComponent();
 
         await waitFor(() =>
           expect(governanceApi.queryNeurons).not.toHaveBeenCalled()
@@ -264,32 +267,26 @@ describe("NnsProposals", () => {
         );
       });
 
-      it("should render proposals", () => {
+      it("should render proposals", async () => {
         mockLoadProposals();
 
-        const { getByText } = render(NnsProposals);
-
+        const po = await renderComponent();
+        const cardPos = await po.getProposalCardPos();
         const firstProposal = mockProposals[0] as ProposalInfo;
         const secondProposal = mockProposals[1] as ProposalInfo;
-        expect(
-          getByText((firstProposal.proposal as Proposal).title as string)
-        ).toBeInTheDocument();
-        expect(
-          getByText((secondProposal.proposal as Proposal).title as string)
-        ).toBeInTheDocument();
+
+        expect(cardPos).toHaveLength(2);
+        expect(await cardPos[0].getProposalId()).toEqual(
+          `ID: ${firstProposal.id}`
+        );
+        expect(await cardPos[1].getProposalId()).toEqual(
+          `ID: ${secondProposal.id}`
+        );
       });
     });
   });
 
   describe("actionable proposals segment", () => {
-    const selectActionableProposals = async (po: NnsProposalListPo) => {
-      await po
-        .getNnsProposalFiltersPo()
-        .getActionableProposalsSegmentPo()
-        .clickActionableProposals();
-      await runResolvedPromises();
-    };
-
     beforeEach(() => {
       actionableNnsProposalsStore.reset();
 

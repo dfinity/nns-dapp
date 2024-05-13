@@ -1,4 +1,5 @@
 import { NnsProposalFiltersPo } from "$tests/page-objects/NnsProposalFilters.page-object";
+import { NoProposalsPo } from "$tests/page-objects/NoProposals.page-object";
 import { PageBannerPo } from "$tests/page-objects/PageBanner.page-object";
 import { ProposalCardPo } from "$tests/page-objects/ProposalCard.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
@@ -14,6 +15,10 @@ export class NnsProposalListPo extends BasePageObject {
 
   getSkeletonCardPo(): SkeletonCardPo {
     return SkeletonCardPo.under(this.root);
+  }
+
+  hasListLoaderSpinner(): Promise<boolean> {
+    return this.isPresent("next-page-sns-proposals-spinner");
   }
 
   getAllProposalList(): PageObjectElement {
@@ -48,6 +53,10 @@ export class NnsProposalListPo extends BasePageObject {
       element: this.root,
       testId: "actionable-proposals-empty",
     });
+  }
+
+  getNoProposalsPo(): NoProposalsPo {
+    return NoProposalsPo.under(this.root);
   }
 
   hasSpinner(): Promise<boolean> {

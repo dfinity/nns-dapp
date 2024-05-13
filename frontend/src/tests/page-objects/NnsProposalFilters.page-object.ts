@@ -1,4 +1,5 @@
 import { ActionableProposalsSegmentPo } from "$tests/page-objects/ActionableProposalsSegment.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { FilterModalPo } from "$tests/page-objects/FilterModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -11,12 +12,20 @@ export class NnsProposalFiltersPo extends BasePageObject {
     return new NnsProposalFiltersPo(element.byTestId(NnsProposalFiltersPo.TID));
   }
 
+  getFilterByTopicsButtonPo(): ButtonPo {
+    return this.getButton("filters-by-topics");
+  }
+
+  getFilterByStatusButtonPo(): ButtonPo {
+    return this.getButton("filters-by-status");
+  }
+
   clickFiltersByTopicsButton(): Promise<void> {
-    return this.click("filters-by-topics");
+    return this.getFilterByTopicsButtonPo().click();
   }
 
   clickFiltersByStatusButton(): Promise<void> {
-    return this.click("filters-by-status");
+    return this.getFilterByStatusButtonPo().click();
   }
 
   getActionableProposalsSegmentPo(): ActionableProposalsSegmentPo {
