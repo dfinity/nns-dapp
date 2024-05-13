@@ -1,4 +1,5 @@
 import SnsProposalsFilters from "$lib/components/sns-proposals/SnsProposalsFilters.svelte";
+import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import { SnsProposalFiltersPo } from "$tests/page-objects/SnsProposalFilters.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -14,10 +15,12 @@ describe("SnsProposalsFilters", () => {
 
   beforeEach(() => {
     proposalsFiltersStore.reset();
+    actionableProposalsSegmentStore.resetForTesting();
   });
 
   it("should render filter buttons", async () => {
     const po = await renderComponent();
+    await po.getActionableProposalsSegmentPo().clickAllProposals();
 
     expect(await po.getFilterByTypesButton().isPresent()).toBe(true);
     expect(await po.getFilterByStatusButton().isPresent()).toBe(true);
@@ -25,6 +28,7 @@ describe("SnsProposalsFilters", () => {
 
   it("should open filter modal when type filter is clicked", async () => {
     const po = await renderComponent();
+    await po.getActionableProposalsSegmentPo().clickAllProposals();
     expect(await po.getFilterModalPo().isPresent()).toBe(false);
 
     await po.clickFiltersByTypesButton();
@@ -34,6 +38,7 @@ describe("SnsProposalsFilters", () => {
 
   it("should open filter modal when status filter is clicked", async () => {
     const po = await renderComponent();
+    await po.getActionableProposalsSegmentPo().clickAllProposals();
     expect(await po.getFilterModalPo().isPresent()).toBe(false);
 
     await po.clickFiltersByStatusButton();
@@ -54,16 +59,19 @@ describe("SnsProposalsFilters", () => {
       );
     });
 
-    it('should "all" be preselected by default', async () => {
+    it('should "actionable" be preselected by default', async () => {
       const po = await renderComponent();
       expect(
-        await po.getActionableProposalsSegmentPo().isAllProposalsSelected()
+        await po
+          .getActionableProposalsSegmentPo()
+          .isActionableProposalsSelected()
       ).toEqual(true);
     });
 
     it("should switch proposal lists on segment change", async () => {
       const po = await renderComponent();
       const segmentPo = po.getActionableProposalsSegmentPo();
+      await segmentPo.clickAllProposals();
 
       expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
       expect(await segmentPo.isActionableProposalsSelected()).toEqual(false);
@@ -81,6 +89,7 @@ describe("SnsProposalsFilters", () => {
       const po = await renderComponent();
       const segmentPo = po.getActionableProposalsSegmentPo();
 
+      await segmentPo.clickAllProposals();
       expect(await po.getFilterByTypesButton().isPresent()).toEqual(true);
       expect(await po.getFilterByStatusButton().isPresent()).toEqual(true);
 
