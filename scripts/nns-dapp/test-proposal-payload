@@ -42,6 +42,7 @@ NODE_ID="ynkov-ujzr4-rgyrv-ou4yf-orw6f-rrslu-w65tu-agnfu-xwdrv-xmayj-qae"
 NODE_ID_2="7e6za-cdhql-kvxja-dfse5-jrme3-rwmau-6foiv-fxnwt-h7qos-wqryb-pae"
 SUBNET_ID="52o7h-ke47f-b5z7i-ah4wu-qhruc-kfdcl-xzzhl-sjmfh-3ryrf-xxtei-bae"
 REPLICA_VERSION_ID="48da85ee6c03e8c15f3e90b21bf9ccae7b753ee6"
+USER_PRINCIPAL="fw6gp-yqo6v-iuhjd-pv26u-cn4qv-bzewd-ubz6s-fcssu-pfpct-xrda2-uqe"
 
 test_nns_function_11() {
   subcommand="propose-to-deploy-guestos-to-all-subnet-nodes"
@@ -173,6 +174,20 @@ test_nns_function_51() {
 
   ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
   EXPECTED_PAYLOAD="{\"hostos_version_id\":null,\"node_ids\":[\"$NODE_ID\"]}"
+
+  verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
+}
+
+test_nns_function_52() {
+  subcommand="propose-to-rent-subnet"
+
+  PROPOSAL_ID="$(run_ic_admin \
+    "$subcommand" \
+     --rental-condition-id App13CH \
+     --user "$USER_PRINCIPAL")"
+
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
+  EXPECTED_PAYLOAD="{\"user\":\"$USER_PRINCIPAL\",\"rental_condition_id\":\"App13CH\"}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
