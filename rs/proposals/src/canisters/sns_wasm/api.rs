@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_wasm --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-05-01_23-01-storage-layer/rs/nns/sns-wasm/canister/sns-wasm.did>
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-05-09_23-02-storage-layer/rs/nns/sns-wasm/canister/sns-wasm.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -27,6 +27,7 @@ pub struct SnsWasmCanisterInitPayload {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct SnsWasm {
     pub wasm: serde_bytes::ByteBuf,
+    pub proposal_id: Option<u64>,
     pub canister_type: i32,
 }
 
