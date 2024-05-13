@@ -368,15 +368,14 @@
     "topics": "Topics",
     "types": "Types",
     "status": "Proposal Status",
-    "hide_unavailable_proposals": "Show only proposals you can still vote for",
     "check_all": "Select All",
     "uncheck_all": "Clear",
     "nothing_found": "No proposals found for the filters.",
     "all_proposals": "All Proposals",
     "actionable_proposals": "Actionable Proposals",
-    "nns_actionable_proposal_tooltip": "There are $count NNS proposals you can vote on.",
-    "sns_actionable_proposal_tooltip": "There are $count $snsName proposals you can vote on.",
-    "total_actionable_proposal_tooltip": "There are a total of $count proposals you can vote on.",
+    "nns_actionable_proposal_tooltip": "You can still vote on $count NNS proposals.",
+    "sns_actionable_proposal_tooltip": "You can still vote on $count $snsName proposals.",
+    "total_actionable_proposal_tooltip": "You can still vote on $count proposals.",
     "is_actionable_status_badge_tooltip": "You can still vote on this proposal."
   },
   "actionable_proposals_sign_in": {
@@ -384,7 +383,7 @@
     "text": "Sign in to see actionable proposals"
   },
   "actionable_proposals_empty": {
-    "title": "There are no actionable proposals you can vote on.",
+    "title": "You're all caught up.",
     "text": "Check back later!"
   },
   "actionable_proposals_not_supported": {

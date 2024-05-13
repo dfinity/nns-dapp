@@ -25,11 +25,6 @@ pub struct ToyAccountSize {
     pub sub_accounts: usize,
     /// The number of canisters
     pub canisters: usize,
-    /// The number of transaction indices for the main account; transactions are stored outside the
-    /// account.
-    pub default_account_transactions: usize,
-    /// The number of transactions per sub-account.
-    pub sub_account_transactions: usize,
     /// The number of hardware wallets.
     pub hardware_wallets: usize,
 }
@@ -38,25 +33,10 @@ impl From<&Account> for ToyAccountSize {
     fn from(account: &Account) -> Self {
         let sub_accounts = account.sub_accounts.len();
         let canisters = account.canisters.len();
-        let default_account_transactions = account.default_account_transactions.len();
-        // Average number of transactions per sub-account, rounded down.  When creating a toy
-        // account, all sub-accounts have the same number of transactions however that can change.
-        let total_sub_account_transactions: usize = account
-            .sub_accounts
-            .values()
-            .map(|sub_account| sub_account.transactions.len())
-            .sum();
-        let sub_account_transactions: usize = if sub_accounts == 0 {
-            0
-        } else {
-            total_sub_account_transactions / sub_accounts
-        };
         let hardware_wallets = account.hardware_wallet_accounts.len();
         ToyAccountSize {
             sub_accounts,
             canisters,
-            default_account_transactions,
-            sub_account_transactions,
             hardware_wallets,
         }
     }
@@ -76,7 +56,6 @@ pub fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
     let mut account = Account {
         principal: Some(principal),
         account_identifier,
-        default_account_transactions: Vec::new(),
         sub_accounts: HashMap::new(),
         hardware_wallet_accounts: Vec::new(),
         canisters: Vec::new(),
@@ -87,8 +66,7 @@ pub fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
         let sub_account_name = format!("sub_account_{account_index}_{sub_account_index}");
         let sub_account = convert_byte_to_sub_account(sub_account_index);
         let sub_account_identifier = AccountIdentifier::new(principal, Some(sub_account));
-        let mut named_sub_account = NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
-        named_sub_account.transactions = (0..size.sub_account_transactions as u64).collect();
+        let named_sub_account = NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
         account.sub_accounts.insert(sub_account_index, named_sub_account);
     }
     // Attaches canisters to the account.
@@ -99,13 +77,6 @@ pub fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
             canister_id,
         };
         account.canisters.push(canister);
-    }
-    for transaction_index in 0..size.default_account_transactions as u64 {
-        // Note: Normally a transaction would be added to the list of transactions in the accounts
-        // store and the index of that transaction would be stored in the account itself.  Given
-        // that we are creating a standalong account, without an account store, the index is
-        // meaningless.
-        account.default_account_transactions.push(transaction_index);
     }
     for hardware_wallet_index in 0..size.hardware_wallets as u64 {
         // Note: The principal is currently unused but in case it is used in future tests we make a
@@ -118,7 +89,6 @@ pub fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
         let hardware_wallet = NamedHardwareWalletAccount {
             name: format!("hw_wallet_{account_index}_{hardware_wallet_index}"),
             principal,
-            transactions: Vec::new(),
         };
         account.hardware_wallet_accounts.push(hardware_wallet);
     }
@@ -132,8 +102,6 @@ fn toy_account_should_have_the_requested_size() {
     let requested_size = ToyAccountSize {
         sub_accounts: 1,
         canisters: 2,
-        default_account_transactions: 3,
-        sub_account_transactions: 4,
         hardware_wallets: 5,
     };
     let account = toy_account(9, requested_size);

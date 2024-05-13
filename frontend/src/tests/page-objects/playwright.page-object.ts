@@ -2,27 +2,37 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import type { Locator, Page } from "@playwright/test";
 
 export class PlaywrightPageObjectElement implements PageObjectElement {
+  readonly page: Page;
   readonly locator: Locator;
 
-  constructor(locator: Locator) {
+  constructor({ locator, page }: { locator: Locator; page: Page }) {
     this.locator = locator;
+    this.page = page;
   }
 
   static fromPage(page: Page): PlaywrightPageObjectElement {
-    return new PlaywrightPageObjectElement(page.locator("body"));
+    return new PlaywrightPageObjectElement({
+      locator: page.locator("body"),
+      page,
+    });
   }
 
   querySelector(selector: string): PlaywrightPageObjectElement {
-    return new PlaywrightPageObjectElement(
-      this.locator.locator(selector).first()
-    );
+    return new PlaywrightPageObjectElement({
+      locator: this.locator.locator(selector).first(),
+      page: this.page,
+    });
   }
 
   async querySelectorAll(
     selector: string
   ): Promise<PlaywrightPageObjectElement[]> {
     return (await this.locator.locator(selector).all()).map(
-      (locator) => new PlaywrightPageObjectElement(locator)
+      (locator) =>
+        new PlaywrightPageObjectElement({
+          locator,
+          page: this.page,
+        })
     );
   }
 
@@ -36,7 +46,10 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     const elements: PlaywrightPageObjectElement[] = [];
     for (let i = 0; i < count; i++) {
       elements.push(
-        new PlaywrightPageObjectElement(this.locator.locator(selector).nth(i))
+        new PlaywrightPageObjectElement({
+          locator: this.locator.locator(selector).nth(i),
+          page: this.page,
+        })
       );
     }
     return elements;
@@ -140,6 +153,6 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   async getDocumentBody(): Promise<PlaywrightPageObjectElement> {
-    throw new Error("Not implemented");
+    return PlaywrightPageObjectElement.fromPage(this.page);
   }
 }

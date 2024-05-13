@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-17_23-01-hotfix-bitcoin-query-stats/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-05-09_23-02-storage-layer/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -18,15 +18,16 @@ pub struct EmptyRecord {}
 // use ic_cdk::api::call::CallResult as Result;
 
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct AddApiBoundaryNodePayload {
-    pub node_id: Principal,
+pub struct AddApiBoundaryNodesPayload {
     pub version: String,
+    pub node_ids: Vec<Principal>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum FirewallRulesScope {
     Node(Principal),
     ReplicaNodes,
+    ApiBoundaryNodes,
     Subnet(Principal),
     Global,
 }
@@ -237,6 +238,12 @@ pub struct DeleteSubnetPayload {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct DeployGuestosToAllSubnetNodesPayload {
+    pub subnet_id: Principal,
+    pub replica_version_id: String,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct DeployGuestosToAllUnassignedNodesPayload {
     pub elected_replica_version: String,
 }
@@ -342,6 +349,15 @@ pub struct RetireReplicaVersionPayload {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct ReviseElectedGuestosVersionsPayload {
+    pub release_package_urls: Vec<String>,
+    pub replica_versions_to_unelect: Vec<String>,
+    pub replica_version_to_elect: Option<String>,
+    pub guest_launch_measurement_sha256_hex: Option<String>,
+    pub release_package_sha256_hex: Option<String>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct SetFirewallConfigPayload {
     pub ipv4_prefixes: Vec<String>,
     pub firewall_config: String,
@@ -349,25 +365,10 @@ pub struct SetFirewallConfigPayload {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct UpdateApiBoundaryNodesVersionPayload {
-    pub version: String,
-    pub node_ids: Vec<Principal>,
-}
-
-#[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateElectedHostosVersionsPayload {
     pub release_package_urls: Vec<String>,
     pub hostos_version_to_elect: Option<String>,
     pub hostos_versions_to_unelect: Vec<String>,
-    pub release_package_sha256_hex: Option<String>,
-}
-
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct UpdateElectedReplicaVersionsPayload {
-    pub release_package_urls: Vec<String>,
-    pub replica_versions_to_unelect: Vec<String>,
-    pub replica_version_to_elect: Option<String>,
-    pub guest_launch_measurement_sha256_hex: Option<String>,
     pub release_package_sha256_hex: Option<String>,
 }
 
@@ -477,12 +478,6 @@ pub struct UpdateSubnetPayload {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct UpdateSubnetReplicaVersionPayload {
-    pub subnet_id: Principal,
-    pub replica_version_id: String,
-}
-
-#[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateUnassignedNodesConfigPayload {
     pub replica_version: Option<String>,
     pub ssh_readonly_access: Option<Vec<String>>,
@@ -490,8 +485,8 @@ pub struct UpdateUnassignedNodesConfigPayload {
 
 pub struct Service(pub Principal);
 impl Service {
-    pub async fn add_api_boundary_node(&self, arg0: AddApiBoundaryNodePayload) -> CallResult<()> {
-        ic_cdk::call(self.0, "add_api_boundary_node", (arg0,)).await
+    pub async fn add_api_boundary_nodes(&self, arg0: AddApiBoundaryNodesPayload) -> CallResult<()> {
+        ic_cdk::call(self.0, "add_api_boundary_nodes", (arg0,)).await
     }
     pub async fn add_firewall_rules(&self, arg0: AddFirewallRulesPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "add_firewall_rules", (arg0,)).await
@@ -525,6 +520,12 @@ impl Service {
     }
     pub async fn delete_subnet(&self, arg0: DeleteSubnetPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "delete_subnet", (arg0,)).await
+    }
+    pub async fn deploy_guestos_to_all_subnet_nodes(
+        &self,
+        arg0: DeployGuestosToAllSubnetNodesPayload,
+    ) -> CallResult<()> {
+        ic_cdk::call(self.0, "deploy_guestos_to_all_subnet_nodes", (arg0,)).await
     }
     pub async fn deploy_guestos_to_all_unassigned_nodes(
         &self,
@@ -574,19 +575,19 @@ impl Service {
     pub async fn retire_replica_version(&self, arg0: RetireReplicaVersionPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "retire_replica_version", (arg0,)).await
     }
+    pub async fn revise_elected_replica_versions(&self, arg0: ReviseElectedGuestosVersionsPayload) -> CallResult<()> {
+        ic_cdk::call(self.0, "revise_elected_replica_versions", (arg0,)).await
+    }
     pub async fn set_firewall_config(&self, arg0: SetFirewallConfigPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "set_firewall_config", (arg0,)).await
     }
-    pub async fn update_api_boundary_nodes_version(
-        &self,
-        arg0: UpdateApiBoundaryNodesVersionPayload,
-    ) -> CallResult<()> {
+    pub async fn update_api_boundary_nodes_version(&self, arg0: AddApiBoundaryNodesPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_api_boundary_nodes_version", (arg0,)).await
     }
     pub async fn update_elected_hostos_versions(&self, arg0: UpdateElectedHostosVersionsPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_elected_hostos_versions", (arg0,)).await
     }
-    pub async fn update_elected_replica_versions(&self, arg0: UpdateElectedReplicaVersionsPayload) -> CallResult<()> {
+    pub async fn update_elected_replica_versions(&self, arg0: ReviseElectedGuestosVersionsPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_elected_replica_versions", (arg0,)).await
     }
     pub async fn update_firewall_rules(&self, arg0: AddFirewallRulesPayload) -> CallResult<()> {
@@ -628,7 +629,7 @@ impl Service {
     pub async fn update_subnet(&self, arg0: UpdateSubnetPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_subnet", (arg0,)).await
     }
-    pub async fn update_subnet_replica_version(&self, arg0: UpdateSubnetReplicaVersionPayload) -> CallResult<()> {
+    pub async fn update_subnet_replica_version(&self, arg0: DeployGuestosToAllSubnetNodesPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_subnet_replica_version", (arg0,)).await
     }
     pub async fn update_unassigned_nodes_config(&self, arg0: UpdateUnassignedNodesConfigPayload) -> CallResult<()> {
