@@ -2,37 +2,27 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import type { Locator, Page } from "@playwright/test";
 
 export class PlaywrightPageObjectElement implements PageObjectElement {
-  readonly page: Page;
   readonly locator: Locator;
 
-  constructor({ locator, page }: { locator: Locator; page: Page }) {
+  constructor(locator: Locator) {
     this.locator = locator;
-    this.page = page;
   }
 
   static fromPage(page: Page): PlaywrightPageObjectElement {
-    return new PlaywrightPageObjectElement({
-      locator: page.locator("body"),
-      page,
-    });
+    return new PlaywrightPageObjectElement(page.locator("body"));
   }
 
   querySelector(selector: string): PlaywrightPageObjectElement {
-    return new PlaywrightPageObjectElement({
-      locator: this.locator.locator(selector).first(),
-      page: this.page,
-    });
+    return new PlaywrightPageObjectElement(
+      this.locator.locator(selector).first()
+    );
   }
 
   async querySelectorAll(
     selector: string
   ): Promise<PlaywrightPageObjectElement[]> {
     return (await this.locator.locator(selector).all()).map(
-      (locator) =>
-        new PlaywrightPageObjectElement({
-          locator,
-          page: this.page,
-        })
+      (locator) => new PlaywrightPageObjectElement(locator)
     );
   }
 
@@ -46,10 +36,7 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     const elements: PlaywrightPageObjectElement[] = [];
     for (let i = 0; i < count; i++) {
       elements.push(
-        new PlaywrightPageObjectElement({
-          locator: this.locator.locator(selector).nth(i),
-          page: this.page,
-        })
+        new PlaywrightPageObjectElement(this.locator.locator(selector).nth(i))
       );
     }
     return elements;
@@ -153,6 +140,6 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   async getDocumentBody(): Promise<PlaywrightPageObjectElement> {
-    return PlaywrightPageObjectElement.fromPage(this.page);
+    throw new Error("Not implemented");
   }
 }

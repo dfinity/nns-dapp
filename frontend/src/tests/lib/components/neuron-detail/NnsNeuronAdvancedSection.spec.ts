@@ -56,7 +56,6 @@ describe("NnsNeuronAdvancedSection", () => {
   });
 
   it("should render neuron data", async () => {
-    const neuronAccountIdentifier = mockSubAccount.identifier;
     const neuron: NeuronInfo = {
       ...mockNeuron,
       neuronId: 12345n,
@@ -65,7 +64,7 @@ describe("NnsNeuronAdvancedSection", () => {
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         agingSinceTimestampSeconds: BigInt(SECONDS_IN_MONTH),
-        accountIdentifier: neuronAccountIdentifier,
+        accountIdentifier: mockSubAccount.identifier,
       },
     };
     const po = renderComponent(neuron);
@@ -75,7 +74,7 @@ describe("NnsNeuronAdvancedSection", () => {
       "Jul 18, 2023 7:44 AM"
     );
     expect(await po.neuronAge()).toBe("30 days, 10 hours");
-    expect(await po.neuronAccount()).toBe(neuronAccountIdentifier);
+    expect(await po.neuronAccount()).toBe("d0654c5...2ff9f32");
   });
 
   it("should render last rewards distribution", async () => {

@@ -40,6 +40,7 @@ export const SNS_AGGREGATOR_CANISTER_URL: string | undefined =
 export interface FeatureFlags<T> {
   ENABLE_CKBTC: T;
   ENABLE_CKTESTBTC: T;
+  ENABLE_VOTING_INDICATION: T;
   ENABLE_ACTIONABLE_TAB: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;

@@ -219,7 +219,7 @@ describe("SelectUniverseCard", () => {
               .getActionableProposalCountBadgePo()
               .getTooltipPo()
               .getTooltipText()
-          ).toBe("You can still vote on 2 Tetris proposals.");
+          ).toBe("There are 2 Tetris proposals you can vote on.");
         });
 
         it("should display actionable proposal count tooltip for NNS", async () => {
@@ -243,7 +243,36 @@ describe("SelectUniverseCard", () => {
               .getActionableProposalCountBadgePo()
               .getTooltipPo()
               .getTooltipText()
-          ).toBe("You can still vote on 2 NNS proposals.");
+          ).toBe("There are 2 NNS proposals you can vote on.");
+        });
+
+        it("should not display actionable proposal count when the feature flag is disabled", async () => {
+          page.mock({
+            data: { universe: OWN_CANISTER_ID_TEXT },
+            routeId: AppPath.Proposals,
+          });
+
+          actionableSnsProposalsStore.set({
+            rootCanisterId: Principal.from(mockSnsUniverse.canisterId),
+            proposals: [mockSnsProposal, mockSnsProposal],
+            includeBallotsByCaller: true,
+          });
+
+          const po = await renderComponent({
+            props: { universe: mockSnsUniverse, selected: false },
+          });
+
+          expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
+            true
+          );
+
+          overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
+
+          await runResolvedPromises();
+
+          expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
+            false
+          );
         });
 
         it("should not display actionable proposal count when not on neurons page", async () => {

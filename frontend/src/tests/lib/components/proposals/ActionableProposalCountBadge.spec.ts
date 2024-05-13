@@ -26,7 +26,7 @@ describe("ActionableProposalCountBadge", () => {
     const po = renderComponent({ count: 5, universe: mockUniverse });
     expect(await po.getTooltipPo().isPresent()).toEqual(true);
     expect(await po.getTooltipPo().getTooltipText()).toEqual(
-      "You can still vote on 5 Tetris proposals."
+      "There are 5 Tetris proposals you can vote on."
     );
   });
 
@@ -39,7 +39,7 @@ describe("ActionableProposalCountBadge", () => {
       },
     });
     expect(await po1.getTooltipPo().getTooltipText()).toEqual(
-      "You can still vote on 5 NNS proposals."
+      "There are 5 NNS proposals you can vote on."
     );
   });
 
@@ -49,7 +49,7 @@ describe("ActionableProposalCountBadge", () => {
       universe: "all",
     });
     expect(await po2.getTooltipPo().getTooltipText()).toEqual(
-      "You can still vote on 5 proposals."
+      "There are a total of 5 proposals you can vote on."
     );
   });
 

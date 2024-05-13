@@ -10,6 +10,7 @@
   import FiltersWrapper from "../proposals/FiltersWrapper.svelte";
   import FiltersButton from "../ui/FiltersButton.svelte";
   import SnsFilterTypesModal from "$lib/modals/sns/proposals/SnsFilterTypesModal.svelte";
+  import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
   import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
@@ -32,9 +33,11 @@
 
 <TestIdWrapper testId="sns-proposals-filters-component">
   <div class="proposal-filters">
-    <ActionableProposalsSegment />
+    {#if $ENABLE_VOTING_INDICATION}
+      <ActionableProposalsSegment />
+    {/if}
 
-    {#if $actionableProposalsSegmentStore.selected !== "actionable"}
+    {#if !$ENABLE_VOTING_INDICATION || $actionableProposalsSegmentStore.selected !== "actionable"}
       <FiltersWrapper>
         <FiltersButton
           testId="filters-by-types"

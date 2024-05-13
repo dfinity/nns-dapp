@@ -70,7 +70,7 @@
       </KeyValuePair>
     {/if}
     {#if nonNullish(neuron.fullNeuron)}
-      <KeyValuePair testId="neuron-account-row">
+      <KeyValuePair>
         <span slot="key" class="label"
           >{$i18n.neuron_detail.neuron_account}</span
         >

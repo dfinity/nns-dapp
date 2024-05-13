@@ -13,6 +13,7 @@
     actionableProposalSupportedStore,
   } from "$lib/derived/actionable-proposals.derived";
   import ActionableProposalCountBadge from "$lib/components/proposals/ActionableProposalCountBadge.svelte";
+  import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
@@ -35,12 +36,14 @@
     });
 
   let actionableProposalCount: number | undefined = undefined;
-  $: actionableProposalCount =
-    $actionableProposalCountStore[universe.canisterId];
+  $: actionableProposalCount = $ENABLE_VOTING_INDICATION
+    ? $actionableProposalCountStore[universe.canisterId]
+    : undefined;
 
   let actionableProposalSupported: boolean | undefined = undefined;
-  $: actionableProposalSupported =
-    $actionableProposalSupportedStore[universe.canisterId];
+  $: actionableProposalSupported = $ENABLE_VOTING_INDICATION
+    ? $actionableProposalSupportedStore[universe.canisterId]
+    : undefined;
 
   // Always rerender to trigger animation start
   let mounted = false;
@@ -66,7 +69,7 @@
     >
       <span class="name">
         {universe.title}
-        {#if $actionableProposalIndicationEnabledStore}
+        {#if $ENABLE_VOTING_INDICATION && $actionableProposalIndicationEnabledStore}
           {#if nonNullish(actionableProposalCount) && actionableProposalCount > 0 && mounted}
             <ActionableProposalCountBadge
               count={actionableProposalCount}

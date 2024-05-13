@@ -5,6 +5,7 @@
     lastProposalId,
   } from "$lib/utils/proposals.utils";
   import {
+    type ProposalsFiltersStore,
     proposalsFiltersStore,
     proposalsStore,
   } from "$lib/stores/proposals.store";
@@ -22,6 +23,7 @@
     sortedProposals,
     filteredProposals,
   } from "$lib/derived/proposals.derived";
+  import { authStore } from "$lib/stores/auth.store";
   import { listNeurons } from "$lib/services/neurons.services";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { notForceCallStrategy } from "$lib/utils/env.utils";
@@ -103,9 +105,16 @@
     initialized = true;
   });
 
-  const applyFilter = () => {
+  const applyFilter = ({ lastAppliedFilter }: ProposalsFiltersStore) => {
     // We only want to display spinner and reset the proposals store if filters are modified by the user
     if (!initialized) {
+      return;
+    }
+
+    if (lastAppliedFilter === "excludeVotedProposals") {
+      // Make a visual feedback that the filter was applyed
+      hidden = true;
+      setTimeout(() => (hidden = false), 200);
       return;
     }
 
@@ -124,7 +133,9 @@
   // goes back into loading state immediately after proposals are loaded.
   // TODO: Fix NnsProposals to load proposals only once and remove the
   // work-around from NnsProposalList.page-object.ts
-  $: $definedNeuronsStore, $proposalsFiltersStore, applyFilter();
+  $: $definedNeuronsStore, applyFilter($proposalsFiltersStore);
+
+  $: $authStore.identity, (() => proposalsFiltersStore.reload())();
 
   const updateNothingFound = () => {
     // Update the "nothing found" UI information only when the results of the certified query has been received to minimize UI glitches
@@ -139,6 +150,8 @@
       !hasMatchingProposals({
         proposals: $filteredProposals.proposals,
         filters: $proposalsFiltersStore,
+        neurons: $definedNeuronsStore,
+        identity: $authStore.identity,
       });
   };
 

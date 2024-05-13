@@ -340,6 +340,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
+          "ENABLE_VOTING_INDICATION": true,
           "ENABLE_ACTIONABLE_TAB": false
         }
       }

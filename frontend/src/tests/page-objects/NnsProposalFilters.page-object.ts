@@ -1,5 +1,5 @@
 import { ActionableProposalsSegmentPo } from "$tests/page-objects/ActionableProposalsSegment.page-object";
-import type { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
 import { FilterModalPo } from "$tests/page-objects/FilterModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -12,20 +12,12 @@ export class NnsProposalFiltersPo extends BasePageObject {
     return new NnsProposalFiltersPo(element.byTestId(NnsProposalFiltersPo.TID));
   }
 
-  getFilterByTopicsButtonPo(): ButtonPo {
-    return this.getButton("filters-by-topics");
-  }
-
-  getFilterByStatusButtonPo(): ButtonPo {
-    return this.getButton("filters-by-status");
-  }
-
   clickFiltersByTopicsButton(): Promise<void> {
-    return this.getFilterByTopicsButtonPo().click();
+    return this.click("filters-by-topics");
   }
 
   clickFiltersByStatusButton(): Promise<void> {
-    return this.getFilterByStatusButtonPo().click();
+    return this.click("filters-by-status");
   }
 
   getActionableProposalsSegmentPo(): ActionableProposalsSegmentPo {
@@ -39,6 +31,13 @@ export class NnsProposalFiltersPo extends BasePageObject {
 
   getFilterModalPo(): FilterModalPo {
     return FilterModalPo.under(this.root);
+  }
+
+  getVotableProposalsOnlyCheckboxPo(): CheckboxPo {
+    return CheckboxPo.under({
+      element: this.root,
+      testId: "votable-proposals-only",
+    });
   }
 
   async selectEntriesInFilterModal(ids: string[]): Promise<void> {
