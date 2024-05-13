@@ -183,8 +183,8 @@ test_nns_function_52() {
 
   PROPOSAL_ID="$(run_ic_admin \
     "$subcommand" \
-     --rental-condition-id App13CH \
-     --user "$USER_PRINCIPAL")"
+    --rental-condition-id App13CH \
+    --user "$USER_PRINCIPAL")"
 
   ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
   EXPECTED_PAYLOAD="{\"user\":\"$USER_PRINCIPAL\",\"rental_condition_id\":\"App13CH\"}"
