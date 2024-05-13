@@ -108,7 +108,7 @@ test_nns_function_43() {
     --version $REPLICA_VERSION_ID)"
 
   ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
-  EXPECTED_PAYLOAD="{\"release_package_urls\":[],\"replica_versions_to_unelect\":[\"$REPLICA_VERSION_ID\"],\"replica_version_to_elect\":null,\"guest_launch_measurement_sha256_hex\":null,\"release_package_sha256_hex\":null}"
+  EXPECTED_PAYLOAD="{\"version\":\"$REPLICA_VERSION_ID\",\"node_ids\":[\"$NODE_ID\"]}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
