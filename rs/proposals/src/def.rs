@@ -192,7 +192,8 @@ pub struct UpdateIcpXdrConversionRatePayload {
 
 /// NNS function 11 - `UpdateSubnetReplicaVersion`
 /// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_subnet_replica.rs#L58>
-pub type UpdateSubnetReplicaVersionPayload = crate::canisters::nns_registry::api::UpdateSubnetReplicaVersionPayload;
+pub type DeployGuestosToAllSubnetNodesPayload =
+    crate::canisters::nns_registry::api::DeployGuestosToAllSubnetNodesPayload;
 
 /// NNS function 13 - `RemoveNodesFromSubnet`
 /// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_remove_nodes_from_subnet.rs#L57>
@@ -428,7 +429,7 @@ impl From<InsertUpgradePathEntriesRequest> for InsertUpgradePathEntriesRequestHu
 // NNS function 38 - UpdateElectedReplicaVersions
 /// The payload of a proposal to update elected replica versions.
 // https://gitlab.com/dfinity-lab/public/ic/-/blob/90d82ff6e51a66306f9ddba820fcad984f4d85a5/rs/registry/canister/src/mutations/do_update_elected_replica_versions.rs#L193
-pub type UpdateElectedReplicaVersionsPayload = crate::canisters::nns_registry::api::UpdateElectedReplicaVersionsPayload;
+pub type ReviseElectedGuestosVersionsPayload = crate::canisters::nns_registry::api::ReviseElectedGuestosVersionsPayload;
 
 // NNS function 39 - BitcoinSetConfig
 // https://github.com/dfinity/ic/blob/ae00aff1373e9f6db375ff7076250a20bbf3eea0/rs/nns/governance/src/governance.rs#L8930
