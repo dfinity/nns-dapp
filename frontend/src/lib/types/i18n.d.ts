@@ -382,7 +382,6 @@ interface I18nVoting {
   topics: string;
   types: string;
   status: string;
-  hide_unavailable_proposals: string;
   check_all: string;
   uncheck_all: string;
   nothing_found: string;

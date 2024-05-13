@@ -1,7 +1,5 @@
 import SnsProposals from "$lib/pages/SnsProposals.svelte";
-import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
@@ -339,214 +337,160 @@ describe("SnsProposals", () => {
         proposals: [actionableProposal1],
         includeBallotsByCaller,
       });
+    const selectActionableProposals = async (po: SnsProposalListPo) => {
+      await po
+        .getSnsProposalFiltersPo()
+        .getActionableProposalsSegmentPo()
+        .clickActionableProposals();
+      await runResolvedPromises();
+    };
+    const selectAllProposals = async (po: SnsProposalListPo) => {
+      await po
+        .getSnsProposalFiltersPo()
+        .getActionableProposalsSegmentPo()
+        .clickAllProposals();
+      await runResolvedPromises();
+    };
 
     beforeEach(() => {
       resetIdentity();
       actionableSnsProposalsStore.resetForTesting();
-      overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
       mockActionableProposalsLoadingDone();
     });
 
-    describe("when feature flag false", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
-      });
+    it("should render all proposals by default", async () => {
+      const po = await renderComponent();
 
-      it("should render only all proposals", async () => {
-        const po = await renderComponent();
-
-        expect(await po.getAllProposalList().isPresent()).toEqual(true);
-        expect(await po.getActionableProposalList().isPresent()).toEqual(false);
-      });
-
-      it("should not render actionable segment", async () => {
-        const po = await renderComponent();
-
-        expect(
-          await po
-            .getSnsProposalFiltersPo()
-            .getActionableProposalsSegmentPo()
-            .isPresent()
-        ).toEqual(false);
-      });
-
-      describe("when signOut", () => {
-        beforeEach(() => {
-          setNoIdentity();
-        });
-
-        it("should render only all proposals", async () => {
-          const po = await renderComponent();
-
-          expect(await po.getAllProposalList().isPresent()).toEqual(true);
-          expect(await po.getActionableProposalList().isPresent()).toEqual(
-            false
-          );
-        });
-
-        it("should not render actionable segment", async () => {
-          const po = await renderComponent();
-
-          expect(
-            await po
-              .getSnsProposalFiltersPo()
-              .getActionableProposalsSegmentPo()
-              .isPresent()
-          ).toEqual(false);
-        });
-      });
+      expect(await po.getAllProposalList().isPresent()).toEqual(true);
+      expect(await po.getActionableProposalList().isPresent()).toEqual(false);
     });
 
-    describe("when feature flag true", () => {
-      const selectActionableProposals = async (po: SnsProposalListPo) => {
-        await po
-          .getSnsProposalFiltersPo()
-          .getActionableProposalsSegmentPo()
-          .clickActionableProposals();
-        await runResolvedPromises();
-      };
-      beforeEach(() => {
-        resetIdentity();
-        actionableProposalsSegmentStore.resetForTesting();
-        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
-        mockActionableProposalsLoadingDone();
+    it("should switch proposal lists on actionable segment change", async () => {
+      const po = await renderComponent();
+      expect(await po.getAllProposalList().isPresent()).toEqual(true);
+      expect(await po.getActionableProposalList().isPresent()).toEqual(false);
+
+      await selectActionableProposals(po);
+
+      expect(await po.getAllProposalList().isPresent()).toEqual(false);
+      expect(await po.getActionableProposalList().isPresent()).toEqual(true);
+
+      await po
+        .getSnsProposalFiltersPo()
+        .getActionableProposalsSegmentPo()
+        .clickAllProposals();
+      await runResolvedPromises();
+
+      expect(await po.getAllProposalList().isPresent()).toEqual(true);
+      expect(await po.getActionableProposalList().isPresent()).toEqual(false);
+    });
+
+    it('should display "Not signIn" banner', async () => {
+      setNoIdentity();
+      const po = await renderComponent();
+      await selectActionableProposals(po);
+      expect(await po.getActionableSignInBanner().isPresent()).toBe(true);
+
+      // login
+      resetIdentity();
+      await runResolvedPromises();
+      expect(await po.getActionableSignInBanner().isPresent()).toBe(false);
+
+      // logout
+      setNoIdentity();
+      await runResolvedPromises();
+      expect(await po.getActionableSignInBanner().isPresent()).toBe(true);
+
+      // switch to all proposals
+      await po
+        .getSnsProposalFiltersPo()
+        .getActionableProposalsSegmentPo()
+        .clickAllProposals();
+      expect(await po.getActionableSignInBanner().isPresent()).toBe(false);
+    });
+
+    it("should display loading skeletons", async () => {
+      actionableSnsProposalsStore.resetForTesting();
+      const po = await renderComponent();
+      expect(await po.getSkeletonCardPo().isPresent()).toBe(false);
+
+      await selectActionableProposals(po);
+      expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
+
+      mockActionableProposalsLoadingDone();
+      await runResolvedPromises();
+      expect(await po.getSkeletonCardPo().isPresent()).toBe(false);
+    });
+
+    it('should display "No actionable proposals" banner', async () => {
+      actionableSnsProposalsStore.set({
+        rootCanisterId,
+        proposals: [],
+        includeBallotsByCaller: true,
       });
+      // no proposals available
+      const po = await renderComponent();
+      await selectActionableProposals(po);
+      expect(await po.getActionableEmptyBanner().isPresent()).toBe(true);
 
-      it("should render all proposals by default", async () => {
-        const po = await renderComponent();
+      // with proposals available
+      mockActionableProposalsLoadingDone();
+      const po2 = await renderComponent();
+      await selectActionableProposals(po2);
+      expect(await po2.getActionableEmptyBanner().isPresent()).toBe(false);
 
-        expect(await po.getAllProposalList().isPresent()).toEqual(true);
-        expect(await po.getActionableProposalList().isPresent()).toEqual(false);
-      });
+      // signOut
+      setNoIdentity();
+      const po3 = await renderComponent();
+      await selectActionableProposals(po3);
+      expect(await po3.getActionableEmptyBanner().isPresent()).toBe(false);
+    });
 
-      it("should switch proposal lists on actionable segment change", async () => {
-        const po = await renderComponent();
-        expect(await po.getAllProposalList().isPresent()).toEqual(true);
-        expect(await po.getActionableProposalList().isPresent()).toEqual(false);
+    it('should display "Actionable not supported" banner', async () => {
+      // sns without support
+      mockActionableProposalsLoadingDone({ includeBallotsByCaller: false });
+      const po = await renderComponent();
+      await selectActionableProposals(po);
+      expect(await po.getActionableNotSupportedBanner().isPresent()).toBe(true);
+      expect(await po.getActionableNotSupportedBanner().getTitleText()).toEqual(
+        `${projectName} doesn't yet support actionable proposals.`
+      );
+      expect(
+        await po.getActionableNotSupportedBanner().getDescriptionText()
+      ).toEqual(
+        `${projectName} SNS governance canister needs to be updated to the latest version to show actionable proposals. You can still vote on all proposals, but they will not have the visual indication.`
+      );
 
-        await selectActionableProposals(po);
+      // select to all proposals
+      await po
+        .getSnsProposalFiltersPo()
+        .getActionableProposalsSegmentPo()
+        .clickAllProposals();
+      expect(await po.getActionableNotSupportedBanner().isPresent()).toBe(
+        false
+      );
 
-        expect(await po.getAllProposalList().isPresent()).toEqual(false);
-        expect(await po.getActionableProposalList().isPresent()).toEqual(true);
+      // sns with support
+      mockActionableProposalsLoadingDone({ includeBallotsByCaller: true });
+      const po2 = await renderComponent();
+      await selectActionableProposals(po2);
+      expect(await po2.getActionableNotSupportedBanner().isPresent()).toBe(
+        false
+      );
+    });
 
-        await po
-          .getSnsProposalFiltersPo()
-          .getActionableProposalsSegmentPo()
-          .clickAllProposals();
-        await runResolvedPromises();
+    it("should display actionable proposals", async () => {
+      const po = await renderComponent();
+      await selectAllProposals(po);
 
-        expect(await po.getAllProposalList().isPresent()).toEqual(true);
-        expect(await po.getActionableProposalList().isPresent()).toEqual(false);
-      });
+      expect((await po.getProposalCardPos()).length).toEqual(0);
 
-      it('should display "Not signIn" banner', async () => {
-        setNoIdentity();
-        const po = await renderComponent();
-        await selectActionableProposals(po);
-        expect(await po.getActionableSignInBanner().isPresent()).toBe(true);
+      await selectActionableProposals(po);
 
-        // login
-        resetIdentity();
-        await runResolvedPromises();
-        expect(await po.getActionableSignInBanner().isPresent()).toBe(false);
-
-        // logout
-        setNoIdentity();
-        await runResolvedPromises();
-        expect(await po.getActionableSignInBanner().isPresent()).toBe(true);
-
-        // switch to all proposals
-        await po
-          .getSnsProposalFiltersPo()
-          .getActionableProposalsSegmentPo()
-          .clickAllProposals();
-        expect(await po.getActionableSignInBanner().isPresent()).toBe(false);
-      });
-
-      it("should display loading skeletons", async () => {
-        actionableSnsProposalsStore.resetForTesting();
-        const po = await renderComponent();
-        expect(await po.getSkeletonCardPo().isPresent()).toBe(false);
-
-        await selectActionableProposals(po);
-        expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
-
-        mockActionableProposalsLoadingDone();
-        await runResolvedPromises();
-        expect(await po.getSkeletonCardPo().isPresent()).toBe(false);
-      });
-
-      it('should display "No actionable proposals" banner', async () => {
-        actionableSnsProposalsStore.set({
-          rootCanisterId,
-          proposals: [],
-          includeBallotsByCaller: true,
-        });
-        // no proposals available
-        const po = await renderComponent();
-        await selectActionableProposals(po);
-        expect(await po.getActionableEmptyBanner().isPresent()).toBe(true);
-
-        // with proposals available
-        mockActionableProposalsLoadingDone();
-        const po2 = await renderComponent();
-        await selectActionableProposals(po2);
-        expect(await po2.getActionableEmptyBanner().isPresent()).toBe(false);
-
-        // signOut
-        setNoIdentity();
-        const po3 = await renderComponent();
-        await selectActionableProposals(po3);
-        expect(await po3.getActionableEmptyBanner().isPresent()).toBe(false);
-      });
-
-      it('should display "Actionable not supported" banner', async () => {
-        // sns without support
-        mockActionableProposalsLoadingDone({ includeBallotsByCaller: false });
-        const po = await renderComponent();
-        await selectActionableProposals(po);
-        expect(await po.getActionableNotSupportedBanner().isPresent()).toBe(
-          true
-        );
-        expect(
-          await po.getActionableNotSupportedBanner().getTitleText()
-        ).toEqual(`${projectName} doesn't yet support actionable proposals.`);
-        expect(
-          await po.getActionableNotSupportedBanner().getDescriptionText()
-        ).toEqual(
-          `${projectName} SNS governance canister needs to be updated to the latest version to show actionable proposals. You can still vote on all proposals, but they will not have the visual indication.`
-        );
-
-        // select to all proposals
-        await po
-          .getSnsProposalFiltersPo()
-          .getActionableProposalsSegmentPo()
-          .clickAllProposals();
-        expect(await po.getActionableNotSupportedBanner().isPresent()).toBe(
-          false
-        );
-
-        // sns with support
-        mockActionableProposalsLoadingDone({ includeBallotsByCaller: true });
-        const po2 = await renderComponent();
-        await selectActionableProposals(po2);
-        expect(await po2.getActionableNotSupportedBanner().isPresent()).toBe(
-          false
-        );
-      });
-
-      it("should display actionable proposals", async () => {
-        const po = await renderComponent();
-
-        expect((await po.getProposalCardPos()).length).toEqual(0);
-
-        await selectActionableProposals(po);
-
-        expect((await po.getProposalCardPos()).length).toEqual(1);
-        expect(
-          await (await po.getProposalCardPos())[0].getProposalId()
-        ).toEqual("ID: 10");
-      });
+      expect((await po.getProposalCardPos()).length).toEqual(1);
+      expect(await (await po.getProposalCardPos())[0].getProposalId()).toEqual(
+        "ID: 10"
+      );
     });
   });
 });
