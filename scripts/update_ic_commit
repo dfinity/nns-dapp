@@ -31,9 +31,9 @@ source "$(clap.build)"
   printf "%s\n" "$NEW_CONFIG" >"$SOURCE_DIR/../dfx.json"
 }
 
-: "Get the latest sns wasm and did files"
+: "Get the latest did files"
 {
-  : "Get the did and wasm files"
+  : "Get the did files"
   IC_URL="https://raw.githubusercontent.com/dfinity/ic/${DFX_IC_COMMIT}"
   did_curl() {
     local crate="$1"
