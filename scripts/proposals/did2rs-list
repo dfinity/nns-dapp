@@ -17,7 +17,7 @@ source "$(clap.build)"
 
 # Gets a list of declared canisters
 declared_canisters() {
-  ls declarations
+  ls declarations/used_by_proposals
 }
 
 # Gets a list of canisters used by the proposal rendering crate.

@@ -36,23 +36,24 @@ source "$(clap.build)"
   : "Get the did and wasm files"
   IC_URL="https://raw.githubusercontent.com/dfinity/ic/${DFX_IC_COMMIT}"
   did_curl() {
-    local canister="$1"
-    local upstream_path="$2"
-    local local_path="declarations/${canister}/${canister}.did"
+    local crate="$1"
+    local canister="$2"
+    local upstream_path="$3"
+    local local_path="declarations/used_by_${crate}/${canister}/${canister}.did"
     mkdir -p "$(dirname "$local_path")"
     {
       echo "//! Candid for canister \`$canister\` obtained by \`scripts/update_ic_commit\` from: <$IC_URL$upstream_path>"
       curl -sfL --retry 5 "$IC_URL$upstream_path"
     } >"${local_path}"
   }
-  did_curl nns_governance /rs/nns/governance/canister/governance.did
-  did_curl nns_registry /rs/registry/canister/canister/registry.did
-  did_curl nns_ledger /rs/rosetta-api/icp_ledger/ledger.did
-  did_curl sns_governance /rs/sns/governance/canister/governance.did
-  did_curl sns_root /rs/sns/root/canister/root.did
-  did_curl sns_swap /rs/sns/swap/canister/swap.did
-  did_curl sns_wasm /rs/nns/sns-wasm/canister/sns-wasm.did
-  did_curl sns_ledger /rs/rosetta-api/icrc1/ledger/ledger.did
+  did_curl proposals nns_governance /rs/nns/governance/canister/governance.did
+  did_curl proposals nns_registry /rs/registry/canister/canister/registry.did
+  did_curl proposals sns_wasm /rs/nns/sns-wasm/canister/sns-wasm.did
+  did_curl sns_aggregator sns_governance /rs/sns/governance/canister/governance.did
+  did_curl sns_aggregator sns_root /rs/sns/root/canister/root.did
+  did_curl sns_aggregator sns_swap /rs/sns/swap/canister/swap.did
+  did_curl sns_aggregator sns_wasm /rs/nns/sns-wasm/canister/sns-wasm.did
+  did_curl sns_aggregator sns_ledger /rs/rosetta-api/icrc1/ledger/ledger.did
 }
 
 : "All done"

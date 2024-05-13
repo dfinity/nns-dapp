@@ -31,7 +31,7 @@ STRIPPED_COMMAND="scripts/did2rs.sh$(printf " %q" "${@##*/}")"
 source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=c long=canister desc="The canister name" variable=CANISTER_NAME default=""
-clap.define short=d long=did desc="The did path.  Default: {GIT_ROOT}/declarations/{CANISTER_NAME}/{CANISTER_NAME}.did" variable=DID_PATH default=""
+clap.define short=d long=did desc="The did path.  Default: {GIT_ROOT}/declarations/used_by_{CRATE}/{CANISTER_NAME}/{CANISTER_NAME}.did" variable=DID_PATH default=""
 clap.define short=o long=out desc="The path to the output rust file." variable=RUST_PATH default="/dev/stdout"
 clap.define short=p long=patch desc="The path to the patch file, if any.  Default: {RUST_PATH} with the suffix .patch instead of .rs" variable=PATCH_PATH default=""
 clap.define short=t long=traits desc='The traits to add to types' variable=TRAITS default=""
@@ -48,7 +48,8 @@ GIT_ROOT="$(git rev-parse --show-toplevel)"
 
 PATCH_PATH="${PATCH_PATH:-${RUST_PATH%.rs}.patch}"
 EDIT_PATH="${EDIT_PATH:-${RUST_PATH%.rs}.edit}"
-DID_PATH="${DID_PATH:-${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did}"
+CRATE="$(echo "${RUST_PATH}" | "$sed" -nE 's@.*/rs/([^/]+)/.*@\1@p')"
+DID_PATH="${DID_PATH:-${GIT_ROOT}/declarations/used_by_${CRATE}/${CANISTER_NAME}/${CANISTER_NAME}.did}"
 
 cd "$GIT_ROOT"
 
