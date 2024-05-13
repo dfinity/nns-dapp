@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_root --out ic_sns_root.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-04-24_23-01-storage-layer/rs/sns/root/canister/root.did>
+//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-05-01_23-01-storage-layer/rs/sns/root/canister/root.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -144,6 +144,7 @@ pub struct ManageDappCanisterSettingsRequest {
     pub canister_ids: Vec<Principal>,
     pub reserved_cycles_limit: Option<u64>,
     pub log_visibility: Option<i32>,
+    pub wasm_memory_limit: Option<u64>,
     pub memory_allocation: Option<u64>,
     pub compute_allocation: Option<u64>,
 }
