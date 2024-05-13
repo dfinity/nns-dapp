@@ -23,7 +23,7 @@ GIT_ROOT="$(git rev-parse --show-toplevel)"
 failed_output=""
 for CANISTER_NAME in sns_ledger sns_governance sns_root sns_swap sns_wasm; do
   export CANISTER_NAME
-  DID_PATH="${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did"
+  DID_PATH="${GIT_ROOT}/declarations/used_by_sns_aggregator/${CANISTER_NAME}/${CANISTER_NAME}.did"
   test -f "${DID_PATH}" || (
     cd "$GIT_ROOT"
     cp "$(jq '.canisters[env.CANISTER_NAME].candid' dfx.json)" "$DID_PATH"

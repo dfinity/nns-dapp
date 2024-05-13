@@ -39,6 +39,12 @@ clap.define short=h long=header desc="Path to a header to be prepended to every 
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
+if [[ "$(uname)" == "Darwin" ]]; then
+  sed="gsed"
+else
+  sed="sed"
+fi
+
 ##########################
 # Get working dir and args
 ##########################
@@ -52,12 +58,6 @@ CRATE="$(echo "${RUST_PATH}" | "$sed" -nE 's@.*/rs/([^/]+)/.*@\1@p')"
 DID_PATH="${DID_PATH:-${GIT_ROOT}/declarations/used_by_${CRATE}/${CANISTER_NAME}/${CANISTER_NAME}.did}"
 
 cd "$GIT_ROOT"
-
-if [[ "$(uname)" == "Darwin" ]]; then
-  sed="gsed"
-else
-  sed="sed"
-fi
 
 : "Ensure that tools are installed and working.  Rustfmt in particular can self-upgrade when called and the self-upgrade can fail."
 {
