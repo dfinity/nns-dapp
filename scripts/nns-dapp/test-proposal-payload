@@ -39,6 +39,7 @@ NEURON_ID="$(cat "${IDENTITY_PATH}/neurons/local")"
 SUMMARY="Testing proposal payloads"
 
 NODE_ID="ynkov-ujzr4-rgyrv-ou4yf-orw6f-rrslu-w65tu-agnfu-xwdrv-xmayj-qae"
+NODE_ID_2="7e6za-cdhql-kvxja-dfse5-jrme3-rwmau-6foiv-fxnwt-h7qos-wqryb-pae"
 SUBNET_ID="52o7h-ke47f-b5z7i-ah4wu-qhruc-kfdcl-xzzhl-sjmfh-3ryrf-xxtei-bae"
 REPLICA_VERSION_ID="48da85ee6c03e8c15f3e90b21bf9ccae7b753ee6"
 
@@ -105,10 +106,11 @@ test_nns_function_43() {
   PROPOSAL_ID="$(run_ic_admin \
     "$subcommand" \
     --nodes $NODE_ID \
+    --nodes $NODE_ID_2 \
     --version $REPLICA_VERSION_ID)"
 
   ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
-  EXPECTED_PAYLOAD="{\"version\":\"$REPLICA_VERSION_ID\",\"node_ids\":[\"$NODE_ID\"]}"
+  EXPECTED_PAYLOAD="{\"version\":\"$REPLICA_VERSION_ID\",\"node_ids\":[\"$NODE_ID\",\"$NODE_ID_2\"]}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
