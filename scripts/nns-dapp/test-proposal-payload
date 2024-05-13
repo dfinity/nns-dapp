@@ -99,6 +99,20 @@ test_nns_function_38() {
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
 
+test_nns_function_43() {
+  subcommand="propose-to-add-api-boundary-nodes"
+
+  PROPOSAL_ID="$(run_ic_admin \
+    "$subcommand" \
+    --nodes $NODE_ID \
+    --version $REPLICA_VERSION_ID)"
+
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
+  EXPECTED_PAYLOAD="{\"release_package_urls\":[],\"replica_versions_to_unelect\":[\"$REPLICA_VERSION_ID\"],\"replica_version_to_elect\":null,\"guest_launch_measurement_sha256_hex\":null,\"release_package_sha256_hex\":null}"
+
+  verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
+}
+
 test_nns_function_47() {
   subcommand="propose-to-deploy-guestos-to-some-api-boundary-nodes"
 
