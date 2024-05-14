@@ -1,4 +1,3 @@
-import { NeuronFollowingCardPo } from "$tests/page-objects/NeuronFollowingCard.page-object";
 import { NnsNeuronAdvancedSectionPo } from "$tests/page-objects/NnsNeuronAdvancedSection.page-object";
 import { NnsNeuronMaturitySectionPo } from "$tests/page-objects/NnsNeuronMaturitySection.page-object";
 import { NnsNeuronModalsPo } from "$tests/page-objects/NnsNeuronModals.page-object";
@@ -21,10 +20,6 @@ export class NnsNeuronDetailPo extends BasePageObject {
 
   getSkeletonCardPo(): SkeletonCardPo {
     return SkeletonCardPo.under(this.root);
-  }
-
-  getNeuronFollowingCardPo(): NeuronFollowingCardPo {
-    return NeuronFollowingCardPo.under(this.root);
   }
 
   async createDummyProposals(): Promise<void> {

@@ -27,7 +27,6 @@ export class FollowNnsTopicSectionPo extends BasePageObject {
       .querySelector("article[data-tid^='follow-topic-']")
       .getAttribute("data-tid");
     const [_, topic] = dataTid.match(/follow-topic-(\d+)-section/);
-    console.log("dskloetx getFollowTopicSectionPo", dataTid, topic);
     return FollowTopicSectionPo.under({
       element: this.root,
       topic: Number(topic),
@@ -36,5 +35,13 @@ export class FollowNnsTopicSectionPo extends BasePageObject {
 
   getNewFolloweeModalPo(): NewFolloweeModalPo {
     return NewFolloweeModalPo.under(this.root);
+  }
+
+  async getFollowees(): Promise<string[]> {
+    return Promise.all(
+      (await this.root.allByTestId("current-followee-item")).map(async (el) =>
+        (await el.getText()).trim()
+      )
+    );
   }
 }

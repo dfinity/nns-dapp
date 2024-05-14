@@ -30,15 +30,21 @@ test("Test neuron following", async ({ page, context }) => {
     .getEditFollowNeuronsPo()
     .getFollowNnsTopicSectionPos();
 
-  expect(followNnsTopicSections.length).toBe(14);
-  // Go through sections in reverse order because the last one is the one most
-  // likely to fail.
+  step("Follow topics");
+  expect(followNnsTopicSections.length).toBe(15);
+  // Go through sections in reverse order because the later ones are the ones
+  // most likely to fail.
   followNnsTopicSections.reverse();
+  const followee = "123";
   for (const followNnsTopicSection of followNnsTopicSections) {
     const followTopicSection =
       await followNnsTopicSection.getFollowTopicSectionPo();
     await followTopicSection.getCollapsiblePo().expand();
     await followTopicSection.getAddFolloweeButtonPo().click();
-    await followNnsTopicSection.getNewFolloweeModalPo().followNeuronId("28");
+    await followNnsTopicSection
+      .getNewFolloweeModalPo()
+      .followNeuronId(followee);
+    const followees = await followNnsTopicSection.getFollowees();
+    expect(followees).toContain(followee);
   }
 });

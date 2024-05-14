@@ -1,8 +1,8 @@
+import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import { TextInputPo } from "$tests/page-objects/TextInput.page-object";
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class NewFolloweeModalPo extends BasePageObject {
+export class NewFolloweeModalPo extends ModalPo {
   private static readonly TID = "new-followee-modal-component";
 
   static under(element: PageObjectElement): NewFolloweeModalPo {
@@ -16,5 +16,6 @@ export class NewFolloweeModalPo extends BasePageObject {
   async followNeuronId(neuronId: string): Promise<void> {
     await this.getTextInputPo().typeText(neuronId);
     await this.click("follow-neuron-button");
+    await this.waitForClosed();
   }
 }
