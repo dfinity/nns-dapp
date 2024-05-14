@@ -1240,6 +1240,7 @@ interface I18nNns_functions {
   UpdateSshReadOnlyAccessForAllUnassignedNodes: string;
   ReviseElectedHostosVersions: string;
   DeployHostosToSomeNodes: string;
+  SubnetRentalRequest: string;
 }
 
 interface I18nNns_functions_description {
@@ -1293,6 +1294,7 @@ interface I18nNns_functions_description {
   UpdateSshReadOnlyAccessForAllUnassignedNodes: string;
   ReviseElectedHostosVersions: string;
   DeployHostosToSomeNodes: string;
+  SubnetRentalRequest: string;
 }
 
 interface I18n {
