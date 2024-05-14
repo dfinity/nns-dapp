@@ -181,7 +181,8 @@ test_nns_function_51() {
 test_nns_function_52() {
   subcommand="propose-to-rent-subnet"
 
-  PROPOSAL_ID="$(run_ic_admin \
+  # TODO: Use `run_ic_admin` instead of `run_ic_admin_with_test_neuron` once `ic-admin` is fixed.
+  PROPOSAL_ID="$(run_ic_admin_with_test_neuron \
     "$subcommand" \
     --rental-condition-id App13CH \
     --user "$USER_PRINCIPAL")"
@@ -199,6 +200,17 @@ run_ic_admin() {
     "$@" \
     --summary "$SUMMARY" \
     --proposer "$NEURON_ID" |
+    grep -E '^proposal [0-9]+$' | sed 's/proposal //'
+}
+
+# Work-around for when `run_ic_admin` gives this error:
+# Specifying a secret key or HSM is only supported for methods that interact with NNS handlers.
+run_ic_admin_with_test_neuron() {
+  ic-admin \
+    --nns-url "$NNS_URL" \
+    "$@" \
+    --summary "$SUMMARY" \
+    --test-neuron-proposer |
     grep -E '^proposal [0-9]+$' | sed 's/proposal //'
 }
 
@@ -231,7 +243,7 @@ declare -F | grep test_nns_function_ | sed -e 's/declare -f //' | while read -r 
 done
 
 # Make sure that we add tests for new NNS function.
-FIRST_UNDEFINED_NNS_FUNCTION=52
+FIRST_UNDEFINED_NNS_FUNCTION=53
 
 for i in $(seq 0 5); do
   undefined_nns_function=$((FIRST_UNDEFINED_NNS_FUNCTION + i))
