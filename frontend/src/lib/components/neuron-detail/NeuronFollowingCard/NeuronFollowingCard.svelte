@@ -34,7 +34,7 @@
   onMount(listKnownNeurons);
 </script>
 
-<CardInfo noMargin>
+<CardInfo noMargin testId="neuron-following-card-component">
   <KeyValuePairInfo testId="neuron-following">
     <h3 slot="key">{$i18n.neuron_detail.following_title}</h3>
     <svelte:fragment slot="info"

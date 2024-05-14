@@ -1,3 +1,4 @@
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { CollapsiblePo } from "$tests/page-objects/Collapsible.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -34,6 +35,10 @@ export class FollowTopicSectionPo extends BasePageObject {
       element: this.root,
       testId: "collapsible",
     });
+  }
+
+  getAddFolloweeButtonPo(): ButtonPo {
+    return this.getButton("open-new-followee-modal");
   }
 
   async getBadgeNumber(): Promise<number> {
