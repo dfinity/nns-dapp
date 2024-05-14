@@ -31,7 +31,7 @@ test("Test neuron following", async ({ page, context }) => {
     .getFollowNnsTopicSectionPos();
 
   step("Follow topics");
-  expect(followNnsTopicSections.length).toBe(15);
+  expect(followNnsTopicSections.length).toBe(14);
   // Go through sections in reverse order because the later ones are the ones
   // most likely to fail.
   followNnsTopicSections.reverse();
