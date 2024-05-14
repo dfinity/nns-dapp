@@ -150,7 +150,8 @@
     "DeployGuestosToAllUnassignedNodes": "Deploy GuestOS To All Unassigned Nodes",
     "UpdateSshReadOnlyAccessForAllUnassignedNodes": "Update SSH Read Only Access For All Unassigned Nodes",
     "ReviseElectedHostosVersions": "Revise Elected HostOS Versions",
-    "DeployHostosToSomeNodes": "Deploy HostOS To Some Nodes"
+    "DeployHostosToSomeNodes": "Deploy HostOS To Some Nodes",
+    "SubnetRentalRequest": "Subnet Rental Request"
   },
   "nns_functions_description": {
     "Unspecified": "",
@@ -202,6 +203,7 @@
     "DeployGuestosToAllUnassignedNodes": "A proposal to update the version of all unassigned nodes.",
     "UpdateSshReadOnlyAccessForAllUnassignedNodes": "A proposal to update SSH readonly access for all unassigned nodes.",
     "ReviseElectedHostosVersions": "A proposal to change the set of currently elected HostOS versions, by electing a new version, and/or unelecting some priorly elected versions.<br/><br/>HostOS versions are identified by the hash of the installation image.<br/><br/>The version to elect is added to the Registry, and the versions to unelect are removed from the Registry, ensuring that HostOS cannot upgrade to these versions anymore.<br/><br/>This proposal does not actually perform the upgrade; for deployment of an elected version, please refer to \"Deploy HostOS To Some Nodes\".",
-    "DeployHostosToSomeNodes": "Deploy a HostOS version to a given set of nodes. The proposal changes the HostOS version that is used on the specified nodes."
+    "DeployHostosToSomeNodes": "Deploy a HostOS version to a given set of nodes. The proposal changes the HostOS version that is used on the specified nodes.",
+    "SubnetRentalRequest": "A proposal to rent a subnet on the Internet Computer.<br/><br/>The Subnet Rental Canister is called when this proposal is executed, and the rental request is stored there. The user specified in the proposal needs to make a sufficient upfront payment in ICP in order for the proposal to be valid, and the subnet must be available for rent. The available rental conditions can be checked by calling the Subnet Rental Canister."
   }
 }
