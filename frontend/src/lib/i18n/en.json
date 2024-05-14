@@ -361,6 +361,8 @@
     "topic_14_subtitle": "Proposals related to SNS and Neurons' Fund",
     "topic_15_title": "API Boundary Node Management",
     "topic_15_subtitle": "Proposals related to the management of API boundary nodes",
+    "topic_16_title": "Subnet Rental",
+    "topic_16_subtitle": "All proposals related to renting a subnet, for example a subnet rental request.",
     "current_followees": "Currently Following",
     "add": "Add Followee"
   },
