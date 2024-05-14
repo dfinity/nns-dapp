@@ -237,6 +237,7 @@ describe("SnsProposalDetail", () => {
     });
 
     it("should display proposal navigation", async () => {
+      actionableProposalsSegmentStore.set("all");
       // mock the store to have 3 proposals for navigation
       vi.spyOn(snsFilteredProposalsStore, "subscribe").mockImplementation(
         buildMockSnsProposalsStoreSubscribe({
