@@ -29,3 +29,5 @@ for cargo_toml_file in "Cargo.toml" $(find "$TOP_DIR/rs" -name "Cargo.toml"); do
     rm "$cargo_toml_file.bak"
   done
 done
+
+cargo update --workspace
