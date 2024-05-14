@@ -7,9 +7,9 @@
   const allProposalsSegmentId = Symbol();
 
   let selectedSegmentId: symbol =
-    $actionableProposalsSegmentStore.selected !== "actionable"
-      ? allProposalsSegmentId
-      : actionableProposalsSegmentId;
+    $actionableProposalsSegmentStore.selected !== "all"
+      ? actionableProposalsSegmentId
+      : allProposalsSegmentId;
 
   $: selectedSegmentId,
     (() =>
