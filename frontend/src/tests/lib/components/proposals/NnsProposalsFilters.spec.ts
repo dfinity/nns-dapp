@@ -3,6 +3,7 @@ import {
   DEFAULT_PROPOSALS_FILTERS,
   DEPRECATED_TOPICS,
 } from "$lib/constants/proposals.constants";
+import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";
@@ -41,10 +42,18 @@ describe("NnsProposalsFilters", () => {
     expect(buttons?.length).toEqual(1);
   };
 
+  beforeEach(() => {
+    actionableProposalsSegmentStore.resetForTesting();
+  });
+
   describe("default filters", () => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(
-      mutableMockAuthStoreSubscribe
-    );
+    beforeEach(() => {
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mutableMockAuthStoreSubscribe
+      );
+
+      actionableProposalsSegmentStore.set("all");
+    });
 
     it("should render topics filters", () => {
       const { container } = render(NnsProposalsFilters);
@@ -80,6 +89,8 @@ describe("NnsProposalsFilters", () => {
     });
 
     it("should not count deprecated selected filters in the count", () => {
+      actionableProposalsSegmentStore.set("all");
+
       const activeFilters = [
         Topic.SnsDecentralizationSale,
         Topic.SnsAndCommunityFund,
@@ -135,14 +146,17 @@ describe("NnsProposalsFilters", () => {
         );
       });
 
-      it('should "all" be preselected by default', async () => {
+      it('should "actionable" be preselected by default', async () => {
         const po = await renderComponent();
         expect(
-          await po.getActionableProposalsSegmentPo().isAllProposalsSelected()
+          await po
+            .getActionableProposalsSegmentPo()
+            .isActionableProposalsSelected()
         ).toEqual(true);
       });
 
       it("should switch segment on click", async () => {
+        actionableProposalsSegmentStore.set("all");
         const po = await renderComponent();
         const segmentPo = po.getActionableProposalsSegmentPo();
         expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
@@ -158,6 +172,7 @@ describe("NnsProposalsFilters", () => {
       });
 
       it("should hide and show proposal filters", async () => {
+        actionableProposalsSegmentStore.set("all");
         const po = await renderComponent();
         const segmentPo = po.getActionableProposalsSegmentPo();
 
@@ -186,14 +201,17 @@ describe("NnsProposalsFilters", () => {
         );
       });
 
-      it('should "all" be preselected by default', async () => {
+      it('should "actionable" be preselected by default', async () => {
         const po = await renderComponent();
         expect(
-          await po.getActionableProposalsSegmentPo().isAllProposalsSelected()
+          await po
+            .getActionableProposalsSegmentPo()
+            .isActionableProposalsSelected()
         ).toEqual(true);
       });
 
       it("should hide and show proposal filters", async () => {
+        actionableProposalsSegmentStore.set("all");
         const po = await renderComponent();
         const segmentPo = po.getActionableProposalsSegmentPo();
 
