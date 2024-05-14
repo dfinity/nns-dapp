@@ -46,6 +46,7 @@ describe("Proposal", () => {
   beforeEach(() => {
     actionableProposalsSegmentStore.resetForTesting();
     vi.spyOn(proposalsApi, "queryProposalPayload").mockResolvedValue({});
+    actionableProposalsSegmentStore.set("all");
   });
 
   it("should render a detail grid", async () => {
