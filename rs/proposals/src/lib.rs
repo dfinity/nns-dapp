@@ -14,11 +14,11 @@ use crate::def::{
     RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload, RemoveNodesPayload,
     RerouteCanisterRangesPayload, RetireReplicaVersionPayload, ReviseElectedGuestosVersionsPayload,
     ReviseElectedHostosVersionsPayload, SetAuthorizedSubnetworkListArgs, SetFirewallConfigPayload,
-    StopOrStartNnsCanisterProposal, UpdateAllowedPrincipalsRequest, UpdateApiBoundaryNodesVersionPayload,
-    UpdateElectedHostosVersionsPayload, UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload,
-    UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload, UpdateNodesHostosVersionPayload,
-    UpdateSnsSubnetListRequest, UpdateSshReadOnlyAccessForAllUnassignedNodesPayload, UpdateSubnetPayload,
-    UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload, UpgradeRootProposalPayload,
+    StopOrStartNnsCanisterProposal, SubnetRentalRequest, UpdateAllowedPrincipalsRequest,
+    UpdateApiBoundaryNodesVersionPayload, UpdateElectedHostosVersionsPayload, UpdateFirewallRulesPayload,
+    UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload,
+    UpdateNodesHostosVersionPayload, UpdateSnsSubnetListRequest, UpdateSshReadOnlyAccessForAllUnassignedNodesPayload,
+    UpdateSubnetPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload, UpgradeRootProposalPayload,
     UpgradeRootProposalPayloadTrimmed,
 };
 use candid::types::{self as candid_types, Type, TypeInner};
@@ -330,6 +330,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         49 => identity::<UpdateSshReadOnlyAccessForAllUnassignedNodesPayload>(payload_bytes),
         50 => identity::<ReviseElectedHostosVersionsPayload>(payload_bytes),
         51 => identity::<DeployHostosToSomeNodesPayload>(payload_bytes),
+        52 => identity::<SubnetRentalRequest>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }

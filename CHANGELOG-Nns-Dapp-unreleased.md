@@ -19,6 +19,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Add `ENABLE_ACTIONABLE_TAB` feature flag.
 * Support `ApiBoundaryNodes` in `FirewallRulesScope` of `AddFirewallRulesPayload`.
 * Support `SubnetRental` topic.
+* Support NNS function 52 for `SubnetRentalRequest`.
 
 #### Changed
 
