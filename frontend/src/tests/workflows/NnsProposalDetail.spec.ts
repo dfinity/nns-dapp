@@ -4,6 +4,7 @@ import { queryProposal } from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import NnsProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
+import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { page } from "$mocks/$app/stores";
@@ -56,6 +57,8 @@ describe("Proposal detail page when not logged in user", () => {
     resetNeuronsApiService();
     resolveCertifiedPromise = undefined;
     resolveUncertifiedPromise = undefined;
+    // we don't display actionable proposals for non-logged in users
+    actionableProposalsSegmentStore.set("all");
   });
 
   describe("when logged in user", () => {
