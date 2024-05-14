@@ -13,6 +13,7 @@
   } from "$lib/utils/neuron.utils";
   import FollowTopicSection from "./FollowTopicSection.svelte";
   import { IconClose, Value } from "@dfinity/gix-components";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let topic: Topic;
   export let neuron: NeuronInfo;
@@ -61,29 +62,31 @@
   };
 </script>
 
-<FollowTopicSection
-  on:nnsOpen={openNewFolloweeModal}
-  id={String(topic)}
-  count={followees.length}
->
-  <svelte:fragment slot="title">{title}</svelte:fragment>
-  <svelte:fragment slot="subtitle">{subtitle}</svelte:fragment>
-  <ul>
-    {#each followees as followee (followee.neuronId)}
-      <li data-tid="current-followee-item">
-        <Value>{followee.name ?? followee.neuronId}</Value>
-        <button
-          class="text"
-          on:click={() => removeCurrentFollowee(followee.neuronId)}
-          ><IconClose /></button
-        >
-      </li>
-    {/each}
-  </ul>
-</FollowTopicSection>
-{#if showNewFolloweeModal}
-  <NewFolloweeModal {neuron} {topic} on:nnsClose={closeNewFolloweeModal} />
-{/if}
+<TestIdWrapper testId="follow-nns-topic-section-component">
+  <FollowTopicSection
+    on:nnsOpen={openNewFolloweeModal}
+    id={String(topic)}
+    count={followees.length}
+  >
+    <svelte:fragment slot="title">{title}</svelte:fragment>
+    <svelte:fragment slot="subtitle">{subtitle}</svelte:fragment>
+    <ul>
+      {#each followees as followee (followee.neuronId)}
+        <li data-tid="current-followee-item">
+          <Value>{followee.name ?? followee.neuronId}</Value>
+          <button
+            class="text"
+            on:click={() => removeCurrentFollowee(followee.neuronId)}
+            ><IconClose /></button
+          >
+        </li>
+      {/each}
+    </ul>
+  </FollowTopicSection>
+  {#if showNewFolloweeModal}
+    <NewFolloweeModal {neuron} {topic} on:nnsClose={closeNewFolloweeModal} />
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/card";

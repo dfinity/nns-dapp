@@ -13,6 +13,7 @@
 </script>
 
 <button
+  data-tid="follow-neurons-button-component"
   class="primary"
   on:click={() =>
     openNnsNeuronModal({ type: "follow", data: { neuron: $store.neuron } })}
