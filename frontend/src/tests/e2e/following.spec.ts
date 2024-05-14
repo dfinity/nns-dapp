@@ -16,7 +16,6 @@ test("Test neuron following", async ({ page, context }) => {
 
   step("Stake neuron");
   await appPo.goToNeurons();
-  const stake = 10;
   await appPo.getNeuronsPo().getNnsNeuronsFooterPo().clickStakeNeuronsButton();
   const stakeModal = appPo
     .getNeuronsPo()
