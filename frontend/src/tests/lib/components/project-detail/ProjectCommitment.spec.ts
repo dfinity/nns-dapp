@@ -89,13 +89,15 @@ describe("ProjectCommitment", () => {
       directCommitment,
       minDirectParticipation: 10000000000n,
       maxDirectParticipation: 100000000000n,
+      buyersCount: 100n,
+      minParticipants: 100,
     });
     const po = renderComponent(summary);
 
     expect(await po.getGoalReachedMessage()).toEqual(null);
   });
 
-  it("should render success message when current commitment reaches the min participation goal", async () => {
+  it("should hide success message when current saleBuyerCount is less then min_participants", async () => {
     const directCommitment = 30000000000n;
     const summary = createSummary({
       currentTotalCommitment: directCommitment,
@@ -103,6 +105,24 @@ describe("ProjectCommitment", () => {
       directCommitment,
       minDirectParticipation: 10000000000n,
       maxDirectParticipation: 100000000000n,
+      buyersCount: 99n,
+      minParticipants: 100,
+    });
+    const po = renderComponent(summary);
+
+    expect(await po.getGoalReachedMessage()).toEqual(null);
+  });
+
+  it("should render success message when current commitment reaches the min participation goal and there are enough participants", async () => {
+    const directCommitment = 30000000000n;
+    const summary = createSummary({
+      currentTotalCommitment: directCommitment,
+      neuronsFundCommitment: 0n,
+      directCommitment,
+      minDirectParticipation: 10000000000n,
+      maxDirectParticipation: 100000000000n,
+      buyersCount: 100n,
+      minParticipants: 100,
     });
     const po = renderComponent(summary);
 

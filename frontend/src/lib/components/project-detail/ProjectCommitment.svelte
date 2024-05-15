@@ -40,7 +40,8 @@
 
   let min_icp_e8s: bigint;
   let max_icp_e8s: bigint;
-  $: ({ min_icp_e8s, max_icp_e8s } = params);
+  let min_participants: number;
+  $: ({ min_icp_e8s, max_icp_e8s, min_participants } = params);
 
   let projectCommitments: ProjectCommitmentSplit;
   $: projectCommitments = getProjectCommitmentSplit(summary);
@@ -68,6 +69,9 @@
     ? projectCommitments.directCommitmentE8s >=
       projectCommitments.minDirectCommitmentE8s
     : false;
+  let isMinParticipantsReached: boolean;
+  $: isMinParticipantsReached =
+    nonNullish(saleBuyerCount) && saleBuyerCount >= min_participants;
 
   let maxNfParticipation: bigint | undefined;
   $: maxNfParticipation = getMaxNeuronsFundParticipation(summary);
@@ -84,7 +88,7 @@
       >
     </KeyValuePair>
   {/if}
-  {#if isMinParticipationReached}
+  {#if isMinParticipationReached && isMinParticipantsReached}
     <p
       data-tid="min-participation-reached"
       class="content-cell-island__card min-participation-reached"
