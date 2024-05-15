@@ -86,7 +86,7 @@
   };
 </script>
 
-<Modal on:nnsClose>
+<Modal on:nnsClose testId="new-followee-modal-component">
   <svelte:fragment slot="title">{$i18n.new_followee.title}</svelte:fragment>
 
   <form on:submit|preventDefault={addFolloweeByAddress}>
@@ -100,6 +100,7 @@
       <svelte:fragment slot="label">{$i18n.new_followee.label}</svelte:fragment>
     </Input>
     <button
+      data-tid="follow-neuron-button"
       class="primary"
       type="submit"
       disabled={followeeAddress.length === 0 || !isUserAuthorized || $busy}

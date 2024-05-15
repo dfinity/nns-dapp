@@ -2751,6 +2751,9 @@ describe("neuron-utils", () => {
       expect(
         getTopicTitle({ topic: Topic.ApiBoundaryNodeManagement, i18n: en })
       ).toBe("API Boundary Node Management");
+      expect(getTopicTitle({ topic: Topic.SubnetRental, i18n: en })).toBe(
+        "Subnet Rental"
+      );
     });
   });
 
@@ -2825,6 +2828,9 @@ describe("neuron-utils", () => {
       expect(
         getTopicSubtitle({ topic: Topic.ApiBoundaryNodeManagement, i18n: en })
       ).toBe("Proposals related to the management of API boundary nodes");
+      expect(getTopicSubtitle({ topic: Topic.SubnetRental, i18n: en })).toBe(
+        "All proposals related to renting a subnet, for example a subnet rental request."
+      );
     });
   });
 });

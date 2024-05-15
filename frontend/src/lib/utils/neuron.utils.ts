@@ -1003,6 +1003,7 @@ export const getTopicTitle = ({
     [Topic.ReplicaVersionManagement]: i18n.follow_neurons.topic_13_title,
     [Topic.SnsAndCommunityFund]: i18n.follow_neurons.topic_14_title,
     [Topic.ApiBoundaryNodeManagement]: i18n.follow_neurons.topic_15_title,
+    [Topic.SubnetRental]: i18n.follow_neurons.topic_16_title,
   };
   return mapper[topic];
 };
@@ -1032,6 +1033,7 @@ export const getTopicSubtitle = ({
     [Topic.ReplicaVersionManagement]: i18n.follow_neurons.topic_13_subtitle,
     [Topic.SnsAndCommunityFund]: i18n.follow_neurons.topic_14_subtitle,
     [Topic.ApiBoundaryNodeManagement]: i18n.follow_neurons.topic_15_subtitle,
+    [Topic.SubnetRental]: i18n.follow_neurons.topic_16_subtitle,
   };
   return mapper[topic];
 };
