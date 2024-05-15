@@ -99,10 +99,17 @@ describe("NnsNeurons", () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", true);
       });
 
-      it("should not render the neurons table", async () => {
+      it("should render the neurons table", async () => {
         const po = await renderComponent();
 
         expect(await po.getNeuronsTablePo().isPresent()).toBe(true);
+      });
+
+      it("should render neurons table rows", async () => {
+        const po = await renderComponent();
+
+        const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+        expect(rows).toHaveLength(3);
       });
 
       it("should not render the NeuronCards", async () => {
