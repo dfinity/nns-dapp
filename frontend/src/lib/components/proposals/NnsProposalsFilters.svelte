@@ -10,7 +10,8 @@
   import FiltersWrapper from "./FiltersWrapper.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
-  import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
+  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 
@@ -40,9 +41,11 @@
 
 <TestIdWrapper testId="nns-proposals-filters-component">
   <div class="proposal-filters">
-    <ActionableProposalsSegment />
+    {#if $authSignedInStore}
+      <ActionableProposalsSegment />
+    {/if}
 
-    {#if $actionableProposalsSegmentStore.selected !== "actionable"}
+    {#if !$actionableProposalsActiveStore}
       <FiltersWrapper>
         <FiltersButton
           testId="filters-by-topics"

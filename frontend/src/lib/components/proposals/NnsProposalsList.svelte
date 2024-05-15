@@ -11,11 +11,11 @@
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
   import { fade } from "svelte/transition";
   import type { ProposalInfo } from "@dfinity/nns";
-  import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
   import { isNullish } from "@dfinity/utils";
   import ActionableProposalsSignIn from "$lib/components/proposals/ActionableProposalsSignIn.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import ActionableProposalsEmpty from "$lib/components/proposals/ActionableProposalsEmpty.svelte";
+  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
   export let nothingFound: boolean;
   export let hidden: boolean;
   export let disableInfiniteScroll: boolean;
@@ -35,7 +35,7 @@
   <NnsProposalsFilters />
 
   {#if display}
-    {#if $actionableProposalsSegmentStore.selected !== "actionable"}
+    {#if !$actionableProposalsActiveStore}
       <div in:fade data-tid="all-proposal-list">
         {#if loadingAnimation === "skeleton"}
           <LoadingProposals />

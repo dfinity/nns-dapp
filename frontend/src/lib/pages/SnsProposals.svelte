@@ -24,11 +24,11 @@
     actionableSnsProposalsStore,
     type ActionableSnsProposalsData,
   } from "$lib/stores/actionable-sns-proposals.store";
-  import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
   import {
     snsFilteredActionableProposalsStore,
     type SnsProposalActionableData,
   } from "$lib/derived/sns/sns-filtered-actionable-proposals.derived";
+  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
 
   let nsFunctionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
   $: nsFunctionsStore = createSnsNsFunctionsProjectStore($snsOnlyProjectStore);
@@ -127,10 +127,6 @@
       }) as SnsProposalActionableData
   );
 
-  let actionableSelected: boolean;
-  $: actionableSelected =
-    $actionableProposalsSegmentStore.selected === "actionable";
-
   let includeBallots: boolean;
   $: includeBallots = actionableProposalsData?.includeBallotsByCaller ?? false;
 
@@ -138,7 +134,7 @@
   let proposals: SnsProposalActionableData[] | undefined;
   $: proposals = nonNullish(currentProjectCanisterId)
     ? sortSnsProposalsById(
-        actionableSelected
+        $actionableProposalsActiveStore
           ? actionableProposals
           : $snsFilteredActionableProposalsStore[
               currentProjectCanisterId.toText()
@@ -156,7 +152,7 @@
   <SnsProposalsList
     {snsName}
     {proposals}
-    {actionableSelected}
+    actionableSelected={$actionableProposalsActiveStore}
     {includeBallots}
     nsFunctions={$nsFunctionsStore}
     on:nnsIntersect={loadNextPage}
