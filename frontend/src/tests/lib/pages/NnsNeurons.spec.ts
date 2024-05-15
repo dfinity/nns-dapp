@@ -104,6 +104,13 @@ describe("NnsNeurons", () => {
 
         expect(await po.getNeuronsTablePo().isPresent()).toBe(true);
       });
+
+      it("should not render the NeuronCards", async () => {
+        const po = await renderComponent();
+
+        const neuronCards = await po.getNeuronCardPos();
+        expect(neuronCards.length).toBe(0);
+      });
     });
   });
 
