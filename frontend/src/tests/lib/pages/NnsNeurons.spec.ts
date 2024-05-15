@@ -2,6 +2,7 @@ import { resetNeuronsApiService } from "$lib/api-services/governance.api-service
 import * as api from "$lib/api/governance.api";
 import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
 import * as authServices from "$lib/services/auth.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
@@ -19,6 +20,7 @@ describe("NnsNeurons", () => {
     vi.resetAllMocks();
     resetNeuronsApiService();
     neuronsStore.reset();
+    overrideFeatureFlagsStore.reset();
   });
 
   const renderComponent = async () => {
@@ -50,34 +52,58 @@ describe("NnsNeurons", () => {
       vi.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
     });
 
-    it("should render spawning neurons as disabled", async () => {
-      const po = await renderComponent();
+    describe("with ENABLE_NEURONS_TABLE disabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", false);
+      });
 
-      const neuronCards = await po.getNeuronCardPos();
-      expect(neuronCards.length).toBe(3);
+      it("should render spawning neurons as disabled", async () => {
+        const po = await renderComponent();
 
-      expect(await neuronCards[0].isDisabled()).toBe(false);
-      expect(await neuronCards[1].isDisabled()).toBe(true);
-      expect(await neuronCards[2].isDisabled()).toBe(false);
+        const neuronCards = await po.getNeuronCardPos();
+        expect(neuronCards.length).toBe(3);
+
+        expect(await neuronCards[0].isDisabled()).toBe(false);
+        expect(await neuronCards[1].isDisabled()).toBe(true);
+        expect(await neuronCards[2].isDisabled()).toBe(false);
+      });
+
+      it("should render the NeuronCards", async () => {
+        const po = await renderComponent();
+
+        const neuronCards = await po.getNeuronCardPos();
+        expect(neuronCards.length).toBe(neurons.length);
+      });
+
+      it("should not render an empty message", async () => {
+        const po = await renderComponent();
+
+        expect(await po.hasEmptyMessage()).toBe(false);
+      });
+
+      it("should render topic rename message", async () => {
+        const po = await renderComponent();
+
+        expect(await po.hasTopicRenameMessage()).toBe(true);
+      });
+
+      it("should not render the neurons table", async () => {
+        const po = await renderComponent();
+
+        expect(await po.getNeuronsTablePo().isPresent()).toBe(false);
+      });
     });
 
-    it("should render the NeuronCards", async () => {
-      const po = await renderComponent();
+    describe("with ENABLE_NEURONS_TABLE enabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", true);
+      });
 
-      const neuronCards = await po.getNeuronCardPos();
-      expect(neuronCards.length).toBe(neurons.length);
-    });
+      it("should not render the neurons table", async () => {
+        const po = await renderComponent();
 
-    it("should not render an empty message", async () => {
-      const po = await renderComponent();
-
-      expect(await po.hasEmptyMessage()).toBe(false);
-    });
-
-    it("should render topic rename message", async () => {
-      const po = await renderComponent();
-
-      expect(await po.hasTopicRenameMessage()).toBe(true);
+        expect(await po.getNeuronsTablePo().isPresent()).toBe(true);
+      });
     });
   });
 
