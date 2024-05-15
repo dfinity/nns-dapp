@@ -390,23 +390,14 @@ describe("SnsProposals", () => {
       expect(await po.getActionableProposalList().isPresent()).toEqual(true);
     });
 
-    it('should display "Not signIn" banner', async () => {
+    it('should not display "Not signIn" banner', async () => {
       setNoIdentity();
       const po = await renderComponent();
-      expect(await po.getActionableSignInBanner().isPresent()).toBe(true);
+      expect(await po.getActionableSignInBanner().isPresent()).toBe(false);
 
       // login
       resetIdentity();
       await runResolvedPromises();
-      expect(await po.getActionableSignInBanner().isPresent()).toBe(false);
-
-      // logout
-      setNoIdentity();
-      await runResolvedPromises();
-      expect(await po.getActionableSignInBanner().isPresent()).toBe(true);
-
-      // switch to all proposals
-      await selectAllProposals(po);
       expect(await po.getActionableSignInBanner().isPresent()).toBe(false);
     });
 
@@ -437,12 +428,6 @@ describe("SnsProposals", () => {
       const po2 = await renderComponent();
       await selectActionableProposals(po2);
       expect(await po2.getActionableEmptyBanner().isPresent()).toBe(false);
-
-      // signOut
-      setNoIdentity();
-      const po3 = await renderComponent();
-      await selectActionableProposals(po3);
-      expect(await po3.getActionableEmptyBanner().isPresent()).toBe(false);
     });
 
     it('should display "Actionable not supported" banner', async () => {

@@ -339,7 +339,7 @@ describe("NnsProposals", () => {
       expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
     });
 
-    it("should display login CTA", async () => {
+    it("should display no segment when not sign-in", async () => {
       vi.spyOn(authStore, "subscribe").mockImplementation(
         (run: Subscriber<AuthStoreData>): (() => void) => {
           run({ identity: undefined });
@@ -348,17 +348,12 @@ describe("NnsProposals", () => {
         }
       );
       const po = await renderComponent();
-      await selectActionableProposals(po);
-      expect(await po.getActionableSignInBanner().isPresent()).toEqual(true);
-      expect(await po.getActionableSignInBanner().getTitleText()).toEqual(
-        "You are not signed in."
-      );
-      expect(await po.getActionableSignInBanner().getDescriptionText()).toEqual(
-        "Sign in to see actionable proposals"
-      );
       expect(
-        await po.getActionableSignInBanner().getBannerActionsText()
-      ).toEqual("Sign in with Internet Identity");
+        await po
+          .getNnsProposalFiltersPo()
+          .getActionableProposalsSegmentPo()
+          .isPresent()
+      ).toBe(false);
     });
 
     it('should display "no actionable proposals" banner', async () => {

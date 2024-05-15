@@ -138,50 +138,17 @@ describe("NnsProposalsFilters", () => {
         });
       });
 
-      it("should render actionable proposals segment", async () => {
+      it("should not render actionable proposals segment", async () => {
         const po = await renderComponent();
 
         expect(await po.getActionableProposalsSegmentPo().isPresent()).toEqual(
-          true
+          false
         );
       });
 
-      it('should "actionable" be preselected by default', async () => {
+      it("should filters be shown", async () => {
         const po = await renderComponent();
-        expect(
-          await po
-            .getActionableProposalsSegmentPo()
-            .isActionableProposalsSelected()
-        ).toEqual(true);
-      });
 
-      it("should switch segment on click", async () => {
-        actionableProposalsSegmentStore.set("all");
-        const po = await renderComponent();
-        const segmentPo = po.getActionableProposalsSegmentPo();
-        expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
-        expect(await segmentPo.isActionableProposalsSelected()).toEqual(false);
-
-        await segmentPo.clickActionableProposals();
-        expect(await segmentPo.isAllProposalsSelected()).toEqual(false);
-        expect(await segmentPo.isActionableProposalsSelected()).toEqual(true);
-
-        await segmentPo.clickAllProposals();
-        expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
-        expect(await segmentPo.isActionableProposalsSelected()).toEqual(false);
-      });
-
-      it("should hide and show proposal filters", async () => {
-        actionableProposalsSegmentStore.set("all");
-        const po = await renderComponent();
-        const segmentPo = po.getActionableProposalsSegmentPo();
-
-        expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
-
-        await segmentPo.clickActionableProposals();
-        expect(await po.getFiltersWrapper().isPresent()).toEqual(false);
-
-        await segmentPo.clickAllProposals();
         expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
       });
     });
