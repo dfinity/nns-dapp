@@ -282,7 +282,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999994714894000,
+    "icrc1_total_supply": 799999994275894000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -1071,7 +1071,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10076244983357120,
+    "icrc1_total_supply": 10077815033499274,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1598,6 +1598,45 @@
               "target_method_name": "commit_proposed_batch"
             }
           }
+        },
+        {
+          "id": 1004,
+          "name": "grant_permission",
+          "description": "grant permission to asset canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
+              "target_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
+              "validator_method_name": "validate_grant_permission",
+              "target_method_name": "grant_permission"
+            }
+          }
+        },
+        {
+          "id": 1005,
+          "name": "commit_proposed_batch",
+          "description": "commit the batch that proposed by community who has Prepare permission",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
+              "target_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
+            }
+          }
+        },
+        {
+          "id": 101000,
+          "name": "Call `trade_tokens` on the KINIC trading pair canister at the CYCLES-TRANSFER-STATION.",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "y2hpc-naaaa-aaaar-qadua-cai",
+              "target_canister_id": "y2hpc-naaaa-aaaar-qadua-cai",
+              "validator_method_name": "sns_validate_trade_tokens",
+              "target_method_name": "trade_tokens"
+            }
+          }
         }
       ]
     },
@@ -1726,7 +1765,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 600921211481922,
+    "icrc1_total_supply": 601146833461861,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1939,6 +1978,14 @@
           }
         },
         {
+          "id": 14,
+          "name": "Manage dapp canister settings",
+          "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1000,
           "name": "grant_permission",
           "description": "grant permission to asset canister",
@@ -2115,7 +2162,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100791060229844130,
+    "icrc1_total_supply": 100891671613602060,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2764,7 +2811,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 923295013718162600,
+    "icrc1_total_supply": 923440449176617700,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

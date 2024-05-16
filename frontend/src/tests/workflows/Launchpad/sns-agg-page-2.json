@@ -1475,7 +1475,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100003858928734460,
+    "icrc1_total_supply": 100036459557080130,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3352,7 +3352,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100112015910184,
+    "icrc1_total_supply": 100112334975826,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4070,7 +4070,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995774796000,
+    "icrc1_total_supply": 995773801000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4160,7 +4160,8 @@
         "i5jcx-ziaaa-aaaar-qaazq-cai",
         "3jd4g-jyaaa-aaaar-qaeba-cai",
         "3yss5-5qaaa-aaaar-qad7a-cai",
-        "7vkf4-jqaaa-aaaaj-azrua-cai"
+        "7vkf4-jqaaa-aaaaj-azrua-cai",
+        "odhfn-cqaaa-aaaar-qaana-cai"
       ],
       "archives": ["g7jv2-uaaaa-aaaaq-aacpa-cai"]
     },
@@ -5265,6 +5266,32 @@
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorSyncVipMakers",
               "target_method_name": "syncVipMakers"
+            }
+          }
+        },
+        {
+          "id": 1076,
+          "name": "Mining.newRound",
+          "description": "Open a new round mining event.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "odhfn-cqaaa-aaaar-qaana-cai",
+              "validator_method_name": "validatorMiningNewRound",
+              "target_method_name": "newRound"
+            }
+          }
+        },
+        {
+          "id": 1077,
+          "name": "Mining.updateRound",
+          "description": "Update data for specified rounds.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "odhfn-cqaaa-aaaar-qaana-cai",
+              "validator_method_name": "validatorMiningUpdateRound",
+              "target_method_name": "updateRound"
             }
           }
         }
@@ -6694,7 +6721,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20011363646405004,
+    "icrc1_total_supply": 20015429414965604,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -8692,7 +8719,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25051223024374716,
+    "icrc1_total_supply": 25051700282780612,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -10120,7 +10147,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10001081017087644,
+    "icrc1_total_supply": 10002274815276332,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11158,7 +11185,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100457214978690370,
+    "icrc1_total_supply": 100486368584837170,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -11546,6 +11573,19 @@
           "description": "Proposal to change canister settings for some dapp canisters.",
           "function_type": {
             "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 1001,
+          "name": "SetPoolAdmins",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7vygu-3yaaa-aaaag-qjxaq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "setPoolAdminsValidate",
+              "target_method_name": "setPoolAdmins"
+            }
           }
         }
       ]
@@ -12091,7 +12131,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99883899837619900,
+    "icrc1_total_supply": 99870630451386030,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -13264,7 +13304,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 100000697379757490,
+    "icrc1_total_supply": 100000868829368670,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14436,7 +14476,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99999999349800000,
+    "icrc1_total_supply": 99999999275500000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
