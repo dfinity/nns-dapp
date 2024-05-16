@@ -158,10 +158,6 @@ describe("actionable proposals derived stores", () => {
     ];
     const snsProposals = [mockSnsProposal];
 
-    beforeEach(() => {
-      actionableNnsProposalsStore.reset();
-    });
-
     it("returns true for nns", async () => {
       expect(get(actionableProposalSupportedStore)).toEqual({
         [OWN_CANISTER_ID_TEXT]: true,
