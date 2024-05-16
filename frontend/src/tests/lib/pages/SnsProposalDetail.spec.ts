@@ -8,6 +8,7 @@ import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposal
 import { authStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
+import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
@@ -237,6 +238,7 @@ describe("SnsProposalDetail", () => {
     });
 
     it("should display proposal navigation", async () => {
+      actionableProposalsSegmentStore.set("all");
       // mock the store to have 3 proposals for navigation
       vi.spyOn(snsFilteredProposalsStore, "subscribe").mockImplementation(
         buildMockSnsProposalsStoreSubscribe({
@@ -288,6 +290,7 @@ describe("SnsProposalDetail", () => {
     });
 
     it("should display proposal navigation for actionable proposal", async () => {
+      resetIdentity();
       actionableProposalsSegmentStore.set("actionable");
       const actionableProposals = [
         createSnsProposal({
@@ -317,7 +320,7 @@ describe("SnsProposalDetail", () => {
       });
 
       fakeSnsGovernanceApi.addProposalWith({
-        identity: new AnonymousIdentity(),
+        identity: mockIdentity,
         rootCanisterId,
         id: [{ id: 2n }],
       });
@@ -430,6 +433,7 @@ describe("SnsProposalDetail", () => {
         },
       ]);
       snsProposalsStore.reset();
+      snsNeuronsStore.reset();
     });
 
     // This test is related to the fix: https://github.com/dfinity/nns-dapp/pull/4420

@@ -22,8 +22,8 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { SplitBlock } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
-  import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
+  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -35,10 +35,9 @@
     : undefined;
 
   let proposalIds: bigint[] | undefined;
-  $: proposalIds =
-    $actionableProposalsSegmentStore.selected === "actionable"
-      ? $actionableNnsProposalsStore.proposals?.map(({ id }) => id as bigint)
-      : $filteredProposals.proposals?.map(({ id }) => id as bigint);
+  $: proposalIds = $actionableProposalsActiveStore
+    ? $actionableNnsProposalsStore.proposals?.map(({ id }) => id as bigint)
+    : $filteredProposals.proposals?.map(({ id }) => id as bigint);
 </script>
 
 <TestIdWrapper testId="nns-proposal-component">

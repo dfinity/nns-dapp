@@ -25,6 +25,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Update IC, Candid, and `ic-cdk` dependencies.
 * Changed support for NNS function 43 from `AddApiBoundaryNodePayload` (singular) to `AddApiBoundaryNodesPayload` (plural).
+* Set `Actionable Proposals` as the default selection.
 
 #### Deprecated
 

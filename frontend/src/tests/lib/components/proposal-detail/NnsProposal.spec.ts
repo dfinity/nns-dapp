@@ -4,6 +4,7 @@ import { filteredProposals } from "$lib/derived/proposals.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { referrerPathStore } from "$lib/stores/routes.store";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   generateMockProposals,
   mockProposalInfo,
@@ -26,6 +27,7 @@ describe("Proposal", () => {
   blockAllCallsTo(["$lib/api/nns-dapp.api"]);
 
   beforeEach(() => {
+    resetIdentity();
     referrerPathStore.set(undefined);
   });
 
@@ -46,6 +48,7 @@ describe("Proposal", () => {
   beforeEach(() => {
     actionableProposalsSegmentStore.resetForTesting();
     vi.spyOn(proposalsApi, "queryProposalPayload").mockResolvedValue({});
+    actionableProposalsSegmentStore.set("all");
   });
 
   it("should render a detail grid", async () => {

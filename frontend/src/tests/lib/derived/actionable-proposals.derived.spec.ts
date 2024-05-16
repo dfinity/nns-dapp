@@ -3,10 +3,12 @@ import { AppPath } from "$lib/constants/routes.constants";
 import {
   actionableProposalCountStore,
   actionableProposalIndicationEnabledStore,
+  actionableProposalsActiveStore,
   actionableProposalSupportedStore,
   actionableProposalTotalCountStore,
 } from "$lib/derived/actionable-proposals.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
+import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
@@ -49,6 +51,26 @@ describe("actionable proposals derived stores", () => {
       testPath(AppPath.Accounts);
       testPath(AppPath.Neurons);
       testPath(AppPath.Launchpad);
+    });
+  });
+
+  describe("actionableProposalsActiveStore", () => {
+    it('returns true when the user is signed-in and the segment is on "Actionable"', async () => {
+      resetIdentity();
+      actionableProposalsSegmentStore.set("actionable");
+      expect(get(actionableProposalsActiveStore)).toBe(true);
+    });
+
+    it("returns false when the user is not signed-in", async () => {
+      setNoIdentity();
+      actionableProposalsSegmentStore.set("actionable");
+      expect(get(actionableProposalsActiveStore)).toBe(false);
+    });
+
+    it('returns false when the segment is on "All"', async () => {
+      resetIdentity();
+      actionableProposalsSegmentStore.set("all");
+      expect(get(actionableProposalsActiveStore)).toBe(false);
     });
   });
 

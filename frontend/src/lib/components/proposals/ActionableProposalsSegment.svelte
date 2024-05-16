@@ -2,14 +2,14 @@
   import { Segment, SegmentButton } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
+  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
 
   const actionableProposalsSegmentId = Symbol();
   const allProposalsSegmentId = Symbol();
 
-  let selectedSegmentId: symbol =
-    $actionableProposalsSegmentStore.selected !== "all"
-      ? actionableProposalsSegmentId
-      : allProposalsSegmentId;
+  let selectedSegmentId: symbol | undefined = $actionableProposalsActiveStore
+    ? actionableProposalsSegmentId
+    : allProposalsSegmentId;
 
   $: selectedSegmentId,
     (() =>
@@ -22,13 +22,13 @@
 
 <div data-tid="actionable-proposals-segment-component">
   <Segment bind:selectedSegmentId>
-    <SegmentButton testId="all-proposals" segmentId={allProposalsSegmentId}
-      >{$i18n.voting.all_proposals}</SegmentButton
-    >
     <SegmentButton
       testId="actionable-proposals"
       segmentId={actionableProposalsSegmentId}
       >{$i18n.voting.actionable_proposals}</SegmentButton
+    >
+    <SegmentButton testId="all-proposals" segmentId={allProposalsSegmentId}
+      >{$i18n.voting.all_proposals}</SegmentButton
     >
   </Segment>
 </div>

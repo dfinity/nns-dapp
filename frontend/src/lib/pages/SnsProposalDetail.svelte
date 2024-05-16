@@ -40,8 +40,8 @@
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
   import { tick } from "svelte";
-  import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
   import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -208,7 +208,7 @@
   let proposalIds: bigint[];
   $: proposalIds = nonNullish(universeIdText)
     ? sortSnsProposalsById(
-        $actionableProposalsSegmentStore.selected === "actionable"
+        $actionableProposalsActiveStore
           ? $actionableSnsProposalsStore[universeIdText]?.proposals
           : $snsFilteredProposalsStore[universeIdText]?.proposals
       )?.map(snsProposalId) ?? []

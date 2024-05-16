@@ -33,13 +33,16 @@ test("Test proposals", async ({ page, context }) => {
   const nnsProposalListPo = appPo.getProposalsPo().getNnsProposalListPo();
   await nnsProposalListPo.waitForContentLoaded();
 
+  step('Switch to "All Proposals"');
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .getActionableProposalsSegmentPo()
+    .clickAllProposals();
+
   /*
    * Test proposal filters
    */
-  step("Open proposals list");
-  await appPo.goToProposals();
-  await nnsProposalListPo.waitForContentLoaded();
-
   step("Filter proposals by Topic");
   const getVisibleCardTopics = () => nnsProposalListPo.getCardTopics();
 

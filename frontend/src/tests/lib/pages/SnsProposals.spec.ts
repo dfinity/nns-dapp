@@ -1,4 +1,5 @@
 import SnsProposals from "$lib/pages/SnsProposals.svelte";
+import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
@@ -66,6 +67,8 @@ describe("SnsProposals", () => {
         ],
       },
     ]);
+    actionableProposalsSegmentStore.resetForTesting();
+    actionableSnsProposalsStore.resetForTesting();
   });
 
   describe("logged in user", () => {
@@ -75,12 +78,13 @@ describe("SnsProposals", () => {
 
     // TODO(max): add tests that the neurons are being fetched before the proposals (pr: https://github.com/dfinity/nns-dapp/pull/4420/)
 
-    describe("Matching results", () => {
+    describe("Matching results when all proposals selected", () => {
       beforeEach(() => {
         fakeSnsGovernanceApi.addProposalWith({
           rootCanisterId,
           action: functionId,
         });
+        actionableProposalsSegmentStore.set("all");
       });
 
       it("should load nervous system functions", async () => {
@@ -155,7 +159,11 @@ describe("SnsProposals", () => {
       });
     });
 
-    describe("No results", () => {
+    describe("No results when all proposals selected", () => {
+      beforeEach(() => {
+        actionableProposalsSegmentStore.set("all");
+      });
+
       it("should render not found text", async () => {
         const { queryByTestId, container } = render(SnsProposals);
 
@@ -169,9 +177,10 @@ describe("SnsProposals", () => {
     });
   });
 
-  describe("when not logged in", () => {
+  describe("when not logged when all proposals selected", () => {
     beforeEach(() => {
       setNoIdentity();
+      actionableProposalsSegmentStore.set("all");
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
@@ -210,6 +219,7 @@ describe("SnsProposals", () => {
       const functionId1 = 3n;
       const functionId2 = 4n;
       setNoIdentity();
+      actionableProposalsSegmentStore.set("all");
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
@@ -354,19 +364,23 @@ describe("SnsProposals", () => {
 
     beforeEach(() => {
       resetIdentity();
-      actionableSnsProposalsStore.resetForTesting();
       mockActionableProposalsLoadingDone();
     });
 
-    it("should render all proposals by default", async () => {
+    it("should render actionable proposals by default", async () => {
       const po = await renderComponent();
 
-      expect(await po.getAllProposalList().isPresent()).toEqual(true);
-      expect(await po.getActionableProposalList().isPresent()).toEqual(false);
+      expect(await po.getAllProposalList().isPresent()).toEqual(false);
+      expect(await po.getActionableProposalList().isPresent()).toEqual(true);
     });
 
     it("should switch proposal lists on actionable segment change", async () => {
       const po = await renderComponent();
+      expect(await po.getAllProposalList().isPresent()).toEqual(false);
+      expect(await po.getActionableProposalList().isPresent()).toEqual(true);
+
+      await selectAllProposals(po);
+
       expect(await po.getAllProposalList().isPresent()).toEqual(true);
       expect(await po.getActionableProposalList().isPresent()).toEqual(false);
 
@@ -374,47 +388,23 @@ describe("SnsProposals", () => {
 
       expect(await po.getAllProposalList().isPresent()).toEqual(false);
       expect(await po.getActionableProposalList().isPresent()).toEqual(true);
-
-      await po
-        .getSnsProposalFiltersPo()
-        .getActionableProposalsSegmentPo()
-        .clickAllProposals();
-      await runResolvedPromises();
-
-      expect(await po.getAllProposalList().isPresent()).toEqual(true);
-      expect(await po.getActionableProposalList().isPresent()).toEqual(false);
     });
 
-    it('should display "Not signIn" banner', async () => {
+    it('should not display "Not signIn" banner', async () => {
       setNoIdentity();
       const po = await renderComponent();
-      await selectActionableProposals(po);
-      expect(await po.getActionableSignInBanner().isPresent()).toBe(true);
+      expect(await po.getActionableSignInBanner().isPresent()).toBe(false);
 
       // login
       resetIdentity();
       await runResolvedPromises();
-      expect(await po.getActionableSignInBanner().isPresent()).toBe(false);
-
-      // logout
-      setNoIdentity();
-      await runResolvedPromises();
-      expect(await po.getActionableSignInBanner().isPresent()).toBe(true);
-
-      // switch to all proposals
-      await po
-        .getSnsProposalFiltersPo()
-        .getActionableProposalsSegmentPo()
-        .clickAllProposals();
       expect(await po.getActionableSignInBanner().isPresent()).toBe(false);
     });
 
     it("should display loading skeletons", async () => {
       actionableSnsProposalsStore.resetForTesting();
       const po = await renderComponent();
-      expect(await po.getSkeletonCardPo().isPresent()).toBe(false);
 
-      await selectActionableProposals(po);
       expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
 
       mockActionableProposalsLoadingDone();
@@ -438,12 +428,6 @@ describe("SnsProposals", () => {
       const po2 = await renderComponent();
       await selectActionableProposals(po2);
       expect(await po2.getActionableEmptyBanner().isPresent()).toBe(false);
-
-      // signOut
-      setNoIdentity();
-      const po3 = await renderComponent();
-      await selectActionableProposals(po3);
-      expect(await po3.getActionableEmptyBanner().isPresent()).toBe(false);
     });
 
     it('should display "Actionable not supported" banner', async () => {

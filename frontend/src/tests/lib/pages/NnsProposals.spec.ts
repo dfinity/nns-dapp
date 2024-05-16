@@ -4,6 +4,7 @@ import * as governanceApi from "$lib/api/governance.api";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import NnsProposals from "$lib/pages/NnsProposals.svelte";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
+import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -53,6 +54,7 @@ describe("NnsProposals", () => {
     resetNeuronsApiService();
     neuronsStore.reset();
     proposalsFiltersStore.reset();
+    actionableProposalsSegmentStore.resetForTesting();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
 
     vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
@@ -72,6 +74,7 @@ describe("NnsProposals", () => {
           mockProposalsStoreSubscribe
         );
         vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+        actionableProposalsSegmentStore.set("all");
       });
 
       it("should load neurons", async () => {
@@ -104,6 +107,7 @@ describe("NnsProposals", () => {
         );
 
         vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+        actionableProposalsSegmentStore.set("all");
       });
 
       it("should render filters", async () => {
@@ -207,6 +211,7 @@ describe("NnsProposals", () => {
         );
 
         vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+        actionableProposalsSegmentStore.set("all");
       });
 
       it("should render not found text", async () => {
@@ -231,6 +236,7 @@ describe("NnsProposals", () => {
         }
       );
       vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+      actionableProposalsSegmentStore.set("all");
     });
 
     describe("neurons", () => {
@@ -295,14 +301,15 @@ describe("NnsProposals", () => {
       });
     });
 
-    it("should render all proposals by default", async () => {
+    it("should render actionable proposals by default", async () => {
       const po = await renderComponent();
 
-      expect(await po.getAllProposalList().isPresent()).toEqual(true);
-      expect(await po.getActionableProposalList().isPresent()).toEqual(false);
+      expect(await po.getAllProposalList().isPresent()).toEqual(false);
+      expect(await po.getActionableProposalList().isPresent()).toEqual(true);
     });
 
     it("should switch proposal lists on actionable segment change", async () => {
+      actionableProposalsSegmentStore.set("all");
       const po = await renderComponent();
       expect(await po.getAllProposalList().isPresent()).toEqual(true);
       expect(await po.getActionableProposalList().isPresent()).toEqual(false);
@@ -323,9 +330,7 @@ describe("NnsProposals", () => {
 
     it("should render skeletons while loading actionable", async () => {
       const po = await renderComponent();
-      expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
 
-      await selectActionableProposals(po);
       expect(await po.getSkeletonCardPo().isPresent()).toEqual(true);
 
       actionableNnsProposalsStore.setProposals(mockProposals);
@@ -334,7 +339,7 @@ describe("NnsProposals", () => {
       expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
     });
 
-    it("should display login CTA", async () => {
+    it("should display no segment when not sign-in", async () => {
       vi.spyOn(authStore, "subscribe").mockImplementation(
         (run: Subscriber<AuthStoreData>): (() => void) => {
           run({ identity: undefined });
@@ -343,17 +348,12 @@ describe("NnsProposals", () => {
         }
       );
       const po = await renderComponent();
-      await selectActionableProposals(po);
-      expect(await po.getActionableSignInBanner().isPresent()).toEqual(true);
-      expect(await po.getActionableSignInBanner().getTitleText()).toEqual(
-        "You are not signed in."
-      );
-      expect(await po.getActionableSignInBanner().getDescriptionText()).toEqual(
-        "Sign in to see actionable proposals"
-      );
       expect(
-        await po.getActionableSignInBanner().getBannerActionsText()
-      ).toEqual("Sign in with Internet Identity");
+        await po
+          .getNnsProposalFiltersPo()
+          .getActionableProposalsSegmentPo()
+          .isPresent()
+      ).toBe(false);
     });
 
     it('should display "no actionable proposals" banner', async () => {
