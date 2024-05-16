@@ -1,5 +1,6 @@
 import {
   ACCOUNT_PARAM,
+  ACTIONABLE_PARAM,
   AppPath,
   CANISTER_PARAM,
   NEURON_PARAM,
@@ -34,6 +35,9 @@ export const buildSwitchUniverseUrl = (universe: string): string => {
   const { pathname } = window.location;
   return `${pathname}?${UNIVERSE_PARAM}=${universe}`;
 };
+
+export const buildSwitchActionableUrl = (universe: string): string =>
+  `${buildSwitchUniverseUrl(universe)}&${ACTIONABLE_PARAM}`;
 
 const buildUrl = ({
   path,
