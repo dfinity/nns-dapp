@@ -225,7 +225,7 @@ describe("actionable proposals derived stores", () => {
     });
   });
 
-  describe("sortedActionableSnsProposalsStore", () => {
+  describe("actionableSnsProposalsByUniverseStore", () => {
     const proposals0 = [createProposal(0n)];
     const proposals1 = [createProposal(1n)];
 
