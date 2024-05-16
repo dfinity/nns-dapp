@@ -78,7 +78,7 @@ export const actionableProposalSupportedStore: Readable<ActionableProposalSuppor
 
 /** A store that contains sns universes with actionable support and their actionable proposals
  * in the same order as they are displayed in the UI. */
-export const sortedActionableSnsProposalsStore: Readable<
+export const actionableSnsProposalsByUniverseStore: Readable<
   Array<{
     universe: Universe;
     proposals: SnsProposalData[];

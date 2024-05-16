@@ -6,7 +6,7 @@ import {
   actionableProposalSupportedStore,
   actionableProposalTotalCountStore,
   actionableProposalsActiveStore,
-  sortedActionableSnsProposalsStore,
+  actionableSnsProposalsByUniverseStore,
 } from "$lib/derived/actionable-proposals.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
@@ -230,7 +230,7 @@ describe("actionable proposals derived stores", () => {
     const proposals1 = [createProposal(1n)];
 
     it("should return snses with proposals", async () => {
-      expect(get(sortedActionableSnsProposalsStore)).toEqual([]);
+      expect(get(actionableSnsProposalsByUniverseStore)).toEqual([]);
 
       setSnsProjects([
         {
@@ -243,7 +243,7 @@ describe("actionable proposals derived stores", () => {
         },
       ]);
 
-      expect(get(sortedActionableSnsProposalsStore)).toEqual([]);
+      expect(get(actionableSnsProposalsByUniverseStore)).toEqual([]);
 
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
@@ -257,7 +257,7 @@ describe("actionable proposals derived stores", () => {
       });
 
       expect(
-        get(sortedActionableSnsProposalsStore).map(
+        get(actionableSnsProposalsByUniverseStore).map(
           ({ universe: { canisterId }, proposals }) => [canisterId, proposals]
         )
       ).toEqual([
@@ -279,7 +279,7 @@ describe("actionable proposals derived stores", () => {
         includeBallotsByCaller: false,
       });
 
-      expect(get(sortedActionableSnsProposalsStore)).toEqual([]);
+      expect(get(actionableSnsProposalsByUniverseStore)).toEqual([]);
     });
   });
 });
