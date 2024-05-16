@@ -14,7 +14,7 @@ pub struct EmptyRecord {}
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
 // #![allow(dead_code, unused_imports)]
-// use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
+// use candid::{self, CandidType, Deserialize, Principal};
 // use ic_cdk::api::call::CallResult as Result;
 
 #[derive(Serialize, CandidType, Deserialize)]
@@ -22,7 +22,6 @@ pub struct AddApiBoundaryNodesPayload {
     pub version: String,
     pub node_ids: Vec<Principal>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum FirewallRulesScope {
     Node(Principal),
@@ -31,7 +30,6 @@ pub enum FirewallRulesScope {
     Subnet(Principal),
     Global,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct FirewallRule {
     pub ipv4_prefixes: Vec<String>,
@@ -42,7 +40,6 @@ pub struct FirewallRule {
     pub ipv6_prefixes: Vec<String>,
     pub ports: Vec<u32>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct AddFirewallRulesPayload {
     pub expected_hash: String,
@@ -50,14 +47,12 @@ pub struct AddFirewallRulesPayload {
     pub positions: Vec<i32>,
     pub rules: Vec<FirewallRule>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct IPv4Config {
     pub prefix_length: u32,
     pub gateway_ip_addr: String,
     pub ip_addr: String,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct AddNodePayload {
     pub prometheus_metrics_endpoint: String,
@@ -73,13 +68,11 @@ pub struct AddNodePayload {
     pub ni_dkg_dealing_encryption_pk: serde_bytes::ByteBuf,
     pub p2p_flow_endpoints: Vec<String>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum Result_ {
     Ok(Principal),
     Err(String),
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct AddNodeOperatorPayload {
     pub ipv6: Option<String>,
@@ -89,19 +82,16 @@ pub struct AddNodeOperatorPayload {
     pub node_provider_principal_id: Option<Principal>,
     pub dc_id: String,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct AddNodesToSubnetPayload {
     pub subnet_id: Principal,
     pub node_ids: Vec<Principal>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct Gps {
     pub latitude: f32,
     pub longitude: f32,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct DataCenterRecord {
     pub id: String,
@@ -109,13 +99,11 @@ pub struct DataCenterRecord {
     pub region: String,
     pub owner: String,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct AddOrRemoveDataCentersProposalPayload {
     pub data_centers_to_add: Vec<DataCenterRecord>,
     pub data_centers_to_remove: Vec<String>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct BlessReplicaVersionPayload {
     pub release_package_urls: Option<Vec<String>>,
@@ -128,57 +116,48 @@ pub struct BlessReplicaVersionPayload {
     pub node_manager_binary_url: String,
     pub binary_url: String,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ChangeSubnetMembershipPayload {
     pub node_ids_add: Vec<Principal>,
     pub subnet_id: Principal,
     pub node_ids_remove: Vec<Principal>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct CanisterIdRange {
     pub end: Principal,
     pub start: Principal,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct CompleteCanisterMigrationPayload {
     pub canister_id_ranges: Vec<CanisterIdRange>,
     pub migration_trace: Vec<Principal>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum Result1 {
     Ok,
     Err(String),
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct SubnetFeatures {
     pub canister_sandboxing: bool,
     pub http_requests: bool,
     pub sev_enabled: Option<bool>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum EcdsaCurve {
     #[serde(rename = "secp256k1")]
     Secp256K1,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct EcdsaKeyId {
     pub name: String,
     pub curve: EcdsaCurve,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct EcdsaKeyRequest {
     pub key_id: EcdsaKeyId,
     pub subnet_id: Option<Principal>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct EcdsaInitialConfig {
     pub quadruples_to_create_in_advance: u32,
@@ -187,7 +166,6 @@ pub struct EcdsaInitialConfig {
     pub signature_request_timeout_ns: Option<u64>,
     pub idkg_key_rotation_period_ms: Option<u64>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum SubnetType {
     #[serde(rename = "application")]
@@ -197,7 +175,6 @@ pub enum SubnetType {
     #[serde(rename = "system")]
     System,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct CreateSubnetPayload {
     pub unit_delay_millis: u64,
@@ -231,23 +208,19 @@ pub struct CreateSubnetPayload {
     pub gossip_receive_check_cache_size: u32,
     pub node_ids: Vec<Principal>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct DeleteSubnetPayload {
     pub subnet_id: Option<Principal>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct DeployGuestosToAllSubnetNodesPayload {
     pub subnet_id: Principal,
     pub replica_version_id: String,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct DeployGuestosToAllUnassignedNodesPayload {
     pub elected_replica_version: String,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NodeOperatorRecord {
     pub ipv6: Option<String>,
@@ -257,47 +230,39 @@ pub struct NodeOperatorRecord {
     pub node_provider_principal_id: serde_bytes::ByteBuf,
     pub dc_id: String,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum Result2 {
     Ok(Vec<(DataCenterRecord, NodeOperatorRecord)>),
     Err(String),
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NodeProvidersMonthlyXdrRewards {
     pub rewards: Vec<(String, u64)>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum Result3 {
     Ok(NodeProvidersMonthlyXdrRewards),
     Err(String),
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct GetSubnetForCanisterRequest {
     pub principal: Option<Principal>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct GetSubnetForCanisterResponse {
     pub subnet_id: Option<Principal>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum Result4 {
     Ok(GetSubnetForCanisterResponse),
     Err(String),
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct PrepareCanisterMigrationPayload {
     pub canister_id_ranges: Vec<CanisterIdRange>,
     pub source_subnet: Principal,
     pub destination_subnet: Principal,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct RecoverSubnetPayload {
     pub height: u64,
@@ -308,46 +273,38 @@ pub struct RecoverSubnetPayload {
     pub state_hash: serde_bytes::ByteBuf,
     pub time_ns: u64,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct RemoveApiBoundaryNodesPayload {
     pub node_ids: Vec<Principal>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct RemoveFirewallRulesPayload {
     pub expected_hash: String,
     pub scope: FirewallRulesScope,
     pub positions: Vec<i32>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct RemoveNodeDirectlyPayload {
     pub node_id: Principal,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct RemoveNodeOperatorsPayload {
     pub node_operators_to_remove: Vec<serde_bytes::ByteBuf>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct RemoveNodesPayload {
     pub node_ids: Vec<Principal>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct RerouteCanisterRangesPayload {
     pub source_subnet: Principal,
     pub reassigned_canister_ranges: Vec<CanisterIdRange>,
     pub destination_subnet: Principal,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct RetireReplicaVersionPayload {
     pub replica_version_ids: Vec<String>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ReviseElectedGuestosVersionsPayload {
     pub release_package_urls: Vec<String>,
@@ -356,14 +313,12 @@ pub struct ReviseElectedGuestosVersionsPayload {
     pub guest_launch_measurement_sha256_hex: Option<String>,
     pub release_package_sha256_hex: Option<String>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct SetFirewallConfigPayload {
     pub ipv4_prefixes: Vec<String>,
     pub firewall_config: String,
     pub ipv6_prefixes: Vec<String>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateElectedHostosVersionsPayload {
     pub release_package_urls: Vec<String>,
@@ -371,24 +326,20 @@ pub struct UpdateElectedHostosVersionsPayload {
     pub hostos_versions_to_unelect: Vec<String>,
     pub release_package_sha256_hex: Option<String>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateNodeDirectlyPayload {
     pub idkg_dealing_encryption_pk: Option<serde_bytes::ByteBuf>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateNodeDomainDirectlyPayload {
     pub node_id: Principal,
     pub domain: Option<String>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateNodeIPv4ConfigDirectlyPayload {
     pub ipv4_config: Option<IPv4Config>,
     pub node_id: Principal,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateNodeOperatorConfigPayload {
     pub node_operator_id: Option<Principal>,
@@ -399,40 +350,33 @@ pub struct UpdateNodeOperatorConfigPayload {
     pub rewardable_nodes: Vec<(String, u32)>,
     pub dc_id: Option<String>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateNodeOperatorConfigDirectlyPayload {
     pub node_operator_id: Option<Principal>,
     pub node_provider_id: Option<Principal>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NodeRewardRate {
     pub xdr_permyriad_per_node_per_month: u64,
     pub reward_coefficient_percent: Option<i32>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NodeRewardRates {
     pub rates: Vec<(String, NodeRewardRate)>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateNodeRewardsTableProposalPayload {
     pub new_entries: Vec<(String, NodeRewardRates)>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateNodesHostosVersionPayload {
     pub hostos_version_id: Option<String>,
     pub node_ids: Vec<Principal>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateSshReadOnlyAccessForAllUnassignedNodesPayload {
     pub ssh_readonly_keys: Vec<String>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct EcdsaConfig {
     pub quadruples_to_create_in_advance: u32,
@@ -441,7 +385,6 @@ pub struct EcdsaConfig {
     pub signature_request_timeout_ns: Option<u64>,
     pub idkg_key_rotation_period_ms: Option<u64>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateSubnetPayload {
     pub unit_delay_millis: Option<u64>,
@@ -476,7 +419,6 @@ pub struct UpdateSubnetPayload {
     pub subnet_type: Option<SubnetType>,
     pub ssh_readonly_access: Option<Vec<String>>,
 }
-
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateUnassignedNodesConfigPayload {
     pub replica_version: Option<String>,
