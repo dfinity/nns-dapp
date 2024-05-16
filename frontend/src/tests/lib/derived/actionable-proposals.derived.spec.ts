@@ -256,14 +256,13 @@ describe("actionable proposals derived stores", () => {
         includeBallotsByCaller: true,
       });
 
-      const result = get(sortedActionableSnsProposalsStore);
-      expect(result.map(({ universe: { canisterId } }) => canisterId)).toEqual([
-        principal0.toText(),
-        principal1.toText(),
-      ]);
-      expect(result.map(({ proposals }) => proposals)).toEqual([
-        proposals0,
-        proposals1,
+      expect(
+        get(sortedActionableSnsProposalsStore).map(
+          ({ universe: { canisterId }, proposals }) => [canisterId, proposals]
+        )
+      ).toEqual([
+        [principal0.toText(), proposals0],
+        [principal1.toText(), proposals1],
       ]);
     });
 
