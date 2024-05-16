@@ -1,10 +1,10 @@
 # A GitHub Actions workflow that regularly updates the aggregator SNS parsing code
 # and creates a PR for any changes.
-name: Update aggregator candid bindings
+name: Update sns_aggregator candid bindings
 on:
   schedule:
     # Check for updates on candid interface for the aggregator every monday at 3:30am.
-    - cron: '30 3 * * MON'
+    - cron: '30 3 * * FRI'
   workflow_dispatch:
   push:
     branches:
@@ -23,6 +23,34 @@ jobs:
           version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
           # TODO: Make `didc` support `binstall`, then use `binstall` here.
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
+      - name: Find newer IC release, if any
+        id: update
+        run: |
+          current_release="$(jq -r .defaults.build.config.IC_COMMIT_FOR_SNS_AGGREGATOR dfx.json)"
+          echo "Current IC release: $current_release"
+          latest_release=$(curl -sSL https://api.github.com/repos/dfinity/ic/releases/latest | jq .tag_name -r)
+          echo "Latest IC release:  $latest_release"
+          {
+            if [ "$current_release" == "$latest_release" ]
+            then
+              echo "updated=0"
+            else
+              echo "updated=1"
+              echo "release=$latest_release"
+            fi
+          } >> "$GITHUB_OUTPUT"
+      - name: Install sponge
+        if: ${{ steps.update.outputs.updated == '1' }}
+        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+      - name: Update candid files
+        if: ${{ steps.update.outputs.updated == '1' }}
+        run: |
+          # Update candid files
+          scripts/update_ic_commit --crate sns_aggregator --ic_commit "${{ steps.update.outputs.release }}"
+          # Show changes
+          echo "Git status:"
+          git status
+          echo "Note: The git diff is likely to be long so is not logged.  Please see the PR."
       - name: Update to the latest declared APIs
         id: update
         run: scripts/sns/aggregator/mk_nns_types.sh
@@ -42,15 +70,17 @@ jobs:
           branch: bot-aggregator-update
           branch-suffix: timestamp
           delete-branch: true
-          title: 'Update aggregator candid bindings'
+          title: 'bot: Update sns_aggregator candid bindings'
           body: |
             # Motivation
+            A newer release of the internet computer is available.
             We would like to parse all the latest SNS data. To do so, we update the candid interfaces for the SNS aggregator.
             Even with no changes, just updating the reference is good practice.
 
             # Changes
+            * Update the version of `IC_COMMIT_FOR_SNS_AGGREGATOR` specified in `dfx.json`.
+            * Updated the `sns_aggregator` candid files to the versions in that commit.
             * Updated the Rust code derived from `.did` files in the aggregator.
-              * Note: The candid files under `declarations/nns-$CANISTER` are used as inputs.
 
             # Tests
               - [ ] Please check the API updates for any breaking changes that affect our code.
