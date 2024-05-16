@@ -17,7 +17,7 @@ fi
 # - Canister names, one per line
 filter_has_canister_did() {
   while read -r canister; do
-    if test -e "$SOURCE_DIR/../declarations/${canister}/${canister}.did"; then
+    if test -e "$SOURCE_DIR/../declarations/used_by_sns_aggregator/${canister}/${canister}.did"; then
       echo "$canister"
     fi
   done
