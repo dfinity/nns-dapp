@@ -36,9 +36,6 @@ export const buildSwitchUniverseUrl = (universe: string): string => {
   return `${pathname}?${UNIVERSE_PARAM}=${universe}`;
 };
 
-export const buildSwitchActionableUrl = (universe: string): string =>
-  `${buildSwitchUniverseUrl(universe)}&${ACTIONABLE_PARAM}`;
-
 const buildUrl = ({
   path,
   universe,
@@ -46,10 +43,10 @@ const buildUrl = ({
 }: {
   path: AppPath;
   universe: string;
-  params?: Record<string, string>;
+  params?: Record<string, string | undefined>;
 }): string =>
   `${path}/?${UNIVERSE_PARAM}=${universe}${Object.entries(params)
-    .map(([key, value]) => `&${key}=${value}`)
+    .map(([key, value]) => (value === "" ? `&${key}` : `&${key}=${value}`))
     .join("")}`;
 
 export const buildAccountsUrl = ({ universe }: { universe: string }) =>
@@ -58,6 +55,16 @@ export const buildNeuronsUrl = ({ universe }: { universe: string }) =>
   buildUrl({ path: AppPath.Neurons, universe });
 export const buildProposalsUrl = ({ universe }: { universe: string }) =>
   buildUrl({ path: AppPath.Proposals, universe });
+export const buildActionableProposalsUrl = ({
+  universe,
+}: {
+  universe: string;
+}) =>
+  buildUrl({
+    path: AppPath.Proposals,
+    universe,
+    params: { [ACTIONABLE_PARAM]: "" },
+  });
 export const buildCanistersUrl = ({ universe }: { universe: string }) =>
   buildUrl({ path: AppPath.Canisters, universe });
 
