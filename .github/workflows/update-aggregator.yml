@@ -52,7 +52,6 @@ jobs:
           git status
           echo "Note: The git diff is likely to be long so is not logged.  Please see the PR."
       - name: Update to the latest declared APIs
-        id: update
         run: scripts/sns/aggregator/mk_nns_types.sh
       - name: Create Pull Request
         id: cpr
