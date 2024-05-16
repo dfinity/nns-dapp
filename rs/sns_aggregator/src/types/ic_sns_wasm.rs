@@ -13,7 +13,7 @@ use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
 // #![allow(dead_code, unused_imports)]
-// use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
+// use candid::{self, CandidType, Deserialize, Principal};
 // use ic_cdk::api::call::CallResult as Result;
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -22,52 +22,43 @@ pub struct SnsWasmCanisterInitPayload {
     pub access_controls_enabled: bool,
     pub sns_subnet_ids: Vec<Principal>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SnsWasm {
     pub wasm: serde_bytes::ByteBuf,
     pub proposal_id: Option<u64>,
     pub canister_type: i32,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct AddWasmRequest {
     pub hash: serde_bytes::ByteBuf,
     pub wasm: Option<SnsWasm>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SnsWasmError {
     pub message: String,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum Result_ {
     Error(SnsWasmError),
     Hash(serde_bytes::ByteBuf),
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct AddWasmResponse {
     pub result: Option<Result_>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct NeuronBasketConstructionParameters {
     pub dissolve_delay_interval_seconds: u64,
     pub count: u64,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Canister {
     pub id: Option<Principal>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DappCanisters {
     pub canisters: Vec<Canister>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct LinearScalingCoefficient {
     pub slope_numerator: Option<u64>,
@@ -76,12 +67,10 @@ pub struct LinearScalingCoefficient {
     pub slope_denominator: Option<u64>,
     pub to_direct_participation_icp_e8s: Option<u64>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct IdealMatchedParticipationFunction {
     pub serialized_representation: Option<String>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct NeuronsFundParticipationConstraints {
     pub coefficient_intervals: Vec<LinearScalingCoefficient>,
@@ -89,30 +78,25 @@ pub struct NeuronsFundParticipationConstraints {
     pub min_direct_participation_threshold_icp_e8s: Option<u64>,
     pub ideal_matched_participation_function: Option<IdealMatchedParticipationFunction>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CfNeuron {
     pub has_created_neuron_recipes: Option<bool>,
     pub nns_neuron_id: u64,
     pub amount_icp_e8s: u64,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CfParticipant {
     pub hotkey_principal: String,
     pub cf_neurons: Vec<CfNeuron>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct NeuronsFundParticipants {
     pub participants: Vec<CfParticipant>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct TreasuryDistribution {
     pub total_e8s: u64,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct NeuronDistribution {
     pub controller: Option<Principal>,
@@ -121,23 +105,19 @@ pub struct NeuronDistribution {
     pub stake_e8s: u64,
     pub vesting_period_seconds: Option<u64>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DeveloperDistribution {
     pub developer_neurons: Vec<NeuronDistribution>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct AirdropDistribution {
     pub airdrop_neurons: Vec<NeuronDistribution>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SwapDistribution {
     pub total_e8s: u64,
     pub initial_swap_amount_e8s: u64,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct FractionalDeveloperVotingPower {
     pub treasury_distribution: Option<TreasuryDistribution>,
@@ -145,17 +125,14 @@ pub struct FractionalDeveloperVotingPower {
     pub airdrop_distribution: Option<AirdropDistribution>,
     pub swap_distribution: Option<SwapDistribution>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum InitialTokenDistribution {
     FractionalDeveloperVotingPower(FractionalDeveloperVotingPower),
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Countries {
     pub iso_codes: Vec<String>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SnsInitPayload {
     pub url: Option<String>,
@@ -198,19 +175,16 @@ pub struct SnsInitPayload {
     pub min_icp_e8s: Option<u64>,
     pub max_direct_participation_icp_e8s: Option<u64>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DeployNewSnsRequest {
     pub sns_init_payload: Option<SnsInitPayload>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DappCanistersTransferResult {
     pub restored_dapp_canisters: Vec<Canister>,
     pub nns_controlled_dapp_canisters: Vec<Canister>,
     pub sns_controlled_dapp_canisters: Vec<Canister>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SnsCanisterIds {
     pub root: Option<Principal>,
@@ -219,7 +193,6 @@ pub struct SnsCanisterIds {
     pub index: Option<Principal>,
     pub governance: Option<Principal>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DeployNewSnsResponse {
     pub dapp_canisters_transfer_result: Option<DappCanistersTransferResult>,
@@ -227,20 +200,16 @@ pub struct DeployNewSnsResponse {
     pub error: Option<SnsWasmError>,
     pub canisters: Option<SnsCanisterIds>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetAllowedPrincipalsArg {}
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetAllowedPrincipalsResponse {
     pub allowed_principals: Vec<Principal>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetDeployedSnsByProposalIdRequest {
     pub proposal_id: u64,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize, Default)]
 pub struct DeployedSns {
     pub root_canister_id: Option<Principal>,
@@ -249,18 +218,15 @@ pub struct DeployedSns {
     pub swap_canister_id: Option<Principal>,
     pub ledger_canister_id: Option<Principal>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum GetDeployedSnsByProposalIdResult {
     Error(SnsWasmError),
     DeployedSns(DeployedSns),
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetDeployedSnsByProposalIdResponse {
     pub get_deployed_sns_by_proposal_id_result: Option<GetDeployedSnsByProposalIdResult>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SnsVersion {
     pub archive_wasm_hash: serde_bytes::ByteBuf,
@@ -270,96 +236,78 @@ pub struct SnsVersion {
     pub governance_wasm_hash: serde_bytes::ByteBuf,
     pub index_wasm_hash: serde_bytes::ByteBuf,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetNextSnsVersionRequest {
     pub governance_canister_id: Option<Principal>,
     pub current_version: Option<SnsVersion>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetNextSnsVersionResponse {
     pub next_version: Option<SnsVersion>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetSnsSubnetIdsArg {}
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetSnsSubnetIdsResponse {
     pub sns_subnet_ids: Vec<Principal>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetWasmRequest {
     pub hash: serde_bytes::ByteBuf,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetWasmResponse {
     pub wasm: Option<SnsWasm>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetWasmMetadataRequest {
     pub hash: Option<serde_bytes::ByteBuf>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct MetadataSection {
     pub contents: Option<serde_bytes::ByteBuf>,
     pub name: Option<String>,
     pub visibility: Option<String>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Ok {
     pub sections: Vec<MetadataSection>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum Result1 {
     Ok(Ok),
     Error(SnsWasmError),
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetWasmMetadataResponse {
     pub result: Option<Result1>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SnsUpgrade {
     pub next_version: Option<SnsVersion>,
     pub current_version: Option<SnsVersion>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct InsertUpgradePathEntriesRequest {
     pub upgrade_path: Vec<SnsUpgrade>,
     pub sns_governance_canister_id: Option<Principal>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct InsertUpgradePathEntriesResponse {
     pub error: Option<SnsWasmError>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ListDeployedSnsesArg {}
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ListDeployedSnsesResponse {
     pub instances: Vec<DeployedSns>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ListUpgradeStepsRequest {
     pub limit: u32,
     pub starting_at: Option<SnsVersion>,
     pub sns_governance_canister_id: Option<Principal>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct PrettySnsVersion {
     pub archive_wasm_hash: String,
@@ -369,46 +317,38 @@ pub struct PrettySnsVersion {
     pub governance_wasm_hash: String,
     pub index_wasm_hash: String,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ListUpgradeStep {
     pub pretty_version: Option<PrettySnsVersion>,
     pub version: Option<SnsVersion>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ListUpgradeStepsResponse {
     pub steps: Vec<ListUpgradeStep>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct UpdateAllowedPrincipalsRequest {
     pub added_principals: Vec<Principal>,
     pub removed_principals: Vec<Principal>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum UpdateAllowedPrincipalsResult {
     Error(SnsWasmError),
     AllowedPrincipals(GetAllowedPrincipalsResponse),
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct UpdateAllowedPrincipalsResponse {
     pub update_allowed_principals_result: Option<UpdateAllowedPrincipalsResult>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct UpdateSnsSubnetListRequest {
     pub sns_subnet_ids_to_add: Vec<Principal>,
     pub sns_subnet_ids_to_remove: Vec<Principal>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct UpdateSnsSubnetListResponse {
     pub error: Option<SnsWasmError>,
 }
-
 pub struct Service(pub Principal);
 impl Service {
     pub async fn add_wasm(&self, arg0: AddWasmRequest) -> CallResult<(AddWasmResponse,)> {

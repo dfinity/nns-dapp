@@ -13,7 +13,7 @@ use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
 // #![allow(dead_code, unused_imports)]
-// use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
+// use candid::{self, CandidType, Deserialize, Principal};
 // use ic_cdk::api::call::CallResult as Result;
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -27,7 +27,6 @@ pub struct ChangeArchiveOptions {
     pub node_max_memory_size_bytes: Option<u64>,
     pub controller_id: Option<Principal>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum MetadataValue {
     Int(candid::Int),
@@ -35,25 +34,21 @@ pub enum MetadataValue {
     Blob(serde_bytes::ByteBuf),
     Text(String),
 }
-
 pub type Subaccount = serde_bytes::ByteBuf;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Account {
     pub owner: Principal,
     pub subaccount: Option<Subaccount>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum ChangeFeeCollector {
     SetTo(Account),
     Unset,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct FeatureFlags {
     pub icrc2: bool,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct UpgradeArgs {
     pub change_archive_options: Option<ChangeArchiveOptions>,
@@ -67,7 +62,6 @@ pub struct UpgradeArgs {
     pub token_name: Option<String>,
     pub feature_flags: Option<FeatureFlags>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct InitArgsArchiveOptions {
     pub num_blocks_to_archive: u64,
@@ -79,7 +73,6 @@ pub struct InitArgsArchiveOptions {
     pub node_max_memory_size_bytes: Option<u64>,
     pub controller_id: Principal,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct InitArgs {
     pub decimals: Option<u8>,
@@ -96,13 +89,11 @@ pub struct InitArgs {
     pub token_name: String,
     pub feature_flags: Option<FeatureFlags>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum LedgerArg {
     Upgrade(Option<UpgradeArgs>),
     Init(InitArgs),
 }
-
 pub type BlockIndex = candid::Nat;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ArchiveInfo {
@@ -110,13 +101,11 @@ pub struct ArchiveInfo {
     pub canister_id: Principal,
     pub block_range_start: BlockIndex,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetBlocksArgs {
     pub start: BlockIndex,
     pub length: candid::Nat,
 }
-
 pub type Map = Vec<(String, Box<Value>)>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum Value {
@@ -128,13 +117,11 @@ pub enum Value {
     Text(String),
     Array(Vec<Box<Value>>),
 }
-
 pub type Block = Box<Value>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct BlockRange {
     pub blocks: Vec<Block>,
 }
-
 pub type QueryBlockArchiveFn = candid::Func;
 #[derive(CandidType, Deserialize)]
 pub struct GetBlocksResponseArchivedBlocksItem {
@@ -142,7 +129,6 @@ pub struct GetBlocksResponseArchivedBlocksItem {
     pub start: BlockIndex,
     pub length: candid::Nat,
 }
-
 #[derive(CandidType, Deserialize)]
 pub struct GetBlocksResponse {
     pub certificate: Option<serde_bytes::ByteBuf>,
@@ -151,20 +137,17 @@ pub struct GetBlocksResponse {
     pub chain_length: u64,
     pub archived_blocks: Vec<GetBlocksResponseArchivedBlocksItem>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DataCertificate {
     pub certificate: Option<serde_bytes::ByteBuf>,
     pub hash_tree: serde_bytes::ByteBuf,
 }
-
 pub type TxIndex = candid::Nat;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetTransactionsRequest {
     pub start: TxIndex,
     pub length: candid::Nat,
 }
-
 pub type Timestamp = u64;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Burn {
@@ -174,7 +157,6 @@ pub struct Burn {
     pub amount: candid::Nat,
     pub spender: Option<Account>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Mint {
     pub to: Account,
@@ -182,7 +164,6 @@ pub struct Mint {
     pub created_at_time: Option<Timestamp>,
     pub amount: candid::Nat,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Approve {
     pub fee: Option<candid::Nat>,
@@ -194,7 +175,6 @@ pub struct Approve {
     pub expires_at: Option<Timestamp>,
     pub spender: Account,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Transfer {
     pub to: Account,
@@ -205,7 +185,6 @@ pub struct Transfer {
     pub amount: candid::Nat,
     pub spender: Option<Account>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Transaction {
     pub burn: Option<Burn>,
@@ -215,12 +194,10 @@ pub struct Transaction {
     pub timestamp: Timestamp,
     pub transfer: Option<Transfer>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct TransactionRange {
     pub transactions: Vec<Transaction>,
 }
-
 pub type QueryArchiveFn = candid::Func;
 #[derive(CandidType, Deserialize)]
 pub struct GetTransactionsResponseArchivedTransactionsItem {
@@ -228,7 +205,6 @@ pub struct GetTransactionsResponseArchivedTransactionsItem {
     pub start: TxIndex,
     pub length: candid::Nat,
 }
-
 #[derive(CandidType, Deserialize)]
 pub struct GetTransactionsResponse {
     pub first_index: TxIndex,
@@ -236,14 +212,12 @@ pub struct GetTransactionsResponse {
     pub transactions: Vec<Transaction>,
     pub archived_transactions: Vec<GetTransactionsResponseArchivedTransactionsItem>,
 }
-
 pub type Tokens = candid::Nat;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct StandardRecord {
     pub url: String,
     pub name: String,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct TransferArg {
     pub to: Account,
@@ -253,7 +227,6 @@ pub struct TransferArg {
     pub created_at_time: Option<Timestamp>,
     pub amount: Tokens,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum TransferError {
     GenericError { message: String, error_code: candid::Nat },
@@ -265,25 +238,21 @@ pub enum TransferError {
     TooOld,
     InsufficientFunds { balance: Tokens },
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum TransferResult {
     Ok(BlockIndex),
     Err(TransferError),
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct AllowanceArgs {
     pub account: Account,
     pub spender: Account,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Allowance {
     pub allowance: candid::Nat,
     pub expires_at: Option<Timestamp>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ApproveArgs {
     pub fee: Option<candid::Nat>,
@@ -295,7 +264,6 @@ pub struct ApproveArgs {
     pub expires_at: Option<Timestamp>,
     pub spender: Account,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum ApproveError {
     GenericError { message: String, error_code: candid::Nat },
@@ -308,13 +276,11 @@ pub enum ApproveError {
     Expired { ledger_time: Timestamp },
     InsufficientFunds { balance: candid::Nat },
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum ApproveResult {
     Ok(BlockIndex),
     Err(ApproveError),
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct TransferFromArgs {
     pub to: Account,
@@ -325,7 +291,6 @@ pub struct TransferFromArgs {
     pub created_at_time: Option<Timestamp>,
     pub amount: Tokens,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum TransferFromError {
     GenericError { message: String, error_code: candid::Nat },
@@ -338,25 +303,21 @@ pub enum TransferFromError {
     TooOld,
     InsufficientFunds { balance: Tokens },
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum TransferFromResult {
     Ok(BlockIndex),
     Err(TransferFromError),
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetArchivesArgs {
     pub from: Option<Principal>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetArchivesResultItem {
     pub end: candid::Nat,
     pub canister_id: Principal,
     pub start: candid::Nat,
 }
-
 pub type GetArchivesResult = Vec<GetArchivesResultItem>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum Icrc3Value {
@@ -367,39 +328,33 @@ pub enum Icrc3Value {
     Text(String),
     Array(Vec<Box<Icrc3Value>>),
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetBlocksResultBlocksItem {
     pub id: candid::Nat,
     pub block: Box<Icrc3Value>,
 }
-
 pub type GetBlocksResultArchivedBlocksItemCallback = candid::Func;
 #[derive(CandidType, Deserialize)]
 pub struct GetBlocksResultArchivedBlocksItem {
     pub args: Vec<GetBlocksArgs>,
     pub callback: GetBlocksResultArchivedBlocksItemCallback,
 }
-
 #[derive(CandidType, Deserialize)]
 pub struct GetBlocksResult {
     pub log_length: candid::Nat,
     pub blocks: Vec<GetBlocksResultBlocksItem>,
     pub archived_blocks: Vec<GetBlocksResultArchivedBlocksItem>,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Icrc3DataCertificate {
     pub certificate: serde_bytes::ByteBuf,
     pub hash_tree: serde_bytes::ByteBuf,
 }
-
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Icrc3SupportedBlockTypesRetItem {
     pub url: String,
     pub block_type: String,
 }
-
 pub struct Service(pub Principal);
 impl Service {
     pub async fn archives(&self) -> CallResult<(Vec<ArchiveInfo>,)> {
