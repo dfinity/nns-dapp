@@ -169,6 +169,7 @@ pub struct FailedUpdate {
 pub struct SetDappControllersResponse {
     pub failed_updates: Vec<FailedUpdate>,
 }
+
 pub struct Service(pub Principal);
 impl Service {
     pub async fn canister_status(&self, arg0: CanisterIdRecord) -> CallResult<(CanisterStatusResult,)> {

@@ -482,6 +482,7 @@ pub struct RefreshBuyerTokensResponse {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct RestoreDappControllersArg {}
+
 pub struct Service(pub Principal);
 impl Service {
     pub async fn error_refund_icp(&self, arg0: ErrorRefundIcpRequest) -> CallResult<(ErrorRefundIcpResponse,)> {

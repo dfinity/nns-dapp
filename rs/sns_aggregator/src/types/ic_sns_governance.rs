@@ -702,6 +702,7 @@ pub struct SetMode {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SetModeRet {}
+
 pub struct Service(pub Principal);
 impl Service {
     pub async fn claim_swap_neurons(&self, arg0: ClaimSwapNeuronsRequest) -> CallResult<(ClaimSwapNeuronsResponse,)> {

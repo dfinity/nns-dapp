@@ -355,6 +355,7 @@ pub struct Icrc3SupportedBlockTypesRetItem {
     pub url: String,
     pub block_type: String,
 }
+
 pub struct Service(pub Principal);
 impl Service {
     pub async fn archives(&self) -> CallResult<(Vec<ArchiveInfo>,)> {

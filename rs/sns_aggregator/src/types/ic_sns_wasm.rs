@@ -349,6 +349,7 @@ pub struct UpdateSnsSubnetListRequest {
 pub struct UpdateSnsSubnetListResponse {
     pub error: Option<SnsWasmError>,
 }
+
 pub struct Service(pub Principal);
 impl Service {
     pub async fn add_wasm(&self, arg0: AddWasmRequest) -> CallResult<(AddWasmResponse,)> {
