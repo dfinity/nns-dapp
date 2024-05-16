@@ -232,6 +232,30 @@
         }
       }
     },
+    "ckusdc_ledger": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ckusdc_ledger.did",
+      "wasm": "target/ic/ckusdc_ledger.wasm",
+      "type": "custom",
+      "remote": {
+        "id": {
+        }
+      }
+    },
+    "ckusdc_index": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ckusdc_index.did",
+      "wasm": "target/ic/ckusdc_index.wasm",
+      "type": "custom",
+      "remote": {
+        "id": {
+        }
+      }
+    },
     "tvl": {
       "build": [
         "true"

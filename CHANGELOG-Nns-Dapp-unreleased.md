@@ -49,6 +49,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Added workflow to update IC cargo dependencies.
+* Include ckUSDC when generating args.did and .env.
 
 #### Changed
 
