@@ -265,6 +265,89 @@ describe("token-utils", () => {
       });
     });
 
+    describe("with 6 decimals", () => {
+      const token = {
+        decimals: 6,
+        symbol: "ckUSDC",
+        name: "Chain key USDC",
+      };
+
+      const testFormat = (amount: string) => {
+        expect(
+          formatTokenV2({
+            value: TokenAmountV2.fromString({ amount, token }) as TokenAmountV2,
+          })
+        ).toEqual(amount);
+      };
+
+      const testFormatDetailed = (amount: string) => {
+        expect(
+          formatTokenV2({
+            value: TokenAmountV2.fromString({ amount, token }) as TokenAmountV2,
+            detailed: true,
+          })
+        ).toEqual(amount);
+      };
+
+      const testFormatHeightDecimals = (amount: string) => {
+        expect(
+          formatTokenV2({
+            value: TokenAmountV2.fromString({ amount, token }) as TokenAmountV2,
+            detailed: "height_decimals",
+          })
+        ).toEqual(amount);
+      };
+
+      it("should format token", () => {
+        testFormat("1.00");
+        testFormat("1'000'000.00");
+        testFormat("0.01");
+        testFormat("0.001");
+        testFormat("0.0001");
+        testFormat("0.00001");
+        testFormat("0.000001");
+        testFormat("1.01");
+        expect(
+          formatTokenV2({
+            value: TokenAmountV2.fromString({
+              amount: "1.001",
+              token,
+            }) as TokenAmountV2,
+          })
+        ).toEqual("1.00");
+      });
+
+      it("should format detailed token", () => {
+        testFormatDetailed("1.00");
+        testFormatDetailed("1'000'000.00");
+        testFormatDetailed("0.01");
+        testFormatDetailed("0.001");
+        testFormatDetailed("0.0001");
+        testFormatDetailed("0.00001");
+        testFormatDetailed("0.000001");
+        testFormatDetailed("1.01");
+        testFormatDetailed("1.001");
+        testFormatDetailed("1.0001");
+        testFormatDetailed("1.00001");
+        testFormatDetailed("1.000001");
+      });
+
+      it("should format height decimals token", () => {
+        testFormatHeightDecimals("1.000000");
+        testFormatHeightDecimals("1'000'000.000000");
+        testFormatHeightDecimals("0.010000");
+        testFormatHeightDecimals("0.001000");
+        testFormatHeightDecimals("0.000100");
+        testFormatHeightDecimals("0.000010");
+        testFormatHeightDecimals("0.000001");
+        testFormatHeightDecimals("1.010000");
+        testFormatHeightDecimals("1.001000");
+        testFormatHeightDecimals("1.000100");
+        testFormatHeightDecimals("1.000010");
+        testFormatHeightDecimals("1.000001");
+      });
+    });
+
     describe("with 18 decimals", () => {
       const token = {
         decimals: 18,
@@ -280,6 +363,24 @@ describe("token-utils", () => {
         ).toEqual(amount);
       };
 
+      const testFormatDetailed = (amount: string) => {
+        expect(
+          formatTokenV2({
+            value: TokenAmountV2.fromString({ amount, token }) as TokenAmountV2,
+            detailed: true,
+          })
+        ).toEqual(amount);
+      };
+
+      const testFormatHeightDecimals = (amount: string) => {
+        expect(
+          formatTokenV2({
+            value: TokenAmountV2.fromString({ amount, token }) as TokenAmountV2,
+            detailed: "height_decimals",
+          })
+        ).toEqual(amount);
+      };
+
       it("should format token", () => {
         testFormat("1.00");
         testFormat("1'000'000.00");
@@ -290,6 +391,49 @@ describe("token-utils", () => {
         testFormat("0.000001");
         testFormat("0.0000001");
         testFormat("0.00000001");
+        testFormat("1.01");
+        expect(
+          formatTokenV2({
+            value: TokenAmountV2.fromString({
+              amount: "1.001",
+              token,
+            }) as TokenAmountV2,
+          })
+        ).toEqual("1.00");
+      });
+
+      it("should format detailed token", () => {
+        testFormatDetailed("1.00");
+        testFormatDetailed("1'000'000.00");
+        testFormatDetailed("0.01");
+        testFormatDetailed("0.001");
+        testFormatDetailed("0.0001");
+        testFormatDetailed("0.00001");
+        testFormatDetailed("0.000001");
+        testFormatDetailed("1.01");
+        testFormatDetailed("1.001");
+        testFormatDetailed("1.0001");
+        testFormatDetailed("1.00001");
+        testFormatDetailed("1.000001");
+      });
+
+      it("should format height decimals token", () => {
+        testFormatHeightDecimals("1.00000000");
+        testFormatHeightDecimals("1'000'000.00000000");
+        testFormatHeightDecimals("0.01000000");
+        testFormatHeightDecimals("0.00100000");
+        testFormatHeightDecimals("0.00010000");
+        testFormatHeightDecimals("0.00001000");
+        testFormatHeightDecimals("0.00000100");
+        testFormatHeightDecimals("0.00000010");
+        testFormatHeightDecimals("0.00000001");
+        testFormatHeightDecimals("1.01000000");
+        testFormatHeightDecimals("1.00100000");
+        testFormatHeightDecimals("1.00010000");
+        testFormatHeightDecimals("1.00001000");
+        testFormatHeightDecimals("1.00000100");
+        testFormatHeightDecimals("1.00000010");
+        testFormatHeightDecimals("1.00000001");
       });
     });
   });
