@@ -1,7 +1,7 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   ACCOUNT_PARAM,
-  ACTIONABLE_PARAM,
+  ACTIONABLE_PROPOSALS_PARAM,
   AppPath,
   CANISTER_PARAM,
   NEURON_PARAM,
@@ -175,7 +175,7 @@ describe("navigation-utils", () => {
       expect(
         buildActionableProposalsUrl({ universe: OWN_CANISTER_ID_TEXT })
       ).toEqual(
-        `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}&${ACTIONABLE_PARAM}`
+        `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}&${ACTIONABLE_PROPOSALS_PARAM}`
       );
     });
 

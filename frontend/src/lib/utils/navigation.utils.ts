@@ -1,6 +1,6 @@
 import {
   ACCOUNT_PARAM,
-  ACTIONABLE_PARAM,
+  ACTIONABLE_PROPOSALS_PARAM,
   AppPath,
   CANISTER_PARAM,
   NEURON_PARAM,
@@ -63,7 +63,7 @@ export const buildActionableProposalsUrl = ({
   buildUrl({
     path: AppPath.Proposals,
     universe,
-    params: { [ACTIONABLE_PARAM]: "" },
+    params: { [ACTIONABLE_PROPOSALS_PARAM]: "" },
   });
 export const buildCanistersUrl = ({ universe }: { universe: string }) =>
   buildUrl({ path: AppPath.Canisters, universe });

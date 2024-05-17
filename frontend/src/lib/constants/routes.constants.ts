@@ -29,7 +29,7 @@ export const ROUTE_ID_GROUPS = [
 ];
 
 export const UNIVERSE_PARAM = "u";
-export const ACTIONABLE_PARAM = "actionable";
+export const ACTIONABLE_PROPOSALS_PARAM = "actionable";
 
 export const CANISTER_PARAM = "canister";
 export const NEURON_PARAM = "neuron";
