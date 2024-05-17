@@ -6,8 +6,8 @@ import {
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import {
-  CKUSDC_LEDGER_CANISTER_ID,
   CKUSDC_INDEX_CANISTER_ID,
+  CKUSDC_LEDGER_CANISTER_ID,
   CKUSDC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckusdc-canister-ids.constants";
 import { loadIcrcCanisters } from "$lib/services/icrc-canisters.services";
@@ -110,6 +110,5 @@ describe("icrc-canisters.services", () => {
         expect(icrcCanistersStore.setCanisters).toHaveBeenCalledTimes(2);
       });
     });
-
   });
 });
