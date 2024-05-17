@@ -45,6 +45,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Not Published
 
+* Support `ckUSDC` behind a feature flag.
+
 ### Operations
 
 #### Added
