@@ -157,7 +157,7 @@
   {/if}
 
   <div class="amount">
-    <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
+    <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} {token} />
 
     {#if showLedgerFee}
       <TransactionFormFee {transactionFee} />

@@ -1,12 +1,18 @@
 <script lang="ts">
+  import { ICP_DISPLAYED_DECIMALS_DETAILED } from "$lib/constants/icp.constants";
   import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher } from "svelte";
   import MaxButton from "$lib/components/common/MaxButton.svelte";
   import InputWithError from "./InputWithError.svelte";
+  import { type Token, isNullish } from "@dfinity/utils";
 
   export let amount: number | undefined = undefined;
   export let max: number | undefined = undefined;
+  export let token: Token | undefined = undefined;
   export let errorMessage: string | undefined = undefined;
+
+  let inputAmount: string | undefined = amount?.toString();
+  $: amount = isNullish(inputAmount) ? undefined : +inputAmount;
 
   const dispatch = createEventDispatcher();
   const setMax = () => dispatch("nnsMax");
@@ -16,9 +22,13 @@
   testId="amount-input-component"
   placeholderLabelKey="core.amount"
   name="amount"
-  bind:value={amount}
+  bind:value={inputAmount}
   {max}
-  inputType="icp"
+  inputType="currency"
+  decimals={Math.min(
+    token?.decimals ?? ICP_DISPLAYED_DECIMALS_DETAILED,
+    ICP_DISPLAYED_DECIMALS_DETAILED
+  )}
   {errorMessage}
 >
   <svelte:fragment slot="label">{$i18n.core.amount}</svelte:fragment>

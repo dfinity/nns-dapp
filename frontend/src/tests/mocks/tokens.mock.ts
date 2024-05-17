@@ -9,6 +9,7 @@ import {
 } from "$lib/constants/cketh-canister-ids.constants";
 import { NNS_TOKEN } from "$lib/constants/tokens.constants";
 import type { TokensStoreData } from "$lib/stores/tokens.store";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import {
   mockCkETHTESTToken,
   mockCkETHToken,
@@ -16,6 +17,13 @@ import {
 import type { Subscriber } from "svelte/store";
 import { mockCkBTCToken } from "./ckbtc-accounts.mock";
 import { mockSnsFullProject, mockSnsToken } from "./sns-projects.mock";
+
+export const mockCkUSDCToken: IcrcTokenMetadata = {
+  name: "ckUSDC",
+  symbol: "ckUSDC",
+  fee: 4_000n,
+  decimals: 6,
+};
 
 export const mockTokens = {
   [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
