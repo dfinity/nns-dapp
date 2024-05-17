@@ -12,7 +12,11 @@
   export let errorMessage: string | undefined = undefined;
 
   let inputAmount: string | undefined = amount?.toString();
-  $: amount = isNullish(inputAmount) ? undefined : +inputAmount;
+  $: inputAmount = amount?.toString();
+
+  const onInput = () => {
+    amount = isNullish(inputAmount) ? undefined : +inputAmount;
+  };
 
   const dispatch = createEventDispatcher();
   const setMax = () => dispatch("nnsMax");
@@ -30,6 +34,7 @@
     ICP_DISPLAYED_DECIMALS_DETAILED
   )}
   {errorMessage}
+  on:nnsInput={onInput}
 >
   <svelte:fragment slot="label">{$i18n.core.amount}</svelte:fragment>
   <MaxButton on:click={setMax} slot="end" />
