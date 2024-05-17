@@ -10,6 +10,8 @@ type EnvironmentVars = {
   ckbtcMinterCanisterId?: string;
   ckethIndexCanisterId?: string;
   ckethLedgerCanisterId?: string;
+  ckusdcIndexCanisterId?: string;
+  ckusdcLedgerCanisterId?: string;
   cyclesMintingCanisterId: string;
   dfxNetwork: string;
   featureFlags: string;
@@ -103,6 +105,12 @@ const getBuildEnvVars = (): EnvironmentVars => {
     ),
     ckethLedgerCanisterId: convertEmtpyStringToUndefined(
       import.meta.env.VITE_CKETH_LEDGER_CANISTER_ID
+    ),
+    ckusdcIndexCanisterId: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_CKUSDC_INDEX_CANISTER_ID
+    ),
+    ckusdcLedgerCanisterId: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_CKUSDC_LEDGER_CANISTER_ID
     ),
     cyclesMintingCanisterId: convertEmtpyStringToUndefined(
       import.meta.env.VITE_CYCLES_MINTING_CANISTER_ID

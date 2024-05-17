@@ -20,6 +20,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Support `ApiBoundaryNodes` in `FirewallRulesScope` of `AddFirewallRulesPayload`.
 * Support `SubnetRental` topic.
 * Support NNS function 52 for `SubnetRentalRequest`.
+* Get ckUSDC canister IDs from environment/configuration.
 
 #### Changed
 
