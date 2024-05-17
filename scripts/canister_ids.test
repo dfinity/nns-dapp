@@ -38,6 +38,8 @@ cat >"$test_index_html" <<-EOF
         data-ckbtc-ledger-canister-id="st75y-vaaaa-aaaaa-aaalq-cai"
         data-ckbtc-minter-canister-id="t6rzw-2iaaa-aaaaa-aaama-cai"
         data-cketh-ledger-canister-id="omy6t-mmaaa-aaaaa-qabgq-cai"
+        data-ckusdc-ledger-canister-id="m7h5t-euaaa-aaaaa-qabia-cai"
+        data-ckusdc-index-canister-id="myg3h-jmaaa-aaaaa-qabiq-cai"
         data-cycles-minting-canister-id="rkp4c-7iaaa-aaaaa-aaaca-cai"
         data-dfx-network="staging"
         data-fetch-root-key="true"
@@ -164,6 +166,12 @@ if ! diff "$test_json_file" <(
   },
   "cketh_ledger": {
     "staging": "omy6t-mmaaa-aaaaa-qabgq-cai"
+  },
+  "ckusdc_index": {
+    "staging": "myg3h-jmaaa-aaaaa-qabiq-cai"
+  },
+  "ckusdc_ledger": {
+    "staging": "m7h5t-euaaa-aaaaa-qabia-cai"
   },
   "nns-sns-wasm": {
     "staging": "qaa6y-5yaaa-aaaaa-aaafa-cai"

@@ -148,6 +148,8 @@ if [ "$command" = "import-from-index-html" ]; then
   ckbtcMinter="$(get_value_from_html data-ckbtc-minter-canister-id "$tmp_index_html")"
   ckethIndex="$(get_value_from_html data-cketh-index-canister-id "$tmp_index_html")"
   ckethLedger="$(get_value_from_html data-cketh-ledger-canister-id "$tmp_index_html")"
+  ckusdcIndex="$(get_value_from_html data-ckusdc-index-canister-id "$tmp_index_html")"
+  ckusdcLedger="$(get_value_from_html data-ckusdc-ledger-canister-id "$tmp_index_html")"
   snsWasm="$(get_value_from_html data-wasm-canister-id "$tmp_index_html")"
   nnsDapp="$(get_value_from_html data-own-canister-id "$tmp_index_html")"
 
@@ -159,6 +161,8 @@ if [ "$command" = "import-from-index-html" ]; then
     .ckbtc_minter[$network] = $ckbtcMinter |
     .cketh_index[$network] = $ckethIndex |
     .cketh_ledger[$network] = $ckethLedger |
+    .ckusdc_index[$network] = $ckusdcIndex |
+    .ckusdc_ledger[$network] = $ckusdcLedger |
     .["nns-sns-wasm"][$network] = $snsWasm |
     .internet_identity[$network] = $internetIdentity |
     .["nns-dapp"][$network] = $nnsDapp |
@@ -170,6 +174,8 @@ if [ "$command" = "import-from-index-html" ]; then
     --arg ckbtcMinter "$ckbtcMinter" \
     --arg ckethIndex "$ckethIndex" \
     --arg ckethLedger "$ckethLedger" \
+    --arg ckusdcIndex "$ckusdcIndex" \
+    --arg ckusdcLedger "$ckusdcLedger" \
     --arg snsWasm "$snsWasm" \
     --arg internetIdentity "$internetIdentity" \
     --arg nnsDapp "$nnsDapp" \
