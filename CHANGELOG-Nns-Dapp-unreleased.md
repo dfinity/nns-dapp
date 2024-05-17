@@ -53,6 +53,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Added workflow to update IC cargo dependencies.
 * Include `ckUSDC` when generating `args.did` and `.env`.
+* Include `ckUSDC` canister IDs when importing from URL with `scripts/canister_ids`.
 
 #### Changed
 
