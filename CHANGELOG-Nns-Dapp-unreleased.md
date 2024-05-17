@@ -41,6 +41,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Successful swap message should not be shown when participant count is insufficient.
 * Rendering tokens with fewer than 8 decimals.
+* Don't allow inputting more decimals than the token supports.
 
 #### Security
 

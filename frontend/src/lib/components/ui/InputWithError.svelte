@@ -4,7 +4,8 @@
 
   // Same props as Input
   export let name: string;
-  export let inputType: "number" | "text" | "icp" = "number";
+  export let inputType: "number" | "text" | "icp" | "currency" = "number";
+  export let decimals: number | undefined = undefined;
   export let required = true;
   export let spellcheck: boolean | undefined = undefined;
   export let step: number | "any" | undefined = undefined;
@@ -26,6 +27,7 @@
 <div class="wrapper" data-tid={testId} class:error={hasError}>
   <Input
     {inputType}
+    {decimals}
     {required}
     {spellcheck}
     {name}
