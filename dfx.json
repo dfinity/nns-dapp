@@ -240,9 +240,7 @@
       "wasm": "target/ic/ckusdc_ledger.wasm",
       "type": "custom",
       "remote": {
-        "id": {
-          "app": "yfumr-cyaaa-aaaar-qaela-cai"
-        }
+        "id": {}
       }
     },
     "ckusdc_index": {
@@ -253,9 +251,7 @@
       "wasm": "target/ic/ckusdc_index.wasm",
       "type": "custom",
       "remote": {
-        "id": {
-          "app": "ycvkf-paaaa-aaaar-qaelq-cai"
-        }
+        "id": {}
       }
     },
     "tvl": {
