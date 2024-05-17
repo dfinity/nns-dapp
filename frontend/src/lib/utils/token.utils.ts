@@ -125,14 +125,12 @@ export const formatTokenE8s = ({
   });
 };
 
-// TODO: This drops decimals after the 8th decimal place. Decide if this is the
-// desired behavior.
 export const formatTokenV2 = ({
   value,
   detailed = false,
   roundingMode,
 }: {
-  value?: TokenAmount | TokenAmountV2;
+  value: TokenAmount | TokenAmountV2;
   detailed?: boolean | "height_decimals";
   roundingMode?: RoundMode;
 }): string => {
