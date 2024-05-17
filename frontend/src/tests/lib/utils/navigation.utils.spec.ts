@@ -9,8 +9,8 @@ import {
   UNIVERSE_PARAM,
 } from "$lib/constants/routes.constants";
 import {
+  ACTIONABLE_PROPOSALS_URL,
   buildAccountsUrl,
-  buildActionableProposalsUrl,
   buildCanisterUrl,
   buildCanistersUrl,
   buildNeuronUrl,
@@ -171,11 +171,9 @@ describe("navigation-utils", () => {
       );
     });
 
-    it("should build voting url with actionable param", () => {
-      expect(
-        buildActionableProposalsUrl({ universe: OWN_CANISTER_ID_TEXT })
-      ).toEqual(
-        `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}&${ACTIONABLE_PROPOSALS_PARAM}`
+    it("should build ACTIONABLE_PROPOSALS_URL const", () => {
+      expect(ACTIONABLE_PROPOSALS_URL).toEqual(
+        `${AppPath.Proposals}/?${ACTIONABLE_PROPOSALS_PARAM}`
       );
     });
 
