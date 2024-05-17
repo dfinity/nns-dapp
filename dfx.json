@@ -34,6 +34,7 @@
       "type": "custom",
       "remote": {
         "id": {
+          "app": "qhbym-qaaaa-aaaaa-aaafq-cai",
           "mainnet": "qhbym-qaaaa-aaaaa-aaafq-cai"
         }
       }
@@ -215,6 +216,7 @@
       "type": "custom",
       "remote": {
         "id": {
+          "app": "ss2fx-dyaaa-aaaar-qacoq-cai",
           "mainnet": "ss2fx-dyaaa-aaaar-qacoq-cai"
         }
       }
@@ -228,6 +230,7 @@
       "type": "custom",
       "remote": {
         "id": {
+          "app": "s3zol-vqaaa-aaaar-qacpa-cai",
           "mainnet": "s3zol-vqaaa-aaaar-qacpa-cai"
         }
       }
