@@ -5,12 +5,12 @@ import {
   CKETH_INDEX_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
-import { loadCkETHCanisters } from "$lib/services/cketh-canisters.services";
+import { loadCkETHCanisters } from "$lib/services/icrc-canisters.services";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { get } from "svelte/store";
 
-describe("cketh-canisters.services", () => {
+describe("icrc-canisters.services", () => {
   describe("loadCkETHCanisters", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);

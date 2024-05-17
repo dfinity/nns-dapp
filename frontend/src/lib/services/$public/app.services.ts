@@ -4,7 +4,7 @@ import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutAuthReady } from "$lib/stores/layout.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { loadCkETHCanisters } from "../cketh-canisters.services";
+import { loadCkETHCanisters } from "../icrc-canisters.services";
 import { watchIcrcTokensLoadTokenData } from "../icrc-tokens.services";
 
 /**
