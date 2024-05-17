@@ -1,6 +1,7 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   ACCOUNT_PARAM,
+  ACTIONABLE_PROPOSALS_PARAM,
   AppPath,
   CANISTER_PARAM,
   NEURON_PARAM,
@@ -9,6 +10,7 @@ import {
 } from "$lib/constants/routes.constants";
 import {
   buildAccountsUrl,
+  buildActionableProposalsUrl,
   buildCanisterUrl,
   buildCanistersUrl,
   buildNeuronUrl,
@@ -166,6 +168,14 @@ describe("navigation-utils", () => {
         })
       ).toEqual(
         `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
+      );
+    });
+
+    it("should build voting url with actionable param", () => {
+      expect(
+        buildActionableProposalsUrl({ universe: OWN_CANISTER_ID_TEXT })
+      ).toEqual(
+        `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}&${ACTIONABLE_PROPOSALS_PARAM}`
       );
     });
 

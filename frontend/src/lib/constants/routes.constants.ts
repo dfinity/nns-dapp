@@ -36,5 +36,3 @@ export const PROJECT_PARAM = "project";
 export const PROPOSAL_PARAM = "proposal";
 export const ACCOUNT_PARAM = "account";
 export const ACTIONABLE_PROPOSALS_PARAM = "actionable";
-
-export const ACTIONABLE_PROPOSALS_URL = `${AppPath.Proposals}/?${ACTIONABLE_PROPOSALS_PARAM}`;
