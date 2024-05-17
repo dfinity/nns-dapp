@@ -184,8 +184,14 @@ install_state() {
 }
 
 output_restore_backup_script() {
-  echo "echo \"Restoring dfx state.\""
-  echo set -xeu
+  cat <<-EOF
+	if pgrep replica; then
+	  echo "A replica is still running. State should be restored automatically when the replica is stopped." >&2
+	  exit 1
+	fi
+	echo "Restoring dfx state."
+	set -xeu
+	EOF
   output_restore_dir LOCAL_REPLICA_DATA
   output_restore_dir CONFIG
   output_restore_dir NETWORK
