@@ -23,6 +23,8 @@ export const load: LayoutLoad = ($event: LoadEvent): Partial<Page> => {
 
   return {
     universe: searchParams?.get(UNIVERSE_PARAM) ?? undefined,
+    // When the parameter is present but has no value in the URL(e.g., `?actionable` instead of `?actionable=yes`),
+    // an empty string is returned by searchParams.
     actionable: nonNullish(searchParams?.get(ACTIONABLE_PARAM)),
   };
 };
