@@ -43,7 +43,7 @@ const buildUrl = ({
 }: {
   path: AppPath;
   universe: string;
-  params?: Record<string, string | undefined>;
+  params?: Record<string, string>;
 }): string =>
   `${path}/?${UNIVERSE_PARAM}=${universe}${Object.entries(params)
     .map(([key, value]) => (value === "" ? `&${key}` : `&${key}=${value}`))
@@ -62,7 +62,6 @@ export const buildActionableProposalsUrl = ({
 }) =>
   buildUrl({
     path: AppPath.Proposals,
-    universe,
     params: { [ACTIONABLE_PROPOSALS_PARAM]: "" },
   });
 export const buildCanistersUrl = ({ universe }: { universe: string }) =>
