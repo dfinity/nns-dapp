@@ -4,7 +4,7 @@ import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutAuthReady } from "$lib/stores/layout.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { loadCkETHCanisters } from "../icrc-canisters.services";
+import { loadIcrcCanisters } from "../icrc-canisters.services";
 import { watchIcrcTokensLoadTokenData } from "../icrc-tokens.services";
 
 /**
@@ -18,7 +18,7 @@ export const initAppPublicData = (): Promise<
   /**
    * If one of the promises fails, we don't want to block the app.
    */
-  return Promise.allSettled([loadCkETHCanisters(), loadSnsProjects()]);
+  return Promise.allSettled([loadIcrcCanisters(), loadSnsProjects()]);
 };
 
 const syncAuthStore = async () => {
