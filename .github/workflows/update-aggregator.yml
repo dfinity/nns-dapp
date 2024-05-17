@@ -4,7 +4,7 @@ name: Update sns_aggregator candid bindings
 on:
   schedule:
     # Check for updates on candid interface for the aggregator every monday at 3:30am.
-    - cron: '30 3 * * FRI'
+    - cron: '30 3 * * MON'
   workflow_dispatch:
   push:
     branches:

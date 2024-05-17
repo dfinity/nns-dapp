@@ -4,7 +4,7 @@ name: Update proposals candid bindings
 on:
   schedule:
     # Check for updates on candid interface for the proposals every thursday at 3:30am.
-    - cron: '30 2 * * FRI'
+    - cron: '30 3 * * MON'
   workflow_dispatch:
   push:
     branches:
