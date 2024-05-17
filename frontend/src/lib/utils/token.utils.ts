@@ -62,7 +62,7 @@ type RoundMode =
  * Jira GIX-1563:
  * - However, if requested, some amount might be displayed with a fix length of 8 decimals, regardless if leading zero or no leading zero
  */
-export const formatTokenUlps = ({
+const formatTokenUlps = ({
   value,
   tokenDecimals,
   defaultDisplayedDecimals,
