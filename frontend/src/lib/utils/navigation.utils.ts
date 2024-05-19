@@ -64,8 +64,8 @@ const buildUrl = ({
   appendParams({
     path,
     params: {
-      ...params,
       ...(universe ? { [UNIVERSE_PARAM]: universe } : {}),
+      ...params,
     },
   });
 
