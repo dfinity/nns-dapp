@@ -4,6 +4,10 @@
   import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import SelectUniverseModal from "$lib/modals/universe/SelectUniverseModal.svelte";
+  import SelectActionableCard from "$lib/components/universe/SelectActionableCard.svelte";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { ENABLE_ACTIONABLE_TAB } from "$lib/stores/feature-flags.store";
+  import { displaySelectActionableLink } from "$lib/derived/actionable-proposals.derived";
 
   let showProjectPicker = false;
 
@@ -22,12 +26,28 @@
 <svelte:window bind:innerWidth />
 
 <TestIdWrapper testId="select-universe-dropdown-component">
-  <SelectUniverseCard
-    universe={$selectedUniverseStore}
-    selected={true}
-    role="dropdown"
-    on:click={() => (showProjectPicker = true)}
-  />
+  {#if $ENABLE_ACTIONABLE_TAB}
+    {#if $displaySelectActionableLink && $pageStore.actionable}
+      <SelectActionableCard
+        on:click={() => (showProjectPicker = true)}
+        selected={$pageStore.actionable}
+      />
+    {:else}
+      <SelectUniverseCard
+        universe={$selectedUniverseStore}
+        selected={true}
+        role="dropdown"
+        on:click={() => (showProjectPicker = true)}
+      />
+    {/if}
+  {:else}
+    <SelectUniverseCard
+      universe={$selectedUniverseStore}
+      selected={true}
+      role="dropdown"
+      on:click={() => (showProjectPicker = true)}
+    />
+  {/if}
 
   {#if showProjectPicker}
     <SelectUniverseModal on:nnsClose={() => (showProjectPicker = false)} />

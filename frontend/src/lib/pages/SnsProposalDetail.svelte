@@ -228,7 +228,8 @@
       currentProposalId={BigInt(proposalIdText)}
       currentProposalStatus={getUniversalProposalStatus(proposal)}
       {proposalIds}
-      selectProposal={navigateToProposal}
+      selectProposal={(proposalId) =>
+        navigateToProposal({ proposalId, actionable: $pageStore.actionable })}
     />
   {/if}
 

@@ -12,6 +12,7 @@
   export let proposalInfo: ProposalInfo;
   export let hidden = false;
   export let actionable = false;
+  export let fromActionablePage = false;
 
   let id: ProposalId | undefined;
   let title: string | undefined;
@@ -25,6 +26,7 @@
   $: href = buildProposalUrl({
     universe: $pageStore.universe,
     proposalId: id as ProposalId,
+    actionable: fromActionablePage,
   });
 
   let status: UniversalProposalStatus | undefined;

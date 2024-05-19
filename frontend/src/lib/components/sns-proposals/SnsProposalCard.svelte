@@ -14,11 +14,14 @@
   } from "@dfinity/sns";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import type { UniversalProposalStatus } from "$lib/types/proposals";
+  import type { Universe } from "$lib/types/universe";
 
   export let proposalData: SnsProposalData;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
   export let actionable = false;
+  export let fromActionablePage = false;
   export let hidden = false;
+  export let universe: Universe | undefined;
 
   let id: SnsProposalId | undefined;
   let title: string | undefined;
@@ -42,8 +45,9 @@
 
   let href: string;
   $: href = buildProposalUrl({
-    universe: $pageStore.universe,
+    universe: universe?.canisterId ?? $pageStore.universe,
     proposalId: `${id?.id}`,
+    actionable: fromActionablePage,
   });
 </script>
 

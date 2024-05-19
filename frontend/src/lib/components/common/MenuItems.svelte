@@ -16,10 +16,12 @@
   import {
     canistersPathStore,
     neuronsPathStore,
-    proposalsPathStore,
   } from "$lib/derived/paths.derived";
   import { pageStore } from "$lib/derived/page.derived";
-  import { isSelectedPath } from "$lib/utils/navigation.utils";
+  import {
+    ACTIONABLE_PROPOSALS_URL,
+    isSelectedPath,
+  } from "$lib/utils/navigation.utils";
   import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
   import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
 
@@ -59,7 +61,7 @@
     },
     {
       context: "proposals",
-      href: $proposalsPathStore,
+      href: ACTIONABLE_PROPOSALS_URL,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
         paths: [AppPath.Proposals, AppPath.Proposal],
