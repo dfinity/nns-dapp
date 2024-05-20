@@ -134,6 +134,24 @@ get_state_dir() {
   echo "${!var_name}"
 }
 
+reverse_restore_commands=()
+
+mkdir_and_restore() {
+  if [[ -e "$1" ]]; then
+    return
+  fi
+  mkdir_and_restore "$(dirname "$1")"
+  mkdir "$1"
+  reverse_restore_commands+=("$(prinft "rmdir %q" "$1")")
+}
+
+mv_and_restore() {
+  mkdir_and_restore "$(dirname "$2")"
+  printf 'mv %q %q\n' "$1" "$2"
+  mv "$1" "$2"
+  reverse_restore_commands+=("$(printf "mv %q %q" "$2" "$1")")
+}
+
 # Moves $2 to $3 and then $1 to $2.
 # Returns an error if $3 already exists but silently skips moves for which the
 # source doesn't exist.
@@ -144,13 +162,11 @@ mv3() {
   fi
   if [ -e "$2" ]; then
     mkdir -p "$(dirname "$3")"
-    echo mv "'$2'" "'$3'"
-    mv "$2" "$3"
+    mv_and_restore "$2" "$3"
   fi
   if [ -e "$1" ]; then
     mkdir -p "$(dirname "$2")"
-    echo mv "'$1'" "'$2'"
-    mv "$1" "$2"
+    mv_and_restore "$1" "$2"
   fi
 }
 
@@ -162,17 +178,6 @@ install_dir() {
   dfx_dir="$(get_dfx_dir "$1")"
   backup_dir="$(get_backup_dir "$1")"
   mv3 "$state_dir" "$dfx_dir" "$backup_dir"
-}
-
-# Takes "LOCAL_REPLICA_DATA", "CONFIG", or "NETWORK" as argument and outputs the
-# commands to restore the corresponding directory from the backup location after
-# moving the state directory back to its original location.
-output_restore_dir() {
-  state_dir="$(get_state_dir "$1")"
-  dfx_dir="$(get_dfx_dir "$1")"
-  backup_dir="$(get_backup_dir "$1")"
-  printf 'mv %q %q\n' "$dfx_dir" "$state_dir"
-  printf 'mv %q %q\n' "$backup_dir" "$dfx_dir"
 }
 
 # Moves all the existing directories to the backup location and moves the state
@@ -192,11 +197,11 @@ output_restore_backup_script() {
 	echo "Restoring dfx state."
 	set -xeu
 	EOF
-  output_restore_dir LOCAL_REPLICA_DATA
-  output_restore_dir CONFIG
-  output_restore_dir NETWORK
-  echo rm "\$0"
-  echo rmdir "$BACKUP_DIR"
+  for (( i=${#reverse_restore_commands[@]}-1; i>=0; i-- )); do
+    printf "%s\n" "${reverse_restore_commands[i]}"
+  done
+  echo rm "\"\$0\""
+  echo rmdir "\"$BACKUP_DIR\""
 }
 
 # We put the backup script inside the backup directory.
@@ -205,6 +210,7 @@ output_restore_backup_script() {
 RESTORE_BACKUP_SCRIPT_FILE="$BACKUP_DIR/restore.sh"
 echo "Run $RESTORE_BACKUP_SCRIPT_FILE to restore the replica state."
 
+install_state
+
 output_restore_backup_script >"$RESTORE_BACKUP_SCRIPT_FILE"
 
-install_state
