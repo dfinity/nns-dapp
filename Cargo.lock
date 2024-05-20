@@ -2182,7 +2182,7 @@ source = "git+https://github.com/dfinity/ic?rev=release-2024-05-09_23-02-storage
 dependencies = [
  "hex",
  "ic_bls12_381",
- "itertools 0.12.0",
+ "itertools 0.12.1",
  "lazy_static",
  "pairing",
  "paste",
@@ -2809,7 +2809,7 @@ dependencies = [
  "ic-stable-structures",
  "ic-types",
  "icp-ledger",
- "itertools 0.12.0",
+ "itertools 0.12.1",
  "lazy_static",
  "maplit",
  "mockall",
@@ -3103,7 +3103,7 @@ dependencies = [
  "ic-utils",
  "icp-ledger",
  "icrc-ledger-types",
- "itertools 0.12.0",
+ "itertools 0.12.1",
  "lazy_static",
  "maplit",
  "prost",
@@ -3481,9 +3481,18 @@ dependencies = [
 
 [[package]]
 name = "itertools"
-version = "0.12.0"
+version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25db6b064527c5d482d0423354fcd07a89a2dfe07b67892e62411946db7f07b0"
+checksum = "ba291022dbbd398a455acf126c1e341954079855bc60dfdda641363bd6922569"
+dependencies = [
+ "either",
+]
+
+[[package]]
+name = "itertools"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "413ee7dfc52ee1a4949ceeb7dbc8a33f2d6c088194d9f922fb8318faf1f01186"
 dependencies = [
  "either",
 ]
@@ -3909,7 +3918,7 @@ dependencies = [
  "ic-stable-structures",
  "ic_principal",
  "icp-ledger",
- "itertools 0.12.0",
+ "itertools 0.13.0",
  "lazy_static",
  "lzma-rs",
  "maplit",
@@ -4518,7 +4527,7 @@ checksum = "80b776a1b2dc779f5ee0641f8ade0125bc1298dd41a9a0c16d8bd57b42d222b1"
 dependencies = [
  "bytes",
  "heck 0.5.0",
- "itertools 0.12.0",
+ "itertools 0.11.0",
  "log",
  "multimap",
  "once_cell",
@@ -4538,7 +4547,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "19de2de2a00075bf566bee3bd4db014b11587e84184d3f7a791bc17f1a8e9e48"
 dependencies = [
  "anyhow",
- "itertools 0.12.0",
+ "itertools 0.11.0",
  "proc-macro2",
  "quote",
  "syn 2.0.55",
