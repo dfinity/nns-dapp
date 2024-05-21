@@ -160,6 +160,7 @@ const querySnsProposals = async ({
 
   return {
     proposals: sortedProposals,
-    includeBallotsByCaller,
+    includeBallotsByCaller:
+      sortedProposals.length > 0 ? includeBallotsByCaller : false,
   };
 };

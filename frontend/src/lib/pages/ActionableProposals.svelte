@@ -4,6 +4,7 @@
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
   import NnsProposalCard from "$lib/components/proposals/NnsProposalCard.svelte";
   import {
+    actionableProposalNotSupportedUniversesStore,
     actionableProposalsLoadedStore,
     actionableProposalTotalCountStore,
     actionableSnsProposalsByUniverseStore,
@@ -11,6 +12,7 @@
   import SnsWithActionableProposals from "$lib/components/proposals/SnsWithActionableProposals.svelte";
   import ActionableProposalsEmpty from "$lib/components/proposals/ActionableProposalsEmpty.svelte";
   import LoadingProposals from "$lib/components/proposals/LoadingProposals.svelte";
+  import ActionableProposalsNotSupportedSnses from "$lib/components/proposals/ActionableProposalsNotSupportedSnses.svelte";
 </script>
 
 {#if $actionableProposalTotalCountStore === 0}
@@ -31,4 +33,8 @@
   {#each $actionableSnsProposalsByUniverseStore ?? [] as snsUniverse (snsUniverse.universe.canisterId)}
     <SnsWithActionableProposals universe={snsUniverse.universe} />
   {/each}
+{/if}
+
+{#if $actionableProposalNotSupportedUniversesStore.length > 0}
+  <ActionableProposalsNotSupportedSnses />
 {/if}

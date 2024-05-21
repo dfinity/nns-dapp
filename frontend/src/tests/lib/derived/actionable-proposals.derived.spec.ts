@@ -3,6 +3,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import {
   actionableProposalCountStore,
   actionableProposalIndicationEnabledStore,
+  actionableProposalNotSupportedUniversesStore,
   actionableProposalSupportedStore,
   actionableProposalTotalCountStore,
   actionableProposalsActiveStore,
@@ -280,6 +281,50 @@ describe("actionable proposals derived stores", () => {
       });
 
       expect(get(actionableSnsProposalsByUniverseStore)).toEqual([]);
+    });
+  });
+
+  describe("actionableProposalNotSupportedUniversesStore", () => {
+    const proposals0 = [createProposal(0n)];
+    const proposals1 = [createProposal(1n)];
+
+    it("should return snses with proposals", async () => {
+      expect(get(actionableProposalNotSupportedUniversesStore)).toEqual([]);
+
+      setSnsProjects([
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: principal0,
+        },
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: principal1,
+        },
+      ]);
+
+      expect(get(actionableProposalNotSupportedUniversesStore)).toEqual([]);
+
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal0,
+        proposals: proposals0,
+        includeBallotsByCaller: false,
+      });
+      expect(
+        get(actionableProposalNotSupportedUniversesStore).map(
+          ({ canisterId }) => canisterId
+        )
+      ).toEqual([principal0.toText()]);
+
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal1,
+        proposals: proposals1,
+        includeBallotsByCaller: false,
+      });
+      expect(
+        get(actionableProposalNotSupportedUniversesStore).map(
+          ({ canisterId }) => canisterId
+        )
+      ).toEqual([principal0.toText(), principal1.toText()]);
     });
   });
 });
