@@ -180,7 +180,12 @@ install_dir() {
 }
 
 get_config_paths_to_install() {
+  # Shellcheck suggests using find instead of ls but that makes the code much
+  # more complicated and I don't expect any non-standard characters in these
+  # files.
+  # shellcheck disable=SC2010
   ls "$DFX_CONFIG_STATE_DIR" | grep -v '^identity$'
+  # shellcheck disable=SC2012
   ls "$DFX_CONFIG_STATE_DIR/identity" | sed -e 's@^@identity/@'
 }
 
