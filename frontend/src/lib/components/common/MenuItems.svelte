@@ -16,6 +16,7 @@
   import {
     canistersPathStore,
     neuronsPathStore,
+    proposalsPathStore,
   } from "$lib/derived/paths.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import {
@@ -24,6 +25,7 @@
   } from "$lib/utils/navigation.utils";
   import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
   import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
+  import { ENABLE_ACTIONABLE_TAB } from "$lib/stores/feature-flags.store";
 
   let routes: {
     context: string;
@@ -61,7 +63,9 @@
     },
     {
       context: "proposals",
-      href: ACTIONABLE_PROPOSALS_URL,
+      href: $ENABLE_ACTIONABLE_TAB
+        ? ACTIONABLE_PROPOSALS_URL
+        : $proposalsPathStore,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
         paths: [AppPath.Proposals, AppPath.Proposal],
