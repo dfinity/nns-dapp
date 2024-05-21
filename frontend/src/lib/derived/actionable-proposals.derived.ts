@@ -103,8 +103,7 @@ export const actionableSnsProposalsByUniverseStore: Readable<
 /** A store that returns true when "Actionable Proposals" link needs to be displayed in the universe selector */
 export const displaySelectActionableLink: Readable<boolean> = derived(
   [authSignedInStore, pageStore],
-  ([isSignedIn, { path, actionable }]) =>
-    path === AppPath.Proposals && isSignedIn
+  ([isSignedIn, { path }]) => path === AppPath.Proposals && isSignedIn
 );
 
 /** A store that returns true when all ‘Actionable Proposals’ have been loaded.
