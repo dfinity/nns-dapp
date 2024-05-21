@@ -6,7 +6,6 @@
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { ENABLE_ACTIONABLE_TAB } from "$lib/stores/feature-flags.store";
   import { pageStore } from "$lib/derived/page.derived";
-  import { displaySelectActionableLink } from "$lib/derived/actionable-proposals.derived";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { AppPath } from "$lib/constants/routes.constants";

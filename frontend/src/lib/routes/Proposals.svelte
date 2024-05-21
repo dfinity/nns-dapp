@@ -9,16 +9,10 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { ENABLE_ACTIONABLE_TAB } from "$lib/stores/feature-flags.store";
   import { onMount } from "svelte";
-  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
   import ActionableProposals from "$lib/pages/ActionableProposals.svelte";
-
-  onMount(() => {
-    console.log("Proposals component mounted", $pageStore.actionable);
-  });
 </script>
 
 <main data-tid="proposals-component">
-  <!-- TODO: use the store here. Maybe displaySelectActionableLink -->
   {#if $ENABLE_ACTIONABLE_TAB && $authSignedInStore && $pageStore.actionable}
     <ActionableProposals />
   {:else}
