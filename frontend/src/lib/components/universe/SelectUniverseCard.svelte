@@ -70,8 +70,7 @@
       <UniverseLogo size="big" {universe} framed={true} />
     {:else}
       <div data-tid="vote-icon" class="icon">
-        <!-- TODO: add size="24px" -->
-        <IconVote />
+        <IconVote size="24px" />
       </div>
     {/if}
 
