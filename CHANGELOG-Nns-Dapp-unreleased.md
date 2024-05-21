@@ -25,6 +25,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* Stop writing account transactions to stable memory.
+
 #### Fixed
 
 * Rendering tokens with fewer than 8 decimals.
