@@ -11,45 +11,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
-## Proposal 129748
-
-### Application
-
-#### Added
-
-* Close modal on ESC key press.
-* Add `ENABLE_ACTIONABLE_TAB` feature flag.
-* Support `ApiBoundaryNodes` in `FirewallRulesScope` of `AddFirewallRulesPayload`.
-* Support `SubnetRental` topic.
-* Support NNS function 52 for `SubnetRentalRequest`.
-
-#### Changed
-
-* Update IC, Candid, and `ic-cdk` dependencies.
-* Changed support for NNS function 43 from `AddApiBoundaryNodePayload` (singular) to `AddApiBoundaryNodesPayload` (plural).
-
-#### Removed
-
-* Stop encoding the accounts map in the `AccountsStore`.
-* Removed `ENABLE_HIDE_ZERO_BALANCE` feature flag.
-* Proposal filtering by reward status.
-* Intermediate step to remove transactions from accounts stored in nns-dapp.
-
-#### Fixed
-
-* Successful swap message should not be shown when participant count is insufficient.
-
-### Operations
-
-#### Added
-
-* Added workflow to update IC cargo dependencies.
-
-#### Changed
-
-* In `migration-test`, also populate some accounts between upgrade and downgrade.
-* Update `dfx` version from 0.15.3 to 0.19.0.
-
 ## Proposal 129618
 
 ### Application

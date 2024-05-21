@@ -103,7 +103,7 @@
     "Security test: cargo audit: \u001b[32mRUSTSEC-1999-0001\u001b[0m",
     "Values don't match!",
     "Security test: cargo audit: RUSTSEC-1999-0001",
-    "Expected cargo audit: RUSTSEC-2024-0019,RUSTSEC-2024-0332,RUSTSEC-2024-0336"
+    "Expected cargo audit: RUSTSEC-2020-0071,RUSTSEC-2020-0159,RUSTSEC-2024-0019,RUSTSEC-2024-0332,RUSTSEC-2024-0336"
   ],
   "expectedExitCode": 1
 }
