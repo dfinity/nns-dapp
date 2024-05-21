@@ -141,8 +141,9 @@ mkdir_and_restore() {
     return
   fi
   mkdir_and_restore "$(dirname "$1")"
+  printf 'mkdir %q\n' "$1"
   mkdir "$1"
-  reverse_restore_commands+=("$(prinft "rmdir %q" "$1")")
+  reverse_restore_commands+=("$(printf "rmdir %q" "$1")")
 }
 
 mv_and_restore() {
@@ -161,11 +162,9 @@ mv3() {
     return 1
   fi
   if [ -e "$2" ]; then
-    mkdir -p "$(dirname "$3")"
     mv_and_restore "$2" "$3"
   fi
   if [ -e "$1" ]; then
-    mkdir -p "$(dirname "$2")"
     mv_and_restore "$1" "$2"
   fi
 }
@@ -197,11 +196,11 @@ output_restore_backup_script() {
 	echo "Restoring dfx state."
 	set -xeu
 	EOF
-  for (( i=${#reverse_restore_commands[@]}-1; i>=0; i-- )); do
+  for ((i = ${#reverse_restore_commands[@]} - 1; i >= 0; i--)); do
     printf "%s\n" "${reverse_restore_commands[i]}"
   done
-  echo rm "\"\$0\""
-  echo rmdir "\"$BACKUP_DIR\""
+  echo rm "\$0"
+  echo rmdir "$BACKUP_DIR"
 }
 
 # We put the backup script inside the backup directory.
@@ -210,7 +209,6 @@ output_restore_backup_script() {
 RESTORE_BACKUP_SCRIPT_FILE="$BACKUP_DIR/restore.sh"
 echo "Run $RESTORE_BACKUP_SCRIPT_FILE to restore the replica state."
 
+trap 'output_restore_backup_script >"$RESTORE_BACKUP_SCRIPT_FILE"' EXIT
+
 install_state
-
-output_restore_backup_script >"$RESTORE_BACKUP_SCRIPT_FILE"
-
