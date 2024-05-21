@@ -3,6 +3,7 @@
   import { PageBanner, IconNotificationPage } from "@dfinity/gix-components";
   import { replacePlaceholders } from "$lib/utils/i18n.utils.js";
   import { actionableProposalNotSupportedUniversesStore } from "$lib/derived/actionable-proposals.derived";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   let snsNames: string;
   $: snsNames =
@@ -11,19 +12,26 @@
       .join(", ") ?? "";
 </script>
 
-<PageBanner testId="actionable-proposals-not-supported-snses">
-  <IconNotificationPage slot="image" />
-  <svelte:fragment slot="title"
-    >{replacePlaceholders(
-      $i18n.actionable_proposals_not_supported_snses.title,
-      {
-        $snsNames: snsNames,
-      }
-    )}</svelte:fragment
-  >
-  <p class="description" slot="description">
-    {replacePlaceholders($i18n.actionable_proposals_not_supported_snses.text, {
-      $snsName: snsNames,
-    })}
-  </p>
-</PageBanner>
+<TestIdWrapper testId="actionable-proposals-not-supported-snses">
+  {#if snsNames !== ""}
+    <PageBanner>
+      <IconNotificationPage slot="image" />
+      <svelte:fragment slot="title"
+        >{replacePlaceholders(
+          $i18n.actionable_proposals_not_supported_snses.title,
+          {
+            $snsNames: snsNames,
+          }
+        )}</svelte:fragment
+      >
+      <p class="description" slot="description">
+        {replacePlaceholders(
+          $i18n.actionable_proposals_not_supported_snses.text,
+          {
+            $snsName: snsNames,
+          }
+        )}
+      </p>
+    </PageBanner>
+  {/if}
+</TestIdWrapper>

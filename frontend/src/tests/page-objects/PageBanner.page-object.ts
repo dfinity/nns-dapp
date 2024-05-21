@@ -9,9 +9,9 @@ export class PageBannerPo extends BasePageObject {
     testId,
   }: {
     element: PageObjectElement;
-    testId: string;
+    testId?: string;
   }): PageBannerPo {
-    return new PageBannerPo(element.byTestId(testId));
+    return new PageBannerPo(testId ? element.byTestId(testId) : element);
   }
 
   getTitle(): PageObjectElement {

@@ -4,7 +4,6 @@
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
   import NnsProposalCard from "$lib/components/proposals/NnsProposalCard.svelte";
   import {
-    actionableProposalNotSupportedUniversesStore,
     actionableProposalsLoadedStore,
     actionableProposalTotalCountStore,
     actionableSnsProposalsByUniverseStore,
@@ -35,6 +34,4 @@
   {/each}
 {/if}
 
-{#if $actionableProposalNotSupportedUniversesStore.length > 0}
-  <ActionableProposalsNotSupportedSnses />
-{/if}
+<ActionableProposalsNotSupportedSnses />
