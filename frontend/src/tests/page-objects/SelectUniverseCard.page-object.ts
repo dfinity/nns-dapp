@@ -78,4 +78,8 @@ export class SelectUniverseCardPo extends CardPo {
   getActionableProposalCount(): Promise<string> {
     return this.getActionableProposalCountBadgePo().getText();
   }
+
+  hasVoteIcon(): Promise<boolean> {
+    return this.root.querySelector('[data-tid="vote-icon"]').isPresent();
+  }
 }
