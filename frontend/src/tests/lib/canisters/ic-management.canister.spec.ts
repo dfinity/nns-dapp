@@ -41,6 +41,12 @@ describe("ICManagementCanister", () => {
         module_hash: [],
         idle_cycles_burned_per_day: 30_000n,
         reserved_cycles: 1_000_000n,
+        query_stats: {
+          num_calls_total: 1n,
+          num_instructions_total: 2n,
+          request_payload_bytes_total: 3n,
+          response_payload_bytes_total: 4n,
+        },
       };
       const service = mock<IcManagementService>();
       service.canister_status.mockResolvedValue(response);

@@ -34,6 +34,7 @@
       "type": "custom",
       "remote": {
         "id": {
+          "app": "qhbym-qaaaa-aaaaa-aaafq-cai",
           "mainnet": "qhbym-qaaaa-aaaaa-aaafq-cai"
         }
       }
@@ -215,6 +216,7 @@
       "type": "custom",
       "remote": {
         "id": {
+          "app": "ss2fx-dyaaa-aaaar-qacoq-cai",
           "mainnet": "ss2fx-dyaaa-aaaar-qacoq-cai"
         }
       }
@@ -228,6 +230,7 @@
       "type": "custom",
       "remote": {
         "id": {
+          "app": "s3zol-vqaaa-aaaar-qacpa-cai",
           "mainnet": "s3zol-vqaaa-aaaar-qacpa-cai"
         }
       }
@@ -363,7 +366,8 @@
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "ENABLE_ACTIONABLE_TAB": false,
-          "ENABLE_NEURONS_TABLE": false
+          "ENABLE_NEURONS_TABLE": false,
+          "ENABLE_CKUSDC": false
         }
       }
     },
@@ -377,7 +381,7 @@
         "DIDC_VERSION": "2024-05-14",
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2024-05-14",
+        "SNSDEMO_RELEASE": "release-2024-05-15",
         "IC_COMMIT_FOR_PROPOSALS": "release-2024-05-09_23-02-storage-layer",
         "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-05-09_23-02-storage-layer"
       },

@@ -134,6 +134,25 @@ get_state_dir() {
   echo "${!var_name}"
 }
 
+reverse_restore_commands=()
+
+mkdir_and_restore() {
+  if [[ -e "$1" ]]; then
+    return
+  fi
+  mkdir_and_restore "$(dirname "$1")"
+  printf 'mkdir %q\n' "$1"
+  mkdir "$1"
+  reverse_restore_commands+=("$(printf "rmdir %q" "$1")")
+}
+
+mv_and_restore() {
+  mkdir_and_restore "$(dirname "$2")"
+  printf 'mv %q %q\n' "$1" "$2"
+  mv "$1" "$2"
+  reverse_restore_commands+=("$(printf "mv %q %q" "$2" "$1")")
+}
+
 # Moves $2 to $3 and then $1 to $2.
 # Returns an error if $3 already exists but silently skips moves for which the
 # source doesn't exist.
@@ -143,14 +162,10 @@ mv3() {
     return 1
   fi
   if [ -e "$2" ]; then
-    mkdir -p "$(dirname "$3")"
-    echo mv "'$2'" "'$3'"
-    mv "$2" "$3"
+    mv_and_restore "$2" "$3"
   fi
   if [ -e "$1" ]; then
-    mkdir -p "$(dirname "$2")"
-    echo mv "'$1'" "'$2'"
-    mv "$1" "$2"
+    mv_and_restore "$1" "$2"
   fi
 }
 
@@ -164,17 +179,6 @@ install_dir() {
   mv3 "$state_dir" "$dfx_dir" "$backup_dir"
 }
 
-# Takes "LOCAL_REPLICA_DATA", "CONFIG", or "NETWORK" as argument and outputs the
-# commands to restore the corresponding directory from the backup location after
-# moving the state directory back to its original location.
-output_restore_dir() {
-  state_dir="$(get_state_dir "$1")"
-  dfx_dir="$(get_dfx_dir "$1")"
-  backup_dir="$(get_backup_dir "$1")"
-  printf 'mv %q %q\n' "$dfx_dir" "$state_dir"
-  printf 'mv %q %q\n' "$backup_dir" "$dfx_dir"
-}
-
 # Moves all the existing directories to the backup location and moves the state
 # directories in their place.
 install_state() {
@@ -184,11 +188,17 @@ install_state() {
 }
 
 output_restore_backup_script() {
-  echo "echo \"Restoring dfx state.\""
-  echo set -xeu
-  output_restore_dir LOCAL_REPLICA_DATA
-  output_restore_dir CONFIG
-  output_restore_dir NETWORK
+  cat <<-EOF
+	if pgrep replica; then
+	  echo "A replica is still running. State should be restored automatically when the replica is stopped." >&2
+	  exit 1
+	fi
+	echo "Restoring dfx state."
+	set -xeu
+	EOF
+  for ((i = ${#reverse_restore_commands[@]} - 1; i >= 0; i--)); do
+    printf "%s\n" "${reverse_restore_commands[i]}"
+  done
   echo rm "\$0"
   echo rmdir "$BACKUP_DIR"
 }
@@ -199,6 +209,6 @@ output_restore_backup_script() {
 RESTORE_BACKUP_SCRIPT_FILE="$BACKUP_DIR/restore.sh"
 echo "Run $RESTORE_BACKUP_SCRIPT_FILE to restore the replica state."
 
-output_restore_backup_script >"$RESTORE_BACKUP_SCRIPT_FILE"
+trap 'output_restore_backup_script >"$RESTORE_BACKUP_SCRIPT_FILE"' EXIT
 
 install_state

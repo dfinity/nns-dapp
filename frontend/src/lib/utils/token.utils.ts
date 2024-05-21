@@ -1,7 +1,6 @@
 import {
   E8S_PER_ICP,
   ICP_DISPLAYED_DECIMALS,
-  ICP_DISPLAYED_DECIMALS_DETAILED,
   ICP_DISPLAYED_HEIGHT_DECIMALS,
 } from "$lib/constants/icp.constants";
 import type { UserToken } from "$lib/types/tokens-page";
@@ -63,12 +62,18 @@ type RoundMode =
  * Jira GIX-1563:
  * - However, if requested, some amount might be displayed with a fix length of 8 decimals, regardless if leading zero or no leading zero
  */
-export const formatTokenE8s = ({
+const formatTokenUlps = ({
   value,
+  tokenDecimals,
+  defaultDisplayedDecimals,
+  maxDisplayedDecimals,
   detailed = false,
   roundingMode,
 }: {
   value: bigint;
+  tokenDecimals: number;
+  defaultDisplayedDecimals: number;
+  maxDisplayedDecimals: number;
   detailed?: boolean | "height_decimals";
   roundingMode?: RoundMode;
 }): string => {
@@ -76,19 +81,17 @@ export const formatTokenE8s = ({
     return "0";
   }
 
-  const converted = Number(value) / E8S_PER_ICP;
+  const converted = Number(value) / 10 ** tokenDecimals;
 
-  const decimalsICP = (): number =>
+  const decimalsForAmount = (): number =>
     converted < 0.01
-      ? Math.max(countDecimals(converted), ICP_DISPLAYED_DECIMALS)
+      ? Math.max(countDecimals(converted), defaultDisplayedDecimals)
       : detailed
-      ? Math.min(countDecimals(converted), ICP_DISPLAYED_DECIMALS_DETAILED)
-      : ICP_DISPLAYED_DECIMALS;
+      ? Math.min(countDecimals(converted), maxDisplayedDecimals)
+      : defaultDisplayedDecimals;
 
   const decimals =
-    detailed === "height_decimals"
-      ? ICP_DISPLAYED_HEIGHT_DECIMALS
-      : decimalsICP();
+    detailed === "height_decimals" ? maxDisplayedDecimals : decimalsForAmount();
 
   return new Intl.NumberFormat("en-US", {
     minimumFractionDigits: decimals,
@@ -103,28 +106,56 @@ export const formatTokenE8s = ({
     .replace(/,/g, "'");
 };
 
-// TODO: This drops decimals after the 8th decimal place. Decide if this is the
-// desired behavior.
+export const formatTokenE8s = ({
+  value,
+  detailed = false,
+  roundingMode,
+}: {
+  value: bigint;
+  detailed?: boolean | "height_decimals";
+  roundingMode?: RoundMode;
+}): string => {
+  return formatTokenUlps({
+    value,
+    tokenDecimals: ICP_DISPLAYED_HEIGHT_DECIMALS,
+    defaultDisplayedDecimals: ICP_DISPLAYED_DECIMALS,
+    maxDisplayedDecimals: ICP_DISPLAYED_HEIGHT_DECIMALS,
+    detailed,
+    roundingMode,
+  });
+};
+
 export const formatTokenV2 = ({
   value,
   detailed = false,
   roundingMode,
 }: {
-  value?: TokenAmount | TokenAmountV2;
+  value: TokenAmount | TokenAmountV2;
   detailed?: boolean | "height_decimals";
   roundingMode?: RoundMode;
 }): string => {
-  let e8s;
+  let ulps;
   if (isNullish(value)) {
-    e8s = 0n;
+    ulps = 0n;
   } else if (value instanceof TokenAmount) {
-    e8s = value.toE8s();
+    ulps = value.toE8s();
   } else {
-    const decimals = value.token.decimals;
-    const ulps = value.toUlps();
-    e8s = ulpsToE8s({ ulps, decimals });
+    ulps = value.toUlps();
   }
-  return formatTokenE8s({ value: e8s, detailed, roundingMode });
+  return formatTokenUlps({
+    value: ulps,
+    tokenDecimals: value.token.decimals,
+    defaultDisplayedDecimals: Math.min(
+      ICP_DISPLAYED_DECIMALS,
+      value.token.decimals
+    ),
+    maxDisplayedDecimals: Math.min(
+      ICP_DISPLAYED_HEIGHT_DECIMALS,
+      value.token.decimals
+    ),
+    detailed,
+    roundingMode,
+  });
 };
 
 export const sumAmounts = (...amounts: bigint[]): bigint =>

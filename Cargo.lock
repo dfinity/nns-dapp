@@ -2071,20 +2071,6 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk-timers"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8c43b9706fef3ad10c4192a14801d16bd9539068239f0f06f257857441364329"
-dependencies = [
- "futures",
- "ic-cdk 0.12.0",
- "ic0 0.21.1",
- "serde",
- "serde_bytes",
- "slotmap",
-]
-
-[[package]]
-name = "ic-cdk-timers"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "054727a3a1c486528b96349817d54290ff70df6addf417def456ea708a16f7fb"
@@ -2196,7 +2182,7 @@ source = "git+https://github.com/dfinity/ic?rev=release-2024-05-09_23-02-storage
 dependencies = [
  "hex",
  "ic_bls12_381",
- "itertools 0.12.0",
+ "itertools 0.12.1",
  "lazy_static",
  "pairing",
  "paste",
@@ -2276,7 +2262,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "serde_cbor",
- "strum_macros 0.26.2",
+ "strum_macros",
  "subtle",
  "zeroize",
 ]
@@ -2306,7 +2292,7 @@ dependencies = [
  "serde_bytes",
  "serde_cbor",
  "strum 0.26.2",
- "strum_macros 0.26.2",
+ "strum_macros",
  "subtle",
  "zeroize",
 ]
@@ -2323,7 +2309,7 @@ dependencies = [
  "serde",
  "serde_cbor",
  "strum 0.26.2",
- "strum_macros 0.26.2",
+ "strum_macros",
  "thiserror",
  "zeroize",
 ]
@@ -2429,7 +2415,7 @@ dependencies = [
  "ic-utils",
  "serde",
  "strum 0.26.2",
- "strum_macros 0.26.2",
+ "strum_macros",
 ]
 
 [[package]]
@@ -2467,7 +2453,7 @@ dependencies = [
  "ic-canisters-http-types",
  "ic-cdk 0.13.3",
  "ic-cdk-macros 0.9.0",
- "ic-cdk-timers 0.7.0",
+ "ic-cdk-timers",
  "ic-crypto-sha2",
  "ic-icrc1",
  "ic-icrc1-tokens-u64",
@@ -2577,7 +2563,7 @@ dependencies = [
  "serde_bytes",
  "serde_cbor",
  "strum 0.26.2",
- "strum_macros 0.26.2",
+ "strum_macros",
 ]
 
 [[package]]
@@ -2823,7 +2809,7 @@ dependencies = [
  "ic-stable-structures",
  "ic-types",
  "icp-ledger",
- "itertools 0.12.0",
+ "itertools 0.12.1",
  "lazy_static",
  "maplit",
  "mockall",
@@ -2840,7 +2826,7 @@ dependencies = [
  "serde_bytes",
  "serde_json",
  "strum 0.26.2",
- "strum_macros 0.26.2",
+ "strum_macros",
 ]
 
 [[package]]
@@ -2921,7 +2907,7 @@ dependencies = [
  "ic-protobuf",
  "serde",
  "strum 0.26.2",
- "strum_macros 0.26.2",
+ "strum_macros",
 ]
 
 [[package]]
@@ -2990,7 +2976,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "strum 0.26.2",
- "strum_macros 0.26.2",
+ "strum_macros",
 ]
 
 [[package]]
@@ -3117,7 +3103,7 @@ dependencies = [
  "ic-utils",
  "icp-ledger",
  "icrc-ledger-types",
- "itertools 0.12.0",
+ "itertools 0.12.1",
  "lazy_static",
  "maplit",
  "prost",
@@ -3219,7 +3205,7 @@ dependencies = [
  "serde_json",
  "serde_with",
  "strum 0.26.2",
- "strum_macros 0.26.2",
+ "strum_macros",
  "thiserror",
  "thousands",
 ]
@@ -3337,7 +3323,7 @@ dependencies = [
  "serde_bytes",
  "serde_cbor",
  "strum 0.26.2",
- "strum_macros 0.26.2",
+ "strum_macros",
 ]
 
 [[package]]
@@ -3495,9 +3481,18 @@ dependencies = [
 
 [[package]]
 name = "itertools"
-version = "0.12.0"
+version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25db6b064527c5d482d0423354fcd07a89a2dfe07b67892e62411946db7f07b0"
+checksum = "ba291022dbbd398a455acf126c1e341954079855bc60dfdda641363bd6922569"
+dependencies = [
+ "either",
+]
+
+[[package]]
+name = "itertools"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "413ee7dfc52ee1a4949ceeb7dbc8a33f2d6c088194d9f922fb8318faf1f01186"
 dependencies = [
  "either",
 ]
@@ -3898,7 +3893,7 @@ checksum = "e4a24736216ec316047a1fc4252e27dabb04218aa4a3f37c6e7ddbf1f9782b54"
 
 [[package]]
 name = "nns-dapp"
-version = "2.0.76"
+version = "2.0.77"
 dependencies = [
  "anyhow",
  "base64 0.21.5",
@@ -3923,7 +3918,7 @@ dependencies = [
  "ic-stable-structures",
  "ic_principal",
  "icp-ledger",
- "itertools 0.12.0",
+ "itertools 0.13.0",
  "lazy_static",
  "lzma-rs",
  "maplit",
@@ -3939,7 +3934,7 @@ dependencies = [
  "serde_cbor",
  "sha2 0.10.8",
  "strum 0.25.0",
- "strum_macros 0.25.3",
+ "strum_macros",
  "tar",
 ]
 
@@ -4467,7 +4462,7 @@ dependencies = [
 
 [[package]]
 name = "proposals"
-version = "2.0.76"
+version = "2.0.77"
 dependencies = [
  "anyhow",
  "candid 0.10.8",
@@ -4532,7 +4527,7 @@ checksum = "80b776a1b2dc779f5ee0641f8ade0125bc1298dd41a9a0c16d8bd57b42d222b1"
 dependencies = [
  "bytes",
  "heck 0.5.0",
- "itertools 0.12.0",
+ "itertools 0.11.0",
  "log",
  "multimap",
  "once_cell",
@@ -4552,7 +4547,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "19de2de2a00075bf566bee3bd4db014b11587e84184d3f7a791bc17f1a8e9e48"
 dependencies = [
  "anyhow",
- "itertools 0.12.0",
+ "itertools 0.11.0",
  "proc-macro2",
  "quote",
  "syn 2.0.55",
@@ -5320,7 +5315,7 @@ checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 
 [[package]]
 name = "sns_aggregator"
-version = "2.0.76"
+version = "2.0.77"
 dependencies = [
  "anyhow",
  "base64 0.21.5",
@@ -5329,7 +5324,7 @@ dependencies = [
  "dfn_core",
  "ic-cdk 0.13.3",
  "ic-cdk-macros 0.13.3",
- "ic-cdk-timers 0.6.0",
+ "ic-cdk-timers",
  "ic-certified-map 0.3.2",
  "ic-management-canister-types",
  "ic-nervous-system-common",
@@ -5442,20 +5437,7 @@ version = "0.26.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5d8cec3501a5194c432b2b7976db6b7d10ec95c253208b45f83f7136aa985e29"
 dependencies = [
- "strum_macros 0.26.2",
-]
-
-[[package]]
-name = "strum_macros"
-version = "0.25.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23dc1fa9ac9c169a78ba62f0b841814b7abae11bdd047b9c58f893439e309ea0"
-dependencies = [
- "heck 0.4.1",
- "proc-macro2",
- "quote",
- "rustversion",
- "syn 2.0.55",
+ "strum_macros",
 ]
 
 [[package]]
