@@ -30,7 +30,7 @@
       <SelectUniverseCard
         on:click={() => (showProjectPicker = true)}
         selected={$pageStore.actionable}
-        universe="actionable"
+        universe="all-actionable"
       />
     {:else}
       <SelectUniverseCard

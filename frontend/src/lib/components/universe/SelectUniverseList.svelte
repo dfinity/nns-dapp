@@ -22,7 +22,7 @@
     <SelectUniverseCard
       on:click={() => dispatch("nnsSelectActionable")}
       selected={$pageStore.actionable}
-      universe="actionable"
+      universe="all-actionable"
     />
     <Separator spacing="medium" />
   {/if}

@@ -25,7 +25,7 @@
   export let selected: boolean;
   // "link" for desktop, "button" for mobile, "dropdown" to open the modal
   export let role: "link" | "button" | "dropdown" = "link";
-  export let universe: Universe | "actionable";
+  export let universe: Universe | "all-actionable";
 
   let icon: "expand" | "check" | undefined = undefined;
   $: icon = role === "dropdown" ? "expand" : undefined;
@@ -40,13 +40,13 @@
 
   let actionableProposalCount: number | undefined = undefined;
   $: actionableProposalCount =
-    universe === "actionable"
+    universe === "all-actionable"
       ? undefined
       : $actionableProposalCountStore[universe.canisterId];
 
   let actionableProposalSupported: boolean | undefined = undefined;
   $: actionableProposalSupported =
-    universe === "actionable"
+    universe === "all-actionable"
       ? undefined
       : $actionableProposalSupportedStore[universe.canisterId];
 
@@ -66,20 +66,22 @@
   noMargin
 >
   <div class="container" class:selected>
-    {#if universe !== "actionable"}
+    {#if universe !== "all-actionable"}
       <UniverseLogo size="big" {universe} framed={true} />
     {:else}
-      <div class="icon">
-        <IconVote size="24px" />
+      <div data-tid="vote-icon" class="icon">
+        <!-- TODO: add size="24px" -->
+        <IconVote />
       </div>
     {/if}
 
     <div
       class={`content ${role}`}
-      class:balance={displayProjectAccountsBalance && universe !== "actionable"}
+      class:balance={displayProjectAccountsBalance &&
+        universe !== "all-actionable"}
     >
       <span class="name">
-        {#if universe === "actionable"}
+        {#if universe === "all-actionable"}
           {$i18n.voting.actionable_proposals}
           {#if $actionableProposalIndicationEnabledStore}
             {#if $actionableProposalTotalCountStore > 0 && mounted}
@@ -115,7 +117,7 @@
           {/if}
         {/if}
       </span>
-      {#if displayProjectAccountsBalance && universe !== "actionable"}
+      {#if displayProjectAccountsBalance && universe !== "all-actionable"}
         <UniverseAccountsBalance {universe} />
       {/if}
     </div>
