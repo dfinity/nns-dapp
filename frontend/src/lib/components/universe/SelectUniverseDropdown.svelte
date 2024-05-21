@@ -7,6 +7,8 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { ENABLE_ACTIONABLE_TAB } from "$lib/stores/feature-flags.store";
   import { displaySelectActionableLink } from "$lib/derived/actionable-proposals.derived";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   let showProjectPicker = false;
 
@@ -26,7 +28,7 @@
 
 <TestIdWrapper testId="select-universe-dropdown-component">
   {#if $ENABLE_ACTIONABLE_TAB}
-    {#if $displaySelectActionableLink && $pageStore.actionable}
+    {#if $authSignedInStore && $pageStore.path === AppPath.Proposals && $pageStore.actionable}
       <SelectUniverseCard
         on:click={() => (showProjectPicker = true)}
         selected={$pageStore.actionable}

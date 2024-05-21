@@ -8,6 +8,8 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { displaySelectActionableLink } from "$lib/derived/actionable-proposals.derived";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   export let role: "link" | "button" = "link";
 
@@ -18,7 +20,7 @@
 </script>
 
 <TestIdWrapper testId="select-universe-list-component">
-  {#if $ENABLE_ACTIONABLE_TAB && $displaySelectActionableLink}
+  {#if $ENABLE_ACTIONABLE_TAB && $authSignedInStore && $pageStore.path === AppPath.Proposals}
     <SelectUniverseCard
       on:click={() => dispatch("nnsSelectActionable")}
       selected={$pageStore.actionable}
