@@ -45,6 +45,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Keep existing `dfx` identities when running an `snsdemo` snapshot.
+
 #### Deprecated
 
 #### Removed
