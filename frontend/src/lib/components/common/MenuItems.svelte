@@ -26,6 +26,7 @@
   import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
   import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
   import { ENABLE_ACTIONABLE_TAB } from "$lib/stores/feature-flags.store";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   let routes: {
     context: string;
@@ -63,9 +64,11 @@
     },
     {
       context: "proposals",
-      href: $ENABLE_ACTIONABLE_TAB
-        ? ACTIONABLE_PROPOSALS_URL
-        : $proposalsPathStore,
+      href:
+        // Switch to actionable proposals page only when signed in.
+        $ENABLE_ACTIONABLE_TAB && $authSignedInStore
+          ? ACTIONABLE_PROPOSALS_URL
+          : $proposalsPathStore,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
         paths: [AppPath.Proposals, AppPath.Proposal],
