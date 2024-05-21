@@ -192,7 +192,8 @@ pub struct UpdateIcpXdrConversionRatePayload {
 
 /// NNS function 11 - `UpdateSubnetReplicaVersion`
 /// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_subnet_replica.rs#L58>
-pub type UpdateSubnetReplicaVersionPayload = crate::canisters::nns_registry::api::UpdateSubnetReplicaVersionPayload;
+pub type DeployGuestosToAllSubnetNodesPayload =
+    crate::canisters::nns_registry::api::DeployGuestosToAllSubnetNodesPayload;
 
 /// NNS function 13 - `RemoveNodesFromSubnet`
 /// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_remove_nodes_from_subnet.rs#L57>
@@ -428,7 +429,7 @@ impl From<InsertUpgradePathEntriesRequest> for InsertUpgradePathEntriesRequestHu
 // NNS function 38 - UpdateElectedReplicaVersions
 /// The payload of a proposal to update elected replica versions.
 // https://gitlab.com/dfinity-lab/public/ic/-/blob/90d82ff6e51a66306f9ddba820fcad984f4d85a5/rs/registry/canister/src/mutations/do_update_elected_replica_versions.rs#L193
-pub type UpdateElectedReplicaVersionsPayload = crate::canisters::nns_registry::api::UpdateElectedReplicaVersionsPayload;
+pub type ReviseElectedGuestosVersionsPayload = crate::canisters::nns_registry::api::ReviseElectedGuestosVersionsPayload;
 
 // NNS function 39 - BitcoinSetConfig
 // https://github.com/dfinity/ic/blob/ae00aff1373e9f6db375ff7076250a20bbf3eea0/rs/nns/governance/src/governance.rs#L8930
@@ -460,7 +461,7 @@ pub type UpdateNodesHostosVersionPayload = crate::canisters::nns_registry::api::
 
 // NNS function 43 - AddApiBoundaryNode
 // https://github.com/dfinity/ic/blob/04c9c04c7a1f52ab5529531691a7c1bcf289c30d/rs/registry/canister/src/mutations/do_add_api_boundary_node.rs#L14
-pub type AddApiBoundaryNodePayload = crate::canisters::nns_registry::api::AddApiBoundaryNodePayload;
+pub type AddApiBoundaryNodesPayload = crate::canisters::nns_registry::api::AddApiBoundaryNodesPayload;
 
 // NNS function 44 - RemoveApiBoundaryNodes
 // https://github.com/dfinity/ic/blob/04c9c04c7a1f52ab5529531691a7c1bcf289c30d/rs/registry/canister/src/mutations/do_remove_api_boundary_nodes.rs#L14
@@ -468,13 +469,11 @@ pub type RemoveApiBoundaryNodesPayload = crate::canisters::nns_registry::api::Re
 
 // NNS function 46 - UpdateApiBoundaryNodesVersion
 // https://github.com/dfinity/ic/blob/04c9c04c7a1f52ab5529531691a7c1bcf289c30d/rs/registry/canister/src/mutations/do_update_api_boundary_nodes_version.rs#L14
-pub type UpdateApiBoundaryNodesVersionPayload =
-    crate::canisters::nns_registry::api::UpdateApiBoundaryNodesVersionPayload;
+pub type UpdateApiBoundaryNodesVersionPayload = crate::canisters::nns_registry::api::AddApiBoundaryNodesPayload;
 
 // NNS function 47 - UpdateApiBoundaryNodesVersion
 // https://github.com/dfinity/ic/blob/04c9c04c7a1f52ab5529531691a7c1bcf289c30d/rs/registry/canister/src/mutations/do_update_api_boundary_nodes_version.rs#L14
-pub type DeployGuestosToSomeApiBoundaryNodesPayload =
-    crate::canisters::nns_registry::api::UpdateApiBoundaryNodesVersionPayload;
+pub type DeployGuestosToSomeApiBoundaryNodesPayload = UpdateApiBoundaryNodesVersionPayload;
 
 // NNS function 48 - DeployGuestosToAllUnassignedNodes
 // https://github.com/dfinity/ic/blob/3343a9ec1ea3170dcfd0cc4f4298d5ce09abb036/rs/registry/canister/src/mutations/do_deploy_guestos_to_all_unassigned_nodes.rs#L36
@@ -493,3 +492,16 @@ pub type ReviseElectedHostosVersionsPayload = crate::canisters::nns_registry::ap
 // NNS function 51 - DeployHostosToSomeNodes
 // https://github.com/dfinity/ic/blob/26098e18ddd64ab50d3f3725f50c7f369cd3f90e/rs/registry/canister/src/mutations/do_update_nodes_hostos_version.rs#L38C12-L38C43
 pub type DeployHostosToSomeNodesPayload = crate::canisters::nns_registry::api::UpdateNodesHostosVersionPayload;
+
+// Copied from https://github.com/dfinity/ic/blob/master/rs/nns/governance/src/governance.rs
+#[derive(candid::CandidType, candid::Deserialize, serde::Serialize, Clone, Debug)]
+pub struct SubnetRentalRequest {
+    pub user: PrincipalId,
+    pub rental_condition_id: RentalConditionId,
+}
+
+// Copied from https://github.com/dfinity/ic/blob/master/rs/nns/governance/src/governance.rs
+#[derive(candid::CandidType, candid::Deserialize, serde::Serialize, Clone, Copy, Debug)]
+pub enum RentalConditionId {
+    App13CH,
+}

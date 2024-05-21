@@ -1,9 +1,9 @@
 {
-  "dfx": "0.15.3",
+  "dfx": "0.19.0",
   "canisters": {
     "nns-governance": {
       "type": "custom",
-      "candid": "declarations/nns_governance/nns_governance.did",
+      "candid": "declarations/used_by_proposals/nns_governance/nns_governance.did",
       "wasm": "target/ic/governance-canister_test.wasm",
       "build": "./scripts/e2e-tests/nns-canister-download && ./scripts/e2e-tests/nns-canister-build",
       "remote": {
@@ -34,6 +34,7 @@
       "type": "custom",
       "remote": {
         "id": {
+          "app": "qhbym-qaaaa-aaaaa-aaafq-cai",
           "mainnet": "qhbym-qaaaa-aaaaa-aaafq-cai"
         }
       }
@@ -85,7 +86,7 @@
       "build": [
         "true"
       ],
-      "candid": "declarations/sns_wasm/sns_wasm.did",
+      "candid": "declarations/used_by_sns_aggregator/sns_wasm/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
       "type": "custom",
       "remote": {
@@ -99,7 +100,7 @@
       "build": [
         "true"
       ],
-      "candid": "declarations/sns_governance/sns_governance.did",
+      "candid": "declarations/used_by_sns_aggregator/sns_governance/sns_governance.did",
       "wasm": "target/ic/sns-governance-canister.wasm",
       "type": "custom"
     },
@@ -107,7 +108,7 @@
       "build": [
         "true"
       ],
-      "candid": "declarations/sns_ledger/sns_ledger.did",
+      "candid": "declarations/used_by_sns_aggregator/sns_ledger/sns_ledger.did",
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
       "type": "custom"
     },
@@ -131,7 +132,7 @@
       "build": [
         "true"
       ],
-      "candid": "declarations/sns_swap/sns_swap.did",
+      "candid": "declarations/used_by_sns_aggregator/sns_swap/sns_swap.did",
       "wasm": "target/ic/sns-swap-canister.wasm",
       "type": "custom"
     },
@@ -139,7 +140,7 @@
       "build": [
         "true"
       ],
-      "candid": "declarations/sns_root/sns_root.did",
+      "candid": "declarations/used_by_sns_aggregator/sns_root/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
     },
@@ -215,6 +216,7 @@
       "type": "custom",
       "remote": {
         "id": {
+          "app": "ss2fx-dyaaa-aaaar-qacoq-cai",
           "mainnet": "ss2fx-dyaaa-aaaar-qacoq-cai"
         }
       }
@@ -228,8 +230,31 @@
       "type": "custom",
       "remote": {
         "id": {
+          "app": "s3zol-vqaaa-aaaar-qacpa-cai",
           "mainnet": "s3zol-vqaaa-aaaar-qacpa-cai"
         }
+      }
+    },
+    "ckusdc_ledger": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ckusdc_ledger.did",
+      "wasm": "target/ic/ckusdc_ledger.wasm",
+      "type": "custom",
+      "remote": {
+        "id": {}
+      }
+    },
+    "ckusdc_index": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ckusdc_index.did",
+      "wasm": "target/ic/ckusdc_index.wasm",
+      "type": "custom",
+      "remote": {
+        "id": {}
       }
     },
     "tvl": {
@@ -340,7 +365,9 @@
         "FEATURE_FLAGS": {
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
-          "ENABLE_ACTIONABLE_TAB": false
+          "ENABLE_ACTIONABLE_TAB": false,
+          "ENABLE_NEURONS_TABLE": false,
+          "ENABLE_CKUSDC": false
         }
       }
     },
@@ -351,11 +378,12 @@
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
         "BINSTALL_VERSION": "1.3.0",
-        "DIDC_VERSION": "2024-04-11",
+        "DIDC_VERSION": "2024-05-14",
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2024-05-01",
-        "IC_COMMIT": "release-2024-04-24_23-01-storage-layer"
+        "SNSDEMO_RELEASE": "release-2024-05-15",
+        "IC_COMMIT_FOR_PROPOSALS": "release-2024-05-09_23-02-storage-layer",
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-05-09_23-02-storage-layer"
       },
       "packtool": ""
     }

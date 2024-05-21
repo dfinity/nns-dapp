@@ -6,8 +6,8 @@ describe("actionable proposals segment store", () => {
     actionableProposalsSegmentStore.resetForTesting();
   });
 
-  it('should have "all" by default ', () => {
-    expect(get(actionableProposalsSegmentStore).selected).toEqual("all");
+  it('should have "actionable" by default ', () => {
+    expect(get(actionableProposalsSegmentStore).selected).toEqual("actionable");
   });
 
   it("should set selected", () => {

@@ -2,6 +2,8 @@
   import SignIn from "$lib/components/common/SignIn.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { PageBanner, IconProposalsPage } from "@dfinity/gix-components";
+
+  // TODO: to be removed.
 </script>
 
 <PageBanner testId="actionable-proposals-sign-in">

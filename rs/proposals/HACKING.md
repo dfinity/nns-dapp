@@ -32,7 +32,7 @@ If the APIs of canisters controlled by the NNS have changed, proposal payloads m
 
 - Pick [a recent release of the `IC` repository](https://github.com/dfinity/ic/tags) that contains the changes you care about. Alternatively you may chose a commit, but release tags are preferred as their age is obvious.
 - Update the relevant `.did` files under `declarations` in the root of this repository.
-  - You can upgrade all `.did` files that come from the IC repository by running: `./scripts/update_ic_commit -c THE_RELEASE_TAG`
+  - You can upgrade all `.did` files that come from the IC repository by running: `./scripts/update_ic_commit --crate proposals --ic_commit THE_RELEASE_TAG`
     - Note: The above routine is likely to change soon. When it does, the command above needs to be updated.
     - Note: The command may require some manual intervention if the upstream changes are too radical.
   - You can update just a few canisters by manually by getting the corresponding `.did` files from the relevant upstream repositories. You will have to make any corresponding changes manually.

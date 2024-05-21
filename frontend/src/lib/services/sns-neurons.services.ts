@@ -24,7 +24,9 @@ import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { snsTokensByRootCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
+import { loadActionableProposalsForSns } from "$lib/services/actionable-sns-proposals.services";
 import { loadSnsParameters } from "$lib/services/sns-parameters.services";
+import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
@@ -858,6 +860,10 @@ export const makeDummyProposals = async ({
       rootCanisterId,
       identity,
     });
+
+    // reload actionable proposals
+    actionableSnsProposalsStore.resetForSns(rootCanisterId);
+    await loadActionableProposalsForSns(rootCanisterId);
 
     toastsSuccess({
       labelKey: "neuron_detail.dummy_proposal_success",

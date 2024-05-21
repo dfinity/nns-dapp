@@ -113,7 +113,7 @@ get_proposal() {
 # Extracts and parses the payload bytes from the proposal info
 extract_payload() {
   jq -r '.[0][0].proposal[0].action[0].ExecuteNnsFunction.payload' "$(proposal_path).json" | didc decode | sponge "$(proposal_path).payload.did"
-  idl2json <"$(proposal_path).payload.did" -d "$SOURCE_DIR/../declarations/nns_governance/proposals.did" -t "${NNS_FUNCTION_TYPE:-()}" --bytes-as hex | sponge "$(proposal_path).payload.json"
+  idl2json <"$(proposal_path).payload.did" -d "$SOURCE_DIR/../declarations/used_by_proposals/nns_governance/proposals.did" -t "${NNS_FUNCTION_TYPE:-()}" --bytes-as hex | sponge "$(proposal_path).payload.json"
 }
 
 # Determine proposal function type, setting the NNS_FUNCTION_TYPE variable

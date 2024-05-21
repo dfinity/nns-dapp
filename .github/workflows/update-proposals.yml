@@ -1,10 +1,10 @@
 # A GitHub Actions workflow that regularly updates the proposals rendering code
 # and creates a PR for any changes.
-name: Update proposals
+name: Update proposals candid bindings
 on:
   schedule:
     # Check for updates on candid interface for the proposals every thursday at 3:30am.
-    - cron: '30 3 * * THU'
+    - cron: '30 3 * * MON'
   workflow_dispatch:
   push:
     branches:
@@ -23,8 +23,35 @@ jobs:
           version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
           # TODO: Make `didc` support `binstall`, then use `binstall` here.
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
-      - name: Update to the latest declared APIs
+      - name: Find newer IC release, if any
         id: update
+        run: |
+          current_release="$(jq -r .defaults.build.config.IC_COMMIT_FOR_PROPOSALS dfx.json)"
+          echo "Current IC release: $current_release"
+          latest_release=$(curl -sSL https://api.github.com/repos/dfinity/ic/releases/latest | jq .tag_name -r)
+          echo "Latest IC release:  $latest_release"
+          {
+            if [ "$current_release" == "$latest_release" ]
+            then
+              echo "updated=0"
+            else
+              echo "updated=1"
+              echo "release=$latest_release"
+            fi
+          } >> "$GITHUB_OUTPUT"
+      - name: Install sponge
+        if: ${{ steps.update.outputs.updated == '1' }}
+        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+      - name: Update candid files
+        if: ${{ steps.update.outputs.updated == '1' }}
+        run: |
+          # Update candid files
+          scripts/update_ic_commit --crate proposals --ic_commit "${{ steps.update.outputs.release }}"
+          # Show changes
+          echo "Git status:"
+          git status
+          echo "Note: The git diff is likely to be long so is not logged.  Please see the PR."
+      - name: Update to the latest declared APIs
         run: |
           # Derive rust files
           ./scripts/proposals/did2rs
@@ -47,7 +74,7 @@ jobs:
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
           add-paths: rs/proposals/src/canisters/*/api.rs
           delete-branch: true
-          title: 'Update proposal rendering dependencies'
+          title: 'bot: Update proposals candid bindings'
           # Note: It is _likely_ but not guaranteed that the .did files match the `IC_COMMIT` in `dfx.json`.  The files in the PR have a header that give this information reliably.
           #       We do _not_ put a commit in the PR title as it could be misleading.
           body: |
@@ -56,8 +83,9 @@ jobs:
             Even with no changes, just updating the reference is good practice.
 
             # Changes
+            * Update the version of `IC_COMMIT_FOR_PROPOSALS` specified in `dfx.json`.
+            * Updated the `proposals` candid files to the versions in that commit.
             * Updated the Rust code derived from `.did` files in the proposals payload rendering crate.
-              * Note: The candid files under `declarations/nns-$CANISTER` are used as inputs.
 
             # Tests
               - [ ] Please check the API updates for any breaking changes that affect our code.

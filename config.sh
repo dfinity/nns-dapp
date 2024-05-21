@@ -89,6 +89,14 @@ local_deployment_data="$(
   export CKETH_INDEX_CANISTER_ID
   test -n "${CKETH_INDEX_CANISTER_ID:-}" || unset CKETH_INDEX_CANISTER_ID
 
+  : "Try to find the ckUSDC canister IDs"
+  CKUSDC_LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckusdc_ledger 2>/dev/null || true)"
+  export CKUSDC_LEDGER_CANISTER_ID
+  test -n "${CKUSDC_LEDGER_CANISTER_ID:-}" || unset CKUSDC_LEDGER_CANISTER_ID
+  CKUSDC_INDEX_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckusdc_index 2>/dev/null || true)"
+  export CKUSDC_INDEX_CANISTER_ID
+  test -n "${CKUSDC_INDEX_CANISTER_ID:-}" || unset CKUSDC_INDEX_CANISTER_ID
+
   : "Get the governance canister ID - it should be defined"
   GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
   export GOVERNANCE_CANISTER_ID
@@ -135,6 +143,8 @@ local_deployment_data="$(
     CKBTC_INDEX_CANISTER_ID: env.CKBTC_INDEX_CANISTER_ID,
     CKETH_LEDGER_CANISTER_ID: env.CKETH_LEDGER_CANISTER_ID,
     CKETH_INDEX_CANISTER_ID: env.CKETH_INDEX_CANISTER_ID,
+    CKUSDC_LEDGER_CANISTER_ID: env.CKUSDC_LEDGER_CANISTER_ID,
+    CKUSDC_INDEX_CANISTER_ID: env.CKUSDC_INDEX_CANISTER_ID,
     CYCLES_MINTING_CANISTER_ID: env.CYCLES_MINTING_CANISTER_ID,
     ROBOTS: env.ROBOTS,
     STATIC_HOST: env.STATIC_HOST,
@@ -180,6 +190,8 @@ ckbtcMinterCanisterId=$(echo "$json" | jq -r '.CKBTC_MINTER_CANISTER_ID // ""')
 ckbtcIndexCanisterId=$(echo "$json" | jq -r '.CKBTC_INDEX_CANISTER_ID // ""')
 ckethLedgerCanisterId=$(echo "$json" | jq -r '.CKETH_LEDGER_CANISTER_ID // ""')
 ckethIndexCanisterId=$(echo "$json" | jq -r '.CKETH_INDEX_CANISTER_ID // ""')
+ckusdcLedgerCanisterId=$(echo "$json" | jq -r '.CKUSDC_LEDGER_CANISTER_ID // ""')
+ckusdcIndexCanisterId=$(echo "$json" | jq -r '.CKUSDC_INDEX_CANISTER_ID // ""')
 
 echo "VITE_DFX_NETWORK=$dfxNetwork
 VITE_CYCLES_MINTING_CANISTER_ID=$cmcCanisterId
@@ -198,7 +210,9 @@ VITE_CKBTC_LEDGER_CANISTER_ID=${ckbtcLedgerCanisterId:-}
 VITE_CKBTC_MINTER_CANISTER_ID=${ckbtcMinterCanisterId:-}
 VITE_CKBTC_INDEX_CANISTER_ID=${ckbtcIndexCanisterId:-}
 VITE_CKETH_LEDGER_CANISTER_ID=${ckethLedgerCanisterId:-}
-VITE_CKETH_INDEX_CANISTER_ID=${ckethIndexCanisterId:-}" | tee "$ENV_FILE"
+VITE_CKETH_INDEX_CANISTER_ID=${ckethIndexCanisterId:-}
+VITE_CKUSDC_LEDGER_CANISTER_ID=${ckusdcLedgerCanisterId:-}
+VITE_CKUSDC_INDEX_CANISTER_ID=${ckusdcIndexCanisterId:-}" | tee "$ENV_FILE"
 
 echo "$json" >"$JSON_OUT"
 {
@@ -235,6 +249,11 @@ CKETH_LEDGER_CANISTER_ID="${ckethLedgerCanisterId:-}"
 export CKETH_LEDGER_CANISTER_ID
 CKETH_INDEX_CANISTER_ID="${ckethIndexCanisterId:-}"
 export CKETH_INDEX_CANISTER_ID
+
+CKUSDC_LEDGER_CANISTER_ID="${ckusdcLedgerCanisterId:-}"
+export CKUSDC_LEDGER_CANISTER_ID
+CKUSDC_INDEX_CANISTER_ID="${ckusdcIndexCanisterId:-}"
+export CKUSDC_INDEX_CANISTER_ID
 
 GOVERNANCE_CANISTER_ID="$governanceCanisterId"
 export GOVERNANCE_CANISTER_ID

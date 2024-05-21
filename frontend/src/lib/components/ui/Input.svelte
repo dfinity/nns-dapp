@@ -4,7 +4,8 @@
 
   export let testId: string = "input-ui-element";
   export let name: string;
-  export let inputType: "icp" | "number" | "text" = "number";
+  export let inputType: "icp" | "currency" | "number" | "text" = "number";
+  export let decimals: number | undefined = undefined;
   export let required = true;
   export let spellcheck: boolean | undefined = undefined;
   export let step: number | "any" | undefined = undefined;
@@ -23,6 +24,7 @@
 <Input
   {testId}
   {inputType}
+  {decimals}
   {required}
   {spellcheck}
   {name}

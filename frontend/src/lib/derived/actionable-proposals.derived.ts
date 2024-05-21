@@ -2,10 +2,14 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { authSignedInStore } from "$lib/derived/auth.derived";
 import { pageStore } from "$lib/derived/page.derived";
+import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
+import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+import type { Universe } from "$lib/types/universe";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
 import { mapEntries } from "$lib/utils/utils";
+import type { SnsProposalData } from "@dfinity/sns";
 import { derived, type Readable } from "svelte/store";
 
 export interface ActionableProposalCountData {
@@ -25,6 +29,12 @@ export const actionableProposalIndicationEnabledStore: Readable<boolean> =
         paths: [AppPath.Proposals],
       })
   );
+
+/** Returns true when actionable are enabled (sign-in & selected)  */
+export const actionableProposalsActiveStore: Readable<boolean> = derived(
+  [actionableProposalsSegmentStore, authSignedInStore],
+  ([{ selected }, isSignedIn]) => isSignedIn && selected === "actionable"
+);
 
 /** A store that contains the count of proposals that can be voted on by the user mapped by canister id (nns + snses) */
 export const actionableProposalCountStore: Readable<ActionableProposalCountData> =
@@ -65,3 +75,24 @@ export const actionableProposalSupportedStore: Readable<ActionableProposalSuppor
       ],
     }),
   }));
+
+/** A store that contains sns universes with actionable support and their actionable proposals
+ * in the same order as they are displayed in the UI. */
+export const actionableSnsProposalsByUniverseStore: Readable<
+  Array<{
+    universe: Universe;
+    proposals: SnsProposalData[];
+  }>
+> = derived(
+  [selectableUniversesStore, actionableSnsProposalsStore],
+  ([universes, actionableSnsProposals]) =>
+    universes
+      .filter(
+        ({ canisterId }) =>
+          actionableSnsProposals[canisterId]?.includeBallotsByCaller === true
+      )
+      .map((universe) => ({
+        universe,
+        proposals: actionableSnsProposals[universe.canisterId].proposals,
+      }))
+);

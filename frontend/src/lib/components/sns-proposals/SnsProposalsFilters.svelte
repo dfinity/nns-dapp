@@ -10,9 +10,10 @@
   import FiltersWrapper from "../proposals/FiltersWrapper.svelte";
   import FiltersButton from "../ui/FiltersButton.svelte";
   import SnsFilterTypesModal from "$lib/modals/sns/proposals/SnsFilterTypesModal.svelte";
-  import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
   import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   let modal: "types" | "status" | undefined = undefined;
 
@@ -32,9 +33,11 @@
 
 <TestIdWrapper testId="sns-proposals-filters-component">
   <div class="proposal-filters">
-    <ActionableProposalsSegment />
+    {#if $authSignedInStore}
+      <ActionableProposalsSegment />
+    {/if}
 
-    {#if $actionableProposalsSegmentStore.selected !== "actionable"}
+    {#if !$actionableProposalsActiveStore}
       <FiltersWrapper>
         <FiltersButton
           testId="filters-by-types"

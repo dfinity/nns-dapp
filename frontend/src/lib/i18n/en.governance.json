@@ -22,7 +22,8 @@
     "ReplicaVersionManagement": "IC OS Version Election",
     "SubnetReplicaVersionManagement": "IC OS Version Deployment",
     "SnsAndCommunityFund": "SNS & Neurons' Fund",
-    "ApiBoundaryNodeManagement": "API Boundary Node Management"
+    "ApiBoundaryNodeManagement": "API Boundary Node Management",
+    "SubnetRental": "Subnet Rental"
   },
   "topics_description": {
     "Unspecified": "",
@@ -40,7 +41,8 @@
     "ReplicaVersionManagement": "Proposals handling election of IC OS versions.",
     "SubnetReplicaVersionManagement": "Proposals handling deployments of IC OS versions.",
     "SnsAndCommunityFund": "Proposals relating to service nervous systems (SNS) and Neurons' Fund.",
-    "ApiBoundaryNodeManagement": "Proposals related to the management of API boundary nodes."
+    "ApiBoundaryNodeManagement": "Proposals related to the management of API boundary nodes.",
+    "SubnetRental": "All proposals related to renting a subnet — for example a subnet rental request."
   },
   "rewards": {
     "Unknown": "Unknown",
@@ -143,14 +145,15 @@
     "BitcoinSetConfig": "Set Bitcoin Config",
     "UpdateElectedHostosVersions": "Update Elected HostOS Versions",
     "UpdateNodesHostosVersion": "Update Nodes HostOS Version",
-    "AddApiBoundaryNode": "Add API Boundary Node",
-    "RemoveApiBoundaryNodes": "Remove API Boundary Node",
+    "AddApiBoundaryNode": "Add API Boundary Nodes",
+    "RemoveApiBoundaryNodes": "Remove API Boundary Nodes",
     "UpdateApiBoundaryNodesVersion": "Update API Boundary Nodes Version",
     "DeployGuestosToSomeApiBoundaryNodes": "Deploy GuestOS To Some API Boundary Nodes",
     "DeployGuestosToAllUnassignedNodes": "Deploy GuestOS To All Unassigned Nodes",
     "UpdateSshReadOnlyAccessForAllUnassignedNodes": "Update SSH Read Only Access For All Unassigned Nodes",
     "ReviseElectedHostosVersions": "Revise Elected HostOS Versions",
-    "DeployHostosToSomeNodes": "Deploy HostOS To Some Nodes"
+    "DeployHostosToSomeNodes": "Deploy HostOS To Some Nodes",
+    "SubnetRentalRequest": "Subnet Rental Request"
   },
   "nns_functions_description": {
     "Unspecified": "",
@@ -195,13 +198,14 @@
     "BitcoinSetConfig": "A proposal to set the configuration of the underlying Bitcoin Canister that powers the Bitcoin API. The configuration includes whether or not the Bitcoin Canister should sync new blocks from the network, whether the API is enabled, the fees to charge, etc.",
     "UpdateElectedHostosVersions": "A proposal to update currently elected HostOS versions, by electing a new version, and/or unelecting multiple unused versions. The version to elect (often identified by the hash of the installation image) is added to the registry. By itself, this proposal does not effect any upgrade. The specified versions to unelect are removed from the registry. This ensures that the HostOS cannot upgrade to these versions anymore.",
     "UpdateNodesHostosVersion": "Update the HostOS version running on a given list of nodes. The proposal changes the HostOS version that is used on the specified nodes. The version must be contained in the list of HostOS versions.",
-    "AddApiBoundaryNode": "A proposal to add a new API Boundary Node using an assigned node.",
+    "AddApiBoundaryNode": "A proposal to add a set of new API Boundary Nodes using unassigned nodes.",
     "RemoveApiBoundaryNodes": "A proposal to remove a set of API Boundary Nodes, which will designate them as unassigned nodes.",
     "UpdateApiBoundaryNodesVersion": "A proposal to update the version of a set of API Boundary Nodes.",
     "DeployGuestosToSomeApiBoundaryNodes": "A proposal to update the version of a set of API Boundary Nodes.",
     "DeployGuestosToAllUnassignedNodes": "A proposal to update the version of all unassigned nodes.",
     "UpdateSshReadOnlyAccessForAllUnassignedNodes": "A proposal to update SSH readonly access for all unassigned nodes.",
     "ReviseElectedHostosVersions": "A proposal to change the set of currently elected HostOS versions, by electing a new version, and/or unelecting some priorly elected versions.<br/><br/>HostOS versions are identified by the hash of the installation image.<br/><br/>The version to elect is added to the Registry, and the versions to unelect are removed from the Registry, ensuring that HostOS cannot upgrade to these versions anymore.<br/><br/>This proposal does not actually perform the upgrade; for deployment of an elected version, please refer to \"Deploy HostOS To Some Nodes\".",
-    "DeployHostosToSomeNodes": "Deploy a HostOS version to a given set of nodes. The proposal changes the HostOS version that is used on the specified nodes."
+    "DeployHostosToSomeNodes": "Deploy a HostOS version to a given set of nodes. The proposal changes the HostOS version that is used on the specified nodes.",
+    "SubnetRentalRequest": "A proposal to rent a subnet on the Internet Computer.<br/><br/>The Subnet Rental Canister is called when this proposal is executed, and the rental request is stored there. The user specified in the proposal needs to make a sufficient upfront payment in ICP in order for the proposal to be valid, and the subnet must be available for rent. The available rental conditions can be checked by calling the Subnet Rental Canister."
   }
 }

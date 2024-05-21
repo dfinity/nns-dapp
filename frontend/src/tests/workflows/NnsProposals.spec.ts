@@ -4,6 +4,7 @@ import { queryProposals } from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import NnsProposals from "$lib/pages/NnsProposals.svelte";
+import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { page } from "$mocks/$app/stores";
@@ -35,9 +36,13 @@ vi.mock("$lib/api/proposals.api", () => {
 
 vi.mock("$lib/api/governance.api");
 
-describe("NnsProposals", () => {
+describe('NnsProposals when "all proposals" selected', () => {
   const { topics: defaultIncludeTopcis, status: defaultIncludeStatus } =
     DEFAULT_PROPOSALS_FILTERS;
+
+  beforeEach(() => {
+    actionableProposalsSegmentStore.set("all");
+  });
 
   afterEach(() => {
     vi.clearAllMocks();

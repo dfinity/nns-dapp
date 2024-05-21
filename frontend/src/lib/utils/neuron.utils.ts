@@ -22,6 +22,7 @@ import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { VoteRegistrationStoreData } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
+import type { TableNeuron } from "$lib/types/neurons-table";
 import type { Identity } from "@dfinity/agent";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
@@ -1003,6 +1004,7 @@ export const getTopicTitle = ({
     [Topic.ReplicaVersionManagement]: i18n.follow_neurons.topic_13_title,
     [Topic.SnsAndCommunityFund]: i18n.follow_neurons.topic_14_title,
     [Topic.ApiBoundaryNodeManagement]: i18n.follow_neurons.topic_15_title,
+    [Topic.SubnetRental]: i18n.follow_neurons.topic_16_title,
   };
   return mapper[topic];
 };
@@ -1032,6 +1034,15 @@ export const getTopicSubtitle = ({
     [Topic.ReplicaVersionManagement]: i18n.follow_neurons.topic_13_subtitle,
     [Topic.SnsAndCommunityFund]: i18n.follow_neurons.topic_14_subtitle,
     [Topic.ApiBoundaryNodeManagement]: i18n.follow_neurons.topic_15_subtitle,
+    [Topic.SubnetRental]: i18n.follow_neurons.topic_16_subtitle,
   };
   return mapper[topic];
+};
+
+export const tableNeuronsFromNeuronInfos = (
+  neuronInfos: NeuronInfo[]
+): TableNeuron[] => {
+  return neuronInfos.map(({ neuronId }) => ({
+    neuronId,
+  }));
 };

@@ -143,8 +143,14 @@ jobs:
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
-      - name: Run the ic_commit code generator
-        run: ./scripts/update_ic_commit --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT dfx.json)"
+      - name: Run the ic_commit code generator for proposals
+        run: |
+          ./scripts/update_ic_commit --crate proposals --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT_FOR_PROPOSALS dfx.json)"
+          ./scripts/proposals/did2rs
+      - name: Run the ic_commit code generator for sns_aggregator
+        run: |
+          ./scripts/update_ic_commit --crate proposals --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT_FOR_SNS_AGGREGATOR dfx.json)"
+          ./scripts/sns/aggregator/mk_nns_patch.sh
       - name: Verify that there are no code changes
         run: |
           if git diff | grep . ; then

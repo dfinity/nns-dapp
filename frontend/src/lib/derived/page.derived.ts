@@ -12,13 +12,18 @@ import { derived, type Readable } from "svelte/store";
 
 export interface Page {
   universe: string;
+  actionable: boolean;
   path: AppPath | null;
 }
 
 export const pageStore = derived<Readable<PageType>, Page>(
   page,
-  ({ data: { universe }, route: { id: routeId } }) => ({
-    universe: universe ?? OWN_CANISTER_ID_TEXT,
-    path: routeId ? pathForRouteId(routeId) : null,
-  })
+  ({ data, route: { id: routeId } }) => {
+    const { universe, actionable } = data;
+    return {
+      universe: universe ?? OWN_CANISTER_ID_TEXT,
+      actionable,
+      path: routeId ? pathForRouteId(routeId) : null,
+    };
+  }
 );

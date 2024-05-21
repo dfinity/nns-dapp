@@ -1,4 +1,5 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { NeuronsTablePo } from "$tests/page-objects/NeuronsTable.page-object";
 import { NnsNeuronCardPo } from "$tests/page-objects/NnsNeuronCard.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -8,6 +9,10 @@ export class NnsNeuronsPo extends BasePageObject {
 
   static under(element: PageObjectElement): NnsNeuronsPo {
     return new NnsNeuronsPo(element.byTestId(NnsNeuronsPo.TID));
+  }
+
+  getNeuronsTablePo(): NeuronsTablePo {
+    return NeuronsTablePo.under(this.root);
   }
 
   getSkeletonCardPo(): SkeletonCardPo {

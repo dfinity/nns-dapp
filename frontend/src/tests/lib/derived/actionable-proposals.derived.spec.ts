@@ -5,18 +5,48 @@ import {
   actionableProposalIndicationEnabledStore,
   actionableProposalSupportedStore,
   actionableProposalTotalCountStore,
+  actionableProposalsActiveStore,
+  actionableSnsProposalsByUniverseStore,
 } from "$lib/derived/actionable-proposals.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
+import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
+import {
+  createSnsProposal,
+  mockSnsProposal,
+} from "$tests/mocks/sns-proposals.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { ProposalInfo } from "@dfinity/nns";
+import {
+  SnsProposalDecisionStatus,
+  SnsProposalRewardStatus,
+  SnsSwapLifecycle,
+  type SnsProposalData,
+} from "@dfinity/sns";
 import { get } from "svelte/store";
 
 describe("actionable proposals derived stores", () => {
+  const createProposal = (proposalId: bigint): SnsProposalData =>
+    createSnsProposal({
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+      rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+      proposalId,
+    });
+  const principal0 = principal(0);
+  const principal1 = principal(1);
+  const principal2 = principal(2);
+
+  beforeEach(() => {
+    vi.restoreAllMocks();
+    resetSnsProjects();
+    actionableNnsProposalsStore.reset();
+    actionableSnsProposalsStore.resetForTesting();
+  });
+
   describe("actionableProposalIndicationEnabledStore", () => {
     it("returns true when the user is signed-in and on proposals page", async () => {
       resetIdentity();
@@ -52,6 +82,26 @@ describe("actionable proposals derived stores", () => {
     });
   });
 
+  describe("actionableProposalsActiveStore", () => {
+    it('returns true when the user is signed-in and the segment is on "Actionable"', async () => {
+      resetIdentity();
+      actionableProposalsSegmentStore.set("actionable");
+      expect(get(actionableProposalsActiveStore)).toBe(true);
+    });
+
+    it("returns false when the user is not signed-in", async () => {
+      setNoIdentity();
+      actionableProposalsSegmentStore.set("actionable");
+      expect(get(actionableProposalsActiveStore)).toBe(false);
+    });
+
+    it('returns false when the segment is on "All"', async () => {
+      resetIdentity();
+      actionableProposalsSegmentStore.set("all");
+      expect(get(actionableProposalsActiveStore)).toBe(false);
+    });
+  });
+
   describe("actionableProposalCountStore", () => {
     const nnsProposals: ProposalInfo[] = [
       {
@@ -64,14 +114,6 @@ describe("actionable proposals derived stores", () => {
       },
     ];
     const snsProposals = [mockSnsProposal];
-    const principal0 = principal(0);
-    const principal1 = principal(1);
-    const principal2 = principal(2);
-
-    beforeEach(() => {
-      actionableNnsProposalsStore.reset();
-      actionableSnsProposalsStore.resetForTesting();
-    });
 
     it("returns actionable proposal count", async () => {
       expect(get(actionableProposalCountStore)).toEqual({
@@ -115,13 +157,6 @@ describe("actionable proposals derived stores", () => {
       },
     ];
     const snsProposals = [mockSnsProposal];
-    const principal0 = principal(0);
-    const principal1 = principal(1);
-
-    beforeEach(() => {
-      actionableNnsProposalsStore.reset();
-      actionableSnsProposalsStore.resetForTesting();
-    });
 
     it("returns true for nns", async () => {
       expect(get(actionableProposalSupportedStore)).toEqual({
@@ -161,14 +196,6 @@ describe("actionable proposals derived stores", () => {
         },
       ];
       const snsProposals = [mockSnsProposal];
-      const principal0 = principal(0);
-      const principal1 = principal(1);
-      const principal2 = principal(2);
-
-      beforeEach(() => {
-        actionableNnsProposalsStore.reset();
-        actionableSnsProposalsStore.resetForTesting();
-      });
 
       it("returns total actionable proposal count", async () => {
         expect(get(actionableProposalTotalCountStore)).toEqual(0);
@@ -195,6 +222,64 @@ describe("actionable proposals derived stores", () => {
           nnsProposals.length + snsProposals.length * 2
         );
       });
+    });
+  });
+
+  describe("actionableSnsProposalsByUniverseStore", () => {
+    const proposals0 = [createProposal(0n)];
+    const proposals1 = [createProposal(1n)];
+
+    it("should return snses with proposals", async () => {
+      expect(get(actionableSnsProposalsByUniverseStore)).toEqual([]);
+
+      setSnsProjects([
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: principal0,
+        },
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: principal1,
+        },
+      ]);
+
+      expect(get(actionableSnsProposalsByUniverseStore)).toEqual([]);
+
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal0,
+        proposals: proposals0,
+        includeBallotsByCaller: true,
+      });
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal1,
+        proposals: proposals1,
+        includeBallotsByCaller: true,
+      });
+
+      expect(
+        get(actionableSnsProposalsByUniverseStore).map(
+          ({ universe: { canisterId }, proposals }) => [canisterId, proposals]
+        )
+      ).toEqual([
+        [principal0.toText(), proposals0],
+        [principal1.toText(), proposals1],
+      ]);
+    });
+
+    it("should filter out snses w/o actionable support", async () => {
+      setSnsProjects([
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: principal0,
+        },
+      ]);
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal0,
+        proposals: proposals0,
+        includeBallotsByCaller: false,
+      });
+
+      expect(get(actionableSnsProposalsByUniverseStore)).toEqual([]);
     });
   });
 });

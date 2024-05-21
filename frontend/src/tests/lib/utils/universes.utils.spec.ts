@@ -32,6 +32,7 @@ describe("universes-utils", () => {
         isAllTokensPath({
           universe: "not used here",
           path: AppPath.Accounts,
+          actionable: false,
         })
       ).toBeTruthy();
 
@@ -39,6 +40,7 @@ describe("universes-utils", () => {
         isAllTokensPath({
           universe: "not used here",
           path: AppPath.Wallet,
+          actionable: false,
         })
       ).toBeTruthy();
     });
@@ -48,6 +50,7 @@ describe("universes-utils", () => {
         isAllTokensPath({
           universe: "not used here",
           path: AppPath.Neurons,
+          actionable: false,
         })
       ).toBe(false);
 
@@ -55,6 +58,7 @@ describe("universes-utils", () => {
         isAllTokensPath({
           universe: "not used here",
           path: AppPath.Proposal,
+          actionable: false,
         })
       ).toBe(false);
     });
