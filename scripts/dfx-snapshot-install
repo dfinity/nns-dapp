@@ -179,11 +179,22 @@ install_dir() {
   mv3 "$state_dir" "$dfx_dir" "$backup_dir"
 }
 
+get_config_paths_to_install() {
+  ls "$DFX_CONFIG_STATE_DIR" | grep -v '^identity$'
+  ls "$DFX_CONFIG_STATE_DIR/identity" | sed -e 's@^@identity/@'
+}
+
+install_config_dir() {
+  for config_path in $(get_config_paths_to_install); do
+    mv3 "${DFX_CONFIG_STATE_DIR}/${config_path}" "${DFX_CONFIG_DIR}/${config_path}" "${DFX_CONFIG_BACKUP_DIR}/${config_path}"
+  done
+}
+
 # Moves all the existing directories to the backup location and moves the state
 # directories in their place.
 install_state() {
   install_dir LOCAL_REPLICA_DATA
-  install_dir CONFIG
+  install_config_dir
   install_dir NETWORK
 }
 
