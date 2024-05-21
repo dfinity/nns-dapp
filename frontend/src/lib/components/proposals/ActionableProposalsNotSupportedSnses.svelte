@@ -11,7 +11,7 @@
       .join(", ") ?? "";
 </script>
 
-<PageBanner testId="actionable-proposals-not-supported">
+<PageBanner testId="actionable-proposals-not-supported-snses">
   <IconNotificationPage slot="image" />
   <svelte:fragment slot="title"
     >{replacePlaceholders(
