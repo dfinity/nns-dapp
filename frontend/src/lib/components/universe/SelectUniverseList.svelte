@@ -6,7 +6,6 @@
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { ENABLE_ACTIONABLE_TAB } from "$lib/stores/feature-flags.store";
   import { pageStore } from "$lib/derived/page.derived";
-  import SelectActionableCard from "$lib/components/universe/SelectActionableCard.svelte";
   import { displaySelectActionableLink } from "$lib/derived/actionable-proposals.derived";
   import Separator from "$lib/components/ui/Separator.svelte";
 
@@ -20,9 +19,10 @@
 
 <TestIdWrapper testId="select-universe-list-component">
   {#if $ENABLE_ACTIONABLE_TAB && $displaySelectActionableLink}
-    <SelectActionableCard
+    <SelectUniverseCard
       on:click={() => dispatch("nnsSelectActionable")}
       selected={$pageStore.actionable}
+      universe="actionable"
     />
     <Separator spacing="medium" />
   {/if}
