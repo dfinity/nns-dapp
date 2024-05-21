@@ -1,5 +1,6 @@
 import {
   ACCOUNT_PARAM,
+  ACTIONABLE_PROPOSALS_PARAM,
   AppPath,
   CANISTER_PARAM,
   NEURON_PARAM,
@@ -35,18 +36,38 @@ export const buildSwitchUniverseUrl = (universe: string): string => {
   return `${pathname}?${UNIVERSE_PARAM}=${universe}`;
 };
 
+const appendParams = ({
+  path,
+  params = {},
+}: {
+  path: string;
+  params?: Record<string, string>;
+}) => {
+  const queryString = Object.entries(params)
+    // Handling empty values: if the value is empty, we only append the key for the esthetic of the URL.
+    .map(([key, value]) =>
+      value === "" ? key : `${key}=${encodeURIComponent(value)}`
+    )
+    .join("&");
+  return queryString ? `${path}/?${queryString}` : path;
+};
+
 const buildUrl = ({
   path,
   universe,
   params = {},
 }: {
   path: AppPath;
-  universe: string;
+  universe?: string;
   params?: Record<string, string>;
 }): string =>
-  `${path}/?${UNIVERSE_PARAM}=${universe}${Object.entries(params)
-    .map(([key, value]) => `&${key}=${value}`)
-    .join("")}`;
+  appendParams({
+    path,
+    params: {
+      ...(universe ? { [UNIVERSE_PARAM]: universe } : {}),
+      ...params,
+    },
+  });
 
 export const buildAccountsUrl = ({ universe }: { universe: string }) =>
   buildUrl({ path: AppPath.Accounts, universe });
@@ -54,6 +75,10 @@ export const buildNeuronsUrl = ({ universe }: { universe: string }) =>
   buildUrl({ path: AppPath.Neurons, universe });
 export const buildProposalsUrl = ({ universe }: { universe: string }) =>
   buildUrl({ path: AppPath.Proposals, universe });
+export const ACTIONABLE_PROPOSALS_URL = buildUrl({
+  path: AppPath.Proposals,
+  params: { [ACTIONABLE_PROPOSALS_PARAM]: "" },
+});
 export const buildCanistersUrl = ({ universe }: { universe: string }) =>
   buildUrl({ path: AppPath.Canisters, universe });
 
