@@ -161,6 +161,7 @@ const querySnsProposals = async ({
   return {
     proposals: sortedProposals,
     includeBallotsByCaller:
+      // TODO: THIS IS FOR TESTING PURPOSES ONLY!!!
       sortedProposals.length > 0 ? includeBallotsByCaller : false,
   };
 };
