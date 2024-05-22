@@ -14,6 +14,7 @@ describe("ActionableProposalsNotSupportedSnses", () => {
     ).map((_, i) => ({
       lifecycle: SnsSwapLifecycle.Committed,
       rootCanisterId: principal(i),
+      projectName: `SNS-${i}`,
     }));
     setSnsProjects(snsProjects);
 
@@ -60,7 +61,7 @@ describe("ActionableProposalsNotSupportedSnses", () => {
     addSnsesWithSupport([false, false]);
     const po = renderComponent();
     expect(await po.getBannerPo().getTitleText()).toEqual(
-      "Catalyze, Catalyze don’t yet support actionable proposals."
+      "SNS-0, SNS-1 don’t yet support actionable proposals."
     );
   });
 

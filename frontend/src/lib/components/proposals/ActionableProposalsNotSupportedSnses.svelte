@@ -24,12 +24,7 @@
         )}</svelte:fragment
       >
       <p class="description" slot="description">
-        {replacePlaceholders(
-          $i18n.actionable_proposals_not_supported_snses.text,
-          {
-            $snsName: snsNames,
-          }
-        )}
+        {$i18n.actionable_proposals_not_supported_snses.text}
       </p>
     </PageBanner>
   {/if}
