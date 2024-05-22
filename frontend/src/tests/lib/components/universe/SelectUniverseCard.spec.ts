@@ -14,8 +14,9 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
-import { mockSummary } from "$tests/mocks/sns-projects.mock";
+import { mockSummary, principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { SelectUniverseCardPo } from "$tests/page-objects/SelectUniverseCard.page-object";
@@ -25,6 +26,7 @@ import {
   setAccountsForTesting,
 } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import type { ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
 import { describe } from "vitest";
@@ -42,6 +44,8 @@ describe("SelectUniverseCard", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     overrideFeatureFlagsStore.reset();
+    actionableNnsProposalsStore.reset();
+    actionableSnsProposalsStore.resetForTesting();
     resetAccountsForTesting();
     resetIdentity();
   });
@@ -364,6 +368,73 @@ describe("SelectUniverseCard", () => {
         });
         expect(await po.hasBalance()).toBe(false);
       });
+    });
+  });
+
+  describe("all-actionable proposals mode", () => {
+    it("should display custom icon and text", async () => {
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Proposals,
+      });
+
+      const po = await renderComponent({
+        props: { universe: "all-actionable", selected: false },
+      });
+
+      expect(await po.hasVoteIcon()).toBe(true);
+      expect(await po.getName()).toBe("Actionable Proposals");
+    });
+
+    it('should not display custom icon and text when not "all-actionable"', async () => {
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Proposals,
+      });
+
+      const po = await renderComponent({
+        props: { universe: nnsUniverseMock, selected: false },
+      });
+      expect(await po.getName()).toBe("Internet Computer");
+      expect(await po.hasVoteIcon()).toBe(false);
+    });
+
+    it("should display total actionable count", async () => {
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Proposals,
+      });
+      const nnsProposals: ProposalInfo[] = [
+        {
+          ...mockProposalInfo,
+          id: 0n,
+        },
+        {
+          ...mockProposalInfo,
+          id: 1n,
+        },
+      ];
+      const snsProposals = [mockSnsProposal];
+      const principal0 = principal(0);
+      const principal1 = principal(1);
+      actionableNnsProposalsStore.setProposals(nnsProposals);
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal0,
+        proposals: snsProposals,
+        includeBallotsByCaller: true,
+      });
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal1,
+        proposals: snsProposals,
+        includeBallotsByCaller: true,
+      });
+
+      await runResolvedPromises();
+
+      const po = await renderComponent({
+        props: { universe: "all-actionable", selected: false },
+      });
+      expect((await po.getActionableProposalCount()).trim()).toBe("4");
     });
   });
 });

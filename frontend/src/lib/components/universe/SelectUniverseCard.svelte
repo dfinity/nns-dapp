@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Card, Tooltip } from "@dfinity/gix-components";
+  import { Card, IconVote, Tooltip } from "@dfinity/gix-components";
   import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import UniverseAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
   import { pageStore } from "$lib/derived/page.derived";
@@ -11,17 +11,21 @@
     actionableProposalCountStore,
     actionableProposalIndicationEnabledStore,
     actionableProposalSupportedStore,
+    actionableProposalTotalCountStore,
   } from "$lib/derived/actionable-proposals.derived";
   import ActionableProposalCountBadge from "$lib/components/proposals/ActionableProposalCountBadge.svelte";
   import { nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { onMount } from "svelte";
+  import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
+  import { scale } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
 
   export let selected: boolean;
   // "link" for desktop, "button" for mobile, "dropdown" to open the modal
   export let role: "link" | "button" | "dropdown" = "link";
-  export let universe: Universe;
+  export let universe: Universe | "all-actionable";
 
   let icon: "expand" | "check" | undefined = undefined;
   $: icon = role === "dropdown" ? "expand" : undefined;
@@ -36,11 +40,15 @@
 
   let actionableProposalCount: number | undefined = undefined;
   $: actionableProposalCount =
-    $actionableProposalCountStore[universe.canisterId];
+    universe === "all-actionable"
+      ? undefined
+      : $actionableProposalCountStore[universe.canisterId];
 
   let actionableProposalSupported: boolean | undefined = undefined;
   $: actionableProposalSupported =
-    $actionableProposalSupportedStore[universe.canisterId];
+    universe === "all-actionable"
+      ? undefined
+      : $actionableProposalSupportedStore[universe.canisterId];
 
   // Always rerender to trigger animation start
   let mounted = false;
@@ -58,34 +66,57 @@
   noMargin
 >
   <div class="container" class:selected>
-    <UniverseLogo size="big" {universe} framed={true} />
+    {#if universe !== "all-actionable"}
+      <UniverseLogo size="big" {universe} framed={true} />
+    {:else}
+      <div data-tid="vote-icon" class="icon">
+        <IconVote size="24px" />
+      </div>
+    {/if}
 
     <div
       class={`content ${role}`}
-      class:balance={displayProjectAccountsBalance}
+      class:balance={displayProjectAccountsBalance &&
+        universe !== "all-actionable"}
     >
       <span class="name">
-        {universe.title}
-        {#if $actionableProposalIndicationEnabledStore}
-          {#if nonNullish(actionableProposalCount) && actionableProposalCount > 0 && mounted}
-            <ActionableProposalCountBadge
-              count={actionableProposalCount}
-              {universe}
-            />
-          {:else if actionableProposalSupported === false}
-            <TestIdWrapper testId="not-supported-badge">
-              <Tooltip
-                id="actionable-not-supported-tooltip"
-                text={$i18n.actionable_proposals_not_supported.dot_tooltip}
-                top={true}
+        {#if universe === "all-actionable"}
+          {$i18n.voting.actionable_proposals}
+          {#if $actionableProposalIndicationEnabledStore}
+            {#if $actionableProposalTotalCountStore > 0 && mounted}
+              <div
+                in:scale={{
+                  duration: 250,
+                  easing: cubicOut,
+                }}
               >
-                <div class="not-supported-badge" />
-              </Tooltip>
-            </TestIdWrapper>
+                <ActionableProposalTotalCountBadge />
+              </div>
+            {/if}
+          {/if}
+        {:else}
+          {universe.title}
+          {#if $actionableProposalIndicationEnabledStore}
+            {#if nonNullish(actionableProposalCount) && actionableProposalCount > 0 && mounted}
+              <ActionableProposalCountBadge
+                count={actionableProposalCount}
+                {universe}
+              />
+            {:else if actionableProposalSupported === false}
+              <TestIdWrapper testId="not-supported-badge">
+                <Tooltip
+                  id="actionable-not-supported-tooltip"
+                  text={$i18n.actionable_proposals_not_supported.dot_tooltip}
+                  top={true}
+                >
+                  <div class="not-supported-badge" />
+                </Tooltip>
+              </TestIdWrapper>
+            {/if}
           {/if}
         {/if}
       </span>
-      {#if displayProjectAccountsBalance}
+      {#if displayProjectAccountsBalance && universe !== "all-actionable"}
         <UniverseAccountsBalance {universe} />
       {/if}
     </div>
