@@ -12,9 +12,9 @@
       .join(", ");
 </script>
 
-<TestIdWrapper testId="actionable-proposals-not-supported-snses">
+<TestIdWrapper testId="actionable-proposals-not-supported-snses-component">
   {#if snsNames !== ""}
-    <PageBanner>
+    <PageBanner testId="actionable-proposals-not-supported-snses-banner">
       <IconNotificationPage slot="image" />
       <svelte:fragment slot="title"
         >{replacePlaceholders(
