@@ -3,7 +3,6 @@ import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposal
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { ActionableProposalsNotSupportedSnsesPo } from "$tests/page-objects/ActionableProposalsNotSupportedSnses.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -38,29 +37,23 @@ describe("ActionableProposalsNotSupportedSnses", () => {
   beforeEach(() => {
     resetSnsProjects();
     actionableSnsProposalsStore.resetForTesting();
-    allowLoggingInOneTestForDebugging();
   });
 
-  it("should be rendered when there are Snses w/o actionable support", async () => {
+  it("should render a banner when there are Snses w/o actionable support", async () => {
     addSnsesWithSupport([false]);
     const po = renderComponent();
     expect(await po.getBannerPo().isPresent()).toEqual(true);
   });
 
-  it("should be hidden when all Snses supports actionable proposals", async () => {
+  it("should not render the banner when all Snses supports actionable proposals", async () => {
     addSnsesWithSupport([true]);
     const po = renderComponent();
     expect(await po.getBannerPo().isPresent()).toEqual(false);
   });
 
-  it("should be hidden when there are no Snses", async () => {
+  it("should not render the banne when there are no Snses", async () => {
     const po = renderComponent();
     expect(await po.getBannerPo().isPresent()).toEqual(false);
-  });
-
-  it("should not render the banner when no Snses that doesn't support actionable", async () => {
-    const po = renderComponent();
-    expect(await po.getBannerPo().isPresent()).toEqual(true);
   });
 
   it("should display title", async () => {
