@@ -30,7 +30,7 @@
     {#if $authSignedInStore && $pageStore.path === AppPath.Proposals && $pageStore.actionable}
       <SelectUniverseCard
         on:click={() => (showProjectPicker = true)}
-        selected={$pageStore.actionable}
+        selected={true}
         universe="all-actionable"
       />
     {:else}
