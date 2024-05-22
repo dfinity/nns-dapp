@@ -393,6 +393,10 @@
     "text": "$snsName SNS governance canister needs to be updated to the latest version to show actionable proposals. You can still vote on all proposals, but they will not have the visual indication.",
     "dot_tooltip": "This SNS doesn't yet support actionable proposals."
   },
+  "actionable_proposals_not_supported_snses": {
+    "title": "$snsNames don’t yet support actionable proposals.",
+    "text": "If an SNS DAO wishes to support actionable proposals, need to upgrade to a newer version of the SNS governance canister."
+  },
   "canisters": {
     "aria_label_canister_card": "Go to canister details",
     "text": "Developers can create and manage their canisters (a form of smart contracts) and cycles consumption here.",
