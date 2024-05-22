@@ -1,5 +1,5 @@
 <script lang="ts">
-import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 </script>
 
 <TestIdWrapper testId="actionable-proposals-component">
