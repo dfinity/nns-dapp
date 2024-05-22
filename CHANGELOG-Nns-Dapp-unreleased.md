@@ -25,6 +25,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* Stop writing account transactions to stable memory.
+
 #### Fixed
 
 * Rendering tokens with fewer than 8 decimals.
@@ -44,6 +46,8 @@ proposal is successful, the changes it released will be moved from this file to
 * Include `ckUSDC` canister IDs when importing from URL with `scripts/canister_ids`.
 
 #### Changed
+
+* Keep existing `dfx` identities when running an `snsdemo` snapshot.
 
 #### Deprecated
 
