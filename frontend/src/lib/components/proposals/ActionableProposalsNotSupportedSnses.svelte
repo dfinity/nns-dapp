@@ -6,10 +6,9 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   let snsNames: string;
-  $: snsNames =
-    $actionableProposalNotSupportedUniversesStore
-      .map((universe) => universe.title)
-      .join(", ");
+  $: snsNames = $actionableProposalNotSupportedUniversesStore
+    .map((universe) => universe.title)
+    .join(", ");
 </script>
 
 <TestIdWrapper testId="actionable-proposals-not-supported-snses-component">
