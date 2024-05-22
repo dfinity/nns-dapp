@@ -285,9 +285,6 @@ describe("actionable proposals derived stores", () => {
   });
 
   describe("actionableProposalNotSupportedUniversesStore", () => {
-    const proposals0 = [createProposal(0n)];
-    const proposals1 = [createProposal(1n)];
-
     it("should return universes w/o actionable support", async () => {
       expect(get(actionableProposalNotSupportedUniversesStore)).toEqual([]);
 
