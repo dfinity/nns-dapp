@@ -1,7 +1,10 @@
 import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svelte";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
@@ -83,5 +86,50 @@ describe("SelectUniverseList", () => {
     expect(getAllByTestId("select-universe-card").length).toEqual(
       projects.length + 1
     );
+  });
+
+  describe('"all actionable" card', () => {
+    afterAll(() => {
+      overrideFeatureFlagsStore.reset();
+    });
+
+    it('should render "Actionable proposals" card', async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", true);
+      resetIdentity();
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT, actionable: true },
+        routeId: AppPath.Proposals,
+      });
+
+      const { getByText, getByTestId } = render(SelectUniverseList);
+      expect(getByText("Actionable Proposals")).toBeInTheDocument();
+      expect(getByTestId("separator")).toBeInTheDocument();
+    });
+
+    it('should not render "Actionable proposals" card when ENABLE_ACTIONABLE_TAB false', async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", false);
+      resetIdentity();
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT, actionable: true },
+        routeId: AppPath.Proposals,
+      });
+
+      const { queryByText, queryByTestId } = render(SelectUniverseList);
+      expect(queryByText("Actionable Proposals")).toBe(null);
+      expect(queryByTestId("separator")).toBe(null);
+    });
+
+    it('should not render "Actionable proposals" card when signedOut', async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", true);
+      setNoIdentity();
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT, actionable: true },
+        routeId: AppPath.Proposals,
+      });
+
+      const { queryByText, queryByTestId } = render(SelectUniverseList);
+      expect(queryByText("Actionable Proposals")).toBe(null);
+      expect(queryByTestId("separator")).toBe(null);
+    });
   });
 });

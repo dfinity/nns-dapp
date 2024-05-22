@@ -2,7 +2,11 @@
   export let spacing: "medium" | "large" | "none" = "large";
 </script>
 
-<hr class:medium={spacing === "medium"} class:no-margin={spacing === "none"} />
+<hr
+  data-tid="separator"
+  class:medium={spacing === "medium"}
+  class:no-margin={spacing === "none"}
+/>
 
 <style lang="scss">
   hr {
