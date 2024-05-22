@@ -3,7 +3,10 @@
   import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svelte";
   import { createEventDispatcher } from "svelte";
   import { goto } from "$app/navigation";
-  import { buildSwitchUniverseUrl } from "$lib/utils/navigation.utils";
+  import {
+    ACTIONABLE_PROPOSALS_URL,
+    buildSwitchUniverseUrl,
+  } from "$lib/utils/navigation.utils";
   import { titleTokenSelectorStore } from "$lib/derived/title-token-selector.derived";
 
   const dispatcher = createEventDispatcher();
@@ -11,6 +14,11 @@
 
   const select = async (canisterId: string) => {
     await goto(buildSwitchUniverseUrl(canisterId));
+    close();
+  };
+
+  const selectActionable = async () => {
+    await goto(ACTIONABLE_PROPOSALS_URL);
     close();
   };
 </script>
@@ -24,6 +32,7 @@
     <SelectUniverseList
       role="button"
       on:nnsSelectUniverse={({ detail }) => select(detail)}
+      on:nnsSelectActionable={() => selectActionable()}
     />
   </Modal>
 </div>
