@@ -105,9 +105,6 @@
   [role="row"] {
     @include interaction.tappable;
 
-    // If we use grid-template-areas, we need to specify all the areas.
-    // That makes it hard to have dynamic columns.
-    // Instead, we duplicate the actions. Once as the last cell, another within the title cell.
     display: grid;
     flex-direction: column;
     gap: var(--padding-2x);
