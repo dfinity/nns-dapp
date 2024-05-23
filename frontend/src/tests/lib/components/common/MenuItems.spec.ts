@@ -95,10 +95,6 @@ describe("MenuItems", () => {
   });
 
   describe("actionable proposal link", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.reset();
-    });
-
     it("should have actionable proposal link", async () => {
       resetIdentity();
       overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", true);
