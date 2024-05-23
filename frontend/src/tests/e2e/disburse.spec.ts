@@ -26,7 +26,7 @@ test("Test disburse neuron", async ({ page, context }) => {
 
   step("Check account balance before disburse");
   await appPo.goToAccounts();
-  const icpRowBeforeDisburse = appPo
+  const icpRowBeforeDisburse = await appPo
     .getTokensPo()
     .getTokensPagePo()
     .getTokensTable()
@@ -49,7 +49,7 @@ test("Test disburse neuron", async ({ page, context }) => {
 
   step("Check account balance after disburse");
   await appPo.goToAccounts();
-  const icpRowAfterDisburse = appPo
+  const icpRowAfterDisburse = await appPo
     .getTokensPo()
     .getTokensPagePo()
     .getTokensTable()

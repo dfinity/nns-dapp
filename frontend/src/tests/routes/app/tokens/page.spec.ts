@@ -529,17 +529,17 @@ describe("Tokens route", () => {
 
         const tablePo = po.getSignInTokensPagePo().getTokensTablePo();
 
-        const icpRow = tablePo.getRowByName("Internet Computer");
+        const icpRow = await tablePo.getRowByName("Internet Computer");
         expect(await icpRow.getHref()).toEqual(
           `/accounts/?u=${OWN_CANISTER_ID_TEXT}`
         );
 
-        const snsRow = tablePo.getRowByName("Tetris");
+        const snsRow = await tablePo.getRowByName("Tetris");
         expect(await snsRow.getHref()).toEqual(
           `/wallet/?u=${rootCanisterIdTetris.toText()}`
         );
 
-        const ckEthRow = tablePo.getRowByName("ckETH");
+        const ckEthRow = await tablePo.getRowByName("ckETH");
         expect(await ckEthRow.getHref()).toEqual(
           `/wallet/?u=${CKETH_UNIVERSE_CANISTER_ID.toText()}`
         );
