@@ -81,7 +81,9 @@
     >
       <span class="name">
         {#if universe === "all-actionable"}
-          <TestIdWrapper testId="universe-name">{$i18n.voting.actionable_proposals}</TestIdWrapper>
+          <TestIdWrapper testId="universe-name"
+            >{$i18n.voting.actionable_proposals}</TestIdWrapper
+          >
           {#if $actionableProposalIndicationEnabledStore}
             {#if $actionableProposalTotalCountStore > 0 && mounted}
               <div
