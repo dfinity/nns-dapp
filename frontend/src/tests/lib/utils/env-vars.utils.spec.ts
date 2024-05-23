@@ -7,6 +7,10 @@ vi.unmock("$lib/utils/env-vars.utils");
 
 describe("env-vars-utils", () => {
   beforeEach(() => {
+    // Make sure no non-stubbed environment variables are present
+    for (const envVar of Object.keys(import.meta.env)) {
+      vi.stubEnv(envVar, "");
+    }
     vi.stubEnv("VITE_DFX_NETWORK", "local");
     vi.stubEnv(
       "VITE_CYCLES_MINTING_CANISTER_ID",
