@@ -111,6 +111,7 @@ describe("MenuItems", () => {
     });
 
     it("should have default proposal link when signedOut", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", true);
       setNoIdentity();
       page.mock({
         data: { universe: OWN_CANISTER_ID_TEXT },
