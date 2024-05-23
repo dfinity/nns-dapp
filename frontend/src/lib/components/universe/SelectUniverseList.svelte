@@ -25,7 +25,7 @@
       selected={$pageStore.actionable}
       universe="all-actionable"
     />
-    <Separator spacing="medium" />
+    <Separator spacing="medium" testId="all-actionable-separator" />
   {/if}
 
   {#each $selectableUniversesStore as universe (universe.canisterId)}
