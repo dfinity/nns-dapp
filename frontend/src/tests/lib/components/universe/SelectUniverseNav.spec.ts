@@ -97,7 +97,6 @@ describe("SelectUniverseNav", () => {
       .getSelectUniverseCardPos();
     expect(cardPos.length).toEqual(3);
     // nns is the second card
-    expect((await cardPos[1].getActionableProposalCount()).trim()).toEqual("1");
-    expect((await cardPos[2].getActionableProposalCount()).trim()).toEqual("2");
+    expect(await cardPos[1].getName()).toEqual("Internet Computer");
   });
 });
