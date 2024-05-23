@@ -14,6 +14,7 @@ describe("ActionableProposalsNotSupportedSnses", () => {
     ).map((_, i) => ({
       lifecycle: SnsSwapLifecycle.Committed,
       rootCanisterId: principal(i),
+      projectName: `SNS-${i}`,
     }));
     setSnsProjects(snsProjects);
 
@@ -39,28 +40,28 @@ describe("ActionableProposalsNotSupportedSnses", () => {
     actionableSnsProposalsStore.resetForTesting();
   });
 
-  it("should render a banner", async () => {
+  it("should render a banner when there are Snses w/o actionable support", async () => {
     addSnsesWithSupport([false]);
     const po = renderComponent();
     expect(await po.getBannerPo().isPresent()).toEqual(true);
   });
 
-  it("should be hiden when all Snses supports actionable proposals", async () => {
+  it("should not render the banner when all Snses supports actionable proposals", async () => {
     addSnsesWithSupport([true]);
     const po = renderComponent();
-    expect(await po.getBannerPo().isPresent()).toEqual(true);
+    expect(await po.getBannerPo().isPresent()).toEqual(false);
   });
 
-  it("should not render a banner when no projects wit", async () => {
+  it("should not render the banne when there are no Snses", async () => {
     const po = renderComponent();
-    expect(await po.getBannerPo().isPresent()).toEqual(true);
+    expect(await po.getBannerPo().isPresent()).toEqual(false);
   });
 
   it("should display title", async () => {
-    addSnsesWithSupport([false, false]);
+    addSnsesWithSupport([true, false, true, false, true]);
     const po = renderComponent();
     expect(await po.getBannerPo().getTitleText()).toEqual(
-      "Catalyze, Catalyze don’t yet support actionable proposals."
+      "SNS-1, SNS-3 don’t yet support actionable proposals."
     );
   });
 

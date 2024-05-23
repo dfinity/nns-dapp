@@ -6,15 +6,14 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   let snsNames: string;
-  $: snsNames =
-    $actionableProposalNotSupportedUniversesStore
-      .map((universe) => universe.title)
-      .join(", ") ?? "";
+  $: snsNames = $actionableProposalNotSupportedUniversesStore
+    .map((universe) => universe.title)
+    .join(", ");
 </script>
 
-<TestIdWrapper testId="actionable-proposals-not-supported-snses">
+<TestIdWrapper testId="actionable-proposals-not-supported-snses-component">
   {#if snsNames !== ""}
-    <PageBanner>
+    <PageBanner testId="actionable-proposals-not-supported-snses-banner">
       <IconNotificationPage slot="image" />
       <svelte:fragment slot="title"
         >{replacePlaceholders(
@@ -25,12 +24,7 @@
         )}</svelte:fragment
       >
       <p class="description" slot="description">
-        {replacePlaceholders(
-          $i18n.actionable_proposals_not_supported_snses.text,
-          {
-            $snsName: snsNames,
-          }
-        )}
+        {$i18n.actionable_proposals_not_supported_snses.text}
       </p>
     </PageBanner>
   {/if}

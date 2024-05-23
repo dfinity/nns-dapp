@@ -1,34 +1,11 @@
 <script lang="ts">
-  import {
-    UserTokenAction,
-    type UserTokenData,
-    type UserTokenLoading,
-  } from "$lib/types/tokens-page";
-  import type { SvelteComponent, ComponentType } from "svelte";
-  import Logo from "../../ui/Logo.svelte";
-  import GoToDetailIcon from "./actions/GoToDetailIcon.svelte";
-  import ReceiveButton from "./actions/ReceiveButton.svelte";
-  import SendButton from "./actions/SendButton.svelte";
-  import { UnavailableTokenAmount } from "$lib/utils/token.utils";
-  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import { nonNullish } from "@dfinity/utils";
+  import type { UserTokenData, UserTokenLoading } from "$lib/types/tokens-page";
+  import TokenTitleCell from "./TokenTitleCell.svelte";
+  import TokenBalanceCell from "./TokenBalanceCell.svelte";
+  import TokenActionsCell from "./TokenActionsCell.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { Spinner } from "@dfinity/gix-components";
-  import { isUserTokenData } from "$lib/utils/user-token.utils";
 
   export let userTokenData: UserTokenData | UserTokenLoading;
-
-  const actionMapper: Record<
-    UserTokenAction,
-    ComponentType<SvelteComponent<{ userToken: UserTokenData }>>
-  > = {
-    [UserTokenAction.GoToDetail]: GoToDetailIcon,
-    [UserTokenAction.Receive]: ReceiveButton,
-    [UserTokenAction.Send]: SendButton,
-  };
-
-  let userToken: UserTokenData | undefined;
-  $: userToken = isUserTokenData(userTokenData) ? userTokenData : undefined;
 
   // Should be the same as the area in the classes `rows-count-X`.
   const cellAreaName = (index: number) => `cell-${index}`;
@@ -49,47 +26,15 @@
   data-title={userTokenData.title}
 >
   <div role="cell" class="title-cell">
-    <div class="title-logo-wrapper">
-      <Logo
-        src={userTokenData.logo}
-        alt={userTokenData.title}
-        size="medium"
-        framed
-      />
-      <div class="title-wrapper">
-        <h5 data-tid="project-name">{userTokenData.title}</h5>
-        {#if nonNullish(userTokenData.subtitle)}
-          <span data-tid="project-subtitle" class="description"
-            >{userTokenData.subtitle}</span
-          >
-        {/if}
-      </div>
-    </div>
+    <TokenTitleCell {userTokenData} />
   </div>
+
   <div role="cell" class={`mobile-row-cell left-cell ${cellAreaName(0)}`}>
     <span class="mobile-only">{$i18n.tokens.balance_header}</span>
-    {#if userTokenData.balance instanceof UnavailableTokenAmount}
-      <span data-tid="token-value-label"
-        >{`-/- ${userTokenData.balance.token.symbol}`}</span
-      >
-    {:else if userTokenData.balance === "loading"}
-      <span data-tid="token-value-label" class="balance-spinner"
-        ><Spinner inline size="tiny" /></span
-      >
-    {:else}
-      <AmountDisplay singleLine amount={userTokenData.balance} />
-    {/if}
+    <TokenBalanceCell {userTokenData} />
   </div>
   <div role="cell" class="actions-cell actions">
-    {#if nonNullish(userToken)}
-      {#each userToken.actions as action}
-        <svelte:component
-          this={actionMapper[action]}
-          {userToken}
-          on:nnsAction
-        />
-      {/each}
-    {/if}
+    <TokenActionsCell {userTokenData} on:nnsAction />
   </div>
 </a>
 
@@ -98,16 +43,9 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "../../../themes/mixins/grid-table";
 
-  h5 {
-    margin: 0;
-  }
-
   [role="row"] {
     @include interaction.tappable;
 
-    // If we use grid-template-areas, we need to specify all the areas.
-    // That makes it hard to have dynamic columns.
-    // Instead, we duplicate the actions. Once as the last cell, another within the title cell.
     display: grid;
     flex-direction: column;
     gap: var(--padding-2x);
@@ -196,23 +134,6 @@
         }
       }
     }
-  }
-
-  .title-logo-wrapper {
-    display: flex;
-    align-items: center;
-    gap: var(--padding);
-
-    .title-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: var(--padding-0_5x);
-    }
-  }
-
-  .balance-spinner {
-    display: flex;
-    align-items: center;
   }
 
   .actions {

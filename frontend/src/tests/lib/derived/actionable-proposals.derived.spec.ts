@@ -285,10 +285,7 @@ describe("actionable proposals derived stores", () => {
   });
 
   describe("actionableProposalNotSupportedUniversesStore", () => {
-    const proposals0 = [createProposal(0n)];
-    const proposals1 = [createProposal(1n)];
-
-    it("should return snses with proposals", async () => {
+    it("should return universes w/o actionable support", async () => {
       expect(get(actionableProposalNotSupportedUniversesStore)).toEqual([]);
 
       setSnsProjects([
@@ -300,13 +297,17 @@ describe("actionable proposals derived stores", () => {
           lifecycle: SnsSwapLifecycle.Committed,
           rootCanisterId: principal1,
         },
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: principal2,
+        },
       ]);
 
       expect(get(actionableProposalNotSupportedUniversesStore)).toEqual([]);
 
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
-        proposals: proposals0,
+        proposals: [],
         includeBallotsByCaller: false,
       });
       expect(
@@ -317,8 +318,20 @@ describe("actionable proposals derived stores", () => {
 
       actionableSnsProposalsStore.set({
         rootCanisterId: principal1,
-        proposals: proposals1,
+        proposals: [],
         includeBallotsByCaller: false,
+      });
+      expect(
+        get(actionableProposalNotSupportedUniversesStore).map(
+          ({ canisterId }) => canisterId
+        )
+      ).toEqual([principal0.toText(), principal1.toText()]);
+
+      // One with `includeBallotsByCaller: true` should not change the result.
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal2,
+        proposals: [],
+        includeBallotsByCaller: true,
       });
       expect(
         get(actionableProposalNotSupportedUniversesStore).map(
