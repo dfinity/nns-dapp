@@ -34,6 +34,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+* Downgrade to Rust `1.77.2`.
+
 #### Not Published
 
 * Support `ckUSDC` behind a feature flag.
