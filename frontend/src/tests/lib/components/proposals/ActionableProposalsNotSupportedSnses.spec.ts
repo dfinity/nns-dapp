@@ -58,10 +58,10 @@ describe("ActionableProposalsNotSupportedSnses", () => {
   });
 
   it("should display title", async () => {
-    addSnsesWithSupport([false, false]);
+    addSnsesWithSupport([true, false, true, false, true]);
     const po = renderComponent();
     expect(await po.getBannerPo().getTitleText()).toEqual(
-      "SNS-0, SNS-1 don’t yet support actionable proposals."
+      "SNS-1, SNS-3 don’t yet support actionable proposals."
     );
   });
 
