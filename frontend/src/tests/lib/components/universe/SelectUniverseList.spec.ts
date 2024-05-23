@@ -10,6 +10,8 @@ import {
   mockSnsFullProject,
   principal,
 } from "$tests/mocks/sns-projects.mock";
+import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { fireEvent, render } from "@testing-library/svelte";
 
 describe("SelectUniverseList", () => {
@@ -28,6 +30,11 @@ describe("SelectUniverseList", () => {
       },
     },
   ];
+
+  const renderComponent = () => {
+    const { container } = render(SelectUniverseList);
+    return SelectUniverseListPo.under(new JestPageObjectElement(container));
+  };
 
   vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
     mockProjectSubscribe(projects)
@@ -101,9 +108,14 @@ describe("SelectUniverseList", () => {
         routeId: AppPath.Proposals,
       });
 
-      const { getByText, getByTestId } = render(SelectUniverseList);
-      expect(getByText("Actionable Proposals")).toBeInTheDocument();
-      expect(getByTestId("separator")).toBeInTheDocument();
+      const po = renderComponent();
+      const cardPos = await po.getSelectUniverseCardPos();
+      // +1 for IC and +1 for "Actionable Proposals" entry
+      expect(cardPos.length).toEqual(projects.length + 2);
+      expect((await cardPos[0].getText()).trim()).toEqual(
+        "Actionable Proposals"
+      );
+      expect(await po.hasSeparator()).toEqual(true);
     });
 
     it('should not render "Actionable proposals" card when ENABLE_ACTIONABLE_TAB false', async () => {
@@ -114,9 +126,15 @@ describe("SelectUniverseList", () => {
         routeId: AppPath.Proposals,
       });
 
-      const { queryByText, queryByTestId } = render(SelectUniverseList);
-      expect(queryByText("Actionable Proposals")).toBe(null);
-      expect(queryByTestId("separator")).toBe(null);
+      const po = renderComponent();
+      const cardPos = await po.getSelectUniverseCardPos();
+      const titles = (
+        await Promise.all(cardPos.map((card) => card.getText()))
+      ).map((text) => text.trim());
+      // +1 for IC
+      expect(cardPos.length).toEqual(projects.length + 1);
+      expect(titles.includes("Actionable Proposals")).toEqual(false);
+      expect(await po.hasSeparator()).toEqual(false);
     });
 
     it('should not render "Actionable proposals" card when signedOut', async () => {
@@ -127,9 +145,15 @@ describe("SelectUniverseList", () => {
         routeId: AppPath.Proposals,
       });
 
-      const { queryByText, queryByTestId } = render(SelectUniverseList);
-      expect(queryByText("Actionable Proposals")).toBe(null);
-      expect(queryByTestId("separator")).toBe(null);
+      const po = renderComponent();
+      const cardPos = await po.getSelectUniverseCardPos();
+      const titles = (
+        await Promise.all(cardPos.map((card) => card.getText()))
+      ).map((text) => text.trim());
+      // +1 for IC
+      expect(cardPos.length).toEqual(projects.length + 1);
+      expect(titles.includes("Actionable Proposals")).toEqual(false);
+      expect(await po.hasSeparator()).toEqual(false);
     });
   });
 });
