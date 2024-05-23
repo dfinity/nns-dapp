@@ -44,10 +44,8 @@ export class TokensTablePo extends BasePageObject {
     return Promise.all(rows.map((row) => row.getData()));
   }
 
-  async getRowByName(
-    projectName: string
-  ): Promise<TokensTableRowPo | undefined> {
-    while (true) {
+  async getRowByName(projectName: string): Promise<TokensTableRowPo> {
+    for (;;) {
       const rows = await this.getRows();
       for (const row of rows) {
         const name = await row.getProjectName();
