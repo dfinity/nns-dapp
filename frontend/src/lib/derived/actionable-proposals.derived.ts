@@ -76,6 +76,18 @@ export const actionableProposalSupportedStore: Readable<ActionableProposalSuppor
     }),
   }));
 
+/** A store that contains sns universes w/o actionable proposals support */
+export const actionableProposalNotSupportedUniversesStore: Readable<
+  Universe[]
+> = derived(
+  [selectableUniversesStore, actionableSnsProposalsStore],
+  ([universes, actionableSnsProposals]) =>
+    universes.filter(
+      ({ canisterId }) =>
+        actionableSnsProposals[canisterId]?.includeBallotsByCaller === false
+    )
+);
+
 /** A store that contains sns universes with actionable support and their actionable proposals
  * in the same order as they are displayed in the UI. */
 export const actionableSnsProposalsByUniverseStore: Readable<

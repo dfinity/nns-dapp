@@ -243,7 +243,10 @@
       "wasm": "target/ic/ckusdc_ledger.wasm",
       "type": "custom",
       "remote": {
-        "id": {}
+        "id": {
+          "app": "xevnm-gaaaa-aaaar-qafnq-cai",
+          "mainnet": "xevnm-gaaaa-aaaar-qafnq-cai"
+        }
       }
     },
     "ckusdc_index": {
@@ -254,7 +257,10 @@
       "wasm": "target/ic/ckusdc_index.wasm",
       "type": "custom",
       "remote": {
-        "id": {}
+        "id": {
+          "app": "xrs4b-hiaaa-aaaar-qafoa-cai",
+          "mainnet": "xrs4b-hiaaa-aaaar-qafoa-cai"
+        }
       }
     },
     "tvl": {
