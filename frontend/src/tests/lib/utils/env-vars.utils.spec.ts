@@ -45,6 +45,8 @@ describe("env-vars-utils", () => {
     ckbtcMinterCanisterId: "o66jk-a4aaa-aaaaa-qabfq-cai",
     ckethIndexCanisterId: "of3vp-2eaaa-aaaaa-qabha-cai",
     ckethLedgerCanisterId: "omy6t-mmaaa-aaaaa-qabgq-cai",
+    ckusdcIndexCanisterId: "myg3h-jmaaa-aaaaa-qabiq-cai",
+    ckusdcLedgerCanisterId: "m7h5t-euaaa-aaaaa-qabia-cai",
     cyclesMintingCanisterId: "rkp4c-7iaaa-aaaaa-aaaca-cai",
     dfxNetwork: "local",
     featureFlags:
