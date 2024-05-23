@@ -21,34 +21,24 @@
   };
 
   $: onWindowSizeChange(innerWidth);
+
+  let isActionableSelected = false;
+  $: isActionableSelected =
+    $ENABLE_ACTIONABLE_TAB &&
+    $authSignedInStore &&
+    $pageStore.path === AppPath.Proposals &&
+    $pageStore.actionable;
 </script>
 
 <svelte:window bind:innerWidth />
 
 <TestIdWrapper testId="select-universe-dropdown-component">
-  {#if $ENABLE_ACTIONABLE_TAB}
-    {#if $authSignedInStore && $pageStore.path === AppPath.Proposals && $pageStore.actionable}
-      <SelectUniverseCard
-        on:click={() => (showProjectPicker = true)}
-        selected={true}
-        universe="all-actionable"
-      />
-    {:else}
-      <SelectUniverseCard
-        universe={$selectedUniverseStore}
-        selected={true}
-        role="dropdown"
-        on:click={() => (showProjectPicker = true)}
-      />
-    {/if}
-  {:else}
-    <SelectUniverseCard
-      universe={$selectedUniverseStore}
-      selected={true}
-      role="dropdown"
-      on:click={() => (showProjectPicker = true)}
-    />
-  {/if}
+  <SelectUniverseCard
+    universe={isActionableSelected ? "all-actionable" : $selectedUniverseStore}
+    selected={true}
+    role="dropdown"
+    on:click={() => (showProjectPicker = true)}
+  />
 
   {#if showProjectPicker}
     <SelectUniverseModal on:nnsClose={() => (showProjectPicker = false)} />
