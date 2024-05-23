@@ -44,7 +44,7 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_CKUSDC: true,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
-      ENABLE_ACTIONABLE_TAB: false,
+      ENABLE_ACTIONABLE_TAB: true,
     }),
     fetchRootKey: "false",
     host: "https://icp-api.io",
