@@ -1,4 +1,3 @@
-import { ProposalCardPo } from "$tests/page-objects/ProposalCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { assertNonNullish } from "$tests/utils/utils.test-utils";
@@ -24,9 +23,5 @@ export class UniverseWithActionableProposalsPo extends BasePageObject {
     return (
       await assertNonNullish(this.root.querySelector("h1")).getText()
     ).trim();
-  }
-
-  getProposalCardPos(): Promise<ProposalCardPo[]> {
-    return ProposalCardPo.allUnder(this.root);
   }
 }
