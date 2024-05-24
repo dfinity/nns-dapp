@@ -16,6 +16,9 @@
   $: selectedCanisterId = $selectedUniverseIdStore.toText();
 
   const dispatch = createEventDispatcher();
+
+  let actionableProposalsSelected = false;
+  $: actionableProposalsSelected = $ENABLE_ACTIONABLE_TAB && $pageStore.actionable;
 </script>
 
 <TestIdWrapper testId="select-universe-list-component">
@@ -32,7 +35,7 @@
     <SelectUniverseCard
       {universe}
       {role}
-      selected={!($ENABLE_ACTIONABLE_TAB && $pageStore.actionable) &&
+      selected={!actionableProposalsSelected &&
         universe.canisterId === selectedCanisterId}
       on:click={() => dispatch("nnsSelectUniverse", universe.canisterId)}
     />
