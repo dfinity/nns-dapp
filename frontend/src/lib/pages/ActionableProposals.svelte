@@ -1,4 +1,5 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import UniverseWithActionableProposals from "$lib/components/proposals/UniverseWithActionableProposals.svelte";
   import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
@@ -14,24 +15,26 @@
   import ActionableProposalsNotSupportedSnses from "$lib/components/proposals/ActionableProposalsNotSupportedSnses.svelte";
 </script>
 
-{#if $actionableProposalTotalCountStore === 0}
-  {#if $actionableProposalsLoadedStore}
-    <ActionableProposalsEmpty />
+<TestIdWrapper testId="actionable-proposals-component">
+  {#if $actionableProposalTotalCountStore === 0}
+    {#if $actionableProposalsLoadedStore}
+      <ActionableProposalsEmpty />
+    {:else}
+      <LoadingProposals />
+    {/if}
   {:else}
-    <LoadingProposals />
-  {/if}
-{:else}
-  <!-- Nns -->
-  <UniverseWithActionableProposals universe={$nnsUniverseStore}>
-    {#each $actionableNnsProposalsStore?.proposals ?? [] as proposalInfo (proposalInfo.id)}
-      <NnsProposalCard actionable fromActionablePage {proposalInfo} />
+    <!-- Nns -->
+    <UniverseWithActionableProposals universe={$nnsUniverseStore}>
+      {#each $actionableNnsProposalsStore?.proposals ?? [] as proposalInfo (proposalInfo.id)}
+        <NnsProposalCard actionable fromActionablePage {proposalInfo} />
+      {/each}
+    </UniverseWithActionableProposals>
+
+    <!-- Sns -->
+    {#each $actionableSnsProposalsByUniverseStore ?? [] as snsUniverse (snsUniverse.universe.canisterId)}
+      <SnsWithActionableProposals universe={snsUniverse.universe} />
     {/each}
-  </UniverseWithActionableProposals>
+  {/if}
 
-  <!-- Sns -->
-  {#each $actionableSnsProposalsByUniverseStore ?? [] as snsUniverse (snsUniverse.universe.canisterId)}
-    <SnsWithActionableProposals universe={snsUniverse.universe} />
-  {/each}
-{/if}
-
-<ActionableProposalsNotSupportedSnses />
+  <ActionableProposalsNotSupportedSnses />
+</TestIdWrapper>

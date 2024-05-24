@@ -1,12 +1,17 @@
 import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svelte";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
   principal,
 } from "$tests/mocks/sns-projects.mock";
+import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { fireEvent, render } from "@testing-library/svelte";
 
 describe("SelectUniverseList", () => {
@@ -25,6 +30,11 @@ describe("SelectUniverseList", () => {
       },
     },
   ];
+
+  const renderComponent = () => {
+    const { container } = render(SelectUniverseList);
+    return SelectUniverseListPo.under(new JestPageObjectElement(container));
+  };
 
   vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
     mockProjectSubscribe(projects)
@@ -83,5 +93,63 @@ describe("SelectUniverseList", () => {
     expect(getAllByTestId("select-universe-card").length).toEqual(
       projects.length + 1
     );
+  });
+
+  describe('"all actionable" card', () => {
+    afterAll(() => {
+      overrideFeatureFlagsStore.reset();
+    });
+
+    it('should render "Actionable proposals" card', async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", true);
+      resetIdentity();
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT, actionable: true },
+        routeId: AppPath.Proposals,
+      });
+
+      const po = renderComponent();
+      const cardPos = await po.getSelectUniverseCardPos();
+      // +1 for IC and +1 for "Actionable Proposals" entry
+      expect(cardPos.length).toEqual(projects.length + 2);
+      expect(await cardPos[0].getName()).toEqual("Actionable Proposals");
+      expect(await po.hasSeparator()).toEqual(true);
+    });
+
+    it('should not render "Actionable proposals" card when ENABLE_ACTIONABLE_TAB false', async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", false);
+      resetIdentity();
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT, actionable: true },
+        routeId: AppPath.Proposals,
+      });
+
+      const po = renderComponent();
+      const cardPos = await po.getSelectUniverseCardPos();
+      const titles = await Promise.all(cardPos.map((card) => card.getName()));
+      // +1 for IC
+      expect(cardPos.length).toEqual(projects.length + 1);
+      expect(titles.includes("Actionable Proposals")).toEqual(false);
+      expect(await po.hasSeparator()).toEqual(false);
+    });
+
+    it('should not render "Actionable proposals" card when signedOut', async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", true);
+      setNoIdentity();
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT, actionable: true },
+        routeId: AppPath.Proposals,
+      });
+
+      const po = renderComponent();
+      const cardPos = await po.getSelectUniverseCardPos();
+      const titles = (
+        await Promise.all(cardPos.map((card) => card.getText()))
+      ).map((text) => text.trim());
+      // +1 for IC
+      expect(cardPos.length).toEqual(projects.length + 1);
+      expect(titles.includes("Actionable Proposals")).toEqual(false);
+      expect(await po.hasSeparator()).toEqual(false);
+    });
   });
 });

@@ -8,7 +8,6 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { ENABLE_ACTIONABLE_TAB } from "$lib/stores/feature-flags.store";
-  import { onMount } from "svelte";
   import ActionableProposals from "$lib/pages/ActionableProposals.svelte";
 </script>
 

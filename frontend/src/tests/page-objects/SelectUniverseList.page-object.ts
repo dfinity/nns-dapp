@@ -22,6 +22,10 @@ export class SelectUniverseListPo extends BasePageObject {
     return SelectUniverseCardPo.allUnder(this.root);
   }
 
+  hasSeparator(): Promise<boolean> {
+    return this.isPresent("all-actionable-separator");
+  }
+
   isSnsName(name: string): boolean {
     return !SelectUniverseListPo.NON_SNS_NAMES.includes(name);
   }

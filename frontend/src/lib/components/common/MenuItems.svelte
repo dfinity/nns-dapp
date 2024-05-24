@@ -65,7 +65,8 @@
     {
       context: "proposals",
       href:
-        // Switch to actionable proposals page only when signed in.
+        // Switch to the actionable proposals page only when users are signed in.
+        // When users are signed out, we preserve the universe in the URL.
         $ENABLE_ACTIONABLE_TAB && $authSignedInStore
           ? ACTIONABLE_PROPOSALS_URL
           : $proposalsPathStore,
