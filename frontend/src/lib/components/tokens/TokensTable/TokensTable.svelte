@@ -25,7 +25,7 @@
   ];
 </script>
 
-<ResponsiveTable {columns} tableData={userTokensData} on:nnsAction>
+<ResponsiveTable tableData={userTokensData} {columns} on:nnsAction>
   <slot name="last-row" slot="last-row" />
   <slot name="header-icon" slot="header-icon" />
 </ResponsiveTable>
