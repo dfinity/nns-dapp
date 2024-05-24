@@ -18,7 +18,8 @@
   const dispatch = createEventDispatcher();
 
   let actionableProposalsSelected = false;
-  $: actionableProposalsSelected = $ENABLE_ACTIONABLE_TAB && $pageStore.actionable;
+  $: actionableProposalsSelected =
+    $ENABLE_ACTIONABLE_TAB && $pageStore.actionable;
 </script>
 
 <TestIdWrapper testId="select-universe-list-component">
