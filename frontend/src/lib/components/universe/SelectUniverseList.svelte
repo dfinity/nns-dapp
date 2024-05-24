@@ -12,14 +12,9 @@
 
   export let role: "link" | "button" = "link";
 
-  let selectedCanisterId: string;
-  $: selectedCanisterId = $selectedUniverseIdStore.toText();
-
   const dispatch = createEventDispatcher();
 
-  let actionableProposalsSelected = false;
-  $: actionableProposalsSelected =
-    $ENABLE_ACTIONABLE_TAB && $pageStore.actionable;
+  $: selectedUniverse = $ENABLE_ACTIONABLE_TAB && $pageStore.actionable ? "all-actionable" : $selectedUniverseIdStore.toText();
 </script>
 
 <TestIdWrapper testId="select-universe-list-component">
@@ -36,8 +31,7 @@
     <SelectUniverseCard
       {universe}
       {role}
-      selected={!actionableProposalsSelected &&
-        universe.canisterId === selectedCanisterId}
+      selected={universe.canisterId === selectedUniverse}
       on:click={() => dispatch("nnsSelectUniverse", universe.canisterId)}
     />
   {/each}
