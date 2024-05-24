@@ -15,7 +15,7 @@
   const dispatch = createEventDispatcher();
 
   $: selectedUniverse =
-    $ENABLE_ACTIONABLE_TAB && $pageStore.actionable
+    $ENABLE_ACTIONABLE_TAB && $authSignedInStore && $pageStore.actionable
       ? "all-actionable"
       : $selectedUniverseIdStore.toText();
 </script>
