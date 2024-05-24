@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { UserTokenData, UserTokenLoading } from "$lib/types/tokens-page";
-  import TokenTitleCell from "./TokenTitleCell.svelte";
-  import TokenBalanceCell from "./TokenBalanceCell.svelte";
-  import TokenActionsCell from "./TokenActionsCell.svelte";
+  import TokenTitleCell from "$lib/components/tokens/TokensTable/TokenTitleCell.svelte";
+  import TokenBalanceCell from "$lib/components/tokens/TokensTable/TokenBalanceCell.svelte";
+  import TokenActionsCell from "$lib/components/tokens/TokensTable/TokenActionsCell.svelte";
   import { i18n } from "$lib/stores/i18n";
 
   export let userTokenData: UserTokenData | UserTokenLoading;
@@ -41,7 +41,7 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";
   @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "../../../themes/mixins/grid-table";
+  @use "../../themes/mixins/grid-table";
 
   [role="row"] {
     @include interaction.tappable;

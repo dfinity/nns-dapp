@@ -3,7 +3,7 @@
   import type { UserToken } from "$lib/types/tokens-page";
   import { heightTransition } from "$lib/utils/transition.utils";
   import { nonNullish } from "@dfinity/utils";
-  import TokensTableRow from "./TokensTableRow.svelte";
+  import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let userTokensData: Array<UserToken>;
@@ -38,7 +38,7 @@
   <div role="rowgroup">
     {#each userTokensData as userTokenData (userTokenData.rowHref)}
       <div class="row-wrapper" transition:heightTransition={{ duration: 250 }}>
-        <TokensTableRow on:nnsAction {userTokenData} />
+        <ResponsiveTableRow on:nnsAction {userTokenData} />
       </div>
     {/each}
   </div>
@@ -51,7 +51,7 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "../../../themes/mixins/grid-table";
+  @use "../../themes/mixins/grid-table";
 
   div[role="table"] {
     width: 100%;
