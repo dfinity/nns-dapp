@@ -47,7 +47,7 @@ export class AccountsPo extends BasePageObject {
   }
 
   async getAccountAddress(accountName: string): Promise<string> {
-    const row = this.getNnsAccountsPo()
+    const row = await this.getNnsAccountsPo()
       .getTokensTablePo()
       .getRowByName(accountName);
     await row.clickReceive();
