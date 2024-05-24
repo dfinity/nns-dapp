@@ -24,7 +24,7 @@
   {#if $ENABLE_ACTIONABLE_TAB && $authSignedInStore && $pageStore.path === AppPath.Proposals}
     <SelectUniverseCard
       on:click={() => dispatch("nnsSelectActionable")}
-      selected={$pageStore.actionable}
+      selected={selectedUniverse === "all-actionable"}
       universe="all-actionable"
     />
     <Separator spacing="medium" testId="all-actionable-separator" />
