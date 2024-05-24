@@ -5,7 +5,7 @@ import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposal
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
@@ -36,15 +36,20 @@ describe("MenuItems", () => {
   const shouldRenderMenuItem = ({
     context,
     labelKey,
+    href,
   }: {
     context: string;
     labelKey: string;
+    href?: string;
   }) => {
     const { getByTestId } = render(MenuItems);
     const link = getByTestId(`menuitem-${context}`) as HTMLElement;
     expect(link).not.toBeNull();
     expect(link).toBeVisible();
     expect(link.textContent?.trim()).toEqual(en.navigation[labelKey]);
+    if (href) {
+      expect(link.getAttribute("href")).toEqual(href);
+    }
   };
 
   beforeEach(() => {
@@ -86,6 +91,53 @@ describe("MenuItems", () => {
 
       const accountsLink = getByTestId("menuitem-accounts");
       expect(accountsLink.classList.contains("selected")).toBe(true);
+    });
+  });
+
+  describe("actionable proposal link", () => {
+    it("should have actionable proposal link", async () => {
+      resetIdentity();
+      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", true);
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Proposals,
+      });
+
+      shouldRenderMenuItem({
+        context: "proposals",
+        labelKey: "voting",
+        href: "/proposals/?actionable",
+      });
+    });
+
+    it("should have default proposal link when signedOut", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", true);
+      setNoIdentity();
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Proposals,
+      });
+
+      shouldRenderMenuItem({
+        context: "proposals",
+        labelKey: "voting",
+        href: "/proposals/?u=qhbym-qaaaa-aaaaa-aaafq-cai",
+      });
+    });
+
+    it("should have default proposal link when no feature flag set", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", false);
+      resetIdentity();
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Proposals,
+      });
+
+      shouldRenderMenuItem({
+        context: "proposals",
+        labelKey: "voting",
+        href: "/proposals/?u=qhbym-qaaaa-aaaaa-aaafq-cai",
+      });
     });
   });
 

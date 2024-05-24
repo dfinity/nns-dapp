@@ -91,12 +91,15 @@ describe("SelectUniverseNav", () => {
     // open project list
     await po.getSelectUniverseCardPo().click();
     expect(await po.getSelectUniverseListPo().isPresent()).toBe(true);
-    // nns is the first card
+    // "All proposals" is the first card
     const cardPos = await po
       .getSelectUniverseListPo()
       .getSelectUniverseCardPos();
-    expect(cardPos.length).toEqual(2);
-    expect((await cardPos[0].getActionableProposalCount()).trim()).toEqual("1");
-    expect((await cardPos[1].getActionableProposalCount()).trim()).toEqual("2");
+    expect(cardPos.length).toEqual(3);
+    // nns is the second card
+    expect(await cardPos[1].getName()).toEqual("Internet Computer");
+    expect((await cardPos[1].getActionableProposalCount()).trim()).toEqual("1");
+    expect(await cardPos[2].getName()).toEqual("Catalyze");
+    expect((await cardPos[2].getActionableProposalCount()).trim()).toEqual("2");
   });
 });

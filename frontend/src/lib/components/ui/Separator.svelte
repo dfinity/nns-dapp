@@ -1,8 +1,13 @@
 <script lang="ts">
   export let spacing: "medium" | "large" | "none" = "large";
+  export let testId: string | undefined = undefined;
 </script>
 
-<hr class:medium={spacing === "medium"} class:no-margin={spacing === "none"} />
+<hr
+  data-tid={testId}
+  class:medium={spacing === "medium"}
+  class:no-margin={spacing === "none"}
+/>
 
 <style lang="scss">
   hr {

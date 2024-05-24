@@ -19,9 +19,14 @@
     proposalsPathStore,
   } from "$lib/derived/paths.derived";
   import { pageStore } from "$lib/derived/page.derived";
-  import { isSelectedPath } from "$lib/utils/navigation.utils";
+  import {
+    ACTIONABLE_PROPOSALS_URL,
+    isSelectedPath,
+  } from "$lib/utils/navigation.utils";
   import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
   import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
+  import { ENABLE_ACTIONABLE_TAB } from "$lib/stores/feature-flags.store";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   let routes: {
     context: string;
@@ -59,7 +64,12 @@
     },
     {
       context: "proposals",
-      href: $proposalsPathStore,
+      href:
+        // Switch to the actionable proposals page only when users are signed in.
+        // When users are signed out, we preserve the universe in the URL.
+        $ENABLE_ACTIONABLE_TAB && $authSignedInStore
+          ? ACTIONABLE_PROPOSALS_URL
+          : $proposalsPathStore,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
         paths: [AppPath.Proposals, AppPath.Proposal],
