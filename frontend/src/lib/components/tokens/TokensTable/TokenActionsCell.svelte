@@ -11,7 +11,7 @@
   import { nonNullish } from "@dfinity/utils";
   import type { SvelteComponent, ComponentType } from "svelte";
 
-  export let userTokenData: UserTokenData | UserTokenLoading;
+  export let rowData: UserTokenData | UserTokenLoading;
 
   const actionMapper: Record<
     UserTokenAction,
@@ -23,7 +23,7 @@
   };
 
   let userToken: UserTokenData | undefined;
-  $: userToken = isUserTokenData(userTokenData) ? userTokenData : undefined;
+  $: userToken = isUserTokenData(rowData) ? rowData : undefined;
 </script>
 
 {#if nonNullish(userToken)}

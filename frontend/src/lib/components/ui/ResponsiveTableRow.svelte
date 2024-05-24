@@ -5,7 +5,7 @@
   import TokenActionsCell from "$lib/components/tokens/TokensTable/TokenActionsCell.svelte";
   import { i18n } from "$lib/stores/i18n";
 
-  export let userTokenData: UserTokenData | UserTokenLoading;
+  export let rowData: UserTokenData | UserTokenLoading;
 
   // Should be the same as the area in the classes `rows-count-X`.
   const cellAreaName = (index: number) => `cell-${index}`;
@@ -18,23 +18,23 @@
 </script>
 
 <a
-  href={userTokenData.rowHref}
+  href={rowData.rowHref}
   role="row"
   tabindex="0"
   data-tid="tokens-table-row-component"
   class={mobileTemplateClass(2)}
-  data-title={userTokenData.title}
+  data-title={rowData.title}
 >
   <div role="cell" class="title-cell">
-    <TokenTitleCell {userTokenData} />
+    <TokenTitleCell {rowData} />
   </div>
 
   <div role="cell" class={`mobile-row-cell left-cell ${cellAreaName(0)}`}>
     <span class="mobile-only">{$i18n.tokens.balance_header}</span>
-    <TokenBalanceCell {userTokenData} />
+    <TokenBalanceCell {rowData} />
   </div>
   <div role="cell" class="actions-cell actions">
-    <TokenActionsCell {userTokenData} on:nnsAction />
+    <TokenActionsCell {rowData} on:nnsAction />
   </div>
 </a>
 
