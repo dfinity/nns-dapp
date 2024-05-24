@@ -28,20 +28,24 @@
 >
   {#if firstColumn}
     <div role="cell" class="title-cell">
-      <svelte:component this={firstColumn.component} {rowData} />
+      <svelte:component this={firstColumn.cellComponent} {rowData} />
     </div>
   {/if}
 
   {#each middleColumns as column, index}
     <div role="cell" class={`mobile-row-cell left-cell ${cellAreaName(index)}`}>
       <span class="mobile-only">{column.title}</span>
-      <svelte:component this={column.component} {rowData} />
+      <svelte:component this={column.cellComponent} {rowData} />
     </div>
   {/each}
 
   {#if lastColumn}
     <div role="cell" class="actions-cell actions">
-      <svelte:component this={lastColumn.component} {rowData} on:nnsAction />
+      <svelte:component
+        this={lastColumn.cellComponent}
+        {rowData}
+        on:nnsAction
+      />
     </div>
   {/if}
 </a>

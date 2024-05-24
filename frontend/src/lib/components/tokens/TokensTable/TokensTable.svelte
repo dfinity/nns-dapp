@@ -12,15 +12,15 @@
   const columns: TokensTableColumn[] = [
     {
       title: firstColumnHeader,
-      component: TokenTitleCell,
+      cellComponent: TokenTitleCell,
     },
     {
       title: $i18n.tokens.balance_header,
-      component: TokenBalanceCell,
+      cellComponent: TokenBalanceCell,
     },
     {
       title: "",
-      component: TokenActionsCell,
+      cellComponent: TokenActionsCell,
     },
   ];
 </script>

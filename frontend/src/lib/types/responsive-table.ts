@@ -8,5 +8,5 @@ export interface ResponsiveTableColumn<
   RowDataType extends ResponsiveTableRowData,
 > {
   title: string;
-  component: ComponentType<SvelteComponent<{ rowData: RowDataType }>>;
+  cellComponent: ComponentType<SvelteComponent<{ rowData: RowDataType }>>;
 }
