@@ -3,6 +3,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { authSignedInStore } from "$lib/derived/auth.derived";
 import { pageStore } from "$lib/derived/page.derived";
 import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
+import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
@@ -10,6 +11,7 @@ import type { Universe } from "$lib/types/universe";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
 import { mapEntries } from "$lib/utils/utils";
 import type { SnsProposalData } from "@dfinity/sns";
+import { nonNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
 export interface ActionableProposalCountData {
@@ -107,4 +109,19 @@ export const actionableSnsProposalsByUniverseStore: Readable<
         universe,
         proposals: actionableSnsProposals[universe.canisterId].proposals,
       }))
+);
+
+/** A store that returns true when all ‘Actionable Proposals’ have been loaded.
+ */
+export const actionableProposalsLoadedStore: Readable<boolean> = derived(
+  [
+    actionableNnsProposalsStore,
+    actionableSnsProposalsStore,
+    snsProjectsCommittedStore,
+  ],
+  ([nnsProposals, snsProposals, committedSnsProjects]) =>
+    nonNullish(nnsProposals.proposals) &&
+    // It is expected to have at least one SNS to cover when the projects have not yet been loaded.
+    committedSnsProjects.length > 0 &&
+    committedSnsProjects.length === Object.keys(snsProposals).length
 );
