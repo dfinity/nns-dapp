@@ -6,7 +6,7 @@
   import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
-  export let userTokensData: Array<UserToken>;
+  export let tableData: Array<UserToken>;
   export let firstColumnHeader: string;
 
   // This will be useful when we create the generic table.
@@ -36,9 +36,9 @@
     </div>
   </div>
   <div role="rowgroup">
-    {#each userTokensData as userTokenData (userTokenData.rowHref)}
+    {#each tableData as rowData (rowData.rowHref)}
       <div class="row-wrapper" transition:heightTransition={{ duration: 250 }}>
-        <ResponsiveTableRow on:nnsAction {userTokenData} />
+        <ResponsiveTableRow on:nnsAction {rowData} />
       </div>
     {/each}
   </div>

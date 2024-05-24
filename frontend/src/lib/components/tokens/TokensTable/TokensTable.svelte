@@ -6,7 +6,7 @@
   export let firstColumnHeader: string;
 </script>
 
-<ResponsiveTable {userTokensData} {firstColumnHeader} on:nnsAction>
+<ResponsiveTable tableData={userTokensData} {firstColumnHeader} on:nnsAction>
   <slot name="last-row" slot="last-row" />
   <slot name="header-icon" slot="header-icon" />
 </ResponsiveTable>
