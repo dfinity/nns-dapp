@@ -112,7 +112,7 @@ describe("SelectUniverseList", () => {
       const cardPos = await po.getSelectUniverseCardPos();
       // +1 for IC and +1 for "Actionable Proposals" entry
       expect(cardPos.length).toEqual(projects.length + 2);
-      expect(await cardPos[0].getText()).toEqual("Actionable Proposals");
+      expect(await cardPos[0].getName()).toEqual("Actionable Proposals");
       expect(await po.hasSeparator()).toEqual(true);
     });
 
@@ -126,7 +126,7 @@ describe("SelectUniverseList", () => {
 
       const po = renderComponent();
       const cardPos = await po.getSelectUniverseCardPos();
-      const titles = await Promise.all(cardPos.map((card) => card.getText()));
+      const titles = await Promise.all(cardPos.map((card) => card.getName()));
       // +1 for IC
       expect(cardPos.length).toEqual(projects.length + 1);
       expect(titles.includes("Actionable Proposals")).toEqual(false);
