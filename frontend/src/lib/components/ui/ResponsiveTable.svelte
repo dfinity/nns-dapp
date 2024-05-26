@@ -9,12 +9,12 @@
   export let tableData: Array<UserToken>;
   export let columns: ResponsiveTableColumn<UserToken>[];
 
+  // We don't render a header for the last column.
   let firstColumn: ResponsiveTableColumn<UserToken> | undefined;
   let middleColumns: ResponsiveTableColumn<UserToken>[];
 
   $: firstColumn = columns.at(0);
   $: middleColumns = columns.slice(1, -1);
-  // We don't render a header for the last column.
 
   // This will be useful when we create the generic table.
   // The column styles will depend on the columns metadata.
