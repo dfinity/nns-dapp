@@ -1,11 +1,17 @@
 <script lang="ts">
-  import type { UserTokenData, UserTokenLoading } from "$lib/types/tokens-page";
-  import TokenTitleCell from "$lib/components/tokens/TokensTable/TokenTitleCell.svelte";
-  import TokenBalanceCell from "$lib/components/tokens/TokensTable/TokenBalanceCell.svelte";
-  import TokenActionsCell from "$lib/components/tokens/TokensTable/TokenActionsCell.svelte";
-  import { i18n } from "$lib/stores/i18n";
+  import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
+  import type { UserToken } from "$lib/types/tokens-page";
 
-  export let rowData: UserTokenData | UserTokenLoading;
+  export let rowData: UserToken;
+  export let columns: ResponsiveTableColumn<UserToken>[];
+
+  let firstColumn: ResponsiveTableColumn<UserToken> | undefined;
+  let middleColumns: ResponsiveTableColumn<UserToken>[];
+  let lastColumn: ResponsiveTableColumn<UserToken> | undefined;
+
+  $: firstColumn = columns.at(0);
+  $: middleColumns = columns.slice(1, -1);
+  $: lastColumn = columns.at(-1);
 
   // Should be the same as the area in the classes `rows-count-X`.
   const cellAreaName = (index: number) => `cell-${index}`;
@@ -23,19 +29,29 @@
   tabindex="0"
   data-tid="tokens-table-row-component"
   class={mobileTemplateClass(2)}
-  data-title={rowData.title}
 >
-  <div role="cell" class="title-cell">
-    <TokenTitleCell {rowData} />
-  </div>
+  {#if firstColumn}
+    <div role="cell" class="title-cell">
+      <svelte:component this={firstColumn.cellComponent} {rowData} />
+    </div>
+  {/if}
 
-  <div role="cell" class={`mobile-row-cell left-cell ${cellAreaName(0)}`}>
-    <span class="mobile-only">{$i18n.tokens.balance_header}</span>
-    <TokenBalanceCell {rowData} />
-  </div>
-  <div role="cell" class="actions-cell actions">
-    <TokenActionsCell {rowData} on:nnsAction />
-  </div>
+  {#each middleColumns as column, index}
+    <div role="cell" class={`mobile-row-cell left-cell ${cellAreaName(index)}`}>
+      <span class="mobile-only">{column.title}</span>
+      <svelte:component this={column.cellComponent} {rowData} />
+    </div>
+  {/each}
+
+  {#if lastColumn}
+    <div role="cell" class="actions-cell actions">
+      <svelte:component
+        this={lastColumn.cellComponent}
+        {rowData}
+        on:nnsAction
+      />
+    </div>
+  {/if}
 </a>
 
 <style lang="scss">

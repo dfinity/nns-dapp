@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
+  import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
   import type { UserToken } from "$lib/types/tokens-page";
   import { heightTransition } from "$lib/utils/transition.utils";
   import { nonNullish } from "@dfinity/utils";
@@ -7,7 +7,14 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let tableData: Array<UserToken>;
-  export let firstColumnHeader: string;
+  export let columns: ResponsiveTableColumn<UserToken>[];
+
+  // We don't render a header for the last column.
+  let firstColumn: ResponsiveTableColumn<UserToken> | undefined;
+  let middleColumns: ResponsiveTableColumn<UserToken>[];
+
+  $: firstColumn = columns.at(0);
+  $: middleColumns = columns.slice(1, -1);
 
   // This will be useful when we create the generic table.
   // The column styles will depend on the columns metadata.
@@ -24,12 +31,18 @@
 >
   <div role="rowgroup">
     <div role="row" class="header-row">
-      <span role="columnheader" data-tid="column-header-1"
-        >{firstColumnHeader}</span
-      >
-      <span role="columnheader" data-tid="column-header-2" class="header-right"
-        >{$i18n.tokens.balance_header}</span
-      >
+      {#if firstColumn}
+        <span role="columnheader" data-tid="column-header-1"
+          >{firstColumn.title}</span
+        >
+      {/if}
+      {#each middleColumns as column, index}
+        <span
+          role="columnheader"
+          data-tid="column-header-{index + 2}"
+          class="header-right">{column.title}</span
+        >
+      {/each}
       <span role="columnheader" class="header-right header-icon">
         <slot name="header-icon" />
       </span>
@@ -38,7 +51,7 @@
   <div role="rowgroup">
     {#each tableData as rowData (rowData.rowHref)}
       <div class="row-wrapper" transition:heightTransition={{ duration: 250 }}>
-        <ResponsiveTableRow on:nnsAction {rowData} />
+        <ResponsiveTableRow on:nnsAction {rowData} {columns} />
       </div>
     {/each}
   </div>
