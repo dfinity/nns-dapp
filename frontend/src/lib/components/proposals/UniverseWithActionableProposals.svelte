@@ -1,0 +1,21 @@
+<script lang="ts">
+  import type { Universe } from "$lib/types/universe";
+  import { InfiniteScroll } from "@dfinity/gix-components";
+  import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
+
+  export let universe: Universe;
+</script>
+
+<div class="container" data-tid="universe-with-actionable-proposals-component">
+  <UniversePageSummary {universe} />
+
+  <InfiniteScroll layout="grid" disabled>
+    <slot />
+  </InfiniteScroll>
+</div>
+
+<style lang="scss">
+  .container {
+    margin-bottom: var(--padding-4x);
+  }
+</style>
