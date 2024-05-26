@@ -37,7 +37,6 @@
           actionable
           {proposalData}
           {nsFunctions}
-          {universe}
         />
       {/each}
     </UniverseWithActionableProposals>
