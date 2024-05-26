@@ -6,8 +6,8 @@
   export let columns: ResponsiveTableColumn<UserToken>[];
 
   let firstColumn = columns.at(0);
-  let lastColumn = columns.at(-1);
   let middleColumns = columns.slice(1, -1);
+  let lastColumn = columns.at(-1);
 
   // Should be the same as the area in the classes `rows-count-X`.
   const cellAreaName = (index: number) => `cell-${index}`;
