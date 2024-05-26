@@ -5,9 +5,13 @@
   export let rowData: UserToken;
   export let columns: ResponsiveTableColumn<UserToken>[];
 
-  let firstColumn = columns.at(0);
-  let middleColumns = columns.slice(1, -1);
-  let lastColumn = columns.at(-1);
+  let firstColumn: ResponsiveTableColumn<UserToken> | undefined;
+  let middleColumns: ResponsiveTableColumn<UserToken>[];
+  let lastColumn: ResponsiveTableColumn<UserToken> | undefined;
+
+  $: firstColumn = columns.at(0);
+  $: middleColumns = columns.slice(1, -1);
+  $: lastColumn = columns.at(-1);
 
   // Should be the same as the area in the classes `rows-count-X`.
   const cellAreaName = (index: number) => `cell-${index}`;
