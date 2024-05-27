@@ -19,6 +19,7 @@ describe("canisters-worker-api", () => {
       freezing_threshold: 0n,
       memory_allocation: 10n,
       compute_allocation: 5n,
+      log_visibility: { controllers: null },
     },
     module_hash: [],
     idle_cycles_burned_per_day: 300n,

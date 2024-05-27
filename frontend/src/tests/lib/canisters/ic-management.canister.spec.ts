@@ -32,6 +32,7 @@ describe("ICManagementCanister", () => {
         reserved_cycles_limit: 1_000_000_000n,
         memory_allocation: 4n,
         compute_allocation: 10n,
+        log_visibility: { controllers: null },
       };
       const response: CanisterStatusResponse = {
         status: { running: null },
