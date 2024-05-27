@@ -2080,6 +2080,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "ic-cdk-macros"
+version = "0.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "01dc6bc425ec048d6ac4137c7c0f2cfbd6f8b0be8efc568feae2b265f566117c"
+dependencies = [
+ "candid 0.10.8",
+ "proc-macro2",
+ "quote",
+ "serde",
+ "serde_tokenstream 0.2.0",
+ "syn 2.0.55",
+]
+
+[[package]]
 name = "ic-cdk-timers"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3924,7 +3938,7 @@ dependencies = [
  "hex",
  "ic-base-types",
  "ic-cdk 0.13.3",
- "ic-cdk-macros 0.13.3",
+ "ic-cdk-macros 0.14.0",
  "ic-certified-map 0.3.4",
  "ic-crypto-sha2",
  "ic-ledger-core",
@@ -4491,7 +4505,7 @@ dependencies = [
  "ic-base-types",
  "ic-btc-interface 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "ic-cdk 0.13.3",
- "ic-cdk-macros 0.13.3",
+ "ic-cdk-macros 0.14.0",
  "ic-crypto-sha2",
  "ic-management-canister-types",
  "ic-nervous-system-common",
@@ -4544,7 +4558,7 @@ checksum = "80b776a1b2dc779f5ee0641f8ade0125bc1298dd41a9a0c16d8bd57b42d222b1"
 dependencies = [
  "bytes",
  "heck 0.5.0",
- "itertools 0.11.0",
+ "itertools 0.12.1",
  "log",
  "multimap",
  "once_cell",
@@ -4564,7 +4578,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "19de2de2a00075bf566bee3bd4db014b11587e84184d3f7a791bc17f1a8e9e48"
 dependencies = [
  "anyhow",
- "itertools 0.11.0",
+ "itertools 0.12.1",
  "proc-macro2",
  "quote",
  "syn 2.0.55",
@@ -5340,7 +5354,7 @@ dependencies = [
  "dfn_candid",
  "dfn_core",
  "ic-cdk 0.13.3",
- "ic-cdk-macros 0.13.3",
+ "ic-cdk-macros 0.14.0",
  "ic-cdk-timers",
  "ic-certified-map 0.3.2",
  "ic-management-canister-types",
