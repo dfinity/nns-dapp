@@ -1,13 +1,17 @@
-<script lang="ts">
+<script lang="ts" context="module">
+  import type { ResponsiveTableRowData } from "$lib/types/responsive-table";
+  type RowDataType = ResponsiveTableRowData;
+</script>
+
+<script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
   import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
-  import type { UserToken } from "$lib/types/tokens-page";
 
-  export let rowData: UserToken;
-  export let columns: ResponsiveTableColumn<UserToken>[];
+  export let rowData: RowDataType;
+  export let columns: ResponsiveTableColumn<RowDataType>[];
 
-  let firstColumn: ResponsiveTableColumn<UserToken> | undefined;
-  let middleColumns: ResponsiveTableColumn<UserToken>[];
-  let lastColumn: ResponsiveTableColumn<UserToken> | undefined;
+  let firstColumn: ResponsiveTableColumn<RowDataType> | undefined;
+  let middleColumns: ResponsiveTableColumn<RowDataType>[];
+  let lastColumn: ResponsiveTableColumn<RowDataType> | undefined;
 
   $: firstColumn = columns.at(0);
   $: middleColumns = columns.slice(1, -1);
