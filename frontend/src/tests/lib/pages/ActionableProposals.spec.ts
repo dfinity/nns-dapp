@@ -138,11 +138,6 @@ describe("ActionableProposals", () => {
         proposals: [proposal1, proposal2],
         includeBallotsByCaller: true,
       });
-      actionableSnsProposalsStore.set({
-        rootCanisterId: principal2,
-        proposals: [],
-        includeBallotsByCaller: true,
-      });
 
       await runResolvedPromises();
       const snsProposalsPos = await po
