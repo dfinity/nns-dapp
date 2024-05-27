@@ -10,13 +10,9 @@
   import { Principal } from "@dfinity/principal";
   import type { Universe } from "$lib/types/universe";
   import type { Readable } from "svelte/store";
-  import type { ActionableSnsProposalsByUniverseData } from "$lib/derived/actionable-proposals.derived";
 
-  export let actionableUniverse: ActionableSnsProposalsByUniverseData;
-
-  let universe: Universe;
-  let proposals: ProposalData[];
-  $: ({ universe, proposals } = actionableUniverse);
+  export let universe: Universe;
+  export let proposals: ProposalData[];
 
   let rootCanisterId: RootCanisterIdText;
   $: rootCanisterId = universe.canisterId;

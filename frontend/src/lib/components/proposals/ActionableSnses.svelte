@@ -13,7 +13,7 @@
 </script>
 
 <TestIdWrapper testId="actionable-snses-component">
-  {#each actionableUniverses as actionableUniverse (actionableUniverse.universe.canisterId)}
-    <ActionableSnsProposals {actionableUniverse} />
+  {#each actionableUniverses as {universe, proposals} (actionableUniverse.universe.canisterId)}
+    <ActionableSnsProposals {universe} {proposals} />
   {/each}
 </TestIdWrapper>
