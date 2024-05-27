@@ -27,6 +27,24 @@ describe("ActionableProposals", () => {
     await runResolvedPromises();
     return ActionableProposalsPo.under(new JestPageObjectElement(container));
   };
+  const principal0 = principal(0);
+  const principal1 = principal(1);
+  const principal2 = principal(2);
+  const snsProject0 = {
+    lifecycle: SnsSwapLifecycle.Committed,
+    projectName: "Sns Project 0",
+    rootCanisterId: principal0,
+  };
+  const snsProject1 = {
+    lifecycle: SnsSwapLifecycle.Committed,
+    projectName: "Sns Project 1",
+    rootCanisterId: principal1,
+  };
+  const snsProject2 = {
+    lifecycle: SnsSwapLifecycle.Committed,
+    projectName: "Sns Project 2",
+    rootCanisterId: principal2,
+  };
 
   beforeEach(() => {
     vi.restoreAllMocks();
@@ -44,6 +62,21 @@ describe("ActionableProposals", () => {
   describe("Actionable Nns proposals", () => {
     const nnsProposal1: ProposalInfo = { ...mockProposalInfo, id: 11n };
     const nnsProposal2: ProposalInfo = { ...mockProposalInfo, id: 22n };
+
+    beforeEach(() => {
+      // Ensure Sns proposals are loaded to avoid rendering skeletons
+      setSnsProjects([
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: principal(0),
+        },
+      ]);
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal(0),
+        proposals: [],
+        includeBallotsByCaller: false,
+      });
+    });
 
     it("should render actionable Nns proposals", async () => {
       const po = await renderComponent();
@@ -81,37 +114,14 @@ describe("ActionableProposals", () => {
     const proposal0 = createProposal(11n);
     const proposal1 = createProposal(22n);
     const proposal2 = createProposal(33n);
-    const principal0 = principal(0);
-    const principal1 = principal(1);
-    const principal2 = principal(2);
-    const principal3 = principal(3);
 
     beforeEach(() => {
-      setSnsProjects([
-        {
-          lifecycle: SnsSwapLifecycle.Committed,
-          projectName: "Sns Project 0",
-          rootCanisterId: principal0,
-        },
-        {
-          lifecycle: SnsSwapLifecycle.Committed,
-          projectName: "Sns Project 1",
-          rootCanisterId: principal1,
-        },
-        {
-          lifecycle: SnsSwapLifecycle.Committed,
-          projectName: "Sns Project 2",
-          rootCanisterId: principal2,
-        },
-        {
-          lifecycle: SnsSwapLifecycle.Committed,
-          projectName: "Sns Project 3",
-          rootCanisterId: principal3,
-        },
-      ]);
+      // Ensure Nns proposals are loaded to avoid rendering skeletons
+      actionableNnsProposalsStore.setProposals([]);
     });
 
     it("should render actionable Sns proposals", async () => {
+      setSnsProjects([snsProject0, snsProject1]);
       const po = await renderComponent();
 
       expect(
@@ -155,6 +165,7 @@ describe("ActionableProposals", () => {
     });
 
     it("should ignore snses w/o ballot or actionable proposals", async () => {
+      setSnsProjects([snsProject0, snsProject1, snsProject2]);
       const po = await renderComponent();
 
       expect(
@@ -190,5 +201,29 @@ describe("ActionableProposals", () => {
         await po.getActionableSnses().getActionableSnsProposalsPos()
       ).toHaveLength(1);
     });
+  });
+
+  it("should render skeletons while loading", async () => {
+    setSnsProjects([snsProject0]);
+    const po = await renderComponent();
+
+    expect(await po.hasActionableNnsProposals()).toEqual(false);
+    expect(await po.hasSkeletons()).toEqual(true);
+
+    actionableNnsProposalsStore.setProposals([{ ...mockProposalInfo }]);
+    await runResolvedPromises();
+
+    expect(await po.hasActionableNnsProposals()).toEqual(false);
+    expect(await po.hasSkeletons()).toEqual(true);
+
+    actionableSnsProposalsStore.set({
+      rootCanisterId: principal0,
+      proposals: [],
+      includeBallotsByCaller: true,
+    });
+    await runResolvedPromises();
+
+    expect(await po.hasActionableNnsProposals()).toEqual(true);
+    expect(await po.hasSkeletons()).toEqual(false);
   });
 });
