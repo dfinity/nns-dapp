@@ -45,6 +45,21 @@ describe("ActionableProposals", () => {
     const nnsProposal1: ProposalInfo = { ...mockProposalInfo, id: 11n };
     const nnsProposal2: ProposalInfo = { ...mockProposalInfo, id: 22n };
 
+    beforeEach(() => {
+      // Ensure Sns proposals are loaded to avoid rendering skeletons
+      setSnsProjects([
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: principal(0),
+        },
+      ]);
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal(0),
+        proposals: [],
+        includeBallotsByCaller: false,
+      });
+    });
+
     it("should render actionable Nns proposals", async () => {
       const po = await renderComponent();
 
@@ -84,34 +99,29 @@ describe("ActionableProposals", () => {
     const principal0 = principal(0);
     const principal1 = principal(1);
     const principal2 = principal(2);
-    const principal3 = principal(3);
+    const snsProject0 = {
+      lifecycle: SnsSwapLifecycle.Committed,
+      projectName: "Sns Project 0",
+      rootCanisterId: principal0,
+    };
+    const snsProject1 = {
+      lifecycle: SnsSwapLifecycle.Committed,
+      projectName: "Sns Project 1",
+      rootCanisterId: principal1,
+    };
+    const snsProject2 = {
+      lifecycle: SnsSwapLifecycle.Committed,
+      projectName: "Sns Project 2",
+      rootCanisterId: principal2,
+    };
 
     beforeEach(() => {
-      setSnsProjects([
-        {
-          lifecycle: SnsSwapLifecycle.Committed,
-          projectName: "Sns Project 0",
-          rootCanisterId: principal0,
-        },
-        {
-          lifecycle: SnsSwapLifecycle.Committed,
-          projectName: "Sns Project 1",
-          rootCanisterId: principal1,
-        },
-        {
-          lifecycle: SnsSwapLifecycle.Committed,
-          projectName: "Sns Project 2",
-          rootCanisterId: principal2,
-        },
-        {
-          lifecycle: SnsSwapLifecycle.Committed,
-          projectName: "Sns Project 3",
-          rootCanisterId: principal3,
-        },
-      ]);
+      // Ensure Nns proposals are loaded to avoid rendering skeletons
+      actionableNnsProposalsStore.setProposals([]);
     });
 
     it("should render actionable Sns proposals", async () => {
+      setSnsProjects([snsProject0, snsProject1]);
       const po = await renderComponent();
 
       expect(
@@ -126,6 +136,11 @@ describe("ActionableProposals", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId: principal1,
         proposals: [proposal1, proposal2],
+        includeBallotsByCaller: true,
+      });
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal2,
+        proposals: [],
         includeBallotsByCaller: true,
       });
 
@@ -155,6 +170,7 @@ describe("ActionableProposals", () => {
     });
 
     it("should ignore snses w/o ballot or actionable proposals", async () => {
+      setSnsProjects([snsProject0, snsProject1, snsProject2]);
       const po = await renderComponent();
 
       expect(
