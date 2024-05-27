@@ -46,7 +46,7 @@ proposals = { path = "../proposals" }
 anyhow = "1.0.75"
 ic_principal = "0.1.0"
 maplit = "1.0.2"
-pocket-ic = "2.2.0"
+pocket-ic = "3.1.0"
 pretty_assertions = "1.4.0"
 proptest = "1.0.0"
 rand = "0.8.5"
