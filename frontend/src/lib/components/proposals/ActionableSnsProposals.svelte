@@ -33,11 +33,7 @@
   {#if nonNullish(nsFunctions)}
     <UniverseWithActionableProposals {universe}>
       {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
-        <SnsProposalCard
-          actionable
-          {proposalData}
-          {nsFunctions}
-        />
+        <SnsProposalCard actionable {proposalData} {nsFunctions} />
       {/each}
     </UniverseWithActionableProposals>
   {/if}

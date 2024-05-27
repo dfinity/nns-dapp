@@ -7,10 +7,9 @@
   import ActionableSnsProposals from "$lib/components/proposals/ActionableSnsProposals.svelte";
 
   let actionableUniverses: ActionableSnsProposalsByUniverseData[] = [];
-  $: actionableUniverses =
-    $actionableSnsProposalsByUniverseStore.filter(
-      ({ proposals }) => proposals.length > 0
-    );
+  $: actionableUniverses = $actionableSnsProposalsByUniverseStore.filter(
+    ({ proposals }) => proposals.length > 0
+  );
 </script>
 
 <TestIdWrapper testId="actionable-snses-component">
