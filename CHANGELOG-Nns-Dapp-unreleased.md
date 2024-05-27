@@ -15,41 +15,23 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Get `ckUSDC` canister IDs from environment/configuration.
-
 #### Changed
-
-* Set `Actionable Proposals` as the default selection.
 
 #### Deprecated
 
 #### Removed
 
-* Stop writing account transactions to stable memory.
-
 #### Fixed
-
-* Rendering tokens with fewer than 8 decimals.
-* Don't allow inputting more decimals than the token supports.
 
 #### Security
 
-* Downgrade to Rust `1.77.2`.
-
 #### Not Published
-
-* Support `ckUSDC` behind a feature flag.
 
 ### Operations
 
 #### Added
 
-* Include `ckUSDC` when generating `args.did` and `.env`.
-* Include `ckUSDC` canister IDs when importing from URL with `scripts/canister_ids`.
-
 #### Changed
-
-* Keep existing `dfx` identities when running an `snsdemo` snapshot.
 
 #### Deprecated
 
