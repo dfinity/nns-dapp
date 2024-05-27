@@ -27,6 +27,24 @@ describe("ActionableProposals", () => {
     await runResolvedPromises();
     return ActionableProposalsPo.under(new JestPageObjectElement(container));
   };
+  const principal0 = principal(0);
+  const principal1 = principal(1);
+  const principal2 = principal(2);
+  const snsProject0 = {
+    lifecycle: SnsSwapLifecycle.Committed,
+    projectName: "Sns Project 0",
+    rootCanisterId: principal0,
+  };
+  const snsProject1 = {
+    lifecycle: SnsSwapLifecycle.Committed,
+    projectName: "Sns Project 1",
+    rootCanisterId: principal1,
+  };
+  const snsProject2 = {
+    lifecycle: SnsSwapLifecycle.Committed,
+    projectName: "Sns Project 2",
+    rootCanisterId: principal2,
+  };
 
   beforeEach(() => {
     vi.restoreAllMocks();
@@ -96,24 +114,6 @@ describe("ActionableProposals", () => {
     const proposal0 = createProposal(11n);
     const proposal1 = createProposal(22n);
     const proposal2 = createProposal(33n);
-    const principal0 = principal(0);
-    const principal1 = principal(1);
-    const principal2 = principal(2);
-    const snsProject0 = {
-      lifecycle: SnsSwapLifecycle.Committed,
-      projectName: "Sns Project 0",
-      rootCanisterId: principal0,
-    };
-    const snsProject1 = {
-      lifecycle: SnsSwapLifecycle.Committed,
-      projectName: "Sns Project 1",
-      rootCanisterId: principal1,
-    };
-    const snsProject2 = {
-      lifecycle: SnsSwapLifecycle.Committed,
-      projectName: "Sns Project 2",
-      rootCanisterId: principal2,
-    };
 
     beforeEach(() => {
       // Ensure Nns proposals are loaded to avoid rendering skeletons
