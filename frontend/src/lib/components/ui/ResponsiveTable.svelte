@@ -10,6 +10,7 @@
   import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
+  export let testId = "responsive-table-component";
   export let tableData: Array<RowDataType>;
   export let columns: ResponsiveTableColumn<RowDataType>[];
 
@@ -30,7 +31,7 @@
 
 <div
   role="table"
-  data-tid="tokens-table-component"
+  data-tid={testId}
   style={`grid-template-columns: ${desktopColumnsStyle()};`}
 >
   <div role="rowgroup">
