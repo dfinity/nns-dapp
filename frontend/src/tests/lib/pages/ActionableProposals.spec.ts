@@ -202,4 +202,28 @@ describe("ActionableProposals", () => {
       ).toHaveLength(1);
     });
   });
+
+  it("should render skeletons while loading", async () => {
+    setSnsProjects([snsProject0]);
+    const po = await renderComponent();
+
+    expect(await po.hasActionableNnsProposals()).toEqual(false);
+    expect(await po.hasSkeletons()).toEqual(true);
+
+    actionableNnsProposalsStore.setProposals([{ ...mockProposalInfo }]);
+    await runResolvedPromises();
+
+    expect(await po.hasActionableNnsProposals()).toEqual(false);
+    expect(await po.hasSkeletons()).toEqual(true);
+
+    actionableSnsProposalsStore.set({
+      rootCanisterId: principal0,
+      proposals: [],
+      includeBallotsByCaller: true,
+    });
+    await runResolvedPromises();
+
+    expect(await po.hasActionableNnsProposals()).toEqual(true);
+    expect(await po.hasSkeletons()).toEqual(false);
+  });
 });
