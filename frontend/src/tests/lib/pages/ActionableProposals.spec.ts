@@ -123,38 +123,8 @@ describe("ActionableProposals", () => {
         proposals: [proposal0],
         includeBallotsByCaller: true,
       });
-
-      await runResolvedPromises();
-      expect(
-        await po.getActionableSnses().getActionableSnsProposalsPos()
-      ).toHaveLength(1);
-
       actionableSnsProposalsStore.set({
         rootCanisterId: principal1,
-        // no proposals
-        proposals: [],
-        includeBallotsByCaller: true,
-      });
-
-      await runResolvedPromises();
-      expect(
-        await po.getActionableSnses().getActionableSnsProposalsPos()
-      ).toHaveLength(1);
-
-      actionableSnsProposalsStore.set({
-        rootCanisterId: principal2,
-        proposals: [proposal0],
-        // no ballots
-        includeBallotsByCaller: false,
-      });
-
-      await runResolvedPromises();
-      expect(
-        await po.getActionableSnses().getActionableSnsProposalsPos()
-      ).toHaveLength(1);
-
-      actionableSnsProposalsStore.set({
-        rootCanisterId: principal3,
         proposals: [proposal1, proposal2],
         includeBallotsByCaller: true,
       });
@@ -177,11 +147,48 @@ describe("ActionableProposals", () => {
         await snsProposalsPos[1]
           .getUniverseWithActionableProposalsPo()
           .getTitle()
-      ).toEqual("Sns Project 3");
+      ).toEqual("Sns Project 1");
       const proposalCardPos1 = await snsProposalsPos[1].getProposalCardPos();
       expect(proposalCardPos1.length).toEqual(2);
       expect(await proposalCardPos1[0].getProposalId()).toEqual("ID: 22");
       expect(await proposalCardPos1[1].getProposalId()).toEqual("ID: 33");
+    });
+
+    it("should ignore snses w/o ballot or actionable proposals", async () => {
+      const po = await renderComponent();
+
+      expect(
+        await po.getActionableSnses().getActionableSnsProposalsPos()
+      ).toHaveLength(0);
+
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal0,
+        // no proposals
+        proposals: [],
+        includeBallotsByCaller: true,
+      });
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal1,
+        proposals: [proposal0],
+        // no ballots
+        includeBallotsByCaller: false,
+      });
+
+      await runResolvedPromises();
+      expect(
+        await po.getActionableSnses().getActionableSnsProposalsPos()
+      ).toHaveLength(0);
+
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal2,
+        proposals: [proposal1, proposal2],
+        includeBallotsByCaller: true,
+      });
+
+      await runResolvedPromises();
+      expect(
+        await po.getActionableSnses().getActionableSnsProposalsPos()
+      ).toHaveLength(1);
     });
   });
 });
