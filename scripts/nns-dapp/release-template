@@ -77,6 +77,7 @@ To build the wasm module yourself and verify its hash, run the following command
 \`\`\`
 git fetch  # to ensure you have the latest changes.
 git checkout "$(git rev-parse tags/release-candidate)"
+git merge-base --is-ancestor HEAD origin/main && echo "OK" || echo "Commit is not on main branch!"
 ./scripts/docker-build
 sha256sum nns-dapp.wasm.gz
 \`\`\`
@@ -103,6 +104,7 @@ To build the wasm module yourself and verify its hash, run the following command
 \`\`\`
 git fetch  # to ensure you have the latest changes.
 git checkout "$(git rev-parse tags/release-candidate)"
+git merge-base --is-ancestor HEAD origin/main && echo "OK" || echo "Commit is not on main branch!"
 ./scripts/docker-build
 sha256sum nns-dapp.wasm.gz
 \`\`\`
