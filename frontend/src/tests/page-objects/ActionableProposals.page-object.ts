@@ -25,4 +25,8 @@ export class ActionableProposalsPo extends BasePageObject {
       .getUniverseWithActionableProposalsPo()
       .isPresent();
   }
+
+  hasSkeletons(): Promise<boolean> {
+    return this.isPresent("loading-actionable-proposals-component");
+  }
 }

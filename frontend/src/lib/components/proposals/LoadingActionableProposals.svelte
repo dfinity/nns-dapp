@@ -4,7 +4,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 </script>
 
-<TestIdWrapper testId="loading-actionable-proposals">
+<TestIdWrapper testId="loading-actionable-proposals-component">
   <div class="headline">
     <SkeletonText />
   </div>
