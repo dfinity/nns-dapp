@@ -31,7 +31,7 @@
   href={rowData.rowHref}
   role="row"
   tabindex="0"
-  data-tid="tokens-table-row-component"
+  data-tid="responsive-table-row-component"
   class={mobileTemplateClass(2)}
 >
   {#if firstColumn}

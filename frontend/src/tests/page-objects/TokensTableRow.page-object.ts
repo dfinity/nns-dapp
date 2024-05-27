@@ -8,7 +8,7 @@ export type TokensTableRowData = {
 };
 
 export class TokensTableRowPo extends BasePageObject {
-  private static readonly TID = "tokens-table-row-component";
+  private static readonly TID = "responsive-table-row-component";
 
   static async allUnder(
     element: PageObjectElement
