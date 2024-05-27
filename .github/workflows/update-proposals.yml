@@ -72,7 +72,10 @@ jobs:
           branch-suffix: timestamp
           reviewers: mstrasinskis, dskloetd
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
-          add-paths: rs/proposals/src/canisters/*/api.rs
+          add-paths: |
+            dfx.json
+            declarations/*/*.did
+            rs/proposals/src/canisters/*/api.rs
           delete-branch: true
           title: 'bot: Update proposals candid bindings'
           # Note: It is _likely_ but not guaranteed that the .did files match the `IC_COMMIT` in `dfx.json`.  The files in the PR have a header that give this information reliably.
