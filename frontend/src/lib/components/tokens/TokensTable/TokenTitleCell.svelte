@@ -3,21 +3,16 @@
   import Logo from "../../ui/Logo.svelte";
   import { nonNullish } from "@dfinity/utils";
 
-  export let userTokenData: UserTokenData | UserTokenLoading;
+  export let rowData: UserTokenData | UserTokenLoading;
 </script>
 
 <div class="title-logo-wrapper">
-  <Logo
-    src={userTokenData.logo}
-    alt={userTokenData.title}
-    size="medium"
-    framed
-  />
+  <Logo src={rowData.logo} alt={rowData.title} size="medium" framed />
   <div class="title-wrapper">
-    <h5 data-tid="project-name">{userTokenData.title}</h5>
-    {#if nonNullish(userTokenData.subtitle)}
+    <h5 data-tid="project-name">{rowData.title}</h5>
+    {#if nonNullish(rowData.subtitle)}
       <span data-tid="project-subtitle" class="description"
-        >{userTokenData.subtitle}</span
+        >{rowData.subtitle}</span
       >
     {/if}
   </div>

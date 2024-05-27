@@ -7,6 +7,7 @@
  * - `UserTokenAction` is a list of actions supported by the tokens page and hardcoded in the TokensTable.
  * - `UserToken` is the union of `UserTokenLoading` and `UserTokenData`.
  */
+import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
 import type { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import type { Principal } from "@dfinity/principal";
 import type { Token, TokenAmountV2 } from "@dfinity/utils";
@@ -49,3 +50,4 @@ export type UserTokenData = UserTokenBase & {
 };
 
 export type UserToken = UserTokenLoading | UserTokenData;
+export type TokensTableColumn = ResponsiveTableColumn<UserToken>;

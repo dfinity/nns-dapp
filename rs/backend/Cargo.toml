@@ -43,7 +43,7 @@ on_wire = { workspace = true }
 proposals = { path = "../proposals" }
 
 [dev-dependencies]
-anyhow = "1.0.75"
+anyhow = "1.0.86"
 ic_principal = "0.1.0"
 maplit = "1.0.2"
 pocket-ic = "2.2.0"

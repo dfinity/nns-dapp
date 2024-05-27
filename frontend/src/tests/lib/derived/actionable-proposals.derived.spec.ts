@@ -7,6 +7,7 @@ import {
   actionableProposalSupportedStore,
   actionableProposalTotalCountStore,
   actionableProposalsActiveStore,
+  actionableProposalsLoadedStore,
   actionableSnsProposalsByUniverseStore,
 } from "$lib/derived/actionable-proposals.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
@@ -338,6 +339,61 @@ describe("actionable proposals derived stores", () => {
           ({ canisterId }) => canisterId
         )
       ).toEqual([principal0.toText(), principal1.toText()]);
+    });
+  });
+
+  describe("actionableProposalsLoadedStore", () => {
+    it("should return true when all actionable proposals are loaded", async () => {
+      expect(get(actionableProposalsLoadedStore)).toEqual(false);
+      setSnsProjects([
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: principal0,
+        },
+      ]);
+
+      expect(get(actionableProposalsLoadedStore)).toEqual(false);
+
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal0,
+        proposals: [],
+        includeBallotsByCaller: true,
+      });
+
+      expect(get(actionableProposalsLoadedStore)).toEqual(false);
+      actionableNnsProposalsStore.setProposals([mockProposalInfo]);
+
+      expect(get(actionableProposalsLoadedStore)).toEqual(true);
+    });
+
+    it("should return false when actionable proposals are loaded not of all Snses", async () => {
+      expect(get(actionableProposalsLoadedStore)).toEqual(false);
+      setSnsProjects([
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: principal0,
+        },
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: principal1,
+        },
+      ]);
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal0,
+        proposals: [],
+        includeBallotsByCaller: false,
+      });
+      actionableNnsProposalsStore.setProposals([mockProposalInfo]);
+
+      expect(get(actionableProposalsLoadedStore)).toEqual(false);
+
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal1,
+        proposals: [],
+        includeBallotsByCaller: false,
+      });
+
+      expect(get(actionableProposalsLoadedStore)).toEqual(true);
     });
   });
 });

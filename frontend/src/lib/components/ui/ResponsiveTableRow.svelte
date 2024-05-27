@@ -1,11 +1,21 @@
-<script lang="ts">
-  import type { UserTokenData, UserTokenLoading } from "$lib/types/tokens-page";
-  import TokenTitleCell from "./TokenTitleCell.svelte";
-  import TokenBalanceCell from "./TokenBalanceCell.svelte";
-  import TokenActionsCell from "./TokenActionsCell.svelte";
-  import { i18n } from "$lib/stores/i18n";
+<script lang="ts" context="module">
+  import type { ResponsiveTableRowData } from "$lib/types/responsive-table";
+  type RowDataType = ResponsiveTableRowData;
+</script>
 
-  export let userTokenData: UserTokenData | UserTokenLoading;
+<script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
+  import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
+
+  export let rowData: RowDataType;
+  export let columns: ResponsiveTableColumn<RowDataType>[];
+
+  let firstColumn: ResponsiveTableColumn<RowDataType> | undefined;
+  let middleColumns: ResponsiveTableColumn<RowDataType>[];
+  let lastColumn: ResponsiveTableColumn<RowDataType> | undefined;
+
+  $: firstColumn = columns.at(0);
+  $: middleColumns = columns.slice(1, -1);
+  $: lastColumn = columns.at(-1);
 
   // Should be the same as the area in the classes `rows-count-X`.
   const cellAreaName = (index: number) => `cell-${index}`;
@@ -18,30 +28,40 @@
 </script>
 
 <a
-  href={userTokenData.rowHref}
+  href={rowData.rowHref}
   role="row"
   tabindex="0"
   data-tid="tokens-table-row-component"
   class={mobileTemplateClass(2)}
-  data-title={userTokenData.title}
 >
-  <div role="cell" class="title-cell">
-    <TokenTitleCell {userTokenData} />
-  </div>
+  {#if firstColumn}
+    <div role="cell" class="title-cell">
+      <svelte:component this={firstColumn.cellComponent} {rowData} />
+    </div>
+  {/if}
 
-  <div role="cell" class={`mobile-row-cell left-cell ${cellAreaName(0)}`}>
-    <span class="mobile-only">{$i18n.tokens.balance_header}</span>
-    <TokenBalanceCell {userTokenData} />
-  </div>
-  <div role="cell" class="actions-cell actions">
-    <TokenActionsCell {userTokenData} on:nnsAction />
-  </div>
+  {#each middleColumns as column, index}
+    <div role="cell" class={`mobile-row-cell left-cell ${cellAreaName(index)}`}>
+      <span class="mobile-only">{column.title}</span>
+      <svelte:component this={column.cellComponent} {rowData} />
+    </div>
+  {/each}
+
+  {#if lastColumn}
+    <div role="cell" class="actions-cell actions">
+      <svelte:component
+        this={lastColumn.cellComponent}
+        {rowData}
+        on:nnsAction
+      />
+    </div>
+  {/if}
 </a>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";
   @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "../../../themes/mixins/grid-table";
+  @use "../../themes/mixins/grid-table";
 
   [role="row"] {
     @include interaction.tappable;
