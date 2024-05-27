@@ -5,6 +5,7 @@ import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposal
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { ActionableProposalsPo } from "$tests/page-objects/ActionableProposals.page-object";
@@ -12,13 +13,13 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import type { ProposalInfo } from "@dfinity/nns";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
   SnsSwapLifecycle,
   type SnsProposalData,
 } from "@dfinity/sns";
-import { beforeEach } from "vitest";
 
 describe("ActionableProposals", () => {
   const renderComponent = async () => {
@@ -37,6 +38,35 @@ describe("ActionableProposals", () => {
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT },
       routeId: AppPath.Proposals,
+    });
+  });
+
+  describe("Actionable Nns proposals", () => {
+    const nnsProposal1: ProposalInfo = { ...mockProposalInfo, id: 11n };
+    const nnsProposal2: ProposalInfo = { ...mockProposalInfo, id: 22n };
+
+    it("should render actionable Nns proposals", async () => {
+      const po = await renderComponent();
+
+      expect(await po.hasActionableNnsProposals()).toEqual(false);
+
+      actionableNnsProposalsStore.setProposals([nnsProposal1, nnsProposal2]);
+      await runResolvedPromises();
+      expect(await po.hasActionableNnsProposals()).toEqual(true);
+
+      expect(
+        await po
+          .getActionableNnsProposalsPo()
+          .getUniverseWithActionableProposalsPo()
+          .getTitle()
+      ).toEqual("Internet Computer");
+
+      const proposalCardPos = await po
+        .getActionableNnsProposalsPo()
+        .getProposalCardPos();
+      expect(proposalCardPos.length).toEqual(2);
+      expect(await proposalCardPos[0].getProposalId()).toEqual("ID: 11");
+      expect(await proposalCardPos[1].getProposalId()).toEqual("ID: 22");
     });
   });
 

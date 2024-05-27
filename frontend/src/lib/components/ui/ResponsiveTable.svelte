@@ -1,17 +1,21 @@
-<script lang="ts">
+<script lang="ts" context="module">
+  import type { ResponsiveTableRowData } from "$lib/types/responsive-table";
+  type RowDataType = ResponsiveTableRowData;
+</script>
+
+<script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
   import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
-  import type { UserToken } from "$lib/types/tokens-page";
   import { heightTransition } from "$lib/utils/transition.utils";
   import { nonNullish } from "@dfinity/utils";
   import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
-  export let tableData: Array<UserToken>;
-  export let columns: ResponsiveTableColumn<UserToken>[];
+  export let tableData: Array<RowDataType>;
+  export let columns: ResponsiveTableColumn<RowDataType>[];
 
   // We don't render a header for the last column.
-  let firstColumn: ResponsiveTableColumn<UserToken> | undefined;
-  let middleColumns: ResponsiveTableColumn<UserToken>[];
+  let firstColumn: ResponsiveTableColumn<RowDataType> | undefined;
+  let middleColumns: ResponsiveTableColumn<RowDataType>[];
 
   $: firstColumn = columns.at(0);
   $: middleColumns = columns.slice(1, -1);
