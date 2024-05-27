@@ -44,8 +44,23 @@ export class TokensTablePo extends BasePageObject {
     return Promise.all(rows.map((row) => row.getData()));
   }
 
-  getRowByName(projectName: string): TokensTableRowPo | undefined {
-    return TokensTableRowPo.byTitle({ element: this.root, title: projectName });
+  async getRowByName(projectName: string): Promise<TokensTableRowPo> {
+    for (;;) {
+      const rows = await this.getRows();
+      for (const row of rows) {
+        const name = await row.getProjectName();
+        if (name === projectName) {
+          return row;
+        }
+      }
+
+      // If we didn't find the row, wait for more rows to load and try again.
+      const moreRows = TokensTableRowPo.countUnder({
+        element: this.root,
+        count: rows.length + 1,
+      });
+      await moreRows.at(-1).waitFor();
+    }
   }
 
   async getRowData(projectName: string): Promise<TokensTableRowData> {

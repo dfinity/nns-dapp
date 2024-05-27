@@ -124,16 +124,18 @@ export class AppPo extends BasePageObject {
 
   async goToNnsMainAccountWallet(): Promise<void> {
     await this.goToAccounts();
-    await this.getTokensPo()
-      .getTokensPagePo()
-      .getTokensTable()
-      .getRowByName("Internet Computer")
-      .click();
-    await this.getAccountsPo()
-      .getNnsAccountsPo()
-      .getTokensTablePo()
-      .getRowByName("Main")
-      .click();
+    await (
+      await this.getTokensPo()
+        .getTokensPagePo()
+        .getTokensTable()
+        .getRowByName("Internet Computer")
+    ).click();
+    await (
+      await this.getAccountsPo()
+        .getNnsAccountsPo()
+        .getTokensTablePo()
+        .getRowByName("Main")
+    ).click();
   }
 
   async goToNeurons(): Promise<void> {

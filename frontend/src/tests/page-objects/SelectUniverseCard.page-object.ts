@@ -44,7 +44,7 @@ export class SelectUniverseCardPo extends CardPo {
   }
 
   async getName(): Promise<string> {
-    return (await this.root.querySelector("span.name").getText()).trim();
+    return this.getText("universe-name");
   }
 
   getLogoAltText(): Promise<string> {

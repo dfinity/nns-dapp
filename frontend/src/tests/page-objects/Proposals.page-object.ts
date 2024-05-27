@@ -1,3 +1,4 @@
+import { ActionableProposalsPo } from "$tests/page-objects/ActionableProposals.page-object";
 import { NnsProposalFiltersPo } from "$tests/page-objects/NnsProposalFilters.page-object";
 import { NnsProposalListPo } from "$tests/page-objects/NnsProposalList.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -20,5 +21,9 @@ export class ProposalsPo extends BasePageObject {
 
   getNnsProposalFiltersPo(): NnsProposalFiltersPo {
     return NnsProposalFiltersPo.under(this.root);
+  }
+
+  getActionableProposalsPo(): ActionableProposalsPo {
+    return ActionableProposalsPo.under(this.root);
   }
 }
