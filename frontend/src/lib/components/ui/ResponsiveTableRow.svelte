@@ -4,6 +4,7 @@
 </script>
 
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
+  import { getCellGridAreaName } from "$lib/utils/responsive-table.utils";
   import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
 
   export let rowData: RowDataType;
@@ -16,9 +17,6 @@
   $: firstColumn = columns.at(0);
   $: middleColumns = columns.slice(1, -1);
   $: lastColumn = columns.at(-1);
-
-  // Should be the same as the area in the classes `rows-count-X`.
-  const cellAreaName = (index: number) => `cell-${index}`;
 </script>
 
 <a
@@ -37,7 +35,7 @@
     <div
       role="cell"
       class={`mobile-row-cell left-cell`}
-      style="--grid-area-name: {cellAreaName(index)}"
+      style="--grid-area-name: {getCellGridAreaName(index)}"
     >
       <span class="mobile-only">{column.title}</span>
       <svelte:component this={column.cellComponent} {rowData} />
