@@ -23,4 +23,12 @@ export class ResponsiveTableRowPo extends BasePageObject {
       )
     );
   }
+
+  async getCellStyles(): Promise<string[]> {
+    return Promise.all(
+      (await this.root.querySelectorAll("[role='cell']")).map((el) =>
+        el.getAttribute("style")
+      )
+    );
+  }
 }

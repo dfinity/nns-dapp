@@ -76,4 +76,50 @@ describe("ResponseTable", () => {
     expect(await rows[1].getHref()).toBe("anna/");
     expect(await rows[2].getHref()).toBe("anton/");
   });
+
+  it("should render column styles depending on the number of columns", async () => {
+    // 3 columns
+    const po1 = renderComponent({ columns, tableData });
+    expect(await po1.getDesktopGridTemplateColumns()).toBe(
+      "1fr max-content max-content"
+    );
+    expect(await po1.getMobileGridTemplateAreas()).toBe(
+      '"first-cell last-cell" "cell-0 cell-0"'
+    );
+
+    // 6 columns
+    const po2 = renderComponent({
+      columns: [...columns, ...columns],
+      tableData,
+    });
+    expect(await po2.getDesktopGridTemplateColumns()).toBe(
+      "1fr max-content max-content max-content max-content max-content"
+    );
+    expect(await po2.getMobileGridTemplateAreas()).toBe(
+      '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2" "cell-3 cell-3"'
+    );
+  });
+
+  it("should have a different grid area for cells in different columns", async () => {
+    // 6 columns
+    const po = renderComponent({
+      columns: [...columns, ...columns],
+      tableData,
+    });
+
+    // The first and last cell have grid areas set in CSS directly rather than
+    // through the style attribute.
+    const expectedStyles = [
+      null,
+      "--grid-area-name: cell-0;",
+      "--grid-area-name: cell-1;",
+      "--grid-area-name: cell-2;",
+      "--grid-area-name: cell-3;",
+      null,
+    ];
+
+    const rows = await po.getRows();
+    expect(rows).toHaveLength(3);
+    expect(await rows[0].getCellStyles()).toEqual(expectedStyles);
+  });
 });

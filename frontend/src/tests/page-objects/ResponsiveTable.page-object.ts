@@ -20,4 +20,25 @@ export class ResponsiveTablePo extends BasePageObject {
   getRows(): Promise<ResponsiveTableRowPo[]> {
     return ResponsiveTableRowPo.allUnder(this.root);
   }
+
+  getStyle(): Promise<string> {
+    return this.root.getAttribute("style");
+  }
+
+  async getStyleVariable(varName: string): Promise<string> {
+    const style = await this.getStyle();
+    const match = style.match(new RegExp(`--${varName}: ([^;]+)`));
+    if (!match) {
+      throw new Error(`Could not find --${varName} in style attribute`);
+    }
+    return match[1];
+  }
+
+  getDesktopGridTemplateColumns(): Promise<string> {
+    return this.getStyleVariable("desktop-grid-template-columns");
+  }
+
+  getMobileGridTemplateAreas(): Promise<string> {
+    return this.getStyleVariable("mobile-grid-template-areas");
+  }
 }
