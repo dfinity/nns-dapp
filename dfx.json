@@ -373,7 +373,7 @@
           "ENABLE_CKTESTBTC": false,
           "ENABLE_ACTIONABLE_TAB": false,
           "ENABLE_NEURONS_TABLE": false,
-          "ENABLE_CKUSDC": false
+          "ENABLE_CKUSDC": true
         }
       }
     },
