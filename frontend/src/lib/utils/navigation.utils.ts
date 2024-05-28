@@ -73,8 +73,18 @@ export const buildAccountsUrl = ({ universe }: { universe: string }) =>
   buildUrl({ path: AppPath.Accounts, universe });
 export const buildNeuronsUrl = ({ universe }: { universe: string }) =>
   buildUrl({ path: AppPath.Neurons, universe });
-export const buildProposalsUrl = ({ universe }: { universe: string }) =>
-  buildUrl({ path: AppPath.Proposals, universe });
+export const buildProposalsUrl = ({
+  universe,
+  actionable,
+}: {
+  universe: string;
+  actionable?: boolean;
+}) =>
+  buildUrl({
+    path: AppPath.Proposals,
+    universe,
+    params: { ...(actionable && { [ACTIONABLE_PROPOSALS_PARAM]: "" }) },
+  });
 export const ACTIONABLE_PROPOSALS_URL = buildUrl({
   path: AppPath.Proposals,
   params: { [ACTIONABLE_PROPOSALS_PARAM]: "" },
@@ -111,14 +121,19 @@ export const buildNeuronUrl = ({
 export const buildProposalUrl = ({
   universe,
   proposalId,
+  actionable,
 }: {
   universe: string;
   proposalId: ProposalId | string;
+  actionable?: boolean;
 }): string =>
   buildUrl({
     path: AppPath.Proposal,
     universe,
-    params: { [PROPOSAL_PARAM]: `${proposalId}` },
+    params: {
+      [PROPOSAL_PARAM]: `${proposalId}`,
+      ...(actionable && { [ACTIONABLE_PROPOSALS_PARAM]: "" }),
+    },
   });
 
 export const buildCanisterUrl = ({
