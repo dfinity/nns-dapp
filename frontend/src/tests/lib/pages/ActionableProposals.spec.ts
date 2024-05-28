@@ -164,7 +164,7 @@ describe("ActionableProposals", () => {
       expect(await proposalCardPos1[1].getProposalId()).toEqual("ID: 33");
     });
 
-    it("should have actionable parameter in href", async () => {
+    it("should have actionable query parameter in card href", async () => {
       setSnsProjects([snsProject0]);
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
@@ -177,8 +177,10 @@ describe("ActionableProposals", () => {
         .getActionableSnsProposalsPos();
       expect(snsProposalsPos).toHaveLength(1);
       expect(
-        await (await snsProposalsPos[0].getProposalCardPos())[0].getHref()
-      ).toEqual("Sns Project 0");
+        await (await snsProposalsPos[0].getProposalCardPos())[0].getCardHref()
+      ).toEqual(
+        "/proposal/?u=qhbym-qaaaa-aaaaa-aaafq-cai&proposal=11&actionable"
+      );
     });
 
     it("should ignore snses w/o ballot or actionable proposals", async () => {
