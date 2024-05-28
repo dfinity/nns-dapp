@@ -243,4 +243,30 @@ describe("ActionableProposals", () => {
 
     expect(await po.hasActionableEmptyBanner()).toEqual(true);
   });
+
+  it('should display "unsupported proposals" banner', async () => {
+    setSnsProjects([snsProject0]);
+    actionableNnsProposalsStore.setProposals([]);
+    const po = await renderComponent();
+
+    expect(await po.hasActionableProposalsNotSupportedSnses()).toEqual(false);
+
+    actionableSnsProposalsStore.set({
+      rootCanisterId: principal0,
+      proposals: [],
+      includeBallotsByCaller: false,
+    });
+    await runResolvedPromises();
+
+    expect(await po.hasActionableProposalsNotSupportedSnses()).toEqual(true);
+
+    actionableSnsProposalsStore.set({
+      rootCanisterId: principal0,
+      proposals: [],
+      includeBallotsByCaller: true,
+    });
+    await runResolvedPromises();
+
+    expect(await po.hasActionableProposalsNotSupportedSnses()).toEqual(false);
+  });
 });
