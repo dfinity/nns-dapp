@@ -226,4 +226,21 @@ describe("ActionableProposals", () => {
     expect(await po.hasActionableNnsProposals()).toEqual(true);
     expect(await po.hasSkeletons()).toEqual(false);
   });
+
+  it('should display "no actionable proposals" banner', async () => {
+    setSnsProjects([snsProject0]);
+    const po = await renderComponent();
+
+    expect(await po.hasActionableEmptyBanner()).toEqual(false);
+
+    actionableNnsProposalsStore.setProposals([]);
+    actionableSnsProposalsStore.set({
+      rootCanisterId: principal0,
+      proposals: [],
+      includeBallotsByCaller: true,
+    });
+    await runResolvedPromises();
+
+    expect(await po.hasActionableEmptyBanner()).toEqual(true);
+  });
 });
