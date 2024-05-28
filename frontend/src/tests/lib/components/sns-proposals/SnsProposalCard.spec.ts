@@ -6,6 +6,7 @@ import {
   createSnsProposal,
   mockSnsProposal,
 } from "$tests/mocks/sns-proposals.mock";
+import { mockSnsCanisterIdText } from "$tests/mocks/sns.api.mock";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
@@ -14,7 +15,11 @@ import {
 import { render } from "@testing-library/svelte";
 
 describe("SnsProposalCard", () => {
-  const props = { proposalData: mockSnsProposal, nsFunctions: [] };
+  const props = {
+    proposalData: mockSnsProposal,
+    nsFunctions: [],
+    rootCanisterId: mockSnsCanisterIdText,
+  };
   const now = 1698139468000;
   const nowInSeconds = Math.ceil(now / 1000);
   beforeEach(() => {
@@ -40,6 +45,7 @@ describe("SnsProposalCard", () => {
           action: nervousSystemFunctionMock.id,
         },
         nsFunctions: [nervousSystemFunctionMock],
+        rootCanisterId: mockSnsCanisterIdText,
       },
     });
 
@@ -89,6 +95,7 @@ describe("SnsProposalCard", () => {
       props: {
         proposalData,
         nsFunctions: [],
+        rootCanisterId: mockSnsCanisterIdText,
       },
     });
 
@@ -105,6 +112,7 @@ describe("SnsProposalCard", () => {
       props: {
         proposalData,
         nsFunctions: [],
+        rootCanisterId: mockSnsCanisterIdText,
       },
     });
 
@@ -129,9 +137,31 @@ describe("SnsProposalCard", () => {
       props: {
         proposalData,
         nsFunctions: [],
+        rootCanisterId: mockSnsCanisterIdText,
       },
     });
 
     expect(container.querySelector(".executed")).not.toBeNull();
+  });
+
+  it("should use provided rootCanisterId for a link", () => {
+    const { getByTestId } = render(SnsProposalCard, {
+      props: {
+        ...props,
+        proposalData: {
+          ...mockSnsProposal,
+          id: [
+            {
+              id: 77n,
+            },
+          ],
+        },
+        rootCanisterId: "aaaaa-aa",
+      },
+    });
+
+    expect(getByTestId("proposal-card").getAttribute("href")).toEqual(
+      "/proposal/?u=aaaaa-aa&proposal=77"
+    );
   });
 });
