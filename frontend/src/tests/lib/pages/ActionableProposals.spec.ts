@@ -164,6 +164,23 @@ describe("ActionableProposals", () => {
       expect(await proposalCardPos1[1].getProposalId()).toEqual("ID: 33");
     });
 
+    it("should have actionable parameter in href", async () => {
+      setSnsProjects([snsProject0]);
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal0,
+        proposals: [proposal0],
+        includeBallotsByCaller: true,
+      });
+      const po = await renderComponent();
+      const snsProposalsPos = await po
+        .getActionableSnses()
+        .getActionableSnsProposalsPos();
+      expect(snsProposalsPos).toHaveLength(1);
+      expect(
+        await (await snsProposalsPos[0].getProposalCardPos())[0].getHref()
+      ).toEqual("Sns Project 0");
+    });
+
     it("should ignore snses w/o ballot or actionable proposals", async () => {
       setSnsProjects([snsProject0, snsProject1, snsProject2]);
       const po = await renderComponent();

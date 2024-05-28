@@ -27,6 +27,10 @@ export class ProposalCardPo extends BasePageObject {
     return this.getText("proposal-topic");
   }
 
+  getCardHref(): Promise<string> {
+    return this.root.getAttribute("href");
+  }
+
   async getProposalStatusText(): Promise<string> {
     return (await this.getProposalStatusTagPo().getText()).trim();
   }
