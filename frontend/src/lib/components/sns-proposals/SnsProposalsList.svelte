@@ -43,6 +43,7 @@
             {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
               <SnsProposalCard
                 actionable={proposalData.isActionable}
+                fromActionablePage={false}
                 {proposalData}
                 {nsFunctions}
               />
@@ -66,6 +67,7 @@
           {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
             <SnsProposalCard
               actionable={proposalData.isActionable}
+              fromActionablePage={false}
               {proposalData}
               {nsFunctions}
             />
