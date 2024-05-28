@@ -4,6 +4,7 @@
 </script>
 
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
+  import { getCellGridAreaName } from "$lib/utils/responsive-table.utils";
   import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
 
   export let rowData: RowDataType;
@@ -16,15 +17,6 @@
   $: firstColumn = columns.at(0);
   $: middleColumns = columns.slice(1, -1);
   $: lastColumn = columns.at(-1);
-
-  // Should be the same as the area in the classes `rows-count-X`.
-  const cellAreaName = (index: number) => `cell-${index}`;
-  // This will allow us to have different number of rows depending on the number of columns.
-  // It's not really necessary for the TokensTable becuase we know we want only 1 row.
-  // But this should be moved when we make the generic table.
-  const mobileTemplateClass = (rowsCount: number) => {
-    return `rows-count-${rowsCount}`;
-  };
 </script>
 
 <a
@@ -32,7 +24,6 @@
   role="row"
   tabindex="0"
   data-tid="responsive-table-row-component"
-  class={mobileTemplateClass(2)}
 >
   {#if firstColumn}
     <div role="cell" class="title-cell">
@@ -41,7 +32,11 @@
   {/if}
 
   {#each middleColumns as column, index}
-    <div role="cell" class={`mobile-row-cell left-cell ${cellAreaName(index)}`}>
+    <div
+      role="cell"
+      class={`mobile-row-cell left-cell`}
+      style="--grid-area-name: {getCellGridAreaName(index)}"
+    >
       <span class="mobile-only">{column.title}</span>
       <svelte:component this={column.cellComponent} {rowData} />
     </div>
@@ -72,18 +67,7 @@
 
     text-decoration: none;
 
-    &.rows-count-2 {
-      grid-template-areas:
-        "first-cell last-cell"
-        "cell-0 cell-0";
-    }
-
-    &.rows-count-3 {
-      grid-template-areas:
-        "first-cell last-cell"
-        "cell-0 cell-0"
-        "cell-1 cell-1";
-    }
+    grid-template-areas: var(--mobile-grid-template-areas);
 
     @include media.min-width(medium) {
       @include grid-table.row;
@@ -132,20 +116,10 @@
       display: flex;
       justify-content: space-between;
 
-      &.cell-0 {
-        grid-area: cell-0;
+      grid-area: var(--grid-area-name);
 
-        @include media.min-width(medium) {
-          grid-area: revert;
-        }
-      }
-
-      &.cell-1 {
-        grid-area: cell-1;
-
-        @include media.min-width(medium) {
-          grid-area: revert;
-        }
+      @include media.min-width(medium) {
+        grid-area: revert;
       }
 
       @include media.min-width(medium) {

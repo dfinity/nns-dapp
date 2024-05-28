@@ -1,4 +1,5 @@
 <script lang="ts" context="module">
+  import { getCellGridAreaName } from "$lib/utils/responsive-table.utils";
   import type { ResponsiveTableRowData } from "$lib/types/responsive-table";
   type RowDataType = ResponsiveTableRowData;
 </script>
@@ -21,19 +22,28 @@
   $: firstColumn = columns.at(0);
   $: middleColumns = columns.slice(1, -1);
 
-  // This will be useful when we create the generic table.
-  // The column styles will depend on the columns metadata.
-  // And we don't have the columns metadata in the `style` tag.
-  const desktopColumnsStyle = () => {
-    return "1fr max-content max-content";
+  const getTableStyle = (columnCount: number) => {
+    // On desktop the first column gets all the remaining space after other
+    // columns get as much as their content needs.
+    const desktopGridTemplateColumns = `1fr${" max-content".repeat(
+      columnCount - 1
+    )}`;
+    // On mobile, instead of a single row per data item, we have one row for the
+    // first and last cell combined and a separate labeled row for each other
+    // cell.
+    let mobileGridTemplateAreas = '"first-cell last-cell"';
+    for (let i = 0; i < columnCount - 2; i++) {
+      const areaName = getCellGridAreaName(i);
+      mobileGridTemplateAreas += ` "${areaName} ${areaName}"`;
+    }
+    return `--desktop-grid-template-columns: ${desktopGridTemplateColumns}; --mobile-grid-template-areas: ${mobileGridTemplateAreas};`;
   };
+
+  let tableStyle: string;
+  $: tableStyle = getTableStyle(columns.length);
 </script>
 
-<div
-  role="table"
-  data-tid={testId}
-  style={`grid-template-columns: ${desktopColumnsStyle()};`}
->
+<div role="table" data-tid={testId} style={tableStyle}>
   <div role="rowgroup">
     <div role="row" class="header-row">
       {#if firstColumn}
@@ -83,7 +93,7 @@
 
     @include media.min-width(medium) {
       display: grid;
-      // `grid-template-columns` set with inline style.
+      grid-template-columns: var(--desktop-grid-template-columns);
       column-gap: var(--padding-2x);
     }
 
