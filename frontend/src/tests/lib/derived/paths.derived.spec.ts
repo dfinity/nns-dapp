@@ -74,6 +74,17 @@ describe("paths derived stores", () => {
         `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${mockSnsCanisterIdText}`
       );
     });
+
+    it("should preserve actionable parameter in path", () => {
+      page.mock({
+        data: { universe: mockSnsCanisterIdText, actionable: true },
+      });
+
+      const $store = get(proposalsPathStore);
+      expect($store).toBe(
+        `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${mockSnsCanisterIdText}&actionable`
+      );
+    });
   });
 
   describe("canistersPathStore", () => {
