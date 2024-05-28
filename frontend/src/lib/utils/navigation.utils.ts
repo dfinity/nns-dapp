@@ -111,19 +111,14 @@ export const buildNeuronUrl = ({
 export const buildProposalUrl = ({
   universe,
   proposalId,
-  actionable,
 }: {
   universe: string;
   proposalId: ProposalId | string;
-  actionable?: boolean;
 }): string =>
   buildUrl({
     path: AppPath.Proposal,
     universe,
-    params: {
-      [PROPOSAL_PARAM]: `${proposalId}`,
-      ...(actionable && { [ACTIONABLE_PROPOSALS_PARAM]: "" }),
-    },
+    params: { [PROPOSAL_PARAM]: `${proposalId}` },
   });
 
 export const buildCanisterUrl = ({
