@@ -16,6 +16,7 @@ export class TokensTablePo extends BasePageObject {
     "ckTESTBTC",
     "ckETH",
     "ckETHSepolia",
+    "ckUSDC",
   ];
 
   static under(element: PageObjectElement): TokensTablePo {
