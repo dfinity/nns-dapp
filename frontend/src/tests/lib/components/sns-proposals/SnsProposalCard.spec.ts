@@ -143,4 +143,25 @@ describe("SnsProposalCard", () => {
 
     expect(container.querySelector(".executed")).not.toBeNull();
   });
+
+  it("should use provided rootCanisterId for a link", () => {
+    const { getByTestId } = render(SnsProposalCard, {
+      props: {
+        ...props,
+        proposalData: {
+          ...mockSnsProposal,
+          id: [
+            {
+              id: 77n,
+            },
+          ],
+        },
+        rootCanisterId: "aaaaa-aa",
+      },
+    });
+
+    expect(getByTestId("proposal-card").getAttribute("href")).toEqual(
+      "/proposal/?u=aaaaa-aa&proposal=77"
+    );
+  });
 });
