@@ -131,6 +131,18 @@ describe("navigation-utils", () => {
       );
     });
 
+    it("should build proposal url with actionable param", () => {
+      expect(
+        buildProposalUrl({
+          universe: OWN_CANISTER_ID_TEXT,
+          proposalId: "123",
+          actionable: true,
+        })
+      ).toEqual(
+        `${AppPath.Proposal}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}&${PROPOSAL_PARAM}=123&${ACTIONABLE_PROPOSALS_PARAM}`
+      );
+    });
+
     it("should build canister url", () => {
       expect(
         buildCanisterUrl({
@@ -168,6 +180,17 @@ describe("navigation-utils", () => {
         })
       ).toEqual(
         `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
+      );
+    });
+
+    it("should build voting url with actionable param", () => {
+      expect(
+        buildProposalsUrl({
+          universe: OWN_CANISTER_ID_TEXT,
+          actionable: true,
+        })
+      ).toEqual(
+        `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}&${ACTIONABLE_PROPOSALS_PARAM}`
       );
     });
 
