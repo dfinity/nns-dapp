@@ -6,7 +6,7 @@ import { render } from "$tests/utils/svelte.test-utils";
 
 describe("NeuronsTableRow", () => {
   const neuron: TableNeuron = {
-    neuronId: 10n,
+    neuronId: "10",
   };
   const renderComponent = () => {
     const { container } = render(NeuronsTableRow, {
@@ -17,6 +17,6 @@ describe("NeuronsTableRow", () => {
 
   it("should render table row", async () => {
     const po = renderComponent();
-    expect(await po.getNeuronId()).toBe(neuron.neuronId.toString());
+    expect(await po.getNeuronId()).toBe(neuron.neuronId);
   });
 });
