@@ -102,6 +102,19 @@ describe("ActionableProposals", () => {
       expect(await proposalCardPos[0].getProposalId()).toEqual("ID: 11");
       expect(await proposalCardPos[1].getProposalId()).toEqual("ID: 22");
     });
+
+    it("should have actionable query parameter in card href", async () => {
+      actionableNnsProposalsStore.setProposals([nnsProposal1]);
+
+      const po = await renderComponent();
+      const firstCardPo = (
+        await po.getActionableNnsProposalsPo().getProposalCardPos()
+      )[0];
+      expect(await firstCardPo.getProposalId()).toEqual("ID: 11");
+      expect(await firstCardPo.getCardHref()).toEqual(
+        "/proposal/?u=qhbym-qaaaa-aaaaa-aaafq-cai&proposal=11&actionable"
+      );
+    });
   });
 
   describe("Actionable Sns proposals", () => {
