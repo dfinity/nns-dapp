@@ -19,7 +19,7 @@ import {
   type UserTokenLoading,
 } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
-import { TokenAmountV2 } from "@dfinity/utils";
+import { TokenAmountV2, nonNullish } from "@dfinity/utils";
 import { mockCkBTCToken } from "./ckbtc-accounts.mock";
 import { mockSnsToken, principal } from "./sns-projects.mock";
 
@@ -139,7 +139,11 @@ export const userTokensPageMock: UserTokenData[] = [
 ];
 
 export const createUserToken = (params: Partial<UserTokenData> = {}) => {
-  const rowHref = params.rowHref ?? `/wallet/?u=${params.universeId.toText()}`;
+  const rowHref = nonNullish(params.rowHref)
+    ? params.rowHref
+    : nonNullish(params.universeId)
+    ? `/wallet/?u=${params.universeId.toText()}`
+    : userTokenPageMock.rowHref;
   return {
     ...userTokenPageMock,
     ...params,
