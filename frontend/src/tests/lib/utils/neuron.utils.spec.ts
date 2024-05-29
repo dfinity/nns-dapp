@@ -98,7 +98,7 @@ import {
   type ProposalInfo,
   type RewardEvent,
 } from "@dfinity/nns";
-import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("neuron-utils", () => {
@@ -2839,22 +2839,44 @@ describe("neuron-utils", () => {
     it("should convert neuronInfos to tableNeurons", () => {
       const neuronId1 = 42n;
       const neuronId2 = 342n;
+      const stake1 = 500_000_000n;
+      const stake2 = 600_000_000n;
       const neuronInfo1 = {
         ...mockNeuron,
         neuronId: neuronId1,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: stake1,
+        },
       };
       const neuronInfo2 = {
         ...mockNeuron,
         neuronId: neuronId2,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: stake2,
+        },
       };
       const neuronInfos = [neuronInfo1, neuronInfo2];
       const tableNeurons = tableNeuronsFromNeuronInfos(neuronInfos);
       expect(tableNeurons).toEqual([
         {
+          rowHref: "/neuron/?u=qhbym-qaaaa-aaaaa-aaafq-cai&neuron=42",
+          domKey: "42",
           neuronId: "42",
+          stake: TokenAmountV2.fromUlps({
+            amount: 500_000_000n,
+            token: ICPToken,
+          }),
         },
         {
+          rowHref: "/neuron/?u=qhbym-qaaaa-aaaaa-aaafq-cai&neuron=342",
+          domKey: "342",
           neuronId: "342",
+          stake: TokenAmountV2.fromUlps({
+            amount: 600_000_000n,
+            token: ICPToken,
+          }),
         },
       ]);
     });
