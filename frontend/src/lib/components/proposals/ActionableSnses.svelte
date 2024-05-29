@@ -4,6 +4,7 @@
     actionableSnsProposalsByUniverseStore,
   } from "$lib/derived/actionable-proposals.derived";
   import ActionableSnsProposals from "$lib/components/proposals/ActionableSnsProposals.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   let actionableUniverses: ActionableSnsProposalsByUniverseData[] = [];
   $: actionableUniverses = $actionableSnsProposalsByUniverseStore.filter(
@@ -11,16 +12,8 @@
   );
 </script>
 
-<div class="container" data-tid="actionable-snses-component">
+<TestIdWrapper testId="actionable-snses-component">
   {#each actionableUniverses as { universe, proposals } (universe.canisterId)}
     <ActionableSnsProposals {universe} {proposals} />
   {/each}
-</div>
-
-<style lang="scss">
-  .container {
-    display: flex;
-    flex-direction: column;
-    gap: var(--actionable-page-gap);
-  }
-</style>
+</TestIdWrapper>

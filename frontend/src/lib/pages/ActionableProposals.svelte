@@ -24,11 +24,8 @@
 
 <style lang="scss">
   .container {
-    // The gap between blocks on the page (e.g. between the universes and banners)
-    --actionable-page-gap: var(--padding-4x);
-
     display: flex;
     flex-direction: column;
-    gap: var(--actionable-page-gap);
+    gap: var(--padding-4x);
   }
 </style>
