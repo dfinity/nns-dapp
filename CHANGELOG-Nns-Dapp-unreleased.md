@@ -23,6 +23,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* Message informing about proposal topic changes.
+
 #### Fixed
 
 #### Security
