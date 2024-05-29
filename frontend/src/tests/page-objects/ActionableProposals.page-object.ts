@@ -1,4 +1,5 @@
 import { ActionableNnsProposalsPo } from "$tests/page-objects/ActionableNnsProposals.page-object";
+import { ActionableProposalsNotSupportedSnsesPo } from "$tests/page-objects/ActionableProposalsNotSupportedSnses.page-object";
 import { ActionableSnsesPo } from "$tests/page-objects/ActionableSnses.page-object";
 import { PageBannerPo } from "$tests/page-objects/PageBanner.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -36,5 +37,11 @@ export class ActionableProposalsPo extends BasePageObject {
       element: this.root,
       testId: "actionable-proposals-empty",
     }).isPresent();
+  }
+
+  hasActionableProposalsNotSupportedSnses(): Promise<boolean> {
+    return ActionableProposalsNotSupportedSnsesPo.under(this.root)
+      .getBannerPo()
+      .isPresent();
   }
 }

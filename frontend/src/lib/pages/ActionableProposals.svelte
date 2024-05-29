@@ -7,6 +7,7 @@
   } from "$lib/derived/actionable-proposals.derived";
   import LoadingActionableProposals from "$lib/components/proposals/LoadingActionableProposals.svelte";
   import ActionableProposalsEmpty from "$lib/components/proposals/ActionableProposalsEmpty.svelte";
+  import ActionableProposalsNotSupportedSnses from "$lib/components/proposals/ActionableProposalsNotSupportedSnses.svelte";
 </script>
 
 <div class="container" data-tid="actionable-proposals-component">
@@ -14,6 +15,7 @@
     {#if $actionableProposalTotalCountStore > 0}
       <ActionableNnsProposals />
       <ActionableSnses />
+      <ActionableProposalsNotSupportedSnses />
     {:else}
       <ActionableProposalsEmpty />
     {/if}
