@@ -181,7 +181,7 @@ describe("ActionableProposals", () => {
       setSnsProjects([snsProject0]);
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
-        proposals: [proposal0],
+        proposals: [snsProposal0],
         includeBallotsByCaller: true,
       });
       const po = await renderComponent();
@@ -212,12 +212,12 @@ describe("ActionableProposals", () => {
       ]);
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
-        proposals: [proposal0],
+        proposals: [snsProposal0],
         includeBallotsByCaller: true,
       });
       actionableSnsProposalsStore.set({
         rootCanisterId: principal1,
-        proposals: [proposal1],
+        proposals: [snsProposal1],
         includeBallotsByCaller: true,
       });
       const po = await renderComponent();
