@@ -81,9 +81,7 @@ describe("paths derived stores", () => {
         data: { universe: mockSnsCanisterIdText, actionable: true },
       });
 
-      expect(get(proposalsPathStore)).toBe(
-        `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${mockSnsCanisterIdText}&actionable`
-      );
+      expect(get(proposalsPathStore)).toBe(`${AppPath.Proposals}/?actionable`);
 
       page.mock({
         data: { universe: mockSnsCanisterIdText },
