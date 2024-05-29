@@ -55,8 +55,4 @@ export class NnsNeuronsPo extends BasePageObject {
   hasEmptyMessage(): Promise<boolean> {
     return this.isPresent("empty-message-component");
   }
-
-  async hasTopicRenameMessage(): Promise<boolean> {
-    return this.isPresent("topic-rename-message");
-  }
 }
