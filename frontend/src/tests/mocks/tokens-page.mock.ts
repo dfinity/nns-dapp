@@ -19,7 +19,7 @@ import {
   type UserTokenLoading,
 } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
-import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { mockCkBTCToken } from "./ckbtc-accounts.mock";
 import { mockSnsToken, principal } from "./sns-projects.mock";
 
@@ -29,6 +29,7 @@ export const icpTokenBase: UserTokenBase = {
   logo: IC_LOGO_ROUNDED,
   actions: [],
 };
+const icpHref = `/accounts/?u=${OWN_CANISTER_ID_TEXT}`;
 const icpTokenNoBalance: UserTokenData = {
   ...icpTokenBase,
   balance: new UnavailableTokenAmount(NNS_TOKEN_DATA),
@@ -37,7 +38,8 @@ const icpTokenNoBalance: UserTokenData = {
     amount: NNS_TOKEN_DATA.fee,
     token: NNS_TOKEN_DATA,
   }),
-  rowHref: `/accounts/?u=${OWN_CANISTER_ID_TEXT}`,
+  rowHref: icpHref,
+  domKey: icpHref,
 };
 const snsTetrisToken = mockSnsToken;
 const snsPackmanToken = {
@@ -63,6 +65,7 @@ export const ckTESTBTCTokenBase: UserTokenBase = {
   actions: [],
 };
 
+const snsHref = `/wallet/?u=${principal(0).toText()}`;
 export const userTokenPageMock: UserTokenData = {
   universeId: principal(0),
   title: "Test SNS",
@@ -77,9 +80,11 @@ export const userTokenPageMock: UserTokenData = {
     token: mockCkBTCToken,
   }),
   actions: [UserTokenAction.Send, UserTokenAction.Receive],
-  rowHref: `/wallet/?u=${principal(0).toText()}`,
+  rowHref: snsHref,
+  domKey: snsHref,
 };
 
+const ckBTCHref = `/wallet/?u=${CKBTC_UNIVERSE_CANISTER_ID.toText()}`;
 export const userTokensPageMock: UserTokenData[] = [
   {
     ...icpTokenNoBalance,
@@ -94,7 +99,8 @@ export const userTokensPageMock: UserTokenData[] = [
       token: mockCkBTCToken,
     }),
     actions: [UserTokenAction.Send, UserTokenAction.Receive],
-    rowHref: `/wallet/?u=${CKBTC_UNIVERSE_CANISTER_ID.toText()}`,
+    rowHref: ckBTCHref,
+    domKey: ckBTCHref,
   },
   {
     universeId: principal(0),
@@ -111,6 +117,7 @@ export const userTokensPageMock: UserTokenData[] = [
     logo: "sns-logo.svg",
     actions: [UserTokenAction.Send, UserTokenAction.Receive],
     rowHref: `/wallet/?u=${principal(0).toText()}`,
+    domKey: `/wallet/?u=${principal(0).toText()}`,
   },
   {
     universeId: principal(1),
@@ -127,16 +134,19 @@ export const userTokensPageMock: UserTokenData[] = [
     logo: "sns-logo-2.svg",
     actions: [UserTokenAction.Send, UserTokenAction.Receive],
     rowHref: `/wallet/?u=${principal(1).toText()}`,
+    domKey: `/wallet/?u=${principal(1).toText()}`,
   },
 ];
 
-export const createUserToken = (params: Partial<UserTokenData> = {}) => ({
-  ...userTokenPageMock,
-  ...params,
-  ...(isNullish(params.rowHref) && nonNullish(params.universeId)
-    ? { rowHref: `/wallet/?u=${params.universeId.toText()}` }
-    : {}),
-});
+export const createUserToken = (params: Partial<UserTokenData> = {}) => {
+  const rowHref = params.rowHref ?? `/wallet/?u=${params.universeId.toText()}`;
+  return {
+    ...userTokenPageMock,
+    ...params,
+    rowHref,
+    domKey: rowHref,
+  };
+};
 
 export const createIcpUserToken = (params: Partial<UserTokenData> = {}) => ({
   ...icpTokenNoBalance,
@@ -150,6 +160,7 @@ export const defaultUserTokenLoading: UserTokenLoading = {
   logo: "sns-logo.svg",
   actions: [],
   rowHref: `/wallet/?u=${principal(0).toText()}`,
+  domKey: `/wallet/?u=${principal(0).toText()}`,
 };
 
 export const createUserTokenLoading = (

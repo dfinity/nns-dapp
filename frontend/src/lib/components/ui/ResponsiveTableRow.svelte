@@ -6,6 +6,7 @@
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
   import { getCellGridAreaName } from "$lib/utils/responsive-table.utils";
   import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
+  import { nonNullish } from "@dfinity/utils";
 
   export let rowData: RowDataType;
   export let columns: ResponsiveTableColumn<RowDataType>[];
@@ -19,7 +20,8 @@
   $: lastColumn = columns.at(-1);
 </script>
 
-<a
+<svelte:element
+  this={nonNullish(rowData.rowHref) ? "a" : "div"}
   href={rowData.rowHref}
   role="row"
   tabindex="0"
@@ -51,7 +53,7 @@
       />
     </div>
   {/if}
-</a>
+</svelte:element>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";

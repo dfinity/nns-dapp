@@ -31,4 +31,8 @@ export class ResponsiveTableRowPo extends BasePageObject {
       )
     );
   }
+
+  async getTagName(): Promise<string> {
+    return this.root.getTagName();
+  }
 }

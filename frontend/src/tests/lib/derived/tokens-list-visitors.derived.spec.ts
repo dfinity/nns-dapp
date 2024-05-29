@@ -52,10 +52,12 @@ describe("tokens-list-base.derived", () => {
     name: "ckTESTBTC",
   };
 
+  const icpHref = `/accounts/?u=${OWN_CANISTER_ID_TEXT}`;
   const icpVisitorToken: UserTokenData = createIcpUserToken({
     balance: new UnavailableTokenAmount(NNS_TOKEN_DATA),
     actions: [UserTokenAction.GoToDetail],
-    rowHref: `/accounts/?u=${OWN_CANISTER_ID_TEXT}`,
+    rowHref: icpHref,
+    domKey: icpHref,
   });
   const tetrisHref = `/wallet/?u=${snsTetris.rootCanisterId.toText()}`;
   const tetrisTokenLoading: UserTokenLoading = {
@@ -65,6 +67,7 @@ describe("tokens-list-base.derived", () => {
     balance: "loading",
     actions: [],
     rowHref: tetrisHref,
+    domKey: tetrisHref,
   };
   const tetrisVisitorToken: UserTokenData = {
     ...tetrisTokenLoading,
@@ -76,6 +79,7 @@ describe("tokens-list-base.derived", () => {
       token: snsTetris.tokenMetadata,
     }),
     rowHref: tetrisHref,
+    domKey: tetrisHref,
   };
   const pacmanHref = `/wallet/?u=${snsPacman.rootCanisterId.toText()}`;
   const pacmanTokenLoading: UserTokenLoading = {
@@ -85,6 +89,7 @@ describe("tokens-list-base.derived", () => {
     balance: "loading",
     actions: [],
     rowHref: pacmanHref,
+    domKey: pacmanHref,
   };
   const pacmanVisitorToken: UserTokenData = {
     ...pacmanTokenLoading,
@@ -96,6 +101,7 @@ describe("tokens-list-base.derived", () => {
       token: snsPacman.tokenMetadata,
     }),
     rowHref: pacmanHref,
+    domKey: pacmanHref,
   };
   const ckBTCHref = `/wallet/?u=${CKBTC_UNIVERSE_CANISTER_ID.toText()}`;
   const ckBTCTokenLoading: UserTokenLoading = {
@@ -103,6 +109,7 @@ describe("tokens-list-base.derived", () => {
     balance: "loading",
     actions: [],
     rowHref: ckBTCHref,
+    domKey: ckBTCHref,
   };
   const ckTESTBTCHref = `/wallet/?u=${CKTESTBTC_UNIVERSE_CANISTER_ID.toText()}`;
   const ckTESTBTCTokenLoading: UserTokenLoading = {
@@ -110,6 +117,7 @@ describe("tokens-list-base.derived", () => {
     balance: "loading",
     actions: [],
     rowHref: ckTESTBTCHref,
+    domKey: ckTESTBTCHref,
   };
   const ckTESTBTCVisitorToken: UserTokenData = {
     ...ckTESTBTCTokenBase,
@@ -121,6 +129,7 @@ describe("tokens-list-base.derived", () => {
       token: mockCkTESTBTCToken,
     }),
     rowHref: ckTESTBTCHref,
+    domKey: ckTESTBTCHref,
   };
   const ckBTCVisitorToken: UserTokenData = {
     ...ckBTCTokenBase,
@@ -132,7 +141,9 @@ describe("tokens-list-base.derived", () => {
       token: mockCkBTCToken,
     }),
     rowHref: ckBTCHref,
+    domKey: ckBTCHref,
   };
+  const ckETHHref = `/wallet/?u=${ckETHTokenBase.universeId.toText()}`;
   const ckETHVisitorToken: UserTokenData = {
     ...ckETHTokenBase,
     balance: new UnavailableTokenAmount(mockCkETHToken),
@@ -142,7 +153,8 @@ describe("tokens-list-base.derived", () => {
       token: mockCkETHToken,
     }),
     actions: [UserTokenAction.GoToDetail],
-    rowHref: `/wallet/?u=${ckETHTokenBase.universeId.toText()}`,
+    rowHref: ckETHHref,
+    domKey: ckETHHref,
   };
 
   describe("tokensListVisitorsStore", () => {
