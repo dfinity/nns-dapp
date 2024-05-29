@@ -6,10 +6,10 @@ import { render } from "$tests/utils/svelte.test-utils";
 
 describe("NeuronsTable", () => {
   const neuron1: TableNeuron = {
-    neuronId: 10n,
+    neuronId: "10",
   };
   const neuron2: TableNeuron = {
-    neuronId: 99n,
+    neuronId: "99",
   };
   const renderComponent = () => {
     const { container } = render(NeuronsTable, {
@@ -22,7 +22,7 @@ describe("NeuronsTable", () => {
     const po = renderComponent();
     const rowPos = await po.getNeuronsTableRowPos();
     expect(rowPos).toHaveLength(2);
-    expect(await rowPos[0].getNeuronId()).toBe(neuron1.neuronId.toString());
-    expect(await rowPos[1].getNeuronId()).toBe(neuron2.neuronId.toString());
+    expect(await rowPos[0].getNeuronId()).toBe(neuron1.neuronId);
+    expect(await rowPos[1].getNeuronId()).toBe(neuron2.neuronId);
   });
 });

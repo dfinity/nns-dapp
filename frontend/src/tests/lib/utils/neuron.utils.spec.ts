@@ -2851,10 +2851,10 @@ describe("neuron-utils", () => {
       const tableNeurons = tableNeuronsFromNeuronInfos(neuronInfos);
       expect(tableNeurons).toEqual([
         {
-          neuronId: neuronId1,
+          neuronId: "42",
         },
         {
-          neuronId: neuronId2,
+          neuronId: "342",
         },
       ]);
     });
