@@ -11,7 +11,7 @@
     definedNeuronsStore,
   } from "$lib/stores/neurons.store";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { IconInfo, Tooltip } from "@dfinity/gix-components";
+  import { Tooltip } from "@dfinity/gix-components";
   import { isSpawning } from "$lib/utils/neuron.utils";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
