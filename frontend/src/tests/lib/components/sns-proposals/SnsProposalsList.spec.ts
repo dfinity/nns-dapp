@@ -1,4 +1,5 @@
 import SnsProposalsList from "$lib/components/sns-proposals/SnsProposalsList.svelte";
+import { ACTIONABLE_PROPOSALS_PARAM } from "$lib/constants/routes.constants";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -215,6 +216,22 @@ describe("SnsProposalsList", () => {
       expect(await (await po.getProposalCardPos())[0].getCardHref()).toEqual(
         `/proposal/?u=aaaaa-aa&proposal=123`
       );
+    });
+
+    it("should not have actionable parameter in a card href", async () => {
+      const po = await renderComponent({
+        proposals: [actionableProposalA],
+        includeBallots: true,
+        snsName: "sns-name",
+        actionableSelected: true,
+        nsFunctions: [],
+      });
+      expect((await po.getProposalCardPos()).length).toEqual(1);
+      expect(
+        (await (await po.getProposalCardPos())[0].getCardHref()).includes(
+          ACTIONABLE_PROPOSALS_PARAM
+        )
+      ).toEqual(false);
     });
 
     it("should display actionable mark on all proposals view", async () => {

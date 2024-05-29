@@ -102,6 +102,19 @@ describe("ActionableProposals", () => {
       expect(await proposalCardPos[0].getProposalId()).toEqual("ID: 11");
       expect(await proposalCardPos[1].getProposalId()).toEqual("ID: 22");
     });
+
+    it("should have actionable query parameter in card href", async () => {
+      actionableNnsProposalsStore.setProposals([nnsProposal1]);
+
+      const po = await renderComponent();
+      const firstCardPo = (
+        await po.getActionableNnsProposalsPo().getProposalCardPos()
+      )[0];
+      expect(await firstCardPo.getProposalId()).toEqual("ID: 11");
+      expect(await firstCardPo.getCardHref()).toEqual(
+        "/proposal/?u=qhbym-qaaaa-aaaaa-aaafq-cai&proposal=11&actionable"
+      );
+    });
   });
 
   describe("Actionable Sns proposals", () => {
@@ -165,6 +178,23 @@ describe("ActionableProposals", () => {
       expect(await proposalCardPos1[1].getProposalId()).toEqual("ID: 33");
     });
 
+    it("should have actionable query parameter in card href", async () => {
+      setSnsProjects([snsProject0]);
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal0,
+        proposals: [proposal0],
+        includeBallotsByCaller: true,
+      });
+      const po = await renderComponent();
+      const snsProposalsPos = await po
+        .getActionableSnses()
+        .getActionableSnsProposalsPos();
+      expect(snsProposalsPos).toHaveLength(1);
+      expect(
+        await (await snsProposalsPos[0].getProposalCardPos())[0].getCardHref()
+      ).toEqual("/proposal/?u=g3pce-2iaae&proposal=11&actionable");
+    });
+
     it("should render proposal card links to different Snses", async () => {
       const principal0 = Principal.fromText("aaaaa-aa");
       const principal1 = Principal.fromText("aax3a-h4aaa-aaaaa-qaahq-cai");
@@ -199,10 +229,12 @@ describe("ActionableProposals", () => {
       expect(snsProposalsPos).toHaveLength(2);
       expect(
         await (await snsProposalsPos[0].getProposalCardPos())[0].getCardHref()
-      ).toEqual("/proposal/?u=aaaaa-aa&proposal=11");
+      ).toEqual("/proposal/?u=aaaaa-aa&proposal=11&actionable");
       expect(
         await (await snsProposalsPos[1].getProposalCardPos())[0].getCardHref()
-      ).toEqual("/proposal/?u=aax3a-h4aaa-aaaaa-qaahq-cai&proposal=22");
+      ).toEqual(
+        "/proposal/?u=aax3a-h4aaa-aaaaa-qaahq-cai&proposal=22&actionable"
+      );
     });
 
     it("should ignore snses w/o ballot or actionable proposals", async () => {

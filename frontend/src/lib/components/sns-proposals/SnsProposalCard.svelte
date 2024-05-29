@@ -19,6 +19,7 @@
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
   export let rootCanisterId: RootCanisterIdText;
   export let actionable = false;
+  export let fromActionablePage = false;
   export let hidden = false;
 
   let id: SnsProposalId | undefined;
@@ -45,6 +46,7 @@
   $: href = buildProposalUrl({
     universe: rootCanisterId,
     proposalId: `${id?.id}`,
+    actionable: fromActionablePage,
   });
 </script>
 
