@@ -20,6 +20,7 @@ import {
   SnsSwapLifecycle,
   type SnsProposalData,
 } from "@dfinity/sns";
+import { beforeEach } from "vitest";
 
 describe("ActionableProposals", () => {
   const renderComponent = async () => {
@@ -45,6 +46,15 @@ describe("ActionableProposals", () => {
     projectName: "Sns Project 2",
     rootCanisterId: principal2,
   };
+  const createProposal = (proposalId: bigint): SnsProposalData =>
+    createSnsProposal({
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+      rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+      proposalId,
+    });
+  const snsProposal0 = createProposal(11n);
+  const snsProposal1 = createProposal(22n);
+  const snsProposal2 = createProposal(33n);
 
   beforeEach(() => {
     vi.restoreAllMocks();
@@ -104,17 +114,6 @@ describe("ActionableProposals", () => {
   });
 
   describe("Actionable Sns proposals", () => {
-    const createProposal = (proposalId: bigint): SnsProposalData =>
-      createSnsProposal({
-        status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-        rewardStatus:
-          SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
-        proposalId,
-      });
-    const proposal0 = createProposal(11n);
-    const proposal1 = createProposal(22n);
-    const proposal2 = createProposal(33n);
-
     beforeEach(() => {
       // Ensure Nns proposals are loaded to avoid rendering skeletons
       actionableNnsProposalsStore.setProposals([]);
@@ -130,12 +129,12 @@ describe("ActionableProposals", () => {
 
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
-        proposals: [proposal0],
+        proposals: [snsProposal0],
         includeBallotsByCaller: true,
       });
       actionableSnsProposalsStore.set({
         rootCanisterId: principal1,
-        proposals: [proposal1, proposal2],
+        proposals: [snsProposal1, snsProposal2],
         includeBallotsByCaller: true,
       });
 
@@ -180,7 +179,7 @@ describe("ActionableProposals", () => {
       });
       actionableSnsProposalsStore.set({
         rootCanisterId: principal1,
-        proposals: [proposal0],
+        proposals: [snsProposal0],
         // no ballots
         includeBallotsByCaller: false,
       });
@@ -192,7 +191,7 @@ describe("ActionableProposals", () => {
 
       actionableSnsProposalsStore.set({
         rootCanisterId: principal2,
-        proposals: [proposal1, proposal2],
+        proposals: [snsProposal1, snsProposal2],
         includeBallotsByCaller: true,
       });
 
@@ -244,29 +243,71 @@ describe("ActionableProposals", () => {
     expect(await po.hasActionableEmptyBanner()).toEqual(true);
   });
 
-  it('should display "unsupported proposals" banner', async () => {
-    setSnsProjects([snsProject0]);
-    actionableNnsProposalsStore.setProposals([]);
-    const po = await renderComponent();
+  describe("ActionableProposalsNotSupportedSnses banner", () => {
+    it("should be visible when there are actionable proposals and Sns without support actionable", async () => {
+      actionableNnsProposalsStore.setProposals([]);
+      setSnsProjects([snsProject0, snsProject1]);
+      const po = await renderComponent();
 
-    expect(await po.hasActionableProposalsNotSupportedSnses()).toEqual(false);
+      expect(await po.hasActionableProposalsNotSupportedSnses()).toEqual(false);
 
-    actionableSnsProposalsStore.set({
-      rootCanisterId: principal0,
-      proposals: [],
-      includeBallotsByCaller: false,
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal0,
+        proposals: [],
+        includeBallotsByCaller: false,
+      });
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal1,
+        proposals: [snsProposal1],
+        includeBallotsByCaller: true,
+      });
+      await runResolvedPromises();
+
+      expect(await po.hasActionableProposalsNotSupportedSnses()).toEqual(true);
     });
-    await runResolvedPromises();
 
-    expect(await po.hasActionableProposalsNotSupportedSnses()).toEqual(true);
+    it("should be hidden when there are actionable proposals and no Sns without actionable support", async () => {
+      actionableNnsProposalsStore.setProposals([]);
+      setSnsProjects([snsProject0, snsProject1]);
+      const po = await renderComponent();
 
-    actionableSnsProposalsStore.set({
-      rootCanisterId: principal0,
-      proposals: [],
-      includeBallotsByCaller: true,
+      expect(await po.hasActionableProposalsNotSupportedSnses()).toEqual(false);
+
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal0,
+        proposals: [],
+        includeBallotsByCaller: true,
+      });
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal1,
+        proposals: [snsProposal1],
+        includeBallotsByCaller: true,
+      });
+      await runResolvedPromises();
+
+      expect(await po.hasActionableProposalsNotSupportedSnses()).toEqual(false);
     });
-    await runResolvedPromises();
 
-    expect(await po.hasActionableProposalsNotSupportedSnses()).toEqual(false);
+    it("should be hidden when no actionable proposals and there is Sns without actionable support", async () => {
+      actionableNnsProposalsStore.setProposals([]);
+      setSnsProjects([snsProject0, snsProject1]);
+      const po = await renderComponent();
+
+      expect(await po.hasActionableProposalsNotSupportedSnses()).toEqual(false);
+
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal0,
+        proposals: [],
+        includeBallotsByCaller: true,
+      });
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal1,
+        proposals: [snsProposal1],
+        includeBallotsByCaller: false,
+      });
+      await runResolvedPromises();
+
+      expect(await po.hasActionableProposalsNotSupportedSnses()).toEqual(false);
+    });
   });
 });
