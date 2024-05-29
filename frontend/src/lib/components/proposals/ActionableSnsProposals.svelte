@@ -29,7 +29,13 @@
   {#if nonNullish(nsFunctions)}
     <UniverseWithActionableProposals {universe}>
       {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
-        <SnsProposalCard actionable {proposalData} {nsFunctions} />
+        <SnsProposalCard
+          actionable
+          fromActionablePage
+          {proposalData}
+          {nsFunctions}
+          rootCanisterId={universe.canisterId}
+        />
       {/each}
     </UniverseWithActionableProposals>
   {/if}

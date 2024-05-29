@@ -132,6 +132,7 @@ describe("TokensTable", () => {
       universeId: OWN_CANISTER_ID,
       balance: TokenAmount.fromE8s({ amount: 314000000n, token: ICPToken }),
       rowHref: href,
+      domKey: href,
     });
     const po = renderTable({ userTokensData: [token1] });
 
@@ -247,6 +248,7 @@ describe("TokensTable", () => {
     const userToken = createUserToken({
       actions: [UserTokenAction.Send],
       rowHref: AppPath.Neurons,
+      domKey: AppPath.Neurons,
     });
 
     const po = renderTable({
@@ -274,6 +276,7 @@ describe("TokensTable", () => {
     const userToken = createUserToken({
       actions: [UserTokenAction.Receive],
       rowHref: AppPath.Neurons,
+      domKey: AppPath.Neurons,
     });
 
     const po = renderTable({

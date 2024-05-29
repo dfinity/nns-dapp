@@ -35,6 +35,7 @@ const convertAccountToUserTokenData = ({
       logo: nnsUniverse.logo,
       actions: [],
       rowHref,
+      domKey: rowHref,
     };
   }
 
@@ -62,6 +63,7 @@ const convertAccountToUserTokenData = ({
       token: NNS_TOKEN_DATA,
     }),
     rowHref,
+    domKey: rowHref,
     accountIdentifier: account.identifier,
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
   };

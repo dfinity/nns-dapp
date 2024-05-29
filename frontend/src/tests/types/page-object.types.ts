@@ -38,4 +38,5 @@ export interface PageObjectElement {
   innerHtmlForDebugging(): Promise<string>;
   addEventListener(eventType: string, fn: (e: Event) => void): Promise<void>;
   getDocumentBody(): Promise<PageObjectElement>;
+  getTagName(): Promise<string>;
 }

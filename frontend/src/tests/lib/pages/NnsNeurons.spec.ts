@@ -81,12 +81,6 @@ describe("NnsNeurons", () => {
         expect(await po.hasEmptyMessage()).toBe(false);
       });
 
-      it("should render topic rename message", async () => {
-        const po = await renderComponent();
-
-        expect(await po.hasTopicRenameMessage()).toBe(true);
-      });
-
       it("should not render the neurons table", async () => {
         const po = await renderComponent();
 
@@ -134,12 +128,6 @@ describe("NnsNeurons", () => {
 
       expect(await po.hasEmptyMessage()).toBe(true);
     });
-
-    it("should not render topic rename message", async () => {
-      const po = await renderComponent();
-
-      expect(await po.hasTopicRenameMessage()).toBe(false);
-    });
   });
 
   describe("while loading", () => {
@@ -158,12 +146,6 @@ describe("NnsNeurons", () => {
       const po = await renderComponent();
 
       expect(await po.hasEmptyMessage()).toBe(false);
-    });
-
-    it("should not render topic rename message", async () => {
-      const po = await renderComponent();
-
-      expect(await po.hasTopicRenameMessage()).toBe(false);
     });
   });
 

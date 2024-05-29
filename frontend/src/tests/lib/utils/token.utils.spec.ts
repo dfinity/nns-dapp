@@ -808,14 +808,16 @@ describe("token-utils", () => {
   });
 
   describe("sortUserTokens", () => {
+    const icpHref = buildWalletUrl({
+      universe: OWN_CANISTER_ID_TEXT,
+    });
     const loadingUserToken: UserToken = {
       ...icpTokenBase,
       title: "Main",
       balance: "loading",
       actions: [],
-      rowHref: buildWalletUrl({
-        universe: OWN_CANISTER_ID_TEXT,
-      }),
+      rowHref: icpHref,
+      domKey: icpHref,
     };
     const userToken = (balanceUlps: bigint): UserToken => ({
       universeId: Principal.fromText(nnsUniverseMock.canisterId),
@@ -832,6 +834,7 @@ describe("token-utils", () => {
         token: NNS_TOKEN_DATA,
       }),
       rowHref: "row href",
+      domKey: "row href",
       accountIdentifier: mockSubAccount.identifier,
       actions: [UserTokenAction.Receive, UserTokenAction.Send],
     });

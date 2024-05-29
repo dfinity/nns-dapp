@@ -1,10 +1,9 @@
 <script>
   import SkeletonCard from "../ui/SkeletonCard.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 </script>
 
-<TestIdWrapper testId="loading-actionable-proposals-component">
+<div data-tid="loading-actionable-proposals-component">
   <div class="headline">
     <SkeletonText />
   </div>
@@ -13,7 +12,7 @@
     <SkeletonCard />
     <SkeletonCard />
   </div>
-</TestIdWrapper>
+</div>
 
 <style lang="scss">
   .headline {

@@ -17,10 +17,6 @@
 </div>
 
 <style lang="scss">
-  .container {
-    margin-bottom: var(--padding-4x);
-  }
-
   .title {
     margin-bottom: var(--padding-3x);
   }

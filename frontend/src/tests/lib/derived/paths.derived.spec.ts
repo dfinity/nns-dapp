@@ -9,6 +9,7 @@ import {
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
 import { mockSnsCanisterIdText } from "$tests/mocks/sns.api.mock";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { get } from "svelte/store";
 
 describe("paths derived stores", () => {
@@ -71,6 +72,23 @@ describe("paths derived stores", () => {
 
       const $store = get(proposalsPathStore);
       expect($store).toBe(
+        `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${mockSnsCanisterIdText}`
+      );
+    });
+
+    it("should respect actionable parameter in path", async () => {
+      page.mock({
+        data: { universe: mockSnsCanisterIdText, actionable: true },
+      });
+
+      expect(get(proposalsPathStore)).toBe(`${AppPath.Proposals}/?actionable`);
+
+      page.mock({
+        data: { universe: mockSnsCanisterIdText },
+      });
+      await runResolvedPromises();
+
+      expect(get(proposalsPathStore)).toBe(
         `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${mockSnsCanisterIdText}`
       );
     });

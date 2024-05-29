@@ -54,6 +54,7 @@ describe("NnsAccounts", () => {
           token: NNS_TOKEN_DATA,
         }),
         rowHref: "/main",
+        domKey: "/main",
       });
       const subaccountTokenData = createUserToken({
         title: "Subaccount test",
@@ -62,6 +63,7 @@ describe("NnsAccounts", () => {
           token: NNS_TOKEN_DATA,
         }),
         rowHref: "/subaccount",
+        domKey: "/subaccount",
       });
       const po = renderComponent([mainTokenData, subaccountTokenData]);
       expect(await po.getTokensTablePo().getRowsData()).toEqual([
@@ -84,6 +86,7 @@ describe("NnsAccounts", () => {
           token: NNS_TOKEN_DATA,
         }),
         rowHref: "/main",
+        domKey: "/main",
       });
       const subaccountTokenData = createUserToken({
         title: "Subaccount test",
@@ -92,6 +95,7 @@ describe("NnsAccounts", () => {
           token: NNS_TOKEN_DATA,
         }),
         rowHref: "/subaccount",
+        domKey: "/subaccount",
       });
       const po = renderComponent([mainTokenData, subaccountTokenData]);
       expect(await po.getAddAccountRowTabindex()).toBe("0");

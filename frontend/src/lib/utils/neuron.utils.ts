@@ -1043,6 +1043,6 @@ export const tableNeuronsFromNeuronInfos = (
   neuronInfos: NeuronInfo[]
 ): TableNeuron[] => {
   return neuronInfos.map(({ neuronId }) => ({
-    neuronId,
+    neuronId: neuronId.toString(),
   }));
 };

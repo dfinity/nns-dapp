@@ -27,14 +27,16 @@ describe("icp-tokens-list-user.derived", () => {
   const icpTokenUser: UserTokenData = createIcpUserToken({
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
   });
+  const mainAccountHref = buildWalletUrl({
+    universe: OWN_CANISTER_ID_TEXT,
+  });
   const loadingUserTokenData: UserTokenLoading = {
     ...icpTokenBase,
     title: "Main",
     balance: "loading",
     actions: [],
-    rowHref: buildWalletUrl({
-      universe: OWN_CANISTER_ID_TEXT,
-    }),
+    rowHref: mainAccountHref,
+    domKey: mainAccountHref,
   };
   const mainUserTokenData: UserTokenData = {
     ...icpTokenUser,
@@ -44,9 +46,8 @@ describe("icp-tokens-list-user.derived", () => {
     }),
     title: "Main",
     subtitle: undefined,
-    rowHref: buildWalletUrl({
-      universe: OWN_CANISTER_ID_TEXT,
-    }),
+    rowHref: mainAccountHref,
+    domKey: mainAccountHref,
     accountIdentifier: mockMainAccount.identifier,
   };
   const subaccountUserTokenData = (
@@ -57,6 +58,10 @@ describe("icp-tokens-list-user.derived", () => {
       balanceUlps === mockSubAccount.balanceUlps
         ? mockSubAccount.identifier
         : `${balanceUlps}`;
+    const subaccountHref = buildWalletUrl({
+      universe: OWN_CANISTER_ID_TEXT,
+      account: accountIdentifier,
+    });
     return {
       ...icpTokenUser,
       balance: TokenAmountV2.fromUlps({
@@ -65,10 +70,8 @@ describe("icp-tokens-list-user.derived", () => {
       }),
       title: mockSubAccount.name,
       subtitle: undefined,
-      rowHref: buildWalletUrl({
-        universe: OWN_CANISTER_ID_TEXT,
-        account: accountIdentifier,
-      }),
+      rowHref: subaccountHref,
+      domKey: subaccountHref,
       accountIdentifier,
     };
   };
@@ -80,6 +83,10 @@ describe("icp-tokens-list-user.derived", () => {
       balanceUlps === mockHardwareWalletAccount.balanceUlps
         ? mockHardwareWalletAccount.identifier
         : `${balanceUlps}`;
+    const hwHref = buildWalletUrl({
+      universe: OWN_CANISTER_ID_TEXT,
+      account: accountIdentifier,
+    });
     return {
       ...icpTokenUser,
       balance: TokenAmountV2.fromUlps({
@@ -88,10 +95,8 @@ describe("icp-tokens-list-user.derived", () => {
       }),
       title: mockHardwareWalletAccount.name,
       subtitle: "Hardware Wallet Controlled",
-      rowHref: buildWalletUrl({
-        universe: OWN_CANISTER_ID_TEXT,
-        account: accountIdentifier,
-      }),
+      rowHref: hwHref,
+      domKey: hwHref,
       accountIdentifier,
     };
   };

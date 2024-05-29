@@ -1,5 +1,6 @@
 import { pageStore, type Page } from "$lib/derived/page.derived";
 import {
+  ACTIONABLE_PROPOSALS_URL,
   buildAccountsUrl,
   buildCanistersUrl,
   buildNeuronsUrl,
@@ -19,7 +20,8 @@ export const neuronsPathStore = derived<Readable<Page>, string>(
 
 export const proposalsPathStore = derived<Readable<Page>, string>(
   pageStore,
-  ({ universe }) => buildProposalsUrl({ universe })
+  ({ universe, actionable }) =>
+    actionable ? ACTIONABLE_PROPOSALS_URL : buildProposalsUrl({ universe })
 );
 
 export const canistersPathStore = derived<Readable<Page>, string>(
