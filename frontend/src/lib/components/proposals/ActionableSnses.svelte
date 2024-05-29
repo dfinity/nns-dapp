@@ -1,5 +1,4 @@
 <script lang="ts">
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import {
     type ActionableSnsProposalsByUniverseData,
     actionableSnsProposalsByUniverseStore,
@@ -12,8 +11,16 @@
   );
 </script>
 
-<TestIdWrapper testId="actionable-snses-component">
+<div class="container" data-tid="actionable-snses-component">
   {#each actionableUniverses as { universe, proposals } (universe.canisterId)}
     <ActionableSnsProposals {universe} {proposals} />
   {/each}
-</TestIdWrapper>
+</div>
+
+<style lang="scss">
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--actionable-page-gap);
+  }
+</style>
