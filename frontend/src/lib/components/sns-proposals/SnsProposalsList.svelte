@@ -14,6 +14,7 @@
   import ActionableProposalsNotSupported from "$lib/components/proposals/ActionableProposalsNotSupported.svelte";
   import ActionableProposalsEmpty from "$lib/components/proposals/ActionableProposalsEmpty.svelte";
   import type { SnsProposalActionableData } from "$lib/derived/sns/sns-filtered-actionable-proposals.derived";
+  import { pageStore } from "$lib/derived/page.derived";
 
   export let snsName: string;
   export let proposals: SnsProposalActionableData[] | undefined;
@@ -46,6 +47,7 @@
                 fromActionablePage={false}
                 {proposalData}
                 {nsFunctions}
+                rootCanisterId={$pageStore.universe}
               />
             {/each}
           </InfiniteScroll>
@@ -69,6 +71,7 @@
               actionable={proposalData.isActionable}
               fromActionablePage={false}
               {proposalData}
+              rootCanisterId={$pageStore.universe}
               {nsFunctions}
             />
           {/each}

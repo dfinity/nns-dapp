@@ -34,6 +34,7 @@
           fromActionablePage
           {proposalData}
           {nsFunctions}
+          rootCanisterId={universe.canisterId}
         />
       {/each}
     </UniverseWithActionableProposals>

@@ -3,7 +3,6 @@
     getUniversalProposalStatus,
     mapProposalInfo,
   } from "$lib/utils/sns-proposals.utils";
-  import { pageStore } from "$lib/derived/page.derived";
   import { buildProposalUrl } from "$lib/utils/navigation.utils";
   import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
   import type {
@@ -14,9 +13,11 @@
   } from "@dfinity/sns";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import type { UniversalProposalStatus } from "$lib/types/proposals";
+  import type { RootCanisterIdText } from "$lib/types/sns";
 
   export let proposalData: SnsProposalData;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
+  export let rootCanisterId: RootCanisterIdText;
   export let actionable = false;
   export let fromActionablePage = false;
   export let hidden = false;
@@ -43,7 +44,7 @@
 
   let href: string;
   $: href = buildProposalUrl({
-    universe: $pageStore.universe,
+    universe: rootCanisterId,
     proposalId: `${id?.id}`,
     actionable: fromActionablePage,
   });
