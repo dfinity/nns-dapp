@@ -5,7 +5,6 @@ import {
   createSnsProposal,
   mockSnsProposal,
 } from "$tests/mocks/sns-proposals.mock";
-import { mockSnsCanisterIdText } from "$tests/mocks/sns.api.mock";
 import { SnsProposalListPo } from "$tests/page-objects/SnsProposalList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
@@ -33,7 +32,7 @@ describe("SnsProposalsList", () => {
   const proposals = [proposal1, proposal2, proposal3];
 
   beforeEach(() => {
-    page.mock({ data: { universe: mockSnsCanisterIdText } });
+    page.mock({ data: { universe: "aaaaa-aa" } });
   });
 
   it("should render a proposal card per proposal", () => {
@@ -201,6 +200,20 @@ describe("SnsProposalsList", () => {
       );
       expect(await (await po.getProposalCardPos())[1].getProposalId()).toEqual(
         "ID: 321"
+      );
+    });
+
+    it("should use universe from URL for card href", async () => {
+      const po = await renderComponent({
+        proposals: [actionableProposalA],
+        includeBallots: true,
+        snsName: "sns-name",
+        actionableSelected: true,
+        nsFunctions: [],
+      });
+      expect((await po.getProposalCardPos()).length).toEqual(1);
+      expect(await (await po.getProposalCardPos())[0].getCardHref()).toEqual(
+        `/proposal/?u=aaaaa-aa&proposal=123`
       );
     });
 

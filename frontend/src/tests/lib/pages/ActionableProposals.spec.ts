@@ -14,6 +14,7 @@ import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { ProposalInfo } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
@@ -162,6 +163,46 @@ describe("ActionableProposals", () => {
       expect(proposalCardPos1.length).toEqual(2);
       expect(await proposalCardPos1[0].getProposalId()).toEqual("ID: 22");
       expect(await proposalCardPos1[1].getProposalId()).toEqual("ID: 33");
+    });
+
+    it("should render proposal card links to different Snses", async () => {
+      const principal0 = Principal.fromText("aaaaa-aa");
+      const principal1 = Principal.fromText("aax3a-h4aaa-aaaaa-qaahq-cai");
+      Principal.fromText("aaaaa-aa");
+      setSnsProjects([
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          projectName: "Sns Project 0",
+          rootCanisterId: principal0,
+        },
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          projectName: "Sns Project 1",
+          rootCanisterId: principal1,
+        },
+      ]);
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal0,
+        proposals: [proposal0],
+        includeBallotsByCaller: true,
+      });
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal1,
+        proposals: [proposal1],
+        includeBallotsByCaller: true,
+      });
+      const po = await renderComponent();
+
+      const snsProposalsPos = await po
+        .getActionableSnses()
+        .getActionableSnsProposalsPos();
+      expect(snsProposalsPos).toHaveLength(2);
+      expect(
+        await (await snsProposalsPos[0].getProposalCardPos())[0].getCardHref()
+      ).toEqual("/proposal/?u=aaaaa-aa&proposal=11");
+      expect(
+        await (await snsProposalsPos[1].getProposalCardPos())[0].getCardHref()
+      ).toEqual("/proposal/?u=aax3a-h4aaa-aaaaa-qaahq-cai&proposal=22");
     });
 
     it("should ignore snses w/o ballot or actionable proposals", async () => {
