@@ -61,7 +61,9 @@
   @use "../../themes/mixins/grid-table";
 
   [role="row"] {
-    @include interaction.tappable;
+    a {
+      @include interaction.tappable;
+    }
 
     display: grid;
     flex-direction: column;
