@@ -61,10 +61,6 @@
   @use "../../themes/mixins/grid-table";
 
   [role="row"] {
-    a {
-      @include interaction.tappable;
-    }
-
     display: grid;
     flex-direction: column;
     gap: var(--padding-2x);
