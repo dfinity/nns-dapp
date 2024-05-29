@@ -401,6 +401,7 @@ interface I18nActionable_proposals_sign_in {
 interface I18nActionable_proposals_empty {
   title: string;
   text: string;
+  text_unsupported: string;
 }
 
 interface I18nActionable_proposals_not_supported {

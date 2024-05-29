@@ -384,7 +384,8 @@
   },
   "actionable_proposals_empty": {
     "title": "You're all caught up.",
-    "text": "Check back later!"
+    "text": "Check back later!",
+    "text_unsupported": "Check back later! Note, that not all SNS DAOs support actionable proposals. You will need to check proposals manually if you hold $snsNames neurons."
   },
   "actionable_proposals_not_supported": {
     "title": "$snsName doesn't yet support actionable proposals.",
