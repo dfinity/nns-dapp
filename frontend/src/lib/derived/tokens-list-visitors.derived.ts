@@ -31,6 +31,7 @@ const convertToUserToken = ({
       balance: "loading",
       actions: [],
       rowHref,
+      domKey: rowHref,
     };
   }
   return {
@@ -40,6 +41,7 @@ const convertToUserToken = ({
     fee: TokenAmountV2.fromUlps({ amount: token.fee, token }),
     actions: [UserTokenAction.GoToDetail],
     rowHref,
+    domKey: rowHref,
   };
 };
 

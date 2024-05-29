@@ -38,6 +38,7 @@ const convertToUserTokenData = ({
       balance: "loading",
       actions: [],
       rowHref,
+      domKey: rowHref,
     };
   }
   const fee = TokenAmountV2.fromUlps({ amount: token.fee, token });
@@ -65,6 +66,7 @@ const convertToUserTokenData = ({
     ],
     accountIdentifier,
     rowHref,
+    domKey: rowHref,
   };
 };
 

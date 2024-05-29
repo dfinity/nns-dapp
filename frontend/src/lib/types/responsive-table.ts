@@ -1,7 +1,10 @@
 import type { ComponentType, SvelteComponent } from "svelte";
 
 export interface ResponsiveTableRowData {
-  rowHref: string;
+  // Used in forEach for consistent rendering. Must be unique per table.
+  domKey: string;
+  // If absent, the row will not be clickable.
+  rowHref?: string;
 }
 
 export interface ResponsiveTableColumn<

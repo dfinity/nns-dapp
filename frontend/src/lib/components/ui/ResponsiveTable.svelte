@@ -64,7 +64,7 @@
     </div>
   </div>
   <div role="rowgroup">
-    {#each tableData as rowData (rowData.rowHref)}
+    {#each tableData as rowData (rowData.domKey)}
       <div class="row-wrapper" transition:heightTransition={{ duration: 250 }}>
         <ResponsiveTableRow on:nnsAction {rowData} {columns} />
       </div>
