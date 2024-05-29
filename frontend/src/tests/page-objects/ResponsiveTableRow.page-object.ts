@@ -2,7 +2,7 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import { BasePageObject } from "./base.page-object";
 
 export class ResponsiveTableRowPo extends BasePageObject {
-  private static readonly TID = "responsive-table-row-component";
+  static readonly TID = "responsive-table-row-component";
 
   static async allUnder(
     element: PageObjectElement
