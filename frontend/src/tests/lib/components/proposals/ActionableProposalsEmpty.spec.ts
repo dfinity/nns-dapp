@@ -33,6 +33,7 @@ describe("ActionableProposalsEmpty", () => {
 
     return PageBannerPo.under({
       element: new JestPageObjectElement(container),
+      testId: "actionable-proposals-empty",
     });
   };
 
