@@ -3,23 +3,20 @@ import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposal
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { PageBannerPo } from "$tests/page-objects/PageBanner.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 
 describe("ActionableProposalsEmpty", () => {
   const addSnsesWithSupport = (includeBallotsByCallerList: boolean[]) => {
-    const snsProjects = Array.from(
-      new Array(includeBallotsByCallerList.length)
-    ).map((_, i) => ({
+    const snsProjects = includeBallotsByCallerList.map((_, i) => ({
       lifecycle: SnsSwapLifecycle.Committed,
       rootCanisterId: principal(i),
       projectName: `SNS-${i}`,
     }));
     setSnsProjects(snsProjects);
 
-    Array.from(new Array(includeBallotsByCallerList.length)).forEach((_, i) =>
+    includeBallotsByCallerList.forEach((_, i) =>
       actionableSnsProposalsStore.set({
         rootCanisterId: principal(i),
         proposals: [],
@@ -40,7 +37,6 @@ describe("ActionableProposalsEmpty", () => {
   beforeEach(() => {
     resetSnsProjects();
     actionableSnsProposalsStore.resetForTesting();
-    allowLoggingInOneTestForDebugging();
   });
 
   it("should display a title", async () => {

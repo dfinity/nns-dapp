@@ -9,16 +9,14 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 
 describe("ActionableProposalsNotSupportedSnses", () => {
   const addSnsesWithSupport = (includeBallotsByCallerList: boolean[]) => {
-    const snsProjects = Array.from(
-      new Array(includeBallotsByCallerList.length)
-    ).map((_, i) => ({
+    const snsProjects = includeBallotsByCallerList.map((_, i) => ({
       lifecycle: SnsSwapLifecycle.Committed,
       rootCanisterId: principal(i),
       projectName: `SNS-${i}`,
     }));
     setSnsProjects(snsProjects);
 
-    Array.from(new Array(includeBallotsByCallerList.length)).forEach((_, i) =>
+    includeBallotsByCallerList.forEach((_, i) =>
       actionableSnsProposalsStore.set({
         rootCanisterId: principal(i),
         proposals: [],
