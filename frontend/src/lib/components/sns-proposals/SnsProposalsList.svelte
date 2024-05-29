@@ -44,7 +44,6 @@
             {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
               <SnsProposalCard
                 actionable={proposalData.isActionable}
-                fromActionablePage={false}
                 {proposalData}
                 {nsFunctions}
                 rootCanisterId={$pageStore.universe}
@@ -69,7 +68,6 @@
           {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
             <SnsProposalCard
               actionable={proposalData.isActionable}
-              fromActionablePage={false}
               {proposalData}
               rootCanisterId={$pageStore.universe}
               {nsFunctions}
