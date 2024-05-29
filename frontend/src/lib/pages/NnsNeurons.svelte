@@ -34,22 +34,6 @@
 </script>
 
 <TestIdWrapper testId="nns-neurons-component">
-  {#if !isLoading && $sortedNeuronStore.length > 0}
-    <div class="topic-rename-message" data-tid="topic-rename-message">
-      <div class="icon-info">
-        <IconInfo />
-      </div>
-      <span>
-        {$i18n.neurons.rename_topic_message}
-        <a
-          href="https://forum.dfinity.org/t/bringing-clarity-to-icp-upgrade-proposals/29626"
-          rel="noopener noreferrer"
-          aria-label={$i18n.neurons.rename_topic_learn_more_label}
-          target="_blank">{$i18n.core.learn_more}</a
-        >
-      </span>
-    </div>
-  {/if}
   {#if $ENABLE_NEURONS_TABLE}
     <NeuronsTable neurons={tableNeurons} />
   {:else}
@@ -89,22 +73,3 @@
     <EmptyMessage>{$i18n.neurons.text}</EmptyMessage>
   {/if}
 </TestIdWrapper>
-
-<style lang="scss">
-  .topic-rename-message {
-    display: flex;
-    gap: var(--padding);
-    align-items: center;
-
-    background-color: var(--card-background);
-    border-radius: var(--border-radius);
-    margin-bottom: var(--padding-2x);
-    padding: var(--padding-2x);
-
-    .icon-info {
-      padding: var(--padding);
-      background-color: var(--tooltip-border-color);
-      border-radius: 50%;
-    }
-  }
-</style>
