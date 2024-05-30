@@ -68,6 +68,7 @@ describe("NnsNeurons", () => {
 
         expect(await neuronCards[0].isDisabled()).toBe(false);
         expect(await neuronCards[1].isDisabled()).toBe(false);
+        // Spawning neuron comes last because it has no stake.
         expect(await neuronCards[2].isDisabled()).toBe(true);
       });
 
