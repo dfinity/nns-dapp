@@ -1052,12 +1052,15 @@ export const tableNeuronsFromNeuronInfos = (
   return neuronInfos.map((neuronInfo) => {
     const { neuronId } = neuronInfo;
     const neuronIdString = neuronId.toString();
-    const rowHref = buildNeuronUrl({
-      universe: OWN_CANISTER_ID_TEXT,
-      neuronId,
-    });
+    const isSpawningNeuron = isSpawning(neuronInfo);
+    const rowHref = isSpawningNeuron
+      ? undefined
+      : buildNeuronUrl({
+          universe: OWN_CANISTER_ID_TEXT,
+          neuronId,
+        });
     return {
-      rowHref,
+      ...(rowHref && { rowHref }),
       domKey: neuronIdString,
       neuronId: neuronIdString,
       stake: TokenAmountV2.fromUlps({

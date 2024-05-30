@@ -2880,5 +2880,31 @@ describe("neuron-utils", () => {
         },
       ]);
     });
+
+    it("should convert neuronInfo for spawning neuron without href", () => {
+      const neuronId = 52n;
+      const spawningNeuronInfo = {
+        ...mockNeuron,
+        neuronId: neuronId,
+        state: NeuronState.Spawning,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 0n,
+          spawnAtTimesSeconds: 12_312_313n,
+        },
+      };
+      const neuronInfos = [spawningNeuronInfo];
+      const tableNeurons = tableNeuronsFromNeuronInfos(neuronInfos);
+      expect(tableNeurons).toEqual([
+        {
+          domKey: "52",
+          neuronId: "52",
+          stake: TokenAmountV2.fromUlps({
+            amount: 0n,
+            token: ICPToken,
+          }),
+        },
+      ]);
+    });
   });
 });

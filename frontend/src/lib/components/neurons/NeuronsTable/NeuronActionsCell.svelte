@@ -1,12 +1,14 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { IconRight } from "@dfinity/gix-components";
   import type { TableNeuron } from "$lib/types/neurons-table";
+  import { nonNullish } from "@dfinity/utils";
 
   export let rowData: TableNeuron;
 </script>
 
-{#if false}
-  We need to reference {rowData} to satisfy the linter. We'll reference it properly
-  in a future change.
+{#if nonNullish(rowData.rowHref)}
+  <TestIdWrapper testId="go-to-neuron-detail-action">
+    <IconRight />
+  </TestIdWrapper>
 {/if}
-<IconRight />
