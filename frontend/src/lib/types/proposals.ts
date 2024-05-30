@@ -1,4 +1,5 @@
-import type { ProposalStatus, Topic } from "@dfinity/nns";
+import type { UniverseCanisterIdText } from "$lib/types/universe";
+import type { ProposalId, ProposalStatus, Topic } from "@dfinity/nns";
 
 export type ProposalsFilters = typeof Topic | typeof ProposalStatus;
 
@@ -26,3 +27,9 @@ export interface VotingNeuron {
 
 // 100% -> 10000 basis points
 export type BasisPoints = bigint;
+
+// An entry for proposal navigation on the proposal detail page.
+export interface ProposalsNavigationId {
+  proposalId: ProposalId;
+  universe: UniverseCanisterIdText;
+}
