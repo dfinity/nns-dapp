@@ -593,7 +593,7 @@ export const getVoteDisplay = (vote: Vote): string => {
 };
 
 // Returns 1 when a < b, -1 when a > b, 0 when a === b
-export const compareNavigationIds = ({
+export const navigationIdComparator = ({
   a,
   b,
   universes,
