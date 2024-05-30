@@ -22,6 +22,10 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
     return this.getText("neuron-stake-cell-component");
   }
 
+  getDissolveDelay(): Promise<string> {
+    return this.getText("neuron-dissolve-delay-cell-component");
+  }
+
   hasGoToDetailButton(): Promise<boolean> {
     return this.isPresent("go-to-neuron-detail-action");
   }

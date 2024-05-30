@@ -1,4 +1,9 @@
 import NeuronsTable from "$lib/components/neurons/NeuronsTable/NeuronsTable.svelte";
+import {
+  SECONDS_IN_DAY,
+  SECONDS_IN_EIGHT_YEARS,
+  SECONDS_IN_MONTH,
+} from "$lib/constants/constants";
 import type { TableNeuron } from "$lib/types/neurons-table";
 import { NeuronsTablePo } from "$tests/page-objects/NeuronsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -14,7 +19,9 @@ describe("NeuronsTable", () => {
       amount: 500_000_000n,
       token: ICPToken,
     }),
+    dissolveDelaySeconds: BigInt(6 * SECONDS_IN_MONTH),
   };
+
   const neuron2: TableNeuron = {
     rowHref: "/neurons/99",
     domKey: "99",
@@ -23,7 +30,9 @@ describe("NeuronsTable", () => {
       amount: 1_300_000_000n,
       token: ICPToken,
     }),
+    dissolveDelaySeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
   };
+
   const spawningNeuron: TableNeuron = {
     domKey: "101",
     neuronId: "101",
@@ -31,7 +40,9 @@ describe("NeuronsTable", () => {
       amount: 300_000_000n,
       token: ICPToken,
     }),
+    dissolveDelaySeconds: BigInt(5 * SECONDS_IN_DAY),
   };
+
   const renderComponent = ({ neurons }) => {
     const { container } = render(NeuronsTable, {
       neurons,
@@ -61,6 +72,14 @@ describe("NeuronsTable", () => {
     expect(rowPos).toHaveLength(2);
     expect(await rowPos[0].getStake()).toBe("5.00 ICP");
     expect(await rowPos[1].getStake()).toBe("13.00 ICP");
+  });
+
+  it("should render dissolve delay", async () => {
+    const po = renderComponent({ neurons: [neuron1, neuron2] });
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getDissolveDelay()).toBe("182 days, 15 hours");
+    expect(await rowPos[1].getDissolveDelay()).toBe("8 years");
   });
 
   it("should render go-to-detail button iff there is a URL", async () => {
