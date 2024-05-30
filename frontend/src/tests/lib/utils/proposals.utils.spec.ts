@@ -13,7 +13,9 @@ import {
   isProposalDeadlineInTheFuture,
   lastProposalId,
   mapProposalInfo,
+  newerProposalNavigationId,
   nnsNeuronToVotingNeuron,
+  olderProposalNavigationId,
   preserveNeuronSelectionAfterUpdate,
   proposalActionData,
   proposalFirstActionKey,
@@ -32,6 +34,7 @@ import {
   proposalActionRewardNodeProvider,
 } from "$tests/mocks/proposal.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
+import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
 import type {
   Action,
   Ballot,
@@ -998,5 +1001,285 @@ describe("proposals-utils", () => {
       expect(getVoteDisplay(Vote.No)).toBe("No");
       expect(getVoteDisplay(Vote.Unspecified)).toBe("Unspecified");
     });
+  });
+
+  describe("newerProposalId", () => {
+    beforeEach(() => {
+      allowLoggingInOneTestForDebugging();
+    });
+
+    it("should return newer id from same universe", () => {
+      expect(
+        newerProposalNavigationId({
+          currentId: {
+            proposalId: 1n,
+            universe: "aaaaa-aa",
+          },
+          ids: [
+            {
+              proposalId: 2n,
+              universe: "aaaaa-aa",
+            },
+            {
+              proposalId: 1n,
+              universe: "aaaaa-aa",
+            },
+            {
+              proposalId: 0n,
+              universe: "aaaaa-aa",
+            },
+          ],
+          universes: ["aaaaa-aa"],
+        })
+      ).toEqual({
+        proposalId: 2n,
+        universe: "aaaaa-aa",
+      });
+    });
+
+    it("should return newer id from same universe even when the current proposalId is not presented anymore", () => {
+      expect(
+        newerProposalNavigationId({
+          currentId: {
+            proposalId: 1n,
+            universe: "aaaaa-aa",
+          },
+          ids: [
+            {
+              proposalId: 2n,
+              universe: "aaaaa-aa",
+            },
+            {
+              proposalId: 0n,
+              universe: "aaaaa-aa",
+            },
+          ],
+          universes: ["aaaaa-aa"],
+        })
+      ).toEqual({
+        proposalId: 2n,
+        universe: "aaaaa-aa",
+      });
+    });
+  });
+
+  it("should return first id from the previous universe when no newer in the current", () => {
+    expect(
+      newerProposalNavigationId({
+        currentId: {
+          proposalId: 1n,
+          universe: "aaaaa-aa",
+        },
+        ids: [
+          {
+            proposalId: 33n,
+            universe: "ccccc-cc",
+          },
+          {
+            proposalId: 10n,
+            universe: "ccccc-cc",
+          },
+          {
+            proposalId: 1n,
+            universe: "aaaaa-aa",
+          },
+          {
+            proposalId: 0n,
+            universe: "aaaaa-aa",
+          },
+        ],
+        universes: ["ccccc-cc", "bbbbb-bb", "aaaaa-aa"],
+      })
+    ).toEqual({
+      proposalId: 10n,
+      universe: "ccccc-cc",
+    });
+  });
+
+  it("should return first id from the previous universe when no current universe presented", () => {
+    expect(
+      newerProposalNavigationId({
+        currentId: {
+          proposalId: 1000n,
+          universe: "aaaaa-aa",
+        },
+        ids: [
+          {
+            proposalId: 33n,
+            universe: "ccccc-cc",
+          },
+          {
+            proposalId: 10n,
+            universe: "ccccc-cc",
+          },
+        ],
+        universes: ["ccccc-cc", "bbbbb-bb", "aaaaa-aa"],
+      })
+    ).toEqual({
+      proposalId: 10n,
+      universe: "ccccc-cc",
+    });
+  });
+
+  it("should return undefined when nothing found", () => {
+    expect(
+      newerProposalNavigationId({
+        currentId: {
+          proposalId: 1n,
+          universe: "aaaaa-aa",
+        },
+        ids: [
+          {
+            proposalId: 1n,
+            universe: "aaaaa-aa",
+          },
+          {
+            proposalId: 0n,
+            universe: "aaaaa-aa",
+          },
+        ],
+        universes: ["ccccc-cc", "bbbbb-bb", "aaaaa-aa"],
+      })
+    ).toEqual(undefined);
+  });
+
+  describe("olderProposalNavigationId", () => {
+    beforeEach(() => {
+      allowLoggingInOneTestForDebugging();
+    });
+
+    it("should return older id from same universe", () => {
+      expect(
+        olderProposalNavigationId({
+          currentId: {
+            proposalId: 1n,
+            universe: "aaaaa-aa",
+          },
+          ids: [
+            {
+              proposalId: 2n,
+              universe: "aaaaa-aa",
+            },
+            {
+              proposalId: 1n,
+              universe: "aaaaa-aa",
+            },
+            {
+              proposalId: 0n,
+              universe: "aaaaa-aa",
+            },
+          ],
+          universes: ["aaaaa-aa"],
+        })
+      ).toEqual({
+        proposalId: 0n,
+        universe: "aaaaa-aa",
+      });
+    });
+
+    it("should return older id from same universe even when the current proposalId is not presented anymore", () => {
+      expect(
+        olderProposalNavigationId({
+          currentId: {
+            proposalId: 1n,
+            universe: "aaaaa-aa",
+          },
+          ids: [
+            {
+              proposalId: 2n,
+              universe: "aaaaa-aa",
+            },
+            {
+              proposalId: 0n,
+              universe: "aaaaa-aa",
+            },
+          ],
+          universes: ["aaaaa-aa"],
+        })
+      ).toEqual({
+        proposalId: 0n,
+        universe: "aaaaa-aa",
+      });
+    });
+  });
+
+  it("should return first id from the next universe when no older in the current", () => {
+    expect(
+      olderProposalNavigationId({
+        currentId: {
+          proposalId: 10n,
+          universe: "ccccc-cc",
+        },
+        ids: [
+          {
+            proposalId: 33n,
+            universe: "ccccc-cc",
+          },
+          {
+            proposalId: 10n,
+            universe: "ccccc-cc",
+          },
+          {
+            proposalId: 1n,
+            universe: "aaaaa-aa",
+          },
+          {
+            proposalId: 0n,
+            universe: "aaaaa-aa",
+          },
+        ],
+        universes: ["ccccc-cc", "bbbbb-bb", "aaaaa-aa"],
+      })
+    ).toEqual({
+      proposalId: 1n,
+      universe: "aaaaa-aa",
+    });
+  });
+
+  it("should return first id from the next universe when no current universe presented", () => {
+    expect(
+      olderProposalNavigationId({
+        currentId: {
+          proposalId: 1000n,
+          universe: "aaaaa-aa",
+        },
+        ids: [
+          {
+            proposalId: 33n,
+            universe: "ccccc-cc",
+          },
+          {
+            proposalId: 10n,
+            universe: "ccccc-cc",
+          },
+        ],
+        universes: ["aaaaa-aa", "bbbbb-bb", "ccccc-cc"],
+      })
+    ).toEqual({
+      proposalId: 33n,
+      universe: "ccccc-cc",
+    });
+  });
+
+  it("should return undefined when nothing found", () => {
+    expect(
+      olderProposalNavigationId({
+        currentId: {
+          proposalId: 0n,
+          universe: "aaaaa-aa",
+        },
+        ids: [
+          {
+            proposalId: 1n,
+            universe: "aaaaa-aa",
+          },
+          {
+            proposalId: 0n,
+            universe: "aaaaa-aa",
+          },
+        ],
+        universes: ["aaaaa-aa", "bbbbb-bb", "ccccc-cc"],
+      })
+    ).toEqual(undefined);
   });
 });
