@@ -19,7 +19,9 @@ describe("NnsStakeItemAction", () => {
     stake: 314000000n,
     stakedMaturity: 100000000n,
     state: NeuronState.Locked,
-    dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
+    dissolveDelaySeconds:
+      snsNervousSystemParametersMock
+        .neuron_minimum_dissolve_delay_to_vote_seconds[0],
     ageSinceTimestampSeconds: BigInt(nowInSeconds - SECONDS_IN_YEAR),
   });
   const neuronCanNotVote = createMockSnsNeuron({
@@ -28,7 +30,7 @@ describe("NnsStakeItemAction", () => {
     state: NeuronState.Locked,
     dissolveDelaySeconds:
       snsNervousSystemParametersMock
-        .neuron_minimum_dissolve_delay_to_vote_seconds[0] - 100n,
+        .neuron_minimum_dissolve_delay_to_vote_seconds[0] - 1n,
   });
   const renderComponent = (neuron: SnsNeuron) => {
     const { container } = render(SnsNeuronVotingPowerSection, {
@@ -51,7 +53,7 @@ describe("NnsStakeItemAction", () => {
 
   it("should render voting power", async () => {
     const po = renderComponent(neuronCanVote);
-    expect(await po.getVotingPower()).toBe("5.23");
+    expect(await po.getVotingPower()).toBe("5.18");
   });
 
   it("should render no voting power if neuron can't vote", async () => {
@@ -71,7 +73,7 @@ describe("NnsStakeItemAction", () => {
     const po = renderComponent(neuronCanVote);
 
     expect(await po.getDescription()).toBe(
-      "voting_power = (3.14 + 1.00) × 1.25 × 1.01 = 5.23"
+      "voting_power = (3.14 + 1.00) × 1.25 × 1.00 = 5.18"
     );
   });
 
