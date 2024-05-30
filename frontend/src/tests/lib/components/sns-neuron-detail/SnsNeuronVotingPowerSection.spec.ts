@@ -63,7 +63,7 @@ describe("NnsStakeItemAction", () => {
     const po = renderComponent(neuronCanNotVote);
 
     expect(await po.getDescription()).toBe(
-      "The dissolve delay must be greater than 30 days, 10 hours for the neuron to have voting power. Learn more about voting power on the dashboard."
+      "The dissolve delay must be at least 30 days, 10 hours for the neuron to have voting power. Learn more about voting power on the dashboard."
     );
   });
 
