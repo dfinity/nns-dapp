@@ -11,23 +11,25 @@
   } from "$lib/types/proposals";
   import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
   import { triggerDebugReport } from "$lib/directives/debug.directives";
+  import type { UniverseCanisterIdText } from "$lib/types/universe";
+  import { compareNavigationIds } from "$lib/utils/proposals.utils";
 
   export let currentProposalId: ProposalsNavigationId;
   export let title: string | undefined = undefined;
   export let currentProposalStatus: UniversalProposalStatus;
   export let proposalIds: ProposalsNavigationId[] = [];
+  export let universes: UniverseCanisterIdText[] = [];
   export let selectProposal: (id: ProposalsNavigationId) => void;
 
-  let currentProposalIndex: number;
-  $: currentProposalIndex = proposalIds.findIndex(
-    ({ proposalId, universe }) =>
-      proposalId === currentProposalId.proposalId &&
-      universe === currentProposalId.universe
-  );
   let newerId: ProposalsNavigationId | undefined;
-  $: newerId = proposalIds[currentProposalIndex - 1];
+  $: newerId = proposalIds.findLast(
+    (id) => compareNavigationIds({ a: id, b: currentProposalId, universes }) < 0
+  );
+
   let olderId: ProposalsNavigationId | undefined;
-  $: olderId = proposalIds[currentProposalIndex + 1];
+  $: olderId = proposalIds.find(
+    (id) => compareNavigationIds({ a: id, b: currentProposalId, universes }) > 0
+  );
 
   const selectNewer = () => {
     assertNonNullish(newerId);
