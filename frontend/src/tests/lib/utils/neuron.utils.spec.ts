@@ -2841,6 +2841,8 @@ describe("neuron-utils", () => {
       const neuronId2 = 342n;
       const stake1 = 500_000_000n;
       const stake2 = 600_000_000n;
+      const dissolveDelay1 = 15778800n;
+      const dissolveDelay2 = 252460800n;
       const neuronInfo1 = {
         ...mockNeuron,
         neuronId: neuronId1,
@@ -2848,6 +2850,7 @@ describe("neuron-utils", () => {
           ...mockNeuron.fullNeuron,
           cachedNeuronStake: stake1,
         },
+        dissolveDelaySeconds: dissolveDelay1,
       };
       const neuronInfo2 = {
         ...mockNeuron,
@@ -2856,6 +2859,7 @@ describe("neuron-utils", () => {
           ...mockNeuron.fullNeuron,
           cachedNeuronStake: stake2,
         },
+        dissolveDelaySeconds: dissolveDelay2,
       };
       const neuronInfos = [neuronInfo1, neuronInfo2];
       const tableNeurons = tableNeuronsFromNeuronInfos(neuronInfos);
@@ -2868,6 +2872,7 @@ describe("neuron-utils", () => {
             amount: 500_000_000n,
             token: ICPToken,
           }),
+          dissolveDelaySeconds: dissolveDelay1,
         },
         {
           rowHref: "/neuron/?u=qhbym-qaaaa-aaaaa-aaafq-cai&neuron=342",
@@ -2877,12 +2882,14 @@ describe("neuron-utils", () => {
             amount: 600_000_000n,
             token: ICPToken,
           }),
+          dissolveDelaySeconds: dissolveDelay2,
         },
       ]);
     });
 
     it("should convert neuronInfo for spawning neuron without href", () => {
       const neuronId = 52n;
+      const dissolveDelaySeconds = BigInt(5 * SECONDS_IN_DAY);
       const spawningNeuronInfo = {
         ...mockNeuron,
         neuronId: neuronId,
@@ -2892,6 +2899,7 @@ describe("neuron-utils", () => {
           cachedNeuronStake: 0n,
           spawnAtTimesSeconds: 12_312_313n,
         },
+        dissolveDelaySeconds,
       };
       const neuronInfos = [spawningNeuronInfo];
       const tableNeurons = tableNeuronsFromNeuronInfos(neuronInfos);
@@ -2903,6 +2911,7 @@ describe("neuron-utils", () => {
             amount: 0n,
             token: ICPToken,
           }),
+          dissolveDelaySeconds,
         },
       ]);
     });

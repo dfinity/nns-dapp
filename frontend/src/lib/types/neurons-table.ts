@@ -6,6 +6,7 @@ export type TableNeuron = {
   domKey: string;
   neuronId: string;
   stake: TokenAmountV2;
+  dissolveDelaySeconds: bigint;
 };
 
 export type NeuronsTableColumn = ResponsiveTableColumn<TableNeuron>;

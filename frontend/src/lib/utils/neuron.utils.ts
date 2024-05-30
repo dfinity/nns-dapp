@@ -1050,7 +1050,7 @@ export const tableNeuronsFromNeuronInfos = (
   neuronInfos: NeuronInfo[]
 ): TableNeuron[] => {
   return neuronInfos.map((neuronInfo) => {
-    const { neuronId } = neuronInfo;
+    const { neuronId, dissolveDelaySeconds } = neuronInfo;
     const neuronIdString = neuronId.toString();
     const isSpawningNeuron = isSpawning(neuronInfo);
     const rowHref = isSpawningNeuron
@@ -1067,6 +1067,7 @@ export const tableNeuronsFromNeuronInfos = (
         amount: neuronStake(neuronInfo),
         token: ICPToken,
       }),
+      dissolveDelaySeconds,
     };
   });
 };
