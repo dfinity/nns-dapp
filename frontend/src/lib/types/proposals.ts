@@ -29,6 +29,6 @@ export type BasisPoints = bigint;
 
 // An entry for proposal navigation on the proposal detail page.
 export interface ProposalsNavigationId {
-  proposalId: ProposalId;
-  universe: UniverseCanisterIdText;
+  proposalId: string;
+  universe: string;
 }
