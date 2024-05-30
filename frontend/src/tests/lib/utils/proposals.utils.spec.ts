@@ -34,7 +34,6 @@ import {
   proposalActionRewardNodeProvider,
 } from "$tests/mocks/proposal.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
-import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
 import type {
   Action,
   Ballot,
@@ -1004,10 +1003,6 @@ describe("proposals-utils", () => {
   });
 
   describe("newerProposalId", () => {
-    beforeEach(() => {
-      allowLoggingInOneTestForDebugging();
-    });
-
     it("should return newer id from same universe", () => {
       expect(
         newerProposalNavigationId({
@@ -1144,10 +1139,6 @@ describe("proposals-utils", () => {
   });
 
   describe("olderProposalNavigationId", () => {
-    beforeEach(() => {
-      allowLoggingInOneTestForDebugging();
-    });
-
     it("should return older id from same universe", () => {
       expect(
         olderProposalNavigationId({

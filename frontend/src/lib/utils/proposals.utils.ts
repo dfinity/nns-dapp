@@ -4,6 +4,7 @@ import { i18n } from "$lib/stores/i18n";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
 import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
 import type {
+  ProposalsNavigationId,
   UniversalProposalStatus,
   VotingNeuron,
 } from "$lib/types/proposals";
@@ -618,9 +619,7 @@ export const newerProposalNavigationId = ({
     ids,
     universes,
   });
-  // console.log("idsByUniverse", idsByUniverse);
   const currentUniverseIndex = universes.indexOf(currentId.universe);
-  // console.log("currentUniverseIndex", currentUniverseIndex);
   for (
     let universeIndex = currentUniverseIndex;
     universeIndex >= 0;
@@ -634,7 +633,6 @@ export const newerProposalNavigationId = ({
           )
         : universeIds.at(-1);
     if (res) {
-      // console.log("res", res);
       return res;
     }
   }
@@ -658,9 +656,7 @@ export const olderProposalNavigationId = ({
     ids,
     universes,
   });
-  // console.log("idsByUniverse", idsByUniverse);
   const currentUniverseIndex = universes.indexOf(currentId.universe);
-  // console.log("currentUniverseIndex", currentUniverseIndex);
   for (
     let universeIndex = currentUniverseIndex;
     universeIndex < idsByUniverse.length;
@@ -674,7 +670,6 @@ export const olderProposalNavigationId = ({
           )
         : universeIds[0];
     if (res) {
-      // console.log("res", res);
       return res;
     }
   }
