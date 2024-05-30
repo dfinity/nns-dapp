@@ -138,10 +138,28 @@ describe("NnsNeurons", () => {
       vi.spyOn(api, "queryNeurons").mockResolvedValue([]);
     });
 
-    it("should render an empty message", async () => {
-      const po = await renderComponent();
+    describe("with ENABLE_NEURONS_TABLE disabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", false);
+      });
 
-      expect(await po.hasEmptyMessage()).toBe(true);
+      it("should render an empty message", async () => {
+        const po = await renderComponent();
+
+        expect(await po.hasEmptyMessage()).toBe(true);
+      });
+    });
+
+    describe("with ENABLE_NEURONS_TABLE enabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", true);
+      });
+
+      it("should render an empty message", async () => {
+        const po = await renderComponent();
+
+        expect(await po.hasEmptyMessage()).toBe(true);
+      });
     });
   });
 
@@ -157,10 +175,42 @@ describe("NnsNeurons", () => {
       );
     });
 
-    it("should not render an empty message", async () => {
-      const po = await renderComponent();
+    describe("with ENABLE_NEURONS_TABLE disabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", false);
+      });
 
-      expect(await po.hasEmptyMessage()).toBe(false);
+      it("should render skeleton cards", async () => {
+        const po = await renderComponent();
+
+        expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
+        expect(await po.hasSpinner()).toBe(false);
+      });
+
+      it("should not render an empty message", async () => {
+        const po = await renderComponent();
+
+        expect(await po.hasEmptyMessage()).toBe(false);
+      });
+    });
+
+    describe("with ENABLE_NEURONS_TABLE enabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", true);
+      });
+
+      it("should render a spinner", async () => {
+        const po = await renderComponent();
+
+        expect(await po.hasSpinner()).toBe(true);
+        expect(await po.getSkeletonCardPo().isPresent()).toBe(false);
+      });
+
+      it("should not render an empty message", async () => {
+        const po = await renderComponent();
+
+        expect(await po.hasEmptyMessage()).toBe(false);
+      });
     });
   });
 
