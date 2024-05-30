@@ -4,7 +4,6 @@ import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import { isSpawning } from "$lib/utils/neuron.utils";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronsPo } from "$tests/page-objects/NnsNeurons.page-object";
@@ -123,12 +122,13 @@ describe("NnsNeurons", () => {
         const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
         expect(rows).toHaveLength(3);
         expect(neurons).toHaveLength(3);
-        expect(isSpawning(neurons[0])).toBe(false);
+        expect(await rows[0].getStake()).not.toBe("0 ICP");
         expect(await rows[0].hasGoToDetailButton()).toBe(true);
-        expect(isSpawning(neurons[1])).toBe(true);
-        expect(await rows[1].hasGoToDetailButton()).toBe(false);
-        expect(isSpawning(neurons[2])).toBe(false);
-        expect(await rows[2].hasGoToDetailButton()).toBe(true);
+        expect(await rows[1].getStake()).not.toBe("0 ICP");
+        expect(await rows[1].hasGoToDetailButton()).toBe(true);
+        // Spawning neuron without stake comes last.
+        expect(await rows[2].getStake()).toBe("0 ICP");
+        expect(await rows[2].hasGoToDetailButton()).toBe(false);
       });
     });
   });

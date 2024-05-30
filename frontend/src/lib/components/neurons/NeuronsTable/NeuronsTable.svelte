@@ -9,8 +9,22 @@
   import NeuronStakeCell from "$lib/components/neurons/NeuronsTable/NeuronStakeCell.svelte";
   import NeuronDissolveDelayCell from "$lib/components/neurons/NeuronsTable/NeuronDissolveDelayCell.svelte";
   import NeuronActionsCell from "$lib/components/neurons/NeuronsTable/NeuronActionsCell.svelte";
+  import {
+    sortNeurons,
+    compareByStake,
+    compareByDissolveDelay,
+    compareById,
+  } from "$lib/utils/neurons-table.utils";
 
   export let neurons: TableNeuron[];
+
+  const order = [compareByStake, compareByDissolveDelay, compareById];
+
+  let sortedNeurons: TableNeuron[];
+  $: sortedNeurons = sortNeurons({
+    neurons,
+    order,
+  });
 
   const columns: NeuronsTableColumn[] = [
     {
@@ -32,5 +46,8 @@
   ];
 </script>
 
-<ResponsiveTable testId="neurons-table-component" {columns} tableData={neurons}
+<ResponsiveTable
+  testId="neurons-table-component"
+  {columns}
+  tableData={sortedNeurons}
 ></ResponsiveTable>
