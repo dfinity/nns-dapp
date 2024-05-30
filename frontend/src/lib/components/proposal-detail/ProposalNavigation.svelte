@@ -12,29 +12,22 @@
   import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
   import { triggerDebugReport } from "$lib/directives/debug.directives";
 
-  export let currentProposalId: bigint;
+  export let currentProposalId: ProposalsNavigationId;
   export let title: string | undefined = undefined;
   export let currentProposalStatus: UniversalProposalStatus;
   export let proposalIds: ProposalsNavigationId[] = [];
   export let selectProposal: (id: ProposalsNavigationId) => void;
 
-  let sortedProposalIds: ProposalsNavigationId[] = [];
-  // sort proposalIds in descent order
-  $: sortedProposalIds = [...proposalIds].sort(
-    ({ proposalId: a }, { proposalId: b }) => Number(b - a)
+  let currentProposalIndex: number;
+  $: currentProposalIndex = proposalIds.findIndex(
+    ({ proposalId, universe }) =>
+      proposalId === currentProposalId.proposalId &&
+      universe === currentProposalId.universe
   );
-
   let newerId: ProposalsNavigationId | undefined;
-  // TODO: switch to findLast() once it's available
-  // use `as bigint[]` to avoid TS error (type T | undefined is not assignable to type bigint | undefined)
-  $: newerId = [...sortedProposalIds]
-    .reverse()
-    .find(({ proposalId }) => proposalId > currentProposalId);
-
+  $: newerId = proposalIds[currentProposalIndex - 1];
   let olderId: ProposalsNavigationId | undefined;
-  $: olderId = sortedProposalIds.find(
-    ({ proposalId }) => proposalId < currentProposalId
-  );
+  $: olderId = proposalIds[currentProposalIndex + 1];
 
   const selectNewer = () => {
     assertNonNullish(newerId);

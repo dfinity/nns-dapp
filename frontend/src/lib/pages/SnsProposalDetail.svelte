@@ -229,7 +229,10 @@
   {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
     <ProposalNavigation
       title={proposalNavigationTitle}
-      currentProposalId={BigInt(proposalIdText)}
+      currentProposalId={{
+        proposalId: BigInt(proposalIdText),
+        universe: $pageStore.universe,
+      }}
       currentProposalStatus={getUniversalProposalStatus(proposal)}
       {proposalIds}
       selectProposal={navigateToProposal}

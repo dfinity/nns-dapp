@@ -52,7 +52,10 @@
     {#if $referrerPathStore !== AppPath.Launchpad}
       <ProposalNavigation
         title={proposalType}
-        currentProposalId={$store.proposal.id}
+        currentProposalId={{
+          proposalId: $store.proposal.id,
+          universe: $pageStore.universe,
+        }}
         currentProposalStatus={getUniversalProposalStatus($store.proposal)}
         {proposalIds}
         selectProposal={navigateToProposal}
