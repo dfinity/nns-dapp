@@ -56,6 +56,7 @@
           proposalId: $store.proposal.id,
           universe: $pageStore.universe,
         }}
+        universes={[$pageStore.universe]}
         currentProposalStatus={getUniversalProposalStatus($store.proposal)}
         {proposalIds}
         selectProposal={navigateToProposal}

@@ -233,6 +233,7 @@
         proposalId: BigInt(proposalIdText),
         universe: $pageStore.universe,
       }}
+      universes={[$pageStore.universe]}
       currentProposalStatus={getUniversalProposalStatus(proposal)}
       {proposalIds}
       selectProposal={navigateToProposal}
