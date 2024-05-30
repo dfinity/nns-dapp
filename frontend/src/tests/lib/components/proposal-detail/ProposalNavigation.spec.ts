@@ -283,4 +283,35 @@ describe("ProposalNavigation", () => {
     await po.clickOlder();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(toNavigationId(2n));
   });
+
+  it("should emmit with different universes", async () => {
+    const selectProposalSpy = vi.fn();
+    const po = renderComponent({
+      title: "Title",
+      currentProposalId: 2n,
+      currentProposalStatus: "open",
+      proposalIds: [
+        { proposalId: 3n, universe: "g3pce-2iaae" },
+        { proposalId: 2n, universe: "f7crg-kabae" },
+        { proposalId: 1n, universe: "atueb-2ycae" },
+      ],
+      selectProposal: selectProposalSpy,
+    });
+
+    await po.clickNewer();
+
+    expect(selectProposalSpy).toHaveBeenCalledTimes(1);
+    expect(selectProposalSpy).toHaveBeenCalledWith({
+      proposalId: 3n,
+      universe: "g3pce-2iaae",
+    });
+
+    await po.clickOlder();
+
+    expect(selectProposalSpy).toHaveBeenCalledTimes(2);
+    expect(selectProposalSpy).toHaveBeenCalledWith({
+      proposalId: 1n,
+      universe: "atueb-2ycae",
+    });
+  });
 });
