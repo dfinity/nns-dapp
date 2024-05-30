@@ -1,11 +1,16 @@
 import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import type { ProposalsNavigationId } from "$lib/types/proposals";
 import { page } from "$mocks/$app/stores";
 import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("ProposalNavigation", () => {
+  const toNavigationId = (proposalId: bigint): ProposalsNavigationId => ({
+    proposalId,
+    universe: OWN_CANISTER_ID_TEXT,
+  });
   const renderComponent = (props) => {
     const { container } = render(ProposalNavigation, { props });
     return ProposalNavigationPo.under(new JestPageObjectElement(container));
@@ -76,7 +81,11 @@ describe("ProposalNavigation", () => {
           title: "Title",
           currentProposalId: 1n,
           currentProposalStatus: "open",
-          proposalIds: [2n, 1n, 0n],
+          proposalIds: [
+            toNavigationId(2n),
+            toNavigationId(1n),
+            toNavigationId(0n),
+          ],
           selectProposal: vi.fn(),
         });
 
@@ -89,7 +98,11 @@ describe("ProposalNavigation", () => {
           title: "Title",
           currentProposalId: 1n,
           currentProposalStatus: "open",
-          proposalIds: [2n, 1n, 0n],
+          proposalIds: [
+            toNavigationId(2n),
+            toNavigationId(1n),
+            toNavigationId(0n),
+          ],
           selectProposal: vi.fn(),
         });
 
@@ -102,7 +115,11 @@ describe("ProposalNavigation", () => {
           title: "Title",
           currentProposalId: 1n,
           currentProposalStatus: "open",
-          proposalIds: [2n, 1n, 0n],
+          proposalIds: [
+            toNavigationId(2n),
+            toNavigationId(1n),
+            toNavigationId(0n),
+          ],
           selectProposal: vi.fn(),
         });
 
@@ -115,7 +132,7 @@ describe("ProposalNavigation", () => {
           title: "Title",
           currentProposalId: 10n,
           currentProposalStatus: "open",
-          proposalIds: [20n, 0n],
+          proposalIds: [toNavigationId(20n), toNavigationId(0n)],
           selectProposal: vi.fn(),
         });
 
@@ -128,7 +145,7 @@ describe("ProposalNavigation", () => {
           title: "Title",
           currentProposalId: 1n,
           currentProposalStatus: "open",
-          proposalIds: [1n, 0n],
+          proposalIds: [toNavigationId(1n), toNavigationId(0n)],
           selectProposal: vi.fn(),
         });
 
@@ -141,7 +158,7 @@ describe("ProposalNavigation", () => {
           title: "Title",
           currentProposalId: 1n,
           currentProposalStatus: "open",
-          proposalIds: [2n, 1n],
+          proposalIds: [toNavigationId(2n), toNavigationId(1n)],
           selectProposal: vi.fn(),
         });
 
@@ -157,14 +174,20 @@ describe("ProposalNavigation", () => {
       title: "Title",
       currentProposalId: 2n,
       currentProposalStatus: "open",
-      proposalIds: [4n, 3n, 2n, 1n, 0n],
+      proposalIds: [
+        toNavigationId(4n),
+        toNavigationId(3n),
+        toNavigationId(2n),
+        toNavigationId(1n),
+        toNavigationId(0n),
+      ],
       selectProposal: selectProposalSpy,
     });
 
     await po.clickOlder();
 
     expect(selectProposalSpy).toHaveBeenCalledTimes(1);
-    expect(selectProposalSpy).toHaveBeenCalledWith(1n);
+    expect(selectProposalSpy).toHaveBeenCalledWith(toNavigationId(1n));
   });
 
   it("should emmit to-newer-proposal click", async () => {
@@ -173,14 +196,20 @@ describe("ProposalNavigation", () => {
       title: "Title",
       currentProposalId: 2n,
       currentProposalStatus: "open",
-      proposalIds: [4n, 3n, 2n, 1n, 0n],
+      proposalIds: [
+        toNavigationId(4n),
+        toNavigationId(3n),
+        toNavigationId(2n),
+        toNavigationId(1n),
+        toNavigationId(0n),
+      ],
       selectProposal: selectProposalSpy,
     });
 
     await po.clickNewer();
 
     expect(selectProposalSpy).toHaveBeenCalledTimes(1);
-    expect(selectProposalSpy).toHaveBeenCalledWith(3n);
+    expect(selectProposalSpy).toHaveBeenCalledWith(toNavigationId(3n));
   });
 
   it("should emit with right arguments for non-consecutive ids", async () => {
@@ -189,14 +218,22 @@ describe("ProposalNavigation", () => {
       title: "Title",
       currentProposalId: 13n,
       currentProposalStatus: "open",
-      proposalIds: [99n, 17n, 13n, 4n, 2n, 1n, 0n],
+      proposalIds: [
+        toNavigationId(99n),
+        toNavigationId(17n),
+        toNavigationId(13n),
+        toNavigationId(4n),
+        toNavigationId(2n),
+        toNavigationId(1n),
+        toNavigationId(0n),
+      ],
       selectProposal: selectProposalSpy,
     });
 
     await po.clickNewer();
-    expect(selectProposalSpy).toHaveBeenLastCalledWith(17n);
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(toNavigationId(17n));
     await po.clickOlder();
-    expect(selectProposalSpy).toHaveBeenLastCalledWith(4n);
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(toNavigationId(4n));
   });
 
   it("should emit with right arguments even when the current id is not in the list", async () => {
@@ -205,14 +242,22 @@ describe("ProposalNavigation", () => {
       title: "Title",
       currentProposalId: 9n,
       currentProposalStatus: "open",
-      proposalIds: [99n, 17n, 13n, 4n, 2n, 1n, 0n],
+      proposalIds: [
+        toNavigationId(99n),
+        toNavigationId(17n),
+        toNavigationId(13n),
+        toNavigationId(4n),
+        toNavigationId(2n),
+        toNavigationId(1n),
+        toNavigationId(0n),
+      ],
       selectProposal: selectProposalSpy,
     });
 
     await po.clickNewer();
-    expect(selectProposalSpy).toHaveBeenLastCalledWith(13n);
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(toNavigationId(13n));
     await po.clickOlder();
-    expect(selectProposalSpy).toHaveBeenLastCalledWith(4n);
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(toNavigationId(4n));
   });
 
   it("should sort ids", async () => {
@@ -221,13 +266,21 @@ describe("ProposalNavigation", () => {
       title: "Title",
       currentProposalId: 3n,
       currentProposalStatus: "open",
-      proposalIds: [0n, 1n, 5n, 3n, 7n, 9n, 2n],
+      proposalIds: [
+        toNavigationId(0n),
+        toNavigationId(1n),
+        toNavigationId(5n),
+        toNavigationId(3n),
+        toNavigationId(7n),
+        toNavigationId(9n),
+        toNavigationId(2n),
+      ],
       selectProposal: selectProposalSpy,
     });
 
     await po.clickNewer();
-    expect(selectProposalSpy).toHaveBeenLastCalledWith(5n);
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(toNavigationId(5n));
     await po.clickOlder();
-    expect(selectProposalSpy).toHaveBeenLastCalledWith(2n);
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(toNavigationId(2n));
   });
 });
