@@ -41,6 +41,8 @@ describe("NnsNeurons", () => {
       neuronId: 224n,
       fullNeuron: {
         ...mockFullNeuron,
+        cachedNeuronStake: 0n,
+        maturityE8sEquivalent: 10_000_000_000n,
         spawnAtTimesSeconds: 12_312_313n,
       },
     };
@@ -65,8 +67,8 @@ describe("NnsNeurons", () => {
         expect(neuronCards.length).toBe(3);
 
         expect(await neuronCards[0].isDisabled()).toBe(false);
-        expect(await neuronCards[1].isDisabled()).toBe(true);
-        expect(await neuronCards[2].isDisabled()).toBe(false);
+        expect(await neuronCards[1].isDisabled()).toBe(false);
+        expect(await neuronCards[2].isDisabled()).toBe(true);
       });
 
       it("should render the NeuronCards", async () => {
