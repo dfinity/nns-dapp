@@ -1,4 +1,8 @@
-import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
+import {
+  joinWithOr,
+  replacePlaceholders,
+  translate,
+} from "$lib/utils/i18n.utils";
 
 describe("i18n-utils", () => {
   it("should translate", () => {
@@ -56,6 +60,23 @@ describe("i18n-utils", () => {
           "{1}": "dog",
         })
       ).toBe("The quick brown fox jumps over the lazy dog");
+    });
+  });
+
+  describe("joinWithOr", () => {
+    it("should add or", () => {
+      expect(joinWithOr(["Example", "Sample", "Test"])).toBe(
+        "Example, Sample or Test"
+      );
+      expect(joinWithOr(["Sample", "Test"])).toBe("Sample or Test");
+    });
+
+    it("should return a single entry only", () => {
+      expect(joinWithOr(["Example"])).toBe("Example");
+    });
+
+    it("should return empty text", () => {
+      expect(joinWithOr([])).toBe("");
     });
   });
 });
