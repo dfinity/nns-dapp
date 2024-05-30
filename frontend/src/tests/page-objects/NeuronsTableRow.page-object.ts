@@ -21,4 +21,8 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
   getStake(): Promise<string> {
     return this.getText("neuron-stake-cell-component");
   }
+
+  hasGoToDetailButton(): Promise<boolean> {
+    return this.isPresent("go-to-neuron-detail-action");
+  }
 }

@@ -24,15 +24,23 @@ describe("NeuronsTable", () => {
       token: ICPToken,
     }),
   };
-  const renderComponent = () => {
+  const spawningNeuron: TableNeuron = {
+    domKey: "101",
+    neuronId: "101",
+    stake: TokenAmountV2.fromUlps({
+      amount: 300_000_000n,
+      token: ICPToken,
+    }),
+  };
+  const renderComponent = ({ neurons }) => {
     const { container } = render(NeuronsTable, {
-      neurons: [neuron1, neuron2],
+      neurons,
     });
     return NeuronsTablePo.under(new JestPageObjectElement(container));
   };
 
   it("should render neuron URL", async () => {
-    const po = renderComponent();
+    const po = renderComponent({ neurons: [neuron1, neuron2] });
     const rowPos = await po.getNeuronsTableRowPos();
     expect(rowPos).toHaveLength(2);
     expect(await rowPos[0].getHref()).toBe(neuron1.rowHref);
@@ -40,7 +48,7 @@ describe("NeuronsTable", () => {
   });
 
   it("should render neuron ID", async () => {
-    const po = renderComponent();
+    const po = renderComponent({ neurons: [neuron1, neuron2] });
     const rowPos = await po.getNeuronsTableRowPos();
     expect(rowPos).toHaveLength(2);
     expect(await rowPos[0].getNeuronId()).toBe(neuron1.neuronId);
@@ -48,10 +56,20 @@ describe("NeuronsTable", () => {
   });
 
   it("should render neuron stake", async () => {
-    const po = renderComponent();
+    const po = renderComponent({ neurons: [neuron1, neuron2] });
     const rowPos = await po.getNeuronsTableRowPos();
     expect(rowPos).toHaveLength(2);
     expect(await rowPos[0].getStake()).toBe("5.00 ICP");
     expect(await rowPos[1].getStake()).toBe("13.00 ICP");
+  });
+
+  it("should render go-to-detail button iff there is a URL", async () => {
+    const po = renderComponent({ neurons: [neuron1, spawningNeuron] });
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getHref()).toBe(neuron1.rowHref);
+    expect(await rowPos[0].hasGoToDetailButton()).toBe(true);
+    expect(await rowPos[1].getHref()).toBe(null);
+    expect(await rowPos[1].hasGoToDetailButton()).toBe(false);
   });
 });
