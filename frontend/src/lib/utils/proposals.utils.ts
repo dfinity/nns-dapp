@@ -7,6 +7,7 @@ import type {
   UniversalProposalStatus,
   VotingNeuron,
 } from "$lib/types/proposals";
+import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { buildProposalUrl } from "$lib/utils/navigation.utils";
 import type {
   Ballot,
@@ -589,4 +590,27 @@ export const getVoteDisplay = (vote: Vote): string => {
     case Vote.Unspecified:
       return i18nObj.core.unspecified;
   }
+};
+
+// Returns 1 when a < b, -1 when a > b, 0 when a === b
+export const compareNavigationIds = ({
+  a,
+  b,
+  universes,
+}: {
+  a: ProposalsNavigationId;
+  b: ProposalsNavigationId;
+  universes: UniverseCanisterIdText[];
+}) => {
+  const aUniverseIndex = universes.indexOf(a.universe);
+  const bUniverseIndex = universes.indexOf(b.universe);
+  if (aUniverseIndex > bUniverseIndex) {
+    return -1;
+  }
+  if (aUniverseIndex < bUniverseIndex) {
+    return 1;
+  }
+  if (a.proposalId < b.proposalId) return 1;
+  if (a.proposalId > b.proposalId) return -1;
+  return 0;
 };
