@@ -1,9 +1,9 @@
 import { goto } from "$app/navigation";
-import { pageStore } from "$lib/derived/page.derived";
 import { i18n } from "$lib/stores/i18n";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
 import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
 import type {
+  ProposalsNavigationId,
   UniversalProposalStatus,
   VotingNeuron,
 } from "$lib/types/proposals";
@@ -548,10 +548,13 @@ export const nnsNeuronToVotingNeuron = ({
 });
 
 /** Navigate to the current universe (NNS/SNS) proposal page */
-export const navigateToProposal = (proposalId: ProposalId): Promise<void> =>
+export const navigateToProposal = ({
+  proposalId,
+  universe,
+}: ProposalsNavigationId): Promise<void> =>
   goto(
     buildProposalUrl({
-      universe: get(pageStore).universe,
+      universe,
       proposalId,
     })
   );

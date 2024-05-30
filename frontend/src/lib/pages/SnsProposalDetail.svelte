@@ -42,6 +42,7 @@
   import { tick } from "svelte";
   import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
   import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
+  import type { ProposalsNavigationId } from "$lib/types/proposals";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -205,13 +206,16 @@
         })
       : undefined;
 
-  let proposalIds: bigint[];
+  let proposalIds: ProposalsNavigationId[];
   $: proposalIds = nonNullish(universeIdText)
     ? sortSnsProposalsById(
         $actionableProposalsActiveStore
           ? $actionableSnsProposalsStore[universeIdText]?.proposals
           : $snsFilteredProposalsStore[universeIdText]?.proposals
-      )?.map(snsProposalId) ?? []
+      )?.map((proposal) => ({
+        proposalId: snsProposalId(proposal),
+        universe: $pageStore.universe,
+      })) ?? []
     : [];
 
   // The `update` function cares about the necessary data to be refetched.

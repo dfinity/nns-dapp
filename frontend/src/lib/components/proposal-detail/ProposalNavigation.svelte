@@ -5,29 +5,36 @@
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import type { UniversalProposalStatus } from "$lib/types/proposals";
+  import type {
+    ProposalsNavigationId,
+    UniversalProposalStatus,
+  } from "$lib/types/proposals";
   import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
   import { triggerDebugReport } from "$lib/directives/debug.directives";
 
   export let currentProposalId: bigint;
   export let title: string | undefined = undefined;
   export let currentProposalStatus: UniversalProposalStatus;
-  export let proposalIds: bigint[] = [];
-  export let selectProposal: (proposalId: bigint) => void;
+  export let proposalIds: ProposalsNavigationId[] = [];
+  export let selectProposal: (id: ProposalsNavigationId) => void;
 
-  let sortedProposalIds: bigint[] = [];
+  let sortedProposalIds: ProposalsNavigationId[] = [];
   // sort proposalIds in descent order
-  $: sortedProposalIds = [...proposalIds].sort((a, b) => Number(b - a));
-
-  let newerId: bigint | undefined;
-  // TODO: switch to findLast() once it's available
-  // use `as bigint[]` to avoid TS error (type T | undefined is not assignable to type bigint | undefined)
-  $: newerId = ([...sortedProposalIds].reverse() as bigint[]).find(
-    (id) => id > currentProposalId
+  $: sortedProposalIds = [...proposalIds].sort(
+    ({ proposalId: a }, { proposalId: b }) => Number(b - a)
   );
 
-  let olderId: bigint | undefined;
-  $: olderId = sortedProposalIds.find((id) => id < currentProposalId);
+  let newerId: ProposalsNavigationId | undefined;
+  // TODO: switch to findLast() once it's available
+  // use `as bigint[]` to avoid TS error (type T | undefined is not assignable to type bigint | undefined)
+  $: newerId = [...sortedProposalIds]
+    .reverse()
+    .find(({ proposalId }) => proposalId > currentProposalId);
+
+  let olderId: ProposalsNavigationId | undefined;
+  $: olderId = sortedProposalIds.find(
+    ({ proposalId }) => proposalId < currentProposalId
+  );
 
   const selectNewer = () => {
     assertNonNullish(newerId);
@@ -61,7 +68,7 @@
     on:click={selectNewer}
     class:hidden={isNullish(newerId)}
     data-tid="proposal-nav-newer"
-    data-test-proposal-id={newerId?.toString() ?? ""}
+    data-test-proposal-id={newerId?.proposalId.toString() ?? ""}
   >
     <IconLeft />
     {$i18n.proposal_detail.newer_short}</button
@@ -73,7 +80,7 @@
     on:click={selectOlder}
     class:hidden={isNullish(olderId)}
     data-tid="proposal-nav-older"
-    data-test-proposal-id={olderId?.toString() ?? ""}
+    data-test-proposal-id={olderId?.proposalId.toString() ?? ""}
   >
     {$i18n.proposal_detail.older_short}
     <IconRight />
