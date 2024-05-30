@@ -1,5 +1,4 @@
-import type { UniverseCanisterIdText } from "$lib/types/universe";
-import type { ProposalId, ProposalStatus, Topic } from "@dfinity/nns";
+import type { ProposalStatus, Topic } from "@dfinity/nns";
 
 export type ProposalsFilters = typeof Topic | typeof ProposalStatus;
 
@@ -30,6 +29,6 @@ export type BasisPoints = bigint;
 
 // An entry for proposal navigation on the proposal detail page.
 export interface ProposalsNavigationId {
-  proposalId: ProposalId;
-  universe: UniverseCanisterIdText;
+  proposalId: bigint;
+  universe: string;
 }
