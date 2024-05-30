@@ -7,6 +7,7 @@ import type {
   UniversalProposalStatus,
   VotingNeuron,
 } from "$lib/types/proposals";
+import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { buildProposalUrl } from "$lib/utils/navigation.utils";
 import type {
   Ballot,
@@ -585,5 +586,96 @@ export const getVoteDisplay = (vote: Vote): string => {
       return i18nObj.core.no;
     case Vote.Unspecified:
       return i18nObj.core.unspecified;
+  }
+};
+
+const proposalNavigationIdsByUniverse = ({
+  ids,
+  universes,
+}: {
+  ids: ProposalsNavigationId[];
+  universes: UniverseCanisterIdText[];
+}) =>
+  universes.map((universe) => [
+    ...ids.filter(({ universe: idUniverse }) => idUniverse === universe),
+  ]);
+
+/**
+ * Return newer proposal id entry from the same universe,
+ * or the last available in previous universes.
+ * Solves the issue when the current proposalId or universe is no longer in the ids.
+ */
+export const newerProposalNavigationId = ({
+  currentId,
+  ids,
+  universes,
+}: {
+  currentId: ProposalsNavigationId;
+  ids: ProposalsNavigationId[];
+  universes: UniverseCanisterIdText[];
+}): ProposalsNavigationId | undefined => {
+  const idsByUniverse = proposalNavigationIdsByUniverse({
+    ids,
+    universes,
+  });
+  // console.log("idsByUniverse", idsByUniverse);
+  const currentUniverseIndex = universes.indexOf(currentId.universe);
+  // console.log("currentUniverseIndex", currentUniverseIndex);
+  for (
+    let universeIndex = currentUniverseIndex;
+    universeIndex >= 0;
+    universeIndex--
+  ) {
+    const universeIds = idsByUniverse[universeIndex];
+    const res =
+      universeIndex === currentUniverseIndex
+        ? universeIds.findLast(
+            ({ proposalId }) => proposalId > currentId.proposalId
+          )
+        : universeIds.at(-1);
+    if (res) {
+      // console.log("res", res);
+      return res;
+    }
+  }
+};
+
+/**
+ * Return older proposal id entry from the same universe,
+ * or the first available in next universes.
+ * Solves the issue when the current proposalId or universe is no longer in the ids.
+ */
+export const olderProposalNavigationId = ({
+  currentId,
+  ids,
+  universes,
+}: {
+  currentId: ProposalsNavigationId;
+  ids: ProposalsNavigationId[];
+  universes: UniverseCanisterIdText[];
+}): ProposalsNavigationId | undefined => {
+  const idsByUniverse = proposalNavigationIdsByUniverse({
+    ids,
+    universes,
+  });
+  // console.log("idsByUniverse", idsByUniverse);
+  const currentUniverseIndex = universes.indexOf(currentId.universe);
+  // console.log("currentUniverseIndex", currentUniverseIndex);
+  for (
+    let universeIndex = currentUniverseIndex;
+    universeIndex < idsByUniverse.length;
+    universeIndex++
+  ) {
+    const universeIds = idsByUniverse[universeIndex];
+    const res =
+      universeIndex === currentUniverseIndex
+        ? universeIds.find(
+            ({ proposalId }) => proposalId < currentId.proposalId
+          )
+        : universeIds[0];
+    if (res) {
+      // console.log("res", res);
+      return res;
+    }
   }
 };
