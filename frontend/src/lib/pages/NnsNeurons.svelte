@@ -11,7 +11,7 @@
     definedNeuronsStore,
   } from "$lib/stores/neurons.store";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { Spinner, Tooltip } from "@dfinity/gix-components";
   import { isSpawning } from "$lib/utils/neuron.utils";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
@@ -35,7 +35,11 @@
 
 <TestIdWrapper testId="nns-neurons-component">
   {#if $ENABLE_NEURONS_TABLE}
-    <NeuronsTable neurons={tableNeurons} />
+    {#if isLoading}
+      <Spinner />
+    {:else if tableNeurons.length > 0}
+      <NeuronsTable neurons={tableNeurons} />
+    {/if}
   {:else}
     <div class="card-grid" data-tid="neurons-body">
       {#if isLoading}
