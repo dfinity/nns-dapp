@@ -37,6 +37,7 @@ export type UserTokenLoading = UserTokenBase & {
   balance: "loading";
   actions: [];
   rowHref: string;
+  domKey: string;
 };
 
 export type UserTokenData = UserTokenBase & {
@@ -47,6 +48,7 @@ export type UserTokenData = UserTokenBase & {
   // Fees are included in the metadata of ICRC tokens, but this is not a list of only ICRC tokens
   fee: TokenAmountV2;
   rowHref: string;
+  domKey: string;
 };
 
 export type UserToken = UserTokenLoading | UserTokenData;

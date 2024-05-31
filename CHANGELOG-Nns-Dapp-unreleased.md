@@ -27,6 +27,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Render neurons with minimum dissolve delay correctly with voting power.
+
 #### Security
 
 #### Not Published

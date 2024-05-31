@@ -10,7 +10,7 @@
   {#if $actionableNnsProposalsStore?.proposals?.length ?? 0 > 0}
     <UniverseWithActionableProposals universe={$nnsUniverseStore}>
       {#each $actionableNnsProposalsStore?.proposals ?? [] as proposalInfo (proposalInfo.id)}
-        <NnsProposalCard actionable {proposalInfo} />
+        <NnsProposalCard actionable fromActionablePage {proposalInfo} />
       {/each}
     </UniverseWithActionableProposals>
   {/if}

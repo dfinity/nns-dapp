@@ -35,6 +35,7 @@ interface I18nCore {
   receive: string;
   send_with_token: string;
   collapse_all: string;
+  or: string;
 }
 
 interface I18nError {
@@ -400,6 +401,7 @@ interface I18nActionable_proposals_sign_in {
 interface I18nActionable_proposals_empty {
   title: string;
   text: string;
+  text_unsupported: string;
 }
 
 interface I18nActionable_proposals_not_supported {

@@ -48,20 +48,23 @@ import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("tokens-list-user.derived", () => {
+  const icpHref = buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT });
   const icpUserToken: UserTokenData = createIcpUserToken({
     balance: TokenAmountV2.fromUlps({
       amount: mockMainAccount.balanceUlps,
       token: NNS_TOKEN_DATA,
     }),
     actions: [UserTokenAction.GoToDetail],
-    rowHref: buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT }),
+    rowHref: icpHref,
+    domKey: icpHref,
     accountIdentifier: undefined,
   });
   const icpUserTokenLoading: UserTokenLoading = {
     ...icpTokenBase,
     balance: "loading",
     actions: [],
-    rowHref: buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT }),
+    rowHref: icpHref,
+    domKey: icpHref,
   };
   const snsTetrisToken = mockSnsToken;
   const tetrisRootCanisterId = rootCanisterIdMock;
@@ -96,6 +99,7 @@ describe("tokens-list-user.derived", () => {
     balance: "loading",
     actions: [],
     rowHref: tetrisHref,
+    domKey: tetrisHref,
   };
   const tetrisUserToken: UserTokenData = {
     ...tetrisTokenLoading,
@@ -110,6 +114,7 @@ describe("tokens-list-user.derived", () => {
       token: snsTetris.tokenMetadata,
     }),
     rowHref: tetrisHref,
+    domKey: tetrisHref,
     accountIdentifier: mockSnsMainAccount.identifier,
   };
   const pacmanHref = buildWalletUrl({
@@ -122,6 +127,7 @@ describe("tokens-list-user.derived", () => {
     balance: "loading",
     actions: [],
     rowHref: pacmanHref,
+    domKey: pacmanHref,
   };
   const pacmanUserToken: UserTokenData = {
     ...pacmanTokenLoading,
@@ -136,6 +142,7 @@ describe("tokens-list-user.derived", () => {
       token: snsPacman.tokenMetadata,
     }),
     rowHref: pacmanHref,
+    domKey: pacmanHref,
     accountIdentifier: mockSnsMainAccount.identifier,
   };
   const ckBTCHref = buildWalletUrl({
@@ -146,6 +153,7 @@ describe("tokens-list-user.derived", () => {
     balance: "loading",
     actions: [],
     rowHref: ckBTCHref,
+    domKey: ckBTCHref,
   };
   const ckTESTBTCHref = buildWalletUrl({
     universe: ckTESTBTCTokenBase.universeId.toText(),
@@ -155,6 +163,7 @@ describe("tokens-list-user.derived", () => {
     balance: "loading",
     actions: [],
     rowHref: ckTESTBTCHref,
+    domKey: ckTESTBTCHref,
   };
   const ckBTCUserToken: UserTokenData = {
     ...ckBTCTokenBase,
@@ -169,6 +178,7 @@ describe("tokens-list-user.derived", () => {
       token: mockCkBTCToken,
     }),
     rowHref: ckBTCHref,
+    domKey: ckBTCHref,
     accountIdentifier: mockCkBTCMainAccount.identifier,
   };
   const ckETHHref = buildWalletUrl({
@@ -179,6 +189,7 @@ describe("tokens-list-user.derived", () => {
     balance: "loading",
     actions: [],
     rowHref: ckETHHref,
+    domKey: ckETHHref,
   };
   const ckETHUserToken: UserTokenData = {
     ...ckETHTokenBase,
@@ -192,6 +203,7 @@ describe("tokens-list-user.derived", () => {
       token: mockCkETHToken,
     }),
     rowHref: ckETHHref,
+    domKey: ckETHHref,
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
     accountIdentifier: mockCkETHMainAccount.identifier,
   };

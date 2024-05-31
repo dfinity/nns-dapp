@@ -31,6 +31,7 @@
       {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
         <SnsProposalCard
           actionable
+          fromActionablePage
           {proposalData}
           {nsFunctions}
           rootCanisterId={universe.canisterId}

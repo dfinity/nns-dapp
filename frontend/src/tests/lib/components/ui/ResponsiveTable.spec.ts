@@ -26,16 +26,18 @@ describe("ResponseTable", () => {
   const tableData = [
     {
       rowHref: "alice/",
+      domKey: "1",
       name: "Alice",
       age: 45,
     },
     {
       rowHref: "anna/",
+      domKey: "2",
       name: "Anna",
       age: 19,
     },
     {
-      rowHref: "anton/",
+      domKey: "3",
       name: "Anton",
       age: 31,
     },
@@ -74,7 +76,16 @@ describe("ResponseTable", () => {
     expect(rows).toHaveLength(3);
     expect(await rows[0].getHref()).toBe("alice/");
     expect(await rows[1].getHref()).toBe("anna/");
-    expect(await rows[2].getHref()).toBe("anton/");
+    expect(await rows[2].getHref()).toBe(null);
+  });
+
+  it("should render rows with href as link", async () => {
+    const po = renderComponent({ columns, tableData });
+    const rows = await po.getRows();
+    expect(rows).toHaveLength(3);
+    expect(await rows[0].getTagName()).toBe("A");
+    expect(await rows[1].getTagName()).toBe("A");
+    expect(await rows[2].getTagName()).toBe("DIV");
   });
 
   it("should render column styles depending on the number of columns", async () => {

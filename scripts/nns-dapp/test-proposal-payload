@@ -182,7 +182,7 @@ test_nns_function_52() {
   subcommand="propose-to-rent-subnet"
 
   # TODO: Use `run_ic_admin` instead of `run_ic_admin_with_test_neuron` once `ic-admin` is fixed.
-  PROPOSAL_ID="$(run_ic_admin_with_test_neuron \
+  PROPOSAL_ID="$(run_ic_admin \
     "$subcommand" \
     --rental-condition-id App13CH \
     --user "$USER_PRINCIPAL")"
@@ -200,17 +200,6 @@ run_ic_admin() {
     "$@" \
     --summary "$SUMMARY" \
     --proposer "$NEURON_ID" |
-    grep -E '^proposal [0-9]+$' | sed 's/proposal //'
-}
-
-# Work-around for when `run_ic_admin` gives this error:
-# Specifying a secret key or HSM is only supported for methods that interact with NNS handlers.
-run_ic_admin_with_test_neuron() {
-  ic-admin \
-    --nns-url "$NNS_URL" \
-    "$@" \
-    --summary "$SUMMARY" \
-    --test-neuron-proposer |
     grep -E '^proposal [0-9]+$' | sed 's/proposal //'
 }
 

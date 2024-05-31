@@ -1,6 +1,8 @@
 import type { NeuronsStore } from "$lib/stores/neurons.store";
+import type { TableNeuron } from "$lib/types/neurons-table";
 import type { KnownNeuron, Neuron, NeuronInfo } from "@dfinity/nns";
 import { NeuronState } from "@dfinity/nns";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 import { mockIdentity } from "./auth.store.mock";
 
@@ -99,4 +101,15 @@ export const mockNeuronNotControlled = {
     ...mockFullNeuron,
     hotKeys: ["not-current-principal"],
   },
+};
+
+export const mockTableNeuron: TableNeuron = {
+  rowHref: "/",
+  domKey: "0",
+  neuronId: "0",
+  stake: TokenAmountV2.fromUlps({
+    amount: 1n,
+    token: ICPToken,
+  }),
+  dissolveDelaySeconds: 1n,
 };

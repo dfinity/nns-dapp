@@ -51,7 +51,7 @@ describe("NnsNeuronPageHeading", () => {
     const po = renderComponent({
       ...mockNeuron,
       votingPower,
-      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE * 2),
+      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
     });
 
     expect(await po.getVotingPower()).toEqual("Voting Power: 3.14");
@@ -62,7 +62,7 @@ describe("NnsNeuronPageHeading", () => {
     const po = renderComponent({
       ...mockNeuron,
       votingPower,
-      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE - 100),
+      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE - 1),
     });
 
     expect(await po.getVotingPower()).toEqual("No Voting Power");

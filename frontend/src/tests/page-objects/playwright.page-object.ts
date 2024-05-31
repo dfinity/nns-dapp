@@ -155,4 +155,8 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   async getDocumentBody(): Promise<PlaywrightPageObjectElement> {
     return PlaywrightPageObjectElement.fromPage(this.page);
   }
+
+  async getTagName(): Promise<string> {
+    throw new Error("Not implement");
+  }
 }
