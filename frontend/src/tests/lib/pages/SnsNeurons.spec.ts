@@ -1,6 +1,7 @@
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -56,6 +57,7 @@ describe("SnsNeurons", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    overrideFeatureFlagsStore.reset();
     page.mock({ data: { universe: rootCanisterId.toText() } });
     resetIdentity();
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
@@ -82,8 +84,57 @@ describe("SnsNeurons", () => {
     return SnsNeuronsPo.under(new JestPageObjectElement(container));
   };
 
-  describe("without neurons from CF", () => {
+  describe("while loading", () => {
     beforeEach(() => {
+      vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockReturnValue(
+        new Promise(() => {
+          // Don't resolve the promise to keep the component in loading state.
+        })
+      );
+    });
+
+    describe("with ENABLE_NEURONS_TABLE disabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", false);
+      });
+
+      it("should render skeleton cards", async () => {
+        const po = await renderComponent();
+
+        expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
+        expect(await po.hasSpinner()).toBe(false);
+      });
+
+      it("should not render empty text", async () => {
+        const po = await renderComponent();
+
+        expect(await po.hasEmptyMessage()).toBe(false);
+      });
+    });
+
+    describe("with ENABLE_NEURONS_TABLE enabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", true);
+      });
+
+      it("should render a spinner", async () => {
+        const po = await renderComponent();
+
+        expect(await po.hasSpinner()).toBe(true);
+        expect(await po.getSkeletonCardPo().isPresent()).toBe(false);
+      });
+
+      it("should not render empty text", async () => {
+        const po = await renderComponent();
+
+        expect(await po.hasEmptyMessage()).toBe(false);
+      });
+    });
+  });
+
+  describe("with normal neurons without neurons from CF", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", false);
       vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([
         neuron1,
         neuron2,
@@ -113,7 +164,7 @@ describe("SnsNeurons", () => {
     });
   });
 
-  describe("with neurons from CF", () => {
+  describe("with normal neurons and neurons from CF", () => {
     beforeEach(() => {
       vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([
         neuron1,
@@ -121,28 +172,80 @@ describe("SnsNeurons", () => {
       ]);
     });
 
-    it("should render SnsNeuronCards for each neuron", async () => {
-      const po = await renderComponent();
+    describe("with ENABLE_NEURONS_TABLE disabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", false);
+      });
 
-      expect(await po.getNeuronCardPos()).toHaveLength(2);
+      it("should render SnsNeuronCards for each neuron", async () => {
+        const po = await renderComponent();
+
+        expect(await po.getNeuronCardPos()).toHaveLength(2);
+      });
+
+      it("should render NF neurons grids", async () => {
+        const po = await renderComponent();
+
+        expect(await po.hasNonNeuronFundNeuronsGrid()).toBe(true);
+        expect(await po.hasNeuronFundNeuronsGrid()).toBe(true);
+      });
+
+      it("should not render empty text", async () => {
+        const po = await renderComponent();
+
+        expect(await po.hasEmptyMessage()).toBe(false);
+      });
+
+      it("should not render the neurons table", async () => {
+        const po = await renderComponent();
+
+        expect(await po.getNeuronsTablePo().isPresent()).toBe(false);
+      });
     });
 
-    it("should render NF neurons grids", async () => {
-      const po = await renderComponent();
+    describe("with ENABLE_NEURONS_TABLE enabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", true);
+      });
 
-      expect(await po.hasNonNeuronFundNeuronsGrid()).toBe(true);
-      expect(await po.hasNeuronFundNeuronsGrid()).toBe(true);
-    });
+      it("should render the neurons table", async () => {
+        const po = await renderComponent();
 
-    it("should not render empty text", async () => {
-      const po = await renderComponent();
+        expect(await po.getNeuronsTablePo().isPresent()).toBe(true);
+      });
 
-      expect(await po.hasEmptyMessage()).toBe(false);
+      it("should render neurons table rows", async () => {
+        const po = await renderComponent();
+
+        const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+        expect(rows).toHaveLength(2);
+      });
+
+      it("should not render the NeuronCards", async () => {
+        const po = await renderComponent();
+
+        const neuronCards = await po.getNeuronCardPos();
+        expect(neuronCards.length).toBe(0);
+      });
+
+      it("should not render neurons grids", async () => {
+        const po = await renderComponent();
+
+        expect(await po.hasNonNeuronFundNeuronsGrid()).toBe(false);
+        expect(await po.hasNeuronFundNeuronsGrid()).toBe(false);
+      });
+
+      it("should not render empty text", async () => {
+        const po = await renderComponent();
+
+        expect(await po.hasEmptyMessage()).toBe(false);
+      });
     });
   });
 
   describe("with only neurons from CF", () => {
     beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", false);
       vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([
         neuronNF,
       ]);
@@ -165,6 +268,7 @@ describe("SnsNeurons", () => {
 
   describe("no neurons", () => {
     beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", false);
       vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([]);
     });
 

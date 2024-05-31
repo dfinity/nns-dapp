@@ -73,7 +73,7 @@ describe("Neurons", () => {
   });
 
   it("should render NnsNeurons by default", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", false);
+    overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", true);
 
     fakeGovernanceApi.pause();
     page.mock({
@@ -93,10 +93,13 @@ describe("Neurons", () => {
     });
 
     const neuronIdText = testNnsNeuronId.toString();
-    expect(await po.getNnsNeuronsPo().getNeuronIds()).toContain(neuronIdText);
+    expect(
+      await po.getNnsNeuronsPo().getNeuronsTablePo().getNeuronIds()
+    ).toContain(neuronIdText);
   });
 
   it("should render project page when a committed project is selected", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", true);
     fakeSnsGovernanceApi.pause();
     page.mock({
       data: { universe: testCommittedSnsCanisterId.toText() },
@@ -114,7 +117,9 @@ describe("Neurons", () => {
     });
 
     const neuronIdText = getSnsNeuronIdAsHexString(testCommittedSnsNeuron);
-    expect(await po.getSnsNeuronsPo().getNeuronIds()).toContain(neuronIdText);
+    expect(
+      await po.getSnsNeuronsPo().getNeuronsTablePo().getNeuronIds()
+    ).toContain(neuronIdText);
   });
 
   it("should not render neurons when an open project is selected", async () => {

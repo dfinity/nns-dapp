@@ -12,4 +12,9 @@ export class NeuronsTablePo extends BasePageObject {
   getNeuronsTableRowPos(): Promise<NeuronsTableRowPo[]> {
     return NeuronsTableRowPo.allUnder(this.root);
   }
+
+  async getNeuronIds(): Promise<string[]> {
+    const rows = await this.getNeuronsTableRowPos();
+    return Promise.all(rows.map((row) => row.getNeuronId()));
+  }
 }

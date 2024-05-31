@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { ENABLE_NEURONS_TABLE } from "$lib/stores/feature-flags.store";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
+  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import {
     sortedSnsCFNeuronsStore,
     sortedSnsUserNeuronsStore,
@@ -22,7 +24,10 @@
     snsOnlyProjectStore,
     snsProjectSelectedStore,
   } from "$lib/derived/sns/sns-selected-project.derived";
-  import { Html } from "@dfinity/gix-components";
+  import { Html, Spinner } from "@dfinity/gix-components";
+  import NeuronsTable from "$lib/components/neurons/NeuronsTable/NeuronsTable.svelte";
+  import type { TableNeuron } from "$lib/types/neurons-table";
+  import { tableNeuronsFromSnsNeurons } from "$lib/utils/neurons-table.utils";
 
   let loading = true;
 
@@ -56,45 +61,65 @@
 
   let summary: SnsSummary | undefined;
   $: summary = $snsProjectSelectedStore?.summary;
+
+  let tableNeurons: TableNeuron[] = [];
+  $: tableNeurons =
+    $ENABLE_NEURONS_TABLE && nonNullish(summary)
+      ? tableNeuronsFromSnsNeurons({
+          universe: $pageStore.universe,
+          token: summary.token,
+          snsNeurons: $snsNeuronsStore[$pageStore.universe]?.neurons ?? [],
+        })
+      : [];
 </script>
 
 <TestIdWrapper testId="sns-neurons-component">
-  {#if $sortedSnsUserNeuronsStore.length > 0 || loading}
-    <div class="card-grid" data-tid="sns-neurons-body">
-      {#if loading}
-        <SkeletonCard />
-        <SkeletonCard />
-      {:else}
-        {#each $sortedSnsUserNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
+  {#if $ENABLE_NEURONS_TABLE}
+    {#if loading}
+      <Spinner />
+    {:else if tableNeurons.length > 0}
+      <NeuronsTable neurons={tableNeurons} />
+    {/if}
+  {:else}
+    {#if $sortedSnsUserNeuronsStore.length > 0 || loading}
+      <div class="card-grid" data-tid="sns-neurons-body">
+        {#if loading}
+          <SkeletonCard />
+          <SkeletonCard />
+        {:else}
+          {#each $sortedSnsUserNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
+            <SnsNeuronCard
+              {neuron}
+              ariaLabel={$i18n.neurons.aria_label_neuron_card}
+              href={buildNeuronDetailsUrl(neuron)}
+            />
+          {/each}
+        {/if}
+      </div>
+    {/if}
+
+    {#if $sortedSnsCFNeuronsStore.length > 0}
+      <h2
+        data-tid="community-fund-title"
+        class={$sortedSnsUserNeuronsStore.length > 0 ? "top-margin" : ""}
+      >
+        {$i18n.sns_neuron_detail.community_fund_section}
+      </h2>
+      <p data-tid="community-fund-description" class="bottom-margin">
+        <Html
+          text={$i18n.sns_neuron_detail.community_fund_section_description}
+        />
+      </p>
+      <div class="card-grid" data-tid="fund-neurons-grid">
+        {#each $sortedSnsCFNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
           <SnsNeuronCard
             {neuron}
             ariaLabel={$i18n.neurons.aria_label_neuron_card}
             href={buildNeuronDetailsUrl(neuron)}
           />
         {/each}
-      {/if}
-    </div>
-  {/if}
-
-  {#if $sortedSnsCFNeuronsStore.length > 0}
-    <h2
-      data-tid="community-fund-title"
-      class={$sortedSnsUserNeuronsStore.length > 0 ? "top-margin" : ""}
-    >
-      {$i18n.sns_neuron_detail.community_fund_section}
-    </h2>
-    <p data-tid="community-fund-description" class="bottom-margin">
-      <Html text={$i18n.sns_neuron_detail.community_fund_section_description} />
-    </p>
-    <div class="card-grid" data-tid="fund-neurons-grid">
-      {#each $sortedSnsCFNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
-        <SnsNeuronCard
-          {neuron}
-          ariaLabel={$i18n.neurons.aria_label_neuron_card}
-          href={buildNeuronDetailsUrl(neuron)}
-        />
-      {/each}
-    </div>
+      </div>
+    {/if}
   {/if}
 
   {#if !loading && empty && nonNullish(summary)}
