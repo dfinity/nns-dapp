@@ -1,3 +1,4 @@
+import { NeuronIdCellPo } from "$tests/page-objects/NeuronIdCell.page-object";
 import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -14,8 +15,12 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
     );
   }
 
+  getNeuronIdCellPo(): NeuronIdCellPo {
+    return NeuronIdCellPo.under(this.root);
+  }
+
   getNeuronId(): Promise<string> {
-    return this.getText("neuron-id-cell-component");
+    return this.getNeuronIdCellPo().getNeurondId();
   }
 
   getStake(): Promise<string> {
