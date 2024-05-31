@@ -5,8 +5,12 @@ import {
   compareByStake,
   sortNeurons,
   tableNeuronsFromNeuronInfos,
+  tableNeuronsFromSnsNeurons,
 } from "$lib/utils/neurons-table.utils";
+import { hexStringToBytes } from "$lib/utils/utils";
 import { mockNeuron, mockTableNeuron } from "$tests/mocks/neurons.mock";
+import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { NeuronState } from "@dfinity/nns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
@@ -85,6 +89,71 @@ describe("neurons-table.utils", () => {
           neuronId: "52",
           stake: makeStake(0n),
           dissolveDelaySeconds,
+        },
+      ]);
+    });
+  });
+
+  describe("tableNeuronsFromSnsNeurons", () => {
+    const snsUniverseIdText = "br5f7-7uaaa-aaaaa-qaaca-cai";
+    const neuronIdString = "123456789abcdef0";
+    const neuronId = hexStringToBytes(neuronIdString);
+    const stake = 300_000n;
+    const dissolveDelaySeconds = 8640000n;
+
+    const snsNeuron = createMockSnsNeuron({
+      id: neuronId,
+      stake,
+      dissolveDelaySeconds,
+    });
+
+    const makeSnsStake = (amount: bigint) =>
+      TokenAmountV2.fromUlps({
+        amount,
+        token: mockSnsToken,
+      });
+
+    const expectedTableNeuron = {
+      rowHref: "/neuron/?u=br5f7-7uaaa-aaaaa-qaaca-cai&neuron=123456789abcdef0",
+      domKey: neuronIdString,
+      neuronId: neuronIdString,
+      stake: makeSnsStake(stake),
+      dissolveDelaySeconds,
+    };
+
+    it("should convert SnsNeuron to TableNeuron", () => {
+      const snsNeurons = [snsNeuron];
+      const tableNeurons = tableNeuronsFromSnsNeurons({
+        universe: snsUniverseIdText,
+        token: mockSnsToken,
+        snsNeurons: snsNeurons,
+      });
+      expect(tableNeurons).toEqual([expectedTableNeuron]);
+    });
+
+    it("should convert multiple neurons", () => {
+      const neuronIdString2 = "fafafafafafafafa";
+      const neuronId2 = hexStringToBytes(neuronIdString2);
+      const snsNeuron2 = createMockSnsNeuron({
+        id: neuronId2,
+        stake,
+        dissolveDelaySeconds,
+      });
+
+      const snsNeurons = [snsNeuron, snsNeuron2];
+      const tableNeurons = tableNeuronsFromSnsNeurons({
+        universe: snsUniverseIdText,
+        token: mockSnsToken,
+        snsNeurons: snsNeurons,
+      });
+      expect(tableNeurons).toEqual([
+        expectedTableNeuron,
+        {
+          ...expectedTableNeuron,
+          rowHref:
+            "/neuron/?u=br5f7-7uaaa-aaaaa-qaaca-cai&neuron=fafafafafafafafa",
+          domKey: neuronIdString2,
+          neuronId: neuronIdString2,
         },
       ]);
     });
