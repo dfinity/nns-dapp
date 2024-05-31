@@ -8,10 +8,6 @@
   } from "$lib/services/worker-auth.services";
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
   import { toastsClean } from "$lib/stores/toasts.store";
-  import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
-  import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { loadActionableSnsProposals } from "$lib/services/actionable-sns-proposals.services";
 
   let ready = false;
 
