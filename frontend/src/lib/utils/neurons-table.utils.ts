@@ -1,7 +1,38 @@
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import type {
   TableNeuron,
   TableNeuronComparator,
 } from "$lib/types/neurons-table";
+import { buildNeuronUrl } from "$lib/utils/navigation.utils";
+import { isSpawning, neuronStake } from "$lib/utils/neuron.utils";
+import type { NeuronInfo } from "@dfinity/nns";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+
+export const tableNeuronsFromNeuronInfos = (
+  neuronInfos: NeuronInfo[]
+): TableNeuron[] => {
+  return neuronInfos.map((neuronInfo) => {
+    const { neuronId, dissolveDelaySeconds } = neuronInfo;
+    const neuronIdString = neuronId.toString();
+    const isSpawningNeuron = isSpawning(neuronInfo);
+    const rowHref = isSpawningNeuron
+      ? undefined
+      : buildNeuronUrl({
+          universe: OWN_CANISTER_ID_TEXT,
+          neuronId,
+        });
+    return {
+      ...(rowHref && { rowHref }),
+      domKey: neuronIdString,
+      neuronId: neuronIdString,
+      stake: TokenAmountV2.fromUlps({
+        amount: neuronStake(neuronInfo),
+        token: ICPToken,
+      }),
+      dissolveDelaySeconds,
+    };
+  });
+};
 
 // Takes a list of comparators and returns a single comparator by first applying
 // the first comparator and using subsequent comparators to break ties.
