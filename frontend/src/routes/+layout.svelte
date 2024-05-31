@@ -8,10 +8,6 @@
   } from "$lib/services/worker-auth.services";
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
   import { toastsClean } from "$lib/stores/toasts.store";
-  import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
-  import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { loadActionableSnsProposals } from "$lib/services/actionable-sns-proposals.services";
 
   let ready = false;
 
@@ -48,12 +44,6 @@
   });
 
   $: syncAuth($authStore);
-
-  $: $authSignedInStore && loadActionableProposals();
-  // Check for the committed projects length in case the sns list is not yet loaded
-  $: $authSignedInStore &&
-    $snsProjectsCommittedStore.length > 0 &&
-    loadActionableSnsProposals();
 </script>
 
 <slot />
