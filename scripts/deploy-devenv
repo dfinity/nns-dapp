@@ -1,10 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# deploy-devenv should be run from a DevEnv machine which is running a local
-# replica started with 'dfx start --host 0.0.0.0:8080'.
-# It will deploy nns-dapp.wasm.gz with arguments such that it can be accessed
-# from a VPN URL from other machines.
+print_help() {
+  cat <<-EOF
+
+	deploy-devenv should be run from a DevEnv machine which is running a local
+	replica started with 'dfx start --host 0.0.0.0:8080 --domain $USER-ingress.devenv.dfinity.network'.
+	It will deploy nns-dapp.wasm.gz with arguments such that it can be accessed
+	from a VPN URL from other machines.
+	EOF
+}
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=m long=mode desc="The dfx install mode to use" variable=INSTALL_MODE default="reinstall"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
 
 if [[ "$HOSTNAME" =~ ^(devenv)-(.*)$ ]]; then
   DEVENV_NAME=${BASH_REMATCH[2]}
@@ -66,7 +80,7 @@ fi
 
 dfx identity use "$NNS_DAPP_CONTROLLER_IDENTITY"
 
-dfx canister install nns-dapp --wasm nns-dapp.wasm.gz --upgrade-unchanged --mode reinstall --yes -v --argument "$(cat "$DEVENV_ARGS_DID")"
+dfx canister install nns-dapp --wasm nns-dapp.wasm.gz --upgrade-unchanged --mode "$INSTALL_MODE" --yes -v --argument "$(cat "$DEVENV_ARGS_DID")"
 
 NNS_DAPP_ID="$(dfx canister id nns-dapp)"
 DEVENV_URL="https://$NNS_DAPP_ID.$DEVENV_HOST"

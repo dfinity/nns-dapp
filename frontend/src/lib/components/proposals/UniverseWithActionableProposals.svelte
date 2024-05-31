@@ -7,7 +7,9 @@
 </script>
 
 <div class="container" data-tid="universe-with-actionable-proposals-component">
-  <UniversePageSummary {universe} />
+  <div class="title">
+    <UniversePageSummary {universe} />
+  </div>
 
   <InfiniteScroll layout="grid" disabled>
     <slot />
@@ -15,7 +17,7 @@
 </div>
 
 <style lang="scss">
-  .container {
-    margin-bottom: var(--padding-4x);
+  .title {
+    margin-bottom: var(--padding-3x);
   }
 </style>

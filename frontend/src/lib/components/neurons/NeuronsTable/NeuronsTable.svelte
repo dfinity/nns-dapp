@@ -1,13 +1,36 @@
 <script lang="ts">
-  import type { TableNeuron } from "$lib/types/neurons-table";
-  import NeuronsTableRow from "$lib/components/neurons/NeuronsTable/NeuronsTableRow.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
+  import type {
+    TableNeuron,
+    NeuronsTableColumn,
+  } from "$lib/types/neurons-table";
+  import NeuronIdCell from "$lib/components/neurons/NeuronsTable/NeuronIdCell.svelte";
+  import NeuronStakeCell from "$lib/components/neurons/NeuronsTable/NeuronStakeCell.svelte";
+  import NeuronDissolveDelayCell from "$lib/components/neurons/NeuronsTable/NeuronDissolveDelayCell.svelte";
+  import NeuronActionsCell from "$lib/components/neurons/NeuronsTable/NeuronActionsCell.svelte";
 
   export let neurons: TableNeuron[];
+
+  const columns: NeuronsTableColumn[] = [
+    {
+      title: $i18n.neurons.neuron_id,
+      cellComponent: NeuronIdCell,
+    },
+    {
+      title: $i18n.neuron_detail.stake,
+      cellComponent: NeuronStakeCell,
+    },
+    {
+      title: $i18n.neurons.dissolve_delay_title,
+      cellComponent: NeuronDissolveDelayCell,
+    },
+    {
+      title: "",
+      cellComponent: NeuronActionsCell,
+    },
+  ];
 </script>
 
-<div data-tid="neurons-table-component">
-  <h1>The neurons table is under construction.</h1>
-  {#each neurons as neuron}
-    <NeuronsTableRow {neuron} />
-  {/each}
-</div>
+<ResponsiveTable testId="neurons-table-component" {columns} tableData={neurons}
+></ResponsiveTable>

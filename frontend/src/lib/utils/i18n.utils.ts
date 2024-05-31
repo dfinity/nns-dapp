@@ -65,3 +65,13 @@ export const replacePlaceholders = (
 
   return result;
 };
+
+/**
+ * Similar to Array.join(", ") but uses " or " before the last element.
+ * @example
+ * ["Example", "Sample", "Test"] -> "Example, Sample or Test"
+ */
+export const joinWithOr = (text: string[]): string =>
+  text.length > 1
+    ? `${text.slice(0, -1).join(", ")} ${get(i18n).core.or} ${text.slice(-1)}`
+    : text.join(", ");

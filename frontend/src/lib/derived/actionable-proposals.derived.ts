@@ -90,13 +90,15 @@ export const actionableProposalNotSupportedUniversesStore: Readable<
     )
 );
 
+export interface ActionableSnsProposalsByUniverseData {
+  universe: Universe;
+  proposals: SnsProposalData[];
+}
+
 /** A store that contains sns universes with actionable support and their actionable proposals
  * in the same order as they are displayed in the UI. */
 export const actionableSnsProposalsByUniverseStore: Readable<
-  Array<{
-    universe: Universe;
-    proposals: SnsProposalData[];
-  }>
+  Array<ActionableSnsProposalsByUniverseData>
 > = derived(
   [selectableUniversesStore, actionableSnsProposalsStore],
   ([universes, actionableSnsProposals]) =>

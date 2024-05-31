@@ -35,7 +35,7 @@ interface I18nCore {
   receive: string;
   send_with_token: string;
   collapse_all: string;
-  learn_more: string;
+  or: string;
 }
 
 interface I18nError {
@@ -250,8 +250,6 @@ interface I18nNeuron_types {
 interface I18nNeurons {
   title: string;
   text: string;
-  rename_topic_message: string;
-  rename_topic_learn_more_label: string;
   stake_token: string;
   merge_neurons: string;
   merge_neurons_modal_title: string;
@@ -403,6 +401,7 @@ interface I18nActionable_proposals_sign_in {
 interface I18nActionable_proposals_empty {
   title: string;
   text: string;
+  text_unsupported: string;
 }
 
 interface I18nActionable_proposals_not_supported {

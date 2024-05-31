@@ -1,28 +1,94 @@
 import NeuronsTable from "$lib/components/neurons/NeuronsTable/NeuronsTable.svelte";
+import {
+  SECONDS_IN_DAY,
+  SECONDS_IN_EIGHT_YEARS,
+  SECONDS_IN_MONTH,
+} from "$lib/constants/constants";
 import type { TableNeuron } from "$lib/types/neurons-table";
 import { NeuronsTablePo } from "$tests/page-objects/NeuronsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
 describe("NeuronsTable", () => {
   const neuron1: TableNeuron = {
-    neuronId: 10n,
+    rowHref: "/neurons/10",
+    domKey: "10",
+    neuronId: "10",
+    stake: TokenAmountV2.fromUlps({
+      amount: 500_000_000n,
+      token: ICPToken,
+    }),
+    dissolveDelaySeconds: BigInt(6 * SECONDS_IN_MONTH),
   };
+
   const neuron2: TableNeuron = {
-    neuronId: 99n,
+    rowHref: "/neurons/99",
+    domKey: "99",
+    neuronId: "99",
+    stake: TokenAmountV2.fromUlps({
+      amount: 1_300_000_000n,
+      token: ICPToken,
+    }),
+    dissolveDelaySeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
   };
-  const renderComponent = () => {
+
+  const spawningNeuron: TableNeuron = {
+    domKey: "101",
+    neuronId: "101",
+    stake: TokenAmountV2.fromUlps({
+      amount: 300_000_000n,
+      token: ICPToken,
+    }),
+    dissolveDelaySeconds: BigInt(5 * SECONDS_IN_DAY),
+  };
+
+  const renderComponent = ({ neurons }) => {
     const { container } = render(NeuronsTable, {
-      neurons: [neuron1, neuron2],
+      neurons,
     });
     return NeuronsTablePo.under(new JestPageObjectElement(container));
   };
 
-  it("should render neurons", async () => {
-    const po = renderComponent();
+  it("should render neuron URL", async () => {
+    const po = renderComponent({ neurons: [neuron1, neuron2] });
     const rowPos = await po.getNeuronsTableRowPos();
     expect(rowPos).toHaveLength(2);
-    expect(await rowPos[0].getNeuronId()).toBe(neuron1.neuronId.toString());
-    expect(await rowPos[1].getNeuronId()).toBe(neuron2.neuronId.toString());
+    expect(await rowPos[0].getHref()).toBe(neuron1.rowHref);
+    expect(await rowPos[1].getHref()).toBe(neuron2.rowHref);
+  });
+
+  it("should render neuron ID", async () => {
+    const po = renderComponent({ neurons: [neuron1, neuron2] });
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getNeuronId()).toBe(neuron1.neuronId);
+    expect(await rowPos[1].getNeuronId()).toBe(neuron2.neuronId);
+  });
+
+  it("should render neuron stake", async () => {
+    const po = renderComponent({ neurons: [neuron1, neuron2] });
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getStake()).toBe("5.00 ICP");
+    expect(await rowPos[1].getStake()).toBe("13.00 ICP");
+  });
+
+  it("should render dissolve delay", async () => {
+    const po = renderComponent({ neurons: [neuron1, neuron2] });
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getDissolveDelay()).toBe("182 days, 15 hours");
+    expect(await rowPos[1].getDissolveDelay()).toBe("8 years");
+  });
+
+  it("should render go-to-detail button iff there is a URL", async () => {
+    const po = renderComponent({ neurons: [neuron1, spawningNeuron] });
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getHref()).toBe(neuron1.rowHref);
+    expect(await rowPos[0].hasGoToDetailButton()).toBe(true);
+    expect(await rowPos[1].getHref()).toBe(null);
+    expect(await rowPos[1].hasGoToDetailButton()).toBe(false);
   });
 });

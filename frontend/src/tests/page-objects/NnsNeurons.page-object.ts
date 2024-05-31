@@ -24,8 +24,12 @@ export class NnsNeuronsPo extends BasePageObject {
   }
 
   async isContentLoaded(): Promise<boolean> {
+    return (await this.isPresent()) && !(await this.isContentLoading());
+  }
+
+  async isContentLoading(): Promise<boolean> {
     return (
-      (await this.isPresent()) && !(await this.getSkeletonCardPo().isPresent())
+      (await this.getSkeletonCardPo().isPresent()) || (await this.hasSpinner())
     );
   }
 
@@ -56,7 +60,7 @@ export class NnsNeuronsPo extends BasePageObject {
     return this.isPresent("empty-message-component");
   }
 
-  async hasTopicRenameMessage(): Promise<boolean> {
-    return this.isPresent("topic-rename-message");
+  hasSpinner(): Promise<boolean> {
+    return this.isPresent("spinner");
   }
 }

@@ -12,7 +12,6 @@ import {
   mutableMockAuthStoreSubscribe,
 } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
-import { MockLedgerCanister } from "$tests/mocks/ledger.canister.mock";
 import { buildMockNeuronsStoreSubscribe } from "$tests/mocks/neurons.mock";
 import {
   mockEmptyProposalsStoreSubscribe,
@@ -20,7 +19,6 @@ import {
 } from "$tests/mocks/proposals.store.mock";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
-import { LedgerCanister } from "@dfinity/ledger-icp";
 import { GovernanceCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";
@@ -34,8 +32,6 @@ describe("ProposalDetail", () => {
 
   const mockGovernanceCanister: MockGovernanceCanister =
     new MockGovernanceCanister(mockProposals);
-
-  const mockLedgerCanister: MockLedgerCanister = new MockLedgerCanister();
 
   beforeEach(() => {
     silentConsoleErrors();
@@ -52,8 +48,6 @@ describe("ProposalDetail", () => {
     vi.spyOn(GovernanceCanister, "create").mockReturnValue(
       mockGovernanceCanister
     );
-
-    vi.spyOn(LedgerCanister, "create").mockReturnValue(mockLedgerCanister);
 
     vi.spyOn(neuronsStore, "subscribe").mockImplementation(
       buildMockNeuronsStoreSubscribe([], false)

@@ -12,20 +12,24 @@ import { nnsUniverseStore } from "./nns-universe.derived";
 export const icpTokensListVisitors = derived<
   Readable<Universe>,
   UserTokenData[]
->(nnsUniverseStore, (nnsUniverse) => [
-  {
-    universeId: Principal.fromText(nnsUniverse.canisterId),
-    title: nnsUniverse.title,
-    balance: new UnavailableTokenAmount(NNS_TOKEN_DATA),
-    logo: nnsUniverse.logo,
-    token: NNS_TOKEN_DATA,
-    fee: TokenAmountV2.fromUlps({
-      amount: NNS_TOKEN_DATA.fee,
+>(nnsUniverseStore, (nnsUniverse) => {
+  const rowHref = buildWalletUrl({
+    universe: OWN_CANISTER_ID_TEXT,
+  });
+  return [
+    {
+      universeId: Principal.fromText(nnsUniverse.canisterId),
+      title: nnsUniverse.title,
+      balance: new UnavailableTokenAmount(NNS_TOKEN_DATA),
+      logo: nnsUniverse.logo,
       token: NNS_TOKEN_DATA,
-    }),
-    actions: [UserTokenAction.GoToDetail],
-    rowHref: buildWalletUrl({
-      universe: OWN_CANISTER_ID_TEXT,
-    }),
-  },
-]);
+      fee: TokenAmountV2.fromUlps({
+        amount: NNS_TOKEN_DATA.fee,
+        token: NNS_TOKEN_DATA,
+      }),
+      actions: [UserTokenAction.GoToDetail],
+      rowHref,
+      domKey: rowHref,
+    },
+  ];
+});

@@ -22,7 +22,7 @@
   // The API might return a non-zero voting power even if the neuron can't vote.
   let canVote: boolean;
   $: canVote =
-    neuron.dissolveDelaySeconds > BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);
+    neuron.dissolveDelaySeconds >= BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);
 </script>
 
 <Section testId="nns-neuron-voting-power-section-component">

@@ -6,9 +6,11 @@ import { createIcpUserToken } from "$tests/mocks/tokens-page.mock";
 import { get } from "svelte/store";
 
 describe("icp-tokens-list-visitors.derived", () => {
+  const href = `/wallet/?u=${OWN_CANISTER_ID_TEXT}`;
   const expectedIcpTokenVisitor: UserTokenData = createIcpUserToken({
     actions: [UserTokenAction.GoToDetail],
-    rowHref: `/wallet/?u=${OWN_CANISTER_ID_TEXT}`,
+    rowHref: href,
+    domKey: href,
   });
 
   describe("icpTokensListVisitors", () => {

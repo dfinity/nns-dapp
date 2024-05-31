@@ -2,6 +2,7 @@ import { resetNeuronsApiService } from "$lib/api-services/governance.api-service
 import * as agent from "$lib/api/agent.api";
 import * as governanceApi from "$lib/api/governance.api";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
+import { ACTIONABLE_PROPOSALS_PARAM } from "$lib/constants/routes.constants";
 import NnsProposals from "$lib/pages/NnsProposals.svelte";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
@@ -149,6 +150,17 @@ describe("NnsProposals", () => {
         expect(await cardPos[1].getProposalId()).toEqual(
           `ID: ${secondProposal.id}`
         );
+      });
+
+      it("should not have actionable parameter in a proposal card href", async () => {
+        const po = await renderComponent();
+        const firstCardPos = (await po.getProposalCardPos())[0];
+
+        expect(
+          (await firstCardPos.getCardHref()).includes(
+            ACTIONABLE_PROPOSALS_PARAM
+          )
+        ).toEqual(false);
       });
 
       it("should display actionable mark on all proposals view", async () => {

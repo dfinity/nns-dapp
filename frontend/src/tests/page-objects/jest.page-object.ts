@@ -181,4 +181,9 @@ export class JestPageObjectElement implements PageObjectElement {
   async getDocumentBody(): Promise<JestPageObjectElement> {
     return new JestPageObjectElement(document.body);
   }
+
+  async getTagName(): Promise<string> {
+    await this.waitFor();
+    return this.getElement()?.tagName ?? "";
+  }
 }

@@ -11,6 +11,46 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 130081
+
+### Application
+
+#### Added
+
+* Get `ckUSDC` canister IDs from environment/configuration.
+
+#### Changed
+
+* Set `Actionable Proposals` as the default selection.
+
+#### Removed
+
+* Stop writing account transactions to stable memory.
+
+#### Fixed
+
+* Rendering tokens with fewer than 8 decimals.
+* Don't allow inputting more decimals than the token supports.
+
+#### Security
+
+* Downgrade to Rust `1.77.2`.
+
+#### Not Published
+
+* Support `ckUSDC` behind a feature flag.
+
+### Operations
+
+#### Added
+
+* Include `ckUSDC` when generating `args.did` and `.env`.
+* Include `ckUSDC` canister IDs when importing from URL with `scripts/canister_ids`.
+
+#### Changed
+
+* Keep existing `dfx` identities when running an `snsdemo` snapshot.
+
 ## Proposal 129748
 
 ### Application
