@@ -48,12 +48,6 @@
   });
 
   $: syncAuth($authStore);
-
-  $: $authSignedInStore && loadActionableProposals();
-  // Check for the committed projects length in case the sns list is not yet loaded
-  $: $authSignedInStore &&
-    $snsProjectsCommittedStore.length > 0 &&
-    loadActionableSnsProposals();
 </script>
 
 <slot />
