@@ -48,7 +48,7 @@ export const createMockSnsNeuron = ({
   permissions = [],
   vesting,
   votingPowerMultiplier = 100n,
-  dissolveDelaySeconds = BigInt(Math.floor(3600 * 24 * 365 * 2)),
+  dissolveDelaySeconds,
   whenDissolvedTimestampSeconds = BigInt(
     Math.floor(Date.now() / 1000 + 3600 * 24 * 365 * 2)
   ),
@@ -80,6 +80,12 @@ export const createMockSnsNeuron = ({
 }): SnsNeuron => {
   if (isNullish(state) && nonNullish(dissolveDelaySeconds)) {
     state = NeuronState.Locked;
+  } else if (
+    nonNullish(state) &&
+    state !== NeuronState.Dissolved &&
+    isNullish(dissolveDelaySeconds)
+  ) {
+    dissolveDelaySeconds = BigInt(Math.floor(3600 * 24 * 365 * 2));
   }
   return {
     id: [{ id: arrayOfNumberToUint8Array(id) }],
