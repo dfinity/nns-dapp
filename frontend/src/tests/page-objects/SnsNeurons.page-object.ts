@@ -25,8 +25,12 @@ export class SnsNeuronsPo extends BasePageObject {
   }
 
   async isContentLoaded(): Promise<boolean> {
+    return (await this.isPresent()) && !(await this.isContentLoading());
+  }
+
+  async isContentLoading(): Promise<boolean> {
     return (
-      (await this.isPresent()) && !(await this.getSkeletonCardPo().isPresent())
+      (await this.getSkeletonCardPo().isPresent()) || (await this.hasSpinner())
     );
   }
 
