@@ -31,7 +31,6 @@ describe("Proposal", () => {
   beforeEach(() => {
     resetIdentity();
     referrerPathStore.set(undefined);
-    // page.reset();
   });
 
   const renderProposalModern = (id = 1000n) =>

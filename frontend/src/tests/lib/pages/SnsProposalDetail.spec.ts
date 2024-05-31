@@ -353,6 +353,13 @@ describe("SnsProposalDetail", () => {
   });
 
   it("should not display proposal navigation when user comes from actionable page", async () => {
+    resetIdentity();
+    setSnsProjects([
+      {
+        rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
     page.mock({
       data: { universe: rootCanisterId.toText(), actionable: true },
     });
@@ -379,7 +386,7 @@ describe("SnsProposalDetail", () => {
     );
 
     fakeSnsGovernanceApi.addProposalWith({
-      identity: new AnonymousIdentity(),
+      identity: mockIdentity,
       rootCanisterId,
       id: [{ id: 2n }],
     });
@@ -391,11 +398,18 @@ describe("SnsProposalDetail", () => {
       },
     });
     const po = SnsProposalDetailPo.under(new JestPageObjectElement(container));
-
-    await waitFor(async () => expect(await po.isContentLoaded()).toBe(true));
+    await runResolvedPromises();
+    expect(await po.isContentLoaded()).toBe(true);
 
     const navigationPo = po.getProposalNavigationPo();
     expect(await navigationPo.isPresent()).toBe(false);
+
+    page.mock({
+      data: { universe: rootCanisterId.toText(), actionable: false },
+    });
+
+    await runResolvedPromises();
+    expect(await navigationPo.isPresent()).toBe(true);
   });
 
   describe("not logged in that logs in afterwards", () => {
