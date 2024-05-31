@@ -14,7 +14,8 @@ export const initAppPrivateData = async (): Promise<void> => {
    */
   await Promise.allSettled([Promise.all(initNns), Promise.all(initSns)]);
 
-  // Load the actionable proposals only after the Nns and Sns projects have been loaded, because it's a non-critical enhancement.
+  // Load the actionable proposals only after the Nns and Sns projects have been loaded.
+  // Because it's a non-critical enhancement, the loading of actionable proposals should not delay the execution of this function.
   Promise.allSettled([
     loadActionableProposals(),
     loadActionableSnsProposals(),
