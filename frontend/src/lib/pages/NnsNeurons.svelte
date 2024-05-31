@@ -18,7 +18,7 @@
   import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
   import { onMount } from "svelte";
   import { listNeurons } from "$lib/services/neurons.services";
-  import { tableNeuronsFromNeuronInfos } from "$lib/utils/neuron.utils";
+  import { tableNeuronsFromNeuronInfos } from "$lib/utils/neurons-table.utils";
 
   let isLoading = false;
   $: isLoading = $neuronsStore.neurons === undefined;
