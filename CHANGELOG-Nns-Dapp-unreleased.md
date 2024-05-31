@@ -29,6 +29,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Render neurons with minimum dissolve delay correctly with voting power.
 * Nns-dapp may crash while finishing an empty receive.
+* Actionable proposals initialization before Sns-es were loaded.
 
 #### Security
 

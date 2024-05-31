@@ -3,10 +3,17 @@ import type {
   TableNeuron,
   TableNeuronComparator,
 } from "$lib/types/neurons-table";
+import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { buildNeuronUrl } from "$lib/utils/navigation.utils";
 import { isSpawning, neuronStake } from "$lib/utils/neuron.utils";
+import {
+  getSnsDissolveDelaySeconds,
+  getSnsNeuronIdAsHexString,
+  getSnsNeuronStake,
+} from "$lib/utils/sns-neuron.utils";
 import type { NeuronInfo } from "@dfinity/nns";
-import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import type { SnsNeuron } from "@dfinity/sns";
+import { ICPToken, TokenAmountV2, type Token } from "@dfinity/utils";
 
 export const tableNeuronsFromNeuronInfos = (
   neuronInfos: NeuronInfo[]
@@ -28,6 +35,35 @@ export const tableNeuronsFromNeuronInfos = (
       stake: TokenAmountV2.fromUlps({
         amount: neuronStake(neuronInfo),
         token: ICPToken,
+      }),
+      dissolveDelaySeconds,
+    };
+  });
+};
+
+export const tableNeuronsFromSnsNeurons = ({
+  universe,
+  token,
+  snsNeurons,
+}: {
+  universe: UniverseCanisterIdText;
+  token: Token;
+  snsNeurons: SnsNeuron[];
+}): TableNeuron[] => {
+  return snsNeurons.map((snsNeuron) => {
+    const dissolveDelaySeconds = getSnsDissolveDelaySeconds(snsNeuron) ?? 0n;
+    const neuronIdString = getSnsNeuronIdAsHexString(snsNeuron);
+    const rowHref = buildNeuronUrl({
+      universe,
+      neuronId: neuronIdString,
+    });
+    return {
+      rowHref,
+      domKey: neuronIdString,
+      neuronId: neuronIdString,
+      stake: TokenAmountV2.fromUlps({
+        amount: getSnsNeuronStake(snsNeuron),
+        token,
       }),
       dissolveDelaySeconds,
     };
