@@ -1,6 +1,7 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { NeuronsTablePo } from "$tests/page-objects/NeuronsTable.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { SnsNeuronCardPo } from "$tests/page-objects/SnsNeuronCard.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class SnsNeuronsPo extends BasePageObject {
@@ -8,6 +9,10 @@ export class SnsNeuronsPo extends BasePageObject {
 
   static under(element: PageObjectElement): SnsNeuronsPo {
     return new SnsNeuronsPo(element.byTestId(SnsNeuronsPo.TID));
+  }
+
+  getNeuronsTablePo(): NeuronsTablePo {
+    return NeuronsTablePo.under(this.root);
   }
 
   getSkeletonCardPo(): SkeletonCardPo {
@@ -49,5 +54,9 @@ export class SnsNeuronsPo extends BasePageObject {
 
   hasEmptyMessage(): Promise<boolean> {
     return this.isPresent("empty-message-component");
+  }
+
+  hasSpinner(): Promise<boolean> {
+    return this.isPresent("spinner");
   }
 }
