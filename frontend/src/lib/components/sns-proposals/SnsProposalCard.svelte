@@ -21,6 +21,7 @@
   export let actionable = false;
   export let fromActionablePage = false;
   export let hidden = false;
+  export let index = 0;
 
   let id: SnsProposalId | undefined;
   let title: string | undefined;
@@ -53,6 +54,7 @@
 <ProposalCard
   {status}
   {hidden}
+  {index}
   {actionable}
   {href}
   id={id?.id}

@@ -1,3 +1,5 @@
+import { cubicOut } from "svelte/easing";
+
 export const DEFAULT_LIST_PAGINATION_LIMIT = 100;
 export const MAX_ACTIONABLE_REQUEST_COUNT = 5;
 // Use a different limit for Icrc transactions
@@ -22,3 +24,8 @@ export const DAYS_IN_NON_LEAP_YEAR = 365;
 
 export const NANO_SECONDS_IN_MILLISECOND = 1_000_000;
 export const NANO_SECONDS_IN_MINUTE = NANO_SECONDS_IN_MILLISECOND * 1_000 * 60;
+
+export const PROPOSAL_CARD_ANIMATION_DURATION_IN_MILLISECOND = 300;
+export const PROPOSAL_CARD_ANIMATION_DELAY_IN_MILLISECOND = 30;
+export const PROPOSAL_CARD_ANIMATION_Y = 60;
+export const PROPOSAL_CARD_ANIMATION_EASING = cubicOut;

@@ -1,10 +1,11 @@
 <script lang="ts">
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import {
     type ActionableSnsProposalsByUniverseData,
     actionableSnsProposalsByUniverseStore,
   } from "$lib/derived/actionable-proposals.derived";
   import ActionableSnsProposals from "$lib/components/proposals/ActionableSnsProposals.svelte";
+
+  export let cardIndex = 0;
 
   let actionableUniverses: ActionableSnsProposalsByUniverseData[] = [];
   $: actionableUniverses = $actionableSnsProposalsByUniverseStore.filter(
@@ -12,8 +13,8 @@
   );
 </script>
 
-<TestIdWrapper testId="actionable-snses-component">
+<div data-tid="actionable-snses-component">
   {#each actionableUniverses as { universe, proposals } (universe.canisterId)}
-    <ActionableSnsProposals {universe} {proposals} />
+    <ActionableSnsProposals {universe} {proposals} {cardIndex} />
   {/each}
-</TestIdWrapper>
+</div>

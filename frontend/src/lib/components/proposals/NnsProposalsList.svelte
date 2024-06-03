@@ -36,7 +36,7 @@
 
   {#if display}
     {#if !$actionableProposalsActiveStore}
-      <div in:fade data-tid="all-proposal-list">
+      <div data-tid="all-proposal-list">
         {#if loadingAnimation === "skeleton"}
           <LoadingProposals />
         {:else if nothingFound}
@@ -48,9 +48,10 @@
               layout="grid"
               disabled={disableInfiniteScroll || loading}
             >
-              {#each $filteredActionableProposals.proposals as proposalInfo (proposalInfo.id)}
+              {#each $filteredActionableProposals.proposals as proposalInfo, index (proposalInfo.id)}
                 <NnsProposalCard
                   {hidden}
+                  {index}
                   actionable={proposalInfo.isActionable}
                   {proposalInfo}
                 />
@@ -60,7 +61,7 @@
         {/if}
       </div>
     {:else}
-      <div in:fade data-tid="actionable-proposal-list">
+      <div data-tid="actionable-proposal-list">
         {#if !$authSignedInStore}
           <ActionableProposalsSignIn />
         {:else if isNullish(actionableProposals)}
@@ -69,8 +70,8 @@
           <ActionableProposalsEmpty />
         {:else}
           <InfiniteScroll layout="grid" disabled>
-            {#each actionableProposals ?? [] as proposalInfo (proposalInfo.id)}
-              <NnsProposalCard {hidden} actionable {proposalInfo} />
+            {#each actionableProposals ?? [] as proposalInfo, index (proposalInfo.id)}
+              <NnsProposalCard {hidden} {index} actionable {proposalInfo} />
             {/each}
           </InfiniteScroll>
         {/if}

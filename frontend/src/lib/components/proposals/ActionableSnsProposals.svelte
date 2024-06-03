@@ -10,9 +10,11 @@
   import { Principal } from "@dfinity/principal";
   import type { Universe } from "$lib/types/universe";
   import type { Readable } from "svelte/store";
+  import { PROPOSAL_CARD_ANIMATION_DELAY_IN_MILLISECOND } from "$lib/constants/constants";
 
   export let universe: Universe;
   export let proposals: ProposalData[];
+  export let cardIndex = 0;
 
   let rootCanisterId: RootCanisterIdText;
   $: rootCanisterId = universe.canisterId;
@@ -27,9 +29,13 @@
 
 <TestIdWrapper testId="actionable-sns-proposals-component">
   {#if nonNullish(nsFunctions)}
-    <UniverseWithActionableProposals {universe}>
-      {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
+    <UniverseWithActionableProposals
+      {universe}
+      delay={cardIndex * PROPOSAL_CARD_ANIMATION_DELAY_IN_MILLISECOND}
+    >
+      {#each proposals as proposalData, index (fromNullable(proposalData.id)?.id)}
         <SnsProposalCard
+          index={cardIndex + index}
           actionable
           fromActionablePage
           {proposalData}

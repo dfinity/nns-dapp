@@ -9,13 +9,16 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { ENABLE_ACTIONABLE_TAB } from "$lib/stores/feature-flags.store";
   import ActionableProposals from "$lib/pages/ActionableProposals.svelte";
+  import { fade } from "svelte/transition";
 </script>
 
 <main data-tid="proposals-component">
   {#if $ENABLE_ACTIONABLE_TAB && $authSignedInStore && $pageStore.actionable}
     <ActionableProposals />
   {:else}
-    <SummaryUniverse />
+    <div in:fade|global>
+      <SummaryUniverse />
+    </div>
 
     {#if $isNnsUniverseStore}
       <Proposals />

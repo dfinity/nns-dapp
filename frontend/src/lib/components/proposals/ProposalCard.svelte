@@ -14,7 +14,15 @@
   import { PROPOSER_ID_DISPLAY_SPLIT_LENGTH } from "$lib/constants/proposals.constants";
   import type { UniversalProposalStatus } from "$lib/types/proposals";
   import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
+  import { fly } from "svelte/transition";
+  import {
+    PROPOSAL_CARD_ANIMATION_DELAY_IN_MILLISECOND,
+    PROPOSAL_CARD_ANIMATION_DURATION_IN_MILLISECOND,
+    PROPOSAL_CARD_ANIMATION_EASING,
+    PROPOSAL_CARD_ANIMATION_Y,
+  } from "$lib/constants/constants";
 
+  export let index = 0;
   export let hidden = false;
   export let actionable = false;
   export let status: UniversalProposalStatus | undefined;
@@ -27,7 +35,17 @@
   export let href: string;
 </script>
 
-<li class:hidden>
+<li
+  class:hidden
+  in:fly|global={{
+    duration: PROPOSAL_CARD_ANIMATION_DURATION_IN_MILLISECOND,
+    delay: index * PROPOSAL_CARD_ANIMATION_DELAY_IN_MILLISECOND,
+    y: PROPOSAL_CARD_ANIMATION_Y,
+    x: 0,
+    opacity: 0,
+    easing: PROPOSAL_CARD_ANIMATION_EASING,
+  }}
+>
   <Card testId="proposal-card" {href}>
     <div class="container">
       <div>

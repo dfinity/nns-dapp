@@ -29,7 +29,7 @@
   <SnsProposalsFilters />
 
   {#if !actionableSelected}
-    <div in:fade data-tid="all-proposal-list">
+    <div data-tid="all-proposal-list">
       {#if proposals === undefined}
         <LoadingProposals />
       {:else if proposals.length === 0}
@@ -41,8 +41,9 @@
             on:nnsIntersect
             disabled={disableInfiniteScroll}
           >
-            {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
+            {#each proposals as proposalData, index (fromNullable(proposalData.id)?.id)}
               <SnsProposalCard
+                {index}
                 actionable={proposalData.isActionable}
                 {proposalData}
                 {nsFunctions}
@@ -65,8 +66,9 @@
         <ActionableProposalsEmpty />
       {:else}
         <InfiniteScroll layout="grid" disabled>
-          {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
+          {#each proposals as proposalData, index (fromNullable(proposalData.id)?.id)}
             <SnsProposalCard
+              {index}
               actionable={proposalData.isActionable}
               {proposalData}
               rootCanisterId={$pageStore.universe}
