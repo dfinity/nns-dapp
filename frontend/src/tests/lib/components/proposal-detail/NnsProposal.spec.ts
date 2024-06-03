@@ -137,7 +137,7 @@ describe("Proposal", () => {
     expect(await po.isPresent()).toBe(false);
   });
 
-  it("should not render proposal navigation when from actionable page", async () => {
+  it("should not render proposal navigation buttons when from actionable page", async () => {
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT, actionable: true },
       routeId: AppPath.Proposals,
@@ -150,6 +150,8 @@ describe("Proposal", () => {
     const { container } = renderProposalModern(5n);
     const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
 
-    expect(await po.isPresent()).toBe(false);
+    expect(await po.isPresent()).toBe(true);
+    expect(await po.getNewerButtonPo().isPresent()).toBe(false);
+    expect(await po.getOlderButtonPo().isPresent()).toBe(false);
   });
 });

@@ -24,7 +24,6 @@
   import { nonNullish } from "@dfinity/utils";
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
   import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
-  import { pageStore } from "$lib/derived/page.derived";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -43,7 +42,7 @@
 
 <TestIdWrapper testId="nns-proposal-component">
   {#if $store?.proposal?.id !== undefined && nonNullish(proposalIds)}
-    {#if $referrerPathStore !== AppPath.Launchpad && !$pageStore.actionable}
+    {#if $referrerPathStore !== AppPath.Launchpad}
       <ProposalNavigation
         title={proposalType}
         currentProposalId={$store.proposal.id}
