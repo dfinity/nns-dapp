@@ -352,7 +352,7 @@ describe("SnsProposalDetail", () => {
     });
   });
 
-  it("should not display proposal navigation when user comes from actionable page", async () => {
+  it("should not display proposal navigation buttons when user comes from actionable page", async () => {
     resetIdentity();
     setSnsProjects([
       {
@@ -402,14 +402,17 @@ describe("SnsProposalDetail", () => {
     expect(await po.isContentLoaded()).toBe(true);
 
     const navigationPo = po.getProposalNavigationPo();
-    expect(await navigationPo.isPresent()).toBe(false);
+    expect(await navigationPo.isPresent()).toBe(true);
+    expect(await navigationPo.getNewerButtonPo().isPresent()).toBe(false);
+    expect(await navigationPo.getOlderButtonPo().isPresent()).toBe(false);
 
     page.mock({
       data: { universe: rootCanisterId.toText(), actionable: false },
     });
 
     await runResolvedPromises();
-    expect(await navigationPo.isPresent()).toBe(true);
+    expect(await navigationPo.getNewerButtonPo().isPresent()).toBe(true);
+    expect(await navigationPo.getOlderButtonPo().isPresent()).toBe(true);
   });
 
   describe("not logged in that logs in afterwards", () => {
