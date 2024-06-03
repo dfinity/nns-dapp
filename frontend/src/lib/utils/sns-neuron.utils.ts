@@ -11,6 +11,7 @@ import {
   type CompactNeuronInfo,
   type IneligibleNeuronData,
   type NeuronIneligibilityReason,
+  type NeuronTagData,
 } from "$lib/utils/neuron.utils";
 import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
 import { formatTokenE8s } from "$lib/utils/token.utils";
@@ -546,6 +547,24 @@ export const formattedStakedMaturity = (
  */
 export const isCommunityFund = ({ source_nns_neuron_id }: SnsNeuron): boolean =>
   nonNullish(fromNullable(source_nns_neuron_id));
+
+export const getSnsNeuronTags = ({
+  neuron,
+  identity,
+  i18n,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+  i18n: I18n;
+}): NeuronTagData[] => {
+  const tags: NeuronTagData[] = [];
+  if (isCommunityFund(neuron)) {
+    tags.push({ text: i18n.neurons.community_fund });
+  } else if (isUserHotkey({ neuron, identity })) {
+    tags.push({ text: i18n.neurons.hotkey_control });
+  }
+  return tags;
+};
 
 /**
  * Returns true if the neuron needs to be refreshed.
