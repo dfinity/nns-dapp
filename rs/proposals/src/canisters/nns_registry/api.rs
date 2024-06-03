@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-05-22_23-01-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-05-29_23-02-base/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -296,6 +296,10 @@ pub struct RemoveNodesPayload {
     pub node_ids: Vec<Principal>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct RemoveNodesFromSubnetPayload {
+    pub node_ids: Vec<Principal>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct RerouteCanisterRangesPayload {
     pub source_subnet: Principal,
     pub reassigned_canister_ranges: Vec<CanisterIdRange>,
@@ -320,11 +324,23 @@ pub struct SetFirewallConfigPayload {
     pub ipv6_prefixes: Vec<String>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct UpdateApiBoundaryNodesVersionPayload {
+    pub version: String,
+    pub node_ids: Vec<Principal>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateElectedHostosVersionsPayload {
     pub release_package_urls: Vec<String>,
     pub hostos_version_to_elect: Option<String>,
     pub hostos_versions_to_unelect: Vec<String>,
     pub release_package_sha256_hex: Option<String>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct UpdateFirewallRulesPayload {
+    pub expected_hash: String,
+    pub scope: FirewallRulesScope,
+    pub positions: Vec<i32>,
+    pub rules: Vec<FirewallRule>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateNodeDirectlyPayload {
@@ -508,7 +524,7 @@ impl Service {
     pub async fn remove_nodes(&self, arg0: RemoveNodesPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "remove_nodes", (arg0,)).await
     }
-    pub async fn remove_nodes_from_subnet(&self, arg0: RemoveNodesPayload) -> CallResult<()> {
+    pub async fn remove_nodes_from_subnet(&self, arg0: RemoveNodesFromSubnetPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "remove_nodes_from_subnet", (arg0,)).await
     }
     pub async fn reroute_canister_ranges(&self, arg0: RerouteCanisterRangesPayload) -> CallResult<(Result1,)> {
@@ -523,7 +539,10 @@ impl Service {
     pub async fn set_firewall_config(&self, arg0: SetFirewallConfigPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "set_firewall_config", (arg0,)).await
     }
-    pub async fn update_api_boundary_nodes_version(&self, arg0: AddApiBoundaryNodesPayload) -> CallResult<()> {
+    pub async fn update_api_boundary_nodes_version(
+        &self,
+        arg0: UpdateApiBoundaryNodesVersionPayload,
+    ) -> CallResult<()> {
         ic_cdk::call(self.0, "update_api_boundary_nodes_version", (arg0,)).await
     }
     pub async fn update_elected_hostos_versions(&self, arg0: UpdateElectedHostosVersionsPayload) -> CallResult<()> {
@@ -532,7 +551,7 @@ impl Service {
     pub async fn update_elected_replica_versions(&self, arg0: ReviseElectedGuestosVersionsPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_elected_replica_versions", (arg0,)).await
     }
-    pub async fn update_firewall_rules(&self, arg0: AddFirewallRulesPayload) -> CallResult<()> {
+    pub async fn update_firewall_rules(&self, arg0: UpdateFirewallRulesPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_firewall_rules", (arg0,)).await
     }
     pub async fn update_node_directly(&self, arg0: UpdateNodeDirectlyPayload) -> CallResult<(Result1,)> {
