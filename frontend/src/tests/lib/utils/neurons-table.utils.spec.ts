@@ -15,11 +15,17 @@ import { NeuronState } from "@dfinity/nns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
 describe("neurons-table.utils", () => {
+  const now = new Date("2022-01-01T15:26:47Z");
+
   const makeStake = (amount: bigint) =>
     TokenAmountV2.fromUlps({
       amount,
       token: ICPToken,
     });
+
+  beforeEach(() => {
+    vi.useFakeTimers().setSystemTime(now);
+  });
 
   describe("tableNeuronsFromNeuronInfos", () => {
     it("should convert neuronInfos to tableNeurons", () => {
@@ -37,6 +43,7 @@ describe("neurons-table.utils", () => {
           cachedNeuronStake: stake1,
         },
         dissolveDelaySeconds: dissolveDelay1,
+        state: NeuronState.Locked,
       };
       const neuronInfo2 = {
         ...mockNeuron,
@@ -46,6 +53,7 @@ describe("neurons-table.utils", () => {
           cachedNeuronStake: stake2,
         },
         dissolveDelaySeconds: dissolveDelay2,
+        state: NeuronState.Dissolving,
       };
       const neuronInfos = [neuronInfo1, neuronInfo2];
       const tableNeurons = tableNeuronsFromNeuronInfos(neuronInfos);
@@ -56,6 +64,7 @@ describe("neurons-table.utils", () => {
           neuronId: "42",
           stake: makeStake(500_000_000n),
           dissolveDelaySeconds: dissolveDelay1,
+          state: NeuronState.Locked,
         },
         {
           rowHref: "/neuron/?u=qhbym-qaaaa-aaaaa-aaafq-cai&neuron=342",
@@ -63,6 +72,7 @@ describe("neurons-table.utils", () => {
           neuronId: "342",
           stake: makeStake(600_000_000n),
           dissolveDelaySeconds: dissolveDelay2,
+          state: NeuronState.Dissolving,
         },
       ]);
     });
@@ -89,6 +99,35 @@ describe("neurons-table.utils", () => {
           neuronId: "52",
           stake: makeStake(0n),
           dissolveDelaySeconds,
+          state: NeuronState.Spawning,
+        },
+      ]);
+    });
+
+    it("should convert neuronInfo for dissolved neuron", () => {
+      const neuronId = 53n;
+      const stake = 400_000_000n;
+      const dissolveDelaySeconds = 0n;
+      const dissolvedNeuronInfo = {
+        ...mockNeuron,
+        neuronId: neuronId,
+        state: NeuronState.Dissolved,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: stake,
+        },
+        dissolveDelaySeconds,
+      };
+      const neuronInfos = [dissolvedNeuronInfo];
+      const tableNeurons = tableNeuronsFromNeuronInfos(neuronInfos);
+      expect(tableNeurons).toEqual([
+        {
+          rowHref: "/neuron/?u=qhbym-qaaaa-aaaaa-aaafq-cai&neuron=53",
+          domKey: "53",
+          neuronId: "53",
+          stake: makeStake(stake),
+          dissolveDelaySeconds,
+          state: NeuronState.Dissolved,
         },
       ]);
     });
@@ -101,11 +140,14 @@ describe("neurons-table.utils", () => {
     const stake = 300_000n;
     const dissolveDelaySeconds = 8640000n;
 
-    const snsNeuron = createMockSnsNeuron({
+    const defaultCreateMockSnsNeuronParams = {
       id: neuronId,
       stake,
       dissolveDelaySeconds,
-    });
+      state: NeuronState.Locked,
+    };
+
+    const snsNeuron = createMockSnsNeuron(defaultCreateMockSnsNeuronParams);
 
     const makeSnsStake = (amount: bigint) =>
       TokenAmountV2.fromUlps({
@@ -119,6 +161,7 @@ describe("neurons-table.utils", () => {
       neuronId: neuronIdString,
       stake: makeSnsStake(stake),
       dissolveDelaySeconds,
+      state: NeuronState.Locked,
     };
 
     it("should convert SnsNeuron to TableNeuron", () => {
@@ -129,6 +172,38 @@ describe("neurons-table.utils", () => {
         snsNeurons: snsNeurons,
       });
       expect(tableNeurons).toEqual([expectedTableNeuron]);
+    });
+
+    it("should convert SnsNeuron state to TableNeuron", () => {
+      const snsNeurons = [
+        createMockSnsNeuron({
+          ...defaultCreateMockSnsNeuronParams,
+          whenDissolvedTimestampSeconds:
+            BigInt(Math.floor(now.getTime() / 1000)) + dissolveDelaySeconds,
+          state: NeuronState.Dissolving,
+        }),
+        createMockSnsNeuron({
+          ...defaultCreateMockSnsNeuronParams,
+          dissolveDelaySeconds: 0n,
+          state: NeuronState.Dissolved,
+        }),
+      ];
+      const tableNeurons = tableNeuronsFromSnsNeurons({
+        universe: snsUniverseIdText,
+        token: mockSnsToken,
+        snsNeurons: snsNeurons,
+      });
+      expect(tableNeurons).toEqual([
+        {
+          ...expectedTableNeuron,
+          state: NeuronState.Dissolving,
+        },
+        {
+          ...expectedTableNeuron,
+          dissolveDelaySeconds: 0n,
+          state: NeuronState.Dissolved,
+        },
+      ]);
     });
 
     it("should convert multiple neurons", () => {
