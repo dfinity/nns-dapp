@@ -8,6 +8,7 @@
   import type { UniversalProposalStatus } from "$lib/types/proposals";
   import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
   import { triggerDebugReport } from "$lib/directives/debug.directives";
+  import { pageStore } from "$lib/derived/page.derived";
 
   export let currentProposalId: bigint;
   export let title: string | undefined = undefined;
@@ -54,30 +55,32 @@
     </span>
     <TestIdWrapper testId="title">{title ?? ""}</TestIdWrapper>
   </h2>
-  <button
-    class="ghost newer"
-    type="button"
-    aria-label={$i18n.proposal_detail.newer}
-    on:click={selectNewer}
-    class:hidden={isNullish(newerId)}
-    data-tid="proposal-nav-newer"
-    data-test-proposal-id={newerId?.toString() ?? ""}
-  >
-    <IconLeft />
-    {$i18n.proposal_detail.newer_short}</button
-  >
-  <button
-    class="ghost older"
-    type="button"
-    aria-label={$i18n.proposal_detail.older}
-    on:click={selectOlder}
-    class:hidden={isNullish(olderId)}
-    data-tid="proposal-nav-older"
-    data-test-proposal-id={olderId?.toString() ?? ""}
-  >
-    {$i18n.proposal_detail.older_short}
-    <IconRight />
-  </button>
+  {#if !$pageStore.actionable}
+    <button
+      class="ghost newer"
+      type="button"
+      aria-label={$i18n.proposal_detail.newer}
+      on:click={selectNewer}
+      class:hidden={isNullish(newerId)}
+      data-tid="proposal-nav-newer"
+      data-test-proposal-id={newerId?.toString() ?? ""}
+    >
+      <IconLeft />
+      {$i18n.proposal_detail.newer_short}</button
+    >
+    <button
+      class="ghost older"
+      type="button"
+      aria-label={$i18n.proposal_detail.older}
+      on:click={selectOlder}
+      class:hidden={isNullish(olderId)}
+      data-tid="proposal-nav-older"
+      data-test-proposal-id={olderId?.toString() ?? ""}
+    >
+      {$i18n.proposal_detail.older_short}
+      <IconRight />
+    </button>
+  {/if}
 </div>
 
 <style lang="scss">
