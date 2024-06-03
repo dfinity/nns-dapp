@@ -9,7 +9,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 anyhow = "1.0.86"
-base64 = "0.21.5"
+base64 = "0.22.1"
 candid = "0.10.8"
 dfn_candid = { workspace = true }
 dfn_core = { workspace = true }
