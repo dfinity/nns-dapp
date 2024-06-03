@@ -222,7 +222,7 @@
 </script>
 
 <TestIdWrapper testId="sns-proposal-details-grid">
-  {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId) && !$pageStore.actionable}
+  {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
     <ProposalNavigation
       title={proposalNavigationTitle}
       currentProposalId={BigInt(proposalIdText)}

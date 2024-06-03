@@ -43,7 +43,7 @@
 
 <TestIdWrapper testId="nns-proposal-component">
   {#if $store?.proposal?.id !== undefined && nonNullish(proposalIds)}
-    {#if $referrerPathStore !== AppPath.Launchpad && !$pageStore.actionable}
+    {#if $referrerPathStore !== AppPath.Launchpad}
       <ProposalNavigation
         title={proposalType}
         currentProposalId={$store.proposal.id}
