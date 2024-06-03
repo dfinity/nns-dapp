@@ -27,6 +27,7 @@ import {
   getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
   getSnsNeuronState,
+  getSnsNeuronTags,
   getSnsNeuronVote,
   hasEnoughMaturityToDisburse,
   hasEnoughMaturityToStake,
@@ -65,6 +66,7 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import {
@@ -1496,6 +1498,55 @@ describe("sns-neuron utils", () => {
         source_nns_neuron_id: [],
       };
       expect(isCommunityFund(neuron)).toBe(false);
+    });
+  });
+
+  describe("getSnsNeuronTags", () => {
+    it("should return no tags", () => {
+      const tags = getSnsNeuronTags({
+        neuron: mockSnsNeuron,
+        identity: mockIdentity,
+        i18n: en,
+      });
+      expect(tags).toEqual([]);
+    });
+
+    it("should return hotkey tag", () => {
+      const hotkeyNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
+          },
+        ],
+      };
+      const tags = getSnsNeuronTags({
+        neuron: hotkeyNeuron,
+        identity: mockIdentity,
+        i18n: en,
+      });
+      expect(tags).toEqual([{ text: "Hotkey control" }]);
+    });
+
+    it("should return NF tag", () => {
+      const fundNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
+          },
+        ],
+        source_nns_neuron_id: [2n],
+        staked_maturity_e8s_equivalent: [] as [] | [bigint],
+      };
+      const tags = getSnsNeuronTags({
+        neuron: fundNeuron,
+        identity: mockIdentity,
+        i18n: en,
+      });
+      expect(tags).toEqual([{ text: "Neurons' fund" }]);
     });
   });
 

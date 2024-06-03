@@ -1,4 +1,5 @@
 import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
+import type { NeuronState } from "@dfinity/nns";
 import type { TokenAmountV2 } from "@dfinity/utils";
 
 export type TableNeuron = {
@@ -7,6 +8,7 @@ export type TableNeuron = {
   neuronId: string;
   stake: TokenAmountV2;
   dissolveDelaySeconds: bigint;
+  state: NeuronState;
 };
 
 // Should define a partial ordering on TableNeuron by return -1 if a < b, +1 if

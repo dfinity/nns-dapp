@@ -6,9 +6,11 @@ import {
   SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
 import type { TableNeuron } from "$lib/types/neurons-table";
+import { mockTableNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronsTablePo } from "$tests/page-objects/NeuronsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
+import { NeuronState } from "@dfinity/nns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
 describe("NeuronsTable", () => {
@@ -19,38 +21,47 @@ describe("NeuronsTable", () => {
     });
 
   const neuron1: TableNeuron = {
+    ...mockTableNeuron,
     rowHref: "/neurons/10",
     domKey: "10",
     neuronId: "10",
     stake: makeStake(1_300_000_000n),
     dissolveDelaySeconds: BigInt(6 * SECONDS_IN_MONTH),
+    state: NeuronState.Dissolving,
   };
 
   const neuron2: TableNeuron = {
+    ...mockTableNeuron,
     rowHref: "/neurons/99",
     domKey: "99",
     neuronId: "99",
     stake: makeStake(500_000_000n),
     dissolveDelaySeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
+    state: NeuronState.Locked,
   };
 
   const neuron3: TableNeuron = {
+    ...mockTableNeuron,
     rowHref: "/neurons/200",
     domKey: "200",
     neuronId: "200",
     stake: makeStake(500_000_000n),
     dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
+    state: NeuronState.Dissolving,
   };
 
   const neuron4: TableNeuron = {
+    ...mockTableNeuron,
     rowHref: "/neurons/1111",
     domKey: "1111",
     neuronId: "1111",
     stake: makeStake(500_000_000n),
     dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
+    state: NeuronState.Locked,
   };
 
   const spawningNeuron: TableNeuron = {
+    ...mockTableNeuron,
     domKey: "101",
     neuronId: "101",
     stake: TokenAmountV2.fromUlps({
@@ -58,6 +69,7 @@ describe("NeuronsTable", () => {
       token: ICPToken,
     }),
     dissolveDelaySeconds: BigInt(5 * SECONDS_IN_DAY),
+    state: NeuronState.Spawning,
   };
 
   const renderComponent = ({ neurons }) => {
@@ -66,6 +78,17 @@ describe("NeuronsTable", () => {
     });
     return NeuronsTablePo.under(new JestPageObjectElement(container));
   };
+
+  it("should render headers", async () => {
+    const po = renderComponent({ neurons: [neuron1, neuron2] });
+    expect(await po.getColumnHeaders()).toEqual([
+      "Neuron ID",
+      "Stake",
+      "State",
+      "Dissolve Delay",
+      "", // No header for actions column.
+    ]);
+  });
 
   it("should render neuron URL", async () => {
     const po = renderComponent({ neurons: [neuron1, neuron2] });
@@ -89,6 +112,14 @@ describe("NeuronsTable", () => {
     expect(rowPos).toHaveLength(2);
     expect(await rowPos[0].getStake()).toBe("13.00 ICP");
     expect(await rowPos[1].getStake()).toBe("5.00 ICP");
+  });
+
+  it("should render neuron state", async () => {
+    const po = renderComponent({ neurons: [neuron1, neuron2] });
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getState()).toBe("Dissolving");
+    expect(await rowPos[1].getState()).toBe("Locked");
   });
 
   it("should sort neurons", async () => {

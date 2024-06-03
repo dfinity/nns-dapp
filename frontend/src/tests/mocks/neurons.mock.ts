@@ -104,7 +104,6 @@ export const mockNeuronNotControlled = {
 };
 
 export const mockTableNeuron: TableNeuron = {
-  rowHref: "/",
   domKey: "0",
   neuronId: "0",
   stake: TokenAmountV2.fromUlps({
@@ -112,4 +111,5 @@ export const mockTableNeuron: TableNeuron = {
     token: ICPToken,
   }),
   dissolveDelaySeconds: 1n,
+  state: NeuronState.Locked,
 };
