@@ -1,8 +1,8 @@
 import { NeuronsTableRowPo } from "$tests/page-objects/NeuronsTableRow.page-object";
-import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { ResponsiveTablePo } from "$tests/page-objects/ResponsiveTable.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class NeuronsTablePo extends BasePageObject {
+export class NeuronsTablePo extends ResponsiveTablePo {
   private static readonly TID = "neurons-table-component";
 
   static under(element: PageObjectElement): NeuronsTablePo {

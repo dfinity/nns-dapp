@@ -6,6 +6,7 @@
     NeuronsTableColumn,
   } from "$lib/types/neurons-table";
   import NeuronIdCell from "$lib/components/neurons/NeuronsTable/NeuronIdCell.svelte";
+  import NeuronStateCell from "$lib/components/neurons/NeuronsTable/NeuronStateCell.svelte";
   import NeuronStakeCell from "$lib/components/neurons/NeuronsTable/NeuronStakeCell.svelte";
   import NeuronDissolveDelayCell from "$lib/components/neurons/NeuronsTable/NeuronDissolveDelayCell.svelte";
   import NeuronActionsCell from "$lib/components/neurons/NeuronsTable/NeuronActionsCell.svelte";
@@ -34,6 +35,10 @@
     {
       title: $i18n.neuron_detail.stake,
       cellComponent: NeuronStakeCell,
+    },
+    {
+      title: $i18n.neurons.state,
+      cellComponent: NeuronStateCell,
     },
     {
       title: $i18n.neurons.dissolve_delay_title,
