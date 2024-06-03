@@ -178,6 +178,10 @@ describe("neurons-table.utils", () => {
       const snsNeurons = [
         createMockSnsNeuron({
           ...defaultCreateMockSnsNeuronParams,
+          state: NeuronState.Locked,
+        }),
+        createMockSnsNeuron({
+          ...defaultCreateMockSnsNeuronParams,
           whenDissolvedTimestampSeconds:
             BigInt(Math.floor(now.getTime() / 1000)) + dissolveDelaySeconds,
           state: NeuronState.Dissolving,
@@ -194,6 +198,10 @@ describe("neurons-table.utils", () => {
         snsNeurons: snsNeurons,
       });
       expect(tableNeurons).toEqual([
+        {
+          ...expectedTableNeuron,
+          state: NeuronState.Locked,
+        },
         {
           ...expectedTableNeuron,
           state: NeuronState.Dissolving,
