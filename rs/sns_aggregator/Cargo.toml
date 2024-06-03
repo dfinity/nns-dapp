@@ -22,7 +22,7 @@ ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "58791941b
 ic-management-canister-types = { workspace = true }
 ic-nervous-system-common = { workspace = true }
 lazy_static = "1.4.0"
-num-traits = "0.2.15"
+num-traits = "0.2.19"
 serde = "1.0.193"
 serde_bytes = "0.11.12"
 serde_cbor = "0.11.2"
