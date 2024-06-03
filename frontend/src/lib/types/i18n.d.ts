@@ -323,6 +323,7 @@ interface I18nNeurons {
   merge_neurons_source_neuron_disappear: string;
   merge_neurons_more_info: string;
   stake_amount: string;
+  state: string;
 }
 
 interface I18nNew_followee {

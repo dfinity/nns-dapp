@@ -1,4 +1,5 @@
 import { NeuronIdCellPo } from "$tests/page-objects/NeuronIdCell.page-object";
+import { NeuronStateInfoPo } from "$tests/page-objects/NeuronStateInfo.page-object";
 import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -19,12 +20,20 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
     return NeuronIdCellPo.under(this.root);
   }
 
+  getNeuronStateInfoPo(): NeuronStateInfoPo {
+    return NeuronStateInfoPo.under(this.root);
+  }
+
   getNeuronId(): Promise<string> {
     return this.getNeuronIdCellPo().getNeurondId();
   }
 
   getStake(): Promise<string> {
     return this.getText("neuron-stake-cell-component");
+  }
+
+  getState(): Promise<string> {
+    return this.getNeuronStateInfoPo().getState();
   }
 
   getDissolveDelay(): Promise<string> {
