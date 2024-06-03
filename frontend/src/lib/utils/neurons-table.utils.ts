@@ -10,6 +10,7 @@ import {
   getSnsDissolveDelaySeconds,
   getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
+  getSnsNeuronState,
 } from "$lib/utils/sns-neuron.utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
@@ -37,6 +38,7 @@ export const tableNeuronsFromNeuronInfos = (
         token: ICPToken,
       }),
       dissolveDelaySeconds,
+      state: neuronInfo.state,
     };
   });
 };
@@ -66,6 +68,7 @@ export const tableNeuronsFromSnsNeurons = ({
         token,
       }),
       dissolveDelaySeconds,
+      state: getSnsNeuronState(snsNeuron),
     };
   });
 };

@@ -6,6 +6,7 @@ import {
   SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
 import type { TableNeuron } from "$lib/types/neurons-table";
+import { mockTableNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronsTablePo } from "$tests/page-objects/NeuronsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
@@ -19,6 +20,7 @@ describe("NeuronsTable", () => {
     });
 
   const neuron1: TableNeuron = {
+    ...mockTableNeuron,
     rowHref: "/neurons/10",
     domKey: "10",
     neuronId: "10",
@@ -27,6 +29,7 @@ describe("NeuronsTable", () => {
   };
 
   const neuron2: TableNeuron = {
+    ...mockTableNeuron,
     rowHref: "/neurons/99",
     domKey: "99",
     neuronId: "99",
@@ -35,6 +38,7 @@ describe("NeuronsTable", () => {
   };
 
   const neuron3: TableNeuron = {
+    ...mockTableNeuron,
     rowHref: "/neurons/200",
     domKey: "200",
     neuronId: "200",
@@ -43,6 +47,7 @@ describe("NeuronsTable", () => {
   };
 
   const neuron4: TableNeuron = {
+    ...mockTableNeuron,
     rowHref: "/neurons/1111",
     domKey: "1111",
     neuronId: "1111",
@@ -51,6 +56,7 @@ describe("NeuronsTable", () => {
   };
 
   const spawningNeuron: TableNeuron = {
+    ...mockTableNeuron,
     domKey: "101",
     neuronId: "101",
     stake: TokenAmountV2.fromUlps({
