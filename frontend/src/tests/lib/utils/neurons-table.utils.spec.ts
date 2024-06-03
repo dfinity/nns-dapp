@@ -1,4 +1,3 @@
-import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import {
   compareByDissolveDelay,
   compareById,
@@ -11,7 +10,8 @@ import { hexStringToBytes } from "$lib/utils/utils";
 import { mockNeuron, mockTableNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import type { SnsNeuron } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
 describe("neurons-table.utils", () => {
@@ -28,104 +28,147 @@ describe("neurons-table.utils", () => {
   });
 
   describe("tableNeuronsFromNeuronInfos", () => {
-    it("should convert neuronInfos to tableNeurons", () => {
+    const defaultDissolveDelaySeconds = 15778800n;
+    const defaultStake = 500_000_000n;
+
+    const defaultNeuronInfo = {
+      ...mockNeuron,
+      neuronId: 42n,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        cachedNeuronStake: defaultStake,
+      },
+      dissolveDelaySeconds: defaultDissolveDelaySeconds,
+      state: NeuronState.Locked,
+    };
+
+    const defaultExpectedTableNeuron = {
+      rowHref: "/neuron/?u=qhbym-qaaaa-aaaaa-aaafq-cai&neuron=42",
+      domKey: "42",
+      neuronId: "42",
+      stake: makeStake(defaultStake),
+      dissolveDelaySeconds: defaultDissolveDelaySeconds,
+      state: NeuronState.Locked,
+    };
+
+    const convert = (neuronInfos: NeuronInfo[]) =>
+      tableNeuronsFromNeuronInfos(neuronInfos);
+
+    it("should convert default neuronInfo to tableNeuron", () => {
+      const tableNeurons = convert([defaultNeuronInfo]);
+      expect(tableNeurons).toEqual([defaultExpectedTableNeuron]);
+    });
+
+    it("should convert multiple neuronInfos to tableNeurons", () => {
       const neuronId1 = 42n;
       const neuronId2 = 342n;
       const stake1 = 500_000_000n;
       const stake2 = 600_000_000n;
-      const dissolveDelay1 = 15778800n;
-      const dissolveDelay2 = 252460800n;
       const neuronInfo1 = {
-        ...mockNeuron,
+        ...defaultNeuronInfo,
         neuronId: neuronId1,
         fullNeuron: {
           ...mockNeuron.fullNeuron,
           cachedNeuronStake: stake1,
         },
-        dissolveDelaySeconds: dissolveDelay1,
-        state: NeuronState.Locked,
       };
       const neuronInfo2 = {
-        ...mockNeuron,
+        ...defaultNeuronInfo,
         neuronId: neuronId2,
         fullNeuron: {
           ...mockNeuron.fullNeuron,
           cachedNeuronStake: stake2,
         },
-        dissolveDelaySeconds: dissolveDelay2,
-        state: NeuronState.Dissolving,
       };
       const neuronInfos = [neuronInfo1, neuronInfo2];
-      const tableNeurons = tableNeuronsFromNeuronInfos(neuronInfos);
+      const tableNeurons = convert(neuronInfos);
       expect(tableNeurons).toEqual([
         {
+          ...defaultExpectedTableNeuron,
           rowHref: "/neuron/?u=qhbym-qaaaa-aaaaa-aaafq-cai&neuron=42",
           domKey: "42",
           neuronId: "42",
-          stake: makeStake(500_000_000n),
-          dissolveDelaySeconds: dissolveDelay1,
-          state: NeuronState.Locked,
+          stake: makeStake(stake1),
         },
         {
+          ...defaultExpectedTableNeuron,
           rowHref: "/neuron/?u=qhbym-qaaaa-aaaaa-aaafq-cai&neuron=342",
           domKey: "342",
           neuronId: "342",
-          stake: makeStake(600_000_000n),
-          dissolveDelaySeconds: dissolveDelay2,
-          state: NeuronState.Dissolving,
+          stake: makeStake(stake2),
+        },
+      ]);
+    });
+
+    it("should convert neuronInfo stake", () => {
+      const stake = 675_000_000n;
+      const tableNeurons = convert([
+        {
+          ...defaultNeuronInfo,
+          fullNeuron: {
+            ...mockNeuron.fullNeuron,
+            cachedNeuronStake: stake,
+          },
+        },
+      ]);
+      expect(tableNeurons).toEqual([
+        {
+          ...defaultExpectedTableNeuron,
+          stake: makeStake(stake),
+        },
+      ]);
+    });
+
+    it("should convert neuronInfo dissolve delay", () => {
+      const dissolveDelaySeconds = 123_456_000n;
+      const tableNeurons = convert([
+        {
+          ...defaultNeuronInfo,
+          dissolveDelaySeconds,
+        },
+      ]);
+      expect(tableNeurons).toEqual([
+        {
+          ...defaultExpectedTableNeuron,
+          dissolveDelaySeconds,
         },
       ]);
     });
 
     it("should convert neuronInfo for spawning neuron without href", () => {
-      const neuronId = 52n;
-      const dissolveDelaySeconds = BigInt(5 * SECONDS_IN_DAY);
       const spawningNeuronInfo = {
-        ...mockNeuron,
-        neuronId: neuronId,
+        ...defaultNeuronInfo,
         state: NeuronState.Spawning,
         fullNeuron: {
           ...mockNeuron.fullNeuron,
           cachedNeuronStake: 0n,
           spawnAtTimesSeconds: 12_312_313n,
         },
-        dissolveDelaySeconds,
       };
       const neuronInfos = [spawningNeuronInfo];
-      const tableNeurons = tableNeuronsFromNeuronInfos(neuronInfos);
+      const tableNeurons = convert(neuronInfos);
       expect(tableNeurons).toEqual([
         {
-          domKey: "52",
-          neuronId: "52",
+          ...defaultExpectedTableNeuron,
+          rowHref: undefined,
           stake: makeStake(0n),
-          dissolveDelaySeconds,
           state: NeuronState.Spawning,
         },
       ]);
     });
 
     it("should convert neuronInfo for dissolved neuron", () => {
-      const neuronId = 53n;
-      const stake = 400_000_000n;
       const dissolveDelaySeconds = 0n;
       const dissolvedNeuronInfo = {
-        ...mockNeuron,
-        neuronId: neuronId,
+        ...defaultNeuronInfo,
         state: NeuronState.Dissolved,
-        fullNeuron: {
-          ...mockNeuron.fullNeuron,
-          cachedNeuronStake: stake,
-        },
         dissolveDelaySeconds,
       };
       const neuronInfos = [dissolvedNeuronInfo];
-      const tableNeurons = tableNeuronsFromNeuronInfos(neuronInfos);
+      const tableNeurons = convert(neuronInfos);
       expect(tableNeurons).toEqual([
         {
-          rowHref: "/neuron/?u=qhbym-qaaaa-aaaaa-aaafq-cai&neuron=53",
-          domKey: "53",
-          neuronId: "53",
-          stake: makeStake(stake),
+          ...defaultExpectedTableNeuron,
           dissolveDelaySeconds,
           state: NeuronState.Dissolved,
         },
@@ -164,13 +207,16 @@ describe("neurons-table.utils", () => {
       state: NeuronState.Locked,
     };
 
-    it("should convert SnsNeuron to TableNeuron", () => {
-      const snsNeurons = [snsNeuron];
-      const tableNeurons = tableNeuronsFromSnsNeurons({
+    const convert = (snsNeurons: SnsNeuron[]) =>
+      tableNeuronsFromSnsNeurons({
+        snsNeurons: snsNeurons,
         universe: snsUniverseIdText,
         token: mockSnsToken,
-        snsNeurons: snsNeurons,
       });
+
+    it("should convert SnsNeuron to TableNeuron", () => {
+      const snsNeurons = [snsNeuron];
+      const tableNeurons = convert(snsNeurons);
       expect(tableNeurons).toEqual([expectedTableNeuron]);
     });
 
@@ -192,11 +238,7 @@ describe("neurons-table.utils", () => {
           state: NeuronState.Dissolved,
         }),
       ];
-      const tableNeurons = tableNeuronsFromSnsNeurons({
-        universe: snsUniverseIdText,
-        token: mockSnsToken,
-        snsNeurons: snsNeurons,
-      });
+      const tableNeurons = convert(snsNeurons);
       expect(tableNeurons).toEqual([
         {
           ...expectedTableNeuron,
@@ -224,11 +266,7 @@ describe("neurons-table.utils", () => {
       });
 
       const snsNeurons = [snsNeuron, snsNeuron2];
-      const tableNeurons = tableNeuronsFromSnsNeurons({
-        universe: snsUniverseIdText,
-        token: mockSnsToken,
-        snsNeurons: snsNeurons,
-      });
+      const tableNeurons = convert(snsNeurons);
       expect(tableNeurons).toEqual([
         expectedTableNeuron,
         {
