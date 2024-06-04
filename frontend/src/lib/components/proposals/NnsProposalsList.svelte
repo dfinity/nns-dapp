@@ -9,7 +9,6 @@
   import { building } from "$app/environment";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-  import { fade } from "svelte/transition";
   import type { ProposalInfo } from "@dfinity/nns";
   import { isNullish } from "@dfinity/utils";
   import ActionableProposalsSignIn from "$lib/components/proposals/ActionableProposalsSignIn.svelte";
