@@ -3,13 +3,21 @@
   import { InfiniteScroll } from "@dfinity/gix-components";
   import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
   import { fade } from "svelte/transition";
+  import { ANIMATION_DEFAULT_DURATION_IN_MILLISECOND } from "$lib/constants/constants";
 
   export let universe: Universe;
   export let delay = 0;
+  export let noAnimation = false;
 </script>
 
 <div class="container" data-tid="universe-with-actionable-proposals-component">
-  <div in:fade|global={{ delay }} class="title">
+  <div
+    in:fade|global={{
+      delay,
+      duration: noAnimation ? 0 : ANIMATION_DEFAULT_DURATION_IN_MILLISECOND,
+    }}
+    class="title"
+  >
     <UniversePageSummary {universe} />
   </div>
 
