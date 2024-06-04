@@ -8,7 +8,6 @@
   import SkeletonProposalCard from "$lib/components/ui/SkeletonProposalCard.svelte";
   import NnsProposalCard from "../proposals/NnsProposalCard.svelte";
   import { loadProposalsSnsCF } from "$lib/services/$public/sns.services";
-  import { fade } from "svelte/transition";
 
   let loading = false;
   $: loading = $snsProposalsStoreIsLoading;
@@ -23,18 +22,16 @@
 </script>
 
 {#if loading}
-  <div in:fade class="card-grid">
+  <div class="card-grid">
     <SkeletonProposalCard />
     <SkeletonProposalCard />
   </div>
 {:else if $openSnsProposalsStore.length === 0}
-  <p in:fade class="no-proposals description">
-    {$i18n.sns_launchpad.no_proposals}
-  </p>
+  <p class="no-proposals description">{$i18n.sns_launchpad.no_proposals}</p>
 {:else}
   <ul class="card-grid">
-    {#each $openSnsProposalsStore as proposalInfo, index (proposalInfo.id)}
-      <NnsProposalCard {proposalInfo} {index} />
+    {#each $openSnsProposalsStore as proposalInfo (proposalInfo.id)}
+      <NnsProposalCard {proposalInfo} noAnimation />
     {/each}
   </ul>
 {/if}
