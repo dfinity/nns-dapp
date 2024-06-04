@@ -153,4 +153,24 @@ describe("NeuronsTable", () => {
     expect(await rowPos[1].getHref()).toBe(null);
     expect(await rowPos[1].hasGoToDetailButton()).toBe(false);
   });
+
+  it("should render tags", async () => {
+    const tags = ["Neuron's fund", "Hotkey control"];
+    const po = renderComponent({
+      neurons: [
+        {
+          ...neuron1,
+          tags: [],
+        },
+        {
+          ...neuron2,
+          tags,
+        },
+      ],
+    });
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getTags()).toEqual([]);
+    expect(await rowPos[1].getTags()).toEqual(tags);
+  });
 });

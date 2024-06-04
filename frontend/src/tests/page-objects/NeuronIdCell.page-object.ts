@@ -16,4 +16,9 @@ export class NeuronIdCellPo extends BasePageObject {
   getNeurondId(): Promise<string> {
     return this.getIdentifierHashPo().getFullText();
   }
+
+  async getTags(): Promise<string[]> {
+    const tagElements = await this.root.allByTestId("neuron-tag");
+    return Promise.all(tagElements.map((el) => el.getText()));
+  }
 }
