@@ -9,18 +9,20 @@
   import { i18n } from "$lib/stores/i18n";
   import Countdown from "./Countdown.svelte";
   import { nowInSeconds } from "$lib/utils/date.utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { PROPOSER_ID_DISPLAY_SPLIT_LENGTH } from "$lib/constants/proposals.constants";
   import type { UniversalProposalStatus } from "$lib/types/proposals";
   import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
-  import { fly } from "svelte/transition";
+  import { fly, type FlyParams } from "svelte/transition";
   import {
     PROPOSAL_CARD_ANIMATION_DELAY_IN_MILLISECOND,
     PROPOSAL_CARD_ANIMATION_DURATION_IN_MILLISECOND,
     PROPOSAL_CARD_ANIMATION_EASING,
     PROPOSAL_CARD_ANIMATION_Y,
   } from "$lib/constants/constants";
+  import { isNode } from "$lib/utils/dev.utils";
+  import { isHtmlElementInViewport } from "$lib/utils/utils";
 
   export let index = 0;
   export let hidden = false;
@@ -33,19 +35,41 @@
   export let proposer: string | undefined;
   export let deadlineTimestampSeconds: bigint | undefined;
   export let href: string;
+
+  let element: HTMLElement;
+
+  let inViewport: boolean = false;
+  $: inViewport =
+    isNode() || isNullish(element) ? true : isHtmlElementInViewport(element);
+
+  // A short delay to wait when the cards are being rendered.
+  // This process takes some time on FF and Safari, which makes the animation look not perfect.
+  const CARD_ANIMATION_DELAY = 250;
+  // Apply sequential fly animation to only first cards:
+  // 1. to not waist resources on not visible animation;
+  // 2. to make the proposal lazy loading still looks good.
+  const TOP_MAX_ANIMATED_CARDS = 18;
+  let topCards = false;
+  $: topCards = index < TOP_MAX_ANIMATED_CARDS;
+  let flyAnimation: FlyParams = {};
+  $: flyAnimation = {
+    duration: topCards ? PROPOSAL_CARD_ANIMATION_DURATION_IN_MILLISECOND : 0,
+    delay: topCards
+      ? index * PROPOSAL_CARD_ANIMATION_DELAY_IN_MILLISECOND +
+        CARD_ANIMATION_DELAY
+      : // Adjust the animation start time for cards other than the first ones,
+        // so they appear right after the first cards becomes visible.
+        TOP_MAX_ANIMATED_CARDS * PROPOSAL_CARD_ANIMATION_DELAY_IN_MILLISECOND +
+        CARD_ANIMATION_DELAY +
+        PROPOSAL_CARD_ANIMATION_DURATION_IN_MILLISECOND / 2,
+    // Do not apply any animation to the cards that are not in the viewport.
+    y: inViewport ? PROPOSAL_CARD_ANIMATION_Y : 0,
+    opacity: inViewport ? 0 : 1,
+    easing: PROPOSAL_CARD_ANIMATION_EASING,
+  };
 </script>
 
-<li
-  class:hidden
-  in:fly|global={{
-    duration: PROPOSAL_CARD_ANIMATION_DURATION_IN_MILLISECOND,
-    delay: index * PROPOSAL_CARD_ANIMATION_DELAY_IN_MILLISECOND,
-    y: PROPOSAL_CARD_ANIMATION_Y,
-    x: 0,
-    opacity: 0,
-    easing: PROPOSAL_CARD_ANIMATION_EASING,
-  }}
->
+<li bind:this={element} class:hidden in:fly|global={flyAnimation}>
   <Card testId="proposal-card" {href}>
     <div class="container">
       <div>
@@ -113,7 +137,7 @@
 
   li {
     list-style: none;
-    //will-change: transform, opacity;
+    will-change: transform, opacity;
   }
 
   .container {
