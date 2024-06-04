@@ -113,6 +113,7 @@
 
   li {
     list-style: none;
+    will-change: transform, opacity;
   }
 
   .container {
