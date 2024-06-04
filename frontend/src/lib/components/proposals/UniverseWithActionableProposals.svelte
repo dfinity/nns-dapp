@@ -3,7 +3,7 @@
   import { InfiniteScroll } from "@dfinity/gix-components";
   import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
   import { fade } from "svelte/transition";
-  import { ANIMATION_DEFAULT_DURATION_IN_MILLISECOND } from "$lib/constants/constants";
+  import { SVELTE_DEFAULT_ANIMATION_DURATION_IN_MILLISECOND } from "$lib/constants/constants";
 
   export let universe: Universe;
   export let delay = 0;
@@ -14,7 +14,9 @@
   <div
     in:fade|global={{
       delay,
-      duration: noAnimation ? 0 : ANIMATION_DEFAULT_DURATION_IN_MILLISECOND,
+      duration: noAnimation
+        ? 0
+        : SVELTE_DEFAULT_ANIMATION_DURATION_IN_MILLISECOND,
     }}
     class="title"
   >
