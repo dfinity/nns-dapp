@@ -1,3 +1,4 @@
+import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import {
   compareByDissolveDelay,
   compareById,
@@ -7,6 +8,9 @@ import {
   tableNeuronsFromSnsNeurons,
 } from "$lib/utils/neurons-table.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron, mockTableNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
@@ -49,10 +53,16 @@ describe("neurons-table.utils", () => {
       stake: makeStake(defaultStake),
       dissolveDelaySeconds: defaultDissolveDelaySeconds,
       state: NeuronState.Locked,
+      tags: [],
     };
 
     const convert = (neuronInfos: NeuronInfo[]) =>
-      tableNeuronsFromNeuronInfos(neuronInfos);
+      tableNeuronsFromNeuronInfos({
+        neuronInfos,
+        identity: mockIdentity,
+        accounts: mockAccountsStoreData,
+        i18n: en,
+      });
 
     it("should convert default neuronInfo to tableNeuron", () => {
       const tableNeurons = convert([defaultNeuronInfo]);
@@ -174,6 +184,29 @@ describe("neurons-table.utils", () => {
         },
       ]);
     });
+
+    it("should convert neuronInfo for hotkey neuron", () => {
+      const hotkeyNeuronInfo = {
+        ...defaultNeuronInfo,
+        fullNeuron: {
+          ...defaultNeuronInfo.fullNeuron,
+          controller: "not-hardware-wallet",
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      const tableNeurons = tableNeuronsFromNeuronInfos({
+        neuronInfos: [hotkeyNeuronInfo],
+        identity: mockIdentity,
+        accounts: mockAccountsStoreData,
+        i18n: en,
+      });
+      expect(tableNeurons).toEqual([
+        {
+          ...defaultExpectedTableNeuron,
+          tags: ["Hotkey control"],
+        },
+      ]);
+    });
   });
 
   describe("tableNeuronsFromSnsNeurons", () => {
@@ -205,6 +238,7 @@ describe("neurons-table.utils", () => {
       stake: makeSnsStake(stake),
       dissolveDelaySeconds,
       state: NeuronState.Locked,
+      tags: [],
     };
 
     const convert = (snsNeurons: SnsNeuron[]) =>
@@ -212,6 +246,8 @@ describe("neurons-table.utils", () => {
         snsNeurons: snsNeurons,
         universe: snsUniverseIdText,
         token: mockSnsToken,
+        identity: mockIdentity,
+        i18n: en,
       });
 
     it("should convert SnsNeuron to TableNeuron", () => {
@@ -275,6 +311,27 @@ describe("neurons-table.utils", () => {
             "/neuron/?u=br5f7-7uaaa-aaaaa-qaaca-cai&neuron=fafafafafafafafa",
           domKey: neuronIdString2,
           neuronId: neuronIdString2,
+        },
+      ]);
+    });
+
+    it("should convert hotkey SnsNeuron", () => {
+      const snsNeurons: SnsNeuron[] = [
+        {
+          ...snsNeuron,
+          permissions: [
+            {
+              principal: [mockIdentity.getPrincipal()],
+              permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
+            },
+          ],
+        },
+      ];
+      const tableNeurons = convert(snsNeurons);
+      expect(tableNeurons).toEqual([
+        {
+          ...expectedTableNeuron,
+          tags: ["Hotkey control"],
         },
       ]);
     });

@@ -8,6 +8,7 @@
     sortedSnsUserNeuronsStore,
   } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { authStore } from "$lib/stores/auth.store";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";
   import type { Principal } from "@dfinity/principal";
@@ -68,6 +69,8 @@
       ? tableNeuronsFromSnsNeurons({
           universe: $pageStore.universe,
           token: summary.token,
+          identity: $authStore.identity,
+          i18n: $i18n,
           snsNeurons: $snsNeuronsStore[$pageStore.universe]?.neurons ?? [],
         })
       : [];

@@ -28,6 +28,10 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
     return this.getNeuronIdCellPo().getNeurondId();
   }
 
+  getTags(): Promise<string[]> {
+    return this.getNeuronIdCellPo().getTags();
+  }
+
   getStake(): Promise<string> {
     return this.getText("neuron-stake-cell-component");
   }

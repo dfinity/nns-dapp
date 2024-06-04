@@ -111,7 +111,6 @@
     "git checkout Release-2001-02-29: Was already done. Skipping.",
     "Post proposal on Slack: Was already: \u001b[35mhttps://dfinity.slack.com/archives/C02P68W6MQA/p1695977290251409\u001b[0m",
     "Schedule voting: Was already done. Skipping.",
-    "Schedule silence alerts: Was already done. Skipping.",
     "Forum post: Was already done. Skipping."
   ],
   "expectedExitCode": 0

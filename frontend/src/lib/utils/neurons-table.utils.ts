@@ -1,24 +1,39 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import type {
   TableNeuron,
   TableNeuronComparator,
 } from "$lib/types/neurons-table";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { buildNeuronUrl } from "$lib/utils/navigation.utils";
-import { isSpawning, neuronStake } from "$lib/utils/neuron.utils";
+import {
+  getNeuronTags,
+  isSpawning,
+  neuronStake,
+} from "$lib/utils/neuron.utils";
 import {
   getSnsDissolveDelaySeconds,
   getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
   getSnsNeuronState,
+  getSnsNeuronTags,
 } from "$lib/utils/sns-neuron.utils";
+import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2, type Token } from "@dfinity/utils";
 
-export const tableNeuronsFromNeuronInfos = (
-  neuronInfos: NeuronInfo[]
-): TableNeuron[] => {
+export const tableNeuronsFromNeuronInfos = ({
+  neuronInfos,
+  identity,
+  accounts,
+  i18n,
+}: {
+  neuronInfos: NeuronInfo[];
+  identity?: Identity | undefined | null;
+  accounts: IcpAccountsStoreData;
+  i18n: I18n;
+}): TableNeuron[] => {
   return neuronInfos.map((neuronInfo) => {
     const { neuronId, dissolveDelaySeconds } = neuronInfo;
     const neuronIdString = neuronId.toString();
@@ -39,18 +54,28 @@ export const tableNeuronsFromNeuronInfos = (
       }),
       dissolveDelaySeconds,
       state: neuronInfo.state,
+      tags: getNeuronTags({
+        neuron: neuronInfo,
+        identity,
+        accounts,
+        i18n,
+      }).map(({ text }) => text),
     };
   });
 };
 
 export const tableNeuronsFromSnsNeurons = ({
+  snsNeurons,
   universe,
   token,
-  snsNeurons,
+  identity,
+  i18n,
 }: {
+  snsNeurons: SnsNeuron[];
   universe: UniverseCanisterIdText;
   token: Token;
-  snsNeurons: SnsNeuron[];
+  identity: Identity | undefined | null;
+  i18n: I18n;
 }): TableNeuron[] => {
   return snsNeurons.map((snsNeuron) => {
     const dissolveDelaySeconds = getSnsDissolveDelaySeconds(snsNeuron) ?? 0n;
@@ -69,6 +94,11 @@ export const tableNeuronsFromSnsNeurons = ({
       }),
       dissolveDelaySeconds,
       state: getSnsNeuronState(snsNeuron),
+      tags: getSnsNeuronTags({
+        neuron: snsNeuron,
+        identity,
+        i18n,
+      }).map(({ text }) => text),
     };
   });
 };

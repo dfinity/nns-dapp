@@ -2,6 +2,8 @@
   import { ENABLE_NEURONS_TABLE } from "$lib/stores/feature-flags.store";
   import type { TableNeuron } from "$lib/types/neurons-table";
   import { i18n } from "$lib/stores/i18n";
+  import { authStore } from "$lib/stores/auth.store";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
   import NeuronsTable from "$lib/components/neurons/NeuronsTable/NeuronsTable.svelte";
@@ -29,7 +31,12 @@
 
   let tableNeurons: TableNeuron[] = [];
   $: tableNeurons = $ENABLE_NEURONS_TABLE
-    ? tableNeuronsFromNeuronInfos($definedNeuronsStore)
+    ? tableNeuronsFromNeuronInfos({
+        identity: $authStore.identity,
+        accounts: $icpAccountsStore,
+        i18n: $i18n,
+        neuronInfos: $definedNeuronsStore,
+      })
     : [];
 </script>
 

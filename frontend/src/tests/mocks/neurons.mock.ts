@@ -112,4 +112,5 @@ export const mockTableNeuron: TableNeuron = {
   }),
   dissolveDelaySeconds: 1n,
   state: NeuronState.Locked,
+  tags: [],
 };

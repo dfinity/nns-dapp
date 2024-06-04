@@ -9,6 +9,7 @@ export type TableNeuron = {
   stake: TokenAmountV2;
   dissolveDelaySeconds: bigint;
   state: NeuronState;
+  tags: string[];
 };
 
 // Should define a partial ordering on TableNeuron by return -1 if a < b, +1 if
