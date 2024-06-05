@@ -213,6 +213,18 @@
           : $snsFilteredProposalsStore[universeIdText]?.proposals
       )?.map(snsProposalId) ?? []
     : [];
+  // Search for the previous proposal id in the reversed IDs array
+  // in case the current proposal is not in the list anymore (after successful vote, for example)
+  let previousProposalId: bigint | undefined;
+  $: previousProposalId =
+    nonNullish(proposalIdText) && nonNullish(proposalIds)
+      ? [...proposalIds].reverse().find((id) => id > BigInt(proposalIdText))
+      : undefined;
+  let nextProposalId: bigint | undefined;
+  $: nextProposalId =
+    nonNullish(proposalIdText) && nonNullish(proposalIds)
+      ? proposalIds.find((id) => id < BigInt(proposalIdText))
+      : undefined;
 
   // The `update` function cares about the necessary data to be refetched.
   $: universeIdText, proposalIdText, $snsNeuronsStore, $authStore, update();
@@ -225,9 +237,9 @@
   {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
     <ProposalNavigation
       title={proposalNavigationTitle}
-      currentProposalId={BigInt(proposalIdText)}
       currentProposalStatus={getUniversalProposalStatus(proposal)}
-      {proposalIds}
+      {previousProposalId}
+      {nextProposalId}
       selectProposal={navigateToProposal}
     />
   {/if}

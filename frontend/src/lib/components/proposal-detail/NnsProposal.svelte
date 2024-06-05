@@ -38,16 +38,30 @@
   $: proposalIds = $actionableProposalsActiveStore
     ? $actionableNnsProposalsStore.proposals?.map(({ id }) => id as bigint)
     : $filteredProposals.proposals?.map(({ id }) => id as bigint);
+  let currentProposalId: bigint | undefined;
+  $: currentProposalId = $store.proposal?.id;
+  let previousProposalId: bigint | undefined;
+  // Search for the previous proposal id in the reversed IDs array
+  // in case the current proposal is not in the list anymore (after successful vote, for example)
+  $: previousProposalId =
+    nonNullish(currentProposalId) && nonNullish(proposalIds)
+      ? [...proposalIds].reverse().find((id) => id > currentProposalId)
+      : undefined;
+  let nextProposalId: bigint | undefined;
+  $: nextProposalId =
+    nonNullish(currentProposalId) && nonNullish(proposalIds)
+      ? proposalIds.find((id) => id < currentProposalId)
+      : undefined;
 </script>
 
 <TestIdWrapper testId="nns-proposal-component">
   {#if $store?.proposal?.id !== undefined && nonNullish(proposalIds)}
-    {#if $referrerPathStore !== AppPath.Launchpad}
+    {#if $referrerPathStore !== AppPath.Launchpad && nonNullish(currentProposalId)}
       <ProposalNavigation
         title={proposalType}
-        currentProposalId={$store.proposal.id}
+        {previousProposalId}
+        {nextProposalId}
         currentProposalStatus={getUniversalProposalStatus($store.proposal)}
-        {proposalIds}
         selectProposal={navigateToProposal}
       />
     {/if}

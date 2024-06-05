@@ -10,29 +10,19 @@
   import { triggerDebugReport } from "$lib/directives/debug.directives";
   import { pageStore } from "$lib/derived/page.derived";
 
-  export let currentProposalId: bigint;
+  export let previousProposalId: bigint | undefined;
+  export let nextProposalId: bigint | undefined;
   export let title: string | undefined = undefined;
   export let currentProposalStatus: UniversalProposalStatus;
-  export let proposalIds: bigint[] = [];
   export let selectProposal: (proposalId: bigint) => void;
 
-  let previousId: bigint | undefined;
-  // TODO: switch to findLast() once it's available
-  // use `as bigint[]` to avoid TS error (type T | undefined is not assignable to type bigint | undefined)
-  $: previousId = ([...proposalIds].reverse() as bigint[]).find(
-    (id) => id > currentProposalId
-  );
-
-  let nextId: bigint | undefined;
-  $: nextId = proposalIds.find((id) => id < currentProposalId);
-
   const selectPrevious = () => {
-    assertNonNullish(previousId);
-    selectProposal(previousId);
+    assertNonNullish(previousProposalId);
+    selectProposal(previousProposalId);
   };
   const selectNext = () => {
-    assertNonNullish(nextId);
-    selectProposal(nextId);
+    assertNonNullish(nextProposalId);
+    selectProposal(nextProposalId);
   };
 </script>
 
@@ -57,9 +47,9 @@
       type="button"
       aria-label={$i18n.proposal_detail.previous}
       on:click={selectPrevious}
-      class:hidden={isNullish(previousId)}
+      class:hidden={isNullish(previousProposalId)}
       data-tid="proposal-nav-previous"
-      data-test-proposal-id={previousId?.toString() ?? ""}
+      data-test-proposal-id={previousProposalId?.toString() ?? ""}
     >
       <IconLeft />
       {$i18n.proposal_detail.previous_short}</button
@@ -69,9 +59,9 @@
       type="button"
       aria-label={$i18n.proposal_detail.next}
       on:click={selectNext}
-      class:hidden={isNullish(nextId)}
+      class:hidden={isNullish(nextProposalId)}
       data-tid="proposal-nav-next"
-      data-test-proposal-id={nextId?.toString() ?? ""}
+      data-test-proposal-id={nextProposalId?.toString() ?? ""}
     >
       {$i18n.proposal_detail.next_short}
       <IconRight />
