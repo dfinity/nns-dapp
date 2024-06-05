@@ -10,16 +10,19 @@ describe("ResponseTable", () => {
     {
       title: "Name",
       cellComponent: TestTableNameCell,
+      alignment: "left",
     },
     {
       title: "Age",
       cellComponent: TestTableAgeCell,
+      alignment: "left",
     },
     {
       title: "Actions",
       // Normally each column would have a different cell component but for
       // testing we reuse the name cell component.
       cellComponent: TestTableNameCell,
+      alignment: "right",
     },
   ];
 
@@ -86,6 +89,16 @@ describe("ResponseTable", () => {
     expect(await rows[0].getTagName()).toBe("A");
     expect(await rows[1].getTagName()).toBe("A");
     expect(await rows[2].getTagName()).toBe("DIV");
+  });
+
+  it("should render classes based on column alignment", async () => {
+    const po = renderComponent({ columns, tableData });
+    const rows = await po.getRows();
+    expect(await rows[0].getCellClasses()).toEqual([
+      expect.arrayContaining(["desktop-align-left"]),
+      expect.arrayContaining(["desktop-align-left"]),
+      expect.arrayContaining(["desktop-align-right"]),
+    ]);
   });
 
   it("should render column styles depending on the number of columns", async () => {

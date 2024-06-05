@@ -13,14 +13,17 @@
     {
       title: firstColumnHeader,
       cellComponent: TokenTitleCell,
+      alignment: "left",
     },
     {
       title: $i18n.tokens.balance_header,
       cellComponent: TokenBalanceCell,
+      alignment: "right",
     },
     {
       title: "",
       cellComponent: TokenActionsCell,
+      alignment: "right",
     },
   ];
 </script>
