@@ -11,7 +11,6 @@
   import SnsProposalSummarySection from "$lib/components/sns-proposals/SnsProposalSummarySection.svelte";
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
   import SnsProposalPayloadSection from "$lib/components/sns-proposals/SnsProposalPayloadSection.svelte";
-  import { sortedSnsUserNeuronsStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { pageStore } from "$lib/derived/page.derived";
