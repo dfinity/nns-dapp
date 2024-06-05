@@ -93,6 +93,22 @@ describe("TokensTable", () => {
     ]);
   });
 
+  it("should use correct template columns", async () => {
+    const firstColumnHeader = "Accounts";
+    const token1 = createUserToken({
+      universeId: OWN_CANISTER_ID,
+    });
+    const po = renderTable({ userTokensData: [token1], firstColumnHeader });
+
+    expect(await po.getDesktopGridTemplateColumns()).toBe(
+      "1fr max-content max-content"
+    );
+    expect(await po.getMobileGridTemplateColumns()).toBe("1fr max-content");
+    expect(await po.getMobileGridTemplateAreas()).toBe(
+      '"first-cell last-cell" "cell-0 cell-0"'
+    );
+  });
+
   it("should render the last-row slot", async () => {
     const lastRowText = "Add Account";
     const token1 = createUserToken({

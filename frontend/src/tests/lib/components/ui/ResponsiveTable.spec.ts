@@ -11,11 +11,13 @@ describe("ResponseTable", () => {
       title: "Name",
       cellComponent: TestTableNameCell,
       alignment: "left",
+      templateColumns: ["1fr"],
     },
     {
       title: "Age",
       cellComponent: TestTableAgeCell,
       alignment: "left",
+      templateColumns: ["1fr"],
     },
     {
       title: "Actions",
@@ -23,6 +25,7 @@ describe("ResponseTable", () => {
       // testing we reuse the name cell component.
       cellComponent: TestTableNameCell,
       alignment: "right",
+      templateColumns: ["max-content"],
     },
   ];
 
@@ -105,8 +108,9 @@ describe("ResponseTable", () => {
     // 3 columns
     const po1 = renderComponent({ columns, tableData });
     expect(await po1.getDesktopGridTemplateColumns()).toBe(
-      "1fr max-content max-content"
+      "1fr 1fr max-content"
     );
+    expect(await po1.getMobileGridTemplateColumns()).toBe("1fr max-content");
     expect(await po1.getMobileGridTemplateAreas()).toBe(
       '"first-cell last-cell" "cell-0 cell-0"'
     );
@@ -117,7 +121,7 @@ describe("ResponseTable", () => {
       tableData,
     });
     expect(await po2.getDesktopGridTemplateColumns()).toBe(
-      "1fr max-content max-content max-content max-content max-content"
+      "1fr 1fr max-content 1fr 1fr max-content"
     );
     expect(await po2.getMobileGridTemplateAreas()).toBe(
       '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2" "cell-3 cell-3"'

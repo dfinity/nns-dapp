@@ -71,6 +71,7 @@
     text-decoration: none;
 
     grid-template-areas: var(--mobile-grid-template-areas);
+    grid-template-columns: var(--mobile-grid-template-columns);
 
     @include media.min-width(medium) {
       @include grid-table.row;

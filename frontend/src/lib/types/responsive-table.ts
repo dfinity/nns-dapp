@@ -8,6 +8,7 @@ export interface ResponsiveTableRowData {
 }
 
 export type ColumnAlignment = "left" | "right";
+export type TemplateItem = "max-content" | "1fr";
 
 export interface ResponsiveTableColumn<
   RowDataType extends ResponsiveTableRowData,
@@ -15,4 +16,5 @@ export interface ResponsiveTableColumn<
   title: string;
   cellComponent: ComponentType<SvelteComponent<{ rowData: RowDataType }>>;
   alignment: ColumnAlignment;
+  templateColumns: TemplateItem[];
 }
