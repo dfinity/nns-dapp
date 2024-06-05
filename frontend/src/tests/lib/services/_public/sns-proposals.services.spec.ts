@@ -354,7 +354,7 @@ describe("sns-proposals services", () => {
         );
       });
 
-      it("should use the proposal in store if certified and not call api", () =>
+      it("should call api regardless of having a certified proposal in store", () =>
         new Promise<void>((done) => {
           const queryProposalSpy = vi
             .spyOn(api, "queryProposal")
@@ -368,29 +368,6 @@ describe("sns-proposals services", () => {
           getSnsProposalById({
             rootCanisterId,
             proposalId,
-            setProposal: ({ proposal }) => {
-              expect(queryProposalSpy).not.toBeCalledTimes(1);
-              expect(proposal).toEqual(mockSnsProposal);
-              done();
-            },
-            reloadForBallots: false,
-          });
-        }));
-
-      it("should not use the proposal in store if not certified and call api", () =>
-        new Promise<void>((done) => {
-          const queryProposalSpy = vi
-            .spyOn(api, "queryProposal")
-            .mockResolvedValue(mockSnsProposal);
-          snsProposalsStore.setProposals({
-            rootCanisterId,
-            proposals: [mockSnsProposal],
-            certified: false,
-            completed: true,
-          });
-          getSnsProposalById({
-            rootCanisterId,
-            proposalId,
             setProposal: () => {
               expect(queryProposalSpy).toBeCalledWith({
                 identity: new AnonymousIdentity(),
@@ -401,29 +378,6 @@ describe("sns-proposals services", () => {
               expect(queryProposalSpy).toBeCalledTimes(1);
               done();
             },
-            reloadForBallots: false,
-          });
-        }));
-
-      it("should call api if store is empty", () =>
-        new Promise<void>((done) => {
-          const queryProposalSpy = vi
-            .spyOn(api, "queryProposal")
-            .mockResolvedValue(mockSnsProposal);
-          getSnsProposalById({
-            rootCanisterId,
-            proposalId,
-            setProposal: () => {
-              expect(queryProposalSpy).toBeCalledWith({
-                identity: new AnonymousIdentity(),
-                certified: false,
-                rootCanisterId,
-                proposalId,
-              });
-              expect(queryProposalSpy).toBeCalledTimes(1);
-              done();
-            },
-            reloadForBallots: false,
           });
         }));
     });
@@ -435,80 +389,14 @@ describe("sns-proposals services", () => {
         );
       });
 
-      it("should use the proposal in store if certified and not call api", () =>
-        new Promise<void>((done) => {
-          const queryProposalSpy = vi
-            .spyOn(api, "queryProposal")
-            .mockResolvedValue(mockSnsProposal);
-          snsProposalsStore.setProposals({
-            rootCanisterId,
-            proposals: [mockSnsProposal],
-            certified: true,
-            completed: true,
-          });
-          getSnsProposalById({
-            rootCanisterId,
-            proposalId,
-            setProposal: ({ proposal }) => {
-              expect(queryProposalSpy).not.toBeCalledTimes(1);
-              expect(proposal).toEqual(mockSnsProposal);
-              done();
-            },
-            reloadForBallots: false,
-          });
-        }));
-
-      it("should ignore the proposal in store if it contains no ballots and the reloadForBallots flag is set", async () => {
-        const queryProposalSpy = vi
-          .spyOn(api, "queryProposal")
-          .mockResolvedValue(mockSnsProposal);
-        snsProposalsStore.setProposals({
-          rootCanisterId,
-          proposals: [
-            {
-              ...mockSnsProposal,
-              ballots: [],
-            },
-          ],
-          certified: true,
-          completed: true,
-        });
-        let dataCertified = false;
-        getSnsProposalById({
-          rootCanisterId,
-          proposalId,
-          reloadForBallots: true,
-          setProposal: ({ certified, proposal }) => {
-            if (certified) {
-              dataCertified = true;
-              expect(proposal).toEqual(mockSnsProposal);
-            }
-          },
-        });
-        await waitFor(() => expect(dataCertified).toBe(true));
-        expect(queryProposalSpy).toBeCalledWith({
-          identity: mockIdentity,
-          certified: false,
-          rootCanisterId,
-          proposalId,
-        });
-        expect(queryProposalSpy).toBeCalledWith({
-          identity: mockIdentity,
-          certified: true,
-          rootCanisterId,
-          proposalId,
-        });
-        expect(queryProposalSpy).toBeCalledTimes(2);
-      });
-
-      it("should not use the proposal in store if not certified and call api", async () => {
+      it("should call api regardless of having a certified proposal in store", async () => {
         const queryProposalSpy = vi
           .spyOn(api, "queryProposal")
           .mockResolvedValue(mockSnsProposal);
         snsProposalsStore.setProposals({
           rootCanisterId,
           proposals: [mockSnsProposal],
-          certified: false,
+          certified: true,
           completed: true,
         });
         let dataCertified = false;
@@ -521,40 +409,8 @@ describe("sns-proposals services", () => {
               expect(proposal).toEqual(mockSnsProposal);
             }
           },
-          reloadForBallots: false,
         });
 
-        await waitFor(() => expect(dataCertified).toBe(true));
-        expect(queryProposalSpy).toBeCalledWith({
-          identity: mockIdentity,
-          certified: false,
-          rootCanisterId,
-          proposalId,
-        });
-        expect(queryProposalSpy).toBeCalledWith({
-          identity: mockIdentity,
-          certified: true,
-          rootCanisterId,
-          proposalId,
-        });
-        expect(queryProposalSpy).toBeCalledTimes(2);
-      });
-
-      it("should call api if store is empty", async () => {
-        const queryProposalSpy = vi
-          .spyOn(api, "queryProposal")
-          .mockResolvedValue(mockSnsProposal);
-        let dataCertified = false;
-        getSnsProposalById({
-          rootCanisterId,
-          proposalId,
-          setProposal: ({ certified }) => {
-            if (certified) {
-              dataCertified = true;
-            }
-          },
-          reloadForBallots: false,
-        });
         await waitFor(() => expect(dataCertified).toBe(true));
         expect(queryProposalSpy).toBeCalledWith({
           identity: mockIdentity,
@@ -581,7 +437,6 @@ describe("sns-proposals services", () => {
           proposalId,
           setProposal: setProposalSpy,
           handleError: handleErrorSpy,
-          reloadForBallots: false,
         });
 
         await waitFor(() => expect(handleErrorSpy).toBeCalledTimes(2));
@@ -597,7 +452,6 @@ describe("sns-proposals services", () => {
           proposalId,
           setProposal: setProposalSpy,
           handleError: handleErrorSpy,
-          reloadForBallots: false,
         });
 
         await waitFor(() => expect(handleErrorSpy).toBeCalledTimes(2));

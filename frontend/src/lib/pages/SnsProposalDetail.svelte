@@ -11,7 +11,6 @@
   import SnsProposalSummarySection from "$lib/components/sns-proposals/SnsProposalSummarySection.svelte";
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
   import SnsProposalPayloadSection from "$lib/components/sns-proposals/SnsProposalPayloadSection.svelte";
-  import { sortedSnsUserNeuronsStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { pageStore } from "$lib/derived/page.derived";
@@ -106,9 +105,6 @@
     const proposalId: SnsProposalId = {
       id: BigInt(proposalIdText as string),
     };
-    // No need to force getProposal when user has no sns neurons
-    const reloadForBallots =
-      neuronsReady && $sortedSnsUserNeuronsStore.length > 0;
     return getSnsProposalById({
       rootCanisterId: universeCanisterId as Principal,
       proposalId,
@@ -125,7 +121,6 @@
         setProposal(proposalData);
       },
       handleError: () => goBack(universeCanisterIdAtTimeOfRequest),
-      reloadForBallots,
     });
   };
 
@@ -152,14 +147,6 @@
           //
           !$authSignedInStore ? undefined : loadSnsParameters(universeId),
         ]);
-        /*
-        Reload proposal only after `syncSnsNeurons` is done,
-        to be sure that the `reloadForBallots` flag is calculated correctly (based on user neuron presence).
-        When `reloadForBallots` is true, the proposal will be reloaded regardless of other conditions.
-        Otherwise, the proposal from snsProposalsStore will be used when:
-          - proposal data in the store is certified
-          - and user has no neurons for selected Sns.
-         */
         await reloadProposal();
       } catch (error) {
         toastsError({
