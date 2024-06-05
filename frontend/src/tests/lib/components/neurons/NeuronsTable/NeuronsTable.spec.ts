@@ -102,6 +102,18 @@ describe("NeuronsTable", () => {
     ]);
   });
 
+  it("should use correct template columns", async () => {
+    const po = renderComponent({ neurons: [neuron1] });
+
+    expect(await po.getDesktopGridTemplateColumns()).toBe(
+      "1fr max-content max-content max-content max-content"
+    );
+    expect(await po.getMobileGridTemplateColumns()).toBe("1fr max-content");
+    expect(await po.getMobileGridTemplateAreas()).toBe(
+      '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2"'
+    );
+  });
+
   it("should render neuron URL", async () => {
     const po = renderComponent({ neurons: [neuron1, neuron2] });
     const rowPos = await po.getNeuronsTableRowPos();

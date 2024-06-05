@@ -22,12 +22,17 @@
   $: firstColumn = columns.at(0);
   $: middleColumns = columns.slice(1, -1);
 
-  const getTableStyle = (columnCount: number) => {
+  const getTableStyle = (columns: ResponsiveTableColumn<RowDataType>[]) => {
     // On desktop the first column gets all the remaining space after other
     // columns get as much as their content needs.
-    const desktopGridTemplateColumns = `1fr${" max-content".repeat(
-      columnCount - 1
-    )}`;
+    const desktopGridTemplateColumns = columns
+      .flatMap((column) => column.templateColumns)
+      .join(" ");
+
+    const columnCount = columns.length;
+    const firstColumnTemplate = columns[0].templateColumns;
+    const lastColumnTemplate = columns[columnCount - 1].templateColumns;
+
     // On mobile, instead of a single row per data item, we have one row for the
     // first and last cell combined and a separate labeled row for each other
     // cell.
@@ -36,11 +41,19 @@
       const areaName = getCellGridAreaName(i);
       mobileGridTemplateAreas += ` "${areaName} ${areaName}"`;
     }
-    return `--desktop-grid-template-columns: ${desktopGridTemplateColumns}; --mobile-grid-template-areas: ${mobileGridTemplateAreas};`;
+    const mobileGridTemplateColumns = [
+      ...firstColumnTemplate,
+      ...lastColumnTemplate,
+    ].join(" ");
+    return (
+      `--desktop-grid-template-columns: ${desktopGridTemplateColumns}; ` +
+      `--mobile-grid-template-areas: ${mobileGridTemplateAreas};` +
+      `--mobile-grid-template-columns: ${mobileGridTemplateColumns};`
+    );
   };
 
   let tableStyle: string;
-  $: tableStyle = getTableStyle(columns.length);
+  $: tableStyle = getTableStyle(columns);
 </script>
 
 <div role="table" data-tid={testId} style={tableStyle}>

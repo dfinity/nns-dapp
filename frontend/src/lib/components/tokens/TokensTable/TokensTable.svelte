@@ -14,16 +14,19 @@
       title: firstColumnHeader,
       cellComponent: TokenTitleCell,
       alignment: "left",
+      templateColumns: ["1fr"],
     },
     {
       title: $i18n.tokens.balance_header,
       cellComponent: TokenBalanceCell,
       alignment: "right",
+      templateColumns: ["max-content"],
     },
     {
       title: "",
       cellComponent: TokenActionsCell,
       alignment: "right",
+      templateColumns: ["max-content"],
     },
   ];
 </script>
