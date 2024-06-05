@@ -13,6 +13,8 @@
   export let currentProposalId: bigint;
   export let title: string | undefined = undefined;
   export let currentProposalStatus: UniversalProposalStatus;
+  // To resolve the absence of the currentProposalId in proposalIds,
+  // the proposalIds must be passed in decreasing order by the parent component.
   export let proposalIds: bigint[] = [];
   export let selectProposal: (proposalId: bigint) => void;
 
