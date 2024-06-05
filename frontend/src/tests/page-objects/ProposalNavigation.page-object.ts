@@ -15,12 +15,12 @@ export class ProposalNavigationPo extends BasePageObject {
     return (await root.getClasses()).includes("hidden");
   }
 
-  getNewerButtonPo(): ButtonPo {
-    return this.getButton("proposal-nav-newer");
+  getPreviousButtonPo(): ButtonPo {
+    return this.getButton("proposal-nav-previous");
   }
 
-  getOlderButtonPo(): ButtonPo {
-    return this.getButton("proposal-nav-older");
+  getNextButtonPo(): ButtonPo {
+    return this.getButton("proposal-nav-next");
   }
 
   getLogoPo(): UniverseLogoPo {
@@ -43,31 +43,31 @@ export class ProposalNavigationPo extends BasePageObject {
     return this.root.byTestId("title").getText();
   }
 
-  async getNewerButtonProposalId(): Promise<string> {
-    return (await this.getNewerButtonPo().getElement()).getAttribute(
+  async getPreviousButtonProposalId(): Promise<string> {
+    return (await this.getPreviousButtonPo().getElement()).getAttribute(
       "data-test-proposal-id"
     );
   }
 
-  async getOlderButtonProposalId(): Promise<string> {
-    return (await this.getOlderButtonPo().getElement()).getAttribute(
+  async getNextButtonProposalId(): Promise<string> {
+    return (await this.getNextButtonPo().getElement()).getAttribute(
       "data-test-proposal-id"
     );
   }
 
-  async isNewerButtonHidden(): Promise<boolean> {
-    return ProposalNavigationPo.isButtonHidden(this.getNewerButtonPo());
+  async isPreviousButtonHidden(): Promise<boolean> {
+    return ProposalNavigationPo.isButtonHidden(this.getPreviousButtonPo());
   }
 
-  async isOlderButtonHidden(): Promise<boolean> {
-    return ProposalNavigationPo.isButtonHidden(this.getOlderButtonPo());
+  async isNextButtonHidden(): Promise<boolean> {
+    return ProposalNavigationPo.isButtonHidden(this.getNextButtonPo());
   }
 
-  clickNewer(): Promise<void> {
-    return this.getNewerButtonPo().click();
+  clickPrevious(): Promise<void> {
+    return this.getPreviousButtonPo().click();
   }
 
-  clickOlder(): Promise<void> {
-    return this.getOlderButtonPo().click();
+  clickNext(): Promise<void> {
+    return this.getNextButtonPo().click();
   }
 }

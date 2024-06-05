@@ -100,10 +100,10 @@ describe("Proposal", () => {
     const { container } = renderProposalModern(5n);
     const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
 
-    expect(await po.getOlderButtonPo().isPresent()).toBe(true);
-    expect(await po.getOlderButtonProposalId()).toEqual("4");
-    expect(await po.getNewerButtonPo().isPresent()).toBe(true);
-    expect(await po.getNewerButtonProposalId()).toEqual("6");
+    expect(await po.getNextButtonPo().isPresent()).toBe(true);
+    expect(await po.getNextButtonProposalId()).toEqual("4");
+    expect(await po.getPreviousButtonPo().isPresent()).toBe(true);
+    expect(await po.getPreviousButtonProposalId()).toEqual("6");
   });
 
   it("should use actionable proposals for navigation when actionable selected", async () => {
@@ -119,10 +119,10 @@ describe("Proposal", () => {
     const { container } = renderProposalModern(1n);
     const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
 
-    expect(await po.getOlderButtonPo().isPresent()).toBe(true);
-    expect(await po.getOlderButtonProposalId()).toEqual("0");
-    expect(await po.getNewerButtonPo().isPresent()).toBe(true);
-    expect(await po.getNewerButtonProposalId()).toEqual("2");
+    expect(await po.getNextButtonPo().isPresent()).toBe(true);
+    expect(await po.getNextButtonProposalId()).toEqual("0");
+    expect(await po.getPreviousButtonPo().isPresent()).toBe(true);
+    expect(await po.getPreviousButtonProposalId()).toEqual("2");
   });
 
   it("should not render proposal navigation when on launchpad", async () => {
@@ -151,7 +151,7 @@ describe("Proposal", () => {
     const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
 
     expect(await po.isPresent()).toBe(true);
-    expect(await po.getNewerButtonPo().isPresent()).toBe(false);
-    expect(await po.getOlderButtonPo().isPresent()).toBe(false);
+    expect(await po.getPreviousButtonPo().isPresent()).toBe(false);
+    expect(await po.getNextButtonPo().isPresent()).toBe(false);
   });
 });

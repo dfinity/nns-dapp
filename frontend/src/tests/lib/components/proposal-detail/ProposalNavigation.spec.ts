@@ -65,8 +65,8 @@ describe("ProposalNavigation", () => {
           selectProposal: vi.fn(),
         });
 
-        expect(await po.isOlderButtonHidden()).toBe(true);
-        expect(await po.isNewerButtonHidden()).toBe(true);
+        expect(await po.isNextButtonHidden()).toBe(true);
+        expect(await po.isPreviousButtonHidden()).toBe(true);
       });
     });
 
@@ -80,8 +80,8 @@ describe("ProposalNavigation", () => {
           selectProposal: vi.fn(),
         });
 
-        expect(await po.getNewerButtonPo().isPresent()).toBe(true);
-        expect(await po.getOlderButtonPo().isPresent()).toBe(true);
+        expect(await po.getPreviousButtonPo().isPresent()).toBe(true);
+        expect(await po.getNextButtonPo().isPresent()).toBe(true);
       });
 
       it("should render test ids", async () => {
@@ -93,8 +93,8 @@ describe("ProposalNavigation", () => {
           selectProposal: vi.fn(),
         });
 
-        expect(await po.getNewerButtonProposalId()).toEqual("2");
-        expect(await po.getOlderButtonProposalId()).toEqual("0");
+        expect(await po.getPreviousButtonProposalId()).toEqual("2");
+        expect(await po.getNextButtonProposalId()).toEqual("0");
       });
 
       it("should enable both buttons", async () => {
@@ -106,8 +106,8 @@ describe("ProposalNavigation", () => {
           selectProposal: vi.fn(),
         });
 
-        expect(await po.isOlderButtonHidden()).toBe(false);
-        expect(await po.isNewerButtonHidden()).toBe(false);
+        expect(await po.isNextButtonHidden()).toBe(false);
+        expect(await po.isPreviousButtonHidden()).toBe(false);
       });
 
       it("should be visible even when the current proposal is not in the list", async () => {
@@ -119,8 +119,8 @@ describe("ProposalNavigation", () => {
           selectProposal: vi.fn(),
         });
 
-        expect(await po.isOlderButtonHidden()).toBe(false);
-        expect(await po.isNewerButtonHidden()).toBe(false);
+        expect(await po.isNextButtonHidden()).toBe(false);
+        expect(await po.isPreviousButtonHidden()).toBe(false);
       });
 
       it("should hide to-newer-proposal button when the newest proposal is selected", async () => {
@@ -132,8 +132,8 @@ describe("ProposalNavigation", () => {
           selectProposal: vi.fn(),
         });
 
-        expect(await po.isOlderButtonHidden()).toBe(false);
-        expect(await po.isNewerButtonHidden()).toBe(true);
+        expect(await po.isNextButtonHidden()).toBe(false);
+        expect(await po.isPreviousButtonHidden()).toBe(true);
       });
 
       it("should hide to-oldest-proposal when the oldest is selected", async () => {
@@ -145,8 +145,8 @@ describe("ProposalNavigation", () => {
           selectProposal: vi.fn(),
         });
 
-        expect(await po.isOlderButtonHidden()).toBe(true);
-        expect(await po.isNewerButtonHidden()).toBe(false);
+        expect(await po.isNextButtonHidden()).toBe(true);
+        expect(await po.isPreviousButtonHidden()).toBe(false);
       });
     });
   });
@@ -161,7 +161,7 @@ describe("ProposalNavigation", () => {
       selectProposal: selectProposalSpy,
     });
 
-    await po.clickOlder();
+    await po.clickNext();
 
     expect(selectProposalSpy).toHaveBeenCalledTimes(1);
     expect(selectProposalSpy).toHaveBeenCalledWith(1n);
@@ -177,7 +177,7 @@ describe("ProposalNavigation", () => {
       selectProposal: selectProposalSpy,
     });
 
-    await po.clickNewer();
+    await po.clickPrevious();
 
     expect(selectProposalSpy).toHaveBeenCalledTimes(1);
     expect(selectProposalSpy).toHaveBeenCalledWith(3n);
@@ -193,9 +193,9 @@ describe("ProposalNavigation", () => {
       selectProposal: selectProposalSpy,
     });
 
-    await po.clickNewer();
+    await po.clickPrevious();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(17n);
-    await po.clickOlder();
+    await po.clickNext();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(4n);
   });
 
@@ -209,9 +209,9 @@ describe("ProposalNavigation", () => {
       selectProposal: selectProposalSpy,
     });
 
-    await po.clickNewer();
+    await po.clickPrevious();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(13n);
-    await po.clickOlder();
+    await po.clickNext();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(4n);
   });
 
@@ -225,9 +225,9 @@ describe("ProposalNavigation", () => {
       selectProposal: selectProposalSpy,
     });
 
-    await po.clickNewer();
+    await po.clickPrevious();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(5n);
-    await po.clickOlder();
+    await po.clickNext();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(2n);
   });
 });
