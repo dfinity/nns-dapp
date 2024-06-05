@@ -6,7 +6,6 @@
   import { getProjectProposal } from "$lib/getters/sns-summary";
   import { loadProposal } from "$lib/services/$public/proposals.services";
   import { i18n } from "$lib/stores/i18n";
-  import { fade } from "svelte/transition";
 
   export let summary: SnsSummary;
 
@@ -32,8 +31,8 @@
 </script>
 
 {#if nonNullish(proposalInfo)}
-  <h3 in:fade>{$i18n.sns_project_detail.swap_proposal}</h3>
-  <NnsProposalCard {proposalInfo} />
+  <h3>{$i18n.sns_project_detail.swap_proposal}</h3>
+  <NnsProposalCard {proposalInfo} noAnimation />
 {/if}
 
 <style lang="scss">
