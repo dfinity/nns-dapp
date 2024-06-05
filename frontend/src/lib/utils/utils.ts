@@ -501,3 +501,14 @@ export const splitE8sIntoChunks = (value: unknown): string[] => {
 
 export const basisPointsToPercent = (basisPoints: BasisPoints): number =>
   Number(basisPoints) / 100;
+
+// Check the current element position in window viewport.
+export const isHtmlElementInViewport = (element: HTMLElement) => {
+  const { top, left, bottom, right } = element.getBoundingClientRect();
+  return (
+    top >= 0 &&
+    left >= 0 &&
+    bottom <= window.innerHeight &&
+    right <= window.innerWidth
+  );
+};

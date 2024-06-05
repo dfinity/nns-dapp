@@ -13,6 +13,8 @@
   export let hidden = false;
   export let actionable = false;
   export let fromActionablePage = false;
+  export let index = 0;
+  export let noAnimation = false;
 
   let id: ProposalId | undefined;
   let title: string | undefined;
@@ -35,6 +37,8 @@
 
 <ProposalCard
   {hidden}
+  {index}
+  {noAnimation}
   {actionable}
   {href}
   {status}

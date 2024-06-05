@@ -31,7 +31,7 @@
 {:else}
   <ul class="card-grid">
     {#each $openSnsProposalsStore as proposalInfo (proposalInfo.id)}
-      <NnsProposalCard {proposalInfo} />
+      <NnsProposalCard {proposalInfo} noAnimation />
     {/each}
   </ul>
 {/if}

@@ -16,6 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Enabled `ENABLE_CKUSDC` feature flag.
+* Proposal cards animation. 
 
 #### Changed
 
