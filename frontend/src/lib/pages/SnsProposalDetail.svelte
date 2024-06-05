@@ -106,9 +106,6 @@
     const proposalId: SnsProposalId = {
       id: BigInt(proposalIdText as string),
     };
-    // No need to force getProposal when user has no sns neurons
-    const reloadForBallots =
-      neuronsReady && $sortedSnsUserNeuronsStore.length > 0;
     return getSnsProposalById({
       rootCanisterId: universeCanisterId as Principal,
       proposalId,
@@ -125,7 +122,6 @@
         setProposal(proposalData);
       },
       handleError: () => goBack(universeCanisterIdAtTimeOfRequest),
-      reloadForBallots,
     });
   };
 
@@ -145,21 +141,13 @@
         updating = true;
 
         await Promise.all([
-          // skip neurons call when not signedIn or when neurons are ready
+          // skip neurons call when not signedIn or when neurons are ready available
           neuronsReady || !$authSignedInStore
             ? undefined
             : syncSnsNeurons(universeId),
           //
           !$authSignedInStore ? undefined : loadSnsParameters(universeId),
         ]);
-        /*
-        Reload proposal only after `syncSnsNeurons` is done,
-        to be sure that the `reloadForBallots` flag is calculated correctly (based on user neuron presence).
-        When `reloadForBallots` is true, the proposal will be reloaded regardless of other conditions.
-        Otherwise, the proposal from snsProposalsStore will be used when:
-          - proposal data in the store is certified
-          - and user has no neurons for selected Sns.
-         */
         await reloadProposal();
       } catch (error) {
         toastsError({

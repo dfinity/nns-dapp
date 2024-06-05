@@ -12,10 +12,7 @@ import {
 } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsSelectedFiltersStore } from "$lib/stores/sns-filters.store";
-import {
-  snsProposalsStore,
-  type ProjectProposalData,
-} from "$lib/stores/sns-proposals.store";
+import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import {
   getSnsNeuronState,
@@ -34,12 +31,7 @@ import type {
   SnsProposalId,
   SnsVote,
 } from "@dfinity/sns";
-import {
-  fromDefinedNullable,
-  fromNullable,
-  isNullish,
-  nonNullish,
-} from "@dfinity/utils";
+import { fromDefinedNullable, isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { queryAndUpdate } from "../utils.services";
 
@@ -188,46 +180,20 @@ export const loadSnsProposals = async ({
   });
 };
 
-const getProposalFromStoreById = ({
-  rootCanisterId,
-  proposalId,
-  certified,
-}: {
-  rootCanisterId: Principal;
-  proposalId: SnsProposalId;
-  certified: boolean;
-}): SnsProposalData | undefined => {
-  const projectProposalsData: ProjectProposalData =
-    get(snsProposalsStore)[rootCanisterId.toText()];
-  if (
-    !projectProposalsData?.certified &&
-    certified !== projectProposalsData?.certified
-  ) {
-    return undefined;
-  }
-  return projectProposalsData?.proposals.find(
-    ({ id }) => fromNullable(id)?.id === proposalId.id
-  );
-};
-
 /**
  * Calls the callback `setProposal` with the proposal found by the `proposalId` or `undefined` if not found.
- *
- * - If proposal is in store and certified, it will be returned immediately.
- * - Otherwise, use queryAndUpdate and call the callback with the result twice.
+ * - queryAndUpdate is used, and it calls the callback with the result twice.
  *
  * @param {Object} params
  * @param {Principal} params.rootCanisterId
  * @param {SnsProposalId} params.proposalId
  * @param {Function} params.handleError
- * @param {boolean} params.reloadForBallots Skip the store value and fetch the proposal when there is no ballots available.
  */
 export const getSnsProposalById = async ({
   rootCanisterId,
   proposalId,
   setProposal,
   handleError,
-  reloadForBallots,
 }: {
   rootCanisterId: Principal;
   proposalId: SnsProposalId;
@@ -236,24 +202,7 @@ export const getSnsProposalById = async ({
     certified: boolean;
   }) => void;
   handleError?: (err: unknown) => void;
-  /**  */
-  reloadForBallots?: boolean;
 }): Promise<void> => {
-  const proposal = getProposalFromStoreById({
-    rootCanisterId,
-    proposalId,
-    certified: true,
-  });
-
-  // Get proposal from the store if proposal is there:
-  // (when ballots not needed OR when proposal has ballots)
-  if (
-    nonNullish(proposal) &&
-    (proposal.ballots.length > 0 || !reloadForBallots)
-  ) {
-    setProposal({ proposal, certified: true });
-    return;
-  }
   return queryAndUpdate<SnsProposalData, unknown>({
     identityType: "current",
     request: ({ certified, identity }) =>
