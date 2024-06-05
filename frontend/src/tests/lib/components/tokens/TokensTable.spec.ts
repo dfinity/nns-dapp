@@ -66,6 +66,49 @@ describe("TokensTable", () => {
     expect(await po.getFirstColumnHeader()).toEqual(firstColumnHeader);
   });
 
+  it("should render headers", async () => {
+    const firstColumnHeader = "Accounts";
+    const token1 = createUserToken({
+      universeId: OWN_CANISTER_ID,
+    });
+    const po = renderTable({ userTokensData: [token1], firstColumnHeader });
+    expect(await po.getColumnHeaders()).toEqual([
+      "Accounts",
+      "Balance",
+      "", // No header for actions column.
+    ]);
+  });
+
+  it("should render cell alignment classes", async () => {
+    const firstColumnHeader = "Accounts";
+    const token1 = createUserToken({
+      universeId: OWN_CANISTER_ID,
+    });
+    const po = renderTable({ userTokensData: [token1], firstColumnHeader });
+    const rows = await po.getRows();
+    expect(await rows[0].getCellClasses()).toEqual([
+      expect.arrayContaining(["desktop-align-left"]), // Accounts
+      expect.arrayContaining(["desktop-align-right"]), // Balance
+      expect.arrayContaining(["desktop-align-right"]), // Actions
+    ]);
+  });
+
+  it("should use correct template columns", async () => {
+    const firstColumnHeader = "Accounts";
+    const token1 = createUserToken({
+      universeId: OWN_CANISTER_ID,
+    });
+    const po = renderTable({ userTokensData: [token1], firstColumnHeader });
+
+    expect(await po.getDesktopGridTemplateColumns()).toBe(
+      "1fr max-content max-content"
+    );
+    expect(await po.getMobileGridTemplateColumns()).toBe("1fr max-content");
+    expect(await po.getMobileGridTemplateAreas()).toBe(
+      '"first-cell last-cell" "cell-0 cell-0"'
+    );
+  });
+
   it("should render the last-row slot", async () => {
     const lastRowText = "Add Account";
     const token1 = createUserToken({

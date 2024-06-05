@@ -35,6 +35,7 @@ interface I18nCore {
   receive: string;
   send_with_token: string;
   collapse_all: string;
+  or: string;
 }
 
 interface I18nError {
@@ -322,6 +323,7 @@ interface I18nNeurons {
   merge_neurons_source_neuron_disappear: string;
   merge_neurons_more_info: string;
   stake_amount: string;
+  state: string;
 }
 
 interface I18nNew_followee {
@@ -400,6 +402,7 @@ interface I18nActionable_proposals_sign_in {
 interface I18nActionable_proposals_empty {
   title: string;
   text: string;
+  text_unsupported: string;
 }
 
 interface I18nActionable_proposals_not_supported {
@@ -529,10 +532,10 @@ interface I18nProposal_detail {
   no_more_info: string;
   voting_results: string;
   remaining: string;
-  older: string;
-  newer: string;
-  older_short: string;
-  newer_short: string;
+  next: string;
+  previous: string;
+  next_short: string;
+  previous_short: string;
   sign_in: string;
   toggle_lable: string;
   toggle_tree: string;

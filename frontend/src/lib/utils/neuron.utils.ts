@@ -22,8 +22,6 @@ import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { VoteRegistrationStoreData } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
-import type { TableNeuron } from "$lib/types/neurons-table";
-import { buildNeuronUrl } from "$lib/utils/navigation.utils";
 import type { Identity } from "@dfinity/agent";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
@@ -47,13 +45,7 @@ import {
   type ProposalInfo,
   type RewardEvent,
 } from "@dfinity/nns";
-import {
-  ICPToken,
-  TokenAmountV2,
-  fromNullable,
-  isNullish,
-  nonNullish,
-} from "@dfinity/utils";
+import { ICPToken, fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import type { ComponentType } from "svelte";
 import {
   getAccountByPrincipal,
@@ -1044,26 +1036,4 @@ export const getTopicSubtitle = ({
     [Topic.SubnetRental]: i18n.follow_neurons.topic_16_subtitle,
   };
   return mapper[topic];
-};
-
-export const tableNeuronsFromNeuronInfos = (
-  neuronInfos: NeuronInfo[]
-): TableNeuron[] => {
-  return neuronInfos.map((neuronInfo) => {
-    const { neuronId } = neuronInfo;
-    const neuronIdString = neuronId.toString();
-    const rowHref = buildNeuronUrl({
-      universe: OWN_CANISTER_ID_TEXT,
-      neuronId,
-    });
-    return {
-      rowHref,
-      domKey: neuronIdString,
-      neuronId: neuronIdString,
-      stake: TokenAmountV2.fromUlps({
-        amount: neuronStake(neuronInfo),
-        token: ICPToken,
-      }),
-    };
-  });
 };

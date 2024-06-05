@@ -26,7 +26,7 @@ describe("ProposalNavigation", () => {
       it("should render universe logo", async () => {
         const po = renderComponent({
           title: "Title",
-          currentProposalId: 1n,
+          currentProposalId: toNavigationId(1n),
           currentProposalStatus: "open",
           proposalIds: undefined,
           selectProposal: vi.fn(),
@@ -40,7 +40,7 @@ describe("ProposalNavigation", () => {
       it("should render proposal status", async () => {
         const po = renderComponent({
           title: "Title",
-          currentProposalId: 1n,
+          currentProposalId: toNavigationId(1n),
           currentProposalStatus: "open",
           proposalIds: undefined,
           selectProposal: vi.fn(),
@@ -52,7 +52,7 @@ describe("ProposalNavigation", () => {
       it("should render proposal title", async () => {
         const po = renderComponent({
           title: "Title",
-          currentProposalId: 1n,
+          currentProposalId: toNavigationId(1n),
           currentProposalStatus: "open",
           proposalIds: undefined,
           selectProposal: vi.fn(),
@@ -64,14 +64,14 @@ describe("ProposalNavigation", () => {
       it("should hide buttons if no proposalIds", async () => {
         const po = renderComponent({
           title: "Title",
-          currentProposalId: 1n,
+          currentProposalId: toNavigationId(1n),
           currentProposalStatus: "open",
           proposalIds: undefined,
           selectProposal: vi.fn(),
         });
 
-        expect(await po.isOlderButtonHidden()).toBe(true);
-        expect(await po.isNewerButtonHidden()).toBe(true);
+        expect(await po.isNextButtonHidden()).toBe(true);
+        expect(await po.isPreviousButtonHidden()).toBe(true);
       });
     });
 
@@ -79,7 +79,7 @@ describe("ProposalNavigation", () => {
       it("should render buttons", async () => {
         const po = renderComponent({
           title: "Title",
-          currentProposalId: 1n,
+          currentProposalId: toNavigationId(1n),
           currentProposalStatus: "open",
           proposalIds: [
             toNavigationId(2n),
@@ -89,14 +89,14 @@ describe("ProposalNavigation", () => {
           selectProposal: vi.fn(),
         });
 
-        expect(await po.getNewerButtonPo().isPresent()).toBe(true);
-        expect(await po.getOlderButtonPo().isPresent()).toBe(true);
+        expect(await po.getPreviousButtonPo().isPresent()).toBe(true);
+        expect(await po.getNextButtonPo().isPresent()).toBe(true);
       });
 
       it("should render test ids", async () => {
         const po = renderComponent({
           title: "Title",
-          currentProposalId: 1n,
+          currentProposalId: toNavigationId(1n),
           currentProposalStatus: "open",
           proposalIds: [
             toNavigationId(2n),
@@ -106,14 +106,14 @@ describe("ProposalNavigation", () => {
           selectProposal: vi.fn(),
         });
 
-        expect(await po.getNewerButtonProposalId()).toEqual("2");
-        expect(await po.getOlderButtonProposalId()).toEqual("0");
+        expect(await po.getPreviousButtonProposalId()).toEqual("2");
+        expect(await po.getNextButtonProposalId()).toEqual("0");
       });
 
       it("should enable both buttons", async () => {
         const po = renderComponent({
           title: "Title",
-          currentProposalId: 1n,
+          currentProposalId: toNavigationId(1n),
           currentProposalStatus: "open",
           proposalIds: [
             toNavigationId(2n),
@@ -123,56 +123,56 @@ describe("ProposalNavigation", () => {
           selectProposal: vi.fn(),
         });
 
-        expect(await po.isOlderButtonHidden()).toBe(false);
-        expect(await po.isNewerButtonHidden()).toBe(false);
+        expect(await po.isNextButtonHidden()).toBe(false);
+        expect(await po.isPreviousButtonHidden()).toBe(false);
       });
 
       it("should be visible even when the current proposal is not in the list", async () => {
         const po = renderComponent({
           title: "Title",
-          currentProposalId: 10n,
+          currentProposalId: toNavigationId(10n),
           currentProposalStatus: "open",
           proposalIds: [toNavigationId(20n), toNavigationId(0n)],
           selectProposal: vi.fn(),
         });
 
-        expect(await po.isOlderButtonHidden()).toBe(false);
-        expect(await po.isNewerButtonHidden()).toBe(false);
+        expect(await po.isNextButtonHidden()).toBe(false);
+        expect(await po.isPreviousButtonHidden()).toBe(false);
       });
 
-      it("should hide to-newer-proposal button when the newest proposal is selected", async () => {
+      it("should hide to-previous-proposal button when the first proposal is selected", async () => {
         const po = renderComponent({
           title: "Title",
-          currentProposalId: 1n,
+          currentProposalId: toNavigationId(1n),
           currentProposalStatus: "open",
           proposalIds: [toNavigationId(1n), toNavigationId(0n)],
           selectProposal: vi.fn(),
         });
 
-        expect(await po.isOlderButtonHidden()).toBe(false);
-        expect(await po.isNewerButtonHidden()).toBe(true);
+        expect(await po.isNextButtonHidden()).toBe(false);
+        expect(await po.isPreviousButtonHidden()).toBe(true);
       });
 
-      it("should hide to-oldest-proposal when the oldest is selected", async () => {
+      it("should hide to-next-proposal when the last is selected", async () => {
         const po = renderComponent({
           title: "Title",
-          currentProposalId: 1n,
+          currentProposalId: toNavigationId(1n),
           currentProposalStatus: "open",
           proposalIds: [toNavigationId(2n), toNavigationId(1n)],
           selectProposal: vi.fn(),
         });
 
-        expect(await po.isOlderButtonHidden()).toBe(true);
-        expect(await po.isNewerButtonHidden()).toBe(false);
+        expect(await po.isNextButtonHidden()).toBe(true);
+        expect(await po.isPreviousButtonHidden()).toBe(false);
       });
     });
   });
 
-  it("should emmit to-older-proposal click", async () => {
+  it("should emmit to-next-proposal click", async () => {
     const selectProposalSpy = vi.fn();
     const po = renderComponent({
       title: "Title",
-      currentProposalId: 2n,
+      currentProposalId: toNavigationId(2n),
       currentProposalStatus: "open",
       proposalIds: [
         toNavigationId(4n),
@@ -184,17 +184,17 @@ describe("ProposalNavigation", () => {
       selectProposal: selectProposalSpy,
     });
 
-    await po.clickOlder();
+    await po.clickNext();
 
     expect(selectProposalSpy).toHaveBeenCalledTimes(1);
     expect(selectProposalSpy).toHaveBeenCalledWith(toNavigationId(1n));
   });
 
-  it("should emmit to-newer-proposal click", async () => {
+  it("should emmit to-previous-proposal click", async () => {
     const selectProposalSpy = vi.fn();
     const po = renderComponent({
       title: "Title",
-      currentProposalId: 2n,
+      currentProposalId: toNavigationId(2n),
       currentProposalStatus: "open",
       proposalIds: [
         toNavigationId(4n),
@@ -206,7 +206,7 @@ describe("ProposalNavigation", () => {
       selectProposal: selectProposalSpy,
     });
 
-    await po.clickNewer();
+    await po.clickPrevious();
 
     expect(selectProposalSpy).toHaveBeenCalledTimes(1);
     expect(selectProposalSpy).toHaveBeenCalledWith(toNavigationId(3n));
@@ -216,7 +216,7 @@ describe("ProposalNavigation", () => {
     const selectProposalSpy = vi.fn();
     const po = renderComponent({
       title: "Title",
-      currentProposalId: 13n,
+      currentProposalId: toNavigationId(13n),
       currentProposalStatus: "open",
       proposalIds: [
         toNavigationId(99n),
@@ -230,9 +230,9 @@ describe("ProposalNavigation", () => {
       selectProposal: selectProposalSpy,
     });
 
-    await po.clickNewer();
+    await po.clickPrevious();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(toNavigationId(17n));
-    await po.clickOlder();
+    await po.clickNext();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(toNavigationId(4n));
   });
 
@@ -240,7 +240,7 @@ describe("ProposalNavigation", () => {
     const selectProposalSpy = vi.fn();
     const po = renderComponent({
       title: "Title",
-      currentProposalId: 9n,
+      currentProposalId: toNavigationId(9n),
       currentProposalStatus: "open",
       proposalIds: [
         toNavigationId(99n),
@@ -254,64 +254,43 @@ describe("ProposalNavigation", () => {
       selectProposal: selectProposalSpy,
     });
 
-    await po.clickNewer();
+    await po.clickPrevious();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(toNavigationId(13n));
-    await po.clickOlder();
+    await po.clickNext();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(toNavigationId(4n));
   });
 
-  it("should sort ids", async () => {
+  it("should search between universes", async () => {
     const selectProposalSpy = vi.fn();
     const po = renderComponent({
       title: "Title",
-      currentProposalId: 3n,
+      currentProposalId: { proposalId: 2000n, universe: "bbbbb-bbbbb" },
       currentProposalStatus: "open",
       proposalIds: [
-        toNavigationId(0n),
-        toNavigationId(1n),
-        toNavigationId(5n),
-        toNavigationId(3n),
-        toNavigationId(7n),
-        toNavigationId(9n),
-        toNavigationId(2n),
+        { proposalId: 40n, universe: "aaaaa-aaaaa" },
+        { proposalId: 4n, universe: "aaaaa-aaaaa" },
+        // Removed record -> { proposalId: 2000n, universe: "bbbbb-bbbbb" }
+        { proposalId: 100n, universe: "ccccc-ccccc" },
+        { proposalId: 1n, universe: "ccccc-ccccc" },
       ],
+      universes: ["aaaaa-aaaaa", "bbbbb-bbbbb", "ccccc-ccccc"],
       selectProposal: selectProposalSpy,
     });
 
-    await po.clickNewer();
-    expect(selectProposalSpy).toHaveBeenLastCalledWith(toNavigationId(5n));
-    await po.clickOlder();
-    expect(selectProposalSpy).toHaveBeenLastCalledWith(toNavigationId(2n));
-  });
-
-  it("should emmit with different universes", async () => {
-    const selectProposalSpy = vi.fn();
-    const po = renderComponent({
-      title: "Title",
-      currentProposalId: 2n,
-      currentProposalStatus: "open",
-      proposalIds: [
-        { proposalId: 3n, universe: "g3pce-2iaae" },
-        { proposalId: 2n, universe: "f7crg-kabae" },
-        { proposalId: 1n, universe: "atueb-2ycae" },
-      ],
-      selectProposal: selectProposalSpy,
-    });
-
-    await po.clickNewer();
+    await po.clickPrevious();
 
     expect(selectProposalSpy).toHaveBeenCalledTimes(1);
     expect(selectProposalSpy).toHaveBeenCalledWith({
-      proposalId: 3n,
-      universe: "g3pce-2iaae",
+      proposalId: 4n,
+      universe: "aaaaa-aaaaa",
     });
 
-    await po.clickOlder();
+    await po.clickNext();
 
     expect(selectProposalSpy).toHaveBeenCalledTimes(2);
     expect(selectProposalSpy).toHaveBeenCalledWith({
-      proposalId: 1n,
-      universe: "atueb-2ycae",
+      proposalId: 100n,
+      universe: "ccccc-ccccc",
     });
   });
 });

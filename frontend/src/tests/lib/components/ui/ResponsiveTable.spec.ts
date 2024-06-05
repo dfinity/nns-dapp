@@ -10,16 +10,22 @@ describe("ResponseTable", () => {
     {
       title: "Name",
       cellComponent: TestTableNameCell,
+      alignment: "left",
+      templateColumns: ["1fr"],
     },
     {
       title: "Age",
       cellComponent: TestTableAgeCell,
+      alignment: "left",
+      templateColumns: ["1fr"],
     },
     {
       title: "Actions",
       // Normally each column would have a different cell component but for
       // testing we reuse the name cell component.
       cellComponent: TestTableNameCell,
+      alignment: "right",
+      templateColumns: ["max-content"],
     },
   ];
 
@@ -88,12 +94,23 @@ describe("ResponseTable", () => {
     expect(await rows[2].getTagName()).toBe("DIV");
   });
 
+  it("should render classes based on column alignment", async () => {
+    const po = renderComponent({ columns, tableData });
+    const rows = await po.getRows();
+    expect(await rows[0].getCellClasses()).toEqual([
+      expect.arrayContaining(["desktop-align-left"]),
+      expect.arrayContaining(["desktop-align-left"]),
+      expect.arrayContaining(["desktop-align-right"]),
+    ]);
+  });
+
   it("should render column styles depending on the number of columns", async () => {
     // 3 columns
     const po1 = renderComponent({ columns, tableData });
     expect(await po1.getDesktopGridTemplateColumns()).toBe(
-      "1fr max-content max-content"
+      "1fr 1fr max-content"
     );
+    expect(await po1.getMobileGridTemplateColumns()).toBe("1fr max-content");
     expect(await po1.getMobileGridTemplateAreas()).toBe(
       '"first-cell last-cell" "cell-0 cell-0"'
     );
@@ -104,7 +121,7 @@ describe("ResponseTable", () => {
       tableData,
     });
     expect(await po2.getDesktopGridTemplateColumns()).toBe(
-      "1fr max-content max-content max-content max-content max-content"
+      "1fr 1fr max-content 1fr 1fr max-content"
     );
     expect(await po2.getMobileGridTemplateAreas()).toBe(
       '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2" "cell-3 cell-3"'

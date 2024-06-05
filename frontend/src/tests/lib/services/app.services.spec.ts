@@ -2,10 +2,14 @@ import { clearSnsAggregatorCache } from "$lib/api-services/sns-aggregator.api-se
 import * as agent from "$lib/api/agent.api";
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
+import * as actionableProposalsServices from "$lib/services/actionable-proposals.services";
+import * as actionableSnsProposalsServices from "$lib/services/actionable-sns-proposals.services";
 import { initAppPrivateData } from "$lib/services/app.services";
+import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import { LedgerCanister } from "@dfinity/ledger-icp";
@@ -23,6 +27,7 @@ describe("app-services", () => {
     toastsStore.reset();
     vi.clearAllMocks();
     clearSnsAggregatorCache();
+    // resetSnsProjects();
     vi.spyOn(LedgerCanister, "create").mockImplementation(
       (): LedgerCanister => mockLedgerCanister
     );
@@ -79,5 +84,34 @@ describe("app-services", () => {
 
     const toastData = get(toastsStore);
     expect(toastData).toHaveLength(0);
+  });
+
+  it("should call loadActionableProposals after Sns data is ready", async () => {
+    const spyLoadActionableProposals = vi
+      .spyOn(actionableProposalsServices, "loadActionableProposals")
+      .mockResolvedValue();
+    const spyLoadActionableSnsProposals = vi
+      .spyOn(actionableSnsProposalsServices, "loadActionableSnsProposals")
+      .mockResolvedValue();
+    let querySnsProjectsResolver;
+    vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(
+      (): Promise<CachedSnsDto[]> =>
+        new Promise((resolve) => {
+          querySnsProjectsResolver = () =>
+            resolve([aggregatorSnsMockDto, aggregatorSnsMockDto]);
+        })
+    );
+
+    initAppPrivateData();
+    await runResolvedPromises();
+
+    expect(spyLoadActionableProposals).toHaveBeenCalledTimes(0);
+    expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(0);
+
+    querySnsProjectsResolver();
+    await runResolvedPromises();
+
+    expect(spyLoadActionableProposals).toHaveBeenCalledTimes(1);
+    expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(1);
   });
 });

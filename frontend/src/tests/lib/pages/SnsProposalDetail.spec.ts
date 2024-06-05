@@ -54,6 +54,10 @@ describe("SnsProposalDetail", () => {
     return SnsProposalDetailPo.under(new JestPageObjectElement(container));
   };
 
+  beforeEach(() => {
+    page.reset();
+  });
+
   describe("not logged in", () => {
     beforeEach(() => {
       vi.clearAllMocks();
@@ -280,13 +284,13 @@ describe("SnsProposalDetail", () => {
 
       const navigationPo = po.getProposalNavigationPo();
       expect(await navigationPo.isPresent()).toBe(true);
-      expect(await navigationPo.getOlderButtonPo().isPresent()).toBe(true);
-      expect(await navigationPo.getNewerButtonPo().isPresent()).toBe(true);
-      expect(await navigationPo.getNewerButtonProposalId()).toBe("3");
-      expect(await navigationPo.getOlderButtonProposalId()).toBe("1");
+      expect(await navigationPo.getNextButtonPo().isPresent()).toBe(true);
+      expect(await navigationPo.getPreviousButtonPo().isPresent()).toBe(true);
+      expect(await navigationPo.getPreviousButtonProposalId()).toBe("3");
+      expect(await navigationPo.getNextButtonProposalId()).toBe("1");
       // all buttons should be enabled
-      expect(await navigationPo.getOlderButtonPo().isDisabled()).toBe(false);
-      expect(await navigationPo.getNewerButtonPo().isDisabled()).toBe(false);
+      expect(await navigationPo.getNextButtonPo().isDisabled()).toBe(false);
+      expect(await navigationPo.getPreviousButtonPo().isDisabled()).toBe(false);
     });
 
     it("should display proposal navigation for actionable proposal", async () => {
@@ -337,15 +341,78 @@ describe("SnsProposalDetail", () => {
 
       const navigationPo = po.getProposalNavigationPo();
       expect(await navigationPo.isPresent()).toBe(true);
-      expect(await navigationPo.getOlderButtonPo().isPresent()).toBe(true);
-      expect(await navigationPo.getNewerButtonPo().isPresent()).toBe(true);
-      // 4 <newer 3 older> 1
-      expect(await navigationPo.getNewerButtonProposalId()).toBe("3");
-      expect(await navigationPo.getOlderButtonProposalId()).toBe("1");
+      expect(await navigationPo.getNextButtonPo().isPresent()).toBe(true);
+      expect(await navigationPo.getPreviousButtonPo().isPresent()).toBe(true);
+      // 4 <prev 3 next> 1
+      expect(await navigationPo.getPreviousButtonProposalId()).toBe("3");
+      expect(await navigationPo.getNextButtonProposalId()).toBe("1");
       // all buttons should be enabled
-      expect(await navigationPo.getOlderButtonPo().isDisabled()).toBe(false);
-      expect(await navigationPo.getNewerButtonPo().isDisabled()).toBe(false);
+      expect(await navigationPo.getNextButtonPo().isDisabled()).toBe(false);
+      expect(await navigationPo.getPreviousButtonPo().isDisabled()).toBe(false);
     });
+  });
+
+  it("should not display proposal navigation buttons when user comes from actionable page", async () => {
+    resetIdentity();
+    setSnsProjects([
+      {
+        rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
+    page.mock({
+      data: { universe: rootCanisterId.toText(), actionable: true },
+    });
+
+    // mock the store to have 3 proposals for navigation
+    vi.spyOn(snsFilteredProposalsStore, "subscribe").mockImplementation(
+      buildMockSnsProposalsStoreSubscribe({
+        universeIdText: rootCanisterId.toText(),
+        proposals: [
+          createSnsProposal({
+            proposalId: 1n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+          }),
+          createSnsProposal({
+            proposalId: 2n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+          }),
+          createSnsProposal({
+            proposalId: 3n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+          }),
+        ],
+      })
+    );
+
+    fakeSnsGovernanceApi.addProposalWith({
+      identity: mockIdentity,
+      rootCanisterId,
+      id: [{ id: 2n }],
+    });
+
+    const { container } = render(SnsProposalDetail, {
+      props: {
+        // set the proposal with id=2 to be in the middle of the list
+        proposalIdText: "2",
+      },
+    });
+    const po = SnsProposalDetailPo.under(new JestPageObjectElement(container));
+    await runResolvedPromises();
+    expect(await po.isContentLoaded()).toBe(true);
+
+    const navigationPo = po.getProposalNavigationPo();
+    expect(await navigationPo.isPresent()).toBe(true);
+    expect(await navigationPo.getPreviousButtonPo().isPresent()).toBe(false);
+    expect(await navigationPo.getNextButtonPo().isPresent()).toBe(false);
+
+    page.mock({
+      data: { universe: rootCanisterId.toText(), actionable: false },
+    });
+
+    await runResolvedPromises();
+    expect(await navigationPo.getPreviousButtonPo().isPresent()).toBe(true);
+    expect(await navigationPo.getNextButtonPo().isPresent()).toBe(true);
   });
 
   describe("not logged in that logs in afterwards", () => {

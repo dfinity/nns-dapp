@@ -25,7 +25,7 @@ describe("NnsStakeItemAction", () => {
     const neuron: NeuronInfo = {
       ...mockNeuron,
       votingPower: 614000000n,
-      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE + 100),
+      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
     };
     const po = renderComponent(neuron);
 
@@ -36,7 +36,7 @@ describe("NnsStakeItemAction", () => {
     const neuron: NeuronInfo = {
       ...mockNeuron,
       votingPower: 614000000n,
-      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE - 100),
+      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE - 1),
     };
     const po = renderComponent(neuron);
 
@@ -47,12 +47,12 @@ describe("NnsStakeItemAction", () => {
     const neuron: NeuronInfo = {
       ...mockNeuron,
       votingPower: 614000000n,
-      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE - 100),
+      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE - 1),
     };
     const po = renderComponent(neuron);
 
     expect(await po.getDescription()).toBe(
-      "The dissolve delay must be greater than 6 months for the neuron to have voting power. Learn more about voting power on the dashboard."
+      "The dissolve delay must be at least 6 months for the neuron to have voting power. Learn more about voting power on the dashboard."
     );
   });
 
@@ -60,7 +60,7 @@ describe("NnsStakeItemAction", () => {
     const neuron: NeuronInfo = {
       ...mockNeuron,
       votingPower: 614000000n,
-      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE + 100),
+      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
     };
     const po = renderComponent(neuron);
 

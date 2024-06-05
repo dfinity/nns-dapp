@@ -1,19 +1,17 @@
+import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { AmountDisplayPo } from "./AmountDisplay.page-object";
-import { BasePageObject } from "./base.page-object";
 
 export type TokensTableRowData = {
   projectName: string;
   balance: string;
 };
 
-export class TokensTableRowPo extends BasePageObject {
-  private static readonly TID = "responsive-table-row-component";
-
+export class TokensTableRowPo extends ResponsiveTableRowPo {
   static async allUnder(
     element: PageObjectElement
   ): Promise<TokensTableRowPo[]> {
-    return Array.from(await element.allByTestId(TokensTableRowPo.TID)).map(
+    return Array.from(await element.allByTestId(ResponsiveTableRowPo.TID)).map(
       (el) => new TokensTableRowPo(el)
     );
   }
@@ -39,7 +37,7 @@ export class TokensTableRowPo extends BasePageObject {
   }): TokensTableRowPo[] {
     return element
       .countByTestId({
-        tid: TokensTableRowPo.TID,
+        tid: ResponsiveTableRowPo.TID,
         count,
       })
       .map((el) => new TokensTableRowPo(el));

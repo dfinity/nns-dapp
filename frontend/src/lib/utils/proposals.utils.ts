@@ -605,10 +605,10 @@ export const navigationIdComparator = ({
   const aUniverseIndex = universes.indexOf(a.universe);
   const bUniverseIndex = universes.indexOf(b.universe);
   if (aUniverseIndex > bUniverseIndex) {
-    return -1;
+    return 1;
   }
   if (aUniverseIndex < bUniverseIndex) {
-    return 1;
+    return -1;
   }
   if (a.proposalId < b.proposalId) return 1;
   if (a.proposalId > b.proposalId) return -1;

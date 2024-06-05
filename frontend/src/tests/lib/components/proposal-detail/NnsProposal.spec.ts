@@ -1,9 +1,11 @@
 import * as proposalsApi from "$lib/api/proposals.api";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { filteredProposals } from "$lib/derived/proposals.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { referrerPathStore } from "$lib/stores/routes.store";
+import { page } from "$mocks/$app/stores";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   generateMockProposals,
@@ -92,16 +94,17 @@ describe("Proposal", () => {
 
   it("should render proposal navigation", async () => {
     vi.spyOn(filteredProposals, "subscribe").mockImplementation(
-      createMockProposalsStoreSubscribe(generateMockProposals(10))
+      // Reverse to mock the common order of the proposals
+      createMockProposalsStoreSubscribe(generateMockProposals(10).reverse())
     );
 
     const { container } = renderProposalModern(5n);
     const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
 
-    expect(await po.getOlderButtonPo().isPresent()).toBe(true);
-    expect(await po.getOlderButtonProposalId()).toEqual("4");
-    expect(await po.getNewerButtonPo().isPresent()).toBe(true);
-    expect(await po.getNewerButtonProposalId()).toEqual("6");
+    expect(await po.getNextButtonPo().isPresent()).toBe(true);
+    expect(await po.getNextButtonProposalId()).toEqual("4");
+    expect(await po.getPreviousButtonPo().isPresent()).toBe(true);
+    expect(await po.getPreviousButtonProposalId()).toEqual("6");
   });
 
   it("should use actionable proposals for navigation when actionable selected", async () => {
@@ -117,10 +120,10 @@ describe("Proposal", () => {
     const { container } = renderProposalModern(1n);
     const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
 
-    expect(await po.getOlderButtonPo().isPresent()).toBe(true);
-    expect(await po.getOlderButtonProposalId()).toEqual("0");
-    expect(await po.getNewerButtonPo().isPresent()).toBe(true);
-    expect(await po.getNewerButtonProposalId()).toEqual("2");
+    expect(await po.getNextButtonPo().isPresent()).toBe(true);
+    expect(await po.getNextButtonProposalId()).toEqual("0");
+    expect(await po.getPreviousButtonPo().isPresent()).toBe(true);
+    expect(await po.getPreviousButtonProposalId()).toEqual("2");
   });
 
   it("should not render proposal navigation when on launchpad", async () => {
@@ -133,5 +136,23 @@ describe("Proposal", () => {
     const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
 
     expect(await po.isPresent()).toBe(false);
+  });
+
+  it("should not render proposal navigation buttons when from actionable page", async () => {
+    page.mock({
+      data: { universe: OWN_CANISTER_ID_TEXT, actionable: true },
+      routeId: AppPath.Proposals,
+    });
+
+    vi.spyOn(filteredProposals, "subscribe").mockImplementation(
+      createMockProposalsStoreSubscribe(generateMockProposals(10))
+    );
+
+    const { container } = renderProposalModern(5n);
+    const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
+
+    expect(await po.isPresent()).toBe(true);
+    expect(await po.getPreviousButtonPo().isPresent()).toBe(false);
+    expect(await po.getNextButtonPo().isPresent()).toBe(false);
   });
 });

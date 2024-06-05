@@ -31,7 +31,8 @@
     "receive_with_token": "Receive $token",
     "receive": "Receive",
     "send_with_token": "Send $token",
-    "collapse_all": "Collapse All"
+    "collapse_all": "Collapse All",
+    "or": "or"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -310,7 +311,8 @@
     "merge_neurons_select_info": "The order of selection matters. The neuron that you select first will be merged into the second one.",
     "merge_neurons_source_neuron_disappear": "The neuron <strong>$neuronId</strong> will disappear.",
     "merge_neurons_more_info": "Learn more about merging neurons <a href=\"https://medium.com/dfinity/internet-computer-nns-neurons-can-now-be-merged-8b4e44584dc2\" rel=\"noopener noreferrer\" aria-label=\"more info about merging neurons\" target=\"_blank\">here</a>.",
-    "stake_amount": "Stake Amount"
+    "stake_amount": "Stake Amount",
+    "state": "State"
   },
   "new_followee": {
     "title": "Enter New Followee",
@@ -383,7 +385,8 @@
   },
   "actionable_proposals_empty": {
     "title": "You're all caught up.",
-    "text": "Check back later!"
+    "text": "Check back later!",
+    "text_unsupported": "Check back later! Note, that not all SNS DAOs support actionable proposals. You will need to check proposals manually if you hold $snsNames neurons."
   },
   "actionable_proposals_not_supported": {
     "title": "$snsName doesn't yet support actionable proposals.",
@@ -505,10 +508,10 @@
     "no_more_info": "No particular information.",
     "voting_results": "Voting Results",
     "remaining": "remaining",
-    "older": "Navigate to older proposal",
-    "newer": "Navigate to newer proposal",
-    "older_short": "Older",
-    "newer_short": "Newer",
+    "next": "Navigate to next proposal",
+    "previous": "Navigate to previous proposal",
+    "next_short": "Next",
+    "previous_short": "Previous",
     "sign_in": "Sign in to vote",
     "toggle_lable": "Switch between user-friendly and raw data representation",
     "toggle_tree": "Tree",
@@ -575,8 +578,8 @@
     "voting_power_subtitle": "Voting Power: $votingPower",
     "voting_power_zero_subtitle": "No Voting Power",
     "voting_power_zero": "None",
-    "voting_power_section_description_expanded_zero": "The dissolve delay must be greater than $minDuration for the neuron to have voting power. Learn more about voting power on the <a href=\"$dashboardLink\" rel=\"noopener noreferrer\" aria-label=\"more info about voting power\" target=\"_blank\">dashboard</a>.",
-    "voting_power_section_description_expanded_zero_nns": "The dissolve delay must be greater than 6 months for the neuron to have voting power. Learn more about voting power on the <a href=\"$dashboardLink\" rel=\"noopener noreferrer\" aria-label=\"more info about voting power\" target=\"_blank\">dashboard</a>.",
+    "voting_power_section_description_expanded_zero": "The dissolve delay must be at least $minDuration for the neuron to have voting power. Learn more about voting power on the <a href=\"$dashboardLink\" rel=\"noopener noreferrer\" aria-label=\"more info about voting power\" target=\"_blank\">dashboard</a>.",
+    "voting_power_section_description_expanded_zero_nns": "The dissolve delay must be at least 6 months for the neuron to have voting power. Learn more about voting power on the <a href=\"$dashboardLink\" rel=\"noopener noreferrer\" aria-label=\"more info about voting power\" target=\"_blank\">dashboard</a>.",
     "calculated_as": "Calculated as:",
     "voting_power_section_calculation_generic": "voting_power = (staked_amount + staked_maturity) × (1 + age_bonus) × (1 + dissolve_delay_bonus)",
     "this_neuron_calculation": "For this neuron, the calculation is:",

@@ -2,6 +2,8 @@
   import { ENABLE_NEURONS_TABLE } from "$lib/stores/feature-flags.store";
   import type { TableNeuron } from "$lib/types/neurons-table";
   import { i18n } from "$lib/stores/i18n";
+  import { authStore } from "$lib/stores/auth.store";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
   import NeuronsTable from "$lib/components/neurons/NeuronsTable/NeuronsTable.svelte";
@@ -11,14 +13,14 @@
     definedNeuronsStore,
   } from "$lib/stores/neurons.store";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { Spinner, Tooltip } from "@dfinity/gix-components";
   import { isSpawning } from "$lib/utils/neuron.utils";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
   import { onMount } from "svelte";
   import { listNeurons } from "$lib/services/neurons.services";
-  import { tableNeuronsFromNeuronInfos } from "$lib/utils/neuron.utils";
+  import { tableNeuronsFromNeuronInfos } from "$lib/utils/neurons-table.utils";
 
   let isLoading = false;
   $: isLoading = $neuronsStore.neurons === undefined;
@@ -29,13 +31,22 @@
 
   let tableNeurons: TableNeuron[] = [];
   $: tableNeurons = $ENABLE_NEURONS_TABLE
-    ? tableNeuronsFromNeuronInfos($definedNeuronsStore)
+    ? tableNeuronsFromNeuronInfos({
+        identity: $authStore.identity,
+        accounts: $icpAccountsStore,
+        i18n: $i18n,
+        neuronInfos: $definedNeuronsStore,
+      })
     : [];
 </script>
 
 <TestIdWrapper testId="nns-neurons-component">
   {#if $ENABLE_NEURONS_TABLE}
-    <NeuronsTable neurons={tableNeurons} />
+    {#if isLoading}
+      <Spinner />
+    {:else if tableNeurons.length > 0}
+      <NeuronsTable neurons={tableNeurons} />
+    {/if}
   {:else}
     <div class="card-grid" data-tid="neurons-body">
       {#if isLoading}

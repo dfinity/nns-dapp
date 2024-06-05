@@ -3,10 +3,12 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class ResponsiveTablePo extends BasePageObject {
-  private static readonly TID = "responsive-table-component";
+  private static readonly RESPONSIVE_TABLE_TID = "responsive-table-component";
 
   static under(element: PageObjectElement): ResponsiveTablePo {
-    return new ResponsiveTablePo(element.byTestId(ResponsiveTablePo.TID));
+    return new ResponsiveTablePo(
+      element.byTestId(ResponsiveTablePo.RESPONSIVE_TABLE_TID)
+    );
   }
 
   async getColumnHeaders(): Promise<string[]> {
@@ -36,6 +38,10 @@ export class ResponsiveTablePo extends BasePageObject {
 
   getDesktopGridTemplateColumns(): Promise<string> {
     return this.getStyleVariable("desktop-grid-template-columns");
+  }
+
+  getMobileGridTemplateColumns(): Promise<string> {
+    return this.getStyleVariable("mobile-grid-template-columns");
   }
 
   getMobileGridTemplateAreas(): Promise<string> {

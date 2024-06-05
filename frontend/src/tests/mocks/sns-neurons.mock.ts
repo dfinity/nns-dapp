@@ -18,7 +18,11 @@ import type {
   DisburseMaturityInProgress,
   NeuronPermission,
 } from "@dfinity/sns/dist/candid/sns_governance";
-import { arrayOfNumberToUint8Array, isNullish } from "@dfinity/utils";
+import {
+  arrayOfNumberToUint8Array,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "./auth.store.mock";
 import { rootCanisterIdMock } from "./sns.api.mock";
@@ -44,7 +48,7 @@ export const createMockSnsNeuron = ({
   permissions = [],
   vesting,
   votingPowerMultiplier = 100n,
-  dissolveDelaySeconds = BigInt(Math.floor(3600 * 24 * 365 * 2)),
+  dissolveDelaySeconds,
   whenDissolvedTimestampSeconds = BigInt(
     Math.floor(Date.now() / 1000 + 3600 * 24 * 365 * 2)
   ),
@@ -74,6 +78,15 @@ export const createMockSnsNeuron = ({
   sourceNnsNeuronId?: NeuronId;
   activeDisbursementsE8s?: bigint[];
 }): SnsNeuron => {
+  if (isNullish(state) && nonNullish(dissolveDelaySeconds)) {
+    state = NeuronState.Locked;
+  } else if (
+    nonNullish(state) &&
+    state !== NeuronState.Dissolved &&
+    isNullish(dissolveDelaySeconds)
+  ) {
+    dissolveDelaySeconds = BigInt(Math.floor(3600 * 24 * 365 * 2));
+  }
   return {
     id: [{ id: arrayOfNumberToUint8Array(id) }],
     permissions,

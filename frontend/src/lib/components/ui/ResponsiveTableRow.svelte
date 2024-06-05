@@ -28,7 +28,7 @@
   data-tid="responsive-table-row-component"
 >
   {#if firstColumn}
-    <div role="cell" class="title-cell">
+    <div role="cell" class="title-cell desktop-align-{firstColumn.alignment}">
       <svelte:component this={firstColumn.cellComponent} {rowData} />
     </div>
   {/if}
@@ -36,7 +36,7 @@
   {#each middleColumns as column, index}
     <div
       role="cell"
-      class={`mobile-row-cell left-cell`}
+      class="mobile-row-cell desktop-align-{column.alignment}"
       style="--grid-area-name: {getCellGridAreaName(index)}"
     >
       <span class="mobile-only">{column.title}</span>
@@ -45,7 +45,10 @@
   {/each}
 
   {#if lastColumn}
-    <div role="cell" class="actions-cell actions">
+    <div
+      role="cell"
+      class="actions-cell actions desktop-align-{lastColumn.alignment}"
+    >
       <svelte:component
         this={lastColumn.cellComponent}
         {rowData}
@@ -68,6 +71,7 @@
     text-decoration: none;
 
     grid-template-areas: var(--mobile-grid-template-areas);
+    grid-template-columns: var(--mobile-grid-template-columns);
 
     @include media.min-width(medium) {
       @include grid-table.row;
@@ -121,11 +125,15 @@
       @include media.min-width(medium) {
         grid-area: revert;
       }
+    }
 
-      @include media.min-width(medium) {
-        &.left-cell {
-          justify-content: flex-end;
-        }
+    @include media.min-width(medium) {
+      &.desktop-align-left {
+        justify-content: flex-start;
+      }
+
+      &.desktop-align-right {
+        justify-content: flex-end;
       }
     }
   }

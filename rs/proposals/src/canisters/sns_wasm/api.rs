@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_wasm --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-05-22_23-01-base/rs/nns/sns-wasm/canister/sns-wasm.did>
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-05-29_23-02-base/rs/nns/sns-wasm/canister/sns-wasm.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -247,6 +247,14 @@ pub struct GetNextSnsVersionResponse {
     pub next_version: Option<SnsVersion>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct GetProposalIdThatAddedWasmRequest {
+    pub hash: serde_bytes::ByteBuf,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct GetProposalIdThatAddedWasmResponse {
+    pub proposal_id: Option<u64>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct GetSnsSubnetIdsArg {}
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct GetSnsSubnetIdsResponse {
@@ -379,6 +387,12 @@ impl Service {
         arg0: GetNextSnsVersionRequest,
     ) -> CallResult<(GetNextSnsVersionResponse,)> {
         ic_cdk::call(self.0, "get_next_sns_version", (arg0,)).await
+    }
+    pub async fn get_proposal_id_that_added_wasm(
+        &self,
+        arg0: GetProposalIdThatAddedWasmRequest,
+    ) -> CallResult<(GetProposalIdThatAddedWasmResponse,)> {
+        ic_cdk::call(self.0, "get_proposal_id_that_added_wasm", (arg0,)).await
     }
     pub async fn get_sns_subnet_ids(&self, arg0: GetSnsSubnetIdsArg) -> CallResult<(GetSnsSubnetIdsResponse,)> {
         ic_cdk::call(self.0, "get_sns_subnet_ids", (arg0,)).await
