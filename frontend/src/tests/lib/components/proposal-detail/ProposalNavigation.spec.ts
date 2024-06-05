@@ -214,20 +214,4 @@ describe("ProposalNavigation", () => {
     await po.clickNext();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(4n);
   });
-
-  it("should sort ids", async () => {
-    const selectProposalSpy = vi.fn();
-    const po = renderComponent({
-      title: "Title",
-      currentProposalId: 3n,
-      currentProposalStatus: "open",
-      proposalIds: [0n, 1n, 5n, 3n, 7n, 9n, 2n],
-      selectProposal: selectProposalSpy,
-    });
-
-    await po.clickPrevious();
-    expect(selectProposalSpy).toHaveBeenLastCalledWith(5n);
-    await po.clickNext();
-    expect(selectProposalSpy).toHaveBeenLastCalledWith(2n);
-  });
 });

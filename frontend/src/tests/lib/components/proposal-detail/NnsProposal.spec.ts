@@ -94,7 +94,8 @@ describe("Proposal", () => {
 
   it("should render proposal navigation", async () => {
     vi.spyOn(filteredProposals, "subscribe").mockImplementation(
-      createMockProposalsStoreSubscribe(generateMockProposals(10))
+      // Reverse to mock the common order of the proposals
+      createMockProposalsStoreSubscribe(generateMockProposals(10).reverse())
     );
 
     const { container } = renderProposalModern(5n);
