@@ -13,30 +13,28 @@
   export let currentProposalId: bigint;
   export let title: string | undefined = undefined;
   export let currentProposalStatus: UniversalProposalStatus;
+  // To resolve the absence of the currentProposalId in proposalIds,
+  // the proposalIds must be passed in decreasing order by the parent component.
   export let proposalIds: bigint[] = [];
   export let selectProposal: (proposalId: bigint) => void;
 
-  let sortedProposalIds: bigint[] = [];
-  // sort proposalIds in descent order
-  $: sortedProposalIds = [...proposalIds].sort((a, b) => Number(b - a));
-
-  let newerId: bigint | undefined;
+  let previousId: bigint | undefined;
   // TODO: switch to findLast() once it's available
   // use `as bigint[]` to avoid TS error (type T | undefined is not assignable to type bigint | undefined)
-  $: newerId = ([...sortedProposalIds].reverse() as bigint[]).find(
+  $: previousId = ([...proposalIds].reverse() as bigint[]).find(
     (id) => id > currentProposalId
   );
 
-  let olderId: bigint | undefined;
-  $: olderId = sortedProposalIds.find((id) => id < currentProposalId);
+  let nextId: bigint | undefined;
+  $: nextId = proposalIds.find((id) => id < currentProposalId);
 
-  const selectNewer = () => {
-    assertNonNullish(newerId);
-    selectProposal(newerId);
+  const selectPrevious = () => {
+    assertNonNullish(previousId);
+    selectProposal(previousId);
   };
-  const selectOlder = () => {
-    assertNonNullish(olderId);
-    selectProposal(olderId);
+  const selectNext = () => {
+    assertNonNullish(nextId);
+    selectProposal(nextId);
   };
 </script>
 
@@ -57,27 +55,27 @@
   </h2>
   {#if !$pageStore.actionable}
     <button
-      class="ghost newer"
+      class="ghost previous"
       type="button"
-      aria-label={$i18n.proposal_detail.newer}
-      on:click={selectNewer}
-      class:hidden={isNullish(newerId)}
-      data-tid="proposal-nav-newer"
-      data-test-proposal-id={newerId?.toString() ?? ""}
+      aria-label={$i18n.proposal_detail.previous}
+      on:click={selectPrevious}
+      class:hidden={isNullish(previousId)}
+      data-tid="proposal-nav-previous"
+      data-test-proposal-id={previousId?.toString() ?? ""}
     >
       <IconLeft />
-      {$i18n.proposal_detail.newer_short}</button
+      {$i18n.proposal_detail.previous_short}</button
     >
     <button
-      class="ghost older"
+      class="ghost next"
       type="button"
-      aria-label={$i18n.proposal_detail.older}
-      on:click={selectOlder}
-      class:hidden={isNullish(olderId)}
-      data-tid="proposal-nav-older"
-      data-test-proposal-id={olderId?.toString() ?? ""}
+      aria-label={$i18n.proposal_detail.next}
+      on:click={selectNext}
+      class:hidden={isNullish(nextId)}
+      data-tid="proposal-nav-next"
+      data-test-proposal-id={nextId?.toString() ?? ""}
     >
-      {$i18n.proposal_detail.older_short}
+      {$i18n.proposal_detail.next_short}
       <IconRight />
     </button>
   {/if}
@@ -95,12 +93,12 @@
     align-items: center;
     grid-template-columns: 1fr auto auto;
     grid-template-areas:
-      "status newer older"
+      "status previous next"
       "title title title";
 
     @include media.min-width(small) {
       row-gap: var(--padding);
-      grid-template-areas: "title status newer older";
+      grid-template-areas: "title status previous next";
       grid-template-columns: auto 1fr auto auto;
     }
 
@@ -116,12 +114,12 @@
       align-items: center;
       gap: var(--padding);
     }
-    .newer {
-      grid-area: newer;
+    .previous {
+      grid-area: previous;
       @include fonts.small;
     }
-    .older {
-      grid-area: older;
+    .next {
+      grid-area: next;
       @include fonts.small;
     }
   }
