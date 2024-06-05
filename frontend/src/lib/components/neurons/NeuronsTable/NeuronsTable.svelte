@@ -31,22 +31,27 @@
     {
       title: $i18n.neurons.neuron_id,
       cellComponent: NeuronIdCell,
+      alignment: "left",
     },
     {
       title: $i18n.neuron_detail.stake,
       cellComponent: NeuronStakeCell,
+      alignment: "right",
     },
     {
       title: $i18n.neurons.state,
       cellComponent: NeuronStateCell,
+      alignment: "left",
     },
     {
       title: $i18n.neurons.dissolve_delay_title,
       cellComponent: NeuronDissolveDelayCell,
+      alignment: "right",
     },
     {
       title: "",
       cellComponent: NeuronActionsCell,
+      alignment: "right",
     },
   ];
 </script>

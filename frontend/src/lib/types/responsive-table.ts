@@ -7,9 +7,12 @@ export interface ResponsiveTableRowData {
   rowHref?: string;
 }
 
+export type ColumnAlignment = "left" | "right";
+
 export interface ResponsiveTableColumn<
   RowDataType extends ResponsiveTableRowData,
 > {
   title: string;
   cellComponent: ComponentType<SvelteComponent<{ rowData: RowDataType }>>;
+  alignment: ColumnAlignment;
 }

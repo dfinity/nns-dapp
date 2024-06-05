@@ -1,12 +1,12 @@
+import { ResponsiveTablePo } from "$tests/page-objects/ResponsiveTable.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { isNullish } from "@dfinity/utils";
 import {
   TokensTableRowPo,
   type TokensTableRowData,
 } from "./TokensTableRow.page-object";
-import { BasePageObject } from "./base.page-object";
 
-export class TokensTablePo extends BasePageObject {
+export class TokensTablePo extends ResponsiveTablePo {
   private static readonly TID = "tokens-table-component";
 
   // There will be multiple ckETH projects and arbitrary ICRC tokens in the future.

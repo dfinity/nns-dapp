@@ -32,6 +32,14 @@ export class ResponsiveTableRowPo extends BasePageObject {
     );
   }
 
+  async getCellClasses(): Promise<string[][]> {
+    return Promise.all(
+      (await this.root.querySelectorAll("[role='cell']")).map((el) =>
+        el.getClasses()
+      )
+    );
+  }
+
   async getTagName(): Promise<string> {
     return this.root.getTagName();
   }
