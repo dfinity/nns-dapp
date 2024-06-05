@@ -13,6 +13,7 @@ import {
   isProposalDeadlineInTheFuture,
   lastProposalId,
   mapProposalInfo,
+  navigationIdComparator,
   nnsNeuronToVotingNeuron,
   preserveNeuronSelectionAfterUpdate,
   proposalActionData,
@@ -997,6 +998,86 @@ describe("proposals-utils", () => {
       expect(getVoteDisplay(Vote.Yes)).toBe("Yes");
       expect(getVoteDisplay(Vote.No)).toBe("No");
       expect(getVoteDisplay(Vote.Unspecified)).toBe("Unspecified");
+    });
+  });
+
+  describe("navigationIdComparator", () => {
+    const universeA = "aaaaa-aaaaa";
+    const universeB = "bbbbb-bbbbb";
+    const universes = [universeA, universeB];
+
+    it("should compare by universes", () => {
+      expect(
+        navigationIdComparator({
+          a: {
+            universe: universeA,
+            proposalId: 1n,
+          },
+          b: {
+            universe: universeB,
+            proposalId: 1n,
+          },
+          universes,
+        })
+      ).toBe(-1);
+      expect(
+        navigationIdComparator({
+          a: {
+            universe: universeB,
+            proposalId: 1n,
+          },
+          b: {
+            universe: universeA,
+            proposalId: 1n,
+          },
+          universes,
+        })
+      ).toBe(1);
+    });
+
+    it("should compare by proposal IDs", () => {
+      expect(
+        navigationIdComparator({
+          a: {
+            universe: universeA,
+            proposalId: 0n,
+          },
+          b: {
+            universe: universeA,
+            proposalId: 1n,
+          },
+          universes,
+        })
+      ).toBe(1);
+      expect(
+        navigationIdComparator({
+          a: {
+            universe: universeA,
+            proposalId: 1n,
+          },
+          b: {
+            universe: universeA,
+            proposalId: 0n,
+          },
+          universes,
+        })
+      ).toBe(-1);
+    });
+
+    it("should return 0 when a = b", () => {
+      expect(
+        navigationIdComparator({
+          a: {
+            universe: universeA,
+            proposalId: 1n,
+          },
+          b: {
+            universe: universeA,
+            proposalId: 1n,
+          },
+          universes,
+        })
+      ).toBe(0);
     });
   });
 });

@@ -592,7 +592,10 @@ export const getVoteDisplay = (vote: Vote): string => {
   }
 };
 
-// Returns 1 when a < b, -1 when a > b, 0 when a === b
+/** Compares two ProposalsNavigationId objects by universe and proposalId.
+ *  First universes are compared based on their index in the provided universes array.
+ *  If the universes are the same, the comparator then compares the proposalIds.
+ */
 export const navigationIdComparator = ({
   a,
   b,
