@@ -63,32 +63,30 @@
     </span>
     <TestIdWrapper testId="title">{title ?? ""}</TestIdWrapper>
   </h2>
-  {#if !$pageStore.actionable}
-    <button
-      class="ghost previous"
-      type="button"
-      aria-label={$i18n.proposal_detail.previous}
-      on:click={selectPrevious}
-      class:hidden={isNullish(previousId)}
-      data-tid="proposal-nav-previous"
-      data-test-proposal-id={previousId?.proposalId.toString() ?? ""}
-    >
-      <IconLeft />
-      {$i18n.proposal_detail.previous_short}</button
-    >
-    <button
-      class="ghost next"
-      type="button"
-      aria-label={$i18n.proposal_detail.next}
-      on:click={selectNext}
-      class:hidden={isNullish(nextId)}
-      data-tid="proposal-nav-next"
-      data-test-proposal-id={nextId?.proposalId.toString() ?? ""}
-    >
-      {$i18n.proposal_detail.next_short}
-      <IconRight />
-    </button>
-  {/if}
+  <button
+    class="ghost previous"
+    type="button"
+    aria-label={$i18n.proposal_detail.previous}
+    on:click={selectPrevious}
+    class:hidden={isNullish(previousId)}
+    data-tid="proposal-nav-previous"
+    data-test-proposal-id={previousId?.proposalId.toString() ?? ""}
+  >
+    <IconLeft />
+    {$i18n.proposal_detail.previous_short}</button
+  >
+  <button
+    class="ghost next"
+    type="button"
+    aria-label={$i18n.proposal_detail.next}
+    on:click={selectNext}
+    class:hidden={isNullish(nextId)}
+    data-tid="proposal-nav-next"
+    data-test-proposal-id={nextId?.proposalId.toString() ?? ""}
+  >
+    {$i18n.proposal_detail.next_short}
+    <IconRight />
+  </button>
 </div>
 
 <style lang="scss">
