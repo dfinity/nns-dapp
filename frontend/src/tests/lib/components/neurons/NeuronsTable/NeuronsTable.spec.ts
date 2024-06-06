@@ -106,7 +106,13 @@ describe("NeuronsTable", () => {
     const po = renderComponent({ neurons: [neuron1] });
 
     expect(await po.getDesktopGridTemplateColumns()).toBe(
-      "1fr max-content max-content max-content max-content"
+      [
+        "max-content max-content 1fr", // Neuron ID
+        "max-content", // Stake
+        "max-content", // State
+        "max-content", // Dissolve Delay
+        "max-content", // Actions
+      ].join(" ")
     );
     expect(await po.getMobileGridTemplateAreas()).toBe(
       '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2"'
