@@ -27,13 +27,15 @@
 </script>
 
 {#if nonNullish(userToken)}
-  {#each userToken.actions as action}
-    <svelte:component this={actionMapper[action]} {userToken} on:nnsAction />
-  {/each}
+  <div class="container">
+    {#each userToken.actions as action}
+      <svelte:component this={actionMapper[action]} {userToken} on:nnsAction />
+    {/each}
+  </div>
 {/if}
 
 <style lang="scss">
-  :global(svg) {
+  .container {
     color: var(--primary);
   }
 </style>

@@ -8,13 +8,13 @@
 </script>
 
 {#if nonNullish(rowData.rowHref)}
-  <TestIdWrapper testId="go-to-neuron-detail-action">
+  <div testId="go-to-neuron-detail-action" class="container">
     <IconRight />
-  </TestIdWrapper>
+  </div>
 {/if}
 
 <style lang="scss">
-  :global(svg) {
+  .container {
     color: var(--primary);
   }
 </style>

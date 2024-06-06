@@ -96,7 +96,7 @@
     display: flex;
     align-items: center;
 
-    // Styles applied to mobile (and overridden for desktop)::
+    // Styles applied to mobile (and overridden for desktop):
 
     &.first-cell {
       grid-area: first-cell;
