@@ -64,6 +64,6 @@
 <ResponsiveTable
   testId="neurons-table-component"
   {columns}
-  gridRowsPerTableRow="2"
+  gridRowsPerTableRow={2}
   tableData={sortedNeurons}
 ></ResponsiveTable>

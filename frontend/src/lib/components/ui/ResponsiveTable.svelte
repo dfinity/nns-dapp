@@ -68,13 +68,15 @@
           class="header-right">{column.title}</span
         >
       {/each}
-      <span
-        role="columnheader"
-        style="--column-span: {lastColumn.templateColumns.length}"
-        class="header-right header-icon"
-      >
-        <slot name="header-icon" />
-      </span>
+      {#if lastColumn}
+        <span
+          role="columnheader"
+          style="--column-span: {lastColumn.templateColumns.length}"
+          class="header-right header-icon"
+        >
+          <slot name="header-icon" />
+        </span>
+      {/if}
     </div>
   </div>
   <div role="rowgroup">
