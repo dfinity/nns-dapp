@@ -24,6 +24,8 @@
   import { nonNullish } from "@dfinity/utils";
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
   import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
+  import type { ProposalsNavigationId } from "$lib/types/proposals";
+  import { pageStore } from "$lib/derived/page.derived";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -34,10 +36,15 @@
     ? ({ type: proposalType } = mapProposalInfo($store.proposal))
     : undefined;
 
-  let proposalIds: bigint[] | undefined;
-  $: proposalIds = $actionableProposalsActiveStore
-    ? $actionableNnsProposalsStore.proposals?.map(({ id }) => id as bigint)
-    : $filteredProposals.proposals?.map(({ id }) => id as bigint);
+  let proposalIds: ProposalsNavigationId[] | undefined;
+  $: proposalIds = (
+    $actionableProposalsActiveStore
+      ? $actionableNnsProposalsStore
+      : $filteredProposals
+  ).proposals?.map(({ id }) => ({
+    proposalId: id as bigint,
+    universe: $pageStore.universe,
+  }));
 </script>
 
 <TestIdWrapper testId="nns-proposal-component">
@@ -45,7 +52,11 @@
     {#if $referrerPathStore !== AppPath.Launchpad}
       <ProposalNavigation
         title={proposalType}
-        currentProposalId={$store.proposal.id}
+        currentProposalId={{
+          proposalId: $store.proposal.id,
+          universe: $pageStore.universe,
+        }}
+        universes={[$pageStore.universe]}
         currentProposalStatus={getUniversalProposalStatus($store.proposal)}
         {proposalIds}
         selectProposal={navigateToProposal}

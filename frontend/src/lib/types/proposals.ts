@@ -26,3 +26,9 @@ export interface VotingNeuron {
 
 // 100% -> 10000 basis points
 export type BasisPoints = bigint;
+
+// An entry for proposal navigation on the proposal detail page.
+export interface ProposalsNavigationId {
+  proposalId: bigint;
+  universe: string;
+}
