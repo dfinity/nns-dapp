@@ -30,6 +30,7 @@
   import type { ProposalsNavigationId } from "$lib/types/proposals";
   import { pageStore } from "$lib/derived/page.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -63,7 +64,7 @@
         title={proposalType}
         currentProposalId={{
           proposalId: $store.proposal.id,
-          universe: $pageStore.universe,
+          universe: OWN_CANISTER_ID_TEXT,
         }}
         universes={$selectableUniversesStore.map(
           ({ canisterId }) => canisterId

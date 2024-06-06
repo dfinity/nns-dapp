@@ -11,7 +11,6 @@
   } from "$lib/types/proposals";
   import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
   import { triggerDebugReport } from "$lib/directives/debug.directives";
-  import { pageStore } from "$lib/derived/page.derived";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { navigationIdComparator } from "$lib/utils/proposals.utils";
 

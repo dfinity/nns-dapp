@@ -110,7 +110,6 @@ describe("ResponseTable", () => {
     expect(await po1.getDesktopGridTemplateColumns()).toBe(
       "1fr 1fr max-content"
     );
-    expect(await po1.getMobileGridTemplateColumns()).toBe("1fr max-content");
     expect(await po1.getMobileGridTemplateAreas()).toBe(
       '"first-cell last-cell" "cell-0 cell-0"'
     );

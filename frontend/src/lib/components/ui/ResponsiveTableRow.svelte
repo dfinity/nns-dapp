@@ -28,32 +28,35 @@
   data-tid="responsive-table-row-component"
 >
   {#if firstColumn}
-    <div role="cell" class="title-cell desktop-align-{firstColumn.alignment}">
-      <svelte:component this={firstColumn.cellComponent} {rowData} />
+    <div role="cell" class="first-cell desktop-align-{firstColumn.alignment}">
+      <div class="cell-body">
+        <svelte:component this={firstColumn.cellComponent} {rowData} />
+      </div>
     </div>
   {/if}
 
   {#each middleColumns as column, index}
     <div
       role="cell"
-      class="mobile-row-cell desktop-align-{column.alignment}"
+      class="middle-cell desktop-align-{column.alignment}"
       style="--grid-area-name: {getCellGridAreaName(index)}"
     >
-      <span class="mobile-only">{column.title}</span>
-      <svelte:component this={column.cellComponent} {rowData} />
+      <span class="middle-cell-label">{column.title}</span>
+      <div class="cell-body">
+        <svelte:component this={column.cellComponent} {rowData} />
+      </div>
     </div>
   {/each}
 
   {#if lastColumn}
-    <div
-      role="cell"
-      class="actions-cell actions desktop-align-{lastColumn.alignment}"
-    >
-      <svelte:component
-        this={lastColumn.cellComponent}
-        {rowData}
-        on:nnsAction
-      />
+    <div role="cell" class="last-cell desktop-align-{lastColumn.alignment}">
+      <div class="cell-body">
+        <svelte:component
+          this={lastColumn.cellComponent}
+          {rowData}
+          on:nnsAction
+        />
+      </div>
     </div>
   {/if}
 </svelte:element>
@@ -71,7 +74,6 @@
     text-decoration: none;
 
     grid-template-areas: var(--mobile-grid-template-areas);
-    grid-template-columns: var(--mobile-grid-template-columns);
 
     @include media.min-width(medium) {
       @include grid-table.row;
@@ -83,51 +85,48 @@
 
     background-color: var(--table-row-background);
 
-    @include media.min-width(medium) {
-      grid-template-rows: 1fr;
-    }
-
     &:hover {
       background-color: var(--table-row-background-hover);
     }
   }
 
   div[role="cell"] {
+    // Styles applied to desktop and mobile:
+
     display: flex;
     align-items: center;
-    gap: var(--padding);
 
-    &.title-cell {
+    // Styles applied to mobile (and overridden for desktop):
+
+    &.first-cell {
       grid-area: first-cell;
-
-      @include media.min-width(medium) {
-        grid-area: revert;
-      }
     }
 
-    &.actions-cell {
-      display: flex;
+    &.last-cell {
       justify-content: flex-end;
 
       grid-area: last-cell;
-
-      @include media.min-width(medium) {
-        grid-area: revert;
-      }
     }
 
-    &.mobile-row-cell {
-      display: flex;
+    &.middle-cell {
       justify-content: space-between;
 
       grid-area: var(--grid-area-name);
-
-      @include media.min-width(medium) {
-        grid-area: revert;
-      }
     }
 
+    // Styles applied to desktop only:
+
     @include media.min-width(medium) {
+      .middle-cell-label {
+        display: none;
+      }
+
+      &.first-cell,
+      &.middle-cell,
+      &.last-cell {
+        grid-area: revert;
+      }
+
       &.desktop-align-left {
         justify-content: flex-start;
       }
@@ -135,20 +134,6 @@
       &.desktop-align-right {
         justify-content: flex-end;
       }
-    }
-  }
-
-  .actions {
-    :global(svg) {
-      color: var(--primary);
-    }
-  }
-
-  .mobile-only {
-    display: block;
-
-    @include media.min-width(medium) {
-      display: none;
     }
   }
 </style>
