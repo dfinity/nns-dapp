@@ -1125,7 +1125,7 @@
       "index": "ks7eq-3yaaa-aaaaq-aaddq-cai",
       "governance": "k34pm-nqaaa-aaaaq-aadca-cai",
       "dapps": ["2uktw-yiaaa-aaaah-adwxq-cai", "2tlvc-vqaaa-aaaah-adwxa-cai"],
-      "archives": []
+      "archives": ["j6iuh-qyaaa-aaaaq-aadjq-cai"]
     },
     "meta": {
       "url": "https://2uktw-yiaaa-aaaah-adwxq-cai.icp0.io/",
@@ -1431,7 +1431,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 999979600000,
+    "icrc1_total_supply": 999973870000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1812,7 +1812,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 99999968570000,
+    "icrc1_total_supply": 99999963670000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2043,7 +2043,7 @@
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
-      "neuron_minimum_stake_e8s": 800000000,
+      "neuron_minimum_stake_e8s": 88800000000,
       "max_neuron_age_for_age_bonus": 31557600,
       "initial_voting_period_seconds": 345600,
       "neuron_minimum_dissolve_delay_to_vote_seconds": 31560192,
@@ -2193,7 +2193,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041804760755198600,
+    "icrc1_total_supply": 1041804760744998500,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

@@ -1475,7 +1475,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100108536404153180,
+    "icrc1_total_supply": 100195217351445070,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3352,7 +3352,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100229732179900,
+    "icrc1_total_supply": 100230009532348,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4070,7 +4070,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995771642000,
+    "icrc1_total_supply": 995770646000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -6721,7 +6721,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20021321427531880,
+    "icrc1_total_supply": 20022070730263548,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -8719,7 +8719,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25060257244905836,
+    "icrc1_total_supply": 25069018387548736,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -10147,7 +10147,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10004843413972972,
+    "icrc1_total_supply": 10006215364251722,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11185,7 +11185,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100826428713278260,
+    "icrc1_total_supply": 100871411200964380,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -11587,6 +11587,45 @@
               "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
               "validator_method_name": "setPoolAdminsValidate",
               "target_method_name": "setPoolAdmins"
+            }
+          }
+        },
+        {
+          "id": 2001,
+          "name": "SetFarmAdmins",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "arxpg-cyaaa-aaaag-qjzhq-cai",
+              "target_canister_id": "c5jrt-yaaaa-aaaag-qb5ra-cai",
+              "validator_method_name": "setFarmAdminsValidate",
+              "target_method_name": "setFarmAdmins"
+            }
+          }
+        },
+        {
+          "id": 2002,
+          "name": "AddFarmControllers",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "arxpg-cyaaa-aaaag-qjzhq-cai",
+              "target_canister_id": "c5jrt-yaaaa-aaaag-qb5ra-cai",
+              "validator_method_name": "addFarmControllersValidate",
+              "target_method_name": "addFarmControllers"
+            }
+          }
+        },
+        {
+          "id": 2003,
+          "name": "RemoveFarmControllers",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "arxpg-cyaaa-aaaag-qjzhq-cai",
+              "target_canister_id": "c5jrt-yaaaa-aaaag-qb5ra-cai",
+              "validator_method_name": "removeFarmControllersValidate",
+              "target_method_name": "removeFarmControllers"
             }
           }
         }
@@ -12133,7 +12172,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99890865135618200,
+    "icrc1_total_supply": 99879283144938000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -13306,7 +13345,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 100001240324884930,
+    "icrc1_total_supply": 100001253530155260,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14478,7 +14517,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100017835165314020,
+    "icrc1_total_supply": 100018956580251000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
