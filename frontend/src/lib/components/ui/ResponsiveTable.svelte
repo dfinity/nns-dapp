@@ -29,26 +29,17 @@
       .flatMap((column) => column.templateColumns)
       .join(" ");
 
-    const columnCount = columns.length;
-    const firstColumnTemplate = columns[0].templateColumns;
-    const lastColumnTemplate = columns[columnCount - 1].templateColumns;
-
     // On mobile, instead of a single row per data item, we have one row for the
     // first and last cell combined and a separate labeled row for each other
     // cell.
     let mobileGridTemplateAreas = '"first-cell last-cell"';
-    for (let i = 0; i < columnCount - 2; i++) {
+    for (let i = 0; i < columns.length - 2; i++) {
       const areaName = getCellGridAreaName(i);
       mobileGridTemplateAreas += ` "${areaName} ${areaName}"`;
     }
-    const mobileGridTemplateColumns = [
-      ...firstColumnTemplate,
-      ...lastColumnTemplate,
-    ].join(" ");
     return (
       `--desktop-grid-template-columns: ${desktopGridTemplateColumns}; ` +
-      `--mobile-grid-template-areas: ${mobileGridTemplateAreas};` +
-      `--mobile-grid-template-columns: ${mobileGridTemplateColumns};`
+      `--mobile-grid-template-areas: ${mobileGridTemplateAreas};`
     );
   };
 

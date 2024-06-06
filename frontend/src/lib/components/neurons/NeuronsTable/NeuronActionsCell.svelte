@@ -12,3 +12,9 @@
     <IconRight />
   </TestIdWrapper>
 {/if}
+
+<style lang="scss">
+  :global(svg) {
+    color: var(--primary);
+  }
+</style>

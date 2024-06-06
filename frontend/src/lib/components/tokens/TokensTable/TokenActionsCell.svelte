@@ -31,3 +31,9 @@
     <svelte:component this={actionMapper[action]} {userToken} on:nnsAction />
   {/each}
 {/if}
+
+<style lang="scss">
+  :global(svg) {
+    color: var(--primary);
+  }
+</style>
