@@ -14,13 +14,15 @@
   export let testId = "responsive-table-component";
   export let tableData: Array<RowDataType>;
   export let columns: ResponsiveTableColumn<RowDataType>[];
+  export let gridRowsPerTableRow = 1;
 
-  // We don't render a header for the last column.
   let firstColumn: ResponsiveTableColumn<RowDataType> | undefined;
   let middleColumns: ResponsiveTableColumn<RowDataType>[];
+  let lastColumn: ResponsiveTableColumn<RowDataType> | undefined;
 
   $: firstColumn = columns.at(0);
   $: middleColumns = columns.slice(1, -1);
+  $: lastColumn = columns.at(-1);
 
   const getTableStyle = (columns: ResponsiveTableColumn<RowDataType>[]) => {
     // On desktop the first column gets all the remaining space after other
@@ -38,6 +40,7 @@
       mobileGridTemplateAreas += ` "${areaName} ${areaName}"`;
     }
     return (
+      `--grid-rows-per-table-row: ${gridRowsPerTableRow}; ` +
       `--desktop-grid-template-columns: ${desktopGridTemplateColumns}; ` +
       `--mobile-grid-template-areas: ${mobileGridTemplateAreas};`
     );
@@ -51,18 +54,25 @@
   <div role="rowgroup">
     <div role="row" class="header-row">
       {#if firstColumn}
-        <span role="columnheader" data-tid="column-header-1"
-          >{firstColumn.title}</span
+        <span
+          role="columnheader"
+          style="--column-span: {firstColumn.templateColumns.length}"
+          data-tid="column-header-1">{firstColumn.title}</span
         >
       {/if}
       {#each middleColumns as column, index}
         <span
           role="columnheader"
+          style="--column-span: {column.templateColumns.length}"
           data-tid="column-header-{index + 2}"
           class="header-right">{column.title}</span
         >
       {/each}
-      <span role="columnheader" class="header-right header-icon">
+      <span
+        role="columnheader"
+        style="--column-span: {lastColumn.templateColumns.length}"
+        class="header-right header-icon"
+      >
         <slot name="header-icon" />
       </span>
     </div>
@@ -119,6 +129,8 @@
 
       [role="columnheader"] {
         display: none;
+
+        grid-column: span var(--column-span);
 
         &:first-child,
         &:last-child {

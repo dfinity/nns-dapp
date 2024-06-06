@@ -18,6 +18,19 @@
   $: firstColumn = columns.at(0);
   $: middleColumns = columns.slice(1, -1);
   $: lastColumn = columns.at(-1);
+
+  const getCellStyle = ({
+    column,
+    index,
+  }: {
+    column: ResponsiveTableColumn<RowDataType>;
+    index?: number;
+  }) =>
+    `--desktop-column-span: ${column.templateColumns.length};` +
+    `--mobile-template-columns: ${column.templateColumns.join(" ")};` +
+    (nonNullish(index)
+      ? `--grid-area-name: ${getCellGridAreaName(index)};`
+      : "");
 </script>
 
 <svelte:element
@@ -28,7 +41,12 @@
   data-tid="responsive-table-row-component"
 >
   {#if firstColumn}
-    <div role="cell" class="first-cell desktop-align-{firstColumn.alignment}">
+    <div
+      role="cell"
+      class:subgrid-cell={firstColumn.templateColumns.length > 1}
+      class="first-cell desktop-align-{firstColumn.alignment}"
+      style={getCellStyle({ column: firstColumn })}
+    >
       <div class="cell-body">
         <svelte:component this={firstColumn.cellComponent} {rowData} />
       </div>
@@ -38,8 +56,9 @@
   {#each middleColumns as column, index}
     <div
       role="cell"
+      class:subgrid-cell={column.templateColumns.length > 1}
       class="middle-cell desktop-align-{column.alignment}"
-      style="--grid-area-name: {getCellGridAreaName(index)}"
+      style={getCellStyle({ column, index })}
     >
       <span class="middle-cell-label">{column.title}</span>
       <div class="cell-body">
@@ -49,7 +68,12 @@
   {/each}
 
   {#if lastColumn}
-    <div role="cell" class="last-cell desktop-align-{lastColumn.alignment}">
+    <div
+      role="cell"
+      class:subgrid-cell={lastColumn.templateColumns.length > 1}
+      class="last-cell actions desktop-align-{lastColumn.alignment}"
+      style={getCellStyle({ column: lastColumn })}
+    >
       <div class="cell-body">
         <svelte:component
           this={lastColumn.cellComponent}
@@ -91,12 +115,32 @@
   }
 
   div[role="cell"] {
+    // On desktop we have one large grid. Some table cells take up a single
+    // grid cell, while others span multiple cells because they have to align
+    // with the grid lines. The single-cell cells use `display: flex` while
+    // the aligned cells use `display: grid`.
+    //
+    // On mobile, there is no alignment between different cells and all cells
+    // get display: flex.
+    //
+    // But the cells that expect to be in a grid, still need their grid
+    // defined. This happens in the cell-body div. On desktop these get
+    // `display: contents` to get their grid lines from the larger grid, while
+    // on desktop they get their own grid from `--mobile-template-columns`.
+
     // Styles applied to desktop and mobile:
 
     display: flex;
     align-items: center;
 
     // Styles applied to mobile (and overridden for desktop):
+
+    &.subgrid-cell {
+      .cell-body {
+        display: grid;
+        grid-template-columns: var(--mobile-template-columns);
+      }
+    }
 
     &.first-cell {
       grid-area: first-cell;
@@ -117,6 +161,16 @@
     // Styles applied to desktop only:
 
     @include media.min-width(medium) {
+      &.subgrid-cell {
+        display: grid;
+        grid-template-columns: subgrid;
+        grid-template-rows: subgrid;
+
+        .cell-body {
+          display: contents;
+        }
+      }
+
       .middle-cell-label {
         display: none;
       }
@@ -125,6 +179,8 @@
       &.middle-cell,
       &.last-cell {
         grid-area: revert;
+        grid-column: span var(--desktop-column-span);
+        grid-row: span var(--grid-rows-per-table-row);
       }
 
       &.desktop-align-left {

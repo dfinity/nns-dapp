@@ -1,5 +1,5 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
-import { IdentifierHashPo } from "$tests/page-objects/IdentifierHash.page-object";
+import { HashPo } from "$tests/page-objects/Hash.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class NeuronIdCellPo extends BasePageObject {
@@ -9,12 +9,12 @@ export class NeuronIdCellPo extends BasePageObject {
     return new NeuronIdCellPo(element.byTestId(NeuronIdCellPo.TID));
   }
 
-  getIdentifierHashPo(): IdentifierHashPo {
-    return IdentifierHashPo.under(this.root);
+  getHashPo(): HashPo {
+    return HashPo.under(this.root);
   }
 
   getNeurondId(): Promise<string> {
-    return this.getIdentifierHashPo().getFullText();
+    return this.getHashPo().getFullText();
   }
 
   async getTags(): Promise<string[]> {
