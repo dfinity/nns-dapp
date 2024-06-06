@@ -23,9 +23,13 @@
   import { SplitBlock } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
+  import {
+    actionableProposalsActiveStore,
+    actionableProposalsNavigationIdsStore,
+  } from "$lib/derived/actionable-proposals.derived";
   import type { ProposalsNavigationId } from "$lib/types/proposals";
   import { pageStore } from "$lib/derived/page.derived";
+  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -37,14 +41,15 @@
     : undefined;
 
   let proposalIds: ProposalsNavigationId[] | undefined;
-  $: proposalIds = (
-    $actionableProposalsActiveStore
-      ? $actionableNnsProposalsStore
-      : $filteredProposals
-  ).proposals?.map(({ id }) => ({
-    proposalId: id as bigint,
-    universe: $pageStore.universe,
-  }));
+  $: proposalIds = $pageStore.actionable
+    ? $actionableProposalsNavigationIdsStore
+    : ($actionableProposalsActiveStore
+        ? $actionableNnsProposalsStore
+        : $filteredProposals
+      ).proposals?.map(({ id }) => ({
+        proposalId: id as bigint,
+        universe: $pageStore.universe,
+      }));
 
   const selectProposal = (id: ProposalsNavigationId) => {
     navigateToProposal({ ...id, actionable: $pageStore.actionable });
@@ -60,7 +65,9 @@
           proposalId: $store.proposal.id,
           universe: $pageStore.universe,
         }}
-        universes={[$pageStore.universe]}
+        universes={$selectableUniversesStore.map(
+          ({ canisterId }) => canisterId
+        )}
         currentProposalStatus={getUniversalProposalStatus($store.proposal)}
         {proposalIds}
         {selectProposal}

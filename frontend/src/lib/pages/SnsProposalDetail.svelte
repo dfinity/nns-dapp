@@ -40,8 +40,12 @@
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
   import { tick } from "svelte";
   import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
-  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
+  import {
+    actionableProposalsActiveStore,
+    actionableProposalsNavigationIdsStore,
+  } from "$lib/derived/actionable-proposals.derived";
   import type { ProposalsNavigationId } from "$lib/types/proposals";
+  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -194,7 +198,9 @@
       : undefined;
 
   let proposalIds: ProposalsNavigationId[];
-  $: proposalIds = nonNullish(universeIdText)
+  $: proposalIds = $pageStore.actionable
+    ? $actionableProposalsNavigationIdsStore
+    : nonNullish(universeIdText)
     ? sortSnsProposalsById(
         $actionableProposalsActiveStore
           ? $actionableSnsProposalsStore[universeIdText]?.proposals
@@ -224,7 +230,7 @@
         proposalId: BigInt(proposalIdText),
         universe: $pageStore.universe,
       }}
-      universes={[$pageStore.universe]}
+      universes={$selectableUniversesStore.map(({ canisterId }) => canisterId)}
       currentProposalStatus={getUniversalProposalStatus(proposal)}
       {proposalIds}
       {selectProposal}
