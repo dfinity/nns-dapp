@@ -25,7 +25,7 @@
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
   import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
   import type { ProposalsNavigationId } from "$lib/types/proposals";
-  import { pageStore } from "$lib/derived/page.derived";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -43,7 +43,7 @@
       : $filteredProposals
   ).proposals?.map(({ id }) => ({
     proposalId: id as bigint,
-    universe: $pageStore.universe,
+    universe: OWN_CANISTER_ID_TEXT,
   }));
 </script>
 
@@ -54,9 +54,9 @@
         title={proposalType}
         currentProposalId={{
           proposalId: $store.proposal.id,
-          universe: $pageStore.universe,
+          universe: OWN_CANISTER_ID_TEXT,
         }}
-        universes={[$pageStore.universe]}
+        universes={[OWN_CANISTER_ID_TEXT]}
         currentProposalStatus={getUniversalProposalStatus($store.proposal)}
         {proposalIds}
         selectProposal={navigateToProposal}
