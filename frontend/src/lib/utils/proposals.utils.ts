@@ -594,7 +594,8 @@ export const getVoteDisplay = (vote: Vote): string => {
 
 /** Compares two ProposalsNavigationId objects by universe and proposalId.
  *  First universes are compared based on their index in the provided universes array.
- *  If the universes are the same, the comparator then compares the proposalIds.
+ *  If the universes are the same, the comparator then compares the proposalIds
+ *  (proposal IDs are ordered in decreasing order).
  */
 export const navigationIdComparator = ({
   a,
