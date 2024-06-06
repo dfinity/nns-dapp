@@ -395,7 +395,7 @@
   },
   "actionable_proposals_not_supported_snses": {
     "title": "$snsNames don’t yet support actionable proposals.",
-    "text": "If an SNS DAO wishes to support actionable proposals, it needs to upgrade to a newer version of the SNS governance canister"
+    "text": "If an SNS DAO wishes to support actionable proposals, it needs to upgrade to a newer version of the SNS governance canister."
   },
   "canisters": {
     "aria_label_canister_card": "Go to canister details",
