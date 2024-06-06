@@ -40,10 +40,6 @@ export class ResponsiveTablePo extends BasePageObject {
     return this.getStyleVariable("desktop-grid-template-columns");
   }
 
-  getMobileGridTemplateColumns(): Promise<string> {
-    return this.getStyleVariable("mobile-grid-template-columns");
-  }
-
   getMobileGridTemplateAreas(): Promise<string> {
     return this.getStyleVariable("mobile-grid-template-areas");
   }

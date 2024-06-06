@@ -27,7 +27,19 @@
 </script>
 
 {#if nonNullish(userToken)}
-  {#each userToken.actions as action}
-    <svelte:component this={actionMapper[action]} {userToken} on:nnsAction />
-  {/each}
+  <div class="container">
+    {#each userToken.actions as action}
+      <svelte:component this={actionMapper[action]} {userToken} on:nnsAction />
+    {/each}
+  </div>
 {/if}
+
+<style lang="scss">
+  .container {
+    color: var(--primary);
+    display: flex;
+    height: 28px;
+    align-items: center;
+    gap: var(--padding);
+  }
+</style>

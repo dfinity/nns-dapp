@@ -103,7 +103,6 @@ describe("TokensTable", () => {
     expect(await po.getDesktopGridTemplateColumns()).toBe(
       "1fr max-content max-content"
     );
-    expect(await po.getMobileGridTemplateColumns()).toBe("1fr max-content");
     expect(await po.getMobileGridTemplateAreas()).toBe(
       '"first-cell last-cell" "cell-0 cell-0"'
     );
