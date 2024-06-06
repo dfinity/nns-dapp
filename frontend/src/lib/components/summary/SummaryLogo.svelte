@@ -10,4 +10,4 @@
   $: universe = displayUniverse ? $selectedUniverseStore : $nnsUniverseStore;
 </script>
 
-<UniverseLogo {universe} framed horizontalPadding={false} />
+<UniverseLogo {universe} framed />
