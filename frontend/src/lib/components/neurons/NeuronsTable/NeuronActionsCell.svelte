@@ -1,5 +1,4 @@
 <script lang="ts">
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { IconRight } from "@dfinity/gix-components";
   import type { TableNeuron } from "$lib/types/neurons-table";
   import { nonNullish } from "@dfinity/utils";
