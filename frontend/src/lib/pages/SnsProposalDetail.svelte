@@ -210,6 +210,10 @@
 
   let proposalNavigationTitle: string | undefined;
   $: proposalNavigationTitle = proposalDataMap?.type;
+
+  const selectProposal = (id: ProposalsNavigationId) => {
+    navigateToProposal({ ...id, actionable: $pageStore.actionable });
+  };
 </script>
 
 <TestIdWrapper testId="sns-proposal-details-grid">
@@ -223,7 +227,7 @@
       universes={[$pageStore.universe]}
       currentProposalStatus={getUniversalProposalStatus(proposal)}
       {proposalIds}
-      selectProposal={navigateToProposal}
+      {selectProposal}
     />
   {/if}
 

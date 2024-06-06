@@ -45,6 +45,10 @@
     proposalId: id as bigint,
     universe: $pageStore.universe,
   }));
+
+  const selectProposal = (id: ProposalsNavigationId) => {
+    navigateToProposal({ ...id, actionable: $pageStore.actionable });
+  };
 </script>
 
 <TestIdWrapper testId="nns-proposal-component">
@@ -59,7 +63,7 @@
         universes={[$pageStore.universe]}
         currentProposalStatus={getUniversalProposalStatus($store.proposal)}
         {proposalIds}
-        selectProposal={navigateToProposal}
+        {selectProposal}
       />
     {/if}
 
