@@ -8,7 +8,7 @@
 </script>
 
 {#if nonNullish(rowData.rowHref)}
-  <div testId="go-to-neuron-detail-action" class="container">
+  <div data-tid="go-to-neuron-detail-action" class="container">
     <IconRight />
   </div>
 {/if}
@@ -16,5 +16,8 @@
 <style lang="scss">
   .container {
     color: var(--primary);
+    display: flex;
+    height: 20px;
+    align-items: center;
   }
 </style>

@@ -37,5 +37,9 @@
 <style lang="scss">
   .container {
     color: var(--primary);
+    display: flex;
+    height: 28px;
+    align-items: center;
+    gap: var(--padding);
   }
 </style>
