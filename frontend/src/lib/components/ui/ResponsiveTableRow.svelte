@@ -126,7 +126,7 @@
     // But the cells that expect to be in a grid, still need their grid
     // defined. This happens in the cell-body div. On desktop these get
     // `display: contents` to get their grid lines from the larger grid, while
-    // on desktop they get their own grid from `--mobile-template-columns`.
+    // on mobile they get their own grid from `--mobile-template-columns`.
 
     // Styles applied to desktop and mobile:
 
