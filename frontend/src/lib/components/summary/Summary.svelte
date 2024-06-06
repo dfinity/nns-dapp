@@ -11,13 +11,12 @@
 
 <div class="summary" data-tid="projects-summary">
   <h1 class="title">
+    <SummaryLogo {displayUniverse} />
     <span
       >{displayUniverse
         ? $selectedUniverseStore.title
         : $nnsUniverseStore.title}</span
     >
-
-    <SummaryLogo {displayUniverse} />
   </h1>
 
   {#if twoLines}
@@ -41,6 +40,7 @@
 
   .title {
     display: inline-flex;
+    gap: var(--padding);
   }
 
   span {
