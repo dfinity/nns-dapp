@@ -148,12 +148,12 @@ describe("ResponseTable", () => {
     // The first and last cell have grid areas set in CSS directly rather than
     // through the style attribute.
     const expectedStyles = [
-      "--column-span: 2; --template-columns: 1fr max-content;",
-      "--grid-area-name: cell-0; --column-span: 1; --template-columns: 1fr;",
-      "--grid-area-name: cell-1; --column-span: 1; --template-columns: max-content;",
-      "--grid-area-name: cell-2; --column-span: 2; --template-columns: 1fr max-content;",
-      "--grid-area-name: cell-3; --column-span: 1; --template-columns: 1fr;",
-      "--column-span: 1; --template-columns: max-content;",
+      "--desktop-column-span: 2;--mobile-template-columns: 1fr max-content;",
+      "--desktop-column-span: 1;--mobile-template-columns: 1fr;--grid-area-name: cell-0;",
+      "--desktop-column-span: 1;--mobile-template-columns: max-content;--grid-area-name: cell-1;",
+      "--desktop-column-span: 2;--mobile-template-columns: 1fr max-content;--grid-area-name: cell-2;",
+      "--desktop-column-span: 1;--mobile-template-columns: 1fr;--grid-area-name: cell-3;",
+      "--desktop-column-span: 1;--mobile-template-columns: max-content;",
     ];
 
     const rows = await po.getRows();
