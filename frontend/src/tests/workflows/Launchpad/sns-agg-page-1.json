@@ -285,7 +285,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98043940671581870,
+    "icrc1_total_supply": 98044537252073950,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -552,6 +552,19 @@
           }
         },
         {
+          "id": 1003,
+          "name": "ICPSwap - ICS token icrc1_transfer function",
+          "description": "Execute icrc1_transfer function in ICPSwap ledger canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "fglgf-uyaaa-aaaal-qbzcq-cai",
+              "target_canister_id": "ca6gz-lqaaa-aaaaq-aacwa-cai",
+              "validator_method_name": "validate_ICS_icrc1_transfer",
+              "target_method_name": "icrc1_transfer"
+            }
+          }
+        },
+        {
           "id": 1010,
           "name": "Game Launcher asset canister function commit_proposed_batch",
           "description": "Call commit_proposed_batch function to commit changes to upgrade Game Launcher asset canister",
@@ -728,7 +741,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100540205023960050,
+    "icrc1_total_supply": 100552673991064850,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1385,7 +1398,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50150269480196880,
+    "icrc1_total_supply": 50150760183563490,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2182,7 +2195,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9957183518549718,
+    "icrc1_total_supply": 9957197121970280,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3134,7 +3147,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10021119339973660,
+    "icrc1_total_supply": 10022372214383018,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4099,7 +4112,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12578808615224452,
+    "icrc1_total_supply": 12578921959333700,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -6005,7 +6018,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99996822298295120,
+    "icrc1_total_supply": 99997222511681380,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,
