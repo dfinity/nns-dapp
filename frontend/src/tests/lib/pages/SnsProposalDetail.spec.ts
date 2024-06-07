@@ -16,7 +16,6 @@ import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   buildMockSnsProposalsStoreSubscribe,
   createSnsProposal,
@@ -27,6 +26,7 @@ import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
   SnsProposalDecisionStatus,
@@ -355,10 +355,10 @@ describe("SnsProposalDetail", () => {
     });
   });
 
-  it("should provide navigation between Snses for actionable page proposals", async () => {
-    const rootCanisterId1 = principal(1);
-    const rootCanisterId2 = principal(2);
-    const rootCanisterId3 = principal(3);
+  it("should navigate to the proposal from the next Sns", async () => {
+    const rootCanisterId1 = Principal.fromText("f7crg-kabae");
+    const rootCanisterId2 = Principal.fromText("atueb-2ycae");
+
     resetIdentity();
     setSnsProjects([
       {
@@ -369,8 +369,84 @@ describe("SnsProposalDetail", () => {
         rootCanisterId: rootCanisterId2,
         lifecycle: SnsSwapLifecycle.Committed,
       },
+    ]);
+
+    page.mock({
+      data: { universe: rootCanisterId1.toText(), actionable: true },
+    });
+
+    actionableSnsProposalsStore.set({
+      rootCanisterId: rootCanisterId1,
+      includeBallotsByCaller: true,
+      proposals: [
+        createSnsProposal({
+          proposalId: 1n,
+          status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+        }),
+      ],
+    });
+    actionableSnsProposalsStore.set({
+      rootCanisterId: rootCanisterId2,
+      includeBallotsByCaller: true,
+      proposals: [
+        createSnsProposal({
+          proposalId: 2n,
+          status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+        }),
+      ],
+    });
+
+    fakeSnsGovernanceApi.addProposalWith({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterId1,
+      id: [{ id: 1n }],
+    });
+    fakeSnsGovernanceApi.addProposalWith({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterId2,
+      id: [{ id: 2n }],
+    });
+
+    const { container } = render(SnsProposalDetail, {
+      props: {
+        // set the proposal with id=2 to be in the middle of the list
+        proposalIdText: "1",
+      },
+    });
+    const po = SnsProposalDetailPo.under(new JestPageObjectElement(container));
+    await runResolvedPromises();
+    expect(await po.isContentLoaded()).toBe(true);
+
+    const navigationPo = po.getProposalNavigationPo();
+    expect(await navigationPo.isPresent()).toBe(true);
+    expect(await navigationPo.isPreviousButtonHidden()).toBe(true);
+    expect(await navigationPo.isNextButtonHidden()).toBe(false);
+
+    await navigationPo.clickNext();
+    expect(get(page)).toEqual({
+      data: {
+        actionable: "",
+        proposal: "2",
+        universe: "atueb-2ycae",
+      },
+      route: {
+        id: "/(app)/proposal/",
+      },
+    });
+  });
+
+  it("should navigate to the proposal from the previous Sns", async () => {
+    const rootCanisterId1 = Principal.fromText("f7crg-kabae");
+    const rootCanisterId2 = Principal.fromText("atueb-2ycae");
+
+    resetIdentity();
+    setSnsProjects([
       {
-        rootCanisterId: rootCanisterId3,
+        rootCanisterId: rootCanisterId1,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+      {
+        rootCanisterId: rootCanisterId2,
         lifecycle: SnsSwapLifecycle.Committed,
       },
     ]);
@@ -399,17 +475,12 @@ describe("SnsProposalDetail", () => {
         }),
       ],
     });
-    actionableSnsProposalsStore.set({
-      rootCanisterId: rootCanisterId3,
-      includeBallotsByCaller: true,
-      proposals: [
-        createSnsProposal({
-          proposalId: 3n,
-          status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-        }),
-      ],
-    });
 
+    fakeSnsGovernanceApi.addProposalWith({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterId1,
+      id: [{ id: 1n }],
+    });
     fakeSnsGovernanceApi.addProposalWith({
       identity: mockIdentity,
       rootCanisterId: rootCanisterId2,
@@ -428,16 +499,20 @@ describe("SnsProposalDetail", () => {
 
     const navigationPo = po.getProposalNavigationPo();
     expect(await navigationPo.isPresent()).toBe(true);
+    expect(await navigationPo.isNextButtonHidden()).toBe(true);
     expect(await navigationPo.isPreviousButtonHidden()).toBe(false);
-    expect(await navigationPo.getPreviousButtonProposalId()).toBe("1");
-    expect(await navigationPo.getPreviousButtonProposalUniverse()).toBe(
-      rootCanisterId1.toText()
-    );
-    expect(await navigationPo.isNextButtonHidden()).toBe(false);
-    expect(await navigationPo.getNextButtonProposalId()).toBe("3");
-    expect(await navigationPo.getNextButtonProposalUniverse()).toBe(
-      rootCanisterId3.toText()
-    );
+
+    await navigationPo.clickPrevious();
+    expect(get(page)).toEqual({
+      data: {
+        actionable: "",
+        proposal: "1",
+        universe: "f7crg-kabae",
+      },
+      route: {
+        id: "/(app)/proposal/",
+      },
+    });
   });
 
   describe("not logged in that logs in afterwards", () => {
