@@ -71,10 +71,10 @@ export class SelectUniverseListPo extends BasePageObject {
   }
 
   async clickOnInternetComputer(): Promise<void> {
-    await this.clickOnSnsUniverse(SelectUniverseListPo.INTERNET_COMPUTER);
+    await this.clickOnUniverse(SelectUniverseListPo.INTERNET_COMPUTER);
   }
 
-  async clickOnSnsUniverse(name: string): Promise<void> {
+  async clickOnUniverse(name: string): Promise<void> {
     const cards = await this.getSelectUniverseCardPos();
     const names = await Promise.all(cards.map((card) => card.getName()));
     for (let i = 0; i < names.length; i++) {
