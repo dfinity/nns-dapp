@@ -28,6 +28,6 @@
   .container {
     display: flex;
     flex-direction: column;
-    gap: var(--padding-4x);
+    gap: var(--padding-6x);
   }
 </style>

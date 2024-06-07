@@ -67,7 +67,7 @@ describe("ActionableProposalsNotSupportedSnses", () => {
     addSnsesWithSupport([false]);
     const po = renderComponent();
     expect(await po.getBannerPo().getDescriptionText()).toEqual(
-      "If an SNS DAO wishes to support actionable proposals, need to upgrade to a newer version of the SNS governance canister."
+      "If an SNS DAO wishes to support actionable proposals, it needs to upgrade to a newer version of the SNS governance canister."
     );
   });
 });
