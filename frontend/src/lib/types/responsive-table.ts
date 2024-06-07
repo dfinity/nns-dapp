@@ -8,7 +8,7 @@ export interface ResponsiveTableRowData {
 }
 
 export type ColumnAlignment = "left" | "right";
-export type TemplateItem = "max-content" | "1fr";
+export type TemplateItem = "max-content" | "1fr" | "minmax(max-content, 1fr)";
 
 export interface ResponsiveTableColumn<
   RowDataType extends ResponsiveTableRowData,
