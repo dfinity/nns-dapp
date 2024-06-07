@@ -34,7 +34,7 @@ test("Test SNS governance", async ({ page, context }) => {
   await appPo.goToNeurons();
 
   await appPo.openUniverses();
-  await appPo.getSelectUniverseListPo().clickOnSnsUniverse(snsProjectName);
+  await appPo.getSelectUniverseListPo().clickOnUniverse(snsProjectName);
 
   await appPo.getNeuronsPo().getSnsNeuronsPo().waitForContentLoaded();
   expect(

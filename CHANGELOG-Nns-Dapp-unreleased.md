@@ -15,6 +15,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Enabled `ENABLE_CKUSDC` feature flag.
+* Actionable proposals page.
+
 #### Changed
 
 * Rename proposal navigation buttons to "Previous" and "Next".
