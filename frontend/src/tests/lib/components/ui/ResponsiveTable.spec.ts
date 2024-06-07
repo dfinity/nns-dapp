@@ -11,7 +11,7 @@ describe("ResponseTable", () => {
       title: "Name",
       cellComponent: TestTableNameCell,
       alignment: "left",
-      templateColumns: ["1fr"],
+      templateColumns: ["1fr", "max-content"],
     },
     {
       title: "Age",
@@ -108,7 +108,11 @@ describe("ResponseTable", () => {
     // 3 columns
     const po1 = renderComponent({ columns, tableData });
     expect(await po1.getDesktopGridTemplateColumns()).toBe(
-      "1fr 1fr max-content"
+      [
+        "1fr max-content", // Name
+        "1fr", // Age
+        "max-content", // Actions
+      ].join(" ")
     );
     expect(await po1.getMobileGridTemplateAreas()).toBe(
       '"first-cell last-cell" "cell-0 cell-0"'
@@ -120,7 +124,14 @@ describe("ResponseTable", () => {
       tableData,
     });
     expect(await po2.getDesktopGridTemplateColumns()).toBe(
-      "1fr 1fr max-content 1fr 1fr max-content"
+      [
+        "1fr max-content", // Name
+        "1fr", // Age
+        "max-content", // Actions
+        "1fr max-content", // Name
+        "1fr", // Age
+        "max-content", // Actions
+      ].join(" ")
     );
     expect(await po2.getMobileGridTemplateAreas()).toBe(
       '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2" "cell-3 cell-3"'
@@ -137,12 +148,12 @@ describe("ResponseTable", () => {
     // The first and last cell have grid areas set in CSS directly rather than
     // through the style attribute.
     const expectedStyles = [
-      null,
-      "--grid-area-name: cell-0;",
-      "--grid-area-name: cell-1;",
-      "--grid-area-name: cell-2;",
-      "--grid-area-name: cell-3;",
-      null,
+      "--desktop-column-span: 2;--mobile-template-columns: 1fr max-content;",
+      "--desktop-column-span: 1;--mobile-template-columns: 1fr;--grid-area-name: cell-0;",
+      "--desktop-column-span: 1;--mobile-template-columns: max-content;--grid-area-name: cell-1;",
+      "--desktop-column-span: 2;--mobile-template-columns: 1fr max-content;--grid-area-name: cell-2;",
+      "--desktop-column-span: 1;--mobile-template-columns: 1fr;--grid-area-name: cell-3;",
+      "--desktop-column-span: 1;--mobile-template-columns: max-content;",
     ];
 
     const rows = await po.getRows();
