@@ -17,7 +17,6 @@ import { createMockProposalsStoreSubscribe } from "$tests/mocks/proposals.store.
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
@@ -27,6 +26,7 @@ import {
   SnsSwapLifecycle,
 } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import NnsProposalTest from "./NnsProposalTest.svelte";
 
 vi.mock("$lib/utils/html.utils", () => ({
@@ -41,7 +41,6 @@ describe("Proposal", () => {
   beforeEach(() => {
     resetIdentity();
     referrerPathStore.set(undefined);
-    allowLoggingInOneTestForDebugging();
   });
 
   const renderProposalModern = (id = 1000n) =>
@@ -149,7 +148,7 @@ describe("Proposal", () => {
     expect(await po.isPresent()).toBe(false);
   });
 
-  it("should provide navigation to Sns", async () => {
+  it("should navigate to Sns", async () => {
     page.mock({
       data: {
         universe: OWN_CANISTER_ID_TEXT,
@@ -185,5 +184,17 @@ describe("Proposal", () => {
     expect(await po.isNextButtonHidden()).toBe(false);
     expect(await po.getNextButtonProposalId()).toEqual("33");
     expect(await po.getNextButtonProposalUniverse()).toEqual("f7crg-kabae");
+
+    await po.clickNext();
+    expect(get(page)).toEqual({
+      data: {
+        actionable: "",
+        proposal: "33",
+        universe: "f7crg-kabae",
+      },
+      route: {
+        id: "/(app)/proposal/",
+      },
+    });
   });
 });
