@@ -184,5 +184,6 @@ describe("Proposal", () => {
     expect(await po.isPreviousButtonHidden()).toBe(true);
     expect(await po.isNextButtonHidden()).toBe(false);
     expect(await po.getNextButtonProposalId()).toEqual("33");
+    expect(await po.getNextButtonProposalUniverse()).toEqual("f7crg-kabae");
   });
 });
