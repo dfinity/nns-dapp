@@ -6,8 +6,9 @@ export class SelectUniverseListPo extends BasePageObject {
   private static readonly TID = "select-universe-list-component";
   // TODO: GIX-2150 Find a better way to identify SNS projects.
   // There will be multiple ckETH projects and arbitrary ICRC tokens in the future.
+  private static readonly INTERNET_COMPUTER = "Internet Computer";
   private static readonly NON_SNS_NAMES = [
-    "Internet Computer",
+    SelectUniverseListPo.INTERNET_COMPUTER,
     "ckBTC",
     "ckTESTBTC",
     "ckETH",
@@ -67,6 +68,10 @@ export class SelectUniverseListPo extends BasePageObject {
       }
     }
     throw new Error("ckBTC card not found");
+  }
+
+  async clickOnInternetComputer(): Promise<void> {
+    await this.clickOnSnsUniverse(SelectUniverseListPo.INTERNET_COMPUTER);
   }
 
   async clickOnSnsUniverse(name: string): Promise<void> {
