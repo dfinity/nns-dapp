@@ -96,7 +96,7 @@ describe("NeuronsTable", () => {
     expect(await rows[0].getCellClasses()).toEqual([
       expect.arrayContaining(["desktop-align-left"]), // Neuron ID
       expect.arrayContaining(["desktop-align-right"]), // Stake
-      expect.arrayContaining(["desktop-align-left"]), // State
+      expect.arrayContaining(["desktop-align-right"]), // State
       expect.arrayContaining(["desktop-align-right"]), // Dissolve Delay
       expect.arrayContaining(["desktop-align-right"]), // Actions
     ]);
@@ -108,9 +108,9 @@ describe("NeuronsTable", () => {
     expect(await po.getDesktopGridTemplateColumns()).toBe(
       [
         "max-content max-content 1fr", // Neuron ID
-        "max-content", // Stake
-        "max-content", // State
-        "max-content", // Dissolve Delay
+        "1fr", // Stake
+        "1fr", // State
+        "1fr", // Dissolve Delay
         "max-content", // Actions
       ].join(" ")
     );
