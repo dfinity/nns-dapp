@@ -177,6 +177,22 @@ describe("NeuronsTable", () => {
     expect(await rowPos[1].hasGoToDetailButton()).toBe(false);
   });
 
+  it("should have a tooltip for spawning neurons", async () => {
+    const po = renderComponent({ neurons: [neuron1, spawningNeuron] });
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getNeuronStateCellPo().isTooltipEnabled()).toBe(
+      false
+    );
+    expect(await rowPos[1].getNeuronStateCellPo().isTooltipEnabled()).toBe(
+      true
+    );
+    expect(await rowPos[1].getNeuronStateCellPo().getTooltipText()).toBe(
+      "When this neuron has finished spawning, newly minted ICP will be added. The quantity of new ICP minted will depend on the ICP price trend. You will then be able to disburse this new ICP if you wish."
+    );
+  });
+
   it("should render tags", async () => {
     const tags = ["Neuron's fund", "Hotkey control"];
     const po = renderComponent({
