@@ -371,7 +371,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
-          "ENABLE_ACTIONABLE_TAB": false,
+          "ENABLE_ACTIONABLE_TAB": true,
           "ENABLE_NEURONS_TABLE": false,
           "ENABLE_CKUSDC": true
         }
