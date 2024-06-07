@@ -416,6 +416,12 @@ describe("SnsProposalDetail", () => {
 
     it("show neurons that can vote", async () => {
       authStore.setForTesting(undefined);
+      setSnsProjects([
+        {
+          rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+        },
+      ]);
 
       const proposalCreatedTimestamp = 33333n;
       const proposal = createSnsProposal({
