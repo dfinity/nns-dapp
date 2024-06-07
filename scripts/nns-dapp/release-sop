@@ -438,7 +438,7 @@ confirm_cmd git push origin -f tags/release-candidate
 record "Security test: npm audit" npm_audit
 verify "Security test: npm audit" "Expected npm audit" echo "found 0 vulnerabilities"
 record "Security test: cargo audit" cargo_audit
-verify "Security test: cargo audit" "Expected cargo audit" echo "RUSTSEC-2024-0019,RUSTSEC-2024-0332,RUSTSEC-2024-0336"
+verify "Security test: cargo audit" "Expected cargo audit" echo "RUSTSEC-2024-0019"
 record "Security test: no HTML in templates" no_html_in_templates
 confirm_cmd "$SOURCE_DIR/download-ci-wasm" --commit tags/release-candidate --dir "$TOP_DIR/release/ci" --wasm-filename nns-dapp.wasm.gz
 record "CI NNS-dapp WASM hash" "$SOURCE_DIR/get-hash-from-ci-log" --commit tags/release-candidate
