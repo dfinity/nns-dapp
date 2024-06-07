@@ -38,19 +38,19 @@
       title: $i18n.neuron_detail.stake,
       cellComponent: NeuronStakeCell,
       alignment: "right",
-      templateColumns: ["max-content"],
+      templateColumns: ["1fr"],
     },
     {
       title: $i18n.neurons.state,
       cellComponent: NeuronStateCell,
-      alignment: "left",
-      templateColumns: ["max-content"],
+      alignment: "right",
+      templateColumns: ["1fr"],
     },
     {
       title: $i18n.neurons.dissolve_delay_title,
       cellComponent: NeuronDissolveDelayCell,
       alignment: "right",
-      templateColumns: ["max-content"],
+      templateColumns: ["1fr"],
     },
     {
       title: "",

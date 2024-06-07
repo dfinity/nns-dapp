@@ -93,7 +93,6 @@
   [role="row"] {
     display: grid;
     flex-direction: column;
-    gap: var(--padding-2x);
 
     text-decoration: none;
 
