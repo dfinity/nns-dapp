@@ -11,6 +11,26 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 130144
+
+### Application
+
+#### Added
+
+* Enabled `ENABLE_CKUSDC` feature flag.
+
+#### Removed
+
+* Message informing about proposal topic changes.
+
+#### Fixed
+
+* Render neurons with minimum dissolve delay correctly with voting power.
+* Nns-dapp may crash while finishing an empty receive.
+* Actionable proposals initialization before Sns-es were loaded.
+
+### Operations
+
 ## Proposal 130081
 
 ### Application
