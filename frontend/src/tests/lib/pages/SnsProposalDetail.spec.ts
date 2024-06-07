@@ -16,13 +16,15 @@ import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   buildMockSnsProposalsStoreSubscribe,
   createSnsProposal,
 } from "$tests/mocks/sns-proposals.mock";
 import { SnsProposalDetailPo } from "$tests/page-objects/SnsProposalDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
@@ -32,7 +34,7 @@ import {
   SnsSwapLifecycle,
   SnsVote,
 } from "@dfinity/sns";
-import { render, waitFor } from "@testing-library/svelte";
+import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/sns-governance.api");
@@ -56,6 +58,7 @@ describe("SnsProposalDetail", () => {
 
   beforeEach(() => {
     page.reset();
+    resetSnsProjects();
   });
 
   describe("not logged in", () => {
@@ -352,42 +355,64 @@ describe("SnsProposalDetail", () => {
     });
   });
 
-  it("should not display proposal navigation buttons when user comes from actionable page", async () => {
+  it("should provide navigation between Snses for actionable page proposals", async () => {
+    const rootCanisterId1 = principal(1);
+    const rootCanisterId2 = principal(2);
+    const rootCanisterId3 = principal(3);
     resetIdentity();
     setSnsProjects([
       {
-        rootCanisterId,
+        rootCanisterId: rootCanisterId1,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+      {
+        rootCanisterId: rootCanisterId2,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+      {
+        rootCanisterId: rootCanisterId3,
         lifecycle: SnsSwapLifecycle.Committed,
       },
     ]);
+
     page.mock({
-      data: { universe: rootCanisterId.toText(), actionable: true },
+      data: { universe: rootCanisterId2.toText(), actionable: true },
     });
 
-    // mock the store to have 3 proposals for navigation
-    vi.spyOn(snsFilteredProposalsStore, "subscribe").mockImplementation(
-      buildMockSnsProposalsStoreSubscribe({
-        universeIdText: rootCanisterId.toText(),
-        proposals: [
-          createSnsProposal({
-            proposalId: 1n,
-            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-          }),
-          createSnsProposal({
-            proposalId: 2n,
-            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-          }),
-          createSnsProposal({
-            proposalId: 3n,
-            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-          }),
-        ],
-      })
-    );
+    actionableSnsProposalsStore.set({
+      rootCanisterId: rootCanisterId1,
+      includeBallotsByCaller: true,
+      proposals: [
+        createSnsProposal({
+          proposalId: 1n,
+          status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+        }),
+      ],
+    });
+    actionableSnsProposalsStore.set({
+      rootCanisterId: rootCanisterId2,
+      includeBallotsByCaller: true,
+      proposals: [
+        createSnsProposal({
+          proposalId: 2n,
+          status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+        }),
+      ],
+    });
+    actionableSnsProposalsStore.set({
+      rootCanisterId: rootCanisterId3,
+      includeBallotsByCaller: true,
+      proposals: [
+        createSnsProposal({
+          proposalId: 3n,
+          status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+        }),
+      ],
+    });
 
     fakeSnsGovernanceApi.addProposalWith({
       identity: mockIdentity,
-      rootCanisterId,
+      rootCanisterId: rootCanisterId2,
       id: [{ id: 2n }],
     });
 
@@ -403,16 +428,16 @@ describe("SnsProposalDetail", () => {
 
     const navigationPo = po.getProposalNavigationPo();
     expect(await navigationPo.isPresent()).toBe(true);
-    expect(await navigationPo.getPreviousButtonPo().isPresent()).toBe(false);
-    expect(await navigationPo.getNextButtonPo().isPresent()).toBe(false);
-
-    page.mock({
-      data: { universe: rootCanisterId.toText(), actionable: false },
-    });
-
-    await runResolvedPromises();
-    expect(await navigationPo.getPreviousButtonPo().isPresent()).toBe(true);
-    expect(await navigationPo.getNextButtonPo().isPresent()).toBe(true);
+    expect(await navigationPo.isPreviousButtonHidden()).toBe(false);
+    expect(await navigationPo.getPreviousButtonProposalId()).toBe("1");
+    expect(await navigationPo.getPreviousButtonProposalUniverse()).toBe(
+      rootCanisterId1.toText()
+    );
+    expect(await navigationPo.isNextButtonHidden()).toBe(false);
+    expect(await navigationPo.getNextButtonProposalId()).toBe("3");
+    expect(await navigationPo.getNextButtonProposalUniverse()).toBe(
+      rootCanisterId3.toText()
+    );
   });
 
   describe("not logged in that logs in afterwards", () => {
@@ -424,6 +449,12 @@ describe("SnsProposalDetail", () => {
 
     it("show neurons that can vote", async () => {
       authStore.setForTesting(undefined);
+      setSnsProjects([
+        {
+          rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+        },
+      ]);
 
       const proposalCreatedTimestamp = 33333n;
       const proposal = createSnsProposal({

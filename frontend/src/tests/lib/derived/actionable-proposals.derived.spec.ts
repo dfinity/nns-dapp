@@ -8,6 +8,7 @@ import {
   actionableProposalTotalCountStore,
   actionableProposalsActiveStore,
   actionableProposalsLoadedStore,
+  actionableProposalsNavigationIdsStore,
   actionableSnsProposalsByUniverseStore,
 } from "$lib/derived/actionable-proposals.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
@@ -22,7 +23,9 @@ import {
   mockSnsProposal,
 } from "$tests/mocks/sns-proposals.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { ProposalInfo } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
@@ -394,6 +397,72 @@ describe("actionable proposals derived stores", () => {
       });
 
       expect(get(actionableProposalsLoadedStore)).toEqual(true);
+    });
+  });
+
+  describe("actionableProposalsNavigationIdsStore", () => {
+    it("should return navigation IDs", async () => {
+      expect(get(actionableProposalsNavigationIdsStore)).toEqual([]);
+
+      setSnsProjects([
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: Principal.fromText("g3pce-2iaae"),
+        },
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: Principal.fromText("f7crg-kabae"),
+        },
+      ]);
+      // Add Sns proposals in reverse order to test that the universe order is used.
+      actionableSnsProposalsStore.set({
+        rootCanisterId: Principal.fromText("f7crg-kabae"),
+        proposals: [createProposal(1n), createProposal(0n)],
+        includeBallotsByCaller: true,
+      });
+      actionableSnsProposalsStore.set({
+        rootCanisterId: Principal.fromText("g3pce-2iaae"),
+        proposals: [createProposal(3n), createProposal(2n)],
+        includeBallotsByCaller: true,
+      });
+      actionableNnsProposalsStore.setProposals([
+        {
+          ...mockProposalInfo,
+          id: 2n,
+        },
+        {
+          ...mockProposalInfo,
+          id: 1n,
+        },
+      ]);
+      await runResolvedPromises();
+
+      expect(get(actionableProposalsNavigationIdsStore)).toEqual([
+        {
+          universe: OWN_CANISTER_ID_TEXT,
+          proposalId: 2n,
+        },
+        {
+          universe: OWN_CANISTER_ID_TEXT,
+          proposalId: 1n,
+        },
+        {
+          proposalId: 3n,
+          universe: "g3pce-2iaae",
+        },
+        {
+          proposalId: 2n,
+          universe: "g3pce-2iaae",
+        },
+        {
+          proposalId: 1n,
+          universe: "f7crg-kabae",
+        },
+        {
+          proposalId: 0n,
+          universe: "f7crg-kabae",
+        },
+      ]);
     });
   });
 });

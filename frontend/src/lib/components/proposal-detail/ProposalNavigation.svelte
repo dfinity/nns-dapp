@@ -11,7 +11,6 @@
   } from "$lib/types/proposals";
   import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
   import { triggerDebugReport } from "$lib/directives/debug.directives";
-  import { pageStore } from "$lib/derived/page.derived";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { navigationIdComparator } from "$lib/utils/proposals.utils";
 
@@ -63,32 +62,32 @@
     </span>
     <TestIdWrapper testId="title">{title ?? ""}</TestIdWrapper>
   </h2>
-  {#if !$pageStore.actionable}
-    <button
-      class="ghost previous"
-      type="button"
-      aria-label={$i18n.proposal_detail.previous}
-      on:click={selectPrevious}
-      class:hidden={isNullish(previousId)}
-      data-tid="proposal-nav-previous"
-      data-test-proposal-id={previousId?.proposalId.toString() ?? ""}
-    >
-      <IconLeft />
-      {$i18n.proposal_detail.previous_short}</button
-    >
-    <button
-      class="ghost next"
-      type="button"
-      aria-label={$i18n.proposal_detail.next}
-      on:click={selectNext}
-      class:hidden={isNullish(nextId)}
-      data-tid="proposal-nav-next"
-      data-test-proposal-id={nextId?.proposalId.toString() ?? ""}
-    >
-      {$i18n.proposal_detail.next_short}
-      <IconRight />
-    </button>
-  {/if}
+  <button
+    class="ghost previous"
+    type="button"
+    aria-label={$i18n.proposal_detail.previous}
+    on:click={selectPrevious}
+    class:hidden={isNullish(previousId)}
+    data-tid="proposal-nav-previous"
+    data-test-proposal-id={previousId?.proposalId.toString() ?? ""}
+    data-test-proposal-u={previousId?.universe ?? ""}
+  >
+    <IconLeft />
+    {$i18n.proposal_detail.previous_short}</button
+  >
+  <button
+    class="ghost next"
+    type="button"
+    aria-label={$i18n.proposal_detail.next}
+    on:click={selectNext}
+    class:hidden={isNullish(nextId)}
+    data-tid="proposal-nav-next"
+    data-test-proposal-id={nextId?.proposalId.toString() ?? ""}
+    data-test-proposal-u={nextId?.universe ?? ""}
+  >
+    {$i18n.proposal_detail.next_short}
+    <IconRight />
+  </button>
 </div>
 
 <style lang="scss">

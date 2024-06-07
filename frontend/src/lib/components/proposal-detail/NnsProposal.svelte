@@ -23,8 +23,13 @@
   import { SplitBlock } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
+  import {
+    actionableProposalsActiveStore,
+    actionableProposalsNavigationIdsStore,
+  } from "$lib/derived/actionable-proposals.derived";
   import type { ProposalsNavigationId } from "$lib/types/proposals";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 
   const { store } = getContext<SelectedProposalContext>(
@@ -37,14 +42,19 @@
     : undefined;
 
   let proposalIds: ProposalsNavigationId[] | undefined;
-  $: proposalIds = (
-    $actionableProposalsActiveStore
-      ? $actionableNnsProposalsStore
-      : $filteredProposals
-  ).proposals?.map(({ id }) => ({
-    proposalId: id as bigint,
-    universe: OWN_CANISTER_ID_TEXT,
-  }));
+  $: proposalIds = $pageStore.actionable
+    ? $actionableProposalsNavigationIdsStore
+    : ($actionableProposalsActiveStore
+        ? $actionableNnsProposalsStore
+        : $filteredProposals
+      ).proposals?.map(({ id }) => ({
+        proposalId: id as bigint,
+        universe: $pageStore.universe,
+      }));
+
+  const selectProposal = (id: ProposalsNavigationId) => {
+    navigateToProposal({ ...id, actionable: $pageStore.actionable });
+  };
 </script>
 
 <TestIdWrapper testId="nns-proposal-component">
@@ -56,10 +66,12 @@
           proposalId: $store.proposal.id,
           universe: OWN_CANISTER_ID_TEXT,
         }}
-        universes={[OWN_CANISTER_ID_TEXT]}
+        universes={$selectableUniversesStore.map(
+          ({ canisterId }) => canisterId
+        )}
         currentProposalStatus={getUniversalProposalStatus($store.proposal)}
         {proposalIds}
-        selectProposal={navigateToProposal}
+        {selectProposal}
       />
     {/if}
 

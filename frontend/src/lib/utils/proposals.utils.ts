@@ -552,11 +552,13 @@ export const nnsNeuronToVotingNeuron = ({
 export const navigateToProposal = ({
   proposalId,
   universe,
-}: ProposalsNavigationId): Promise<void> =>
+  actionable,
+}: ProposalsNavigationId & { actionable: boolean }): Promise<void> =>
   goto(
     buildProposalUrl({
       universe,
       proposalId,
+      actionable,
     })
   );
 
