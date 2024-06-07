@@ -29,7 +29,7 @@
   .container {
     display: grid;
     grid-row: span 2;
-    grid-column: span 3;
+    grid-column: span 2;
     grid-template-rows: subgrid;
     grid-template-columns: subgrid;
     gap: 0;

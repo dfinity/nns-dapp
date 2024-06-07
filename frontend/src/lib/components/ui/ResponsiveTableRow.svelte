@@ -184,10 +184,12 @@
 
       &.desktop-align-left {
         justify-content: flex-start;
+        text-align: start;
       }
 
       &.desktop-align-right {
         justify-content: flex-end;
+        text-align: end;
       }
     }
   }
