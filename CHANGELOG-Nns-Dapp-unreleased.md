@@ -20,7 +20,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* Rename proposal navigation buttons to "Previous" and "Next".
+* Added cross-project proposal navigation.
 
 #### Deprecated
 
