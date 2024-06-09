@@ -62,7 +62,7 @@ const createHotkeyNeuronsInOtherAccount = async ({
 test("Test neurons table", async ({ page, context, browser }) => {
   await page.goto("/canisters");
   await expect(page).toHaveTitle("Canisters / NNS Dapp");
-  let appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
+  const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
 
   await step("Sign in");
   await signInWithNewUser({ page, context });
@@ -89,7 +89,7 @@ test("Test neurons table", async ({ page, context, browser }) => {
 
   step("Start dissolving");
   await appPo.goToNeuronDetails(neuronIds[0]);
-  let neuronDetail = appPo.getNeuronDetailPo().getNnsNeuronDetailPo();
+  const neuronDetail = appPo.getNeuronDetailPo().getNnsNeuronDetailPo();
 
   await neuronDetail.startDissolving();
 
