@@ -9,6 +9,9 @@ import {
 } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
+// We replace the actualy neuron IDs with these ones to make the screenshots
+// consistent. We use different ones for each neuron to make sure the copy
+// icons are correctly aligned with neuron IDs of differing width.
 const replacementNeuronIds = [
   "2151613...5151617",
   "03a3234...db988b5",
@@ -16,7 +19,10 @@ const replacementNeuronIds = [
   "5afd2dc...43c101d",
 ];
 
-const createHotkeyNeuronsInOtherAccount = async ({ principal, browser }) => {
+const createHotkeyNeuronsInOtherAccount = async ({
+  hotkeyPrincipal,
+  browser,
+}) => {
   const context = await browser.newContext();
   const page = await context.newPage();
   await page.goto("/");
@@ -39,10 +45,16 @@ const createHotkeyNeuronsInOtherAccount = async ({ principal, browser }) => {
   expect(neuronIds).toHaveLength(2);
 
   await appPo.goToNeuronDetails(neuronIds[0]);
-  await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().addHotkey(principal);
+  await appPo
+    .getNeuronDetailPo()
+    .getNnsNeuronDetailPo()
+    .addHotkey(hotkeyPrincipal);
   await appPo.goBack();
   await appPo.goToNeuronDetails(neuronIds[1]);
-  await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().addHotkey(principal);
+  await appPo
+    .getNeuronDetailPo()
+    .getNnsNeuronDetailPo()
+    .addHotkey(hotkeyPrincipal);
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().joinCommunityFund();
   await page.close();
 };
@@ -58,7 +70,7 @@ test("Test neurons table", async ({ page, context, browser }) => {
   const principal = await appPo.getCanistersPo().getPrincipal();
 
   const createHotkeyNeuronsPromise = createHotkeyNeuronsInOtherAccount({
-    principal,
+    hotkeyPrincipal: principal,
     browser,
   });
 
@@ -83,11 +95,8 @@ test("Test neurons table", async ({ page, context, browser }) => {
 
   step("Get maturity");
   await neuronDetail.addMaturity(5);
-  // Reload the page to see the maturity.
+  // Reload the page to see the maturity and enable the spawn neuron button.
   await page.reload();
-
-  appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
-  neuronDetail = appPo.getNeuronDetailPo().getNnsNeuronDetailPo();
 
   step("Spawn a neuron");
   await neuronDetail.spawnNeuron({ percentage: 100 });
@@ -95,15 +104,15 @@ test("Test neurons table", async ({ page, context, browser }) => {
   step("Wait for the hotkey neurons to be created");
   await createHotkeyNeuronsPromise;
 
-  setFeatureFlag({ page, featureFlag: "ENABLE_NEURONS_TABLE", value: true });
+  await setFeatureFlag({
+    page,
+    featureFlag: "ENABLE_NEURONS_TABLE",
+    value: true,
+  });
   await page.reload();
 
   step("Make screenshots");
-  appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
   await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
-
-  // replaceContent fails on FireFox without this delay.
-  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   await replaceContent({
     page,
