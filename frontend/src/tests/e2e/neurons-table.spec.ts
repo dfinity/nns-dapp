@@ -114,6 +114,5 @@ test("Test neurons table", async ({ page, context, browser }) => {
 
   await expect(page).toHaveScreenshot("desktop.png");
   await page.setViewportSize({ width: 480, height: 800 });
-  //await new Promise((resolve) => setTimeout(resolve, 1000));
   await expect(page).toHaveScreenshot("mobile.png");
 });
