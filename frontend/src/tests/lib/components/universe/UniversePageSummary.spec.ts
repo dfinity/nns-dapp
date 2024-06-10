@@ -23,7 +23,7 @@ describe("UniversePageSummary", () => {
     const po = renderComponent(nnsUniverseMock);
     expect(await po.getTitle()).toEqual("Internet Computer");
     expect(await po.getLogoUrl()).toEqual(nnsUniverseMock.logo);
-    expect(await po.getLogoAlt()).toEqual("Internet Computer");
+    expect(await po.getLogoAlt()).toEqual("Internet Computer logo");
   });
 
   it("shout render sns", async () => {
@@ -31,7 +31,7 @@ describe("UniversePageSummary", () => {
     const po = renderComponent(mockSnsUniverse);
     expect(await po.getTitle()).toEqual("Tetris");
     expect(await po.getLogoUrl()).toEqual(mockSnsUniverse.logo);
-    expect(await po.getLogoAlt()).toEqual("Tetris");
+    expect(await po.getLogoAlt()).toEqual("Tetris project logo");
   });
 
   it("shout render ckBTC", async () => {
