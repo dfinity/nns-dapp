@@ -74,7 +74,7 @@
         horizontalPadding={false}
       />
     {:else}
-      <div data-tid="vote-icon" class="icon">
+      <div data-tid="vote-icon" class="vote-icon">
         <IconVote size="24px" />
       </div>
     {/if}
@@ -156,7 +156,7 @@
     }
   }
 
-  .icon {
+  .vote-icon {
     // Align with small framed universe logo
     width: var(--padding-3x);
     height: var(--padding-3x);
