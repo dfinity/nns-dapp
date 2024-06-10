@@ -22,6 +22,7 @@
 </script>
 
 <Checkbox
+  testId="join-community-fund-checkbox-component"
   {disabled}
   preventDefault
   inputId="join-community-fund-checkbox"

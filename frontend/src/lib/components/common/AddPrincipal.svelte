@@ -13,7 +13,7 @@
   };
 </script>
 
-<form on:submit|preventDefault={select}>
+<form on:submit|preventDefault={select} data-tid="add-principal-component">
   <div>
     <PrincipalInput
       bind:principal

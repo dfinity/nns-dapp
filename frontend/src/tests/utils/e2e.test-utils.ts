@@ -94,20 +94,29 @@ export const setFeatureFlag = ({
     { featureFlag, value }
   );
 
+// Finds elements matching any of the selectors and replaces their
+// `innerHTML` content with any of the `replacements`, if the current content
+// matches the `pattern`.
+// If more elements are found than replacements, the replacements will be
+// reused in round-robin fashion.
 export const replaceContent = async ({
   page,
   selectors,
-  innerHtml,
+  pattern,
+  replacements,
 }: {
   page: Page;
   selectors: string[];
-  innerHtml: string;
+  pattern: RegExp;
+  replacements: string[];
 }): Promise<void> => {
   await page.evaluate(
-    ({ selectors, innerHtml }) =>
-      document.querySelectorAll(selectors.join(", ")).forEach((el) => {
-        el.innerHTML = innerHtml;
+    ({ selectors, pattern, replacements }) =>
+      document.querySelectorAll(selectors.join(", ")).forEach((el, i) => {
+        if (pattern.test(el.innerHTML)) {
+          el.innerHTML = replacements[i % replacements.length];
+        }
       }),
-    { selectors, innerHtml }
+    { selectors, pattern, replacements }
   );
 };

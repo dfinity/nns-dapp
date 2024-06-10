@@ -124,8 +124,12 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return this.locator.click();
   }
 
-  input(_value: string): Promise<void> {
-    throw new Error("Not implement");
+  input(value: string): Promise<void> {
+    return this.locator.evaluate((node: HTMLInputElement, value: string) => {
+      node.value = value;
+      node.dispatchEvent(new Event("input", { bubbles: true }));
+      node.dispatchEvent(new Event("change", { bubbles: true }));
+    }, value);
   }
 
   typeText(text: string): Promise<void> {
