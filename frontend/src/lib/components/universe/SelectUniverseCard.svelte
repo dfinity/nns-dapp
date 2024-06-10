@@ -151,6 +151,16 @@
     }
   }
 
+  .icon {
+    // Align with small framed universe logo 
+    width: var(--padding-3x);
+    height: var(--padding-3x);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--padding-0_25x);
+  }
+
   .content {
     display: flex;
     flex-direction: column;
