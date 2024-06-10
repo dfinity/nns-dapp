@@ -67,7 +67,7 @@
 >
   <div class="container" class:selected>
     {#if universe !== "all-actionable"}
-      <UniverseLogo size="big" {universe} framed={true} />
+      <UniverseLogo size="small" {universe} framed={true} horizontalPadding={false} />
     {:else}
       <div data-tid="vote-icon" class="icon">
         <IconVote size="24px" />
