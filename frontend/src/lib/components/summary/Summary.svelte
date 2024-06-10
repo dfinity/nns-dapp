@@ -3,11 +3,9 @@
   import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
 </script>
 
-<div class="summary" data-tid="projects-summary">
-  <h1 class="title">
-    <UniversePageSummary universe={$selectedUniverseStore} />
-  </h1>
-</div>
+<h1 class="summary" data-tid="projects-summary">
+  <UniversePageSummary universe={$selectedUniverseStore} />
+</h1>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
