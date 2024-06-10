@@ -3,14 +3,19 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { page } from "$mocks/$app/stores";
-import en from "$tests/mocks/i18n.mock";
-import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { nnsUniverseMock } from "$tests/mocks/universe.mock";
+import { UniversePageSummaryPo } from "$tests/page-objects/UniversePageSummary.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
 describe("Summary", () => {
-  const rootCanisterId = rootCanisterIdMock;
+  const renderComponent = () => {
+    const { container } = render(Summary);
+    return UniversePageSummaryPo.under(new JestPageObjectElement(container));
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -18,72 +23,55 @@ describe("Summary", () => {
     resetSnsProjects();
   });
 
-  it("should render a logo", () => {
-    const { getByTestId } = render(Summary);
-    expect(getByTestId("project-logo")).not.toBeNull();
-  });
-
   describe("no universe", () => {
-    it("should render internet computer if none", () => {
-      const { container } = render(Summary, {
-        props: { displayUniverse: false },
-      });
-
-      expect(
-        container?.querySelector("h1")?.textContent?.includes(en.core.ic)
-      ).toBeTruthy();
+    it("should render internet computer if none", async () => {
+      const po = renderComponent();
+      expect(await po.getTitle()).toEqual("Internet Computer");
+      expect(await po.getLogoUrl()).toEqual(nnsUniverseMock.logo);
+      expect(await po.getLogoAlt()).toEqual("Internet Computer logo");
     });
   });
 
   describe("nns", () => {
-    it("should render internet computer", () => {
+    it("should render internet computer", async () => {
       page.mock({
         data: { universe: OWN_CANISTER_ID.toText() },
       });
-
-      const { container } = render(Summary);
-
-      expect(
-        container?.querySelector("h1")?.textContent?.includes(en.core.ic)
-      ).toBeTruthy();
+      const po = renderComponent();
+      expect(await po.getTitle()).toEqual("Internet Computer");
+      expect(await po.getLogoUrl()).toEqual(nnsUniverseMock.logo);
+      expect(await po.getLogoAlt()).toEqual("Internet Computer logo");
     });
   });
 
   describe("sns", () => {
-    it("should render project", () => {
+    it("should render project", async () => {
       page.mock({
-        data: { universe: rootCanisterId.toText() },
+        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
         routeId: AppPath.Accounts,
       });
-      const projectName = "test";
       setSnsProjects([
         {
-          projectName,
+          projectName: "Tetriz",
           lifecycle: SnsSwapLifecycle.Committed,
-          rootCanisterId,
         },
       ]);
 
-      const { container } = render(Summary);
-
-      expect(
-        container?.querySelector("h1")?.textContent?.includes(projectName)
-      ).toBeTruthy();
+      const po = renderComponent();
+      expect(await po.getTitle()).toEqual("Tetriz");
+      expect(await po.getLogoAlt()).toEqual("Tetriz project logo");
     });
   });
 
-  describe("ckBTC", () => {
-    it("should render ckBTC", () => {
+  describe("ckBTC", async () => {
+    it("should render ckBTC", async () => {
       page.mock({
         data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Accounts,
       });
 
-      const { container } = render(Summary);
-
-      expect(
-        container?.querySelector("h1")?.textContent?.includes(en.ckbtc.title)
-      ).toBeTruthy();
+      const po = renderComponent();
+      expect(await po.getTitle()).toEqual("ckBTC");
     });
   });
 });
