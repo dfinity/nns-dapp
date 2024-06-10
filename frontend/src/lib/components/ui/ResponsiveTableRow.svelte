@@ -91,22 +91,25 @@
   @use "../../themes/mixins/grid-table";
 
   [role="row"] {
+    // Styles for desktop and mobile:
+
     display: grid;
-    flex-direction: column;
-
     text-decoration: none;
+    padding: var(--padding-2x);
+    background-color: var(--table-row-background);
 
+    // Styles for mobile (and overridden for desktop):
+
+    row-gap: var(--padding-2x);
     grid-template-areas: var(--mobile-grid-template-areas);
+
+    // Styles applied to desktop only:
 
     @include media.min-width(medium) {
       @include grid-table.row;
       row-gap: 0;
       grid-template-areas: none;
     }
-
-    padding: var(--padding-2x);
-
-    background-color: var(--table-row-background);
 
     &:hover {
       background-color: var(--table-row-background-hover);
