@@ -14,7 +14,7 @@ export interface ResponsiveTableColumn<
   RowDataType extends ResponsiveTableRowData,
 > {
   title: string;
-  cellComponent: ComponentType<SvelteComponent<{ rowData: RowDataType }>>;
+  cellComponent?: ComponentType<SvelteComponent<{ rowData: RowDataType }>>;
   alignment: ColumnAlignment;
   templateColumns: TemplateItem[];
 }

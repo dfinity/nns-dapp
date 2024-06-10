@@ -83,8 +83,11 @@ describe("NeuronsTable", () => {
     const po = renderComponent({ neurons: [neuron1, neuron2] });
     expect(await po.getColumnHeaders()).toEqual([
       "Neuron ID",
+      "",
       "Stake",
+      "",
       "State",
+      "",
       "Dissolve Delay",
       "", // No header for actions column.
     ]);
@@ -95,8 +98,11 @@ describe("NeuronsTable", () => {
     const rows = await po.getRows();
     expect(await rows[0].getCellClasses()).toEqual([
       expect.arrayContaining(["desktop-align-left"]), // Neuron ID
+      expect.any(Array), // gap
       expect.arrayContaining(["desktop-align-right"]), // Stake
+      expect.any(Array), // gap
       expect.arrayContaining(["desktop-align-right"]), // State
+      expect.any(Array), // gap
       expect.arrayContaining(["desktop-align-right"]), // Dissolve Delay
       expect.arrayContaining(["desktop-align-right"]), // Actions
     ]);
@@ -108,14 +114,17 @@ describe("NeuronsTable", () => {
     expect(await po.getDesktopGridTemplateColumns()).toBe(
       [
         "max-content max-content", // Neuron ID
-        "minmax(max-content, 1fr)", // Stake
-        "minmax(max-content, 1fr)", // State
-        "minmax(max-content, 1fr)", // Dissolve Delay
+        "1fr", // gap
+        "max-content", // Stake
+        "1fr", // gap
+        "max-content", // State
+        "1fr", // gap
+        "max-content", // Dissolve Delay
         "max-content", // Actions
       ].join(" ")
     );
     expect(await po.getMobileGridTemplateAreas()).toBe(
-      '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2"'
+      '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5"'
     );
   });
 
