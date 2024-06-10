@@ -67,7 +67,12 @@
 >
   <div class="container" class:selected>
     {#if universe !== "all-actionable"}
-      <UniverseLogo size="small" {universe} framed={true} horizontalPadding={false} />
+      <UniverseLogo
+        size="small"
+        {universe}
+        framed={true}
+        horizontalPadding={false}
+      />
     {:else}
       <div data-tid="vote-icon" class="icon">
         <IconVote size="24px" />
@@ -152,7 +157,7 @@
   }
 
   .icon {
-    // Align with small framed universe logo 
+    // Align with small framed universe logo
     width: var(--padding-3x);
     height: var(--padding-3x);
     display: flex;
