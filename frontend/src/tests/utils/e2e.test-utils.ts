@@ -94,6 +94,11 @@ export const setFeatureFlag = ({
     { featureFlag, value }
   );
 
+// Finds elements matching any of the selectors and replaces their
+// `innerHTML` content with any of the `replacements`, if the current content
+// matches the `pattern`.
+// If more elements are found than replacements, the replacements will be
+// reused in round-robin fashion.
 export const replaceContent = async ({
   page,
   selectors,
