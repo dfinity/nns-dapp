@@ -22,12 +22,16 @@ describe("UniversePageSummary", () => {
   it("shout render IC", async () => {
     const po = renderComponent(nnsUniverseMock);
     expect(await po.getTitle()).toEqual("Internet Computer");
+    expect(await po.getLogoUrl()).toEqual(nnsUniverseMock.logo);
+    expect(await po.getLogoAlt()).toEqual("Internet Computer");
   });
 
   it("shout render sns", async () => {
     const mockSnsUniverse = createUniverse(mockSummary);
     const po = renderComponent(mockSnsUniverse);
     expect(await po.getTitle()).toEqual("Tetris");
+    expect(await po.getLogoUrl()).toEqual(mockSnsUniverse.logo);
+    expect(await po.getLogoAlt()).toEqual("Tetris");
   });
 
   it("shout render ckBTC", async () => {
