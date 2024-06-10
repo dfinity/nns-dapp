@@ -1,5 +1,4 @@
 <script lang="ts">
-  import SummaryLogo from "$lib/components/summary/SummaryLogo.svelte";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
 </script>
