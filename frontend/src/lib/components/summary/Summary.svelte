@@ -1,30 +1,15 @@
 <script lang="ts">
   import SummaryLogo from "$lib/components/summary/SummaryLogo.svelte";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
-  import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
-
-  export let displayUniverse = true;
-
-  let twoLines = true;
-  $: twoLines = $$slots.details !== undefined;
+  import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
 </script>
 
 <div class="summary" data-tid="projects-summary">
   <h1 class="title">
-    <span
-      >{displayUniverse
-        ? $selectedUniverseStore.title
-        : $nnsUniverseStore.title}</span
-    >
+    <span>{$selectedUniverseStore.title}</span>
 
-    <SummaryLogo {displayUniverse} />
+    <UniverseLogo universe={$selectedUniverseStore} framed />
   </h1>
-
-  {#if twoLines}
-    <div class="details">
-      <slot name="details" />
-    </div>
-  {/if}
 </div>
 
 <style lang="scss">
@@ -50,11 +35,5 @@
     @include text.truncate;
 
     margin: 0;
-  }
-
-  .details {
-    height: var(--padding-4x);
-    color: var(--description-color);
-    @include fonts.small;
   }
 </style>
