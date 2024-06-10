@@ -39,7 +39,11 @@
 
 <TestIdWrapper testId="spawn-neuron-button-component">
   {#if enoughMaturity}
-    <button class="secondary" on:click={showModal}>
+    <button
+      data-tid="spawn-neuron-button"
+      class="secondary"
+      on:click={showModal}
+    >
       {$i18n.neuron_detail.spawn_neuron}
     </button>
   {:else}
@@ -68,7 +72,7 @@
         }
       )}
     >
-      <button disabled class="secondary">
+      <button data-tid="spawn-neuron-button" disabled class="secondary">
         {$i18n.neuron_detail.spawn_neuron}
       </button>
     </Tooltip>

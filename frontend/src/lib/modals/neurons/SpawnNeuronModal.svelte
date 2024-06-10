@@ -91,7 +91,12 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep on:nnsClose>
+<WizardModal
+  testId="spawn-neuron-modal-component"
+  {steps}
+  bind:currentStep
+  on:nnsClose
+>
   <svelte:fragment slot="title"
     >{currentStep?.title ?? steps[0].title}</svelte:fragment
   >

@@ -34,7 +34,11 @@
   };
 </script>
 
-<ConfirmationModal on:nnsClose on:nnsConfirm={dissolveAction}>
+<ConfirmationModal
+  testId="dissolve-action-button-modal-component"
+  on:nnsClose
+  on:nnsConfirm={dissolveAction}
+>
   <div data-tid="dissolve-action-modal">
     <h4>{$i18n.core.confirm}</h4>
     <p>{description}</p>

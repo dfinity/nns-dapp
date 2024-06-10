@@ -15,7 +15,12 @@
 
 <div data-tid="neuron-id-cell-component" class="container">
   <span class="hash"
-    ><Hash text={rowData.neuronId} tagName="span" id={elementId} /></span
+    ><Hash
+      testId="neuron-id"
+      text={rowData.neuronId}
+      tagName="span"
+      id={elementId}
+    /></span
   >
   <Copy value={rowData.neuronId} />
   <div class="tags">

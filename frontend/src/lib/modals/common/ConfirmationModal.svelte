@@ -3,10 +3,11 @@
   import { i18n } from "$lib/stores/i18n";
   import { Modal, busy } from "@dfinity/gix-components";
 
+  export let testId = "confirmation-modal-component";
   const dispatch = createEventDispatcher();
 </script>
 
-<Modal role="alert" on:nnsClose testId="confirmation-modal-component">
+<Modal role="alert" on:nnsClose {testId}>
   <article data-tid="confirmation-modal-content">
     <slot />
   </article>
