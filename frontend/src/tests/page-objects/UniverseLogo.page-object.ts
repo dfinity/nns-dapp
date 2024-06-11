@@ -1,4 +1,5 @@
-import { LogoWrapperPo } from "$tests/page-objects/LogoWrapper.page-object";
+import { LogoPo } from "$tests/page-objects/Logo.page-object";
+import { VoteLogoPo } from "$tests/page-objects/VoteLogo.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -9,8 +10,12 @@ export class UniverseLogoPo extends BasePageObject {
     return new UniverseLogoPo(element.byTestId(UniverseLogoPo.TID));
   }
 
-  getLogoWrapperPo(): LogoWrapperPo {
-    return LogoWrapperPo.under(this.root);
+  getLogoPo(): LogoPo {
+    return LogoPo.under(this.root);
+  }
+
+  getVoteLogoPo(): VoteLogoPo {
+    return VoteLogoPo.under(this.root);
   }
 
   getLogoAltText(): Promise<string> {

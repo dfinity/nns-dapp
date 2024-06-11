@@ -8,7 +8,7 @@
   export let testId: string | undefined = undefined;
 </script>
 
-<LogoWrapper {size} {framed}>
+<LogoWrapper {size} {framed} testId="logo-component">
   <img
     {src}
     {alt}

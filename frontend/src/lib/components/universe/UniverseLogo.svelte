@@ -1,15 +1,16 @@
 <script lang="ts">
   import Logo from "$lib/components/ui/Logo.svelte";
+  import VoteLogo from "$lib/components/universe/VoteLogo.svelte";
   import type { Universe } from "$lib/types/universe";
   import { universeLogoAlt } from "$lib/utils/universe.utils";
 
-  export let universe: Universe;
+  export let universe: Universe | "all-actionable";
   export let size: "big" | "medium" | "small" = "small";
   export let framed = false;
   export let horizontalPadding = true;
 
   let title: string;
-  $: title = universeLogoAlt(universe);
+  $: title = universe !== "all-actionable" ? universeLogoAlt(universe) : "";
 </script>
 
 <span
@@ -17,7 +18,11 @@
   class:horizontalPadding
   data-tid="project-logo"
 >
-  <Logo src={universe.logo} alt={title} {size} {framed} testId="logo" />
+  {#if universe !== "all-actionable"}
+    <Logo src={universe.logo} alt={title} {size} {framed} testId="logo" />
+  {:else}
+    <VoteLogo {size} {framed} />
+  {/if}
 </span>
 
 <style lang="scss">

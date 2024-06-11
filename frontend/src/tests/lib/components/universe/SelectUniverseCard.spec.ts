@@ -102,11 +102,13 @@ describe("SelectUniverseCard", () => {
       const po = await renderComponent({
         props,
       });
-      const logo = po.getUniverseLogoPo().getLogoWrapperPo();
+      const logo = po.getUniverseLogoPo().getLogoPo();
       expect(await logo.isPresent()).toBe(true);
       expect(await logo.getSize()).toBe("big");
       expect(await logo.isFramed()).toBe(true);
-      expect(await po.getVoteLogoPo().isPresent()).toBe(false);
+      expect(await po.getUniverseLogoPo().getVoteLogoPo().isPresent()).toBe(
+        false
+      );
     });
   });
 
@@ -130,11 +132,13 @@ describe("SelectUniverseCard", () => {
       const po = await renderComponent({
         props,
       });
-      const logo = po.getUniverseLogoPo().getLogoWrapperPo();
+      const logo = po.getUniverseLogoPo().getLogoPo();
       expect(await logo.isPresent()).toBe(true);
       expect(await logo.getSize()).toBe("big");
       expect(await logo.isFramed()).toBe(true);
-      expect(await po.getVoteLogoPo().isPresent()).toBe(false);
+      expect(await po.getUniverseLogoPo().getVoteLogoPo().isPresent()).toBe(
+        false
+      );
     });
   });
 
@@ -418,11 +422,11 @@ describe("SelectUniverseCard", () => {
         props: { universe: "all-actionable", selected: false },
       });
 
-      const logo = po.getVoteLogoPo();
+      const logo = po.getUniverseLogoPo().getVoteLogoPo();
       expect(await logo.isPresent()).toBe(true);
       expect(await logo.getSize()).toBe("big");
       expect(await logo.isFramed()).toBe(true);
-      expect(await po.getUniverseLogoPo().isPresent()).toBe(false);
+      expect(await po.getUniverseLogoPo().getLogoPo().isPresent()).toBe(false);
     });
 
     it('should not display custom icon and text when not "all-actionable"', async () => {

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Card, Tooltip } from "@dfinity/gix-components";
-  import VoteLogo from "$lib/components/universe/VoteLogo.svelte";
   import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import UniverseAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
   import { pageStore } from "$lib/derived/page.derived";
@@ -54,9 +53,6 @@
   // Always rerender to trigger animation start
   let mounted = false;
   onMount(() => (mounted = true));
-
-  const logoSize = "big";
-  const logoFramed = true;
 </script>
 
 <Card
@@ -70,11 +66,7 @@
   noMargin
 >
   <div class="container" class:selected>
-    {#if universe !== "all-actionable"}
-      <UniverseLogo size={logoSize} {universe} framed={logoFramed} />
-    {:else}
-      <VoteLogo size={logoSize} framed={logoFramed} />
-    {/if}
+    <UniverseLogo size="big" {universe} framed={true} />
 
     <div
       class={`content ${role}`}
