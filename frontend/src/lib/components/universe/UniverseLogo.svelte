@@ -12,12 +12,16 @@
   $: title = universeLogoAlt(universe);
 </script>
 
-<div class={`${size}`} class:horizontalPadding data-tid="project-logo">
+<span
+  class={`container ${size}`}
+  class:horizontalPadding
+  data-tid="project-logo"
+>
   <Logo src={universe.logo} alt={title} {size} {framed} testId="logo" />
-</div>
+</span>
 
 <style lang="scss">
-  div {
+  .container {
     display: flex;
     justify-content: center;
     align-items: center;
