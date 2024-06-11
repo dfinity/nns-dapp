@@ -53,7 +53,7 @@
     {
       title: $i18n.neurons.state,
       cellComponent: NeuronStateCell,
-      alignment: "right",
+      alignment: "left",
       templateColumns: ["max-content"],
     },
     {

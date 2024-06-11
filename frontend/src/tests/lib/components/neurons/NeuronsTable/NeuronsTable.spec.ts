@@ -96,15 +96,15 @@ describe("NeuronsTable", () => {
   it("should render cell alignment classes", async () => {
     const po = renderComponent({ neurons: [neuron1, neuron2] });
     const rows = await po.getRows();
-    expect(await rows[0].getCellClasses()).toEqual([
-      expect.arrayContaining(["desktop-align-left"]), // Neuron ID
-      expect.any(Array), // gap
-      expect.arrayContaining(["desktop-align-right"]), // Stake
-      expect.any(Array), // gap
-      expect.arrayContaining(["desktop-align-right"]), // State
-      expect.any(Array), // gap
-      expect.arrayContaining(["desktop-align-right"]), // Dissolve Delay
-      expect.arrayContaining(["desktop-align-right"]), // Actions
+    expect(await rows[0].getCellAlignments()).toEqual([
+      "desktop-align-left", // Neuron ID
+      expect.any(String), // gap
+      "desktop-align-right", // Stake
+      expect.any(String), // gap
+      "desktop-align-left", // State
+      expect.any(String), // gap
+      "desktop-align-right", // Dissolve Delay
+      "desktop-align-right", // Actions
     ]);
   });
 

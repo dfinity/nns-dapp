@@ -19,6 +19,18 @@ export class ResponsiveTablePo extends BasePageObject {
     );
   }
 
+  async getColumnHeaderAlignments(): Promise<string[]> {
+    return (
+      await Promise.all(
+        (await this.root.querySelectorAll("[role='columnheader']")).map((el) =>
+          el.getClasses()
+        )
+      )
+    ).map((classes) =>
+      classes.filter((c) => c.startsWith("desktop-align-")).join(" ")
+    );
+  }
+
   getRows(): Promise<ResponsiveTableRowPo[]> {
     return ResponsiveTableRowPo.allUnder(this.root);
   }

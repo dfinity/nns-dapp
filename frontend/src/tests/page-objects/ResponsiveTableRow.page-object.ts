@@ -32,6 +32,18 @@ export class ResponsiveTableRowPo extends BasePageObject {
     );
   }
 
+  async getCellAlignments(): Promise<string[]> {
+    return (
+      await Promise.all(
+        (await this.root.querySelectorAll("[role='cell']")).map((el) =>
+          el.getClasses()
+        )
+      )
+    ).map((classes) =>
+      classes.filter((c) => c.startsWith("desktop-align-")).join(" ")
+    );
+  }
+
   async getCellClasses(): Promise<string[][]> {
     return Promise.all(
       (await this.root.querySelectorAll("[role='cell']")).map((el) =>
