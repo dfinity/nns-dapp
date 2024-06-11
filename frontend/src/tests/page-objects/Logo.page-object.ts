@@ -1,5 +1,4 @@
 import { LogoWrapperPo } from "$tests/page-objects/LogoWrapper.page-object";
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class LogoPo extends LogoWrapperPo {
