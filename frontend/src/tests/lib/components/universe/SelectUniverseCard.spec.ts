@@ -97,6 +97,17 @@ describe("SelectUniverseCard", () => {
       });
       expect(await po.getName()).toBe(en.core.ic);
     });
+
+    it("should use a big framed logo", async () => {
+      const po = await renderComponent({
+        props,
+      });
+      const logo = po.getUniverseLogoPo().getLogoWrapperPo();
+      expect(await logo.isPresent()).toBe(true);
+      expect(await logo.getSize()).toBe("big");
+      expect(await logo.isFramed()).toBe(true);
+      expect(await po.getVoteLogoPo().isPresent()).toBe(false);
+    });
   });
 
   describe("sns", () => {
@@ -113,6 +124,17 @@ describe("SelectUniverseCard", () => {
         props: { universe: mockSnsUniverse, selected: false },
       });
       expect(await po.getName()).toBe(mockSummary.metadata.name);
+    });
+
+    it("should use a big framed logo", async () => {
+      const po = await renderComponent({
+        props,
+      });
+      const logo = po.getUniverseLogoPo().getLogoWrapperPo();
+      expect(await logo.isPresent()).toBe(true);
+      expect(await logo.getSize()).toBe("big");
+      expect(await logo.isFramed()).toBe(true);
+      expect(await po.getVoteLogoPo().isPresent()).toBe(false);
     });
   });
 
@@ -384,6 +406,23 @@ describe("SelectUniverseCard", () => {
 
       expect(await po.hasVoteIcon()).toBe(true);
       expect(await po.getName()).toBe("Actionable Proposals");
+    });
+
+    it("should use a big framed vote logo", async () => {
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Proposals,
+      });
+
+      const po = await renderComponent({
+        props: { universe: "all-actionable", selected: false },
+      });
+
+      const logo = po.getVoteLogoPo();
+      expect(await logo.isPresent()).toBe(true);
+      expect(await logo.getSize()).toBe("big");
+      expect(await logo.isFramed()).toBe(true);
+      expect(await po.getUniverseLogoPo().isPresent()).toBe(false);
     });
 
     it('should not display custom icon and text when not "all-actionable"', async () => {

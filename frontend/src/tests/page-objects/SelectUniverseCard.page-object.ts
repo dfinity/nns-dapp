@@ -3,6 +3,7 @@ import { CardPo } from "$tests/page-objects/Card.page-object";
 import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import { UniverseAccountsBalancePo } from "$tests/page-objects/UniverseAccountsBalance.page-object";
 import { UniverseLogoPo } from "$tests/page-objects/UniverseLogo.page-object";
+import { VoteLogoPo } from "$tests/page-objects/VoteLogo.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class SelectUniverseCardPo extends CardPo {
@@ -43,6 +44,10 @@ export class SelectUniverseCardPo extends CardPo {
     return UniverseLogoPo.under(this.root);
   }
 
+  getVoteLogoPo(): VoteLogoPo {
+    return VoteLogoPo.under(this.root);
+  }
+
   async getName(): Promise<string> {
     return this.getText("universe-name");
   }
@@ -80,6 +85,6 @@ export class SelectUniverseCardPo extends CardPo {
   }
 
   hasVoteIcon(): Promise<boolean> {
-    return this.root.querySelector('[data-tid="vote-icon"]').isPresent();
+    return this.getVoteLogoPo().isPresent();
   }
 }

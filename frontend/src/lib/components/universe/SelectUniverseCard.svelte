@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Card, IconVote, Tooltip } from "@dfinity/gix-components";
+  import { Card, Tooltip } from "@dfinity/gix-components";
+  import VoteLogo from "$lib/components/universe/VoteLogo.svelte";
   import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import UniverseAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
   import { pageStore } from "$lib/derived/page.derived";
@@ -53,6 +54,9 @@
   // Always rerender to trigger animation start
   let mounted = false;
   onMount(() => (mounted = true));
+
+  const logoSize = "big";
+  const logoFramed = true;
 </script>
 
 <Card
@@ -67,11 +71,9 @@
 >
   <div class="container" class:selected>
     {#if universe !== "all-actionable"}
-      <UniverseLogo size="big" {universe} framed={true} />
+      <UniverseLogo size={logoSize} {universe} framed={logoFramed} />
     {:else}
-      <div data-tid="vote-icon" class="icon">
-        <IconVote size="24px" />
-      </div>
+      <VoteLogo size={logoSize} framed={logoFramed} />
     {/if}
 
     <div
