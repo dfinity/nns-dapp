@@ -35,9 +35,11 @@
     // first and last cell combined and a separate labeled row for each other
     // cell.
     let mobileGridTemplateAreas = '"first-cell last-cell"';
-    for (let i = 0; i < columns.length - 2; i++) {
-      const areaName = getCellGridAreaName(i);
-      mobileGridTemplateAreas += ` "${areaName} ${areaName}"`;
+    for (let i = 1; i < columns.length - 1; i++) {
+      if (nonNullish(columns[i].cellComponent)) {
+        const areaName = getCellGridAreaName(i - 1);
+        mobileGridTemplateAreas += ` "${areaName} ${areaName}"`;
+      }
     }
     return (
       `--grid-rows-per-table-row: ${gridRowsPerTableRow}; ` +

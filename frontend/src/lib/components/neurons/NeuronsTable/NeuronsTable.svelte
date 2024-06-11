@@ -35,22 +35,37 @@
       templateColumns: ["max-content", "max-content"],
     },
     {
+      title: "",
+      alignment: "left",
+      templateColumns: ["1fr"],
+    },
+    {
       title: $i18n.neuron_detail.stake,
       cellComponent: NeuronStakeCell,
       alignment: "right",
-      templateColumns: ["minmax(max-content, 1fr)"],
+      templateColumns: ["max-content"],
+    },
+    {
+      title: "",
+      alignment: "left",
+      templateColumns: ["1fr"],
     },
     {
       title: $i18n.neurons.state,
       cellComponent: NeuronStateCell,
       alignment: "right",
-      templateColumns: ["minmax(max-content, 1fr)"],
+      templateColumns: ["max-content"],
+    },
+    {
+      title: "",
+      alignment: "left",
+      templateColumns: ["1fr"],
     },
     {
       title: $i18n.neurons.dissolve_delay_title,
       cellComponent: NeuronDissolveDelayCell,
       alignment: "right",
-      templateColumns: ["minmax(max-content, 1fr)"],
+      templateColumns: ["max-content"],
     },
     {
       title: "",
