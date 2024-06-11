@@ -71,6 +71,16 @@ describe("ResponseTable", () => {
     expect(await po.getColumnHeaders()).toEqual(["Name", "", "Age", ""]);
   });
 
+  it("should render column header alignments", async () => {
+    const po = renderComponent({ columns, tableData });
+    expect(await po.getColumnHeaderAlignments()).toEqual([
+      "desktop-align-left", // Name
+      expect.any(String), // gap
+      "desktop-align-left", // Age
+      "desktop-align-right", // Actions
+    ]);
+  });
+
   it("should render row data", async () => {
     const po = renderComponent({ columns, tableData });
     const rows = await po.getRows();
@@ -103,11 +113,11 @@ describe("ResponseTable", () => {
   it("should render classes based on column alignment", async () => {
     const po = renderComponent({ columns, tableData });
     const rows = await po.getRows();
-    expect(await rows[0].getCellClasses()).toEqual([
-      expect.arrayContaining(["desktop-align-left"]),
-      expect.any(Array),
-      expect.arrayContaining(["desktop-align-left"]),
-      expect.arrayContaining(["desktop-align-right"]),
+    expect(await rows[0].getCellAlignments()).toEqual([
+      "desktop-align-left", // Name
+      expect.any(String), // gap
+      "desktop-align-left", // Age
+      "desktop-align-right", // Actions
     ]);
   });
 
