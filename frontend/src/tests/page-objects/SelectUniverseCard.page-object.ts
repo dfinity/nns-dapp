@@ -80,6 +80,6 @@ export class SelectUniverseCardPo extends CardPo {
   }
 
   hasVoteIcon(): Promise<boolean> {
-    return this.root.querySelector('[data-tid="vote-icon"]').isPresent();
+    return this.getUniverseLogoPo().getVoteLogoPo().isPresent();
   }
 }
