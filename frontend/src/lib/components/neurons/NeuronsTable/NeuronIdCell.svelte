@@ -1,16 +1,9 @@
-<script lang="ts" context="module">
-  let nextElementIdNumber = 0;
-</script>
-
 <script lang="ts">
   import type { TableNeuron } from "$lib/types/neurons-table";
   import Hash from "$lib/components/ui/Hash.svelte";
   import { Copy, Tag } from "@dfinity/gix-components";
 
   export let rowData: TableNeuron;
-
-  let elementId = `neuron-id-cell-${nextElementIdNumber}`;
-  ++nextElementIdNumber;
 </script>
 
 <div data-tid="neuron-id-cell-component" class="container">
@@ -19,7 +12,7 @@
       testId="neuron-id"
       text={rowData.neuronId}
       tagName="span"
-      id={elementId}
+      idPrefix="neuron-id-cell"
     /></span
   >
   <Copy value={rowData.neuronId} />
