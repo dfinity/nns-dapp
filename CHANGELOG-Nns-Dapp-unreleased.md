@@ -20,6 +20,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Rename proposal navigation buttons to "Previous" and "Next".
+* Put project icon before title in page summary.
 
 #### Deprecated
 
