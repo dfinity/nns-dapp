@@ -10,7 +10,7 @@
 
   export let rowData: RowDataType;
   export let columns: ResponsiveTableColumn<RowDataType>[];
-  export let style = "";
+  export let style: string | undefined = undefined;
 
   let firstColumn: ResponsiveTableColumn<RowDataType> | undefined;
   let middleColumns: ResponsiveTableColumn<RowDataType>[];

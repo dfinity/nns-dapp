@@ -15,7 +15,8 @@
   export let tableData: Array<RowDataType>;
   export let columns: ResponsiveTableColumn<RowDataType>[];
   export let gridRowsPerTableRow = 1;
-  export let getRowStyle: (rowData: RowDataType) => string = (_) => "";
+  export let getRowStyle: (rowData: RowDataType) => string | undefined = (_) =>
+    undefined;
 
   let firstColumn: ResponsiveTableColumn<RowDataType> | undefined;
   let middleColumns: ResponsiveTableColumn<RowDataType>[];

@@ -58,7 +58,7 @@ export class ResponsiveTableRowPo extends BasePageObject {
 
   async getStyleVariable(varName: string): Promise<string> {
     const style = await this.getStyle();
-    const match = style.match(new RegExp(`--${varName}: ([^;]+)`));
+    const match = style && style.match(new RegExp(`--${varName}: ([^;]+)`));
     if (!match) {
       return "";
     }

@@ -80,7 +80,7 @@
     if (neuron.state === NeuronState.Spawning) {
       return "--table-row-text-color: var(--text-description-tint)";
     }
-    return "";
+    return undefined;
   };
 </script>
 
