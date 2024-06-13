@@ -1,45 +1,23 @@
 <script lang="ts">
   import type { TableNeuron } from "$lib/types/neurons-table";
   import Hash from "$lib/components/ui/Hash.svelte";
-  import { Copy, Tag } from "@dfinity/gix-components";
+  import { Tag } from "@dfinity/gix-components";
 
   export let rowData: TableNeuron;
 </script>
 
-<div data-tid="neuron-id-cell-component" class="container">
-  <span class="hash"
-    ><Hash
-      testId="neuron-id"
-      text={rowData.neuronId}
-      tagName="span"
-      idPrefix="neuron-id-cell"
-    /></span
-  >
-  <Copy value={rowData.neuronId} />
-  <div class="tags">
+<div data-tid="neuron-id-cell-component">
+  <Hash idPrefix="neuron-id" tagName="span" text={rowData.neuronId} showCopy />
+  <span class="tags">
     {#each rowData.tags as tag}
       <Tag testId="neuron-tag">{tag}</Tag>
     {/each}
-  </div>
+  </span>
 </div>
 
 <style lang="scss">
-  .container {
-    display: grid;
-    grid-row: span 2;
-    grid-column: span 2;
-    grid-template-rows: subgrid;
-    grid-template-columns: subgrid;
-    gap: 0;
-  }
-
-  .hash {
-    align-self: center;
-  }
-
   .tags {
-    display: flex;
+    display: inline-flex;
     gap: var(--padding);
-    grid-column: 1/-1;
   }
 </style>
