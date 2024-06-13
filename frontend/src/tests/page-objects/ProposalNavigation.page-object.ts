@@ -61,12 +61,6 @@ export class ProposalNavigationPo extends BasePageObject {
     );
   }
 
-  async getNextButtonProposalUniverse(): Promise<string> {
-    return (await this.getNextButtonPo().getElement()).getAttribute(
-      "data-test-proposal-u"
-    );
-  }
-
   async isPreviousButtonHidden(): Promise<boolean> {
     return ProposalNavigationPo.isButtonHidden(this.getPreviousButtonPo());
   }
