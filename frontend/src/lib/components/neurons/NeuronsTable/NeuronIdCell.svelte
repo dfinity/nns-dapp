@@ -7,7 +7,13 @@
 </script>
 
 <div data-tid="neuron-id-cell-component">
-  <Hash idPrefix="neuron-id" tagName="span" text={rowData.neuronId} showCopy />
+  <Hash
+    testId="neuron-id"
+    text={rowData.neuronId}
+    tagName="span"
+    idPrefix="neuron-id"
+    showCopy
+  />
   <span class="tags">
     {#each rowData.tags as tag}
       <Tag testId="neuron-tag">{tag}</Tag>
