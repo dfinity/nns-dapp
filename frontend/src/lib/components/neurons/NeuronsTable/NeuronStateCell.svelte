@@ -22,7 +22,9 @@
       : undefined}
   >
     <div class="status" data-tid="neuron-state-info">
-      <svelte:component this={stateInfo.Icon} size={ICON_SIZE_SMALL_PIXELS} />
+      <span class="icon">
+        <svelte:component this={stateInfo.Icon} size={ICON_SIZE_SMALL_PIXELS} />
+      </span>
       {$i18n.neuron_state[stateInfo.textKey]}
     </div>
   </Tooltip>
@@ -30,6 +32,11 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
+  .icon {
+    display: contents;
+    color: var(--elements-icons);
+  }
 
   .status {
     display: flex;
