@@ -42,4 +42,9 @@ export class NeuronSelectPercentagePo extends BasePageObject {
   getAvailableMaturity(): Promise<string> {
     return this.getText("available-maturity");
   }
+
+  async spawnNeuron({ percentage }: { percentage: number }): Promise<void> {
+    this.setPercentage(percentage);
+    await this.clickNextButton();
+  }
 }

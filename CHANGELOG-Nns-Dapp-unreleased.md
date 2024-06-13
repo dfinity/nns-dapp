@@ -15,12 +15,12 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Enabled `ENABLE_CKUSDC` feature flag.
 * Actionable proposals page.
 
 #### Changed
 
 * Added cross-project proposal navigation.
+* Put project icon before title in page summary.
 
 #### Deprecated
 
@@ -39,6 +39,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 #### Changed
+
+* Put snapshot state directories in home directory instead of `dfx` cache.
 
 #### Deprecated
 

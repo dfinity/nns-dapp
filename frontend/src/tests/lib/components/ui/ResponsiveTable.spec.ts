@@ -14,6 +14,12 @@ describe("ResponseTable", () => {
       templateColumns: ["1fr", "max-content"],
     },
     {
+      // Column without cellComponent, to create a gap in the grid.
+      title: "",
+      alignment: "left",
+      templateColumns: ["1fr"],
+    },
+    {
       title: "Age",
       cellComponent: TestTableAgeCell,
       alignment: "left",
@@ -62,7 +68,17 @@ describe("ResponseTable", () => {
     const po = renderComponent({ columns, tableData });
     // The last column is reserved for actions and is never rendered with a
     // header.
-    expect(await po.getColumnHeaders()).toEqual(["Name", "Age", ""]);
+    expect(await po.getColumnHeaders()).toEqual(["Name", "", "Age", ""]);
+  });
+
+  it("should render column header alignments", async () => {
+    const po = renderComponent({ columns, tableData });
+    expect(await po.getColumnHeaderAlignments()).toEqual([
+      "desktop-align-left", // Name
+      expect.any(String), // gap
+      "desktop-align-left", // Age
+      "desktop-align-right", // Actions
+    ]);
   });
 
   it("should render row data", async () => {
@@ -71,9 +87,9 @@ describe("ResponseTable", () => {
     expect(rows).toHaveLength(3);
     // The label is repeated in the cell for columns that aren't the first or
     // the last column. They are hidden on desktop and shown on mobile.
-    expect(await rows[0].getCells()).toEqual(["Alice", "Age 45", "Alice"]);
-    expect(await rows[1].getCells()).toEqual(["Anna", "Age 19", "Anna"]);
-    expect(await rows[2].getCells()).toEqual(["Anton", "Age 31", "Anton"]);
+    expect(await rows[0].getCells()).toEqual(["Alice", "", "Age 45", "Alice"]);
+    expect(await rows[1].getCells()).toEqual(["Anna", "", "Age 19", "Anna"]);
+    expect(await rows[2].getCells()).toEqual(["Anton", "", "Age 31", "Anton"]);
   });
 
   it("should render row href", async () => {
@@ -97,28 +113,30 @@ describe("ResponseTable", () => {
   it("should render classes based on column alignment", async () => {
     const po = renderComponent({ columns, tableData });
     const rows = await po.getRows();
-    expect(await rows[0].getCellClasses()).toEqual([
-      expect.arrayContaining(["desktop-align-left"]),
-      expect.arrayContaining(["desktop-align-left"]),
-      expect.arrayContaining(["desktop-align-right"]),
+    expect(await rows[0].getCellAlignments()).toEqual([
+      "desktop-align-left", // Name
+      expect.any(String), // gap
+      "desktop-align-left", // Age
+      "desktop-align-right", // Actions
     ]);
   });
 
   it("should render column styles depending on the number of columns", async () => {
-    // 3 columns
+    // 4 columns
     const po1 = renderComponent({ columns, tableData });
     expect(await po1.getDesktopGridTemplateColumns()).toBe(
       [
         "1fr max-content", // Name
+        "1fr", // gap
         "1fr", // Age
         "max-content", // Actions
       ].join(" ")
     );
     expect(await po1.getMobileGridTemplateAreas()).toBe(
-      '"first-cell last-cell" "cell-0 cell-0"'
+      '"first-cell last-cell" "cell-1 cell-1"'
     );
 
-    // 6 columns
+    // 8 columns
     const po2 = renderComponent({
       columns: [...columns, ...columns],
       tableData,
@@ -126,20 +144,22 @@ describe("ResponseTable", () => {
     expect(await po2.getDesktopGridTemplateColumns()).toBe(
       [
         "1fr max-content", // Name
+        "1fr", // gap
         "1fr", // Age
         "max-content", // Actions
         "1fr max-content", // Name
+        "1fr", // gap
         "1fr", // Age
         "max-content", // Actions
       ].join(" ")
     );
     expect(await po2.getMobileGridTemplateAreas()).toBe(
-      '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2" "cell-3 cell-3"'
+      '"first-cell last-cell" "cell-1 cell-1" "cell-2 cell-2" "cell-3 cell-3" "cell-5 cell-5"'
     );
   });
 
   it("should have a different grid area for cells in different columns", async () => {
-    // 6 columns
+    // 8 columns
     const po = renderComponent({
       columns: [...columns, ...columns],
       tableData,
@@ -150,9 +170,11 @@ describe("ResponseTable", () => {
     const expectedStyles = [
       "--desktop-column-span: 2;--mobile-template-columns: 1fr max-content;",
       "--desktop-column-span: 1;--mobile-template-columns: 1fr;--grid-area-name: cell-0;",
-      "--desktop-column-span: 1;--mobile-template-columns: max-content;--grid-area-name: cell-1;",
-      "--desktop-column-span: 2;--mobile-template-columns: 1fr max-content;--grid-area-name: cell-2;",
-      "--desktop-column-span: 1;--mobile-template-columns: 1fr;--grid-area-name: cell-3;",
+      "--desktop-column-span: 1;--mobile-template-columns: 1fr;--grid-area-name: cell-1;",
+      "--desktop-column-span: 1;--mobile-template-columns: max-content;--grid-area-name: cell-2;",
+      "--desktop-column-span: 2;--mobile-template-columns: 1fr max-content;--grid-area-name: cell-3;",
+      "--desktop-column-span: 1;--mobile-template-columns: 1fr;--grid-area-name: cell-4;",
+      "--desktop-column-span: 1;--mobile-template-columns: 1fr;--grid-area-name: cell-5;",
       "--desktop-column-span: 1;--mobile-template-columns: max-content;",
     ];
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Card, IconVote, Tooltip } from "@dfinity/gix-components";
+  import { Card, Tooltip } from "@dfinity/gix-components";
   import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import UniverseAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
   import { pageStore } from "$lib/derived/page.derived";
@@ -66,13 +66,7 @@
   noMargin
 >
   <div class="container" class:selected>
-    {#if universe !== "all-actionable"}
-      <UniverseLogo size="big" {universe} framed={true} />
-    {:else}
-      <div data-tid="vote-icon" class="icon">
-        <IconVote size="24px" />
-      </div>
-    {/if}
+    <UniverseLogo size="big" {universe} framed={true} />
 
     <div
       class={`content ${role}`}

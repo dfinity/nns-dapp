@@ -886,19 +886,12 @@
   "auth_neurons": {
     "title": "Earn staking rewards"
   },
-  "auth_proposals": {
-    "title": "Be part of the ICP community!",
-    "text": "Participate in the governance of the Internet Computer and receive voting rewards. Shape the future of the web by submitting your own proposals.",
-    "sign_in": "Sign in to vote"
-  },
+  "auth_proposals": {},
   "auth_canisters": {
     "title": "Run your code on the Internet Computer",
     "text": "Create and manage your canister smart contracts and top them up with cycles here. Anywhere, anytime."
   },
-  "auth_sns": {
-    "title": "Service Nervous Systems (SNS)",
-    "text": "Put the autonomy in DAO. No centralized power, no administrative overhead, no legal headache, only code and its community."
-  },
+  "auth_sns": {},
   "universe": {
     "select_token": "Select Token",
     "select_nervous_system": "Nervous System",

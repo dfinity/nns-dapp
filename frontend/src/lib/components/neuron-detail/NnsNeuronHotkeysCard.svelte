@@ -65,7 +65,7 @@
   };
 </script>
 
-<CardInfo noMargin>
+<CardInfo noMargin testId="nns-neuron-hotkeys-card-component">
   <h3 slot="start">{$i18n.neuron_detail.hotkeys_title}</h3>
   {#if hotkeys.length === 0}
     {#if isControllable}

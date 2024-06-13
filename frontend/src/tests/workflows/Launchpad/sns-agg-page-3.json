@@ -1431,7 +1431,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 999973870000,
+    "icrc1_total_supply": 999966610000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1812,7 +1812,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 99999963670000,
+    "icrc1_total_supply": 99999957970000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1899,8 +1899,8 @@
       "ledger": "lkwrt-vyaaa-aaaaq-aadhq-cai",
       "index": "jqkzp-liaaa-aaaaq-aadiq-cai",
       "governance": "lnxxh-yaaaa-aaaaq-aadha-cai",
-      "dapps": ["3wpnp-6yaaa-aaaal-ajgdq-cai"],
-      "archives": []
+      "dapps": ["3wpnp-6yaaa-aaaal-ajgdq-cai", "yuijc-oiaaa-aaaap-ahezq-cai"],
+      "archives": ["jlpfk-rqaaa-aaaaq-aadka-cai"]
     },
     "meta": {
       "url": "https://www.origyn.com/",
@@ -2193,7 +2193,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041804760744998500,
+    "icrc1_total_supply": 1041803679428787800,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

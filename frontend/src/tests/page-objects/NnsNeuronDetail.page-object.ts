@@ -1,6 +1,8 @@
 import { NnsNeuronAdvancedSectionPo } from "$tests/page-objects/NnsNeuronAdvancedSection.page-object";
+import { NnsNeuronHotkeysCardPo } from "$tests/page-objects/NnsNeuronHotkeysCard.page-object";
 import { NnsNeuronMaturitySectionPo } from "$tests/page-objects/NnsNeuronMaturitySection.page-object";
 import { NnsNeuronModalsPo } from "$tests/page-objects/NnsNeuronModals.page-object";
+import { NnsNeuronTestnetFunctionsCardPo } from "$tests/page-objects/NnsNeuronTestnetFunctionsCard.page-object";
 import { NnsNeuronVotingPowerSectionPo } from "$tests/page-objects/NnsNeuronVotingPowerSection.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -71,10 +73,58 @@ export class NnsNeuronDetailPo extends BasePageObject {
     return NnsNeuronAdvancedSectionPo.under(this.root);
   }
 
+  getNnsNeuronHotkeysCardPo(): NnsNeuronHotkeysCardPo {
+    return NnsNeuronHotkeysCardPo.under(this.root);
+  }
+
+  getNnsNeuronTestnetFunctionsCardPo(): NnsNeuronTestnetFunctionsCardPo {
+    return NnsNeuronTestnetFunctionsCardPo.under(this.root);
+  }
+
   async increaseStake({ amount }: { amount: number }): Promise<void> {
     await this.getVotingPowerSectionPo().getStakeItemActionPo().clickIncrease();
     const modal = this.getNnsNeuronModalsPo().getIncreaseNeuronStakeModalPo();
     await modal.increaseStake({ amount });
     await modal.waitForAbsent();
+  }
+
+  async startDissolving(): Promise<void> {
+    await this.getVotingPowerSectionPo()
+      .getNeuronStateItemActionPo()
+      .getDissolveButtonPo()
+      .click();
+    const modal = this.getNnsNeuronModalsPo().getDissolveActionButtonModalPo();
+    await modal.confirmYes();
+  }
+
+  async addHotkey(principal: string): Promise<void> {
+    await this.getNnsNeuronHotkeysCardPo().clickAddHotkey();
+    await this.getNnsNeuronModalsPo()
+      .getAddHotkeyModalPo()
+      .addHotkey(principal);
+  }
+
+  async joinCommunityFund(): Promise<void> {
+    await this.getAdvancedSectionPo().clickJoinCommunityFundCheckbox();
+    const modal =
+      await this.getNnsNeuronModalsPo().getJoinCommunityFundModalPo();
+    await modal.confirmYes();
+  }
+
+  async addMaturity(amount: number): Promise<void> {
+    await this.getNnsNeuronTestnetFunctionsCardPo().clickAddMaturity();
+    await this.getNnsNeuronModalsPo()
+      .getNnsAddMaturityModalPo()
+      .addMaturity(amount);
+  }
+
+  async spawnNeuron({ percentage }: { percentage: number }): Promise<void> {
+    await this.getMaturitySectionPo()
+      .getAvailableMaturityItemActionPo()
+      .getSpawnButton()
+      .click();
+    await this.getNnsNeuronModalsPo()
+      .getSpawnNeuronModalPo()
+      .spawnNeuron({ percentage });
   }
 }

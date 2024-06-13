@@ -1,3 +1,4 @@
+import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { HashPo } from "./Hash.page-object";
@@ -56,5 +57,12 @@ export class NnsNeuronAdvancedSectionPo extends BasePageObject {
 
   hasSplitNeuronButton(): Promise<boolean> {
     return this.getButton("split-nns-neuron-button-component").isPresent();
+  }
+
+  async clickJoinCommunityFundCheckbox(): Promise<void> {
+    return CheckboxPo.under({
+      element: this.root,
+      testId: "join-community-fund-checkbox-component",
+    }).toggle();
   }
 }

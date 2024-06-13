@@ -17,6 +17,13 @@ export class UniversePageSummaryPo extends BasePageObject {
       .getAttribute("src");
   }
 
+  async getLogoAlt(): Promise<string> {
+    return this.root
+      .byTestId("project-logo")
+      .querySelector("img")
+      .getAttribute("alt");
+  }
+
   async getTitle(): Promise<string> {
     return (await this.getText()).trim();
   }

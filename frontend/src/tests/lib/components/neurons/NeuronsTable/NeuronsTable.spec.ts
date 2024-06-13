@@ -83,8 +83,11 @@ describe("NeuronsTable", () => {
     const po = renderComponent({ neurons: [neuron1, neuron2] });
     expect(await po.getColumnHeaders()).toEqual([
       "Neuron ID",
+      "",
       "Stake",
+      "",
       "State",
+      "",
       "Dissolve Delay",
       "", // No header for actions column.
     ]);
@@ -93,12 +96,15 @@ describe("NeuronsTable", () => {
   it("should render cell alignment classes", async () => {
     const po = renderComponent({ neurons: [neuron1, neuron2] });
     const rows = await po.getRows();
-    expect(await rows[0].getCellClasses()).toEqual([
-      expect.arrayContaining(["desktop-align-left"]), // Neuron ID
-      expect.arrayContaining(["desktop-align-right"]), // Stake
-      expect.arrayContaining(["desktop-align-right"]), // State
-      expect.arrayContaining(["desktop-align-right"]), // Dissolve Delay
-      expect.arrayContaining(["desktop-align-right"]), // Actions
+    expect(await rows[0].getCellAlignments()).toEqual([
+      "desktop-align-left", // Neuron ID
+      expect.any(String), // gap
+      "desktop-align-right", // Stake
+      expect.any(String), // gap
+      "desktop-align-left", // State
+      expect.any(String), // gap
+      "desktop-align-right", // Dissolve Delay
+      "desktop-align-right", // Actions
     ]);
   });
 
@@ -107,15 +113,18 @@ describe("NeuronsTable", () => {
 
     expect(await po.getDesktopGridTemplateColumns()).toBe(
       [
-        "max-content max-content", // Neuron ID
-        "minmax(max-content, 1fr)", // Stake
-        "minmax(max-content, 1fr)", // State
-        "minmax(max-content, 1fr)", // Dissolve Delay
+        "minmax(min-content, max-content)", // Neuron ID
+        "1fr", // gap
+        "max-content", // Stake
+        "1fr", // gap
+        "max-content", // State
+        "1fr", // gap
+        "max-content", // Dissolve Delay
         "max-content", // Actions
       ].join(" ")
     );
     expect(await po.getMobileGridTemplateAreas()).toBe(
-      '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2"'
+      '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5"'
     );
   });
 

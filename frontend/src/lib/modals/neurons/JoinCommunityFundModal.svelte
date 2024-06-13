@@ -43,7 +43,11 @@
   const closeModal = () => dispatcher("nnsClose");
 </script>
 
-<ConfirmationModal on:nnsClose on:nnsConfirm={joinFund}>
+<ConfirmationModal
+  testId="join-community-fund-modal-component"
+  on:nnsClose
+  on:nnsConfirm={joinFund}
+>
   <div data-tid="join-community-fund-modal">
     <h4>{$i18n.core.confirm}</h4>
     {#if isCommunityFund}

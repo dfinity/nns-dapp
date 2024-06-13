@@ -6,7 +6,7 @@
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
   import { getCellGridAreaName } from "$lib/utils/responsive-table.utils";
   import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let rowData: RowDataType;
   export let columns: ResponsiveTableColumn<RowDataType>[];
@@ -57,13 +57,16 @@
     <div
       role="cell"
       class:subgrid-cell={column.templateColumns.length > 1}
+      class:empty-cell={isNullish(column.cellComponent)}
       class="middle-cell desktop-align-{column.alignment}"
       style={getCellStyle({ column, index })}
     >
-      <span class="middle-cell-label">{column.title}</span>
-      <div class="cell-body">
-        <svelte:component this={column.cellComponent} {rowData} />
-      </div>
+      {#if nonNullish(column.cellComponent)}
+        <span class="middle-cell-label">{column.title}</span>
+        <div class="cell-body">
+          <svelte:component this={column.cellComponent} {rowData} />
+        </div>
+      {/if}
     </div>
   {/each}
 
@@ -91,22 +94,25 @@
   @use "../../themes/mixins/grid-table";
 
   [role="row"] {
+    // Styles for desktop and mobile:
+
     display: grid;
-    flex-direction: column;
-
     text-decoration: none;
+    padding: var(--padding-2x);
+    background-color: var(--table-row-background);
 
+    // Styles for mobile (and overridden for desktop):
+
+    row-gap: var(--padding-2x);
     grid-template-areas: var(--mobile-grid-template-areas);
+
+    // Styles applied to desktop only:
 
     @include media.min-width(medium) {
       @include grid-table.row;
       row-gap: 0;
       grid-template-areas: none;
     }
-
-    padding: var(--padding-2x);
-
-    background-color: var(--table-row-background);
 
     &:hover {
       background-color: var(--table-row-background-hover);
@@ -134,6 +140,10 @@
 
     // Styles applied to mobile (and overridden for desktop):
 
+    &.empty-cell {
+      display: none;
+    }
+
     &.subgrid-cell {
       .cell-body {
         display: grid;
@@ -160,6 +170,10 @@
     // Styles applied to desktop only:
 
     @include media.min-width(medium) {
+      &.empty-cell {
+        display: flex;
+      }
+
       &.subgrid-cell {
         display: grid;
         grid-template-columns: subgrid;

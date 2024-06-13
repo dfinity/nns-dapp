@@ -35,9 +35,11 @@
     // first and last cell combined and a separate labeled row for each other
     // cell.
     let mobileGridTemplateAreas = '"first-cell last-cell"';
-    for (let i = 0; i < columns.length - 2; i++) {
-      const areaName = getCellGridAreaName(i);
-      mobileGridTemplateAreas += ` "${areaName} ${areaName}"`;
+    for (let i = 1; i < columns.length - 1; i++) {
+      if (nonNullish(columns[i].cellComponent)) {
+        const areaName = getCellGridAreaName(i - 1);
+        mobileGridTemplateAreas += ` "${areaName} ${areaName}"`;
+      }
     }
     return (
       `--grid-rows-per-table-row: ${gridRowsPerTableRow}; ` +
@@ -57,7 +59,9 @@
         <span
           role="columnheader"
           style="--column-span: {firstColumn.templateColumns.length}"
-          data-tid="column-header-1">{firstColumn.title}</span
+          data-tid="column-header-1"
+          class="desktop-align-{firstColumn.alignment}"
+          >{firstColumn.title}</span
         >
       {/if}
       {#each middleColumns as column, index}
@@ -65,14 +69,14 @@
           role="columnheader"
           style="--column-span: {column.templateColumns.length}"
           data-tid="column-header-{index + 2}"
-          class="header-right">{column.title}</span
+          class="desktop-align-{column.alignment}">{column.title}</span
         >
       {/each}
       {#if lastColumn}
         <span
           role="columnheader"
           style="--column-span: {lastColumn.templateColumns.length}"
-          class="header-right header-icon"
+          class="desktop-align-{lastColumn.alignment} header-icon"
         >
           <slot name="header-icon" />
         </span>
@@ -144,7 +148,7 @@
         }
       }
 
-      .header-right {
+      .desktop-align-right {
         text-align: right;
       }
 
