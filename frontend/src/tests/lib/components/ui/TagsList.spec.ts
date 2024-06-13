@@ -1,7 +1,7 @@
 import { render } from "@testing-library/svelte";
 import TagsListTest from "./TagsListTest.svelte";
 
-describe("CardBlock", () => {
+describe("TagsList", () => {
   it("should render a ul", () => {
     const { container } = render(TagsListTest);
     expect(container.querySelector("ul")).toBeInTheDocument();
