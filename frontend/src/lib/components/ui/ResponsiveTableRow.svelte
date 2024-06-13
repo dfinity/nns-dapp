@@ -193,6 +193,10 @@
         display: none;
       }
 
+      &.first-cell {
+        margin-bottom: 0;
+      }
+
       &.first-cell,
       &.middle-cell,
       &.last-cell {
