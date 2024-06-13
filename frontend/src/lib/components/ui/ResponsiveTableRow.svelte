@@ -10,6 +10,7 @@
 
   export let rowData: RowDataType;
   export let columns: ResponsiveTableColumn<RowDataType>[];
+  export let style: string | undefined = undefined;
 
   let firstColumn: ResponsiveTableColumn<RowDataType> | undefined;
   let middleColumns: ResponsiveTableColumn<RowDataType>[];
@@ -39,6 +40,7 @@
   role="row"
   tabindex="0"
   data-tid="responsive-table-row-component"
+  {style}
 >
   {#if firstColumn}
     <div
@@ -95,6 +97,7 @@
 
   [role="row"] {
     // Styles for desktop and mobile:
+    color: var(--table-row-text-color, inherit);
 
     display: grid;
     text-decoration: none;
