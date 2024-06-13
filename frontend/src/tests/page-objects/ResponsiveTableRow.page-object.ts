@@ -55,4 +55,17 @@ export class ResponsiveTableRowPo extends BasePageObject {
   async getTagName(): Promise<string> {
     return this.root.getTagName();
   }
+
+  async getStyleVariable(varName: string): Promise<string> {
+    const style = await this.getStyle();
+    const match = style.match(new RegExp(`--${varName}: ([^;]+)`));
+    if (!match) {
+      return "";
+    }
+    return match[1];
+  }
+
+  async getTableRowTextColorVariable(): Promise<string> {
+    return this.getStyleVariable("table-row-text-color");
+  }
 }

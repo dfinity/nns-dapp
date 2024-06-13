@@ -208,6 +208,14 @@ describe("NeuronsTable", () => {
     );
   });
 
+  it("should render a different style for spawning neuron rows", async () => {
+    const po = renderComponent({ neurons: [neuron1, spawningNeuron] });
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getTableRowTextColorVariable()).toBe("");
+    expect(await rowPos[1].getTableRowTextColorVariable()).toBe("var(--text-description-tint)");
+  });
+
   it("should render tags", async () => {
     const tags = ["Neuron's fund", "Hotkey control"];
     const po = renderComponent({

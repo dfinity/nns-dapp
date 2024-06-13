@@ -15,6 +15,7 @@
   export let tableData: Array<RowDataType>;
   export let columns: ResponsiveTableColumn<RowDataType>[];
   export let gridRowsPerTableRow = 1;
+  export let getRowStyle: (rowData: RowDataType) => string = (_) => "";
 
   let firstColumn: ResponsiveTableColumn<RowDataType> | undefined;
   let middleColumns: ResponsiveTableColumn<RowDataType>[];
@@ -86,7 +87,12 @@
   <div role="rowgroup">
     {#each tableData as rowData (rowData.domKey)}
       <div class="row-wrapper" transition:heightTransition={{ duration: 250 }}>
-        <ResponsiveTableRow on:nnsAction {rowData} {columns} />
+        <ResponsiveTableRow
+          on:nnsAction
+          {rowData}
+          {columns}
+          style={getRowStyle(rowData)}
+        />
       </div>
     {/each}
   </div>
