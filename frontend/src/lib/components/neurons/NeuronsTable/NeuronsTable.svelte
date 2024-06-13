@@ -32,7 +32,7 @@
       title: $i18n.neurons.neuron_id,
       cellComponent: NeuronIdCell,
       alignment: "left",
-      templateColumns: ["max-content", "max-content"],
+      templateColumns: ["minmax(min-content, max-content)"],
     },
     {
       title: "",
@@ -79,6 +79,5 @@
 <ResponsiveTable
   testId="neurons-table-component"
   {columns}
-  gridRowsPerTableRow={2}
   tableData={sortedNeurons}
 ></ResponsiveTable>

@@ -113,7 +113,7 @@ describe("NeuronsTable", () => {
 
     expect(await po.getDesktopGridTemplateColumns()).toBe(
       [
-        "max-content max-content", // Neuron ID
+        "minmax(min-content, max-content)", // Neuron ID
         "1fr", // gap
         "max-content", // Stake
         "1fr", // gap
