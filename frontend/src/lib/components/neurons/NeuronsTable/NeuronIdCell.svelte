@@ -11,7 +11,7 @@
     testId="neuron-id"
     text={rowData.neuronId}
     tagName="span"
-    idPrefix="neuron-id"
+    idPrefix="neuron-id-cell"
     showCopy
   />
   <span class="tags">
