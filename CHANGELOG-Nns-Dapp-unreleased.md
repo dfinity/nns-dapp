@@ -39,6 +39,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Put snapshot state directories in home directory instead of `dfx` cache.
+
 #### Deprecated
 
 #### Removed
