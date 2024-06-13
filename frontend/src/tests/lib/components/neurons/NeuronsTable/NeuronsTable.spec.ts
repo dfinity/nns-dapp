@@ -86,9 +86,9 @@ describe("NeuronsTable", () => {
       "",
       "Stake",
       "",
-      "State",
-      "",
       "Dissolve Delay",
+      "",
+      "State",
       "", // No header for actions column.
     ]);
   });
@@ -101,9 +101,9 @@ describe("NeuronsTable", () => {
       expect.any(String), // gap
       "desktop-align-right", // Stake
       expect.any(String), // gap
-      "desktop-align-left", // State
+      "desktop-align-left", // Dissolve Delay
       expect.any(String), // gap
-      "desktop-align-right", // Dissolve Delay
+      "desktop-align-left", // State
       "desktop-align-right", // Actions
     ]);
   });

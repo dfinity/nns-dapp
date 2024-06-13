@@ -51,8 +51,8 @@
       templateColumns: ["1fr"],
     },
     {
-      title: $i18n.neurons.state,
-      cellComponent: NeuronStateCell,
+      title: $i18n.neurons.dissolve_delay_title,
+      cellComponent: NeuronDissolveDelayCell,
       alignment: "left",
       templateColumns: ["max-content"],
     },
@@ -62,9 +62,9 @@
       templateColumns: ["1fr"],
     },
     {
-      title: $i18n.neurons.dissolve_delay_title,
-      cellComponent: NeuronDissolveDelayCell,
-      alignment: "right",
+      title: $i18n.neurons.state,
+      cellComponent: NeuronStateCell,
+      alignment: "left",
       templateColumns: ["max-content"],
     },
     {
