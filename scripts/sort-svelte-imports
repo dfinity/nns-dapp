@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+print_help() {
+  cat <<-EOF
+
+	Usage: sort-svelte-imports [FILE...]
+	Sorts the imports in Svelte files.
+
+	If FILE arguments are provided, sorts the imports in those files.
+	If directories are provided, sorts the imports in all Svelte files in those directories, recursively.
+	If no arguments are provided, sorts the imports in any Svelte files changed relative to the main branch.
+	If there are no changes, sorts the imports in all Svelte files in the project
+	exit
+	EOF
+}
+
+if [[ "$1" == "--help" ]]; then
+  print_help
+  exit 0
+fi
+
+TOP_DIR=$(git rev-parse --show-toplevel)
+
+list_files_to_sort() {
+  if [[ "$#" -ne 0 ]]; then
+    find "$@" -type f -name '*.svelte' -exec readlink -f {} \;
+    return
+  fi
+
+  ancestor=$(git merge-base HEAD main)
+  if git diff --quiet "$ancestor" --exit-code; then
+    git ls-files '*.svelte' | sed "s@^@$TOP_DIR/@"
+    return
+  fi
+
+  git diff --name-only "$ancestor" | grep '\.svelte$' | sed "s@^@$TOP_DIR/@"
+}
+
+mapfile -t FILES < <(list_files_to_sort "$@")
+
+vim -n -c "set nomore" -c "source $TOP_DIR/scripts/sort-svelte-imports.vim" -c "argdo call SortSvelteImports() | update" -c "qa" "${FILES[@]}"
+
+# The vim scripts puts every import on a single line. We call prettier to format
+# the imports in case they were on multiple lines.
+cd "$TOP_DIR/frontend"
+npx prettier --write "${FILES[@]}"
