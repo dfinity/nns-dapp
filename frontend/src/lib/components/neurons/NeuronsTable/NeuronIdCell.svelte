@@ -6,7 +6,7 @@
   export let rowData: TableNeuron;
 </script>
 
-<div data-tid="neuron-id-cell-component">
+<div data-tid="neuron-id-cell-component" class="container">
   <Hash
     testId="neuron-id"
     text={rowData.neuronId}
@@ -22,6 +22,10 @@
 </div>
 
 <style lang="scss">
+  .container {
+    line-height: 1.5;
+  }
+
   .tags {
     display: inline-flex;
     gap: var(--padding);
