@@ -55,12 +55,8 @@ describe("ResponseTable", () => {
     },
   ];
 
-  const renderComponent = ({ columns, tableData }) => {
-    const { container } = render(ResponsiveTable, {
-      columns,
-      tableData,
-    });
-
+  const renderComponent = (props) => {
+    const { container } = render(ResponsiveTable, props);
     return ResponsiveTablePo.under(new JestPageObjectElement(container));
   };
 
@@ -119,6 +115,23 @@ describe("ResponseTable", () => {
       "desktop-align-left", // Age
       "desktop-align-right", // Actions
     ]);
+  });
+
+  it("should apply row style", async () => {
+    const po = renderComponent({
+      columns,
+      tableData,
+      getRowStyle: (rowData) =>
+        rowData.rowHref ? "color: black;" : "color: grey;",
+    });
+    const rows = await po.getRows();
+    expect(rows).toHaveLength(3);
+    expect(tableData[0].rowHref).toBeDefined();
+    expect(await rows[0].getStyle()).toBe("color: black;");
+    expect(tableData[1].rowHref).toBeDefined();
+    expect(await rows[1].getStyle()).toBe("color: black;");
+    expect(tableData[2].rowHref).toBeUndefined();
+    expect(await rows[2].getStyle()).toBe("color: grey;");
   });
 
   it("should render column styles depending on the number of columns", async () => {

@@ -213,7 +213,9 @@ describe("NeuronsTable", () => {
     const rowPos = await po.getNeuronsTableRowPos();
     expect(rowPos).toHaveLength(2);
     expect(await rowPos[0].getTableRowTextColorVariable()).toBe("");
-    expect(await rowPos[1].getTableRowTextColorVariable()).toBe("var(--text-description-tint)");
+    expect(await rowPos[1].getTableRowTextColorVariable()).toBe(
+      "var(--text-description-tint)"
+    );
   });
 
   it("should render tags", async () => {

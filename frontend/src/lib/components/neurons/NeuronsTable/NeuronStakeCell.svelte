@@ -11,6 +11,7 @@
 
 <style lang="scss">
   .container {
+    display: contents;
     --amount-color: var(--table-row-text-color);
     --label-color: var(--table-row-text-color);
   }
