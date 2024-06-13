@@ -234,7 +234,11 @@ describe("NeuronsTable", () => {
     });
     const rowPos = await po.getNeuronsTableRowPos();
     expect(rowPos).toHaveLength(2);
-    expect(await rowPos[0].getTags()).toEqual([]);
-    expect(await rowPos[1].getTags()).toEqual(tags);
+    const cell1 = rowPos[0].getNeuronIdCellPo();
+    expect(await cell1.getTags()).toEqual([]);
+    expect(await cell1.hasTagsElement()).toBe(false);
+    const cell2 = rowPos[1].getNeuronIdCellPo();
+    expect(await cell2.getTags()).toEqual(tags);
+    expect(await cell2.hasTagsElement()).toBe(true);
   });
 });
