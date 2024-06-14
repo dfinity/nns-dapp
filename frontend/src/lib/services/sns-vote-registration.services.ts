@@ -226,6 +226,12 @@ const registerSnsNeuronsVote = async ({
         })
           // call it only after successful registration
           .then(() => onSuccessVote(neuron))
+          .catch(async (err) => {
+            if (isAlreadyVotedError(err)) {
+              // If the neuron has already voted,
+              // we treat it as a successfull vote.
+              await onSuccessVote(neuron);
+            }
           })
     );
 
