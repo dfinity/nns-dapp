@@ -62,6 +62,10 @@ export const registerNnsVotes = async ({
       // the one that was called
       proposalsStore.replaceProposals([updatedProposalInfo]);
       updateProposalContext(updatedProposalInfo);
+
+      // Reset and reload actionable nns proposals.
+      actionableNnsProposalsStore.reset();
+      loadActionableProposals().then();
     },
   });
 };

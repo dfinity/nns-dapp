@@ -86,10 +86,6 @@ export const manageVotesRegistration = async ({
       proposalIdString,
       canisterId: universeCanisterId,
     });
-
-    // Reset and reload actionable nns proposals.
-    actionableNnsProposalsStore.reset();
-    loadActionableProposals().then();
   } catch (err: unknown) {
     console.error("vote unknown:", err);
 
