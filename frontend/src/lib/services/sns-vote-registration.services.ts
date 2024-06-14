@@ -4,6 +4,7 @@ import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-
 import { loadActionableProposalsForSns } from "$lib/services/actionable-sns-proposals.services";
 import { getSnsNeuronIdentity } from "$lib/services/sns-neurons.services";
 import {
+  isAlreadyVotedError,
   manageVotesRegistration,
   processRegisterVoteErrors,
   updateVoteRegistrationToastMessage,
@@ -197,6 +198,21 @@ const registerSnsNeuronsVote = async ({
   const proposalType =
     mapSnsProposal({ proposalData: proposal, nsFunctions }).type ?? "";
   const successfulVotedNeurons: SnsNeuron[] = [];
+  const onSuccessVote = async (neuron: SnsNeuron) => {
+    successfulVotedNeurons.push(neuron);
+    snsNeuronRegistrationComplete({
+      universeCanisterId: universeCanisterId,
+      neuron,
+      proposal,
+      toastId,
+    });
+    const optimisticProposal = proposalAfterVote({
+      proposal,
+      neurons: successfulVotedNeurons,
+      vote: toSnsVote(vote),
+    });
+    await updateProposalContext(optimisticProposal);
+  };
   try {
     const requests = neurons.map(
       (neuron): Promise<void> =>
@@ -209,22 +225,7 @@ const registerSnsNeuronsVote = async ({
           vote,
         })
           // call it only after successful registration
-          .then(async () => {
-            successfulVotedNeurons.push(neuron);
-
-            snsNeuronRegistrationComplete({
-              universeCanisterId: universeCanisterId,
-              neuron,
-              proposal,
-              toastId,
-            });
-
-            const optimisticProposal = proposalAfterVote({
-              proposal,
-              neurons: successfulVotedNeurons,
-              vote: toSnsVote(vote),
-            });
-            await updateProposalContext(optimisticProposal);
+          .then(() => onSuccessVote(neuron))
           })
     );
 
