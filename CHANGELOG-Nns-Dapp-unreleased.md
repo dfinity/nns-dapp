@@ -21,6 +21,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Rename proposal navigation buttons to "Previous" and "Next".
 * Put project icon before title in page summary.
+* Removed the gap between identifier and copy button.
 
 #### Deprecated
 
