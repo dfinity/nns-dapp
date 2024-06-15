@@ -22,8 +22,13 @@ fi
 
 TOP_DIR=$(git rev-parse --show-toplevel)
 
+# Outputs a list of files to sort. See help text above for how the list is
+# determined.
+# Files are given as absolute paths so they also work from the frontend
+# directory where we have to be to run prettier.
 list_files_to_sort() {
   if [[ "$#" -ne 0 ]]; then
+    # readlink makes the paths absolute
     find "$@" -type f -name '*.svelte' -exec readlink -f {} \;
     return
   fi

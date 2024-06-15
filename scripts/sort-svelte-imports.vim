@@ -4,6 +4,10 @@
 " Then it sorts the lines.
 " Then it removes the path from the front of the line.
 " It does this separately for each contiguous block of import statements.
+"
+" To use this in Vim, you can add the following to your .vimrc to make
+" the 'gs' keyboard shortcut sort the imports in a Svelte file:
+" autocmd FileType svelte nnoremap gs :silent call SortSvelteImports()<CR>
 function! SortSvelteImports()
   let l:path_import_separator = ' #### path import separator #### '
   let l:old_lines = line('$')
