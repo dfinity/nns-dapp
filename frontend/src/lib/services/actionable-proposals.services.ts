@@ -20,8 +20,10 @@ import { get } from "svelte/store";
 /**
  * Fetch all proposals that are accepting votes and put them in the store.
  */
-export const loadActionableProposals = async (): Promise<void> => {
-  if (nonNullish(get(actionableNnsProposalsStore).proposals)) {
+export const loadActionableProposals = async (
+  { forceLoad }: { forceLoad: boolean } = { forceLoad: false }
+): Promise<void> => {
+  if (!forceLoad && nonNullish(get(actionableNnsProposalsStore).proposals)) {
     // The proposals state does not update frequently, so we don't need to re-fetch.
     // The store will be reset after the user registers a vote.
     return;
