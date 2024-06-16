@@ -25,18 +25,22 @@ export const loadActionableSnsProposals = async () => {
 
   await Promise.all(
     rootCanisterIds.map((rootCanisterId) =>
-      loadActionableProposalsForSns(rootCanisterId)
+      loadActionableProposalsForSns({ rootCanisterId })
     )
   );
 };
 
-export const loadActionableProposalsForSns = async (
-  rootCanisterId: Principal
-): Promise<void> => {
+export const loadActionableProposalsForSns = async ({
+  rootCanisterId,
+  forceLoad,
+}: {
+  rootCanisterId: Principal;
+  forceLoad?: boolean;
+}): Promise<void> => {
   try {
     const rootCanisterIdText = rootCanisterId.toText();
     const storeValue = get(actionableSnsProposalsStore)[rootCanisterIdText];
-    if (nonNullish(storeValue)) {
+    if (!forceLoad && nonNullish(storeValue)) {
       // The proposals state does not update frequently, so we don't need to re-fetch.
       // The store will be reset after the user registers a vote.
       return;
