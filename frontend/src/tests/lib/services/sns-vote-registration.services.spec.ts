@@ -204,7 +204,7 @@ describe("sns-vote-registration-services", () => {
       );
     });
 
-    it("should reset and reload actionable sns proposals after voting", async () => {
+    it("should reload actionable sns proposals after voting", async () => {
       vi.spyOn(snsGovernanceApi, "registerVote").mockResolvedValue();
       const rootCanisterId2 = principal(13);
       actionableSnsProposalsStore.set({
@@ -253,7 +253,12 @@ describe("sns-vote-registration-services", () => {
       });
       expect(spyQuerySnsNeurons).toBeCalledTimes(0);
 
+      // The store value should be not changed until the proposals are loaded
       expect(get(actionableSnsProposalsStore)).toEqual({
+        [rootCanisterId.toText()]: {
+          proposals: [proposal1, proposal2],
+          includeBallotsByCaller: true,
+        },
         [rootCanisterId2.toText()]: {
           proposals: [proposal1, proposal2],
           includeBallotsByCaller: true,
