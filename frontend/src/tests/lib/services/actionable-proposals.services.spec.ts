@@ -10,7 +10,6 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { ProposalRewardStatus, Vote } from "@dfinity/nns";
