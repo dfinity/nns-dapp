@@ -1,4 +1,4 @@
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-06-05_23-01-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-06-12_23-01-base/rs/registry/canister/canister/registry.did>
 // A brief note about the history of this file: This file used to be
 // automatically generated, but now, it is hand-crafted, because the
 // auto-generator has some some pretty degenerate behaviors. The worst of those
@@ -399,7 +399,6 @@ service : {
   clear_provisional_whitelist : () -> ();
   complete_canister_migration : (CompleteCanisterMigrationPayload) -> ();
   create_subnet : (CreateSubnetPayload) -> ();
-  delete_subnet : (DeleteSubnetPayload) -> ();
   deploy_guestos_to_all_subnet_nodes : (
       DeployGuestosToAllSubnetNodesPayload,
     ) -> ();
