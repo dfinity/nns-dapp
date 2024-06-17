@@ -87,7 +87,7 @@ export const manageVotesRegistration = async ({
     });
 
     // Reload actionable nns proposals.
-    loadActionableProposals({ forceLoad: true }).then();
+    loadActionableProposals().then();
   } catch (err: unknown) {
     console.error("vote unknown:", err);
 

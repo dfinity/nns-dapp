@@ -995,7 +995,7 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
     });
 
     // reload actionable proposals
-    await loadActionableProposals({ forceLoad: true });
+    await loadActionableProposals();
 
     toastsSuccess({
       labelKey: "neuron_detail.dummy_proposal_success",
