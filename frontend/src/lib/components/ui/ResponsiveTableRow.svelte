@@ -10,6 +10,7 @@
 
   export let rowData: RowDataType;
   export let columns: ResponsiveTableColumn<RowDataType>[];
+  export let style: string | undefined = undefined;
 
   let firstColumn: ResponsiveTableColumn<RowDataType> | undefined;
   let middleColumns: ResponsiveTableColumn<RowDataType>[];
@@ -39,6 +40,7 @@
   role="row"
   tabindex="0"
   data-tid="responsive-table-row-component"
+  {style}
 >
   {#if firstColumn}
     <div
@@ -95,21 +97,23 @@
 
   [role="row"] {
     // Styles for desktop and mobile:
+    color: var(--table-row-text-color, inherit);
 
     display: grid;
     text-decoration: none;
-    padding: var(--padding-2x);
     background-color: var(--table-row-background);
 
     // Styles for mobile (and overridden for desktop):
 
-    row-gap: var(--padding-2x);
+    padding: var(--padding-3x);
+    row-gap: var(--padding-1_5x);
     grid-template-areas: var(--mobile-grid-template-areas);
 
     // Styles applied to desktop only:
 
     @include media.min-width(medium) {
       @include grid-table.row;
+      padding: var(--padding-2x);
       row-gap: 0;
       grid-template-areas: none;
     }
@@ -153,6 +157,7 @@
 
     &.first-cell {
       grid-area: first-cell;
+      margin-bottom: var(--padding-0_5x);
     }
 
     &.last-cell {
@@ -186,6 +191,10 @@
 
       .middle-cell-label {
         display: none;
+      }
+
+      &.first-cell {
+        margin-bottom: 0;
       }
 
       &.first-cell,

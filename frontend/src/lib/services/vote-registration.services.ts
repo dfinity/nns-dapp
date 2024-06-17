@@ -1,4 +1,3 @@
-import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
 import { i18n } from "$lib/stores/i18n";
 import {
   toastsError,
@@ -85,9 +84,6 @@ export const manageVotesRegistration = async ({
       proposalIdString,
       canisterId: universeCanisterId,
     });
-
-    // Reload actionable nns proposals.
-    loadActionableProposals().then();
   } catch (err: unknown) {
     console.error("vote unknown:", err);
 

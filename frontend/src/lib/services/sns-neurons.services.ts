@@ -862,7 +862,6 @@ export const makeDummyProposals = async ({
     });
 
     // reload actionable proposals
-    actionableSnsProposalsStore.resetForSns(rootCanisterId);
     await loadActionableProposalsForSns(rootCanisterId);
 
     toastsSuccess({

@@ -35,10 +35,6 @@ export class ResponsiveTablePo extends BasePageObject {
     return ResponsiveTableRowPo.allUnder(this.root);
   }
 
-  getStyle(): Promise<string> {
-    return this.root.getAttribute("style");
-  }
-
   async getStyleVariable(varName: string): Promise<string> {
     const style = await this.getStyle();
     const match = style.match(new RegExp(`--${varName}: ([^;]+)`));

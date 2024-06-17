@@ -17,6 +17,10 @@ export class NeuronIdCellPo extends BasePageObject {
     return this.getHashPo().getFullText();
   }
 
+  hasTagsElement(): Promise<boolean> {
+    return this.root.byTestId("neuron-tags").isPresent();
+  }
+
   async getTags(): Promise<string[]> {
     const tagElements = await this.root.allByTestId("neuron-tag");
     return Promise.all(tagElements.map((el) => el.getText()));
