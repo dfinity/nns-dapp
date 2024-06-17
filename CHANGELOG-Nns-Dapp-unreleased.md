@@ -15,20 +15,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Actionable proposals page.
-
 #### Changed
-
-* Rename proposal navigation buttons to "Previous" and "Next".
-* Put project icon before title in page summary.
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
-
-* Missing SNS proposal payload rendering under certain conditions.
 
 #### Security
 
