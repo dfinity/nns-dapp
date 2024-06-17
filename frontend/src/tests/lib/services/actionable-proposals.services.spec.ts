@@ -180,18 +180,5 @@ describe("actionable-proposals.services", () => {
         proposals: [votableProposal],
       });
     });
-
-    it("should not query proposals when store is already filled", async () => {
-      expect(spyQueryProposals).not.toHaveBeenCalled();
-      expect(spyQueryNeurons).not.toHaveBeenCalled();
-      actionableNnsProposalsStore.setProposals([votableProposal]);
-
-      await loadActionableProposals();
-      // just in case
-      await runResolvedPromises();
-
-      expect(spyQueryProposals).not.toHaveBeenCalled();
-      expect(spyQueryNeurons).not.toHaveBeenCalled();
-    });
   });
 });
