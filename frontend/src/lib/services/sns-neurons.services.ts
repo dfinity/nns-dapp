@@ -863,7 +863,7 @@ export const makeDummyProposals = async ({
 
     // reload actionable proposals
     actionableSnsProposalsStore.resetForSns(rootCanisterId);
-    await loadActionableProposalsForSns({ rootCanisterId });
+    await loadActionableProposalsForSns(rootCanisterId);
 
     toastsSuccess({
       labelKey: "neuron_detail.dummy_proposal_success",
