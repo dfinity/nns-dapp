@@ -2,10 +2,10 @@
   import { ENABLE_NEURONS_TABLE } from "$lib/stores/feature-flags.store";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import {
     sortedSnsCFNeuronsStore,
     sortedSnsUserNeuronsStore,
+    definedSnsNeuronStore,
   } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { i18n } from "$lib/stores/i18n";
   import { authStore } from "$lib/stores/auth.store";
@@ -71,7 +71,7 @@
           token: summary.token,
           identity: $authStore.identity,
           i18n: $i18n,
-          snsNeurons: $snsNeuronsStore[$pageStore.universe]?.neurons ?? [],
+          snsNeurons: $definedSnsNeuronStore,
         })
       : [];
 </script>
