@@ -65,7 +65,7 @@ impl AccountsDbAsProxy {
     ///   - This may be no larger than `Self::MIGRATION_STEP_SIZE_MAX`.  If it is larger, it will be reduced.
     pub fn step_migration(&mut self, step_size: u32) {
         // Ensure that the step size is modest:
-        let step_size = step_size.min(Self::MIGRATION_STEP_SIZE_MAX).max(1);
+        let step_size = step_size.clamp(1, Self::MIGRATION_STEP_SIZE_MAX);
         if let Some(migration) = &mut self.migration {
             if let Some(next_to_migrate) = &migration.next_to_migrate {
                 println!("Stepping migration: {:?} -> {:?}", self.authoritative_db, migration.db);
