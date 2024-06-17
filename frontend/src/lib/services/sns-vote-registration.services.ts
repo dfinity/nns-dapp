@@ -231,6 +231,8 @@ const registerSnsNeuronsVote = async ({
               // If the neuron has already voted,
               // we treat it as a successfull vote.
               await onSuccessVote(neuron);
+            } else {
+              throw err;
             }
           })
     );
