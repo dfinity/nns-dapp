@@ -1,11 +1,13 @@
 import { governanceApiService } from "$lib/api-services/governance.api-service";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
 import {
   manageVotesRegistration,
   processRegisterVoteErrors,
   updateVoteRegistrationToastMessage,
   voteRegistrationByProposal,
 } from "$lib/services/vote-registration.services";
+import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { proposalsStore } from "$lib/stores/proposals.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
@@ -18,8 +20,6 @@ import { get } from "svelte/store";
 import { loadProposal } from "./$public/proposals.services";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
-import {actionableNnsProposalsStore} from "$lib/stores/actionable-nns-proposals.store";
-import {loadActionableProposals} from "$lib/services/actionable-proposals.services";
 
 /**
  * Makes multiple registerVote calls (1 per neuronId).

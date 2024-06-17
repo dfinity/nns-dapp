@@ -1,6 +1,6 @@
 import * as api from "$lib/api/sns-governance.api";
-import * as actionableProposalsService from "$lib/services/actionable-proposals.services";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
+import * as actionableProposalsService from "$lib/services/actionable-proposals.services";
 import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
@@ -282,8 +282,10 @@ describe("sns-vote-registration-services", () => {
 
     it("should not reset actionable nns proposals after voting", async () => {
       vi.spyOn(snsGovernanceApi, "registerVote").mockResolvedValue();
-      const spyLoadActionableProposalsNns = vi
-        .spyOn(actionableProposalsService, "loadActionableProposals");
+      const spyLoadActionableProposalsNns = vi.spyOn(
+        actionableProposalsService,
+        "loadActionableProposals"
+      );
       const rootCanisterId2 = principal(13);
       actionableSnsProposalsStore.set({
         rootCanisterId,

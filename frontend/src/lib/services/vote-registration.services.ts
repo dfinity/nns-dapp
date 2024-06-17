@@ -1,5 +1,3 @@
-import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
-import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { i18n } from "$lib/stores/i18n";
 import {
   toastsError,
