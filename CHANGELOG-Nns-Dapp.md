@@ -28,6 +28,7 @@ here after a successful release.
 * Render neurons with minimum dissolve delay correctly with voting power.
 * Nns-dapp may crash while finishing an empty receive.
 * Actionable proposals initialization before Sns-es were loaded.
+* Button disable state glitch when voting with neurons where one follows another.
 
 ### Operations
 
