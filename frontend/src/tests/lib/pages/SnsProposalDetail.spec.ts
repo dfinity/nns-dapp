@@ -36,7 +36,7 @@ import {
 } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import {beforeEach} from "vitest";
+import { beforeEach } from "vitest";
 
 vi.mock("$lib/api/sns-governance.api");
 
@@ -398,27 +398,29 @@ describe("SnsProposalDetail", () => {
       fakeSnsGovernanceApi.addProposalWith({
         identity: mockIdentity,
         rootCanisterId: rootCanisterId1,
-        id: [{id: 1n}],
+        id: [{ id: 1n }],
       });
       fakeSnsGovernanceApi.addProposalWith({
         identity: mockIdentity,
         rootCanisterId: rootCanisterId2,
-        id: [{id: 2n}],
+        id: [{ id: 2n }],
       });
     });
 
     it("should navigate to the proposal from the next Sns", async () => {
       page.mock({
-        data: {universe: rootCanisterId1.toText(), actionable: true},
+        data: { universe: rootCanisterId1.toText(), actionable: true },
       });
 
-      const {container} = render(SnsProposalDetail, {
+      const { container } = render(SnsProposalDetail, {
         props: {
           // The next proposal is the one of the next Sns (rootCanisterId2)
           proposalIdText: "1",
         },
       });
-      const po = SnsProposalDetailPo.under(new JestPageObjectElement(container));
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
       await runResolvedPromises();
       expect(await po.isContentLoaded()).toBe(true);
 
@@ -442,16 +444,18 @@ describe("SnsProposalDetail", () => {
 
     it("should navigate to the proposal from the previous Sns", async () => {
       page.mock({
-        data: {universe: rootCanisterId2.toText(), actionable: true},
+        data: { universe: rootCanisterId2.toText(), actionable: true },
       });
 
-      const {container} = render(SnsProposalDetail, {
+      const { container } = render(SnsProposalDetail, {
         props: {
           // set the proposal with id=2 to be in the middle of the list
           proposalIdText: "2",
         },
       });
-      const po = SnsProposalDetailPo.under(new JestPageObjectElement(container));
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
       await runResolvedPromises();
       expect(await po.isContentLoaded()).toBe(true);
 
