@@ -11,6 +11,25 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 130375
+
+### Application
+
+#### Added
+
+* Actionable proposals page.
+
+#### Changed
+
+* Rename proposal navigation buttons to "Previous" and "Next".
+* Put project icon before title in page summary.
+
+#### Fixed
+
+* Missing SNS proposal payload rendering under certain conditions.
+
+### Operations
+
 ## Proposal 130144
 
 ### Application
