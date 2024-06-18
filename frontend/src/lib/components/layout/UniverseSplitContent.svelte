@@ -25,6 +25,7 @@
   // Temporarily redefine default values of the SplitContent until the proper redesign is implemented.
   .container {
     display: contents;
+    // The height of the SelectUniverseCard is 68px + top padding (12px) + bottom padding (12px).
     --content-start-height: calc(68px + var(--padding-3x));
   }
 </style>
