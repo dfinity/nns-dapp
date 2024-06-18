@@ -104,7 +104,7 @@ describe("SelectUniverseCard", () => {
       });
       const logo = po.getUniverseLogoPo().getLogoPo();
       expect(await logo.isPresent()).toBe(true);
-      expect(await logo.getSize()).toBe("big");
+      expect(await logo.getSize()).toBe("medium");
       expect(await logo.isFramed()).toBe(true);
       expect(await po.getUniverseLogoPo().getVoteLogoPo().isPresent()).toBe(
         false
@@ -134,7 +134,7 @@ describe("SelectUniverseCard", () => {
       });
       const logo = po.getUniverseLogoPo().getLogoPo();
       expect(await logo.isPresent()).toBe(true);
-      expect(await logo.getSize()).toBe("big");
+      expect(await logo.getSize()).toBe("medium");
       expect(await logo.isFramed()).toBe(true);
       expect(await po.getUniverseLogoPo().getVoteLogoPo().isPresent()).toBe(
         false
@@ -424,7 +424,7 @@ describe("SelectUniverseCard", () => {
 
       const logo = po.getUniverseLogoPo().getVoteLogoPo();
       expect(await logo.isPresent()).toBe(true);
-      expect(await logo.getSize()).toBe("big");
+      expect(await logo.getSize()).toBe("medium");
       expect(await logo.isFramed()).toBe(true);
       expect(await po.getUniverseLogoPo().getLogoPo().isPresent()).toBe(false);
     });
