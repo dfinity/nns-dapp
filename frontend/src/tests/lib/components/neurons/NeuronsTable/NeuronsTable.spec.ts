@@ -152,6 +152,20 @@ describe("NeuronsTable", () => {
     expect(await rowPos[1].getStake()).toBe("5.00 ICP");
   });
 
+  it("should render detailed neuron stake", async () => {
+    const po = renderComponent({
+      neurons: [
+        {
+          ...neuron1,
+          stake: makeStake(999_990_000n),
+        },
+      ],
+    });
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(1);
+    expect(await rowPos[0].getStake()).toBe("9.9999 ICP");
+  });
+
   it("should render neuron state", async () => {
     const po = renderComponent({ neurons: [neuron1, neuron2] });
     const rowPos = await po.getNeuronsTableRowPos();

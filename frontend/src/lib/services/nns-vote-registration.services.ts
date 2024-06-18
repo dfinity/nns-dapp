@@ -7,7 +7,6 @@ import {
   updateVoteRegistrationToastMessage,
   voteRegistrationByProposal,
 } from "$lib/services/vote-registration.services";
-import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { proposalsStore } from "$lib/stores/proposals.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
@@ -66,7 +65,6 @@ export const registerNnsVotes = async ({
       updateProposalContext(updatedProposalInfo);
 
       // Reset and reload actionable nns proposals.
-      actionableNnsProposalsStore.reset();
       loadActionableProposals().then();
     },
   });

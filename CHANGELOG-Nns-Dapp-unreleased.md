@@ -17,6 +17,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Removed the gap between identifier and copy button.
+
 #### Deprecated
 
 #### Removed

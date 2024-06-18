@@ -95,12 +95,12 @@
     }
 
     &:before {
-      border-top: 1px solid var(--line);
+      border-top: 1px solid var(--elements-divider);
       padding: 0 0 var(--padding);
     }
 
     &:after {
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid var(--elements-divider);
       padding: var(--padding) 0 0;
     }
   }

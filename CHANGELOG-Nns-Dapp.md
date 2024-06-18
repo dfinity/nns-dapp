@@ -23,6 +23,7 @@ here after a successful release.
 
 * Rename proposal navigation buttons to "Previous" and "Next".
 * Put project icon before title in page summary.
+* Updated colors of element dividers.
 
 #### Fixed
 
@@ -47,6 +48,7 @@ here after a successful release.
 * Render neurons with minimum dissolve delay correctly with voting power.
 * Nns-dapp may crash while finishing an empty receive.
 * Actionable proposals initialization before Sns-es were loaded.
+* Fix actionable proposals indication glitch.
 
 ### Operations
 
