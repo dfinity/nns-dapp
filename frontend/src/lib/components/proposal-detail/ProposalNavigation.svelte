@@ -69,8 +69,6 @@
     on:click={selectPrevious}
     class:hidden={isNullish(previousId)}
     data-tid="proposal-nav-previous"
-    data-test-proposal-id={previousId?.proposalId.toString() ?? ""}
-    data-test-proposal-u={previousId?.universe ?? ""}
   >
     <IconLeft />
     {$i18n.proposal_detail.previous_short}</button
@@ -82,8 +80,6 @@
     on:click={selectNext}
     class:hidden={isNullish(nextId)}
     data-tid="proposal-nav-next"
-    data-test-proposal-id={nextId?.proposalId.toString() ?? ""}
-    data-test-proposal-u={nextId?.universe ?? ""}
   >
     {$i18n.proposal_detail.next_short}
     <IconRight />
