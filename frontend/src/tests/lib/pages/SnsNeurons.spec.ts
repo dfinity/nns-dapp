@@ -34,6 +34,12 @@ describe("SnsNeurons", () => {
     id: [1, 2, 4],
     stake: neuron2Stake,
   });
+  const disbursedNeuronStake = 0n;
+  const disbursedNeuron = createMockSnsNeuron({
+    id: [1, 2, 5],
+    stake: disbursedNeuronStake,
+    maturity: 0n,
+  });
   const neuronNFStake = 400_000_000n;
   const neuronNF: SnsNeuron = {
     ...createMockSnsNeuron({
@@ -49,6 +55,9 @@ describe("SnsNeurons", () => {
     }
     if (neuronId === neuron2.id[0]) {
       return neuron2Stake;
+    }
+    if (neuronId === disbursedNeuron.id[0]) {
+      return disbursedNeuronStake;
     }
     if (neuronId === neuronNF.id[0]) {
       return neuronNFStake;
@@ -239,6 +248,18 @@ describe("SnsNeurons", () => {
         const po = await renderComponent();
 
         expect(await po.hasEmptyMessage()).toBe(false);
+      });
+
+      it("should not render disbursed neurons", async () => {
+        vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([
+          neuron1,
+          disbursedNeuron,
+          neuronNF,
+        ]);
+        const po = await renderComponent();
+
+        const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+        expect(rows).toHaveLength(2);
       });
     });
   });

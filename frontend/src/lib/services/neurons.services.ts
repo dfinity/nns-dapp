@@ -12,7 +12,6 @@ import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.de
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
-import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import {
@@ -996,7 +995,6 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
     });
 
     // reload actionable proposals
-    actionableNnsProposalsStore.reset();
     await loadActionableProposals();
 
     toastsSuccess({

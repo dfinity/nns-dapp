@@ -35,13 +35,6 @@ export const loadActionableProposalsForSns = async (
 ): Promise<void> => {
   try {
     const rootCanisterIdText = rootCanisterId.toText();
-    const storeValue = get(actionableSnsProposalsStore)[rootCanisterIdText];
-    if (nonNullish(storeValue)) {
-      // The proposals state does not update frequently, so we don't need to re-fetch.
-      // The store will be reset after the user registers a vote.
-      return;
-    }
-
     const identity = await getAuthenticatedIdentity();
     const { proposals: allProposals, includeBallotsByCaller } =
       await querySnsProposals({

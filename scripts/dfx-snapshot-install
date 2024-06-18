@@ -48,14 +48,17 @@ extract() {
   fi
 }
 
-# Make sure the dfx cache is installed.
-if ! [ -d "$(dfx cache show)" ]; then
-  dfx cache install
-fi
-
 STATE_HASH="$(sha256sum "$SNAPSHOT_ARCHIVE" | cut -d' ' -f1)"
 
-STATE_DIR="$(dfx cache show)/snsdemo-state-$STATE_HASH"
+OLD_STATE_DIR="$(find "$(dirname "$(dfx cache show)")" -name "snsdemo-state-$STATE_HASH" | sort | tail -1)"
+PREFERRED_STATE_DIR="$HOME/.snsdemo-state/$STATE_HASH"
+
+if [ -d "$OLD_STATE_DIR" ] && ! [ -d "$PREFERRED_STATE_DIR" ]; then
+  echo "Using state from old location: $OLD_STATE_DIR"
+  STATE_DIR="$OLD_STATE_DIR"
+else
+  STATE_DIR="$PREFERRED_STATE_DIR"
+fi
 
 if [ -d "$STATE_DIR" ] && [ "$CLEAN" = "false" ]; then
   echo "Reusing existing state in $STATE_DIR"
@@ -63,6 +66,8 @@ else
   if [ -d "$STATE_DIR" ]; then
     echo "Removing existing state in $STATE_DIR"
     rm -rf "$STATE_DIR"
+    # Once the directorly is deleted, we can use the preferred state directory.
+    STATE_DIR="$PREFERRED_STATE_DIR"
   fi
   echo "Extracting state into $STATE_DIR"
   mkdir -p "$STATE_DIR"

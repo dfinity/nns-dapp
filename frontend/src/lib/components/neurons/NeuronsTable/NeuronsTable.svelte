@@ -16,6 +16,7 @@
     compareByDissolveDelay,
     compareById,
   } from "$lib/utils/neurons-table.utils";
+  import { NeuronState } from "@dfinity/nns";
 
   export let neurons: TableNeuron[];
 
@@ -32,25 +33,40 @@
       title: $i18n.neurons.neuron_id,
       cellComponent: NeuronIdCell,
       alignment: "left",
-      templateColumns: ["max-content", "max-content"],
+      templateColumns: ["minmax(min-content, max-content)"],
+    },
+    {
+      title: "",
+      alignment: "left",
+      templateColumns: ["1fr"],
     },
     {
       title: $i18n.neuron_detail.stake,
       cellComponent: NeuronStakeCell,
       alignment: "right",
-      templateColumns: ["minmax(max-content, 1fr)"],
+      templateColumns: ["max-content"],
     },
     {
-      title: $i18n.neurons.state,
-      cellComponent: NeuronStateCell,
-      alignment: "right",
-      templateColumns: ["minmax(max-content, 1fr)"],
+      title: "",
+      alignment: "left",
+      templateColumns: ["1fr"],
     },
     {
       title: $i18n.neurons.dissolve_delay_title,
       cellComponent: NeuronDissolveDelayCell,
-      alignment: "right",
-      templateColumns: ["minmax(max-content, 1fr)"],
+      alignment: "left",
+      templateColumns: ["max-content"],
+    },
+    {
+      title: "",
+      alignment: "left",
+      templateColumns: ["1fr"],
+    },
+    {
+      title: $i18n.neurons.state,
+      cellComponent: NeuronStateCell,
+      alignment: "left",
+      templateColumns: ["max-content"],
     },
     {
       title: "",
@@ -59,11 +75,18 @@
       templateColumns: ["max-content"],
     },
   ];
+
+  const getRowStyle = (neuron: TableNeuron) => {
+    if (neuron.state === NeuronState.Spawning) {
+      return "--table-row-text-color: var(--text-description-tint)";
+    }
+    return undefined;
+  };
 </script>
 
 <ResponsiveTable
   testId="neurons-table-component"
   {columns}
-  gridRowsPerTableRow={2}
   tableData={sortedNeurons}
+  {getRowStyle}
 ></ResponsiveTable>

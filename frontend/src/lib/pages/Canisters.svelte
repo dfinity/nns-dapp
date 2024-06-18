@@ -17,9 +17,10 @@
   } from "$lib/utils/navigation.utils";
   import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
   import { pageStore } from "$lib/derived/page.derived";
-  import Summary from "$lib/components/summary/Summary.svelte";
   import PrincipalText from "$lib/components/summary/PrincipalText.svelte";
   import { referrerPathStore } from "$lib/stores/routes.store";
+  import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
+  import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
 
   const loadCanisters = async () => {
     try {
@@ -67,9 +68,14 @@
 
 <TestIdWrapper testId="canisters-component">
   <main>
-    <Summary displayUniverse={false}>
-      <PrincipalText slot="details" inline />
-    </Summary>
+    <div class="summary" data-tid="projects-summary">
+      <h1 class="summary-title">
+        <UniversePageSummary universe={$nnsUniverseStore} />
+      </h1>
+      <div class="summary-details">
+        <PrincipalText inline />
+      </div>
+    </div>
 
     <div class="card-grid">
       {#each $canistersStore.canisters ?? [] as canister (canister.canister_id)}
@@ -116,9 +122,25 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
   main {
     padding-bottom: var(--footer-height);
+  }
+
+  .summary {
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 var(--padding-3x);
+  }
+
+  .summary-title {
+    display: inline-flex;
+  }
+  .summary-details {
+    height: var(--padding-4x);
+    color: var(--description-color);
+    @include fonts.small;
   }
 
   .empty {

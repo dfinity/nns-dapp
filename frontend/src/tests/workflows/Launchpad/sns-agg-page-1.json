@@ -285,7 +285,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98044537252073950,
+    "icrc1_total_supply": 98044621729498180,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -741,7 +741,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100552673991064850,
+    "icrc1_total_supply": 100558137999480880,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1139,7 +1139,8 @@
         "zhbl3-wyaaa-aaaap-aa4rq-cai",
         "yimtt-ziaaa-aaaap-ahe3q-cai",
         "2jvhk-5aaaa-aaaap-ahewa-cai",
-        "4bli7-7iaaa-aaaap-ahd4a-cai"
+        "4bli7-7iaaa-aaaap-ahd4a-cai",
+        "o7ouu-niaaa-aaaap-ahhdq-cai"
       ],
       "archives": ["uz6mw-eaaaa-aaaaq-aabpa-cai"]
     },
@@ -1398,7 +1399,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50150760183563490,
+    "icrc1_total_supply": 50168949792605060,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2195,7 +2196,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9957197121970280,
+    "icrc1_total_supply": 9957206846789994,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3147,7 +3148,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10022372214383018,
+    "icrc1_total_supply": 10022495037373620,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4112,7 +4113,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12578921959333700,
+    "icrc1_total_supply": 12587824587323706,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -6018,7 +6019,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99997222511681380,
+    "icrc1_total_supply": 99997740626509710,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

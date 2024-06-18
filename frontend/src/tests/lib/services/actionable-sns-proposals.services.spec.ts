@@ -303,23 +303,6 @@ describe("actionable-sns-proposals.services", () => {
       });
     });
 
-    it("should not query data when already in the store", async () => {
-      mockSnsProjectsCommittedStore([rootCanisterId1]);
-
-      expect(spyQuerySnsNeurons).not.toHaveBeenCalled();
-      expect(spyQuerySnsProposals).not.toHaveBeenCalled();
-
-      await loadActionableSnsProposals();
-
-      expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(1);
-      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(1);
-
-      await loadActionableSnsProposals();
-
-      expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(1);
-      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(1);
-    });
-
     it("should not query neurons when the sns doesn't support ballots", async () => {
       mockSnsProjectsCommittedStore([rootCanisterId1]);
       includeBallotsByCaller = false;

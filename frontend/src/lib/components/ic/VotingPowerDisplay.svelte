@@ -1,7 +1,3 @@
-<script lang="ts" context="module">
-  let nextTooltipIdNumber = 0;
-</script>
-
 <script lang="ts">
   import { Tooltip } from "@dfinity/gix-components";
   import {
@@ -12,14 +8,11 @@
   export let valueTestId: string;
   export let valueAriaLabel: string | undefined = undefined;
   export let votingPowerE8s: bigint;
-
-  let tooltipId = `voting-power-tooltip-${nextTooltipIdNumber}`;
-  ++nextTooltipIdNumber;
 </script>
 
 <Tooltip
   testId="voting-power-display-component"
-  id={tooltipId}
+  idPrefix="voting-power-tooltip"
   text={formatVotingPowerDetailed(votingPowerE8s)}
 >
   <span data-tid={valueTestId} aria-label={valueAriaLabel}

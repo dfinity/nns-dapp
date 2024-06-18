@@ -15,19 +15,15 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Actionable proposals page.
-
 #### Changed
 
-* Rename proposal navigation buttons to "Previous" and "Next".
+* Removed the gap between identifier and copy button.
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
-
-* Missing SNS proposal payload rendering under certain conditions.
 
 #### Security
 
@@ -38,6 +34,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 #### Changed
+
+* Put snapshot state directories in home directory instead of `dfx` cache.
 
 #### Deprecated
 
