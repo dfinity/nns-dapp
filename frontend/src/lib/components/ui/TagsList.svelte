@@ -20,7 +20,7 @@
     padding: 0 0 calc(2 * var(--padding));
 
     &:not(:last-of-type) {
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid var(--elements-divider);
     }
   }
 </style>
