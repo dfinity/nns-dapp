@@ -149,7 +149,10 @@ export class AppPo extends BasePageObject {
   async goToNeuronDetails(neuronId: string): Promise<void> {
     await this.goToNeurons();
     await (
-      await this.getNeuronsPo().getNnsNeuronsPo().getNeuronCardPo(neuronId)
+      await this.getNeuronsPo()
+        .getNnsNeuronsPo()
+        .getNeuronsTablePo()
+        .getNeuronsTableRowPo(neuronId)
     ).click();
     await this.getNeuronDetailPo().waitFor();
   }

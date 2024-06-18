@@ -1,4 +1,5 @@
 import { NeuronIdCellPo } from "$tests/page-objects/NeuronIdCell.page-object";
+import { NeuronStakeCellPo } from "$tests/page-objects/NeuronStakeCell.page-object";
 import { NeuronStateCellPo } from "$tests/page-objects/NeuronStateCell.page-object";
 import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -20,6 +21,10 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
     return NeuronIdCellPo.under(this.root);
   }
 
+  getNeuronStakeCellPo(): NeuronStakeCellPo {
+    return NeuronStakeCellPo.under(this.root);
+  }
+
   getNeuronStateCellPo(): NeuronStateCellPo {
     return NeuronStateCellPo.under(this.root);
   }
@@ -33,7 +38,12 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
   }
 
   getStake(): Promise<string> {
-    return this.getText("neuron-stake-cell-component");
+    return this.getNeuronStakeCellPo().getStake();
+  }
+
+  // Stake without the currency symbol
+  getStakeBalance(): Promise<string> {
+    return this.getNeuronStakeCellPo().getStakeBalance();
   }
 
   getState(): Promise<string> {
