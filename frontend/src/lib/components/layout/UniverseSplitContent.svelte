@@ -25,6 +25,6 @@
   // Temporarily redefine default values of the SplitContent until the proper redesign is implemented.
   .container {
     display: contents;
-    --content-start-height: calc(92px + var(--padding-2x));
+    --content-start-height: calc(68px + var(--padding-3x));
   }
 </style>
