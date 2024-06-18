@@ -27,7 +27,6 @@ import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
   SnsProposalDecisionStatus,
