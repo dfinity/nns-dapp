@@ -1,5 +1,6 @@
 import * as api from "$lib/api/sns-governance.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
+import * as actionableProposalsService from "$lib/services/actionable-proposals.services";
 import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
@@ -204,7 +205,7 @@ describe("sns-vote-registration-services", () => {
       );
     });
 
-    it("should reset and reload actionable sns proposals after voting", async () => {
+    it("should reload actionable sns proposals after voting", async () => {
       vi.spyOn(snsGovernanceApi, "registerVote").mockResolvedValue();
       const rootCanisterId2 = principal(13);
       actionableSnsProposalsStore.set({
@@ -253,7 +254,12 @@ describe("sns-vote-registration-services", () => {
       });
       expect(spyQuerySnsNeurons).toBeCalledTimes(0);
 
+      // The store value should be not changed until the proposals are loaded
       expect(get(actionableSnsProposalsStore)).toEqual({
+        [rootCanisterId.toText()]: {
+          proposals: [proposal1, proposal2],
+          includeBallotsByCaller: true,
+        },
         [rootCanisterId2.toText()]: {
           proposals: [proposal1, proposal2],
           includeBallotsByCaller: true,
@@ -277,6 +283,48 @@ describe("sns-vote-registration-services", () => {
           includeBallotsByCaller: true,
         },
       });
+    });
+
+    it("should not reset actionable nns proposals after voting", async () => {
+      vi.spyOn(snsGovernanceApi, "registerVote").mockResolvedValue();
+      const spyLoadActionableProposalsNns = vi.spyOn(
+        actionableProposalsService,
+        "loadActionableProposals"
+      );
+      const rootCanisterId2 = principal(13);
+      actionableSnsProposalsStore.set({
+        rootCanisterId,
+        proposals: [proposal1, proposal2],
+        includeBallotsByCaller: true,
+      });
+      actionableSnsProposalsStore.set({
+        rootCanisterId: rootCanisterId2,
+        proposals: [proposal1, proposal2],
+        includeBallotsByCaller: true,
+      });
+
+      expect(get(actionableSnsProposalsStore)).toEqual({
+        [rootCanisterId.toText()]: {
+          proposals: [proposal1, proposal2],
+          includeBallotsByCaller: true,
+        },
+        [rootCanisterId2.toText()]: {
+          proposals: [proposal1, proposal2],
+          includeBallotsByCaller: true,
+        },
+      });
+      expect(spyQuerySnsProposals).toBeCalledTimes(0);
+      expect(spyLoadActionableProposalsNns).toBeCalledTimes(0);
+
+      await callRegisterVote({
+        vote: SnsVote.Yes,
+        reloadProposalCallback: () => {
+          // do nothing
+        },
+      });
+
+      expect(spyQuerySnsProposals).toBeCalledTimes(1);
+      expect(spyLoadActionableProposalsNns).toBeCalledTimes(0);
     });
 
     it("should display a correct error details", async () => {

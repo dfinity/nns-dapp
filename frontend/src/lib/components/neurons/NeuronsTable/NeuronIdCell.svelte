@@ -1,47 +1,35 @@
-<script lang="ts" context="module">
-  let nextElementIdNumber = 0;
-</script>
-
 <script lang="ts">
   import type { TableNeuron } from "$lib/types/neurons-table";
   import Hash from "$lib/components/ui/Hash.svelte";
-  import { Copy, Tag } from "@dfinity/gix-components";
+  import { Tag } from "@dfinity/gix-components";
 
   export let rowData: TableNeuron;
-
-  let elementId = `neuron-id-cell-${nextElementIdNumber}`;
-  ++nextElementIdNumber;
 </script>
 
 <div data-tid="neuron-id-cell-component" class="container">
-  <span class="hash"
-    ><Hash text={rowData.neuronId} tagName="span" id={elementId} /></span
-  >
-  <Copy value={rowData.neuronId} />
-  <div class="tags">
-    {#each rowData.tags as tag}
-      <Tag testId="neuron-tag">{tag}</Tag>
-    {/each}
-  </div>
+  <Hash
+    testId="neuron-id"
+    text={rowData.neuronId}
+    tagName="span"
+    idPrefix="neuron-id-cell"
+    showCopy
+  />
+  {#if rowData.tags.length > 0}
+    <span class="tags" data-tid="neuron-tags">
+      {#each rowData.tags as tag}
+        <Tag testId="neuron-tag">{tag}</Tag>
+      {/each}
+    </span>
+  {/if}
 </div>
 
 <style lang="scss">
   .container {
-    display: grid;
-    grid-row: span 2;
-    grid-column: span 2;
-    grid-template-rows: subgrid;
-    grid-template-columns: subgrid;
-    gap: 0;
-  }
-
-  .hash {
-    align-self: center;
+    line-height: 1.5;
   }
 
   .tags {
-    display: flex;
+    display: inline-flex;
     gap: var(--padding);
-    grid-column: 1/-1;
   }
 </style>

@@ -229,17 +229,11 @@ describe("MergeNeuronsModal", () => {
 
       expect(await po.getConfirmNeuronsMergePo().isPresent()).toBe(true);
       expect(
-        await po.getConfirmNeuronsMergePo().getSourceNeuronInfoPo().isPresent()
-      ).toBe(false);
-      expect(
         await po
           .getConfirmNeuronsMergePo()
           .getSourceNeuronDetailCardPo()
           .isPresent()
       ).toBe(true);
-      expect(
-        await po.getConfirmNeuronsMergePo().getTargetNeuronInfoPo().isPresent()
-      ).toBe(false);
       expect(
         await po
           .getConfirmNeuronsMergePo()

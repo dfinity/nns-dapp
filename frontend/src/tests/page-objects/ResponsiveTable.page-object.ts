@@ -19,12 +19,20 @@ export class ResponsiveTablePo extends BasePageObject {
     );
   }
 
-  getRows(): Promise<ResponsiveTableRowPo[]> {
-    return ResponsiveTableRowPo.allUnder(this.root);
+  async getColumnHeaderAlignments(): Promise<string[]> {
+    return (
+      await Promise.all(
+        (await this.root.querySelectorAll("[role='columnheader']")).map((el) =>
+          el.getClasses()
+        )
+      )
+    ).map((classes) =>
+      classes.filter((c) => c.startsWith("desktop-align-")).join(" ")
+    );
   }
 
-  getStyle(): Promise<string> {
-    return this.root.getAttribute("style");
+  getRows(): Promise<ResponsiveTableRowPo[]> {
+    return ResponsiveTableRowPo.allUnder(this.root);
   }
 
   async getStyleVariable(varName: string): Promise<string> {

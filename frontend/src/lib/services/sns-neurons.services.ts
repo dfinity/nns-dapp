@@ -26,7 +26,6 @@ import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-s
 import { snsTokensByRootCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
 import { loadActionableProposalsForSns } from "$lib/services/actionable-sns-proposals.services";
 import { loadSnsParameters } from "$lib/services/sns-parameters.services";
-import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
@@ -862,7 +861,6 @@ export const makeDummyProposals = async ({
     });
 
     // reload actionable proposals
-    actionableSnsProposalsStore.resetForSns(rootCanisterId);
     await loadActionableProposalsForSns(rootCanisterId);
 
     toastsSuccess({

@@ -45,7 +45,7 @@
 
   .container {
     padding-bottom: var(--padding-2x);
-    border-bottom: 1px solid var(--tertiary);
+    border-bottom: 1px solid var(--elements-divider);
 
     &:last-of-type {
       border-bottom: none;

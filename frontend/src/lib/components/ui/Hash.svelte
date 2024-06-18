@@ -6,7 +6,8 @@
 
   export let tagName: "h3" | "p" | "span" | "h5" = "h3";
   export let testId: string | undefined = undefined;
-  export let id: string;
+  export let id: string | undefined = undefined;
+  export let idPrefix: string = "hash";
   export let text: string;
   export let showCopy = false;
   export let className: string | undefined = undefined;
@@ -21,7 +22,7 @@
 </script>
 
 <span data-tid="hash-component">
-  <Tooltip top={tooltipTop} {id} {text}>
+  <Tooltip top={tooltipTop} {id} {idPrefix} {text}>
     <svelte:element
       this={tagName}
       data-tid={testId}
@@ -43,7 +44,6 @@
   span {
     align-items: center;
     display: inline-flex;
-    gap: var(--padding-0_5x);
 
     .copy {
       align-items: center;

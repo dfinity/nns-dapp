@@ -130,7 +130,6 @@
     }
 
     :global(hr) {
-      color: var(--line);
       margin: var(--padding-3x) 0;
     }
   }

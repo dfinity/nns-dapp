@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-05-29_23-02-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-06-12_23-01-base/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -69,11 +69,6 @@ pub struct AddNodePayload {
     pub p2p_flow_endpoints: Vec<String>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub enum Result_ {
-    Ok(Principal),
-    Err(String),
-}
-#[derive(Serialize, CandidType, Deserialize)]
 pub struct AddNodeOperatorPayload {
     pub ipv6: Option<String>,
     pub node_operator_principal_id: Option<Principal>,
@@ -131,11 +126,6 @@ pub struct CanisterIdRange {
 pub struct CompleteCanisterMigrationPayload {
     pub canister_id_ranges: Vec<CanisterIdRange>,
     pub migration_trace: Vec<Principal>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub enum Result1 {
-    Ok,
-    Err(String),
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct SubnetFeatures {
@@ -209,10 +199,6 @@ pub struct CreateSubnetPayload {
     pub node_ids: Vec<Principal>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct DeleteSubnetPayload {
-    pub subnet_id: Option<Principal>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
 pub struct DeployGuestosToAllSubnetNodesPayload {
     pub subnet_id: Principal,
     pub replica_version_id: String,
@@ -231,7 +217,7 @@ pub struct NodeOperatorRecord {
     pub dc_id: String,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub enum Result2 {
+pub enum GetNodeOperatorsAndDcsOfNodeProviderResponse {
     Ok(Vec<(DataCenterRecord, NodeOperatorRecord)>),
     Err(String),
 }
@@ -240,7 +226,7 @@ pub struct NodeProvidersMonthlyXdrRewards {
     pub rewards: Vec<(String, u64)>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub enum Result3 {
+pub enum GetNodeProvidersMonthlyXdrRewardsResponse {
     Ok(NodeProvidersMonthlyXdrRewards),
     Err(String),
 }
@@ -249,12 +235,8 @@ pub struct GetSubnetForCanisterRequest {
     pub principal: Option<Principal>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct GetSubnetForCanisterResponse {
-    pub subnet_id: Option<Principal>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub enum Result4 {
-    Ok(GetSubnetForCanisterResponse),
+pub enum GetSubnetForCanisterResponse {
+    Ok { subnet_id: Option<Principal> },
     Err(String),
 }
 #[derive(Serialize, CandidType, Deserialize)]
@@ -293,10 +275,6 @@ pub struct RemoveNodeOperatorsPayload {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct RemoveNodesPayload {
-    pub node_ids: Vec<Principal>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct RemoveNodesFromSubnetPayload {
     pub node_ids: Vec<Principal>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
@@ -352,9 +330,19 @@ pub struct UpdateNodeDomainDirectlyPayload {
     pub domain: Option<String>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub enum UpdateNodeDomainDirectlyResponse {
+    Ok,
+    Err(String),
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateNodeIPv4ConfigDirectlyPayload {
     pub ipv4_config: Option<IPv4Config>,
     pub node_id: Principal,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub enum UpdateNodeIpv4ConfigDirectlyResponse {
+    Ok,
+    Err(String),
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateNodeOperatorConfigPayload {
@@ -449,7 +437,7 @@ impl Service {
     pub async fn add_firewall_rules(&self, arg0: AddFirewallRulesPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "add_firewall_rules", (arg0,)).await
     }
-    pub async fn add_node(&self, arg0: AddNodePayload) -> CallResult<(Result_,)> {
+    pub async fn add_node(&self, arg0: AddNodePayload) -> CallResult<(Principal,)> {
         ic_cdk::call(self.0, "add_node", (arg0,)).await
     }
     pub async fn add_node_operator(&self, arg0: AddNodeOperatorPayload) -> CallResult<()> {
@@ -470,14 +458,11 @@ impl Service {
     pub async fn clear_provisional_whitelist(&self) -> CallResult<()> {
         ic_cdk::call(self.0, "clear_provisional_whitelist", ()).await
     }
-    pub async fn complete_canister_migration(&self, arg0: CompleteCanisterMigrationPayload) -> CallResult<(Result1,)> {
+    pub async fn complete_canister_migration(&self, arg0: CompleteCanisterMigrationPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "complete_canister_migration", (arg0,)).await
     }
     pub async fn create_subnet(&self, arg0: CreateSubnetPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "create_subnet", (arg0,)).await
-    }
-    pub async fn delete_subnet(&self, arg0: DeleteSubnetPayload) -> CallResult<()> {
-        ic_cdk::call(self.0, "delete_subnet", (arg0,)).await
     }
     pub async fn deploy_guestos_to_all_subnet_nodes(
         &self,
@@ -494,16 +479,24 @@ impl Service {
     pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
         ic_cdk::call(self.0, "get_build_metadata", ()).await
     }
-    pub async fn get_node_operators_and_dcs_of_node_provider(&self, arg0: Principal) -> CallResult<(Result2,)> {
+    pub async fn get_node_operators_and_dcs_of_node_provider(
+        &self,
+        arg0: Principal,
+    ) -> CallResult<(GetNodeOperatorsAndDcsOfNodeProviderResponse,)> {
         ic_cdk::call(self.0, "get_node_operators_and_dcs_of_node_provider", (arg0,)).await
     }
-    pub async fn get_node_providers_monthly_xdr_rewards(&self) -> CallResult<(Result3,)> {
+    pub async fn get_node_providers_monthly_xdr_rewards(
+        &self,
+    ) -> CallResult<(GetNodeProvidersMonthlyXdrRewardsResponse,)> {
         ic_cdk::call(self.0, "get_node_providers_monthly_xdr_rewards", ()).await
     }
-    pub async fn get_subnet_for_canister(&self, arg0: GetSubnetForCanisterRequest) -> CallResult<(Result4,)> {
+    pub async fn get_subnet_for_canister(
+        &self,
+        arg0: GetSubnetForCanisterRequest,
+    ) -> CallResult<(GetSubnetForCanisterResponse,)> {
         ic_cdk::call(self.0, "get_subnet_for_canister", (arg0,)).await
     }
-    pub async fn prepare_canister_migration(&self, arg0: PrepareCanisterMigrationPayload) -> CallResult<(Result1,)> {
+    pub async fn prepare_canister_migration(&self, arg0: PrepareCanisterMigrationPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "prepare_canister_migration", (arg0,)).await
     }
     pub async fn recover_subnet(&self, arg0: RecoverSubnetPayload) -> CallResult<()> {
@@ -524,10 +517,10 @@ impl Service {
     pub async fn remove_nodes(&self, arg0: RemoveNodesPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "remove_nodes", (arg0,)).await
     }
-    pub async fn remove_nodes_from_subnet(&self, arg0: RemoveNodesFromSubnetPayload) -> CallResult<()> {
+    pub async fn remove_nodes_from_subnet(&self, arg0: RemoveNodesPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "remove_nodes_from_subnet", (arg0,)).await
     }
-    pub async fn reroute_canister_ranges(&self, arg0: RerouteCanisterRangesPayload) -> CallResult<(Result1,)> {
+    pub async fn reroute_canister_ranges(&self, arg0: RerouteCanisterRangesPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "reroute_canister_ranges", (arg0,)).await
     }
     pub async fn retire_replica_version(&self, arg0: RetireReplicaVersionPayload) -> CallResult<()> {
@@ -554,16 +547,19 @@ impl Service {
     pub async fn update_firewall_rules(&self, arg0: UpdateFirewallRulesPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_firewall_rules", (arg0,)).await
     }
-    pub async fn update_node_directly(&self, arg0: UpdateNodeDirectlyPayload) -> CallResult<(Result1,)> {
+    pub async fn update_node_directly(&self, arg0: UpdateNodeDirectlyPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_node_directly", (arg0,)).await
     }
-    pub async fn update_node_domain_directly(&self, arg0: UpdateNodeDomainDirectlyPayload) -> CallResult<(Result1,)> {
+    pub async fn update_node_domain_directly(
+        &self,
+        arg0: UpdateNodeDomainDirectlyPayload,
+    ) -> CallResult<(UpdateNodeDomainDirectlyResponse,)> {
         ic_cdk::call(self.0, "update_node_domain_directly", (arg0,)).await
     }
     pub async fn update_node_ipv_4_config_directly(
         &self,
         arg0: UpdateNodeIPv4ConfigDirectlyPayload,
-    ) -> CallResult<(Result1,)> {
+    ) -> CallResult<(UpdateNodeIpv4ConfigDirectlyResponse,)> {
         ic_cdk::call(self.0, "update_node_ipv4_config_directly", (arg0,)).await
     }
     pub async fn update_node_operator_config(&self, arg0: UpdateNodeOperatorConfigPayload) -> CallResult<()> {

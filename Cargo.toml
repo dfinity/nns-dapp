@@ -7,10 +7,10 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "2.0.79"
+version = "2.0.80"
 
 [workspace.dependencies]
-ic-cdk = "0.13.2"
+ic-cdk = "0.14.0"
 ic-cdk-macros = "0.14.0"
 
 cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2024-05-29_23-02-base" }

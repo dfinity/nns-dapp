@@ -94,7 +94,7 @@
 
     &:after {
       content: "";
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid var(--elements-divider);
       padding: var(--padding) 0 0;
       width: 100%;
     }

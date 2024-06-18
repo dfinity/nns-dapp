@@ -16,6 +16,17 @@ import { tick } from "svelte";
 vi.mock("$lib/api/governance.api");
 
 describe("NnsNeurons", () => {
+  const disbursedNeuron = {
+    ...mockNeuron,
+    state: NeuronState.Dissolved,
+    neuronId: 225n,
+    fullNeuron: {
+      ...mockFullNeuron,
+      cachedNeuronStake: 0n,
+      maturityE8sEquivalent: 0n,
+    },
+  };
+
   beforeEach(() => {
     vi.resetAllMocks();
     resetNeuronsApiService();
@@ -78,6 +89,18 @@ describe("NnsNeurons", () => {
         expect(neuronCards.length).toBe(neurons.length);
       });
 
+      it("should filter out disbursed neurons", async () => {
+        vi.spyOn(api, "queryNeurons").mockResolvedValue([
+          mockNeuron,
+          disbursedNeuron,
+          mockNeuron2,
+        ]);
+        const po = await renderComponent();
+
+        const neuronCards = await po.getNeuronCardPos();
+        expect(neuronCards.length).toBe(2);
+      });
+
       it("should not render an empty message", async () => {
         const po = await renderComponent();
 
@@ -107,6 +130,20 @@ describe("NnsNeurons", () => {
 
         const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
         expect(rows).toHaveLength(3);
+      });
+
+      it("should filter out disbursed neurons", async () => {
+        vi.spyOn(api, "queryNeurons").mockResolvedValue([
+          mockNeuron,
+          disbursedNeuron,
+          mockNeuron2,
+        ]);
+        const po = await renderComponent();
+
+        const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+        expect(rows).toHaveLength(2);
+        expect(await rows[0].getStake()).not.toBe("0 ICP");
+        expect(await rows[1].getStake()).not.toBe("0 ICP");
       });
 
       it("should not render the NeuronCards", async () => {
@@ -151,6 +188,13 @@ describe("NnsNeurons", () => {
 
         expect(await po.hasEmptyMessage()).toBe(true);
       });
+
+      it("should render an empty message with disbursed neurons", async () => {
+        vi.spyOn(api, "queryNeurons").mockResolvedValue([disbursedNeuron]);
+        const po = await renderComponent();
+
+        expect(await po.hasEmptyMessage()).toBe(true);
+      });
     });
 
     describe("with ENABLE_NEURONS_TABLE enabled", () => {
@@ -159,6 +203,13 @@ describe("NnsNeurons", () => {
       });
 
       it("should render an empty message", async () => {
+        const po = await renderComponent();
+
+        expect(await po.hasEmptyMessage()).toBe(true);
+      });
+
+      it("should render an empty message with disbursed neurons", async () => {
+        vi.spyOn(api, "queryNeurons").mockResolvedValue([disbursedNeuron]);
         const po = await renderComponent();
 
         expect(await po.hasEmptyMessage()).toBe(true);
