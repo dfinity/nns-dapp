@@ -115,6 +115,8 @@ test("Test neurons table", async ({ page, context, browser }) => {
   step("Wait for the hotkey neurons to be created");
   await createHotkeyNeuronsPromise;
 
+  await page.reload();
+
   step("Make screenshots");
   await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
 
