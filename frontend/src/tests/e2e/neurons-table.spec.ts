@@ -1,6 +1,5 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { getNnsNeuronCardsIds } from "$tests/utils/e2e.nns-neuron.test-utils";
 import {
   replaceContent,
   setFeatureFlag,
@@ -26,6 +25,11 @@ const createHotkeyNeuronsInOtherAccount = async ({
   const context = await browser.newContext();
   const page = await context.newPage();
   await page.goto("/");
+  await setFeatureFlag({
+    page,
+    featureFlag: "ENABLE_NEURONS_TABLE",
+    value: true,
+  });
   await signInWithNewUser({ page, context });
 
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
@@ -41,7 +45,7 @@ const createHotkeyNeuronsInOtherAccount = async ({
     .getNnsNeuronsFooterPo()
     .stakeNeuron({ amount: 10, dissolveDelayDays: 0 });
 
-  const neuronIds = await getNnsNeuronCardsIds(appPo);
+  const neuronIds = await appPo.getNeuronsPo().getNnsNeuronsPo().getNeuronIds();
   expect(neuronIds).toHaveLength(2);
 
   await appPo.goToNeuronDetails(neuronIds[0]);
@@ -62,6 +66,12 @@ const createHotkeyNeuronsInOtherAccount = async ({
 test("Test neurons table", async ({ page, context, browser }) => {
   await page.goto("/canisters");
   await expect(page).toHaveTitle("Canisters / NNS Dapp");
+  await setFeatureFlag({
+    page,
+    featureFlag: "ENABLE_NEURONS_TABLE",
+    value: true,
+  });
+
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
 
   await step("Sign in");
@@ -84,7 +94,7 @@ test("Test neurons table", async ({ page, context, browser }) => {
     .getNnsNeuronsFooterPo()
     .stakeNeuron({ amount: 20, dissolveDelayDays: 365 });
 
-  const neuronIds = await getNnsNeuronCardsIds(appPo);
+  const neuronIds = await appPo.getNeuronsPo().getNnsNeuronsPo().getNeuronIds();
   expect(neuronIds).toHaveLength(1);
 
   step("Start dissolving");
@@ -103,13 +113,6 @@ test("Test neurons table", async ({ page, context, browser }) => {
 
   step("Wait for the hotkey neurons to be created");
   await createHotkeyNeuronsPromise;
-
-  await setFeatureFlag({
-    page,
-    featureFlag: "ENABLE_NEURONS_TABLE",
-    value: true,
-  });
-  await page.reload();
 
   step("Make screenshots");
   await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
