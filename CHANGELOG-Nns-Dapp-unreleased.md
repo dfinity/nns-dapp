@@ -34,6 +34,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Put snapshot state directories in home directory instead of `dfx` cache.
+* Universe selector icon size decreased.
 
 #### Deprecated
 
