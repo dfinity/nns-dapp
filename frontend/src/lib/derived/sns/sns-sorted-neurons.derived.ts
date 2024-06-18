@@ -8,14 +8,19 @@ import type { SnsNeuron } from "@dfinity/sns";
 import { derived, type Readable } from "svelte/store";
 import { selectedUniverseIdStore } from "../selected-universe.derived";
 
-export const snsSortedNeuronStore: Readable<SnsNeuron[]> = derived(
+export const definedSnsNeuronStore: Readable<SnsNeuron[]> = derived(
   [snsNeuronsStore, selectedUniverseIdStore],
   ([store, selectedSnsRootCanisterId]) => {
     const projectStore = store[selectedSnsRootCanisterId.toText()];
     return projectStore === undefined
       ? []
-      : sortSnsNeuronsByStake(projectStore.neurons.filter(hasValidStake));
+      : projectStore.neurons.filter(hasValidStake);
   }
+);
+
+export const snsSortedNeuronStore: Readable<SnsNeuron[]> = derived(
+  definedSnsNeuronStore,
+  (store) => sortSnsNeuronsByStake(store)
 );
 
 export const sortedSnsUserNeuronsStore: Readable<SnsNeuron[]> = derived(
