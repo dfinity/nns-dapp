@@ -25,6 +25,7 @@ const createHotkeyNeuronsInOtherAccount = async ({
   const context = await browser.newContext();
   const page = await context.newPage();
   await page.goto("/");
+  await expect(page).toHaveTitle("Tokens / NNS Dapp");
   await setFeatureFlag({
     page,
     featureFlag: "ENABLE_NEURONS_TABLE",
