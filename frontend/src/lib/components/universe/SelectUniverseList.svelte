@@ -39,9 +39,3 @@
     />
   {/each}
 </TestIdWrapper>
-
-<style lang="scss">
-  :global(hr[data-tid="all-actionable-separator"]) {
-    color: var(--elements-divider);
-  }
-</style>
