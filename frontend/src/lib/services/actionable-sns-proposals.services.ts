@@ -3,7 +3,10 @@ import { MAX_ACTIONABLE_REQUEST_COUNT } from "$lib/constants/constants";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
-import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+import {
+  actionableSnsProposalsStore,
+  failedActionableSnsesStore,
+} from "$lib/stores/actionable-sns-proposals.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { votableSnsNeurons } from "$lib/utils/sns-neuron.utils";
 import {
@@ -80,6 +83,8 @@ export const loadActionableProposalsForSns = async (
     });
   } catch (err) {
     console.error(err);
+
+    get(failedActionableSnsesStore).push(rootCanisterId.toText());
   }
 };
 
