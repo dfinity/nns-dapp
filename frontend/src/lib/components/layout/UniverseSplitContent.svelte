@@ -3,8 +3,8 @@
   import Title from "$lib/components/header/Title.svelte";
   import SelectUniverseNav from "$lib/components/universe/SelectUniverseNav.svelte";
   import HeaderToolbar from "$lib/components/header/HeaderToolbar.svelte";
-  import {nonNullish} from "@dfinity/utils";
-  import {afterNavigate} from "$app/navigation";
+  import { nonNullish } from "@dfinity/utils";
+  import { afterNavigate } from "$app/navigation";
 
   export let resetScrollPositionAfterNavigation = false;
 
@@ -15,7 +15,6 @@
       splitContent.resetScrollPosition();
     }
   });
-
 </script>
 
 <div class="container">
