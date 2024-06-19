@@ -69,3 +69,4 @@ const initActionableSnsProposalsStore = (): ActionableSnsProposalsStore => {
 };
 
 export const actionableSnsProposalsStore = initActionableSnsProposalsStore();
+export const failedActionableSnsesStore = writable<string[]>([]);
