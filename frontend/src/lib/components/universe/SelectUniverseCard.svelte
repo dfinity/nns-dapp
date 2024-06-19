@@ -66,7 +66,7 @@
   noMargin
 >
   <div class="container" class:selected>
-    <UniverseLogo size="big" {universe} framed={true} />
+    <UniverseLogo size="medium" {universe} framed={true} />
 
     <div
       class={`content ${role}`}
