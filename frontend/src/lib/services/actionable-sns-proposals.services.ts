@@ -84,6 +84,7 @@ export const loadActionableProposalsForSns = async (
   } catch (err) {
     console.error(err);
 
+    // Store the failed root canister ID to provide the correct loading state.
     get(failedActionableSnsesStore).push(rootCanisterId.toText());
   }
 };
