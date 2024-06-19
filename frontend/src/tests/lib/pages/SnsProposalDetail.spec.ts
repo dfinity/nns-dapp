@@ -360,32 +360,35 @@ describe("SnsProposalDetail", () => {
     const principal1 = principal(11);
     const principal2 = principal(22);
 
-    const mockCommittedSnsProjectsWithVotableProposal = (
-      props: Array<{ rootCanisterId: Principal; proposalId: bigint }>
+    const mockCommittedSnsProjectsWithVotableProposals = (
+      projects: Array<{ rootCanisterId: Principal; proposalIds: bigint[] }>
     ) => {
-      const snsProjects = props.map(({ rootCanisterId }) => ({
+      const snsProjects = projects.map(({ rootCanisterId }) => ({
         rootCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
       }));
       setSnsProjects(snsProjects);
-      props.forEach(({ rootCanisterId, proposalId }) => {
+      projects.forEach(({ rootCanisterId, proposalIds }) => {
+        const proposals = proposalIds.map((proposalId) =>
+          createSnsProposal({
+            proposalId,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+          })
+        );
         // set votable proposals
         actionableSnsProposalsStore.set({
           rootCanisterId,
           includeBallotsByCaller: true,
-          proposals: [
-            createSnsProposal({
-              proposalId,
-              status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-            }),
-          ],
+          proposals,
         });
-        // Add proposal to the fake api to be able to navigate to it
-        fakeSnsGovernanceApi.addProposalWith({
-          identity: mockIdentity,
-          rootCanisterId: rootCanisterId,
-          id: [{ id: proposalId }],
-        });
+        // Add proposals to the fake api to be able to navigate to it
+        proposalIds.forEach((proposalId) =>
+          fakeSnsGovernanceApi.addProposalWith({
+            identity: mockIdentity,
+            rootCanisterId,
+            id: [{ id: proposalId }],
+          })
+        );
       });
     };
 
@@ -395,16 +398,16 @@ describe("SnsProposalDetail", () => {
     });
 
     it("should navigate to the proposal from the next Sns", async () => {
-      mockCommittedSnsProjectsWithVotableProposal([
-        { rootCanisterId: principal1, proposalId: 1n },
-        { rootCanisterId: principal2, proposalId: 2n },
+      mockCommittedSnsProjectsWithVotableProposals([
+        { rootCanisterId: principal1, proposalIds: [20n, 19n] },
+        { rootCanisterId: principal2, proposalIds: [30n, 29n] },
       ]);
       page.mock({
         data: { universe: principal1.toText(), actionable: true },
       });
 
       const { container } = render(SnsProposalDetail, {
-        props: { proposalIdText: "1" },
+        props: { proposalIdText: "19" },
       });
       const po = SnsProposalDetailPo.under(
         new JestPageObjectElement(container)
@@ -420,7 +423,7 @@ describe("SnsProposalDetail", () => {
       expect(get(page)).toEqual({
         data: {
           actionable: "",
-          proposal: "2",
+          proposal: "30",
           universe: principal2.toText(),
         },
         route: {
@@ -430,16 +433,16 @@ describe("SnsProposalDetail", () => {
     });
 
     it("should navigate to the proposal from the previous Sns", async () => {
-      mockCommittedSnsProjectsWithVotableProposal([
-        { rootCanisterId: principal1, proposalId: 1n },
-        { rootCanisterId: principal2, proposalId: 2n },
+      mockCommittedSnsProjectsWithVotableProposals([
+        { rootCanisterId: principal1, proposalIds: [20n, 19n] },
+        { rootCanisterId: principal2, proposalIds: [30n, 29n] },
       ]);
       page.mock({
         data: { universe: principal2.toText(), actionable: true },
       });
 
       const { container } = render(SnsProposalDetail, {
-        props: { proposalIdText: "2" },
+        props: { proposalIdText: "30" },
       });
       const po = SnsProposalDetailPo.under(
         new JestPageObjectElement(container)
@@ -455,7 +458,7 @@ describe("SnsProposalDetail", () => {
       expect(get(page)).toEqual({
         data: {
           actionable: "",
-          proposal: "1",
+          proposal: "19",
           universe: principal1.toText(),
         },
         route: {
