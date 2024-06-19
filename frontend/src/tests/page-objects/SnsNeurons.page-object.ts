@@ -44,8 +44,8 @@ export class SnsNeuronsPo extends BasePageObject {
   }
 
   async getNeuronIds(): Promise<string[]> {
-    const cards = await this.getNeuronCardPos();
-    return Promise.all(cards.map((card) => card.getNeuronId()));
+    const rows = await this.getNeuronsTablePo().getNeuronsTableRowPos();
+    return Promise.all(rows.map((row) => row.getNeuronId()));
   }
 
   hasNonNeuronFundNeuronsGrid(): Promise<boolean> {
