@@ -49,21 +49,9 @@ export class ProposalNavigationPo extends BasePageObject {
     );
   }
 
-  async getPreviousButtonProposalUniverse(): Promise<string> {
-    return (await this.getPreviousButtonPo().getElement()).getAttribute(
-      "data-test-proposal-u"
-    );
-  }
-
   async getNextButtonProposalId(): Promise<string> {
     return (await this.getNextButtonPo().getElement()).getAttribute(
       "data-test-proposal-id"
-    );
-  }
-
-  async getNextButtonProposalUniverse(): Promise<string> {
-    return (await this.getNextButtonPo().getElement()).getAttribute(
-      "data-test-proposal-u"
     );
   }
 
