@@ -30,8 +30,8 @@ To run the dapp against canisters deployed locally on a simulated IC network, us
 
 - Clone the [snsdemo](https://github.com/dfinity/snsdemo/) repository. We'll use it to set up the test environment.
 - In the `snsdemo` repo, run:
-  * `bin/dfx-sns-demo-install` (to install necessary tools)
-  * `bin/dfx-snapshot-stock-make --snapshot $HOME/my-snapshot.tar.xz` (to create a snapshot with a test environment)
+  - `bin/dfx-sns-demo-install` (to install necessary tools)
+  - `bin/dfx-snapshot-stock-make --snapshot $HOME/my-snapshot.tar.xz` (to create a snapshot with a test environment)
 - Go back to the `nns-dapp` repo
 - Run `scripts/dfx-snapshot-start --snapshot $HOME/my-snapshot.tar.xz` (this will keep running so switch to another terminal window)
 - Run `DFX_NETWORK=local ./config.sh` to populate the `./frontend/.env` file.
