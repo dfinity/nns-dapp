@@ -3,10 +3,23 @@
   import Title from "$lib/components/header/Title.svelte";
   import SelectUniverseNav from "$lib/components/universe/SelectUniverseNav.svelte";
   import HeaderToolbar from "$lib/components/header/HeaderToolbar.svelte";
+  import {nonNullish} from "@dfinity/utils";
+  import {afterNavigate} from "$app/navigation";
+
+  export let resetScrollPositionAfterNavigation = false;
+
+  let splitContent: SplitContent | undefined;
+
+  afterNavigate(() => {
+    if (resetScrollPositionAfterNavigation && nonNullish(splitContent)) {
+      splitContent.resetScrollPosition();
+    }
+  });
+
 </script>
 
 <div class="container">
-  <SplitContent>
+  <SplitContent bind:this={splitContent}>
     <div class="nav" slot="start">
       <SelectUniverseNav />
     </div>

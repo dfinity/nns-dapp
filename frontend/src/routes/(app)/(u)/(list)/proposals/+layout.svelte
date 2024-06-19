@@ -7,7 +7,7 @@
 
 <LayoutList title={$i18n.navigation.voting}>
   <Layout>
-    <UniverseSplitContent>
+    <UniverseSplitContent resetScrollPositionAfterNavigation>
       <slot />
     </UniverseSplitContent>
   </Layout>
