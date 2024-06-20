@@ -200,6 +200,44 @@ describe("actionable-sns-proposals.services", () => {
       });
     });
 
+    it("should save failed canister IDs", async () => {
+      const failRootCanisterId = principal(13);
+      mockSnsProjectsCommittedStore([failRootCanisterId, rootCanisterId1, rootCanisterId2]);
+      spyQuerySnsProposals =
+        vi.spyOn(api, "queryProposals")
+        .mockRejectedValueOnce(new Error("fail"))
+        .mockImplementation(spyQuerySnsProposalsImplementation);
+      spyConsoleError = silentConsoleErrors();
+
+      expect(spyQuerySnsProposals).not.toHaveBeenCalled();
+
+      await loadActionableSnsProposals();
+
+      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(3);
+      expect(spyQuerySnsProposals).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        rootCanisterId: failRootCanisterId,
+        certified: false,
+        params: expectedQuerySnsProposalsFilterParams,
+      });
+      expect(spyQuerySnsProposals).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterId1,
+        certified: false,
+        params: expectedQuerySnsProposalsFilterParams,
+      });
+      expect(spyQuerySnsProposals).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterId2,
+        certified: false,
+        params: expectedQuerySnsProposalsFilterParams,
+      });
+
+      // expect a single error to be logged
+      expect(spyConsoleError).toHaveBeenCalledTimes(1);
+      expect(get(failedActionableSnsesStore)).toEqual([failRootCanisterId.toText()]);
+    });
+
     it("should query list proposals using multiple calls", async () => {
       mockSnsProjectsCommittedStore([rootCanisterId1]);
       const firstResponse = hundredProposals.slice(0, 20);
