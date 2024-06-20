@@ -26,6 +26,7 @@ export interface ActionableSnsProposalsStore
 
 interface FailedActionableSnsesStore extends Readable<string[]> {
   add: (rootCanisterId: string) => void;
+  remove: (rootCanisterId: string) => void;
   resetForTesting: () => void;
 }
 
@@ -85,6 +86,12 @@ const initFailedActionableSnsesStore = (): FailedActionableSnsesStore => {
     add(rootCanisterId: string) {
       update((currentState: string[]) =>
         Array.from(new Set([...currentState, rootCanisterId]))
+      );
+    },
+
+    remove(rootCanisterId: string) {
+      update((currentState: string[]) =>
+        currentState.filter((id) => id !== rootCanisterId)
       );
     },
 

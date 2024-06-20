@@ -82,15 +82,29 @@ describe("failedActionableSnsesStore", () => {
   });
 
   it("should store root canister ids", () => {
+    expect(get(failedActionableSnsesStore)).toEqual([]);
     failedActionableSnsesStore.add("1");
     failedActionableSnsesStore.add("2");
     expect(get(failedActionableSnsesStore)).toEqual(["1", "2"]);
   });
 
   it("should store only unique ids", () => {
+    expect(get(failedActionableSnsesStore)).toEqual([]);
     failedActionableSnsesStore.add("1");
     failedActionableSnsesStore.add("2");
     failedActionableSnsesStore.add("1");
     expect(get(failedActionableSnsesStore)).toEqual(["1", "2"]);
+  });
+
+  it("should remove ids", () => {
+    expect(get(failedActionableSnsesStore)).toEqual([]);
+    failedActionableSnsesStore.add("1");
+    failedActionableSnsesStore.add("2");
+    failedActionableSnsesStore.add("3");
+    expect(get(failedActionableSnsesStore)).toEqual(["1", "2", "3"]);
+    failedActionableSnsesStore.remove("5");
+    failedActionableSnsesStore.remove("2");
+    failedActionableSnsesStore.remove("2");
+    expect(get(failedActionableSnsesStore)).toEqual(["1", "3"]);
   });
 });
