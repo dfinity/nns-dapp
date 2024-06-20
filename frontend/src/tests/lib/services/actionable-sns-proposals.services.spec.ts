@@ -204,6 +204,7 @@ describe("actionable-sns-proposals.services", () => {
 
     it("should save failed canister IDs", async () => {
       const failRootCanisterId = principal(13);
+      const snsQueryError = new Error("sns query proposals test fail");
       mockSnsProjectsCommittedStore([
         failRootCanisterId,
         rootCanisterId1,
@@ -211,7 +212,7 @@ describe("actionable-sns-proposals.services", () => {
       ]);
       spyQuerySnsProposals = vi
         .spyOn(api, "queryProposals")
-        .mockRejectedValueOnce(new Error("sns query proposals test fail"))
+        .mockRejectedValueOnce(snsQueryError)
         .mockImplementation(async () => ({
           proposals: [],
           include_ballots_by_caller: undefined,
@@ -244,9 +245,7 @@ describe("actionable-sns-proposals.services", () => {
 
       // expect a single error to be logged
       expect(spyConsoleError).toHaveBeenCalledTimes(1);
-      expect(spyConsoleError).toBeCalledWith(
-        new Error("sns query proposals test fail")
-      );
+      expect(spyConsoleError).toBeCalledWith(snsQueryError);
 
       expect(get(failedActionableSnsesStore)).toEqual([
         failRootCanisterId.toText(),
