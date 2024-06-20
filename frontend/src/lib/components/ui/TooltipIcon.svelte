@@ -3,7 +3,7 @@
 
   export let tooltipId: string | undefined;
   export let tooltipIdPrefix = "tooltip-icon";
-  export let text: string;
+  export let text: string | undefined = undefined;
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -11,6 +11,7 @@
 <div class="wrapper" data-tid="tooltip-icon-component" on:click|preventDefault>
   <Tooltip id={tooltipId} idPrefix={tooltipIdPrefix} {text}>
     <IconInfo />
+    <slot slot="tooltip-content" />
   </Tooltip>
 </div>
 
