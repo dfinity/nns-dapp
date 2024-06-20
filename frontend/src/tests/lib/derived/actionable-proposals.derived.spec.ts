@@ -53,6 +53,7 @@ describe("actionable proposals derived stores", () => {
     resetSnsProjects();
     actionableNnsProposalsStore.reset();
     actionableSnsProposalsStore.resetForTesting();
+    failedActionableSnsesStore.resetForTesting();
   });
 
   describe("actionableProposalIndicationEnabledStore", () => {
@@ -402,7 +403,7 @@ describe("actionable proposals derived stores", () => {
       expect(get(actionableProposalsLoadedStore)).toEqual(true);
     });
 
-    it("should respect failed snses as well", async () => {
+    it("should consider failed snses as loaded", async () => {
       expect(get(actionableProposalsLoadedStore)).toEqual(false);
       setSnsProjects([
         {
