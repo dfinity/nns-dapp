@@ -120,18 +120,7 @@ describe("actionable-sns-proposals.services", () => {
         proposals,
         include_ballots_by_caller: [true],
       }) as SnsListProposalsResponse;
-    const spyQuerySnsProposalsImplementation = async ({ rootCanisterId }) =>
-      ({
-        proposals:
-          rootCanisterId.toText() === rootCanisterId1.toText()
-            ? [votableProposal1, votedProposal]
-            : [votableProposal2, votedProposal],
-        // Upgraded canisters return always include_ballots_by_caller: [true], and by old canisters it's not presented.
-        include_ballots_by_caller: includeBallotsByCaller
-          ? [includeBallotsByCaller]
-          : undefined,
-      }) as SnsListProposalsResponse;
-    const expectedQuerySnsProposalsFilterParams = {
+    const expectedFilterParams = {
       includeRewardStatus: [
         SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
       ],
@@ -158,9 +147,19 @@ describe("actionable-sns-proposals.services", () => {
         .spyOn(api, "querySnsNeurons")
         .mockImplementation(() => Promise.resolve([neuron]));
       includeBallotsByCaller = true;
-      spyQuerySnsProposals = vi
-        .spyOn(api, "queryProposals")
-        .mockImplementation(spyQuerySnsProposalsImplementation);
+      spyQuerySnsProposals = vi.spyOn(api, "queryProposals").mockImplementation(
+        async ({ rootCanisterId }) =>
+          ({
+            proposals:
+              rootCanisterId.toText() === rootCanisterId1.toText()
+                ? [votableProposal1, votedProposal]
+                : [votableProposal2, votedProposal],
+            // Upgraded canisters return always include_ballots_by_caller: [true], and by old canisters it's not presented.
+            include_ballots_by_caller: includeBallotsByCaller
+              ? [includeBallotsByCaller]
+              : undefined,
+          }) as SnsListProposalsResponse
+      );
     });
 
     it("should query user neurons per sns", async () => {
@@ -193,13 +192,13 @@ describe("actionable-sns-proposals.services", () => {
         identity: mockIdentity,
         rootCanisterId: rootCanisterId1,
         certified: false,
-        params: expectedQuerySnsProposalsFilterParams,
+        params: expectedFilterParams,
       });
       expect(spyQuerySnsProposals).toHaveBeenCalledWith({
         identity: mockIdentity,
         rootCanisterId: rootCanisterId2,
         certified: false,
-        params: expectedQuerySnsProposalsFilterParams,
+        params: expectedFilterParams,
       });
     });
 
@@ -212,8 +211,11 @@ describe("actionable-sns-proposals.services", () => {
       ]);
       spyQuerySnsProposals = vi
         .spyOn(api, "queryProposals")
-        .mockRejectedValueOnce(new Error("fail"))
-        .mockImplementation(spyQuerySnsProposalsImplementation);
+        .mockRejectedValueOnce(new Error("sns query proposals test fail"))
+        .mockImplementation(async () => ({
+          proposals: [],
+          include_ballots_by_caller: undefined,
+        }));
       spyConsoleError = silentConsoleErrors();
 
       expect(spyQuerySnsProposals).not.toHaveBeenCalled();
@@ -225,19 +227,19 @@ describe("actionable-sns-proposals.services", () => {
         identity: mockIdentity,
         rootCanisterId: failRootCanisterId,
         certified: false,
-        params: expectedQuerySnsProposalsFilterParams,
+        params: expectedFilterParams,
       });
       expect(spyQuerySnsProposals).toHaveBeenCalledWith({
         identity: mockIdentity,
         rootCanisterId: rootCanisterId1,
         certified: false,
-        params: expectedQuerySnsProposalsFilterParams,
+        params: expectedFilterParams,
       });
       expect(spyQuerySnsProposals).toHaveBeenCalledWith({
         identity: mockIdentity,
         rootCanisterId: rootCanisterId2,
         certified: false,
-        params: expectedQuerySnsProposalsFilterParams,
+        params: expectedFilterParams,
       });
 
       // expect a single error to be logged
