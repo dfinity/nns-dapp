@@ -35,12 +35,14 @@ describe("neurons-table.utils", () => {
     const defaultDissolveDelaySeconds = 15778800n;
     const defaultStake = 500_000_000n;
 
-    const defaultNeuronInfo = {
+    const defaultNeuronInfo: NeuronInfo = {
       ...mockNeuron,
       neuronId: 42n,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         cachedNeuronStake: defaultStake,
+        maturityE8sEquivalent: 0n,
+        stakedMaturityE8sEquivalent: 0n,
       },
       dissolveDelaySeconds: defaultDissolveDelaySeconds,
       state: NeuronState.Locked,
@@ -51,6 +53,8 @@ describe("neurons-table.utils", () => {
       domKey: "42",
       neuronId: "42",
       stake: makeStake(defaultStake),
+      availableMaturity: 0n,
+      stakedMaturity: 0n,
       dissolveDelaySeconds: defaultDissolveDelaySeconds,
       state: NeuronState.Locked,
       tags: [],
@@ -78,7 +82,7 @@ describe("neurons-table.utils", () => {
         ...defaultNeuronInfo,
         neuronId: neuronId1,
         fullNeuron: {
-          ...mockNeuron.fullNeuron,
+          ...defaultNeuronInfo.fullNeuron,
           cachedNeuronStake: stake1,
         },
       };
@@ -86,7 +90,7 @@ describe("neurons-table.utils", () => {
         ...defaultNeuronInfo,
         neuronId: neuronId2,
         fullNeuron: {
-          ...mockNeuron.fullNeuron,
+          ...defaultNeuronInfo.fullNeuron,
           cachedNeuronStake: stake2,
         },
       };
@@ -116,7 +120,7 @@ describe("neurons-table.utils", () => {
         {
           ...defaultNeuronInfo,
           fullNeuron: {
-            ...mockNeuron.fullNeuron,
+            ...defaultNeuronInfo.fullNeuron,
             cachedNeuronStake: stake,
           },
         },
@@ -145,12 +149,34 @@ describe("neurons-table.utils", () => {
       ]);
     });
 
+    it("should convert neuronInfo maturity", () => {
+      const availableMaturity = 50_000_000n;
+      const stakedMaturity = 60_000_000n;
+      const tableNeurons = convert([
+        {
+          ...defaultNeuronInfo,
+          fullNeuron: {
+            ...defaultNeuronInfo.fullNeuron,
+            maturityE8sEquivalent: availableMaturity,
+            stakedMaturityE8sEquivalent: stakedMaturity,
+          },
+        },
+      ]);
+      expect(tableNeurons).toEqual([
+        {
+          ...defaultExpectedTableNeuron,
+          availableMaturity,
+          stakedMaturity,
+        },
+      ]);
+    });
+
     it("should convert neuronInfo for spawning neuron without href", () => {
       const spawningNeuronInfo = {
         ...defaultNeuronInfo,
         state: NeuronState.Spawning,
         fullNeuron: {
-          ...mockNeuron.fullNeuron,
+          ...defaultNeuronInfo.fullNeuron,
           cachedNeuronStake: 0n,
           spawnAtTimesSeconds: 12_312_313n,
         },
@@ -219,6 +245,8 @@ describe("neurons-table.utils", () => {
     const defaultCreateMockSnsNeuronParams = {
       id: neuronId,
       stake,
+      maturity: 0n,
+      stakedMaturity: 0n,
       dissolveDelaySeconds,
       state: NeuronState.Locked,
     };
@@ -236,6 +264,8 @@ describe("neurons-table.utils", () => {
       domKey: neuronIdString,
       neuronId: neuronIdString,
       stake: makeSnsStake(stake),
+      availableMaturity: 0n,
+      stakedMaturity: 0n,
       dissolveDelaySeconds,
       state: NeuronState.Locked,
       tags: [],
@@ -292,10 +322,31 @@ describe("neurons-table.utils", () => {
       ]);
     });
 
+    it("should convert SnsNeuron maturity", () => {
+      const availableMaturity = 70_000_000n;
+      const stakedMaturity = 80_000_000n;
+      const snsNeurons = [
+        createMockSnsNeuron({
+          ...defaultCreateMockSnsNeuronParams,
+          maturity: availableMaturity,
+          stakedMaturity,
+        }),
+      ];
+      const tableNeurons = convert(snsNeurons);
+      expect(tableNeurons).toEqual([
+        {
+          ...expectedTableNeuron,
+          availableMaturity,
+          stakedMaturity,
+        },
+      ]);
+    });
+
     it("should convert multiple neurons", () => {
       const neuronIdString2 = "fafafafafafafafa";
       const neuronId2 = hexStringToBytes(neuronIdString2);
       const snsNeuron2 = createMockSnsNeuron({
+        ...defaultCreateMockSnsNeuronParams,
         id: neuronId2,
         stake,
         dissolveDelaySeconds,

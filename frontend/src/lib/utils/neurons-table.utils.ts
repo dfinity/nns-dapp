@@ -21,7 +21,12 @@ import {
 import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
-import { ICPToken, TokenAmountV2, type Token } from "@dfinity/utils";
+import {
+  ICPToken,
+  TokenAmountV2,
+  fromNullable,
+  type Token,
+} from "@dfinity/utils";
 
 export const tableNeuronsFromNeuronInfos = ({
   neuronInfos,
@@ -52,6 +57,8 @@ export const tableNeuronsFromNeuronInfos = ({
         amount: neuronStake(neuronInfo),
         token: ICPToken,
       }),
+      availableMaturity: neuronInfo.fullNeuron?.maturityE8sEquivalent ?? 0n,
+      stakedMaturity: neuronInfo.fullNeuron?.stakedMaturityE8sEquivalent ?? 0n,
       dissolveDelaySeconds,
       state: neuronInfo.state,
       tags: getNeuronTags({
@@ -92,6 +99,9 @@ export const tableNeuronsFromSnsNeurons = ({
         amount: getSnsNeuronStake(snsNeuron),
         token,
       }),
+      availableMaturity: snsNeuron.maturity_e8s_equivalent ?? 0n,
+      stakedMaturity:
+        fromNullable(snsNeuron.staked_maturity_e8s_equivalent) ?? 0n,
       dissolveDelaySeconds,
       state: getSnsNeuronState(snsNeuron),
       tags: getSnsNeuronTags({

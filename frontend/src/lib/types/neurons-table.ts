@@ -7,6 +7,8 @@ export type TableNeuron = {
   domKey: string;
   neuronId: string;
   stake: TokenAmountV2;
+  availableMaturity: bigint;
+  stakedMaturity: bigint;
   dissolveDelaySeconds: bigint;
   state: NeuronState;
   tags: string[];
