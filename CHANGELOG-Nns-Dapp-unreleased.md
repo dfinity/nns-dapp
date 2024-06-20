@@ -26,7 +26,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-* Fixed the display of actionable proposals page when a single Sns fails.
+* Fixed the display of actionable proposals page when a single SNS fails.
 
 #### Security
 
