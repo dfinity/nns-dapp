@@ -244,6 +244,10 @@ describe("actionable-sns-proposals.services", () => {
 
       // expect a single error to be logged
       expect(spyConsoleError).toHaveBeenCalledTimes(1);
+      expect(spyConsoleError).toBeCalledWith(
+        new Error("sns query proposals test fail")
+      );
+
       expect(get(failedActionableSnsesStore)).toEqual([
         failRootCanisterId.toText(),
       ]);
