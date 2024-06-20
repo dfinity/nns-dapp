@@ -30,7 +30,7 @@ describe("TooltipIcon", () => {
 
   it("should have the tooltip text", async () => {
     const po = renderComponent({ tooltipId });
-    expect(await po.getText()).toBe(text);
+    expect(await po.getTooltipText()).toBe(text);
   });
 
   it("should have the tooltip ID", async () => {
