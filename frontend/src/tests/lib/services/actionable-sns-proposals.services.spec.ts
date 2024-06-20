@@ -249,6 +249,24 @@ describe("actionable-sns-proposals.services", () => {
       ]);
     });
 
+    it("should remove failed canister IDs", async () => {
+      mockSnsProjectsCommittedStore([rootCanisterId1]);
+      spyQuerySnsProposals = vi
+        .spyOn(api, "queryProposals")
+        .mockImplementation(async () => ({
+          proposals: [],
+          include_ballots_by_caller: undefined,
+        }));
+      failedActionableSnsesStore.add(rootCanisterId1.toText());
+
+      expect(spyQuerySnsProposals).not.toHaveBeenCalled();
+
+      await loadActionableSnsProposals();
+
+      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(1);
+      expect(get(failedActionableSnsesStore)).toEqual([]);
+    });
+
     it("should query list proposals using multiple calls", async () => {
       mockSnsProjectsCommittedStore([rootCanisterId1]);
       const firstResponse = hundredProposals.slice(0, 20);
