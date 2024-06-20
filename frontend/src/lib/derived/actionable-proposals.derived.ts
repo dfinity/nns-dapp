@@ -6,7 +6,10 @@ import { selectableUniversesStore } from "$lib/derived/selectable-universes.deri
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
-import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+import {
+  actionableSnsProposalsStore,
+  failedActionableSnsesStore,
+} from "$lib/stores/actionable-sns-proposals.store";
 import type { ProposalsNavigationId } from "$lib/types/proposals";
 import type { Universe } from "$lib/types/universe";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
@@ -121,12 +124,14 @@ export const actionableProposalsLoadedStore: Readable<boolean> = derived(
     actionableNnsProposalsStore,
     actionableSnsProposalsStore,
     snsProjectsCommittedStore,
+    failedActionableSnsesStore,
   ],
-  ([nnsProposals, snsProposals, committedSnsProjects]) =>
+  ([nnsProposals, snsProposals, committedSnsProjects, failedSnses]) =>
     nonNullish(nnsProposals.proposals) &&
     // It is expected to have at least one SNS to cover when the projects have not yet been loaded.
     committedSnsProjects.length > 0 &&
-    committedSnsProjects.length === Object.keys(snsProposals).length
+    committedSnsProjects.length ===
+      Object.keys(snsProposals).length + failedSnses.length
 );
 
 // Generate list of ProposalsNavigationId using universes to provide correct order

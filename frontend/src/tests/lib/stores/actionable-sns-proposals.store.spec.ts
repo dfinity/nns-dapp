@@ -1,4 +1,7 @@
-import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+import {
+  actionableSnsProposalsStore,
+  failedActionableSnsesStore,
+} from "$lib/stores/actionable-sns-proposals.store";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import type { SnsProposalData } from "@dfinity/sns";
@@ -70,5 +73,38 @@ describe("actionableSnsProposalsStore", () => {
       proposals: [snsProposal2],
       includeBallotsByCaller: true,
     });
+  });
+});
+
+describe("failedActionableSnsesStore", () => {
+  beforeEach(() => {
+    failedActionableSnsesStore.resetForTesting();
+  });
+
+  it("should store root canister ids", () => {
+    expect(get(failedActionableSnsesStore)).toEqual([]);
+    failedActionableSnsesStore.add("1");
+    failedActionableSnsesStore.add("2");
+    expect(get(failedActionableSnsesStore)).toEqual(["1", "2"]);
+  });
+
+  it("should store only unique ids", () => {
+    expect(get(failedActionableSnsesStore)).toEqual([]);
+    failedActionableSnsesStore.add("1");
+    failedActionableSnsesStore.add("2");
+    failedActionableSnsesStore.add("1");
+    expect(get(failedActionableSnsesStore)).toEqual(["1", "2"]);
+  });
+
+  it("should remove ids", () => {
+    expect(get(failedActionableSnsesStore)).toEqual([]);
+    failedActionableSnsesStore.add("1");
+    failedActionableSnsesStore.add("2");
+    failedActionableSnsesStore.add("3");
+    expect(get(failedActionableSnsesStore)).toEqual(["1", "2", "3"]);
+    failedActionableSnsesStore.remove("5");
+    failedActionableSnsesStore.remove("2");
+    failedActionableSnsesStore.remove("2");
+    expect(get(failedActionableSnsesStore)).toEqual(["1", "3"]);
   });
 });

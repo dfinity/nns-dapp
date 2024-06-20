@@ -13,7 +13,10 @@ import {
 } from "$lib/derived/actionable-proposals.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
-import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+import {
+  actionableSnsProposalsStore,
+  failedActionableSnsesStore,
+} from "$lib/stores/actionable-sns-proposals.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
@@ -50,6 +53,7 @@ describe("actionable proposals derived stores", () => {
     resetSnsProjects();
     actionableNnsProposalsStore.reset();
     actionableSnsProposalsStore.resetForTesting();
+    failedActionableSnsesStore.resetForTesting();
   });
 
   describe("actionableProposalIndicationEnabledStore", () => {
@@ -395,6 +399,32 @@ describe("actionable proposals derived stores", () => {
         proposals: [],
         includeBallotsByCaller: false,
       });
+
+      expect(get(actionableProposalsLoadedStore)).toEqual(true);
+    });
+
+    it("should consider failed snses as loaded", async () => {
+      expect(get(actionableProposalsLoadedStore)).toEqual(false);
+      setSnsProjects([
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: principal0,
+        },
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: principal1,
+        },
+      ]);
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal0,
+        proposals: [],
+        includeBallotsByCaller: false,
+      });
+      actionableNnsProposalsStore.setProposals([mockProposalInfo]);
+
+      expect(get(actionableProposalsLoadedStore)).toEqual(false);
+
+      failedActionableSnsesStore.add(principal1.toText());
 
       expect(get(actionableProposalsLoadedStore)).toEqual(true);
     });
