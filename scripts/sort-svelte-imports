@@ -15,7 +15,7 @@ print_help() {
 	EOF
 }
 
-if [[ "$1" == "--help" ]]; then
+if [[ "${1:-}" == "--help" ]]; then
   print_help
   exit 0
 fi
@@ -28,6 +28,7 @@ TOP_DIR=$(git rev-parse --show-toplevel)
 # directory where we have to be to run prettier.
 list_files_to_sort() {
   if [[ "$#" -ne 0 ]]; then
+    echo "Using script arguments to find svelte files." >&2
     # readlink makes the paths absolute
     find "$@" -type f -name '*.svelte' -exec readlink -f {} \;
     return
@@ -35,14 +36,21 @@ list_files_to_sort() {
 
   ancestor=$(git merge-base HEAD main)
   if git diff --quiet "$ancestor" --exit-code; then
+    echo "No changes in branch. Sorting all svelte files." >&2
     git ls-files '*.svelte' | sed "s@^@$TOP_DIR/@"
     return
   fi
 
+  echo "Sorting svelte files changed relative to main branch." >&2
   git diff --name-only "$ancestor" | grep '\.svelte$' | sed "s@^@$TOP_DIR/@"
 }
 
 mapfile -t FILES < <(list_files_to_sort "$@")
+
+if [[ "${#FILES[@]}" -eq 0 ]]; then
+  echo "No files to sort."
+  exit 0
+fi
 
 vim -n -c "set nomore" -c "source $TOP_DIR/scripts/sort-svelte-imports.vim" -c "argdo call SortSvelteImports() | update" -c "qa" "${FILES[@]}"
 
