@@ -1,7 +1,10 @@
 import * as api from "$lib/api/sns-governance.api";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { loadActionableSnsProposals } from "$lib/services/actionable-sns-proposals.services";
-import {actionableSnsProposalsStore, failedActionableSnsesStore} from "$lib/stores/actionable-sns-proposals.store";
+import {
+  actionableSnsProposalsStore,
+  failedActionableSnsesStore,
+} from "$lib/stores/actionable-sns-proposals.store";
 import { authStore } from "$lib/stores/auth.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
@@ -29,8 +32,8 @@ import {
   type SnsNeuronId,
   type SnsProposalData,
 } from "@dfinity/sns";
+import type { SpyInstance } from "@vitest/spy";
 import { get } from "svelte/store";
-import type {SpyInstance} from "@vitest/spy";
 
 describe("actionable-sns-proposals.services", () => {
   beforeEach(() => {
@@ -117,25 +120,23 @@ describe("actionable-sns-proposals.services", () => {
         proposals,
         include_ballots_by_caller: [true],
       }) as SnsListProposalsResponse;
-    const spyQuerySnsProposalsImplementation =
-      async ({ rootCanisterId }) =>
-        ({
-          proposals:
-            rootCanisterId.toText() === rootCanisterId1.toText()
-              ? [votableProposal1, votedProposal]
-              : [votableProposal2, votedProposal],
-          // Upgraded canisters return always include_ballots_by_caller: [true], and by old canisters it's not presented.
-          include_ballots_by_caller: includeBallotsByCaller
-            ? [includeBallotsByCaller]
-            : undefined,
-        }) as SnsListProposalsResponse
+    const spyQuerySnsProposalsImplementation = async ({ rootCanisterId }) =>
+      ({
+        proposals:
+          rootCanisterId.toText() === rootCanisterId1.toText()
+            ? [votableProposal1, votedProposal]
+            : [votableProposal2, votedProposal],
+        // Upgraded canisters return always include_ballots_by_caller: [true], and by old canisters it's not presented.
+        include_ballots_by_caller: includeBallotsByCaller
+          ? [includeBallotsByCaller]
+          : undefined,
+      }) as SnsListProposalsResponse;
     const expectedQuerySnsProposalsFilterParams = {
       includeRewardStatus: [
         SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
       ],
       limit: 20,
     };
-
 
     let spyQuerySnsProposals: SpyInstance;
     let spyQuerySnsNeurons;
@@ -157,7 +158,9 @@ describe("actionable-sns-proposals.services", () => {
         .spyOn(api, "querySnsNeurons")
         .mockImplementation(() => Promise.resolve([neuron]));
       includeBallotsByCaller = true;
-      spyQuerySnsProposals = vi.spyOn(api, "queryProposals").mockImplementation(spyQuerySnsProposalsImplementation);
+      spyQuerySnsProposals = vi
+        .spyOn(api, "queryProposals")
+        .mockImplementation(spyQuerySnsProposalsImplementation);
     });
 
     it("should query user neurons per sns", async () => {
@@ -202,9 +205,13 @@ describe("actionable-sns-proposals.services", () => {
 
     it("should save failed canister IDs", async () => {
       const failRootCanisterId = principal(13);
-      mockSnsProjectsCommittedStore([failRootCanisterId, rootCanisterId1, rootCanisterId2]);
-      spyQuerySnsProposals =
-        vi.spyOn(api, "queryProposals")
+      mockSnsProjectsCommittedStore([
+        failRootCanisterId,
+        rootCanisterId1,
+        rootCanisterId2,
+      ]);
+      spyQuerySnsProposals = vi
+        .spyOn(api, "queryProposals")
         .mockRejectedValueOnce(new Error("fail"))
         .mockImplementation(spyQuerySnsProposalsImplementation);
       spyConsoleError = silentConsoleErrors();
@@ -235,7 +242,9 @@ describe("actionable-sns-proposals.services", () => {
 
       // expect a single error to be logged
       expect(spyConsoleError).toHaveBeenCalledTimes(1);
-      expect(get(failedActionableSnsesStore)).toEqual([failRootCanisterId.toText()]);
+      expect(get(failedActionableSnsesStore)).toEqual([
+        failRootCanisterId.toText(),
+      ]);
     });
 
     it("should query list proposals using multiple calls", async () => {
