@@ -81,6 +81,7 @@ export const loadActionableProposalsForSns = async (
       proposals: votableProposals,
       includeBallotsByCaller,
     });
+    failedActionableSnsesStore.remove(rootCanisterIdText);
   } catch (err) {
     console.error(err);
 
