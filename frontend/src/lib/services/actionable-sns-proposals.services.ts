@@ -45,6 +45,8 @@ export const loadActionableProposalsForSns = async (
         identity,
       });
 
+    failedActionableSnsesStore.remove(rootCanisterIdText);
+
     if (!includeBallotsByCaller) {
       // No need to fetch neurons if there are no actionable proposals support.
       actionableSnsProposalsStore.set({
@@ -81,7 +83,6 @@ export const loadActionableProposalsForSns = async (
       proposals: votableProposals,
       includeBallotsByCaller,
     });
-    failedActionableSnsesStore.remove(rootCanisterIdText);
   } catch (err) {
     console.error(err);
 
