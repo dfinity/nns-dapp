@@ -6,7 +6,9 @@
   export let text: string;
 </script>
 
-<div class="wrapper" data-tid="tooltip-icon-component">
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<div class="wrapper" data-tid="tooltip-icon-component" on:click|preventDefault>
   <Tooltip id={tooltipId} idPrefix={tooltipIdPrefix} {text}>
     <IconInfo />
   </Tooltip>
