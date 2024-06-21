@@ -449,7 +449,10 @@ impl Service {
     pub async fn create_subnet(&self, arg0: CreateSubnetPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "create_subnet", (arg0,)).await
     }
-    pub async fn deploy_guestos_to_all_subnet_nodes(&self, arg0: DeployGuestosToAllSubnetNodesPayload) -> CallResult<()> {
+    pub async fn deploy_guestos_to_all_subnet_nodes(
+        &self,
+        arg0: DeployGuestosToAllSubnetNodesPayload,
+    ) -> CallResult<()> {
         ic_cdk::call(self.0, "deploy_guestos_to_all_subnet_nodes", (arg0,)).await
     }
     pub async fn deploy_guestos_to_all_unassigned_nodes(
@@ -467,7 +470,9 @@ impl Service {
     ) -> CallResult<(GetNodeOperatorsAndDcsOfNodeProviderResponse,)> {
         ic_cdk::call(self.0, "get_node_operators_and_dcs_of_node_provider", (arg0,)).await
     }
-    pub async fn get_node_providers_monthly_xdr_rewards(&self) -> CallResult<(GetNodeProvidersMonthlyXdrRewardsResponse,)> {
+    pub async fn get_node_providers_monthly_xdr_rewards(
+        &self,
+    ) -> CallResult<(GetNodeProvidersMonthlyXdrRewardsResponse,)> {
         ic_cdk::call(self.0, "get_node_providers_monthly_xdr_rewards", ()).await
     }
     pub async fn get_subnet_for_canister(
@@ -512,7 +517,10 @@ impl Service {
     pub async fn set_firewall_config(&self, arg0: SetFirewallConfigPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "set_firewall_config", (arg0,)).await
     }
-    pub async fn update_api_boundary_nodes_version(&self, arg0: UpdateApiBoundaryNodesVersionPayload) -> CallResult<()> {
+    pub async fn update_api_boundary_nodes_version(
+        &self,
+        arg0: UpdateApiBoundaryNodesVersionPayload,
+    ) -> CallResult<()> {
         ic_cdk::call(self.0, "update_api_boundary_nodes_version", (arg0,)).await
     }
     pub async fn update_elected_hostos_versions(&self, arg0: UpdateElectedHostosVersionsPayload) -> CallResult<()> {

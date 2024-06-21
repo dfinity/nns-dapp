@@ -153,7 +153,8 @@ cd "$GIT_ROOT"
 	    # Replace invalid "{}" in generated Rust code with "EmptyRecord":
 	    /^pub (struct|enum) /,/^}/{s/ *\{\},$/(EmptyRecord),/g};
 	    ' |
-    "$sed" -z 's/candid::define_function!(pub \([^ ]*\) [^;]*;\n#\[derive([^)]*)\]/pub type \1 = candid::Func;\n#[derive(CandidType, Deserialize)]/g'
+    "$sed" -z 's/candid::define_function!(pub \([^ ]*\) [^;]*;\n#\[derive([^)]*)\]/pub type \1 = candid::Func;\n#[derive(CandidType, Deserialize)]/g' |
+    rustfmt --edition 2021
 } >"${RUST_PATH}"
 if test -f "${EDIT_PATH}"; then
   (
