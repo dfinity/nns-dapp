@@ -382,10 +382,7 @@ impl Service {
     pub async fn get_latest_sns_version_pretty(&self, arg0: ()) -> CallResult<(Vec<(String, String)>,)> {
         ic_cdk::call(self.0, "get_latest_sns_version_pretty", (arg0,)).await
     }
-    pub async fn get_next_sns_version(
-        &self,
-        arg0: GetNextSnsVersionRequest,
-    ) -> CallResult<(GetNextSnsVersionResponse,)> {
+    pub async fn get_next_sns_version(&self, arg0: GetNextSnsVersionRequest) -> CallResult<(GetNextSnsVersionResponse,)> {
         ic_cdk::call(self.0, "get_next_sns_version", (arg0,)).await
     }
     pub async fn get_proposal_id_that_added_wasm(

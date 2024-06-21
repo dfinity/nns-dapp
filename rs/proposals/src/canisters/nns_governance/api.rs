@@ -730,11 +730,7 @@ pub struct Governance {
     pub neurons: Vec<(u64, Neuron)>,
     pub genesis_timestamp_seconds: u64,
 }
-#[derive(Serialize, CandidType, Deserialize)]
-pub enum Result_ {
-    Ok,
-    Err(GovernanceError),
-}
+pub type Result_ = std::result::Result<(), GovernanceError>;
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum Result1 {
     Error(GovernanceError),
@@ -744,21 +740,9 @@ pub enum Result1 {
 pub struct ClaimOrRefreshNeuronFromAccountResponse {
     pub result: Option<Result1>,
 }
-#[derive(Serialize, CandidType, Deserialize)]
-pub enum Result2 {
-    Ok(Neuron),
-    Err(GovernanceError),
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub enum Result3 {
-    Ok(GovernanceCachedMetrics),
-    Err(GovernanceError),
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub enum Result4 {
-    Ok(RewardNodeProviders),
-    Err(GovernanceError),
-}
+pub type Result2 = std::result::Result<Neuron, GovernanceError>;
+pub type Result3 = std::result::Result<GovernanceCachedMetrics, GovernanceError>;
+pub type Result4 = std::result::Result<RewardNodeProviders, GovernanceError>;
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronInfo {
     pub dissolve_delay_seconds: u64,
@@ -773,11 +757,7 @@ pub struct NeuronInfo {
     pub voting_power: u64,
     pub age_seconds: u64,
 }
-#[derive(Serialize, CandidType, Deserialize)]
-pub enum Result5 {
-    Ok(NeuronInfo),
-    Err(GovernanceError),
-}
+pub type Result5 = std::result::Result<NeuronInfo, GovernanceError>;
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct GetNeuronsFundAuditInfoRequest {
     pub nns_proposal_id: Option<NeuronId>,
@@ -792,20 +772,12 @@ pub struct NeuronsFundAuditInfo {
 pub struct Ok {
     pub neurons_fund_audit_info: Option<NeuronsFundAuditInfo>,
 }
-#[derive(Serialize, CandidType, Deserialize)]
-pub enum Result6 {
-    Ok(Ok),
-    Err(GovernanceError),
-}
+pub type Result6 = std::result::Result<Ok, GovernanceError>;
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct GetNeuronsFundAuditInfoResponse {
     pub result: Option<Result6>,
 }
-#[derive(Serialize, CandidType, Deserialize)]
-pub enum Result7 {
-    Ok(NodeProvider),
-    Err(GovernanceError),
-}
+pub type Result7 = std::result::Result<NodeProvider, GovernanceError>;
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ProposalInfo {
     pub id: Option<NeuronId>,
@@ -955,11 +927,7 @@ pub struct NeuronsFundNeuron {
 pub struct Ok1 {
     pub neurons_fund_neuron_portions: Vec<NeuronsFundNeuron>,
 }
-#[derive(Serialize, CandidType, Deserialize)]
-pub enum Result10 {
-    Ok(Ok1),
-    Err(GovernanceError),
-}
+pub type Result10 = std::result::Result<Ok1, GovernanceError>;
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct SettleNeuronsFundParticipationResponse {
     pub result: Option<Result10>,

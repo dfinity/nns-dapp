@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -xeuo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
@@ -119,15 +119,17 @@ cd "$GIT_ROOT"
   #   - Any corrections to the output of the sed script.  sed is not a Rust parser; the sed output
   #     is not guaranteed to be correct.
   # shellcheck disable=SC2016
-  didc bind "${DID_PATH}" --target rs |
+  if [[ "$DID_PATH" == *nns_governance.did ]]; then
+    #METHODS_ARGS=("--methods" "list_proposals")
+    METHODS_ARGS=()
+  else
+    METHODS_ARGS=()
+  fi
+  didc bind "${DID_PATH}" --target rs "${METHODS_ARGS[@]}" |
     rustfmt --edition 2021 |
     "$sed" -E '
             # Comment out the header "use", "//!" and "#!" lines.
 	    s@^(use |//!|#!)@// &@;
-
-	    # Make types and fields public:
-            s/^(struct|enum|type) /pub &/;
-            s/^    [a-z].*:/    pub&/;s/^( *pub ) *pub /\1/;
 
 	    # Add traits
             s/#\[derive\(/&'"${TRAITS:-}${TRAITS:+, }"'/;
@@ -138,8 +140,7 @@ cd "$GIT_ROOT"
 	    # Replace invalid "{}" in generated Rust code with "EmptyRecord":
 	    /^pub (struct|enum) /,/^}/{s/ *\{\},$/(EmptyRecord),/g};
 	    ' |
-    "$sed" -z 's/candid::define_function!(pub \([^ ]*\) [^;]*;\n#\[derive([^)]*)\]/pub type \1 = candid::Func;\n#[derive(CandidType, Deserialize)]/g' |
-    rustfmt --edition 2021
+    "$sed" -z 's/candid::define_function!(pub \([^ ]*\) [^;]*;\n#\[derive([^)]*)\]/pub type \1 = candid::Func;\n#[derive(CandidType, Deserialize)]/g'
 } >"${RUST_PATH}"
 if test -f "${EDIT_PATH}"; then
   (
