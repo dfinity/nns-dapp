@@ -119,15 +119,30 @@ cd "$GIT_ROOT"
   #   - Any corrections to the output of the sed script.  sed is not a Rust parser; the sed output
   #     is not guaranteed to be correct.
   # shellcheck disable=SC2016
-  didc bind "${DID_PATH}" --target rs |
+  if [[ "$DID_PATH" == *nns_governance.did ]]; then
+    METHODS_ARGS=("--methods" "get_proposal_info")
+  elif [[ "$DID_PATH" == *nns_registry.did ]]; then
+    #METHODS_ARGS=("--methods" "add_api_boundary_nodes,update_elected_hostos_versions,update_nodes_hostos_version,update_ssh_readonly_access_for_all_unassigned_nodes,deploy_guestos_to_all_unassigned_nodes,remove_api_boundary_nodes,ReviseElectedGuestosVersionsPayload,revise_elected_replica_versions,retire_replica_version,change_subnet_membership,complete_canister_migration")
+    METHODS_ARGS=()
+  elif [[ "$DID_PATH" == *sns_wasm.did ]]; then
+    if [[ "$CRATE" == "proposals" ]]; then
+      METHODS_ARGS=("--methods" "insert_upgrade_path_entries,update_allowed_principals,update_sns_subnet_list,add_wasm")
+    else
+      METHODS_ARGS=("--methods" "list_deployed_snses")
+      #METHODS_ARGS=()
+    fi
+  elif [[ "$DID_PATH" == *sns_governance.did ]]; then
+      METHODS_ARGS=("--methods" "manage_neuron,get_metadata,list_nervous_system_functions")
+  elif [[ "$DID_PATH" == *sns_ledger.did ]]; then
+      METHODS_ARGS=("--methods" "icrc1_metadata,icrc1_total_supply")
+  else
+    METHODS_ARGS=()
+  fi
+  didc bind "${DID_PATH}" --target rs "${METHODS_ARGS[@]}" |
     rustfmt --edition 2021 |
     "$sed" -E '
             # Comment out the header "use", "//!" and "#!" lines.
 	    s@^(use |//!|#!)@// &@;
-
-	    # Make types and fields public:
-            s/^(struct|enum|type) /pub &/;
-            s/^    [a-z].*:/    pub&/;s/^( *pub ) *pub /\1/;
 
 	    # Add traits
             s/#\[derive\(/&'"${TRAITS:-}${TRAITS:+, }"'/;

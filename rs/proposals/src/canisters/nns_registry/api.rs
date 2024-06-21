@@ -216,29 +216,22 @@ pub struct NodeOperatorRecord {
     pub node_provider_principal_id: serde_bytes::ByteBuf,
     pub dc_id: String,
 }
-#[derive(Serialize, CandidType, Deserialize)]
-pub enum GetNodeOperatorsAndDcsOfNodeProviderResponse {
-    Ok(Vec<(DataCenterRecord, NodeOperatorRecord)>),
-    Err(String),
-}
+pub type GetNodeOperatorsAndDcsOfNodeProviderResponse =
+    std::result::Result<Vec<(DataCenterRecord, NodeOperatorRecord)>, String>;
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NodeProvidersMonthlyXdrRewards {
     pub rewards: Vec<(String, u64)>,
 }
-#[derive(Serialize, CandidType, Deserialize)]
-pub enum GetNodeProvidersMonthlyXdrRewardsResponse {
-    Ok(NodeProvidersMonthlyXdrRewards),
-    Err(String),
-}
+pub type GetNodeProvidersMonthlyXdrRewardsResponse = std::result::Result<NodeProvidersMonthlyXdrRewards, String>;
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct GetSubnetForCanisterRequest {
     pub principal: Option<Principal>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub enum GetSubnetForCanisterResponse {
-    Ok { subnet_id: Option<Principal> },
-    Err(String),
+pub struct GetSubnetForCanisterResponseOk {
+    pub subnet_id: Option<Principal>,
 }
+pub type GetSubnetForCanisterResponse = std::result::Result<GetSubnetForCanisterResponseOk, String>;
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct PrepareCanisterMigrationPayload {
     pub canister_id_ranges: Vec<CanisterIdRange>,
@@ -329,21 +322,13 @@ pub struct UpdateNodeDomainDirectlyPayload {
     pub node_id: Principal,
     pub domain: Option<String>,
 }
-#[derive(Serialize, CandidType, Deserialize)]
-pub enum UpdateNodeDomainDirectlyResponse {
-    Ok,
-    Err(String),
-}
+pub type UpdateNodeDomainDirectlyResponse = std::result::Result<(), String>;
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateNodeIPv4ConfigDirectlyPayload {
     pub ipv4_config: Option<IPv4Config>,
     pub node_id: Principal,
 }
-#[derive(Serialize, CandidType, Deserialize)]
-pub enum UpdateNodeIpv4ConfigDirectlyResponse {
-    Ok,
-    Err(String),
-}
+pub type UpdateNodeIpv4ConfigDirectlyResponse = std::result::Result<(), String>;
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateNodeOperatorConfigPayload {
     pub node_operator_id: Option<Principal>,

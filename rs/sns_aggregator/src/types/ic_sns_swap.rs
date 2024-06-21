@@ -101,11 +101,7 @@ pub struct Err {
     pub description: Option<String>,
     pub error_type: Option<i32>,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum Result_ {
-    Ok(Ok),
-    Err(Err),
-}
+pub type Result_ = std::result::Result<Ok, Err>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ErrorRefundIcpResponse {
     pub result: Option<Result_>,
@@ -126,11 +122,7 @@ pub struct FailedUpdate {
 pub struct SetDappControllersResponse {
     pub failed_updates: Vec<FailedUpdate>,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum Possibility {
-    Ok(SetDappControllersResponse),
-    Err(CanisterCallError),
-}
+pub type Possibility = std::result::Result<SetDappControllersResponse, CanisterCallError>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SetDappControllersCallResult {
     pub possibility: Option<Possibility>,
@@ -152,11 +144,7 @@ pub struct GovernanceError {
 pub struct Response {
     pub governance_error: Option<GovernanceError>,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum Possibility1 {
-    Ok(Response),
-    Err(CanisterCallError),
-}
+pub type Possibility1 = std::result::Result<Response, CanisterCallError>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SettleCommunityFundParticipationResult {
     pub possibility: Option<Possibility1>,
@@ -170,20 +158,14 @@ pub struct Ok1 {
 pub struct Error {
     pub message: Option<String>,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum Possibility2 {
-    Ok(Ok1),
-    Err(Error),
-}
+pub type Possibility2 = std::result::Result<Ok1, Error>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SettleNeuronsFundParticipationResult {
     pub possibility: Option<Possibility2>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum Possibility3 {
-    Ok(EmptyRecord),
-    Err(CanisterCallError),
-}
+pub struct Possibility3Ok {}
+pub type Possibility3 = std::result::Result<Possibility3Ok, CanisterCallError>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SetModeCallResult {
     pub possibility: Option<Possibility3>,
@@ -310,11 +292,7 @@ pub struct Ok2 {
 pub struct Err1 {
     pub error_type: Option<i32>,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum Result1 {
-    Ok(Ok2),
-    Err(Err1),
-}
+pub type Result1 = std::result::Result<Ok2, Err1>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetOpenTicketResponse {
     pub result: Option<Result1>,
@@ -451,11 +429,7 @@ pub struct Err2 {
     pub existing_ticket: Option<Ticket>,
     pub error_type: i32,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum Result2 {
-    Ok(Ok2),
-    Err(Err2),
-}
+pub type Result2 = std::result::Result<Ok2, Err2>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct NewSaleTicketResponse {
     pub result: Option<Result2>,
