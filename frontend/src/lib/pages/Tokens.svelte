@@ -90,11 +90,11 @@
   .settings-button {
     --content-color: var(--text-description);
 
-    @include effect.ripple-effect(--primary-tint);
+    @include effect.ripple-effect(--primary-tint, var(--primary-contrast));
 
     &:focus {
       background: var(--primary-tint);
-      @include effect.ripple-effect(--primary-tint);
+      @include effect.ripple-effect(--primary-tint, var(--primary-contrast));
     }
   }
 
