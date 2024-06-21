@@ -23,7 +23,6 @@ here after a successful release.
 
 * Rename proposal navigation buttons to "Previous" and "Next".
 * Put project icon before title in page summary.
-* Updated colors of element dividers.
 
 #### Fixed
 

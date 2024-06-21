@@ -20,6 +20,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Display neurons in a table instead of a grid of cards.
 * Removed the gap between identifier and copy button.
 * Reset the scroll position on the Proposals page when switching between projects.
+* Updated colors of element dividers.
 
 #### Deprecated
 
