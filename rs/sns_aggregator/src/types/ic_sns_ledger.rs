@@ -238,11 +238,7 @@ pub enum TransferError {
     TooOld,
     InsufficientFunds { balance: Tokens },
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum TransferResult {
-    Ok(BlockIndex),
-    Err(TransferError),
-}
+pub type TransferResult = std::result::Result<BlockIndex, TransferError>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct AllowanceArgs {
     pub account: Account,
@@ -276,11 +272,7 @@ pub enum ApproveError {
     Expired { ledger_time: Timestamp },
     InsufficientFunds { balance: candid::Nat },
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum ApproveResult {
-    Ok(BlockIndex),
-    Err(ApproveError),
-}
+pub type ApproveResult = std::result::Result<BlockIndex, ApproveError>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct TransferFromArgs {
     pub to: Account,
@@ -303,11 +295,7 @@ pub enum TransferFromError {
     TooOld,
     InsufficientFunds { balance: Tokens },
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum TransferFromResult {
-    Ok(BlockIndex),
-    Err(TransferFromError),
-}
+pub type TransferFromResult = std::result::Result<BlockIndex, TransferFromError>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetArchivesArgs {
     pub from: Option<Principal>,

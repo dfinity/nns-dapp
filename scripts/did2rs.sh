@@ -120,8 +120,9 @@ cd "$GIT_ROOT"
   #     is not guaranteed to be correct.
   # shellcheck disable=SC2016
   if [[ "$DID_PATH" == *nns_governance.did ]]; then
-    #METHODS_ARGS=("--methods" "list_proposals")
-    METHODS_ARGS=()
+    METHODS_ARGS=("--methods" "get_proposal_info")
+  elif [[ "$DID_PATH" == *nns_registry.did ]]; then
+    METHODS_ARGS=("--methods" "add_api_boundary_nodes")
   else
     METHODS_ARGS=()
   fi

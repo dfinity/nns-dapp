@@ -499,11 +499,7 @@ pub struct SwapNeuron {
 pub struct ClaimedSwapNeurons {
     pub swap_neurons: Vec<SwapNeuron>,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum ClaimSwapNeuronsResult {
-    Ok(ClaimedSwapNeurons),
-    Err(i32),
-}
+pub type ClaimSwapNeuronsResult = std::result::Result<ClaimedSwapNeurons, i32>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ClaimSwapNeuronsResponse {
     pub claim_swap_neurons_result: Option<ClaimSwapNeuronsResult>,
