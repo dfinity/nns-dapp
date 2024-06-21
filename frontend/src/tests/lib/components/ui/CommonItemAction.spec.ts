@@ -26,7 +26,7 @@ describe("CommonItemAction", () => {
   it("should render the tooltip text", async () => {
     const po = renderComponent();
 
-    expect(await po.getTooltipIconPo().getText()).toBe(tooltipText);
+    expect(await po.getTooltipIconPo().getTooltipText()).toBe(tooltipText);
   });
 
   it("should render the tooltip id", async () => {

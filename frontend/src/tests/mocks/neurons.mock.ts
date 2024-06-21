@@ -110,6 +110,8 @@ export const mockTableNeuron: TableNeuron = {
     amount: 1n,
     token: ICPToken,
   }),
+  availableMaturity: 0n,
+  stakedMaturity: 0n,
   dissolveDelaySeconds: 1n,
   state: NeuronState.Locked,
   tags: [],

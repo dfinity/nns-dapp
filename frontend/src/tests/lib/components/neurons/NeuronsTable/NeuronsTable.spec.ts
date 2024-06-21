@@ -152,6 +152,20 @@ describe("NeuronsTable", () => {
     expect(await rowPos[1].getStake()).toBe("5.00 ICP");
   });
 
+  it("should render detailed neuron stake", async () => {
+    const po = renderComponent({
+      neurons: [
+        {
+          ...neuron1,
+          stake: makeStake(999_990_000n),
+        },
+      ],
+    });
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(1);
+    expect(await rowPos[0].getStake()).toBe("9.9999 ICP");
+  });
+
   it("should render neuron state", async () => {
     const po = renderComponent({ neurons: [neuron1, neuron2] });
     const rowPos = await po.getNeuronsTableRowPos();
@@ -208,6 +222,16 @@ describe("NeuronsTable", () => {
     );
   });
 
+  it("should render a different style for spawning neuron rows", async () => {
+    const po = renderComponent({ neurons: [neuron1, spawningNeuron] });
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getTableRowTextColorVariable()).toBe("");
+    expect(await rowPos[1].getTableRowTextColorVariable()).toBe(
+      "var(--text-description-tint)"
+    );
+  });
+
   it("should render tags", async () => {
     const tags = ["Neuron's fund", "Hotkey control"];
     const po = renderComponent({
@@ -224,7 +248,11 @@ describe("NeuronsTable", () => {
     });
     const rowPos = await po.getNeuronsTableRowPos();
     expect(rowPos).toHaveLength(2);
-    expect(await rowPos[0].getTags()).toEqual([]);
-    expect(await rowPos[1].getTags()).toEqual(tags);
+    const cell1 = rowPos[0].getNeuronIdCellPo();
+    expect(await cell1.getTags()).toEqual([]);
+    expect(await cell1.hasTagsElement()).toBe(false);
+    const cell2 = rowPos[1].getNeuronIdCellPo();
+    expect(await cell2.getTags()).toEqual(tags);
+    expect(await cell2.hasTagsElement()).toBe(true);
   });
 });

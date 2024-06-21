@@ -16,6 +16,7 @@
     compareByDissolveDelay,
     compareById,
   } from "$lib/utils/neurons-table.utils";
+  import { NeuronState } from "@dfinity/nns";
 
   export let neurons: TableNeuron[];
 
@@ -74,10 +75,18 @@
       templateColumns: ["max-content"],
     },
   ];
+
+  const getRowStyle = (neuron: TableNeuron) => {
+    if (neuron.state === NeuronState.Spawning) {
+      return "--table-row-text-color: var(--text-description-tint)";
+    }
+    return undefined;
+  };
 </script>
 
 <ResponsiveTable
   testId="neurons-table-component"
   {columns}
   tableData={sortedNeurons}
+  {getRowStyle}
 ></ResponsiveTable>

@@ -68,7 +68,7 @@
   li {
     padding: var(--padding-2x) 0;
 
-    border-top: 1px solid currentColor;
+    border-top: 1px solid var(--elements-divider);
     &:first-child {
       border-top: none;
     }

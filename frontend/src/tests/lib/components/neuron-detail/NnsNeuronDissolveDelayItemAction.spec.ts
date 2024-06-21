@@ -159,7 +159,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     };
     const po = renderComponent(neuron);
 
-    expect(await po.getTooltipIconPo().getText()).toBe(
+    expect(await po.getTooltipIconPo().getTooltipText()).toBe(
       "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ICP to be available again. If your neuron is dissolving, your ICP will be available in 2 years, 12 hours."
     );
   });
@@ -172,7 +172,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     };
     const po = renderComponent(neuron);
 
-    expect(await po.getTooltipIconPo().getText()).toBe(
+    expect(await po.getTooltipIconPo().getTooltipText()).toBe(
       "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ICP to be available again. If your neuron is dissolving, your ICP will be available in 2 years, 12 hours."
     );
   });

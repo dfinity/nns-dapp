@@ -1,11 +1,20 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  setFeatureFlag,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test disburse neuron", async ({ page, context }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("Tokens / NNS Dapp");
+  await setFeatureFlag({
+    page,
+    featureFlag: "ENABLE_NEURONS_TABLE",
+    value: true,
+  });
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
@@ -37,12 +46,14 @@ test("Test disburse neuron", async ({ page, context }) => {
 
   step("Open the neuron details");
   await appPo.goToNeurons();
-  const neuronCards = await appPo
+  await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
+  const neuronRows = await appPo
     .getNeuronsPo()
     .getNnsNeuronsPo()
-    .getNeuronCardPos();
-  expect(neuronCards.length).toBe(1);
-  neuronCards[0].click();
+    .getNeuronsTablePo()
+    .getNeuronsTableRowPos();
+  expect(neuronRows).toHaveLength(1);
+  neuronRows[0].click();
 
   step("Disburse the neuron");
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().disburseNeuron();

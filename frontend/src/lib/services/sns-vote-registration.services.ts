@@ -10,7 +10,6 @@ import {
   updateVoteRegistrationToastMessage,
   voteRegistrationByProposal,
 } from "$lib/services/vote-registration.services";
-import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
@@ -89,8 +88,7 @@ export const registerSnsVotes = async ({
         completed: true,
       });
 
-      // Reset and reload actionable sns proposals.
-      actionableSnsProposalsStore.resetForSns(universeCanisterId);
+      // Reload actionable sns proposals.
       loadActionableProposalsForSns(universeCanisterId).then();
     },
   });

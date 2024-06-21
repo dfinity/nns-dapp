@@ -26,23 +26,15 @@ That is why we are providing a `./config.sh` script that generate the above envi
 
 ## Local
 
-To run the dapp against canisters deployed locally on a simulated IC network, use the steps below, or run `./scripts/dev-local.sh` which guides you through these steps
+To run the dapp against canisters deployed locally on a simulated IC network, use the steps below:
 
-- Make sure you have a clean local replica running with `dfx start --clean`. This will stay running so use a separate terminal for this.
-- Deploy the NNS back-end canisters locally with `dfx nns install`
-- From the last line of output of `dfx nns install` note down the value URL for `nns-dapp`
+- Clone the [snsdemo](https://github.com/dfinity/snsdemo/) repository. We'll use it to set up the test environment.
+- In the `snsdemo` repo, run:
+  - `bin/dfx-sns-demo-install` (to install necessary tools)
+  - `bin/dfx-snapshot-stock-make --snapshot $HOME/my-snapshot.tar.xz` (to create a snapshot with a test environment)
+- Go back to the `nns-dapp` repo
+- Run `scripts/dfx-snapshot-start --snapshot $HOME/my-snapshot.tar.xz` (this will keep running so switch to another terminal window)
 - Run `DFX_NETWORK=local ./config.sh` to populate the `./frontend/.env` file.
-- Manually edit the `./frontend/.env` and replace `null` with the nns-dapp canister id from the URL you noted down before.
-- Create a file called `canister_ids.json` in `./dfx/local/` with the following content (and make sure to replace the id:
-
-```
-{
-  "nns-dapp": {
-    "local": "<the id from the URL from the output of 'dfx nns install'>"
-  }
-}
-```
-
 - In the `./frontend/` folder, first run `npm ci` and then `npm run dev` to serve the application.
 
 With this setup, you can work on the frontend code without building the

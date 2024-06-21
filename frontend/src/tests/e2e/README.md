@@ -22,9 +22,9 @@ project. The environment that we run against on CI is created by
 in the snsdemo repository. After setting up the environment, it creates a
 snapshot of the replica state, which is then used for CI by the nns-dapp repo.
 
-You can run locally with such a snapshot by using `scripts/dev-local-state.sh`.
-However, on Mac environments, this only seems to work if the snapshot was created
-on the same machine.
+You can run locally with such a snapshot by using `scripts/dfx-snapshot-start`.
+However, this only seems to work if the snapshot was created on the same
+machine.
 
 
 # Debugging

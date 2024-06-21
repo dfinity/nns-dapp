@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-06-05_23-01-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-06-12_23-01-base/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -197,10 +197,6 @@ pub struct CreateSubnetPayload {
     pub gossip_retransmission_request_ms: u32,
     pub gossip_receive_check_cache_size: u32,
     pub node_ids: Vec<Principal>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct DeleteSubnetPayload {
-    pub subnet_id: Option<Principal>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct DeployGuestosToAllSubnetNodesPayload {
@@ -467,9 +463,6 @@ impl Service {
     }
     pub async fn create_subnet(&self, arg0: CreateSubnetPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "create_subnet", (arg0,)).await
-    }
-    pub async fn delete_subnet(&self, arg0: DeleteSubnetPayload) -> CallResult<()> {
-        ic_cdk::call(self.0, "delete_subnet", (arg0,)).await
     }
     pub async fn deploy_guestos_to_all_subnet_nodes(
         &self,

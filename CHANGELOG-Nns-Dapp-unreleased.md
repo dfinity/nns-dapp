@@ -15,12 +15,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Actionable proposals page.
-
 #### Changed
 
-* Rename proposal navigation buttons to "Previous" and "Next".
-* Put project icon before title in page summary.
+* Display neurons in a table instead of a grid of cards.
+* Removed the gap between identifier and copy button.
+* Reset the scroll position on the Proposals page when switching between projects.
+* Universe selector icon size decreased.
+* Updated colors of element dividers.
 
 #### Deprecated
 
@@ -28,8 +29,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-* Missing SNS proposal payload rendering under certain conditions.
 * Button disable state glitch when voting with neurons where one follows another.
+* Fixed the display of actionable proposals page when a single SNS fails.
 
 #### Security
 

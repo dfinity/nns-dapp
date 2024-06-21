@@ -44,7 +44,6 @@
   span {
     align-items: center;
     display: inline-flex;
-    gap: var(--padding-0_5x);
 
     .copy {
       align-items: center;
