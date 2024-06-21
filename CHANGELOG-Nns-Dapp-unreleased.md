@@ -29,6 +29,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Missing SNS proposal payload rendering under certain conditions.
+* Button disable state glitch when voting with neurons where one follows another.
 
 #### Security
 
