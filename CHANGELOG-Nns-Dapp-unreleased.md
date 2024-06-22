@@ -15,6 +15,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Maturity visible in neurons table.
+
 #### Changed
 
 * Display neurons in a table instead of a grid of cards.
