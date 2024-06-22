@@ -125,10 +125,6 @@ cd "$GIT_ROOT"
             # Comment out the header "use", "//!" and "#!" lines.
 	    s@^(use |//!|#!)@// &@;
 
-	    # Make types and fields public:
-            s/^(struct|enum|type) /pub &/;
-            s/^    [a-z].*:/    pub&/;s/^( *pub ) *pub /\1/;
-
 	    # Add traits
             s/#\[derive\(/&'"${TRAITS:-}${TRAITS:+, }"'/;
 
