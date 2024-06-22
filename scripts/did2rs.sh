@@ -100,7 +100,6 @@ cd "$GIT_ROOT"
   #
   # sed:
   #   - Comments out the header provided by didc; we provide our own and the two conflict.
-  #   - Makes structures and their fields "pub", so that they can be used.
   #   - Adds additional traits after "Deserialize".
   #   - Makes API call response types "CallResult".  The alternative convention is to have:
   #       use ic_cdk::api::call::CallResult as Result;
