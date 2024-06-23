@@ -1,18 +1,18 @@
 <script lang="ts">
   import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
-  import type { NeuronId } from "@dfinity/nns";
-  import { i18n } from "$lib/stores/i18n";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { authStore } from "$lib/stores/auth.store";
   import { addHotkeyForHardwareWalletNeuron } from "$lib/services/neurons.services";
-  import type { Account } from "$lib/types/account";
-  import { createEventDispatcher, getContext } from "svelte";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
+  import type { Account } from "$lib/types/account";
   import {
     WALLET_CONTEXT_KEY,
     type WalletContext,
     type HardwareWalletNeuronInfo,
   } from "$lib/types/wallet.context";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import type { NeuronId } from "@dfinity/nns";
+  import { createEventDispatcher, getContext } from "svelte";
 
   export let neuronId: NeuronId;
 

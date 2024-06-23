@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { QRCodeReaderModal } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
-  import { createEventDispatcher } from "svelte";
-  import { toastsError } from "$lib/stores/toasts.store";
   import { ENABLE_QR_CODE_READER } from "$lib/constants/mockable.constants";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import { QRCodeReaderModal } from "@dfinity/gix-components";
+  import { createEventDispatcher } from "svelte";
 
   // TODO: can we improve the local development experience if the QR code needs to be used locally?
   /**

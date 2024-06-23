@@ -1,15 +1,15 @@
 <script lang="ts">
-  import TransactionIcon from "./TransactionIcon.svelte";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import ColumnRow from "$lib/components/ui/ColumnRow.svelte";
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
-  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { KeyValuePair } from "@dfinity/gix-components";
   import type {
     UiTransaction,
     TransactionIconType,
   } from "$lib/types/transaction";
+  import TransactionIcon from "./TransactionIcon.svelte";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import {
     nonNullish,
     type TokenAmount,

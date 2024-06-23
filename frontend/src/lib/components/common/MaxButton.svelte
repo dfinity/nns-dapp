@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { IconSubdirectory } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
+  import { IconSubdirectory } from "@dfinity/gix-components";
 
   export let disabled = false;
 </script>

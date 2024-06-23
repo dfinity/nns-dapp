@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { SnsNeuron } from "@dfinity/sns";
   import Hash from "$lib/components/ui/Hash.svelte";
+  import { onIntersection } from "$lib/directives/intersection.directives";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
   import {
     getSnsNeuronIdAsHexString,
     isUserHotkey,
   } from "$lib/utils/sns-neuron.utils";
-  import { authStore } from "$lib/stores/auth.store";
-  import { i18n } from "$lib/stores/i18n";
-  import { onIntersection } from "$lib/directives/intersection.directives";
+  import type { SnsNeuron } from "@dfinity/sns";
 
   export let neuron: SnsNeuron;
   export let tagName: "h3" | "p" = "h3";

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { nonNullish } from "@dfinity/utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import { SkeletonText } from "@dfinity/gix-components";
-  import { TokenAmountV2, type Token } from "@dfinity/utils";
+  import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
   import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
   import type { Universe } from "$lib/types/universe";
-  import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
+  import { SkeletonText } from "@dfinity/gix-components";
+  import { TokenAmountV2, type Token } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   export let universe: Universe;
 

@@ -1,21 +1,21 @@
 <script lang="ts">
-  import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
-  import { confirmCloseApp } from "$lib/utils/before-unload.utils";
-  import { voteRegistrationActive } from "$lib/utils/proposals.utils";
-  import { onMount } from "svelte";
-  import { Toasts, BusyScreen } from "@dfinity/gix-components";
+  import { browser } from "$app/environment";
+  import { afterNavigate } from "$app/navigation";
+  import Warnings from "$lib/components/warnings/Warnings.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import {
     initAppAuth,
     initAppPublicData,
   } from "$lib/services/$public/app.services";
-  import Warnings from "$lib/components/warnings/Warnings.svelte";
-  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-  import type { AfterNavigate } from "@sveltejs/kit";
-  import { afterNavigate } from "$app/navigation";
-  import { referrerPathStore } from "$lib/stores/routes.store";
-  import { referrerPathForNav } from "$lib/utils/page.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { browser } from "$app/environment";
+  import { referrerPathStore } from "$lib/stores/routes.store";
+  import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
+  import { confirmCloseApp } from "$lib/utils/before-unload.utils";
+  import { referrerPathForNav } from "$lib/utils/page.utils";
+  import { voteRegistrationActive } from "$lib/utils/proposals.utils";
+  import { Toasts, BusyScreen } from "@dfinity/gix-components";
+  import type { AfterNavigate } from "@sveltejs/kit";
+  import { onMount } from "svelte";
 
   onMount(async () => await Promise.all([initAppAuth(), initAppPublicData()]));
 

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Html, IconWarning, Modal } from "@dfinity/gix-components";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { IS_TEST_MAINNET } from "$lib/constants/environment.constants";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { Html, IconWarning, Modal } from "@dfinity/gix-components";
 
   let visible = false;
   $: visible = $authSignedInStore && !acknowledged && IS_TEST_MAINNET;

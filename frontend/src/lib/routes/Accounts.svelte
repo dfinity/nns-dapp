@@ -1,13 +1,13 @@
 <script lang="ts">
-  import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
+  import { goto } from "$app/navigation";
   import NnsAccountsFooter from "$lib/components/accounts/NnsAccountsFooter.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
-  import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
-  import { icpTokensListUser } from "$lib/derived/icp-tokens-list-user.derived";
-  import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { icpTokensListUser } from "$lib/derived/icp-tokens-list-user.derived";
+  import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
+  import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
+  import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
   import { Spinner } from "@dfinity/gix-components";
 
   $: {

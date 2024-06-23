@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-  import { i18n } from "$lib/stores/i18n";
-  import { invalidAddress } from "$lib/utils/accounts.utils";
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import type { TransactionNetwork } from "$lib/types/transaction";
-  import type { Principal } from "@dfinity/principal";
+  import { invalidAddress } from "$lib/utils/accounts.utils";
   import { IconQRCodeScanner } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
+  import { createEventDispatcher } from "svelte";
 
   export let address = "";
   export let selectedNetwork: TransactionNetwork | undefined = undefined;

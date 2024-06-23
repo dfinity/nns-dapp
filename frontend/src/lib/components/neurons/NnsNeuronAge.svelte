@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import { KeyValuePair } from "@dfinity/gix-components";
-  import { secondsToDuration } from "@dfinity/utils";
   import { neuronAge } from "$lib/utils/neuron.utils";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import { KeyValuePair } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { secondsToDuration } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;
 </script>

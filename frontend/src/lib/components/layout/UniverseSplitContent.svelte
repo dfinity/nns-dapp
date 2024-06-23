@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { SplitContent } from "@dfinity/gix-components";
+  import { afterNavigate } from "$app/navigation";
+  import HeaderToolbar from "$lib/components/header/HeaderToolbar.svelte";
   import Title from "$lib/components/header/Title.svelte";
   import SelectUniverseNav from "$lib/components/universe/SelectUniverseNav.svelte";
-  import HeaderToolbar from "$lib/components/header/HeaderToolbar.svelte";
+  import { SplitContent } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
-  import { afterNavigate } from "$app/navigation";
 
   export let resetScrollPositionAfterNavigation = false;
 

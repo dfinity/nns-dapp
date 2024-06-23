@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { nonNullish } from "@dfinity/utils";
   import { metricsStore } from "$lib/stores/metrics.store";
+  import { nonNullish } from "@dfinity/utils";
 
   export let layout: "inline" | "stacked" = "inline";
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { Tag } from "@dfinity/gix-components";
   import type { NeuronTagData } from "$lib/utils/neuron.utils";
+  import { Tag } from "@dfinity/gix-components";
 
   export let tag: NeuronTagData;
 </script>

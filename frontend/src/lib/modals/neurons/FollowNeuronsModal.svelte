@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { NeuronId } from "@dfinity/nns";
   import EditFollowNeurons from "$lib/components/neurons/EditFollowNeurons.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { Modal } from "@dfinity/gix-components";
+  import type { NeuronId } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
 
   export let neuronId: NeuronId;

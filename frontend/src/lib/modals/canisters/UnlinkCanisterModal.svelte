@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { detachCanister } from "$lib/services/canisters.services";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
-  import type { Principal } from "@dfinity/principal";
   import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
+  import { detachCanister } from "$lib/services/canisters.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import type { Principal } from "@dfinity/principal";
   import { createEventDispatcher } from "svelte";
 
   export let canisterId: Principal;

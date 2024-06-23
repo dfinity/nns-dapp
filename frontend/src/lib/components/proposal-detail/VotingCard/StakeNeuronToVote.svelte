@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { IconExpandCircleDown, Collapsible } from "@dfinity/gix-components";
-  import { fade } from "svelte/transition";
-  import { i18n } from "$lib/stores/i18n";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
-  import { nnsTokenStore } from "$lib/derived/universes-tokens.derived";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { nonNullish } from "@dfinity/utils";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import { nnsTokenStore } from "$lib/derived/universes-tokens.derived";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { IconExpandCircleDown, Collapsible } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
+  import { fade } from "svelte/transition";
 
   let toggleContent: () => void;
   let expanded: boolean;

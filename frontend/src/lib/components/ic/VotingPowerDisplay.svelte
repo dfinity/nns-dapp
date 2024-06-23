@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Tooltip } from "@dfinity/gix-components";
   import {
     formatVotingPower,
     formatVotingPowerDetailed,
   } from "$lib/utils/neuron.utils";
+  import { Tooltip } from "@dfinity/gix-components";
 
   export let valueTestId: string;
   export let valueAriaLabel: string | undefined = undefined;

@@ -1,29 +1,29 @@
 <script lang="ts">
-  import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { Island, Spinner } from "@dfinity/gix-components";
+  import { goto } from "$app/navigation";
+  import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
+  import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
+  import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
-  import type { Writable } from "svelte/store";
-  import type { WalletStore } from "$lib/types/wallet.context";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
+  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
+  import { syncAccounts as syncWalletAccounts } from "$lib/services/icrc-accounts.services";
+  import { i18n } from "$lib/stores/i18n";
+  import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import type { WalletStore } from "$lib/types/wallet.context";
   import {
     findAccountOrDefaultToMain,
     hasAccounts,
   } from "$lib/utils/accounts.utils";
-  import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-  import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
-  import { syncAccounts as syncWalletAccounts } from "$lib/services/icrc-accounts.services";
-  import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { i18n } from "$lib/stores/i18n";
-  import { goto } from "$app/navigation";
+  import { Island, Spinner } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
-  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
-  import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
-  import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
-  import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
-  import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
+  import type { Writable } from "svelte/store";
 
   export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;

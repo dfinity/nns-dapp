@@ -1,5 +1,8 @@
 <script lang="ts">
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import ProjectUserCommitmentLabel from "$lib/components/project-detail/ProjectUserCommitmentLabel.svelte";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+  import { i18n } from "$lib/stores/i18n";
   import type {
     SnsSummary,
     SnsSwapCommitment,
@@ -9,15 +12,12 @@
     durationTillSwapDeadline,
     durationTillSwapStart,
   } from "$lib/utils/projects.utils";
-  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
-  import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "@dfinity/utils";
-  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
-  import ProjectUserCommitmentLabel from "$lib/components/project-detail/ProjectUserCommitmentLabel.svelte";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
-  import { nonNullish } from "@dfinity/utils";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
+  import { secondsToDuration } from "@dfinity/utils";
 
   export let project: SnsFullProject;
   // The data to know whether it's finalizing or not is not in the SnsFullProject.

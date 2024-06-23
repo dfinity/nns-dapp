@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { NeuronState } from "@dfinity/nns";
+  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { i18n } from "$lib/stores/i18n";
-  import type { SnsNeuronId } from "@dfinity/sns";
   import {
     startDissolving,
     stopDissolving,
   } from "$lib/services/sns-neurons.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { NeuronState } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
+  import type { SnsNeuronId } from "@dfinity/sns";
   import { createEventDispatcher } from "svelte";
-  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
 
   export let neuronId: SnsNeuronId;
   export let neuronState: NeuronState;

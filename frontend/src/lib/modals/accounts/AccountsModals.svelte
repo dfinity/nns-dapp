@@ -1,17 +1,17 @@
 <script lang="ts">
+  import IcrcReceiveModal from "$lib/modals/accounts/IcrcReceiveModal.svelte";
+  import NnsReceiveModal from "$lib/modals/accounts/NnsReceiveModal.svelte";
+  import type { Account } from "$lib/types/account";
   import type {
     AccountsModal,
     AccountsModalData,
     AccountsModalType,
     AccountsReceiveModalData,
   } from "$lib/types/accounts.modal";
-  import NnsReceiveModal from "$lib/modals/accounts/NnsReceiveModal.svelte";
-  import { nonNullish } from "@dfinity/utils";
-  import IcrcReceiveModal from "$lib/modals/accounts/IcrcReceiveModal.svelte";
-  import BuyIcpModal from "./BuyIcpModal.svelte";
-  import type { Account } from "$lib/types/account";
   import AddAccountModal from "./AddAccountModal.svelte";
+  import BuyIcpModal from "./BuyIcpModal.svelte";
   import IcpTransactionModal from "./IcpTransactionModal.svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   let modal:
     | AccountsModal<AccountsReceiveModalData | AccountsModalData>

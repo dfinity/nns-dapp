@@ -1,8 +1,8 @@
 <script lang="ts">
+  import { updateBalance as updateBalanceService } from "$lib/services/ckbtc-minter.services";
   import { i18n } from "$lib/stores/i18n";
   import type { CanisterId } from "$lib/types/canister";
   import type { UniverseCanisterId } from "$lib/types/universe";
-  import { updateBalance as updateBalanceService } from "$lib/services/ckbtc-minter.services";
 
   export let universeId: UniverseCanisterId;
   export let minterCanisterId: CanisterId;

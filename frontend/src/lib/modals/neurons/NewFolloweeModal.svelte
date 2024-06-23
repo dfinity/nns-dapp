@@ -1,12 +1,9 @@
 <script lang="ts">
-  import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
-  import { createEventDispatcher, onMount } from "svelte";
   import KnownNeuronFollowItem from "$lib/components/neurons/KnownNeuronFollowItem.svelte";
   import Input from "$lib/components/ui/Input.svelte";
-  import { Spinner } from "@dfinity/gix-components";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
   import { addFollowee } from "$lib/services/neurons.services";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { authStore } from "$lib/stores/auth.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
@@ -16,7 +13,10 @@
     isHotKeyControllable,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
+  import { Spinner } from "@dfinity/gix-components";
   import { busy, Modal } from "@dfinity/gix-components";
+  import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
+  import { createEventDispatcher, onMount } from "svelte";
 
   export let neuron: NeuronInfo;
   export let topic: Topic;

@@ -1,23 +1,23 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import Hash from "$lib/components/ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "@dfinity/utils";
+  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatTokenE8s } from "$lib/utils/token.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
-  import { valueSpan } from "$lib/utils/utils";
-  import { Html, busy } from "@dfinity/gix-components";
   import {
     getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
+  import { valueSpan } from "$lib/utils/utils";
+  import { Html, busy } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
+  import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import type { SnsNeuron } from "@dfinity/sns";
   import type { Token } from "@dfinity/utils";
-  import type { SnsNervousSystemParameters } from "@dfinity/sns";
-  import Hash from "$lib/components/ui/Hash.svelte";
-  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-  import type { Principal } from "@dfinity/principal";
+  import { secondsToDuration } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;

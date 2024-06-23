@@ -1,8 +1,8 @@
 <script lang="ts">
   import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
   import IcrcTokenAccountsModals from "$lib/modals/accounts/IcrcTokenAccountsModals.svelte";
-  import type { SvelteComponent } from "svelte";
   import { nonNullish } from "@dfinity/utils";
+  import type { SvelteComponent } from "svelte";
 
   export let testComponent: typeof SvelteComponent;
   export let accountIdentifier: string | undefined | null = undefined;

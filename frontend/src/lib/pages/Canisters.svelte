@@ -1,26 +1,26 @@
 <script lang="ts">
+  import type { CanisterId } from "$lib/canisters/nns-dapp/nns-dapp.types";
+  import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
-  import { onMount } from "svelte";
-  import { i18n } from "$lib/stores/i18n";
-  import { toastsError } from "$lib/stores/toasts.store";
+  import PrincipalText from "$lib/components/summary/PrincipalText.svelte";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
+  import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
+  import { pageStore } from "$lib/derived/page.derived";
+  import CreateCanisterModal from "$lib/modals/canisters/CreateCanisterModal.svelte";
+  import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
   import { listCanisters } from "$lib/services/canisters.services";
   import { canistersStore } from "$lib/stores/canisters.store";
-  import { AppPath } from "$lib/constants/routes.constants";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
-  import type { CanisterId } from "$lib/canisters/nns-dapp/nns-dapp.types";
-  import CreateCanisterModal from "$lib/modals/canisters/CreateCanisterModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { referrerPathStore } from "$lib/stores/routes.store";
+  import { toastsError } from "$lib/stores/toasts.store";
   import {
     buildCanisterUrl,
     reloadRouteData,
   } from "$lib/utils/navigation.utils";
-  import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
-  import { pageStore } from "$lib/derived/page.derived";
-  import PrincipalText from "$lib/components/summary/PrincipalText.svelte";
-  import { referrerPathStore } from "$lib/stores/routes.store";
-  import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
-  import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
+  import { onMount } from "svelte";
 
   const loadCanisters = async () => {
     try {

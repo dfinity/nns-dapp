@@ -2,9 +2,9 @@
   import { i18n } from "$lib/stores/i18n";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import { getSnsNeuronState, isVesting } from "$lib/utils/sns-neuron.utils";
-  import type { SnsNeuron } from "@dfinity/sns";
   import VestingTooltipWrapper from "../VestingTooltipWrapper.svelte";
   import { NeuronState } from "@dfinity/nns";
+  import type { SnsNeuron } from "@dfinity/sns";
 
   export let neuron: SnsNeuron;
 

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { IconLogin } from "@dfinity/gix-components";
+  import { login } from "$lib/services/auth.services";
   import { i18n } from "$lib/stores/i18n";
   import { layoutAuthReady } from "$lib/stores/layout.store";
-  import { login } from "$lib/services/auth.services";
+  import { IconLogin } from "@dfinity/gix-components";
 </script>
 
 <button

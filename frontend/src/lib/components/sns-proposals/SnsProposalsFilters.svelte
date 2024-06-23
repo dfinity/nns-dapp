@@ -1,19 +1,19 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
+  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import SnsFilterStatusModal from "$lib/modals/sns/proposals/SnsFilterStatusModal.svelte";
+  import SnsFilterTypesModal from "$lib/modals/sns/proposals/SnsFilterTypesModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import {
     snsFiltersStore,
     type ProjectFiltersStoreData,
   } from "$lib/stores/sns-filters.store";
-  import type { Principal } from "@dfinity/principal";
   import FiltersWrapper from "../proposals/FiltersWrapper.svelte";
   import FiltersButton from "../ui/FiltersButton.svelte";
-  import SnsFilterTypesModal from "$lib/modals/sns/proposals/SnsFilterTypesModal.svelte";
-  import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import type { Principal } from "@dfinity/principal";
 
   let modal: "types" | "status" | undefined = undefined;
 

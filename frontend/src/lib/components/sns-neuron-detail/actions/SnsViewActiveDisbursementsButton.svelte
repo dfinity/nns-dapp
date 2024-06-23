@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import { i18n } from "$lib/stores/i18n";
+  import { openSnsNeuronModal } from "$lib/utils/modals.utils";
 
   const showModal = () =>
     openSnsNeuronModal({ type: "view-active-disbursements" });

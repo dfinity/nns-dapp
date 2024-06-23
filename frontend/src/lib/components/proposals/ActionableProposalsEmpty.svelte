@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { IconProposalsPage, PageBanner } from "@dfinity/gix-components";
   import { actionableProposalNotSupportedUniversesStore } from "$lib/derived/actionable-proposals.derived";
+  import { i18n } from "$lib/stores/i18n";
   import { joinWithOr, replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { IconProposalsPage, PageBanner } from "@dfinity/gix-components";
 
   let unsupportedUniverseNames: string[] = [];
   $: unsupportedUniverseNames =

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { TableNeuron } from "$lib/types/neurons-table";
   import Hash from "$lib/components/ui/Hash.svelte";
+  import type { TableNeuron } from "$lib/types/neurons-table";
   import { Tag } from "@dfinity/gix-components";
 
   export let rowData: TableNeuron;

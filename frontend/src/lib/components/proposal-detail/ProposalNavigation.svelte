@@ -1,18 +1,18 @@
 <script lang="ts">
-  import { IconLeft, IconRight } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
-  import { assertNonNullish, isNullish } from "@dfinity/utils";
-  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
-  import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
+  import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
+  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
+  import { triggerDebugReport } from "$lib/directives/debug.directives";
+  import { i18n } from "$lib/stores/i18n";
   import type {
     ProposalsNavigationId,
     UniversalProposalStatus,
   } from "$lib/types/proposals";
-  import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
-  import { triggerDebugReport } from "$lib/directives/debug.directives";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { navigationIdComparator } from "$lib/utils/proposals.utils";
+  import { IconLeft, IconRight } from "@dfinity/gix-components";
+  import { assertNonNullish, isNullish } from "@dfinity/utils";
 
   export let currentProposalId: ProposalsNavigationId;
   export let title: string | undefined = undefined;

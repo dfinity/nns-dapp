@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { IconUser, ThemeToggle, Popover } from "@dfinity/gix-components";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import Logout from "./Logout.svelte";
-  import LoginIconOnly from "./LoginIconOnly.svelte";
-  import { i18n } from "$lib/stores/i18n";
-  import SettingsButton from "$lib/components/header/SettingsButton.svelte";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
   import ManageInternetIdentityButton from "$lib/components/header/ManageInternetIdentityButton.svelte";
+  import SettingsButton from "$lib/components/header/SettingsButton.svelte";
   import SourceCodeButton from "$lib/components/header/SourceCodeButton.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { i18n } from "$lib/stores/i18n";
+  import LoginIconOnly from "./LoginIconOnly.svelte";
+  import Logout from "./Logout.svelte";
+  import { IconUser, ThemeToggle, Popover } from "@dfinity/gix-components";
 
   let visible = false;
   let button: HTMLButtonElement | undefined;

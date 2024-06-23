@@ -1,9 +1,9 @@
 <script lang="ts">
+  import Metrics from "$lib/components/metrics/Metrics.svelte";
+  import TestEnvironmentWarning from "$lib/components/warnings/TestEnvironmentWarning.svelte";
   import TransactionRateWarning from "$lib/components/warnings/TransactionRateWarning.svelte";
   import { ENABLE_METRICS } from "$lib/constants/mockable.constants";
-  import Metrics from "$lib/components/metrics/Metrics.svelte";
   import { Toasts } from "@dfinity/gix-components";
-  import TestEnvironmentWarning from "$lib/components/warnings/TestEnvironmentWarning.svelte";
 
   export let bringToastsForward = false;
   export let testEnvironmentWarning = false;

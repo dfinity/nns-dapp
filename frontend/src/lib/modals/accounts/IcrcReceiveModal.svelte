@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { AccountsReceiveModalData } from "$lib/types/accounts.modal";
-  import type { Account } from "$lib/types/account";
   import ReceiveModal from "$lib/modals/accounts/ReceiveModal.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import type { Account } from "$lib/types/account";
+  import type { AccountsReceiveModalData } from "$lib/types/accounts.modal";
   import type { UniverseCanisterId } from "$lib/types/universe";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { nonNullish } from "@dfinity/utils";
 
   export let data: AccountsReceiveModalData;

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { IconPace } from "@dfinity/gix-components";
-  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
-  import type { SnsNeuron } from "@dfinity/sns";
   import SnsViewActiveDisbursementsButton from "$lib/components/sns-neuron-detail/actions/SnsViewActiveDisbursementsButton.svelte";
-  import { totalDisbursingMaturity } from "$lib/utils/sns-neuron.utils";
+  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import { formatMaturity } from "$lib/utils/neuron.utils";
+  import { totalDisbursingMaturity } from "$lib/utils/sns-neuron.utils";
+  import { IconPace } from "@dfinity/gix-components";
+  import type { SnsNeuron } from "@dfinity/sns";
 
   export let neuron: SnsNeuron;
 

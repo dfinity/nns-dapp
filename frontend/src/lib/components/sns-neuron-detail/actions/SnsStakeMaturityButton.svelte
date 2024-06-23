@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { openSnsNeuronModal } from "$lib/utils/modals.utils";
-  import type { SnsNeuron } from "@dfinity/sns";
   import StakeMaturityButton from "$lib/components/neuron-detail/actions/StakeMaturityButton.svelte";
+  import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import { hasEnoughMaturityToStake } from "$lib/utils/sns-neuron.utils";
+  import type { SnsNeuron } from "@dfinity/sns";
 
   export let neuron: SnsNeuron;
 

@@ -1,23 +1,23 @@
 <script lang="ts">
-  import AddSubAccount from "$lib/components/accounts/AddSubAccount.svelte";
   import AddAccountType from "$lib/components/accounts/AddAccountType.svelte";
-  import {
-    WizardModal,
-    type WizardSteps,
-    type WizardStep,
-  } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
-  import HardwareWalletName from "$lib/components/accounts/HardwareWalletName.svelte";
-  import { setContext, tick } from "svelte";
+  import AddSubAccount from "$lib/components/accounts/AddSubAccount.svelte";
   import HardwareWalletConnect from "$lib/components/accounts/HardwareWalletConnect.svelte";
-  import { writable } from "svelte/store";
+  import HardwareWalletName from "$lib/components/accounts/HardwareWalletName.svelte";
+  import { debugAddAccountStore } from "$lib/derived/debug.derived";
+  import { i18n } from "$lib/stores/i18n";
   import type {
     AddAccountContext,
     AddAccountStore,
     AccountType,
   } from "$lib/types/add-account.context";
   import { ADD_ACCOUNT_CONTEXT_KEY } from "$lib/types/add-account.context";
-  import { debugAddAccountStore } from "$lib/derived/debug.derived";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
+  import { setContext, tick } from "svelte";
+  import { writable } from "svelte/store";
 
   const subAccountSteps: WizardSteps = [
     {

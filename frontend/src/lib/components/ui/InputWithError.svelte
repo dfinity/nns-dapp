@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { IconInfo } from "@dfinity/gix-components";
   import Input from "./Input.svelte";
+  import { IconInfo } from "@dfinity/gix-components";
 
   // Same props as Input
   export let name: string;

@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
-  import { i18n } from "$lib/stores/i18n";
-  import { numberToE8s } from "$lib/utils/token.utils";
-  import TransactionReceivedTokenAmount from "$lib/components/transaction/TransactionReceivedTokenAmount.svelte";
   import BitcoinFeeDisplay from "$lib/components/accounts/BitcoinFeeDisplay.svelte";
-  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
-  import type { UniverseCanisterId } from "$lib/types/universe";
+  import TransactionReceivedTokenAmount from "$lib/components/transaction/TransactionReceivedTokenAmount.svelte";
   import {
     ckBTCInfoStore,
     type CkBTCInfoStoreUniverseData,
   } from "$lib/stores/ckbtc-info.store";
+  import { i18n } from "$lib/stores/i18n";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import { numberToE8s } from "$lib/utils/token.utils";
+  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
+  import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
 
   export let amount: number | undefined = undefined;
   export let bitcoinEstimatedFee: bigint | undefined | null = undefined;

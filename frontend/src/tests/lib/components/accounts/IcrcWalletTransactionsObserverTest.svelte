@@ -1,10 +1,10 @@
 <script lang="ts">
   import IcrcWalletTransactionsObserver from "$lib/components/accounts/IcrcWalletTransactionsObserver.svelte";
-  import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
   import {
     CKTESTBTC_INDEX_CANISTER_ID,
     CKTESTBTC_LEDGER_CANISTER_ID,
   } from "$lib/constants/ckbtc-canister-ids.constants";
+  import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 </script>
 
 <IcrcWalletTransactionsObserver

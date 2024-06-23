@@ -1,26 +1,26 @@
 <script lang="ts">
-  import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { hasAccounts } from "$lib/utils/accounts.utils";
-  import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import CkBTCInfoCard from "$lib/components/accounts/CkBTCInfoCard.svelte";
   import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsList.svelte";
+  import CkBTCWalletFooter from "$lib/components/accounts/CkBTCWalletFooter.svelte";
+  import IcrcWalletPage from "$lib/components/accounts/IcrcWalletPage.svelte";
   import NoTransactions from "$lib/components/accounts/NoTransactions.svelte";
+  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import {
     ckBTCTokenFeeStore,
     ckBTCTokenStore,
   } from "$lib/derived/universes-tokens.derived";
-  import CkBTCWalletFooter from "$lib/components/accounts/CkBTCWalletFooter.svelte";
-  import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
-  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
-  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
-  import CkBTCInfoCard from "$lib/components/accounts/CkBTCInfoCard.svelte";
-  import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
-  import { loadRetrieveBtcStatuses } from "$lib/services/ckbtc-minter.services";
   import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
-  import IcrcWalletPage from "$lib/components/accounts/IcrcWalletPage.svelte";
-  import { writable } from "svelte/store";
-  import type { WalletStore } from "$lib/types/wallet.context";
+  import { loadRetrieveBtcStatuses } from "$lib/services/ckbtc-minter.services";
   import { loadAccounts } from "$lib/services/icrc-accounts.services";
+  import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+  import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+  import type { WalletStore } from "$lib/types/wallet.context";
+  import { hasAccounts } from "$lib/utils/accounts.utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { writable } from "svelte/store";
 
   export let accountIdentifier: string | undefined | null = undefined;
 

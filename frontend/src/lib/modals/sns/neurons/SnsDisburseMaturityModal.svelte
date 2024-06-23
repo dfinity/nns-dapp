@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { createEventDispatcher } from "svelte";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
-  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
-  import type { Principal } from "@dfinity/principal";
-  import { disburseMaturity as disburseMaturityService } from "$lib/services/sns-neurons.services";
-  import { minimumAmountToDisburseMaturity } from "$lib/utils/sns-neuron.utils";
-  import DisburseMaturityModal from "$lib/modals/neurons/DisburseMaturityModal.svelte";
   import { snsTokensByRootCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
+  import DisburseMaturityModal from "$lib/modals/neurons/DisburseMaturityModal.svelte";
+  import { disburseMaturity as disburseMaturityService } from "$lib/services/sns-neurons.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import { minimumAmountToDisburseMaturity } from "$lib/utils/sns-neuron.utils";
+  import type { Principal } from "@dfinity/principal";
+  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+  import { createEventDispatcher } from "svelte";
 
   export let neuron: SnsNeuron;
   export let neuronId: SnsNeuronId;

@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { TransactionNetwork } from "$lib/types/transaction";
   import { estimateFee as estimateFeeService } from "$lib/services/ckbtc-minter.services";
-  import { debounce, nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
-  import { numberToE8s } from "$lib/utils/token.utils";
-  import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
   import type { CanisterId } from "$lib/types/canister";
+  import type { TransactionNetwork } from "$lib/types/transaction";
+  import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
+  import { numberToE8s } from "$lib/utils/token.utils";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
   import type { EstimateWithdrawalFee } from "@dfinity/ckbtc";
+  import { debounce, nonNullish } from "@dfinity/utils";
 
   export let minterCanisterId: CanisterId;
   export let amount: number | undefined = undefined;

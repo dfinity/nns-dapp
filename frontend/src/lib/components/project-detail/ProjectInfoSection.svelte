@@ -1,15 +1,15 @@
 <script lang="ts">
-  import type { SnsSummary, SnsSummaryMetadata } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
-  import { KeyValuePair } from "@dfinity/gix-components";
-  import ProjectSwapDetails from "./ProjectSwapDetails.svelte";
-  import { getContext } from "svelte";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
+  import type { SnsSummary, SnsSummaryMetadata } from "$lib/types/sns";
+  import ProjectSwapDetails from "./ProjectSwapDetails.svelte";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
-  import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import { getContext } from "svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

@@ -1,15 +1,15 @@
 <script lang="ts">
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
-  import { i18n } from "$lib/stores/i18n";
-  import Footer from "$lib/components/layout/Footer.svelte";
-  import { nonNullish } from "@dfinity/utils";
+  import IC_LOGO from "$lib/assets/icp.svg";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import Footer from "$lib/components/layout/Footer.svelte";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { syncAccounts } from "$lib/services/icp-accounts.services";
+  import { i18n } from "$lib/stores/i18n";
   import { openAccountsModal } from "$lib/utils/modals.utils";
   import { IconAdd } from "@dfinity/gix-components";
-  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import IC_LOGO from "$lib/assets/icp.svg";
+  import { nonNullish } from "@dfinity/utils";
 
   // TODO: for performance reason use `loadBalance` to reload specific account
   const reload = async () => await syncAccounts();

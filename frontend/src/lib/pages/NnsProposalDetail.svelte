@@ -1,24 +1,24 @@
 <script lang="ts">
-  import { setContext } from "svelte";
-  import { loadProposal } from "$lib/services/$public/proposals.services";
+  import { browser } from "$app/environment";
+  import { goto } from "$app/navigation";
+  import NnsProposal from "$lib/components/proposal-detail/NnsProposal.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import type { ProposalId, ProposalInfo } from "@dfinity/nns";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { debugSelectedProposalStore } from "$lib/derived/debug.derived";
+  import { loadProposal } from "$lib/services/$public/proposals.services";
+  import { listNeurons } from "$lib/services/neurons.services";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
-  import { writable } from "svelte/store";
+  import { referrerPathStore } from "$lib/stores/routes.store";
   import type {
     SelectedProposalContext,
     SelectedProposalStore,
   } from "$lib/types/selected-proposal.context";
   import { SELECTED_PROPOSAL_CONTEXT_KEY } from "$lib/types/selected-proposal.context";
-  import { debugSelectedProposalStore } from "$lib/derived/debug.derived";
-  import NnsProposal from "$lib/components/proposal-detail/NnsProposal.svelte";
-  import { i18n } from "$lib/stores/i18n";
-  import { goto } from "$app/navigation";
-  import { authStore } from "$lib/stores/auth.store";
-  import { listNeurons } from "$lib/services/neurons.services";
-  import { browser } from "$app/environment";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { referrerPathStore } from "$lib/stores/routes.store";
+  import type { ProposalId, ProposalInfo } from "@dfinity/nns";
+  import { setContext } from "svelte";
+  import { writable } from "svelte/store";
 
   export let proposalIdText: string | undefined | null = undefined;
 
