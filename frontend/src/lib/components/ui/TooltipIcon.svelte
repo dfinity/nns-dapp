@@ -1,7 +1,7 @@
 <script lang="ts">
   import { IconInfo, Tooltip } from "@dfinity/gix-components";
 
-  export let tooltipId: string | undefined;
+  export let tooltipId: string | undefined = undefined;
   export let tooltipIdPrefix = "tooltip-icon";
   export let text: string | undefined = undefined;
 </script>
