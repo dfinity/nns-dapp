@@ -44,7 +44,7 @@
   }
 
   .tooltip-content {
-    --line: var(--tooltip-divider);
+    --elements-divider: var(--tooltip-divider);
     display: flex;
     flex-direction: column;
     gap: var(--padding-0_5x);
