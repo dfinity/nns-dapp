@@ -2,31 +2,31 @@
 <svelte:options accessors />
 
 <script lang="ts">
+  import IcrcWalletTransactionsObserver from "$lib/components/accounts/IcrcWalletTransactionsObserver.svelte";
+  import UiTransactionsList from "$lib/components/accounts/UiTransactionsList.svelte";
+  import { WALLET_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/wallet.constants";
+  import {
+    loadIcrcAccountNextTransactions,
+    loadIcrcAccountTransactions,
+  } from "$lib/services/icrc-transactions.services";
+  import { i18n } from "$lib/stores/i18n";
+  import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
   import type { Account } from "$lib/types/account";
+  import type { CanisterId } from "$lib/types/canister";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import type {
     UiTransaction,
     IcrcTransactionData,
   } from "$lib/types/transaction";
-  import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
-  import { i18n } from "$lib/stores/i18n";
+  import type { UniverseCanisterId } from "$lib/types/universe";
   import {
     getSortedTransactionsFromStore,
     isIcrcTransactionsCompleted,
     mapIcrcTransaction,
   } from "$lib/utils/icrc-transactions.utils";
-  import UiTransactionsList from "$lib/components/accounts/UiTransactionsList.svelte";
-  import type { UniverseCanisterId } from "$lib/types/universe";
-  import type { CanisterId } from "$lib/types/canister";
-  import { onMount } from "svelte";
-  import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import IcrcWalletTransactionsObserver from "$lib/components/accounts/IcrcWalletTransactionsObserver.svelte";
-  import { WALLET_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/wallet.constants";
   import { waitForMilliseconds } from "$lib/utils/utils";
   import { nonNullish } from "@dfinity/utils";
-  import {
-    loadIcrcAccountNextTransactions,
-    loadIcrcAccountTransactions,
-  } from "$lib/services/icrc-transactions.services";
+  import { onMount } from "svelte";
 
   export let indexCanisterId: CanisterId;
   export let ledgerCanisterId: UniverseCanisterId;

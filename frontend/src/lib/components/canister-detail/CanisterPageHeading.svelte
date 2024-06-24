@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
   import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
-  import PageHeading from "../common/PageHeading.svelte";
-  import UnlinkCanisterButton from "./UnlinkCanisterButton.svelte";
-  import RenameCanisterButton from "./RenameCanisterButton.svelte";
-  import CanisterHeadingTitle from "./CanisterHeadingTitle.svelte";
   import HeadingSubtitle from "../common/HeadingSubtitle.svelte";
+  import PageHeading from "../common/PageHeading.svelte";
+  import CanisterHeadingTitle from "./CanisterHeadingTitle.svelte";
+  import RenameCanisterButton from "./RenameCanisterButton.svelte";
+  import UnlinkCanisterButton from "./UnlinkCanisterButton.svelte";
 
   export let canisterDetails: CanisterDetails | undefined;
   export let canister: CanisterInfo;

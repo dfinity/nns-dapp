@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { KeyValuePair } from "@dfinity/gix-components";
   import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { TokenAmountV2, type Token } from "@dfinity/utils";
   import { nonNullish } from "@dfinity/utils";

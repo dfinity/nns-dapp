@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { invalidIcpAddress } from "$lib/utils/accounts.utils";
-  import { i18n } from "$lib/stores/i18n";
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { i18n } from "$lib/stores/i18n";
   import { TransactionNetwork } from "$lib/types/transaction";
-  import { createEventDispatcher } from "svelte";
+  import { invalidIcpAddress } from "$lib/utils/accounts.utils";
   import { assertNonNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let showManualAddress = false;
   export let selectedDestinationAddress: string | undefined = undefined;

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { PageBanner, IconNotificationPage } from "@dfinity/gix-components";
   import { replacePlaceholders } from "$lib/utils/i18n.utils.js";
+  import { PageBanner, IconNotificationPage } from "@dfinity/gix-components";
 
   export let snsName: string;
 </script>

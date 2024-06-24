@@ -1,12 +1,12 @@
 <script lang="ts">
+  import AutoStakeMaturityModal from "$lib/modals/neurons/AutoStakeMaturityModal.svelte";
+  import { toggleAutoStakeMaturity } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import { createEventDispatcher } from "svelte";
-  import AutoStakeMaturityModal from "$lib/modals/neurons/AutoStakeMaturityModal.svelte";
-  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   import { hasAutoStakeMaturityOn } from "$lib/utils/sns-neuron.utils";
-  import { toggleAutoStakeMaturity } from "$lib/services/sns-neurons.services";
   import type { Principal } from "@dfinity/principal";
+  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+  import { createEventDispatcher } from "svelte";
 
   export let neuron: SnsNeuron;
   export let neuronId: SnsNeuronId;

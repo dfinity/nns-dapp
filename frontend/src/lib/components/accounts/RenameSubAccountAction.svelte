@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { createEventDispatcher, getContext } from "svelte";
   import { renameSubAccount } from "$lib/services/icp-accounts.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { busy } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import {
     WALLET_CONTEXT_KEY,
     type WalletContext,
   } from "$lib/types/wallet.context";
   import TextInputForm from "../common/TextInputForm.svelte";
+  import { busy } from "@dfinity/gix-components";
+  import { createEventDispatcher, getContext } from "svelte";
 
   const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
   let selectedAccount: Account | undefined;

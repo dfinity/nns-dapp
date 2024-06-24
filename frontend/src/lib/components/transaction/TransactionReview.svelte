@@ -1,15 +1,15 @@
 <script lang="ts">
-  import type { TokenAmountV2, TokenAmount, Token } from "@dfinity/utils";
-  import { createEventDispatcher } from "svelte";
-  import { busy } from "@dfinity/gix-components";
+  import SignInGuard from "$lib/components/common/SignInGuard.svelte";
+  import TransactionDescription from "$lib/components/transaction/TransactionDescription.svelte";
+  import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
+  import TransactionSummary from "$lib/components/transaction/TransactionSummary.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import type { NewTransaction } from "$lib/types/transaction";
-  import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
-  import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import type { TransactionNetwork } from "$lib/types/transaction";
-  import TransactionSummary from "$lib/components/transaction/TransactionSummary.svelte";
-  import TransactionDescription from "$lib/components/transaction/TransactionDescription.svelte";
+  import { busy } from "@dfinity/gix-components";
+  import type { TokenAmountV2, TokenAmount, Token } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let transaction: NewTransaction;
   export let disableSubmit: boolean;

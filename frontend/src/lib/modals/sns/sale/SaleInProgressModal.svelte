@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Modal } from "@dfinity/gix-components";
   import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
-  import type { SaleStep } from "$lib/types/sale";
   import { i18n } from "$lib/stores/i18n";
+  import type { SaleStep } from "$lib/types/sale";
+  import { Modal } from "@dfinity/gix-components";
 
   export let progressStep: SaleStep;
 </script>

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { nonNullish } from "@dfinity/utils";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
   import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { i18n } from "$lib/stores/i18n";
-  import { SkeletonText } from "@dfinity/gix-components";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
   import { formatCyclesToTCycles } from "$lib/utils/canisters.utils";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import { SkeletonText } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
 
   export let details: CanisterDetails | undefined;
   export let canister: CanisterInfo;

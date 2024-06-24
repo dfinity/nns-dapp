@@ -1,6 +1,4 @@
 <script lang="ts">
-  import type { NeuronId } from "@dfinity/nns";
-  import { createEventDispatcher } from "svelte";
   import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { i18n } from "$lib/stores/i18n";
@@ -11,8 +9,10 @@
     mapNeuronIds,
     type MergeableNeuron,
   } from "$lib/utils/neuron.utils";
-  import { Tooltip } from "@dfinity/gix-components";
   import NnsNeuronCard from "./NnsNeuronCard.svelte";
+  import { Tooltip } from "@dfinity/gix-components";
+  import type { NeuronId } from "@dfinity/nns";
+  import { createEventDispatcher } from "svelte";
 
   let selectedNeuronIds: NeuronId[] = [];
 

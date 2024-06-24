@@ -1,31 +1,31 @@
 <svelte:options accessors />
 
 <script lang="ts">
-  import QrWizardModal from "./QrWizardModal.svelte";
+  import TransactionForm from "$lib/components/transaction/TransactionForm.svelte";
+  import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
+  import TransactionReview from "$lib/components/transaction/TransactionReview.svelte";
+  import type { Account } from "$lib/types/account";
   import type { QrResponse } from "$lib/types/qr-wizard-modal";
+  import type {
+    TransactionInit,
+    TransactionNetwork,
+    ValidateAmountFn,
+  } from "$lib/types/transaction";
+  import type { TransactionSelectDestinationMethods } from "$lib/types/transaction";
+  import QrWizardModal from "./QrWizardModal.svelte";
   import type {
     WizardModal,
     WizardStep,
     WizardSteps,
   } from "@dfinity/gix-components";
-  import type { Account } from "$lib/types/account";
-  import TransactionForm from "$lib/components/transaction/TransactionForm.svelte";
-  import TransactionReview from "$lib/components/transaction/TransactionReview.svelte";
+  import type { Principal } from "@dfinity/principal";
   import {
     TokenAmount,
     TokenAmountV2,
     ICPToken,
     type Token,
   } from "@dfinity/utils";
-  import type { Principal } from "@dfinity/principal";
-  import type {
-    TransactionInit,
-    TransactionNetwork,
-    ValidateAmountFn,
-  } from "$lib/types/transaction";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
-  import type { TransactionSelectDestinationMethods } from "$lib/types/transaction";
 
   export let testId = "transaction-modal-component";
   export let transactionInit: TransactionInit = {};

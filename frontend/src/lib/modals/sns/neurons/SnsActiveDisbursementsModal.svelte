@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type { SnsNeuron } from "@dfinity/sns";
-  import { i18n } from "$lib/stores/i18n";
-  import { Html, KeyValuePair, Modal } from "@dfinity/gix-components";
-  import SnsActiveDisbursementEntry from "$lib/modals/sns/neurons/SnsActiveDisbursementEntry.svelte";
-  import { createEventDispatcher } from "svelte";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import type { Token } from "@dfinity/utils";
   import { selectedTokenStore } from "$lib/derived/selected-token.derived";
+  import SnsActiveDisbursementEntry from "$lib/modals/sns/neurons/SnsActiveDisbursementEntry.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
   import { totalDisbursingMaturity } from "$lib/utils/sns-neuron.utils";
+  import { Html, KeyValuePair, Modal } from "@dfinity/gix-components";
+  import type { SnsNeuron } from "@dfinity/sns";
+  import type { Token } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let neuron: SnsNeuron;
 

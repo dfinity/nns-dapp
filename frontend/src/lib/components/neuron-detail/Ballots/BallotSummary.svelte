@@ -1,11 +1,11 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import ProposalSummary from "$lib/components/proposal-detail/ProposalSummary.svelte";
+  import { loadProposal } from "$lib/services/$public/proposals.services";
+  import { getVoteDisplay } from "$lib/utils/proposals.utils";
+  import { KeyValuePairInfo, SkeletonText } from "@dfinity/gix-components";
   import type { BallotInfo, ProposalId, ProposalInfo } from "@dfinity/nns";
   import { onMount } from "svelte";
-  import { loadProposal } from "$lib/services/$public/proposals.services";
-  import ProposalSummary from "$lib/components/proposal-detail/ProposalSummary.svelte";
-  import { KeyValuePairInfo, SkeletonText } from "@dfinity/gix-components";
-  import { getVoteDisplay } from "$lib/utils/proposals.utils";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let ballot: Required<BallotInfo>;
 

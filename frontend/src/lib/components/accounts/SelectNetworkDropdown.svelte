@@ -1,16 +1,16 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Dropdown, DropdownItem } from "@dfinity/gix-components";
   import { TransactionNetwork } from "$lib/types/transaction";
-  import { isNullish, nonNullish } from "@dfinity/utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
-  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import {
     invalidBtcAddress,
     invalidIcpAddress,
     invalidIcrcAddress,
   } from "$lib/utils/accounts.utils";
+  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import { BtcNetwork } from "@dfinity/ckbtc";
+  import { Dropdown, DropdownItem } from "@dfinity/gix-components";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let universeId: UniverseCanisterId;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;

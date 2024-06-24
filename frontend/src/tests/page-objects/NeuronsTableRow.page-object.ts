@@ -1,4 +1,5 @@
 import { NeuronIdCellPo } from "$tests/page-objects/NeuronIdCell.page-object";
+import { NeuronMaturityCellPo } from "$tests/page-objects/NeuronMaturityCell.page-object";
 import { NeuronStakeCellPo } from "$tests/page-objects/NeuronStakeCell.page-object";
 import { NeuronStateCellPo } from "$tests/page-objects/NeuronStateCell.page-object";
 import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.page-object";
@@ -25,6 +26,10 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
     return NeuronStakeCellPo.under(this.root);
   }
 
+  getNeuronMaturityCellPo(): NeuronMaturityCellPo {
+    return NeuronMaturityCellPo.under(this.root);
+  }
+
   getNeuronStateCellPo(): NeuronStateCellPo {
     return NeuronStateCellPo.under(this.root);
   }
@@ -44,6 +49,18 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
   // Stake without the currency symbol
   getStakeBalance(): Promise<string> {
     return this.getNeuronStakeCellPo().getStakeBalance();
+  }
+
+  getTotalMaturity(): Promise<string> {
+    return this.getNeuronMaturityCellPo().getTotalMaturity();
+  }
+
+  getAvailableMaturity(): Promise<string> {
+    return this.getNeuronMaturityCellPo().getAvailableMaturity();
+  }
+
+  getStakedMaturity(): Promise<string> {
+    return this.getNeuronMaturityCellPo().getStakedMaturity();
   }
 
   getState(): Promise<string> {

@@ -1,22 +1,22 @@
 <script lang="ts">
-  import { NeuronState } from "@dfinity/nns";
-  import type { Token } from "@dfinity/utils";
-  import { getStateInfo, type StateInfo } from "$lib/utils/neuron.utils";
-  import { i18n } from "$lib/stores/i18n";
-  import { keyOf } from "$lib/utils/utils";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
-  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { getStateInfo, type StateInfo } from "$lib/utils/neuron.utils";
   import {
     ageMultiplier,
     getSnsNeuronState,
     hasPermissionToDisburse,
     hasPermissionToDissolve,
   } from "$lib/utils/sns-neuron.utils";
+  import { keyOf } from "$lib/utils/utils";
+  import AgeBonusText from "../neuron-detail/AgeBonusText.svelte";
   import DisburseSnsButton from "./actions/DisburseSnsButton.svelte";
   import DissolveSnsNeuronButton from "./actions/DissolveSnsNeuronButton.svelte";
-  import { authStore } from "$lib/stores/auth.store";
-  import AgeBonusText from "../neuron-detail/AgeBonusText.svelte";
+  import { NeuronState } from "@dfinity/nns";
+  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
+  import type { Token } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
   export let snsParameters: SnsNervousSystemParameters;

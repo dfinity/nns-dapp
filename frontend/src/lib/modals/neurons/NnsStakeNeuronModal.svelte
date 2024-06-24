@@ -1,28 +1,28 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import type { Account } from "$lib/types/account";
-  import NnsStakeNeuron from "$lib/components/neurons/NnsStakeNeuron.svelte";
-  import SetNnsDissolveDelay from "$lib/components/neurons/SetNnsDissolveDelay.svelte";
-  import type { NeuronId, NeuronInfo } from "@dfinity/nns";
+  import AddUserToHotkeys from "$lib/components/neurons/AddUserToHotkeys.svelte";
   import ConfirmDissolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
   import EditFollowNeurons from "$lib/components/neurons/EditFollowNeurons.svelte";
+  import NnsStakeNeuron from "$lib/components/neurons/NnsStakeNeuron.svelte";
+  import SetNnsDissolveDelay from "$lib/components/neurons/SetNnsDissolveDelay.svelte";
+  import {
+    cancelPollAccounts,
+    pollAccounts,
+  } from "$lib/services/icp-accounts.services";
+  import { i18n } from "$lib/stores/i18n";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import { toastsError, toastsShow } from "$lib/stores/toasts.store";
+  import type { Account } from "$lib/types/account";
+  import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import {
     WizardModal,
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
   import { wizardStepIndex } from "@dfinity/gix-components";
-  import { createEventDispatcher, onDestroy, tick } from "svelte";
-  import { toastsError, toastsShow } from "$lib/stores/toasts.store";
-  import AddUserToHotkeys from "$lib/components/neurons/AddUserToHotkeys.svelte";
-  import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
-  import { definedNeuronsStore } from "$lib/stores/neurons.store";
-  import { onMount } from "svelte";
-  import {
-    cancelPollAccounts,
-    pollAccounts,
-  } from "$lib/services/icp-accounts.services";
+  import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
+  import { createEventDispatcher, onDestroy, tick } from "svelte";
+  import { onMount } from "svelte";
 
   onMount(() => {
     pollAccounts();

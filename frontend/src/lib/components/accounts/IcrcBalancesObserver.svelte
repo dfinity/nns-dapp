@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { BalancesObserverData } from "$lib/types/icrc.observer";
-  import { nonNullish } from "@dfinity/utils";
   import BalancesObserver from "$lib/components/accounts/BalancesObserver.svelte";
   import type { BalancesCallback } from "$lib/services/worker-balances.services";
-  import type { Account } from "$lib/types/account";
-  import type { Principal } from "@dfinity/principal";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+  import type { Account } from "$lib/types/account";
+  import type { BalancesObserverData } from "$lib/types/icrc.observer";
+  import type { Principal } from "@dfinity/principal";
+  import { nonNullish } from "@dfinity/utils";
 
   export let ledgerCanisterId: Principal;
   export let accounts: Account[];

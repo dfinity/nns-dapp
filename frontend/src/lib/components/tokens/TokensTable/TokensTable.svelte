@@ -1,10 +1,10 @@
 <script lang="ts">
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
-  import TokenTitleCell from "./TokenTitleCell.svelte";
-  import TokenBalanceCell from "./TokenBalanceCell.svelte";
-  import TokenActionsCell from "./TokenActionsCell.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { UserToken, TokensTableColumn } from "$lib/types/tokens-page";
+  import TokenActionsCell from "./TokenActionsCell.svelte";
+  import TokenBalanceCell from "./TokenBalanceCell.svelte";
+  import TokenTitleCell from "./TokenTitleCell.svelte";
 
   export let userTokensData: Array<UserToken>;
   export let firstColumnHeader: string;

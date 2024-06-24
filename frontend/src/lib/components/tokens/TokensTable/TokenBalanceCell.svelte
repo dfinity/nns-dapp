@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { UserTokenData, UserTokenLoading } from "$lib/types/tokens-page";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import { Spinner } from "@dfinity/gix-components";
+  import type { UserTokenData, UserTokenLoading } from "$lib/types/tokens-page";
   import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+  import { Spinner } from "@dfinity/gix-components";
 
   export let rowData: UserTokenData | UserTokenLoading;
 </script>

@@ -1,16 +1,16 @@
 <script lang="ts">
+  import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
+  import { addController } from "$lib/services/canisters.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { busy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import type { Principal } from "@dfinity/principal";
-  import { createEventDispatcher, getContext } from "svelte";
+  import { toastsError } from "$lib/stores/toasts.store";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
-  import { toastsError } from "$lib/stores/toasts.store";
-  import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
-  import { addController } from "$lib/services/canisters.services";
+  import { busy } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
+  import { createEventDispatcher, getContext } from "svelte";
 
   export let controller: Principal;
 

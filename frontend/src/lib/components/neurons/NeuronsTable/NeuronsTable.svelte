@@ -1,15 +1,16 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
+  import NeuronActionsCell from "$lib/components/neurons/NeuronsTable/NeuronActionsCell.svelte";
+  import NeuronDissolveDelayCell from "$lib/components/neurons/NeuronsTable/NeuronDissolveDelayCell.svelte";
+  import NeuronIdCell from "$lib/components/neurons/NeuronsTable/NeuronIdCell.svelte";
+  import NeuronMaturityCell from "$lib/components/neurons/NeuronsTable/NeuronMaturityCell.svelte";
+  import NeuronStakeCell from "$lib/components/neurons/NeuronsTable/NeuronStakeCell.svelte";
+  import NeuronStateCell from "$lib/components/neurons/NeuronsTable/NeuronStateCell.svelte";
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import type {
     TableNeuron,
     NeuronsTableColumn,
   } from "$lib/types/neurons-table";
-  import NeuronIdCell from "$lib/components/neurons/NeuronsTable/NeuronIdCell.svelte";
-  import NeuronStateCell from "$lib/components/neurons/NeuronsTable/NeuronStateCell.svelte";
-  import NeuronStakeCell from "$lib/components/neurons/NeuronsTable/NeuronStakeCell.svelte";
-  import NeuronDissolveDelayCell from "$lib/components/neurons/NeuronsTable/NeuronDissolveDelayCell.svelte";
-  import NeuronActionsCell from "$lib/components/neurons/NeuronsTable/NeuronActionsCell.svelte";
   import {
     sortNeurons,
     compareByStake,
@@ -43,6 +44,17 @@
     {
       title: $i18n.neuron_detail.stake,
       cellComponent: NeuronStakeCell,
+      alignment: "right",
+      templateColumns: ["max-content"],
+    },
+    {
+      title: "",
+      alignment: "left",
+      templateColumns: ["1fr"],
+    },
+    {
+      title: $i18n.neuron_detail.maturity_title,
+      cellComponent: NeuronMaturityCell,
       alignment: "right",
       templateColumns: ["max-content"],
     },

@@ -1,21 +1,21 @@
 <script lang="ts">
+  import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
-  import { IconClockNoFill } from "@dfinity/gix-components";
-  import { NeuronState } from "@dfinity/nns";
-  import CommonItemAction from "../ui/CommonItemAction.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { secondsToDuration, type Token } from "@dfinity/utils";
-  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import {
     dissolveDelayMultiplier,
     getSnsDissolveDelaySeconds,
     getSnsNeuronState,
     hasPermissionToDissolve,
   } from "$lib/utils/sns-neuron.utils";
-  import { fromNullable } from "@dfinity/utils";
-  import IncreaseSnsDissolveDelayButton from "./actions/IncreaseSnsDissolveDelayButton.svelte";
-  import { authStore } from "$lib/stores/auth.store";
   import DissolveDelayBonusText from "../neuron-detail/DissolveDelayBonusText.svelte";
+  import CommonItemAction from "../ui/CommonItemAction.svelte";
+  import IncreaseSnsDissolveDelayButton from "./actions/IncreaseSnsDissolveDelayButton.svelte";
+  import { IconClockNoFill } from "@dfinity/gix-components";
+  import { NeuronState } from "@dfinity/nns";
+  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
+  import { fromNullable } from "@dfinity/utils";
+  import { secondsToDuration, type Token } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;

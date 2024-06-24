@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { TransactionIconType } from "$lib/types/transaction";
   import {
     IconReimbursed,
     IconErrorOutline,
     IconUp,
     IconDown,
   } from "@dfinity/gix-components";
-  import type { TransactionIconType } from "$lib/types/transaction";
 
   export let type: TransactionIconType;
   export let isPending: boolean = false;

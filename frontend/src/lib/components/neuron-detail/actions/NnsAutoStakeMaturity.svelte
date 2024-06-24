@@ -1,18 +1,18 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
-  import {
-    hasAutoStakeMaturityOn,
-    isNeuronControllable,
-  } from "$lib/utils/neuron.utils";
-  import { getContext } from "svelte";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import { authStore } from "$lib/stores/auth.store";
   import {
     NNS_NEURON_CONTEXT_KEY,
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
-  import { authStore } from "$lib/stores/auth.store";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import {
+    hasAutoStakeMaturityOn,
+    isNeuronControllable,
+  } from "$lib/utils/neuron.utils";
   import AutoStakeMaturity from "./AutoStakeMaturity.svelte";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { getContext } from "svelte";
 
   export let neuron: NeuronInfo;
 

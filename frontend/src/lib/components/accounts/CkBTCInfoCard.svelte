@@ -1,14 +1,22 @@
 <script lang="ts">
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
+  import CkBTCUpdateBalanceButton from "$lib/components/accounts/CkBTCUpdateBalanceButton.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
-  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
-  import type { UniverseCanisterId } from "$lib/types/universe";
-  import type { CanisterId } from "$lib/types/canister";
-  import type { Account } from "$lib/types/account";
+  import {
+    BITCOIN_BLOCK_EXPLORER_MAINNET_URL,
+    BITCOIN_BLOCK_EXPLORER_TESTNET_URL,
+  } from "$lib/constants/bitcoin.constants";
+  import { loadBtcAddress } from "$lib/services/ckbtc-minter.services";
   import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
-  import { nonNullish } from "@dfinity/utils";
-  import type { BtcAddressText } from "$lib/types/bitcoin";
+  import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
   import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
+  import type { BtcAddressText } from "$lib/types/bitcoin";
+  import type { CanisterId } from "$lib/types/canister";
+  import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import {
     SkeletonText,
     Spinner,
@@ -17,15 +25,7 @@
     Html,
     IconQRCode,
   } from "@dfinity/gix-components";
-  import {
-    BITCOIN_BLOCK_EXPLORER_MAINNET_URL,
-    BITCOIN_BLOCK_EXPLORER_TESTNET_URL,
-  } from "$lib/constants/bitcoin.constants";
-  import { loadBtcAddress } from "$lib/services/ckbtc-minter.services";
-  import CkBTCUpdateBalanceButton from "$lib/components/accounts/CkBTCUpdateBalanceButton.svelte";
-  import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
+  import { nonNullish } from "@dfinity/utils";
 
   export let account: Account | undefined;
   export let minterCanisterId: CanisterId;

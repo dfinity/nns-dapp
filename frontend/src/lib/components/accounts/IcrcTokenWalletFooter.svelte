@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { isNullish } from "@dfinity/utils";
-  import Footer from "$lib/components/layout/Footer.svelte";
-  import { toastsError } from "$lib/stores/toasts.store";
-  import { openIcrcTokenModal } from "$lib/utils/modals.utils";
-  import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import { i18n } from "$lib/stores/i18n";
-  import type { Account } from "$lib/types/account";
-  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import IC_LOGO from "$lib/assets/icp.svg";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
+  import Footer from "$lib/components/layout/Footer.svelte";
+  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import type { Account } from "$lib/types/account";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import { openIcrcTokenModal } from "$lib/utils/modals.utils";
   import type { Principal } from "@dfinity/principal";
+  import { isNullish } from "@dfinity/utils";
 
   export let ledgerCanisterId: Principal;
   export let token: IcrcTokenMetadata;

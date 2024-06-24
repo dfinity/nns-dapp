@@ -1,15 +1,15 @@
 <script lang="ts" context="module">
-  import { getCellGridAreaName } from "$lib/utils/responsive-table.utils";
   import type { ResponsiveTableRowData } from "$lib/types/responsive-table";
+  import { getCellGridAreaName } from "$lib/utils/responsive-table.utils";
   type RowDataType = ResponsiveTableRowData;
 </script>
 
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
   import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
   import { heightTransition } from "$lib/utils/transition.utils";
   import { nonNullish } from "@dfinity/utils";
-  import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let testId = "responsive-table-component";
   export let tableData: Array<RowDataType>;
@@ -18,12 +18,10 @@
   export let getRowStyle: (rowData: RowDataType) => string | undefined = (_) =>
     undefined;
 
-  let firstColumn: ResponsiveTableColumn<RowDataType> | undefined;
-  let middleColumns: ResponsiveTableColumn<RowDataType>[];
+  let nonLastColumns: ResponsiveTableColumn<RowDataType>[];
   let lastColumn: ResponsiveTableColumn<RowDataType> | undefined;
 
-  $: firstColumn = columns.at(0);
-  $: middleColumns = columns.slice(1, -1);
+  $: nonLastColumns = columns.slice(0, -1);
   $: lastColumn = columns.at(-1);
 
   const getTableStyle = (columns: ResponsiveTableColumn<RowDataType>[]) => {
@@ -57,20 +55,11 @@
 <div role="table" data-tid={testId} style={tableStyle}>
   <div role="rowgroup">
     <div role="row" class="header-row">
-      {#if firstColumn}
-        <span
-          role="columnheader"
-          style="--column-span: {firstColumn.templateColumns.length}"
-          data-tid="column-header-1"
-          class="desktop-align-{firstColumn.alignment}"
-          >{firstColumn.title}</span
-        >
-      {/if}
-      {#each middleColumns as column, index}
+      {#each nonLastColumns as column, index}
         <span
           role="columnheader"
           style="--column-span: {column.templateColumns.length}"
-          data-tid="column-header-{index + 2}"
+          data-tid="column-header-{index + 1}"
           class="desktop-align-{column.alignment}">{column.title}</span
         >
       {/each}

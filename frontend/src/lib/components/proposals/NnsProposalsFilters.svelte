@@ -1,17 +1,17 @@
 <script lang="ts">
-  import type { ProposalsFilterModalProps } from "$lib/types/proposals";
-  import NnsProposalsFilterModal from "$lib/modals/proposals/NnsProposalsFilterModal.svelte";
-  import { i18n } from "$lib/stores/i18n";
-  import { ProposalStatus, Topic } from "@dfinity/nns";
-  import { proposalsFiltersStore } from "$lib/stores/proposals.store";
-  import { enumsExclude } from "$lib/utils/enum.utils";
-  import FiltersButton from "$lib/components/ui/FiltersButton.svelte";
-  import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
-  import FiltersWrapper from "./FiltersWrapper.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
+  import FiltersButton from "$lib/components/ui/FiltersButton.svelte";
+  import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
   import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import NnsProposalsFilterModal from "$lib/modals/proposals/NnsProposalsFilterModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { proposalsFiltersStore } from "$lib/stores/proposals.store";
+  import type { ProposalsFilterModalProps } from "$lib/types/proposals";
+  import { enumsExclude } from "$lib/utils/enum.utils";
+  import FiltersWrapper from "./FiltersWrapper.svelte";
+  import { ProposalStatus, Topic } from "@dfinity/nns";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 

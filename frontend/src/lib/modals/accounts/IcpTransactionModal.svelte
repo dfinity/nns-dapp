@@ -1,19 +1,19 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
+  import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import { transferICP } from "$lib/services/icp-accounts.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { Account } from "$lib/types/account";
   import type { NewTransaction } from "$lib/types/transaction";
-  import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
-  import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
-  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import type { WizardStep } from "@dfinity/gix-components";
-  import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import type { TransactionInit } from "$lib/types/transaction";
+  import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import type { WizardStep } from "@dfinity/gix-components";
   import { ICPToken } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let selectedAccount: Account | undefined = undefined;
 

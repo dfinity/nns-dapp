@@ -1,19 +1,19 @@
 <script lang="ts">
+  import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
+  import type { UniversalProposalStatus } from "$lib/types/proposals";
+  import type { RootCanisterIdText } from "$lib/types/sns";
+  import { buildProposalUrl } from "$lib/utils/navigation.utils";
+  import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import {
     getUniversalProposalStatus,
     mapProposalInfo,
   } from "$lib/utils/sns-proposals.utils";
-  import { buildProposalUrl } from "$lib/utils/navigation.utils";
-  import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
   import type {
     SnsNervousSystemFunction,
     SnsNeuronId,
     SnsProposalData,
     SnsProposalId,
   } from "@dfinity/sns";
-  import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
-  import type { UniversalProposalStatus } from "$lib/types/proposals";
-  import type { RootCanisterIdText } from "$lib/types/sns";
 
   export let proposalData: SnsProposalData;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;

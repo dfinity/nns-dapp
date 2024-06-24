@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { Principal } from "@dfinity/principal";
   import { i18n } from "$lib/stores/i18n";
   import { getPrincipalFromString } from "$lib/utils/accounts.utils";
   import InputWithError from "./InputWithError.svelte";
+  import type { Principal } from "@dfinity/principal";
 
   export let placeholderLabelKey: string;
   export let name: string;

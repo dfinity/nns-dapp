@@ -4,8 +4,8 @@
 </script>
 
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
-  import { getCellGridAreaName } from "$lib/utils/responsive-table.utils";
   import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
+  import { getCellGridAreaName } from "$lib/utils/responsive-table.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let rowData: RowDataType;

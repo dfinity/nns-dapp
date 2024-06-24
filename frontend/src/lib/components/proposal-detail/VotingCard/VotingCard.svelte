@@ -1,19 +1,19 @@
 <script lang="ts">
-  import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
-  import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
-  import { BottomSheet } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
+  import IneligibleNeuronList from "$lib/components/proposal-detail/VotingCard/IneligibleNeuronList.svelte";
+  import StakeNeuronToVote from "$lib/components/proposal-detail/VotingCard/StakeNeuronToVote.svelte";
+  import VotableNeuronList from "$lib/components/proposal-detail/VotingCard/VotableNeuronList.svelte";
+  import VotedNeuronList from "$lib/components/proposal-detail/VotingCard/VotedNeuronList.svelte";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { i18n } from "$lib/stores/i18n";
+  import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
   import type {
     CompactNeuronInfo,
     IneligibleNeuronData,
   } from "$lib/utils/neuron.utils";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
-  import VotedNeuronList from "$lib/components/proposal-detail/VotingCard/VotedNeuronList.svelte";
-  import IneligibleNeuronList from "$lib/components/proposal-detail/VotingCard/IneligibleNeuronList.svelte";
-  import VotableNeuronList from "$lib/components/proposal-detail/VotingCard/VotableNeuronList.svelte";
-  import StakeNeuronToVote from "$lib/components/proposal-detail/VotingCard/StakeNeuronToVote.svelte";
+  import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
+  import { BottomSheet } from "@dfinity/gix-components";
 
   export let hasNeurons: boolean;
   export let visible: boolean;

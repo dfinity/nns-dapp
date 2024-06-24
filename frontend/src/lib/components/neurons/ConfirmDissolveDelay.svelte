@@ -1,20 +1,20 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
-  import { createEventDispatcher } from "svelte";
+  import { startBusyNeuron } from "$lib/services/busy.services";
   import { updateDelay } from "$lib/services/neurons.services";
+  import { stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatTokenE8s } from "$lib/utils/token.utils";
   import {
     formatVotingPower,
     neuronStake,
     neuronVotingPower,
   } from "$lib/utils/neuron.utils";
-  import { stopBusy } from "$lib/stores/busy.store";
-  import { startBusyNeuron } from "$lib/services/busy.services";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import { valueSpan } from "$lib/utils/utils";
   import { Html, busy } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { secondsToDuration } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let delayInSeconds: bigint;
   export let neuron: NeuronInfo;

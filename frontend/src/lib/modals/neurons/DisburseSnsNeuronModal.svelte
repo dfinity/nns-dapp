@@ -1,9 +1,26 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
-  import { createEventDispatcher } from "svelte";
+  import { goto } from "$app/navigation";
+  import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
+  import { neuronsPathStore } from "$lib/derived/paths.derived";
+  import { snsProjectMainAccountStore } from "$lib/derived/sns/sns-project-accounts.derived";
+  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
   import { disburse } from "$lib/services/sns-neurons.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import {
+    getSnsNeuronIdAsHexString,
+    getSnsNeuronStake,
+  } from "$lib/utils/sns-neuron.utils";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
   import {
     TokenAmountV2,
@@ -11,24 +28,7 @@
     type Token,
     type TokenAmount,
   } from "@dfinity/utils";
-  import {
-    getSnsNeuronIdAsHexString,
-    getSnsNeuronStake,
-  } from "$lib/utils/sns-neuron.utils";
-  import type { Principal } from "@dfinity/principal";
-  import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
-  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-  import {
-    WizardModal,
-    type WizardSteps,
-    type WizardStep,
-  } from "@dfinity/gix-components";
-  import { neuronsPathStore } from "$lib/derived/paths.derived";
-  import { snsProjectMainAccountStore } from "$lib/derived/sns/sns-project-accounts.derived";
-  import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
-  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
-  import { goto } from "$app/navigation";
-  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import { createEventDispatcher } from "svelte";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
   import { KeyValuePair } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
 
   export let fee: bigint | undefined | null = undefined;
   export let testId: string | undefined = undefined;

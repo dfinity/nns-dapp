@@ -15,21 +15,16 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-#### Changed
+* Maturity visible in neurons table.
+* Support rendering `tSchnorr` proposal parameters.
 
-* Display neurons in a table instead of a grid of cards.
-* Removed the gap between identifier and copy button.
-* Reset the scroll position on the Proposals page when switching between projects.
-* Universe selector icon size decreased.
-* Updated colors of element dividers.
+#### Changed
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
-
-* Fixed the display of actionable proposals page when a single SNS fails.
 
 #### Security
 
@@ -40,8 +35,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 #### Changed
-
-* Put snapshot state directories in home directory instead of `dfx` cache.
 
 #### Deprecated
 

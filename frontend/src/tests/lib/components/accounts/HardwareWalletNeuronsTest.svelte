@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { setContext, SvelteComponent } from "svelte";
   import {
     WALLET_CONTEXT_KEY,
     type WalletContext,
   } from "$lib/types/wallet.context";
   import { mockHardwareWalletNeuronsStore } from "$tests/mocks/hardware-wallet-neurons.store.mock";
+  import { setContext, SvelteComponent } from "svelte";
 
   export let testComponent: typeof SvelteComponent;
 

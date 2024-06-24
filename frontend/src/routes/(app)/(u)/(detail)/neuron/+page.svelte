@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import SignInNeurons from "$lib/pages/SignInNeurons.svelte";
   import NeuronDetail from "$lib/routes/NeuronDetail.svelte";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   // Preloaded by +page.ts
   export let data: { neuron: string | null | undefined };

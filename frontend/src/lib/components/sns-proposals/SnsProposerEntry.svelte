@@ -1,9 +1,9 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
+  import Hash from "../ui/Hash.svelte";
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
   import type { SnsNeuronId } from "@dfinity/sns";
-  import Hash from "../ui/Hash.svelte";
 
   export let proposer: SnsNeuronId;
 

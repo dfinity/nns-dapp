@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { Modal } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
   import ReceiveAddressQRCode from "$lib/components/accounts/ReceiveAddressQRCode.svelte";
-  import type { Account } from "$lib/types/account";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { createEventDispatcher } from "svelte";
-  import { QR_CODE_RENDERED_DEFAULT_STATE } from "$lib/constants/mockable.constants";
-  import type { UniverseCanisterId } from "$lib/types/universe";
   import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
+  import { QR_CODE_RENDERED_DEFAULT_STATE } from "$lib/constants/mockable.constants";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
+  import type { UniverseCanisterId } from "$lib/types/universe";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { Modal } from "@dfinity/gix-components";
+  import { createEventDispatcher } from "svelte";
 
   export let universeId: UniverseCanisterId | undefined = undefined;
   export let account: Account | undefined;
