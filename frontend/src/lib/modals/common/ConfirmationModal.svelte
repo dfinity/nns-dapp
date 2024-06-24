@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { Modal, busy } from "@dfinity/gix-components";
+  import { createEventDispatcher } from "svelte";
 
   export let testId = "confirmation-modal-component";
   const dispatch = createEventDispatcher();

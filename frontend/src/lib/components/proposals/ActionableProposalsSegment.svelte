@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Segment, SegmentButton } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
-  import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
   import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
+  import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { Segment, SegmentButton } from "@dfinity/gix-components";
 
   const actionableProposalsSegmentId = Symbol();
   const allProposalsSegmentId = Symbol();

@@ -1,7 +1,7 @@
 <script lang="ts">
   import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
-  import { layoutMenuOpen, menuCollapsed } from "@dfinity/gix-components";
   import { ENABLE_METRICS } from "$lib/constants/mockable.constants";
+  import { layoutMenuOpen, menuCollapsed } from "@dfinity/gix-components";
 
   export let sticky = true;
 </script>

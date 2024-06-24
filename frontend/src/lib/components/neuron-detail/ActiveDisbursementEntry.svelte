@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { IconClockNoFill, KeyValuePair } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
+  import { IconClockNoFill, KeyValuePair } from "@dfinity/gix-components";
 
   export let dateTime: string;
   export let destination: string;

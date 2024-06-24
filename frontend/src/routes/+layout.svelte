@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { authStore } from "$lib/stores/auth.store";
-  import type { AuthStoreData } from "$lib/stores/auth.store";
+  import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
   import {
     type AuthWorker,
     initAuthWorker,
   } from "$lib/services/worker-auth.services";
-  import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
+  import type { AuthStoreData } from "$lib/stores/auth.store";
+  import { authStore } from "$lib/stores/auth.store";
   import { toastsClean } from "$lib/stores/toasts.store";
+  import { onMount } from "svelte";
 
   let ready = false;
 

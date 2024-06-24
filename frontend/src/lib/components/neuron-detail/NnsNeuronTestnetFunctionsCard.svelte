@@ -1,6 +1,6 @@
 <script lang="ts">
-  import CardInfo from "../ui/CardInfo.svelte";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
+  import CardInfo from "../ui/CardInfo.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;

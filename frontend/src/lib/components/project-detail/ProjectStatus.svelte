@@ -1,17 +1,17 @@
 <script lang="ts">
-  import type { SnsSummary, SnsSummarySwap } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
-  import { Tag } from "@dfinity/gix-components";
-  import { getContext } from "svelte";
+  import { createIsSnsFinalizingStore } from "$lib/stores/sns-finalization-status.store";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import type { SnsSummary, SnsSummarySwap } from "$lib/types/sns";
   import { keyOf } from "$lib/utils/utils";
-  import type { Readable } from "svelte/store";
-  import { createIsSnsFinalizingStore } from "$lib/stores/sns-finalization-status.store";
+  import { Tag } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { getContext } from "svelte";
+  import type { Readable } from "svelte/store";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

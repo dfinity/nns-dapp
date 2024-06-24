@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import type { NeuronId } from "@dfinity/nns";
-  import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Hash from "$lib/components/ui/Hash.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
+  import type { NeuronId } from "@dfinity/nns";
 
   export let proposer: NeuronId | undefined;
 

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { Tooltip } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isVesting, vestingInSeconds } from "$lib/utils/sns-neuron.utils";
-  import type { SnsNeuron } from "@dfinity/sns";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import { Tooltip } from "@dfinity/gix-components";
+  import type { SnsNeuron } from "@dfinity/sns";
+  import { secondsToDuration } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
 </script>

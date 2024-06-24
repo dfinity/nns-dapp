@@ -1,26 +1,26 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import { goto } from "$app/navigation";
+  import ConfirmSpawnHW from "$lib/components/neuron-detail/ConfirmSpawnHW.svelte";
   import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import { startBusyNeuron } from "$lib/services/busy.services";
+  import { spawnNeuron } from "$lib/services/neurons.services";
+  import { stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsShow } from "$lib/stores/toasts.store";
+  import {
+    isEnoughMaturityToSpawn,
+    isNeuronControlledByHardwareWallet,
+  } from "$lib/utils/neuron.utils";
   import {
     WizardModal,
     Html,
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
-  import { stopBusy } from "$lib/stores/busy.store";
+  import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import { spawnNeuron } from "$lib/services/neurons.services";
-  import { toastsShow } from "$lib/stores/toasts.store";
-  import {
-    isEnoughMaturityToSpawn,
-    isNeuronControlledByHardwareWallet,
-  } from "$lib/utils/neuron.utils";
-  import { startBusyNeuron } from "$lib/services/busy.services";
-  import ConfirmSpawnHW from "$lib/components/neuron-detail/ConfirmSpawnHW.svelte";
-  import { AppPath } from "$lib/constants/routes.constants";
-  import { goto } from "$app/navigation";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 
   export let neuron: NeuronInfo;
 

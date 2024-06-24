@@ -1,25 +1,25 @@
 <script lang="ts">
+  import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
+  import SetSnsDissolveDelay from "$lib/components/sns-neurons/SetSnsDissolveDelay.svelte";
+  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import { updateDelay } from "$lib/services/sns-neurons.services";
+  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import {
+    getSnsDissolvingTimeInSeconds,
+    getSnsLockedTimeInSeconds,
+  } from "$lib/utils/sns-neuron.utils";
   import {
     WizardModal,
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
-  import { createEventDispatcher } from "svelte";
-  import type { SnsNeuron } from "@dfinity/sns";
-  import {
-    getSnsDissolvingTimeInSeconds,
-    getSnsLockedTimeInSeconds,
-  } from "$lib/utils/sns-neuron.utils";
-  import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
-  import type { Token } from "@dfinity/utils";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import type { Principal } from "@dfinity/principal";
-  import { updateDelay } from "$lib/services/sns-neurons.services";
-  import { toastsError } from "$lib/stores/toasts.store";
-  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
-  import SetSnsDissolveDelay from "$lib/components/sns-neurons/SetSnsDissolveDelay.svelte";
-  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import type { SnsNeuron } from "@dfinity/sns";
+  import type { Token } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;

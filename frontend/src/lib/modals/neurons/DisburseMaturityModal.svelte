@@ -1,10 +1,20 @@
 <script lang="ts">
+  import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
+  import NeuronConfirmActionScreen from "$lib/components/neuron-detail/NeuronConfirmActionScreen.svelte";
+  import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
+  import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
+  import QrWizardModal from "$lib/modals/transaction/QrWizardModal.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import type { QrResponse } from "$lib/types/qr-wizard-modal";
+  import type { TransactionNetwork } from "$lib/types/transaction";
+  import {
+    getAccountByRootCanister,
+    invalidAddress,
+  } from "$lib/utils/accounts.utils";
   import { formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { createEventDispatcher } from "svelte";
-  import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
-  import NeuronConfirmActionScreen from "$lib/components/neuron-detail/NeuronConfirmActionScreen.svelte";
+  import { formatMaturity } from "$lib/utils/neuron.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import {
     Html,
     WizardModal,
@@ -12,19 +22,9 @@
     type WizardStep,
     KeyValuePair,
   } from "@dfinity/gix-components";
-  import { formatTokenE8s } from "$lib/utils/token.utils";
-  import { formatMaturity } from "$lib/utils/neuron.utils";
-  import QrWizardModal from "$lib/modals/transaction/QrWizardModal.svelte";
-  import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
   import type { Principal } from "@dfinity/principal";
   import { assertNonNullish, type Token } from "@dfinity/utils";
-  import type { QrResponse } from "$lib/types/qr-wizard-modal";
-  import type { TransactionNetwork } from "$lib/types/transaction";
-  import {
-    getAccountByRootCanister,
-    invalidAddress,
-  } from "$lib/utils/accounts.utils";
-  import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
+  import { createEventDispatcher } from "svelte";
 
   export let availableMaturityE8s: bigint;
   export let rootCanisterId: Principal;

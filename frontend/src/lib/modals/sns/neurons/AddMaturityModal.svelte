@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { Modal, Spinner } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
-  import { createEventDispatcher } from "svelte";
+  import Input from "$lib/components/ui/Input.svelte";
+  import { addMaturity } from "$lib/services/sns-neurons-dev.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsError } from "$lib/stores/toasts.store";
-  import Input from "$lib/components/ui/Input.svelte";
   import { numberToE8s } from "$lib/utils/token.utils";
-  import { addMaturity } from "$lib/services/sns-neurons-dev.services";
+  import { Modal, Spinner } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
   import type { SnsNeuronId } from "@dfinity/sns";
+  import { createEventDispatcher } from "svelte";
 
   export let neuronId: SnsNeuronId;
   export let rootCanisterId: Principal;

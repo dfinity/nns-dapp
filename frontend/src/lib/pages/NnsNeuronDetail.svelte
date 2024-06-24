@@ -1,45 +1,45 @@
 <script lang="ts">
-  import type { NeuronId, NeuronInfo } from "@dfinity/nns";
+  import { goto } from "$app/navigation";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
-  import NnsNeuronHotkeysCard from "$lib/components/neuron-detail/NnsNeuronHotkeysCard.svelte";
   import NeuronVotingHistoryCard from "$lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
-  import { AppPath } from "$lib/constants/routes.constants";
-  import { neuronsStore } from "$lib/stores/neurons.store";
-  import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import NnsNeuronAdvancedSection from "$lib/components/neuron-detail/NnsNeuronAdvancedSection.svelte";
+  import NnsNeuronHotkeysCard from "$lib/components/neuron-detail/NnsNeuronHotkeysCard.svelte";
+  import NnsNeuronMaturitySection from "$lib/components/neuron-detail/NnsNeuronMaturitySection.svelte";
+  import NnsNeuronPageHeader from "$lib/components/neuron-detail/NnsNeuronPageHeader.svelte";
+  import NnsNeuronPageHeading from "$lib/components/neuron-detail/NnsNeuronPageHeading.svelte";
+  import NnsNeuronProposalsCard from "$lib/components/neuron-detail/NnsNeuronProposalsCard.svelte";
+  import NnsNeuronTestnetFunctionsCard from "$lib/components/neuron-detail/NnsNeuronTestnetFunctionsCard.svelte";
+  import NnsNeuronVotingPowerSection from "$lib/components/neuron-detail/NnsNeuronVotingPowerSection.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import {
-    getNeuronById,
-    isSpawning,
-    neuronVoting,
-  } from "$lib/utils/neuron.utils";
+  import SkeletonHeader from "$lib/components/ui/SkeletonHeader.svelte";
+  import SkeletonHeading from "$lib/components/ui/SkeletonHeading.svelte";
+  import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { pageStore } from "$lib/derived/page.derived";
+  import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
+  import { listNeurons } from "$lib/services/neurons.services";
+  import { loadLatestRewardEvent } from "$lib/services/nns-reward-event.services";
+  import { i18n } from "$lib/stores/i18n";
+  import { neuronsStore } from "$lib/stores/neurons.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
-  import { i18n } from "$lib/stores/i18n";
-  import { goto } from "$app/navigation";
-  import { pageStore } from "$lib/derived/page.derived";
-  import { Island } from "@dfinity/gix-components";
-  import { writable } from "svelte/store";
   import type {
     NnsNeuronContext,
     NnsNeuronStore,
   } from "$lib/types/nns-neuron-detail.context";
   import { NNS_NEURON_CONTEXT_KEY } from "$lib/types/nns-neuron-detail.context";
-  import { onMount, setContext } from "svelte";
-  import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
-  import NnsNeuronProposalsCard from "$lib/components/neuron-detail/NnsNeuronProposalsCard.svelte";
-  import { listNeurons } from "$lib/services/neurons.services";
-  import { loadLatestRewardEvent } from "$lib/services/nns-reward-event.services";
   import { isForceCallStrategy } from "$lib/utils/env.utils";
-  import NnsNeuronPageHeader from "$lib/components/neuron-detail/NnsNeuronPageHeader.svelte";
-  import NnsNeuronVotingPowerSection from "$lib/components/neuron-detail/NnsNeuronVotingPowerSection.svelte";
-  import NnsNeuronMaturitySection from "$lib/components/neuron-detail/NnsNeuronMaturitySection.svelte";
-  import NnsNeuronAdvancedSection from "$lib/components/neuron-detail/NnsNeuronAdvancedSection.svelte";
-  import Separator from "$lib/components/ui/Separator.svelte";
-  import NnsNeuronPageHeading from "$lib/components/neuron-detail/NnsNeuronPageHeading.svelte";
-  import SkeletonHeader from "$lib/components/ui/SkeletonHeader.svelte";
-  import SkeletonHeading from "$lib/components/ui/SkeletonHeading.svelte";
-  import NnsNeuronTestnetFunctionsCard from "$lib/components/neuron-detail/NnsNeuronTestnetFunctionsCard.svelte";
+  import {
+    getNeuronById,
+    isSpawning,
+    neuronVoting,
+  } from "$lib/utils/neuron.utils";
+  import { Island } from "@dfinity/gix-components";
+  import type { NeuronId, NeuronInfo } from "@dfinity/nns";
+  import { onMount, setContext } from "svelte";
+  import { writable } from "svelte/store";
 
   export let neuronIdText: string | undefined | null;
 

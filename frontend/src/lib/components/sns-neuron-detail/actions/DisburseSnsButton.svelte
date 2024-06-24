@@ -1,9 +1,9 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
-  import type { SnsNeuron } from "@dfinity/sns";
-  import VestingTooltipWrapper from "../VestingTooltipWrapper.svelte";
   import { isVesting } from "$lib/utils/sns-neuron.utils";
+  import VestingTooltipWrapper from "../VestingTooltipWrapper.svelte";
+  import type { SnsNeuron } from "@dfinity/sns";
 
   export let neuron: SnsNeuron;
 </script>

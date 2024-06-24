@@ -1,35 +1,35 @@
 <script lang="ts">
-  import {
-    type ProposalInfo,
-    type Vote,
-    votableNeurons as getVotableNeurons,
-  } from "@dfinity/nns";
-  import { getContext } from "svelte";
+  import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+  import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
+  import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
   import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
-  import {
-    SELECTED_PROPOSAL_CONTEXT_KEY,
-    type SelectedProposalContext,
-  } from "$lib/types/selected-proposal.context";
-  import {
-    isProposalDeadlineInTheFuture,
-    nnsNeuronToVotingNeuron,
-  } from "$lib/utils/proposals.utils";
   import {
     voteRegistrationStore,
     type VoteRegistrationStoreEntry,
   } from "$lib/stores/vote-registration.store";
-  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
-  import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
+  import {
+    SELECTED_PROPOSAL_CONTEXT_KEY,
+    type SelectedProposalContext,
+  } from "$lib/types/selected-proposal.context";
+  import { isForceCallStrategy } from "$lib/utils/env.utils";
   import {
     type CompactNeuronInfo,
     filterIneligibleNnsNeurons,
     type IneligibleNeuronData,
     votedNeuronDetails,
   } from "$lib/utils/neuron.utils";
-  import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
-  import { isForceCallStrategy } from "$lib/utils/env.utils";
-  import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
+  import {
+    isProposalDeadlineInTheFuture,
+    nnsNeuronToVotingNeuron,
+  } from "$lib/utils/proposals.utils";
+  import {
+    type ProposalInfo,
+    type Vote,
+    votableNeurons as getVotableNeurons,
+  } from "@dfinity/nns";
+  import { getContext } from "svelte";
 
   export let proposalInfo: ProposalInfo;
 

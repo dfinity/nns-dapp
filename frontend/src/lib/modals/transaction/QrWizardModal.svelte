@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { QrResponse, QrResult } from "$lib/types/qr-wizard-modal";
   import TransactionQRCode from "$lib/components/transaction/TransactionQRCode.svelte";
   import { toastsError } from "$lib/stores/toasts.store";
+  import type { QrResponse, QrResult } from "$lib/types/qr-wizard-modal";
   import {
     WizardModal,
     type WizardStep,

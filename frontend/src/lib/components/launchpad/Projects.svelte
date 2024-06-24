@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import ProjectCard from "./ProjectCard.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import SkeletonProjectCard from "$lib/components/ui/SkeletonProjectCard.svelte";
-  import { isLoadingSnsProjectsStore } from "$lib/stores/sns.store";
   import {
     snsProjectsActivePadStore,
     type SnsFullProject,
   } from "$lib/derived/sns/sns-projects.derived";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { i18n } from "$lib/stores/i18n";
+  import { isLoadingSnsProjectsStore } from "$lib/stores/sns.store";
   import { filterProjectsStatus } from "$lib/utils/projects.utils";
+  import ProjectCard from "./ProjectCard.svelte";
   import { Html } from "@dfinity/gix-components";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
 
   export let testId: string;
   export let status: SnsSwapLifecycle;

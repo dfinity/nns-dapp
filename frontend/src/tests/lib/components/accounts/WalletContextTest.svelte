@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { setContext, SvelteComponent } from "svelte";
+  import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
+  import type { Account } from "$lib/types/account";
   import {
     WALLET_CONTEXT_KEY,
     WalletContext,
     WalletStore,
   } from "$lib/types/wallet.context";
-  import type { Account } from "$lib/types/account";
+  import { setContext, SvelteComponent } from "svelte";
   import { writable } from "svelte/store";
-  import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
 
   export let testComponent: typeof SvelteComponent;
   export let account: Account | undefined;

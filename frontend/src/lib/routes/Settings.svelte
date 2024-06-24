@@ -1,16 +1,16 @@
 <script lang="ts">
+  import Hash from "$lib/components/ui/Hash.svelte";
+  import { authRemainingTimeStore, authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
   import {
     Island,
     KeyValuePairInfo,
     SkeletonText,
   } from "@dfinity/gix-components";
-  import Hash from "$lib/components/ui/Hash.svelte";
-  import { secondsToDuration } from "@dfinity/utils";
-  import { authRemainingTimeStore, authStore } from "$lib/stores/auth.store";
-  import { i18n } from "$lib/stores/i18n";
   import { debounce, nonNullish } from "@dfinity/utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { onMount } from "svelte";
-  import { layoutTitleStore } from "$lib/stores/layout.store";
 
   let principalText = "";
   $: principalText = $authStore.identity?.getPrincipal().toText() ?? "";

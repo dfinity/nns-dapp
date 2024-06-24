@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { nonNullish } from "@dfinity/utils";
   import { Checkbox } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
 
   export let conditionsToAccept: string | undefined = undefined;
   export let areConditionsAccepted = false;

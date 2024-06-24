@@ -1,15 +1,15 @@
 <script lang="ts">
   import Projects from "$lib/components/launchpad/Projects.svelte";
   import Proposals from "$lib/components/launchpad/Proposals.svelte";
-  import { i18n } from "$lib/stores/i18n";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import {
     snsProjectsAdoptedStore,
     snsProjectsCommittedStore,
   } from "$lib/derived/sns/sns-projects.derived";
   import { loadSnsSwapCommitments } from "$lib/services/sns.services";
   import { authStore } from "$lib/stores/auth.store";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { i18n } from "$lib/stores/i18n";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
 
   const loadSnsSale = async () => {
     if (!$authSignedInStore) {

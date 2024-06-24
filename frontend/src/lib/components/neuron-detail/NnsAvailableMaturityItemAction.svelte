@@ -1,17 +1,17 @@
 <script lang="ts">
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import {
     formattedMaturity,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
-  import { IconExpandCircleDown } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
-  import NnsStakeMaturityButton from "./actions/NnsStakeMaturityButton.svelte";
-  import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
   import CommonItemAction from "../ui/CommonItemAction.svelte";
   import TooltipIcon from "../ui/TooltipIcon.svelte";
-  import { authStore } from "$lib/stores/auth.store";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import NnsStakeMaturityButton from "./actions/NnsStakeMaturityButton.svelte";
+  import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
+  import { IconExpandCircleDown } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;
 

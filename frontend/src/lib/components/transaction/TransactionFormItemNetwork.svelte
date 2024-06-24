@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { UniverseCanisterId } from "$lib/types/universe";
-  import { TransactionNetwork } from "$lib/types/transaction";
   import SelectNetworkDropdown from "$lib/components/accounts/SelectNetworkDropdown.svelte";
-  import { notEmptyString } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
+  import { TransactionNetwork } from "$lib/types/transaction";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import { notEmptyString } from "@dfinity/utils";
 
   export let universeId: UniverseCanisterId;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import { KeyValuePair } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import { TokenAmountV2, type Token } from "@dfinity/utils";
 
   export let account: Account;

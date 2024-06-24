@@ -1,18 +1,18 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { Modal, busy } from "@dfinity/gix-components";
   import TextInputForm from "$lib/components/common/TextInputForm.svelte";
+  import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
+  import { renameCanister } from "$lib/services/canisters.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
-  import { createEventDispatcher, getContext } from "svelte";
-  import { nonNullish } from "@dfinity/utils";
-  import { renameCanister } from "$lib/services/canisters.services";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
   import { errorCanisterNameMessage } from "$lib/utils/canisters.utils";
+  import { Modal, busy } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
+  import { createEventDispatcher, getContext } from "svelte";
 
   const { store }: CanisterDetailsContext = getContext<CanisterDetailsContext>(
     CANISTER_DETAILS_CONTEXT_KEY

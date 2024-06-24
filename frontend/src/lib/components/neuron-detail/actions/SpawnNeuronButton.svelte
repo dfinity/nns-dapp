@@ -1,22 +1,22 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
-  import { ULPS_PER_MATURITY } from "$lib/constants/neurons.constants";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import {
     MIN_NEURON_STAKE,
     MATURITY_MODULATION_VARIANCE_PERCENTAGE,
   } from "$lib/constants/neurons.constants";
+  import { ULPS_PER_MATURITY } from "$lib/constants/neurons.constants";
   import { i18n } from "$lib/stores/i18n";
-  import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { isEnoughMaturityToSpawn } from "$lib/utils/neuron.utils";
-  import { Tooltip } from "@dfinity/gix-components";
   import {
     NNS_NEURON_CONTEXT_KEY,
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
-  import { getContext } from "svelte";
+  import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { isEnoughMaturityToSpawn } from "$lib/utils/neuron.utils";
+  import { Tooltip } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { getContext } from "svelte";
 
   export let neuron: NeuronInfo;
 

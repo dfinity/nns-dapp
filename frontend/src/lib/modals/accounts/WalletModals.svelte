@@ -1,6 +1,6 @@
 <script lang="ts">
-  import RenameSubAccountModal from "$lib/modals/accounts/RenameSubAccountModal.svelte";
   import HardwareWalletListNeuronsModal from "$lib/modals/accounts/HardwareWalletListNeuronsModal.svelte";
+  import RenameSubAccountModal from "$lib/modals/accounts/RenameSubAccountModal.svelte";
   import type { WalletModal, WalletModalType } from "$lib/types/wallet.modal";
 
   let modal: WalletModal | undefined;

@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import SkeletonProposalCard from "$lib/components/ui/SkeletonProposalCard.svelte";
+  import { loadProposalsSnsCF } from "$lib/services/$public/sns.services";
   import { i18n } from "$lib/stores/i18n";
   import {
     openSnsProposalsStore,
     snsProposalsStoreIsLoading,
   } from "$lib/stores/sns.store";
-  import SkeletonProposalCard from "$lib/components/ui/SkeletonProposalCard.svelte";
   import NnsProposalCard from "../proposals/NnsProposalCard.svelte";
-  import { loadProposalsSnsCF } from "$lib/services/$public/sns.services";
+  import { onMount } from "svelte";
 
   let loading = false;
   $: loading = $snsProposalsStoreIsLoading;

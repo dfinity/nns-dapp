@@ -1,17 +1,17 @@
 <script lang="ts">
-  import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
-  import { toastsError } from "$lib/stores/toasts.store";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
   import { removeController } from "$lib/services/canisters.services";
-  import { createEventDispatcher, getContext } from "svelte";
+  import { authStore } from "$lib/stores/auth.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsError } from "$lib/stores/toasts.store";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
   import { isUserController } from "$lib/utils/canisters.utils";
-  import { authStore } from "$lib/stores/auth.store";
-  import { i18n } from "$lib/stores/i18n";
+  import { createEventDispatcher, getContext } from "svelte";
 
   export let controller: string;
 

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { Modal } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
   import HardwareWalletNeurons from "$lib/components/accounts/HardwareWalletNeurons.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { Modal } from "@dfinity/gix-components";
 </script>
 
 <Modal on:nnsClose>

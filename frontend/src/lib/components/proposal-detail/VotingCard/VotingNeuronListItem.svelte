@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
   import VotingPowerDisplay from "$lib/components/ic/VotingPowerDisplay.svelte";
+  import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
   import { i18n } from "$lib/stores/i18n";
   import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
   import type { VotingNeuron } from "$lib/types/proposals";

@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import { hasJoinedCommunityFund } from "$lib/utils/neuron.utils";
-  import { Checkbox } from "@dfinity/gix-components";
   import {
     NNS_NEURON_CONTEXT_KEY,
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
-  import { getContext } from "svelte";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
+  import { hasJoinedCommunityFund } from "$lib/utils/neuron.utils";
+  import { Checkbox } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { getContext } from "svelte";
 
   export let neuron: NeuronInfo;
   export let disabled = false;

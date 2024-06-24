@@ -1,7 +1,9 @@
 <script lang="ts">
+  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { i18n } from "$lib/stores/i18n";
+  import type { Universe } from "$lib/types/universe";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
+  import { formatVotingPower } from "$lib/utils/neuron.utils";
   import {
     ageMultiplier,
     dissolveDelayMultiplier,
@@ -10,17 +12,15 @@
     neuronDashboardUrl,
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
-  import { type Token, fromDefinedNullable } from "@dfinity/utils";
-  import { formatVotingPower } from "$lib/utils/neuron.utils";
-  import SnsStakeItemAction from "./SnsStakeItemAction.svelte";
-  import type { Universe } from "$lib/types/universe";
-  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
-  import SnsNeuronStateItemAction from "./SnsNeuronStateItemAction.svelte";
-  import SnsNeuronDissolveDelayItemAction from "./SnsNeuronDissolveDelayItemAction.svelte";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import { secondsToDuration } from "@dfinity/utils";
+  import SnsNeuronDissolveDelayItemAction from "./SnsNeuronDissolveDelayItemAction.svelte";
+  import SnsNeuronStateItemAction from "./SnsNeuronStateItemAction.svelte";
+  import SnsStakeItemAction from "./SnsStakeItemAction.svelte";
   import { Html, Section } from "@dfinity/gix-components";
   import { Principal } from "@dfinity/principal";
+  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
+  import { secondsToDuration } from "@dfinity/utils";
+  import { type Token, fromDefinedNullable } from "@dfinity/utils";
 
   export let parameters: SnsNervousSystemParameters;
   export let neuron: SnsNeuron;

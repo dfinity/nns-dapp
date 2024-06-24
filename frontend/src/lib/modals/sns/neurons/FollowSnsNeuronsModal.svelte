@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
   import FollowSnsTopicSection from "$lib/components/sns-neuron-detail/FollowSnsTopicSection.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
+  import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
+  import { i18n } from "$lib/stores/i18n";
   import { Modal, Spinner } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
-  import type { SnsNeuron } from "@dfinity/sns";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
-  import Separator from "$lib/components/ui/Separator.svelte";
+  import type { SnsNeuron } from "@dfinity/sns";
   import { createEventDispatcher } from "svelte";
   import type { Readable } from "svelte/store";
-  import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
 
   export let neuron: SnsNeuron;
   export let rootCanisterId: Principal;

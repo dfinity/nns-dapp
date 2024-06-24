@@ -1,11 +1,11 @@
 <script lang="ts">
-  import Layout from "$lib/components/layout/Layout.svelte";
-  import Content from "$lib/components/layout/Content.svelte";
   import { goto } from "$app/navigation";
-  import { accountsPathStore } from "$lib/derived/paths.derived";
+  import Content from "$lib/components/layout/Content.svelte";
+  import Layout from "$lib/components/layout/Layout.svelte";
   import LayoutNavGuard from "$lib/components/layout/LayoutNavGuard.svelte";
-  import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { accountsPathStore } from "$lib/derived/paths.derived";
+  import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
 
   const back = (): Promise<void> =>
     goto($isNnsUniverseStore ? $accountsPathStore : AppPath.Tokens);

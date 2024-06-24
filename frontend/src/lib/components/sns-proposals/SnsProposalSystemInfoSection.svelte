@@ -1,12 +1,12 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDateTime } from "$lib/utils/date.utils";
   import type { SnsProposalDataMap } from "$lib/utils/sns-proposals.utils";
-  import type { SnsNeuronId } from "@dfinity/sns";
-  import { nonNullish } from "@dfinity/utils";
   import ProposalSystemInfoEntry from "../proposal-detail/ProposalSystemInfoEntry.svelte";
   import SnsProposerEntry from "./SnsProposerEntry.svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import type { SnsNeuronId } from "@dfinity/sns";
+  import { nonNullish } from "@dfinity/utils";
 
   export let proposalDataMap: SnsProposalDataMap;
 

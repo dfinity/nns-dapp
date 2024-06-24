@@ -1,13 +1,13 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { formatPercentage } from "$lib/utils/format.utils";
-  import { InputRange, KeyValuePair } from "@dfinity/gix-components";
-  import { createEventDispatcher } from "svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { formatMaturity } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { formatMaturity } from "$lib/utils/neuron.utils";
+  import { InputRange, KeyValuePair } from "@dfinity/gix-components";
   import { Tooltip } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let availableMaturityE8s: bigint;
   export let percentage: number;

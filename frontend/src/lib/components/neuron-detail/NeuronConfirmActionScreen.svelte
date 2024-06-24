@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-  import { busy } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { busy } from "@dfinity/gix-components";
+  import { createEventDispatcher } from "svelte";
 
   export let editLabel = $i18n.neuron_detail.edit_percentage;
 

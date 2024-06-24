@@ -1,15 +1,15 @@
 <script lang="ts" context="module">
-  import { getCellGridAreaName } from "$lib/utils/responsive-table.utils";
   import type { ResponsiveTableRowData } from "$lib/types/responsive-table";
+  import { getCellGridAreaName } from "$lib/utils/responsive-table.utils";
   type RowDataType = ResponsiveTableRowData;
 </script>
 
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
   import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
   import { heightTransition } from "$lib/utils/transition.utils";
   import { nonNullish } from "@dfinity/utils";
-  import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let testId = "responsive-table-component";
   export let tableData: Array<RowDataType>;
