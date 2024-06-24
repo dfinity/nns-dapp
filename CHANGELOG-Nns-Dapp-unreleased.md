@@ -16,6 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Maturity visible in neurons table.
+* Support rendering `tSchnorr` proposal parameters.
 
 #### Changed
 
