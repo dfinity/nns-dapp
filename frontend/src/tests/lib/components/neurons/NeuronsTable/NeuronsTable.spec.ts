@@ -26,6 +26,8 @@ describe("NeuronsTable", () => {
     domKey: "10",
     neuronId: "10",
     stake: makeStake(1_300_000_000n),
+    availableMaturity: 0n,
+    stakedMaturity: 0n,
     dissolveDelaySeconds: BigInt(6 * SECONDS_IN_MONTH),
     state: NeuronState.Dissolving,
   };
@@ -36,6 +38,8 @@ describe("NeuronsTable", () => {
     domKey: "99",
     neuronId: "99",
     stake: makeStake(500_000_000n),
+    availableMaturity: 10_000_000n,
+    stakedMaturity: 20_000_000n,
     dissolveDelaySeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
     state: NeuronState.Locked,
   };
@@ -86,6 +90,8 @@ describe("NeuronsTable", () => {
       "",
       "Stake",
       "",
+      "Maturity",
+      "",
       "Dissolve Delay",
       "",
       "State",
@@ -100,6 +106,8 @@ describe("NeuronsTable", () => {
       "desktop-align-left", // Neuron ID
       expect.any(String), // gap
       "desktop-align-right", // Stake
+      expect.any(String), // gap
+      "desktop-align-right", // Maturity
       expect.any(String), // gap
       "desktop-align-left", // Dissolve Delay
       expect.any(String), // gap
@@ -117,6 +125,8 @@ describe("NeuronsTable", () => {
         "1fr", // gap
         "max-content", // Stake
         "1fr", // gap
+        "max-content", // Maturity
+        "1fr", // gap
         "max-content", // State
         "1fr", // gap
         "max-content", // Dissolve Delay
@@ -124,7 +134,7 @@ describe("NeuronsTable", () => {
       ].join(" ")
     );
     expect(await po.getMobileGridTemplateAreas()).toBe(
-      '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5"'
+      '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5" "cell-7 cell-7"'
     );
   });
 
@@ -164,6 +174,14 @@ describe("NeuronsTable", () => {
     const rowPos = await po.getNeuronsTableRowPos();
     expect(rowPos).toHaveLength(1);
     expect(await rowPos[0].getStake()).toBe("9.9999 ICP");
+  });
+
+  it("should render neuron maturity", async () => {
+    const po = renderComponent({ neurons: [neuron1, neuron2] });
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getTotalMaturity()).toBe("0");
+    expect(await rowPos[1].getTotalMaturity()).toBe("0.30");
   });
 
   it("should render neuron state", async () => {

@@ -46,6 +46,10 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
     return this.getNeuronStakeCellPo().getStakeBalance();
   }
 
+  getTotalMaturity(): Promise<string> {
+    return this.getText("total-maturity");
+  }
+
   getState(): Promise<string> {
     return this.getNeuronStateCellPo().getState();
   }
