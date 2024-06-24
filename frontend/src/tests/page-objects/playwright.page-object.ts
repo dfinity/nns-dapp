@@ -121,7 +121,8 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   click(): Promise<void> {
-    return this.locator.click();
+    // Click in the corner to avoid clicking any `preventDefault` items inside.
+    return this.locator.click( { position: { x: 5, y: 5 } });
   }
 
   input(value: string): Promise<void> {
