@@ -10,6 +10,7 @@
   import NeuronStakeCell from "$lib/components/neurons/NeuronsTable/NeuronStakeCell.svelte";
   import NeuronDissolveDelayCell from "$lib/components/neurons/NeuronsTable/NeuronDissolveDelayCell.svelte";
   import NeuronActionsCell from "$lib/components/neurons/NeuronsTable/NeuronActionsCell.svelte";
+  import NeuronMaturityCell from "$lib/components/neurons/NeuronsTable/NeuronMaturityCell.svelte";
   import {
     sortNeurons,
     compareByStake,
@@ -43,6 +44,17 @@
     {
       title: $i18n.neuron_detail.stake,
       cellComponent: NeuronStakeCell,
+      alignment: "right",
+      templateColumns: ["max-content"],
+    },
+    {
+      title: "",
+      alignment: "left",
+      templateColumns: ["1fr"],
+    },
+    {
+      title: $i18n.neuron_detail.maturity_title,
+      cellComponent: NeuronMaturityCell,
       alignment: "right",
       templateColumns: ["max-content"],
     },
