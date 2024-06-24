@@ -1,19 +1,19 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
-  import { topUpNeuron } from "$lib/services/neurons.services";
-  import type { NewTransaction } from "$lib/types/transaction";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
-  import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
-  import { createEventDispatcher, onMount } from "svelte";
-  import { i18n } from "$lib/stores/i18n";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import type { WizardStep } from "@dfinity/gix-components";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
+  import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import { pollAccounts } from "$lib/services/icp-accounts.services";
+  import { topUpNeuron } from "$lib/services/neurons.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import type { NewTransaction } from "$lib/types/transaction";
   import type { TransactionInit } from "$lib/types/transaction";
+  import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import type { WizardStep } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { createEventDispatcher, onMount } from "svelte";
 
   export let neuron: NeuronInfo;
 

@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { Modal } from "@dfinity/gix-components";
-  import type { NeuronId } from "@dfinity/nns";
-  import { i18n } from "$lib/stores/i18n";
-  import type { NeuronInfo } from "@dfinity/nns";
-  import { Spinner } from "@dfinity/gix-components";
   import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
-  import { toastsError } from "$lib/stores/toasts.store";
-  import { createEventDispatcher, onMount } from "svelte";
   import VotingHistoryCard from "$lib/components/neurons/VotingHistoryCard.svelte";
-  import { authStore } from "$lib/stores/auth.store";
   import { loadNeuron } from "$lib/services/neurons.services";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import { Modal } from "@dfinity/gix-components";
+  import { Spinner } from "@dfinity/gix-components";
+  import type { NeuronId } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { createEventDispatcher, onMount } from "svelte";
 
   export let neuronId: NeuronId;
   let neuron: NeuronInfo | undefined;

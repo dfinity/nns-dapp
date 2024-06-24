@@ -1,10 +1,10 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import ActionableSnsProposals from "$lib/components/proposals/ActionableSnsProposals.svelte";
   import {
     type ActionableSnsProposalsByUniverseData,
     actionableSnsProposalsByUniverseStore,
   } from "$lib/derived/actionable-proposals.derived";
-  import ActionableSnsProposals from "$lib/components/proposals/ActionableSnsProposals.svelte";
 
   let actionableUniverses: ActionableSnsProposalsByUniverseData[] = [];
   $: actionableUniverses = $actionableSnsProposalsByUniverseStore.filter(

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { Content } from "@dfinity/gix-components";
-  import Title from "$lib/components/header/Title.svelte";
   import HeaderToolbar from "$lib/components/header/HeaderToolbar.svelte";
+  import Title from "$lib/components/header/Title.svelte";
+  import { Content } from "@dfinity/gix-components";
 
   export let back: (() => Promise<void>) | undefined = undefined;
 </script>

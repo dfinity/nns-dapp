@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { PageBanner, IconNotificationPage } from "@dfinity/gix-components";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils.js";
-  import { actionableProposalNotSupportedUniversesStore } from "$lib/derived/actionable-proposals.derived";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { actionableProposalNotSupportedUniversesStore } from "$lib/derived/actionable-proposals.derived";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils.js";
+  import { PageBanner, IconNotificationPage } from "@dfinity/gix-components";
 
   let snsNames: string;
   $: snsNames = $actionableProposalNotSupportedUniversesStore

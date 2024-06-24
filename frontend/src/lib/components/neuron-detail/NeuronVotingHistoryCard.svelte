@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import { i18n } from "$lib/stores/i18n";
   import Ballots from "./Ballots/Ballots.svelte";
-  import CardInfo from "$lib/components/ui/CardInfo.svelte";
+  import type { NeuronInfo } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;
 </script>

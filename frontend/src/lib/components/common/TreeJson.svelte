@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { IconExpandMore } from "@dfinity/gix-components";
   import TreeJsonValue from "$lib/components/common/TreeJsonValue.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import {
     getTreeJsonValueRenderType,
     type TreeJsonValueType,
   } from "$lib/utils/json.utils";
-  import { fade } from "svelte/transition";
   import { typeOfLikeANumber } from "$lib/utils/utils";
+  import { IconExpandMore } from "@dfinity/gix-components";
+  import { fade } from "svelte/transition";
 
   export let json: unknown | undefined = undefined;
   export let defaultExpandedLevel = Infinity;

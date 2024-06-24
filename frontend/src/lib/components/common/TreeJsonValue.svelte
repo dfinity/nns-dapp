@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Html } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
   import type { TreeJsonValueType } from "$lib/utils/json.utils";
   import { splitE8sIntoChunks, stringifyJson } from "$lib/utils/utils.js";
-  import { i18n } from "$lib/stores/i18n";
+  import { Html } from "@dfinity/gix-components";
 
   // To avoid having quotes around all the value types
   const formatE8s = (data: unknown): string[] =>

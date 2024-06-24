@@ -1,21 +1,21 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { isNullish } from "@dfinity/utils";
-  import { onDestroy, onMount } from "svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
+  import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import {
     cancelPollAccounts,
     loadBalance,
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
-  import type { UserToken } from "$lib/types/tokens-page";
-  import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { IconAdd } from "@dfinity/gix-components";
-  import { openAccountsModal } from "$lib/utils/modals.utils";
-  import { ActionType, type Action } from "$lib/types/actions";
-  import { findAccount } from "$lib/utils/accounts.utils";
-  import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
+  import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
+  import { ActionType, type Action } from "$lib/types/actions";
+  import type { UserToken } from "$lib/types/tokens-page";
+  import { findAccount } from "$lib/utils/accounts.utils";
+  import { openAccountsModal } from "$lib/utils/modals.utils";
+  import { IconAdd } from "@dfinity/gix-components";
+  import { isNullish } from "@dfinity/utils";
+  import { onDestroy, onMount } from "svelte";
 
   onMount(() => {
     pollAccounts();

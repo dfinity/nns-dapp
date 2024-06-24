@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { emit } from "$lib/utils/events.utils";
   import type { CanisterDetailModal } from "$lib/types/canister-detail.modal";
+  import { emit } from "$lib/utils/events.utils";
 
   const openModal = () =>
     emit<CanisterDetailModal>({

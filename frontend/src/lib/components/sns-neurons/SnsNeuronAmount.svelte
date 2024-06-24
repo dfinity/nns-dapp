@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { TokenAmountV2 } from "@dfinity/utils";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { getSnsNeuronStake } from "$lib/utils/sns-neuron.utils";
-  import type { SnsNeuron } from "@dfinity/sns";
-  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { Spinner } from "@dfinity/gix-components";
+  import type { SnsNeuron } from "@dfinity/sns";
+  import { TokenAmountV2 } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
 

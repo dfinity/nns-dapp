@@ -2,26 +2,26 @@
   /**
    * Transfer ICP to current principal. For test purpose only and only available on dev environments.
    */
-  import { Dropdown, DropdownItem, Modal } from "@dfinity/gix-components";
-  import Input from "$lib/components/ui/Input.svelte";
-  import { getICPs, getBTC, getIcrcTokens } from "$lib/services/dev.services";
-  import { Spinner } from "@dfinity/gix-components";
-  import { toastsError } from "$lib/stores/toasts.store";
-  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
-  import { Principal } from "@dfinity/principal";
-  import { isNullish, nonNullish, type Token } from "@dfinity/utils";
   import {
     getIcrcTokenTestAccountBalance,
     getTestIcpAccountBalance,
   } from "$lib/api/dev.api";
-  import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";
-  import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
-  import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
-  import { createEventDispatcher } from "svelte";
-  import type { Universe } from "$lib/types/universe";
-  import { universesStore } from "$lib/derived/universes.derived";
-  import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
+  import Input from "$lib/components/ui/Input.svelte";
+  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { snsLedgerCanisterIdsStore } from "$lib/derived/sns/sns-canisters.derived";
+  import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
+  import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
+  import { universesStore } from "$lib/derived/universes.derived";
+  import { getICPs, getBTC, getIcrcTokens } from "$lib/services/dev.services";
+  import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import type { Universe } from "$lib/types/universe";
+  import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";
+  import { Dropdown, DropdownItem, Modal } from "@dfinity/gix-components";
+  import { Spinner } from "@dfinity/gix-components";
+  import { Principal } from "@dfinity/principal";
+  import { isNullish, nonNullish, type Token } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   let transferring = false;
 

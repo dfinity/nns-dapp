@@ -1,7 +1,25 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
+  import NnsDestinationAddress from "$lib/components/accounts/NnsDestinationAddress.svelte";
+  import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
+  import { neuronsPathStore } from "$lib/derived/paths.derived";
   import QrWizardModal from "$lib/modals/transaction/QrWizardModal.svelte";
-  import type { QrResponse } from "$lib/types/qr-wizard-modal";
+  import { startBusyNeuron } from "$lib/services/busy.services";
+  import {
+    cancelPollAccounts,
+    pollAccounts,
+  } from "$lib/services/icp-accounts.services";
+  import { disburse } from "$lib/services/neurons.services";
+  import { stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import type { QrResponse } from "$lib/types/qr-wizard-modal";
+  import { neuronStake } from "$lib/utils/neuron.utils";
+  import type {
+    WizardModal,
+    WizardSteps,
+    WizardStep,
+  } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import {
     ICPToken,
@@ -9,26 +27,8 @@
     assertNonNullish,
     TokenAmountV2,
   } from "@dfinity/utils";
-  import type {
-    WizardModal,
-    WizardSteps,
-    WizardStep,
-  } from "@dfinity/gix-components";
-  import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
-  import NnsDestinationAddress from "$lib/components/accounts/NnsDestinationAddress.svelte";
-  import { startBusyNeuron } from "$lib/services/busy.services";
-  import { stopBusy } from "$lib/stores/busy.store";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
   import { createEventDispatcher, onDestroy } from "svelte";
-  import { disburse } from "$lib/services/neurons.services";
-  import { neuronStake } from "$lib/utils/neuron.utils";
-  import { neuronsPathStore } from "$lib/derived/paths.derived";
-  import { goto } from "$app/navigation";
   import { onMount } from "svelte";
-  import {
-    cancelPollAccounts,
-    pollAccounts,
-  } from "$lib/services/icp-accounts.services";
 
   export let neuron: NeuronInfo;
 

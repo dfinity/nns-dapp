@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { TokenAmount, TokenAmountV2 } from "@dfinity/utils";
-  import { createEventDispatcher } from "svelte";
-  import { i18n } from "$lib/stores/i18n";
   import TransactionInfo from "$lib/components/accounts/TransactionInfo.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import type { TokenAmount, TokenAmountV2 } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let amount: TokenAmountV2;
   export let fee: TokenAmount | undefined = undefined;

@@ -1,4 +1,34 @@
 <script lang="ts">
+  import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
+  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import { snsSortedNeuronStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
+  import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
+  import { authStore } from "$lib/stores/auth.store";
+  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+  import {
+    voteRegistrationStore,
+    type VoteRegistrationStoreEntry,
+    votingNeuronSelectStore,
+  } from "$lib/stores/vote-registration.store";
+  import type { UniverseCanisterIdText } from "$lib/types/universe";
+  import type {
+    CompactNeuronInfo,
+    IneligibleNeuronData,
+  } from "$lib/utils/neuron.utils";
+  import {
+    getSnsNeuronIdAsHexString,
+    snsNeuronsToIneligibleNeuronData,
+    votableSnsNeurons,
+    votedSnsNeuronDetails,
+  } from "$lib/utils/sns-neuron.utils";
+  import { ineligibleSnsNeurons } from "$lib/utils/sns-neuron.utils";
+  import {
+    snsNeuronToVotingNeuron,
+    snsProposalIdString,
+    snsProposalAcceptingVotes,
+  } from "$lib/utils/sns-proposals.utils";
+  import { Principal } from "@dfinity/principal";
   import type {
     SnsNervousSystemParameters,
     SnsNeuron,
@@ -6,36 +36,6 @@
     SnsVote,
   } from "@dfinity/sns";
   import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
-  import { snsSortedNeuronStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
-  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-  import type { UniverseCanisterIdText } from "$lib/types/universe";
-  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
-  import {
-    voteRegistrationStore,
-    type VoteRegistrationStoreEntry,
-    votingNeuronSelectStore,
-  } from "$lib/stores/vote-registration.store";
-  import {
-    snsNeuronToVotingNeuron,
-    snsProposalIdString,
-    snsProposalAcceptingVotes,
-  } from "$lib/utils/sns-proposals.utils";
-  import {
-    getSnsNeuronIdAsHexString,
-    snsNeuronsToIneligibleNeuronData,
-    votableSnsNeurons,
-    votedSnsNeuronDetails,
-  } from "$lib/utils/sns-neuron.utils";
-  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-  import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
-  import { Principal } from "@dfinity/principal";
-  import type {
-    CompactNeuronInfo,
-    IneligibleNeuronData,
-  } from "$lib/utils/neuron.utils";
-  import { ineligibleSnsNeurons } from "$lib/utils/sns-neuron.utils";
-  import { authStore } from "$lib/stores/auth.store";
-  import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
 
   export let proposal: SnsProposalData;
   export let reloadProposal: () => Promise<void>;

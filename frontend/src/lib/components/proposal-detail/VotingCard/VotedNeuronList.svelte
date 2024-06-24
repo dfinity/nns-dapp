@@ -1,15 +1,15 @@
 <script lang="ts">
+  import VotingPowerDisplay from "$lib/components/ic/VotingPowerDisplay.svelte";
+  import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
+  import ExpandableProposalNeurons from "$lib/components/proposal-detail/VotingCard/ExpandableProposalNeurons.svelte";
+  import VoteResultIcon from "$lib/components/proposal-detail/VotingCard/VoteResultIcon.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     type CompactNeuronInfo,
     neuronsVotingPower,
   } from "$lib/utils/neuron.utils";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import VotingPowerDisplay from "$lib/components/ic/VotingPowerDisplay.svelte";
-  import ExpandableProposalNeurons from "$lib/components/proposal-detail/VotingCard/ExpandableProposalNeurons.svelte";
-  import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
   import { Vote } from "@dfinity/nns";
-  import VoteResultIcon from "$lib/components/proposal-detail/VotingCard/VoteResultIcon.svelte";
 
   export let neuronsVotedForProposal: CompactNeuronInfo[];
 

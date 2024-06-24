@@ -1,12 +1,12 @@
 <script lang="ts">
+  import RawJson from "$lib/components/common/RawJson.svelte";
+  import TreeJson from "$lib/components/common/TreeJson.svelte";
+  import { jsonRepresentationModeStore } from "$lib/derived/json-representation.derived";
   import { i18n } from "$lib/stores/i18n";
   import { expandObject, getObjMaxDepth } from "$lib/utils/utils";
-  import { isNullish } from "@dfinity/utils";
   import { IconCollapseAll, IconExpandAll } from "@dfinity/gix-components";
-  import TreeJson from "$lib/components/common/TreeJson.svelte";
-  import RawJson from "$lib/components/common/RawJson.svelte";
+  import { isNullish } from "@dfinity/utils";
   import { fade } from "svelte/transition";
-  import { jsonRepresentationModeStore } from "$lib/derived/json-representation.derived";
 
   const DEFAULT_EXPANDED_LEVEL = 1;
 

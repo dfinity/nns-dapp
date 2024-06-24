@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { SkeletonText } from "@dfinity/gix-components";
   import PageHeader from "../common/PageHeader.svelte";
+  import { SkeletonText } from "@dfinity/gix-components";
 </script>
 
 <PageHeader>

@@ -1,8 +1,7 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
-  import { onMount } from "svelte";
-  import { listKnownNeurons } from "$lib/services/known-neurons.services";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import { listKnownNeurons } from "$lib/services/known-neurons.services";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import {
@@ -11,10 +10,11 @@
     isNeuronControllable,
     isHotKeyControllable,
   } from "$lib/utils/neuron.utils";
-  import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import FollowNeuronsButton from "../actions/FollowNeuronsButton.svelte";
   import Followee from "./Followee.svelte";
   import { KeyValuePairInfo } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { onMount } from "svelte";
 
   export let neuron: NeuronInfo;
   let isControllable: boolean;

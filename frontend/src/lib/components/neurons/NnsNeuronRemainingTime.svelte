@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
   import {
     getDissolvingTimeInSeconds,
     getSpawningTimeInSeconds,
   } from "$lib/utils/neuron.utils";
   import NeuronStateRemainingTime from "./NeuronStateRemainingTime.svelte";
+  import type { NeuronInfo } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;
   export let inline = true;

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import VotingCardNeuronList from "$lib/components/proposal-detail/VotingCard/VotingCardNeuronList.svelte";
   import VotingNeuronListItem from "$lib/components/proposal-detail/VotingCard/VotingNeuronListItem.svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 
   export let disabled: boolean;
 

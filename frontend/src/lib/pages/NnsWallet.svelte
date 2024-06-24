@@ -1,22 +1,48 @@
 <script lang="ts">
-  import { authSignedInStore } from "$lib/derived/auth.derived";
-  import type { Account } from "$lib/types/account";
-  import { onMount, onDestroy, setContext } from "svelte";
-  import { i18n } from "$lib/stores/i18n";
+  import { goto } from "$app/navigation";
+  import IC_LOGO from "$lib/assets/icp.svg";
+  import HardwareWalletListNeuronsButton from "$lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
+  import HardwareWalletShowActionButton from "$lib/components/accounts/HardwareWalletShowActionButton.svelte";
+  import NoTransactions from "$lib/components/accounts/NoTransactions.svelte";
+  import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
+  import RenameSubAccountButton from "$lib/components/accounts/RenameSubAccountButton.svelte";
+  import UiTransactionsList from "$lib/components/accounts/UiTransactionsList.svelte";
+  import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
+  import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
+  import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
+  import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
+  import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
+  import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
   import {
     cancelPollAccounts,
     loadBalance,
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
+  import {
+    loadIcpAccountNextTransactions,
+    loadIcpAccountTransactions,
+  } from "$lib/services/icp-transactions.services";
+  import { listNeurons } from "$lib/services/neurons.services";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
   import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
-  import { Island, Spinner } from "@dfinity/gix-components";
+  import {
+    icpTransactionsStore,
+    type IcpTransactionsStoreData,
+  } from "$lib/stores/icp-transactions.store";
+  import { neuronAccountsStore } from "$lib/stores/neurons.store";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { writable, type Readable } from "svelte/store";
-  import NoTransactions from "$lib/components/accounts/NoTransactions.svelte";
+  import type { Account } from "$lib/types/account";
+  import type { AccountIdentifierText } from "$lib/types/account";
+  import type { UiTransaction } from "$lib/types/transaction";
   import {
     WALLET_CONTEXT_KEY,
     type WalletContext,
@@ -27,47 +53,21 @@
     findAccountOrDefaultToMain,
     isAccountHardwareWallet,
   } from "$lib/utils/accounts.utils";
-  import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
-  import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
-  import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
-  import { goto } from "$app/navigation";
-  import { AppPath } from "$lib/constants/routes.constants";
-  import Separator from "$lib/components/ui/Separator.svelte";
-  import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import {
+    mapIcpTransaction,
+    mapToSelfTransactions,
+    sortTransactionsByIdDescendingOrder,
+  } from "$lib/utils/icp-transactions.utils";
+  import { Island, Spinner } from "@dfinity/gix-components";
   import {
     ICPToken,
     TokenAmountV2,
     isNullish,
     nonNullish,
   } from "@dfinity/utils";
-  import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
-  import type { AccountIdentifierText } from "$lib/types/account";
-  import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
-  import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
-  import HardwareWalletListNeuronsButton from "$lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
-  import HardwareWalletShowActionButton from "$lib/components/accounts/HardwareWalletShowActionButton.svelte";
-  import RenameSubAccountButton from "$lib/components/accounts/RenameSubAccountButton.svelte";
-  import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
-  import IC_LOGO from "$lib/assets/icp.svg";
-  import {
-    loadIcpAccountNextTransactions,
-    loadIcpAccountTransactions,
-  } from "$lib/services/icp-transactions.services";
-  import type { UiTransaction } from "$lib/types/transaction";
-  import {
-    icpTransactionsStore,
-    type IcpTransactionsStoreData,
-  } from "$lib/stores/icp-transactions.store";
-  import {
-    mapIcpTransaction,
-    mapToSelfTransactions,
-    sortTransactionsByIdDescendingOrder,
-  } from "$lib/utils/icp-transactions.utils";
-  import UiTransactionsList from "$lib/components/accounts/UiTransactionsList.svelte";
-  import { neuronAccountsStore } from "$lib/stores/neurons.store";
-  import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
-  import { authStore } from "$lib/stores/auth.store";
-  import { listNeurons } from "$lib/services/neurons.services";
+  import { onMount, onDestroy, setContext } from "svelte";
+  import { writable, type Readable } from "svelte/store";
 
   $: if ($authSignedInStore) {
     pollAccounts();

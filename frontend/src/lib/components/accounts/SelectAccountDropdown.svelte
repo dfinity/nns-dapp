@@ -1,15 +1,15 @@
 <script lang="ts">
+  import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import {
     getAccountByRootCanister,
     getAccountsByRootCanister,
   } from "$lib/utils/accounts.utils";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
   import { Dropdown, DropdownItem, Spinner } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
-  import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
   import { isNullish } from "@dfinity/utils";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   export let selectedAccount: Account | undefined = undefined;
   export let rootCanisterId: Principal;

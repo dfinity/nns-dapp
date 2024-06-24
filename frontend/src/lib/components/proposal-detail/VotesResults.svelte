@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
-  import ProposalContentCell from "./ProposalContentCell.svelte";
-  import Countdown from "$lib/components/proposals/Countdown.svelte";
   import VotesResultsMajorityDescription from "$lib/components/proposal-detail/VotesResultsMajorityDescription.svelte";
-  import { nonNullish } from "@dfinity/utils";
+  import Countdown from "$lib/components/proposals/Countdown.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import { nowInSeconds } from "$lib/utils/date.utils";
+  import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isCriticalProposal } from "$lib/utils/sns-proposals.utils";
+  import ProposalContentCell from "./ProposalContentCell.svelte";
   import { Html } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
 
   const formatVotingPower = (value: number) =>
     `${formatNumber(value, {

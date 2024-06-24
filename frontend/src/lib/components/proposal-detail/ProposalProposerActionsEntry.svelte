@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Copy } from "@dfinity/gix-components";
+  import JsonPreview from "$lib/components/common/JsonPreview.svelte";
   import TreeRawToggle from "$lib/components/proposal-detail/JsonRepresentationModeToggle.svelte";
   import { stringifyJson } from "$lib/utils/utils";
-  import JsonPreview from "$lib/components/common/JsonPreview.svelte";
+  import { Copy } from "@dfinity/gix-components";
 
   export let actionKey: string | undefined;
   export let actionData: unknown | undefined;

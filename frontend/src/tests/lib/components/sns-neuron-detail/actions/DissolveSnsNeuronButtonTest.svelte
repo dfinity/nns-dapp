@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { setContext } from "svelte";
-  import { writable } from "svelte/store";
+  import DissolveSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/DissolveSnsNeuronButton.svelte";
   import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
   import type {
     SelectedSnsNeuronContext,
@@ -9,7 +8,8 @@
   import { SELECTED_SNS_NEURON_CONTEXT_KEY } from "$lib/types/sns-neuron-detail.context";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
   import type { SnsNeuron } from "@dfinity/sns";
-  import DissolveSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/DissolveSnsNeuronButton.svelte";
+  import { setContext } from "svelte";
+  import { writable } from "svelte/store";
 
   export let neuron: SnsNeuron | undefined;
   export let spy: (() => void) | undefined = undefined;

@@ -1,20 +1,20 @@
 <script lang="ts">
+  import ConfirmNeuronsMerge from "$lib/components/neurons/ConfirmNeuronsMerge.svelte";
+  import SelectNeuronsToMerge from "$lib/components/neurons/SelectNeuronsToMerge.svelte";
+  import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
   import { i18n } from "$lib/stores/i18n";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import {
+    checkInvalidState,
+    type InvalidState,
+  } from "$lib/utils/neuron.utils";
   import {
     WizardModal,
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
-  import SelectNeuronsToMerge from "$lib/components/neurons/SelectNeuronsToMerge.svelte";
-  import ConfirmNeuronsMerge from "$lib/components/neurons/ConfirmNeuronsMerge.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
-  import {
-    checkInvalidState,
-    type InvalidState,
-  } from "$lib/utils/neuron.utils";
-  import { toastsError } from "$lib/stores/toasts.store";
   import { createEventDispatcher } from "svelte";
-  import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
 
   let selectedNeurons: NeuronInfo[] | undefined;
 

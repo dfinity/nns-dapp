@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { writable } from "svelte/store";
+  import Followee from "$lib/components/neuron-detail/NeuronFollowingCard/Followee.svelte";
+  import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
   import type {
     NnsNeuronContext,
     NnsNeuronStore,
   } from "$lib/types/nns-neuron-detail.context";
-  import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
-  import Followee from "$lib/components/neuron-detail/NeuronFollowingCard/Followee.svelte";
+  import { NNS_NEURON_CONTEXT_KEY } from "$lib/types/nns-neuron-detail.context";
   import { FolloweesNeuron } from "$lib/utils/neuron.utils";
   import { mockNeuron } from "$tests/mocks/neurons.mock";
   import { setContext } from "svelte";
-  import { NNS_NEURON_CONTEXT_KEY } from "$lib/types/nns-neuron-detail.context";
+  import { writable } from "svelte/store";
 
   export let followee: FolloweesNeuron;
 

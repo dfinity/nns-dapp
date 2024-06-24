@@ -1,19 +1,19 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
-  import type { SnsNeuron } from "@dfinity/sns";
   import {
     isVesting,
     hasEnoughStakeToSplit,
   } from "$lib/utils/sns-neuron.utils";
-  import type { SnsNervousSystemParameters } from "@dfinity/sns";
-  import { fromDefinedNullable } from "@dfinity/utils";
   import { minNeuronSplittable } from "$lib/utils/sns-neuron.utils";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import { Tooltip } from "@dfinity/gix-components";
-  import type { Token, TokenAmountV2 } from "@dfinity/utils";
   import VestingTooltipWrapper from "../VestingTooltipWrapper.svelte";
+  import { Tooltip } from "@dfinity/gix-components";
+  import type { SnsNervousSystemParameters } from "@dfinity/sns";
+  import type { SnsNeuron } from "@dfinity/sns";
+  import type { Token, TokenAmountV2 } from "@dfinity/utils";
+  import { fromDefinedNullable } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;

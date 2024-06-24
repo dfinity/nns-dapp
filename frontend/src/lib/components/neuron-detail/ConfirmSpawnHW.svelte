@@ -1,16 +1,16 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
-  import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatTokenE8s } from "$lib/utils/token.utils";
   import {
     formattedMaturity,
     isEnoughToStakeNeuron,
     neuronStake,
   } from "$lib/utils/neuron.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import { valueSpan } from "$lib/utils/utils";
   import { Html } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;
 

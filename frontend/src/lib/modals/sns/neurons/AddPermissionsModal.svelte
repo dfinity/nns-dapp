@@ -1,23 +1,23 @@
 <script lang="ts">
   import {
+    addNeuronPermissions,
+    removeNeuronPermissions,
+  } from "$lib/api/sns-governance.api";
+  import AddPrincipal from "$lib/components/common/AddPrincipal.svelte";
+  import { getCurrentIdentity } from "$lib/services/auth.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import { enumValues } from "$lib/utils/enum.utils";
+  import {
     Checkbox,
     WizardModal,
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
-  import { i18n } from "$lib/stores/i18n";
-  import { createEventDispatcher } from "svelte";
-  import AddPrincipal from "$lib/components/common/AddPrincipal.svelte";
   import { SnsNeuronPermissionType, type SnsNeuronId } from "@dfinity/sns";
-  import {
-    addNeuronPermissions,
-    removeNeuronPermissions,
-  } from "$lib/api/sns-governance.api";
-  import { getCurrentIdentity } from "$lib/services/auth.services";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { enumValues } from "$lib/utils/enum.utils";
-  import { toastsError } from "$lib/stores/toasts.store";
+  import { createEventDispatcher } from "svelte";
 
   export let neuronId: SnsNeuronId;
   export let rootCanisterId: Principal;

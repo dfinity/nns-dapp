@@ -1,31 +1,31 @@
 <script lang="ts">
-  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
-  import type { SnsSummary } from "$lib/types/sns";
+  import NfCommitmentProgressBar from "$lib/components/project-detail/NfCommitmentProgressBar.svelte";
+  import { getMaxNeuronsFundParticipation } from "$lib/getters/sns-summary";
   import { i18n } from "$lib/stores/i18n";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import {
-    Html,
-    KeyValuePair,
-    KeyValuePairInfo,
-  } from "@dfinity/gix-components";
-  import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
-  import { getContext } from "svelte";
+  import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import type { SnsParams } from "@dfinity/sns";
-  import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
-  import { nonNullish } from "@dfinity/utils";
-  import { swapSaleBuyerCount } from "$lib/utils/sns-swap.utils";
+  import type { SnsSummary } from "$lib/types/sns";
   import {
     getProjectCommitmentSplit,
     isCommitmentSplitWithNeuronsFund,
     type ProjectCommitmentSplit,
   } from "$lib/utils/projects.utils";
+  import { swapSaleBuyerCount } from "$lib/utils/sns-swap.utils";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
-  import NfCommitmentProgressBar from "$lib/components/project-detail/NfCommitmentProgressBar.svelte";
-  import { getMaxNeuronsFundParticipation } from "$lib/getters/sns-summary";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
+  import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
+  import {
+    Html,
+    KeyValuePair,
+    KeyValuePairInfo,
+  } from "@dfinity/gix-components";
+  import type { SnsParams } from "@dfinity/sns";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
+  import { getContext } from "svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

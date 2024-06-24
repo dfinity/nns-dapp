@@ -1,15 +1,15 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
+  import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
+  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+  import type { SnsProposalDataMap } from "$lib/utils/sns-proposals.utils";
+  import { basisPointsToPercent } from "$lib/utils/utils";
   import {
     type SnsProposalData,
     SnsProposalRewardStatus,
     type SnsTally,
   } from "@dfinity/sns";
-  import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
-  import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
-  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-  import type { SnsProposalDataMap } from "$lib/utils/sns-proposals.utils";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { basisPointsToPercent } from "$lib/utils/utils";
   import { fromDefinedNullable } from "@dfinity/utils";
 
   export let proposal: SnsProposalData;

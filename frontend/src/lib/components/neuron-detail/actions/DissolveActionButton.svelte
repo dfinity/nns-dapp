@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { NeuronState } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import { keyOf } from "$lib/utils/utils";
   import {
     NNS_NEURON_CONTEXT_KEY,
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
-  import { getContext } from "svelte";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
+  import { keyOf } from "$lib/utils/utils";
+  import { NeuronState } from "@dfinity/nns";
+  import { getContext } from "svelte";
 
   export let neuronState: NeuronState;
 

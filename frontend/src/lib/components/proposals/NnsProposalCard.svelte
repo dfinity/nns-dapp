@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { NeuronId, ProposalInfo, ProposalId } from "@dfinity/nns";
+  import { pageStore } from "$lib/derived/page.derived";
+  import type { UniversalProposalStatus } from "$lib/types/proposals";
+  import { buildProposalUrl } from "$lib/utils/navigation.utils";
   import {
     getUniversalProposalStatus,
     mapProposalInfo,
   } from "$lib/utils/proposals.utils";
   import ProposalCard from "./ProposalCard.svelte";
-  import { buildProposalUrl } from "$lib/utils/navigation.utils";
-  import { pageStore } from "$lib/derived/page.derived";
-  import type { UniversalProposalStatus } from "$lib/types/proposals";
+  import type { NeuronId, ProposalInfo, ProposalId } from "@dfinity/nns";
 
   export let proposalInfo: ProposalInfo;
   export let hidden = false;

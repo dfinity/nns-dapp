@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { page } from "$app/stores";
   import { AppPath } from "$lib/constants/routes.constants";
   import { pathForRouteId } from "$lib/utils/page.utils";
-  import { page } from "$app/stores";
   import type { SvelteComponent } from "svelte";
 
   export let testComponent: typeof SvelteComponent;

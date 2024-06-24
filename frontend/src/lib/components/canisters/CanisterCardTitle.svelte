@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { CanisterDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
-  import { Copy } from "@dfinity/gix-components";
   import { mapCanisterDetails } from "$lib/utils/canisters.utils";
+  import { Copy } from "@dfinity/gix-components";
 
   export let canister: CanisterDetails;
   export let titleTag: "h1" | "h4" = "h4";

@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
   import { listNeuronsHardwareWalletProxy } from "$lib/proxy/icp-ledger.services.proxy";
+  import { authStore } from "$lib/stores/auth.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { busy } from "@dfinity/gix-components";
-  import { getContext } from "svelte";
+  import { i18n } from "$lib/stores/i18n";
   import type { WalletContext } from "$lib/types/wallet.context";
   import { WALLET_CONTEXT_KEY } from "$lib/types/wallet.context";
-  import type { NeuronInfo } from "@dfinity/nns";
   import { mapHardwareWalletNeuronInfo } from "$lib/utils/hardware-wallet-neurons.utils";
-  import { authStore } from "$lib/stores/auth.store";
   import { openWalletModal } from "$lib/utils/modals.utils";
+  import { busy } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { getContext } from "svelte";
 
   // Get the store for the neurons of the hardware wallet from the dedicated context
   const context: WalletContext = getContext<WalletContext>(WALLET_CONTEXT_KEY);

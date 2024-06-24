@@ -1,38 +1,38 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { i18n } from "$lib/stores/i18n";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
-  import type { NewTransaction, TransactionInit } from "$lib/types/transaction";
-  import type { TransactionNetwork } from "$lib/types/transaction";
-  import type { ValidateAmountFn } from "$lib/types/transaction";
+  import BitcoinEstimatedAmountReceived from "$lib/components/accounts/BitcoinEstimatedAmountReceived.svelte";
+  import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
+  import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
+  import ConvertBtcInProgress from "$lib/components/accounts/ConvertBtcInProgress.svelte";
+  import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import type { Account } from "$lib/types/account";
-  import type { WizardStep } from "@dfinity/gix-components";
-  import { transferTokens as transferIcrcTokens } from "$lib/services/icrc-accounts.services";
-  import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
-  import type { TokenAmountV2, Token } from "@dfinity/utils";
-  import type { UniverseCanisterId } from "$lib/types/universe";
-  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import {
     convertCkBTCToBtcIcrc2,
     type ConvertCkBTCToBtcParams,
   } from "$lib/services/ckbtc-convert.services";
-  import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
-  import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
-  import ConvertBtcInProgress from "$lib/components/accounts/ConvertBtcInProgress.svelte";
-  import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
-  import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
-  import BitcoinEstimatedAmountReceived from "$lib/components/accounts/BitcoinEstimatedAmountReceived.svelte";
-  import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
-  import { nonNullish } from "@dfinity/utils";
-  import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
+  import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
+  import { transferTokens as transferIcrcTokens } from "$lib/services/icrc-accounts.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
     ckBTCInfoStore,
     type CkBTCInfoStoreUniverseData,
   } from "$lib/stores/ckbtc-info.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import type { Account } from "$lib/types/account";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+  import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
+  import type { NewTransaction, TransactionInit } from "$lib/types/transaction";
+  import type { TransactionNetwork } from "$lib/types/transaction";
+  import type { ValidateAmountFn } from "$lib/types/transaction";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { numberToE8s } from "$lib/utils/token.utils";
+  import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
+  import type { WizardStep } from "@dfinity/gix-components";
+  import type { TokenAmountV2, Token } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let selectedAccount: Account | undefined = undefined;
 

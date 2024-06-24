@@ -1,5 +1,20 @@
 <script lang="ts">
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
+  import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
+  import { secondsToDate, secondsToDateTime } from "$lib/utils/date.utils";
+  import {
+    canUserManageNeuronFundParticipation,
+    getDissolvingTimestampSeconds,
+    isNeuronControllable,
+    maturityLastDistribution,
+  } from "$lib/utils/neuron.utils";
+  import NnsNeuronAge from "../neurons/NnsNeuronAge.svelte";
+  import Hash from "../ui/Hash.svelte";
+  import JoinCommunityFundCheckbox from "./actions/JoinCommunityFundCheckbox.svelte";
+  import NnsAutoStakeMaturity from "./actions/NnsAutoStakeMaturity.svelte";
+  import SplitNnsNeuronButton from "./actions/SplitNnsNeuronButton.svelte";
   import {
     Html,
     KeyValuePair,
@@ -7,22 +22,7 @@
     Section,
   } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import NnsNeuronAge from "../neurons/NnsNeuronAge.svelte";
-  import { secondsToDate, secondsToDateTime } from "$lib/utils/date.utils";
   import { nonNullish } from "@dfinity/utils";
-  import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
-  import {
-    canUserManageNeuronFundParticipation,
-    getDissolvingTimestampSeconds,
-    isNeuronControllable,
-    maturityLastDistribution,
-  } from "$lib/utils/neuron.utils";
-  import Hash from "../ui/Hash.svelte";
-  import NnsAutoStakeMaturity from "./actions/NnsAutoStakeMaturity.svelte";
-  import JoinCommunityFundCheckbox from "./actions/JoinCommunityFundCheckbox.svelte";
-  import SplitNnsNeuronButton from "./actions/SplitNnsNeuronButton.svelte";
-  import { authStore } from "$lib/stores/auth.store";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 
   export let neuron: NeuronInfo;
 

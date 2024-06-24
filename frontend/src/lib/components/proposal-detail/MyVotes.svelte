@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { Vote } from "@dfinity/nns";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import VotingPowerDisplay from "$lib/components/ic/VotingPowerDisplay.svelte";
+  import VoteResultIcon from "$lib/components/proposal-detail/VotingCard/VoteResultIcon.svelte";
+  import VotingCardNeuronList from "$lib/components/proposal-detail/VotingCard/VotingCardNeuronList.svelte";
+  import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
   import { i18n } from "$lib/stores/i18n";
-  import { KeyValuePair } from "@dfinity/gix-components";
+  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { CompactNeuronInfo } from "$lib/utils/neuron.utils";
   import { getVoteDisplay } from "$lib/utils/proposals.utils";
-  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
-  import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
-  import VotingPowerDisplay from "$lib/components/ic/VotingPowerDisplay.svelte";
-  import VotingCardNeuronList from "$lib/components/proposal-detail/VotingCard/VotingCardNeuronList.svelte";
+  import { KeyValuePair } from "@dfinity/gix-components";
+  import { Vote } from "@dfinity/nns";
   import { fade } from "svelte/transition";
-  import VoteResultIcon from "$lib/components/proposal-detail/VotingCard/VoteResultIcon.svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let neuronsVotedForProposal: CompactNeuronInfo[] = [];
 

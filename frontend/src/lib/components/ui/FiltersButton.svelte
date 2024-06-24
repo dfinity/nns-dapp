@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
   import { IconFilter } from "@dfinity/gix-components";
+  import { createEventDispatcher } from "svelte";
 
   /**
    * How many filters are available and how many are currently active?

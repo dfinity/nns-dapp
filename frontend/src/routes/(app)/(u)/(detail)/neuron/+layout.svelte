@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Layout from "$lib/components/layout/Layout.svelte";
-  import Content from "$lib/components/layout/Content.svelte";
   import { goto } from "$app/navigation";
-  import { neuronsPathStore } from "$lib/derived/paths.derived";
+  import Content from "$lib/components/layout/Content.svelte";
+  import Layout from "$lib/components/layout/Layout.svelte";
   import LayoutNavGuard from "$lib/components/layout/LayoutNavGuard.svelte";
+  import { neuronsPathStore } from "$lib/derived/paths.derived";
 
   const back = (): Promise<void> => goto($neuronsPathStore);
 </script>

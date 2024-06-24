@@ -1,18 +1,18 @@
 <script lang="ts">
-  import { TokenAmount, ICPToken, nonNullish } from "@dfinity/utils";
-  import type { SnsSwapCommitment, SnsSummary } from "$lib/types/sns";
-  import ProjectStatus from "./ProjectStatus.svelte";
-  import ProjectCommitment from "./ProjectCommitment.svelte";
-  import ProjectTimelineUserCommitment from "./ProjectTimelineUserCommitment.svelte";
-  import { getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import { isNullish } from "@dfinity/utils";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
-  import ParticipateButton from "./ParticipateButton.svelte";
+  import type { SnsSwapCommitment, SnsSummary } from "$lib/types/sns";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
+  import ParticipateButton from "./ParticipateButton.svelte";
+  import ProjectCommitment from "./ProjectCommitment.svelte";
+  import ProjectStatus from "./ProjectStatus.svelte";
+  import ProjectTimelineUserCommitment from "./ProjectTimelineUserCommitment.svelte";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { TokenAmount, ICPToken, nonNullish } from "@dfinity/utils";
+  import { isNullish } from "@dfinity/utils";
+  import { getContext } from "svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

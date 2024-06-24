@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { DisburseMaturityInProgress } from "@dfinity/sns/dist/candid/sns_governance";
-  import { secondsToDateTime } from "$lib/utils/date.utils";
-  import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
-  import type { Account } from "@dfinity/sns/dist/candid/sns_governance";
   import ActiveDisbursementItem from "$lib/components/neuron-detail/ActiveDisbursementEntry.svelte";
+  import { secondsToDateTime } from "$lib/utils/date.utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
   import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
+  import type { Account } from "@dfinity/sns/dist/candid/sns_governance";
+  import type { DisburseMaturityInProgress } from "@dfinity/sns/dist/candid/sns_governance";
+  import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 
   export let disbursement: DisburseMaturityInProgress;
 

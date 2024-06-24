@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { nonNullish } from "@dfinity/utils";
-  import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
   import {
     ckBTCInfoStore,
     type CkBTCInfoStoreUniverseData,
   } from "$lib/stores/ckbtc-info.store";
+  import { i18n } from "$lib/stores/i18n";
   import type { UniverseCanisterId } from "$lib/types/universe";
+  import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
+  import { nonNullish } from "@dfinity/utils";
 
   export let universeId: UniverseCanisterId;
 

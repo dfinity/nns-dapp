@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
   import {
     SECONDS_IN_EIGHT_YEARS,
     SECONDS_IN_HALF_YEAR,
@@ -9,6 +8,7 @@
     neuronStake as getNeuronStake,
     neuronVotingPower,
   } from "$lib/utils/neuron.utils";
+  import type { NeuronInfo } from "@dfinity/nns";
 
   import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
   import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
