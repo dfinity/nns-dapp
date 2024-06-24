@@ -22,3 +22,8 @@ export interface ResponsiveTableColumn<
   alignment: ColumnAlignment;
   templateColumns: TemplateItem[];
 }
+
+export type Comparator<RowDataType> = (
+  a: RowDataType,
+  b: RowDataType
+) => number;
