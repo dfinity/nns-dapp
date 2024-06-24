@@ -282,7 +282,7 @@ jobs:
         run: echo "{}" > global-config.json
       - name: Build wasms
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile
