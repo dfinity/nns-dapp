@@ -20,6 +20,8 @@ proposal is successful, the changes it released will be moved from this file to
 * Display neurons in a table instead of a grid of cards.
 * Removed the gap between identifier and copy button.
 * Reset the scroll position on the Proposals page when switching between projects.
+* Universe selector icon size decreased.
+* Updated colors of element dividers.
 
 #### Deprecated
 
@@ -40,7 +42,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Put snapshot state directories in home directory instead of `dfx` cache.
-* Universe selector icon size decreased.
 
 #### Deprecated
 
