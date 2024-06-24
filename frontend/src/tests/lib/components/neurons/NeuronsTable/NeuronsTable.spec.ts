@@ -180,7 +180,11 @@ describe("NeuronsTable", () => {
     const po = renderComponent({ neurons: [neuron1, neuron2] });
     const rowPos = await po.getNeuronsTableRowPos();
     expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getAvailableMaturity()).toBe("0");
+    expect(await rowPos[0].getStakedMaturity()).toBe("0");
     expect(await rowPos[0].getTotalMaturity()).toBe("0");
+    expect(await rowPos[1].getAvailableMaturity()).toBe("0.10");
+    expect(await rowPos[1].getStakedMaturity()).toBe("0.20");
     expect(await rowPos[1].getTotalMaturity()).toBe("0.30");
   });
 
