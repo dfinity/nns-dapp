@@ -389,7 +389,7 @@
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2024-06-19",
         "IC_COMMIT_FOR_PROPOSALS": "2538538e0132b394f302c49fd91da23fc4cee284",
-        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-06-05_23-01-storage-layer-disabled"
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-06-19_23-01-cycle-hotfix"
       },
       "packtool": ""
     }
