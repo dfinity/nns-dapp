@@ -73,11 +73,18 @@ describe("ResponsiveTable", () => {
     return ResponsiveTablePo.under(new JestPageObjectElement(container));
   };
 
-  it("should render column headers", async () => {
+  it("should render desktop column headers", async () => {
     const po = renderComponent({ columns, tableData });
     // The last column is reserved for actions and is never rendered with a
     // header.
-    expect(await po.getColumnHeaders()).toEqual(["Name", "", "Age", ""]);
+    expect(await po.getDesktopColumnHeaders()).toEqual(["Name", "", "Age", ""]);
+  });
+
+  it("should render mobile column headers", async () => {
+    const po = renderComponent({ columns, tableData });
+    // The last column is reserved for actions and is never rendered with a
+    // header.
+    expect(await po.getMobileColumnHeaders()).toEqual(["Name", ""]);
   });
 
   it("should render column header alignments", async () => {
