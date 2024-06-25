@@ -28,6 +28,7 @@ That is why we are providing a `./config.sh` script that generate the above envi
 
 To run the dapp against canisters deployed locally on a simulated IC network, use the steps below:
 
+- Run `scripts/setup` to install necessary tools.
 - Clone the [snsdemo](https://github.com/dfinity/snsdemo/) repository. We'll use it to set up the test environment.
 - In the `snsdemo` repo, run:
   - `bin/dfx-sns-demo-install` (to install necessary tools)
