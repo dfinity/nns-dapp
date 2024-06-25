@@ -102,6 +102,18 @@ describe("responsive-table.utils", () => {
         })
       ).toEqual([{ columnId: "b" }, { columnId: "a", reversed: true }]);
     });
+
+    it("should not keep an existing order reversed as it becomes primary", () => {
+      expect(
+        selectPrimaryOrder({
+          order: [
+            { columnId: "a", reversed: true },
+            { columnId: "b", reversed: true },
+          ],
+          selectedColumnId: "b",
+        })
+      ).toEqual([{ columnId: "b" }, { columnId: "a", reversed: true }]);
+    });
   });
 
   describe("sortTableData", () => {
