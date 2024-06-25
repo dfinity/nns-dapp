@@ -36,7 +36,7 @@
   const columns: NeuronsTableColumn[] = [
     {
       id: "id",
-      title: $i18n.neurons.neuron_id,
+      title: $i18n.neurons.title,
       cellComponent: NeuronIdCell,
       alignment: "left",
       templateColumns: ["minmax(min-content, max-content)"],
