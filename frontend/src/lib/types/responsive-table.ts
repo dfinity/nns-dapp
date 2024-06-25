@@ -30,4 +30,4 @@ export type Comparator<RowDataType> = (
   b: RowDataType
 ) => number;
 
-export type TableOrder = Array<{ columnId: string }>;
+export type ResponsiveTableOrder = Array<{ columnId: string }>;

@@ -8,7 +8,7 @@
   import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
   import type {
     ResponsiveTableColumn,
-    TableOrder,
+    ResponsiveTableOrder,
   } from "$lib/types/responsive-table";
   import {
     getCellGridAreaName,
@@ -20,7 +20,7 @@
   export let testId = "responsive-table-component";
   export let tableData: Array<RowDataType>;
   export let columns: ResponsiveTableColumn<RowDataType>[];
-  export let order: TableOrder = [];
+  export let order: ResponsiveTableOrder = [];
   export let gridRowsPerTableRow = 1;
   export let getRowStyle: (rowData: RowDataType) => string | undefined = (_) =>
     undefined;

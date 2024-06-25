@@ -1,8 +1,8 @@
 import type {
   Comparator,
   ResponsiveTableColumn,
+  ResponsiveTableOrder,
   ResponsiveTableRowData,
-  TableOrder,
 } from "$lib/types/responsive-table";
 
 export const getCellGridAreaName = (index: number) => `cell-${index}`;
@@ -54,7 +54,7 @@ export const sortTableData = <RowDataType extends ResponsiveTableRowData>({
   columns,
 }: {
   tableData: RowDataType[];
-  order: TableOrder;
+  order: ResponsiveTableOrder;
   columns: ResponsiveTableColumn<RowDataType>[];
 }): RowDataType[] => {
   const comparatorByColumnId = Object.fromEntries(

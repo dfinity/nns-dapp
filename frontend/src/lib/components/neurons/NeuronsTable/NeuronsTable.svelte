@@ -11,7 +11,7 @@
     TableNeuron,
     NeuronsTableColumn,
   } from "$lib/types/neurons-table";
-  import type { TableOrder } from "$lib/types/responsive-table";
+  import type { ResponsiveTableOrder } from "$lib/types/responsive-table";
   import {
     compareByStake,
     compareByDissolveDelay,
@@ -21,7 +21,7 @@
 
   export let neurons: TableNeuron[];
 
-  const order: TableOrder = [
+  const order: ResponsiveTableOrder = [
     {
       columnId: "stake",
     },
