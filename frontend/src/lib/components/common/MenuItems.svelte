@@ -66,9 +66,7 @@
       href:
         // Switch to the actionable proposals page only when users are signed in.
         // When users are signed out, we preserve the universe in the URL.
-        $authSignedInStore
-          ? ACTIONABLE_PROPOSALS_URL
-          : $proposalsPathStore,
+        $authSignedInStore ? ACTIONABLE_PROPOSALS_URL : $proposalsPathStore,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
         paths: [AppPath.Proposals, AppPath.Proposal],
