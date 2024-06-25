@@ -172,7 +172,7 @@ describe("responsive-table.utils", () => {
       expect(
         sortTableData({
           tableData: [item1, item2, item3, item4],
-          order: [{ columnId: "a" }, { columnId: "b", reversed: true}],
+          order: [{ columnId: "a" }, { columnId: "b", reversed: true }],
           columns,
         })
       ).toEqual([item2, item1, item4, item3]);
