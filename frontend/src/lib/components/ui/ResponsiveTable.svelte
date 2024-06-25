@@ -1,19 +1,26 @@
 <script lang="ts" context="module">
   import type { ResponsiveTableRowData } from "$lib/types/responsive-table";
-  import { getCellGridAreaName } from "$lib/utils/responsive-table.utils";
   type RowDataType = ResponsiveTableRowData;
 </script>
 
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
-  import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
+  import type {
+    ResponsiveTableColumn,
+    ResponsiveTableOrder,
+  } from "$lib/types/responsive-table";
+  import {
+    getCellGridAreaName,
+    sortTableData,
+  } from "$lib/utils/responsive-table.utils";
   import { heightTransition } from "$lib/utils/transition.utils";
   import { nonNullish } from "@dfinity/utils";
 
   export let testId = "responsive-table-component";
   export let tableData: Array<RowDataType>;
   export let columns: ResponsiveTableColumn<RowDataType>[];
+  export let order: ResponsiveTableOrder = [];
   export let gridRowsPerTableRow = 1;
   export let getRowStyle: (rowData: RowDataType) => string | undefined = (_) =>
     undefined;
@@ -23,6 +30,13 @@
 
   $: nonLastColumns = columns.slice(0, -1);
   $: lastColumn = columns.at(-1);
+
+  let sortedTableData: RowDataType[];
+  $: sortedTableData = sortTableData({
+    tableData,
+    order,
+    columns,
+  });
 
   const getTableStyle = (columns: ResponsiveTableColumn<RowDataType>[]) => {
     // On desktop the first column gets all the remaining space after other
@@ -75,7 +89,7 @@
     </div>
   </div>
   <div role="rowgroup">
-    {#each tableData as rowData (rowData.domKey)}
+    {#each sortedTableData as rowData (rowData.domKey)}
       <div class="row-wrapper" transition:heightTransition={{ duration: 250 }}>
         <ResponsiveTableRow
           on:nnsAction

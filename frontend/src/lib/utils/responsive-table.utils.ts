@@ -1,4 +1,9 @@
-import type { Comparator } from "$lib/types/responsive-table";
+import type {
+  Comparator,
+  ResponsiveTableColumn,
+  ResponsiveTableOrder,
+  ResponsiveTableRowData,
+} from "$lib/types/responsive-table";
 
 export const getCellGridAreaName = (index: number) => `cell-${index}`;
 
@@ -43,12 +48,20 @@ export const createAscendingComparator = <RowDataType, Comparable>(
 };
 
 // Sorts rows based on a provided custom ordering.
-export const sortTableData = <RowDataType>({
+export const sortTableData = <RowDataType extends ResponsiveTableRowData>({
   tableData,
   order,
+  columns,
 }: {
   tableData: RowDataType[];
-  order: Comparator<RowDataType>[];
+  order: ResponsiveTableOrder;
+  columns: ResponsiveTableColumn<RowDataType>[];
 }): RowDataType[] => {
-  return [...tableData].sort(mergeComparators(order));
+  const comparatorByColumnId = Object.fromEntries(
+    columns.filter((c) => c.id && c.comparator).map((c) => [c.id, c.comparator])
+  );
+  const comparators = order.map(
+    ({ columnId }) => comparatorByColumnId[columnId]
+  );
+  return [...tableData].sort(mergeComparators(comparators));
 };

@@ -17,13 +17,17 @@ export type TemplateItem =
 export interface ResponsiveTableColumn<
   RowDataType extends ResponsiveTableRowData,
 > {
+  id?: string;
   title: string;
   cellComponent?: ComponentType<SvelteComponent<{ rowData: RowDataType }>>;
   alignment: ColumnAlignment;
   templateColumns: TemplateItem[];
+  comparator?: Comparator<RowDataType>;
 }
 
 export type Comparator<RowDataType> = (
   a: RowDataType,
   b: RowDataType
 ) => number;
+
+export type ResponsiveTableOrder = Array<{ columnId: string }>;

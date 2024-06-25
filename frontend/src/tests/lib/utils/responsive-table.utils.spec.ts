@@ -1,3 +1,4 @@
+import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
 import {
   createAscendingComparator,
   createDescendingComparator,
@@ -57,30 +58,62 @@ describe("responsive-table.utils", () => {
 
   describe("sortTableData", () => {
     it("should sort based on list of comparators", () => {
-      const item1 = { a: 10, b: 10 };
-      const item2 = { a: 10, b: 20 };
-      const item3 = { a: 20, b: 10 };
-      const item4 = { a: 20, b: 20 };
+      type TestRowData = { a: number; b: number; domKey: string };
+
+      const item1 = { a: 10, b: 10, domKey: "1" };
+      const item2 = { a: 10, b: 20, domKey: "2" };
+      const item3 = { a: 20, b: 10, domKey: "3" };
+      const item4 = { a: 20, b: 20, domKey: "4" };
       const comparatorA = createAscendingComparator(({ a }) => a);
       const comparatorB = createAscendingComparator(({ b }) => b);
+
+      const columnDefaults: ResponsiveTableColumn<TestRowData> = {
+        title: "Title",
+        alignment: "left",
+        templateColumns: ["1fr"],
+      };
+
+      const columns: ResponsiveTableColumn<TestRowData>[] = [
+        {
+          ...columnDefaults,
+          id: "a",
+          comparator: comparatorA,
+        },
+        {
+          ...columnDefaults,
+          id: "b",
+          comparator: comparatorB,
+        },
+      ];
+
       expect(
         sortTableData({
           tableData: [item3, item1, item4, item2],
-          order: [comparatorA, comparatorB],
+          order: [{ columnId: "a" }, { columnId: "b" }],
+          columns,
         })
       ).toEqual([item1, item2, item3, item4]);
       expect(
         sortTableData({
           tableData: [item4, item3, item2, item1],
-          order: [comparatorA, comparatorB],
+          order: [{ columnId: "a" }, { columnId: "b" }],
+          columns,
         })
       ).toEqual([item1, item2, item3, item4]);
       expect(
         sortTableData({
           tableData: [item1, item2, item3, item4],
-          order: [comparatorA, comparatorB],
+          order: [{ columnId: "a" }, { columnId: "b" }],
+          columns,
         })
       ).toEqual([item1, item2, item3, item4]);
+      expect(
+        sortTableData({
+          tableData: [item1, item2, item3, item4],
+          order: [{ columnId: "b" }, { columnId: "a" }],
+          columns,
+        })
+      ).toEqual([item1, item3, item2, item4]);
     });
   });
 });
