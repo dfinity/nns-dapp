@@ -4,6 +4,7 @@ import {
   createDescendingComparator,
   getCellGridAreaName,
   mergeComparators,
+  selectPrimaryOrder,
   sortTableData,
 } from "$lib/utils/responsive-table.utils";
 
@@ -53,6 +54,53 @@ describe("responsive-table.utils", () => {
       expect(comparator(item3, item2)).toBe(1);
       expect(comparator(item3, item4)).toBe(-1);
       expect(comparator(item4, item3)).toBe(1);
+    });
+  });
+
+  describe("selectPrimaryOrder", () => {
+    it("should add a new order to the front", () => {
+      expect(
+        selectPrimaryOrder({
+          order: [{ columnId: "a" }],
+          selectedColumnId: "b",
+        })
+      ).toEqual([{ columnId: "b" }, { columnId: "a" }]);
+    });
+
+    it("should move an exist order to the front", () => {
+      expect(
+        selectPrimaryOrder({
+          order: [{ columnId: "a" }, { columnId: "b" }, { columnId: "c" }],
+          selectedColumnId: "b",
+        })
+      ).toEqual([{ columnId: "b" }, { columnId: "a" }, { columnId: "c" }]);
+    });
+
+    it("should reverse an existing primary order", () => {
+      expect(
+        selectPrimaryOrder({
+          order: [{ columnId: "a" }, { columnId: "b" }],
+          selectedColumnId: "a",
+        })
+      ).toEqual([{ columnId: "a", reversed: true }, { columnId: "b" }]);
+    });
+
+    it("should un-reverse an existing primary order", () => {
+      expect(
+        selectPrimaryOrder({
+          order: [{ columnId: "a", reversed: true }, { columnId: "b" }],
+          selectedColumnId: "a",
+        })
+      ).toEqual([{ columnId: "a" }, { columnId: "b" }]);
+    });
+
+    it("should keep an existing order reversed as it becomes secondary", () => {
+      expect(
+        selectPrimaryOrder({
+          order: [{ columnId: "a", reversed: true }, { columnId: "b" }],
+          selectedColumnId: "b",
+        })
+      ).toEqual([{ columnId: "b" }, { columnId: "a", reversed: true }]);
     });
   });
 
@@ -114,6 +162,20 @@ describe("responsive-table.utils", () => {
           columns,
         })
       ).toEqual([item1, item3, item2, item4]);
+      expect(
+        sortTableData({
+          tableData: [item1, item2, item3, item4],
+          order: [{ columnId: "a", reversed: true }, { columnId: "b" }],
+          columns,
+        })
+      ).toEqual([item3, item4, item1, item2]);
+      expect(
+        sortTableData({
+          tableData: [item1, item2, item3, item4],
+          order: [{ columnId: "a" }, { columnId: "b", reversed: true}],
+          columns,
+        })
+      ).toEqual([item2, item1, item4, item3]);
     });
   });
 });
