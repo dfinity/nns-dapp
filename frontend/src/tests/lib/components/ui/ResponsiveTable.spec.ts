@@ -56,7 +56,7 @@ describe("ResponsiveTable", () => {
       age: 45,
     },
     {
-      rowHref: "anna/",
+      rowHref: "anya/",
       domKey: "2",
       name: "Anya",
       age: 19,
@@ -106,7 +106,7 @@ describe("ResponsiveTable", () => {
     const rows = await po.getRows();
     expect(rows).toHaveLength(3);
     expect(await rows[0].getHref()).toBe("alice/");
-    expect(await rows[1].getHref()).toBe("anna/");
+    expect(await rows[1].getHref()).toBe("anya/");
     expect(await rows[2].getHref()).toBe(null);
   });
 
