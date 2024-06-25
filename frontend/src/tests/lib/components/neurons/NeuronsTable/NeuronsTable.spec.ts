@@ -86,7 +86,7 @@ describe("NeuronsTable", () => {
   it("should render headers", async () => {
     const po = renderComponent({ neurons: [neuron1, neuron2] });
     expect(await po.getColumnHeaders()).toEqual([
-      "Neuron ID",
+      "Neurons",
       "",
       "Stake",
       "",
