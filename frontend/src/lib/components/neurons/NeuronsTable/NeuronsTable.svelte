@@ -11,8 +11,8 @@
     TableNeuron,
     NeuronsTableColumn,
   } from "$lib/types/neurons-table";
+  import type { TableOrder } from "$lib/types/responsive-table";
   import {
-    sortNeurons,
     compareByStake,
     compareByDissolveDelay,
     compareById,
@@ -21,20 +21,26 @@
 
   export let neurons: TableNeuron[];
 
-  const order = [compareByStake, compareByDissolveDelay, compareById];
-
-  let sortedNeurons: TableNeuron[];
-  $: sortedNeurons = sortNeurons({
-    neurons,
-    order,
-  });
+  const order: TableOrder = [
+    {
+      columnId: "stake",
+    },
+    {
+      columnId: "dissolveDelay",
+    },
+    {
+      columnId: "id",
+    },
+  ];
 
   const columns: NeuronsTableColumn[] = [
     {
+      id: "id",
       title: $i18n.neurons.neuron_id,
       cellComponent: NeuronIdCell,
       alignment: "left",
       templateColumns: ["minmax(min-content, max-content)"],
+      comparator: compareById,
     },
     {
       title: "",
@@ -42,10 +48,12 @@
       templateColumns: ["1fr"],
     },
     {
+      id: "stake",
       title: $i18n.neuron_detail.stake,
       cellComponent: NeuronStakeCell,
       alignment: "right",
       templateColumns: ["max-content"],
+      comparator: compareByStake,
     },
     {
       title: "",
@@ -64,10 +72,12 @@
       templateColumns: ["1fr"],
     },
     {
+      id: "dissolveDelay",
       title: $i18n.neurons.dissolve_delay_title,
       cellComponent: NeuronDissolveDelayCell,
       alignment: "left",
       templateColumns: ["max-content"],
+      comparator: compareByDissolveDelay,
     },
     {
       title: "",
@@ -99,6 +109,7 @@
 <ResponsiveTable
   testId="neurons-table-component"
   {columns}
-  tableData={sortedNeurons}
+  tableData={neurons}
+  {order}
   {getRowStyle}
 ></ResponsiveTable>

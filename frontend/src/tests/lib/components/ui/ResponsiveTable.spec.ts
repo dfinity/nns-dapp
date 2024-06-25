@@ -1,17 +1,28 @@
 import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
+import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
+import { createAscendingComparator } from "$lib/utils/responsive-table.utils";
 import TestTableAgeCell from "$tests/lib/components/ui/TestTableAgeCell.svelte";
 import TestTableNameCell from "$tests/lib/components/ui/TestTableNameCell.svelte";
 import { ResponsiveTablePo } from "$tests/page-objects/ResponsiveTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 
-describe("ResponseTable", () => {
-  const columns = [
+describe("ResponsiveTable", () => {
+  type TestRowData = {
+    domKey: string;
+    rowHref?: string;
+    name: string;
+    age: number;
+  };
+
+  const columns: ResponsiveTableColumn<TestRowData>[] = [
     {
+      id: "name",
       title: "Name",
       cellComponent: TestTableNameCell,
       alignment: "left",
       templateColumns: ["1fr", "max-content"],
+      comparator: createAscendingComparator((rowData) => rowData.name),
     },
     {
       // Column without cellComponent, to create a gap in the grid.
@@ -20,10 +31,12 @@ describe("ResponseTable", () => {
       templateColumns: ["1fr"],
     },
     {
+      id: "age",
       title: "Age",
       cellComponent: TestTableAgeCell,
       alignment: "left",
       templateColumns: ["1fr"],
+      comparator: createAscendingComparator((rowData) => rowData.age),
     },
     {
       title: "Actions",
@@ -45,7 +58,7 @@ describe("ResponseTable", () => {
     {
       rowHref: "anna/",
       domKey: "2",
-      name: "Anna",
+      name: "Anya",
       age: 19,
     },
     {
@@ -84,7 +97,7 @@ describe("ResponseTable", () => {
     // The label is repeated in the cell for columns that aren't the first or
     // the last column. They are hidden on desktop and shown on mobile.
     expect(await rows[0].getCells()).toEqual(["Alice", "", "Age 45", "Alice"]);
-    expect(await rows[1].getCells()).toEqual(["Anna", "", "Age 19", "Anna"]);
+    expect(await rows[1].getCells()).toEqual(["Anya", "", "Age 19", "Anya"]);
     expect(await rows[2].getCells()).toEqual(["Anton", "", "Age 31", "Anton"]);
   });
 
@@ -132,6 +145,38 @@ describe("ResponseTable", () => {
     expect(await rows[1].getStyle()).toBe("color: black;");
     expect(tableData[2].rowHref).toBeUndefined();
     expect(await rows[2].getStyle()).toBe("color: grey;");
+  });
+
+  it("should sort rows based on name", async () => {
+    const po = renderComponent({
+      columns,
+      tableData,
+      order: [{ columnId: "name" }],
+      getRowStyle: (rowData) =>
+        rowData.rowHref ? "color: black;" : "color: grey;",
+    });
+    const rows = await po.getRows();
+    expect(rows).toHaveLength(3);
+
+    expect(await rows[0].getCells()).toEqual(["Alice", "", "Age 45", "Alice"]);
+    expect(await rows[1].getCells()).toEqual(["Anton", "", "Age 31", "Anton"]);
+    expect(await rows[2].getCells()).toEqual(["Anya", "", "Age 19", "Anya"]);
+  });
+
+  it("should sort rows based on age", async () => {
+    const po = renderComponent({
+      columns,
+      tableData,
+      order: [{ columnId: "age" }],
+      getRowStyle: (rowData) =>
+        rowData.rowHref ? "color: black;" : "color: grey;",
+    });
+    const rows = await po.getRows();
+    expect(rows).toHaveLength(3);
+
+    expect(await rows[0].getCells()).toEqual(["Anya", "", "Age 19", "Anya"]);
+    expect(await rows[1].getCells()).toEqual(["Anton", "", "Age 31", "Anton"]);
+    expect(await rows[2].getCells()).toEqual(["Alice", "", "Age 45", "Alice"]);
   });
 
   it("should not set empty style attribute", async () => {

@@ -1,9 +1,6 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
-import type {
-  TableNeuron,
-  TableNeuronComparator,
-} from "$lib/types/neurons-table";
+import type { TableNeuron } from "$lib/types/neurons-table";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { buildNeuronUrl } from "$lib/utils/navigation.utils";
 import {
@@ -15,7 +12,6 @@ import {
   createAscendingComparator,
   createDescendingComparator,
   mergeComparators,
-  sortTableData,
 } from "$lib/utils/responsive-table.utils";
 import {
   getSnsDissolveDelaySeconds,
@@ -133,17 +129,3 @@ export const compareById = mergeComparators([
   createAscendingComparator((neuron: TableNeuron) => neuron.neuronId.length),
   createAscendingComparator((neuron: TableNeuron) => neuron.neuronId),
 ]);
-
-// Sorts neurons based on a provided custom ordering.
-export const sortNeurons = ({
-  neurons,
-  order,
-}: {
-  neurons: TableNeuron[];
-  order: TableNeuronComparator[];
-}): TableNeuron[] => {
-  return sortTableData({
-    tableData: neurons,
-    order,
-  });
-};
