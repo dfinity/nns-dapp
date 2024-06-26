@@ -74,7 +74,8 @@
           role="columnheader"
           style="--column-span: {column.templateColumns.length}"
           data-tid="column-header-{index + 1}"
-          class="desktop-align-{column.alignment}">{column.title}</span
+          class="desktop-align-{column.alignment}"
+          class:desktop-only={index > 0}>{column.title}</span
         >
       {/each}
       {#if lastColumn}
@@ -144,17 +145,16 @@
       border-bottom: 1px solid var(--elements-divider);
 
       [role="columnheader"] {
-        display: none;
-
         grid-column: span var(--column-span);
 
-        &:first-child,
-        &:last-child {
-          display: block;
+        &.desktop-only {
+          display: none;
         }
 
         @include media.min-width(medium) {
-          display: block;
+          &.desktop-only {
+            display: block;
+          }
         }
       }
 

@@ -11,11 +11,21 @@ export class ResponsiveTablePo extends BasePageObject {
     );
   }
 
-  async getColumnHeaders(): Promise<string[]> {
+  async getDesktopColumnHeaders(): Promise<string[]> {
     return Promise.all(
       (await this.root.querySelectorAll("[role='columnheader']")).map((el) =>
         el.getText()
       )
+    );
+  }
+
+  async getMobileColumnHeaders(): Promise<string[]> {
+    return Promise.all(
+      (
+        await this.root.querySelectorAll(
+          "[role='columnheader']:not(.desktop-only)"
+        )
+      ).map((el) => el.getText())
     );
   }
 
