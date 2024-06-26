@@ -41,8 +41,45 @@ SUMMARY="Testing proposal payloads"
 NODE_ID="ynkov-ujzr4-rgyrv-ou4yf-orw6f-rrslu-w65tu-agnfu-xwdrv-xmayj-qae"
 NODE_ID_2="7e6za-cdhql-kvxja-dfse5-jrme3-rwmau-6foiv-fxnwt-h7qos-wqryb-pae"
 SUBNET_ID="52o7h-ke47f-b5z7i-ah4wu-qhruc-kfdcl-xzzhl-sjmfh-3ryrf-xxtei-bae"
+SUBNET_ID_2="gxevo-lhkam-aaaaa-aaaap-yai"
 REPLICA_VERSION_ID="48da85ee6c03e8c15f3e90b21bf9ccae7b753ee6"
 USER_PRINCIPAL="fw6gp-yqo6v-iuhjd-pv26u-cn4qv-bzewd-ubz6s-fcssu-pfpct-xrda2-uqe"
+
+test_nns_function_06() {
+  HEIGHT=107428000
+  TIME_NS=1719241477392602354
+  STATE_HASH="5d6601ac575f565b7c61d6bf5f9b25fa503bf7d756210a9a1fe8d8a32967f2e5"
+  JSON_STATE_HASH="[$(echo "$STATE_HASH" | sed 's/../0x&,/g' | gawk -F, '{for(i=1;i<NF;i++) printf "%d,", strtonum($i)}' | sed 's/,$//')]"
+  KEY_NAME="some_key_name_1"
+  KEY_ROTATION_PERIOD_MS=111
+  SIGNATURE_REQUEST_TIMEOUT_NS=222
+  MAX_QUEUE_SIZE=155
+  NUM_PRE_SIGNATURES=99
+
+  subcommand="propose-to-update-recovery-cup"
+
+  PROPOSAL_ID="$(run_ic_admin \
+    "$subcommand" \
+    --initial-chain-key-configs-to-request "[
+        {
+            \"key_id\": \"ecdsa:Secp256k1:$KEY_NAME\",
+            \"pre_signatures_to_create_in_advance\": \"$NUM_PRE_SIGNATURES\",
+            \"max_queue_size\": \"$MAX_QUEUE_SIZE\",
+            \"subnet_id\": \"$SUBNET_ID_2\"
+        }
+    ]" \
+    --idkg-key-rotation-period-ms "$KEY_ROTATION_PERIOD_MS" \
+    --signature-request-timeout-ns "$SIGNATURE_REQUEST_TIMEOUT_NS" \
+    --subnet "$SUBNET_ID" \
+    --state-hash $STATE_HASH \
+    --time-ns $TIME_NS \
+    --height $HEIGHT)"
+
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
+  EXPECTED_PAYLOAD="{\"height\":$HEIGHT,\"replacement_nodes\":null,\"subnet_id\":\"$SUBNET_ID\",\"registry_store_uri\":null,\"ecdsa_config\":null,\"state_hash\":$JSON_STATE_HASH,\"chain_key_config\":{\"signature_request_timeout_ns\":$SIGNATURE_REQUEST_TIMEOUT_NS,\"key_configs\":[{\"subnet_id\":\"$SUBNET_ID_2\",\"key_config\":{\"max_queue_size\":$MAX_QUEUE_SIZE,\"key_id\":{\"Ecdsa\":{\"name\":\"$KEY_NAME\",\"curve\":\"secp256k1\"}},\"pre_signatures_to_create_in_advance\":$NUM_PRE_SIGNATURES}}],\"idkg_key_rotation_period_ms\":$KEY_ROTATION_PERIOD_MS},\"time_ns\":$TIME_NS}"
+
+  verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
+}
 
 test_nns_function_11() {
   subcommand="propose-to-deploy-guestos-to-all-subnet-nodes"
