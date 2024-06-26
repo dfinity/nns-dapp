@@ -83,10 +83,10 @@ describe("NeuronsTable", () => {
     return NeuronsTablePo.under(new JestPageObjectElement(container));
   };
 
-  it("should render headers", async () => {
+  it("should render desktop headers", async () => {
     const po = renderComponent({ neurons: [neuron1, neuron2] });
-    expect(await po.getColumnHeaders()).toEqual([
-      "Neuron ID",
+    expect(await po.getDesktopColumnHeaders()).toEqual([
+      "Neurons",
       "",
       "Stake",
       "",
@@ -95,6 +95,14 @@ describe("NeuronsTable", () => {
       "Dissolve Delay",
       "",
       "State",
+      "", // No header for actions column.
+    ]);
+  });
+
+  it("should render mobile headers", async () => {
+    const po = renderComponent({ neurons: [neuron1, neuron2] });
+    expect(await po.getMobileColumnHeaders()).toEqual([
+      "Neurons",
       "", // No header for actions column.
     ]);
   });

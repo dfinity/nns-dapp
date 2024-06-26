@@ -19,7 +19,6 @@ describe("icrc-canisters.services", () => {
   describe("loadIcrcCanisters", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKUSDC", false);
       icrcCanistersStore.reset();
     });
 
@@ -28,7 +27,7 @@ describe("icrc-canisters.services", () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
       });
 
-      it("should load cketh canisters", async () => {
+      it("should load cketh and ckusdc canisters", async () => {
         expect(get(icrcCanistersStore)).toEqual({});
         await loadIcrcCanisters();
 
@@ -41,10 +40,14 @@ describe("icrc-canisters.services", () => {
             ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
             indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
           },
+          [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: {
+            ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
+            indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
+          },
         });
       });
 
-      it("should not load cketh canisters if already present", async () => {
+      it("should not load canisters if already present", async () => {
         vi.spyOn(icrcCanistersStore, "setCanisters");
         icrcCanistersStore.setCanisters({
           ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,
@@ -54,32 +57,18 @@ describe("icrc-canisters.services", () => {
           ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
           indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
         });
-        expect(icrcCanistersStore.setCanisters).toHaveBeenCalledTimes(2);
+        icrcCanistersStore.setCanisters({
+          ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
+          indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
+        });
+        expect(icrcCanistersStore.setCanisters).toHaveBeenCalledTimes(3);
         await loadIcrcCanisters();
-        expect(icrcCanistersStore.setCanisters).toHaveBeenCalledTimes(2);
+        expect(icrcCanistersStore.setCanisters).toHaveBeenCalledTimes(3);
       });
     });
 
     describe("if ckethtest is disabled", () => {
-      it("should load cketh canisters", async () => {
-        expect(get(icrcCanistersStore)).toEqual({});
-        await loadIcrcCanisters();
-
-        expect(get(icrcCanistersStore)).toEqual({
-          [CKETH_UNIVERSE_CANISTER_ID.toText()]: {
-            ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,
-            indexCanisterId: CKETH_INDEX_CANISTER_ID,
-          },
-        });
-      });
-    });
-
-    describe("if ENABLE_CKUSDC is enabled", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_CKUSDC", true);
-      });
-
-      it("should load ckUSDC canisters", async () => {
+      it("should load cketh and ckusdc canisters", async () => {
         expect(get(icrcCanistersStore)).toEqual({});
         await loadIcrcCanisters();
 
@@ -93,21 +82,6 @@ describe("icrc-canisters.services", () => {
             indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
           },
         });
-      });
-
-      it("should not load cketh canisters if already present", async () => {
-        vi.spyOn(icrcCanistersStore, "setCanisters");
-        icrcCanistersStore.setCanisters({
-          ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,
-          indexCanisterId: CKETH_INDEX_CANISTER_ID,
-        });
-        icrcCanistersStore.setCanisters({
-          ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
-          indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
-        });
-        expect(icrcCanistersStore.setCanisters).toHaveBeenCalledTimes(2);
-        await loadIcrcCanisters();
-        expect(icrcCanistersStore.setCanisters).toHaveBeenCalledTimes(2);
       });
     });
   });

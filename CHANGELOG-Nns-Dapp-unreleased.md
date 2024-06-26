@@ -20,6 +20,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Change neuron ID column title to "Neurons".
+
 #### Deprecated
 
 #### Removed

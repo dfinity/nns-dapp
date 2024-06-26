@@ -41,7 +41,6 @@ export interface FeatureFlags<T> {
   ENABLE_CKBTC: T;
   ENABLE_CKTESTBTC: T;
   ENABLE_NEURONS_TABLE: T;
-  ENABLE_CKUSDC: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;
@@ -56,7 +55,7 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
   envVars?.featureFlags ??
-    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_SNS_TYPES_FILTER": false, "ENABLE_NEURONS_TABLE": false, "ENABLE_CKUSDC": false}'
+    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_SNS_TYPES_FILTER": false, "ENABLE_NEURONS_TABLE": false}'
 );
 
 export const IS_TESTNET: boolean =

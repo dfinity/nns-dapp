@@ -8,10 +8,7 @@ import {
   CKUSDC_INDEX_CANISTER_ID,
   CKUSDC_LEDGER_CANISTER_ID,
 } from "$lib/constants/ckusdc-canister-ids.constants";
-import {
-  ENABLE_CKTESTBTC,
-  ENABLE_CKUSDC,
-} from "$lib/stores/feature-flags.store";
+import { ENABLE_CKTESTBTC } from "$lib/stores/feature-flags.store";
 import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -35,10 +32,7 @@ export const loadIcrcCanisters = async () => {
       indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
     });
   }
-  if (
-    get(ENABLE_CKUSDC) &&
-    isNullish(storeData[CKUSDC_LEDGER_CANISTER_ID.toText()])
-  ) {
+  if (isNullish(storeData[CKUSDC_LEDGER_CANISTER_ID.toText()])) {
     icrcCanistersStore.setCanisters({
       ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
       indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
