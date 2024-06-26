@@ -7,7 +7,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import {
     actionableProposalCountStore,
-    actionableProposalIndicationEnabledStore,
+    actionableProposalIndicationVisibleStore,
     actionableProposalSupportedStore,
     actionableProposalTotalCountStore,
   } from "$lib/derived/actionable-proposals.derived";
@@ -78,7 +78,7 @@
           <TestIdWrapper testId="universe-name"
             >{$i18n.voting.actionable_proposals}</TestIdWrapper
           >
-          {#if $actionableProposalIndicationEnabledStore}
+          {#if $actionableProposalIndicationVisibleStore}
             {#if $actionableProposalTotalCountStore > 0 && mounted}
               <div
                 in:scale={{
@@ -92,7 +92,7 @@
           {/if}
         {:else}
           <TestIdWrapper testId="universe-name">{universe.title}</TestIdWrapper>
-          {#if $actionableProposalIndicationEnabledStore}
+          {#if $actionableProposalIndicationVisibleStore}
             {#if nonNullish(actionableProposalCount) && actionableProposalCount > 0 && mounted}
               <ActionableProposalCountBadge
                 count={actionableProposalCount}

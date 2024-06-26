@@ -2,7 +2,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
   actionableProposalCountStore,
-  actionableProposalIndicationEnabledStore,
+  actionableProposalIndicationVisibleStore,
   actionableProposalNotSupportedUniversesStore,
   actionableProposalSupportedStore,
   actionableProposalTotalCountStore,
@@ -56,14 +56,14 @@ describe("actionable proposals derived stores", () => {
     failedActionableSnsesStore.resetForTesting();
   });
 
-  describe("actionableProposalIndicationEnabledStore", () => {
+  describe("actionableProposalIndicationVisibleStore", () => {
     it("returns true when the user is signed-in and on proposals page", async () => {
       resetIdentity();
       page.mock({
         data: { universe: OWN_CANISTER_ID_TEXT },
         routeId: AppPath.Proposals,
       });
-      expect(get(actionableProposalIndicationEnabledStore)).toBe(true);
+      expect(get(actionableProposalIndicationVisibleStore)).toBe(true);
     });
 
     it("returns false when the user is not signed-in", async () => {
@@ -72,7 +72,7 @@ describe("actionable proposals derived stores", () => {
         data: { universe: OWN_CANISTER_ID_TEXT },
         routeId: AppPath.Proposals,
       });
-      expect(get(actionableProposalIndicationEnabledStore)).toBe(false);
+      expect(get(actionableProposalIndicationVisibleStore)).toBe(false);
     });
 
     it("returns false when the user is not on proposals page", async () => {
@@ -81,7 +81,7 @@ describe("actionable proposals derived stores", () => {
           data: { universe: OWN_CANISTER_ID_TEXT },
           routeId,
         });
-        expect(get(actionableProposalIndicationEnabledStore)).toBe(false);
+        expect(get(actionableProposalIndicationVisibleStore)).toBe(false);
       };
       resetIdentity();
 
