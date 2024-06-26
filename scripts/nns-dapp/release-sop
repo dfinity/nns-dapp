@@ -306,7 +306,7 @@ npm_audit() {
 
 cargo_audit() {
   local output
-  output=$(cargo audit --json | jq -r '[.vulnerabilities.list[] | .advisory.id] | sort | join(",")' || true)
+  output="$(cargo audit --json | jq -r '[.vulnerabilities.list[] | .advisory.id] | sort | join(",")' || true)"
 
   if [ -z "$output" ]; then
     echo "no vulnerabilities"
