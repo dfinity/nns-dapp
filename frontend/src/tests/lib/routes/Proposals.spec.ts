@@ -2,7 +2,6 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import Proposals from "$lib/routes/Proposals.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -42,6 +41,7 @@ describe("Proposals", () => {
     expect(queryByTestId("nns-proposal-list-component")).toBeInTheDocument();
   });
 
+  // TODO(max): unwrap
   describe("with ENABLE_ACTIONABLE_TAB", () => {
     const renderComponent = () => {
       const { container } = render(Proposals);
@@ -50,7 +50,6 @@ describe("Proposals", () => {
 
     beforeEach(() => {
       page.reset();
-      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", true);
     });
 
     it('should display actionable proposals when "actionable" in URL', async () => {

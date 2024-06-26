@@ -6,7 +6,6 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import SelectUniverseModal from "$lib/modals/universe/SelectUniverseModal.svelte";
-  import { ENABLE_ACTIONABLE_TAB } from "$lib/stores/feature-flags.store";
   import { BREAKPOINT_LARGE } from "@dfinity/gix-components";
 
   let showProjectPicker = false;
@@ -24,7 +23,6 @@
 
   let isActionableSelected = false;
   $: isActionableSelected =
-    $ENABLE_ACTIONABLE_TAB &&
     $authSignedInStore &&
     $pageStore.path === AppPath.Proposals &&
     $pageStore.actionable;

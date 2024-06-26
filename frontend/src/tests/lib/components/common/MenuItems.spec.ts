@@ -3,7 +3,6 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -52,10 +51,6 @@ describe("MenuItems", () => {
     }
   };
 
-  beforeEach(() => {
-    overrideFeatureFlagsStore.reset();
-  });
-
   it("should render accounts menu item", () =>
     shouldRenderMenuItem({ context: "accounts", labelKey: "tokens" }));
   it("should render neurons menu item", () =>
@@ -97,7 +92,6 @@ describe("MenuItems", () => {
   describe("actionable proposal link", () => {
     it("should have actionable proposal link", async () => {
       resetIdentity();
-      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", true);
       page.mock({
         data: { universe: OWN_CANISTER_ID_TEXT },
         routeId: AppPath.Proposals,
@@ -111,23 +105,7 @@ describe("MenuItems", () => {
     });
 
     it("should have default proposal link when signedOut", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", true);
       setNoIdentity();
-      page.mock({
-        data: { universe: OWN_CANISTER_ID_TEXT },
-        routeId: AppPath.Proposals,
-      });
-
-      shouldRenderMenuItem({
-        context: "proposals",
-        labelKey: "voting",
-        href: "/proposals/?u=qhbym-qaaaa-aaaaa-aaafq-cai",
-      });
-    });
-
-    it("should have default proposal link when no feature flag set", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", false);
-      resetIdentity();
       page.mock({
         data: { universe: OWN_CANISTER_ID_TEXT },
         routeId: AppPath.Proposals,

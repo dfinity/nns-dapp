@@ -7,12 +7,11 @@
   import ActionableProposals from "$lib/pages/ActionableProposals.svelte";
   import Proposals from "$lib/pages/NnsProposals.svelte";
   import SnsProposals from "$lib/pages/SnsProposals.svelte";
-  import { ENABLE_ACTIONABLE_TAB } from "$lib/stores/feature-flags.store";
   import { nonNullish } from "@dfinity/utils";
 </script>
 
 <main data-tid="proposals-component">
-  {#if $ENABLE_ACTIONABLE_TAB && $authSignedInStore && $pageStore.actionable}
+  {#if $authSignedInStore && $pageStore.actionable}
     <ActionableProposals />
   {:else}
     <SummaryUniverse />

@@ -12,7 +12,6 @@
     neuronsPathStore,
     proposalsPathStore,
   } from "$lib/derived/paths.derived";
-  import { ENABLE_ACTIONABLE_TAB } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import {
     ACTIONABLE_PROPOSALS_URL,
@@ -67,9 +66,7 @@
       href:
         // Switch to the actionable proposals page only when users are signed in.
         // When users are signed out, we preserve the universe in the URL.
-        $ENABLE_ACTIONABLE_TAB && $authSignedInStore
-          ? ACTIONABLE_PROPOSALS_URL
-          : $proposalsPathStore,
+        $authSignedInStore ? ACTIONABLE_PROPOSALS_URL : $proposalsPathStore,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
         paths: [AppPath.Proposals, AppPath.Proposal],
