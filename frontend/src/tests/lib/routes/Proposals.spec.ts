@@ -60,7 +60,7 @@ describe("Proposals", () => {
     expect(await po.getActionableProposalsPo().isPresent()).toBe(true);
   });
 
-  it('should no display actionable proposals when not "actionable" in URL', async () => {
+  it('should not display actionable proposals when no "actionable" in URL', async () => {
     resetIdentity();
     page.mock({
       data: {
