@@ -245,7 +245,7 @@ describe("NeuronsTable", () => {
         reversed: true,
       },
     ]);
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await runResolvedPromises();
 
     {
       const rowPos = await po.getNeuronsTableRowPos();
