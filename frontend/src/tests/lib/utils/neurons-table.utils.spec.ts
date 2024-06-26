@@ -1,5 +1,10 @@
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import {
+  compareByDissolveDelay,
+  compareById,
+  compareByMaturity,
+  compareByStake,
+  compareByState,
   tableNeuronsFromNeuronInfos,
   tableNeuronsFromSnsNeurons,
 } from "$lib/utils/neurons-table.utils";
@@ -7,7 +12,7 @@ import { hexStringToBytes } from "$lib/utils/utils";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { mockNeuron, mockTableNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
@@ -381,6 +386,144 @@ describe("neurons-table.utils", () => {
           tags: ["Hotkey control"],
         },
       ]);
+    });
+  });
+
+  describe("compareById", () => {
+    it("should sort neurons by ascending id", () => {
+      const neuron1 = {
+        ...mockTableNeuron,
+        neuronId: "9",
+      };
+      const neuron2 = {
+        ...mockTableNeuron,
+        neuronId: "10",
+      };
+      const neuron3 = {
+        ...mockTableNeuron,
+        neuronId: "222",
+      };
+
+      expect(compareById(neuron1, neuron1)).toBe(0);
+      expect(compareById(neuron1, neuron2)).toBe(-1);
+      expect(compareById(neuron2, neuron3)).toBe(-1);
+      expect(compareById(neuron3, neuron2)).toBe(1);
+      expect(compareById(neuron2, neuron1)).toBe(1);
+    });
+  });
+
+  describe("compareByStake", () => {
+    it("should sort neurons by descending stake", () => {
+      const makeStake = (amount: bigint) =>
+        TokenAmountV2.fromUlps({
+          amount,
+          token: ICPToken,
+        });
+
+      const neuron1 = {
+        ...mockTableNeuron,
+        stake: makeStake(100_000_000n),
+      };
+      const neuron2 = {
+        ...mockTableNeuron,
+        stake: makeStake(200_000_000n),
+      };
+
+      expect(compareByStake(neuron1, neuron1)).toBe(0);
+      expect(compareByStake(neuron1, neuron2)).toBe(1);
+      expect(compareByStake(neuron2, neuron1)).toBe(-1);
+    });
+  });
+
+  describe("compareByMaturity", () => {
+    it("should sort neurons by descending maturity, with just availableMaturity", () => {
+      const neuron1 = {
+        ...mockTableNeuron,
+        availableMaturity: 100_000_000n,
+      };
+      const neuron2 = {
+        ...mockTableNeuron,
+        availableMaturity: 200_000_000n,
+      };
+
+      expect(compareByMaturity(neuron1, neuron2)).toBe(1);
+      expect(compareByMaturity(neuron2, neuron1)).toBe(-1);
+    });
+
+    it("should sort neurons by descending maturity, with just stakedMaturity", () => {
+      const neuron1 = {
+        ...mockTableNeuron,
+        stakedMaturity: 100_000_000n,
+      };
+      const neuron2 = {
+        ...mockTableNeuron,
+        stakedMaturity: 200_000_000n,
+      };
+
+      expect(compareByMaturity(neuron1, neuron2)).toBe(1);
+      expect(compareByMaturity(neuron2, neuron1)).toBe(-1);
+    });
+
+    it("should treat available and staked maturity as equivalent", () => {
+      const neuron1 = {
+        ...mockTableNeuron,
+        availableMaturity: 200_000_000n,
+        stakedMaturity: 100_000_000n,
+      };
+      const neuron2 = {
+        ...mockTableNeuron,
+        availableMaturity: 100_000_000n,
+        stakedMaturity: 200_000_000n,
+      };
+
+      expect(compareByMaturity(neuron1, neuron2)).toBe(0);
+      expect(compareByMaturity(neuron2, neuron1)).toBe(0);
+    });
+  });
+
+  describe("compareByDissolveDelay", () => {
+    it("should sort neurons by descending dissolve delay", () => {
+      const neuron1 = {
+        ...mockTableNeuron,
+        dissolveDelaySeconds: 86400n,
+      };
+      const neuron2 = {
+        ...mockTableNeuron,
+        dissolveDelaySeconds: 8640000n,
+      };
+
+      expect(compareByDissolveDelay(neuron1, neuron1)).toBe(0);
+      expect(compareByDissolveDelay(neuron1, neuron2)).toBe(1);
+      expect(compareByDissolveDelay(neuron2, neuron1)).toBe(-1);
+    });
+  });
+
+  describe("compareByState", () => {
+    it("should sort neurons by state", () => {
+      const neuron1 = {
+        ...mockTableNeuron,
+        state: NeuronState.Spawning,
+      };
+      const neuron2 = {
+        ...mockTableNeuron,
+        state: NeuronState.Dissolved,
+      };
+      const neuron3 = {
+        ...mockTableNeuron,
+        state: NeuronState.Dissolving,
+      };
+      const neuron4 = {
+        ...mockTableNeuron,
+        state: NeuronState.Locked,
+      };
+
+      expect(compareByState(neuron1, neuron1)).toBe(0);
+      expect(compareByState(neuron1, neuron2)).toBe(1);
+      expect(compareByState(neuron2, neuron3)).toBe(1);
+      expect(compareByState(neuron3, neuron4)).toBe(1);
+      expect(compareByState(neuron2, neuron1)).toBe(-1);
+      expect(compareByState(neuron3, neuron2)).toBe(-1);
+      expect(compareByState(neuron4, neuron3)).toBe(-1);
     });
   });
 });
