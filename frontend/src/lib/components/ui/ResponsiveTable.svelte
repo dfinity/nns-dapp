@@ -147,9 +147,13 @@
       [role="columnheader"] {
         grid-column: span var(--column-span);
 
+        &.desktop-only {
+          display: none;
+        }
+
         @include media.min-width(medium) {
           &.desktop-only {
-            display: none;
+            display: block;
           }
         }
       }
