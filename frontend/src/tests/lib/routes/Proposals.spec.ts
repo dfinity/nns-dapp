@@ -41,42 +41,35 @@ describe("Proposals", () => {
     expect(queryByTestId("nns-proposal-list-component")).toBeInTheDocument();
   });
 
-  // TODO(max): unwrap
-  describe("with ENABLE_ACTIONABLE_TAB", () => {
-    const renderComponent = () => {
-      const { container } = render(Proposals);
-      return ProposalsPo.under(new JestPageObjectElement(container));
-    };
+  const renderComponent = () => {
+    const { container } = render(Proposals);
+    return ProposalsPo.under(new JestPageObjectElement(container));
+  };
 
-    beforeEach(() => {
-      page.reset();
+  it('should display actionable proposals when "actionable" in URL', async () => {
+    resetIdentity();
+    page.mock({
+      data: {
+        universe: OWN_CANISTER_ID_TEXT,
+        routeId: AppPath.Proposals,
+        actionable: true,
+      },
     });
 
-    it('should display actionable proposals when "actionable" in URL', async () => {
-      resetIdentity();
-      page.mock({
-        data: {
-          universe: OWN_CANISTER_ID_TEXT,
-          routeId: AppPath.Proposals,
-          actionable: true,
-        },
-      });
+    const po = renderComponent();
+    expect(await po.getActionableProposalsPo().isPresent()).toBe(true);
+  });
 
-      const po = renderComponent();
-      expect(await po.getActionableProposalsPo().isPresent()).toBe(true);
+  it('should no display actionable proposals when not "actionable" in URL', async () => {
+    resetIdentity();
+    page.mock({
+      data: {
+        universe: OWN_CANISTER_ID_TEXT,
+        routeId: AppPath.Proposals,
+      },
     });
 
-    it('should no display actionable proposals when not "actionable" in URL', async () => {
-      resetIdentity();
-      page.mock({
-        data: {
-          universe: OWN_CANISTER_ID_TEXT,
-          routeId: AppPath.Proposals,
-        },
-      });
-
-      const po = renderComponent();
-      expect(await po.getActionableProposalsPo().isPresent()).toBe(false);
-    });
+    const po = renderComponent();
+    expect(await po.getActionableProposalsPo().isPresent()).toBe(false);
   });
 });
