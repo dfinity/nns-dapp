@@ -27,24 +27,23 @@ vi.mock("$lib/services/$public/sns-proposals.services", () => {
 vi.mock("$lib/api/governance.api");
 
 describe("Proposals", () => {
-  vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
-    mockProjectSubscribe([mockSnsFullProject])
-  );
+  const renderComponent = () => {
+    const { container } = render(Proposals);
+    return ProposalsPo.under(new JestPageObjectElement(container));
+  };
 
   beforeEach(() => {
     // Reset to default value
     page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
+    vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+      mockProjectSubscribe([mockSnsFullProject])
+    );
   });
 
   it("should render NnsProposals by default", () => {
     const { queryByTestId } = render(Proposals);
     expect(queryByTestId("nns-proposal-list-component")).toBeInTheDocument();
   });
-
-  const renderComponent = () => {
-    const { container } = render(Proposals);
-    return ProposalsPo.under(new JestPageObjectElement(container));
-  };
 
   it('should display actionable proposals when "actionable" in URL', async () => {
     resetIdentity();
