@@ -25,7 +25,7 @@ export interface ActionableProposalCountData {
 
 /** Returns true when the indication needs to be shown */
 // TODO(max): rename into actionableProposalIndicationVisibleStore (related to the visibility on neurons page bug)
-export const actionableProposalIndicationEnabledStore: Readable<boolean> =
+export const actionableProposalIndicationVisibleStore: Readable<boolean> =
   derived(
     [pageStore, authSignedInStore],
     ([{ path: currentPath }, isSignedIn]) =>
