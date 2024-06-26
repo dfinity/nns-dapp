@@ -7,11 +7,11 @@
   import NeuronStateCell from "$lib/components/neurons/NeuronsTable/NeuronStateCell.svelte";
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import { neuronsTableOrderStore } from "$lib/stores/neurons-table.store";
   import type {
     TableNeuron,
     NeuronsTableColumn,
   } from "$lib/types/neurons-table";
-  import type { ResponsiveTableOrder } from "$lib/types/responsive-table";
   import {
     compareByStake,
     compareByDissolveDelay,
@@ -20,18 +20,6 @@
   import { NeuronState } from "@dfinity/nns";
 
   export let neurons: TableNeuron[];
-
-  const order: ResponsiveTableOrder = [
-    {
-      columnId: "stake",
-    },
-    {
-      columnId: "dissolveDelay",
-    },
-    {
-      columnId: "id",
-    },
-  ];
 
   const columns: NeuronsTableColumn[] = [
     {
@@ -110,6 +98,6 @@
   testId="neurons-table-component"
   {columns}
   tableData={neurons}
-  {order}
+  order={$neuronsTableOrderStore}
   {getRowStyle}
 ></ResponsiveTable>

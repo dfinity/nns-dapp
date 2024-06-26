@@ -5,6 +5,7 @@ import {
   SECONDS_IN_MONTH,
   SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
+import { neuronsTableOrderStore } from "$lib/stores/neurons-table.store";
 import type { TableNeuron } from "$lib/types/neurons-table";
 import { mockTableNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronsTablePo } from "$tests/page-objects/NeuronsTable.page-object";
@@ -82,6 +83,10 @@ describe("NeuronsTable", () => {
     });
     return NeuronsTablePo.under(new JestPageObjectElement(container));
   };
+
+  beforeEach(() => {
+    neuronsTableOrderStore.reset();
+  });
 
   it("should render desktop headers", async () => {
     const po = renderComponent({ neurons: [neuron1, neuron2] });
@@ -216,6 +221,40 @@ describe("NeuronsTable", () => {
     expect(await rowPos[1].getNeuronId()).toBe(neuron2.neuronId);
     expect(await rowPos[2].getNeuronId()).toBe(neuron3.neuronId);
     expect(await rowPos[3].getNeuronId()).toBe(neuron4.neuronId);
+  });
+
+  it("should change order based on order store", async () => {
+    const po = renderComponent({
+      neurons: [neuron1, neuron2, neuron3, neuron4],
+    });
+    {
+      const rowPos = await po.getNeuronsTableRowPos();
+      expect(rowPos).toHaveLength(4);
+      expect(await rowPos[0].getNeuronId()).toBe(neuron1.neuronId);
+      expect(await rowPos[1].getNeuronId()).toBe(neuron2.neuronId);
+      expect(await rowPos[2].getNeuronId()).toBe(neuron3.neuronId);
+      expect(await rowPos[3].getNeuronId()).toBe(neuron4.neuronId);
+    }
+
+    neuronsTableOrderStore.set([
+      {
+        columnId: "dissolveDelay",
+      },
+      {
+        columnId: "id",
+        reversed: true,
+      },
+    ]);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    {
+      const rowPos = await po.getNeuronsTableRowPos();
+      expect(rowPos).toHaveLength(4);
+      expect(await rowPos[0].getNeuronId()).toBe(neuron2.neuronId);
+      expect(await rowPos[1].getNeuronId()).toBe(neuron4.neuronId);
+      expect(await rowPos[2].getNeuronId()).toBe(neuron3.neuronId);
+      expect(await rowPos[3].getNeuronId()).toBe(neuron1.neuronId);
+    }
   });
 
   it("should render dissolve delay", async () => {
