@@ -154,13 +154,21 @@ describe("ResponsiveTable", () => {
     expect(await rows[2].getStyle()).toBe("color: grey;");
   });
 
+  it("should not set empty style attribute", async () => {
+    const po = renderComponent({
+      columns,
+      tableData,
+      getRowStyle: (_) => undefined,
+    });
+    const rows = await po.getRows();
+    expect(await rows[0].getStyle()).toBeNull();
+  });
+
   it("should sort rows based on name", async () => {
     const po = renderComponent({
       columns,
       tableData,
       order: [{ columnId: "name" }],
-      getRowStyle: (rowData) =>
-        rowData.rowHref ? "color: black;" : "color: grey;",
     });
     const rows = await po.getRows();
     expect(rows).toHaveLength(3);
@@ -175,8 +183,6 @@ describe("ResponsiveTable", () => {
       columns,
       tableData,
       order: [{ columnId: "age" }],
-      getRowStyle: (rowData) =>
-        rowData.rowHref ? "color: black;" : "color: grey;",
     });
     const rows = await po.getRows();
     expect(rows).toHaveLength(3);
@@ -184,16 +190,6 @@ describe("ResponsiveTable", () => {
     expect(await rows[0].getCells()).toEqual(["Anya", "", "Age 19", "Anya"]);
     expect(await rows[1].getCells()).toEqual(["Anton", "", "Age 31", "Anton"]);
     expect(await rows[2].getCells()).toEqual(["Alice", "", "Age 45", "Alice"]);
-  });
-
-  it("should not set empty style attribute", async () => {
-    const po = renderComponent({
-      columns,
-      tableData,
-      getRowStyle: (_) => undefined,
-    });
-    const rows = await po.getRows();
-    expect(await rows[0].getStyle()).toBeNull();
   });
 
   it("should render column styles depending on the number of columns", async () => {

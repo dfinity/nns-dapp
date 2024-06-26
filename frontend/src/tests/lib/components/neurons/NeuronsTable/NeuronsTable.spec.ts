@@ -11,6 +11,7 @@ import { mockTableNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronsTablePo } from "$tests/page-objects/NeuronsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
@@ -245,7 +246,7 @@ describe("NeuronsTable", () => {
         reversed: true,
       },
     ]);
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await runResolvedPromises();
 
     {
       const rowPos = await po.getNeuronsTableRowPos();
