@@ -464,7 +464,7 @@ describe("neurons-table.utils", () => {
       expect(compareByMaturity(neuron2, neuron1)).toBe(-1);
     });
 
-    it("should tream available and staked maturity as equivalent", () => {
+    it("should treat available and staked maturity as equivalent", () => {
       const neuron1 = {
         ...mockTableNeuron,
         availableMaturity: 200_000_000n,
