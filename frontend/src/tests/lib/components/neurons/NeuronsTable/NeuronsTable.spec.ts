@@ -14,6 +14,7 @@ import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import { get } from "svelte/store";
 
 describe("NeuronsTable", () => {
   const makeStake = (amount: bigint) =>
@@ -256,6 +257,57 @@ describe("NeuronsTable", () => {
       expect(await rowPos[2].getNeuronId()).toBe(neuron3.neuronId);
       expect(await rowPos[3].getNeuronId()).toBe(neuron1.neuronId);
     }
+  });
+
+  it("should change order store based on clicked header", async () => {
+    const po = renderComponent({
+      neurons: [neuron1, neuron2, neuron3, neuron4],
+    });
+
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "stake" },
+      { columnId: "dissolveDelay" },
+      { columnId: "id" },
+    ]);
+
+    await po.clickColumnHeader("Stake");
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "stake", reversed: true },
+      { columnId: "dissolveDelay" },
+      { columnId: "id" },
+    ]);
+
+    await po.clickColumnHeader("Neurons");
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "id" },
+      { columnId: "stake", reversed: true },
+      { columnId: "dissolveDelay" },
+    ]);
+
+    await po.clickColumnHeader("Maturity");
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "maturity" },
+      { columnId: "id" },
+      { columnId: "stake", reversed: true },
+      { columnId: "dissolveDelay" },
+    ]);
+
+    await po.clickColumnHeader("Dissolve Delay");
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "dissolveDelay" },
+      { columnId: "maturity" },
+      { columnId: "id" },
+      { columnId: "stake", reversed: true },
+    ]);
+
+    await po.clickColumnHeader("State");
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "state" },
+      { columnId: "dissolveDelay" },
+      { columnId: "maturity" },
+      { columnId: "id" },
+      { columnId: "stake", reversed: true },
+    ]);
   });
 
   it("should render dissolve delay", async () => {
