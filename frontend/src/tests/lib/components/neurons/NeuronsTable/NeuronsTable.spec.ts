@@ -3,7 +3,6 @@ import {
   SECONDS_IN_DAY,
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_MONTH,
-  SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
 import { neuronsTableOrderStore } from "$lib/stores/neurons-table.store";
 import type { TableNeuron } from "$lib/types/neurons-table";
@@ -28,11 +27,6 @@ describe("NeuronsTable", () => {
     rowHref: "/neurons/10",
     domKey: "10",
     neuronId: "10",
-    stake: makeStake(1_300_000_000n),
-    availableMaturity: 0n,
-    stakedMaturity: 0n,
-    dissolveDelaySeconds: BigInt(6 * SECONDS_IN_MONTH),
-    state: NeuronState.Dissolving,
   };
 
   const neuron2: TableNeuron = {
@@ -40,11 +34,6 @@ describe("NeuronsTable", () => {
     rowHref: "/neurons/99",
     domKey: "99",
     neuronId: "99",
-    stake: makeStake(500_000_000n),
-    availableMaturity: 10_000_000n,
-    stakedMaturity: 20_000_000n,
-    dissolveDelaySeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
-    state: NeuronState.Locked,
   };
 
   const neuron3: TableNeuron = {
@@ -52,9 +41,6 @@ describe("NeuronsTable", () => {
     rowHref: "/neurons/200",
     domKey: "200",
     neuronId: "200",
-    stake: makeStake(500_000_000n),
-    dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
-    state: NeuronState.Dissolving,
   };
 
   const neuron4: TableNeuron = {
@@ -62,9 +48,6 @@ describe("NeuronsTable", () => {
     rowHref: "/neurons/1111",
     domKey: "1111",
     neuronId: "1111",
-    stake: makeStake(500_000_000n),
-    dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
-    state: NeuronState.Locked,
   };
 
   const spawningNeuron: TableNeuron = {
@@ -72,9 +55,10 @@ describe("NeuronsTable", () => {
     domKey: "101",
     neuronId: "101",
     stake: TokenAmountV2.fromUlps({
-      amount: 300_000_000n,
+      amount: 0n,
       token: ICPToken,
     }),
+    availableMaturity: 300_000_000n,
     dissolveDelaySeconds: BigInt(5 * SECONDS_IN_DAY),
     state: NeuronState.Spawning,
   };
@@ -170,7 +154,18 @@ describe("NeuronsTable", () => {
   });
 
   it("should render neuron stake", async () => {
-    const po = renderComponent({ neurons: [neuron1, neuron2] });
+    const po = renderComponent({
+      neurons: [
+        {
+          ...neuron1,
+          stake: makeStake(1_300_000_000n),
+        },
+        {
+          ...neuron2,
+          stake: makeStake(500_000_000n),
+        },
+      ],
+    });
     const rowPos = await po.getNeuronsTableRowPos();
     expect(rowPos).toHaveLength(2);
     expect(await rowPos[0].getStake()).toBe("13.00 ICP");
@@ -192,7 +187,20 @@ describe("NeuronsTable", () => {
   });
 
   it("should render neuron maturity", async () => {
-    const po = renderComponent({ neurons: [neuron1, neuron2] });
+    const po = renderComponent({
+      neurons: [
+        {
+          ...neuron1,
+          availableMaturity: 0n,
+          stakedMaturity: 0n,
+        },
+        {
+          ...neuron2,
+          availableMaturity: 10_000_000n,
+          stakedMaturity: 20_000_000n,
+        },
+      ],
+    });
     const rowPos = await po.getNeuronsTableRowPos();
     expect(rowPos).toHaveLength(2);
     expect(await rowPos[0].getAvailableMaturity()).toBe("0");
@@ -204,7 +212,18 @@ describe("NeuronsTable", () => {
   });
 
   it("should render neuron state", async () => {
-    const po = renderComponent({ neurons: [neuron1, neuron2] });
+    const po = renderComponent({
+      neurons: [
+        {
+          ...neuron1,
+          state: NeuronState.Dissolving,
+        },
+        {
+          ...neuron2,
+          state: NeuronState.Locked,
+        },
+      ],
+    });
     const rowPos = await po.getNeuronsTableRowPos();
     expect(rowPos).toHaveLength(2);
     expect(await rowPos[0].getState()).toBe("Dissolving");
@@ -214,7 +233,24 @@ describe("NeuronsTable", () => {
   it("should sort neurons", async () => {
     // Neurons passed in out of order ...
     const po = renderComponent({
-      neurons: [neuron3, neuron1, neuron4, neuron2],
+      neurons: [
+        {
+          ...neuron2,
+          stake: makeStake(800_000_000n),
+        },
+        {
+          ...neuron4,
+          stake: makeStake(600_000_000n),
+        },
+        {
+          ...neuron1,
+          stake: makeStake(900_000_000n),
+        },
+        {
+          ...neuron3,
+          stake: makeStake(700_000_000n),
+        },
+      ],
     });
     const rowPos = await po.getNeuronsTableRowPos();
     expect(rowPos).toHaveLength(4);
@@ -227,7 +263,28 @@ describe("NeuronsTable", () => {
 
   it("should change order based on order store", async () => {
     const po = renderComponent({
-      neurons: [neuron1, neuron2, neuron3, neuron4],
+      neurons: [
+        {
+          ...neuron1,
+          stake: makeStake(800_000_000n),
+          dissolveDelaySeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
+        },
+        {
+          ...neuron2,
+          stake: makeStake(800_000_000n),
+          dissolveDelaySeconds: BigInt(6 * SECONDS_IN_MONTH),
+        },
+        {
+          ...neuron3,
+          stake: makeStake(300_000_000n),
+          dissolveDelaySeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
+        },
+        {
+          ...neuron4,
+          stake: makeStake(300_000_000n),
+          dissolveDelaySeconds: BigInt(6 * SECONDS_IN_MONTH),
+        },
+      ],
     });
     {
       const rowPos = await po.getNeuronsTableRowPos();
@@ -252,10 +309,10 @@ describe("NeuronsTable", () => {
     {
       const rowPos = await po.getNeuronsTableRowPos();
       expect(rowPos).toHaveLength(4);
-      expect(await rowPos[0].getNeuronId()).toBe(neuron2.neuronId);
-      expect(await rowPos[1].getNeuronId()).toBe(neuron4.neuronId);
-      expect(await rowPos[2].getNeuronId()).toBe(neuron3.neuronId);
-      expect(await rowPos[3].getNeuronId()).toBe(neuron1.neuronId);
+      expect(await rowPos[0].getNeuronId()).toBe(neuron3.neuronId);
+      expect(await rowPos[1].getNeuronId()).toBe(neuron1.neuronId);
+      expect(await rowPos[2].getNeuronId()).toBe(neuron4.neuronId);
+      expect(await rowPos[3].getNeuronId()).toBe(neuron2.neuronId);
     }
   });
 
@@ -311,7 +368,20 @@ describe("NeuronsTable", () => {
   });
 
   it("should render dissolve delay", async () => {
-    const po = renderComponent({ neurons: [neuron1, neuron2] });
+    const po = renderComponent({
+      neurons: [
+        {
+          ...neuron1,
+          stake: makeStake(800_000_000n),
+          dissolveDelaySeconds: BigInt(6 * SECONDS_IN_MONTH),
+        },
+        {
+          ...neuron2,
+          stake: makeStake(300_000_000n),
+          dissolveDelaySeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
+        },
+      ],
+    });
     const rowPos = await po.getNeuronsTableRowPos();
     expect(rowPos).toHaveLength(2);
     expect(await rowPos[0].getDissolveDelay()).toBe("182 days, 15 hours");
