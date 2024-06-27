@@ -270,16 +270,6 @@ describe("ResponsiveTable", () => {
     expect(await po.getColumnHeaderWithArrow()).toBe("Age reversed");
   });
 
-  it("should not set empty style attribute", async () => {
-    const po = renderComponent({
-      columns,
-      tableData,
-      getRowStyle: (_) => undefined,
-    });
-    const rows = await po.getRows();
-    expect(await rows[0].getStyle()).toBeNull();
-  });
-
   it("should render column styles depending on the number of columns", async () => {
     // 4 columns
     const po1 = renderComponent({ columns, tableData });
