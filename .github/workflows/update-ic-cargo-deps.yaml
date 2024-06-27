@@ -39,7 +39,7 @@ jobs:
           branch: bot-ic-update
           branch-suffix: timestamp
           delete-branch: true
-          title: 'Update IC Cargo Dependencies to ${{ steps.latest.outputs.latest_release }}'
+          title: 'bot: Update IC Cargo Dependencies to ${{ steps.latest.outputs.latest_release }}'
           body: |
             # Motivation
             A newer release of the internet computer is available.

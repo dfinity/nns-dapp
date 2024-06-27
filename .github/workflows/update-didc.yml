@@ -55,7 +55,7 @@ jobs:
           branch: bot-didc-update
           branch-suffix: timestamp
           delete-branch: true
-          title: 'Update didc release to ${{ steps.update.outputs.version }}'
+          title: 'bot: Update didc release to ${{ steps.update.outputs.version }}'
           body: |
             # Motivation
             A newer version of `didc` is available.
