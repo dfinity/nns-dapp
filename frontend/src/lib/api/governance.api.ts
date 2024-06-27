@@ -362,6 +362,7 @@ export const queryNeurons = async ({
 
   const response = await canister.listNeurons({
     certified,
+    includeEmptyNeurons: false,
   });
   logWithTimestamp(`Querying Neurons certified:${certified} complete.`);
   return response;
