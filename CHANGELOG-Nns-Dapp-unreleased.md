@@ -23,6 +23,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Change neuron ID column title to "Neurons".
+* Excluded non-displayed empty neurons when loading neurons.
 
 #### Deprecated
 

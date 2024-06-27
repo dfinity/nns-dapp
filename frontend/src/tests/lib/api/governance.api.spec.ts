@@ -126,7 +126,11 @@ describe("neurons-api", () => {
 
     await queryNeurons({ identity: mockIdentity, certified: false });
 
-    expect(mockGovernanceCanister.listNeurons).toBeCalled();
+    expect(mockGovernanceCanister.listNeurons).toBeCalledWith({
+      certified: false,
+      includeEmptyNeurons: false,
+    });
+    expect(mockGovernanceCanister.listNeurons).toBeCalledTimes(1);
   });
 
   it("queryKnownNeurons fetches known neurons", async () => {
