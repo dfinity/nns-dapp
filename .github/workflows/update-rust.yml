@@ -69,7 +69,7 @@ jobs:
           branch: bot-rust-update
           branch-suffix: timestamp
           delete-branch: true
-          title: 'Update rust version to ${{ steps.update.outputs.version }}'
+          title: 'bot: Update rust version to ${{ steps.update.outputs.version }}'
           body: |
             # Motivation
             A new verion of Rust is available.

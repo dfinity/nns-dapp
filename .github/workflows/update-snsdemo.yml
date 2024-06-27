@@ -68,7 +68,7 @@ jobs:
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
           add-paths: dfx.json
           delete-branch: true
-          title: 'Update snsdemo to ${{ steps.update.outputs.release }}'
+          title: 'bot: Update snsdemo to ${{ steps.update.outputs.release }}'
           body: |
             # Motivation
             We would like to keep the testing environment, provided by snsdemo, up to date.
