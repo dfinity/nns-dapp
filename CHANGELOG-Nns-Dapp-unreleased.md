@@ -13,6 +13,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 ### Application
 
+* Make neurons table sortable on desktop.
+
 #### Added
 
 * Maturity visible in neurons table.
