@@ -11,11 +11,15 @@ export class ResponsiveTablePo extends BasePageObject {
     );
   }
 
+  getDesktopColumnHeaderElements(): Promise<PageObjectElement[]> {
+    return this.root.querySelectorAll(
+      "[role='columnheader']:not(.mobile-only)"
+    );
+  }
+
   async getDesktopColumnHeaders(): Promise<string[]> {
     return Promise.all(
-      (await this.root.querySelectorAll("[role='columnheader']")).map((el) =>
-        el.getText()
-      )
+      (await this.getDesktopColumnHeaderElements()).map((el) => el.getText())
     );
   }
 
@@ -32,7 +36,7 @@ export class ResponsiveTablePo extends BasePageObject {
   async getColumnHeaderAlignments(): Promise<string[]> {
     return (
       await Promise.all(
-        (await this.root.querySelectorAll("[role='columnheader']")).map((el) =>
+        (await this.getDesktopColumnHeaderElements()).map((el) =>
           el.getClasses()
         )
       )
@@ -60,5 +64,34 @@ export class ResponsiveTablePo extends BasePageObject {
 
   getMobileGridTemplateAreas(): Promise<string> {
     return this.getStyleVariable("mobile-grid-template-areas");
+  }
+
+  async clickColumnHeader(title: string): Promise<void> {
+    const columnHeaderElements = await this.getDesktopColumnHeaderElements();
+    const titles = await Promise.all(
+      columnHeaderElements.map((el) => el.getText())
+    );
+    const index = titles.indexOf(title);
+    if (index === -1) {
+      throw new Error(
+        `Could not find column header with title "${title}". Found: ${titles.join(
+          ", "
+        )}`
+      );
+    }
+    await columnHeaderElements[index].click();
+  }
+
+  async getColumnHeaderWithArrow(): Promise<string | undefined> {
+    const columnHeaderElements = await this.getDesktopColumnHeaderElements();
+    for (const el of columnHeaderElements) {
+      const arrow = el.querySelector("span.order-arrow");
+      if (await arrow.isPresent()) {
+        const direction = (await arrow.querySelector(".reversed").isPresent())
+          ? " reversed"
+          : "";
+        return `${await el.getText()}${direction}`;
+      }
+    }
   }
 }

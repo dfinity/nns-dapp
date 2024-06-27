@@ -13,9 +13,11 @@
     NeuronsTableColumn,
   } from "$lib/types/neurons-table";
   import {
-    compareByStake,
     compareByDissolveDelay,
     compareById,
+    compareByMaturity,
+    compareByStake,
+    compareByState,
   } from "$lib/utils/neurons-table.utils";
   import { NeuronState } from "@dfinity/nns";
 
@@ -49,10 +51,12 @@
       templateColumns: ["1fr"],
     },
     {
+      id: "maturity",
       title: $i18n.neuron_detail.maturity_title,
       cellComponent: NeuronMaturityCell,
       alignment: "right",
       templateColumns: ["max-content"],
+      comparator: compareByMaturity,
     },
     {
       title: "",
@@ -73,10 +77,12 @@
       templateColumns: ["1fr"],
     },
     {
+      id: "state",
       title: $i18n.neurons.state,
       cellComponent: NeuronStateCell,
       alignment: "left",
       templateColumns: ["max-content"],
+      comparator: compareByState,
     },
     {
       title: "",
@@ -98,6 +104,6 @@
   testId="neurons-table-component"
   {columns}
   tableData={neurons}
-  order={$neuronsTableOrderStore}
+  bind:order={$neuronsTableOrderStore}
   {getRowStyle}
 ></ResponsiveTable>

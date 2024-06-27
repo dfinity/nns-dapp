@@ -97,6 +97,25 @@ describe("ResponsiveTable", () => {
     ]);
   });
 
+  it("should render column header alignments when first column is not sortable", async () => {
+    const po = renderComponent({
+      columns: [
+        {
+          ...columns[0],
+          comparator: undefined,
+        },
+        ...columns.slice(1),
+      ],
+      tableData,
+    });
+    expect(await po.getColumnHeaderAlignments()).toEqual([
+      "desktop-align-left", // Name
+      expect.any(String), // gap
+      "desktop-align-left", // Age
+      "desktop-align-right", // Actions
+    ]);
+  });
+
   it("should render row data", async () => {
     const po = renderComponent({ columns, tableData });
     const rows = await po.getRows();
@@ -190,6 +209,65 @@ describe("ResponsiveTable", () => {
     expect(await rows[0].getCells()).toEqual(["Anya", "", "Age 19", "Anya"]);
     expect(await rows[1].getCells()).toEqual(["Anton", "", "Age 31", "Anton"]);
     expect(await rows[2].getCells()).toEqual(["Alice", "", "Age 45", "Alice"]);
+  });
+
+  it("should sort rows based clicked column", async () => {
+    const po = renderComponent({
+      columns,
+      tableData,
+      order: [{ columnId: "name" }],
+    });
+    await po.clickColumnHeader("Age");
+
+    let rows = await po.getRows();
+    expect(rows).toHaveLength(3);
+    expect(await rows[0].getCells()).toEqual(["Anya", "", "Age 19", "Anya"]);
+    expect(await rows[1].getCells()).toEqual(["Anton", "", "Age 31", "Anton"]);
+    expect(await rows[2].getCells()).toEqual(["Alice", "", "Age 45", "Alice"]);
+
+    await po.clickColumnHeader("Name");
+    rows = await po.getRows();
+    expect(rows).toHaveLength(3);
+    expect(await rows[0].getCells()).toEqual(["Alice", "", "Age 45", "Alice"]);
+    expect(await rows[1].getCells()).toEqual(["Anton", "", "Age 31", "Anton"]);
+    expect(await rows[2].getCells()).toEqual(["Anya", "", "Age 19", "Anya"]);
+  });
+
+  it("should reverse sort order when same column is clicked again", async () => {
+    const po = renderComponent({
+      columns,
+      tableData,
+      order: [{ columnId: "name" }],
+    });
+    await po.clickColumnHeader("Age");
+
+    let rows = await po.getRows();
+    expect(rows).toHaveLength(3);
+    expect(await rows[0].getCells()).toEqual(["Anya", "", "Age 19", "Anya"]);
+    expect(await rows[1].getCells()).toEqual(["Anton", "", "Age 31", "Anton"]);
+    expect(await rows[2].getCells()).toEqual(["Alice", "", "Age 45", "Alice"]);
+
+    await po.clickColumnHeader("Age");
+    rows = await po.getRows();
+    expect(rows).toHaveLength(3);
+    expect(await rows[0].getCells()).toEqual(["Alice", "", "Age 45", "Alice"]);
+    expect(await rows[1].getCells()).toEqual(["Anton", "", "Age 31", "Anton"]);
+    expect(await rows[2].getCells()).toEqual(["Anya", "", "Age 19", "Anya"]);
+  });
+
+  it("should show arrow on sorted column", async () => {
+    const po = renderComponent({
+      columns,
+      tableData,
+      order: [{ columnId: "name" }],
+    });
+    expect(await po.getColumnHeaderWithArrow()).toBe("Name");
+
+    await po.clickColumnHeader("Age");
+    expect(await po.getColumnHeaderWithArrow()).toBe("Age");
+
+    await po.clickColumnHeader("Age");
+    expect(await po.getColumnHeaderWithArrow()).toBe("Age reversed");
   });
 
   it("should render column styles depending on the number of columns", async () => {
