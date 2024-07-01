@@ -1,4 +1,3 @@
-import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
