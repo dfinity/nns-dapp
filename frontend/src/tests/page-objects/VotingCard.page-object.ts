@@ -89,9 +89,10 @@ export class VotingCardPo extends BasePageObject {
     return this.root.byTestId("spinner").waitForAbsent();
   }
 
-  async voteYes(): Promise<void> {
+  async voteYes(waitForComplete: boolean = true): Promise<void> {
     await this.getVotingConfirmationToolbarPo().getVoteYesButtonPo().click();
     await this.getConfirmYesButtonPo().click();
-    await this.waitForVotingComplete();
+
+    if (waitForComplete) await this.waitForVotingComplete();
   }
 }

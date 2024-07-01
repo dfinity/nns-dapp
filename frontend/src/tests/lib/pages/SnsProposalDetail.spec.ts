@@ -1,3 +1,4 @@
+import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
@@ -15,7 +16,10 @@ import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
-import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import {
+  createMockSnsNeuron,
+  mockSnsNeuron,
+} from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   buildMockSnsProposalsStoreSubscribe,
@@ -33,6 +37,7 @@ import {
   SnsProposalRewardStatus,
   SnsSwapLifecycle,
   SnsVote,
+  type SnsProposalData,
 } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -603,6 +608,204 @@ describe("SnsProposalDetail", () => {
       expect(await votingCardPo.isPresent()).toBe(true);
       expect(await votingCardPo.getVotableNeurons().isPresent()).toBe(true);
       expect(await votingCardPo.getIneligibleNeurons().isPresent()).toBe(false);
+    });
+  });
+
+  describe("Enabled voting buttons during the voting glitch", () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+
+      resetIdentity();
+      page.mock({ data: { universe: rootCanisterId.toText() } });
+      setSnsProjects([
+        {
+          rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+        },
+      ]);
+      snsProposalsStore.reset();
+      snsNeuronsStore.reset();
+    });
+
+    it("should keep the voting buttons disabled throughout the entire voting process", async () => {
+      const neuron1 = createMockSnsNeuron({
+        stake: 1_000_000_000n,
+        id: [1],
+      });
+      const neuron2 = createMockSnsNeuron({
+        stake: 1_000_000_000n,
+        id: [2],
+      });
+      const proposal = createSnsProposal({
+        status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+        rewardStatus:
+          SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+        proposalId: proposalId.id,
+      });
+      snsProposalsStore.setProposals({
+        rootCanisterId,
+        proposals: [proposal],
+        certified: true,
+        completed: true,
+      });
+
+      fakeSnsGovernanceApi.addNeuronWith({
+        identity: mockIdentity,
+        rootCanisterId,
+        id: neuron1.id,
+        created_timestamp_seconds:
+          proposal.proposal_creation_timestamp_seconds - 100n,
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+            ]),
+          },
+        ],
+      });
+      fakeSnsGovernanceApi.addNeuronWith({
+        identity: mockIdentity,
+        rootCanisterId,
+        id: neuron2.id,
+        created_timestamp_seconds:
+          proposal.proposal_creation_timestamp_seconds - 100n,
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+            ]),
+          },
+        ],
+      });
+      const proposalToVote = fakeSnsGovernanceApi.addProposalWith({
+        identity: mockIdentity,
+        rootCanisterId,
+        ...proposal,
+        ballots: [
+          [
+            getSnsNeuronIdAsHexString(neuron1),
+            {
+              vote: SnsVote.Unspecified,
+              voting_power: 100_000_000n,
+              cast_timestamp_seconds: 0n,
+            },
+          ],
+          [
+            getSnsNeuronIdAsHexString(neuron2),
+            {
+              vote: SnsVote.Unspecified,
+              voting_power: 100_000_000n,
+              cast_timestamp_seconds: 0n,
+            },
+          ],
+        ],
+      });
+      const { container } = render(SnsProposalDetail, {
+        props: {
+          proposalIdText: proposalId.id.toString(),
+        },
+      });
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
+      await runResolvedPromises();
+      const votingCardPo = await po
+        .getSnsProposalVotingSectionPo()
+        .getVotingCardPo();
+      expect(await votingCardPo.isPresent()).toBe(true);
+      expect(await votingCardPo.getVotableNeurons().isPresent()).toBe(true);
+
+      let resolveQueryProposalApi;
+      const resolveQueryProposalApiPromise = new Promise(
+        (resolve) =>
+          (resolveQueryProposalApi = () =>
+            resolve({
+              ...proposalToVote,
+              // voted state
+              ballots: [
+                [
+                  getSnsNeuronIdAsHexString(neuron1),
+                  {
+                    vote: SnsVote.Yes,
+                    voting_power: 100_000_000n,
+                    cast_timestamp_seconds: 0n,
+                  },
+                ],
+                [
+                  getSnsNeuronIdAsHexString(neuron2),
+                  {
+                    vote: SnsVote.Yes,
+                    voting_power: 100_000_000n,
+                    cast_timestamp_seconds: 0n,
+                  },
+                ],
+              ],
+            }))
+      );
+      const spyQueryProposalApi = vi
+        .spyOn(snsGovernanceApi, "queryProposal")
+        .mockImplementation(
+          () => resolveQueryProposalApiPromise as Promise<SnsProposalData>
+        );
+
+      expect(spyQueryProposalApi).toBeCalledTimes(0);
+
+      let resolveNeuron1VoteRegistration;
+      let rejectNeuron2VoteRegistration;
+      const spyRegisterVoteApi = vi
+        .spyOn(snsGovernanceApi, "registerVote")
+        .mockImplementationOnce(
+          () =>
+            new Promise(
+              (resolve) => (resolveNeuron1VoteRegistration = resolve)
+            ) as Promise<void>
+        )
+        .mockImplementationOnce(
+          () =>
+            new Promise(
+              (_, reject) => (rejectNeuron2VoteRegistration = reject)
+            ) as Promise<void>
+        );
+
+      expect(spyRegisterVoteApi).toBeCalledTimes(0);
+      expect(spyQueryProposalApi).toBeCalledTimes(0);
+
+      expect(await votingCardPo.getVoteYesButtonPo().isDisabled()).toBe(false);
+      expect(await votingCardPo.getVoteNoButtonPo().isDisabled()).toBe(false);
+
+      await votingCardPo.voteYes(false);
+      await runResolvedPromises();
+
+      expect(await votingCardPo.getVoteYesButtonPo().isDisabled()).toBe(true);
+      expect(await votingCardPo.getVoteNoButtonPo().isDisabled()).toBe(true);
+
+      // Neuron 1 votes
+      resolveNeuron1VoteRegistration();
+      await runResolvedPromises();
+
+      // Simulate the neuron 2 to follow the neuron 1
+      rejectNeuron2VoteRegistration(
+        new Error("Neuron already voted on proposal.")
+      );
+      await runResolvedPromises();
+
+      // Fails on the next line w/o the fix
+      expect(await votingCardPo.getVoteYesButtonPo().isDisabled()).toBe(true);
+      expect(await votingCardPo.getVoteNoButtonPo().isDisabled()).toBe(true);
+
+      // Wait with reloading the proposal, because the glitch happens after the voting but before the proposal is reloaded.
+      resolveQueryProposalApi();
+      await runResolvedPromises();
+
+      expect(await votingCardPo.getVoteYesButtonPo().isDisabled()).toBe(true);
+      expect(await votingCardPo.getVoteNoButtonPo().isDisabled()).toBe(true);
+
+      // Two neurons should vote
+      expect(spyRegisterVoteApi).toBeCalledTimes(2);
+      // Proposals should be reloaded after voting
+      expect(spyQueryProposalApi).toBeCalledTimes(2);
     });
   });
 });
