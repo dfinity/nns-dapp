@@ -25,7 +25,8 @@
 
   // Make sure there is a consistent order even if the selected sorting
   // criteria don't tiebreak all neurons.
-  let neuronsSortedById = [...neurons].sort(compareById);
+  let neuronsSortedById: TableNeuron[];
+  $: neuronsSortedById = [...neurons].sort(compareById);
 
   const columns: NeuronsTableColumn[] = [
     {

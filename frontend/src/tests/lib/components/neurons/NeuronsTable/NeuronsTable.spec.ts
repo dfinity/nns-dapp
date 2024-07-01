@@ -13,7 +13,7 @@ import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
-import { get } from "svelte/store";
+import { get, writable, type Writable } from "svelte/store";
 
 describe("NeuronsTable", () => {
   const makeStake = (amount: bigint) =>
@@ -63,9 +63,19 @@ describe("NeuronsTable", () => {
     state: NeuronState.Spawning,
   };
 
-  const renderComponent = ({ neurons }) => {
-    const { container } = render(NeuronsTable, {
+  const renderComponent = ({
+    neurons,
+    neuronsStore,
+  }: {
+    neurons?: TableNeuron[];
+    neuronsStore?: Writable<TableNeuron[]>;
+  }) => {
+    neurons ??= get(neuronsStore);
+    const { container, component } = render(NeuronsTable, {
       neurons,
+    });
+    neuronsStore?.subscribe((neurons) => {
+      component.$set({ neurons });
     });
     return NeuronsTablePo.under(new JestPageObjectElement(container));
   };
@@ -290,6 +300,18 @@ describe("NeuronsTable", () => {
     expect(await rowPos[1].getNeuronId()).toBe(neuron2.neuronId);
     expect(await rowPos[2].getNeuronId()).toBe(neuron3.neuronId);
     expect(await rowPos[3].getNeuronId()).toBe(neuron4.neuronId);
+  });
+
+  it("should update table when neurons prop changes", async () => {
+    const neuronsStore = writable([neuron1]);
+    const po = renderComponent({
+      neuronsStore,
+    });
+    expect(await po.getNeuronsTableRowPos()).toHaveLength(1);
+
+    neuronsStore.set([neuron1, neuron2]);
+    await runResolvedPromises();
+    expect(await po.getNeuronsTableRowPos()).toHaveLength(2);
   });
 
   it("should change order based on order store", async () => {
