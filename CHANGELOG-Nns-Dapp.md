@@ -11,6 +11,17 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 130768
+
+### Application
+
+#### Added
+
+* Maturity visible in neurons table.
+* Support rendering `tSchnorr` proposal parameters.
+
+### Operations
+
 ## Proposal 130710
 
 ### Application
