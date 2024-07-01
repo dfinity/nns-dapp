@@ -105,7 +105,12 @@ test("Test merge neurons", async ({ page, context }) => {
   await transactionList.waitForLoaded();
   const transactions = await transactionList.getTransactionCardPos();
   expect(await Promise.all(transactions.map((tx) => tx.getHeadline()))).toEqual(
-    ["Top-up Neuron", "Staked", "Staked", "Received"]
+    [
+      "Sent", // This would be "Top-up Neuron" but we don't know the neuron anymore.
+      "Staked",
+      "Sent", // This would be "Staked" but we don't know the neuron anymore.
+      "Received",
+    ]
   );
   expect(await Promise.all(transactions.map((tx) => tx.getAmount()))).toEqual([
     "-2.0001",
