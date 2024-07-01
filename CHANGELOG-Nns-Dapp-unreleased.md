@@ -26,6 +26,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* Disable sorting the neurons table by neuron ID.
+
 #### Fixed
 
 #### Security
