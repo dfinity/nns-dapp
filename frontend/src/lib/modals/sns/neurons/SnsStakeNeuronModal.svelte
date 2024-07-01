@@ -1,23 +1,23 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+  import SnsNeuronTransactionModal from "$lib/modals/sns/neurons/SnsNeuronTransactionModal.svelte";
+  import { stakeNeuron } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
+  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
   import type {
     NewTransaction,
     ValidateAmountFn,
   } from "$lib/types/transaction";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import type { WizardStep } from "@dfinity/gix-components";
-  import type { Token, TokenAmountV2 } from "@dfinity/utils";
-  import type { Principal } from "@dfinity/principal";
-  import { stakeNeuron } from "$lib/services/sns-neurons.services";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
-  import SnsNeuronTransactionModal from "$lib/modals/sns/neurons/SnsNeuronTransactionModal.svelte";
-  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
+  import type { WizardStep } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
-  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+  import type { Token, TokenAmountV2 } from "@dfinity/utils";
   import { nonNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let token: Token;
   export let rootCanisterId: Principal;

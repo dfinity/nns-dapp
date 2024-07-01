@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { isNullish, nonNullish, type TokenAmountV2 } from "@dfinity/utils";
+  import { onIntersection } from "$lib/directives/intersection.directives";
+  import { i18n } from "$lib/stores/i18n";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
+  import type { IntersectingDetail } from "$lib/types/intersection.types";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatTokenV2 } from "$lib/utils/token.utils";
+  import HeadingSubtitle from "../common/HeadingSubtitle.svelte";
   import PageHeading from "../common/PageHeading.svelte";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import HeadingSubtitle from "../common/HeadingSubtitle.svelte";
-  import type { Principal } from "@dfinity/principal";
-  import { onIntersection } from "$lib/directives/intersection.directives";
-  import type { IntersectingDetail } from "$lib/types/intersection.types";
-  import { layoutTitleStore } from "$lib/stores/layout.store";
-  import { i18n } from "$lib/stores/i18n";
-  import { formatTokenV2 } from "$lib/utils/token.utils";
   import IdentifierHash from "../ui/IdentifierHash.svelte";
   import { Tooltip } from "@dfinity/gix-components";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import type { Principal } from "@dfinity/principal";
+  import { isNullish, nonNullish, type TokenAmountV2 } from "@dfinity/utils";
 
   export let balance: TokenAmountV2 | undefined = undefined;
   export let accountName: string;

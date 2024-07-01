@@ -1,21 +1,21 @@
 <script lang="ts">
+  import { i18n } from "$lib/stores/i18n";
   import type {
     SnsSummary,
     SnsSummarySwap,
     SnsSwapCommitment,
   } from "$lib/types/sns";
-  import { i18n } from "$lib/stores/i18n";
   import {
     durationTillSwapDeadline,
     durationTillSwapStart,
   } from "$lib/utils/projects.utils";
-  import { secondsToDuration } from "@dfinity/utils";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
+  import Separator from "../ui/Separator.svelte";
+  import ProjectUserCommitmentLabel from "./ProjectUserCommitmentLabel.svelte";
   import { Value, KeyValuePair } from "@dfinity/gix-components";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { TokenAmount, nonNullish } from "@dfinity/utils";
-  import ProjectUserCommitmentLabel from "./ProjectUserCommitmentLabel.svelte";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import Separator from "../ui/Separator.svelte";
+  import { secondsToDuration } from "@dfinity/utils";
 
   export let myCommitment: TokenAmount | undefined;
   export let summary: SnsSummary;

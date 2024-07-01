@@ -1,39 +1,39 @@
 <script lang="ts">
+  import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
+  import AddMaturityModal from "$lib/modals/sns/neurons/AddMaturityModal.svelte";
+  import AddSnsHotkeyModal from "$lib/modals/sns/neurons/AddSnsHotkeyModal.svelte";
+  import DissolveSnsNeuronModal from "$lib/modals/sns/neurons/DissolveSnsNeuronModal.svelte";
+  import FollowSnsNeuronsModal from "$lib/modals/sns/neurons/FollowSnsNeuronsModal.svelte";
   import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/neurons/IncreaseSnsDissolveDelayModal.svelte";
-  import { getContext } from "svelte";
+  import SnsActiveDisbursementsModal from "$lib/modals/sns/neurons/SnsActiveDisbursementsModal.svelte";
+  import SnsAutoStakeMaturityModal from "$lib/modals/sns/neurons/SnsAutoStakeMaturityModal.svelte";
+  import SnsDisburseMaturityModal from "$lib/modals/sns/neurons/SnsDisburseMaturityModal.svelte";
+  import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
+  import SnsStakeMaturityModal from "$lib/modals/sns/neurons/SnsStakeMaturityModal.svelte";
+  import SplitSnsNeuronModal from "$lib/modals/sns/neurons/SplitSnsNeuronModal.svelte";
+  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
-  import { isNullish, nonNullish } from "@dfinity/utils";
-  import type { E8s } from "@dfinity/nns";
-  import type { Token } from "@dfinity/utils";
-  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-  import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
-  import DissolveSnsNeuronModal from "$lib/modals/sns/neurons/DissolveSnsNeuronModal.svelte";
-  import FollowSnsNeuronsModal from "$lib/modals/sns/neurons/FollowSnsNeuronsModal.svelte";
-  import AddSnsHotkeyModal from "$lib/modals/sns/neurons/AddSnsHotkeyModal.svelte";
-  import type { Principal } from "@dfinity/principal";
-  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
-  import { fromDefinedNullable } from "@dfinity/utils";
-  import type { NeuronState } from "@dfinity/nns";
-  import { getSnsNeuronState } from "$lib/utils/sns-neuron.utils";
   import type {
     SnsNeuronModal,
     SnsNeuronModalType,
   } from "$lib/types/sns-neuron-detail.modal";
-  import SnsStakeMaturityModal from "$lib/modals/sns/neurons/SnsStakeMaturityModal.svelte";
-  import SnsAutoStakeMaturityModal from "$lib/modals/sns/neurons/SnsAutoStakeMaturityModal.svelte";
-  import SplitSnsNeuronModal from "$lib/modals/sns/neurons/SplitSnsNeuronModal.svelte";
-  import type { SnsNervousSystemParameters } from "@dfinity/sns";
-  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
-  import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
-  import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import { getSnsNeuronState } from "$lib/utils/sns-neuron.utils";
   import AddPermissionsModal from "./AddPermissionsModal.svelte";
-  import SnsActiveDisbursementsModal from "$lib/modals/sns/neurons/SnsActiveDisbursementsModal.svelte";
-  import SnsDisburseMaturityModal from "$lib/modals/sns/neurons/SnsDisburseMaturityModal.svelte";
-  import AddMaturityModal from "$lib/modals/sns/neurons/AddMaturityModal.svelte";
+  import type { E8s } from "@dfinity/nns";
+  import type { NeuronState } from "@dfinity/nns";
+  import type { Principal } from "@dfinity/principal";
+  import type { SnsNervousSystemParameters } from "@dfinity/sns";
+  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+  import type { Token } from "@dfinity/utils";
+  import { fromDefinedNullable } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { getContext } from "svelte";
 
   // Modal events
 

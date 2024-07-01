@@ -1,8 +1,8 @@
 <script lang="ts">
   import MaxButton from "$lib/components/common/MaxButton.svelte";
-  import InputWithError from "./InputWithError.svelte";
   import MinButton from "$lib/components/common/MinButton.svelte";
   import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
+  import InputWithError from "./InputWithError.svelte";
 
   export let seconds: number;
   export let disabled: boolean = false;

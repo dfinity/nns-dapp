@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { setContext } from "svelte";
+  import RenameCanisterModal from "$lib/modals/canisters/RenameCanisterModal.svelte";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
     type SelectCanisterDetailsStore,
   } from "$lib/types/canister-detail.context";
   import { mockCanisterDetails } from "$tests/mocks/canisters.mock";
-  import RenameCanisterModal from "$lib/modals/canisters/RenameCanisterModal.svelte";
   import type { Principal } from "@dfinity/principal";
+  import { setContext } from "svelte";
   import { writable } from "svelte/store";
 
   export let canisterId: Principal;

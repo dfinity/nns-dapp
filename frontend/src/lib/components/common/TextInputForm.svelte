@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
   import InputWithError from "../ui/InputWithError.svelte";
   import { nonNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let text: string | undefined = undefined;
   export let placeholderLabelKey: string;

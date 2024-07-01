@@ -1,9 +1,6 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
-import type {
-  TableNeuron,
-  TableNeuronComparator,
-} from "$lib/types/neurons-table";
+import type { TableNeuron } from "$lib/types/neurons-table";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { buildNeuronUrl } from "$lib/utils/navigation.utils";
 import {
@@ -11,6 +8,11 @@ import {
   isSpawning,
   neuronStake,
 } from "$lib/utils/neuron.utils";
+import {
+  createAscendingComparator,
+  createDescendingComparator,
+  mergeComparators,
+} from "$lib/utils/responsive-table.utils";
 import {
   getSnsDissolveDelaySeconds,
   getSnsNeuronIdAsHexString,
@@ -20,6 +22,7 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo } from "@dfinity/nns";
+import { NeuronState } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
 import {
   ICPToken,
@@ -113,67 +116,31 @@ export const tableNeuronsFromSnsNeurons = ({
   });
 };
 
-// Takes a list of comparators and returns a single comparator by first applying
-// the first comparator and using subsequent comparators to break ties.
-const mergeComparators = (
-  comparators: TableNeuronComparator[]
-): TableNeuronComparator => {
-  return (a, b) => {
-    for (const comparator of comparators) {
-      const result = comparator(a, b);
-      if (result !== 0) {
-        return result;
-      }
-    }
-    return 0;
-  };
-};
-
-// Creates a comparator for sorting in descending order based on the value
-// returned by the getter function.
-const createComparator = <T>(
-  getter: (neuron: TableNeuron) => T
-): TableNeuronComparator => {
-  return (a, b) => {
-    const valueA = getter(a);
-    const valueB = getter(b);
-    if (valueA < valueB) return 1;
-    if (valueA > valueB) return -1;
-    return 0;
-  };
-};
-
-// Same as createComparator but returns a comparator for sorting in ascending
-// order.
-const createAscendingComparator = <T>(
-  getter: (neuron: TableNeuron) => T
-): TableNeuronComparator => {
-  const descendingComparator = createComparator(getter);
-  return (a, b) => -descendingComparator(a, b);
-};
-
-export const compareByStake = createComparator((neuron) =>
-  neuron.stake.toUlps()
+export const compareByStake = createDescendingComparator(
+  (neuron: TableNeuron) => neuron.stake.toUlps()
 );
 
-export const compareByDissolveDelay = createComparator(
-  (neuron) => neuron.dissolveDelaySeconds
+export const compareByMaturity = createDescendingComparator(
+  (neuron: TableNeuron) => neuron.availableMaturity + neuron.stakedMaturity
+);
+
+export const compareByDissolveDelay = createDescendingComparator(
+  (neuron: TableNeuron) => neuron.dissolveDelaySeconds
+);
+
+export const compareByState = createDescendingComparator(
+  (neuron: TableNeuron) =>
+    [
+      NeuronState.Spawning,
+      NeuronState.Dissolved,
+      NeuronState.Dissolving,
+      NeuronState.Locked,
+    ].indexOf(neuron.state)
 );
 
 // Orders strings as if they are positive integers, so "9" < "10" < "11", by
 // ordering first by length and then legicographically.
 export const compareById = mergeComparators([
-  createAscendingComparator((neuron) => neuron.neuronId.length),
-  createAscendingComparator((neuron) => neuron.neuronId),
+  createAscendingComparator((neuron: TableNeuron) => neuron.neuronId.length),
+  createAscendingComparator((neuron: TableNeuron) => neuron.neuronId),
 ]);
-
-// Sorts neurons based on a provided custom ordering.
-export const sortNeurons = ({
-  neurons,
-  order,
-}: {
-  neurons: TableNeuron[];
-  order: TableNeuronComparator[];
-}): TableNeuron[] => {
-  return [...neurons].sort(mergeComparators(order));
-};

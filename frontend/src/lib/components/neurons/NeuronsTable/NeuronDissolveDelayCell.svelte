@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { i18n } from "$lib/stores/i18n";
   import type { TableNeuron } from "$lib/types/neurons-table";
   import { secondsToDuration } from "@dfinity/utils";
-  import { i18n } from "$lib/stores/i18n";
 
   export let rowData: TableNeuron;
 

@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
-  import type { CardType } from "$lib/types/card";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import type { CardType } from "$lib/types/card";
   import NeuronCardContainer from "./NeuronCardContainer.svelte";
   import NeuronStateInfo from "./NeuronStateInfo.svelte";
+  import NnsNeuronAmount from "./NnsNeuronAmount.svelte";
   import NnsNeuronCardTitle from "./NnsNeuronCardTitle.svelte";
   import NnsNeuronRemainingTime from "./NnsNeuronRemainingTime.svelte";
-  import NnsNeuronAmount from "./NnsNeuronAmount.svelte";
+  import type { NeuronInfo } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;
   export let proposerNeuron = false;

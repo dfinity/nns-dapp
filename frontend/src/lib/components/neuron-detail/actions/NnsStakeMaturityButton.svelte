@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
-  import { hasEnoughMaturityToStake } from "$lib/utils/neuron.utils";
+  import StakeMaturityButton from "$lib/components/neuron-detail/actions/StakeMaturityButton.svelte";
   import {
     NNS_NEURON_CONTEXT_KEY,
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
-  import { getContext } from "svelte";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
-  import StakeMaturityButton from "$lib/components/neuron-detail/actions/StakeMaturityButton.svelte";
+  import { hasEnoughMaturityToStake } from "$lib/utils/neuron.utils";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { getContext } from "svelte";
 
   export let neuron: NeuronInfo;
 

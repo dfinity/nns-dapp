@@ -1,25 +1,25 @@
 <script lang="ts" xmlns:svelte="http://www.w3.org/1999/html">
   import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
-  import { Modal, Value, busy } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
-  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+  import AmountInput from "$lib/components/ui/AmountInput.svelte";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
+  import { splitNeuron } from "$lib/services/neurons.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import {
     isNeuronControlledByHardwareWallet,
     isValidInputAmount,
     neuronStake,
   } from "$lib/utils/neuron.utils";
-  import AmountInput from "$lib/components/ui/AmountInput.svelte";
-  import { i18n } from "$lib/stores/i18n";
   import {
     formattedTransactionFeeICP,
     ulpsToNumber,
   } from "$lib/utils/token.utils";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { Modal, Value, busy } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
-  import { splitNeuron } from "$lib/services/neurons.services";
-  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-  import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 
   export let neuron: NeuronInfo;
 

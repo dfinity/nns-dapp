@@ -10,7 +10,7 @@ crate-type = ["cdylib"]
 [dependencies]
 anyhow = "1.0.86"
 base64 = "0.22.1"
-candid = "0.10.8"
+candid = "0.10.9"
 dfn_candid = { workspace = true }
 dfn_core = { workspace = true }
 # This next candid is 0.9.0_beta code that fixes serde Nat but has other issues.  Keep checking until the issues are fixed.
@@ -21,13 +21,13 @@ ic-cdk-timers = "0.8.0"
 ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "58791941b72471e09e3d9e733f2a3d4d54e52b5a" }
 ic-management-canister-types = { workspace = true }
 ic-nervous-system-common = { workspace = true }
-lazy_static = "1.4.0"
+lazy_static = "1.5.0"
 num-traits = "0.2.19"
 serde = "1.0.203"
-serde_bytes = "0.11.14"
+serde_bytes = "0.11.15"
 serde_cbor = "0.11.2"
 serde_derive = "1.0.126"
-serde_json = "1.0.117"
+serde_json = "1.0.119"
 sha2 = "0.10.8"
 
 [dev-dependencies]

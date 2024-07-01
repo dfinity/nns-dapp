@@ -1,32 +1,32 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
+  import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
+  import TransactionFormItemNetwork from "$lib/components/transaction/TransactionFormItemNetwork.svelte";
+  import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
+  import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
+  import { NotEnoughAmountError } from "$lib/types/common.errors";
   import { InvalidAmountError } from "$lib/types/neurons.errors";
+  import type {
+    TransactionNetwork,
+    ValidateAmountFn,
+  } from "$lib/types/transaction";
+  import type { TransactionSelectDestinationMethods } from "$lib/types/transaction";
   import {
     assertEnoughAccountFunds,
     invalidAddress,
     isAccountHardwareWallet,
   } from "$lib/utils/accounts.utils";
+  import { translate } from "$lib/utils/i18n.utils";
   import {
     getMaxTransactionAmount,
     toTokenAmountV2,
   } from "$lib/utils/token.utils";
-  import AmountInput from "$lib/components/ui/AmountInput.svelte";
-  import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
-  import { TokenAmount, TokenAmountV2, type Token } from "@dfinity/utils";
-  import { NotEnoughAmountError } from "$lib/types/common.errors";
   import type { Principal } from "@dfinity/principal";
-  import { translate } from "$lib/utils/i18n.utils";
-  import type {
-    TransactionNetwork,
-    ValidateAmountFn,
-  } from "$lib/types/transaction";
+  import { TokenAmount, TokenAmountV2, type Token } from "@dfinity/utils";
   import { isNullish } from "@dfinity/utils";
-  import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
-  import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
-  import type { TransactionSelectDestinationMethods } from "$lib/types/transaction";
-  import TransactionFormItemNetwork from "$lib/components/transaction/TransactionFormItemNetwork.svelte";
+  import { createEventDispatcher } from "svelte";
 
   // Tested in the TransactionModal
   export let rootCanisterId: Principal;

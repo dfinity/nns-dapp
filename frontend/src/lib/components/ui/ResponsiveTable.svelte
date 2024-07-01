@@ -1,30 +1,50 @@
 <script lang="ts" context="module">
-  import { getCellGridAreaName } from "$lib/utils/responsive-table.utils";
   import type { ResponsiveTableRowData } from "$lib/types/responsive-table";
   type RowDataType = ResponsiveTableRowData;
 </script>
 
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
-  import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
-  import { heightTransition } from "$lib/utils/transition.utils";
-  import { nonNullish } from "@dfinity/utils";
-  import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
+  import type {
+    ResponsiveTableColumn,
+    ResponsiveTableOrder,
+  } from "$lib/types/responsive-table";
+  import {
+    getCellGridAreaName,
+    sortTableData,
+    selectPrimaryOrder,
+  } from "$lib/utils/responsive-table.utils";
+  import { heightTransition } from "$lib/utils/transition.utils";
+  import { IconSouth } from "@dfinity/gix-components";
+  import { isNullish, assertNonNullish } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   export let testId = "responsive-table-component";
   export let tableData: Array<RowDataType>;
   export let columns: ResponsiveTableColumn<RowDataType>[];
+  export let order: ResponsiveTableOrder = [];
   export let gridRowsPerTableRow = 1;
   export let getRowStyle: (rowData: RowDataType) => string | undefined = (_) =>
     undefined;
 
-  let firstColumn: ResponsiveTableColumn<RowDataType> | undefined;
-  let middleColumns: ResponsiveTableColumn<RowDataType>[];
+  let nonLastColumns: ResponsiveTableColumn<RowDataType>[];
   let lastColumn: ResponsiveTableColumn<RowDataType> | undefined;
 
-  $: firstColumn = columns.at(0);
-  $: middleColumns = columns.slice(1, -1);
+  $: nonLastColumns = columns.slice(0, -1);
   $: lastColumn = columns.at(-1);
+
+  let sortedTableData: RowDataType[];
+  $: sortedTableData = sortTableData({
+    tableData,
+    order,
+    columns,
+  });
+
+  const orderBy = (column: ResponsiveTableColumn<RowDataType>) => {
+    assertNonNullish(column.id);
+    order = selectPrimaryOrder({ order, selectedColumnId: column.id });
+  };
 
   const getTableStyle = (columns: ResponsiveTableColumn<RowDataType>[]) => {
     // On desktop the first column gets all the remaining space after other
@@ -52,27 +72,46 @@
 
   let tableStyle: string;
   $: tableStyle = getTableStyle(columns);
+
+  // In mobile view, we only show the first column header and it should never be
+  // sortable by clicking on it. So depending on whether the first column is
+  // sortable we have or don't have separate first column headers for desktop
+  // and mobile.
 </script>
 
 <div role="table" data-tid={testId} style={tableStyle}>
   <div role="rowgroup">
     <div role="row" class="header-row">
-      {#if firstColumn}
-        <span
-          role="columnheader"
-          style="--column-span: {firstColumn.templateColumns.length}"
-          data-tid="column-header-1"
-          class="desktop-align-{firstColumn.alignment}"
-          >{firstColumn.title}</span
-        >
-      {/if}
-      {#each middleColumns as column, index}
-        <span
-          role="columnheader"
-          style="--column-span: {column.templateColumns.length}"
-          data-tid="column-header-{index + 2}"
-          class="desktop-align-{column.alignment}">{column.title}</span
-        >
+      {#each nonLastColumns as column, index}
+        {#if isNullish(column.comparator) || index === 0}
+          <span
+            role="columnheader"
+            style="--column-span: {column.templateColumns.length}"
+            data-tid="column-header-{index + 1}"
+            class={isNullish(column.comparator)
+              ? `desktop-align-${column.alignment}`
+              : ""}
+            class:desktop-only={index > 0}
+            class:mobile-only={nonNullish(column.comparator)}
+            >{column.title}
+          </span>
+        {/if}
+        {#if nonNullish(column.comparator)}
+          <button
+            role="columnheader"
+            on:click={() => orderBy(column)}
+            style="--column-span: {column.templateColumns.length}"
+            data-tid="column-header-{index + 1}"
+            class="desktop-only desktop-align-{column.alignment}"
+            >{column.title}{#if nonNullish(column.comparator) && order[0]?.columnId === column.id}
+              <span class="order-arrow">
+                <span class="arrow-icon" class:reversed={order[0].reversed}>
+                  <IconSouth size="8" />
+                </span>
+              </span>
+            {/if}
+          </button>
+        {/if}
       {/each}
       {#if lastColumn}
         <span
@@ -86,7 +125,7 @@
     </div>
   </div>
   <div role="rowgroup">
-    {#each tableData as rowData (rowData.domKey)}
+    {#each sortedTableData as rowData (rowData.domKey)}
       <div class="row-wrapper" transition:heightTransition={{ duration: 250 }}>
         <ResponsiveTableRow
           on:nnsAction
@@ -140,23 +179,54 @@
 
       border-bottom: 1px solid var(--elements-divider);
 
-      [role="columnheader"] {
-        display: none;
+      button[role="columnheader"] {
+        color: var(--text-description);
+        font-size: var(--font-size-small);
+        padding: 0;
 
-        grid-column: span var(--column-span);
-
-        &:first-child,
-        &:last-child {
-          display: block;
-        }
-
-        @include media.min-width(medium) {
-          display: block;
+        &.desktop-align-left {
+          text-align: left;
         }
       }
 
-      .desktop-align-right {
-        text-align: right;
+      [role="columnheader"] {
+        grid-column: span var(--column-span);
+
+        &.desktop-align-right {
+          text-align: right;
+        }
+
+        &.desktop-only {
+          display: none;
+        }
+
+        @include media.min-width(medium) {
+          &.mobile-only {
+            display: none;
+          }
+          &.desktop-only {
+            display: block;
+          }
+        }
+
+        .order-arrow {
+          display: inline-block;
+
+          // If the column header is right aligned, we don't want it to be
+          // pushed to the left by the arrow. So we give the arrow zero width so
+          // it will overflow into the next column.
+          width: 0;
+
+          .arrow-icon {
+            display: inline-block;
+            margin: 0 var(--padding-0_5x);
+
+            &.reversed {
+              transform: rotate(180deg);
+              transform-origin: center center;
+            }
+          }
+        }
       }
 
       .header-icon {

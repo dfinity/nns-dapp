@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
+  import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { getNeuronTags, type NeuronTagData } from "$lib/utils/neuron.utils";
-  import { authStore } from "$lib/stores/auth.store";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
-  import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
+  import type { NeuronInfo } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;
   export let tagName: "p" | "h3" = "p";

@@ -1,16 +1,16 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
+  import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import {
     minNeuronSplittable,
     neuronCanBeSplit,
   } from "$lib/utils/neuron.utils";
-  import { i18n } from "$lib/stores/i18n";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
   import { Tooltip } from "@dfinity/gix-components";
-  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
+  import type { NeuronInfo } from "@dfinity/nns";
   import { ICPToken } from "@dfinity/utils";
-  import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 
   export let neuron: NeuronInfo;
 

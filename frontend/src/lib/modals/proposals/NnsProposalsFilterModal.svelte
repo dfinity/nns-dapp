@@ -1,18 +1,18 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
+  import { i18n } from "$lib/stores/i18n";
+  import { proposalsFiltersStore } from "$lib/stores/proposals.store";
+  import type { Filter } from "$lib/types/filters";
   import type {
     ProposalsFilterModalProps,
     ProposalsFilters,
   } from "$lib/types/proposals";
-  import { i18n } from "$lib/stores/i18n";
-  import { enumValues } from "$lib/utils/enum.utils";
-  import { proposalsFiltersStore } from "$lib/stores/proposals.store";
-  import type { ProposalStatus, Topic } from "@dfinity/nns";
   import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
+  import { enumValues } from "$lib/utils/enum.utils";
   import { keyOf, keyOfOptional } from "$lib/utils/utils";
-  import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
   import FilterModal from "../common/FilterModal.svelte";
-  import type { Filter } from "$lib/types/filters";
+  import type { ProposalStatus, Topic } from "@dfinity/nns";
+  import { createEventDispatcher } from "svelte";
 
   export let props: ProposalsFilterModalProps | undefined;
 

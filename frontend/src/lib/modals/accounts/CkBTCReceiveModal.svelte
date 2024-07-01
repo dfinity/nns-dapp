@@ -1,29 +1,29 @@
 <script lang="ts">
+  import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
+  import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
+  import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
+  import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
+  import ReceiveAddressQRCode from "$lib/components/accounts/ReceiveAddressQRCode.svelte";
+  import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
+  import { loadBtcAddress } from "$lib/services/ckbtc-minter.services";
+  import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
+  import type { CkBTCReceiveModalData } from "$lib/types/ckbtc-accounts.modal";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+  import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import {
     Modal,
     Segment,
     SegmentButton,
     Spinner,
   } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
-  import type { Account } from "$lib/types/account";
-  import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
-  import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
-  import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { loadBtcAddress } from "$lib/services/ckbtc-minter.services";
-  import { createEventDispatcher } from "svelte";
-  import type { CkBTCReceiveModalData } from "$lib/types/ckbtc-accounts.modal";
-  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
-  import type { UniverseCanisterId } from "$lib/types/universe";
-  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
-  import ReceiveAddressQRCode from "$lib/components/accounts/ReceiveAddressQRCode.svelte";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
-  import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
-  import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
-  import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
+  import { createEventDispatcher } from "svelte";
 
   export let data: CkBTCReceiveModalData;
 

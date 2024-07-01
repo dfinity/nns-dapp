@@ -1,11 +1,11 @@
 <script lang="ts">
   import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
-  import type { SnsNeuron } from "@dfinity/sns";
   import {
     getSnsDissolvingTimeInSeconds,
     getSnsLockedTimeInSeconds,
     getSnsNeuronState,
   } from "$lib/utils/sns-neuron.utils";
+  import type { SnsNeuron } from "@dfinity/sns";
 
   export let neuron: SnsNeuron;
   export let inline = true;

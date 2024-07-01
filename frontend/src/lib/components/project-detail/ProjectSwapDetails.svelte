@@ -1,25 +1,25 @@
 <script lang="ts">
-  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+  import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import {
     getDeniedCountries,
     getMaxNeuronsFundParticipation,
   } from "$lib/getters/sns-summary";
-  import type { SnsSummary } from "$lib/types/sns";
-  import { getContext } from "svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import type { CountryCode } from "$lib/types/location";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import { KeyValuePair } from "@dfinity/gix-components";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import { i18n } from "$lib/stores/i18n";
-  import type { SnsParams } from "@dfinity/sns";
-  import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
-  import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import { nonNullish } from "@dfinity/utils";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import type { SnsSummary } from "$lib/types/sns";
   import { formatNumber } from "$lib/utils/format.utils";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
+  import { KeyValuePair } from "@dfinity/gix-components";
+  import type { SnsParams } from "@dfinity/sns";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
+  import { getContext } from "svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

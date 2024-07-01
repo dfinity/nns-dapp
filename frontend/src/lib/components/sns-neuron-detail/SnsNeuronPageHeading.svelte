@@ -1,20 +1,20 @@
 <script lang="ts">
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
-  import { type Token, nonNullish, TokenAmountV2 } from "@dfinity/utils";
   import { selectedTokenStore } from "$lib/derived/selected-token.derived";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatVotingPower } from "$lib/utils/neuron.utils";
   import {
     getSnsNeuronStake,
     isUserHotkey,
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { i18n } from "$lib/stores/i18n";
-  import PageHeading from "../common/PageHeading.svelte";
-  import { formatVotingPower } from "$lib/utils/neuron.utils";
-  import { authStore } from "$lib/stores/auth.store";
   import HeadingSubtitle from "../common/HeadingSubtitle.svelte";
+  import PageHeading from "../common/PageHeading.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { Tag } from "@dfinity/gix-components";
+  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
+  import { type Token, nonNullish, TokenAmountV2 } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;

@@ -2,7 +2,6 @@ import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svel
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -96,12 +95,7 @@ describe("SelectUniverseList", () => {
   });
 
   describe('"all actionable" card', () => {
-    afterAll(() => {
-      overrideFeatureFlagsStore.reset();
-    });
-
     it('should render "Actionable proposals" card', async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", true);
       resetIdentity();
       page.mock({
         data: { universe: OWN_CANISTER_ID_TEXT, actionable: true },
@@ -116,25 +110,7 @@ describe("SelectUniverseList", () => {
       expect(await po.hasSeparator()).toEqual(true);
     });
 
-    it('should not render "Actionable proposals" card when ENABLE_ACTIONABLE_TAB false', async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", false);
-      resetIdentity();
-      page.mock({
-        data: { universe: OWN_CANISTER_ID_TEXT, actionable: true },
-        routeId: AppPath.Proposals,
-      });
-
-      const po = renderComponent();
-      const cardPos = await po.getSelectUniverseCardPos();
-      const titles = await Promise.all(cardPos.map((card) => card.getName()));
-      // +1 for IC
-      expect(cardPos.length).toEqual(projects.length + 1);
-      expect(titles.includes("Actionable Proposals")).toEqual(false);
-      expect(await po.hasSeparator()).toEqual(false);
-    });
-
     it('should not render "Actionable proposals" card when signedOut', async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", true);
       setNoIdentity();
       page.mock({
         data: { universe: OWN_CANISTER_ID_TEXT, actionable: true },

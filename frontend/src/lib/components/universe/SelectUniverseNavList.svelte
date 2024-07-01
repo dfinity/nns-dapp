@@ -1,6 +1,6 @@
 <script lang="ts">
-  import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svelte";
   import { goto } from "$app/navigation";
+  import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svelte";
   import {
     ACTIONABLE_PROPOSALS_URL,
     buildSwitchUniverseUrl,

@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { Modal, Spinner } from "@dfinity/gix-components";
-  import { createEventDispatcher } from "svelte";
-  import { Checkbox } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
-  import { isNullish } from "@dfinity/utils";
-  import type { SnsProposalDecisionStatus } from "@dfinity/sns";
+  import { Checkbox } from "@dfinity/gix-components";
+  import { Modal, Spinner } from "@dfinity/gix-components";
   import type { ProposalStatus, Topic } from "@dfinity/nns";
+  import type { SnsProposalDecisionStatus } from "@dfinity/sns";
+  import { isNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   type FiltersData =
     | SnsProposalTypeFilterId

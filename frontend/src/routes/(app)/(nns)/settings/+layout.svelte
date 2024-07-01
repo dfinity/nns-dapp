@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Layout from "$lib/components/layout/Layout.svelte";
-  import Content from "$lib/components/layout/Content.svelte";
   import { goto } from "$app/navigation";
+  import Content from "$lib/components/layout/Content.svelte";
+  import Layout from "$lib/components/layout/Layout.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { nonNullish } from "@dfinity/utils";
   import { referrerPathStore } from "$lib/stores/routes.store";
+  import { nonNullish } from "@dfinity/utils";
 
   const back = async () => {
     if (nonNullish($referrerPathStore)) {

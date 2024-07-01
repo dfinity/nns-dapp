@@ -1,44 +1,44 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import Tokens from "$lib/pages/Tokens.svelte";
-  import SignInTokens from "$lib/pages/SignInTokens.svelte";
-  import { onMount } from "svelte";
-  import { ActionType, type Action } from "$lib/types/actions";
-  import { tokensListVisitorsStore } from "$lib/derived/tokens-list-visitors.derived";
-  import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
-  import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
+  import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
+  import { snsLedgerCanisterIdsStore } from "$lib/derived/sns/sns-canisters.derived";
   import {
     snsProjectsCommittedStore,
     type SnsFullProject,
   } from "$lib/derived/sns/sns-projects.derived";
+  import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
+  import { tokensListVisitorsStore } from "$lib/derived/tokens-list-visitors.derived";
+  import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
+  import CkBtcReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
+  import CkBtcTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
+  import IcrcReceiveModal from "$lib/modals/accounts/IcrcReceiveModal.svelte";
+  import IcrcTokenTransactionModal from "$lib/modals/accounts/IcrcTokenTransactionModal.svelte";
+  import SignInTokens from "$lib/pages/SignInTokens.svelte";
+  import Tokens from "$lib/pages/Tokens.svelte";
+  import { updateBalance } from "$lib/services/ckbtc-minter.services";
+  import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
   import { uncertifiedLoadSnsesAccountsBalances } from "$lib/services/sns-accounts-balance.services";
-  import type { Universe, UniverseCanisterIdText } from "$lib/types/universe";
-  import { isArrayEmpty } from "$lib/utils/utils";
   import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
-  import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
+  import {
+    icrcCanistersStore,
+    type IcrcCanistersStoreData,
+  } from "$lib/stores/icrc-canisters.store";
+  import type { Account } from "$lib/types/account";
+  import { ActionType, type Action } from "$lib/types/actions";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+  import type { UserTokenData } from "$lib/types/tokens-page";
+  import type { Universe, UniverseCanisterIdText } from "$lib/types/universe";
   import {
     isIcrcTokenUniverse,
     isUniverseCkBTC,
     isUniverseNns,
   } from "$lib/utils/universe.utils";
-  import type { UserTokenData } from "$lib/types/tokens-page";
-  import {
-    icrcCanistersStore,
-    type IcrcCanistersStoreData,
-  } from "$lib/stores/icrc-canisters.store";
-  import CkBtcTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
-  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
-  import { updateBalance } from "$lib/services/ckbtc-minter.services";
-  import { nonNullish } from "@dfinity/utils";
+  import { isArrayEmpty } from "$lib/utils/utils";
   import { Principal } from "@dfinity/principal";
-  import IcrcTokenTransactionModal from "$lib/modals/accounts/IcrcTokenTransactionModal.svelte";
-  import CkBtcReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
-  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
-  import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
-  import type { Account } from "$lib/types/account";
-  import IcrcReceiveModal from "$lib/modals/accounts/IcrcReceiveModal.svelte";
-  import { snsLedgerCanisterIdsStore } from "$lib/derived/sns/sns-canisters.derived";
+  import { nonNullish } from "@dfinity/utils";
+  import { onMount } from "svelte";
 
   onMount(() => {
     loadCkBTCTokens();

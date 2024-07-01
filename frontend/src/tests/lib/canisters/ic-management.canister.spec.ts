@@ -33,6 +33,7 @@ describe("ICManagementCanister", () => {
         memory_allocation: 4n,
         compute_allocation: 10n,
         log_visibility: { controllers: null },
+        wasm_memory_limit: 1_000_000_000n,
       };
       const response: CanisterStatusResponse = {
         status: { running: null },

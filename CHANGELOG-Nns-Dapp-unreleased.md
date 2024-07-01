@@ -13,24 +13,24 @@ proposal is successful, the changes it released will be moved from this file to
 
 ### Application
 
+* Make neurons table sortable on desktop.
+
 #### Added
 
 #### Changed
 
-* Display neurons in a table instead of a grid of cards.
-* Removed the gap between identifier and copy button.
-* Reset the scroll position on the Proposals page when switching between projects.
-* Universe selector icon size decreased.
-* Updated colors of element dividers.
+* Change neuron ID column title to "Neurons".
+* Excluded non-displayed empty neurons when loading neurons.
 
 #### Deprecated
 
 #### Removed
 
+* Disable sorting the neurons table by neuron ID.
+
 #### Fixed
 
 * Button disable state glitch when voting with neurons where one follows another.
-* Fixed the display of actionable proposals page when a single SNS fails.
 
 #### Security
 
@@ -41,8 +41,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 #### Changed
-
-* Put snapshot state directories in home directory instead of `dfx` cache.
 
 #### Deprecated
 

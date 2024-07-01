@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { setContext, SvelteComponent } from "svelte";
-  import { writable } from "svelte/store";
+  import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
   import type {
     NnsNeuronContext,
     NnsNeuronStore,
   } from "$lib/types/nns-neuron-detail.context";
-  import type { NeuronInfo } from "@dfinity/nns";
-  import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
   import { NNS_NEURON_CONTEXT_KEY } from "$lib/types/nns-neuron-detail.context";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { setContext, SvelteComponent } from "svelte";
+  import { writable } from "svelte/store";
 
   export let testComponent: typeof SvelteComponent;
   export let neuron: NeuronInfo | undefined;

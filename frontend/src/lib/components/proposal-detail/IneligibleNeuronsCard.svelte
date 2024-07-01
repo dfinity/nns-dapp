@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import type { IneligibleNeuronData } from "$lib/utils/neuron.utils";
-  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+  import VotingCardNeuronList from "$lib/components/proposal-detail/VotingCard/VotingCardNeuronList.svelte";
   import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { i18n } from "$lib/stores/i18n";
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import type { IneligibleNeuronData } from "$lib/utils/neuron.utils";
   import type { NeuronIneligibilityReason } from "$lib/utils/neuron.utils";
   import { nonNullish } from "@dfinity/utils";
-  import VotingCardNeuronList from "$lib/components/proposal-detail/VotingCard/VotingCardNeuronList.svelte";
 
   export let ineligibleNeurons: IneligibleNeuronData[] = [];
   export let minSnsDissolveDelaySeconds: bigint;

@@ -285,7 +285,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98074512362489330,
+    "icrc1_total_supply": 98074577850224030,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -741,7 +741,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100566708838098190,
+    "icrc1_total_supply": 100570809474313310,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1140,7 +1140,9 @@
         "yimtt-ziaaa-aaaap-ahe3q-cai",
         "2jvhk-5aaaa-aaaap-ahewa-cai",
         "4bli7-7iaaa-aaaap-ahd4a-cai",
-        "o7ouu-niaaa-aaaap-ahhdq-cai"
+        "o7ouu-niaaa-aaaap-ahhdq-cai",
+        "zgfl7-pqaaa-aaaap-accpa-cai",
+        "inc34-eqaaa-aaaap-ahl2a-cai"
       ],
       "archives": ["uz6mw-eaaaa-aaaaq-aabpa-cai"]
     },
@@ -1188,7 +1190,7 @@
         {
           "id": 4,
           "name": "Add nervous system function",
-          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1196,7 +1198,7 @@
         {
           "id": 5,
           "name": "Remove nervous system function",
-          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1204,7 +1206,7 @@
         {
           "id": 6,
           "name": "Execute nervous system function",
-          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "description": "Proposal to execute a user-defined nervous system function, previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1251,7 +1253,7 @@
         },
         {
           "id": 12,
-          "name": "Mint SNS Tokens",
+          "name": "Mint SNS tokens",
           "description": "Proposal to mint SNS tokens to a specified recipient.",
           "function_type": {
             "NativeNervousSystemFunction": {}
@@ -1399,7 +1401,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50179969854042640,
+    "icrc1_total_supply": 50186792629907160,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2196,7 +2198,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9957234997125438,
+    "icrc1_total_supply": 9957242340258184,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3148,7 +3150,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10029138728673794,
+    "icrc1_total_supply": 10029144770509956,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4113,7 +4115,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12589111805844282,
+    "icrc1_total_supply": 12591711906875280,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -6019,7 +6021,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99997797328908720,
+    "icrc1_total_supply": 99965555477253970,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

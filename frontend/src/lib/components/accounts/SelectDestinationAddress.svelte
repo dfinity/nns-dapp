@@ -1,20 +1,20 @@
 <script lang="ts">
+  import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
+  import type {
+    TransactionNetwork,
+    TransactionSelectDestinationMethods,
+  } from "$lib/types/transaction";
   import {
     getAccountByRootCanister,
     getAccountsByRootCanister,
     invalidAddress,
   } from "$lib/utils/accounts.utils";
-  import { Toggle } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
   import AddressInput from "./AddressInput.svelte";
   import SelectAccountDropdown from "./SelectAccountDropdown.svelte";
-  import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
-  import type {
-    TransactionNetwork,
-    TransactionSelectDestinationMethods,
-  } from "$lib/types/transaction";
+  import { Toggle } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
 
   export let rootCanisterId: Principal;

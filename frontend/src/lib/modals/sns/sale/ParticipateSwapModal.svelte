@@ -1,49 +1,49 @@
 <script lang="ts">
+  import AdditionalInfoForm from "$lib/components/sale/AdditionalInfoForm.svelte";
+  import AdditionalInfoReview from "$lib/components/sale/AdditionalInfoReview.svelte";
+  import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
+  import { getConditionsToAccept } from "$lib/getters/sns-summary";
+  import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
+  import {
+    cancelPollAccounts,
+    pollAccounts,
+  } from "$lib/services/icp-accounts.services";
+  import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
+  import { getSwapAccount } from "$lib/services/sns.services";
   import { i18n } from "$lib/stores/i18n";
+  import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
+  import {
+    PROJECT_DETAIL_CONTEXT_KEY,
+    type ProjectDetailContext,
+  } from "$lib/types/project-detail.context";
+  import { SaleStep } from "$lib/types/sale";
+  import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+  import type {
+    NewTransaction,
+    ValidateAmountFn,
+  } from "$lib/types/transaction";
+  import type { TransactionInit } from "$lib/types/transaction";
+  import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
+  import {
+    currentUserMaxCommitment,
+    hasUserParticipatedToSwap,
+    validParticipation,
+  } from "$lib/utils/projects.utils";
+  import {
+    getCommitmentE8s,
+    hasOpenTicketInProcess,
+  } from "$lib/utils/sns.utils";
+  import type { WizardStep } from "@dfinity/gix-components";
   import { TokenAmount, ICPToken } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
   import {
     createEventDispatcher,
     getContext,
     onDestroy,
     onMount,
   } from "svelte";
-  import { getConditionsToAccept } from "$lib/getters/sns-summary";
-  import {
-    PROJECT_DETAIL_CONTEXT_KEY,
-    type ProjectDetailContext,
-  } from "$lib/types/project-detail.context";
-  import {
-    currentUserMaxCommitment,
-    hasUserParticipatedToSwap,
-    validParticipation,
-  } from "$lib/utils/projects.utils";
-  import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
-  import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
-  import { nonNullish } from "@dfinity/utils";
-  import { getSwapAccount } from "$lib/services/sns.services";
-  import type {
-    NewTransaction,
-    ValidateAmountFn,
-  } from "$lib/types/transaction";
-  import AdditionalInfoForm from "$lib/components/sale/AdditionalInfoForm.svelte";
-  import AdditionalInfoReview from "$lib/components/sale/AdditionalInfoReview.svelte";
-  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import type { WizardStep } from "@dfinity/gix-components";
-  import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
-  import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
-  import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
-  import {
-    getCommitmentE8s,
-    hasOpenTicketInProcess,
-  } from "$lib/utils/sns.utils";
-  import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
-  import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
-  import { SaleStep } from "$lib/types/sale";
-  import {
-    cancelPollAccounts,
-    pollAccounts,
-  } from "$lib/services/icp-accounts.services";
-  import type { TransactionInit } from "$lib/types/transaction";
 
   onMount(() => {
     pollAccounts(false);

@@ -1,18 +1,18 @@
 <script lang="ts">
+  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
+  import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { IconExpandCircleDown } from "@dfinity/gix-components";
-  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
-  import TooltipIcon from "../ui/TooltipIcon.svelte";
-  import type { SnsNeuron } from "@dfinity/sns";
   import {
     formattedMaturity,
     hasPermissionToDisburseMaturity,
     hasPermissionToStakeMaturity,
   } from "$lib/utils/sns-neuron.utils";
-  import SnsStakeMaturityButton from "./actions/SnsStakeMaturityButton.svelte";
+  import TooltipIcon from "../ui/TooltipIcon.svelte";
   import SnsDisburseMaturityButton from "./actions/SnsDisburseMaturityButton.svelte";
-  import { authStore } from "$lib/stores/auth.store";
+  import SnsStakeMaturityButton from "./actions/SnsStakeMaturityButton.svelte";
+  import { IconExpandCircleDown } from "@dfinity/gix-components";
+  import type { SnsNeuron } from "@dfinity/sns";
   import type { TokenAmountV2, Token } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;

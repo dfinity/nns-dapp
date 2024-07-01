@@ -2,26 +2,26 @@
 <svelte:options accessors />
 
 <script lang="ts">
-  import { ckbtcRetrieveBtcStatusesStore } from "$lib/stores/ckbtc-retrieve-btc-statuses.store";
-  import { i18n } from "$lib/stores/i18n";
+  import IcrcWalletTransactionsList from "$lib/components/accounts/IcrcWalletTransactionsList.svelte";
   import {
     ckBTCInfoStore,
     type CkBTCInfoStoreUniverseData,
   } from "$lib/stores/ckbtc-info.store";
   import { ckbtcPendingUtxosStore } from "$lib/stores/ckbtc-pending-utxos.store";
+  import { ckbtcRetrieveBtcStatusesStore } from "$lib/stores/ckbtc-retrieve-btc-statuses.store";
+  import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
-  import {
-    mapCkbtcTransactions,
-    mapCkbtcPendingUtxo,
-  } from "$lib/utils/icrc-transactions.utils";
+  import type { CanisterId } from "$lib/types/canister";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import type {
     UiTransaction,
     IcrcTransactionData,
   } from "$lib/types/transaction";
   import type { UniverseCanisterId } from "$lib/types/universe";
-  import type { CanisterId } from "$lib/types/canister";
-  import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import IcrcWalletTransactionsList from "$lib/components/accounts/IcrcWalletTransactionsList.svelte";
+  import {
+    mapCkbtcTransactions,
+    mapCkbtcPendingUtxo,
+  } from "$lib/utils/icrc-transactions.utils";
   import type { PendingUtxo } from "@dfinity/ckbtc";
   import { isNullish } from "@dfinity/utils";
 

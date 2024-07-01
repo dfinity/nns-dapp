@@ -1,20 +1,20 @@
 <script lang="ts">
-  import { AppPath } from "$lib/constants/routes.constants";
-  import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
-  import { i18n } from "$lib/stores/i18n";
-  import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
-  import { Card } from "@dfinity/gix-components";
-  import Logo from "$lib/components/ui/Logo.svelte";
-  import { Spinner } from "@dfinity/gix-components";
-  import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
-  import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
+  import Logo from "$lib/components/ui/Logo.svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+  import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
+  import { i18n } from "$lib/stores/i18n";
+  import { createIsSnsFinalizingStore } from "$lib/stores/sns-finalization-status.store";
+  import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+  import { getCommitmentE8s } from "$lib/utils/sns.utils";
+  import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
+  import { Card } from "@dfinity/gix-components";
+  import { Spinner } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
-  import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import type { Readable } from "svelte/store";
-  import { createIsSnsFinalizingStore } from "$lib/stores/sns-finalization-status.store";
-  import type { Principal } from "@dfinity/principal";
 
   export let project: SnsFullProject;
 

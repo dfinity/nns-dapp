@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Layout from "$lib/components/layout/Layout.svelte";
   import Content from "$lib/components/layout/Content.svelte";
+  import Layout from "$lib/components/layout/Layout.svelte";
   import { nonNullish } from "@dfinity/utils";
 
   export let content = "";
