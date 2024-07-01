@@ -27,7 +27,9 @@
 </script>
 
 <Modal testId="responsive-table-sort-modal-component" on:nnsClose>
-  <div slot="title">{$i18n.responsive_table.sort_by}</div>
+  <svelte:fragment slot="title"
+    >{$i18n.responsive_table.sort_by}</svelte:fragment
+  >
   {#each columns as column}
     {#if nonNullish(column.comparator)}
       <button
@@ -67,6 +69,7 @@
 
     .arrow-icon {
       color: var(--primary);
+      // Should match the size="16" of the IconSouth above.
       height: 16px;
       margin-left: var(--padding);
 
