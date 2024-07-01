@@ -23,6 +23,11 @@
 
   export let neurons: TableNeuron[];
 
+  // Make sure there is a consistent order even if the selected sorting
+  // criteria don't tiebreak all neurons.
+  let neuronsSortedById: TableNeuron[];
+  $: neuronsSortedById = [...neurons].sort(compareById);
+
   const columns: NeuronsTableColumn[] = [
     {
       id: "id",
@@ -30,7 +35,6 @@
       cellComponent: NeuronIdCell,
       alignment: "left",
       templateColumns: ["minmax(min-content, max-content)"],
-      comparator: compareById,
     },
     {
       title: "",
@@ -103,7 +107,7 @@
 <ResponsiveTable
   testId="neurons-table-component"
   {columns}
-  tableData={neurons}
+  tableData={neuronsSortedById}
   bind:order={$neuronsTableOrderStore}
   {getRowStyle}
 ></ResponsiveTable>

@@ -11,9 +11,6 @@ describe("neurons-table.store", () => {
         {
           columnId: "dissolveDelay",
         },
-        {
-          columnId: "id",
-        },
       ]);
     });
 
@@ -38,9 +35,6 @@ describe("neurons-table.store", () => {
         },
         {
           columnId: "dissolveDelay",
-        },
-        {
-          columnId: "id",
         },
       ]);
     });
