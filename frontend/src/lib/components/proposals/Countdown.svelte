@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { AUTH_SESSION_DURATION } from "$lib/constants/identity.constants";
+  import { i18n } from "$lib/stores/i18n";
   import { nowInSeconds } from "$lib/utils/date.utils";
   import { secondsToDuration } from "@dfinity/utils";
-  import { i18n } from "$lib/stores/i18n";
-  import { AUTH_SESSION_DURATION } from "$lib/constants/identity.constants";
+  import { onDestroy, onMount } from "svelte";
 
   export let deadlineTimestampSeconds: bigint | undefined;
 

@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { triggerDebugReport } from "$lib/directives/debug.directives";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { HeaderTitle } from "@dfinity/gix-components";
-  import { triggerDebugReport } from "$lib/directives/debug.directives";
 
   let pageTitle = "NNS Dapp";
   $: pageTitle = `${$layoutTitleStore.title ?? ""}${

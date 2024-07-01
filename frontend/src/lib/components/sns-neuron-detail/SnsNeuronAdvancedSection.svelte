@@ -1,22 +1,22 @@
 <script lang="ts">
+  import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
-  import { KeyValuePair, Section } from "@dfinity/gix-components";
   import { secondsToDateTime } from "$lib/utils/date.utils";
-  import Hash from "../ui/Hash.svelte";
-  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import {
     getSnsDissolvingTimestampSeconds,
     getSnsNeuronIdAsHexString,
     hasPermissionToSplit,
   } from "$lib/utils/sns-neuron.utils";
   import SnsNeuronAge from "../sns-neurons/SnsNeuronAge.svelte";
-  import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
-  import type { Principal } from "@dfinity/principal";
-  import { nonNullish, type Token, TokenAmountV2 } from "@dfinity/utils";
+  import Hash from "../ui/Hash.svelte";
   import SnsNeuronVestingPeriodRemaining from "./SnsNeuronVestingPeriodRemaining.svelte";
   import SnsAutoStakeMaturity from "./actions/SnsAutoStakeMaturity.svelte";
   import SplitSnsNeuronButton from "./actions/SplitSnsNeuronButton.svelte";
-  import { authStore } from "$lib/stores/auth.store";
+  import { KeyValuePair, Section } from "@dfinity/gix-components";
+  import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
+  import type { Principal } from "@dfinity/principal";
+  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
+  import { nonNullish, type Token, TokenAmountV2 } from "@dfinity/utils";
 
   export let governanceCanisterId: Principal | undefined;
   export let neuron: SnsNeuron;

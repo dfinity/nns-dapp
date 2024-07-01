@@ -3,7 +3,10 @@ import { MAX_ACTIONABLE_REQUEST_COUNT } from "$lib/constants/constants";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
-import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+import {
+  actionableSnsProposalsStore,
+  failedActionableSnsesStore,
+} from "$lib/stores/actionable-sns-proposals.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { votableSnsNeurons } from "$lib/utils/sns-neuron.utils";
 import {
@@ -35,19 +38,14 @@ export const loadActionableProposalsForSns = async (
 ): Promise<void> => {
   try {
     const rootCanisterIdText = rootCanisterId.toText();
-    const storeValue = get(actionableSnsProposalsStore)[rootCanisterIdText];
-    if (nonNullish(storeValue)) {
-      // The proposals state does not update frequently, so we don't need to re-fetch.
-      // The store will be reset after the user registers a vote.
-      return;
-    }
-
     const identity = await getAuthenticatedIdentity();
     const { proposals: allProposals, includeBallotsByCaller } =
       await querySnsProposals({
         rootCanisterId: rootCanisterIdText,
         identity,
       });
+
+    failedActionableSnsesStore.remove(rootCanisterIdText);
 
     if (!includeBallotsByCaller) {
       // No need to fetch neurons if there are no actionable proposals support.
@@ -87,6 +85,9 @@ export const loadActionableProposalsForSns = async (
     });
   } catch (err) {
     console.error(err);
+
+    // Store the failed root canister ID to provide the correct loading state.
+    failedActionableSnsesStore.add(rootCanisterId.toText());
   }
 };
 

@@ -1,10 +1,10 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { formattedTotalMaturity } from "$lib/utils/neuron.utils";
+  import NnsAvailableMaturityItemAction from "./NnsAvailableMaturityItemAction.svelte";
+  import NnsStakedMaturityItemAction from "./NnsStakedMaturityItemAction.svelte";
   import { Section } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import NnsStakedMaturityItemAction from "./NnsStakedMaturityItemAction.svelte";
-  import NnsAvailableMaturityItemAction from "./NnsAvailableMaturityItemAction.svelte";
 
   export let neuron: NeuronInfo;
 </script>

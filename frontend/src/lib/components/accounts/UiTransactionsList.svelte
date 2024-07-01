@@ -1,11 +1,11 @@
 <script lang="ts">
   // TODO: Rename to TransactionList once we remove the old one.
-  import { InfiniteScroll, Spinner } from "@dfinity/gix-components";
-  import NoTransactions from "./NoTransactions.svelte";
-  import SkeletonCard from "../ui/SkeletonCard.svelte";
   import type { UiTransaction } from "$lib/types/transaction";
-  import { flip } from "svelte/animate";
+  import SkeletonCard from "../ui/SkeletonCard.svelte";
+  import NoTransactions from "./NoTransactions.svelte";
   import TransactionCard from "./TransactionCard.svelte";
+  import { InfiniteScroll, Spinner } from "@dfinity/gix-components";
+  import { flip } from "svelte/animate";
 
   export let transactions: UiTransaction[];
   export let loading: boolean;

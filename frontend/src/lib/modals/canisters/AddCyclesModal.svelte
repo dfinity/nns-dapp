@@ -1,35 +1,35 @@
 <script lang="ts">
-  import { createEventDispatcher, getContext, onMount } from "svelte";
-  import type { Principal } from "@dfinity/principal";
+  import CanisterIdInfo from "$lib/components/canisters/CanisterIdInfo.svelte";
   import ConfirmCyclesCanister from "$lib/components/canisters/ConfirmCyclesCanister.svelte";
   import SelectCyclesCanister from "$lib/components/canisters/SelectCyclesCanister.svelte";
+  import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
   import {
     getIcpToCyclesExchangeRate,
     topUpCanister,
   } from "$lib/services/canisters.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import type { Account } from "$lib/types/account";
+  import {
+    CANISTER_DETAILS_CONTEXT_KEY,
+    type CanisterDetailsContext,
+  } from "$lib/types/canister-detail.context";
+  import { filterHardwareWalletAccounts } from "$lib/utils/accounts.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
+  import { valueSpan } from "$lib/utils/utils";
   import {
     WizardModal,
     Html,
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
-  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import {
-    CANISTER_DETAILS_CONTEXT_KEY,
-    type CanisterDetailsContext,
-  } from "$lib/types/canister-detail.context";
-  import CanisterIdInfo from "$lib/components/canisters/CanisterIdInfo.svelte";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
-  import { valueSpan } from "$lib/utils/utils";
+  import type { Principal } from "@dfinity/principal";
   import { ICPToken } from "@dfinity/utils";
-  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
-  import { filterHardwareWalletAccounts } from "$lib/utils/accounts.utils";
-  import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
+  import { createEventDispatcher, getContext, onMount } from "svelte";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {

@@ -35,4 +35,8 @@ export class SimpleBasePageObject {
   getText(tid: string | undefined = undefined): Promise<string> {
     return this.getElement(tid).getText();
   }
+
+  getStyle(): Promise<string> {
+    return this.root.getAttribute("style");
+  }
 }

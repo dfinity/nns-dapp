@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
+  import VotingPowerDisplay from "$lib/components/ic/VotingPowerDisplay.svelte";
+  import ExpandableProposalNeurons from "$lib/components/proposal-detail/VotingCard/ExpandableProposalNeurons.svelte";
+  import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
   import { i18n } from "$lib/stores/i18n";
   import {
     type VoteRegistrationStoreEntry,
     votingNeuronSelectStore,
   } from "$lib/stores/vote-registration.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import VotingPowerDisplay from "$lib/components/ic/VotingPowerDisplay.svelte";
-  import ExpandableProposalNeurons from "$lib/components/proposal-detail/VotingCard/ExpandableProposalNeurons.svelte";
-  import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
+  import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
 
   export let voteRegistration: VoteRegistrationStoreEntry | undefined;
 

@@ -1,49 +1,49 @@
 <script lang="ts">
-  import { setContext, onDestroy } from "svelte";
+  import { browser } from "$app/environment";
+  import { goto } from "$app/navigation";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ProjectInfoSection from "$lib/components/project-detail/ProjectInfoSection.svelte";
   import ProjectMetadataSection from "$lib/components/project-detail/ProjectMetadataSection.svelte";
+  import ProjectProposal from "$lib/components/project-detail/ProjectProposal.svelte";
   import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
+  import { IS_TEST_ENV } from "$lib/constants/mockable.constants";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { layoutTitleStore } from "$lib/stores/layout.store";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { debugSelectedProjectStore } from "$lib/derived/debug.derived";
+  import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
+  import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
+  import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
+  import {
+    hidePollingToast,
+    restoreSnsSaleParticipation,
+  } from "$lib/services/sns-sale.services";
+  import { loadSnsSwapMetrics } from "$lib/services/sns-swap-metrics.services";
   import {
     loadSnsLifecycle,
     loadSnsSwapCommitment,
     loadSnsDerivedState,
     watchSnsTotalCommitment,
   } from "$lib/services/sns.services";
+  import { loadUserCountry } from "$lib/services/user-country.services";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
+  import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
+  import { snsSummariesStore } from "$lib/stores/sns.store";
   import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
+  import { toastsError } from "$lib/stores/toasts.store";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
     type ProjectDetailStore,
   } from "$lib/types/project-detail.context";
-  import { writable } from "svelte/store";
-  import { snsSummariesStore } from "$lib/stores/sns.store";
-  import { Principal } from "@dfinity/principal";
-  import { toastsError } from "$lib/stores/toasts.store";
-  import { debugSelectedProjectStore } from "$lib/derived/debug.derived";
-  import { goto } from "$app/navigation";
-  import { isNullish, nonNullish } from "@dfinity/utils";
-  import { loadSnsSwapMetrics } from "$lib/services/sns-swap-metrics.services";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
-  import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
-  import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
-  import {
-    hidePollingToast,
-    restoreSnsSaleParticipation,
-  } from "$lib/services/sns-sale.services";
-  import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import { SaleStep } from "$lib/types/sale";
-  import { getCommitmentE8s } from "$lib/utils/sns.utils";
-  import { browser } from "$app/environment";
-  import { IS_TEST_ENV } from "$lib/constants/mockable.constants";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { userCountryIsNeeded } from "$lib/utils/projects.utils";
-  import { loadUserCountry } from "$lib/services/user-country.services";
   import { hasBuyersCount } from "$lib/utils/sns-swap.utils";
-  import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
-  import ProjectProposal from "$lib/components/project-detail/ProjectProposal.svelte";
+  import { getCommitmentE8s } from "$lib/utils/sns.utils";
+  import { Principal } from "@dfinity/principal";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { setContext, onDestroy } from "svelte";
+  import { writable } from "svelte/store";
 
   export let rootCanisterId: string | undefined | null;
 

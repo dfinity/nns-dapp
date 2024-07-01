@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { Account } from "$lib/types/account";
   import { i18n } from "$lib/stores/i18n";
-  import { openAccountsModal } from "$lib/utils/modals.utils";
-  import { busy } from "@dfinity/gix-components";
+  import type { Account } from "$lib/types/account";
   import type { AccountsModalType } from "$lib/types/accounts.modal";
   import type { UniverseCanisterId } from "$lib/types/universe";
+  import { openAccountsModal } from "$lib/utils/modals.utils";
+  import { busy } from "@dfinity/gix-components";
 
   export let testId = "receive-icp";
   export let type: AccountsModalType;

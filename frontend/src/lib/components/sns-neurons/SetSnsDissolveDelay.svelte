@@ -1,24 +1,24 @@
 <script lang="ts">
-  import type { NeuronState } from "@dfinity/nns";
-  import type { Token } from "@dfinity/utils";
+  import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
+  import Hash from "$lib/components/ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { TokenAmountV2, isNullish } from "@dfinity/utils";
-  import type { SnsNeuron } from "@dfinity/sns";
   import {
     getSnsLockedTimeInSeconds,
     getSnsNeuronStake,
     getSnsNeuronState,
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
-  import type { SnsNervousSystemParameters } from "@dfinity/sns";
-  import { fromDefinedNullable } from "@dfinity/utils";
-  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-  import type { Principal } from "@dfinity/principal";
-  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
-  import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-  import Hash from "$lib/components/ui/Hash.svelte";
+  import type { NeuronState } from "@dfinity/nns";
+  import type { Principal } from "@dfinity/principal";
+  import type { SnsNervousSystemParameters } from "@dfinity/sns";
+  import type { SnsNeuron } from "@dfinity/sns";
+  import type { Token } from "@dfinity/utils";
+  import { TokenAmountV2, isNullish } from "@dfinity/utils";
+  import { fromDefinedNullable } from "@dfinity/utils";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;

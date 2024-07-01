@@ -1,34 +1,34 @@
 <script lang="ts">
-  import { ENABLE_NEURONS_TABLE } from "$lib/stores/feature-flags.store";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-  import {
-    sortedSnsCFNeuronsStore,
-    sortedSnsUserNeuronsStore,
-  } from "$lib/derived/sns/sns-sorted-neurons.derived";
-  import { i18n } from "$lib/stores/i18n";
-  import { authStore } from "$lib/stores/auth.store";
-  import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
+  import NeuronsTable from "$lib/components/neurons/NeuronsTable/NeuronsTable.svelte";
   import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";
-  import type { Principal } from "@dfinity/principal";
-  import type { SnsNeuron } from "@dfinity/sns";
-  import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-  import { pageStore } from "$lib/derived/page.derived";
-  import { buildNeuronUrl } from "$lib/utils/navigation.utils";
-  import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
   import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import type { SnsSummary } from "$lib/types/sns";
-  import { nonNullish } from "@dfinity/utils";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
+  import { pageStore } from "$lib/derived/page.derived";
   import {
     snsOnlyProjectStore,
     snsProjectSelectedStore,
   } from "$lib/derived/sns/sns-selected-project.derived";
-  import { Html, Spinner } from "@dfinity/gix-components";
-  import NeuronsTable from "$lib/components/neurons/NeuronsTable/NeuronsTable.svelte";
+  import {
+    sortedSnsCFNeuronsStore,
+    sortedSnsUserNeuronsStore,
+    definedSnsNeuronStore,
+  } from "$lib/derived/sns/sns-sorted-neurons.derived";
+  import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
+  import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
+  import { authStore } from "$lib/stores/auth.store";
+  import { ENABLE_NEURONS_TABLE } from "$lib/stores/feature-flags.store";
+  import { i18n } from "$lib/stores/i18n";
   import type { TableNeuron } from "$lib/types/neurons-table";
+  import type { SnsSummary } from "$lib/types/sns";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import { tableNeuronsFromSnsNeurons } from "$lib/utils/neurons-table.utils";
+  import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+  import { Html, Spinner } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
+  import type { SnsNeuron } from "@dfinity/sns";
+  import { nonNullish } from "@dfinity/utils";
 
   let loading = true;
 
@@ -71,7 +71,7 @@
           token: summary.token,
           identity: $authStore.identity,
           i18n: $i18n,
-          snsNeurons: $snsNeuronsStore[$pageStore.universe]?.neurons ?? [],
+          snsNeurons: $definedSnsNeuronStore,
         })
       : [];
 </script>

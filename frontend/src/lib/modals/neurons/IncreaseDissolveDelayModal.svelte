@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import SetNnsDissolveDelay from "$lib/components/neurons/SetNnsDissolveDelay.svelte";
-  import type { NeuronInfo } from "@dfinity/nns";
   import ConfirmDissolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
+  import SetNnsDissolveDelay from "$lib/components/neurons/SetNnsDissolveDelay.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import {
     WizardModal,
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;

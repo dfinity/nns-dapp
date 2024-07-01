@@ -3,8 +3,8 @@
     type MetricsWorker,
     initMetricsWorker,
   } from "$lib/services/$public/worker-metrics.services";
-  import { onMount, onDestroy } from "svelte";
   import { metricsStore } from "$lib/stores/metrics.store";
+  import { onMount, onDestroy } from "svelte";
 
   import type { PostMessageDataResponseMetrics } from "$lib/types/post-message.metrics";
 

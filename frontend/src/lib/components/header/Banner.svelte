@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { IconClose } from "@dfinity/gix-components";
+  import { browser } from "$app/environment";
   import {
     DFX_NETWORK,
     IS_TESTNET,
   } from "$lib/constants/environment.constants";
   import { DEV } from "$lib/constants/mockable.constants";
-  import { browser } from "$app/environment";
+  import { i18n } from "$lib/stores/i18n";
+  import { IconClose } from "@dfinity/gix-components";
 
   const localstorageKey = "nnsdapp-testnet-banner-display";
 

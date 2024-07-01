@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_ledger --out ic_sns_ledger.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-06-05_23-01-base/rs/rosetta-api/icrc1/ledger/ledger.did>
+//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-06-19_23-01-cycle-hotfix/rs/rosetta-api/icrc1/ledger/ledger.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -212,6 +212,11 @@ pub struct GetTransactionsResponse {
     pub transactions: Vec<Transaction>,
     pub archived_transactions: Vec<GetTransactionsResponseArchivedTransactionsItem>,
 }
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Icrc10SupportedStandardsRetItem {
+    pub url: String,
+    pub name: String,
+}
 pub type Tokens = candid::Nat;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct StandardRecord {
@@ -242,6 +247,64 @@ pub enum TransferError {
 pub enum TransferResult {
     Ok(BlockIndex),
     Err(TransferError),
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Icrc21ConsentMessageMetadata {
+    pub language: String,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum Icrc21ConsentMessageSpecDeviceSpecInner {
+    GenericDisplay,
+    LineDisplay {
+        characters_per_line: u16,
+        lines_per_page: u16,
+    },
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Icrc21ConsentMessageSpec {
+    pub metadata: Icrc21ConsentMessageMetadata,
+    pub device_spec: Option<Icrc21ConsentMessageSpecDeviceSpecInner>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Icrc21ConsentMessageRequest {
+    pub arg: serde_bytes::ByteBuf,
+    pub method: String,
+    pub user_preferences: Icrc21ConsentMessageSpec,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Icrc21ConsentMessageLineDisplayMessagePagesItem {
+    pub lines: Vec<String>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum Icrc21ConsentMessage {
+    LineDisplayMessage {
+        pages: Vec<Icrc21ConsentMessageLineDisplayMessagePagesItem>,
+    },
+    GenericDisplayMessage(String),
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Icrc21ConsentInfo {
+    pub metadata: Icrc21ConsentMessageMetadata,
+    pub consent_message: Icrc21ConsentMessage,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Icrc21ErrorInfo {
+    pub description: String,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum Icrc21Error {
+    GenericError {
+        description: String,
+        error_code: candid::Nat,
+    },
+    InsufficientPayment(Icrc21ErrorInfo),
+    UnsupportedCanisterCall(Icrc21ErrorInfo),
+    ConsentMessageUnavailable(Icrc21ErrorInfo),
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum Icrc21ConsentMessageResponse {
+    Ok(Icrc21ConsentInfo),
+    Err(Icrc21Error),
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct AllowanceArgs {
@@ -370,6 +433,9 @@ impl Service {
     pub async fn get_transactions(&self, arg0: GetTransactionsRequest) -> CallResult<(GetTransactionsResponse,)> {
         ic_cdk::call(self.0, "get_transactions", (arg0,)).await
     }
+    pub async fn icrc_10_supported_standards(&self) -> CallResult<(Vec<Icrc10SupportedStandardsRetItem>,)> {
+        ic_cdk::call(self.0, "icrc10_supported_standards", ()).await
+    }
     pub async fn icrc_1_balance_of(&self, arg0: Account) -> CallResult<(Tokens,)> {
         ic_cdk::call(self.0, "icrc1_balance_of", (arg0,)).await
     }
@@ -399,6 +465,12 @@ impl Service {
     }
     pub async fn icrc_1_transfer(&self, arg0: TransferArg) -> CallResult<(TransferResult,)> {
         ic_cdk::call(self.0, "icrc1_transfer", (arg0,)).await
+    }
+    pub async fn icrc_21_canister_call_consent_message(
+        &self,
+        arg0: Icrc21ConsentMessageRequest,
+    ) -> CallResult<(Icrc21ConsentMessageResponse,)> {
+        ic_cdk::call(self.0, "icrc21_canister_call_consent_message", (arg0,)).await
     }
     pub async fn icrc_2_allowance(&self, arg0: AllowanceArgs) -> CallResult<(Allowance,)> {
         ic_cdk::call(self.0, "icrc2_allowance", (arg0,)).await

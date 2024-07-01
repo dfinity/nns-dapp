@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { BallotInfo, NeuronInfo } from "@dfinity/nns";
-  import BallotSummary from "./BallotSummary.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { ballotsWithDefinedProposal } from "$lib/utils/neuron.utils";
+  import BallotSummary from "./BallotSummary.svelte";
   import { InfiniteScroll } from "@dfinity/gix-components";
+  import type { BallotInfo, NeuronInfo } from "@dfinity/nns";
   import { debounce } from "@dfinity/utils";
 
   export let neuron: NeuronInfo | undefined;
@@ -68,7 +68,7 @@
   li {
     padding: var(--padding-2x) 0;
 
-    border-top: 1px solid currentColor;
+    border-top: 1px solid var(--elements-divider);
     &:first-child {
       border-top: none;
     }

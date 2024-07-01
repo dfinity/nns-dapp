@@ -13,7 +13,7 @@ export class TooltipIconPo extends BasePageObject {
     return TooltipPo.under(this.root);
   }
 
-  getText(): Promise<string> {
+  getTooltipText(): Promise<string> {
     return this.getTooltipPo().getTooltipText();
   }
 }

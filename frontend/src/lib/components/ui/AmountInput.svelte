@@ -1,10 +1,10 @@
 <script lang="ts">
+  import MaxButton from "$lib/components/common/MaxButton.svelte";
   import { ICP_DISPLAYED_DECIMALS_DETAILED } from "$lib/constants/icp.constants";
   import { i18n } from "$lib/stores/i18n";
-  import { createEventDispatcher } from "svelte";
-  import MaxButton from "$lib/components/common/MaxButton.svelte";
   import InputWithError from "./InputWithError.svelte";
   import { type Token, isNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let amount: number | undefined = undefined;
   export let max: number | undefined = undefined;

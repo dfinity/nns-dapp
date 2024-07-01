@@ -1,17 +1,17 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
   import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toggleCommunityFund } from "$lib/services/neurons.services";
+  import { authStore } from "$lib/stores/auth.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import {
     hasJoinedCommunityFund,
     isHotKeyControllable,
   } from "$lib/utils/neuron.utils";
-  import { i18n } from "$lib/stores/i18n";
   import { Html } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import { authStore } from "$lib/stores/auth.store";
 
   export let neuron: NeuronInfo;
 

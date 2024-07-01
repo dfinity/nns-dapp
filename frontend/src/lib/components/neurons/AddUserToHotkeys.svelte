@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
   import { addHotkeyForHardwareWalletNeuron } from "$lib/services/neurons.services";
+  import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
-  import type { NeuronId } from "@dfinity/nns";
-  import { authStore } from "$lib/stores/auth.store";
   import { busy } from "@dfinity/gix-components";
+  import type { NeuronId } from "@dfinity/nns";
+  import { createEventDispatcher } from "svelte";
 
   export let account: Account;
   export let neuronId: NeuronId;

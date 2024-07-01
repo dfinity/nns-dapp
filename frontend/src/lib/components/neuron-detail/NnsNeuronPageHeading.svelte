@@ -1,21 +1,21 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+  import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     formatVotingPower,
     getNeuronTags,
     neuronStake,
     type NeuronTagData,
   } from "$lib/utils/neuron.utils";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { i18n } from "$lib/stores/i18n";
-  import PageHeading from "../common/PageHeading.svelte";
-  import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
-  import { authStore } from "$lib/stores/auth.store";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import HeadingSubtitle from "../common/HeadingSubtitle.svelte";
+  import PageHeading from "../common/PageHeading.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { Tag } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;
 

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
-  import type { TransactionsObserverData } from "$lib/types/icrc.observer";
   import type {
     TransactionsCallback,
     TransactionsWorker,
   } from "$lib/services/worker-transactions.services";
   import { initTransactionsWorker } from "$lib/services/worker-transactions.services";
+  import type { TransactionsObserverData } from "$lib/types/icrc.observer";
+  import { onDestroy, onMount } from "svelte";
 
   export let data: TransactionsObserverData;
   export let callback: TransactionsCallback;

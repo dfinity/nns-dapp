@@ -10,7 +10,6 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { ProposalRewardStatus, Vote } from "@dfinity/nns";
@@ -179,19 +178,6 @@ describe("actionable-proposals.services", () => {
       expect(get(actionableNnsProposalsStore)).toEqual({
         proposals: [votableProposal],
       });
-    });
-
-    it("should not query proposals when store is already filled", async () => {
-      expect(spyQueryProposals).not.toHaveBeenCalled();
-      expect(spyQueryNeurons).not.toHaveBeenCalled();
-      actionableNnsProposalsStore.setProposals([votableProposal]);
-
-      await loadActionableProposals();
-      // just in case
-      await runResolvedPromises();
-
-      expect(spyQueryProposals).not.toHaveBeenCalled();
-      expect(spyQueryNeurons).not.toHaveBeenCalled();
     });
   });
 });

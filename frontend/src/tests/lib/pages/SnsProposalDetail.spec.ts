@@ -31,6 +31,7 @@ import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
+import type { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
   SnsProposalDecisionStatus,
@@ -64,13 +65,13 @@ describe("SnsProposalDetail", () => {
   beforeEach(() => {
     page.reset();
     resetSnsProjects();
+    actionableSnsProposalsStore.resetForTesting();
   });
 
   describe("not logged in", () => {
     beforeEach(() => {
       vi.clearAllMocks();
       actionableProposalsSegmentStore.resetForTesting();
-      actionableSnsProposalsStore.resetForTesting();
       vi.spyOn(console, "error").mockImplementation(() => undefined);
       authStore.setForTesting(undefined);
       snsFunctionsStore.reset();
@@ -360,89 +361,116 @@ describe("SnsProposalDetail", () => {
     });
   });
 
-  it("should provide navigation between Snses for actionable page proposals", async () => {
-    const rootCanisterId1 = principal(1);
-    const rootCanisterId2 = principal(2);
-    const rootCanisterId3 = principal(3);
-    resetIdentity();
-    setSnsProjects([
-      {
-        rootCanisterId: rootCanisterId1,
+  describe("cross-project navigation", () => {
+    const principal1 = principal(11);
+    const principal2 = principal(22);
+
+    const mockCommittedSnsProjectsWithVotableProposals = (
+      projects: Array<{ rootCanisterId: Principal; proposalIds: bigint[] }>
+    ) => {
+      const snsProjects = projects.map(({ rootCanisterId }) => ({
+        rootCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
-      },
-      {
-        rootCanisterId: rootCanisterId2,
-        lifecycle: SnsSwapLifecycle.Committed,
-      },
-      {
-        rootCanisterId: rootCanisterId3,
-        lifecycle: SnsSwapLifecycle.Committed,
-      },
-    ]);
+      }));
+      setSnsProjects(snsProjects);
+      projects.forEach(({ rootCanisterId, proposalIds }) => {
+        const proposals = proposalIds.map((proposalId) =>
+          createSnsProposal({
+            proposalId,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+          })
+        );
+        // set votable proposals
+        actionableSnsProposalsStore.set({
+          rootCanisterId,
+          includeBallotsByCaller: true,
+          proposals,
+        });
+        // Add proposals to the fake api to be able to navigate to it
+        proposalIds.forEach((proposalId) =>
+          fakeSnsGovernanceApi.addProposalWith({
+            identity: mockIdentity,
+            rootCanisterId,
+            id: [{ id: proposalId }],
+          })
+        );
+      });
+    };
 
-    page.mock({
-      data: { universe: rootCanisterId2.toText(), actionable: true },
-    });
-
-    actionableSnsProposalsStore.set({
-      rootCanisterId: rootCanisterId1,
-      includeBallotsByCaller: true,
-      proposals: [
-        createSnsProposal({
-          proposalId: 1n,
-          status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-        }),
-      ],
-    });
-    actionableSnsProposalsStore.set({
-      rootCanisterId: rootCanisterId2,
-      includeBallotsByCaller: true,
-      proposals: [
-        createSnsProposal({
-          proposalId: 2n,
-          status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-        }),
-      ],
-    });
-    actionableSnsProposalsStore.set({
-      rootCanisterId: rootCanisterId3,
-      includeBallotsByCaller: true,
-      proposals: [
-        createSnsProposal({
-          proposalId: 3n,
-          status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-        }),
-      ],
+    beforeEach(() => {
+      // Actionable proposals are available for signed in user only
+      resetIdentity();
     });
 
-    fakeSnsGovernanceApi.addProposalWith({
-      identity: mockIdentity,
-      rootCanisterId: rootCanisterId2,
-      id: [{ id: 2n }],
+    it("should navigate to the proposal from the next Sns", async () => {
+      mockCommittedSnsProjectsWithVotableProposals([
+        { rootCanisterId: principal1, proposalIds: [20n, 19n] },
+        { rootCanisterId: principal2, proposalIds: [30n, 29n] },
+      ]);
+      page.mock({
+        data: { universe: principal1.toText(), actionable: true },
+      });
+
+      const { container } = render(SnsProposalDetail, {
+        props: { proposalIdText: "19" },
+      });
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
+      await runResolvedPromises();
+      expect(await po.isContentLoaded()).toBe(true);
+
+      const navigationPo = po.getProposalNavigationPo();
+      expect(await navigationPo.isPresent()).toBe(true);
+      expect(await navigationPo.isNextButtonHidden()).toBe(false);
+
+      await navigationPo.clickNext();
+      expect(get(page)).toEqual({
+        data: {
+          actionable: "",
+          proposal: "30",
+          universe: principal2.toText(),
+        },
+        route: {
+          id: "/(app)/proposal/",
+        },
+      });
     });
 
-    const { container } = render(SnsProposalDetail, {
-      props: {
-        // set the proposal with id=2 to be in the middle of the list
-        proposalIdText: "2",
-      },
-    });
-    const po = SnsProposalDetailPo.under(new JestPageObjectElement(container));
-    await runResolvedPromises();
-    expect(await po.isContentLoaded()).toBe(true);
+    it("should navigate to the proposal from the previous Sns", async () => {
+      mockCommittedSnsProjectsWithVotableProposals([
+        { rootCanisterId: principal1, proposalIds: [20n, 19n] },
+        { rootCanisterId: principal2, proposalIds: [30n, 29n] },
+      ]);
+      page.mock({
+        data: { universe: principal2.toText(), actionable: true },
+      });
 
-    const navigationPo = po.getProposalNavigationPo();
-    expect(await navigationPo.isPresent()).toBe(true);
-    expect(await navigationPo.isPreviousButtonHidden()).toBe(false);
-    expect(await navigationPo.getPreviousButtonProposalId()).toBe("1");
-    expect(await navigationPo.getPreviousButtonProposalUniverse()).toBe(
-      rootCanisterId1.toText()
-    );
-    expect(await navigationPo.isNextButtonHidden()).toBe(false);
-    expect(await navigationPo.getNextButtonProposalId()).toBe("3");
-    expect(await navigationPo.getNextButtonProposalUniverse()).toBe(
-      rootCanisterId3.toText()
-    );
+      const { container } = render(SnsProposalDetail, {
+        props: { proposalIdText: "30" },
+      });
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
+      await runResolvedPromises();
+      expect(await po.isContentLoaded()).toBe(true);
+
+      const navigationPo = po.getProposalNavigationPo();
+      expect(await navigationPo.isPresent()).toBe(true);
+      expect(await navigationPo.isPreviousButtonHidden()).toBe(false);
+
+      await navigationPo.clickPrevious();
+      expect(get(page)).toEqual({
+        data: {
+          actionable: "",
+          proposal: "19",
+          universe: principal1.toText(),
+        },
+        route: {
+          id: "/(app)/proposal/",
+        },
+      });
+    });
   });
 
   describe("not logged in that logs in afterwards", () => {

@@ -1,13 +1,13 @@
 <script lang="ts">
+  import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
+  import { startBusyNeuron } from "$lib/services/busy.services";
   import {
     startDissolving,
     stopDissolving,
   } from "$lib/services/neurons.services";
-  import { startBusyNeuron } from "$lib/services/busy.services";
   import { stopBusy } from "$lib/stores/busy.store";
-  import { type NeuronId, type NeuronInfo, NeuronState } from "@dfinity/nns";
-  import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import { type NeuronId, type NeuronInfo, NeuronState } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;

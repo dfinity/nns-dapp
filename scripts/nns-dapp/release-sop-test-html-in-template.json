@@ -59,7 +59,7 @@
     },
     {
       "command": "cargo_audit",
-      "stdout": "RUSTSEC-2024-0019",
+      "stdout": "no vulnerabilities",
       "stderr": "",
       "exitCode": 0
     },
@@ -106,8 +106,8 @@
     "git push origin -f tags/release-candidate: \u001b[32mDone\u001b[0m",
     "Security test: npm audit: \u001b[32mfound 0 vulnerabilities\u001b[0m",
     "Expected npm audit: \u001b[32mfound 0 vulnerabilities\u001b[0m",
-    "Security test: cargo audit: \u001b[32mRUSTSEC-2024-0019\u001b[0m",
-    "Expected cargo audit: \u001b[32mRUSTSEC-2024-0019\u001b[0m",
+    "Security test: cargo audit: \u001b[32mno vulnerabilities\u001b[0m",
+    "Expected cargo audit: \u001b[32mno vulnerabilities\u001b[0m",
     "Security test: no HTML in templates: Failed"
   ],
   "expectedExitCode": 1

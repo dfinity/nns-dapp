@@ -282,7 +282,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999992406394000,
+    "icrc1_total_supply": 799999991342494000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -1071,7 +1071,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10086944142670536,
+    "icrc1_total_supply": 10089726687568454,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1645,6 +1645,19 @@
               "target_method_name": "trade_tokens"
             }
           }
+        },
+        {
+          "id": 101001,
+          "name": "Call the `cycles_out` method on the CYCLES-TRANSFER-STATION CYCLES-BANK.",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "wwikr-gqaaa-aaaar-qacva-cai",
+              "target_canister_id": "wwikr-gqaaa-aaaar-qacva-cai",
+              "validator_method_name": "sns_validate_cycles_out",
+              "target_method_name": "cycles_out"
+            }
+          }
         }
       ]
     },
@@ -1773,7 +1786,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 601654660529686,
+    "icrc1_total_supply": 601980919899088,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2170,7 +2183,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 101186205586019360,
+    "icrc1_total_supply": 101273411382038600,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2819,7 +2832,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 923945829169620900,
+    "icrc1_total_supply": 924121724207528600,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

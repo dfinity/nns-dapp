@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { ProgressStep } from "@dfinity/gix-components";
-  import { SaleStep } from "$lib/types/sale";
-  import { i18n } from "$lib/stores/i18n";
   import InProgress from "$lib/components/common/InProgress.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { SaleStep } from "$lib/types/sale";
+  import type { ProgressStep } from "@dfinity/gix-components";
 
   export let progressStep: SaleStep;
 

@@ -13,22 +13,23 @@ proposal is successful, the changes it released will be moved from this file to
 
 ### Application
 
-#### Added
+* Make neurons table sortable on desktop.
 
-* Actionable proposals page.
+#### Added
 
 #### Changed
 
-* Rename proposal navigation buttons to "Previous" and "Next".
-* Put project icon before title in page summary.
+* Change neuron ID column title to "Neurons".
+* Excluded non-displayed empty neurons when loading neurons.
 
 #### Deprecated
 
 #### Removed
 
+* Disable sorting the neurons table by neuron ID.
+
 #### Fixed
 
-* Missing SNS proposal payload rendering under certain conditions.
 * Button disable state glitch when voting with neurons where one follows another.
 
 #### Security
@@ -40,8 +41,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 #### Changed
-
-* Put snapshot state directories in home directory instead of `dfx` cache.
 
 #### Deprecated
 

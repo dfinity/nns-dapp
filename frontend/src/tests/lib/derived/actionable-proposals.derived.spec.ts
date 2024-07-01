@@ -2,7 +2,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
   actionableProposalCountStore,
-  actionableProposalIndicationEnabledStore,
+  actionableProposalIndicationVisibleStore,
   actionableProposalNotSupportedUniversesStore,
   actionableProposalSupportedStore,
   actionableProposalTotalCountStore,
@@ -13,7 +13,10 @@ import {
 } from "$lib/derived/actionable-proposals.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
-import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+import {
+  actionableSnsProposalsStore,
+  failedActionableSnsesStore,
+} from "$lib/stores/actionable-sns-proposals.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
@@ -50,16 +53,17 @@ describe("actionable proposals derived stores", () => {
     resetSnsProjects();
     actionableNnsProposalsStore.reset();
     actionableSnsProposalsStore.resetForTesting();
+    failedActionableSnsesStore.resetForTesting();
   });
 
-  describe("actionableProposalIndicationEnabledStore", () => {
+  describe("actionableProposalIndicationVisibleStore", () => {
     it("returns true when the user is signed-in and on proposals page", async () => {
       resetIdentity();
       page.mock({
         data: { universe: OWN_CANISTER_ID_TEXT },
         routeId: AppPath.Proposals,
       });
-      expect(get(actionableProposalIndicationEnabledStore)).toBe(true);
+      expect(get(actionableProposalIndicationVisibleStore)).toBe(true);
     });
 
     it("returns false when the user is not signed-in", async () => {
@@ -68,7 +72,7 @@ describe("actionable proposals derived stores", () => {
         data: { universe: OWN_CANISTER_ID_TEXT },
         routeId: AppPath.Proposals,
       });
-      expect(get(actionableProposalIndicationEnabledStore)).toBe(false);
+      expect(get(actionableProposalIndicationVisibleStore)).toBe(false);
     });
 
     it("returns false when the user is not on proposals page", async () => {
@@ -77,7 +81,7 @@ describe("actionable proposals derived stores", () => {
           data: { universe: OWN_CANISTER_ID_TEXT },
           routeId,
         });
-        expect(get(actionableProposalIndicationEnabledStore)).toBe(false);
+        expect(get(actionableProposalIndicationVisibleStore)).toBe(false);
       };
       resetIdentity();
 
@@ -395,6 +399,32 @@ describe("actionable proposals derived stores", () => {
         proposals: [],
         includeBallotsByCaller: false,
       });
+
+      expect(get(actionableProposalsLoadedStore)).toEqual(true);
+    });
+
+    it("should consider failed snses as loaded", async () => {
+      expect(get(actionableProposalsLoadedStore)).toEqual(false);
+      setSnsProjects([
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: principal0,
+        },
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: principal1,
+        },
+      ]);
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal0,
+        proposals: [],
+        includeBallotsByCaller: false,
+      });
+      actionableNnsProposalsStore.setProposals([mockProposalInfo]);
+
+      expect(get(actionableProposalsLoadedStore)).toEqual(false);
+
+      failedActionableSnsesStore.add(principal1.toText());
 
       expect(get(actionableProposalsLoadedStore)).toEqual(true);
     });

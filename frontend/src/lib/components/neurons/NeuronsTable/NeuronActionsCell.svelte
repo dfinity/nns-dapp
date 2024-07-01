@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { IconRight } from "@dfinity/gix-components";
   import type { TableNeuron } from "$lib/types/neurons-table";
+  import { IconRight } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
   export let rowData: TableNeuron;

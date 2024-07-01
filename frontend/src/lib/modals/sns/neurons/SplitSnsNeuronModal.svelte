@@ -1,23 +1,23 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { Modal, Value, busy } from "@dfinity/gix-components";
-  import { createEventDispatcher } from "svelte";
-  import type { SnsNeuron } from "@dfinity/sns";
-  import { getSnsNeuronStake } from "$lib/utils/sns-neuron.utils";
-  import type { E8s } from "@dfinity/nns";
-  import type { Token } from "@dfinity/utils";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import type { Principal } from "@dfinity/principal";
-  import { isValidInputAmount } from "$lib/utils/neuron.utils";
-  import { TokenAmountV2 } from "@dfinity/utils";
-  import { fromDefinedNullable } from "@dfinity/utils";
   import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
-  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-  import { splitNeuron } from "$lib/services/sns-neurons.services";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-  import type { SnsNervousSystemParameters } from "@dfinity/sns";
+  import { splitNeuron } from "$lib/services/sns-neurons.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import { isValidInputAmount } from "$lib/utils/neuron.utils";
+  import { getSnsNeuronStake } from "$lib/utils/sns-neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
+  import { Modal, Value, busy } from "@dfinity/gix-components";
+  import type { E8s } from "@dfinity/nns";
+  import type { Principal } from "@dfinity/principal";
+  import type { SnsNervousSystemParameters } from "@dfinity/sns";
+  import type { SnsNeuron } from "@dfinity/sns";
+  import type { Token } from "@dfinity/utils";
+  import { TokenAmountV2 } from "@dfinity/utils";
+  import { fromDefinedNullable } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;

@@ -1,26 +1,26 @@
 <script lang="ts">
-  import { ENABLE_NEURONS_TABLE } from "$lib/stores/feature-flags.store";
-  import type { TableNeuron } from "$lib/types/neurons-table";
-  import { i18n } from "$lib/stores/i18n";
-  import { authStore } from "$lib/stores/auth.store";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
   import NeuronsTable from "$lib/components/neurons/NeuronsTable/NeuronsTable.svelte";
+  import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
+  import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { listNeurons } from "$lib/services/neurons.services";
+  import { authStore } from "$lib/stores/auth.store";
+  import { ENABLE_NEURONS_TABLE } from "$lib/stores/feature-flags.store";
+  import { i18n } from "$lib/stores/i18n";
   import {
     neuronsStore,
     sortedNeuronStore,
     definedNeuronsStore,
   } from "$lib/stores/neurons.store";
-  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { Spinner, Tooltip } from "@dfinity/gix-components";
-  import { isSpawning } from "$lib/utils/neuron.utils";
-  import { pageStore } from "$lib/derived/page.derived";
+  import type { TableNeuron } from "$lib/types/neurons-table";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
-  import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
-  import { onMount } from "svelte";
-  import { listNeurons } from "$lib/services/neurons.services";
+  import { isSpawning } from "$lib/utils/neuron.utils";
   import { tableNeuronsFromNeuronInfos } from "$lib/utils/neurons-table.utils";
+  import { Spinner, Tooltip } from "@dfinity/gix-components";
+  import { onMount } from "svelte";
 
   let isLoading = false;
   $: isLoading = $neuronsStore.neurons === undefined;

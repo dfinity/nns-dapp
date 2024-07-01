@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from "svelte";
+  import Input from "$lib/components/ui/Input.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import { areEnoughCyclesSelected } from "$lib/utils/canisters.utils";
   import {
     convertIcpToTCycles,
     convertTCyclesToIcpNumber,
   } from "$lib/utils/token.utils";
-  import Input from "$lib/components/ui/Input.svelte";
-  import { areEnoughCyclesSelected } from "$lib/utils/canisters.utils";
+  import { createEventDispatcher, onMount } from "svelte";
 
   export let amount: number | undefined = undefined;
   export let icpToCyclesExchangeRate: bigint | undefined = undefined;

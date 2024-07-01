@@ -1,17 +1,17 @@
 <script lang="ts">
-  import type { Account } from "$lib/types/account";
-  import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
-  import type { CkBTCTransactionModalData } from "$lib/types/ckbtc-accounts.modal";
-  import { createEventDispatcher } from "svelte";
-  import { nonNullish } from "@dfinity/utils";
   import {
     ckBTCTokenFeeStore,
     ckBTCTokenStore,
   } from "$lib/derived/universes-tokens.derived";
-  import type { UniverseCanisterId } from "$lib/types/universe";
+  import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
-  import type { TokenAmountV2 } from "@dfinity/utils";
+  import type { Account } from "$lib/types/account";
+  import type { CkBTCTransactionModalData } from "$lib/types/ckbtc-accounts.modal";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import type { TokenAmountV2 } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let data: CkBTCTransactionModalData;
 

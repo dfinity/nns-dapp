@@ -1,7 +1,7 @@
 <script lang="ts">
+  import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
   import type { Universe } from "$lib/types/universe";
   import { InfiniteScroll } from "@dfinity/gix-components";
-  import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
 
   export let universe: Universe;
 </script>

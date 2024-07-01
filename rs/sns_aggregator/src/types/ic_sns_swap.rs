@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_swap --out ic_sns_swap.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-06-05_23-01-base/rs/sns/swap/canister/swap.did>
+//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-06-19_23-01-cycle-hotfix/rs/sns/swap/canister/swap.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -480,8 +480,6 @@ pub struct RefreshBuyerTokensResponse {
     pub icp_accepted_participation_e8s: u64,
     pub icp_ledger_account_balance_e8s: u64,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct RestoreDappControllersArg {}
 
 pub struct Service(pub Principal);
 impl Service {
@@ -556,11 +554,5 @@ impl Service {
         arg0: RefreshBuyerTokensRequest,
     ) -> CallResult<(RefreshBuyerTokensResponse,)> {
         ic_cdk::call(self.0, "refresh_buyer_tokens", (arg0,)).await
-    }
-    pub async fn restore_dapp_controllers(
-        &self,
-        arg0: RestoreDappControllersArg,
-    ) -> CallResult<(SetDappControllersCallResult,)> {
-        ic_cdk::call(self.0, "restore_dapp_controllers", (arg0,)).await
     }
 }

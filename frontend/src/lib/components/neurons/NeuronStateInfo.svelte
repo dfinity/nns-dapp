@@ -1,10 +1,10 @@
 <script lang="ts">
+  import { ICON_SIZE_SMALL_PIXELS } from "$lib/constants/layout.constants";
   import { i18n } from "$lib/stores/i18n";
   import type { StateInfo } from "$lib/utils/neuron.utils";
-  import type { NeuronState } from "@dfinity/nns";
   import { getStateInfo } from "$lib/utils/neuron.utils";
   import { keyOf } from "$lib/utils/utils";
-  import { ICON_SIZE_SMALL_PIXELS } from "$lib/constants/layout.constants";
+  import type { NeuronState } from "@dfinity/nns";
 
   export let state: NeuronState;
 

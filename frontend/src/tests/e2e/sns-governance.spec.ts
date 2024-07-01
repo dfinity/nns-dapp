@@ -1,11 +1,20 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  setFeatureFlag,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test SNS governance", async ({ page, context }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("Tokens / NNS Dapp");
+  await setFeatureFlag({
+    page,
+    featureFlag: "ENABLE_NEURONS_TABLE",
+    value: true,
+  });
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
@@ -49,16 +58,17 @@ test("Test SNS governance", async ({ page, context }) => {
 
   step("SN001: User can see the list of neurons");
   await appPo.getNeuronsPo().getSnsNeuronsPo().waitForContentLoaded();
-  const neuronCards = await appPo
+  const neuronRows = await appPo
     .getNeuronsPo()
     .getSnsNeuronsPo()
-    .getNeuronCardPos();
-  expect(neuronCards.length).toBe(1);
-  const neuronCard = neuronCards[0];
-  expect(await neuronCard.getStake()).toEqual(formattedStake);
+    .getNeuronsTablePo()
+    .getNeuronsTableRowPos();
+  expect(neuronRows).toHaveLength(1);
+  const neuronRow = neuronRows[0];
+  expect(await neuronRow.getStakeBalance()).toEqual(formattedStake);
 
   step("SN002: User can see the details of a neuron");
-  await neuronCard.click();
+  await neuronRow.click();
   const neuronDetail = appPo.getNeuronDetailPo().getSnsNeuronDetailPo();
   expect(await neuronDetail.getUniverse()).toBe(snsProjectName);
   expect(await neuronDetail.getStake()).toBe(formattedStake);

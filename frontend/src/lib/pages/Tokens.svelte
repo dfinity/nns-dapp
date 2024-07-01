@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import HideZeroBalancesToggle from "$lib/components/tokens/TokensTable/HideZeroBalancesToggle.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+  import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
   import { i18n } from "$lib/stores/i18n";
   import type { UserToken } from "$lib/types/tokens-page";
-  import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
   import { heightTransition } from "$lib/utils/transition.utils";
   import { IconSettings } from "@dfinity/gix-components";
   import { Popover } from "@dfinity/gix-components";
@@ -90,11 +90,11 @@
   .settings-button {
     --content-color: var(--text-description);
 
-    @include effect.ripple-effect(--primary-tint);
+    @include effect.ripple-effect(--primary-tint, var(--primary-contrast));
 
     &:focus {
       background: var(--primary-tint);
-      @include effect.ripple-effect(--primary-tint);
+      @include effect.ripple-effect(--primary-tint, var(--primary-contrast));
     }
   }
 

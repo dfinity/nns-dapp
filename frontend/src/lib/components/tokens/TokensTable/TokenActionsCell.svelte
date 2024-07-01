@@ -1,13 +1,13 @@
 <script lang="ts">
-  import GoToDetailIcon from "./actions/GoToDetailIcon.svelte";
-  import ReceiveButton from "./actions/ReceiveButton.svelte";
-  import SendButton from "./actions/SendButton.svelte";
   import {
     UserTokenAction,
     type UserTokenData,
     type UserTokenLoading,
   } from "$lib/types/tokens-page";
   import { isUserTokenData } from "$lib/utils/user-token.utils";
+  import GoToDetailIcon from "./actions/GoToDetailIcon.svelte";
+  import ReceiveButton from "./actions/ReceiveButton.svelte";
+  import SendButton from "./actions/SendButton.svelte";
   import { nonNullish } from "@dfinity/utils";
   import type { SvelteComponent, ComponentType } from "svelte";
 

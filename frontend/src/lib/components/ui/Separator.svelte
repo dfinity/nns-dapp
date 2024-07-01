@@ -11,7 +11,7 @@
 
 <style lang="scss">
   hr {
-    color: var(--line);
+    color: var(--elements-divider);
     margin: var(--padding-4x) 0;
   }
 

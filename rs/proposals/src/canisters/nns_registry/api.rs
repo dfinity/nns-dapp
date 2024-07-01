@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-06-05_23-01-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-06-26_23-01-base/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -157,6 +157,40 @@ pub struct EcdsaInitialConfig {
     pub idkg_key_rotation_period_ms: Option<u64>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub enum SchnorrAlgorithm {
+    #[serde(rename = "ed25519")]
+    Ed25519,
+    #[serde(rename = "bip340secp256k1")]
+    Bip340Secp256K1,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct SchnorrKeyId {
+    pub algorithm: SchnorrAlgorithm,
+    pub name: String,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub enum MasterPublicKeyId {
+    Schnorr(SchnorrKeyId),
+    Ecdsa(EcdsaKeyId),
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct KeyConfig {
+    pub max_queue_size: Option<u32>,
+    pub key_id: Option<MasterPublicKeyId>,
+    pub pre_signatures_to_create_in_advance: Option<u32>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct KeyConfigRequest {
+    pub subnet_id: Option<Principal>,
+    pub key_config: Option<KeyConfig>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct InitialChainKeyConfig {
+    pub signature_request_timeout_ns: Option<u64>,
+    pub key_configs: Vec<KeyConfigRequest>,
+    pub idkg_key_rotation_period_ms: Option<u64>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub enum SubnetType {
     #[serde(rename = "application")]
     Application,
@@ -191,16 +225,13 @@ pub struct CreateSubnetPayload {
     pub ssh_backup_access: Vec<String>,
     pub ingress_bytes_per_block_soft_cap: u64,
     pub initial_notary_delay_millis: u64,
+    pub chain_key_config: Option<InitialChainKeyConfig>,
     pub gossip_max_chunk_size: u32,
     pub subnet_type: SubnetType,
     pub ssh_readonly_access: Vec<String>,
     pub gossip_retransmission_request_ms: u32,
     pub gossip_receive_check_cache_size: u32,
     pub node_ids: Vec<Principal>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct DeleteSubnetPayload {
-    pub subnet_id: Option<Principal>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct DeployGuestosToAllSubnetNodesPayload {
@@ -257,6 +288,7 @@ pub struct RecoverSubnetPayload {
     pub registry_store_uri: Option<(String, String, u64)>,
     pub ecdsa_config: Option<EcdsaInitialConfig>,
     pub state_hash: serde_bytes::ByteBuf,
+    pub chain_key_config: Option<InitialChainKeyConfig>,
     pub time_ns: u64,
 }
 #[derive(Serialize, CandidType, Deserialize)]
@@ -394,6 +426,12 @@ pub struct EcdsaConfig {
     pub idkg_key_rotation_period_ms: Option<u64>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct ChainKeyConfig {
+    pub signature_request_timeout_ns: Option<u64>,
+    pub key_configs: Vec<KeyConfig>,
+    pub idkg_key_rotation_period_ms: Option<u64>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateSubnetPayload {
     pub unit_delay_millis: Option<u64>,
     pub max_duplicity: Option<u32>,
@@ -411,6 +449,7 @@ pub struct UpdateSubnetPayload {
     pub max_instructions_per_install_code: Option<u64>,
     pub start_as_nns: Option<bool>,
     pub is_halted: Option<bool>,
+    pub chain_key_signing_enable: Option<Vec<MasterPublicKeyId>>,
     pub max_ingress_messages_per_block: Option<u64>,
     pub max_number_of_canisters: Option<u64>,
     pub ecdsa_config: Option<EcdsaConfig>,
@@ -423,9 +462,11 @@ pub struct UpdateSubnetPayload {
     pub ssh_backup_access: Option<Vec<String>>,
     pub max_chunk_size: Option<u32>,
     pub initial_notary_delay_millis: Option<u64>,
+    pub chain_key_config: Option<ChainKeyConfig>,
     pub max_artifact_streams_per_peer: Option<u32>,
     pub subnet_type: Option<SubnetType>,
     pub ssh_readonly_access: Option<Vec<String>>,
+    pub chain_key_signing_disable: Option<Vec<MasterPublicKeyId>>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateUnassignedNodesConfigPayload {
@@ -467,9 +508,6 @@ impl Service {
     }
     pub async fn create_subnet(&self, arg0: CreateSubnetPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "create_subnet", (arg0,)).await
-    }
-    pub async fn delete_subnet(&self, arg0: DeleteSubnetPayload) -> CallResult<()> {
-        ic_cdk::call(self.0, "delete_subnet", (arg0,)).await
     }
     pub async fn deploy_guestos_to_all_subnet_nodes(
         &self,

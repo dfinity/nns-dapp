@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { nonNullish } from "@dfinity/utils";
   import { stringifyJson } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   export let json: unknown;
   export let testId: string | undefined = undefined;

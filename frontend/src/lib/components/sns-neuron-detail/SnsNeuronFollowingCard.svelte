@@ -1,4 +1,9 @@
 <script lang="ts">
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
+  import {
+    createSnsNsFunctionsProjectStore,
+    type SnsNervousSystemFunctionsProjectStore,
+  } from "$lib/derived/sns-ns-functions-project.derived";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import {
@@ -10,19 +15,14 @@
     hasPermissionToVote,
     type SnsFolloweesByNeuron,
   } from "$lib/utils/sns-neuron.utils";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import SkeletonFollowees from "../ui/SkeletonFollowees.svelte";
+  import SnsFollowee from "./SnsFollowee.svelte";
+  import FollowSnsNeuronsButton from "./actions/FollowSnsNeuronsButton.svelte";
   import { KeyValuePairInfo } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
-  import CardInfo from "$lib/components/ui/CardInfo.svelte";
-  import FollowSnsNeuronsButton from "./actions/FollowSnsNeuronsButton.svelte";
-  import SnsFollowee from "./SnsFollowee.svelte";
-  import SkeletonFollowees from "../ui/SkeletonFollowees.svelte";
-  import {
-    createSnsNsFunctionsProjectStore,
-    type SnsNervousSystemFunctionsProjectStore,
-  } from "$lib/derived/sns-ns-functions-project.derived";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);

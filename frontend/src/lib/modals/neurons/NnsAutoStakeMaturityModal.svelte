@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
-  import type { NeuronInfo } from "@dfinity/nns";
-  import { hasAutoStakeMaturityOn } from "$lib/utils/neuron.utils";
-  import { createEventDispatcher } from "svelte";
   import AutoStakeMaturityModal from "$lib/modals/neurons/AutoStakeMaturityModal.svelte";
+  import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import { hasAutoStakeMaturityOn } from "$lib/utils/neuron.utils";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;
 

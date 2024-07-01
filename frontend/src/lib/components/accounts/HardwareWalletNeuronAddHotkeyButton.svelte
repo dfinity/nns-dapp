@@ -1,7 +1,7 @@
 <script lang="ts">
+  import HardwareWalletNeuronAddHotkeyModal from "$lib/modals/accounts/HardwareWalletNeuronAddHotkeyModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { NeuronId } from "@dfinity/nns";
-  import HardwareWalletNeuronAddHotkeyModal from "$lib/modals/accounts/HardwareWalletNeuronAddHotkeyModal.svelte";
 
   export let neuronId: NeuronId;
 

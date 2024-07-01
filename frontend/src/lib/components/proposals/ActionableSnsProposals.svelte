@@ -1,14 +1,14 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import UniverseWithActionableProposals from "$lib/components/proposals/UniverseWithActionableProposals.svelte";
-  import type { ProposalData } from "@dfinity/sns/dist/candid/sns_governance";
-  import type { RootCanisterIdText } from "$lib/types/sns";
-  import { fromNullable, nonNullish } from "@dfinity/utils";
   import SnsProposalCard from "$lib/components/sns-proposals/SnsProposalCard.svelte";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
-  import type { SnsNervousSystemFunction } from "@dfinity/sns";
-  import { Principal } from "@dfinity/principal";
+  import type { RootCanisterIdText } from "$lib/types/sns";
   import type { Universe } from "$lib/types/universe";
+  import { Principal } from "@dfinity/principal";
+  import type { SnsNervousSystemFunction } from "@dfinity/sns";
+  import type { ProposalData } from "@dfinity/sns/dist/candid/sns_governance";
+  import { fromNullable, nonNullish } from "@dfinity/utils";
   import type { Readable } from "svelte/store";
 
   export let universe: Universe;

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { TableNeuron } from "$lib/types/neurons-table";
   import Hash from "$lib/components/ui/Hash.svelte";
+  import type { TableNeuron } from "$lib/types/neurons-table";
   import { Tag } from "@dfinity/gix-components";
 
   export let rowData: TableNeuron;
@@ -14,11 +14,13 @@
     idPrefix="neuron-id-cell"
     showCopy
   />
-  <span class="tags">
-    {#each rowData.tags as tag}
-      <Tag testId="neuron-tag">{tag}</Tag>
-    {/each}
-  </span>
+  {#if rowData.tags.length > 0}
+    <span class="tags" data-tid="neuron-tags">
+      {#each rowData.tags as tag}
+        <Tag testId="neuron-tag">{tag}</Tag>
+      {/each}
+    </span>
+  {/if}
 </div>
 
 <style lang="scss">

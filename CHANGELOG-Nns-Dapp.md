@@ -11,6 +11,39 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 130768
+
+### Application
+
+#### Added
+
+* Maturity visible in neurons table.
+* Support rendering `tSchnorr` proposal parameters.
+
+### Operations
+
+## Proposal 130710
+
+### Application
+
+#### Changed
+
+* Display neurons in a table instead of a grid of cards.
+* Removed the gap between identifier and copy button.
+* Reset the scroll position on the Proposals page when switching between projects.
+* Universe selector icon size decreased.
+* Updated colors of element dividers.
+
+#### Fixed
+
+* Fixed the display of actionable proposals page when a single SNS fails.
+
+### Operations
+
+#### Changed
+
+* Put snapshot state directories in home directory instead of `dfx` cache.
+
 ## Proposal 130375
 
 ### Application
@@ -23,7 +56,6 @@ here after a successful release.
 
 * Rename proposal navigation buttons to "Previous" and "Next".
 * Put project icon before title in page summary.
-* Updated colors of element dividers.
 
 #### Fixed
 

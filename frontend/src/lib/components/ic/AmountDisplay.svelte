@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { TokenAmount, TokenAmountV2 } from "@dfinity/utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { Copy } from "@dfinity/gix-components";
+  import type { TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 
   // TODO: should we expose two properties - an amount in bigint and a token Token - and build the TokenAmount.fromE8s in this component?
   export let amount: TokenAmount | TokenAmountV2;

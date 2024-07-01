@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
+  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
 </script>
 
 <h1 class="summary" data-tid="projects-summary">

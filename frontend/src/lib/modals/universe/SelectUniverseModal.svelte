@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { Modal } from "@dfinity/gix-components";
-  import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svelte";
-  import { createEventDispatcher } from "svelte";
   import { goto } from "$app/navigation";
+  import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svelte";
+  import { titleTokenSelectorStore } from "$lib/derived/title-token-selector.derived";
   import {
     ACTIONABLE_PROPOSALS_URL,
     buildSwitchUniverseUrl,
   } from "$lib/utils/navigation.utils";
-  import { titleTokenSelectorStore } from "$lib/derived/title-token-selector.derived";
+  import { Modal } from "@dfinity/gix-components";
+  import { createEventDispatcher } from "svelte";
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");

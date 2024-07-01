@@ -1,21 +1,21 @@
 <script lang="ts">
-  import { NeuronState, type NeuronInfo } from "@dfinity/nns";
-  import { ICPToken } from "@dfinity/utils";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     ageMultiplier,
     getStateInfo,
     isNeuronControllable,
     type StateInfo,
   } from "$lib/utils/neuron.utils";
-  import { i18n } from "$lib/stores/i18n";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { keyOf } from "$lib/utils/utils";
+  import CommonItemAction from "../ui/CommonItemAction.svelte";
+  import AgeBonusText from "./AgeBonusText.svelte";
   import DisburseButton from "./actions/DisburseButton.svelte";
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
-  import CommonItemAction from "../ui/CommonItemAction.svelte";
-  import { authStore } from "$lib/stores/auth.store";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
-  import AgeBonusText from "./AgeBonusText.svelte";
+  import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+  import { ICPToken } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;
 

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { busy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import { emit } from "$lib/utils/events.utils";
   import type { CanisterDetailModalDetach } from "$lib/types/canister-detail.modal";
+  import { emit } from "$lib/utils/events.utils";
+  import { busy } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
 
   export let canisterId: Principal;
