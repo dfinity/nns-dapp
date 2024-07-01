@@ -62,7 +62,7 @@ test_nns_function_06() {
     "$subcommand" \
     --initial-chain-key-configs-to-request "[
         {
-            \"key_id\": \"ecdsa:Secp256k1:$KEY_NAME\",
+            \"key_id\": \"schnorr:Bip340Secp256k1:$KEY_NAME\",
             \"pre_signatures_to_create_in_advance\": \"$NUM_PRE_SIGNATURES\",
             \"max_queue_size\": \"$MAX_QUEUE_SIZE\",
             \"subnet_id\": \"$SUBNET_ID_2\"
@@ -76,7 +76,7 @@ test_nns_function_06() {
     --height $HEIGHT)"
 
   ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
-  EXPECTED_PAYLOAD="{\"height\":$HEIGHT,\"replacement_nodes\":null,\"subnet_id\":\"$SUBNET_ID\",\"registry_store_uri\":null,\"ecdsa_config\":null,\"state_hash\":$JSON_STATE_HASH,\"chain_key_config\":{\"signature_request_timeout_ns\":$SIGNATURE_REQUEST_TIMEOUT_NS,\"key_configs\":[{\"subnet_id\":\"$SUBNET_ID_2\",\"key_config\":{\"max_queue_size\":$MAX_QUEUE_SIZE,\"key_id\":{\"Ecdsa\":{\"name\":\"$KEY_NAME\",\"curve\":\"secp256k1\"}},\"pre_signatures_to_create_in_advance\":$NUM_PRE_SIGNATURES}}],\"idkg_key_rotation_period_ms\":$KEY_ROTATION_PERIOD_MS},\"time_ns\":$TIME_NS}"
+  EXPECTED_PAYLOAD="{\"height\":$HEIGHT,\"replacement_nodes\":null,\"subnet_id\":\"$SUBNET_ID\",\"registry_store_uri\":null,\"ecdsa_config\":null,\"state_hash\":$JSON_STATE_HASH,\"chain_key_config\":{\"signature_request_timeout_ns\":$SIGNATURE_REQUEST_TIMEOUT_NS,\"key_configs\":[{\"subnet_id\":\"$SUBNET_ID_2\",\"key_config\":{\"max_queue_size\":$MAX_QUEUE_SIZE,\"key_id\":{\"Schnorr\":{\"algorithm\":\"bip340secp256k1\",\"name\":\"$KEY_NAME\"}},\"pre_signatures_to_create_in_advance\":$NUM_PRE_SIGNATURES}}],\"idkg_key_rotation_period_ms\":$KEY_ROTATION_PERIOD_MS},\"time_ns\":$TIME_NS}"
 
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
@@ -255,6 +255,7 @@ verify_payload() {
       echo "Unexpected payload for $subcommand."
       echo "EXPECTED_PAYLOAD='$EXPECTED_PAYLOAD'"
       echo "  ACTUAL_PAYLOAD='$ACTUAL_PAYLOAD'"
+      wdiff -3 <(echo "$ACTUAL_PAYLOAD" | sed -e 's@,@, @g') <(echo "$EXPECTED_PAYLOAD" | sed -e 's@,@, @g') | colordiff
     } >&2
     exit 1
   else
