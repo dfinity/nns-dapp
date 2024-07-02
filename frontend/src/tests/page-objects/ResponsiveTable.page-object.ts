@@ -1,4 +1,6 @@
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.page-object";
+import { ResponsiveTableSortModalPo } from "$tests/page-objects/ResponsiveTableSortModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -9,6 +11,14 @@ export class ResponsiveTablePo extends BasePageObject {
     return new ResponsiveTablePo(
       element.byTestId(ResponsiveTablePo.RESPONSIVE_TABLE_TID)
     );
+  }
+
+  getOpenSortModalButtonPo(): ButtonPo {
+    return this.getButton("open-sort-modal");
+  }
+
+  getResponsiveTableSortModalPo(): ResponsiveTableSortModalPo {
+    return ResponsiveTableSortModalPo.under(this.root);
   }
 
   getDesktopColumnHeaderElements(): Promise<PageObjectElement[]> {
@@ -49,8 +59,12 @@ export class ResponsiveTablePo extends BasePageObject {
     return ResponsiveTableRowPo.allUnder(this.root);
   }
 
+  getTableStyle(): Promise<string> {
+    return this.root.querySelector('[role="table"]').getAttribute("style");
+  }
+
   async getStyleVariable(varName: string): Promise<string> {
-    const style = await this.getStyle();
+    const style = await this.getTableStyle();
     const match = style.match(new RegExp(`--${varName}: ([^;]+)`));
     if (!match) {
       throw new Error(`Could not find --${varName} in style attribute`);
@@ -93,5 +107,11 @@ export class ResponsiveTablePo extends BasePageObject {
         return `${await el.getText()}${direction}`;
       }
     }
+  }
+
+  async openSortModal(): Promise<void> {
+    await this.waitFor("open-sort-modal");
+    await this.getOpenSortModalButtonPo().click();
+    await this.getResponsiveTableSortModalPo().waitFor();
   }
 }
