@@ -23,17 +23,38 @@ function! SortSvelteImports()
   " Jump to the first line
   1
   while 1
-    let l:first_import = search('^\s*import', 'W')
+    let l:first_import = search('^\s*import\s\+.*\s\+from\s*"', 'W')
     if first_import == 0
       break
     endif
     let l:last_import = search('\v^(\s*import\s)@!', 'W') - 1
     let l:range = first_import . ',' . last_import
     " Put a copy of the path at the front of the line
-    execute range . 's@^\s*import\s\+.*\s*from\s*"\([^"]*\)"\s*;\s*$@\1' . path_import_separator . '&@'
+    execute range . 's@^\s*import\s\+.*\s\+from\s*"\([^"]*\)"\s*;\s*$@\1' . path_import_separator . '&@'
     " Sort the lines based on the path
     execute range . '!sort'
     " Remove the path from the front of the line
     execute range 's@.*' . path_import_separator . '@@'
+  endwhile
+  1
+  while 1
+    " Find imports that import multiple things
+    let l:import_start = search('^\s*import\s\+\(type\s\+\)\?{.*,.*}', 'W')
+    if import_start == 0
+      break
+    endif
+    let import_start += 1
+    " Put the imported things on separate lines
+    s@{\s*@{\r    @
+    s@,\s*\(\w\)@,\r    \1@g
+    s@,\?\s*}@,\r  }@
+    let l:import_end = line('.') - 1
+    let l:range = import_start . ',' . import_end
+    " Put ~ in front of type-only imports so they sort last
+    silent! execute range . 's@\<type\>@\~type@'
+    " Sort the things imported by this import statement
+    execute range . '!sort'
+    " Remove the added ~ in front of type-only imports
+    silent! execute range . 's@\~type\>@type@'
   endwhile
 endfunction

@@ -29,15 +29,14 @@ TOP_DIR=$(git rev-parse --show-toplevel)
 list_files_to_sort() {
   if [[ "$#" -ne 0 ]]; then
     echo "Using script arguments to find svelte files." >&2
-    # readlink makes the paths absolute
-    find "$@" -type f -name '*.svelte' -exec readlink -f {} \;
+    git ls-files --full-name "$@" | grep -E '\.svelte$' | sed "s@^@$TOP_DIR/@"
     return
   fi
 
   ancestor=$(git merge-base HEAD main)
   if git diff --quiet "$ancestor" --exit-code; then
     echo "No changes in branch. Sorting all svelte files." >&2
-    git ls-files '*.svelte' | sed "s@^@$TOP_DIR/@"
+    git ls-files --full-name '*.svelte' | sed "s@^@$TOP_DIR/@"
     return
   fi
 
