@@ -22,6 +22,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Change neuron ID column title to "Neurons".
 * Excluded non-displayed empty neurons when loading neurons.
 * Transactions to neuron accounts are now displayed as "Sent" instead of "Staked" or "Top-up neuron" if the neuron is no longer displayed because it's disbursed or merged.
+* Change the color of the settings icon on the tokens table.
 
 #### Deprecated
 
