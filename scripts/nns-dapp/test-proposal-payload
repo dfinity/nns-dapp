@@ -255,7 +255,7 @@ verify_payload() {
       echo "Unexpected payload for $subcommand."
       echo "EXPECTED_PAYLOAD='$EXPECTED_PAYLOAD'"
       echo "  ACTUAL_PAYLOAD='$ACTUAL_PAYLOAD'"
-      wdiff -3 <(echo "$ACTUAL_PAYLOAD" | sed -e 's@,@, @g') <(echo "$EXPECTED_PAYLOAD" | sed -e 's@,@, @g') | colordiff
+      wdiff -3 <(echo "${ACTUAL_PAYLOAD//,/, }") <(echo "${EXPECTED_PAYLOAD//,/, }") | colordiff
     } >&2
     exit 1
   else
