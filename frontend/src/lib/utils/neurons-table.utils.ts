@@ -22,6 +22,7 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo } from "@dfinity/nns";
+import { NeuronState } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
 import {
   ICPToken,
@@ -119,8 +120,22 @@ export const compareByStake = createDescendingComparator(
   (neuron: TableNeuron) => neuron.stake.toUlps()
 );
 
+export const compareByMaturity = createDescendingComparator(
+  (neuron: TableNeuron) => neuron.availableMaturity + neuron.stakedMaturity
+);
+
 export const compareByDissolveDelay = createDescendingComparator(
   (neuron: TableNeuron) => neuron.dissolveDelaySeconds
+);
+
+export const compareByState = createDescendingComparator(
+  (neuron: TableNeuron) =>
+    [
+      NeuronState.Spawning,
+      NeuronState.Dissolved,
+      NeuronState.Dissolving,
+      NeuronState.Locked,
+    ].indexOf(neuron.state)
 );
 
 // Orders strings as if they are positive integers, so "9" < "10" < "11", by

@@ -805,6 +805,11 @@ interface I18nSns_neurons {
   min_dissolve_delay_description: string;
 }
 
+interface I18nResponsive_table {
+  sort_by: string;
+  tap_to_reverse: string;
+}
+
 interface I18nTime {
   year: string;
   year_plural: string;
@@ -1331,6 +1336,7 @@ interface I18n {
   sns_sale: I18nSns_sale;
   sns_neuron_detail: I18nSns_neuron_detail;
   sns_neurons: I18nSns_neurons;
+  responsive_table: I18nResponsive_table;
   time: I18nTime;
   error__ledger: I18nError__ledger;
   error__attach_wallet: I18nError__attach_wallet;

@@ -13,13 +13,20 @@
     NeuronsTableColumn,
   } from "$lib/types/neurons-table";
   import {
-    compareByStake,
     compareByDissolveDelay,
     compareById,
+    compareByMaturity,
+    compareByStake,
+    compareByState,
   } from "$lib/utils/neurons-table.utils";
   import { NeuronState } from "@dfinity/nns";
 
   export let neurons: TableNeuron[];
+
+  // Make sure there is a consistent order even if the selected sorting
+  // criteria don't tiebreak all neurons.
+  let neuronsSortedById: TableNeuron[];
+  $: neuronsSortedById = [...neurons].sort(compareById);
 
   const columns: NeuronsTableColumn[] = [
     {
@@ -28,7 +35,6 @@
       cellComponent: NeuronIdCell,
       alignment: "left",
       templateColumns: ["minmax(min-content, max-content)"],
-      comparator: compareById,
     },
     {
       title: "",
@@ -49,10 +55,12 @@
       templateColumns: ["1fr"],
     },
     {
+      id: "maturity",
       title: $i18n.neuron_detail.maturity_title,
       cellComponent: NeuronMaturityCell,
       alignment: "right",
       templateColumns: ["max-content"],
+      comparator: compareByMaturity,
     },
     {
       title: "",
@@ -73,10 +81,12 @@
       templateColumns: ["1fr"],
     },
     {
+      id: "state",
       title: $i18n.neurons.state,
       cellComponent: NeuronStateCell,
       alignment: "left",
       templateColumns: ["max-content"],
+      comparator: compareByState,
     },
     {
       title: "",
@@ -97,7 +107,7 @@
 <ResponsiveTable
   testId="neurons-table-component"
   {columns}
-  tableData={neurons}
-  order={$neuronsTableOrderStore}
+  tableData={neuronsSortedById}
+  bind:order={$neuronsTableOrderStore}
   {getRowStyle}
 ></ResponsiveTable>

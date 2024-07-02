@@ -772,6 +772,10 @@
     "token_stake": "$amount $token Stake",
     "min_dissolve_delay_description": "Voting power is given to neurons with a dissolve delay of at least $duration."
   },
+  "responsive_table": {
+    "sort_by": "Sort by",
+    "tap_to_reverse": "Tap to reverse"
+  },
   "time": {
     "year": "year",
     "year_plural": "years",

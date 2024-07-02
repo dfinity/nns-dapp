@@ -8,9 +8,6 @@ const initialNeuronsTableOrder: ResponsiveTableOrder = [
   {
     columnId: "dissolveDelay",
   },
-  {
-    columnId: "id",
-  },
 ];
 
 const initNeuronsTableOrderStore = () => {
