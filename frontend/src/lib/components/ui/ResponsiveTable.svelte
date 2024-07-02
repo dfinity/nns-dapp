@@ -52,6 +52,14 @@
 
   let showSortModal = false;
 
+  const openSortModal = () => {
+    showSortModal = true;
+  };
+
+  const closeSortModal = () => {
+    showSortModal = false;
+  };
+
   const getTableStyle = (columns: ResponsiveTableColumn<RowDataType>[]) => {
     // On desktop the first column gets all the remaining space after other
     // columns get as much as their content needs.
@@ -78,14 +86,6 @@
 
   let tableStyle: string;
   $: tableStyle = getTableStyle(columns);
-
-  const openSortModal = () => {
-    showSortModal = true;
-  };
-
-  const closeSortModal = () => {
-    showSortModal = false;
-  };
 
   // In mobile view, we only show the first column header and it should never be
   // sortable by clicking on it. So depending on whether the first column is
