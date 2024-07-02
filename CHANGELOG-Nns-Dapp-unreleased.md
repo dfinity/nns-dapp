@@ -13,9 +13,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 ### Application
 
-* Make neurons table sortable on desktop.
-
 #### Added
+
+* Make neurons table sortable on desktop and mobile.
 
 #### Changed
 

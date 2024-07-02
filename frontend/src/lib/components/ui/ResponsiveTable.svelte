@@ -6,18 +6,19 @@
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
+  import ResponsiveTableSortModal from "$lib/modals/common/ResponsiveTableSortModal.svelte";
   import type {
     ResponsiveTableColumn,
     ResponsiveTableOrder,
   } from "$lib/types/responsive-table";
   import {
     getCellGridAreaName,
-    sortTableData,
     selectPrimaryOrder,
+    sortTableData,
   } from "$lib/utils/responsive-table.utils";
   import { heightTransition } from "$lib/utils/transition.utils";
-  import { IconSouth } from "@dfinity/gix-components";
-  import { isNullish, assertNonNullish } from "@dfinity/utils";
+  import { IconSort, IconSouth } from "@dfinity/gix-components";
+  import { assertNonNullish, isNullish } from "@dfinity/utils";
   import { nonNullish } from "@dfinity/utils";
 
   export let testId = "responsive-table-component";
@@ -34,6 +35,9 @@
   $: nonLastColumns = columns.slice(0, -1);
   $: lastColumn = columns.at(-1);
 
+  let isSortingEnabled: boolean;
+  $: isSortingEnabled = columns.some((column) => nonNullish(column.comparator));
+
   let sortedTableData: RowDataType[];
   $: sortedTableData = sortTableData({
     tableData,
@@ -44,6 +48,16 @@
   const orderBy = (column: ResponsiveTableColumn<RowDataType>) => {
     assertNonNullish(column.id);
     order = selectPrimaryOrder({ order, selectedColumnId: column.id });
+  };
+
+  let showSortModal = false;
+
+  const openSortModal = () => {
+    showSortModal = true;
+  };
+
+  const closeSortModal = () => {
+    showSortModal = false;
   };
 
   const getTableStyle = (columns: ResponsiveTableColumn<RowDataType>[]) => {
@@ -79,69 +93,85 @@
   // and mobile.
 </script>
 
-<div role="table" data-tid={testId} style={tableStyle}>
-  <div role="rowgroup">
-    <div role="row" class="header-row">
-      {#each nonLastColumns as column, index}
-        {#if isNullish(column.comparator) || index === 0}
+<TestIdWrapper {testId}>
+  <div role="table" style={tableStyle}>
+    <div role="rowgroup">
+      <div role="row" class="header-row">
+        {#each nonLastColumns as column, index}
+          {#if isNullish(column.comparator) || index === 0}
+            <span
+              role="columnheader"
+              style="--column-span: {column.templateColumns.length}"
+              data-tid="column-header-{index + 1}"
+              class={isNullish(column.comparator)
+                ? `desktop-align-${column.alignment}`
+                : ""}
+              class:desktop-only={index > 0}
+              class:mobile-only={nonNullish(column.comparator)}
+              >{column.title}
+            </span>
+          {/if}
+          {#if nonNullish(column.comparator)}
+            <button
+              role="columnheader"
+              on:click={() => orderBy(column)}
+              style="--column-span: {column.templateColumns.length}"
+              data-tid="column-header-{index + 1}"
+              class="desktop-only desktop-align-{column.alignment}"
+              >{column.title}{#if nonNullish(column.comparator) && order[0]?.columnId === column.id}
+                <span class="order-arrow">
+                  <span class="arrow-icon" class:reversed={order[0].reversed}>
+                    <IconSouth size="8" />
+                  </span>
+                </span>
+              {/if}
+            </button>
+          {/if}
+        {/each}
+        {#if lastColumn}
           <span
             role="columnheader"
-            style="--column-span: {column.templateColumns.length}"
-            data-tid="column-header-{index + 1}"
-            class={isNullish(column.comparator)
-              ? `desktop-align-${column.alignment}`
-              : ""}
-            class:desktop-only={index > 0}
-            class:mobile-only={nonNullish(column.comparator)}
-            >{column.title}
+            style="--column-span: {lastColumn.templateColumns.length}"
+            class="desktop-align-{lastColumn.alignment} header-icon"
+            >{#if isSortingEnabled}<button
+                data-tid="open-sort-modal"
+                class="mobile-only icon-only"
+                on:click={openSortModal}><IconSort /></button
+              >{/if}<slot name="header-icon" />
           </span>
         {/if}
-        {#if nonNullish(column.comparator)}
-          <button
-            role="columnheader"
-            on:click={() => orderBy(column)}
-            style="--column-span: {column.templateColumns.length}"
-            data-tid="column-header-{index + 1}"
-            class="desktop-only desktop-align-{column.alignment}"
-            >{column.title}{#if nonNullish(column.comparator) && order[0]?.columnId === column.id}
-              <span class="order-arrow">
-                <span class="arrow-icon" class:reversed={order[0].reversed}>
-                  <IconSouth size="8" />
-                </span>
-              </span>
-            {/if}
-          </button>
-        {/if}
-      {/each}
-      {#if lastColumn}
-        <span
-          role="columnheader"
-          style="--column-span: {lastColumn.templateColumns.length}"
-          class="desktop-align-{lastColumn.alignment} header-icon"
-        >
-          <slot name="header-icon" />
-        </span>
-      {/if}
-    </div>
-  </div>
-  <div role="rowgroup">
-    {#each sortedTableData as rowData (rowData.domKey)}
-      <div class="row-wrapper" transition:heightTransition={{ duration: 250 }}>
-        <ResponsiveTableRow
-          on:nnsAction
-          {rowData}
-          {columns}
-          style={getRowStyle(rowData)}
-        />
       </div>
-    {/each}
+    </div>
+    <div role="rowgroup">
+      {#each sortedTableData as rowData (rowData.domKey)}
+        <div
+          class="row-wrapper"
+          transition:heightTransition={{ duration: 250 }}
+        >
+          <ResponsiveTableRow
+            on:nnsAction
+            {rowData}
+            {columns}
+            style={getRowStyle(rowData)}
+          />
+        </div>
+      {/each}
+    </div>
+    {#if nonNullish($$slots["last-row"])}
+      <TestIdWrapper testId="last-row">
+        <slot name="last-row" />
+      </TestIdWrapper>
+    {/if}
   </div>
-  {#if nonNullish($$slots["last-row"])}
-    <TestIdWrapper testId="last-row">
-      <slot name="last-row" />
-    </TestIdWrapper>
+
+  {#if showSortModal}
+    <ResponsiveTableSortModal
+      {columns}
+      bind:order
+      on:nnsClose={closeSortModal}
+    />
   {/if}
-</div>
+</TestIdWrapper>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
@@ -189,24 +219,24 @@
         }
       }
 
+      .desktop-only {
+        display: none;
+      }
+
+      @include media.min-width(medium) {
+        .mobile-only {
+          display: none;
+        }
+        .desktop-only {
+          display: block;
+        }
+      }
+
       [role="columnheader"] {
         grid-column: span var(--column-span);
 
         &.desktop-align-right {
           text-align: right;
-        }
-
-        &.desktop-only {
-          display: none;
-        }
-
-        @include media.min-width(medium) {
-          &.mobile-only {
-            display: none;
-          }
-          &.desktop-only {
-            display: block;
-          }
         }
 
         .order-arrow {
