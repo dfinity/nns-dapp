@@ -639,6 +639,9 @@ describe("SnsProposalDetail", () => {
     });
   });
 
+  // When one voting neuron follows another,
+  // the second neuron’s vote request returns a ‘Neuron already voted on proposal.’ error.
+  // This causes the voting buttons to enable because the second neuron is considered not successfully voted.
   describe("Enabled voting buttons during the voting glitch", () => {
     beforeEach(() => {
       vi.clearAllMocks();
@@ -803,7 +806,7 @@ describe("SnsProposalDetail", () => {
       expect(await votingCardPo.getVoteYesButtonPo().isDisabled()).toBe(false);
       expect(await votingCardPo.getVoteNoButtonPo().isDisabled()).toBe(false);
 
-      await votingCardPo.voteYes(false);
+      await votingCardPo.voteYes();
       await runResolvedPromises();
 
       expect(await votingCardPo.getVoteYesButtonPo().isDisabled()).toBe(true);
@@ -819,11 +822,17 @@ describe("SnsProposalDetail", () => {
       );
       await runResolvedPromises();
 
-      // Fails on the next line w/o the fix
+      // Fails on the next line w/o the fix.
+      // If the second neuron to vote follows the first neuron, voting with the first neuron results in the second
+      // neuron already having voted. In that case voting with the second neuron results in an error. Normally when
+      // voting results in an error, we assume that the neuron hasn't voted yet. This results in the voting button
+      // becoming enabled again. So we need to make sure that if the error is because the neuron has already voted,
+      // we don't treat the neuron as not having voted yet.
       expect(await votingCardPo.getVoteYesButtonPo().isDisabled()).toBe(true);
       expect(await votingCardPo.getVoteNoButtonPo().isDisabled()).toBe(true);
 
-      // Wait with reloading the proposal, because the glitch happens after the voting but before the proposal is reloaded.
+      // The delay before the proposal reload response was necessary
+      // because the glitch occurs after voting but before the proposal is reloaded.
       resolveQueryProposalApi();
       await runResolvedPromises();
 
