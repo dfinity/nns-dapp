@@ -159,7 +159,7 @@ describe("SnsNeurons", () => {
     });
   });
 
-  describe.skip("no neurons", () => {
+  describe("no neurons", () => {
     beforeEach(() => {
       vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([]);
     });
