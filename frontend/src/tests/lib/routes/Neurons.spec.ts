@@ -73,8 +73,6 @@ describe("Neurons", () => {
   });
 
   it("should render NnsNeurons by default", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", true);
-
     fakeGovernanceApi.pause();
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT },
@@ -99,7 +97,6 @@ describe("Neurons", () => {
   });
 
   it("should render project page when a committed project is selected", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", true);
     fakeSnsGovernanceApi.pause();
     page.mock({
       data: { universe: testCommittedSnsCanisterId.toText() },
