@@ -24,7 +24,7 @@
     assertNonNullish(column.id);
     order = selectPrimaryOrder({ order, selectedColumnId: column.id });
     // Delay so the user can see the new selection before the modal closes.
-    await waitForMilliseconds(400);
+    await waitForMilliseconds(250);
     dispatch("nnsClose");
   };
 </script>
