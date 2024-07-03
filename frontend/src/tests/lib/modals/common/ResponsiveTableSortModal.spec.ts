@@ -6,8 +6,9 @@ import type {
 import { createAscendingComparator } from "$lib/utils/responsive-table.utils";
 import TestTableAgeCell from "$tests/lib/components/ui/TestTableAgeCell.svelte";
 import TestTableNameCell from "$tests/lib/components/ui/TestTableNameCell.svelte";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ResponsiveTableSortModalPo } from "$tests/page-objects/ResponsiveTableSortModal.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { advanceTime } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
 import { get, writable, type Writable } from "svelte/store";
 
@@ -65,6 +66,10 @@ describe("ResponsiveTableSortModal", () => {
     );
   };
 
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
   it("should render modal title", async () => {
     const po = renderComponent({ columns, order });
     expect(await po.getModalTitle()).toBe("Sort by");
@@ -86,6 +91,7 @@ describe("ResponsiveTableSortModal", () => {
     const orderStore = writable(order);
     const po = renderComponent({ columns, order, orderStore });
     await po.clickOption("Age");
+    await advanceTime(400);
     expect(await po.getOptionWithArrow()).toBe("Age");
     expect(get(orderStore)).toEqual([
       { columnId: "age" },
@@ -99,17 +105,21 @@ describe("ResponsiveTableSortModal", () => {
     const po = renderComponent({ columns, order, orderStore });
     expect(await po.isReversed()).toBe(false);
     await po.clickOption("Name");
+    await advanceTime(400);
     expect(get(orderStore)).toEqual([{ columnId: "name", reversed: true }]);
     expect(await po.isReversed()).toBe(true);
     await po.clickOption("Age");
     expect(await po.isReversed()).toBe(false);
   });
 
-  it("should close modal when selecting an option", async () => {
+  it("should close modal with delay when selecting an option", async () => {
     const close = vi.fn();
     const po = renderComponent({ columns, order, onClose: close });
     expect(close).not.toBeCalled();
     await po.clickOption("Name");
+    await advanceTime(300);
+    expect(close).not.toBeCalled();
+    await advanceTime(200);
     expect(close).toBeCalledTimes(1);
   });
 });
