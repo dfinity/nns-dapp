@@ -10,6 +10,7 @@
     ResponsiveTableOrder,
   } from "$lib/types/responsive-table";
   import { selectPrimaryOrder } from "$lib/utils/responsive-table.utils";
+  import { waitForMilliseconds } from "$lib/utils/utils";
   import { IconSouth, Modal } from "@dfinity/gix-components";
   import { assertNonNullish, nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
@@ -19,9 +20,11 @@
 
   const dispatch = createEventDispatcher();
 
-  const orderBy = (column: ResponsiveTableColumn<RowDataType>) => {
+  const orderBy = async (column: ResponsiveTableColumn<RowDataType>) => {
     assertNonNullish(column.id);
     order = selectPrimaryOrder({ order, selectedColumnId: column.id });
+    // Delay so the user can see the new selection before the modal closes.
+    await waitForMilliseconds(400);
     dispatch("nnsClose");
   };
 </script>
