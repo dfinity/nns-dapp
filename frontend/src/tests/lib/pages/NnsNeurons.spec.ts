@@ -65,108 +65,46 @@ describe("NnsNeurons", () => {
       vi.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
     });
 
-    describe("with ENABLE_NEURONS_TABLE disabled", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", false);
-      });
+    it("should render the neurons table", async () => {
+      const po = await renderComponent();
 
-      it("should render spawning neurons as disabled", async () => {
-        const po = await renderComponent();
-
-        const neuronCards = await po.getNeuronCardPos();
-        expect(neuronCards.length).toBe(3);
-
-        expect(await neuronCards[0].isDisabled()).toBe(false);
-        expect(await neuronCards[1].isDisabled()).toBe(false);
-        // Spawning neuron comes last because it has no stake.
-        expect(await neuronCards[2].isDisabled()).toBe(true);
-      });
-
-      it("should render the NeuronCards", async () => {
-        const po = await renderComponent();
-
-        const neuronCards = await po.getNeuronCardPos();
-        expect(neuronCards.length).toBe(neurons.length);
-      });
-
-      it("should filter out disbursed neurons", async () => {
-        vi.spyOn(api, "queryNeurons").mockResolvedValue([
-          mockNeuron,
-          disbursedNeuron,
-          mockNeuron2,
-        ]);
-        const po = await renderComponent();
-
-        const neuronCards = await po.getNeuronCardPos();
-        expect(neuronCards.length).toBe(2);
-      });
-
-      it("should not render an empty message", async () => {
-        const po = await renderComponent();
-
-        expect(await po.hasEmptyMessage()).toBe(false);
-      });
-
-      it("should not render the neurons table", async () => {
-        const po = await renderComponent();
-
-        expect(await po.getNeuronsTablePo().isPresent()).toBe(false);
-      });
+      expect(await po.getNeuronsTablePo().isPresent()).toBe(true);
     });
 
-    describe("with ENABLE_NEURONS_TABLE enabled", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", true);
-      });
+    it("should render neurons table rows", async () => {
+      const po = await renderComponent();
 
-      it("should render the neurons table", async () => {
-        const po = await renderComponent();
+      const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+      expect(rows).toHaveLength(3);
+    });
 
-        expect(await po.getNeuronsTablePo().isPresent()).toBe(true);
-      });
+    it("should filter out disbursed neurons", async () => {
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([
+        mockNeuron,
+        disbursedNeuron,
+        mockNeuron2,
+      ]);
+      const po = await renderComponent();
 
-      it("should render neurons table rows", async () => {
-        const po = await renderComponent();
+      const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+      expect(rows).toHaveLength(2);
+      expect(await rows[0].getStake()).not.toBe("0 ICP");
+      expect(await rows[1].getStake()).not.toBe("0 ICP");
+    });
 
-        const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
-        expect(rows).toHaveLength(3);
-      });
+    it("should render an go-to-detail button for non-spawning neurons", async () => {
+      const po = await renderComponent();
 
-      it("should filter out disbursed neurons", async () => {
-        vi.spyOn(api, "queryNeurons").mockResolvedValue([
-          mockNeuron,
-          disbursedNeuron,
-          mockNeuron2,
-        ]);
-        const po = await renderComponent();
-
-        const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
-        expect(rows).toHaveLength(2);
-        expect(await rows[0].getStake()).not.toBe("0 ICP");
-        expect(await rows[1].getStake()).not.toBe("0 ICP");
-      });
-
-      it("should not render the NeuronCards", async () => {
-        const po = await renderComponent();
-
-        const neuronCards = await po.getNeuronCardPos();
-        expect(neuronCards.length).toBe(0);
-      });
-
-      it("should render an go-to-detail button for non-spawning neurons", async () => {
-        const po = await renderComponent();
-
-        const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
-        expect(rows).toHaveLength(3);
-        expect(neurons).toHaveLength(3);
-        expect(await rows[0].getStake()).not.toBe("0 ICP");
-        expect(await rows[0].hasGoToDetailButton()).toBe(true);
-        expect(await rows[1].getStake()).not.toBe("0 ICP");
-        expect(await rows[1].hasGoToDetailButton()).toBe(true);
-        // Spawning neuron without stake comes last.
-        expect(await rows[2].getStake()).toBe("0 ICP");
-        expect(await rows[2].hasGoToDetailButton()).toBe(false);
-      });
+      const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+      expect(rows).toHaveLength(3);
+      expect(neurons).toHaveLength(3);
+      expect(await rows[0].getStake()).not.toBe("0 ICP");
+      expect(await rows[0].hasGoToDetailButton()).toBe(true);
+      expect(await rows[1].getStake()).not.toBe("0 ICP");
+      expect(await rows[1].hasGoToDetailButton()).toBe(true);
+      // Spawning neuron without stake comes last.
+      expect(await rows[2].getStake()).toBe("0 ICP");
+      expect(await rows[2].hasGoToDetailButton()).toBe(false);
     });
   });
 
@@ -178,42 +116,17 @@ describe("NnsNeurons", () => {
       vi.spyOn(api, "queryNeurons").mockResolvedValue([]);
     });
 
-    describe("with ENABLE_NEURONS_TABLE disabled", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", false);
-      });
+    it("should render an empty message", async () => {
+      const po = await renderComponent();
 
-      it("should render an empty message", async () => {
-        const po = await renderComponent();
-
-        expect(await po.hasEmptyMessage()).toBe(true);
-      });
-
-      it("should render an empty message with disbursed neurons", async () => {
-        vi.spyOn(api, "queryNeurons").mockResolvedValue([disbursedNeuron]);
-        const po = await renderComponent();
-
-        expect(await po.hasEmptyMessage()).toBe(true);
-      });
+      expect(await po.hasEmptyMessage()).toBe(true);
     });
 
-    describe("with ENABLE_NEURONS_TABLE enabled", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", true);
-      });
+    it("should render an empty message with disbursed neurons", async () => {
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([disbursedNeuron]);
+      const po = await renderComponent();
 
-      it("should render an empty message", async () => {
-        const po = await renderComponent();
-
-        expect(await po.hasEmptyMessage()).toBe(true);
-      });
-
-      it("should render an empty message with disbursed neurons", async () => {
-        vi.spyOn(api, "queryNeurons").mockResolvedValue([disbursedNeuron]);
-        const po = await renderComponent();
-
-        expect(await po.hasEmptyMessage()).toBe(true);
-      });
+      expect(await po.hasEmptyMessage()).toBe(true);
     });
   });
 
@@ -229,42 +142,16 @@ describe("NnsNeurons", () => {
       );
     });
 
-    describe("with ENABLE_NEURONS_TABLE disabled", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", false);
-      });
+    it("should render a spinner", async () => {
+      const po = await renderComponent();
 
-      it("should render skeleton cards", async () => {
-        const po = await renderComponent();
-
-        expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
-        expect(await po.hasSpinner()).toBe(false);
-      });
-
-      it("should not render an empty message", async () => {
-        const po = await renderComponent();
-
-        expect(await po.hasEmptyMessage()).toBe(false);
-      });
+      expect(await po.hasSpinner()).toBe(true);
     });
 
-    describe("with ENABLE_NEURONS_TABLE enabled", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_NEURONS_TABLE", true);
-      });
+    it("should not render an empty message", async () => {
+      const po = await renderComponent();
 
-      it("should render a spinner", async () => {
-        const po = await renderComponent();
-
-        expect(await po.hasSpinner()).toBe(true);
-        expect(await po.getSkeletonCardPo().isPresent()).toBe(false);
-      });
-
-      it("should not render an empty message", async () => {
-        const po = await renderComponent();
-
-        expect(await po.hasEmptyMessage()).toBe(false);
-      });
+      expect(await po.hasEmptyMessage()).toBe(false);
     });
   });
 

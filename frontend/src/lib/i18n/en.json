@@ -273,7 +273,6 @@
     "remaining": "Remaining",
     "age": "Age",
     "vestion_period": "Remaining vesting period",
-    "aria_label_neuron_card": "Go to neuron details",
     "neuron_id": "Neuron ID",
     "neuron_balance": "Balance",
     "current_dissolve_delay": "Current Dissolve Delay",
@@ -759,8 +758,6 @@
   },
   "sns_neuron_detail": {
     "vesting_period_tooltip": "This function is not available during your vesting period. Vesting will last another $remainingVesting",
-    "community_fund_section": "Neurons' Fund",
-    "community_fund_section_description": "You are not the controller of the SNS neurons below. To facilitate bootstrapping the SNS DAO governance, the NNS treasury has temporarily granted hotkey access to you for voting and following. <a href=\"https://internetcomputer.org/docs/current/tokenomics/nns/neurons-fund\" rel=\"noopener noreferrer\" aria-label=\"more info about neurons' fund\" target=\"_blank\">Learn more</a>.",
     "add_hotkey_info": "To vote with this neuron from another dapp, add the principal id you have in the other dapp as a hotkey.",
     "add_hotkey_tooltip": "To vote with this neuron from another dapp, add the principal id you have in the other dapp as a hotkey."
   },
