@@ -215,9 +215,8 @@ export const processRegisterVoteErrors = ({
   registerVoteResponses.forEach(
     (response: PromiseSettledResult<void>, index: number) => {
       const { status } = response;
-      const hasAlreadyVoted = isAlreadyVotedError(
-        "reason" in response ? response?.reason : undefined
-      );
+      const hasAlreadyVoted =
+        "reason" in response && isAlreadyVotedError(response.reason);
 
       if (status === "rejected" && !hasAlreadyVoted) {
         rejectedResponses.push(response);
