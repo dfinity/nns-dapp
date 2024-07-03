@@ -29,11 +29,6 @@ describe("SnsNeurons", () => {
     id: [1, 2, 3],
     stake: neuron1Stake,
   });
-  const neuron2Stake = 100_000_000n;
-  const neuron2 = createMockSnsNeuron({
-    id: [1, 2, 4],
-    stake: neuron2Stake,
-  });
   const disbursedNeuronStake = 0n;
   const disbursedNeuron = createMockSnsNeuron({
     id: [1, 2, 5],
@@ -52,9 +47,6 @@ describe("SnsNeurons", () => {
   const getNeuronBalanceMock = async ({ neuronId }) => {
     if (neuronId === neuron1.id[0]) {
       return neuron1Stake;
-    }
-    if (neuronId === neuron2.id[0]) {
-      return neuron2Stake;
     }
     if (neuronId === disbursedNeuron.id[0]) {
       return disbursedNeuronStake;
