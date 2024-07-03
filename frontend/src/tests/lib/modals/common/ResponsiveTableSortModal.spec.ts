@@ -117,9 +117,9 @@ describe("ResponsiveTableSortModal", () => {
     const po = renderComponent({ columns, order, onClose: close });
     expect(close).not.toBeCalled();
     await po.clickOption("Name");
-    await advanceTime(300);
-    expect(close).not.toBeCalled();
     await advanceTime(200);
+    expect(close).not.toBeCalled();
+    await advanceTime(100);
     expect(close).toBeCalledTimes(1);
   });
 });
