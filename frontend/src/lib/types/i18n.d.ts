@@ -284,7 +284,6 @@ interface I18nNeurons {
   remaining: string;
   age: string;
   vestion_period: string;
-  aria_label_neuron_card: string;
   neuron_id: string;
   neuron_balance: string;
   current_dissolve_delay: string;
@@ -790,8 +789,6 @@ interface I18nSns_sale {
 
 interface I18nSns_neuron_detail {
   vesting_period_tooltip: string;
-  community_fund_section: string;
-  community_fund_section_description: string;
   add_hotkey_info: string;
   add_hotkey_tooltip: string;
 }
