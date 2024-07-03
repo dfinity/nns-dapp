@@ -16,6 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Make neurons table sortable on desktop and mobile.
+* A short delay before closing the mobile table sorting modal.
 
 #### Changed
 
