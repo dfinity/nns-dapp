@@ -16,10 +16,7 @@ import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
-import {
-  createMockSnsNeuron,
-  mockSnsNeuron,
-} from "$tests/mocks/sns-neurons.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   buildMockSnsProposalsStoreSubscribe,
@@ -31,6 +28,7 @@ import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
+import { Vote } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
@@ -38,8 +36,10 @@ import {
   SnsProposalRewardStatus,
   SnsSwapLifecycle,
   SnsVote,
+  type SnsBallot,
   type SnsProposalData,
 } from "@dfinity/sns";
+import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -639,10 +639,7 @@ describe("SnsProposalDetail", () => {
     });
   });
 
-  // When one voting neuron follows another,
-  // the second neuron’s vote request returns a ‘Neuron already voted on proposal.’ error.
-  // This causes the voting buttons to enable because the second neuron is considered not successfully voted.
-  describe("Enabled voting buttons during the voting glitch", () => {
+  describe('When one voting neuron follows another voting neuron and the second vote returns "Neuron already voted" error', () => {
     beforeEach(() => {
       vi.clearAllMocks();
 
@@ -659,20 +656,56 @@ describe("SnsProposalDetail", () => {
     });
 
     it("should keep the voting buttons disabled throughout the entire voting process", async () => {
-      const neuron1 = createMockSnsNeuron({
-        stake: 1_000_000_000n,
-        id: [1],
-      });
-      const neuron2 = createMockSnsNeuron({
-        stake: 1_000_000_000n,
-        id: [2],
-      });
       const proposal = createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
         rewardStatus:
           SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
         proposalId: proposalId.id,
       });
+      const votingNeuronParams = {
+        identity: mockIdentity,
+        rootCanisterId,
+        created_timestamp_seconds:
+          proposal.proposal_creation_timestamp_seconds - 100n,
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+            ]),
+          } as NeuronPermission,
+        ],
+      };
+      const neuron1 = fakeSnsGovernanceApi.addNeuronWith({
+        ...votingNeuronParams,
+        id: [{ id: [1] }],
+      });
+      const neuron2 = fakeSnsGovernanceApi.addNeuronWith({
+        ...votingNeuronParams,
+        id: [{ id: [2] }],
+      });
+      const neuron1Id = getSnsNeuronIdAsHexString(neuron1);
+      const neuron2Id = getSnsNeuronIdAsHexString(neuron2);
+      const ballotsWithVote = (vote: Vote) =>
+        [
+          [
+            neuron1Id,
+            {
+              vote,
+              voting_power: 100_000_000n,
+              cast_timestamp_seconds: 0n,
+            },
+          ],
+          [
+            neuron2Id,
+            {
+              vote,
+              voting_power: 100_000_000n,
+              cast_timestamp_seconds: 0n,
+            },
+          ],
+        ] as [string, SnsBallot][];
+
       snsProposalsStore.setProposals({
         rootCanisterId,
         proposals: [proposal],
@@ -680,58 +713,10 @@ describe("SnsProposalDetail", () => {
         completed: true,
       });
 
-      fakeSnsGovernanceApi.addNeuronWith({
-        identity: mockIdentity,
-        rootCanisterId,
-        id: neuron1.id,
-        created_timestamp_seconds:
-          proposal.proposal_creation_timestamp_seconds - 100n,
-        permissions: [
-          {
-            principal: [mockIdentity.getPrincipal()],
-            permission_type: Int32Array.from([
-              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-            ]),
-          },
-        ],
-      });
-      fakeSnsGovernanceApi.addNeuronWith({
-        identity: mockIdentity,
-        rootCanisterId,
-        id: neuron2.id,
-        created_timestamp_seconds:
-          proposal.proposal_creation_timestamp_seconds - 100n,
-        permissions: [
-          {
-            principal: [mockIdentity.getPrincipal()],
-            permission_type: Int32Array.from([
-              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-            ]),
-          },
-        ],
-      });
       const proposalToVote = fakeSnsGovernanceApi.addProposalWith({
-        identity: mockIdentity,
         rootCanisterId,
         ...proposal,
-        ballots: [
-          [
-            getSnsNeuronIdAsHexString(neuron1),
-            {
-              vote: SnsVote.Unspecified,
-              voting_power: 100_000_000n,
-              cast_timestamp_seconds: 0n,
-            },
-          ],
-          [
-            getSnsNeuronIdAsHexString(neuron2),
-            {
-              vote: SnsVote.Unspecified,
-              voting_power: 100_000_000n,
-              cast_timestamp_seconds: 0n,
-            },
-          ],
-        ],
+        ballots: ballotsWithVote(Vote.Unspecified),
       });
       const { container } = render(SnsProposalDetail, {
         props: {
@@ -755,24 +740,7 @@ describe("SnsProposalDetail", () => {
             resolve({
               ...proposalToVote,
               // voted state
-              ballots: [
-                [
-                  getSnsNeuronIdAsHexString(neuron1),
-                  {
-                    vote: SnsVote.Yes,
-                    voting_power: 100_000_000n,
-                    cast_timestamp_seconds: 0n,
-                  },
-                ],
-                [
-                  getSnsNeuronIdAsHexString(neuron2),
-                  {
-                    vote: SnsVote.Yes,
-                    voting_power: 100_000_000n,
-                    cast_timestamp_seconds: 0n,
-                  },
-                ],
-              ],
+              ballots: ballotsWithVote(Vote.Yes),
             }))
       );
       const spyQueryProposalApi = vi
