@@ -12,6 +12,7 @@
     neuronsPathStore,
     proposalsPathStore,
   } from "$lib/derived/paths.derived";
+  import { ENABLE_PROJECTS_TABLE } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import {
     ACTIONABLE_PROPOSALS_URL,
@@ -19,9 +20,9 @@
   } from "$lib/utils/navigation.utils";
   import {
     IconExplore,
-    IconVote,
     IconNeurons,
     IconRocketLaunch,
+    IconVote,
     IconWallet,
     MenuItem,
   } from "@dfinity/gix-components";
@@ -53,10 +54,10 @@
     },
     {
       context: "neurons",
-      href: $neuronsPathStore,
+      href: $ENABLE_PROJECTS_TABLE ? AppPath.Staking : $neuronsPathStore,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
-        paths: [AppPath.Neurons, AppPath.Neuron],
+        paths: [AppPath.Staking, AppPath.Neurons, AppPath.Neuron],
       }),
       title: $i18n.navigation.neurons,
       icon: IconNeurons,

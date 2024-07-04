@@ -1,3 +1,4 @@
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import MenuItems from "$lib/components/common/MenuItems.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -53,10 +54,28 @@ describe("MenuItems", () => {
 
   it("should render accounts menu item", () =>
     shouldRenderMenuItem({ context: "accounts", labelKey: "tokens" }));
-  it("should render neurons menu item", () =>
-    shouldRenderMenuItem({ context: "neurons", labelKey: "neurons" }));
+
+  it("should render neurons menu item without projects table", () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_PROJECTS_TABLE", false);
+    shouldRenderMenuItem({
+      context: "neurons",
+      labelKey: "neurons",
+      href: "/neurons/?u=qhbym-qaaaa-aaaaa-aaafq-cai",
+    });
+  });
+
+  it("should render neurons menu item with projects table", () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_PROJECTS_TABLE", true);
+    shouldRenderMenuItem({
+      context: "neurons",
+      labelKey: "neurons",
+      href: "/staking",
+    });
+  });
+
   it("should render voting menu item", () =>
     shouldRenderMenuItem({ context: "proposals", labelKey: "voting" }));
+
   it("should render canisters menu item", () =>
     shouldRenderMenuItem({ context: "canisters", labelKey: "canisters" }));
 
