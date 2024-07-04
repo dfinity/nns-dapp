@@ -1,9 +1,9 @@
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import MenuItems from "$lib/components/common/MenuItems.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";

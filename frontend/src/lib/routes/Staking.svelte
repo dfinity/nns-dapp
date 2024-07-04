@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
-  import { buildNeuronsUrl } from "$lib/utils/navigation.utils";
 </script>
 
 <main data-tid="staking-component">
