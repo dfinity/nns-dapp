@@ -1,3 +1,4 @@
+import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
@@ -27,6 +28,7 @@ import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
+import { Vote } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
@@ -34,7 +36,10 @@ import {
   SnsProposalRewardStatus,
   SnsSwapLifecycle,
   SnsVote,
+  type SnsBallot,
+  type SnsProposalData,
 } from "@dfinity/sns";
+import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -631,6 +636,179 @@ describe("SnsProposalDetail", () => {
       expect(await votingCardPo.isPresent()).toBe(true);
       expect(await votingCardPo.getVotableNeurons().isPresent()).toBe(true);
       expect(await votingCardPo.getIneligibleNeurons().isPresent()).toBe(false);
+    });
+  });
+
+  describe('When one voting neuron follows another voting neuron and the second vote returns "Neuron already voted" error', () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+
+      resetIdentity();
+      page.mock({ data: { universe: rootCanisterId.toText() } });
+      setSnsProjects([
+        {
+          rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+        },
+      ]);
+      snsProposalsStore.reset();
+      snsNeuronsStore.reset();
+    });
+
+    it("should keep the voting buttons disabled throughout the entire voting process", async () => {
+      const proposal = createSnsProposal({
+        status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+        rewardStatus:
+          SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+        proposalId: proposalId.id,
+      });
+      const votingNeuronParams = {
+        identity: mockIdentity,
+        rootCanisterId,
+        created_timestamp_seconds:
+          proposal.proposal_creation_timestamp_seconds - 100n,
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+            ]),
+          } as NeuronPermission,
+        ],
+      };
+      const neuron1 = fakeSnsGovernanceApi.addNeuronWith({
+        ...votingNeuronParams,
+        id: [{ id: [1] }],
+      });
+      const neuron2 = fakeSnsGovernanceApi.addNeuronWith({
+        ...votingNeuronParams,
+        id: [{ id: [2] }],
+      });
+      const neuron1Id = getSnsNeuronIdAsHexString(neuron1);
+      const neuron2Id = getSnsNeuronIdAsHexString(neuron2);
+      const ballotsWithVote = (vote: Vote) =>
+        [
+          [
+            neuron1Id,
+            {
+              vote,
+              voting_power: 100_000_000n,
+              cast_timestamp_seconds: 0n,
+            },
+          ],
+          [
+            neuron2Id,
+            {
+              vote,
+              voting_power: 100_000_000n,
+              cast_timestamp_seconds: 0n,
+            },
+          ],
+        ] as [string, SnsBallot][];
+
+      snsProposalsStore.setProposals({
+        rootCanisterId,
+        proposals: [proposal],
+        certified: true,
+        completed: true,
+      });
+
+      const proposalToVote = fakeSnsGovernanceApi.addProposalWith({
+        rootCanisterId,
+        ...proposal,
+        ballots: ballotsWithVote(Vote.Unspecified),
+      });
+      const { container } = render(SnsProposalDetail, {
+        props: {
+          proposalIdText: proposalId.id.toString(),
+        },
+      });
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
+      await runResolvedPromises();
+      const votingCardPo = await po
+        .getSnsProposalVotingSectionPo()
+        .getVotingCardPo();
+      expect(await votingCardPo.isPresent()).toBe(true);
+      expect(await votingCardPo.getVotableNeurons().isPresent()).toBe(true);
+
+      let resolveQueryProposalApi;
+      const resolveQueryProposalApiPromise = new Promise(
+        (resolve) =>
+          (resolveQueryProposalApi = () =>
+            resolve({
+              ...proposalToVote,
+              // voted state
+              ballots: ballotsWithVote(Vote.Yes),
+            }))
+      );
+      const spyQueryProposalApi = vi
+        .spyOn(snsGovernanceApi, "queryProposal")
+        .mockImplementation(
+          () => resolveQueryProposalApiPromise as Promise<SnsProposalData>
+        );
+
+      expect(spyQueryProposalApi).toBeCalledTimes(0);
+
+      let resolveNeuron1VoteRegistration;
+      let rejectNeuron2VoteRegistration;
+      const spyRegisterVoteApi = vi
+        .spyOn(snsGovernanceApi, "registerVote")
+        .mockImplementationOnce(
+          () =>
+            new Promise(
+              (resolve) => (resolveNeuron1VoteRegistration = resolve)
+            ) as Promise<void>
+        )
+        .mockImplementationOnce(
+          () =>
+            new Promise(
+              (_, reject) => (rejectNeuron2VoteRegistration = reject)
+            ) as Promise<void>
+        );
+
+      expect(spyRegisterVoteApi).toBeCalledTimes(0);
+      expect(spyQueryProposalApi).toBeCalledTimes(0);
+
+      expect(await votingCardPo.getVoteYesButtonPo().isDisabled()).toBe(false);
+      expect(await votingCardPo.getVoteNoButtonPo().isDisabled()).toBe(false);
+
+      await votingCardPo.voteYes();
+      await runResolvedPromises();
+
+      expect(await votingCardPo.getVoteYesButtonPo().isDisabled()).toBe(true);
+      expect(await votingCardPo.getVoteNoButtonPo().isDisabled()).toBe(true);
+
+      // Neuron 1 votes
+      resolveNeuron1VoteRegistration();
+      await runResolvedPromises();
+
+      // Simulate the neuron 2 to follow the neuron 1
+      rejectNeuron2VoteRegistration(
+        new Error("Neuron already voted on proposal.")
+      );
+      await runResolvedPromises();
+
+      // If the second neuron to vote follows the first neuron, voting with the first neuron results in the second
+      // neuron already having voted. In that case voting with the second neuron results in an error. Normally when
+      // voting results in an error, we assume that the neuron hasn't voted yet. This results in the voting button
+      // becoming enabled again. So we need to make sure that if the error is because the neuron has already voted,
+      // we don't treat the neuron as not having voted yet.
+      expect(await votingCardPo.getVoteYesButtonPo().isDisabled()).toBe(true);
+      expect(await votingCardPo.getVoteNoButtonPo().isDisabled()).toBe(true);
+
+      // Now that we’ve tested that the buttons are disabled, we can proceed with resolving the proposal reload.
+      resolveQueryProposalApi();
+      await runResolvedPromises();
+
+      expect(await votingCardPo.getVoteYesButtonPo().isDisabled()).toBe(true);
+      expect(await votingCardPo.getVoteNoButtonPo().isDisabled()).toBe(true);
+
+      // Two neurons should vote
+      expect(spyRegisterVoteApi).toBeCalledTimes(2);
+      // Proposals should be reloaded after voting
+      expect(spyQueryProposalApi).toBeCalledTimes(2);
     });
   });
 });

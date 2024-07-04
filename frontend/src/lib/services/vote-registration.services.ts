@@ -192,6 +192,13 @@ export const updateVoteRegistrationToastMessage = ({
   });
 };
 
+// We ignore the error "Neuron already voted on proposal." - i.e. we consider it as a valid response
+// 1. the error truly means the neuron has already voted.
+// 2. if user has for example two neurons with one neuron (B) following another neuron (A). Then if user select both A and B to cast a vote, A will first vote for itself and then vote for the followee B. Then Promise.allSettled above process next neuron B and try to vote again but this vote won't succeed, because it has already been registered by A.
+// TODO: Extend to rely not only on the error text but also on a specific error type: ERROR_TYPE_NEURON_ALREADY_VOTED = 19 (https://gitlab.com/dfinity-lab/public/ic/-/merge_requests/20100)
+export const isAlreadyVotedError = (error: unknown) =>
+  errorToString(error) === "Neuron already voted on proposal.";
+
 export const processRegisterVoteErrors = ({
   registerVoteResponses,
   neuronIdStrings,
@@ -208,15 +215,8 @@ export const processRegisterVoteErrors = ({
   registerVoteResponses.forEach(
     (response: PromiseSettledResult<void>, index: number) => {
       const { status } = response;
-      const message: string | undefined =
-        "reason" in response ? errorToString(response?.reason) : undefined;
-
-      // We ignore the error "Neuron already voted on proposal." - i.e. we consider it as a valid response
-      // 1. the error truly means the neuron has already voted.
-      // 2. if user has for example two neurons with one neuron (B) following another neuron (A). Then if user select both A and B to cast a vote, A will first vote for itself and then vote for the followee B. Then Promise.allSettled above process next neuron B and try to vote again but this vote won't succeed, because it has already been registered by A.
-      // TODO(L2-465): discuss with Governance team to either turn the error into a valid response (or warning) with comment or to throw a unique identifier for this particular error.
-      const hasAlreadyVoted: boolean =
-        message === "Neuron already voted on proposal.";
+      const hasAlreadyVoted =
+        "reason" in response && isAlreadyVotedError(response.reason);
 
       if (status === "rejected" && !hasAlreadyVoted) {
         rejectedResponses.push(response);

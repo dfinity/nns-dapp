@@ -84,6 +84,7 @@ test("Test neuron voting", async ({ page, context }) => {
 
   step("Vote for proposal");
   await proposalDetails.getVotingCardPo().voteYes();
+  await proposalDetails.getVotingCardPo().waitForVotingComplete();
 
   step("Compare voting power before and after voting");
   const changedAdoptVotingPower = await proposalDetails
