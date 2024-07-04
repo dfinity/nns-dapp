@@ -1,6 +1,7 @@
 export enum AppPath {
   Accounts = "/accounts",
   Wallet = "/wallet",
+  Staking = "/staking",
   Neurons = "/neurons",
   Neuron = "/neuron",
   Proposals = "/proposals",
