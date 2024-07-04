@@ -790,7 +790,6 @@ describe("SnsProposalDetail", () => {
       );
       await runResolvedPromises();
 
-      // Fails on the next line w/o the fix.
       // If the second neuron to vote follows the first neuron, voting with the first neuron results in the second
       // neuron already having voted. In that case voting with the second neuron results in an error. Normally when
       // voting results in an error, we assume that the neuron hasn't voted yet. This results in the voting button
@@ -799,8 +798,7 @@ describe("SnsProposalDetail", () => {
       expect(await votingCardPo.getVoteYesButtonPo().isDisabled()).toBe(true);
       expect(await votingCardPo.getVoteNoButtonPo().isDisabled()).toBe(true);
 
-      // The delay before the proposal reload response was necessary
-      // because the glitch occurs after voting but before the proposal is reloaded.
+      // Now that we’ve tested that the buttons are disabled, we can proceed with resolving the proposal reload.
       resolveQueryProposalApi();
       await runResolvedPromises();
 
