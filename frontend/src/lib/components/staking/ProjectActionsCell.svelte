@@ -18,7 +18,6 @@
   .container {
     color: var(--primary);
     display: flex;
-    height: 20px;
     align-items: center;
   }
 </style>

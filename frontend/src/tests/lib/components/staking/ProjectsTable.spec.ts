@@ -20,7 +20,6 @@ describe("ProjectsTable", () => {
 
   beforeEach(() => {
     resetSnsProjects();
-    vi.useFakeTimers();
 
     page.mock({
       routeId: AppPath.Staking,
