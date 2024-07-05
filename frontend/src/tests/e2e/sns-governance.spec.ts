@@ -21,8 +21,8 @@ test("Test SNS governance", async ({ page, context }) => {
   const snsUniverseRow = snsUniverseRows[0];
   const snsProjectName = await snsUniverseRow.getProjectName();
 
-  // Our test SNS project names are always 5 uppercase letters.
-  expect(snsProjectName).toMatch(/[A-Z]{5}/);
+  // Our first test SNS project is always named "Alfa Centauri".
+  expect(snsProjectName).toBe("Alfa Centauri");
 
   step("Acquire tokens");
   const askedAmount = 20;
