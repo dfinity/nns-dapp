@@ -40,7 +40,7 @@ test("Test SNS governance", async ({ page, context }) => {
   expect(
     await appPo.getNeuronsPo().getSnsNeuronsPo().getEmptyMessage()
   ).toEqual(
-    `You have no ${snsProjectName} neurons. Create a neuron by staking ${snsProjectName} to vote on ${snsProjectName} proposals.`
+    "You have no Alfa Centauri neurons. Create a neuron by staking ALF to vote on Alfa Centauri proposals."
   );
 
   const stake = 5;
