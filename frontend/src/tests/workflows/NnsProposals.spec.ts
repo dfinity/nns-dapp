@@ -14,16 +14,16 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
-import { ProposalRewardStatus } from "@dfinity/nns";
+import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 
 const proposal = {
   ...mockProposalInfo,
-  topic: DEFAULT_PROPOSALS_FILTERS.topics[0],
+  topic: Topic.NetworkEconomics,
   rewardStatus: ProposalRewardStatus.AcceptVotes,
-  status: DEFAULT_PROPOSALS_FILTERS.status[0],
+  status: ProposalStatus.Open,
 };
 
 vi.mock("$lib/api/proposals.api", () => {
