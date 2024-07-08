@@ -190,4 +190,35 @@ describe("Tokens page", () => {
       "Zero balance",
     ]);
   });
+
+  describe("when import token feature flag is enabled", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN", true);
+    });
+
+    it("should show import token button", async () => {
+      const po = renderPage([positiveBalance, zeroBalance]);
+      expect(await po.getImportTokenButtonPo().isPresent()).toBe(true);
+    });
+
+    it("should show import token and show all buttons", async () => {
+      const po = renderPage([positiveBalance, zeroBalance]);
+      await po.getSettingsButtonPo().click();
+      await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
+
+      expect(await po.getShowAllButtonPo().isPresent()).toBe(true);
+      expect(await po.getImportTokenButtonPo().isPresent()).toBe(true);
+    });
+  });
+
+  describe("when import token feature flag is disabled", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN", false);
+    });
+
+    it("should not show import token button", async () => {
+      const po = renderPage([positiveBalance, zeroBalance]);
+      expect(await po.getImportTokenButtonPo().isPresent()).toBe(false);
+    });
+  });
 });
