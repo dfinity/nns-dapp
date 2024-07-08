@@ -11,6 +11,27 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 130986
+
+### Application
+
+#### Added
+
+* Make neurons table sortable on desktop and mobile.
+
+#### Changed
+
+* Change neuron ID column title to "Neurons".
+* Excluded non-displayed empty neurons when loading neurons.
+* Transactions to neuron accounts are now displayed as "Sent" instead of "Staked" or "Top-up neuron" if the neuron is no longer displayed because it's disbursed or merged.
+* Change the color of the settings icon on the tokens table.
+
+#### Removed
+
+* Disable sorting the neurons table by neuron ID.
+
+### Operations
+
 ## Proposal 130768
 
 ### Application
