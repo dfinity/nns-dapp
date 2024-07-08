@@ -44,6 +44,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Script to convert between ID formats
+
 #### Changed
 
 #### Deprecated
