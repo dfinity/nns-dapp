@@ -104,6 +104,7 @@ function hex_to_account_identifier() {
   hex=$(cat)
   subaccount_hex=$(get_subaccount_hex)
 
+  # Logic translated from https://github.com/dfinity/ic/blob/6aceb6a35248ef2735ddd9ca99d8a1c6f4a13908/rs/rosetta-api/icp_ledger/src/account_identifier.rs#L58-L68
   hash_input="0a$(echo -n account-id | xxd -p)${hex}${subaccount_hex}"
   hash_output="$(echo -n "$hash_input" | xxd -r -p | openssl dgst -sha224 | awk '{print $2}')"
   checksum=$(echo -n "$hash_output" | xxd -r -p | /usr/bin/crc32 /dev/stdin)
