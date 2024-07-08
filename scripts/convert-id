@@ -9,7 +9,7 @@ print_help() {
 	Formats are: text, hex, blob, and account_identifier.
 
 	USAGE:
-	  $(basename $0) --input <format> --output <format> [--as_subaccount] [--subaccount_format <format>] <id> [<subaccount>]
+	  $(basename "$0") --input <format> --output <format> [--as_subaccount] [--subaccount_format <format>] <id> [<subaccount>]
 
 	FORMAT EXAMPLES:
 	  text: 3vbe6-ysauy-vhiiq-dkhzp-ndzfr-6knc4-45rwt-youy4-dwtze-oqoo3-nae
@@ -18,9 +18,9 @@ print_help() {
 	  account_identifier: e8865cf776c7cd1ffeb4491208f94d601570755bfe410e217497a0e626bef101
 
 	USAGE EXAMPLES:
-	  $(basename $0) --input text --output hex 3vbe6-ysauy-vhiiq-dkhzp-ndzfr-6knc4-45rwt-youy4-dwtze-oqoo3-nae
-	  $(basename $0) --input hex --output blob 40A62A74220351F2F68F258F94D1739D8DA787531C1DA7923A0E76DA02
-	  $(basename $0) --input text --output account_identifier --subaccount_format index 3vbe6-ysauy-vhiiq-dkhzp-ndzfr-6knc4-45rwt-youy4-dwtze-oqoo3-nae 1
+	  $(basename "$0") --input text --output hex 3vbe6-ysauy-vhiiq-dkhzp-ndzfr-6knc4-45rwt-youy4-dwtze-oqoo3-nae
+	  $(basename "$0") --input hex --output blob 40A62A74220351F2F68F258F94D1739D8DA787531C1DA7923A0E76DA02
+	  $(basename "$0") --input text --output account_identifier --subaccount_format index 3vbe6-ysauy-vhiiq-dkhzp-ndzfr-6knc4-45rwt-youy4-dwtze-oqoo3-nae 1
 	EOF
 }
 
