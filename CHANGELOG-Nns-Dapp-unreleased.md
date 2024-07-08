@@ -15,21 +15,14 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Make neurons table sortable on desktop and mobile.
 * A short delay before closing the mobile table sorting modal.
 
 #### Changed
-
-* Change neuron ID column title to "Neurons".
-* Excluded non-displayed empty neurons when loading neurons.
-* Transactions to neuron accounts are now displayed as "Sent" instead of "Staked" or "Top-up neuron" if the neuron is no longer displayed because it's disbursed or merged.
-* Change the color of the settings icon on the tokens table.
 
 #### Deprecated
 
 #### Removed
 
-* Disable sorting the neurons table by neuron ID.
 * Remove default topic and proposal status filters.
 
 #### Fixed
