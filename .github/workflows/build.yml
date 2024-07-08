@@ -117,7 +117,7 @@ jobs:
         uses: dfinity/setup-dfx@main
       - name: Install tools
         run: |
-          sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+          sudo apt-get update -yy && sudo apt-get install -yy moreutils libarchive-zip-perl && command -v sponge
           cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
       - name: Run uprade-downgrade test
         run: ./scripts/nns-dapp/upgrade-downgrade-test --wasm out/nns-dapp_test.wasm.gz --args out/nns-dapp-arg-local.did --github_step_summary "$GITHUB_STEP_SUMMARY"

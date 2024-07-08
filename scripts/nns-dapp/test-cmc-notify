@@ -43,7 +43,7 @@ function hex_to_blob() {
 
 function get_cmc_account_identifier() {
   subaccount="$1"
-  convert --output account_identifier --subaccount_format text $CMC_ID "$subaccount"
+  convert --output account_identifier --subaccount_format text "$CMC_ID" "$subaccount"
 }
 
 function get_user_canisters() {
