@@ -211,13 +211,13 @@ fn growing_write_test_vectors() -> Vec<GrowingWriteTestVector> {
         },
         GrowingWriteTestVector {
             initial_memory_pages: 0,
-            write_offset: WASM_PAGE_SIZE_IN_BYTES as u64,
+            write_offset: WASM_PAGE_SIZE_IN_BYTES,
             buffer: vec![],
             expected_final_memory_pages: 1,
         },
         GrowingWriteTestVector {
             initial_memory_pages: 0,
-            write_offset: (WASM_PAGE_SIZE_IN_BYTES as u64) + 1,
+            write_offset: (WASM_PAGE_SIZE_IN_BYTES) + 1,
             buffer: vec![],
             expected_final_memory_pages: 2,
         },
@@ -235,19 +235,19 @@ fn growing_write_test_vectors() -> Vec<GrowingWriteTestVector> {
         },
         GrowingWriteTestVector {
             initial_memory_pages: 0,
-            write_offset: WASM_PAGE_SIZE_IN_BYTES as u64 - 4,
+            write_offset: WASM_PAGE_SIZE_IN_BYTES - 4,
             buffer: vec![1, 2, 3, 4],
             expected_final_memory_pages: 1,
         },
         GrowingWriteTestVector {
             initial_memory_pages: 0,
-            write_offset: (WASM_PAGE_SIZE_IN_BYTES as u64) - 3,
+            write_offset: (WASM_PAGE_SIZE_IN_BYTES) - 3,
             buffer: vec![1, 2, 3, 4],
             expected_final_memory_pages: 2,
         },
         GrowingWriteTestVector {
             initial_memory_pages: 0,
-            write_offset: (WASM_PAGE_SIZE_IN_BYTES as u64),
+            write_offset: (WASM_PAGE_SIZE_IN_BYTES),
             buffer: vec![1, 2, 3, 4],
             expected_final_memory_pages: 2,
         },

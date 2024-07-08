@@ -197,7 +197,7 @@ impl Partitions {
         let min_pages: u64 = u64::try_from(bytes.len())
             .unwrap_or_else(|err| unreachable!("Buffer for growing_write is longer than 2**64 bytes?? Err: {err}"))
             .saturating_add(offset)
-            .div_ceil(WASM_PAGE_SIZE_IN_BYTES as u64);
+            .div_ceil(WASM_PAGE_SIZE_IN_BYTES);
         let current_pages = memory.size();
         if current_pages < min_pages {
             memory.grow(min_pages - current_pages);
@@ -208,9 +208,7 @@ impl Partitions {
     /// Reads the exact number of bytes needed to fill `buffer`.
     pub fn read_exact(&self, memory_id: MemoryId, offset: u64, buffer: &mut [u8]) -> Result<(), String> {
         let memory = self.get(memory_id);
-        let bytes_in_memory = memory.size()
-            * u64::try_from(WASM_PAGE_SIZE_IN_BYTES)
-                .unwrap_or_else(|err| unreachable!("Wasm page size is fixed and well within the range of u64: {err}"));
+        let bytes_in_memory = memory.size() * WASM_PAGE_SIZE_IN_BYTES;
         if offset.saturating_add(u64::try_from(buffer.len()).unwrap_or_else(|err| {
             unreachable!("Buffer for read_exact is longer than 2**64.  This seems extremely implausible.  Err: {err}")
         })) > bytes_in_memory
