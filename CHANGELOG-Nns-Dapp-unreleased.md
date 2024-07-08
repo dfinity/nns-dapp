@@ -38,6 +38,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Script to convert between ID formats
+* Test cycles minting canister notification mechnism of the nns-dapp.
 
 #### Changed
 
