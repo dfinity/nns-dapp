@@ -87,7 +87,7 @@ fn partitions_should_get_correct_virtual_memory() {
     );
 
     // Grow a partition in the memory manager.  The partitions should grow with it.
-    let toy_metadata_fill = [9u8; WASM_PAGE_SIZE_IN_BYTES];
+    let toy_metadata_fill = [9u8; WASM_PAGE_SIZE_IN_BYTES as usize];
     memory_manager.get(PartitionType::Metadata.memory_id()).grow(1);
     let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory))
         .expect("Failed to get partitions when one partition has grown");
@@ -159,7 +159,7 @@ fn should_be_able_to_convert_memory_to_partitions_and_back() {
     /// Memory hasher, used to check that the memory is the same before and after.
     fn hash_memory(memory: &DefaultMemoryImpl) -> [u8; 32] {
         let mut hasher = Sha256::new();
-        let mut buf = [0u8; WASM_PAGE_SIZE_IN_BYTES];
+        let mut buf = [0u8; WASM_PAGE_SIZE_IN_BYTES as usize];
         for page_num in 0..memory.size() {
             let byte_offset = page_num * u64::try_from(WASM_PAGE_SIZE_IN_BYTES).expect("Amazingly large pages");
             memory.read(byte_offset, &mut buf);
