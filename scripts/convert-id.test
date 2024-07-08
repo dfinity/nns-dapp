@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+function expect_convert() {
+  expected_output="$1"
+  shift
+  actual_output=$("$SOURCE_DIR/convert-id" "$@")
+  if [ "$expected_output" != "$actual_output" ]; then
+    printf "Command: %s " "$(basename "$0")"
+    printf " %q" "$@"
+    echo
+    echo "Expected: $expected_output"
+    echo "Actual: $actual_output"
+    exit 1
+  fi
+}
+
+TEXT="w7xx4-wq2fm-6a"
+HEX="1A2B3C"
+BLOB="\\1A\\2B\\3C"
+ACCOUNT_IDENTIFIER="66b308004b77291769646f70ebe4f392741ef6a44c5f7ab83cd2d42b20588d2b"
+
+expect_convert "$TEXT" --output text --input text "$TEXT"
+expect_convert "$TEXT" --output text --input hex "$HEX"
+expect_convert "$TEXT" --output text --input blob "$BLOB"
+expect_convert "$HEX" --output hex --input text "$TEXT"
+expect_convert "$HEX" --output hex --input hex "$HEX"
+expect_convert "$HEX" --output hex --input blob "$BLOB"
+expect_convert "$BLOB" --output blob --input text "$TEXT"
+expect_convert "$BLOB" --output blob --input hex "$HEX"
+expect_convert "$BLOB" --output blob --input blob "$BLOB"
+
+expect_convert "$ACCOUNT_IDENTIFIER" --output account_identifier --input text "$TEXT"
+
+TEXT2="3vbe6-ysauy-vhiiq-dkhzp-ndzfr-6knc4-45rwt-youy4-dwtze-oqoo3-nae"
+HEX2="40A62A74220351F2F68F258F94D1739D8DA787531C1DA7923A0E76DA02"
+BLOB2="\\40\\A6\\2A\\74\\22\\03\\51\\F2\\F6\\8F\\25\\8F\\94\\D1\\73\\9D\\8D\\A7\\87\\53\\1C\\1D\\A7\\92\\3A\\0E\\76\\DA\\02"
+ACCOUNT_IDENTIFIER2="e8865cf776c7cd1ffeb4491208f94d601570755bfe410e217497a0e626bef101"
+ACCOUNT_IDENTIFIER2_INDEX_1="9de8d877dd08d3a376d4dfd30ecc0624353e24b69479a62d79360de08e30a5e8"
+
+expect_convert "$TEXT2" --output text --input text "$TEXT2"
+expect_convert "$TEXT2" --output text --input hex "$HEX2"
+expect_convert "$TEXT2" --output text --input blob "$BLOB2"
+expect_convert "$HEX2" --output hex --input text "$TEXT2"
+expect_convert "$HEX2" --output hex --input hex "$HEX2"
+expect_convert "$HEX2" --output hex --input blob "$BLOB2"
+expect_convert "$BLOB2" --output blob --input text "$TEXT2"
+expect_convert "$BLOB2" --output blob --input hex "$HEX2"
+expect_convert "$BLOB2" --output blob --input blob "$BLOB2"
+
+expect_convert "$ACCOUNT_IDENTIFIER2" --output account_identifier --input text "$TEXT2"
+expect_convert "$ACCOUNT_IDENTIFIER2_INDEX_1" --output account_identifier --input text "$TEXT2" 1
+
+SUBACCOUNT_IDENTIFIER="0a0b22efafb70f6bc7b93951e7bf40feeb0d3a07b7b2e4a6ae37c4f17793360f"
+HEX_AS_SUBACCOUNT="031A2B3C00000000000000000000000000000000000000000000000000000000"
+expect_convert "$SUBACCOUNT_IDENTIFIER" --output account_identifier --input text --subaccount_format text "$TEXT2" "$TEXT"
+expect_convert "$HEX_AS_SUBACCOUNT" --output hex --as_subaccount --input text "$TEXT"
+expect_convert "$SUBACCOUNT_IDENTIFIER" --output account_identifier --input text --subaccount_format hex "$TEXT2" "$HEX_AS_SUBACCOUNT"
+
+echo PASS
