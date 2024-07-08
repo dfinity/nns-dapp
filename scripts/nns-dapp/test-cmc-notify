@@ -25,6 +25,8 @@ clap.define short=i long=identity desc="Identity to use to create proposals" var
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
+set -x
+
 export DFX_IDENTITY
 
 # Magic numbers defined at https://github.com/dfinity/ic/blob/be47f18b190689a055c7b198030a85e8cc816b65/rs/nns/cmc/src/lib.rs#L229-L230
