@@ -1079,6 +1079,7 @@ interface I18nTokens {
   hide_zero_balances_toggle_label: string;
   zero_balance_hidden: string;
   show_all: string;
+  import_token: string;
 }
 
 interface I18nNeuron_state {
