@@ -7,6 +7,7 @@ import {
 } from "$lib/api/sns-governance.api";
 import { MAX_NEURONS_SUBACCOUNTS } from "$lib/constants/sns-neurons.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import {
   getSnsNeuronIdAsHexString,
@@ -315,19 +316,38 @@ const checkNeurons = async ({
   neurons: SnsNeuron[];
 }) => {
   for (const neuron of neurons) {
-    const neuronId = fromNullable(neuron.id);
-    if (neuronId !== undefined) {
-      if (await neuronNeedsRefresh({ rootCanisterId, neuron, identity })) {
-        await refreshNeuron({ rootCanisterId, identity, neuronId });
-        await loadNeuron({
-          rootCanisterId,
-          neuronId: neuronId,
-          certified: true,
-          identity,
-        });
-      }
-    }
+    await checkNeuron({ identity, rootCanisterId, neuron });
   }
+};
+
+/**
+ * Checks neuron's subaccount and refreshes the neuron if needed.
+ * Returns true if the neuron was refreshed.
+ */
+const checkNeuron = async ({
+  identity,
+  rootCanisterId,
+  neuron,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  neuron: SnsNeuron;
+}): Promise<boolean> => {
+  const neuronId = fromNullable(neuron.id);
+  if (
+    isNullish(neuronId) ||
+    !(await neuronNeedsRefresh({ rootCanisterId, neuron, identity }))
+  ) {
+    return false;
+  }
+  await refreshNeuron({ rootCanisterId, identity, neuronId });
+  await loadNeuron({
+    rootCanisterId,
+    neuronId: neuronId,
+    certified: true,
+    identity,
+  });
+  return true;
 };
 
 /**
@@ -363,4 +383,38 @@ export const checkSnsNeuronBalances = async ({
   });
 
   await checkNeurons({ identity, rootCanisterId, neurons: unvisitedNeurons });
+};
+
+// Returns true if the neuron was refreshed.
+export const refreshNeuronIfNeeded = async ({
+  rootCanisterId,
+  neuron,
+}: {
+  rootCanisterId: Principal | undefined;
+  neuron: SnsNeuron | null | undefined;
+}): Promise<boolean> => {
+  if (isNullish(rootCanisterId) || isNullish(neuron)) {
+    return false;
+  }
+  // An SNS neuron's ID is the same as its subaccount.
+  const subaccountHex = getSnsNeuronIdAsHexString(neuron);
+  const universeId = rootCanisterId.toText();
+
+  // We only check neurons to recover from an interrupted stake/top-up.
+  // Doing this once per neuron per session is often enough.
+  if (
+    !checkedNeuronSubaccountsStore.addSubaccount({
+      universeId,
+      subaccountHex,
+    })
+  ) {
+    return false;
+  }
+
+  const identity = await getAuthenticatedIdentity();
+  return checkNeuron({
+    identity,
+    rootCanisterId,
+    neuron,
+  });
 };

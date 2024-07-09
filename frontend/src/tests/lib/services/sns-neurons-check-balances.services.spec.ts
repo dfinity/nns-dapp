@@ -2,7 +2,9 @@ import * as governanceApi from "$lib/api/sns-governance.api";
 import {
   checkSnsNeuronBalances,
   neuronNeedsRefresh,
+  refreshNeuronIfNeeded,
 } from "$lib/services/sns-neurons-check-balances.services";
+import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
@@ -59,6 +61,7 @@ describe("sns-neurons-check-balances-services", () => {
 
   beforeEach(() => {
     resetIdentity();
+    checkedNeuronSubaccountsStore.reset();
   });
 
   describe("checkSnsNeuronBalances", () => {
@@ -338,6 +341,98 @@ describe("sns-neurons-check-balances-services", () => {
       });
       await waitFor(() => expect(spyNeuronBalance).toBeCalled());
       expect(res).toBe(false);
+    });
+  });
+
+  describe("refreshNeuronIfNeeded", () => {
+    let spyNeuronBalance;
+    let spyRefreshNeuron;
+
+    beforeEach(() => {
+      spyRefreshNeuron = vi
+        .spyOn(governanceApi, "refreshNeuron")
+        .mockResolvedValue(undefined);
+    });
+
+    it("should not refresh neuron when balance matches stake", async () => {
+      spyNeuronBalance = vi
+        .spyOn(governanceApi, "getNeuronBalance")
+        .mockImplementation(() =>
+          Promise.resolve(userNeuron.cached_neuron_stake_e8s)
+        );
+      expect(
+        await refreshNeuronIfNeeded({
+          rootCanisterId: mockPrincipal,
+          neuron: userNeuron,
+        })
+      ).toBe(false);
+
+      expect(spyNeuronBalance).toBeCalledTimes(1);
+      expect(spyNeuronBalance).toBeCalledWith({
+        rootCanisterId: mockPrincipal,
+        neuronId: neuronId,
+        certified: false,
+        identity: mockIdentity,
+      });
+      expect(spyRefreshNeuron).not.toBeCalled();
+    });
+
+    it("should refresh neuron when balance does not match stake", async () => {
+      const rootCanisterId = mockPrincipal;
+      spyNeuronBalance = vi
+        .spyOn(governanceApi, "getNeuronBalance")
+        .mockImplementation(() =>
+          Promise.resolve(userNeuron.cached_neuron_stake_e8s + 100_000_000n)
+        );
+      expect(
+        await refreshNeuronIfNeeded({
+          rootCanisterId,
+          neuron: userNeuron,
+        })
+      ).toBe(true);
+
+      expect(spyNeuronBalance).toBeCalledTimes(1);
+      expect(spyNeuronBalance).toBeCalledWith({
+        rootCanisterId,
+        neuronId: neuronId,
+        certified: false,
+        identity: mockIdentity,
+      });
+      expect(spyRefreshNeuron).toBeCalledTimes(1);
+      expect(spyRefreshNeuron).toBeCalledWith({
+        rootCanisterId,
+        neuronId,
+        identity: mockIdentity,
+      });
+    });
+
+    it("should check neuron only once", async () => {
+      spyNeuronBalance = vi
+        .spyOn(governanceApi, "getNeuronBalance")
+        .mockImplementation(() =>
+          Promise.resolve(userNeuron.cached_neuron_stake_e8s)
+        );
+      expect(
+        await refreshNeuronIfNeeded({
+          rootCanisterId: mockPrincipal,
+          neuron: userNeuron,
+        })
+      ).toBe(false);
+      expect(
+        await refreshNeuronIfNeeded({
+          rootCanisterId: mockPrincipal,
+          neuron: userNeuron,
+        })
+      ).toBe(false);
+      expect(
+        await refreshNeuronIfNeeded({
+          rootCanisterId: mockPrincipal,
+          neuron: userNeuron,
+        })
+      ).toBe(false);
+
+      expect(spyNeuronBalance).toBeCalledTimes(1);
+      expect(spyRefreshNeuron).not.toBeCalled();
     });
   });
 });
