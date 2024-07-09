@@ -144,7 +144,7 @@ describe("SnsNeuronDetail", () => {
             })
         );
 
-      const po = await renderComponent({
+      await renderComponent({
         neuronId: validNeuronIdAsHexString,
       });
 
@@ -167,7 +167,7 @@ describe("SnsNeuronDetail", () => {
             })
         );
 
-      const po = await renderComponent({
+      await renderComponent({
         neuronId: validNeuronIdAsHexString,
       });
 
