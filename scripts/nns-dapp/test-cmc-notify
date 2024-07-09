@@ -31,7 +31,7 @@ export DFX_IDENTITY
 CREATE_CANISTER_MEMO="$((16#41455243))" # 1095062083
 TOP_UP_CANISTER_MEMO="$((16#50555054))" # 1347768404
 
-ICP=11000000
+ICP_E8S=11000000
 
 function convert() {
   "$SOURCE_DIR/convert-id" "$@"
@@ -52,7 +52,10 @@ function get_user_canisters() {
 
 function get_cycles_balance() {
   canister_id="$1"
-  dfx canister status "$canister_id" | grep "Balance:" | sed -e 's@Balance: \(.*\) Cycles@\1@' | sed -e 's@_@@g'
+  dfx canister status "$canister_id" |
+    grep "Balance:" |
+    sed -e 's@Balance: \(.*\) Cycles@\1@' |
+    sed -e 's@_@@g'
 }
 
 # Make sure we have an account so nns-dapp tracks our transactions
@@ -62,20 +65,26 @@ OLD_CANISTERS="$(get_user_canisters)"
 
 CMC_ID="$(dfx canister id nns-cycles-minting)"
 
-CYCLES_RATE="$(dfx canister call nns-cycles-minting get_icp_xdr_conversion_rate | idl2json | jq -r '.data.xdr_permyriad_per_icp')"
+CYCLES_PER_ICP_E8="$(
+  dfx canister call nns-cycles-minting get_icp_xdr_conversion_rate |
+    idl2json |
+    jq -r '.data.xdr_permyriad_per_icp'
+)"
 
 PRINCIPAL="$(dfx identity get-principal)"
-CREATE_CANISTER_ACCOUNT_IDENTIFIER="$(get_cmc_account_identifier "$PRINCIPAL")"
 
+CREATE_CANISTER_ACCOUNT_IDENTIFIER="$(get_cmc_account_identifier "$PRINCIPAL")"
 dfx canister call nns-ledger transfer "(
   record {
     to = blob \"$(hex_to_blob "$CREATE_CANISTER_ACCOUNT_IDENTIFIER")\";
     fee = record { e8s = 10_000 : nat64 };
     memo = $CREATE_CANISTER_MEMO : nat64;
-    amount = record { e8s = $ICP : nat64 };
+    amount = record { e8s = $ICP_E8S : nat64 };
   }
 )"
 
+# Wait for the nns-dapp canister to see the transaction, to notify the CMC and
+# to add the canister to the list of user canisters.
 for ((try = 30; try > 0; try--)); do
   ALL_CANISTERS="$(get_user_canisters)"
   if [[ "$ALL_CANISTERS" != "$OLD_CANISTERS" ]]; then
@@ -85,7 +94,13 @@ for ((try = 30; try > 0; try--)); do
   sleep 1
 done
 
-NEW_CANISTER="$(echo "$ALL_CANISTERS $OLD_CANISTERS" | sed -e 's@ @\n@g' | sort | uniq -u | grep -v '^$')"
+NEW_CANISTER="$(
+  echo "$ALL_CANISTERS $OLD_CANISTERS" |
+    sed -e 's@ @\n@g' |
+    sort |
+    uniq -u |
+    grep -v '^$'
+)"
 
 if [[ -z "$NEW_CANISTER" ]]; then
   echo "No new canister found"
@@ -94,7 +109,7 @@ fi
 
 echo "Created canister ID $NEW_CANISTER"
 
-EXPECTED_CYCLES="$((ICP * CYCLES_RATE))"
+EXPECTED_CYCLES="$((ICP_E8S * CYCLES_PER_ICP_E8))"
 
 ACTUAL_CYCLES="$(get_cycles_balance "$NEW_CANISTER")"
 
@@ -106,19 +121,20 @@ if [[ "$ACTUAL_CYCLES" != "$EXPECTED_CYCLES" ]]; then
 fi
 
 TOP_UP_ACCOUNT_IDENTIFIER="$(get_cmc_account_identifier "$NEW_CANISTER")"
-
 dfx canister call nns-ledger transfer "(
   record {
     to = blob \"$(hex_to_blob "$TOP_UP_ACCOUNT_IDENTIFIER")\";
     fee = record { e8s = 10_000 : nat64 };
     memo = $TOP_UP_CANISTER_MEMO : nat64;
-    amount = record { e8s = $ICP : nat64 };
+    amount = record { e8s = $ICP_E8S : nat64 };
   }
 )"
 
-EXPECTED_CYCLES="$((2 * ICP * CYCLES_RATE))"
+EXPECTED_CYCLES="$((2 * ICP_E8S * CYCLES_PER_ICP_E8))"
 OLD_CYCLES="$ACTUAL_CYCLES"
 
+# Wait for the nns-dapp canister to see the transaction, for it to notify the
+# CMC and for the CMC to update the canister's cycles balance.
 for ((try = 30; try > 0; try--)); do
   ACTUAL_CYCLES="$(get_cycles_balance "$NEW_CANISTER")"
   if [[ "ACTUAL_CYCLES" != "$OLD_CYCLES" ]]; then
@@ -135,4 +151,4 @@ if [[ "$ACTUAL_CYCLES" != "$EXPECTED_CYCLES" ]]; then
   exit 1
 fi
 
-echo PASS
+echo "✅ PASS"
