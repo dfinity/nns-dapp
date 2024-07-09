@@ -88,7 +88,9 @@ function get_subaccount_hex() {
       exit 1
     fi
     subaccount_part=$(echo -n "$ID_ARG" | sed 's@^[^.]*\.@@')
-    printf '%064d%s' 0 "$subaccount_part" | tail -c 64
+    # Some version of bash produce leading spaces instead of zeros.
+    # tr ' ' '0' is used to replace them with zeros.
+    printf '%064s' "$subaccount_part" | tr ' ' '0'
     return
   fi
   if [[ "$SUBACCOUNT_FORMAT" = "index" ]]; then
