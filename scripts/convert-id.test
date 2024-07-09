@@ -5,9 +5,10 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 function expect_convert() {
   expected_output="$1"
   shift
-  actual_output=$("$SOURCE_DIR/convert-id" "$@")
+  SCRIPT_UNDER_TEST="$SOURCE_DIR/convert-id"
+  actual_output=$("$SCRIPT_UNDER_TEST" "$@")
   if [ "$expected_output" != "$actual_output" ]; then
-    printf "Command: %s " "$(basename "$0")"
+    printf "Command: %s " "$(basename "$SCRIPT_UNDER_TEST")"
     printf " %q" "$@"
     echo
     echo "Expected: $expected_output"
