@@ -58,4 +58,10 @@ expect_convert "$SUBACCOUNT_IDENTIFIER" --output account_identifier --input text
 expect_convert "$HEX_AS_SUBACCOUNT" --output hex --as_subaccount --input text "$TEXT"
 expect_convert "$SUBACCOUNT_IDENTIFIER" --output account_identifier --input text --subaccount_format hex "$TEXT2" "$HEX_AS_SUBACCOUNT"
 
+ICRC1_CHECKSUM="3vbe6yq"
+ICRC1="$TEXT2-$ICRC1_CHECKSUM.1"
+expect_convert "$ICRC1" --output icrc1 --input icrc1 "$ICRC1"
+expect_convert "$ICRC1" --output icrc1 --input text "$TEXT2" 1
+expect_convert "$ACCOUNT_IDENTIFIER2_INDEX_1" --output account_identifier --input icrc1 "$ICRC1"
+
 echo PASS
