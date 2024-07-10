@@ -131,11 +131,17 @@ function icrc1_to_hex() {
   sed 's@-[^-]*$@@' | text_to_hex
 }
 
+# See https://internetcomputer.org/docs/current/references/icrc1-standard#textual-encoding-of-accounts
+# The ICRC-1 format is: <principal>-<checksum>.<compressed-subaccount>
+# where <compressed-subaccount> is the lower-case hex representation the
+# subaccount with leading zeros removed.
+# If the subaccount is only zeros, the ICRC-1 format is just the principal.
 function hex_to_icrc1() {
   hex=$(cat)
 
   subaccount_hex="$(get_subaccount_hex)"
 
+  # Remove leading zeros.
   subaccount_hex="$(echo -n "$subaccount_hex" | sed -e 's@^0*@@')"
 
   if [[ -z "$subaccount_hex" ]]; then
