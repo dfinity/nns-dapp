@@ -7,7 +7,11 @@ import { getCurrentIdentity } from "$lib/services/auth.services";
 import { listNeurons } from "$lib/services/neurons.services";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
-import { lastProposalId } from "$lib/utils/proposals.utils";
+import {
+  concatenateUniqueProposals,
+  lastProposalId,
+  sortProposalsByIdDescendingOrder,
+} from "$lib/utils/proposals.utils";
 import {
   ProposalRewardStatus,
   ProposalStatus,
@@ -29,16 +33,27 @@ export const loadActionableProposals = async (): Promise<void> => {
     return;
   }
 
-  const proposals = await queryProposals({
+  const acceptVotesProposals = await queryProposals({
     includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
   });
-
+  // Request Neuron Management proposals that are open and have ineligible reward status because they don't have ProposalRewardStatus.AcceptVotes.
+  const neuronManagementProposals = await queryProposals({
+    includeRewardStatus: [ProposalRewardStatus.Ineligible],
+    includeStatus: [ProposalStatus.Open],
+    includeTopics: [Topic.ManageNeuron],
+  });
+  const uniqueProposals = concatenateUniqueProposals({
+    oldProposals: acceptVotesProposals,
+    newProposals: neuronManagementProposals,
+  });
   // Filter proposals that have at least one votable neuron
-  const votableProposals = proposals.filter(
+  const votableProposals = uniqueProposals.filter(
     (proposal) => votableNeurons({ neurons, proposal }).length > 0
   );
 
-  actionableNnsProposalsStore.setProposals(votableProposals);
+  actionableNnsProposalsStore.setProposals(
+    sortProposalsByIdDescendingOrder(votableProposals)
+  );
 };
 
 const queryNeurons = async (): Promise<NeuronInfo[]> => {
@@ -74,11 +89,10 @@ const queryProposals = async (
       certified: false,
       ...filters,
     });
-    // Sort proposals by id in descending order to be sure that "lastProposalId" returns correct id.
-    sortedProposals = [...sortedProposals, ...page].sort(
-      ({ id: proposalIdA }, { id: proposalIdB }) =>
-        Number((proposalIdB ?? 0n) - (proposalIdA ?? 0n))
-    );
+    sortedProposals = sortProposalsByIdDescendingOrder([
+      ...sortedProposals,
+      ...page,
+    ]);
 
     if (page.length !== DEFAULT_LIST_PAGINATION_LIMIT) {
       break;
