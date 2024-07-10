@@ -1,6 +1,8 @@
 <script lang="ts">
+  import ProjectsTable from "$lib/components/staking/ProjectsTable.svelte";
+  import { Island } from "@dfinity/gix-components";
 </script>
 
-<main data-tid="staking-component">
-  <h1>STAKING PROJECTS TABLE UNDER CONSTRUCTION</h1>
-</main>
+<Island>
+  <ProjectsTable />
+</Island>

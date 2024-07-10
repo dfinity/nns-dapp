@@ -355,6 +355,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: scripts/unused-i18n
+  convert-id:
+    name: Test the ID conversion script
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: |
+          # libarchive-zip-perl is needed for crc32, used by convert-id.
+          sudo apt-get update -yy && sudo apt-get install -yy libarchive-zip-perl
+      - name: Run test
+        run: scripts/convert-id.test
   version-match:
     name: The nns-dapp npm and cargo versions should match
     runs-on: ubuntu-20.04

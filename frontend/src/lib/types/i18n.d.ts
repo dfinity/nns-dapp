@@ -247,6 +247,10 @@ interface I18nNeuron_types {
   ect: string;
 }
 
+interface I18nStaking {
+  nervous_systems: string;
+}
+
 interface I18nNeurons {
   title: string;
   text: string;
@@ -1079,6 +1083,7 @@ interface I18nTokens {
   hide_zero_balances_toggle_label: string;
   zero_balance_hidden: string;
   show_all: string;
+  import_token: string;
 }
 
 interface I18nNeuron_state {
@@ -1311,6 +1316,7 @@ interface I18n {
   auth: I18nAuth;
   accounts: I18nAccounts;
   neuron_types: I18nNeuron_types;
+  staking: I18nStaking;
   neurons: I18nNeurons;
   new_followee: I18nNew_followee;
   follow_neurons: I18nFollow_neurons;

@@ -58,7 +58,7 @@ jobs:
         if: ${{ steps.update.outputs.updated == '1' }}
         uses: peter-evans/create-pull-request@v4
         with:
-          token: ${{ secrets.GIX_BOT_PAT }}
+          token: ${{ secrets.GIX_CREATE_PR_PAT }}
           commit-message: Update snsdemo to ${{ steps.update.outputs.release }}
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>

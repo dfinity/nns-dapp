@@ -1,19 +1,12 @@
 import type { BasisPoints } from "$lib/types/proposals";
 import { ProposalStatus, Topic } from "@dfinity/nns";
 
-// TODO: suggest to move into the store and add typing
-export const DEFAULT_PROPOSALS_FILTERS = {
-  topics: [
-    Topic.NetworkEconomics,
-    Topic.Governance,
-    Topic.NodeAdmin,
-    Topic.ParticipantManagement,
-    Topic.SubnetManagement,
-    Topic.NetworkCanisterManagement,
-    Topic.NodeProviderRewards,
-    Topic.SnsAndCommunityFund,
-  ],
-  status: [ProposalStatus.Open],
+export const DEFAULT_PROPOSALS_FILTERS: {
+  topics: Topic[];
+  status: ProposalStatus[];
+} = {
+  topics: [],
+  status: [],
 };
 
 export const DEPRECATED_TOPICS = [Topic.SnsDecentralizationSale];

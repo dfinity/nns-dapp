@@ -25,15 +25,16 @@
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
   import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
+  import { refreshNeuronIfNeeded } from "$lib/services/sns-neurons-check-balances.services";
   import { getSnsNeuron } from "$lib/services/sns-neurons.services";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { queuedStore } from "$lib/stores/queued-store";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import {
+    SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
     type SelectedSnsNeuronStore,
-    SELECTED_SNS_NEURON_CONTEXT_KEY,
   } from "$lib/types/sns-neuron-detail.context";
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
   import { Island } from "@dfinity/gix-components";
@@ -41,7 +42,7 @@
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import type { SnsNeuron } from "@dfinity/sns";
   import type { Token, TokenAmountV2 } from "@dfinity/utils";
-  import { nonNullish, isNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { onMount, setContext } from "svelte";
 
   export let neuronId: string | null | undefined;
@@ -156,6 +157,28 @@
     isNullish($selectedSnsNeuronStore.neuron) ||
     isNullish(parameters) ||
     isNullish(transactionFee);
+
+  const maybeRefreshAndReload = async ({
+    rootCanisterId,
+    neuron,
+  }: {
+    rootCanisterId: Principal | undefined;
+    neuron: SnsNeuron | undefined | null;
+  }) => {
+    if (
+      await refreshNeuronIfNeeded({
+        rootCanisterId,
+        neuron,
+      })
+    ) {
+      loadNeuron({ forceFetch: true });
+    }
+  };
+
+  $: maybeRefreshAndReload({
+    rootCanisterId,
+    neuron: $selectedSnsNeuronStore.neuron,
+  });
 </script>
 
 <TestIdWrapper testId="sns-neuron-detail-component">
