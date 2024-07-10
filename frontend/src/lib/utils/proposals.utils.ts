@@ -620,3 +620,17 @@ export const navigationIdComparator = ({
   if (a.proposalId > b.proposalId) return -1;
   return 0;
 };
+
+/**
+ * Sort NNS proposals by IDs in descending order.
+ */
+export const sortProposalsByIdDescendingOrder = (
+  proposals: ProposalInfo[]
+): ProposalInfo[] =>
+  [...proposals].sort((a, b) => {
+    const idA = a.id ?? 0n;
+    const idB = b.id ?? 0n;
+    if (idB > idA) return 1;
+    if (idB < idA) return -1;
+    return 0;
+  });
