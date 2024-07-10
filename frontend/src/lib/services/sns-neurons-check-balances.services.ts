@@ -469,7 +469,7 @@ const claimNeuronIfNeeded = async ({
   }
 
   const neuronMinimumStake = await getNeuronMinimumStake({ rootCanisterId });
-   // Don't claim a neuron if there's not enough balance to stake.
+  // Don't claim a neuron if there's not enough balance to stake.
   if (neuronAccountBalance < neuronMinimumStake) {
     return;
   }
