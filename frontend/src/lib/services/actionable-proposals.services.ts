@@ -8,11 +8,13 @@ import { listNeurons } from "$lib/services/neurons.services";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import { lastProposalId } from "$lib/utils/proposals.utils";
-import type { ProposalInfo } from "@dfinity/nns";
 import {
   ProposalRewardStatus,
+  ProposalStatus,
+  Topic,
   votableNeurons,
   type NeuronInfo,
+  type ProposalInfo,
 } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -27,7 +29,10 @@ export const loadActionableProposals = async (): Promise<void> => {
     return;
   }
 
-  const proposals = await queryProposals();
+  const proposals = await queryProposals({
+    includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
+  });
+
   // Filter proposals that have at least one votable neuron
   const votableProposals = proposals.filter(
     (proposal) => votableNeurons({ neurons, proposal }).length > 0
@@ -45,8 +50,16 @@ const queryNeurons = async (): Promise<NeuronInfo[]> => {
   return get(definedNeuronsStore);
 };
 
+interface QueryProposalsFilter {
+  includeTopics?: Topic[];
+  includeRewardStatus?: ProposalRewardStatus[];
+  includeStatus?: ProposalStatus[];
+}
+
 /// Fetch all (500 max) proposals that are accepting votes.
-const queryProposals = async (): Promise<ProposalInfo[]> => {
+const queryProposals = async (
+  filters: QueryProposalsFilter
+): Promise<ProposalInfo[]> => {
   const identity = getCurrentIdentity();
   let sortedProposals: ProposalInfo[] = [];
   for (
@@ -58,8 +71,8 @@ const queryProposals = async (): Promise<ProposalInfo[]> => {
     const page = await queryNnsProposals({
       beforeProposal: lastProposalId(sortedProposals),
       identity,
-      includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
       certified: false,
+      ...filters,
     });
     // Sort proposals by id in descending order to be sure that "lastProposalId" returns correct id.
     sortedProposals = [...sortedProposals, ...page].sort(
