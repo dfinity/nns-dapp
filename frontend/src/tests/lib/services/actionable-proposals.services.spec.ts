@@ -60,8 +60,13 @@ describe("actionable-proposals.services", () => {
       );
       spyQueryProposals = vi
         .spyOn(api, "queryProposals")
-        .mockImplementation(() =>
-          Promise.resolve([votableProposal, votedProposal])
+        .mockImplementation((requestData) =>
+          requestData.includeRewardStatus?.includes(
+            ProposalRewardStatus.AcceptVotes
+          )
+            ? Promise.resolve([votableProposal, votedProposal])
+            : // Return nothing for Topic.ManageNeuron proposals
+              Promise.resolve([])
         );
       spyQueryNeurons = vi
         .spyOn(governanceApi, "queryNeurons")
@@ -98,7 +103,7 @@ describe("actionable-proposals.services", () => {
 
       await loadActionableProposals();
 
-      expect(spyQueryProposals).toHaveBeenCalledTimes(1);
+      expect(spyQueryProposals).toHaveBeenCalledTimes(2);
       expect(spyQueryProposals).toHaveBeenCalledWith(
         expect.objectContaining({
           beforeProposal: undefined,
@@ -120,7 +125,7 @@ describe("actionable-proposals.services", () => {
 
       await loadActionableProposals();
 
-      expect(spyQueryProposals).toHaveBeenCalledTimes(2);
+      expect(spyQueryProposals).toHaveBeenCalledTimes(3);
       expect(spyQueryProposals).toHaveBeenCalledWith({
         identity: mockIdentity,
         beforeProposal: undefined,
@@ -155,7 +160,7 @@ describe("actionable-proposals.services", () => {
 
       await loadActionableProposals();
 
-      expect(spyQueryProposals).toHaveBeenCalledTimes(5);
+      expect(spyQueryProposals).toHaveBeenCalledTimes(6);
       // expect an error message
       expect(spyConsoleError).toHaveBeenCalledTimes(1);
       expect(spyConsoleError).toHaveBeenCalledWith(
