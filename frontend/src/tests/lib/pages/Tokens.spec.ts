@@ -203,6 +203,9 @@ describe("Tokens page", () => {
 
     it("should show import token and show all buttons", async () => {
       const po = renderPage([positiveBalance, zeroBalance]);
+
+      expect(await po.getShowAllButtonPo().isPresent()).toBe(false);
+
       await po.getSettingsButtonPo().click();
       await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
 
