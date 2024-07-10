@@ -65,4 +65,15 @@ expect_convert "$ICRC1" --output icrc1 --input icrc1 "$ICRC1"
 expect_convert "$ICRC1" --output icrc1 --input text "$TEXT2" 1
 expect_convert "$ACCOUNT_IDENTIFIER2_INDEX_1" --output account_identifier --input icrc1 "$ICRC1"
 
+NONCE="1"
+NEURON_SUBACCOUNT="13de0411947c35e473401a686c70366f0ee9407f6805352aa700392edaf17958"
+expect_convert "$NEURON_SUBACCOUNT" --output hex --input text --as_neuron_subaccount "$TEXT2" "$NONCE"
+
+NONCE2="2651852402133984091"
+NEURON_SUBACCOUNT2="edd9ba59cb70fe4cff968f282cfba36aef011003d7bdebaa49102e374641f72f"
+NEURON_ACCOUNT2="240ddb2ab0fc6d74d9147839a974ca0a7d2408e122180411c204517b09c25010"
+GOVERNANCE_CANISTER_ID="rrkah-fqaaa-aaaaa-aaaaq-cai"
+expect_convert "$NEURON_SUBACCOUNT2" --output hex --input text --as_neuron_subaccount "$TEXT2" "$NONCE2"
+expect_convert "$NEURON_ACCOUNT2" --output account_identifier --input text --subaccount_format hex "$GOVERNANCE_CANISTER_ID" "$NEURON_SUBACCOUNT2"
+
 echo PASS

@@ -10,6 +10,7 @@ print_help() {
 
 	USAGE:
 	  $(basename "$0") --input <format> --output <format> [--as_subaccount] [--subaccount_format <format>] <id> [<subaccount>]
+	  $(basename "$0") --input <format> --output <format> --as_neuron_subaccount] <id> <nonce>
 
 	FORMAT EXAMPLES:
 	  text: 3vbe6-ysauy-vhiiq-dkhzp-ndzfr-6knc4-45rwt-youy4-dwtze-oqoo3-nae
@@ -30,6 +31,7 @@ source "$SOURCE_DIR/clap.bash"
 clap.define short=i long=input desc="The input format" variable=INPUT_FORMAT default="text"
 clap.define short=o long=output desc="The output format" variable=OUTPUT_FORMAT default="hex"
 clap.define long=as_subaccount desc="To be used as ICP subaccount" variable=AS_SUBACCOUNT nargs=0
+clap.define long=as_neuron_subaccount desc="To be used as neuron subaccount" variable=AS_NEURON_SUBACCOUNT nargs=0
 clap.define long=subaccount_format desc="Formet of the subaccount parameter for account_identifier" variable=SUBACCOUNT_FORMAT default="index"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
@@ -183,6 +185,14 @@ function check_icrc1() {
 }
 
 function maybe_as_subaccount() {
+  if [ "${AS_NEURON_SUBACCOUNT:-}" = "true" ]; then
+    hex=$(cat)
+    # Logic translated from https://github.com/dfinity/ic/blob/1ec57bd3ac00a716eb6e58ba2f49cf4e9c3e6b03/rs/nervous_system/common/src/ledger.rs#L211-L223
+    nonce=$(printf "%016x" "$NONCE_ARG")
+    hash_input="0c$(echo -n neuron-stake | xxd -p)${hex}${nonce}"
+    echo -n "$hash_input" | xxd -r -p | openssl dgst -sha256 | awk '{print $2}'
+    return
+  fi
   if [ "${AS_SUBACCOUNT:-}" != "true" ]; then
     cat
     return
@@ -198,5 +208,6 @@ check_"$INPUT_FORMAT" "$1"
 
 ID_ARG="$1"
 SUBACCOUNT_ARG="${2:-}"
+NONCE_ARG="${2:-}"
 
 echo -n "$1" | "${INPUT_FORMAT}_to_hex" | maybe_as_subaccount | "hex_to_${OUTPUT_FORMAT}"
