@@ -24,7 +24,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 * Remove default topic and proposal status filters.
-* Remove old canister creation/topup mechanism that hasn't been used for 2 years.
+* Remove old canister creation/top-up mechanism that hasn't been used for 2 years.
 
 #### Fixed
 
