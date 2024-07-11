@@ -284,26 +284,6 @@ jobs:
                   exit 1
           } >&2
           # TODO: Verify that the commits contain the expected changes.
-  download-nns-dapp-ci-wasm:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-20.04, macos-13]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install bash and sha256sum if on Mac
-        run: |
-          if command -v brew ; then
-            brew install bash
-            brew install coreutils
-          fi
-      - name: Download NNS-dapp CI wasm
-        run: |
-          MAIN_COMMIT="$(git ls-remote --refs https://github.com/dfinity/nns-dapp.git main | awk '{print $1}')"
-          scripts/nns-dapp/download-ci-wasm.test --commit "$MAIN_COMMIT"
-    env:
-      GH_TOKEN: ${{ github.token }}
   version-match:
     name: The nns-dapp npm and cargo versions should match
     runs-on: ubuntu-20.04
@@ -336,10 +316,16 @@ jobs:
       - name: Install tools on Mac
         run: |
           if command -v brew ; then
-            # coreutils is needed for base32, used by convert-id.test
+            # coreutils is needed for
+            #   base32, used by convert-id.test, and
+            #   sha256sum, used download-ci-wasm.test
             # moreutils is needed for sponge, used by network-config.test
             brew install bash coreutils moreutils
           fi
+      - name: Download NNS-dapp CI wasm
+        run: |
+          MAIN_COMMIT="$(git ls-remote --refs https://github.com/dfinity/nns-dapp.git main | awk '{print $1}')"
+          scripts/nns-dapp/download-ci-wasm.test --commit "$MAIN_COMMIT"
       - name: Test canister_ids tool
         run: scripts/canister_ids.test
       - name: Test release-sop script
@@ -365,7 +351,6 @@ jobs:
       - config-check
       - asset-chunking-works
       - docker-build-cli-flags
-      - download-nns-dapp-ci-wasm
       - minor-version-bump-works
       - migration-test-utils-work
       - version-match
