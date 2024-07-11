@@ -63,12 +63,8 @@ import { loadSnsAccounts } from "./sns-accounts.services";
 import { queryAndUpdate } from "./utils.services";
 
 /**
- * Loads sns neurons in store and checks neurons's stake against the balance of the subaccount.
+ * Loads sns neurons in store.
  * (Loads sns parameters when not already in the store)
- *
- * On update, it will check whether there are neurons that need to be refreshed or claimed.
- * A neuron needs to be refreshed if the balance of the subaccount doesn't match the stake of the neuron.
- * A neuron needs to be claimed if there is a subaccount with balance and no neuron.
  *
  * @param {Principal} rootCanisterId
  * @returns {void}
@@ -116,7 +112,7 @@ export const syncSnsNeurons = async (
   return Promise.all([snsParametersRequest, syncSnsNeuronsRequest]).then();
 };
 
-export const loadNeurons = async ({
+export const loadSnsNeurons = async ({
   rootCanisterId,
   certified,
 }: {
@@ -321,7 +317,7 @@ export const splitNeuron = async ({
     // TODO: Get identity depending on account to support HW accounts
     const identity = await getSnsNeuronIdentity();
     // reload neurons (should be actual for nextMemo calculation)
-    await loadNeurons({
+    await loadSnsNeurons({
       rootCanisterId,
       certified: true,
     });
@@ -531,7 +527,7 @@ export const stakeNeuron = async ({
     });
     await Promise.all([
       loadSnsAccounts({ rootCanisterId }),
-      loadNeurons({ rootCanisterId, certified: true }),
+      loadSnsNeurons({ rootCanisterId, certified: true }),
     ]);
     return { success: true };
   } catch (err) {

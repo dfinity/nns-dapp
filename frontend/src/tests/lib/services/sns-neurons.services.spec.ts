@@ -63,7 +63,7 @@ const {
   removeHotkey,
   splitNeuron,
   stakeNeuron,
-  loadNeurons,
+  loadSnsNeurons,
   addFollowee,
 } = services;
 
@@ -194,7 +194,7 @@ describe("sns-neurons-services", () => {
     });
   });
 
-  describe("loadNeurons", () => {
+  describe("loadSnsNeurons", () => {
     beforeEach(() => {
       snsNeuronsStore.reset();
       vi.spyOn(console, "error").mockImplementation(() => undefined);
@@ -204,7 +204,7 @@ describe("sns-neurons-services", () => {
       const spyQuery = vi
         .spyOn(governanceApi, "querySnsNeurons")
         .mockImplementation(() => Promise.resolve([neuron]));
-      await loadNeurons({ rootCanisterId: mockPrincipal, certified: true });
+      await loadSnsNeurons({ rootCanisterId: mockPrincipal, certified: true });
 
       await tick();
       const store = get(snsNeuronsStore);
