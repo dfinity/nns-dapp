@@ -342,9 +342,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: Install tools
+      - name: Install tools on Linux
         # libarchive-zip-perl is needed for crc32, used by convert-id.
-        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils libarchive-zip-perl && command -v sponge
+        run: |
+          if command -v apt-get; then
+            sudo apt-get update -yy && sudo apt-get install -yy moreutils libarchive-zip-perl && command -v sponge
+          fi
       - name: Install bash if on Mac
         run: |
           if command -v brew ; then
