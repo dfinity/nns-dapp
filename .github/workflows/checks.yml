@@ -391,9 +391,8 @@ jobs:
       - release-sop
       - split-changelog
       - minor-version-bump-works
-      - version-match
-      - network-config
       - migration-test-utils-work
+      - small-tests
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
