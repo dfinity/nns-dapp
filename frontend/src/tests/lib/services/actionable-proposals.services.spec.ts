@@ -214,7 +214,6 @@ describe("actionable-proposals.services", () => {
         identity: mockIdentity,
         beforeProposal: undefined,
         certified: false,
-        includeRewardStatus: [ProposalRewardStatus.Ineligible],
         includeStatus: [ProposalStatus.Open],
         includeTopics: [Topic.ManageNeuron],
       };

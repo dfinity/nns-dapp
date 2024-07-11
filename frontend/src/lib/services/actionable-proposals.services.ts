@@ -42,7 +42,6 @@ export const loadActionableProposals = async (): Promise<void> => {
   // Only users which are listed explicitly in the followees of a Neuron Management proposal will get to
   // see such a proposal in the query response. So for most users the response will be empty.
   const neuronManagementProposals = await queryProposals({
-    includeRewardStatus: [ProposalRewardStatus.Ineligible],
     includeStatus: [ProposalStatus.Open],
     includeTopics: [Topic.ManageNeuron],
   });
