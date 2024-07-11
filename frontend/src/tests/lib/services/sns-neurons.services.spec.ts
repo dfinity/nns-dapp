@@ -360,12 +360,6 @@ describe("sns-neurons-services", () => {
           ...mockSnsNeuron,
           id: [neuronId] as [SnsNeuronId],
         };
-        const spyNeuronBalance = vi
-          .spyOn(governanceApi, "getNeuronBalance")
-          .mockImplementationOnce(() =>
-            Promise.resolve(mockSnsNeuron.cached_neuron_stake_e8s)
-          )
-          .mockImplementation(() => Promise.resolve(0n));
         const spyQuery = vi
           .spyOn(governanceApi, "getSnsNeuron")
           .mockImplementation(() => Promise.resolve(neuron));
@@ -379,53 +373,6 @@ describe("sns-neurons-services", () => {
           expect(spyQuery).toBeCalled();
           expect(neuronToLoad).toEqual(neuron);
           if (certified) {
-            await waitFor(() => expect(spyNeuronBalance).toBeCalled());
-            done();
-          }
-        };
-        getSnsNeuron({
-          neuronIdHex: bytesToHexString(
-            Array.from(mockSnsNeuron.id[0]?.id as Uint8Array)
-          ),
-          rootCanisterId: mockPrincipal,
-          onLoad,
-        });
-      }));
-
-    it("should refresh neuron if balance does not match and load again", () =>
-      new Promise<void>((done) => {
-        const stake = neuron.cached_neuron_stake_e8s + 10_000n;
-        const updatedNeuron = {
-          ...neuron,
-          cached_neuron_stake_e8s: stake,
-        };
-        const spyNeuronBalance = vi
-          .spyOn(governanceApi, "getNeuronBalance")
-          .mockImplementationOnce(() => Promise.resolve(stake))
-          .mockImplementation(() => Promise.resolve(0n));
-        const spyQuery = vi
-          .spyOn(governanceApi, "getSnsNeuron")
-          // First is the query call and returns old neuron
-          .mockImplementationOnce(() => Promise.resolve(neuron))
-          // Second is the update call and returns old neuron. It will be checked.
-          .mockImplementationOnce(() => Promise.resolve(neuron))
-          // After refreshing we get the updated neuron.
-          .mockImplementation(() => Promise.resolve(updatedNeuron));
-        const spyRefreshNeuron = vi
-          .spyOn(governanceApi, "refreshNeuron")
-          .mockImplementation(() => Promise.resolve(undefined));
-        const onLoad = ({
-          neuron: neuronToLoad,
-        }: {
-          neuron: SnsNeuron;
-          certified: boolean;
-        }) => {
-          // Wait until we get the updated neuron to finish the test.
-          if (neuronToLoad.cached_neuron_stake_e8s === stake) {
-            expect(spyQuery).toBeCalledTimes(3);
-            expect(spyNeuronBalance).toBeCalledTimes(1);
-            expect(spyRefreshNeuron).toBeCalledTimes(1);
-            expect(neuronToLoad).toEqual(updatedNeuron);
             done();
           }
         };
