@@ -622,15 +622,9 @@ describe("sns-neurons-check-balances-services", () => {
           index,
         });
         return {
-          ...mockSnsNeuron,
+          ...userNeuron,
           id: [{ id: subaccount }],
           cached_neuron_stake_e8s: neuronAccountBalance,
-          permissions: [
-            {
-              principal: [mockIdentity.getPrincipal()],
-              permission_type: allPermissions,
-            },
-          ],
         };
       };
       const existingNeurons = [
@@ -701,12 +695,11 @@ describe("sns-neurons-check-balances-services", () => {
         id: subaccountUnclaimedNeuron,
       };
       const unclaimedNeuron: SnsNeuron = {
-        ...userNeuron,
+        // The current user does not have any permissions because this neuron
+        // no longer belongs to this user.
+        ...transferredNeuron,
         id: [unclaimedNeuronId] as [SnsNeuronId],
         cached_neuron_stake_e8s: neuronAccountBalance,
-        // The user does not have any permissions because this neuron no longer
-        // belongs to this user.
-        permissions: [],
       };
 
       spyNeuronBalance.mockResolvedValue(neuronAccountBalance);
