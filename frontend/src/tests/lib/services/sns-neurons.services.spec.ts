@@ -360,12 +360,6 @@ describe("sns-neurons-services", () => {
           ...mockSnsNeuron,
           id: [neuronId] as [SnsNeuronId],
         };
-        const spyNeuronBalance = vi
-          .spyOn(governanceApi, "getNeuronBalance")
-          .mockImplementationOnce(() =>
-            Promise.resolve(mockSnsNeuron.cached_neuron_stake_e8s)
-          )
-          .mockImplementation(() => Promise.resolve(0n));
         const spyQuery = vi
           .spyOn(governanceApi, "getSnsNeuron")
           .mockImplementation(() => Promise.resolve(neuron));
