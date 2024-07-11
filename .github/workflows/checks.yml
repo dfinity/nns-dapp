@@ -348,10 +348,10 @@ jobs:
           if command -v apt-get; then
             sudo apt-get update -yy && sudo apt-get install -yy moreutils libarchive-zip-perl && command -v sponge
           fi
-      - name: Install bash if on Mac
+      - name: Install tools on Mac
         run: |
           if command -v brew ; then
-            brew install bash
+            brew install bash coreutils
           fi
       - name: Test split-changelog script
         run: scripts/nns-dapp/split-changelog.test
