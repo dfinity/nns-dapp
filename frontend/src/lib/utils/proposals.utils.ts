@@ -192,6 +192,7 @@ export const proposalIdSet = (proposals: ProposalInfo[]): Set<ProposalId> =>
  * Compares proposals by "id"
  */
 export const concatenateUniqueProposals = ({
+  // TODO(max): replace with unnamed parameters because it's now being used in multiple places
   oldProposals,
   newProposals,
 }: {
