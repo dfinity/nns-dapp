@@ -28,14 +28,14 @@ describe("actionable-proposals.services", () => {
 
   describe("updateActionableProposals", () => {
     const callLoadActionableProposals = async ({
-      mockResponses,
+      queryProposalsResponses,
       expectedPayloads = [],
     }: {
-      mockResponses: ProposalInfo[][];
+      queryProposalsResponses: ProposalInfo[][];
       expectedPayloads?: Array<unknown>;
     }) => {
       spyQueryProposals = vi.spyOn(api, "queryProposals");
-      mockResponses.forEach((response) =>
+      queryProposalsResponses.forEach((response) =>
         spyQueryProposals.mockResolvedValueOnce(response)
       );
 
@@ -232,7 +232,7 @@ describe("actionable-proposals.services", () => {
 
       it("should query list proposals also with ManageNeurons payload", async () => {
         await callLoadActionableProposals({
-          mockResponses: [[], [proposal1, proposal0]],
+          queryProposalsResponses: [[], [proposal1, proposal0]],
           expectedPayloads: [
             {
               identity: mockIdentity,
@@ -249,7 +249,7 @@ describe("actionable-proposals.services", () => {
 
       it("should combine and sort votable AcceptedRewards with votable ManageNeurons proposals", async () => {
         await callLoadActionableProposals({
-          mockResponses: [[proposal1], [proposal2, proposal0]],
+          queryProposalsResponses: [[proposal1], [proposal2, proposal0]],
         });
 
         expect(spyQueryProposals).toHaveBeenCalledTimes(2);
@@ -264,7 +264,11 @@ describe("actionable-proposals.services", () => {
         const secondResponseProposals = [fiveHundredsProposal[100]];
 
         await callLoadActionableProposals({
-          mockResponses: [[], firstResponseProposals, secondResponseProposals],
+          queryProposalsResponses: [
+            [],
+            firstResponseProposals,
+            secondResponseProposals,
+          ],
           expectedPayloads: [
             {
               identity: mockIdentity,
@@ -296,7 +300,7 @@ describe("actionable-proposals.services", () => {
         expect(spyConsoleError).not.toHaveBeenCalled();
 
         await callLoadActionableProposals({
-          mockResponses: [
+          queryProposalsResponses: [
             [],
             fiveHundredsProposal.slice(0, 100),
             fiveHundredsProposal.slice(100, 200),
@@ -326,7 +330,7 @@ describe("actionable-proposals.services", () => {
         });
 
         await callLoadActionableProposals({
-          mockResponses: [[], [votableProposal, votedProposal]],
+          queryProposalsResponses: [[], [votableProposal, votedProposal]],
         });
 
         expect(get(actionableNnsProposalsStore)).toEqual({
