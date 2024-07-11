@@ -9,9 +9,11 @@
   } from "$lib/derived/sns/sns-selected-project.derived";
   import { definedSnsNeuronStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
+  import { claimNextNeuronIfNeeded } from "$lib/services/sns-neurons-check-balances.services";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
+  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { TableNeuron } from "$lib/types/neurons-table";
   import type { SnsSummary } from "$lib/types/sns";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -50,6 +52,13 @@
         snsNeurons: $definedSnsNeuronStore,
       })
     : [];
+
+  $: claimNextNeuronIfNeeded({
+    rootCanisterId: $snsOnlyProjectStore,
+    neurons:
+      $snsOnlyProjectStore &&
+      $snsNeuronsStore[$snsOnlyProjectStore.toText()]?.neurons,
+  });
 </script>
 
 <TestIdWrapper testId="sns-neurons-component">
