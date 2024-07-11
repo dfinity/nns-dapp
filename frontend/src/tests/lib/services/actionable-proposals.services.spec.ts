@@ -27,12 +27,19 @@ describe("actionable-proposals.services", () => {
   });
 
   describe("updateActionableProposals", () => {
+    const expectedManageNeuronPayload = {
+      identity: mockIdentity,
+      beforeProposal: undefined,
+      certified: false,
+      includeStatus: [ProposalStatus.Open],
+      includeTopics: [Topic.ManageNeuron],
+    };
     const callLoadActionableProposals = async ({
       queryProposalsResponses,
-      expectedPayloads = [],
+      expectedQueryProposalsParams = [],
     }: {
       queryProposalsResponses: ProposalInfo[][];
-      expectedPayloads?: Array<unknown>;
+      expectedQueryProposalsParams?: Array<unknown>;
     }) => {
       spyQueryProposals = vi.spyOn(api, "queryProposals");
       queryProposalsResponses.forEach((response) =>
@@ -41,7 +48,7 @@ describe("actionable-proposals.services", () => {
 
       await loadActionableProposals();
 
-      expectedPayloads.forEach((expectedPayload, index) => {
+      expectedQueryProposalsParams.forEach((expectedPayload, index) => {
         expect(spyQueryProposals).toHaveBeenNthCalledWith(
           index,
           expectedPayload
@@ -138,6 +145,9 @@ describe("actionable-proposals.services", () => {
           includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
         })
       );
+      expect(spyQueryProposals).toHaveBeenCalledWith(
+        expectedManageNeuronPayload
+      );
     });
 
     it("should query list proposals using multiple calls", async () => {
@@ -166,6 +176,9 @@ describe("actionable-proposals.services", () => {
         certified: false,
         includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
       });
+      expect(spyQueryProposals).toHaveBeenCalledWith(
+        expectedManageNeuronPayload
+      );
       expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(101);
       expect(get(actionableNnsProposalsStore)?.proposals).toEqual([
         ...firstResponseProposals,
@@ -236,7 +249,7 @@ describe("actionable-proposals.services", () => {
       it("should query list proposals also with ManageNeurons payload", async () => {
         await callLoadActionableProposals({
           queryProposalsResponses: [[], [proposal1, proposal0]],
-          expectedPayloads: [
+          expectedQueryProposalsParams: [
             {
               identity: mockIdentity,
               beforeProposal: undefined,
@@ -272,7 +285,7 @@ describe("actionable-proposals.services", () => {
             firstResponseProposals,
             secondResponseProposals,
           ],
-          expectedPayloads: [
+          expectedQueryProposalsParams: [
             {
               identity: mockIdentity,
               beforeProposal: undefined,
