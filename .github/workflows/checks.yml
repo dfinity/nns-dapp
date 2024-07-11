@@ -305,6 +305,9 @@ jobs:
       matrix:
         os: [ubuntu-20.04, macos-13]
     runs-on: ${{ matrix.os }}
+    env:
+      # Used by download-ci-wasm.test
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
       - name: Install tools on Linux
