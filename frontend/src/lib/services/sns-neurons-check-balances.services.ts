@@ -124,7 +124,6 @@ const claimAndLoadNeuron = async ({
   });
 };
 
-
 /**
  * Returns true only of neuron is present and the user has no permissions.
  *
@@ -146,8 +145,6 @@ const userHasNoPermissions = ({
           permission_type.length > 0
         );
       });
-
-
 
 /**
  * Checks neuron's subaccount and refreshes the neuron if needed.
