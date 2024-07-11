@@ -27,12 +27,13 @@ describe("actionable-proposals.services", () => {
   });
 
   describe("updateActionableProposals", () => {
-    const expectedManageNeuronPayload = {
+    const expectedQueryManageNeuronProposalsParams = {
       identity: mockIdentity,
       beforeProposal: undefined,
       certified: false,
       includeStatus: [ProposalStatus.Open],
       includeTopics: [Topic.ManageNeuron],
+      includeRewardStatus: [ProposalRewardStatus.Ineligible],
     };
     const callLoadActionableProposals = async ({
       queryProposalsResponses,
@@ -143,7 +144,7 @@ describe("actionable-proposals.services", () => {
         })
       );
       expect(spyQueryProposals).toHaveBeenCalledWith(
-        expectedManageNeuronPayload
+        expectedQueryManageNeuronProposalsParams
       );
     });
 
@@ -174,7 +175,7 @@ describe("actionable-proposals.services", () => {
         includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
       });
       expect(spyQueryProposals).toHaveBeenCalledWith(
-        expectedManageNeuronPayload
+        expectedQueryManageNeuronProposalsParams
       );
       expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(101);
       expect(get(actionableNnsProposalsStore)?.proposals).toEqual([
@@ -223,14 +224,6 @@ describe("actionable-proposals.services", () => {
     });
 
     describe("ManageNeurons proposals", () => {
-      const expectedManageNeuronPayload = {
-        identity: mockIdentity,
-        beforeProposal: undefined,
-        certified: false,
-        includeRewardStatus: [ProposalRewardStatus.Ineligible],
-        includeStatus: [ProposalStatus.Open],
-        includeTopics: [Topic.ManageNeuron],
-      };
       const proposal0 = {
         ...mockProposalInfo,
         id: 0n,
@@ -254,7 +247,7 @@ describe("actionable-proposals.services", () => {
               certified: false,
               includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
             },
-            expectedManageNeuronPayload,
+            expectedQueryManageNeuronProposalsParams,
           ],
         });
 
@@ -290,9 +283,9 @@ describe("actionable-proposals.services", () => {
               certified: false,
               includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
             },
-            expectedManageNeuronPayload,
+            expectedQueryManageNeuronProposalsParams,
             {
-              ...expectedManageNeuronPayload,
+              ...expectedQueryManageNeuronProposalsParams,
               beforeProposal:
                 firstResponseProposals[firstResponseProposals.length - 1].id,
             },
