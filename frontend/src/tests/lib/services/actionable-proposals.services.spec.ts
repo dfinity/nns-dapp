@@ -42,7 +42,10 @@ describe("actionable-proposals.services", () => {
       await loadActionableProposals();
 
       expectedPayloads.forEach((expectedPayload, index) => {
-        expect(spyQueryProposals.mock.calls[index][0]).toEqual(expectedPayload);
+        expect(spyQueryProposals).toHaveBeenNthCalledWith(
+          index,
+          expectedPayload
+        );
       });
     };
     const votedProposalId = 1234n;
