@@ -36,7 +36,9 @@ export const loadActionableProposals = async (): Promise<void> => {
   const acceptVotesProposals = await queryProposals({
     includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
   });
-  // Request Neuron Management proposals that are open and have ineligible reward status because they don't have ProposalRewardStatus.AcceptVotes.
+  // Request Neuron Management proposals that are open and have an ineligible reward
+  // status because they don't have rewards (not ProposalRewardStatus.AcceptVotes),
+  // but are still votable.
   const neuronManagementProposals = await queryProposals({
     includeRewardStatus: [ProposalRewardStatus.Ineligible],
     includeStatus: [ProposalStatus.Open],
