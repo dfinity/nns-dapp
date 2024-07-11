@@ -41,6 +41,19 @@ const loadNeuron = async ({
     neuronId,
     certified,
   });
+  if (userHasNoPermissions({ neuron, controller: identity.getPrincipal() })) {
+    // This neuron does not belong to the user.
+    // It's possible for an SNS neuron to be transferred to another user
+    // by removing the permissions for one user and adding permissions for
+    // another user. For example idgeek.app has a service to sell SNS
+    // neurons. This service also works with NNS dapp controlled neurons
+    // because they fully take over your Internet Identity. Since this
+    // will not change the ID of the neuron, it will still appear in the
+    // sequence of neuron IDs for the original user. So we must take extra
+    // care to make sure it does not appear in the UI for the original
+    // user.
+    return;
+  }
   snsNeuronsStore.addNeurons({
     rootCanisterId,
     certified,
