@@ -319,21 +319,21 @@ jobs:
             brew install bash
           fi
       - run: scripts/canister_ids.test
-  release-sop:
-    name: Test release-sop script
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-20.04, macos-13]
-    runs-on: ${{ matrix.os }}
+  version-match:
+    name: The nns-dapp npm and cargo versions should match
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
-      - name: Install bash if on Mac
+      - name: Backend and frontend have the same version
         run: |
-          if command -v brew ; then
-            brew install bash
-          fi
-      - run: scripts/nns-dapp/release-sop.test
+          backend_version="$(cargo metadata | jq -r '.packages[] | select(.name == "nns-dapp").version')"
+          frontend_version="$(jq -r .version frontend/package.json)"
+          [[ "${backend_version}" == "${frontend_version}" ]] || {
+                  echo "ERROR: The nns-dapp frontend and backend should have the same version but:"
+                  echo "Backend:  $backend_version"
+                  echo "Frontend: $frontend_version"
+                  exit 1
+          } >&2
   small-tests:
     strategy:
       fail-fast: false
@@ -355,22 +355,14 @@ jobs:
             # moreutils is needed for sponge, used by network-config.test
             brew install bash coreutils moreutils
           fi
+      - name: Test release-sop script
+        run: scripts/nns-dapp/release-sop.test
       - name: Test split-changelog script
         run: scripts/nns-dapp/split-changelog.test
       - name: Find unused i18n messages
         run: scripts/unused-i18n
       - name: Test the ID conversion script
         run: scripts/convert-id.test
-      - name: The nns-dapp npm and cargo versions should match
-        run: |
-          backend_version="$(cargo metadata | jq -r '.packages[] | select(.name == "nns-dapp").version')"
-          frontend_version="$(jq -r .version frontend/package.json)"
-          [[ "${backend_version}" == "${frontend_version}" ]] || {
-                  echo "ERROR: The nns-dapp frontend and backend should have the same version but:"
-                  echo "Backend:  $backend_version"
-                  echo "Frontend: $frontend_version"
-                  exit 1
-          } >&2
       - name: Getting network config works
         run: scripts/network-config.test
   checks-pass:
