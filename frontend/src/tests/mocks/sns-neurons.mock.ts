@@ -45,7 +45,7 @@ export const createMockSnsNeuron = ({
   stake = 1_000_000_000n,
   id,
   state,
-  permissions = [],
+  permissions,
   vesting,
   votingPowerMultiplier = 100n,
   dissolveDelaySeconds,
@@ -89,7 +89,12 @@ export const createMockSnsNeuron = ({
   }
   return {
     id: [{ id: arrayOfNumberToUint8Array(id) }],
-    permissions,
+    permissions: permissions ?? [
+      {
+        principal: [mockIdentity.getPrincipal()],
+        permission_type: Int32Array.from(enumValues(SnsNeuronPermissionType)),
+      },
+    ],
     source_nns_neuron_id: isNullish(sourceNnsNeuronId)
       ? []
       : [sourceNnsNeuronId],
