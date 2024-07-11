@@ -247,12 +247,6 @@ jobs:
         uses: dfinity/setup-dfx@main
       - name: Test getting proposal args
         run: scripts/dfx-nns-proposal-args.test
-  docker-build-cli-flags:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v4
-      - name: docker-build prints help
-        run: ./scripts/docker-build --help | grep -i usage
   minor-version-bump-works:
     runs-on: ubuntu-20.04
     steps:
@@ -325,6 +319,8 @@ jobs:
             # moreutils is needed for sponge, used by network-config.test
             brew install bash coreutils moreutils
           fi
+      - name: docker-build prints help
+        run: ./scripts/docker-build --help | grep -i usage
       - name: Download NNS-dapp CI wasm
         run: |
           MAIN_COMMIT="$(git ls-remote --refs https://github.com/dfinity/nns-dapp.git main | awk '{print $1}')"
@@ -353,7 +349,6 @@ jobs:
       - release-templating-works
       - config-check
       - asset-chunking-works
-      - docker-build-cli-flags
       - minor-version-bump-works
       - migration-test-utils-work
       - version-match
