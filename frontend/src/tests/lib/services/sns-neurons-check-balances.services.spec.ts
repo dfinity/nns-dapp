@@ -625,6 +625,12 @@ describe("sns-neurons-check-balances-services", () => {
           ...mockSnsNeuron,
           id: [{ id: subaccount }],
           cached_neuron_stake_e8s: neuronAccountBalance,
+          permissions: [
+            {
+              principal: [mockIdentity.getPrincipal()],
+              permission_type: allPermissions,
+            },
+          ],
         };
       };
       const existingNeurons = [
@@ -678,6 +684,65 @@ describe("sns-neurons-check-balances-services", () => {
           [subaccountToHexString(unclaimedSubaccount)]: true,
         },
       });
+    });
+
+    it("should not add neuron to store if no permissions", async () => {
+      // It's possible to transfer a neuron to another user. In this case the
+      // permissions of the original user will have been removed. Such a neuron
+      // should no longer appear in the store (and thus UI) of the original
+      // user.
+      const neuronMinimumStake = 100_000_000n;
+      const neuronAccountBalance = neuronMinimumStake;
+      const subaccountUnclaimedNeuron = neuronSubaccount({
+        controller: mockIdentity.getPrincipal(),
+        index: 0,
+      });
+      const unclaimedNeuronId: SnsNeuronId = {
+        id: subaccountUnclaimedNeuron,
+      };
+      const unclaimedNeuron: SnsNeuron = {
+        ...userNeuron,
+        id: [unclaimedNeuronId] as [SnsNeuronId],
+        cached_neuron_stake_e8s: neuronAccountBalance,
+        // The user does not have any permissions because this neuron no longer
+        // belongs to this user.
+        permissions: [],
+      };
+
+      spyNeuronBalance.mockResolvedValue(neuronAccountBalance);
+      spyNervousSystemParameters.mockResolvedValue({
+        ...snsNervousSystemParametersMock,
+        neuron_minimum_stake_e8s: [neuronMinimumStake],
+      });
+      spyClaimNeuron.mockResolvedValue(unclaimedNeuronId);
+      spyGetSnsNeuron.mockResolvedValue(unclaimedNeuron);
+
+      expect(spyNeuronBalance).toBeCalledTimes(0);
+      expect(spyNervousSystemParameters).toBeCalledTimes(0);
+      expect(spyClaimNeuron).toBeCalledTimes(0);
+      expect(
+        get(snsNeuronsStore)[mockPrincipal.toText()]?.neurons
+      ).toBeUndefined();
+
+      await claimNextNeuronIfNeeded({
+        rootCanisterId: mockPrincipal,
+        neurons: [],
+      });
+
+      expect(spyNeuronBalance).toBeCalledTimes(1);
+      expect(spyNervousSystemParameters).toBeCalledTimes(2);
+      expect(spyClaimNeuron).toBeCalledTimes(1);
+      expect(spyClaimNeuron).toBeCalledWith({
+        controller: mockIdentity.getPrincipal(),
+        identity: mockIdentity,
+        memo: 0n,
+        rootCanisterId: mockPrincipal,
+        subaccount: subaccountUnclaimedNeuron,
+      });
+      // Neuron should not have been added to the store because it does not belong to the user.
+      expect(
+        get(snsNeuronsStore)[mockPrincipal.toText()]?.neurons
+      ).toBeUndefined();
     });
   });
 });
