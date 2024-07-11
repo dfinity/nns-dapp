@@ -6,6 +6,7 @@ import {
   failedActionableSnsesStore,
 } from "$lib/stores/actionable-sns-proposals.store";
 import { authStore } from "$lib/stores/auth.store";
+import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { snsProposalId } from "$lib/utils/sns-proposals.utils";
@@ -39,6 +40,7 @@ describe("actionable-sns-proposals.services", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     failedActionableSnsesStore.resetForTesting();
+    snsNeuronsStore.reset();
   });
 
   describe("loadActionableProposalsForSns", () => {
@@ -166,6 +168,8 @@ describe("actionable-sns-proposals.services", () => {
       mockSnsProjectsCommittedStore([rootCanisterId1, rootCanisterId2]);
       expect(spyQuerySnsNeurons).not.toHaveBeenCalled();
 
+      expect(get(snsNeuronsStore)).toEqual({});
+
       await loadActionableSnsProposals();
 
       expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(2);
@@ -178,6 +182,17 @@ describe("actionable-sns-proposals.services", () => {
         identity: mockIdentity,
         rootCanisterId: rootCanisterId2,
         certified: false,
+      });
+
+      expect(get(snsNeuronsStore)).toEqual({
+        [rootCanisterId1.toText()]: {
+          certified: false,
+          neurons: [neuron],
+        },
+        [rootCanisterId2.toText()]: {
+          certified: false,
+          neurons: [neuron],
+        },
       });
     });
 
