@@ -68,16 +68,16 @@ const queryNeurons = async (): Promise<NeuronInfo[]> => {
   return get(definedNeuronsStore);
 };
 
-interface QueryProposalsFilter {
+/// Fetch all (500 max) proposals that are accepting votes.
+const queryProposals = async ({
+  includeTopics,
+  includeRewardStatus,
+  includeStatus,
+}: {
   includeTopics?: Topic[];
   includeRewardStatus?: ProposalRewardStatus[];
   includeStatus?: ProposalStatus[];
-}
-
-/// Fetch all (500 max) proposals that are accepting votes.
-const queryProposals = async (
-  filters: QueryProposalsFilter
-): Promise<ProposalInfo[]> => {
+}): Promise<ProposalInfo[]> => {
   const identity = getCurrentIdentity();
   let sortedProposals: ProposalInfo[] = [];
   for (
@@ -90,7 +90,9 @@ const queryProposals = async (
       beforeProposal: lastProposalId(sortedProposals),
       identity,
       certified: false,
-      ...filters,
+      includeTopics,
+      includeRewardStatus,
+      includeStatus,
     });
     sortedProposals = sortProposalsByIdDescendingOrder([
       ...sortedProposals,
