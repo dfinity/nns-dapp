@@ -261,6 +261,22 @@ type SchemaLabel = variant {
     AccountsInStableMemory;
 };
 
+type UiSettings = record {
+  is_ic_os_topic_rename_message_dismissed : opt bool;
+};
+
+type SetUiSettingsResponse =
+    variant {
+        Ok;
+        AccountNotFound;
+    };
+
+type GetUiSettingsResponse =
+    variant {
+        Ok: UiSettings;
+        AccountNotFound;
+    };
+
 service: (opt Config) -> {
     get_account: () -> (GetAccountResponse) query;
     add_account: () -> (AccountIdentifier);
@@ -285,4 +301,8 @@ service: (opt Config) -> {
 
     // Methods available in the test build only:
     get_toy_account: (nat64) -> (GetAccountResponse) query;
+  
+    // Overrides only the optional fields which are set.
+    set_ui_settings: (UiSettings) -> (SetUiSettingsResponse);
+    get_ui_settings: () -> (GetUiSettingsResponse) query;
 }

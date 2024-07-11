@@ -9,6 +9,7 @@ canister_query get_exceptional_transactions
 canister_query get_histogram
 canister_query get_stats
 canister_query get_transactions
+canister_query get_ui_settings
 canister_query http_request
 canister_update <ic-cdk internal> timer_executor
 canister_update add_account
@@ -21,5 +22,6 @@ canister_update get_proposal_payload
 canister_update register_hardware_wallet
 canister_update rename_canister
 canister_update rename_sub_account
+canister_update set_ui_settings
 canister_update step_migration
 main

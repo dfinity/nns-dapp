@@ -4,6 +4,7 @@ use crate::accounts_store::{
     DetachCanisterResponse, GetTransactionsRequest, GetTransactionsResponse, NamedCanister,
     RegisterHardwareWalletRequest, RegisterHardwareWalletResponse, RenameCanisterRequest, RenameCanisterResponse,
     RenameSubAccountRequest, RenameSubAccountResponse,
+    UiSettings, SetUiSettingsResponse, GetUiSettingsResponse,
 };
 use crate::arguments::{set_canister_arguments, CanisterArguments, CANISTER_ARGUMENTS};
 use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
@@ -251,6 +252,26 @@ pub fn detach_canister() {
 fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterResponse {
     let principal = dfn_core::api::caller();
     STATE.with(|s| s.accounts_store.borrow_mut().detach_canister(principal, request))
+}
+
+#[export_name = "canister_update set_ui_settings"]
+pub fn set_ui_settings() {
+    over(candid_one, set_ui_settings_impl);
+}
+
+fn set_ui_settings_impl(settings: UiSettings) -> SetUiSettingsResponse{
+    let principal = dfn_core::api::caller();
+    STATE.with(|s| s.accounts_store.borrow_mut().set_ui_settings(principal, settings))
+}
+
+#[export_name = "canister_query get_ui_settings"]
+pub fn get_ui_settings() {
+    over(candid_one, |()| get_ui_settings_impl());
+}
+
+fn get_ui_settings_impl() -> GetUiSettingsResponse{
+    let principal = dfn_core::api::caller();
+    STATE.with(|s| s.accounts_store.borrow_mut().get_ui_settings(principal))
 }
 
 #[export_name = "canister_update get_proposal_payload"]

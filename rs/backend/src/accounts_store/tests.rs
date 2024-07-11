@@ -144,6 +144,7 @@ fn add_account_adds_principal_and_sets_transaction_types() {
         sub_accounts: HashMap::default(),
         hardware_wallet_accounts: Vec::default(),
         canisters: Vec::default(),
+        ui_settings: None,
     };
 
     store
@@ -1101,6 +1102,64 @@ fn detach_canister_canister_not_found() {
 
     assert_eq!(1, canisters.len());
     assert_eq!(canister_id1, canisters[0].canister_id);
+}
+
+#[test]
+fn set_and_get_is_ic_os_topic_rename_message_dismissed() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    assert_eq!(store.get_ui_settings(principal), GetUiSettingsResponse::Ok(UiSettings::default()));
+
+    assert_eq!(store.set_ui_settings(
+        principal,
+        UiSettings {
+            is_ic_os_topic_rename_message_dismissed: Some(true),
+        },
+    ), SetUiSettingsResponse::Ok);
+
+    assert_eq!(store.get_ui_settings(principal), GetUiSettingsResponse::Ok(UiSettings {
+        is_ic_os_topic_rename_message_dismissed: Some(true),
+    }));
+}
+
+#[test]
+fn set_is_ic_os_topic_rename_message_dismissed_to_none_does_not_overwrite() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    assert_eq!(store.set_ui_settings(
+        principal,
+        UiSettings {
+            is_ic_os_topic_rename_message_dismissed: Some(true),
+        },
+    ), SetUiSettingsResponse::Ok);
+
+    assert_eq!(store.set_ui_settings(
+        principal,
+        UiSettings {
+            is_ic_os_topic_rename_message_dismissed: None,
+        },
+    ), SetUiSettingsResponse::Ok);
+
+    assert_eq!(store.get_ui_settings(principal), GetUiSettingsResponse::Ok(UiSettings {
+        is_ic_os_topic_rename_message_dismissed: Some(true),
+    }));
+}
+
+#[test]
+fn set_ui_settings_account_not_found() {
+    let mut store = setup_test_store();
+    let non_existing_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    assert_eq!(store.set_ui_settings(non_existing_principal,
+    UiSettings::default()), SetUiSettingsResponse::AccountNotFound);
+}
+
+#[test]
+fn get_ui_settings_account_not_found() {
+    let mut store = setup_test_store();
+    let non_existing_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    assert_eq!(store.get_ui_settings(non_existing_principal), GetUiSettingsResponse::AccountNotFound);
 }
 
 #[test]

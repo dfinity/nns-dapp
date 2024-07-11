@@ -163,6 +163,7 @@ pub struct Account {
     sub_accounts: HashMap<u8, NamedSubAccount>,
     hardware_wallet_accounts: Vec<NamedHardwareWalletAccount>,
     canisters: Vec<NamedCanister>,
+    ui_settings: Option<UiSettings>,
 }
 
 impl Storable for Account {
@@ -222,6 +223,23 @@ impl PartialOrd for NamedCanister {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
+}
+
+#[derive(CandidType, Clone, Default, Deserialize, Debug, Eq, PartialEq)]
+pub struct UiSettings {
+  is_ic_os_topic_rename_message_dismissed: Option<bool>,
+}
+
+#[derive(CandidType, Debug, PartialEq)]
+pub enum SetUiSettingsResponse {
+    Ok,
+    AccountNotFound,
+}
+
+#[derive(CandidType, Debug, PartialEq)]
+pub enum GetUiSettingsResponse {
+    Ok(UiSettings),
+    AccountNotFound,
 }
 
 #[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
@@ -1011,6 +1029,33 @@ impl AccountsStore {
         }
     }
 
+    pub fn set_ui_settings(&mut self, caller: PrincipalId, new_ui_settings:
+    UiSettings) -> SetUiSettingsResponse {
+        let account_identifier = AccountIdentifier::from(caller).to_vec();
+        let mut account = match self.accounts_db.db_get_account(&account_identifier) {
+            Some(account) => account,
+            None => return SetUiSettingsResponse::AccountNotFound,
+        };
+
+        let ui_settings = account.ui_settings.get_or_insert_with(UiSettings::default);
+        if let Some(is_ic_os_topic_rename_message_dismissed) = new_ui_settings.is_ic_os_topic_rename_message_dismissed {
+            ui_settings.is_ic_os_topic_rename_message_dismissed = Some(is_ic_os_topic_rename_message_dismissed);
+        }
+
+        self.accounts_db.db_insert_account(&account_identifier, account);
+        SetUiSettingsResponse::Ok
+    }
+
+    pub fn get_ui_settings(&mut self, caller: PrincipalId) -> GetUiSettingsResponse {
+        let account_identifier = AccountIdentifier::from(caller).to_vec();
+        let account = match self.accounts_db.db_get_account(&account_identifier) {
+            Some(account) => account,
+            None => return GetUiSettingsResponse::AccountNotFound,
+        };
+
+        GetUiSettingsResponse::Ok(account.ui_settings.clone().unwrap_or_default())
+    }
+
     pub fn enqueue_transaction_to_be_refunded(&mut self, args: RefundTransactionArgs) {
         self.multi_part_transactions_processor.push(
             args.original_transaction_block_height,
@@ -1700,6 +1745,7 @@ impl Account {
             sub_accounts: HashMap::new(),
             hardware_wallet_accounts: Vec::new(),
             canisters: Vec::new(),
+            ui_settings: None,
         }
     }
 
