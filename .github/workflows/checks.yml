@@ -334,8 +334,7 @@ jobs:
             brew install bash
           fi
       - run: scripts/nns-dapp/release-sop.test
-  split-changelog:
-    name: Test split-changelog script
+  small-tests:
     strategy:
       fail-fast: false
       matrix:
@@ -343,19 +342,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+      - name: Install tools
+        # libarchive-zip-perl is needed for crc32, used by convert-id.
+        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils libarchive-zip-perl && command -v sponge
       - name: Install bash if on Mac
         run: |
           if command -v brew ; then
             brew install bash
           fi
-      - run: scripts/nns-dapp/split-changelog.test
-  small-tests:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install tools
-        # libarchive-zip-perl is needed for crc32, used by convert-id.
-        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils libarchive-zip-perl && command -v sponge
+      - name: Test split-changelog script
+        run: scripts/nns-dapp/split-changelog.test
       - name: Find unused i18n messages
         run: scripts/unused-i18n
       - name: Test the ID conversion script
@@ -389,7 +385,6 @@ jobs:
       - download-nns-dapp-ci-wasm
       - canister-ids-tool
       - release-sop
-      - split-changelog
       - minor-version-bump-works
       - migration-test-utils-work
       - small-tests
