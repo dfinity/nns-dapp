@@ -42,18 +42,15 @@ describe("actionable-proposals.services", () => {
       expectedQueryProposalsParams?: Array<unknown>;
     }) => {
       spyQueryProposals = vi.spyOn(api, "queryProposals");
-      queryProposalsResponses.forEach((response) =>
-        spyQueryProposals.mockResolvedValueOnce(response)
-      );
+      for (const response of queryProposalsResponses) {
+        spyQueryProposals.mockResolvedValueOnce(response);
+      }
 
       await loadActionableProposals();
 
-      expectedQueryProposalsParams.forEach((expectedPayload, index) => {
-        expect(spyQueryProposals).toHaveBeenNthCalledWith(
-          index,
-          expectedPayload
-        );
-      });
+      for (const params of expectedQueryProposalsParams) {
+        expect(spyQueryProposals).toHaveBeenCalledWith(params);
+      }
     };
     const votedProposalId = 1234n;
     const neuronId = 0n;
