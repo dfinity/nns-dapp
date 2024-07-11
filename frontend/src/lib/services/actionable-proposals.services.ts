@@ -8,7 +8,6 @@ import { listNeurons } from "$lib/services/neurons.services";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import {
-  concatenateUniqueProposals,
   lastProposalId,
   sortProposalsByIdDescendingOrder,
 } from "$lib/utils/proposals.utils";
@@ -46,14 +45,11 @@ export const loadActionableProposals = async (): Promise<void> => {
     includeStatus: [ProposalStatus.Open],
     includeTopics: [Topic.ManageNeuron],
   });
-  const uniqueProposals = concatenateUniqueProposals({
-    oldProposals: acceptVotesProposals,
-    newProposals: neuronManagementProposals,
-  });
   // Filter proposals that have at least one votable neuron
-  const votableProposals = uniqueProposals.filter(
-    (proposal) => votableNeurons({ neurons, proposal }).length > 0
-  );
+  const votableProposals = [
+    ...acceptVotesProposals,
+    ...neuronManagementProposals,
+  ].filter((proposal) => votableNeurons({ neurons, proposal }).length > 0);
 
   actionableNnsProposalsStore.setProposals(
     sortProposalsByIdDescendingOrder(votableProposals)
