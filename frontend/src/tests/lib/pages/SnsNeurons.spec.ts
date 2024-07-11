@@ -4,6 +4,7 @@ import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
 import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+import { enumValues } from "$lib/utils/enum.utils";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
@@ -12,14 +13,15 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsNeuronsPo } from "$tests/page-objects/SnsNeurons.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { SnsNeuron } from "@dfinity/sns";
 import {
-  neuronSubaccount,
+  SnsNeuronPermissionType,
   SnsSwapLifecycle,
+  neuronSubaccount,
+  type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
@@ -162,6 +164,14 @@ describe("SnsNeurons", () => {
       };
       const unclaimedNeuron1 = createMockSnsNeuron({
         id: Array.from(unclaimedNeuronId1.id),
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from(
+              enumValues(SnsNeuronPermissionType)
+            ),
+          },
+        ],
       });
 
       const spyGetNeuronBalance = vi
