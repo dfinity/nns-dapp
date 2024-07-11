@@ -297,6 +297,8 @@ describe("SnsVotingCard", () => {
           ...createMockSnsNeuron({
             id: [3],
             state: NeuronState.Unspecified,
+            // Neuron is ineligible because it has no vote permission
+            permissions: [],
           }),
         },
       ],
