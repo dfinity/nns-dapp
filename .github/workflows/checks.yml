@@ -368,7 +368,6 @@ jobs:
           } >&2
       - name: Getting network config works
         run: scripts/network-config.test
-  
   checks-pass:
     needs:
       - formatting
