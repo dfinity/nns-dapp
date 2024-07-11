@@ -380,9 +380,9 @@ jobs:
       - docker-build-cli-flags
       - download-nns-dapp-ci-wasm
       - canister-ids-tool
-      - release-sop
       - minor-version-bump-works
       - migration-test-utils-work
+      - version-match
       - small-tests
     if: ${{ always() }}
     runs-on: ubuntu-20.04
