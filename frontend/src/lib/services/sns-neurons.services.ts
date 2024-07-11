@@ -7,7 +7,6 @@ import {
   getSnsNeuron as getSnsNeuronApi,
   querySnsNeuron,
   querySnsNeurons,
-  refreshNeuron,
   removeNeuronPermissions,
   setDissolveDelay,
   setFollowees,
@@ -70,10 +69,7 @@ import {
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { loadSnsAccounts } from "./sns-accounts.services";
-import {
-  checkSnsNeuronBalances,
-  neuronNeedsRefresh,
-} from "./sns-neurons-check-balances.services";
+import { checkSnsNeuronBalances } from "./sns-neurons-check-balances.services";
 import { queryAndUpdate } from "./utils.services";
 
 /**
@@ -242,24 +238,6 @@ export const getSnsNeuron = async ({
       }),
     onLoad: async ({ response: neuron, certified }) => {
       onLoad({ neuron, certified });
-
-      if (certified) {
-        // Check that the neuron's stake is in sync with the subaccount's balance
-        const neuronId = fromNullable(neuron.id);
-        if (neuronId !== undefined) {
-          const identity = await getSnsNeuronIdentity();
-          if (await neuronNeedsRefresh({ rootCanisterId, neuron, identity })) {
-            await refreshNeuron({ rootCanisterId, identity, neuronId });
-            const updatedNeuron = await getSnsNeuronApi({
-              identity,
-              rootCanisterId,
-              neuronId,
-              certified,
-            });
-            onLoad({ neuron: updatedNeuron, certified });
-          }
-        }
-      }
     },
     onError: ({ certified, error }) => {
       onError?.({ certified, error });
