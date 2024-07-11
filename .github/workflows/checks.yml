@@ -349,29 +349,18 @@ jobs:
             brew install bash
           fi
       - run: scripts/nns-dapp/split-changelog.test
-  unused-i18n:
-    name: Find unused i18n messages
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v4
-      - run: scripts/unused-i18n
-  convert-id:
-    name: Test the ID conversion script
+  small-tests:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
       - name: Install tools
-        run: |
-          # libarchive-zip-perl is needed for crc32, used by convert-id.
-          sudo apt-get update -yy && sudo apt-get install -yy libarchive-zip-perl
-      - name: Run test
+        # libarchive-zip-perl is needed for crc32, used by convert-id.
+        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils libarchive-zip-perl && command -v sponge
+      - name: Find unused i18n messages
+        run: scripts/unused-i18n
+      - name: Test the ID conversion script
         run: scripts/convert-id.test
-  version-match:
-    name: The nns-dapp npm and cargo versions should match
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v4
-      - name: Backend and frontend have the same version
+      - name: The nns-dapp npm and cargo versions should match
         run: |
           backend_version="$(cargo metadata | jq -r '.packages[] | select(.name == "nns-dapp").version')"
           frontend_version="$(jq -r .version frontend/package.json)"
@@ -381,14 +370,9 @@ jobs:
                   echo "Frontend: $frontend_version"
                   exit 1
           } >&2
-  network-config:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install sponge
-        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Getting network config works
         run: scripts/network-config.test
+  
   checks-pass:
     needs:
       - formatting
