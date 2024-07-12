@@ -2,6 +2,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
+  import { getLifecycle } from "$lib/getters/sns-summary";
   import { i18n } from "$lib/stores/i18n";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import {
@@ -26,7 +27,7 @@
   $: rootCanisterId = summary?.rootCanisterId;
 
   let lifecycle: SnsSwapLifecycle | undefined;
-  $: lifecycle = summary?.swap.lifecycle;
+  $: lifecycle = getLifecycle(summary);
 
   let metadata: SnsSummaryMetadata | undefined;
   let token: IcrcTokenMetadata | undefined;

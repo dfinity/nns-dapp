@@ -2,11 +2,12 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import ProjectUserCommitmentLabel from "$lib/components/project-detail/ProjectUserCommitmentLabel.svelte";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+  import { getLifecycle } from "$lib/getters/sns-summary";
   import { i18n } from "$lib/stores/i18n";
   import type {
     SnsSummary,
-    SnsSwapCommitment,
     SnsSummarySwap,
+    SnsSwapCommitment,
   } from "$lib/types/sns";
   import {
     durationTillSwapDeadline,
@@ -31,9 +32,7 @@
   $: ({ swap } = summary);
 
   let lifecycle: number;
-  $: ({
-    swap: { lifecycle },
-  } = summary);
+  $: lifecycle = getLifecycle(summary);
 
   let durationTillDeadline: bigint | undefined;
   $: durationTillDeadline = durationTillSwapDeadline(swap);

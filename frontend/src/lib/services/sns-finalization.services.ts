@@ -1,5 +1,6 @@
 import { queryFinalizationStatus } from "$lib/api/sns-sale.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
+import { getLifecycle } from "$lib/getters/sns-summary";
 import { getOrCreateSnsFinalizationStatusStore } from "$lib/stores/sns-finalization-status.store";
 import { snsSummariesStore } from "$lib/stores/sns.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -31,7 +32,7 @@ export const loadSnsFinalizationStatus = async ({
   if (
     !forceFetch &&
     (isNullish(summary) ||
-      summary.swap.lifecycle !== SnsSwapLifecycle.Committed ||
+      getLifecycle(summary) !== SnsSwapLifecycle.Committed ||
       swapEndedMoreThanOneWeekAgo({ summary, nowInSeconds: nowInSeconds() }))
   ) {
     return;

@@ -11,6 +11,7 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { debugSelectedProjectStore } from "$lib/derived/debug.derived";
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
+  import { getLifecycle } from "$lib/getters/sns-summary";
   import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import {
@@ -19,9 +20,9 @@
   } from "$lib/services/sns-sale.services";
   import { loadSnsSwapMetrics } from "$lib/services/sns-swap-metrics.services";
   import {
+    loadSnsDerivedState,
     loadSnsLifecycle,
     loadSnsSwapCommitment,
-    loadSnsDerivedState,
     watchSnsTotalCommitment,
   } from "$lib/services/sns.services";
   import { loadUserCountry } from "$lib/services/user-country.services";
@@ -42,7 +43,7 @@
   import { Principal } from "@dfinity/principal";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import { setContext, onDestroy } from "svelte";
+  import { onDestroy, setContext } from "svelte";
   import { writable } from "svelte/store";
 
   export let rootCanisterId: string | undefined | null;
@@ -148,7 +149,7 @@
 
   let enableOpenProjectWatchers = false;
   $: enableOpenProjectWatchers =
-    $projectDetailStore?.summary?.swap.lifecycle === SnsSwapLifecycle.Open;
+    getLifecycle($projectDetailStore?.summary) === SnsSwapLifecycle.Open;
 
   let swapCanisterId: Principal | undefined;
   $: swapCanisterId = $projectDetailStore.summary?.swapCanisterId;
@@ -175,7 +176,7 @@
 
   $: if (
     nonNullish(rootCanisterId) &&
-    $projectDetailStore.summary?.swap.lifecycle === SnsSwapLifecycle.Committed
+    getLifecycle($projectDetailStore.summary) === SnsSwapLifecycle.Committed
   ) {
     loadSnsFinalizationStatus({
       rootCanisterId: Principal.fromText(rootCanisterId),
@@ -235,7 +236,7 @@
   // - no root canister id
   // - ticket already in progress for the same root canister id
   $: if (
-    $projectDetailStore.summary?.swap.lifecycle === SnsSwapLifecycle.Open &&
+    getLifecycle($projectDetailStore.summary) === SnsSwapLifecycle.Open &&
     $authSignedInStore &&
     nonNullish(userCommitment) &&
     nonNullish(swapCanisterId) &&

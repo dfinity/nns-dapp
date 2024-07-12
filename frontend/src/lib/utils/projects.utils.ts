@@ -2,6 +2,7 @@ import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import {
   getDeniedCountries,
+  getLifecycle,
   getMaxDirectParticipation,
   getMinDirectParticipation,
   getNeuronsFundParticipation,
@@ -34,13 +35,7 @@ export const filterProjectsStatus = ({
   swapLifecycle: SnsSwapLifecycle;
   projects: SnsFullProject[];
 }): SnsFullProject[] =>
-  projects.filter(
-    ({
-      summary: {
-        swap: { lifecycle },
-      },
-    }) => swapLifecycle === lifecycle
-  );
+  projects.filter(({ summary }) => swapLifecycle === getLifecycle(summary));
 
 export const filterCommittedProjects = (
   projects: SnsFullProject[]
@@ -60,17 +55,12 @@ export const filterCommittedProjects = (
 export const filterActiveProjects = (
   projects: SnsFullProject[]
 ): SnsFullProject[] =>
-  projects?.filter(
-    ({
-      summary: {
-        swap: { lifecycle },
-      },
-    }) =>
-      [
-        SnsSwapLifecycle.Committed,
-        SnsSwapLifecycle.Open,
-        SnsSwapLifecycle.Adopted,
-      ].includes(lifecycle)
+  projects?.filter(({ summary }) =>
+    [
+      SnsSwapLifecycle.Committed,
+      SnsSwapLifecycle.Open,
+      SnsSwapLifecycle.Adopted,
+    ].includes(getLifecycle(summary))
   );
 
 /**
@@ -119,7 +109,7 @@ export const projectRemainingAmount = ({ swap, derived }: SnsSummary): bigint =>
   swap.params.max_icp_e8s - derived.buyer_total_icp_e8s;
 
 const isProjectOpen = (summary: SnsSummary): boolean =>
-  summary.swap.lifecycle === SnsSwapLifecycle.Open;
+  getLifecycle(summary) === SnsSwapLifecycle.Open;
 // Checks whether the amount that the user wants to contribute is lower than the minimum for the project.
 // It takes into account the current commitment of the user.
 const commitmentTooSmall = ({

@@ -1,6 +1,7 @@
 import type { CountryCode } from "$lib/types/location";
 import type { SnsSummary } from "$lib/types/sns";
 import type { ProposalId } from "@dfinity/nns";
+import type { SnsSwapLifecycle } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
 
 export const getDeniedCountries = (_summary: SnsSummary): CountryCode[] =>
@@ -39,3 +40,14 @@ export const getMaxNeuronsFundParticipation = ({
 export const getProjectProposal = (
   summary: SnsSummary
 ): ProposalId | undefined => fromNullable(summary.init?.nns_proposal_id ?? []);
+
+export function getLifecycle(summary: SnsSummary): SnsSwapLifecycle;
+export function getLifecycle(
+  summary: SnsSummary | null | undefined
+): SnsSwapLifecycle | undefined;
+export function getLifecycle(
+  summary: SnsSummary | null | undefined
+): SnsSwapLifecycle | null | undefined {
+  // TODO: Get from summary.lifecycle instead of summary.swap.
+  return summary?.swap.lifecycle;
+}

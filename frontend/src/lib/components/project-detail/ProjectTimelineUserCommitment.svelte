@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getLifecycle } from "$lib/getters/sns-summary";
   import { i18n } from "$lib/stores/i18n";
   import type {
     SnsSummary,
@@ -12,7 +13,7 @@
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import Separator from "../ui/Separator.svelte";
   import ProjectUserCommitmentLabel from "./ProjectUserCommitmentLabel.svelte";
-  import { Value, KeyValuePair } from "@dfinity/gix-components";
+  import { KeyValuePair, Value } from "@dfinity/gix-components";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { TokenAmount, nonNullish } from "@dfinity/utils";
   import { secondsToDuration } from "@dfinity/utils";
@@ -31,11 +32,14 @@
   let durationTillStart: bigint | undefined;
   $: durationTillStart = durationTillSwapStart(swap);
 
+  let lifecycle: SnsSwapLifecycle;
+  $: lifecycle = getLifecycle(summary);
+
   let isOpen: boolean;
-  $: isOpen = swap.lifecycle === SnsSwapLifecycle.Open;
+  $: isOpen = lifecycle === SnsSwapLifecycle.Open;
 
   let isAdopted: boolean;
-  $: isAdopted = swap.lifecycle === SnsSwapLifecycle.Adopted;
+  $: isAdopted = lifecycle === SnsSwapLifecycle.Adopted;
 
   let hasParticipated: boolean;
   $: hasParticipated = nonNullish(myCommitment) && myCommitment.toE8s() > 0n;

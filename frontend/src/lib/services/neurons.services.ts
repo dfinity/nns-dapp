@@ -9,6 +9,7 @@ import {
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
+import { getLifecycle } from "$lib/getters/sns-summary";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
@@ -983,10 +984,7 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
     const { snsSummariesStore } = await import("../stores/sns.store");
     const projects = get(snsSummariesStore);
     const pendingProject = projects.find(
-      ({
-        swap: { lifecycle },
-        // Use 1 instead of using enum to avoid importing sns-js
-      }) => lifecycle === 1
+      (summary) => getLifecycle(summary) === 1
     );
     await makeDummyProposalsApi({
       neuronId,

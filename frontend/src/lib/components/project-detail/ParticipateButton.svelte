@@ -3,6 +3,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { getLifecycle } from "$lib/getters/sns-summary";
   import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
@@ -11,11 +12,10 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import type { SnsSummary } from "$lib/types/sns";
   import {
     hasUserParticipatedToSwap,
-    type ParticipationButtonStatus,
     participateButtonStatus,
+    type ParticipationButtonStatus,
   } from "$lib/utils/projects.utils";
   import { BottomSheet } from "@dfinity/gix-components";
   import { Tooltip } from "@dfinity/gix-components";
@@ -29,13 +29,8 @@
   );
 
   let lifecycle: number;
-  $: ({
-    swap: { lifecycle },
-  } =
-    $projectDetailStore.summary ??
-    ({
-      swap: { state: { lifecycle: SnsSwapLifecycle.Unspecified } },
-    } as unknown as SnsSummary));
+  $: lifecycle =
+    getLifecycle($projectDetailStore.summary) ?? SnsSwapLifecycle.Unspecified;
 
   let showModal = false;
   const openModal = () => (showModal = true);

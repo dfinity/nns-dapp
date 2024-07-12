@@ -1,5 +1,6 @@
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import { getLifecycle } from "$lib/getters/sns-summary";
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
@@ -53,19 +54,21 @@ describe("project-utils", () => {
   describe("filter", () => {
     it("should filter by status", () => {
       expect(
-        filterProjectsStatus({
-          projects: [
-            {
-              ...mockSnsFullProject,
-              summary: summaryForLifecycle(SnsSwapLifecycle.Open),
-            },
-            {
-              ...mockSnsFullProject,
-              summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
-            },
-          ],
-          swapLifecycle: SnsSwapLifecycle.Open,
-        })[0].summary.swap.lifecycle
+        getLifecycle(
+          filterProjectsStatus({
+            projects: [
+              {
+                ...mockSnsFullProject,
+                summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+              },
+              {
+                ...mockSnsFullProject,
+                summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
+              },
+            ],
+            swapLifecycle: SnsSwapLifecycle.Open,
+          })[0].summary
+        )
       ).toEqual(SnsSwapLifecycle.Open);
 
       expect(
