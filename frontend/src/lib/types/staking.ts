@@ -5,6 +5,7 @@ export type TableProject = {
   domKey: string;
   title: string;
   logo: string;
+  neuronCount: number;
 };
 
 export type ProjectsTableColumn = ResponsiveTableColumn<TableProject>;

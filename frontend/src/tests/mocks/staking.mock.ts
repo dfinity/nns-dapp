@@ -7,4 +7,5 @@ export const mockTableProject: TableProject = {
   domKey: OWN_CANISTER_ID_TEXT,
   title: "Internet Computer",
   logo: IC_LOGO_ROUNDED,
+  neuronCount: 0,
 };
