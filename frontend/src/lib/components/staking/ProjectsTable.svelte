@@ -4,6 +4,8 @@
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { ProjectsTableColumn, TableProject } from "$lib/types/staking";
   import { getTableProjects } from "$lib/utils/staking.utils";
 
@@ -25,6 +27,8 @@
   let tableProjects: TableProject[];
   $: tableProjects = getTableProjects({
     universes: $selectableUniversesStore,
+    definedNnsNeurons: $definedNeuronsStore,
+    snsNeurons: $snsNeuronsStore,
   });
 </script>
 
