@@ -55,6 +55,7 @@ export const queryProposals = async ({
       includeRewardStatus,
       includeStatus,
       includeAllManageNeuronProposals: false,
+      omitLargeFields: true,
     },
     certified,
   });
