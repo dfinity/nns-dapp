@@ -1,3 +1,4 @@
+import { ProjectNeuronsCellPo } from "$tests/page-objects/ProjectNeuronsCell.page-object";
 import { ProjectTitleCellPo } from "$tests/page-objects/ProjectTitleCell.page-object";
 import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -19,7 +20,15 @@ export class ProjectsTableRowPo extends ResponsiveTableRowPo {
     return ProjectTitleCellPo.under(this.root);
   }
 
-  async getProjectTitle(): Promise<string> {
+  getProjectNeuronsCellPo(): ProjectNeuronsCellPo {
+    return ProjectNeuronsCellPo.under(this.root);
+  }
+
+  getProjectTitle(): Promise<string> {
     return this.getProjectTitleCellPo().getProjectTitle();
+  }
+
+  getNeuronCount(): Promise<string> {
+    return this.getProjectNeuronsCellPo().getNeuronCount();
   }
 }
