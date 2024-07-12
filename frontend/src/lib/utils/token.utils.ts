@@ -1,3 +1,7 @@
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import {
   E8S_PER_ICP,
   ICP_DISPLAYED_DECIMALS,
@@ -9,6 +13,7 @@ import {
   TokenAmount,
   TokenAmountV2,
   isNullish,
+  nonNullish,
   type Token,
 } from "@dfinity/utils";
 
@@ -318,3 +323,46 @@ export const sortUserTokens = (tokens: UserToken[]): UserToken[] => [
   // tokens without balance
   ...tokens.filter(({ balance }) => !(balance instanceof TokenAmountV2)),
 ];
+
+export const sortUserTokensForTable = (tokens: UserToken[]): UserToken[] => {
+  const getBalance = (token: UserToken) =>
+    token.balance instanceof TokenAmountV2 ? token.balance.toUlps() : 0n;
+  const sortByName = (
+    { title: aTitle }: UserToken,
+    { title: bTitle }: UserToken
+  ) => {
+    if (aTitle < bTitle) return -1;
+    if (aTitle > bTitle) return 1;
+    return 0;
+  };
+  const ckTokenIds = [
+    CKBTC_UNIVERSE_CANISTER_ID.toText(),
+    CKETH_UNIVERSE_CANISTER_ID.toText(),
+    CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+  ];
+  const tokenMap = new Map<string, UserToken>(
+    tokens.map((t) => [t.universeId.toText(), t])
+  );
+  const icpToken = tokenMap.get(OWN_CANISTER_ID_TEXT) as UserToken;
+  const ckTokens = ckTokenIds.map((id) => tokenMap.get(id)).filter(nonNullish);
+
+  [...ckTokenIds, OWN_CANISTER_ID_TEXT].forEach((id) => tokenMap.delete(id));
+  const otherTokens = [...tokenMap.values()];
+
+  return [
+    // ICP always first
+    icpToken,
+
+    // Tokens with balance
+    // ck tokens not sorted
+    ...ckTokens.filter((token) => getBalance(token) > 0n),
+    // other tokens sorted by name
+    ...otherTokens.filter((token) => getBalance(token) > 0n).sort(sortByName),
+
+    // Tokens without balance
+    // ck tokens not sorted
+    ...ckTokens.filter((token) => getBalance(token) === 0n),
+    // other tokens sorted by name
+    ...otherTokens.filter((token) => getBalance(token) === 0n).sort(sortByName),
+  ];
+};
