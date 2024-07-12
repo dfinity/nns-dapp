@@ -6,19 +6,21 @@ import { hasValidStake } from "$lib/utils/sns-neuron.utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
 
+// Will filter out neurons without stake from snsNeurons, but assumes neurons
+// without stake have already been filtered out from definedNnsNeurons
 export const getTableProjects = ({
   universes,
-  nnsNeurons,
+  definedNnsNeurons,
   snsNeurons,
 }: {
   universes: Universe[];
-  nnsNeurons: NeuronInfo[];
+  definedNnsNeurons: NeuronInfo[];
   snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
 }): TableProject[] => {
   return universes.map((universe) => {
     const neuronCount =
       universe.canisterId === OWN_CANISTER_ID_TEXT
-        ? nnsNeurons.length
+        ? definedNnsNeurons.length
         : snsNeurons[universe.canisterId]?.neurons.filter(hasValidStake)
             .length ?? 0;
     return {

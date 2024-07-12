@@ -27,7 +27,7 @@
   let tableProjects: TableProject[];
   $: tableProjects = getTableProjects({
     universes: $selectableUniversesStore,
-    nnsNeurons: $definedNeuronsStore,
+    definedNnsNeurons: $definedNeuronsStore,
     snsNeurons: $snsNeuronsStore,
   });
 </script>

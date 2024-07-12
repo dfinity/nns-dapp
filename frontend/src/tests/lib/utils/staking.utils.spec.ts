@@ -3,7 +3,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import type { Universe } from "$lib/types/universe";
 import { getTableProjects } from "$lib/utils/staking.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 
 describe("staking.utils", () => {
@@ -38,12 +38,23 @@ describe("staking.utils", () => {
       neuronCount: 0,
     };
 
+    const snsNeuronWithStake = createMockSnsNeuron({
+      stake: 100_000_000n,
+      id: [1, 1, 3],
+    });
+
+    const snsNeuronWithoutStake = createMockSnsNeuron({
+      stake: 0n,
+      maturity: 0n,
+      id: [7, 7, 9],
+    });
+
     it("should return an array of TableProject objects", () => {
       const universes: Universe[] = [nnsUniverse, snsUniverse];
 
       const tableProjects = getTableProjects({
         universes,
-        nnsNeurons: [],
+        definedNnsNeurons: [],
         snsNeurons: {},
       });
 
@@ -56,7 +67,7 @@ describe("staking.utils", () => {
     it("should include number of NNS neurons", () => {
       const tableProjects = getTableProjects({
         universes: [nnsUniverse],
-        nnsNeurons: [mockNeuron, mockNeuron, mockNeuron],
+        definedNnsNeurons: [mockNeuron, mockNeuron, mockNeuron],
         snsNeurons: {},
       });
 
@@ -71,10 +82,10 @@ describe("staking.utils", () => {
     it("should include number of SNS neurons", () => {
       const tableProjects = getTableProjects({
         universes: [snsUniverse],
-        nnsNeurons: [],
+        definedNnsNeurons: [],
         snsNeurons: {
           [universeId2]: {
-            neurons: [mockSnsNeuron, mockSnsNeuron],
+            neurons: [snsNeuronWithStake, snsNeuronWithStake],
           },
         },
       });
@@ -83,6 +94,30 @@ describe("staking.utils", () => {
         {
           ...defaultExpectedSnsTableProject,
           neuronCount: 2,
+        },
+      ]);
+    });
+
+    it("should filter SNS neurons without stake", () => {
+      const tableProjects = getTableProjects({
+        universes: [snsUniverse],
+        definedNnsNeurons: [],
+        snsNeurons: {
+          [universeId2]: {
+            neurons: [
+              snsNeuronWithStake,
+              snsNeuronWithoutStake,
+              snsNeuronWithoutStake,
+              snsNeuronWithoutStake,
+            ],
+          },
+        },
+      });
+
+      expect(tableProjects).toEqual([
+        {
+          ...defaultExpectedSnsTableProject,
+          neuronCount: 1,
         },
       ]);
     });
