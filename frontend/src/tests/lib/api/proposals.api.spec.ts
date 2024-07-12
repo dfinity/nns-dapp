@@ -79,6 +79,7 @@ describe("proposals-api", () => {
           includeStatus: defaultIncludeStatus,
           includeAllManageNeuronProposals: false,
           limit: 100,
+          omitLargeFields: true,
         },
       });
     });
@@ -99,6 +100,7 @@ describe("proposals-api", () => {
           includeStatus: [],
           includeAllManageNeuronProposals: false,
           limit: 100,
+          omitLargeFields: true,
         },
       });
     });
