@@ -1,5 +1,6 @@
 <script lang="ts">
   import ProjectActionsCell from "$lib/components/staking/ProjectActionsCell.svelte";
+  import ProjectNeuronsCell from "$lib/components/staking/ProjectNeuronsCell.svelte";
   import ProjectTitleCell from "$lib/components/staking/ProjectTitleCell.svelte";
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
@@ -14,6 +15,12 @@
       title: $i18n.staking.nervous_systems,
       cellComponent: ProjectTitleCell,
       alignment: "left",
+      templateColumns: ["1fr"],
+    },
+    {
+      title: $i18n.neurons.title,
+      cellComponent: ProjectNeuronsCell,
+      alignment: "right",
       templateColumns: ["1fr"],
     },
     {
