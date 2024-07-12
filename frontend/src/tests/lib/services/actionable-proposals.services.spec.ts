@@ -11,8 +11,14 @@ import {
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
-import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
-import { ProposalRewardStatus, Vote } from "@dfinity/nns";
+import {
+  ProposalRewardStatus,
+  ProposalStatus,
+  Topic,
+  Vote,
+  type NeuronInfo,
+  type ProposalInfo,
+} from "@dfinity/nns";
 import { get } from "svelte/store";
 
 describe("actionable-proposals.services", () => {
@@ -21,6 +27,32 @@ describe("actionable-proposals.services", () => {
   });
 
   describe("updateActionableProposals", () => {
+    const expectedQueryManageNeuronProposalsParams = {
+      identity: mockIdentity,
+      beforeProposal: undefined,
+      certified: false,
+      includeStatus: [ProposalStatus.Open],
+      includeTopics: [Topic.ManageNeuron],
+      includeRewardStatus: [ProposalRewardStatus.Ineligible],
+    };
+    const callLoadActionableProposals = async ({
+      queryProposalsResponses,
+      expectedQueryProposalsParams = [],
+    }: {
+      queryProposalsResponses: ProposalInfo[][];
+      expectedQueryProposalsParams?: Array<unknown>;
+    }) => {
+      spyQueryProposals = vi.spyOn(api, "queryProposals");
+      for (const response of queryProposalsResponses) {
+        spyQueryProposals.mockResolvedValueOnce(response);
+      }
+
+      await loadActionableProposals();
+
+      for (const params of expectedQueryProposalsParams) {
+        expect(spyQueryProposals).toHaveBeenCalledWith(params);
+      }
+    };
     const votedProposalId = 1234n;
     const neuronId = 0n;
     const neuron1: NeuronInfo = {
@@ -60,8 +92,13 @@ describe("actionable-proposals.services", () => {
       );
       spyQueryProposals = vi
         .spyOn(api, "queryProposals")
-        .mockImplementation(() =>
-          Promise.resolve([votableProposal, votedProposal])
+        .mockImplementation((requestData) =>
+          requestData.includeRewardStatus?.includes(
+            ProposalRewardStatus.AcceptVotes
+          )
+            ? Promise.resolve([votableProposal, votedProposal])
+            : // Return nothing for Topic.ManageNeuron proposals
+              Promise.resolve([])
         );
       spyQueryNeurons = vi
         .spyOn(governanceApi, "queryNeurons")
@@ -98,13 +135,16 @@ describe("actionable-proposals.services", () => {
 
       await loadActionableProposals();
 
-      expect(spyQueryProposals).toHaveBeenCalledTimes(1);
+      expect(spyQueryProposals).toHaveBeenCalledTimes(2);
       expect(spyQueryProposals).toHaveBeenCalledWith(
         expect.objectContaining({
           beforeProposal: undefined,
           certified: false,
           includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
         })
+      );
+      expect(spyQueryProposals).toHaveBeenCalledWith(
+        expectedQueryManageNeuronProposalsParams
       );
     });
 
@@ -120,7 +160,7 @@ describe("actionable-proposals.services", () => {
 
       await loadActionableProposals();
 
-      expect(spyQueryProposals).toHaveBeenCalledTimes(2);
+      expect(spyQueryProposals).toHaveBeenCalledTimes(3);
       expect(spyQueryProposals).toHaveBeenCalledWith({
         identity: mockIdentity,
         beforeProposal: undefined,
@@ -134,6 +174,9 @@ describe("actionable-proposals.services", () => {
         certified: false,
         includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
       });
+      expect(spyQueryProposals).toHaveBeenCalledWith(
+        expectedQueryManageNeuronProposalsParams
+      );
       expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(101);
       expect(get(actionableNnsProposalsStore)?.proposals).toEqual([
         ...firstResponseProposals,
@@ -155,7 +198,7 @@ describe("actionable-proposals.services", () => {
 
       await loadActionableProposals();
 
-      expect(spyQueryProposals).toHaveBeenCalledTimes(5);
+      expect(spyQueryProposals).toHaveBeenCalledTimes(6);
       // expect an error message
       expect(spyConsoleError).toHaveBeenCalledTimes(1);
       expect(spyConsoleError).toHaveBeenCalledWith(
@@ -177,6 +220,129 @@ describe("actionable-proposals.services", () => {
 
       expect(get(actionableNnsProposalsStore)).toEqual({
         proposals: [votableProposal],
+      });
+    });
+
+    describe("ManageNeurons proposals", () => {
+      const proposal0 = {
+        ...mockProposalInfo,
+        id: 0n,
+      } as ProposalInfo;
+      const proposal1 = {
+        ...mockProposalInfo,
+        id: 1n,
+      } as ProposalInfo;
+      const proposal2 = {
+        ...mockProposalInfo,
+        id: 2n,
+      } as ProposalInfo;
+
+      it("should query list proposals also with ManageNeurons payload", async () => {
+        await callLoadActionableProposals({
+          queryProposalsResponses: [[], [proposal1, proposal0]],
+          expectedQueryProposalsParams: [
+            {
+              identity: mockIdentity,
+              beforeProposal: undefined,
+              certified: false,
+              includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
+            },
+            expectedQueryManageNeuronProposalsParams,
+          ],
+        });
+
+        expect(spyQueryProposals).toHaveBeenCalledTimes(2);
+      });
+
+      it("should combine and sort votable AcceptedRewards with votable ManageNeurons proposals", async () => {
+        await callLoadActionableProposals({
+          queryProposalsResponses: [[proposal1], [proposal2, proposal0]],
+        });
+
+        expect(spyQueryProposals).toHaveBeenCalledTimes(2);
+
+        const storeProposals = get(actionableNnsProposalsStore)?.proposals;
+        expect(storeProposals.length).toEqual(3);
+        expect(storeProposals).toEqual([proposal2, proposal1, proposal0]);
+      });
+
+      it("should request ManageNeurons proposals using multiple calls", async () => {
+        const firstResponseProposals = fiveHundredsProposal.slice(0, 100);
+        const secondResponseProposals = [fiveHundredsProposal[100]];
+
+        await callLoadActionableProposals({
+          queryProposalsResponses: [
+            [],
+            firstResponseProposals,
+            secondResponseProposals,
+          ],
+          expectedQueryProposalsParams: [
+            {
+              identity: mockIdentity,
+              beforeProposal: undefined,
+              certified: false,
+              includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
+            },
+            expectedQueryManageNeuronProposalsParams,
+            {
+              ...expectedQueryManageNeuronProposalsParams,
+              beforeProposal:
+                firstResponseProposals[firstResponseProposals.length - 1].id,
+            },
+          ],
+        });
+
+        expect(spyQueryProposals).toHaveBeenCalledTimes(3);
+        expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(
+          101
+        );
+        expect(get(actionableNnsProposalsStore)?.proposals).toEqual([
+          ...firstResponseProposals,
+          ...secondResponseProposals,
+        ]);
+      });
+
+      it("should log an error when request count limit reached", async () => {
+        spyConsoleError = silentConsoleErrors();
+        expect(spyConsoleError).not.toHaveBeenCalled();
+
+        await callLoadActionableProposals({
+          queryProposalsResponses: [
+            [],
+            fiveHundredsProposal.slice(0, 100),
+            fiveHundredsProposal.slice(100, 200),
+            fiveHundredsProposal.slice(200, 300),
+            fiveHundredsProposal.slice(300, 400),
+            fiveHundredsProposal.slice(400, 500),
+          ],
+        });
+
+        expect(spyQueryProposals).toHaveBeenCalledTimes(6);
+        // expect an error message
+        expect(spyConsoleError).toHaveBeenCalledTimes(1);
+        expect(spyConsoleError).toHaveBeenCalledWith(
+          "Max actionable pages loaded"
+        );
+        expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(
+          500
+        );
+        expect(get(actionableNnsProposalsStore)?.proposals).toEqual(
+          fiveHundredsProposal
+        );
+      });
+
+      it("should update actionable nns proposals store only with votable Neuron Management proposals", async () => {
+        expect(get(actionableNnsProposalsStore)).toEqual({
+          proposals: undefined,
+        });
+
+        await callLoadActionableProposals({
+          queryProposalsResponses: [[], [votableProposal, votedProposal]],
+        });
+
+        expect(get(actionableNnsProposalsStore)).toEqual({
+          proposals: [votableProposal],
+        });
       });
     });
   });
