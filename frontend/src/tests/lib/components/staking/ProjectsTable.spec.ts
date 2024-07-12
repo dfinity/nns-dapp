@@ -1,11 +1,11 @@
-import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import ProjectsTable from "$lib/components/staking/ProjectsTable.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
+import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { page } from "$mocks/$app/stores";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { ProjectsTablePo } from "$tests/page-objects/ProjectsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
