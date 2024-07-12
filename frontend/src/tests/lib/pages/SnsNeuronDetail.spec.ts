@@ -8,6 +8,7 @@ import {
 } from "$lib/constants/sns-neurons.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
+import * as checkNeuronsService from "$lib/services/sns-neurons-check-balances.services";
 import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
@@ -130,6 +131,52 @@ describe("SnsNeuronDetail", () => {
       expect(await po.getAdvancedSectionPo().isPresent()).toBe(true);
       expect(await po.getFollowingCardPo().isPresent()).toBe(true);
       expect(await po.getHotkeysCardPo().isPresent()).toBe(true);
+    });
+
+    it("should reload neuron if refreshed", async () => {
+      let resolveRefreshNeuronIfNeeded;
+      const spyRefreshNeuronIfNeeded = vi
+        .spyOn(checkNeuronsService, "refreshNeuronIfNeeded")
+        .mockImplementation(
+          () =>
+            new Promise<boolean>((resolve) => {
+              resolveRefreshNeuronIfNeeded = resolve;
+            })
+        );
+
+      await renderComponent({
+        neuronId: validNeuronIdAsHexString,
+      });
+
+      expect(spyRefreshNeuronIfNeeded).toBeCalled();
+      expect(snsGovernanceApi.getSnsNeuron).toBeCalledTimes(2);
+
+      resolveRefreshNeuronIfNeeded(true);
+      await runResolvedPromises();
+      expect(snsGovernanceApi.getSnsNeuron).toBeCalledTimes(4);
+    });
+
+    it("should not reload neuron if not refreshed", async () => {
+      let resolveRefreshNeuronIfNeeded;
+      const spyRefreshNeuronIfNeeded = vi
+        .spyOn(checkNeuronsService, "refreshNeuronIfNeeded")
+        .mockImplementation(
+          () =>
+            new Promise<boolean>((resolve) => {
+              resolveRefreshNeuronIfNeeded = resolve;
+            })
+        );
+
+      await renderComponent({
+        neuronId: validNeuronIdAsHexString,
+      });
+
+      expect(spyRefreshNeuronIfNeeded).toBeCalled();
+      expect(snsGovernanceApi.getSnsNeuron).toBeCalledTimes(2);
+
+      resolveRefreshNeuronIfNeeded(false);
+      await runResolvedPromises();
+      expect(snsGovernanceApi.getSnsNeuron).toBeCalledTimes(2);
     });
   });
 

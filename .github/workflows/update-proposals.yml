@@ -64,7 +64,7 @@ jobs:
         # Note: If there were no changes, this step creates no PR.
         uses: peter-evans/create-pull-request@v4
         with:
-          token: ${{ secrets.GIX_BOT_PAT }}
+          token: ${{ secrets.GIX_CREATE_PR_PAT }}
           commit-message: Update proposals
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>

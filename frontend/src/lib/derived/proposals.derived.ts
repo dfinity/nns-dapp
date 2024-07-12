@@ -4,7 +4,10 @@ import {
   proposalsFiltersStore,
   proposalsStore,
 } from "$lib/stores/proposals.store";
-import { hideProposal } from "$lib/utils/proposals.utils";
+import {
+  hideProposal,
+  sortProposalsByIdDescendingOrder,
+} from "$lib/utils/proposals.utils";
 import type { ProposalInfo } from "@dfinity/nns";
 import { derived, type Readable } from "svelte/store";
 
@@ -21,9 +24,7 @@ import { derived, type Readable } from "svelte/store";
 export const sortedProposals: Readable<ProposalsStore> = derived(
   [proposalsStore],
   ([{ proposals, certified }]) => ({
-    proposals: proposals.sort(({ id: proposalIdA }, { id: proposalIdB }) =>
-      Number((proposalIdB ?? 0n) - (proposalIdA ?? 0n))
-    ),
+    proposals: sortProposalsByIdDescendingOrder(proposals),
     certified,
   })
 );

@@ -25,7 +25,7 @@ jobs:
         if: ${{ steps.update.outputs.updated == '1' }}
         uses: peter-evans/create-pull-request@v4
         with:
-          token: ${{ secrets.GIX_BOT_PAT }}
+          token: ${{ secrets.GIX_CREATE_PR_PAT }}
           base: main
           reviewers: mstrasinskis, dskloetd, nns-team
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.

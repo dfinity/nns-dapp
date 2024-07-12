@@ -315,7 +315,7 @@ describe("vote-registration-services", () => {
         await runResolvedPromises();
 
         expect(get(actionableNnsProposalsStore)).toEqual({
-          proposals: [votableProposal],
+          proposals: [votableProposal, votableProposal],
         });
       });
 

@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-06-26_23-01-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-03_23-01-storage-layer-disabled/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -258,6 +258,7 @@ pub enum GetNodeOperatorsAndDcsOfNodeProviderResponse {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NodeProvidersMonthlyXdrRewards {
+    pub registry_version: Option<u64>,
     pub rewards: Vec<(String, u64)>,
 }
 #[derive(Serialize, CandidType, Deserialize)]

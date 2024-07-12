@@ -1,10 +1,12 @@
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
+import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+import { enumValues } from "$lib/utils/enum.utils";
 import { page } from "$mocks/$app/stores";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   createMockSnsNeuron,
@@ -15,8 +17,13 @@ import { SnsNeuronsPo } from "$tests/page-objects/SnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { SnsNeuron } from "@dfinity/sns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import {
+  SnsNeuronPermissionType,
+  SnsSwapLifecycle,
+  neuronSubaccount,
+  type SnsNeuron,
+  type SnsNeuronId,
+} from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/sns-governance.api");
@@ -44,20 +51,10 @@ describe("SnsNeurons", () => {
     source_nns_neuron_id: [123n],
   };
   const projectName = "Tetris";
-  const getNeuronBalanceMock = async ({ neuronId }) => {
-    if (neuronId === neuron1.id[0]) {
-      return neuron1Stake;
-    }
-    if (neuronId === disbursedNeuron.id[0]) {
-      return disbursedNeuronStake;
-    }
-    if (neuronId === neuronNF.id[0]) {
-      return neuronNFStake;
-    }
-  };
 
   beforeEach(() => {
     vi.clearAllMocks();
+    checkedNeuronSubaccountsStore.reset();
     overrideFeatureFlagsStore.reset();
     page.mock({ data: { universe: rootCanisterId.toText() } });
     resetIdentity();
@@ -77,6 +74,7 @@ describe("SnsNeurons", () => {
         projectName,
       },
     ]);
+    vi.spyOn(snsGovernanceApi, "getNeuronBalance").mockResolvedValue(0n);
   });
 
   const renderComponent = async () => {
@@ -114,9 +112,6 @@ describe("SnsNeurons", () => {
         neuron1,
         neuronNF,
       ]);
-      vi.spyOn(snsGovernanceApi, "getNeuronBalance").mockImplementation(
-        getNeuronBalanceMock
-      );
     });
 
     it("should render the neurons table", async () => {
@@ -148,6 +143,73 @@ describe("SnsNeurons", () => {
 
       const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
       expect(rows).toHaveLength(2);
+    });
+
+    it("should claim unclaimed neuron", async () => {
+      const unclaimedNeuronIndex1 = 0;
+      const unclaimedNeuronIndex2 = 1;
+      const unclaimedNeuronSubaccount1 = neuronSubaccount({
+        controller: mockIdentity.getPrincipal(),
+        index: unclaimedNeuronIndex1,
+      });
+      const unclaimedNeuronSubaccount2 = neuronSubaccount({
+        controller: mockIdentity.getPrincipal(),
+        index: unclaimedNeuronIndex2,
+      });
+      const unclaimedNeuronId1: SnsNeuronId = {
+        id: unclaimedNeuronSubaccount1,
+      };
+      const unclaimedNeuronId2: SnsNeuronId = {
+        id: unclaimedNeuronSubaccount2,
+      };
+      const unclaimedNeuron1 = createMockSnsNeuron({
+        id: Array.from(unclaimedNeuronId1.id),
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from(
+              enumValues(SnsNeuronPermissionType)
+            ),
+          },
+        ],
+      });
+
+      const spyGetNeuronBalance = vi
+        .spyOn(snsGovernanceApi, "getNeuronBalance")
+        .mockResolvedValueOnce(100_000_000n)
+        .mockResolvedValueOnce(0n);
+      const spyClaimNeuron = vi
+        .spyOn(snsGovernanceApi, "claimNeuron")
+        .mockResolvedValue(unclaimedNeuronId1);
+      vi.spyOn(snsGovernanceApi, "getSnsNeuron").mockResolvedValue(
+        unclaimedNeuron1
+      );
+
+      expect(spyGetNeuronBalance).toBeCalledTimes(0);
+
+      await renderComponent();
+
+      expect(spyGetNeuronBalance).toBeCalledTimes(2);
+      expect(spyGetNeuronBalance).toBeCalledWith({
+        rootCanisterId,
+        neuronId: unclaimedNeuronId1,
+        certified: false,
+        identity: mockIdentity,
+      });
+      expect(spyGetNeuronBalance).toBeCalledWith({
+        rootCanisterId,
+        neuronId: unclaimedNeuronId2,
+        certified: false,
+        identity: mockIdentity,
+      });
+      expect(spyClaimNeuron).toBeCalledTimes(1);
+      expect(spyClaimNeuron).toBeCalledWith({
+        rootCanisterId,
+        subaccount: unclaimedNeuronSubaccount1,
+        memo: BigInt(unclaimedNeuronIndex1),
+        controller: mockIdentity.getPrincipal(),
+        identity: mockIdentity,
+      });
     });
   });
 

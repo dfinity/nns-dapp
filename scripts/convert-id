@@ -1,0 +1,213 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+print_help() {
+  cat <<-EOF
+
+	Convert IDs between different formats.
+	Formats are: text, hex, blob, and account_identifier.
+
+	USAGE:
+	  $(basename "$0") --input <format> --output <format> [--as_subaccount] [--subaccount_format <format>] <id> [<subaccount>]
+	  $(basename "$0") --input <format> --output <format> --as_neuron_subaccount] <id> <nonce>
+
+	FORMAT EXAMPLES:
+	  text: 3vbe6-ysauy-vhiiq-dkhzp-ndzfr-6knc4-45rwt-youy4-dwtze-oqoo3-nae
+	  hex: 40A62A74220351F2F68F258F94D1739D8DA787531C1DA7923A0E76DA02
+	  blob: \\40\\A6\\2A\\74\\22\\03\\51\\F2\\F6\\8F\\25\\8F\\94\\D1\\73\\9D\\8D\\A7\\87\\53\\1C\\1D\\A7\\92\\3A\\0E\\76\\DA\\02
+	  account_identifier: e8865cf776c7cd1ffeb4491208f94d601570755bfe410e217497a0e626bef101
+
+	USAGE EXAMPLES:
+	  $(basename "$0") --input text --output hex 3vbe6-ysauy-vhiiq-dkhzp-ndzfr-6knc4-45rwt-youy4-dwtze-oqoo3-nae
+	  $(basename "$0") --input hex --output blob 40A62A74220351F2F68F258F94D1739D8DA787531C1DA7923A0E76DA02
+	  $(basename "$0") --input text --output account_identifier --subaccount_format index 3vbe6-ysauy-vhiiq-dkhzp-ndzfr-6knc4-45rwt-youy4-dwtze-oqoo3-nae 1
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=i long=input desc="The input format" variable=INPUT_FORMAT default="text"
+clap.define short=o long=output desc="The output format" variable=OUTPUT_FORMAT default="hex"
+clap.define long=as_subaccount desc="To be used as ICP subaccount" variable=AS_SUBACCOUNT nargs=0
+clap.define long=as_neuron_subaccount desc="To be used as neuron subaccount" variable=AS_NEURON_SUBACCOUNT nargs=0
+clap.define long=subaccount_format desc="Formet of the subaccount parameter for account_identifier" variable=SUBACCOUNT_FORMAT default="index"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+function check_format() {
+  case $1 in
+  text | hex | blob | account_identifier | icrc1) ;;
+  *)
+    echo "Invalid format: $1" >&2
+    echo "Valid formats are: text, hex and blob" >&2
+    exit 1
+    ;;
+  esac
+}
+
+# Copied from https://internetcomputer.org/docs/current/references/ic-interface-spec/#textual-representation-of-principals
+function textual_encode() {
+  (
+    echo "$1" | xxd -r -p | /usr/bin/crc32 /dev/stdin
+    echo -n "$1"
+  ) |
+    xxd -r -p | base32 | tr '[:upper:]' '[:lower:]' |
+    tr -d = | fold -w5 | paste -sd'-' -
+}
+
+function textual_decode() {
+  echo -n "$1" | tr -d - | tr '[:lower:]' '[:upper:]' |
+    fold -w 8 | xargs -n1 printf '%-8s' | tr ' ' = |
+    base32 -d | xxd -p | tr -d '\n' | cut -b9- | tr '[:lower:]' '[:upper:]'
+}
+
+function hex_to_hex() {
+  cat
+}
+
+function hex_to_text() {
+  textual_encode "$(cat)"
+}
+
+function text_to_hex() {
+  textual_decode "$(cat)"
+}
+
+function hex_to_blob() {
+  sed -e 's@..@\\&@g'
+}
+
+function blob_to_hex() {
+  sed -e 's@\\@@g'
+}
+
+function get_subaccount_hex() {
+  if [[ "$INPUT_FORMAT" = "icrc1" ]]; then
+    if [[ -n "${SUBACCOUNT_ARG}" ]]; then
+      echo "The ICRC1 format includes the subaccount so you can't specify a separate subaccount as well." >&2
+      exit 1
+    fi
+    subaccount_part=$(echo -n "$ID_ARG" | sed 's@^[^.]*\.@@')
+    # Some version of bash produce leading spaces instead of zeros.
+    # tr ' ' '0' is used to replace them with zeros.
+    printf '%064s' "$subaccount_part" | tr ' ' '0'
+    return
+  fi
+  if [[ "$SUBACCOUNT_FORMAT" = "index" ]]; then
+    SUBACCOUNT_ARG="${SUBACCOUNT_ARG:-0}"
+    if ! [[ "$SUBACCOUNT_ARG" =~ ^[0-9]+$ ]]; then
+      echo "Subaccount index must be a decimal number." >&2
+      exit 1
+    fi
+    printf "%064x" "$SUBACCOUNT_ARG"
+    return
+  fi
+
+  if ! [[ "$SUBACCOUNT_FORMAT" = "text" ]]; then
+    "$0" --input "$SUBACCOUNT_FORMAT" --output hex "$SUBACCOUNT_ARG"
+    return
+  fi
+
+  "$0" --input "$SUBACCOUNT_FORMAT" --output hex --as_subaccount "$SUBACCOUNT_ARG"
+}
+
+function hex_to_account_identifier() {
+  hex=$(cat)
+  subaccount_hex=$(get_subaccount_hex)
+
+  # Logic translated from https://github.com/dfinity/ic/blob/6aceb6a35248ef2735ddd9ca99d8a1c6f4a13908/rs/rosetta-api/icp_ledger/src/account_identifier.rs#L58-L68
+  hash_input="0a$(echo -n account-id | xxd -p)${hex}${subaccount_hex}"
+  hash_output="$(echo -n "$hash_input" | xxd -r -p | openssl dgst -sha224 | awk '{print $2}')"
+  checksum=$(echo -n "$hash_output" | xxd -r -p | /usr/bin/crc32 /dev/stdin)
+  echo "${checksum}${hash_output}"
+}
+
+function account_identifier_to_hex() {
+  echo "Account identifiers can't be reversed." >&2
+  exit 1
+}
+
+function icrc1_to_hex() {
+  sed 's@-[^-]*$@@' | text_to_hex
+}
+
+# See https://internetcomputer.org/docs/current/references/icrc1-standard#textual-encoding-of-accounts
+# The ICRC-1 format is: <principal>-<checksum>.<compressed-subaccount>
+# where <compressed-subaccount> is the lower-case hex representation the
+# subaccount with leading zeros removed.
+# If the subaccount is only zeros, the ICRC-1 format is just the principal.
+function hex_to_icrc1() {
+  hex=$(cat)
+
+  subaccount_hex="$(get_subaccount_hex)"
+
+  # Remove leading zeros.
+  subaccount_hex="$(echo -n "$subaccount_hex" | sed -e 's@^0*@@')"
+
+  if [[ -z "$subaccount_hex" ]]; then
+    echo -n "$hex" | hex_to_text
+    return
+  fi
+
+  checksum="$(echo -n "${hex}${subaccount_hex}" | xxd -r -p | /usr/bin/crc32 /dev/stdin | xxd -p -r | base32 | tr -d = | tr '[:upper:]' '[:lower:]')"
+
+  echo "$(echo "$hex" | hex_to_text)-${checksum}.${subaccount_hex}"
+}
+
+function check_hex() {
+  if ! [[ $1 =~ ^([0-9a-fA-F]{2})+$ ]]; then
+    echo "Invalid hex: $1" >&2
+    exit 1
+  fi
+}
+
+function check_blob() {
+  if ! [[ $1 =~ ^(\\[0-9a-fA-F]{2})+$ ]]; then
+    echo "Invalid blob: $1" >&2
+    exit 1
+  fi
+}
+
+function check_text() {
+  if ! [[ $1 =~ ^[a-z0-9-]+$ ]]; then
+    echo "Invalid text: $1" >&2
+    exit 1
+  fi
+}
+
+function check_icrc1() {
+  if ! [[ $1 =~ ^[a-z0-9-]+\.[0-9a-f]+$ ]]; then
+    echo "Invalid icrc1: $1" >&2
+    exit 1
+  fi
+}
+
+function maybe_as_subaccount() {
+  if [ "${AS_NEURON_SUBACCOUNT:-}" = "true" ]; then
+    hex=$(cat)
+    # Logic translated from https://github.com/dfinity/ic/blob/1ec57bd3ac00a716eb6e58ba2f49cf4e9c3e6b03/rs/nervous_system/common/src/ledger.rs#L211-L223
+    nonce=$(printf "%016x" "$NONCE_ARG")
+    hash_input="0c$(echo -n neuron-stake | xxd -p)${hex}${nonce}"
+    echo -n "$hash_input" | xxd -r -p | openssl dgst -sha256 | awk '{print $2}'
+    return
+  fi
+  if [ "${AS_SUBACCOUNT:-}" != "true" ]; then
+    cat
+    return
+  fi
+  hex=$(cat)
+  length=$(($(echo -n "$hex" | wc -c) / 2))
+  printf '%02X%-062s' $length "$hex" | tr ' ' '0'
+}
+
+check_format "$INPUT_FORMAT"
+check_format "$OUTPUT_FORMAT"
+check_"$INPUT_FORMAT" "$1"
+
+ID_ARG="$1"
+SUBACCOUNT_ARG="${2:-}"
+NONCE_ARG="${2:-}"
+
+echo -n "$1" | "${INPUT_FORMAT}_to_hex" | maybe_as_subaccount | "hex_to_${OUTPUT_FORMAT}"
