@@ -1,32 +1,41 @@
 <script lang="ts">
-  import { IconLeft, IconRight } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
-  import { assertNonNullish, isNullish } from "@dfinity/utils";
-  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
-  import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import type { UniversalProposalStatus } from "$lib/types/proposals";
   import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
+  import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
+  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { triggerDebugReport } from "$lib/directives/debug.directives";
-  import { pageStore } from "$lib/derived/page.derived";
+  import { i18n } from "$lib/stores/i18n";
+  import type {
+    ProposalsNavigationId,
+    UniversalProposalStatus,
+  } from "$lib/types/proposals";
+  import type { UniverseCanisterIdText } from "$lib/types/universe";
+  import { navigationIdComparator } from "$lib/utils/proposals.utils";
+  import { IconLeft, IconRight } from "@dfinity/gix-components";
+  import { assertNonNullish, isNullish } from "@dfinity/utils";
 
-  export let currentProposalId: bigint;
+  export let currentProposalId: ProposalsNavigationId;
   export let title: string | undefined = undefined;
   export let currentProposalStatus: UniversalProposalStatus;
   // To resolve the absence of the currentProposalId in proposalIds,
   // the proposalIds must be passed in decreasing order by the parent component.
-  export let proposalIds: bigint[] = [];
-  export let selectProposal: (proposalId: bigint) => void;
+  export let proposalIds: ProposalsNavigationId[] = [];
+  // To resolve the absence of the currentProposalId in proposalIds,
+  // all the universes must be passed.
+  export let universes: UniverseCanisterIdText[] = [];
+  export let selectProposal: (id: ProposalsNavigationId) => void;
 
-  let previousId: bigint | undefined;
-  // TODO: switch to findLast() once it's available
-  // use `as bigint[]` to avoid TS error (type T | undefined is not assignable to type bigint | undefined)
-  $: previousId = ([...proposalIds].reverse() as bigint[]).find(
-    (id) => id > currentProposalId
+  let previousId: ProposalsNavigationId | undefined;
+  $: previousId = proposalIds.findLast(
+    (id) =>
+      navigationIdComparator({ a: id, b: currentProposalId, universes }) < 0
   );
 
-  let nextId: bigint | undefined;
-  $: nextId = proposalIds.find((id) => id < currentProposalId);
+  let nextId: ProposalsNavigationId | undefined;
+  $: nextId = proposalIds.find(
+    (id) =>
+      navigationIdComparator({ a: id, b: currentProposalId, universes }) > 0
+  );
 
   const selectPrevious = () => {
     assertNonNullish(previousId);
@@ -53,32 +62,30 @@
     </span>
     <TestIdWrapper testId="title">{title ?? ""}</TestIdWrapper>
   </h2>
-  {#if !$pageStore.actionable}
-    <button
-      class="ghost previous"
-      type="button"
-      aria-label={$i18n.proposal_detail.previous}
-      on:click={selectPrevious}
-      class:hidden={isNullish(previousId)}
-      data-tid="proposal-nav-previous"
-      data-test-proposal-id={previousId?.toString() ?? ""}
-    >
-      <IconLeft />
-      {$i18n.proposal_detail.previous_short}</button
-    >
-    <button
-      class="ghost next"
-      type="button"
-      aria-label={$i18n.proposal_detail.next}
-      on:click={selectNext}
-      class:hidden={isNullish(nextId)}
-      data-tid="proposal-nav-next"
-      data-test-proposal-id={nextId?.toString() ?? ""}
-    >
-      {$i18n.proposal_detail.next_short}
-      <IconRight />
-    </button>
-  {/if}
+  <button
+    class="ghost previous"
+    type="button"
+    aria-label={$i18n.proposal_detail.previous}
+    on:click={selectPrevious}
+    class:hidden={isNullish(previousId)}
+    data-tid="proposal-nav-previous"
+    data-test-proposal-id={previousId?.proposalId.toString() ?? ""}
+  >
+    <IconLeft />
+    {$i18n.proposal_detail.previous_short}</button
+  >
+  <button
+    class="ghost next"
+    type="button"
+    aria-label={$i18n.proposal_detail.next}
+    on:click={selectNext}
+    class:hidden={isNullish(nextId)}
+    data-tid="proposal-nav-next"
+    data-test-proposal-id={nextId?.proposalId.toString() ?? ""}
+  >
+    {$i18n.proposal_detail.next_short}
+    <IconRight />
+  </button>
 </div>
 
 <style lang="scss">

@@ -1,31 +1,31 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import {
-    hasMatchingProposals,
-    lastProposalId,
-  } from "$lib/utils/proposals.utils";
-  import {
-    proposalsFiltersStore,
-    proposalsStore,
-  } from "$lib/stores/proposals.store";
-  import { debounce } from "@dfinity/utils";
-  import { AppPath } from "$lib/constants/routes.constants";
-  import {
-    listNextProposals,
-    listProposals,
-  } from "$lib/services/$public/proposals.services";
-  import { toastsError } from "$lib/stores/toasts.store";
-  import { definedNeuronsStore } from "$lib/stores/neurons.store";
-  import { reloadRouteData } from "$lib/utils/navigation.utils";
   import NnsProposalsList from "$lib/components/proposals/NnsProposalsList.svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import {
     sortedProposals,
     filteredProposals,
   } from "$lib/derived/proposals.derived";
+  import {
+    listNextProposals,
+    listProposals,
+  } from "$lib/services/$public/proposals.services";
   import { listNeurons } from "$lib/services/neurons.services";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { notForceCallStrategy } from "$lib/utils/env.utils";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import {
+    proposalsFiltersStore,
+    proposalsStore,
+  } from "$lib/stores/proposals.store";
   import { referrerPathStore } from "$lib/stores/routes.store";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import { notForceCallStrategy } from "$lib/utils/env.utils";
+  import { reloadRouteData } from "$lib/utils/navigation.utils";
+  import {
+    hasMatchingProposals,
+    lastProposalId,
+  } from "$lib/utils/proposals.utils";
+  import { debounce } from "@dfinity/utils";
+  import { onMount } from "svelte";
 
   // It's exported so that we can test the value
   export let disableInfiniteScroll = false;

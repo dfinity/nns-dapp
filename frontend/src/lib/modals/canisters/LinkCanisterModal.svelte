@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { busy, Modal } from "@dfinity/gix-components";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { attachCanister } from "$lib/services/canisters.services";
-  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-  import type { Principal } from "@dfinity/principal";
-  import { createEventDispatcher } from "svelte";
-  import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
+  import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
+  import { attachCanister } from "$lib/services/canisters.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { errorCanisterNameMessage } from "$lib/utils/canisters.utils";
+  import { busy, Modal } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   let principal: Principal | undefined;
   let name = "";

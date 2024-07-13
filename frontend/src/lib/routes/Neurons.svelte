@@ -1,13 +1,13 @@
 <script lang="ts">
-  import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
-  import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import NnsNeuronsFooter from "$lib/components/neurons/NnsNeuronsFooter.svelte";
   import SnsNeuronsFooter from "$lib/components/sns-neurons/SnsNeuronsFooter.svelte";
-  import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
   import { snsCommittedProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
+  import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
+  import { nonNullish } from "@dfinity/utils";
 </script>
 
 <TestIdWrapper testId="neurons-component">

@@ -1,5 +1,7 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
+  import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     ageMultiplier,
     dissolveDelayMultiplier,
@@ -8,14 +10,12 @@
     neuronDashboardUrl,
     neuronStake,
   } from "$lib/utils/neuron.utils";
-  import { i18n } from "$lib/stores/i18n";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import NnsStakeItemAction from "./NnsStakeItemAction.svelte";
-  import NnsNeuronStateItemAction from "./NnsNeuronStateItemAction.svelte";
-  import NnsNeuronDissolveDelayItemAction from "./NnsNeuronDissolveDelayItemAction.svelte";
-  import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { formatTokenE8s } from "$lib/utils/token.utils";
+  import NnsNeuronDissolveDelayItemAction from "./NnsNeuronDissolveDelayItemAction.svelte";
+  import NnsNeuronStateItemAction from "./NnsNeuronStateItemAction.svelte";
+  import NnsStakeItemAction from "./NnsStakeItemAction.svelte";
   import { Html, Section } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;
 

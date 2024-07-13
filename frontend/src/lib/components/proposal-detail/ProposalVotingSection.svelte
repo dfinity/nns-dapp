@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type { ProposalInfo } from "@dfinity/nns";
-  import VotesResults from "./VotesResults.svelte";
-  import { ProposalRewardStatus } from "@dfinity/nns";
+  import NnsVotingCard from "$lib/components/proposal-detail/VotingCard/NnsVotingCard.svelte";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-  import { basisPointsToPercent } from "$lib/utils/utils";
   import {
     MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER,
     MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER,
   } from "$lib/constants/proposals.constants";
-  import NnsVotingCard from "$lib/components/proposal-detail/VotingCard/NnsVotingCard.svelte";
+  import { basisPointsToPercent } from "$lib/utils/utils";
+  import VotesResults from "./VotesResults.svelte";
+  import type { ProposalInfo } from "@dfinity/nns";
+  import { ProposalRewardStatus } from "@dfinity/nns";
 
   export let proposalInfo: ProposalInfo;
 

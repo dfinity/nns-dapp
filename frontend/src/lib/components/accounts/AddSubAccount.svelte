@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { createEventDispatcher, getContext } from "svelte";
   import { addSubAccount } from "$lib/services/icp-accounts.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { busy } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
   import {
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
   } from "$lib/types/add-account.context";
   import TextInputForm from "../common/TextInputForm.svelte";
+  import { busy } from "@dfinity/gix-components";
+  import { createEventDispatcher, getContext } from "svelte";
 
   let newAccountName = "";
 

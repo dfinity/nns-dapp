@@ -247,6 +247,10 @@ interface I18nNeuron_types {
   ect: string;
 }
 
+interface I18nStaking {
+  nervous_systems: string;
+}
+
 interface I18nNeurons {
   title: string;
   text: string;
@@ -284,7 +288,6 @@ interface I18nNeurons {
   remaining: string;
   age: string;
   vestion_period: string;
-  aria_label_neuron_card: string;
   neuron_id: string;
   neuron_balance: string;
   current_dissolve_delay: string;
@@ -790,8 +793,6 @@ interface I18nSns_sale {
 
 interface I18nSns_neuron_detail {
   vesting_period_tooltip: string;
-  community_fund_section: string;
-  community_fund_section_description: string;
   add_hotkey_info: string;
   add_hotkey_tooltip: string;
 }
@@ -803,6 +804,11 @@ interface I18nSns_neurons {
   stake_sns_neuron_success: string;
   token_stake: string;
   min_dissolve_delay_description: string;
+}
+
+interface I18nResponsive_table {
+  sort_by: string;
+  tap_to_reverse: string;
 }
 
 interface I18nTime {
@@ -927,21 +933,14 @@ interface I18nAuth_neurons {
   title: string;
 }
 
-interface I18nAuth_proposals {
-  title: string;
-  text: string;
-  sign_in: string;
-}
+interface I18nAuth_proposals {}
 
 interface I18nAuth_canisters {
   title: string;
   text: string;
 }
 
-interface I18nAuth_sns {
-  title: string;
-  text: string;
-}
+interface I18nAuth_sns {}
 
 interface I18nUniverse {
   select_token: string;
@@ -1084,6 +1083,7 @@ interface I18nTokens {
   hide_zero_balances_toggle_label: string;
   zero_balance_hidden: string;
   show_all: string;
+  import_token: string;
 }
 
 interface I18nNeuron_state {
@@ -1316,6 +1316,7 @@ interface I18n {
   auth: I18nAuth;
   accounts: I18nAccounts;
   neuron_types: I18nNeuron_types;
+  staking: I18nStaking;
   neurons: I18nNeurons;
   new_followee: I18nNew_followee;
   follow_neurons: I18nFollow_neurons;
@@ -1338,6 +1339,7 @@ interface I18n {
   sns_sale: I18nSns_sale;
   sns_neuron_detail: I18nSns_neuron_detail;
   sns_neurons: I18nSns_neurons;
+  responsive_table: I18nResponsive_table;
   time: I18nTime;
   error__ledger: I18nError__ledger;
   error__attach_wallet: I18nError__attach_wallet;

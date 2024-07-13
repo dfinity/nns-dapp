@@ -1,15 +1,15 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
-  import { Modal, Spinner } from "@dfinity/gix-components";
-  import { nonNullish } from "@dfinity/utils";
-  import { i18n } from "$lib/stores/i18n";
-  import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";
   import { snsSelectedProjectNewTxData } from "$lib/derived/sns/sns-selected-project-new-tx-data.derived";
-  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
+  import { Modal, Spinner } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
 
   type ModalKey = "stake-neuron";
   let showModal: ModalKey | undefined = undefined;

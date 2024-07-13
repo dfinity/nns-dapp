@@ -178,6 +178,8 @@ describe("SnsNeuronStateItemAction", () => {
     });
     const po = renderComponent(neuron);
 
-    expect(await po.getTooltipIconPo().getText()).toContain(token.symbol);
+    expect(await po.getTooltipIconPo().getTooltipText()).toContain(
+      token.symbol
+    );
   });
 });

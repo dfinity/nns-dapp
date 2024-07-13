@@ -38,12 +38,20 @@ test("Test merge neurons", async ({ page, context }) => {
   });
   const neuronId2 = (await neuronsPo.getNeuronIds())[0];
 
-  expect(await (await neuronsPo.getNeuronCardPo(neuronId1)).getBalance()).toBe(
-    initialStake1
-  );
-  expect(await (await neuronsPo.getNeuronCardPo(neuronId2)).getBalance()).toBe(
-    stake2
-  );
+  expect(
+    Number(
+      await (
+        await neuronsPo.getNeuronsTablePo().getNeuronsTableRowPo(neuronId1)
+      ).getStakeBalance()
+    )
+  ).toBe(initialStake1);
+  expect(
+    Number(
+      await (
+        await neuronsPo.getNeuronsTablePo().getNeuronsTableRowPo(neuronId2)
+      ).getStakeBalance()
+    )
+  ).toBe(stake2);
 
   step("Increase stake on first neuron");
   const finalStake1 = 3;
@@ -64,9 +72,13 @@ test("Test merge neurons", async ({ page, context }) => {
   });
 
   const transactionFee = 0.0001;
-  expect(await (await neuronsPo.getNeuronCardPo(neuronId2)).getBalance()).toBe(
-    finalStake1 + stake2 - transactionFee
-  );
+  expect(
+    Number(
+      await (
+        await neuronsPo.getNeuronsTablePo().getNeuronsTableRowPo(neuronId2)
+      ).getStakeBalance()
+    )
+  ).toBe(finalStake1 + stake2 - transactionFee);
 
   expect(await neuronsPo.getNeuronIds()).not.toContain(neuronId1);
 
@@ -84,7 +96,12 @@ test("Test merge neurons", async ({ page, context }) => {
   await transactionList.waitForLoaded();
   const transactions = await transactionList.getTransactionCardPos();
   expect(await Promise.all(transactions.map((tx) => tx.getHeadline()))).toEqual(
-    ["Top-up Neuron", "Staked", "Staked", "Received"]
+    [
+      "Sent", // This would be "Top-up Neuron" but we don't know the neuron anymore.
+      "Staked",
+      "Sent", // This would be "Staked" but we don't know the neuron anymore.
+      "Received",
+    ]
   );
   expect(await Promise.all(transactions.map((tx) => tx.getAmount()))).toEqual([
     "-2.0001",

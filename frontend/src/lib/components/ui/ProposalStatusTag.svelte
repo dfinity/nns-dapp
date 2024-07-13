@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { UniversalProposalStatus } from "$lib/types/proposals";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import type { UniversalProposalStatus } from "$lib/types/proposals";
   import { Tooltip } from "@dfinity/gix-components";
   import { cubicOut } from "svelte/easing";
   import { scale } from "svelte/transition";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let status: UniversalProposalStatus;
   export let actionable: boolean | undefined = undefined;

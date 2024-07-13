@@ -1,11 +1,14 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from "svelte";
   import ConfirmCyclesCanister from "$lib/components/canisters/ConfirmCyclesCanister.svelte";
   import SelectCyclesCanister from "$lib/components/canisters/SelectCyclesCanister.svelte";
+  import TextInputForm from "$lib/components/common/TextInputForm.svelte";
+  import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import {
     MAX_CANISTER_NAME_LENGTH,
     NEW_CANISTER_MIN_T_CYCLES,
   } from "$lib/constants/canisters.constants";
+  import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
   import {
     createCanister,
     getIcpToCyclesExchangeRate,
@@ -13,8 +16,9 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
-  import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
   import type { Account } from "$lib/types/account";
+  import { filterHardwareWalletAccounts } from "$lib/utils/accounts.utils";
+  import { errorCanisterNameMessage } from "$lib/utils/canisters.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
   import { valueSpan } from "$lib/utils/utils";
@@ -24,12 +28,8 @@
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
-  import TextInputForm from "$lib/components/common/TextInputForm.svelte";
   import { ICPToken, nonNullish } from "@dfinity/utils";
-  import { errorCanisterNameMessage } from "$lib/utils/canisters.utils";
-  import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
-  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import { filterHardwareWalletAccounts } from "$lib/utils/accounts.utils";
+  import { createEventDispatcher, onMount } from "svelte";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {

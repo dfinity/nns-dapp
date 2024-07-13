@@ -2,8 +2,9 @@ import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import {
   compareByDissolveDelay,
   compareById,
+  compareByMaturity,
   compareByStake,
-  sortNeurons,
+  compareByState,
   tableNeuronsFromNeuronInfos,
   tableNeuronsFromSnsNeurons,
 } from "$lib/utils/neurons-table.utils";
@@ -35,12 +36,14 @@ describe("neurons-table.utils", () => {
     const defaultDissolveDelaySeconds = 15778800n;
     const defaultStake = 500_000_000n;
 
-    const defaultNeuronInfo = {
+    const defaultNeuronInfo: NeuronInfo = {
       ...mockNeuron,
       neuronId: 42n,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         cachedNeuronStake: defaultStake,
+        maturityE8sEquivalent: 0n,
+        stakedMaturityE8sEquivalent: 0n,
       },
       dissolveDelaySeconds: defaultDissolveDelaySeconds,
       state: NeuronState.Locked,
@@ -51,6 +54,8 @@ describe("neurons-table.utils", () => {
       domKey: "42",
       neuronId: "42",
       stake: makeStake(defaultStake),
+      availableMaturity: 0n,
+      stakedMaturity: 0n,
       dissolveDelaySeconds: defaultDissolveDelaySeconds,
       state: NeuronState.Locked,
       tags: [],
@@ -78,7 +83,7 @@ describe("neurons-table.utils", () => {
         ...defaultNeuronInfo,
         neuronId: neuronId1,
         fullNeuron: {
-          ...mockNeuron.fullNeuron,
+          ...defaultNeuronInfo.fullNeuron,
           cachedNeuronStake: stake1,
         },
       };
@@ -86,7 +91,7 @@ describe("neurons-table.utils", () => {
         ...defaultNeuronInfo,
         neuronId: neuronId2,
         fullNeuron: {
-          ...mockNeuron.fullNeuron,
+          ...defaultNeuronInfo.fullNeuron,
           cachedNeuronStake: stake2,
         },
       };
@@ -116,7 +121,7 @@ describe("neurons-table.utils", () => {
         {
           ...defaultNeuronInfo,
           fullNeuron: {
-            ...mockNeuron.fullNeuron,
+            ...defaultNeuronInfo.fullNeuron,
             cachedNeuronStake: stake,
           },
         },
@@ -145,12 +150,34 @@ describe("neurons-table.utils", () => {
       ]);
     });
 
+    it("should convert neuronInfo maturity", () => {
+      const availableMaturity = 50_000_000n;
+      const stakedMaturity = 60_000_000n;
+      const tableNeurons = convert([
+        {
+          ...defaultNeuronInfo,
+          fullNeuron: {
+            ...defaultNeuronInfo.fullNeuron,
+            maturityE8sEquivalent: availableMaturity,
+            stakedMaturityE8sEquivalent: stakedMaturity,
+          },
+        },
+      ]);
+      expect(tableNeurons).toEqual([
+        {
+          ...defaultExpectedTableNeuron,
+          availableMaturity,
+          stakedMaturity,
+        },
+      ]);
+    });
+
     it("should convert neuronInfo for spawning neuron without href", () => {
       const spawningNeuronInfo = {
         ...defaultNeuronInfo,
         state: NeuronState.Spawning,
         fullNeuron: {
-          ...mockNeuron.fullNeuron,
+          ...defaultNeuronInfo.fullNeuron,
           cachedNeuronStake: 0n,
           spawnAtTimesSeconds: 12_312_313n,
         },
@@ -219,6 +246,8 @@ describe("neurons-table.utils", () => {
     const defaultCreateMockSnsNeuronParams = {
       id: neuronId,
       stake,
+      maturity: 0n,
+      stakedMaturity: 0n,
       dissolveDelaySeconds,
       state: NeuronState.Locked,
     };
@@ -236,6 +265,8 @@ describe("neurons-table.utils", () => {
       domKey: neuronIdString,
       neuronId: neuronIdString,
       stake: makeSnsStake(stake),
+      availableMaturity: 0n,
+      stakedMaturity: 0n,
       dissolveDelaySeconds,
       state: NeuronState.Locked,
       tags: [],
@@ -292,10 +323,31 @@ describe("neurons-table.utils", () => {
       ]);
     });
 
+    it("should convert SnsNeuron maturity", () => {
+      const availableMaturity = 70_000_000n;
+      const stakedMaturity = 80_000_000n;
+      const snsNeurons = [
+        createMockSnsNeuron({
+          ...defaultCreateMockSnsNeuronParams,
+          maturity: availableMaturity,
+          stakedMaturity,
+        }),
+      ];
+      const tableNeurons = convert(snsNeurons);
+      expect(tableNeurons).toEqual([
+        {
+          ...expectedTableNeuron,
+          availableMaturity,
+          stakedMaturity,
+        },
+      ]);
+    });
+
     it("should convert multiple neurons", () => {
       const neuronIdString2 = "fafafafafafafafa";
       const neuronId2 = hexStringToBytes(neuronIdString2);
       const snsNeuron2 = createMockSnsNeuron({
+        ...defaultCreateMockSnsNeuronParams,
         id: neuronId2,
         stake,
         dissolveDelaySeconds,
@@ -337,111 +389,141 @@ describe("neurons-table.utils", () => {
     });
   });
 
-  describe("sortNeurons", () => {
-    const neurons = [
-      {
+  describe("compareById", () => {
+    it("should sort neurons by ascending id", () => {
+      const neuron1 = {
         ...mockTableNeuron,
         neuronId: "9",
-        stake: makeStake(100_000_000n),
-        dissolveDelaySeconds: 8640000n,
-      },
-      {
-        ...mockTableNeuron,
-        neuronId: "88",
-        stake: makeStake(300_000_000n),
-        dissolveDelaySeconds: 864000n,
-      },
-      {
+      };
+      const neuron2 = {
         ...mockTableNeuron,
         neuronId: "10",
-        stake: makeStake(200_000_000n),
-        dissolveDelaySeconds: 86400000n,
-      },
-      {
+      };
+      const neuron3 = {
         ...mockTableNeuron,
-        neuronId: "777",
+        neuronId: "222",
+      };
+
+      expect(compareById(neuron1, neuron1)).toBe(0);
+      expect(compareById(neuron1, neuron2)).toBe(-1);
+      expect(compareById(neuron2, neuron3)).toBe(-1);
+      expect(compareById(neuron3, neuron2)).toBe(1);
+      expect(compareById(neuron2, neuron1)).toBe(1);
+    });
+  });
+
+  describe("compareByStake", () => {
+    it("should sort neurons by descending stake", () => {
+      const makeStake = (amount: bigint) =>
+        TokenAmountV2.fromUlps({
+          amount,
+          token: ICPToken,
+        });
+
+      const neuron1 = {
+        ...mockTableNeuron,
         stake: makeStake(100_000_000n),
-        dissolveDelaySeconds: 86400000n,
-      },
-      {
+      };
+      const neuron2 = {
         ...mockTableNeuron,
-        neuronId: "200",
-        stake: makeStake(300_000_000n),
-        dissolveDelaySeconds: 864000n,
-      },
-      {
-        ...mockTableNeuron,
-        neuronId: "11111",
         stake: makeStake(200_000_000n),
-        dissolveDelaySeconds: 8640000n,
-      },
-      {
+      };
+
+      expect(compareByStake(neuron1, neuron1)).toBe(0);
+      expect(compareByStake(neuron1, neuron2)).toBe(1);
+      expect(compareByStake(neuron2, neuron1)).toBe(-1);
+    });
+  });
+
+  describe("compareByMaturity", () => {
+    it("should sort neurons by descending maturity, with just availableMaturity", () => {
+      const neuron1 = {
         ...mockTableNeuron,
-        neuronId: "3000",
-        stake: makeStake(200_000_000n),
+        availableMaturity: 100_000_000n,
+      };
+      const neuron2 = {
+        ...mockTableNeuron,
+        availableMaturity: 200_000_000n,
+      };
+
+      expect(compareByMaturity(neuron1, neuron2)).toBe(1);
+      expect(compareByMaturity(neuron2, neuron1)).toBe(-1);
+    });
+
+    it("should sort neurons by descending maturity, with just stakedMaturity", () => {
+      const neuron1 = {
+        ...mockTableNeuron,
+        stakedMaturity: 100_000_000n,
+      };
+      const neuron2 = {
+        ...mockTableNeuron,
+        stakedMaturity: 200_000_000n,
+      };
+
+      expect(compareByMaturity(neuron1, neuron2)).toBe(1);
+      expect(compareByMaturity(neuron2, neuron1)).toBe(-1);
+    });
+
+    it("should treat available and staked maturity as equivalent", () => {
+      const neuron1 = {
+        ...mockTableNeuron,
+        availableMaturity: 200_000_000n,
+        stakedMaturity: 100_000_000n,
+      };
+      const neuron2 = {
+        ...mockTableNeuron,
+        availableMaturity: 100_000_000n,
+        stakedMaturity: 200_000_000n,
+      };
+
+      expect(compareByMaturity(neuron1, neuron2)).toBe(0);
+      expect(compareByMaturity(neuron2, neuron1)).toBe(0);
+    });
+  });
+
+  describe("compareByDissolveDelay", () => {
+    it("should sort neurons by descending dissolve delay", () => {
+      const neuron1 = {
+        ...mockTableNeuron,
+        dissolveDelaySeconds: 86400n,
+      };
+      const neuron2 = {
+        ...mockTableNeuron,
         dissolveDelaySeconds: 8640000n,
-      },
-    ];
+      };
 
-    it("should sort neurons by decreasing stake", () => {
-      expect(
-        sortNeurons({ neurons, order: [compareByStake] }).map((neuron) =>
-          neuron.stake.toUlps()
-        )
-      ).toEqual([
-        300_000_000n,
-        300_000_000n,
-        200_000_000n,
-        200_000_000n,
-        200_000_000n,
-        100_000_000n,
-        100_000_000n,
-      ]);
+      expect(compareByDissolveDelay(neuron1, neuron1)).toBe(0);
+      expect(compareByDissolveDelay(neuron1, neuron2)).toBe(1);
+      expect(compareByDissolveDelay(neuron2, neuron1)).toBe(-1);
     });
+  });
 
-    it("should sort neurons by decreasing dissolve delay", () => {
-      expect(
-        sortNeurons({ neurons, order: [compareByDissolveDelay] }).map(
-          (neuron) => neuron.dissolveDelaySeconds
-        )
-      ).toEqual([
-        86400000n,
-        86400000n,
-        8640000n,
-        8640000n,
-        8640000n,
-        864000n,
-        864000n,
-      ]);
-    });
+  describe("compareByState", () => {
+    it("should sort neurons by state", () => {
+      const neuron1 = {
+        ...mockTableNeuron,
+        state: NeuronState.Spawning,
+      };
+      const neuron2 = {
+        ...mockTableNeuron,
+        state: NeuronState.Dissolved,
+      };
+      const neuron3 = {
+        ...mockTableNeuron,
+        state: NeuronState.Dissolving,
+      };
+      const neuron4 = {
+        ...mockTableNeuron,
+        state: NeuronState.Locked,
+      };
 
-    it("should sort neurons by increasing neuron ID", () => {
-      expect(
-        sortNeurons({ neurons, order: [compareById] }).map(
-          (neuron) => neuron.neuronId
-        )
-      ).toEqual(["9", "10", "88", "200", "777", "3000", "11111"]);
-    });
-
-    it("should sort neurons by stake, then dissolve delay, then ID", () => {
-      expect(
-        sortNeurons({
-          neurons,
-          order: [compareByStake, compareByDissolveDelay, compareById],
-        }).map((neuron) => [
-          neuron.stake.toUlps(),
-          neuron.dissolveDelaySeconds,
-          neuron.neuronId,
-        ])
-      ).toEqual([
-        [300_000_000n, 864000n, "88"],
-        [300_000_000n, 864000n, "200"],
-        [200_000_000n, 86400000n, "10"],
-        [200_000_000n, 8640000n, "3000"],
-        [200_000_000n, 8640000n, "11111"],
-        [100_000_000n, 86400000n, "777"],
-        [100_000_000n, 8640000n, "9"],
-      ]);
+      expect(compareByState(neuron1, neuron1)).toBe(0);
+      expect(compareByState(neuron1, neuron2)).toBe(1);
+      expect(compareByState(neuron2, neuron3)).toBe(1);
+      expect(compareByState(neuron3, neuron4)).toBe(1);
+      expect(compareByState(neuron2, neuron1)).toBe(-1);
+      expect(compareByState(neuron3, neuron2)).toBe(-1);
+      expect(compareByState(neuron4, neuron3)).toBe(-1);
     });
   });
 });

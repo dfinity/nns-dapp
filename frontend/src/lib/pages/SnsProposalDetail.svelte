@@ -1,21 +1,34 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { buildProposalsUrl } from "$lib/utils/navigation.utils";
-  import { isNullish, nonNullish } from "@dfinity/utils";
-  import { getSnsProposalById } from "$lib/services/$public/sns-proposals.services";
-  import type { SnsProposalData, SnsProposalId } from "@dfinity/sns";
-  import { toastsError } from "$lib/stores/toasts.store";
-  import { Principal } from "@dfinity/principal";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
+  import SnsProposalPayloadSection from "$lib/components/sns-proposals/SnsProposalPayloadSection.svelte";
+  import SnsProposalSummarySection from "$lib/components/sns-proposals/SnsProposalSummarySection.svelte";
   import SnsProposalSystemInfoSection from "$lib/components/sns-proposals/SnsProposalSystemInfoSection.svelte";
   import SnsProposalVotingSection from "$lib/components/sns-proposals/SnsProposalVotingSection.svelte";
-  import SnsProposalSummarySection from "$lib/components/sns-proposals/SnsProposalSummarySection.svelte";
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
-  import SnsProposalPayloadSection from "$lib/components/sns-proposals/SnsProposalPayloadSection.svelte";
-  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-  import type { UniverseCanisterIdText } from "$lib/types/universe";
+  import {
+    actionableProposalsActiveStore,
+    actionableProposalsNavigationIdsStore,
+  } from "$lib/derived/actionable-proposals.derived";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
-  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
+  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
+  import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
+  import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
+  import { getSnsProposalById } from "$lib/services/$public/sns-proposals.services";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
+  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
+  import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
+  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import type { ProposalsNavigationId } from "$lib/types/proposals";
+  import type { UniverseCanisterIdText } from "$lib/types/universe";
+  import { buildProposalsUrl } from "$lib/utils/navigation.utils";
+  import { navigateToProposal } from "$lib/utils/proposals.utils";
   import {
     getUniversalProposalStatus,
     mapProposalInfo,
@@ -24,23 +37,15 @@
     snsProposalIdString,
     sortSnsProposalsById,
   } from "$lib/utils/sns-proposals.utils";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { debugSnsProposalStore } from "../derived/debug.derived";
   import { isUniverseNns } from "$lib/utils/universe.utils";
-  import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { layoutTitleStore } from "$lib/stores/layout.store";
-  import { i18n } from "$lib/stores/i18n";
-  import { authStore } from "$lib/stores/auth.store";
+  import { debugSnsProposalStore } from "../derived/debug.derived";
   import { SplitBlock } from "@dfinity/gix-components";
-  import { navigateToProposal } from "$lib/utils/proposals.utils";
-  import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
-  import type { Readable } from "svelte/store";
+  import { Principal } from "@dfinity/principal";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
-  import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
+  import type { SnsProposalData, SnsProposalId } from "@dfinity/sns";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { tick } from "svelte";
-  import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
-  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
+  import type { Readable } from "svelte/store";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -192,13 +197,18 @@
         })
       : undefined;
 
-  let proposalIds: bigint[];
-  $: proposalIds = nonNullish(universeIdText)
+  let proposalIds: ProposalsNavigationId[];
+  $: proposalIds = $pageStore.actionable
+    ? $actionableProposalsNavigationIdsStore
+    : nonNullish(universeIdText)
     ? sortSnsProposalsById(
         $actionableProposalsActiveStore
           ? $actionableSnsProposalsStore[universeIdText]?.proposals
           : $snsFilteredProposalsStore[universeIdText]?.proposals
-      )?.map(snsProposalId) ?? []
+      )?.map((proposal) => ({
+        proposalId: snsProposalId(proposal),
+        universe: $pageStore.universe,
+      })) ?? []
     : [];
 
   // The `update` function cares about the necessary data to be refetched.
@@ -206,16 +216,24 @@
 
   let proposalNavigationTitle: string | undefined;
   $: proposalNavigationTitle = proposalDataMap?.type;
+
+  const selectProposal = (id: ProposalsNavigationId) => {
+    navigateToProposal({ ...id, actionable: $pageStore.actionable });
+  };
 </script>
 
 <TestIdWrapper testId="sns-proposal-details-grid">
   {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
     <ProposalNavigation
       title={proposalNavigationTitle}
-      currentProposalId={BigInt(proposalIdText)}
+      currentProposalId={{
+        proposalId: BigInt(proposalIdText),
+        universe: $pageStore.universe,
+      }}
+      universes={$selectableUniversesStore.map(({ canisterId }) => canisterId)}
       currentProposalStatus={getUniversalProposalStatus(proposal)}
       {proposalIds}
-      selectProposal={navigateToProposal}
+      {selectProposal}
     />
   {/if}
 

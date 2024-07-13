@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { Account } from "$lib/types/account";
-  import { i18n } from "$lib/stores/i18n";
   import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
   import type { UniverseCanisterId } from "$lib/types/universe";
-  import { createEventDispatcher } from "svelte";
   import { nonNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let account: Account | undefined;
   export let universeId: UniverseCanisterId | undefined = undefined;

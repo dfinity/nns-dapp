@@ -5,7 +5,7 @@ import {
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { ConfirmationModalPo } from "$tests/page-objects/ConfirmationModal.page-object";
+import { JoinCommunityFundModalPo } from "$tests/page-objects/JoinCommunityFundModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
@@ -13,7 +13,7 @@ import { render } from "@testing-library/svelte";
 describe("ConfirmationModal", () => {
   const renderComponent = (neuron: NeuronInfo) => {
     const { container } = render(JoinCommunityFundModal, { props: { neuron } });
-    return ConfirmationModalPo.under(new JestPageObjectElement(container));
+    return JoinCommunityFundModalPo.under(new JestPageObjectElement(container));
   };
 
   const controlledNeuron: NeuronInfo = {

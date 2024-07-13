@@ -13,6 +13,19 @@ export class NeuronsTablePo extends ResponsiveTablePo {
     return NeuronsTableRowPo.allUnder(this.root);
   }
 
+  async getNeuronsTableRowPo(neuronId: string): Promise<NeuronsTableRowPo> {
+    const rows = await this.getNeuronsTableRowPos();
+
+    for (const row of rows) {
+      const id = await row.getNeuronId();
+      if (id === neuronId) {
+        return row;
+      }
+    }
+
+    throw new Error(`Neuron with id ${neuronId} not found`);
+  }
+
   async getNeuronIds(): Promise<string[]> {
     const rows = await this.getNeuronsTableRowPos();
     return Promise.all(rows.map((row) => row.getNeuronId()));

@@ -1,60 +1,19 @@
 <script lang="ts">
-  import SummaryLogo from "$lib/components/summary/SummaryLogo.svelte";
+  import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
-  import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
-
-  export let displayUniverse = true;
-
-  let twoLines = true;
-  $: twoLines = $$slots.details !== undefined;
 </script>
 
-<div class="summary" data-tid="projects-summary">
-  <h1 class="title">
-    <span
-      >{displayUniverse
-        ? $selectedUniverseStore.title
-        : $nnsUniverseStore.title}</span
-    >
-
-    <SummaryLogo {displayUniverse} />
-  </h1>
-
-  {#if twoLines}
-    <div class="details">
-      <slot name="details" />
-    </div>
-  {/if}
-</div>
+<h1 class="summary" data-tid="projects-summary">
+  <UniversePageSummary universe={$selectedUniverseStore} />
+</h1>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
   .summary {
     display: flex;
     flex-direction: column;
 
     margin: 0 0 var(--padding-3x);
-  }
-
-  .title {
-    display: inline-flex;
-  }
-
-  span {
-    @include fonts.h3;
-
-    max-width: calc(100% - var(--padding-6x));
-    @include text.truncate;
-
-    margin: 0;
-  }
-
-  .details {
-    height: var(--padding-4x);
-    color: var(--description-color);
-    @include fonts.small;
   }
 </style>

@@ -1,19 +1,19 @@
 <script lang="ts">
-  import type { SnsSummary, SnsSummaryMetadata } from "$lib/types/sns";
-  import { i18n } from "$lib/stores/i18n";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
-  import { getContext } from "svelte";
+  import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import { isNullish } from "@dfinity/utils";
-  import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
-  import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import type { Principal } from "@dfinity/principal";
+  import type { SnsSummary, SnsSummaryMetadata } from "$lib/types/sns";
   import { snsProjectDashboardUrl } from "$lib/utils/projects.utils";
+  import type { Principal } from "@dfinity/principal";
   import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { isNullish } from "@dfinity/utils";
+  import { getContext } from "svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

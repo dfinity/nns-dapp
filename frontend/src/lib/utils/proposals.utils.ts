@@ -1,12 +1,13 @@
 import { goto } from "$app/navigation";
-import { pageStore } from "$lib/derived/page.derived";
 import { i18n } from "$lib/stores/i18n";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
 import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
 import type {
+  ProposalsNavigationId,
   UniversalProposalStatus,
   VotingNeuron,
 } from "$lib/types/proposals";
+import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { buildProposalUrl } from "$lib/utils/navigation.utils";
 import type {
   Ballot,
@@ -191,6 +192,7 @@ export const proposalIdSet = (proposals: ProposalInfo[]): Set<ProposalId> =>
  * Compares proposals by "id"
  */
 export const concatenateUniqueProposals = ({
+  // TODO(max): replace with unnamed parameters because it's now being used in multiple places
   oldProposals,
   newProposals,
 }: {
@@ -548,11 +550,16 @@ export const nnsNeuronToVotingNeuron = ({
 });
 
 /** Navigate to the current universe (NNS/SNS) proposal page */
-export const navigateToProposal = (proposalId: ProposalId): Promise<void> =>
+export const navigateToProposal = ({
+  proposalId,
+  universe,
+  actionable,
+}: ProposalsNavigationId & { actionable: boolean }): Promise<void> =>
   goto(
     buildProposalUrl({
-      universe: get(pageStore).universe,
+      universe,
       proposalId,
+      actionable,
     })
   );
 
@@ -587,3 +594,44 @@ export const getVoteDisplay = (vote: Vote): string => {
       return i18nObj.core.unspecified;
   }
 };
+
+/** Compares two ProposalsNavigationId objects by universe and proposalId.
+ *  First universes are compared based on their index in the provided universes array.
+ *  If the universes are the same, the comparator then compares the proposalIds
+ *  (proposal IDs are ordered in decreasing order).
+ */
+export const navigationIdComparator = ({
+  a,
+  b,
+  universes,
+}: {
+  a: ProposalsNavigationId;
+  b: ProposalsNavigationId;
+  universes: UniverseCanisterIdText[];
+}) => {
+  const aUniverseIndex = universes.indexOf(a.universe);
+  const bUniverseIndex = universes.indexOf(b.universe);
+  if (aUniverseIndex > bUniverseIndex) {
+    return 1;
+  }
+  if (aUniverseIndex < bUniverseIndex) {
+    return -1;
+  }
+  if (a.proposalId < b.proposalId) return 1;
+  if (a.proposalId > b.proposalId) return -1;
+  return 0;
+};
+
+/**
+ * Sort NNS proposals by IDs in descending order.
+ */
+export const sortProposalsByIdDescendingOrder = (
+  proposals: ProposalInfo[]
+): ProposalInfo[] =>
+  [...proposals].sort((a, b) => {
+    const idA = a.id ?? 0n;
+    const idB = b.id ?? 0n;
+    if (idB > idA) return 1;
+    if (idB < idA) return -1;
+    return 0;
+  });

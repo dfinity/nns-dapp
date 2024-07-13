@@ -1,28 +1,28 @@
 <script lang="ts">
-  import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
-  import type { SnsSummary } from "$lib/types/sns";
-  import { getContext } from "svelte";
-  import { BottomSheet } from "@dfinity/gix-components";
+  import SignInGuard from "$lib/components/common/SignInGuard.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
+  import { userCountryStore } from "$lib/stores/user-country.store";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svelte";
+  import type { SnsSummary } from "$lib/types/sns";
   import {
     hasUserParticipatedToSwap,
     type ParticipationButtonStatus,
     participateButtonStatus,
   } from "$lib/utils/projects.utils";
-  import { i18n } from "$lib/stores/i18n";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { BottomSheet } from "@dfinity/gix-components";
   import { Tooltip } from "@dfinity/gix-components";
-  import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import type { Principal } from "@dfinity/principal";
+  import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
   import { nonNullish } from "@dfinity/utils";
-  import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
-  import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { userCountryStore } from "$lib/stores/user-country.store";
+  import { getContext } from "svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

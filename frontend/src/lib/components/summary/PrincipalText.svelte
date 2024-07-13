@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
   import Hash from "$lib/components/ui/Hash.svelte";
   import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
 
   export let inline = false;
 

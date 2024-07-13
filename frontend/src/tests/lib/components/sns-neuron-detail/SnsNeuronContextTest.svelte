@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { setContext, SvelteComponent } from "svelte";
-  import { writable } from "svelte/store";
   import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
   import type {
     SelectedSnsNeuronContext,
@@ -8,8 +6,10 @@
   } from "$lib/types/sns-neuron-detail.context";
   import { SELECTED_SNS_NEURON_CONTEXT_KEY } from "$lib/types/sns-neuron-detail.context";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-  import type { SnsNeuron } from "@dfinity/sns";
   import type { Principal } from "@dfinity/principal";
+  import type { SnsNeuron } from "@dfinity/sns";
+  import { setContext, SvelteComponent } from "svelte";
+  import { writable } from "svelte/store";
 
   export let neuron: SnsNeuron | undefined;
   export let rootCanisterId: Principal | null;

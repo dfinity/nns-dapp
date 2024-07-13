@@ -37,12 +37,14 @@ test("Test disburse neuron", async ({ page, context }) => {
 
   step("Open the neuron details");
   await appPo.goToNeurons();
-  const neuronCards = await appPo
+  await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
+  const neuronRows = await appPo
     .getNeuronsPo()
     .getNnsNeuronsPo()
-    .getNeuronCardPos();
-  expect(neuronCards.length).toBe(1);
-  neuronCards[0].click();
+    .getNeuronsTablePo()
+    .getNeuronsTableRowPos();
+  expect(neuronRows).toHaveLength(1);
+  neuronRows[0].click();
 
   step("Disburse the neuron");
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().disburseNeuron();

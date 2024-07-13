@@ -68,7 +68,7 @@
         {
           "id": 4,
           "name": "Add nervous system function",
-          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -76,7 +76,7 @@
         {
           "id": 5,
           "name": "Remove nervous system function",
-          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -84,7 +84,7 @@
         {
           "id": 6,
           "name": "Execute nervous system function",
-          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "description": "Proposal to execute a user-defined nervous system function, previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -131,7 +131,7 @@
         },
         {
           "id": 12,
-          "name": "Mint SNS Tokens",
+          "name": "Mint SNS tokens",
           "description": "Proposal to mint SNS tokens to a specified recipient.",
           "function_type": {
             "NativeNervousSystemFunction": {}
@@ -1475,7 +1475,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100195217351445070,
+    "icrc1_total_supply": 100312053390123260,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3352,7 +3352,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100230009532348,
+    "icrc1_total_supply": 100319926969670,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -3931,6 +3931,19 @@
               "target_method_name": "send_icrc1_tokens"
             }
           }
+        },
+        {
+          "id": 2003,
+          "name": "transfer_icpswap_lp_position",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "ok64y-uiaaa-aaaag-qdcbq-cai",
+              "target_canister_id": "ok64y-uiaaa-aaaag-qdcbq-cai",
+              "validator_method_name": "validate_transfer_icpswap_lp_position",
+              "target_method_name": "transfer_icpswap_lp_position"
+            }
+          }
         }
       ]
     },
@@ -4070,7 +4083,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995770646000,
+    "icrc1_total_supply": 995765800000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4161,7 +4174,9 @@
         "3jd4g-jyaaa-aaaar-qaeba-cai",
         "3yss5-5qaaa-aaaar-qad7a-cai",
         "7vkf4-jqaaa-aaaaj-azrua-cai",
-        "odhfn-cqaaa-aaaar-qaana-cai"
+        "odhfn-cqaaa-aaaar-qaana-cai",
+        "i2ied-uqaaa-aaaar-qaaza-cai",
+        "6zwik-gaaaa-aaaap-ab63q-cai"
       ],
       "archives": ["g7jv2-uaaaa-aaaaq-aacpa-cai"]
     },
@@ -5292,6 +5307,253 @@
               "target_canister_id": "odhfn-cqaaa-aaaar-qaana-cai",
               "validator_method_name": "validatorMiningUpdateRound",
               "target_method_name": "updateRound"
+            }
+          }
+        },
+        {
+          "id": 1078,
+          "name": "DexAggr.syncAllTokenFee",
+          "description": "Synchronize all token fees",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrSyncAllTokenFee",
+              "target_method_name": "sync"
+            }
+          }
+        },
+        {
+          "id": 1079,
+          "name": "DexAggr.putTradingPair",
+          "description": "Add a pair to the list",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrPutTradingPair",
+              "target_method_name": "put"
+            }
+          }
+        },
+        {
+          "id": 1080,
+          "name": "DexAggr.removeTradingPair",
+          "description": "Remove a pair to the list",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrRemoveTradingPair",
+              "target_method_name": "remove"
+            }
+          }
+        },
+        {
+          "id": 1081,
+          "name": "DexAggr.setScore",
+          "description": "Set the score of a pair (score2, max 20)",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrSetScore",
+              "target_method_name": "setScore"
+            }
+          }
+        },
+        {
+          "id": 1082,
+          "name": "DexAggr.putCurrencyToken",
+          "description": "Add a currency token to the list",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrPutCurrency",
+              "target_method_name": "putCurrency"
+            }
+          }
+        },
+        {
+          "id": 1083,
+          "name": "DexAggr.removeCurrencyToken",
+          "description": "Remove a currency token to the list",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrRemoveCurrency",
+              "target_method_name": "removeCurrency"
+            }
+          }
+        },
+        {
+          "id": 1084,
+          "name": "DexAggr.setDex",
+          "description": "Submit a Dex to DexAggregator",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrSetDex",
+              "target_method_name": "setDex"
+            }
+          }
+        },
+        {
+          "id": 1085,
+          "name": "DexAggr.delDex",
+          "description": "Remove a Dex from DexAggregator",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrDelDex",
+              "target_method_name": "delDex"
+            }
+          }
+        },
+        {
+          "id": 1086,
+          "name": "DexAggr.putPairToMarket",
+          "description": "Add a pair to a Market list",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrPutPairToMarket",
+              "target_method_name": "putPairToMarket"
+            }
+          }
+        },
+        {
+          "id": 1087,
+          "name": "DexAggr.removePairFromMarket",
+          "description": "Remove a pair from the market list",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrRemovePairFromMarket",
+              "target_method_name": "removePairFromMarket"
+            }
+          }
+        },
+        {
+          "id": 1088,
+          "name": "DexAggr.addTokenMetadata",
+          "description": "Add metadata to a token",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrAddTokenMetadata",
+              "target_method_name": "addTokenMetadata"
+            }
+          }
+        },
+        {
+          "id": 1089,
+          "name": "DexAggr.removeTokenMetadata",
+          "description": "Remove metadata of a token",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrRemoveTokenMetadata",
+              "target_method_name": "removeTokenMetadata"
+            }
+          }
+        },
+        {
+          "id": 1090,
+          "name": "DexAggr.config",
+          "description": "Configuring DexAggregator",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrConfig",
+              "target_method_name": "config"
+            }
+          }
+        },
+        {
+          "id": 1091,
+          "name": "DexAggr.sysWithdraw",
+          "description": "Withdraw token from DexAggregator",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrSysWithdraw",
+              "target_method_name": "sys_withdraw"
+            }
+          }
+        },
+        {
+          "id": 1092,
+          "name": "DexAggr.sysBurn",
+          "description": "Burn token from DexAggregator",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrSysBurn",
+              "target_method_name": "sys_burn"
+            }
+          }
+        },
+        {
+          "id": 1093,
+          "name": "DexAggr.verifyListingReferre",
+          "description": "Verify listing referrer",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrVerifyListingReferrer",
+              "target_method_name": "verifyListingReferrer"
+            }
+          }
+        },
+        {
+          "id": 1094,
+          "name": "DexAggr.dropListingReferrer",
+          "description": "Deleting a verified listing referrer",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrDropListingReferrer",
+              "target_method_name": "dropListingReferrer"
+            }
+          }
+        },
+        {
+          "id": 1095,
+          "name": "DexAggr.propose",
+          "description": "Listing Referrer creates a proposal to increase the trading pair score",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrPropose",
+              "target_method_name": "propose"
+            }
+          }
+        },
+        {
+          "id": 1096,
+          "name": "DexAggr.mngNFTUnStake",
+          "description": "Unlocking NFTs locked in DexAggregator by NFT holders",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrMngNFTUnStake",
+              "target_method_name": "NFTUnStake"
             }
           }
         }
@@ -6721,7 +6983,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20022070730263548,
+    "icrc1_total_supply": 20024051237164500,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -8099,7 +8361,9 @@
         "ev7jo-jaaaa-aaaah-adthq-cai",
         "n4ahg-pqaaa-aaaah-advla-cai",
         "bpsjh-6yaaa-aaaah-adyjq-cai",
-        "gichg-2iaaa-aaaah-adtia-cai"
+        "gichg-2iaaa-aaaah-adtia-cai",
+        "wm3tr-wyaaa-aaaah-adxyq-cai",
+        "a32nk-lqaaa-aaaah-aeaba-cai"
       ],
       "archives": ["dyxt2-fqaaa-aaaaq-aacsa-cai"]
     },
@@ -8719,7 +8983,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25069018387548736,
+    "icrc1_total_supply": 25096413085862880,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -9207,7 +9471,7 @@
         {
           "id": 4,
           "name": "Add nervous system function",
-          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -9215,7 +9479,7 @@
         {
           "id": 5,
           "name": "Remove nervous system function",
-          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -9223,7 +9487,7 @@
         {
           "id": 6,
           "name": "Execute nervous system function",
-          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "description": "Proposal to execute a user-defined nervous system function, previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -9270,7 +9534,7 @@
         },
         {
           "id": 12,
-          "name": "Mint SNS Tokens",
+          "name": "Mint SNS tokens",
           "description": "Proposal to mint SNS tokens to a specified recipient.",
           "function_type": {
             "NativeNervousSystemFunction": {}
@@ -9562,6 +9826,32 @@
               "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
               "validator_method_name": "validateAddNewToken",
               "target_method_name": "executeAddNewToken"
+            }
+          }
+        },
+        {
+          "id": 22000,
+          "name": "Add CreatePlayer Callback Function",
+          "description": "Proposal to create the endpoint for adding the callback function to create a new player.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validateCreatePlayer",
+              "target_method_name": "executeCreatePlayer"
+            }
+          }
+        },
+        {
+          "id": 23000,
+          "name": "Promote New Club",
+          "description": "Add Promoted Championship Team.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validatePromoteNewClub",
+              "target_method_name": "executePromoteNewClub"
             }
           }
         }
@@ -10147,7 +10437,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10006215364251722,
+    "icrc1_total_supply": 10013494609757842,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -10731,7 +11021,7 @@
         {
           "id": 4,
           "name": "Add nervous system function",
-          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -10739,7 +11029,7 @@
         {
           "id": 5,
           "name": "Remove nervous system function",
-          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -10747,7 +11037,7 @@
         {
           "id": 6,
           "name": "Execute nervous system function",
-          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "description": "Proposal to execute a user-defined nervous system function, previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -10794,7 +11084,7 @@
         },
         {
           "id": 12,
-          "name": "Mint SNS Tokens",
+          "name": "Mint SNS tokens",
           "description": "Proposal to mint SNS tokens to a specified recipient.",
           "function_type": {
             "NativeNervousSystemFunction": {}
@@ -11185,7 +11475,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100871411200964380,
+    "icrc1_total_supply": 101071460163239330,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -11492,7 +11782,7 @@
         {
           "id": 4,
           "name": "Add nervous system function",
-          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -11500,7 +11790,7 @@
         {
           "id": 5,
           "name": "Remove nervous system function",
-          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -11508,7 +11798,7 @@
         {
           "id": 6,
           "name": "Execute nervous system function",
-          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "description": "Proposal to execute a user-defined nervous system function, previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -11555,7 +11845,7 @@
         },
         {
           "id": 12,
-          "name": "Mint SNS Tokens",
+          "name": "Mint SNS tokens",
           "description": "Proposal to mint SNS tokens to a specified recipient.",
           "function_type": {
             "NativeNervousSystemFunction": {}
@@ -11587,6 +11877,32 @@
               "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
               "validator_method_name": "setPoolAdminsValidate",
               "target_method_name": "setPoolAdmins"
+            }
+          }
+        },
+        {
+          "id": 1004,
+          "name": "BatchSetPoolAdmins",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7vygu-3yaaa-aaaag-qjxaq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "batchSetPoolAdminsValidate",
+              "target_method_name": "batchSetPoolAdmins"
+            }
+          }
+        },
+        {
+          "id": 1010,
+          "name": "UpgradePoolTokenStandard",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7vygu-3yaaa-aaaag-qjxaq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "upgradePoolTokenStandardValidate",
+              "target_method_name": "upgradePoolTokenStandard"
             }
           }
         },
@@ -11626,6 +11942,19 @@
               "target_canister_id": "c5jrt-yaaaa-aaaag-qb5ra-cai",
               "validator_method_name": "removeFarmControllersValidate",
               "target_method_name": "removeFarmControllers"
+            }
+          }
+        },
+        {
+          "id": 2101,
+          "name": "CreateFarm",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "arxpg-cyaaa-aaaag-qjzhq-cai",
+              "target_canister_id": "c5jrt-yaaaa-aaaag-qb5ra-cai",
+              "validator_method_name": "createValidate",
+              "target_method_name": "create"
             }
           }
         }
@@ -12172,7 +12501,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99879283144938000,
+    "icrc1_total_supply": 99276853751307380,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -13345,7 +13674,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 100001253530155260,
+    "icrc1_total_supply": 100002055316033820,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -13880,7 +14209,7 @@
         {
           "id": 4,
           "name": "Add nervous system function",
-          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -13888,7 +14217,7 @@
         {
           "id": 5,
           "name": "Remove nervous system function",
-          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -13896,7 +14225,7 @@
         {
           "id": 6,
           "name": "Execute nervous system function",
-          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "description": "Proposal to execute a user-defined nervous system function, previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -13943,7 +14272,7 @@
         },
         {
           "id": 12,
-          "name": "Mint SNS Tokens",
+          "name": "Mint SNS tokens",
           "description": "Proposal to mint SNS tokens to a specified recipient.",
           "function_type": {
             "NativeNervousSystemFunction": {}
@@ -14517,7 +14846,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100018956580251000,
+    "icrc1_total_supply": 100027613503665980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

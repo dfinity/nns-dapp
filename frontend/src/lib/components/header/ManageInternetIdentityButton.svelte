@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { IconOpenInNew } from "@dfinity/gix-components";
   import { getIdentityProviderUrl } from "$lib/utils/auth.utils";
+  import { IconOpenInNew } from "@dfinity/gix-components";
 </script>
 
 <a

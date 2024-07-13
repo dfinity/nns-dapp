@@ -4,17 +4,17 @@
     type CyclesWorker,
     initCyclesWorker,
   } from "$lib/services/worker-cycles.services";
-  import { onDestroy } from "svelte";
+  import { i18n } from "$lib/stores/i18n";
   import type { CanisterSync } from "$lib/types/canister";
-  import { isNullish, nonNullish } from "@dfinity/utils";
-  import { SkeletonText } from "@dfinity/gix-components";
-  import { formatNumber } from "$lib/utils/format.utils";
+  import type { PostMessageDataResponseCycles } from "$lib/types/post-message.canister";
   import {
     canisterStatusToText,
     formatCyclesToTCycles,
   } from "$lib/utils/canisters.utils";
-  import { i18n } from "$lib/stores/i18n";
-  import type { PostMessageDataResponseCycles } from "$lib/types/post-message.canister";
+  import { formatNumber } from "$lib/utils/format.utils";
+  import { SkeletonText } from "@dfinity/gix-components";
+  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { onDestroy } from "svelte";
 
   export let canister: CanisterDetails;
 

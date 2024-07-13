@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { ProgressBar } from "@dfinity/gix-components";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
   export let maxCommitmentE8s: bigint;
   export let commitmentE8s: bigint;

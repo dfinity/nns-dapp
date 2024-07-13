@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { IconStakedMaturity } from "@dfinity/gix-components";
   import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import { i18n } from "$lib/stores/i18n";
   import { formattedStakedMaturity } from "$lib/utils/sns-neuron.utils";
   import TooltipIcon from "../ui/TooltipIcon.svelte";
+  import { IconStakedMaturity } from "@dfinity/gix-components";
+  import type { SnsNeuron } from "@dfinity/sns";
 
   export let neuron: SnsNeuron;
 </script>

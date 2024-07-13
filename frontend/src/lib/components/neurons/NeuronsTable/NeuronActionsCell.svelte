@@ -1,14 +1,22 @@
 <script lang="ts">
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { IconRight } from "@dfinity/gix-components";
   import type { TableNeuron } from "$lib/types/neurons-table";
+  import { IconRight } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
   export let rowData: TableNeuron;
 </script>
 
 {#if nonNullish(rowData.rowHref)}
-  <TestIdWrapper testId="go-to-neuron-detail-action">
+  <div data-tid="go-to-neuron-detail-action" class="container">
     <IconRight />
-  </TestIdWrapper>
+  </div>
 {/if}
+
+<style lang="scss">
+  .container {
+    color: var(--primary);
+    display: flex;
+    height: 20px;
+    align-items: center;
+  }
+</style>

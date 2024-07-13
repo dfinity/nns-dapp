@@ -20,6 +20,7 @@ describe("canisters-worker-api", () => {
       memory_allocation: 10n,
       compute_allocation: 5n,
       log_visibility: { controllers: null },
+      wasm_memory_limit: 1_000_000_000n,
     },
     module_hash: [],
     idle_cycles_burned_per_day: 300n,

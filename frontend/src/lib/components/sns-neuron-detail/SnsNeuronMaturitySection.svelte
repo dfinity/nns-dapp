@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { Section } from "@dfinity/gix-components";
-  import SnsStakedMaturityItemAction from "./SnsStakedMaturityItemAction.svelte";
-  import SnsAvailableMaturityItemAction from "./SnsAvailableMaturityItemAction.svelte";
-  import type { SnsNeuron } from "@dfinity/sns";
-  import { formattedTotalMaturity } from "$lib/utils/sns-neuron.utils";
   import SnsViewActiveDisbursementsItemAction from "$lib/components/sns-neuron-detail/SnsViewActiveDisbursementsItemAction.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { formattedTotalMaturity } from "$lib/utils/sns-neuron.utils";
+  import SnsAvailableMaturityItemAction from "./SnsAvailableMaturityItemAction.svelte";
+  import SnsStakedMaturityItemAction from "./SnsStakedMaturityItemAction.svelte";
+  import { Section } from "@dfinity/gix-components";
+  import type { SnsNeuron } from "@dfinity/sns";
   import type { TokenAmountV2, Token } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;

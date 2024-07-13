@@ -276,7 +276,7 @@ describe("vote-registration-services", () => {
         }
       });
 
-      it("should reset and reload actionable proposals after voting", async () => {
+      it("should reload actionable proposals after voting", async () => {
         actionableNnsProposalsStore.setProposals([proposal]);
 
         expect(get(actionableNnsProposalsStore)).toEqual({
@@ -305,8 +305,9 @@ describe("vote-registration-services", () => {
           identity: mockIdentity,
         });
 
+        // The store value should be not changed until the proposals are loaded
         expect(get(actionableNnsProposalsStore)).toEqual({
-          proposals: undefined,
+          proposals: [proposal],
         });
 
         // wait for actionable proposal loading
@@ -314,7 +315,7 @@ describe("vote-registration-services", () => {
         await runResolvedPromises();
 
         expect(get(actionableNnsProposalsStore)).toEqual({
-          proposals: [votableProposal],
+          proposals: [votableProposal, votableProposal],
         });
       });
 

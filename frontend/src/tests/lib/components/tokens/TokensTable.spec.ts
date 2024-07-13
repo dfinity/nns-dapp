@@ -66,15 +66,27 @@ describe("TokensTable", () => {
     expect(await po.getFirstColumnHeader()).toEqual(firstColumnHeader);
   });
 
-  it("should render headers", async () => {
+  it("should render desktop headers", async () => {
     const firstColumnHeader = "Accounts";
     const token1 = createUserToken({
       universeId: OWN_CANISTER_ID,
     });
     const po = renderTable({ userTokensData: [token1], firstColumnHeader });
-    expect(await po.getColumnHeaders()).toEqual([
+    expect(await po.getDesktopColumnHeaders()).toEqual([
       "Accounts",
       "Balance",
+      "", // No header for actions column.
+    ]);
+  });
+
+  it("should render mobile headers", async () => {
+    const firstColumnHeader = "Accounts";
+    const token1 = createUserToken({
+      universeId: OWN_CANISTER_ID,
+    });
+    const po = renderTable({ userTokensData: [token1], firstColumnHeader });
+    expect(await po.getMobileColumnHeaders()).toEqual([
+      "Accounts",
       "", // No header for actions column.
     ]);
   });
@@ -103,7 +115,6 @@ describe("TokensTable", () => {
     expect(await po.getDesktopGridTemplateColumns()).toBe(
       "1fr max-content max-content"
     );
-    expect(await po.getMobileGridTemplateColumns()).toBe("1fr max-content");
     expect(await po.getMobileGridTemplateAreas()).toBe(
       '"first-cell last-cell" "cell-0 cell-0"'
     );

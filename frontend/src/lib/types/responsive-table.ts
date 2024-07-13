@@ -8,13 +8,29 @@ export interface ResponsiveTableRowData {
 }
 
 export type ColumnAlignment = "left" | "right";
-export type TemplateItem = "max-content" | "1fr";
+export type TemplateItem =
+  | "1fr"
+  | "max-content"
+  | "minmax(max-content, 1fr)"
+  | "minmax(min-content, max-content)";
 
 export interface ResponsiveTableColumn<
   RowDataType extends ResponsiveTableRowData,
 > {
+  id?: string;
   title: string;
-  cellComponent: ComponentType<SvelteComponent<{ rowData: RowDataType }>>;
+  cellComponent?: ComponentType<SvelteComponent<{ rowData: RowDataType }>>;
   alignment: ColumnAlignment;
   templateColumns: TemplateItem[];
+  comparator?: Comparator<RowDataType>;
 }
+
+export type Comparator<RowDataType> = (
+  a: RowDataType,
+  b: RowDataType
+) => number;
+
+export type ResponsiveTableOrder = Array<{
+  columnId: string;
+  reversed?: boolean;
+}>;

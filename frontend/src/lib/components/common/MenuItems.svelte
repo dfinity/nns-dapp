@@ -1,32 +1,32 @@
 <script lang="ts">
-  import {
-    IconExplore,
-    IconVote,
-    IconNeurons,
-    IconRocketLaunch,
-    IconWallet,
-    MenuItem,
-  } from "@dfinity/gix-components";
-  import type { ComponentType } from "svelte";
-  import { i18n } from "$lib/stores/i18n";
-  import { AppPath } from "$lib/constants/routes.constants";
-  import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
+  import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
+  import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { pageStore } from "$lib/derived/page.derived";
   import {
     canistersPathStore,
     neuronsPathStore,
     proposalsPathStore,
   } from "$lib/derived/paths.derived";
-  import { pageStore } from "$lib/derived/page.derived";
+  import { ENABLE_PROJECTS_TABLE } from "$lib/stores/feature-flags.store";
+  import { i18n } from "$lib/stores/i18n";
   import {
     ACTIONABLE_PROPOSALS_URL,
     isSelectedPath,
   } from "$lib/utils/navigation.utils";
-  import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
-  import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
-  import { ENABLE_ACTIONABLE_TAB } from "$lib/stores/feature-flags.store";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import {
+    IconExplore,
+    IconNeurons,
+    IconRocketLaunch,
+    IconVote,
+    IconWallet,
+    MenuItem,
+  } from "@dfinity/gix-components";
+  import type { ComponentType } from "svelte";
 
   let routes: {
     context: string;
@@ -54,10 +54,10 @@
     },
     {
       context: "neurons",
-      href: $neuronsPathStore,
+      href: $ENABLE_PROJECTS_TABLE ? AppPath.Staking : $neuronsPathStore,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
-        paths: [AppPath.Neurons, AppPath.Neuron],
+        paths: [AppPath.Staking, AppPath.Neurons, AppPath.Neuron],
       }),
       title: $i18n.navigation.neurons,
       icon: IconNeurons,
@@ -67,9 +67,7 @@
       href:
         // Switch to the actionable proposals page only when users are signed in.
         // When users are signed out, we preserve the universe in the URL.
-        $ENABLE_ACTIONABLE_TAB && $authSignedInStore
-          ? ACTIONABLE_PROPOSALS_URL
-          : $proposalsPathStore,
+        $authSignedInStore ? ACTIONABLE_PROPOSALS_URL : $proposalsPathStore,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
         paths: [AppPath.Proposals, AppPath.Proposal],

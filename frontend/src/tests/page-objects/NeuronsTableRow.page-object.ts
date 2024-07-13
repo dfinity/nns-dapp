@@ -1,5 +1,7 @@
 import { NeuronIdCellPo } from "$tests/page-objects/NeuronIdCell.page-object";
-import { NeuronStateInfoPo } from "$tests/page-objects/NeuronStateInfo.page-object";
+import { NeuronMaturityCellPo } from "$tests/page-objects/NeuronMaturityCell.page-object";
+import { NeuronStakeCellPo } from "$tests/page-objects/NeuronStakeCell.page-object";
+import { NeuronStateCellPo } from "$tests/page-objects/NeuronStateCell.page-object";
 import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -20,8 +22,16 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
     return NeuronIdCellPo.under(this.root);
   }
 
-  getNeuronStateInfoPo(): NeuronStateInfoPo {
-    return NeuronStateInfoPo.under(this.root);
+  getNeuronStakeCellPo(): NeuronStakeCellPo {
+    return NeuronStakeCellPo.under(this.root);
+  }
+
+  getNeuronMaturityCellPo(): NeuronMaturityCellPo {
+    return NeuronMaturityCellPo.under(this.root);
+  }
+
+  getNeuronStateCellPo(): NeuronStateCellPo {
+    return NeuronStateCellPo.under(this.root);
   }
 
   getNeuronId(): Promise<string> {
@@ -33,11 +43,28 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
   }
 
   getStake(): Promise<string> {
-    return this.getText("neuron-stake-cell-component");
+    return this.getNeuronStakeCellPo().getStake();
+  }
+
+  // Stake without the currency symbol
+  getStakeBalance(): Promise<string> {
+    return this.getNeuronStakeCellPo().getStakeBalance();
+  }
+
+  getTotalMaturity(): Promise<string> {
+    return this.getNeuronMaturityCellPo().getTotalMaturity();
+  }
+
+  getAvailableMaturity(): Promise<string> {
+    return this.getNeuronMaturityCellPo().getAvailableMaturity();
+  }
+
+  getStakedMaturity(): Promise<string> {
+    return this.getNeuronMaturityCellPo().getStakedMaturity();
   }
 
   getState(): Promise<string> {
-    return this.getNeuronStateInfoPo().getState();
+    return this.getNeuronStateCellPo().getState();
   }
 
   getDissolveDelay(): Promise<string> {

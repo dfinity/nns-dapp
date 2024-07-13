@@ -4,6 +4,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { filteredProposals } from "$lib/derived/proposals.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
+import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { referrerPathStore } from "$lib/stores/routes.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -13,10 +14,19 @@ import {
   proposalActionNnsFunction21,
 } from "$tests/mocks/proposal.mock";
 import { createMockProposalsStoreSubscribe } from "$tests/mocks/proposals.store.mock";
+import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { Principal } from "@dfinity/principal";
+import {
+  SnsProposalDecisionStatus,
+  SnsProposalRewardStatus,
+  SnsSwapLifecycle,
+} from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import NnsProposalTest from "./NnsProposalTest.svelte";
 
 vi.mock("$lib/utils/html.utils", () => ({
@@ -138,21 +148,52 @@ describe("Proposal", () => {
     expect(await po.isPresent()).toBe(false);
   });
 
-  it("should not render proposal navigation buttons when from actionable page", async () => {
+  it("should navigate to Sns", async () => {
     page.mock({
-      data: { universe: OWN_CANISTER_ID_TEXT, actionable: true },
-      routeId: AppPath.Proposals,
+      data: {
+        universe: OWN_CANISTER_ID_TEXT,
+        routeId: AppPath.Proposal,
+        actionable: true,
+      },
+    });
+    setSnsProjects([
+      {
+        lifecycle: SnsSwapLifecycle.Committed,
+        rootCanisterId: Principal.fromText("f7crg-kabae"),
+      },
+    ]);
+    actionableSnsProposalsStore.set({
+      rootCanisterId: Principal.fromText("f7crg-kabae"),
+      proposals: [
+        createSnsProposal({
+          status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+          rewardStatus:
+            SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+          proposalId: 33n,
+        }),
+      ],
+      includeBallotsByCaller: true,
     });
 
-    vi.spyOn(filteredProposals, "subscribe").mockImplementation(
-      createMockProposalsStoreSubscribe(generateMockProposals(10))
-    );
+    actionableNnsProposalsStore.setProposals(generateMockProposals(1));
 
-    const { container } = renderProposalModern(5n);
+    const { container } = renderProposalModern(0n);
     const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
 
-    expect(await po.isPresent()).toBe(true);
-    expect(await po.getPreviousButtonPo().isPresent()).toBe(false);
-    expect(await po.getNextButtonPo().isPresent()).toBe(false);
+    expect(await po.isPreviousButtonHidden()).toBe(true);
+    expect(await po.isNextButtonHidden()).toBe(false);
+    expect(await po.getNextButtonProposalId()).toEqual("33");
+
+    await po.clickNext();
+    expect(get(page)).toEqual({
+      data: {
+        actionable: "",
+        proposal: "33",
+        universe: "f7crg-kabae",
+      },
+      route: {
+        id: "/(app)/proposal/",
+      },
+    });
   });
 });

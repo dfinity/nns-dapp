@@ -24,8 +24,8 @@ export class SimpleBasePageObject {
     return this.getElement(tid).waitFor();
   }
 
-  waitForAbsent(timeout?: number): Promise<void> {
-    return this.root.waitForAbsent(timeout);
+  waitForAbsent(tid: string | undefined = undefined): Promise<void> {
+    return this.getElement(tid).waitForAbsent();
   }
 
   click(tid: string | undefined = undefined): Promise<void> {
@@ -34,5 +34,9 @@ export class SimpleBasePageObject {
 
   getText(tid: string | undefined = undefined): Promise<string> {
     return this.getElement(tid).getText();
+  }
+
+  getStyle(): Promise<string> {
+    return this.root.getAttribute("style");
   }
 }

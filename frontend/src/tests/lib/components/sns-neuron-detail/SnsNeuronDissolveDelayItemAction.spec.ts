@@ -169,7 +169,7 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
     });
     const po = renderComponent(neuron);
 
-    expect(await po.getTooltipIconPo().getText()).toBe(
+    expect(await po.getTooltipIconPo().getTooltipText()).toBe(
       "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ZXCV to be available again. If your neuron is dissolving, your ZXCV will be available in 4 years."
     );
   });
@@ -186,7 +186,7 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
     });
     const po = renderComponent(neuron);
 
-    expect(await po.getTooltipIconPo().getText()).toBe(
+    expect(await po.getTooltipIconPo().getTooltipText()).toBe(
       "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ZXCV to be available again. If your neuron is dissolving, your ZXCV will be available in 4 years."
     );
   });

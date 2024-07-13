@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { CanisterId } from "$lib/types/canister";
-  import type { Account } from "$lib/types/account";
-  import type { TransactionsObserverData } from "$lib/types/icrc.observer";
   import TransactionsObserver from "$lib/components/accounts/TransactionsObserver.svelte";
-  import type { TransactionsCallback } from "$lib/services/worker-transactions.services";
-  import { isNullish } from "@dfinity/utils";
   import { addObservedIcrcTransactionsToStore } from "$lib/services/observer.services";
+  import type { TransactionsCallback } from "$lib/services/worker-transactions.services";
+  import type { Account } from "$lib/types/account";
+  import type { CanisterId } from "$lib/types/canister";
+  import type { TransactionsObserverData } from "$lib/types/icrc.observer";
+  import { isNullish } from "@dfinity/utils";
 
   export let indexCanisterId: CanisterId;
   export let ledgerCanisterId: CanisterId;

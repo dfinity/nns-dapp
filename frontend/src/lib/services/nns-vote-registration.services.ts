@@ -1,5 +1,6 @@
 import { governanceApiService } from "$lib/api-services/governance.api-service";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
 import {
   manageVotesRegistration,
   processRegisterVoteErrors,
@@ -62,6 +63,9 @@ export const registerNnsVotes = async ({
       // the one that was called
       proposalsStore.replaceProposals([updatedProposalInfo]);
       updateProposalContext(updatedProposalInfo);
+
+      // Reset and reload actionable nns proposals.
+      loadActionableProposals().then();
     },
   });
 };

@@ -24,6 +24,12 @@ export interface ActionableSnsProposalsStore
   resetForTesting: () => void;
 }
 
+interface FailedActionableSnsesStore extends Readable<string[]> {
+  add: (rootCanisterId: string) => void;
+  remove: (rootCanisterId: string) => void;
+  resetForTesting: () => void;
+}
+
 /**
  * A store that contains sns proposals that can be voted on by the user (ballots w/ state 0).
  */
@@ -68,4 +74,32 @@ const initActionableSnsProposalsStore = (): ActionableSnsProposalsStore => {
   };
 };
 
+/**
+ * A store that contains root canister ids of SNS projects that failed to load actionable proposals.
+ */
+const initFailedActionableSnsesStore = (): FailedActionableSnsesStore => {
+  const { subscribe, update, set } = writable<string[]>([]);
+
+  return {
+    subscribe,
+
+    add(rootCanisterId: string) {
+      update((currentState: string[]) =>
+        Array.from(new Set([...currentState, rootCanisterId]))
+      );
+    },
+
+    remove(rootCanisterId: string) {
+      update((currentState: string[]) =>
+        currentState.filter((id) => id !== rootCanisterId)
+      );
+    },
+
+    resetForTesting(): void {
+      set([]);
+    },
+  };
+};
+
 export const actionableSnsProposalsStore = initActionableSnsProposalsStore();
+export const failedActionableSnsesStore = initFailedActionableSnsesStore();

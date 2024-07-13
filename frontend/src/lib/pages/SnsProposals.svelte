@@ -1,34 +1,34 @@
 <script lang="ts">
-  import { loadSnsProposals } from "$lib/services/$public/sns-proposals.services";
-  import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
-  import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import SnsProposalsList from "$lib/components/sns-proposals/SnsProposalsList.svelte";
+  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
+  import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
   import {
-    lastProposalId,
-    sortSnsProposalsById,
-  } from "$lib/utils/sns-proposals.utils";
-  import { loadSnsFilters } from "$lib/services/sns-filters.services";
+    snsFilteredActionableProposalsStore,
+    type SnsProposalActionableData,
+  } from "$lib/derived/sns/sns-filtered-actionable-proposals.derived";
   import {
     snsOnlyProjectStore,
     snsProjectSelectedStore,
   } from "$lib/derived/sns/sns-selected-project.derived";
-  import {
-    snsFiltersStore,
-    type SnsFiltersStoreData,
-  } from "$lib/stores/sns-filters.store";
-  import { isNullish, nonNullish } from "@dfinity/utils";
-  import type { Principal } from "@dfinity/principal";
-  import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
-  import type { Readable } from "svelte/store";
+  import { loadSnsProposals } from "$lib/services/$public/sns-proposals.services";
+  import { loadSnsFilters } from "$lib/services/sns-filters.services";
   import {
     actionableSnsProposalsStore,
     type ActionableSnsProposalsData,
   } from "$lib/stores/actionable-sns-proposals.store";
   import {
-    snsFilteredActionableProposalsStore,
-    type SnsProposalActionableData,
-  } from "$lib/derived/sns/sns-filtered-actionable-proposals.derived";
-  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
+    snsFiltersStore,
+    type SnsFiltersStoreData,
+  } from "$lib/stores/sns-filters.store";
+  import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
+  import {
+    lastProposalId,
+    sortSnsProposalsById,
+  } from "$lib/utils/sns-proposals.utils";
+  import type { Principal } from "@dfinity/principal";
+  import type { SnsNervousSystemFunction } from "@dfinity/sns";
+  import { isNullish, nonNullish } from "@dfinity/utils";
+  import type { Readable } from "svelte/store";
 
   let nsFunctionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
   $: nsFunctionsStore = createSnsNsFunctionsProjectStore($snsOnlyProjectStore);

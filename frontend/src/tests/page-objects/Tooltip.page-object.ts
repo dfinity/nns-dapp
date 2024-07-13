@@ -3,10 +3,10 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import { assertNonNullish } from "$tests/utils/utils.test-utils";
 
 export class TooltipPo extends BasePageObject {
-  private static readonly TID = "tooltip-component";
+  private static readonly TOOLTIP_TID = "tooltip-component";
 
   static under(element: PageObjectElement): TooltipPo {
-    return new TooltipPo(element.byTestId(TooltipPo.TID));
+    return new TooltipPo(element.byTestId(TooltipPo.TOOLTIP_TID));
   }
 
   async getTooltipText(): Promise<string> {
@@ -23,11 +23,22 @@ export class TooltipPo extends BasePageObject {
     return (await this.getTooltipElement()).getAttribute("id");
   }
 
+  async isTooltipEnabled(): Promise<boolean> {
+    return !(await (await this.getTooltipElement()).getClasses()).includes(
+      "not-rendered"
+    );
+  }
+
   async getTooltipElement(): Promise<PageObjectElement> {
     const id = await this.getAriaDescribedBy();
     const body = await this.root.getDocumentBody();
-    const tooltipElemenet = body.querySelector(`#${id}`);
-    return tooltipElemenet;
+    const tooltipElements = await body.querySelectorAll(`#${id}`);
+    if (tooltipElements.length !== 1) {
+      throw new Error(
+        `Found ${tooltipElements.length} tooltip elements with id ${id}`
+      );
+    }
+    return tooltipElements[0];
   }
 
   async getDisplayedText(): Promise<string> {

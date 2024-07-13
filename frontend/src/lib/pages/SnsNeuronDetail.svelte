@@ -1,48 +1,49 @@
 <script lang="ts">
-  import { Principal } from "@dfinity/principal";
-  import type { SnsNeuron } from "@dfinity/sns";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import SnsNeuronHotkeysCard from "$lib/components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
-  import { getSnsNeuron } from "$lib/services/sns-neurons.services";
-  import {
-    type SelectedSnsNeuronContext,
-    type SelectedSnsNeuronStore,
-    SELECTED_SNS_NEURON_CONTEXT_KEY,
-  } from "$lib/types/sns-neuron-detail.context";
-  import { onMount, setContext } from "svelte";
-  import { toastsError } from "$lib/stores/toasts.store";
-  import { queuedStore } from "$lib/stores/queued-store";
-  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { goto } from "$app/navigation";
-  import { pageStore } from "$lib/derived/page.derived";
-  import { neuronsPathStore } from "$lib/derived/paths.derived";
-  import { AppPath } from "$lib/constants/routes.constants";
-  import SnsNeuronFollowingCard from "$lib/components/sns-neuron-detail/SnsNeuronFollowingCard.svelte";
-  import { Island } from "@dfinity/gix-components";
-  import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
-  import { debugSelectedSnsNeuronStore } from "$lib/derived/debug.derived";
-  import type { SnsNervousSystemParameters } from "@dfinity/sns";
-  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
-  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
-  import type { Token, TokenAmountV2 } from "@dfinity/utils";
-  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-  import { nonNullish, isNullish } from "@dfinity/utils";
-  import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import SnsNeuronProposalsCard from "$lib/components/neuron-detail/SnsNeuronProposalsCard.svelte";
-  import SnsPermissionsCard from "$lib/components/neuron-detail/SnsPermissionsCard.svelte";
-  import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
-  import SnsNeuronPageHeader from "$lib/components/sns-neuron-detail/SnsNeuronPageHeader.svelte";
-  import SnsNeuronVotingPowerSection from "$lib/components/sns-neuron-detail/SnsNeuronVotingPowerSection.svelte";
-  import SnsNeuronMaturitySection from "$lib/components/sns-neuron-detail/SnsNeuronMaturitySection.svelte";
-  import SnsNeuronAdvancedSection from "$lib/components/sns-neuron-detail/SnsNeuronAdvancedSection.svelte";
-  import Separator from "$lib/components/ui/Separator.svelte";
-  import SnsNeuronPageHeading from "$lib/components/sns-neuron-detail/SnsNeuronPageHeading.svelte";
-  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import SnsNeuronTestnetFunctionsCard from "$lib/components/neuron-detail/SnsNeuronTestnetFunctionsCard.svelte";
+  import SnsPermissionsCard from "$lib/components/neuron-detail/SnsPermissionsCard.svelte";
+  import SnsNeuronAdvancedSection from "$lib/components/sns-neuron-detail/SnsNeuronAdvancedSection.svelte";
+  import SnsNeuronFollowingCard from "$lib/components/sns-neuron-detail/SnsNeuronFollowingCard.svelte";
+  import SnsNeuronHotkeysCard from "$lib/components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
+  import SnsNeuronMaturitySection from "$lib/components/sns-neuron-detail/SnsNeuronMaturitySection.svelte";
+  import SnsNeuronPageHeader from "$lib/components/sns-neuron-detail/SnsNeuronPageHeader.svelte";
+  import SnsNeuronPageHeading from "$lib/components/sns-neuron-detail/SnsNeuronPageHeading.svelte";
+  import SnsNeuronVotingPowerSection from "$lib/components/sns-neuron-detail/SnsNeuronVotingPowerSection.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import SkeletonHeader from "$lib/components/ui/SkeletonHeader.svelte";
   import SkeletonHeading from "$lib/components/ui/SkeletonHeading.svelte";
+  import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { debugSelectedSnsNeuronStore } from "$lib/derived/debug.derived";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { neuronsPathStore } from "$lib/derived/paths.derived";
+  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
+  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
+  import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
+  import { refreshNeuronIfNeeded } from "$lib/services/sns-neurons-check-balances.services";
+  import { getSnsNeuron } from "$lib/services/sns-neurons.services";
+  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
+  import { queuedStore } from "$lib/stores/queued-store";
+  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import {
+    SELECTED_SNS_NEURON_CONTEXT_KEY,
+    type SelectedSnsNeuronContext,
+    type SelectedSnsNeuronStore,
+  } from "$lib/types/sns-neuron-detail.context";
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
+  import { Island } from "@dfinity/gix-components";
+  import { Principal } from "@dfinity/principal";
+  import type { SnsNervousSystemParameters } from "@dfinity/sns";
+  import type { SnsNeuron } from "@dfinity/sns";
+  import type { Token, TokenAmountV2 } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { onMount, setContext } from "svelte";
 
   export let neuronId: string | null | undefined;
 
@@ -156,6 +157,28 @@
     isNullish($selectedSnsNeuronStore.neuron) ||
     isNullish(parameters) ||
     isNullish(transactionFee);
+
+  const maybeRefreshAndReload = async ({
+    rootCanisterId,
+    neuron,
+  }: {
+    rootCanisterId: Principal | undefined;
+    neuron: SnsNeuron | undefined | null;
+  }) => {
+    if (
+      await refreshNeuronIfNeeded({
+        rootCanisterId,
+        neuron,
+      })
+    ) {
+      loadNeuron({ forceFetch: true });
+    }
+  };
+
+  $: maybeRefreshAndReload({
+    rootCanisterId,
+    neuron: $selectedSnsNeuronStore.neuron,
+  });
 </script>
 
 <TestIdWrapper testId="sns-neuron-detail-component">

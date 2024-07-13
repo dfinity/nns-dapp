@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { getContext } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import {
     type AccountType,
@@ -7,6 +6,7 @@
     type AddAccountContext,
   } from "$lib/types/add-account.context";
   import { Card } from "@dfinity/gix-components";
+  import { getContext } from "svelte";
 
   const context: AddAccountContext = getContext<AddAccountContext>(
     ADD_ACCOUNT_CONTEXT_KEY

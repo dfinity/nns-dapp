@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-05-29_23-02-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-03_23-01-storage-layer-disabled/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -453,11 +453,13 @@ pub struct GovernanceCachedMetrics {
     pub not_dissolving_neurons_count: u64,
     pub total_locked_e8s: u64,
     pub neurons_fund_total_active_neurons: u64,
+    pub total_voting_power_non_self_authenticating_controller: Option<u64>,
     pub total_staked_maturity_e8s_equivalent: u64,
     pub not_dissolving_neurons_e8s_buckets_ect: Vec<(u64, f64)>,
     pub total_staked_e8s_ect: u64,
     pub not_dissolving_neurons_staked_maturity_e8s_equivalent_sum: u64,
     pub dissolved_neurons_e8s: u64,
+    pub total_staked_e8s_non_self_authenticating_controller: Option<u64>,
     pub dissolving_neurons_e8s_buckets_seed: Vec<(u64, f64)>,
     pub neurons_with_less_than_6_months_dissolve_delay_e8s: u64,
     pub not_dissolving_neurons_staked_maturity_e8s_equivalent_buckets: Vec<(u64, f64)>,
@@ -833,6 +835,7 @@ pub struct ListKnownNeuronsResponse {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ListNeurons {
     pub neuron_ids: Vec<u64>,
+    pub include_empty_neurons_readable_by_caller: Option<bool>,
     pub include_neurons_readable_by_caller: bool,
 }
 #[derive(Serialize, CandidType, Deserialize)]

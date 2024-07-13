@@ -1,22 +1,16 @@
-<script lang="ts" context="module">
-  let nextTooltipIdNumber = 0;
-</script>
-
 <script lang="ts">
-  import { scale } from "svelte/transition";
-  import { cubicOut } from "svelte/easing";
-  import { Tooltip } from "@dfinity/gix-components";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import type { Universe } from "$lib/types/universe";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isUniverseNns } from "$lib/utils/universe.utils";
-  import type { Universe } from "$lib/types/universe";
+  import { Tooltip } from "@dfinity/gix-components";
   import { Principal } from "@dfinity/principal";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { cubicOut } from "svelte/easing";
+  import { scale } from "svelte/transition";
 
   export let count: number;
   export let universe: Universe | "all";
-
-  let tooltipId = `actionable-count-tooltip-${nextTooltipIdNumber++}`;
 
   let tooltipText = "";
   $: tooltipText =
@@ -38,7 +32,7 @@
 </script>
 
 <TestIdWrapper testId="actionable-proposal-count-badge-component">
-  <Tooltip id={tooltipId} text={tooltipText} top={true}
+  <Tooltip idPrefix="actionable-count-tooltip" text={tooltipText} top={true}
     ><span
       transition:scale={{
         duration: 250,

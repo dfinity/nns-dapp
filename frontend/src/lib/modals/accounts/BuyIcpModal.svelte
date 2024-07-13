@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Html, Modal } from "@dfinity/gix-components";
-  import type { Account } from "$lib/types/account";
-  import { i18n } from "$lib/stores/i18n";
-  import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
   import BANXA_LOGO from "$lib/assets/banxa-logo.svg";
+  import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
+  import { Html, Modal } from "@dfinity/gix-components";
 
   export let account: Account;
 

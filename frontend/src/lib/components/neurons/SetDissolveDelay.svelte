@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-  import { i18n } from "$lib/stores/i18n";
-  import { formatTokenV2 } from "$lib/utils/token.utils";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { Html } from "@dfinity/gix-components";
-  import { valueSpan } from "$lib/utils/utils";
   import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
   import DayInput from "$lib/components/ui/DayInput.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatTokenV2 } from "$lib/utils/token.utils";
+  import { valueSpan } from "$lib/utils/utils";
+  import RangeDissolveDelay from "./RangeDissolveDelay.svelte";
+  import { Html } from "@dfinity/gix-components";
   import type { NeuronState } from "@dfinity/nns";
   import { nonNullish, type TokenAmountV2 } from "@dfinity/utils";
-  import RangeDissolveDelay from "./RangeDissolveDelay.svelte";
+  import { createEventDispatcher } from "svelte";
 
   export let neuronState: NeuronState;
   export let neuronDissolveDelaySeconds: bigint;

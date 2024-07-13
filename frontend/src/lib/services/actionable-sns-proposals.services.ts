@@ -1,9 +1,13 @@
-import { queryProposals, querySnsNeurons } from "$lib/api/sns-governance.api";
+import { queryProposals } from "$lib/api/sns-governance.api";
 import { MAX_ACTIONABLE_REQUEST_COUNT } from "$lib/constants/constants";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
-import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+import { loadSnsNeurons } from "$lib/services/sns-neurons.services";
+import {
+  actionableSnsProposalsStore,
+  failedActionableSnsesStore,
+} from "$lib/stores/actionable-sns-proposals.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { votableSnsNeurons } from "$lib/utils/sns-neuron.utils";
 import {
@@ -15,7 +19,7 @@ import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsProposalRewardStatus } from "@dfinity/sns";
 import type { ProposalData } from "@dfinity/sns/dist/candid/sns_governance";
-import { fromNullable, nonNullish } from "@dfinity/utils";
+import { fromNullable, isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 export const loadActionableSnsProposals = async () => {
@@ -35,19 +39,14 @@ export const loadActionableProposalsForSns = async (
 ): Promise<void> => {
   try {
     const rootCanisterIdText = rootCanisterId.toText();
-    const storeValue = get(actionableSnsProposalsStore)[rootCanisterIdText];
-    if (nonNullish(storeValue)) {
-      // The proposals state does not update frequently, so we don't need to re-fetch.
-      // The store will be reset after the user registers a vote.
-      return;
-    }
-
     const identity = await getAuthenticatedIdentity();
     const { proposals: allProposals, includeBallotsByCaller } =
       await querySnsProposals({
         rootCanisterId: rootCanisterIdText,
         identity,
       });
+
+    failedActionableSnsesStore.remove(rootCanisterIdText);
 
     if (!includeBallotsByCaller) {
       // No need to fetch neurons if there are no actionable proposals support.
@@ -59,14 +58,9 @@ export const loadActionableProposalsForSns = async (
       return;
     }
 
-    const neurons =
-      get(snsNeuronsStore)[rootCanisterIdText]?.neurons ??
-      // Fetch neurons if they are not in the store, but do not populate the store.
-      // Otherwise, it will skip calling of the `syncSnsNeurons` function to check neurons stake against the balance of the subaccount.
-      (await queryNeurons({
-        rootCanisterId: rootCanisterIdText,
-        identity,
-      }));
+    const neurons = await queryNeurons({
+      rootCanisterId,
+    });
 
     // It's not possible to filter out votable proposals w/o ballots
     const votableProposals = includeBallotsByCaller
@@ -87,26 +81,23 @@ export const loadActionableProposalsForSns = async (
     });
   } catch (err) {
     console.error(err);
+
+    // Store the failed root canister ID to provide the correct loading state.
+    failedActionableSnsesStore.add(rootCanisterId.toText());
   }
 };
 
 const queryNeurons = async ({
   rootCanisterId,
-  identity,
 }: {
-  rootCanisterId: string;
-  identity: Identity;
+  rootCanisterId: Principal;
 }): Promise<SnsNeuron[]> => {
-  const storeNeurons = get(snsNeuronsStore)[rootCanisterId];
-  if (nonNullish(storeNeurons?.neurons)) {
-    return storeNeurons.neurons;
+  const getStoreNeurons = () =>
+    get(snsNeuronsStore)[rootCanisterId.toText()]?.neurons;
+  if (isNullish(getStoreNeurons())) {
+    await loadSnsNeurons({ rootCanisterId, certified: false });
   }
-
-  return await querySnsNeurons({
-    identity,
-    rootCanisterId: Principal.fromText(rootCanisterId),
-    certified: false,
-  });
+  return getStoreNeurons();
 };
 
 /** Fetches proposals that accept votes */

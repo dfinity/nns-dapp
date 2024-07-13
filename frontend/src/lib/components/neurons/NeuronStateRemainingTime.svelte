@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { NeuronState } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { Html, KeyValuePair } from "@dfinity/gix-components";
+  import { NeuronState } from "@dfinity/nns";
+  import { secondsToDuration } from "@dfinity/utils";
 
   export let state: NeuronState;
   export let timeInSeconds: bigint | undefined;

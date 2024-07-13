@@ -1,16 +1,16 @@
 <script lang="ts">
+  import NeuronConfirmActionScreen from "$lib/components/neuron-detail/NeuronConfirmActionScreen.svelte";
+  import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { createEventDispatcher } from "svelte";
-  import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
-  import NeuronConfirmActionScreen from "$lib/components/neuron-detail/NeuronConfirmActionScreen.svelte";
   import {
     Html,
     WizardModal,
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
+  import { createEventDispatcher } from "svelte";
 
   export let availableMaturityE8s: bigint;
 

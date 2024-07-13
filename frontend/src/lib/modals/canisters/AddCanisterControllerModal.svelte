@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { Principal } from "@dfinity/principal";
   import NewControllerReview from "$lib/components/canister-detail/NewControllerReview.svelte";
   import AddPrincipal from "$lib/components/common/AddPrincipal.svelte";
   import { i18n } from "$lib/stores/i18n";
@@ -8,6 +7,7 @@
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
 
   const steps: WizardSteps = [
     {

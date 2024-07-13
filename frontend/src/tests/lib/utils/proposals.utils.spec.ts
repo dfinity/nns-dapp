@@ -13,6 +13,7 @@ import {
   isProposalDeadlineInTheFuture,
   lastProposalId,
   mapProposalInfo,
+  navigationIdComparator,
   nnsNeuronToVotingNeuron,
   preserveNeuronSelectionAfterUpdate,
   proposalActionData,
@@ -22,6 +23,7 @@ import {
   replaceAndConcatenateProposals,
   replaceProposals,
   selectedNeuronsVotingPower,
+  sortProposalsByIdDescendingOrder,
 } from "$lib/utils/proposals.utils";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
@@ -997,6 +999,105 @@ describe("proposals-utils", () => {
       expect(getVoteDisplay(Vote.Yes)).toBe("Yes");
       expect(getVoteDisplay(Vote.No)).toBe("No");
       expect(getVoteDisplay(Vote.Unspecified)).toBe("Unspecified");
+    });
+  });
+
+  describe("navigationIdComparator", () => {
+    const universeA = "aaaaa-aaaaa";
+    const universeB = "bbbbb-bbbbb";
+    const universes = [universeA, universeB];
+
+    it("should compare by universes", () => {
+      expect(
+        navigationIdComparator({
+          a: {
+            universe: universeA,
+            proposalId: 1n,
+          },
+          b: {
+            universe: universeB,
+            proposalId: 1n,
+          },
+          universes,
+        })
+      ).toBe(-1);
+      expect(
+        navigationIdComparator({
+          a: {
+            universe: universeB,
+            proposalId: 1n,
+          },
+          b: {
+            universe: universeA,
+            proposalId: 1n,
+          },
+          universes,
+        })
+      ).toBe(1);
+    });
+
+    it("should compare by proposal IDs", () => {
+      expect(
+        navigationIdComparator({
+          a: {
+            universe: universeA,
+            proposalId: 0n,
+          },
+          b: {
+            universe: universeA,
+            proposalId: 1n,
+          },
+          universes,
+        })
+      ).toBe(1);
+      expect(
+        navigationIdComparator({
+          a: {
+            universe: universeA,
+            proposalId: 1n,
+          },
+          b: {
+            universe: universeA,
+            proposalId: 0n,
+          },
+          universes,
+        })
+      ).toBe(-1);
+    });
+
+    it("should return 0 when a = b", () => {
+      expect(
+        navigationIdComparator({
+          a: {
+            universe: universeA,
+            proposalId: 1n,
+          },
+          b: {
+            universe: universeA,
+            proposalId: 1n,
+          },
+          universes,
+        })
+      ).toBe(0);
+    });
+  });
+
+  describe("sortProposalsByIdDescendingOrder", () => {
+    const proposal0 = { ...mockProposalInfo, id: 0n } as ProposalInfo;
+    const proposal1 = { ...mockProposalInfo, id: 1n } as ProposalInfo;
+    const proposal2 = { ...mockProposalInfo, id: 2n } as ProposalInfo;
+
+    it("should sort proposals", () => {
+      expect(
+        sortProposalsByIdDescendingOrder([proposal1, proposal0, proposal2])
+      ).toEqual([proposal2, proposal1, proposal0]);
+      expect(
+        sortProposalsByIdDescendingOrder([proposal2, proposal1, proposal0])
+      ).toEqual([proposal2, proposal1, proposal0]);
+      expect(sortProposalsByIdDescendingOrder([proposal0])).toEqual([
+        proposal0,
+      ]);
+      expect(sortProposalsByIdDescendingOrder([])).toEqual([]);
     });
   });
 });

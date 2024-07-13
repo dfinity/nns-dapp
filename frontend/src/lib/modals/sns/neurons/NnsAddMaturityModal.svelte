@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { Modal, Spinner } from "@dfinity/gix-components";
-  import { createEventDispatcher } from "svelte";
+  import Input from "$lib/components/ui/Input.svelte";
+  import { addMaturity } from "$lib/services/nns-neurons-dev.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsError } from "$lib/stores/toasts.store";
-  import Input from "$lib/components/ui/Input.svelte";
   import { numberToE8s } from "$lib/utils/token.utils";
-  import { addMaturity } from "$lib/services/nns-neurons-dev.services";
+  import { Modal, Spinner } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
+  import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;
 
@@ -39,7 +39,7 @@
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
-<Modal role="alert" on:nnsClose>
+<Modal testId="nns-add-maturity-modal-component" role="alert" on:nnsClose>
   <span slot="title">Add Nns Neuron Maturity</span>
 
   <form id="get-maturity-form" on:submit|preventDefault={onSubmit}>
@@ -55,6 +55,7 @@
   </form>
 
   <button
+    data-tid="confirm-add-maturity-button"
     form="get-maturity-form"
     type="submit"
     class="primary"

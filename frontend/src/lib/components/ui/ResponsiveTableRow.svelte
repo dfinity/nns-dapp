@@ -4,12 +4,13 @@
 </script>
 
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
-  import { getCellGridAreaName } from "$lib/utils/responsive-table.utils";
   import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
-  import { nonNullish } from "@dfinity/utils";
+  import { getCellGridAreaName } from "$lib/utils/responsive-table.utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let rowData: RowDataType;
   export let columns: ResponsiveTableColumn<RowDataType>[];
+  export let style: string | undefined = undefined;
 
   let firstColumn: ResponsiveTableColumn<RowDataType> | undefined;
   let middleColumns: ResponsiveTableColumn<RowDataType>[];
@@ -18,6 +19,19 @@
   $: firstColumn = columns.at(0);
   $: middleColumns = columns.slice(1, -1);
   $: lastColumn = columns.at(-1);
+
+  const getCellStyle = ({
+    column,
+    index,
+  }: {
+    column: ResponsiveTableColumn<RowDataType>;
+    index?: number;
+  }) =>
+    `--desktop-column-span: ${column.templateColumns.length};` +
+    `--mobile-template-columns: ${column.templateColumns.join(" ")};` +
+    (nonNullish(index)
+      ? `--grid-area-name: ${getCellGridAreaName(index)};`
+      : "");
 </script>
 
 <svelte:element
@@ -26,34 +40,52 @@
   role="row"
   tabindex="0"
   data-tid="responsive-table-row-component"
+  {style}
 >
   {#if firstColumn}
-    <div role="cell" class="title-cell desktop-align-{firstColumn.alignment}">
-      <svelte:component this={firstColumn.cellComponent} {rowData} />
+    <div
+      role="cell"
+      class:subgrid-cell={firstColumn.templateColumns.length > 1}
+      class="first-cell desktop-align-{firstColumn.alignment}"
+      style={getCellStyle({ column: firstColumn })}
+    >
+      <div class="cell-body">
+        <svelte:component this={firstColumn.cellComponent} {rowData} />
+      </div>
     </div>
   {/if}
 
   {#each middleColumns as column, index}
     <div
       role="cell"
-      class="mobile-row-cell desktop-align-{column.alignment}"
-      style="--grid-area-name: {getCellGridAreaName(index)}"
+      class:subgrid-cell={column.templateColumns.length > 1}
+      class:empty-cell={isNullish(column.cellComponent)}
+      class="middle-cell desktop-align-{column.alignment}"
+      style={getCellStyle({ column, index })}
     >
-      <span class="mobile-only">{column.title}</span>
-      <svelte:component this={column.cellComponent} {rowData} />
+      {#if nonNullish(column.cellComponent)}
+        <span class="middle-cell-label">{column.title}</span>
+        <div class="cell-body">
+          <svelte:component this={column.cellComponent} {rowData} />
+        </div>
+      {/if}
     </div>
   {/each}
 
   {#if lastColumn}
     <div
       role="cell"
-      class="actions-cell actions desktop-align-{lastColumn.alignment}"
+      class:subgrid-cell={lastColumn.templateColumns.length > 1}
+      class="last-cell actions desktop-align-{lastColumn.alignment}"
+      style={getCellStyle({ column: lastColumn })}
     >
-      <svelte:component
-        this={lastColumn.cellComponent}
-        {rowData}
-        on:nnsAction
-      />
+      <div class="cell-body">
+        <svelte:component
+          this={lastColumn.cellComponent}
+          {rowData}
+          on:nnsAction
+        />
+      </div>
     </div>
   {/if}
 </svelte:element>
@@ -64,27 +96,26 @@
   @use "../../themes/mixins/grid-table";
 
   [role="row"] {
+    // Styles for desktop and mobile:
+    color: var(--table-row-text-color, inherit);
+
     display: grid;
-    flex-direction: column;
-    gap: var(--padding-2x);
-
     text-decoration: none;
+    background-color: var(--table-row-background);
 
+    // Styles for mobile (and overridden for desktop):
+
+    padding: var(--padding-3x);
+    row-gap: var(--padding-1_5x);
     grid-template-areas: var(--mobile-grid-template-areas);
-    grid-template-columns: var(--mobile-grid-template-columns);
+
+    // Styles applied to desktop only:
 
     @include media.min-width(medium) {
       @include grid-table.row;
+      padding: var(--padding-2x);
       row-gap: 0;
       grid-template-areas: none;
-    }
-
-    padding: var(--padding-2x);
-
-    background-color: var(--table-row-background);
-
-    @include media.min-width(medium) {
-      grid-template-rows: 1fr;
     }
 
     &:hover {
@@ -93,62 +124,96 @@
   }
 
   div[role="cell"] {
+    // On desktop we have one large grid. Some table cells take up a single
+    // grid cell, while others span multiple cells because they have to align
+    // with the grid lines. The single-cell cells use `display: flex` while
+    // the aligned cells use `display: grid`.
+    //
+    // On mobile, there is no alignment between different cells and all cells
+    // get display: flex.
+    //
+    // But the cells that expect to be in a grid, still need their grid
+    // defined. This happens in the cell-body div. On desktop these get
+    // `display: contents` to get their grid lines from the larger grid, while
+    // on mobile they get their own grid from `--mobile-template-columns`.
+
+    // Styles applied to desktop and mobile:
+
     display: flex;
     align-items: center;
-    gap: var(--padding);
 
-    &.title-cell {
-      grid-area: first-cell;
+    // Styles applied to mobile (and overridden for desktop):
 
-      @include media.min-width(medium) {
-        grid-area: revert;
+    &.empty-cell {
+      display: none;
+    }
+
+    &.subgrid-cell {
+      .cell-body {
+        display: grid;
+        grid-template-columns: var(--mobile-template-columns);
       }
     }
 
-    &.actions-cell {
-      display: flex;
+    &.first-cell {
+      grid-area: first-cell;
+      margin-bottom: var(--padding-0_5x);
+    }
+
+    &.last-cell {
       justify-content: flex-end;
 
       grid-area: last-cell;
-
-      @include media.min-width(medium) {
-        grid-area: revert;
-      }
     }
 
-    &.mobile-row-cell {
-      display: flex;
+    &.middle-cell {
       justify-content: space-between;
 
       grid-area: var(--grid-area-name);
-
-      @include media.min-width(medium) {
-        grid-area: revert;
-      }
     }
 
+    // Styles applied to desktop only:
+
     @include media.min-width(medium) {
+      &.empty-cell {
+        display: flex;
+      }
+
+      &.subgrid-cell {
+        display: grid;
+        grid-template-columns: subgrid;
+        grid-template-rows: subgrid;
+
+        .cell-body {
+          display: contents;
+        }
+      }
+
+      .middle-cell-label {
+        display: none;
+      }
+
+      &.first-cell {
+        margin-bottom: 0;
+      }
+
+      &.first-cell,
+      &.middle-cell,
+      &.last-cell {
+        grid-area: revert;
+        grid-column: span var(--desktop-column-span);
+        grid-row: span var(--grid-rows-per-table-row);
+      }
+
       &.desktop-align-left {
         justify-content: flex-start;
+        text-align: start;
       }
 
       &.desktop-align-right {
         justify-content: flex-end;
+        text-align: end;
       }
-    }
-  }
-
-  .actions {
-    :global(svg) {
-      color: var(--primary);
-    }
-  }
-
-  .mobile-only {
-    display: block;
-
-    @include media.min-width(medium) {
-      display: none;
     }
   }
 </style>

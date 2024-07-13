@@ -1,42 +1,42 @@
 <script lang="ts">
-  import { onMount, setContext } from "svelte";
-  import type { Principal } from "@dfinity/principal";
+  import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
   import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
+  import ControllersCard from "$lib/components/canister-detail/ControllersCard.svelte";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { debugSelectedCanisterStore } from "$lib/derived/debug.derived";
   import {
     getCanisterDetails,
     listCanisters,
   } from "$lib/services/canisters.services";
-  import { i18n } from "$lib/stores/i18n";
   import { canistersStore } from "$lib/stores/canisters.store";
-  import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
-  import { busy, Island } from "@dfinity/gix-components";
-  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import ControllersCard from "$lib/components/canister-detail/ControllersCard.svelte";
-  import { writable } from "svelte/store";
+  import { i18n } from "$lib/stores/i18n";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
     type SelectCanisterDetailsStore,
   } from "$lib/types/canister-detail.context";
-  import { debugSelectedCanisterStore } from "$lib/derived/debug.derived";
-  import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
+  import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
+  import { busy, Island } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
+  import { onMount, setContext } from "svelte";
+  import { writable } from "svelte/store";
 
-  import { toastsError } from "$lib/stores/toasts.store";
-  import { getCanisterFromStore } from "$lib/utils/canisters.utils";
-  import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
-  import CardInfo from "$lib/components/ui/CardInfo.svelte";
-  import Footer from "$lib/components/layout/Footer.svelte";
   import { goto } from "$app/navigation";
-  import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
-  import { emit } from "$lib/utils/events.utils";
-  import type { CanisterDetailModal } from "$lib/types/canister-detail.modal";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
   import CanisterPageHeader from "$lib/components/canister-detail/CanisterPageHeader.svelte";
   import CanisterPageHeading from "$lib/components/canister-detail/CanisterPageHeading.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import Footer from "$lib/components/layout/Footer.svelte";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import SkeletonHeader from "$lib/components/ui/SkeletonHeader.svelte";
   import SkeletonHeading from "$lib/components/ui/SkeletonHeading.svelte";
+  import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import type { CanisterDetailModal } from "$lib/types/canister-detail.modal";
+  import { getCanisterFromStore } from "$lib/utils/canisters.utils";
+  import { emit } from "$lib/utils/events.utils";
   import { nonNullish } from "@dfinity/utils";
 
   // BEGIN: loading and navigation

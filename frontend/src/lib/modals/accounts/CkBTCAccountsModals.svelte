@@ -1,4 +1,6 @@
 <script lang="ts">
+  import CkBTCReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
+  import CkBTCTransactionTokenModal from "$lib/modals/accounts/CkBTCTransactionTokenModal.svelte";
   import type {
     CkBTCWalletModal,
     CkBTCWalletModalData,
@@ -7,8 +9,6 @@
     CkBTCTransactionModalData,
   } from "$lib/types/ckbtc-accounts.modal";
   import { nonNullish } from "@dfinity/utils";
-  import CkBTCReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
-  import CkBTCTransactionTokenModal from "$lib/modals/accounts/CkBTCTransactionTokenModal.svelte";
 
   let modal: CkBTCWalletModal | undefined;
   const close = () => (modal = undefined);

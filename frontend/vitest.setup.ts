@@ -40,11 +40,10 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
     featureFlags: JSON.stringify({
       ENABLE_CKBTC: true,
       ENABLE_CKTESTBTC: true,
-      ENABLE_NEURONS_TABLE: true,
-      ENABLE_CKUSDC: true,
+      ENABLE_PROJECTS_TABLE: true,
+      ENABLE_IMPORT_TOKEN: true,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
-      ENABLE_ACTIONABLE_TAB: true,
     }),
     fetchRootKey: "false",
     host: "https://icp-api.io",

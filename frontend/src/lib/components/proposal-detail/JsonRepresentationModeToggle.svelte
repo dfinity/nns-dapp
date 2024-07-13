@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Toggle } from "@dfinity/gix-components";
+  import { jsonRepresentationModeStore } from "$lib/derived/json-representation.derived.js";
   import { i18n } from "$lib/stores/i18n";
   import { jsonRepresentationStore } from "$lib/stores/json-representation.store";
-  import { jsonRepresentationModeStore } from "$lib/derived/json-representation.derived.js";
+  import { Toggle } from "@dfinity/gix-components";
 
   let checked: boolean;
   $: checked = $jsonRepresentationModeStore === "raw";

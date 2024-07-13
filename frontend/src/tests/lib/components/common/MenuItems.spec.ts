@@ -52,16 +52,30 @@ describe("MenuItems", () => {
     }
   };
 
-  beforeEach(() => {
-    overrideFeatureFlagsStore.reset();
-  });
-
   it("should render accounts menu item", () =>
     shouldRenderMenuItem({ context: "accounts", labelKey: "tokens" }));
-  it("should render neurons menu item", () =>
-    shouldRenderMenuItem({ context: "neurons", labelKey: "neurons" }));
+
+  it("should render neurons menu item without projects table", () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_PROJECTS_TABLE", false);
+    shouldRenderMenuItem({
+      context: "neurons",
+      labelKey: "neurons",
+      href: "/neurons/?u=qhbym-qaaaa-aaaaa-aaafq-cai",
+    });
+  });
+
+  it("should render neurons menu item with projects table", () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_PROJECTS_TABLE", true);
+    shouldRenderMenuItem({
+      context: "neurons",
+      labelKey: "neurons",
+      href: "/staking",
+    });
+  });
+
   it("should render voting menu item", () =>
     shouldRenderMenuItem({ context: "proposals", labelKey: "voting" }));
+
   it("should render canisters menu item", () =>
     shouldRenderMenuItem({ context: "canisters", labelKey: "canisters" }));
 
@@ -97,7 +111,6 @@ describe("MenuItems", () => {
   describe("actionable proposal link", () => {
     it("should have actionable proposal link", async () => {
       resetIdentity();
-      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", true);
       page.mock({
         data: { universe: OWN_CANISTER_ID_TEXT },
         routeId: AppPath.Proposals,
@@ -111,23 +124,7 @@ describe("MenuItems", () => {
     });
 
     it("should have default proposal link when signedOut", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", true);
       setNoIdentity();
-      page.mock({
-        data: { universe: OWN_CANISTER_ID_TEXT },
-        routeId: AppPath.Proposals,
-      });
-
-      shouldRenderMenuItem({
-        context: "proposals",
-        labelKey: "voting",
-        href: "/proposals/?u=qhbym-qaaaa-aaaaa-aaafq-cai",
-      });
-    });
-
-    it("should have default proposal link when no feature flag set", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", false);
-      resetIdentity();
       page.mock({
         data: { universe: OWN_CANISTER_ID_TEXT },
         routeId: AppPath.Proposals,

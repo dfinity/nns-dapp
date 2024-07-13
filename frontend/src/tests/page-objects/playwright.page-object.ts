@@ -121,11 +121,16 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   click(): Promise<void> {
-    return this.locator.click();
+    // Click in the corner to avoid clicking any `preventDefault` items inside.
+    return this.locator.click({ position: { x: 5, y: 5 } });
   }
 
-  input(_value: string): Promise<void> {
-    throw new Error("Not implement");
+  input(value: string): Promise<void> {
+    return this.locator.evaluate((node: HTMLInputElement, value: string) => {
+      node.value = value;
+      node.dispatchEvent(new Event("input", { bubbles: true }));
+      node.dispatchEvent(new Event("change", { bubbles: true }));
+    }, value);
   }
 
   typeText(text: string): Promise<void> {

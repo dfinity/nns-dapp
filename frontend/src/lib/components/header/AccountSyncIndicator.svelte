@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { ComponentType } from "svelte";
-  import { IconSync } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
-  import { IconError, Popover } from "@dfinity/gix-components";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { syncOverallStatusStore } from "$lib/derived/sync.derived";
-  import { nonNullish } from "@dfinity/utils";
+  import { i18n } from "$lib/stores/i18n";
   import type { SyncState } from "$lib/types/sync";
+  import { IconError, Popover } from "@dfinity/gix-components";
+  import { IconSync } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
+  import type { ComponentType } from "svelte";
 
   let visible: boolean | undefined;
   let button: HTMLButtonElement | undefined;

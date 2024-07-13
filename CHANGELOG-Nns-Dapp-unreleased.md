@@ -15,24 +15,24 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Enabled `ENABLE_CKUSDC` feature flag.
+* A short delay before closing the mobile table sorting modal.
 
 #### Changed
 
-* Rename proposal navigation buttons to "Previous" and "Next".
+* Reduce the frequency of checking if SNS neurons need to be refreshed.
 
 #### Deprecated
 
 #### Removed
 
-* Message informing about proposal topic changes.
+* Remove default topic and proposal status filters.
+* Remove old canister creation/top-up mechanism that hasn't been used for 2 years.
 
 #### Fixed
 
-* Render neurons with minimum dissolve delay correctly with voting power.
-* Nns-dapp may crash while finishing an empty receive.
-* Actionable proposals initialization before Sns-es were loaded.
-* Missing SNS proposal payload rendering under certain conditions.
+* Button disable state glitch when voting with neurons where one follows another.
+* Fix "the current proposals response is too large" error on proposals page.
+* Visibility of "Neuron Management" proposals in actionable list.
 
 #### Security
 
@@ -41,6 +41,9 @@ proposal is successful, the changes it released will be moved from this file to
 ### Operations
 
 #### Added
+
+* Script to convert between ID formats
+* Test cycles minting canister notification mechanism of the nns-dapp.
 
 #### Changed
 

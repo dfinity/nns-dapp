@@ -51,7 +51,10 @@ describe("SnsNeuronMaturitySection", () => {
     const po = renderComponent(mockNeuron);
 
     expect(
-      await po.getAvailableMaturityItemActionPo().getTooltipIconPo().getText()
+      await po
+        .getAvailableMaturityItemActionPo()
+        .getTooltipIconPo()
+        .getTooltipText()
     ).toBe(
       "Available maturity can be staked, or burned to disburse an amount of BLOB that is subject to a non-deterministic process, called maturity modulation."
     );

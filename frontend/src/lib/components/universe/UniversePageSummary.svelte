@@ -5,10 +5,10 @@
   export let universe: Universe;
 </script>
 
-<div class="summary" data-tid="universe-page-summary-component">
+<span class="summary" data-tid="universe-page-summary-component">
   <UniverseLogo {universe} framed horizontalPadding={false} />
-  <span>{universe.title}</span>
-</div>
+  <span class="summary-title">{universe.title}</span>
+</span>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/text";
@@ -19,7 +19,7 @@
     gap: var(--padding);
   }
 
-  span {
+  .summary-title {
     @include fonts.h3;
     @include text.truncate;
   }

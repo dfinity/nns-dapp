@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { AccountsReceiveModalData } from "$lib/types/accounts.modal";
-  import type { Account } from "$lib/types/account";
-  import ReceiveModal from "$lib/modals/accounts/ReceiveModal.svelte";
-  import { i18n } from "$lib/stores/i18n";
   import IC_LOGO from "$lib/assets/icp.svg";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import ReceiveModal from "$lib/modals/accounts/ReceiveModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
+  import type { AccountsReceiveModalData } from "$lib/types/accounts.modal";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { ICPToken } from "@dfinity/utils";
 

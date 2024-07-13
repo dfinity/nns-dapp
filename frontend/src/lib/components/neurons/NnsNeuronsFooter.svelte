@@ -1,14 +1,14 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
-  import NnsStakeNeuronModal from "$lib/modals/neurons/NnsStakeNeuronModal.svelte";
-  import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
-  import { sortedNeuronStore } from "$lib/stores/neurons.store";
-  import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
-  import { i18n } from "$lib/stores/i18n";
-  import { Tooltip } from "@dfinity/gix-components";
-  import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+  import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
+  import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
+  import NnsStakeNeuronModal from "$lib/modals/neurons/NnsStakeNeuronModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { sortedNeuronStore } from "$lib/stores/neurons.store";
+  import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
+  import { Tooltip } from "@dfinity/gix-components";
 
   type ModalKey = "stake-neuron" | "merge-neurons";
   let showModal: ModalKey | undefined = undefined;

@@ -3,7 +3,6 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
@@ -36,7 +35,6 @@ describe("SelectUniverseDropdown", () => {
     icrcAccountsStore.reset();
     resetSnsProjects();
     resetIdentity();
-    overrideFeatureFlagsStore.reset();
 
     page.mock({
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
@@ -90,7 +88,6 @@ describe("SelectUniverseDropdown", () => {
     });
 
     it('should render "Actionable proposals" card', async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_ACTIONABLE_TAB", true);
       resetIdentity();
       const po = renderComponent();
       expect(await po.getSelectUniverseCardPo().getName()).toEqual(

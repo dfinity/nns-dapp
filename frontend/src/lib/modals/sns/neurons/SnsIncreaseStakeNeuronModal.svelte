@@ -1,22 +1,22 @@
 <script lang="ts">
-  import SnsNeuronTransactionModal from "$lib/modals/sns/neurons/SnsNeuronTransactionModal.svelte";
-  import type { Token, TokenAmountV2 } from "@dfinity/utils";
-  import type { Principal } from "@dfinity/principal";
-  import type { WizardStep } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
-  import { createEventDispatcher } from "svelte";
-  import { nonNullish } from "@dfinity/utils";
+  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import SnsNeuronTransactionModal from "$lib/modals/sns/neurons/SnsNeuronTransactionModal.svelte";
+  import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction } from "$lib/types/transaction";
-  import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
-  import type { SnsNeuronId } from "@dfinity/sns";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-  import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
+  import type { WizardStep } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
+  import type { SnsNeuronId } from "@dfinity/sns";
+  import type { Token, TokenAmountV2 } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let neuronId: SnsNeuronId;
   export let token: Token;

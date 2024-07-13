@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { ItemAction } from "@dfinity/gix-components";
-  import UniverseLogo from "../universe/UniverseLogo.svelte";
-  import type { Token } from "@dfinity/utils";
   import IncreaseStakeButton from "$lib/components/neuron-detail/actions/IncreaseStakeButton.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Universe } from "$lib/types/universe";
-  import { formatTokenE8s } from "$lib/utils/token.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
+  import UniverseLogo from "../universe/UniverseLogo.svelte";
+  import { ItemAction } from "@dfinity/gix-components";
+  import type { Token } from "@dfinity/utils";
 
   export let universe: Universe;
   export let token: Token;

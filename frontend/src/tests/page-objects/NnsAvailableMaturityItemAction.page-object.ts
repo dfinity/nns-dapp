@@ -1,3 +1,4 @@
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -15,6 +16,10 @@ export class NnsAvailableMaturityItemActionPo extends BasePageObject {
     return TooltipIconPo.under(this.root);
   }
 
+  getSpawnButton(): ButtonPo {
+    return this.getButton("spawn-neuron-button");
+  }
+
   getMaturity(): Promise<string> {
     return this.getText("available-maturity");
   }
@@ -24,8 +29,6 @@ export class NnsAvailableMaturityItemActionPo extends BasePageObject {
   }
 
   hasSpawnButton(): Promise<boolean> {
-    // The spawn button is wrapped by `TestIdWrapper` because
-    // it might render a simple button or a Tooltip and a button inside it.
-    return this.root.byTestId("spawn-neuron-button-component").isPresent();
+    return this.getSpawnButton().isPresent();
   }
 }

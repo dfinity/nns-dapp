@@ -1,6 +1,6 @@
 <script lang="ts">
-  import CardInfo from "../ui/CardInfo.svelte";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
+  import CardInfo from "../ui/CardInfo.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;
@@ -11,11 +11,14 @@
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
-<CardInfo>
+<CardInfo testId="nns-neuron-testnet-functions-card-component">
   <h3 slot="start">Neuron TESTNET ONLY</h3>
 
   <div>
-    <button on:click={openAddMaturityModal} class="primary">Add Maturity</button
+    <button
+      on:click={openAddMaturityModal}
+      class="primary"
+      data-tid="add-maturity-button">Add Maturity</button
     >
   </div>
 </CardInfo>

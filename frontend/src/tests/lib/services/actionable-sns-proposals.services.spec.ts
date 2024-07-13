@@ -1,8 +1,12 @@
 import * as api from "$lib/api/sns-governance.api";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { loadActionableSnsProposals } from "$lib/services/actionable-sns-proposals.services";
-import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+import {
+  actionableSnsProposalsStore,
+  failedActionableSnsesStore,
+} from "$lib/stores/actionable-sns-proposals.store";
 import { authStore } from "$lib/stores/auth.store";
+import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { snsProposalId } from "$lib/utils/sns-proposals.utils";
@@ -29,11 +33,14 @@ import {
   type SnsNeuronId,
   type SnsProposalData,
 } from "@dfinity/sns";
+import type { SpyInstance } from "@vitest/spy";
 import { get } from "svelte/store";
 
 describe("actionable-sns-proposals.services", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    failedActionableSnsesStore.resetForTesting();
+    snsNeuronsStore.reset();
   });
 
   describe("loadActionableProposalsForSns", () => {
@@ -115,8 +122,14 @@ describe("actionable-sns-proposals.services", () => {
         proposals,
         include_ballots_by_caller: [true],
       }) as SnsListProposalsResponse;
+    const expectedFilterParams = {
+      includeRewardStatus: [
+        SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+      ],
+      limit: 20,
+    };
 
-    let spyQuerySnsProposals;
+    let spyQuerySnsProposals: SpyInstance;
     let spyQuerySnsNeurons;
     let spyConsoleError;
     let includeBallotsByCaller = true;
@@ -155,6 +168,8 @@ describe("actionable-sns-proposals.services", () => {
       mockSnsProjectsCommittedStore([rootCanisterId1, rootCanisterId2]);
       expect(spyQuerySnsNeurons).not.toHaveBeenCalled();
 
+      expect(get(snsNeuronsStore)).toEqual({});
+
       await loadActionableSnsProposals();
 
       expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(2);
@@ -168,6 +183,17 @@ describe("actionable-sns-proposals.services", () => {
         rootCanisterId: rootCanisterId2,
         certified: false,
       });
+
+      expect(get(snsNeuronsStore)).toEqual({
+        [rootCanisterId1.toText()]: {
+          certified: false,
+          neurons: [neuron],
+        },
+        [rootCanisterId2.toText()]: {
+          certified: false,
+          neurons: [neuron],
+        },
+      });
     });
 
     it("should query proposals per sns with accept rewards status only", async () => {
@@ -177,12 +203,6 @@ describe("actionable-sns-proposals.services", () => {
       await loadActionableSnsProposals();
 
       expect(spyQuerySnsProposals).toHaveBeenCalledTimes(2);
-      const expectedFilterParams = {
-        includeRewardStatus: [
-          SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
-        ],
-        limit: 20,
-      };
       expect(spyQuerySnsProposals).toHaveBeenCalledWith({
         identity: mockIdentity,
         rootCanisterId: rootCanisterId1,
@@ -195,6 +215,74 @@ describe("actionable-sns-proposals.services", () => {
         certified: false,
         params: expectedFilterParams,
       });
+    });
+
+    it("should save failed canister IDs", async () => {
+      const failRootCanisterId = principal(13);
+      const snsQueryError = new Error("sns query proposals test fail");
+      mockSnsProjectsCommittedStore([
+        failRootCanisterId,
+        rootCanisterId1,
+        rootCanisterId2,
+      ]);
+      spyQuerySnsProposals = vi
+        .spyOn(api, "queryProposals")
+        .mockRejectedValueOnce(snsQueryError)
+        .mockImplementation(async () => ({
+          proposals: [],
+          include_ballots_by_caller: undefined,
+        }));
+      spyConsoleError = silentConsoleErrors();
+
+      expect(spyQuerySnsProposals).not.toHaveBeenCalled();
+
+      await loadActionableSnsProposals();
+
+      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(3);
+      expect(spyQuerySnsProposals).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        rootCanisterId: failRootCanisterId,
+        certified: false,
+        params: expectedFilterParams,
+      });
+      expect(spyQuerySnsProposals).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterId1,
+        certified: false,
+        params: expectedFilterParams,
+      });
+      expect(spyQuerySnsProposals).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterId2,
+        certified: false,
+        params: expectedFilterParams,
+      });
+
+      // expect a single error to be logged
+      expect(spyConsoleError).toHaveBeenCalledTimes(1);
+      expect(spyConsoleError).toBeCalledWith(snsQueryError);
+
+      expect(get(failedActionableSnsesStore)).toEqual([
+        failRootCanisterId.toText(),
+      ]);
+    });
+
+    it("should remove failed canister IDs", async () => {
+      mockSnsProjectsCommittedStore([rootCanisterId1]);
+      spyQuerySnsProposals = vi
+        .spyOn(api, "queryProposals")
+        .mockImplementation(async () => ({
+          proposals: [],
+          include_ballots_by_caller: undefined,
+        }));
+      failedActionableSnsesStore.add(rootCanisterId1.toText());
+
+      expect(spyQuerySnsProposals).not.toHaveBeenCalled();
+
+      await loadActionableSnsProposals();
+
+      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(1);
+      expect(get(failedActionableSnsesStore)).toEqual([]);
     });
 
     it("should query list proposals using multiple calls", async () => {
@@ -301,23 +389,6 @@ describe("actionable-sns-proposals.services", () => {
           includeBallotsByCaller: true,
         },
       });
-    });
-
-    it("should not query data when already in the store", async () => {
-      mockSnsProjectsCommittedStore([rootCanisterId1]);
-
-      expect(spyQuerySnsNeurons).not.toHaveBeenCalled();
-      expect(spyQuerySnsProposals).not.toHaveBeenCalled();
-
-      await loadActionableSnsProposals();
-
-      expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(1);
-      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(1);
-
-      await loadActionableSnsProposals();
-
-      expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(1);
-      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(1);
     });
 
     it("should not query neurons when the sns doesn't support ballots", async () => {

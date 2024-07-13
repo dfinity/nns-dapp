@@ -25,7 +25,7 @@ jobs:
         if: ${{ steps.update.outputs.updated == '1' }}
         uses: peter-evans/create-pull-request@v4
         with:
-          token: ${{ secrets.GIX_BOT_PAT }}
+          token: ${{ secrets.GIX_CREATE_PR_PAT }}
           base: main
           reviewers: mstrasinskis, dskloetd, nns-team
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
@@ -39,7 +39,7 @@ jobs:
           branch: bot-ic-update
           branch-suffix: timestamp
           delete-branch: true
-          title: 'Update IC Cargo Dependencies to ${{ steps.latest.outputs.latest_release }}'
+          title: 'bot: Update IC Cargo Dependencies to ${{ steps.latest.outputs.latest_release }}'
           body: |
             # Motivation
             A newer release of the internet computer is available.

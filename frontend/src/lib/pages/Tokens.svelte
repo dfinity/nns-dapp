@@ -1,15 +1,16 @@
 <script lang="ts">
-  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import HideZeroBalancesToggle from "$lib/components/tokens/TokensTable/HideZeroBalancesToggle.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+  import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
   import { i18n } from "$lib/stores/i18n";
   import type { UserToken } from "$lib/types/tokens-page";
-  import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
   import { heightTransition } from "$lib/utils/transition.utils";
-  import { IconSettings } from "@dfinity/gix-components";
+  import { IconPlus, IconSettings } from "@dfinity/gix-components";
   import { Popover } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
+  import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
 
   export let userTokensData: UserToken[];
 
@@ -39,6 +40,12 @@
   const showAll = () => {
     hideZeroBalancesStore.set("show");
   };
+
+  const importToken = async () => {
+    // TBD: Implement import token.
+  };
+
+  // TODO(Import token): After removing ENABLE_IMPORT_TOKEN combine divs -> <div slot="last-row" class="last-row">
 </script>
 
 <TestIdWrapper testId="tokens-page-component">
@@ -57,7 +64,30 @@
       >
     </div>
     <div slot="last-row">
-      {#if shouldHideZeroBalances}
+      {#if $ENABLE_IMPORT_TOKEN}
+        <div class="last-row">
+          {#if shouldHideZeroBalances}
+            <div class="show-all-button-container">
+              {$i18n.tokens.zero_balance_hidden}
+              <button
+                data-tid="show-all-button"
+                class="ghost show-all"
+                on:click={showAll}
+              >
+                {$i18n.tokens.show_all}</button
+              >
+            </div>
+          {/if}
+
+          <button
+            data-tid="import-token-button"
+            class="ghost with-icon import-token-button"
+            on:click={importToken}
+          >
+            <IconPlus />{$i18n.tokens.import_token}
+          </button>
+        </div>
+      {:else if shouldHideZeroBalances}
         <div
           class="show-all-row"
           transition:heightTransition={{ duration: 250 }}
@@ -86,15 +116,16 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/effect";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .settings-button {
     --content-color: var(--text-description);
 
-    @include effect.ripple-effect(--primary-tint);
+    @include effect.ripple-effect(--primary-tint, var(--primary-contrast));
 
     &:focus {
       background: var(--primary-tint);
-      @include effect.ripple-effect(--primary-tint);
+      @include effect.ripple-effect(--primary-tint, var(--primary-contrast));
     }
   }
 
@@ -102,6 +133,7 @@
     grid-column: 1 / -1;
   }
 
+  // TODO(Import token): Remove after enabling ENABLE_IMPORT_TOKEN
   .show-all-row {
     color: var(--text-description);
     padding: var(--padding-2x);
@@ -109,6 +141,45 @@
 
     button.show-all {
       text-decoration: underline;
+    }
+  }
+
+  .last-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--padding-2x);
+
+    padding: calc(3 * var(--padding)) var(--padding-2x);
+    background: var(--table-row-background);
+    border-top: 1px solid var(--elements-divider);
+    text-align: center;
+
+    @include media.min-width(medium) {
+      flex-direction: row;
+      justify-content: space-between;
+      padding: var(--padding-2x);
+      text-align: left;
+      gap: var(--padding);
+
+      .show-all-button-container {
+        // Show-all button should be on right on desktop.
+        order: 1;
+      }
+    }
+
+    .show-all-button-container {
+      color: var(--text-description);
+      background: var(--table-row-background);
+
+      button.show-all {
+        text-decoration: underline;
+      }
+    }
+
+    .import-token-button {
+      gap: var(--padding);
+      color: var(--primary);
     }
   }
 </style>

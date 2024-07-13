@@ -23,7 +23,7 @@ jobs:
         # Note: If there were no changes, this step creates no PR.
         uses: peter-evans/create-pull-request@v4
         with:
-          token: ${{ secrets.GIX_BOT_PAT }}
+          token: ${{ secrets.GIX_CREATE_PR_PAT }}
           commit-message: Update SNS aggregator response
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>
@@ -34,7 +34,7 @@ jobs:
           branch: bot-aggregator-response-update
           branch-suffix: timestamp
           delete-branch: true
-          title: 'Update SNS Aggregator Response'
+          title: 'bot: Update SNS Aggregator Response'
           body: |
             # Motivation
             We would like to keep the ProdLaunchpad.spec up to date with mainnet data.

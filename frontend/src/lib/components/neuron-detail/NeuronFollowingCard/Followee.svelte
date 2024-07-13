@@ -1,18 +1,18 @@
 <script lang="ts">
-  import type { Topic } from "@dfinity/nns";
-  import { type FolloweesNeuron, getTopicTitle } from "$lib/utils/neuron.utils";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import TagsList from "$lib/components/ui/TagsList.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
-  import { Copy, Tag } from "@dfinity/gix-components";
   import {
     NNS_NEURON_CONTEXT_KEY,
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
-  import { getContext } from "svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import TagsList from "$lib/components/ui/TagsList.svelte";
-  import { emit } from "$lib/utils/events.utils";
   import type { NnsNeuronModalVotingHistory } from "$lib/types/nns-neuron-detail.modal";
+  import { emit } from "$lib/utils/events.utils";
+  import { type FolloweesNeuron, getTopicTitle } from "$lib/utils/neuron.utils";
+  import { Copy, Tag } from "@dfinity/gix-components";
+  import type { Topic } from "@dfinity/nns";
+  import { getContext } from "svelte";
 
   export let followee: FolloweesNeuron;
 

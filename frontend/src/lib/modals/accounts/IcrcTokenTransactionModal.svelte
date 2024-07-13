@@ -1,18 +1,18 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
+  import { transferTokens } from "$lib/services/icrc-accounts.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
+  import type { Account } from "$lib/types/account";
   import type { NewTransaction } from "$lib/types/transaction";
-  import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
+  import type { TransactionInit } from "$lib/types/transaction";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { numberToUlps } from "$lib/utils/token.utils";
-  import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
-  import type { TransactionInit } from "$lib/types/transaction";
-  import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
-  import { transferTokens } from "$lib/services/icrc-accounts.services";
+  import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let selectedAccount: Account | undefined = undefined;
   export let ledgerCanisterId: Principal;

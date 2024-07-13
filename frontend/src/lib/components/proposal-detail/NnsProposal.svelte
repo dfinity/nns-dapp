@@ -1,29 +1,36 @@
 <script lang="ts">
-  import ProposalSystemInfoSection from "./ProposalSystemInfoSection.svelte";
-  import NnsProposalSummarySection from "./NnsProposalSummarySection.svelte";
-  import ProposalVotingSection from "./ProposalVotingSection.svelte";
-  import ProposalNavigation from "./ProposalNavigation.svelte";
-  import { getContext } from "svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import {
+    actionableProposalsActiveStore,
+    actionableProposalsNavigationIdsStore,
+  } from "$lib/derived/actionable-proposals.derived";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { filteredProposals } from "$lib/derived/proposals.derived";
+  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
+  import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
+  import { referrerPathStore } from "$lib/stores/routes.store";
+  import type { ProposalsNavigationId } from "$lib/types/proposals";
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
   } from "$lib/types/selected-proposal.context";
-  import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
-  import NnsProposalProposerActionsEntry from "./NnsProposalProposerActionsEntry.svelte";
-  import NnsProposalProposerPayloadEntry from "./NnsProposalProposerPayloadEntry.svelte";
-  import { filteredProposals } from "$lib/derived/proposals.derived";
   import {
     getUniversalProposalStatus,
     mapProposalInfo,
     navigateToProposal,
   } from "$lib/utils/proposals.utils";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { referrerPathStore } from "$lib/stores/routes.store";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import NnsProposalProposerActionsEntry from "./NnsProposalProposerActionsEntry.svelte";
+  import NnsProposalProposerPayloadEntry from "./NnsProposalProposerPayloadEntry.svelte";
+  import NnsProposalSummarySection from "./NnsProposalSummarySection.svelte";
+  import ProposalNavigation from "./ProposalNavigation.svelte";
+  import ProposalSystemInfoSection from "./ProposalSystemInfoSection.svelte";
+  import ProposalVotingSection from "./ProposalVotingSection.svelte";
   import { SplitBlock } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
-  import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
+  import { getContext } from "svelte";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -34,10 +41,20 @@
     ? ({ type: proposalType } = mapProposalInfo($store.proposal))
     : undefined;
 
-  let proposalIds: bigint[] | undefined;
-  $: proposalIds = $actionableProposalsActiveStore
-    ? $actionableNnsProposalsStore.proposals?.map(({ id }) => id as bigint)
-    : $filteredProposals.proposals?.map(({ id }) => id as bigint);
+  let proposalIds: ProposalsNavigationId[] | undefined;
+  $: proposalIds = $pageStore.actionable
+    ? $actionableProposalsNavigationIdsStore
+    : ($actionableProposalsActiveStore
+        ? $actionableNnsProposalsStore
+        : $filteredProposals
+      ).proposals?.map(({ id }) => ({
+        proposalId: id as bigint,
+        universe: $pageStore.universe,
+      }));
+
+  const selectProposal = (id: ProposalsNavigationId) => {
+    navigateToProposal({ ...id, actionable: $pageStore.actionable });
+  };
 </script>
 
 <TestIdWrapper testId="nns-proposal-component">
@@ -45,10 +62,16 @@
     {#if $referrerPathStore !== AppPath.Launchpad}
       <ProposalNavigation
         title={proposalType}
-        currentProposalId={$store.proposal.id}
+        currentProposalId={{
+          proposalId: $store.proposal.id,
+          universe: OWN_CANISTER_ID_TEXT,
+        }}
+        universes={$selectableUniversesStore.map(
+          ({ canisterId }) => canisterId
+        )}
         currentProposalStatus={getUniversalProposalStatus($store.proposal)}
         {proposalIds}
-        selectProposal={navigateToProposal}
+        {selectProposal}
       />
     {/if}
 

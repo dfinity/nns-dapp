@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { TokenAmount, TokenAmountV2, type Token } from "@dfinity/utils";
-  import { i18n } from "$lib/stores/i18n";
-  import { IconSouth, KeyValuePair } from "@dfinity/gix-components";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
+  import { IconSouth, KeyValuePair } from "@dfinity/gix-components";
+  import { TokenAmount, TokenAmountV2, type Token } from "@dfinity/utils";
 
   export let amount: number;
   export let token: Token;
@@ -95,12 +95,12 @@
     }
 
     &:before {
-      border-top: 1px solid var(--line);
+      border-top: 1px solid var(--elements-divider);
       padding: 0 0 var(--padding);
     }
 
     &:after {
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid var(--elements-divider);
       padding: var(--padding) 0 0;
     }
   }

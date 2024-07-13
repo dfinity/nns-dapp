@@ -1,13 +1,13 @@
 <script lang="ts">
-  import GoToDetailIcon from "./actions/GoToDetailIcon.svelte";
-  import ReceiveButton from "./actions/ReceiveButton.svelte";
-  import SendButton from "./actions/SendButton.svelte";
   import {
     UserTokenAction,
     type UserTokenData,
     type UserTokenLoading,
   } from "$lib/types/tokens-page";
   import { isUserTokenData } from "$lib/utils/user-token.utils";
+  import GoToDetailIcon from "./actions/GoToDetailIcon.svelte";
+  import ReceiveButton from "./actions/ReceiveButton.svelte";
+  import SendButton from "./actions/SendButton.svelte";
   import { nonNullish } from "@dfinity/utils";
   import type { SvelteComponent, ComponentType } from "svelte";
 
@@ -27,7 +27,19 @@
 </script>
 
 {#if nonNullish(userToken)}
-  {#each userToken.actions as action}
-    <svelte:component this={actionMapper[action]} {userToken} on:nnsAction />
-  {/each}
+  <div class="container">
+    {#each userToken.actions as action}
+      <svelte:component this={actionMapper[action]} {userToken} on:nnsAction />
+    {/each}
+  </div>
 {/if}
+
+<style lang="scss">
+  .container {
+    color: var(--primary);
+    display: flex;
+    height: 28px;
+    align-items: center;
+    gap: var(--padding);
+  }
+</style>

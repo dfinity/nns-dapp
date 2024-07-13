@@ -1,20 +1,20 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
+  import { goto } from "$app/navigation";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
+  import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { IconClose, IconWarning, Value } from "@dfinity/gix-components";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import ConfirmRemoveCurrentUserHotkey from "$lib/modals/neurons/ConfirmRemoveCurrentUserHotkey.svelte";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { removeHotkey } from "$lib/services/neurons.services";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { authStore } from "$lib/stores/auth.store";
   import { stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsShow } from "$lib/stores/toasts.store";
   import { isNeuronControllable } from "$lib/utils/neuron.utils";
-  import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
-  import { goto } from "$app/navigation";
-  import ConfirmRemoveCurrentUserHotkey from "$lib/modals/neurons/ConfirmRemoveCurrentUserHotkey.svelte";
-  import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
+  import { IconClose, IconWarning, Value } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;
 
@@ -65,7 +65,7 @@
   };
 </script>
 
-<CardInfo noMargin>
+<CardInfo noMargin testId="nns-neuron-hotkeys-card-component">
   <h3 slot="start">{$i18n.neuron_detail.hotkeys_title}</h3>
   {#if hotkeys.length === 0}
     {#if isControllable}

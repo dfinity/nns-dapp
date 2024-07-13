@@ -236,6 +236,9 @@
     "seed": "Seed",
     "ect": "Early Contributor Token"
   },
+  "staking": {
+    "nervous_systems": "Nervous Systems"
+  },
   "neurons": {
     "title": "Neurons",
     "text": "Earn voting rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by submitting and voting on Network Nervous System (NNS) proposals.",
@@ -273,7 +276,6 @@
     "remaining": "Remaining",
     "age": "Age",
     "vestion_period": "Remaining vesting period",
-    "aria_label_neuron_card": "Go to neuron details",
     "neuron_id": "Neuron ID",
     "neuron_balance": "Balance",
     "current_dissolve_delay": "Current Dissolve Delay",
@@ -395,7 +397,7 @@
   },
   "actionable_proposals_not_supported_snses": {
     "title": "$snsNames don’t yet support actionable proposals.",
-    "text": "If an SNS DAO wishes to support actionable proposals, need to upgrade to a newer version of the SNS governance canister."
+    "text": "If an SNS DAO wishes to support actionable proposals, it needs to upgrade to a newer version of the SNS governance canister."
   },
   "canisters": {
     "aria_label_canister_card": "Go to canister details",
@@ -759,8 +761,6 @@
   },
   "sns_neuron_detail": {
     "vesting_period_tooltip": "This function is not available during your vesting period. Vesting will last another $remainingVesting",
-    "community_fund_section": "Neurons' Fund",
-    "community_fund_section_description": "You are not the controller of the SNS neurons below. To facilitate bootstrapping the SNS DAO governance, the NNS treasury has temporarily granted hotkey access to you for voting and following. <a href=\"https://internetcomputer.org/docs/current/tokenomics/nns/neurons-fund\" rel=\"noopener noreferrer\" aria-label=\"more info about neurons' fund\" target=\"_blank\">Learn more</a>.",
     "add_hotkey_info": "To vote with this neuron from another dapp, add the principal id you have in the other dapp as a hotkey.",
     "add_hotkey_tooltip": "To vote with this neuron from another dapp, add the principal id you have in the other dapp as a hotkey."
   },
@@ -771,6 +771,10 @@
     "stake_sns_neuron_success": "$tokenSymbol Neuron created successfully.",
     "token_stake": "$amount $token Stake",
     "min_dissolve_delay_description": "Voting power is given to neurons with a dissolve delay of at least $duration."
+  },
+  "responsive_table": {
+    "sort_by": "Sort by",
+    "tap_to_reverse": "Tap to reverse"
   },
   "time": {
     "year": "year",
@@ -886,19 +890,12 @@
   "auth_neurons": {
     "title": "Earn staking rewards"
   },
-  "auth_proposals": {
-    "title": "Be part of the ICP community!",
-    "text": "Participate in the governance of the Internet Computer and receive voting rewards. Shape the future of the web by submitting your own proposals.",
-    "sign_in": "Sign in to vote"
-  },
+  "auth_proposals": {},
   "auth_canisters": {
     "title": "Run your code on the Internet Computer",
     "text": "Create and manage your canister smart contracts and top them up with cycles here. Anywhere, anytime."
   },
-  "auth_sns": {
-    "title": "Service Nervous Systems (SNS)",
-    "text": "Put the autonomy in DAO. No centralized power, no administrative overhead, no legal headache, only code and its community."
-  },
+  "auth_sns": {},
   "universe": {
     "select_token": "Select Token",
     "select_nervous_system": "Nervous System",
@@ -1026,6 +1023,7 @@
     "hide_zero_balances": "Hide zero balances",
     "hide_zero_balances_toggle_label": "Switch between showing and hiding tokens with a balance of zero",
     "zero_balance_hidden": "Tokens with 0 balances are hidden.",
-    "show_all": "Show all"
+    "show_all": "Show all",
+    "import_token": "Import Token"
   }
 }

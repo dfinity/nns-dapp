@@ -1,26 +1,26 @@
 <script lang="ts">
-  import { Card, IconVote, Tooltip } from "@dfinity/gix-components";
-  import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import ActionableProposalCountBadge from "$lib/components/proposals/ActionableProposalCountBadge.svelte";
+  import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
   import UniverseAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
-  import { pageStore } from "$lib/derived/page.derived";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { isSelectedPath } from "$lib/utils/navigation.utils";
-  import type { Universe } from "$lib/types/universe";
   import {
     actionableProposalCountStore,
-    actionableProposalIndicationEnabledStore,
+    actionableProposalIndicationVisibleStore,
     actionableProposalSupportedStore,
     actionableProposalTotalCountStore,
   } from "$lib/derived/actionable-proposals.derived";
-  import ActionableProposalCountBadge from "$lib/components/proposals/ActionableProposalCountBadge.svelte";
-  import { nonNullish } from "@dfinity/utils";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { pageStore } from "$lib/derived/page.derived";
   import { i18n } from "$lib/stores/i18n";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import type { Universe } from "$lib/types/universe";
+  import { isSelectedPath } from "$lib/utils/navigation.utils";
+  import { Card, Tooltip } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
-  import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
-  import { scale } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
+  import { scale } from "svelte/transition";
 
   export let selected: boolean;
   // "link" for desktop, "button" for mobile, "dropdown" to open the modal
@@ -66,13 +66,7 @@
   noMargin
 >
   <div class="container" class:selected>
-    {#if universe !== "all-actionable"}
-      <UniverseLogo size="big" {universe} framed={true} />
-    {:else}
-      <div data-tid="vote-icon" class="icon">
-        <IconVote size="24px" />
-      </div>
-    {/if}
+    <UniverseLogo size="medium" {universe} framed={true} />
 
     <div
       class={`content ${role}`}
@@ -84,7 +78,7 @@
           <TestIdWrapper testId="universe-name"
             >{$i18n.voting.actionable_proposals}</TestIdWrapper
           >
-          {#if $actionableProposalIndicationEnabledStore}
+          {#if $actionableProposalIndicationVisibleStore}
             {#if $actionableProposalTotalCountStore > 0 && mounted}
               <div
                 in:scale={{
@@ -98,7 +92,7 @@
           {/if}
         {:else}
           <TestIdWrapper testId="universe-name">{universe.title}</TestIdWrapper>
-          {#if $actionableProposalIndicationEnabledStore}
+          {#if $actionableProposalIndicationVisibleStore}
             {#if nonNullish(actionableProposalCount) && actionableProposalCount > 0 && mounted}
               <ActionableProposalCountBadge
                 count={actionableProposalCount}

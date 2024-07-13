@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { formatNumber } from "$lib/utils/format.utils";
   import { convertIcpToTCycles } from "$lib/utils/token.utils";
-  import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
-  import { ICPToken, nonNullish } from "@dfinity/utils";
   import { KeyValuePair } from "@dfinity/gix-components";
+  import { ICPToken, nonNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let amount: number;
   export let name: string | undefined = undefined;
@@ -94,7 +94,7 @@
 
     &:after {
       content: "";
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid var(--elements-divider);
       padding: var(--padding) 0 0;
       width: 100%;
     }

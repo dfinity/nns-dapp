@@ -21,8 +21,8 @@ test("Test SNS governance", async ({ page, context }) => {
   const snsUniverseRow = snsUniverseRows[0];
   const snsProjectName = await snsUniverseRow.getProjectName();
 
-  // Our test SNS project names are always 5 uppercase letters.
-  expect(snsProjectName).toMatch(/[A-Z]{5}/);
+  // Our first test SNS project is always named "Alfa Centauri".
+  expect(snsProjectName).toBe("Alfa Centauri");
 
   step("Acquire tokens");
   const askedAmount = 20;
@@ -34,13 +34,13 @@ test("Test SNS governance", async ({ page, context }) => {
   await appPo.goToNeurons();
 
   await appPo.openUniverses();
-  await appPo.getSelectUniverseListPo().clickOnSnsUniverse(snsProjectName);
+  await appPo.getSelectUniverseListPo().clickOnUniverse(snsProjectName);
 
   await appPo.getNeuronsPo().getSnsNeuronsPo().waitForContentLoaded();
   expect(
     await appPo.getNeuronsPo().getSnsNeuronsPo().getEmptyMessage()
   ).toEqual(
-    `You have no ${snsProjectName} neurons. Create a neuron by staking ${snsProjectName} to vote on ${snsProjectName} proposals.`
+    "You have no Alfa Centauri neurons. Create a neuron by staking ALF to vote on Alfa Centauri proposals."
   );
 
   const stake = 5;
@@ -49,16 +49,17 @@ test("Test SNS governance", async ({ page, context }) => {
 
   step("SN001: User can see the list of neurons");
   await appPo.getNeuronsPo().getSnsNeuronsPo().waitForContentLoaded();
-  const neuronCards = await appPo
+  const neuronRows = await appPo
     .getNeuronsPo()
     .getSnsNeuronsPo()
-    .getNeuronCardPos();
-  expect(neuronCards.length).toBe(1);
-  const neuronCard = neuronCards[0];
-  expect(await neuronCard.getStake()).toEqual(formattedStake);
+    .getNeuronsTablePo()
+    .getNeuronsTableRowPos();
+  expect(neuronRows).toHaveLength(1);
+  const neuronRow = neuronRows[0];
+  expect(await neuronRow.getStakeBalance()).toEqual(formattedStake);
 
   step("SN002: User can see the details of a neuron");
-  await neuronCard.click();
+  await neuronRow.click();
   const neuronDetail = appPo.getNeuronDetailPo().getSnsNeuronDetailPo();
   expect(await neuronDetail.getUniverse()).toBe(snsProjectName);
   expect(await neuronDetail.getStake()).toBe(formattedStake);

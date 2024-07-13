@@ -1,14 +1,16 @@
 <script lang="ts">
-  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
-  import { fromDefinedNullable } from "@dfinity/utils";
-  import { getContext } from "svelte";
+  import { goto } from "$app/navigation";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
+  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
-  import { IconClose, IconWarning, Value } from "@dfinity/gix-components";
+  import { neuronsPathStore } from "$lib/derived/paths.derived";
+  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import ConfirmRemoveCurrentUserHotkey from "$lib/modals/neurons/ConfirmRemoveCurrentUserHotkey.svelte";
   import { removeHotkey } from "$lib/services/sns-neurons.services";
   import { authStore } from "$lib/stores/auth.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import { toastsShow } from "$lib/stores/toasts.store";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
@@ -17,15 +19,13 @@
     getSnsNeuronHotkeys,
     canIdentityManageHotkeys,
   } from "$lib/utils/sns-neuron.utils";
-  import CardInfo from "$lib/components/ui/CardInfo.svelte";
-  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
-  import AddSnsHotkeyButton from "./actions/AddSnsHotkeyButton.svelte";
-  import { toastsShow } from "$lib/stores/toasts.store";
-  import { goto } from "$app/navigation";
-  import { neuronsPathStore } from "$lib/derived/paths.derived";
-  import ConfirmRemoveCurrentUserHotkey from "$lib/modals/neurons/ConfirmRemoveCurrentUserHotkey.svelte";
-  import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import AddSnsHotkeyButton from "./actions/AddSnsHotkeyButton.svelte";
+  import { IconClose, IconWarning, Value } from "@dfinity/gix-components";
+  import type { SnsNervousSystemParameters } from "@dfinity/sns";
+  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+  import { fromDefinedNullable } from "@dfinity/utils";
+  import { getContext } from "svelte";
 
   export let parameters: SnsNervousSystemParameters;
 

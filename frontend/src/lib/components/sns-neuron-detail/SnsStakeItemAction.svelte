@@ -1,13 +1,13 @@
 <script lang="ts">
   import StakeItemAction from "$lib/components/neuron-detail/StakeItemAction.svelte";
-  import type { Token } from "@dfinity/utils";
+  import type { Universe } from "$lib/types/universe";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
-  import type { SnsNeuron } from "@dfinity/sns";
   import {
     getSnsNeuronStake,
     isCommunityFund,
   } from "$lib/utils/sns-neuron.utils";
-  import type { Universe } from "$lib/types/universe";
+  import type { SnsNeuron } from "@dfinity/sns";
+  import type { Token } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
   export let token: Token;
