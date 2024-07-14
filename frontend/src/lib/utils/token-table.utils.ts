@@ -36,7 +36,7 @@ export const compareTokensByImportance = createDescendingComparator(
 );
 
 export const compareTokensAlphabetically = createAscendingComparator(
-  ({ title }: UserToken) => title
+  ({ title }: UserToken) => title.toLowerCase()
 );
 
 export const compareTokensForTable = mergeComparators([
