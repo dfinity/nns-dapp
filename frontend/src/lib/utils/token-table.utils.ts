@@ -17,11 +17,12 @@ export const compareTokensIcpFirst = createDescendingComparator(
   (token: UserToken) => token.universeId.toText() === OWN_CANISTER_ID_TEXT
 );
 
-export const compareTokensByBalance = createDescendingComparator(
+export const compareTokensWithBalanceFirst = createDescendingComparator(
   (token: UserToken) => getTokenBalanceOrZero(token) > 0n
 );
 
-// These tokens have significance within the Internet Computer ecosystem that deserve to be highlighted.
+// These tokens should be placed before others (but after ICP)
+// because they have significance within the Internet Computer ecosystem and deserve to be highlighted.
 // Where the fixed order maps to a descending order in the market cap of the underlying native tokens.
 const ImportantCkTokenIds = [
   CKBTC_UNIVERSE_CANISTER_ID.toText(),
@@ -30,7 +31,7 @@ const ImportantCkTokenIds = [
 ]
   // Reverse the list to preserve the order in the descending comparison
   .reverse();
-export const compareTokensImportantFirst = createDescendingComparator(
+export const compareTokensByImportance = createDescendingComparator(
   (token: UserToken) => ImportantCkTokenIds.indexOf(token.universeId.toText())
 );
 
@@ -40,7 +41,7 @@ export const compareTokensAlphabetically = createAscendingComparator(
 
 export const compareTokensForTable = mergeComparators([
   compareTokensIcpFirst,
-  compareTokensByBalance,
-  compareTokensImportantFirst,
+  compareTokensWithBalanceFirst,
+  compareTokensByImportance,
   compareTokensAlphabetically,
 ]);
