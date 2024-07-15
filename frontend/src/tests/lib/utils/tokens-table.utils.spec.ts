@@ -14,7 +14,6 @@ import {
   createUserToken,
   createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
-import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
 import { TokenAmountV2 } from "@dfinity/utils";
 
 describe("tokens-table.utils", () => {
@@ -37,28 +36,13 @@ describe("tokens-table.utils", () => {
   });
 
   beforeEach(() => {
-    allowLoggingInOneTestForDebugging();
     vi.clearAllMocks();
   });
-
-  // ;
-  // compareTokensForTable;
 
   describe("compareTokensIcpFirst", () => {
     it("should keep ICP first", () => {
       const icpToken = createIcpUserToken();
       const ckBTCUserToken = createUserToken(ckBTCTokenBase);
-      //   {
-      //   ...ckBTCTokenBase,
-      //   // TODO: the balance not needed
-      //   balance: TokenAmountV2.fromUlps({
-      //     amount: mockCkBTCMainAccount.balanceUlps,
-      //     token: mockCkBTCToken,
-      //   }),
-      // };
-      const token1 = createUserToken({
-        universeId: principal(0),
-      });
 
       expect(compareTokensIcpFirst(icpToken, ckBTCUserToken)).toEqual(-1);
       expect(compareTokensIcpFirst(ckBTCUserToken, icpToken)).toEqual(1);
