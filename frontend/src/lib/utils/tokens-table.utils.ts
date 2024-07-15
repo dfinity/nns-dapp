@@ -39,7 +39,7 @@ export const compareTokensAlphabetically = createAscendingComparator(
   ({ title }: UserToken) => title.toLowerCase()
 );
 
-export const compareTokensForTable = mergeComparators([
+export const compareTokensForTokensTable = mergeComparators([
   compareTokensIcpFirst,
   compareTokensWithBalanceFirst,
   compareTokensByImportance,

@@ -6,7 +6,7 @@ import {
   compareTokensByImportance,
   compareTokensIcpFirst,
   compareTokensWithBalanceFirst,
-} from "$lib/utils/token-table.utils";
+} from "$lib/utils/tokens-table.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   ckBTCTokenBase,
