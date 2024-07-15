@@ -28,13 +28,11 @@ jobs:
         run: |
           cd frontend
           npm run update:gix
-          git commit -a -m "Bump gix-components"
       - name: Update ic-js
         if: ${{ inputs.ic_js }}
         run: |
           cd frontend
           npm run upgrade:next
-          git commit -a -m "Bump ic-js"
       - name: Create Pull Request
         id: cpr
         # Note: If there were no changes, this step creates no PR.
