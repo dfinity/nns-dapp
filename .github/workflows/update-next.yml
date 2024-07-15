@@ -1,0 +1,72 @@
+# A GitHub Actions workflow that can be used to trigger updates of npm package
+# dependencies.
+name: Update next npm package dependencies
+on:
+  workflow_dispatch:
+    inputs:
+      gix_components:
+        description: 'Update gix-components'
+        default: true
+        type: boolean
+      ic_js:
+        description: 'Update ic-js'
+        default: true
+        type: boolean
+jobs:
+  update-next-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install latest npm
+        run: npm install -g npm@latest
+      - name: Update gix-components
+        if: ${{ inputs.gix_components }}
+        run: |
+          cd frontend
+          npm run update:gix
+      - name: Update ic-js
+        if: ${{ inputs.ic_js }}
+        run: |
+          cd frontend
+          npm run upgrade:next
+      - name: Create Pull Request
+        id: cpr
+        # Note: If there were no changes, this step creates no PR.
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GIX_CREATE_PR_PAT }}
+          commit-message: Bump
+          committer: GitHub <noreply@github.com>
+          author: gix-bot <gix-bot@users.noreply.github.com>
+          branch: bot-bump-next
+          branch-suffix: timestamp
+          reviewers: mstrasinskis, dskloetd
+          add-paths: |
+            frontend
+          delete-branch: true
+          title: "bot: Bump ${{ inputs.gix_components && 'gix-components' || '' }}${{ inputs.gix_components && inputs.ic_js && ' and ' || '' }}${{ inputs.ic_js && 'ic-js' || '' }}"
+          body: |
+            # Motivation
+            We want to pull in the latest changes.
+
+            # Changes
+
+            ${{ inputs.gix_components && '* Ran `npm run update:gix`' || '' }}
+            ${{ inputs.ic_js && '* Ran `npm run upgrade:next`' || '' }}
+
+            # Tests
+
+            * CI should pass
+            * The pulled in changes should have been tested before being committed to their repositories.
+      - name: Report on the action
+        run: |
+          (
+            if test -n "${{ steps.cpr.outputs.pull-request-number }}"
+            then echo "Created [PR #${{ steps.cpr.outputs.pull-request-number }}](${{ steps.cpr.outputs.pull-request-url }})."
+            else echo "No changes needed."
+            fi
+          ) | tee -a $GITHUB_STEP_SUMMARY
