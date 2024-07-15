@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-03_23-01-storage-layer-disabled/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-10_23-01-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -429,9 +429,32 @@ pub struct MakingSnsProposal {
     pub proposer_id: Option<NeuronId>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct MostRecentMonthlyNodeProviderRewards {
+pub struct XdrConversionRate {
+    pub xdr_permyriad_per_icp: Option<u64>,
+    pub timestamp_seconds: Option<u64>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct MonthlyNodeProviderRewards {
+    pub minimum_xdr_permyriad_per_icp: Option<u64>,
+    pub registry_version: Option<u64>,
+    pub node_providers: Vec<NodeProvider>,
     pub timestamp: u64,
     pub rewards: Vec<RewardNodeProvider>,
+    pub xdr_conversion_rate: Option<XdrConversionRate>,
+    pub maximum_node_provider_rewards_e8s: Option<u64>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct NeuronSubsetMetrics {
+    pub total_maturity_e8s_equivalent: Option<u64>,
+    pub maturity_e8s_equivalent_buckets: Vec<(u64, u64)>,
+    pub voting_power_buckets: Vec<(u64, u64)>,
+    pub total_staked_e8s: Option<u64>,
+    pub count: Option<u64>,
+    pub total_staked_maturity_e8s_equivalent: Option<u64>,
+    pub staked_maturity_e8s_equivalent_buckets: Vec<(u64, u64)>,
+    pub staked_e8s_buckets: Vec<(u64, u64)>,
+    pub total_voting_power: Option<u64>,
+    pub count_buckets: Vec<(u64, u64)>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct GovernanceCachedMetrics {
@@ -465,6 +488,7 @@ pub struct GovernanceCachedMetrics {
     pub not_dissolving_neurons_staked_maturity_e8s_equivalent_buckets: Vec<(u64, f64)>,
     pub dissolving_neurons_count_buckets: Vec<(u64, u64)>,
     pub dissolving_neurons_e8s_buckets_ect: Vec<(u64, f64)>,
+    pub non_self_authenticating_controller_neuron_subset_metrics: Option<NeuronSubsetMetrics>,
     pub dissolving_neurons_count: u64,
     pub dissolving_neurons_e8s_buckets: Vec<(u64, f64)>,
     pub total_staked_maturity_e8s_equivalent_seed: u64,
@@ -652,11 +676,6 @@ pub struct ProposalData {
     pub original_total_community_fund_maturity_e8s_equivalent: Option<u64>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct XdrConversionRate {
-    pub xdr_permyriad_per_icp: Option<u64>,
-    pub timestamp_seconds: Option<u64>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
 pub enum Command2 {
     Spawn(NeuronId),
     Split(Split),
@@ -711,7 +730,7 @@ pub struct Neuron {
 pub struct Governance {
     pub default_followees: Vec<(i32, Followees)>,
     pub making_sns_proposal: Option<MakingSnsProposal>,
-    pub most_recent_monthly_node_provider_rewards: Option<MostRecentMonthlyNodeProviderRewards>,
+    pub most_recent_monthly_node_provider_rewards: Option<MonthlyNodeProviderRewards>,
     pub maturity_modulation_last_updated_at_timestamp_seconds: Option<u64>,
     pub wait_for_quiet_threshold_seconds: u64,
     pub metrics: Option<GovernanceCachedMetrics>,
@@ -1003,7 +1022,7 @@ impl Service {
     }
     pub async fn get_most_recent_monthly_node_provider_rewards(
         &self,
-    ) -> CallResult<(Option<MostRecentMonthlyNodeProviderRewards>,)> {
+    ) -> CallResult<(Option<MonthlyNodeProviderRewards>,)> {
         ic_cdk::call(self.0, "get_most_recent_monthly_node_provider_rewards", ()).await
     }
     pub async fn get_network_economics_parameters(&self) -> CallResult<(NetworkEconomics,)> {
