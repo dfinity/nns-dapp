@@ -372,7 +372,7 @@
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "ENABLE_PROJECTS_TABLE": false,
-          "ENABLE_IMPORT_TOKEN": true
+          "ENABLE_IMPORT_TOKEN": false
         }
       }
     },
@@ -386,9 +386,9 @@
         "DIDC_VERSION": "2024-05-14",
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2024-07-01",
-        "IC_COMMIT_FOR_PROPOSALS": "release-2024-06-26_23-01-base",
-        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-06-26_23-01-base"
+        "SNSDEMO_RELEASE": "release-2024-07-10",
+        "IC_COMMIT_FOR_PROPOSALS": "release-2024-07-10_23-01-base",
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-07-03_23-01-storage-layer-disabled"
       },
       "packtool": ""
     }

@@ -1475,7 +1475,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100308522330214930,
+    "icrc1_total_supply": 100312053390123260,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3352,7 +3352,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100319389738380,
+    "icrc1_total_supply": 100319926969670,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4083,7 +4083,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995766697000,
+    "icrc1_total_supply": 995765800000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5502,6 +5502,58 @@
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrSysBurn",
               "target_method_name": "sys_burn"
+            }
+          }
+        },
+        {
+          "id": 1093,
+          "name": "DexAggr.verifyListingReferre",
+          "description": "Verify listing referrer",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrVerifyListingReferrer",
+              "target_method_name": "verifyListingReferrer"
+            }
+          }
+        },
+        {
+          "id": 1094,
+          "name": "DexAggr.dropListingReferrer",
+          "description": "Deleting a verified listing referrer",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrDropListingReferrer",
+              "target_method_name": "dropListingReferrer"
+            }
+          }
+        },
+        {
+          "id": 1095,
+          "name": "DexAggr.propose",
+          "description": "Listing Referrer creates a proposal to increase the trading pair score",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrPropose",
+              "target_method_name": "propose"
+            }
+          }
+        },
+        {
+          "id": 1096,
+          "name": "DexAggr.mngNFTUnStake",
+          "description": "Unlocking NFTs locked in DexAggregator by NFT holders",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+              "validator_method_name": "dexAggrMngNFTUnStake",
+              "target_method_name": "NFTUnStake"
             }
           }
         }
@@ -6931,7 +6983,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20023552077493028,
+    "icrc1_total_supply": 20024051237164500,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -8931,7 +8983,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25091733263097804,
+    "icrc1_total_supply": 25096413085862880,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -9776,6 +9828,32 @@
               "target_method_name": "executeAddNewToken"
             }
           }
+        },
+        {
+          "id": 22000,
+          "name": "Add CreatePlayer Callback Function",
+          "description": "Proposal to create the endpoint for adding the callback function to create a new player.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validateCreatePlayer",
+              "target_method_name": "executeCreatePlayer"
+            }
+          }
+        },
+        {
+          "id": 23000,
+          "name": "Promote New Club",
+          "description": "Add Promoted Championship Team.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
+              "validator_method_name": "validatePromoteNewClub",
+              "target_method_name": "executePromoteNewClub"
+            }
+          }
         }
       ]
     },
@@ -10359,7 +10437,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10011813958302796,
+    "icrc1_total_supply": 10013494609757842,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11397,7 +11475,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 101057227531983300,
+    "icrc1_total_supply": 101071460163239330,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -11864,6 +11942,19 @@
               "target_canister_id": "c5jrt-yaaaa-aaaag-qb5ra-cai",
               "validator_method_name": "removeFarmControllersValidate",
               "target_method_name": "removeFarmControllers"
+            }
+          }
+        },
+        {
+          "id": 2101,
+          "name": "CreateFarm",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "arxpg-cyaaa-aaaag-qjzhq-cai",
+              "target_canister_id": "c5jrt-yaaaa-aaaag-qb5ra-cai",
+              "validator_method_name": "createValidate",
+              "target_method_name": "create"
             }
           }
         }
@@ -12410,7 +12501,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99270642249421360,
+    "icrc1_total_supply": 99276853751307380,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -13583,7 +13674,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 100001960765583300,
+    "icrc1_total_supply": 100002055316033820,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14755,7 +14846,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100024384200525120,
+    "icrc1_total_supply": 100027613503665980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

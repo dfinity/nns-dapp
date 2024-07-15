@@ -7,12 +7,17 @@ import { getCurrentIdentity } from "$lib/services/auth.services";
 import { listNeurons } from "$lib/services/neurons.services";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
-import { lastProposalId } from "$lib/utils/proposals.utils";
-import type { ProposalInfo } from "@dfinity/nns";
+import {
+  lastProposalId,
+  sortProposalsByIdDescendingOrder,
+} from "$lib/utils/proposals.utils";
 import {
   ProposalRewardStatus,
+  ProposalStatus,
+  Topic,
   votableNeurons,
   type NeuronInfo,
+  type ProposalInfo,
 } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -27,13 +32,30 @@ export const loadActionableProposals = async (): Promise<void> => {
     return;
   }
 
-  const proposals = await queryProposals();
+  const acceptVotesProposals = await queryProposals({
+    includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
+  });
+  // Request Neuron Management proposals that are open and have an ineligible reward
+  // status because they don't have rewards (not ProposalRewardStatus.AcceptVotes),
+  // but are still votable.
+  // Only users which are listed explicitly in the followees of a Neuron Management proposal will get to
+  // see such a proposal in the query response. So for most users the response will be empty.
+  const neuronManagementProposals = await queryProposals({
+    includeStatus: [ProposalStatus.Open],
+    includeTopics: [Topic.ManageNeuron],
+    // Technically, filtering by ProposalRewardStatus.Ineligible isn’t necessary,
+    // but it ensures that the results are disjoint (acceptVotesProposals and neuronManagementProposals have no common items).
+    includeRewardStatus: [ProposalRewardStatus.Ineligible],
+  });
   // Filter proposals that have at least one votable neuron
-  const votableProposals = proposals.filter(
-    (proposal) => votableNeurons({ neurons, proposal }).length > 0
-  );
+  const votableProposals = [
+    ...acceptVotesProposals,
+    ...neuronManagementProposals,
+  ].filter((proposal) => votableNeurons({ neurons, proposal }).length > 0);
 
-  actionableNnsProposalsStore.setProposals(votableProposals);
+  actionableNnsProposalsStore.setProposals(
+    sortProposalsByIdDescendingOrder(votableProposals)
+  );
 };
 
 const queryNeurons = async (): Promise<NeuronInfo[]> => {
@@ -46,7 +68,15 @@ const queryNeurons = async (): Promise<NeuronInfo[]> => {
 };
 
 /// Fetch all (500 max) proposals that are accepting votes.
-const queryProposals = async (): Promise<ProposalInfo[]> => {
+const queryProposals = async ({
+  includeTopics,
+  includeRewardStatus,
+  includeStatus,
+}: {
+  includeTopics?: Topic[];
+  includeRewardStatus?: ProposalRewardStatus[];
+  includeStatus?: ProposalStatus[];
+}): Promise<ProposalInfo[]> => {
   const identity = getCurrentIdentity();
   let sortedProposals: ProposalInfo[] = [];
   for (
@@ -58,14 +88,15 @@ const queryProposals = async (): Promise<ProposalInfo[]> => {
     const page = await queryNnsProposals({
       beforeProposal: lastProposalId(sortedProposals),
       identity,
-      includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
       certified: false,
+      includeTopics,
+      includeRewardStatus,
+      includeStatus,
     });
-    // Sort proposals by id in descending order to be sure that "lastProposalId" returns correct id.
-    sortedProposals = [...sortedProposals, ...page].sort(
-      ({ id: proposalIdA }, { id: proposalIdB }) =>
-        Number((proposalIdB ?? 0n) - (proposalIdA ?? 0n))
-    );
+    sortedProposals = sortProposalsByIdDescendingOrder([
+      ...sortedProposals,
+      ...page,
+    ]);
 
     if (page.length !== DEFAULT_LIST_PAGINATION_LIMIT) {
       break;
