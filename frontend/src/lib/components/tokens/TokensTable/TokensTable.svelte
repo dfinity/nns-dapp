@@ -5,7 +5,6 @@
   import TokenActionsCell from "./TokenActionsCell.svelte";
   import TokenBalanceCell from "./TokenBalanceCell.svelte";
   import TokenTitleCell from "./TokenTitleCell.svelte";
-  import {sortUserTokensForTable} from "$lib/utils/token.utils";
 
   export let userTokensData: Array<UserToken>;
   export let firstColumnHeader: string;
@@ -34,7 +33,7 @@
 
 <ResponsiveTable
   testId="tokens-table-component"
-  tableData={sortUserTokensForTable(userTokensData)}
+  tableData={userTokensData}
   {columns}
   on:nnsAction
 >
