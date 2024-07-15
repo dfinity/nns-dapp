@@ -198,8 +198,8 @@ describe("Tokens route", () => {
             "Internet Computer",
             "ckBTC",
             "ckETH",
-            "Tetris",
             "Pacman",
+            "Tetris",
           ]);
         });
 
@@ -211,8 +211,8 @@ describe("Tokens route", () => {
             { projectName: "Internet Computer", balance: "1.23 ICP" },
             { projectName: "ckBTC", balance: "4.45 ckBTC" },
             { projectName: "ckETH", balance: "4.14 ckETH" },
-            { projectName: "Tetris", balance: "2.22 TST" },
             { projectName: "Pacman", balance: "3.14 PCMN" },
+            { projectName: "Tetris", balance: "2.22 TST" },
           ]);
         });
 
@@ -499,8 +499,8 @@ describe("Tokens route", () => {
             "Internet Computer",
             "ckBTC",
             "ckETH",
-            "Tetris",
             "Pacman",
+            "Tetris",
           ]);
         });
       });
@@ -518,8 +518,8 @@ describe("Tokens route", () => {
           expect(await signInPo.getTokenNames()).toEqual([
             "Internet Computer",
             "ckETH",
-            "Tetris",
             "Pacman",
+            "Tetris",
           ]);
         });
       });
