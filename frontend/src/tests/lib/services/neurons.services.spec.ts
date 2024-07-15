@@ -353,10 +353,12 @@ describe("neurons-services", () => {
       expect(spyQueryNeurons).toBeCalledWith({
         certified: false,
         identity: mockIdentity,
+        includeEmptyNeurons: false,
       });
       expect(spyQueryNeurons).toBeCalledWith({
         certified: true,
         identity: mockIdentity,
+        includeEmptyNeurons: false,
       });
       expect(spyQueryNeurons).toBeCalledTimes(2);
 
@@ -371,11 +373,13 @@ describe("neurons-services", () => {
       expect(spyQueryNeurons).toBeCalledWith({
         identity: mockIdentity,
         certified: true,
+        includeEmptyNeurons: false,
       });
 
       expect(spyQueryNeurons).toBeCalledWith({
         identity: mockIdentity,
         certified: false,
+        includeEmptyNeurons: false,
       });
 
       expect(spyQueryNeurons).toBeCalledTimes(2);

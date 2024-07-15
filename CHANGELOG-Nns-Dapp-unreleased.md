@@ -33,6 +33,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Button disable state glitch when voting with neurons where one follows another.
 * Fix "the current proposals response is too large" error on proposals page.
 * Visibility of "Neuron Management" proposals in actionable list.
+* Fix "Show neurons" for hardware wallet.
 
 #### Security
 

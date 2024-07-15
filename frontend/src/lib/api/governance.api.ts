@@ -353,16 +353,22 @@ export const setFollowees = async ({
   logWithTimestamp(`Setting Followees (${hashCode(neuronId)}) complete.`);
 };
 
+export type ApiQueryNeuronsParams = ApiQueryParams & {
+  // undefined is interpreted as true by the backend.
+  includeEmptyNeurons?: boolean | undefined;
+};
+
 export const queryNeurons = async ({
   identity,
   certified,
-}: ApiQueryParams): Promise<NeuronInfo[]> => {
+  includeEmptyNeurons,
+}: ApiQueryNeuronsParams): Promise<NeuronInfo[]> => {
   logWithTimestamp(`Querying Neurons certified:${certified} call...`);
   const { canister } = await governanceCanister({ identity });
 
   const response = await canister.listNeurons({
     certified,
-    includeEmptyNeurons: false,
+    includeEmptyNeurons,
   });
   logWithTimestamp(`Querying Neurons certified:${certified} complete.`);
   return response;

@@ -320,6 +320,13 @@ describe("icp-ledger.services", () => {
         const { neurons } = await listNeuronsHardwareWallet();
 
         expect(neurons).toEqual(mockNeurons);
+        expect(api.queryNeurons).toBeCalledWith({
+          certified: true,
+          identity: mockLedgerIdentity,
+          // Must be undefined for compatibility with Ledger app 2.4.9.
+          includeEmptyNeurons: undefined,
+        });
+        expect(api.queryNeurons).toBeCalledTimes(1);
       });
     });
 

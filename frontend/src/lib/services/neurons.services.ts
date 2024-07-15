@@ -251,7 +251,11 @@ export const listNeurons = async ({
   return queryAndUpdate<NeuronInfo[], unknown>({
     strategy: strategy ?? FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
-      governanceApiService.queryNeurons({ certified, identity }),
+      governanceApiService.queryNeurons({
+        certified,
+        identity,
+        includeEmptyNeurons: false,
+      }),
     onLoad: async ({ response: neurons, certified }) => {
       neuronsStore.setNeurons({ neurons, certified });
 
