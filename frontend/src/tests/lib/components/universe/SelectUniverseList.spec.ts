@@ -19,14 +19,13 @@ describe("SelectUniverseList", () => {
     {
       ...mockSnsFullProject,
       rootCanisterId: principal(1),
-      summary: {
-        ...mockSnsFullProject.summary,
+      summary: mockSnsFullProject.summary.override({
         rootCanisterId: principal(1),
         metadata: {
           ...mockSnsFullProject.summary.metadata,
           name: "another name",
         },
-      },
+      }),
     },
   ];
 

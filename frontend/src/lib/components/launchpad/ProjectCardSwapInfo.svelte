@@ -3,11 +3,8 @@
   import ProjectUserCommitmentLabel from "$lib/components/project-detail/ProjectUserCommitmentLabel.svelte";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { i18n } from "$lib/stores/i18n";
-  import type {
-    SnsSummary,
-    SnsSwapCommitment,
-    SnsSummarySwap,
-  } from "$lib/types/sns";
+  import type { SnsSummarySwap, SnsSwapCommitment } from "$lib/types/sns";
+  import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import {
     durationTillSwapDeadline,
     durationTillSwapStart,
@@ -23,7 +20,7 @@
   // The data to know whether it's finalizing or not is not in the SnsFullProject.
   export let isFinalizing: boolean;
 
-  let summary: SnsSummary;
+  let summary: SnsSummaryWrapper;
   let swapCommitment: SnsSwapCommitment | undefined;
   $: ({ summary, swapCommitment } = project);
 
@@ -31,9 +28,7 @@
   $: ({ swap } = summary);
 
   let lifecycle: number;
-  $: ({
-    swap: { lifecycle },
-  } = summary);
+  $: lifecycle = summary.getLifecycle();
 
   let durationTillDeadline: bigint | undefined;
   $: durationTillDeadline = durationTillSwapDeadline(swap);

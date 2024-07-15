@@ -3,7 +3,8 @@ import {
   type ProjectDetailContext,
   type ProjectDetailStore,
 } from "$lib/types/project-detail.context";
-import type { SnsSummary, SnsSwapCommitment, SnsTicket } from "$lib/types/sns";
+import type { SnsSwapCommitment, SnsTicket } from "$lib/types/sns";
+import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
@@ -44,7 +45,7 @@ export const renderContextCmp = ({
   totalTokensSupply,
   reload,
 }: {
-  summary?: SnsSummary;
+  summary?: SnsSummaryWrapper;
   swapCommitment?: SnsSwapCommitment;
   totalTokensSupply?: TokenAmountV2;
   Component: typeof SvelteComponent;

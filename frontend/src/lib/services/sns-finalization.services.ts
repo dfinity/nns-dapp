@@ -31,7 +31,7 @@ export const loadSnsFinalizationStatus = async ({
   if (
     !forceFetch &&
     (isNullish(summary) ||
-      summary.swap.lifecycle !== SnsSwapLifecycle.Committed ||
+      summary.getLifecycle() !== SnsSwapLifecycle.Committed ||
       swapEndedMoreThanOneWeekAgo({ summary, nowInSeconds: nowInSeconds() }))
   ) {
     return;

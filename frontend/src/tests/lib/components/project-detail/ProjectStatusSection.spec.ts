@@ -1,7 +1,8 @@
 import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
-import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+import type { SnsSwapCommitment } from "$lib/types/sns";
+import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
   createBuyersState,
@@ -25,7 +26,7 @@ describe("ProjectStatusSection", () => {
     summary,
     swapCommitment,
   }: {
-    summary?: SnsSummary;
+    summary?: SnsSummaryWrapper;
     swapCommitment?: SnsSwapCommitment;
   }): ProjectStatusSectionPo => {
     const { container } = renderContextCmp({
