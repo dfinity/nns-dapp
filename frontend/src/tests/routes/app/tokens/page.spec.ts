@@ -492,6 +492,66 @@ describe("Tokens route", () => {
       });
     });
 
+    describe("table sorting", () => {
+      describe("when logged in", () => {
+        beforeEach(() => {
+          resetIdentity();
+        });
+
+        it("should display tokens in specific order", async () => {
+          const po = await renderPage();
+          const tokensPagePo = po.getTokensPagePo();
+          expect(await tokensPagePo.getTokenNames()).toEqual([
+            "Internet Computer",
+            "ckBTC",
+            "ckETH",
+            "ckUSDC",
+            "Pacman",
+            "Tetris",
+          ]);
+        });
+
+        describe("taking balance into account", () => {
+          beforeEach(() => {
+            ckETHBalanceUlps = 0n;
+            pacmanBalanceE8s = 0n;
+          });
+
+          it("should display token with balance first", async () => {
+            const po = await renderPage();
+            const tokensPagePo = po.getTokensPagePo();
+            expect(await tokensPagePo.getTokenNames()).toEqual([
+              "Internet Computer",
+              "ckBTC",
+              "ckUSDC",
+              "Tetris",
+              "ckETH",
+              "Pacman",
+            ]);
+          });
+        });
+
+        describe("when logged out", () => {
+          beforeEach(() => {
+            setNoIdentity();
+          });
+
+          it("should display token in specific order", async () => {
+            const po = await renderPage();
+            const tablePo = po.getSignInTokensPagePo().getTokensTablePo();
+            expect(await tablePo.getTokenNames()).toEqual([
+              "Internet Computer",
+              "ckBTC",
+              "ckETH",
+              "ckUSDC",
+              "Pacman",
+              "Tetris",
+            ]);
+          });
+        });
+      });
+    });
+
     describe("when logged out", () => {
       beforeEach(() => {
         setNoIdentity();
