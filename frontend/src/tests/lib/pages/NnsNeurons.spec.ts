@@ -170,11 +170,13 @@ describe("NnsNeurons", () => {
         expect(api.queryNeurons).toHaveBeenCalledWith({
           identity: mockIdentity,
           certified: true,
+          includeEmptyNeurons: false,
         })
       );
       expect(api.queryNeurons).toHaveBeenCalledWith({
         identity: mockIdentity,
         certified: false,
+        includeEmptyNeurons: false,
       });
     });
 
@@ -185,11 +187,13 @@ describe("NnsNeurons", () => {
         expect(api.queryNeurons).toHaveBeenCalledWith({
           identity: mockIdentity,
           certified: true,
+          includeEmptyNeurons: false,
         })
       );
       expect(api.queryNeurons).toHaveBeenCalledWith({
         identity: mockIdentity,
         certified: false,
+        includeEmptyNeurons: false,
       });
 
       await renderComponent();
