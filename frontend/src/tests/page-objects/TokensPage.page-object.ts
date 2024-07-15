@@ -33,6 +33,10 @@ export class TokensPagePo extends BasePageObject {
     return this.getButton("show-all-button");
   }
 
+  getImportTokenButtonPo(): ButtonPo {
+    return this.getButton("import-token-button");
+  }
+
   hasTokensTable(): Promise<boolean> {
     return this.getTokensTable().isPresent();
   }

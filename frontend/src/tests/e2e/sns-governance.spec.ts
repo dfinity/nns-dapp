@@ -21,8 +21,8 @@ test("Test SNS governance", async ({ page, context }) => {
   const snsUniverseRow = snsUniverseRows[0];
   const snsProjectName = await snsUniverseRow.getProjectName();
 
-  // Our test SNS project names are always 5 uppercase letters.
-  expect(snsProjectName).toMatch(/[A-Z]{5}/);
+  // Our first test SNS project is always named "Alfa Centauri".
+  expect(snsProjectName).toBe("Alfa Centauri");
 
   step("Acquire tokens");
   const askedAmount = 20;
@@ -40,7 +40,7 @@ test("Test SNS governance", async ({ page, context }) => {
   expect(
     await appPo.getNeuronsPo().getSnsNeuronsPo().getEmptyMessage()
   ).toEqual(
-    `You have no ${snsProjectName} neurons. Create a neuron by staking ${snsProjectName} to vote on ${snsProjectName} proposals.`
+    "You have no Alfa Centauri neurons. Create a neuron by staking ALF to vote on Alfa Centauri proposals."
   );
 
   const stake = 5;

@@ -7,7 +7,6 @@ import {
   getSnsNeuron as getSnsNeuronApi,
   querySnsNeuron,
   querySnsNeurons,
-  refreshNeuron,
   removeNeuronPermissions,
   setDissolveDelay,
   setFollowees,
@@ -30,14 +29,10 @@ import {
   snsNeuronsStore,
   type ProjectNeuronStore,
 } from "$lib/stores/sns-neurons.store";
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { nowInSeconds } from "$lib/utils/date.utils";
-import {
-  isForceCallStrategy,
-  notForceCallStrategy,
-} from "$lib/utils/env.utils";
+import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import {
@@ -54,35 +49,22 @@ import type { Identity } from "@dfinity/agent";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { E8s } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import type {
-  SnsNervousSystemParameters,
-  SnsNeuron,
-  SnsNeuronId,
-} from "@dfinity/sns";
+import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
 import {
   arrayOfNumberToUint8Array,
   assertNonNullish,
   fromDefinedNullable,
   fromNullable,
-  isNullish,
   nonNullish,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { loadSnsAccounts } from "./sns-accounts.services";
-import {
-  checkSnsNeuronBalances,
-  neuronNeedsRefresh,
-} from "./sns-neurons-check-balances.services";
 import { queryAndUpdate } from "./utils.services";
 
 /**
- * Loads sns neurons in store and checks neurons's stake against the balance of the subaccount.
+ * Loads sns neurons in store.
  * (Loads sns parameters when not already in the store)
- *
- * On update, it will check whether there are neurons that need to be refreshed or claimed.
- * A neuron needs to be refreshed if the balance of the subaccount doesn't match the stake of the neuron.
- * A neuron needs to be claimed if there is a subaccount with balance and no neuron.
  *
  * @param {Principal} rootCanisterId
  * @returns {void}
@@ -90,13 +72,8 @@ import { queryAndUpdate } from "./utils.services";
 export const syncSnsNeurons = async (
   rootCanisterId: Principal
 ): Promise<void> => {
-  const snsParameters = () =>
-    get(snsParametersStore)?.[rootCanisterId.toText()]
-      ?.parameters as SnsNervousSystemParameters;
-  // Load SNS parameters if not in store
-  const snsParametersRequest = isNullish(snsParameters())
-    ? loadSnsParameters(rootCanisterId)
-    : Promise.resolve();
+  const snsParametersRequest = loadSnsParameters(rootCanisterId);
+
   const syncSnsNeuronsRequest = queryAndUpdate<SnsNeuron[], unknown>({
     strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
@@ -111,21 +88,6 @@ export const syncSnsNeurons = async (
         neurons,
         certified,
       });
-
-      if (certified || isForceCallStrategy()) {
-        // be sure that the parameters are loaded
-        await snsParametersRequest;
-        const neuronMinimumStake = fromNullable(
-          snsParameters()?.neuron_minimum_stake_e8s
-        );
-        assertNonNullish(neuronMinimumStake, "neuron_minimum_stake_e8s");
-
-        checkSnsNeuronBalances({
-          rootCanisterId,
-          neurons,
-          neuronMinimumStake,
-        });
-      }
     },
     onError: ({ error: err, certified }) => {
       console.error(err);
@@ -150,7 +112,7 @@ export const syncSnsNeurons = async (
   return Promise.all([snsParametersRequest, syncSnsNeuronsRequest]).then();
 };
 
-export const loadNeurons = async ({
+export const loadSnsNeurons = async ({
   rootCanisterId,
   certified,
 }: {
@@ -242,24 +204,6 @@ export const getSnsNeuron = async ({
       }),
     onLoad: async ({ response: neuron, certified }) => {
       onLoad({ neuron, certified });
-
-      if (certified) {
-        // Check that the neuron's stake is in sync with the subaccount's balance
-        const neuronId = fromNullable(neuron.id);
-        if (neuronId !== undefined) {
-          const identity = await getSnsNeuronIdentity();
-          if (await neuronNeedsRefresh({ rootCanisterId, neuron, identity })) {
-            await refreshNeuron({ rootCanisterId, identity, neuronId });
-            const updatedNeuron = await getSnsNeuronApi({
-              identity,
-              rootCanisterId,
-              neuronId,
-              certified,
-            });
-            onLoad({ neuron: updatedNeuron, certified });
-          }
-        }
-      }
     },
     onError: ({ certified, error }) => {
       onError?.({ certified, error });
@@ -373,7 +317,7 @@ export const splitNeuron = async ({
     // TODO: Get identity depending on account to support HW accounts
     const identity = await getSnsNeuronIdentity();
     // reload neurons (should be actual for nextMemo calculation)
-    await loadNeurons({
+    await loadSnsNeurons({
       rootCanisterId,
       certified: true,
     });
@@ -583,7 +527,7 @@ export const stakeNeuron = async ({
     });
     await Promise.all([
       loadSnsAccounts({ rootCanisterId }),
-      loadNeurons({ rootCanisterId, certified: true }),
+      loadSnsNeurons({ rootCanisterId, certified: true }),
     ]);
     return { success: true };
   } catch (err) {
