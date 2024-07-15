@@ -28,7 +28,7 @@
   import type { Account } from "$lib/types/account";
   import { ActionType, type Action } from "$lib/types/actions";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
-  import type {UserToken, UserTokenData} from "$lib/types/tokens-page";
+  import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
   import type { Universe, UniverseCanisterIdText } from "$lib/types/universe";
   import {
     isIcrcTokenUniverse,
@@ -39,7 +39,7 @@
   import { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
-  import {compareTokensForTokensTable} from "$lib/utils/tokens-table.utils";
+  import { compareTokensForTokensTable } from "$lib/utils/tokens-table.utils";
 
   onMount(() => {
     loadCkBTCTokens();
@@ -197,12 +197,16 @@
     }
   };
 
-  const sortTokens = (tokens: UserToken[]) => [...tokens].sort(compareTokensForTokensTable);
+  const sortTokens = (tokens: UserToken[]) =>
+    [...tokens].sort(compareTokensForTokensTable);
 </script>
 
 <TestIdWrapper testId="tokens-route-component">
   {#if $authSignedInStore}
-    <Tokens userTokensData={sortTokens($tokensListUserStore)} on:nnsAction={handleAction} />
+    <Tokens
+      userTokensData={sortTokens($tokensListUserStore)}
+      on:nnsAction={handleAction}
+    />
   {:else}
     <SignInTokens
       on:nnsAction={handleAction}
