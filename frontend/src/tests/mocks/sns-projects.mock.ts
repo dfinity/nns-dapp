@@ -1,11 +1,11 @@
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type {
-  SnsSummary,
   SnsSummaryMetadata,
   SnsSummarySwap,
   SnsSwapCommitment,
 } from "$lib/types/sns";
+import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import type { QuerySnsMetadata } from "$lib/types/sns.query";
 import type { Universe } from "$lib/types/universe";
 import {
@@ -213,7 +213,7 @@ export const mockLifecycleResponse: SnsGetLifecycleResponse = {
   decentralization_swap_termination_timestamp_seconds: [],
 };
 
-export const mockSnsSummaryList: SnsSummary[] = [
+export const mockSnsSummaryList: SnsSummaryWrapper[] = [
   {
     rootCanisterId: principal(0),
     swapCanisterId: principal(3),
@@ -303,7 +303,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
     swapParams: mockSnsParams,
     lifecycle: mockLifecycleResponse,
   },
-];
+].map((summary) => new SnsSummaryWrapper(summary));
 
 export const mockSummary = mockSnsSummaryList[0];
 
@@ -319,13 +319,7 @@ export const mockSnsFullProject: SnsFullProject = {
 
 export const summaryForLifecycle = (
   lifecycle: SnsSwapLifecycle
-): SnsSummary => ({
-  ...mockSnsFullProject.summary,
-  swap: {
-    ...mockSwap,
-    lifecycle,
-  },
-});
+): SnsSummaryWrapper => mockSnsFullProject.summary.overrideLifecycle(lifecycle);
 
 type SnsSummaryParams = {
   lifecycle?: SnsSwapLifecycle;
@@ -377,7 +371,7 @@ export const createSummary = ({
   rootCanisterId,
   projectName,
   logo,
-}: SnsSummaryParams): SnsSummary => {
+}: SnsSummaryParams): SnsSummaryWrapper => {
   const init: SnsSwapInit = {
     ...mockInit,
     swap_due_timestamp_seconds: [swapDueTimestampSeconds],
@@ -428,8 +422,7 @@ export const createSummary = ({
     logo: logo ?? mockMetadata.logo,
   };
   const summary = summaryForLifecycle(lifecycle);
-  return {
-    ...summary,
+  return summary.override({
     rootCanisterId: rootCanisterId ?? summary.rootCanisterId,
     metadata,
     swap: {
@@ -440,7 +433,7 @@ export const createSummary = ({
     },
     derived,
     init,
-  };
+  });
 };
 
 export const createMockSnsFullProject = ({

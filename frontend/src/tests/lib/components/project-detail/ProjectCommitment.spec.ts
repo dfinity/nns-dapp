@@ -1,6 +1,7 @@
 import ProjectCommitment from "$lib/components/project-detail/ProjectCommitment.svelte";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
-import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+import type { SnsSwapCommitment } from "$lib/types/sns";
+import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import {
   createSummary,
   mockSnsFullProject,
@@ -14,7 +15,7 @@ describe("ProjectCommitment", () => {
   const saleBuyerCount = 1_000_000;
 
   const renderComponent = (
-    summary: SnsSummary,
+    summary: SnsSummaryWrapper,
     swapCommitment: SnsSwapCommitment = mockSnsFullProject.swapCommitment
   ) => {
     const { container } = renderContextCmp({

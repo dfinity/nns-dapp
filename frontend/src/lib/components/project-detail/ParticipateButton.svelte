@@ -11,11 +11,10 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import type { SnsSummary } from "$lib/types/sns";
   import {
     hasUserParticipatedToSwap,
-    type ParticipationButtonStatus,
     participateButtonStatus,
+    type ParticipationButtonStatus,
   } from "$lib/utils/projects.utils";
   import { BottomSheet } from "@dfinity/gix-components";
   import { Tooltip } from "@dfinity/gix-components";
@@ -29,13 +28,8 @@
   );
 
   let lifecycle: number;
-  $: ({
-    swap: { lifecycle },
-  } =
-    $projectDetailStore.summary ??
-    ({
-      swap: { state: { lifecycle: SnsSwapLifecycle.Unspecified } },
-    } as unknown as SnsSummary));
+  $: lifecycle =
+    $projectDetailStore.summary?.getLifecycle() ?? SnsSwapLifecycle.Unspecified;
 
   let showModal = false;
   const openModal = () => (showModal = true);

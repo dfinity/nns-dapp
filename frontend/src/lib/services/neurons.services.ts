@@ -983,10 +983,7 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
     const { snsSummariesStore } = await import("../stores/sns.store");
     const projects = get(snsSummariesStore);
     const pendingProject = projects.find(
-      ({
-        swap: { lifecycle },
-        // Use 1 instead of using enum to avoid importing sns-js
-      }) => lifecycle === 1
+      (summary) => summary.getLifecycle() === 1
     );
     await makeDummyProposalsApi({
       neuronId,

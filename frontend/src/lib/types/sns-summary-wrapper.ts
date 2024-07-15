@@ -10,6 +10,7 @@ import type {
   SnsParams,
   SnsSwapDerivedState,
   SnsSwapInit,
+  SnsSwapLifecycle,
 } from "@dfinity/sns";
 import { fromNullable, isNullish } from "@dfinity/utils";
 
@@ -56,6 +57,10 @@ export class SnsSummaryWrapper implements SnsSummary {
     return this.summary.lifecycle;
   }
 
+  getLifecycle(): SnsSwapLifecycle {
+    return this.swap.lifecycle;
+  }
+
   public overrideDerivedState(
     newDerivedState: SnsSwapDerivedState
   ): SnsSummaryWrapper {
@@ -83,6 +88,20 @@ export class SnsSummaryWrapper implements SnsSummary {
         decentralization_sale_open_timestamp_seconds: saleOpenTimestamp,
       },
       lifecycle: newLifecycle,
+    });
+  }
+
+  public overrideLifecycle(lifecycle: SnsSwapLifecycle): SnsSummaryWrapper {
+    return this.overrideLifecycleResponse({
+      ...this.lifecycle,
+      lifecycle: [lifecycle],
+    });
+  }
+
+  public override(summary: Partial<SnsSummary>): SnsSummaryWrapper {
+    return new SnsSummaryWrapper({
+      ...this.summary,
+      ...summary,
     });
   }
 }

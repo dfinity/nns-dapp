@@ -1,6 +1,7 @@
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
   canUserParticipateToSwap,
@@ -37,11 +38,11 @@ import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 
 describe("project-utils", () => {
-  const summaryUsRestricted: SnsSummary = createSummary({
+  const summaryUsRestricted: SnsSummaryWrapper = createSummary({
     lifecycle: SnsSwapLifecycle.Open,
     restrictedCountries: ["US"],
   });
-  const summaryNoRestricted: SnsSummary = createSummary({
+  const summaryNoRestricted: SnsSummaryWrapper = createSummary({
     lifecycle: SnsSwapLifecycle.Open,
     restrictedCountries: [],
   });
@@ -65,7 +66,7 @@ describe("project-utils", () => {
             },
           ],
           swapLifecycle: SnsSwapLifecycle.Open,
-        })[0].summary.swap.lifecycle
+        })[0].summary.getLifecycle()
       ).toEqual(SnsSwapLifecycle.Open);
 
       expect(
@@ -114,13 +115,12 @@ describe("project-utils", () => {
         filterActiveProjects([
           {
             ...mockSnsFullProject,
-            summary: {
-              ...mockSnsFullProject.summary,
+            summary: mockSnsFullProject.summary.override({
               swap: {
                 ...mockSwap,
                 lifecycle: SnsSwapLifecycle.Pending,
               },
-            },
+            }),
           },
         ])?.length
       ).toEqual(0);
@@ -473,8 +473,7 @@ describe("project-utils", () => {
       const userMax = 1_000_000_000n;
       const validProject: SnsFullProject = {
         ...mockSnsFullProject,
-        summary: {
-          ...mockSnsFullProject.summary,
+        summary: mockSnsFullProject.summary.override({
           derived: {
             buyer_total_icp_e8s: 0n,
             sns_tokens_per_icp: 1,
@@ -493,7 +492,7 @@ describe("project-utils", () => {
               max_icp_e8s: projectMax,
             },
           },
-        },
+        }),
         swapCommitment: undefined,
       };
       expect(currentUserMaxCommitment(validProject)).toEqual(userMax);
@@ -505,8 +504,7 @@ describe("project-utils", () => {
       const userCommitment = 400_000_000n;
       const validProject: SnsFullProject = {
         ...mockSnsFullProject,
-        summary: {
-          ...mockSnsFullProject.summary,
+        summary: mockSnsFullProject.summary.override({
           derived: {
             buyer_total_icp_e8s: userCommitment,
             sns_tokens_per_icp: 1,
@@ -525,7 +523,7 @@ describe("project-utils", () => {
               max_icp_e8s: projectMax,
             },
           },
-        },
+        }),
         swapCommitment: {
           ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
           myCommitment: {
@@ -545,8 +543,7 @@ describe("project-utils", () => {
       const projectCommitment = 9_500_000_000n;
       const validProject: SnsFullProject = {
         ...mockSnsFullProject,
-        summary: {
-          ...mockSnsFullProject.summary,
+        summary: mockSnsFullProject.summary.override({
           derived: {
             buyer_total_icp_e8s: projectCommitment,
             sns_tokens_per_icp: 1,
@@ -565,7 +562,7 @@ describe("project-utils", () => {
               max_icp_e8s: projectMax,
             },
           },
-        },
+        }),
         swapCommitment: undefined,
       };
       expect(currentUserMaxCommitment(validProject)).toEqual(
@@ -580,8 +577,7 @@ describe("project-utils", () => {
       const userCommitment = 400_000_000n;
       const validProject: SnsFullProject = {
         ...mockSnsFullProject,
-        summary: {
-          ...mockSnsFullProject.summary,
+        summary: mockSnsFullProject.summary.override({
           derived: {
             buyer_total_icp_e8s: projectCommitment,
             sns_tokens_per_icp: 1,
@@ -600,7 +596,7 @@ describe("project-utils", () => {
               max_icp_e8s: projectMax,
             },
           },
-        },
+        }),
         swapCommitment: {
           ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
           myCommitment: {
@@ -619,8 +615,7 @@ describe("project-utils", () => {
     it("returns remaining amount taking into account current commitment", () => {
       const projectMax = 10_000_000_000n;
       const projectCommitment = 9_200_000_000n;
-      const summary: SnsSummary = {
-        ...mockSnsFullProject.summary,
+      const summary: SnsSummary = mockSnsFullProject.summary.override({
         derived: {
           buyer_total_icp_e8s: projectCommitment,
           sns_tokens_per_icp: 1,
@@ -639,7 +634,7 @@ describe("project-utils", () => {
             max_icp_e8s: projectMax,
           },
         },
-      };
+      });
       expect(projectRemainingAmount(summary)).toEqual(
         projectMax - projectCommitment
       );
@@ -650,8 +645,7 @@ describe("project-utils", () => {
     const validAmountE8s = 1_000_000_000n;
     const validProject: SnsFullProject = {
       ...mockSnsFullProject,
-      summary: {
-        ...mockSnsFullProject.summary,
+      summary: mockSnsFullProject.summary.override({
         derived: {
           buyer_total_icp_e8s: 0n,
           sns_tokens_per_icp: 1,
@@ -671,7 +665,7 @@ describe("project-utils", () => {
             max_icp_e8s: validAmountE8s + 10_000n,
           },
         },
-      },
+      }),
       swapCommitment: {
         ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
         myCommitment: {
@@ -694,13 +688,12 @@ describe("project-utils", () => {
     it("returns false if project committed", () => {
       const project = {
         ...validProject,
-        summary: {
-          ...validProject.summary,
+        summary: validProject.summary.override({
           swap: {
             ...validProject.summary.swap,
             lifecycle: SnsSwapLifecycle.Committed,
           },
-        },
+        }),
       };
       const { valid } = validParticipation({
         project,
@@ -715,13 +708,12 @@ describe("project-utils", () => {
     it("returns false if project pending", () => {
       const project = {
         ...validProject,
-        summary: {
-          ...validProject.summary,
+        summary: validProject.summary.override({
           swap: {
             ...validProject.summary.swap,
             lifecycle: SnsSwapLifecycle.Pending,
           },
-        },
+        }),
       };
       const { valid } = validParticipation({
         project,
@@ -736,8 +728,7 @@ describe("project-utils", () => {
     it("returns false if amount is larger than maximum per participant", () => {
       const project = {
         ...validProject,
-        summary: {
-          ...validProject.summary,
+        summary: validProject.summary.override({
           swap: {
             ...validProject.summary.swap,
             params: {
@@ -745,7 +736,7 @@ describe("project-utils", () => {
               max_participant_icp_e8s: validAmountE8s,
             },
           },
-        },
+        }),
       };
       const { valid } = validParticipation({
         project,
@@ -760,8 +751,7 @@ describe("project-utils", () => {
     it("takes into account current participation to calculate the maximum per participant", () => {
       const project: SnsFullProject = {
         ...validProject,
-        summary: {
-          ...validProject.summary,
+        summary: validProject.summary.override({
           swap: {
             ...validProject.summary.swap,
             params: {
@@ -769,7 +759,7 @@ describe("project-utils", () => {
               max_participant_icp_e8s: validAmountE8s * 2n,
             },
           },
-        },
+        }),
         swapCommitment: {
           ...(validProject.swapCommitment as SnsSwapCommitment),
           myCommitment: {
@@ -794,8 +784,7 @@ describe("project-utils", () => {
       const currentE8s = 950_000_000n;
       const project: SnsFullProject = {
         ...validProject,
-        summary: {
-          ...validProject.summary,
+        summary: validProject.summary.override({
           derived: {
             buyer_total_icp_e8s: currentE8s,
             sns_tokens_per_icp: 1,
@@ -812,7 +801,7 @@ describe("project-utils", () => {
               max_participant_icp_e8s: maxE8s,
             },
           },
-        },
+        }),
       };
       const { valid } = validParticipation({
         project,
@@ -833,8 +822,7 @@ describe("project-utils", () => {
       const newParticipation = 600_000_000n;
       const project: SnsFullProject = {
         ...validProject,
-        summary: {
-          ...validProject.summary,
+        summary: validProject.summary.override({
           derived: {
             buyer_total_icp_e8s: currentProjectParticipation,
             sns_tokens_per_icp: 1,
@@ -853,7 +841,7 @@ describe("project-utils", () => {
               max_icp_e8s: maxProject,
             },
           },
-        },
+        }),
         swapCommitment: {
           ...(validProject.swapCommitment as SnsSwapCommitment),
           myCommitment: {
@@ -879,8 +867,7 @@ describe("project-utils", () => {
     const maxPerUser = 2_000_000_000n;
     const project: SnsFullProject = {
       ...mockSnsFullProject,
-      summary: {
-        ...mockSnsFullProject.summary,
+      summary: mockSnsFullProject.summary.override({
         derived: {
           buyer_total_icp_e8s: 0n,
           sns_tokens_per_icp: 1,
@@ -900,7 +887,7 @@ describe("project-utils", () => {
             max_icp_e8s: maxProject,
           },
         },
-      },
+      }),
       swapCommitment: undefined,
     };
     it("user flow check", () => {
@@ -995,8 +982,7 @@ describe("project-utils", () => {
       const maxE8s = 1_000_000_000n;
       const participationE8s = 100_000_000n;
       const currentE8s = 950_000_000n;
-      const summary: SnsSummary = {
-        ...mockSnsFullProject.summary,
+      const summary = mockSnsFullProject.summary.override({
         derived: {
           buyer_total_icp_e8s: currentE8s,
           sns_tokens_per_icp: 1,
@@ -1013,7 +999,7 @@ describe("project-utils", () => {
             max_icp_e8s: maxE8s,
           },
         },
-      };
+      });
       const expected = commitmentExceedsAmountLeft({
         summary,
         amountE8s: participationE8s,
@@ -1025,8 +1011,7 @@ describe("project-utils", () => {
       const maxE8s = 1_000_000_000n;
       const participationE8s = 100_000_000n;
       const currentE8s = 850_000_000n;
-      const summary: SnsSummary = {
-        ...mockSnsFullProject.summary,
+      const summary = mockSnsFullProject.summary.override({
         derived: {
           buyer_total_icp_e8s: currentE8s,
           sns_tokens_per_icp: 1,
@@ -1043,7 +1028,7 @@ describe("project-utils", () => {
             max_icp_e8s: maxE8s,
           },
         },
-      };
+      });
       const expected = commitmentExceedsAmountLeft({
         summary,
         amountE8s: participationE8s,
@@ -1053,17 +1038,14 @@ describe("project-utils", () => {
   });
 
   describe("participateButtonStatus", () => {
-    const summary: SnsSummary = {
-      ...mockSnsFullProject.summary,
-    };
+    const summary = mockSnsFullProject.summary;
 
-    const notOpenSummary: SnsSummary = {
-      ...mockSnsFullProject.summary,
+    const notOpenSummary = mockSnsFullProject.summary.override({
       swap: {
         ...mockSnsFullProject.summary.swap,
         lifecycle: SnsSwapLifecycle.Committed,
       },
-    };
+    });
 
     const userNoCommitment: SnsSwapCommitment = {
       rootCanisterId: mockSnsFullProject.rootCanisterId,
@@ -1268,13 +1250,12 @@ describe("project-utils", () => {
     });
 
     it("should return the different summaries", () => {
-      const sameButDifferent: SnsSummary = {
-        ...summaryNoRestricted,
+      const sameButDifferent = summaryNoRestricted.override({
         token: {
           ...summaryNoRestricted.token,
           name: "not the same",
         },
-      };
+      });
       expect(
         differentSummaries(
           [summaryUsRestricted, sameButDifferent],
