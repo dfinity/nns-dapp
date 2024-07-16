@@ -10,8 +10,8 @@
   {#if !$authSignedInStore}
     <PageBanner testId="staking-page-banner">
       <IconNeuronsPage slot="image" />
-      <svelte:fragment slot="title">{$i18n.auth_neurons.title}</svelte:fragment>
-      <p class="description" slot="description">{$i18n.neurons.text}</p>
+      <svelte:fragment slot="title">{$i18n.staking.title}</svelte:fragment>
+      <p class="description" slot="description">{$i18n.staking.text}</p>
       <SignIn slot="actions" />
     </PageBanner>
   {/if}

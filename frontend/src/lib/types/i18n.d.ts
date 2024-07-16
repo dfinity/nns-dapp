@@ -248,6 +248,8 @@ interface I18nNeuron_types {
 }
 
 interface I18nStaking {
+  title: string;
+  text: string;
   nervous_systems: string;
 }
 

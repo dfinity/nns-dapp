@@ -237,6 +237,8 @@
     "ect": "Early Contributor Token"
   },
   "staking": {
+    "title": "Stake and earn voting rewards",
+    "text": "Earn voting rewards by staking your tokens in neurons. Neurons allow you to participate in governance of the Internet Computer, and DAOs deployed on the Internet Computer.",
     "nervous_systems": "Nervous Systems"
   },
   "neurons": {
