@@ -31,4 +31,8 @@ export class ProjectsTableRowPo extends ResponsiveTableRowPo {
   getNeuronCount(): Promise<string> {
     return this.getProjectNeuronsCellPo().getNeuronCount();
   }
+
+  hasGoToNeuronsTableAction(): Promise<boolean> {
+    return this.isPresent("go-to-neurons-table-action");
+  }
 }

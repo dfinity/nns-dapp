@@ -22,8 +22,11 @@ describe("staking.utils", () => {
       logo: "logo2",
     };
 
+    const nnsHref = `/neurons/?u=${OWN_CANISTER_ID_TEXT}`;
+    const snsHref = `/neurons/?u=${universeId2}`;
+
     const defaultExpectedNnsTableProject = {
-      rowHref: `/neurons/?u=${OWN_CANISTER_ID_TEXT}`,
+      rowHref: undefined,
       domKey: OWN_CANISTER_ID_TEXT,
       title: "Internet Computer",
       logo: IC_LOGO_ROUNDED,
@@ -31,7 +34,7 @@ describe("staking.utils", () => {
     };
 
     const defaultExpectedSnsTableProject = {
-      rowHref: `/neurons/?u=${universeId2}`,
+      rowHref: undefined,
       domKey: universeId2,
       title: "title2",
       logo: "logo2",
@@ -95,6 +98,7 @@ describe("staking.utils", () => {
       expect(tableProjects).toEqual([
         {
           ...defaultExpectedNnsTableProject,
+          rowHref: nnsHref,
           neuronCount: 3,
         },
       ]);
@@ -115,6 +119,7 @@ describe("staking.utils", () => {
       expect(tableProjects).toEqual([
         {
           ...defaultExpectedSnsTableProject,
+          rowHref: snsHref,
           neuronCount: 2,
         },
       ]);
@@ -135,6 +140,7 @@ describe("staking.utils", () => {
       expect(tableProjects).toEqual([
         {
           ...defaultExpectedNnsTableProject,
+          rowHref: nnsHref,
           neuronCount: 1,
         },
       ]);
@@ -160,6 +166,7 @@ describe("staking.utils", () => {
       expect(tableProjects).toEqual([
         {
           ...defaultExpectedSnsTableProject,
+          rowHref: snsHref,
           neuronCount: 1,
         },
       ]);
@@ -180,10 +187,12 @@ describe("staking.utils", () => {
       expect(tableProjects).toEqual([
         {
           ...defaultExpectedNnsTableProject,
+          rowHref: undefined,
           neuronCount: undefined,
         },
         {
           ...defaultExpectedSnsTableProject,
+          rowHref: undefined,
           neuronCount: undefined,
         },
       ]);
@@ -202,10 +211,12 @@ describe("staking.utils", () => {
       expect(tableProjects).toEqual([
         {
           ...defaultExpectedNnsTableProject,
+          rowHref: undefined,
           neuronCount: undefined,
         },
         {
           ...defaultExpectedSnsTableProject,
+          rowHref: undefined,
           neuronCount: undefined,
         },
       ]);
