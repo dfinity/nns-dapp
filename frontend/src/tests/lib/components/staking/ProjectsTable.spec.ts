@@ -4,6 +4,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { page } from "$mocks/$app/stores";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
@@ -26,6 +27,7 @@ describe("ProjectsTable", () => {
     neuronsStore.reset();
     snsNeuronsStore.reset();
     resetSnsProjects();
+    resetIdentity();
 
     page.mock({
       routeId: AppPath.Staking,
@@ -136,7 +138,6 @@ describe("ProjectsTable", () => {
       const rowPos = await po.getProjectsTableRowPos();
       expect(rowPos).toHaveLength(2);
       expect(await rowPos[0].getNeuronCount()).toBe("2");
-      expect(await rowPos[1].getNeuronCount()).toBe("0");
     });
 
     it("should render SNS neurons count", async () => {
@@ -148,7 +149,6 @@ describe("ProjectsTable", () => {
       const po = renderComponent();
       const rowPos = await po.getProjectsTableRowPos();
       expect(rowPos).toHaveLength(2);
-      expect(await rowPos[0].getNeuronCount()).toBe("0");
       expect(await rowPos[1].getNeuronCount()).toBe("3");
     });
 
@@ -161,7 +161,6 @@ describe("ProjectsTable", () => {
       const rowPos = await po.getProjectsTableRowPos();
       expect(rowPos).toHaveLength(2);
       expect(await rowPos[0].getNeuronCount()).toBe("1");
-      expect(await rowPos[1].getNeuronCount()).toBe("0");
     });
 
     it("should filter SNS neurons without stake", async () => {
@@ -177,8 +176,29 @@ describe("ProjectsTable", () => {
       const po = renderComponent();
       const rowPos = await po.getProjectsTableRowPos();
       expect(rowPos).toHaveLength(2);
-      expect(await rowPos[0].getNeuronCount()).toBe("0");
       expect(await rowPos[1].getNeuronCount()).toBe("2");
+    });
+
+    it("should not render neurons count when not signed in", async () => {
+      setNoIdentity();
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [],
+        certified: true,
+      });
+      const po = renderComponent();
+      const rowPos = await po.getProjectsTableRowPos();
+      expect(rowPos).toHaveLength(2);
+      expect(await rowPos[0].getNeuronCount()).toBe("-/-");
+      expect(await rowPos[1].getNeuronCount()).toBe("-/-");
+    });
+
+    it("should not render SNS neurons count when not loaded", async () => {
+      const po = renderComponent();
+      const rowPos = await po.getProjectsTableRowPos();
+      expect(rowPos).toHaveLength(2);
+      expect(await rowPos[0].getNeuronCount()).toBe("-/-");
+      expect(await rowPos[1].getNeuronCount()).toBe("-/-");
     });
   });
 

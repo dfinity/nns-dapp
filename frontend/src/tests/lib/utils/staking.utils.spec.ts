@@ -38,6 +38,23 @@ describe("staking.utils", () => {
       neuronCount: 0,
     };
 
+    const nnsNeuronWithStake = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        cachedNeuronStake: 100_000_000n,
+      },
+    };
+
+    const nnsNeuronWithoutStake = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        cachedNeuronStake: 0n,
+        maturityE8sEquivalent: 0n,
+      },
+    };
+
     const snsNeuronWithStake = createMockSnsNeuron({
       stake: 100_000_000n,
       id: [1, 1, 3],
@@ -54,8 +71,11 @@ describe("staking.utils", () => {
 
       const tableProjects = getTableProjects({
         universes,
-        definedNnsNeurons: [],
-        snsNeurons: {},
+        isSignedIn: true,
+        nnsNeurons: [],
+        snsNeurons: {
+          [universeId2]: { neurons: [] },
+        },
       });
 
       expect(tableProjects).toEqual([
@@ -67,7 +87,8 @@ describe("staking.utils", () => {
     it("should include number of NNS neurons", () => {
       const tableProjects = getTableProjects({
         universes: [nnsUniverse],
-        definedNnsNeurons: [mockNeuron, mockNeuron, mockNeuron],
+        isSignedIn: true,
+        nnsNeurons: [mockNeuron, mockNeuron, mockNeuron],
         snsNeurons: {},
       });
 
@@ -82,7 +103,8 @@ describe("staking.utils", () => {
     it("should include number of SNS neurons", () => {
       const tableProjects = getTableProjects({
         universes: [snsUniverse],
-        definedNnsNeurons: [],
+        isSignedIn: true,
+        nnsNeurons: [],
         snsNeurons: {
           [universeId2]: {
             neurons: [snsNeuronWithStake, snsNeuronWithStake],
@@ -98,10 +120,31 @@ describe("staking.utils", () => {
       ]);
     });
 
+    it("should filter NNS neurons without stake", () => {
+      const tableProjects = getTableProjects({
+        universes: [nnsUniverse],
+        isSignedIn: true,
+        nnsNeurons: [
+          nnsNeuronWithStake,
+          nnsNeuronWithoutStake,
+          nnsNeuronWithoutStake,
+        ],
+        snsNeurons: {},
+      });
+
+      expect(tableProjects).toEqual([
+        {
+          ...defaultExpectedNnsTableProject,
+          neuronCount: 1,
+        },
+      ]);
+    });
+
     it("should filter SNS neurons without stake", () => {
       const tableProjects = getTableProjects({
         universes: [snsUniverse],
-        definedNnsNeurons: [],
+        isSignedIn: true,
+        nnsNeurons: [],
         snsNeurons: {
           [universeId2]: {
             neurons: [
@@ -118,6 +161,52 @@ describe("staking.utils", () => {
         {
           ...defaultExpectedSnsTableProject,
           neuronCount: 1,
+        },
+      ]);
+    });
+
+    it("should not have a number of neurons when not signed in", () => {
+      const tableProjects = getTableProjects({
+        universes: [nnsUniverse, snsUniverse],
+        isSignedIn: false,
+        nnsNeurons: [],
+        snsNeurons: {
+          [universeId2]: {
+            neurons: [],
+          },
+        },
+      });
+
+      expect(tableProjects).toEqual([
+        {
+          ...defaultExpectedNnsTableProject,
+          neuronCount: undefined,
+        },
+        {
+          ...defaultExpectedSnsTableProject,
+          neuronCount: undefined,
+        },
+      ]);
+    });
+
+    it("should not have a number of neurons when not loaded into the store", () => {
+      const tableProjects = getTableProjects({
+        universes: [nnsUniverse, snsUniverse],
+        isSignedIn: true,
+        nnsNeurons: undefined,
+        snsNeurons: {
+          [universeId2]: undefined,
+        },
+      });
+
+      expect(tableProjects).toEqual([
+        {
+          ...defaultExpectedNnsTableProject,
+          neuronCount: undefined,
+        },
+        {
+          ...defaultExpectedSnsTableProject,
+          neuronCount: undefined,
         },
       ]);
     });
