@@ -29,7 +29,7 @@ const ImportantCkTokenIds = [
   CKETH_UNIVERSE_CANISTER_ID.toText(),
   CKUSDC_UNIVERSE_CANISTER_ID.toText(),
 ]
-  // Reverse the list to preserve the order in the descending comparison
+  // To place other tokens (which get an index of -1) at the bottom.
   .reverse();
 export const compareTokensByImportance = createDescendingComparator(
   (token: UserToken) => ImportantCkTokenIds.indexOf(token.universeId.toText())
