@@ -68,8 +68,7 @@ describe("Tokens route", () => {
   };
   const tetrisDefaultBalanceE8s = 222000000n;
   let tetrisBalanceE8s = tetrisDefaultBalanceE8s;
-  const pacmanDefaultBalanceE8s = 314000000n;
-  let pacmanBalanceE8s = pacmanDefaultBalanceE8s;
+  const pacmanBalanceE8s = 314000000n;
   const ckBTCDefaultBalanceE8s = 444556699n;
   let ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
   const ckUSDCDefaultBalanceE8s = 111000000n;
@@ -110,7 +109,6 @@ describe("Tokens route", () => {
       ckETHBalanceUlps = ckETHDefaultBalanceUlps;
       ckUSDCBalanceE8s = ckUSDCDefaultBalanceE8s;
       tetrisBalanceE8s = tetrisDefaultBalanceE8s;
-      pacmanBalanceE8s = pacmanDefaultBalanceE8s;
       vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockImplementation(
         async ({ canisterId }) => {
           const tokenMap = {
@@ -513,8 +511,26 @@ describe("Tokens route", () => {
 
         describe("taking balance into account", () => {
           beforeEach(() => {
-            ckETHBalanceUlps = 0n;
-            pacmanBalanceE8s = 0n;
+            vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
+              async ({ canisterId }) => {
+                const balancesMap = {
+                  [CKBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
+                  [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
+                  [CKETH_UNIVERSE_CANISTER_ID.toText()]: 0n,
+                  [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: ckUSDCBalanceE8s,
+                  [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]:
+                    ckETHBalanceUlps,
+                  [ledgerCanisterIdTetris.toText()]: tetrisBalanceE8s,
+                  [ledgerCanisterIdPacman.toText()]: 0n,
+                };
+                if (isNullish(balancesMap[canisterId.toText()])) {
+                  throw new Error(
+                    `Account not found for canister ${canisterId.toText()}`
+                  );
+                }
+                return balancesMap[canisterId.toText()];
+              }
+            );
           });
 
           it("should display token with balance first", async () => {
