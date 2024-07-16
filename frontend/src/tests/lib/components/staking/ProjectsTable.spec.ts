@@ -82,16 +82,6 @@ describe("ProjectsTable", () => {
     );
   });
 
-  it("should render neurons URL", async () => {
-    const po = renderComponent();
-    const rowPos = await po.getProjectsTableRowPos();
-    expect(rowPos).toHaveLength(2);
-    expect(await rowPos[0].getHref()).toBe(
-      `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
-    );
-    expect(await rowPos[1].getHref()).toBe(`/neurons/?u=${snsCanisterId}`);
-  });
-
   it("should render project title", async () => {
     const po = renderComponent();
     const rowPos = await po.getProjectsTableRowPos();
@@ -138,6 +128,10 @@ describe("ProjectsTable", () => {
       const rowPos = await po.getProjectsTableRowPos();
       expect(rowPos).toHaveLength(2);
       expect(await rowPos[0].getNeuronCount()).toBe("2");
+      expect(await rowPos[0].getHref()).toBe(
+        `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
+      );
+      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(true);
     });
 
     it("should render SNS neurons count", async () => {
@@ -150,6 +144,8 @@ describe("ProjectsTable", () => {
       const rowPos = await po.getProjectsTableRowPos();
       expect(rowPos).toHaveLength(2);
       expect(await rowPos[1].getNeuronCount()).toBe("3");
+      expect(await rowPos[1].getHref()).toBe(`/neurons/?u=${snsCanisterId}`);
+      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(true);
     });
 
     it("should filter NNS neurons without stake", async () => {
@@ -190,7 +186,11 @@ describe("ProjectsTable", () => {
       const rowPos = await po.getProjectsTableRowPos();
       expect(rowPos).toHaveLength(2);
       expect(await rowPos[0].getNeuronCount()).toBe("-/-");
+      expect(await rowPos[0].getHref()).toBe(null);
+      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(false);
       expect(await rowPos[1].getNeuronCount()).toBe("-/-");
+      expect(await rowPos[1].getHref()).toBe(null);
+      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(false);
     });
 
     it("should not render SNS neurons count when not loaded", async () => {
@@ -198,7 +198,32 @@ describe("ProjectsTable", () => {
       const rowPos = await po.getProjectsTableRowPos();
       expect(rowPos).toHaveLength(2);
       expect(await rowPos[0].getNeuronCount()).toBe("-/-");
+      expect(await rowPos[0].getHref()).toBe(null);
+      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(false);
       expect(await rowPos[1].getNeuronCount()).toBe("-/-");
+      expect(await rowPos[0].getHref()).toBe(null);
+      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(false);
+    });
+
+    it("should not render clickable row with zero neurons", async () => {
+      neuronsStore.setNeurons({
+        neurons: [],
+        certified: true,
+      });
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [],
+        certified: true,
+      });
+      const po = renderComponent();
+      const rowPos = await po.getProjectsTableRowPos();
+      expect(rowPos).toHaveLength(2);
+      expect(await rowPos[0].getNeuronCount()).toBe("0");
+      expect(await rowPos[0].getHref()).toBe(null);
+      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(false);
+      expect(await rowPos[1].getNeuronCount()).toBe("0");
+      expect(await rowPos[1].getHref()).toBe(null);
+      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(false);
     });
   });
 

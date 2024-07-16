@@ -25,8 +25,12 @@ export const getTableProjects = ({
       ? nnsNeurons?.filter(nnsHasValidStake).length
       : snsNeurons[universe.canisterId]?.neurons.filter(snsHasValidStake)
           .length;
+    const rowHref =
+      (neuronCount ?? 0) > 0
+        ? buildNeuronsUrl({ universe: universe.canisterId })
+        : undefined;
     return {
-      rowHref: buildNeuronsUrl({ universe: universe.canisterId }),
+      rowHref,
       domKey: universe.canisterId,
       title: universe.title,
       logo: universe.logo,
