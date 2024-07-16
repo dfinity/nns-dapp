@@ -9,8 +9,14 @@ import {
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
+import {
+  CKUSDC_INDEX_CANISTER_ID,
+  CKUSDC_LEDGER_CANISTER_ID,
+  CKUSDC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckusdc-canister-ids.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { numberToUlps } from "$lib/utils/token.utils";
 import TokensRoute from "$routes/(app)/(nns)/tokens/+page.svelte";
@@ -28,6 +34,7 @@ import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { mockCkUSDCToken } from "$tests/mocks/tokens.mock";
 import { TokensRoutePo } from "$tests/page-objects/TokensRoute.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
@@ -64,6 +71,7 @@ describe("Tokens route", () => {
   const pacmanBalanceE8s = 314000000n;
   const ckBTCDefaultBalanceE8s = 444556699n;
   let ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
+  const ckUSDCBalanceE8s = 111000000n;
   const amountCkBTCTransaction = 2;
   const amountCkBTCTransactionUlps = numberToUlps({
     amount: amountCkBTCTransaction,
@@ -95,6 +103,7 @@ describe("Tokens route", () => {
       vi.clearAllMocks();
       icrcAccountsStore.reset();
       tokensStore.reset();
+      icrcCanistersStore.reset();
       ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
       ckETHBalanceUlps = ckETHDefaultBalanceUlps;
       tetrisBalanceE8s = tetrisDefaultBalanceE8s;
@@ -105,6 +114,7 @@ describe("Tokens route", () => {
             [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkTESTBTCToken,
             [CKETH_UNIVERSE_CANISTER_ID.toText()]: mockCkETHToken,
             [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: mockCkTESTBTCToken,
+            [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: mockCkUSDCToken,
           };
           if (isNullish(tokenMap[canisterId.toText()])) {
             throw new Error(
@@ -123,6 +133,7 @@ describe("Tokens route", () => {
             [CKBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
             [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
             [CKETH_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
+            [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: ckUSDCBalanceE8s,
             [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
             [ledgerCanisterIdTetris.toText()]: tetrisBalanceE8s,
             [ledgerCanisterIdPacman.toText()]: pacmanBalanceE8s,
@@ -163,6 +174,15 @@ describe("Tokens route", () => {
       setAccountsForTesting({
         main: { ...mockMainAccount, balanceUlps: icpBalanceE8s },
       });
+
+      icrcCanistersStore.setCanisters({
+        ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
+        indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
+      });
+      tokensStore.setToken({
+        canisterId: CKUSDC_UNIVERSE_CANISTER_ID,
+        token: mockCkUSDCToken,
+      });
     });
 
     describe("when logged in", () => {
@@ -198,8 +218,9 @@ describe("Tokens route", () => {
             "Internet Computer",
             "ckBTC",
             "ckETH",
-            "Tetris",
+            "ckUSDC",
             "Pacman",
+            "Tetris",
           ]);
         });
 
@@ -211,8 +232,9 @@ describe("Tokens route", () => {
             { projectName: "Internet Computer", balance: "1.23 ICP" },
             { projectName: "ckBTC", balance: "4.45 ckBTC" },
             { projectName: "ckETH", balance: "4.14 ckETH" },
-            { projectName: "Tetris", balance: "2.22 TST" },
+            { projectName: "ckUSDC", balance: "111.00 ckUSDC" },
             { projectName: "Pacman", balance: "3.14 PCMN" },
+            { projectName: "Tetris", balance: "2.22 TST" },
           ]);
         });
 
@@ -466,6 +488,84 @@ describe("Tokens route", () => {
       });
     });
 
+    describe("table sorting", () => {
+      describe("when logged in", () => {
+        beforeEach(() => {
+          resetIdentity();
+        });
+
+        it("should display tokens in specific order", async () => {
+          const po = await renderPage();
+          const tokensPagePo = po.getTokensPagePo();
+          expect(await tokensPagePo.getTokenNames()).toEqual([
+            "Internet Computer",
+            "ckBTC",
+            "ckETH",
+            "ckUSDC",
+            "Pacman",
+            "Tetris",
+          ]);
+        });
+
+        describe("taking balance into account", () => {
+          beforeEach(() => {
+            vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
+              async ({ canisterId }) => {
+                const balancesMap = {
+                  [CKBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
+                  [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
+                  [CKETH_UNIVERSE_CANISTER_ID.toText()]: 0n,
+                  [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: ckUSDCBalanceE8s,
+                  [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]:
+                    ckETHBalanceUlps,
+                  [ledgerCanisterIdTetris.toText()]: tetrisBalanceE8s,
+                  [ledgerCanisterIdPacman.toText()]: 0n,
+                };
+                if (isNullish(balancesMap[canisterId.toText()])) {
+                  throw new Error(
+                    `Account not found for canister ${canisterId.toText()}`
+                  );
+                }
+                return balancesMap[canisterId.toText()];
+              }
+            );
+          });
+
+          it("should display token with balance first", async () => {
+            const po = await renderPage();
+            const tokensPagePo = po.getTokensPagePo();
+            expect(await tokensPagePo.getTokenNames()).toEqual([
+              "Internet Computer",
+              "ckBTC",
+              "ckUSDC",
+              "Tetris",
+              "ckETH",
+              "Pacman",
+            ]);
+          });
+        });
+
+        describe("when logged out", () => {
+          beforeEach(() => {
+            setNoIdentity();
+          });
+
+          it("should display token in specific order", async () => {
+            const po = await renderPage();
+            const tablePo = po.getSignInTokensPagePo().getTokensTablePo();
+            expect(await tablePo.getTokenNames()).toEqual([
+              "Internet Computer",
+              "ckBTC",
+              "ckETH",
+              "ckUSDC",
+              "Pacman",
+              "Tetris",
+            ]);
+          });
+        });
+      });
+    });
+
     describe("when logged out", () => {
       beforeEach(() => {
         setNoIdentity();
@@ -499,8 +599,9 @@ describe("Tokens route", () => {
             "Internet Computer",
             "ckBTC",
             "ckETH",
-            "Tetris",
+            "ckUSDC",
             "Pacman",
+            "Tetris",
           ]);
         });
       });
@@ -518,8 +619,9 @@ describe("Tokens route", () => {
           expect(await signInPo.getTokenNames()).toEqual([
             "Internet Computer",
             "ckETH",
-            "Tetris",
+            "ckUSDC",
             "Pacman",
+            "Tetris",
           ]);
         });
       });

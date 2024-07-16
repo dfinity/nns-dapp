@@ -18,8 +18,7 @@ test("Test SNS governance", async ({ page, context }) => {
     .getTokensTable()
     .getSnsRows();
   expect(snsUniverseRows.length).toBeGreaterThanOrEqual(1);
-  const snsUniverseRow = snsUniverseRows[0];
-  const snsProjectName = await snsUniverseRow.getProjectName();
+  const snsProjectName = await snsUniverseRows[0].getProjectName();
 
   // Our first test SNS project is always named "Alfa Centauri".
   expect(snsProjectName).toBe("Alfa Centauri");
@@ -28,6 +27,11 @@ test("Test SNS governance", async ({ page, context }) => {
   const askedAmount = 20;
   await appPo.getSnsTokens({ amount: askedAmount, name: snsProjectName });
 
+  const snsUniverseRow = await appPo
+    .getTokensPo()
+    .getTokensPagePo()
+    .getTokensTable()
+    .getRowByName(snsProjectName);
   expect(await snsUniverseRow.getBalanceNumber()).toEqual(askedAmount);
 
   step("Stake a neuron");
