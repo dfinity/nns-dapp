@@ -3,9 +3,10 @@
   import ProjectNeuronsCell from "$lib/components/staking/ProjectNeuronsCell.svelte";
   import ProjectTitleCell from "$lib/components/staking/ProjectTitleCell.svelte";
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import { neuronsStore } from "$lib/stores/neurons.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { ProjectsTableColumn, TableProject } from "$lib/types/staking";
   import { getTableProjects } from "$lib/utils/staking.utils";
@@ -34,7 +35,8 @@
   let tableProjects: TableProject[];
   $: tableProjects = getTableProjects({
     universes: $selectableUniversesStore,
-    definedNnsNeurons: $definedNeuronsStore,
+    isSignedIn: $authSignedInStore,
+    nnsNeurons: $neuronsStore?.neurons,
     snsNeurons: $snsNeuronsStore,
   });
 </script>
