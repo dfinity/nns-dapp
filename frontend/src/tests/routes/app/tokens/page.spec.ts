@@ -71,8 +71,7 @@ describe("Tokens route", () => {
   const pacmanBalanceE8s = 314000000n;
   const ckBTCDefaultBalanceE8s = 444556699n;
   let ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
-  const ckUSDCDefaultBalanceE8s = 111000000n;
-  let ckUSDCBalanceE8s = ckBTCDefaultBalanceE8s;
+  const ckUSDCBalanceE8s = 111000000n;
   const amountCkBTCTransaction = 2;
   const amountCkBTCTransactionUlps = numberToUlps({
     amount: amountCkBTCTransaction,
@@ -107,7 +106,6 @@ describe("Tokens route", () => {
       icrcCanistersStore.reset();
       ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
       ckETHBalanceUlps = ckETHDefaultBalanceUlps;
-      ckUSDCBalanceE8s = ckUSDCDefaultBalanceE8s;
       tetrisBalanceE8s = tetrisDefaultBalanceE8s;
       vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockImplementation(
         async ({ canisterId }) => {
