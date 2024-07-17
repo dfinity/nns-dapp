@@ -4,7 +4,13 @@ export class LedgerErrorKey extends Error {
   // Optional substitutions values that can be used to fill the error message
   substitutions?: I18nSubstitutions;
 
-  constructor(message?: string, substitutions?: I18nSubstitutions) {
+  constructor({
+    message,
+    substitutions,
+  }: {
+    message?: string;
+    substitutions?: I18nSubstitutions;
+  }) {
     super(message);
 
     this.substitutions = substitutions;

@@ -246,7 +246,9 @@ describe("LedgerIdentity", () => {
 
       const call = () => identity.transformRequest(mockHttpRequest1);
       expect(call).rejects.toThrowError(
-        new LedgerErrorKey("error__ledger.app_version_not_supported")
+        new LedgerErrorKey({
+          message: "error__ledger.app_version_not_supported",
+        })
       );
       expect(mockLedgerApp.signUpdateCall).not.toBeCalled();
     });
@@ -269,7 +271,9 @@ describe("LedgerIdentity", () => {
 
       const call = () => identity.transformRequest(mockHttpRequest1);
       expect(call).rejects.toThrowError(
-        new LedgerErrorKey("error__ledger.app_version_not_supported")
+        new LedgerErrorKey({
+          message: "error__ledger.app_version_not_supported",
+        })
       );
       expect(mockLedgerApp.sign).not.toBeCalled();
     });

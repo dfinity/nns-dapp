@@ -27,7 +27,7 @@ describe("ledger-utils", () => {
         } as ResponseAddress);
 
       expect(call).rejects.toThrow(
-        new LedgerErrorKey("error__ledger.please_open")
+        new LedgerErrorKey({ message: "error__ledger.please_open" })
       );
     });
 
@@ -39,7 +39,9 @@ describe("ledger-utils", () => {
           returnCode: LedgerError.TransactionRejected,
         } as ResponseAddress);
 
-      expect(call).rejects.toThrow(new LedgerErrorKey("error__ledger.locked"));
+      expect(call).rejects.toThrow(
+        new LedgerErrorKey({ message: "error__ledger.locked" })
+      );
     });
 
     it("should throw an error because public key cannot be fetched", () => {
@@ -52,7 +54,7 @@ describe("ledger-utils", () => {
         } as ResponseAddress);
 
       expect(call).rejects.toThrow(
-        new LedgerErrorKey("error__ledger.fetch_public_key")
+        new LedgerErrorKey({ message: "error__ledger.fetch_public_key" })
       );
     });
 
@@ -64,7 +66,7 @@ describe("ledger-utils", () => {
         } as ResponseAddress);
 
       expect(call).rejects.toThrow(
-        new LedgerErrorKey("error__ledger.principal_not_match")
+        new LedgerErrorKey({ message: "error__ledger.principal_not_match" })
       );
     });
 
@@ -88,9 +90,9 @@ describe("ledger-utils", () => {
         } as unknown as ResponseSign);
 
       expect(call).rejects.toThrow(
-        new LedgerErrorKey(
-          `A ledger error happened during signature. undefined (code ${LedgerError.UnknownError}).`
-        )
+        new LedgerErrorKey({
+          message: `A ledger error happened during signature. undefined (code ${LedgerError.UnknownError}).`,
+        })
       );
     });
 
@@ -102,7 +104,9 @@ describe("ledger-utils", () => {
         } as unknown as ResponseSign);
 
       expect(call).rejects.toThrow(
-        new LedgerErrorKey("error__ledger.user_rejected_transaction")
+        new LedgerErrorKey({
+          message: "error__ledger.user_rejected_transaction",
+        })
       );
     });
 
@@ -116,9 +120,9 @@ describe("ledger-utils", () => {
         } as unknown as ResponseSign);
 
       expect(call).rejects.toThrow(
-        new LedgerErrorKey(
-          `Signature must be 64 bytes long (is ${test.length})`
-        )
+        new LedgerErrorKey({
+          message: `Signature must be 64 bytes long (is ${test.length})`,
+        })
       );
     });
 
