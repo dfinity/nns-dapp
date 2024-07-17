@@ -2171,18 +2171,24 @@ describe("neuron-utils", () => {
       expect(topicsToFollow(neuronWithoutManageNeuron)).toEqual(
         TOPICS_TO_FOLLOW_NNS.filter(
           (topic) =>
-            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic) && !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
+            topic !== Topic.ManageNeuron &&
+            !DEPRECATED_TOPICS.includes(topic) &&
+            !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
         )
       );
       expect(topicsToFollow(neuronWithoutFollowees)).toEqual(
         TOPICS_TO_FOLLOW_NNS.filter(
           (topic) =>
-            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic) && !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
+            topic !== Topic.ManageNeuron &&
+            !DEPRECATED_TOPICS.includes(topic) &&
+            !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
         )
       );
       expect(topicsToFollow(neuronWithManageNeuron)).toEqual(
         TOPICS_TO_FOLLOW_NNS.filter(
-          (topic) => !DEPRECATED_TOPICS.includes(topic) && !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
+          (topic) =>
+            !DEPRECATED_TOPICS.includes(topic) &&
+            !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
         )
       );
     });
@@ -2190,7 +2196,9 @@ describe("neuron-utils", () => {
     it("should return topics with ManageNeuron if neuron follows some neuron on the ManageNeuron topic", () => {
       expect(topicsToFollow(neuronWithManageNeuron)).toEqual(
         TOPICS_TO_FOLLOW_NNS.filter(
-          (topic) => !DEPRECATED_TOPICS.includes(topic) && !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
+          (topic) =>
+            !DEPRECATED_TOPICS.includes(topic) &&
+            !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
         )
       );
     });
