@@ -1057,7 +1057,7 @@ describe("neuron-utils", () => {
             {
               topic: 100 as Topic,
               followees: [3n, 4n],
-            }
+            },
           ],
         },
       };
