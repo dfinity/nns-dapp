@@ -4,22 +4,30 @@ import type { Universe } from "$lib/types/universe";
 import { getTableProjects } from "$lib/utils/staking.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { principal } from "$tests/mocks/sns-projects.mock";
+import {
+  mockSnsToken,
+  mockSummary,
+  principal,
+} from "$tests/mocks/sns-projects.mock";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
 describe("staking.utils", () => {
   describe("getTableProjects", () => {
     const universeId2 = principal(2).toText();
 
-    const nnsUniverse = {
+    const nnsUniverse: Universe = {
       canisterId: OWN_CANISTER_ID_TEXT,
       title: "Internet Computer",
       logo: IC_LOGO_ROUNDED,
     };
 
-    const snsUniverse = {
+    const snsUniverse: Universe = {
       canisterId: universeId2,
       title: "title2",
       logo: "logo2",
+      summary: mockSummary.override({
+        token: mockSnsToken,
+      }),
     };
 
     const nnsHref = `/neurons/?u=${OWN_CANISTER_ID_TEXT}`;
@@ -31,6 +39,10 @@ describe("staking.utils", () => {
       title: "Internet Computer",
       logo: IC_LOGO_ROUNDED,
       neuronCount: 0,
+      stake: TokenAmountV2.fromUlps({
+        amount: 0n,
+        token: ICPToken,
+      }),
     };
 
     const defaultExpectedSnsTableProject = {
@@ -39,6 +51,10 @@ describe("staking.utils", () => {
       title: "title2",
       logo: "logo2",
       neuronCount: 0,
+      stake: TokenAmountV2.fromUlps({
+        amount: 0n,
+        token: mockSnsToken,
+      }),
     };
 
     const nnsNeuronWithStake = {
@@ -87,11 +103,15 @@ describe("staking.utils", () => {
       ]);
     });
 
-    it("should include number of NNS neurons", () => {
+    it("should include info for NNS neurons", () => {
       const tableProjects = getTableProjects({
         universes: [nnsUniverse],
         isSignedIn: true,
-        nnsNeurons: [mockNeuron, mockNeuron, mockNeuron],
+        nnsNeurons: [
+          nnsNeuronWithStake,
+          nnsNeuronWithStake,
+          nnsNeuronWithStake,
+        ],
         snsNeurons: {},
       });
 
@@ -100,11 +120,15 @@ describe("staking.utils", () => {
           ...defaultExpectedNnsTableProject,
           rowHref: nnsHref,
           neuronCount: 3,
+          stake: TokenAmountV2.fromUlps({
+            amount: 3n * nnsNeuronWithStake.fullNeuron.cachedNeuronStake,
+            token: ICPToken,
+          }),
         },
       ]);
     });
 
-    it("should include number of SNS neurons", () => {
+    it("should include info for SNS neurons", () => {
       const tableProjects = getTableProjects({
         universes: [snsUniverse],
         isSignedIn: true,
@@ -121,6 +145,10 @@ describe("staking.utils", () => {
           ...defaultExpectedSnsTableProject,
           rowHref: snsHref,
           neuronCount: 2,
+          stake: TokenAmountV2.fromUlps({
+            amount: 2n * snsNeuronWithStake.cached_neuron_stake_e8s,
+            token: mockSnsToken,
+          }),
         },
       ]);
     });
@@ -142,6 +170,10 @@ describe("staking.utils", () => {
           ...defaultExpectedNnsTableProject,
           rowHref: nnsHref,
           neuronCount: 1,
+          stake: TokenAmountV2.fromUlps({
+            amount: nnsNeuronWithStake.fullNeuron.cachedNeuronStake,
+            token: ICPToken,
+          }),
         },
       ]);
     });
@@ -168,6 +200,10 @@ describe("staking.utils", () => {
           ...defaultExpectedSnsTableProject,
           rowHref: snsHref,
           neuronCount: 1,
+          stake: TokenAmountV2.fromUlps({
+            amount: snsNeuronWithStake.cached_neuron_stake_e8s,
+            token: mockSnsToken,
+          }),
         },
       ]);
     });
@@ -189,11 +225,13 @@ describe("staking.utils", () => {
           ...defaultExpectedNnsTableProject,
           rowHref: undefined,
           neuronCount: undefined,
+          stake: undefined,
         },
         {
           ...defaultExpectedSnsTableProject,
           rowHref: undefined,
           neuronCount: undefined,
+          stake: undefined,
         },
       ]);
     });
@@ -213,11 +251,13 @@ describe("staking.utils", () => {
           ...defaultExpectedNnsTableProject,
           rowHref: undefined,
           neuronCount: undefined,
+          stake: undefined,
         },
         {
           ...defaultExpectedSnsTableProject,
           rowHref: undefined,
           neuronCount: undefined,
+          stake: undefined,
         },
       ]);
     });
