@@ -16,6 +16,7 @@ import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
   TOPICS_TO_FOLLOW_NNS,
+  TOPICS_WITH_FOLLOWING_DISABLED,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
@@ -207,9 +208,9 @@ export const bonusMultiplier = ({
 }): number =>
   1 +
   multiplier *
-    (Math.min(Number(amount), max) /
-      // to avoid NaN
-      (max === 0 ? 1 : max));
+  (Math.min(Number(amount), max) /
+    // to avoid NaN
+    (max === 0 ? 1 : max));
 
 // TODO: Do we need this? What does it mean to have a valid stake?
 // TODO: https://dfinity.atlassian.net/browse/L2-507
@@ -217,16 +218,16 @@ export const hasValidStake = (neuron: NeuronInfo): boolean =>
   // Ignore if we can't validate the stake
   nonNullish(neuron.fullNeuron)
     ? neuron.fullNeuron.cachedNeuronStake +
-        neuron.fullNeuron.maturityE8sEquivalent >
-      BigInt(DEFAULT_TRANSACTION_FEE_E8S)
+    neuron.fullNeuron.maturityE8sEquivalent >
+    BigInt(DEFAULT_TRANSACTION_FEE_E8S)
     : false;
 
 export const getDissolvingTimestampSeconds = (
   neuron: NeuronInfo
 ): bigint | undefined =>
   neuron.state === NeuronState.Dissolving &&
-  neuron.fullNeuron?.dissolveState !== undefined &&
-  "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
+    neuron.fullNeuron?.dissolveState !== undefined &&
+    "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
     ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds
     : undefined;
 
@@ -282,7 +283,7 @@ export const formattedMaturity = ({ fullNeuron }: NeuronInfo): string =>
 export const formattedTotalMaturity = ({ fullNeuron }: NeuronInfo): string =>
   formatMaturity(
     (fullNeuron?.maturityE8sEquivalent ?? 0n) +
-      (fullNeuron?.stakedMaturityE8sEquivalent ?? 0n)
+    (fullNeuron?.stakedMaturityE8sEquivalent ?? 0n)
   );
 
 /**
@@ -368,7 +369,7 @@ export const isNeuronControllable = ({
   fullNeuron?.controller !== undefined &&
   (fullNeuron.controller === identity?.getPrincipal().toText() ||
     getAccountByPrincipal({ principal: fullNeuron.controller, accounts }) !==
-      undefined);
+    undefined);
 
 export const isNeuronControlledByHardwareWallet = ({
   neuron,
@@ -734,12 +735,12 @@ export const canBeMerged = (
   }
   return sameManageNeuronFollowees(neurons)
     ? {
-        isValid: true,
-      }
+      isValid: true,
+    }
     : {
-        isValid: false,
-        messageKey: "error.merge_neurons_not_same_manage_neuron_followees",
-      };
+      isValid: false,
+      messageKey: "error.merge_neurons_not_same_manage_neuron_followees",
+    };
 };
 
 export const mapNeuronIds = ({
@@ -814,7 +815,7 @@ export const topicsToFollow = (neuron: NeuronInfo): Topic[] =>
   (followeesByTopic({ neuron, topic: Topic.ManageNeuron }) === undefined
     ? TOPICS_TO_FOLLOW_NNS.filter((topic) => topic !== Topic.ManageNeuron)
     : TOPICS_TO_FOLLOW_NNS
-  ).filter((topic) => !DEPRECATED_TOPICS.includes(topic));
+  ).filter((topic) => !DEPRECATED_TOPICS.includes(topic) && !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic));
 
 // NeuronInfo is public info.
 // fullNeuron is only for users with access.
@@ -972,7 +973,7 @@ export const maturityLastDistribution = ({
   return (
     actual_timestamp_seconds -
     (fromNullable(rounds_since_last_distribution) ?? 1n) *
-      BigInt(SECONDS_IN_DAY)
+    BigInt(SECONDS_IN_DAY)
   );
 };
 
@@ -1004,6 +1005,8 @@ export const getTopicTitle = ({
     [Topic.SnsAndCommunityFund]: i18n.follow_neurons.topic_14_title,
     [Topic.ApiBoundaryNodeManagement]: i18n.follow_neurons.topic_15_title,
     [Topic.SubnetRental]: i18n.follow_neurons.topic_16_title,
+    [Topic.ProtocolCanisterManagement]: i18n.follow_neurons.topic_17_title,
+    [Topic.ServiceNervousSystemManagement]: i18n.follow_neurons.topic_18_title,
   };
   return mapper[topic];
 };
@@ -1034,6 +1037,9 @@ export const getTopicSubtitle = ({
     [Topic.SnsAndCommunityFund]: i18n.follow_neurons.topic_14_subtitle,
     [Topic.ApiBoundaryNodeManagement]: i18n.follow_neurons.topic_15_subtitle,
     [Topic.SubnetRental]: i18n.follow_neurons.topic_16_subtitle,
+    [Topic.ProtocolCanisterManagement]: i18n.follow_neurons.topic_17_subtitle,
+    [Topic.ServiceNervousSystemManagement]:
+      i18n.follow_neurons.topic_18_subtitle,
   };
   return mapper[topic];
 };

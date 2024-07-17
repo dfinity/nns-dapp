@@ -11,6 +11,7 @@ import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
   TOPICS_TO_FOLLOW_NNS,
+  TOPICS_WITH_FOLLOWING_DISABLED,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
@@ -2166,22 +2167,22 @@ describe("neuron-utils", () => {
       },
     };
 
-    it("should not return deprecated topics", () => {
+    it("should not return deprecated or disabled topics", () => {
       expect(topicsToFollow(neuronWithoutManageNeuron)).toEqual(
         TOPICS_TO_FOLLOW_NNS.filter(
           (topic) =>
-            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic)
+            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic) && !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
         )
       );
       expect(topicsToFollow(neuronWithoutFollowees)).toEqual(
         TOPICS_TO_FOLLOW_NNS.filter(
           (topic) =>
-            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic)
+            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic) && !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
         )
       );
       expect(topicsToFollow(neuronWithManageNeuron)).toEqual(
         TOPICS_TO_FOLLOW_NNS.filter(
-          (topic) => !DEPRECATED_TOPICS.includes(topic)
+          (topic) => !DEPRECATED_TOPICS.includes(topic) && !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
         )
       );
     });
@@ -2189,7 +2190,7 @@ describe("neuron-utils", () => {
     it("should return topics with ManageNeuron if neuron follows some neuron on the ManageNeuron topic", () => {
       expect(topicsToFollow(neuronWithManageNeuron)).toEqual(
         TOPICS_TO_FOLLOW_NNS.filter(
-          (topic) => !DEPRECATED_TOPICS.includes(topic)
+          (topic) => !DEPRECATED_TOPICS.includes(topic) && !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
         )
       );
     });

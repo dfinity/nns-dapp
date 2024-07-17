@@ -20,6 +20,11 @@ const FIRST_TOPICS = [
   Topic.SnsAndCommunityFund,
 ];
 const LAST_TOPICS = [Topic.ExchangeRate];
+
+// Topics that neurons cannot yet set following for.
+// TODO: Remove this list when the NNS Governance supports following on those topics.
+export const TOPICS_WITH_FOLLOWING_DISABLED = [Topic.ProtocolCanisterManagement, Topic.ServiceNervousSystemManagement];
+
 // This list should include ALL topics ordered as we want.
 // Filtering out topics is done in the utils.
 export const TOPICS_TO_FOLLOW_NNS = [

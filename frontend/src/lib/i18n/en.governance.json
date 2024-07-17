@@ -23,7 +23,9 @@
     "SubnetReplicaVersionManagement": "IC OS Version Deployment",
     "SnsAndCommunityFund": "SNS & Neurons' Fund",
     "ApiBoundaryNodeManagement": "API Boundary Node Management",
-    "SubnetRental": "Subnet Rental"
+    "SubnetRental": "Subnet Rental",
+    "ProtocolCanisterManagement": "Protocol Canister Management",
+    "ServiceNervousSystemManagement": "Service Nervous System Management"
   },
   "topics_description": {
     "Unspecified": "",
@@ -42,7 +44,9 @@
     "SubnetReplicaVersionManagement": "Proposals handling deployments of IC OS versions.",
     "SnsAndCommunityFund": "Proposals relating to service nervous systems (SNS) and Neurons' Fund.",
     "ApiBoundaryNodeManagement": "Proposals related to the management of API boundary nodes.",
-    "SubnetRental": "All proposals related to renting a subnet — for example a subnet rental request."
+    "SubnetRental": "Proposals related to renting a subnet — for example a subnet rental request.",
+    "ProtocolCanisterManagement": "Proposals related to managing canisters that are considered as part of the IC protocol.",
+    "ServiceNervousSystemManagement": "All proposals related to managing the service nervous system (SNS)."
   },
   "rewards": {
     "Unknown": "Unknown",
