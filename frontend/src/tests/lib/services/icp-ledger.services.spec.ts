@@ -296,7 +296,7 @@ describe("icp-ledger.services", () => {
         expect(spyToastError).toBeCalled();
         expect(spyToastError).toBeCalledWith({
           labelKey: "error__ledger.unexpected_wallet",
-          renderAsHtml: true,
+          renderAsHtml: false,
         });
 
         spyToastError.mockRestore();
@@ -351,7 +351,7 @@ describe("icp-ledger.services", () => {
         expect(spyToastError).toBeCalled();
         expect(spyToastError).toBeCalledWith({
           labelKey: "error__ledger.please_open",
-          renderAsHtml: true,
+          renderAsHtml: false,
         });
 
         expect(err).not.toBeUndefined();
