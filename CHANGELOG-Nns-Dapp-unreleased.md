@@ -21,6 +21,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Reduce the frequency of checking if SNS neurons need to be refreshed.
 * New token table order. 
+* Update nns-dapp icons for consistent style and line thickness.
 
 #### Deprecated
 

@@ -121,7 +121,7 @@
               >{column.title}{#if nonNullish(column.comparator) && order[0]?.columnId === column.id}
                 <span class="order-arrow">
                   <span class="arrow-icon" class:reversed={order[0].reversed}>
-                    <IconSouth size="8" />
+                    <IconSouth size="8" strokeWidth={2} />
                   </span>
                 </span>
               {/if}

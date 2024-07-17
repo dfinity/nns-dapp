@@ -46,7 +46,8 @@
             >{$i18n.responsive_table.tap_to_reverse}<span
               data-tid="arrow"
               class="arrow-icon"
-              class:reversed={order[0].reversed}><IconSouth size="16" /></span
+              class:reversed={order[0].reversed}
+              ><IconSouth size="16" strokeWidth={2} /></span
             ></span
           >{/if}</button
       >
