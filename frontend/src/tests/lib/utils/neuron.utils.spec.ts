@@ -1054,6 +1054,10 @@ describe("neuron-utils", () => {
               topic: Topic.Governance,
               followees: [0n, 1n, 2n],
             },
+            {
+              topic: 100 as Topic,
+              followees: [3n, 4n],
+            }
           ],
         },
       };

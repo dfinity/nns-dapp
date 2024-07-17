@@ -208,9 +208,9 @@ export const bonusMultiplier = ({
 }): number =>
   1 +
   multiplier *
-    (Math.min(Number(amount), max) /
-      // to avoid NaN
-      (max === 0 ? 1 : max));
+  (Math.min(Number(amount), max) /
+    // to avoid NaN
+    (max === 0 ? 1 : max));
 
 // TODO: Do we need this? What does it mean to have a valid stake?
 // TODO: https://dfinity.atlassian.net/browse/L2-507
@@ -218,16 +218,16 @@ export const hasValidStake = (neuron: NeuronInfo): boolean =>
   // Ignore if we can't validate the stake
   nonNullish(neuron.fullNeuron)
     ? neuron.fullNeuron.cachedNeuronStake +
-        neuron.fullNeuron.maturityE8sEquivalent >
-      BigInt(DEFAULT_TRANSACTION_FEE_E8S)
+    neuron.fullNeuron.maturityE8sEquivalent >
+    BigInt(DEFAULT_TRANSACTION_FEE_E8S)
     : false;
 
 export const getDissolvingTimestampSeconds = (
   neuron: NeuronInfo
 ): bigint | undefined =>
   neuron.state === NeuronState.Dissolving &&
-  neuron.fullNeuron?.dissolveState !== undefined &&
-  "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
+    neuron.fullNeuron?.dissolveState !== undefined &&
+    "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
     ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds
     : undefined;
 
@@ -283,7 +283,7 @@ export const formattedMaturity = ({ fullNeuron }: NeuronInfo): string =>
 export const formattedTotalMaturity = ({ fullNeuron }: NeuronInfo): string =>
   formatMaturity(
     (fullNeuron?.maturityE8sEquivalent ?? 0n) +
-      (fullNeuron?.stakedMaturityE8sEquivalent ?? 0n)
+    (fullNeuron?.stakedMaturityE8sEquivalent ?? 0n)
   );
 
 /**
@@ -369,7 +369,7 @@ export const isNeuronControllable = ({
   fullNeuron?.controller !== undefined &&
   (fullNeuron.controller === identity?.getPrincipal().toText() ||
     getAccountByPrincipal({ principal: fullNeuron.controller, accounts }) !==
-      undefined);
+    undefined);
 
 export const isNeuronControlledByHardwareWallet = ({
   neuron,
@@ -487,6 +487,9 @@ export const followeesNeurons = (neuron: NeuronInfo): FolloweesNeuron[] => {
     result.find(({ neuronId: id }) => id === neuronId);
 
   for (const { followees, topic } of neuron.fullNeuron.followees) {
+    if (!(topic in Topic)) {
+      continue;
+    }
     for (const neuronId of followees) {
       const followeesNeuron = resultNeuron(neuronId);
       if (followeesNeuron === undefined) {
@@ -735,12 +738,12 @@ export const canBeMerged = (
   }
   return sameManageNeuronFollowees(neurons)
     ? {
-        isValid: true,
-      }
+      isValid: true,
+    }
     : {
-        isValid: false,
-        messageKey: "error.merge_neurons_not_same_manage_neuron_followees",
-      };
+      isValid: false,
+      messageKey: "error.merge_neurons_not_same_manage_neuron_followees",
+    };
 };
 
 export const mapNeuronIds = ({
@@ -977,7 +980,7 @@ export const maturityLastDistribution = ({
   return (
     actual_timestamp_seconds -
     (fromNullable(rounds_since_last_distribution) ?? 1n) *
-      BigInt(SECONDS_IN_DAY)
+    BigInt(SECONDS_IN_DAY)
   );
 };
 
