@@ -96,6 +96,7 @@ export class LedgerIdentity extends SignIdentity {
     ) {
       throw new LedgerErrorKey({
         message: "error__ledger.app_version_not_supported",
+        renderAsHtml: true,
       });
     }
   };
