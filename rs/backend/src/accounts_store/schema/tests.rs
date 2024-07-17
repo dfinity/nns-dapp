@@ -24,6 +24,7 @@ pub fn toy_account(account_index: u64, num_canisters: u64) -> Account {
         sub_accounts: HashMap::new(),
         hardware_wallet_accounts: Vec::new(),
         canisters: Vec::new(),
+        imported_tokens: None,
     };
     // Attaches canisters to the account.
     for canister_index in 0..num_canisters {
