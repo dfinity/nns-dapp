@@ -12,7 +12,7 @@ import type {
   SnsSwapInit,
   SnsSwapLifecycle,
 } from "@dfinity/sns";
-import { fromNullable, isNullish } from "@dfinity/utils";
+import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
 
 export class SnsSummaryWrapper implements SnsSummary {
   private readonly summary: SnsSummary;
@@ -58,7 +58,9 @@ export class SnsSummaryWrapper implements SnsSummary {
   }
 
   getLifecycle(): SnsSwapLifecycle {
-    return this.swap.lifecycle;
+    // lifecycle was added as an optional field for backwards compatibility but
+    // is always defined in current SNSes.
+    return fromDefinedNullable(this.lifecycle.lifecycle);
   }
 
   public overrideDerivedState(

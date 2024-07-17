@@ -115,12 +115,9 @@ describe("project-utils", () => {
         filterActiveProjects([
           {
             ...mockSnsFullProject,
-            summary: mockSnsFullProject.summary.override({
-              swap: {
-                ...mockSwap,
-                lifecycle: SnsSwapLifecycle.Pending,
-              },
-            }),
+            summary: mockSnsFullProject.summary.overrideLifecycle(
+              SnsSwapLifecycle.Pending
+            ),
           },
         ])?.length
       ).toEqual(0);
@@ -688,12 +685,9 @@ describe("project-utils", () => {
     it("returns false if project committed", () => {
       const project = {
         ...validProject,
-        summary: validProject.summary.override({
-          swap: {
-            ...validProject.summary.swap,
-            lifecycle: SnsSwapLifecycle.Committed,
-          },
-        }),
+        summary: validProject.summary.overrideLifecycle(
+          SnsSwapLifecycle.Committed
+        ),
       };
       const { valid } = validParticipation({
         project,
@@ -708,12 +702,9 @@ describe("project-utils", () => {
     it("returns false if project pending", () => {
       const project = {
         ...validProject,
-        summary: validProject.summary.override({
-          swap: {
-            ...validProject.summary.swap,
-            lifecycle: SnsSwapLifecycle.Pending,
-          },
-        }),
+        summary: validProject.summary.overrideLifecycle(
+          SnsSwapLifecycle.Pending
+        ),
       };
       const { valid } = validParticipation({
         project,
@@ -1040,12 +1031,9 @@ describe("project-utils", () => {
   describe("participateButtonStatus", () => {
     const summary = mockSnsFullProject.summary;
 
-    const notOpenSummary = mockSnsFullProject.summary.override({
-      swap: {
-        ...mockSnsFullProject.summary.swap,
-        lifecycle: SnsSwapLifecycle.Committed,
-      },
-    });
+    const notOpenSummary = mockSnsFullProject.summary.overrideLifecycle(
+      SnsSwapLifecycle.Committed
+    );
 
     const userNoCommitment: SnsSwapCommitment = {
       rootCanisterId: mockSnsFullProject.rootCanisterId,

@@ -5,7 +5,7 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import type { SnsSummary, SnsSummarySwap } from "$lib/types/sns";
+  import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import { keyOf } from "$lib/utils/utils";
   import { Tag } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
@@ -17,10 +17,12 @@
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
-  let swap: SnsSummarySwap;
-  let rootCanisterId: Principal;
+  let summary: SnsSummaryWrapper;
   // type safety validation is done in ProjectStatusSection component
-  $: ({ swap, rootCanisterId } = $projectDetailStore.summary as SnsSummary);
+  $: summary = $projectDetailStore.summary as SnsSummaryWrapper;
+
+  let rootCanisterId: Principal;
+  $: rootCanisterId = summary.rootCanisterId;
 
   const statusTextMapper = {
     [SnsSwapLifecycle.Unspecified]: $i18n.sns_project_detail.status_unspecified,
@@ -32,7 +34,7 @@
   };
 
   let lifecycle: number;
-  $: ({ lifecycle } = swap);
+  $: lifecycle = summary.getLifecycle();
 
   let isFinalizingStore: Readable<boolean>;
   $: isFinalizingStore = createIsSnsFinalizingStore(rootCanisterId);
