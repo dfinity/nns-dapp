@@ -16,6 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * A short delay before closing the mobile table sorting modal.
+* Add 2 new topics ProtocolCanisterMangement and ServiceNervousSystemManagement 
+  while not allowing following to be set.
 
 #### Changed
 
