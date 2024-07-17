@@ -130,12 +130,18 @@ export const toToastError = ({
   renderAsHtml: boolean;
 } => {
   let errorKey = false;
-  const message: string | undefined = (err as Error)?.message;
+  const error = err as Error | undefined;
+  const message: string | undefined = error?.message;
 
   if (message !== undefined) {
     const label = translate({ labelKey: message });
     errorKey = label !== message;
   }
+
+  const renderAsHtml =
+    nonNullish(error) && "renderAsHtml" in error
+      ? (error.renderAsHtml as boolean)
+      : false;
 
   type ErrorSubstitutions = { substitutions?: I18nSubstitutions };
 
@@ -148,7 +154,7 @@ export const toToastError = ({
       undefined && {
       substitutions: (err as ErrorSubstitutions).substitutions,
     }),
-    renderAsHtml: true,
+    renderAsHtml,
   };
 };
 
