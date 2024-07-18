@@ -19,6 +19,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { toastsError } from "$lib/stores/toasts.store";
+  import ImportTokenReview from "$lib/components/accounts/ImportTokenReview.svelte";
 
   export let currentStep: WizardStep | undefined = undefined;
 
@@ -73,15 +74,27 @@
   const onUserInput = async () => {
     // TODO: check the uniqueness of the ledgerCanisterId
 
-    // TODO: test the busy screen text
-    startBusy({ initiator: "import-token-validation", labelKey: 'import_token.verifying' });
+    // TEST: should display the busy screen
+    // TEST: should display the busy screen text
+    startBusy({
+      initiator: "import-token-validation",
+      labelKey: "import_token.verifying",
+    });
     await updateTokenMetaData();
     stopBusy("import-token-validation");
 
-    console.log("tokenMetaData", tokenMetaData, modal);
     if (nonNullish(tokenMetaData)) {
       next();
     }
+  };
+
+  const onUserConfirm = async () => {
+    console.log(
+      "onUserConfirm",
+      ledgerCanisterId,
+      indexCanisterId,
+      tokenMetaData
+    );
   };
 </script>
 
@@ -103,8 +116,14 @@
       on:nnsSubmit={onUserInput}
     />
   {/if}
-  {#if currentStep?.name === STEP_REVIEW}
-    TBD: ImportTokenReview
+  {#if currentStep?.name === STEP_REVIEW && nonNullish(ledgerCanisterId) && nonNullish(tokenMetaData)}
+    <ImportTokenReview
+      {ledgerCanisterId}
+      {indexCanisterId}
+      {tokenMetaData}
+      on:nnsBack={back}
+      on:nnsConfirm={onUserConfirm}
+    />
   {/if}
   {#if currentStep?.name === STEP_IN_PROGRESS}
     TBD: ImportTokenInProgress
