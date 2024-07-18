@@ -29,7 +29,7 @@
     {$i18n.import_token.where_to_find}</a
   >
 
-  <form>
+  <form on:submit|preventDefault={() => dispatch('nnsSubmit')}>
     <PrincipalInput
       bind:principal={ledgerCanisterId}
       placeholderLabelKey="import_token.placeholder"
