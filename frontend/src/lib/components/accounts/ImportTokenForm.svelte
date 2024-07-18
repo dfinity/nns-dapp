@@ -2,7 +2,7 @@
   import type { Principal } from "@dfinity/principal";
   import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { Html, IconInfo, IconOpenInNew } from "@dfinity/gix-components";
+  import { Html, IconOpenInNew } from "@dfinity/gix-components";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ImportTokenWarning from "$lib/components/accounts/ImportTokenWarning.svelte";
   import { createEventDispatcher } from "svelte";
@@ -24,12 +24,13 @@
     class="where-to-find"
     href={$i18n.import_token.where_to_find_href}
     target="_blank"
+    rel="noopener noreferrer"
   >
-    <IconOpenInNew></IconOpenInNew>
+    <IconOpenInNew />
     {$i18n.import_token.where_to_find}</a
   >
 
-  <form on:submit|preventDefault={() => dispatch('nnsSubmit')}>
+  <form on:submit|preventDefault={() => dispatch("nnsSubmit")}>
     <PrincipalInput
       bind:principal={ledgerCanisterId}
       placeholderLabelKey="import_token.placeholder"
@@ -46,7 +47,7 @@
       placeholderLabelKey="import_token.placeholder"
       name="ledger-canister-id"
     >
-      <Html slot="label" text={$i18n.import_token.index_label} />
+      <Html slot="label" text={$i18n.import_token.index_label_optional} />
     </PrincipalInput>
 
     <p data-tid="index-canister-description" class="description">
