@@ -18,7 +18,7 @@ jobs:
             brew install jq
             brew install coreutils
             brew install gzip
-            brew reinstall xz
+            brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/341f40d8b016eb0fa0b0c026a69e4e5b134c7275/Formula/xz.rb
             echo "/usr/local/bin" >> $GITHUB_PATH
             echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
           fi
