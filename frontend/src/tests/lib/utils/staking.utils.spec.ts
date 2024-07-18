@@ -34,7 +34,7 @@ describe("staking.utils", () => {
     const snsHref = `/neurons/?u=${universeId2}`;
 
     const defaultExpectedNnsTableProject = {
-      rowHref: undefined,
+      rowHref: nnsHref,
       domKey: OWN_CANISTER_ID_TEXT,
       title: "Internet Computer",
       logo: IC_LOGO_ROUNDED,
@@ -46,7 +46,7 @@ describe("staking.utils", () => {
     };
 
     const defaultExpectedSnsTableProject = {
-      rowHref: undefined,
+      rowHref: snsHref,
       domKey: universeId2,
       title: "title2",
       logo: "logo2",
@@ -223,13 +223,11 @@ describe("staking.utils", () => {
       expect(tableProjects).toEqual([
         {
           ...defaultExpectedNnsTableProject,
-          rowHref: undefined,
           neuronCount: undefined,
           stake: undefined,
         },
         {
           ...defaultExpectedSnsTableProject,
-          rowHref: undefined,
           neuronCount: undefined,
           stake: undefined,
         },
@@ -249,13 +247,11 @@ describe("staking.utils", () => {
       expect(tableProjects).toEqual([
         {
           ...defaultExpectedNnsTableProject,
-          rowHref: undefined,
           neuronCount: undefined,
           stake: undefined,
         },
         {
           ...defaultExpectedSnsTableProject,
-          rowHref: undefined,
           neuronCount: undefined,
           stake: undefined,
         },
