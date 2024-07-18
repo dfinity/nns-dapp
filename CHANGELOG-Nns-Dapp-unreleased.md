@@ -55,6 +55,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* Deleted Reproducible Assets workflow.
+
 #### Fixed
 
 #### Security
