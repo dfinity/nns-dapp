@@ -7,7 +7,7 @@ import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { principal } from "$tests/mocks/sns-projects.mock";
+import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { ProjectsTablePo } from "$tests/page-objects/ProjectsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
@@ -17,6 +17,7 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 describe("ProjectsTable", () => {
   const snsTitle = "SNS-1";
   const snsCanisterId = principal(1111);
+  const snsTokenSymbol = "TOK";
 
   const renderComponent = () => {
     const { container } = render(ProjectsTable);
@@ -36,6 +37,10 @@ describe("ProjectsTable", () => {
       {
         projectName: snsTitle,
         rootCanisterId: snsCanisterId,
+        tokenMetadata: {
+          ...mockSnsToken,
+          symbol: snsTokenSymbol,
+        },
       },
     ]);
   });
@@ -44,6 +49,7 @@ describe("ProjectsTable", () => {
     const po = renderComponent();
     expect(await po.getDesktopColumnHeaders()).toEqual([
       "Nervous Systems",
+      "Stake",
       "Neurons",
       "", // No header for actions column.
     ]);
@@ -62,6 +68,7 @@ describe("ProjectsTable", () => {
     const rows = await po.getRows();
     expect(await rows[0].getCellAlignments()).toEqual([
       "desktop-align-left", // Nervous Systems
+      "desktop-align-right", // Stake
       "desktop-align-right", // Neurons
       "desktop-align-right", // Actions
     ]);
@@ -73,12 +80,13 @@ describe("ProjectsTable", () => {
     expect(await po.getDesktopGridTemplateColumns()).toBe(
       [
         "1fr", // Nerous Systems
+        "1fr", // Stake
         "1fr", // Neurons
         "max-content", // Actions
       ].join(" ")
     );
     expect(await po.getMobileGridTemplateAreas()).toBe(
-      '"first-cell last-cell" "cell-0 cell-0"'
+      '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1"'
     );
   });
 
@@ -90,12 +98,40 @@ describe("ProjectsTable", () => {
     expect(await rowPos[1].getProjectTitle()).toBe(snsTitle);
   });
 
-  describe("neuron counts", () => {
+  it("should render stake as -/- when neurons not loaded", async () => {
+    const po = renderComponent();
+    const rowPos = await po.getProjectsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getStake()).toBe("-/-");
+    expect(await rowPos[1].getStake()).toBe("-/-");
+  });
+
+  it("should not render stake when user has no neurons", async () => {
+    neuronsStore.setNeurons({
+      neurons: [],
+      certified: true,
+    });
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: snsCanisterId,
+      neurons: [],
+      certified: true,
+    });
+    const po = renderComponent();
+    const rowPos = await po.getProjectsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getStake()).toBe("");
+    expect(await rowPos[1].getStake()).toBe("");
+  });
+
+  describe("with neurons", () => {
+    const nnsNeuronStake = 100_000_000n;
+    const snsNeuronStake = 200_000_000n;
+
     const nnsNeuronWithStake = {
       ...mockNeuron,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
-        cachedNeuronStake: 100_000_000n,
+        cachedNeuronStake: nnsNeuronStake,
       },
     };
 
@@ -109,7 +145,7 @@ describe("ProjectsTable", () => {
     };
 
     const snsNeuronWithStake = createMockSnsNeuron({
-      stake: 100_000_000n,
+      stake: snsNeuronStake,
       id: [1, 1, 3],
     });
 
@@ -117,6 +153,23 @@ describe("ProjectsTable", () => {
       stake: 0n,
       maturity: 0n,
       id: [7, 7, 9],
+    });
+
+    it("should render stake", async () => {
+      neuronsStore.setNeurons({
+        neurons: [nnsNeuronWithStake],
+        certified: true,
+      });
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [snsNeuronWithStake],
+        certified: true,
+      });
+      const po = renderComponent();
+      const rowPos = await po.getProjectsTableRowPos();
+      expect(rowPos).toHaveLength(2);
+      expect(await rowPos[0].getStake()).toBe("1.00 ICP");
+      expect(await rowPos[1].getStake()).toBe("2.00 TOK");
     });
 
     it("should render NNS neurons count", async () => {
