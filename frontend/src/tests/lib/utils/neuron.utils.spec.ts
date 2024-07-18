@@ -1054,10 +1054,6 @@ describe("neuron-utils", () => {
               topic: Topic.Governance,
               followees: [0n, 1n, 2n],
             },
-            {
-              topic: 100 as Topic,
-              followees: [3n, 4n],
-            },
           ],
         },
       };
@@ -2785,6 +2781,9 @@ describe("neuron-utils", () => {
       ).toBe("API Boundary Node Management");
       expect(getTopicTitle({ topic: Topic.SubnetRental, i18n: en })).toBe(
         "Subnet Rental"
+      );
+      expect(getTopicTitle({ topic: 1000 as Topic, i18n: en })).toBe(
+        "Unknown Topic (1000)"
       );
     });
   });

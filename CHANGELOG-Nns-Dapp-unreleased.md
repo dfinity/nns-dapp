@@ -1,4 +1,3 @@
-
 # Unreleased changelog NNS Dapp
 
 All notable changes to the NNS Dapp will be documented in this file.
@@ -15,31 +14,31 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* A short delay before closing the mobile table sorting modal.
-* Add 2 new topics `ProtocolCanisterMangement` and
+- A short delay before closing the mobile table sorting modal.
+- Add 2 new topics `ProtocolCanisterMangement` and
   `ServiceNervousSystemManagement` while not allowing following to be set.
 
 #### Changed
 
-* Reduce the frequency of checking if SNS neurons need to be refreshed.
-* New token table order. 
-* Update nns-dapp icons for consistent style and line thickness.
+- Reduce the frequency of checking if SNS neurons need to be refreshed.
+- New token table order.
+- Update nns-dapp icons for consistent style and line thickness.
 
 #### Deprecated
 
 #### Removed
 
-* Remove default topic and proposal status filters.
-* Remove old canister creation/top-up mechanism that hasn't been used for 2 years.
+- Remove default topic and proposal status filters.
+- Remove old canister creation/top-up mechanism that hasn't been used for 2 years.
 
 #### Fixed
 
-* Button disable state glitch when voting with neurons where one follows another.
-* Fix "the current proposals response is too large" error on proposals page.
-* Visibility of "Neuron Management" proposals in actionable list.
-* Fix "Show neurons" for hardware wallet.
-* HTML injection in error toast.
-* Skip unrecognized topics when displaying neuron followees.
+- Button disable state glitch when voting with neurons where one follows another.
+- Fix "the current proposals response is too large" error on proposals page.
+- Visibility of "Neuron Management" proposals in actionable list.
+- Fix "Show neurons" for hardware wallet.
+- HTML injection in error toast.
+- Show unknown topic as "Unknown Topic (...")"
 
 #### Security
 
@@ -49,8 +48,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Script to convert between ID formats
-* Test cycles minting canister notification mechanism of the nns-dapp.
+- Script to convert between ID formats
+- Test cycles minting canister notification mechanism of the nns-dapp.
 
 #### Changed
 
@@ -58,7 +57,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
-* Deleted Reproducible Assets workflow.
+- Deleted Reproducible Assets workflow.
 
 #### Fixed
 

@@ -371,7 +371,8 @@
     "topic_18_title": "Service Nervous System Management",
     "topic_18_subtitle": "Proposals related to managing the canisters related to service nervous system (SNS).",
     "current_followees": "Currently Following",
-    "add": "Add Followee"
+    "add": "Add Followee",
+    "unknown_topic_title": "Unknown Topic ($topicId)"
   },
   "voting": {
     "topics": "Topics",
