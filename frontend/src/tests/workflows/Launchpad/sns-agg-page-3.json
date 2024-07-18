@@ -1431,7 +1431,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 999950010000,
+    "icrc1_total_supply": 999947270000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1590,7 +1590,7 @@
         {
           "id": 4,
           "name": "Add nervous system function",
-          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1598,7 +1598,7 @@
         {
           "id": 5,
           "name": "Remove nervous system function",
-          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1606,7 +1606,7 @@
         {
           "id": 6,
           "name": "Execute nervous system function",
-          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "description": "Proposal to execute a user-defined nervous system function, previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1653,7 +1653,7 @@
         },
         {
           "id": 12,
-          "name": "Mint SNS Tokens",
+          "name": "Mint SNS tokens",
           "description": "Proposal to mint SNS tokens to a specified recipient.",
           "function_type": {
             "NativeNervousSystemFunction": {}
@@ -1812,7 +1812,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 99999918810000,
+    "icrc1_total_supply": 99999905250000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2193,7 +2193,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041793657933846300,
+    "icrc1_total_supply": 1041790608177840600,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2305,7 +2305,11 @@
       "ledger": "jcmow-hyaaa-aaaaq-aadlq-cai",
       "index": "iidmm-fiaaa-aaaaq-aadmq-cai",
       "governance": "jfnic-kaaaa-aaaaq-aadla-cai",
-      "dapps": [],
+      "dapps": [
+        "tsbvt-pyaaa-aaaar-qafva-cai",
+        "buwm7-7yaaa-aaaar-qagva-cai",
+        "btxkl-saaaa-aaaar-qagvq-cai"
+      ],
       "archives": ["i2f3v-jyaaa-aaaaq-aadpq-cai"]
     },
     "meta": {
@@ -2435,6 +2439,19 @@
           "description": "Proposal to change canister settings for some dapp canisters.",
           "function_type": {
             "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 1000,
+          "name": "Vote on NNS proposal",
+          "description": "Vote yes to a given NNS proposal. If there is no strict majority, vote for the majority outcome.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "tsbvt-pyaaa-aaaar-qafva-cai",
+              "target_canister_id": "tsbvt-pyaaa-aaaar-qafva-cai",
+              "validator_method_name": "approve_proposal_validate",
+              "target_method_name": "approve_proposal"
+            }
           }
         }
       ]
@@ -2809,7 +2826,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11598599548034456,
+    "icrc1_total_supply": 11601328904399804,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -3134,7 +3151,8 @@
       "dapps": [
         "em3jm-bqaaa-aaaar-qabxa-cai",
         "el2py-miaaa-aaaar-qabxq-cai",
-        "wwikr-gqaaa-aaaar-qacva-cai"
+        "wwikr-gqaaa-aaaar-qacva-cai",
+        "dvpyg-3qaaa-aaaar-qagyq-cai"
       ],
       "archives": []
     },
@@ -3266,6 +3284,19 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 10001,
+          "name": "Create a trade-contract for the CTS market",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "el2py-miaaa-aaaar-qabxq-cai",
+              "target_canister_id": "el2py-miaaa-aaaar-qabxq-cai",
+              "validator_method_name": "sns_validate_controller_create_trade_contract",
+              "target_method_name": "controller_create_trade_contract"
+            }
+          }
         }
       ]
     },
@@ -3304,7 +3335,7 @@
     },
     "swap_state": {
       "swap": {
-        "lifecycle": 2,
+        "lifecycle": 3,
         "init": {
           "nns_proposal_id": 130733,
           "sns_root_canister_id": "ibahq-taaaa-aaaaq-aadna-cai",
@@ -3599,8 +3630,8 @@
         "decentralization_sale_open_timestamp_seconds": 1719664200
       },
       "derived": {
-        "buyer_total_icp_e8s": 1661637432198,
-        "sns_tokens_per_icp": 361.0896
+        "buyer_total_icp_e8s": 1817604788497,
+        "sns_tokens_per_icp": 330.10477
       }
     },
     "icrc1_metadata": [
@@ -3642,7 +3673,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 2000000000000000,
+    "icrc1_total_supply": 1999999851200000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 400000000,
@@ -3938,18 +3969,18 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 361.089599609375,
-      "buyer_total_icp_e8s": 1661637432198,
-      "cf_participant_count": 0,
-      "neurons_fund_participation_icp_e8s": 73526246493,
-      "direct_participation_icp_e8s": 1588111185705,
-      "direct_participant_count": 185,
-      "cf_neuron_count": 0
+      "sns_tokens_per_icp": 330.1047668457031,
+      "buyer_total_icp_e8s": 1817604788497,
+      "cf_participant_count": 4,
+      "neurons_fund_participation_icp_e8s": 112576279910,
+      "direct_participation_icp_e8s": 1705028508587,
+      "direct_participant_count": 208,
+      "cf_neuron_count": 19
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1719664200,
-      "lifecycle": 2,
-      "decentralization_swap_termination_timestamp_seconds": null
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": 1720873802
     }
   }
 ]
