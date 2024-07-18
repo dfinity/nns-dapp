@@ -73,7 +73,8 @@
   const onUserInput = async () => {
     // TODO: check the uniqueness of the ledgerCanisterId
 
-    startBusy({ initiator: "import-token-validation" });
+    // TODO: test the busy screen text
+    startBusy({ initiator: "import-token-validation", labelKey: 'import_token.verifying' });
     await updateTokenMetaData();
     stopBusy("import-token-validation");
 
