@@ -1,6 +1,6 @@
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
-import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
@@ -612,7 +612,7 @@ describe("project-utils", () => {
     it("returns remaining amount taking into account current commitment", () => {
       const projectMax = 10_000_000_000n;
       const projectCommitment = 9_200_000_000n;
-      const summary: SnsSummary = mockSnsFullProject.summary.override({
+      const summary = mockSnsFullProject.summary.override({
         derived: {
           buyer_total_icp_e8s: projectCommitment,
           sns_tokens_per_icp: 1,
