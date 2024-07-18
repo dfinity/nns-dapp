@@ -67,6 +67,8 @@ describe("enum-utils", () => {
       Topic.SnsAndCommunityFund,
       Topic.ApiBoundaryNodeManagement,
       Topic.SubnetRental,
+      Topic.ProtocolCanisterManagement,
+      Topic.ServiceNervousSystemManagement,
     ];
 
     expect(

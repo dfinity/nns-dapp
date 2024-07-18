@@ -16,6 +16,7 @@ import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
   TOPICS_TO_FOLLOW_NNS,
+  TOPICS_WITH_FOLLOWING_DISABLED,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
@@ -814,7 +815,11 @@ export const topicsToFollow = (neuron: NeuronInfo): Topic[] =>
   (followeesByTopic({ neuron, topic: Topic.ManageNeuron }) === undefined
     ? TOPICS_TO_FOLLOW_NNS.filter((topic) => topic !== Topic.ManageNeuron)
     : TOPICS_TO_FOLLOW_NNS
-  ).filter((topic) => !DEPRECATED_TOPICS.includes(topic));
+  ).filter(
+    (topic) =>
+      !DEPRECATED_TOPICS.includes(topic) &&
+      !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
+  );
 
 // NeuronInfo is public info.
 // fullNeuron is only for users with access.
@@ -1004,6 +1009,8 @@ export const getTopicTitle = ({
     [Topic.SnsAndCommunityFund]: i18n.follow_neurons.topic_14_title,
     [Topic.ApiBoundaryNodeManagement]: i18n.follow_neurons.topic_15_title,
     [Topic.SubnetRental]: i18n.follow_neurons.topic_16_title,
+    [Topic.ProtocolCanisterManagement]: i18n.follow_neurons.topic_17_title,
+    [Topic.ServiceNervousSystemManagement]: i18n.follow_neurons.topic_18_title,
   };
   return mapper[topic];
 };
@@ -1034,6 +1041,9 @@ export const getTopicSubtitle = ({
     [Topic.SnsAndCommunityFund]: i18n.follow_neurons.topic_14_subtitle,
     [Topic.ApiBoundaryNodeManagement]: i18n.follow_neurons.topic_15_subtitle,
     [Topic.SubnetRental]: i18n.follow_neurons.topic_16_subtitle,
+    [Topic.ProtocolCanisterManagement]: i18n.follow_neurons.topic_17_subtitle,
+    [Topic.ServiceNervousSystemManagement]:
+      i18n.follow_neurons.topic_18_subtitle,
   };
   return mapper[topic];
 };
