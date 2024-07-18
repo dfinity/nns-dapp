@@ -10,10 +10,7 @@ import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
-  TOPICS_TO_FOLLOW_NNS,
-  TOPICS_WITH_FOLLOWING_DISABLED,
 } from "$lib/constants/neurons.constants";
-import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -2168,39 +2165,61 @@ describe("neuron-utils", () => {
     };
 
     it("should not return deprecated or disabled topics", () => {
-      expect(topicsToFollow(neuronWithoutManageNeuron)).toEqual(
-        TOPICS_TO_FOLLOW_NNS.filter(
-          (topic) =>
-            topic !== Topic.ManageNeuron &&
-            !DEPRECATED_TOPICS.includes(topic) &&
-            !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
-        )
-      );
-      expect(topicsToFollow(neuronWithoutFollowees)).toEqual(
-        TOPICS_TO_FOLLOW_NNS.filter(
-          (topic) =>
-            topic !== Topic.ManageNeuron &&
-            !DEPRECATED_TOPICS.includes(topic) &&
-            !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
-        )
-      );
-      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(
-        TOPICS_TO_FOLLOW_NNS.filter(
-          (topic) =>
-            !DEPRECATED_TOPICS.includes(topic) &&
-            !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
-        )
-      );
+      expect(topicsToFollow(neuronWithoutManageNeuron)).toEqual([
+        Topic.Unspecified,
+        Topic.Governance,
+        Topic.SnsAndCommunityFund,
+        Topic.NetworkEconomics,
+        Topic.NodeAdmin,
+        Topic.ParticipantManagement,
+        Topic.SubnetManagement,
+        Topic.NetworkCanisterManagement,
+        Topic.Kyc,
+        Topic.NodeProviderRewards,
+        Topic.SubnetReplicaVersionManagement,
+        Topic.ReplicaVersionManagement,
+        Topic.ApiBoundaryNodeManagement,
+        Topic.SubnetRental,
+        Topic.ExchangeRate,
+      ]);
+      expect(topicsToFollow(neuronWithoutFollowees)).toEqual([
+        Topic.Unspecified,
+        Topic.Governance,
+        Topic.SnsAndCommunityFund,
+        Topic.NetworkEconomics,
+        Topic.NodeAdmin,
+        Topic.ParticipantManagement,
+        Topic.SubnetManagement,
+        Topic.NetworkCanisterManagement,
+        Topic.Kyc,
+        Topic.NodeProviderRewards,
+        Topic.SubnetReplicaVersionManagement,
+        Topic.ReplicaVersionManagement,
+        Topic.ApiBoundaryNodeManagement,
+        Topic.SubnetRental,
+        Topic.ExchangeRate,
+      ]);
     });
 
     it("should return topics with ManageNeuron if neuron follows some neuron on the ManageNeuron topic", () => {
-      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(
-        TOPICS_TO_FOLLOW_NNS.filter(
-          (topic) =>
-            !DEPRECATED_TOPICS.includes(topic) &&
-            !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
-        )
-      );
+      expect(topicsToFollow(neuronWithManageNeuron)).toEqual([
+        Topic.Unspecified,
+        Topic.Governance,
+        Topic.SnsAndCommunityFund,
+        Topic.ManageNeuron,
+        Topic.NetworkEconomics,
+        Topic.NodeAdmin,
+        Topic.ParticipantManagement,
+        Topic.SubnetManagement,
+        Topic.NetworkCanisterManagement,
+        Topic.Kyc,
+        Topic.NodeProviderRewards,
+        Topic.SubnetReplicaVersionManagement,
+        Topic.ReplicaVersionManagement,
+        Topic.ApiBoundaryNodeManagement,
+        Topic.SubnetRental,
+        Topic.ExchangeRate,
+      ]);
     });
   });
 

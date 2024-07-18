@@ -46,7 +46,7 @@
     "ApiBoundaryNodeManagement": "Proposals related to the management of API boundary nodes.",
     "SubnetRental": "Proposals related to renting a subnet — for example a subnet rental request.",
     "ProtocolCanisterManagement": "Proposals related to managing canisters that are considered as part of the IC protocol.",
-    "ServiceNervousSystemManagement": "All proposals related to managing the service nervous system (SNS)."
+    "ServiceNervousSystemManagement": "All proposals related to managing the canisters related to service nervous system (SNS)."
   },
   "rewards": {
     "Unknown": "Unknown",
