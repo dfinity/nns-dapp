@@ -7,7 +7,7 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import type { SnsSummary } from "$lib/types/sns";
+  import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import {
     getProjectCommitmentSplit,
     isCommitmentSplitWithNeuronsFund,
@@ -22,7 +22,6 @@
     KeyValuePair,
     KeyValuePairInfo,
   } from "@dfinity/gix-components";
-  import type { SnsParams } from "@dfinity/sns";
   import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
   import { nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
@@ -31,17 +30,16 @@
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
-  let summary: SnsSummary;
+  let summary: SnsSummaryWrapper;
   // type safety validation is done in ProjectStatusSection component
-  $: summary = $projectDetailStore.summary as SnsSummary;
-
-  let params: SnsParams;
-  $: ({ params } = summary.swap);
+  $: summary = $projectDetailStore.summary as SnsSummaryWrapper;
 
   let min_icp_e8s: bigint;
   let max_icp_e8s: bigint;
   let min_participants: number;
-  $: ({ min_icp_e8s, max_icp_e8s, min_participants } = params);
+  $: min_icp_e8s = summary.getMinIcpE8s();
+  $: max_icp_e8s = summary.getMaxIcpE8s();
+  $: min_participants = summary.getMinParticipants();
 
   let projectCommitments: ProjectCommitmentSplit;
   $: projectCommitments = getProjectCommitmentSplit(summary);

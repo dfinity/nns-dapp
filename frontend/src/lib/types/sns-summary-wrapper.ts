@@ -63,6 +63,34 @@ export class SnsSummaryWrapper implements SnsSummary {
     return fromDefinedNullable(this.lifecycle.lifecycle);
   }
 
+  getSwapDueTimestampSeconds(): bigint {
+    return this.swap.params.swap_due_timestamp_seconds;
+  }
+
+  getMinIcpE8s(): bigint {
+    return this.swap.params.min_icp_e8s;
+  }
+
+  getMaxIcpE8s(): bigint {
+    return this.swap.params.max_icp_e8s;
+  }
+
+  getMinParticipants(): number {
+    return this.swap.params.min_participants;
+  }
+
+  getMinParticipantIcpE8s(): bigint {
+    return this.swap.params.min_participant_icp_e8s;
+  }
+
+  getMaxParticipantIcpE8s(): bigint {
+    return this.swap.params.max_participant_icp_e8s;
+  }
+
+  getSnsTokenE8s(): bigint {
+    return this.swap.params.sns_token_e8s;
+  }
+
   public overrideDerivedState(
     newDerivedState: SnsSwapDerivedState
   ): SnsSummaryWrapper {

@@ -2,7 +2,8 @@ import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import { MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 import type { SnsTicketsStoreData } from "$lib/stores/sns-tickets.store";
 import type { TicketStatus } from "$lib/types/sale";
-import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+import type { SnsSwapCommitment } from "$lib/types/sns";
+import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
 import type { Principal } from "@dfinity/principal";
 import type {
@@ -167,11 +168,11 @@ export const swapEndedMoreThanOneWeekAgo = ({
   summary,
   nowInSeconds,
 }: {
-  summary: SnsSummary;
+  summary: SnsSummaryWrapper;
   nowInSeconds: number;
 }) => {
   const oneWeekAgoInSeconds = BigInt(nowInSeconds - SECONDS_IN_DAY * 7);
-  return oneWeekAgoInSeconds > summary.swap.params.swap_due_timestamp_seconds;
+  return oneWeekAgoInSeconds > summary.getSwapDueTimestampSeconds();
 };
 
 /**
