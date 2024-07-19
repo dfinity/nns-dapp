@@ -39,6 +39,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Visibility of "Neuron Management" proposals in actionable list.
 * Fix "Show neurons" for hardware wallet.
 * HTML injection in error toast.
+* Show unknown topic as "Unknown Topic (...")".
 
 #### Security
 

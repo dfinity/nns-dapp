@@ -386,6 +386,7 @@ interface I18nFollow_neurons {
   topic_18_subtitle: string;
   current_followees: string;
   add: string;
+  unknown_topic_title: string;
 }
 
 interface I18nVoting {

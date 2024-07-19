@@ -23,6 +23,7 @@ import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { VoteRegistrationStoreData } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import type { Identity } from "@dfinity/agent";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
@@ -1012,7 +1013,12 @@ export const getTopicTitle = ({
     [Topic.ProtocolCanisterManagement]: i18n.follow_neurons.topic_17_title,
     [Topic.ServiceNervousSystemManagement]: i18n.follow_neurons.topic_18_title,
   };
-  return mapper[topic];
+  return (
+    mapper[topic] ??
+    replacePlaceholders(i18n.follow_neurons.unknown_topic_title, {
+      $topicId: topic.toString(),
+    })
+  );
 };
 
 export const getTopicSubtitle = ({
