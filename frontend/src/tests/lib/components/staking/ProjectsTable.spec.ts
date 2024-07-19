@@ -306,4 +306,65 @@ describe("ProjectsTable", () => {
     await runResolvedPromises();
     expect(await po.getProjectsTableRowPos()).toHaveLength(3);
   });
+
+  it("should sort projects", async () => {
+    const snsNeuronWithStake = createMockSnsNeuron({
+      stake: 100_000_000n,
+      id: [1, 1, 3],
+    });
+    const rootCanisterId1 = principal(101);
+    const rootCanisterId2 = principal(102);
+    const rootCanisterId3 = principal(103);
+    const rootCanisterId4 = principal(104);
+    setSnsProjects([
+      {
+        projectName: "A without neurons",
+        rootCanisterId: rootCanisterId1,
+      },
+      {
+        projectName: "B with neurons",
+        rootCanisterId: rootCanisterId2,
+      },
+      {
+        projectName: "X without neurons",
+        rootCanisterId: rootCanisterId3,
+      },
+      {
+        projectName: "Z with neurons",
+        rootCanisterId: rootCanisterId4,
+      },
+    ]);
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: rootCanisterId1,
+      neurons: [],
+      certified: true,
+    });
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: rootCanisterId2,
+      neurons: [snsNeuronWithStake],
+      certified: true,
+    });
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: rootCanisterId3,
+      neurons: [],
+      certified: true,
+    });
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: rootCanisterId4,
+      neurons: [snsNeuronWithStake],
+      certified: true,
+    });
+    const po = renderComponent();
+    const rowPos = await po.getProjectsTableRowPos();
+    expect(rowPos).toHaveLength(5);
+    expect(
+      await Promise.all(rowPos.map((project) => project.getProjectTitle()))
+    ).toEqual([
+      "Internet Computer",
+      "B with neurons",
+      "Z with neurons",
+      "A without neurons",
+      "X without neurons",
+    ]);
+  });
 });

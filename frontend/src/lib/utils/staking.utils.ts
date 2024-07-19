@@ -7,6 +7,11 @@ import {
   hasValidStake as nnsHasValidStake,
 } from "$lib/utils/neuron.utils";
 import {
+  createAscendingComparator,
+  createDescendingComparator,
+  mergeComparators,
+} from "$lib/utils/responsive-table.utils";
+import {
   getSnsNeuronStake,
   hasValidStake as snsHasValidStake,
 } from "$lib/utils/sns-neuron.utils";
@@ -113,4 +118,27 @@ export const getTableProjects = ({
       stake,
     };
   });
+};
+
+// Relies on the domKey being the universeId of the project.
+const compareIcpFirst = createDescendingComparator(
+  (project: TableProject) => project.domKey === OWN_CANISTER_ID_TEXT
+);
+
+const comparePositiveNeuronsFirst = createDescendingComparator(
+  (project: TableProject) => (project.neuronCount ?? 0) > 0
+);
+
+const compareByProjectTitle = createAscendingComparator(
+  (project: TableProject) => project.title.toLowerCase()
+);
+
+export const sortTableProjects = (projects: TableProject[]): TableProject[] => {
+  return [...projects].sort(
+    mergeComparators([
+      compareIcpFirst,
+      comparePositiveNeuronsFirst,
+      compareByProjectTitle,
+    ])
+  );
 };

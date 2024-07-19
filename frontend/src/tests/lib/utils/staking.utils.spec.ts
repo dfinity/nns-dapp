@@ -1,7 +1,7 @@
 import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import type { Universe } from "$lib/types/universe";
-import { getTableProjects } from "$lib/utils/staking.utils";
+import { getTableProjects, sortTableProjects } from "$lib/utils/staking.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import {
@@ -9,6 +9,7 @@ import {
   mockSummary,
   principal,
 } from "$tests/mocks/sns-projects.mock";
+import { mockTableProject } from "$tests/mocks/staking.mock";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
 describe("staking.utils", () => {
@@ -255,6 +256,126 @@ describe("staking.utils", () => {
           neuronCount: undefined,
           stake: undefined,
         },
+      ]);
+    });
+  });
+
+  describe("sortTableProjects", () => {
+    const icpDomKey = OWN_CANISTER_ID_TEXT;
+    const snsDomKey = principal(2).toText();
+
+    const defaultProject = {
+      ...mockTableProject,
+      domKey: snsDomKey,
+      neuronCount: 0,
+    };
+
+    it("should sort ICP first", () => {
+      const icpProject = {
+        ...defaultProject,
+        domKey: icpDomKey,
+        title: "Internet Computer",
+        neuronCount: 0,
+      };
+      const snsProject = {
+        ...defaultProject,
+        domKey: snsDomKey,
+        title: "AAA",
+        neuronCount: 1,
+      };
+      expect(sortTableProjects([snsProject, icpProject])).toEqual([
+        icpProject,
+        snsProject,
+      ]);
+      expect(sortTableProjects([icpProject, snsProject])).toEqual([
+        icpProject,
+        snsProject,
+      ]);
+    });
+
+    it("should sort SNSes with neurons before SNSes without neuron", () => {
+      const snsWithNeurons = {
+        ...defaultProject,
+        title: "ZZZ",
+        neuronCount: 1,
+      };
+      const snsWithoutNeurons = {
+        ...defaultProject,
+        title: "AAA",
+        neuronCount: 0,
+      };
+      expect(sortTableProjects([snsWithoutNeurons, snsWithNeurons])).toEqual([
+        snsWithNeurons,
+        snsWithoutNeurons,
+      ]);
+      expect(sortTableProjects([snsWithNeurons, snsWithoutNeurons])).toEqual([
+        snsWithNeurons,
+        snsWithoutNeurons,
+      ]);
+    });
+
+    it("should sort SNSes with neurons alphabetically", () => {
+      const snsA = {
+        ...defaultProject,
+        title: "AAA",
+        neuronCount: 1,
+      };
+      const snsZ = {
+        ...defaultProject,
+        title: "ZZZ",
+        neuronCount: 1,
+      };
+      expect(sortTableProjects([snsZ, snsA])).toEqual([snsA, snsZ]);
+      expect(sortTableProjects([snsA, snsZ])).toEqual([snsA, snsZ]);
+    });
+
+    it("should sort SNSes without neurons alphabetically", () => {
+      const snsA = {
+        ...defaultProject,
+        title: "AAA",
+        neuronCount: 0,
+      };
+      const snsZ = {
+        ...defaultProject,
+        title: "ZZZ",
+        neuronCount: 0,
+      };
+      expect(sortTableProjects([snsZ, snsA])).toEqual([snsA, snsZ]);
+      expect(sortTableProjects([snsA, snsZ])).toEqual([snsA, snsZ]);
+    });
+
+    it("should sort case insensitive", () => {
+      const snsA = {
+        ...defaultProject,
+        title: "aaa",
+        neuronCount: 0,
+      };
+      const snsB = {
+        ...defaultProject,
+        title: "BBB",
+        neuronCount: 0,
+      };
+      const snsC = {
+        ...defaultProject,
+        title: "ccc",
+        neuronCount: 0,
+      };
+      const snsD = {
+        ...defaultProject,
+        title: "DDD",
+        neuronCount: 0,
+      };
+      expect(sortTableProjects([snsD, snsC, snsB, snsA])).toEqual([
+        snsA,
+        snsB,
+        snsC,
+        snsD,
+      ]);
+      expect(sortTableProjects([snsC, snsA, snsD, snsB])).toEqual([
+        snsA,
+        snsB,
+        snsC,
+        snsD,
       ]);
     });
   });

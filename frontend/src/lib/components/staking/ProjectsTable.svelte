@@ -10,7 +10,10 @@
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { ProjectsTableColumn, TableProject } from "$lib/types/staking";
-  import { getTableProjects } from "$lib/utils/staking.utils";
+  import {
+    getTableProjects,
+    sortTableProjects,
+  } from "$lib/utils/staking.utils";
 
   const columns: ProjectsTableColumn[] = [
     {
@@ -46,10 +49,13 @@
     nnsNeurons: $neuronsStore?.neurons,
     snsNeurons: $snsNeuronsStore,
   });
+
+  let sortedTableProjects: TableProject[];
+  $: sortedTableProjects = sortTableProjects(tableProjects);
 </script>
 
 <ResponsiveTable
   testId="projects-table-component"
-  tableData={tableProjects}
+  tableData={sortedTableProjects}
   {columns}
 ></ResponsiveTable>
