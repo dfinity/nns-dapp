@@ -25,7 +25,9 @@ import type {
   AccountDetails,
   CanisterDetails,
   CreateSubAccountResponse,
-  GetAccountResponse, ImportedToken, ImportedTokens,
+  GetAccountResponse,
+  ImportedToken,
+  ImportedTokens,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
   RenameSubAccountRequest,
@@ -335,13 +337,17 @@ export class NNSDappCanister {
       throw new AccountNotFoundError("error__account.not_found");
     }
     // Edge case
-    throw new Error(`Error getting imported tokens ${JSON.stringify(response)}`);
+    throw new Error(
+      `Error getting imported tokens ${JSON.stringify(response)}`
+    );
   };
 
-  public setImportedTokens = async (importedTokens: Array<ImportedToken>): Promise<void> => {
-    const response = await this.certifiedService.set_imported_tokens(
-      { 'imported_tokens' : importedTokens }
-    );
+  public setImportedTokens = async (
+    importedTokens: Array<ImportedToken>
+  ): Promise<void> => {
+    const response = await this.certifiedService.set_imported_tokens({
+      imported_tokens: importedTokens,
+    });
     if ("Ok" in response) {
       return;
     }
@@ -349,6 +355,8 @@ export class NNSDappCanister {
       throw new AccountNotFoundError("error__account.not_found");
     }
     // Edge case
-    throw new Error(`Error setting imported tokens ${JSON.stringify(response)}`);
+    throw new Error(
+      `Error setting imported tokens ${JSON.stringify(response)}`
+    );
   };
 }
