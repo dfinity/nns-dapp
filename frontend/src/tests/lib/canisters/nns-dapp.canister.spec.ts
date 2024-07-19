@@ -17,11 +17,13 @@ import type { NNSDappService } from "$lib/canisters/nns-dapp/nns-dapp.idl";
 import type {
   CreateSubAccountResponse,
   GetAccountResponse,
+  GetImportedTokensResponse,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanister, mockCanisters } from "$tests/mocks/canisters.mock";
 import {
   mockAccountDetails,
+  mockImportedToken,
   mockSubAccountDetails,
 } from "$tests/mocks/icp-accounts.store.mock";
 import type { HttpAgent } from "@dfinity/agent";
@@ -472,5 +474,52 @@ describe("NNSDapp", () => {
       });
 
     expect(call).rejects.toThrowError(UnknownProposalPayloadError);
+  });
+
+  describe("NNSDapp.getImportedTokens", () => {
+    it("should call get_imported_tokens", async () => {
+      const service = mock<NNSDappService>();
+      service.get_imported_tokens.mockResolvedValue({
+        Ok: {
+          imported_tokens: [],
+        },
+      });
+      const nnsDapp = await createNnsDapp(service);
+
+      expect(service.get_imported_tokens).not.toBeCalled();
+
+      await nnsDapp.getImportedTokens();
+
+      expect(service.get_imported_tokens).toBeCalledTimes(1);
+    });
+
+    it("should return imported tokens", async () => {
+      const service = mock<NNSDappService>();
+      service.get_imported_tokens.mockResolvedValue({
+        Ok: {
+          imported_tokens: [mockImportedToken],
+        },
+      });
+      const nnsDapp = await createNnsDapp(service);
+      const result = await nnsDapp.getImportedTokens();
+
+      expect(result).toEqual({
+        imported_tokens: [mockImportedToken],
+      });
+    });
+
+    it("throws error if account not found", async () => {
+      const response: GetImportedTokensResponse = {
+        AccountNotFound: null,
+      };
+      const service = mock<NNSDappService>();
+      service.get_imported_tokens.mockResolvedValue(response);
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () => nnsDapp.getImportedTokens();
+
+      await expect(call).rejects.toThrow(AccountNotFoundError);
+    });
   });
 });
