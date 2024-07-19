@@ -1,10 +1,15 @@
 import type {
   AccountDetails,
   HardwareWalletAccountDetails,
+  ImportedToken,
   SubAccountDetails,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import type { Account } from "$lib/types/account";
+import {
+  indexCanisterIdMock,
+  ledgerCanisterIdMock,
+} from "$tests/mocks/sns.api.mock";
 import { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";
 
@@ -84,3 +89,8 @@ export const mockAccountsStoreSubscribe =
 export const mockAddressInputValid =
   "cd70bfa0f092c38a0ff8643d4617219761eb61d199b15418c0b1114d59e30f8e";
 export const mockAddressInputInvalid = "not-valid";
+
+export const mockImportedToken: ImportedToken = {
+  ledger_canister_id: ledgerCanisterIdMock,
+  index_canister_id: [indexCanisterIdMock],
+};
