@@ -3,9 +3,11 @@ import {
   createCanister,
   detachCanister,
   getIcpToCyclesExchangeRate,
+  getImportedTokens,
   queryCanisterDetails,
   queryCanisters,
   renameCanister,
+  setImportedTokens,
   topUpCanister,
   updateSettings,
 } from "$lib/api/canisters.api";
@@ -24,7 +26,10 @@ import {
   mockCanisterDetails,
   mockCanisterSettings,
 } from "$tests/mocks/canisters.mock";
-import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
+import {
+  mockImportedToken,
+  mockSubAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { CMCCanister, ProcessingError } from "@dfinity/cmc";
 import {
   AccountIdentifier,
@@ -429,6 +434,32 @@ describe("canisters-api", () => {
         });
       expect(call).rejects.toThrow();
       expect(mockCMCCanister.notifyTopUp).not.toBeCalled();
+    });
+  });
+
+  describe("getImportedTokens", () => {
+    it("should call the nns dapp canister to get the imported tokens", async () => {
+      expect(mockNNSDappCanister.getImportedTokens).not.toBeCalled();
+      await getImportedTokens({
+        identity: mockIdentity,
+      });
+
+      expect(mockNNSDappCanister.getImportedTokens).toBeCalledTimes(1);
+    });
+  });
+
+  describe("setImportedTokens", () => {
+    it("should call the nns dapp canister to set imported tokens", async () => {
+      expect(mockNNSDappCanister.setImportedTokens).not.toBeCalled();
+      await setImportedTokens({
+        identity: mockIdentity,
+        importedTokens: [mockImportedToken],
+      });
+
+      expect(mockNNSDappCanister.setImportedTokens).toBeCalledTimes(1);
+      expect(mockNNSDappCanister.setImportedTokens).toBeCalledWith([
+        mockImportedToken,
+      ]);
     });
   });
 });
