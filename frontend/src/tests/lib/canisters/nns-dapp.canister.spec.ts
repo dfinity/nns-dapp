@@ -18,6 +18,7 @@ import type {
   CreateSubAccountResponse,
   GetAccountResponse,
   GetImportedTokensResponse,
+  SetImportedTokensResponse,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanister, mockCanisters } from "$tests/mocks/canisters.mock";
@@ -520,6 +521,75 @@ describe("NNSDapp", () => {
       const call = async () => nnsDapp.getImportedTokens();
 
       await expect(call).rejects.toThrow(AccountNotFoundError);
+    });
+
+    it("should provide generic error message", async () => {
+      const response = {
+        UnexpectedError: "message",
+      };
+      const service = mock<NNSDappService>();
+      service.get_imported_tokens.mockResolvedValue(
+        response as unknown as GetImportedTokensResponse
+      );
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () => nnsDapp.getImportedTokens();
+
+      await expect(call).rejects.toThrow(
+        'Error getting imported tokens {"UnexpectedError":"message"}'
+      );
+    });
+  });
+
+  describe("NNSDapp.setImportedTokens", () => {
+    it("should call set_imported_tokens", async () => {
+      const service = mock<NNSDappService>();
+      service.set_imported_tokens.mockResolvedValue({
+        Ok: null,
+      });
+      const nnsDapp = await createNnsDapp(service);
+
+      expect(service.set_imported_tokens).not.toBeCalled();
+
+      await nnsDapp.setImportedTokens([mockImportedToken]);
+
+      expect(service.set_imported_tokens).toBeCalledTimes(1);
+      expect(service.set_imported_tokens).toBeCalledWith({
+        imported_tokens: [mockImportedToken],
+      });
+    });
+
+    it("throws error if account not found", async () => {
+      const response: SetImportedTokensResponse = {
+        AccountNotFound: null,
+      };
+      const service = mock<NNSDappService>();
+      service.set_imported_tokens.mockResolvedValue(response);
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () => nnsDapp.setImportedTokens([]);
+
+      await expect(call).rejects.toThrow(AccountNotFoundError);
+    });
+
+    it("should provide generic error message", async () => {
+      const response = {
+        UnexpectedError: "message",
+      };
+      const service = mock<NNSDappService>();
+      service.set_imported_tokens.mockResolvedValue(
+        response as unknown as SetImportedTokensResponse
+      );
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () => nnsDapp.setImportedTokens([]);
+
+      await expect(call).rejects.toThrow(
+        'Error setting imported tokens {"UnexpectedError":"message"}'
+      );
     });
   });
 });
