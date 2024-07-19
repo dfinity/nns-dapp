@@ -2782,6 +2782,9 @@ describe("neuron-utils", () => {
       expect(getTopicTitle({ topic: Topic.SubnetRental, i18n: en })).toBe(
         "Subnet Rental"
       );
+    });
+
+    it("should render unknown topics", () => {
       expect(getTopicTitle({ topic: 1000 as Topic, i18n: en })).toBe(
         "Unknown Topic (1000)"
       );
