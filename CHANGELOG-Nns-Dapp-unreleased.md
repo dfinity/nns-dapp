@@ -23,6 +23,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* Removed `unsafe-eval` from Content Security Policy.
+
 #### Fixed
 
 * HTML injection in error toast.
