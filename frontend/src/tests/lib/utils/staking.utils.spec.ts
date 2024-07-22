@@ -2,6 +2,7 @@ import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import type { Universe } from "$lib/types/universe";
 import { getTableProjects, sortTableProjects } from "$lib/utils/staking.utils";
+import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import {
@@ -225,12 +226,12 @@ describe("staking.utils", () => {
         {
           ...defaultExpectedNnsTableProject,
           neuronCount: undefined,
-          stake: undefined,
+          stake: new UnavailableTokenAmount(ICPToken),
         },
         {
           ...defaultExpectedSnsTableProject,
           neuronCount: undefined,
-          stake: undefined,
+          stake: new UnavailableTokenAmount(mockSnsToken),
         },
       ]);
     });
@@ -249,12 +250,12 @@ describe("staking.utils", () => {
         {
           ...defaultExpectedNnsTableProject,
           neuronCount: undefined,
-          stake: undefined,
+          stake: new UnavailableTokenAmount(ICPToken),
         },
         {
           ...defaultExpectedSnsTableProject,
           neuronCount: undefined,
-          stake: undefined,
+          stake: new UnavailableTokenAmount(mockSnsToken),
         },
       ]);
     });

@@ -15,9 +15,16 @@ import {
   getSnsNeuronStake,
   hasValidStake as snsHasValidStake,
 } from "$lib/utils/sns-neuron.utils";
+import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
-import { ICPToken, TokenAmountV2, isNullish, type Token } from "@dfinity/utils";
+import {
+  ICPToken,
+  TokenAmountV2,
+  asNonNullish,
+  isNullish,
+  type Token,
+} from "@dfinity/utils";
 
 const getNnsNeuronCountAndStake = (
   nnsNeurons: NeuronInfo[] | undefined
@@ -44,7 +51,7 @@ const getSnsNeuronCountAndStake = ({
 }): {
   neuronCount: number | undefined;
   stake: bigint | undefined;
-  token: Token | undefined;
+  token: Token;
 } => {
   const neurons =
     snsNeurons[universe.canisterId]?.neurons.filter(snsHasValidStake);
@@ -52,7 +59,8 @@ const getSnsNeuronCountAndStake = ({
     (acc, neuron) => acc + getSnsNeuronStake(neuron),
     0n
   );
-  const token = universe.summary?.token;
+  // If the universe is an SNS universe then the summary is non-nullish.
+  const token = asNonNullish(universe.summary).token;
   return {
     neuronCount: neurons?.length,
     stake,
@@ -70,9 +78,21 @@ const getNeuronCountAndStake = ({
   universe: Universe;
   nnsNeurons: NeuronInfo[] | undefined;
   snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
-}): { neuronCount: number | undefined; stake: TokenAmountV2 | undefined } => {
+}): {
+  neuronCount: number | undefined;
+  stake: TokenAmountV2 | UnavailableTokenAmount;
+} => {
   if (!isSignedIn) {
-    return { neuronCount: undefined, stake: undefined };
+    const token =
+      universe.canisterId === OWN_CANISTER_ID_TEXT
+        ? ICPToken
+        : // If the universe is an SNS universe then the summary is non-nullish.
+          asNonNullish(universe.summary).token;
+    const stake = new UnavailableTokenAmount(token);
+    return {
+      neuronCount: undefined,
+      stake,
+    };
   }
   const { neuronCount, stake, token } =
     universe.canisterId === OWN_CANISTER_ID_TEXT
@@ -80,13 +100,12 @@ const getNeuronCountAndStake = ({
       : getSnsNeuronCountAndStake({ snsNeurons, universe });
   return {
     neuronCount,
-    stake:
-      isNullish(stake) || isNullish(token)
-        ? undefined
-        : TokenAmountV2.fromUlps({
-            amount: stake,
-            token,
-          }),
+    stake: isNullish(stake)
+      ? new UnavailableTokenAmount(token)
+      : TokenAmountV2.fromUlps({
+          amount: stake,
+          token,
+        }),
   };
 };
 

@@ -102,8 +102,8 @@ describe("ProjectsTable", () => {
     const po = renderComponent();
     const rowPos = await po.getProjectsTableRowPos();
     expect(rowPos).toHaveLength(2);
-    expect(await rowPos[0].getStake()).toBe("-/-");
-    expect(await rowPos[1].getStake()).toBe("-/-");
+    expect(await rowPos[0].getStake()).toBe("-/- ICP");
+    expect(await rowPos[1].getStake()).toBe("-/- TOK");
   });
 
   it("should not render stake when user has no neurons", async () => {
