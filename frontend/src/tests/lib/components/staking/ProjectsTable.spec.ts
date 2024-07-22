@@ -83,7 +83,7 @@ describe("ProjectsTable", () => {
 
     expect(await po.getDesktopGridTemplateColumns()).toBe(
       [
-        "minmax(min-content, max-content)", // Nerous Systems
+        "minmax(min-content, max-content)", // Nervous Systems
         "1fr", // gap
         "max-content", // Stake
         "1fr", // gap
