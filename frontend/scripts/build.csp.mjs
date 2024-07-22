@@ -180,9 +180,7 @@ const updateCSP = (indexHtml) => {
         img-src 'self' data: https://nns.internetcomputer.org/ https://nns.ic0.app/ https://nns.raw.ic0.app/ \${{SNS_AGGREGATOR_URL}};
         child-src 'self';
         manifest-src 'self';
-        script-src 'unsafe-inline' 'strict-dynamic' ${indexHashes.join(
-          " "
-        )};
+        script-src 'unsafe-inline' 'strict-dynamic' ${indexHashes.join(" ")};
         base-uri 'self';
         form-action 'none';
         style-src 'self' 'unsafe-inline';
