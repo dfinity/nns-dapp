@@ -31,6 +31,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Remove default topic and proposal status filters.
 * Remove old canister creation/top-up mechanism that hasn't been used for 2 years.
+* Removed `unsafe-eval` from Content Security Policy.
 
 #### Fixed
 
