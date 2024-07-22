@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-10_23-01-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-18_01-30--github-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -164,6 +164,14 @@ pub struct ManageNeuron {
     pub id: Option<NeuronId>,
     pub command: Option<Command>,
     pub neuron_id_or_subaccount: Option<NeuronIdOrSubaccount>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct InstallCode {
+    pub arg: Option<serde_bytes::ByteBuf>,
+    pub wasm_module: Option<serde_bytes::ByteBuf>,
+    pub skip_stopping_before_installing: Option<bool>,
+    pub canister_id: Option<Principal>,
+    pub install_mode: Option<i32>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct Percentage {
@@ -383,7 +391,7 @@ pub struct NetworkEconomics {
     pub neurons_fund_economics: Option<NeuronsFundEconomics>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct ApproveGenesisKyc {
+pub struct Principals {
     pub principals: Vec<Principal>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
@@ -403,6 +411,7 @@ pub struct Motion {
 pub enum Action {
     RegisterKnownNeuron(KnownNeuron),
     ManageNeuron(ManageNeuron),
+    InstallCode(InstallCode),
     CreateServiceNervousSystem(CreateServiceNervousSystem),
     ExecuteNnsFunction(ExecuteNnsFunction),
     RewardNodeProvider(RewardNodeProvider),
@@ -411,7 +420,7 @@ pub enum Action {
     SetDefaultFollowees(SetDefaultFollowees),
     RewardNodeProviders(RewardNodeProviders),
     ManageNetworkEconomics(NetworkEconomics),
-    ApproveGenesisKyc(ApproveGenesisKyc),
+    ApproveGenesisKyc(Principals),
     AddOrRemoveNodeProvider(AddOrRemoveNodeProvider),
     Motion(Motion),
 }
@@ -582,7 +591,9 @@ pub struct SwapParticipationLimits {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronsFundNeuronPortion {
+    pub controller: Option<Principal>,
     pub hotkey_principal: Option<Principal>,
+    pub hotkeys: Vec<Principal>,
     pub is_capped: Option<bool>,
     pub maturity_equivalent_icp_e8s: Option<u64>,
     pub nns_neuron_id: Option<NeuronId>,
@@ -968,7 +979,9 @@ pub struct SettleNeuronsFundParticipationRequest {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronsFundNeuron {
+    pub controller: Option<Principal>,
     pub hotkey_principal: Option<String>,
+    pub hotkeys: Option<Principals>,
     pub is_capped: Option<bool>,
     pub nns_neuron_id: Option<u64>,
     pub amount_icp_e8s: Option<u64>,
