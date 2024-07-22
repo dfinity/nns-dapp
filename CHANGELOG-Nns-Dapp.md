@@ -11,6 +11,39 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 131363
+
+### Application
+
+#### Added
+
+* A short delay before closing the mobile table sorting modal.
+
+#### Changed
+
+* Reduce the frequency of checking if SNS neurons need to be refreshed.
+* New token table order. 
+* Update nns-dapp icons for consistent style and line thickness.
+
+#### Removed
+
+* Remove default topic and proposal status filters.
+* Remove old canister creation/top-up mechanism that hasn't been used for 2 years.
+
+#### Fixed
+
+* Button disable state glitch when voting with neurons where one follows another.
+* Fix "the current proposals response is too large" error on proposals page.
+* Visibility of "Neuron Management" proposals in actionable list.
+* Fix "Show neurons" for hardware wallet.
+
+### Operations
+
+#### Added
+
+* Script to convert between ID formats
+* Test cycles minting canister notification mechanism of the nns-dapp.
+
 ## Proposal 130986
 
 ### Application
