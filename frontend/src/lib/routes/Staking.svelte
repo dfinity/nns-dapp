@@ -1,5 +1,6 @@
 <script lang="ts">
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
+  import IslandWidthMain from "$lib/components/layout/IslandWidthMain.svelte";
   import ProjectsTable from "$lib/components/staking/ProjectsTable.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -51,7 +52,7 @@
   });
 </script>
 
-<main data-tid="staking-component">
+<IslandWidthMain testId="staking-component">
   {#if showStakingBanner}
     <PageBanner testId="staking-page-banner">
       <IconNeuronsPage slot="image" />
@@ -62,23 +63,4 @@
   {/if}
 
   <ProjectsTable />
-</main>
-
-<style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-
-  main {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-2x);
-
-    margin: 0 auto;
-    padding-left: 0;
-    padding-right: 0;
-
-    @include media.min-width(large) {
-      width: var(--island-width);
-      max-width: var(--island-max-width);
-    }
-  }
-</style>
+</IslandWidthMain>
