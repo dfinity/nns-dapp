@@ -72,8 +72,13 @@
     flex-direction: column;
     gap: var(--padding-2x);
 
+    margin: 0 auto;
+    padding-left: 0;
+    padding-right: 0;
+
     @include media.min-width(large) {
       width: var(--island-width);
+      max-width: var(--island-max-width);
     }
   }
 </style>
