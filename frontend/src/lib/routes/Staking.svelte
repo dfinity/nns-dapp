@@ -1,5 +1,6 @@
 <script lang="ts">
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
+  import IslandWidthMain from "$lib/components/layout/IslandWidthMain.svelte";
   import ProjectsTable from "$lib/components/staking/ProjectsTable.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -51,29 +52,25 @@
   });
 </script>
 
-<main data-tid="staking-component">
-  {#if showStakingBanner}
-    <PageBanner testId="staking-page-banner">
-      <IconNeuronsPage slot="image" />
-      <svelte:fragment slot="title">{$i18n.staking.title}</svelte:fragment>
-      <p class="description" slot="description">{$i18n.staking.text}</p>
-      <SignInGuard slot="actions" />
-    </PageBanner>
-  {/if}
+<IslandWidthMain testId="staking-component">
+  <div class="content">
+    {#if showStakingBanner}
+      <PageBanner testId="staking-page-banner">
+        <IconNeuronsPage slot="image" />
+        <svelte:fragment slot="title">{$i18n.staking.title}</svelte:fragment>
+        <p class="description" slot="description">{$i18n.staking.text}</p>
+        <SignInGuard slot="actions" />
+      </PageBanner>
+    {/if}
 
-  <ProjectsTable />
-</main>
+    <ProjectsTable />
+  </div>
+</IslandWidthMain>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-
-  main {
+  .content {
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
-
-    @include media.min-width(large) {
-      width: var(--island-width);
-    }
   }
 </style>
