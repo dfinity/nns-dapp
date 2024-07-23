@@ -53,14 +53,24 @@
 </script>
 
 <IslandWidthMain testId="staking-component">
-  {#if showStakingBanner}
-    <PageBanner testId="staking-page-banner">
-      <IconNeuronsPage slot="image" />
-      <svelte:fragment slot="title">{$i18n.staking.title}</svelte:fragment>
-      <p class="description" slot="description">{$i18n.staking.text}</p>
-      <SignInGuard slot="actions" />
-    </PageBanner>
-  {/if}
+  <div class="content">
+    {#if showStakingBanner}
+      <PageBanner testId="staking-page-banner">
+        <IconNeuronsPage slot="image" />
+        <svelte:fragment slot="title">{$i18n.staking.title}</svelte:fragment>
+        <p class="description" slot="description">{$i18n.staking.text}</p>
+        <SignInGuard slot="actions" />
+      </PageBanner>
+    {/if}
 
-  <ProjectsTable />
+    <ProjectsTable />
+  </div>
 </IslandWidthMain>
+
+<style lang="scss">
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+  }
+</style>
