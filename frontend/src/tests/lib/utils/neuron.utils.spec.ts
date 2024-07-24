@@ -56,8 +56,10 @@ import {
   maturityLastDistribution,
   minNeuronSplittable,
   neuronAge,
+  neuronAvailableMaturity,
   neuronCanBeSplit,
   neuronStake,
+  neuronStakedMaturity,
   neuronVotingPower,
   neuronsVotingPower,
   sortNeuronsByStake,
@@ -986,6 +988,50 @@ describe("neuron-utils", () => {
         fullNeuron: undefined,
       };
       expect(neuronStake(neuron)).toBe(0n);
+    });
+  });
+
+  describe("neuronAvailableMaturity", () => {
+    it("should calculate available maturity", () => {
+      const maturity = 100234n;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: maturity,
+        },
+      };
+      expect(neuronAvailableMaturity(neuron)).toBe(maturity);
+    });
+
+    it("should return 0n when maturity is not available", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(neuronAvailableMaturity(neuron)).toBe(0n);
+    });
+  });
+
+  describe("neuronStakedMaturity", () => {
+    it("should calculate staked maturity", () => {
+      const maturity = 100235n;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          stakedMaturityE8sEquivalent: maturity,
+        },
+      };
+      expect(neuronStakedMaturity(neuron)).toBe(maturity);
+    });
+
+    it("should return 0n when maturity is not available", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(neuronStakedMaturity(neuron)).toBe(0n);
     });
   });
 
