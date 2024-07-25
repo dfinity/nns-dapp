@@ -13,10 +13,6 @@ describe("imported-tokens-api", () => {
   beforeEach(() => {
     vi.resetAllMocks();
 
-    vi.spyOn(console, "error").mockImplementation(() => undefined);
-    const now = Date.now();
-    vi.useFakeTimers().setSystemTime(now);
-
     vi.spyOn(NNSDappCanister, "create").mockImplementation(
       (): NNSDappCanister => mockNNSDappCanister
     );
