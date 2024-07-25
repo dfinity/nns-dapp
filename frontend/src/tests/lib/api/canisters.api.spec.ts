@@ -442,9 +442,13 @@ describe("canisters-api", () => {
       expect(mockNNSDappCanister.getImportedTokens).not.toBeCalled();
       await getImportedTokens({
         identity: mockIdentity,
+        certified: true,
       });
 
       expect(mockNNSDappCanister.getImportedTokens).toBeCalledTimes(1);
+      expect(mockNNSDappCanister.getImportedTokens).toBeCalledWith({
+        certified: true,
+      });
     });
   });
 

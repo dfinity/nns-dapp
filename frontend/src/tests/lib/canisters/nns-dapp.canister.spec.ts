@@ -489,9 +489,12 @@ describe("NNSDapp", () => {
 
       expect(service.get_imported_tokens).not.toBeCalled();
 
-      await nnsDapp.getImportedTokens();
+      await nnsDapp.getImportedTokens({ certified: true });
 
       expect(service.get_imported_tokens).toBeCalledTimes(1);
+      expect(service.get_imported_tokens).toBeCalledWith({
+        certified: true,
+      });
     });
 
     it("should return imported tokens", async () => {
@@ -502,7 +505,7 @@ describe("NNSDapp", () => {
         },
       });
       const nnsDapp = await createNnsDapp(service);
-      const result = await nnsDapp.getImportedTokens();
+      const result = await nnsDapp.getImportedTokens({ certified: true });
 
       expect(result).toEqual({
         imported_tokens: [mockImportedToken],
@@ -518,7 +521,7 @@ describe("NNSDapp", () => {
 
       const nnsDapp = await createNnsDapp(service);
 
-      const call = async () => nnsDapp.getImportedTokens();
+      const call = async () => nnsDapp.getImportedTokens({ certified: true });
 
       await expect(call).rejects.toThrow(AccountNotFoundError);
     });
@@ -534,7 +537,7 @@ describe("NNSDapp", () => {
 
       const nnsDapp = await createNnsDapp(service);
 
-      const call = async () => nnsDapp.getImportedTokens();
+      const call = async () => nnsDapp.getImportedTokens({ certified: true });
 
       await expect(call).rejects.toThrow(
         'Error getting imported tokens {"UnexpectedError":"message"}'

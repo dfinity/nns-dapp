@@ -328,8 +328,13 @@ export class NNSDappCanister {
     );
   }
 
-  public getImportedTokens = async (): Promise<ImportedTokens> => {
-    const response = await this.certifiedService.get_imported_tokens();
+  public getImportedTokens = async ({
+    certified,
+  }: {
+    certified: boolean;
+  }): Promise<ImportedTokens> => {
+    const response =
+      await this.getNNSDappService(certified).get_imported_tokens();
     if ("Ok" in response) {
       return response.Ok;
     }

@@ -11,8 +11,6 @@ import {
 } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type {
   CanisterDetails as CanisterInfo,
-  ImportedToken,
-  ImportedTokens,
   SubAccountArray,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import {
@@ -377,34 +375,4 @@ const canisters = async (
   const { canister: nnsDapp } = await nnsDappCanister({ identity });
 
   return { cmc, icMgt, nnsDapp };
-};
-
-export const getImportedTokens = async ({
-  identity,
-}: {
-  identity: Identity;
-}): Promise<ImportedTokens> => {
-  logWithTimestamp("Getting imported tokens call...");
-  const { nnsDapp } = await canisters(identity);
-
-  const importedTokens = await nnsDapp.getImportedTokens();
-
-  logWithTimestamp("Getting imported tokens call complete.");
-
-  return importedTokens;
-};
-
-export const setImportedTokens = async ({
-  identity,
-  importedTokens,
-}: {
-  identity: Identity;
-  importedTokens: Array<ImportedToken>;
-}): Promise<void> => {
-  logWithTimestamp("Setting imported tokens call...");
-  const { nnsDapp } = await canisters(identity);
-
-  await nnsDapp.setImportedTokens(importedTokens);
-
-  logWithTimestamp("Setting imported tokens call complete.");
 };
