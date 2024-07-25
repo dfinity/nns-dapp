@@ -17,6 +17,7 @@ import {
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
+  TooManyImportedTokensError,
   UnknownProposalPayloadError,
 } from "./nns-dapp.errors";
 import type { NNSDappService } from "./nns-dapp.idl";
@@ -358,6 +359,11 @@ export class NNSDappCanister {
     }
     if ("AccountNotFound" in response) {
       throw new AccountNotFoundError("error__account.not_found");
+    }
+    if ("TooManyImportedTokens" in response) {
+      throw new TooManyImportedTokensError("error__imported_tokens.too_many", {
+        $limit: response.TooManyImportedTokens?.limit.toString(),
+      });
     }
     // Edge case
     throw new Error(

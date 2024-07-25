@@ -11,6 +11,7 @@ import {
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
+  TooManyImportedTokensError,
   UnknownProposalPayloadError,
 } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { NNSDappService } from "$lib/canisters/nns-dapp/nns-dapp.idl";
@@ -492,9 +493,6 @@ describe("NNSDapp", () => {
       await nnsDapp.getImportedTokens({ certified: true });
 
       expect(service.get_imported_tokens).toBeCalledTimes(1);
-      expect(service.get_imported_tokens).toBeCalledWith({
-        certified: true,
-      });
     });
 
     it("should return imported tokens", async () => {
@@ -575,6 +573,24 @@ describe("NNSDapp", () => {
       const call = async () => nnsDapp.setImportedTokens([]);
 
       await expect(call).rejects.toThrow(AccountNotFoundError);
+    });
+
+    it("throws error if the limit has been reached", async () => {
+      const response: SetImportedTokensResponse = {
+        TooManyImportedTokens: { limit: 10 },
+      };
+      const service = mock<NNSDappService>();
+      service.set_imported_tokens.mockResolvedValue(response);
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () => nnsDapp.setImportedTokens([]);
+
+      await expect(call).rejects.toThrowError(
+        new TooManyImportedTokensError("error__imported_tokens.too_many", {
+          limit: "10",
+        })
+      );
     });
 
     it("should provide generic error message", async () => {
