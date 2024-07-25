@@ -848,8 +848,17 @@ fn set_and_get_imported_tokens_without_index_canister() {
     );
 }
 
+fn get_unique_imported_tokens(count: u64) -> Vec<ImportedToken> {
+    (0..count)
+        .map(|i| ImportedToken {
+            ledger_canister_id: PrincipalId::new_user_test_id(i),
+            index_canister_id: Some(PrincipalId::new_user_test_id(i + 1000)),
+        })
+        .collect()
+}
+
 #[test]
-fn set_and_get_10_imported_tokens() {
+fn set_and_get_20_imported_tokens() {
     let mut store = setup_test_store();
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
 
@@ -858,12 +867,7 @@ fn set_and_get_10_imported_tokens() {
         GetImportedTokensResponse::Ok(ImportedTokens::default())
     );
 
-    let imported_tokens: Vec<ImportedToken> = (0..10)
-        .map(|i| ImportedToken {
-            ledger_canister_id: PrincipalId::new_user_test_id(i as u64),
-            index_canister_id: Some(PrincipalId::new_user_test_id(i as u64 + 100)),
-        })
-        .collect();
+    let imported_tokens = get_unique_imported_tokens(20);
 
     assert_eq!(
         store.set_imported_tokens(
@@ -895,22 +899,12 @@ fn set_imported_tokens_account_not_found() {
 fn set_imported_tokens_too_many() {
     let mut store = setup_test_store();
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-    let ledger_canister_id = PrincipalId::new_user_test_id(101);
-    let index_canister_id = PrincipalId::new_user_test_id(102);
 
-    let imported_token = ImportedToken {
-        ledger_canister_id,
-        index_canister_id: Some(index_canister_id),
-    };
+    let imported_tokens = get_unique_imported_tokens(21);
 
     assert_eq!(
-        store.set_imported_tokens(
-            principal,
-            ImportedTokens {
-                imported_tokens: vec![imported_token.clone(); 11],
-            },
-        ),
-        SetImportedTokensResponse::TooManyImportedTokens { limit: 10 }
+        store.set_imported_tokens(principal, ImportedTokens { imported_tokens },),
+        SetImportedTokensResponse::TooManyImportedTokens { limit: 20 }
     );
 }
 

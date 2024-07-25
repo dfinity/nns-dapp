@@ -37,7 +37,9 @@ use self::schema::SchemaLabel;
 /// accounts we avoid some complications.
 const PRE_MIGRATION_LIMIT: u64 = 300_000;
 
-const MAX_IMPORTED_TOKENS: i32 = 10;
+// Conservatively limit the number of imported tokens to prevent using too much memory.
+// Can be revisited if users find this too restrictive.
+const MAX_IMPORTED_TOKENS: i32 = 20;
 
 /// Accounts, transactions and related data.
 ///
