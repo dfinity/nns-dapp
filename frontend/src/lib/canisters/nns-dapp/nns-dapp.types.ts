@@ -1,3 +1,4 @@
+import type { ActorMethod } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 export interface AccountDetails {
   principal: Principal;
@@ -35,6 +36,9 @@ export type DetachCanisterResponse = { Ok: null } | { CanisterNotFound: null };
 export type GetAccountResponse =
   | { Ok: AccountDetails }
   | { AccountNotFound: null };
+export type GetImportedTokensResponse =
+  | { Ok: ImportedTokens }
+  | { AccountNotFound: null };
 export type GetProposalPayloadResponse = { Ok: string } | { Err: string };
 export interface HardwareWalletAccountDetails {
   principal: Principal;
@@ -52,6 +56,13 @@ export interface HttpResponse {
   body: Array<number>;
   headers: Array<HeaderField>;
   status_code: number;
+}
+export interface ImportedToken {
+  index_canister_id: [] | [Principal];
+  ledger_canister_id: Principal;
+}
+export interface ImportedTokens {
+  imported_tokens: Array<ImportedToken>;
 }
 export interface RegisterHardwareWalletRequest {
   principal: Principal;
@@ -82,6 +93,10 @@ export type RenameSubAccountResponse =
   | { AccountNotFound: null }
   | { SubAccountNotFound: null }
   | { NameTooLong: null };
+export type SetImportedTokensResponse =
+  | { Ok: null }
+  | { AccountNotFound: null }
+  | { TooManyImportedTokens: { limit: number } };
 export interface Stats {
   seconds_since_last_ledger_sync: bigint;
   sub_accounts_count: bigint;
@@ -115,6 +130,7 @@ export default interface _SERVICE {
   ) => Promise<DetachCanisterResponse>;
   get_account: () => Promise<GetAccountResponse>;
   get_canisters: () => Promise<Array<CanisterDetails>>;
+  get_imported_tokens: () => Promise<GetImportedTokensResponse>;
   get_proposal_payload: (arg_0: bigint) => Promise<GetProposalPayloadResponse>;
   get_stats: () => Promise<Stats>;
   http_request: (arg_0: HttpRequest) => Promise<HttpResponse>;
@@ -124,4 +140,5 @@ export default interface _SERVICE {
   rename_sub_account: (
     arg_0: RenameSubAccountRequest
   ) => Promise<RenameSubAccountResponse>;
+  set_imported_tokens: ActorMethod<[ImportedTokens], SetImportedTokensResponse>;
 }
