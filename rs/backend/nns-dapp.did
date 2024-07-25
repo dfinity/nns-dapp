@@ -193,14 +193,16 @@ type SchemaLabel = variant {
     AccountsInStableMemory;
 };
 
-type ImportedToken = record {
-  ledger_canister_id: principal;
-  index_canister_id: opt principal;
-};
+type ImportedToken =
+    record {
+        ledger_canister_id: principal;
+        index_canister_id: opt principal;
+    };
 
-type ImportedTokens = record {
-  imported_tokens: vec ImportedToken;
-};
+type ImportedTokens =
+    record {
+        imported_tokens: vec ImportedToken;
+    };
 
 type SetImportedTokensResponse =
     variant {
