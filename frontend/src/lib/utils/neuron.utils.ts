@@ -472,6 +472,12 @@ export const neuronStake = (neuron: NeuronInfo): bigint =>
     ? neuron.fullNeuron?.cachedNeuronStake - neuron.fullNeuron?.neuronFees
     : 0n;
 
+export const neuronAvailableMaturity = (neuron: NeuronInfo): bigint =>
+  neuron.fullNeuron?.maturityE8sEquivalent ?? 0n;
+
+export const neuronStakedMaturity = (neuron: NeuronInfo): bigint =>
+  neuron.fullNeuron?.stakedMaturityE8sEquivalent ?? 0n;
+
 export interface FolloweesNeuron {
   neuronId: NeuronId;
   topics: [Topic, ...Topic[]];
