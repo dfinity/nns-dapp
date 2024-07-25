@@ -16,6 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Add 2 new topics `ProtocolCanisterMangement` and
+* Make the WASM accessible via beta subdomains so we can deploy early versions there.
 
 #### Changed
 
