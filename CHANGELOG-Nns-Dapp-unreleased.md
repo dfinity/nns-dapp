@@ -18,6 +18,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Add 2 new topics `ProtocolCanisterMangement` and
 * Make the WASM accessible via beta subdomains so we can deploy early versions there.
 * Enable warning dialog on beta deployment.
+* Back-end support for storing imported tokens.
 
 #### Changed
 

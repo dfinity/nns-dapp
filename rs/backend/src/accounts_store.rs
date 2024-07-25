@@ -37,6 +37,10 @@ use self::schema::SchemaLabel;
 /// accounts we avoid some complications.
 const PRE_MIGRATION_LIMIT: u64 = 300_000;
 
+// Conservatively limit the number of imported tokens to prevent using too much memory.
+// Can be revisited if users find this too restrictive.
+const MAX_IMPORTED_TOKENS: i32 = 20;
+
 /// Accounts, transactions and related data.
 ///
 /// Note: Some monitoring fields are not included in the `Eq` and `PartialEq` implementations.  Additionally, please note
@@ -154,6 +158,7 @@ pub struct Account {
     sub_accounts: HashMap<u8, NamedSubAccount>,
     hardware_wallet_accounts: Vec<NamedHardwareWalletAccount>,
     canisters: Vec<NamedCanister>,
+    imported_tokens: Option<ImportedTokens>,
     // default_account_transactions: Do not reuse this field. There are still accounts in stable memor with this unused field.
 }
 
@@ -214,6 +219,30 @@ impl PartialOrd for NamedCanister {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
+}
+
+#[derive(CandidType, Clone, Copy, Default, Deserialize, Debug, Eq, PartialEq)]
+pub struct ImportedToken {
+    ledger_canister_id: PrincipalId,
+    index_canister_id: Option<PrincipalId>,
+}
+
+#[derive(CandidType, Clone, Default, Deserialize, Debug, Eq, PartialEq)]
+pub struct ImportedTokens {
+    imported_tokens: Vec<ImportedToken>,
+}
+
+#[derive(CandidType, Debug, PartialEq)]
+pub enum SetImportedTokensResponse {
+    Ok,
+    AccountNotFound,
+    TooManyImportedTokens { limit: i32 },
+}
+
+#[derive(CandidType, Debug, PartialEq)]
+pub enum GetImportedTokensResponse {
+    Ok(ImportedTokens),
+    AccountNotFound,
 }
 
 #[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
@@ -746,6 +775,36 @@ impl AccountsStore {
         }
     }
 
+    pub fn set_imported_tokens(
+        &mut self,
+        caller: PrincipalId,
+        new_imported_tokens: ImportedTokens,
+    ) -> SetImportedTokensResponse {
+        if new_imported_tokens.imported_tokens.len() > (MAX_IMPORTED_TOKENS as usize) {
+            return SetImportedTokensResponse::TooManyImportedTokens {
+                limit: MAX_IMPORTED_TOKENS,
+            };
+        }
+        let account_identifier = AccountIdentifier::from(caller).to_vec();
+        let Some(mut account) = self.accounts_db.db_get_account(&account_identifier) else {
+            return SetImportedTokensResponse::AccountNotFound;
+        };
+
+        account.imported_tokens = Some(new_imported_tokens);
+
+        self.accounts_db.db_insert_account(&account_identifier, account);
+        SetImportedTokensResponse::Ok
+    }
+
+    pub fn get_imported_tokens(&mut self, caller: PrincipalId) -> GetImportedTokensResponse {
+        let account_identifier = AccountIdentifier::from(caller).to_vec();
+        let Some(account) = self.accounts_db.db_get_account(&account_identifier) else {
+            return GetImportedTokensResponse::AccountNotFound;
+        };
+
+        GetImportedTokensResponse::Ok(account.imported_tokens.unwrap_or_default())
+    }
+
     #[must_use]
     pub fn get_block_height_synced_up_to(&self) -> Option<BlockIndex> {
         self.block_height_synced_up_to
@@ -1116,6 +1175,7 @@ impl Account {
             sub_accounts: HashMap::new(),
             hardware_wallet_accounts: Vec::new(),
             canisters: Vec::new(),
+            imported_tokens: None,
         }
     }
 }
