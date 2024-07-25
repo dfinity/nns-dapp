@@ -1431,7 +1431,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 999947270000,
+    "icrc1_total_supply": 999944120000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1812,7 +1812,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 99999905250000,
+    "icrc1_total_supply": 99999903370000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1899,7 +1899,11 @@
       "ledger": "lkwrt-vyaaa-aaaaq-aadhq-cai",
       "index": "jqkzp-liaaa-aaaaq-aadiq-cai",
       "governance": "lnxxh-yaaaa-aaaaq-aadha-cai",
-      "dapps": ["3wpnp-6yaaa-aaaal-ajgdq-cai", "yuijc-oiaaa-aaaap-ahezq-cai"],
+      "dapps": [
+        "3wpnp-6yaaa-aaaal-ajgdq-cai",
+        "yuijc-oiaaa-aaaap-ahezq-cai",
+        "gzcjd-xiaaa-aaaak-qijga-cai"
+      ],
       "archives": ["jlpfk-rqaaa-aaaaq-aadka-cai"]
     },
     "meta": {
@@ -2193,7 +2197,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041790608177840600,
+    "icrc1_total_supply": 1041787585024459800,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2308,7 +2312,8 @@
       "dapps": [
         "tsbvt-pyaaa-aaaar-qafva-cai",
         "buwm7-7yaaa-aaaar-qagva-cai",
-        "btxkl-saaaa-aaaar-qagvq-cai"
+        "btxkl-saaaa-aaaar-qagvq-cai",
+        "daijl-2yaaa-aaaar-qag3a-cai"
       ],
       "archives": ["i2f3v-jyaaa-aaaaq-aadpq-cai"]
     },
@@ -2826,7 +2831,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11601328904399804,
+    "icrc1_total_supply": 11610458554783916,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -3297,6 +3302,32 @@
               "target_method_name": "controller_create_trade_contract"
             }
           }
+        },
+        {
+          "id": 20001,
+          "name": "Website Upgrade",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "em3jm-bqaaa-aaaar-qabxa-cai",
+              "target_canister_id": "em3jm-bqaaa-aaaar-qabxa-cai",
+              "validator_method_name": "sns_validate_controller_commit_batch",
+              "target_method_name": "controller_commit_batch"
+            }
+          }
+        },
+        {
+          "id": 30001,
+          "name": "Sell CTS tokens at the CTS market",
+          "description": "This proposal type lets the CTS SNS governance canister call the trade_tokens method on the CTS/CYCLES trading-pair canister at the CTS market. This proposal type lets the CTS SNS sell CTS tokens at the CTS market.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "ckhlr-yiaaa-aaaar-qag4a-cai",
+              "target_canister_id": "ckhlr-yiaaa-aaaar-qag4a-cai",
+              "validator_method_name": "sns_validate_trade_tokens",
+              "target_method_name": "trade_tokens"
+            }
+          }
         }
       ]
     },
@@ -3673,7 +3704,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 1999999851200000,
+    "icrc1_total_supply": 1999999833700000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 400000000,
