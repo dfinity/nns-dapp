@@ -12,7 +12,7 @@ import type {
   SnsSwapInit,
   SnsSwapLifecycle,
 } from "@dfinity/sns";
-import { fromNullable, isNullish } from "@dfinity/utils";
+import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
 
 export class SnsSummaryWrapper implements SnsSummary {
   private readonly summary: SnsSummary;
@@ -58,7 +58,37 @@ export class SnsSummaryWrapper implements SnsSummary {
   }
 
   getLifecycle(): SnsSwapLifecycle {
-    return this.swap.lifecycle;
+    // lifecycle was added as an optional field for backwards compatibility but
+    // is always defined in current SNSes.
+    return fromDefinedNullable(this.lifecycle.lifecycle);
+  }
+
+  getSwapDueTimestampSeconds(): bigint {
+    return this.swap.params.swap_due_timestamp_seconds;
+  }
+
+  getMinIcpE8s(): bigint {
+    return this.swap.params.min_icp_e8s;
+  }
+
+  getMaxIcpE8s(): bigint {
+    return this.swap.params.max_icp_e8s;
+  }
+
+  getMinParticipants(): number {
+    return this.swap.params.min_participants;
+  }
+
+  getMinParticipantIcpE8s(): bigint {
+    return this.swap.params.min_participant_icp_e8s;
+  }
+
+  getMaxParticipantIcpE8s(): bigint {
+    return this.swap.params.max_participant_icp_e8s;
+  }
+
+  getSnsTokenE8s(): bigint {
+    return this.swap.params.sns_token_e8s;
   }
 
   public overrideDerivedState(

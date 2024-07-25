@@ -94,7 +94,10 @@ export class LedgerIdentity extends SignIdentity {
     if (
       smallerVersion({ minVersion: ALL_CANDID_TXS_VERSION, currentVersion })
     ) {
-      throw new LedgerErrorKey("error__ledger.app_version_not_supported");
+      throw new LedgerErrorKey({
+        message: "error__ledger.app_version_not_supported",
+        renderAsHtml: true,
+      });
     }
   };
 
@@ -207,13 +210,17 @@ export class LedgerIdentity extends SignIdentity {
         if (
           (err as LedgerHQTransportError)?.message.includes("not supported")
         ) {
-          throw new LedgerErrorKey("error__ledger.browser_not_supported");
+          throw new LedgerErrorKey({
+            message: "error__ledger.browser_not_supported",
+          });
         }
-        throw new LedgerErrorKey("error__ledger.access_denied");
+        throw new LedgerErrorKey({ message: "error__ledger.access_denied" });
       }
 
       if ((err as LedgerHQTransportError)?.id === "NoDeviceFound") {
-        throw new LedgerErrorKey("error__ledger.connect_no_device");
+        throw new LedgerErrorKey({
+          message: "error__ledger.connect_no_device",
+        });
       }
 
       if (
@@ -221,7 +228,9 @@ export class LedgerIdentity extends SignIdentity {
           "cannot open device with path"
         )
       ) {
-        throw new LedgerErrorKey("error__ledger.connect_many_apps");
+        throw new LedgerErrorKey({
+          message: "error__ledger.connect_many_apps",
+        });
       }
 
       // Unsupported browser. Data on browser compatibility is taken from https://caniuse.com/webhid
@@ -262,7 +271,9 @@ export class LedgerIdentity extends SignIdentity {
         });
 
       if (JSON.stringify(devicePublicKey) !== JSON.stringify(this.publicKey)) {
-        throw new LedgerErrorKey("error__ledger.unexpected_wallet");
+        throw new LedgerErrorKey({
+          message: "error__ledger.unexpected_wallet",
+        });
       }
 
       // Run the provided function.

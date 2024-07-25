@@ -1,6 +1,5 @@
 import { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
-import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { getRequestId } from "$lib/utils/ledger.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
@@ -245,9 +244,10 @@ describe("LedgerIdentity", () => {
       const identity = await LedgerIdentity.create();
 
       const call = () => identity.transformRequest(mockHttpRequest1);
-      expect(call).rejects.toThrowError(
-        new LedgerErrorKey("error__ledger.app_version_not_supported")
-      );
+      expect(call).rejects.toMatchObject({
+        message: "error__ledger.app_version_not_supported",
+        renderAsHtml: true,
+      });
       expect(mockLedgerApp.signUpdateCall).not.toBeCalled();
     });
 
@@ -268,9 +268,10 @@ describe("LedgerIdentity", () => {
       identity.flagUpcomingStakeNeuron();
 
       const call = () => identity.transformRequest(mockHttpRequest1);
-      expect(call).rejects.toThrowError(
-        new LedgerErrorKey("error__ledger.app_version_not_supported")
-      );
+      expect(call).rejects.toMatchObject({
+        message: "error__ledger.app_version_not_supported",
+        renderAsHtml: true,
+      });
       expect(mockLedgerApp.sign).not.toBeCalled();
     });
   });

@@ -248,6 +248,8 @@ interface I18nNeuron_types {
 }
 
 interface I18nStaking {
+  title: string;
+  text: string;
   nervous_systems: string;
 }
 
@@ -378,8 +380,13 @@ interface I18nFollow_neurons {
   topic_15_subtitle: string;
   topic_16_title: string;
   topic_16_subtitle: string;
+  topic_17_title: string;
+  topic_17_subtitle: string;
+  topic_18_title: string;
+  topic_18_subtitle: string;
   current_followees: string;
   add: string;
+  unknown_topic_title: string;
 }
 
 interface I18nVoting {
@@ -1112,6 +1119,8 @@ interface I18nTopics {
   SnsAndCommunityFund: string;
   ApiBoundaryNodeManagement: string;
   SubnetRental: string;
+  ProtocolCanisterManagement: string;
+  ServiceNervousSystemManagement: string;
 }
 
 interface I18nTopics_description {
@@ -1132,6 +1141,8 @@ interface I18nTopics_description {
   SnsAndCommunityFund: string;
   ApiBoundaryNodeManagement: string;
   SubnetRental: string;
+  ProtocolCanisterManagement: string;
+  ServiceNervousSystemManagement: string;
 }
 
 interface I18nRewards {

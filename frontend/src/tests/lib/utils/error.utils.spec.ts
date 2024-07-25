@@ -1,3 +1,5 @@
+import { LedgerErrorKey } from "$lib/types/ledger.errors";
+
 import { HardwareWalletAttachError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import {
   errorToString,
@@ -44,7 +46,7 @@ describe("error-utils", () => {
           fallbackErrorLabelKey: "test.test",
           err: undefined,
         })
-      ).toEqual({ labelKey: "test.test", renderAsHtml: true });
+      ).toEqual({ labelKey: "test.test", renderAsHtml: false });
 
       const err = new HardwareWalletAttachError("test");
 
@@ -53,14 +55,14 @@ describe("error-utils", () => {
           fallbackErrorLabelKey: "test.test",
           err,
         })
-      ).toEqual({ labelKey: "test.test", err, renderAsHtml: true });
+      ).toEqual({ labelKey: "test.test", err, renderAsHtml: false });
 
       expect(
         toToastError({
           fallbackErrorLabelKey: "test.test",
           err,
         })
-      ).toEqual({ labelKey: "test.test", err, renderAsHtml: true });
+      ).toEqual({ labelKey: "test.test", err, renderAsHtml: false });
     });
 
     it("should use error message key", () => {
@@ -71,7 +73,24 @@ describe("error-utils", () => {
           fallbackErrorLabelKey: "test.test",
           err,
         })
-      ).toEqual({ labelKey: "error.rename_subaccount", renderAsHtml: true });
+      ).toEqual({ labelKey: "error.rename_subaccount", renderAsHtml: false });
+    });
+
+    it("should pass on renderAsHtml", () => {
+      const err = new LedgerErrorKey({
+        message: "error__ledger.app_version_not_supported",
+        renderAsHtml: true,
+      });
+
+      expect(
+        toToastError({
+          fallbackErrorLabelKey: "test.test",
+          err,
+        })
+      ).toEqual({
+        labelKey: "error__ledger.app_version_not_supported",
+        renderAsHtml: true,
+      });
     });
   });
 

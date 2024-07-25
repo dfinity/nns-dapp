@@ -454,7 +454,7 @@ export const initiateSnsSaleParticipation = async ({
 
     if (!valid) {
       // TODO: Rename LedgerErroKey to NnsDappErrorKey?
-      throw new LedgerErrorKey(labelKey, substitutions);
+      throw new LedgerErrorKey({ message: labelKey, substitutions });
     }
 
     // Step 1.

@@ -23,7 +23,6 @@
       overflow-x: hidden;
       @include media.min-width(large) {
         width: var(--island-width);
-        max-width: var(--island-max-width);
       }
     }
   }

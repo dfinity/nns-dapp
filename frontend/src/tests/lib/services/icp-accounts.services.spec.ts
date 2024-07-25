@@ -536,7 +536,7 @@ describe("icp-accounts.services", () => {
       expect(spyToastError).toBeCalledWith({
         labelKey: "error__account.create_subaccount",
         err: new Error(en.error.missing_identity),
-        renderAsHtml: true,
+        renderAsHtml: false,
       });
 
       resetIdentity();
@@ -729,7 +729,7 @@ describe("icp-accounts.services", () => {
       expect(spyToastError).toBeCalledWith({
         labelKey: "error.rename_subaccount",
         err: new Error(en.error.missing_identity),
-        renderAsHtml: true,
+        renderAsHtml: false,
       });
 
       resetIdentity();
@@ -748,7 +748,7 @@ describe("icp-accounts.services", () => {
       expect(spyToastError).toBeCalled();
       expect(spyToastError).toBeCalledWith({
         labelKey: "error.rename_subaccount_no_account",
-        renderAsHtml: true,
+        renderAsHtml: false,
       });
 
       spyToastError.mockClear();
@@ -765,7 +765,7 @@ describe("icp-accounts.services", () => {
       expect(spyToastError).toBeCalled();
       expect(spyToastError).toBeCalledWith({
         labelKey: "error.rename_subaccount_type",
-        renderAsHtml: true,
+        renderAsHtml: false,
       });
 
       spyToastError.mockClear();

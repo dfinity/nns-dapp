@@ -10,9 +10,7 @@ import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
-  TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
-import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -58,8 +56,10 @@ import {
   maturityLastDistribution,
   minNeuronSplittable,
   neuronAge,
+  neuronAvailableMaturity,
   neuronCanBeSplit,
   neuronStake,
+  neuronStakedMaturity,
   neuronVotingPower,
   neuronsVotingPower,
   sortNeuronsByStake,
@@ -988,6 +988,50 @@ describe("neuron-utils", () => {
         fullNeuron: undefined,
       };
       expect(neuronStake(neuron)).toBe(0n);
+    });
+  });
+
+  describe("neuronAvailableMaturity", () => {
+    it("should calculate available maturity", () => {
+      const maturity = 100234n;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: maturity,
+        },
+      };
+      expect(neuronAvailableMaturity(neuron)).toBe(maturity);
+    });
+
+    it("should return 0n when maturity is not available", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(neuronAvailableMaturity(neuron)).toBe(0n);
+    });
+  });
+
+  describe("neuronStakedMaturity", () => {
+    it("should calculate staked maturity", () => {
+      const maturity = 100235n;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          stakedMaturityE8sEquivalent: maturity,
+        },
+      };
+      expect(neuronStakedMaturity(neuron)).toBe(maturity);
+    });
+
+    it("should return 0n when maturity is not available", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(neuronStakedMaturity(neuron)).toBe(0n);
     });
   });
 
@@ -2166,32 +2210,62 @@ describe("neuron-utils", () => {
       },
     };
 
-    it("should not return deprecated topics", () => {
-      expect(topicsToFollow(neuronWithoutManageNeuron)).toEqual(
-        TOPICS_TO_FOLLOW_NNS.filter(
-          (topic) =>
-            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic)
-        )
-      );
-      expect(topicsToFollow(neuronWithoutFollowees)).toEqual(
-        TOPICS_TO_FOLLOW_NNS.filter(
-          (topic) =>
-            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic)
-        )
-      );
-      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(
-        TOPICS_TO_FOLLOW_NNS.filter(
-          (topic) => !DEPRECATED_TOPICS.includes(topic)
-        )
-      );
+    it("should not return deprecated or disabled topics", () => {
+      expect(topicsToFollow(neuronWithoutManageNeuron)).toEqual([
+        Topic.Unspecified,
+        Topic.Governance,
+        Topic.SnsAndCommunityFund,
+        Topic.NetworkEconomics,
+        Topic.NodeAdmin,
+        Topic.ParticipantManagement,
+        Topic.SubnetManagement,
+        Topic.NetworkCanisterManagement,
+        Topic.Kyc,
+        Topic.NodeProviderRewards,
+        Topic.SubnetReplicaVersionManagement,
+        Topic.ReplicaVersionManagement,
+        Topic.ApiBoundaryNodeManagement,
+        Topic.SubnetRental,
+        Topic.ExchangeRate,
+      ]);
+      expect(topicsToFollow(neuronWithoutFollowees)).toEqual([
+        Topic.Unspecified,
+        Topic.Governance,
+        Topic.SnsAndCommunityFund,
+        Topic.NetworkEconomics,
+        Topic.NodeAdmin,
+        Topic.ParticipantManagement,
+        Topic.SubnetManagement,
+        Topic.NetworkCanisterManagement,
+        Topic.Kyc,
+        Topic.NodeProviderRewards,
+        Topic.SubnetReplicaVersionManagement,
+        Topic.ReplicaVersionManagement,
+        Topic.ApiBoundaryNodeManagement,
+        Topic.SubnetRental,
+        Topic.ExchangeRate,
+      ]);
     });
 
     it("should return topics with ManageNeuron if neuron follows some neuron on the ManageNeuron topic", () => {
-      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(
-        TOPICS_TO_FOLLOW_NNS.filter(
-          (topic) => !DEPRECATED_TOPICS.includes(topic)
-        )
-      );
+      expect(topicsToFollow(neuronWithManageNeuron)).toEqual([
+        Topic.Unspecified,
+        Topic.Governance,
+        Topic.SnsAndCommunityFund,
+        Topic.ManageNeuron,
+        Topic.NetworkEconomics,
+        Topic.NodeAdmin,
+        Topic.ParticipantManagement,
+        Topic.SubnetManagement,
+        Topic.NetworkCanisterManagement,
+        Topic.Kyc,
+        Topic.NodeProviderRewards,
+        Topic.SubnetReplicaVersionManagement,
+        Topic.ReplicaVersionManagement,
+        Topic.ApiBoundaryNodeManagement,
+        Topic.SubnetRental,
+        Topic.ExchangeRate,
+      ]);
     });
   });
 
@@ -2753,6 +2827,12 @@ describe("neuron-utils", () => {
       ).toBe("API Boundary Node Management");
       expect(getTopicTitle({ topic: Topic.SubnetRental, i18n: en })).toBe(
         "Subnet Rental"
+      );
+    });
+
+    it("should render unknown topics", () => {
+      expect(getTopicTitle({ topic: 1000 as Topic, i18n: en })).toBe(
+        "Unknown Topic (1000)"
       );
     });
   });
