@@ -783,22 +783,24 @@ fn detach_canister_canister_not_found() {
 fn set_and_get_imported_tokens() {
     let mut store = setup_test_store();
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-    let ledger_canister_id = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
-    let index_canister_id = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    let ledger_canister_id = PrincipalId::new_user_test_id(101);
+    let index_canister_id = PrincipalId::new_user_test_id(102);
 
     assert_eq!(
         store.get_imported_tokens(principal),
         GetImportedTokensResponse::Ok(ImportedTokens::default())
     );
 
+    let imported_token = ImportedToken {
+        ledger_canister_id,
+        index_canister_id: Some(index_canister_id),
+    };
+
     assert_eq!(
         store.set_imported_tokens(
             principal,
             ImportedTokens {
-                imported_tokens: vec![ImportedToken {
-                    ledger_canister_id: ledger_canister_id,
-                    index_canister_id: Some(index_canister_id),
-                }],
+                imported_tokens: vec![imported_token.clone()],
             },
         ),
         SetImportedTokensResponse::Ok
@@ -807,11 +809,75 @@ fn set_and_get_imported_tokens() {
     assert_eq!(
         store.get_imported_tokens(principal),
         GetImportedTokensResponse::Ok(ImportedTokens {
-            imported_tokens: vec![ImportedToken {
-                ledger_canister_id: ledger_canister_id,
-                index_canister_id: Some(index_canister_id),
-            }],
+            imported_tokens: vec![imported_token],
         })
+    );
+}
+
+#[test]
+fn set_and_get_imported_tokens_without_index_canister() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let ledger_canister_id = PrincipalId::new_user_test_id(101);
+
+    assert_eq!(
+        store.get_imported_tokens(principal),
+        GetImportedTokensResponse::Ok(ImportedTokens::default())
+    );
+
+    let imported_token = ImportedToken {
+        ledger_canister_id,
+        index_canister_id: None,
+    };
+
+    assert_eq!(
+        store.set_imported_tokens(
+            principal,
+            ImportedTokens {
+                imported_tokens: vec![imported_token.clone()],
+            },
+        ),
+        SetImportedTokensResponse::Ok
+    );
+
+    assert_eq!(
+        store.get_imported_tokens(principal),
+        GetImportedTokensResponse::Ok(ImportedTokens {
+            imported_tokens: vec![imported_token],
+        })
+    );
+}
+
+#[test]
+fn set_and_get_10_imported_tokens() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    assert_eq!(
+        store.get_imported_tokens(principal),
+        GetImportedTokensResponse::Ok(ImportedTokens::default())
+    );
+
+    let imported_tokens: Vec<ImportedToken> = (0..10)
+        .map(|i| ImportedToken {
+            ledger_canister_id: PrincipalId::new_user_test_id(i as u64),
+            index_canister_id: Some(PrincipalId::new_user_test_id(i as u64 + 100)),
+        })
+        .collect();
+
+    assert_eq!(
+        store.set_imported_tokens(
+            principal,
+            ImportedTokens {
+                imported_tokens: imported_tokens.clone()
+            },
+        ),
+        SetImportedTokensResponse::Ok
+    );
+
+    assert_eq!(
+        store.get_imported_tokens(principal),
+        GetImportedTokensResponse::Ok(ImportedTokens { imported_tokens })
     );
 }
 
@@ -822,6 +888,29 @@ fn set_imported_tokens_account_not_found() {
     assert_eq!(
         store.set_imported_tokens(non_existing_principal, ImportedTokens::default()),
         SetImportedTokensResponse::AccountNotFound
+    );
+}
+
+#[test]
+fn set_imported_tokens_too_many() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let ledger_canister_id = PrincipalId::new_user_test_id(101);
+    let index_canister_id = PrincipalId::new_user_test_id(102);
+
+    let imported_token = ImportedToken {
+        ledger_canister_id,
+        index_canister_id: Some(index_canister_id),
+    };
+
+    assert_eq!(
+        store.set_imported_tokens(
+            principal,
+            ImportedTokens {
+                imported_tokens: vec![imported_token.clone(); 11],
+            },
+        ),
+        SetImportedTokensResponse::TooManyImportedTokens { limit: 10 }
     );
 }
 

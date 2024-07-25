@@ -37,6 +37,8 @@ use self::schema::SchemaLabel;
 /// accounts we avoid some complications.
 const PRE_MIGRATION_LIMIT: u64 = 300_000;
 
+const MAX_IMPORTED_TOKENS: i32 = 10;
+
 /// Accounts, transactions and related data.
 ///
 /// Note: Some monitoring fields are not included in the `Eq` and `PartialEq` implementations.  Additionally, please note
@@ -232,6 +234,7 @@ pub struct ImportedTokens {
 pub enum SetImportedTokensResponse {
     Ok,
     AccountNotFound,
+    TooManyImportedTokens { limit: i32 },
 }
 
 #[derive(CandidType, Debug, PartialEq)]
@@ -775,6 +778,11 @@ impl AccountsStore {
         caller: PrincipalId,
         new_imported_tokens: ImportedTokens,
     ) -> SetImportedTokensResponse {
+        if new_imported_tokens.imported_tokens.len() > (MAX_IMPORTED_TOKENS as usize) {
+            return SetImportedTokensResponse::TooManyImportedTokens {
+                limit: MAX_IMPORTED_TOKENS,
+            };
+        }
         let account_identifier = AccountIdentifier::from(caller).to_vec();
         let Some(mut account) = self.accounts_db.db_get_account(&account_identifier) else {
             return SetImportedTokensResponse::AccountNotFound;
