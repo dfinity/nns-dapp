@@ -94,7 +94,8 @@ export type RenameSubAccountResponse =
   | { NameTooLong: null };
 export type SetImportedTokensResponse =
   | { Ok: null }
-  | { AccountNotFound: null };
+  | { AccountNotFound: null }
+  | { TooManyImportedTokens: { limit: number } };
 export interface Stats {
   seconds_since_last_ledger_sync: bigint;
   sub_accounts_count: bigint;

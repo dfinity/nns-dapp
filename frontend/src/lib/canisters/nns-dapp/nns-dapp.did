@@ -168,6 +168,7 @@ type SetImportedTokensResponse =
     variant {
         Ok;
         AccountNotFound;
+        TooManyImportedTokens: record{limit: int32};
     };
 
 type GetImportedTokensResponse =
