@@ -272,7 +272,7 @@ export const transferICP = async ({
   sourceAccount,
   destinationAddress: to,
   amount,
-}: NewTransaction): Promise<{ success: boolean; err?: string }> => {
+}: NewTransaction): Promise<{ success: boolean; err?: string, transaction_time?: number }> => {
   try {
     const { identifier, subAccount } = sourceAccount;
 
@@ -293,7 +293,7 @@ export const transferICP = async ({
 
     const feeE8s = get(mainTransactionFeeE8sStore);
 
-    await (validIcrcAddress
+    let transaction_time = await (validIcrcAddress
       ? sendIcpIcrc1({
           identity,
           to: decodeIcrcAccount(to),
@@ -308,6 +308,17 @@ export const transferICP = async ({
           amount: tokenAmount.toE8s(),
           fee: feeE8s,
         }));
+    
+
+    // Assuming transaction_time is already defined as either bigint or [bigint, number]
+    let extractedNumber: number | undefined;
+
+    if (Array.isArray(transaction_time) && transaction_time.length === 2 && typeof transaction_time[1] === 'number') {
+      extractedNumber = transaction_time[1];
+    } else {
+      // transaction_time is not a tuple, so extractedNumber remains undefined or you can set a default value
+      
+    }
 
     // Transfer can be to one of the user's account.
     const toAccount = findAccount({
@@ -323,7 +334,8 @@ export const transferICP = async ({
         : Promise.resolve(),
     ]);
 
-    return { success: true };
+
+    return { success: true, transaction_time: extractedNumber };
   } catch (err) {
     return transferError({ labelKey: "error.transaction_error", err });
   }

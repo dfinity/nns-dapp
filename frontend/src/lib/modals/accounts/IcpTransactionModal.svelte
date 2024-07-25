@@ -43,14 +43,22 @@
       }),
     });
 
-    const { success } = await transferICP({
+    const { success, transaction_time } = await transferICP({
       sourceAccount,
       destinationAddress,
       amount,
     });
 
     if (success) {
-      toastsSuccess({ labelKey: "accounts.transaction_success" });
+      let transactionTimeString = (
+        (transaction_time || 9999999) / 1000
+      ).toFixed(2);
+
+      // Adjust the toastsSuccess call to include the timer
+      toastsSuccess({
+        labelKey: "accounts.transaction_success",
+        substitutions: { $time: transactionTimeString }, // Assuming the message template uses `{time}` for substitution
+      });
     }
 
     stopBusy("accounts");

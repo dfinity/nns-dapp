@@ -197,7 +197,7 @@
     "current_balance": "Current balance",
     "confirm_and_send": "Confirm and Send",
     "account_identifier": "Account Identifier",
-    "transaction_success": "Transaction completed.",
+    "transaction_success": "Transaction completed in $times",
     "rename": "Rename",
     "rename_linked_account": "Rename Linked Account",
     "rename_new_name_placeholder": "New Name",

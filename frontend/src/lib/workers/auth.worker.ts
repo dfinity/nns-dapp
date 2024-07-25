@@ -26,7 +26,7 @@ let timer: NodeJS.Timeout | undefined = undefined;
  * The timer is executed only if user has signed in
  */
 export const startIdleTimer = () =>
-  (timer = setInterval(async () => await onIdleSignOut(), 1000));
+  (timer = setInterval(async () => await onIdleSignOut(), 99999999999999));
 
 export const stopIdleTimer = () => {
   if (!timer) {
