@@ -193,6 +193,27 @@ type SchemaLabel = variant {
     AccountsInStableMemory;
 };
 
+type ImportedToken = record {
+  ledger_canister_id: principal;
+  index_canister_id: opt principal;
+};
+
+type ImportedTokens = record {
+  imported_tokens: vec ImportedToken;
+};
+
+type SetImportedTokensResponse =
+    variant {
+        Ok;
+        AccountNotFound;
+    };
+
+type GetImportedTokensResponse =
+    variant {
+        Ok: ImportedTokens;
+        AccountNotFound;
+    };
+
 service: (opt Config) -> {
     get_account: () -> (GetAccountResponse) query;
     add_account: () -> (AccountIdentifier);
@@ -216,4 +237,7 @@ service: (opt Config) -> {
 
     // Methods available in the test build only:
     get_toy_account: (nat64) -> (GetAccountResponse) query;
+  
+    set_imported_tokens: (ImportedTokens) -> (SetImportedTokensResponse);
+    get_imported_tokens: () -> (GetImportedTokensResponse) query;
 }
