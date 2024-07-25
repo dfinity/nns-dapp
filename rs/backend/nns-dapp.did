@@ -227,6 +227,8 @@ service: (opt Config) -> {
     attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
     rename_canister: (RenameCanisterRequest) -> (RenameCanisterResponse);
     detach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
+    set_imported_tokens: (ImportedTokens) -> (SetImportedTokensResponse);
+    get_imported_tokens: () -> (GetImportedTokensResponse) query;
     get_proposal_payload: (nat64) -> (GetProposalPayloadResponse);
     get_stats: () -> (Stats) query;
     get_histogram: () -> (Histogram) query;
@@ -240,7 +242,4 @@ service: (opt Config) -> {
 
     // Methods available in the test build only:
     get_toy_account: (nat64) -> (GetAccountResponse) query;
-  
-    set_imported_tokens: (ImportedTokens) -> (SetImportedTokensResponse);
-    get_imported_tokens: () -> (GetImportedTokensResponse) query;
 }
