@@ -847,7 +847,7 @@
     "get_exchange_rate": "Error getting the exchange rate of ICP to Cycles."
   },
   "error__imported_tokens": {
-    "too_many": "The limit of imported tokens that can be added has been reached (max. $limit)."
+    "too_many": "You can't import more than $limit tokens."
   },
   "error__sns": {
     "undefined_project": "The requested project is invalid or throws an error.",
