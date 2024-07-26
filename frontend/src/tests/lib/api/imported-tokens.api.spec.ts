@@ -4,7 +4,7 @@ import {
 } from "$lib/api/imported-tokens.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { mockImportedToken } from "$tests/mocks/icp-accounts.store.mock";
+import { mockImportedToken } from "$tests/mocks/icrc-accounts.mock";
 import { mock } from "vitest-mock-extended";
 
 describe("imported-tokens-api", () => {

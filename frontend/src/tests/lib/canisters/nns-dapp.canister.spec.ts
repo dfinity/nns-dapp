@@ -25,9 +25,9 @@ import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanister, mockCanisters } from "$tests/mocks/canisters.mock";
 import {
   mockAccountDetails,
-  mockImportedToken,
   mockSubAccountDetails,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { mockImportedToken } from "$tests/mocks/icrc-accounts.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";
