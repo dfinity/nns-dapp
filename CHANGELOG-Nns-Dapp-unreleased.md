@@ -22,6 +22,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Replace the nervous system left navigation on the staking tab with a new table.
+
 #### Deprecated
 
 #### Removed
