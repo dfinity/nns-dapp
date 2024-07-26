@@ -85,7 +85,7 @@ test("Test neuron increase stake", async ({ page, context }) => {
     amount: increase2,
   });
 
-  await appPo.goBack({ waitAbsent: false });
+  await appPo.goBack();
   await appPo.getAccountsPo().waitFor();
   await appPo.goBack();
   await appPo.goToNeuronDetails(neuronId);

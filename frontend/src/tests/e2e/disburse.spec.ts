@@ -48,6 +48,8 @@ test("Test disburse neuron", async ({ page, context }) => {
 
   step("Disburse the neuron");
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().disburseNeuron();
+  // After disburing, the app navigatings to the neurons table.
+  await appPo.getNeuronDetailPo().waitForAbsent();
 
   step("Check account balance after disburse");
   await appPo.goToAccounts();
