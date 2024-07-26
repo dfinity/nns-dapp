@@ -19,6 +19,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Make the WASM accessible via beta subdomains so we can deploy early versions there.
 * Enable warning dialog on beta deployment.
 * Back-end support for storing imported tokens.
+* Display transfer time for ICP and ICRC1 transactions in the `toastsSuccess` for transfers. 
 
 #### Changed
 

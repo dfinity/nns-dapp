@@ -38,11 +38,15 @@ export const sendICP = async ({
   memo?: bigint;
   createdAt?: bigint;
   fee: bigint;
-}): Promise<BlockHeight> => {
+}): Promise<{
+  blockHeight: BlockHeight;
+  transferDurationMilliSeconds: number;
+}> => {
   logWithTimestamp(`Sending icp call...`);
   const { canister } = await ledgerCanister({ identity });
 
-  const response = await canister.transfer({
+  const start = Date.now();
+  const blockHeight = await canister.transfer({
     to: AccountIdentifier.fromHex(to),
     amount,
     fromSubAccount,
@@ -50,8 +54,13 @@ export const sendICP = async ({
     createdAt: createdAt ?? nowInBigIntNanoSeconds(),
     fee,
   });
+  const end = Date.now();
+  const transferDurationMilliSeconds = end - start;
   logWithTimestamp(`Sending icp complete.`);
-  return response;
+  return {
+    blockHeight,
+    transferDurationMilliSeconds,
+  };
 };
 
 // WARNING: When using the ICRC-1 interface of the ICP ledger canister, there is
@@ -86,11 +95,15 @@ export const sendIcpIcrc1 = async ({
   icrc1Memo?: Uint8Array;
   fromSubAccount?: Uint8Array;
   createdAt?: bigint;
-}): Promise<BlockHeight> => {
+}): Promise<{
+  blockHeight: BlockHeight;
+  transferDurationMilliSeconds: number;
+}> => {
   logWithTimestamp(`Sending ICRC-1 icp call...`);
   const { canister } = await ledgerCanister({ identity });
 
-  const response = await canister.icrc1Transfer({
+  const start = Date.now();
+  const blockHeight = await canister.icrc1Transfer({
     to: {
       owner: to.owner,
       subaccount: toNullable(to.subaccount),
@@ -101,8 +114,13 @@ export const sendIcpIcrc1 = async ({
     icrc1Memo,
     createdAt: createdAt ?? nowInBigIntNanoSeconds(),
   });
+  const end = Date.now();
+  const transferDurationMilliSeconds = end - start;
   logWithTimestamp(`Sending ICRC-1 icp complete.`);
-  return response;
+  return {
+    blockHeight,
+    transferDurationMilliSeconds,
+  };
 };
 
 /**

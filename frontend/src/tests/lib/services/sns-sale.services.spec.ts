@@ -180,7 +180,10 @@ describe("sns-api", () => {
 
     setUpMockSnsProjectStore({ rootCanisterId: testSnsTicket.rootCanisterId });
 
-    spyOnSendICP.mockResolvedValue(13n);
+    spyOnSendICP.mockResolvedValue({
+      blockHeight: 13n,
+      transferDurationMilliSeconds: 2500,
+    });
 
     tokensStore.setToken({
       canisterId: rootCanisterIdMock,
@@ -1268,7 +1271,10 @@ describe("sns-api", () => {
           new TxCreatedInFutureError("Created in future error")
         )
         .mockRejectedValueOnce(new Error("Connection error"))
-        .mockResolvedValue(13n);
+        .mockResolvedValue({
+          blockHeight: 13n,
+          transferDurationMilliSeconds: 2500,
+        });
 
       participateInSnsSale({
         rootCanisterId: testRootCanisterId,

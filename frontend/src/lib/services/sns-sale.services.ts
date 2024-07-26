@@ -658,7 +658,7 @@ const pollTransfer = ({
         createdAt,
         memo,
         fee,
-      }),
+      }).then(({ blockHeight }) => blockHeight),
     // Should still just retry in case of TxCreatedInFutureError
     // (this error should be gone in a couple of seconds)
     shouldExit: (err: unknown) =>

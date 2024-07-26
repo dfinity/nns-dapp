@@ -43,21 +43,30 @@
       }),
     });
 
-    const { success } = await transferICP({
+    const transfer_result = await transferICP({
       sourceAccount,
       destinationAddress,
       amount,
     });
 
-    if (success) {
-      toastsSuccess({ labelKey: "accounts.transaction_success" });
+    if (transfer_result.success) {
+      const transferDurationMilliSeconds =
+        transfer_result.transferDurationMilliSeconds;
+      const transferDurationSeconds = transferDurationMilliSeconds / 1000;
+
+      toastsSuccess({
+        labelKey: "accounts.transaction_success",
+        substitutions: {
+          $transferDurationSeconds: transferDurationSeconds.toFixed(2),
+        },
+      });
     }
 
     stopBusy("accounts");
 
     // We close the modal in case of success or error if the selected source is not a hardware wallet.
     // In case of hardware wallet, the error messages might contain interesting information for the user such as "your device is idle"
-    if (success || !isAccountHardwareWallet(sourceAccount)) {
+    if (transfer_result.success || !isAccountHardwareWallet(sourceAccount)) {
       dispatcher("nnsClose");
     }
   };

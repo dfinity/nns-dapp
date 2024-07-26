@@ -268,11 +268,23 @@ export const addSubAccount = async ({
   }
 };
 
+type SuccessfulTransfer = {
+  transferDurationMilliSeconds: number;
+  success: true;
+};
+
+type FailedTransfer = {
+  err?: string;
+  success: false;
+};
+
+type TransferResult = SuccessfulTransfer | FailedTransfer;
+
 export const transferICP = async ({
   sourceAccount,
   destinationAddress: to,
   amount,
-}: NewTransaction): Promise<{ success: boolean; err?: string }> => {
+}: NewTransaction): Promise<TransferResult> => {
   try {
     const { identifier, subAccount } = sourceAccount;
 
@@ -293,7 +305,7 @@ export const transferICP = async ({
 
     const feeE8s = get(mainTransactionFeeE8sStore);
 
-    await (validIcrcAddress
+    const { transferDurationMilliSeconds } = await (validIcrcAddress
       ? sendIcpIcrc1({
           identity,
           to: decodeIcrcAccount(to),
@@ -323,7 +335,7 @@ export const transferICP = async ({
         : Promise.resolve(),
     ]);
 
-    return { success: true };
+    return { success: true, transferDurationMilliSeconds };
   } catch (err) {
     return transferError({ labelKey: "error.transaction_error", err });
   }
@@ -335,7 +347,7 @@ const transferError = ({
 }: {
   labelKey: string;
   err?: unknown;
-}): { success: boolean; err?: string } => {
+}): { success: false; err?: string } => {
   toastsError(
     toToastError({
       err,

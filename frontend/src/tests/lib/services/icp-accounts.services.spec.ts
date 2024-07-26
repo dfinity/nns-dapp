@@ -557,7 +557,10 @@ describe("icp-accounts.services", () => {
       queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      spySendICP = vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(20n);
+      spySendICP = vi.spyOn(ledgerApi, "sendICP").mockResolvedValue({
+        blockHeight: 20n,
+        transferDurationMilliSeconds: 2500,
+      });
     });
 
     it("should transfer ICP", async () => {
@@ -581,7 +584,10 @@ describe("icp-accounts.services", () => {
     });
 
     it("should transfer ICP using an Icrc destination address", async () => {
-      const spy = vi.spyOn(ledgerApi, "sendIcpIcrc1").mockResolvedValue(1n);
+      const spy = vi.spyOn(ledgerApi, "sendIcpIcrc1").mockResolvedValue({
+        blockHeight: 1n,
+        transferDurationMilliSeconds: 2500,
+      });
 
       await transferICP({
         ...transferICPParams,

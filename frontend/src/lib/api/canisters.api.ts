@@ -242,7 +242,7 @@ export const createCanister = async ({
 
   const createdAt = nowInBigIntNanoSeconds();
   // Transfer the funds
-  const blockHeight = await sendICP({
+  const { blockHeight } = await sendICP({
     memo: CREATE_CANISTER_MEMO,
     identity,
     to: recipient.toHex(),
@@ -333,7 +333,7 @@ export const topUpCanister = async ({
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
   const createdAt = nowInBigIntNanoSeconds();
-  const blockHeight = await sendICP({
+  const { blockHeight } = await sendICP({
     memo: TOP_UP_CANISTER_MEMO,
     identity,
     amount,

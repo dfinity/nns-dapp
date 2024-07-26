@@ -68,7 +68,10 @@ describe("Accounts", () => {
       balanceIcrcToken
     );
     vi.spyOn(accountsApi, "createSubAccount").mockResolvedValue(undefined);
-    vi.spyOn(icpLedgerApi, "sendICP").mockResolvedValue(1234n);
+    vi.spyOn(icpLedgerApi, "sendICP").mockResolvedValue({
+      blockHeight: 1234n,
+      transferDurationMilliSeconds: 2500,
+    });
     vi.spyOn(icpLedgerApi, "queryAccountBalance").mockImplementation(
       async ({ icpAccountIdentifier }) => {
         if (icpAccountIdentifier === mockMainAccount.identifier) {

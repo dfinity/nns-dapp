@@ -374,7 +374,10 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           icp_accepted_participation_e8s: testTicket.amount_icp_e8s,
           icp_ledger_account_balance_e8s: testTicket.amount_icp_e8s,
         });
-        vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(10n);
+        vi.spyOn(ledgerApi, "sendICP").mockResolvedValue({
+          blockHeight: 10n,
+          transferDurationMilliSeconds: 2500,
+        });
         vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
           1_000_000_000n
         );
