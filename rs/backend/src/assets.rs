@@ -393,6 +393,7 @@ pub fn init_assets() {
 /// - If the decompression fails or the tarball cannot be parsed.
 #[allow(clippy::needless_pass_by_value)]
 pub fn insert_tar_xz(compressed: Vec<u8>) {
+    ic_cdk:: println!("add_assets_tar_xz in over after insert_tar_xz");
     println!("Inserting assets...");
     let mut num_assets = 0;
     let mut decompressed = Vec::new();

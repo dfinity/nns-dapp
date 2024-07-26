@@ -389,14 +389,19 @@ pub fn add_stable_asset() {
 /// - Permission to upload may be denied; see `may_upload()` for details.
 #[export_name = "canister_update add_assets_tar_xz"]
 pub fn add_assets_tar_xz() {
+    ic_cdk::println!("add_assets_tar_xz before over");
     over(candid_one, |asset_bytes: Vec<u8>| {
+        ic_cdk::println!("add_assets_tar_xz in over");
         let caller = ic_cdk::caller();
         let is_controller = ic_cdk::api::is_controller(&caller);
         assets::upload::may_upload(&caller, is_controller)
             .map_err(|e| format!("Permission to upload denied: {e}"))
             .unwrap();
+        ic_cdk::println!("add_assets_tar_xz in over before insert_tar_xz");
         insert_tar_xz(asset_bytes);
+        ic_cdk::println!("add_assets_tar_xz in over after insert_tar_xz");
     });
+    ic_cdk::println!("add_assets_tar_xz after over");
 }
 
 /// Generates a lot of toy accounts for testing.

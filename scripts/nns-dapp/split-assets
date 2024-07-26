@@ -22,6 +22,19 @@ clap.define short=o long=out desc="The output directory; a subdirectory 'chunks'
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
+# we need GNU tar so we check early
+if tar --help | grep GNU >/dev/null; then
+  echo "found GNU tar as tar"
+  tar="tar"
+elif command -v gtar >/dev/null; then
+  echo "found GNU tar as gtar"
+  tar="gtar"
+else
+  echo "did not find GNU tar, please install"
+  echo "  brew install gnu-tar"
+  exit 1
+fi
+
 ORIGINAL_ASSETS_TAR_XZ="$(realpath "$ORIGINAL_ASSETS_TAR_XZ")"
 test -d "$OUTPUT_DIR" || {
   echo "ERROR: The output directory should exist: '$OUTPUT_DIR'"
@@ -37,7 +50,7 @@ WORKDIR="$(mktemp -d)"
   cd "$WORKDIR"
   mkdir assets
   cd assets
-  tar -Jxf "$ORIGINAL_ASSETS_TAR_XZ"
+  "$tar" -Jxf "$ORIGINAL_ASSETS_TAR_XZ"
 )
 
 # Prints paths of assets in the tarball
@@ -82,7 +95,7 @@ FILES_PER_CHUNK="$(
   cd assets
   list_manifests | while read -r chunk_manifest; do
     chunk_name="$WORKDIR/chunks/assets.$(basename "$chunk_manifest").tar.xz"
-    tar cJ \
+    "$tar" cJ \
       --mtime='2021-05-07 17:00Z' \
       --sort=name \
       --owner=0 \
