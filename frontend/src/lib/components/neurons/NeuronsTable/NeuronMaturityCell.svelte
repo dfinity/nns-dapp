@@ -5,7 +5,7 @@
   export let rowData: TableNeuron;
 </script>
 
-<div data-tid="neuron-maturity-cell-component" class="container">
+<div data-tid="neuron-maturity-cell-component">
   <MaturityWithTooltip
     availableMaturity={rowData.availableMaturity}
     stakedMaturity={rowData.stakedMaturity}
