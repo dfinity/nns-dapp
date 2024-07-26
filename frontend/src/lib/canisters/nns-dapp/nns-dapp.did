@@ -187,12 +187,11 @@ service : {
     attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
     rename_canister: (RenameCanisterRequest) -> (RenameCanisterResponse);
     detach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
+    set_imported_tokens: (ImportedTokens) -> (SetImportedTokensResponse);
+    get_imported_tokens: () -> (GetImportedTokensResponse) query;
     get_proposal_payload: (nat64) -> (GetProposalPayloadResponse);
     get_stats: () -> (Stats) query;
 
     http_request: (request: HttpRequest) -> (HttpResponse) query;
     add_stable_asset: (asset: blob) -> ();
-
-    set_imported_tokens: (ImportedTokens) -> (SetImportedTokensResponse);
-    get_imported_tokens: () -> (GetImportedTokensResponse) query;
 }
