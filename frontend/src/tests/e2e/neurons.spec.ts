@@ -51,8 +51,6 @@ test("Test neuron voting", async ({ page, context }) => {
 
   // vp=stake*2 when max dissolve delay (https://support.dfinity.org/hc/en-us/articles/4404284534420-What-is-voting-power-)
   expect(neuronAVotingPower).toBe(stake * 2);
-  // back to neurons otherwise the menu is not available
-  await appPo.goBack();
 
   step("Open proposals list");
   await appPo.goToProposals();

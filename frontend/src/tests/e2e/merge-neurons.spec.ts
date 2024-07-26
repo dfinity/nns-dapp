@@ -60,8 +60,6 @@ test("Test merge neurons", async ({ page, context }) => {
     .getNeuronDetailPo()
     .getNnsNeuronDetailPo()
     .increaseStake({ amount: finalStake1 - initialStake1 });
-  // Go back to make the menu button visible again.
-  await appPo.goBack();
 
   step("Merge neurons");
   await appPo.goToNeurons();
