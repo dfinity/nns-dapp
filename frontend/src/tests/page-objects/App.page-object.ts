@@ -14,6 +14,7 @@ import { ProposalDetailPo } from "$tests/page-objects/ProposalDetail.page-object
 import { ProposalsPo } from "$tests/page-objects/Proposals.page-object";
 import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.page-object";
 import { SignInPo } from "$tests/page-objects/SignIn.page-object";
+import { StakingPo } from "$tests/page-objects/Staking.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { isNullish } from "@dfinity/utils";
@@ -44,6 +45,10 @@ export class AppPo extends BasePageObject {
 
   getWalletPo(): WalletPo {
     return WalletPo.under(this.root);
+  }
+
+  getStakingPo(): StakingPo {
+    return StakingPo.under(this.root);
   }
 
   getNeuronsPo(): NeuronsPo {
@@ -140,17 +145,26 @@ export class AppPo extends BasePageObject {
     ).click();
   }
 
-  async goToNeurons(): Promise<void> {
+  async goToStaking(): Promise<void> {
     await this.goBackAllTheWay();
     await this.openMenu();
     await this.getMenuItemsPo().clickNeuronStaking();
     // Menu closes automatically.
     await this.getBackdropPo().waitForAbsent();
+    await this.getStakingPo().waitFor();
+  }
+
+  async goNnsToNeurons(): Promise<void> {
+    await this.goToStaking();
+    const nnsRow = await this.getStakingPo()
+      .getProjectsTablePo()
+      .getRowByTitle("Internet Computer");
+    await nnsRow.click();
     await this.getNeuronsPo().waitForContentLoaded();
   }
 
   async goToNeuronDetails(neuronId: string): Promise<void> {
-    await this.goToNeurons();
+    await this.goToNnsNeurons();
     await (
       await this.getNeuronsPo()
         .getNnsNeuronsPo()
@@ -206,6 +220,7 @@ export class AppPo extends BasePageObject {
     const views = [
       this.getAccountsPo(),
       this.getWalletPo(),
+      this.getNeuronsPo(),
       this.getNeuronDetailPo(),
       this.getProposalDetailPo(),
       this.getProjectDetailPo(),

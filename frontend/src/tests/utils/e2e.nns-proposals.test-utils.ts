@@ -16,7 +16,7 @@ export const createDummyProposal = async (appPo: AppPo): Promise<string> => {
     step(`Create a dummy proposal > ${message}`);
 
   await localStep("Goto neurons tab");
-  await appPo.goToNeurons();
+  await appPo.goToNnsNeurons();
   await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
 
   await localStep("Stake a neuron to create dummy proposals");
