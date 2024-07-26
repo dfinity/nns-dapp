@@ -12,12 +12,12 @@ import { expect, test } from "@playwright/test";
 
 test("Test proposals", async ({ page, context }) => {
   await page.goto("/");
+  await expect(page).toHaveTitle("Tokens / NNS Dapp");
   await setFeatureFlag({
     page,
     featureFlag: "ENABLE_PROJECTS_TABLE",
     value: true,
   });
-  await expect(page).toHaveTitle("Tokens / NNS Dapp");
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
