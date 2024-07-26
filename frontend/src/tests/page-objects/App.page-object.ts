@@ -229,6 +229,9 @@ export class AppPo extends BasePageObject {
     currentView.waitForAbsent();
   }
 
+  // Can be called regardless of whether a back button is present.
+  // The back button will be called as long as there is a back button, until the
+  // menu button appears.
   async goBackAllTheWay(): Promise<void> {
     for (;;) {
       const currentView = await this.getCurrentViewWithBackButtonPo();
