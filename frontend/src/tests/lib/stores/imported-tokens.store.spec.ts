@@ -13,7 +13,7 @@ describe("imported-tokens-store", () => {
     };
     const importedTokenB: ImportedTokenData = {
       ledgerCanisterId: principal(2),
-      indexCanisterId: principal(3),
+      indexCanisterId: undefined,
     };
 
     it("should set imported tokens", () => {
