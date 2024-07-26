@@ -20,8 +20,11 @@ describe("imported-tokens-api", () => {
 
   describe("getImportedTokens", () => {
     it("should call the nns dapp canister to get the imported tokens", async () => {
+      mockNNSDappCanister.getImportedTokens.mockResolvedValue({
+        imported_tokens: [mockImportedToken],
+      });
       expect(mockNNSDappCanister.getImportedTokens).not.toBeCalled();
-      await getImportedTokens({
+      const result = await getImportedTokens({
         identity: mockIdentity,
         certified: true,
       });
@@ -29,6 +32,9 @@ describe("imported-tokens-api", () => {
       expect(mockNNSDappCanister.getImportedTokens).toBeCalledTimes(1);
       expect(mockNNSDappCanister.getImportedTokens).toBeCalledWith({
         certified: true,
+      });
+      expect(result).toEqual({
+        imported_tokens: [mockImportedToken],
       });
     });
   });
