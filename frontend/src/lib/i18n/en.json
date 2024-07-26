@@ -846,6 +846,9 @@
     "unknown_unlink": "Error unlinking canister.",
     "get_exchange_rate": "Error getting the exchange rate of ICP to Cycles."
   },
+  "error__imported_tokens": {
+    "too_many": "You can't import more than $limit tokens."
+  },
   "error__sns": {
     "undefined_project": "The requested project is invalid or throws an error.",
     "list_summaries": "There was an unexpected error while loading the summaries of all deployed projects.",

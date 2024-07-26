@@ -886,6 +886,10 @@ interface I18nError__canister {
   get_exchange_rate: string;
 }
 
+interface I18nError__imported_tokens {
+  too_many: string;
+}
+
 interface I18nError__sns {
   undefined_project: string;
   list_summaries: string;
@@ -1356,6 +1360,7 @@ interface I18n {
   error__attach_wallet: I18nError__attach_wallet;
   error__account: I18nError__account;
   error__canister: I18nError__canister;
+  error__imported_tokens: I18nError__imported_tokens;
   error__sns: I18nError__sns;
   auth_accounts: I18nAuth_accounts;
   auth_neurons: I18nAuth_neurons;
