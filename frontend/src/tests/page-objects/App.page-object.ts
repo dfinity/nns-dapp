@@ -154,7 +154,7 @@ export class AppPo extends BasePageObject {
     await this.getStakingPo().waitFor();
   }
 
-  async goNnsToNeurons(): Promise<void> {
+  async goToNnsNeurons(): Promise<void> {
     await this.goToStaking();
     const nnsRow = await this.getStakingPo()
       .getProjectsTablePo()
