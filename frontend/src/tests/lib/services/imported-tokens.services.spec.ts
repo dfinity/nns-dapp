@@ -163,6 +163,27 @@ describe("imported-tokens-services", () => {
       });
     });
 
+    it("should display success toast", async () => {
+      const spyToastSuccsess = vi.spyOn(toastsStore, "toastsSuccess");
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
+        undefined
+      );
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
+        imported_tokens: [importedTokenA, importedTokenB],
+      });
+      expect(spyToastSuccsess).not.toBeCalled();
+
+      await addImportedToken({
+        tokenToAdd: importedTokenDataB,
+        importedTokens: [importedTokenDataA],
+      });
+
+      expect(spyToastSuccsess).toBeCalledTimes(1);
+      expect(spyToastSuccsess).toBeCalledWith({
+        labelKey: "tokens.add_imported_token_success",
+      });
+    });
+
     it("should display toast on error", async () => {
       const spyToastError = vi.spyOn(toastsStore, "toastsError");
       vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
