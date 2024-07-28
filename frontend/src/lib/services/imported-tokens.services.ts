@@ -45,21 +45,16 @@ export const loadImportedTokens = async () => {
   });
 };
 
-export const addImportedToken = async ({
-  tokenToAdd,
+const saveImportedToken = async ({
   tokens,
 }: {
-  tokenToAdd: ImportedTokenData;
   tokens: ImportedTokenData[];
-}) => {
-  // TODO: validate importedToken (not sns, not ck, is unique, etc.)
-
+}): Promise<{ success: boolean }> => {
   try {
     const identity = await getAuthenticatedIdentity();
-    const importedTokens = [...tokens, tokenToAdd].map(fromImportedTokenData);
+    const importedTokens = tokens.map(fromImportedTokenData);
 
     await setImportedTokens({ identity, importedTokens });
-    await loadImportedTokens();
 
     toastsSuccess({
       labelKey: "tokens.add_imported_token_success",
@@ -82,3 +77,27 @@ export const addImportedToken = async ({
 
   return { success: true };
 };
+
+export const addImportedToken = async ({
+  tokenToAdd,
+  importedTokens,
+}: {
+  tokenToAdd: ImportedTokenData;
+  importedTokens: ImportedTokenData[];
+}): Promise<{ success: boolean }> => {
+  // TODO: validate importedToken (not sns, not ck, is unique, etc.)
+
+  const tokens = [...importedTokens, tokenToAdd];
+  const { success } = await saveImportedToken({ tokens });
+
+  if (success) {
+    await loadImportedTokens();
+
+    toastsSuccess({
+      labelKey: "tokens.add_imported_token_success",
+    });
+  }
+
+  return { success };
+};
+

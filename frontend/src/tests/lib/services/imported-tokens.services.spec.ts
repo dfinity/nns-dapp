@@ -121,7 +121,7 @@ describe("imported-tokens-services", () => {
 
       const { success } = await addImportedToken({
         tokenToAdd: importedTokenDataB,
-        tokens: [importedTokenDataA],
+        importedTokens: [importedTokenDataA],
       });
 
       expect(success).toEqual(true);
@@ -153,7 +153,7 @@ describe("imported-tokens-services", () => {
 
       await addImportedToken({
         tokenToAdd: importedTokenDataB,
-        tokens: [importedTokenDataA],
+        importedTokens: [importedTokenDataA],
       });
 
       expect(spyGetImportedTokens).toBeCalledTimes(2);
@@ -172,7 +172,7 @@ describe("imported-tokens-services", () => {
 
       const { success } = await addImportedToken({
         tokenToAdd: importedTokenDataB,
-        tokens: [importedTokenDataA],
+        importedTokens: [importedTokenDataA],
       });
 
       expect(success).toEqual(false);
@@ -192,7 +192,7 @@ describe("imported-tokens-services", () => {
 
       const { success } = await addImportedToken({
         tokenToAdd: importedTokenDataB,
-        tokens: [importedTokenDataA],
+        importedTokens: [importedTokenDataA],
       });
 
       expect(success).toEqual(false);
