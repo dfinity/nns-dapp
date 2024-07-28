@@ -37,17 +37,21 @@ export const loadImportedTokens = async () => {
       importedTokensStore.reset();
 
       toastsError({
-        labelKey: "error.load_imported_tokens",
+        labelKey: "error__imported_tokens.load_imported_tokens",
+        err,
       });
     },
     logMessage: "Get Imported Tokens",
   });
 };
 
-export const addImportedToken = async (
-  tokenToAdd: ImportedTokenData,
-  tokens: ImportedTokenData[]
-) => {
+export const addImportedToken = async ({
+  tokenToAdd,
+  tokens,
+}: {
+  tokenToAdd: ImportedTokenData;
+  tokens: ImportedTokenData[];
+}) => {
   // TODO: validate importedToken (not sns, not ck, is unique, etc.)
 
   try {
@@ -63,12 +67,12 @@ export const addImportedToken = async (
   } catch (err: unknown) {
     if (err instanceof TooManyImportedTokensError) {
       toastsError({
-        labelKey: "error__ckbtc.too_many",
+        labelKey: "error__imported_tokens.too_many",
         substitutions: { $limit: `${MAX_IMPORTED_TOKENS}` },
       });
     } else {
       toastsError({
-        labelKey: "error.add_imported_token",
+        labelKey: "error__imported_tokens.add_imported_token",
         err,
       });
     }

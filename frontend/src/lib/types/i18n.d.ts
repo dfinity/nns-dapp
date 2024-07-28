@@ -887,9 +887,9 @@ interface I18nError__canister {
 }
 
 interface I18nError__imported_tokens {
-  too_many: string;
   load_imported_tokens: string;
-  add_imported_token: string;
+  add_imported_token_success: string;
+  too_many: string;
 }
 
 interface I18nError__sns {
@@ -1097,7 +1097,6 @@ interface I18nTokens {
   zero_balance_hidden: string;
   show_all: string;
   import_token: string;
-  add_imported_token_success: string;
 }
 
 interface I18nNeuron_state {
