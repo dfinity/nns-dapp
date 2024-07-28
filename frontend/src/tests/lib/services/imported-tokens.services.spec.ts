@@ -1,6 +1,10 @@
 import * as importedTokensApi from "$lib/api/imported-tokens.api";
+import { TooManyImportedTokensError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { ImportedToken } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { loadImportedTokens } from "$lib/services/imported-tokens.services";
+import {
+  addImportedToken,
+  loadImportedTokens,
+} from "$lib/services/imported-tokens.services";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
@@ -104,6 +108,98 @@ describe("imported-tokens-services", () => {
       expect(get(importedTokensStore)).toEqual({
         importedTokens: undefined,
         certified: undefined,
+      });
+    });
+  });
+
+  describe("addImportedToken", () => {
+    it("should call setImportedTokens with updated token list", async () => {
+      const spySetImportedTokens = vi
+        .spyOn(importedTokensApi, "setImportedTokens")
+        .mockResolvedValue(undefined);
+      expect(spySetImportedTokens).toBeCalledTimes(0);
+
+      const { success } = await addImportedToken({
+        tokenToAdd: importedTokenDataB,
+        tokens: [importedTokenDataA],
+      });
+
+      expect(success).toEqual(true);
+      expect(spySetImportedTokens).toBeCalledTimes(1);
+      expect(spySetImportedTokens).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        importedTokens: [importedTokenA, importedTokenB],
+      });
+    });
+
+    it("should update the store", async () => {
+      const spyGetImportedTokens = vi
+        .spyOn(importedTokensApi, "getImportedTokens")
+        .mockResolvedValue({
+          imported_tokens: [importedTokenA, importedTokenB],
+        });
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue(
+        undefined
+      );
+      importedTokensStore.set({
+        importedTokens: [importedTokenDataA],
+        certified: true,
+      });
+      expect(spyGetImportedTokens).toBeCalledTimes(0);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: [importedTokenDataA],
+        certified: true,
+      });
+
+      await addImportedToken({
+        tokenToAdd: importedTokenDataB,
+        tokens: [importedTokenDataA],
+      });
+
+      expect(spyGetImportedTokens).toBeCalledTimes(2);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+        certified: true,
+      });
+    });
+
+    it("should display toast on error", async () => {
+      const spyToastError = vi.spyOn(toastsStore, "toastsError");
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
+        testError
+      );
+      expect(spyToastError).not.toBeCalled();
+
+      const { success } = await addImportedToken({
+        tokenToAdd: importedTokenDataB,
+        tokens: [importedTokenDataA],
+      });
+
+      expect(success).toEqual(false);
+      expect(spyToastError).toBeCalledTimes(1);
+      expect(spyToastError).toBeCalledWith({
+        labelKey: "error__imported_tokens.add_imported_token",
+        err: testError,
+      });
+    });
+
+    it("should handle too many tokens errors", async () => {
+      const spyToastError = vi.spyOn(toastsStore, "toastsError");
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
+        new TooManyImportedTokensError("too many tokens")
+      );
+      expect(spyToastError).not.toBeCalled();
+
+      const { success } = await addImportedToken({
+        tokenToAdd: importedTokenDataB,
+        tokens: [importedTokenDataA],
+      });
+
+      expect(success).toEqual(false);
+      expect(spyToastError).toBeCalledTimes(1);
+      expect(spyToastError).toBeCalledWith({
+        labelKey: "error__imported_tokens.too_many",
+        substitutions: { $limit: "20" },
       });
     });
   });
