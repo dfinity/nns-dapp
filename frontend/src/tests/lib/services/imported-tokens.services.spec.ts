@@ -4,6 +4,7 @@ import type { ImportedToken } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import {
   addImportedToken,
   loadImportedTokens,
+  removeImportedToken,
 } from "$lib/services/imported-tokens.services";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import * as toastsStore from "$lib/stores/toasts.store";
@@ -221,6 +222,99 @@ describe("imported-tokens-services", () => {
       expect(spyToastError).toBeCalledWith({
         labelKey: "error__imported_tokens.too_many",
         substitutions: { $limit: "20" },
+      });
+    });
+  });
+
+  describe("removeImportedToken", () => {
+    it("should call setImportedTokens with updated token list", async () => {
+      const spySetImportedTokens = vi
+        .spyOn(importedTokensApi, "setImportedTokens")
+        .mockResolvedValue(undefined);
+      expect(spySetImportedTokens).toBeCalledTimes(0);
+
+      const { success } = await removeImportedToken({
+        tokenToRemove: importedTokenDataA,
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+      });
+
+      expect(success).toEqual(true);
+      expect(spySetImportedTokens).toBeCalledTimes(1);
+      expect(spySetImportedTokens).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        importedTokens: [importedTokenB],
+      });
+    });
+
+    it("should update the store", async () => {
+      const spyGetImportedTokens = vi
+        .spyOn(importedTokensApi, "getImportedTokens")
+        .mockResolvedValue({
+          imported_tokens: [importedTokenB],
+        });
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue(
+        undefined
+      );
+      importedTokensStore.set({
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+        certified: true,
+      });
+      expect(spyGetImportedTokens).toBeCalledTimes(0);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+        certified: true,
+      });
+
+      await removeImportedToken({
+        tokenToRemove: importedTokenDataA,
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+      });
+
+      expect(spyGetImportedTokens).toBeCalledTimes(2);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: [importedTokenDataB],
+        certified: true,
+      });
+    });
+
+    it("should display success toast", async () => {
+      const spyToastSuccsess = vi.spyOn(toastsStore, "toastsSuccess");
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
+        undefined
+      );
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
+        imported_tokens: [importedTokenB],
+      });
+      expect(spyToastSuccsess).not.toBeCalled();
+
+      await removeImportedToken({
+        tokenToRemove: importedTokenDataA,
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+      });
+
+      expect(spyToastSuccsess).toBeCalledTimes(1);
+      expect(spyToastSuccsess).toBeCalledWith({
+        labelKey: "tokens.remove_imported_token_success",
+      });
+    });
+
+    it("should display toast on error", async () => {
+      const spyToastError = vi.spyOn(toastsStore, "toastsError");
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
+        testError
+      );
+      expect(spyToastError).not.toBeCalled();
+
+      const { success } = await removeImportedToken({
+        tokenToRemove: importedTokenDataA,
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+      });
+
+      expect(success).toEqual(false);
+      expect(spyToastError).toBeCalledTimes(1);
+      expect(spyToastError).toBeCalledWith({
+        labelKey: "error__imported_tokens.remove_imported_token",
+        err: testError,
       });
     });
   });
