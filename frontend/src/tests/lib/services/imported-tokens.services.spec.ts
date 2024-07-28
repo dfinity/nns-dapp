@@ -25,6 +25,7 @@ describe("imported-tokens-services", () => {
     ledgerCanisterId: principal(2),
     indexCanisterId: undefined,
   };
+  const testError = new Error("test");
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -69,7 +70,7 @@ describe("imported-tokens-services", () => {
       const spyToastError = vi.spyOn(toastsStore, "toastsError");
       const spyGetImportedTokens = vi
         .spyOn(importedTokensApi, "getImportedTokens")
-        .mockRejectedValue(new Error("test"));
+        .mockRejectedValue(testError);
 
       expect(spyGetImportedTokens).toBeCalledTimes(0);
       expect(spyToastError).not.toBeCalled();
@@ -78,14 +79,15 @@ describe("imported-tokens-services", () => {
 
       expect(spyToastError).toBeCalledTimes(1);
       expect(spyToastError).toBeCalledWith({
-        labelKey: "error.load_imported_tokens",
+        labelKey: "error__imported_tokens.load_imported_tokens",
+        err: testError,
       });
     });
 
     it("should reset store on error", async () => {
-      const spyGetImportedTokens = vi
-        .spyOn(importedTokensApi, "getImportedTokens")
-        .mockRejectedValue(new Error("test"));
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockRejectedValue(
+        testError
+      );
 
       importedTokensStore.set({
         importedTokens: [importedTokenDataA],
