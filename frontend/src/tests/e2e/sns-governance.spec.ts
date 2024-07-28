@@ -1,11 +1,20 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  setFeatureFlag,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test SNS governance", async ({ page, context }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("Tokens / NNS Dapp");
+  await setFeatureFlag({
+    page,
+    featureFlag: "ENABLE_PROJECTS_TABLE",
+    value: true,
+  });
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
@@ -35,10 +44,13 @@ test("Test SNS governance", async ({ page, context }) => {
   expect(await snsUniverseRow.getBalanceNumber()).toEqual(askedAmount);
 
   step("Stake a neuron");
-  await appPo.goToNeurons();
+  await appPo.goToStaking();
 
-  await appPo.openUniverses();
-  await appPo.getSelectUniverseListPo().clickOnUniverse(snsProjectName);
+  const snsRow = await appPo
+    .getStakingPo()
+    .getProjectsTablePo()
+    .getRowByTitle(snsProjectName);
+  await snsRow.click();
 
   await appPo.getNeuronsPo().getSnsNeuronsPo().waitForContentLoaded();
   expect(
