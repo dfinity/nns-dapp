@@ -101,3 +101,26 @@ export const addImportedToken = async ({
   return { success };
 };
 
+export const removeImportedToken = async ({
+  tokenToRemove,
+  importedTokens,
+}: {
+  tokenToRemove: ImportedTokenData;
+  importedTokens: ImportedTokenData[];
+}): Promise<{ success: boolean }> => {
+  const tokens = importedTokens.filter(
+    ({ ledgerCanisterId: id }) =>
+      id.toText() !== tokenToRemove.ledgerCanisterId.toText()
+  );
+  const { success } = await saveImportedToken({ tokens });
+
+  if (success) {
+    await loadImportedTokens();
+
+    toastsSuccess({
+      labelKey: "tokens.remove_imported_token_success",
+    });
+  }
+
+  return { success };
+};
