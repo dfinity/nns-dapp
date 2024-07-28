@@ -18,6 +18,9 @@ import {
 import { isNullish } from "@dfinity/utils";
 import { queryAndUpdate } from "./utils.services";
 
+/** Load imported tokens from the `nns-dapp` backend and update the `importedTokensStore` store.
+ * - Displays an error toast if the operation fails.
+ */
 export const loadImportedTokens = async () => {
   return queryAndUpdate<ImportedTokens, unknown>({
     request: (options) => getImportedTokens(options),
@@ -46,6 +49,8 @@ export const loadImportedTokens = async () => {
   });
 };
 
+// Save imported tokens to the nns-dapp backend.
+// Returns an error if the operation fails.
 const saveImportedToken = async ({
   tokens,
 }: {
@@ -62,6 +67,11 @@ const saveImportedToken = async ({
   return { err: undefined };
 };
 
+/**
+ * Add new imported token and reload imported tokens from the `nns-dapp` backend to update the `importedTokensStore`.
+ *  - Displays a success toast if the operation is successful.
+ *  - Displays an error toast if the operation fails.
+ */
 export const addImportedToken = async ({
   tokenToAdd,
   importedTokens,
@@ -98,6 +108,11 @@ export const addImportedToken = async ({
   return { success: false };
 };
 
+/**
+ * Remove an imported token and reload imported tokens from the `nns-dapp` backend to update the `importedTokensStore`.
+ *  - Displays a success toast if the operation is successful.
+ *  - Displays an error toast if the operation fails.
+ */
 export const removeImportedToken = async ({
   tokenToRemove,
   importedTokens,
