@@ -849,7 +849,7 @@
   "error__imported_tokens": {
     "load_imported_tokens": "There was an unexpected issue while loading imported tokens.",
     "add_imported_token": "There was an unexpected issue while adding new imported token.",
-    "remove_imported_token": "There was an unexpected issue while adding new imported token.",
+    "remove_imported_token": "There was an unexpected issue while removing the imported token.",
     "too_many": "You can't import more than $limit tokens."
   },
   "error__sns": {
