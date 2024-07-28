@@ -15,6 +15,7 @@ import {
   fromImportedTokenData,
   toImportedTokenData,
 } from "$lib/utils/imported-tokens.utils";
+import { isNullish } from "@dfinity/utils";
 import { queryAndUpdate } from "./utils.services";
 
 export const loadImportedTokens = async () => {
@@ -49,33 +50,16 @@ const saveImportedToken = async ({
   tokens,
 }: {
   tokens: ImportedTokenData[];
-}): Promise<{ success: boolean }> => {
+}): Promise<{ err: Error | undefined }> => {
   try {
     const identity = await getAuthenticatedIdentity();
     const importedTokens = tokens.map(fromImportedTokenData);
-
     await setImportedTokens({ identity, importedTokens });
-
-    toastsSuccess({
-      labelKey: "tokens.add_imported_token_success",
-    });
-  } catch (err: unknown) {
-    if (err instanceof TooManyImportedTokensError) {
-      toastsError({
-        labelKey: "error__imported_tokens.too_many",
-        substitutions: { $limit: `${MAX_IMPORTED_TOKENS}` },
-      });
-    } else {
-      toastsError({
-        labelKey: "error__imported_tokens.add_imported_token",
-        err,
-      });
-    }
-
-    return { success: false };
+  } catch (err) {
+    return { err: err as Error };
   }
 
-  return { success: true };
+  return { err: undefined };
 };
 
 export const addImportedToken = async ({
@@ -88,17 +72,30 @@ export const addImportedToken = async ({
   // TODO: validate importedToken (not sns, not ck, is unique, etc.)
 
   const tokens = [...importedTokens, tokenToAdd];
-  const { success } = await saveImportedToken({ tokens });
+  const { err } = await saveImportedToken({ tokens });
 
-  if (success) {
+  if (isNullish(err)) {
     await loadImportedTokens();
-
     toastsSuccess({
       labelKey: "tokens.add_imported_token_success",
     });
+
+    return { success: true };
   }
 
-  return { success };
+  if (err instanceof TooManyImportedTokensError) {
+    toastsError({
+      labelKey: "error__imported_tokens.too_many",
+      substitutions: { $limit: `${MAX_IMPORTED_TOKENS}` },
+    });
+  } else {
+    toastsError({
+      labelKey: "error__imported_tokens.add_imported_token",
+      err,
+    });
+  }
+
+  return { success: false };
 };
 
 export const removeImportedToken = async ({
@@ -108,19 +105,26 @@ export const removeImportedToken = async ({
   tokenToRemove: ImportedTokenData;
   importedTokens: ImportedTokenData[];
 }): Promise<{ success: boolean }> => {
+  // Compare imported tokens by their ledgerCanisterId because they should be unique.
   const tokens = importedTokens.filter(
     ({ ledgerCanisterId: id }) =>
       id.toText() !== tokenToRemove.ledgerCanisterId.toText()
   );
-  const { success } = await saveImportedToken({ tokens });
+  const { err } = await saveImportedToken({ tokens });
 
-  if (success) {
+  if (isNullish(err)) {
     await loadImportedTokens();
-
     toastsSuccess({
       labelKey: "tokens.remove_imported_token_success",
     });
+
+    return { success: true };
   }
 
-  return { success };
+  toastsError({
+    labelKey: "error__imported_tokens.remove_imported_token",
+    err,
+  });
+
+  return { success: false };
 };
