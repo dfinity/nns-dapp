@@ -38,7 +38,6 @@ export const loadImportedTokens = async () => {
 
       toastsError({
         labelKey: "error.load_imported_tokens",
-        err,
       });
     },
     logMessage: "Get Imported Tokens",
