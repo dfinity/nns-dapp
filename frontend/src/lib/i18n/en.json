@@ -847,7 +847,8 @@
     "get_exchange_rate": "Error getting the exchange rate of ICP to Cycles."
   },
   "error__imported_tokens": {
-    "too_many": "You can't import more than $limit tokens."
+    "too_many": "You can't import more than $limit tokens.",
+    "load_imported_tokens": "There was an unexpected issue while loading imported tokens."
   },
   "error__sns": {
     "undefined_project": "The requested project is invalid or throws an error.",
@@ -1034,6 +1035,7 @@
     "hide_zero_balances_toggle_label": "Switch between showing and hiding tokens with a balance of zero",
     "zero_balance_hidden": "Tokens with 0 balances are hidden.",
     "show_all": "Show all",
-    "import_token": "Import Token"
+    "import_token": "Import Token",
+    "add_imported_token_success": "New token has been successfully imported!"
   }
 }
