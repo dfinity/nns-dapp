@@ -18,7 +18,6 @@
 
   const STEP_FORM = "Form";
   const STEP_REVIEW = "Review";
-  const STEP_IN_PROGRESS = "InProgress";
 
   const steps: WizardSteps = [
     {
@@ -28,11 +27,7 @@
     {
       name: STEP_REVIEW,
       title: $i18n.import_token.review_token_info,
-    },
-    {
-      name: STEP_IN_PROGRESS,
-      title: $i18n.import_token.import_token,
-    },
+    }
   ];
 
   let modal: WizardModal;
@@ -97,7 +92,6 @@
   bind:currentStep
   bind:this={modal}
   on:nnsClose
-  disablePointerEvents={currentStep?.name === STEP_IN_PROGRESS}
 >
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
 
