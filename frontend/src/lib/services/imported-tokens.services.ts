@@ -109,21 +109,23 @@ export const addImportedToken = async ({
 };
 
 /**
- * Remove an imported token and reload imported tokens from the `nns-dapp` backend to update the `importedTokensStore`.
+ * Remove imported tokens and reload imported tokens from the `nns-dapp` backend to update the `importedTokensStore`.
  *  - Displays a success toast if the operation is successful.
  *  - Displays an error toast if the operation fails.
  */
-export const removeImportedToken = async ({
-  tokenToRemove,
+export const removeImportedTokens = async ({
+  tokensToRemove,
   importedTokens,
 }: {
-  tokenToRemove: ImportedTokenData;
+  tokensToRemove: ImportedTokenData[];
   importedTokens: ImportedTokenData[];
 }): Promise<{ success: boolean }> => {
   // Compare imported tokens by their ledgerCanisterId because they should be unique.
+  const ledgerIdsToRemove = new Set(
+    tokensToRemove.map(({ ledgerCanisterId }) => ledgerCanisterId.toText())
+  );
   const tokens = importedTokens.filter(
-    ({ ledgerCanisterId: id }) =>
-      id.toText() !== tokenToRemove.ledgerCanisterId.toText()
+    ({ ledgerCanisterId }) => !ledgerIdsToRemove.has(ledgerCanisterId.toText())
   );
   const { err } = await saveImportedToken({ tokens });
 
