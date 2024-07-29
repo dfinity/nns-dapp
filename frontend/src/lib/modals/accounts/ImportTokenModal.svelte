@@ -125,7 +125,4 @@
       on:nnsConfirm={onUserConfirm}
     />
   {/if}
-  {#if currentStep?.name === STEP_IN_PROGRESS}
-    TBD: ImportTokenInProgress
-  {/if}
 </WizardModal>
