@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { Principal } from "@dfinity/principal";
   import { i18n } from "$lib/stores/i18n";
   import { Html, IconError } from "@dfinity/gix-components";
 </script>
