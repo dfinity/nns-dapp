@@ -15,7 +15,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Add 2 new topics `ProtocolCanisterMangement` and `ServiceNervousSystemManagement` while not allowing following to be set.
+* Add 2 new topics `ProtocolCanisterMangement` and
+* Make the WASM accessible via beta subdomains so we can deploy early versions there.
 * Enable warning dialog on beta deployment.
 * Back-end support for storing imported tokens.
 
@@ -27,7 +28,12 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* Removed `unsafe-eval` from Content Security Policy.
+
 #### Fixed
+
+* HTML injection in error toast.
+* Show unknown topic as "Unknown Topic (...")".
 
 #### Security
 
@@ -42,6 +48,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Deprecated
 
 #### Removed
+
+* Deleted Reproducible Assets workflow.
 
 #### Fixed
 
