@@ -1115,8 +1115,7 @@ interface I18nImport_token {
   verifying: string;
   importing: string;
   review_token_info: string;
-  link_to_ledger_canister: string;
-  link_to_index_canister: string;
+  link_to_canister: string;
   ledger_canister_loading_error: string;
   add_imported_token_success: string;
   remove_imported_token_success: string;

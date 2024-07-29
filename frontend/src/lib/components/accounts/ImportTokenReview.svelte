@@ -18,7 +18,7 @@
 
   let ledgerCanisterHref: string;
   $: ledgerCanisterHref = replacePlaceholders(
-    $i18n.import_token.link_to_ledger_canister,
+    $i18n.import_token.link_to_canister,
     {
       $canisterId: ledgerCanisterId.toText(),
     }
@@ -26,7 +26,7 @@
   let indexCanisterHref: string | undefined;
   $: indexCanisterHref = isNullish(indexCanisterId)
     ? undefined
-    : replacePlaceholders($i18n.import_token.link_to_index_canister, {
+    : replacePlaceholders($i18n.import_token.link_to_canister, {
         $canisterId: ledgerCanisterId.toText(),
       });
 </script>
