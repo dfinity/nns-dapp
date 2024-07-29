@@ -1,0 +1,202 @@
+[
+  {
+    "name": "Start time",
+    "value": "2024-07-25 09:53:45"
+  },
+  {
+    "name": "git fetch --tags --force",
+    "value": "Done"
+  },
+  {
+    "name": "Release SOP script is newest version",
+    "value": "yes"
+  },
+  {
+    "name": "git checkout -b Release-2024-07-25 --no-track origin/main",
+    "value": "Done"
+  },
+  {
+    "name": "Release branch",
+    "value": "Release-2024-07-25"
+  },
+  {
+    "name": "Current branch",
+    "value": "Release-2024-07-25"
+  },
+  {
+    "name": "git push origin Release-2024-07-25",
+    "value": "Done"
+  },
+  {
+    "name": "Release branch URL",
+    "value": "https://github.com/dfinity/nns-dapp/tree/Release-2024-07-25"
+  },
+  {
+    "name": "git tag -f release-candidate",
+    "value": "Done"
+  },
+  {
+    "name": "Release commit",
+    "value": "0b2bfc18b5e2334b5b3dbfcf3c38912d129f6251"
+  },
+  {
+    "name": "tags/release-candidate commit",
+    "value": "0b2bfc18b5e2334b5b3dbfcf3c38912d129f6251"
+  },
+  {
+    "name": "git push origin -f tags/release-candidate",
+    "value": "Done"
+  },
+  {
+    "name": "Security test: npm audit",
+    "value": "found 0 vulnerabilities"
+  },
+  {
+    "name": "Expected npm audit",
+    "value": "found 0 vulnerabilities"
+  },
+  {
+    "name": "Security test: cargo audit",
+    "value": "no vulnerabilities"
+  },
+  {
+    "name": "Expected cargo audit",
+    "value": "no vulnerabilities"
+  },
+  {
+    "name": "Security test: no HTML in templates",
+    "value": "Checked"
+  },
+  {
+    "name": "./scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /Users/mstr/projects/nns-dapp1/release/ci --wasm-filename nns-dapp.wasm.gz",
+    "value": "Done"
+  },
+  {
+    "name": "CI NNS-dapp WASM hash",
+    "value": "e71d315a5969fce5766f1e19175078db2fd6c922b74cdd47f59a40088a96449c"
+  },
+  {
+    "name": "Local WASM hash",
+    "value": "e71d315a5969fce5766f1e19175078db2fd6c922b74cdd47f59a40088a96449c"
+  },
+  {
+    "name": "scripts/canister_ids --remove --network devenv_mstr --canister nns-dapp",
+    "value": "Done"
+  },
+  {
+    "name": "dfx identity",
+    "value": "snsdemo8: eencq-gkfcb-26uet-4gdxh-5alzx-j3q4h-u3c7p-x2wh6-dvnxo-tupxl-yqe"
+  },
+  {
+    "name": "dfx canister create nns-dapp --network devenv_mstr --no-wallet",
+    "value": "Done"
+  },
+  {
+    "name": "NNS-dapp devenv_mstr canister ID",
+    "value": "mddhc-tuaaa-aaaaa-qabka-cai"
+  },
+  {
+    "name": "Current NNS-dapp devenv_mstr canister ID",
+    "value": "mddhc-tuaaa-aaaaa-qabka-cai"
+  },
+  {
+    "name": "DFX_NETWORK=devenv_mstr ./config.sh",
+    "value": "Done"
+  },
+  {
+    "name": "dfx canister install nns-dapp --argument $'(opt record{\\n  args = vec {\\n    record{ 0=\"API_HOST\"; 1=\"https://mstr-ingress.devenv.dfinity.network\" };\\n    record{ 0=\"CKBTC_INDEX_CANISTER_ID\"; 1=\"omy6t-mmaaa-aaaaa-qabgq-cai\" };\\n    record{ 0=\"CKBTC_LEDGER_CANISTER_ID\"; 1=\"o66jk-a4aaa-aaaaa-qabfq-cai\" };\\n    record{ 0=\"CKBTC_MINTER_CANISTER_ID\"; 1=\"olzyh-buaaa-aaaaa-qabga-cai\" };\\n    record{ 0=\"CKETH_INDEX_CANISTER_ID\"; 1=\"oc2t3-x4aaa-aaaaa-qabhq-cai\" };\\n    record{ 0=\"CKETH_LEDGER_CANISTER_ID\"; 1=\"of3vp-2eaaa-aaaaa-qabha-cai\" };\\n    record{ 0=\"CKUSDC_INDEX_CANISTER_ID\"; 1=\"myg3h-jmaaa-aaaaa-qabiq-cai\" };\\n    record{ 0=\"CKUSDC_LEDGER_CANISTER_ID\"; 1=\"m7h5t-euaaa-aaaaa-qabia-cai\" };\\n    record{ 0=\"CYCLES_MINTING_CANISTER_ID\"; 1=\"rkp4c-7iaaa-aaaaa-aaaca-cai\" };\\n    record{ 0=\"DFX_NETWORK\"; 1=\"devenv_mstr\" };\\n    record{ 0=\"FEATURE_FLAGS\"; 1=\"{\\\\\"ENABLE_CKBTC\\\\\":true,\\\\\"ENABLE_CKTESTBTC\\\\\":false,\\\\\"ENABLE_IMPORT_TOKEN\\\\\":false,\\\\\"ENABLE_PROJECTS_TABLE\\\\\":false}\" };\\n    record{ 0=\"FETCH_ROOT_KEY\"; 1=\"true\" };\\n    record{ 0=\"GOVERNANCE_CANISTER_ID\"; 1=\"rrkah-fqaaa-aaaaa-aaaaq-cai\" };\\n    record{ 0=\"HOST\"; 1=\"https://mstr-ingress.devenv.dfinity.network\" };\\n    record{ 0=\"IDENTITY_SERVICE_URL\"; 1=\"https://qhbym-qaaaa-aaaaa-aaafq-cai.mstr-ingress.devenv.dfinity.network\" };\\n    record{ 0=\"INDEX_CANISTER_ID\"; 1=\"bkyz2-fmaaa-aaaaa-qaaaq-cai\" };\\n    record{ 0=\"LEDGER_CANISTER_ID\"; 1=\"ryjl3-tyaaa-aaaaa-aaaba-cai\" };\\n    record{ 0=\"OWN_CANISTER_ID\"; 1=\"mddhc-tuaaa-aaaaa-qabka-cai\" };\\n    record{ 0=\"ROBOTS\"; 1=\"<meta name=\\\\\"robots\\\\\" content=\\\\\"noindex, nofollow\\\\\" />\" };\\n    record{ 0=\"SNS_AGGREGATOR_URL\"; 1=\"https://be2us-64aaa-aaaaa-qaabq-cai.mstr-ingress.devenv.dfinity.network\" };\\n    record{ 0=\"STATIC_HOST\"; 1=\"https://mstr-ingress.devenv.dfinity.network\" };\\n    record{ 0=\"TVL_CANISTER_ID\"; 1=\"\" };\\n    record{ 0=\"WASM_CANISTER_ID\"; 1=\"qaa6y-5yaaa-aaaaa-aaafa-cai\" };\\n  };\\n  schema = opt variant { AccountsInStableMemory };\\n})' --network devenv_mstr --wasm ./release/ci/nns-dapp.wasm.gz",
+    "value": "Done"
+  },
+  {
+    "name": "Release candidate URL",
+    "value": "https://mddhc-tuaaa-aaaaa-qabka-cai.mstr-ingress.devenv.dfinity.network/"
+  },
+  {
+    "name": "RC WASM hash",
+    "value": "e71d315a5969fce5766f1e19175078db2fd6c922b74cdd47f59a40088a96449c"
+  },
+  {
+    "name": "Post RC on Slack",
+    "value": "https://dfinity.slack.com/archives/C01S03NBM7S/p1721894249173549"
+  },
+  {
+    "name": "Update playground",
+    "value": "Done"
+  },
+  {
+    "name": "Canister IDs",
+    "value": "{\n  \"__Candid_UI\": {\n    \"devenv_mstr\": \"dqerg-34aaa-aaaaa-qaapq-cai\"\n  },\n  \"ckbtc_index\": {\n    \"devenv_mstr\": \"omy6t-mmaaa-aaaaa-qabgq-cai\"\n  },\n  \"ckbtc_ledger\": {\n    \"devenv_mstr\": \"o66jk-a4aaa-aaaaa-qabfq-cai\"\n  },\n  \"ckbtc_minter\": {\n    \"devenv_mstr\": \"olzyh-buaaa-aaaaa-qabga-cai\"\n  },\n  \"cketh_index\": {\n    \"devenv_mstr\": \"oc2t3-x4aaa-aaaaa-qabhq-cai\"\n  },\n  \"cketh_ledger\": {\n    \"devenv_mstr\": \"of3vp-2eaaa-aaaaa-qabha-cai\"\n  },\n  \"ckusdc_index\": {\n    \"devenv_mstr\": \"myg3h-jmaaa-aaaaa-qabiq-cai\"\n  },\n  \"ckusdc_ledger\": {\n    \"devenv_mstr\": \"m7h5t-euaaa-aaaaa-qabia-cai\"\n  },\n  \"index\": {\n    \"devenv_mstr\": \"bkyz2-fmaaa-aaaaa-qaaaq-cai\"\n  },\n  \"index_canister\": {\n    \"devenv_mstr\": \"bkyz2-fmaaa-aaaaa-qaaaq-cai\"\n  },\n  \"internet_identity\": {\n    \"devenv_mstr\": \"qhbym-qaaaa-aaaaa-aaafq-cai\"\n  },\n  \"nns-dapp\": {\n    \"devenv_mstr\": \"mddhc-tuaaa-aaaaa-qabka-cai\"\n  },\n  \"nns-index\": {\n    \"devenv_mstr\": \"bkyz2-fmaaa-aaaaa-qaaaq-cai\"\n  },\n  \"nns-sns-wasm\": {\n    \"devenv_mstr\": \"qaa6y-5yaaa-aaaaa-aaafa-cai\"\n  },\n  \"sns_aggregator\": {\n    \"devenv_mstr\": \"be2us-64aaa-aaaaa-qaabq-cai\"\n  }\n}"
+  },
+  {
+    "name": "Build hashes",
+    "value": "2946031bf57faf5600ec2329e8993e3cacbdbdc69f054cfc415abafac5cb4b27  assets.tar.xz\ne71d315a5969fce5766f1e19175078db2fd6c922b74cdd47f59a40088a96449c  nns-dapp.wasm.gz\n842cacd1e7e025cfcdd2da0f689a4e9400622fffa6246a25d6efb33d4ef04550  sns_aggregator.wasm.gz\naede922691c283fa8640caa01bee6bbd93f244682dd59edb474b0d108ffabc79  nns-dapp-arg-mainnet.did\n2c042f03557f7c9174428f429a30a8467c805e9befa0b3e8a07f86402949988d  nns-dapp-arg-mainnet.bin"
+  },
+  {
+    "name": "./scripts/nns-dapp/release-template",
+    "value": "Done"
+  },
+  {
+    "name": "./scripts/nns-dapp/release-check",
+    "value": "Done"
+  },
+  {
+    "name": "Built NNS-dapp WASM hash",
+    "value": "e71d315a5969fce5766f1e19175078db2fd6c922b74cdd47f59a40088a96449c"
+  },
+  {
+    "name": "Review proposal",
+    "value": "Done"
+  },
+  {
+    "name": "Review feature flags",
+    "value": "Done"
+  },
+  {
+    "name": "CI mainnet args hash",
+    "value": "2c042f03557f7c9174428f429a30a8467c805e9befa0b3e8a07f86402949988d"
+  },
+  {
+    "name": "Built mainnet args hash",
+    "value": "2c042f03557f7c9174428f429a30a8467c805e9befa0b3e8a07f86402949988d"
+  },
+  {
+    "name": "./scripts/nns-dapp/release --save-proposal-id-to-file release/proposal_id",
+    "value": "Done"
+  },
+  {
+    "name": "Proposal ID",
+    "value": "131389"
+  },
+  {
+    "name": "Proposal time",
+    "value": "2024-07-26 10:00:33"
+  },
+  {
+    "name": "git checkout release-candidate",
+    "value": "Done"
+  },
+  {
+    "name": "git tag proposal-131389",
+    "value": "Done"
+  },
+  {
+    "name": "git push origin tags/proposal-131389",
+    "value": "Done"
+  },
+  {
+    "name": "git checkout Release-2024-07-25",
+    "value": "Done"
+  },
+  {
+    "name": "Post proposal on Slack",
+    "value": "https://dfinity.slack.com/archives/C02P68W6MQA/p1721981041628499"
+  },
+  {
+    "name": "Schedule voting",
+    "value": "Done"
+  },
+  {
+    "name": "Forum post",
+    "value": "Done"
+  }
+]
