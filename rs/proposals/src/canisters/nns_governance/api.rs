@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-18_01-30--github-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-25_21-03-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -82,6 +82,10 @@ pub struct IncreaseDissolveDelay {
     pub additional_dissolve_delay_seconds: u32,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct SetVisibility {
+    pub visibility: Option<i32>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct SetDissolveTimestamp {
     pub dissolve_timestamp_seconds: u64,
 }
@@ -93,6 +97,7 @@ pub enum Operation {
     StopDissolving(EmptyRecord),
     StartDissolving(EmptyRecord),
     IncreaseDissolveDelay(IncreaseDissolveDelay),
+    SetVisibility(SetVisibility),
     JoinCommunityFund(EmptyRecord),
     LeaveCommunityFund(EmptyRecord),
     SetDissolveTimestamp(SetDissolveTimestamp),
@@ -172,6 +177,11 @@ pub struct InstallCode {
     pub skip_stopping_before_installing: Option<bool>,
     pub canister_id: Option<Principal>,
     pub install_mode: Option<i32>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct StopOrStartCanister {
+    pub action: Option<i32>,
+    pub canister_id: Option<Principal>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct Percentage {
@@ -412,6 +422,7 @@ pub enum Action {
     RegisterKnownNeuron(KnownNeuron),
     ManageNeuron(ManageNeuron),
     InstallCode(InstallCode),
+    StopOrStartCanister(StopOrStartCanister),
     CreateServiceNervousSystem(CreateServiceNervousSystem),
     ExecuteNnsFunction(ExecuteNnsFunction),
     RewardNodeProvider(RewardNodeProvider),
@@ -569,11 +580,13 @@ pub struct GovernanceError {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct CfNeuron {
     pub has_created_neuron_recipes: Option<bool>,
+    pub hotkeys: Option<Principals>,
     pub nns_neuron_id: u64,
     pub amount_icp_e8s: u64,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct CfParticipant {
+    pub controller: Option<Principal>,
     pub hotkey_principal: String,
     pub cf_neurons: Vec<CfNeuron>,
 }
@@ -733,6 +746,7 @@ pub struct Neuron {
     pub dissolve_state: Option<DissolveState>,
     pub followees: Vec<(i32, Followees)>,
     pub neuron_fees_e8s: u64,
+    pub visibility: Option<i32>,
     pub transfer: Option<NeuronStakeTransfer>,
     pub known_neuron_data: Option<KnownNeuronData>,
     pub spawn_at_timestamp_seconds: Option<u64>,
@@ -801,6 +815,7 @@ pub struct NeuronInfo {
     pub stake_e8s: u64,
     pub joined_community_fund_timestamp_seconds: Option<u64>,
     pub retrieved_at_timestamp_seconds: u64,
+    pub visibility: Option<i32>,
     pub known_neuron_data: Option<KnownNeuronData>,
     pub voting_power: u64,
     pub age_seconds: u64,
