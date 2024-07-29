@@ -1113,6 +1113,7 @@ interface I18nImport_token {
   warning: string;
   import_button: string;
   verifying: string;
+  importing: string;
   review_token_info: string;
   link_to_ledger_canister: string;
   link_to_index_canister: string;

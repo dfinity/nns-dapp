@@ -13,6 +13,8 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { toastsError } from "$lib/stores/toasts.store";
   import ImportTokenReview from "$lib/components/accounts/ImportTokenReview.svelte";
+  import { addImportedToken } from "$lib/services/imported-tokens.services";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 
   export let currentStep: WizardStep | undefined = undefined;
 
@@ -27,7 +29,7 @@
     {
       name: STEP_REVIEW,
       title: $i18n.import_token.review_token_info,
-    }
+    },
   ];
 
   let modal: WizardModal;
@@ -60,8 +62,6 @@
   };
 
   const onUserInput = async () => {
-    // TODO: check the uniqueness of the ledgerCanisterId
-
     // TEST: should display the busy screen
     // TEST: should display the busy screen text
     startBusy({
@@ -77,12 +77,26 @@
   };
 
   const onUserConfirm = async () => {
-    console.log(
-      "onUserConfirm",
-      ledgerCanisterId,
-      indexCanisterId,
-      tokenMetaData
-    );
+    if (isNullish(ledgerCanisterId) || isNullish($importedTokensStore.importedTokens)) {
+      return;
+    }
+
+    startBusy({
+      initiator: "import-token-importing",
+      labelKey: "import_token.importing",
+    });
+
+    await addImportedToken({
+      tokenToAdd: {
+        ledgerCanisterId,
+        indexCanisterId,
+      },
+      importedTokens: $importedTokensStore.importedTokens,
+    });
+
+    stopBusy("import-token-importing");
+
+    // TODO: navigate to imported token details page
   };
 </script>
 
