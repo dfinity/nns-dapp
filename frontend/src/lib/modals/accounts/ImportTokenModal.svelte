@@ -4,13 +4,6 @@
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import { setContext } from "svelte";
-  import {
-    IMPORT_TOKEN_CONTEXT_KEY,
-    type ImportTokenContext,
-    type ImportTokenStore,
-  } from "$lib/types/import-token.context";
-  import { writable } from "svelte/store";
   import { i18n } from "$lib/stores/i18n";
   import type { Principal } from "@dfinity/principal";
   import ImportTokenForm from "$lib/components/accounts/ImportTokenForm.svelte";
