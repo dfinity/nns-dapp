@@ -7,7 +7,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Principal } from "@dfinity/principal";
   import ImportTokenForm from "$lib/components/accounts/ImportTokenForm.svelte";
-  import { fetchIcrcToken } from "$lib/services/icrc-accounts.services";
+  import { fetchIcrcTokenMetaData } from "$lib/services/icrc-accounts.services";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { isNullish, nonNullish } from "@dfinity/utils";
@@ -48,9 +48,9 @@
     if (isNullish(ledgerCanisterId)) {
       return;
     }
-    const meta = await fetchIcrcToken({ ledgerCanisterId });
+    const meta = await fetchIcrcTokenMetaData({ ledgerCanisterId });
 
-    if (meta === null) {
+    if (isNullish(meta)) {
       tokenMetaData = undefined;
       toastsError({
         labelKey: "import_token.ledger_canister_loading_error",

@@ -36,7 +36,7 @@ export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
 };
 
 // Returns null if the token is not found
-export const fetchIcrcToken = async ({
+export const fetchIcrcTokenMetaData = async ({
   ledgerCanisterId,
 }: {
   ledgerCanisterId: Principal;
