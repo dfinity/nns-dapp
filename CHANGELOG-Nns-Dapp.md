@@ -11,6 +11,30 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 131389
+
+### Application
+
+#### Added
+
+* Add 2 new topics `ProtocolCanisterMangement` and `ServiceNervousSystemManagement` while not allowing following to be set.
+* Make the WASM accessible via beta subdomains so we can deploy early versions there.
+
+#### Removed
+
+* Removed `unsafe-eval` from Content Security Policy.
+
+#### Fixed
+
+* HTML injection in error toast.
+* Show unknown topic as "Unknown Topic (...")".
+
+### Operations
+
+#### Removed
+
+* Deleted Reproducible Assets workflow.
+
 ## Proposal 131363
 
 ### Application
