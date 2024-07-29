@@ -2,7 +2,7 @@
   import type { Principal } from "@dfinity/principal";
   import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { Html, IconOpenInNew } from "@dfinity/gix-components";
+  import { Html } from "@dfinity/gix-components";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ImportTokenWarning from "$lib/components/accounts/ImportTokenWarning.svelte";
   import { createEventDispatcher } from "svelte";
@@ -19,16 +19,6 @@
 
 <TestIdWrapper testId="import-token-form-component">
   <p class="description">{$i18n.import_token.description}</p>
-
-  <a
-    class="where-to-find"
-    href={$i18n.import_token.where_to_find_href}
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <IconOpenInNew />
-    {$i18n.import_token.where_to_find}</a
-  >
 
   <form on:submit|preventDefault={() => dispatch("nnsSubmit")}>
     <PrincipalInput
@@ -74,17 +64,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  .description {
+  p.description {
     margin: 0 0 var(--padding-2x);
-  }
-
-  .where-to-find {
-    margin: 0 0 var(--padding-3x);
-
-    display: flex;
-    align-items: center;
-    gap: var(--padding);
-    color: var(--primary);
-    text-decoration: none;
   }
 </style>

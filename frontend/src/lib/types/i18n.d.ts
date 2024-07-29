@@ -1103,7 +1103,6 @@ interface I18nImport_token {
   import_token: string;
   description: string;
   where_to_find: string;
-  where_to_find_href: string;
   ledger_label: string;
   index_label_optional: string;
   index_label: string;
