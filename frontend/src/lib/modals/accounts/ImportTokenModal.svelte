@@ -62,13 +62,13 @@
   };
 
   const onUserInput = async () => {
-    // TEST: should display the busy screen
-    // TEST: should display the busy screen text
     startBusy({
       initiator: "import-token-validation",
       labelKey: "import_token.verifying",
     });
     await updateTokenMetaData();
+    // TODO: validate index canister id here (if provided)
+
     stopBusy("import-token-validation");
 
     if (nonNullish(tokenMetaData)) {
