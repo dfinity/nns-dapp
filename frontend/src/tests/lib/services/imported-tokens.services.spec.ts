@@ -4,7 +4,7 @@ import type { ImportedToken } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import {
   addImportedToken,
   loadImportedTokens,
-  removeImportedToken,
+  removeImportedTokens,
 } from "$lib/services/imported-tokens.services";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import * as toastsStore from "$lib/stores/toasts.store";
@@ -226,15 +226,15 @@ describe("imported-tokens-services", () => {
     });
   });
 
-  describe("removeImportedToken", () => {
+  describe("removeImportedTokens", () => {
     it("should call setImportedTokens with updated token list", async () => {
       const spySetImportedTokens = vi
         .spyOn(importedTokensApi, "setImportedTokens")
         .mockResolvedValue(undefined);
       expect(spySetImportedTokens).toBeCalledTimes(0);
 
-      const { success } = await removeImportedToken({
-        tokenToRemove: importedTokenDataA,
+      const { success } = await removeImportedTokens({
+        tokensToRemove: [importedTokenDataA],
         importedTokens: [importedTokenDataA, importedTokenDataB],
       });
 
@@ -243,6 +243,25 @@ describe("imported-tokens-services", () => {
       expect(spySetImportedTokens).toHaveBeenCalledWith({
         identity: mockIdentity,
         importedTokens: [importedTokenB],
+      });
+    });
+
+    it("should remove multiple tokens", async () => {
+      const spySetImportedTokens = vi
+        .spyOn(importedTokensApi, "setImportedTokens")
+        .mockResolvedValue(undefined);
+      expect(spySetImportedTokens).toBeCalledTimes(0);
+
+      const { success } = await removeImportedTokens({
+        tokensToRemove: [importedTokenDataA, importedTokenDataB],
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+      });
+
+      expect(success).toEqual(true);
+      expect(spySetImportedTokens).toBeCalledTimes(1);
+      expect(spySetImportedTokens).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        importedTokens: [],
       });
     });
 
@@ -265,8 +284,8 @@ describe("imported-tokens-services", () => {
         certified: true,
       });
 
-      await removeImportedToken({
-        tokenToRemove: importedTokenDataA,
+      await removeImportedTokens({
+        tokensToRemove: [importedTokenDataA],
         importedTokens: [importedTokenDataA, importedTokenDataB],
       });
 
@@ -287,8 +306,8 @@ describe("imported-tokens-services", () => {
       });
       expect(spyToastSuccsess).not.toBeCalled();
 
-      await removeImportedToken({
-        tokenToRemove: importedTokenDataA,
+      await removeImportedTokens({
+        tokensToRemove: [importedTokenDataA],
         importedTokens: [importedTokenDataA, importedTokenDataB],
       });
 
@@ -305,8 +324,8 @@ describe("imported-tokens-services", () => {
       );
       expect(spyToastError).not.toBeCalled();
 
-      const { success } = await removeImportedToken({
-        tokenToRemove: importedTokenDataA,
+      const { success } = await removeImportedTokens({
+        tokensToRemove: [importedTokenDataA],
         importedTokens: [importedTokenDataA, importedTokenDataB],
       });
 

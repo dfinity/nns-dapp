@@ -1097,8 +1097,6 @@ interface I18nTokens {
   hide_zero_balances_toggle_label: string;
   zero_balance_hidden: string;
   show_all: string;
-  add_imported_token_success: string;
-  remove_imported_token_success: string;
 }
 
 interface I18nImport_token {
@@ -1119,6 +1117,8 @@ interface I18nImport_token {
   link_to_ledger_canister: string;
   link_to_index_canister: string;
   ledger_canister_loading_error: string;
+  add_imported_token_success: string;
+  remove_imported_token_success: string;
 }
 
 interface I18nNeuron_state {
