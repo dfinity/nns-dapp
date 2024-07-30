@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_swap --out ic_sns_swap.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-18_01-30--github-base/rs/sns/swap/canister/swap.did>
+//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-25_21-03-base/rs/sns/swap/canister/swap.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -40,14 +40,20 @@ pub struct NeuronsFundParticipationConstraints {
     pub min_direct_participation_threshold_icp_e8s: Option<u64>,
     pub ideal_matched_participation_function: Option<IdealMatchedParticipationFunction>,
 }
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Principals {
+    pub principals: Vec<Principal>,
+}
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
 pub struct CfNeuron {
     pub has_created_neuron_recipes: Option<bool>,
+    pub hotkeys: Option<Principals>,
     pub nns_neuron_id: u64,
     pub amount_icp_e8s: u64,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
 pub struct CfParticipant {
+    pub controller: Option<Principal>,
     pub hotkey_principal: String,
     pub cf_neurons: Vec<CfNeuron>,
 }
@@ -353,7 +359,9 @@ pub struct NeuronAttributes {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CfInvestment {
+    pub controller: Option<Principal>,
     pub hotkey_principal: String,
+    pub hotkeys: Option<Principals>,
     pub nns_neuron_id: u64,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
