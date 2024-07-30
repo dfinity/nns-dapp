@@ -4,7 +4,7 @@
   export let htmlText: string;
 </script>
 
-<article data-tid="import-token-warning-component">
+<article data-tid="callout-warning-component">
   <span class="icon"><IconError size="24" /></span>
   <p data-tid="text"><Html text={htmlText} /></p>
 </article>

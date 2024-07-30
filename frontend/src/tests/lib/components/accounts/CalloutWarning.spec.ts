@@ -1,14 +1,14 @@
-import ImportTokenWarning from "$lib/components/accounts/ImportTokenWarning.svelte";
-import { ImportTokenWarningPo } from "$tests/page-objects/ImportTokenWarning.page-object";
+import CalloutWarning from "$lib/components/common/CalloutWarning.svelte";
+import { CalloutWarningPo } from "$tests/page-objects/CalloutWarning.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
-describe("ImportTokenWarning", () => {
+describe("CalloutWarning", () => {
   const renderComponent = (props) => {
-    const { container } = render(ImportTokenWarning, {
+    const { container } = render(CalloutWarning, {
       props,
     });
-    return ImportTokenWarningPo.under(new JestPageObjectElement(container));
+    return CalloutWarningPo.under(new JestPageObjectElement(container));
   };
 
   it("should render description text", async () => {
