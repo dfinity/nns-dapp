@@ -9,26 +9,35 @@
   export let canisterIdFallback: string | undefined = undefined;
 </script>
 
-<div data-tid="import-token-canister-id-component">
+<div class="container" data-tid="import-token-canister-id-component">
   <span data-tid="label">{label}</span>
   <div class="canister-id">
-    <span class="value description" data-tid="canister-id">{canisterId}</span>
     {#if nonNullish(canisterId) && nonNullish(canisterLinkHref)}
+      <span class="value description" data-tid="canister-id">{canisterId}</span>
       <Copy value={canisterId ?? ""} />
       <LinkIcon href={canisterLinkHref} />
     {:else if nonNullish(canisterIdFallback)}
       <span class="fallback description" data-tid="canister-id-fallback"
-        >{canisterIdFallback}</span
+      >{canisterIdFallback}</span
       >
     {/if}
   </div>
 </div>
 
 <style lang="scss">
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-0_5x);
+  }
+
   .canister-id {
     display: flex;
     align-items: center;
     color: var(--primary);
+
+    // preserve icon buttons height
+    min-height: var(--padding-4x);
   }
 
   .value {
