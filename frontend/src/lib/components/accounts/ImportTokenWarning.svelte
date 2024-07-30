@@ -1,6 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { Html, IconError } from "@dfinity/gix-components";
+  // TODO: replace with a generic component for warnings/errors when available
 </script>
 
 <article data-tid="import-token-warning">

@@ -25,6 +25,7 @@
       bind:principal={ledgerCanisterId}
       placeholderLabelKey="import_token.placeholder"
       name="ledger-canister-id"
+      testId="ledger-canister-id"
     >
       <svelte:fragment slot="label"
         >{$i18n.import_token.ledger_label}</svelte:fragment
@@ -35,7 +36,8 @@
       bind:principal={indexCanisterId}
       required={false}
       placeholderLabelKey="import_token.placeholder"
-      name="ledger-canister-id"
+      name="index-canister-id"
+      testId="index-canister-id"
     >
       <Html slot="label" text={$i18n.import_token.index_label_optional} />
     </PrincipalInput>

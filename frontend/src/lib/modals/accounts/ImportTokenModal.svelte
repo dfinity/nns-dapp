@@ -77,7 +77,10 @@
   };
 
   const onUserConfirm = async () => {
-    if (isNullish(ledgerCanisterId) || isNullish($importedTokensStore.importedTokens)) {
+    if (
+      isNullish(ledgerCanisterId) ||
+      isNullish($importedTokensStore.importedTokens)
+    ) {
       return;
     }
 

@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { Principal } from "@dfinity/principal";
   import { i18n } from "$lib/stores/i18n";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ImportTokenWarning from "$lib/components/accounts/ImportTokenWarning.svelte";
   import { createEventDispatcher } from "svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
@@ -34,33 +33,34 @@
 <div class="container" data-tid="import-token-review-component">
   <div class="meta">
     <Logo
+      testId="token-logo"
       src={tokenMetaData?.logo ?? ""}
       alt={tokenMetaData.name}
       size="medium"
       framed
     />
     <div>
-      <div>{tokenMetaData.name}</div>
-      <div class="description">{tokenMetaData.symbol}</div>
+      <div data-tid="token-name">{tokenMetaData.name}</div>
+      <div data-tid="token-symbol" class="description">
+        {tokenMetaData.symbol}
+      </div>
     </div>
   </div>
 
-  <TestIdWrapper testId="ledger-canister-id">
-    <ImportTokenCanisterId
-      label={$i18n.import_token.ledger_label}
-      canisterId={ledgerCanisterId.toText()}
-      canisterLinkHref={ledgerCanisterHref}
-    />
-  </TestIdWrapper>
+  <ImportTokenCanisterId
+    testId="ledger-canister-id"
+    label={$i18n.import_token.ledger_label}
+    canisterId={ledgerCanisterId.toText()}
+    canisterLinkHref={ledgerCanisterHref}
+  />
 
-  <TestIdWrapper testId="index-canister-id">
-    <ImportTokenCanisterId
-      label={$i18n.import_token.index_label}
-      canisterId={indexCanisterId?.toText()}
-      canisterLinkHref={indexCanisterHref}
-      canisterIdFallback={$i18n.import_token.index_fallback_label}
-    />
-  </TestIdWrapper>
+  <ImportTokenCanisterId
+    testId="index-canister-id"
+    label={$i18n.import_token.index_label}
+    canisterId={indexCanisterId?.toText()}
+    canisterLinkHref={indexCanisterHref}
+    canisterIdFallback={$i18n.import_token.index_fallback_label}
+  />
 
   <ImportTokenWarning />
 

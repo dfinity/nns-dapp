@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconOpenInNew, IconSubdirectory } from "@dfinity/gix-components";
+  import { IconOpenInNew } from "@dfinity/gix-components";
 
   export let href: string;
 </script>
