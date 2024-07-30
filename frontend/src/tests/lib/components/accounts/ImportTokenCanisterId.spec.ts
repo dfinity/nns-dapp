@@ -68,4 +68,14 @@ describe("ImportTokenCanisterId", () => {
     expect(await po.getCopyButtonPo().isPresent()).toEqual(false);
     expect(await po.getLinkIconPo().isPresent()).toEqual(false);
   });
+
+  it("Should render neither the canister id nor the fallback when both parameters are not provided", async () => {
+    const po = renderComponent({
+      label: "test label",
+    });
+
+    expect(await po.getLabel().isPresent()).toEqual(true);
+    expect(await po.getCanisterId().isPresent()).toEqual(false);
+    expect(await po.getCanisterIdFallback().isPresent()).toEqual(false);
+  });
 });
