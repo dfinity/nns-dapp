@@ -164,7 +164,10 @@ jobs:
           fi
   release-templating-works:
     name: Release template
-    runs-on: ubuntu-20.04
+    runs-on:
+      labels: dind-small
+    container:
+      image: ghcr.io/dfinity/minimal-runner-image:latest
     steps:
       - uses: actions/checkout@v4
         with:
