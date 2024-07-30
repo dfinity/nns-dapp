@@ -18,7 +18,7 @@
       <LinkIcon href={canisterLinkHref} />
     {:else if nonNullish(canisterIdFallback)}
       <span class="fallback description" data-tid="canister-id-fallback"
-      >{canisterIdFallback}</span
+        >{canisterIdFallback}</span
       >
     {/if}
   </div>
