@@ -12,10 +12,12 @@
 <div class="container" data-tid="import-token-canister-id-component">
   <span data-tid="label">{label}</span>
   <div class="canister-id">
-    {#if nonNullish(canisterId) && nonNullish(canisterLinkHref)}
+    {#if nonNullish(canisterId)}
       <span class="value description" data-tid="canister-id">{canisterId}</span>
-      <Copy value={canisterId ?? ""} />
-      <LinkIcon href={canisterLinkHref} />
+      <Copy value={canisterId} />
+      {#if nonNullish(canisterLinkHref)}
+        <LinkIcon href={canisterLinkHref} />
+      {/if}
     {:else if nonNullish(canisterIdFallback)}
       <span class="fallback description" data-tid="canister-id-fallback"
         >{canisterIdFallback}</span
