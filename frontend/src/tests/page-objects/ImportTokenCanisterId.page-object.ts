@@ -21,7 +21,7 @@ export class ImportTokenCanisterIdPo extends BasePageObject {
   }
 
   getCanisterIdFallback(): PageObjectElement {
-    return this.root.byTestId("canister-id");
+    return this.root.byTestId("canister-id-fallback");
   }
 
   getLabelText(): Promise<string> {
@@ -38,10 +38,6 @@ export class ImportTokenCanisterIdPo extends BasePageObject {
 
   getLinkIconPo(): LinkIconPo {
     return LinkIconPo.under(this.root);
-  }
-
-  hasCanisterIdFallback(): Promise<boolean> {
-    return this.isPresent("canister-id-fallback");
   }
 
   getCanisterIdFallbackText(): Promise<string> {

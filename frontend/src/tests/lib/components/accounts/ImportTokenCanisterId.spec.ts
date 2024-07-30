@@ -50,10 +50,12 @@ describe("ImportTokenCanisterId", () => {
       canisterIdFallback: "test fallback",
     });
 
+    expect(await po.getLabel().isPresent()).toEqual(true);
+    expect(await po.getLabelText()).toEqual("test label");
     expect(await po.getCanisterIdFallback().isPresent()).toEqual(true);
     expect(await po.getCanisterIdFallbackText()).toEqual("test fallback");
 
-    expect(await po.getLabel().isPresent()).toEqual(false);
+    expect(await po.getCanisterId().isPresent()).toEqual(false);
   });
 
   it("should render no buttons when canister id not provided", async () => {
