@@ -8,7 +8,6 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isNullish } from "@dfinity/utils";
   import CalloutWarning from "$lib/components/common/CalloutWarning.svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let ledgerCanisterId: Principal;
   export let indexCanisterId: Principal | undefined = undefined;
@@ -48,22 +47,20 @@
     </div>
   </div>
 
-  <TestIdWrapper testId="ledger-canister-id">
-    <ImportTokenCanisterId
-      label={$i18n.import_token.ledger_label}
-      canisterId={ledgerCanisterId.toText()}
-      canisterLinkHref={ledgerCanisterHref}
-    />
-  </TestIdWrapper>
+  <ImportTokenCanisterId
+    testId="ledger-canister-id"
+    label={$i18n.import_token.ledger_label}
+    canisterId={ledgerCanisterId.toText()}
+    canisterLinkHref={ledgerCanisterHref}
+  />
 
-  <TestIdWrapper testId="index-canister-id">
-    <ImportTokenCanisterId
-      label={$i18n.import_token.index_label}
-      canisterId={indexCanisterId?.toText()}
-      canisterLinkHref={indexCanisterHref}
-      canisterIdFallback={$i18n.import_token.index_fallback_label}
-    />
-  </TestIdWrapper>
+  <ImportTokenCanisterId
+    testId="index-canister-id"
+    label={$i18n.import_token.index_label}
+    canisterId={indexCanisterId?.toText()}
+    canisterLinkHref={indexCanisterHref}
+    canisterIdFallback={$i18n.import_token.index_fallback_label}
+  />
 
   <CalloutWarning htmlText={$i18n.import_token.warning} />
 
