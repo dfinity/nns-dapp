@@ -14,7 +14,7 @@
   import { fetchIcrcTokenMetaData } from "$lib/services/icrc-accounts.services";
   import { toastsError } from "$lib/stores/toasts.store";
 
-  export let currentStep: WizardStep | undefined = undefined;
+  let currentStep: WizardStep | undefined = undefined;
 
   const STEP_FORM = "Form";
   const STEP_REVIEW = "Review";
@@ -58,6 +58,10 @@
   };
 
   const onUserInput = async () => {
+    if (isNullish(ledgerCanisterId)) {
+      return;
+    }
+
     startBusy({
       initiator: "import-token-validation",
       labelKey: "import_token.verifying",
@@ -78,7 +82,7 @@
 </script>
 
 <WizardModal
-  testId="import-token-modal"
+  testId="import-token-modal-component"
   {steps}
   bind:currentStep
   bind:this={modal}
