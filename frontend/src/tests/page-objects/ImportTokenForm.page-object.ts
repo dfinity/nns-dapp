@@ -42,8 +42,4 @@ export class ImportTokenFormPo extends BasePageObject {
       testId: "next-button",
     });
   }
-
-  isNextButtonDisabled(): Promise<boolean> {
-    return this.getNextButtonPo().isDisabled();
-  }
 }
