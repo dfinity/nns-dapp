@@ -83,11 +83,11 @@ describe("ImportTokenModal", () => {
     });
   });
 
-  it("should an error toast when failed to load the token meta data", async () => {
+  it("should an error toast when failed to load the token meta data, and stay on first step", async () => {
     vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(
       new Error("Not a ledger canister")
     );
-    const { formPo } = renderComponent();
+    const { formPo, reviewPo } = renderComponent();
 
     expect(toastsError).not.toBeCalled();
 
@@ -101,6 +101,9 @@ describe("ImportTokenModal", () => {
     expect(toastsError).toBeCalledWith({
       labelKey: "import_token.ledger_canister_loading_error",
     });
+
+    expect(await formPo.isPresent()).toEqual(true);
+    expect(await reviewPo.isPresent()).toEqual(false);
   });
 
   it("should display entered canisters info on the review step", async () => {
