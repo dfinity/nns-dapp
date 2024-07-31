@@ -1113,8 +1113,6 @@ interface I18nImport_token {
   review_token_info: string;
   import_button: string;
   link_to_canister: string;
-  add_imported_token_success: string;
-  remove_imported_token_success: string;
 }
 
 interface I18nNeuron_state {
