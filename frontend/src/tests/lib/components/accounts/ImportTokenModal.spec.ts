@@ -102,6 +102,7 @@ describe("ImportTokenModal", () => {
       labelKey: "import_token.ledger_canister_loading_error",
     });
 
+    // Stays on the first step.
     expect(await formPo.isPresent()).toEqual(true);
     expect(await reviewPo.isPresent()).toEqual(false);
   });
