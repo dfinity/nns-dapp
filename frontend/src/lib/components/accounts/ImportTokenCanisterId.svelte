@@ -4,12 +4,13 @@
   import LinkIcon from "$lib/components/common/LinkIcon.svelte";
 
   export let label: string;
+  export let testId: string = "import-token-canister-id-component";
   export let canisterId: string | undefined = undefined;
   export let canisterLinkHref: string | undefined = undefined;
   export let canisterIdFallback: string | undefined = undefined;
 </script>
 
-<div class="container" data-tid="import-token-canister-id-component">
+<div class="container" data-tid={testId}>
   <span data-tid="label">{label}</span>
   <div class="canister-id">
     {#if nonNullish(canisterId)}
