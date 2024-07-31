@@ -1,6 +1,7 @@
 import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
 import * as busyServices from "$lib/stores/busy.store";
+import { toastsError } from "$lib/stores/toasts.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { ImportTokenModalPo } from "$tests/page-objects/ImportTokenModal.page-object";
@@ -8,6 +9,12 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SpyInstance } from "vitest";
+
+vi.mock("$lib/stores/toasts.store", () => {
+  return {
+    toastsError: vi.fn(),
+  };
+});
 
 describe("ImportTokenModal", () => {
   const ledgerCanisterId = principal(0);
@@ -37,6 +44,7 @@ describe("ImportTokenModal", () => {
 
   beforeEach(() => {
     vi.restoreAllMocks();
+    (toastsError as undefined as SpyInstance).mockReset();
 
     queryIcrcTokenSpy = vi
       .spyOn(ledgerApi, "queryIcrcToken")
@@ -75,6 +83,26 @@ describe("ImportTokenModal", () => {
     });
   });
 
+  it("should an error toast when failed to load the token meta data", async () => {
+    vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(
+      new Error("Not a ledger canister")
+    );
+    const { formPo } = renderComponent();
+
+    expect(toastsError).not.toBeCalled();
+
+    await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
+    await formPo.getNextButtonPo().click();
+
+    // Wait for toast error to be called.
+    await runResolvedPromises();
+
+    expect(toastsError).toBeCalledTimes(1);
+    expect(toastsError).toBeCalledWith({
+      labelKey: "import_token.ledger_canister_loading_error",
+    });
+  });
+
   it("should display entered canisters info on the review step", async () => {
     const { formPo, reviewPo } = renderComponent();
 
@@ -94,6 +122,26 @@ describe("ImportTokenModal", () => {
     expect(await reviewPo.getTokenName()).toEqual(tokenMetaData.name);
     expect(await reviewPo.getTokenSymbol()).toEqual(tokenMetaData.symbol);
     expect(await reviewPo.getLogoSource()).toEqual(tokenMetaData.logo);
+  });
+
+  it("should display a fallback text for the index canister when it's not entered", async () => {
+    const { formPo, reviewPo } = renderComponent();
+
+    await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
+    await formPo.getNextButtonPo().click();
+
+    // Wait for ModalWizard step animation.
+    await runResolvedPromises();
+
+    expect(
+      await reviewPo.getIndexCanisterIdPo().getCanisterId().isPresent()
+    ).toEqual(false);
+    expect(
+      await reviewPo.getIndexCanisterIdPo().getCanisterIdFallback().isPresent()
+    ).toEqual(true);
+    expect(
+      await reviewPo.getIndexCanisterIdPo().getCanisterIdFallbackText()
+    ).toEqual("Transaction history won’t be displayed.");
   });
 
   it('should navigate back to form on "Back" button click', async () => {

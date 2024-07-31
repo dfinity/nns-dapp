@@ -1051,6 +1051,7 @@
     "verifying": "Veryifying token details...",
     "review_token_info": "Review token info",
     "import_button": "Import",
+    "ledger_canister_loading_error": "Unable to load token details using the provided Ledger Canister ID.",
     "link_to_canister": "https://dashboard.internetcomputer.org/canister/$canisterId"
   }
 }
