@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
   import { Html, IconError } from "@dfinity/gix-components";
-  // TODO: replace with a generic component for warnings/errors when available
+
+  export let htmlText: string;
 </script>
 
-<article data-tid="import-token-warning">
+<article data-tid="callout-warning-component">
   <span class="icon"><IconError size="24" /></span>
-  <p><Html text={$i18n.import_token.warning} /></p>
+  <p data-tid="text"><Html text={htmlText} /></p>
 </article>
 
 <style lang="scss">

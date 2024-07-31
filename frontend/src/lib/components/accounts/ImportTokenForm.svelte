@@ -4,9 +4,9 @@
   import { i18n } from "$lib/stores/i18n";
   import { Html } from "@dfinity/gix-components";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import ImportTokenWarning from "$lib/components/accounts/ImportTokenWarning.svelte";
   import { createEventDispatcher } from "svelte";
   import { isNullish } from "@dfinity/utils";
+  import CalloutWarning from "$lib/components/common/CalloutWarning.svelte";
 
   export let ledgerCanisterId: Principal | undefined = undefined;
   export let indexCanisterId: Principal | undefined = undefined;
@@ -46,7 +46,7 @@
       <Html text={$i18n.import_token.index_canister_description} />
     </p>
 
-    <ImportTokenWarning />
+    <CalloutWarning htmlText={$i18n.import_token.warning} />
 
     <div class="toolbar">
       <button
