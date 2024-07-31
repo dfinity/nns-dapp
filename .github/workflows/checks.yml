@@ -41,7 +41,7 @@ jobs:
     runs-on:
       labels: dind-small
     container:
-      image: ghcr.io/dfinity/minimal-runner-image:latest
+      image: ghcr.io/dfinity/minimal-runner-image:0.1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -60,7 +60,7 @@ jobs:
     runs-on:
       labels: dind-small
     container:
-      image: ghcr.io/dfinity/minimal-runner-image:latest
+      image: ghcr.io/dfinity/minimal-runner-image:0.1
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
@@ -167,7 +167,7 @@ jobs:
     runs-on:
       labels: dind-small
     container:
-      image: ghcr.io/dfinity/minimal-runner-image:latest
+      image: ghcr.io/dfinity/minimal-runner-image:0.1
     steps:
       - uses: actions/checkout@v4
         with:
