@@ -11,6 +11,7 @@
   import { Popover } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
   import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
+  import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
 
   export let userTokensData: UserToken[];
 
@@ -41,9 +42,7 @@
     hideZeroBalancesStore.set("show");
   };
 
-  const importToken = async () => {
-    // TBD: Implement import token.
-  };
+  let showImportTokenModal = false;
 
   // TODO(Import token): After removing ENABLE_IMPORT_TOKEN combine divs -> <div slot="last-row" class="last-row">
 </script>
@@ -82,9 +81,9 @@
           <button
             data-tid="import-token-button"
             class="ghost with-icon import-token-button"
-            on:click={importToken}
+            on:click={() => (showImportTokenModal = true)}
           >
-            <IconPlus />{$i18n.tokens.import_token}
+            <IconPlus />{$i18n.import_token.import_token}
           </button>
         </div>
       {:else if shouldHideZeroBalances}
@@ -112,6 +111,10 @@
   >
     <HideZeroBalancesToggle />
   </Popover>
+
+  {#if showImportTokenModal}
+    <ImportTokenModal on:nnsClose={() => (showImportTokenModal = false)} />
+  {/if}
 </TestIdWrapper>
 
 <style lang="scss">
