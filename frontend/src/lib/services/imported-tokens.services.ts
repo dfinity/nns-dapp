@@ -7,6 +7,7 @@ import type { ImportedTokens } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
@@ -16,6 +17,7 @@ import {
   toImportedTokenData,
 } from "$lib/utils/imported-tokens.utils";
 import { isNullish } from "@dfinity/utils";
+import { get } from "svelte/store";
 import { queryAndUpdate } from "./utils.services";
 
 /** Load imported tokens from the `nns-dapp` backend and update the `importedTokensStore` store.
@@ -25,11 +27,24 @@ export const loadImportedTokens = async () => {
   return queryAndUpdate<ImportedTokens, unknown>({
     request: (options) => getImportedTokens(options),
     strategy: FORCE_CALL_STRATEGY,
-    onLoad: ({ response: { imported_tokens: importedTokens }, certified }) =>
+    onLoad: ({ response: { imported_tokens: rawImportTokens }, certified }) => {
+      const importedTokens = rawImportTokens.map(toImportedTokenData);
+      console.log("User Imported Tokens:", importedTokens);
       importedTokensStore.set({
-        importedTokens: importedTokens.map(toImportedTokenData),
+        importedTokens,
         certified,
-      }),
+      });
+
+      const icrcCanistersStoreData = get(icrcCanistersStore);
+      for (const { ledgerCanisterId, indexCanisterId } of importedTokens) {
+        if (isNullish(icrcCanistersStoreData[ledgerCanisterId.toText()])) {
+          icrcCanistersStore.setCanisters({
+            ledgerCanisterId,
+            indexCanisterId,
+          });
+        }
+      }
+    },
     onError: ({ error: err, certified }) => {
       console.error(err);
 
