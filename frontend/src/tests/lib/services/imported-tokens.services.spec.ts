@@ -181,7 +181,7 @@ describe("imported-tokens-services", () => {
 
       expect(spyToastSuccsess).toBeCalledTimes(1);
       expect(spyToastSuccsess).toBeCalledWith({
-        labelKey: "tokens.add_imported_token_success",
+        labelKey: "import_token.add_imported_token_success",
       });
     });
 
@@ -313,7 +313,7 @@ describe("imported-tokens-services", () => {
 
       expect(spyToastSuccsess).toBeCalledTimes(1);
       expect(spyToastSuccsess).toBeCalledWith({
-        labelKey: "tokens.remove_imported_token_success",
+        labelKey: "import_token.remove_imported_token_success",
       });
     });
 
