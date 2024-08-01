@@ -20,10 +20,12 @@
     hasAccounts,
   } from "$lib/utils/accounts.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { Island, Spinner } from "@dfinity/gix-components";
+  import { Island, Spinner, Tag } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import type { Writable } from "svelte/store";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { isImportedToken } from "$lib/utils/imported-tokens.utils";
 
   export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;
@@ -142,6 +144,13 @@
         ledgerCanisterId,
         isSignedIn: $authSignedInStore,
       }))();
+
+  // TODO: test me
+  let importedToken = false;
+  $: importedToken = isImportedToken({
+    ledgerCanisterId,
+    importedTokens: $importedTokensStore.importedTokens,
+  });
 </script>
 
 <Island {testId}>
@@ -172,6 +181,13 @@
         >
           <slot name="header-actions" />
           <SignInGuard />
+          <svelte:fragment slot="tags">
+            {#if importedToken}
+              <Tag testId="imported-token-tag"
+                >{$i18n.import_token.imported_token}</Tag
+              >
+            {/if}
+          </svelte:fragment>
         </WalletPageHeading>
 
         {#if $$slots["info-card"]}
