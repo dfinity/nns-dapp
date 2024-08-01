@@ -13,11 +13,11 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { fetchIcrcTokenMetaData } from "$lib/services/icrc-accounts.services";
   import { toastsError } from "$lib/stores/toasts.store";
-  import {importedTokensStore} from "$lib/stores/imported-tokens.store";
-  import {addImportedToken} from "$lib/services/imported-tokens.services";
-  import {buildWalletUrl} from "$lib/utils/navigation.utils";
-  import {goto} from "$app/navigation";
-  import {createEventDispatcher} from "svelte";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { addImportedToken } from "$lib/services/imported-tokens.services";
+  import { buildWalletUrl } from "$lib/utils/navigation.utils";
+  import { goto } from "$app/navigation";
+  import { createEventDispatcher } from "svelte";
 
   let currentStep: WizardStep | undefined = undefined;
   const dispatch = createEventDispatcher();
@@ -104,9 +104,11 @@
 
     dispatch("nnsClose");
 
-    goto(buildWalletUrl({
-      universe: ledgerCanisterId.toText(),
-    }));
+    goto(
+      buildWalletUrl({
+        universe: ledgerCanisterId.toText(),
+      })
+    );
 
     stopBusy("import-token-importing");
   };

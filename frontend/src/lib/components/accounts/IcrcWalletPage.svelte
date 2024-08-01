@@ -24,10 +24,10 @@
   import type { Principal } from "@dfinity/principal";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import type { Writable } from "svelte/store";
-  import {accountsPathStore} from "$lib/derived/paths.derived";
-  import {startBusy, stopBusy} from "$lib/stores/busy.store";
-  import {importedTokensStore} from "$lib/stores/imported-tokens.store";
-  import {removeImportedTokens} from "$lib/services/imported-tokens.services";
+  import { accountsPathStore } from "$lib/derived/paths.derived";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { removeImportedTokens } from "$lib/services/imported-tokens.services";
 
   export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;
@@ -147,7 +147,9 @@
         isSignedIn: $authSignedInStore,
       }))();
 
-  const remove = async ({ detail }: CustomEvent<{ledgerCanisterId: Principal}>) => {
+  const remove = async ({
+    detail,
+  }: CustomEvent<{ ledgerCanisterId: Principal }>) => {
     console.log("removeImportedToken", detail.ledgerCanisterId);
 
     startBusy({
@@ -156,9 +158,10 @@
     });
 
     const importedTokens = $importedTokensStore.importedTokens ?? [];
-    const {success} = await removeImportedTokens({
+    const { success } = await removeImportedTokens({
       tokensToRemove: importedTokens.filter(
-        ({ledgerCanisterId: id}) => id.toText() === detail.ledgerCanisterId.toText()
+        ({ ledgerCanisterId: id }) =>
+          id.toText() === detail.ledgerCanisterId.toText()
       ),
       importedTokens,
     });
@@ -168,9 +171,7 @@
     if (success) {
       goto($accountsPathStore);
     }
-
-  }
-
+  };
 </script>
 
 <Island {testId}>
