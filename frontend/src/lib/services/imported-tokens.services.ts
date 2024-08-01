@@ -29,7 +29,6 @@ export const loadImportedTokens = async () => {
     strategy: FORCE_CALL_STRATEGY,
     onLoad: ({ response: { imported_tokens: rawImportTokens }, certified }) => {
       const importedTokens = rawImportTokens.map(toImportedTokenData);
-      console.log("User Imported Tokens:", importedTokens);
       importedTokensStore.set({
         importedTokens,
         certified,
