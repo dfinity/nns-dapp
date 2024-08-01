@@ -87,7 +87,7 @@ export const addImportedToken = async ({
   if (isNullish(err)) {
     await loadImportedTokens();
     toastsSuccess({
-      labelKey: "tokens.add_imported_token_success",
+      labelKey: "import_token.add_imported_token_success",
     });
 
     return { success: true };
@@ -132,7 +132,7 @@ export const removeImportedTokens = async ({
   if (isNullish(err)) {
     await loadImportedTokens();
     toastsSuccess({
-      labelKey: "tokens.remove_imported_token_success",
+      labelKey: "import_token.remove_imported_token_success",
     });
 
     return { success: true };
