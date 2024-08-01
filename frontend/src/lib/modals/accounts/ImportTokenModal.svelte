@@ -13,6 +13,8 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { fetchIcrcTokenMetaData } from "$lib/services/icrc-accounts.services";
   import { toastsError } from "$lib/stores/toasts.store";
+  import {importedTokensStore} from "$lib/stores/imported-tokens.store";
+  import {addImportedToken} from "$lib/services/imported-tokens.services";
 
   let currentStep: WizardStep | undefined = undefined;
 
@@ -76,7 +78,28 @@
   };
 
   const onUserConfirm = async () => {
-    // TODO: save imported token to the backend canister
+    if (
+      isNullish(ledgerCanisterId) ||
+      isNullish($importedTokensStore.importedTokens)
+    ) {
+      return;
+    }
+
+    startBusy({
+      initiator: "import-token-importing",
+      labelKey: "import_token.importing",
+    });
+
+    await addImportedToken({
+      tokenToAdd: {
+        ledgerCanisterId,
+        indexCanisterId,
+      },
+      importedTokens: $importedTokensStore.importedTokens,
+    });
+
+    stopBusy("import-token-importing");
+
     // TODO: navigate to imported token details page
   };
 </script>
