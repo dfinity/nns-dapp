@@ -181,12 +181,13 @@
         >
           <slot name="header-actions" />
           <SignInGuard />
-
-          {#if importedToken}
-            <Tag testId="imported-token-tag"
-              >{$i18n.import_token.imported_token}</Tag
-            >
-          {/if}
+          <svelte:fragment slot="tags">
+            {#if importedToken}
+              <Tag testId="imported-token-tag"
+                >{$i18n.import_token.imported_token}</Tag
+              >
+            {/if}
+          </svelte:fragment>
         </WalletPageHeading>
 
         {#if $$slots["info-card"]}
