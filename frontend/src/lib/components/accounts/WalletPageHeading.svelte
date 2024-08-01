@@ -77,7 +77,7 @@
       </p>
     {/if}
   </div>
-  <slot name="tags" slot="tags" />
+  <slot slot="tags" />
 </PageHeading>
 
 <style lang="scss">
