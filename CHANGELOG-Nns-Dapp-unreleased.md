@@ -21,6 +21,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Replace the nervous system left navigation on the staking tab with a new table.
+* Bump ic-js to a version with new proposal types and neuron visibility.
 
 #### Deprecated
 
