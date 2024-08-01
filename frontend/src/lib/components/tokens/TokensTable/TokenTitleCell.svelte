@@ -5,17 +5,16 @@
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { Tag } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
+  import { isImportedToken } from "$lib/utils/imported-tokens.utils";
 
   export let rowData: UserTokenData | UserTokenLoading;
 
   // TODO: test me
-  let isImportedToken = false;
-  $: isImportedToken = nonNullish(
-    $importedTokensStore.importedTokens?.find(
-      ({ ledgerCanisterId }) =>
-        rowData.universeId.toText() === ledgerCanisterId.toText()
-    )
-  );
+  let importedToken = false;
+  $: importedToken = isImportedToken({
+    ledgerCanisterId: rowData?.universeId,
+    importedTokens: $importedTokensStore.importedTokens,
+  });
 </script>
 
 <div class="title-logo-wrapper">
@@ -28,7 +27,7 @@
       >
     {/if}
   </div>
-  {#if isImportedToken}
+  {#if importedToken}
     <Tag testId="imported-token-tag">{$i18n.import_token.imported_token}</Tag>
   {/if}
 </div>
