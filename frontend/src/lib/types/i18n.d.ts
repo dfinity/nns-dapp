@@ -1110,6 +1110,7 @@ interface I18nImport_token {
   index_canister_description: string;
   warning: string;
   verifying: string;
+  importing: string;
   review_token_info: string;
   import_button: string;
   ledger_canister_loading_error: string;
