@@ -135,9 +135,12 @@ export const removeImportedTokens = async ({
   tokensToRemove: ImportedTokenData[];
   importedTokens: ImportedTokenData[];
 }): Promise<{ success: boolean }> => {
+  const canisterIdsToRemove = tokensToRemove.map(
+    ({ ledgerCanisterId }) => ledgerCanisterId
+  );
   // Compare imported tokens by their ledgerCanisterId because they should be unique.
   const ledgerIdsToRemove = new Set(
-    tokensToRemove.map(({ ledgerCanisterId }) => ledgerCanisterId.toText())
+    canisterIdsToRemove.map((id) => id.toText())
   );
   const tokens = importedTokens.filter(
     ({ ledgerCanisterId }) => !ledgerIdsToRemove.has(ledgerCanisterId.toText())
@@ -145,6 +148,9 @@ export const removeImportedTokens = async ({
   const { err } = await saveImportedToken({ tokens });
 
   if (isNullish(err)) {
+    // TODO: update unit test to check if icrcCanistersStore.removeCanisters is called
+    icrcCanistersStore.removeCanisters(canisterIdsToRemove);
+
     await loadImportedTokens();
     toastsSuccess({
       labelKey: "import_token.remove_imported_token_success",

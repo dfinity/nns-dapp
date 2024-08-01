@@ -24,6 +24,10 @@
   import type { Principal } from "@dfinity/principal";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import type { Writable } from "svelte/store";
+  import {accountsPathStore} from "$lib/derived/paths.derived";
+  import {startBusy, stopBusy} from "$lib/stores/busy.store";
+  import {importedTokensStore} from "$lib/stores/imported-tokens.store";
+  import {removeImportedTokens} from "$lib/services/imported-tokens.services";
 
   export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;
@@ -142,6 +146,31 @@
         ledgerCanisterId,
         isSignedIn: $authSignedInStore,
       }))();
+
+  const remove = async ({ detail }: CustomEvent<{ledgerCanisterId: Principal}>) => {
+    console.log("removeImportedToken", detail.ledgerCanisterId);
+
+    startBusy({
+      initiator: "import-token-removing",
+      labelKey: "import_token.removing",
+    });
+
+    const importedTokens = $importedTokensStore.importedTokens ?? [];
+    const {success} = await removeImportedTokens({
+      tokensToRemove: importedTokens.filter(
+        ({ledgerCanisterId: id}) => id.toText() === detail.ledgerCanisterId.toText()
+      ),
+      importedTokens,
+    });
+
+    stopBusy("import-token-removing");
+
+    if (success) {
+      goto($accountsPathStore);
+    }
+
+  }
+
 </script>
 
 <Island {testId}>
@@ -158,6 +187,7 @@
         <WalletPageHeader
           universe={$selectedUniverseStore}
           walletAddress={$selectedAccountStore.account?.identifier}
+          on:nnsRemove={remove}
         />
         <WalletPageHeading
           accountName={$selectedAccountStore.account?.name ??

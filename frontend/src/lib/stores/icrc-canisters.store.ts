@@ -1,5 +1,6 @@
 import { browser } from "$app/environment";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
+import { removeKeys } from "$lib/utils/utils";
 import { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import type { Readable } from "svelte/store";
@@ -17,6 +18,7 @@ export type IcrcCanistersStoreData = Record<
 
 export interface IcrcCanistersStore extends Readable<IcrcCanistersStoreData> {
   setCanisters: (data: IcrcCanisters) => void;
+  removeCanisters: (ledgerCanisterIds: Principal[]) => void;
   reset: () => void;
 }
 
@@ -46,6 +48,17 @@ const initIcrcCanistersStore = (): IcrcCanistersStore => {
           indexCanisterId,
         },
       }));
+    },
+
+    // TODO: unit test me!
+    // Remove entries by ledger canister id.
+    removeCanisters(ledgerCanisterIds: Principal[]) {
+      update((state: IcrcCanistersStoreData) =>
+        removeKeys({
+          obj: state,
+          keysToRemove: ledgerCanisterIds.map((id) => id.toText()),
+        })
+      );
     },
 
     // Used in tests
