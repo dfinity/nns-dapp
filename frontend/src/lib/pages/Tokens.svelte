@@ -81,7 +81,7 @@
           <button
             data-tid="import-token-button"
             class="ghost with-icon import-token-button"
-            on:click={() => showImportTokenModal = true}
+            on:click={() => (showImportTokenModal = true)}
           >
             <IconPlus />{$i18n.import_token.import_token}
           </button>
@@ -113,7 +113,7 @@
   </Popover>
 
   {#if showImportTokenModal}
-    <ImportTokenModal on:nnsClose={() => showImportTokenModal = false} />
+    <ImportTokenModal on:nnsClose={() => (showImportTokenModal = false)} />
   {/if}
 </TestIdWrapper>
 

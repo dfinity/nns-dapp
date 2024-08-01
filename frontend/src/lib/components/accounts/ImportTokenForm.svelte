@@ -42,7 +42,7 @@
       <Html slot="label" text={$i18n.import_token.index_label_optional} />
     </PrincipalInput>
 
-    <p data-tid="index-canister-description" class="description">
+    <p class="description">
       <Html text={$i18n.import_token.index_canister_description} />
     </p>
 
@@ -53,7 +53,7 @@
         class="secondary"
         type="button"
         data-tid="cancel-button"
-        on:click={() => dispatch("nnsClose")}
+        on:click={() => dispatch("nnsCancel")}
       >
         {$i18n.core.cancel}
       </button>

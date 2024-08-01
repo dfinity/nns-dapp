@@ -14,7 +14,9 @@ describe("ImportTokenCanisterId", () => {
     const { container } = render(ImportTokenCanisterId, {
       props,
     });
-    return ImportTokenCanisterIdPo.under(new JestPageObjectElement(container));
+    return ImportTokenCanisterIdPo.under({
+      element: new JestPageObjectElement(container),
+    });
   };
 
   it("should render label, canister id and buttons", async () => {

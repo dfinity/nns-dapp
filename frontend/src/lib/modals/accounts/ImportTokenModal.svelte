@@ -7,16 +7,14 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Principal } from "@dfinity/principal";
   import ImportTokenForm from "$lib/components/accounts/ImportTokenForm.svelte";
-  import { fetchIcrcTokenMetaData } from "$lib/services/icrc-accounts.services";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import { toastsError } from "$lib/stores/toasts.store";
   import ImportTokenReview from "$lib/components/accounts/ImportTokenReview.svelte";
-  import { addImportedToken } from "$lib/services/imported-tokens.services";
-  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { fetchIcrcTokenMetaData } from "$lib/services/icrc-accounts.services";
+  import { toastsError } from "$lib/stores/toasts.store";
 
-  export let currentStep: WizardStep | undefined = undefined;
+  let currentStep: WizardStep | undefined = undefined;
 
   const STEP_FORM = "Form";
   const STEP_REVIEW = "Review";
@@ -49,7 +47,6 @@
       return;
     }
     const meta = await fetchIcrcTokenMetaData({ ledgerCanisterId });
-
     if (isNullish(meta)) {
       tokenMetaData = undefined;
       toastsError({
@@ -57,18 +54,20 @@
       });
       return;
     }
-
     tokenMetaData = meta;
   };
 
   const onUserInput = async () => {
+    if (isNullish(ledgerCanisterId)) {
+      return;
+    }
+
     startBusy({
       initiator: "import-token-validation",
       labelKey: "import_token.verifying",
     });
     await updateTokenMetaData();
     // TODO: validate index canister id here (if provided)
-
     stopBusy("import-token-validation");
 
     if (nonNullish(tokenMetaData)) {
@@ -77,34 +76,13 @@
   };
 
   const onUserConfirm = async () => {
-    if (
-      isNullish(ledgerCanisterId) ||
-      isNullish($importedTokensStore.importedTokens)
-    ) {
-      return;
-    }
-
-    startBusy({
-      initiator: "import-token-importing",
-      labelKey: "import_token.importing",
-    });
-
-    await addImportedToken({
-      tokenToAdd: {
-        ledgerCanisterId,
-        indexCanisterId,
-      },
-      importedTokens: $importedTokensStore.importedTokens,
-    });
-
-    stopBusy("import-token-importing");
-
+    // TODO: save imported token to the backend canister
     // TODO: navigate to imported token details page
   };
 </script>
 
 <WizardModal
-  testId="import-token-modal"
+  testId="import-token-modal-component"
   {steps}
   bind:currentStep
   bind:this={modal}

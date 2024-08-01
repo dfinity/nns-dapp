@@ -1109,14 +1109,13 @@ interface I18nImport_token {
   placeholder: string;
   index_canister_description: string;
   warning: string;
-  import_button: string;
   verifying: string;
-  importing: string;
   review_token_info: string;
-  link_to_canister: string;
+  import_button: string;
   ledger_canister_loading_error: string;
   add_imported_token_success: string;
   remove_imported_token_success: string;
+  link_to_canister: string;
 }
 
 interface I18nNeuron_state {
