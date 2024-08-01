@@ -2,8 +2,20 @@
   import type { UserTokenData, UserTokenLoading } from "$lib/types/tokens-page";
   import Logo from "../../ui/Logo.svelte";
   import { nonNullish } from "@dfinity/utils";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { Tag } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
 
   export let rowData: UserTokenData | UserTokenLoading;
+
+  // TODO: test me
+  let isImportedToken = false;
+  $: isImportedToken = nonNullish(
+    $importedTokensStore.importedTokens?.find(
+      ({ ledgerCanisterId }) =>
+        rowData.universeId.toText() === ledgerCanisterId.toText()
+    )
+  );
 </script>
 
 <div class="title-logo-wrapper">
@@ -16,6 +28,9 @@
       >
     {/if}
   </div>
+  {#if isImportedToken}
+    <Tag testId="imported-token-tag">{$i18n.import_token.imported_token}</Tag>
+  {/if}
 </div>
 
 <style lang="scss">
