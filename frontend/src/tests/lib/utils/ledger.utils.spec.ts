@@ -95,7 +95,7 @@ describe("ledger-utils", () => {
 
       expect(call).rejects.toThrow(
         new LedgerErrorMessage(
-          `A ledger error happened during signature. undefined (code ${LedgerError.UnknownError}).`
+          `A Ledger error happened during signature. undefined (code ${LedgerError.UnknownError}).`
         )
       );
     });
