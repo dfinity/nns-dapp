@@ -20,22 +20,18 @@
   disablePointerEvents={true}
 >
   <div class="title" slot="title">
-    <IconWarning />
+    <span class="icon">
+      <IconWarning />
+    </span>
     {$i18n.warning.test_env_title}
   </div>
-
-  <p>{$i18n.warning.test_env_welcome}</p>
 
   <p>
     <Html text={$i18n.warning.test_env_note} />
   </p>
 
-  <p>
-    {$i18n.warning.test_env_request}
-  </p>
-
   <div class="custom-toolbar">
-    <button class="primary" on:click={close} data-tid="test-env-warning-ack"
+    <button class="danger" on:click={close} data-tid="test-env-warning-ack"
       >{$i18n.warning.test_env_confirm}</button
     >
   </div>
@@ -52,5 +48,9 @@
     display: flex;
     justify-content: center;
     padding: var(--padding-2x) 0 var(--padding);
+  }
+
+  p {
+    padding: 0 var(--padding);
   }
 </style>
