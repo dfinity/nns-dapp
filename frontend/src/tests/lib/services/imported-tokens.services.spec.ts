@@ -82,13 +82,11 @@ describe("imported-tokens-services", () => {
 
       await loadImportedTokens();
 
-      // TODO: uncomment this after api availability on CI
-      expect(spyToastError).toBeCalledTimes(0);
-      // expect(spyToastError).toBeCalledTimes(1);
-      // expect(spyToastError).toBeCalledWith({
-      //   labelKey: "error__imported_tokens.load_imported_tokens",
-      //   err: testError,
-      // });
+      expect(spyToastError).toBeCalledTimes(1);
+      expect(spyToastError).toBeCalledWith({
+        labelKey: "error__imported_tokens.load_imported_tokens",
+        err: testError,
+      });
     });
 
     it("should reset store on error", async () => {
