@@ -54,11 +54,10 @@ export const loadImportedTokens = async () => {
       // Explicitly handle only UPDATE errors
       importedTokensStore.reset();
 
-      // TODO: uncomment this after api availability on CI
-      // toastsError({
-      //   labelKey: "error__imported_tokens.load_imported_tokens",
-      //   err,
-      // });
+      toastsError({
+        labelKey: "error__imported_tokens.load_imported_tokens",
+        err,
+      });
     },
     logMessage: "Get Imported Tokens",
   });
