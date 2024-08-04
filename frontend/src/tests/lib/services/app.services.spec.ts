@@ -84,16 +84,15 @@ describe("app-services", () => {
 
     const toastData = get(toastsStore);
 
-    expect(toastData).toHaveLength(0);
     // The imported tokens error should be shown.
     // TODO: check if this is the correct behavior
-    // expect(toastData).toHaveLength(1);
-    // expect(toastData).toEqual([
-    //   expect.objectContaining({
-    //     text: "There was an unexpected issue while loading imported tokens. Cannot read properties of undefined (reading 'imported_tokens')",
-    //     level: "error",
-    //   }),
-    // ]);
+    expect(toastData).toHaveLength(1);
+    expect(toastData).toEqual([
+      expect.objectContaining({
+        text: "There was an unexpected issue while loading imported tokens. Cannot read properties of undefined (reading 'imported_tokens')",
+        level: "error",
+      }),
+    ]);
   });
 
   it("should call loadActionableProposals after Sns data is ready", async () => {
