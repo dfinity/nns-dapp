@@ -100,17 +100,17 @@ describe("tokens-table.utils", () => {
       const expectedOrder = [ckBTCToken, ckETHTToken, ckUSDCToken, token0];
       expect(
         [token0, ckUSDCToken, ckETHTToken, ckBTCToken].sort(
-          compareTokensByImportance
+          compareTokensByImportance({ importedTokenIds: new Set() })
         )
       ).toEqual(expectedOrder);
       expect(
         [ckBTCToken, ckETHTToken, ckUSDCToken, token0].sort(
-          compareTokensByImportance
+          compareTokensByImportance({ importedTokenIds: new Set() })
         )
       ).toEqual(expectedOrder);
       expect(
         [ckETHTToken, ckBTCToken, token0, ckUSDCToken].sort(
-          compareTokensByImportance
+          compareTokensByImportance({ importedTokenIds: new Set() })
         )
       ).toEqual(expectedOrder);
     });

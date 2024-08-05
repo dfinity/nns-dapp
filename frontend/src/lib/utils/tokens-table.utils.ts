@@ -21,6 +21,18 @@ export const compareTokensWithBalanceFirst = createDescendingComparator(
   (token: UserToken) => getTokenBalanceOrZero(token) > 0n
 );
 
+// TODO: add unit tests
+export const compareTokensWithBalanceOrImportedFirst = ({
+  importedTokenIds,
+}: {
+  importedTokenIds: Set<string>;
+}) =>
+  createDescendingComparator(
+    (token: UserToken) =>
+      getTokenBalanceOrZero(token) > 0n ||
+      importedTokenIds.has(token.universeId.toText())
+  );
+
 // These tokens should be placed before others (but after ICP)
 // because they have significance within the Internet Computer ecosystem and deserve to be highlighted.
 // Where the fixed order maps to a descending order in the market cap of the underlying native tokens.
@@ -31,17 +43,35 @@ const ImportantCkTokenIds = [
 ]
   // To place other tokens (which get an index of -1) at the bottom.
   .reverse();
-export const compareTokensByImportance = createDescendingComparator(
-  (token: UserToken) => ImportantCkTokenIds.indexOf(token.universeId.toText())
-);
+// TODO: update unit tests
+export const compareTokensByImportance = ({
+  importedTokenIds,
+}: {
+  importedTokenIds: Set<string>;
+}) =>
+  createDescendingComparator((token: UserToken) => {
+    const ckKnownIndex = ImportantCkTokenIds.indexOf(token.universeId.toText());
+    if (ckKnownIndex >= 0) {
+      return ckKnownIndex;
+    }
+
+    return importedTokenIds.has(token.universeId.toText()) ? 0 : -1;
+  });
 
 export const compareTokensAlphabetically = createAscendingComparator(
   ({ title }: UserToken) => title.toLowerCase()
 );
 
-export const compareTokensForTokensTable = mergeComparators([
-  compareTokensIcpFirst,
-  compareTokensWithBalanceFirst,
-  compareTokensByImportance,
-  compareTokensAlphabetically,
-]);
+// TODO: update unit tests
+export const compareTokensForTokensTable = ({
+  importedTokenIds,
+}: {
+  importedTokenIds: Set<string>;
+}) =>
+  mergeComparators([
+    compareTokensIcpFirst,
+    compareTokensWithBalanceOrImportedFirst({ importedTokenIds }),
+    compareTokensWithBalanceFirst,
+    compareTokensByImportance({ importedTokenIds }),
+    compareTokensAlphabetically,
+  ]);

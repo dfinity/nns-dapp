@@ -6,6 +6,7 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import {
+  fetchIcrcTokenMetaData,
   getIcrcAccountIdentity,
   loadAccounts,
   loadIcrcToken,
@@ -429,6 +430,36 @@ describe("icrc-accounts-services", () => {
       const finalAccount =
         get(icrcAccountsStore)[ledgerCanisterId.toText()]?.accounts[0];
       expect(finalAccount.balanceUlps).toEqual(balanceE8s);
+    });
+  });
+
+  describe("fetchIcrcTokenMetaData", () => {
+    it("calls queryIcrcToken from icrc ledger api", async () => {
+      const result = await fetchIcrcTokenMetaData({
+        ledgerCanisterId,
+      });
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: false,
+        canisterId: ledgerCanisterId,
+      });
+      expect(result).toEqual(mockToken);
+    });
+
+    it("returns null on error", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(undefined);
+
+      const result = await fetchIcrcTokenMetaData({
+        ledgerCanisterId,
+      });
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: false,
+        canisterId: ledgerCanisterId,
+      });
+      expect(result).toEqual(null);
     });
   });
 });

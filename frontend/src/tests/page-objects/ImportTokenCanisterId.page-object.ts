@@ -6,9 +6,15 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class ImportTokenCanisterIdPo extends BasePageObject {
   private static readonly TID = "import-token-canister-id-component";
 
-  static under(element: PageObjectElement): ImportTokenCanisterIdPo {
+  static under({
+    element,
+    testId,
+  }: {
+    element: PageObjectElement;
+    testId?: string;
+  }): ImportTokenCanisterIdPo {
     return new ImportTokenCanisterIdPo(
-      element.byTestId(ImportTokenCanisterIdPo.TID)
+      element.byTestId(testId ?? ImportTokenCanisterIdPo.TID)
     );
   }
 
