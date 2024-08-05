@@ -17,12 +17,12 @@ import {
 import { TokenAmountV2 } from "@dfinity/utils";
 
 describe("tokens-table.utils", () => {
-  const tokenWithBalance = (amount: bigint) =>
+  const tokenWithBalance = ({ id, amount }: { id: number; amount: bigint }) =>
     createUserToken({
-      universeId: principal(Number(amount)),
+      universeId: principal(id),
       balance: TokenAmountV2.fromUlps({
         amount,
-        token: { name: `T${amount}`, symbol: `T${amount}`, decimals: 8 },
+        token: { name: `T${id}`, symbol: `T${id}`, decimals: 8 },
       }),
     });
   const ckBTCToken = createUserToken({
@@ -54,26 +54,26 @@ describe("tokens-table.utils", () => {
     it("should keep tokens with balance first", () => {
       expect(
         compareTokensWithBalanceFirst(
-          tokenWithBalance(1n),
-          tokenWithBalance(0n)
+          tokenWithBalance({ id: 1, amount: 1n }),
+          tokenWithBalance({ id: 0, amount: 0n })
         )
       ).toEqual(-1);
       expect(
         compareTokensWithBalanceFirst(
-          tokenWithBalance(0n),
-          tokenWithBalance(1n)
+          tokenWithBalance({ id: 0, amount: 0n }),
+          tokenWithBalance({ id: 1, amount: 1n })
         )
       ).toEqual(1);
       expect(
         compareTokensWithBalanceFirst(
-          tokenWithBalance(0n),
-          tokenWithBalance(0n)
+          tokenWithBalance({ id: 0, amount: 0n }),
+          tokenWithBalance({ id: 0, amount: 0n })
         )
       ).toEqual(0);
       expect(
         compareTokensWithBalanceFirst(
-          tokenWithBalance(1n),
-          tokenWithBalance(1n)
+          tokenWithBalance({ id: 1, amount: 1n }),
+          tokenWithBalance({ id: 1, amount: 1n })
         )
       ).toEqual(0);
     });
@@ -82,12 +82,12 @@ describe("tokens-table.utils", () => {
       expect(
         compareTokensWithBalanceFirst(
           createUserTokenLoading(),
-          tokenWithBalance(1n)
+          tokenWithBalance({ id: 1, amount: 1n })
         )
       ).toEqual(1);
       expect(
         compareTokensWithBalanceFirst(
-          tokenWithBalance(1n),
+          tokenWithBalance({ id: 1, amount: 1n }),
           createUserTokenLoading()
         )
       ).toEqual(-1);
@@ -96,21 +96,21 @@ describe("tokens-table.utils", () => {
 
   describe("compareTokensByImportance", () => {
     it("should sort tokens by importance", () => {
-      const token0 = tokenWithBalance(0n);
+      const token0 = tokenWithBalance({ id: 0, amount: 0n });
       const expectedOrder = [ckBTCToken, ckETHTToken, ckUSDCToken, token0];
       expect(
         [token0, ckUSDCToken, ckETHTToken, ckBTCToken].sort(
-          compareTokensByImportance({ importedTokenIds: new Set() })
+          compareTokensByImportance
         )
       ).toEqual(expectedOrder);
       expect(
         [ckBTCToken, ckETHTToken, ckUSDCToken, token0].sort(
-          compareTokensByImportance({ importedTokenIds: new Set() })
+          compareTokensByImportance
         )
       ).toEqual(expectedOrder);
       expect(
         [ckETHTToken, ckBTCToken, token0, ckUSDCToken].sort(
-          compareTokensByImportance({ importedTokenIds: new Set() })
+          compareTokensByImportance
         )
       ).toEqual(expectedOrder);
     });
