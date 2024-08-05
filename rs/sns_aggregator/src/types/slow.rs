@@ -130,7 +130,7 @@ pub fn logo_binary(data_url: &str) -> Vec<u8> {
 }
 
 /// Slowly changing information about an SNS canister's swap state.
-#[derive(candid::CandidType, candid::Deserialize, Clone, Debug, PartialEq, serde::Serialize)]
+#[derive(candid::CandidType, candid::Deserialize, Clone, Debug, serde::Serialize)]
 pub struct SlowSwapState {
     /// Slowly changing information extracted directly from an SNS canister.
     pub swap: Option<SlowSwap>,
@@ -147,7 +147,7 @@ impl From<&GetStateResponse> for SlowSwapState {
 }
 
 /// Slow information about an SNS extracted from its swap canister.
-#[derive(candid::CandidType, candid::Deserialize, Clone, Debug, PartialEq, serde::Serialize)]
+#[derive(candid::CandidType, candid::Deserialize, Clone, Debug, serde::Serialize)]
 pub struct SlowSwap {
     /// The current lifecycle of the swap.
     pub lifecycle: i32,
