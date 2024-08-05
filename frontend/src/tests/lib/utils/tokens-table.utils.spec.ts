@@ -5,7 +5,6 @@ import {
   compareTokensAlphabetically,
   compareTokensByImportance,
   compareTokensIcpFirst,
-  compareTokensWithBalanceFirst,
   compareTokensWithBalanceOrImportedFirst,
 } from "$lib/utils/tokens-table.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
@@ -13,7 +12,6 @@ import {
   ckBTCTokenBase,
   createIcpUserToken,
   createUserToken,
-  createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
 import { TokenAmountV2 } from "@dfinity/utils";
 
@@ -48,50 +46,6 @@ describe("tokens-table.utils", () => {
       expect(compareTokensIcpFirst(icpToken, ckBTCUserToken)).toEqual(-1);
       expect(compareTokensIcpFirst(ckBTCUserToken, icpToken)).toEqual(1);
       expect(compareTokensIcpFirst(icpToken, icpToken)).toEqual(0);
-    });
-  });
-
-  describe("compareTokensWithBalanceFirst", () => {
-    it("should keep tokens with balance first", () => {
-      expect(
-        compareTokensWithBalanceFirst(
-          tokenWithBalance({ id: 1, amount: 1n }),
-          tokenWithBalance({ id: 0, amount: 0n })
-        )
-      ).toEqual(-1);
-      expect(
-        compareTokensWithBalanceFirst(
-          tokenWithBalance({ id: 0, amount: 0n }),
-          tokenWithBalance({ id: 1, amount: 1n })
-        )
-      ).toEqual(1);
-      expect(
-        compareTokensWithBalanceFirst(
-          tokenWithBalance({ id: 0, amount: 0n }),
-          tokenWithBalance({ id: 0, amount: 0n })
-        )
-      ).toEqual(0);
-      expect(
-        compareTokensWithBalanceFirst(
-          tokenWithBalance({ id: 1, amount: 1n }),
-          tokenWithBalance({ id: 1, amount: 1n })
-        )
-      ).toEqual(0);
-    });
-
-    it("should treat token in loading state as having a balance of 0", () => {
-      expect(
-        compareTokensWithBalanceFirst(
-          createUserTokenLoading(),
-          tokenWithBalance({ id: 1, amount: 1n })
-        )
-      ).toEqual(1);
-      expect(
-        compareTokensWithBalanceFirst(
-          tokenWithBalance({ id: 1, amount: 1n }),
-          createUserTokenLoading()
-        )
-      ).toEqual(-1);
     });
   });
 
