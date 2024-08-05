@@ -32,6 +32,19 @@ const getLocationFromIpLocation = async (): Promise<CountryCode> => {
   return data.country_code2;
 };
 
+// https://api.ip2location.io/
+const getLocationFromIp2LocationIo = async (): Promise<CountryCode> => {
+  const BASE_URL = "https://api.ip2location.io";
+  const response = await fetch(`${BASE_URL}/`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch user location from IP2Location.io");
+  }
+
+  const data = await response.json();
+  return data.country_code;
+};
+
 /**
  * Fetches the user's country location two different services.
  *
@@ -41,6 +54,10 @@ export const queryUserCountryLocation = async (): Promise<CountryCode> => {
   try {
     return await getLocationFromGeoIP();
   } catch (_) {
-    return await getLocationFromIpLocation();
+    try {
+      return await getLocationFromIpLocation();
+    } catch (_) {
+      return await getLocationFromIp2LocationIo();
+    }
   }
 };
