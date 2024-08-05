@@ -319,7 +319,7 @@ export const receiveMockBtc = async ({
   const agent = await HttpAgent.create({
     host: HOST,
     verifyQuerySignatures: false,
-    shouldFetchRootKey: true
+    shouldFetchRootKey: true,
   });
   const actor = Actor.createActor(mockBitcoinIdlFactory, {
     agent,
