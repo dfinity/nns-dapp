@@ -6,6 +6,7 @@ import {
   compareTokensByImportance,
   compareTokensIcpFirst,
   compareTokensWithBalanceFirst,
+  compareTokensWithBalanceOrImportedFirst,
 } from "$lib/utils/tokens-table.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
@@ -113,6 +114,76 @@ describe("tokens-table.utils", () => {
           compareTokensByImportance
         )
       ).toEqual(expectedOrder);
+    });
+  });
+
+  describe("compareTokensWithBalanceOrImportedFirst", () => {
+    const token0 = tokenWithBalance({ id: 0, amount: 0n });
+    const token1 = tokenWithBalance({ id: 1, amount: 1n });
+    const importedTokenWithBalance = tokenWithBalance({ id: 2, amount: 1n });
+    const importedTokenNoBalance = tokenWithBalance({ id: 3, amount: 0n });
+    const importedTokenIds = new Set([
+      importedTokenWithBalance.universeId.toText(),
+      importedTokenNoBalance.universeId.toText(),
+    ]);
+
+    it("should compare by balance", () => {
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token1, token0)
+      ).toEqual(-1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token0, token1)
+      ).toEqual(1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token1, token1)
+      ).toEqual(0);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token0, token0)
+      ).toEqual(0);
+    });
+
+    it("should compare by imported", () => {
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(importedTokenNoBalance, token0)
+      ).toEqual(-1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token0, importedTokenNoBalance)
+      ).toEqual(1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(importedTokenWithBalance, importedTokenNoBalance)
+      ).toEqual(0);
+    });
+
+    it("should compare by balance and imported", () => {
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(importedTokenNoBalance, token1)
+      ).toEqual(0);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token0, importedTokenNoBalance)
+      ).toEqual(1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(importedTokenWithBalance, token0)
+      ).toEqual(-1);
     });
   });
 
