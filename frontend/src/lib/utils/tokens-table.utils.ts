@@ -21,7 +21,6 @@ export const compareTokensWithBalanceFirst = createDescendingComparator(
   (token: UserToken) => getTokenBalanceOrZero(token) > 0n
 );
 
-// TODO: add unit tests
 export const compareTokensWithBalanceOrImportedFirst = ({
   importedTokenIds,
 }: {
@@ -43,20 +42,9 @@ const ImportantCkTokenIds = [
 ]
   // To place other tokens (which get an index of -1) at the bottom.
   .reverse();
-// TODO: update unit tests
-export const compareTokensByImportance = ({
-  importedTokenIds,
-}: {
-  importedTokenIds: Set<string>;
-}) =>
-  createDescendingComparator((token: UserToken) => {
-    const ckKnownIndex = ImportantCkTokenIds.indexOf(token.universeId.toText());
-    if (ckKnownIndex >= 0) {
-      return ckKnownIndex;
-    }
-
-    return importedTokenIds.has(token.universeId.toText()) ? 0 : -1;
-  });
+export const compareTokensByImportance = createDescendingComparator(
+  (token: UserToken) => ImportantCkTokenIds.indexOf(token.universeId.toText())
+);
 
 export const compareTokensAlphabetically = createAscendingComparator(
   ({ title }: UserToken) => title.toLowerCase()
@@ -71,7 +59,6 @@ export const compareTokensForTokensTable = ({
   mergeComparators([
     compareTokensIcpFirst,
     compareTokensWithBalanceOrImportedFirst({ importedTokenIds }),
-    compareTokensWithBalanceFirst,
-    compareTokensByImportance({ importedTokenIds }),
+    compareTokensByImportance,
     compareTokensAlphabetically,
   ]);
