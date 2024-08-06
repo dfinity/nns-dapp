@@ -131,6 +131,7 @@ export const anonymizeNeuronInfo = async (
     retrievedAtTimestampSeconds,
     votingPower,
     ageSeconds,
+    visibility,
     fullNeuron,
   } = neuron;
 
@@ -145,6 +146,7 @@ export const anonymizeNeuronInfo = async (
     retrievedAtTimestampSeconds,
     votingPower: await anonymizeAmount(votingPower),
     ageSeconds,
+    visibility,
     fullNeuron: await anonymizeFullNeuron(fullNeuron),
   };
 };
@@ -191,6 +193,7 @@ export const anonymizeFullNeuron = async (
     dissolveState,
     followees,
     spawnAtTimesSeconds,
+    visibility,
   } = neuron;
 
   return {
@@ -215,6 +218,7 @@ export const anonymizeFullNeuron = async (
     spawnAtTimesSeconds,
     dissolveState,
     followees: await mapPromises(followees, anonymizeFollowees),
+    visibility,
   };
 };
 

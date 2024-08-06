@@ -6,7 +6,9 @@ import { buildNeuronUrl } from "$lib/utils/navigation.utils";
 import {
   getNeuronTags,
   isSpawning,
+  neuronAvailableMaturity,
   neuronStake,
+  neuronStakedMaturity,
 } from "$lib/utils/neuron.utils";
 import {
   createAscendingComparator,
@@ -15,8 +17,10 @@ import {
 } from "$lib/utils/responsive-table.utils";
 import {
   getSnsDissolveDelaySeconds,
+  getSnsNeuronAvailableMaturity,
   getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
+  getSnsNeuronStakedMaturity,
   getSnsNeuronState,
   getSnsNeuronTags,
 } from "$lib/utils/sns-neuron.utils";
@@ -24,12 +28,7 @@ import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo } from "@dfinity/nns";
 import { NeuronState } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
-import {
-  ICPToken,
-  TokenAmountV2,
-  fromNullable,
-  type Token,
-} from "@dfinity/utils";
+import { ICPToken, TokenAmountV2, type Token } from "@dfinity/utils";
 
 export const tableNeuronsFromNeuronInfos = ({
   neuronInfos,
@@ -60,8 +59,8 @@ export const tableNeuronsFromNeuronInfos = ({
         amount: neuronStake(neuronInfo),
         token: ICPToken,
       }),
-      availableMaturity: neuronInfo.fullNeuron?.maturityE8sEquivalent ?? 0n,
-      stakedMaturity: neuronInfo.fullNeuron?.stakedMaturityE8sEquivalent ?? 0n,
+      availableMaturity: neuronAvailableMaturity(neuronInfo),
+      stakedMaturity: neuronStakedMaturity(neuronInfo),
       dissolveDelaySeconds,
       state: neuronInfo.state,
       tags: getNeuronTags({
@@ -102,9 +101,8 @@ export const tableNeuronsFromSnsNeurons = ({
         amount: getSnsNeuronStake(snsNeuron),
         token,
       }),
-      availableMaturity: snsNeuron.maturity_e8s_equivalent ?? 0n,
-      stakedMaturity:
-        fromNullable(snsNeuron.staked_maturity_e8s_equivalent) ?? 0n,
+      availableMaturity: getSnsNeuronAvailableMaturity(snsNeuron),
+      stakedMaturity: getSnsNeuronStakedMaturity(snsNeuron),
       dissolveDelaySeconds,
       state: getSnsNeuronState(snsNeuron),
       tags: getSnsNeuronTags({

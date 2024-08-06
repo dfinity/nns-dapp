@@ -1,8 +1,9 @@
 use crate::accounts_store::histogram::AccountsStoreHistogram;
 use crate::accounts_store::{
     AccountDetails, AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest,
-    DetachCanisterResponse, NamedCanister, RegisterHardwareWalletRequest, RegisterHardwareWalletResponse,
-    RenameCanisterRequest, RenameCanisterResponse, RenameSubAccountRequest, RenameSubAccountResponse,
+    DetachCanisterResponse, GetImportedTokensResponse, ImportedTokens, NamedCanister, RegisterHardwareWalletRequest,
+    RegisterHardwareWalletResponse, RenameCanisterRequest, RenameCanisterResponse, RenameSubAccountRequest,
+    RenameSubAccountResponse, SetImportedTokensResponse,
 };
 use crate::arguments::{set_canister_arguments, CanisterArguments, CANISTER_ARGUMENTS};
 use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
@@ -251,6 +252,26 @@ pub fn detach_canister() {
 fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterResponse {
     let principal = dfn_core::api::caller();
     STATE.with(|s| s.accounts_store.borrow_mut().detach_canister(principal, request))
+}
+
+#[export_name = "canister_update set_imported_tokens"]
+pub fn set_imported_tokens() {
+    over(candid_one, set_imported_tokens_impl);
+}
+
+fn set_imported_tokens_impl(settings: ImportedTokens) -> SetImportedTokensResponse {
+    let principal = dfn_core::api::caller();
+    STATE.with(|s| s.accounts_store.borrow_mut().set_imported_tokens(principal, settings))
+}
+
+#[export_name = "canister_query get_imported_tokens"]
+pub fn get_imported_tokens() {
+    over(candid_one, |()| get_imported_tokens_impl());
+}
+
+fn get_imported_tokens_impl() -> GetImportedTokensResponse {
+    let principal = dfn_core::api::caller();
+    STATE.with(|s| s.accounts_store.borrow_mut().get_imported_tokens(principal))
 }
 
 #[export_name = "canister_update get_proposal_payload"]

@@ -48,6 +48,17 @@ export const idlFactory = ({ IDL }) => {
     name: IDL.Text,
     canister_id: IDL.Principal,
   });
+  const ImportedToken = IDL.Record({
+    index_canister_id: IDL.Opt(IDL.Principal),
+    ledger_canister_id: IDL.Principal,
+  });
+  const ImportedTokens = IDL.Record({
+    imported_tokens: IDL.Vec(ImportedToken),
+  });
+  const GetImportedTokensResponse = IDL.Variant({
+    Ok: ImportedTokens,
+    AccountNotFound: IDL.Null,
+  });
   const BlockHeight = IDL.Nat64;
   const NeuronId = IDL.Nat64;
   const GetProposalPayloadResponse = IDL.Variant({
@@ -108,6 +119,11 @@ export const idlFactory = ({ IDL }) => {
     SubAccountNotFound: IDL.Null,
     NameTooLong: IDL.Null,
   });
+  const SetImportedTokensResponse = IDL.Variant({
+    Ok: IDL.Null,
+    AccountNotFound: IDL.Null,
+    TooManyImportedTokens: IDL.Record({ limit: IDL.Int32 }),
+  });
   return IDL.Service({
     add_account: IDL.Func([], [AccountIdentifier], []),
     add_stable_asset: IDL.Func([IDL.Vec(IDL.Nat8)], [], []),
@@ -129,6 +145,7 @@ export const idlFactory = ({ IDL }) => {
     ),
     get_account: IDL.Func([], [GetAccountResponse], []),
     get_canisters: IDL.Func([], [IDL.Vec(CanisterDetails)], []),
+    get_imported_tokens: IDL.Func([], [GetImportedTokensResponse], []),
     get_proposal_payload: IDL.Func(
       [IDL.Nat64],
       [GetProposalPayloadResponse],
@@ -144,6 +161,11 @@ export const idlFactory = ({ IDL }) => {
     rename_sub_account: IDL.Func(
       [RenameSubAccountRequest],
       [RenameSubAccountResponse],
+      []
+    ),
+    set_imported_tokens: IDL.Func(
+      [ImportedTokens],
+      [SetImportedTokensResponse],
       []
     ),
   });

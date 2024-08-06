@@ -20,19 +20,29 @@
       title: $i18n.staking.nervous_systems,
       cellComponent: ProjectTitleCell,
       alignment: "left",
+      templateColumns: ["minmax(min-content, max-content)"],
+    },
+    {
+      title: "",
+      alignment: "left",
       templateColumns: ["1fr"],
     },
     {
       title: $i18n.neuron_detail.stake,
       cellComponent: ProjectStakeCell,
       alignment: "right",
+      templateColumns: ["max-content"],
+    },
+    {
+      title: "",
+      alignment: "left",
       templateColumns: ["1fr"],
     },
     {
       title: $i18n.neurons.title,
       cellComponent: ProjectNeuronsCell,
       alignment: "right",
-      templateColumns: ["1fr"],
+      templateColumns: ["max-content"],
     },
     {
       title: "",

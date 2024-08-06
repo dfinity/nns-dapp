@@ -11,12 +11,15 @@ import {
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
+  TooManyImportedTokensError,
   UnknownProposalPayloadError,
 } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { NNSDappService } from "$lib/canisters/nns-dapp/nns-dapp.idl";
 import type {
   CreateSubAccountResponse,
   GetAccountResponse,
+  GetImportedTokensResponse,
+  SetImportedTokensResponse,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanister, mockCanisters } from "$tests/mocks/canisters.mock";
@@ -24,6 +27,7 @@ import {
   mockAccountDetails,
   mockSubAccountDetails,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { mockImportedToken } from "$tests/mocks/icrc-accounts.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";
@@ -472,5 +476,139 @@ describe("NNSDapp", () => {
       });
 
     expect(call).rejects.toThrowError(UnknownProposalPayloadError);
+  });
+
+  describe("NNSDapp.getImportedTokens", () => {
+    it("should call get_imported_tokens", async () => {
+      const service = mock<NNSDappService>();
+      service.get_imported_tokens.mockResolvedValue({
+        Ok: {
+          imported_tokens: [],
+        },
+      });
+      const nnsDapp = await createNnsDapp(service);
+
+      expect(service.get_imported_tokens).not.toBeCalled();
+
+      await nnsDapp.getImportedTokens({ certified: true });
+
+      expect(service.get_imported_tokens).toBeCalledTimes(1);
+    });
+
+    it("should return imported tokens", async () => {
+      const service = mock<NNSDappService>();
+      service.get_imported_tokens.mockResolvedValue({
+        Ok: {
+          imported_tokens: [mockImportedToken],
+        },
+      });
+      const nnsDapp = await createNnsDapp(service);
+      const result = await nnsDapp.getImportedTokens({ certified: true });
+
+      expect(result).toEqual({
+        imported_tokens: [mockImportedToken],
+      });
+    });
+
+    it("throws error if account not found", async () => {
+      const response: GetImportedTokensResponse = {
+        AccountNotFound: null,
+      };
+      const service = mock<NNSDappService>();
+      service.get_imported_tokens.mockResolvedValue(response);
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () => nnsDapp.getImportedTokens({ certified: true });
+
+      await expect(call).rejects.toThrow(AccountNotFoundError);
+    });
+
+    it("should provide generic error message", async () => {
+      const response = {
+        UnexpectedError: "message",
+      };
+      const service = mock<NNSDappService>();
+      service.get_imported_tokens.mockResolvedValue(
+        response as unknown as GetImportedTokensResponse
+      );
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () => nnsDapp.getImportedTokens({ certified: true });
+
+      await expect(call).rejects.toThrow(
+        'Error getting imported tokens {"UnexpectedError":"message"}'
+      );
+    });
+  });
+
+  describe("NNSDapp.setImportedTokens", () => {
+    it("should call set_imported_tokens", async () => {
+      const service = mock<NNSDappService>();
+      service.set_imported_tokens.mockResolvedValue({
+        Ok: null,
+      });
+      const nnsDapp = await createNnsDapp(service);
+
+      expect(service.set_imported_tokens).not.toBeCalled();
+
+      await nnsDapp.setImportedTokens([mockImportedToken]);
+
+      expect(service.set_imported_tokens).toBeCalledTimes(1);
+      expect(service.set_imported_tokens).toBeCalledWith({
+        imported_tokens: [mockImportedToken],
+      });
+    });
+
+    it("throws error if account not found", async () => {
+      const response: SetImportedTokensResponse = {
+        AccountNotFound: null,
+      };
+      const service = mock<NNSDappService>();
+      service.set_imported_tokens.mockResolvedValue(response);
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () => nnsDapp.setImportedTokens([]);
+
+      await expect(call).rejects.toThrow(AccountNotFoundError);
+    });
+
+    it("throws error if the limit has been reached", async () => {
+      const response: SetImportedTokensResponse = {
+        TooManyImportedTokens: { limit: 10 },
+      };
+      const service = mock<NNSDappService>();
+      service.set_imported_tokens.mockResolvedValue(response);
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () => nnsDapp.setImportedTokens([]);
+
+      await expect(call).rejects.toThrowError(
+        new TooManyImportedTokensError("error__imported_tokens.too_many", {
+          limit: "10",
+        })
+      );
+    });
+
+    it("should provide generic error message", async () => {
+      const response = {
+        UnexpectedError: "message",
+      };
+      const service = mock<NNSDappService>();
+      service.set_imported_tokens.mockResolvedValue(
+        response as unknown as SetImportedTokensResponse
+      );
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () => nnsDapp.setImportedTokens([]);
+
+      await expect(call).rejects.toThrow(
+        'Error setting imported tokens {"UnexpectedError":"message"}'
+      );
+    });
   });
 });

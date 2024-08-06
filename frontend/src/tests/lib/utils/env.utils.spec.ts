@@ -38,6 +38,12 @@ describe("env-utils", () => {
 
       setOrigin("https://wallet.ic0.app");
       expect(isNnsAlternativeOrigin()).toBeTruthy();
+
+      setOrigin("https://beta.nns.internetcomputer.org");
+      expect(isNnsAlternativeOrigin()).toBeTruthy();
+
+      setOrigin("https://beta.nns.ic0.app");
+      expect(isNnsAlternativeOrigin()).toBeTruthy();
     });
 
     it("should not be an alternative origin", () => {
@@ -54,6 +60,12 @@ describe("env-utils", () => {
       expect(isNnsAlternativeOrigin()).toBe(false);
 
       setOrigin("https://ii.internetcomputer.org");
+      expect(isNnsAlternativeOrigin()).toBe(false);
+
+      setOrigin("https://beta.internetcomputer.org");
+      expect(isNnsAlternativeOrigin()).toBe(false);
+
+      setOrigin("https://beta.ic0.app");
       expect(isNnsAlternativeOrigin()).toBe(false);
     });
   });

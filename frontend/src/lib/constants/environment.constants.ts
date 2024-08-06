@@ -64,6 +64,7 @@ export const IS_TESTNET: boolean =
   FETCH_ROOT_KEY === true &&
   !(HOST.includes(".icp-api.io") || HOST.includes(".ic0.app"));
 
-// TODO: display test environment warning on mainnet according configuration
-// DFX_NETWORK === new_environment_to_be_configured
-export const IS_TEST_MAINNET = false;
+// This is the network name used in the dfx.json file
+const BETA_TEST_DFX_NETWORK = "app";
+
+export const IS_TEST_MAINNET = envVars.dfxNetwork === BETA_TEST_DFX_NETWORK;
