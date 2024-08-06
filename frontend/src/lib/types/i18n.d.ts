@@ -36,6 +36,7 @@ interface I18nCore {
   send_with_token: string;
   collapse_all: string;
   or: string;
+  learn_more: string;
 }
 
 interface I18nError {
@@ -256,6 +257,8 @@ interface I18nStaking {
 interface I18nNeurons {
   title: string;
   text: string;
+  rename_topic_message: string;
+  rename_topic_learn_more_label: string;
   stake_token: string;
   merge_neurons: string;
   merge_neurons_modal_title: string;
