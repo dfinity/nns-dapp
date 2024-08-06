@@ -152,25 +152,6 @@ export const createUserToken = (params: Partial<UserTokenData> = {}) => {
   };
 };
 
-export const createTokenWithBalance = ({
-  id,
-  amount,
-}: {
-  id: number;
-  amount: bigint;
-}) =>
-  createUserToken({
-    universeId: principal(id),
-    balance: TokenAmountV2.fromUlps({
-      amount,
-      token: {
-        name: `T${id}`,
-        symbol: `T${id}`,
-        decimals: 8,
-      },
-    }),
-  }) as UserTokenData;
-
 export const createIcpUserToken = (params: Partial<UserTokenData> = {}) => ({
   ...icpTokenNoBalance,
   ...params,

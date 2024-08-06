@@ -1,18 +1,20 @@
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import type { UserTokenData } from "$lib/types/tokens-page";
 import {
   compareTokensAlphabetically,
   compareTokensByImportance,
   compareTokensIcpFirst,
   compareTokensWithBalanceOrImportedFirst,
 } from "$lib/utils/tokens-table.utils";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   ckBTCTokenBase,
   createIcpUserToken,
-  createTokenWithBalance,
   createUserToken,
 } from "$tests/mocks/tokens-page.mock";
+import { TokenAmountV2 } from "@dfinity/utils";
 
 describe("tokens-table.utils", () => {
   const ckBTCToken = createUserToken({
@@ -24,6 +26,24 @@ describe("tokens-table.utils", () => {
   const ckUSDCToken = createUserToken({
     universeId: CKUSDC_UNIVERSE_CANISTER_ID,
   });
+  const createTokenWithBalance = ({
+    id,
+    amount,
+  }: {
+    id: number;
+    amount: bigint;
+  }) =>
+    createUserToken({
+      universeId: principal(id),
+      balance: TokenAmountV2.fromUlps({
+        amount,
+        token: {
+          name: `T${id}`,
+          symbol: `T${id}`,
+          decimals: 8,
+        },
+      }),
+    }) as UserTokenData;
 
   beforeEach(() => {
     vi.clearAllMocks();
