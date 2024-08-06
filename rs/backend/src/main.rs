@@ -259,6 +259,7 @@ pub fn set_imported_tokens() {
     over(candid_one, set_imported_tokens_impl);
 }
 
+#[candid_method(update, rename = "set_imported_tokens")]
 fn set_imported_tokens_impl(settings: ImportedTokens) -> SetImportedTokensResponse {
     let principal = dfn_core::api::caller();
     STATE.with(|s| s.accounts_store.borrow_mut().set_imported_tokens(principal, settings))
@@ -269,6 +270,7 @@ pub fn get_imported_tokens() {
     over(candid_one, |()| get_imported_tokens_impl());
 }
 
+#[candid_method(query, rename = "get_imported_tokens")]
 fn get_imported_tokens_impl() -> GetImportedTokensResponse {
     let principal = dfn_core::api::caller();
     STATE.with(|s| s.accounts_store.borrow_mut().get_imported_tokens(principal))
