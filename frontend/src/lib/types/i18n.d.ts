@@ -950,14 +950,14 @@ interface I18nAuth_neurons {
   title: string;
 }
 
-interface I18nAuth_proposals { }
+interface I18nAuth_proposals {}
 
 interface I18nAuth_canisters {
   title: string;
   text: string;
 }
 
-interface I18nAuth_sns { }
+interface I18nAuth_sns {}
 
 interface I18nUniverse {
   select_token: string;
