@@ -483,4 +483,4 @@ pub enum GetAccountResponse {
 // This has to be at the end of the file for the test to be able to find all
 // the candid method.
 #[cfg(test)]
-mod candid_test;
+mod candid_interface_test;
