@@ -2210,7 +2210,7 @@ describe("neuron-utils", () => {
       },
     };
 
-    it("should not return deprecated or disabled topics", () => {
+    it("should not return deprecated topics", () => {
       expect(topicsToFollow(neuronWithoutManageNeuron)).toEqual([
         Topic.Unspecified,
         Topic.Governance,
@@ -2226,6 +2226,8 @@ describe("neuron-utils", () => {
         Topic.ReplicaVersionManagement,
         Topic.ApiBoundaryNodeManagement,
         Topic.SubnetRental,
+        Topic.ProtocolCanisterManagement,
+        Topic.ServiceNervousSystemManagement,
         Topic.ExchangeRate,
       ]);
       expect(topicsToFollow(neuronWithoutFollowees)).toEqual([
@@ -2243,6 +2245,8 @@ describe("neuron-utils", () => {
         Topic.ReplicaVersionManagement,
         Topic.ApiBoundaryNodeManagement,
         Topic.SubnetRental,
+        Topic.ProtocolCanisterManagement,
+        Topic.ServiceNervousSystemManagement,
         Topic.ExchangeRate,
       ]);
     });
@@ -2264,6 +2268,8 @@ describe("neuron-utils", () => {
         Topic.ReplicaVersionManagement,
         Topic.ApiBoundaryNodeManagement,
         Topic.SubnetRental,
+        Topic.ProtocolCanisterManagement,
+        Topic.ServiceNervousSystemManagement,
         Topic.ExchangeRate,
       ]);
     });

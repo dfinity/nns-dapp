@@ -16,7 +16,6 @@ import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
   TOPICS_TO_FOLLOW_NNS,
-  TOPICS_WITH_FOLLOWING_DISABLED,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
@@ -822,11 +821,7 @@ export const topicsToFollow = (neuron: NeuronInfo): Topic[] =>
   (followeesByTopic({ neuron, topic: Topic.ManageNeuron }) === undefined
     ? TOPICS_TO_FOLLOW_NNS.filter((topic) => topic !== Topic.ManageNeuron)
     : TOPICS_TO_FOLLOW_NNS
-  ).filter(
-    (topic) =>
-      !DEPRECATED_TOPICS.includes(topic) &&
-      !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
-  );
+  ).filter((topic) => !DEPRECATED_TOPICS.includes(topic));
 
 // NeuronInfo is public info.
 // fullNeuron is only for users with access.
