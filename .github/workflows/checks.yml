@@ -38,7 +38,10 @@ jobs:
                   exit 1
           }
   spelling:
-    runs-on: ubuntu-20.04
+    runs-on:
+      labels: dind-small
+    container:
+      image: ghcr.io/dfinity/minimal-runner-image:0.1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,10 +55,10 @@ jobs:
       - name: Spellcheck changelog
         run: scripts/spellcheck-changelog
   cargo-tests:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-20.04]
+    runs-on:
+      labels: dind-small
+    container:
+      image: ghcr.io/dfinity/minimal-runner-image:0.1
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
@@ -159,7 +162,10 @@ jobs:
           fi
   release-templating-works:
     name: Release template
-    runs-on: ubuntu-20.04
+    runs-on:
+      labels: dind-small
+    container:
+      image: ghcr.io/dfinity/minimal-runner-image:0.1
     steps:
       - uses: actions/checkout@v4
         with:
