@@ -39,7 +39,7 @@ export class NnsNeuronsPo extends BasePageObject {
     return this.isPresent("spinner");
   }
 
-  async hasTopicRenameMessage(): Promise<boolean> {
-    return this.isPresent("topic-rename-message");
+  async hasTopicSplitMessage(): Promise<boolean> {
+    return this.isPresent("topic-split-message");
   }
 }

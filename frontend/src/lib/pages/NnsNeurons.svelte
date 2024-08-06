@@ -33,16 +33,16 @@
   {#if isLoading}
     <Spinner />
   {:else if tableNeurons.length > 0}
-    <div class="topic-rename-message" data-tid="topic-rename-message">
+    <div class="topic-split-message" data-tid="topic-split-message">
       <div class="icon-info">
         <IconInfo />
       </div>
       <span>
-        {$i18n.neurons.rename_topic_message}
+        {$i18n.neurons.split_topic_message}
         <a
           href="https://forum.dfinity.org/t/refine-nns-proposals-topics/32125"
           rel="noopener noreferrer"
-          aria-label={$i18n.neurons.rename_topic_learn_more_label}
+          aria-label={$i18n.neurons.split_topic_learn_more_label}
           target="_blank">{$i18n.core.learn_more}</a
         >
       </span>
@@ -54,7 +54,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  .topic-rename-message {
+  .topic-split-message {
     display: flex;
     gap: var(--padding);
     align-items: center;

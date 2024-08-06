@@ -257,8 +257,8 @@ interface I18nStaking {
 interface I18nNeurons {
   title: string;
   text: string;
-  rename_topic_message: string;
-  rename_topic_learn_more_label: string;
+  split_topic_message: string;
+  split_topic_learn_more_label: string;
   stake_token: string;
   merge_neurons: string;
   merge_neurons_modal_title: string;
@@ -950,14 +950,14 @@ interface I18nAuth_neurons {
   title: string;
 }
 
-interface I18nAuth_proposals {}
+interface I18nAuth_proposals { }
 
 interface I18nAuth_canisters {
   title: string;
   text: string;
 }
 
-interface I18nAuth_sns {}
+interface I18nAuth_sns { }
 
 interface I18nUniverse {
   select_token: string;

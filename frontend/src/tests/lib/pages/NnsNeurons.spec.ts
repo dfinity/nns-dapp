@@ -107,10 +107,10 @@ describe("NnsNeurons", () => {
       expect(await rows[2].hasGoToDetailButton()).toBe(false);
     });
 
-    it("should render topic rename message", async () => {
+    it("should render topic split message", async () => {
       const po = await renderComponent();
 
-      expect(await po.hasTopicRenameMessage()).toBe(true);
+      expect(await po.hasTopicSplitMessage()).toBe(true);
     });
   });
 
@@ -135,16 +135,10 @@ describe("NnsNeurons", () => {
       expect(await po.hasEmptyMessage()).toBe(true);
     });
 
-    it("should not render topic rename message", async () => {
+    it("should not render topic split message", async () => {
       const po = await renderComponent();
 
-      expect(await po.hasTopicRenameMessage()).toBe(false);
-    });
-
-    it("should not render topic rename message", async () => {
-      const po = await renderComponent();
-
-      expect(await po.hasTopicRenameMessage()).toBe(false);
+      expect(await po.hasTopicSplitMessage()).toBe(false);
     });
   });
 
@@ -172,10 +166,10 @@ describe("NnsNeurons", () => {
       expect(await po.hasEmptyMessage()).toBe(false);
     });
 
-    it("should not render topic rename message", async () => {
+    it("should not render topic split message", async () => {
       const po = await renderComponent();
 
-      expect(await po.hasTopicRenameMessage()).toBe(false);
+      expect(await po.hasTopicSplitMessage()).toBe(false);
     });
   });
 
