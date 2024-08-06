@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_wasm --out ic_sns_wasm.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-18_01-30--github-base/rs/nns/sns-wasm/canister/sns-wasm.did>
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-02_01-30-base/rs/nns/sns-wasm/canister/sns-wasm.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -79,13 +79,19 @@ pub struct NeuronsFundParticipationConstraints {
     pub ideal_matched_participation_function: Option<IdealMatchedParticipationFunction>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Principals {
+    pub principals: Vec<Principal>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CfNeuron {
     pub has_created_neuron_recipes: Option<bool>,
+    pub hotkeys: Option<Principals>,
     pub nns_neuron_id: u64,
     pub amount_icp_e8s: u64,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CfParticipant {
+    pub controller: Option<Principal>,
     pub hotkey_principal: String,
     pub cf_neurons: Vec<CfNeuron>,
 }

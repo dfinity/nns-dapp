@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_swap --out ic_sns_swap.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-18_01-30--github-base/rs/sns/swap/canister/swap.did>
+//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-02_01-30-base/rs/sns/swap/canister/swap.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -41,13 +41,19 @@ pub struct NeuronsFundParticipationConstraints {
     pub ideal_matched_participation_function: Option<IdealMatchedParticipationFunction>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Principals {
+    pub principals: Vec<Principal>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CfNeuron {
     pub has_created_neuron_recipes: Option<bool>,
+    pub hotkeys: Option<Principals>,
     pub nns_neuron_id: u64,
     pub amount_icp_e8s: u64,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CfParticipant {
+    pub controller: Option<Principal>,
     pub hotkey_principal: String,
     pub cf_neurons: Vec<CfNeuron>,
 }
@@ -353,7 +359,9 @@ pub struct NeuronAttributes {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CfInvestment {
+    pub controller: Option<Principal>,
     pub hotkey_principal: String,
+    pub hotkeys: Option<Principals>,
     pub nns_neuron_id: u64,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -463,14 +471,6 @@ pub struct NewSaleTicketResponse {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct NotifyPaymentFailureArg {}
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct OpenRequest {
-    pub cf_participants: Vec<CfParticipant>,
-    pub params: Option<Params>,
-    pub open_sns_token_swap_proposal_id: Option<u64>,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct OpenRet {}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct RefreshBuyerTokensRequest {
     pub confirmation_text: Option<String>,
     pub buyer: String,
@@ -545,9 +545,6 @@ impl Service {
     }
     pub async fn notify_payment_failure(&self, arg0: NotifyPaymentFailureArg) -> CallResult<(Ok2,)> {
         ic_cdk::call(self.0, "notify_payment_failure", (arg0,)).await
-    }
-    pub async fn open(&self, arg0: OpenRequest) -> CallResult<(OpenRet,)> {
-        ic_cdk::call(self.0, "open", (arg0,)).await
     }
     pub async fn refresh_buyer_tokens(
         &self,
