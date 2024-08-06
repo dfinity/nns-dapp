@@ -7,23 +7,14 @@ import {
   compareTokensIcpFirst,
   compareTokensWithBalanceOrImportedFirst,
 } from "$lib/utils/tokens-table.utils";
-import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   ckBTCTokenBase,
   createIcpUserToken,
+  createTokenWithBalance,
   createUserToken,
 } from "$tests/mocks/tokens-page.mock";
-import { TokenAmountV2 } from "@dfinity/utils";
 
 describe("tokens-table.utils", () => {
-  const tokenWithBalance = ({ id, amount }: { id: number; amount: bigint }) =>
-    createUserToken({
-      universeId: principal(id),
-      balance: TokenAmountV2.fromUlps({
-        amount,
-        token: { name: `T${id}`, symbol: `T${id}`, decimals: 8 },
-      }),
-    });
   const ckBTCToken = createUserToken({
     universeId: CKBTC_UNIVERSE_CANISTER_ID,
   });
@@ -51,7 +42,7 @@ describe("tokens-table.utils", () => {
 
   describe("compareTokensByImportance", () => {
     it("should sort tokens by importance", () => {
-      const token0 = tokenWithBalance({ id: 0, amount: 0n });
+      const token0 = createTokenWithBalance({ id: 0, amount: 0n });
       const expectedOrder = [ckBTCToken, ckETHTToken, ckUSDCToken, token0];
       expect(
         [token0, ckUSDCToken, ckETHTToken, ckBTCToken].sort(
@@ -72,10 +63,16 @@ describe("tokens-table.utils", () => {
   });
 
   describe("compareTokensWithBalanceOrImportedFirst", () => {
-    const token0 = tokenWithBalance({ id: 0, amount: 0n });
-    const token1 = tokenWithBalance({ id: 1, amount: 1n });
-    const importedTokenWithBalance = tokenWithBalance({ id: 2, amount: 1n });
-    const importedTokenNoBalance = tokenWithBalance({ id: 3, amount: 0n });
+    const token0 = createTokenWithBalance({ id: 0, amount: 0n });
+    const token1 = createTokenWithBalance({ id: 1, amount: 1n });
+    const importedTokenWithBalance = createTokenWithBalance({
+      id: 2,
+      amount: 1n,
+    });
+    const importedTokenNoBalance = createTokenWithBalance({
+      id: 3,
+      amount: 0n,
+    });
     const importedTokenIds = new Set([
       importedTokenWithBalance.universeId.toText(),
       importedTokenNoBalance.universeId.toText(),
