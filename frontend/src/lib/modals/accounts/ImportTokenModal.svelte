@@ -94,7 +94,7 @@
       labelKey: "import_token.importing",
     });
 
-    await addImportedToken({
+    const { success } = await addImportedToken({
       tokenToAdd: {
         ledgerCanisterId,
         indexCanisterId,
@@ -102,13 +102,15 @@
       importedTokens: $importedTokensStore.importedTokens,
     });
 
-    dispatch("nnsClose");
+    if (success) {
+      dispatch("nnsClose");
 
-    goto(
-      buildWalletUrl({
-        universe: ledgerCanisterId.toText(),
-      })
-    );
+      goto(
+        buildWalletUrl({
+          universe: ledgerCanisterId.toText(),
+        })
+      );
+    }
 
     stopBusy("import-token-importing");
   };
