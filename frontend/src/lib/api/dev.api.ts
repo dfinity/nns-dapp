@@ -316,11 +316,11 @@ export const receiveMockBtc = async ({
   btcAddress: string;
   amountE8s: bigint;
 }) => {
-  const agent = new HttpAgent({
+  const agent = await HttpAgent.create({
     host: HOST,
     verifyQuerySignatures: false,
+    shouldFetchRootKey: true,
   });
-  await agent.fetchRootKey();
   const actor = Actor.createActor(mockBitcoinIdlFactory, {
     agent,
     canisterId: HARD_CODED_BITCOIN_CANISTER_ID,
