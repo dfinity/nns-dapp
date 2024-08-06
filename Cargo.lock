@@ -3765,6 +3765,7 @@ dependencies = [
  "anyhow",
  "base64 0.22.1",
  "candid",
+ "candid_parser",
  "cycles-minting-canister",
  "dfn_candid",
  "dfn_core",
