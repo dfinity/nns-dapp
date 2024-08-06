@@ -3,7 +3,9 @@ import type { TableProject } from "$lib/types/staking";
 import type { Universe } from "$lib/types/universe";
 import { buildNeuronsUrl } from "$lib/utils/navigation.utils";
 import {
+  neuronAvailableMaturity,
   neuronStake,
+  neuronStakedMaturity,
   hasValidStake as nnsHasValidStake,
 } from "$lib/utils/neuron.utils";
 import {
@@ -12,7 +14,9 @@ import {
   mergeComparators,
 } from "$lib/utils/responsive-table.utils";
 import {
+  getSnsNeuronAvailableMaturity,
   getSnsNeuronStake,
+  getSnsNeuronStakedMaturity,
   hasValidStake as snsHasValidStake,
 } from "$lib/utils/sns-neuron.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
@@ -26,23 +30,35 @@ import {
   type Token,
 } from "@dfinity/utils";
 
-const getNnsNeuronCountAndStake = (
+const getNnsNeuronAggregateInfo = (
   nnsNeurons: NeuronInfo[] | undefined
 ): {
   neuronCount: number | undefined;
   stake: bigint | undefined;
   token: Token;
+  availableMaturity: bigint | undefined;
+  stakedMaturity: bigint | undefined;
 } => {
   const neurons = nnsNeurons?.filter(nnsHasValidStake);
   const stake = neurons?.reduce((acc, neuron) => acc + neuronStake(neuron), 0n);
+  const availableMaturity = neurons?.reduce(
+    (acc, neuron) => acc + neuronAvailableMaturity(neuron),
+    0n
+  );
+  const stakedMaturity = neurons?.reduce(
+    (acc, neuron) => acc + neuronStakedMaturity(neuron),
+    0n
+  );
   return {
     neuronCount: neurons?.length,
     stake,
     token: ICPToken,
+    availableMaturity,
+    stakedMaturity,
   };
 };
 
-const getSnsNeuronCountAndStake = ({
+const getSnsNeuronAggregateInfo = ({
   universe,
   snsNeurons,
 }: {
@@ -52,11 +68,21 @@ const getSnsNeuronCountAndStake = ({
   neuronCount: number | undefined;
   stake: bigint | undefined;
   token: Token;
+  availableMaturity: bigint | undefined;
+  stakedMaturity: bigint | undefined;
 } => {
   const neurons =
     snsNeurons[universe.canisterId]?.neurons.filter(snsHasValidStake);
   const stake = neurons?.reduce(
     (acc, neuron) => acc + getSnsNeuronStake(neuron),
+    0n
+  );
+  const availableMaturity = neurons?.reduce(
+    (acc, neuron) => acc + getSnsNeuronAvailableMaturity(neuron),
+    0n
+  );
+  const stakedMaturity = neurons?.reduce(
+    (acc, neuron) => acc + getSnsNeuronStakedMaturity(neuron),
     0n
   );
   // If the universe is an SNS universe then the summary is non-nullish.
@@ -65,10 +91,12 @@ const getSnsNeuronCountAndStake = ({
     neuronCount: neurons?.length,
     stake,
     token,
+    availableMaturity,
+    stakedMaturity,
   };
 };
 
-const getNeuronCountAndStake = ({
+const getNeuronAggregateInfo = ({
   isSignedIn,
   universe,
   nnsNeurons,
@@ -81,6 +109,8 @@ const getNeuronCountAndStake = ({
 }): {
   neuronCount: number | undefined;
   stake: TokenAmountV2 | UnavailableTokenAmount;
+  availableMaturity: bigint | undefined;
+  stakedMaturity: bigint | undefined;
 } => {
   if (!isSignedIn) {
     const token =
@@ -92,12 +122,14 @@ const getNeuronCountAndStake = ({
     return {
       neuronCount: undefined,
       stake,
+      availableMaturity: undefined,
+      stakedMaturity: undefined,
     };
   }
-  const { neuronCount, stake, token } =
+  const { neuronCount, stake, token, availableMaturity, stakedMaturity } =
     universe.canisterId === OWN_CANISTER_ID_TEXT
-      ? getNnsNeuronCountAndStake(nnsNeurons)
-      : getSnsNeuronCountAndStake({ snsNeurons, universe });
+      ? getNnsNeuronAggregateInfo(nnsNeurons)
+      : getSnsNeuronAggregateInfo({ snsNeurons, universe });
   return {
     neuronCount,
     stake: isNullish(stake)
@@ -106,6 +138,8 @@ const getNeuronCountAndStake = ({
           amount: stake,
           token,
         }),
+    availableMaturity,
+    stakedMaturity,
   };
 };
 
@@ -121,12 +155,13 @@ export const getTableProjects = ({
   snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
 }): TableProject[] => {
   return universes.map((universe) => {
-    const { neuronCount, stake } = getNeuronCountAndStake({
-      isSignedIn,
-      universe,
-      nnsNeurons,
-      snsNeurons,
-    });
+    const { neuronCount, stake, availableMaturity, stakedMaturity } =
+      getNeuronAggregateInfo({
+        isSignedIn,
+        universe,
+        nnsNeurons,
+        snsNeurons,
+      });
     const rowHref = buildNeuronsUrl({ universe: universe.canisterId });
     return {
       rowHref,
@@ -135,6 +170,8 @@ export const getTableProjects = ({
       logo: universe.logo,
       neuronCount,
       stake,
+      availableMaturity,
+      stakedMaturity,
     };
   });
 };

@@ -13,4 +13,6 @@ export const mockTableProject: TableProject = {
     amount: 100_000_000n,
     token: ICPToken,
   }),
+  availableMaturity: 0n,
+  stakedMaturity: 0n,
 };
