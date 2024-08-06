@@ -49,7 +49,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -yy hunspell hunspell-en-gb hunspell-en-us clang libclang-dev
-          cd $GITHUB_WORKSPACE # need to run inside working directory to access cargo version in rust-toolchain.toml
           cargo install --locked --target x86_64-unknown-linux-gnu cargo-spellcheck@0.13.1
       - name: Spellcheck Rust
         run: cargo spellcheck --code 1
