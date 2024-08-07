@@ -1100,9 +1100,28 @@ interface I18nTokens {
   hide_zero_balances_toggle_label: string;
   zero_balance_hidden: string;
   show_all: string;
+}
+
+interface I18nImport_token {
   import_token: string;
+  imported_token: string;
+  description: string;
+  ledger_label: string;
+  index_label_optional: string;
+  index_label: string;
+  index_fallback_label: string;
+  placeholder: string;
+  index_canister_description: string;
+  warning: string;
+  verifying: string;
+  importing: string;
+  removing: string;
+  review_token_info: string;
+  import_button: string;
+  ledger_canister_loading_error: string;
   add_imported_token_success: string;
   remove_imported_token_success: string;
+  link_to_canister: string;
 }
 
 interface I18nNeuron_state {
@@ -1389,6 +1408,7 @@ interface I18n {
   settings: I18nSettings;
   sync: I18nSync;
   tokens: I18nTokens;
+  import_token: I18nImport_token;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

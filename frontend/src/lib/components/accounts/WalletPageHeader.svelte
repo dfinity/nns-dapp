@@ -10,7 +10,7 @@
 </script>
 
 <PageHeader testId="wallet-page-header-component">
-  <UniversePageSummary slot="start" {universe} />
+  <UniversePageSummary slot="start" {universe} on:nnsRemove />
   <span
     slot="end"
     class="description header-end"
