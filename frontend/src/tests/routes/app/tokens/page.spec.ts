@@ -121,6 +121,7 @@ describe("Tokens route", () => {
       icrcAccountsStore.reset();
       tokensStore.reset();
       icrcCanistersStore.reset();
+      importedTokensStore.reset();
       ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
       ckETHBalanceUlps = ckETHDefaultBalanceUlps;
       tetrisBalanceE8s = tetrisDefaultBalanceE8s;
@@ -576,8 +577,6 @@ describe("Tokens route", () => {
           };
 
           beforeEach(() => {
-            importedTokensStore.reset();
-
             vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
               async ({ canisterId }) => {
                 const balancesMap = {
