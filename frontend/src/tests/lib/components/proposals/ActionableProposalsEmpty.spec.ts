@@ -45,25 +45,9 @@ describe("ActionableProposalsEmpty", () => {
     expect(await po.getTitleText()).toEqual("You're all caught up.");
   });
 
-  it("should display a static text when there is no unsupported Snses", async () => {
-    addSnsesWithSupport([true]);
-    const po = renderComponent();
-    expect(await po.getDescriptionText()).toEqual("Check back later!");
-  });
-
-  it("should display an unsupported Sns name in description", async () => {
+  it("should display a description", async () => {
     addSnsesWithSupport([false]);
     const po = renderComponent();
-    expect(await po.getDescriptionText()).toEqual(
-      "Check back later! Note, that not all SNS DAOs support actionable proposals. You will need to check proposals manually if you hold SNS-0 neurons."
-    );
-  });
-
-  it("should display multiple unsupported Sns names in description", async () => {
-    addSnsesWithSupport([false, true, false, true, false]);
-    const po = renderComponent();
-    expect(await po.getDescriptionText()).toEqual(
-      "Check back later! Note, that not all SNS DAOs support actionable proposals. You will need to check proposals manually if you hold SNS-0, SNS-2 or SNS-4 neurons."
-    );
+    expect(await po.getDescriptionText()).toEqual("Check back later!");
   });
 });

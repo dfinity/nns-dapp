@@ -3,8 +3,6 @@ import { AppPath } from "$lib/constants/routes.constants";
 import {
   actionableProposalCountStore,
   actionableProposalIndicationVisibleStore,
-  actionableProposalNotSupportedUniversesStore,
-  actionableProposalSupportedStore,
   actionableProposalTotalCountStore,
   actionableProposalsActiveStore,
   actionableProposalsLoadedStore,
@@ -154,7 +152,7 @@ describe("actionable proposals derived stores", () => {
     });
   });
 
-  describe("actionableProposalSupportedStore", () => {
+  describe("actionableProposalTotalCountStore", () => {
     const nnsProposals: ProposalInfo[] = [
       {
         ...mockProposalInfo,
@@ -167,13 +165,9 @@ describe("actionable proposals derived stores", () => {
     ];
     const snsProposals = [mockSnsProposal];
 
-    it("returns true for nns", async () => {
-      expect(get(actionableProposalSupportedStore)).toEqual({
-        [OWN_CANISTER_ID_TEXT]: true,
-      });
-    });
+    it("returns total actionable proposal count", async () => {
+      expect(get(actionableProposalTotalCountStore)).toEqual(0);
 
-    it("returns actionable proposal support", async () => {
       actionableNnsProposalsStore.setProposals(nnsProposals);
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
@@ -182,55 +176,19 @@ describe("actionable proposals derived stores", () => {
       });
       actionableSnsProposalsStore.set({
         rootCanisterId: principal1,
-        proposals: [],
+        proposals: snsProposals,
+        includeBallotsByCaller: true,
+      });
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal2,
+        proposals: snsProposals,
+        // this flag produces undefined count
         includeBallotsByCaller: false,
       });
 
-      expect(get(actionableProposalSupportedStore)).toEqual({
-        [OWN_CANISTER_ID_TEXT]: true,
-        [principal0.toText()]: true,
-        [principal1.toText()]: false,
-      });
-    });
-
-    describe("actionableProposalTotalCountStore", () => {
-      const nnsProposals: ProposalInfo[] = [
-        {
-          ...mockProposalInfo,
-          id: 0n,
-        },
-        {
-          ...mockProposalInfo,
-          id: 1n,
-        },
-      ];
-      const snsProposals = [mockSnsProposal];
-
-      it("returns total actionable proposal count", async () => {
-        expect(get(actionableProposalTotalCountStore)).toEqual(0);
-
-        actionableNnsProposalsStore.setProposals(nnsProposals);
-        actionableSnsProposalsStore.set({
-          rootCanisterId: principal0,
-          proposals: snsProposals,
-          includeBallotsByCaller: true,
-        });
-        actionableSnsProposalsStore.set({
-          rootCanisterId: principal1,
-          proposals: snsProposals,
-          includeBallotsByCaller: true,
-        });
-        actionableSnsProposalsStore.set({
-          rootCanisterId: principal2,
-          proposals: snsProposals,
-          // this flag produces undefined count
-          includeBallotsByCaller: false,
-        });
-
-        expect(get(actionableProposalTotalCountStore)).toEqual(
-          nnsProposals.length + snsProposals.length * 2
-        );
-      });
+      expect(get(actionableProposalTotalCountStore)).toEqual(
+        nnsProposals.length + snsProposals.length * 2
+      );
     });
   });
 
@@ -289,63 +247,6 @@ describe("actionable proposals derived stores", () => {
       });
 
       expect(get(actionableSnsProposalsByUniverseStore)).toEqual([]);
-    });
-  });
-
-  describe("actionableProposalNotSupportedUniversesStore", () => {
-    it("should return universes w/o actionable support", async () => {
-      expect(get(actionableProposalNotSupportedUniversesStore)).toEqual([]);
-
-      setSnsProjects([
-        {
-          lifecycle: SnsSwapLifecycle.Committed,
-          rootCanisterId: principal0,
-        },
-        {
-          lifecycle: SnsSwapLifecycle.Committed,
-          rootCanisterId: principal1,
-        },
-        {
-          lifecycle: SnsSwapLifecycle.Committed,
-          rootCanisterId: principal2,
-        },
-      ]);
-
-      expect(get(actionableProposalNotSupportedUniversesStore)).toEqual([]);
-
-      actionableSnsProposalsStore.set({
-        rootCanisterId: principal0,
-        proposals: [],
-        includeBallotsByCaller: false,
-      });
-      expect(
-        get(actionableProposalNotSupportedUniversesStore).map(
-          ({ canisterId }) => canisterId
-        )
-      ).toEqual([principal0.toText()]);
-
-      actionableSnsProposalsStore.set({
-        rootCanisterId: principal1,
-        proposals: [],
-        includeBallotsByCaller: false,
-      });
-      expect(
-        get(actionableProposalNotSupportedUniversesStore).map(
-          ({ canisterId }) => canisterId
-        )
-      ).toEqual([principal0.toText(), principal1.toText()]);
-
-      // One with `includeBallotsByCaller: true` should not change the result.
-      actionableSnsProposalsStore.set({
-        rootCanisterId: principal2,
-        proposals: [],
-        includeBallotsByCaller: true,
-      });
-      expect(
-        get(actionableProposalNotSupportedUniversesStore).map(
-          ({ canisterId }) => canisterId
-        )
-      ).toEqual([principal0.toText(), principal1.toText()]);
     });
   });
 
