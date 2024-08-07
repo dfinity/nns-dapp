@@ -127,9 +127,6 @@
       }) as SnsProposalActionableData
   );
 
-  let includeBallots: boolean;
-  $: includeBallots = actionableProposalsData?.includeBallotsByCaller ?? false;
-
   // `undefined` means that we haven't loaded the proposals yet.
   let proposals: SnsProposalActionableData[] | undefined;
   $: proposals = nonNullish(currentProjectCanisterId)
@@ -150,10 +147,8 @@
 
 {#if nonNullish(snsName)}
   <SnsProposalsList
-    {snsName}
     {proposals}
     actionableSelected={$actionableProposalsActiveStore}
-    {includeBallots}
     nsFunctions={$nsFunctionsStore}
     on:nnsIntersect={loadNextPage}
     {disableInfiniteScroll}
