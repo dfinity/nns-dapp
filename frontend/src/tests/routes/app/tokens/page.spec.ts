@@ -92,15 +92,15 @@ describe("Tokens route", () => {
     pending_utxos: [],
     required_confirmations: 0,
   });
-  const ckToken1Id = principal(100);
-  const ckToken1Metadata = {
+  const importedToken1Id = principal(100);
+  const importedToken1Metadata = {
     name: "ZTOKEN1",
     symbol: "ZTOKEN1",
     fee: 4_000n,
     decimals: 6,
   } as IcrcTokenMetadata;
-  const ckToken2Id = principal(101);
-  const ckToken2Metadata = {
+  const importedToken2Id = principal(101);
+  const importedToken2Metadata = {
     name: "ATOKEN2",
     symbol: "ATOKEN2",
     fee: 4_000n,
@@ -133,8 +133,8 @@ describe("Tokens route", () => {
             [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: mockCkTESTBTCToken,
             [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: mockCkUSDCToken,
             // imported tokens
-            [ckToken1Id.toText()]: ckToken1Metadata,
-            [ckToken2Id.toText()]: ckToken2Metadata,
+            [importedToken1Id.toText()]: importedToken1Metadata,
+            [importedToken2Id.toText()]: importedToken2Metadata,
           };
           if (isNullish(tokenMap[canisterId.toText()])) {
             throw new Error(
@@ -566,12 +566,12 @@ describe("Tokens route", () => {
         });
 
         describe("imported tokens", () => {
-          const ckToken1Data: ImportedTokenData = {
-            ledgerCanisterId: ckToken1Id,
+          const importedToken1Data: ImportedTokenData = {
+            ledgerCanisterId: importedToken1Id,
             indexCanisterId: principal(111),
           };
-          const ckToken2Data: ImportedTokenData = {
-            ledgerCanisterId: ckToken2Id,
+          const importedToken2Data: ImportedTokenData = {
+            ledgerCanisterId: importedToken2Id,
             indexCanisterId: undefined,
           };
 
@@ -589,8 +589,8 @@ describe("Tokens route", () => {
                     ckETHBalanceUlps,
                   [ledgerCanisterIdTetris.toText()]: tetrisBalanceE8s,
                   [ledgerCanisterIdPacman.toText()]: 0n,
-                  [ckToken1Id.toText()]: 10n,
-                  [ckToken2Id.toText()]: 0n,
+                  [importedToken1Id.toText()]: 10n,
+                  [importedToken2Id.toText()]: 0n,
                 };
                 if (isNullish(balancesMap[canisterId.toText()])) {
                   throw new Error(
@@ -603,24 +603,24 @@ describe("Tokens route", () => {
 
             // Add 2 imported tokens
             tokensStore.setToken({
-              canisterId: ckToken1Id,
-              token: ckToken1Metadata,
+              canisterId: importedToken1Id,
+              token: importedToken1Metadata,
             });
             icrcCanistersStore.setCanisters({
-              ledgerCanisterId: ckToken1Id,
+              ledgerCanisterId: importedToken1Id,
               indexCanisterId: undefined,
             });
             tokensStore.setToken({
-              canisterId: ckToken2Id,
-              token: ckToken2Metadata,
+              canisterId: importedToken2Id,
+              token: importedToken2Metadata,
             });
             icrcCanistersStore.setCanisters({
-              ledgerCanisterId: ckToken2Id,
+              ledgerCanisterId: importedToken2Id,
               indexCanisterId: undefined,
             });
 
             importedTokensStore.set({
-              importedTokens: [ckToken1Data, ckToken2Data],
+              importedTokens: [importedToken1Data, importedToken2Data],
               certified: true,
             });
           });
