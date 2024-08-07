@@ -634,9 +634,9 @@ describe("Tokens route", () => {
               "ckUSDC",
               // Imported tokens should be placed with the SNS tokens that have a non-zero balance
               // and should be sorted alphabetically.
-              "ATOKEN2", // Imported
+              "ATOKEN2", // Imported without balance
               "Tetris", // SNS with balance
-              "ZTOKEN1", // Imported
+              "ZTOKEN1", // Imported with balance
               // Zero balance
               "ckETH",
               "Pacman",
