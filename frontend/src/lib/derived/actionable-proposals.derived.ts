@@ -62,37 +62,6 @@ export const actionableProposalTotalCountStore: Readable<number> = derived(
     Object.values(map).reduce((acc: number, count) => acc + (count ?? 0), 0)
 );
 
-export interface ActionableProposalSupportData {
-  // We use the root canister id as the key to identify the actionable proposals support for a specific project.
-  [rootCanisterId: string]: boolean | undefined;
-}
-
-/** A store that contains the project actionable proposals support state mapped by canister id (nns + snses) */
-export const actionableProposalSupportedStore: Readable<ActionableProposalSupportData> =
-  derived([actionableSnsProposalsStore], ([actionableSnsProposals]) => ({
-    // NNS already returns ballots
-    [OWN_CANISTER_ID_TEXT]: true,
-    ...mapEntries({
-      obj: actionableSnsProposals,
-      mapFn: ([canisterId, { includeBallotsByCaller }]) => [
-        canisterId,
-        includeBallotsByCaller === true,
-      ],
-    }),
-  }));
-
-/** A store that contains sns universes w/o actionable proposals support */
-export const actionableProposalNotSupportedUniversesStore: Readable<
-  Universe[]
-> = derived(
-  [selectableUniversesStore, actionableSnsProposalsStore],
-  ([universes, actionableSnsProposals]) =>
-    universes.filter(
-      ({ canisterId }) =>
-        actionableSnsProposals[canisterId]?.includeBallotsByCaller === false
-    )
-);
-
 export interface ActionableSnsProposalsByUniverseData {
   universe: Universe;
   proposals: SnsProposalData[];
