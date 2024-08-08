@@ -232,22 +232,6 @@ describe("actionable proposals derived stores", () => {
         [principal1.toText(), proposals1],
       ]);
     });
-
-    it("should filter out snses w/o actionable support", async () => {
-      setSnsProjects([
-        {
-          lifecycle: SnsSwapLifecycle.Committed,
-          rootCanisterId: principal0,
-        },
-      ]);
-      actionableSnsProposalsStore.set({
-        rootCanisterId: principal0,
-        proposals: proposals0,
-        includeBallotsByCaller: false,
-      });
-
-      expect(get(actionableSnsProposalsByUniverseStore)).toEqual([]);
-    });
   });
 
   describe("actionableProposalsLoadedStore", () => {

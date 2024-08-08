@@ -430,39 +430,6 @@ describe("SnsProposals", () => {
       expect(await po2.getActionableEmptyBanner().isPresent()).toBe(false);
     });
 
-    it('should display "Actionable not supported" banner', async () => {
-      // sns without support
-      mockActionableProposalsLoadingDone({ includeBallotsByCaller: false });
-      const po = await renderComponent();
-      await selectActionableProposals(po);
-      expect(await po.getActionableNotSupportedBanner().isPresent()).toBe(true);
-      expect(await po.getActionableNotSupportedBanner().getTitleText()).toEqual(
-        `${projectName} doesn't yet support actionable proposals.`
-      );
-      expect(
-        await po.getActionableNotSupportedBanner().getDescriptionText()
-      ).toEqual(
-        `${projectName} SNS governance canister needs to be updated to the latest version to show actionable proposals. You can still vote on all proposals, but they will not have the visual indication.`
-      );
-
-      // select to all proposals
-      await po
-        .getSnsProposalFiltersPo()
-        .getActionableProposalsSegmentPo()
-        .clickAllProposals();
-      expect(await po.getActionableNotSupportedBanner().isPresent()).toBe(
-        false
-      );
-
-      // sns with support
-      mockActionableProposalsLoadingDone({ includeBallotsByCaller: true });
-      const po2 = await renderComponent();
-      await selectActionableProposals(po2);
-      expect(await po2.getActionableNotSupportedBanner().isPresent()).toBe(
-        false
-      );
-    });
-
     it("should display actionable proposals", async () => {
       const po = await renderComponent();
       await selectAllProposals(po);
