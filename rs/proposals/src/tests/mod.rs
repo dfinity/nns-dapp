@@ -61,9 +61,9 @@ fn process_proposal_payload_install_code() {
 
     assert_eq!(
         process_proposal_payload(&proposal_info),
-        "{\"wasm_module_hash\":\"9f64a747e1b97f131fabb6b447296c9b6f0201e79fb3c5356e6c77e89b6a806a\",\
+        "{\"arg_hash\":\"55e5509f8052998294266ee5b50cb592938191fb5d67f73cac2e60b0276b1bdd\",\
          \"arg_hex\":\"05060708\",\
-         \"arg_hash\":\"55e5509f8052998294266ee5b50cb592938191fb5d67f73cac2e60b0276b1bdd\"}"
+         \"wasm_module_hash\":\"9f64a747e1b97f131fabb6b447296c9b6f0201e79fb3c5356e6c77e89b6a806a\"}"
             .to_string()
     );
 }

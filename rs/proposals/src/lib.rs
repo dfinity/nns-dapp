@@ -30,6 +30,7 @@ use idl2json::candid_types::internal_candid_type_to_idl_type;
 use idl2json::{idl_args2json_with_weak_names, BytesFormat, Idl2JsonOptions};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
+use serde_json::json;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt::Debug;
@@ -128,9 +129,12 @@ pub fn process_proposal_payload(proposal_info: &ProposalInfo) -> Json {
                 arg_hex,
                 arg_hash,
             } = InstallCodeTrimmed::from(install_code);
-            format!(
-                "{{\"wasm_module_hash\":\"{wasm_module_hash}\",\"arg_hex\":\"{arg_hex}\",\"arg_hash\":\"{arg_hash}\"}}"
-            )
+            json!({
+                "wasm_module_hash": wasm_module_hash,
+                "arg_hex": arg_hex,
+                "arg_hash": arg_hash,
+            })
+            .to_string()
         }
         _ => serde_json::to_string("Proposal has no payload")
             .unwrap_or_else(|err| unreachable!("Surely a fixed string can be serialized as JSON?  Err: {err:?}")),
