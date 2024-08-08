@@ -211,22 +211,18 @@ describe("sns-vote-registration-services", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId,
         proposals: [proposal1, proposal2],
-        includeBallotsByCaller: true,
       });
       actionableSnsProposalsStore.set({
         rootCanisterId: rootCanisterId2,
         proposals: [proposal1, proposal2],
-        includeBallotsByCaller: true,
       });
 
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId.toText()]: {
           proposals: [proposal1, proposal2],
-          includeBallotsByCaller: true,
         },
         [rootCanisterId2.toText()]: {
           proposals: [proposal1, proposal2],
-          includeBallotsByCaller: true,
         },
       });
       expect(spyQuerySnsProposals).toBeCalledTimes(0);
@@ -258,11 +254,9 @@ describe("sns-vote-registration-services", () => {
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId.toText()]: {
           proposals: [proposal1, proposal2],
-          includeBallotsByCaller: true,
         },
         [rootCanisterId2.toText()]: {
           proposals: [proposal1, proposal2],
-          includeBallotsByCaller: true,
         },
       });
 
@@ -276,11 +270,9 @@ describe("sns-vote-registration-services", () => {
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId.toText()]: {
           proposals: [proposal1],
-          includeBallotsByCaller: true,
         },
         [rootCanisterId2.toText()]: {
           proposals: [proposal1, proposal2],
-          includeBallotsByCaller: true,
         },
       });
     });
@@ -295,22 +287,18 @@ describe("sns-vote-registration-services", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId,
         proposals: [proposal1, proposal2],
-        includeBallotsByCaller: true,
       });
       actionableSnsProposalsStore.set({
         rootCanisterId: rootCanisterId2,
         proposals: [proposal1, proposal2],
-        includeBallotsByCaller: true,
       });
 
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId.toText()]: {
           proposals: [proposal1, proposal2],
-          includeBallotsByCaller: true,
         },
         [rootCanisterId2.toText()]: {
           proposals: [proposal1, proposal2],
-          includeBallotsByCaller: true,
         },
       });
       expect(spyQuerySnsProposals).toBeCalledTimes(0);

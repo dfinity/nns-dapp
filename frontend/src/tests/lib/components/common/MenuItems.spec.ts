@@ -167,7 +167,6 @@ describe("MenuItems", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId: snsRootCanisterId,
         proposals: snsProposals,
-        includeBallotsByCaller: true,
       });
 
       const po = renderComponent();

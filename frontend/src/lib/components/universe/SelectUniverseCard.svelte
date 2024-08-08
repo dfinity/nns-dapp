@@ -8,7 +8,6 @@
   import {
     actionableProposalCountStore,
     actionableProposalIndicationVisibleStore,
-    actionableProposalSupportedStore,
     actionableProposalTotalCountStore,
   } from "$lib/derived/actionable-proposals.derived";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -16,7 +15,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Universe } from "$lib/types/universe";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
-  import { Card, Tooltip } from "@dfinity/gix-components";
+  import { Card } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
   import { cubicOut } from "svelte/easing";
@@ -43,12 +42,6 @@
     universe === "all-actionable"
       ? undefined
       : $actionableProposalCountStore[universe.canisterId];
-
-  let actionableProposalSupported: boolean | undefined = undefined;
-  $: actionableProposalSupported =
-    universe === "all-actionable"
-      ? undefined
-      : $actionableProposalSupportedStore[universe.canisterId];
 
   // Always rerender to trigger animation start
   let mounted = false;
@@ -98,16 +91,6 @@
                 count={actionableProposalCount}
                 {universe}
               />
-            {:else if actionableProposalSupported === false}
-              <TestIdWrapper testId="not-supported-badge">
-                <Tooltip
-                  id="actionable-not-supported-tooltip"
-                  text={$i18n.actionable_proposals_not_supported.dot_tooltip}
-                  top={true}
-                >
-                  <div class="not-supported-badge" />
-                </Tooltip>
-              </TestIdWrapper>
             {/if}
           {/if}
         {/if}
@@ -168,15 +151,5 @@
     justify-content: space-between;
     align-items: center;
     gap: var(--padding);
-  }
-
-  .not-supported-badge {
-    // extra gap to align with the count badge
-    margin: var(--padding);
-
-    width: var(--padding);
-    height: var(--padding);
-    border-radius: var(--padding);
-    background: var(--background);
   }
 </style>

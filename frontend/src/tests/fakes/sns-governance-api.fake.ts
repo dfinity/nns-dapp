@@ -116,7 +116,7 @@ const getProposals = (keyParams: KeyParams): SnsListProposalsResponse => {
   if (isNullish(proposals.get(key))) {
     proposals.set(key, {
       proposals: [],
-      include_ballots_by_caller: [false],
+      include_ballots_by_caller: [true],
     });
   }
   return proposals.get(key);
@@ -301,7 +301,7 @@ async function queryProposals({
   return (
     proposals.get(mapKey({ identity, rootCanisterId })) || {
       proposals: [],
-      include_ballots_by_caller: [false],
+      include_ballots_by_caller: [true],
     }
   );
 }
@@ -503,7 +503,7 @@ export const addProposalWith = ({
     ...proposalParams,
   };
   proposalsList.push(proposal);
-  response.include_ballots_by_caller = [includeBallotsByCaller ?? false];
+  response.include_ballots_by_caller = [includeBallotsByCaller ?? true];
 
   return proposal;
 };
