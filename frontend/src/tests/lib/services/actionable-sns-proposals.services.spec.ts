@@ -225,7 +225,7 @@ describe("actionable-sns-proposals.services", () => {
         .mockRejectedValueOnce(snsQueryError)
         .mockImplementation(async () => ({
           proposals: [],
-          include_ballots_by_caller: [true],
+          include_ballots_by_caller: [true] as [boolean],
         }));
       spyConsoleError = silentConsoleErrors();
 
@@ -268,7 +268,7 @@ describe("actionable-sns-proposals.services", () => {
         .spyOn(api, "queryProposals")
         .mockImplementation(async () => ({
           proposals: [],
-          include_ballots_by_caller: [true],
+          include_ballots_by_caller: [true] as [boolean],
         }));
       failedActionableSnsesStore.add(rootCanisterId1.toText());
 
