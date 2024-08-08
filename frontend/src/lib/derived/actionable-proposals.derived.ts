@@ -73,10 +73,14 @@ export const actionableSnsProposalsByUniverseStore: Readable<
 > = derived(
   [selectableUniversesStore, actionableSnsProposalsStore],
   ([universes, actionableSnsProposals]) =>
-    universes.map((universe) => ({
-      universe,
-      proposals: actionableSnsProposals[universe.canisterId].proposals,
-    }))
+    universes
+      .filter(({ canisterId }) =>
+        nonNullish(actionableSnsProposals[canisterId])
+      )
+      .map((universe) => ({
+        universe,
+        proposals: actionableSnsProposals[universe.canisterId].proposals,
+      }))
 );
 
 /** A store that returns true when all ‘Actionable Proposals’ have been loaded.
