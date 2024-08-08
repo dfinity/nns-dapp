@@ -1100,12 +1100,12 @@ interface I18nTokens {
   hide_zero_balances_toggle_label: string;
   zero_balance_hidden: string;
   show_all: string;
-  import_token: string;
   add_imported_token_success: string;
   remove_imported_token_success: string;
 }
 
 interface I18nImport_token {
+  import_token: string;
   description: string;
   ledger_label: string;
   index_label_optional: string;

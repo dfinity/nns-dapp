@@ -1040,11 +1040,11 @@
     "hide_zero_balances_toggle_label": "Switch between showing and hiding tokens with a balance of zero",
     "zero_balance_hidden": "Tokens with 0 balances are hidden.",
     "show_all": "Show all",
-    "import_token": "Import Token",
     "add_imported_token_success": "New token has been successfully imported!",
     "remove_imported_token_success": "The token has been successfully removed!"
   },
   "import_token": {
+    "import_token": "Import Token",
     "description": "To import a new token to your NNS dapp wallet, you will need to find, and paste the ledger canister id of the token. If you want to see your transaction history, you need to import the token’s index canister.",
     "ledger_label": "Ledger Canister ID",
     "index_label_optional": "Index Canister ID <span class='description'>(Optional)</span>",

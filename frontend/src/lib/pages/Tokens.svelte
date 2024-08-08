@@ -83,7 +83,7 @@
             class="ghost with-icon import-token-button"
             on:click={() => (showImportTokenModal = true)}
           >
-            <IconPlus />{$i18n.tokens.import_token}
+            <IconPlus />{$i18n.import_token.import_token}
           </button>
         </div>
       {:else if shouldHideZeroBalances}
