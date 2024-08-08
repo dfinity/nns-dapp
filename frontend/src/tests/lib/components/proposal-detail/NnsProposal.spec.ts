@@ -172,7 +172,6 @@ describe("Proposal", () => {
           proposalId: 33n,
         }),
       ],
-      includeBallotsByCaller: true,
     });
 
     actionableNnsProposalsStore.setProposals(generateMockProposals(1));

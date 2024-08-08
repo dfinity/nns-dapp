@@ -337,15 +337,10 @@ describe("SnsProposals", () => {
       await runResolvedPromises();
       return SnsProposalListPo.under(new JestPageObjectElement(container));
     };
-    const mockActionableProposalsLoadingDone = (
-      { includeBallotsByCaller }: { includeBallotsByCaller: boolean } = {
-        includeBallotsByCaller: true,
-      }
-    ) =>
+    const mockActionableProposalsLoadingDone = () =>
       actionableSnsProposalsStore.set({
         rootCanisterId,
         proposals: [actionableProposal1],
-        includeBallotsByCaller,
       });
     const selectActionableProposals = async (po: SnsProposalListPo) => {
       await po
@@ -416,7 +411,6 @@ describe("SnsProposals", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId,
         proposals: [],
-        includeBallotsByCaller: true,
       });
       // no proposals available
       const po = await renderComponent();

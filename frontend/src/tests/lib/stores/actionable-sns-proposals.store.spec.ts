@@ -27,30 +27,24 @@ describe("actionableSnsProposalsStore", () => {
     actionableSnsProposalsStore.set({
       rootCanisterId: principal1,
       proposals: [snsProposal1],
-      includeBallotsByCaller: true,
     });
     actionableSnsProposalsStore.set({
       rootCanisterId: principal2,
       proposals: [snsProposal2],
-      includeBallotsByCaller: true,
     });
     actionableSnsProposalsStore.set({
       rootCanisterId: principal3,
       proposals: [],
-      includeBallotsByCaller: false,
     });
 
     expect(get(actionableSnsProposalsStore)[principal1.toText()]).toEqual({
       proposals: [snsProposal1],
-      includeBallotsByCaller: true,
     });
     expect(get(actionableSnsProposalsStore)[principal2.toText()]).toEqual({
       proposals: [snsProposal2],
-      includeBallotsByCaller: true,
     });
     expect(get(actionableSnsProposalsStore)[principal3.toText()]).toEqual({
       proposals: [],
-      includeBallotsByCaller: false,
     });
   });
 
@@ -58,12 +52,10 @@ describe("actionableSnsProposalsStore", () => {
     actionableSnsProposalsStore.set({
       rootCanisterId: principal1,
       proposals: [snsProposal1],
-      includeBallotsByCaller: true,
     });
     actionableSnsProposalsStore.set({
       rootCanisterId: principal2,
       proposals: [snsProposal2],
-      includeBallotsByCaller: true,
     });
     actionableSnsProposalsStore.resetForSns(principal1);
     expect(
@@ -71,7 +63,6 @@ describe("actionableSnsProposalsStore", () => {
     ).toBeUndefined();
     expect(get(actionableSnsProposalsStore)[principal2.toText()]).toEqual({
       proposals: [snsProposal2],
-      includeBallotsByCaller: true,
     });
   });
 });

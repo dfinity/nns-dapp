@@ -85,7 +85,6 @@ describe("ActionableProposals", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId: principal(0),
         proposals: [],
-        includeBallotsByCaller: false,
       });
     });
 
@@ -144,12 +143,10 @@ describe("ActionableProposals", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
         proposals: [snsProposal0],
-        includeBallotsByCaller: true,
       });
       actionableSnsProposalsStore.set({
         rootCanisterId: principal1,
         proposals: [snsProposal1, snsProposal2],
-        includeBallotsByCaller: true,
       });
 
       await runResolvedPromises();
@@ -182,7 +179,6 @@ describe("ActionableProposals", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
         proposals: [snsProposal0],
-        includeBallotsByCaller: true,
       });
       const po = await renderComponent();
       const snsProposalsPos = await po
@@ -213,12 +209,10 @@ describe("ActionableProposals", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
         proposals: [snsProposal0],
-        includeBallotsByCaller: true,
       });
       actionableSnsProposalsStore.set({
         rootCanisterId: principal1,
         proposals: [snsProposal1],
-        includeBallotsByCaller: true,
       });
       const po = await renderComponent();
 
@@ -248,13 +242,11 @@ describe("ActionableProposals", () => {
         rootCanisterId: principal0,
         // no proposals
         proposals: [],
-        includeBallotsByCaller: true,
       });
       actionableSnsProposalsStore.set({
         rootCanisterId: principal1,
         proposals: [snsProposal0],
         // no ballots
-        includeBallotsByCaller: false,
       });
 
       await runResolvedPromises();
@@ -265,13 +257,12 @@ describe("ActionableProposals", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId: principal2,
         proposals: [snsProposal1, snsProposal2],
-        includeBallotsByCaller: true,
       });
 
       await runResolvedPromises();
       expect(
         await po.getActionableSnses().getActionableSnsProposalsPos()
-      ).toHaveLength(1);
+      ).toHaveLength(2);
     });
   });
 
@@ -291,7 +282,6 @@ describe("ActionableProposals", () => {
     actionableSnsProposalsStore.set({
       rootCanisterId: principal0,
       proposals: [],
-      includeBallotsByCaller: true,
     });
     await runResolvedPromises();
 
@@ -309,34 +299,9 @@ describe("ActionableProposals", () => {
     actionableSnsProposalsStore.set({
       rootCanisterId: principal0,
       proposals: [],
-      includeBallotsByCaller: true,
     });
     await runResolvedPromises();
 
     expect(await po.hasActionableEmptyBanner()).toEqual(true);
-  });
-
-  describe("outdated sns governance canister", () => {
-    it("should not break when an Sns does not support BallotsByCaller", async () => {
-      actionableNnsProposalsStore.setProposals([]);
-      setSnsProjects([snsProject0, snsProject1]);
-      const po = await renderComponent();
-
-      actionableSnsProposalsStore.set({
-        rootCanisterId: principal0,
-        proposals: [],
-        includeBallotsByCaller: false,
-      });
-      actionableSnsProposalsStore.set({
-        rootCanisterId: principal1,
-        proposals: [snsProposal1],
-        includeBallotsByCaller: true,
-      });
-      await runResolvedPromises();
-
-      expect(await po.hasActionableNnsProposals()).toEqual(false);
-      expect(await po.hasSkeletons()).toEqual(false);
-      expect(await po.hasActionableEmptyBanner()).toEqual(false);
-    });
   });
 });

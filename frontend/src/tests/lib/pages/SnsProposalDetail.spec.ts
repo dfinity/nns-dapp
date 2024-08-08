@@ -328,7 +328,6 @@ describe("SnsProposalDetail", () => {
       );
       actionableSnsProposalsStore.set({
         rootCanisterId,
-        includeBallotsByCaller: true,
         proposals: actionableProposals,
       });
 
@@ -383,7 +382,6 @@ describe("SnsProposalDetail", () => {
         // set votable proposals
         actionableSnsProposalsStore.set({
           rootCanisterId,
-          includeBallotsByCaller: true,
           proposals,
         });
         // Add proposals to the fake api to be able to navigate to it

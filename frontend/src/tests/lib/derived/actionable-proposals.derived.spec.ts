@@ -131,23 +131,21 @@ describe("actionable proposals derived stores", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
         proposals: snsProposals,
-        includeBallotsByCaller: true,
       });
       actionableSnsProposalsStore.set({
         rootCanisterId: principal1,
         proposals: [],
-        includeBallotsByCaller: true,
       });
       actionableSnsProposalsStore.set({
         rootCanisterId: principal2,
         proposals: [],
-        includeBallotsByCaller: false,
       });
 
       expect(get(actionableProposalCountStore)).toEqual({
         [OWN_CANISTER_ID_TEXT]: nnsProposals.length,
         [principal0.toText()]: snsProposals.length,
         [principal1.toText()]: 0,
+        [principal2.toText()]: 0,
       });
     });
   });
@@ -172,22 +170,18 @@ describe("actionable proposals derived stores", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
         proposals: snsProposals,
-        includeBallotsByCaller: true,
       });
       actionableSnsProposalsStore.set({
         rootCanisterId: principal1,
         proposals: snsProposals,
-        includeBallotsByCaller: true,
       });
       actionableSnsProposalsStore.set({
         rootCanisterId: principal2,
         proposals: snsProposals,
-        // this flag produces undefined count
-        includeBallotsByCaller: false,
       });
 
       expect(get(actionableProposalTotalCountStore)).toEqual(
-        nnsProposals.length + snsProposals.length * 2
+        nnsProposals.length + snsProposals.length * 3
       );
     });
   });
@@ -215,12 +209,10 @@ describe("actionable proposals derived stores", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
         proposals: proposals0,
-        includeBallotsByCaller: true,
       });
       actionableSnsProposalsStore.set({
         rootCanisterId: principal1,
         proposals: proposals1,
-        includeBallotsByCaller: true,
       });
 
       expect(
@@ -249,7 +241,6 @@ describe("actionable proposals derived stores", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
         proposals: [],
-        includeBallotsByCaller: true,
       });
 
       expect(get(actionableProposalsLoadedStore)).toEqual(false);
@@ -273,7 +264,6 @@ describe("actionable proposals derived stores", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
         proposals: [],
-        includeBallotsByCaller: false,
       });
       actionableNnsProposalsStore.setProposals([mockProposalInfo]);
 
@@ -282,7 +272,6 @@ describe("actionable proposals derived stores", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId: principal1,
         proposals: [],
-        includeBallotsByCaller: false,
       });
 
       expect(get(actionableProposalsLoadedStore)).toEqual(true);
@@ -303,7 +292,6 @@ describe("actionable proposals derived stores", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
         proposals: [],
-        includeBallotsByCaller: false,
       });
       actionableNnsProposalsStore.setProposals([mockProposalInfo]);
 
@@ -333,12 +321,10 @@ describe("actionable proposals derived stores", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId: Principal.fromText("f7crg-kabae"),
         proposals: [createProposal(1n), createProposal(0n)],
-        includeBallotsByCaller: true,
       });
       actionableSnsProposalsStore.set({
         rootCanisterId: Principal.fromText("g3pce-2iaae"),
         proposals: [createProposal(3n), createProposal(2n)],
-        includeBallotsByCaller: true,
       });
       actionableNnsProposalsStore.setProposals([
         {

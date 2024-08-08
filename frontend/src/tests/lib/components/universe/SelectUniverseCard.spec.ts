@@ -233,7 +233,6 @@ describe("SelectUniverseCard", () => {
           actionableSnsProposalsStore.set({
             rootCanisterId: Principal.from(mockSnsUniverse.canisterId),
             proposals: [mockSnsProposal, mockSnsProposal],
-            includeBallotsByCaller: true,
           });
 
           const po = await renderComponent({
@@ -285,7 +284,6 @@ describe("SelectUniverseCard", () => {
           actionableSnsProposalsStore.set({
             rootCanisterId: Principal.from(mockSnsUniverse.canisterId),
             proposals: [mockSnsProposal, mockSnsProposal],
-            includeBallotsByCaller: true,
           });
 
           const po = await renderComponent({
@@ -306,7 +304,6 @@ describe("SelectUniverseCard", () => {
           actionableSnsProposalsStore.set({
             rootCanisterId: Principal.from(mockSnsUniverse.canisterId),
             proposals: [],
-            includeBallotsByCaller: true,
           });
 
           const po = await renderComponent({
@@ -436,12 +433,10 @@ describe("SelectUniverseCard", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
         proposals: snsProposals,
-        includeBallotsByCaller: true,
       });
       actionableSnsProposalsStore.set({
         rootCanisterId: principal1,
         proposals: snsProposals,
-        includeBallotsByCaller: true,
       });
 
       await runResolvedPromises();
