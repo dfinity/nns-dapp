@@ -1105,6 +1105,17 @@ interface I18nTokens {
   remove_imported_token_success: string;
 }
 
+interface I18nImport_token {
+  description: string;
+  ledger_label: string;
+  index_label_optional: string;
+  index_label: string;
+  placeholder: string;
+  index_canister_description: string;
+  review_token_info: string;
+  warning: string;
+}
+
 interface I18nNeuron_state {
   Unspecified: string;
   Locked: string;
@@ -1389,6 +1400,7 @@ interface I18n {
   settings: I18nSettings;
   sync: I18nSync;
   tokens: I18nTokens;
+  import_token: I18nImport_token;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;
