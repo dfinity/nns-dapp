@@ -1109,7 +1109,6 @@ interface I18nImport_token {
   description: string;
   ledger_label: string;
   index_label_optional: string;
-  index_label: string;
   placeholder: string;
   index_canister_description: string;
   review_token_info: string;

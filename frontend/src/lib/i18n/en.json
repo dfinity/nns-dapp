@@ -1048,7 +1048,6 @@
     "description": "To import a new token to your NNS dapp wallet, you will need to find, and paste the ledger canister id of the token. If you want to see your transaction history, you need to import the token’s index canister.",
     "ledger_label": "Ledger Canister ID",
     "index_label_optional": "Index Canister ID <span class='description'>(Optional)</span>",
-    "index_label": "Index Canister ID",
     "placeholder": "00000-00000-00000-00000-000",
     "index_canister_description": "Index Canister allows to display a token balance and transaction history. <strong>Note:</strong> not all tokens have index canisters.",
     "review_token_info": "Review token info",
