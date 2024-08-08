@@ -49,8 +49,7 @@ export const actionableProposalCountStore: Readable<ActionableProposalCountData>
       [OWN_CANISTER_ID_TEXT]: nnsProposals?.length,
       ...mapEntries({
         obj: actionableSnsProposals,
-        mapFn: ([canisterId, { proposals, includeBallotsByCaller }]) =>
-          includeBallotsByCaller ? [canisterId, proposals.length] : undefined,
+        mapFn: ([canisterId, { proposals }]) => [canisterId, proposals.length],
       }),
     })
   );
@@ -74,15 +73,10 @@ export const actionableSnsProposalsByUniverseStore: Readable<
 > = derived(
   [selectableUniversesStore, actionableSnsProposalsStore],
   ([universes, actionableSnsProposals]) =>
-    universes
-      .filter(
-        ({ canisterId }) =>
-          actionableSnsProposals[canisterId]?.includeBallotsByCaller === true
-      )
-      .map((universe) => ({
-        universe,
-        proposals: actionableSnsProposals[universe.canisterId].proposals,
-      }))
+    universes.map((universe) => ({
+      universe,
+      proposals: actionableSnsProposals[universe.canisterId].proposals,
+    }))
 );
 
 /** A store that returns true when all ‘Actionable Proposals’ have been loaded.
