@@ -1475,7 +1475,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100376223797839170,
+    "icrc1_total_supply": 100376357658718290,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3352,7 +3352,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100367436484736,
+    "icrc1_total_supply": 100398419479405,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4096,7 +4096,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995763375000,
+    "icrc1_total_supply": 995762426000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -6996,7 +6996,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20028600012659104,
+    "icrc1_total_supply": 20029183193376640,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -8996,7 +8996,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25106369405122250,
+    "icrc1_total_supply": 25112769353448756,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -10450,7 +10450,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10017214550329650,
+    "icrc1_total_supply": 10019145450126512,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11488,7 +11488,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 101286189379629950,
+    "icrc1_total_supply": 101420680709012000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -12529,7 +12529,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99276194762887680,
+    "icrc1_total_supply": 99330724906780770,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -13702,7 +13702,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 100004701357653860,
+    "icrc1_total_supply": 100004825450356340,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14874,7 +14874,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100045302350385470,
+    "icrc1_total_supply": 100046133128564000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
