@@ -212,6 +212,14 @@ describe("Tokens page", () => {
       expect(await po.getShowAllButtonPo().isPresent()).toBe(true);
       expect(await po.getImportTokenButtonPo().isPresent()).toBe(true);
     });
+
+    it("should open import token modal", async () => {
+      const po = renderPage([positiveBalance, zeroBalance]);
+
+      await po.getImportTokenButtonPo().click();
+
+      expect(await po.getImportTokenModalPo().isPresent()).toBe(true);
+    });
   });
 
   describe("when import token feature flag is disabled", () => {
