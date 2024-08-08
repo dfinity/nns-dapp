@@ -17,9 +17,16 @@ export const compareTokensIcpFirst = createDescendingComparator(
   (token: UserToken) => token.universeId.toText() === OWN_CANISTER_ID_TEXT
 );
 
-export const compareTokensWithBalanceFirst = createDescendingComparator(
-  (token: UserToken) => getTokenBalanceOrZero(token) > 0n
-);
+export const compareTokensWithBalanceOrImportedFirst = ({
+  importedTokenIds,
+}: {
+  importedTokenIds: Set<string>;
+}) =>
+  createDescendingComparator(
+    (token: UserToken) =>
+      getTokenBalanceOrZero(token) > 0n ||
+      importedTokenIds.has(token.universeId.toText())
+  );
 
 // These tokens should be placed before others (but after ICP)
 // because they have significance within the Internet Computer ecosystem and deserve to be highlighted.
@@ -39,9 +46,14 @@ export const compareTokensAlphabetically = createAscendingComparator(
   ({ title }: UserToken) => title.toLowerCase()
 );
 
-export const compareTokensForTokensTable = mergeComparators([
-  compareTokensIcpFirst,
-  compareTokensWithBalanceFirst,
-  compareTokensByImportance,
-  compareTokensAlphabetically,
-]);
+export const compareTokensForTokensTable = ({
+  importedTokenIds,
+}: {
+  importedTokenIds: Set<string>;
+}) =>
+  mergeComparators([
+    compareTokensIcpFirst,
+    compareTokensWithBalanceOrImportedFirst({ importedTokenIds }),
+    compareTokensByImportance,
+    compareTokensAlphabetically,
+  ]);
