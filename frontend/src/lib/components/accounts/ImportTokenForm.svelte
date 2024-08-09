@@ -58,7 +58,12 @@
         {$i18n.core.cancel}
       </button>
 
-      <button data-tid="submit-button" class="primary" type="submit" disabled={isSubmitDisabled}>
+      <button
+        data-tid="submit-button"
+        class="primary"
+        type="submit"
+        disabled={isSubmitDisabled}
+      >
         {$i18n.core.next}
       </button>
     </div>
