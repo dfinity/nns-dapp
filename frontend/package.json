@@ -71,7 +71,7 @@
     "@dfinity/ic-management": "next",
     "@dfinity/identity": "^1.3.0",
     "@dfinity/ledger-icp": "next",
-    "@dfinity/ledger-icrc": "next",
+    "@dfinity/ledger-icrc": "file:../../ic-js/packages/ledger-icrc",
     "@dfinity/nns": "next",
     "@dfinity/principal": "^1.3.0",
     "@dfinity/sns": "next",
