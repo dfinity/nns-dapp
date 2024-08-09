@@ -1,3 +1,4 @@
+import { ImportTokenModalPo } from "$tests/page-objects/ImportTokenModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { BackdropPo } from "./Backdrop.page-object";
@@ -35,6 +36,10 @@ export class TokensPagePo extends BasePageObject {
 
   getImportTokenButtonPo(): ButtonPo {
     return this.getButton("import-token-button");
+  }
+
+  getImportTokenModalPo(): ImportTokenModalPo {
+    return ImportTokenModalPo.under(this.root);
   }
 
   hasTokensTable(): Promise<boolean> {
