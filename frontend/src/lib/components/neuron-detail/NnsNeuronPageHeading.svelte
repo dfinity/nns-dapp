@@ -40,7 +40,7 @@
 </script>
 
 <PageHeading testId="nns-neuron-page-heading-component">
-  <AmountDisplay slot="title" {amount} size="huge" singleLine />
+  <AmountDisplay slot="title" {amount} size="huge" singleLine detailed />
   <HeadingSubtitle slot="subtitle" testId="voting-power">
     {#if canVote}
       {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
