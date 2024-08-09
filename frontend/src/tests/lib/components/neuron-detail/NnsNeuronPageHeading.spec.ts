@@ -33,7 +33,7 @@ describe("NnsNeuronPageHeading", () => {
   });
 
   it("should render the neuron's stake", async () => {
-    const stake = 314_000_000n;
+    const stake = 314_560_000n;
     const po = renderComponent({
       ...mockNeuron,
       fullNeuron: {
@@ -43,7 +43,7 @@ describe("NnsNeuronPageHeading", () => {
       },
     });
 
-    expect(await po.getStake()).toEqual("3.14");
+    expect(await po.getStake()).toEqual("3.1456");
   });
 
   it("should render neuron's voting power", async () => {
