@@ -13,8 +13,8 @@
 
   const dispatch = createEventDispatcher();
 
-  let disabled = true;
-  $: disabled = isNullish(ledgerCanisterId);
+  let isSubmitDisabled = true;
+  $: isSubmitDisabled = isNullish(ledgerCanisterId);
 </script>
 
 <TestIdWrapper testId="import-token-form-component">
@@ -58,7 +58,7 @@
         {$i18n.core.cancel}
       </button>
 
-      <button data-tid="submit-button" class="primary" type="submit" {disabled}>
+      <button data-tid="submit-button" class="primary" type="submit" disabled={isSubmitDisabled}>
         {$i18n.core.next}
       </button>
     </div>
