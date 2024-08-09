@@ -447,19 +447,24 @@ describe("icrc-accounts-services", () => {
       expect(result).toEqual(mockToken);
     });
 
-    it("returns null on error", async () => {
-      vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(undefined);
+    it("throws an error", async () => {
+      const testError = new Error("test");
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(testError);
 
-      const result = await getIcrcTokenMetaData({
-        ledgerCanisterId,
-      });
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(0);
+
+      const call = () =>
+        getIcrcTokenMetaData({
+          ledgerCanisterId,
+        });
+
+      expect(call).rejects.toThrow(testError);
       expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
       expect(ledgerApi.queryIcrcToken).toHaveBeenCalledWith({
         identity: mockIdentity,
         certified: false,
         canisterId: ledgerCanisterId,
       });
-      expect(result).toEqual(null);
     });
   });
 });
