@@ -9,8 +9,8 @@ use crate::def::{
     ChangeSubnetTypeAssignmentArgs, CompleteCanisterMigrationPayload, CreateSubnetPayload,
     DeployGuestosToAllSubnetNodesPayload, DeployGuestosToAllUnassignedNodesPayload,
     DeployGuestosToSomeApiBoundaryNodesPayload, DeployHostosToSomeNodesPayload, InsertUpgradePathEntriesRequest,
-    InsertUpgradePathEntriesRequestHumanReadable, PrepareCanisterMigrationPayload, RecoverSubnetPayload,
-    RemoveApiBoundaryNodesPayload, RemoveFirewallRulesPayload, RemoveNodeOperatorsPayload,
+    InsertUpgradePathEntriesRequestHumanReadable, InstallCodeTrimmed, PrepareCanisterMigrationPayload,
+    RecoverSubnetPayload, RemoveApiBoundaryNodesPayload, RemoveFirewallRulesPayload, RemoveNodeOperatorsPayload,
     RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload, RemoveNodesPayload,
     RerouteCanisterRangesPayload, RetireReplicaVersionPayload, ReviseElectedGuestosVersionsPayload,
     ReviseElectedHostosVersionsPayload, SetAuthorizedSubnetworkListArgs, SetFirewallConfigPayload,
@@ -30,6 +30,7 @@ use idl2json::candid_types::internal_candid_type_to_idl_type;
 use idl2json::{idl_args2json_with_weak_names, BytesFormat, Idl2JsonOptions};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
+use serde_json::json;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt::Debug;
@@ -114,14 +115,20 @@ fn decode_arg(arg: &[u8], arg_types: &IDLTypes) -> String {
 /// Checks if the proposal has a payload.  If yes, de-serializes it then converts it to JSON.
 #[must_use]
 pub fn process_proposal_payload(proposal_info: &ProposalInfo) -> Json {
-    if let Some(Action::ExecuteNnsFunction(f)) = proposal_info.proposal.as_ref().and_then(|p| p.action.as_ref()) {
-        transform_payload_to_json(f.nns_function, &f.payload).unwrap_or_else(|e| {
-            let error_msg = "Unable to deserialize payload";
-            serde_json::to_string(&format!("{error_msg}: {e:.400}")).unwrap_or_else(|_| format!("\"{error_msg}\""))
-        })
-    } else {
-        serde_json::to_string("Proposal has no payload")
-            .unwrap_or_else(|err| unreachable!("Surely a fixed string can be serialized as JSON?  Err: {err:?}"))
+    let action = proposal_info.proposal.as_ref().and_then(|p| p.action.as_ref());
+    match action {
+        Some(Action::ExecuteNnsFunction(f)) => {
+            transform_payload_to_json(f.nns_function, &f.payload).unwrap_or_else(|e| {
+                let error_msg = "Unable to deserialize payload";
+                serde_json::to_string(&format!("{error_msg}: {e:.400}")).unwrap_or_else(|_| format!("\"{error_msg}\""))
+            })
+        }
+        Some(Action::InstallCode(install_code)) => {
+            let trimmed = InstallCodeTrimmed::from(install_code);
+            json!(trimmed).to_string()
+        }
+        _ => serde_json::to_string("Proposal has no payload")
+            .unwrap_or_else(|err| unreachable!("Surely a fixed string can be serialized as JSON?  Err: {err:?}")),
     }
 }
 

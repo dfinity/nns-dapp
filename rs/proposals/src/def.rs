@@ -7,9 +7,15 @@
 //!
 //! Thus the types come from a variety of sources.  Each type is annotated with a versioned URL that points to the source of the type.  Updates are NOT automated yet.
 #![allow(missing_docs)]
-use crate::canister_arg_types;
-use crate::canisters::sns_wasm::api::{SnsUpgrade, SnsVersion};
-use crate::{decode_arg, Json};
+use crate::{
+    canister_arg_types,
+    canisters::{
+        nns_governance::api::InstallCode,
+        sns_wasm::api::{SnsUpgrade, SnsVersion},
+    },
+    decode_arg, Json,
+};
+
 use candid::{CandidType, Principal};
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_crypto_sha2::Sha256;
@@ -504,4 +510,29 @@ pub struct SubnetRentalRequest {
 #[derive(candid::CandidType, candid::Deserialize, serde::Serialize, Clone, Copy, Debug)]
 pub enum RentalConditionId {
     App13CH,
+}
+
+#[derive(CandidType, Serialize, Deserialize, Clone)]
+pub struct InstallCodeTrimmed {
+    pub wasm_module_hash: String,
+    pub arg_hex: String,
+    pub arg_hash: String,
+}
+
+impl From<&InstallCode> for InstallCodeTrimmed {
+    fn from(install_code: &InstallCode) -> Self {
+        InstallCodeTrimmed {
+            wasm_module_hash: install_code
+                .wasm_module
+                .as_ref()
+                .map(|wasm_module| calculate_hash_string(wasm_module))
+                .unwrap_or_default(),
+            arg_hex: install_code.arg.as_ref().map(hex::encode).unwrap_or_default(),
+            arg_hash: install_code
+                .arg
+                .as_ref()
+                .map(|arg| calculate_hash_string(arg))
+                .unwrap_or_default(),
+        }
+    }
 }
