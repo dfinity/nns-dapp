@@ -18,6 +18,7 @@
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import { goto } from "$app/navigation";
   import { createEventDispatcher } from "svelte";
+  import { validateLedgerIndexPair } from "$lib/services/icrc-index.services";
 
   let currentStep: WizardStep | undefined = undefined;
   const dispatch = createEventDispatcher();
@@ -48,7 +49,7 @@
   let indexCanisterId: Principal | undefined;
   let tokenMetaData: IcrcTokenMetadata | undefined;
 
-  const updateTokenMetaData = async () => {
+  const getTokenMetaData = async (): Promise<IcrcTokenMetadata | undefined> => {
     if (isNullish(ledgerCanisterId)) {
       return;
     }
@@ -60,7 +61,7 @@
       });
       return;
     }
-    tokenMetaData = meta;
+    return meta;
   };
 
   const onUserInput = async () => {
@@ -72,11 +73,16 @@
       initiator: "import-token-validation",
       labelKey: "import_token.verifying",
     });
-    await updateTokenMetaData();
-    // TODO: validate index canister id here (if provided)
+    tokenMetaData = await getTokenMetaData();
+
+    const validOrEmptyIndexCanister =
+      nonNullish(tokenMetaData) && nonNullish(indexCanisterId)
+        ? await validateLedgerIndexPair({ ledgerCanisterId, indexCanisterId })
+        : true;
+
     stopBusy("import-token-validation");
 
-    if (nonNullish(tokenMetaData)) {
+    if (nonNullish(tokenMetaData) && validOrEmptyIndexCanister) {
       next();
     }
   };

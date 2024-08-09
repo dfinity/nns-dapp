@@ -119,7 +119,9 @@
     "adding_permissions": "There was an error adding permissions.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
     "qrcode_camera_error": "An error occurred while initializing the camera to read the QR code.",
-    "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction."
+    "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction.",
+    "invalid_ledger_index_pair": "The provided index canister ID does not match the associated ledger canister ID.",
+    "index_canister_validation": "An error occurred while validating the index canister ID."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired.",
