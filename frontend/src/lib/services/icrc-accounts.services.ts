@@ -38,7 +38,7 @@ export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
 /** Fetch token metadata from the icrc1 ledger canister.
  * Return null on any error.
  */
-export const fetchIcrcTokenMetaData = async ({
+export const getIcrcTokenMetaData = async ({
   ledgerCanisterId,
 }: {
   ledgerCanisterId: Principal;

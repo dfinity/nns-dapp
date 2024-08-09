@@ -6,8 +6,8 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import {
-  fetchIcrcTokenMetaData,
   getIcrcAccountIdentity,
+  getIcrcTokenMetaData,
   loadAccounts,
   loadIcrcToken,
   syncAccounts,
@@ -433,9 +433,9 @@ describe("icrc-accounts-services", () => {
     });
   });
 
-  describe("fetchIcrcTokenMetaData", () => {
+  describe("getIcrcTokenMetaData", () => {
     it("calls queryIcrcToken from icrc ledger api", async () => {
-      const result = await fetchIcrcTokenMetaData({
+      const result = await getIcrcTokenMetaData({
         ledgerCanisterId,
       });
       expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
@@ -450,7 +450,7 @@ describe("icrc-accounts-services", () => {
     it("returns null on error", async () => {
       vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(undefined);
 
-      const result = await fetchIcrcTokenMetaData({
+      const result = await getIcrcTokenMetaData({
         ledgerCanisterId,
       });
       expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
