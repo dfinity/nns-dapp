@@ -25,6 +25,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Bump ic-js to a version with new proposal types and neuron visibility.
 * Enable following on the new topics `ProtocolCansiterManagement` and `ServiceNervousSystemManagement`.
 * Round maturity to 2 decimals in tables.
+* Show detailed stake amount in neuron details page.
 
 #### Deprecated
 
