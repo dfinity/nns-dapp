@@ -24,7 +24,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Replace the nervous system left navigation on the staking tab with a new table.
 * Bump ic-js to a version with new proposal types and neuron visibility.
 * Enable following on the new topics `ProtocolCansiterManagement` and `ServiceNervousSystemManagement`.
-* Round maturity to 2 decimals in tables.
+* Round neuron stake and maturity to 2 decimals in tables.
 * Show detailed stake amount in neuron details page.
 
 #### Deprecated

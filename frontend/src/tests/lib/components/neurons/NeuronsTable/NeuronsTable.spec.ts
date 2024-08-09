@@ -182,7 +182,7 @@ describe("NeuronsTable", () => {
     expect(await rowPos[1].getStake()).toBe("5.00 ICP");
   });
 
-  it("should render detailed neuron stake", async () => {
+  it("should not render detailed neuron stake", async () => {
     const po = renderComponent({
       neurons: [
         {
@@ -193,7 +193,7 @@ describe("NeuronsTable", () => {
     });
     const rowPos = await po.getNeuronsTableRowPos();
     expect(rowPos).toHaveLength(1);
-    expect(await rowPos[0].getStake()).toBe("9.9999 ICP");
+    expect(await rowPos[0].getStake()).toBe("10.00 ICP");
   });
 
   it("should render neuron maturity", async () => {
