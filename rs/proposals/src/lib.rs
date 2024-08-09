@@ -124,17 +124,8 @@ pub fn process_proposal_payload(proposal_info: &ProposalInfo) -> Json {
             })
         }
         Some(Action::InstallCode(install_code)) => {
-            let InstallCodeTrimmed {
-                wasm_module_hash,
-                arg_hex,
-                arg_hash,
-            } = InstallCodeTrimmed::from(install_code);
-            json!({
-                "wasm_module_hash": wasm_module_hash,
-                "arg_hex": arg_hex,
-                "arg_hash": arg_hash,
-            })
-            .to_string()
+            let trimmed = InstallCodeTrimmed::from(install_code);
+            json!(trimmed).to_string()
         }
         _ => serde_json::to_string("Proposal has no payload")
             .unwrap_or_else(|err| unreachable!("Surely a fixed string can be serialized as JSON?  Err: {err:?}")),
