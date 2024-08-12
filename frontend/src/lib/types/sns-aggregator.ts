@@ -95,15 +95,9 @@ export type CachedSwapInitParamsDto = {
     // NeuronsFundParticipants
     cf_participants: Array<{
       // CfParticipant
-      controller: null | string;
       hotkey_principal: string;
       cf_neurons: Array<{
         // CfNeuron
-        has_created_neuron_recipes: null | boolean;
-        hotkeys: null | {
-          // Principals
-          principals: string[];
-        };
         nns_neuron_id: number;
         amount_icp_e8s: number;
       }>;
