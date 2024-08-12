@@ -5,6 +5,7 @@
   import type { Principal } from "@dfinity/principal";
 
   export let canisterId: Principal;
+  export let noLabel: boolean = false;
 
   let href: string;
   $: href = replacePlaceholders($i18n.import_token.link_to_dashboard, {
@@ -14,11 +15,25 @@
 
 <a
   class="button ghost with-icon"
+  class:noLabel
   data-tid="link-to-dashboard-canister-component"
   {href}
   target="_blank"
   rel="noopener noreferrer"
 >
   <IconOpenInNew />
-  {$i18n.import_token.view_in_dashboard}
+  {#if !noLabel}
+    {$i18n.import_token.view_in_dashboard}
+  {/if}
 </a>
+
+<style lang="scss">
+  a.noLabel {
+    // Increase click area
+    padding: var(--padding-0_5x);
+
+    &:hover {
+      color: inherit;
+    }
+  }
+</style>

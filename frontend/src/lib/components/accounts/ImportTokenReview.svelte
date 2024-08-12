@@ -50,15 +50,13 @@
   <ImportTokenCanisterId
     testId="ledger-canister-id"
     label={$i18n.import_token.ledger_label}
-    canisterId={ledgerCanisterId.toText()}
-    canisterLinkHref={ledgerCanisterHref}
+    canisterId={ledgerCanisterId}
   />
 
   <ImportTokenCanisterId
     testId="index-canister-id"
     label={$i18n.import_token.index_label}
-    canisterId={indexCanisterId?.toText()}
-    canisterLinkHref={indexCanisterHref}
+    canisterId={indexCanisterId}
     canisterIdFallback={$i18n.import_token.index_fallback_label}
   />
 
