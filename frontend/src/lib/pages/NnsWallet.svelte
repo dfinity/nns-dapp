@@ -59,7 +59,7 @@
     mapToSelfTransactions,
     sortTransactionsByIdDescendingOrder,
   } from "$lib/utils/icp-transactions.utils";
-  import { Island, Spinner } from "@dfinity/gix-components";
+  import { IconDots, Island, Popover, Spinner } from "@dfinity/gix-components";
   import {
     ICPToken,
     TokenAmountV2,
@@ -68,6 +68,8 @@
   } from "@dfinity/utils";
   import { onMount, onDestroy, setContext } from "svelte";
   import { writable, type Readable } from "svelte/store";
+  import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
+  import { Principal } from "@dfinity/principal";
 
   $: if ($authSignedInStore) {
     pollAccounts();
@@ -293,6 +295,9 @@
 
   let isSubaccount: boolean;
   $: isSubaccount = $selectedAccountStore.account?.type === "subAccount";
+
+  let moreButton: HTMLButtonElement | undefined;
+  let morePopupVisible = false;
 </script>
 
 <TestIdWrapper testId="nns-wallet-component">
@@ -303,7 +308,18 @@
           <WalletPageHeader
             universe={$nnsUniverseStore}
             walletAddress={$selectedAccountStore.account?.identifier}
-          />
+          >
+            <svelte:fragment slot="actions">
+              <button
+                bind:this={moreButton}
+                class="icon-only"
+                data-tid="more-button"
+                on:click={() => (morePopupVisible = true)}
+              >
+                <IconDots />
+              </button>
+            </svelte:fragment>
+          </WalletPageHeader>
           <WalletPageHeading
             balance={nonNullish($selectedAccountStore.account)
               ? TokenAmountV2.fromUlps({
@@ -369,6 +385,17 @@
       selectedAccount={$selectedAccountStore.account}
     />
   {/if}
+
+  <Popover
+    bind:visible={morePopupVisible}
+    anchor={moreButton}
+    direction="rtl"
+    invisibleBackdrop
+  >
+    <LinkToDashboardCanister
+      canisterId={Principal.fromText($nnsUniverseStore.canisterId)}
+    />
+  </Popover>
 </TestIdWrapper>
 
 <style lang="scss">
