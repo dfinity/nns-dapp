@@ -16,6 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Parse and trim proposal payload for `InstallCode` within the `get_proposal_payload` back-end endpoint.
+* Support rendering `InstallCode` proposal payload by calling `get_proposal_payload`.
 
 #### Changed
 

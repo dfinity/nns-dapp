@@ -1202,6 +1202,9 @@ interface I18nActions {
   SetSnsTokenSwapOpenTimeWindow: string;
   OpenSnsTokenSwap: string;
   CreateServiceNervousSystem: string;
+  InstallCode: string;
+  StopOrStartCanister: string;
+  UpdateCanisterSettings: string;
 }
 
 interface I18nActions_description {
@@ -1217,6 +1220,9 @@ interface I18nActions_description {
   SetSnsTokenSwapOpenTimeWindow: string;
   OpenSnsTokenSwap: string;
   CreateServiceNervousSystem: string;
+  InstallCode: string;
+  StopOrStartCanister: string;
+  UpdateCanisterSettings: string;
 }
 
 interface I18nNns_functions {
