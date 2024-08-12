@@ -392,9 +392,11 @@
     direction="rtl"
     invisibleBackdrop
   >
-    <LinkToDashboardCanister
-      canisterId={Principal.fromText($nnsUniverseStore.canisterId)}
-    />
+    <TestIdWrapper testId="more-popup-content">
+      <LinkToDashboardCanister
+        canisterId={Principal.fromText($nnsUniverseStore.canisterId)}
+      />
+    </TestIdWrapper>
   </Popover>
 </TestIdWrapper>
 
