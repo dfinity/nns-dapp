@@ -20,7 +20,7 @@
     hasAccounts,
   } from "$lib/utils/accounts.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { Island, Spinner } from "@dfinity/gix-components";
+  import { IconDots, Island, Popover, Spinner } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import type { Writable } from "svelte/store";
@@ -28,6 +28,8 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { removeImportedTokens } from "$lib/services/imported-tokens.services";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import LinkToDashboardCanister from "$lib/components/common/LinkToDashboardCanister.svelte";
 
   export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;
@@ -172,59 +174,89 @@
       goto($accountsPathStore);
     }
   };
+
+  let moreButton: HTMLButtonElement | undefined;
+  let morePopupVisible = false;
 </script>
 
-<Island {testId}>
-  <main class="legacy">
-    <section>
-      {#if loaded && nonNullish(ledgerCanisterId)}
-        {#if nonNullish($selectedAccountStore.account) && nonNullish(token)}
-          <IcrcBalancesObserver
-            {ledgerCanisterId}
-            accounts={[$selectedAccountStore.account]}
-            reload={reloadOnlyAccountFromStore}
-          />
-        {/if}
-        <WalletPageHeader
-          universe={$selectedUniverseStore}
-          walletAddress={$selectedAccountStore.account?.identifier}
-          on:nnsRemove={remove}
-        />
-        <WalletPageHeading
-          accountName={$selectedAccountStore.account?.name ??
-            $i18n.accounts.main}
-          balance={nonNullish($selectedAccountStore.account) &&
-          nonNullish(token)
-            ? TokenAmountV2.fromUlps({
-                amount: $selectedAccountStore.account.balanceUlps,
-                token,
-              })
-            : undefined}
-        >
-          <slot name="header-actions" />
-          <SignInGuard />
-        </WalletPageHeading>
+<TestIdWrapper {testId}>
+  <Island>
+    <main class="legacy">
+      <section>
+        {#if loaded && nonNullish(ledgerCanisterId)}
+          {#if nonNullish($selectedAccountStore.account) && nonNullish(token)}
+            <IcrcBalancesObserver
+              {ledgerCanisterId}
+              accounts={[$selectedAccountStore.account]}
+              reload={reloadOnlyAccountFromStore}
+            />
+          {/if}
+          <WalletPageHeader
+            universe={$selectedUniverseStore}
+            walletAddress={$selectedAccountStore.account?.identifier}
+            on:nnsRemove={remove}
+            on:nnsMore={() => console.log("icrc")}
+          >
+            <svelte:fragment slot="actions">
+              {#if nonNullish(ledgerCanisterId)}
+                <button
+                  bind:this={moreButton}
+                  class="icon-only"
+                  data-tid="more-button"
+                  on:click={() => (morePopupVisible = true)}
+                >
+                  <IconDots />
+                </button>
+              {/if}
+            </svelte:fragment>
+          </WalletPageHeader>
+          <WalletPageHeading
+            accountName={$selectedAccountStore.account?.name ??
+              $i18n.accounts.main}
+            balance={nonNullish($selectedAccountStore.account) &&
+            nonNullish(token)
+              ? TokenAmountV2.fromUlps({
+                  amount: $selectedAccountStore.account.balanceUlps,
+                  token,
+                })
+              : undefined}
+          >
+            <slot name="header-actions" />
+            <SignInGuard />
+          </WalletPageHeading>
 
-        {#if $$slots["info-card"]}
-          <div class="content-cell-island info-card">
-            <slot name="info-card" />
+          {#if $$slots["info-card"]}
+            <div class="content-cell-island info-card">
+              <slot name="info-card" />
+            </div>
+          {/if}
+
+          <Separator spacing="none" />
+
+          <!-- Transactions and the explanation go together. -->
+          <div>
+            <slot name="page-content" />
           </div>
+        {:else}
+          <Spinner />
         {/if}
+      </section>
+    </main>
 
-        <Separator spacing="none" />
+    <slot name="footer-actions" />
+  </Island>
 
-        <!-- Transactions and the explanation go together. -->
-        <div>
-          <slot name="page-content" />
-        </div>
-      {:else}
-        <Spinner />
-      {/if}
-    </section>
-  </main>
-
-  <slot name="footer-actions" />
-</Island>
+  {#if nonNullish(ledgerCanisterId)}
+    <Popover
+      bind:visible={morePopupVisible}
+      anchor={moreButton}
+      direction="rtl"
+      invisibleBackdrop
+    >
+      <LinkToDashboardCanister canisterId={ledgerCanisterId} />
+    </Popover>
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   section {
