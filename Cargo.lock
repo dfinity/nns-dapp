@@ -2193,7 +2193,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "serde_cbor",
- "strum 0.26.3",
+ "strum",
  "strum_macros",
  "subtle",
  "zeroize",
@@ -2210,7 +2210,7 @@ dependencies = [
  "phantom_newtype",
  "serde",
  "serde_cbor",
- "strum 0.26.3",
+ "strum",
  "strum_macros",
  "thiserror",
  "zeroize",
@@ -2305,7 +2305,7 @@ dependencies = [
  "ic-protobuf",
  "ic-utils",
  "serde",
- "strum 0.26.3",
+ "strum",
  "strum_macros",
 ]
 
@@ -2455,7 +2455,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "serde_cbor",
- "strum 0.26.3",
+ "strum",
  "strum_macros",
 ]
 
@@ -2731,7 +2731,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "serde_json",
- "strum 0.26.3",
+ "strum",
  "strum_macros",
 ]
 
@@ -2757,7 +2757,7 @@ dependencies = [
  "prost",
  "serde",
  "serde_bytes",
- "strum 0.26.3",
+ "strum",
  "strum_macros",
 ]
 
@@ -2854,7 +2854,7 @@ dependencies = [
  "candid",
  "ic-protobuf",
  "serde",
- "strum 0.26.3",
+ "strum",
  "strum_macros",
 ]
 
@@ -2923,7 +2923,7 @@ dependencies = [
  "rust_decimal_macros",
  "serde",
  "serde_bytes",
- "strum 0.26.3",
+ "strum",
  "strum_macros",
 ]
 
@@ -3152,7 +3152,7 @@ dependencies = [
  "serde_cbor",
  "serde_json",
  "serde_with",
- "strum 0.26.3",
+ "strum",
  "strum_macros",
  "thiserror",
  "thousands",
@@ -3269,7 +3269,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "serde_cbor",
- "strum 0.26.3",
+ "strum",
  "strum_macros",
 ]
 
@@ -3299,7 +3299,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "sha2",
- "strum 0.26.3",
+ "strum",
  "time",
 ]
 
@@ -3945,7 +3945,7 @@ dependencies = [
  "serde_bytes",
  "serde_cbor",
  "sha2",
- "strum 0.25.0",
+ "strum",
  "strum_macros",
  "tar",
 ]
@@ -5511,12 +5511,6 @@ name = "strsim"
 version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7da8b5736845d9f2fcb837ea5d9e2628564b3b043a70948a3f0b778838c5fb4f"
-
-[[package]]
-name = "strum"
-version = "0.25.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "290d54ea6f91c969195bdbcd7442c8c2a2ba87da8bf60a7ee86a235d4bc1e125"
 
 [[package]]
 name = "strum"
