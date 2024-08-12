@@ -15,12 +15,12 @@ import type { Universe } from "$lib/types/universe";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
 import { mapEntries } from "$lib/utils/utils";
 import type { SnsProposalData } from "@dfinity/sns";
-import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
+import { fromDefinedNullable, isNullish, nonNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
 export interface ActionableProposalCountData {
   // We use the root canister id as the key to identify the proposals for a specific project.
-  [rootCanisterId: string]: number | undefined;
+  [rootCanisterId: string]: number;
 }
 
 /** Returns true when the indication needs to be shown */
@@ -46,7 +46,11 @@ export const actionableProposalCountStore: Readable<ActionableProposalCountData>
   derived(
     [actionableNnsProposalsStore, actionableSnsProposalsStore],
     ([{ proposals: nnsProposals }, actionableSnsProposals]) => ({
-      [OWN_CANISTER_ID_TEXT]: nnsProposals?.length,
+      // nns
+      ...(isNullish(nnsProposals)
+        ? {}
+        : { [OWN_CANISTER_ID_TEXT]: nnsProposals?.length }),
+      // sns
       ...mapEntries({
         obj: actionableSnsProposals,
         mapFn: ([canisterId, { proposals }]) => [canisterId, proposals.length],
