@@ -35,7 +35,6 @@ const getNnsNeuronAggregateInfo = (
 ): {
   neuronCount: number | undefined;
   stake: bigint | undefined;
-  token: Token;
   availableMaturity: bigint | undefined;
   stakedMaturity: bigint | undefined;
 } => {
@@ -52,7 +51,6 @@ const getNnsNeuronAggregateInfo = (
   return {
     neuronCount: neurons?.length,
     stake,
-    token: ICPToken,
     availableMaturity,
     stakedMaturity,
   };
@@ -67,7 +65,6 @@ const getSnsNeuronAggregateInfo = ({
 }): {
   neuronCount: number | undefined;
   stake: bigint | undefined;
-  token: Token;
   availableMaturity: bigint | undefined;
   stakedMaturity: bigint | undefined;
 } => {
@@ -85,12 +82,9 @@ const getSnsNeuronAggregateInfo = ({
     (acc, neuron) => acc + getSnsNeuronStakedMaturity(neuron),
     0n
   );
-  // If the universe is an SNS universe then the summary is non-nullish.
-  const token = asNonNullish(universe.summary).token;
   return {
     neuronCount: neurons?.length,
     stake,
-    token,
     availableMaturity,
     stakedMaturity,
   };
@@ -99,11 +93,13 @@ const getSnsNeuronAggregateInfo = ({
 const getNeuronAggregateInfo = ({
   isSignedIn,
   universe,
+  token,
   nnsNeurons,
   snsNeurons,
 }: {
   isSignedIn: boolean;
   universe: Universe;
+  token: Token;
   nnsNeurons: NeuronInfo[] | undefined;
   snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
 }): {
@@ -113,11 +109,6 @@ const getNeuronAggregateInfo = ({
   stakedMaturity: bigint | undefined;
 } => {
   if (!isSignedIn) {
-    const token =
-      universe.canisterId === OWN_CANISTER_ID_TEXT
-        ? ICPToken
-        : // If the universe is an SNS universe then the summary is non-nullish.
-          asNonNullish(universe.summary).token;
     const stake = new UnavailableTokenAmount(token);
     return {
       neuronCount: undefined,
@@ -126,7 +117,7 @@ const getNeuronAggregateInfo = ({
       stakedMaturity: undefined,
     };
   }
-  const { neuronCount, stake, token, availableMaturity, stakedMaturity } =
+  const { neuronCount, stake, availableMaturity, stakedMaturity } =
     universe.canisterId === OWN_CANISTER_ID_TEXT
       ? getNnsNeuronAggregateInfo(nnsNeurons)
       : getSnsNeuronAggregateInfo({ snsNeurons, universe });
@@ -155,19 +146,28 @@ export const getTableProjects = ({
   snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
 }): TableProject[] => {
   return universes.map((universe) => {
+    const token =
+      universe.canisterId === OWN_CANISTER_ID_TEXT
+        ? ICPToken
+        : // If the universe is an SNS universe then the summary is non-nullish.
+          asNonNullish(universe.summary).token;
     const { neuronCount, stake, availableMaturity, stakedMaturity } =
       getNeuronAggregateInfo({
         isSignedIn,
         universe,
+        token,
         nnsNeurons,
         snsNeurons,
       });
     const rowHref = buildNeuronsUrl({ universe: universe.canisterId });
+    const universeId = universe.canisterId;
     return {
       rowHref,
-      domKey: universe.canisterId,
+      domKey: universeId,
+      universeId,
       title: universe.title,
       logo: universe.logo,
+      tokenSymbol: token.symbol,
       neuronCount,
       stake,
       availableMaturity,
@@ -176,9 +176,8 @@ export const getTableProjects = ({
   });
 };
 
-// Relies on the domKey being the universeId of the project.
 const compareIcpFirst = createDescendingComparator(
-  (project: TableProject) => project.domKey === OWN_CANISTER_ID_TEXT
+  (project: TableProject) => project.universeId === OWN_CANISTER_ID_TEXT
 );
 
 const comparePositiveNeuronsFirst = createDescendingComparator(
