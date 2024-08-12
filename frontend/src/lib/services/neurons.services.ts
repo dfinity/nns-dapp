@@ -777,7 +777,7 @@ const setFolloweesHelper = async ({
       identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
     }
     // ManageNeuron topic followes can only be handled by controllers
-    if (topic === Topic.ManageNeuron) {
+    if (topic === Topic.NeuronManagement) {
       identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
     }
     await governanceApiService.setFollowees({

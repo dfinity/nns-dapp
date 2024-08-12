@@ -53,7 +53,7 @@ describe("enum-utils", () => {
   it("should exclude selected topics", () => {
     const results: Topic[] = [
       Topic.Unspecified,
-      Topic.ManageNeuron,
+      Topic.NeuronManagement,
       Topic.ExchangeRate,
       Topic.NetworkEconomics,
       Topic.Governance,
@@ -62,8 +62,8 @@ describe("enum-utils", () => {
       Topic.NetworkCanisterManagement,
       Topic.NodeProviderRewards,
       Topic.SnsDecentralizationSale,
-      Topic.SubnetReplicaVersionManagement,
-      Topic.ReplicaVersionManagement,
+      Topic.IcOsVersionDeployment,
+      Topic.IcOsVersionElection,
       Topic.SnsAndCommunityFund,
       Topic.ApiBoundaryNodeManagement,
       Topic.SubnetRental,

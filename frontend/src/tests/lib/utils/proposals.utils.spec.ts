@@ -873,7 +873,7 @@ describe("proposals-utils", () => {
         isProposalDeadlineInTheFuture({
           ...mockProposalInfo,
           deadlineTimestampSeconds: undefined,
-          topic: Topic.ManageNeuron,
+          topic: Topic.NeuronManagement,
           proposalTimestampSeconds: BigInt(Math.round(nowSeconds - 3600)),
         })
       ).toBeTruthy();
@@ -885,7 +885,7 @@ describe("proposals-utils", () => {
         isProposalDeadlineInTheFuture({
           ...mockProposalInfo,
           deadlineTimestampSeconds: undefined,
-          topic: Topic.ManageNeuron,
+          topic: Topic.NeuronManagement,
           proposalTimestampSeconds: BigInt(Math.round(nowSeconds - 3600 * 13)),
         })
       ).toBe(false);

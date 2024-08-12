@@ -32,7 +32,7 @@ describe("actionable-proposals.services", () => {
       beforeProposal: undefined,
       certified: false,
       includeStatus: [ProposalStatus.Open],
-      includeTopics: [Topic.ManageNeuron],
+      includeTopics: [Topic.NeuronManagement],
       includeRewardStatus: [ProposalRewardStatus.Ineligible],
     };
     const callLoadActionableProposals = async ({
@@ -97,7 +97,7 @@ describe("actionable-proposals.services", () => {
             ProposalRewardStatus.AcceptVotes
           )
             ? Promise.resolve([votableProposal, votedProposal])
-            : // Return nothing for Topic.ManageNeuron proposals
+            : // Return nothing for Topic.NeuronManagement proposals
               Promise.resolve([])
         );
       spyQueryNeurons = vi
