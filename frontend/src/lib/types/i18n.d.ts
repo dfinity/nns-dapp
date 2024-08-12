@@ -1120,6 +1120,8 @@ interface I18nImport_token {
   ledger_canister_loading_error: string;
   add_imported_token_success: string;
   remove_imported_token_success: string;
+  view_in_dashboard: string;
+  link_to_dashboard: string;
   link_to_canister: string;
 }
 

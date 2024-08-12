@@ -1059,6 +1059,8 @@
     "ledger_canister_loading_error": "Unable to load token details using the provided Ledger Canister ID.",
     "add_imported_token_success": "New token has been successfully imported!",
     "remove_imported_token_success": "The token has been successfully removed!",
+    "view_in_dashboard": "View in Dashboard",
+    "link_to_dashboard": "https://dashboard.internetcomputer.org/canister/$canisterId",
     "link_to_canister": "https://dashboard.internetcomputer.org/canister/$canisterId"
   }
 }
