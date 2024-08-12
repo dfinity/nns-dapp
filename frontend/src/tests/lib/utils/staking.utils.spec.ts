@@ -23,12 +23,18 @@ describe("staking.utils", () => {
       logo: IC_LOGO_ROUNDED,
     };
 
+    const snsTokenSymbol = "STS";
+    const snsToken = {
+      ...mockSnsToken,
+      symbol: snsTokenSymbol,
+    };
+
     const snsUniverse: Universe = {
       canisterId: universeId2,
       title: "title2",
       logo: "logo2",
       summary: mockSummary.override({
-        token: mockSnsToken,
+        token: snsToken,
       }),
     };
 
@@ -38,6 +44,7 @@ describe("staking.utils", () => {
     const defaultExpectedNnsTableProject = {
       rowHref: nnsHref,
       domKey: OWN_CANISTER_ID_TEXT,
+      universeId: OWN_CANISTER_ID_TEXT,
       title: "Internet Computer",
       logo: IC_LOGO_ROUNDED,
       neuronCount: 0,
@@ -45,6 +52,7 @@ describe("staking.utils", () => {
         amount: 0n,
         token: ICPToken,
       }),
+      tokenSymbol: "ICP",
       availableMaturity: 0n,
       stakedMaturity: 0n,
     };
@@ -52,13 +60,15 @@ describe("staking.utils", () => {
     const defaultExpectedSnsTableProject = {
       rowHref: snsHref,
       domKey: universeId2,
+      universeId: universeId2,
       title: "title2",
       logo: "logo2",
       neuronCount: 0,
       stake: TokenAmountV2.fromUlps({
         amount: 0n,
-        token: mockSnsToken,
+        token: snsToken,
       }),
+      tokenSymbol: snsTokenSymbol,
       availableMaturity: 0n,
       stakedMaturity: 0n,
     };
@@ -112,6 +122,70 @@ describe("staking.utils", () => {
       expect(tableProjects).toEqual([
         defaultExpectedNnsTableProject,
         defaultExpectedSnsTableProject,
+      ]);
+    });
+
+    it("should include universeId for SNS project", () => {
+      const snsUniverseId = principal(4455).toText();
+      const universes: Universe[] = [
+        {
+          ...snsUniverse,
+          canisterId: snsUniverseId,
+        },
+      ];
+
+      const tableProjects = getTableProjects({
+        universes,
+        isSignedIn: true,
+        nnsNeurons: [],
+        snsNeurons: {
+          [snsUniverseId]: { neurons: [] },
+        },
+      });
+
+      expect(tableProjects).toEqual([
+        {
+          ...defaultExpectedSnsTableProject,
+          rowHref: `/neurons/?u=${snsUniverseId}`,
+          domKey: snsUniverseId,
+          universeId: snsUniverseId,
+        },
+      ]);
+    });
+
+    it("should include tokenSymbol for SNS project", () => {
+      const snsTokenSymbol = "WUV";
+      const snsToken = {
+        ...mockSnsToken,
+        symbol: snsTokenSymbol,
+      };
+      const universes: Universe[] = [
+        {
+          ...snsUniverse,
+          summary: mockSummary.override({
+            token: snsToken,
+          }),
+        },
+      ];
+
+      const tableProjects = getTableProjects({
+        universes,
+        isSignedIn: true,
+        nnsNeurons: [],
+        snsNeurons: {
+          [universeId2]: { neurons: [] },
+        },
+      });
+
+      expect(tableProjects).toEqual([
+        {
+          ...defaultExpectedSnsTableProject,
+          stake: TokenAmountV2.fromUlps({
+            amount: 0n,
+            token: snsToken,
+          }),
+          tokenSymbol: snsTokenSymbol,
+        },
       ]);
     });
 
@@ -236,7 +310,7 @@ describe("staking.utils", () => {
           neuronCount: 2,
           stake: TokenAmountV2.fromUlps({
             amount: 2n * snsNeuronWithStake.cached_neuron_stake_e8s,
-            token: mockSnsToken,
+            token: snsToken,
           }),
         },
       ]);
@@ -310,7 +384,7 @@ describe("staking.utils", () => {
           neuronCount: 2,
           stake: TokenAmountV2.fromUlps({
             amount: 2n * stake,
-            token: mockSnsToken,
+            token: snsToken,
           }),
           stakedMaturity: maturity1 + maturity2,
         },
@@ -366,7 +440,7 @@ describe("staking.utils", () => {
           neuronCount: 1,
           stake: TokenAmountV2.fromUlps({
             amount: snsNeuronWithStake.cached_neuron_stake_e8s,
-            token: mockSnsToken,
+            token: snsToken,
           }),
         },
       ]);
@@ -395,7 +469,7 @@ describe("staking.utils", () => {
         {
           ...defaultExpectedSnsTableProject,
           neuronCount: undefined,
-          stake: new UnavailableTokenAmount(mockSnsToken),
+          stake: new UnavailableTokenAmount(snsToken),
           availableMaturity: undefined,
           stakedMaturity: undefined,
         },
@@ -423,7 +497,7 @@ describe("staking.utils", () => {
         {
           ...defaultExpectedSnsTableProject,
           neuronCount: undefined,
-          stake: new UnavailableTokenAmount(mockSnsToken),
+          stake: new UnavailableTokenAmount(snsToken),
           availableMaturity: undefined,
           stakedMaturity: undefined,
         },
@@ -433,7 +507,8 @@ describe("staking.utils", () => {
 
   describe("sortTableProjects", () => {
     const icpDomKey = OWN_CANISTER_ID_TEXT;
-    const snsDomKey = principal(2).toText();
+    const snsUniverseId = principal(2).toText();
+    const snsDomKey = snsUniverseId;
 
     const defaultProject = {
       ...mockTableProject,
@@ -445,12 +520,14 @@ describe("staking.utils", () => {
       const icpProject = {
         ...defaultProject,
         domKey: icpDomKey,
+        universeId: OWN_CANISTER_ID_TEXT,
         title: "Internet Computer",
         neuronCount: 0,
       };
       const snsProject = {
         ...defaultProject,
         domKey: snsDomKey,
+        universeId: snsUniverseId,
         title: "AAA",
         neuronCount: 1,
       };
