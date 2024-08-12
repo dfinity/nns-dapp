@@ -698,8 +698,8 @@ const sameManageNeuronFollowees = (neurons: NeuronInfo[]): boolean => {
   const sortedFollowees: NeuronId[][] = fullNeurons
     .map(
       ({ followees }): Followees =>
-        followees.find(({ topic }) => topic === Topic.ManageNeuron) ?? {
-          topic: Topic.ManageNeuron,
+        followees.find(({ topic }) => topic === Topic.NeuronManagement) ?? {
+          topic: Topic.NeuronManagement,
           followees: [],
         }
     )
@@ -818,8 +818,8 @@ export const followeesByTopic = ({
  * Filter out deprecated topics.
  */
 export const topicsToFollow = (neuron: NeuronInfo): Topic[] =>
-  (followeesByTopic({ neuron, topic: Topic.ManageNeuron }) === undefined
-    ? TOPICS_TO_FOLLOW_NNS.filter((topic) => topic !== Topic.ManageNeuron)
+  (followeesByTopic({ neuron, topic: Topic.NeuronManagement }) === undefined
+    ? TOPICS_TO_FOLLOW_NNS.filter((topic) => topic !== Topic.NeuronManagement)
     : TOPICS_TO_FOLLOW_NNS
   ).filter((topic) => !DEPRECATED_TOPICS.includes(topic));
 
@@ -995,7 +995,7 @@ export const getTopicTitle = ({
 }): string => {
   const mapper: Record<Topic, string> = {
     [Topic.Unspecified]: i18n.follow_neurons.topic_0_title,
-    [Topic.ManageNeuron]: i18n.follow_neurons.topic_1_title,
+    [Topic.NeuronManagement]: i18n.follow_neurons.topic_1_title,
     [Topic.ExchangeRate]: i18n.follow_neurons.topic_2_title,
     [Topic.NetworkEconomics]: i18n.follow_neurons.topic_3_title,
     [Topic.Governance]: i18n.follow_neurons.topic_4_title,
@@ -1006,8 +1006,8 @@ export const getTopicTitle = ({
     [Topic.Kyc]: i18n.follow_neurons.topic_9_title,
     [Topic.NodeProviderRewards]: i18n.follow_neurons.topic_10_title,
     [Topic.SnsDecentralizationSale]: i18n.follow_neurons.topic_11_title,
-    [Topic.SubnetReplicaVersionManagement]: i18n.follow_neurons.topic_12_title,
-    [Topic.ReplicaVersionManagement]: i18n.follow_neurons.topic_13_title,
+    [Topic.IcOsVersionDeployment]: i18n.follow_neurons.topic_12_title,
+    [Topic.IcOsVersionElection]: i18n.follow_neurons.topic_13_title,
     [Topic.SnsAndCommunityFund]: i18n.follow_neurons.topic_14_title,
     [Topic.ApiBoundaryNodeManagement]: i18n.follow_neurons.topic_15_title,
     [Topic.SubnetRental]: i18n.follow_neurons.topic_16_title,
@@ -1031,7 +1031,7 @@ export const getTopicSubtitle = ({
 }): string => {
   const mapper: Record<Topic, string> = {
     [Topic.Unspecified]: i18n.follow_neurons.topic_0_subtitle,
-    [Topic.ManageNeuron]: i18n.follow_neurons.topic_1_subtitle,
+    [Topic.NeuronManagement]: i18n.follow_neurons.topic_1_subtitle,
     [Topic.ExchangeRate]: i18n.follow_neurons.topic_2_subtitle,
     [Topic.NetworkEconomics]: i18n.follow_neurons.topic_3_subtitle,
     [Topic.Governance]: i18n.follow_neurons.topic_4_subtitle,
@@ -1042,9 +1042,8 @@ export const getTopicSubtitle = ({
     [Topic.Kyc]: i18n.follow_neurons.topic_9_subtitle,
     [Topic.NodeProviderRewards]: i18n.follow_neurons.topic_10_subtitle,
     [Topic.SnsDecentralizationSale]: i18n.follow_neurons.topic_11_subtitle,
-    [Topic.SubnetReplicaVersionManagement]:
-      i18n.follow_neurons.topic_12_subtitle,
-    [Topic.ReplicaVersionManagement]: i18n.follow_neurons.topic_13_subtitle,
+    [Topic.IcOsVersionDeployment]: i18n.follow_neurons.topic_12_subtitle,
+    [Topic.IcOsVersionElection]: i18n.follow_neurons.topic_13_subtitle,
     [Topic.SnsAndCommunityFund]: i18n.follow_neurons.topic_14_subtitle,
     [Topic.ApiBoundaryNodeManagement]: i18n.follow_neurons.topic_15_subtitle,
     [Topic.SubnetRental]: i18n.follow_neurons.topic_16_subtitle,

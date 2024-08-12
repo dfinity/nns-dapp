@@ -1113,7 +1113,7 @@ interface I18nNeuron_state {
 
 interface I18nTopics {
   Unspecified: string;
-  ManageNeuron: string;
+  NeuronManagement: string;
   ExchangeRate: string;
   NetworkEconomics: string;
   Governance: string;
@@ -1124,8 +1124,8 @@ interface I18nTopics {
   Kyc: string;
   NodeProviderRewards: string;
   SnsDecentralizationSale: string;
-  ReplicaVersionManagement: string;
-  SubnetReplicaVersionManagement: string;
+  IcOsVersionElection: string;
+  IcOsVersionDeployment: string;
   SnsAndCommunityFund: string;
   ApiBoundaryNodeManagement: string;
   SubnetRental: string;
@@ -1135,7 +1135,7 @@ interface I18nTopics {
 
 interface I18nTopics_description {
   Unspecified: string;
-  ManageNeuron: string;
+  NeuronManagement: string;
   ExchangeRate: string;
   NetworkEconomics: string;
   Governance: string;
@@ -1146,8 +1146,8 @@ interface I18nTopics_description {
   Kyc: string;
   NodeProviderRewards: string;
   SnsDecentralizationSale: string;
-  ReplicaVersionManagement: string;
-  SubnetReplicaVersionManagement: string;
+  IcOsVersionElection: string;
+  IcOsVersionDeployment: string;
   SnsAndCommunityFund: string;
   ApiBoundaryNodeManagement: string;
   SubnetRental: string;
@@ -1191,7 +1191,7 @@ interface I18nStatus_description {
 
 interface I18nActions {
   RegisterKnownNeuron: string;
-  ManageNeuron: string;
+  NeuronManagement: string;
   ApproveGenesisKyc: string;
   ManageNetworkEconomics: string;
   RewardNodeProvider: string;
@@ -1206,7 +1206,7 @@ interface I18nActions {
 
 interface I18nActions_description {
   RegisterKnownNeuron: string;
-  ManageNeuron: string;
+  NeuronManagement: string;
   ApproveGenesisKyc: string;
   ManageNetworkEconomics: string;
   RewardNodeProvider: string;
