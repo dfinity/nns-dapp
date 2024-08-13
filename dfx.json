@@ -102,12 +102,7 @@
       ],
       "candid": "declarations/used_by_sns_aggregator/sns_governance/sns_governance.did",
       "wasm": "target/ic/sns-governance-canister.wasm",
-      "type": "custom",
-      "remote": {
-        "id": {
-          "local": "nondm-44aaa-aaaaa-qabnq-cai"
-        }
-      }
+      "type": "custom"
     },
     "sns_ledger": {
       "build": [
@@ -115,12 +110,7 @@
       ],
       "candid": "declarations/used_by_sns_aggregator/sns_ledger/sns_ledger.did",
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
-      "type": "custom",
-      "remote": {
-        "id": {
-          "local": "n3ksb-5uaaa-aaaaa-qaboa-cai"
-        }
-      }
+      "type": "custom"
     },
     "sns_archive": {
       "build": [
@@ -136,12 +126,7 @@
       ],
       "candid": "target/ic/ic-icrc1-index.did",
       "wasm": "target/ic/ic-icrc1-index.wasm",
-      "type": "custom",
-      "remote": {
-        "id": {
-          "local": "nvi7j-geaaa-aaaaa-qabpa-cai"
-        }
-      }
+      "type": "custom"
     },
     "sns_swap": {
       "build": [
@@ -149,12 +134,7 @@
       ],
       "candid": "declarations/used_by_sns_aggregator/sns_swap/sns_swap.did",
       "wasm": "target/ic/sns-swap-canister.wasm",
-      "type": "custom",
-      "remote": {
-        "id": {
-          "local": "n4luv-qmaaa-aaaaa-qaboq-cai"
-        }
-      }
+      "type": "custom"
     },
     "sns_root": {
       "build": [
@@ -162,12 +142,7 @@
       ],
       "candid": "declarations/used_by_sns_aggregator/sns_root/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
-      "type": "custom",
-      "remote": {
-        "id": {
-          "local": "njmfy-reaaa-aaaaa-qabna-cai"
-        }
-      }
+      "type": "custom"
     },
     "sns_aggregator": {
       "build": [
