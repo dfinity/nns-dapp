@@ -186,8 +186,8 @@ impl State {
             let slow_data = SlowSnsData::from(upstream_data);
             let json_data = serde_json::to_string(&slow_data)?;
             if root_canister_str.as_str() == "njmfy-reaaa-aaaaa-qabna-cai" {
-              ic_cdk::println!("slow_data: {:?}", slow_data);
-              ic_cdk::println!("json_data: {json_data}");
+                ic_cdk::println!("slow_data: {:?}", slow_data);
+                ic_cdk::println!("json_data: {json_data}");
             }
             let path = format!("{prefix}/sns/root/{root_canister_str}/slow.json");
             let asset = Asset {
