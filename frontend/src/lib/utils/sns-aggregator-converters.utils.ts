@@ -32,7 +32,12 @@ import type {
   SnsSwapDerivedState,
   SnsSwapInit,
 } from "@dfinity/sns";
-import {candidNatArrayToBigInt, isNullish, nonNullish, toNullable} from "@dfinity/utils";
+import {
+  candidNatArrayToBigInt,
+  isNullish,
+  nonNullish,
+  toNullable,
+} from "@dfinity/utils";
 import { mapOptionalToken } from "./icrc-tokens.utils";
 import { isPngAsset } from "./utils";
 
@@ -76,12 +81,9 @@ const convertFunctionType = (
   };
 };
 
-export const convertNervousFunction = ({
-  id,
-  name,
-  description,
-  function_type,
-}: CachedNervousFunctionDto): SnsNervousSystemFunction => ({
+export const convertNervousFunction = (
+  { id, name, description, function_type }: CachedNervousFunctionDto
+): SnsNervousSystemFunction => ({
   id: BigInt(id),
   name: name,
   description: toNullable(description),
@@ -94,13 +96,15 @@ const convertNeuronsFundParticipationConstraints = (
   constraints: CachedNeuronsFundParticipationConstraints
 ): SnsNeuronsFundParticipationConstraints => ({
   coefficient_intervals: constraints.coefficient_intervals.map(
-    ({
-      slope_numerator,
-      intercept_icp_e8s,
-      from_direct_participation_icp_e8s,
-      slope_denominator,
-      to_direct_participation_icp_e8s,
-    }) => ({
+    (
+      {
+        slope_numerator,
+        intercept_icp_e8s,
+        from_direct_participation_icp_e8s,
+        slope_denominator,
+        to_direct_participation_icp_e8s,
+      }
+    ) => ({
       slope_numerator: toNullable(convertOptionalNumToBigInt(slope_numerator)),
       intercept_icp_e8s: toNullable(
         convertOptionalNumToBigInt(intercept_icp_e8s)
@@ -251,15 +255,17 @@ const convertSwapParams = (params: CachedSwapParamsDto): SnsParams => ({
   ),
 });
 
-const convertDerived = ({
-  sns_tokens_per_icp,
-  buyer_total_icp_e8s,
-  cf_participant_count,
-  direct_participant_count,
-  cf_neuron_count,
-  direct_participation_icp_e8s,
-  neurons_fund_participation_icp_e8s,
-}: CachedSnsSwapDerivedDto): SnsSwapDerivedState => ({
+const convertDerived = (
+  {
+    sns_tokens_per_icp,
+    buyer_total_icp_e8s,
+    cf_participant_count,
+    direct_participant_count,
+    cf_neuron_count,
+    direct_participation_icp_e8s,
+    neurons_fund_participation_icp_e8s,
+  }: CachedSnsSwapDerivedDto
+): SnsSwapDerivedState => ({
   sns_tokens_per_icp,
   buyer_total_icp_e8s: BigInt(buyer_total_icp_e8s),
   cf_participant_count: nonNullish(cf_participant_count)
@@ -399,22 +405,24 @@ const isValidSummary = (entry: PartialSummary): entry is SnsSummary =>
   nonNullish(entry.init) &&
   nonNullish(entry.swapParams);
 
-export const convertDtoToSnsSummary = ({
-  canister_ids: {
-    root_canister_id,
-    swap_canister_id,
-    governance_canister_id,
-    ledger_canister_id,
-    index_canister_id,
-  },
-  meta,
-  icrc1_metadata,
-  swap_state,
-  derived_state,
-  init,
-  swap_params,
-  lifecycle,
-}: CachedSnsDto): SnsSummaryWrapper | undefined => {
+export const convertDtoToSnsSummary = (
+  {
+    canister_ids: {
+      root_canister_id,
+      swap_canister_id,
+      governance_canister_id,
+      ledger_canister_id,
+      index_canister_id,
+    },
+    meta,
+    icrc1_metadata,
+    swap_state,
+    derived_state,
+    init,
+    swap_params,
+    lifecycle,
+  }: CachedSnsDto
+): SnsSummaryWrapper | undefined => {
   const partialSummary: PartialSummary = {
     rootCanisterId: Principal.from(root_canister_id),
     swapCanisterId: Principal.from(swap_canister_id),
