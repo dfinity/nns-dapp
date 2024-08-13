@@ -284,7 +284,7 @@ const arrayToBigInt = (array: number[]): bigint => {
   let d = 1n;
   for (const num of array) {
     result += d * BigInt(num);
-    d *= (2n ** 32n);
+    d *= 2n ** 32n;
   }
   return result;
 };
