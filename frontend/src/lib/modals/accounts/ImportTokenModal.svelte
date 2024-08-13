@@ -11,7 +11,6 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import ImportTokenReview from "$lib/components/accounts/ImportTokenReview.svelte";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { fetchIcrcTokenMetaData } from "$lib/services/icrc-accounts.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { addImportedToken } from "$lib/services/imported-tokens.services";
@@ -19,6 +18,7 @@
   import { goto } from "$app/navigation";
   import { createEventDispatcher } from "svelte";
   import { validateLedgerIndexPair } from "$lib/services/icrc-index.services";
+  import { getIcrcTokenMetaData } from "$lib/services/icrc-accounts.services";
 
   let currentStep: WizardStep | undefined = undefined;
   const dispatch = createEventDispatcher();
@@ -52,7 +52,7 @@
     if (isNullish(ledgerCanisterId)) {
       return;
     }
-    const meta = await fetchIcrcTokenMetaData({ ledgerCanisterId });
+    const meta = await getIcrcTokenMetaData({ ledgerCanisterId });
     if (isNullish(meta)) {
       tokenMetaData = undefined;
       toastsError({

@@ -55,10 +55,10 @@ export const getLedgerId = async ({
   certified?: boolean;
 }): Promise<Principal> => {
   const {
-    canister: { getLedgerId },
+    canister: { ledgerId },
   } = await indexCanister({ identity, canisterId: indexCanisterId });
 
-  return getLedgerId({ certified });
+  return ledgerId({ certified });
 };
 
 const indexCanister = async ({
