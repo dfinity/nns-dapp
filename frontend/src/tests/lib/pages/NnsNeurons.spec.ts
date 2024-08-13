@@ -106,6 +106,12 @@ describe("NnsNeurons", () => {
       expect(await rows[2].getStake()).toBe("0 ICP");
       expect(await rows[2].hasGoToDetailButton()).toBe(false);
     });
+
+    it("should render topic split message", async () => {
+      const po = await renderComponent();
+
+      expect(await po.hasTopicSplitMessage()).toBe(true);
+    });
   });
 
   describe("no neurons", () => {
@@ -127,6 +133,12 @@ describe("NnsNeurons", () => {
       const po = await renderComponent();
 
       expect(await po.hasEmptyMessage()).toBe(true);
+    });
+
+    it("should not render topic split message", async () => {
+      const po = await renderComponent();
+
+      expect(await po.hasTopicSplitMessage()).toBe(false);
     });
   });
 
@@ -152,6 +164,12 @@ describe("NnsNeurons", () => {
       const po = await renderComponent();
 
       expect(await po.hasEmptyMessage()).toBe(false);
+    });
+
+    it("should not render topic split message", async () => {
+      const po = await renderComponent();
+
+      expect(await po.hasTopicSplitMessage()).toBe(false);
     });
   });
 

@@ -9,6 +9,8 @@ export type TableProject = {
   logo: string;
   neuronCount: number | undefined;
   stake: TokenAmountV2 | UnavailableTokenAmount;
+  availableMaturity: bigint | undefined;
+  stakedMaturity: bigint | undefined;
 };
 
 export type ProjectsTableColumn = ResponsiveTableColumn<TableProject>;

@@ -51,7 +51,7 @@ describe("ImportTokenModal", () => {
       .mockResolvedValue(tokenMetaData);
   });
 
-  it("should display modal", async () => {
+  it("should display modal title", async () => {
     const { po } = renderComponent();
 
     expect(await po.getModalTitle()).toEqual("Import Token");

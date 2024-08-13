@@ -282,7 +282,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999988910994000,
+    "icrc1_total_supply": 799999988058694000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -384,7 +384,8 @@
         "64dy3-wqaaa-aaaaf-biicq-cai",
         "2notu-qyaaa-aaaar-qaeha-cai",
         "2kpva-5aaaa-aaaar-qaehq-cai",
-        "zi2i7-nqaaa-aaaar-qaemq-cai"
+        "zi2i7-nqaaa-aaaar-qaemq-cai",
+        "62rh2-kiaaa-aaaaf-bmy5q-cai"
       ],
       "archives": ["2sqpr-ciaaa-aaaaq-aaaoq-cai"]
     },
@@ -1071,7 +1072,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10093721177692796,
+    "icrc1_total_supply": 10096774797779140,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1786,7 +1787,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 605858586340519,
+    "icrc1_total_supply": 607012918715858,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1878,8 +1879,8 @@
       "archives": ["4zzzg-yyaaa-aaaaq-aaazq-cai"]
     },
     "meta": {
-      "url": "https://hotornot.wtf",
-      "name": "Hot or Not",
+      "url": "https://yral.com",
+      "name": "YRAL",
       "description": "A decentralized short-video social media platform governed by the people for the people",
       "logo": "/v1/sns/root/67bll-riaaa-aaaaq-aaauq-cai/logo.png"
     },
@@ -2183,7 +2184,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 101598115227376770,
+    "icrc1_total_supply": 101697500191235630,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2832,7 +2833,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 924284911162108300,
+    "icrc1_total_supply": 924966870371904500,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

@@ -46,7 +46,6 @@ export const compareTokensAlphabetically = createAscendingComparator(
   ({ title }: UserToken) => title.toLowerCase()
 );
 
-// TODO: update unit tests
 export const compareTokensForTokensTable = ({
   importedTokenIds,
 }: {

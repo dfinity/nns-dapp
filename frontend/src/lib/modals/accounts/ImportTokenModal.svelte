@@ -25,7 +25,6 @@
 
   const STEP_FORM = "Form";
   const STEP_REVIEW = "Review";
-
   const steps: WizardSteps = [
     {
       name: STEP_FORM,
@@ -63,18 +62,14 @@
     }
     return meta;
   };
-
   const onUserInput = async () => {
-    if (isNullish(ledgerCanisterId)) {
-      return;
-    }
+    if (isNullish(ledgerCanisterId)) return;
 
     startBusy({
       initiator: "import-token-validation",
       labelKey: "import_token.verifying",
     });
     tokenMetaData = await getTokenMetaData();
-
     const validOrEmptyIndexCanister =
       nonNullish(tokenMetaData) && nonNullish(indexCanisterId)
         ? await validateLedgerIndexPair({ ledgerCanisterId, indexCanisterId })
@@ -86,7 +81,6 @@
       next();
     }
   };
-
   const onUserConfirm = async () => {
     if (
       isNullish(ledgerCanisterId) ||

@@ -36,10 +36,10 @@ export class ImportTokenFormPo extends BasePageObject {
     });
   }
 
-  getNextButtonPo(): ButtonPo {
+  getSubmitButtonPo(): ButtonPo {
     return ButtonPo.under({
       element: this.root,
-      testId: "next-button",
+      testId: "submit-button",
     });
   }
 }

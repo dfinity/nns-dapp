@@ -45,6 +45,8 @@ describe("staking.utils", () => {
         amount: 0n,
         token: ICPToken,
       }),
+      availableMaturity: 0n,
+      stakedMaturity: 0n,
     };
 
     const defaultExpectedSnsTableProject = {
@@ -57,6 +59,8 @@ describe("staking.utils", () => {
         amount: 0n,
         token: mockSnsToken,
       }),
+      availableMaturity: 0n,
+      stakedMaturity: 0n,
     };
 
     const nnsNeuronWithStake = {
@@ -64,6 +68,8 @@ describe("staking.utils", () => {
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         cachedNeuronStake: 100_000_000n,
+        maturityE8sEquivalent: 0n,
+        stakedMaturityE8sEquivalent: 0n,
       },
     };
 
@@ -73,17 +79,21 @@ describe("staking.utils", () => {
         ...mockNeuron.fullNeuron,
         cachedNeuronStake: 0n,
         maturityE8sEquivalent: 0n,
+        stakedMaturityE8sEquivalent: 0n,
       },
     };
 
     const snsNeuronWithStake = createMockSnsNeuron({
       stake: 100_000_000n,
+      maturity: 0n,
+      stakedMaturity: 0n,
       id: [1, 1, 3],
     });
 
     const snsNeuronWithoutStake = createMockSnsNeuron({
       stake: 0n,
       maturity: 0n,
+      stakedMaturity: 0n,
       id: [7, 7, 9],
     });
 
@@ -130,6 +140,83 @@ describe("staking.utils", () => {
       ]);
     });
 
+    it("should include available maturity for NNS neurons", () => {
+      const maturity1 = 1_000_000n;
+      const maturity2 = 2_000_000n;
+      const neuron1 = {
+        ...nnsNeuronWithStake,
+        fullNeuron: {
+          ...nnsNeuronWithStake.fullNeuron,
+          cachedNeuronStake: 0n,
+          maturityE8sEquivalent: maturity1,
+        },
+      };
+      const neuron2 = {
+        ...nnsNeuronWithStake,
+        fullNeuron: {
+          ...nnsNeuronWithStake.fullNeuron,
+          cachedNeuronStake: 0n,
+          maturityE8sEquivalent: maturity2,
+        },
+      };
+      const tableProjects = getTableProjects({
+        universes: [nnsUniverse],
+        isSignedIn: true,
+        nnsNeurons: [neuron1, neuron2],
+        snsNeurons: {},
+      });
+
+      expect(tableProjects).toEqual([
+        {
+          ...defaultExpectedNnsTableProject,
+          neuronCount: 2,
+          availableMaturity: maturity1 + maturity2,
+        },
+      ]);
+    });
+
+    it("should include staked maturity for NNS neurons", () => {
+      // There must be some stake because neurons without stake and without
+      // available maturity are filtered out.
+      const stake = 100_000_000n;
+      const maturity1 = 1_500_000n;
+      const maturity2 = 2_200_000n;
+      const neuron1 = {
+        ...nnsNeuronWithStake,
+        fullNeuron: {
+          ...nnsNeuronWithStake.fullNeuron,
+          cachedNeuronStake: stake,
+          stakedMaturityE8sEquivalent: maturity1,
+        },
+      };
+      const neuron2 = {
+        ...nnsNeuronWithStake,
+        fullNeuron: {
+          ...nnsNeuronWithStake.fullNeuron,
+          cachedNeuronStake: stake,
+          stakedMaturityE8sEquivalent: maturity2,
+        },
+      };
+      const tableProjects = getTableProjects({
+        universes: [nnsUniverse],
+        isSignedIn: true,
+        nnsNeurons: [neuron1, neuron2],
+        snsNeurons: {},
+      });
+
+      expect(tableProjects).toEqual([
+        {
+          ...defaultExpectedNnsTableProject,
+          neuronCount: 2,
+          stake: TokenAmountV2.fromUlps({
+            amount: 2n * stake,
+            token: ICPToken,
+          }),
+          stakedMaturity: maturity1 + maturity2,
+        },
+      ]);
+    });
+
     it("should include info for SNS neurons", () => {
       const tableProjects = getTableProjects({
         universes: [snsUniverse],
@@ -151,6 +238,81 @@ describe("staking.utils", () => {
             amount: 2n * snsNeuronWithStake.cached_neuron_stake_e8s,
             token: mockSnsToken,
           }),
+        },
+      ]);
+    });
+
+    it("should include available maturity for SNS neurons", () => {
+      const maturity1 = 2_000_000n;
+      const maturity2 = 3_000_000n;
+      const neuron1 = createMockSnsNeuron({
+        stake: 0n,
+        maturity: maturity1,
+        stakedMaturity: 0n,
+        id: [1],
+      });
+      const neuron2 = createMockSnsNeuron({
+        stake: 0n,
+        maturity: maturity2,
+        stakedMaturity: 0n,
+        id: [2],
+      });
+      const tableProjects = getTableProjects({
+        universes: [snsUniverse],
+        isSignedIn: true,
+        nnsNeurons: [],
+        snsNeurons: {
+          [universeId2]: {
+            neurons: [neuron1, neuron2],
+          },
+        },
+      });
+
+      expect(tableProjects).toEqual([
+        {
+          ...defaultExpectedSnsTableProject,
+          neuronCount: 2,
+          availableMaturity: maturity1 + maturity2,
+        },
+      ]);
+    });
+
+    it("should include staked maturity for SNS neurons", () => {
+      const stake = 100_000_000n;
+      const maturity1 = 2_100_000n;
+      const maturity2 = 3_400_000n;
+      const neuron1 = createMockSnsNeuron({
+        stake,
+        maturity: 0n,
+        stakedMaturity: maturity1,
+        id: [1],
+      });
+      const neuron2 = createMockSnsNeuron({
+        stake,
+        maturity: 0n,
+        stakedMaturity: maturity2,
+        id: [2],
+      });
+      const tableProjects = getTableProjects({
+        universes: [snsUniverse],
+        isSignedIn: true,
+        nnsNeurons: [],
+        snsNeurons: {
+          [universeId2]: {
+            neurons: [neuron1, neuron2],
+          },
+        },
+      });
+
+      expect(tableProjects).toEqual([
+        {
+          ...defaultExpectedSnsTableProject,
+          neuronCount: 2,
+          stake: TokenAmountV2.fromUlps({
+            amount: 2n * stake,
+            token: mockSnsToken,
+          }),
+          stakedMaturity: maturity1 + maturity2,
         },
       ]);
     });
@@ -227,11 +389,15 @@ describe("staking.utils", () => {
           ...defaultExpectedNnsTableProject,
           neuronCount: undefined,
           stake: new UnavailableTokenAmount(ICPToken),
+          availableMaturity: undefined,
+          stakedMaturity: undefined,
         },
         {
           ...defaultExpectedSnsTableProject,
           neuronCount: undefined,
           stake: new UnavailableTokenAmount(mockSnsToken),
+          availableMaturity: undefined,
+          stakedMaturity: undefined,
         },
       ]);
     });
@@ -251,11 +417,15 @@ describe("staking.utils", () => {
           ...defaultExpectedNnsTableProject,
           neuronCount: undefined,
           stake: new UnavailableTokenAmount(ICPToken),
+          availableMaturity: undefined,
+          stakedMaturity: undefined,
         },
         {
           ...defaultExpectedSnsTableProject,
           neuronCount: undefined,
           stake: new UnavailableTokenAmount(mockSnsToken),
+          availableMaturity: undefined,
+          stakedMaturity: undefined,
         },
       ]);
     });

@@ -38,7 +38,7 @@ pub mod canisters;
 pub mod def;
 
 /// A JSON string.
-type Json = String;
+pub type Json = String;
 
 /// The maximum number of proposal payloads that will be cached.
 const CACHE_SIZE_LIMIT: usize = 100;
