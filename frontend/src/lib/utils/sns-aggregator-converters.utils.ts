@@ -286,7 +286,6 @@ const arrayToBigInt = (array: number[]): bigint[] => {
     result += d * BigInt(num);
     d *= (2n ** 32n);
   }
-  console.log('dskloetx array', array, result);
   return result;
 };
 

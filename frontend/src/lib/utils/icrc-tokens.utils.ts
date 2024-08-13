@@ -14,7 +14,6 @@ import { isNullish, nonNullish } from "@dfinity/utils";
 export const mapOptionalToken = (
   response: IcrcTokenMetadataResponse
 ): IcrcTokenMetadata | undefined => {
-  console.log('dskloetx response', response);
   const nullishToken: Partial<IcrcTokenMetadata> = response.reduce(
     (acc, [key, value]) => {
       switch (key) {
@@ -50,7 +49,6 @@ export const mapOptionalToken = (
     return undefined;
   }
 
-  console.log('dskloetx nullishToken', nullishToken);
   return nullishToken as IcrcTokenMetadata;
 };
 
