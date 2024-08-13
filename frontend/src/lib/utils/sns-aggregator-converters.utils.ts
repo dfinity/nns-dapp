@@ -32,7 +32,7 @@ import type {
   SnsSwapDerivedState,
   SnsSwapInit,
 } from "@dfinity/sns";
-import { isNullish, nonNullish, toNullable } from "@dfinity/utils";
+import {candidNatArrayToBigInt, isNullish, nonNullish, toNullable} from "@dfinity/utils";
 import { mapOptionalToken } from "./icrc-tokens.utils";
 import { isPngAsset } from "./utils";
 
@@ -287,7 +287,7 @@ export const convertIcrc1Metadata = (
       return [key, { Int: BigInt(value.Int[0]) }];
     }
     if ("Nat" in value) {
-      return [key, { Nat: BigInt(value.Nat[0]) }];
+      return [key, { Nat: candidNatArrayToBigInt(value.Nat) }];
     }
     return [key, value];
   });
