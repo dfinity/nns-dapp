@@ -59,16 +59,8 @@ export class NnsWalletPo extends BasePageObject {
     return this.getButton("more-button");
   }
 
-  getMorePopupContent(): PageObjectElement {
-    return this.root.byTestId("more-popup-content");
-  }
-
-  isMorePopupVisible(): Promise<boolean> {
-    return this.getMorePopupContent().isPresent();
-  }
-
   getLinkToDashboardPo(): LinkToDashboardCanisterPo {
-    return LinkToDashboardCanisterPo.under(this.getMorePopupContent());
+    return LinkToDashboardCanisterPo.under(this.root);
   }
 
   hasSignInButton(): Promise<boolean> {

@@ -249,7 +249,7 @@ describe("NnsWallet", () => {
 
     it('should not render "more" popup by default', async () => {
       const po = await renderWallet({});
-      expect(await po.isMorePopupVisible()).toBe(false);
+      expect(await po.getLinkToDashboardPo().isPresent()).toBe(false);
     });
 
     it('should have "View in dashboard" link in "more" popup', async () => {
@@ -259,7 +259,7 @@ describe("NnsWallet", () => {
 
       await runResolvedPromises();
 
-      expect(await po.isMorePopupVisible()).toBe(true);
+      expect(await po.getLinkToDashboardPo().isPresent()).toBe(true);
       expect(await po.getLinkToDashboardPo().getHref()).toBe(
         `https://dashboard.internetcomputer.org/canister/${OWN_CANISTER_ID_TEXT}`
       );

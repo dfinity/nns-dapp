@@ -6,6 +6,8 @@ import { render } from "@testing-library/svelte";
 
 describe("LinkToDashboardCanister", () => {
   const canisterIdText = "aaaaa-aa";
+  const urlToDashboard =
+    "https://dashboard.internetcomputer.org/canister/aaaaa-aa";
   const canisterId = Principal.fromText(canisterIdText);
 
   const renderComponent = (props) => {
@@ -25,8 +27,6 @@ describe("LinkToDashboardCanister", () => {
 
   it("should render href", async () => {
     const po = renderComponent({ canisterId });
-    expect(await po.getHref()).toBe(
-      "https://dashboard.internetcomputer.org/canister/aaaaa-aa"
-    );
+    expect(await po.getHref()).toBe(urlToDashboard);
   });
 });
