@@ -69,7 +69,7 @@
   import { onMount, onDestroy, setContext } from "svelte";
   import { writable, type Readable } from "svelte/store";
   import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
-  import { Principal } from "@dfinity/principal";
+  import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 
   $: if ($authSignedInStore) {
     pollAccounts();
@@ -392,11 +392,7 @@
     direction="rtl"
     invisibleBackdrop
   >
-    <TestIdWrapper testId="more-popup-content">
-      <LinkToDashboardCanister
-        canisterId={Principal.fromText($nnsUniverseStore.canisterId)}
-      />
-    </TestIdWrapper>
+    <LinkToDashboardCanister canisterId={LEDGER_CANISTER_ID} />
   </Popover>
 </TestIdWrapper>
 
