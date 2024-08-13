@@ -279,7 +279,7 @@ const convertDerived = ({
   ),
 });
 
-const arrayToBigInt = (array: number[]): bigint[] => {
+const arrayToBigInt = (array: number[]): bigint => {
   let result = 0n;
   let d = 1n;
   for (const num of array) {
