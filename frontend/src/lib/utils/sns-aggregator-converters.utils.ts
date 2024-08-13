@@ -279,15 +279,26 @@ const convertDerived = ({
   ),
 });
 
+const arrayToBigInt = (array: number[]): bigint[] => {
+  let result = 0n;
+  let d = 1n;
+  for (const num of array) {
+    result += d * BigInt(num);
+    d *= (2n ** 32n);
+  }
+  console.log('dskloetx array', array, result);
+  return result;
+};
+
 export const convertIcrc1Metadata = (
   icrc1Metadata: CachedSnsTokenMetadataDto
 ): IcrcTokenMetadataResponse => {
   return icrc1Metadata.map(([key, value]) => {
     if ("Int" in value) {
-      return [key, { Int: BigInt(value.Int[0]) }];
+      return [key, { Int: arrayToBigInt(value.Int) }];
     }
     if ("Nat" in value) {
-      return [key, { Nat: BigInt(value.Nat[0]) }];
+      return [key, { Nat: arrayToBigInt(value.Nat) }];
     }
     return [key, value];
   });

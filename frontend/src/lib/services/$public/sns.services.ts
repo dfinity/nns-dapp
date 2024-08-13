@@ -51,6 +51,7 @@ export const loadSnsProjects = async (): Promise<void> => {
     // This call is not necessary because the canister ids are already provided by the SNS aggregator.
     // As soon as the aggregator store is filled, SNS components may start rendering, resulting in calls on the SNS wrappers.
     // We set the aggregator store after building the wrappers' caches to avoid calls to the root canister when the SNS wrapper is initialized.
+    //console.log('dskloetx aggregatorData', aggregatorData);
     snsAggregatorStore.setData(aggregatorData);
     snsTotalTokenSupplyStore.setTotalTokenSupplies(
       aggregatorData.map(({ icrc1_total_supply, canister_ids }) => ({
