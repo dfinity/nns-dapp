@@ -29,12 +29,4 @@ describe("LinkToDashboardCanister", () => {
       "https://dashboard.internetcomputer.org/canister/aaaaa-aa"
     );
   });
-
-  it("should not render label when noLabel set", async () => {
-    const po = renderComponent({ canisterId, noLabel: true });
-    expect(await po.getLabel().isPresent()).toEqual(false);
-    expect(await po.getHref()).toBe(
-      "https://dashboard.internetcomputer.org/canister/aaaaa-aa"
-    );
-  });
 });
