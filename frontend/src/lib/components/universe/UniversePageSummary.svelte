@@ -39,8 +39,4 @@
     @include fonts.h3;
     @include text.truncate;
   }
-
-  .remove {
-    color: var(--negative-emphasis);
-  }
 </style>
