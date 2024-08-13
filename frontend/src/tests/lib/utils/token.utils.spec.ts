@@ -28,8 +28,7 @@ import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 describe("token-utils", () => {
   it("should format token", () => {
     expect(formatTokenE8s({ value: 0n })).toEqual("0");
-    // TODO: this following test used to equals 0.0000001 but because of the new ICP conversion it now renders 0.00
-    // expect(formatTokenE8s({value: 10n})).toEqual("0.0000001");
+    expect(formatTokenE8s({ value: 10n })).toEqual("0.0000001");
     expect(formatTokenE8s({ value: 100n })).toEqual("0.000001");
     expect(formatTokenE8s({ value: 100_000_000n })).toEqual("1.00");
     expect(formatTokenE8s({ value: 1_000_000_000n })).toEqual("10.00");
@@ -146,20 +145,24 @@ describe("token-utils", () => {
         value,
         detailed,
         roundingMode,
+        extraDetailForSmallAmount,
       }: {
         value: bigint;
         detailed?: boolean | "height_decimals";
         roundingMode?: "ceil";
+        extraDetailForSmallAmount?: boolean;
       }) => {
         const format1 = formatTokenE8s({
           value,
           detailed,
           roundingMode,
+          extraDetailForSmallAmount,
         });
         const format2 = formatTokenV2({
           value: TokenAmountV2.fromUlps({ amount: value, token }),
           detailed,
           roundingMode,
+          extraDetailForSmallAmount,
         });
         expect(format1).toBe(format2);
         return format2;
@@ -167,8 +170,7 @@ describe("token-utils", () => {
 
       it("should format token", () => {
         expect(testFormat({ value: 0n })).toEqual("0");
-        // TODO: this following test used to equals 0.0000001 but because of the new ICP conversion it now renders 0.00
-        // expect(testFormat({value: 10n})).toEqual("0.0000001");
+        expect(testFormat({ value: 10n })).toEqual("0.0000001");
         expect(testFormat({ value: 100n })).toEqual("0.000001");
         expect(testFormat({ value: 100_000_000n })).toEqual("1.00");
         expect(testFormat({ value: 1_000_000_000n })).toEqual("10.00");
@@ -251,6 +253,21 @@ describe("token-utils", () => {
             detailed: "height_decimals",
           })
         ).toEqual(`2'000'000.00000000`);
+      });
+
+      it("should format token without extra detail", () => {
+        expect(
+          testFormat({ value: 0n, extraDetailForSmallAmount: false })
+        ).toEqual("0");
+        expect(
+          testFormat({ value: 400_000n, extraDetailForSmallAmount: false })
+        ).toEqual("0.00");
+        expect(
+          testFormat({ value: 600_000n, extraDetailForSmallAmount: false })
+        ).toEqual("0.01");
+        expect(
+          testFormat({ value: 1_400_000n, extraDetailForSmallAmount: false })
+        ).toEqual("0.01");
       });
 
       it("should use roundingMode", () => {

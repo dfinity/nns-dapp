@@ -417,18 +417,6 @@ interface I18nActionable_proposals_sign_in {
 interface I18nActionable_proposals_empty {
   title: string;
   text: string;
-  text_unsupported: string;
-}
-
-interface I18nActionable_proposals_not_supported {
-  title: string;
-  text: string;
-  dot_tooltip: string;
-}
-
-interface I18nActionable_proposals_not_supported_snses {
-  title: string;
-  text: string;
 }
 
 interface I18nCanisters {
@@ -1138,7 +1126,7 @@ interface I18nNeuron_state {
 
 interface I18nTopics {
   Unspecified: string;
-  ManageNeuron: string;
+  NeuronManagement: string;
   ExchangeRate: string;
   NetworkEconomics: string;
   Governance: string;
@@ -1149,8 +1137,8 @@ interface I18nTopics {
   Kyc: string;
   NodeProviderRewards: string;
   SnsDecentralizationSale: string;
-  ReplicaVersionManagement: string;
-  SubnetReplicaVersionManagement: string;
+  IcOsVersionElection: string;
+  IcOsVersionDeployment: string;
   SnsAndCommunityFund: string;
   ApiBoundaryNodeManagement: string;
   SubnetRental: string;
@@ -1160,7 +1148,7 @@ interface I18nTopics {
 
 interface I18nTopics_description {
   Unspecified: string;
-  ManageNeuron: string;
+  NeuronManagement: string;
   ExchangeRate: string;
   NetworkEconomics: string;
   Governance: string;
@@ -1171,8 +1159,8 @@ interface I18nTopics_description {
   Kyc: string;
   NodeProviderRewards: string;
   SnsDecentralizationSale: string;
-  ReplicaVersionManagement: string;
-  SubnetReplicaVersionManagement: string;
+  IcOsVersionElection: string;
+  IcOsVersionDeployment: string;
   SnsAndCommunityFund: string;
   ApiBoundaryNodeManagement: string;
   SubnetRental: string;
@@ -1216,7 +1204,7 @@ interface I18nStatus_description {
 
 interface I18nActions {
   RegisterKnownNeuron: string;
-  ManageNeuron: string;
+  NeuronManagement: string;
   ApproveGenesisKyc: string;
   ManageNetworkEconomics: string;
   RewardNodeProvider: string;
@@ -1227,11 +1215,14 @@ interface I18nActions {
   SetSnsTokenSwapOpenTimeWindow: string;
   OpenSnsTokenSwap: string;
   CreateServiceNervousSystem: string;
+  InstallCode: string;
+  StopOrStartCanister: string;
+  UpdateCanisterSettings: string;
 }
 
 interface I18nActions_description {
   RegisterKnownNeuron: string;
-  ManageNeuron: string;
+  NeuronManagement: string;
   ApproveGenesisKyc: string;
   ManageNetworkEconomics: string;
   RewardNodeProvider: string;
@@ -1242,6 +1233,9 @@ interface I18nActions_description {
   SetSnsTokenSwapOpenTimeWindow: string;
   OpenSnsTokenSwap: string;
   CreateServiceNervousSystem: string;
+  InstallCode: string;
+  StopOrStartCanister: string;
+  UpdateCanisterSettings: string;
 }
 
 interface I18nNns_functions {
@@ -1369,8 +1363,6 @@ interface I18n {
   voting: I18nVoting;
   actionable_proposals_sign_in: I18nActionable_proposals_sign_in;
   actionable_proposals_empty: I18nActionable_proposals_empty;
-  actionable_proposals_not_supported: I18nActionable_proposals_not_supported;
-  actionable_proposals_not_supported_snses: I18nActionable_proposals_not_supported_snses;
   canisters: I18nCanisters;
   canister_detail: I18nCanister_detail;
   transaction_names: I18nTransaction_names;

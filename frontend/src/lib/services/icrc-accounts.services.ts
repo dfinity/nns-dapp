@@ -35,10 +35,8 @@ export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
   return getAuthenticatedIdentity();
 };
 
-/** Simple fetch of the token metadata from the icrc1 ledger canister.
- * Return null on any error.
- */
-export const fetchIcrcTokenMetaData = async ({
+/// Fetch token metadata from the icrc1 ledger canister.
+export const getIcrcTokenMetaData = async ({
   ledgerCanisterId,
 }: {
   ledgerCanisterId: Principal;
@@ -47,9 +45,6 @@ export const fetchIcrcTokenMetaData = async ({
     identity: getCurrentIdentity(),
     canisterId: ledgerCanisterId,
     certified: false,
-  }).catch(() => {
-    // TODO: Improve error handling if needed
-    return null;
   });
 };
 

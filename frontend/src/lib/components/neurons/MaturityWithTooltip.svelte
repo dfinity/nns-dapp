@@ -3,15 +3,24 @@
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { formatMaturity } from "$lib/utils/neuron.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
 
   export let availableMaturity: bigint;
   export let stakedMaturity: bigint;
   let totalMaturity = availableMaturity + stakedMaturity;
+
+  const formatMaturityForTable = (maturity: bigint) => {
+    const formattedMaturity = formatTokenE8s({
+      value: maturity,
+      extraDetailForSmallAmount: false,
+    });
+    return formattedMaturity == "0.00" ? "0" : formattedMaturity;
+  };
 </script>
 
 <div data-tid="maturity-with-tooltip-component" class="container">
   <span data-tid="total-maturity">
-    {formatMaturity(totalMaturity)}
+    {formatMaturityForTable(totalMaturity)}
   </span>
   <TooltipIcon tooltipIdPrefix="maturity-cell-tooltip">
     <div class="tooltip-content">

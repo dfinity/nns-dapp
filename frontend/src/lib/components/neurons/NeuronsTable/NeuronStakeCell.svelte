@@ -6,7 +6,7 @@
 </script>
 
 <div data-tid="neuron-stake-cell-component" class="container">
-  <AmountDisplay singleLine amount={rowData.stake} detailed />
+  <AmountDisplay singleLine amount={rowData.stake} />
 </div>
 
 <style lang="scss">

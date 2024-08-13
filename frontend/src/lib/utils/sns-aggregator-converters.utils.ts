@@ -170,12 +170,15 @@ const convertSwapInitParams = (
                   ({ hotkey_principal, cf_neurons }) => ({
                     // CfParticipant
                     hotkey_principal,
+                    hotkeys: [],
+                    controller: [],
                     cf_neurons: cf_neurons.map(
                       ({ nns_neuron_id, amount_icp_e8s }) => ({
                         // CfNeuron
                         nns_neuron_id: BigInt(nns_neuron_id),
                         amount_icp_e8s: BigInt(amount_icp_e8s),
                         has_created_neuron_recipes: [],
+                        hotkeys: [],
                       })
                     ),
                   })

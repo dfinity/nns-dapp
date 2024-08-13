@@ -399,17 +399,7 @@
   },
   "actionable_proposals_empty": {
     "title": "You're all caught up.",
-    "text": "Check back later!",
-    "text_unsupported": "Check back later! Note, that not all SNS DAOs support actionable proposals. You will need to check proposals manually if you hold $snsNames neurons."
-  },
-  "actionable_proposals_not_supported": {
-    "title": "$snsName doesn't yet support actionable proposals.",
-    "text": "$snsName SNS governance canister needs to be updated to the latest version to show actionable proposals. You can still vote on all proposals, but they will not have the visual indication.",
-    "dot_tooltip": "This SNS doesn't yet support actionable proposals."
-  },
-  "actionable_proposals_not_supported_snses": {
-    "title": "$snsNames don’t yet support actionable proposals.",
-    "text": "If an SNS DAO wishes to support actionable proposals, it needs to upgrade to a newer version of the SNS governance canister."
+    "text": "Check back later!"
   },
   "canisters": {
     "aria_label_canister_card": "Go to canister details",
