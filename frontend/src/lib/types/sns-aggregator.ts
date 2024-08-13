@@ -170,7 +170,7 @@ export type CachedSnsTokenMetadataDto = [
     | { Nat: [number, number?] }
     | { Blob: Uint8Array }
     | { Text: string }
-  )
+  ),
 ][];
 
 // Export for testing purposes
