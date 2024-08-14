@@ -11,6 +11,7 @@
 
 <PageHeader testId="wallet-page-header-component">
   <UniversePageSummary slot="start" {universe}>
+    <slot name="tags" slot="tags" />
     <slot name="actions" slot="actions" />
   </UniversePageSummary>
   <span

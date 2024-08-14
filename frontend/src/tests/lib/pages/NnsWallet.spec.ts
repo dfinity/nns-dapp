@@ -241,6 +241,29 @@ describe("NnsWallet", () => {
         },
       ]);
     });
+
+    it('should render "more" button', async () => {
+      const po = await renderWallet({});
+      expect(await po.getMoreButton().isPresent()).toBe(true);
+    });
+
+    it('should not render "more" popup by default', async () => {
+      const po = await renderWallet({});
+      expect(await po.getLinkToDashboardPo().isPresent()).toBe(false);
+    });
+
+    it('should have "View in dashboard" link in "more" popup', async () => {
+      const po = await renderWallet({});
+
+      await po.clickMore();
+
+      await runResolvedPromises();
+
+      expect(await po.getLinkToDashboardPo().isPresent()).toBe(true);
+      expect(await po.getLinkToDashboardPo().getHref()).toBe(
+        `https://dashboard.internetcomputer.org/canister/${OWN_CANISTER_ID_TEXT}`
+      );
+    });
   });
 
   describe("no accounts", () => {

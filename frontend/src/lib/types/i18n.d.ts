@@ -177,8 +177,8 @@ interface I18nAccounts {
   add_account: string;
   new_account_title: string;
   new_linked_subtitle: string;
-  attach_hardware_subtitle: string;
   attach_hardware_title: string;
+  attach_hardware_subtitle: string;
   attach_hardware_name_placeholder: string;
   attach_hardware_enter_name: string;
   attach_hardware_description: string;
@@ -1108,7 +1108,6 @@ interface I18nImport_token {
   importing: string;
   removing: string;
   review_token_info: string;
-  import_button: string;
   ledger_canister_loading_error: string;
   add_imported_token_success: string;
   remove_imported_token_success: string;
