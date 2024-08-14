@@ -17,8 +17,14 @@
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import { goto } from "$app/navigation";
   import { createEventDispatcher } from "svelte";
-  import { validateLedgerIndexPair } from "$lib/services/icrc-index.services";
+  import { matchLedgerIndexPair } from "$lib/services/icrc-index.services";
   import { getIcrcTokenMetaData } from "$lib/services/icrc-accounts.services";
+  import {
+    isImportantCkToken,
+    isUniqueImportedToken,
+  } from "$lib/utils/imported-tokens.utils";
+  import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
+  import { isSnsLedgerCanisterId } from "$lib/utils/sns.utils";
 
   let currentStep: WizardStep | undefined = undefined;
   const dispatch = createEventDispatcher();
@@ -48,39 +54,78 @@
   let indexCanisterId: Principal | undefined;
   let tokenMetaData: IcrcTokenMetadata | undefined;
 
-  const getTokenMetaData = async (): Promise<IcrcTokenMetadata | undefined> => {
-    if (isNullish(ledgerCanisterId)) {
-      return;
-    }
-    const meta = await getIcrcTokenMetaData({ ledgerCanisterId });
-    if (isNullish(meta)) {
-      tokenMetaData = undefined;
+  const getTokenMetaData = async (
+    ledgerCanisterId: Principal
+  ): Promise<IcrcTokenMetadata | undefined> => {
+    try {
+      return await getIcrcTokenMetaData({ ledgerCanisterId });
+    } catch (err) {
       toastsError({
         labelKey: "import_token.ledger_canister_loading_error",
+        err,
       });
-      return;
     }
-    return meta;
   };
+
   const onUserInput = async () => {
     if (isNullish(ledgerCanisterId)) return;
+
+    // Ledger canister ID validation
+    if (
+      !isUniqueImportedToken({
+        ledgerCanisterId,
+        importedTokens: $importedTokensStore?.importedTokens,
+      })
+    ) {
+      return toastsError({
+        labelKey: "error__imported_tokens.is_duplication",
+      });
+    }
+    if (
+      isSnsLedgerCanisterId({
+        ledgerCanisterId,
+        snsProjects: $snsProjectsCommittedStore,
+      })
+    ) {
+      return toastsError({
+        labelKey: "error__imported_tokens.is_sns",
+      });
+    }
+    if (
+      isImportantCkToken({
+        ledgerCanisterId,
+      })
+    ) {
+      return toastsError({
+        labelKey: "error__imported_tokens.is_important",
+      });
+    }
 
     startBusy({
       initiator: "import-token-validation",
       labelKey: "import_token.verifying",
     });
-    tokenMetaData = await getTokenMetaData();
+
+    tokenMetaData = await getTokenMetaData(ledgerCanisterId);
+    // No need to validate index canister if tokenMetaData fails to load or no index canister is provided
     const validOrEmptyIndexCanister =
-      nonNullish(tokenMetaData) && nonNullish(indexCanisterId)
-        ? await validateLedgerIndexPair({ ledgerCanisterId, indexCanisterId })
-        : true;
+      nonNullish(tokenMetaData) &&
+      (nonNullish(indexCanisterId)
+        ? await matchLedgerIndexPair({ ledgerCanisterId, indexCanisterId })
+        : true);
+    console.log(
+      "validOrEmptyIndexCanister",
+      validOrEmptyIndexCanister,
+      tokenMetaData
+    );
 
     stopBusy("import-token-validation");
 
-    if (nonNullish(tokenMetaData) && validOrEmptyIndexCanister) {
+    if (validOrEmptyIndexCanister) {
       next();
     }
   };
+
   const onUserConfirm = async () => {
     if (
       isNullish(ledgerCanisterId) ||

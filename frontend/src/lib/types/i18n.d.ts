@@ -884,6 +884,9 @@ interface I18nError__imported_tokens {
   add_imported_token: string;
   remove_imported_token: string;
   too_many: string;
+  is_duplication: string;
+  is_sns: string;
+  is_important: string;
 }
 
 interface I18nError__sns {

@@ -24,7 +24,7 @@ const getLedgerId = async ({
  * This function uses `ledger_id` icrc1 index canister api to check if the indexCanisterId is correctly associated with
  * the provided ledgerCanisterId.
  */
-export const validateLedgerIndexPair = async ({
+export const matchLedgerIndexPair = async ({
   ledgerCanisterId,
   indexCanisterId,
 }: {
