@@ -20,9 +20,7 @@
   disablePointerEvents={true}
 >
   <div class="title" slot="title">
-    <span class="icon">
-      <IconWarning />
-    </span>
+    <IconWarning />
     {$i18n.warning.test_env_title}
   </div>
 
