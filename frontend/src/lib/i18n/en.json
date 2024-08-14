@@ -1036,6 +1036,7 @@
   },
   "import_token": {
     "import_token": "Import Token",
+    "import_button": "Import",
     "imported_token": "Imported Token",
     "description": "To import a new token to your NNS dapp wallet, you will need to find, and paste the ledger canister id of the token. If you want to see your transaction history, you need to import the token’s index canister.",
     "ledger_label": "Ledger Canister ID",
