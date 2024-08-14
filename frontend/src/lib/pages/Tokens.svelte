@@ -9,9 +9,10 @@
   import { heightTransition } from "$lib/utils/transition.utils";
   import { IconPlus, IconSettings } from "@dfinity/gix-components";
   import { Popover } from "@dfinity/gix-components";
-  import { TokenAmountV2 } from "@dfinity/utils";
+  import { nonNullish, TokenAmountV2 } from "@dfinity/utils";
   import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 
   export let userTokensData: UserToken[];
 
@@ -41,6 +42,9 @@
   const showAll = () => {
     hideZeroBalancesStore.set("show");
   };
+
+  let shownImportTokenButton = false;
+  $: shownImportTokenButton = nonNullish($importedTokensStore.importedTokens);
 
   let showImportTokenModal = false;
 
@@ -78,13 +82,15 @@
             </div>
           {/if}
 
-          <button
-            data-tid="import-token-button"
-            class="ghost with-icon import-token-button"
-            on:click={() => (showImportTokenModal = true)}
-          >
-            <IconPlus />{$i18n.import_token.import_token}
-          </button>
+          {#if shownImportTokenButton}
+            <button
+              data-tid="import-token-button"
+              class="ghost with-icon import-token-button"
+              on:click={() => (showImportTokenModal = true)}
+            >
+              <IconPlus />{$i18n.import_token.import_token}
+            </button>
+          {/if}
         </div>
       {:else if shouldHideZeroBalances}
         <div
