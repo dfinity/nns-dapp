@@ -1,4 +1,7 @@
-import type { CachedSnsDto } from "$lib/types/sns-aggregator";
+import type {
+  CachedSnsDto,
+  CachedSnsTokenMetadataDto,
+} from "$lib/types/sns-aggregator";
 import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import {
   convertDtoToSnsSummary,
@@ -19,6 +22,21 @@ describe("sns aggregator converters utils", () => {
           ["icrc1:fee", { Nat: 100000n }],
         ]
       );
+    });
+
+    it("converts icrc1:fee using not only lower parts of a 64-bit value", () => {
+      const metadata = aggregatorSnsMockDto.icrc1_metadata.map(
+        ([key, value]) => [
+          key,
+          key === "icrc1:fee" ? { Nat: [705032704, 1] } : value,
+        ]
+      ) as CachedSnsTokenMetadataDto;
+      expect(convertIcrc1Metadata(metadata)).toEqual([
+        ["icrc1:decimals", { Nat: 8n }],
+        ["icrc1:name", { Text: "CatalyzeDAO" }],
+        ["icrc1:symbol", { Text: "CAT" }],
+        ["icrc1:fee", { Nat: 5_000_000_000n }],
+      ]);
     });
 
     it("converts aggregator nervous function to ic-js types", () => {
