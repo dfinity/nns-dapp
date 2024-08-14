@@ -33,7 +33,7 @@ import type {
   SnsSwapInit,
 } from "@dfinity/sns";
 import {
-  candidNatArrayToBigInt,
+  candidNumberArrayToBigInt,
   isNullish,
   nonNullish,
   toNullable,
@@ -289,10 +289,10 @@ export const convertIcrc1Metadata = (
 ): IcrcTokenMetadataResponse => {
   return icrc1Metadata.map(([key, value]) => {
     if ("Int" in value) {
-      return [key, { Int: candidNatArrayToBigInt(value.Int) }];
+      return [key, { Int: candidNumberArrayToBigInt(value.Int) }];
     }
     if ("Nat" in value) {
-      return [key, { Nat: candidNatArrayToBigInt(value.Nat) }];
+      return [key, { Nat: candidNumberArrayToBigInt(value.Nat) }];
     }
     return [key, value];
   });
