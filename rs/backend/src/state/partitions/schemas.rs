@@ -5,8 +5,6 @@ use crate::accounts_store::schema::SchemaLabelBytes;
 use crate::state::SchemaLabel;
 use ic_cdk::println;
 use ic_stable_structures::memory_manager::MemoryManager;
-#[cfg(test)]
-mod tests;
 
 impl Partitions {
     /// Writes the schema label to the metadata partition.
@@ -40,19 +38,14 @@ impl Partitions {
     /// - If the schema label is not supported:
     ///   - The `Map` schema does not use partitions, so may not be used with this method.
     #[must_use]
-    pub fn new_with_schema(memory: DefaultMemoryImpl, schema: SchemaLabel) -> Partitions {
-        match schema {
-            SchemaLabel::Map => panic!("Map schema does not use partitions"),
-            SchemaLabel::AccountsInStableMemory => {
-                let memory_manager = MemoryManager::init(Self::copy_memory_reference(&memory));
-                let partitions = Partitions {
-                    memory_manager,
-                    #[cfg(test)]
-                    memory,
-                };
-                partitions.set_schema_label(schema);
-                partitions
-            }
-        }
+    pub fn new(memory: DefaultMemoryImpl) -> Partitions {
+        let memory_manager = MemoryManager::init(Self::copy_memory_reference(&memory));
+        let partitions = Partitions {
+            memory_manager,
+            #[cfg(test)]
+            memory,
+        };
+        partitions.set_schema_label(SchemaLabel::AccountsInStableMemory);
+        partitions
     }
 }

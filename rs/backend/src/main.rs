@@ -5,7 +5,7 @@ use crate::accounts_store::{
     RegisterHardwareWalletResponse, RenameCanisterRequest, RenameCanisterResponse, RenameSubAccountRequest,
     RenameSubAccountResponse, SetImportedTokensResponse,
 };
-use crate::arguments::{set_canister_arguments, CanisterArguments, CANISTER_ARGUMENTS};
+use crate::arguments::{set_canister_arguments, CanisterArguments};
 use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
 use crate::perf::PerformanceCount;
 use crate::periodic_tasks_runner::run_periodic_tasks;
@@ -47,16 +47,11 @@ fn init(args: Option<CanisterArguments>) {
     println!("START init with args: {args:#?}");
     set_canister_arguments(args);
     perf::record_instruction_count("init after set_canister_arguments");
-    CANISTER_ARGUMENTS.with(|args| {
-        let args = args.borrow();
-        let schema = args.schema.unwrap_or_default();
-        let stable_memory = DefaultMemoryImpl::default();
-        let state = State::new(schema, stable_memory);
-        let state = state.with_arguments(&args);
-        STATE.with(|s| {
-            s.replace(state);
-            println!("init state after: {s:?}");
-        });
+    let stable_memory = DefaultMemoryImpl::default();
+    let state = State::new(stable_memory);
+    STATE.with(|s| {
+        s.replace(state);
+        println!("init state after: {s:?}");
     });
     // Legacy:
     assets::init_assets();
@@ -95,7 +90,6 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
     STATE.with(|s| {
         let stable_memory = DefaultMemoryImpl::default();
         let state = State::from(stable_memory);
-        let state = state.with_arguments_maybe(args_maybe.as_ref());
         s.replace(state);
     });
     perf::save_instruction_count(counter_before);

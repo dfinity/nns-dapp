@@ -5,13 +5,9 @@ use super::accounts_in_unbounded_stable_btree_map::{AccountsDbAsUnboundedStableB
 use super::{map::AccountsDbAsMap, Account, AccountsDbTrait, SchemaLabel};
 use core::fmt;
 use core::ops::RangeBounds;
-#[cfg(test)]
-use ic_stable_structures::DefaultMemoryImpl;
 
 mod enum_boilerplate;
 mod migration;
-#[cfg(test)]
-mod tests;
 
 /// An accounts database delegates API calls to underlying implementations.
 ///
