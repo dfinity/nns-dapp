@@ -1,59 +1,9 @@
 //! Tests for stable memory layout code.
 use super::*;
-use crate::{
-    accounts_store::schema::SchemaLabel,
-    state::{tests::setup_test_state, StableState},
-};
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_crypto_sha2::Sha256;
 use pretty_assertions::assert_eq;
 use std::rc::Rc;
-
-#[test]
-fn is_managed_should_recognize_memory_manager() {
-    let toy_memory = DefaultMemoryImpl::default();
-    assert!(
-        !Partitions::is_managed(&toy_memory),
-        "Empty (zero pages) of memory should not be recognized as a memory manager."
-    );
-    toy_memory.grow(5);
-    assert!(
-        !Partitions::is_managed(&toy_memory),
-        "Blank, unpopulated memory should not be recognized as managed."
-    );
-    let old_style_memory = setup_test_state().encode();
-    toy_memory.write(0, &old_style_memory);
-    assert!(!Partitions::is_managed(&toy_memory), "Random fill or old style memory should not be recognized as managed.  There _should_ be only a 2**24 bit chance of a false positive.");
-    MemoryManager::init(Rc::clone(&toy_memory)); // Note: The clone() clones the Rc, not the memory.
-    assert!(
-        Partitions::is_managed(&toy_memory),
-        "Memory manager should be recognized as managed."
-    );
-}
-
-/// If memory contains a memory manager, we should be able to get a partition table from it.
-#[test]
-fn should_be_able_to_get_partitions_from_managed_memory() {
-    // Prepare some memory.
-    let toy_memory = DefaultMemoryImpl::default();
-    assert!(
-        Partitions::try_from_memory(Rc::clone(&toy_memory)).is_err(),
-        "Zero bytes of memory should not yeild a partition table."
-    );
-    assert!(toy_memory.size() == 0, "Zero bytes of memory should have zero pages.");
-    toy_memory.grow(5);
-    assert!(
-        Partitions::try_from_memory(Rc::clone(&toy_memory)).is_err(),
-        "Blank memory should not yield a partition table."
-    );
-    // Create a memory manager.
-    MemoryManager::init(Rc::clone(&toy_memory));
-    let partitions = Partitions::try_from_memory(std::rc::Rc::clone(&toy_memory));
-    assert!(
-        partitions.is_ok(),
-        "Managed memory should yield a partition table, even if it is empty."
-    );
-}
 
 /// The virtual memory in a partition table should correspond to that created by a memory manager.
 #[test]
@@ -74,7 +24,7 @@ fn partitions_should_get_correct_virtual_memory() {
     let toy_memory = DefaultMemoryImpl::default();
     let memory_manager = MemoryManager::init(Rc::clone(&toy_memory));
     // At this stage, partitions should be empty.
-    let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory)).expect("Failed to get empty partitions");
+    let partitions = Partitions::from(Rc::clone(&toy_memory));
     assert_eq!(
         partitions.get(PartitionType::Metadata.memory_id()).size(),
         0,
@@ -89,11 +39,9 @@ fn partitions_should_get_correct_virtual_memory() {
     // Grow a partition in the memory manager.  The partitions should grow with it.
     let toy_metadata_fill = [9u8; WASM_PAGE_SIZE_IN_BYTES as usize];
     memory_manager.get(PartitionType::Metadata.memory_id()).grow(1);
-    let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory))
-        .expect("Failed to get partitions when one partition has grown");
+    let partitions = Partitions::from(Rc::clone(&toy_memory));
     assert_eq!(
-        Partitions::try_from_memory(Rc::clone(&toy_memory))
-            .expect("Failed to get partitions")
+        Partitions::from(Rc::clone(&toy_memory))
             .get(PartitionType::Metadata.memory_id())
             .size(),
         1,
@@ -109,8 +57,7 @@ fn partitions_should_get_correct_virtual_memory() {
     memory_manager
         .get(PartitionType::Metadata.memory_id())
         .write(0, &toy_metadata_fill);
-    let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory))
-        .expect("Failed to get partitions when one partition is populated");
+    let partitions = Partitions::from(Rc::clone(&toy_memory));
     assert_eq!(
         partitions.get(PartitionType::Metadata.memory_id()).size(),
         1,
@@ -126,8 +73,7 @@ fn partitions_should_get_correct_virtual_memory() {
     // Populate another partition via partitions.  The memory manager should reflect the change.
     let toy_heap_fill = b"bar".repeat(1000);
     memory_manager.get(PartitionType::Heap.memory_id()).grow(2);
-    let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory))
-        .expect("Failed to get partitions when one partition is populated");
+    let partitions = Partitions::from(Rc::clone(&toy_memory));
     assert_eq!(
         memory_manager.get(PartitionType::Metadata.memory_id()).size(),
         1,
@@ -178,7 +124,7 @@ fn should_be_able_to_convert_memory_to_partitions_and_back() {
     }
     let memory_hash_before = hash_memory(&toy_memory);
     // Load the memory into partitions and back again.
-    let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory)).expect("Failed to get partitions");
+    let partitions = Partitions::from(Rc::clone(&toy_memory));
     let toy_memory_after = partitions.into_memory();
     let memory_hash_after = hash_memory(&toy_memory_after);
     assert_eq!(
@@ -263,7 +209,7 @@ fn growing_write_should_work(memory_id: MemoryId, test_vector: &GrowingWriteTest
     } = test_vector;
     let toy_memory = DefaultMemoryImpl::default();
     MemoryManager::init(Partitions::copy_memory_reference(&toy_memory));
-    let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory)).expect("Failed to get partitions");
+    let partitions = Partitions::from(Rc::clone(&toy_memory));
     partitions.get(memory_id).grow(*initial_memory_pages);
     assert_eq!(
         partitions.get(memory_id).size(),
@@ -302,11 +248,11 @@ fn growing_write_should_work_for_all() {
 
 #[test]
 fn debug_should_portray_partitions_accurately() {
-    let partitions = Partitions::new_with_schema(DefaultMemoryImpl::default(), SchemaLabel::AccountsInStableMemory);
+    let partitions = Partitions::new(DefaultMemoryImpl::default());
     partitions.get(PartitionType::Metadata.memory_id()).grow(5); // Has one page already, storing the schema label.  Increase this to 6.
     partitions.get(PartitionType::Accounts.memory_id()).grow(2);
     assert_eq!(
         format!("{:?}", partitions),
-        "Partitions {\n  schema_label: AccountsInStableMemory\n  Metadata partition: 6 pages\n  Heap partition: 0 pages\n  Accounts partition: 2 pages\n}\n"
+        "Partitions {\n  Metadata partition: 5 pages\n  Heap partition: 0 pages\n  Accounts partition: 2 pages\n}\n"
     );
 }

@@ -58,28 +58,6 @@ impl AccountsDbAsProxy {
         self.migration = Some(migration);
     }
 
-    /// Advances the migration by one step.
-    ///
-    /// # Arguments
-    /// - `step_size`: The maximum number of accounts to migrate on this step.
-    ///   - This may be no larger than `Self::MIGRATION_STEP_SIZE_MAX`.  If it is larger, it will be reduced.
-    pub fn step_migration(&mut self, step_size: u32) {
-        // Ensure that the step size is modest:
-        let step_size = step_size.clamp(1, Self::MIGRATION_STEP_SIZE_MAX);
-        if let Some(migration) = &mut self.migration {
-            if let Some(next_to_migrate) = &migration.next_to_migrate {
-                println!("Stepping migration: {:?} -> {:?}", self.authoritative_db, migration.db);
-                let mut range = self.authoritative_db.range(next_to_migrate.clone()..);
-                for (key, account) in (&mut range).take(usize::try_from(step_size).unwrap_or(usize::MAX)) {
-                    migration.db.db_insert_account(&key, account);
-                }
-                migration.next_to_migrate = range.next().map(|(key, _account)| key.clone());
-            } else {
-                self.complete_migration();
-            }
-        }
-    }
-
     /// Completes any migration in progress.
     ///
     /// The migration will be cancelled, instead of completed, if an invariant check fails:

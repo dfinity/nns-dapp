@@ -2,7 +2,7 @@
 
 #[cfg(test)]
 use super::AccountsDbBTreeMapTrait;
-use super::{Account, AccountsDbTrait, SchemaLabel};
+use super::{Account, AccountsDbTrait};
 use core::fmt;
 use core::ops::RangeBounds;
 use std::collections::BTreeMap;
@@ -53,9 +53,6 @@ impl AccountsDbTrait for AccountsDbAsMap {
             .range(key_range)
             .map(|(key, val)| (key.clone(), val.clone()));
         Box::new(iterator)
-    }
-    fn schema_label(&self) -> SchemaLabel {
-        SchemaLabel::Map
     }
 }
 

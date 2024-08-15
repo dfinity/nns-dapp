@@ -31,8 +31,6 @@ use schema::{
     AccountsDbTrait,
 };
 
-use self::schema::SchemaLabel;
-
 /// The data migration is more complicated if there are too many accounts.  With below this many
 /// accounts we avoid some complications.
 const PRE_MIGRATION_LIMIT: u64 = 300_000;
@@ -128,9 +126,6 @@ impl AccountsDbTrait for AccountsStore {
     }
     fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
         self.accounts_db.range(key_range)
-    }
-    fn schema_label(&self) -> SchemaLabel {
-        self.accounts_db.schema_label()
     }
 }
 
@@ -371,21 +366,6 @@ pub enum DetachCanisterResponse {
 }
 
 impl AccountsStore {
-    /// Determines whether a migration is being performed.
-    #[must_use]
-    pub fn migration_in_progress(&self) -> bool {
-        self.accounts_db.migration_in_progress()
-    }
-    /// Starts migrating accounts to the new db.
-    pub fn start_migrating_accounts_to(&mut self, accounts_db: AccountsDb) {
-        self.accounts_db.start_migrating_accounts_to(accounts_db);
-    }
-    /// Advances the migration by one step.
-    ///
-    /// Note: This is a pass-through to the underlying `AccountsDb::step_migration`.  Please see that for further details.
-    pub fn step_migration(&mut self, step_size: u32) {
-        self.accounts_db.step_migration(step_size);
-    }
     #[must_use]
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
@@ -856,8 +836,6 @@ impl AccountsStore {
         stats.neurons_created_count = self.neuron_accounts.len() as u64;
         stats.neurons_topped_up_count = self.neurons_topped_up_count;
         stats.transactions_to_process_queue_length = self.multi_part_transactions_processor.get_queue_length();
-        stats.schema = Some(self.accounts_db.schema_label() as u32);
-        stats.migration_countdown = Some(self.accounts_db.migration_countdown());
         stats.accounts_db_stats_recomputed_on_upgrade = self.accounts_db_stats_recomputed_on_upgrade.0;
     }
 

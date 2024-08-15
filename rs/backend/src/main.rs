@@ -5,19 +5,17 @@ use crate::accounts_store::{
     RegisterHardwareWalletResponse, RenameCanisterRequest, RenameCanisterResponse, RenameSubAccountRequest,
     RenameSubAccountResponse, SetImportedTokensResponse,
 };
-use crate::arguments::{set_canister_arguments, CanisterArguments, CANISTER_ARGUMENTS};
+use crate::arguments::{set_canister_arguments, CanisterArguments};
 use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
 use crate::perf::PerformanceCount;
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
 use candid::candid_method;
 
-use accounts_store::schema::proxy::AccountsDbAsProxy;
 pub use candid::{CandidType, Deserialize};
 use dfn_candid::{candid, candid_one};
 use dfn_core::{over, over_async};
-use ic_cdk::api::call::RejectionCode;
-use ic_cdk::{eprintln, println};
+use ic_cdk::println;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use ic_stable_structures::DefaultMemoryImpl;
 use icp_ledger::AccountIdentifier;
@@ -47,16 +45,11 @@ fn init(args: Option<CanisterArguments>) {
     println!("START init with args: {args:#?}");
     set_canister_arguments(args);
     perf::record_instruction_count("init after set_canister_arguments");
-    CANISTER_ARGUMENTS.with(|args| {
-        let args = args.borrow();
-        let schema = args.schema.unwrap_or_default();
-        let stable_memory = DefaultMemoryImpl::default();
-        let state = State::new(schema, stable_memory);
-        let state = state.with_arguments(&args);
-        STATE.with(|s| {
-            s.replace(state);
-            println!("init state after: {s:?}");
-        });
+    let stable_memory = DefaultMemoryImpl::default();
+    let state = State::new(stable_memory);
+    STATE.with(|s| {
+        s.replace(state);
+        println!("init state after: {s:?}");
     });
     // Legacy:
     assets::init_assets();
@@ -95,7 +88,6 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
     STATE.with(|s| {
         let stable_memory = DefaultMemoryImpl::default();
         let state = State::from(stable_memory);
-        let state = state.with_arguments_maybe(args_maybe.as_ref());
         s.replace(state);
     });
     perf::save_instruction_count(counter_before);
@@ -339,45 +331,6 @@ pub fn canister_heartbeat() {
     let future = run_periodic_tasks();
 
     dfn_core::api::futures::spawn(future);
-    let migration_in_progress = STATE.with(|s| s.accounts_store.borrow().migration_in_progress());
-    if migration_in_progress {
-        dfn_core::api::futures::spawn(call_step_migration_with_retries());
-    }
-}
-
-/// Steps the migration.
-#[export_name = "canister_update step_migration"]
-pub fn step_migration() {
-    over(candid_one, step_migration_impl);
-}
-
-#[candid_method(update, rename = "step_migration")]
-fn step_migration_impl(step_size: u32) {
-    let caller = ic_cdk::caller();
-    let own_canister_id = ic_cdk::api::id();
-    if caller != own_canister_id {
-        dfn_core::api::trap_with("Only the canister itself may call step_migration");
-    }
-    STATE.with(|s| {
-        s.accounts_store.borrow_mut().step_migration(step_size);
-    });
-}
-
-/// Calls `step_migration()` without panicking and rolling back if anything goes wrong.
-async fn call_step_migration(step_size: u32) -> Result<(), (RejectionCode, String)> {
-    ic_cdk::api::call::call(ic_cdk::id(), "step_migration", (step_size,)).await
-}
-
-/// Calls step migration, dropping the step size to 1 on failure.
-async fn call_step_migration_with_retries() {
-    for step_size in [AccountsDbAsProxy::MIGRATION_STEP_SIZE, 1] {
-        if let Err((code, msg)) = call_step_migration(step_size).await {
-            println!("WARNING: step_migration failed with step size {step_size}: {code:?} {msg}");
-        } else {
-            return;
-        }
-    }
-    eprintln!("ERROR: step_migration failed.");
 }
 
 /// Add an asset to be served by the canister.

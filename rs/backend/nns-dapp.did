@@ -237,8 +237,6 @@ service: (opt Config) -> {
     add_stable_asset: (asset: blob) -> ();
     add_assets_tar_xz: (asset: blob) -> ();
 
-    step_migration: (nat32) -> ();
-
     // Methods available in the test build only:
     get_toy_account: (nat64) -> (GetAccountResponse) query;
 }

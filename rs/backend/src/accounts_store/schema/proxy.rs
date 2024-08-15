@@ -2,16 +2,11 @@
 //!
 //! The proxy manages migrations from one implementation to another.
 use super::accounts_in_unbounded_stable_btree_map::{AccountsDbAsUnboundedStableBTreeMap, ProductionMemoryType};
-use super::{map::AccountsDbAsMap, Account, AccountsDbTrait, SchemaLabel};
+use super::{map::AccountsDbAsMap, Account, AccountsDbTrait};
 use core::fmt;
 use core::ops::RangeBounds;
-#[cfg(test)]
-use ic_stable_structures::DefaultMemoryImpl;
 
 mod enum_boilerplate;
-mod migration;
-#[cfg(test)]
-mod tests;
 
 /// An accounts database delegates API calls to underlying implementations.
 ///
@@ -39,8 +34,6 @@ impl Default for AccountsDbAsProxy {
 struct Migration {
     /// The database being migrated to
     db: AccountsDb,
-    /// The next account to migrate.
-    next_to_migrate: Option<Vec<u8>>,
 }
 
 impl fmt::Debug for Migration {
@@ -108,10 +101,6 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     /// Iterates over the values of the authoritative database.
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         self.authoritative_db.values()
-    }
-    /// The authoritative schema label.
-    fn schema_label(&self) -> SchemaLabel {
-        self.authoritative_db.schema_label()
     }
     /// Iterates over a range of accounts in the authoritative db.
     fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
