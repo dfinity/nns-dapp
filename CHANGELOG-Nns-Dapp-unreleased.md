@@ -43,6 +43,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* Integration test setup code and related script and documentation.
+
 #### Fixed
 
 #### Security
