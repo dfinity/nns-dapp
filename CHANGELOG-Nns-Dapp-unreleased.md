@@ -29,6 +29,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Empty space in the Tokens and Neurons tables in Safari.
+
 #### Security
 
 #### Not Published
