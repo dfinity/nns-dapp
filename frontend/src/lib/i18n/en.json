@@ -1055,6 +1055,8 @@
     "remove_imported_token_success": "The token has been successfully removed!",
     "view_in_dashboard": "View in Dashboard",
     "link_to_dashboard": "https://dashboard.internetcomputer.org/canister/$canisterId",
-    "link_to_canister": "https://dashboard.internetcomputer.org/canister/$canisterId"
+    "link_to_canister": "https://dashboard.internetcomputer.org/canister/$canisterId",
+    "remove_confirmation_title": "Remove Token",
+    "remove_confirmation_description": "Are you sure you want to remove this token from your account?<br /><br />Tokens you hold in your account will not be lost, and you can add the token back in the future."
   }
 }

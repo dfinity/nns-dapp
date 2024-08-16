@@ -1115,6 +1115,8 @@ interface I18nImport_token {
   view_in_dashboard: string;
   link_to_dashboard: string;
   link_to_canister: string;
+  remove_confirmation_title: string;
+  remove_confirmation_description: string;
 }
 
 interface I18nNeuron_state {

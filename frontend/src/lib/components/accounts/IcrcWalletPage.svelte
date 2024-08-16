@@ -23,7 +23,6 @@
   import {
     IconBin,
     IconDots,
-    IconOpenInNew,
     Island,
     Popover,
     Spinner,
@@ -39,6 +38,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import LinkToDashboardCanister from "$lib/components/common/LinkToDashboardCanister.svelte";
   import { isImportedToken as checkImportedToken } from "$lib/utils/imported-tokens.utils";
+  import ImportTokenRemoveConfirmation from "$lib/components/accounts/ImportTokenRemoveConfirmation.svelte";
 
   export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;
@@ -189,6 +189,8 @@
     ledgerCanisterId,
     importedTokens: $importedTokensStore.importedTokens,
   });
+
+  let removeImportedTokenConfirmtionVisible = false;
 </script>
 
 <TestIdWrapper {testId}>
@@ -276,7 +278,7 @@
           <button
             class="remove-button button ghost with-icon"
             data-tid="remove-imported-token-button"
-            on:click={remove}
+            on:click={() => (removeImportedTokenConfirmtionVisible = true)}
           >
             <IconBin />
             {$i18n.core.remove}
@@ -284,6 +286,14 @@
         {/if}
       </div>
     </Popover>
+  {/if}
+
+  {#if removeImportedTokenConfirmtionVisible}
+    <ImportTokenRemoveConfirmation
+      {ledgerCanisterId}
+      on:nnsClose={() => (removeImportedTokenConfirmtionVisible = false)}
+      on:nnsConfirm={remove}
+    />
   {/if}
 </TestIdWrapper>
 
