@@ -21,7 +21,9 @@
   } from "$lib/utils/accounts.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
+    IconBin,
     IconDots,
+    IconOpenInNew,
     Island,
     Popover,
     Spinner,
@@ -156,10 +158,8 @@
         isSignedIn: $authSignedInStore,
       }))();
 
-  const remove = async ({
-    detail,
-  }: CustomEvent<{ ledgerCanisterId: Principal }>) => {
-    console.log("removeImportedToken", detail.ledgerCanisterId);
+  const remove = async () => {
+    if (isNullish(ledgerCanisterId)) return;
 
     startBusy({
       initiator: "import-token-removing",
@@ -169,8 +169,7 @@
     const importedTokens = $importedTokensStore.importedTokens ?? [];
     const { success } = await removeImportedTokens({
       tokensToRemove: importedTokens.filter(
-        ({ ledgerCanisterId: id }) =>
-          id.toText() === detail.ledgerCanisterId.toText()
+        ({ ledgerCanisterId: id }) => id.toText() === ledgerCanisterId.toText()
       ),
       importedTokens,
     });
@@ -273,7 +272,19 @@
       direction="rtl"
       invisibleBackdrop
     >
-      <LinkToDashboardCanister canisterId={ledgerCanisterId} />
+      <div class="popover-content">
+        <LinkToDashboardCanister canisterId={ledgerCanisterId} />
+        {#if isImportedToken}
+          <button
+            class="remove-button button ghost with-icon"
+            data-tid="remove-imported-token-button"
+            on:click={remove}
+          >
+            <IconBin />
+            {$i18n.core.remove}
+          </button>
+        {/if}
+      </div>
     </Popover>
   {/if}
 </TestIdWrapper>
@@ -287,5 +298,20 @@
 
   .info-card {
     background-color: var(--island-card-background);
+  }
+
+  .popover-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+  }
+
+  .remove-button {
+    padding: 0;
+    color: var(--negative-emphasis);
+
+    &:hover {
+      color: inherit;
+    }
   }
 </style>
