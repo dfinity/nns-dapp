@@ -311,7 +311,7 @@
     color: var(--negative-emphasis);
 
     &:hover {
-      color: inherit;
+      color: var(--negative-emphasis);
     }
   }
 </style>

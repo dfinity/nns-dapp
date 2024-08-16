@@ -28,12 +28,18 @@
 </a>
 
 <style lang="scss">
-  a.noLabel {
-    // Increase click area
-    padding: var(--padding-0_5x);
-
+  a {
     &:hover {
-      color: inherit;
+      text-decoration: underline;
+    }
+
+    &.noLabel {
+      // Increase click area
+      padding: var(--padding-0_5x);
+
+      &:hover {
+        color: inherit;
+      }
     }
   }
 </style>
