@@ -371,20 +371,6 @@ describe("sns-api", () => {
     expect(res).toEqual(expect.objectContaining({ proposals }));
   });
 
-  it("should solve missing flag for outdated canisters", async () => {
-    const res = await queryProposals({
-      identity: mockIdentity,
-      rootCanisterId: rootCanisterIdMock,
-      certified: false,
-      params: {},
-    });
-
-    expect(listProposalsSpy).toBeCalled();
-    expect(res).toEqual(
-      expect.objectContaining({ include_ballots_by_caller: [false] })
-    );
-  });
-
   it("should get a proposal", async () => {
     const proposalId: SnsProposalId = {
       id: 2n,

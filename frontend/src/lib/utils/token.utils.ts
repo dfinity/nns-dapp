@@ -69,6 +69,7 @@ const formatTokenUlps = ({
   maxDisplayedDecimals,
   detailed = false,
   roundingMode,
+  extraDetailForSmallAmount = true,
 }: {
   value: bigint;
   tokenDecimals: number;
@@ -76,6 +77,7 @@ const formatTokenUlps = ({
   maxDisplayedDecimals: number;
   detailed?: boolean | "height_decimals";
   roundingMode?: RoundMode;
+  extraDetailForSmallAmount?: boolean;
 }): string => {
   if (value === 0n) {
     return "0";
@@ -84,7 +86,7 @@ const formatTokenUlps = ({
   const converted = Number(value) / 10 ** tokenDecimals;
 
   const decimalsForAmount = (): number =>
-    converted < 0.01
+    converted < 0.01 && extraDetailForSmallAmount
       ? Math.max(countDecimals(converted), defaultDisplayedDecimals)
       : detailed
       ? Math.min(countDecimals(converted), maxDisplayedDecimals)
@@ -110,10 +112,12 @@ export const formatTokenE8s = ({
   value,
   detailed = false,
   roundingMode,
+  extraDetailForSmallAmount = true,
 }: {
   value: bigint;
   detailed?: boolean | "height_decimals";
   roundingMode?: RoundMode;
+  extraDetailForSmallAmount?: boolean;
 }): string => {
   return formatTokenUlps({
     value,
@@ -122,6 +126,7 @@ export const formatTokenE8s = ({
     maxDisplayedDecimals: ICP_DISPLAYED_HEIGHT_DECIMALS,
     detailed,
     roundingMode,
+    extraDetailForSmallAmount,
   });
 };
 
@@ -129,10 +134,12 @@ export const formatTokenV2 = ({
   value,
   detailed = false,
   roundingMode,
+  extraDetailForSmallAmount = true,
 }: {
   value: TokenAmount | TokenAmountV2;
   detailed?: boolean | "height_decimals";
   roundingMode?: RoundMode;
+  extraDetailForSmallAmount?: boolean;
 }): string => {
   let ulps;
   if (isNullish(value)) {
@@ -155,6 +162,7 @@ export const formatTokenV2 = ({
     ),
     detailed,
     roundingMode,
+    extraDetailForSmallAmount,
   });
 };
 

@@ -20,7 +20,14 @@
     hasAccounts,
   } from "$lib/utils/accounts.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { Island, Spinner } from "@dfinity/gix-components";
+  import {
+    IconBin,
+    IconDots,
+    Island,
+    Popover,
+    Spinner,
+    Tag,
+  } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import type { Writable } from "svelte/store";
@@ -28,6 +35,10 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { removeImportedTokens } from "$lib/services/imported-tokens.services";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import LinkToDashboardCanister from "$lib/components/common/LinkToDashboardCanister.svelte";
+  import { isImportedToken as checkImportedToken } from "$lib/utils/imported-tokens.utils";
+  import ImportTokenRemoveConfirmation from "$lib/components/accounts/ImportTokenRemoveConfirmation.svelte";
 
   export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;
@@ -147,10 +158,8 @@
         isSignedIn: $authSignedInStore,
       }))();
 
-  const remove = async ({
-    detail,
-  }: CustomEvent<{ ledgerCanisterId: Principal }>) => {
-    console.log("removeImportedToken", detail.ledgerCanisterId);
+  const remove = async () => {
+    if (isNullish(ledgerCanisterId)) return;
 
     startBusy({
       initiator: "import-token-removing",
@@ -160,8 +169,7 @@
     const importedTokens = $importedTokensStore.importedTokens ?? [];
     const { success } = await removeImportedTokens({
       tokensToRemove: importedTokens.filter(
-        ({ ledgerCanisterId: id }) =>
-          id.toText() === detail.ledgerCanisterId.toText()
+        ({ ledgerCanisterId: id }) => id.toText() === ledgerCanisterId.toText()
       ),
       importedTokens,
     });
@@ -172,59 +180,122 @@
       goto($accountsPathStore);
     }
   };
+
+  let moreButton: HTMLButtonElement | undefined;
+  let morePopupVisible = false;
+
+  let isImportedToken = false;
+  $: isImportedToken = checkImportedToken({
+    ledgerCanisterId,
+    importedTokens: $importedTokensStore.importedTokens,
+  });
+
+  let removeImportedTokenConfirmtionVisible = false;
 </script>
 
-<Island {testId}>
-  <main class="legacy">
-    <section>
-      {#if loaded && nonNullish(ledgerCanisterId)}
-        {#if nonNullish($selectedAccountStore.account) && nonNullish(token)}
-          <IcrcBalancesObserver
-            {ledgerCanisterId}
-            accounts={[$selectedAccountStore.account]}
-            reload={reloadOnlyAccountFromStore}
-          />
-        {/if}
-        <WalletPageHeader
-          universe={$selectedUniverseStore}
-          walletAddress={$selectedAccountStore.account?.identifier}
-          on:nnsRemove={remove}
-        />
-        <WalletPageHeading
-          accountName={$selectedAccountStore.account?.name ??
-            $i18n.accounts.main}
-          balance={nonNullish($selectedAccountStore.account) &&
-          nonNullish(token)
-            ? TokenAmountV2.fromUlps({
-                amount: $selectedAccountStore.account.balanceUlps,
-                token,
-              })
-            : undefined}
-        >
-          <slot name="header-actions" />
-          <SignInGuard />
-        </WalletPageHeading>
+<TestIdWrapper {testId}>
+  <Island>
+    <main class="legacy">
+      <section>
+        {#if loaded && nonNullish(ledgerCanisterId)}
+          {#if nonNullish($selectedAccountStore.account) && nonNullish(token)}
+            <IcrcBalancesObserver
+              {ledgerCanisterId}
+              accounts={[$selectedAccountStore.account]}
+              reload={reloadOnlyAccountFromStore}
+            />
+          {/if}
+          <WalletPageHeader
+            universe={$selectedUniverseStore}
+            walletAddress={$selectedAccountStore.account?.identifier}
+          >
+            <svelte:fragment slot="tags">
+              {#if isImportedToken}
+                <Tag testId="imported-token-tag"
+                  >{$i18n.import_token.imported_token}</Tag
+                >
+              {/if}
+            </svelte:fragment>
+            <svelte:fragment slot="actions">
+              {#if nonNullish(ledgerCanisterId)}
+                <button
+                  bind:this={moreButton}
+                  class="icon-only"
+                  data-tid="more-button"
+                  on:click={() => (morePopupVisible = true)}
+                >
+                  <IconDots />
+                </button>
+              {/if}
+            </svelte:fragment>
+          </WalletPageHeader>
+          <WalletPageHeading
+            accountName={$selectedAccountStore.account?.name ??
+              $i18n.accounts.main}
+            balance={nonNullish($selectedAccountStore.account) &&
+            nonNullish(token)
+              ? TokenAmountV2.fromUlps({
+                  amount: $selectedAccountStore.account.balanceUlps,
+                  token,
+                })
+              : undefined}
+          >
+            <slot name="header-actions" />
+            <SignInGuard />
+          </WalletPageHeading>
 
-        {#if $$slots["info-card"]}
-          <div class="content-cell-island info-card">
-            <slot name="info-card" />
+          {#if $$slots["info-card"]}
+            <div class="content-cell-island info-card">
+              <slot name="info-card" />
+            </div>
+          {/if}
+
+          <Separator spacing="none" />
+
+          <!-- Transactions and the explanation go together. -->
+          <div>
+            <slot name="page-content" />
           </div>
+        {:else}
+          <Spinner />
         {/if}
+      </section>
+    </main>
 
-        <Separator spacing="none" />
+    <slot name="footer-actions" />
+  </Island>
 
-        <!-- Transactions and the explanation go together. -->
-        <div>
-          <slot name="page-content" />
-        </div>
-      {:else}
-        <Spinner />
-      {/if}
-    </section>
-  </main>
+  {#if nonNullish(ledgerCanisterId)}
+    <Popover
+      bind:visible={morePopupVisible}
+      anchor={moreButton}
+      direction="rtl"
+      invisibleBackdrop
+    >
+      <div class="popover-content">
+        <LinkToDashboardCanister canisterId={ledgerCanisterId} />
+        {#if isImportedToken}
+          <button
+            class="remove-button button ghost with-icon"
+            data-tid="remove-imported-token-button"
+            on:click={() => (removeImportedTokenConfirmtionVisible = true)}
+          >
+            <IconBin />
+            {$i18n.core.remove}
+          </button>
+        {/if}
+      </div>
+    </Popover>
+  {/if}
 
-  <slot name="footer-actions" />
-</Island>
+  {#if removeImportedTokenConfirmtionVisible}
+    <ImportTokenRemoveConfirmation
+      {ledgerCanisterId}
+      on:nnsClose={() => (removeImportedTokenConfirmtionVisible = false)}
+      on:nnsConfirm={remove}
+    />
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   section {
@@ -235,5 +306,20 @@
 
   .info-card {
     background-color: var(--island-card-background);
+  }
+
+  .popover-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+  }
+
+  .remove-button {
+    padding: 0;
+    color: var(--negative-emphasis);
+
+    &:hover {
+      color: var(--negative-emphasis);
+    }
   }
 </style>

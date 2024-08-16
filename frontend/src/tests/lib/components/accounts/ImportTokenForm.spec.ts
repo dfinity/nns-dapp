@@ -14,10 +14,10 @@ describe("ImportTokenForm", () => {
       props,
     });
 
-    const onSubmit = vi.fn();
-    component.$on("nnsSubmit", onSubmit);
+    const nnsSubmit = vi.fn();
+    component.$on("nnsSubmit", nnsSubmit);
     const nnsClose = vi.fn();
-    component.$on("nnsCancel", nnsClose);
+    component.$on("nnsClose", nnsClose);
     const getPropLedgerCanisterId = () =>
       component.$$.ctx[component.$$.props["ledgerCanisterId"]];
     const getPropIndexCanisterId = () =>
@@ -25,7 +25,7 @@ describe("ImportTokenForm", () => {
 
     return {
       po: ImportTokenFormPo.under(new JestPageObjectElement(container)),
-      onSubmit,
+      nnsSubmit,
       nnsClose,
       getPropLedgerCanisterId,
       getPropIndexCanisterId,
@@ -81,12 +81,12 @@ describe("ImportTokenForm", () => {
       indexCanisterId: undefined,
     });
 
-    expect(await po.getNextButtonPo().isDisabled()).toEqual(true);
+    expect(await po.getSubmitButtonPo().isDisabled()).toEqual(true);
 
     // Enter a valid canister id
     await po.getLedgerCanisterInputPo().getTextInputPo().typeText("aaaaa-aa");
 
-    expect(await po.getNextButtonPo().isDisabled()).toEqual(false);
+    expect(await po.getSubmitButtonPo().isDisabled()).toEqual(false);
   });
 
   it("should disable the next button when the ledger canister id is invalid", async () => {
@@ -95,7 +95,7 @@ describe("ImportTokenForm", () => {
       indexCanisterId: undefined,
     });
 
-    expect(await po.getNextButtonPo().isDisabled()).toEqual(false);
+    expect(await po.getSubmitButtonPo().isDisabled()).toEqual(false);
 
     // Enter an invalid canister id
     await po
@@ -103,7 +103,7 @@ describe("ImportTokenForm", () => {
       .getTextInputPo()
       .typeText("invalid-canister-id");
 
-    expect(await po.getNextButtonPo().isDisabled()).toEqual(true);
+    expect(await po.getSubmitButtonPo().isDisabled()).toEqual(true);
   });
 
   it("should bind canister ids props to inputs", async () => {
@@ -129,23 +129,33 @@ describe("ImportTokenForm", () => {
     expect(getPropIndexCanisterId()).toEqual(principal2);
   });
 
-  it("should dispatch events on buttons click", async () => {
-    const { po, onSubmit, nnsClose } = renderComponent({
+  it("should dispatch nnsClose event", async () => {
+    const { po, nnsSubmit, nnsClose } = renderComponent({
       ledgerCanisterId: principal(0),
       indexCanisterId: undefined,
     });
 
-    expect(onSubmit).not.toHaveBeenCalled();
+    expect(nnsSubmit).not.toHaveBeenCalled();
     expect(nnsClose).not.toHaveBeenCalled();
 
     await po.getCancelButtonPo().click();
 
-    expect(onSubmit).not.toHaveBeenCalled();
+    expect(nnsSubmit).not.toHaveBeenCalled();
     expect(nnsClose).toBeCalledTimes(1);
+  });
 
-    await po.getNextButtonPo().click();
+  it("should dispatch nnsSubmit event", async () => {
+    const { po, nnsSubmit, nnsClose } = renderComponent({
+      ledgerCanisterId: principal(0),
+      indexCanisterId: undefined,
+    });
 
-    expect(onSubmit).toBeCalledTimes(1);
-    expect(nnsClose).toBeCalledTimes(1);
+    expect(nnsSubmit).not.toHaveBeenCalled();
+    expect(nnsClose).not.toHaveBeenCalled();
+
+    await po.getSubmitButtonPo().click();
+
+    expect(nnsSubmit).toBeCalledTimes(1);
+    expect(nnsClose).not.toHaveBeenCalled();
   });
 });

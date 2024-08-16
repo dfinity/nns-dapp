@@ -17,7 +17,10 @@ import {
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
+import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { numberToUlps } from "$lib/utils/token.utils";
 import TokensRoute from "$routes/(app)/(nns)/tokens/+page.svelte";
 import {
@@ -89,6 +92,20 @@ describe("Tokens route", () => {
     pending_utxos: [],
     required_confirmations: 0,
   });
+  const importedToken1Id = principal(100);
+  const importedToken1Metadata = {
+    name: "ZTOKEN1",
+    symbol: "ZTOKEN1",
+    fee: 4_000n,
+    decimals: 6,
+  } as IcrcTokenMetadata;
+  const importedToken2Id = principal(101);
+  const importedToken2Metadata = {
+    name: "ATOKEN2",
+    symbol: "ATOKEN2",
+    fee: 4_000n,
+    decimals: 6,
+  } as IcrcTokenMetadata;
 
   const renderPage = async () => {
     const { container } = render(TokensRoute);
@@ -104,6 +121,7 @@ describe("Tokens route", () => {
       icrcAccountsStore.reset();
       tokensStore.reset();
       icrcCanistersStore.reset();
+      importedTokensStore.reset();
       ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
       ckETHBalanceUlps = ckETHDefaultBalanceUlps;
       tetrisBalanceE8s = tetrisDefaultBalanceE8s;
@@ -115,6 +133,9 @@ describe("Tokens route", () => {
             [CKETH_UNIVERSE_CANISTER_ID.toText()]: mockCkETHToken,
             [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: mockCkTESTBTCToken,
             [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: mockCkUSDCToken,
+            // imported tokens
+            [importedToken1Id.toText()]: importedToken1Metadata,
+            [importedToken2Id.toText()]: importedToken2Metadata,
           };
           if (isNullish(tokenMap[canisterId.toText()])) {
             throw new Error(
@@ -507,7 +528,7 @@ describe("Tokens route", () => {
           ]);
         });
 
-        describe("taking balance into account", () => {
+        describe("taking balance and import tokens into account", () => {
           beforeEach(() => {
             vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
               async ({ canisterId }) => {
@@ -539,6 +560,84 @@ describe("Tokens route", () => {
               "ckBTC",
               "ckUSDC",
               "Tetris",
+              "ckETH",
+              "Pacman",
+            ]);
+          });
+        });
+
+        describe("imported tokens", () => {
+          const importedToken1Data: ImportedTokenData = {
+            ledgerCanisterId: importedToken1Id,
+            indexCanisterId: principal(111),
+          };
+          const importedToken2Data: ImportedTokenData = {
+            ledgerCanisterId: importedToken2Id,
+            indexCanisterId: undefined,
+          };
+
+          beforeEach(() => {
+            vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
+              async ({ canisterId }) => {
+                const balancesMap = {
+                  [CKBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
+                  [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
+                  [CKETH_UNIVERSE_CANISTER_ID.toText()]: 0n,
+                  [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: ckUSDCBalanceE8s,
+                  [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]:
+                    ckETHBalanceUlps,
+                  [ledgerCanisterIdTetris.toText()]: tetrisBalanceE8s,
+                  [ledgerCanisterIdPacman.toText()]: 0n,
+                  [importedToken1Id.toText()]: 10n,
+                  [importedToken2Id.toText()]: 0n,
+                };
+                if (isNullish(balancesMap[canisterId.toText()])) {
+                  throw new Error(
+                    `Account not found for canister ${canisterId.toText()}`
+                  );
+                }
+                return balancesMap[canisterId.toText()];
+              }
+            );
+
+            // Add 2 imported tokens
+            tokensStore.setToken({
+              canisterId: importedToken1Id,
+              token: importedToken1Metadata,
+            });
+            icrcCanistersStore.setCanisters({
+              ledgerCanisterId: importedToken1Id,
+              indexCanisterId: undefined,
+            });
+            tokensStore.setToken({
+              canisterId: importedToken2Id,
+              token: importedToken2Metadata,
+            });
+            icrcCanistersStore.setCanisters({
+              ledgerCanisterId: importedToken2Id,
+              indexCanisterId: undefined,
+            });
+
+            importedTokensStore.set({
+              importedTokens: [importedToken1Data, importedToken2Data],
+              certified: true,
+            });
+          });
+
+          it("should display imported tokens after important with balance", async () => {
+            const po = await renderPage();
+            const tokensPagePo = po.getTokensPagePo();
+            expect(await tokensPagePo.getTokenNames()).toEqual([
+              "Internet Computer",
+              // ck with balance
+              "ckBTC",
+              "ckUSDC",
+              // Imported tokens should be placed with the SNS tokens that have a non-zero balance
+              // and should be sorted alphabetically.
+              "ATOKEN2", // Imported without balance
+              "Tetris", // SNS with balance
+              "ZTOKEN1", // Imported with balance
+              // Zero balance
               "ckETH",
               "Pacman",
             ]);

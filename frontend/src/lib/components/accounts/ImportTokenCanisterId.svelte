@@ -1,12 +1,12 @@
 <script lang="ts">
   import { Copy } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
-  import LinkIcon from "$lib/components/common/LinkIcon.svelte";
+  import LinkToDashboardCanister from "$lib/components/common/LinkToDashboardCanister.svelte";
+  import type { Principal } from "@dfinity/principal";
 
   export let label: string;
   export let testId: string = "import-token-canister-id-component";
-  export let canisterId: string | undefined = undefined;
-  export let canisterLinkHref: string | undefined = undefined;
+  export let canisterId: Principal | undefined = undefined;
   export let canisterIdFallback: string | undefined = undefined;
 </script>
 
@@ -15,10 +15,8 @@
   <div class="canister-id">
     {#if nonNullish(canisterId)}
       <span class="value description" data-tid="canister-id">{canisterId}</span>
-      <Copy value={canisterId} />
-      {#if nonNullish(canisterLinkHref)}
-        <LinkIcon href={canisterLinkHref} />
-      {/if}
+      <Copy value={canisterId.toText()} />
+      <LinkToDashboardCanister noLabel {canisterId} />
     {:else if nonNullish(canisterIdFallback)}
       <span class="fallback description" data-tid="canister-id-fallback"
         >{canisterIdFallback}</span

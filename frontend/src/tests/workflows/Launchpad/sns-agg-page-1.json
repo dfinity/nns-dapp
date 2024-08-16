@@ -299,7 +299,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98083299953550780,
+    "icrc1_total_supply": 98124565329183100,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -755,7 +755,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100603152866249580,
+    "icrc1_total_supply": 100617930829456750,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1411,7 +1411,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50218101232939240,
+    "icrc1_total_supply": 50240983763095220,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2208,7 +2208,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9957276973783424,
+    "icrc1_total_supply": 9955944258312996,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3160,7 +3160,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10029212686651062,
+    "icrc1_total_supply": 10029215877783186,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4125,7 +4125,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12597370287762524,
+    "icrc1_total_supply": 12597600380332356,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5478,6 +5478,19 @@
               "target_method_name": "set_reserve_transfer_amounts"
             }
           }
+        },
+        {
+          "id": 1004,
+          "name": "Set GLDGov daily burn amount from reserve pool",
+          "description": "Proposal to adjust the daily amount of GLDGov burned from the reserve pool of the sns_rewards canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "iyehc-lqaaa-aaaap-ab25a-cai",
+              "target_canister_id": "iyehc-lqaaa-aaaap-ab25a-cai",
+              "validator_method_name": "set_daily_gldgov_burn_rate_validate",
+              "target_method_name": "set_daily_gldgov_burn_rate"
+            }
+          }
         }
       ]
     },
@@ -5902,7 +5915,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99966313374322200,
+    "icrc1_total_supply": 99913584624087220,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

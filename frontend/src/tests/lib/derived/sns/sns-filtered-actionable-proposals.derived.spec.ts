@@ -59,7 +59,6 @@ describe("snsFilteredActionableProposalsStore", () => {
     actionableSnsProposalsStore.set({
       rootCanisterId,
       proposals: [snsProposal1, snsProposal3],
-      includeBallotsByCaller: true,
     });
 
     await runResolvedPromises();

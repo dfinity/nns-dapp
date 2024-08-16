@@ -11,20 +11,26 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import ImportTokenReview from "$lib/components/accounts/ImportTokenReview.svelte";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { fetchIcrcTokenMetaData } from "$lib/services/icrc-accounts.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { addImportedToken } from "$lib/services/imported-tokens.services";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import { goto } from "$app/navigation";
   import { createEventDispatcher } from "svelte";
+  import { matchLedgerIndexPair } from "$lib/services/icrc-index.services";
+  import { getIcrcTokenMetaData } from "$lib/services/icrc-accounts.services";
+  import {
+    isImportantCkToken,
+    isUniqueImportedToken,
+  } from "$lib/utils/imported-tokens.utils";
+  import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
+  import { isSnsLedgerCanisterId } from "$lib/utils/sns.utils";
 
   let currentStep: WizardStep | undefined = undefined;
   const dispatch = createEventDispatcher();
 
   const STEP_FORM = "Form";
   const STEP_REVIEW = "Review";
-
   const steps: WizardSteps = [
     {
       name: STEP_FORM,
@@ -48,35 +54,69 @@
   let indexCanisterId: Principal | undefined;
   let tokenMetaData: IcrcTokenMetadata | undefined;
 
-  const updateTokenMetaData = async () => {
-    if (isNullish(ledgerCanisterId)) {
-      return;
-    }
-    const meta = await fetchIcrcTokenMetaData({ ledgerCanisterId });
-    if (isNullish(meta)) {
-      tokenMetaData = undefined;
+  const getTokenMetaData = async (
+    ledgerCanisterId: Principal
+  ): Promise<IcrcTokenMetadata | undefined> => {
+    try {
+      return await getIcrcTokenMetaData({ ledgerCanisterId });
+    } catch (err) {
       toastsError({
         labelKey: "import_token.ledger_canister_loading_error",
+        err,
       });
-      return;
     }
-    tokenMetaData = meta;
   };
 
   const onUserInput = async () => {
-    if (isNullish(ledgerCanisterId)) {
-      return;
+    if (isNullish(ledgerCanisterId)) return;
+
+    // Ledger canister ID validation
+    if (
+      !isUniqueImportedToken({
+        ledgerCanisterId,
+        importedTokens: $importedTokensStore?.importedTokens,
+      })
+    ) {
+      return toastsError({
+        labelKey: "error__imported_tokens.is_duplication",
+      });
+    }
+    if (
+      isSnsLedgerCanisterId({
+        ledgerCanisterId,
+        snsProjects: $snsProjectsCommittedStore,
+      })
+    ) {
+      return toastsError({
+        labelKey: "error__imported_tokens.is_sns",
+      });
+    }
+    if (
+      isImportantCkToken({
+        ledgerCanisterId,
+      })
+    ) {
+      return toastsError({
+        labelKey: "error__imported_tokens.is_important",
+      });
     }
 
     startBusy({
       initiator: "import-token-validation",
       labelKey: "import_token.verifying",
     });
-    await updateTokenMetaData();
-    // TODO: validate index canister id here (if provided)
+
+    tokenMetaData = await getTokenMetaData(ledgerCanisterId);
+    // No need to validate index canister if tokenMetaData fails to load or no index canister is provided
+    const validOrEmptyIndexCanister =
+      nonNullish(tokenMetaData) &&
+      (nonNullish(indexCanisterId)
+        ? await matchLedgerIndexPair({ ledgerCanisterId, indexCanisterId })
+        : true);
+
     stopBusy("import-token-validation");
 
-    if (nonNullish(tokenMetaData)) {
+    if (validOrEmptyIndexCanister) {
       next();
     }
   };
@@ -94,7 +134,7 @@
       labelKey: "import_token.importing",
     });
 
-    await addImportedToken({
+    const { success } = await addImportedToken({
       tokenToAdd: {
         ledgerCanisterId,
         indexCanisterId,
@@ -102,13 +142,15 @@
       importedTokens: $importedTokensStore.importedTokens,
     });
 
-    dispatch("nnsClose");
+    if (success) {
+      dispatch("nnsClose");
 
-    goto(
-      buildWalletUrl({
-        universe: ledgerCanisterId.toText(),
-      })
-    );
+      goto(
+        buildWalletUrl({
+          universe: ledgerCanisterId.toText(),
+        })
+      );
+    }
 
     stopBusy("import-token-importing");
   };

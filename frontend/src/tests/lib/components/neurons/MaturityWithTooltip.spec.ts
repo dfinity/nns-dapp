@@ -19,4 +19,26 @@ describe("MaturityWithTooltip", () => {
     expect(await po.getStakedMaturity()).toBe("2.00");
     expect(await po.getTotalMaturity()).toBe("3.00");
   });
+
+  it("should never use more than 2 decimals in the table", async () => {
+    const po = renderComponent({
+      availableMaturity: 200_000n,
+      stakedMaturity: 300_000n,
+    });
+
+    expect(await po.getAvailableMaturity()).toBe("0.002");
+    expect(await po.getStakedMaturity()).toBe("0.003");
+    expect(await po.getTotalMaturity()).toBe("0.01");
+  });
+
+  it("should render 0.00 as 0", async () => {
+    const po = renderComponent({
+      availableMaturity: 100_000n,
+      stakedMaturity: 200_000n,
+    });
+
+    expect(await po.getAvailableMaturity()).toBe("0.001");
+    expect(await po.getStakedMaturity()).toBe("0.002");
+    expect(await po.getTotalMaturity()).toBe("0");
+  });
 });

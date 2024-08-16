@@ -1,7 +1,5 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
-import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import { IMPORTANT_CK_TOKEN_IDS } from "$lib/constants/important-ck-tokens.constants";
 import type { UserToken } from "$lib/types/tokens-page";
 import {
   createAscendingComparator,
@@ -17,11 +15,6 @@ export const compareTokensIcpFirst = createDescendingComparator(
   (token: UserToken) => token.universeId.toText() === OWN_CANISTER_ID_TEXT
 );
 
-export const compareTokensWithBalanceFirst = createDescendingComparator(
-  (token: UserToken) => getTokenBalanceOrZero(token) > 0n
-);
-
-// TODO: add unit tests
 export const compareTokensWithBalanceOrImportedFirst = ({
   importedTokenIds,
 }: {
@@ -36,33 +29,19 @@ export const compareTokensWithBalanceOrImportedFirst = ({
 // These tokens should be placed before others (but after ICP)
 // because they have significance within the Internet Computer ecosystem and deserve to be highlighted.
 // Where the fixed order maps to a descending order in the market cap of the underlying native tokens.
-const ImportantCkTokenIds = [
-  CKBTC_UNIVERSE_CANISTER_ID.toText(),
-  CKETH_UNIVERSE_CANISTER_ID.toText(),
-  CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-]
+const ImportantCkTokenIds = IMPORTANT_CK_TOKEN_IDS.map((token) =>
+  token.toText()
+)
   // To place other tokens (which get an index of -1) at the bottom.
   .reverse();
-// TODO: update unit tests
-export const compareTokensByImportance = ({
-  importedTokenIds,
-}: {
-  importedTokenIds: Set<string>;
-}) =>
-  createDescendingComparator((token: UserToken) => {
-    const ckKnownIndex = ImportantCkTokenIds.indexOf(token.universeId.toText());
-    if (ckKnownIndex >= 0) {
-      return ckKnownIndex;
-    }
-
-    return importedTokenIds.has(token.universeId.toText()) ? 0 : -1;
-  });
+export const compareTokensByImportance = createDescendingComparator(
+  (token: UserToken) => ImportantCkTokenIds.indexOf(token.universeId.toText())
+);
 
 export const compareTokensAlphabetically = createAscendingComparator(
   ({ title }: UserToken) => title.toLowerCase()
 );
 
-// TODO: update unit tests
 export const compareTokensForTokensTable = ({
   importedTokenIds,
 }: {
@@ -71,7 +50,6 @@ export const compareTokensForTokensTable = ({
   mergeComparators([
     compareTokensIcpFirst,
     compareTokensWithBalanceOrImportedFirst({ importedTokenIds }),
-    compareTokensWithBalanceFirst,
-    compareTokensByImportance({ importedTokenIds }),
+    compareTokensByImportance,
     compareTokensAlphabetically,
   ]);

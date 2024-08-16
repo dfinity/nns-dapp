@@ -1,30 +1,22 @@
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import type { UserTokenData } from "$lib/types/tokens-page";
 import {
   compareTokensAlphabetically,
   compareTokensByImportance,
   compareTokensIcpFirst,
-  compareTokensWithBalanceFirst,
+  compareTokensWithBalanceOrImportedFirst,
 } from "$lib/utils/tokens-table.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   ckBTCTokenBase,
   createIcpUserToken,
   createUserToken,
-  createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
 import { TokenAmountV2 } from "@dfinity/utils";
 
 describe("tokens-table.utils", () => {
-  const tokenWithBalance = (amount: bigint) =>
-    createUserToken({
-      universeId: principal(Number(amount)),
-      balance: TokenAmountV2.fromUlps({
-        amount,
-        token: { name: `T${amount}`, symbol: `T${amount}`, decimals: 8 },
-      }),
-    });
   const ckBTCToken = createUserToken({
     universeId: CKBTC_UNIVERSE_CANISTER_ID,
   });
@@ -34,6 +26,24 @@ describe("tokens-table.utils", () => {
   const ckUSDCToken = createUserToken({
     universeId: CKUSDC_UNIVERSE_CANISTER_ID,
   });
+  const createTokenWithBalance = ({
+    id,
+    amount,
+  }: {
+    id: number;
+    amount: bigint;
+  }) =>
+    createUserToken({
+      universeId: principal(id),
+      balance: TokenAmountV2.fromUlps({
+        amount,
+        token: {
+          name: `T${id}`,
+          symbol: `T${id}`,
+          decimals: 8,
+        },
+      }),
+    }) as UserTokenData;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -50,69 +60,101 @@ describe("tokens-table.utils", () => {
     });
   });
 
-  describe("compareTokensWithBalanceFirst", () => {
-    it("should keep tokens with balance first", () => {
-      expect(
-        compareTokensWithBalanceFirst(
-          tokenWithBalance(1n),
-          tokenWithBalance(0n)
-        )
-      ).toEqual(-1);
-      expect(
-        compareTokensWithBalanceFirst(
-          tokenWithBalance(0n),
-          tokenWithBalance(1n)
-        )
-      ).toEqual(1);
-      expect(
-        compareTokensWithBalanceFirst(
-          tokenWithBalance(0n),
-          tokenWithBalance(0n)
-        )
-      ).toEqual(0);
-      expect(
-        compareTokensWithBalanceFirst(
-          tokenWithBalance(1n),
-          tokenWithBalance(1n)
-        )
-      ).toEqual(0);
-    });
-
-    it("should treat token in loading state as having a balance of 0", () => {
-      expect(
-        compareTokensWithBalanceFirst(
-          createUserTokenLoading(),
-          tokenWithBalance(1n)
-        )
-      ).toEqual(1);
-      expect(
-        compareTokensWithBalanceFirst(
-          tokenWithBalance(1n),
-          createUserTokenLoading()
-        )
-      ).toEqual(-1);
-    });
-  });
-
   describe("compareTokensByImportance", () => {
     it("should sort tokens by importance", () => {
-      const token0 = tokenWithBalance(0n);
+      const token0 = createTokenWithBalance({ id: 0, amount: 0n });
       const expectedOrder = [ckBTCToken, ckETHTToken, ckUSDCToken, token0];
       expect(
         [token0, ckUSDCToken, ckETHTToken, ckBTCToken].sort(
-          compareTokensByImportance({ importedTokenIds: new Set() })
+          compareTokensByImportance
         )
       ).toEqual(expectedOrder);
       expect(
         [ckBTCToken, ckETHTToken, ckUSDCToken, token0].sort(
-          compareTokensByImportance({ importedTokenIds: new Set() })
+          compareTokensByImportance
         )
       ).toEqual(expectedOrder);
       expect(
         [ckETHTToken, ckBTCToken, token0, ckUSDCToken].sort(
-          compareTokensByImportance({ importedTokenIds: new Set() })
+          compareTokensByImportance
         )
       ).toEqual(expectedOrder);
+    });
+  });
+
+  describe("compareTokensWithBalanceOrImportedFirst", () => {
+    const token0 = createTokenWithBalance({ id: 0, amount: 0n });
+    const token1 = createTokenWithBalance({ id: 1, amount: 1n });
+    const importedTokenWithBalance = createTokenWithBalance({
+      id: 2,
+      amount: 1n,
+    });
+    const importedTokenNoBalance = createTokenWithBalance({
+      id: 3,
+      amount: 0n,
+    });
+    const importedTokenIds = new Set([
+      importedTokenWithBalance.universeId.toText(),
+      importedTokenNoBalance.universeId.toText(),
+    ]);
+
+    it("should compare by balance", () => {
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token1, token0)
+      ).toEqual(-1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token0, token1)
+      ).toEqual(1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token1, token1)
+      ).toEqual(0);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token0, token0)
+      ).toEqual(0);
+    });
+
+    it("should compare by imported", () => {
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(importedTokenNoBalance, token0)
+      ).toEqual(-1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token0, importedTokenNoBalance)
+      ).toEqual(1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(importedTokenWithBalance, importedTokenNoBalance)
+      ).toEqual(0);
+    });
+
+    it("should compare by balance and imported", () => {
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(importedTokenNoBalance, token1)
+      ).toEqual(0);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token0, importedTokenNoBalance)
+      ).toEqual(1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(importedTokenWithBalance, token0)
+      ).toEqual(-1);
     });
   });
 
@@ -134,6 +176,100 @@ describe("tokens-table.utils", () => {
       ).toEqual(-1);
       expect(
         compareTokensAlphabetically(annaToken, albertTokenLowerCase)
+      ).toEqual(1);
+    });
+  });
+
+  describe("compareTokensWithBalanceOrImportedFirst", () => {
+    const token0 = createTokenWithBalance({ id: 0, amount: 0n });
+    const token1 = createTokenWithBalance({ id: 1, amount: 1n });
+    const importedTokenWithBalance = createTokenWithBalance({
+      id: 2,
+      amount: 1n,
+    });
+    const importedTokenNoBalance = createTokenWithBalance({
+      id: 3,
+      amount: 0n,
+    });
+    const importedTokenIds = new Set([
+      importedTokenWithBalance.universeId.toText(),
+      importedTokenNoBalance.universeId.toText(),
+    ]);
+
+    it("should compare by balance", () => {
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token1, token0)
+      ).toEqual(-1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token0, token1)
+      ).toEqual(1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token1, token1)
+      ).toEqual(0);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token0, token0)
+      ).toEqual(0);
+    });
+
+    it("should compare by imported", () => {
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(importedTokenNoBalance, token0)
+      ).toEqual(-1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token0, importedTokenNoBalance)
+      ).toEqual(1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(importedTokenWithBalance, importedTokenNoBalance)
+      ).toEqual(0);
+    });
+
+    it("should compare by balance and imported", () => {
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(importedTokenNoBalance, token1)
+      ).toEqual(0);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token0, importedTokenNoBalance)
+      ).toEqual(1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(importedTokenWithBalance, token0)
+      ).toEqual(-1);
+    });
+
+    it("should treat token in loading state as having a balance of 0", () => {
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(createUserTokenLoading(), token0)
+      ).toEqual(0);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token1, createUserTokenLoading())
+      ).toEqual(-1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(createUserTokenLoading(), importedTokenNoBalance)
       ).toEqual(1);
     });
   });

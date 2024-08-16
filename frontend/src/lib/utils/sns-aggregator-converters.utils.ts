@@ -32,7 +32,12 @@ import type {
   SnsSwapDerivedState,
   SnsSwapInit,
 } from "@dfinity/sns";
-import { isNullish, nonNullish, toNullable } from "@dfinity/utils";
+import {
+  candidNumberArrayToBigInt,
+  isNullish,
+  nonNullish,
+  toNullable,
+} from "@dfinity/utils";
 import { mapOptionalToken } from "./icrc-tokens.utils";
 import { isPngAsset } from "./utils";
 
@@ -170,12 +175,15 @@ const convertSwapInitParams = (
                   ({ hotkey_principal, cf_neurons }) => ({
                     // CfParticipant
                     hotkey_principal,
+                    hotkeys: [],
+                    controller: [],
                     cf_neurons: cf_neurons.map(
                       ({ nns_neuron_id, amount_icp_e8s }) => ({
                         // CfNeuron
                         nns_neuron_id: BigInt(nns_neuron_id),
                         amount_icp_e8s: BigInt(amount_icp_e8s),
                         has_created_neuron_recipes: [],
+                        hotkeys: [],
                       })
                     ),
                   })
@@ -281,10 +289,10 @@ export const convertIcrc1Metadata = (
 ): IcrcTokenMetadataResponse => {
   return icrc1Metadata.map(([key, value]) => {
     if ("Int" in value) {
-      return [key, { Int: BigInt(value.Int[0]) }];
+      return [key, { Int: candidNumberArrayToBigInt(value.Int) }];
     }
     if ("Nat" in value) {
-      return [key, { Nat: BigInt(value.Nat[0]) }];
+      return [key, { Nat: candidNumberArrayToBigInt(value.Nat) }];
     }
     return [key, value];
   });

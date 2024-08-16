@@ -32,7 +32,8 @@
     "receive": "Receive",
     "send_with_token": "Send $token",
     "collapse_all": "Collapse All",
-    "or": "or"
+    "or": "or",
+    "learn_more": "Learn more"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -119,7 +120,9 @@
     "adding_permissions": "There was an error adding permissions.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
     "qrcode_camera_error": "An error occurred while initializing the camera to read the QR code.",
-    "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction."
+    "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction.",
+    "invalid_ledger_index_pair": "The provided index canister ID does not match the associated ledger canister ID.",
+    "index_canister_validation": "An error occurred while validating the index canister ID."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired.",
@@ -242,6 +245,8 @@
   "neurons": {
     "title": "Neurons",
     "text": "Earn voting rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by submitting and voting on Network Nervous System (NNS) proposals.",
+    "split_topic_message": "The System Canister Management topic is being split into 3 topics. Review your neuron following to confirm it is set up according to your preferences.",
+    "split_topic_learn_more_label": "Learn more about the changes made to proposal topics.",
     "stake_token": "Stake $token",
     "merge_neurons": "Merge Neurons",
     "merge_neurons_modal_title": "Select two neurons to merge",
@@ -392,17 +397,7 @@
   },
   "actionable_proposals_empty": {
     "title": "You're all caught up.",
-    "text": "Check back later!",
-    "text_unsupported": "Check back later! Note, that not all SNS DAOs support actionable proposals. You will need to check proposals manually if you hold $snsNames neurons."
-  },
-  "actionable_proposals_not_supported": {
-    "title": "$snsName doesn't yet support actionable proposals.",
-    "text": "$snsName SNS governance canister needs to be updated to the latest version to show actionable proposals. You can still vote on all proposals, but they will not have the visual indication.",
-    "dot_tooltip": "This SNS doesn't yet support actionable proposals."
-  },
-  "actionable_proposals_not_supported_snses": {
-    "title": "$snsNames don’t yet support actionable proposals.",
-    "text": "If an SNS DAO wishes to support actionable proposals, it needs to upgrade to a newer version of the SNS governance canister."
+    "text": "Check back later!"
   },
   "canisters": {
     "aria_label_canister_card": "Go to canister details",
@@ -848,7 +843,10 @@
     "load_imported_tokens": "There was an unexpected issue while loading imported tokens.",
     "add_imported_token": "There was an unexpected issue while adding new imported token.",
     "remove_imported_token": "There was an unexpected issue while removing the imported token.",
-    "too_many": "You can't import more than $limit tokens."
+    "too_many": "You can't import more than $limit tokens.",
+    "is_duplication": "You have already imported this token, you can find it in the token list.",
+    "is_sns": "You cannot import SNS tokens, they are added automatically.",
+    "is_important": "This token is already in the token list."
   },
   "error__sns": {
     "undefined_project": "The requested project is invalid or throws an error.",
@@ -1038,6 +1036,7 @@
   },
   "import_token": {
     "import_token": "Import Token",
+    "import_button": "Import",
     "imported_token": "Imported Token",
     "description": "To import a new token to your NNS dapp wallet, you will need to find, and paste the Ledger canister id of the token. If you want to see your transaction history, you need to import the token’s index canister.",
     "ledger_label": "Ledger Canister ID",
@@ -1051,10 +1050,13 @@
     "importing": "Importing new token...",
     "removing": "Removing imported token...",
     "review_token_info": "Review token info",
-    "import_button": "Import",
     "ledger_canister_loading_error": "Unable to load token details using the provided Ledger Canister ID.",
     "add_imported_token_success": "New token has been successfully imported!",
     "remove_imported_token_success": "The token has been successfully removed!",
-    "link_to_canister": "https://dashboard.internetcomputer.org/canister/$canisterId"
+    "view_in_dashboard": "View in Dashboard",
+    "link_to_dashboard": "https://dashboard.internetcomputer.org/canister/$canisterId",
+    "link_to_canister": "https://dashboard.internetcomputer.org/canister/$canisterId",
+    "remove_confirmation_title": "Remove Token",
+    "remove_confirmation_description": "Are you sure you want to remove this token from your account?<br /><br />Tokens you hold in your account will not be lost, and you can add the token back in the future."
   }
 }

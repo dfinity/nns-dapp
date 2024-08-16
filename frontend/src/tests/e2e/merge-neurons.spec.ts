@@ -78,14 +78,15 @@ test("Test merge neurons", async ({ page, context }) => {
     targetNeuronId: neuronId2,
   });
 
-  const transactionFee = 0.0001;
+  // The stake is also reduced by the transaction fee, but the difference isn't
+  // visible after rounding.
   expect(
     Number(
       await (
         await neuronsPo.getNeuronsTablePo().getNeuronsTableRowPo(neuronId2)
       ).getStakeBalance()
     )
-  ).toBe(finalStake1 + stake2 - transactionFee);
+  ).toBe(finalStake1 + stake2);
 
   expect(await neuronsPo.getNeuronIds()).not.toContain(neuronId1);
 

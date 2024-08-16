@@ -36,6 +36,7 @@ interface I18nCore {
   send_with_token: string;
   collapse_all: string;
   or: string;
+  learn_more: string;
 }
 
 interface I18nError {
@@ -124,6 +125,8 @@ interface I18nError {
   canister_invalid_transaction: string;
   qrcode_camera_error: string;
   qrcode_token_incompatible: string;
+  invalid_ledger_index_pair: string;
+  index_canister_validation: string;
 }
 
 interface I18nWarning {
@@ -254,6 +257,8 @@ interface I18nStaking {
 interface I18nNeurons {
   title: string;
   text: string;
+  split_topic_message: string;
+  split_topic_learn_more_label: string;
   stake_token: string;
   merge_neurons: string;
   merge_neurons_modal_title: string;
@@ -408,18 +413,6 @@ interface I18nActionable_proposals_sign_in {
 }
 
 interface I18nActionable_proposals_empty {
-  title: string;
-  text: string;
-  text_unsupported: string;
-}
-
-interface I18nActionable_proposals_not_supported {
-  title: string;
-  text: string;
-  dot_tooltip: string;
-}
-
-interface I18nActionable_proposals_not_supported_snses {
   title: string;
   text: string;
 }
@@ -889,6 +882,9 @@ interface I18nError__imported_tokens {
   add_imported_token: string;
   remove_imported_token: string;
   too_many: string;
+  is_duplication: string;
+  is_sns: string;
+  is_important: string;
 }
 
 interface I18nError__sns {
@@ -1099,6 +1095,7 @@ interface I18nTokens {
 
 interface I18nImport_token {
   import_token: string;
+  import_button: string;
   imported_token: string;
   description: string;
   ledger_label: string;
@@ -1112,11 +1109,14 @@ interface I18nImport_token {
   importing: string;
   removing: string;
   review_token_info: string;
-  import_button: string;
   ledger_canister_loading_error: string;
   add_imported_token_success: string;
   remove_imported_token_success: string;
+  view_in_dashboard: string;
+  link_to_dashboard: string;
   link_to_canister: string;
+  remove_confirmation_title: string;
+  remove_confirmation_description: string;
 }
 
 interface I18nNeuron_state {
@@ -1129,7 +1129,7 @@ interface I18nNeuron_state {
 
 interface I18nTopics {
   Unspecified: string;
-  ManageNeuron: string;
+  NeuronManagement: string;
   ExchangeRate: string;
   NetworkEconomics: string;
   Governance: string;
@@ -1140,8 +1140,8 @@ interface I18nTopics {
   Kyc: string;
   NodeProviderRewards: string;
   SnsDecentralizationSale: string;
-  ReplicaVersionManagement: string;
-  SubnetReplicaVersionManagement: string;
+  IcOsVersionElection: string;
+  IcOsVersionDeployment: string;
   SnsAndCommunityFund: string;
   ApiBoundaryNodeManagement: string;
   SubnetRental: string;
@@ -1151,7 +1151,7 @@ interface I18nTopics {
 
 interface I18nTopics_description {
   Unspecified: string;
-  ManageNeuron: string;
+  NeuronManagement: string;
   ExchangeRate: string;
   NetworkEconomics: string;
   Governance: string;
@@ -1162,8 +1162,8 @@ interface I18nTopics_description {
   Kyc: string;
   NodeProviderRewards: string;
   SnsDecentralizationSale: string;
-  ReplicaVersionManagement: string;
-  SubnetReplicaVersionManagement: string;
+  IcOsVersionElection: string;
+  IcOsVersionDeployment: string;
   SnsAndCommunityFund: string;
   ApiBoundaryNodeManagement: string;
   SubnetRental: string;
@@ -1207,7 +1207,7 @@ interface I18nStatus_description {
 
 interface I18nActions {
   RegisterKnownNeuron: string;
-  ManageNeuron: string;
+  NeuronManagement: string;
   ApproveGenesisKyc: string;
   ManageNetworkEconomics: string;
   RewardNodeProvider: string;
@@ -1218,11 +1218,14 @@ interface I18nActions {
   SetSnsTokenSwapOpenTimeWindow: string;
   OpenSnsTokenSwap: string;
   CreateServiceNervousSystem: string;
+  InstallCode: string;
+  StopOrStartCanister: string;
+  UpdateCanisterSettings: string;
 }
 
 interface I18nActions_description {
   RegisterKnownNeuron: string;
-  ManageNeuron: string;
+  NeuronManagement: string;
   ApproveGenesisKyc: string;
   ManageNetworkEconomics: string;
   RewardNodeProvider: string;
@@ -1233,6 +1236,9 @@ interface I18nActions_description {
   SetSnsTokenSwapOpenTimeWindow: string;
   OpenSnsTokenSwap: string;
   CreateServiceNervousSystem: string;
+  InstallCode: string;
+  StopOrStartCanister: string;
+  UpdateCanisterSettings: string;
 }
 
 interface I18nNns_functions {
@@ -1360,8 +1366,6 @@ interface I18n {
   voting: I18nVoting;
   actionable_proposals_sign_in: I18nActionable_proposals_sign_in;
   actionable_proposals_empty: I18nActionable_proposals_empty;
-  actionable_proposals_not_supported: I18nActionable_proposals_not_supported;
-  actionable_proposals_not_supported_snses: I18nActionable_proposals_not_supported_snses;
   canisters: I18nCanisters;
   canister_detail: I18nCanister_detail;
   transaction_names: I18nTransaction_names;

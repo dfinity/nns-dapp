@@ -19,7 +19,7 @@ import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsProposalRewardStatus } from "@dfinity/sns";
 import type { ProposalData } from "@dfinity/sns/dist/candid/sns_governance";
-import { fromNullable, isNullish } from "@dfinity/utils";
+import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 export const loadActionableSnsProposals = async () => {
@@ -40,44 +40,29 @@ export const loadActionableProposalsForSns = async (
   try {
     const rootCanisterIdText = rootCanisterId.toText();
     const identity = await getAuthenticatedIdentity();
-    const { proposals: allProposals, includeBallotsByCaller } =
-      await querySnsProposals({
-        rootCanisterId: rootCanisterIdText,
-        identity,
-      });
+    const { proposals: allProposals } = await querySnsProposals({
+      rootCanisterId: rootCanisterIdText,
+      identity,
+    });
 
     failedActionableSnsesStore.remove(rootCanisterIdText);
-
-    if (!includeBallotsByCaller) {
-      // No need to fetch neurons if there are no actionable proposals support.
-      actionableSnsProposalsStore.set({
-        rootCanisterId,
-        proposals: [],
-        includeBallotsByCaller,
-      });
-      return;
-    }
 
     const neurons = await queryNeurons({
       rootCanisterId,
     });
 
-    // It's not possible to filter out votable proposals w/o ballots
-    const votableProposals = includeBallotsByCaller
-      ? allProposals.filter(
-          (proposal) =>
-            votableSnsNeurons({
-              neurons,
-              proposal,
-              identity,
-            }).length > 0
-        )
-      : [];
+    const votableProposals = allProposals.filter(
+      (proposal) =>
+        votableSnsNeurons({
+          neurons,
+          proposal,
+          identity,
+        }).length > 0
+    );
 
     actionableSnsProposalsStore.set({
       rootCanisterId,
       proposals: votableProposals,
-      includeBallotsByCaller,
     });
   } catch (err) {
     console.error(err);
@@ -107,37 +92,32 @@ const querySnsProposals = async ({
 }: {
   rootCanisterId: string;
   identity: Identity;
-}): Promise<{ proposals: ProposalData[]; includeBallotsByCaller: boolean }> => {
+}): Promise<{ proposals: ProposalData[] }> => {
   let sortedProposals: ProposalData[] = [];
-  let includeBallotsByCaller = false;
   for (
     let pagesLoaded = 0;
     pagesLoaded < MAX_ACTIONABLE_REQUEST_COUNT;
     pagesLoaded++
   ) {
     // Fetch all proposals that are accepting votes.
-    const { proposals: page, include_ballots_by_caller } = await queryProposals(
-      {
-        params: {
-          limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
-          includeRewardStatus: [
-            SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
-          ],
-          beforeProposal: lastProposalId(sortedProposals),
-        },
-        identity,
-        certified: false,
-        rootCanisterId: Principal.fromText(rootCanisterId),
-      }
-    );
+    const { proposals: page } = await queryProposals({
+      params: {
+        limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+        includeRewardStatus: [
+          SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+        ],
+        beforeProposal: lastProposalId(sortedProposals),
+      },
+      identity,
+      certified: false,
+      rootCanisterId: Principal.fromText(rootCanisterId),
+    });
 
     // Sort proposals by id in descending order to be sure that "lastProposalId" returns correct id.
     sortedProposals = sortSnsProposalsById([
       ...sortedProposals,
       ...page,
     ]) as ProposalData[];
-    // Canisters w/o ballot support, returns undefined for `include_ballots_by_caller`.
-    includeBallotsByCaller = fromNullable(include_ballots_by_caller) ?? false;
 
     // no more proposals available
     if (page.length !== DEFAULT_SNS_PROPOSALS_PAGE_SIZE) {
@@ -151,6 +131,5 @@ const querySnsProposals = async ({
 
   return {
     proposals: sortedProposals,
-    includeBallotsByCaller,
   };
 };
