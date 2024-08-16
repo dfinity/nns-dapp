@@ -1114,7 +1114,6 @@ interface I18nImport_token {
   remove_imported_token_success: string;
   view_in_dashboard: string;
   link_to_dashboard: string;
-  link_to_canister: string;
   remove_confirmation_title: string;
   remove_confirmation_description: string;
 }
