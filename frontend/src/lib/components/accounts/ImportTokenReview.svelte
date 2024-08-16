@@ -5,8 +5,6 @@
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import Logo from "$lib/components/ui/Logo.svelte";
   import ImportTokenCanisterId from "$lib/components/accounts/ImportTokenCanisterId.svelte";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { isNullish } from "@dfinity/utils";
   import CalloutWarning from "$lib/components/common/CalloutWarning.svelte";
 
   export let ledgerCanisterId: Principal;
@@ -14,20 +12,6 @@
   export let tokenMetaData: IcrcTokenMetadata;
 
   const dispatch = createEventDispatcher();
-
-  let ledgerCanisterHref: string;
-  $: ledgerCanisterHref = replacePlaceholders(
-    $i18n.import_token.link_to_canister,
-    {
-      $canisterId: ledgerCanisterId.toText(),
-    }
-  );
-  let indexCanisterHref: string | undefined;
-  $: indexCanisterHref = isNullish(indexCanisterId)
-    ? undefined
-    : replacePlaceholders($i18n.import_token.link_to_canister, {
-        $canisterId: ledgerCanisterId.toText(),
-      });
 </script>
 
 <div class="container" data-tid="import-token-review-component">
