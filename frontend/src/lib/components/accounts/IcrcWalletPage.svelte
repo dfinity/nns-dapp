@@ -169,7 +169,7 @@
     const importedTokens = $importedTokensStore.importedTokens ?? [];
     const { success } = await removeImportedTokens({
       tokensToRemove: importedTokens.filter(
-        ({ ledgerCanisterId: id }) => id.toText() === ledgerCanisterId.toText()
+        ({ ledgerCanisterId: id }) => id.toText() === ledgerCanisterId?.toText()
       ),
       importedTokens,
     });
@@ -288,7 +288,7 @@
     </Popover>
   {/if}
 
-  {#if removeImportedTokenConfirmtionVisible}
+  {#if removeImportedTokenConfirmtionVisible && nonNullish(ledgerCanisterId)}
     <ImportTokenRemoveConfirmation
       {ledgerCanisterId}
       on:nnsClose={() => (removeImportedTokenConfirmtionVisible = false)}

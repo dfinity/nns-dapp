@@ -29,13 +29,15 @@
   </svelte:fragment>
 
   <div class="content">
-    {#if nonNullish(universe)}
-      <UniversePageSummary slot="start" {universe}>
-        <Tag slot="tags" testId="imported-token-tag"
-          >{$i18n.import_token.imported_token}</Tag
-        >
-      </UniversePageSummary>
-    {/if}
+    <svelte:fragment slot="start">
+      {#if nonNullish(universe)}
+        <UniversePageSummary {universe}>
+          <Tag slot="tags" testId="imported-token-tag"
+            >{$i18n.import_token.imported_token}</Tag
+          >
+        </UniversePageSummary>
+      {/if}
+    </svelte:fragment>
     <p><Html text={$i18n.import_token.remove_confirmation_description} /></p>
   </div>
 
