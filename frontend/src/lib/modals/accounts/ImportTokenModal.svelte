@@ -113,11 +113,6 @@
       (nonNullish(indexCanisterId)
         ? await matchLedgerIndexPair({ ledgerCanisterId, indexCanisterId })
         : true);
-    console.log(
-      "validOrEmptyIndexCanister",
-      validOrEmptyIndexCanister,
-      tokenMetaData
-    );
 
     stopBusy("import-token-validation");
 

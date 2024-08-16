@@ -206,8 +206,6 @@
           <WalletPageHeader
             universe={$selectedUniverseStore}
             walletAddress={$selectedAccountStore.account?.identifier}
-            on:nnsRemove={remove}
-            on:nnsMore={() => console.log("icrc")}
           >
             <svelte:fragment slot="tags">
               {#if isImportedToken}
