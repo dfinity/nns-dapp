@@ -20,7 +20,13 @@
     hasAccounts,
   } from "$lib/utils/accounts.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import {IconDots, Island, Popover, Spinner, Tag} from "@dfinity/gix-components";
+  import {
+    IconDots,
+    Island,
+    Popover,
+    Spinner,
+    Tag,
+  } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import type { Writable } from "svelte/store";
@@ -30,7 +36,7 @@
   import { removeImportedTokens } from "$lib/services/imported-tokens.services";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import LinkToDashboardCanister from "$lib/components/common/LinkToDashboardCanister.svelte";
-  import {isImportedToken as checkImportedToken} from "$lib/utils/imported-tokens.utils";
+  import { isImportedToken as checkImportedToken } from "$lib/utils/imported-tokens.utils";
 
   export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;
@@ -206,7 +212,9 @@
           >
             <svelte:fragment slot="tags">
               {#if isImportedToken}
-                <Tag testId="imported-token-tag">{$i18n.import_token.imported_token}</Tag>
+                <Tag testId="imported-token-tag"
+                  >{$i18n.import_token.imported_token}</Tag
+                >
               {/if}
             </svelte:fragment>
             <svelte:fragment slot="actions">
