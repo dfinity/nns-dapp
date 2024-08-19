@@ -15,13 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Parse and trim proposal payload for `InstallCode` within the `get_proposal_payload` back-end endpoint.
-* Support rendering `InstallCode` proposal payload by calling `get_proposal_payload`.
-
 #### Changed
-
-* Round neuron stake and maturity to 2 decimals in tables.
-* Show detailed stake amount in neuron details page.
 
 #### Deprecated
 
