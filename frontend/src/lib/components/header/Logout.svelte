@@ -22,5 +22,6 @@
 
   button {
     @include account-menu.button;
+    padding: 0;
   }
 </style>

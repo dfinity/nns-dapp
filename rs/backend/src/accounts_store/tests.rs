@@ -780,6 +780,145 @@ fn detach_canister_canister_not_found() {
 }
 
 #[test]
+fn set_and_get_imported_tokens() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let ledger_canister_id = PrincipalId::new_user_test_id(101);
+    let index_canister_id = PrincipalId::new_user_test_id(102);
+
+    assert_eq!(
+        store.get_imported_tokens(principal),
+        GetImportedTokensResponse::Ok(ImportedTokens::default())
+    );
+
+    let imported_token = ImportedToken {
+        ledger_canister_id,
+        index_canister_id: Some(index_canister_id),
+    };
+
+    assert_eq!(
+        store.set_imported_tokens(
+            principal,
+            ImportedTokens {
+                imported_tokens: vec![imported_token.clone()],
+            },
+        ),
+        SetImportedTokensResponse::Ok
+    );
+
+    assert_eq!(
+        store.get_imported_tokens(principal),
+        GetImportedTokensResponse::Ok(ImportedTokens {
+            imported_tokens: vec![imported_token],
+        })
+    );
+}
+
+#[test]
+fn set_and_get_imported_tokens_without_index_canister() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let ledger_canister_id = PrincipalId::new_user_test_id(101);
+
+    assert_eq!(
+        store.get_imported_tokens(principal),
+        GetImportedTokensResponse::Ok(ImportedTokens::default())
+    );
+
+    let imported_token = ImportedToken {
+        ledger_canister_id,
+        index_canister_id: None,
+    };
+
+    assert_eq!(
+        store.set_imported_tokens(
+            principal,
+            ImportedTokens {
+                imported_tokens: vec![imported_token.clone()],
+            },
+        ),
+        SetImportedTokensResponse::Ok
+    );
+
+    assert_eq!(
+        store.get_imported_tokens(principal),
+        GetImportedTokensResponse::Ok(ImportedTokens {
+            imported_tokens: vec![imported_token],
+        })
+    );
+}
+
+fn get_unique_imported_tokens(count: u64) -> Vec<ImportedToken> {
+    (0..count)
+        .map(|i| ImportedToken {
+            ledger_canister_id: PrincipalId::new_user_test_id(i),
+            index_canister_id: Some(PrincipalId::new_user_test_id(i + 1000)),
+        })
+        .collect()
+}
+
+#[test]
+fn set_and_get_20_imported_tokens() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    assert_eq!(
+        store.get_imported_tokens(principal),
+        GetImportedTokensResponse::Ok(ImportedTokens::default())
+    );
+
+    let imported_tokens = get_unique_imported_tokens(20);
+
+    assert_eq!(
+        store.set_imported_tokens(
+            principal,
+            ImportedTokens {
+                imported_tokens: imported_tokens.clone()
+            },
+        ),
+        SetImportedTokensResponse::Ok
+    );
+
+    assert_eq!(
+        store.get_imported_tokens(principal),
+        GetImportedTokensResponse::Ok(ImportedTokens { imported_tokens })
+    );
+}
+
+#[test]
+fn set_imported_tokens_account_not_found() {
+    let mut store = setup_test_store();
+    let non_existing_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    assert_eq!(
+        store.set_imported_tokens(non_existing_principal, ImportedTokens::default()),
+        SetImportedTokensResponse::AccountNotFound
+    );
+}
+
+#[test]
+fn set_imported_tokens_too_many() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    let imported_tokens = get_unique_imported_tokens(21);
+
+    assert_eq!(
+        store.set_imported_tokens(principal, ImportedTokens { imported_tokens },),
+        SetImportedTokensResponse::TooManyImportedTokens { limit: 20 }
+    );
+}
+
+#[test]
+fn get_imported_tokens_account_not_found() {
+    let mut store = setup_test_store();
+    let non_existing_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    assert_eq!(
+        store.get_imported_tokens(non_existing_principal),
+        GetImportedTokensResponse::AccountNotFound
+    );
+}
+
+#[test]
 fn sub_account_name_too_long() {
     let mut store = setup_test_store();
 

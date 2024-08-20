@@ -4,14 +4,14 @@ import {
   type ProjectDetailContext,
   type ProjectDetailStore,
 } from "$lib/types/project-detail.context";
-import type { SnsSummary } from "$lib/types/sns";
+import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";
 
 describe("ProjectInfoSection", () => {
-  const renderProjectInfoSection = (summary: SnsSummary | undefined) =>
+  const renderProjectInfoSection = (summary: SnsSummaryWrapper | undefined) =>
     render(ContextWrapperTest, {
       props: {
         contextKey: PROJECT_DETAIL_CONTEXT_KEY,

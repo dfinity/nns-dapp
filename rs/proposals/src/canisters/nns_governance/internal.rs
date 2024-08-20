@@ -9,6 +9,7 @@
 /// Note: The type is published in multiple places under the same name:
 ///  - In the IC repo in `rs/nns/governance/src/governance.rs`
 ///  - in the `ic_cdk`.
+///
 /// The public type is probably better.  Maybe we can ask upstream to use the public type?
 pub use ic_cdk::api::management_canister::bitcoin::BitcoinNetwork;
 

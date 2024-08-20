@@ -251,7 +251,11 @@ export const listNeurons = async ({
   return queryAndUpdate<NeuronInfo[], unknown>({
     strategy: strategy ?? FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
-      governanceApiService.queryNeurons({ certified, identity }),
+      governanceApiService.queryNeurons({
+        certified,
+        identity,
+        includeEmptyNeurons: false,
+      }),
     onLoad: async ({ response: neurons, certified }) => {
       neuronsStore.setNeurons({ neurons, certified });
 
@@ -773,7 +777,7 @@ const setFolloweesHelper = async ({
       identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
     }
     // ManageNeuron topic followes can only be handled by controllers
-    if (topic === Topic.ManageNeuron) {
+    if (topic === Topic.NeuronManagement) {
       identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
     }
     await governanceApiService.setFollowees({
@@ -983,10 +987,8 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
     const { snsSummariesStore } = await import("../stores/sns.store");
     const projects = get(snsSummariesStore);
     const pendingProject = projects.find(
-      ({
-        swap: { lifecycle },
-        // Use 1 instead of using enum to avoid importing sns-js
-      }) => lifecycle === 1
+      // Use 1 instead of using enum to avoid importing sns-js
+      (summary) => summary.getLifecycle() === 1
     );
     await makeDummyProposalsApi({
       neuronId,

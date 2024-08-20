@@ -85,11 +85,13 @@ describe("NnsProposals", () => {
           expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
             identity: mockIdentity,
             certified: true,
+            includeEmptyNeurons: false,
           })
         );
         expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
           identity: mockIdentity,
           certified: false,
+          includeEmptyNeurons: false,
         });
       });
     });

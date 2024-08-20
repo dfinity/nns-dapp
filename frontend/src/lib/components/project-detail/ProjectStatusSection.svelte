@@ -3,14 +3,14 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import type { SnsSwapCommitment, SnsSummary } from "$lib/types/sns";
+  import type { SnsSwapCommitment } from "$lib/types/sns";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import ParticipateButton from "./ParticipateButton.svelte";
   import ProjectCommitment from "./ProjectCommitment.svelte";
   import ProjectStatus from "./ProjectStatus.svelte";
   import ProjectTimelineUserCommitment from "./ProjectTimelineUserCommitment.svelte";
   import { SnsSwapLifecycle } from "@dfinity/sns";
-  import { TokenAmount, ICPToken, nonNullish } from "@dfinity/utils";
+  import { ICPToken, TokenAmount, nonNullish } from "@dfinity/utils";
   import { isNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
 
@@ -34,13 +34,8 @@
   $: loadingSummary = isNullish($projectDetailStore.summary);
 
   let lifecycle: number;
-  $: ({
-    swap: { lifecycle },
-  } =
-    $projectDetailStore.summary ??
-    ({
-      swap: { state: { lifecycle: SnsSwapLifecycle.Unspecified } },
-    } as unknown as SnsSummary));
+  $: lifecycle =
+    $projectDetailStore.summary?.getLifecycle() ?? SnsSwapLifecycle.Unspecified;
 
   let displayStatusSection = false;
   $: displayStatusSection =

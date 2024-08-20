@@ -29,6 +29,7 @@ import {
   type ApiManageNeuronParams,
   type ApiMergeNeuronsParams,
   type ApiQueryNeuronParams,
+  type ApiQueryNeuronsParams,
   type ApiQueryParams,
   type ApiSetFolloweesParams,
   type ApiSpawnNeuronParams,
@@ -129,7 +130,7 @@ export const governanceApiService = {
   queryNeuron(params: ApiQueryNeuronParams) {
     return queryNeuron(params);
   },
-  async queryNeurons(params: ApiQueryParams) {
+  async queryNeurons(params: ApiQueryNeuronsParams) {
     if (nonNullish(neuronsCache) && hasValidCachedNeurons(params.identity)) {
       return neuronsCache.neurons;
     }

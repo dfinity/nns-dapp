@@ -54,6 +54,12 @@
       "stdout": "6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
       "stderr": "",
       "exitCode": 0
+    },
+    {
+      "command": "get_module_hash_from_network mainnet",
+      "stdout": "6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
+      "stderr": "",
+      "exitCode": 0
     }
   ],
   "expectedOutput": [
@@ -111,7 +117,24 @@
     "git checkout Release-2001-02-29: Was already done. Skipping.",
     "Post proposal on Slack: Was already: \u001b[35mhttps://dfinity.slack.com/archives/C02P68W6MQA/p1695977290251409\u001b[0m",
     "Schedule voting: Was already done. Skipping.",
-    "Forum post: Was already done. Skipping."
+    "Forum post: Was already done. Skipping.",
+    "Mainnet WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
+    "Smoke test: Was already done. Skipping.",
+    "git checkout release-candidate --: Was already done. Skipping.",
+    "git tag -f prod: Was already done. Skipping.",
+    "git push origin -f tags/prod: Was already done. Skipping.",
+    "git checkout Release-2001-02-29 --: Was already done. Skipping.",
+    "git fetch: Was already done. Skipping.",
+    "git merge origin/main: Was already done. Skipping.",
+    "scripts/nns-dapp/split-changelog: Was already done. Skipping.",
+    "git commit -a -m Split\\ changelog\\ post-release: Was already done. Skipping.",
+    "scripts/nns-dapp/release-sop.test --update: Was already done. Skipping.",
+    "Release SOP tests need update: Was already: \u001b[35mTests do not need to be updated.\u001b[0m",
+    "scripts/nns-dapp/bump-patch --commit: Was already done. Skipping.",
+    "gh pr create --draft --title Update\\ changelog\\ after\\ release --body $'# Motivation\\n\\nA release has been deployed to production.\\n\\n# Changes\\n\\n- Changelog - split out the changes included in the release.\\n- Increment the patch version of the nns-dapp.': Was already done. Skipping.",
+    "Merge release PR: Was already done. Skipping.",
+    "rm scripts/nns-dapp/Release-2001-02-29.json: Was already done. Skipping.",
+    "gh release upload proposal-123490 scripts/nns-dapp/Release-2001-02-29.json: Was already done. Skipping."
   ],
   "expectedExitCode": 0
 }

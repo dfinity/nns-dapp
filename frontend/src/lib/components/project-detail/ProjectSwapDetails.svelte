@@ -11,12 +11,11 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import type { SnsSummary } from "$lib/types/sns";
+  import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import { formatNumber } from "$lib/utils/format.utils";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
-  import type { SnsParams } from "@dfinity/sns";
   import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
   import { nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
@@ -26,30 +25,27 @@
   );
 
   // type safety validation is done in ProjectDetail component
-  let summary: SnsSummary;
-  $: summary = $projectDetailStore.summary as SnsSummary;
+  let summary: SnsSummaryWrapper;
+  $: summary = $projectDetailStore.summary as SnsSummaryWrapper;
 
-  let params: SnsParams;
   let token: IcrcTokenMetadata;
-  $: ({
-    swap: { params },
-    token,
-  } = summary);
+  $: token = summary.token;
 
   let minCommitmentIcp: TokenAmountV2;
   $: minCommitmentIcp = TokenAmountV2.fromUlps({
-    amount: params.min_participant_icp_e8s,
+    amount: summary.getMinParticipantIcpE8s(),
     token: ICPToken,
   });
+
   let maxCommitmentIcp: TokenAmountV2;
   $: maxCommitmentIcp = TokenAmountV2.fromUlps({
-    amount: params.max_participant_icp_e8s,
+    amount: summary.getMaxParticipantIcpE8s(),
     token: ICPToken,
   });
 
   let snsTokens: TokenAmountV2;
   $: snsTokens = TokenAmountV2.fromUlps({
-    amount: params.sns_token_e8s,
+    amount: summary.getSnsTokenE8s(),
     token,
   });
 
@@ -83,7 +79,7 @@
   <KeyValuePair testId="project-swap-min-participants">
     <span slot="key">{$i18n.sns_project_detail.min_participants} </span>
     <span slot="value"
-      >{formatNumber(params.min_participants, {
+      >{formatNumber(summary.getMinParticipants(), {
         minFraction: 0,
         maxFraction: 0,
       })}</span
@@ -118,7 +114,7 @@
     <span slot="key">{$i18n.sns_project_detail.sale_end} </span>
     <DateSeconds
       slot="value"
-      seconds={Number(params.swap_due_timestamp_seconds ?? 0n)}
+      seconds={Number(summary.getSwapDueTimestampSeconds() ?? 0n)}
       tagName="span"
     />
   </KeyValuePair>

@@ -8,7 +8,8 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import type { SnsSummary, SnsSummaryMetadata } from "$lib/types/sns";
+  import type { SnsSummaryMetadata } from "$lib/types/sns";
+  import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import { snsProjectDashboardUrl } from "$lib/utils/projects.utils";
   import type { Principal } from "@dfinity/principal";
   import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -19,14 +20,14 @@
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
-  let summary: SnsSummary | undefined | null;
+  let summary: SnsSummaryWrapper | undefined | null;
   $: summary = $projectDetailStore.summary;
 
   let rootCanisterId: Principal | undefined;
   $: rootCanisterId = summary?.rootCanisterId;
 
   let lifecycle: SnsSwapLifecycle | undefined;
-  $: lifecycle = summary?.swap.lifecycle;
+  $: lifecycle = summary?.getLifecycle();
 
   let metadata: SnsSummaryMetadata | undefined;
   let token: IcrcTokenMetadata | undefined;

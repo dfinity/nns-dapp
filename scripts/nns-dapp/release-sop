@@ -427,6 +427,18 @@ post_proposal_on_slack() {
   echo "$SLACK_LINK"
 }
 
+release_sop_tests_need_update() {
+  if ! git diff --quiet origin/main scripts/nns-dapp/release-sop-*; then
+    if ! git diff --quiet -- scripts/nns-dapp/release-sop-*; then
+      echo "Verify updates to release-sop tests and commit." >&2
+      exit 1
+    fi
+    echo "Tests have been updated."
+    return
+  fi
+  echo "Tests do not need to be updated."
+}
+
 echo Checklist file: "$CHECKLIST_FILE"
 
 # Pre-release
@@ -486,3 +498,31 @@ confirm_cmd git checkout "$BRANCH_NAME"
 record "Post proposal on Slack" post_proposal_on_slack
 confirm_manual "Schedule voting" echo "Schedule an appointment (use \"NNS Upgrades\" calendar) for trusted neurons voting (in 3 days)"
 confirm_manual "Forum post" echo "Ask Andrew if he wants to make a forum post"
+
+# Post-release
+verify "CI NNS-dapp WASM hash" "Mainnet WASM hash" get_module_hash_from_network mainnet
+confirm_manual "Smoke test" echo "Check that https://nns.ic0.app/ is up and works"
+# The '--' is added to distinguish this from the earlier 'git checkout release-candidate' command. Otherwise it would be skipped because it was already done.
+confirm_cmd git checkout release-candidate --
+confirm_cmd git tag -f prod
+confirm_cmd git push origin -f tags/prod
+# The '--' is added to distinguish this from the earlier 'git checkout "$BRANCH_NAME"' command. Otherwise it would be skipped because it was already done.
+confirm_cmd git checkout "$BRANCH_NAME" --
+confirm_cmd git fetch
+confirm_cmd git merge origin/main
+confirm_cmd "$SOURCE_DIR/split-changelog"
+confirm_cmd git commit -a -m "Split changelog post-release"
+confirm_cmd "scripts/nns-dapp/release-sop.test" --update
+record "Release SOP tests need update" release_sop_tests_need_update
+confirm_cmd "$SOURCE_DIR/bump-patch" --commit
+confirm_cmd gh pr create --draft --title "Update changelog after release" --body "# Motivation
+
+A release has been deployed to production.
+
+# Changes
+
+- Changelog - split out the changes included in the release.
+- Increment the patch version of the nns-dapp."
+confirm_manual "Merge release PR" echo "Have the release PR reviewed and merge it."
+confirm_cmd rm scripts/nns-dapp/Release-2001-02-29.json
+confirm_cmd gh release upload "proposal-$PROPOSAL_ID" "$CHECKLIST_FILE"

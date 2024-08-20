@@ -1,6 +1,6 @@
 {
   "name": "@dfinity/nns-dapp",
-  "version": "2.0.83",
+  "version": "2.0.87",
   "private": true,
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
@@ -62,7 +62,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@dfinity/agent": "^1.3.0",
+    "@dfinity/agent": "^1.4.0",
     "@dfinity/auth-client": "^1.3.0",
     "@dfinity/candid": "^1.3.0",
     "@dfinity/ckbtc": "next",

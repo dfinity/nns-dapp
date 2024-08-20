@@ -5,7 +5,10 @@ import {
 } from "$lib/api/icrc-ledger.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { snsTokensByLedgerCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
-import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import {
+  getAuthenticatedIdentity,
+  getCurrentIdentity,
+} from "$lib/services/auth.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
@@ -30,6 +33,19 @@ import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
   // TODO: Support Hardware Wallets
   return getAuthenticatedIdentity();
+};
+
+/// Fetch token metadata from the icrc1 ledger canister.
+export const getIcrcTokenMetaData = async ({
+  ledgerCanisterId,
+}: {
+  ledgerCanisterId: Principal;
+}): Promise<IcrcTokenMetadata | null> => {
+  return queryIcrcToken({
+    identity: getCurrentIdentity(),
+    canisterId: ledgerCanisterId,
+    certified: false,
+  });
 };
 
 export const loadIcrcToken = ({

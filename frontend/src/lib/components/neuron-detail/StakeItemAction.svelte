@@ -25,7 +25,7 @@
   <div class="content">
     <h4 class="token-value">
       <span data-tid="stake-value"
-        >{formatTokenE8s({ value: neuronStake })}</span
+        >{formatTokenE8s({ value: neuronStake, detailed: true })}</span
       ><span data-tid="token-symbol">{token.symbol}</span>
     </h4>
     <p class="description" data-tid="staked-description">

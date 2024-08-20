@@ -27,17 +27,17 @@ export const decodePublicKey = async ({
   const code: AllLedgerError = returnCode as AllLedgerError;
 
   if (code === ExtendedLedgerError.AppNotOpen) {
-    throw new LedgerErrorKey("error__ledger.please_open");
+    throw new LedgerErrorKey({ message: "error__ledger.please_open" });
   }
 
   const { LedgerError } = await import("@zondax/ledger-icp");
 
   if (code === LedgerError.TransactionRejected) {
-    throw new LedgerErrorKey("error__ledger.locked");
+    throw new LedgerErrorKey({ message: "error__ledger.locked" });
   }
 
   if (code === ExtendedLedgerError.CannotFetchPublicKey) {
-    throw new LedgerErrorKey("error__ledger.fetch_public_key");
+    throw new LedgerErrorKey({ message: "error__ledger.fetch_public_key" });
   }
 
   const publicKey: Secp256k1PublicKey = Secp256k1PublicKey.fromRaw(
@@ -48,7 +48,7 @@ export const decodePublicKey = async ({
     principalText !==
     Principal.selfAuthenticating(new Uint8Array(publicKey.toDer())).toText()
   ) {
-    throw new LedgerErrorKey("error__ledger.principal_not_match");
+    throw new LedgerErrorKey({ message: "error__ledger.principal_not_match" });
   }
 
   return publicKey;
@@ -57,7 +57,9 @@ export const decodePublicKey = async ({
 const checkResponseCode = async (returnCode: LedgerError): Promise<void> => {
   const { LedgerError } = await import("@zondax/ledger-icp");
   if (returnCode === LedgerError.TransactionRejected) {
-    throw new LedgerErrorKey("error__ledger.user_rejected_transaction");
+    throw new LedgerErrorKey({
+      message: "error__ledger.user_rejected_transaction",
+    });
   }
 };
 

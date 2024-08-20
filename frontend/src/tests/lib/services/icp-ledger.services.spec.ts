@@ -98,7 +98,9 @@ describe("icp-ledger.services", () => {
 
       it("should display a toast for the error assuming the browser is not supported", async () => {
         vi.spyOn(LedgerIdentity, "create").mockImplementation(() => {
-          throw new LedgerErrorKey("error__ledger.browser_not_supported");
+          throw new LedgerErrorKey({
+            message: "error__ledger.browser_not_supported",
+          });
         });
         const spyToastError = vi.spyOn(toastsStore, "toastsError");
 
@@ -282,7 +284,9 @@ describe("icp-ledger.services", () => {
     describe("error", () => {
       it("should not display info if ledger throw an error", async () => {
         spy.mockImplementation(() => {
-          throw new LedgerErrorKey("error__ledger.unexpected_wallet");
+          throw new LedgerErrorKey({
+            message: "error__ledger.unexpected_wallet",
+          });
         });
 
         const spyToastError = vi.spyOn(toastsStore, "toastsError");
@@ -292,7 +296,7 @@ describe("icp-ledger.services", () => {
         expect(spyToastError).toBeCalled();
         expect(spyToastError).toBeCalledWith({
           labelKey: "error__ledger.unexpected_wallet",
-          renderAsHtml: true,
+          renderAsHtml: false,
         });
 
         spyToastError.mockRestore();
@@ -320,6 +324,13 @@ describe("icp-ledger.services", () => {
         const { neurons } = await listNeuronsHardwareWallet();
 
         expect(neurons).toEqual(mockNeurons);
+        expect(api.queryNeurons).toBeCalledWith({
+          certified: true,
+          identity: mockLedgerIdentity,
+          // Must be undefined for compatibility with Ledger app 2.4.9.
+          includeEmptyNeurons: undefined,
+        });
+        expect(api.queryNeurons).toBeCalledTimes(1);
       });
     });
 
@@ -327,7 +338,7 @@ describe("icp-ledger.services", () => {
       beforeAll(() => {
         vi.spyOn(LedgerIdentity, "create").mockImplementation(
           async (): Promise<LedgerIdentity> => {
-            throw new LedgerErrorKey("error__ledger.please_open");
+            throw new LedgerErrorKey({ message: "error__ledger.please_open" });
           }
         );
       });
@@ -340,7 +351,7 @@ describe("icp-ledger.services", () => {
         expect(spyToastError).toBeCalled();
         expect(spyToastError).toBeCalledWith({
           labelKey: "error__ledger.please_open",
-          renderAsHtml: true,
+          renderAsHtml: false,
         });
 
         expect(err).not.toBeUndefined();

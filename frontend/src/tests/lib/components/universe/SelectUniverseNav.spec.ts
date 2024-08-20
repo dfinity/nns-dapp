@@ -76,7 +76,6 @@ describe("SelectUniverseNav", () => {
     actionableSnsProposalsStore.set({
       rootCanisterId: mockSnsFullProject.rootCanisterId,
       proposals: [votableSnsProposal1, votableSnsProposal2],
-      includeBallotsByCaller: true,
     });
 
     setSnsProjects([{ lifecycle: SnsSwapLifecycle.Committed }]);

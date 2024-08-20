@@ -19,9 +19,9 @@
   } from "$lib/services/sns-sale.services";
   import { loadSnsSwapMetrics } from "$lib/services/sns-swap-metrics.services";
   import {
+    loadSnsDerivedState,
     loadSnsLifecycle,
     loadSnsSwapCommitment,
-    loadSnsDerivedState,
     watchSnsTotalCommitment,
   } from "$lib/services/sns.services";
   import { loadUserCountry } from "$lib/services/user-country.services";
@@ -42,7 +42,7 @@
   import { Principal } from "@dfinity/principal";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import { setContext, onDestroy } from "svelte";
+  import { onDestroy, setContext } from "svelte";
   import { writable } from "svelte/store";
 
   export let rootCanisterId: string | undefined | null;
@@ -148,7 +148,7 @@
 
   let enableOpenProjectWatchers = false;
   $: enableOpenProjectWatchers =
-    $projectDetailStore?.summary?.swap.lifecycle === SnsSwapLifecycle.Open;
+    $projectDetailStore?.summary?.getLifecycle() === SnsSwapLifecycle.Open;
 
   let swapCanisterId: Principal | undefined;
   $: swapCanisterId = $projectDetailStore.summary?.swapCanisterId;
@@ -175,7 +175,7 @@
 
   $: if (
     nonNullish(rootCanisterId) &&
-    $projectDetailStore.summary?.swap.lifecycle === SnsSwapLifecycle.Committed
+    $projectDetailStore.summary?.getLifecycle() === SnsSwapLifecycle.Committed
   ) {
     loadSnsFinalizationStatus({
       rootCanisterId: Principal.fromText(rootCanisterId),
@@ -235,7 +235,7 @@
   // - no root canister id
   // - ticket already in progress for the same root canister id
   $: if (
-    $projectDetailStore.summary?.swap.lifecycle === SnsSwapLifecycle.Open &&
+    $projectDetailStore.summary?.getLifecycle() === SnsSwapLifecycle.Open &&
     $authSignedInStore &&
     nonNullish(userCommitment) &&
     nonNullish(swapCanisterId) &&

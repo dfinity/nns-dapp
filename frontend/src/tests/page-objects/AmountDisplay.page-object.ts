@@ -1,3 +1,4 @@
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { assertNonNullish } from "$tests/utils/utils.test-utils";
@@ -13,5 +14,9 @@ export class AmountDisplayPo extends BasePageObject {
     return assertNonNullish(
       await this.root.querySelector(`[data-tid="token-value"]`).getText()
     );
+  }
+
+  getCopyButtonPo(): ButtonPo {
+    return this.getButton("copy-component");
   }
 }

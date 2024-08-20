@@ -22,10 +22,12 @@ import {
   getSnsDissolvingTimeInSeconds,
   getSnsDissolvingTimestampSeconds,
   getSnsLockedTimeInSeconds,
+  getSnsNeuronAvailableMaturity,
   getSnsNeuronByHexId,
   getSnsNeuronHotkeys,
   getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
+  getSnsNeuronStakedMaturity,
   getSnsNeuronState,
   getSnsNeuronTags,
   getSnsNeuronVote,
@@ -349,6 +351,36 @@ describe("sns-neuron utils", () => {
       };
       expect(getSnsNeuronStake(neuron1)).toBe(stake1 - fees1);
       expect(getSnsNeuronStake(neuron2)).toBe(stake2 - fees2);
+    });
+  });
+
+  describe("getSnsNeuronAvailableMaturity", () => {
+    it("returns available maturity", () => {
+      const maturity = 1234n;
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: maturity,
+      };
+      expect(getSnsNeuronAvailableMaturity(neuron)).toBe(maturity);
+    });
+  });
+
+  describe("getSnsNeuronStakedMaturity", () => {
+    it("returns staked maturity", () => {
+      const maturity = 5432n;
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        staked_maturity_e8s_equivalent: [maturity],
+      };
+      expect(getSnsNeuronStakedMaturity(neuron)).toBe(maturity);
+    });
+
+    it("returns 0 when absent", () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        staked_maturity_e8s_equivalent: [],
+      };
+      expect(getSnsNeuronStakedMaturity(neuron)).toBe(0n);
     });
   });
 

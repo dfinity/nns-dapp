@@ -1,12 +1,21 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import { getNnsNeuronCardsIds } from "$tests/utils/e2e.nns-neuron.test-utils";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  setFeatureFlag,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test neuron increase stake", async ({ page, context }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("Tokens / NNS Dapp");
+  await setFeatureFlag({
+    page,
+    featureFlag: "ENABLE_PROJECTS_TABLE",
+    value: true,
+  });
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
@@ -16,7 +25,7 @@ test("Test neuron increase stake", async ({ page, context }) => {
   await appPo.getIcpTokens(20);
 
   step("Stake neuron");
-  await appPo.goToNeurons();
+  await appPo.goToNnsNeurons();
   const initialStake = 10;
   await appPo
     .getNeuronsPo()
@@ -85,7 +94,7 @@ test("Test neuron increase stake", async ({ page, context }) => {
     amount: increase2,
   });
 
-  await appPo.goBack({ waitAbsent: false });
+  await appPo.goBack();
   await appPo.getAccountsPo().waitFor();
   await appPo.goBack();
   await appPo.goToNeuronDetails(neuronId);

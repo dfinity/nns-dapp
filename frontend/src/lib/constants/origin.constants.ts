@@ -3,4 +3,6 @@ export const NNS_IC_ORG_ALTERNATIVE_ORIGINS = [
   "https://nns.internetcomputer.org",
   "https://wallet.internetcomputer.org",
   "https://wallet.ic0.app",
+  "https://beta.nns.internetcomputer.org",
+  "https://beta.nns.ic0.app",
 ];

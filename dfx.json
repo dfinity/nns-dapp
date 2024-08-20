@@ -1,5 +1,5 @@
 {
-  "dfx": "0.20.1",
+  "dfx": "0.22.0",
   "canisters": {
     "nns-governance": {
       "type": "custom",
@@ -371,7 +371,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
-          "ENABLE_PROJECTS_TABLE": false,
+          "ENABLE_PROJECTS_TABLE": true,
           "ENABLE_IMPORT_TOKEN": false
         }
       }
@@ -386,9 +386,9 @@
         "DIDC_VERSION": "2024-05-14",
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2024-07-10",
-        "IC_COMMIT_FOR_PROPOSALS": "release-2024-07-03_23-01-storage-layer-disabled",
-        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-07-03_23-01-storage-layer-disabled"
+        "SNSDEMO_RELEASE": "release-2024-08-14",
+        "IC_COMMIT_FOR_PROPOSALS": "release-2024-08-02_01-30-base",
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-08-02_01-30-base"
       },
       "packtool": ""
     }

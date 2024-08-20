@@ -1,6 +1,7 @@
+import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import type { TokenAmountV2 } from "@dfinity/utils";
 import type { Writable } from "svelte/store";
-import type { SnsSummary, SnsSwapCommitment } from "./sns";
+import type { SnsSwapCommitment } from "./sns";
 
 /**
  * SnsSummary or SnsSwapCommitment is a valid project
@@ -9,7 +10,7 @@ import type { SnsSummary, SnsSwapCommitment } from "./sns";
  * `undefined` means not found
  */
 export type ProjectDetailStore = {
-  summary: SnsSummary | undefined | null;
+  summary: SnsSummaryWrapper | undefined | null;
   swapCommitment: SnsSwapCommitment | undefined | null;
   totalTokensSupply?: TokenAmountV2 | undefined | null;
 };

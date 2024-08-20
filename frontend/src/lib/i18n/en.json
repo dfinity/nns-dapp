@@ -32,7 +32,8 @@
     "receive": "Receive",
     "send_with_token": "Send $token",
     "collapse_all": "Collapse All",
-    "or": "or"
+    "or": "or",
+    "learn_more": "Learn more"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -237,11 +238,15 @@
     "ect": "Early Contributor Token"
   },
   "staking": {
+    "title": "Stake and earn voting rewards",
+    "text": "Earn voting rewards by staking your tokens in neurons. Neurons allow you to participate in governance of the Internet Computer, and DAOs deployed on the Internet Computer.",
     "nervous_systems": "Nervous Systems"
   },
   "neurons": {
     "title": "Neurons",
     "text": "Earn voting rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by submitting and voting on Network Nervous System (NNS) proposals.",
+    "split_topic_message": "The System Canister Management topic is being split into 3 topics. Review your neuron following to confirm it is set up according to your preferences.",
+    "split_topic_learn_more_label": "Learn more about the changes made to proposal topics.",
     "stake_token": "Stake $token",
     "merge_neurons": "Merge Neurons",
     "merge_neurons_modal_title": "Select two neurons to merge",
@@ -364,8 +369,13 @@
     "topic_15_subtitle": "Proposals related to the management of API boundary nodes",
     "topic_16_title": "Subnet Rental",
     "topic_16_subtitle": "All proposals related to renting a subnet, for example a subnet rental request.",
+    "topic_17_title": "Protocol Canister Management",
+    "topic_17_subtitle": "Proposals related to managing canisters that are considered as part of the IC protocol.",
+    "topic_18_title": "Service Nervous System Management",
+    "topic_18_subtitle": "Proposals related to managing the canisters related to service nervous system (SNS).",
     "current_followees": "Currently Following",
-    "add": "Add Followee"
+    "add": "Add Followee",
+    "unknown_topic_title": "Unknown Topic ($topicId)"
   },
   "voting": {
     "topics": "Topics",
@@ -387,17 +397,7 @@
   },
   "actionable_proposals_empty": {
     "title": "You're all caught up.",
-    "text": "Check back later!",
-    "text_unsupported": "Check back later! Note, that not all SNS DAOs support actionable proposals. You will need to check proposals manually if you hold $snsNames neurons."
-  },
-  "actionable_proposals_not_supported": {
-    "title": "$snsName doesn't yet support actionable proposals.",
-    "text": "$snsName SNS governance canister needs to be updated to the latest version to show actionable proposals. You can still vote on all proposals, but they will not have the visual indication.",
-    "dot_tooltip": "This SNS doesn't yet support actionable proposals."
-  },
-  "actionable_proposals_not_supported_snses": {
-    "title": "$snsNames don’t yet support actionable proposals.",
-    "text": "If an SNS DAO wishes to support actionable proposals, it needs to upgrade to a newer version of the SNS governance canister."
+    "text": "Check back later!"
   },
   "canisters": {
     "aria_label_canister_card": "Go to canister details",
@@ -839,6 +839,12 @@
     "unknown_unlink": "Error unlinking canister.",
     "get_exchange_rate": "Error getting the exchange rate of ICP to Cycles."
   },
+  "error__imported_tokens": {
+    "load_imported_tokens": "There was an unexpected issue while loading imported tokens.",
+    "add_imported_token": "There was an unexpected issue while adding new imported token.",
+    "remove_imported_token": "There was an unexpected issue while removing the imported token.",
+    "too_many": "You can't import more than $limit tokens."
+  },
   "error__sns": {
     "undefined_project": "The requested project is invalid or throws an error.",
     "list_summaries": "There was an unexpected error while loading the summaries of all deployed projects.",
@@ -1024,6 +1030,17 @@
     "hide_zero_balances_toggle_label": "Switch between showing and hiding tokens with a balance of zero",
     "zero_balance_hidden": "Tokens with 0 balances are hidden.",
     "show_all": "Show all",
-    "import_token": "Import Token"
+    "add_imported_token_success": "New token has been successfully imported!",
+    "remove_imported_token_success": "The token has been successfully removed!"
+  },
+  "import_token": {
+    "import_token": "Import Token",
+    "description": "To import a new token to your NNS dapp wallet, you will need to find, and paste the ledger canister id of the token. If you want to see your transaction history, you need to import the token’s index canister.",
+    "ledger_label": "Ledger Canister ID",
+    "index_label_optional": "Index Canister ID <span class='description'>(Optional)</span>",
+    "placeholder": "00000-00000-00000-00000-000",
+    "index_canister_description": "Index Canister allows to display a token balance and transaction history. <strong>Note:</strong> not all tokens have index canisters.",
+    "review_token_info": "Review token info",
+    "warning": "<strong>Warning:</strong> Be careful what token you import! Anyone can create a token including one with the same name as existing tokens, such as ckBTC."
   }
 }

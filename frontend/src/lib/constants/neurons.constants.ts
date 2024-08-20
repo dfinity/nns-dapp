@@ -20,6 +20,7 @@ const FIRST_TOPICS = [
   Topic.SnsAndCommunityFund,
 ];
 const LAST_TOPICS = [Topic.ExchangeRate];
+
 // This list should include ALL topics ordered as we want.
 // Filtering out topics is done in the utils.
 export const TOPICS_TO_FOLLOW_NNS = [

@@ -9,6 +9,7 @@ import {
   getVotingBallot,
   getVotingPower,
   hasMatchingProposals,
+  hasProposalPayload,
   hideProposal,
   isProposalDeadlineInTheFuture,
   lastProposalId,
@@ -846,6 +847,49 @@ describe("proposals-utils", () => {
     });
   });
 
+  describe("hasProposalPayload", () => {
+    it("should return true for ExecuteNnsFunction", () => {
+      expect(
+        hasProposalPayload({
+          ...mockProposalInfo.proposal,
+          action: {
+            ExecuteNnsFunction: {
+              nnsFunctionId: 4,
+            },
+          },
+        } as Proposal)
+      ).toBe(true);
+    });
+
+    it("should return true for InstallCode", () => {
+      expect(
+        hasProposalPayload({
+          ...mockProposalInfo.proposal,
+          action: {
+            InstallCode: {
+              skipStoppingBeforeInstalling: false,
+              canisterId: "rrkah-fqaaa-aaaaa-aaaaq-cai",
+              installMode: 3,
+            },
+          },
+        } as Proposal)
+      ).toBe(true);
+    });
+
+    it("should return false for Motion", () => {
+      expect(
+        hasProposalPayload({
+          ...mockProposalInfo.proposal,
+          action: {
+            Motion: {
+              motionText: "motion text",
+            },
+          },
+        } as Proposal)
+      ).toBe(false);
+    });
+  });
+
   describe("Open for votes", () => {
     it("should be open for votes", () => {
       const nowSeconds = new Date().getTime() / 1000;
@@ -873,7 +917,7 @@ describe("proposals-utils", () => {
         isProposalDeadlineInTheFuture({
           ...mockProposalInfo,
           deadlineTimestampSeconds: undefined,
-          topic: Topic.ManageNeuron,
+          topic: Topic.NeuronManagement,
           proposalTimestampSeconds: BigInt(Math.round(nowSeconds - 3600)),
         })
       ).toBeTruthy();
@@ -885,7 +929,7 @@ describe("proposals-utils", () => {
         isProposalDeadlineInTheFuture({
           ...mockProposalInfo,
           deadlineTimestampSeconds: undefined,
-          topic: Topic.ManageNeuron,
+          topic: Topic.NeuronManagement,
           proposalTimestampSeconds: BigInt(Math.round(nowSeconds - 3600 * 13)),
         })
       ).toBe(false);

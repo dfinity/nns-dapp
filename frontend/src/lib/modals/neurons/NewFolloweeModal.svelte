@@ -13,8 +13,7 @@
     isHotKeyControllable,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
-  import { Spinner } from "@dfinity/gix-components";
-  import { busy, Modal } from "@dfinity/gix-components";
+  import { Modal, Spinner, busy } from "@dfinity/gix-components";
   import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher, onMount } from "svelte";
 
@@ -34,7 +33,7 @@
   });
   let isUserAuthorized: boolean;
   $: isUserAuthorized =
-    topic === Topic.ManageNeuron
+    topic === Topic.NeuronManagement
       ? isControllableByUser
       : isControllableByUser || isControllableByHotkey;
 

@@ -14,7 +14,6 @@ use crate::{
 use anyhow::anyhow;
 use ic_cdk::api::management_canister::provisional::CanisterId;
 use ic_cdk::api::time;
-use ic_cdk::println;
 use ic_cdk_timers::TimerId;
 use std::cell::RefCell;
 use std::collections::VecDeque;
@@ -119,10 +118,9 @@ thread_local! {
     pub static STATE: State = State::default();
 }
 
-/// Log to console and store for retrieval by query calls.
+/// Store for retrieval by query calls.
 #[allow(clippy::needless_pass_by_value)] // The value is actually consumed.
 pub fn log(message: String) {
-    println!("{}", &message);
     let now = time();
     let message = format!("{now}: {message}");
     STATE.with(|state| {

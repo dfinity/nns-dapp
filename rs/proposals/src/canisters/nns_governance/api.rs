@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-03_23-01-storage-layer-disabled/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-02_01-30-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -82,6 +82,10 @@ pub struct IncreaseDissolveDelay {
     pub additional_dissolve_delay_seconds: u32,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct SetVisibility {
+    pub visibility: Option<i32>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct SetDissolveTimestamp {
     pub dissolve_timestamp_seconds: u64,
 }
@@ -93,6 +97,7 @@ pub enum Operation {
     StopDissolving(EmptyRecord),
     StartDissolving(EmptyRecord),
     IncreaseDissolveDelay(IncreaseDissolveDelay),
+    SetVisibility(SetVisibility),
     JoinCommunityFund(EmptyRecord),
     LeaveCommunityFund(EmptyRecord),
     SetDissolveTimestamp(SetDissolveTimestamp),
@@ -164,6 +169,37 @@ pub struct ManageNeuron {
     pub id: Option<NeuronId>,
     pub command: Option<Command>,
     pub neuron_id_or_subaccount: Option<NeuronIdOrSubaccount>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct Controllers {
+    pub controllers: Vec<Principal>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct CanisterSettings {
+    pub freezing_threshold: Option<u64>,
+    pub controllers: Option<Controllers>,
+    pub log_visibility: Option<i32>,
+    pub wasm_memory_limit: Option<u64>,
+    pub memory_allocation: Option<u64>,
+    pub compute_allocation: Option<u64>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct UpdateCanisterSettings {
+    pub canister_id: Option<Principal>,
+    pub settings: Option<CanisterSettings>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct InstallCode {
+    pub arg: Option<serde_bytes::ByteBuf>,
+    pub wasm_module: Option<serde_bytes::ByteBuf>,
+    pub skip_stopping_before_installing: Option<bool>,
+    pub canister_id: Option<Principal>,
+    pub install_mode: Option<i32>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct StopOrStartCanister {
+    pub action: Option<i32>,
+    pub canister_id: Option<Principal>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct Percentage {
@@ -383,7 +419,7 @@ pub struct NetworkEconomics {
     pub neurons_fund_economics: Option<NeuronsFundEconomics>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct ApproveGenesisKyc {
+pub struct Principals {
     pub principals: Vec<Principal>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
@@ -403,6 +439,9 @@ pub struct Motion {
 pub enum Action {
     RegisterKnownNeuron(KnownNeuron),
     ManageNeuron(ManageNeuron),
+    UpdateCanisterSettings(UpdateCanisterSettings),
+    InstallCode(InstallCode),
+    StopOrStartCanister(StopOrStartCanister),
     CreateServiceNervousSystem(CreateServiceNervousSystem),
     ExecuteNnsFunction(ExecuteNnsFunction),
     RewardNodeProvider(RewardNodeProvider),
@@ -411,7 +450,7 @@ pub enum Action {
     SetDefaultFollowees(SetDefaultFollowees),
     RewardNodeProviders(RewardNodeProviders),
     ManageNetworkEconomics(NetworkEconomics),
-    ApproveGenesisKyc(ApproveGenesisKyc),
+    ApproveGenesisKyc(Principals),
     AddOrRemoveNodeProvider(AddOrRemoveNodeProvider),
     Motion(Motion),
 }
@@ -429,9 +468,32 @@ pub struct MakingSnsProposal {
     pub proposer_id: Option<NeuronId>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct MostRecentMonthlyNodeProviderRewards {
+pub struct XdrConversionRate {
+    pub xdr_permyriad_per_icp: Option<u64>,
+    pub timestamp_seconds: Option<u64>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct MonthlyNodeProviderRewards {
+    pub minimum_xdr_permyriad_per_icp: Option<u64>,
+    pub registry_version: Option<u64>,
+    pub node_providers: Vec<NodeProvider>,
     pub timestamp: u64,
     pub rewards: Vec<RewardNodeProvider>,
+    pub xdr_conversion_rate: Option<XdrConversionRate>,
+    pub maximum_node_provider_rewards_e8s: Option<u64>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct NeuronSubsetMetrics {
+    pub total_maturity_e8s_equivalent: Option<u64>,
+    pub maturity_e8s_equivalent_buckets: Vec<(u64, u64)>,
+    pub voting_power_buckets: Vec<(u64, u64)>,
+    pub total_staked_e8s: Option<u64>,
+    pub count: Option<u64>,
+    pub total_staked_maturity_e8s_equivalent: Option<u64>,
+    pub staked_maturity_e8s_equivalent_buckets: Vec<(u64, u64)>,
+    pub staked_e8s_buckets: Vec<(u64, u64)>,
+    pub total_voting_power: Option<u64>,
+    pub count_buckets: Vec<(u64, u64)>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct GovernanceCachedMetrics {
@@ -465,11 +527,13 @@ pub struct GovernanceCachedMetrics {
     pub not_dissolving_neurons_staked_maturity_e8s_equivalent_buckets: Vec<(u64, f64)>,
     pub dissolving_neurons_count_buckets: Vec<(u64, u64)>,
     pub dissolving_neurons_e8s_buckets_ect: Vec<(u64, f64)>,
+    pub non_self_authenticating_controller_neuron_subset_metrics: Option<NeuronSubsetMetrics>,
     pub dissolving_neurons_count: u64,
     pub dissolving_neurons_e8s_buckets: Vec<(u64, f64)>,
     pub total_staked_maturity_e8s_equivalent_seed: u64,
     pub community_fund_total_staked_e8s: u64,
     pub not_dissolving_neurons_e8s_buckets_seed: Vec<(u64, f64)>,
+    pub public_neuron_subset_metrics: Option<NeuronSubsetMetrics>,
     pub timestamp_seconds: u64,
     pub seed_neuron_count: u64,
 }
@@ -536,11 +600,13 @@ pub struct GovernanceError {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct CfNeuron {
     pub has_created_neuron_recipes: Option<bool>,
+    pub hotkeys: Option<Principals>,
     pub nns_neuron_id: u64,
     pub amount_icp_e8s: u64,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct CfParticipant {
+    pub controller: Option<Principal>,
     pub hotkey_principal: String,
     pub cf_neurons: Vec<CfNeuron>,
 }
@@ -558,7 +624,9 @@ pub struct SwapParticipationLimits {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronsFundNeuronPortion {
+    pub controller: Option<Principal>,
     pub hotkey_principal: Option<Principal>,
+    pub hotkeys: Vec<Principal>,
     pub is_capped: Option<bool>,
     pub maturity_equivalent_icp_e8s: Option<u64>,
     pub nns_neuron_id: Option<NeuronId>,
@@ -652,11 +720,6 @@ pub struct ProposalData {
     pub original_total_community_fund_maturity_e8s_equivalent: Option<u64>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct XdrConversionRate {
-    pub xdr_permyriad_per_icp: Option<u64>,
-    pub timestamp_seconds: Option<u64>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
 pub enum Command2 {
     Spawn(NeuronId),
     Split(Split),
@@ -703,6 +766,7 @@ pub struct Neuron {
     pub dissolve_state: Option<DissolveState>,
     pub followees: Vec<(i32, Followees)>,
     pub neuron_fees_e8s: u64,
+    pub visibility: Option<i32>,
     pub transfer: Option<NeuronStakeTransfer>,
     pub known_neuron_data: Option<KnownNeuronData>,
     pub spawn_at_timestamp_seconds: Option<u64>,
@@ -711,7 +775,7 @@ pub struct Neuron {
 pub struct Governance {
     pub default_followees: Vec<(i32, Followees)>,
     pub making_sns_proposal: Option<MakingSnsProposal>,
-    pub most_recent_monthly_node_provider_rewards: Option<MostRecentMonthlyNodeProviderRewards>,
+    pub most_recent_monthly_node_provider_rewards: Option<MonthlyNodeProviderRewards>,
     pub maturity_modulation_last_updated_at_timestamp_seconds: Option<u64>,
     pub wait_for_quiet_threshold_seconds: u64,
     pub metrics: Option<GovernanceCachedMetrics>,
@@ -771,6 +835,7 @@ pub struct NeuronInfo {
     pub stake_e8s: u64,
     pub joined_community_fund_timestamp_seconds: Option<u64>,
     pub retrieved_at_timestamp_seconds: u64,
+    pub visibility: Option<i32>,
     pub known_neuron_data: Option<KnownNeuronData>,
     pub voting_power: u64,
     pub age_seconds: u64,
@@ -834,6 +899,7 @@ pub struct ListKnownNeuronsResponse {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ListNeurons {
+    pub include_public_neurons_in_full_neurons: Option<bool>,
     pub neuron_ids: Vec<u64>,
     pub include_empty_neurons_readable_by_caller: Option<bool>,
     pub include_neurons_readable_by_caller: bool,
@@ -949,7 +1015,9 @@ pub struct SettleNeuronsFundParticipationRequest {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronsFundNeuron {
+    pub controller: Option<Principal>,
     pub hotkey_principal: Option<String>,
+    pub hotkeys: Option<Principals>,
     pub is_capped: Option<bool>,
     pub nns_neuron_id: Option<u64>,
     pub amount_icp_e8s: Option<u64>,
@@ -1003,7 +1071,7 @@ impl Service {
     }
     pub async fn get_most_recent_monthly_node_provider_rewards(
         &self,
-    ) -> CallResult<(Option<MostRecentMonthlyNodeProviderRewards>,)> {
+    ) -> CallResult<(Option<MonthlyNodeProviderRewards>,)> {
         ic_cdk::call(self.0, "get_most_recent_monthly_node_provider_rewards", ()).await
     }
     pub async fn get_network_economics_parameters(&self) -> CallResult<(NetworkEconomics,)> {

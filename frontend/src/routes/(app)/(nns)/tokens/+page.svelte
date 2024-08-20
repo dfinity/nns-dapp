@@ -28,7 +28,7 @@
   import type { Account } from "$lib/types/account";
   import { ActionType, type Action } from "$lib/types/actions";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
-  import type { UserTokenData } from "$lib/types/tokens-page";
+  import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
   import type { Universe, UniverseCanisterIdText } from "$lib/types/universe";
   import {
     isIcrcTokenUniverse,
@@ -39,6 +39,8 @@
   import { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
+  import { compareTokensForTokensTable } from "$lib/utils/tokens-table.utils";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 
   onMount(() => {
     loadCkBTCTokens();
@@ -195,15 +197,28 @@
       }
     }
   };
+
+  let importedTokenIds: Set<string> = new Set();
+  $: importedTokenIds = new Set(
+    ($importedTokensStore.importedTokens ?? []).map(({ ledgerCanisterId }) =>
+      ledgerCanisterId.toText()
+    )
+  );
+
+  const sortTokens = (tokens: UserToken[]) =>
+    [...tokens].sort(compareTokensForTokensTable({ importedTokenIds }));
 </script>
 
 <TestIdWrapper testId="tokens-route-component">
   {#if $authSignedInStore}
-    <Tokens userTokensData={$tokensListUserStore} on:nnsAction={handleAction} />
+    <Tokens
+      userTokensData={sortTokens($tokensListUserStore)}
+      on:nnsAction={handleAction}
+    />
   {:else}
     <SignInTokens
       on:nnsAction={handleAction}
-      userTokensData={$tokensListVisitorsStore}
+      userTokensData={sortTokens($tokensListVisitorsStore)}
     />
   {/if}
 

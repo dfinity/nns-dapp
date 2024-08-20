@@ -72,7 +72,7 @@ test("Test accounts requirements", async ({ page, context }) => {
     expectedAccountAddress: subAccountAddress,
     amount: 5,
   });
-  await appPo.goBack({ waitAbsent: false });
+  await appPo.goBack();
 
   expect(await mainAccountRow.getBalance()).toEqual("15.00 ICP");
   expect(await subaccountRow.getBalance()).toEqual("5.00 ICP");

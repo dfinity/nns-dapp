@@ -19,7 +19,8 @@
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
   import { SaleStep } from "$lib/types/sale";
-  import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+  import type { SnsSwapCommitment } from "$lib/types/sns";
+  import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import type {
     NewTransaction,
     ValidateAmountFn,
@@ -36,7 +37,7 @@
     hasOpenTicketInProcess,
   } from "$lib/utils/sns.utils";
   import type { WizardStep } from "@dfinity/gix-components";
-  import { TokenAmount, ICPToken } from "@dfinity/utils";
+  import { ICPToken, TokenAmount } from "@dfinity/utils";
   import { nonNullish } from "@dfinity/utils";
   import {
     createEventDispatcher,
@@ -56,10 +57,10 @@
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
 
-  let summary: SnsSummary;
+  let summary: SnsSummaryWrapper;
   let swapCommitment: SnsSwapCommitment | undefined | null;
   // type safety validation is done in ProjectDetail component
-  $: summary = $projectDetailStore.summary as SnsSummary;
+  $: summary = $projectDetailStore.summary as SnsSummaryWrapper;
   $: swapCommitment = $projectDetailStore.swapCommitment;
   let userHasParticipatedToSwap = false;
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({

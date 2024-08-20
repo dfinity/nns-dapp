@@ -89,6 +89,7 @@ type AttachCanisterResponse =
         CanisterAlreadyAttached;
         NameAlreadyTaken;
         NameTooLong;
+        AccountNotFound;
     };
 
 type RenameCanisterRequest =
@@ -115,6 +116,7 @@ type DetachCanisterResponse =
     variant {
         Ok;
         CanisterNotFound;
+        AccountNotFound;
     };
 
 type GetProposalPayloadResponse =
@@ -138,6 +140,8 @@ type Stats =
         wasm_memory_size_bytes: opt nat64;
         schema: opt nat32;
         migration_countdown: opt nat32;
+        exceptional_transactions_count: opt nat32;
+        periodic_tasks_count: opt nat32;
         accounts_db_stats_recomputed_on_upgrade: opt bool;
     };
 
@@ -151,13 +155,8 @@ type PerformanceCount =
 type Histogram =
     record {
         accounts_count: nat64;
-        default_account_transactions: vec record { nat32; nat64};
         sub_accounts: vec record { nat32; nat64};
-        sub_account_transactions: vec record { nat32; nat64};
-        total_sub_account_transactions: vec record { nat32; nat64};
         hardware_wallet_accounts: vec record { nat32; nat64};
-        hardware_wallet_transactions: vec record { nat32; nat64};
-        total_hardware_wallet_transactions: vec record { nat32; nat64};
         canisters: vec record { nat32; nat64};
     };
 
@@ -193,6 +192,30 @@ type SchemaLabel = variant {
     AccountsInStableMemory;
 };
 
+type ImportedToken =
+    record {
+        ledger_canister_id: principal;
+        index_canister_id: opt principal;
+    };
+
+type ImportedTokens =
+    record {
+        imported_tokens: vec ImportedToken;
+    };
+
+type SetImportedTokensResponse =
+    variant {
+        Ok;
+        AccountNotFound;
+        TooManyImportedTokens: record{limit: int32};
+    };
+
+type GetImportedTokensResponse =
+    variant {
+        Ok: ImportedTokens;
+        AccountNotFound;
+    };
+
 service: (opt Config) -> {
     get_account: () -> (GetAccountResponse) query;
     add_account: () -> (AccountIdentifier);
@@ -203,10 +226,12 @@ service: (opt Config) -> {
     attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
     rename_canister: (RenameCanisterRequest) -> (RenameCanisterResponse);
     detach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
+    set_imported_tokens: (ImportedTokens) -> (SetImportedTokensResponse);
+    get_imported_tokens: () -> (GetImportedTokensResponse) query;
     get_proposal_payload: (nat64) -> (GetProposalPayloadResponse);
     get_stats: () -> (Stats) query;
     get_histogram: () -> (Histogram) query;
-    get_exceptional_transactions: () -> (vec nat64) query;
+    get_exceptional_transactions: () -> (opt vec nat64) query;
 
     http_request: (request: HttpRequest) -> (HttpResponse) query;
     add_stable_asset: (asset: blob) -> ();

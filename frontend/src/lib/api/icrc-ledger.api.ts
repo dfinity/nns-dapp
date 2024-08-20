@@ -42,7 +42,7 @@ export const queryIcrcToken = async ({
   const token = mapOptionalToken(tokenData);
 
   if (isNullish(token)) {
-    throw new LedgerErrorKey("error.icrc_token_load");
+    throw new LedgerErrorKey({ message: "error.icrc_token_load" });
   }
 
   return token;

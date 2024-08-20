@@ -4,7 +4,7 @@ import {
   type ProjectDetailContext,
   type ProjectDetailStore,
 } from "$lib/types/project-detail.context";
-import type { SnsSummary } from "$lib/types/sns";
+import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 import {
   createSummary,
@@ -17,7 +17,9 @@ import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";
 
 describe("ProjectMetadataSection", () => {
-  const renderProjectMetadataSection = (summary: SnsSummary | undefined) =>
+  const renderProjectMetadataSection = (
+    summary: SnsSummaryWrapper | undefined
+  ) =>
     render(ContextWrapperTest, {
       props: {
         contextKey: PROJECT_DETAIL_CONTEXT_KEY,

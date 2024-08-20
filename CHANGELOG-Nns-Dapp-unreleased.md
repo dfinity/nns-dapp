@@ -15,24 +15,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* A short delay before closing the mobile table sorting modal.
-
 #### Changed
-
-* Reduce the frequency of checking if SNS neurons need to be refreshed.
 
 #### Deprecated
 
 #### Removed
 
-* Remove default topic and proposal status filters.
-* Remove old canister creation/top-up mechanism that hasn't been used for 2 years.
-
 #### Fixed
-
-* Button disable state glitch when voting with neurons where one follows another.
-* Fix "the current proposals response is too large" error on proposals page.
-* Visibility of "Neuron Management" proposals in actionable list.
 
 #### Security
 
@@ -42,14 +31,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Script to convert between ID formats
-* Test cycles minting canister notification mechanism of the nns-dapp.
-
 #### Changed
 
 #### Deprecated
 
 #### Removed
+
+* Integration test setup code and related script and documentation.
 
 #### Fixed
 

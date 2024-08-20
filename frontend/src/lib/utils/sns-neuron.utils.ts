@@ -121,6 +121,12 @@ export const getSnsNeuronStake = ({
   neuron_fees_e8s,
 }: SnsNeuron): bigint => cached_neuron_stake_e8s - neuron_fees_e8s;
 
+export const getSnsNeuronAvailableMaturity = (neuron: SnsNeuron): bigint =>
+  neuron.maturity_e8s_equivalent;
+
+export const getSnsNeuronStakedMaturity = (neuron: SnsNeuron): bigint =>
+  fromNullable(neuron.staked_maturity_e8s_equivalent) ?? 0n;
+
 export const getSnsNeuronByHexId = ({
   neuronIdHex,
   neurons,

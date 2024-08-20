@@ -40,15 +40,14 @@ describe("ProjectTimelineUserCommitment", () => {
 
   it("should render starting info if status Adopted", () => {
     const summaryData = summaryForLifecycle(SnsSwapLifecycle.Adopted);
-    const summary = {
-      ...summaryData,
+    const summary = summaryData.override({
       swap: {
         ...summaryData.swap,
         decentralization_sale_open_timestamp_seconds: BigInt(
           now + SECONDS_IN_DAY
         ),
       },
-    };
+    });
     const { queryByText } = render(ProjectTimelineUserCommitment, {
       summary,
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,

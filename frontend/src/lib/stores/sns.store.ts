@@ -1,4 +1,4 @@
-import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { convertDtoToSnsSummary } from "$lib/utils/sns-aggregator-converters.utils";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
@@ -151,7 +151,7 @@ const overrideLifecycle =
  */
 export const snsSummariesStore = derived<
   [SnsAggregatorStore, SnsDerivedStateStore, SnsLifecycleStore],
-  SnsSummary[]
+  SnsSummaryWrapper[]
 >(
   [snsAggregatorStore, snsDerivedStateStore, snsLifecycleStore],
   ([aggregatorData, derivedStates, lifecycles]) => {

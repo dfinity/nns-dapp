@@ -176,6 +176,8 @@ export const listNeuronsHardwareWallet = async (): Promise<{
     const neurons: NeuronInfo[] = await queryNeurons({
       identity: ledgerIdentity,
       certified: true,
+      // Must be undefined for compatibility with Ledger app 2.4.9.
+      includeEmptyNeurons: undefined,
     });
 
     return { neurons };

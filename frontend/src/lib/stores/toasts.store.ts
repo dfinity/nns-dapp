@@ -46,10 +46,12 @@ export const toastsError = ({
   labelKey,
   err,
   substitutions,
+  renderAsHtml,
 }: {
   labelKey: string;
   err?: unknown;
   substitutions?: I18nSubstitutions;
+  renderAsHtml?: boolean;
 }): symbol => {
   if (err !== undefined) {
     console.error(err);
@@ -60,8 +62,7 @@ export const toastsError = ({
     level: "error",
     detail: errorToString(err),
     substitutions,
-    // We don't have any use-case to not render as HTML, so no need to add complexity here.
-    renderAsHtml: true,
+    renderAsHtml,
   });
 };
 

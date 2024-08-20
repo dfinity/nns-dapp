@@ -9,6 +9,7 @@ export const initAppPrivateData = async (): Promise<void> => {
   // Get latest data and create wrapper caches for the logged in identity.
   const initSns: Promise<void>[] = [loadSnsProjects()];
 
+  // TODO: load imported tokens after Nns.
   /**
    * If Nns load but Sns load fails it is "fine" to go on because Nns are core features.
    */

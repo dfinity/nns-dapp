@@ -143,11 +143,6 @@ const extractStartScript = (htmlFile) => {
  *
  * Note about the rules:
  *
- * - script-src 'unsafe-eval' is required because:
- * 1. agent-js uses a WebAssembly module for the validation of bls signatures.
- *    source: II https://github.com/dfinity/internet-identity/blob/c5709518ce3daaf7fdd9c7994120b66bd613f01b/src/internet_identity/src/main.rs#L824
- * 2. nns-js auto-generated proto js code (base_types_pb.js and ledger_pb.js) require 'unsafe-eval' as well
- *
  * - script-src and usage of 'integrity':
  * Ideally we would like to secure the scripts that are loaded with the 'integrity=sha256-...' hashes attributes - e.g. https://stackoverflow.com/a/68492689/5404186.
  * However, this is currently only supported by Chrome. Firefox issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1409200
@@ -185,9 +180,7 @@ const updateCSP = (indexHtml) => {
         img-src 'self' data: https://nns.internetcomputer.org/ https://nns.ic0.app/ https://nns.raw.ic0.app/ \${{SNS_AGGREGATOR_URL}};
         child-src 'self';
         manifest-src 'self';
-        script-src 'unsafe-eval' 'unsafe-inline' 'strict-dynamic' ${indexHashes.join(
-          " "
-        )};
+        script-src 'unsafe-inline' 'strict-dynamic' ${indexHashes.join(" ")};
         base-uri 'self';
         form-action 'none';
         style-src 'self' 'unsafe-inline';

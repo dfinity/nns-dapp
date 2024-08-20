@@ -40,8 +40,6 @@ describe("SnsProposalsList", () => {
     const { queryAllByTestId } = render(SnsProposalsList, {
       props: {
         proposals,
-        includeBallots: false,
-        snsName: "sns-name",
         actionableSelected: false,
         nsFunctions: [],
       },
@@ -54,8 +52,6 @@ describe("SnsProposalsList", () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
         proposals,
-        includeBallots: false,
-        snsName: "sns-name",
         actionableSelected: false,
         nsFunctions: [],
         loadingNextPage: true,
@@ -71,8 +67,6 @@ describe("SnsProposalsList", () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
         proposals: undefined,
-        includeBallots: false,
-        snsName: "sns-name",
         actionableSelected: false,
         nsFunctions: [],
       },
@@ -85,8 +79,6 @@ describe("SnsProposalsList", () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
         proposals: [],
-        includeBallots: false,
-        snsName: "sns-name",
         actionableSelected: false,
         nsFunctions: [],
       },
@@ -111,8 +103,6 @@ describe("SnsProposalsList", () => {
     it("should render skeletons while proposals are loading", async () => {
       const po = await renderComponent({
         proposals: undefined,
-        includeBallots: true,
-        snsName: "sns-name",
         actionableSelected: true,
         nsFunctions: [],
       });
@@ -124,8 +114,6 @@ describe("SnsProposalsList", () => {
       setNoIdentity();
       const po = await renderComponent({
         proposals: undefined,
-        includeBallots: false,
-        snsName: "sns-name",
         actionableSelected: true,
         nsFunctions: [],
       });
@@ -134,8 +122,6 @@ describe("SnsProposalsList", () => {
       resetIdentity();
       const po2 = await renderComponent({
         proposals: undefined,
-        includeBallots: false,
-        snsName: "sns-name",
         actionableSelected: true,
         nsFunctions: [],
       });
@@ -145,8 +131,6 @@ describe("SnsProposalsList", () => {
     it('should display "No actionable proposals" banner', async () => {
       const po = await renderComponent({
         proposals: [],
-        includeBallots: true,
-        snsName: "sns-name",
         actionableSelected: true,
         nsFunctions: [],
       });
@@ -154,44 +138,15 @@ describe("SnsProposalsList", () => {
 
       const po2 = await renderComponent({
         proposals: [actionableProposalA],
-        includeBallots: true,
-        snsName: "sns-name",
         actionableSelected: true,
         nsFunctions: [],
       });
       expect(await po2.getActionableEmptyBanner().isPresent()).toBe(false);
     });
 
-    it('should display "Actionable not supported" banner', async () => {
-      const po = await renderComponent({
-        proposals: [],
-        includeBallots: false,
-        snsName: "sns-name",
-        actionableSelected: true,
-        nsFunctions: [],
-      });
-      expect(await po.getActionableNotSupportedBanner().isPresent()).toBe(true);
-      expect(await po.getActionableNotSupportedBanner().getTitleText()).toBe(
-        "sns-name doesn't yet support actionable proposals."
-      );
-
-      const poTwo = await renderComponent({
-        proposals: [],
-        includeBallots: true,
-        snsName: "sns-name",
-        actionableSelected: true,
-        nsFunctions: [],
-      });
-      expect(await poTwo.getActionableNotSupportedBanner().isPresent()).toBe(
-        false
-      );
-    });
-
     it("should display actionable proposals", async () => {
       const po = await renderComponent({
         proposals: [actionableProposalA, actionableProposalB],
-        includeBallots: true,
-        snsName: "sns-name",
         actionableSelected: true,
         nsFunctions: [],
       });
@@ -207,8 +162,6 @@ describe("SnsProposalsList", () => {
     it("should use universe from URL for card href", async () => {
       const po = await renderComponent({
         proposals: [actionableProposalA],
-        includeBallots: true,
-        snsName: "sns-name",
         actionableSelected: true,
         nsFunctions: [],
       });
@@ -221,8 +174,6 @@ describe("SnsProposalsList", () => {
     it("should not have actionable parameter in a card href", async () => {
       const po = await renderComponent({
         proposals: [actionableProposalA],
-        includeBallots: true,
-        snsName: "sns-name",
         actionableSelected: true,
         nsFunctions: [],
       });
@@ -253,8 +204,6 @@ describe("SnsProposalsList", () => {
             isActionable: true,
           },
         ],
-        includeBallots: true,
-        snsName: "sns-name",
         actionableSelected: false,
         nsFunctions: [],
       });

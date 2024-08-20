@@ -3,11 +3,8 @@ import {
   snsSwapCommitmentsStore,
   type SnsSwapCommitmentsStore,
 } from "$lib/stores/sns.store";
-import type {
-  RootCanisterIdText,
-  SnsSummary,
-  SnsSwapCommitment,
-} from "$lib/types/sns";
+import type { RootCanisterIdText, SnsSwapCommitment } from "$lib/types/sns";
+import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import {
   filterActiveProjects,
   filterCommittedProjects,
@@ -21,7 +18,7 @@ import { derived, type Readable } from "svelte/store";
 
 export interface SnsFullProject {
   rootCanisterId: Principal;
-  summary: SnsSummary;
+  summary: SnsSummaryWrapper;
   swapCommitment: SnsSwapCommitment | undefined;
 }
 
@@ -32,7 +29,7 @@ export interface SnsFullProject {
  * @return SnsFullProject[] | undefined What we called project - i.e. the summary and swap of a Sns with the user commitment
  */
 export const snsProjectsStore = derived<
-  [Readable<SnsSummary[]>, SnsSwapCommitmentsStore],
+  [Readable<SnsSummaryWrapper[]>, SnsSwapCommitmentsStore],
   SnsFullProject[]
 >(
   [snsSummariesStore, snsSwapCommitmentsStore],

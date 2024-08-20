@@ -10,9 +10,7 @@ import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
-  TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
-import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -58,8 +56,10 @@ import {
   maturityLastDistribution,
   minNeuronSplittable,
   neuronAge,
+  neuronAvailableMaturity,
   neuronCanBeSplit,
   neuronStake,
+  neuronStakedMaturity,
   neuronVotingPower,
   neuronsVotingPower,
   sortNeuronsByStake,
@@ -991,6 +991,50 @@ describe("neuron-utils", () => {
     });
   });
 
+  describe("neuronAvailableMaturity", () => {
+    it("should calculate available maturity", () => {
+      const maturity = 100234n;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: maturity,
+        },
+      };
+      expect(neuronAvailableMaturity(neuron)).toBe(maturity);
+    });
+
+    it("should return 0n when maturity is not available", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(neuronAvailableMaturity(neuron)).toBe(0n);
+    });
+  });
+
+  describe("neuronStakedMaturity", () => {
+    it("should calculate staked maturity", () => {
+      const maturity = 100235n;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          stakedMaturityE8sEquivalent: maturity,
+        },
+      };
+      expect(neuronStakedMaturity(neuron)).toBe(maturity);
+    });
+
+    it("should return 0n when maturity is not available", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(neuronStakedMaturity(neuron)).toBe(0n);
+    });
+  });
+
   describe("ballotsWithDefinedProposal", () => {
     const ballot: BallotInfo = {
       vote: Vote.Yes,
@@ -1727,7 +1771,7 @@ describe("neuron-utils", () => {
         neuronId: 444n,
         fullNeuron: {
           ...neuron.fullNeuron,
-          followees: [{ topic: Topic.ManageNeuron, followees: [444n] }],
+          followees: [{ topic: Topic.NeuronManagement, followees: [444n] }],
         },
       };
       const neuron3 = {
@@ -1797,7 +1841,7 @@ describe("neuron-utils", () => {
         neuronId: 444n,
         fullNeuron: {
           ...neuron.fullNeuron,
-          followees: [{ topic: Topic.ManageNeuron, followees: [444n] }],
+          followees: [{ topic: Topic.NeuronManagement, followees: [444n] }],
         },
       };
       const neuron3 = {
@@ -1832,7 +1876,7 @@ describe("neuron-utils", () => {
         neuronId: 444n,
         fullNeuron: {
           ...neuron.fullNeuron,
-          followees: [{ topic: Topic.ManageNeuron, followees: [444n] }],
+          followees: [{ topic: Topic.NeuronManagement, followees: [444n] }],
         },
       };
       const neuron3 = {
@@ -1925,7 +1969,7 @@ describe("neuron-utils", () => {
           controller: "controller",
           followees: [
             {
-              topic: Topic.ManageNeuron,
+              topic: Topic.NeuronManagement,
               followees: [10n, 40n],
             },
           ],
@@ -1939,7 +1983,7 @@ describe("neuron-utils", () => {
           controller: "controller",
           followees: [
             {
-              topic: Topic.ManageNeuron,
+              topic: Topic.NeuronManagement,
               followees: [10n],
             },
           ],
@@ -1956,7 +2000,7 @@ describe("neuron-utils", () => {
           controller: "controller",
           followees: [
             {
-              topic: Topic.ManageNeuron,
+              topic: Topic.NeuronManagement,
               followees: [40n, 10n],
             },
           ],
@@ -1970,7 +2014,7 @@ describe("neuron-utils", () => {
           controller: "controller",
           followees: [
             {
-              topic: Topic.ManageNeuron,
+              topic: Topic.NeuronManagement,
               followees: [10n, 40n],
             },
           ],
@@ -1987,7 +2031,7 @@ describe("neuron-utils", () => {
           controller: "controller",
           followees: [
             {
-              topic: Topic.ManageNeuron,
+              topic: Topic.NeuronManagement,
               followees: [40n, 10n],
             },
           ],
@@ -2013,7 +2057,7 @@ describe("neuron-utils", () => {
           controller: "controller",
           followees: [
             {
-              topic: Topic.ManageNeuron,
+              topic: Topic.NeuronManagement,
               followees: [40n, 10n],
             },
           ],
@@ -2027,7 +2071,7 @@ describe("neuron-utils", () => {
           controller: "controller",
           followees: [
             {
-              topic: Topic.ManageNeuron,
+              topic: Topic.NeuronManagement,
               followees: [40n, 200n],
             },
           ],
@@ -2113,13 +2157,13 @@ describe("neuron-utils", () => {
 
     it("should return undefined if topic not found", () => {
       expect(
-        followeesByTopic({ neuron, topic: Topic.ManageNeuron })
+        followeesByTopic({ neuron, topic: Topic.NeuronManagement })
       ).toBeUndefined();
     });
 
     it("should return undefined if no neuron", () => {
       expect(
-        followeesByTopic({ neuron: undefined, topic: Topic.ManageNeuron })
+        followeesByTopic({ neuron: undefined, topic: Topic.NeuronManagement })
       ).toBeUndefined();
     });
 
@@ -2127,7 +2171,7 @@ describe("neuron-utils", () => {
       expect(
         followeesByTopic({
           neuron: { ...mockNeuron, fullNeuron: undefined },
-          topic: Topic.ManageNeuron,
+          topic: Topic.NeuronManagement,
         })
       ).toBeUndefined();
     });
@@ -2159,7 +2203,7 @@ describe("neuron-utils", () => {
         ...mockFullNeuron,
         followees: [
           {
-            topic: Topic.ManageNeuron,
+            topic: Topic.NeuronManagement,
             followees: [0n, 1n],
           },
         ],
@@ -2167,31 +2211,67 @@ describe("neuron-utils", () => {
     };
 
     it("should not return deprecated topics", () => {
-      expect(topicsToFollow(neuronWithoutManageNeuron)).toEqual(
-        TOPICS_TO_FOLLOW_NNS.filter(
-          (topic) =>
-            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic)
-        )
-      );
-      expect(topicsToFollow(neuronWithoutFollowees)).toEqual(
-        TOPICS_TO_FOLLOW_NNS.filter(
-          (topic) =>
-            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic)
-        )
-      );
-      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(
-        TOPICS_TO_FOLLOW_NNS.filter(
-          (topic) => !DEPRECATED_TOPICS.includes(topic)
-        )
-      );
+      expect(topicsToFollow(neuronWithoutManageNeuron)).toEqual([
+        Topic.Unspecified,
+        Topic.Governance,
+        Topic.SnsAndCommunityFund,
+        Topic.NetworkEconomics,
+        Topic.NodeAdmin,
+        Topic.ParticipantManagement,
+        Topic.SubnetManagement,
+        Topic.NetworkCanisterManagement,
+        Topic.Kyc,
+        Topic.NodeProviderRewards,
+        Topic.IcOsVersionDeployment,
+        Topic.IcOsVersionElection,
+        Topic.ApiBoundaryNodeManagement,
+        Topic.SubnetRental,
+        Topic.ProtocolCanisterManagement,
+        Topic.ServiceNervousSystemManagement,
+        Topic.ExchangeRate,
+      ]);
+      expect(topicsToFollow(neuronWithoutFollowees)).toEqual([
+        Topic.Unspecified,
+        Topic.Governance,
+        Topic.SnsAndCommunityFund,
+        Topic.NetworkEconomics,
+        Topic.NodeAdmin,
+        Topic.ParticipantManagement,
+        Topic.SubnetManagement,
+        Topic.NetworkCanisterManagement,
+        Topic.Kyc,
+        Topic.NodeProviderRewards,
+        Topic.IcOsVersionDeployment,
+        Topic.IcOsVersionElection,
+        Topic.ApiBoundaryNodeManagement,
+        Topic.SubnetRental,
+        Topic.ProtocolCanisterManagement,
+        Topic.ServiceNervousSystemManagement,
+        Topic.ExchangeRate,
+      ]);
     });
 
     it("should return topics with ManageNeuron if neuron follows some neuron on the ManageNeuron topic", () => {
-      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(
-        TOPICS_TO_FOLLOW_NNS.filter(
-          (topic) => !DEPRECATED_TOPICS.includes(topic)
-        )
-      );
+      expect(topicsToFollow(neuronWithManageNeuron)).toEqual([
+        Topic.Unspecified,
+        Topic.Governance,
+        Topic.SnsAndCommunityFund,
+        Topic.NeuronManagement,
+        Topic.NetworkEconomics,
+        Topic.NodeAdmin,
+        Topic.ParticipantManagement,
+        Topic.SubnetManagement,
+        Topic.NetworkCanisterManagement,
+        Topic.Kyc,
+        Topic.NodeProviderRewards,
+        Topic.IcOsVersionDeployment,
+        Topic.IcOsVersionElection,
+        Topic.ApiBoundaryNodeManagement,
+        Topic.SubnetRental,
+        Topic.ProtocolCanisterManagement,
+        Topic.ServiceNervousSystemManagement,
+        Topic.ExchangeRate,
+      ]);
     });
   });
 
@@ -2708,7 +2788,7 @@ describe("neuron-utils", () => {
       expect(getTopicTitle({ topic: Topic.Unspecified, i18n: en })).toBe(
         "All Except Governance, and SNS & Neurons' Fund"
       );
-      expect(getTopicTitle({ topic: Topic.ManageNeuron, i18n: en })).toBe(
+      expect(getTopicTitle({ topic: Topic.NeuronManagement, i18n: en })).toBe(
         "Manage Neuron"
       );
       expect(getTopicTitle({ topic: Topic.ExchangeRate, i18n: en })).toBe(
@@ -2740,10 +2820,10 @@ describe("neuron-utils", () => {
         getTopicTitle({ topic: Topic.SnsDecentralizationSale, i18n: en })
       ).toBe("SNS Decentralization Swap");
       expect(
-        getTopicTitle({ topic: Topic.SubnetReplicaVersionManagement, i18n: en })
+        getTopicTitle({ topic: Topic.IcOsVersionDeployment, i18n: en })
       ).toBe("IC OS Version Deployment");
       expect(
-        getTopicTitle({ topic: Topic.ReplicaVersionManagement, i18n: en })
+        getTopicTitle({ topic: Topic.IcOsVersionElection, i18n: en })
       ).toBe("IC OS Version Election");
       expect(
         getTopicTitle({ topic: Topic.SnsAndCommunityFund, i18n: en })
@@ -2753,6 +2833,12 @@ describe("neuron-utils", () => {
       ).toBe("API Boundary Node Management");
       expect(getTopicTitle({ topic: Topic.SubnetRental, i18n: en })).toBe(
         "Subnet Rental"
+      );
+    });
+
+    it("should render unknown topics", () => {
+      expect(getTopicTitle({ topic: 1000 as Topic, i18n: en })).toBe(
+        "Unknown Topic (1000)"
       );
     });
   });
@@ -2770,7 +2856,9 @@ describe("neuron-utils", () => {
       expect(getTopicSubtitle({ topic: Topic.Unspecified, i18n: en })).toBe(
         "Follow neurons on all proposal topics except the governance topic, and SNS & Neurons' Fund."
       );
-      expect(getTopicSubtitle({ topic: Topic.ManageNeuron, i18n: en })).toBe(
+      expect(
+        getTopicSubtitle({ topic: Topic.NeuronManagement, i18n: en })
+      ).toBe(
         "Proposals that manage specific neurons, for example making them perform actions."
       );
       expect(getTopicSubtitle({ topic: Topic.ExchangeRate, i18n: en })).toBe(
@@ -2813,12 +2901,12 @@ describe("neuron-utils", () => {
       ).toBe("Proposals for SNS");
       expect(
         getTopicSubtitle({
-          topic: Topic.SubnetReplicaVersionManagement,
+          topic: Topic.IcOsVersionDeployment,
           i18n: en,
         })
       ).toBe("Proposals handling updates of a subnet's replica version");
       expect(
-        getTopicSubtitle({ topic: Topic.ReplicaVersionManagement, i18n: en })
+        getTopicSubtitle({ topic: Topic.IcOsVersionElection, i18n: en })
       ).toBe(
         "Proposals dealing with blessing and retirement of replica versions"
       );

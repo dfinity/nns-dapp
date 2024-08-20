@@ -14,8 +14,10 @@ import { ProposalDetailPo } from "$tests/page-objects/ProposalDetail.page-object
 import { ProposalsPo } from "$tests/page-objects/Proposals.page-object";
 import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.page-object";
 import { SignInPo } from "$tests/page-objects/SignIn.page-object";
+import { StakingPo } from "$tests/page-objects/Staking.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { isNullish } from "@dfinity/utils";
 import { expect } from "@playwright/test";
 import { SignInAccountsPo } from "./SignInAccounts.page-object";
 import { TokensRoutePo } from "./TokensRoute.page-object";
@@ -43,6 +45,10 @@ export class AppPo extends BasePageObject {
 
   getWalletPo(): WalletPo {
     return WalletPo.under(this.root);
+  }
+
+  getStakingPo(): StakingPo {
+    return StakingPo.under(this.root);
   }
 
   getNeuronsPo(): NeuronsPo {
@@ -116,6 +122,7 @@ export class AppPo extends BasePageObject {
 
   // GIX-2080: Rename to "goToTokens"
   async goToAccounts(): Promise<void> {
+    await this.goBackAllTheWay();
     await this.openMenu();
     await this.getMenuItemsPo().clickAccounts();
     // Menu closes automatically.
@@ -138,16 +145,26 @@ export class AppPo extends BasePageObject {
     ).click();
   }
 
-  async goToNeurons(): Promise<void> {
+  async goToStaking(): Promise<void> {
+    await this.goBackAllTheWay();
     await this.openMenu();
     await this.getMenuItemsPo().clickNeuronStaking();
     // Menu closes automatically.
     await this.getBackdropPo().waitForAbsent();
+    await this.getStakingPo().waitFor();
+  }
+
+  async goToNnsNeurons(): Promise<void> {
+    await this.goToStaking();
+    const nnsRow = await this.getStakingPo()
+      .getProjectsTablePo()
+      .getRowByTitle("Internet Computer");
+    await nnsRow.click();
     await this.getNeuronsPo().waitForContentLoaded();
   }
 
   async goToNeuronDetails(neuronId: string): Promise<void> {
-    await this.goToNeurons();
+    await this.goToNnsNeurons();
     await (
       await this.getNeuronsPo()
         .getNnsNeuronsPo()
@@ -158,6 +175,7 @@ export class AppPo extends BasePageObject {
   }
 
   async goToProposals(): Promise<void> {
+    await this.goBackAllTheWay();
     await this.openMenu();
     await this.getMenuItemsPo().clickProposals();
     // Menu closes automatically.
@@ -165,6 +183,7 @@ export class AppPo extends BasePageObject {
   }
 
   async goToLaunchpad(): Promise<void> {
+    await this.goBackAllTheWay();
     await this.openMenu();
     await this.getMenuItemsPo().clickLaunchpad();
     // Menu closes automatically.
@@ -172,6 +191,7 @@ export class AppPo extends BasePageObject {
   }
 
   async goToCanisters(): Promise<void> {
+    await this.goBackAllTheWay();
     await this.openMenu();
     await this.getMenuItemsPo().clickCanisters();
     // Menu closes automatically.
@@ -196,13 +216,46 @@ export class AppPo extends BasePageObject {
     await this.closeMenu();
   }
 
-  async goBack(
-    { waitAbsent }: { waitAbsent: boolean } = { waitAbsent: true }
-  ): Promise<void> {
+  async getCurrentViewWithBackButtonPo(): Promise<BasePageObject | null> {
+    const views = [
+      this.getAccountsPo(),
+      this.getWalletPo(),
+      this.getNeuronsPo(),
+      this.getNeuronDetailPo(),
+      this.getProposalDetailPo(),
+      this.getProjectDetailPo(),
+      this.getCanisterDetailPo(),
+    ];
+    for (const view of views) {
+      if (await view.isPresent()) {
+        return view;
+      }
+    }
+    return null;
+  }
+
+  async goBack(): Promise<void> {
+    const currentView = await this.getCurrentViewWithBackButtonPo();
+    if (isNullish(currentView)) {
+      throw new Error("No known view with back button is present");
+    }
+
     await this.getButton("back").click();
-    // Not all the times that the back is clicked the button disappears. For example, from ICP Wallet back to ICP Accounts.
-    if (waitAbsent) {
-      await this.getButton("back").waitForAbsent();
+    currentView.waitForAbsent();
+  }
+
+  // Can be called regardless of whether a back button is present.
+  // The back button will be called as long as there is a back button, until the
+  // menu button appears.
+  async goBackAllTheWay(): Promise<void> {
+    for (;;) {
+      const currentView = await this.getCurrentViewWithBackButtonPo();
+      if (isNullish(currentView)) {
+        return;
+      }
+
+      await this.getButton("back").click();
+      currentView.waitForAbsent();
     }
   }
 

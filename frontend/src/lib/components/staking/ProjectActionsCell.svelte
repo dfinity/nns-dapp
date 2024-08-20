@@ -10,7 +10,7 @@
   {rowData.title}
 {/if}
 
-<div class="container">
+<div data-tid="go-to-neurons-table-action" class="container">
   <IconRight />
 </div>
 

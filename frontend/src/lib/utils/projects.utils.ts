@@ -12,6 +12,7 @@ import type {
   SnsSummarySwap,
   SnsSwapCommitment,
 } from "$lib/types/sns";
+import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import type { StoreData } from "$lib/types/store";
 import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
@@ -34,13 +35,7 @@ export const filterProjectsStatus = ({
   swapLifecycle: SnsSwapLifecycle;
   projects: SnsFullProject[];
 }): SnsFullProject[] =>
-  projects.filter(
-    ({
-      summary: {
-        swap: { lifecycle },
-      },
-    }) => swapLifecycle === lifecycle
-  );
+  projects.filter(({ summary }) => swapLifecycle === summary.getLifecycle());
 
 export const filterCommittedProjects = (
   projects: SnsFullProject[]
@@ -60,17 +55,12 @@ export const filterCommittedProjects = (
 export const filterActiveProjects = (
   projects: SnsFullProject[]
 ): SnsFullProject[] =>
-  projects?.filter(
-    ({
-      summary: {
-        swap: { lifecycle },
-      },
-    }) =>
-      [
-        SnsSwapLifecycle.Committed,
-        SnsSwapLifecycle.Open,
-        SnsSwapLifecycle.Adopted,
-      ].includes(lifecycle)
+  projects?.filter(({ summary }) =>
+    [
+      SnsSwapLifecycle.Committed,
+      SnsSwapLifecycle.Open,
+      SnsSwapLifecycle.Adopted,
+    ].includes(summary.getLifecycle())
   );
 
 /**
@@ -99,27 +89,28 @@ export const durationTillSwapStart = ({
  * - remaining commitment to reach project maximum
  */
 export const currentUserMaxCommitment = ({
-  summary: { swap, derived },
+  summary,
   swapCommitment,
 }: {
-  summary: SnsSummary;
+  summary: SnsSummaryWrapper;
   swapCommitment: SnsSwapCommitment | undefined | null;
 }): bigint => {
   const remainingProjectCommitment =
-    swap.params.max_icp_e8s - derived.buyer_total_icp_e8s;
+    summary.getMaxIcpE8s() - summary.derived.buyer_total_icp_e8s;
   const remainingUserCommitment =
-    swap.params.max_participant_icp_e8s -
+    summary.getMaxParticipantIcpE8s() -
     (getCommitmentE8s(swapCommitment) ?? 0n);
   return remainingProjectCommitment < remainingUserCommitment
     ? remainingProjectCommitment
     : remainingUserCommitment;
 };
 
-export const projectRemainingAmount = ({ swap, derived }: SnsSummary): bigint =>
-  swap.params.max_icp_e8s - derived.buyer_total_icp_e8s;
+export const projectRemainingAmount = (summary: SnsSummaryWrapper): bigint =>
+  summary.getMaxIcpE8s() - summary.derived.buyer_total_icp_e8s;
 
-const isProjectOpen = (summary: SnsSummary): boolean =>
-  summary.swap.lifecycle === SnsSwapLifecycle.Open;
+const isProjectOpen = (summary: SnsSummaryWrapper): boolean =>
+  summary.getLifecycle() === SnsSwapLifecycle.Open;
+
 // Checks whether the amount that the user wants to contribute is lower than the minimum for the project.
 // It takes into account the current commitment of the user.
 const commitmentTooSmall = ({
@@ -129,15 +120,17 @@ const commitmentTooSmall = ({
   project: SnsFullProject;
   amount: TokenAmount;
 }): boolean =>
-  summary.swap.params.min_participant_icp_e8s >
+  summary.getMinParticipantIcpE8s() >
   amount.toE8s() + (getCommitmentE8s(swapCommitment) ?? 0n);
+
 const commitmentTooLarge = ({
   summary,
   amountE8s,
 }: {
-  summary: SnsSummary;
+  summary: SnsSummaryWrapper;
   amountE8s: bigint;
-}): boolean => summary.swap.params.max_participant_icp_e8s < amountE8s;
+}): boolean => summary.getMaxParticipantIcpE8s() < amountE8s;
+
 // Checks whether the amount that the user wants to contribute
 // plus the amount that all users have contributed so far
 // exceeds the maximum amount that the project can accept.
@@ -145,7 +138,7 @@ export const commitmentExceedsAmountLeft = ({
   summary,
   amountE8s,
 }: {
-  summary: SnsSummary;
+  summary: SnsSummaryWrapper;
   amountE8s: bigint;
 }): boolean => projectRemainingAmount(summary) < amountE8s;
 
@@ -160,7 +153,7 @@ export const canUserParticipateToSwap = ({
   summary,
   swapCommitment,
 }: {
-  summary: SnsSummary | undefined | null;
+  summary: SnsSummaryWrapper | undefined | null;
   swapCommitment: SnsSwapCommitment | undefined | null;
 }): boolean => {
   const myCommitment = getCommitmentE8s(swapCommitment) ?? 0n;
@@ -190,7 +183,7 @@ export const userCountryIsNeeded = ({
   swapCommitment,
   loggedIn,
 }: {
-  summary: SnsSummary | undefined | null;
+  summary: SnsSummaryWrapper | undefined | null;
   swapCommitment: SnsSwapCommitment | undefined | null;
   loggedIn: boolean;
 }): boolean =>
@@ -231,7 +224,7 @@ export const validParticipation = ({
       labelKey: "error__sns.not_enough_amount",
       substitutions: {
         $amount: formatTokenE8s({
-          value: project.summary.swap.params.min_participant_icp_e8s,
+          value: project.summary.getMinParticipantIcpE8s(),
           detailed: true,
         }),
       },
@@ -251,7 +244,7 @@ export const validParticipation = ({
           value: getCommitmentE8s(project.swapCommitment) ?? 0n,
         }),
         $maxCommitment: formatTokenE8s({
-          value: project.summary.swap.params.max_participant_icp_e8s,
+          value: project.summary.getMaxParticipantIcpE8s(),
         }),
       },
     };
@@ -269,7 +262,7 @@ export const validParticipation = ({
         $commitment: formatTokenE8s({ value: totalCommitment }),
         $remainingCommitment: formatTokenE8s({
           value:
-            project.summary.swap.params.max_icp_e8s -
+            project.summary.getMaxIcpE8s() -
             project.summary.derived.buyer_total_icp_e8s,
         }),
       },
@@ -331,7 +324,7 @@ export const participateButtonStatus = ({
   ticket,
   userCountry,
 }: {
-  summary: SnsSummary | undefined | null;
+  summary: SnsSummaryWrapper | undefined | null;
   swapCommitment: SnsSwapCommitment | undefined | null;
   loggedIn: boolean;
   ticket: SnsSwapTicket | undefined | null;

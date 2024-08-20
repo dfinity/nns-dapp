@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_ledger --out ic_sns_ledger.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-03_23-01-storage-layer-disabled/rs/rosetta-api/icrc1/ledger/ledger.did>
+//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-02_01-30-base/rs/rosetta-api/icrc1/ledger/ledger.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -250,6 +250,7 @@ pub enum TransferResult {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Icrc21ConsentMessageMetadata {
+    pub utc_offset_minutes: Option<i16>,
     pub language: String,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]

@@ -1,12 +1,14 @@
 import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-import { formatTokenE8s } from "$lib/utils/token.utils";
-import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
+import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("AmountDisplay", () => {
   const tokenAmount = TokenAmount.fromE8s({
-    amount: mockMainAccount.balanceUlps,
+    amount: 123_456_789_010_000n,
     token: ICPToken,
   });
 
@@ -14,70 +16,109 @@ describe("AmountDisplay", () => {
     amount: tokenAmount,
   };
 
-  it("should render an token amount", () => {
-    const { container } = render(AmountDisplay, {
-      props,
-    });
+  const renderComponent = (props) => {
+    const { container } = render(AmountDisplay, props);
+    return AmountDisplayPo.under(new JestPageObjectElement(container));
+  };
 
-    const value = container.querySelector("span:first-of-type");
-
-    expect(value?.textContent).toEqual(
-      `${formatTokenE8s({ value: mockMainAccount.balanceUlps })}`
-    );
+  beforeEach(() => {
+    vi.restoreAllMocks();
   });
 
-  it("should render an token symbol", () => {
-    const { getByText } = render(AmountDisplay, {
-      props,
-    });
-
-    expect(getByText("ICP")).toBeInTheDocument();
+  it("should render an token amount", async () => {
+    const po = renderComponent(props);
+    expect(await po.getAmount()).toEqual("1'234'567.89");
   });
 
-  it("should render + sign", () => {
-    const { container } = render(AmountDisplay, {
+  it("should render an token symbol", async () => {
+    const po = renderComponent(props);
+    expect(await po.getText()).toEqual("1'234'567.89 ICP");
+  });
+
+  it("should render + sign", async () => {
+    const po = renderComponent({
       props: {
         ...props,
         sign: "+",
       },
     });
-    const value = container.querySelector("span:first-of-type");
-
-    expect(value?.textContent).toEqual(
-      `+${formatTokenE8s({ value: mockMainAccount.balanceUlps })}`
-    );
-    expect(container.querySelector(".plus-sign")).toBeInTheDocument();
+    expect(await po.getText()).toEqual("+1'234'567.89 ICP");
   });
 
-  it("should render - sign", () => {
-    const { container } = render(AmountDisplay, {
+  it("should render - sign", async () => {
+    const po = renderComponent({
       props: {
         ...props,
         sign: "-",
       },
     });
-    const value = container.querySelector("span:first-of-type");
-
-    expect(value?.textContent).toEqual(
-      `-${formatTokenE8s({ value: mockMainAccount.balanceUlps })}`
-    );
+    expect(await po.getText()).toEqual("-1'234'567.89 ICP");
   });
 
-  it("should render a detailed token amount", () => {
-    const { container } = render(AmountDisplay, {
+  it("should render a detailed token amount", async () => {
+    const po = renderComponent({
       props: {
         ...props,
         detailed: true,
       },
     });
+    expect(await po.getAmount()).toEqual("1'234'567.8901");
+  });
 
-    const value = container.querySelector("span:first-of-type");
+  it("should not have a copy button by default", async () => {
+    const po = renderComponent(props);
+    expect(await po.getCopyButtonPo().isPresent()).toBe(false);
+  });
 
-    expect(value?.textContent).toEqual(
-      `${formatTokenE8s({
-        value: mockMainAccount.balanceUlps,
-        detailed: true,
-      })}`
-    );
+  it("should have a copy button", async () => {
+    const po = renderComponent({
+      ...props,
+      copy: true,
+    });
+    expect(await po.getCopyButtonPo().isPresent()).toBe(true);
+  });
+
+  it("should copy amount to clipboard", async () => {
+    const copySpy = vi.fn();
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: copySpy,
+      },
+    });
+
+    const po = renderComponent({
+      ...props,
+      copy: true,
+    });
+    expect(copySpy).not.toBeCalled();
+    await po.getCopyButtonPo().click();
+    expect(copySpy).toBeCalledWith("1'234'567.8901");
+    expect(copySpy).toBeCalledTimes(1);
+  });
+
+  it("should render unavailable ICP amount", async () => {
+    const po = renderComponent({
+      amount: new UnavailableTokenAmount(ICPToken),
+    });
+    expect(await po.getText()).toBe("-/- ICP");
+  });
+
+  it("should render unavailable token amount", async () => {
+    const token = {
+      ...mockSnsToken,
+      symbol: "TOKEN",
+    };
+    const po = renderComponent({
+      amount: new UnavailableTokenAmount(token),
+    });
+    expect(await po.getText()).toBe("-/- TOKEN");
+  });
+
+  it("should never render a copy button for unavailable amount", async () => {
+    const po = renderComponent({
+      amount: new UnavailableTokenAmount(ICPToken),
+      copy: true,
+    });
+    expect(await po.getCopyButtonPo().isPresent()).toBe(false);
   });
 });

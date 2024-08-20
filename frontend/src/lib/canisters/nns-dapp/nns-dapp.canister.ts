@@ -17,6 +17,7 @@ import {
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
+  TooManyImportedTokensError,
   UnknownProposalPayloadError,
 } from "./nns-dapp.errors";
 import type { NNSDappService } from "./nns-dapp.idl";
@@ -26,6 +27,8 @@ import type {
   CanisterDetails,
   CreateSubAccountResponse,
   GetAccountResponse,
+  ImportedToken,
+  ImportedTokens,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
   RenameSubAccountRequest,
@@ -325,4 +328,46 @@ export class NNSDappCanister {
       errorText ?? (nonNullish(response) ? JSON.stringify(response) : undefined)
     );
   }
+
+  public getImportedTokens = async ({
+    certified,
+  }: {
+    certified: boolean;
+  }): Promise<ImportedTokens> => {
+    const response =
+      await this.getNNSDappService(certified).get_imported_tokens();
+    if ("Ok" in response) {
+      return response.Ok;
+    }
+    if ("AccountNotFound" in response) {
+      throw new AccountNotFoundError("error__account.not_found");
+    }
+    // Edge case
+    throw new Error(
+      `Error getting imported tokens ${JSON.stringify(response)}`
+    );
+  };
+
+  public setImportedTokens = async (
+    importedTokens: Array<ImportedToken>
+  ): Promise<void> => {
+    const response = await this.certifiedService.set_imported_tokens({
+      imported_tokens: importedTokens,
+    });
+    if ("Ok" in response) {
+      return;
+    }
+    if ("AccountNotFound" in response) {
+      throw new AccountNotFoundError("error__account.not_found");
+    }
+    if ("TooManyImportedTokens" in response) {
+      throw new TooManyImportedTokensError("error__imported_tokens.too_many", {
+        $limit: response.TooManyImportedTokens?.limit.toString(),
+      });
+    }
+    // Edge case
+    throw new Error(
+      `Error setting imported tokens ${JSON.stringify(response)}`
+    );
+  };
 }

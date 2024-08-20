@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-03_23-01-storage-layer-disabled/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-02_01-30-base/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -202,14 +202,11 @@ pub enum SubnetType {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct CreateSubnetPayload {
     pub unit_delay_millis: u64,
-    pub max_instructions_per_round: u64,
     pub features: SubnetFeatures,
-    pub max_instructions_per_message: u64,
     pub gossip_registry_poll_period_ms: u32,
     pub max_ingress_bytes_per_message: u64,
     pub dkg_dealings_per_block: u64,
     pub max_block_payload_size: u64,
-    pub max_instructions_per_install_code: u64,
     pub start_as_nns: bool,
     pub is_halted: bool,
     pub gossip_pfn_evaluation_period_ms: u32,
@@ -436,10 +433,8 @@ pub struct ChainKeyConfig {
 pub struct UpdateSubnetPayload {
     pub unit_delay_millis: Option<u64>,
     pub max_duplicity: Option<u32>,
-    pub max_instructions_per_round: Option<u64>,
     pub features: Option<SubnetFeatures>,
     pub set_gossip_config_to_default: bool,
-    pub max_instructions_per_message: Option<u64>,
     pub halt_at_cup_height: Option<bool>,
     pub pfn_evaluation_period_ms: Option<u32>,
     pub subnet_id: Principal,
@@ -447,7 +442,6 @@ pub struct UpdateSubnetPayload {
     pub dkg_dealings_per_block: Option<u64>,
     pub ecdsa_key_signing_disable: Option<Vec<EcdsaKeyId>>,
     pub max_block_payload_size: Option<u64>,
-    pub max_instructions_per_install_code: Option<u64>,
     pub start_as_nns: Option<bool>,
     pub is_halted: Option<bool>,
     pub chain_key_signing_enable: Option<Vec<MasterPublicKeyId>>,

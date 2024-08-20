@@ -1,11 +1,20 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  setFeatureFlag,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test SNS governance", async ({ page, context }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("Tokens / NNS Dapp");
+  await setFeatureFlag({
+    page,
+    featureFlag: "ENABLE_PROJECTS_TABLE",
+    value: true,
+  });
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
@@ -18,8 +27,7 @@ test("Test SNS governance", async ({ page, context }) => {
     .getTokensTable()
     .getSnsRows();
   expect(snsUniverseRows.length).toBeGreaterThanOrEqual(1);
-  const snsUniverseRow = snsUniverseRows[0];
-  const snsProjectName = await snsUniverseRow.getProjectName();
+  const snsProjectName = await snsUniverseRows[0].getProjectName();
 
   // Our first test SNS project is always named "Alfa Centauri".
   expect(snsProjectName).toBe("Alfa Centauri");
@@ -28,13 +36,21 @@ test("Test SNS governance", async ({ page, context }) => {
   const askedAmount = 20;
   await appPo.getSnsTokens({ amount: askedAmount, name: snsProjectName });
 
+  const snsUniverseRow = await appPo
+    .getTokensPo()
+    .getTokensPagePo()
+    .getTokensTable()
+    .getRowByName(snsProjectName);
   expect(await snsUniverseRow.getBalanceNumber()).toEqual(askedAmount);
 
   step("Stake a neuron");
-  await appPo.goToNeurons();
+  await appPo.goToStaking();
 
-  await appPo.openUniverses();
-  await appPo.getSelectUniverseListPo().clickOnUniverse(snsProjectName);
+  const snsRow = await appPo
+    .getStakingPo()
+    .getProjectsTablePo()
+    .getRowByTitle(snsProjectName);
+  await snsRow.click();
 
   await appPo.getNeuronsPo().getSnsNeuronsPo().waitForContentLoaded();
   expect(
