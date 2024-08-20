@@ -6,6 +6,7 @@ import TestTableNameCell from "$tests/lib/components/ui/TestTableNameCell.svelte
 import { ResponsiveTablePo } from "$tests/page-objects/ResponsiveTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
+import { nonNullish } from "@dfinity/utils";
 
 describe("ResponsiveTable", () => {
   type TestRowData = {
@@ -68,8 +69,23 @@ describe("ResponsiveTable", () => {
     },
   ];
 
-  const renderComponent = (props) => {
-    const { container } = render(ResponsiveTable, props);
+  beforeEach(() => {
+    vi.restoreAllMocks();
+
+    // Clicking on the rows that are links causes JSDOM to output an error about
+    // navigation not being implemented. But the error is not logged immediately
+    // and can happen during a different test. So we dissable error logging for
+    // all tests.
+    vi.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  const renderComponent = ({ onNnsAction = null, ...props }) => {
+    const { container, component } = render(ResponsiveTable, props);
+    if (nonNullish(onNnsAction)) {
+      component.$on("nnsAction", ({ detail }) => {
+        onNnsAction({ detail });
+      });
+    }
     return ResponsiveTablePo.under(new JestPageObjectElement(container));
   };
 
@@ -143,6 +159,22 @@ describe("ResponsiveTable", () => {
     expect(await rows[0].getTagName()).toBe("A");
     expect(await rows[1].getTagName()).toBe("A");
     expect(await rows[2].getTagName()).toBe("DIV");
+  });
+
+  it("should dispatch nnsAction, only for click on non-link row", async () => {
+    const onNnsAction = vi.fn();
+    const po = renderComponent({ columns, tableData, onNnsAction });
+    const rows = await po.getRows();
+    expect(rows).toHaveLength(3);
+
+    expect(onNnsAction).not.toBeCalled();
+    await rows[0].click();
+    expect(onNnsAction).not.toBeCalled();
+    await rows[1].click();
+    expect(onNnsAction).not.toBeCalled();
+    await rows[2].click();
+    expect(onNnsAction).toBeCalledTimes(1);
+    expect(onNnsAction).toBeCalledWith({ detail: { rowData: tableData[2] } });
   });
 
   it("should render classes based on column alignment", async () => {
