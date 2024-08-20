@@ -9,7 +9,6 @@ import {
   getVotingBallot,
   getVotingPower,
   hasMatchingProposals,
-  hasProposalPayload,
   hideProposal,
   isProposalDeadlineInTheFuture,
   lastProposalId,
@@ -844,49 +843,6 @@ describe("proposals-utils", () => {
 
     it("should return undefined if undefined", () => {
       expect(getNnsFunctionKey(undefined)).toBeUndefined();
-    });
-  });
-
-  describe("hasProposalPayload", () => {
-    it("should return true for ExecuteNnsFunction", () => {
-      expect(
-        hasProposalPayload({
-          ...mockProposalInfo.proposal,
-          action: {
-            ExecuteNnsFunction: {
-              nnsFunctionId: 4,
-            },
-          },
-        } as Proposal)
-      ).toBe(true);
-    });
-
-    it("should return true for InstallCode", () => {
-      expect(
-        hasProposalPayload({
-          ...mockProposalInfo.proposal,
-          action: {
-            InstallCode: {
-              skipStoppingBeforeInstalling: false,
-              canisterId: "rrkah-fqaaa-aaaaa-aaaaq-cai",
-              installMode: 3,
-            },
-          },
-        } as Proposal)
-      ).toBe(true);
-    });
-
-    it("should return false for Motion", () => {
-      expect(
-        hasProposalPayload({
-          ...mockProposalInfo.proposal,
-          action: {
-            Motion: {
-              motionText: "motion text",
-            },
-          },
-        } as Proposal)
-      ).toBe(false);
     });
   });
 
