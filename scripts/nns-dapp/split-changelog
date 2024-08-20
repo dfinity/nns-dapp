@@ -21,7 +21,7 @@ source "$SOURCE_DIR/../clap.bash"
 clap.define long=commit desc="Entries after this commit are considered new" variable=COMMIT default="tags/release-candidate"
 clap.define long=test-released-changelog desc="An alternate released CHANGELOG file for testing" variable=RELEASED_CHANGELOG default=""
 clap.define long=test-unreleased-changelog desc="An alternate unreleased CHANGELOG file for testing" variable=UNRELEASED_CHANGELOG default=""
-clap.define long=test-old-unreleased-changelog desc="An alternate old unrelesed CHANGELOG for testing" variable=OLD_UNRELEASED_CHANGELOG default=""
+clap.define long=test-old-unreleased-changelog desc="An alternate old unreleased CHANGELOG for testing" variable=OLD_UNRELEASED_CHANGELOG default=""
 clap.define long=test-proposal desc="An alternate proposal number for testing" variable=PROPOSAL_NUMBER default=""
 # Source the output file ------------------------------------------------------
 source "$(clap.build)"

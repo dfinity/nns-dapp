@@ -1475,7 +1475,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100376357658718290,
+    "icrc1_total_supply": 100434761709266830,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2752,7 +2752,9 @@
         "3s7ne-diaaa-aaaam-ab24a-cai",
         "x5jzu-faaaa-aaaam-abx4q-cai",
         "u45jl-liaaa-aaaam-abppa-cai",
-        "toj6n-haaaa-aaaal-qdika-cai"
+        "toj6n-haaaa-aaaal-qdika-cai",
+        "wxer6-3yaaa-aaaal-qjnua-cai",
+        "eqtcs-jiaaa-aaaal-qdmia-cai"
       ],
       "archives": ["fbysu-tqaaa-aaaaq-aacga-cai"]
     },
@@ -2895,6 +2897,58 @@
               "target_canister_id": "mxzaz-hqaaa-aaaar-qaada-cai",
               "validator_method_name": "validate_icrc1_transfer",
               "target_method_name": "icrc1_transfer"
+            }
+          }
+        },
+        {
+          "id": 6000,
+          "name": "DeVeFi Add Vector Pair",
+          "description": "Add vector pair canister to DeFi Vectors",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "wxer6-3yaaa-aaaal-qjnua-cai",
+              "target_canister_id": "wxer6-3yaaa-aaaal-qjnua-cai",
+              "validator_method_name": "validate_add_pair",
+              "target_method_name": "add_pair"
+            }
+          }
+        },
+        {
+          "id": 6010,
+          "name": "DeVeFi:ICP/ckBTC:Create Vector",
+          "description": "Creates a new vector",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
+              "target_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
+              "validator_method_name": "validate_create_vector",
+              "target_method_name": "create_vector"
+            }
+          }
+        },
+        {
+          "id": 6011,
+          "name": "DeVeFi:ICP/ckBTC:Modify Vector",
+          "description": "Modifies a vector",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
+              "target_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
+              "validator_method_name": "validate_modify_vector",
+              "target_method_name": "modify_vector"
+            }
+          }
+        },
+        {
+          "id": 6012,
+          "name": "DeVeFi:ICP/ckBTC:Withdraw Vector",
+          "description": "Withdraws tokens from a vector",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
+              "target_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
+              "validator_method_name": "validate_withdraw_vector",
+              "target_method_name": "withdraw_vector"
             }
           }
         }
@@ -3352,7 +3406,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100398419479405,
+    "icrc1_total_supply": 100398929795052,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4096,7 +4150,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995762426000,
+    "icrc1_total_supply": 995761566000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -6996,7 +7050,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20029183193376640,
+    "icrc1_total_supply": 20030386942058316,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -8424,7 +8478,7 @@
         {
           "id": 4,
           "name": "Add nervous system function",
-          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -8432,7 +8486,7 @@
         {
           "id": 5,
           "name": "Remove nervous system function",
-          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -8440,7 +8494,7 @@
         {
           "id": 6,
           "name": "Execute nervous system function",
-          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "description": "Proposal to execute a user-defined nervous system function, previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -8487,7 +8541,7 @@
         },
         {
           "id": 12,
-          "name": "Mint SNS Tokens",
+          "name": "Mint SNS tokens",
           "description": "Proposal to mint SNS tokens to a specified recipient.",
           "function_type": {
             "NativeNervousSystemFunction": {}
@@ -8996,7 +9050,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25112769353448756,
+    "icrc1_total_supply": 25113335299364870,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -10450,7 +10504,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10019145450126512,
+    "icrc1_total_supply": 10020310209059500,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11488,7 +11542,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 101420680709012000,
+    "icrc1_total_supply": 101768714728863800,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -12529,7 +12583,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99330724906780770,
+    "icrc1_total_supply": 99314423076781920,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -13702,7 +13756,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 100004825450356340,
+    "icrc1_total_supply": 100004827501712080,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14874,7 +14928,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100046133128564000,
+    "icrc1_total_supply": 100047133246928580,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

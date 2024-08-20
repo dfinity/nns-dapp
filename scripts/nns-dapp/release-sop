@@ -430,7 +430,7 @@ post_proposal_on_slack() {
 release_sop_tests_need_update() {
   if ! git diff --quiet origin/main scripts/nns-dapp/release-sop-*; then
     if ! git diff --quiet -- scripts/nns-dapp/release-sop-*; then
-      echo "Verify updates to relese-sop tests and commit." >&2
+      echo "Verify updates to release-sop tests and commit." >&2
       exit 1
     fi
     echo "Tests have been updated."
@@ -525,4 +525,4 @@ A release has been deployed to production.
 - Increment the patch version of the nns-dapp."
 confirm_manual "Merge release PR" echo "Have the release PR reviewed and merge it."
 confirm_cmd rm scripts/nns-dapp/Release-2001-02-29.json
-confirm_cmd gh release upload "proposal-$PROPOSAL_ID" scripts/nns-dapp/Release-*.json
+confirm_cmd gh release upload "proposal-$PROPOSAL_ID" "$CHECKLIST_FILE"
