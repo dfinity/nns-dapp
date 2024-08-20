@@ -7,6 +7,7 @@
   import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
   import { getCellGridAreaName } from "$lib/utils/responsive-table.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let rowData: RowDataType;
   export let columns: ResponsiveTableColumn<RowDataType>[];
@@ -19,6 +20,16 @@
   $: firstColumn = columns.at(0);
   $: middleColumns = columns.slice(1, -1);
   $: lastColumn = columns.at(-1);
+
+  const dispatcher = createEventDispatcher();
+
+  const onRowClick = () => {
+    if (nonNullish(rowData.rowHref)) {
+      // We don't interfere with normal link behavior.
+      return;
+    }
+    dispatcher("nnsAction", { rowData });
+  };
 
   const getCellStyle = ({
     column,
@@ -40,6 +51,7 @@
   role="row"
   tabindex="0"
   data-tid="responsive-table-row-component"
+  on:click={onRowClick}
   {style}
 >
   {#if firstColumn}
