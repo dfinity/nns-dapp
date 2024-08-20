@@ -124,7 +124,7 @@
     "AssignNoid": "Assign Node Operator ID (NOID)",
     "NnsRootUpgrade": "NNS Root Canister Upgrade",
     "IcpXdrConversionRate": "ICP/XDR Conversion Rate",
-    "DeployGuestosToAllSubnetNodes": "Deploy GuestOS to All Subnet Nodes",
+    "DeployGuestosToAllSubnetNodes": "Deploy GuestOS To All Subnet Nodes",
     "ClearProvisionalWhitelist": "Clear Provisional Whitelist",
     "RemoveNodesFromSubnet": "Remove Node from Subnet",
     "SetAuthorizedSubnetworks": "Set Authorized Subnets",
