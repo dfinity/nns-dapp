@@ -17,6 +17,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Bump ic-js so that NNS Dapp can parse `InstallCode` proposal correctly.
+
 #### Deprecated
 
 #### Removed
