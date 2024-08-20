@@ -76,7 +76,9 @@ describe("ResponsiveTable", () => {
     // navigation not being implemented. But the error is not logged immediately
     // and can happen during a different test. So we dissable error logging for
     // all tests.
-    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation((arg) => {
+      expect(arg).toMatch(/Error: Not implemented: navigation/);
+    });
   });
 
   const renderComponent = ({ onNnsAction = null, ...props }) => {
