@@ -128,6 +128,10 @@ fn tail_log(limit: Option<u16>) -> String {
 }
 
 /// Web server
+///
+/// Note: we use a decoding quota of 10000 corresponding to roughly 10KB of decoded data incl. overhead,
+/// see the Candid cost model (https://github.com/dfinity/candid/blob/f324a1686d6f2bd4fba9307a37f8e3f90cc7222b/rust/candid/src/de.rs#L170)
+/// for more details.
 #[candid_method(query)]
 #[ic_cdk_macros::query(decoding_quota = 10000)]
 fn http_request(req: HttpRequest) -> HttpResponse {
