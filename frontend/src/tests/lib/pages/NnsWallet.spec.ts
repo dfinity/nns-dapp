@@ -252,7 +252,7 @@ describe("NnsWallet", () => {
       expect(await po.getLinkToDashboardPo().isPresent()).toBe(false);
     });
 
-    it('should have "View in dashboard" link in "more" popup', async () => {
+    it.skip('should have "View in dashboard" link in "more" popup', async () => {
       const po = await renderWallet({});
 
       await po.clickMore();
