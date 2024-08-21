@@ -1,6 +1,5 @@
 import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
 import { toastsError } from "$lib/stores/toasts.store";
-import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { ImportTokenModalPo } from "$tests/page-objects/ImportTokenModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
@@ -15,11 +14,11 @@ vi.mock("$lib/stores/toasts.store", () => {
 describe("ImportTokenModal", () => {
   // const ledgerCanisterId = principal(0);
   // const indexCanisterId = principal(1);
-  const tokenMetaData = {
-    name: "Tetris",
-    symbol: "TET",
-    logo: "https://tetris.tet/logo.png",
-  } as IcrcTokenMetadata;
+  // const tokenMetaData = {
+  //   name: "Tetris",
+  //   symbol: "TET",
+  //   logo: "https://tetris.tet/logo.png",
+  // } as IcrcTokenMetadata;
 
   const renderComponent = () => {
     const { container, component } = render(ImportTokenModal);
