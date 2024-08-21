@@ -1,14 +1,37 @@
+import * as governanceApi from "$lib/api/governance.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import * as snsGovernanceApi from "$lib/api/sns-governance.api";
+import * as snsApi from "$lib/api/sns.api";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import Staking from "$lib/routes/Staking.svelte";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
+import { page } from "$mocks/$app/stores";
+import {
+  mockIdentity,
+  resetIdentity,
+  setNoIdentity,
+} from "$tests/mocks/auth.store.mock";
+import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { principal } from "$tests/mocks/sns-projects.mock";
+import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { StakingPo } from "$tests/page-objects/Staking.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { Principal } from "@dfinity/principal";
+import { fromNullable } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("Staking", () => {
   const snsTitle = "SNS-1";
@@ -19,6 +42,12 @@ describe("Staking", () => {
     snsNeuronsStore.reset();
     resetSnsProjects();
     resetIdentity();
+    resetAccountsForTesting();
+    icrcAccountsStore.reset();
+
+    page.mock({
+      routeId: AppPath.Staking,
+    });
   });
 
   const renderComponent = () => {
@@ -121,5 +150,228 @@ describe("Staking", () => {
     const po = renderComponent();
     expect(await po.getPageBannerPo().isPresent()).toBe(false);
     expect(await po.getSignInPo().isPresent()).toBe(false);
+  });
+
+  describe("Stake ICP button", () => {
+    beforeEach(() => {
+      setAccountsForTesting(mockAccountsStoreData);
+      neuronsStore.setNeurons({
+        neurons: [],
+        certified: true,
+      });
+
+      vi.spyOn(governanceApi, "stakeNeuron").mockImplementation(async () => {
+        neuronsStore.setNeurons({ neurons: [mockNeuron], certified: true });
+        return mockNeuron.neuronId;
+      });
+      vi.spyOn(governanceApi, "queryNeuron").mockResolvedValue(mockNeuron);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        200_000_000n
+      );
+    });
+
+    it("should open NNS stake neuron modal", async () => {
+      const po = renderComponent();
+
+      const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
+      expect(rows).toHaveLength(1);
+
+      expect(await po.getNnsStakeNeuronModalPo().isPresent()).toBe(false);
+      await rows[0].click();
+      expect(await po.getNnsStakeNeuronModalPo().isPresent()).toBe(true);
+    });
+
+    it("should go to NNS neurons table after staking", async () => {
+      const po = renderComponent();
+
+      const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
+      await rows[0].click();
+      const modal = po.getNnsStakeNeuronModalPo();
+
+      await modal.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(1);
+      await modal.getNnsStakeNeuronPo().clickCreate();
+      await runResolvedPromises();
+      expect(await modal.getSetDissolveDelayPo().isPresent()).toBe(true);
+      expect(get(pageStore).path).toBe(AppPath.Staking);
+      await modal.closeModal();
+      expect(await modal.isPresent()).toBe(false);
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Neurons,
+        universe: OWN_CANISTER_ID_TEXT,
+      });
+    });
+
+    it("should not go to neurons table when closing without staking", async () => {
+      const po = renderComponent();
+
+      const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
+      await rows[0].click();
+      const modal = po.getNnsStakeNeuronModalPo();
+
+      await modal.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(1);
+      await modal.closeModal();
+      expect(await modal.isPresent()).toBe(false);
+      await runResolvedPromises();
+      expect(get(pageStore).path).toBe(AppPath.Staking);
+    });
+  });
+
+  describe("Stake SNS token button", () => {
+    const snsGovernanceIdText = "73vho-mf5gq-aq";
+    const snsGovernanceId = Principal.fromText(snsGovernanceIdText);
+    const snsLedgerId = principal(54651);
+    const snsTokenSymbol = "KLM";
+    const snsTransactionFee = 123_000n;
+    const snsAccountBalance = 200_000_000n;
+    const snsAccountBalanceFormatted = "2.00";
+    let queryIcrcBalanceSpy;
+    let stakeNeuronSpy;
+
+    beforeEach(() => {
+      setSnsProjects([
+        {
+          projectName: snsTitle,
+          rootCanisterId: snsCanisterId,
+          governanceCanisterId: snsGovernanceId,
+          ledgerCanisterId: snsLedgerId,
+          tokenMetadata: {
+            ...mockToken,
+            symbol: snsTokenSymbol,
+            fee: snsTransactionFee,
+          },
+        },
+      ]);
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [],
+        certified: true,
+      });
+
+      queryIcrcBalanceSpy = vi
+        .spyOn(icrcLedgerApi, "queryIcrcBalance")
+        .mockResolvedValue(snsAccountBalance);
+      stakeNeuronSpy = vi
+        .spyOn(snsApi, "stakeNeuron")
+        .mockResolvedValue(fromNullable(mockSnsNeuron.id));
+      vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([
+        mockSnsNeuron,
+      ]);
+    });
+
+    it("should open SNS stake neuron modal", async () => {
+      const po = renderComponent();
+
+      const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
+      expect(rows).toHaveLength(2);
+
+      expect(await po.getSnsStakeNeuronModalPo().isPresent()).toBe(false);
+      await rows[1].click();
+      await runResolvedPromises();
+      expect(await po.getSnsStakeNeuronModalPo().isPresent()).toBe(true);
+    });
+
+    it("should load account balance", async () => {
+      const po = renderComponent();
+
+      const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
+
+      expect(queryIcrcBalanceSpy).not.toBeCalled();
+      await rows[1].click();
+      await runResolvedPromises();
+      expect(
+        await po
+          .getSnsStakeNeuronModalPo()
+          .getTransactionFormPo()
+          .getTransactionFromAccountPo()
+          .getAmountDisplayPo()
+          .getAmount()
+      ).toBe(snsAccountBalanceFormatted);
+
+      expect(queryIcrcBalanceSpy).toBeCalledTimes(2);
+      const expectedQueryBalanceParams = {
+        account: {
+          owner: mockIdentity.getPrincipal(),
+        },
+        canisterId: snsLedgerId,
+        identity: mockIdentity,
+      };
+      expect(queryIcrcBalanceSpy).toBeCalledWith({
+        ...expectedQueryBalanceParams,
+        certified: false,
+      });
+      expect(queryIcrcBalanceSpy).toBeCalledWith({
+        ...expectedQueryBalanceParams,
+        certified: true,
+      });
+    });
+
+    it("should go to SNS neurons table after staking", async () => {
+      const po = renderComponent();
+
+      const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
+      await rows[1].click();
+      const modal = po.getSnsStakeNeuronModalPo();
+
+      expect(stakeNeuronSpy).not.toBeCalled();
+      expect(get(pageStore).path).toBe(AppPath.Staking);
+      await modal.stake(1);
+      await runResolvedPromises();
+      expect(await modal.isPresent()).toBe(false);
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Neurons,
+        universe: snsCanisterId.toText(),
+      });
+      expect(stakeNeuronSpy).toBeCalledTimes(1);
+      expect(stakeNeuronSpy).toBeCalledWith({
+        controller: mockIdentity.getPrincipal(),
+        fee: snsTransactionFee,
+        identity: mockIdentity,
+        rootCanisterId: snsCanisterId,
+        source: {
+          owner: mockIdentity.getPrincipal(),
+        },
+        stakeE8s: 100_000_000n,
+      });
+    });
+
+    it("should not go to neurons table when closing without staking", async () => {
+      const po = renderComponent();
+
+      const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
+      await rows[1].click();
+      const modal = po.getSnsStakeNeuronModalPo();
+
+      expect(get(pageStore).path).toBe(AppPath.Staking);
+      await modal.closeModal();
+      await runResolvedPromises();
+      expect(await modal.isPresent()).toBe(false);
+      expect(get(pageStore).path).toBe(AppPath.Staking);
+    });
+
+    it("should pass correct SNS details to stake modal", async () => {
+      const po = renderComponent();
+
+      const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
+      await rows[1].click();
+      const modal = po.getSnsStakeNeuronModalPo();
+
+      expect(
+        await modal
+          .getTransactionFormPo()
+          .getTransactionFormFeePo()
+          .getAmountDisplayPo()
+          .getAmount()
+      ).toBe("0.00123000");
+
+      await modal.getTransactionFormPo().enterAmount(1);
+      await modal.getTransactionFormPo().clickContinue();
+
+      expect(await modal.getTransactionReviewPo().getDestinationAddress()).toBe(
+        `Subaccount of ${snsGovernanceIdText}`
+      );
+      expect(
+        await modal.getTransactionReviewPo().getTransactionDescription()
+      ).toBe(`Stake ${snsTokenSymbol}`);
+    });
   });
 });

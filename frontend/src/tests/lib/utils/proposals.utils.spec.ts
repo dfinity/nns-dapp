@@ -1,5 +1,6 @@
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { nowInSeconds } from "$lib/utils/date.utils";
+import { enumValues } from "$lib/utils/enum.utils";
 import {
   concatenateUniqueProposals,
   excludeProposals,
@@ -9,7 +10,6 @@ import {
   getVotingBallot,
   getVotingPower,
   hasMatchingProposals,
-  hasProposalPayload,
   hideProposal,
   isProposalDeadlineInTheFuture,
   lastProposalId,
@@ -620,6 +620,46 @@ describe("proposals-utils", () => {
         typeDescription
       );
     });
+
+    it("should provide labels for all function IDs", () => {
+      const IGNORED_NNS_FUNCTION_IDS = [
+        NnsFunction.HardResetNnsRootToVersion,
+        // Obsolete types
+        NnsFunction.UpdateApiBoundaryNodeDomain,
+        NnsFunction.UpdateApiBoundaryNodesVersion,
+      ];
+      const proposalWithNnsFunctionId = (nnsFunctionId: number) => ({
+        ...proposalInfo,
+        proposal: {
+          ...proposal,
+          action: {
+            ExecuteNnsFunction: { nnsFunctionId } as ExecuteNnsFunction,
+          },
+        },
+      });
+      const typeSet = new Set();
+      const typeDescriptionSet = new Set();
+
+      for (const nnsFunctionId of enumValues(NnsFunction)) {
+        if (IGNORED_NNS_FUNCTION_IDS.includes(nnsFunctionId)) {
+          continue;
+        }
+        const { type, typeDescription } = mapProposalInfo(
+          proposalWithNnsFunctionId(nnsFunctionId)
+        );
+
+        // Labels should be defined
+        expect(type).toBeDefined();
+        expect(typeDescription).toBeDefined();
+
+        // Labels should be unique
+        expect(typeSet.has(type)).toBe(false);
+        expect(typeDescriptionSet.has(typeDescription)).toBe(false);
+
+        typeSet.add(type);
+        typeDescriptionSet.add(typeDescription);
+      }
+    });
   });
 
   describe("concatenateUniqueProposals", () => {
@@ -819,7 +859,7 @@ describe("proposals-utils", () => {
     });
   });
 
-  describe("getNnsFunctionIndex", () => {
+  describe("getNnsFunctionKey", () => {
     it("should return nnsFunctionKey from proposal", () => {
       expect(
         getNnsFunctionKey({
@@ -844,49 +884,6 @@ describe("proposals-utils", () => {
 
     it("should return undefined if undefined", () => {
       expect(getNnsFunctionKey(undefined)).toBeUndefined();
-    });
-  });
-
-  describe("hasProposalPayload", () => {
-    it("should return true for ExecuteNnsFunction", () => {
-      expect(
-        hasProposalPayload({
-          ...mockProposalInfo.proposal,
-          action: {
-            ExecuteNnsFunction: {
-              nnsFunctionId: 4,
-            },
-          },
-        } as Proposal)
-      ).toBe(true);
-    });
-
-    it("should return true for InstallCode", () => {
-      expect(
-        hasProposalPayload({
-          ...mockProposalInfo.proposal,
-          action: {
-            InstallCode: {
-              skipStoppingBeforeInstalling: false,
-              canisterId: "rrkah-fqaaa-aaaaa-aaaaq-cai",
-              installMode: 3,
-            },
-          },
-        } as Proposal)
-      ).toBe(true);
-    });
-
-    it("should return false for Motion", () => {
-      expect(
-        hasProposalPayload({
-          ...mockProposalInfo.proposal,
-          action: {
-            Motion: {
-              motionText: "motion text",
-            },
-          },
-        } as Proposal)
-      ).toBe(false);
     });
   });
 
