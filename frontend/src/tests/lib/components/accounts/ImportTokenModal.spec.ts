@@ -1,8 +1,6 @@
-import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
-import { principal } from "$tests/mocks/sns-projects.mock";
 import { ImportTokenModalPo } from "$tests/page-objects/ImportTokenModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
@@ -15,8 +13,8 @@ vi.mock("$lib/stores/toasts.store", () => {
 });
 
 describe("ImportTokenModal", () => {
-  const ledgerCanisterId = principal(0);
-  const indexCanisterId = principal(1);
+  // const ledgerCanisterId = principal(0);
+  // const indexCanisterId = principal(1);
   const tokenMetaData = {
     name: "Tetris",
     symbol: "TET",
@@ -38,15 +36,15 @@ describe("ImportTokenModal", () => {
       onClose,
     };
   };
-  let queryIcrcTokenSpy: SpyInstance;
+  // let queryIcrcTokenSpy: SpyInstance;
 
   beforeEach(() => {
     vi.restoreAllMocks();
     (toastsError as undefined as SpyInstance).mockReset();
 
-    queryIcrcTokenSpy = vi
-      .spyOn(ledgerApi, "queryIcrcToken")
-      .mockResolvedValue(tokenMetaData);
+    // queryIcrcTokenSpy = vi
+    //   .spyOn(ledgerApi, "queryIcrcToken")
+    //   .mockResolvedValue(tokenMetaData);
   });
 
   it("should display modal title", async () => {
