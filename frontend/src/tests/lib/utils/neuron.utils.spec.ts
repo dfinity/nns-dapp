@@ -2811,7 +2811,7 @@ describe("neuron-utils", () => {
       );
       expect(
         getTopicTitle({ topic: Topic.NetworkCanisterManagement, i18n: en })
-      ).toBe("System Canister Management");
+      ).toBe("Application Canister Management");
       expect(getTopicTitle({ topic: Topic.Kyc, i18n: en })).toBe("KYC");
       expect(
         getTopicTitle({ topic: Topic.NodeProviderRewards, i18n: en })
@@ -2834,6 +2834,12 @@ describe("neuron-utils", () => {
       expect(getTopicTitle({ topic: Topic.SubnetRental, i18n: en })).toBe(
         "Subnet Rental"
       );
+      expect(
+        getTopicTitle({ topic: Topic.ProtocolCanisterManagement, i18n: en })
+      ).toBe("Protocol Canister Management");
+      expect(
+        getTopicTitle({ topic: Topic.ServiceNervousSystemManagement, i18n: en })
+      ).toBe("Service Nervous System Management");
     });
 
     it("should render unknown topics", () => {
@@ -2888,7 +2894,7 @@ describe("neuron-utils", () => {
       expect(
         getTopicSubtitle({ topic: Topic.NetworkCanisterManagement, i18n: en })
       ).toBe(
-        "Installing and upgrading “system” canisters that belong to the network. For example, upgrading the NNS."
+        "All proposals to manage NNS-controlled canisters not covered by other topics (Protocol Canister Management or Service Nervous System Management)."
       );
       expect(getTopicSubtitle({ topic: Topic.Kyc, i18n: en })).toBe(
         "Proposals that update KYC information for regulatory purposes, for example during the initial Genesis distribution of ICP in the form of neurons."
@@ -2918,6 +2924,22 @@ describe("neuron-utils", () => {
       ).toBe("Proposals related to the management of API boundary nodes");
       expect(getTopicSubtitle({ topic: Topic.SubnetRental, i18n: en })).toBe(
         "All proposals related to renting a subnet, for example a subnet rental request."
+      );
+      expect(
+        getTopicSubtitle({
+          topic: Topic.ProtocolCanisterManagement,
+          i18n: en,
+        })
+      ).toBe(
+        "All proposals to manage protocol canisters, which are considered part of the ICP protocol and are essential for its proper functioning."
+      );
+      expect(
+        getTopicSubtitle({
+          topic: Topic.ServiceNervousSystemManagement,
+          i18n: en,
+        })
+      ).toBe(
+        "All proposals to manage the canisters of service nervous systems (SNS), including upgrading relevant canisters and managing SNS framework canister WASMs through SNS-W."
       );
     });
   });

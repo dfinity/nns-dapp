@@ -435,21 +435,6 @@ jobs:
           scripts/sns/aggregator/test-fast
       - name: Stop replica
         run: dfx stop
-  integration:
-    name: "Integration tests"
-    needs: build
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v4
-      - name: Get docker build outputs
-        uses: actions/download-artifact@v4
-        with:
-          name: out
-          path: out
-      - name: Install pocket-ic
-        run: curl -sSL https://github.com/dfinity/pocketic/releases/download/3.0.1/pocket-ic-x86_64-linux.gz | gunzip | install -m 755 /dev/stdin pocket-ic
-      - name: Run integration tests
-        run: ./scripts/test-integration
   assets:
     name: "Upload assets"
     needs: build
@@ -522,7 +507,7 @@ jobs:
           ) | tee -a $GITHUB_STEP_SUMMARY
           (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
   build-pass:
-    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-upgrade-downgrade", "test-test-account-api", "test-upgrade-stable", "integration"]
+    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-upgrade-downgrade", "test-test-account-api", "test-upgrade-stable"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

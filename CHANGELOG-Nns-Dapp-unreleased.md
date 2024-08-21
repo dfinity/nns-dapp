@@ -15,13 +15,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Parse and trim proposal payload for `InstallCode` within the `get_proposal_payload` back-end endpoint.
-* Support rendering `InstallCode` proposal payload by calling `get_proposal_payload`.
-
 #### Changed
 
-* Round neuron stake and maturity to 2 decimals in tables.
-* Show detailed stake amount in neuron details page.
+* Bump ic-js so that NNS Dapp can parse `InstallCode` proposal correctly.
+* Display of the new/renamed topics and proposals.
 
 #### Deprecated
 
@@ -30,6 +27,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Empty space in the Tokens and Neurons tables in Safari.
+* Staking for SNS with zero transaction fee.
 
 #### Security
 
@@ -44,6 +42,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Deprecated
 
 #### Removed
+
+* Integration test setup code and related script and documentation.
 
 #### Fixed
 

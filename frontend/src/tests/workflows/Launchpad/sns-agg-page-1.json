@@ -299,7 +299,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98124565329183100,
+    "icrc1_total_supply": 98130918921037390,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -755,7 +755,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100617930829456750,
+    "icrc1_total_supply": 100622329361427950,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1411,7 +1411,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50240983763095220,
+    "icrc1_total_supply": 50255085205960910,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2208,7 +2208,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9955944258312996,
+    "icrc1_total_supply": 9955972562914872,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3160,7 +3160,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10029215877783186,
+    "icrc1_total_supply": 10029328048855402,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4125,7 +4125,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12597600380332356,
+    "icrc1_total_supply": 12597966015236092,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5307,7 +5307,8 @@
         "o4yaf-3yaaa-aaaap-abr2a-cai",
         "bojx2-iaaaa-aaaag-ab3jq-cai",
         "j4jiq-sqaaa-aaaap-ab23a-cai",
-        "iyehc-lqaaa-aaaap-ab25a-cai"
+        "iyehc-lqaaa-aaaap-ab25a-cai",
+        "rbsh4-yyaaa-aaaal-qdigq-cai"
       ],
       "archives": ["fgzua-6iaaa-aaaaq-aacgq-cai"]
     },
@@ -5489,6 +5490,19 @@
               "target_canister_id": "iyehc-lqaaa-aaaap-ab25a-cai",
               "validator_method_name": "set_daily_gldgov_burn_rate_validate",
               "target_method_name": "set_daily_gldgov_burn_rate"
+            }
+          }
+        },
+        {
+          "id": 2001,
+          "name": "Upgrade GLD dashboard frontend.",
+          "description": "Proposal to upgrade the GLD dashboard frontend to a new version.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "rbsh4-yyaaa-aaaal-qdigq-cai",
+              "target_canister_id": "rbsh4-yyaaa-aaaal-qdigq-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
             }
           }
         }
@@ -5915,7 +5929,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99913584624087220,
+    "icrc1_total_supply": 99884546688308110,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

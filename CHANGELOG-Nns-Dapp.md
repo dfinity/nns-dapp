@@ -11,6 +11,26 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 131754
+
+### Application
+
+#### Added
+
+* Parse and trim proposal payload for `InstallCode` within the `get_proposal_payload` back-end endpoint.
+* Support rendering `InstallCode` proposal payload by calling `get_proposal_payload`.
+
+#### Changed
+
+* Round neuron stake and maturity to 2 decimals in tables.
+* Show detailed stake amount in neuron details page.
+
+#### Fixed
+
+* Fixed incorrect interpretation of ICRC fees (#5314).
+
+### Operations
+
 ## Proposal 131698
 
 ### Application
