@@ -158,7 +158,7 @@
     "AddApiBoundaryNodes": "Add API Boundary Nodes",
     "RemoveApiBoundaryNodes": "Remove API Boundary Nodes",
     "UpdateApiBoundaryNodesVersion": "Update API Boundary Nodes Version",
-    "DeployGuestosToSomeApiBoundaryNodes": "Deploy Guestos To Some Api Boundary Nodes",
+    "DeployGuestosToSomeApiBoundaryNodes": "Deploy GuestOS To Some API Boundary Nodes",
     "DeployGuestosToAllUnassignedNodes": "Deploy GuestOS To All Unassigned Nodes",
     "UpdateSshReadOnlyAccessForAllUnassignedNodes": "Update SSH Read Only Access For All Unassigned Nodes",
     "ReviseElectedHostosVersions": "Revise Elected HostOS Versions",
