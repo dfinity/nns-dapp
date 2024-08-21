@@ -512,8 +512,6 @@
     "remaining": "remaining",
     "next": "Navigate to next proposal",
     "previous": "Navigate to previous proposal",
-    "next_short": "Next",
-    "previous_short": "Previous",
     "sign_in": "Sign in to vote",
     "toggle_lable": "Switch between user-friendly and raw data representation",
     "toggle_tree": "Tree",
