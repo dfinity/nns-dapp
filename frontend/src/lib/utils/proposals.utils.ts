@@ -75,16 +75,6 @@ export const getNnsFunctionKey = (
   return NnsFunction[nnsFunctionId];
 };
 
-export const hasProposalPayload = (proposal: Proposal | undefined): boolean => {
-  const action = proposalFirstActionKey(proposal);
-  // ExecuteNnsFunction has proposal payloads that we need to load from the NNS Dapp backend,
-  // because of 2 reasons: (1) candid files from various canisters (e.g. registry) are needed to
-  // decode the payload, which is not done in ic-js. (2) the payload can be large and we want to
-  // avoid loading on the client side, so NNS Dapp backend is used for calculating and caching the
-  // hash of the large payloads. For InstallCode, however, only the reason (2) applies.
-  return action === "ExecuteNnsFunction" || action === "InstallCode";
-};
-
 /**
  * Hide proposal that don't match filters
  */

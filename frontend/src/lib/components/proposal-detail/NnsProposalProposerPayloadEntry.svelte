@@ -1,7 +1,7 @@
 <script lang="ts">
   import { loadProposalPayload } from "$lib/services/$public/proposals.services";
   import { proposalPayloadsStore } from "$lib/stores/proposals.store";
-  import { hasProposalPayload } from "$lib/utils/proposals.utils";
+  import { getNnsFunctionKey } from "$lib/utils/proposals.utils";
   import ProposalProposerPayloadEntry from "./ProposalProposerPayloadEntry.svelte";
   import type { Proposal } from "@dfinity/nns";
   import type { ProposalId } from "@dfinity/nns";
@@ -11,8 +11,8 @@
 
   let payload: object | undefined | null;
   // Only proposals with nnsFunctionKey and proposalId have payload
-  let shouldDisplayPayload: boolean;
-  $: shouldDisplayPayload = hasProposalPayload(proposal);
+  let nnsFunctionKey: string | undefined;
+  $: nnsFunctionKey = getNnsFunctionKey(proposal);
 
   $: $proposalPayloadsStore,
     (payload =
@@ -21,7 +21,7 @@
         : undefined);
   $: if (
     proposalId !== undefined &&
-    shouldDisplayPayload &&
+    nnsFunctionKey !== undefined &&
     !$proposalPayloadsStore.has(proposalId)
   ) {
     loadProposalPayload({
@@ -30,6 +30,6 @@
   }
 </script>
 
-{#if shouldDisplayPayload && proposalId !== undefined}
+{#if nnsFunctionKey !== undefined && proposalId !== undefined}
   <ProposalProposerPayloadEntry {payload} />
 {/if}

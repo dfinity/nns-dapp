@@ -23,15 +23,14 @@ test("Test disburse neuron", async ({ page, context }) => {
   step("Get some ICP");
   await appPo.getIcpTokens(10);
 
-  step("Go to the neurons tab");
-  await appPo.goToNnsNeurons();
+  step("Go to the staking tab");
+  await appPo.goToStaking();
 
   step("Stake a neuron");
   const stake = 3;
   await appPo
-    .getNeuronsPo()
-    .getNnsNeuronsFooterPo()
-    .stakeNeuron({ amount: stake, dissolveDelayDays: 0 });
+    .getStakingPo()
+    .stakeFirstNnsNeuron({ amount: stake, dissolveDelayDays: 0 });
 
   step("Check account balance before disburse");
   await appPo.goToAccounts();

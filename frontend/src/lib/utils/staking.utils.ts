@@ -159,7 +159,10 @@ export const getTableProjects = ({
         nnsNeurons,
         snsNeurons,
       });
-    const rowHref = buildNeuronsUrl({ universe: universe.canisterId });
+    const rowHref =
+      isNullish(neuronCount) || neuronCount > 0
+        ? buildNeuronsUrl({ universe: universe.canisterId })
+        : undefined;
     const universeId = universe.canisterId;
     return {
       rowHref,

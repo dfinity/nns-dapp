@@ -28,11 +28,10 @@ test("Test proposals", async ({ page, context }) => {
 
   // should be created before dummy proposals
   step("Stake a neuron for voting");
-  await appPo.goToNnsNeurons();
+  await appPo.goToStaking();
   await appPo
-    .getNeuronsPo()
-    .getNnsNeuronsFooterPo()
-    .stakeNeuron({ amount: 10, dissolveDelayDays: "max" });
+    .getStakingPo()
+    .stakeFirstNnsNeuron({ amount: 10, dissolveDelayDays: "max" });
 
   step("Create dummy proposals");
   const proposerNeuronId = await createDummyProposal(appPo);
