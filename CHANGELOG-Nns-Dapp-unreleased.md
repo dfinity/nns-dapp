@@ -26,6 +26,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Staking for SNS with zero transaction fee.
+
 #### Security
 
 #### Not Published
