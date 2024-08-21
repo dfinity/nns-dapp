@@ -25,12 +25,12 @@ test("Test neuron increase stake", async ({ page, context }) => {
   await appPo.getIcpTokens(20);
 
   step("Stake neuron");
-  await appPo.goToNnsNeurons();
+  await appPo.goToStaking();
   const initialStake = 10;
   await appPo
-    .getNeuronsPo()
-    .getNnsNeuronsFooterPo()
-    .stakeNeuron({ amount: initialStake, dissolveDelayDays: "max" });
+    .getStakingPo()
+    .stakeFirstNnsNeuron({ amount: initialStake, dissolveDelayDays: "max" });
+  await appPo.getNeuronsPo().waitFor();
 
   const neuronIds = await getNnsNeuronCardsIds(appPo);
   expect(neuronIds).toHaveLength(1);

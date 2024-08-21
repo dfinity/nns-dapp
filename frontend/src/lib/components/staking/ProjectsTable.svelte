@@ -15,6 +15,7 @@
     getTableProjects,
     sortTableProjects,
   } from "$lib/utils/staking.utils";
+  import { createEventDispatcher } from "svelte";
 
   const columns: ProjectsTableColumn[] = [
     {
@@ -74,10 +75,21 @@
 
   let sortedTableProjects: TableProject[];
   $: sortedTableProjects = sortTableProjects(tableProjects);
+
+  const dispatcher = createEventDispatcher();
+
+  const handleAction = ({
+    detail: { rowData },
+  }: {
+    detail: { rowData: TableProject };
+  }) => {
+    dispatcher("nnsStakeTokens", { universeId: rowData.universeId });
+  };
 </script>
 
 <ResponsiveTable
   testId="projects-table-component"
   tableData={sortedTableProjects}
   {columns}
+  on:nnsAction={handleAction}
 ></ResponsiveTable>
