@@ -13,14 +13,20 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { nonNullish } from "@dfinity/utils";
 
 describe("ProjectsTable", () => {
   const snsTitle = "SNS-1";
   const snsCanisterId = principal(1111);
   const snsTokenSymbol = "TOK";
 
-  const renderComponent = () => {
-    const { container } = render(ProjectsTable);
+  const renderComponent = ({ onNnsStakeTokens = null } = {}) => {
+    const { container, component } = render(ProjectsTable);
+    if (nonNullish(onNnsStakeTokens)) {
+      component.$on("nnsStakeTokens", ({ detail }) =>
+        onNnsStakeTokens({ detail })
+      );
+    }
     return ProjectsTablePo.under(new JestPageObjectElement(container));
   };
 
@@ -332,7 +338,7 @@ describe("ProjectsTable", () => {
       expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(true);
     });
 
-    it("should not render clickable row with zero neurons", async () => {
+    it("should render stake button with zero neurons", async () => {
       neuronsStore.setNeurons({
         neurons: [],
         certified: true,
@@ -342,17 +348,36 @@ describe("ProjectsTable", () => {
         neurons: [],
         certified: true,
       });
-      const po = renderComponent();
+      const onNnsStakeTokens = vi.fn();
+      const po = renderComponent({ onNnsStakeTokens });
       const rowPos = await po.getProjectsTableRowPos();
       expect(rowPos).toHaveLength(2);
-      expect(await rowPos[0].getNeuronCount()).toBe("0");
-      expect(await rowPos[0].getHref()).toBe(
-        `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
-      );
+      expect(await rowPos[0].getStakeButtonPo().isPresent()).toBe(true);
+      expect(await rowPos[0].getNeuronCount()).toBe("Stake ICP");
+      expect(await rowPos[0].getHref()).toBe(null);
       expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(true);
-      expect(await rowPos[1].getNeuronCount()).toBe("0");
-      expect(await rowPos[1].getHref()).toBe(`/neurons/?u=${snsCanisterId}`);
+
+      expect(onNnsStakeTokens).not.toBeCalled();
+      await rowPos[0].getStakeButtonPo().click();
+      expect(onNnsStakeTokens).toBeCalledTimes(1);
+      expect(onNnsStakeTokens).toBeCalledWith({
+        detail: {
+          universeId: OWN_CANISTER_ID_TEXT,
+        },
+      });
+
+      expect(await rowPos[1].getStakeButtonPo().isPresent()).toBe(true);
+      expect(await rowPos[1].getNeuronCount()).toBe("Stake TOK");
+      expect(await rowPos[1].getHref()).toBe(null);
       expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(true);
+
+      await rowPos[1].getStakeButtonPo().click();
+      expect(onNnsStakeTokens).toBeCalledTimes(2);
+      expect(onNnsStakeTokens).toBeCalledWith({
+        detail: {
+          universeId: snsCanisterId.toText(),
+        },
+      });
     });
   });
 
