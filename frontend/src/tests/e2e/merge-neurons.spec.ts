@@ -23,19 +23,21 @@ test("Test merge neurons", async ({ page, context }) => {
   step("Get some ICP");
   await appPo.getIcpTokens(20);
 
-  step("Go to the neurons tab");
-  await appPo.goToNnsNeurons();
+  step("Go to the staking tab");
+  await appPo.goToStaking();
 
   step("Stake a neuron");
-  const footerPo = appPo.getNeuronsPo().getNnsNeuronsFooterPo();
-  const neuronsPo = appPo.getNeuronsPo().getNnsNeuronsPo();
-
   const initialStake1 = 1;
   const dissolveDelayDays1 = 3 * 365;
-  await footerPo.stakeNeuron({
+  await appPo.getStakingPo().stakeFirstNnsNeuron({
     amount: initialStake1,
     dissolveDelayDays: dissolveDelayDays1,
   });
+
+  const neuronsPo = appPo.getNeuronsPo().getNnsNeuronsPo();
+  const footerPo = appPo.getNeuronsPo().getNnsNeuronsFooterPo();
+  await neuronsPo.waitFor();
+
   const neuronId1 = (await neuronsPo.getNeuronIds())[0];
 
   step("Stake a second neuron");

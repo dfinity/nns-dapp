@@ -35,4 +35,31 @@ export class StakingPo extends BasePageObject {
   getSnsStakeNeuronModalPo(): SnsStakeNeuronModalPo {
     return SnsStakeNeuronModalPo.under(this.root);
   }
+
+  async stakeFirstNnsNeuron({
+    amount,
+    dissolveDelayDays = "max",
+  }: {
+    amount: number;
+    dissolveDelayDays?: "max" | number;
+  }): Promise<void> {
+    const nnsRow =
+      await this.getProjectsTablePo().getRowByTitle("Internet Computer");
+    await nnsRow.getStakeButtonPo().click();
+    const modal = this.getNnsStakeNeuronModalPo();
+    await modal.stake({ amount, dissolveDelayDays });
+  }
+
+  async stakeFirstSnsNeuron({
+    projectName,
+    amount,
+  }: {
+    projectName: string;
+    amount: number;
+  }): Promise<void> {
+    const snsRow = await this.getProjectsTablePo().getRowByTitle(projectName);
+    await snsRow.getStakeButtonPo().click();
+    const modal = this.getSnsStakeNeuronModalPo();
+    await modal.stake(amount);
+  }
 }

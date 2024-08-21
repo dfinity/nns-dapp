@@ -24,12 +24,13 @@ test("Test neuron following", async ({ page, context }) => {
   await appPo.getIcpTokens(20);
 
   step("Stake neuron");
-  await appPo.goToNnsNeurons();
-  await appPo.getNeuronsPo().getNnsNeuronsFooterPo().clickStakeNeuronsButton();
-  const stakeModal = appPo
-    .getNeuronsPo()
-    .getNnsNeuronsFooterPo()
-    .getNnsStakeNeuronModalPo();
+  await appPo.goToStaking();
+  const nnsRow = await appPo
+    .getStakingPo()
+    .getProjectsTablePo()
+    .getRowByTitle("Internet Computer");
+  await nnsRow.getStakeButtonPo().click();
+  const stakeModal = appPo.getStakingPo().getNnsStakeNeuronModalPo();
   await stakeModal.getNnsStakeNeuronPo().stake(10);
   await stakeModal.getSetDissolveDelayPo().setDissolveDelayDays("max");
   await stakeModal.getConfirmDissolveDelayPo().clickConfirm();
