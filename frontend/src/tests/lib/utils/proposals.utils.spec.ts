@@ -625,6 +625,7 @@ describe("proposals-utils", () => {
     it("should provide labels for all function IDs", () => {
       const IGNORED_NNS_FUNCTION_IDS = [
         NnsFunction.HardResetNnsRootToVersion,
+        // Obsolete types
         NnsFunction.UpdateApiBoundaryNodeDomain,
         NnsFunction.UpdateApiBoundaryNodesVersion,
       ];
