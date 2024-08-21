@@ -13,6 +13,7 @@ import {
   ckBTCTokenBase,
   createIcpUserToken,
   createUserToken,
+  createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
 import { TokenAmountV2 } from "@dfinity/utils";
 

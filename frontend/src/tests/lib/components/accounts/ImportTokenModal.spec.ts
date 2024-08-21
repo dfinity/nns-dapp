@@ -64,7 +64,7 @@ describe("ImportTokenModal", () => {
 
     expect(queryIcrcTokenSpy).not.toHaveBeenCalled();
 
-    await formPo.getNextButtonPo().click();
+    await formPo.getSubmitButtonP().click();
 
     expect(queryIcrcTokenSpy).toBeCalledTimes(1);
   });
@@ -74,7 +74,7 @@ describe("ImportTokenModal", () => {
     const { formPo } = renderComponent();
 
     await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
-    await formPo.getNextButtonPo().click();
+    await formPo.getSubmitButtonP().click();
 
     expect(startBusySpy).toHaveBeenCalledTimes(1);
     expect(startBusySpy).toHaveBeenCalledWith({
@@ -92,7 +92,7 @@ describe("ImportTokenModal", () => {
     expect(toastsError).not.toBeCalled();
 
     await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
-    await formPo.getNextButtonPo().click();
+    await formPo.getSubmitButtonP().click();
 
     // Wait for toast error to be called.
     await runResolvedPromises();
@@ -112,7 +112,7 @@ describe("ImportTokenModal", () => {
 
     await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
     await formPo.getIndexCanisterInputPo().typeText(indexCanisterId.toText());
-    await formPo.getNextButtonPo().click();
+    await formPo.getSubmitButtonP().click();
 
     // Wait for ModalWizard step animation.
     await runResolvedPromises();
@@ -132,7 +132,7 @@ describe("ImportTokenModal", () => {
     const { formPo, reviewPo } = renderComponent();
 
     await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
-    await formPo.getNextButtonPo().click();
+    await formPo.getSubmitButtonP().click();
 
     // Wait for ModalWizard step animation.
     await runResolvedPromises();
@@ -155,7 +155,7 @@ describe("ImportTokenModal", () => {
     expect(await reviewPo.isPresent()).toEqual(false);
 
     await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
-    await formPo.getNextButtonPo().click();
+    await formPo.getSubmitButtonPo().click();
 
     // Wait for ModalWizard step animation.
     await runResolvedPromises();
