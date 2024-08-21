@@ -543,6 +543,32 @@ describe("sns-neurons-services", () => {
       expect(success).toBe(false);
       expect(spyStake).not.toBeCalled();
     });
+
+    it("should call sns api stakeNeuron if fee is 0", async () => {
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          tokenMetadata: { ...mockSnsToken, fee: 0n },
+        },
+      ]);
+      const spyStake = vi
+        .spyOn(api, "stakeNeuron")
+        .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
+      const spyQuery = vi
+        .spyOn(governanceApi, "querySnsNeurons")
+        .mockImplementation(() => Promise.resolve([mockSnsNeuron]));
+
+      const { success } = await stakeNeuron({
+        rootCanisterId: mockPrincipal,
+        amount: 2,
+        account: mockSnsMainAccount,
+      });
+
+      expect(success).toBeTruthy();
+      expect(spyStake).toBeCalled();
+      expect(spyQuery).toBeCalled();
+      expect(loadSnsAccounts).toBeCalled();
+    });
   });
 
   describe("increaseStakeNeuron", () => {
