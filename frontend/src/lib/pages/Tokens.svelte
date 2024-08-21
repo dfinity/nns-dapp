@@ -7,7 +7,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { UserToken } from "$lib/types/tokens-page";
   import { heightTransition } from "$lib/utils/transition.utils";
-  import { IconAddCircle, IconSettings } from "@dfinity/gix-components";
+  import { IconPlus, IconSettings } from "@dfinity/gix-components";
   import { Popover } from "@dfinity/gix-components";
   import { nonNullish, TokenAmountV2 } from "@dfinity/utils";
   import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
@@ -85,10 +85,10 @@
           {#if shownImportTokenButton}
             <button
               data-tid="import-token-button"
-              class="secondary with-icon import-token-button"
+              class="ghost with-icon import-token-button"
               on:click={() => (showImportTokenModal = true)}
             >
-              <IconAddCircle />{$i18n.import_token.import_token}
+              <IconPlus />{$i18n.import_token.import_token}
             </button>
           {/if}
         </div>
