@@ -535,8 +535,6 @@ interface I18nProposal_detail {
   remaining: string;
   next: string;
   previous: string;
-  next_short: string;
-  previous_short: string;
   sign_in: string;
   toggle_lable: string;
   toggle_tree: string;
