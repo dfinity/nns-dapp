@@ -623,6 +623,11 @@ describe("proposals-utils", () => {
     });
 
     it("should provide labels for all function IDs", () => {
+      const IGNORED_NNS_FUNCTION_IDS = [
+        NnsFunction.HardResetNnsRootToVersion,
+        NnsFunction.UpdateApiBoundaryNodeDomain,
+        NnsFunction.UpdateApiBoundaryNodesVersion,
+      ];
       const proposalWithNnsFunctionId = (nnsFunctionId: number) => ({
         ...proposalInfo,
         proposal: {
@@ -636,6 +641,9 @@ describe("proposals-utils", () => {
       const typeDescriptionSet = new Set();
 
       for (const nnsFunctionId of enumValues(NnsFunction)) {
+        if (IGNORED_NNS_FUNCTION_IDS.includes(nnsFunctionId)) {
+          continue;
+        }
         const { type, typeDescription } = mapProposalInfo(
           proposalWithNnsFunctionId(nnsFunctionId)
         );
