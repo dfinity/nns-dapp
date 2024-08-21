@@ -177,9 +177,3 @@ Tests are found in `rs/backend/src/accounts_store/tests.rs`.
 ```bash
 $ cargo test --lib
 ```
-
-### Integration tests
-
-```bash
-$ ./scripts/test-integration
-```
