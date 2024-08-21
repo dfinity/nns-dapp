@@ -64,7 +64,7 @@ describe("ImportTokenModal", () => {
 
     expect(queryIcrcTokenSpy).not.toHaveBeenCalled();
 
-    await formPo.getSubmitButtonP().click();
+    await formPo.getSubmitButtonPo().click();
 
     expect(queryIcrcTokenSpy).toBeCalledTimes(1);
   });
@@ -74,7 +74,7 @@ describe("ImportTokenModal", () => {
     const { formPo } = renderComponent();
 
     await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
-    await formPo.getSubmitButtonP().click();
+    await formPo.getSubmitButtonPo().click();
 
     expect(startBusySpy).toHaveBeenCalledTimes(1);
     expect(startBusySpy).toHaveBeenCalledWith({
@@ -92,7 +92,7 @@ describe("ImportTokenModal", () => {
     expect(toastsError).not.toBeCalled();
 
     await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
-    await formPo.getSubmitButtonP().click();
+    await formPo.getSubmitButtonPo().click();
 
     // Wait for toast error to be called.
     await runResolvedPromises();
@@ -112,7 +112,7 @@ describe("ImportTokenModal", () => {
 
     await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
     await formPo.getIndexCanisterInputPo().typeText(indexCanisterId.toText());
-    await formPo.getSubmitButtonP().click();
+    await formPo.getSubmitButtonPo().click();
 
     // Wait for ModalWizard step animation.
     await runResolvedPromises();
@@ -132,7 +132,7 @@ describe("ImportTokenModal", () => {
     const { formPo, reviewPo } = renderComponent();
 
     await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
-    await formPo.getSubmitButtonP().click();
+    await formPo.getSubmitButtonPo().click();
 
     // Wait for ModalWizard step animation.
     await runResolvedPromises();
