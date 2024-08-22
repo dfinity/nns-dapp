@@ -30,7 +30,10 @@ jobs:
     timeout-minutes: 60
     env:
       NNS_DAPP_APP_SUBNET_CANISTER_ID: "xnjld-hqaaa-aaaal-qb56q-cai"
-      SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID: "otgyv-wyaaa-aaaak-qcgba-cai"
+      # beta sns aggregator
+      # SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID: "otgyv-wyaaa-aaaak-qcgba-cai"
+      # mainnet sns aggregator
+      SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID: "3r4gx-wqaaa-aaaaq-aaaia-cai"
       DFX_NETWORK: app
     steps:
       - name: Checkout nns-dapp
