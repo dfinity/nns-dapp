@@ -1,5 +1,6 @@
 import * as agent from "$lib/api/agent.api";
 import {
+  getLedgerId,
   getTransactions,
   type GetTransactionsParams,
 } from "$lib/api/icrc-index.api";
@@ -82,6 +83,43 @@ describe("icrc-index api", () => {
       indexCanisterMock.getTransactions.mockRejectedValue(err);
 
       const call = () => getTransactions(params);
+
+      expect(call).rejects.toThrowError(err);
+    });
+  });
+
+  describe("getLedgerId", () => {
+    const indexCanisterId = principal(0);
+    const ledgerCanisterId = principal(1);
+
+    it("returns list of transaction", async () => {
+      indexCanisterMock.ledgerId.mockResolvedValue(ledgerCanisterId);
+      const resultPrincipal = await getLedgerId({
+        identity: mockIdentity,
+        indexCanisterId,
+        certified: true,
+      });
+
+      expect(resultPrincipal).not.toBeUndefined();
+
+      expect(resultPrincipal).toEqual(ledgerCanisterId);
+
+      expect(indexCanisterMock.ledgerId).toBeCalledTimes(1);
+      expect(indexCanisterMock.ledgerId).toBeCalledWith({
+        certified: true,
+      });
+    });
+
+    it("throws an error if canister throws", () => {
+      const err = new Error("test");
+      indexCanisterMock.ledgerId.mockRejectedValue(err);
+
+      const call = () =>
+        getLedgerId({
+          identity: mockIdentity,
+          indexCanisterId,
+          certified: true,
+        });
 
       expect(call).rejects.toThrowError(err);
     });
