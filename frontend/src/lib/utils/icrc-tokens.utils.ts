@@ -1,3 +1,4 @@
+import { IMPORTANT_CK_TOKEN_IDS } from "$lib/constants/tokens.constants";
 import type { TokensStore, TokensStoreData } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
@@ -86,3 +87,12 @@ export const fillTokensStoreFromAggregatorData = ({
       )
   );
 };
+
+export const isImportantCkToken = ({
+  ledgerCanisterId,
+}: {
+  ledgerCanisterId: Principal;
+}): boolean =>
+  IMPORTANT_CK_TOKEN_IDS.some(
+    (token) => token.toText() === ledgerCanisterId.toText()
+  );

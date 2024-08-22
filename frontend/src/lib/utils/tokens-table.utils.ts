@@ -1,5 +1,5 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { IMPORTANT_CK_TOKEN_IDS } from "$lib/constants/important-ck-tokens.constants";
+import { IMPORTANT_CK_TOKEN_IDS } from "$lib/constants/tokens.constants";
 import type { UserToken } from "$lib/types/tokens-page";
 import {
   createAscendingComparator,
