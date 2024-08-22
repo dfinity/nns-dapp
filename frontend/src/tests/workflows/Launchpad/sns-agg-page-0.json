@@ -282,7 +282,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999987694694000,
+    "icrc1_total_supply": 799999987285194000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -1072,7 +1072,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10099369996852280,
+    "icrc1_total_supply": 10101305934326508,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1436,14 +1436,16 @@
         "nw5jb-vqaaa-aaaaf-qaj4a-cai",
         "74iy7-xqaaa-aaaaf-qagra-cai",
         "ny7ej-oaaaa-aaaaf-qaj5a-cai",
-        "va3nt-myaaa-aaaak-afjga-cai"
+        "va3nt-myaaa-aaaak-afjga-cai",
+        "xcvai-qiaaa-aaaak-afowq-cai",
+        "xfug4-5qaaa-aaaak-afowa-cai"
       ],
       "archives": ["6yan7-4qaaa-aaaaq-aaaua-cai"]
     },
     "meta": {
       "url": "https://kinic.io/",
       "name": "Kinic",
-      "description": "The first and only dedicated search engine for web3 content that is hosted on blockchain or decentralized storage networks",
+      "description": "The home of portable and verifiable AI.  A DAO for push to deploy vector DB, zkML, search, trading bots and much more.",
       "logo": "/v1/sns/root/7jkta-eyaaa-aaaaq-aaarq-cai/logo.png"
     },
     "parameters": {
@@ -1635,6 +1637,19 @@
           }
         },
         {
+          "id": 1006,
+          "name": "commit_proposed_batch_of_kinic_ui",
+          "description": "commit the batch that proposed by community who has Prepare permission",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "xcvai-qiaaa-aaaak-afowq-cai",
+              "target_canister_id": "xcvai-qiaaa-aaaak-afowq-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
+            }
+          }
+        },
+        {
           "id": 101000,
           "name": "Call `trade_tokens` on the KINIC trading pair canister at the CYCLES-TRANSFER-STATION.",
           "description": null,
@@ -1787,7 +1802,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 607017601109702,
+    "icrc1_total_supply": 607026514523329,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2161,13 +2176,13 @@
       [
         "icrc1:name",
         {
-          "Text": "HotOrNot"
+          "Text": "YRAL"
         }
       ],
       [
         "icrc1:symbol",
         {
-          "Text": "HOT"
+          "Text": "DOLR"
         }
       ],
       [
@@ -2184,7 +2199,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 101798770855745300,
+    "icrc1_total_supply": 101836895418679660,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2597,7 +2612,7 @@
         {
           "id": 4,
           "name": "Add nervous system function",
-          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -2605,7 +2620,7 @@
         {
           "id": 5,
           "name": "Remove nervous system function",
-          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -2613,7 +2628,7 @@
         {
           "id": 6,
           "name": "Execute nervous system function",
-          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "description": "Proposal to execute a user-defined nervous system function, previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -2660,7 +2675,7 @@
         },
         {
           "id": 12,
-          "name": "Mint SNS Tokens",
+          "name": "Mint SNS tokens",
           "description": "Proposal to mint SNS tokens to a specified recipient.",
           "function_type": {
             "NativeNervousSystemFunction": {}
@@ -2833,7 +2848,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 925042237815582200,
+    "icrc1_total_supply": 925060561314637000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
