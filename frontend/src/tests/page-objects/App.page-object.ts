@@ -160,6 +160,11 @@ export class AppPo extends BasePageObject {
       .getProjectsTablePo()
       .getRowByTitle("Internet Computer");
     await nnsRow.click();
+    if (await nnsRow.getStakeButtonPo().isPresent()) {
+      throw new Error(
+        "Cannot navigate to NNS neurons because a neuron first needs to be staked."
+      );
+    }
     await this.getNeuronsPo().waitForContentLoaded();
   }
 

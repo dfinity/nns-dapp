@@ -5,7 +5,6 @@ import { jsonRepresentationStore } from "$lib/stores/json-representation.store";
 import { proposalPayloadsStore } from "$lib/stores/proposals.store";
 import {
   mockProposalInfo,
-  proposalActionInstallCode,
   proposalActionMotion,
   proposalActionNnsFunction21,
 } from "$tests/mocks/proposal.mock";
@@ -59,45 +58,6 @@ describe("NnsProposalProposerPayloadEntry", () => {
       const { container } = render(NnsProposalProposerPayloadEntry, {
         props: {
           proposal: proposalWithNnsFunctionAction,
-          proposalId: mockProposalInfo.id,
-        },
-      });
-      await runResolvedPromises();
-      const po = JsonPreviewPo.under(new JestPageObjectElement(container));
-      expect(await po.getRawObject()).toEqual(payload);
-    });
-  });
-
-  describe("when proposal is InstallCode", () => {
-    const proposalWithInstallCodeAction = {
-      ...mockProposalInfo.proposal,
-      action: proposalActionInstallCode,
-    } as Proposal;
-
-    it("should trigger getProposalPayload", async () => {
-      nnsDappMock.getProposalPayload.mockImplementation(async () => payload);
-
-      expect(nnsDappMock.getProposalPayload).toBeCalledTimes(0);
-      render(NnsProposalProposerPayloadEntry, {
-        props: {
-          proposal: proposalWithInstallCodeAction,
-          proposalId: mockProposalInfo.id,
-        },
-      });
-
-      await runResolvedPromises();
-      expect(nnsDappMock.getProposalPayload).toBeCalledTimes(1);
-      expect(nnsDappMock.getProposalPayload).toBeCalledWith({
-        proposalId: mockProposalInfo.id,
-      });
-    });
-
-    it("should render payload", async () => {
-      nnsDappMock.getProposalPayload.mockImplementation(async () => payload);
-      jsonRepresentationStore.setMode("raw");
-      const { container } = render(NnsProposalProposerPayloadEntry, {
-        props: {
-          proposal: proposalWithInstallCodeAction,
           proposalId: mockProposalInfo.id,
         },
       });

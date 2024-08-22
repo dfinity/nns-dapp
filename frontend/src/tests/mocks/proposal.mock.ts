@@ -49,8 +49,8 @@ export const proposalActionNnsFunction21 = {
 export const proposalActionInstallCode = {
   InstallCode: {
     canisterId: "aaaaa-aa",
-    wasmModule: new Uint8Array([1, 2, 3]),
-    arg: new Uint8Array([4, 5, 6]),
+    wasmModuleHash: "abcd",
+    argHash: "efgh",
     skipStoppingBeforeInstalling: false,
     installMode: 3,
   },

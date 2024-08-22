@@ -1,8 +1,9 @@
 import { AmountInputPo } from "$tests/page-objects/AmountInput.page-object";
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { SelectDestinationAddressPo } from "$tests/page-objects/SelectDestinationAddress.page-object";
+import { TransactionFormFeePo } from "$tests/page-objects/TransactionFormFee.page-object";
 import { TransactionFromAccountPo } from "$tests/page-objects/TransactionFromAccount.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class TransactionFormPo extends BasePageObject {
@@ -14,6 +15,10 @@ export class TransactionFormPo extends BasePageObject {
 
   getTransactionFromAccountPo(): TransactionFromAccountPo {
     return TransactionFromAccountPo.under(this.root);
+  }
+
+  getTransactionFormFeePo(): TransactionFormFeePo {
+    return TransactionFormFeePo.under(this.root);
   }
 
   getSourceAccounts(): Promise<string[]> {

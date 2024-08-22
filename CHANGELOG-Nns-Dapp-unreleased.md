@@ -15,13 +15,21 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Stake tokens, the first time, directly from the Nervous Systems table.
+
 #### Changed
+
+* Bump ic-js so that NNS Dapp can parse `InstallCode` proposal correctly.
+* Display of the new/renamed topics and proposals.
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
+
+* Empty space in the Tokens and Neurons tables in Safari.
+* Staking for SNS with zero transaction fee.
 
 #### Security
 

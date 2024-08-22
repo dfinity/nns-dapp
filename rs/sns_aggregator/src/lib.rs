@@ -19,7 +19,6 @@ use assets::{insert_favicon, insert_home_page, AssetHashes, HttpRequest, HttpRes
 use candid::{candid_method, export_service, CandidType, Principal};
 use dfn_core::api::{call, CanisterId};
 use fast_scheduler::FastScheduler;
-use ic_cdk::api::call::{self};
 use ic_cdk_timers::{clear_timer, set_timer, set_timer_interval};
 use ic_management_canister_types::{CanisterIdRecord, IC_00};
 use serde::Deserialize;
@@ -129,17 +128,17 @@ fn tail_log(limit: Option<u16>) -> String {
 }
 
 /// Web server
+///
+/// Note: we use a decoding quota of 10000 corresponding to roughly 10 KB of decoded data incl. overhead,
+/// see the Candid [cost model](https://github.com/dfinity/candid/blob/f324a1686d6f2bd4fba9307a37f8e3f90cc7222b/rust/candid/src/de.rs#L170)
+/// for more details.
 #[candid_method(query)]
-#[export_name = "canister_query http_request"]
-fn http_request(/* req: HttpRequest */) /* -> HttpResponse */
-{
-    ic_cdk::setup();
-    let request = call::arg_data::<(HttpRequest,)>(ic_cdk::api::call::ArgDecoderConfig::default()).0;
-    let response = match request.url.as_ref() {
+#[ic_cdk_macros::query(decoding_quota = 10000)]
+fn http_request(req: HttpRequest) -> HttpResponse {
+    match req.url.as_ref() {
         "/__candid" => HttpResponse::from(__export_service()),
-        _ => assets::http_request(request),
-    };
-    call::reply((response,));
+        _ => assets::http_request(req),
+    }
 }
 
 /// Function called when a canister is first created IF it is created

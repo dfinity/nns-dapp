@@ -535,8 +535,6 @@ interface I18nProposal_detail {
   remaining: string;
   next: string;
   previous: string;
-  next_short: string;
-  previous_short: string;
   sign_in: string;
   toggle_lable: string;
   toggle_tree: string;
@@ -1252,7 +1250,7 @@ interface I18nNns_functions {
   AssignNoid: string;
   NnsRootUpgrade: string;
   IcpXdrConversionRate: string;
-  UpdateSubnetReplicaVersion: string;
+  DeployGuestosToAllSubnetNodes: string;
   ClearProvisionalWhitelist: string;
   RemoveNodesFromSubnet: string;
   SetAuthorizedSubnetworks: string;
@@ -1279,11 +1277,11 @@ interface I18nNns_functions {
   UpdateAllowedPrincipals: string;
   RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
-  UpdateElectedReplicaVersions: string;
+  ReviseElectedGuestosVersions: string;
   BitcoinSetConfig: string;
   UpdateElectedHostosVersions: string;
   UpdateNodesHostosVersion: string;
-  AddApiBoundaryNode: string;
+  AddApiBoundaryNodes: string;
   RemoveApiBoundaryNodes: string;
   UpdateApiBoundaryNodesVersion: string;
   DeployGuestosToSomeApiBoundaryNodes: string;
@@ -1306,7 +1304,7 @@ interface I18nNns_functions_description {
   AssignNoid: string;
   NnsRootUpgrade: string;
   IcpXdrConversionRate: string;
-  UpdateSubnetReplicaVersion: string;
+  DeployGuestosToAllSubnetNodes: string;
   ClearProvisionalWhitelist: string;
   RemoveNodesFromSubnet: string;
   SetAuthorizedSubnetworks: string;
@@ -1333,11 +1331,11 @@ interface I18nNns_functions_description {
   UpdateAllowedPrincipals: string;
   RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
-  UpdateElectedReplicaVersions: string;
+  ReviseElectedGuestosVersions: string;
   BitcoinSetConfig: string;
   UpdateElectedHostosVersions: string;
   UpdateNodesHostosVersion: string;
-  AddApiBoundaryNode: string;
+  AddApiBoundaryNodes: string;
   RemoveApiBoundaryNodes: string;
   UpdateApiBoundaryNodesVersion: string;
   DeployGuestosToSomeApiBoundaryNodes: string;
