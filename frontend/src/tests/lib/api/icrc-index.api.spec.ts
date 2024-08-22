@@ -22,13 +22,15 @@ describe("icrc-index api", () => {
   };
 
   const indexCanisterMock = mock<IcrcIndexCanister>();
+  const agentMock = mock<HttpAgent>();
+  let spyOnIndexCanisterCreate;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(IcrcIndexCanister, "create").mockImplementation(
-      () => indexCanisterMock
-    );
-    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    spyOnIndexCanisterCreate = vi
+      .spyOn(IcrcIndexCanister, "create")
+      .mockImplementation(() => indexCanisterMock);
+    vi.spyOn(agent, "createAgent").mockResolvedValue(agentMock);
   });
 
   afterEach(() => {
@@ -92,12 +94,18 @@ describe("icrc-index api", () => {
     const indexCanisterId = principal(0);
     const ledgerCanisterId = principal(1);
 
-    it("returns list of transaction", async () => {
+    it("returns ledger id", async () => {
       indexCanisterMock.ledgerId.mockResolvedValue(ledgerCanisterId);
       const resultPrincipal = await getLedgerId({
         identity: mockIdentity,
         indexCanisterId,
         certified: true,
+      });
+
+      expect(spyOnIndexCanisterCreate).toBeCalledTimes(1);
+      expect(spyOnIndexCanisterCreate).toBeCalledWith({
+        agent: agentMock,
+        canisterId: indexCanisterId,
       });
 
       expect(resultPrincipal).not.toBeUndefined();
