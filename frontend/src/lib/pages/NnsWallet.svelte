@@ -70,6 +70,7 @@
   import { writable, type Readable } from "svelte/store";
   import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
   import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
 
   $: if ($authSignedInStore) {
     pollAccounts();
@@ -310,14 +311,16 @@
             walletAddress={$selectedAccountStore.account?.identifier}
           >
             <svelte:fragment slot="actions">
-              <button
-                bind:this={moreButton}
-                class="icon-only"
-                data-tid="more-button"
-                on:click={() => (morePopupVisible = true)}
-              >
-                <IconDots />
-              </button>
+              {#if $ENABLE_IMPORT_TOKEN}
+                <button
+                  bind:this={moreButton}
+                  class="icon-only"
+                  data-tid="more-button"
+                  on:click={() => (morePopupVisible = true)}
+                >
+                  <IconDots />
+                </button>
+              {/if}
             </svelte:fragment>
           </WalletPageHeader>
           <WalletPageHeading
