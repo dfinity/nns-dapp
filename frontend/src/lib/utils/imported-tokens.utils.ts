@@ -19,7 +19,6 @@ export const fromImportedTokenData = ({
   index_canister_id: toNullable(indexCanisterId),
 });
 
-// TODO: unit test me!
 export const isImportedToken = ({
   ledgerCanisterId,
   importedTokens,
@@ -31,16 +30,4 @@ export const isImportedToken = ({
   nonNullish(importedTokens) &&
   importedTokens.some(
     ({ ledgerCanisterId: id }) => id.toText() === ledgerCanisterId.toText()
-  );
-
-export const isUniqueImportedToken = ({
-  ledgerCanisterId,
-  importedTokens,
-}: {
-  ledgerCanisterId: Principal;
-  importedTokens: ImportedTokenData[] | undefined;
-}): boolean =>
-  nonNullish(importedTokens) &&
-  importedTokens.every(
-    ({ ledgerCanisterId: id }) => id.toText() !== ledgerCanisterId.toText()
   );

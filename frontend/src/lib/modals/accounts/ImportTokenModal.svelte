@@ -19,12 +19,10 @@
   import { createEventDispatcher } from "svelte";
   import { matchLedgerIndexPair } from "$lib/services/icrc-index.services";
   import { getIcrcTokenMetaData } from "$lib/services/icrc-accounts.services";
-  import {
-    isImportantCkToken,
-    isUniqueImportedToken,
-  } from "$lib/utils/imported-tokens.utils";
+  import { isImportedToken } from "$lib/utils/imported-tokens.utils";
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
   import { isSnsLedgerCanisterId } from "$lib/utils/sns.utils";
+  import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
 
   let currentStep: WizardStep | undefined = undefined;
   const dispatch = createEventDispatcher();
@@ -72,7 +70,7 @@
 
     // Ledger canister ID validation
     if (
-      !isUniqueImportedToken({
+      isImportedToken({
         ledgerCanisterId,
         importedTokens: $importedTokensStore?.importedTokens,
       })
