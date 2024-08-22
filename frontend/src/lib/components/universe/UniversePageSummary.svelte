@@ -8,8 +8,6 @@
 <span class="summary" data-tid="universe-page-summary-component">
   <UniverseLogo {universe} framed horizontalPadding={false} />
   <span class="summary-title">{universe.title}</span>
-  <slot name="tags" />
-  <slot name="actions" />
 </span>
 
 <style lang="scss">

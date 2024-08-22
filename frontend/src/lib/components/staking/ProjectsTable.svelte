@@ -83,7 +83,9 @@
   }: {
     detail: { rowData: TableProject };
   }) => {
-    dispatcher("nnsStakeTokens", { universeId: rowData.universeId });
+    if (rowData.neuronCount === 0) {
+      dispatcher("nnsStakeTokens", { universeId: rowData.universeId });
+    }
   };
 </script>
 

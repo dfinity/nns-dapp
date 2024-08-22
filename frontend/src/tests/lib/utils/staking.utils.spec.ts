@@ -464,7 +464,6 @@ describe("staking.utils", () => {
       expect(tableProjects).toEqual([
         {
           ...defaultExpectedNnsTableProject,
-          rowHref: nnsHref,
           neuronCount: undefined,
           stake: new UnavailableTokenAmount(ICPToken),
           availableMaturity: undefined,
@@ -472,7 +471,6 @@ describe("staking.utils", () => {
         },
         {
           ...defaultExpectedSnsTableProject,
-          rowHref: snsHref,
           neuronCount: undefined,
           stake: new UnavailableTokenAmount(snsToken),
           availableMaturity: undefined,
@@ -494,7 +492,6 @@ describe("staking.utils", () => {
       expect(tableProjects).toEqual([
         {
           ...defaultExpectedNnsTableProject,
-          rowHref: nnsHref,
           neuronCount: undefined,
           stake: new UnavailableTokenAmount(ICPToken),
           availableMaturity: undefined,
@@ -502,7 +499,6 @@ describe("staking.utils", () => {
         },
         {
           ...defaultExpectedSnsTableProject,
-          rowHref: snsHref,
           neuronCount: undefined,
           stake: new UnavailableTokenAmount(snsToken),
           availableMaturity: undefined,

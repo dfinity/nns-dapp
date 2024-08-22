@@ -10,10 +10,11 @@
 </script>
 
 <PageHeader testId="wallet-page-header-component">
-  <UniversePageSummary slot="start" {universe}>
-    <slot name="tags" slot="tags" />
-    <slot name="actions" slot="actions" />
-  </UniversePageSummary>
+  <div slot="start" class="header-start">
+    <UniversePageSummary {universe} />
+    <slot name="tags" />
+    <slot name="actions" />
+  </div>
   <span
     slot="end"
     class="description header-end"
@@ -26,6 +27,11 @@
 </PageHeader>
 
 <style lang="scss">
+  .header-start {
+    display: flex;
+    gap: var(--padding-0_5x);
+  }
+
   .header-end {
     // The IdentifierHash has the copy button at the end which has some extra padding.
     // This is needed to align in the center the UniversePageSummary and the IdentifierHash in mobile view.
