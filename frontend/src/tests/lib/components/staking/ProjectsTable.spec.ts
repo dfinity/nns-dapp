@@ -315,13 +315,11 @@ describe("ProjectsTable", () => {
       const rowPos = await po.getProjectsTableRowPos();
       expect(rowPos).toHaveLength(2);
       expect(await rowPos[0].getNeuronCount()).toBe("-/-");
-      expect(await rowPos[0].getHref()).toBe(
-        `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
-      );
-      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(true);
+      expect(await rowPos[0].getHref()).toBe(null);
+      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(false);
       expect(await rowPos[1].getNeuronCount()).toBe("-/-");
-      expect(await rowPos[1].getHref()).toBe(`/neurons/?u=${snsCanisterId}`);
-      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(true);
+      expect(await rowPos[1].getHref()).toBe(null);
+      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(false);
     });
 
     it("should not render SNS neurons count when not loaded", async () => {
@@ -329,13 +327,11 @@ describe("ProjectsTable", () => {
       const rowPos = await po.getProjectsTableRowPos();
       expect(rowPos).toHaveLength(2);
       expect(await rowPos[0].getNeuronCount()).toBe("-/-");
-      expect(await rowPos[0].getHref()).toBe(
-        `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
-      );
-      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(true);
+      expect(await rowPos[0].getHref()).toBe(null);
+      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(false);
       expect(await rowPos[1].getNeuronCount()).toBe("-/-");
-      expect(await rowPos[1].getHref()).toBe(`/neurons/?u=${snsCanisterId}`);
-      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(true);
+      expect(await rowPos[1].getHref()).toBe(null);
+      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(false);
     });
 
     it("should render stake button with zero neurons", async () => {
@@ -378,6 +374,77 @@ describe("ProjectsTable", () => {
           universeId: snsCanisterId.toText(),
         },
       });
+    });
+
+    it("should dispatch nnsStakeTokens on row click with zero neurons", async () => {
+      neuronsStore.setNeurons({
+        neurons: [],
+        certified: true,
+      });
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [],
+        certified: true,
+      });
+      const onNnsStakeTokens = vi.fn();
+      const po = renderComponent({ onNnsStakeTokens });
+      const rowPos = await po.getProjectsTableRowPos();
+      expect(rowPos).toHaveLength(2);
+
+      expect(onNnsStakeTokens).not.toBeCalled();
+      await rowPos[0].click();
+      expect(onNnsStakeTokens).toBeCalledTimes(1);
+      expect(onNnsStakeTokens).toBeCalledWith({
+        detail: {
+          universeId: OWN_CANISTER_ID_TEXT,
+        },
+      });
+
+      await rowPos[1].click();
+      expect(onNnsStakeTokens).toBeCalledTimes(2);
+      expect(onNnsStakeTokens).toBeCalledWith({
+        detail: {
+          universeId: snsCanisterId.toText(),
+        },
+      });
+    });
+
+    it("should not dispatch nnsStakeTokens on row click when not signed in", async () => {
+      setNoIdentity();
+      neuronsStore.setNeurons({
+        neurons: [],
+        certified: true,
+      });
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [],
+        certified: true,
+      });
+      const onNnsStakeTokens = vi.fn();
+      const po = renderComponent({ onNnsStakeTokens });
+      const rowPos = await po.getProjectsTableRowPos();
+      expect(rowPos).toHaveLength(2);
+
+      expect(onNnsStakeTokens).not.toBeCalled();
+      await rowPos[0].click();
+      expect(onNnsStakeTokens).not.toBeCalled();
+
+      await rowPos[1].click();
+      expect(onNnsStakeTokens).not.toBeCalled();
+    });
+
+    it("should not dispatch nnsStakeTokens on row click when neurons not loaded", async () => {
+      const onNnsStakeTokens = vi.fn();
+      const po = renderComponent({ onNnsStakeTokens });
+      const rowPos = await po.getProjectsTableRowPos();
+      expect(rowPos).toHaveLength(2);
+
+      expect(onNnsStakeTokens).not.toBeCalled();
+      await rowPos[0].click();
+      expect(onNnsStakeTokens).not.toBeCalled();
+
+      await rowPos[1].click();
+      expect(onNnsStakeTokens).not.toBeCalled();
     });
   });
 
