@@ -27,6 +27,7 @@ import {
   TokenAmountV2,
   asNonNullish,
   isNullish,
+  nonNullish,
   type Token,
 } from "@dfinity/utils";
 
@@ -160,7 +161,7 @@ export const getTableProjects = ({
         snsNeurons,
       });
     const rowHref =
-      isNullish(neuronCount) || neuronCount > 0
+      nonNullish(neuronCount) && neuronCount > 0
         ? buildNeuronsUrl({ universe: universe.canisterId })
         : undefined;
     const universeId = universe.canisterId;
