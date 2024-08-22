@@ -108,8 +108,6 @@ describe("icrc-index api", () => {
         canisterId: indexCanisterId,
       });
 
-      expect(resultPrincipal).not.toBeUndefined();
-
       expect(resultPrincipal).toEqual(ledgerCanisterId);
 
       expect(indexCanisterMock.ledgerId).toBeCalledTimes(1);
