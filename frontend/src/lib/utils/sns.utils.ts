@@ -1,5 +1,6 @@
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import { MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
+import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import type { SnsTicketsStoreData } from "$lib/stores/sns-tickets.store";
 import type { TicketStatus } from "$lib/types/sale";
 import type { SnsSwapCommitment } from "$lib/types/sns";
@@ -202,3 +203,18 @@ export const isSnsGenericNervousSystemTypeProposal = ({
   action,
 }: SnsProposalData): boolean =>
   action >= MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID;
+
+/**
+ * Returns true if the ledgerId is one of the SNS projects.
+ */
+export const isSnsLedgerCanisterId = ({
+  ledgerCanisterId,
+  snsProjects,
+}: {
+  ledgerCanisterId: Principal;
+  snsProjects: SnsFullProject[];
+}): boolean =>
+  snsProjects.some(
+    ({ summary }) =>
+      summary.ledgerCanisterId.toText() === ledgerCanisterId.toText()
+  );

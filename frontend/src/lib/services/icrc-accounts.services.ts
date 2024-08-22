@@ -40,7 +40,7 @@ export const getIcrcTokenMetaData = async ({
   ledgerCanisterId,
 }: {
   ledgerCanisterId: Principal;
-}): Promise<IcrcTokenMetadata | null> => {
+}): Promise<IcrcTokenMetadata> => {
   return queryIcrcToken({
     identity: getCurrentIdentity(),
     canisterId: ledgerCanisterId,

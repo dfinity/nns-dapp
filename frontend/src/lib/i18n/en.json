@@ -120,13 +120,13 @@
     "adding_permissions": "There was an error adding permissions.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
     "qrcode_camera_error": "An error occurred while initializing the camera to read the QR code.",
-    "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction."
+    "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction.",
+    "invalid_ledger_index_pair": "The provided index canister ID does not match the associated ledger canister ID.",
+    "index_canister_validation": "An error occurred while validating the index canister ID."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired.",
-    "test_env_welcome": "Welcome to the Testing Environment.",
-    "test_env_note": "Please note that you are currently using a <strong>test</strong> version of NNS-dapp that operates on the Internet Computer <strong>mainnet</strong>. Although it utilizes real data, it is intended solely for testing purposes.",
-    "test_env_request": "We kindly remind you that the functionality and availability of this testing dapp may change or even disappear at any time. Therefore, it is crucial to refrain from relying on it for any production or critical activities.",
+    "test_env_note": "<strong>Use with caution!</strong> This is not stable software, and it is not securely updated by the Network Nervous System. However, it accesses your real wallets and neurons. <br /><br />Functionality you see here can change at any time, and this dapp may not always be available.",
     "test_env_confirm": "I understand and want to continue",
     "test_env_title": "Warning"
   },
@@ -168,8 +168,8 @@
     "add_account": "Add Account",
     "new_account_title": "New Account",
     "new_linked_subtitle": "Create a new account controlled by your Internet Identity",
-    "attach_hardware_title": "New Account (Hardware Wallet)",
-    "attach_hardware_subtitle": "Create a new account controlled by your hardware wallet",
+    "attach_hardware_subtitle": "Create a new account controlled by your Ledger device",
+    "attach_hardware_title": "New Account (Ledger Controlled)",
     "attach_hardware_name_placeholder": "Hardware Wallet Name",
     "attach_hardware_enter_name": "Enter Wallet Name",
     "attach_hardware_description": "Create a new account controlled by your connected hardware wallet.",
@@ -790,19 +790,19 @@
   },
   "error__ledger": {
     "unexpected": "There was an error with the hardware wallet.",
-    "app_version_not_supported": "This Ledger device is running an outdated version of the Internet Computer app. In order to use the device with this application, it needs to be updated to version 2.4.9 or later. More info <a href=\"https://forum.dfinity.org/t/nns-dapp-to-remove-protobuf-dependency-upgrade-your-ledger-ic-app-to-2-4-9/27712\" rel=\"noopener noreferrer\" aria-label=\"more info ledger App version deprecated\" target=\"_blank\">here</a>.",
+    "app_version_not_supported": "This Ledger device is running an outdated version of the Internet Computer app. In order to use the device with this application, it needs to be updated to version 2.4.9 or later. More info <a href=\"https://forum.dfinity.org/t/nns-dapp-to-remove-protobuf-dependency-upgrade-your-ledger-ic-app-to-2-4-9/27712\" rel=\"noopener noreferrer\" aria-label=\"more info Ledger App version deprecated\" target=\"_blank\">here</a>.",
     "please_open": "Please open the Internet Computer app on your hardware wallet and try again.",
     "locked": "Hardware Wallet is locked. Unlock it and try again.",
     "fetch_public_key": "Unable to fetch the public key. Please try again.",
     "principal_not_match": "Principal returned by the device does not match the public key.",
-    "signature_unexpected": "A ledger error happened during signature. $message (code $code).",
+    "signature_unexpected": "A Ledger error happened during signature. $message (code $code).",
     "signature_length": "Signature must be 64 bytes long (is $length)",
     "connect_no_device": "No hardware wallet found. Is the hardware wallet connected and unlocked?",
     "connect_many_apps": "Cannot connect to the hardware wallet. Please close all other wallet applications (e.g. Ledger Live) and try again.",
     "connect_not_supported": "Either you have other wallet applications open (e.g. Ledger Live), or your browser doesn't support WebHID, which is necessary to communicate with your Ledger hardware wallet. Supported browsers: Chrome (Desktop) v89+, Edge v89+, Opera v76+. Error: $err",
     "unexpected_wallet": "Found unexpected public key. Are you sure you're using the right hardware wallet?",
-    "access_denied": "Access denied to use the ledger device.",
-    "user_rejected_transaction": "The transaction was rejected on the ledger device.",
+    "access_denied": "Access denied to use the Ledger device.",
+    "user_rejected_transaction": "The transaction was rejected on the Ledger device.",
     "version_not_supported": "Sorry, transaction not supported with version $currentVersion. Please upgrade the Internet Computer app on your Ledger device to at least version $minVersion.",
     "browser_not_supported": "Sorry, the browser does not support the WebHID API needed to connect the hardware wallet. Check support in https://caniuse.com/?search=WebHID",
     "incorrect_identifier": "Wallet account identifier doesn't match. Are you sure you connected the right hardware wallet? Expected identifier: $identifier. Wallet identifier: $ledgerIdentifier."
@@ -841,7 +841,10 @@
     "load_imported_tokens": "There was an unexpected issue while loading imported tokens.",
     "add_imported_token": "There was an unexpected issue while adding new imported token.",
     "remove_imported_token": "There was an unexpected issue while removing the imported token.",
-    "too_many": "You can't import more than $limit tokens."
+    "too_many": "You can't import more than $limit tokens.",
+    "is_duplication": "You have already imported this token, you can find it in the token list.",
+    "is_sns": "You cannot import SNS tokens, they are added automatically.",
+    "is_important": "This token is already in the token list."
   },
   "error__sns": {
     "undefined_project": "The requested project is invalid or throws an error.",
@@ -875,7 +878,7 @@
     "sns_sale_invalid_subaccount": "Can't participate with the selected subaccount.",
     "sns_sale_try_later": "Sorry, there was an unexpected error while participating. Please try again later.",
     "sns_sale_committed_not_equal_to_amount": "Your total committed: $amount ICP",
-    "ledger_temporarily_unavailable": "Sorry, the ledger is not available at the moment. Please try again later.",
+    "ledger_temporarily_unavailable": "Sorry, the Ledger is not available at the moment. Please try again later.",
     "ledger_duplicate": "Sorry, the transaction is duplicated. Please try again.",
     "ledger_bad_fee": "Sorry, wrong transaction fee applied. Please try again.",
     "ledger_created_future": "Sorry, the transaction can't be created in the future. Please try again.",
@@ -1027,18 +1030,30 @@
     "hide_zero_balances": "Hide zero balances",
     "hide_zero_balances_toggle_label": "Switch between showing and hiding tokens with a balance of zero",
     "zero_balance_hidden": "Tokens with 0 balances are hidden.",
-    "show_all": "Show all",
-    "add_imported_token_success": "New token has been successfully imported!",
-    "remove_imported_token_success": "The token has been successfully removed!"
+    "show_all": "Show all"
   },
   "import_token": {
     "import_token": "Import Token",
-    "description": "To import a new token to your NNS dapp wallet, you will need to find, and paste the ledger canister id of the token. If you want to see your transaction history, you need to import the token’s index canister.",
+    "import_button": "Import",
+    "imported_token": "Imported Token",
+    "description": "To import a new token to your NNS dapp wallet, you will need to find, and paste the Ledger canister id of the token. If you want to see your transaction history, you need to import the token’s index canister.",
     "ledger_label": "Ledger Canister ID",
     "index_label_optional": "Index Canister ID <span class='description'>(Optional)</span>",
+    "index_label": "Index Canister ID",
+    "index_fallback_label": "Transaction history won’t be displayed.",
     "placeholder": "00000-00000-00000-00000-000",
     "index_canister_description": "Index Canister allows to display a token balance and transaction history. <strong>Note:</strong> not all tokens have index canisters.",
+    "warning": "<strong>Warning:</strong> Be careful what token you import! Anyone can create a token including one with the same name as existing tokens, such as ckBTC.",
+    "verifying": "Veryifying token details...",
+    "importing": "Importing new token...",
+    "removing": "Removing imported token...",
     "review_token_info": "Review token info",
-    "warning": "<strong>Warning:</strong> Be careful what token you import! Anyone can create a token including one with the same name as existing tokens, such as ckBTC."
+    "ledger_canister_loading_error": "Unable to load token details using the provided Ledger Canister ID.",
+    "add_imported_token_success": "New token has been successfully imported!",
+    "remove_imported_token_success": "The token has been successfully removed!",
+    "view_in_dashboard": "View in Dashboard",
+    "link_to_dashboard": "https://dashboard.internetcomputer.org/canister/$canisterId",
+    "remove_confirmation_title": "Remove Token",
+    "remove_confirmation_description": "Are you sure you want to remove this token from your account?<br /><br />Tokens you hold in your account will not be lost, and you can add the token back in the future."
   }
 }

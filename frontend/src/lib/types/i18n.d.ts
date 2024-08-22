@@ -125,13 +125,13 @@ interface I18nError {
   canister_invalid_transaction: string;
   qrcode_camera_error: string;
   qrcode_token_incompatible: string;
+  invalid_ledger_index_pair: string;
+  index_canister_validation: string;
 }
 
 interface I18nWarning {
   auth_sign_out: string;
-  test_env_welcome: string;
   test_env_note: string;
-  test_env_request: string;
   test_env_confirm: string;
   test_env_title: string;
 }
@@ -177,8 +177,8 @@ interface I18nAccounts {
   add_account: string;
   new_account_title: string;
   new_linked_subtitle: string;
-  attach_hardware_title: string;
   attach_hardware_subtitle: string;
+  attach_hardware_title: string;
   attach_hardware_name_placeholder: string;
   attach_hardware_enter_name: string;
   attach_hardware_description: string;
@@ -880,6 +880,9 @@ interface I18nError__imported_tokens {
   add_imported_token: string;
   remove_imported_token: string;
   too_many: string;
+  is_duplication: string;
+  is_sns: string;
+  is_important: string;
 }
 
 interface I18nError__sns {
@@ -1086,19 +1089,31 @@ interface I18nTokens {
   hide_zero_balances_toggle_label: string;
   zero_balance_hidden: string;
   show_all: string;
-  add_imported_token_success: string;
-  remove_imported_token_success: string;
 }
 
 interface I18nImport_token {
   import_token: string;
+  import_button: string;
+  imported_token: string;
   description: string;
   ledger_label: string;
   index_label_optional: string;
+  index_label: string;
+  index_fallback_label: string;
   placeholder: string;
   index_canister_description: string;
-  review_token_info: string;
   warning: string;
+  verifying: string;
+  importing: string;
+  removing: string;
+  review_token_info: string;
+  ledger_canister_loading_error: string;
+  add_imported_token_success: string;
+  remove_imported_token_success: string;
+  view_in_dashboard: string;
+  link_to_dashboard: string;
+  remove_confirmation_title: string;
+  remove_confirmation_description: string;
 }
 
 interface I18nNeuron_state {
