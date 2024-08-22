@@ -87,6 +87,10 @@ export class NnsWalletPo extends BasePageObject {
     return this.getRenameButtonPo().click();
   }
 
+  hasMoreButton(): Promise<boolean> {
+    return this.getMoreButton().isPresent();
+  }
+
   clickMore(): Promise<void> {
     return this.getMoreButton().click();
   }
