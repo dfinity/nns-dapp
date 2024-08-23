@@ -33,7 +33,9 @@
       {#if nonNullish(universe)}<UniversePageSummary {universe} />{/if}
       <Tag>{$i18n.import_token.imported_token}</Tag>
     </div>
-    <p data-tid="description"><Html text={$i18n.import_token.remove_confirmation_description} /></p>
+    <p data-tid="description">
+      <Html text={$i18n.import_token.remove_confirmation_description} />
+    </p>
     <div class="toolbar">
       <button
         class="secondary"
