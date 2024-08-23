@@ -1,4 +1,5 @@
 import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
+import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import {
@@ -10,6 +11,7 @@ import {
   isSnsFinalizing,
   isSnsGenericNervousSystemFunction,
   isSnsGenericNervousSystemTypeProposal,
+  isSnsLedgerCanisterId,
   isSnsNativeNervousSystemFunction,
   parseSnsSwapSaleBuyerCount,
   swapEndedMoreThanOneWeekAgo,
@@ -24,6 +26,7 @@ import {
   createBuyersState,
   createSummary,
   mockDerivedResponse,
+  mockSnsFullProject,
   principal,
 } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
@@ -385,6 +388,49 @@ sale_participants_count ${saleBuyerCount} 1677707139456
         isSnsGenericNervousSystemTypeProposal({
           ...mockSnsProposal,
           action: nativeNervousSystemFunctionMock.id,
+        })
+      ).toBe(false);
+    });
+  });
+
+  describe("isSnsLedgerCanisterId", () => {
+    const snsProjects = [
+      {
+        ...mockSnsFullProject,
+        summary: {
+          ...mockSnsFullProject.summary,
+          ledgerCanisterId: principal(0),
+        },
+      },
+      {
+        ...mockSnsFullProject,
+        summary: {
+          ...mockSnsFullProject.summary,
+          ledgerCanisterId: principal(1),
+        },
+      },
+    ] as SnsFullProject[];
+
+    it("should return true when in the list", () => {
+      expect(
+        isSnsLedgerCanisterId({
+          ledgerCanisterId: principal(0),
+          snsProjects,
+        })
+      ).toBe(true);
+      expect(
+        isSnsLedgerCanisterId({
+          ledgerCanisterId: principal(1),
+          snsProjects,
+        })
+      ).toBe(true);
+    });
+
+    it("should return false if not in the list", () => {
+      expect(
+        isSnsLedgerCanisterId({
+          ledgerCanisterId: principal(2),
+          snsProjects,
         })
       ).toBe(false);
     });
