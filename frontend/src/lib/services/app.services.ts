@@ -12,17 +12,17 @@ export const initAppPrivateData = async (): Promise<void> => {
   // Get latest data and create wrapper caches for the logged in identity.
   const initSns: Promise<void>[] = [loadSnsProjects()];
 
+  const initImportedTokens: Promise<void>[] = get(ENABLE_IMPORT_TOKEN)
+    ? [loadImportedTokens({ ignoreAccountNotFoundError: true })]
+    : [];
+
   // TODO: load imported tokens after Nns.
   /**
    * If Nns load but Sns load fails it is "fine" to go on because Nns are core features.
    */
   await Promise.allSettled([
-    Promise.all(initNns).then(() =>
-      // When you log in with a new account for the first time, the account is created in the NNS dapp.
-      // If you request imported tokens before the account is created, an `AccountNotFound` error will be thrown.
-      // To avoid this, the imported tokens should only be requested after the NNS accounts have been initialized.
-      Promise.all(get(ENABLE_IMPORT_TOKEN) ? [loadImportedTokens()] : [])
-    ),
+    Promise.all(initNns),
+    Promise.all(initImportedTokens),
     Promise.all(initSns),
   ]);
 
