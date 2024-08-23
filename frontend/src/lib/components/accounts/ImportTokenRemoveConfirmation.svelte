@@ -10,18 +10,18 @@
 
   export let ledgerCanisterId: Principal;
 
+  const dispatch = createEventDispatcher();
+
   let universe: Universe | undefined;
   $: universe = $selectableUniversesStore.find(
     ({ canisterId }) => canisterId === ledgerCanisterId.toText()
   );
-
-  const dispatch = createEventDispatcher();
 </script>
 
 <Modal
   role="alert"
   on:nnsClose
-  testId="imported-token-remove-confirmation"
+  testId="import-token-remove-confirmation-component"
   disablePointerEvents={true}
 >
   <svelte:fragment slot="title">
@@ -31,9 +31,9 @@
   <div class="content">
     <div class="headline">
       {#if nonNullish(universe)}<UniversePageSummary {universe} />{/if}
-      <Tag testId="imported-token-tag">{$i18n.import_token.imported_token}</Tag>
+      <Tag>{$i18n.import_token.imported_token}</Tag>
     </div>
-    <p><Html text={$i18n.import_token.remove_confirmation_description} /></p>
+    <p data-tid="description"><Html text={$i18n.import_token.remove_confirmation_description} /></p>
     <div class="toolbar">
       <button
         class="secondary"
