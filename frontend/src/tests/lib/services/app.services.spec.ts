@@ -2,7 +2,6 @@ import { clearSnsAggregatorCache } from "$lib/api-services/sns-aggregator.api-se
 import * as agent from "$lib/api/agent.api";
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
-import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import * as actionableProposalsServices from "$lib/services/actionable-proposals.services";
 import * as actionableSnsProposalsServices from "$lib/services/actionable-sns-proposals.services";
 import { initAppPrivateData } from "$lib/services/app.services";
@@ -121,17 +120,10 @@ describe("app-services", () => {
     expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(1);
   });
 
-  it("should call loadImportedTokens after Nns data is ready", async () => {
+  it("should call loadImportedTokens", async () => {
     const spyLoadImportedTokens = vi
       .spyOn(importedTokensServices, "loadImportedTokens")
       .mockResolvedValue();
-    let getAccountDone;
-    mockNNSDappCanister.getAccount.mockImplementation(
-      () =>
-        new Promise(
-          (resolve) => (getAccountDone = () => resolve(mockAccountDetails))
-        ) as Promise<AccountDetails>
-    );
 
     expect(mockNNSDappCanister.getAccount).toHaveBeenCalledTimes(0);
     expect(spyLoadImportedTokens).toHaveBeenCalledTimes(0);
@@ -140,12 +132,10 @@ describe("app-services", () => {
     await runResolvedPromises();
 
     expect(mockNNSDappCanister.getAccount).toHaveBeenCalledTimes(2);
-    expect(spyLoadImportedTokens).toHaveBeenCalledTimes(0);
-
-    getAccountDone();
-    await runResolvedPromises();
-
     expect(spyLoadImportedTokens).toHaveBeenCalledTimes(1);
+    expect(spyLoadImportedTokens).toHaveBeenCalledWith({
+      ignoreAccountNotFoundError: true,
+    });
   });
 
   it("should not loadImportedTokens when ENABLE_IMPORT_TOKEN is disabled", async () => {
