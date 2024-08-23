@@ -29,31 +29,28 @@
   </svelte:fragment>
 
   <div class="content">
-    {#if nonNullish(universe)}
-      <UniversePageSummary {universe}>
-        <Tag slot="tags" testId="imported-token-tag"
-          >{$i18n.import_token.imported_token}</Tag
-        >
-      </UniversePageSummary>
-    {/if}
+    <div class="headline">
+      {#if nonNullish(universe)}<UniversePageSummary {universe} />{/if}
+      <Tag testId="imported-token-tag">{$i18n.import_token.imported_token}</Tag>
+    </div>
     <p><Html text={$i18n.import_token.remove_confirmation_description} /></p>
-  </div>
-  <div class="toolbar">
-    <button
-      class="secondary"
-      data-tid="close-button"
-      on:click={() => dispatch("nnsClose")}
-    >
-      {$i18n.core.back}
-    </button>
+    <div class="toolbar">
+      <button
+        class="secondary"
+        data-tid="close-button"
+        on:click={() => dispatch("nnsClose")}
+      >
+        {$i18n.core.back}
+      </button>
 
-    <button
-      data-tid="confirm-button"
-      class="primary"
-      on:click={() => dispatch("nnsConfirm")}
-    >
-      {$i18n.core.remove}
-    </button>
+      <button
+        data-tid="confirm-button"
+        class="primary"
+        on:click={() => dispatch("nnsConfirm")}
+      >
+        {$i18n.core.remove}
+      </button>
+    </div>
   </div>
 </Modal>
 
@@ -63,6 +60,11 @@
     flex-direction: column;
     gap: var(--padding-2x);
 
-    margin-bottom: var(--padding-4x);
+    padding: var(--padding-1_5x) var(--padding) 0 var(--padding);
+  }
+
+  .headline {
+    display: flex;
+    gap: var(--padding-0_5x);
   }
 </style>
