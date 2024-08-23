@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Copy } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
-  import LinkToDashboardCanister from "$lib/components/common/LinkToDashboardCanister.svelte";
+  import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
   import type { Principal } from "@dfinity/principal";
 
   export let label: string;
