@@ -83,6 +83,82 @@ describe("tokens-table.utils", () => {
     });
   });
 
+  describe("compareTokensWithBalanceOrImportedFirst", () => {
+    const token0 = createTokenWithBalance({ id: 0, amount: 0n });
+    const token1 = createTokenWithBalance({ id: 1, amount: 1n });
+    const importedTokenWithBalance = createTokenWithBalance({
+      id: 2,
+      amount: 1n,
+    });
+    const importedTokenNoBalance = createTokenWithBalance({
+      id: 3,
+      amount: 0n,
+    });
+    const importedTokenIds = new Set([
+      importedTokenWithBalance.universeId.toText(),
+      importedTokenNoBalance.universeId.toText(),
+    ]);
+
+    it("should compare by balance", () => {
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token1, token0)
+      ).toEqual(-1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token0, token1)
+      ).toEqual(1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token1, token1)
+      ).toEqual(0);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token0, token0)
+      ).toEqual(0);
+    });
+
+    it("should compare by imported", () => {
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(importedTokenNoBalance, token0)
+      ).toEqual(-1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token0, importedTokenNoBalance)
+      ).toEqual(1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(importedTokenWithBalance, importedTokenNoBalance)
+      ).toEqual(0);
+    });
+
+    it("should compare by balance and imported", () => {
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(importedTokenNoBalance, token1)
+      ).toEqual(0);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token0, importedTokenNoBalance)
+      ).toEqual(1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(importedTokenWithBalance, token0)
+      ).toEqual(-1);
+    });
+  });
+
   describe("compareTokensAlphabetically", () => {
     const annaToken = createUserToken({ title: "Anna" });
     const arnyToken = createUserToken({ title: "Arny" });

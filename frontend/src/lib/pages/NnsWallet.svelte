@@ -68,7 +68,7 @@
   } from "@dfinity/utils";
   import { onMount, onDestroy, setContext } from "svelte";
   import { writable, type Readable } from "svelte/store";
-  import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
+  import LinkToDashboardCanister from "$lib/components/common/LinkToDashboardCanister.svelte";
   import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
 

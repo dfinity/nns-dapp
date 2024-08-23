@@ -120,13 +120,13 @@
     "adding_permissions": "There was an error adding permissions.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
     "qrcode_camera_error": "An error occurred while initializing the camera to read the QR code.",
-    "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction."
+    "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction.",
+    "invalid_ledger_index_pair": "The provided index canister ID does not match the associated ledger canister ID.",
+    "index_canister_validation": "An error occurred while validating the index canister ID."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired.",
-    "test_env_welcome": "Welcome to the Testing Environment.",
-    "test_env_note": "Please note that you are currently using a <strong>test</strong> version of NNS-dapp that operates on the Internet Computer <strong>mainnet</strong>. Although it utilizes real data, it is intended solely for testing purposes.",
-    "test_env_request": "We kindly remind you that the functionality and availability of this testing dapp may change or even disappear at any time. Therefore, it is crucial to refrain from relying on it for any production or critical activities.",
+    "test_env_note": "<strong>Use with caution!</strong> This is not stable software, and it is not securely updated by the Network Nervous System. However, it accesses your real wallets and neurons. <br /><br />Functionality you see here can change at any time, and this dapp may not always be available.",
     "test_env_confirm": "I understand and want to continue",
     "test_env_title": "Warning"
   },
@@ -841,7 +841,10 @@
     "load_imported_tokens": "There was an unexpected issue while loading imported tokens.",
     "add_imported_token": "There was an unexpected issue while adding new imported token.",
     "remove_imported_token": "There was an unexpected issue while removing the imported token.",
-    "too_many": "You can't import more than $limit tokens."
+    "too_many": "You can't import more than $limit tokens.",
+    "is_duplication": "You have already imported this token, you can find it in the token list.",
+    "is_sns": "You cannot import SNS tokens, they are added automatically.",
+    "is_important": "This token is already in the token list."
   },
   "error__sns": {
     "undefined_project": "The requested project is invalid or throws an error.",
@@ -1027,20 +1030,30 @@
     "hide_zero_balances": "Hide zero balances",
     "hide_zero_balances_toggle_label": "Switch between showing and hiding tokens with a balance of zero",
     "zero_balance_hidden": "Tokens with 0 balances are hidden.",
-    "show_all": "Show all",
-    "add_imported_token_success": "New token has been successfully imported!",
-    "remove_imported_token_success": "The token has been successfully removed!"
+    "show_all": "Show all"
   },
   "import_token": {
     "import_token": "Import Token",
+    "import_button": "Import",
+    "imported_token": "Imported Token",
     "description": "To import a new token to your NNS dapp wallet, you will need to find, and paste the ledger canister id of the token. If you want to see your transaction history, you need to import the token’s index canister.",
     "ledger_label": "Ledger Canister ID",
     "index_label_optional": "Index Canister ID <span class='description'>(Optional)</span>",
+    "index_label": "Index Canister ID",
+    "index_fallback_label": "Transaction history won’t be displayed.",
     "placeholder": "00000-00000-00000-00000-000",
     "index_canister_description": "Index Canister allows to display a token balance and transaction history. <strong>Note:</strong> not all tokens have index canisters.",
-    "review_token_info": "Review token info",
     "warning": "<strong>Warning:</strong> Be careful what token you import! Anyone can create a token including one with the same name as existing tokens, such as ckBTC.",
+    "verifying": "Veryifying token details...",
+    "importing": "Importing new token...",
+    "removing": "Removing imported token...",
+    "review_token_info": "Review token info",
+    "ledger_canister_loading_error": "Unable to load token details using the provided Ledger Canister ID.",
+    "add_imported_token_success": "New token has been successfully imported!",
+    "remove_imported_token_success": "The token has been successfully removed!",
     "view_in_dashboard": "View in Dashboard",
-    "link_to_dashboard": "https://dashboard.internetcomputer.org/canister/$canisterId"
+    "link_to_dashboard": "https://dashboard.internetcomputer.org/canister/$canisterId",
+    "remove_confirmation_title": "Remove Token",
+    "remove_confirmation_description": "Are you sure you want to remove this token from your account?<br /><br />Tokens you hold in your account will not be lost, and you can add the token back in the future."
   }
 }

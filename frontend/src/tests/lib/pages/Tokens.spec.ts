@@ -2,6 +2,7 @@ import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import TokensPage from "$lib/pages/Tokens.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
+import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import type { UserTokenData } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
@@ -194,11 +195,22 @@ describe("Tokens page", () => {
   describe("when import token feature flag is enabled", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN", true);
+      importedTokensStore.set({
+        importedTokens: [],
+        certified: false,
+      });
     });
 
     it("should show import token button", async () => {
       const po = renderPage([positiveBalance, zeroBalance]);
       expect(await po.getImportTokenButtonPo().isPresent()).toBe(true);
+    });
+
+    it("should not show import token button when they are not loaded", async () => {
+      // Because of maximum limit validation
+      importedTokensStore.reset();
+      const po = renderPage([positiveBalance, zeroBalance]);
+      expect(await po.getImportTokenButtonPo().isPresent()).toBe(false);
     });
 
     it("should show import token and show all buttons", async () => {
