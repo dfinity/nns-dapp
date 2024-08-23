@@ -3,6 +3,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";
   import type { Principal } from "@dfinity/principal";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let canisterId: Principal;
   export let noLabel: boolean = false;
@@ -13,7 +14,6 @@
   });
 </script>
 
-@@ -0,0 +1,45 @@
 <a
   class="button ghost with-icon"
   class:noLabel
@@ -24,7 +24,9 @@
 >
   <IconOpenInNew />
   {#if !noLabel}
-    {$i18n.import_token.view_in_dashboard}
+    <TestIdWrapper testId="label"
+      >{$i18n.import_token.view_in_dashboard}</TestIdWrapper
+    >
   {/if}
 </a>
 
