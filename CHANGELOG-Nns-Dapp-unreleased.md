@@ -22,6 +22,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Bump ic-js so that NNS Dapp can parse `InstallCode` proposal correctly.
 * Display of the new/renamed topics and proposals.
 * Staking project rows are not clickable when not signed in.
+* Changes for cleaning up the stable structure migration.
 
 #### Deprecated
 

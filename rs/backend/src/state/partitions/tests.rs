@@ -1,9 +1,6 @@
 //! Tests for stable memory layout code.
 use super::*;
-use crate::{
-    accounts_store::schema::SchemaLabel,
-    state::{tests::setup_test_state, StableState},
-};
+use crate::state::{tests::setup_test_state, StableState};
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_crypto_sha2::Sha256;
 use pretty_assertions::assert_eq;
@@ -302,7 +299,7 @@ fn growing_write_should_work_for_all() {
 
 #[test]
 fn debug_should_portray_partitions_accurately() {
-    let partitions = Partitions::new_with_schema(DefaultMemoryImpl::default(), SchemaLabel::AccountsInStableMemory);
+    let partitions = Partitions::new(DefaultMemoryImpl::default());
     partitions.get(PartitionType::Metadata.memory_id()).grow(5); // Has one page already, storing the schema label.  Increase this to 6.
     partitions.get(PartitionType::Accounts.memory_id()).grow(2);
     assert_eq!(
