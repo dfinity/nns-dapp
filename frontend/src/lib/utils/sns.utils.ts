@@ -211,9 +211,11 @@ export const isSnsLedgerCanisterId = ({
   ledgerCanisterId,
   snsProjects,
 }: {
-  ledgerCanisterId: Principal;
-  snsProjects: SnsFullProject[];
+  ledgerCanisterId: Principal | undefined;
+  snsProjects: SnsFullProject[] | undefined;
 }): boolean =>
+  nonNullish(ledgerCanisterId) &&
+  nonNullish(snsProjects) &&
   snsProjects.some(
     ({ summary }) =>
       summary.ledgerCanisterId.toText() === ledgerCanisterId.toText()

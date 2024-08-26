@@ -434,5 +434,26 @@ sale_participants_count ${saleBuyerCount} 1677707139456
         })
       ).toBe(false);
     });
+
+    it("should return false when not enough information", () => {
+      expect(
+        isSnsLedgerCanisterId({
+          ledgerCanisterId: undefined,
+          snsProjects,
+        })
+      ).toBe(false);
+      expect(
+        isSnsLedgerCanisterId({
+          ledgerCanisterId: principal(0),
+          snsProjects: undefined,
+        })
+      ).toBe(false);
+      expect(
+        isSnsLedgerCanisterId({
+          ledgerCanisterId: undefined,
+          snsProjects: undefined,
+        })
+      ).toBe(false);
+    });
   });
 });
