@@ -1,12 +1,7 @@
 //! Tests that the proposals crate can indeed express proposals as JSON.
 use super::*;
 
-use crate::{
-    canisters::nns_governance::api::{InstallCode, NeuronId, Proposal},
-    tests::payloads::get_payloads,
-};
-
-use ic_principal::Principal;
+use crate::tests::payloads::get_payloads;
 
 mod args;
 mod payloads;
