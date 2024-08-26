@@ -4,7 +4,6 @@
 //! This code is here to protect the memory!
 //!
 //! This code also stores virtual memory IDs and other memory functions.
-use crate::state::SchemaLabel;
 use core::borrow::Borrow;
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_cdk::println;
@@ -57,28 +56,6 @@ pub enum PartitionsMaybe {
     Partitions(Partitions),
     /// Memory that does not have any kind of memory manager.
     None(DefaultMemoryImpl),
-}
-
-impl PartitionsMaybe {
-    /// Gets or creates partitions.
-    ///
-    /// WARNING: Partitioning overwrites the memory.  Please be sure that you have extracted all useful data from raw memory before calling this.
-    ///
-    /// WARNING: If the memory is already partitioned, this will return the partitions, even if the schema is different.
-    pub fn get_or_format(&mut self, schema: SchemaLabel) -> &Partitions {
-        match self {
-            PartitionsMaybe::Partitions(partitions) => partitions,
-            PartitionsMaybe::None(memory) => {
-                let memory = Partitions::copy_memory_reference(memory);
-                let partitions = Partitions::new_with_schema(memory, schema);
-                *self = PartitionsMaybe::Partitions(partitions);
-                match self {
-                    PartitionsMaybe::Partitions(partitions) => partitions,
-                    PartitionsMaybe::None(_) => unreachable!("This memory was just partitioned"),
-                }
-            }
-        }
-    }
 }
 
 impl Default for PartitionsMaybe {

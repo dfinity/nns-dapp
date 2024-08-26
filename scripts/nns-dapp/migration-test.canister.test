@@ -13,27 +13,6 @@ title() {
 }
 
 (
-  title List of schemas should match .did file
-  # TODO:  Support extracting this with idl2json rather than sed hackery.
-  # Sed hackery:
-  # - Get the SchemaLabel type definition, up to the closing brace.
-  # - Collect the payload lines in the hold space
-  # - At the end:
-  #   - Replace all separators with whitespace
-  #   - Keep just the text in the braces
-  #   - Print
-  # shellcheck disable=SC2016
-  #   - C2016: We really do want to use $ in the sed expression.
-  SCHEMAS_IN_DID_FILE="$(sed -n '/type SchemaLabel/,/^}/p' rs/backend/nns-dapp.did | sed -nE 'H;${g;s/[; \n]+/ /g;s/.*\{ *//g;s/ *\}.*//g;p}')"
-  [[ "$SCHEMAS_IN_DID_FILE" == "${SCHEMA_LABELS[*]}" ]] || {
-    echo "ERROR: List of schema labels in bash should match the labels in the .did file."
-    echo "Expected schema labels: ${SCHEMAS_IN_DID_FILE}"
-    echo "Actual schema labels:   ${SCHEMA_LABELS[*]}"
-    exit 1
-  } >&2
-)
-
-(
   title Schema converters should give expected values
   for index in "${!SCHEMA_LABELS[@]}"; do
     EXPECTED_NAME="${SCHEMA_LABELS[$index]}"
