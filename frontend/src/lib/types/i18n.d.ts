@@ -1101,7 +1101,8 @@ interface I18nImport_token {
   review_token_info: string;
   warning: string;
   remove_confirmation_title: string;
-  remove_confirmation_description: string;
+  remove_confirmation_description_1: string;
+  remove_confirmation_description_2: string;
   view_in_dashboard: string;
   link_to_dashboard: string;
 }
