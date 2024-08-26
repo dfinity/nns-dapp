@@ -140,10 +140,6 @@ impl From<ChangeNnsCanisterProposal> for ChangeNnsCanisterProposalTrimmed {
     }
 }
 
-// NNS function 5 - BlessReplicaVersion
-// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_bless_replica_version.rs#L83
-pub type BlessReplicaVersionPayload = crate::canisters::nns_registry::api::BlessReplicaVersionPayload;
-
 // NNS function 6 - RecoverSubnet
 // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_recover_subnet.rs#L249
 pub type RecoverSubnetPayload = crate::canisters::nns_registry::api::RecoverSubnetPayload;
@@ -370,10 +366,6 @@ pub type UpdateSnsSubnetListRequest = crate::canisters::sns_wasm::api::UpdateSns
 // NNS function 35 - UpdateAllowedPrincipals
 // https://github.com/dfinity/ic/blob/8d135c4eec4645837962797b7bdac930085c0dbb/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L255
 pub type UpdateAllowedPrincipalsRequest = crate::canisters::sns_wasm::api::UpdateAllowedPrincipalsRequest;
-
-// NNS function 36 - RetireReplicaVersion
-// https://github.com/dfinity/ic/blob/c2ad499466967a9a5557d737c2b9c0b9fa8ad53f/rs/registry/canister/src/mutations/do_retire_replica_version.rs#L143
-pub type RetireReplicaVersionPayload = crate::canisters::nns_registry::api::RetireReplicaVersionPayload;
 
 // NNS function 37 - InsertUpgradePathEntriesRequest
 // https://github.com/dfinity/ic/blob/8b674edbb228acfc19923d5c914807166edcd909/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L128
