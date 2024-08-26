@@ -46,8 +46,9 @@ describe("app-services", () => {
       aggregatorSnsMockDto,
     ]);
 
-    vi.spyOn(importedTokensServices, "loadImportedTokens").mockResolvedValue();
-
+    mockNNSDappCanister.getImportedTokens.mockResolvedValue({
+      imported_tokens: [],
+    });
     mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
     mockLedgerCanister.accountBalance.mockResolvedValue(100_000_000n);
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
