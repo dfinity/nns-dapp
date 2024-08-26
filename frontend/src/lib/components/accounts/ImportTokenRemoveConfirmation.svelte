@@ -42,7 +42,7 @@
         data-tid="close-button"
         on:click={() => dispatch("nnsClose")}
       >
-        {$i18n.core.back}
+        {$i18n.core.cancel}
       </button>
 
       <button
