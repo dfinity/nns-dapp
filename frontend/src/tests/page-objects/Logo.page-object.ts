@@ -8,7 +8,11 @@ export class LogoPo extends LogoWrapperPo {
     return new LogoPo(element.byTestId(LogoPo.TID));
   }
 
+  getImage(): PageObjectElement {
+    return this.root.querySelector("img");
+  }
+
   getSource(): Promise<string> {
-    return this.root.getAttribute("src");
+    return this.getImage().getAttribute("src");
   }
 }
