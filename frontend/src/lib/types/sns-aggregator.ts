@@ -91,18 +91,6 @@ export type CachedSwapInitParamsDto = {
   swap_due_timestamp_seconds: null | number;
   min_participants: null | number;
   sns_token_e8s: null | number;
-  neurons_fund_participants: null | {
-    // NeuronsFundParticipants
-    cf_participants: Array<{
-      // CfParticipant
-      hotkey_principal: string;
-      cf_neurons: Array<{
-        // CfNeuron
-        nns_neuron_id: number;
-        amount_icp_e8s: number;
-      }>;
-    }>;
-  };
   should_auto_finalize: null | boolean;
   max_participant_icp_e8s: null | number;
   min_icp_e8s: null | number;
