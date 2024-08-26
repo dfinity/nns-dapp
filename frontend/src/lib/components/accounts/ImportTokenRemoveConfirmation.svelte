@@ -1,12 +1,10 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Html, Modal, Tag } from "@dfinity/gix-components";
+  import { Modal, Tag } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
   import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
-  import type { Principal } from "@dfinity/principal";
   import type { Universe } from "$lib/types/universe";
   import { nonNullish } from "@dfinity/utils";
-  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 
   const dispatch = createEventDispatcher();
 
