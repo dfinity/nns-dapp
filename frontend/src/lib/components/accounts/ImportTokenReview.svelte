@@ -17,7 +17,6 @@
 <div class="container" data-tid="import-token-review-component">
   <div class="meta">
     <Logo
-      testId="token-logo"
       src={tokenMetaData?.logo ?? ""}
       alt={tokenMetaData.name}
       size="medium"

@@ -1,6 +1,7 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { CalloutWarningPo } from "$tests/page-objects/CalloutWarning.page-object";
 import { ImportTokenCanisterIdPo } from "$tests/page-objects/ImportTokenCanisterId.page-object";
+import { LogoPo } from "$tests/page-objects/Logo.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -12,7 +13,7 @@ export class ImportTokenReviewPo extends BasePageObject {
   }
 
   getLogoSource(): Promise<string> {
-    return this.getElement("token-logo").getAttribute("src");
+    return LogoPo.under(this.root).getSource();
   }
 
   getTokenName(): Promise<string> {
