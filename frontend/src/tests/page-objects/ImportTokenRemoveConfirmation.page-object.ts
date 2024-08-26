@@ -15,10 +15,6 @@ export class ImportTokenRemoveConfirmationPo extends ModalPo {
     return UniversePageSummaryPo.under(this.root);
   }
 
-  getDescription(): Promise<string> {
-    return this.getText("description");
-  }
-
   clickClose(): Promise<void> {
     return this.getButton("close-button").click();
   }

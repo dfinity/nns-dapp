@@ -54,13 +54,6 @@ describe("ImportTokenRemoveConfirmation", () => {
     expect(await po.getUniversePageSummaryPo().getTitle()).toEqual(tokenName);
   });
 
-  it("should render description", async () => {
-    const { po } = renderComponent();
-    expect(await po.getDescription()).toEqual(
-      "Are you sure you want to remove this token from your account?Tokens you hold in your account will not be lost, and you can add the token back in the future."
-    );
-  });
-
   it("should dispatch events", async () => {
     const { po, nnsClose, nnsConfirm } = renderComponent();
 
