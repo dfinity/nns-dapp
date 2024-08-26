@@ -154,8 +154,8 @@ export type CachedLifecycleResponseDto = {
 export type CachedSnsTokenMetadataDto = [
   string | IcrcMetadataResponseEntries,
   (
-    | { Int: [number, number?] }
-    | { Nat: [number, number?] }
+    | { Int: number[] }
+    | { Nat: number[] }
     | { Blob: Uint8Array }
     | { Text: string }
   ),
