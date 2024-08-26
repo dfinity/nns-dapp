@@ -1,3 +1,5 @@
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { ProjectMaturityCellPo } from "$tests/page-objects/ProjectMaturityCell.page-object";
 import { ProjectNeuronsCellPo } from "$tests/page-objects/ProjectNeuronsCell.page-object";
 import { ProjectStakeCellPo } from "$tests/page-objects/ProjectStakeCell.page-object";
 import { ProjectTitleCellPo } from "$tests/page-objects/ProjectTitleCell.page-object";
@@ -25,8 +27,16 @@ export class ProjectsTableRowPo extends ResponsiveTableRowPo {
     return ProjectStakeCellPo.under(this.root);
   }
 
+  getProjectMaturityCellPo(): ProjectMaturityCellPo {
+    return ProjectMaturityCellPo.under(this.root);
+  }
+
   getProjectNeuronsCellPo(): ProjectNeuronsCellPo {
     return ProjectNeuronsCellPo.under(this.root);
+  }
+
+  getStakeButtonPo(): ButtonPo {
+    return this.getProjectNeuronsCellPo().getStakeButtonPo();
   }
 
   getProjectTitle(): Promise<string> {

@@ -30,7 +30,6 @@
   }
 </script>
 
-<!-- Only proposals with nnsFunctionKey and proposalId have payload -->
 {#if nnsFunctionKey !== undefined && proposalId !== undefined}
   <ProposalProposerPayloadEntry {payload} />
 {/if}

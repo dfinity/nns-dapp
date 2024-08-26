@@ -1771,7 +1771,7 @@ describe("neuron-utils", () => {
         neuronId: 444n,
         fullNeuron: {
           ...neuron.fullNeuron,
-          followees: [{ topic: Topic.ManageNeuron, followees: [444n] }],
+          followees: [{ topic: Topic.NeuronManagement, followees: [444n] }],
         },
       };
       const neuron3 = {
@@ -1841,7 +1841,7 @@ describe("neuron-utils", () => {
         neuronId: 444n,
         fullNeuron: {
           ...neuron.fullNeuron,
-          followees: [{ topic: Topic.ManageNeuron, followees: [444n] }],
+          followees: [{ topic: Topic.NeuronManagement, followees: [444n] }],
         },
       };
       const neuron3 = {
@@ -1876,7 +1876,7 @@ describe("neuron-utils", () => {
         neuronId: 444n,
         fullNeuron: {
           ...neuron.fullNeuron,
-          followees: [{ topic: Topic.ManageNeuron, followees: [444n] }],
+          followees: [{ topic: Topic.NeuronManagement, followees: [444n] }],
         },
       };
       const neuron3 = {
@@ -1969,7 +1969,7 @@ describe("neuron-utils", () => {
           controller: "controller",
           followees: [
             {
-              topic: Topic.ManageNeuron,
+              topic: Topic.NeuronManagement,
               followees: [10n, 40n],
             },
           ],
@@ -1983,7 +1983,7 @@ describe("neuron-utils", () => {
           controller: "controller",
           followees: [
             {
-              topic: Topic.ManageNeuron,
+              topic: Topic.NeuronManagement,
               followees: [10n],
             },
           ],
@@ -2000,7 +2000,7 @@ describe("neuron-utils", () => {
           controller: "controller",
           followees: [
             {
-              topic: Topic.ManageNeuron,
+              topic: Topic.NeuronManagement,
               followees: [40n, 10n],
             },
           ],
@@ -2014,7 +2014,7 @@ describe("neuron-utils", () => {
           controller: "controller",
           followees: [
             {
-              topic: Topic.ManageNeuron,
+              topic: Topic.NeuronManagement,
               followees: [10n, 40n],
             },
           ],
@@ -2031,7 +2031,7 @@ describe("neuron-utils", () => {
           controller: "controller",
           followees: [
             {
-              topic: Topic.ManageNeuron,
+              topic: Topic.NeuronManagement,
               followees: [40n, 10n],
             },
           ],
@@ -2057,7 +2057,7 @@ describe("neuron-utils", () => {
           controller: "controller",
           followees: [
             {
-              topic: Topic.ManageNeuron,
+              topic: Topic.NeuronManagement,
               followees: [40n, 10n],
             },
           ],
@@ -2071,7 +2071,7 @@ describe("neuron-utils", () => {
           controller: "controller",
           followees: [
             {
-              topic: Topic.ManageNeuron,
+              topic: Topic.NeuronManagement,
               followees: [40n, 200n],
             },
           ],
@@ -2157,13 +2157,13 @@ describe("neuron-utils", () => {
 
     it("should return undefined if topic not found", () => {
       expect(
-        followeesByTopic({ neuron, topic: Topic.ManageNeuron })
+        followeesByTopic({ neuron, topic: Topic.NeuronManagement })
       ).toBeUndefined();
     });
 
     it("should return undefined if no neuron", () => {
       expect(
-        followeesByTopic({ neuron: undefined, topic: Topic.ManageNeuron })
+        followeesByTopic({ neuron: undefined, topic: Topic.NeuronManagement })
       ).toBeUndefined();
     });
 
@@ -2171,7 +2171,7 @@ describe("neuron-utils", () => {
       expect(
         followeesByTopic({
           neuron: { ...mockNeuron, fullNeuron: undefined },
-          topic: Topic.ManageNeuron,
+          topic: Topic.NeuronManagement,
         })
       ).toBeUndefined();
     });
@@ -2203,14 +2203,14 @@ describe("neuron-utils", () => {
         ...mockFullNeuron,
         followees: [
           {
-            topic: Topic.ManageNeuron,
+            topic: Topic.NeuronManagement,
             followees: [0n, 1n],
           },
         ],
       },
     };
 
-    it("should not return deprecated or disabled topics", () => {
+    it("should not return deprecated topics", () => {
       expect(topicsToFollow(neuronWithoutManageNeuron)).toEqual([
         Topic.Unspecified,
         Topic.Governance,
@@ -2222,10 +2222,12 @@ describe("neuron-utils", () => {
         Topic.NetworkCanisterManagement,
         Topic.Kyc,
         Topic.NodeProviderRewards,
-        Topic.SubnetReplicaVersionManagement,
-        Topic.ReplicaVersionManagement,
+        Topic.IcOsVersionDeployment,
+        Topic.IcOsVersionElection,
         Topic.ApiBoundaryNodeManagement,
         Topic.SubnetRental,
+        Topic.ProtocolCanisterManagement,
+        Topic.ServiceNervousSystemManagement,
         Topic.ExchangeRate,
       ]);
       expect(topicsToFollow(neuronWithoutFollowees)).toEqual([
@@ -2239,10 +2241,12 @@ describe("neuron-utils", () => {
         Topic.NetworkCanisterManagement,
         Topic.Kyc,
         Topic.NodeProviderRewards,
-        Topic.SubnetReplicaVersionManagement,
-        Topic.ReplicaVersionManagement,
+        Topic.IcOsVersionDeployment,
+        Topic.IcOsVersionElection,
         Topic.ApiBoundaryNodeManagement,
         Topic.SubnetRental,
+        Topic.ProtocolCanisterManagement,
+        Topic.ServiceNervousSystemManagement,
         Topic.ExchangeRate,
       ]);
     });
@@ -2252,7 +2256,7 @@ describe("neuron-utils", () => {
         Topic.Unspecified,
         Topic.Governance,
         Topic.SnsAndCommunityFund,
-        Topic.ManageNeuron,
+        Topic.NeuronManagement,
         Topic.NetworkEconomics,
         Topic.NodeAdmin,
         Topic.ParticipantManagement,
@@ -2260,10 +2264,12 @@ describe("neuron-utils", () => {
         Topic.NetworkCanisterManagement,
         Topic.Kyc,
         Topic.NodeProviderRewards,
-        Topic.SubnetReplicaVersionManagement,
-        Topic.ReplicaVersionManagement,
+        Topic.IcOsVersionDeployment,
+        Topic.IcOsVersionElection,
         Topic.ApiBoundaryNodeManagement,
         Topic.SubnetRental,
+        Topic.ProtocolCanisterManagement,
+        Topic.ServiceNervousSystemManagement,
         Topic.ExchangeRate,
       ]);
     });
@@ -2782,7 +2788,7 @@ describe("neuron-utils", () => {
       expect(getTopicTitle({ topic: Topic.Unspecified, i18n: en })).toBe(
         "All Except Governance, and SNS & Neurons' Fund"
       );
-      expect(getTopicTitle({ topic: Topic.ManageNeuron, i18n: en })).toBe(
+      expect(getTopicTitle({ topic: Topic.NeuronManagement, i18n: en })).toBe(
         "Manage Neuron"
       );
       expect(getTopicTitle({ topic: Topic.ExchangeRate, i18n: en })).toBe(
@@ -2805,7 +2811,7 @@ describe("neuron-utils", () => {
       );
       expect(
         getTopicTitle({ topic: Topic.NetworkCanisterManagement, i18n: en })
-      ).toBe("System Canister Management");
+      ).toBe("Application Canister Management");
       expect(getTopicTitle({ topic: Topic.Kyc, i18n: en })).toBe("KYC");
       expect(
         getTopicTitle({ topic: Topic.NodeProviderRewards, i18n: en })
@@ -2814,10 +2820,10 @@ describe("neuron-utils", () => {
         getTopicTitle({ topic: Topic.SnsDecentralizationSale, i18n: en })
       ).toBe("SNS Decentralization Swap");
       expect(
-        getTopicTitle({ topic: Topic.SubnetReplicaVersionManagement, i18n: en })
+        getTopicTitle({ topic: Topic.IcOsVersionDeployment, i18n: en })
       ).toBe("IC OS Version Deployment");
       expect(
-        getTopicTitle({ topic: Topic.ReplicaVersionManagement, i18n: en })
+        getTopicTitle({ topic: Topic.IcOsVersionElection, i18n: en })
       ).toBe("IC OS Version Election");
       expect(
         getTopicTitle({ topic: Topic.SnsAndCommunityFund, i18n: en })
@@ -2828,6 +2834,12 @@ describe("neuron-utils", () => {
       expect(getTopicTitle({ topic: Topic.SubnetRental, i18n: en })).toBe(
         "Subnet Rental"
       );
+      expect(
+        getTopicTitle({ topic: Topic.ProtocolCanisterManagement, i18n: en })
+      ).toBe("Protocol Canister Management");
+      expect(
+        getTopicTitle({ topic: Topic.ServiceNervousSystemManagement, i18n: en })
+      ).toBe("Service Nervous System Management");
     });
 
     it("should render unknown topics", () => {
@@ -2850,7 +2862,9 @@ describe("neuron-utils", () => {
       expect(getTopicSubtitle({ topic: Topic.Unspecified, i18n: en })).toBe(
         "Follow neurons on all proposal topics except the governance topic, and SNS & Neurons' Fund."
       );
-      expect(getTopicSubtitle({ topic: Topic.ManageNeuron, i18n: en })).toBe(
+      expect(
+        getTopicSubtitle({ topic: Topic.NeuronManagement, i18n: en })
+      ).toBe(
         "Proposals that manage specific neurons, for example making them perform actions."
       );
       expect(getTopicSubtitle({ topic: Topic.ExchangeRate, i18n: en })).toBe(
@@ -2880,7 +2894,7 @@ describe("neuron-utils", () => {
       expect(
         getTopicSubtitle({ topic: Topic.NetworkCanisterManagement, i18n: en })
       ).toBe(
-        "Installing and upgrading “system” canisters that belong to the network. For example, upgrading the NNS."
+        "All proposals to manage NNS-controlled canisters not covered by other topics (Protocol Canister Management or Service Nervous System Management)."
       );
       expect(getTopicSubtitle({ topic: Topic.Kyc, i18n: en })).toBe(
         "Proposals that update KYC information for regulatory purposes, for example during the initial Genesis distribution of ICP in the form of neurons."
@@ -2893,12 +2907,12 @@ describe("neuron-utils", () => {
       ).toBe("Proposals for SNS");
       expect(
         getTopicSubtitle({
-          topic: Topic.SubnetReplicaVersionManagement,
+          topic: Topic.IcOsVersionDeployment,
           i18n: en,
         })
       ).toBe("Proposals handling updates of a subnet's replica version");
       expect(
-        getTopicSubtitle({ topic: Topic.ReplicaVersionManagement, i18n: en })
+        getTopicSubtitle({ topic: Topic.IcOsVersionElection, i18n: en })
       ).toBe(
         "Proposals dealing with blessing and retirement of replica versions"
       );
@@ -2910,6 +2924,22 @@ describe("neuron-utils", () => {
       ).toBe("Proposals related to the management of API boundary nodes");
       expect(getTopicSubtitle({ topic: Topic.SubnetRental, i18n: en })).toBe(
         "All proposals related to renting a subnet, for example a subnet rental request."
+      );
+      expect(
+        getTopicSubtitle({
+          topic: Topic.ProtocolCanisterManagement,
+          i18n: en,
+        })
+      ).toBe(
+        "All proposals to manage protocol canisters, which are considered part of the ICP protocol and are essential for its proper functioning."
+      );
+      expect(
+        getTopicSubtitle({
+          topic: Topic.ServiceNervousSystemManagement,
+          i18n: en,
+        })
+      ).toBe(
+        "All proposals to manage the canisters of service nervous systems (SNS), including upgrading relevant canisters and managing SNS framework canister WASMs through SNS-W."
       );
     });
   });

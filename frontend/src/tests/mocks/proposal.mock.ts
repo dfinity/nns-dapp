@@ -46,6 +46,16 @@ export const proposalActionNnsFunction21 = {
   },
 } as Action;
 
+export const proposalActionInstallCode = {
+  InstallCode: {
+    canisterId: "aaaaa-aa",
+    wasmModuleHash: "abcd",
+    argHash: "efgh",
+    skipStoppingBeforeInstalling: false,
+    installMode: 3,
+  },
+} as Action;
+
 // Not a valid `ProposalInfo` object. Only related to the test fields are included
 export const mockProposalInfo: ProposalInfo = {
   id: 10_000n,

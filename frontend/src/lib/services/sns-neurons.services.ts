@@ -55,6 +55,7 @@ import {
   assertNonNullish,
   fromDefinedNullable,
   fromNullable,
+  isNullish,
   nonNullish,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -513,7 +514,7 @@ export const stakeNeuron = async ({
     const fee = get(snsTokensByRootCanisterIdStore)[rootCanisterId.toText()]
       ?.fee;
 
-    if (!fee) {
+    if (isNullish(fee)) {
       throw new Error("error.transaction_fee_not_found");
     }
 

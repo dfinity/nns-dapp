@@ -376,10 +376,6 @@ impl AccountsStore {
     pub fn migration_in_progress(&self) -> bool {
         self.accounts_db.migration_in_progress()
     }
-    /// Starts migrating accounts to the new db.
-    pub fn start_migrating_accounts_to(&mut self, accounts_db: AccountsDb) {
-        self.accounts_db.start_migrating_accounts_to(accounts_db);
-    }
     /// Advances the migration by one step.
     ///
     /// Note: This is a pass-through to the underlying `AccountsDb::step_migration`.  Please see that for further details.

@@ -5,10 +5,14 @@ import type { TokenAmountV2 } from "@dfinity/utils";
 export type TableProject = {
   rowHref?: string;
   domKey: string;
+  universeId: string;
   title: string;
   logo: string;
+  tokenSymbol: string;
   neuronCount: number | undefined;
   stake: TokenAmountV2 | UnavailableTokenAmount;
+  availableMaturity: bigint | undefined;
+  stakedMaturity: bigint | undefined;
 };
 
 export type ProjectsTableColumn = ResponsiveTableColumn<TableProject>;

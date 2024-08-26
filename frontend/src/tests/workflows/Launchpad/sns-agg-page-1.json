@@ -299,7 +299,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98083330929865870,
+    "icrc1_total_supply": 98130965168348910,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -755,7 +755,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100610258950519420,
+    "icrc1_total_supply": 100624141755980110,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1411,7 +1411,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50218549905522696,
+    "icrc1_total_supply": 50256524524533250,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1545,7 +1545,7 @@
         {
           "id": 4,
           "name": "Add nervous system function",
-          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1553,7 +1553,7 @@
         {
           "id": 5,
           "name": "Remove nervous system function",
-          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1561,7 +1561,7 @@
         {
           "id": 6,
           "name": "Execute nervous system function",
-          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "description": "Proposal to execute a user-defined nervous system function, previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1608,7 +1608,7 @@
         },
         {
           "id": 12,
-          "name": "Mint SNS Tokens",
+          "name": "Mint SNS tokens",
           "description": "Proposal to mint SNS tokens to a specified recipient.",
           "function_type": {
             "NativeNervousSystemFunction": {}
@@ -2208,7 +2208,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9955944268912996,
+    "icrc1_total_supply": 9955973489365428,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3160,7 +3160,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10029213084409928,
+    "icrc1_total_supply": 10029336474512344,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -3485,7 +3485,7 @@
         {
           "id": 4,
           "name": "Add nervous system function",
-          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -3493,7 +3493,7 @@
         {
           "id": 5,
           "name": "Remove nervous system function",
-          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -3501,7 +3501,7 @@
         {
           "id": 6,
           "name": "Execute nervous system function",
-          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "description": "Proposal to execute a user-defined nervous system function, previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -3548,7 +3548,7 @@
         },
         {
           "id": 12,
-          "name": "Mint SNS Tokens",
+          "name": "Mint SNS tokens",
           "description": "Proposal to mint SNS tokens to a specified recipient.",
           "function_type": {
             "NativeNervousSystemFunction": {}
@@ -4125,7 +4125,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12597514256558822,
+    "icrc1_total_supply": 12598077318055144,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5307,7 +5307,8 @@
         "o4yaf-3yaaa-aaaap-abr2a-cai",
         "bojx2-iaaaa-aaaag-ab3jq-cai",
         "j4jiq-sqaaa-aaaap-ab23a-cai",
-        "iyehc-lqaaa-aaaap-ab25a-cai"
+        "iyehc-lqaaa-aaaap-ab25a-cai",
+        "rbsh4-yyaaa-aaaal-qdigq-cai"
       ],
       "archives": ["fgzua-6iaaa-aaaaq-aacgq-cai"]
     },
@@ -5355,7 +5356,7 @@
         {
           "id": 4,
           "name": "Add nervous system function",
-          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -5363,7 +5364,7 @@
         {
           "id": 5,
           "name": "Remove nervous system function",
-          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -5371,7 +5372,7 @@
         {
           "id": 6,
           "name": "Execute nervous system function",
-          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "description": "Proposal to execute a user-defined nervous system function, previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -5418,7 +5419,7 @@
         },
         {
           "id": 12,
-          "name": "Mint SNS Tokens",
+          "name": "Mint SNS tokens",
           "description": "Proposal to mint SNS tokens to a specified recipient.",
           "function_type": {
             "NativeNervousSystemFunction": {}
@@ -5476,6 +5477,45 @@
               "target_canister_id": "iyehc-lqaaa-aaaap-ab25a-cai",
               "validator_method_name": "set_reserve_transfer_amounts_validate",
               "target_method_name": "set_reserve_transfer_amounts"
+            }
+          }
+        },
+        {
+          "id": 1004,
+          "name": "Set GLDGov daily burn amount from reserve pool",
+          "description": "Proposal to adjust the daily amount of GLDGov burned from the reserve pool of the sns_rewards canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "iyehc-lqaaa-aaaap-ab25a-cai",
+              "target_canister_id": "iyehc-lqaaa-aaaap-ab25a-cai",
+              "validator_method_name": "set_daily_gldgov_burn_rate_validate",
+              "target_method_name": "set_daily_gldgov_burn_rate"
+            }
+          }
+        },
+        {
+          "id": 1005,
+          "name": "Set reward token types on SNS rewards canister.",
+          "description": "Proposal to update the tokens in which rewards are paid to Gold DAO neurons.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "iyehc-lqaaa-aaaap-ab25a-cai",
+              "target_canister_id": "iyehc-lqaaa-aaaap-ab25a-cai",
+              "validator_method_name": "set_reward_token_types_validate",
+              "target_method_name": "set_reward_token_types"
+            }
+          }
+        },
+        {
+          "id": 2001,
+          "name": "Upgrade GLD dashboard frontend.",
+          "description": "Proposal to upgrade the GLD dashboard frontend to a new version.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "rbsh4-yyaaa-aaaal-qdigq-cai",
+              "target_canister_id": "rbsh4-yyaaa-aaaal-qdigq-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
             }
           }
         }
@@ -5902,7 +5942,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99933049460949650,
+    "icrc1_total_supply": 99868920629799780,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

@@ -443,9 +443,10 @@ const votingPeriodEndFallback = ({
   proposalTimestampSeconds,
   topic,
 }: ProposalInfo): Date => {
-  const durationInSeconds = [Topic.ManageNeuron, Topic.ExchangeRate].includes(
-    topic
-  )
+  const durationInSeconds = [
+    Topic.NeuronManagement,
+    Topic.ExchangeRate,
+  ].includes(topic)
     ? SHORT_VOTING_PERIOD_SECONDS
     : WAIT_FOR_QUIET_THRESHOLD_SECONDS;
 

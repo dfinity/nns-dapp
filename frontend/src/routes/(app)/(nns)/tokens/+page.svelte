@@ -40,6 +40,7 @@
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
   import { compareTokensForTokensTable } from "$lib/utils/tokens-table.utils";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 
   onMount(() => {
     loadCkBTCTokens();
@@ -197,8 +198,15 @@
     }
   };
 
+  let importedTokenIds: Set<string> = new Set();
+  $: importedTokenIds = new Set(
+    ($importedTokensStore.importedTokens ?? []).map(({ ledgerCanisterId }) =>
+      ledgerCanisterId.toText()
+    )
+  );
+
   const sortTokens = (tokens: UserToken[]) =>
-    [...tokens].sort(compareTokensForTokensTable);
+    [...tokens].sort(compareTokensForTokensTable({ importedTokenIds }));
 </script>
 
 <TestIdWrapper testId="tokens-route-component">

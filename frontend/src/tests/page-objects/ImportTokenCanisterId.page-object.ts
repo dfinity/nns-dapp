@@ -1,14 +1,20 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
-import { LinkIconPo } from "$tests/page-objects/LinkIcon.page-object";
+import { LinkToDashboardCanisterPo } from "$tests/page-objects/LinkToDashboardCanister.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class ImportTokenCanisterIdPo extends BasePageObject {
   private static readonly TID = "import-token-canister-id-component";
 
-  static under(element: PageObjectElement): ImportTokenCanisterIdPo {
+  static under({
+    element,
+    testId,
+  }: {
+    element: PageObjectElement;
+    testId?: string;
+  }): ImportTokenCanisterIdPo {
     return new ImportTokenCanisterIdPo(
-      element.byTestId(ImportTokenCanisterIdPo.TID)
+      element.byTestId(testId ?? ImportTokenCanisterIdPo.TID)
     );
   }
 
@@ -36,8 +42,8 @@ export class ImportTokenCanisterIdPo extends BasePageObject {
     return this.getButton("copy-component");
   }
 
-  getLinkIconPo(): LinkIconPo {
-    return LinkIconPo.under(this.root);
+  getLinkToDashboardCanisterPo(): LinkToDashboardCanisterPo {
+    return LinkToDashboardCanisterPo.under(this.root);
   }
 
   getCanisterIdFallbackText(): Promise<string> {

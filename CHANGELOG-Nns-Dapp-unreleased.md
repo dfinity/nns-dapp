@@ -15,19 +15,23 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Enable warning dialog on beta deployment.
-* Back-end support for storing imported tokens.
+* Stake tokens, the first time, directly from the Nervous Systems table.
 
 #### Changed
 
-* Replace the nervous system left navigation on the staking tab with a new table.
-* Bump ic-js to a version with new proposal types and neuron visibility.
+* Bump ic-js so that NNS Dapp can parse `InstallCode` proposal correctly.
+* Display of the new/renamed topics and proposals.
+* Staking project rows are not clickable when not signed in.
+* Changes for cleaning up the stable structure migration.
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
+
+* Empty space in the Tokens and Neurons tables in Safari.
+* Staking for SNS with zero transaction fee.
 
 #### Security
 
@@ -42,6 +46,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Deprecated
 
 #### Removed
+
+* Integration test setup code and related script and documentation.
 
 #### Fixed
 

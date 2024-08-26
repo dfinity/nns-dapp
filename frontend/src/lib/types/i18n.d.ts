@@ -36,6 +36,7 @@ interface I18nCore {
   send_with_token: string;
   collapse_all: string;
   or: string;
+  learn_more: string;
 }
 
 interface I18nError {
@@ -256,6 +257,8 @@ interface I18nStaking {
 interface I18nNeurons {
   title: string;
   text: string;
+  split_topic_message: string;
+  split_topic_learn_more_label: string;
   stake_token: string;
   merge_neurons: string;
   merge_neurons_modal_title: string;
@@ -412,18 +415,6 @@ interface I18nActionable_proposals_sign_in {
 interface I18nActionable_proposals_empty {
   title: string;
   text: string;
-  text_unsupported: string;
-}
-
-interface I18nActionable_proposals_not_supported {
-  title: string;
-  text: string;
-  dot_tooltip: string;
-}
-
-interface I18nActionable_proposals_not_supported_snses {
-  title: string;
-  text: string;
 }
 
 interface I18nCanisters {
@@ -544,8 +535,6 @@ interface I18nProposal_detail {
   remaining: string;
   next: string;
   previous: string;
-  next_short: string;
-  previous_short: string;
   sign_in: string;
   toggle_lable: string;
   toggle_tree: string;
@@ -1097,9 +1086,21 @@ interface I18nTokens {
   hide_zero_balances_toggle_label: string;
   zero_balance_hidden: string;
   show_all: string;
-  import_token: string;
   add_imported_token_success: string;
   remove_imported_token_success: string;
+}
+
+interface I18nImport_token {
+  import_token: string;
+  description: string;
+  ledger_label: string;
+  index_label_optional: string;
+  placeholder: string;
+  index_canister_description: string;
+  review_token_info: string;
+  warning: string;
+  view_in_dashboard: string;
+  link_to_dashboard: string;
 }
 
 interface I18nNeuron_state {
@@ -1112,7 +1113,7 @@ interface I18nNeuron_state {
 
 interface I18nTopics {
   Unspecified: string;
-  ManageNeuron: string;
+  NeuronManagement: string;
   ExchangeRate: string;
   NetworkEconomics: string;
   Governance: string;
@@ -1123,8 +1124,8 @@ interface I18nTopics {
   Kyc: string;
   NodeProviderRewards: string;
   SnsDecentralizationSale: string;
-  ReplicaVersionManagement: string;
-  SubnetReplicaVersionManagement: string;
+  IcOsVersionElection: string;
+  IcOsVersionDeployment: string;
   SnsAndCommunityFund: string;
   ApiBoundaryNodeManagement: string;
   SubnetRental: string;
@@ -1134,7 +1135,7 @@ interface I18nTopics {
 
 interface I18nTopics_description {
   Unspecified: string;
-  ManageNeuron: string;
+  NeuronManagement: string;
   ExchangeRate: string;
   NetworkEconomics: string;
   Governance: string;
@@ -1145,8 +1146,8 @@ interface I18nTopics_description {
   Kyc: string;
   NodeProviderRewards: string;
   SnsDecentralizationSale: string;
-  ReplicaVersionManagement: string;
-  SubnetReplicaVersionManagement: string;
+  IcOsVersionElection: string;
+  IcOsVersionDeployment: string;
   SnsAndCommunityFund: string;
   ApiBoundaryNodeManagement: string;
   SubnetRental: string;
@@ -1190,7 +1191,7 @@ interface I18nStatus_description {
 
 interface I18nActions {
   RegisterKnownNeuron: string;
-  ManageNeuron: string;
+  NeuronManagement: string;
   ApproveGenesisKyc: string;
   ManageNetworkEconomics: string;
   RewardNodeProvider: string;
@@ -1201,11 +1202,14 @@ interface I18nActions {
   SetSnsTokenSwapOpenTimeWindow: string;
   OpenSnsTokenSwap: string;
   CreateServiceNervousSystem: string;
+  InstallCode: string;
+  StopOrStartCanister: string;
+  UpdateCanisterSettings: string;
 }
 
 interface I18nActions_description {
   RegisterKnownNeuron: string;
-  ManageNeuron: string;
+  NeuronManagement: string;
   ApproveGenesisKyc: string;
   ManageNetworkEconomics: string;
   RewardNodeProvider: string;
@@ -1216,6 +1220,9 @@ interface I18nActions_description {
   SetSnsTokenSwapOpenTimeWindow: string;
   OpenSnsTokenSwap: string;
   CreateServiceNervousSystem: string;
+  InstallCode: string;
+  StopOrStartCanister: string;
+  UpdateCanisterSettings: string;
 }
 
 interface I18nNns_functions {
@@ -1230,7 +1237,7 @@ interface I18nNns_functions {
   AssignNoid: string;
   NnsRootUpgrade: string;
   IcpXdrConversionRate: string;
-  UpdateSubnetReplicaVersion: string;
+  DeployGuestosToAllSubnetNodes: string;
   ClearProvisionalWhitelist: string;
   RemoveNodesFromSubnet: string;
   SetAuthorizedSubnetworks: string;
@@ -1257,11 +1264,11 @@ interface I18nNns_functions {
   UpdateAllowedPrincipals: string;
   RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
-  UpdateElectedReplicaVersions: string;
+  ReviseElectedGuestosVersions: string;
   BitcoinSetConfig: string;
   UpdateElectedHostosVersions: string;
   UpdateNodesHostosVersion: string;
-  AddApiBoundaryNode: string;
+  AddApiBoundaryNodes: string;
   RemoveApiBoundaryNodes: string;
   UpdateApiBoundaryNodesVersion: string;
   DeployGuestosToSomeApiBoundaryNodes: string;
@@ -1284,7 +1291,7 @@ interface I18nNns_functions_description {
   AssignNoid: string;
   NnsRootUpgrade: string;
   IcpXdrConversionRate: string;
-  UpdateSubnetReplicaVersion: string;
+  DeployGuestosToAllSubnetNodes: string;
   ClearProvisionalWhitelist: string;
   RemoveNodesFromSubnet: string;
   SetAuthorizedSubnetworks: string;
@@ -1311,11 +1318,11 @@ interface I18nNns_functions_description {
   UpdateAllowedPrincipals: string;
   RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
-  UpdateElectedReplicaVersions: string;
+  ReviseElectedGuestosVersions: string;
   BitcoinSetConfig: string;
   UpdateElectedHostosVersions: string;
   UpdateNodesHostosVersion: string;
-  AddApiBoundaryNode: string;
+  AddApiBoundaryNodes: string;
   RemoveApiBoundaryNodes: string;
   UpdateApiBoundaryNodesVersion: string;
   DeployGuestosToSomeApiBoundaryNodes: string;
@@ -1343,8 +1350,6 @@ interface I18n {
   voting: I18nVoting;
   actionable_proposals_sign_in: I18nActionable_proposals_sign_in;
   actionable_proposals_empty: I18nActionable_proposals_empty;
-  actionable_proposals_not_supported: I18nActionable_proposals_not_supported;
-  actionable_proposals_not_supported_snses: I18nActionable_proposals_not_supported_snses;
   canisters: I18nCanisters;
   canister_detail: I18nCanister_detail;
   transaction_names: I18nTransaction_names;
@@ -1386,6 +1391,7 @@ interface I18n {
   settings: I18nSettings;
   sync: I18nSync;
   tokens: I18nTokens;
+  import_token: I18nImport_token;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

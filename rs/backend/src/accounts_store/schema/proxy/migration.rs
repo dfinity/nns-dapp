@@ -1,5 +1,5 @@
 //! Code for migration from the authoritative database to a new database.
-use super::{AccountsDb, AccountsDbAsProxy, AccountsDbTrait, Migration};
+use super::{AccountsDbAsProxy, AccountsDbTrait};
 use ic_cdk::{eprintln, println};
 
 impl AccountsDbAsProxy {
@@ -37,25 +37,6 @@ impl AccountsDbAsProxy {
             let blocks_for_migration = u32::try_from(blocks_for_migration).unwrap_or(u32::MAX);
             blocks_for_migration.saturating_add(Self::MIGRATION_FINALIZATION_BLOCKS)
         })
-    }
-    /// Starts a migration, if needed.
-    ///
-    /// # Panics
-    /// - If the new database is not empty.
-    pub fn start_migrating_accounts_to(&mut self, accounts_db: AccountsDb) {
-        assert!(
-            accounts_db.db_accounts_len() == 0,
-            "The DB to migrate to should be empty"
-        );
-        let migration = Migration {
-            db: accounts_db,
-            next_to_migrate: self.authoritative_db.iter().next().map(|(key, _account)| key.clone()),
-        };
-        println!(
-            "Starting account migration: {:?} -> {:?}",
-            self.authoritative_db, migration.db
-        );
-        self.migration = Some(migration);
     }
 
     /// Advances the migration by one step.

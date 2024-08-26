@@ -32,7 +32,8 @@
     "receive": "Receive",
     "send_with_token": "Send $token",
     "collapse_all": "Collapse All",
-    "or": "or"
+    "or": "or",
+    "learn_more": "Learn more"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -244,6 +245,8 @@
   "neurons": {
     "title": "Neurons",
     "text": "Earn voting rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by submitting and voting on Network Nervous System (NNS) proposals.",
+    "split_topic_message": "The System Canister Management topic is being split into 3 topics. Review your neuron following to confirm it is set up according to your preferences.",
+    "split_topic_learn_more_label": "Learn more about the changes made to proposal topics.",
     "stake_token": "Stake $token",
     "merge_neurons": "Merge Neurons",
     "merge_neurons_modal_title": "Select two neurons to merge",
@@ -348,8 +351,8 @@
     "topic_6_subtitle": "All proposals that administer network participants, for example, granting and revoking DCIDs (data center identities) or NOIDs (node operator identities).",
     "topic_7_title": "Subnet Management",
     "topic_7_subtitle": "All proposals that administer network subnets, for example creating new subnets, adding and removing subnet nodes, and splitting subnets.",
-    "topic_8_title": "System Canister Management",
-    "topic_8_subtitle": "Installing and upgrading “system” canisters that belong to the network. For example, upgrading the NNS.",
+    "topic_8_title": "Application Canister Management",
+    "topic_8_subtitle": "All proposals to manage NNS-controlled canisters not covered by other topics (Protocol Canister Management or Service Nervous System Management).",
     "topic_9_title": "KYC",
     "topic_9_subtitle": "Proposals that update KYC information for regulatory purposes, for example during the initial Genesis distribution of ICP in the form of neurons.",
     "topic_10_title": "Node Provider Rewards",
@@ -367,9 +370,9 @@
     "topic_16_title": "Subnet Rental",
     "topic_16_subtitle": "All proposals related to renting a subnet, for example a subnet rental request.",
     "topic_17_title": "Protocol Canister Management",
-    "topic_17_subtitle": "Proposals related to managing canisters that are considered as part of the IC protocol.",
+    "topic_17_subtitle": "All proposals to manage protocol canisters, which are considered part of the ICP protocol and are essential for its proper functioning.",
     "topic_18_title": "Service Nervous System Management",
-    "topic_18_subtitle": "Proposals related to managing the canisters related to service nervous system (SNS).",
+    "topic_18_subtitle": "All proposals to manage the canisters of service nervous systems (SNS), including upgrading relevant canisters and managing SNS framework canister WASMs through SNS-W.",
     "current_followees": "Currently Following",
     "add": "Add Followee",
     "unknown_topic_title": "Unknown Topic ($topicId)"
@@ -394,17 +397,7 @@
   },
   "actionable_proposals_empty": {
     "title": "You're all caught up.",
-    "text": "Check back later!",
-    "text_unsupported": "Check back later! Note, that not all SNS DAOs support actionable proposals. You will need to check proposals manually if you hold $snsNames neurons."
-  },
-  "actionable_proposals_not_supported": {
-    "title": "$snsName doesn't yet support actionable proposals.",
-    "text": "$snsName SNS governance canister needs to be updated to the latest version to show actionable proposals. You can still vote on all proposals, but they will not have the visual indication.",
-    "dot_tooltip": "This SNS doesn't yet support actionable proposals."
-  },
-  "actionable_proposals_not_supported_snses": {
-    "title": "$snsNames don’t yet support actionable proposals.",
-    "text": "If an SNS DAO wishes to support actionable proposals, it needs to upgrade to a newer version of the SNS governance canister."
+    "text": "Check back later!"
   },
   "canisters": {
     "aria_label_canister_card": "Go to canister details",
@@ -519,8 +512,6 @@
     "remaining": "remaining",
     "next": "Navigate to next proposal",
     "previous": "Navigate to previous proposal",
-    "next_short": "Next",
-    "previous_short": "Previous",
     "sign_in": "Sign in to vote",
     "toggle_lable": "Switch between user-friendly and raw data representation",
     "toggle_tree": "Tree",
@@ -1037,8 +1028,19 @@
     "hide_zero_balances_toggle_label": "Switch between showing and hiding tokens with a balance of zero",
     "zero_balance_hidden": "Tokens with 0 balances are hidden.",
     "show_all": "Show all",
-    "import_token": "Import Token",
     "add_imported_token_success": "New token has been successfully imported!",
     "remove_imported_token_success": "The token has been successfully removed!"
+  },
+  "import_token": {
+    "import_token": "Import Token",
+    "description": "To import a new token to your NNS dapp wallet, you will need to find, and paste the ledger canister id of the token. If you want to see your transaction history, you need to import the token’s index canister.",
+    "ledger_label": "Ledger Canister ID",
+    "index_label_optional": "Index Canister ID <span class='description'>(Optional)</span>",
+    "placeholder": "00000-00000-00000-00000-000",
+    "index_canister_description": "Index Canister allows to display a token balance and transaction history. <strong>Note:</strong> not all tokens have index canisters.",
+    "review_token_info": "Review token info",
+    "warning": "<strong>Warning:</strong> Be careful what token you import! Anyone can create a token including one with the same name as existing tokens, such as ckBTC.",
+    "view_in_dashboard": "View in Dashboard",
+    "link_to_dashboard": "https://dashboard.internetcomputer.org/canister/$canisterId"
   }
 }

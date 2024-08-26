@@ -1,6 +1,7 @@
+import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
+import { SelectAccountDropdownPo } from "$tests/page-objects/SelectAccountDropdown.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { SelectAccountDropdownPo } from "./SelectAccountDropdown.page-object";
 
 export class TransactionFromAccountPo extends BasePageObject {
   private static readonly TID = "transaction-from-account";
@@ -9,6 +10,10 @@ export class TransactionFromAccountPo extends BasePageObject {
     return new TransactionFromAccountPo(
       element.byTestId(TransactionFromAccountPo.TID)
     );
+  }
+
+  getAmountDisplayPo(): AmountDisplayPo {
+    return AmountDisplayPo.under(this.root);
   }
 
   getSelectAccountDropdownPo(): SelectAccountDropdownPo {

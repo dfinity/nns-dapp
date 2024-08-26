@@ -185,7 +185,7 @@
 
     border-radius: var(--border-radius);
     // Otherwise the non-rounded corners of the header and last row would be visible.
-    overflow-y: auto;
+    overflow-y: hidden;
 
     @include media.min-width(medium) {
       display: grid;

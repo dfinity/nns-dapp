@@ -5,13 +5,13 @@ version = { workspace = true }
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-candid = "0.10.9"
+candid = "0.10.10"
 candid_parser = "0.1.4"
 hex = "0.4.3"
 ic_principal = "0.1.1"
-serde = "1.0.204"
+serde = "1.0.208"
 serde_bytes = "0.11.15"
-serde_json = "1.0.121"
+serde_json = "1.0.125"
 
 cycles-minting-canister = { workspace = true }
 dfn_candid = { workspace = true }

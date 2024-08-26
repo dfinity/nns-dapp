@@ -132,7 +132,6 @@ describe("actionable-sns-proposals.services", () => {
     let spyQuerySnsProposals: SpyInstance;
     let spyQuerySnsNeurons;
     let spyConsoleError;
-    let includeBallotsByCaller = true;
 
     beforeEach(() => {
       vi.clearAllMocks();
@@ -148,7 +147,6 @@ describe("actionable-sns-proposals.services", () => {
       spyQuerySnsNeurons = vi
         .spyOn(api, "querySnsNeurons")
         .mockImplementation(() => Promise.resolve([neuron]));
-      includeBallotsByCaller = true;
       spyQuerySnsProposals = vi.spyOn(api, "queryProposals").mockImplementation(
         async ({ rootCanisterId }) =>
           ({
@@ -156,10 +154,7 @@ describe("actionable-sns-proposals.services", () => {
               rootCanisterId.toText() === rootCanisterId1.toText()
                 ? [votableProposal1, votedProposal]
                 : [votableProposal2, votedProposal],
-            // Upgraded canisters return always include_ballots_by_caller: [true], and by old canisters it's not presented.
-            include_ballots_by_caller: includeBallotsByCaller
-              ? [includeBallotsByCaller]
-              : undefined,
+            include_ballots_by_caller: [true],
           }) as SnsListProposalsResponse
       );
     });
@@ -230,7 +225,7 @@ describe("actionable-sns-proposals.services", () => {
         .mockRejectedValueOnce(snsQueryError)
         .mockImplementation(async () => ({
           proposals: [],
-          include_ballots_by_caller: undefined,
+          include_ballots_by_caller: [true] as [boolean],
         }));
       spyConsoleError = silentConsoleErrors();
 
@@ -273,7 +268,7 @@ describe("actionable-sns-proposals.services", () => {
         .spyOn(api, "queryProposals")
         .mockImplementation(async () => ({
           proposals: [],
-          include_ballots_by_caller: undefined,
+          include_ballots_by_caller: [true] as [boolean],
         }));
       failedActionableSnsesStore.add(rootCanisterId1.toText());
 
@@ -329,7 +324,6 @@ describe("actionable-sns-proposals.services", () => {
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId1.toText()]: {
           proposals: [...firstResponse, ...secondResponse],
-          includeBallotsByCaller: true,
         },
       });
     });
@@ -382,38 +376,9 @@ describe("actionable-sns-proposals.services", () => {
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId1.toText()]: {
           proposals: [votableProposal1],
-          includeBallotsByCaller: true,
         },
         [rootCanisterId2.toText()]: {
           proposals: [votableProposal2],
-          includeBallotsByCaller: true,
-        },
-      });
-    });
-
-    it("should not query neurons when the sns doesn't support ballots", async () => {
-      mockSnsProjectsCommittedStore([rootCanisterId1]);
-      includeBallotsByCaller = false;
-
-      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(0);
-      expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(0);
-
-      await loadActionableSnsProposals();
-
-      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(1);
-      expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(0);
-    });
-
-    it("should not update the store when api doesn't support ballots", async () => {
-      mockSnsProjectsCommittedStore([rootCanisterId1]);
-      includeBallotsByCaller = false;
-
-      await loadActionableSnsProposals();
-
-      expect(get(actionableSnsProposalsStore)).toEqual({
-        [rootCanisterId1.toText()]: {
-          proposals: [],
-          includeBallotsByCaller: false,
         },
       });
     });

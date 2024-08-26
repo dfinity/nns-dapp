@@ -44,24 +44,13 @@ test("Test SNS governance", async ({ page, context }) => {
   expect(await snsUniverseRow.getBalanceNumber()).toEqual(askedAmount);
 
   step("Stake a neuron");
-  await appPo.goToStaking();
-
-  const snsRow = await appPo
-    .getStakingPo()
-    .getProjectsTablePo()
-    .getRowByTitle(snsProjectName);
-  await snsRow.click();
-
-  await appPo.getNeuronsPo().getSnsNeuronsPo().waitForContentLoaded();
-  expect(
-    await appPo.getNeuronsPo().getSnsNeuronsPo().getEmptyMessage()
-  ).toEqual(
-    "You have no Alfa Centauri neurons. Create a neuron by staking ALF to vote on Alfa Centauri proposals."
-  );
-
   const stake = 5;
   const formattedStake = "5.00";
-  await appPo.getNeuronsPo().getSnsNeuronsFooterPo().stakeNeuron(stake);
+  await appPo.goToStaking();
+  await appPo.getStakingPo().stakeFirstSnsNeuron({
+    projectName: snsProjectName,
+    amount: stake,
+  });
 
   step("SN001: User can see the list of neurons");
   await appPo.getNeuronsPo().getSnsNeuronsPo().waitForContentLoaded();

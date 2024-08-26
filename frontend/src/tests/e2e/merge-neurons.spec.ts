@@ -23,19 +23,21 @@ test("Test merge neurons", async ({ page, context }) => {
   step("Get some ICP");
   await appPo.getIcpTokens(20);
 
-  step("Go to the neurons tab");
-  await appPo.goToNnsNeurons();
+  step("Go to the staking tab");
+  await appPo.goToStaking();
 
   step("Stake a neuron");
-  const footerPo = appPo.getNeuronsPo().getNnsNeuronsFooterPo();
-  const neuronsPo = appPo.getNeuronsPo().getNnsNeuronsPo();
-
   const initialStake1 = 1;
   const dissolveDelayDays1 = 3 * 365;
-  await footerPo.stakeNeuron({
+  await appPo.getStakingPo().stakeFirstNnsNeuron({
     amount: initialStake1,
     dissolveDelayDays: dissolveDelayDays1,
   });
+
+  const neuronsPo = appPo.getNeuronsPo().getNnsNeuronsPo();
+  const footerPo = appPo.getNeuronsPo().getNnsNeuronsFooterPo();
+  await neuronsPo.waitFor();
+
   const neuronId1 = (await neuronsPo.getNeuronIds())[0];
 
   step("Stake a second neuron");
@@ -78,14 +80,15 @@ test("Test merge neurons", async ({ page, context }) => {
     targetNeuronId: neuronId2,
   });
 
-  const transactionFee = 0.0001;
+  // The stake is also reduced by the transaction fee, but the difference isn't
+  // visible after rounding.
   expect(
     Number(
       await (
         await neuronsPo.getNeuronsTablePo().getNeuronsTableRowPo(neuronId2)
       ).getStakeBalance()
     )
-  ).toBe(finalStake1 + stake2 - transactionFee);
+  ).toBe(finalStake1 + stake2);
 
   expect(await neuronsPo.getNeuronIds()).not.toContain(neuronId1);
 

@@ -1,5 +1,6 @@
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { nowInSeconds } from "$lib/utils/date.utils";
+import { enumValues } from "$lib/utils/enum.utils";
 import {
   concatenateUniqueProposals,
   excludeProposals,
@@ -619,6 +620,46 @@ describe("proposals-utils", () => {
         typeDescription
       );
     });
+
+    it("should provide labels for all function IDs", () => {
+      const IGNORED_NNS_FUNCTION_IDS = [
+        NnsFunction.HardResetNnsRootToVersion,
+        // Obsolete types
+        NnsFunction.UpdateApiBoundaryNodeDomain,
+        NnsFunction.UpdateApiBoundaryNodesVersion,
+      ];
+      const proposalWithNnsFunctionId = (nnsFunctionId: number) => ({
+        ...proposalInfo,
+        proposal: {
+          ...proposal,
+          action: {
+            ExecuteNnsFunction: { nnsFunctionId } as ExecuteNnsFunction,
+          },
+        },
+      });
+      const typeSet = new Set();
+      const typeDescriptionSet = new Set();
+
+      for (const nnsFunctionId of enumValues(NnsFunction)) {
+        if (IGNORED_NNS_FUNCTION_IDS.includes(nnsFunctionId)) {
+          continue;
+        }
+        const { type, typeDescription } = mapProposalInfo(
+          proposalWithNnsFunctionId(nnsFunctionId)
+        );
+
+        // Labels should be defined
+        expect(type).toBeDefined();
+        expect(typeDescription).toBeDefined();
+
+        // Labels should be unique
+        expect(typeSet.has(type)).toBe(false);
+        expect(typeDescriptionSet.has(typeDescription)).toBe(false);
+
+        typeSet.add(type);
+        typeDescriptionSet.add(typeDescription);
+      }
+    });
   });
 
   describe("concatenateUniqueProposals", () => {
@@ -818,7 +859,7 @@ describe("proposals-utils", () => {
     });
   });
 
-  describe("getNnsFunctionIndex", () => {
+  describe("getNnsFunctionKey", () => {
     it("should return nnsFunctionKey from proposal", () => {
       expect(
         getNnsFunctionKey({
@@ -873,7 +914,7 @@ describe("proposals-utils", () => {
         isProposalDeadlineInTheFuture({
           ...mockProposalInfo,
           deadlineTimestampSeconds: undefined,
-          topic: Topic.ManageNeuron,
+          topic: Topic.NeuronManagement,
           proposalTimestampSeconds: BigInt(Math.round(nowSeconds - 3600)),
         })
       ).toBeTruthy();
@@ -885,7 +926,7 @@ describe("proposals-utils", () => {
         isProposalDeadlineInTheFuture({
           ...mockProposalInfo,
           deadlineTimestampSeconds: undefined,
-          topic: Topic.ManageNeuron,
+          topic: Topic.NeuronManagement,
           proposalTimestampSeconds: BigInt(Math.round(nowSeconds - 3600 * 13)),
         })
       ).toBe(false);

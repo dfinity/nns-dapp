@@ -24,12 +24,13 @@ test("Test neuron following", async ({ page, context }) => {
   await appPo.getIcpTokens(20);
 
   step("Stake neuron");
-  await appPo.goToNnsNeurons();
-  await appPo.getNeuronsPo().getNnsNeuronsFooterPo().clickStakeNeuronsButton();
-  const stakeModal = appPo
-    .getNeuronsPo()
-    .getNnsNeuronsFooterPo()
-    .getNnsStakeNeuronModalPo();
+  await appPo.goToStaking();
+  const nnsRow = await appPo
+    .getStakingPo()
+    .getProjectsTablePo()
+    .getRowByTitle("Internet Computer");
+  await nnsRow.getStakeButtonPo().click();
+  const stakeModal = appPo.getStakingPo().getNnsStakeNeuronModalPo();
   await stakeModal.getNnsStakeNeuronPo().stake(10);
   await stakeModal.getSetDissolveDelayPo().setDissolveDelayDays("max");
   await stakeModal.getConfirmDissolveDelayPo().clickConfirm();
@@ -39,7 +40,7 @@ test("Test neuron following", async ({ page, context }) => {
     .getFollowNnsTopicSectionPos();
 
   step("Follow topics");
-  expect(followNnsTopicSections.length).toBe(15);
+  expect(followNnsTopicSections.length).toBe(17);
   // Go through sections in reverse order because the later ones are the ones
   // most likely to fail.
   followNnsTopicSections.reverse();

@@ -1,5 +1,6 @@
 <script lang="ts">
   import ProjectActionsCell from "$lib/components/staking/ProjectActionsCell.svelte";
+  import ProjectMaturityCell from "$lib/components/staking/ProjectMaturityCell.svelte";
   import ProjectNeuronsCell from "$lib/components/staking/ProjectNeuronsCell.svelte";
   import ProjectStakeCell from "$lib/components/staking/ProjectStakeCell.svelte";
   import ProjectTitleCell from "$lib/components/staking/ProjectTitleCell.svelte";
@@ -14,6 +15,7 @@
     getTableProjects,
     sortTableProjects,
   } from "$lib/utils/staking.utils";
+  import { createEventDispatcher } from "svelte";
 
   const columns: ProjectsTableColumn[] = [
     {
@@ -30,6 +32,17 @@
     {
       title: $i18n.neuron_detail.stake,
       cellComponent: ProjectStakeCell,
+      alignment: "right",
+      templateColumns: ["max-content"],
+    },
+    {
+      title: "",
+      alignment: "left",
+      templateColumns: ["1fr"],
+    },
+    {
+      title: $i18n.neuron_detail.maturity_title,
+      cellComponent: ProjectMaturityCell,
       alignment: "right",
       templateColumns: ["max-content"],
     },
@@ -62,10 +75,23 @@
 
   let sortedTableProjects: TableProject[];
   $: sortedTableProjects = sortTableProjects(tableProjects);
+
+  const dispatcher = createEventDispatcher();
+
+  const handleAction = ({
+    detail: { rowData },
+  }: {
+    detail: { rowData: TableProject };
+  }) => {
+    if (rowData.neuronCount === 0) {
+      dispatcher("nnsStakeTokens", { universeId: rowData.universeId });
+    }
+  };
 </script>
 
 <ResponsiveTable
   testId="projects-table-component"
   tableData={sortedTableProjects}
   {columns}
+  on:nnsAction={handleAction}
 ></ResponsiveTable>

@@ -1462,7 +1462,7 @@ describe("neurons-services", () => {
 
     it("should not call api if not controlled by user but controlled by hotkey for topic Manage Neuron", async () => {
       const followee = 8n;
-      const topic = Topic.ManageNeuron;
+      const topic = Topic.NeuronManagement;
       const hotkeyNeuron = {
         ...notControlledNeuron,
         fullNeuron: {
@@ -1595,7 +1595,7 @@ describe("neurons-services", () => {
 
     it("should not call api if user not controller but controlled by hotkey and topic is manage neuron", async () => {
       const followee = 8n;
-      const topic = Topic.ManageNeuron;
+      const topic = Topic.NeuronManagement;
       const hotkeyNeuron = {
         ...notControlledNeuron,
         fullNeuron: {

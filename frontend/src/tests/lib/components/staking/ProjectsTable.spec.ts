@@ -13,14 +13,20 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { nonNullish } from "@dfinity/utils";
 
 describe("ProjectsTable", () => {
   const snsTitle = "SNS-1";
   const snsCanisterId = principal(1111);
   const snsTokenSymbol = "TOK";
 
-  const renderComponent = () => {
-    const { container } = render(ProjectsTable);
+  const renderComponent = ({ onNnsStakeTokens = null } = {}) => {
+    const { container, component } = render(ProjectsTable);
+    if (nonNullish(onNnsStakeTokens)) {
+      component.$on("nnsStakeTokens", ({ detail }) =>
+        onNnsStakeTokens({ detail })
+      );
+    }
     return ProjectsTablePo.under(new JestPageObjectElement(container));
   };
 
@@ -52,6 +58,8 @@ describe("ProjectsTable", () => {
       "",
       "Stake",
       "",
+      "Maturity",
+      "",
       "Neurons",
       "", // No header for actions column.
     ]);
@@ -73,6 +81,8 @@ describe("ProjectsTable", () => {
       expect.any(String), // gap
       "desktop-align-right", // Stake
       expect.any(String), // gap
+      "desktop-align-right", // Maturity
+      expect.any(String), // gap
       "desktop-align-right", // Neurons
       "desktop-align-right", // Actions
     ]);
@@ -87,12 +97,14 @@ describe("ProjectsTable", () => {
         "1fr", // gap
         "max-content", // Stake
         "1fr", // gap
+        "max-content", // Maturity
+        "1fr", // gap
         "max-content", // Neurons
         "max-content", // Actions
       ].join(" ")
     );
     expect(await po.getMobileGridTemplateAreas()).toBe(
-      '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3"'
+      '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5"'
     );
   });
 
@@ -129,15 +141,46 @@ describe("ProjectsTable", () => {
     expect(await rowPos[1].getStake()).toBe("");
   });
 
+  it("should render maturity as -/- when neurons not loaded", async () => {
+    const po = renderComponent();
+    const rowPos = await po.getProjectsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getProjectMaturityCellPo().getText()).toBe("-/-");
+    expect(await rowPos[1].getProjectMaturityCellPo().getText()).toBe("-/-");
+  });
+
+  it("should not render maturity when user has no neurons", async () => {
+    neuronsStore.setNeurons({
+      neurons: [],
+      certified: true,
+    });
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: snsCanisterId,
+      neurons: [],
+      certified: true,
+    });
+    const po = renderComponent();
+    const rowPos = await po.getProjectsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getProjectMaturityCellPo().getText()).toBe("");
+    expect(await rowPos[1].getProjectMaturityCellPo().getText()).toBe("");
+  });
+
   describe("with neurons", () => {
     const nnsNeuronStake = 100_000_000n;
+    const nnsAvailableMaturity = 30_000_000n;
+    const nnsStakedMaturity = 40_000_000n;
     const snsNeuronStake = 200_000_000n;
+    const snsAvailableMaturity = 50_000_000n;
+    const snsStakedMaturity = 60_000_000n;
 
     const nnsNeuronWithStake = {
       ...mockNeuron,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         cachedNeuronStake: nnsNeuronStake,
+        maturityE8sEquivalent: nnsAvailableMaturity,
+        stakedMaturityE8sEquivalent: nnsStakedMaturity,
       },
     };
 
@@ -147,17 +190,21 @@ describe("ProjectsTable", () => {
         ...mockNeuron.fullNeuron,
         cachedNeuronStake: 0n,
         maturityE8sEquivalent: 0n,
+        stakedMaturityE8sEquivalent: 0n,
       },
     };
 
     const snsNeuronWithStake = createMockSnsNeuron({
       stake: snsNeuronStake,
+      maturity: snsAvailableMaturity,
+      stakedMaturity: snsStakedMaturity,
       id: [1, 1, 3],
     });
 
     const snsNeuronWithoutStake = createMockSnsNeuron({
       stake: 0n,
       maturity: 0n,
+      stakedMaturity: 0n,
       id: [7, 7, 9],
     });
 
@@ -176,6 +223,29 @@ describe("ProjectsTable", () => {
       expect(rowPos).toHaveLength(2);
       expect(await rowPos[0].getStake()).toBe("1.00 ICP");
       expect(await rowPos[1].getStake()).toBe("2.00 TOK");
+    });
+
+    it("should render maturity", async () => {
+      neuronsStore.setNeurons({
+        neurons: [nnsNeuronWithStake],
+        certified: true,
+      });
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [snsNeuronWithStake],
+        certified: true,
+      });
+      const po = renderComponent();
+      const rowPos = await po.getProjectsTableRowPos();
+      expect(rowPos).toHaveLength(2);
+      // 0.30 + 0.40 = 0.70
+      expect(
+        await rowPos[0].getProjectMaturityCellPo().getTotalMaturity()
+      ).toBe("0.70");
+      // 0.50 + 0.60 = 1.10
+      expect(
+        await rowPos[1].getProjectMaturityCellPo().getTotalMaturity()
+      ).toBe("1.10");
     });
 
     it("should render NNS neurons count", async () => {
@@ -245,13 +315,11 @@ describe("ProjectsTable", () => {
       const rowPos = await po.getProjectsTableRowPos();
       expect(rowPos).toHaveLength(2);
       expect(await rowPos[0].getNeuronCount()).toBe("-/-");
-      expect(await rowPos[0].getHref()).toBe(
-        `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
-      );
-      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(true);
+      expect(await rowPos[0].getHref()).toBe(null);
+      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(false);
       expect(await rowPos[1].getNeuronCount()).toBe("-/-");
-      expect(await rowPos[1].getHref()).toBe(`/neurons/?u=${snsCanisterId}`);
-      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(true);
+      expect(await rowPos[1].getHref()).toBe(null);
+      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(false);
     });
 
     it("should not render SNS neurons count when not loaded", async () => {
@@ -259,16 +327,14 @@ describe("ProjectsTable", () => {
       const rowPos = await po.getProjectsTableRowPos();
       expect(rowPos).toHaveLength(2);
       expect(await rowPos[0].getNeuronCount()).toBe("-/-");
-      expect(await rowPos[0].getHref()).toBe(
-        `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
-      );
-      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(true);
+      expect(await rowPos[0].getHref()).toBe(null);
+      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(false);
       expect(await rowPos[1].getNeuronCount()).toBe("-/-");
-      expect(await rowPos[1].getHref()).toBe(`/neurons/?u=${snsCanisterId}`);
-      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(true);
+      expect(await rowPos[1].getHref()).toBe(null);
+      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(false);
     });
 
-    it("should not render clickable row with zero neurons", async () => {
+    it("should render stake button with zero neurons", async () => {
       neuronsStore.setNeurons({
         neurons: [],
         certified: true,
@@ -278,17 +344,107 @@ describe("ProjectsTable", () => {
         neurons: [],
         certified: true,
       });
-      const po = renderComponent();
+      const onNnsStakeTokens = vi.fn();
+      const po = renderComponent({ onNnsStakeTokens });
       const rowPos = await po.getProjectsTableRowPos();
       expect(rowPos).toHaveLength(2);
-      expect(await rowPos[0].getNeuronCount()).toBe("0");
-      expect(await rowPos[0].getHref()).toBe(
-        `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
-      );
+      expect(await rowPos[0].getStakeButtonPo().isPresent()).toBe(true);
+      expect(await rowPos[0].getNeuronCount()).toBe("Stake ICP");
+      expect(await rowPos[0].getHref()).toBe(null);
       expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(true);
-      expect(await rowPos[1].getNeuronCount()).toBe("0");
-      expect(await rowPos[1].getHref()).toBe(`/neurons/?u=${snsCanisterId}`);
+
+      expect(onNnsStakeTokens).not.toBeCalled();
+      await rowPos[0].getStakeButtonPo().click();
+      expect(onNnsStakeTokens).toBeCalledTimes(1);
+      expect(onNnsStakeTokens).toBeCalledWith({
+        detail: {
+          universeId: OWN_CANISTER_ID_TEXT,
+        },
+      });
+
+      expect(await rowPos[1].getStakeButtonPo().isPresent()).toBe(true);
+      expect(await rowPos[1].getNeuronCount()).toBe("Stake TOK");
+      expect(await rowPos[1].getHref()).toBe(null);
       expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(true);
+
+      await rowPos[1].getStakeButtonPo().click();
+      expect(onNnsStakeTokens).toBeCalledTimes(2);
+      expect(onNnsStakeTokens).toBeCalledWith({
+        detail: {
+          universeId: snsCanisterId.toText(),
+        },
+      });
+    });
+
+    it("should dispatch nnsStakeTokens on row click with zero neurons", async () => {
+      neuronsStore.setNeurons({
+        neurons: [],
+        certified: true,
+      });
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [],
+        certified: true,
+      });
+      const onNnsStakeTokens = vi.fn();
+      const po = renderComponent({ onNnsStakeTokens });
+      const rowPos = await po.getProjectsTableRowPos();
+      expect(rowPos).toHaveLength(2);
+
+      expect(onNnsStakeTokens).not.toBeCalled();
+      await rowPos[0].click();
+      expect(onNnsStakeTokens).toBeCalledTimes(1);
+      expect(onNnsStakeTokens).toBeCalledWith({
+        detail: {
+          universeId: OWN_CANISTER_ID_TEXT,
+        },
+      });
+
+      await rowPos[1].click();
+      expect(onNnsStakeTokens).toBeCalledTimes(2);
+      expect(onNnsStakeTokens).toBeCalledWith({
+        detail: {
+          universeId: snsCanisterId.toText(),
+        },
+      });
+    });
+
+    it("should not dispatch nnsStakeTokens on row click when not signed in", async () => {
+      setNoIdentity();
+      neuronsStore.setNeurons({
+        neurons: [],
+        certified: true,
+      });
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [],
+        certified: true,
+      });
+      const onNnsStakeTokens = vi.fn();
+      const po = renderComponent({ onNnsStakeTokens });
+      const rowPos = await po.getProjectsTableRowPos();
+      expect(rowPos).toHaveLength(2);
+
+      expect(onNnsStakeTokens).not.toBeCalled();
+      await rowPos[0].click();
+      expect(onNnsStakeTokens).not.toBeCalled();
+
+      await rowPos[1].click();
+      expect(onNnsStakeTokens).not.toBeCalled();
+    });
+
+    it("should not dispatch nnsStakeTokens on row click when neurons not loaded", async () => {
+      const onNnsStakeTokens = vi.fn();
+      const po = renderComponent({ onNnsStakeTokens });
+      const rowPos = await po.getProjectsTableRowPos();
+      expect(rowPos).toHaveLength(2);
+
+      expect(onNnsStakeTokens).not.toBeCalled();
+      await rowPos[0].click();
+      expect(onNnsStakeTokens).not.toBeCalled();
+
+      await rowPos[1].click();
+      expect(onNnsStakeTokens).not.toBeCalled();
     });
   });
 
