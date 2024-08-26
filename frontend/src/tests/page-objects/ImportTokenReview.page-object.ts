@@ -1,4 +1,4 @@
-import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { ImportTokenCanisterIdPo } from "$tests/page-objects/ImportTokenCanisterId.page-object";
 import { LogoPo } from "$tests/page-objects/Logo.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -38,16 +38,10 @@ export class ImportTokenReviewPo extends BasePageObject {
   }
 
   getBackButtonPo(): ButtonPo {
-    return ButtonPo.under({
-      element: this.root,
-      testId: "back-button",
-    });
+    return this.getButton("back-button");
   }
 
   getConfirmButtonPo(): ButtonPo {
-    return ButtonPo.under({
-      element: this.root,
-      testId: "confirm-button",
-    });
+    return this.getButton("confirm-button");
   }
 }
