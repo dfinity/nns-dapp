@@ -1,5 +1,8 @@
 import * as importedTokensApi from "$lib/api/imported-tokens.api";
-import { TooManyImportedTokensError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import {
+  AccountNotFoundError,
+  TooManyImportedTokensError,
+} from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { ImportedToken } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import {
   addImportedToken,
@@ -109,6 +112,38 @@ describe("imported-tokens-services", () => {
       expect(get(importedTokensStore)).toEqual({
         importedTokens: undefined,
         certified: undefined,
+      });
+    });
+
+    it("should handle ignoreAccountNotFoundError parameter (no error toast, no imported tokens)", async () => {
+      const accountNotFoundError = new AccountNotFoundError("test");
+      const spyToastError = vi.spyOn(toastsStore, "toastsError");
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockRejectedValue(
+        accountNotFoundError
+      );
+
+      expect(spyToastError).toBeCalledTimes(0);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: undefined,
+        certified: undefined,
+      });
+
+      // default = ignoreAccountNotFoundError: false
+      await loadImportedTokens();
+      expect(spyToastError).toBeCalledTimes(1);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: undefined,
+        certified: undefined,
+      });
+
+      // ignoreAccountNotFoundError: true
+      await loadImportedTokens({
+        ignoreAccountNotFoundError: true,
+      });
+      expect(spyToastError).toBeCalledTimes(1);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: [],
+        certified: true,
       });
     });
   });

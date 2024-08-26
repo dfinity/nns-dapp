@@ -2,7 +2,10 @@ import {
   getImportedTokens,
   setImportedTokens,
 } from "$lib/api/imported-tokens.api";
-import { TooManyImportedTokensError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import {
+  AccountNotFoundError,
+  TooManyImportedTokensError,
+} from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { ImportedTokens } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
@@ -21,7 +24,11 @@ import { queryAndUpdate } from "./utils.services";
 /** Load imported tokens from the `nns-dapp` backend and update the `importedTokensStore` store.
  * - Displays an error toast if the operation fails.
  */
-export const loadImportedTokens = async () => {
+export const loadImportedTokens = async ({
+  ignoreAccountNotFoundError,
+}: {
+  ignoreAccountNotFoundError?: boolean;
+} = {}) => {
   return queryAndUpdate<ImportedTokens, unknown>({
     request: (options) => getImportedTokens(options),
     strategy: FORCE_CALL_STRATEGY,
@@ -32,6 +39,17 @@ export const loadImportedTokens = async () => {
       }),
     onError: ({ error: err, certified }) => {
       console.error(err);
+
+      if (ignoreAccountNotFoundError && err instanceof AccountNotFoundError) {
+        // When you log in with a new account for the first time, the account is created in the NNS dapp.
+        // If you request imported tokens before the account is created, an `AccountNotFound` error will be thrown.
+        // In this case, we can be sure that the user has no imported tokens.
+        importedTokensStore.set({
+          importedTokens: [],
+          certified,
+        });
+        return;
+      }
 
       if (!certified && notForceCallStrategy()) {
         return;
