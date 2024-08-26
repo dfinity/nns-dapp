@@ -11,6 +11,30 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 132133
+
+### Application
+
+#### Added
+
+* Stake tokens, the first time, directly from the Nervous Systems table.
+
+#### Changed
+
+* Bump ic-js so that NNS Dapp can parse `InstallCode` proposal correctly.
+* Display of the new/renamed topics and proposals.
+
+#### Fixed
+
+* Empty space in the Tokens and Neurons tables in Safari.
+* Staking for SNS with zero transaction fee.
+
+### Operations
+
+#### Removed
+
+* Integration test setup code and related script and documentation.
+
 ## Proposal 131754
 
 ### Application
