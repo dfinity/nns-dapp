@@ -8,14 +8,9 @@
   import { nonNullish } from "@dfinity/utils";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 
-  export let ledgerCanisterId: Principal;
-
   const dispatch = createEventDispatcher();
 
-  let universe: Universe | undefined;
-  $: universe = $selectableUniversesStore.find(
-    ({ canisterId }) => canisterId === ledgerCanisterId.toText()
-  );
+  export let universe: Universe | undefined;
 </script>
 
 <Modal
