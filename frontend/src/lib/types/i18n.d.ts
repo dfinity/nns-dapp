@@ -1099,6 +1099,9 @@ interface I18nImport_token {
   index_canister_description: string;
   review_token_info: string;
   warning: string;
+  index_label: string;
+  index_fallback_label: string;
+  import_button: string;
   view_in_dashboard: string;
   link_to_dashboard: string;
 }
