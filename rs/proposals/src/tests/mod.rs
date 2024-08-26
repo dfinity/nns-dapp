@@ -47,23 +47,3 @@ fn proposal_info_with_action(action: Action) -> ProposalInfo {
         executed_timestamp_seconds: 1,
     }
 }
-
-#[test]
-fn process_proposal_payload_install_code() {
-    let install_code_action = Action::InstallCode(InstallCode {
-        canister_id: Some(Principal::from_text("rrkah-fqaaa-aaaaa-aaaaq-cai").unwrap()),
-        wasm_module: Some(vec![1, 2, 3, 4].into()),
-        arg: Some(vec![5, 6, 7, 8].into()),
-        skip_stopping_before_installing: Some(false),
-        install_mode: Some(1),
-    });
-    let proposal_info = proposal_info_with_action(install_code_action);
-
-    assert_eq!(
-        process_proposal_payload(&proposal_info),
-        "{\"arg_hash\":\"55e5509f8052998294266ee5b50cb592938191fb5d67f73cac2e60b0276b1bdd\",\
-         \"arg_hex\":\"05060708\",\
-         \"wasm_module_hash\":\"9f64a747e1b97f131fabb6b447296c9b6f0201e79fb3c5356e6c77e89b6a806a\"}"
-            .to_string()
-    );
-}

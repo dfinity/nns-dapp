@@ -9,10 +9,7 @@
 #![allow(missing_docs)]
 use crate::{
     canister_arg_types,
-    canisters::{
-        nns_governance::api::InstallCode,
-        sns_wasm::api::{SnsUpgrade, SnsVersion},
-    },
+    canisters::sns_wasm::api::{SnsUpgrade, SnsVersion},
     decode_arg, Json,
 };
 
@@ -502,29 +499,4 @@ pub struct SubnetRentalRequest {
 #[derive(candid::CandidType, candid::Deserialize, serde::Serialize, Clone, Copy, Debug)]
 pub enum RentalConditionId {
     App13CH,
-}
-
-#[derive(CandidType, Serialize, Deserialize, Clone)]
-pub struct InstallCodeTrimmed {
-    pub wasm_module_hash: String,
-    pub arg_hex: String,
-    pub arg_hash: String,
-}
-
-impl From<&InstallCode> for InstallCodeTrimmed {
-    fn from(install_code: &InstallCode) -> Self {
-        InstallCodeTrimmed {
-            wasm_module_hash: install_code
-                .wasm_module
-                .as_ref()
-                .map(|wasm_module| calculate_hash_string(wasm_module))
-                .unwrap_or_default(),
-            arg_hex: install_code.arg.as_ref().map(hex::encode).unwrap_or_default(),
-            arg_hash: install_code
-                .arg
-                .as_ref()
-                .map(|arg| calculate_hash_string(arg))
-                .unwrap_or_default(),
-        }
-    }
 }
