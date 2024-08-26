@@ -129,9 +129,7 @@ interface I18nError {
 
 interface I18nWarning {
   auth_sign_out: string;
-  test_env_welcome: string;
   test_env_note: string;
-  test_env_request: string;
   test_env_confirm: string;
   test_env_title: string;
 }
@@ -177,8 +175,8 @@ interface I18nAccounts {
   add_account: string;
   new_account_title: string;
   new_linked_subtitle: string;
-  attach_hardware_title: string;
   attach_hardware_subtitle: string;
+  attach_hardware_title: string;
   attach_hardware_name_placeholder: string;
   attach_hardware_enter_name: string;
   attach_hardware_description: string;
