@@ -49,6 +49,9 @@ export const matchLedgerIndexPair = async ({
     console.error(err);
     toastsError({
       labelKey: "error.index_canister_validation",
+      substitutions: {
+        $indexCanister: indexCanisterId.toText(),
+      },
       err,
     });
   }

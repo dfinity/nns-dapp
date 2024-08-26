@@ -61,6 +61,9 @@ describe("icrc-index.services", () => {
       expect(spyToastError).toBeCalledTimes(1);
       expect(spyToastError).toBeCalledWith({
         labelKey: "error.index_canister_validation",
+        substitutions: {
+          $indexCanister: indexCanisterId.toText(),
+        },
         err: error,
       });
     });
