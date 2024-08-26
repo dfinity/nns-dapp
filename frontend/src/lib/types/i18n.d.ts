@@ -177,8 +177,8 @@ interface I18nAccounts {
   add_account: string;
   new_account_title: string;
   new_linked_subtitle: string;
-  attach_hardware_subtitle: string;
   attach_hardware_title: string;
+  attach_hardware_subtitle: string;
   attach_hardware_name_placeholder: string;
   attach_hardware_enter_name: string;
   attach_hardware_description: string;
@@ -1231,7 +1231,6 @@ interface I18nNns_functions {
   AddNodeToSubnet: string;
   NnsCanisterInstall: string;
   NnsCanisterUpgrade: string;
-  BlessReplicaVersion: string;
   RecoverSubnet: string;
   UpdateConfigOfSubnet: string;
   AssignNoid: string;
@@ -1262,7 +1261,6 @@ interface I18nNns_functions {
   ChangeSubnetTypeAssignment: string;
   UpdateSnsWasmSnsSubnetIds: string;
   UpdateAllowedPrincipals: string;
-  RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
   ReviseElectedGuestosVersions: string;
   BitcoinSetConfig: string;
@@ -1285,7 +1283,6 @@ interface I18nNns_functions_description {
   AddNodeToSubnet: string;
   NnsCanisterInstall: string;
   NnsCanisterUpgrade: string;
-  BlessReplicaVersion: string;
   RecoverSubnet: string;
   UpdateConfigOfSubnet: string;
   AssignNoid: string;
@@ -1316,7 +1313,6 @@ interface I18nNns_functions_description {
   ChangeSubnetTypeAssignment: string;
   UpdateSnsWasmSnsSubnetIds: string;
   UpdateAllowedPrincipals: string;
-  RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
   ReviseElectedGuestosVersions: string;
   BitcoinSetConfig: string;
