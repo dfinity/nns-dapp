@@ -7,4 +7,8 @@ export class LogoPo extends LogoWrapperPo {
   static under(element: PageObjectElement): LogoPo {
     return new LogoPo(element.byTestId(LogoPo.TID));
   }
+
+  getSource(): Promise<string> {
+    return this.root.getAttribute("src");
+  }
 }
