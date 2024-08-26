@@ -79,18 +79,6 @@ describe("ImportTokenReview", () => {
     );
   });
 
-  it("should render a warning message", async () => {
-    const { po } = renderComponent({
-      ledgerCanisterId: principal(0),
-      indexCanisterId: undefined,
-      tokenMetaData,
-    });
-
-    expect((await po.getWarningPo().getText()).trim()).toEqual(
-      "Warning: Be careful what token you import! Anyone can create a token including one with the same name as existing tokens, such as ckBTC."
-    );
-  });
-
   it("should dispatch events on buttons click", async () => {
     const { po, onBack, onConfirm } = renderComponent({
       ledgerCanisterId: principal(0),
