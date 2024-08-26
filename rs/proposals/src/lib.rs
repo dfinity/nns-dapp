@@ -9,11 +9,11 @@ use crate::def::{
     CompleteCanisterMigrationPayload, CreateSubnetPayload, DeployGuestosToAllSubnetNodesPayload,
     DeployGuestosToAllUnassignedNodesPayload, DeployGuestosToSomeApiBoundaryNodesPayload,
     DeployHostosToSomeNodesPayload, InsertUpgradePathEntriesRequest, InsertUpgradePathEntriesRequestHumanReadable,
-    InstallCodeTrimmed, PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveApiBoundaryNodesPayload,
-    RemoveFirewallRulesPayload, RemoveNodeOperatorsPayload, RemoveNodeOperatorsPayloadHumanReadable,
-    RemoveNodesFromSubnetPayload, RemoveNodesPayload, RerouteCanisterRangesPayload,
-    ReviseElectedGuestosVersionsPayload, ReviseElectedHostosVersionsPayload, SetAuthorizedSubnetworkListArgs,
-    SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, SubnetRentalRequest, UpdateAllowedPrincipalsRequest,
+    PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveApiBoundaryNodesPayload, RemoveFirewallRulesPayload,
+    RemoveNodeOperatorsPayload, RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload,
+    RemoveNodesPayload, RerouteCanisterRangesPayload, ReviseElectedGuestosVersionsPayload,
+    ReviseElectedHostosVersionsPayload, SetAuthorizedSubnetworkListArgs, SetFirewallConfigPayload,
+    StopOrStartNnsCanisterProposal, SubnetRentalRequest, UpdateAllowedPrincipalsRequest,
     UpdateApiBoundaryNodesVersionPayload, UpdateElectedHostosVersionsPayload, UpdateFirewallRulesPayload,
     UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload,
     UpdateNodesHostosVersionPayload, UpdateSnsSubnetListRequest, UpdateSshReadOnlyAccessForAllUnassignedNodesPayload,
@@ -29,7 +29,6 @@ use idl2json::candid_types::internal_candid_type_to_idl_type;
 use idl2json::{idl_args2json_with_weak_names, BytesFormat, Idl2JsonOptions};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
-use serde_json::json;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt::Debug;
@@ -121,10 +120,6 @@ pub fn process_proposal_payload(proposal_info: &ProposalInfo) -> Json {
                 let error_msg = "Unable to deserialize payload";
                 serde_json::to_string(&format!("{error_msg}: {e:.400}")).unwrap_or_else(|_| format!("\"{error_msg}\""))
             })
-        }
-        Some(Action::InstallCode(install_code)) => {
-            let trimmed = InstallCodeTrimmed::from(install_code);
-            json!(trimmed).to_string()
         }
         _ => serde_json::to_string("Proposal has no payload")
             .unwrap_or_else(|err| unreachable!("Surely a fixed string can be serialized as JSON?  Err: {err:?}")),
