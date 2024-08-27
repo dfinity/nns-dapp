@@ -18,6 +18,21 @@ describe("ConfirmationModal", () => {
     expect(getByText(noButtonText)).toBeInTheDocument();
   });
 
+  it("should provide custom yesLabel", () => {
+    const yesLabel = "yes label for test";
+    const { getByText, component } = render(ConfirmationModal, {
+      props: {
+        yesLabel,
+      },
+    });
+    const spyNnsConfirm = vi.fn();
+    component.$on("nnsConfirm", spyNnsConfirm);
+
+    expect(spyNnsConfirm).toBeCalledTimes(0);
+    fireEvent.click(getByText(yesLabel));
+    expect(spyNnsConfirm).toBeCalledTimes(1);
+  });
+
   it("should trigger nnsClose", () =>
     new Promise<void>((done) => {
       const { getByText, component } = render(ConfirmationModal);
