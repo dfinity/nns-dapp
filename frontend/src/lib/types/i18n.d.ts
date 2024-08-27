@@ -1100,9 +1100,8 @@ interface I18nImport_token {
   index_canister_description: string;
   review_token_info: string;
   warning: string;
-  remove_confirmation_title: string;
-  remove_confirmation_description_1: string;
-  remove_confirmation_description_2: string;
+  remove_confirmation_header: string;
+  remove_confirmation_description: string;
   view_in_dashboard: string;
   link_to_dashboard: string;
 }

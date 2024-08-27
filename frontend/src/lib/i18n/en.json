@@ -1041,9 +1041,8 @@
     "index_canister_description": "Index Canister allows to display a token balance and transaction history. <strong>Note:</strong> not all tokens have index canisters.",
     "review_token_info": "Review token info",
     "warning": "<strong>Warning:</strong> Be careful what token you import! Anyone can create a token including one with the same name as existing tokens, such as ckBTC.",
-    "remove_confirmation_title": "Remove Token",
-    "remove_confirmation_description_1": "Are you sure you want to remove this token from your account?",
-    "remove_confirmation_description_2": "Tokens you hold in your account will not be lost, and you can add the token back in the future.",
+    "remove_confirmation_header": "Are you sure you want to remove this token from your account?",
+    "remove_confirmation_description": "Tokens you hold in your account will not be lost, and you can add the token back in the future.",
     "view_in_dashboard": "View in Dashboard",
     "link_to_dashboard": "https://dashboard.internetcomputer.org/canister/$canisterId"
   }
