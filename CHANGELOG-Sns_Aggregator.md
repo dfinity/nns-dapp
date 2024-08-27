@@ -9,10 +9,6 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ## Unreleased
 
 ### Added
-
-- Include SNS nervous system parameters.
-- Add common code snippets for developers to the "Documentation" chapter on the landing page.
-
 ### Changed
 ### Deprecated
 ### Removed
@@ -21,6 +17,10 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 - Decoding quota of 10,000 in the `http_request` method.
 
+## [Proposal 129614](https://dashboard.internetcomputer.org/proposal/129614)
+### Added
+- Include SNS nervous system parameters.
+- Add common code snippets for developers to the "Documentation" chapter on the landing page.
 
 ## [Proposal 126006](https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=126006)
 ### Changed

@@ -1110,9 +1110,11 @@ interface I18nImport_token {
   ledger_canister_loading_error: string;
   add_imported_token_success: string;
   remove_imported_token_success: string;
+  remove_confirmation_title: string;
+  remove_confirmation_description_1: string;
+  remove_confirmation_description_2: string;
   view_in_dashboard: string;
   link_to_dashboard: string;
-  remove_confirmation_title: string;
   remove_confirmation_description: string;
 }
 
