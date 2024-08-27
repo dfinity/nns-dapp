@@ -4,10 +4,14 @@
   import { createEventDispatcher } from "svelte";
 
   export let testId = "confirmation-modal-component";
+  export let noLabel: string | undefined = undefined;
+  export let yesLabel: string | undefined = undefined;
+
   const dispatch = createEventDispatcher();
 </script>
 
 <Modal role="alert" on:nnsClose {testId}>
+  <slot name="title" slot="title" />
   <article data-tid="confirmation-modal-content">
     <slot />
   </article>
@@ -17,13 +21,13 @@
       data-tid="confirm-no"
       disabled={$busy}
       on:click={() => dispatch("nnsClose")}
-      class="secondary">{$i18n.core.confirm_no}</button
+      class="secondary">{noLabel ?? $i18n.core.confirm_no}</button
     >
     <button
       data-tid="confirm-yes"
       disabled={$busy}
       class="primary"
-      on:click={() => dispatch("nnsConfirm")}>{$i18n.core.confirm_yes}</button
+      on:click={() => dispatch("nnsConfirm")}>{yesLabel && $i18n.core.confirm_yes}</button
     >
   </svelte:fragment>
 </Modal>
