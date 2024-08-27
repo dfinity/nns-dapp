@@ -1092,6 +1092,7 @@ interface I18nTokens {
 
 interface I18nImport_token {
   import_token: string;
+  imported_token: string;
   description: string;
   ledger_label: string;
   index_label_optional: string;
@@ -1099,6 +1100,8 @@ interface I18nImport_token {
   index_canister_description: string;
   review_token_info: string;
   warning: string;
+  remove_confirmation_header: string;
+  remove_confirmation_description: string;
   index_label: string;
   index_fallback_label: string;
   import_button: string;
