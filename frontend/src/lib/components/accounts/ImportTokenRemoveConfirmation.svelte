@@ -5,27 +5,25 @@
   import { nonNullish } from "@dfinity/utils";
   import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
   import { Tag } from "@dfinity/gix-components";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let universe: Universe | undefined;
 </script>
 
-<ConfirmationModal
-  testId="import-token-remove-confirmation-component"
-  on:nnsClose
-  on:nnsConfirm
-  yesLabel={$i18n.core.remove}
->
-  <div class="content">
-    <h4>{$i18n.import_token.remove_confirmation_header}</h4>
-    <div class="headline">
-      {#if nonNullish(universe)}<UniversePageSummary {universe} />{/if}
-      <Tag>{$i18n.import_token.imported_token}</Tag>
+<TestIdWrapper testId="import-token-remove-confirmation-component">
+  <ConfirmationModal on:nnsClose on:nnsConfirm yesLabel={$i18n.core.remove}>
+    <div class="content">
+      <h4>{$i18n.import_token.remove_confirmation_header}</h4>
+      <div class="token">
+        {#if nonNullish(universe)}<UniversePageSummary {universe} />{/if}
+        <Tag>{$i18n.import_token.imported_token}</Tag>
+      </div>
+      <p class="description text_small">
+        {$i18n.import_token.remove_confirmation_description}
+      </p>
     </div>
-    <p class="description text_small">
-      {$i18n.import_token.remove_confirmation_description}
-    </p>
-  </div>
-</ConfirmationModal>
+  </ConfirmationModal>
+</TestIdWrapper>
 
 <style lang="scss">
   .content {
@@ -34,7 +32,7 @@
     gap: var(--padding-2x);
   }
 
-  .headline {
+  .token {
     display: flex;
     gap: var(--padding-0_5x);
   }

@@ -1,8 +1,9 @@
-import { ModalPo } from "$tests/page-objects/Modal.page-object";
+import { ConfirmationModalPo } from "$tests/page-objects/ConfirmationModal.page-object";
 import { UniversePageSummaryPo } from "$tests/page-objects/UniversePageSummary.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class ImportTokenRemoveConfirmationPo extends ModalPo {
+export class ImportTokenRemoveConfirmationPo extends BasePageObject {
   private static readonly TID = "import-token-remove-confirmation-component";
 
   static under(element: PageObjectElement): ImportTokenRemoveConfirmationPo {
@@ -11,15 +12,15 @@ export class ImportTokenRemoveConfirmationPo extends ModalPo {
     );
   }
 
+  getConfirmationModalPo(): ConfirmationModalPo {
+    return ConfirmationModalPo.under(this.root);
+  }
+
   getUniversePageSummaryPo(): UniversePageSummaryPo {
     return UniversePageSummaryPo.under(this.root);
   }
 
-  clickClose(): Promise<void> {
-    return this.getButton("close-button").click();
-  }
-
   clickConfirm(): Promise<void> {
-    return this.getButton("confirm-button").click();
+    return this.getConfirmationModalPo().confirmYes();
   }
 }
