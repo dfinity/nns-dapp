@@ -30,4 +30,4 @@ for cargo_toml_file in "Cargo.toml" $(find "$TOP_DIR/rs" -name "Cargo.toml"); do
   done
 done
 
-cargo update --workspace
+cargo update

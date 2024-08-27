@@ -4,15 +4,14 @@ use crate::canisters::nns_governance::api::{Action, ProposalInfo};
 use crate::def::{
     AddApiBoundaryNodesPayload, AddFirewallRulesPayload, AddNnsCanisterProposal, AddNnsCanisterProposalTrimmed,
     AddNodeOperatorPayload, AddNodesToSubnetPayload, AddOrRemoveDataCentersProposalPayload, AddWasmRequest,
-    AddWasmRequestTrimmed, BitcoinSetConfigProposal, BitcoinSetConfigProposalHumanReadable, BlessReplicaVersionPayload,
-    ChangeNnsCanisterProposal, ChangeNnsCanisterProposalTrimmed, ChangeSubnetMembershipPayload,
-    ChangeSubnetTypeAssignmentArgs, CompleteCanisterMigrationPayload, CreateSubnetPayload,
-    DeployGuestosToAllSubnetNodesPayload, DeployGuestosToAllUnassignedNodesPayload,
-    DeployGuestosToSomeApiBoundaryNodesPayload, DeployHostosToSomeNodesPayload, InsertUpgradePathEntriesRequest,
-    InsertUpgradePathEntriesRequestHumanReadable, InstallCodeTrimmed, PrepareCanisterMigrationPayload,
-    RecoverSubnetPayload, RemoveApiBoundaryNodesPayload, RemoveFirewallRulesPayload, RemoveNodeOperatorsPayload,
-    RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload, RemoveNodesPayload,
-    RerouteCanisterRangesPayload, RetireReplicaVersionPayload, ReviseElectedGuestosVersionsPayload,
+    AddWasmRequestTrimmed, BitcoinSetConfigProposal, BitcoinSetConfigProposalHumanReadable, ChangeNnsCanisterProposal,
+    ChangeNnsCanisterProposalTrimmed, ChangeSubnetMembershipPayload, ChangeSubnetTypeAssignmentArgs,
+    CompleteCanisterMigrationPayload, CreateSubnetPayload, DeployGuestosToAllSubnetNodesPayload,
+    DeployGuestosToAllUnassignedNodesPayload, DeployGuestosToSomeApiBoundaryNodesPayload,
+    DeployHostosToSomeNodesPayload, InsertUpgradePathEntriesRequest, InsertUpgradePathEntriesRequestHumanReadable,
+    PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveApiBoundaryNodesPayload, RemoveFirewallRulesPayload,
+    RemoveNodeOperatorsPayload, RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload,
+    RemoveNodesPayload, RerouteCanisterRangesPayload, ReviseElectedGuestosVersionsPayload,
     ReviseElectedHostosVersionsPayload, SetAuthorizedSubnetworkListArgs, SetFirewallConfigPayload,
     StopOrStartNnsCanisterProposal, SubnetRentalRequest, UpdateAllowedPrincipalsRequest,
     UpdateApiBoundaryNodesVersionPayload, UpdateElectedHostosVersionsPayload, UpdateFirewallRulesPayload,
@@ -30,7 +29,6 @@ use idl2json::candid_types::internal_candid_type_to_idl_type;
 use idl2json::{idl_args2json_with_weak_names, BytesFormat, Idl2JsonOptions};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
-use serde_json::json;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt::Debug;
@@ -122,10 +120,6 @@ pub fn process_proposal_payload(proposal_info: &ProposalInfo) -> Json {
                 let error_msg = "Unable to deserialize payload";
                 serde_json::to_string(&format!("{error_msg}: {e:.400}")).unwrap_or_else(|_| format!("\"{error_msg}\""))
             })
-        }
-        Some(Action::InstallCode(install_code)) => {
-            let trimmed = InstallCodeTrimmed::from(install_code);
-            json!(trimmed).to_string()
         }
         _ => serde_json::to_string("Proposal has no payload")
             .unwrap_or_else(|err| unreachable!("Surely a fixed string can be serialized as JSON?  Err: {err:?}")),
@@ -290,7 +284,6 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         2 => identity::<AddNodesToSubnetPayload>(payload_bytes),
         3 => transform::<AddNnsCanisterProposal, AddNnsCanisterProposalTrimmed>(payload_bytes),
         4 => transform::<ChangeNnsCanisterProposal, ChangeNnsCanisterProposalTrimmed>(payload_bytes),
-        5 => identity::<BlessReplicaVersionPayload>(payload_bytes),
         6 => identity::<RecoverSubnetPayload>(payload_bytes),
         7 => identity::<UpdateSubnetPayload>(payload_bytes),
         8 => identity::<AddNodeOperatorPayload>(payload_bytes),
@@ -321,7 +314,6 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         33 => identity::<ChangeSubnetTypeAssignmentArgs>(payload_bytes),
         34 => identity::<UpdateSnsSubnetListRequest>(payload_bytes),
         35 => identity::<UpdateAllowedPrincipalsRequest>(payload_bytes),
-        36 => identity::<RetireReplicaVersionPayload>(payload_bytes),
         37 => transform::<InsertUpgradePathEntriesRequest, InsertUpgradePathEntriesRequestHumanReadable>(payload_bytes),
         38 => identity::<ReviseElectedGuestosVersionsPayload>(payload_bytes),
         39 => transform::<BitcoinSetConfigProposal, BitcoinSetConfigProposalHumanReadable>(payload_bytes),

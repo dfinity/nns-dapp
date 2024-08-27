@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-02_01-30-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-21_15-36-canister-snapshots/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -98,18 +98,6 @@ pub struct DataCenterRecord {
 pub struct AddOrRemoveDataCentersProposalPayload {
     pub data_centers_to_add: Vec<DataCenterRecord>,
     pub data_centers_to_remove: Vec<String>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct BlessReplicaVersionPayload {
-    pub release_package_urls: Option<Vec<String>>,
-    pub node_manager_sha256_hex: String,
-    pub release_package_url: String,
-    pub sha256_hex: String,
-    pub guest_launch_measurement_sha256_hex: Option<String>,
-    pub replica_version_id: String,
-    pub release_package_sha256_hex: String,
-    pub node_manager_binary_url: String,
-    pub binary_url: String,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ChangeSubnetMembershipPayload {
@@ -240,6 +228,16 @@ pub struct DeployGuestosToAllUnassignedNodesPayload {
     pub elected_replica_version: String,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct DeployGuestosToSomeApiBoundaryNodes {
+    pub version: String,
+    pub node_ids: Vec<Principal>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct DeployHostosToSomeNodes {
+    pub hostos_version_id: Option<String>,
+    pub node_ids: Vec<Principal>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct NodeOperatorRecord {
     pub ipv6: Option<String>,
     pub node_operator_principal_id: serde_bytes::ByteBuf,
@@ -318,15 +316,18 @@ pub struct RerouteCanisterRangesPayload {
     pub destination_subnet: Principal,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct RetireReplicaVersionPayload {
-    pub replica_version_ids: Vec<String>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
 pub struct ReviseElectedGuestosVersionsPayload {
     pub release_package_urls: Vec<String>,
     pub replica_versions_to_unelect: Vec<String>,
     pub replica_version_to_elect: Option<String>,
     pub guest_launch_measurement_sha256_hex: Option<String>,
+    pub release_package_sha256_hex: Option<String>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct ReviseElectedHostosVersionsPayload {
+    pub release_package_urls: Vec<String>,
+    pub hostos_version_to_elect: Option<String>,
+    pub hostos_versions_to_unelect: Vec<String>,
     pub release_package_sha256_hex: Option<String>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
@@ -489,9 +490,6 @@ impl Service {
     pub async fn add_or_remove_data_centers(&self, arg0: AddOrRemoveDataCentersProposalPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "add_or_remove_data_centers", (arg0,)).await
     }
-    pub async fn bless_replica_version(&self, arg0: BlessReplicaVersionPayload) -> CallResult<()> {
-        ic_cdk::call(self.0, "bless_replica_version", (arg0,)).await
-    }
     pub async fn change_subnet_membership(&self, arg0: ChangeSubnetMembershipPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "change_subnet_membership", (arg0,)).await
     }
@@ -515,6 +513,15 @@ impl Service {
         arg0: DeployGuestosToAllUnassignedNodesPayload,
     ) -> CallResult<()> {
         ic_cdk::call(self.0, "deploy_guestos_to_all_unassigned_nodes", (arg0,)).await
+    }
+    pub async fn deploy_guestos_to_some_api_boundary_nodes(
+        &self,
+        arg0: DeployGuestosToSomeApiBoundaryNodes,
+    ) -> CallResult<()> {
+        ic_cdk::call(self.0, "deploy_guestos_to_some_api_boundary_nodes", (arg0,)).await
+    }
+    pub async fn deploy_hostos_to_some_nodes(&self, arg0: DeployHostosToSomeNodes) -> CallResult<()> {
+        ic_cdk::call(self.0, "deploy_hostos_to_some_nodes", (arg0,)).await
     }
     pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
         ic_cdk::call(self.0, "get_build_metadata", ()).await
@@ -563,8 +570,11 @@ impl Service {
     pub async fn reroute_canister_ranges(&self, arg0: RerouteCanisterRangesPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "reroute_canister_ranges", (arg0,)).await
     }
-    pub async fn retire_replica_version(&self, arg0: RetireReplicaVersionPayload) -> CallResult<()> {
-        ic_cdk::call(self.0, "retire_replica_version", (arg0,)).await
+    pub async fn revise_elected_guestos_versions(&self, arg0: ReviseElectedGuestosVersionsPayload) -> CallResult<()> {
+        ic_cdk::call(self.0, "revise_elected_guestos_versions", (arg0,)).await
+    }
+    pub async fn revise_elected_hostos_versions(&self, arg0: ReviseElectedHostosVersionsPayload) -> CallResult<()> {
+        ic_cdk::call(self.0, "revise_elected_hostos_versions", (arg0,)).await
     }
     pub async fn revise_elected_replica_versions(&self, arg0: ReviseElectedGuestosVersionsPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "revise_elected_replica_versions", (arg0,)).await
@@ -580,9 +590,6 @@ impl Service {
     }
     pub async fn update_elected_hostos_versions(&self, arg0: UpdateElectedHostosVersionsPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_elected_hostos_versions", (arg0,)).await
-    }
-    pub async fn update_elected_replica_versions(&self, arg0: ReviseElectedGuestosVersionsPayload) -> CallResult<()> {
-        ic_cdk::call(self.0, "update_elected_replica_versions", (arg0,)).await
     }
     pub async fn update_firewall_rules(&self, arg0: UpdateFirewallRulesPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_firewall_rules", (arg0,)).await
@@ -625,9 +632,6 @@ impl Service {
     }
     pub async fn update_subnet(&self, arg0: UpdateSubnetPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_subnet", (arg0,)).await
-    }
-    pub async fn update_subnet_replica_version(&self, arg0: DeployGuestosToAllSubnetNodesPayload) -> CallResult<()> {
-        ic_cdk::call(self.0, "update_subnet_replica_version", (arg0,)).await
     }
     pub async fn update_unassigned_nodes_config(&self, arg0: UpdateUnassignedNodesConfigPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_unassigned_nodes_config", (arg0,)).await

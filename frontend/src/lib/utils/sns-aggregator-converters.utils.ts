@@ -166,29 +166,6 @@ const convertSwapInitParams = (
         sns_token_e8s: toNullable(
           convertOptionalNumToBigInt(init.sns_token_e8s)
         ),
-        // neurons_fund_participants: [],
-        neurons_fund_participants: isNullish(init.neurons_fund_participants)
-          ? []
-          : toNullable({
-              cf_participants:
-                init.neurons_fund_participants.cf_participants.map(
-                  ({ hotkey_principal, cf_neurons }) => ({
-                    // CfParticipant
-                    hotkey_principal,
-                    hotkeys: [],
-                    controller: [],
-                    cf_neurons: cf_neurons.map(
-                      ({ nns_neuron_id, amount_icp_e8s }) => ({
-                        // CfNeuron
-                        nns_neuron_id: BigInt(nns_neuron_id),
-                        amount_icp_e8s: BigInt(amount_icp_e8s),
-                        has_created_neuron_recipes: [],
-                        hotkeys: [],
-                      })
-                    ),
-                  })
-                ),
-            }),
         should_auto_finalize: toNullable(init.should_auto_finalize),
         max_participant_icp_e8s: toNullable(
           convertOptionalNumToBigInt(init.max_participant_icp_e8s)

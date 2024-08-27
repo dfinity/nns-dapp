@@ -625,6 +625,8 @@ describe("proposals-utils", () => {
       const IGNORED_NNS_FUNCTION_IDS = [
         NnsFunction.HardResetNnsRootToVersion,
         // Obsolete types
+        NnsFunction.BlessReplicaVersion,
+        NnsFunction.RetireReplicaVersion,
         NnsFunction.UpdateApiBoundaryNodeDomain,
         NnsFunction.UpdateApiBoundaryNodesVersion,
       ];

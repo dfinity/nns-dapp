@@ -6,12 +6,12 @@ mod with_raw_memory;
 
 use self::partitions::{PartitionType, Partitions, PartitionsMaybe};
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
+#[cfg(test)]
 use crate::accounts_store::schema::map::AccountsDbAsMap;
 use crate::accounts_store::schema::proxy::AccountsDb;
 use crate::accounts_store::schema::AccountsDbTrait;
 use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::AccountsStore;
-use crate::arguments::CanisterArguments;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
@@ -94,13 +94,6 @@ impl State {
         self.performance.replace(performance.into_inner());
         self.partitions_maybe.replace(partitions_maybe);
     }
-    /// Gets the authoritative schema.  This is the schema that is in stable memory.
-    pub fn schema_label(&self) -> SchemaLabel {
-        match &*self.partitions_maybe.borrow() {
-            PartitionsMaybe::Partitions(partitions) => partitions.schema_label(),
-            PartitionsMaybe::None(_memory) => SchemaLabel::Map,
-        }
-    }
 }
 
 pub trait StableState: Sized {
@@ -115,71 +108,17 @@ thread_local! {
 impl State {
     /// Creates new state with the specified schema.
     #[must_use]
-    pub fn new(schema: SchemaLabel, memory: DefaultMemoryImpl) -> Self {
-        match schema {
-            SchemaLabel::Map => {
-                println!("New State: Map");
-                State {
-                    accounts_store: RefCell::new(AccountsStore::default()),
-                    assets: RefCell::new(Assets::default()),
-                    asset_hashes: RefCell::new(AssetHashes::default()),
-                    performance: RefCell::new(PerformanceCounts::default()),
-                    partitions_maybe: RefCell::new(PartitionsMaybe::None(memory)),
-                }
-            }
-            SchemaLabel::AccountsInStableMemory => {
-                println!("New State: AccountsInStableMemory");
-                let partitions = Partitions::new_with_schema(memory, schema);
-                let accounts_store = AccountsStore::from(AccountsDb::UnboundedStableBTreeMap(
-                    AccountsDbAsUnboundedStableBTreeMap::new(partitions.get(PartitionType::Accounts.memory_id())),
-                ));
-                State {
-                    accounts_store: RefCell::new(accounts_store),
-                    assets: RefCell::new(Assets::default()),
-                    asset_hashes: RefCell::new(AssetHashes::default()),
-                    performance: RefCell::new(PerformanceCounts::default()),
-                    partitions_maybe: RefCell::new(PartitionsMaybe::Partitions(partitions)),
-                }
-            }
-        }
-    }
-    /// Applies the specified arguments to the state.
-    #[must_use]
-    pub fn with_arguments(mut self, arguments: &CanisterArguments) -> Self {
-        if let Some(schema) = arguments.schema {
-            self.start_migration_to(schema);
-        }
-        self
-    }
-    /// Applies the specified arguments, if provided
-    #[must_use]
-    pub fn with_arguments_maybe(self, arguments_maybe: Option<&CanisterArguments>) -> Self {
-        if let Some(arguments) = arguments_maybe {
-            self.with_arguments(arguments)
-        } else {
-            self
-        }
-    }
-    /// Starts a migration, if needed.
-    pub fn start_migration_to(&mut self, schema: SchemaLabel) {
-        let schema_now = self.schema_label();
-        if schema_now == schema {
-            println!("start_migration_to: No migration needed.  Schema is already {schema:?}.");
-        } else {
-            // Create a new, empty, accounts database with the new schema, then start migrating to it.
-            let new_accounts_db = match schema {
-                SchemaLabel::Map => AccountsDb::Map(AccountsDbAsMap::default()),
-                SchemaLabel::AccountsInStableMemory => {
-                    let mut partitions_maybe = self.partitions_maybe.borrow_mut();
-                    // If the memory isn't partitioned, partition it now.
-                    let partitions = partitions_maybe.get_or_format(schema);
-                    let vm = partitions.get(PartitionType::Accounts.memory_id());
-                    AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(vm))
-                }
-            };
-            self.accounts_store
-                .borrow_mut()
-                .start_migrating_accounts_to(new_accounts_db);
+    pub fn new(memory: DefaultMemoryImpl) -> Self {
+        let partitions = Partitions::new(memory);
+        let accounts_store = AccountsStore::from(AccountsDb::UnboundedStableBTreeMap(
+            AccountsDbAsUnboundedStableBTreeMap::new(partitions.get(PartitionType::Accounts.memory_id())),
+        ));
+        State {
+            accounts_store: RefCell::new(accounts_store),
+            assets: RefCell::new(Assets::default()),
+            asset_hashes: RefCell::new(AssetHashes::default()),
+            performance: RefCell::new(PerformanceCounts::default()),
+            partitions_maybe: RefCell::new(PartitionsMaybe::Partitions(partitions)),
         }
     }
 }

@@ -9,10 +9,7 @@
 #![allow(missing_docs)]
 use crate::{
     canister_arg_types,
-    canisters::{
-        nns_governance::api::InstallCode,
-        sns_wasm::api::{SnsUpgrade, SnsVersion},
-    },
+    canisters::sns_wasm::api::{SnsUpgrade, SnsVersion},
     decode_arg, Json,
 };
 
@@ -139,10 +136,6 @@ impl From<ChangeNnsCanisterProposal> for ChangeNnsCanisterProposalTrimmed {
         }
     }
 }
-
-// NNS function 5 - BlessReplicaVersion
-// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_bless_replica_version.rs#L83
-pub type BlessReplicaVersionPayload = crate::canisters::nns_registry::api::BlessReplicaVersionPayload;
 
 // NNS function 6 - RecoverSubnet
 // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_recover_subnet.rs#L249
@@ -371,10 +364,6 @@ pub type UpdateSnsSubnetListRequest = crate::canisters::sns_wasm::api::UpdateSns
 // https://github.com/dfinity/ic/blob/8d135c4eec4645837962797b7bdac930085c0dbb/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L255
 pub type UpdateAllowedPrincipalsRequest = crate::canisters::sns_wasm::api::UpdateAllowedPrincipalsRequest;
 
-// NNS function 36 - RetireReplicaVersion
-// https://github.com/dfinity/ic/blob/c2ad499466967a9a5557d737c2b9c0b9fa8ad53f/rs/registry/canister/src/mutations/do_retire_replica_version.rs#L143
-pub type RetireReplicaVersionPayload = crate::canisters::nns_registry::api::RetireReplicaVersionPayload;
-
 // NNS function 37 - InsertUpgradePathEntriesRequest
 // https://github.com/dfinity/ic/blob/8b674edbb228acfc19923d5c914807166edcd909/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L128
 pub type InsertUpgradePathEntriesRequest = crate::canisters::sns_wasm::api::InsertUpgradePathEntriesRequest;
@@ -510,29 +499,4 @@ pub struct SubnetRentalRequest {
 #[derive(candid::CandidType, candid::Deserialize, serde::Serialize, Clone, Copy, Debug)]
 pub enum RentalConditionId {
     App13CH,
-}
-
-#[derive(CandidType, Serialize, Deserialize, Clone)]
-pub struct InstallCodeTrimmed {
-    pub wasm_module_hash: String,
-    pub arg_hex: String,
-    pub arg_hash: String,
-}
-
-impl From<&InstallCode> for InstallCodeTrimmed {
-    fn from(install_code: &InstallCode) -> Self {
-        InstallCodeTrimmed {
-            wasm_module_hash: install_code
-                .wasm_module
-                .as_ref()
-                .map(|wasm_module| calculate_hash_string(wasm_module))
-                .unwrap_or_default(),
-            arg_hex: install_code.arg.as_ref().map(hex::encode).unwrap_or_default(),
-            arg_hash: install_code
-                .arg
-                .as_ref()
-                .map(|arg| calculate_hash_string(arg))
-                .unwrap_or_default(),
-        }
-    }
 }
