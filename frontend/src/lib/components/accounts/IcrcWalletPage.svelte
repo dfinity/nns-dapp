@@ -39,6 +39,8 @@
   import LinkToDashboardCanister from "$lib/components/common/LinkToDashboardCanister.svelte";
   import { isImportedToken as checkImportedToken } from "$lib/utils/imported-tokens.utils";
   import ImportTokenRemoveConfirmation from "$lib/components/accounts/ImportTokenRemoveConfirmation.svelte";
+  import type { Universe } from "$lib/types/universe";
+  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 
   export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;
@@ -191,6 +193,11 @@
   });
 
   let removeImportedTokenConfirmtionVisible = false;
+
+  let universe: Universe | undefined;
+  $: universe = $selectableUniversesStore.find(
+    ({ canisterId }) => canisterId === ledgerCanisterId?.toText()
+  );
 </script>
 
 <TestIdWrapper {testId}>
@@ -274,7 +281,7 @@
     >
       <div class="popover-content">
         <LinkToDashboardCanister canisterId={ledgerCanisterId} />
-        {#if isImportedToken}
+        {#if isImportedToken && nonNullish(universe)}
           <button
             class="remove-button button ghost with-icon"
             data-tid="remove-imported-token-button"
@@ -288,9 +295,9 @@
     </Popover>
   {/if}
 
-  {#if removeImportedTokenConfirmtionVisible && nonNullish(ledgerCanisterId)}
+  {#if removeImportedTokenConfirmtionVisible && nonNullish(universe)}
     <ImportTokenRemoveConfirmation
-      {ledgerCanisterId}
+      {universe}
       on:nnsClose={() => (removeImportedTokenConfirmtionVisible = false)}
       on:nnsConfirm={remove}
     />

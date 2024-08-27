@@ -13,16 +13,17 @@
   testId="import-token-remove-confirmation-component"
   on:nnsClose
   on:nnsConfirm
-  noLabel={$i18n.core.cancel}
   yesLabel={$i18n.core.remove}
 >
   <div class="content">
+    <h4>{$i18n.import_token.remove_confirmation_description_1}</h4>
     <div class="headline">
       {#if nonNullish(universe)}<UniversePageSummary {universe} />{/if}
       <Tag>{$i18n.import_token.imported_token}</Tag>
     </div>
-    <p>{$i18n.import_token.remove_confirmation_description_1}</p>
-    <p>{$i18n.import_token.remove_confirmation_description_2}</p>
+    <p class="description text_small">
+      {$i18n.import_token.remove_confirmation_description_2}
+    </p>
   </div>
 </ConfirmationModal>
 
@@ -31,8 +32,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
-
-    padding: var(--padding-1_5x) var(--padding) 0 var(--padding);
   }
 
   .headline {
