@@ -125,13 +125,13 @@ interface I18nError {
   canister_invalid_transaction: string;
   qrcode_camera_error: string;
   qrcode_token_incompatible: string;
+  invalid_ledger_index_pair: string;
+  index_canister_validation: string;
 }
 
 interface I18nWarning {
   auth_sign_out: string;
-  test_env_welcome: string;
   test_env_note: string;
-  test_env_request: string;
   test_env_confirm: string;
   test_env_title: string;
 }
@@ -1099,6 +1099,9 @@ interface I18nImport_token {
   index_canister_description: string;
   review_token_info: string;
   warning: string;
+  index_label: string;
+  index_fallback_label: string;
+  import_button: string;
   view_in_dashboard: string;
   link_to_dashboard: string;
 }
@@ -1231,7 +1234,6 @@ interface I18nNns_functions {
   AddNodeToSubnet: string;
   NnsCanisterInstall: string;
   NnsCanisterUpgrade: string;
-  BlessReplicaVersion: string;
   RecoverSubnet: string;
   UpdateConfigOfSubnet: string;
   AssignNoid: string;
@@ -1262,7 +1264,6 @@ interface I18nNns_functions {
   ChangeSubnetTypeAssignment: string;
   UpdateSnsWasmSnsSubnetIds: string;
   UpdateAllowedPrincipals: string;
-  RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
   ReviseElectedGuestosVersions: string;
   BitcoinSetConfig: string;
@@ -1285,7 +1286,6 @@ interface I18nNns_functions_description {
   AddNodeToSubnet: string;
   NnsCanisterInstall: string;
   NnsCanisterUpgrade: string;
-  BlessReplicaVersion: string;
   RecoverSubnet: string;
   UpdateConfigOfSubnet: string;
   AssignNoid: string;
@@ -1316,7 +1316,6 @@ interface I18nNns_functions_description {
   ChangeSubnetTypeAssignment: string;
   UpdateSnsWasmSnsSubnetIds: string;
   UpdateAllowedPrincipals: string;
-  RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
   ReviseElectedGuestosVersions: string;
   BitcoinSetConfig: string;
