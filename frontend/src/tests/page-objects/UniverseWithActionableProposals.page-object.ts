@@ -1,4 +1,4 @@
-import { UniversePageSummaryPo } from "$tests/page-objects/UniversePageSummary.page-object";
+import { UniverseSummaryPo } from "$tests/page-objects/UniverseSummary.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -19,8 +19,8 @@ export class UniverseWithActionableProposalsPo extends BasePageObject {
     ).map((el) => new UniverseWithActionableProposalsPo(el));
   }
 
-  getSummaryPo(): UniversePageSummaryPo {
-    return UniversePageSummaryPo.under(this.root);
+  getSummaryPo(): UniverseSummaryPo {
+    return UniverseSummaryPo.under(this.root);
   }
 
   getTitle(): Promise<string> {

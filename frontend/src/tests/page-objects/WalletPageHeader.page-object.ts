@@ -1,7 +1,7 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { HashPo } from "./Hash.page-object";
-import { UniversePageSummaryPo } from "./UniversePageSummary.page-object";
+import { UniverseSummaryPo } from "./UniverseSummary.page-object";
 
 export class WalletPageHeaderPo extends BasePageObject {
   private static readonly TID = "wallet-page-header-component";
@@ -10,12 +10,12 @@ export class WalletPageHeaderPo extends BasePageObject {
     return new WalletPageHeaderPo(element.byTestId(WalletPageHeaderPo.TID));
   }
 
-  getUniversePageSummaryPo(): UniversePageSummaryPo {
-    return UniversePageSummaryPo.under(this.root);
+  getUniverseSummaryPo(): UniverseSummaryPo {
+    return UniverseSummaryPo.under(this.root);
   }
 
   getUniverse(): Promise<string> {
-    return this.getUniversePageSummaryPo().getTitle();
+    return this.getUniverseSummaryPo().getTitle();
   }
 
   getHashPo(): HashPo {
