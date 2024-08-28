@@ -24,7 +24,7 @@
   let neuronICP: bigint;
   $: neuronICP = neuronStake(neuron);
 
-  const updateNeuron = async () => {
+  const updateNeuron = async (x``) => {
     startBusyNeuron({ initiator: "update-delay", neuronId: neuron.neuronId });
 
     const neuronId = await updateDelay({

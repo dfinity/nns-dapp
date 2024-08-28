@@ -1,4 +1,4 @@
-import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
+import UniverseSummary from "$lib/components/universe/UniverseSummary.svelte";
 import { createUniverse } from "$lib/utils/universe.utils";
 import { mockSummary } from "$tests/mocks/sns-projects.mock";
 import {
@@ -6,17 +6,17 @@ import {
   ckTESTBTCUniverseMock,
   nnsUniverseMock,
 } from "$tests/mocks/universe.mock";
-import { UniversePageSummaryPo } from "$tests/page-objects/UniversePageSummary.page-object";
+import { UniverseSummaryPo } from "$tests/page-objects/UniverseSummary.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
-describe("UniversePageSummary", () => {
+describe("UniverseSummary", () => {
   const renderComponent = (universe) => {
-    const { container } = render(UniversePageSummary, {
+    const { container } = render(UniverseSummary, {
       props: { universe },
     });
 
-    return UniversePageSummaryPo.under(new JestPageObjectElement(container));
+    return UniverseSummaryPo.under(new JestPageObjectElement(container));
   };
 
   it("shout render IC", async () => {

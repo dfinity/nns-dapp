@@ -5,7 +5,7 @@
   import Footer from "$lib/components/layout/Footer.svelte";
   import PrincipalText from "$lib/components/summary/PrincipalText.svelte";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
+  import UniverseSummary from "$lib/components/universe/UniverseSummary.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
   import { pageStore } from "$lib/derived/page.derived";
@@ -70,7 +70,7 @@
   <main>
     <div class="summary" data-tid="projects-summary">
       <h1 class="summary-title">
-        <UniversePageSummary universe={$nnsUniverseStore} />
+        <UniverseSummary universe={$nnsUniverseStore} />
       </h1>
       <div class="summary-details">
         <PrincipalText inline />
