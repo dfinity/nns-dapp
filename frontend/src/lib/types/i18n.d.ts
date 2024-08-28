@@ -1107,7 +1107,6 @@ interface I18nImport_token {
   index_label: string;
   index_fallback_label: string;
   import_button: string;
-  view_in_dashboard: string;
   link_to_dashboard: string;
 }
 

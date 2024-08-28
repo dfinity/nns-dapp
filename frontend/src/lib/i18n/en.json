@@ -1048,7 +1048,6 @@
     "index_label": "Index Canister ID",
     "index_fallback_label": "Transaction history won’t be displayed.",
     "import_button": "Import",
-    "view_in_dashboard": "View in Dashboard",
     "link_to_dashboard": "https://dashboard.internetcomputer.org/canister/$canisterId"
   }
 }
