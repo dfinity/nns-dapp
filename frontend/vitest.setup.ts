@@ -80,7 +80,6 @@ setDefaultTestConstants({
 // ...at HttpAgent.syncTime...
 vi.mock("@dfinity/utils", async () => {
   return {
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     ...(await vi.importActual<any>("@dfinity/utils")),
     __esModule: true,
     createAgent: vi.fn(),
