@@ -8,6 +8,7 @@ import { mock } from "vitest-mock-extended";
 // Mock createAgent to avoid console errors caused by the time-syncing fetch call in agent-js.
 vi.mock("@dfinity/utils", async () => {
   return {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     ...(await vi.importActual<any>("@dfinity/utils")),
     __esModule: true,
     createAgent: vi.fn(),
