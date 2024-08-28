@@ -1,9 +1,5 @@
-use dfn_core::api::ic0;
-
-/// Gets time.
-///
-/// TODO: Replace with: `ic_cdk::api::time`
+/// Gets current timestamp, in nanoseconds since the epoch (1970-01-01)
 #[must_use]
 pub fn time() -> u64 {
-    unsafe { ic0::time() }
+    ic_cdk::api::time()
 }

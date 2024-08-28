@@ -41,12 +41,12 @@ describe("ImportTokenRemoveConfirmation", () => {
 
   it("should render token logo", async () => {
     const { po } = renderComponent();
-    expect(await po.getUniversePageSummaryPo().getLogoUrl()).toEqual(tokenLogo);
+    expect(await po.getUniverseSummaryPo().getLogoUrl()).toEqual(tokenLogo);
   });
 
   it("should render token name", async () => {
     const { po } = renderComponent();
-    expect(await po.getUniversePageSummaryPo().getTitle()).toEqual(tokenName);
+    expect(await po.getUniverseSummaryPo().getTitle()).toEqual(tokenName);
   });
 
   it("should dispatch events", async () => {

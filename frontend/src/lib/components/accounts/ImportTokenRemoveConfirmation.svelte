@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
+  import UniverseSummary from "$lib/components/universe/UniverseSummary.svelte";
   import type { Universe } from "$lib/types/universe";
   import { nonNullish } from "@dfinity/utils";
   import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
@@ -18,7 +18,7 @@
   <div class="content">
     <h4>{$i18n.import_token.remove_confirmation_header}</h4>
     <div class="token">
-      {#if nonNullish(universe)}<UniversePageSummary {universe} />{/if}
+      {#if nonNullish(universe)}<UniverseSummary {universe} />{/if}
       <Tag>{$i18n.import_token.imported_token}</Tag>
     </div>
     <p class="description text_small">

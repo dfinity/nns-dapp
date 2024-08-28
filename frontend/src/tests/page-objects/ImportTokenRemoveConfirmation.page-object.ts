@@ -1,5 +1,5 @@
 import { ConfirmationModalPo } from "$tests/page-objects/ConfirmationModal.page-object";
-import { UniversePageSummaryPo } from "$tests/page-objects/UniversePageSummary.page-object";
+import { UniverseSummaryPo } from "$tests/page-objects/UniverseSummary.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class ImportTokenRemoveConfirmationPo extends ConfirmationModalPo {
@@ -11,7 +11,7 @@ export class ImportTokenRemoveConfirmationPo extends ConfirmationModalPo {
     );
   }
 
-  getUniversePageSummaryPo(): UniversePageSummaryPo {
-    return UniversePageSummaryPo.under(this.root);
+  getUniverseSummaryPo(): UniverseSummaryPo {
+    return UniverseSummaryPo.under(this.root);
   }
 }
