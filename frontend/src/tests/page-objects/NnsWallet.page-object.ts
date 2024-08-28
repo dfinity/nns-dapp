@@ -59,8 +59,18 @@ export class NnsWalletPo extends BasePageObject {
     return this.getButton("more-button");
   }
 
-  getLinkToDashboardPo(): LinkToDashboardCanisterPo {
-    return LinkToDashboardCanisterPo.under(this.root);
+  getLinkToLedgerCanisterPo(): LinkToDashboardCanisterPo {
+    return LinkToDashboardCanisterPo.under({
+      element: this.root,
+      testId: "link-to-ledger-canister",
+    });
+  }
+
+  getLinkToIndexCanisterPo(): LinkToDashboardCanisterPo {
+    return LinkToDashboardCanisterPo.under({
+      element: this.root,
+      testId: "link-to-index-canister",
+    });
   }
 
   hasSignInButton(): Promise<boolean> {

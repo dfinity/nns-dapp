@@ -12,9 +12,9 @@ describe("LinkToDashboardCanister", () => {
 
   const renderComponent = (props) => {
     const { container } = render(LinkToDashboardCanister, { props });
-    return LinkToDashboardCanisterPo.under(
-      new JestPageObjectElement(container)
-    );
+    return LinkToDashboardCanisterPo.under({
+      element: new JestPageObjectElement(container),
+    });
   };
 
   it("should render label", async () => {

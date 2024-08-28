@@ -8,6 +8,7 @@
 
   export let canisterId: Principal;
   export let label: string | undefined = undefined;
+  export let testId: string | undefined = "link-to-dashboard-canister-component";
 
   let href: string;
   $: href = replacePlaceholders($i18n.import_token.link_to_dashboard, {
@@ -21,7 +22,7 @@
 <a
   class="button ghost with-icon"
   class:noLabel
-  data-tid="link-to-dashboard-canister-component"
+  data-tid={testId}
   {href}
   target="_blank"
   rel="noopener noreferrer"

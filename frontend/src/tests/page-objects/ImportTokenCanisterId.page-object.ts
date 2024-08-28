@@ -43,7 +43,9 @@ export class ImportTokenCanisterIdPo extends BasePageObject {
   }
 
   getLinkToDashboardCanisterPo(): LinkToDashboardCanisterPo {
-    return LinkToDashboardCanisterPo.under(this.root);
+    return LinkToDashboardCanisterPo.under({
+      element: this.root,
+    });
   }
 
   getCanisterIdFallbackText(): Promise<string> {

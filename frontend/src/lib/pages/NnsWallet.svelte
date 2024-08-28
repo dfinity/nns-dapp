@@ -400,10 +400,12 @@
   >
     <div class="more">
       <LinkToDashboardCanister
+        testId="link-to-ledger-canister"
         label={$i18n.tokens.ledger_canister}
         canisterId={LEDGER_CANISTER_ID}
       />
       <LinkToDashboardCanister
+        testId="link-to-index-canister"
         label={$i18n.tokens.index_canister}
         canisterId={INDEX_CANISTER_ID}
       />
