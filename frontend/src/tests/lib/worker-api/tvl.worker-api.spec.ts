@@ -2,17 +2,8 @@ import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
 import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
 import { queryTVL } from "$lib/worker-api/tvl.worker-api";
 import { AnonymousIdentity } from "@dfinity/agent";
+import * as dfinityUtils from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
-
-// Mock createAgent to avoid console errors caused by the time-syncing fetch call in agent-js.
-vi.mock("@dfinity/utils", async () => {
-  return {
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    ...(await vi.importActual<any>("@dfinity/utils")),
-    __esModule: true,
-    createAgent: vi.fn(),
-  };
-});
 
 vi.mock("$lib/constants/canister-ids.constants");
 
@@ -32,6 +23,9 @@ describe("tvl worker-api", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     vi.spyOn(TVLCanister, "create").mockImplementation(() => tvlCanisterMock);
+    // Prevent HttpAgent.create(), which is called by createAgent, from making a
+    // real network request via agent.syncTime().
+    vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
   });
 
   describe("with tvl canister id set", () => {

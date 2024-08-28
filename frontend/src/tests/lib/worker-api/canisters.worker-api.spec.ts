@@ -4,17 +4,8 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterDetails } from "$tests/mocks/canisters.mock";
 import type { CanisterStatusResponse } from "@dfinity/ic-management";
 import { ICManagementCanister } from "@dfinity/ic-management";
+import * as dfinityUtils from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
-
-// Mock createAgent to avoid console errors caused by the time-syncing fetch call in agent-js.
-vi.mock("@dfinity/utils", async () => {
-  return {
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    ...(await vi.importActual<any>("@dfinity/utils")),
-    __esModule: true,
-    createAgent: vi.fn(),
-  };
-});
 
 describe("canisters-worker-api", () => {
   const response: CanisterStatusResponse = {
@@ -50,6 +41,9 @@ describe("canisters-worker-api", () => {
     );
 
     mockICManagementCanister.canisterStatus.mockResolvedValue(response);
+    // Prevent HttpAgent.create(), which is called by createAgent, from making a
+    // real network request via agent.syncTime().
+    vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
   });
 
   describe("queryCanisterDetails", () => {

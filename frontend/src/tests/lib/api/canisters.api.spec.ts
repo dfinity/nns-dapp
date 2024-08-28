@@ -31,18 +31,9 @@ import {
   LedgerCanister,
   SubAccount,
 } from "@dfinity/ledger-icp";
+import * as dfinityUtils from "@dfinity/utils";
 import { principalToSubAccount } from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
-
-// Mock createAgent to avoid console errors caused by the time-syncing fetch call in agent-js.
-vi.mock("@dfinity/utils", async () => {
-  return {
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    ...(await vi.importActual<any>("@dfinity/utils")),
-    __esModule: true,
-    createAgent: vi.fn(),
-  };
-});
 
 describe("canisters-api", () => {
   const mockNNSDappCanister = mock<NNSDappCanister>();
@@ -54,6 +45,10 @@ describe("canisters-api", () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.clearAllTimers();
+
+    // Prevent HttpAgent.create(), which is called by createAgent, from making a
+    // real network request via agent.syncTime().
+    vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
 
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     const now = Date.now();

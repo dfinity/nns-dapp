@@ -7,17 +7,8 @@ import {
 } from "$tests/mocks/sns-accounts.mock";
 import { ledgerCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
+import * as dfinityUtils from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
-
-// Mock createAgent to avoid console errors caused by the time-syncing fetch call in agent-js.
-vi.mock("@dfinity/utils", async () => {
-  return {
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    ...(await vi.importActual<any>("@dfinity/utils")),
-    __esModule: true,
-    createAgent: vi.fn(),
-  };
-});
 
 describe("balances.worker-services", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();
@@ -28,6 +19,9 @@ describe("balances.worker-services", () => {
     vi.spyOn(IcrcLedgerCanister, "create").mockImplementation(
       () => ledgerCanisterMock
     );
+    // Prevent HttpAgent.create(), which is called by createAgent, from making a
+    // real network request via agent.syncTime().
+    vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
   });
 
   const accountIdentifiers = [

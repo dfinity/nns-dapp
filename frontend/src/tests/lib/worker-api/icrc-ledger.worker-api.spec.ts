@@ -3,17 +3,8 @@ import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import { getIcrcBalance } from "$lib/worker-api/icrc-ledger.worker-api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
+import * as dfinityUtils from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
-
-// Mock createAgent to avoid console errors caused by the time-syncing fetch call in agent-js.
-vi.mock("@dfinity/utils", async () => {
-  return {
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    ...(await vi.importActual<any>("@dfinity/utils")),
-    __esModule: true,
-    createAgent: vi.fn(),
-  };
-});
 
 describe("icrc-ledger.worker-api", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();
@@ -24,6 +15,9 @@ describe("icrc-ledger.worker-api", () => {
     vi.spyOn(IcrcLedgerCanister, "create").mockImplementation(
       () => ledgerCanisterMock
     );
+    // Prevent HttpAgent.create(), which is called by createAgent, from making a
+    // real network request via agent.syncTime().
+    vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
   });
 
   const params = {
