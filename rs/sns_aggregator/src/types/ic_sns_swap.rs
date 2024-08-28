@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_swap --out ic_sns_swap.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-02_01-30-base/rs/sns/swap/canister/swap.did>
+//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-21_15-36-canister-snapshots/rs/sns/swap/canister/swap.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -41,27 +41,6 @@ pub struct NeuronsFundParticipationConstraints {
     pub ideal_matched_participation_function: Option<IdealMatchedParticipationFunction>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct Principals {
-    pub principals: Vec<Principal>,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct CfNeuron {
-    pub has_created_neuron_recipes: Option<bool>,
-    pub hotkeys: Option<Principals>,
-    pub nns_neuron_id: u64,
-    pub amount_icp_e8s: u64,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct CfParticipant {
-    pub controller: Option<Principal>,
-    pub hotkey_principal: String,
-    pub cf_neurons: Vec<CfNeuron>,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct NeuronsFundParticipants {
-    pub cf_participants: Vec<CfParticipant>,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Countries {
     pub iso_codes: Vec<String>,
 }
@@ -85,7 +64,6 @@ pub struct Init {
     pub icp_ledger_canister_id: String,
     pub sns_ledger_canister_id: String,
     pub neurons_fund_participation_constraints: Option<NeuronsFundParticipationConstraints>,
-    pub neurons_fund_participants: Option<NeuronsFundParticipants>,
     pub should_auto_finalize: Option<bool>,
     pub max_participant_icp_e8s: Option<u64>,
     pub sns_governance_canister_id: String,
@@ -358,6 +336,10 @@ pub struct NeuronAttributes {
     pub followees: Vec<NeuronId>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Principals {
+    pub principals: Vec<Principal>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CfInvestment {
     pub controller: Option<Principal>,
     pub hotkey_principal: String,
@@ -379,6 +361,19 @@ pub struct SnsNeuronRecipe {
     pub claimed_status: Option<i32>,
     pub neuron_attributes: Option<NeuronAttributes>,
     pub investor: Option<Investor>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct CfNeuron {
+    pub has_created_neuron_recipes: Option<bool>,
+    pub hotkeys: Option<Principals>,
+    pub nns_neuron_id: u64,
+    pub amount_icp_e8s: u64,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct CfParticipant {
+    pub controller: Option<Principal>,
+    pub hotkey_principal: String,
+    pub cf_neurons: Vec<CfNeuron>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Swap {
@@ -419,6 +414,10 @@ pub struct GetStateResponse {
 pub struct ListCommunityFundParticipantsRequest {
     pub offset: Option<u64>,
     pub limit: Option<u32>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ListCommunityFundParticipantsResponse {
+    pub cf_participants: Vec<CfParticipant>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ListDirectParticipantsRequest {
@@ -525,7 +524,7 @@ impl Service {
     pub async fn list_community_fund_participants(
         &self,
         arg0: ListCommunityFundParticipantsRequest,
-    ) -> CallResult<(NeuronsFundParticipants,)> {
+    ) -> CallResult<(ListCommunityFundParticipantsResponse,)> {
         ic_cdk::call(self.0, "list_community_fund_participants", (arg0,)).await
     }
     pub async fn list_direct_participants(

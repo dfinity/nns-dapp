@@ -177,8 +177,8 @@ interface I18nAccounts {
   add_account: string;
   new_account_title: string;
   new_linked_subtitle: string;
-  attach_hardware_subtitle: string;
   attach_hardware_title: string;
+  attach_hardware_subtitle: string;
   attach_hardware_name_placeholder: string;
   attach_hardware_enter_name: string;
   attach_hardware_description: string;
@@ -1092,6 +1092,7 @@ interface I18nTokens {
 
 interface I18nImport_token {
   import_token: string;
+  imported_token: string;
   description: string;
   ledger_label: string;
   index_label_optional: string;
@@ -1099,6 +1100,11 @@ interface I18nImport_token {
   index_canister_description: string;
   review_token_info: string;
   warning: string;
+  remove_confirmation_header: string;
+  remove_confirmation_description: string;
+  index_label: string;
+  index_fallback_label: string;
+  import_button: string;
   view_in_dashboard: string;
   link_to_dashboard: string;
 }
@@ -1231,7 +1237,6 @@ interface I18nNns_functions {
   AddNodeToSubnet: string;
   NnsCanisterInstall: string;
   NnsCanisterUpgrade: string;
-  BlessReplicaVersion: string;
   RecoverSubnet: string;
   UpdateConfigOfSubnet: string;
   AssignNoid: string;
@@ -1262,7 +1267,6 @@ interface I18nNns_functions {
   ChangeSubnetTypeAssignment: string;
   UpdateSnsWasmSnsSubnetIds: string;
   UpdateAllowedPrincipals: string;
-  RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
   ReviseElectedGuestosVersions: string;
   BitcoinSetConfig: string;
@@ -1285,7 +1289,6 @@ interface I18nNns_functions_description {
   AddNodeToSubnet: string;
   NnsCanisterInstall: string;
   NnsCanisterUpgrade: string;
-  BlessReplicaVersion: string;
   RecoverSubnet: string;
   UpdateConfigOfSubnet: string;
   AssignNoid: string;
@@ -1316,7 +1319,6 @@ interface I18nNns_functions_description {
   ChangeSubnetTypeAssignment: string;
   UpdateSnsWasmSnsSubnetIds: string;
   UpdateAllowedPrincipals: string;
-  RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
   ReviseElectedGuestosVersions: string;
   BitcoinSetConfig: string;
