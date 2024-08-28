@@ -8,7 +8,8 @@
 
   export let canisterId: Principal;
   export let label: string | undefined = undefined;
-  export let testId: string | undefined = "link-to-dashboard-canister-component";
+  export let testId: string | undefined =
+    "link-to-dashboard-canister-component";
 
   let href: string;
   $: href = replacePlaceholders($i18n.import_token.link_to_dashboard, {
