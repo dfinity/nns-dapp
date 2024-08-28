@@ -11,15 +11,7 @@ export class ImportTokenRemoveConfirmationPo extends ConfirmationModalPo {
     );
   }
 
-  getConfirmationModalPo(): ConfirmationModalPo {
-    return ConfirmationModalPo.under(this.root);
-  }
-
   getUniversePageSummaryPo(): UniversePageSummaryPo {
     return UniversePageSummaryPo.under(this.root);
-  }
-
-  clickConfirm(): Promise<void> {
-    return this.getConfirmationModalPo().confirmYes();
   }
 }
