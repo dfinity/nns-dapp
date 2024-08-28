@@ -6,7 +6,14 @@ import type { CanisterStatusResponse } from "@dfinity/ic-management";
 import { ICManagementCanister } from "@dfinity/ic-management";
 import { mock } from "vitest-mock-extended";
 
-vi.mock("@dfinity/agent");
+// Mock createAgent to avoid console errors caused by the time-syncing fetch call in agent-js.
+vi.mock("@dfinity/utils", async () => {
+  return {
+    ...(await vi.importActual<any>("@dfinity/utils")),
+    __esModule: true,
+    createAgent: vi.fn(),
+  };
+});
 
 describe("canisters-worker-api", () => {
   const response: CanisterStatusResponse = {

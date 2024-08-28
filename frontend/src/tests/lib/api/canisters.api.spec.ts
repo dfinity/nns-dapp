@@ -34,6 +34,15 @@ import {
 import { principalToSubAccount } from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
 
+// Mock createAgent to avoid console errors caused by the time-syncing fetch call in agent-js.
+vi.mock("@dfinity/utils", async () => {
+  return {
+    ...(await vi.importActual<any>("@dfinity/utils")),
+    __esModule: true,
+    createAgent: vi.fn(),
+  };
+});
+
 describe("canisters-api", () => {
   const mockNNSDappCanister = mock<NNSDappCanister>();
   const mockCMCCanister = mock<CMCCanister>();

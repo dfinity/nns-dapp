@@ -12,6 +12,15 @@ import type { IcrcGetTransactions } from "@dfinity/ledger-icrc";
 import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger-icrc";
 import { mock } from "vitest-mock-extended";
 
+// Mock createAgent to avoid console errors caused by the time-syncing fetch call in agent-js.
+vi.mock("@dfinity/utils", async () => {
+  return {
+    ...(await vi.importActual<any>("@dfinity/utils")),
+    __esModule: true,
+    createAgent: vi.fn(),
+  };
+});
+
 describe("transactions.worker-services", () => {
   const indexCanisterMock = mock<IcrcIndexCanister>();
 

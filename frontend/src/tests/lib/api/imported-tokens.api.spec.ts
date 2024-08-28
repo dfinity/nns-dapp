@@ -7,6 +7,15 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockImportedToken } from "$tests/mocks/icrc-accounts.mock";
 import { mock } from "vitest-mock-extended";
 
+// Mock createAgent to avoid console errors caused by the time-syncing fetch call in agent-js.
+vi.mock("@dfinity/utils", async () => {
+  return {
+    ...(await vi.importActual<any>("@dfinity/utils")),
+    __esModule: true,
+    createAgent: vi.fn(),
+  };
+});
+
 describe("imported-tokens-api", () => {
   const mockNNSDappCanister = mock<NNSDappCanister>();
 

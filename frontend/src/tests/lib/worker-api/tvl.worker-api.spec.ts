@@ -4,13 +4,12 @@ import { queryTVL } from "$lib/worker-api/tvl.worker-api";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { mock } from "vitest-mock-extended";
 
-vi.mock("@dfinity/agent", async () => {
+// Mock createAgent to avoid console errors caused by the time-syncing fetch call in agent-js.
+vi.mock("@dfinity/utils", async () => {
   return {
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    ...(await vi.importActual<any>("@dfinity/agent")),
-    HttpAgent: vi.fn().mockImplementation(() => {
-      return {};
-    }),
+    ...(await vi.importActual<any>("@dfinity/utils")),
+    __esModule: true,
+    createAgent: vi.fn(),
   };
 });
 
