@@ -34,6 +34,9 @@
 
 <style lang="scss">
   a {
+    // Overwrite a.button.with-icon alignment.
+    justify-content: start;
+
     &:hover {
       text-decoration: underline;
     }
