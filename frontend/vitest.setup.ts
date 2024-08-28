@@ -70,22 +70,6 @@ setDefaultTestConstants({
   ENABLE_QR_CODE_READER: false,
 });
 
-// Mock the `agent-js` to avoid console errors.
-// In version 2.0, agent-js starts syncing time with the replica immediately after creation,
-// which breaks some tests since real fetch requests are not allowed.
-//
-// CONSOLE ERROR SAMPLE:
-// It looks like the agent is trying to make a request that should have been mocked at Error:
-// ...Expected to find result for path time, but instead found nothing...
-// ...at HttpAgent.syncTime...
-vi.mock("@dfinity/utils", async () => {
-  return {
-    ...(await vi.importActual<any>("@dfinity/utils")),
-    __esModule: true,
-    createAgent: vi.fn(),
-  };
-});
-
 failTestsThatLogToConsole();
 
 // Avoid using fetch in tests.
