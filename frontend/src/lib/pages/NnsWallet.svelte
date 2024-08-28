@@ -69,7 +69,10 @@
   import { onMount, onDestroy, setContext } from "svelte";
   import { writable, type Readable } from "svelte/store";
   import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
-  import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import {
+    INDEX_CANISTER_ID,
+    LEDGER_CANISTER_ID,
+  } from "$lib/constants/canister-ids.constants";
   import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
 
   $: if ($authSignedInStore) {
@@ -395,7 +398,16 @@
     direction="rtl"
     invisibleBackdrop
   >
-    <LinkToDashboardCanister canisterId={LEDGER_CANISTER_ID} />
+    <div class="more">
+      <LinkToDashboardCanister
+        label={$i18n.tokens.ledger_canister}
+        canisterId={LEDGER_CANISTER_ID}
+      />
+      <LinkToDashboardCanister
+        label={$i18n.tokens.index_canister}
+        canisterId={INDEX_CANISTER_ID}
+      />
+    </div>
   </Popover>
 </TestIdWrapper>
 
@@ -404,5 +416,13 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-4x);
+  }
+
+  .more {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
   }
 </style>

@@ -1029,7 +1029,9 @@
     "zero_balance_hidden": "Tokens with 0 balances are hidden.",
     "show_all": "Show all",
     "add_imported_token_success": "New token has been successfully imported!",
-    "remove_imported_token_success": "The token has been successfully removed!"
+    "remove_imported_token_success": "The token has been successfully removed!",
+    "ledger_canister": "Ledger Canister",
+    "index_canister": "Index Canister"
   },
   "import_token": {
     "import_token": "Import Token",
