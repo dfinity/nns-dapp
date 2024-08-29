@@ -19,8 +19,20 @@ export class ConfirmationModalPo extends ModalPo {
     return this.getButton("confirm-yes");
   }
 
-  async confirmYes(): Promise<void> {
+  getConfirmNoButton(): ButtonPo {
+    return this.getButton("confirm-no");
+  }
+
+  async clickNo(): Promise<void> {
+    await this.getConfirmNoButton().click();
+  }
+
+  async clickYes(): Promise<void> {
     await this.getConfirmYesButton().click();
+  }
+
+  async confirmYes(): Promise<void> {
+    await this.clickYes();
     await this.waitForClosed();
   }
 }

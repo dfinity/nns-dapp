@@ -15,15 +15,24 @@ describe("ImportTokenRemoveConfirmation", () => {
     logo: tokenLogo,
   };
   const renderComponent = () => {
-    const { container } = render(ImportTokenRemoveConfirmation, {
+    const { container, component } = render(ImportTokenRemoveConfirmation, {
       props: {
         universe: mockUniverse,
       },
     });
 
-    return ImportTokenRemoveConfirmationPo.under(
-      new JestPageObjectElement(container)
-    );
+    const nnsConfirm = vi.fn();
+    component.$on("nnsConfirm", nnsConfirm);
+    const nnsClose = vi.fn();
+    component.$on("nnsClose", nnsClose);
+
+    return {
+      po: ImportTokenRemoveConfirmationPo.under(
+        new JestPageObjectElement(container)
+      ),
+      nnsConfirm,
+      nnsClose,
+    };
   };
 
   beforeEach(() => {
@@ -31,12 +40,24 @@ describe("ImportTokenRemoveConfirmation", () => {
   });
 
   it("should render token logo", async () => {
-    const po = renderComponent();
+    const { po } = renderComponent();
     expect(await po.getUniverseSummaryPo().getLogoUrl()).toEqual(tokenLogo);
   });
 
   it("should render token name", async () => {
-    const po = renderComponent();
+    const { po } = renderComponent();
     expect(await po.getUniverseSummaryPo().getTitle()).toEqual(tokenName);
+  });
+
+  it("should dispatch events", async () => {
+    const { po, nnsClose, nnsConfirm } = renderComponent();
+
+    expect(nnsClose).not.toBeCalled();
+    await po.clickNo();
+    expect(nnsClose).toBeCalledTimes(1);
+
+    expect(nnsConfirm).not.toBeCalled();
+    await po.clickYes();
+    expect(nnsConfirm).toBeCalledTimes(1);
   });
 });
