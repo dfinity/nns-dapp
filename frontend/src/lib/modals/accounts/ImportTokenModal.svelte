@@ -64,16 +64,14 @@
       })
     ) {
       errorLabelKey = "error__imported_tokens.is_duplication";
-    }
-    if (
+    } else if (
       isSnsLedgerCanisterId({
         ledgerCanisterId,
         snsProjects: $snsProjectsCommittedStore,
       })
     ) {
       errorLabelKey = "error__imported_tokens.is_sns";
-    }
-    if (
+    } else if (
       isImportantCkToken({
         ledgerCanisterId,
       })
