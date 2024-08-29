@@ -222,20 +222,18 @@ describe("ImportTokenModal", () => {
       // Stays on the form.
       expect(await formPo.isPresent()).toEqual(true);
     });
+  });
 
-    it("should leave the form after successful validation", async () => {
-      const { formPo } = renderComponent();
+  it("should leave the form after successful validation", async () => {
+    const { formPo } = renderComponent();
 
-      await formPo
-        .getLedgerCanisterInputPo()
-        .typeText(ledgerCanisterId.toText());
-      await formPo.getSubmitButtonPo().click();
+    await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
+    await formPo.getSubmitButtonPo().click();
 
-      // Wait for toast error to be called.
-      await runResolvedPromises();
+    // Wait for toast error to be called.
+    await runResolvedPromises();
 
-      expect(toastsError).toBeCalledTimes(0);
-      expect(await formPo.isPresent()).toEqual(false);
-    });
+    expect(toastsError).toBeCalledTimes(0);
+    expect(await formPo.isPresent()).toEqual(false);
   });
 });
