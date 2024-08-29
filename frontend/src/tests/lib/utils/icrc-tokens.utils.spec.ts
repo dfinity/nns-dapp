@@ -69,7 +69,7 @@ describe("ICRC tokens utils", () => {
       ).toEqual(true);
     });
 
-    it("should return fale for not important token ledger canisters", () => {
+    it("should return false for not important token ledger canisters", () => {
       expect(isImportantCkToken({ ledgerCanisterId: principal(0) })).toEqual(
         false
       );
