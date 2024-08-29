@@ -52,10 +52,10 @@
       });
     }
   };
-
-  const onUserInput = async () => {
-    if (isNullish(ledgerCanisterId)) return;
-
+  const validateLedgerCanister = (
+    ledgerCanisterId: Principal
+  ): { valid: boolean } => {
+    let errorLabelKey: string | undefined = undefined;
     // Ledger canister ID validation
     if (
       isImportedToken({
@@ -63,9 +63,7 @@
         importedTokens: $importedTokensStore?.importedTokens,
       })
     ) {
-      return toastsError({
-        labelKey: "error__imported_tokens.is_duplication",
-      });
+      errorLabelKey = "error__imported_tokens.is_duplication";
     }
     if (
       isSnsLedgerCanisterId({
@@ -73,19 +71,32 @@
         snsProjects: $snsProjectsCommittedStore,
       })
     ) {
-      return toastsError({
-        labelKey: "error__imported_tokens.is_sns",
-      });
+      errorLabelKey = "error__imported_tokens.is_sns";
     }
     if (
       isImportantCkToken({
         ledgerCanisterId,
       })
     ) {
-      return toastsError({
-        labelKey: "error__imported_tokens.is_important",
-      });
+      errorLabelKey = "error__imported_tokens.is_important";
     }
+
+    if (nonNullish(errorLabelKey)) {
+      toastsError({
+        labelKey: errorLabelKey,
+      });
+      return { valid: false };
+    }
+    return { valid: true };
+  };
+
+  const onSubmit = async () => {
+    if (isNullish(ledgerCanisterId)) return;
+
+    const { valid: isValidLedgerCanisterId } =
+      validateLedgerCanister(ledgerCanisterId);
+
+    if (!isValidLedgerCanisterId) return;
 
     startBusy({
       initiator: "import-token-validation",
@@ -122,7 +133,7 @@
       bind:ledgerCanisterId
       bind:indexCanisterId
       on:nnsClose
-      on:nnsSubmit={onUserInput}
+      on:nnsSubmit={onSubmit}
     />
   {/if}
   {#if currentStep?.name === STEP_REVIEW && nonNullish(ledgerCanisterId) && nonNullish(tokenMetaData)}
