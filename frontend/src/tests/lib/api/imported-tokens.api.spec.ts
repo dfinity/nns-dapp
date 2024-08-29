@@ -5,6 +5,7 @@ import {
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockImportedToken } from "$tests/mocks/icrc-accounts.mock";
+import * as dfinityUtils from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
 
 describe("imported-tokens-api", () => {
@@ -16,6 +17,9 @@ describe("imported-tokens-api", () => {
     vi.spyOn(NNSDappCanister, "create").mockImplementation(
       (): NNSDappCanister => mockNNSDappCanister
     );
+    // Prevent HttpAgent.create(), which is called by createAgent, from making a
+    // real network request via agent.syncTime().
+    vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
   });
 
   describe("getImportedTokens", () => {

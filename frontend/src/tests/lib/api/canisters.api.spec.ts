@@ -31,6 +31,7 @@ import {
   LedgerCanister,
   SubAccount,
 } from "@dfinity/ledger-icp";
+import * as dfinityUtils from "@dfinity/utils";
 import { principalToSubAccount } from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
 
@@ -44,6 +45,10 @@ describe("canisters-api", () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.clearAllTimers();
+
+    // Prevent HttpAgent.create(), which is called by createAgent, from making a
+    // real network request via agent.syncTime().
+    vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
 
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     const now = Date.now();

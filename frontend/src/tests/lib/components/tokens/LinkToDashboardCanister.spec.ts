@@ -12,17 +12,25 @@ describe("LinkToDashboardCanister", () => {
 
   const renderComponent = (props) => {
     const { container } = render(LinkToDashboardCanister, { props });
-    return LinkToDashboardCanisterPo.under(
-      new JestPageObjectElement(container)
-    );
+    return LinkToDashboardCanisterPo.under({
+      element: new JestPageObjectElement(container),
+    });
   };
 
   it("should render label", async () => {
     const po = renderComponent({
       canisterId,
+      label: "test canister",
     });
     expect(await po.getLabel().isPresent()).toEqual(true);
-    expect(await po.getLabelText()).toBe("View in Dashboard");
+    expect(await po.getLabelText()).toBe("test canister");
+  });
+
+  it("should render no label", async () => {
+    const po = renderComponent({
+      canisterId,
+    });
+    expect(await po.getLabel().isPresent()).toEqual(false);
   });
 
   it("should render href", async () => {
