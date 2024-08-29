@@ -72,6 +72,7 @@ describe("ImportTokenModal", () => {
     });
 
     it("should catch duplications", async () => {
+      const startBusySpy = vi.spyOn(busyServices, "startBusy");
       importedTokensStore.set({
         importedTokens: [
           {
@@ -93,6 +94,7 @@ describe("ImportTokenModal", () => {
 
       await formPo.getSubmitButtonPo().click();
 
+      expect(startBusySpy).toBeCalledTimes(0);
       expect(toastsError).toBeCalledTimes(1);
       expect(toastsError).toBeCalledWith({
         labelKey: "error__imported_tokens.is_duplication",
@@ -103,6 +105,7 @@ describe("ImportTokenModal", () => {
     });
 
     it("should catch importing of Snses", async () => {
+      const startBusySpy = vi.spyOn(busyServices, "startBusy");
       setSnsProjects([
         {
           ledgerCanisterId,
@@ -121,6 +124,7 @@ describe("ImportTokenModal", () => {
 
       await formPo.getSubmitButtonPo().click();
 
+      expect(startBusySpy).toBeCalledTimes(0);
       expect(toastsError).toBeCalledTimes(1);
       expect(toastsError).toBeCalledWith({
         labelKey: "error__imported_tokens.is_sns",
@@ -131,6 +135,7 @@ describe("ImportTokenModal", () => {
     });
 
     it("should catch importing of an Important token", async () => {
+      const startBusySpy = vi.spyOn(busyServices, "startBusy");
       const { formPo } = renderComponent();
 
       await formPo
@@ -143,6 +148,7 @@ describe("ImportTokenModal", () => {
 
       await formPo.getSubmitButtonPo().click();
 
+      expect(startBusySpy).toBeCalledTimes(0);
       expect(toastsError).toBeCalledTimes(1);
       expect(toastsError).toBeCalledWith({
         labelKey: "error__imported_tokens.is_important",
@@ -198,7 +204,6 @@ describe("ImportTokenModal", () => {
     });
 
     it("should catch unmatched ledger to index canister IDs", async () => {
-      // vi.spyOn(console, "error").mockReturnValue();
       vi.spyOn(icrcIndexApi, "getLedgerId").mockResolvedValue(principal(666));
 
       const { formPo } = renderComponent();
@@ -225,6 +230,8 @@ describe("ImportTokenModal", () => {
   });
 
   it("should leave the form after successful validation", async () => {
+    const startBusySpy = vi.spyOn(busyServices, "startBusy");
+    const stopBusySpy = vi.spyOn(busyServices, "stopBusy");
     const { formPo } = renderComponent();
 
     await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
@@ -233,6 +240,8 @@ describe("ImportTokenModal", () => {
     // Wait for toast error to be called.
     await runResolvedPromises();
 
+    expect(startBusySpy).toHaveBeenCalledTimes(1);
+    expect(stopBusySpy).toHaveBeenCalledTimes(1);
     expect(toastsError).toBeCalledTimes(0);
     expect(await formPo.isPresent()).toEqual(false);
   });
