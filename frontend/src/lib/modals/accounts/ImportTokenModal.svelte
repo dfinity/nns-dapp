@@ -56,7 +56,6 @@
     ledgerCanisterId: Principal
   ): { valid: boolean } => {
     let errorLabelKey: string | undefined = undefined;
-    // Ledger canister ID validation
     if (
       isImportedToken({
         ledgerCanisterId,
