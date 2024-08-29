@@ -880,6 +880,10 @@ interface I18nError__imported_tokens {
   add_imported_token: string;
   remove_imported_token: string;
   too_many: string;
+  ledger_canister_loading: string;
+  is_duplication: string;
+  is_sns: string;
+  is_important: string;
 }
 
 interface I18nError__sns {
@@ -1095,6 +1099,7 @@ interface I18nTokens {
 interface I18nImport_token {
   import_token: string;
   imported_token: string;
+  verifying: string;
   description: string;
   ledger_label: string;
   index_label_optional: string;
