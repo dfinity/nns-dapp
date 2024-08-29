@@ -15,6 +15,7 @@ use crate::accounts_store::AccountsStore;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
+use crate::tvl::state::TvlState;
 
 use dfn_candid::Candid;
 use dfn_core::api::trap_with;
@@ -31,6 +32,7 @@ pub struct State {
     pub asset_hashes: RefCell<AssetHashes>,
     pub performance: RefCell<PerformanceCounts>,
     pub partitions_maybe: RefCell<PartitionsMaybe>,
+    pub tvl_state: RefCell<TvlState>,
 }
 
 #[cfg(test)]
@@ -54,6 +56,7 @@ impl Default for State {
             asset_hashes: RefCell::new(AssetHashes::default()),
             performance: RefCell::new(PerformanceCounts::default()),
             partitions_maybe: RefCell::new(PartitionsMaybe::None(DefaultMemoryImpl::default())),
+            tvl_state: RefCell::new(TvlState::default()),
         }
     }
 }
@@ -67,6 +70,7 @@ impl core::fmt::Debug for State {
             asset_hashes: _,
             performance: _,
             partitions_maybe,
+            tvl_state,
         } = self;
         writeln!(f, "State {{")?;
         writeln!(f, "  accounts: {:?}", accounts_store.borrow())?;
@@ -74,6 +78,7 @@ impl core::fmt::Debug for State {
         writeln!(f, "  asset_hashes: <hashes of the assets> (elided)")?;
         writeln!(f, "  performance: <stats for the metrics endpoint> (elided)")?;
         writeln!(f, "  partitions_maybe: {:?}", partitions_maybe.borrow())?;
+        writeln!(f, "  tvl_state: {:?}", tvl_state.borrow())?;
         writeln!(f, "}}")
     }
 }
@@ -86,6 +91,7 @@ impl State {
             asset_hashes,
             performance,
             partitions_maybe,
+            tvl_state,
         } = new_state;
         let partitions_maybe = partitions_maybe.into_inner();
         self.accounts_store.replace(accounts_store.into_inner());
@@ -93,6 +99,7 @@ impl State {
         self.asset_hashes.replace(asset_hashes.into_inner());
         self.performance.replace(performance.into_inner());
         self.partitions_maybe.replace(partitions_maybe);
+        self.tvl_state.replace(tvl_state.into_inner());
     }
 }
 
@@ -119,6 +126,7 @@ impl State {
             asset_hashes: RefCell::new(AssetHashes::default()),
             performance: RefCell::new(PerformanceCounts::default()),
             partitions_maybe: RefCell::new(PartitionsMaybe::Partitions(partitions)),
+            tvl_state: RefCell::new(TvlState::default()),
         }
     }
 }
@@ -168,6 +176,7 @@ impl From<DefaultMemoryImpl> for State {
 
 impl StableState for State {
     fn encode(&self) -> Vec<u8> {
+        // TODO: Encode TVL state.
         Candid((self.accounts_store.borrow().encode(), self.assets.borrow().encode()))
             .into_bytes()
             .unwrap()
@@ -186,6 +195,8 @@ impl StableState for State {
             asset_hashes: RefCell::new(asset_hashes),
             performance: RefCell::new(performance),
             partitions_maybe: RefCell::new(PartitionsMaybe::None(DefaultMemoryImpl::default())),
+            // TODO: Decode TVL state from bytes.
+            tvl_state: RefCell::new(TvlState::default()),
         })
     }
 }
