@@ -1088,6 +1088,8 @@ interface I18nTokens {
   show_all: string;
   add_imported_token_success: string;
   remove_imported_token_success: string;
+  ledger_canister: string;
+  index_canister: string;
 }
 
 interface I18nImport_token {
@@ -1105,7 +1107,6 @@ interface I18nImport_token {
   index_label: string;
   index_fallback_label: string;
   import_button: string;
-  view_in_dashboard: string;
   link_to_dashboard: string;
 }
 
