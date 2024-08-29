@@ -5,6 +5,7 @@ import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import {
+  INDEX_CANISTER_ID,
   LEDGER_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
@@ -252,7 +253,7 @@ describe("NnsWallet", () => {
 
     it('should not render "more" popup by default', async () => {
       const po = await renderWallet({});
-      expect(await po.getLinkToDashboardPo().isPresent()).toBe(false);
+      expect(await po.getLinkToLedgerCanisterPo().isPresent()).toBe(false);
     });
 
     it("should not display more button when ENABLE_IMPORT_TOKEN disabled", async () => {
@@ -262,16 +263,20 @@ describe("NnsWallet", () => {
       expect(await po.hasMoreButton()).toBe(false);
     });
 
-    it('should have "View in dashboard" link in "more" popup', async () => {
+    it('should have canister links in "more" popup', async () => {
       const po = await renderWallet({});
 
       await po.clickMore();
 
       await runResolvedPromises();
 
-      expect(await po.getLinkToDashboardPo().isPresent()).toBe(true);
-      expect(await po.getLinkToDashboardPo().getHref()).toBe(
+      expect(await po.getLinkToLedgerCanisterPo().isPresent()).toBe(true);
+      expect(await po.getLinkToLedgerCanisterPo().getHref()).toBe(
         `https://dashboard.internetcomputer.org/canister/${LEDGER_CANISTER_ID.toText()}`
+      );
+      expect(await po.getLinkToIndexCanisterPo().isPresent()).toBe(true);
+      expect(await po.getLinkToIndexCanisterPo().getHref()).toBe(
+        `https://dashboard.internetcomputer.org/canister/${INDEX_CANISTER_ID.toText()}`
       );
     });
   });

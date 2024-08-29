@@ -10,6 +10,7 @@ import {
 } from "$tests/mocks/sns-accounts.mock";
 import type { IcrcGetTransactions } from "@dfinity/ledger-icrc";
 import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger-icrc";
+import * as dfinityUtils from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
 
 describe("transactions.worker-services", () => {
@@ -21,6 +22,9 @@ describe("transactions.worker-services", () => {
     vi.spyOn(IcrcIndexCanister, "create").mockImplementation(
       () => indexCanisterMock
     );
+    // Prevent HttpAgent.create(), which is called by createAgent, from making a
+    // real network request via agent.syncTime().
+    vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
   });
 
   const transaction = {

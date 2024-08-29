@@ -16,7 +16,7 @@
     {#if nonNullish(canisterId)}
       <span class="value description" data-tid="canister-id">{canisterId}</span>
       <Copy value={canisterId.toText()} />
-      <LinkToDashboardCanister noLabel {canisterId} />
+      <LinkToDashboardCanister {canisterId} />
     {:else if nonNullish(canisterIdFallback)}
       <span class="fallback description" data-tid="canister-id-fallback"
         >{canisterIdFallback}</span

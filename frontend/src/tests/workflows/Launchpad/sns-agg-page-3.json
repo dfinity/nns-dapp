@@ -1431,7 +1431,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 999923420000,
+    "icrc1_total_supply": 999919900000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1812,7 +1812,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 99999882810000,
+    "icrc1_total_supply": 99999880490000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2210,7 +2210,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041774036153096800,
+    "icrc1_total_supply": 1041770978059410300,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2331,7 +2331,7 @@
       "archives": ["i2f3v-jyaaa-aaaaq-aadpq-cai"]
     },
     "meta": {
-      "url": "https://waterneuron.fi/stake/",
+      "url": "https://waterneuron.fi/",
       "name": "WaterNeuron",
       "description": "WaterNeuron is a liquid staking protocol designed for the Internet Computer network. \nStaking ICP becomes straightforward and efficient. \n\nLearn more: https://docs.waterneuron.fi | https://x.com/waterneuron | https://t.me/waterneuron\n",
       "logo": "/v1/sns/root/jmod6-4iaaa-aaaaq-aadkq-cai/logo.png"
@@ -2844,7 +2844,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11626265538666390,
+    "icrc1_total_supply": 11629849986163180,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -3717,7 +3717,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 2002132536670411,
+    "icrc1_total_supply": 2002148576764854,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 400000000,
@@ -4047,7 +4047,7 @@
         "kw5rk-raaaa-aaaai-qpfoa-cai",
         "kr4x6-4yaaa-aaaai-qpfoq-cai"
       ],
-      "archives": []
+      "archives": ["mxu7p-2yaaa-aaaaq-aadvq-cai"]
     },
     "meta": {
       "url": "https://qu2gy-uqaaa-aaaal-qcv6a-cai.icp0.io",
@@ -4325,7 +4325,7 @@
       ]
     ],
     "icrc1_fee": [705032704, 1],
-    "icrc1_total_supply": 2466963299278500000,
+    "icrc1_total_supply": 2466954219278500000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4864,7 +4864,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999999997900000,
+    "icrc1_total_supply": 1999999997220000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,

@@ -19,6 +19,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Staking project rows are not clickable when not signed in.
 * Changes for cleaning up the stable structure migration.
+* Upgrade agent-js to version 2.
 
 #### Deprecated
 
