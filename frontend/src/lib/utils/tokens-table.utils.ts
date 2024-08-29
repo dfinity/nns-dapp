@@ -1,7 +1,5 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
-import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import { IMPORTANT_CK_TOKEN_IDS } from "$lib/constants/tokens.constants";
 import type { UserToken } from "$lib/types/tokens-page";
 import {
   createAscendingComparator,
@@ -31,11 +29,9 @@ export const compareTokensWithBalanceOrImportedFirst = ({
 // These tokens should be placed before others (but after ICP)
 // because they have significance within the Internet Computer ecosystem and deserve to be highlighted.
 // Where the fixed order maps to a descending order in the market cap of the underlying native tokens.
-const ImportantCkTokenIds = [
-  CKBTC_UNIVERSE_CANISTER_ID.toText(),
-  CKETH_UNIVERSE_CANISTER_ID.toText(),
-  CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-]
+const ImportantCkTokenIds = IMPORTANT_CK_TOKEN_IDS.map((token) =>
+  token.toText()
+)
   // To place other tokens (which get an index of -1) at the bottom.
   .reverse();
 export const compareTokensByImportance = createDescendingComparator(

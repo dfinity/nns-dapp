@@ -1,3 +1,4 @@
+import { IMPORTANT_CK_TOKEN_IDS } from "$lib/constants/tokens.constants";
 import type { TokensStore, TokensStoreData } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
@@ -6,6 +7,7 @@ import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
 } from "@dfinity/ledger-icrc";
+import type { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
 
 /**
@@ -86,3 +88,12 @@ export const fillTokensStoreFromAggregatorData = ({
       )
   );
 };
+
+export const isImportantCkToken = ({
+  ledgerCanisterId,
+}: {
+  ledgerCanisterId: Principal;
+}): boolean =>
+  IMPORTANT_CK_TOKEN_IDS.some(
+    (token) => token.toText() === ledgerCanisterId.toText()
+  );
