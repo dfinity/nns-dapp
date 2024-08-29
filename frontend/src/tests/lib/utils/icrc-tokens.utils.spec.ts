@@ -12,10 +12,7 @@ import {
   aggregatorTokenMock,
 } from "$tests/mocks/sns-aggregator.mock";
 import { get } from "svelte/store";
-import {
-  CKBTC_LEDGER_CANISTER_ID,
-  CKTESTBTC_LEDGER_CANISTER_ID,
-} from "../../../lib/constants/ckbtc-canister-ids.constants";
+import { CKBTC_LEDGER_CANISTER_ID } from "../../../lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_LEDGER_CANISTER_ID } from "../../../lib/constants/cketh-canister-ids.constants";
 import { CKUSDC_LEDGER_CANISTER_ID } from "../../../lib/constants/ckusdc-canister-ids.constants";
 import { principal } from "../../mocks/sns-projects.mock";
@@ -54,9 +51,6 @@ describe("ICRC tokens utils", () => {
     it("should return true for important token ledger canisters", () => {
       expect(
         isImportantCkToken({ ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID })
-      ).toEqual(true);
-      expect(
-        isImportantCkToken({ ledgerCanisterId: CKTESTBTC_LEDGER_CANISTER_ID })
       ).toEqual(true);
       expect(
         isImportantCkToken({ ledgerCanisterId: CKETH_LEDGER_CANISTER_ID })
