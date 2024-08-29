@@ -2,7 +2,7 @@
   import type { Universe } from "$lib/types/universe";
   import PageHeader from "../common/PageHeader.svelte";
   import IdentifierHash from "../ui/IdentifierHash.svelte";
-  import UniversePageSummary from "../universe/UniversePageSummary.svelte";
+  import UniverseSummary from "../universe/UniverseSummary.svelte";
   import { nonNullish } from "@dfinity/utils";
 
   export let universe: Universe;
@@ -11,7 +11,7 @@
 
 <PageHeader testId="wallet-page-header-component">
   <div slot="start" class="header-start">
-    <UniversePageSummary {universe} />
+    <UniverseSummary {universe} />
     <slot name="actions" />
   </div>
   <span
@@ -33,7 +33,7 @@
 
   .header-end {
     // The IdentifierHash has the copy button at the end which has some extra padding.
-    // This is needed to align in the center the UniversePageSummary and the IdentifierHash in mobile view.
+    // This is needed to align in the center the UniverseSummary and the IdentifierHash in mobile view.
     padding-left: var(--padding-1_5x);
   }
 </style>

@@ -478,10 +478,10 @@ describe("SnsWallet", () => {
       // we want to make sure that SNSes have the ability to change the logo in
       // their ledger canister metadata.
       expect(
-        await po.getWalletPageHeaderPo().getUniversePageSummaryPo().getLogoUrl()
+        await po.getWalletPageHeaderPo().getUniverseSummaryPo().getLogoUrl()
       ).toBe(snsProjectLogo);
       expect(
-        await po.getWalletPageHeaderPo().getUniversePageSummaryPo().getLogoUrl()
+        await po.getWalletPageHeaderPo().getUniverseSummaryPo().getLogoUrl()
       ).not.toBe(tokenLogo);
     });
   });
