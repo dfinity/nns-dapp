@@ -2,6 +2,12 @@ import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
+import {
+  CKBTC_LEDGER_CANISTER_ID,
+  CKTESTBTC_LEDGER_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKETH_LEDGER_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
+import { CKUSDC_LEDGER_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { tokensStore } from "$lib/stores/tokens.store";
 import {
   fillTokensStoreFromAggregatorData,
@@ -11,11 +17,8 @@ import {
   aggregatorSnsMockDto,
   aggregatorTokenMock,
 } from "$tests/mocks/sns-aggregator.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
-import { CKBTC_LEDGER_CANISTER_ID } from "../../../lib/constants/ckbtc-canister-ids.constants";
-import { CKETH_LEDGER_CANISTER_ID } from "../../../lib/constants/cketh-canister-ids.constants";
-import { CKUSDC_LEDGER_CANISTER_ID } from "../../../lib/constants/ckusdc-canister-ids.constants";
-import { principal } from "../../mocks/sns-projects.mock";
 
 describe("ICRC tokens utils", () => {
   beforeEach(() => {
@@ -70,6 +73,9 @@ describe("ICRC tokens utils", () => {
       expect(isImportantCkToken({ ledgerCanisterId: OWN_CANISTER_ID })).toEqual(
         false
       );
+      expect(
+        isImportantCkToken({ ledgerCanisterId: CKTESTBTC_LEDGER_CANISTER_ID })
+      ).toEqual(false);
     });
   });
 });
