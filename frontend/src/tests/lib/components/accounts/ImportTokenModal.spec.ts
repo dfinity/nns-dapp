@@ -4,25 +4,25 @@ import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.cons
 import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
 import * as busyServices from "$lib/stores/busy.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-import { toastsError } from "$lib/stores/toasts.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { ImportTokenModalPo } from "$tests/page-objects/ImportTokenModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
+import { get } from "svelte/store";
 import type { SpyInstance } from "vitest";
-import {
-  resetSnsProjects,
-  setSnsProjects,
-} from "../../../utils/sns.test-utils";
 
-vi.mock("$lib/stores/toasts.store", () => {
-  return {
-    toastsError: vi.fn(),
-  };
-});
+const expectToastError = (contained: string) =>
+  expect(get(toastsStore)).toMatchObject([
+    {
+      level: "error",
+      text: expect.stringContaining(contained),
+    },
+  ]);
 
 describe("ImportTokenModal", () => {
   const ledgerCanisterId = principal(0);
@@ -52,8 +52,9 @@ describe("ImportTokenModal", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     importedTokensStore.reset();
-    (toastsError as undefined as SpyInstance).mockReset();
     resetIdentity();
+    resetSnsProjects();
+    toastsStore.reset();
 
     queryIcrcTokenSpy = vi
       .spyOn(ledgerApi, "queryIcrcToken")
@@ -67,10 +68,6 @@ describe("ImportTokenModal", () => {
   });
 
   describe("Form Step", () => {
-    beforeEach(() => {
-      resetSnsProjects();
-    });
-
     it("should catch duplications", async () => {
       const startBusySpy = vi.spyOn(busyServices, "startBusy");
       importedTokensStore.set({
@@ -88,18 +85,16 @@ describe("ImportTokenModal", () => {
         .getLedgerCanisterInputPo()
         .typeText(ledgerCanisterId.toText());
 
-      expect(toastsError).toBeCalledTimes(0);
-      expect(queryIcrcTokenSpy).toHaveBeenCalledTimes(0);
+      expect(queryIcrcTokenSpy).toBeCalledTimes(0);
       expect(await formPo.isPresent()).toEqual(true);
 
       await formPo.getSubmitButtonPo().click();
 
       expect(startBusySpy).toBeCalledTimes(0);
-      expect(toastsError).toBeCalledTimes(1);
-      expect(toastsError).toBeCalledWith({
-        labelKey: "error__imported_tokens.is_duplication",
-      });
-      expect(queryIcrcTokenSpy).toHaveBeenCalledTimes(0);
+      expectToastError(
+        "You have already imported this token, you can find it in the token list."
+      );
+      expect(queryIcrcTokenSpy).toBeCalledTimes(0);
       // Stays on the form.
       expect(await formPo.isPresent()).toEqual(true);
     });
@@ -118,18 +113,16 @@ describe("ImportTokenModal", () => {
         .getLedgerCanisterInputPo()
         .typeText(ledgerCanisterId.toText());
 
-      expect(toastsError).toBeCalledTimes(0);
-      expect(queryIcrcTokenSpy).toHaveBeenCalledTimes(0);
+      expect(queryIcrcTokenSpy).toBeCalledTimes(0);
       expect(await formPo.isPresent()).toEqual(true);
 
       await formPo.getSubmitButtonPo().click();
 
       expect(startBusySpy).toBeCalledTimes(0);
-      expect(toastsError).toBeCalledTimes(1);
-      expect(toastsError).toBeCalledWith({
-        labelKey: "error__imported_tokens.is_sns",
-      });
-      expect(queryIcrcTokenSpy).toHaveBeenCalledTimes(0);
+      expectToastError(
+        "You cannot import SNS tokens, they are added automatically."
+      );
+      expect(queryIcrcTokenSpy).toBeCalledTimes(0);
       // Stays on the form.
       expect(await formPo.isPresent()).toEqual(true);
     });
@@ -142,18 +135,14 @@ describe("ImportTokenModal", () => {
         .getLedgerCanisterInputPo()
         .typeText(CKBTC_LEDGER_CANISTER_ID.toText());
 
-      expect(toastsError).toBeCalledTimes(0);
-      expect(queryIcrcTokenSpy).toHaveBeenCalledTimes(0);
+      expect(queryIcrcTokenSpy).toBeCalledTimes(0);
       expect(await formPo.isPresent()).toEqual(true);
 
       await formPo.getSubmitButtonPo().click();
 
       expect(startBusySpy).toBeCalledTimes(0);
-      expect(toastsError).toBeCalledTimes(1);
-      expect(toastsError).toBeCalledWith({
-        labelKey: "error__imported_tokens.is_important",
-      });
-      expect(queryIcrcTokenSpy).toHaveBeenCalledTimes(0);
+      expectToastError("This token is already in the token list.");
+      expect(queryIcrcTokenSpy).toBeCalledTimes(0);
       // Stays on the form.
       expect(await formPo.isPresent()).toEqual(true);
     });
@@ -166,24 +155,23 @@ describe("ImportTokenModal", () => {
         .getLedgerCanisterInputPo()
         .typeText(ledgerCanisterId.toText());
 
-      expect(queryIcrcTokenSpy).toHaveBeenCalledTimes(0);
+      expect(queryIcrcTokenSpy).toBeCalledTimes(0);
 
       await formPo.getSubmitButtonPo().click();
 
-      expect(queryIcrcTokenSpy).toHaveBeenCalledTimes(1);
-      expect(startBusySpy).toHaveBeenCalledTimes(1);
-      expect(startBusySpy).toHaveBeenCalledWith({
+      expect(queryIcrcTokenSpy).toBeCalledTimes(1);
+      expect(startBusySpy).toBeCalledTimes(1);
+      expect(startBusySpy).toBeCalledWith({
         initiator: "import-token-validation",
         labelKey: "import_token.verifying",
       });
     });
 
     it("should catch not a ledger canister id", async () => {
+      vi.spyOn(console, "error").mockReturnValue();
       const error = new Error("Not a ledger canister");
       vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(error);
       const { formPo } = renderComponent();
-
-      expect(toastsError).not.toBeCalled();
 
       await formPo
         .getLedgerCanisterInputPo()
@@ -193,11 +181,9 @@ describe("ImportTokenModal", () => {
       // Wait for toast error to be called.
       await runResolvedPromises();
 
-      expect(toastsError).toBeCalledTimes(1);
-      expect(toastsError).toBeCalledWith({
-        labelKey: "error__imported_tokens.ledger_canister_loading",
-        err: error,
-      });
+      expectToastError(
+        "Unable to load token details using the provided Ledger Canister ID. Not a ledger canister"
+      );
 
       // Stays on the form.
       expect(await formPo.isPresent()).toEqual(true);
@@ -208,8 +194,6 @@ describe("ImportTokenModal", () => {
 
       const { formPo } = renderComponent();
 
-      expect(toastsError).toBeCalledTimes(0);
-
       await formPo
         .getLedgerCanisterInputPo()
         .typeText(ledgerCanisterId.toText());
@@ -219,11 +203,9 @@ describe("ImportTokenModal", () => {
       // Wait for toast error to be called.
       await runResolvedPromises();
 
-      expect(toastsError).toBeCalledTimes(1);
-      expect(toastsError).toBeCalledWith({
-        labelKey: "error.invalid_ledger_index_pair",
-      });
-
+      expectToastError(
+        "The provided index canister ID does not match the associated ledger canister ID."
+      );
       // Stays on the form.
       expect(await formPo.isPresent()).toEqual(true);
     });
@@ -240,9 +222,8 @@ describe("ImportTokenModal", () => {
     // Wait for toast error to be called.
     await runResolvedPromises();
 
-    expect(startBusySpy).toHaveBeenCalledTimes(1);
-    expect(stopBusySpy).toHaveBeenCalledTimes(1);
-    expect(toastsError).toBeCalledTimes(0);
+    expect(startBusySpy).toBeCalledTimes(1);
+    expect(stopBusySpy).toBeCalledTimes(1);
     expect(await formPo.isPresent()).toEqual(false);
   });
 });
