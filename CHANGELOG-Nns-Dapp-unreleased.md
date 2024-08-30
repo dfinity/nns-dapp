@@ -40,6 +40,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Change the release process to submitting `InstallCode` proposals.
+
 #### Deprecated
 
 #### Removed
