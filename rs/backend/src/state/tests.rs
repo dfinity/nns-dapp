@@ -4,6 +4,7 @@ use crate::{
         partitions::{Partitions, PartitionsMaybe},
         AccountsDbAsMap, AssetHashes, Assets, PerformanceCounts, StableState, State,
     },
+    tvl::state::TvlState,
 };
 use ic_stable_structures::{DefaultMemoryImpl, VectorMemory};
 use pretty_assertions::assert_eq;
@@ -18,6 +19,7 @@ pub fn setup_test_state() -> State {
         asset_hashes: RefCell::new(AssetHashes::default()),
         performance: RefCell::new(PerformanceCounts::test_data()),
         partitions_maybe: RefCell::new(PartitionsMaybe::None(VectorMemory::default())),
+        tvl_state: RefCell::new(TvlState::default()),
     }
 }
 
