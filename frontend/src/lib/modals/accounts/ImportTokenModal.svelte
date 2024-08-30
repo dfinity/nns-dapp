@@ -93,23 +93,25 @@
       return;
     }
 
-    startBusy({
-      initiator: "import-token-validation",
-      labelKey: "import_token.verifying",
-    });
+    try {
+      startBusy({
+        initiator: "import-token-validation",
+        labelKey: "import_token.verifying",
+      });
 
-    tokenMetaData = await getTokenMetaData(ledgerCanisterId);
-    // No need to validate index canister if tokenMetaData fails to load or no index canister is provided
-    const validOrEmptyIndexCanister =
-      nonNullish(tokenMetaData) &&
-      (nonNullish(indexCanisterId)
-        ? await matchLedgerIndexPair({ ledgerCanisterId, indexCanisterId })
-        : true);
+      tokenMetaData = await getTokenMetaData(ledgerCanisterId);
+      // No need to validate index canister if tokenMetaData fails to load or no index canister is provided
+      const validOrEmptyIndexCanister =
+        nonNullish(tokenMetaData) &&
+        (nonNullish(indexCanisterId)
+          ? await matchLedgerIndexPair({ ledgerCanisterId, indexCanisterId })
+          : true);
 
-    stopBusy("import-token-validation");
-
-    if (validOrEmptyIndexCanister) {
-      next();
+      if (validOrEmptyIndexCanister) {
+        next();
+      }
+    } finally {
+      stopBusy("import-token-validation");
     }
   };
 </script>
