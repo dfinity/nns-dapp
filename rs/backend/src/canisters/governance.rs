@@ -24,11 +24,13 @@ pub use prod::get_metrics;
 #[cfg(test)]
 pub use testing::get_metrics;
 
+type GetMetricsCallResult = Result<Result<GovernanceCachedMetrics, GovernanceError>, String>;
+
 #[cfg(not(test))]
 mod prod {
     use super::{candid, GovernanceCachedMetrics, GovernanceError, GOVERNANCE_CANISTER_ID};
 
-    pub async fn get_metrics() -> Result<Result<GovernanceCachedMetrics, GovernanceError>, String> {
+    pub async fn get_metrics() -> GetMetricsCallResult {
         dfn_core::call(GOVERNANCE_CANISTER_ID, "get_metrics", candid, ())
             .await
             .map_err(|e| e.1)
@@ -42,19 +44,19 @@ pub mod testing {
 
     thread_local! {
         pub static RESPONSES:
-        RefCell<VecDeque<Result<Result<GovernanceCachedMetrics, GovernanceError>, String>>> = RefCell::default();
+        RefCell<VecDeque<GetMetricsCallResult>> = RefCell::default();
     }
 
-    pub async fn get_metrics() -> Result<Result<GovernanceCachedMetrics, GovernanceError>, String> {
+    pub async fn get_metrics() -> GetMetricsCallResult {
         RESPONSES.with(|responses| {
             responses
                 .borrow_mut()
                 .pop_front()
-                .expect("The test must provide a response before get_metrics is called.")
+                .expect("The test must provide a response before each call to get_metrics.")
         })
     }
 
-    pub fn add_metrics_response(response: Result<Result<GovernanceCachedMetrics, GovernanceError>, String>) {
+    pub fn add_metrics_response(response: GetMetricsCallResult) {
         RESPONSES.with(|responses| responses.borrow_mut().push_back(response));
     }
 
