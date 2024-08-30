@@ -1,10 +1,14 @@
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as ledgerApi from "$lib/api/icrc-ledger.api";
+import * as importedTokensApi from "$lib/api/imported-tokens.api";
 import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import { page } from "$mocks/$app/stores";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { ImportTokenModalPo } from "$tests/page-objects/ImportTokenModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -43,6 +47,7 @@ describe("ImportTokenModal", () => {
     return {
       po,
       formPo: po.getImportTokenFormPo(),
+      reviewPo: po.getImportTokenReviewPo(),
       onClose,
     };
   };
@@ -59,6 +64,11 @@ describe("ImportTokenModal", () => {
     queryIcrcTokenSpy = vi
       .spyOn(ledgerApi, "queryIcrcToken")
       .mockResolvedValue(tokenMetaData);
+
+    vi.spyOn(icrcIndexApi, "getLedgerId").mockResolvedValue(ledgerCanisterId);
+    page.mock({
+      routeId: AppPath.Tokens,
+    });
   });
 
   it("should display modal title", async () => {
@@ -221,5 +231,186 @@ describe("ImportTokenModal", () => {
 
     expect(get(busyStore)).toEqual([]);
     expect(await formPo.isPresent()).toEqual(false);
+  });
+
+  it("should display entered canisters info on the review step", async () => {
+    const { formPo, reviewPo } = renderComponent();
+
+    await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
+    await formPo.getIndexCanisterInputPo().typeText(indexCanisterId.toText());
+    await formPo.getSubmitButtonPo().click();
+
+    // Wait for ModalWizard step animation.
+    await runResolvedPromises();
+
+    expect(await reviewPo.isPresent()).toEqual(true);
+    expect(await reviewPo.getLedgerCanisterIdPo().getCanisterIdText()).toEqual(
+      ledgerCanisterId.toText()
+    );
+    expect(await reviewPo.getIndexCanisterIdPo().getCanisterIdText()).toEqual(
+      indexCanisterId.toText()
+    );
+    expect(await reviewPo.getTokenName()).toEqual(tokenMetaData.name);
+    expect(await reviewPo.getTokenSymbol()).toEqual(tokenMetaData.symbol);
+    expect(await reviewPo.getLogoSource()).toEqual(tokenMetaData.logo);
+  });
+
+  it("should display a fallback text for the index canister when it's not entered", async () => {
+    const { formPo, reviewPo } = renderComponent();
+
+    await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
+    await formPo.getSubmitButtonPo().click();
+
+    // Wait for ModalWizard step animation.
+    await runResolvedPromises();
+
+    expect(
+      await reviewPo.getIndexCanisterIdPo().getCanisterId().isPresent()
+    ).toEqual(false);
+    expect(
+      await reviewPo.getIndexCanisterIdPo().getCanisterIdFallback().isPresent()
+    ).toEqual(true);
+    expect(
+      await reviewPo.getIndexCanisterIdPo().getCanisterIdFallbackText()
+    ).toEqual("Transaction history won’t be displayed.");
+  });
+
+  it('should navigate back to form on "Back" button click', async () => {
+    const { formPo, reviewPo } = renderComponent();
+
+    expect(await formPo.isPresent()).toEqual(true);
+    expect(await reviewPo.isPresent()).toEqual(false);
+
+    await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
+    await formPo.getSubmitButtonPo().click();
+
+    // Wait for ModalWizard step animation.
+    await runResolvedPromises();
+
+    expect(await formPo.isPresent()).toEqual(false);
+    expect(await reviewPo.isPresent()).toEqual(true);
+
+    await reviewPo.getBackButtonPo().click();
+
+    expect(await formPo.isPresent()).toEqual(true);
+    expect(await reviewPo.isPresent()).toEqual(false);
+  });
+
+  it("should save imported token", async () => {
+    const getImportedTokensSpy = vi
+      .spyOn(importedTokensApi, "getImportedTokens")
+      .mockResolvedValue({
+        imported_tokens: [],
+      });
+    const setImportedTokensSpy = vi
+      .spyOn(importedTokensApi, "setImportedTokens")
+      .mockResolvedValue();
+
+    importedTokensStore.set({
+      importedTokens: [],
+      certified: true,
+    });
+    const { formPo, reviewPo } = renderComponent();
+
+    expect(await formPo.isPresent()).toEqual(true);
+    expect(await reviewPo.isPresent()).toEqual(false);
+
+    await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
+    await formPo.getIndexCanisterInputPo().typeText(indexCanisterId.toText());
+    await formPo.getSubmitButtonPo().click();
+
+    // Wait for ModalWizard step animation.
+    await runResolvedPromises();
+
+    expect(await formPo.isPresent()).toEqual(false);
+    expect(getImportedTokensSpy).toBeCalledTimes(0);
+    expect(setImportedTokensSpy).toBeCalledTimes(0);
+    expect(get(pageStore).path).toEqual(AppPath.Tokens);
+
+    await reviewPo.getConfirmButtonPo().click();
+
+    expect(get(busyStore)).toEqual([
+      {
+        initiator: "import-token-importing",
+        text: "Importing new token...",
+      },
+    ]);
+
+    await runResolvedPromises();
+
+    expect(get(busyStore)).toEqual([]);
+
+    expect(setImportedTokensSpy).toBeCalledTimes(1);
+    expect(setImportedTokensSpy).toBeCalledWith({
+      identity: mockIdentity,
+      importedTokens: [
+        {
+          index_canister_id: [indexCanisterId],
+          ledger_canister_id: ledgerCanisterId,
+        },
+      ],
+    });
+    expect(getImportedTokensSpy).toBeCalledTimes(2);
+
+    expect(get(pageStore)).toEqual({
+      path: AppPath.Wallet,
+      universe: ledgerCanisterId.toText(),
+    });
+  });
+
+  it("should navigate to the imported token page after saving", async () => {
+    vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
+      imported_tokens: [],
+    });
+    vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue();
+    importedTokensStore.set({
+      importedTokens: [],
+      certified: true,
+    });
+    const { formPo, reviewPo } = renderComponent();
+
+    await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
+    await formPo.getSubmitButtonPo().click();
+
+    // Wait for ModalWizard step animation.
+    await runResolvedPromises();
+
+    expect(get(pageStore).path).toEqual(AppPath.Tokens);
+
+    await reviewPo.getConfirmButtonPo().click();
+    await runResolvedPromises();
+
+    expect(get(pageStore)).toEqual({
+      path: AppPath.Wallet,
+      universe: ledgerCanisterId.toText(),
+    });
+  });
+
+  it("should stay on the token page when an error occurs during saving", async () => {
+    vi.spyOn(console, "error").mockReturnValue();
+    vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
+      imported_tokens: [],
+    });
+    vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
+      new Error("test")
+    );
+    importedTokensStore.set({
+      importedTokens: [],
+      certified: true,
+    });
+    const { formPo, reviewPo } = renderComponent();
+
+    await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
+    await formPo.getSubmitButtonPo().click();
+
+    // Wait for ModalWizard step animation.
+    await runResolvedPromises();
+
+    expect(get(pageStore).path).toEqual(AppPath.Tokens);
+
+    await reviewPo.getConfirmButtonPo().click();
+    await runResolvedPromises();
+
+    expect(get(pageStore).path).toEqual(AppPath.Tokens);
   });
 });
