@@ -33,9 +33,9 @@ use schema::{
 
 use self::schema::SchemaLabel;
 
-/// The data migration is more complicated if there are too many accounts.  With below this many
-/// accounts we avoid some complications.
-const PRE_MIGRATION_LIMIT: u64 = 300_000;
+// This limit is for DoS protection but should be increased if we get close to
+// the limit.
+const ACCOUNT_LIMIT: u64 = 300_000;
 
 // Conservatively limit the number of imported tokens to prevent using too much memory.
 // Can be revisited if users find this too restrictive.
@@ -426,7 +426,7 @@ impl AccountsStore {
     // yet been stored, allowing us to set the principal (since originally we created accounts
     // without storing each user's principal).
     pub fn add_account(&mut self, caller: PrincipalId) -> bool {
-        self.assert_pre_migration_limit();
+        self.assert_account_limit();
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
             if account.principal.is_none() {
@@ -448,7 +448,7 @@ impl AccountsStore {
 
     /// Creates a sub-account for the given user.
     pub fn create_sub_account(&mut self, caller: PrincipalId, sub_account_name: String) -> CreateSubAccountResponse {
-        self.assert_pre_migration_limit();
+        self.assert_account_limit();
         let account_identifier = AccountIdentifier::from(caller);
 
         if !Self::validate_account_name(&sub_account_name) {
@@ -1068,10 +1068,10 @@ impl AccountsStore {
             _ => {}
         };
     }
-    fn assert_pre_migration_limit(&self) {
+    fn assert_account_limit(&self) {
         let db_accounts_len = self.accounts_db.db_accounts_len();
         assert!(
-            db_accounts_len < PRE_MIGRATION_LIMIT,
+            db_accounts_len < ACCOUNT_LIMIT,
             "Pre migration account limit exceeded {db_accounts_len}"
         );
     }
