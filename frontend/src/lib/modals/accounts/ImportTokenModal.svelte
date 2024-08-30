@@ -100,16 +100,15 @@
       });
 
       tokenMetaData = await getTokenMetaData(ledgerCanisterId);
-      // No need to validate index canister if tokenMetaData fails to load or no index canister is provided
-      const validOrEmptyIndexCanister =
-        nonNullish(tokenMetaData) &&
-        (nonNullish(indexCanisterId)
-          ? await matchLedgerIndexPair({ ledgerCanisterId, indexCanisterId })
-          : true);
-
-      if (validOrEmptyIndexCanister) {
-        next();
+      if (
+        isNullish(tokenMetaData) ||
+        (nonNullish(indexCanisterId) &&
+          !(await matchLedgerIndexPair({ ledgerCanisterId, indexCanisterId })))
+      ) {
+        return;
       }
+
+      next();
     } finally {
       stopBusy("import-token-validation");
     }
