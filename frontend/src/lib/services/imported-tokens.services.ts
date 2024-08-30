@@ -44,9 +44,14 @@ export const loadImportedTokens = async ({
         certified,
       });
 
-      const icrcCanistersStoreData = get(icrcCanistersStore);
+      if (!certified && notForceCallStrategy()) {
+        return;
+      }
+
+      // Populate icrcCanistersStore with the imported tokens.
       for (const { ledgerCanisterId, indexCanisterId } of importedTokens) {
-        if (isNullish(icrcCanistersStoreData[ledgerCanisterId.toText()])) {
+        // If the imported token is not already in the store, add it.
+        if (isNullish(get(icrcCanistersStore)[ledgerCanisterId.toText()])) {
           icrcCanistersStore.setCanisters({
             ledgerCanisterId,
             indexCanisterId,
