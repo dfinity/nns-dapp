@@ -4033,6 +4033,7 @@ dependencies = [
  "strum",
  "strum_macros",
  "tar",
+ "tokio",
 ]
 
 [[package]]
