@@ -54,46 +54,44 @@
   };
   const validateLedgerCanister = (
     ledgerCanisterId: Principal
-  ): { valid: boolean } => {
-    let errorLabelKey: string | undefined = undefined;
+  ): { errorLabelKey: string | undefined } => {
     if (
       isImportedToken({
         ledgerCanisterId,
         importedTokens: $importedTokensStore?.importedTokens,
       })
     ) {
-      errorLabelKey = "error__imported_tokens.is_duplication";
-    } else if (
+      return { errorLabelKey: "error__imported_tokens.is_duplication" };
+    }
+    if (
       isSnsLedgerCanisterId({
         ledgerCanisterId,
         snsProjects: $snsProjectsCommittedStore,
       })
     ) {
-      errorLabelKey = "error__imported_tokens.is_sns";
-    } else if (
+      return { errorLabelKey: "error__imported_tokens.is_sns" };
+    }
+    if (
       isImportantCkToken({
         ledgerCanisterId,
       })
     ) {
-      errorLabelKey = "error__imported_tokens.is_important";
+      return { errorLabelKey: "error__imported_tokens.is_important" };
     }
 
-    if (nonNullish(errorLabelKey)) {
-      toastsError({
-        labelKey: errorLabelKey,
-      });
-      return { valid: false };
-    }
-    return { valid: true };
+    return { errorLabelKey: undefined };
   };
 
   const onSubmit = async () => {
     if (isNullish(ledgerCanisterId)) return;
 
-    const { valid: isValidLedgerCanisterId } =
-      validateLedgerCanister(ledgerCanisterId);
-
-    if (!isValidLedgerCanisterId) return;
+    const { errorLabelKey } = validateLedgerCanister(ledgerCanisterId);
+    if (nonNullish(errorLabelKey)) {
+      toastsError({
+        labelKey: errorLabelKey,
+      });
+      return;
+    }
 
     startBusy({
       initiator: "import-token-validation",
