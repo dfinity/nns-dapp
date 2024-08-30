@@ -107,11 +107,11 @@
       ) {
         return;
       }
-
-      next();
     } finally {
       stopBusy("import-token-validation");
     }
+
+    next();
   };
 </script>
 
