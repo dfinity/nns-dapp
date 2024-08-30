@@ -28,7 +28,7 @@ type GetMetricsCallResult = Result<Result<GovernanceCachedMetrics, GovernanceErr
 
 #[cfg(not(test))]
 mod prod {
-    use super::{candid, GovernanceCachedMetrics, GovernanceError, GOVERNANCE_CANISTER_ID};
+    use super::{candid, GetMetricsCallResult, GOVERNANCE_CANISTER_ID};
 
     pub async fn get_metrics() -> GetMetricsCallResult {
         dfn_core::call(GOVERNANCE_CANISTER_ID, "get_metrics", candid, ())
