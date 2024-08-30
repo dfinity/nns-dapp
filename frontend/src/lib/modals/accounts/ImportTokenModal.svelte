@@ -18,8 +18,16 @@
   import { matchLedgerIndexPair } from "$lib/services/icrc-index.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
+  import ImportTokenReview from "$lib/components/accounts/ImportTokenReview.svelte";
+  import { addImportedToken } from "$lib/services/imported-tokens.services";
+  import { buildWalletUrl } from "$lib/utils/navigation.utils";
+  import { createEventDispatcher } from "svelte";
+  import { goto } from "$app/navigation";
 
   let currentStep: WizardStep | undefined = undefined;
+
+  const dispatch = createEventDispatcher();
+
   const STEP_FORM = "Form";
   const STEP_REVIEW = "Review";
   const steps: WizardSteps = [
@@ -33,9 +41,9 @@
     },
   ];
   let modal: WizardModal;
-  const next = () => {
-    modal?.next();
-  };
+  const next = () => modal?.next();
+  const back = () => modal?.back();
+
   let ledgerCanisterId: Principal | undefined;
   let indexCanisterId: Principal | undefined;
   let tokenMetaData: IcrcTokenMetadata | undefined;
@@ -113,6 +121,40 @@
 
     next();
   };
+
+  const onConfirm = async () => {
+    if (
+      isNullish(ledgerCanisterId) ||
+      isNullish($importedTokensStore.importedTokens)
+    ) {
+      return;
+    }
+
+    try {
+      startBusy({
+        initiator: "import-token-importing",
+        labelKey: "import_token.importing",
+      });
+
+      const { success } = await addImportedToken({
+        tokenToAdd: {
+          ledgerCanisterId,
+          indexCanisterId,
+        },
+        importedTokens: $importedTokensStore.importedTokens,
+      });
+      if (success) {
+        dispatch("nnsClose");
+        goto(
+          buildWalletUrl({
+            universe: ledgerCanisterId.toText(),
+          })
+        );
+      }
+    } finally {
+      stopBusy("import-token-importing");
+    }
+  };
 </script>
 
 <WizardModal
@@ -133,6 +175,12 @@
     />
   {/if}
   {#if currentStep?.name === STEP_REVIEW && nonNullish(ledgerCanisterId) && nonNullish(tokenMetaData)}
-    TBD: Review imported token
+    <ImportTokenReview
+      {ledgerCanisterId}
+      {indexCanisterId}
+      {tokenMetaData}
+      on:nnsBack={back}
+      on:nnsConfirm={onConfirm}
+    />
   {/if}
 </WizardModal>
