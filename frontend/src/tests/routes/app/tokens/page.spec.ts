@@ -14,9 +14,9 @@ import {
   CKUSDC_LEDGER_CANISTER_ID,
   CKUSDC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckusdc-canister-ids.constants";
+import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
@@ -120,7 +120,7 @@ describe("Tokens route", () => {
       vi.clearAllMocks();
       icrcAccountsStore.reset();
       tokensStore.reset();
-      icrcCanistersStore.reset();
+      defaultIcrcCanistersStore.reset();
       importedTokensStore.reset();
       ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
       ckETHBalanceUlps = ckETHDefaultBalanceUlps;
@@ -196,7 +196,7 @@ describe("Tokens route", () => {
         main: { ...mockMainAccount, balanceUlps: icpBalanceE8s },
       });
 
-      icrcCanistersStore.setCanisters({
+      defaultIcrcCanistersStore.setCanisters({
         ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
         indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
       });
@@ -605,7 +605,7 @@ describe("Tokens route", () => {
               canisterId: importedToken1Id,
               token: importedToken1Metadata,
             });
-            icrcCanistersStore.setCanisters({
+            defaultIcrcCanistersStore.setCanisters({
               ledgerCanisterId: importedToken1Id,
               indexCanisterId: undefined,
             });
@@ -613,7 +613,7 @@ describe("Tokens route", () => {
               canisterId: importedToken2Id,
               token: importedToken2Metadata,
             });
-            icrcCanistersStore.setCanisters({
+            defaultIcrcCanistersStore.setCanisters({
               ledgerCanisterId: importedToken2Id,
               indexCanisterId: undefined,
             });

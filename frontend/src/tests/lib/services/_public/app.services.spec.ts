@@ -9,8 +9,8 @@ import {
 } from "$lib/constants/cketh-canister-ids.constants";
 import { initAppPublicData } from "$lib/services/$public/app.services";
 import { loadSnsProjects } from "$lib/services/$public/sns.services";
+import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { get } from "svelte/store";
@@ -26,7 +26,7 @@ vi.mock("$lib/services/$public/sns.services", () => {
 describe("$public/app-services", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    icrcCanistersStore.reset();
+    defaultIcrcCanistersStore.reset();
     tokensStore.reset();
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockCkETHToken);
     overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
@@ -42,7 +42,7 @@ describe("$public/app-services", () => {
     await initAppPublicData();
 
     expect(
-      get(icrcCanistersStore)[CKETH_UNIVERSE_CANISTER_ID.toText()]
+      get(defaultIcrcCanistersStore)[CKETH_UNIVERSE_CANISTER_ID.toText()]
     ).toEqual({
       ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
       indexCanisterId: CKETH_INDEX_CANISTER_ID,
@@ -66,7 +66,9 @@ describe("$public/app-services", () => {
       await initAppPublicData();
 
       expect(
-        get(icrcCanistersStore)[CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]
+        get(defaultIcrcCanistersStore)[
+          CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()
+        ]
       ).toEqual({
         ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
         indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
