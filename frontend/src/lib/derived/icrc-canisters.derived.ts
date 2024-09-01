@@ -1,8 +1,8 @@
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
+import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
 import type { Principal } from "@dfinity/principal";
 import { derived, type Readable } from "svelte/store";
-import { importedTokensStore } from "../stores/imported-tokens.store";
 
 export interface IcrcCanisters {
   ledgerCanisterId: Principal;
