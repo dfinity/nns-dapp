@@ -8,7 +8,7 @@ import {
 import {
   icrcCanistersStore,
   type IcrcCanisters,
-} from "$lib/stores/icrc-canisters.store";
+} from "$lib/derived/icrc-canisters.derived";
 import { tokensStore, type TokensStoreData } from "$lib/stores/tokens.store";
 import type { Universe } from "$lib/types/universe";
 import { isNullish, nonNullish } from "@dfinity/utils";

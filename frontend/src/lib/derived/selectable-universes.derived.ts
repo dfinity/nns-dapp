@@ -1,9 +1,9 @@
-import { pageStore, type Page } from "$lib/derived/page.derived";
 import {
   icrcCanistersStore,
   type IcrcCanistersStore,
   type IcrcCanistersStoreData,
-} from "$lib/stores/icrc-canisters.store";
+} from "$lib/derived/icrc-canisters.derived";
+import { pageStore, type Page } from "$lib/derived/page.derived";
 import type { Universe } from "$lib/types/universe";
 import { isAllTokensPath, isUniverseCkBTC } from "$lib/utils/universe.utils";
 import { isNullish } from "@dfinity/utils";

@@ -13,7 +13,7 @@
   import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
   import { universesStore } from "$lib/derived/universes.derived";
   import { getICPs, getBTC, getIcrcTokens } from "$lib/services/dev.services";
-  import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
+  import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
   import { toastsError } from "$lib/stores/toasts.store";
   import type { Universe } from "$lib/types/universe";
   import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";

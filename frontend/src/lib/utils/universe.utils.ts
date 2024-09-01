@@ -4,9 +4,9 @@ import {
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import type { IcrcCanistersStoreData } from "$lib/derived/icrc-canisters.derived";
 import type { Page } from "$lib/derived/page.derived";
 import { i18n } from "$lib/stores/i18n";
-import type { IcrcCanistersStoreData } from "$lib/stores/icrc-canisters.store";
 import type { SnsSummary } from "$lib/types/sns";
 import type { Universe } from "$lib/types/universe";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";

@@ -24,7 +24,7 @@
   import {
     icrcCanistersStore,
     type IcrcCanistersStoreData,
-  } from "$lib/stores/icrc-canisters.store";
+  } from "$lib/derived/icrc-canisters.derived";
   import type { Account } from "$lib/types/account";
   import { ActionType, type Action } from "$lib/types/actions";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
