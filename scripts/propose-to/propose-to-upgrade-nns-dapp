@@ -18,4 +18,4 @@ test -e "$WASM_FILE" || ./scripts/docker-build --network "$DFX_NETWORK"
 SHA="$(sha256sum "$WASM_FILE" | awk '{print $1}')"
 CANISTER_ID="$(get_canister_id)"
 
-set ic-admin --nns-url "$NNS_URL" propose-to-change-nns-canister --test-neuron-proposer --canister-id "$CANISTER_ID" --mode upgrade --wasm-module-path "$WASM_FILE" --wasm-module-sha256 "$SHA" --summary-file ./README.md
+set ic-admin --nns-url "$NNS_URL" propose-to-change-nns-canister --test-neuron-proposer --canister-id "$CANISTER_ID" --mode upgrade --wasm-module-path "$WASM_FILE" --wasm-module-sha256 "$SHA" --summary-file ./README.md --use-explicit-action-type
