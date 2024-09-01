@@ -139,7 +139,7 @@ test -e "${SUMMARY_FILE:-}" || {
 } >&2
 
 # Prepares the command
-set ic-admin "${AUTH_ARGS[@]}" --nns-url "$DFX_NNS_URL" propose-to-change-nns-canister --proposer "$DFX_NEURON_ID" --canister-id "$NNS_DAPP_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --summary-file "$SUMMARY_FILE" --wasm-module-sha256 "$SHA" --arg "$ARG_PATH"
+set ic-admin "${AUTH_ARGS[@]}" --nns-url "$DFX_NNS_URL" propose-to-change-nns-canister --proposer "$DFX_NEURON_ID" --canister-id "$NNS_DAPP_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --summary-file "$SUMMARY_FILE" --wasm-module-sha256 "$SHA" --arg "$ARG_PATH" --use-explicit-action-type
 # ... just checking...
 echo
 echo PLEASE REVIEW THIS COMMAND:

@@ -63,7 +63,7 @@ runs:
       uses: actions/upload-artifact@v4
       if: ${{ failure() }}
       with:
-        name: playwright-failure-results
+        name: playwright-failure-results-${{ inputs.shard_number }}
         path: |
           frontend/playwright-report/*
           frontend/playwright-results/*
