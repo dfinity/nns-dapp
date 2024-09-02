@@ -21,15 +21,13 @@ export const icrcCanistersStore: IcrcCanistersStore = derived(
   ([defaultIcrcCanisters, importedTokensStore]) => {
     return {
       ...defaultIcrcCanisters,
-      ...importedTokensStore?.importedTokens?.reduce(
-        (acc, { ledgerCanisterId, indexCanisterId }) => ({
-          ...acc,
-          [ledgerCanisterId.toText()]: {
-            ledgerCanisterId,
-            indexCanisterId,
-          },
-        }),
-        {}
+      ...Object.fromEntries(
+        importedTokensStore?.importedTokens?.map(
+          ({ ledgerCanisterId, indexCanisterId }) => [
+            ledgerCanisterId.toText(),
+            { ledgerCanisterId, indexCanisterId },
+          ]
+        ) ?? []
       ),
     };
   }
