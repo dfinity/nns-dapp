@@ -19,6 +19,7 @@ import { createActionEvent } from "$tests/utils/actions.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import type { Mock } from "vitest";
+import { importedTokensStore } from "../../../../lib/stores/imported-tokens.store";
 import TokensTableTest from "./TokensTableTest.svelte";
 
 describe("TokensTable", () => {
@@ -375,5 +376,33 @@ describe("TokensTable", () => {
         data: userToken,
       })
     );
+  });
+
+  it("should render an imported token tag", async () => {
+    const token1 = createUserToken({
+      universeId: OWN_CANISTER_ID,
+    });
+    const importedTokenLedgerId = principal(0);
+    const token2 = createUserToken({
+      universeId: importedTokenLedgerId,
+    });
+
+    importedTokensStore.set({
+      importedTokens: [
+        {
+          ledgerCanisterId: importedTokenLedgerId,
+          indexCanisterId: undefined,
+        },
+      ],
+      certified: true,
+    });
+
+    const po = renderTable({ userTokensData: [token1, token2] });
+    const rows = await po.getRows();
+    const row1Po = rows[0];
+    const row2Po = rows[1];
+
+    expect(await row1Po.hasImportedTokenTag()).toBe(false);
+    expect(await row2Po.hasImportedTokenTag()).toBe(true);
   });
 });
