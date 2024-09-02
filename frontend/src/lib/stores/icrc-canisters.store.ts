@@ -7,7 +7,7 @@ import { writable } from "svelte/store";
 
 export interface IcrcCanisters {
   ledgerCanisterId: Principal;
-  indexCanisterId: Principal | undefined;
+  indexCanisterId: Principal;
 }
 
 export type IcrcCanistersStoreData = Record<
