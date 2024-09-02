@@ -67,6 +67,7 @@ export const aggregatorSnsMockWith = ({
   rootCanisterId = "4nwps-saaaa-aaaaa-aabjq-cai",
   governanceCanisterId = "5grkr-3aaaa-aaaaq-aaa5a-cai",
   ledgerCanisterId = "5bqmf-wyaaa-aaaaq-aaa5q-cai",
+  indexCanisterId = "5tw34-2iaaa-aaaaq-aaa6q-cai",
   swapCanisterId = "5ux5i-xqaaa-aaaaq-aaa6a-cai",
   lifecycle = SnsSwapLifecycle.Committed,
   restrictedCountries,
@@ -81,6 +82,7 @@ export const aggregatorSnsMockWith = ({
   rootCanisterId?: string;
   governanceCanisterId?: string;
   ledgerCanisterId?: string;
+  indexCanisterId?: string;
   swapCanisterId?: string;
   lifecycle?: SnsSwapLifecycle;
   restrictedCountries?: string[];
@@ -100,6 +102,7 @@ export const aggregatorSnsMockWith = ({
     root_canister_id: rootCanisterId,
     governance_canister_id: governanceCanisterId,
     ledger_canister_id: ledgerCanisterId,
+    index_canister_id: indexCanisterId,
     swap_canister_id: swapCanisterId,
   },
   list_sns_canisters: {
