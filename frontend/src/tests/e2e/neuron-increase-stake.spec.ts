@@ -98,11 +98,6 @@ test("Test neuron increase stake", async ({ page, context }) => {
   await appPo.getAccountsPo().waitFor();
   await appPo.goBack();
   await appPo.goToNeuronDetails(neuronId);
-  // The neuron info is cached in the governance.api-service for 5 minutes.
-  // This cache is cleared every time we do an operation on the governance API
-  // but not when we transfer the ICP directly to the neuron account. So to see
-  // the new stake we reload the page to avoid hitting the api-service cache.
-  await page.reload();
   const neuronStake3 = Number(
     await appPo
       .getNeuronDetailPo()
