@@ -28,7 +28,7 @@ pub struct GetExchangeRateRequest {
     pub timestamp: Option<u64>,
 }
 
-#[derive(CandidType, Clone, Debug, candid::Deserialize, PartialEq, Eq)]
+#[derive(CandidType, Clone, Debug, Default, candid::Deserialize, PartialEq, Eq)]
 pub struct ExchangeRateMetadata {
     pub decimals: u32,
     pub base_asset_num_received_rates: u64,
@@ -126,11 +126,13 @@ pub mod testing {
                 .pop_front()
                 .expect("The test must provide a response before get_exchange_rate is called.")
         });
+
+        // Assert that request matches response.
         if let Ok(GetExchangeRateResult::Ok(response)) = &response {
-            assert_eq!(response.base_asset, request.base_asset);
-            assert_eq!(response.quote_asset, request.quote_asset);
+            assert_eq!(request.base_asset, response.base_asset);
+            assert_eq!(request.quote_asset, response.quote_asset);
             if let Some(timestamp) = request.timestamp {
-                assert_eq!(response.timestamp, timestamp);
+                assert_eq!(timestamp, response.timestamp);
             }
         }
         REQUESTS.with(|requests| {
@@ -148,23 +150,17 @@ pub mod testing {
     }
 
     pub fn add_exchange_rate_response_ok(base_asset: Asset, quote_asset: Asset, rate_e8s: u64, timestamp_sec: u64) {
-        // The details of the metadata are not important because this is part of
-        // the response that our code doesn't look at.
-        let exchange_rate_metadata = ExchangeRateMetadata {
-            decimals: 8,
-            base_asset_num_received_rates: 3,
-            base_asset_num_queried_sources: 3,
-            quote_asset_num_received_rates: 3,
-            quote_asset_num_queried_sources: 3,
-            standard_deviation: 1,
-            forex_timestamp: None,
-        };
         let response = Ok(GetExchangeRateResult::Ok(ExchangeRate {
             base_asset,
             quote_asset,
             timestamp: timestamp_sec,
             rate: rate_e8s,
-            metadata: exchange_rate_metadata,
+            metadata: ExchangeRateMetadata {
+                decimals: 8,
+                // The details of the metadata are not important because this is
+                // part of the response that our code doesn't look at.
+                ..ExchangeRateMetadata::default()
+            },
         }));
         add_exchange_rate_response(response);
     }
