@@ -251,15 +251,6 @@ describe("NnsWallet", () => {
       expect(await po.getMoreButton().isPresent()).toBe(true);
     });
 
-    it('should not render "more" popup by default', async () => {
-      const po = await renderWallet({});
-      const morePopoverPo = po.getWalletMorePopoverPo();
-
-      expect(await morePopoverPo.getLinkToLedgerCanisterPo().isPresent()).toBe(
-        false
-      );
-    });
-
     it("should not display more button when ENABLE_IMPORT_TOKEN disabled", async () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN", false);
 
@@ -270,6 +261,11 @@ describe("NnsWallet", () => {
     it('should have canister links in "more" popup', async () => {
       const po = await renderWallet({});
       const morePopoverPo = po.getWalletMorePopoverPo();
+
+      // The popover should not be visible initially.
+      expect(await morePopoverPo.getLinkToLedgerCanisterPo().isPresent()).toBe(
+        false
+      );
 
       await po.clickMore();
 
