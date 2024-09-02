@@ -1,16 +1,16 @@
-use crate::tvl::{self, governance, time, xrc, STATE};
+use crate::tvl::{self, exchange_rate_canister, governance, time, STATE};
 
-fn icp_asset() -> xrc::Asset {
-    xrc::Asset {
+fn icp_asset() -> exchange_rate_canister::Asset {
+    exchange_rate_canister::Asset {
         symbol: "ICP".to_string(),
-        class: xrc::AssetClass::Cryptocurrency,
+        class: exchange_rate_canister::AssetClass::Cryptocurrency,
     }
 }
 
-fn usd_asset() -> xrc::Asset {
-    xrc::Asset {
+fn usd_asset() -> exchange_rate_canister::Asset {
+    exchange_rate_canister::Asset {
         symbol: "USD".to_string(),
-        class: xrc::AssetClass::FiatCurrency,
+        class: exchange_rate_canister::AssetClass::FiatCurrency,
     }
 }
 
@@ -30,14 +30,14 @@ fn set_exchange_rate_timestamp_sec(new_value: u64) {
     STATE.with(|s| s.tvl_state.borrow_mut().exchange_rate_timestamp_sec = new_value);
 }
 
-fn get_only_xrc_request() -> xrc::GetExchangeRateRequest {
-    let mut requests = xrc::testing::drain_requests();
+fn get_only_xrc_request() -> exchange_rate_canister::GetExchangeRateRequest {
+    let mut requests = exchange_rate_canister::testing::drain_requests();
     assert_eq!(requests.len(), 1);
     requests.pop().unwrap()
 }
 
-fn get_expected_exchange_rate_request(timestamp_sec: u64) -> xrc::GetExchangeRateRequest {
-    xrc::GetExchangeRateRequest {
+fn get_expected_exchange_rate_request(timestamp_sec: u64) -> exchange_rate_canister::GetExchangeRateRequest {
+    exchange_rate_canister::GetExchangeRateRequest {
         base_asset: icp_asset(),
         quote_asset: usd_asset(),
         timestamp: Some(timestamp_sec),
@@ -65,11 +65,16 @@ async fn update_exchange_rate() {
     // Step 1: Set up the environment.
     time::testing::set_time(now_sec * 1_000_000_000);
     set_usd_per_icp_e8s(initial_usd_per_icp_e8s);
-    xrc::testing::add_exchange_rate_response_ok(icp_asset(), usd_asset(), later_usd_per_icp_e8s, five_minutes_ago_sec);
+    exchange_rate_canister::testing::add_exchange_rate_response_ok(
+        icp_asset(),
+        usd_asset(),
+        later_usd_per_icp_e8s,
+        five_minutes_ago_sec,
+    );
 
     // Step 2: Verify the state before calling the code under test.
     assert_eq!(get_usd_per_icp_e8s(), initial_usd_per_icp_e8s);
-    assert_eq!(xrc::testing::drain_requests().len(), 0);
+    assert_eq!(exchange_rate_canister::testing::drain_requests().len(), 0);
 
     // Step 3: Call the code under test.
     tvl::update_exchange_rate().await;
@@ -97,12 +102,12 @@ async fn update_exchange_rate_with_call_error() {
     time::testing::set_time(now_sec * 1_000_000_000);
     set_usd_per_icp_e8s(initial_usd_per_icp_e8s);
     set_exchange_rate_timestamp_sec(initial_exchange_rate_timestamp_sec);
-    xrc::testing::add_exchange_rate_response(Err("Canister is stopped".to_string()));
+    exchange_rate_canister::testing::add_exchange_rate_response(Err("Canister is stopped".to_string()));
 
     // Step 2: Verify the state before calling the code under test.
     assert_eq!(get_usd_per_icp_e8s(), initial_usd_per_icp_e8s);
     assert_eq!(get_exchange_rate_timestamp_sec(), initial_exchange_rate_timestamp_sec);
-    assert_eq!(xrc::testing::drain_requests().len(), 0);
+    assert_eq!(exchange_rate_canister::testing::drain_requests().len(), 0);
 
     // Step 3: Call the code under test.
     tvl::update_exchange_rate().await;
@@ -131,14 +136,16 @@ async fn update_exchange_rate_with_method_error() {
     time::testing::set_time(now_sec * 1_000_000_000);
     set_usd_per_icp_e8s(initial_usd_per_icp_e8s);
     set_exchange_rate_timestamp_sec(initial_exchange_rate_timestamp_sec);
-    xrc::testing::add_exchange_rate_response(Ok(xrc::GetExchangeRateResult::Err(
-        xrc::ExchangeRateError::CryptoBaseAssetNotFound,
-    )));
+    exchange_rate_canister::testing::add_exchange_rate_response(Ok(
+        exchange_rate_canister::GetExchangeRateResult::Err(
+            exchange_rate_canister::ExchangeRateError::CryptoBaseAssetNotFound,
+        ),
+    ));
 
     // Step 2: Verify the state before calling the code under test.
     assert_eq!(get_usd_per_icp_e8s(), initial_usd_per_icp_e8s);
     assert_eq!(get_exchange_rate_timestamp_sec(), initial_exchange_rate_timestamp_sec);
-    assert_eq!(xrc::testing::drain_requests().len(), 0);
+    assert_eq!(exchange_rate_canister::testing::drain_requests().len(), 0);
 
     // Step 3: Call the code under test.
     tvl::update_exchange_rate().await;
