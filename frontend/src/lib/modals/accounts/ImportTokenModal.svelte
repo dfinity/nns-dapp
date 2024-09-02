@@ -123,6 +123,7 @@
   };
 
   const onConfirm = async () => {
+    // Just for type safety. This should never happen.
     if (
       isNullish(ledgerCanisterId) ||
       isNullish($importedTokensStore.importedTokens)
