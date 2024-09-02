@@ -9,12 +9,14 @@ import {
   loadImportedTokens,
   removeImportedTokens,
 } from "$lib/services/imported-tokens.services";
+import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
+import { runResolvedPromises } from "../../utils/timers.test-utils";
 
 describe("imported-tokens-services", () => {
   const importedTokenA: ImportedToken = {
@@ -39,6 +41,7 @@ describe("imported-tokens-services", () => {
     vi.clearAllMocks();
     resetIdentity();
     importedTokensStore.reset();
+    icrcCanistersStore.reset();
     vi.spyOn(console, "error").mockReturnValue();
   });
 
@@ -71,6 +74,38 @@ describe("imported-tokens-services", () => {
       expect(get(importedTokensStore)).toEqual({
         importedTokens: [importedTokenDataA, importedTokenDataB],
         certified: true,
+      });
+    });
+
+    it("should add imported tokens to the icrcCanistersStore", async () => {
+      const spyGetImportedTokens = vi
+        .spyOn(importedTokensApi, "getImportedTokens")
+        .mockResolvedValueOnce({
+          imported_tokens: [importedTokenA, importedTokenB],
+        });
+
+      expect(spyGetImportedTokens).toBeCalledTimes(0);
+      expect(get(icrcCanistersStore)).toEqual({});
+
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: undefined,
+        certified: undefined,
+      });
+
+      await loadImportedTokens();
+      // Wait for the store to update.
+      await runResolvedPromises();
+
+      expect(spyGetImportedTokens).toBeCalledTimes(2);
+      expect(get(icrcCanistersStore)).toEqual({
+        [importedTokenDataA.ledgerCanisterId.toText()]: {
+          ledgerCanisterId: importedTokenDataA.ledgerCanisterId,
+          indexCanisterId: importedTokenDataA.indexCanisterId,
+        },
+        [importedTokenDataB.ledgerCanisterId.toText()]: {
+          ledgerCanisterId: importedTokenDataB.ledgerCanisterId,
+          indexCanisterId: importedTokenDataB.indexCanisterId,
+        },
       });
     });
 
