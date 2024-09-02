@@ -396,7 +396,7 @@ describe("IcrcWallet", () => {
 
     it('should render "more" button', async () => {
       const po = await renderWallet({});
-      expect(await po.hasMoreButton()).toBe(true);
+      expect(await po.getMoreButton().isPresent()).toBe(true);
     });
 
     it('should not render "more" popup by default', async () => {
@@ -408,13 +408,13 @@ describe("IcrcWallet", () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN", false);
 
       const po = await renderWallet({});
-      expect(await po.hasMoreButton()).toBe(false);
+      expect(await po.getMoreButton().isPresent()).toBe(false);
     });
 
     it('should have canister links in "more" popup', async () => {
       const po = await renderWallet({});
 
-      await po.clickMore();
+      await po.getMoreButton().click();
       await runResolvedPromises();
 
       expect(await po.getLinkToLedgerCanisterPo().isPresent()).toBe(true);
@@ -447,7 +447,7 @@ describe("IcrcWallet", () => {
 
       const po = await renderWallet({});
 
-      await po.clickMore();
+      await po.getMoreButton().click();
       await runResolvedPromises();
 
       expect(await po.getLinkToLedgerCanisterPo().isPresent()).toBe(true);

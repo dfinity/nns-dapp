@@ -1,4 +1,4 @@
-import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { IcrcWalletFooterPo } from "$tests/page-objects/IcrcWalletFooter.page-object";
 import { LinkToDashboardCanisterPo } from "$tests/page-objects/LinkToDashboardCanister.page-object";
 import { SignInPo } from "$tests/page-objects/SignIn.page-object";
@@ -32,14 +32,6 @@ export class IcrcWalletPo extends BasePageObject {
 
   getMoreButton(): ButtonPo {
     return this.getButton("more-button");
-  }
-
-  hasMoreButton(): Promise<boolean> {
-    return this.getMoreButton().isPresent();
-  }
-
-  clickMore(): Promise<void> {
-    return this.getMoreButton().click();
   }
 
   getLinkToLedgerCanisterPo(): LinkToDashboardCanisterPo {
