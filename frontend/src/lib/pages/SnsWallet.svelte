@@ -41,6 +41,7 @@
   {accountIdentifier}
   {token}
   {ledgerCanisterId}
+  {indexCanisterId}
   {selectedAccountStore}
   bind:this={wallet}
   {reloadTransactions}

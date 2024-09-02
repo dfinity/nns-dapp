@@ -59,7 +59,7 @@
     mapToSelfTransactions,
     sortTransactionsByIdDescendingOrder,
   } from "$lib/utils/icp-transactions.utils";
-  import { IconDots, Island, Popover, Spinner } from "@dfinity/gix-components";
+  import { IconDots, Island, Spinner } from "@dfinity/gix-components";
   import {
     ICPToken,
     TokenAmountV2,
@@ -68,12 +68,12 @@
   } from "@dfinity/utils";
   import { onMount, onDestroy, setContext } from "svelte";
   import { writable, type Readable } from "svelte/store";
-  import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
   import {
     INDEX_CANISTER_ID,
     LEDGER_CANISTER_ID,
   } from "$lib/constants/canister-ids.constants";
   import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
+  import WalletMorePopover from "$lib/components/accounts/WalletMorePopover.svelte";
 
   $: if ($authSignedInStore) {
     pollAccounts();
@@ -392,25 +392,12 @@
     />
   {/if}
 
-  <Popover
+  <WalletMorePopover
     bind:visible={morePopupVisible}
     anchor={moreButton}
-    direction="rtl"
-    invisibleBackdrop
-  >
-    <div class="more">
-      <LinkToDashboardCanister
-        testId="link-to-ledger-canister"
-        label={$i18n.tokens.ledger_canister}
-        canisterId={LEDGER_CANISTER_ID}
-      />
-      <LinkToDashboardCanister
-        testId="link-to-index-canister"
-        label={$i18n.tokens.index_canister}
-        canisterId={INDEX_CANISTER_ID}
-      />
-    </div>
-  </Popover>
+    ledgerCanisterId={LEDGER_CANISTER_ID}
+    indexCanisterId={INDEX_CANISTER_ID}
+  />
 </TestIdWrapper>
 
 <style lang="scss">
@@ -418,11 +405,5 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-4x);
-  }
-
-  .more {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-2x);
   }
 </style>

@@ -101,6 +101,7 @@
   {accountIdentifier}
   token={token?.token}
   ledgerCanisterId={$selectedCkBTCUniverseIdStore}
+  indexCanisterId={canisters?.indexCanisterId}
   {selectedAccountStore}
   bind:this={wallet}
   {reloadTransactions}

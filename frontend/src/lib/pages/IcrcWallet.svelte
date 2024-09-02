@@ -42,6 +42,7 @@
   {accountIdentifier}
   {token}
   ledgerCanisterId={$selectedIcrcTokenUniverseIdStore}
+  {indexCanisterId}
   {selectedAccountStore}
   bind:this={wallet}
   {reloadTransactions}
