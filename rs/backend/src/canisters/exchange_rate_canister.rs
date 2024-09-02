@@ -149,14 +149,20 @@ pub mod testing {
         RESPONSES.with(|responses| responses.borrow_mut().push_back(response));
     }
 
-    pub fn add_exchange_rate_response_ok(base_asset: Asset, quote_asset: Asset, rate_e8s: u64, timestamp_seconds: u64) {
+    pub fn add_exchange_rate_response_ok(
+        base_asset: Asset,
+        quote_asset: Asset,
+        rate_e8s: u64,
+        decimals: u32,
+        timestamp_seconds: u64,
+    ) {
         let response = Ok(GetExchangeRateResult::Ok(ExchangeRate {
             base_asset,
             quote_asset,
             timestamp: timestamp_seconds,
             rate: rate_e8s,
             metadata: ExchangeRateMetadata {
-                decimals: 8,
+                decimals,
                 // The details of the metadata are not important because this is
                 // part of the response that our code doesn't look at.
                 ..ExchangeRateMetadata::default()

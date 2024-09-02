@@ -9,6 +9,19 @@ pub mod state;
 
 const XRC_MARGIN_SECONDS: u64 = 60 * 5;
 
+fn convert_to_e8s(amount: u64, decimals: u32) -> u64 {
+    // Copied from https://github.com/dfinity/ic/blob/6760029ea4e9be8170984b023391cb72ff3b6398/rs/rosetta-api/tvl/src/lib.rs#L166C1-L174C6
+    if decimals >= 8 {
+        // If there are at least 8 decimal places, divide by 10^(decimals - 8)
+        // to shift the decimal point to the left.
+        amount / 10u64.pow(decimals - 8)
+    } else {
+        // If there are fewer than 8 decimal places, multiply by 10^(8 - decimals)
+        // to shift the decimal point to the right.
+        amount * 10u64.pow(8 - decimals)
+    }
+}
+
 // TODO(NNS1-3281): Remove #[allow(unused)].
 #[allow(unused)]
 pub async fn update_exchange_rate() {
@@ -38,34 +51,43 @@ pub async fn update_exchange_rate() {
 
     let xrc_result: Result<exchange_rate_canister::GetExchangeRateResult, String> =
         exchange_rate_canister::get_exchange_rate(args).await;
-    STATE.with(|s| {
-        match xrc_result {
-            Ok(exchange_rate_canister::GetExchangeRateResult::Ok(exchange_rate)) => {
-                let exchange_rate_canister::ExchangeRate {
-                    rate: usd_e8s_per_icp,
-                    timestamp,
-                    ..
-                } = exchange_rate;
-                s.tvl_state.borrow_mut().usd_e8s_per_icp = usd_e8s_per_icp;
-                s.tvl_state.borrow_mut().exchange_rate_timestamp_seconds = timestamp;
-                ic_cdk::println!("Updated usd_e8s_per_icp for TVL to {}", usd_e8s_per_icp);
-            }
-            Ok(exchange_rate_canister::GetExchangeRateResult::Err(err)) => {
+    let exchange_rate = match xrc_result {
+        Ok(exchange_rate_canister::GetExchangeRateResult::Ok(exchange_rate)) => exchange_rate,
+        Ok(exchange_rate_canister::GetExchangeRateResult::Err(err)) => {
+            STATE.with(|s| {
                 ic_cdk::println!(
                     "Keeping usd_e8s_per_icp for TVL at {} because of response error: {:?}",
                     s.tvl_state.borrow().usd_e8s_per_icp,
                     err
                 );
-            }
-            Err(err) => {
+            });
+            return;
+        }
+        Err(err) => {
+            STATE.with(|s| {
                 ic_cdk::println!(
                     "Keeping usd_e8s_per_icp for TVL at {} because of call error: {:?}",
                     s.tvl_state.borrow().usd_e8s_per_icp,
                     err
                 );
-            }
-        };
+            });
+            return;
+        }
+    };
+
+    let exchange_rate_canister::ExchangeRate {
+        rate,
+        timestamp,
+        metadata,
+        ..
+    } = exchange_rate;
+    let decimals = metadata.decimals;
+    let usd_e8s_per_icp = convert_to_e8s(rate, decimals);
+    STATE.with(|s| {
+        s.tvl_state.borrow_mut().usd_e8s_per_icp = usd_e8s_per_icp;
+        s.tvl_state.borrow_mut().exchange_rate_timestamp_seconds = timestamp;
     });
+    ic_cdk::println!("Updated usd_e8s_per_icp for TVL to {}", usd_e8s_per_icp);
 }
 
 // TODO(NNS1-3281): Remove #[allow(unused)].

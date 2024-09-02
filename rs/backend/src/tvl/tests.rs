@@ -51,6 +51,7 @@ fn set_total_locked_icp_e8s(new_value: u64) {
 async fn update_exchange_rate() {
     let initial_usd_e8s_per_icp = 850_000_000;
     let later_usd_e8s_per_icp = 920_000_000;
+    let decimals = 8;
 
     // Step 1: Set up the environment.
     time::testing::set_time(NOW_SECONDS * 1_000_000_000);
@@ -59,6 +60,87 @@ async fn update_exchange_rate() {
         ICP.clone(),
         USD.clone(),
         later_usd_e8s_per_icp,
+        decimals,
+        FIVE_MINUTES_AGO_SECONDS,
+    );
+
+    // Step 2: Verify the state before calling the code under test.
+    assert_eq!(get_usd_e8s_per_icp(), initial_usd_e8s_per_icp);
+    assert_eq!(exchange_rate_canister::testing::drain_requests().len(), 0);
+
+    // Step 3: Call the code under test.
+    tvl::update_exchange_rate().await;
+
+    // Step 4: Verify the state after calling the code under test.
+    // Step 4.1: Inspect calls to the exchange rate canister.
+    assert_eq!(
+        get_only_xrc_request(),
+        exchange_rate_canister::GetExchangeRateRequest {
+            base_asset: ICP.clone(),
+            quote_asset: USD.clone(),
+            timestamp: Some(FIVE_MINUTES_AGO_SECONDS),
+        }
+    );
+    // Step 4.2: Inspect the state of the nns-dapp canister.
+    assert_eq!(get_usd_e8s_per_icp(), later_usd_e8s_per_icp);
+    assert_eq!(get_exchange_rate_timestamp_seconds(), FIVE_MINUTES_AGO_SECONDS);
+}
+
+#[tokio::test]
+async fn update_exchange_rate_with_3_decimals() {
+    let initial_usd_e8s_per_icp = 850_000_000;
+    let later_usd_e8s_per_icp = 920_000_000;
+    let decimals = 3;
+    let later_usd_e3s_per_icp = later_usd_e8s_per_icp / 100_000;
+
+    // Step 1: Set up the environment.
+    time::testing::set_time(NOW_SECONDS * 1_000_000_000);
+    set_usd_e8s_per_icp(initial_usd_e8s_per_icp);
+    exchange_rate_canister::testing::add_exchange_rate_response_ok(
+        ICP.clone(),
+        USD.clone(),
+        later_usd_e3s_per_icp,
+        decimals,
+        FIVE_MINUTES_AGO_SECONDS,
+    );
+
+    // Step 2: Verify the state before calling the code under test.
+    assert_eq!(get_usd_e8s_per_icp(), initial_usd_e8s_per_icp);
+    assert_eq!(exchange_rate_canister::testing::drain_requests().len(), 0);
+
+    // Step 3: Call the code under test.
+    tvl::update_exchange_rate().await;
+
+    // Step 4: Verify the state after calling the code under test.
+    // Step 4.1: Inspect calls to the exchange rate canister.
+    assert_eq!(
+        get_only_xrc_request(),
+        exchange_rate_canister::GetExchangeRateRequest {
+            base_asset: ICP.clone(),
+            quote_asset: USD.clone(),
+            timestamp: Some(FIVE_MINUTES_AGO_SECONDS),
+        }
+    );
+    // Step 4.2: Inspect the state of the nns-dapp canister.
+    assert_eq!(get_usd_e8s_per_icp(), later_usd_e8s_per_icp);
+    assert_eq!(get_exchange_rate_timestamp_seconds(), FIVE_MINUTES_AGO_SECONDS);
+}
+
+#[tokio::test]
+async fn update_exchange_rate_with_12_decimals() {
+    let initial_usd_e8s_per_icp = 850_000_000;
+    let later_usd_e8s_per_icp = 920_000_000;
+    let decimals = 12;
+    let later_usd_e12s_per_icp = later_usd_e8s_per_icp * 10_000;
+
+    // Step 1: Set up the environment.
+    time::testing::set_time(NOW_SECONDS * 1_000_000_000);
+    set_usd_e8s_per_icp(initial_usd_e8s_per_icp);
+    exchange_rate_canister::testing::add_exchange_rate_response_ok(
+        ICP.clone(),
+        USD.clone(),
+        later_usd_e12s_per_icp,
+        decimals,
         FIVE_MINUTES_AGO_SECONDS,
     );
 
