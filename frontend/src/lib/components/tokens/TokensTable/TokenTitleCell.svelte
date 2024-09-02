@@ -1,9 +1,19 @@
 <script lang="ts">
   import type { UserTokenData, UserTokenLoading } from "$lib/types/tokens-page";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { isImportedToken } from "$lib/utils/imported-tokens.utils";
   import Logo from "../../ui/Logo.svelte";
   import { nonNullish } from "@dfinity/utils";
+  import { Tag } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
 
   export let rowData: UserTokenData | UserTokenLoading;
+
+  let importedToken = false;
+  $: importedToken = isImportedToken({
+    ledgerCanisterId: rowData?.universeId,
+    importedTokens: $importedTokensStore.importedTokens,
+  });
 </script>
 
 <div class="title-logo-wrapper">
@@ -16,6 +26,9 @@
       >
     {/if}
   </div>
+  {#if importedToken}
+    <Tag testId="imported-token-tag">{$i18n.import_token.imported_token}</Tag>
+  {/if}
 </div>
 
 <style lang="scss">

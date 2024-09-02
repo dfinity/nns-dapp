@@ -1993,6 +1993,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "ic-cdk-macros"
+version = "0.16.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0d4d857135deef20cc7ea8f3869a30cd9cfeb1392b3a81043790b2cd82adc3e0"
+dependencies = [
+ "candid",
+ "proc-macro2",
+ "quote",
+ "serde",
+ "serde_tokenstream 0.2.2",
+ "syn 2.0.77",
+]
+
+[[package]]
 name = "ic-cdk-timers"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3997,7 +4011,7 @@ dependencies = [
  "hex",
  "ic-base-types",
  "ic-cdk 0.15.1",
- "ic-cdk-macros 0.15.0",
+ "ic-cdk-macros 0.16.0",
  "ic-certified-map 0.3.4",
  "ic-crypto-sha2",
  "ic-ledger-core",
@@ -4555,7 +4569,7 @@ dependencies = [
  "ic-base-types",
  "ic-btc-interface",
  "ic-cdk 0.15.1",
- "ic-cdk-macros 0.15.0",
+ "ic-cdk-macros 0.16.0",
  "ic-crypto-sha2",
  "ic-management-canister-types",
  "ic-nervous-system-common",
@@ -5503,7 +5517,7 @@ dependencies = [
  "dfn_candid",
  "dfn_core",
  "ic-cdk 0.15.1",
- "ic-cdk-macros 0.15.0",
+ "ic-cdk-macros 0.16.0",
  "ic-cdk-timers 0.9.0",
  "ic-certified-map 0.3.2",
  "ic-management-canister-types",
