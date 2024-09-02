@@ -118,4 +118,8 @@ export class TokensTableRowPo extends ResponsiveTableRowPo {
   hasGoToDetailIcon(): Promise<boolean> {
     return this.getGoToDetailIcon().isPresent();
   }
+
+  hasImportedTokenTag(): Promise<boolean> {
+    return this.root.byTestId("imported-token-tag").isPresent();
+  }
 }

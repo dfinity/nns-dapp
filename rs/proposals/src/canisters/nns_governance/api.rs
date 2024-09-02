@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-21_15-36-canister-snapshots/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-29_01-30-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -598,19 +598,6 @@ pub struct GovernanceError {
     pub error_type: i32,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct CfNeuron {
-    pub has_created_neuron_recipes: Option<bool>,
-    pub hotkeys: Option<Principals>,
-    pub nns_neuron_id: u64,
-    pub amount_icp_e8s: u64,
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct CfParticipant {
-    pub controller: Option<Principal>,
-    pub hotkey_principal: String,
-    pub cf_neurons: Vec<CfNeuron>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
 pub struct Ballot {
     pub vote: i32,
     pub voting_power: u64,
@@ -702,7 +689,6 @@ pub struct WaitForQuietState {
 pub struct ProposalData {
     pub id: Option<NeuronId>,
     pub failure_reason: Option<GovernanceError>,
-    pub cf_participants: Vec<CfParticipant>,
     pub ballots: Vec<(u64, Ballot)>,
     pub proposal_timestamp_seconds: u64,
     pub reward_event_round: u64,
@@ -822,7 +808,7 @@ pub enum Result3 {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum Result4 {
-    Ok(RewardNodeProviders),
+    Ok(MonthlyNodeProviderRewards),
     Err(GovernanceError),
 }
 #[derive(Serialize, CandidType, Deserialize)]
