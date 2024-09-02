@@ -223,7 +223,6 @@ const anonymiseStoreState = async () => {
     aggregatorStore,
     tokensStore,
     icrcAccountsStore,
-    icrcCanistersStore,
   } = get(debugStore);
 
   return {
@@ -291,7 +290,6 @@ const anonymiseStoreState = async () => {
     ),
     aggregatorStore,
     tokensStore,
-    icrcCanistersStore,
     icrcAccountsStore: await anonymizeSnsTypeStore(
       icrcAccountsStore,
       async ({ certified, accounts }) => ({
