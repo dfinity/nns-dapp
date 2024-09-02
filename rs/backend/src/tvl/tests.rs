@@ -70,6 +70,7 @@ async fn update_exchange_rate() {
     tvl::update_exchange_rate().await;
 
     // Step 4: Verify the state after calling the code under test.
+    // Step 4.1: Inspect calls to the exchange rate canister.
     assert_eq!(
         get_only_xrc_request(),
         exchange_rate_canister::GetExchangeRateRequest {
@@ -78,6 +79,7 @@ async fn update_exchange_rate() {
             timestamp: Some(five_minutes_ago_seconds),
         }
     );
+    // Step 4.2: Inspect the state of the nns-dapp canister.
     assert_eq!(get_usd_e8s_per_icp(), later_usd_e8s_per_icp);
     assert_eq!(get_exchange_rate_timestamp_seconds(), five_minutes_ago_seconds);
 }
@@ -110,6 +112,7 @@ async fn update_exchange_rate_with_call_error() {
     tvl::update_exchange_rate().await;
 
     // Step 4: Verify the state after calling the code under test.
+    // Step 4.1: Inspect calls to the exchange rate canister.
     assert_eq!(
         get_only_xrc_request(),
         exchange_rate_canister::GetExchangeRateRequest {
@@ -118,6 +121,7 @@ async fn update_exchange_rate_with_call_error() {
             timestamp: Some(five_minutes_ago_seconds),
         }
     );
+    // Step 4.2: Inspect the state of the nns-dapp canister.
     // The exchange rate should not have been updated because of the error.
     assert_eq!(get_usd_e8s_per_icp(), initial_usd_e8s_per_icp);
     assert_eq!(
@@ -158,6 +162,7 @@ async fn update_exchange_rate_with_method_error() {
     tvl::update_exchange_rate().await;
 
     // Step 4: Verify the state after calling the code under test.
+    // Step 4.1: Inspect calls to the exchange rate canister.
     assert_eq!(
         get_only_xrc_request(),
         exchange_rate_canister::GetExchangeRateRequest {
@@ -166,6 +171,7 @@ async fn update_exchange_rate_with_method_error() {
             timestamp: Some(five_minutes_ago_seconds),
         }
     );
+    // Step 4.2: Inspect the state of the nns-dapp canister.
     // The exchange rate should not have been updated because of the error.
     assert_eq!(get_usd_e8s_per_icp(), initial_usd_e8s_per_icp);
     assert_eq!(
