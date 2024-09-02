@@ -20,12 +20,11 @@
     hasAccounts,
   } from "$lib/utils/accounts.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { IconDots, Island, Popover, Spinner } from "@dfinity/gix-components";
+  import { IconDots, Island, Spinner } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import type { Writable } from "svelte/store";
   import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
-  import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import WalletMorePopover from "./WalletMorePopover.svelte";
 

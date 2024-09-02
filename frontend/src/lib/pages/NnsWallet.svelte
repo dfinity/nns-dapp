@@ -59,7 +59,7 @@
     mapToSelfTransactions,
     sortTransactionsByIdDescendingOrder,
   } from "$lib/utils/icp-transactions.utils";
-  import { IconDots, Island, Popover, Spinner } from "@dfinity/gix-components";
+  import { IconDots, Island, Spinner } from "@dfinity/gix-components";
   import {
     ICPToken,
     TokenAmountV2,
@@ -68,7 +68,6 @@
   } from "@dfinity/utils";
   import { onMount, onDestroy, setContext } from "svelte";
   import { writable, type Readable } from "svelte/store";
-  import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
   import {
     INDEX_CANISTER_ID,
     LEDGER_CANISTER_ID,
