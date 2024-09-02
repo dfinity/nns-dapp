@@ -1,17 +1,15 @@
 use crate::tvl::{self, exchange_rate_canister, governance, time, STATE};
+use lazy_static::lazy_static;
 
-fn icp_asset() -> exchange_rate_canister::Asset {
-    exchange_rate_canister::Asset {
+lazy_static! {
+    static ref ICP: exchange_rate_canister::Asset = exchange_rate_canister::Asset {
         symbol: "ICP".to_string(),
         class: exchange_rate_canister::AssetClass::Cryptocurrency,
-    }
-}
-
-fn usd_asset() -> exchange_rate_canister::Asset {
-    exchange_rate_canister::Asset {
+    };
+    static ref USD: exchange_rate_canister::Asset = exchange_rate_canister::Asset {
         symbol: "USD".to_string(),
         class: exchange_rate_canister::AssetClass::FiatCurrency,
-    }
+    };
 }
 
 fn get_usd_e8s_per_icp() -> u64 {
@@ -38,8 +36,8 @@ fn get_only_xrc_request() -> exchange_rate_canister::GetExchangeRateRequest {
 
 fn get_expected_exchange_rate_request(timestamp_seconds: u64) -> exchange_rate_canister::GetExchangeRateRequest {
     exchange_rate_canister::GetExchangeRateRequest {
-        base_asset: icp_asset(),
-        quote_asset: usd_asset(),
+        base_asset: ICP.clone(),
+        quote_asset: USD.clone(),
         timestamp: Some(timestamp_seconds),
     }
 }
@@ -66,8 +64,8 @@ async fn update_exchange_rate() {
     time::testing::set_time(now_seconds * 1_000_000_000);
     set_usd_e8s_per_icp(initial_usd_e8s_per_icp);
     exchange_rate_canister::testing::add_exchange_rate_response_ok(
-        icp_asset(),
-        usd_asset(),
+        ICP.clone(),
+        USD.clone(),
         later_usd_e8s_per_icp,
         five_minutes_ago_seconds,
     );
