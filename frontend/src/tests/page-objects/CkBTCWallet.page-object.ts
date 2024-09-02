@@ -1,4 +1,4 @@
-import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { CkBTCInfoCardPo } from "$tests/page-objects/CkBTCInfoCard.page-object";
 import { CkBTCWalletFooterPo } from "$tests/page-objects/CkBTCWalletFooter.page-object";
 import { LinkToDashboardCanisterPo } from "$tests/page-objects/LinkToDashboardCanister.page-object";
