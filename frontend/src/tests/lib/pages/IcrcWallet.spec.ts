@@ -120,6 +120,7 @@ describe("IcrcWallet", () => {
     resetIdentity();
     defaultIcrcCanistersStore.reset();
     busyStore.resetForTesting();
+    importedTokensStore.reset();
 
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
@@ -486,12 +487,15 @@ describe("IcrcWallet", () => {
   });
 
   describe("imported tokens", () => {
+    const ledgerCanisterId = principal(0);
+    const ledgerCanisterId2 = principal(1);
+
     beforeEach(() => {
-      tokensStore.setTokens(mockUniversesTokens);
       page.mock({
-        data: { universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText() },
+        data: { universe: ledgerCanisterId.toText() },
         routeId: AppPath.Wallet,
       });
+      tokensStore.setTokens(mockUniversesTokens);
       icrcAccountsStore.set({
         accounts: {
           accounts: [mockCkETHMainAccount],
@@ -499,20 +503,6 @@ describe("IcrcWallet", () => {
         },
         ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
       });
-    });
-
-    it("should remove imported tokens", async () => {
-      const spyOnSetImportedTokens = vi
-        .spyOn(importedTokensApi, "setImportedTokens")
-        .mockRejectedValue(undefined);
-      const spyOnGetImportedTokens = vi
-        .spyOn(importedTokensApi, "getImportedTokens")
-        .mockResolvedValue({
-          imported_tokens: [],
-        });
-
-      const ledgerCanisterId = principal(0);
-      const ledgerCanisterId2 = principal(1);
       importedTokensStore.set({
         importedTokens: [
           {
@@ -526,10 +516,6 @@ describe("IcrcWallet", () => {
         ],
         certified: true,
       });
-      page.mock({
-        data: { universe: ledgerCanisterId.toText() },
-        routeId: AppPath.Wallet,
-      });
       icrcAccountsStore.set({
         accounts: {
           accounts: [mockCkETHMainAccount],
@@ -537,6 +523,17 @@ describe("IcrcWallet", () => {
         },
         ledgerCanisterId,
       });
+    });
+
+    it("should remove imported tokens", async () => {
+      const spyOnSetImportedTokens = vi
+        .spyOn(importedTokensApi, "setImportedTokens")
+        .mockResolvedValue(undefined);
+      const spyOnGetImportedTokens = vi
+        .spyOn(importedTokensApi, "getImportedTokens")
+        .mockResolvedValue({
+          imported_tokens: [],
+        });
 
       const po = await renderWallet({});
       const morePopoverPo = po.getWalletMorePopoverPo();
@@ -552,8 +549,6 @@ describe("IcrcWallet", () => {
 
       expect(get(pageStore).path).toEqual(AppPath.Wallet);
       expect(get(busyStore)).toEqual([]);
-
-      await runResolvedPromises();
 
       // Confirm the removal.
       expect(await confirmationPo.isPresent()).toBe(true);
@@ -583,6 +578,29 @@ describe("IcrcWallet", () => {
 
       expect(get(busyStore)).toEqual([]);
       expect(get(pageStore).path).toEqual(AppPath.Tokens);
+    });
+
+    it("should stay on the same page when removal is unsuccessful", async () => {
+      vi.spyOn(console, "error").mockReturnValue();
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
+        new Error()
+      );
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
+        imported_tokens: [],
+      });
+
+      const po = await renderWallet({});
+      const morePopoverPo = po.getWalletMorePopoverPo();
+      const confirmationPo = po.getImportTokenRemoveConfirmationPo();
+
+      await po.getMoreButton().click();
+      await runResolvedPromises();
+      await morePopoverPo.getRemoveButtonPo().click();
+      await runResolvedPromises();
+      await confirmationPo.clickYes();
+      await runResolvedPromises();
+      // should stay on wallet page
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
     });
   });
 });
