@@ -2,6 +2,7 @@ import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { IcrcWalletFooterPo } from "$tests/page-objects/IcrcWalletFooter.page-object";
 import { SignInPo } from "$tests/page-objects/SignIn.page-object";
 import { UiTransactionsListPo } from "$tests/page-objects/UiTransactionsList.page-object";
+import { WalletMorePopoverPo } from "$tests/page-objects/WalletMorePopover.page-object";
 import { WalletPageHeaderPo } from "$tests/page-objects/WalletPageHeader.page-object";
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -28,6 +29,14 @@ export class SnsWalletPo extends BasePageObject {
 
   getIcrcWalletFooterPo(): IcrcWalletFooterPo {
     return IcrcWalletFooterPo.under(this.root);
+  }
+
+  getMoreButton(): ButtonPo {
+    return this.getButton("more-button");
+  }
+
+  getWalletMorePopoverPo(): WalletMorePopoverPo {
+    return WalletMorePopoverPo.under(this.root);
   }
 
   getSignInPo(): SignInPo {

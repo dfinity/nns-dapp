@@ -1,7 +1,9 @@
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { CkBTCInfoCardPo } from "$tests/page-objects/CkBTCInfoCard.page-object";
 import { CkBTCWalletFooterPo } from "$tests/page-objects/CkBTCWalletFooter.page-object";
 import { SignInPo } from "$tests/page-objects/SignIn.page-object";
 import { UiTransactionsListPo } from "$tests/page-objects/UiTransactionsList.page-object";
+import { WalletMorePopoverPo } from "$tests/page-objects/WalletMorePopover.page-object";
 import { WalletPageHeaderPo } from "$tests/page-objects/WalletPageHeader.page-object";
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -32,6 +34,14 @@ export class CkBTCWalletPo extends BasePageObject {
 
   getCkBTCWalletFooterPo(): CkBTCWalletFooterPo {
     return CkBTCWalletFooterPo.under(this.root);
+  }
+
+  getMoreButton(): ButtonPo {
+    return this.getButton("more-button");
+  }
+
+  getWalletMorePopoverPo(): WalletMorePopoverPo {
+    return WalletMorePopoverPo.under(this.root);
   }
 
   getCkBTCInfoCardPo(): CkBTCInfoCardPo {
