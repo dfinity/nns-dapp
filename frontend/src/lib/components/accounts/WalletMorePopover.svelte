@@ -40,7 +40,7 @@
 
         <button
           class="remove-button button ghost with-icon"
-          data-tid="remove-imported-token-button"
+          data-tid="remove-button"
           on:click={() => dispatch("nnsRemove")}
         >
           <IconBin />
