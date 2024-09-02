@@ -34,14 +34,6 @@ fn get_only_xrc_request() -> exchange_rate_canister::GetExchangeRateRequest {
     requests.pop().unwrap()
 }
 
-fn get_expected_exchange_rate_request(timestamp_seconds: u64) -> exchange_rate_canister::GetExchangeRateRequest {
-    exchange_rate_canister::GetExchangeRateRequest {
-        base_asset: ICP.clone(),
-        quote_asset: USD.clone(),
-        timestamp: Some(timestamp_seconds),
-    }
-}
-
 fn get_total_locked_icp_e8s() -> u64 {
     STATE.with(|s| s.tvl_state.borrow().total_locked_icp_e8s)
 }
@@ -80,7 +72,11 @@ async fn update_exchange_rate() {
     // Step 4: Verify the state after calling the code under test.
     assert_eq!(
         get_only_xrc_request(),
-        get_expected_exchange_rate_request(five_minutes_ago_seconds)
+        exchange_rate_canister::GetExchangeRateRequest {
+            base_asset: ICP.clone(),
+            quote_asset: USD.clone(),
+            timestamp: Some(five_minutes_ago_seconds),
+        }
     );
     assert_eq!(get_usd_e8s_per_icp(), later_usd_e8s_per_icp);
     assert_eq!(get_exchange_rate_timestamp_seconds(), five_minutes_ago_seconds);
@@ -116,7 +112,11 @@ async fn update_exchange_rate_with_call_error() {
     // Step 4: Verify the state after calling the code under test.
     assert_eq!(
         get_only_xrc_request(),
-        get_expected_exchange_rate_request(five_minutes_ago_seconds)
+        exchange_rate_canister::GetExchangeRateRequest {
+            base_asset: ICP.clone(),
+            quote_asset: USD.clone(),
+            timestamp: Some(five_minutes_ago_seconds),
+        }
     );
     // The exchange rate should not have been updated because of the error.
     assert_eq!(get_usd_e8s_per_icp(), initial_usd_e8s_per_icp);
@@ -160,7 +160,11 @@ async fn update_exchange_rate_with_method_error() {
     // Step 4: Verify the state after calling the code under test.
     assert_eq!(
         get_only_xrc_request(),
-        get_expected_exchange_rate_request(five_minutes_ago_seconds)
+        exchange_rate_canister::GetExchangeRateRequest {
+            base_asset: ICP.clone(),
+            quote_asset: USD.clone(),
+            timestamp: Some(five_minutes_ago_seconds),
+        }
     );
     // The exchange rate should not have been updated because of the error.
     assert_eq!(get_usd_e8s_per_icp(), initial_usd_e8s_per_icp);
