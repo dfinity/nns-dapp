@@ -37,19 +37,10 @@ describe("ImportTokenModal", () => {
   } as IcrcTokenMetadata;
 
   const renderComponent = () => {
-    const { container, component } = render(ImportTokenModal);
-
-    const onClose = vi.fn();
-    component.$on("nnsClose", onClose);
-
+    const { container } = render(ImportTokenModal);
     const po = ImportTokenModalPo.under(new JestPageObjectElement(container));
 
-    return {
-      po,
-      formPo: po.getImportTokenFormPo(),
-      reviewPo: po.getImportTokenReviewPo(),
-      onClose,
-    };
+    return po;
   };
   let queryIcrcTokenSpy: SpyInstance;
 
@@ -72,7 +63,7 @@ describe("ImportTokenModal", () => {
   });
 
   it("should display modal title", async () => {
-    const { po } = renderComponent();
+    const po = renderComponent();
 
     expect(await po.getModalTitle()).toEqual("Import Token");
   });
@@ -88,7 +79,8 @@ describe("ImportTokenModal", () => {
         ],
         certified: true,
       });
-      const { formPo } = renderComponent();
+      const po = renderComponent();
+      const formPo = po.getImportTokenFormPo();
 
       await formPo
         .getLedgerCanisterInputPo()
@@ -115,7 +107,8 @@ describe("ImportTokenModal", () => {
         },
       ]);
 
-      const { formPo } = renderComponent();
+      const po = renderComponent();
+      const formPo = po.getImportTokenFormPo();
 
       await formPo
         .getLedgerCanisterInputPo()
@@ -136,7 +129,8 @@ describe("ImportTokenModal", () => {
     });
 
     it("should catch importing of an Important token", async () => {
-      const { formPo } = renderComponent();
+      const po = renderComponent();
+      const formPo = po.getImportTokenFormPo();
 
       await formPo
         .getLedgerCanisterInputPo()
@@ -155,7 +149,8 @@ describe("ImportTokenModal", () => {
     });
 
     it("should fetch meta data", async () => {
-      const { formPo } = renderComponent();
+      const po = renderComponent();
+      const formPo = po.getImportTokenFormPo();
 
       await formPo
         .getLedgerCanisterInputPo()
@@ -173,7 +168,8 @@ describe("ImportTokenModal", () => {
       vi.spyOn(console, "error").mockReturnValue();
       const error = new Error("Not a ledger canister");
       vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(error);
-      const { formPo } = renderComponent();
+      const po = renderComponent();
+      const formPo = po.getImportTokenFormPo();
 
       await formPo
         .getLedgerCanisterInputPo()
@@ -194,7 +190,8 @@ describe("ImportTokenModal", () => {
     it("should catch unmatched ledger to index canister IDs", async () => {
       vi.spyOn(icrcIndexApi, "getLedgerId").mockResolvedValue(principal(666));
 
-      const { formPo } = renderComponent();
+      const po = renderComponent();
+      const formPo = po.getImportTokenFormPo();
 
       await formPo
         .getLedgerCanisterInputPo()
@@ -214,7 +211,8 @@ describe("ImportTokenModal", () => {
   });
 
   it("should leave the form after successful validation", async () => {
-    const { formPo } = renderComponent();
+    const po = renderComponent();
+    const formPo = po.getImportTokenFormPo();
 
     await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
     await formPo.getSubmitButtonPo().click();
@@ -234,7 +232,9 @@ describe("ImportTokenModal", () => {
   });
 
   it("should display entered canisters info on the review step", async () => {
-    const { formPo, reviewPo } = renderComponent();
+    const po = renderComponent();
+    const formPo = po.getImportTokenFormPo();
+    const reviewPo = po.getImportTokenReviewPo();
 
     await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
     await formPo.getIndexCanisterInputPo().typeText(indexCanisterId.toText());
@@ -250,13 +250,19 @@ describe("ImportTokenModal", () => {
     expect(await reviewPo.getIndexCanisterIdPo().getCanisterIdText()).toEqual(
       indexCanisterId.toText()
     );
+    expect(
+      await reviewPo.getIndexCanisterIdPo().getCanisterIdFallback().isPresent()
+    ).toEqual(false);
+
     expect(await reviewPo.getTokenName()).toEqual(tokenMetaData.name);
     expect(await reviewPo.getTokenSymbol()).toEqual(tokenMetaData.symbol);
     expect(await reviewPo.getLogoSource()).toEqual(tokenMetaData.logo);
   });
 
   it("should display a fallback text for the index canister when it's not entered", async () => {
-    const { formPo, reviewPo } = renderComponent();
+    const po = renderComponent();
+    const formPo = po.getImportTokenFormPo();
+    const reviewPo = po.getImportTokenReviewPo();
 
     await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
     await formPo.getSubmitButtonPo().click();
@@ -276,7 +282,9 @@ describe("ImportTokenModal", () => {
   });
 
   it('should navigate back to form on "Back" button click', async () => {
-    const { formPo, reviewPo } = renderComponent();
+    const po = renderComponent();
+    const formPo = po.getImportTokenFormPo();
+    const reviewPo = po.getImportTokenReviewPo();
 
     expect(await formPo.isPresent()).toEqual(true);
     expect(await reviewPo.isPresent()).toEqual(false);
@@ -310,7 +318,9 @@ describe("ImportTokenModal", () => {
       importedTokens: [],
       certified: true,
     });
-    const { formPo, reviewPo } = renderComponent();
+    const po = renderComponent();
+    const formPo = po.getImportTokenFormPo();
+    const reviewPo = po.getImportTokenReviewPo();
 
     expect(await formPo.isPresent()).toEqual(true);
     expect(await reviewPo.isPresent()).toEqual(false);
@@ -325,7 +335,6 @@ describe("ImportTokenModal", () => {
     expect(await formPo.isPresent()).toEqual(false);
     expect(getImportedTokensSpy).toBeCalledTimes(0);
     expect(setImportedTokensSpy).toBeCalledTimes(0);
-    expect(get(pageStore).path).toEqual(AppPath.Tokens);
 
     await reviewPo.getConfirmButtonPo().click();
 
@@ -351,10 +360,13 @@ describe("ImportTokenModal", () => {
       ],
     });
     expect(getImportedTokensSpy).toBeCalledTimes(2);
-
-    expect(get(pageStore)).toEqual({
-      path: AppPath.Wallet,
-      universe: ledgerCanisterId.toText(),
+    expect(getImportedTokensSpy).toHaveBeenNthCalledWith(1, {
+      identity: mockIdentity,
+      certified: false,
+    });
+    expect(getImportedTokensSpy).toHaveBeenNthCalledWith(2, {
+      identity: mockIdentity,
+      certified: true,
     });
   });
 
@@ -367,7 +379,9 @@ describe("ImportTokenModal", () => {
       importedTokens: [],
       certified: true,
     });
-    const { formPo, reviewPo } = renderComponent();
+    const po = renderComponent();
+    const formPo = po.getImportTokenFormPo();
+    const reviewPo = po.getImportTokenReviewPo();
 
     await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
     await formPo.getSubmitButtonPo().click();
@@ -398,7 +412,9 @@ describe("ImportTokenModal", () => {
       importedTokens: [],
       certified: true,
     });
-    const { formPo, reviewPo } = renderComponent();
+    const po = renderComponent();
+    const formPo = po.getImportTokenFormPo();
+    const reviewPo = po.getImportTokenReviewPo();
 
     await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
     await formPo.getSubmitButtonPo().click();
