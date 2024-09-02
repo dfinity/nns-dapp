@@ -13,7 +13,7 @@ const XRC_MARGIN_SEC: u64 = 60 * 5;
 #[allow(unused)]
 pub async fn update_exchange_rate() {
     // Take few minutes back to be sure to have data.
-    let timestamp_sec = time::time() / SEC_NANOS - XRC_MARGIN_SEC;
+    let timestamp_seconds = time::time() / SEC_NANOS - XRC_MARGIN_SEC;
 
     let usd = exchange_rate_canister::Asset {
         symbol: "USD".to_string(),
@@ -28,7 +28,7 @@ pub async fn update_exchange_rate() {
     let args = exchange_rate_canister::GetExchangeRateRequest {
         base_asset: icp,
         quote_asset: usd,
-        timestamp: Some(timestamp_sec),
+        timestamp: Some(timestamp_seconds),
     };
 
     let xrc_result: Result<exchange_rate_canister::GetExchangeRateResult, String> =
@@ -42,7 +42,7 @@ pub async fn update_exchange_rate() {
                     ..
                 } = exchange_rate;
                 s.tvl_state.borrow_mut().usd_per_icp_e8s = usd_per_icp_e8s;
-                s.tvl_state.borrow_mut().exchange_rate_timestamp_sec = timestamp;
+                s.tvl_state.borrow_mut().exchange_rate_timestamp_seconds = timestamp;
                 ic_cdk::println!("Updated usd_per_icp_e8s for TVL to {}", usd_per_icp_e8s);
             }
             Ok(exchange_rate_canister::GetExchangeRateResult::Err(err)) => {

@@ -149,11 +149,11 @@ pub mod testing {
         RESPONSES.with(|responses| responses.borrow_mut().push_back(response));
     }
 
-    pub fn add_exchange_rate_response_ok(base_asset: Asset, quote_asset: Asset, rate_e8s: u64, timestamp_sec: u64) {
+    pub fn add_exchange_rate_response_ok(base_asset: Asset, quote_asset: Asset, rate_e8s: u64, timestamp_seconds: u64) {
         let response = Ok(GetExchangeRateResult::Ok(ExchangeRate {
             base_asset,
             quote_asset,
-            timestamp: timestamp_sec,
+            timestamp: timestamp_seconds,
             rate: rate_e8s,
             metadata: ExchangeRateMetadata {
                 decimals: 8,

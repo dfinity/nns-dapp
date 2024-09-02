@@ -22,12 +22,12 @@ fn set_usd_per_icp_e8s(new_value: u64) {
     STATE.with(|s| s.tvl_state.borrow_mut().usd_per_icp_e8s = new_value);
 }
 
-fn get_exchange_rate_timestamp_sec() -> u64 {
-    STATE.with(|s| s.tvl_state.borrow().exchange_rate_timestamp_sec)
+fn get_exchange_rate_timestamp_seconds() -> u64 {
+    STATE.with(|s| s.tvl_state.borrow().exchange_rate_timestamp_seconds)
 }
 
-fn set_exchange_rate_timestamp_sec(new_value: u64) {
-    STATE.with(|s| s.tvl_state.borrow_mut().exchange_rate_timestamp_sec = new_value);
+fn set_exchange_rate_timestamp_seconds(new_value: u64) {
+    STATE.with(|s| s.tvl_state.borrow_mut().exchange_rate_timestamp_seconds = new_value);
 }
 
 fn get_only_xrc_request() -> exchange_rate_canister::GetExchangeRateRequest {
@@ -36,11 +36,11 @@ fn get_only_xrc_request() -> exchange_rate_canister::GetExchangeRateRequest {
     requests.pop().unwrap()
 }
 
-fn get_expected_exchange_rate_request(timestamp_sec: u64) -> exchange_rate_canister::GetExchangeRateRequest {
+fn get_expected_exchange_rate_request(timestamp_seconds: u64) -> exchange_rate_canister::GetExchangeRateRequest {
     exchange_rate_canister::GetExchangeRateRequest {
         base_asset: icp_asset(),
         quote_asset: usd_asset(),
-        timestamp: Some(timestamp_sec),
+        timestamp: Some(timestamp_seconds),
     }
 }
 
@@ -54,22 +54,22 @@ fn set_total_locked_icp_e8s(new_value: u64) {
 
 #[tokio::test]
 async fn update_exchange_rate() {
-    let now_sec = 1_234_567_890;
+    let now_seconds = 1_234_567_890;
     // We request the exchange rate from 5 minutes ago to make sure the XRC
     // actually has data for the timestamp we request.
-    let five_minutes_ago_sec = now_sec - 5 * 60;
+    let five_minutes_ago_seconds = now_seconds - 5 * 60;
 
     let initial_usd_per_icp_e8s = 850_000_000;
     let later_usd_per_icp_e8s = 920_000_000;
 
     // Step 1: Set up the environment.
-    time::testing::set_time(now_sec * 1_000_000_000);
+    time::testing::set_time(now_seconds * 1_000_000_000);
     set_usd_per_icp_e8s(initial_usd_per_icp_e8s);
     exchange_rate_canister::testing::add_exchange_rate_response_ok(
         icp_asset(),
         usd_asset(),
         later_usd_per_icp_e8s,
-        five_minutes_ago_sec,
+        five_minutes_ago_seconds,
     );
 
     // Step 2: Verify the state before calling the code under test.
@@ -82,31 +82,34 @@ async fn update_exchange_rate() {
     // Step 4: Verify the state after calling the code under test.
     assert_eq!(
         get_only_xrc_request(),
-        get_expected_exchange_rate_request(five_minutes_ago_sec)
+        get_expected_exchange_rate_request(five_minutes_ago_seconds)
     );
     assert_eq!(get_usd_per_icp_e8s(), later_usd_per_icp_e8s);
-    assert_eq!(get_exchange_rate_timestamp_sec(), five_minutes_ago_sec);
+    assert_eq!(get_exchange_rate_timestamp_seconds(), five_minutes_ago_seconds);
 }
 
 #[tokio::test]
 async fn update_exchange_rate_with_call_error() {
-    let now_sec = 1_234_567_890;
+    let now_seconds = 1_234_567_890;
     // We request the exchange rate from 5 minutes ago to make sure the XRC
     // actually has data for the timestamp we request.
-    let five_minutes_ago_sec = now_sec - 5 * 60;
+    let five_minutes_ago_seconds = now_seconds - 5 * 60;
 
     let initial_usd_per_icp_e8s = 0;
-    let initial_exchange_rate_timestamp_sec = 0;
+    let initial_exchange_rate_timestamp_seconds = 0;
 
     // Step 1: Set up the environment.
-    time::testing::set_time(now_sec * 1_000_000_000);
+    time::testing::set_time(now_seconds * 1_000_000_000);
     set_usd_per_icp_e8s(initial_usd_per_icp_e8s);
-    set_exchange_rate_timestamp_sec(initial_exchange_rate_timestamp_sec);
+    set_exchange_rate_timestamp_seconds(initial_exchange_rate_timestamp_seconds);
     exchange_rate_canister::testing::add_exchange_rate_response(Err("Canister is stopped".to_string()));
 
     // Step 2: Verify the state before calling the code under test.
     assert_eq!(get_usd_per_icp_e8s(), initial_usd_per_icp_e8s);
-    assert_eq!(get_exchange_rate_timestamp_sec(), initial_exchange_rate_timestamp_sec);
+    assert_eq!(
+        get_exchange_rate_timestamp_seconds(),
+        initial_exchange_rate_timestamp_seconds
+    );
     assert_eq!(exchange_rate_canister::testing::drain_requests().len(), 0);
 
     // Step 3: Call the code under test.
@@ -115,27 +118,30 @@ async fn update_exchange_rate_with_call_error() {
     // Step 4: Verify the state after calling the code under test.
     assert_eq!(
         get_only_xrc_request(),
-        get_expected_exchange_rate_request(five_minutes_ago_sec)
+        get_expected_exchange_rate_request(five_minutes_ago_seconds)
     );
     // The exchange rate should not have been updated because of the error.
     assert_eq!(get_usd_per_icp_e8s(), initial_usd_per_icp_e8s);
-    assert_eq!(get_exchange_rate_timestamp_sec(), initial_exchange_rate_timestamp_sec);
+    assert_eq!(
+        get_exchange_rate_timestamp_seconds(),
+        initial_exchange_rate_timestamp_seconds
+    );
 }
 
 #[tokio::test]
 async fn update_exchange_rate_with_method_error() {
-    let now_sec = 1_234_567_890;
+    let now_seconds = 1_234_567_890;
     // We request the exchange rate from 5 minutes ago to make sure the XRC
     // actually has data for the timestamp we request.
-    let five_minutes_ago_sec = now_sec - 5 * 60;
+    let five_minutes_ago_seconds = now_seconds - 5 * 60;
 
     let initial_usd_per_icp_e8s = 0;
-    let initial_exchange_rate_timestamp_sec = 0;
+    let initial_exchange_rate_timestamp_seconds = 0;
 
     // Step 1: Set up the environment.
-    time::testing::set_time(now_sec * 1_000_000_000);
+    time::testing::set_time(now_seconds * 1_000_000_000);
     set_usd_per_icp_e8s(initial_usd_per_icp_e8s);
-    set_exchange_rate_timestamp_sec(initial_exchange_rate_timestamp_sec);
+    set_exchange_rate_timestamp_seconds(initial_exchange_rate_timestamp_seconds);
     exchange_rate_canister::testing::add_exchange_rate_response(Ok(
         exchange_rate_canister::GetExchangeRateResult::Err(
             exchange_rate_canister::ExchangeRateError::CryptoBaseAssetNotFound,
@@ -144,7 +150,10 @@ async fn update_exchange_rate_with_method_error() {
 
     // Step 2: Verify the state before calling the code under test.
     assert_eq!(get_usd_per_icp_e8s(), initial_usd_per_icp_e8s);
-    assert_eq!(get_exchange_rate_timestamp_sec(), initial_exchange_rate_timestamp_sec);
+    assert_eq!(
+        get_exchange_rate_timestamp_seconds(),
+        initial_exchange_rate_timestamp_seconds
+    );
     assert_eq!(exchange_rate_canister::testing::drain_requests().len(), 0);
 
     // Step 3: Call the code under test.
@@ -153,11 +162,14 @@ async fn update_exchange_rate_with_method_error() {
     // Step 4: Verify the state after calling the code under test.
     assert_eq!(
         get_only_xrc_request(),
-        get_expected_exchange_rate_request(five_minutes_ago_sec)
+        get_expected_exchange_rate_request(five_minutes_ago_seconds)
     );
     // The exchange rate should not have been updated because of the error.
     assert_eq!(get_usd_per_icp_e8s(), initial_usd_per_icp_e8s);
-    assert_eq!(get_exchange_rate_timestamp_sec(), initial_exchange_rate_timestamp_sec);
+    assert_eq!(
+        get_exchange_rate_timestamp_seconds(),
+        initial_exchange_rate_timestamp_seconds
+    );
 }
 
 #[tokio::test]
