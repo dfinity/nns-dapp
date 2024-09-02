@@ -1,5 +1,4 @@
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
-import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
@@ -119,7 +118,6 @@ export const initDebugStore = () =>
       tokensStore,
       icrcAccountsStore,
       defaultIcrcCanistersStore,
-      icrcCanistersStore,
     ],
     ([
       $busyStore,
@@ -148,7 +146,6 @@ export const initDebugStore = () =>
       $tokensStore,
       $icrcAccountsStore,
       $defaultIcrcCanistersStore,
-      $icrcCanistersStore,
     ]) => ({
       busy: $busyStore,
       accounts: $accountsStore,
@@ -176,6 +173,5 @@ export const initDebugStore = () =>
       tokensStore: $tokensStore,
       icrcAccountsStore: $icrcAccountsStore,
       defaultIcrcCanistersStore: $defaultIcrcCanistersStore,
-      icrcCanistersStore: $icrcCanistersStore,
     })
   );
