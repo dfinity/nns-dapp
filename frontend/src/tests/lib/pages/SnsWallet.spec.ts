@@ -85,6 +85,7 @@ describe("SnsWallet", () => {
   const rootCanisterId = rootCanisterIdMock;
   const rootCanisterIdText = rootCanisterId.toText();
   const ledgerCanisterId = Principal.fromText("bw4dl-smaaa-aaaaa-qaacq-cai");
+  const indexCanisterId = principal(100);
   const projectName = "Tetris";
 
   const renderComponent = async (props: { accountIdentifier?: string }) => {
@@ -113,6 +114,7 @@ describe("SnsWallet", () => {
       {
         rootCanisterId,
         ledgerCanisterId,
+        indexCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
         projectName,
         tokenMetadata: testToken,
@@ -484,5 +486,21 @@ describe("SnsWallet", () => {
         await po.getWalletPageHeaderPo().getUniverseSummaryPo().getLogoUrl()
       ).not.toBe(tokenLogo);
     });
+  });
+
+  it('should have canister links in "more" popup', async () => {
+    const po = await renderComponent({});
+
+    await po.getMoreButton().click();
+    await runResolvedPromises();
+
+    expect(await po.getLinkToLedgerCanisterPo().isPresent()).toBe(true);
+    expect(await po.getLinkToLedgerCanisterPo().getHref()).toBe(
+      `https://dashboard.internetcomputer.org/canister/${ledgerCanisterId.toText()}`
+    );
+    expect(await po.getLinkToIndexCanisterPo().isPresent()).toBe(true);
+    expect(await po.getLinkToIndexCanisterPo().getHref()).toBe(
+      `https://dashboard.internetcomputer.org/canister/${indexCanisterId.toText()}`
+    );
   });
 });
