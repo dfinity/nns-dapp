@@ -30,6 +30,7 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { principal } from "../../mocks/sns-projects.mock";
 
 const expectedBalanceAfterTransfer = 11_111n;
 
@@ -111,6 +112,7 @@ describe("IcrcWallet", () => {
     overrideFeatureFlagsStore.reset();
     toastsStore.reset();
     resetIdentity();
+    icrcCanistersStore.reset();
 
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
@@ -373,6 +375,86 @@ describe("IcrcWallet", () => {
       expect(await po.getWalletPageHeadingPo().getTitle()).toBe(
         "3.33 ckETHTEST"
       );
+    });
+  });
+
+  describe("move popup", () => {
+    beforeEach(() => {
+      tokensStore.setTokens(mockUniversesTokens);
+      page.mock({
+        data: { universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText() },
+        routeId: AppPath.Wallet,
+      });
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkETHMainAccount],
+          certified: true,
+        },
+        ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
+      });
+    });
+
+    it('should render "more" button', async () => {
+      const po = await renderWallet({});
+      expect(await po.hasMoreButton()).toBe(true);
+    });
+
+    it('should not render "more" popup by default', async () => {
+      const po = await renderWallet({});
+      expect(await po.getLinkToLedgerCanisterPo().isPresent()).toBe(false);
+    });
+
+    it("should not display more button when ENABLE_IMPORT_TOKEN disabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN", false);
+
+      const po = await renderWallet({});
+      expect(await po.hasMoreButton()).toBe(false);
+    });
+
+    it('should have canister links in "more" popup', async () => {
+      const po = await renderWallet({});
+
+      await po.clickMore();
+      await runResolvedPromises();
+
+      expect(await po.getLinkToLedgerCanisterPo().isPresent()).toBe(true);
+      expect(await po.getLinkToLedgerCanisterPo().getHref()).toBe(
+        `https://dashboard.internetcomputer.org/canister/${CKETHSEPOLIA_LEDGER_CANISTER_ID.toText()}`
+      );
+      expect(await po.getLinkToIndexCanisterPo().isPresent()).toBe(true);
+      expect(await po.getLinkToIndexCanisterPo().getHref()).toBe(
+        `https://dashboard.internetcomputer.org/canister/${CKETHSEPOLIA_INDEX_CANISTER_ID.toText()}`
+      );
+    });
+
+    it("should not display index canister link when not available", async () => {
+      const ledgerCanisterId = principal(0);
+      icrcCanistersStore.setCanisters({
+        ledgerCanisterId,
+        indexCanisterId: undefined,
+      });
+      page.mock({
+        data: { universe: ledgerCanisterId.toText() },
+        routeId: AppPath.Wallet,
+      });
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkETHMainAccount],
+          certified: true,
+        },
+        ledgerCanisterId,
+      });
+
+      const po = await renderWallet({});
+
+      await po.clickMore();
+      await runResolvedPromises();
+
+      expect(await po.getLinkToLedgerCanisterPo().isPresent()).toBe(true);
+      expect(await po.getLinkToLedgerCanisterPo().getHref()).toBe(
+        `https://dashboard.internetcomputer.org/canister/${ledgerCanisterId.toText()}`
+      );
+      expect(await po.getLinkToIndexCanisterPo().isPresent()).toBe(false);
     });
   });
 });
