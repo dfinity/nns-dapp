@@ -10,7 +10,7 @@ resolver = "2"
 version = "2.0.88"
 
 [workspace.dependencies]
-ic-cdk = "0.15.1"
+ic-cdk = "0.16.0"
 ic-cdk-macros = "0.16.0"
 
 cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2024-08-29_01-30-base" }
