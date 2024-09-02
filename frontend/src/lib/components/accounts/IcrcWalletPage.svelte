@@ -190,7 +190,7 @@
       });
 
       if (success) {
-        goto($accountsPathStore);
+        goto(AppPath.Tokens);
       }
     } finally {
       stopBusy("import-token-removing");
