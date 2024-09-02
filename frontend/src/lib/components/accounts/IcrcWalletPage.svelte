@@ -31,7 +31,6 @@
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { removeImportedTokens } from "$lib/services/imported-tokens.services";
-  import { accountsPathStore } from "$lib/derived/paths.derived";
   import ImportTokenRemoveConfirmation from "./ImportTokenRemoveConfirmation.svelte";
   import type { Universe } from "$lib/types/universe";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
