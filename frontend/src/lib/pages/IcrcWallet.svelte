@@ -5,7 +5,7 @@
   import NoTransactions from "$lib/components/accounts/NoTransactions.svelte";
   import { selectedIcrcTokenUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
-  import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
+  import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
   import type { CanisterId } from "$lib/types/canister";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import type { WalletStore } from "$lib/types/wallet.context";

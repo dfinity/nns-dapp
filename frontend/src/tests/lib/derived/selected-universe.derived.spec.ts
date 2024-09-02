@@ -17,8 +17,8 @@ import {
   selectedUniverseStore,
 } from "$lib/derived/selected-universe.derived";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
+import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
@@ -118,7 +118,7 @@ describe("selected universe derived stores", () => {
     const ledgerCanisterId = principal(0);
 
     beforeEach(() => {
-      icrcCanistersStore.reset();
+      defaultIcrcCanistersStore.reset();
     });
 
     it("should be ICRC Token inside ICRC Token universe", () => {
@@ -126,7 +126,7 @@ describe("selected universe derived stores", () => {
         data: { universe: ledgerCanisterId.toText() },
         routeId: AppPath.Accounts,
       });
-      icrcCanistersStore.setCanisters({
+      defaultIcrcCanistersStore.setCanisters({
         ledgerCanisterId,
         indexCanisterId: principal(1),
       });
@@ -139,7 +139,7 @@ describe("selected universe derived stores", () => {
         data: { universe: ledgerCanisterId.toText() },
         routeId: AppPath.Neurons,
       });
-      icrcCanistersStore.setCanisters({
+      defaultIcrcCanistersStore.setCanisters({
         ledgerCanisterId,
         indexCanisterId: principal(1),
       });
@@ -262,7 +262,7 @@ describe("selected universe derived stores", () => {
           },
           routeId: data.routeId,
         });
-        icrcCanistersStore.setCanisters({
+        defaultIcrcCanistersStore.setCanisters({
           ledgerCanisterId: icrcCanisterId,
           indexCanisterId: principal(1),
         });
@@ -464,9 +464,9 @@ describe("selected universe derived stores", () => {
     const ledgerCanisterId = principal(0);
 
     beforeEach(() => {
-      icrcCanistersStore.reset();
+      defaultIcrcCanistersStore.reset();
       tokensStore.reset();
-      icrcCanistersStore.setCanisters({
+      defaultIcrcCanistersStore.setCanisters({
         ledgerCanisterId,
         indexCanisterId: principal(1),
       });

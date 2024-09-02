@@ -9,9 +9,9 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import IcrcWallet from "$lib/pages/IcrcWallet.svelte";
+import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
@@ -112,13 +112,13 @@ describe("IcrcWallet", () => {
     overrideFeatureFlagsStore.reset();
     toastsStore.reset();
     resetIdentity();
-    icrcCanistersStore.reset();
+    defaultIcrcCanistersStore.reset();
 
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
     });
 
-    icrcCanistersStore.setCanisters({
+    defaultIcrcCanistersStore.setCanisters({
       ledgerCanisterId: CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
       indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
     });
@@ -434,7 +434,7 @@ describe("IcrcWallet", () => {
 
     it("should not display index canister link when not available", async () => {
       const ledgerCanisterId = principal(0);
-      icrcCanistersStore.setCanisters({
+      defaultIcrcCanistersStore.setCanisters({
         ledgerCanisterId,
         indexCanisterId: undefined,
       });

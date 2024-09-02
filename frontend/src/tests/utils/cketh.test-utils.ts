@@ -3,12 +3,12 @@ import {
   CKETH_LEDGER_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
-import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
+import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 
 export const setCkETHCanisters = () => {
-  icrcCanistersStore.setCanisters({
+  defaultIcrcCanistersStore.setCanisters({
     ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
     indexCanisterId: CKETH_INDEX_CANISTER_ID,
   });
@@ -19,6 +19,6 @@ export const setCkETHCanisters = () => {
 };
 
 export const resetCkETHCanisters = () => {
-  icrcCanistersStore.reset();
+  defaultIcrcCanistersStore.reset();
   tokensStore.reset();
 };

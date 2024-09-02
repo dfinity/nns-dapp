@@ -3,17 +3,17 @@ import {
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  icrcCanistersStore,
+  type IcrcCanistersStore,
+  type IcrcCanistersStoreData,
+} from "$lib/derived/icrc-canisters.derived";
 import { pageStore, type Page } from "$lib/derived/page.derived";
 import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 import {
   ENABLE_CKBTC,
   ENABLE_CKTESTBTC,
 } from "$lib/stores/feature-flags.store";
-import {
-  icrcCanistersStore,
-  type IcrcCanistersStore,
-  type IcrcCanistersStoreData,
-} from "$lib/stores/icrc-canisters.store";
 import type { Universe, UniverseCanisterId } from "$lib/types/universe";
 import {
   isAllTokensPath,

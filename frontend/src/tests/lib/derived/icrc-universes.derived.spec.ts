@@ -6,7 +6,7 @@ import {
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import { icrcTokensUniversesStore } from "$lib/derived/icrc-universes.derived";
-import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
+import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import {
   mockCkETHTESTToken,
@@ -22,11 +22,11 @@ import { get } from "svelte/store";
 describe("icrcTokensUniversesStore", () => {
   beforeEach(() => {
     tokensStore.reset();
-    icrcCanistersStore.reset();
+    defaultIcrcCanistersStore.reset();
   });
 
   it("returns empty array if no tokens are present", () => {
-    icrcCanistersStore.setCanisters({
+    defaultIcrcCanistersStore.setCanisters({
       ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,
       indexCanisterId: CKETH_INDEX_CANISTER_ID,
     });
@@ -54,7 +54,7 @@ describe("icrcTokensUniversesStore", () => {
         token: mockCkETHToken,
       },
     });
-    icrcCanistersStore.setCanisters({
+    defaultIcrcCanistersStore.setCanisters({
       ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,
       indexCanisterId: CKETH_INDEX_CANISTER_ID,
     });
@@ -72,11 +72,11 @@ describe("icrcTokensUniversesStore", () => {
         token: mockCkETHTESTToken,
       },
     });
-    icrcCanistersStore.setCanisters({
+    defaultIcrcCanistersStore.setCanisters({
       ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,
       indexCanisterId: CKETH_INDEX_CANISTER_ID,
     });
-    icrcCanistersStore.setCanisters({
+    defaultIcrcCanistersStore.setCanisters({
       ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
       indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
     });
@@ -94,7 +94,7 @@ describe("icrcTokensUniversesStore", () => {
         token: mockToken,
       },
     });
-    icrcCanistersStore.setCanisters({
+    defaultIcrcCanistersStore.setCanisters({
       ledgerCanisterId: ledgerCanisterId,
       indexCanisterId: principal(2),
     });
@@ -117,7 +117,7 @@ describe("icrcTokensUniversesStore", () => {
         },
       },
     });
-    icrcCanistersStore.setCanisters({
+    defaultIcrcCanistersStore.setCanisters({
       ledgerCanisterId: ledgerCanisterId,
       indexCanisterId: principal(2),
     });

@@ -5,18 +5,19 @@ import { nonNullish } from "@dfinity/utils";
 import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
 
-export interface IcrcCanisters {
+export interface DefaultIcrcCanisters {
   ledgerCanisterId: Principal;
   indexCanisterId: Principal;
 }
 
-export type IcrcCanistersStoreData = Record<
+export type DefaultIcrcCanistersStoreData = Record<
   UniverseCanisterIdText,
-  IcrcCanisters
+  DefaultIcrcCanisters
 >;
 
-export interface IcrcCanistersStore extends Readable<IcrcCanistersStoreData> {
-  setCanisters: (data: IcrcCanisters) => void;
+export interface IcrcCanistersStore
+  extends Readable<DefaultIcrcCanistersStoreData> {
+  setCanisters: (data: DefaultIcrcCanisters) => void;
   reset: () => void;
 }
 
@@ -28,18 +29,18 @@ export interface IcrcCanistersStore extends Readable<IcrcCanistersStoreData> {
  * - reset: reset all information.
  *
  */
-const initIcrcCanistersStore = (): IcrcCanistersStore => {
-  const initialIcrcCanistersStoreData: IcrcCanistersStoreData = {};
+const initDefaultIcrcCanistersStore = (): IcrcCanistersStore => {
+  const initialIcrcCanistersStoreData: DefaultIcrcCanistersStoreData = {};
 
-  const { subscribe, update, set } = writable<IcrcCanistersStoreData>(
+  const { subscribe, update, set } = writable<DefaultIcrcCanistersStoreData>(
     initialIcrcCanistersStoreData
   );
 
   return {
     subscribe,
 
-    setCanisters({ ledgerCanisterId, indexCanisterId }: IcrcCanisters) {
-      update((state: IcrcCanistersStoreData) => ({
+    setCanisters({ ledgerCanisterId, indexCanisterId }: DefaultIcrcCanisters) {
+      update((state: DefaultIcrcCanistersStoreData) => ({
         ...state,
         [ledgerCanisterId.toText()]: {
           ledgerCanisterId,
@@ -55,7 +56,7 @@ const initIcrcCanistersStore = (): IcrcCanistersStore => {
   };
 };
 
-export const icrcCanistersStore = initIcrcCanistersStore();
+export const defaultIcrcCanistersStore = initDefaultIcrcCanistersStore();
 
 // Useful to help people record coins they accidentally sent to NNS dapp, but
 // which are not officially supported by the NNS dapp.
@@ -75,7 +76,7 @@ if (browser) {
     ledgerCanisterId: string,
     indexCanisterId?: string
   ) => {
-    icrcCanistersStore.setCanisters({
+    defaultIcrcCanistersStore.setCanisters({
       ledgerCanisterId: Principal.fromText(ledgerCanisterId),
       indexCanisterId: nonNullish(indexCanisterId)
         ? Principal.fromText(indexCanisterId)

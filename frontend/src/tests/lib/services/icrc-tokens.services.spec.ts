@@ -1,6 +1,6 @@
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { watchIcrcTokensLoadTokenData } from "$lib/services/icrc-tokens.services";
-import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
+import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
@@ -17,7 +17,7 @@ describe("icrc-tokens.services", () => {
     const token2 = { ...mockToken, name: "Token 2" };
 
     beforeEach(() => {
-      icrcCanistersStore.reset();
+      defaultIcrcCanistersStore.reset();
       tokensStore.reset();
       vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockImplementation(
         async ({ canisterId }) => {
@@ -33,7 +33,7 @@ describe("icrc-tokens.services", () => {
     it("should load tokens when icrcCanistersStore is updated", async () => {
       watchIcrcTokensLoadTokenData();
 
-      icrcCanistersStore.setCanisters({
+      defaultIcrcCanistersStore.setCanisters({
         ledgerCanisterId: ledgerCanisterId1,
         indexCanisterId,
       });
@@ -49,12 +49,12 @@ describe("icrc-tokens.services", () => {
     it("should load multiple tokens when icrcCanistersStore is updated multiple times", async () => {
       watchIcrcTokensLoadTokenData();
 
-      icrcCanistersStore.setCanisters({
+      defaultIcrcCanistersStore.setCanisters({
         ledgerCanisterId: ledgerCanisterId1,
         indexCanisterId,
       });
 
-      icrcCanistersStore.setCanisters({
+      defaultIcrcCanistersStore.setCanisters({
         ledgerCanisterId: ledgerCanisterId2,
         indexCanisterId,
       });
