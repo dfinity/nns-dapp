@@ -1,6 +1,11 @@
 use crate::tvl::{self, exchange_rate_canister, governance, time, STATE};
 use lazy_static::lazy_static;
 
+const NOW_SECONDS: u64 = 1_234_567_890;
+// We request the exchange rate from 5 minutes ago to make sure the XRC
+// actually has data for the timestamp we request.
+const FIVE_MINUTES_AGO_SECONDS: u64 = NOW_SECONDS - 5 * 60;
+
 lazy_static! {
     static ref ICP: exchange_rate_canister::Asset = exchange_rate_canister::Asset {
         symbol: "ICP".to_string(),
@@ -44,22 +49,17 @@ fn set_total_locked_icp_e8s(new_value: u64) {
 
 #[tokio::test]
 async fn update_exchange_rate() {
-    let now_seconds = 1_234_567_890;
-    // We request the exchange rate from 5 minutes ago to make sure the XRC
-    // actually has data for the timestamp we request.
-    let five_minutes_ago_seconds = now_seconds - 5 * 60;
-
     let initial_usd_e8s_per_icp = 850_000_000;
     let later_usd_e8s_per_icp = 920_000_000;
 
     // Step 1: Set up the environment.
-    time::testing::set_time(now_seconds * 1_000_000_000);
+    time::testing::set_time(NOW_SECONDS * 1_000_000_000);
     set_usd_e8s_per_icp(initial_usd_e8s_per_icp);
     exchange_rate_canister::testing::add_exchange_rate_response_ok(
         ICP.clone(),
         USD.clone(),
         later_usd_e8s_per_icp,
-        five_minutes_ago_seconds,
+        FIVE_MINUTES_AGO_SECONDS,
     );
 
     // Step 2: Verify the state before calling the code under test.
@@ -76,26 +76,21 @@ async fn update_exchange_rate() {
         exchange_rate_canister::GetExchangeRateRequest {
             base_asset: ICP.clone(),
             quote_asset: USD.clone(),
-            timestamp: Some(five_minutes_ago_seconds),
+            timestamp: Some(FIVE_MINUTES_AGO_SECONDS),
         }
     );
     // Step 4.2: Inspect the state of the nns-dapp canister.
     assert_eq!(get_usd_e8s_per_icp(), later_usd_e8s_per_icp);
-    assert_eq!(get_exchange_rate_timestamp_seconds(), five_minutes_ago_seconds);
+    assert_eq!(get_exchange_rate_timestamp_seconds(), FIVE_MINUTES_AGO_SECONDS);
 }
 
 #[tokio::test]
 async fn update_exchange_rate_with_call_error() {
-    let now_seconds = 1_234_567_890;
-    // We request the exchange rate from 5 minutes ago to make sure the XRC
-    // actually has data for the timestamp we request.
-    let five_minutes_ago_seconds = now_seconds - 5 * 60;
-
     let initial_usd_e8s_per_icp = 0;
     let initial_exchange_rate_timestamp_seconds = 0;
 
     // Step 1: Set up the environment.
-    time::testing::set_time(now_seconds * 1_000_000_000);
+    time::testing::set_time(NOW_SECONDS * 1_000_000_000);
     set_usd_e8s_per_icp(initial_usd_e8s_per_icp);
     set_exchange_rate_timestamp_seconds(initial_exchange_rate_timestamp_seconds);
     exchange_rate_canister::testing::add_exchange_rate_response(Err("Canister is stopped".to_string()));
@@ -118,7 +113,7 @@ async fn update_exchange_rate_with_call_error() {
         exchange_rate_canister::GetExchangeRateRequest {
             base_asset: ICP.clone(),
             quote_asset: USD.clone(),
-            timestamp: Some(five_minutes_ago_seconds),
+            timestamp: Some(FIVE_MINUTES_AGO_SECONDS),
         }
     );
     // Step 4.2: Inspect the state of the nns-dapp canister.
@@ -132,16 +127,11 @@ async fn update_exchange_rate_with_call_error() {
 
 #[tokio::test]
 async fn update_exchange_rate_with_method_error() {
-    let now_seconds = 1_234_567_890;
-    // We request the exchange rate from 5 minutes ago to make sure the XRC
-    // actually has data for the timestamp we request.
-    let five_minutes_ago_seconds = now_seconds - 5 * 60;
-
     let initial_usd_e8s_per_icp = 0;
     let initial_exchange_rate_timestamp_seconds = 0;
 
     // Step 1: Set up the environment.
-    time::testing::set_time(now_seconds * 1_000_000_000);
+    time::testing::set_time(NOW_SECONDS * 1_000_000_000);
     set_usd_e8s_per_icp(initial_usd_e8s_per_icp);
     set_exchange_rate_timestamp_seconds(initial_exchange_rate_timestamp_seconds);
     exchange_rate_canister::testing::add_exchange_rate_response(Ok(
@@ -168,7 +158,7 @@ async fn update_exchange_rate_with_method_error() {
         exchange_rate_canister::GetExchangeRateRequest {
             base_asset: ICP.clone(),
             quote_asset: USD.clone(),
-            timestamp: Some(five_minutes_ago_seconds),
+            timestamp: Some(FIVE_MINUTES_AGO_SECONDS),
         }
     );
     // Step 4.2: Inspect the state of the nns-dapp canister.
