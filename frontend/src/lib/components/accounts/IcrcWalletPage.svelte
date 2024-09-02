@@ -31,7 +31,7 @@
   export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;
   export let ledgerCanisterId: Principal | undefined;
-  export let indexCanisterId: Principal | undefined = undefined;
+  export let indexCanisterId: Principal | undefined;
   export let token: IcrcTokenMetadata | undefined = undefined;
   export let selectedAccountStore: Writable<WalletStore>;
   export let reloadTransactions: () => Promise<void>;
