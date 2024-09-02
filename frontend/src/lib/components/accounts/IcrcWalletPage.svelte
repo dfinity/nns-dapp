@@ -27,6 +27,7 @@
   import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
   import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import WalletMorePopover from "./WalletMorePopover.svelte";
 
   export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;
@@ -216,29 +217,12 @@
     <slot name="footer-actions" />
   </Island>
 
-  <Popover
+  <WalletMorePopover
     bind:visible={morePopupVisible}
     anchor={moreButton}
-    direction="rtl"
-    invisibleBackdrop
-  >
-    <div class="more">
-      {#if nonNullish(ledgerCanisterId)}
-        <LinkToDashboardCanister
-          testId="link-to-ledger-canister"
-          label={$i18n.tokens.ledger_canister}
-          canisterId={ledgerCanisterId}
-        />
-      {/if}
-      {#if nonNullish(indexCanisterId)}
-        <LinkToDashboardCanister
-          testId="link-to-index-canister"
-          label={$i18n.tokens.index_canister}
-          canisterId={indexCanisterId}
-        />
-      {/if}
-    </div>
-  </Popover>
+    {ledgerCanisterId}
+    {indexCanisterId}
+  />
 </TestIdWrapper>
 
 <style lang="scss">
@@ -250,11 +234,5 @@
 
   .info-card {
     background-color: var(--island-card-background);
-  }
-
-  .more {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-2x);
   }
 </style>
