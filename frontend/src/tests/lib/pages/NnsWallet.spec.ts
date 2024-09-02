@@ -253,7 +253,11 @@ describe("NnsWallet", () => {
 
     it('should not render "more" popup by default', async () => {
       const po = await renderWallet({});
-      expect(await po.getLinkToLedgerCanisterPo().isPresent()).toBe(false);
+      const morePopoverPo = po.getWalletMorePopover();
+
+      expect(await morePopoverPo.getLinkToLedgerCanisterPo().isPresent()).toBe(
+        false
+      );
     });
 
     it("should not display more button when ENABLE_IMPORT_TOKEN disabled", async () => {
@@ -265,17 +269,22 @@ describe("NnsWallet", () => {
 
     it('should have canister links in "more" popup', async () => {
       const po = await renderWallet({});
+      const morePopoverPo = po.getWalletMorePopover();
 
       await po.clickMore();
 
       await runResolvedPromises();
 
-      expect(await po.getLinkToLedgerCanisterPo().isPresent()).toBe(true);
-      expect(await po.getLinkToLedgerCanisterPo().getHref()).toBe(
+      expect(await morePopoverPo.getLinkToLedgerCanisterPo().isPresent()).toBe(
+        true
+      );
+      expect(await morePopoverPo.getLinkToLedgerCanisterPo().getHref()).toBe(
         `https://dashboard.internetcomputer.org/canister/${LEDGER_CANISTER_ID.toText()}`
       );
-      expect(await po.getLinkToIndexCanisterPo().isPresent()).toBe(true);
-      expect(await po.getLinkToIndexCanisterPo().getHref()).toBe(
+      expect(await morePopoverPo.getLinkToIndexCanisterPo().isPresent()).toBe(
+        true
+      );
+      expect(await morePopoverPo.getLinkToIndexCanisterPo().getHref()).toBe(
         `https://dashboard.internetcomputer.org/canister/${INDEX_CANISTER_ID.toText()}`
       );
     });

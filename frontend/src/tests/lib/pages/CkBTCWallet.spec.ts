@@ -511,16 +511,19 @@ describe("CkBTCWallet", () => {
 
   it('should have canister links in "more" popup', async () => {
     const po = await renderWallet();
+    const morePopoverPo = po.getWalletMorePopover();
 
     await po.getMoreButton().click();
     await runResolvedPromises();
 
-    expect(await po.getLinkToLedgerCanisterPo().isPresent()).toBe(true);
-    expect(await po.getLinkToLedgerCanisterPo().getHref()).toBe(
+    expect(await morePopoverPo.isPresent()).toBe(true);
+    expect(await morePopoverPo.getLinkToLedgerCanisterPo().getHref()).toBe(
       `https://dashboard.internetcomputer.org/canister/${CKTESTBTC_LEDGER_CANISTER_ID.toText()}`
     );
-    expect(await po.getLinkToIndexCanisterPo().isPresent()).toBe(true);
-    expect(await po.getLinkToIndexCanisterPo().getHref()).toBe(
+    expect(await morePopoverPo.getLinkToIndexCanisterPo().isPresent()).toBe(
+      true
+    );
+    expect(await morePopoverPo.getLinkToIndexCanisterPo().getHref()).toBe(
       `https://dashboard.internetcomputer.org/canister/${CKTESTBTC_INDEX_CANISTER_ID.toText()}`
     );
   });

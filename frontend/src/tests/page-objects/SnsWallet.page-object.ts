@@ -1,8 +1,8 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { IcrcWalletFooterPo } from "$tests/page-objects/IcrcWalletFooter.page-object";
-import { LinkToDashboardCanisterPo } from "$tests/page-objects/LinkToDashboardCanister.page-object";
 import { SignInPo } from "$tests/page-objects/SignIn.page-object";
 import { UiTransactionsListPo } from "$tests/page-objects/UiTransactionsList.page-object";
+import { WalletMorePopoverPo } from "$tests/page-objects/WalletMorePopover.page-object";
 import { WalletPageHeaderPo } from "$tests/page-objects/WalletPageHeader.page-object";
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -35,18 +35,8 @@ export class SnsWalletPo extends BasePageObject {
     return this.getButton("more-button");
   }
 
-  getLinkToLedgerCanisterPo(): LinkToDashboardCanisterPo {
-    return LinkToDashboardCanisterPo.under({
-      element: this.root,
-      testId: "link-to-ledger-canister",
-    });
-  }
-
-  getLinkToIndexCanisterPo(): LinkToDashboardCanisterPo {
-    return LinkToDashboardCanisterPo.under({
-      element: this.root,
-      testId: "link-to-index-canister",
-    });
+  getWalletMorePopover(): WalletMorePopoverPo {
+    return WalletMorePopoverPo.under(this.root);
   }
 
   getSignInPo(): SignInPo {
