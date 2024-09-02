@@ -401,7 +401,7 @@ describe("IcrcWallet", () => {
 
     it('should not render "more" popup by default', async () => {
       const po = await renderWallet({});
-      const morePopoverPo = po.getWalletMorePopover();
+      const morePopoverPo = po.getWalletMorePopoverPo();
 
       expect(await morePopoverPo.getLinkToLedgerCanisterPo().isPresent()).toBe(
         false
@@ -417,7 +417,7 @@ describe("IcrcWallet", () => {
 
     it('should have canister links in "more" popup', async () => {
       const po = await renderWallet({});
-      const morePopoverPo = po.getWalletMorePopover();
+      const morePopoverPo = po.getWalletMorePopoverPo();
 
       await po.getMoreButton().click();
       await runResolvedPromises();
@@ -455,7 +455,7 @@ describe("IcrcWallet", () => {
       });
 
       const po = await renderWallet({});
-      const morePopoverPo = po.getWalletMorePopover();
+      const morePopoverPo = po.getWalletMorePopoverPo();
 
       await po.getMoreButton().click();
       await runResolvedPromises();

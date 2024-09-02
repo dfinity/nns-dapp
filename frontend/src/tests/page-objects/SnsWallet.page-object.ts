@@ -35,7 +35,7 @@ export class SnsWalletPo extends BasePageObject {
     return this.getButton("more-button");
   }
 
-  getWalletMorePopover(): WalletMorePopoverPo {
+  getWalletMorePopoverPo(): WalletMorePopoverPo {
     return WalletMorePopoverPo.under(this.root);
   }
 

@@ -253,7 +253,7 @@ describe("NnsWallet", () => {
 
     it('should not render "more" popup by default', async () => {
       const po = await renderWallet({});
-      const morePopoverPo = po.getWalletMorePopover();
+      const morePopoverPo = po.getWalletMorePopoverPo();
 
       expect(await morePopoverPo.getLinkToLedgerCanisterPo().isPresent()).toBe(
         false
@@ -269,7 +269,7 @@ describe("NnsWallet", () => {
 
     it('should have canister links in "more" popup', async () => {
       const po = await renderWallet({});
-      const morePopoverPo = po.getWalletMorePopover();
+      const morePopoverPo = po.getWalletMorePopoverPo();
 
       await po.clickMore();
 

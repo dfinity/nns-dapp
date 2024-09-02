@@ -40,7 +40,7 @@ export class CkBTCWalletPo extends BasePageObject {
     return this.getButton("more-button");
   }
 
-  getWalletMorePopover(): WalletMorePopoverPo {
+  getWalletMorePopoverPo(): WalletMorePopoverPo {
     return WalletMorePopoverPo.under(this.root);
   }
 

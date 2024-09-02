@@ -490,7 +490,7 @@ describe("SnsWallet", () => {
 
   it('should have canister links in "more" popup', async () => {
     const po = await renderComponent({});
-    const morePopoverPo = po.getWalletMorePopover();
+    const morePopoverPo = po.getWalletMorePopoverPo();
 
     await po.getMoreButton().click();
     await runResolvedPromises();
