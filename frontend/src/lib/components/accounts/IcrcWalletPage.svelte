@@ -27,6 +27,14 @@
   import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import WalletMorePopover from "./WalletMorePopover.svelte";
+  import { isImportedToken as checkImportedToken } from "$lib/utils/imported-tokens.utils";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { removeImportedTokens } from "$lib/services/imported-tokens.services";
+  import { accountsPathStore } from "$lib/derived/paths.derived";
+  import ImportTokenRemoveConfirmation from "./ImportTokenRemoveConfirmation.svelte";
+  import type { Universe } from "$lib/types/universe";
+  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 
   export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;
@@ -149,6 +157,45 @@
 
   let moreButton: HTMLButtonElement | undefined;
   let morePopupVisible = false;
+
+  let isImportedToken = false;
+  $: isImportedToken = checkImportedToken({
+    ledgerCanisterId,
+    importedTokens: $importedTokensStore.importedTokens,
+  });
+
+  let removeImportedTokenConfirmationVisible = false;
+  let universe: Universe | undefined;
+  $: universe = $selectableUniversesStore.find(
+    ({ canisterId }) => canisterId === ledgerCanisterId?.toText()
+  );
+
+  const removeImportedToken = async () => {
+    // Just for type safety. This should never happen.
+    if (isNullish(ledgerCanisterId)) return;
+
+    startBusy({
+      initiator: "import-token-removing",
+      labelKey: "import_token.removing",
+    });
+
+    try {
+      const importedTokens = $importedTokensStore.importedTokens ?? [];
+      const { success } = await removeImportedTokens({
+        tokensToRemove: importedTokens.filter(
+          ({ ledgerCanisterId: id }) =>
+            id.toText() === ledgerCanisterId?.toText()
+        ),
+        importedTokens,
+      });
+
+      if (success) {
+        goto($accountsPathStore);
+      }
+    } finally {
+      stopBusy("import-token-removing");
+    }
+  };
 </script>
 
 <TestIdWrapper {testId}>
@@ -217,11 +264,21 @@
   </Island>
 
   <WalletMorePopover
+    on:nnsRemove={() => (removeImportedTokenConfirmationVisible = true)}
     bind:visible={morePopupVisible}
     anchor={moreButton}
     {ledgerCanisterId}
     {indexCanisterId}
+    showRemoveButton={isImportedToken}
   />
+
+  {#if removeImportedTokenConfirmationVisible && nonNullish(universe)}
+    <ImportTokenRemoveConfirmation
+      {universe}
+      on:nnsClose={() => (removeImportedTokenConfirmationVisible = false)}
+      on:nnsConfirm={removeImportedToken}
+    />
+  {/if}
 </TestIdWrapper>
 
 <style lang="scss">
