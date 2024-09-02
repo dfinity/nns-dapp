@@ -21,6 +21,7 @@ import {
   mockCkETHMainAccount,
   mockCkETHTESTToken,
 } from "$tests/mocks/cketh-accounts.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
 import { IcrcWalletPo } from "$tests/page-objects/IcrcWallet.page-object";
 import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
@@ -30,7 +31,6 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { principal } from "../../mocks/sns-projects.mock";
 
 const expectedBalanceAfterTransfer = 11_111n;
 
