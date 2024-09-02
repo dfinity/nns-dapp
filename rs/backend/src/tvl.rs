@@ -1,19 +1,24 @@
 use crate::{
     canisters::{exchange_rate_canister, governance},
+    constants::NANOS_PER_UNIT,
     state::STATE,
     time,
 };
 
 pub mod state;
 
-const SEC_NANOS: u64 = 1_000_000_000;
-const XRC_MARGIN_SEC: u64 = 60 * 5;
+const XRC_MARGIN_SECONDS: u64 = 60 * 5;
 
 // TODO(NNS1-3281): Remove #[allow(unused)].
 #[allow(unused)]
 pub async fn update_exchange_rate() {
-    // Take few minutes back to be sure to have data.
-    let timestamp_seconds = time::time() / SEC_NANOS - XRC_MARGIN_SEC;
+    // We query XRC data slightly in the past to be sure to have a price with consensus.
+    //
+    // NOTE: The API suggests we could just not specify a timestamp in order to
+    // get the latest available exchange rate. But this is how it was
+    // implemented in the TVL canister to we stick to this, at least for now.
+    // See https://github.com/dfinity/ic/blob/6760029ea4e9be8170984b023391cb72ff3b6398/rs/rosetta-api/tvl/src/lib.rs#L30
+    let timestamp_seconds = time::time() / NANOS_PER_UNIT - XRC_MARGIN_SECONDS;
 
     let usd = exchange_rate_canister::Asset {
         symbol: "USD".to_string(),
