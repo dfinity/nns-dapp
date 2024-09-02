@@ -14,12 +14,12 @@ fn usd_asset() -> exchange_rate_canister::Asset {
     }
 }
 
-fn get_usd_per_icp_e8s() -> u64 {
-    STATE.with(|s| s.tvl_state.borrow().usd_per_icp_e8s)
+fn get_usd_e8s_per_icp() -> u64 {
+    STATE.with(|s| s.tvl_state.borrow().usd_e8s_per_icp)
 }
 
-fn set_usd_per_icp_e8s(new_value: u64) {
-    STATE.with(|s| s.tvl_state.borrow_mut().usd_per_icp_e8s = new_value);
+fn set_usd_e8s_per_icp(new_value: u64) {
+    STATE.with(|s| s.tvl_state.borrow_mut().usd_e8s_per_icp = new_value);
 }
 
 fn get_exchange_rate_timestamp_seconds() -> u64 {
@@ -59,21 +59,21 @@ async fn update_exchange_rate() {
     // actually has data for the timestamp we request.
     let five_minutes_ago_seconds = now_seconds - 5 * 60;
 
-    let initial_usd_per_icp_e8s = 850_000_000;
-    let later_usd_per_icp_e8s = 920_000_000;
+    let initial_usd_e8s_per_icp = 850_000_000;
+    let later_usd_e8s_per_icp = 920_000_000;
 
     // Step 1: Set up the environment.
     time::testing::set_time(now_seconds * 1_000_000_000);
-    set_usd_per_icp_e8s(initial_usd_per_icp_e8s);
+    set_usd_e8s_per_icp(initial_usd_e8s_per_icp);
     exchange_rate_canister::testing::add_exchange_rate_response_ok(
         icp_asset(),
         usd_asset(),
-        later_usd_per_icp_e8s,
+        later_usd_e8s_per_icp,
         five_minutes_ago_seconds,
     );
 
     // Step 2: Verify the state before calling the code under test.
-    assert_eq!(get_usd_per_icp_e8s(), initial_usd_per_icp_e8s);
+    assert_eq!(get_usd_e8s_per_icp(), initial_usd_e8s_per_icp);
     assert_eq!(exchange_rate_canister::testing::drain_requests().len(), 0);
 
     // Step 3: Call the code under test.
@@ -84,7 +84,7 @@ async fn update_exchange_rate() {
         get_only_xrc_request(),
         get_expected_exchange_rate_request(five_minutes_ago_seconds)
     );
-    assert_eq!(get_usd_per_icp_e8s(), later_usd_per_icp_e8s);
+    assert_eq!(get_usd_e8s_per_icp(), later_usd_e8s_per_icp);
     assert_eq!(get_exchange_rate_timestamp_seconds(), five_minutes_ago_seconds);
 }
 
@@ -95,17 +95,17 @@ async fn update_exchange_rate_with_call_error() {
     // actually has data for the timestamp we request.
     let five_minutes_ago_seconds = now_seconds - 5 * 60;
 
-    let initial_usd_per_icp_e8s = 0;
+    let initial_usd_e8s_per_icp = 0;
     let initial_exchange_rate_timestamp_seconds = 0;
 
     // Step 1: Set up the environment.
     time::testing::set_time(now_seconds * 1_000_000_000);
-    set_usd_per_icp_e8s(initial_usd_per_icp_e8s);
+    set_usd_e8s_per_icp(initial_usd_e8s_per_icp);
     set_exchange_rate_timestamp_seconds(initial_exchange_rate_timestamp_seconds);
     exchange_rate_canister::testing::add_exchange_rate_response(Err("Canister is stopped".to_string()));
 
     // Step 2: Verify the state before calling the code under test.
-    assert_eq!(get_usd_per_icp_e8s(), initial_usd_per_icp_e8s);
+    assert_eq!(get_usd_e8s_per_icp(), initial_usd_e8s_per_icp);
     assert_eq!(
         get_exchange_rate_timestamp_seconds(),
         initial_exchange_rate_timestamp_seconds
@@ -121,7 +121,7 @@ async fn update_exchange_rate_with_call_error() {
         get_expected_exchange_rate_request(five_minutes_ago_seconds)
     );
     // The exchange rate should not have been updated because of the error.
-    assert_eq!(get_usd_per_icp_e8s(), initial_usd_per_icp_e8s);
+    assert_eq!(get_usd_e8s_per_icp(), initial_usd_e8s_per_icp);
     assert_eq!(
         get_exchange_rate_timestamp_seconds(),
         initial_exchange_rate_timestamp_seconds
@@ -135,12 +135,12 @@ async fn update_exchange_rate_with_method_error() {
     // actually has data for the timestamp we request.
     let five_minutes_ago_seconds = now_seconds - 5 * 60;
 
-    let initial_usd_per_icp_e8s = 0;
+    let initial_usd_e8s_per_icp = 0;
     let initial_exchange_rate_timestamp_seconds = 0;
 
     // Step 1: Set up the environment.
     time::testing::set_time(now_seconds * 1_000_000_000);
-    set_usd_per_icp_e8s(initial_usd_per_icp_e8s);
+    set_usd_e8s_per_icp(initial_usd_e8s_per_icp);
     set_exchange_rate_timestamp_seconds(initial_exchange_rate_timestamp_seconds);
     exchange_rate_canister::testing::add_exchange_rate_response(Ok(
         exchange_rate_canister::GetExchangeRateResult::Err(
@@ -149,7 +149,7 @@ async fn update_exchange_rate_with_method_error() {
     ));
 
     // Step 2: Verify the state before calling the code under test.
-    assert_eq!(get_usd_per_icp_e8s(), initial_usd_per_icp_e8s);
+    assert_eq!(get_usd_e8s_per_icp(), initial_usd_e8s_per_icp);
     assert_eq!(
         get_exchange_rate_timestamp_seconds(),
         initial_exchange_rate_timestamp_seconds
@@ -165,7 +165,7 @@ async fn update_exchange_rate_with_method_error() {
         get_expected_exchange_rate_request(five_minutes_ago_seconds)
     );
     // The exchange rate should not have been updated because of the error.
-    assert_eq!(get_usd_per_icp_e8s(), initial_usd_per_icp_e8s);
+    assert_eq!(get_usd_e8s_per_icp(), initial_usd_e8s_per_icp);
     assert_eq!(
         get_exchange_rate_timestamp_seconds(),
         initial_exchange_rate_timestamp_seconds

@@ -42,25 +42,25 @@ pub async fn update_exchange_rate() {
         match xrc_result {
             Ok(exchange_rate_canister::GetExchangeRateResult::Ok(exchange_rate)) => {
                 let exchange_rate_canister::ExchangeRate {
-                    rate: usd_per_icp_e8s,
+                    rate: usd_e8s_per_icp,
                     timestamp,
                     ..
                 } = exchange_rate;
-                s.tvl_state.borrow_mut().usd_per_icp_e8s = usd_per_icp_e8s;
+                s.tvl_state.borrow_mut().usd_e8s_per_icp = usd_e8s_per_icp;
                 s.tvl_state.borrow_mut().exchange_rate_timestamp_seconds = timestamp;
-                ic_cdk::println!("Updated usd_per_icp_e8s for TVL to {}", usd_per_icp_e8s);
+                ic_cdk::println!("Updated usd_e8s_per_icp for TVL to {}", usd_e8s_per_icp);
             }
             Ok(exchange_rate_canister::GetExchangeRateResult::Err(err)) => {
                 ic_cdk::println!(
-                    "Keeping usd_per_icp_e8s for TVL at {} because of response error: {:?}",
-                    s.tvl_state.borrow().usd_per_icp_e8s,
+                    "Keeping usd_e8s_per_icp for TVL at {} because of response error: {:?}",
+                    s.tvl_state.borrow().usd_e8s_per_icp,
                     err
                 );
             }
             Err(err) => {
                 ic_cdk::println!(
-                    "Keeping usd_per_icp_e8s for TVL at {} because of call error: {:?}",
-                    s.tvl_state.borrow().usd_per_icp_e8s,
+                    "Keeping usd_e8s_per_icp for TVL at {} because of call error: {:?}",
+                    s.tvl_state.borrow().usd_e8s_per_icp,
                     err
                 );
             }
