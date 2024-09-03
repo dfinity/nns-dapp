@@ -841,6 +841,7 @@
     "load_imported_tokens": "There was an unexpected issue while loading imported tokens.",
     "add_imported_token": "There was an unexpected issue while adding new imported token.",
     "remove_imported_token": "There was an unexpected issue while removing the imported token.",
+    "update_imported_token": "There was an unexpected issue while updating the imported token.",
     "too_many": "You can't import more than $limit tokens.",
     "ledger_canister_loading": "Unable to load token details using the provided Ledger Canister ID.",
     "is_duplication": "You have already imported this token, you can find it in the token list.",
@@ -1034,6 +1035,7 @@
     "show_all": "Show all",
     "add_imported_token_success": "New token has been successfully imported!",
     "remove_imported_token_success": "The token has been successfully removed!",
+    "update_imported_token_success": "The token has been successfully updated!",
     "ledger_canister": "Ledger Canister",
     "index_canister": "Index Canister"
   },

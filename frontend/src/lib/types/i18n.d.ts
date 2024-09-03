@@ -879,6 +879,7 @@ interface I18nError__imported_tokens {
   load_imported_tokens: string;
   add_imported_token: string;
   remove_imported_token: string;
+  update_imported_token: string;
   too_many: string;
   ledger_canister_loading: string;
   is_duplication: string;
@@ -1092,6 +1093,7 @@ interface I18nTokens {
   show_all: string;
   add_imported_token_success: string;
   remove_imported_token_success: string;
+  update_imported_token_success: string;
   ledger_canister: string;
   index_canister: string;
 }
