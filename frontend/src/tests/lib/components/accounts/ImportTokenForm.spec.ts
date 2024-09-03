@@ -9,6 +9,7 @@ describe("ImportTokenForm", () => {
   const renderComponent = (props: {
     ledgerCanisterId: Principal | undefined;
     indexCanisterId: Principal | undefined;
+    addIndexCanisterMode?: boolean | undefined;
   }) => {
     const { container, component } = render(ImportTokenForm, {
       props,
@@ -49,6 +50,7 @@ describe("ImportTokenForm", () => {
       principal(0).toText()
     );
     expect(await po.getLedgerCanisterInputPo().isRequired()).toEqual(true);
+    expect(await po.getLedgerCanisterInputPo().isDisabled()).toEqual(false);
   });
 
   it("should render index canister id", async () => {
@@ -96,6 +98,7 @@ describe("ImportTokenForm", () => {
     });
 
     expect(await po.getSubmitButtonPo().isDisabled()).toEqual(false);
+    expect(await po.getSubmitButtonPo().getText()).toEqual("Next");
 
     // Enter an invalid canister id
     await po
@@ -157,5 +160,22 @@ describe("ImportTokenForm", () => {
 
     expect(nnsSubmit).toBeCalledTimes(1);
     expect(nnsClose).not.toHaveBeenCalled();
+  });
+
+  it("should display addIndexCanister mode ", async () => {
+    const { po } = renderComponent({
+      ledgerCanisterId: principal(0),
+      indexCanisterId: undefined,
+      addIndexCanisterMode: true,
+    });
+
+    expect(await po.getLedgerCanisterInputPo().isDisabled()).toEqual(true);
+    expect(await po.getIndexCanisterInputPo().isRequired()).toEqual(true);
+    expect((await po.getIndexCanisterInputPo().getText()).trim()).toEqual(
+      "Index Canister ID"
+    );
+    expect(await po.getSubmitButtonPo().getText()).toEqual(
+      "Add index canister"
+    );
   });
 });
