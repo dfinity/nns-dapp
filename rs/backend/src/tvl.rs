@@ -37,7 +37,7 @@ pub async fn update_exchange_rate() {
     //
     // NOTE: The API suggests we could just not specify a timestamp in order to
     // get the latest available exchange rate. But this is how it was
-    // implemented in the TVL canister to we stick to this, at least for now.
+    // implemented in the TVL canister, so we stick to this, at least for now.
     // See https://github.com/dfinity/ic/blob/6760029ea4e9be8170984b023391cb72ff3b6398/rs/rosetta-api/tvl/src/lib.rs#L30
     let timestamp_seconds = time::time() / NANOS_PER_UNIT - XRC_MARGIN_SECONDS;
 
