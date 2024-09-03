@@ -1104,6 +1104,7 @@ interface I18nImport_token {
   verifying: string;
   importing: string;
   removing: string;
+  updating: string;
   description: string;
   ledger_label: string;
   index_label_optional: string;
