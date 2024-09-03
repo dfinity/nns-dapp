@@ -35,7 +35,6 @@ import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { createDeferredPromise } from "$tests/utils/utils.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -528,10 +527,13 @@ describe("IcrcWallet", () => {
     });
 
     it("should remove imported tokens", async () => {
-      const setImportedTokensDeferred = createDeferredPromise<void>();
+      let resolveSetImportedTokens;
       const spyOnSetImportedTokens = vi
         .spyOn(importedTokensApi, "setImportedTokens")
-        .mockReturnValue(setImportedTokensDeferred);
+        .mockImplementation(
+          () =>
+            new Promise<void>((resolve) => (resolveSetImportedTokens = resolve))
+        );
       const spyOnGetImportedTokens = vi
         .spyOn(importedTokensApi, "getImportedTokens")
         .mockResolvedValue({
@@ -579,7 +581,7 @@ describe("IcrcWallet", () => {
         },
       ]);
 
-      setImportedTokensDeferred.resolve();
+      resolveSetImportedTokens();
       await runResolvedPromises();
 
       // The token should be removed.
