@@ -18,6 +18,7 @@ import {
   fromImportedTokenData,
   toImportedTokenData,
 } from "$lib/utils/imported-tokens.utils";
+import type { Principal } from "@dfinity/principal";
 import { isNullish } from "@dfinity/utils";
 import { queryAndUpdate } from "./utils.services";
 
@@ -122,6 +123,46 @@ export const addImportedToken = async ({
       err,
     });
   }
+
+  return { success: false };
+};
+
+/**
+ * Add index canister ID to imported token.
+ * Note: This service function assumes the indexCanisterId is valid and matches the ledgerCanisterId.
+ *  - Displays a success toast if the operation is successful.
+ *  - Displays an error toast if the operation fails.
+ */
+export const addIndexCanister = async ({
+  ledgerCanisterId,
+  indexCanisterId,
+  importedTokens,
+}: {
+  ledgerCanisterId: Principal;
+  indexCanisterId: Principal;
+  importedTokens: ImportedTokenData[];
+}): Promise<{ success: boolean }> => {
+  const tokens = importedTokens.map((token) =>
+    token.ledgerCanisterId.toText() === ledgerCanisterId.toText()
+      ? { ...token, indexCanisterId }
+      : token
+  );
+
+  const { err } = await saveImportedToken({ tokens });
+
+  if (isNullish(err)) {
+    await loadImportedTokens();
+    toastsSuccess({
+      labelKey: "tokens.update_imported_token_success",
+    });
+
+    return { success: true };
+  }
+
+  toastsError({
+    labelKey: "error__imported_tokens.update_imported_token",
+    err,
+  });
 
   return { success: false };
 };
