@@ -37,6 +37,7 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { mockIcrcMainAccount } from "../../mocks/icrc-accounts.mock";
 
 const expectedBalanceAfterTransfer = 11_111n;
 
@@ -498,10 +499,10 @@ describe("IcrcWallet", () => {
       tokensStore.setTokens(mockUniversesTokens);
       icrcAccountsStore.set({
         accounts: {
-          accounts: [mockCkETHMainAccount],
+          accounts: [mockIcrcMainAccount],
           certified: true,
         },
-        ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
+        ledgerCanisterId,
       });
       importedTokensStore.set({
         importedTokens: [
@@ -518,7 +519,7 @@ describe("IcrcWallet", () => {
       });
       icrcAccountsStore.set({
         accounts: {
-          accounts: [mockCkETHMainAccount],
+          accounts: [mockIcrcMainAccount],
           certified: true,
         },
         ledgerCanisterId,
