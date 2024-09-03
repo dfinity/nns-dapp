@@ -9,6 +9,14 @@ pub mod state;
 
 const XRC_MARGIN_SECONDS: u64 = 60 * 5;
 
+/// Converts a number such that it can be interpreted as a fixed-point number
+/// with 8 decimal places.
+///
+/// For example, if `amount` is 123 and `decimals` is 2, the input is
+/// interpreted as 1.23, by moving the decimal point 2 positions to the left.
+/// In the output, we want to represent this with 8 decimals instead of 2, so
+/// from 1.23 we move the decimal point 8 positions to the right to get
+/// `123_000_000`.
 fn convert_to_e8s(amount: u64, decimals: u32) -> u64 {
     // Copied from https://github.com/dfinity/ic/blob/6760029ea4e9be8170984b023391cb72ff3b6398/rs/rosetta-api/tvl/src/lib.rs#L166C1-L174C6
     if decimals >= 8 {
