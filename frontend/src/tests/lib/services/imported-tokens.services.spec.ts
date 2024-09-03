@@ -205,22 +205,22 @@ describe("imported-tokens-services", () => {
     });
 
     it("should display success toast", async () => {
-      const spyToastSuccsess = vi.spyOn(toastsStore, "toastsSuccess");
+      const spyToastSuccess = vi.spyOn(toastsStore, "toastsSuccess");
       vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
         undefined
       );
       vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
         imported_tokens: [importedTokenA, importedTokenB],
       });
-      expect(spyToastSuccsess).not.toBeCalled();
+      expect(spyToastSuccess).not.toBeCalled();
 
       await addImportedToken({
         tokenToAdd: importedTokenDataB,
         importedTokens: [importedTokenDataA],
       });
 
-      expect(spyToastSuccsess).toBeCalledTimes(1);
-      expect(spyToastSuccsess).toBeCalledWith({
+      expect(spyToastSuccess).toBeCalledTimes(1);
+      expect(spyToastSuccess).toBeCalledWith({
         labelKey: "tokens.add_imported_token_success",
       });
     });
@@ -337,22 +337,22 @@ describe("imported-tokens-services", () => {
     });
 
     it("should display success toast", async () => {
-      const spyToastSuccsess = vi.spyOn(toastsStore, "toastsSuccess");
+      const spyToastSuccess = vi.spyOn(toastsStore, "toastsSuccess");
       vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
         undefined
       );
       vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
         imported_tokens: [importedTokenB],
       });
-      expect(spyToastSuccsess).not.toBeCalled();
+      expect(spyToastSuccess).not.toBeCalled();
 
       await removeImportedTokens({
         tokensToRemove: [importedTokenDataA],
         importedTokens: [importedTokenDataA, importedTokenDataB],
       });
 
-      expect(spyToastSuccsess).toBeCalledTimes(1);
-      expect(spyToastSuccsess).toBeCalledWith({
+      expect(spyToastSuccess).toBeCalledTimes(1);
+      expect(spyToastSuccess).toBeCalledWith({
         labelKey: "tokens.remove_imported_token_success",
       });
     });
