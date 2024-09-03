@@ -1,6 +1,6 @@
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
-import * as agent from "$lib/api/agent.api";
 import * as governanceApi from "$lib/api/governance.api";
+import * as proposalsApi from "$lib/api/proposals.api";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { ACTIONABLE_PROPOSALS_PARAM } from "$lib/constants/routes.constants";
 import NnsProposals from "$lib/pages/NnsProposals.svelte";
@@ -18,7 +18,6 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
-import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import {
   mockEmptyProposalsStoreSubscribe,
   mockProposals,
@@ -28,11 +27,9 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NnsProposalListPo } from "$tests/page-objects/NnsProposalList.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { HttpAgent } from "@dfinity/agent";
-import { GovernanceCanister, type ProposalInfo } from "@dfinity/nns";
+import type { ProposalInfo } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
-import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/governance.api");
 
@@ -56,16 +53,9 @@ describe("NnsProposals", () => {
     neuronsStore.reset();
     proposalsFiltersStore.reset();
     actionableProposalsSegmentStore.resetForTesting();
-    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
 
     vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
-
-    // TODO: Mock the canister call instead of the canister itself
-    const mockGovernanceCanister: MockGovernanceCanister =
-      new MockGovernanceCanister([]);
-    vi.spyOn(GovernanceCanister, "create").mockReturnValue(
-      mockGovernanceCanister
-    );
+    vi.spyOn(proposalsApi, "queryProposals").mockResolvedValue([]);
   });
 
   describe("logged in user", () => {
@@ -99,16 +89,9 @@ describe("NnsProposals", () => {
     describe("Matching results", () => {
       beforeEach(() => {
         overrideFeatureFlagsStore.reset();
-        const mockGovernanceCanister: MockGovernanceCanister =
-          new MockGovernanceCanister(mockProposals);
-
         vi.spyOn(proposalsStore, "subscribe").mockImplementation(
           mockProposalsStoreSubscribe
         );
-        vi.spyOn(GovernanceCanister, "create").mockImplementation(
-          (): GovernanceCanister => mockGovernanceCanister
-        );
-
         vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
         actionableProposalsSegmentStore.set("all");
       });
@@ -216,14 +199,7 @@ describe("NnsProposals", () => {
     });
 
     describe("No results", () => {
-      const mockGovernanceCanister: MockGovernanceCanister =
-        new MockGovernanceCanister([]);
-
       beforeEach(() => {
-        vi.spyOn(GovernanceCanister, "create").mockImplementation(
-          (): GovernanceCanister => mockGovernanceCanister
-        );
-
         vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
         actionableProposalsSegmentStore.set("all");
       });
@@ -254,15 +230,6 @@ describe("NnsProposals", () => {
     });
 
     describe("neurons", () => {
-      beforeEach(() => {
-        // TODO: Mock the canister call instead of the canister itself
-        const mockGovernanceCanister: MockGovernanceCanister =
-          new MockGovernanceCanister([]);
-        vi.spyOn(GovernanceCanister, "create").mockReturnValue(
-          mockGovernanceCanister
-        );
-      });
-
       it("should NOT load neurons", async () => {
         await renderComponent();
 
@@ -273,19 +240,10 @@ describe("NnsProposals", () => {
     });
 
     describe("Matching results", () => {
-      const mockGovernanceCanister: MockGovernanceCanister =
-        new MockGovernanceCanister(mockProposals);
-
       const mockLoadProposals = () =>
         vi
           .spyOn(proposalsStore, "subscribe")
           .mockImplementation(mockProposalsStoreSubscribe);
-
-      beforeEach(() => {
-        vi.spyOn(GovernanceCanister, "create").mockImplementation(
-          (): GovernanceCanister => mockGovernanceCanister
-        );
-      });
 
       it("should render proposals", async () => {
         mockLoadProposals();
