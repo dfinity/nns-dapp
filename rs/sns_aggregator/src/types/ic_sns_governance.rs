@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-21_15-36-canister-snapshots/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-29_01-30-base/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -605,6 +605,7 @@ pub enum CanisterStatusType {
 pub struct DefiniteCanisterSettingsArgs {
     pub freezing_threshold: candid::Nat,
     pub controllers: Vec<Principal>,
+    pub wasm_memory_limit: Option<candid::Nat>,
     pub memory_allocation: candid::Nat,
     pub compute_allocation: candid::Nat,
 }
