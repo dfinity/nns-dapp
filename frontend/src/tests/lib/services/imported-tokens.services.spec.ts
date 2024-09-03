@@ -6,6 +6,7 @@ import {
 import type { ImportedToken } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import {
   addImportedToken,
+  addIndexCanister,
   loadImportedTokens,
   removeImportedTokens,
 } from "$lib/services/imported-tokens.services";
@@ -14,6 +15,8 @@ import * as toastsStore from "$lib/stores/toasts.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { toastsStore as toastsStoreEntry } from "@dfinity/gix-components";
+import * as dfinityUtils from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("imported-tokens-services", () => {
@@ -39,7 +42,9 @@ describe("imported-tokens-services", () => {
     vi.clearAllMocks();
     resetIdentity();
     importedTokensStore.reset();
+    toastsStoreEntry.reset();
     vi.spyOn(console, "error").mockReturnValue();
+    vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
   });
 
   describe("loadImportedTokens", () => {
@@ -370,6 +375,109 @@ describe("imported-tokens-services", () => {
         labelKey: "error__imported_tokens.remove_imported_token",
         err: testError,
       });
+    });
+  });
+
+  describe("addIndexCanister", () => {
+    const indexCanisterId = principal(1);
+    const expectedTokenB = {
+      ...importedTokenB,
+      index_canister_id: [indexCanisterId],
+    };
+    const expectedTokenDataB = {
+      ...importedTokenDataB,
+      indexCanisterId,
+    };
+    let spyGetImportedTokens;
+
+    beforeEach(() => {
+      spyGetImportedTokens = vi
+        .spyOn(importedTokensApi, "getImportedTokens")
+        .mockResolvedValue({
+          imported_tokens: [
+            importedTokenA,
+            {
+              ...importedTokenB,
+              index_canister_id: [indexCanisterId],
+            },
+          ],
+        });
+    });
+
+    it("should call setImportedTokens with updated token list", async () => {
+      const spySetImportedTokens = vi
+        .spyOn(importedTokensApi, "setImportedTokens")
+        .mockResolvedValue(undefined);
+
+      expect(importedTokenDataB.indexCanisterId).toBeUndefined();
+      importedTokensStore.set({
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+        certified: true,
+      });
+      expect(spySetImportedTokens).toBeCalledTimes(0);
+      expect(spyGetImportedTokens).toBeCalledTimes(0);
+
+      const { success } = await addIndexCanister({
+        ledgerCanisterId: importedTokenDataB.ledgerCanisterId,
+        indexCanisterId,
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+      });
+      expect(success).toEqual(true);
+      expect(spySetImportedTokens).toBeCalledTimes(1);
+      expect(spySetImportedTokens).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        importedTokens: [importedTokenA, expectedTokenB],
+      });
+      expect(spySetImportedTokens).toBeCalledTimes(1);
+      // should reload imported tokens to update the store
+      expect(spyGetImportedTokens).toBeCalledTimes(2);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: [importedTokenDataA, expectedTokenDataB],
+        certified: true,
+      });
+    });
+
+    it("should display success toast", async () => {
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue(
+        undefined
+      );
+
+      expect(get(toastsStoreEntry)).toMatchObject([]);
+
+      await addIndexCanister({
+        ledgerCanisterId: importedTokenDataB.ledgerCanisterId,
+        indexCanisterId,
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+      });
+
+      expect(get(toastsStoreEntry)).toMatchObject([
+        {
+          level: "success",
+          text: "The token has been successfully updated!",
+        },
+      ]);
+    });
+
+    it("should display toast on error", async () => {
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
+        new Error("test")
+      );
+
+      expect(get(toastsStoreEntry)).toMatchObject([]);
+
+      const { success } = await addIndexCanister({
+        ledgerCanisterId: importedTokenDataB.ledgerCanisterId,
+        indexCanisterId,
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+      });
+
+      expect(success).toEqual(false);
+      expect(get(toastsStoreEntry)).toMatchObject([
+        {
+          level: "error",
+          text: "There was an unexpected issue while updating the imported token. test",
+        },
+      ]);
     });
   });
 });
