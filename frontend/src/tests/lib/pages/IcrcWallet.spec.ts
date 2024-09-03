@@ -535,7 +535,12 @@ describe("IcrcWallet", () => {
       const spyOnGetImportedTokens = vi
         .spyOn(importedTokensApi, "getImportedTokens")
         .mockResolvedValue({
-          imported_tokens: [],
+          imported_tokens: [
+            {
+              ledger_canister_id: ledgerCanisterId2,
+              index_canister_id: [],
+            },
+          ],
         });
 
       const po = await renderWallet({});
@@ -557,6 +562,16 @@ describe("IcrcWallet", () => {
       expect(await confirmationPo.isPresent()).toBe(true);
       await confirmationPo.clickYes();
 
+      expect(get(importedTokensStore).importedTokens).toEqual([
+        {
+          ledgerCanisterId,
+          indexCanisterId: undefined,
+        },
+        {
+          ledgerCanisterId: ledgerCanisterId2,
+          indexCanisterId: undefined,
+        },
+      ]);
       expect(get(busyStore)).toEqual([
         {
           initiator: "import-token-removing",
@@ -582,6 +597,12 @@ describe("IcrcWallet", () => {
 
       expect(get(busyStore)).toEqual([]);
       expect(get(pageStore).path).toEqual(AppPath.Tokens);
+      expect(get(importedTokensStore).importedTokens).toEqual([
+        {
+          ledgerCanisterId: ledgerCanisterId2,
+          indexCanisterId: undefined,
+        },
+      ]);
     });
 
     it("should stay on the same page when removal is unsuccessful", async () => {
