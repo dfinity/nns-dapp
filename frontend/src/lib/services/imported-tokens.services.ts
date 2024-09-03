@@ -129,6 +129,7 @@ export const addImportedToken = async ({
 
 /**
  * Add index canister ID to imported token.
+ * Note: This service function assumes the indexCanisterId is valid and matches the ledgerCanisterId.
  *  - Displays a success toast if the operation is successful.
  *  - Displays an error toast if the operation fails.
  */
