@@ -65,11 +65,11 @@ describe("imported-tokens-services", () => {
       await loadImportedTokens();
 
       expect(spyGetImportedTokens).toBeCalledTimes(2);
-      expect(spyGetImportedTokens).toHaveBeenCalledWith({
+      expect(spyGetImportedTokens).toBeCalledWith({
         certified: false,
         identity: mockIdentity,
       });
-      expect(spyGetImportedTokens).toHaveBeenCalledWith({
+      expect(spyGetImportedTokens).toBeCalledWith({
         certified: true,
         identity: mockIdentity,
       });
@@ -167,7 +167,7 @@ describe("imported-tokens-services", () => {
 
       expect(success).toEqual(true);
       expect(spySetImportedTokens).toBeCalledTimes(1);
-      expect(spySetImportedTokens).toHaveBeenCalledWith({
+      expect(spySetImportedTokens).toBeCalledWith({
         identity: mockIdentity,
         importedTokens: [importedTokenA, importedTokenB],
       });
@@ -280,7 +280,7 @@ describe("imported-tokens-services", () => {
 
       expect(success).toEqual(true);
       expect(spySetImportedTokens).toBeCalledTimes(1);
-      expect(spySetImportedTokens).toHaveBeenCalledWith({
+      expect(spySetImportedTokens).toBeCalledWith({
         identity: mockIdentity,
         importedTokens: [importedTokenB],
       });
@@ -299,7 +299,7 @@ describe("imported-tokens-services", () => {
 
       expect(success).toEqual(true);
       expect(spySetImportedTokens).toBeCalledTimes(1);
-      expect(spySetImportedTokens).toHaveBeenCalledWith({
+      expect(spySetImportedTokens).toBeCalledWith({
         identity: mockIdentity,
         importedTokens: [],
       });
@@ -380,14 +380,6 @@ describe("imported-tokens-services", () => {
 
   describe("addIndexCanister", () => {
     const indexCanisterId = principal(1);
-    const expectedTokenB = {
-      ...importedTokenB,
-      index_canister_id: [indexCanisterId],
-    };
-    const expectedTokenDataB = {
-      ...importedTokenDataB,
-      indexCanisterId,
-    };
     let spyGetImportedTokens;
 
     beforeEach(() => {
@@ -405,6 +397,14 @@ describe("imported-tokens-services", () => {
     });
 
     it("should call setImportedTokens with updated token list", async () => {
+      const expectedTokenB = {
+        ...importedTokenB,
+        index_canister_id: [indexCanisterId],
+      };
+      const expectedTokenDataB = {
+        ...importedTokenDataB,
+        indexCanisterId,
+      };
       const spySetImportedTokens = vi
         .spyOn(importedTokensApi, "setImportedTokens")
         .mockResolvedValue(undefined);
@@ -424,7 +424,7 @@ describe("imported-tokens-services", () => {
       });
       expect(success).toEqual(true);
       expect(spySetImportedTokens).toBeCalledTimes(1);
-      expect(spySetImportedTokens).toHaveBeenCalledWith({
+      expect(spySetImportedTokens).toBeCalledWith({
         identity: mockIdentity,
         importedTokens: [importedTokenA, expectedTokenB],
       });
