@@ -1117,6 +1117,8 @@ interface I18nImport_token {
   index_fallback_label: string;
   import_button: string;
   link_to_dashboard: string;
+  add_index_canister: string;
+  add_index_description: string;
 }
 
 interface I18nNeuron_state {
