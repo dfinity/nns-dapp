@@ -47,7 +47,8 @@ export type BusyStateInitiatorType =
   | "update-ckbtc-balance"
   | "reload-receive-account"
   | "import-token-validation"
-  | "import-token-importing";
+  | "import-token-importing"
+  | "import-token-removing";
 
 export interface BusyState {
   initiator: BusyStateInitiatorType;

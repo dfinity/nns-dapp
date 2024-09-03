@@ -1,5 +1,6 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { IcrcWalletFooterPo } from "$tests/page-objects/IcrcWalletFooter.page-object";
+import { ImportTokenRemoveConfirmationPo } from "$tests/page-objects/ImportTokenRemoveConfirmation.page-object";
 import { SignInPo } from "$tests/page-objects/SignIn.page-object";
 import { WalletMorePopoverPo } from "$tests/page-objects/WalletMorePopover.page-object";
 import { WalletPageHeaderPo } from "$tests/page-objects/WalletPageHeader.page-object";
@@ -36,6 +37,10 @@ export class IcrcWalletPo extends BasePageObject {
 
   getWalletMorePopoverPo(): WalletMorePopoverPo {
     return WalletMorePopoverPo.under(this.root);
+  }
+
+  getImportTokenRemoveConfirmationPo(): ImportTokenRemoveConfirmationPo {
+    return ImportTokenRemoveConfirmationPo.under(this.root);
   }
 
   hasSignInButton(): Promise<boolean> {
