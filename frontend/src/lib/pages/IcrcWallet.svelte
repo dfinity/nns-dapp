@@ -63,15 +63,7 @@
     {reloadTransactions}
   >
     <svelte:fragment slot="page-content">
-      {#if nonNullish($selectedAccountStore.account) && nonNullish($selectedIcrcTokenUniverseIdStore) && nonNullish(indexCanisterId)}
-        <IcrcWalletTransactionsList
-          account={$selectedAccountStore.account}
-          {indexCanisterId}
-          ledgerCanisterId={$selectedIcrcTokenUniverseIdStore}
-          {token}
-          bind:this={transactions}
-        />
-      {:else if isImportedToken}
+      {#if isImportedToken && nonNullish(indexCanisterId)}
         <div class="no-index-canister">
           <div class="icon">
             <IconCanistersPage />
@@ -87,6 +79,14 @@
             <IconPlus />{$i18n.import_token.add_index_canister}
           </button>
         </div>
+      {:else if nonNullish($selectedAccountStore.account) && nonNullish($selectedIcrcTokenUniverseIdStore) && nonNullish(indexCanisterId)}
+        <IcrcWalletTransactionsList
+          account={$selectedAccountStore.account}
+          {indexCanisterId}
+          ledgerCanisterId={$selectedIcrcTokenUniverseIdStore}
+          {token}
+          bind:this={transactions}
+        />
       {:else}
         <NoTransactions />
       {/if}
