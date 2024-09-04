@@ -78,7 +78,9 @@
             <IconPlus />{$i18n.import_token.add_index_canister}
           </button>
         </div>
-      {:else if nonNullish($selectedAccountStore.account) && nonNullish($selectedIcrcTokenUniverseIdStore) && nonNullish(indexCanisterId)}
+      {:else if isNullish($selectedAccountStore.account) || isNullish($selectedIcrcTokenUniverseIdStore) || isNullish(indexCanisterId)}
+        <NoTransactions />
+      {:else}
         <IcrcWalletTransactionsList
           account={$selectedAccountStore.account}
           {indexCanisterId}
@@ -86,8 +88,6 @@
           {token}
           bind:this={transactions}
         />
-      {:else}
-        <NoTransactions />
       {/if}
     </svelte:fragment>
 
