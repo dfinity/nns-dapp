@@ -11,12 +11,12 @@ use std::time::Duration;
 pub mod state;
 
 const XRC_MARGIN_SECONDS: u64 = 60 * 5;
-const UPDATE_INTERVAL_SECONDSS: u64 = 6 * 60 * 60; // 4 times a day
+const UPDATE_INTERVAL_SECONDS: u64 = 6 * 60 * 60; // 4 times a day
 
 // TODO(NNS1-3281): Remove #[allow(unused)].
 #[allow(unused)]
 pub fn init_exchange_rate_timers() {
-    set_timer_interval(Duration::from_secs(UPDATE_INTERVAL_SECONDSS), || {
+    set_timer_interval(Duration::from_secs(UPDATE_INTERVAL_SECONDS), || {
         spawn::spawn(update_exchange_rate());
     });
     set_timer(Duration::from_secs(1), || {
