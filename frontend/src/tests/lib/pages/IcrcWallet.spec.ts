@@ -818,6 +818,7 @@ describe("IcrcWallet", () => {
       });
 
       it("should handle errors", async () => {
+        vi.spyOn(console, "error").mockReturnValue();
         // mock an error when updating imported tokens
         spyOnSetImportedTokens = vi
           .spyOn(importedTokensApi, "setImportedTokens")
