@@ -26,6 +26,19 @@ pub fn init_exchange_rate_timers() {
     });
 }
 
+// TODO(NNS1-3281): Remove #[allow(unused)].
+#[allow(unused)]
+fn init_locked_icp_timers() {
+    set_timer_interval(Duration::from_secs(UPDATE_INTERVAL_SECONDS), || {
+        spawn::spawn(update_locked_icp_e8s());
+    });
+    // `set_timer_interval` does not run the callback immediately so we also
+    // call it after 1 second to have an exchange rate available soon.
+    set_timer(Duration::from_secs(1), || {
+        spawn::spawn(update_locked_icp_e8s());
+    });
+}
+
 /// Converts a number such that it can be interpreted as a fixed-point number
 /// with 8 decimal places.
 ///

@@ -398,7 +398,7 @@ async fn init_exchange_rate_timers() {
         later_exchange_rate_timestamp_seconds,
     );
 
-    // Step 2: Verify the state before calling the 1-time timers.
+    // Step 2: Verify the state before calling the interval timers.
     assert_eq!(exchange_rate_canister::testing::drain_requests().len(), 0);
 
     // Step 3: Call the interval timer.
@@ -429,4 +429,84 @@ async fn init_exchange_rate_timers() {
         get_exchange_rate_timestamp_seconds(),
         later_exchange_rate_timestamp_seconds
     );
+}
+
+#[tokio::test]
+async fn init_locked_icp_timers() {
+    let initial_locked_icp_e8s = 1_500_000_000;
+    let later_locked_icp_e8s = 2_300_000_000;
+
+    let expected_timer_delay_seconds = 1;
+    let expected_timer_interval_seconds = 6 * 60 * 60;
+
+    // There are 3 phases each with a number of steps:
+    // Phase 1: Calling the code under test to set timers.
+    // Phase 2: Calling the 1-time timer.
+    // Phase 3: Calling the interval timer.
+
+    // Phase 1: Calling the code under test to set timers.
+
+    // Step 1: Verify no timers exist before calling the code under test.
+    assert_eq!(timer::testing::drain_timers().len(), 0);
+    assert_eq!(timer::testing::drain_timer_intervals().len(), 0);
+
+    // Step 2: Call the code under test.
+    // This should set both a 1-time timer and an interval timer.
+    tvl::init_locked_icp_timers();
+
+    // Phase 2: Calling the 1-time timer.
+
+    // Step 1: Set up the environment.
+    governance::testing::add_metrics_response_with_total_locked_e8s(initial_locked_icp_e8s);
+    set_total_locked_icp_e8s(0);
+
+    // Step 2: Verify the state before calling the 1-time timers.
+    assert_eq!(get_total_locked_icp_e8s(), 0);
+
+    // Step 3: Call the 1-time timer.
+    {
+        let mut timers = timer::testing::drain_timers();
+        assert_eq!(timers.len(), 1);
+        let timer = timers.pop().unwrap();
+        assert_eq!(
+            timer.delay,
+            std::time::Duration::from_secs(expected_timer_delay_seconds)
+        );
+        // The timer calls spawn::spawn, which, during the test, adds the future
+        // to a queue.
+        (timer.func)();
+        // Make sure the spawned future is run.
+        let mut spawned_futures = spawn::testing::drain_spawned_futures();
+        assert_eq!(spawned_futures.len(), 1);
+        spawned_futures.pop().unwrap().await;
+    }
+
+    // Step 4: Verify the state after calling the 1-time timer.
+    assert_eq!(get_total_locked_icp_e8s(), initial_locked_icp_e8s);
+
+    // Phase 3: Calling the interval timer.
+
+    // Step 1: Set up the environment.
+    governance::testing::add_metrics_response_with_total_locked_e8s(later_locked_icp_e8s);
+
+    // Step 2: Call the interval timer.
+    {
+        let mut timers = timer::testing::drain_timer_intervals();
+        assert_eq!(timers.len(), 1);
+        let mut timer = timers.pop().unwrap();
+        assert_eq!(
+            timer.interval,
+            std::time::Duration::from_secs(expected_timer_interval_seconds)
+        );
+        // The timer calls spawn::spawn, which, during the test, adds the future
+        // to a queue.
+        (timer.func)();
+        // Make sure the spawned future is run.
+        let mut spawned_futures = spawn::testing::drain_spawned_futures();
+        assert_eq!(spawned_futures.len(), 1);
+        spawned_futures.pop().unwrap().await;
+    }
+
+    // Step 3: Verify the state after calling interval timer.
+    assert_eq!(get_total_locked_icp_e8s(), later_locked_icp_e8s);
 }
