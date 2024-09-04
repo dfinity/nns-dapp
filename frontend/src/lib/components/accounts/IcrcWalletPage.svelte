@@ -35,7 +35,7 @@
   import type { Universe } from "$lib/types/universe";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 
-  export let testId: string;
+  export let testId: string = "icrc-wallet-page";
   export let accountIdentifier: string | undefined | null = undefined;
   export let ledgerCanisterId: Principal | undefined;
   export let indexCanisterId: Principal | undefined;

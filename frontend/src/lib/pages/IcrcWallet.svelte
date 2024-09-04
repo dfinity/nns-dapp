@@ -53,7 +53,6 @@
 
 <TestIdWrapper testId="icrc-wallet-component">
   <IcrcWalletPage
-    testId="icrc-wallet-page"
     {accountIdentifier}
     {token}
     ledgerCanisterId={$selectedIcrcTokenUniverseIdStore}
