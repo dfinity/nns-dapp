@@ -4034,7 +4034,6 @@ dependencies = [
  "dfn_core",
  "dfn_protobuf",
  "flate2",
- "futures",
  "hex",
  "ic-base-types",
  "ic-cdk 0.16.0",
