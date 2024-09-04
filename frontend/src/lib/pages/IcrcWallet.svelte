@@ -76,7 +76,9 @@
           <div class="icon">
             <IconCanistersPage />
           </div>
-          <p><Html text={$i18n.import_token.add_index_description} /></p>
+          <p class="description">
+            <Html text={$i18n.import_token.add_index_description} />
+          </p>
           <button
             data-tid="add-index-canister-button"
             class="ghost with-icon add-index-canister-button"
