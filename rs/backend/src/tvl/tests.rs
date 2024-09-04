@@ -314,8 +314,8 @@ async fn update_locked_icp_e8s_with_method_error() {
     assert_eq!(get_total_locked_icp_e8s(), initial_locked_icp_e8s);
 }
 
-#[test]
-fn init_exchange_rate_timers() {
+#[tokio::test]
+async fn init_exchange_rate_timers() {
     tvl::time::testing::set_time(NOW_SECONDS * 1_000_000_000);
 
     let initial_usd_e8s_per_icp = 850_000_000;
@@ -366,9 +366,14 @@ fn init_exchange_rate_timers() {
             timer.delay,
             std::time::Duration::from_secs(expected_timer_delay_seconds)
         );
+        // The timer calls spawn::spawn, which, during the test, adds the future
+        // to a queue.
         (timer.func)();
+        // Make sure the spawned future is run.
+        let mut spawned_futures = spawn::testing::drain_spawned_futures();
+        assert_eq!(spawned_futures.len(), 1);
+        spawned_futures.pop().unwrap().await;
     }
-    spawn::testing::block_on_all();
 
     // Step 4: Verify the state after calling the 1-time timer.
     assert_eq!(exchange_rate_canister::testing::drain_requests().len(), 1);
@@ -402,9 +407,14 @@ fn init_exchange_rate_timers() {
             timer.interval,
             std::time::Duration::from_secs(expected_timer_interval_seconds)
         );
+        // The timer calls spawn::spawn, which, during the test, adds the future
+        // to a queue.
         (timer.func)();
+        // Make sure the spawned future is run.
+        let mut spawned_futures = spawn::testing::drain_spawned_futures();
+        assert_eq!(spawned_futures.len(), 1);
+        spawned_futures.pop().unwrap().await;
     }
-    spawn::testing::block_on_all();
 
     // Step 4: Verify the state after calling interval timer.
     assert_eq!(exchange_rate_canister::testing::drain_requests().len(), 1);

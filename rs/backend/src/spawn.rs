@@ -24,13 +24,7 @@ pub mod testing {
         });
     }
 
-    pub fn block_on_all() {
-        SPAWNED_FUTURES.with(|spawned_futures| {
-            for mut future in spawned_futures.borrow_mut().drain(..) {
-                tokio::runtime::Runtime::new()
-                    .unwrap()
-                    .block_on(Pin::as_mut(&mut future));
-            }
-        });
+    pub fn drain_spawned_futures() -> Vec<Pin<Box<dyn Future<Output = ()> + 'static>>> {
+        SPAWNED_FUTURES.with(|spawned_futures| spawned_futures.borrow_mut().drain(..).collect())
     }
 }
