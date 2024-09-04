@@ -115,6 +115,7 @@ describe("IcrcWallet", () => {
     balancesObserverCallback = undefined;
     vi.clearAllMocks();
     vi.clearAllTimers();
+    vi.restoreAllMocks();
     tokensStore.reset();
     overrideFeatureFlagsStore.reset();
     toastsStore.reset();
