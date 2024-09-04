@@ -777,7 +777,9 @@ describe("IcrcWallet", () => {
 
       it("should validate index canister before addition", async () => {
         // Mock the index canister to belong to a different ledger canister.
-        vi.spyOn(icrcIndexApi, "getLedgerId").mockResolvedValue(principal(13));
+        const spyOnGetLedgerId = vi
+          .spyOn(icrcIndexApi, "getLedgerId")
+          .mockResolvedValue(principal(13));
 
         const po = await renderWallet({});
         const addIndexCanisterModalPo = po.getAddIndexCanisterModalPo();
@@ -798,7 +800,49 @@ describe("IcrcWallet", () => {
           },
         ]);
         expect(get(busyStore)).toEqual([]);
+        expect(spyOnGetLedgerId).toBeCalledTimes(1);
+        expect(spyOnGetLedgerId).toBeCalledWith({
+          certified: false,
+          identity: mockIdentity,
+          indexCanisterId,
+        });
         expect(spyOnSetImportedTokens).toBeCalledTimes(0);
+        expect(spyOnGetImportedTokens).toBeCalledTimes(0);
+        expect(get(importedTokensStore).importedTokens).toEqual([
+          {
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ]);
+        expect(await po.getAddIndexCanisterButtonPo().isPresent()).toBe(true);
+      });
+
+      it("should handle errors", async () => {
+        // mock an error when updating imported tokens
+        spyOnSetImportedTokens = vi
+          .spyOn(importedTokensApi, "setImportedTokens")
+          .mockRejectedValue(new Error("test"));
+
+        const po = await renderWallet({});
+        const addIndexCanisterModalPo = po.getAddIndexCanisterModalPo();
+
+        expect(await po.getAddIndexCanisterButtonPo().isPresent()).toBe(true);
+
+        await po.getAddIndexCanisterButtonPo().click();
+        await addIndexCanisterModalPo.typeIndexCanisterId(
+          indexCanisterId.toText()
+        );
+        await addIndexCanisterModalPo.clickAddIndexCanisterButton();
+        await runResolvedPromises();
+
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: "There was an unexpected issue while updating the imported token. test",
+          },
+        ]);
+        expect(get(busyStore)).toEqual([]);
+        expect(spyOnSetImportedTokens).toBeCalledTimes(1);
         expect(spyOnGetImportedTokens).toBeCalledTimes(0);
         expect(get(importedTokensStore).importedTokens).toEqual([
           {
