@@ -1,13 +1,30 @@
 use crate::{
     canisters::{exchange_rate_canister, governance},
     constants::NANOS_PER_UNIT,
+    spawn,
     state::STATE,
     time,
+    timer::{set_timer, set_timer_interval},
 };
+use std::time::Duration;
 
 pub mod state;
 
 const XRC_MARGIN_SECONDS: u64 = 60 * 5;
+const UPDATE_INTERVAL_SECONDS: u64 = 6 * 60 * 60; // 4 times a day
+
+// TODO(NNS1-3281): Remove #[allow(unused)].
+#[allow(unused)]
+pub fn init_exchange_rate_timers() {
+    set_timer_interval(Duration::from_secs(UPDATE_INTERVAL_SECONDS), || {
+        spawn::spawn(update_exchange_rate());
+    });
+    // `set_timer_interval` does not run the callback immediately so we also
+    // call it after 1 second to have an exchange rate available soon.
+    set_timer(Duration::from_secs(1), || {
+        spawn::spawn(update_exchange_rate());
+    });
+}
 
 /// Converts a number such that it can be interpreted as a fixed-point number
 /// with 8 decimal places.

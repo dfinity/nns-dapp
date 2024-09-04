@@ -8,7 +8,6 @@ edition = "2021"
 base64 = "0.22.1"
 candid = "0.10.10"
 flate2 = "1.0.30"
-futures = "0.3.30"
 hex = "0.4.3"
 itertools = "0.13.0"
 lazy_static = "1.5.0"
@@ -29,6 +28,7 @@ dfn_protobuf = { workspace = true }
 ic-base-types = { workspace = true }
 ic-cdk = { workspace = true }
 ic-cdk-macros = { workspace = true }
+ic-cdk-timers = { workspace = true }
 ic-certified-map = "0.3.4" # == https://github.com/dfinity/cdk-rs 6a15aa1616bcfdfdc4c120d17d37a089f5700c36
 ic-crypto-sha2 = { workspace = true }
 ic-ledger-core = { workspace = true }
@@ -51,6 +51,7 @@ pocket-ic = "4.0.0"
 pretty_assertions = "1.4.0"
 proptest = "1.5.0"
 rand = "0.8.5"
+slotmap = "1"
 tokio = "1.39.3"
 
 [features]
