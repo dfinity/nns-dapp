@@ -489,7 +489,10 @@ async fn init_locked_icp_timers() {
     // Step 1: Set up the environment.
     governance::testing::add_metrics_response_with_total_locked_e8s(later_locked_icp_e8s);
 
-    // Step 2: Call the interval timer.
+    // Step 2: Verify the state before calling the interval timers.
+    assert_eq!(get_total_locked_icp_e8s(), initial_locked_icp_e8s);
+
+    // Step 3: Call the interval timer.
     {
         let mut timers = timer::testing::drain_timer_intervals();
         assert_eq!(timers.len(), 1);
@@ -507,6 +510,6 @@ async fn init_locked_icp_timers() {
         spawned_futures.pop().unwrap().await;
     }
 
-    // Step 3: Verify the state after calling interval timer.
+    // Step 4: Verify the state after calling interval timer.
     assert_eq!(get_total_locked_icp_e8s(), later_locked_icp_e8s);
 }
