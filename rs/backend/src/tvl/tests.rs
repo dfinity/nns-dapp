@@ -1,6 +1,5 @@
 use crate::timer;
 use crate::tvl::{self, exchange_rate_canister, governance, spawn, time, STATE};
-use candid::Nat;
 use lazy_static::lazy_static;
 
 const NOW_SECONDS: u64 = 1_234_567_890;
