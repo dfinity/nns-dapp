@@ -32,8 +32,7 @@
     "receive": "Receive",
     "send_with_token": "Send $token",
     "collapse_all": "Collapse All",
-    "or": "or",
-    "learn_more": "Learn more"
+    "or": "or"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -245,8 +244,6 @@
   "neurons": {
     "title": "Neurons",
     "text": "Earn voting rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by submitting and voting on Network Nervous System (NNS) proposals.",
-    "split_topic_message": "The System Canister Management topic is being split into 3 topics. Review your neuron following to confirm it is set up according to your preferences.",
-    "split_topic_learn_more_label": "Learn more about the changes made to proposal topics.",
     "stake_token": "Stake $token",
     "merge_neurons": "Merge Neurons",
     "merge_neurons_modal_title": "Select two neurons to merge",
