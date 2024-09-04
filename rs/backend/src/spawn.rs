@@ -4,9 +4,9 @@ pub use ic_cdk::spawn;
 #[cfg(test)]
 pub use testing::spawn;
 
-/// In unit tests we can't use ic_cdk::spawn. Instead, we add the future to a
+/// In unit tests we can't use `ic_cdk::spawn`. Instead, we add the future to a
 /// queue without running it. If the test wants to run the futures, it can call
-/// block_on_all, or manually block on individual futures.
+/// `testing::block_on_all`, or manually block on individual futures.
 #[cfg(test)]
 pub mod testing {
     use std::cell::RefCell;
