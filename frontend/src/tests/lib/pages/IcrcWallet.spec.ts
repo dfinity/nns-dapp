@@ -774,6 +774,40 @@ describe("IcrcWallet", () => {
         // The add index canister button should not be displayed anymore.
         expect(await po.getAddIndexCanisterButtonPo().isPresent()).toBe(false);
       });
+
+      it("should validate index canister before addition", async () => {
+        // Mock the index canister to belong to a different ledger canister.
+        vi.spyOn(icrcIndexApi, "getLedgerId").mockResolvedValue(principal(13));
+
+        const po = await renderWallet({});
+        const addIndexCanisterModalPo = po.getAddIndexCanisterModalPo();
+
+        expect(await po.getAddIndexCanisterButtonPo().isPresent()).toBe(true);
+
+        await po.getAddIndexCanisterButtonPo().click();
+        await addIndexCanisterModalPo.typeIndexCanisterId(
+          indexCanisterId.toText()
+        );
+        await addIndexCanisterModalPo.clickAddIndexCanisterButton();
+        await runResolvedPromises();
+
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: "The provided index canister ID does not match the associated ledger canister ID.",
+          },
+        ]);
+        expect(get(busyStore)).toEqual([]);
+        expect(spyOnSetImportedTokens).toBeCalledTimes(0);
+        expect(spyOnGetImportedTokens).toBeCalledTimes(0);
+        expect(get(importedTokensStore).importedTokens).toEqual([
+          {
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ]);
+        expect(await po.getAddIndexCanisterButtonPo().isPresent()).toBe(true);
+      });
     });
   });
 });
