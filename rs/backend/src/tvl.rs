@@ -19,6 +19,8 @@ pub fn init_exchange_rate_timers() {
     set_timer_interval(Duration::from_secs(UPDATE_INTERVAL_SECONDS), || {
         spawn::spawn(update_exchange_rate());
     });
+    // `set_timer_interval` does not run the callback immediately so we also
+    // call it after 1 second to have an exchange rate available soon.
     set_timer(Duration::from_secs(1), || {
         spawn::spawn(update_exchange_rate());
     });
