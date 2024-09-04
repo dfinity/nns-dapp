@@ -15,7 +15,7 @@ const UPDATE_INTERVAL_SECONDS: u64 = 6 * 60 * 60; // 4 times a day
 
 // TODO(NNS1-3281): Remove #[allow(unused)].
 #[allow(unused)]
-pub fn init_exchange_rate_timers() {
+pub fn start_updating_exchange_rate_in_background() {
     set_timer_interval(Duration::from_secs(UPDATE_INTERVAL_SECONDS), || {
         spawn::spawn(update_exchange_rate());
     });
@@ -28,7 +28,7 @@ pub fn init_exchange_rate_timers() {
 
 // TODO(NNS1-3281): Remove #[allow(unused)].
 #[allow(unused)]
-fn init_locked_icp_timers() {
+fn start_updating_locked_icp_in_the_background() {
     set_timer_interval(Duration::from_secs(UPDATE_INTERVAL_SECONDS), || {
         spawn::spawn(update_locked_icp_e8s());
     });

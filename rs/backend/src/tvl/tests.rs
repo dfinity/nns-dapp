@@ -315,7 +315,7 @@ async fn update_locked_icp_e8s_with_method_error() {
 }
 
 #[tokio::test]
-async fn init_exchange_rate_timers() {
+async fn start_updating_exchange_rate_in_background() {
     tvl::time::testing::set_time(NOW_SECONDS * 1_000_000_000);
 
     let initial_usd_e8s_per_icp = 850_000_000;
@@ -341,7 +341,7 @@ async fn init_exchange_rate_timers() {
 
     // Step 2: Call the code under test.
     // This should set both a 1-time timer and an interval timer.
-    tvl::init_exchange_rate_timers();
+    tvl::start_updating_exchange_rate_in_background();
 
     // Phase 2: Calling the 1-time timer.
 
@@ -432,7 +432,7 @@ async fn init_exchange_rate_timers() {
 }
 
 #[tokio::test]
-async fn init_locked_icp_timers() {
+async fn start_updating_locked_icp_in_the_background() {
     let initial_locked_icp_e8s = 1_500_000_000;
     let later_locked_icp_e8s = 2_300_000_000;
 
@@ -452,7 +452,7 @@ async fn init_locked_icp_timers() {
 
     // Step 2: Call the code under test.
     // This should set both a 1-time timer and an interval timer.
-    tvl::init_locked_icp_timers();
+    tvl::start_updating_locked_icp_in_the_background();
 
     // Phase 2: Calling the 1-time timer.
 
