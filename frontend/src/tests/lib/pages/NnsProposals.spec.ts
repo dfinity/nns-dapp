@@ -1,10 +1,7 @@
-import {isNullish} from "@dfinity/utils";
-import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
-import { mockIntersectionObserverIsIntersecting, IntersectionObserverActive } from "$tests/mocks/infinitescroll.mock";
-import { advanceTime } from "$tests/utils/timers.test-utils";
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
+import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { ACTIONABLE_PROPOSALS_PARAM } from "$lib/constants/routes.constants";
 import NnsProposals from "$lib/pages/NnsProposals.svelte";
@@ -17,18 +14,18 @@ import {
   proposalsFiltersStore,
   proposalsStore,
 } from "$lib/stores/proposals.store";
-import {
-  mockIdentity,
-  resetIdentity,
-} from "$tests/mocks/auth.store.mock";
-import {
-  mockProposals,
-} from "$tests/mocks/proposals.store.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { IntersectionObserverActive } from "$tests/mocks/infinitescroll.mock";
+import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { NnsProposalListPo } from "$tests/page-objects/NnsProposalList.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "$tests/utils/timers.test-utils";
 import type { ProposalInfo } from "@dfinity/nns";
+import { isNullish } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 
@@ -133,9 +130,12 @@ describe("NnsProposals", () => {
 
         // The first page must have DEFAULT_LIST_PAGINATION_LIMIT proposals
         // otherwise the service thinks we've already loaded all proposals.
-        const firstPageProposals = Promise.resolve<ProposalInfo[]>(Array.from({length:
-        DEFAULT_LIST_PAGINATION_LIMIT}, (_, i) => ({ ...mockProposals[0], id:
-        BigInt(i), })));
+        const firstPageProposals = Promise.resolve<ProposalInfo[]>(
+          Array.from({ length: DEFAULT_LIST_PAGINATION_LIMIT }, (_, i) => ({
+            ...mockProposals[0],
+            id: BigInt(i),
+          }))
+        );
 
         // The second page doesn't resolve immediately so we can see the spinner
         // while it's loading.
@@ -145,9 +145,13 @@ describe("NnsProposals", () => {
         });
 
         // Return the first or second page depending on the beforeProposal parameter.
-        vi.spyOn(proposalsApi, "queryProposals").mockImplementation(({beforeProposal}) => {
-          return isNullish(beforeProposal) ? firstPageProposals : secondPageProposals;
-        });
+        vi.spyOn(proposalsApi, "queryProposals").mockImplementation(
+          ({ beforeProposal }) => {
+            return isNullish(beforeProposal)
+              ? firstPageProposals
+              : secondPageProposals;
+          }
+        );
 
         const po = await renderComponent();
 
@@ -282,7 +286,6 @@ describe("NnsProposals", () => {
 
     describe("Matching results", () => {
       it("should render proposals", async () => {
-
         const po = await renderComponent();
         const cardPos = await po.getProposalCardPos();
         const firstProposal = mockProposals[0] as ProposalInfo;
