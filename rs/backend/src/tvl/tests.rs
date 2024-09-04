@@ -376,6 +376,9 @@ async fn init_exchange_rate_timers() {
     }
 
     // Step 4: Verify the state after calling the 1-time timer.
+    // The request is made because the timer callback calls `update_exchange_rate`.
+    // We don't inspect the request here because `update_exchange_rate` is
+    // tested separately.
     assert_eq!(exchange_rate_canister::testing::drain_requests().len(), 1);
     assert_eq!(get_usd_e8s_per_icp(), initial_usd_e8s_per_icp);
     assert_eq!(
@@ -417,6 +420,9 @@ async fn init_exchange_rate_timers() {
     }
 
     // Step 4: Verify the state after calling interval timer.
+    // The request is made because the timer callback calls `update_exchange_rate`.
+    // We don't inspect the request here because `update_exchange_rate` is
+    // tested separately.
     assert_eq!(exchange_rate_canister::testing::drain_requests().len(), 1);
     assert_eq!(get_usd_e8s_per_icp(), later_usd_e8s_per_icp);
     assert_eq!(
