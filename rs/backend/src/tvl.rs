@@ -15,7 +15,7 @@ const UPDATE_INTERVAL_SECONDS: u64 = 6 * 60 * 60; // 4 times a day
 
 // TODO(NNS1-3281): Remove #[allow(unused)].
 #[allow(unused)]
-pub fn init_exchange_rate_timers() {
+pub fn start_updating_exchange_rate_in_background() {
     set_timer_interval(Duration::from_secs(UPDATE_INTERVAL_SECONDS), || {
         spawn::spawn(update_exchange_rate());
     });
@@ -23,6 +23,19 @@ pub fn init_exchange_rate_timers() {
     // call it after 1 second to have an exchange rate available soon.
     set_timer(Duration::from_secs(1), || {
         spawn::spawn(update_exchange_rate());
+    });
+}
+
+// TODO(NNS1-3281): Remove #[allow(unused)].
+#[allow(unused)]
+fn start_updating_locked_icp_in_the_background() {
+    set_timer_interval(Duration::from_secs(UPDATE_INTERVAL_SECONDS), || {
+        spawn::spawn(update_locked_icp_e8s());
+    });
+    // `set_timer_interval` does not run the callback immediately so we also
+    // call it after 1 second to have an exchange rate available soon.
+    set_timer(Duration::from_secs(1), || {
+        spawn::spawn(update_locked_icp_e8s());
     });
 }
 
