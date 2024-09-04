@@ -490,6 +490,7 @@ describe("IcrcWallet", () => {
   describe("imported tokens", () => {
     const ledgerCanisterId = principal(0);
     const ledgerCanisterId2 = principal(1);
+    const indexCanisterId = principal(2);
 
     beforeEach(() => {
       page.mock({
@@ -653,6 +654,25 @@ describe("IcrcWallet", () => {
           indexCanisterId: undefined,
         },
       ]);
+    });
+
+    it('should not display "Add index canister" button when already available', async () => {
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId,
+            indexCanisterId,
+          },
+        ],
+        certified: true,
+      });
+      const po = await renderWallet({});
+      expect(await po.getAddIndexCanisterButtonPo().isPresent()).toBe(false);
+    });
+
+    it('should display "Add index canister" button when no index canister available', async () => {
+      const po = await renderWallet({});
+      expect(await po.getAddIndexCanisterButtonPo().isPresent()).toBe(true);
     });
   });
 });

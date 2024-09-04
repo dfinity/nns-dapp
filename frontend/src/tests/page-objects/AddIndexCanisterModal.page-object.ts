@@ -14,4 +14,14 @@ export class AddIndexCanisterModalPo extends ModalPo {
   getImportTokenFormPo(): ImportTokenFormPo {
     return ImportTokenFormPo.under(this.root);
   }
+
+  typeIndexCanisterId(indexCanisterId: string): Promise<void> {
+    return this.getImportTokenFormPo()
+      .getIndexCanisterInputPo()
+      .typeText(indexCanisterId);
+  }
+
+  clickAddIndexCanisterButton(): Promise<void> {
+    return this.getImportTokenFormPo().getSubmitButtonPo().click();
+  }
 }
