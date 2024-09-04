@@ -115,6 +115,7 @@ describe("IcrcWallet", () => {
     balancesObserverCallback = undefined;
     vi.clearAllMocks();
     vi.clearAllTimers();
+    vi.restoreAllMocks();
     tokensStore.reset();
     overrideFeatureFlagsStore.reset();
     toastsStore.reset();
@@ -731,7 +732,6 @@ describe("IcrcWallet", () => {
       ]);
       expect(spyOnGetImportedTokens).toBeCalledTimes(0);
 
-      console.log("++resolveSetImportedTokens", resolveSetImportedTokens);
       resolveSetImportedTokens();
       await runResolvedPromises();
 
