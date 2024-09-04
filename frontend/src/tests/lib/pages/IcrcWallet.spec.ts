@@ -658,9 +658,9 @@ describe("IcrcWallet", () => {
     });
 
     describe("index canister addition", () => {
-      let spyOnGetImportedTokens,
-        spyOnSetImportedTokens,
-        resolveSetImportedTokens;
+      let spyOnGetImportedTokens;
+      let spyOnSetImportedTokens;
+      let resolveSetImportedTokens;
 
       beforeEach(() => {
         spyOnGetImportedTokens = vi
