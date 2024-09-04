@@ -9,6 +9,7 @@
   export let principal: Principal | undefined = undefined;
   export let required: boolean | undefined = undefined;
   export let testId: string | undefined = undefined;
+  export let disabled: boolean | undefined = undefined;
 
   let address = principal?.toText() ?? "";
   $: principal = getPrincipalFromString(address);
@@ -26,6 +27,7 @@
   {placeholderLabelKey}
   {name}
   {testId}
+  {disabled}
   bind:value={address}
   errorMessage={showError ? $i18n.error.principal_not_valid : undefined}
   on:blur={showErrorIfAny}

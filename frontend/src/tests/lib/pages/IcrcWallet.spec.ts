@@ -115,6 +115,7 @@ describe("IcrcWallet", () => {
     balancesObserverCallback = undefined;
     vi.clearAllMocks();
     vi.clearAllTimers();
+    vi.restoreAllMocks();
     tokensStore.reset();
     overrideFeatureFlagsStore.reset();
     toastsStore.reset();
@@ -490,6 +491,7 @@ describe("IcrcWallet", () => {
   describe("imported tokens", () => {
     const ledgerCanisterId = principal(0);
     const ledgerCanisterId2 = principal(1);
+    const indexCanisterId = principal(2);
 
     beforeEach(() => {
       page.mock({
@@ -653,6 +655,204 @@ describe("IcrcWallet", () => {
           indexCanisterId: undefined,
         },
       ]);
+    });
+
+    describe("index canister addition", () => {
+      let spyOnGetImportedTokens;
+      let spyOnSetImportedTokens;
+      let resolveSetImportedTokens;
+
+      beforeEach(() => {
+        spyOnGetImportedTokens = vi
+          .spyOn(importedTokensApi, "getImportedTokens")
+          .mockResolvedValue({
+            imported_tokens: [
+              {
+                ledger_canister_id: ledgerCanisterId,
+                index_canister_id: [indexCanisterId],
+              },
+            ],
+          });
+        spyOnSetImportedTokens = vi
+          .spyOn(importedTokensApi, "setImportedTokens")
+          .mockImplementation(
+            () =>
+              new Promise<void>(
+                (resolve) => (resolveSetImportedTokens = resolve)
+              )
+          );
+        importedTokensStore.set({
+          importedTokens: [
+            {
+              ledgerCanisterId,
+              indexCanisterId: undefined,
+            },
+          ],
+          certified: true,
+        });
+        // Needs to pass the index canister validation.
+        vi.spyOn(icrcIndexApi, "getLedgerId").mockResolvedValue(
+          ledgerCanisterId
+        );
+      });
+
+      it('should not display "Add index canister" button when already available', async () => {
+        importedTokensStore.set({
+          importedTokens: [
+            {
+              ledgerCanisterId,
+              indexCanisterId,
+            },
+          ],
+          certified: true,
+        });
+        const po = await renderWallet({});
+        expect(await po.getAddIndexCanisterButtonPo().isPresent()).toBe(false);
+      });
+
+      it('should display "Add index canister" button when no index canister available', async () => {
+        const po = await renderWallet({});
+        expect(await po.getAddIndexCanisterButtonPo().isPresent()).toBe(true);
+      });
+
+      it("should add index canister", async () => {
+        const po = await renderWallet({});
+        const addIndexCanisterModalPo = po.getAddIndexCanisterModalPo();
+
+        expect(await po.getAddIndexCanisterButtonPo().isPresent()).toBe(true);
+
+        // Open the modal.
+        await po.getAddIndexCanisterButtonPo().click();
+
+        expect(spyOnSetImportedTokens).toBeCalledTimes(0);
+        expect(await addIndexCanisterModalPo.isPresent()).toBe(true);
+        expect(get(busyStore)).toEqual([]);
+
+        await addIndexCanisterModalPo.typeIndexCanisterId(
+          indexCanisterId.toText()
+        );
+        await addIndexCanisterModalPo.clickAddIndexCanisterButton();
+        await runResolvedPromises();
+
+        expect(get(toastsStore)).toEqual([]);
+        expect(get(busyStore)).toEqual([
+          {
+            initiator: "import-token-updating",
+            text: "Updating imported token...",
+          },
+        ]);
+        expect(spyOnGetImportedTokens).toBeCalledTimes(0);
+
+        resolveSetImportedTokens();
+        await runResolvedPromises();
+
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "success",
+            text: "The token has been successfully updated!",
+          },
+        ]);
+        expect(spyOnSetImportedTokens).toBeCalledTimes(1);
+        expect(spyOnSetImportedTokens).toHaveBeenCalledWith({
+          identity: mockIdentity,
+          importedTokens: [
+            {
+              ledger_canister_id: ledgerCanisterId,
+              index_canister_id: [indexCanisterId],
+            },
+          ],
+        });
+        expect(spyOnGetImportedTokens).toBeCalledTimes(2);
+        expect(get(busyStore)).toEqual([]);
+        expect(get(importedTokensStore).importedTokens).toEqual([
+          {
+            ledgerCanisterId,
+            indexCanisterId,
+          },
+        ]);
+
+        // The add index canister button should not be displayed anymore.
+        expect(await po.getAddIndexCanisterButtonPo().isPresent()).toBe(false);
+      });
+
+      it("should validate index canister before addition", async () => {
+        // Mock the index canister to belong to a different ledger canister.
+        const spyOnGetLedgerId = vi
+          .spyOn(icrcIndexApi, "getLedgerId")
+          .mockResolvedValue(principal(13));
+
+        const po = await renderWallet({});
+        const addIndexCanisterModalPo = po.getAddIndexCanisterModalPo();
+
+        expect(await po.getAddIndexCanisterButtonPo().isPresent()).toBe(true);
+
+        await po.getAddIndexCanisterButtonPo().click();
+        await addIndexCanisterModalPo.typeIndexCanisterId(
+          indexCanisterId.toText()
+        );
+        await addIndexCanisterModalPo.clickAddIndexCanisterButton();
+        await runResolvedPromises();
+
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: "The provided index canister ID does not match the associated ledger canister ID.",
+          },
+        ]);
+        expect(get(busyStore)).toEqual([]);
+        expect(spyOnGetLedgerId).toBeCalledTimes(1);
+        expect(spyOnGetLedgerId).toBeCalledWith({
+          certified: false,
+          identity: mockIdentity,
+          indexCanisterId,
+        });
+        expect(spyOnSetImportedTokens).toBeCalledTimes(0);
+        expect(spyOnGetImportedTokens).toBeCalledTimes(0);
+        expect(get(importedTokensStore).importedTokens).toEqual([
+          {
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ]);
+        expect(await po.getAddIndexCanisterButtonPo().isPresent()).toBe(true);
+      });
+
+      it("should handle errors", async () => {
+        vi.spyOn(console, "error").mockReturnValue();
+        // mock an error when updating imported tokens
+        spyOnSetImportedTokens = vi
+          .spyOn(importedTokensApi, "setImportedTokens")
+          .mockRejectedValue(new Error("test"));
+
+        const po = await renderWallet({});
+        const addIndexCanisterModalPo = po.getAddIndexCanisterModalPo();
+
+        expect(await po.getAddIndexCanisterButtonPo().isPresent()).toBe(true);
+
+        await po.getAddIndexCanisterButtonPo().click();
+        await addIndexCanisterModalPo.typeIndexCanisterId(
+          indexCanisterId.toText()
+        );
+        await addIndexCanisterModalPo.clickAddIndexCanisterButton();
+        await runResolvedPromises();
+
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: "There was an unexpected issue while updating the imported token. test",
+          },
+        ]);
+        expect(get(busyStore)).toEqual([]);
+        expect(spyOnSetImportedTokens).toBeCalledTimes(1);
+        expect(spyOnGetImportedTokens).toBeCalledTimes(0);
+        expect(get(importedTokensStore).importedTokens).toEqual([
+          {
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ]);
+        expect(await po.getAddIndexCanisterButtonPo().isPresent()).toBe(true);
+      });
     });
   });
 });

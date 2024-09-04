@@ -10,11 +10,14 @@
 
   export let ledgerCanisterId: Principal | undefined = undefined;
   export let indexCanisterId: Principal | undefined = undefined;
+  export let addIndexCanisterMode: boolean = false;
 
   const dispatch = createEventDispatcher();
 
   let isSubmitDisabled = true;
-  $: isSubmitDisabled = isNullish(ledgerCanisterId);
+  $: isSubmitDisabled = addIndexCanisterMode
+    ? isNullish(indexCanisterId)
+    : isNullish(ledgerCanisterId);
 </script>
 
 <TestIdWrapper testId="import-token-form-component">
@@ -26,6 +29,7 @@
       placeholderLabelKey="import_token.placeholder"
       name="ledger-canister-id"
       testId="ledger-canister-id"
+      disabled={addIndexCanisterMode}
     >
       <svelte:fragment slot="label"
         >{$i18n.import_token.ledger_label}</svelte:fragment
@@ -34,19 +38,26 @@
 
     <PrincipalInput
       bind:principal={indexCanisterId}
-      required={false}
+      required={addIndexCanisterMode}
       placeholderLabelKey="import_token.placeholder"
       name="index-canister-id"
       testId="index-canister-id"
     >
-      <Html slot="label" text={$i18n.import_token.index_label_optional} />
+      <Html
+        slot="label"
+        text={addIndexCanisterMode
+          ? $i18n.import_token.index_label
+          : $i18n.import_token.index_label_optional}
+      />
     </PrincipalInput>
 
     <p class="description">
       <Html text={$i18n.import_token.index_canister_description} />
     </p>
 
-    <CalloutWarning htmlText={$i18n.import_token.warning} />
+    {#if !addIndexCanisterMode}
+      <CalloutWarning htmlText={$i18n.import_token.warning} />
+    {/if}
 
     <div class="toolbar">
       <button
@@ -64,7 +75,9 @@
         type="submit"
         disabled={isSubmitDisabled}
       >
-        {$i18n.core.next}
+        {addIndexCanisterMode
+          ? $i18n.import_token.add_index_canister
+          : $i18n.core.next}
       </button>
     </div>
   </form>

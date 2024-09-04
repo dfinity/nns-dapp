@@ -4,8 +4,9 @@
 
   export let placeholderLabelKey: string;
   export let name: string;
+  export let disabled: boolean | undefined;
 
   let principal: Principal | undefined = undefined;
 </script>
 
-<PrincipalInput {name} {placeholderLabelKey} {principal} />
+<PrincipalInput {name} {placeholderLabelKey} {principal} {disabled} />
