@@ -1,3 +1,7 @@
+import {isNullish} from "@dfinity/utils";
+import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
+import { mockIntersectionObserverIsIntersecting, IntersectionObserverActive } from "$tests/mocks/infinitescroll.mock";
+import { advanceTime } from "$tests/utils/timers.test-utils";
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
@@ -14,14 +18,11 @@ import {
   proposalsStore,
 } from "$lib/stores/proposals.store";
 import {
-  authStoreMock,
-  mockAuthStoreSubscribe,
   mockIdentity,
+  resetIdentity,
 } from "$tests/mocks/auth.store.mock";
 import {
-  mockEmptyProposalsStoreSubscribe,
   mockProposals,
-  mockProposalsStoreSubscribe,
 } from "$tests/mocks/proposals.store.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NnsProposalListPo } from "$tests/page-objects/NnsProposalList.page-object";
@@ -49,21 +50,23 @@ describe("NnsProposals", () => {
 
   beforeEach(() => {
     vi.restoreAllMocks();
+    proposalsStore.reset();
     resetNeuronsApiService();
     neuronsStore.reset();
     proposalsFiltersStore.reset();
+    actionableNnsProposalsStore.reset();
     actionableProposalsSegmentStore.resetForTesting();
 
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
-    vi.spyOn(proposalsApi, "queryProposals").mockResolvedValue([]);
+    resetIdentity();
+    vi.spyOn(proposalsApi, "queryProposals").mockResolvedValue(mockProposals);
+    // Loading proposals is debounced but we don't want to wait for the delay in
+    // the unit tests so we use fake timers.
+    vi.useFakeTimers();
   });
 
   describe("logged in user", () => {
     describe("neurons", () => {
       beforeEach(() => {
-        vi.spyOn(proposalsStore, "subscribe").mockImplementation(
-          mockProposalsStoreSubscribe
-        );
         vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
         actionableProposalsSegmentStore.set("all");
       });
@@ -89,9 +92,6 @@ describe("NnsProposals", () => {
     describe("Matching results", () => {
       beforeEach(() => {
         overrideFeatureFlagsStore.reset();
-        vi.spyOn(proposalsStore, "subscribe").mockImplementation(
-          mockProposalsStoreSubscribe
-        );
         vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
         actionableProposalsSegmentStore.set("all");
       });
@@ -113,13 +113,57 @@ describe("NnsProposals", () => {
         ).toBe(true);
       });
 
-      it("should render a spinner while searching proposals", async () => {
+      it("should render a skeleton while searching proposals", async () => {
         const po = await renderComponent();
 
         proposalsFiltersStore.filterTopics(DEFAULT_PROPOSALS_FILTERS.topics);
         await runResolvedPromises();
 
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(true);
+
+        // Stop waiting for the debounce to load proposals.
+        await advanceTime();
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
+      });
+
+      it("should render a spinner while loading more proposals", async () => {
+        // Make sure that the infinite scroll container thinks we are scrolling
+        // to the bottom.
+        vi.stubGlobal("IntersectionObserver", IntersectionObserverActive);
+
+        // The first page must have DEFAULT_LIST_PAGINATION_LIMIT proposals
+        // otherwise the service thinks we've already loaded all proposals.
+        const firstPageProposals = Promise.resolve<ProposalInfo[]>(Array.from({length:
+        DEFAULT_LIST_PAGINATION_LIMIT}, (_, i) => ({ ...mockProposals[0], id:
+        BigInt(i), })));
+
+        // The second page doesn't resolve immediately so we can see the spinner
+        // while it's loading.
+        let resolveSecondPage;
+        const secondPageProposals = new Promise<ProposalInfo[]>((resolve) => {
+          resolveSecondPage = resolve;
+        });
+
+        // Return the first or second page depending on the beforeProposal parameter.
+        vi.spyOn(proposalsApi, "queryProposals").mockImplementation(({beforeProposal}) => {
+          return isNullish(beforeProposal) ? firstPageProposals : secondPageProposals;
+        });
+
+        const po = await renderComponent();
+
+        proposalsFiltersStore.filterTopics(DEFAULT_PROPOSALS_FILTERS.topics);
+        await runResolvedPromises();
+
+        // Stop waiting for the debounce to load the first page of proposals.
+        await advanceTime();
+
+        // Now the infinite scroll is loading the second page of proposals.
         expect(await po.hasListLoaderSpinner()).toEqual(true);
+
+        // Finish loading the second page.
+        resolveSecondPage(mockProposals);
+        await advanceTime();
+        expect(await po.hasListLoaderSpinner()).toEqual(false);
       });
 
       it("should render proposals", async () => {
@@ -202,13 +246,10 @@ describe("NnsProposals", () => {
       beforeEach(() => {
         vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
         actionableProposalsSegmentStore.set("all");
+        vi.spyOn(proposalsApi, "queryProposals").mockResolvedValue([]);
       });
 
       it("should render not found text", async () => {
-        vi.spyOn(proposalsStore, "subscribe").mockImplementation(
-          mockEmptyProposalsStoreSubscribe
-        );
-
         const po = await renderComponent();
 
         expect(await po.getNoProposalsPo().isPresent()).toBe(true);
@@ -240,13 +281,7 @@ describe("NnsProposals", () => {
     });
 
     describe("Matching results", () => {
-      const mockLoadProposals = () =>
-        vi
-          .spyOn(proposalsStore, "subscribe")
-          .mockImplementation(mockProposalsStoreSubscribe);
-
       it("should render proposals", async () => {
-        mockLoadProposals();
 
         const po = await renderComponent();
         const cardPos = await po.getProposalCardPos();
@@ -265,14 +300,6 @@ describe("NnsProposals", () => {
   });
 
   describe("actionable proposals segment", () => {
-    beforeEach(() => {
-      actionableNnsProposalsStore.reset();
-
-      authStoreMock.next({
-        identity: mockIdentity,
-      });
-    });
-
     it("should render actionable proposals by default", async () => {
       const po = await renderComponent();
 
