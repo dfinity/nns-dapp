@@ -12,7 +12,7 @@
   import type { WalletStore } from "$lib/types/wallet.context";
   import { isImportedToken as checkImportedToken } from "$lib/utils/imported-tokens.utils";
   import { Html, IconCanistersPage, IconPlus } from "@dfinity/gix-components";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { writable } from "svelte/store";
   import AddIndexCanisterModal from "$lib/modals/accounts/AddIndexCanisterModal.svelte";
   import { i18n } from "$lib/stores/i18n";
@@ -63,7 +63,7 @@
     {reloadTransactions}
   >
     <svelte:fragment slot="page-content">
-      {#if isImportedToken && nonNullish(indexCanisterId)}
+      {#if isImportedToken && isNullish(indexCanisterId)}
         <div class="no-index-canister">
           <div class="icon">
             <IconCanistersPage />
