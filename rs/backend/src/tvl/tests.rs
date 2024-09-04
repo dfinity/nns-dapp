@@ -1,10 +1,13 @@
-use crate::tvl::{self, exchange_rate_canister, governance, time, STATE};
+use crate::timer;
+use crate::tvl::{self, exchange_rate_canister, governance, spawn, time, STATE};
+use candid::Nat;
 use lazy_static::lazy_static;
 
 const NOW_SECONDS: u64 = 1_234_567_890;
 // We request the exchange rate from 5 minutes ago to make sure the XRC
 // actually has data for the timestamp we request.
 const FIVE_MINUTES_AGO_SECONDS: u64 = NOW_SECONDS - 5 * 60;
+const SIX_HOURS_SECONDS: u64 = 6 * 60 * 60;
 
 lazy_static! {
     static ref ICP: exchange_rate_canister::Asset = exchange_rate_canister::Asset {
@@ -310,4 +313,105 @@ async fn update_locked_icp_e8s_with_method_error() {
     // Step 4: Verify the state after calling the code under test.
     // The total locked ICP should not have been updated because of the error.
     assert_eq!(get_total_locked_icp_e8s(), initial_locked_icp_e8s);
+}
+
+#[test]
+fn init_exchange_rate_timers() {
+    tvl::time::testing::set_time(NOW_SECONDS * 1_000_000_000);
+
+    let initial_usd_e8s_per_icp = 850_000_000;
+    let later_usd_e8s_per_icp = 920_000_000;
+    let decimals = 8;
+
+    let initial_exchange_rate_timestamp_seconds = FIVE_MINUTES_AGO_SECONDS;
+    let later_exchange_rate_timestamp_seconds: u64 = FIVE_MINUTES_AGO_SECONDS + 6 * 60 * 60;
+
+    let expected_timer_delay_seconds = 1;
+    let expected_timer_interval_seconds = 6 * 60 * 60;
+
+    // There are 3 phases each with a number of steps:
+    // Phase 1: Calling the code under test to set timers.
+    // Phase 2: Calling the 1-time timer.
+    // Phase 3: Calling the interval timer.
+
+    // Phase 1: Calling the code under test to set timers.
+
+    // Step 1: Verify no timers exist before calling the code under test.
+    assert_eq!(timer::testing::drain_timers().len(), 0);
+    assert_eq!(timer::testing::drain_timer_intervals().len(), 0);
+
+    // Step 2: Call the code under test.
+    // This should set both a 1-time timer and an interval timer.
+    tvl::init_exchange_rate_timers();
+
+    // Phase 2: Calling the 1-time timer.
+
+    // Step 1: Set up the environment.
+    exchange_rate_canister::testing::add_exchange_rate_response_ok(
+        ICP.clone(),
+        USD.clone(),
+        initial_usd_e8s_per_icp,
+        decimals,
+        initial_exchange_rate_timestamp_seconds,
+    );
+
+    // Step 2: Verify the state before calling the 1-time timers.
+    assert_eq!(exchange_rate_canister::testing::drain_requests().len(), 0);
+
+    // Step 3: Call the 1-time timer.
+    {
+        let mut timers = timer::testing::drain_timers();
+        assert_eq!(timers.len(), 1);
+        let timer = timers.pop().unwrap();
+        assert_eq!(
+            timer.delay,
+            std::time::Duration::from_secs(expected_timer_delay_seconds)
+        );
+        (timer.func)();
+    }
+    spawn::testing::block_on_all();
+
+    // Step 4: Verify the state after calling the 1-time timer.
+    assert_eq!(exchange_rate_canister::testing::drain_requests().len(), 1);
+    assert_eq!(get_usd_e8s_per_icp(), initial_usd_e8s_per_icp);
+    assert_eq!(
+        get_exchange_rate_timestamp_seconds(),
+        initial_exchange_rate_timestamp_seconds
+    );
+
+    // Phase 3: Calling the interval timer.
+
+    // Step 1: Set up the environment.
+    tvl::time::testing::set_time((NOW_SECONDS + SIX_HOURS_SECONDS) * 1_000_000_000);
+    exchange_rate_canister::testing::add_exchange_rate_response_ok(
+        ICP.clone(),
+        USD.clone(),
+        later_usd_e8s_per_icp,
+        decimals,
+        later_exchange_rate_timestamp_seconds,
+    );
+
+    // Step 2: Verify the state before calling the 1-time timers.
+    assert_eq!(exchange_rate_canister::testing::drain_requests().len(), 0);
+
+    // Step 3: Call the interval timer.
+    {
+        let mut timers = timer::testing::drain_timer_intervals();
+        assert_eq!(timers.len(), 1);
+        let mut timer = timers.pop().unwrap();
+        assert_eq!(
+            timer.interval,
+            std::time::Duration::from_secs(expected_timer_interval_seconds)
+        );
+        (timer.func)();
+    }
+    spawn::testing::block_on_all();
+
+    // Step 4: Verify the state after calling interval timer.
+    assert_eq!(exchange_rate_canister::testing::drain_requests().len(), 1);
+    assert_eq!(get_usd_e8s_per_icp(), later_usd_e8s_per_icp);
+    assert_eq!(
+        get_exchange_rate_timestamp_seconds(),
+        later_exchange_rate_timestamp_seconds
+    );
 }
