@@ -36,7 +36,6 @@ interface I18nCore {
   send_with_token: string;
   collapse_all: string;
   or: string;
-  learn_more: string;
   add: string;
 }
 
@@ -258,8 +257,6 @@ interface I18nStaking {
 interface I18nNeurons {
   title: string;
   text: string;
-  split_topic_message: string;
-  split_topic_learn_more_label: string;
   stake_token: string;
   merge_neurons: string;
   merge_neurons_modal_title: string;

@@ -38,12 +38,11 @@ test("Test proposals", async ({ page, context }) => {
 
   step("Open proposals list");
   await appPo.goToProposals();
-  const nnsProposalListPo = appPo.getProposalsPo().getNnsProposalListPo();
-  await nnsProposalListPo.waitForContentLoaded();
 
   step("Open Internet Computer proposals");
   await appPo.openUniverses();
   await appPo.getSelectUniverseListPo().clickOnInternetComputer();
+  const nnsProposalListPo = appPo.getProposalsPo().getNnsProposalListPo();
   await nnsProposalListPo.waitForContentLoaded();
 
   step('Switch to "All Proposals"');
