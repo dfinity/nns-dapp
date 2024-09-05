@@ -108,7 +108,8 @@ describe("NnsProposals", () => {
       it("should reload transactions when proposal filter is set", async () => {
         let resolveQueryProposals;
         vi.spyOn(proposalsApi, "queryProposals").mockImplementation(
-          () => new Promise<ProposalInfo[]>((resolve) => {
+          () =>
+            new Promise<ProposalInfo[]>((resolve) => {
               resolveQueryProposals = resolve;
             })
         );
