@@ -76,7 +76,7 @@
         disabled={isSubmitDisabled}
       >
         {addIndexCanisterMode
-          ? $i18n.import_token.add_index_canister
+          ? $i18n.import_token.add_index_canister_button_short
           : $i18n.core.next}
       </button>
     </div>

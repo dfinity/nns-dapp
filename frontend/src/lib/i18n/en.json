@@ -839,13 +839,13 @@
   },
   "error__imported_tokens": {
     "load_imported_tokens": "There was an unexpected issue while loading imported tokens.",
-    "add_imported_token": "There was an unexpected issue while adding new imported token.",
+    "add_imported_token": "There was an unexpected issue while importing new token.",
     "remove_imported_token": "There was an unexpected issue while removing the imported token.",
     "update_imported_token": "There was an unexpected issue while updating the imported token.",
     "too_many": "You can't import more than $limit tokens.",
-    "ledger_canister_loading": "Unable to load token details using the provided Ledger Canister ID.",
+    "ledger_canister_loading": "Unable to load token details using the provided ledger canister ID.",
     "is_duplication": "You have already imported this token, you can find it in the token list.",
-    "is_sns": "You cannot import SNS tokens, they are added automatically.",
+    "is_sns": "You cannot import SNS tokens, they are added by the NNS.",
     "is_important": "This token is already in the token list."
   },
   "error__sns": {
@@ -1041,25 +1041,27 @@
   },
   "import_token": {
     "import_token": "Import Token",
-    "imported_token": "Imported Token",
+    "imported_token": "Imported token",
     "verifying": "Verifying token details...",
     "importing": "Importing new token...",
     "removing": "Removing imported token...",
     "updating": "Updating imported token...",
-    "description": "To import a new token to your NNS dapp wallet, you will need to find, and paste the ledger canister id of the token. If you want to see your transaction history, you need to import the token’s index canister.",
+    "description": "You can import a new token to your NNS dapp wallet by providing its ledger canister ID. If you want to see your transaction history, you need to enter the token's index canister as well.",
     "ledger_label": "Ledger Canister ID",
     "index_label_optional": "Index Canister ID <span class='description'>(Optional)</span>",
     "placeholder": "00000-00000-00000-00000-000",
-    "index_canister_description": "Index Canister allows to display a token balance and transaction history. <strong>Note:</strong> not all tokens have index canisters.",
+    "index_canister_description": "To see this token's transaction history in the NNS dapp, you need to provide its index canister. <strong>Note:</strong> not all tokens have index canisters.",
     "review_token_info": "Review token info",
     "warning": "<strong>Warning:</strong> Be careful what token you import! Anyone can create a token including one with the same name as existing tokens, such as ckBTC.",
     "remove_confirmation_header": "Are you sure you want to remove this token from your account?",
-    "remove_confirmation_description": "Tokens you hold in your account will not be lost, and you can add the token back in the future.",
+    "remove_confirmation_description": "Tokens you hold in your account will not be lost. You can import this token in the future again.",
     "index_label": "Index Canister ID",
-    "index_fallback_label": "Transaction history won’t be displayed.",
+    "index_fallback_label": "Transaction history won't be displayed.",
     "import_button": "Import",
     "link_to_dashboard": "https://dashboard.internetcomputer.org/canister/$canisterId",
     "add_index_canister": "Add index canister",
-    "add_index_description": "Transaction history is not available. To see history add an index canister. <strong>Note:</strong> not all tokens have index canisters."
+    "add_index_canister_button": "Add Index Canister",
+    "add_index_canister_button_short": "Add",
+    "add_index_description": "Transaction history is not available. To see the transaction history, add an index canister. <strong>Note:</strong> not all tokens have index canisters."
   }
 }

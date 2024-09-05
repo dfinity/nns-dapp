@@ -1119,6 +1119,8 @@ interface I18nImport_token {
   import_button: string;
   link_to_dashboard: string;
   add_index_canister: string;
+  add_index_canister_button: string;
+  add_index_canister_button_short: string;
   add_index_description: string;
 }
 
