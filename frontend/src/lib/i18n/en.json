@@ -840,7 +840,7 @@
   },
   "error__imported_tokens": {
     "load_imported_tokens": "There was an unexpected issue while loading imported tokens.",
-    "add_imported_token": "There was an unexpected issue while importing new token.",
+    "add_imported_token": "There was an unexpected issue while importing the token.",
     "remove_imported_token": "There was an unexpected issue while removing the imported token.",
     "update_imported_token": "There was an unexpected issue while updating the imported token.",
     "too_many": "You can't import more than $limit tokens.",
@@ -1060,8 +1060,7 @@
     "index_fallback_label": "Transaction history won't be displayed.",
     "import_button": "Import",
     "link_to_dashboard": "https://dashboard.internetcomputer.org/canister/$canisterId",
-    "add_index_canister": "Add index canister",
-    "add_index_canister_button": "Add Index Canister",
-    "add_index_description": "Transaction history is not available. To see the transaction history, add an index canister. <strong>Note:</strong> not all tokens have index canisters."
+    "add_index_canister": "Add Index Canister",
+    "add_index_description": "Transaction history is not available. To see this token’s transaction history in the NNS dapp, you need to provide an index canister. <strong>Note:</strong> not all tokens have index canisters."
   }
 }
