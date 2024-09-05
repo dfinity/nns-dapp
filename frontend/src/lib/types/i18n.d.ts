@@ -37,6 +37,7 @@ interface I18nCore {
   collapse_all: string;
   or: string;
   learn_more: string;
+  add: string;
 }
 
 interface I18nError {
@@ -1120,7 +1121,6 @@ interface I18nImport_token {
   link_to_dashboard: string;
   add_index_canister: string;
   add_index_canister_button: string;
-  add_index_canister_button_short: string;
   add_index_description: string;
 }
 

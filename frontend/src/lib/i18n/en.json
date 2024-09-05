@@ -33,7 +33,8 @@
     "send_with_token": "Send $token",
     "collapse_all": "Collapse All",
     "or": "or",
-    "learn_more": "Learn more"
+    "learn_more": "Learn more",
+    "add": "Add"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -1061,7 +1062,6 @@
     "link_to_dashboard": "https://dashboard.internetcomputer.org/canister/$canisterId",
     "add_index_canister": "Add index canister",
     "add_index_canister_button": "Add Index Canister",
-    "add_index_canister_button_short": "Add",
     "add_index_description": "Transaction history is not available. To see the transaction history, add an index canister. <strong>Note:</strong> not all tokens have index canisters."
   }
 }
