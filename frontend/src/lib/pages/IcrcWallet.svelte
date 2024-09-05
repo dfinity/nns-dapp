@@ -75,7 +75,7 @@
             class="ghost with-icon add-index-canister-button"
             on:click={() => (showAddIndexCanisterModal = true)}
           >
-            <IconPlus />{$i18n.import_token.add_index_canister_button}
+            <IconPlus />{$i18n.import_token.add_index_canister}
           </button>
         </div>
       {:else if isNullish($selectedAccountStore.account) || isNullish($selectedIcrcTokenUniverseIdStore) || isNullish(indexCanisterId)}
