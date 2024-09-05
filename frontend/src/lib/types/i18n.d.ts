@@ -36,6 +36,7 @@ interface I18nCore {
   send_with_token: string;
   collapse_all: string;
   or: string;
+  add: string;
 }
 
 interface I18nError {
