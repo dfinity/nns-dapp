@@ -14,7 +14,7 @@ import {
   proposalsFiltersStore,
   proposalsStore,
 } from "$lib/stores/proposals.store";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { IntersectionObserverActive } from "$tests/mocks/infinitescroll.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { NnsProposalListPo } from "$tests/page-objects/NnsProposalList.page-object";
@@ -107,12 +107,16 @@ describe("NnsProposals", () => {
 
       it("should reload transactions when proposal filter is set", async () => {
         let resolveQueryProposals;
-        vi.spyOn(proposalsApi, "queryProposals").mockImplementation(
-          () =>
-            new Promise<ProposalInfo[]>((resolve) => {
-              resolveQueryProposals = resolve;
-            })
-        );
+        const queryProposalsSpy = vi
+          .spyOn(proposalsApi, "queryProposals")
+          .mockImplementation(
+            () =>
+              new Promise<ProposalInfo[]>((resolve) => {
+                resolveQueryProposals = resolve;
+              })
+          );
+
+        expect(queryProposalsSpy).toBeCalledTimes(0);
 
         const po = await renderComponent();
 
@@ -123,6 +127,24 @@ describe("NnsProposals", () => {
         await runResolvedPromises();
         expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
 
+        const expectedQueryProposalsParams = {
+          identity: mockIdentity,
+          includeStatus: [],
+          includeTopics: [],
+        };
+        expect(queryProposalsSpy).toBeCalledTimes(2);
+        expect(queryProposalsSpy).toBeCalledWith({
+          ...expectedQueryProposalsParams,
+          certified: false,
+        });
+        expect(queryProposalsSpy).toBeCalledWith({
+          ...expectedQueryProposalsParams,
+          certified: true,
+        });
+
+        queryProposalsSpy.mockClear();
+        expect(queryProposalsSpy).toBeCalledTimes(0);
+
         // Setting the filter should reload the proposals.
         proposalsFiltersStore.filterTopics(DEFAULT_PROPOSALS_FILTERS.topics);
         await runResolvedPromises();
@@ -131,6 +153,16 @@ describe("NnsProposals", () => {
 
         // Stop waiting for the debounce to load proposals.
         await advanceTime();
+
+        expect(queryProposalsSpy).toBeCalledTimes(2);
+        expect(queryProposalsSpy).toBeCalledWith({
+          ...expectedQueryProposalsParams,
+          certified: false,
+        });
+        expect(queryProposalsSpy).toBeCalledWith({
+          ...expectedQueryProposalsParams,
+          certified: true,
+        });
 
         // Let the proposals load the second time.
         resolveQueryProposals(mockProposals);
