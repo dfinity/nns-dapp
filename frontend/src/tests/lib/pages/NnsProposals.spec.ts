@@ -105,7 +105,7 @@ describe("NnsProposals", () => {
         expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
       });
 
-      it("should reload transactions when proposal filter is set", async () => {
+      it("should reload proposals when proposal filter is set", async () => {
         let resolveQueryProposals;
         const queryProposalsSpy = vi
           .spyOn(proposalsApi, "queryProposals")
