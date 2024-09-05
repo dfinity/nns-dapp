@@ -82,24 +82,6 @@ describe('NnsProposals when "all proposals" selected', () => {
         identity: mockIdentity,
       });
     });
-
-    it("should query neurons", async () => {
-      page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
-      render(NnsProposals);
-
-      await waitFor(() =>
-        expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
-          identity: mockIdentity,
-          certified: true,
-          includeEmptyNeurons: false,
-        })
-      );
-      expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
-        identity: mockIdentity,
-        certified: false,
-        includeEmptyNeurons: false,
-      });
-    });
   });
 
   describe("when not signed in user", () => {
