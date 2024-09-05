@@ -48,6 +48,7 @@ export class StakingPo extends BasePageObject {
     await nnsRow.getStakeButtonPo().click();
     const modal = this.getNnsStakeNeuronModalPo();
     await modal.stake({ amount, dissolveDelayDays });
+    await this.waitForAbsent();
   }
 
   async stakeFirstSnsNeuron({
