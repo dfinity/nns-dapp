@@ -48,6 +48,8 @@ export class StakingPo extends BasePageObject {
     await nnsRow.getStakeButtonPo().click();
     const modal = this.getNnsStakeNeuronModalPo();
     await modal.stake({ amount, dissolveDelayDays });
+    // After staking the first neuron, we get redirected to the neurons page.
+    await this.waitForAbsent();
   }
 
   async stakeFirstSnsNeuron({

@@ -1,17 +1,29 @@
 use crate::{
     canisters::{exchange_rate_canister, governance},
-    constants::NANOS_PER_UNIT,
+    constants::{E8S_PER_UNIT, NANOS_PER_UNIT},
     spawn,
     state::STATE,
     time,
     timer::{set_timer, set_timer_interval},
 };
+use candid::{CandidType, Nat};
 use std::time::Duration;
 
 pub mod state;
 
 const XRC_MARGIN_SECONDS: u64 = 60 * 5;
 const UPDATE_INTERVAL_SECONDS: u64 = 6 * 60 * 60; // 4 times a day
+
+#[derive(CandidType, Debug, PartialEq)]
+pub struct TvlResult {
+    pub tvl: Nat, // Total Value Locked in whole USD.
+    pub time_sec: Nat,
+}
+
+#[derive(CandidType, Debug, PartialEq)]
+pub enum TvlResponse {
+    Ok(TvlResult),
+}
 
 // TODO(NNS1-3281): Remove #[allow(unused)].
 #[allow(unused)]
@@ -154,6 +166,24 @@ pub async fn update_locked_icp_e8s() {
             }
         };
     });
+}
+
+// TODO(NNS1-3281): Remove #[allow(unused)].
+#[allow(unused)]
+pub fn get_tvl() -> TvlResponse {
+    STATE.with(|s| {
+        let state = s.tvl_state.borrow();
+        let locked_u128 = state.total_locked_icp_e8s as u128;
+        let rate_u128 = state.usd_e8s_per_icp as u128;
+        let e8s_per_unit = E8S_PER_UNIT as u128;
+        let tvl = locked_u128 * rate_u128 / e8s_per_unit / e8s_per_unit;
+        let time_sec = state.exchange_rate_timestamp_seconds;
+
+        TvlResponse::Ok(TvlResult {
+            tvl: Nat::from(tvl),
+            time_sec: Nat::from(time_sec),
+        })
+    })
 }
 
 #[cfg(test)]

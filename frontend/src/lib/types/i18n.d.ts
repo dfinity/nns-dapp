@@ -1104,6 +1104,7 @@ interface I18nImport_token {
   verifying: string;
   importing: string;
   removing: string;
+  updating: string;
   description: string;
   ledger_label: string;
   index_label_optional: string;
@@ -1117,6 +1118,8 @@ interface I18nImport_token {
   index_fallback_label: string;
   import_button: string;
   link_to_dashboard: string;
+  add_index_canister: string;
+  add_index_description: string;
 }
 
 interface I18nNeuron_state {

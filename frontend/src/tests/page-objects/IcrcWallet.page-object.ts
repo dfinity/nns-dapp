@@ -7,6 +7,7 @@ import { WalletPageHeaderPo } from "$tests/page-objects/WalletPageHeader.page-ob
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { AddIndexCanisterModalPo } from "./AddIndexCanisterModal.page-object";
 
 export class IcrcWalletPo extends BasePageObject {
   private static readonly TID = "icrc-wallet-component";
@@ -33,6 +34,14 @@ export class IcrcWalletPo extends BasePageObject {
 
   getMoreButton(): ButtonPo {
     return this.getButton("more-button");
+  }
+
+  getAddIndexCanisterButtonPo(): ButtonPo {
+    return this.getButton("add-index-canister-button");
+  }
+
+  getAddIndexCanisterModalPo(): AddIndexCanisterModalPo {
+    return AddIndexCanisterModalPo.under(this.root);
   }
 
   getWalletMorePopoverPo(): WalletMorePopoverPo {

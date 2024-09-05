@@ -48,7 +48,8 @@ export type BusyStateInitiatorType =
   | "reload-receive-account"
   | "import-token-validation"
   | "import-token-importing"
-  | "import-token-removing";
+  | "import-token-removing"
+  | "import-token-updating";
 
 export interface BusyState {
   initiator: BusyStateInitiatorType;
