@@ -1,5 +1,6 @@
 use crate::timer;
 use crate::tvl::{self, exchange_rate_canister, governance, spawn, time, STATE};
+use candid::Nat;
 use lazy_static::lazy_static;
 
 const NOW_SECONDS: u64 = 1_234_567_890;
@@ -312,6 +313,26 @@ async fn update_locked_icp_e8s_with_method_error() {
     // Step 4: Verify the state after calling the code under test.
     // The total locked ICP should not have been updated because of the error.
     assert_eq!(get_total_locked_icp_e8s(), initial_locked_icp_e8s);
+}
+
+#[test]
+fn get_tvl() {
+    let timestamp = 1_738_485_470;
+    let locked_icp_units = 15_000;
+    let usd_per_icp_units = 8;
+    let expected_tvl_in_usd = locked_icp_units * usd_per_icp_units;
+
+    set_total_locked_icp_e8s(locked_icp_units * 100_000_000);
+    set_usd_e8s_per_icp(usd_per_icp_units * 100_000_000);
+    set_exchange_rate_timestamp_seconds(timestamp);
+
+    assert_eq!(
+        tvl::get_tvl(),
+        tvl::TvlResponse::Ok(tvl::TvlResult {
+            tvl: Nat::from(expected_tvl_in_usd),
+            time_sec: Nat::from(timestamp),
+        })
+    );
 }
 
 #[tokio::test]
