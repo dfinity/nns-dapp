@@ -121,7 +121,7 @@ describe("ImportTokenModal", () => {
 
       expect(get(busyStore)).toEqual([]);
       expectToastError(
-        "You cannot import SNS tokens, they are added automatically."
+        "You cannot import SNS tokens, they are added by the NNS."
       );
       expect(queryIcrcTokenSpy).toBeCalledTimes(0);
       // Stays on the form.
@@ -180,7 +180,7 @@ describe("ImportTokenModal", () => {
       await runResolvedPromises();
 
       expectToastError(
-        "Unable to load token details using the provided Ledger Canister ID. Not a ledger canister"
+        "Unable to load token details using the provided ledger canister ID. Not a ledger canister"
       );
 
       // Stays on the form.
@@ -278,7 +278,7 @@ describe("ImportTokenModal", () => {
     ).toEqual(true);
     expect(
       await reviewPo.getIndexCanisterIdPo().getCanisterIdFallbackText()
-    ).toEqual("Transaction history won’t be displayed.");
+    ).toEqual("Transaction history won't be displayed.");
   });
 
   it('should navigate back to form on "Back" button click', async () => {

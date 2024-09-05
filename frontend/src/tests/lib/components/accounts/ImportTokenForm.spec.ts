@@ -174,8 +174,6 @@ describe("ImportTokenForm", () => {
     expect((await po.getIndexCanisterInputPo().getText()).trim()).toEqual(
       "Index Canister ID"
     );
-    expect(await po.getSubmitButtonPo().getText()).toEqual(
-      "Add index canister"
-    );
+    expect(await po.getSubmitButtonPo().getText()).toEqual("Add");
   });
 });
