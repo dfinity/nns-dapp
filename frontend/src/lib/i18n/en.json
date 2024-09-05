@@ -1047,7 +1047,7 @@
     "importing": "Importing new token...",
     "removing": "Removing imported token...",
     "updating": "Updating imported token...",
-    "description": "You can import a new token to your NNS dapp wallet by providing its ledger canister ID. If you want to see your transaction history, you need to enter the token's index canister as well.",
+    "description": "You can import a new token to your NNS dapp wallet by providing its ledger canister ID.",
     "ledger_label": "Ledger Canister ID",
     "index_label_optional": "Index Canister ID <span class='description'>(Optional)</span>",
     "placeholder": "00000-00000-00000-00000-000",
