@@ -14,7 +14,7 @@ import {
   proposalsFiltersStore,
   proposalsStore,
 } from "$lib/stores/proposals.store";
-import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { IntersectionObserverActive } from "$tests/mocks/infinitescroll.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { NnsProposalListPo } from "$tests/page-objects/NnsProposalList.page-object";
@@ -62,30 +62,6 @@ describe("NnsProposals", () => {
   });
 
   describe("logged in user", () => {
-    describe("neurons", () => {
-      beforeEach(() => {
-        vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
-        actionableProposalsSegmentStore.set("all");
-      });
-
-      it("should load neurons", async () => {
-        await renderComponent();
-
-        await waitFor(() =>
-          expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
-            identity: mockIdentity,
-            certified: true,
-            includeEmptyNeurons: false,
-          })
-        );
-        expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
-          identity: mockIdentity,
-          certified: false,
-          includeEmptyNeurons: false,
-        });
-      });
-    });
-
     describe("Matching results", () => {
       beforeEach(() => {
         overrideFeatureFlagsStore.reset();
@@ -111,8 +87,42 @@ describe("NnsProposals", () => {
       });
 
       it("should render a skeleton while searching proposals", async () => {
+        let resolveQueryProposals;
+        vi.spyOn(proposalsApi, "queryProposals").mockImplementation(
+          () =>
+            new Promise<ProposalInfo[]>((resolve) => {
+              resolveQueryProposals = resolve;
+            })
+        );
+
         const po = await renderComponent();
 
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(true);
+
+        // Let the proposals load.
+        resolveQueryProposals(mockProposals);
+        await runResolvedPromises();
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
+      });
+
+      it("should reload transactions when proposal filter is set", async () => {
+        let resolveQueryProposals;
+        vi.spyOn(proposalsApi, "queryProposals").mockImplementation(
+          () => new Promise<ProposalInfo[]>((resolve) => {
+              resolveQueryProposals = resolve;
+            })
+        );
+
+        const po = await renderComponent();
+
+        // Let the proposals load the first time.
+        resolveQueryProposals(mockProposals);
+        resolveQueryProposals = undefined;
+
+        await runResolvedPromises();
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
+
+        // Setting the filter should reload the proposals.
         proposalsFiltersStore.filterTopics(DEFAULT_PROPOSALS_FILTERS.topics);
         await runResolvedPromises();
 
@@ -120,6 +130,11 @@ describe("NnsProposals", () => {
 
         // Stop waiting for the debounce to load proposals.
         await advanceTime();
+
+        // Let the proposals load the second time.
+        resolveQueryProposals(mockProposals);
+        await runResolvedPromises();
+
         expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
       });
 
@@ -155,11 +170,7 @@ describe("NnsProposals", () => {
 
         const po = await renderComponent();
 
-        proposalsFiltersStore.filterTopics(DEFAULT_PROPOSALS_FILTERS.topics);
-        await runResolvedPromises();
-
-        // Stop waiting for the debounce to load the first page of proposals.
-        await advanceTime();
+        // The first page of proposals loads immediately.
 
         // Now the infinite scroll is loading the second page of proposals.
         expect(await po.hasListLoaderSpinner()).toEqual(true);
