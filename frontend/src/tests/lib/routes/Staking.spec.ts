@@ -18,7 +18,10 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import {
+  mockSnsNeuron,
+  snsNervousSystemParametersMock,
+} from "$tests/mocks/sns-neurons.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { StakingPo } from "$tests/page-objects/Staking.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -224,6 +227,8 @@ describe("Staking", () => {
     const snsTransactionFee = 123_000n;
     const snsAccountBalance = 200_000_000n;
     const snsAccountBalanceFormatted = "2.00";
+    const snsMinimumStake = 0.5;
+    const snsMinimumStakeE8s = BigInt(snsMinimumStake * 100_000_000);
     let queryIcrcBalanceSpy;
     let stakeNeuronSpy;
 
@@ -256,6 +261,10 @@ describe("Staking", () => {
       vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([
         mockSnsNeuron,
       ]);
+      vi.spyOn(snsGovernanceApi, "nervousSystemParameters").mockResolvedValue({
+        ...snsNervousSystemParametersMock,
+        neuron_minimum_stake_e8s: [snsMinimumStakeE8s],
+      });
     });
 
     it("should open SNS stake neuron modal", async () => {
@@ -372,6 +381,26 @@ describe("Staking", () => {
       expect(
         await modal.getTransactionReviewPo().getTransactionDescription()
       ).toBe(`Stake ${snsTokenSymbol}`);
+    });
+
+    it("should enforce minimum stake", async () => {
+      const po = renderComponent();
+
+      const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
+      await rows[1].click();
+      const modal = po.getSnsStakeNeuronModalPo();
+      const form = modal.getTransactionFormPo();
+
+      await form.enterAmount(snsMinimumStake - 0.0001);
+      expect(await form.getAmountInputPo().hasError()).toBe(true);
+      expect(await form.getAmountInputPo().getErrorMessage()).toBe(
+        "Sorry, the amount is too small. You need to stake a minimum of 0.5 KLM."
+      );
+      expect(await form.isContinueButtonEnabled()).toBe(false);
+
+      await form.enterAmount(snsMinimumStake);
+      expect(await form.getAmountInputPo().hasError()).toBe(false);
+      expect(await form.isContinueButtonEnabled()).toBe(true);
     });
   });
 });
