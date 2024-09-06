@@ -30,6 +30,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Enforce minimum stake when staking SNS tokens from the staking table.
+
 #### Security
 
 #### Not Published
