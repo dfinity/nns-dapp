@@ -82,7 +82,7 @@
       }
     | undefined = undefined;
 
-  const openSnsStakingModal = (rootCanisterIdText: string) => {
+  const openSnsStakingModal = async (rootCanisterIdText: string) => {
     const summary = get(snsProjectsRecordStore)[rootCanisterIdText].summary;
 
     // Accounts need to be loaded to display the account and balance used for
@@ -91,7 +91,7 @@
       rootCanisterId: summary.rootCanisterId,
     });
     // SNS parameters need to be loaded for the minimum stake amount.
-    loadSnsParameters(summary.rootCanisterId);
+    await loadSnsParameters(summary.rootCanisterId);
 
     snsStakingModalData = {
       rootCanisterId: summary.rootCanisterId,
