@@ -1,4 +1,4 @@
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-29_01-30-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-09-06_01-30-canister-snapshots/rs/nns/governance/canister/governance.did>
 type AccountIdentifier = record {
   hash : blob;
 };
@@ -677,7 +677,6 @@ type NeuronsFundMatchedFundingCurveCoefficients = record {
 
 type NeuronsFundNeuron = record {
   controller : opt principal;
-  hotkey_principal : opt text;
   hotkeys : opt Principals;
   is_capped : opt bool;
   nns_neuron_id : opt nat64;
@@ -686,7 +685,6 @@ type NeuronsFundNeuron = record {
 
 type NeuronsFundNeuronPortion = record {
   controller : opt principal;
-  hotkey_principal : opt principal;
   hotkeys : vec principal;
   is_capped : opt bool;
   maturity_equivalent_icp_e8s : opt nat64;
@@ -783,9 +781,6 @@ type ProposalActionRequest = variant {
   CreateServiceNervousSystem : CreateServiceNervousSystem;
   ExecuteNnsFunction : ExecuteNnsFunction;
   RewardNodeProvider : RewardNodeProvider;
-  OpenSnsTokenSwap : OpenSnsTokenSwap;
-  SetSnsTokenSwapOpenTimeWindow : SetSnsTokenSwapOpenTimeWindow;
-  SetDefaultFollowees : SetDefaultFollowees;
   RewardNodeProviders : RewardNodeProviders;
   ManageNetworkEconomics : NetworkEconomics;
   ApproveGenesisKyc : Principals;
