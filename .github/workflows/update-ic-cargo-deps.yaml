@@ -23,7 +23,7 @@ jobs:
         run: if git diff --quiet --exit-code; then echo "updated=0" >> "$GITHUB_OUTPUT"; else echo "updated=1" >> "$GITHUB_OUTPUT"; fi
       - name: Create Pull Request
         if: ${{ steps.update.outputs.updated == '1' }}
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GIX_CREATE_PR_PAT }}
           base: main
