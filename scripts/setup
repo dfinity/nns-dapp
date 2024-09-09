@@ -311,8 +311,6 @@ command -v xz || "install_xz_$OS"
 have_correct_dfx || install_dfx
 command -v gtar || tar --help | grep GNU >/dev/null || "install_tar_$OS"
 command -v cmake || "install_cmake_$OS"
-command -V ic-admin || "install_ic_admin_$OS"
-command -v sns || "install_sns_$OS"
 command -v idl2json || install_idl2json
 command -v didc || "install_didc_$OS"
 command -v pocket-ic || "install_pocketic_$OS"
