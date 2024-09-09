@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-29_01-30-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-09-06_01-30-canister-snapshots/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -236,6 +236,17 @@ pub struct DeployGuestosToSomeApiBoundaryNodes {
 pub struct DeployHostosToSomeNodes {
     pub hostos_version_id: Option<String>,
     pub node_ids: Vec<Principal>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct GetApiBoundaryNodeIdsRequest {}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct ApiBoundaryNodeIdRecord {
+    pub id: Option<Principal>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub enum GetApiBoundaryNodeIdsResponse {
+    Ok(Vec<ApiBoundaryNodeIdRecord>),
+    Err(String),
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NodeOperatorRecord {
@@ -522,6 +533,12 @@ impl Service {
     }
     pub async fn deploy_hostos_to_some_nodes(&self, arg0: DeployHostosToSomeNodes) -> CallResult<()> {
         ic_cdk::call(self.0, "deploy_hostos_to_some_nodes", (arg0,)).await
+    }
+    pub async fn get_api_boundary_node_ids(
+        &self,
+        arg0: GetApiBoundaryNodeIdsRequest,
+    ) -> CallResult<(GetApiBoundaryNodeIdsResponse,)> {
+        ic_cdk::call(self.0, "get_api_boundary_node_ids", (arg0,)).await
     }
     pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
         ic_cdk::call(self.0, "get_build_metadata", ()).await

@@ -1,4 +1,4 @@
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-29_01-30-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-09-06_01-30-canister-snapshots/rs/registry/canister/canister/registry.did>
 // A brief note about the history of this file: This file used to be
 // automatically generated, but now, it is hand-crafted, because the
 // auto-generator has some some pretty degenerate behaviors. The worst of those
@@ -179,6 +179,19 @@ type FirewallRulesScope = variant {
   ApiBoundaryNodes;
   Subnet : principal;
   Global;
+};
+
+type GetApiBoundaryNodeIdsRequest = record {
+
+};
+
+type GetApiBoundaryNodeIdsResponse = variant {
+    Ok : vec ApiBoundaryNodeIdRecord;
+    Err : text;
+};
+
+type ApiBoundaryNodeIdRecord = record {
+  id : opt principal;
 };
 
 type GetNodeOperatorsAndDcsOfNodeProviderResponse = variant {
@@ -436,6 +449,7 @@ service : {
   ) -> ();
   deploy_guestos_to_some_api_boundary_nodes : (DeployGuestosToSomeApiBoundaryNodes) -> ();
   deploy_hostos_to_some_nodes : (DeployHostosToSomeNodes) -> ();
+  get_api_boundary_node_ids : (GetApiBoundaryNodeIdsRequest) -> (GetApiBoundaryNodeIdsResponse) query;
   get_build_metadata : () -> (text) query;
   get_node_operators_and_dcs_of_node_provider : (principal) -> (GetNodeOperatorsAndDcsOfNodeProviderResponse) query;
   get_node_providers_monthly_xdr_rewards : () -> (GetNodeProvidersMonthlyXdrRewardsResponse) query;
