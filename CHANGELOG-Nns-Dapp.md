@@ -11,6 +11,31 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 132374
+
+### Application
+
+#### Changed
+
+* Staking project rows are not clickable when not signed in.
+* Changes for cleaning up the stable structure migration.
+* Upgrade agent-js to version 2.
+
+#### Removed
+
+* Rendering for `InstallCode`, `BlessReplicaVersion` and `RetireReplicaVersion` proposals.
+* Message informing users of the System Canister Management topic split.
+
+#### Fixed
+
+* Enforce minimum stake when staking SNS tokens from the staking table.
+
+### Operations
+
+#### Changed
+
+* Change the release process to submitting `InstallCode` proposals.
+
 ## Proposal 132133
 
 ### Application

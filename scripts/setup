@@ -222,19 +222,6 @@ install_cmake_linux() {
   sudo apt-get install cmake
 }
 
-# Note: There is an open ticket to factor out all definitions of IC_ADMIN.
-install_ic_admin_linux() {
-  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/release/ic-admin.gz" | gunzip >"$USER_BIN/ic-admin"
-  chmod +x "$USER_BIN/ic-admin"
-}
-install_ic_admin_darwin() {
-  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/openssl-static-binaries/x86_64-darwin/ic-admin.gz" | gunzip >"$USER_BIN/ic-admin"
-  chmod +x "$USER_BIN/ic-admin"
-  # shellcheck disable=SC2016
-  command -v ic-admin ||
-    append_to_profile "export PATH=\"\$PATH:${USER_BIN}\""
-}
-
 check_ic_wasm() {
   EXPECTED_IC_WASM_VERSION="$(jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json)"
   INSTALLED_IC_WASM_VERSION="$(ic-wasm --version | awk '{print $2}')"
@@ -253,18 +240,6 @@ check_cargo_sort() {
 install_cargo_sort() {
   CARGO_SORT_VERSION="$(jq -r '.defaults.build.config.CARGO_SORT_VERSION' dfx.json)"
   cargo binstall --force --no-confirm "cargo-sort@${CARGO_SORT_VERSION}"
-}
-
-install_sns_linux() {
-  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/release/sns.gz" | gunzip >"$USER_BIN/sns"
-  chmod +x "$USER_BIN/sns"
-}
-install_sns_darwin() {
-  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/openssl-static-binaries/x86_64-darwin/sns.gz" | gunzip >"$USER_BIN/sns"
-  chmod +x "$USER_BIN/sns"
-  # shellcheck disable=SC2016
-  command -v sns ||
-    append_to_profile "export PATH=\"\$PATH:${USER_BIN}\""
 }
 
 install_idl2json() {
@@ -336,8 +311,6 @@ command -v xz || "install_xz_$OS"
 have_correct_dfx || install_dfx
 command -v gtar || tar --help | grep GNU >/dev/null || "install_tar_$OS"
 command -v cmake || "install_cmake_$OS"
-command -V ic-admin || "install_ic_admin_$OS"
-command -v sns || "install_sns_$OS"
 command -v idl2json || install_idl2json
 command -v didc || "install_didc_$OS"
 command -v pocket-ic || "install_pocketic_$OS"

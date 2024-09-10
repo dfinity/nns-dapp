@@ -17,15 +17,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* Staking project rows are not clickable when not signed in.
-* Changes for cleaning up the stable structure migration.
-* Upgrade agent-js to version 2.
-
 #### Deprecated
 
 #### Removed
-
-* Rendering for `InstallCode`, `BlessReplicaVersion` and `RetireReplicaVersion` proposals.
 
 #### Fixed
 
@@ -38,8 +32,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 #### Changed
-
-* Change the release process to submitting `InstallCode` proposals.
 
 #### Deprecated
 

@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-29_01-30-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-09-06_01-30-canister-snapshots/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -612,7 +612,6 @@ pub struct SwapParticipationLimits {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronsFundNeuronPortion {
     pub controller: Option<Principal>,
-    pub hotkey_principal: Option<Principal>,
     pub hotkeys: Vec<Principal>,
     pub is_capped: Option<bool>,
     pub maturity_equivalent_icp_e8s: Option<u64>,
@@ -944,9 +943,6 @@ pub enum ProposalActionRequest {
     CreateServiceNervousSystem(CreateServiceNervousSystem),
     ExecuteNnsFunction(ExecuteNnsFunction),
     RewardNodeProvider(RewardNodeProvider),
-    OpenSnsTokenSwap(OpenSnsTokenSwap),
-    SetSnsTokenSwapOpenTimeWindow(SetSnsTokenSwapOpenTimeWindow),
-    SetDefaultFollowees(SetDefaultFollowees),
     RewardNodeProviders(RewardNodeProviders),
     ManageNetworkEconomics(NetworkEconomics),
     ApproveGenesisKyc(Principals),
@@ -1070,7 +1066,6 @@ pub struct SettleNeuronsFundParticipationRequest {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronsFundNeuron {
     pub controller: Option<Principal>,
-    pub hotkey_principal: Option<String>,
     pub hotkeys: Option<Principals>,
     pub is_capped: Option<bool>,
     pub nns_neuron_id: Option<u64>,

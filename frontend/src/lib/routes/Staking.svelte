@@ -11,6 +11,7 @@
   import NnsStakeNeuronModal from "$lib/modals/neurons/NnsStakeNeuronModal.svelte";
   import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";
   import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
+  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
@@ -81,7 +82,7 @@
       }
     | undefined = undefined;
 
-  const openSnsStakingModal = (rootCanisterIdText: string) => {
+  const openSnsStakingModal = async (rootCanisterIdText: string) => {
     const summary = get(snsProjectsRecordStore)[rootCanisterIdText].summary;
 
     // Accounts need to be loaded to display the account and balance used for
@@ -89,6 +90,8 @@
     loadSnsAccounts({
       rootCanisterId: summary.rootCanisterId,
     });
+    // SNS parameters need to be loaded for the minimum stake amount.
+    await loadSnsParameters(summary.rootCanisterId);
 
     snsStakingModalData = {
       rootCanisterId: summary.rootCanisterId,

@@ -1,17 +1,14 @@
 <script lang="ts">
   import NnsProposalsList from "$lib/components/proposals/NnsProposalsList.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
   import {
-    sortedProposals,
     filteredProposals,
+    sortedProposals,
   } from "$lib/derived/proposals.derived";
   import {
     listNextProposals,
     listProposals,
   } from "$lib/services/$public/proposals.services";
-  import { listNeurons } from "$lib/services/neurons.services";
-  import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import {
     proposalsFiltersStore,
     proposalsStore,
@@ -29,10 +26,6 @@
 
   // It's exported so that we can test the value
   export let disableInfiniteScroll = false;
-
-  $: if ($authSignedInStore) {
-    listNeurons();
-  }
 
   let loading = true;
   let hidden = false;
@@ -119,12 +112,7 @@
     debounceFindProposals?.();
   };
 
-  // Neurons and proposals are loaded at the same time. But once neurons are
-  // loaded, proposals are loaded again. So it's possible that the component
-  // goes back into loading state immediately after proposals are loaded.
-  // TODO: Fix NnsProposals to load proposals only once and remove the
-  // work-around from NnsProposalList.page-object.ts
-  $: $definedNeuronsStore, $proposalsFiltersStore, applyFilter();
+  $: $proposalsFiltersStore, applyFilter();
 
   const updateNothingFound = () => {
     // Update the "nothing found" UI information only when the results of the certified query has been received to minimize UI glitches

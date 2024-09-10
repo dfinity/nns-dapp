@@ -63,7 +63,6 @@ test("Test neuron voting", async ({ page, context }) => {
 
   step("Open proposals list");
   await appPo.goToProposals();
-  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
 
   step("Open Internet Computer proposals");
   await appPo.openUniverses();
