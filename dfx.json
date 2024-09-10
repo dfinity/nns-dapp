@@ -386,7 +386,7 @@
         "DIDC_VERSION": "2024-05-14",
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2024-09-04",
+        "SNSDEMO_RELEASE": "release-2024-09-10",
         "IC_COMMIT_FOR_PROPOSALS": "release-2024-09-06_01-30-canister-snapshots",
         "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-09-06_01-30-canister-snapshots"
       },
