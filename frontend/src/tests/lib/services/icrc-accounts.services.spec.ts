@@ -432,6 +432,70 @@ describe("icrc-accounts-services", () => {
 
       expect(ledgerApi.queryIcrcToken).not.toBeCalled();
     });
+
+    it("displays a toast on error", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(
+        new Error("test")
+      );
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+      expect(get(toastsStore)).toMatchObject([]);
+      await loadIcrcToken({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcToken).toBeCalledTimes(2);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, there was an error loading the token metadata information. test",
+        },
+      ]);
+    });
+
+    it("doesn't load imported token if in failed imported tokens store", async () => {
+      failedImportedTokenLedgerIdsStore.add(ledgerCanisterId);
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+      await loadIcrcToken({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+    });
+
+    it("updates failed imported tokens store on error", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(new Error());
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([]);
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+      await loadIcrcToken({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcToken).toBeCalledTimes(2);
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([
+        ledgerCanisterId,
+      ]);
+    });
+
+    it("don't display toast errors when imported token fails to load", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(
+        new Error("test")
+      );
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+      expect(get(toastsStore)).toMatchObject([]);
+      await loadIcrcToken({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcToken).toBeCalledTimes(2);
+      expect(get(toastsStore)).toMatchObject([]);
+    });
   });
 
   describe("transferTokens", () => {
