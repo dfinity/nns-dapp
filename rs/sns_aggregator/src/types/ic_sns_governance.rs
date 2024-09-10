@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-08-29_01-30-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-09-06_01-30-canister-snapshots/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -509,19 +509,8 @@ pub struct NeuronRecipes {
     pub neuron_recipes: Vec<NeuronRecipe>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct NeuronParameters {
-    pub controller: Option<Principal>,
-    pub dissolve_delay_seconds: Option<u64>,
-    pub source_nns_neuron_id: Option<u64>,
-    pub stake_e8s: Option<u64>,
-    pub followees: Vec<NeuronId>,
-    pub hotkey: Option<Principal>,
-    pub neuron_id: Option<NeuronId>,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ClaimSwapNeuronsRequest {
     pub neuron_recipes: Option<NeuronRecipes>,
-    pub neuron_parameters: Vec<NeuronParameters>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SwapNeuron {
