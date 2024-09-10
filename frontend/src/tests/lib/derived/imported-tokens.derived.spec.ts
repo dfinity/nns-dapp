@@ -3,7 +3,7 @@ import {
   failedImportedTokenLedgerIdsStore,
   importedTokensStore,
 } from "$lib/stores/imported-tokens.store";
-import { ImportedTokenData } from "$lib/types/imported-tokens";
+import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
 
