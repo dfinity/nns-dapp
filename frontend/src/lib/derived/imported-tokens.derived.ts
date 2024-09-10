@@ -6,10 +6,10 @@ import { derived } from "svelte/store";
 
 export const loadedImportedTokensStore = derived(
   [importedTokensStore, failedImportedTokenLedgerIdsStore],
-  ([importedTokensStore, failedImportedTokensStore]) => {
+  ([importedTokensStore, failedImportedTokenLedgerIds]) => {
     return (importedTokensStore.importedTokens ?? []).filter(
       ({ ledgerCanisterId }) =>
-        !failedImportedTokensStore.some(
+        !failedImportedTokenLedgerIds.some(
           (id) => id.toText() === ledgerCanisterId.toText()
         )
     );
