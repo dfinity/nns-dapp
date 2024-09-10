@@ -243,7 +243,7 @@ jobs:
         run: scripts/nns-dapp/e2e-test-metrics-present
       - name: Test TVL
         run: |
-          scripts/nns-dapp/test-tvl --nns_dapp_wasm nns-dapp.wasm.gz --nns_dapp_args nns-dapp-arg-local.did
+          scripts/nns-dapp/test-tvl --nns_dapp_wasm nns-dapp.wasm.gz --nns_dapp_arg nns-dapp-arg-local.did
       - name: Release
         run: |
           for tag in $(git tag --points-at HEAD) ; do
