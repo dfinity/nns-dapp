@@ -68,8 +68,10 @@ describe("imported-tokens-store", () => {
       failedImportedTokenLedgerIdsStore.add(canisterIdA);
       expect(get(failedImportedTokenLedgerIdsStore)).toEqual([canisterIdA]);
       failedImportedTokenLedgerIdsStore.add(canisterIdB);
-      expect(get(failedImportedTokenLedgerIdsStore)).toContain(canisterIdA);
-      expect(get(failedImportedTokenLedgerIdsStore)).toContain(canisterIdB);
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([
+        canisterIdA,
+        canisterIdB,
+      ]);
     });
 
     it("should not add duplicates", () => {
