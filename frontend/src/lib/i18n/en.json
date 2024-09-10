@@ -144,7 +144,10 @@
   "header": {
     "menu": "Open menu to access navigation options",
     "logout": "Logout",
-    "account_menu": "Open menu to access logout button"
+    "account_menu": "Open menu to access logout button",
+    "main_icp_account_id": "Main ICP Account ID",
+    "principal_id": "Principal ID",
+    "account_id_tooltip": "You can send ICP both to your principal ID and account ID, however some exchanges or wallets may not support transactions using a principal ID."
   },
   "auth": {
     "login": "Sign in with Internet Identity",

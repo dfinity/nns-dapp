@@ -1,5 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { TooltipIconPo } from "./TooltipIcon.page-object";
 
 export class AccountMenuPo extends BasePageObject {
   private static readonly TID = "account-menu-component";
@@ -18,5 +19,11 @@ export class AccountMenuPo extends BasePageObject {
 
   clickCanisters(): Promise<void> {
     return this.click("canisters-button");
+  }
+
+  getMainIcpAccountIdTooltipIconPo(): TooltipIconPo {
+    return TooltipIconPo.under(
+      this.root.byTestId("main-icp-account-id-wrapper")
+    );
   }
 }

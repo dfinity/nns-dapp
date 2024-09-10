@@ -5,6 +5,7 @@
   import SourceCodeButton from "$lib/components/header/SourceCodeButton.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { i18n } from "$lib/stores/i18n";
+  import AccountDetails from "./AccountDetails.svelte";
 
   import CanistersButton from "./CanistersButton.svelte";
   import LoginIconOnly from "./LoginIconOnly.svelte";
@@ -31,6 +32,8 @@
 
     <Popover bind:visible anchor={button} direction="rtl">
       <div class="info">
+        <AccountDetails />
+
         <ThemeToggle />
 
         <ManageInternetIdentityButton />
