@@ -1,7 +1,5 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import Hash from "$lib/components/ui/Hash.svelte";
-  import { IconInfo, Tooltip } from "@dfinity/gix-components";
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import TooltipIcon from "../ui/TooltipIcon.svelte";
