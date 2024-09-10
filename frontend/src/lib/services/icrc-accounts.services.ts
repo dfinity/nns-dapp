@@ -11,12 +11,17 @@ import {
 } from "$lib/services/auth.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
+import {
+  failedImportedTokenLedgerIdsStore,
+  importedTokensStore,
+} from "$lib/stores/imported-tokens.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
+import { isImportedToken } from "$lib/utils/imported-tokens.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import type { Identity } from "@dfinity/agent";
 import {
@@ -28,6 +33,11 @@ import type { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
+
+const isFailedImportedToken = (ledgerCanisterId: Principal) =>
+  get(failedImportedTokenLedgerIdsStore).some(
+    (id) => id.toText() === ledgerCanisterId.toText()
+  );
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
@@ -59,6 +69,10 @@ export const loadIcrcToken = ({
     // SNS tokens are derived from aggregator data instead.
     return;
   }
+  if (isFailedImportedToken(ledgerCanisterId)) {
+    // Ensures that imported tokens that failed to load are not fetched again.
+    return;
+  }
 
   const currentToken = get(tokensStore)[ledgerCanisterId.toText()];
 
@@ -82,11 +96,21 @@ export const loadIcrcToken = ({
         return;
       }
 
-      // Explicitly handle only UPDATE errors
-      toastsError({
-        labelKey: "error.token_not_found",
-        err,
-      });
+      if (
+        isImportedToken({
+          ledgerCanisterId,
+          importedTokens: get(importedTokensStore)?.importedTokens,
+        })
+      ) {
+        // Do not display error toasts for imported tokens, as this is not an NNS-dapp error.
+        failedImportedTokenLedgerIdsStore.add(ledgerCanisterId);
+      } else {
+        // Explicitly handle only UPDATE errors
+        toastsError({
+          labelKey: "error.token_not_found",
+          err,
+        });
+      }
 
       // Hide unproven data
       tokensStore.resetUniverse(ledgerCanisterId);
@@ -141,6 +165,11 @@ export const loadAccounts = async ({
   ledgerCanisterId: Principal;
   strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
+  if (isFailedImportedToken(ledgerCanisterId)) {
+    // Ensures that imported tokens that failed to load are not fetched again.
+    return;
+  }
+
   return queryAndUpdate<Account[], unknown>({
     strategy,
     request: ({ certified, identity }) =>
@@ -165,12 +194,22 @@ export const loadAccounts = async ({
       icrcAccountsStore.reset();
       icrcTransactionsStore.resetUniverse(ledgerCanisterId);
 
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error.accounts_load",
+      if (
+        isImportedToken({
+          ledgerCanisterId,
+          importedTokens: get(importedTokensStore)?.importedTokens,
         })
-      );
+      ) {
+        // Do not display error toasts for imported tokens, as this is not an NNS-dapp error.
+        failedImportedTokenLedgerIdsStore.add(ledgerCanisterId);
+      } else {
+        toastsError(
+          toToastError({
+            err,
+            fallbackErrorLabelKey: "error.accounts_load",
+          })
+        );
+      }
 
       handleError?.();
     },
