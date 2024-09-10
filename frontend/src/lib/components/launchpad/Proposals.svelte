@@ -1,6 +1,6 @@
 <script lang="ts">
   import SkeletonProposalCard from "$lib/components/ui/SkeletonProposalCard.svelte";
-  import { loadProposalsSnsCF } from "$lib/services/$public/sns.services";
+  import { loadProposalsSnsCF } from "$lib/services/public/sns.services";
   import { i18n } from "$lib/stores/i18n";
   import {
     openSnsProposalsStore,

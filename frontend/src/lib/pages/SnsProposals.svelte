@@ -10,7 +10,7 @@
     snsOnlyProjectStore,
     snsProjectSelectedStore,
   } from "$lib/derived/sns/sns-selected-project.derived";
-  import { loadSnsProposals } from "$lib/services/$public/sns-proposals.services";
+  import { loadSnsProposals } from "$lib/services/public/sns-proposals.services";
   import { loadSnsFilters } from "$lib/services/sns-filters.services";
   import {
     actionableSnsProposalsStore,

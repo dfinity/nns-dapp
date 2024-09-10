@@ -17,7 +17,7 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
-vi.mock("$lib/services/$public/sns.services", () => {
+vi.mock("$lib/services/public/sns.services", () => {
   return {
     loadProposalsSnsCF: vi.fn().mockResolvedValue(Promise.resolve()),
   };

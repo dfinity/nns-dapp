@@ -7,8 +7,8 @@ import {
   CKETH_LEDGER_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
-import { initAppPublicData } from "$lib/services/$public/app.services";
-import { loadSnsProjects } from "$lib/services/$public/sns.services";
+import { initAppPublicData } from "$lib/services/public/app.services";
+import { loadSnsProjects } from "$lib/services/public/sns.services";
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -17,13 +17,13 @@ import { get } from "svelte/store";
 
 vi.mock("$lib/api/icrc-ledger.api");
 
-vi.mock("$lib/services/$public/sns.services", () => {
+vi.mock("$lib/services/public/sns.services", () => {
   return {
     loadSnsProjects: vi.fn().mockResolvedValue(Promise.resolve()),
   };
 });
 
-describe("$public/app-services", () => {
+describe("public/app-services", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     defaultIcrcCanistersStore.reset();

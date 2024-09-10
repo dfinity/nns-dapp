@@ -4,7 +4,7 @@ import {
   getSnsProposalById,
   loadSnsProposals,
   registerVote,
-} from "$lib/services/$public/sns-proposals.services";
+} from "$lib/services/public/sns-proposals.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";

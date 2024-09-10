@@ -1,7 +1,7 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ProposalSummary from "$lib/components/proposal-detail/ProposalSummary.svelte";
-  import { loadProposal } from "$lib/services/$public/proposals.services";
+  import { loadProposal } from "$lib/services/public/proposals.services";
   import { getVoteDisplay } from "$lib/utils/proposals.utils";
   import { KeyValuePairInfo, SkeletonText } from "@dfinity/gix-components";
   import type { BallotInfo, ProposalId, ProposalInfo } from "@dfinity/nns";

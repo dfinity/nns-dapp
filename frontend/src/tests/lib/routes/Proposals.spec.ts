@@ -12,13 +12,13 @@ import { ProposalsPo } from "$tests/page-objects/Proposals.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 
-vi.mock("$lib/services/$public/proposals.services", () => {
+vi.mock("$lib/services/public/proposals.services", () => {
   return {
     listProposals: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-vi.mock("$lib/services/$public/sns-proposals.services", () => {
+vi.mock("$lib/services/public/sns-proposals.services", () => {
   return {
     loadSnsProposals: vi.fn().mockResolvedValue(undefined),
   };
