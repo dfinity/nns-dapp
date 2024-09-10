@@ -176,18 +176,31 @@ impl From<DefaultMemoryImpl> for State {
 
 impl StableState for State {
     fn encode(&self) -> Vec<u8> {
-        // TODO: Encode TVL state.
-        Candid((self.accounts_store.borrow().encode(), self.assets.borrow().encode()))
-            .into_bytes()
-            .unwrap()
+        Candid((
+            self.accounts_store.borrow().encode(),
+            self.assets.borrow().encode(),
+            self.tvl_state.borrow().encode(),
+        ))
+        .into_bytes()
+        .unwrap()
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
-        let (account_store_bytes, assets_bytes) = Candid::from_bytes(bytes).map(|c| c.0)?;
+        let (
+            account_store_bytes,
+            assets_bytes,
+            // TODO(NNS1-3281): Restore TVL state from stable memory after we've
+            // had a release that has written the TVL state to stable memory.
+            // tvl_state_bytes,
+        ) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
         let assets = Assets::decode(assets_bytes)?;
         let asset_hashes = AssetHashes::from(&assets);
         let performance = PerformanceCounts::default();
+        let tvl_state = TvlState::default();
+        // TODO(NNS1-3281): Restore TVL state from stable memory after we've had
+        // a release that has written the TVL state to stable memory.  let
+        // let tvl_state = TvlState::decode(tvl_state_bytes)?;
 
         Ok(State {
             accounts_store: RefCell::new(AccountsStore::decode(account_store_bytes)?),
@@ -195,8 +208,7 @@ impl StableState for State {
             asset_hashes: RefCell::new(asset_hashes),
             performance: RefCell::new(performance),
             partitions_maybe: RefCell::new(PartitionsMaybe::None(DefaultMemoryImpl::default())),
-            // TODO: Decode TVL state from bytes.
-            tvl_state: RefCell::new(TvlState::default()),
+            tvl_state: RefCell::new(tvl_state),
         })
     }
 }
