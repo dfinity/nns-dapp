@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+
+print_help() {
+  cat <<-EOF
+
+	Sets mock exchange rate and tests that nns-dapp uses it for the TVL
+	calculation.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=w long=nns_dapp_wasm desc="The NNS dapp wasm to install to calculate the new TVL value" variable=NNS_DAPP_WASM default="nns-dapp.wasm.gz"
+clap.define short=a long=nns_dapp_arg desc="The argument file to use when installing the nns-dapp" variable=NNS_DAPP_ARG default="nns-dapp-arg-local.did"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+E8S_PER_UNIT="100000000"
+TOTAL_ICP_LOCKED_E8S="$(dfx canister call nns-governance get_metrics | idl2json | jq -r '.Ok.total_locked_e8s')"
+
+test_exchange_rate() {
+  exchange_rate="$1"
+  exchange_rate_e8s="$(echo "$exchange_rate $E8S_PER_UNIT" | awk '{ printf "%d\n", $1 * $2 }')"
+  expected_tvl="$(echo "$TOTAL_ICP_LOCKED_E8S $exchange_rate $E8S_PER_UNIT" | awk '{ printf "%d\n", $1 * $2 / $3}')"
+
+  dfx canister call xrc set_exchange_rate "(record{base_asset=\"ICP\"; quote_asset=\"USD\"; rate=$exchange_rate_e8s:nat64})"
+
+  # We upgrade nns-dapp to avoid waiting for its timer to update the TVL value.
+  dfx canister install nns-dapp --wasm "$NNS_DAPP_WASM" --upgrade-unchanged --mode upgrade --yes -v --argument "$(cat "$NNS_DAPP_ARG")"
+
+  actual_tvl="$(dfx canister call nns-dapp get_tvl | idl2json | jq -r '.Ok.tvl' | sed -e 's/_//g')"
+
+  if [[ "$actual_tvl" -ne "$expected_tvl" ]]; then
+    echo "Expected TVL: $expected_tvl, Actual TVL: $actual_tvl"
+    exit 1
+  fi
+}
+
+test_exchange_rate "10"
+test_exchange_rate "12.34567891"
+test_exchange_rate "0.00012345"
+test_exchange_rate "12345.87654321"
