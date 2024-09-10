@@ -15,4 +15,8 @@ export class AccountMenuPo extends BasePageObject {
   clickLogout(): Promise<void> {
     return this.click("logout");
   }
+
+  clickCanisters(): Promise<void> {
+    return this.click("canisters-button");
+  }
 }
