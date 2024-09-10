@@ -15,6 +15,10 @@ import {
 } from "$lib/services/icrc-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
+import {
+  failedImportedTokenLedgerIdsStore,
+  importedTokensStore,
+} from "$lib/stores/imported-tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -27,6 +31,7 @@ import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import { tick } from "svelte";
@@ -45,6 +50,9 @@ describe("icrc-accounts-services", () => {
     resetIdentity();
     tokensStore.reset();
     icrcAccountsStore.reset();
+    importedTokensStore.reset();
+    failedImportedTokenLedgerIdsStore.reset();
+    toastsStore.reset();
     resetSnsProjects();
 
     vi.spyOn(ledgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
@@ -207,6 +215,70 @@ describe("icrc-accounts-services", () => {
       expect(
         transactionsStore[CKBTC_UNIVERSE_CANISTER_ID.toText()]
       ).toBeUndefined();
+    });
+
+    it("displays a toast on error", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(
+        new Error("test")
+      );
+      expect(ledgerApi.queryIcrcBalance).not.toBeCalled();
+      expect(get(toastsStore)).toMatchObject([]);
+      await loadAccounts({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcBalance).toBeCalledTimes(2);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "An error occurred while loading the accounts. test",
+        },
+      ]);
+    });
+
+    it("doesn't load imported token if in failed imported tokens store", async () => {
+      failedImportedTokenLedgerIdsStore.add(ledgerCanisterId);
+      expect(ledgerApi.queryIcrcBalance).not.toBeCalled();
+      await loadAccounts({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcBalance).not.toBeCalled();
+    });
+
+    it("updates failed imported tokens store on error", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(new Error());
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+
+      expect(ledgerApi.queryIcrcBalance).not.toBeCalled();
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([]);
+      await loadAccounts({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcBalance).toBeCalledTimes(2);
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([
+        ledgerCanisterId,
+      ]);
+    });
+
+    it("don't display toast errors when imported token fails to load", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(
+        new Error("test")
+      );
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+      expect(ledgerApi.queryIcrcBalance).not.toBeCalled();
+      expect(get(toastsStore)).toMatchObject([]);
+      await loadAccounts({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcBalance).toBeCalledTimes(2);
+      expect(get(toastsStore)).toMatchObject([]);
     });
   });
 
