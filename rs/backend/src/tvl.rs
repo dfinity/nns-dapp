@@ -25,8 +25,11 @@ pub enum TvlResponse {
     Ok(TvlResult),
 }
 
-// TODO(NNS1-3281): Remove #[allow(unused)].
-#[allow(unused)]
+pub fn init_timers() {
+    start_updating_exchange_rate_in_background();
+    start_updating_locked_icp_in_the_background();
+}
+
 pub fn start_updating_exchange_rate_in_background() {
     set_timer_interval(Duration::from_secs(UPDATE_INTERVAL_SECONDS), || {
         spawn::spawn(update_exchange_rate());
@@ -38,8 +41,6 @@ pub fn start_updating_exchange_rate_in_background() {
     });
 }
 
-// TODO(NNS1-3281): Remove #[allow(unused)].
-#[allow(unused)]
 fn start_updating_locked_icp_in_the_background() {
     set_timer_interval(Duration::from_secs(UPDATE_INTERVAL_SECONDS), || {
         spawn::spawn(update_locked_icp_e8s());
@@ -72,8 +73,6 @@ fn convert_to_e8s(amount: u64, decimals: u32) -> u64 {
     }
 }
 
-// TODO(NNS1-3281): Remove #[allow(unused)].
-#[allow(unused)]
 pub async fn update_exchange_rate() {
     // We query XRC data slightly in the past to be sure to have a price with consensus.
     //
@@ -140,8 +139,6 @@ pub async fn update_exchange_rate() {
     ic_cdk::println!("Updated usd_e8s_per_icp for TVL to {}", usd_e8s_per_icp);
 }
 
-// TODO(NNS1-3281): Remove #[allow(unused)].
-#[allow(unused)]
 pub async fn update_locked_icp_e8s() {
     let metrics_result = governance::get_metrics().await;
     STATE.with(|s| {
@@ -168,8 +165,6 @@ pub async fn update_locked_icp_e8s() {
     });
 }
 
-// TODO(NNS1-3281): Remove #[allow(unused)].
-#[allow(unused)]
 pub fn get_tvl() -> TvlResponse {
     STATE.with(|s| {
         let state = s.tvl_state.borrow();
