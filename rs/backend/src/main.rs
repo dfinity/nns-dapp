@@ -10,6 +10,7 @@ use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
 use crate::perf::PerformanceCount;
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
+use crate::tvl::TvlResponse;
 use candid::candid_method;
 
 use accounts_store::schema::proxy::AccountsDbAsProxy;
@@ -58,6 +59,7 @@ fn init(args: Option<CanisterArguments>) {
     });
     // Legacy:
     assets::init_assets();
+    tvl::init_timers();
     perf::record_instruction_count("init stop");
     println!("END   init with args");
 }
@@ -100,6 +102,7 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
     set_canister_arguments(args_maybe);
     perf::record_instruction_count("post_upgrade after set_canister_arguments");
     assets::init_assets();
+    tvl::init_timers();
     perf::record_instruction_count("post_upgrade stop");
     println!("END   post-upgrade");
 }
@@ -492,6 +495,16 @@ fn get_exceptional_transactions_impl() -> Option<Vec<u64>> {
             .as_ref()
             .map(|transactions| transactions.iter().copied().collect::<Vec<u64>>())
     })
+}
+
+#[export_name = "canister_query get_tvl"]
+pub fn get_tvl() {
+    over(candid, |()| get_tvl_impl());
+}
+
+#[candid_method(query, rename = "get_tvl")]
+fn get_tvl_impl() -> TvlResponse {
+    tvl::get_tvl()
 }
 
 #[derive(CandidType)]

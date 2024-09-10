@@ -210,6 +210,17 @@ type GetImportedTokensResponse =
         AccountNotFound;
     };
 
+type TvlResult =
+    record {
+        tvl : nat;
+        time_sec: nat
+    };
+
+type TvlResponse =
+    variant {
+        Ok : TvlResult;
+    };
+
 service: (opt Config) -> {
     get_account: () -> (GetAccountResponse) query;
     add_account: () -> (AccountIdentifier);
@@ -226,6 +237,7 @@ service: (opt Config) -> {
     get_stats: () -> (Stats) query;
     get_histogram: () -> (Histogram) query;
     get_exceptional_transactions: () -> (opt vec nat64) query;
+    get_tvl : () -> (TvlResponse) query;
 
     http_request: (request: HttpRequest) -> (HttpResponse) query;
     add_stable_asset: (asset: blob) -> ();

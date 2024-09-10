@@ -9,6 +9,7 @@ canister_query get_exceptional_transactions
 canister_query get_histogram
 canister_query get_imported_tokens
 canister_query get_stats
+canister_query get_tvl
 canister_query http_request
 canister_update <ic-cdk internal> timer_executor
 canister_update add_account
