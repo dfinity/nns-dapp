@@ -1,6 +1,9 @@
 import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
-import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+import {
+  failedImportedTokenLedgerIdsStore,
+  importedTokensStore,
+} from "$lib/stores/imported-tokens.store";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
 
@@ -12,6 +15,7 @@ describe("icrcCanistersStore", () => {
   beforeEach(() => {
     defaultIcrcCanistersStore.reset();
     importedTokensStore.reset();
+    failedImportedTokenLedgerIdsStore.reset();
   });
 
   it("returns empty object when no icrc tokens are present", () => {
@@ -48,6 +52,21 @@ describe("icrcCanistersStore", () => {
         ledgerCanisterId,
       },
     });
+  });
+
+  it("ignores failed imported tokens", () => {
+    importedTokensStore.set({
+      importedTokens: [
+        {
+          ledgerCanisterId,
+          indexCanisterId: undefined,
+        },
+      ],
+      certified: true,
+    });
+    failedImportedTokenLedgerIdsStore.add(ledgerCanisterId);
+
+    expect(get(icrcCanistersStore)).toEqual({});
   });
 
   it("return data from the defaultIcrcCanistersStore and the importedTokensStore", () => {
