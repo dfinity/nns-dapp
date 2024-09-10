@@ -15,6 +15,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Added `get_tvl` method to `nns-dapp` canister.
+
 #### Changed
 
 #### Deprecated
