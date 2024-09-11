@@ -75,7 +75,7 @@ runs:
         list_changed_or_new_screenshots() {
           git status --short --porcelain -- frontend/src/tests/e2e/screenshots | awk '{print $2}'
         }
-        if [[ "$(list_changed_or_new_screenshots)" -ne "" ]]; then
+        if [[ -n "$(list_changed_or_new_screenshots)" ]]; then
           echo "screenshots<<EOF" >> "$GITHUB_OUTPUT"
           list_changed_or_new_screenshots >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
