@@ -4,6 +4,7 @@
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import TooltipIcon from "../ui/TooltipIcon.svelte";
   import IdentifierHash from "../ui/IdentifierHash.svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   let principalId: string | undefined;
   let accountId: string | undefined;
@@ -12,9 +13,9 @@
   $: accountId = $icpAccountsStore.main?.identifier;
 </script>
 
-{#if accountId || principalId}
+{#if nonNullish(accountId) || nonNullish(principalId)}
   <div class="account-details" data-tid="account-details-container">
-    {#if accountId}
+    {#if nonNullish(accountId)}
       <div class="detail-row">
         <span class="description">{$i18n.header.main_icp_account_id}</span>
         <div class="id-container" data-tid="main-icp-account-id-container">
@@ -26,7 +27,7 @@
         </div>
       </div>
     {/if}
-    {#if principalId}
+    {#if nonNullish(principalId)}
       <div class="detail-row" data-tid="principal-id-container">
         <span class="description">{$i18n.core.principal_id}</span>
         <div class="id-container">
