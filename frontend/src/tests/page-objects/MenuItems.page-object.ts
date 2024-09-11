@@ -34,6 +34,11 @@ export class MenuItemsPo extends BasePageObject {
     return this.click("menuitem-canisters");
   }
 
+  async getSourceCodeButtonLink(): Promise<string | null> {
+    const element = await this.root.byTestId("source-code-link");
+    return element ? await element.getAttribute("href") : "null";
+  }
+
   getGetTokensPo(): GetTokensPo {
     return GetTokensPo.under(this.root);
   }

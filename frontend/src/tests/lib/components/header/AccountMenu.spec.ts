@@ -63,14 +63,6 @@ describe("AccountMenu", () => {
       expect(renderResult.getByTestId("manage-ii-link")).not.toBeNull();
     });
 
-    it('should display "Source code" button if signed in', async () => {
-      const renderResult = render(AccountMenu);
-
-      await show(renderResult);
-
-      expect(renderResult.getByTestId("source-code-link")).not.toBeNull();
-    });
-
     it("should close popover on click on settings", async () => {
       const renderResult = render(AccountMenu);
 
