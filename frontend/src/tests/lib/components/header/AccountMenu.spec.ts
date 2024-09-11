@@ -1,5 +1,9 @@
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
-import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockIdentity,
+  resetIdentity,
+  setNoIdentity,
+} from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { AccountMenuPo } from "$tests/page-objects/AccountMenu.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -90,8 +94,12 @@ describe("AccountMenu", () => {
     });
 
     it("should display main ICP account ID if available", async () => {
+      const accountIdForTesting = "82376428374628347628347263847263847623";
       setAccountsForTesting({
-        main: mockMainAccount,
+        main: {
+          ...mockMainAccount,
+          identifier: accountIdForTesting,
+        },
       });
 
       const renderResult = render(AccountMenu);
@@ -106,7 +114,7 @@ describe("AccountMenu", () => {
 
       const mainAccountId = await accountDetailsPo.getMainIcpAccountId();
 
-      expect(mainAccountId).toContain("d4685b3...711682f");
+      expect(mainAccountId).toBe(accountIdForTesting);
     });
 
     it("should display principal ID if available", async () => {
@@ -120,8 +128,8 @@ describe("AccountMenu", () => {
 
       await show(renderResult);
 
-      expect(await accountDetailsPo.getPrincipalId()).toContain(
-        "xlmdg-v...4rh-oqe"
+      expect(await accountDetailsPo.getPrincipalId()).toBe(
+        mockIdentity.getPrincipal().toText()
       );
     });
 

@@ -32,11 +32,11 @@ export class AccountDetailsPo extends BasePageObject {
   }
 
   async getMainIcpAccountId(): Promise<string> {
-    return this.getMainIcpAccountIdPo().getDisplayedText();
+    return this.getMainIcpAccountIdPo().getFullText();
   }
 
   async getPrincipalId(): Promise<string> {
-    return this.getPrincipalIdPo().getDisplayedText();
+    return this.getPrincipalIdPo().getFullText();
   }
 
   async getMainIcpAccountIdTooltipText(): Promise<string> {
