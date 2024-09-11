@@ -1,11 +1,18 @@
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
+import { AccountMenuPo } from "$tests/page-objects/AccountMenu.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("AccountMenu", () => {
   const show = async ({ container, getByRole }) => {
     await fireEvent.click(container.querySelector("button.toggle"));
     await waitFor(() => expect(getByRole("menu")).not.toBeNull());
+  };
+
+  const renderComponent = () => {
+    const { container } = render(AccountMenu);
+    return AccountMenuPo.under(new JestPageObjectElement(container));
   };
 
   it("should be closed by default", () => {
@@ -72,11 +79,11 @@ describe("AccountMenu", () => {
     });
 
     it('should display "Canisters" button if signed in', async () => {
-      const renderResult = render(AccountMenu);
+      const AccountMenuPo = renderComponent();
 
-      await show(renderResult);
+      await AccountMenuPo.openMenu();
 
-      expect(renderResult.getByTestId("canisters-button")).not.toBeNull();
+      expect(await AccountMenuPo.getCanistersButtonPo().isPresent()).toBe(true);
     });
 
     it("should close popover on click on settings", async () => {

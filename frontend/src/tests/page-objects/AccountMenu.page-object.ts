@@ -16,6 +16,10 @@ export class AccountMenuPo extends BasePageObject {
     return this.click("logout");
   }
 
+  getCanistersButtonPo(): PageObjectElement {
+    return this.root.byTestId("canisters-button");
+  }
+
   clickCanisters(): Promise<void> {
     return this.click("canisters-button");
   }
