@@ -153,7 +153,6 @@ interface I18nHeader {
   logout: string;
   account_menu: string;
   main_icp_account_id: string;
-  principal_id: string;
   account_id_tooltip: string;
 }
 

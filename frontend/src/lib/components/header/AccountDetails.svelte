@@ -31,7 +31,7 @@
 
   <div class="detail-row">
     <span class="label" data-tid="principal-id-label"
-      >{$i18n.header.principal_id}</span
+      >{$i18n.core.principal_id}</span
     >
     <div class="id-wrapper" data-tid="principal-id-wrapper">
       <IdentifierHash identifier={principalId} />
