@@ -19,7 +19,9 @@
     <div class="account-details">
       {#if nonNullish(accountId)}
         <div class="detail-row">
-          <span class="description">{$i18n.header.main_icp_account_id}</span>
+          <span class="description text-sm"
+            >{$i18n.header.main_icp_account_id}</span
+          >
           <div class="id-container" data-tid="main-icp-account-id-container">
             <IdentifierHash identifier={accountId} />
             <TooltipIcon
@@ -31,7 +33,7 @@
       {/if}
       {#if nonNullish(principalId)}
         <div class="detail-row">
-          <span class="description">{$i18n.core.principal_id}</span>
+          <span class="description text-sm">{$i18n.core.principal_id}</span>
           <div class="id-container" data-tid="principal-id-container">
             <IdentifierHash identifier={principalId} />
           </div>
@@ -42,6 +44,9 @@
 </TestIdWrapper>
 
 <style lang="scss">
+  .text-sm {
+    font-size: var(--font-size-small);
+  }
   .account-details {
     display: flex;
     flex-direction: column;
