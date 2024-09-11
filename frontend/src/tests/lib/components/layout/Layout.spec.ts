@@ -3,7 +3,7 @@ import en from "$tests/mocks/i18n.mock";
 import { fireEvent, render } from "@testing-library/svelte";
 import LayoutTest from "./LayoutTest.svelte";
 
-vi.mock("$lib/services/$public/worker-metrics.services", () => ({
+vi.mock("$lib/services/public/worker-metrics.services", () => ({
   initMetricsWorker: vi.fn(() =>
     Promise.resolve({
       startMetricsTimer: () => {

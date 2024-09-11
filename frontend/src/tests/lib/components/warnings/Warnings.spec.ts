@@ -1,5 +1,5 @@
 import Warnings from "$lib/components/warnings/Warnings.svelte";
-import type { MetricsCallback } from "$lib/services/$public/worker-metrics.services";
+import type { MetricsCallback } from "$lib/services/public/worker-metrics.services";
 import { metricsStore } from "$lib/stores/metrics.store";
 import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
@@ -12,7 +12,7 @@ import WarningsTest from "./WarningsTest.svelte";
 
 let metricsCallback: MetricsCallback | undefined;
 
-vi.mock("$lib/services/$public/worker-metrics.services", () => ({
+vi.mock("$lib/services/public/worker-metrics.services", () => ({
   initMetricsWorker: vi.fn(() =>
     Promise.resolve({
       startMetricsTimer: ({ callback }: { callback: MetricsCallback }) => {

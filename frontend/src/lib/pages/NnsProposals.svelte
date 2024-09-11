@@ -8,7 +8,7 @@
   import {
     listNextProposals,
     listProposals,
-  } from "$lib/services/$public/proposals.services";
+  } from "$lib/services/public/proposals.services";
   import {
     proposalsFiltersStore,
     proposalsStore,
