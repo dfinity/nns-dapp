@@ -40,6 +40,12 @@ export type UserTokenLoading = UserTokenBase & {
   domKey: string;
 };
 
+export type UserTokenFailed = UserTokenBase & {
+  balance: "failed";
+  actions: [];
+  domKey: string;
+};
+
 export type UserTokenData = UserTokenBase & {
   balance: TokenAmountV2 | UnavailableTokenAmount;
   // Identifier of the account related to the row (only if the row represents one account, not multiple)
@@ -51,5 +57,5 @@ export type UserTokenData = UserTokenBase & {
   domKey: string;
 };
 
-export type UserToken = UserTokenLoading | UserTokenData;
+export type UserToken = UserTokenLoading | UserTokenFailed | UserTokenData;
 export type TokensTableColumn = ResponsiveTableColumn<UserToken>;

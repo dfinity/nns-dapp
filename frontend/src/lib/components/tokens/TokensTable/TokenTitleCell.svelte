@@ -1,5 +1,9 @@
 <script lang="ts">
-  import type { UserTokenData, UserTokenLoading } from "$lib/types/tokens-page";
+  import type {
+    UserTokenData,
+    UserTokenFailed,
+    UserTokenLoading,
+  } from "$lib/types/tokens-page";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
   import Logo from "../../ui/Logo.svelte";
@@ -7,7 +11,7 @@
   import { Tag } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
 
-  export let rowData: UserTokenData | UserTokenLoading;
+  export let rowData: UserTokenData | UserTokenLoading | UserTokenFailed;
 
   let importedToken = false;
   $: importedToken = isImportedToken({
