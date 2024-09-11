@@ -1,7 +1,7 @@
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
-import { AccountMenuPo } from "$tests/page-objects/AccountMenu.page-object";
+import { AccountDetailsPo } from "$tests/page-objects/AccountDetails.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
@@ -14,7 +14,7 @@ describe("AccountMenu", () => {
 
   const renderComponent = () => {
     const renderResult = render(AccountMenu);
-    const po = AccountMenuPo.under(
+    const po = AccountDetailsPo.under(
       new JestPageObjectElement(renderResult.container)
     );
 
@@ -98,47 +98,55 @@ describe("AccountMenu", () => {
       );
     });
 
-    it("should display main ICP account ID", async () => {
+    it("should display main ICP account ID if available", async () => {
       setAccountsForTesting({
         main: mockMainAccount,
       });
 
-      const { po, renderResult } = renderComponent();
+      const { po: accountDetailsPo, renderResult } = renderComponent();
 
       await show(renderResult);
 
-      const mainAccountIdWrapper = await po.getElement(
-        "main-icp-account-id-wrapper"
-      );
+      const mainAccountId = await accountDetailsPo.getMainIcpAccountId();
 
-      expect(await mainAccountIdWrapper.getText()).toContain(
-        "d4685b3...711682f"
-      );
+      if (mainAccountId) {
+        expect(mainAccountId).toContain("d4685b3...711682f");
+      } else {
+        assert(false, "Main ICP account ID not rendered");
+      }
     });
 
-    it("should display principal ID", async () => {
-      const { po, renderResult } = renderComponent();
+    it("should display principal ID if available", async () => {
+      const { po: accountDetailsPo, renderResult } = renderComponent();
 
       await show(renderResult);
 
-      const principalIdWrapper = await po.getElement("principal-id-wrapper");
-      expect(await principalIdWrapper.getText()).toContain("xlmdg-v...4rh-oqe");
+      const principalId = await accountDetailsPo.getPrincipalId();
+
+      if (principalId) {
+        expect(principalId).toContain("xlmdg-v...4rh-oqe");
+      } else {
+        assert(false, "Principal ID not rendered");
+      }
     });
 
-    it("should display tooltip for main ICP account ID", async () => {
-      const { po, renderResult } = renderComponent();
+    it("should display tooltip for main ICP account ID if available", async () => {
+      const { po: accountDetailsPo, renderResult } = renderComponent();
 
       await show(renderResult);
 
-      const tooltipIconPo = po.getMainIcpAccountIdTooltipIconPo();
+      const tooltipId = await accountDetailsPo.getMainIcpAccountIdTooltipId();
+      const tooltipText =
+        await accountDetailsPo.getMainIcpAccountIdTooltipText();
 
-      expect(await tooltipIconPo.getTooltipPo().getTooltipId()).toMatch(
-        /main-icp-account-id-tooltip/
-      );
-
-      expect(await tooltipIconPo.getTooltipText()).toBe(
-        "You can send ICP both to your principal ID and account ID, however some exchanges or wallets may not support transactions using a principal ID."
-      );
+      if (tooltipId && tooltipText) {
+        expect(tooltipId).toMatch(/main-icp-account-id-tooltip/);
+        expect(tooltipText).toBe(
+          "You can send ICP both to your principal ID and account ID, however some exchanges or wallets may not support transactions using a principal ID."
+        );
+      } else {
+        assert(false, "Main ICP account ID tooltip not rendered");
+      }
     });
   });
 });
