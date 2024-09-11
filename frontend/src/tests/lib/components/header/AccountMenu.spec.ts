@@ -1,7 +1,7 @@
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
-import { AccountDetailsPo } from "$tests/page-objects/AccountDetails.page-object";
+import { AccountMenuPo } from "$tests/page-objects/AccountMenu.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
@@ -10,15 +10,6 @@ describe("AccountMenu", () => {
   const show = async ({ container, getByRole }) => {
     await fireEvent.click(container.querySelector("button.toggle"));
     await waitFor(() => expect(getByRole("menu")).not.toBeNull());
-  };
-
-  const renderComponent = () => {
-    const renderResult = render(AccountMenu);
-    const po = AccountDetailsPo.under(
-      new JestPageObjectElement(renderResult.container)
-    );
-
-    return { renderResult, po };
   };
 
   it("should be closed by default", () => {
@@ -103,7 +94,13 @@ describe("AccountMenu", () => {
         main: mockMainAccount,
       });
 
-      const { po: accountDetailsPo, renderResult } = renderComponent();
+      const renderResult = render(AccountMenu);
+
+      const accountMenuPo = AccountMenuPo.under(
+        new JestPageObjectElement(renderResult.container)
+      );
+
+      const accountDetailsPo = accountMenuPo.getAccountDetailsPo();
 
       await show(renderResult);
 
@@ -113,7 +110,13 @@ describe("AccountMenu", () => {
     });
 
     it("should display principal ID if available", async () => {
-      const { po: accountDetailsPo, renderResult } = renderComponent();
+      const renderResult = render(AccountMenu);
+
+      const accountMenuPo = AccountMenuPo.under(
+        new JestPageObjectElement(renderResult.container)
+      );
+
+      const accountDetailsPo = accountMenuPo.getAccountDetailsPo();
 
       await show(renderResult);
 
@@ -123,7 +126,13 @@ describe("AccountMenu", () => {
     });
 
     it("should display tooltip for main ICP account ID if available", async () => {
-      const { po: accountDetailsPo, renderResult } = renderComponent();
+      const renderResult = render(AccountMenu);
+
+      const accountMenuPo = AccountMenuPo.under(
+        new JestPageObjectElement(renderResult.container)
+      );
+
+      const accountDetailsPo = accountMenuPo.getAccountDetailsPo();
 
       await show(renderResult);
 
