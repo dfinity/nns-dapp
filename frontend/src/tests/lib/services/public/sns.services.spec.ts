@@ -6,7 +6,7 @@ import { loadSnsProjects } from "$lib/services/public/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsFunctionsStore } from "$lib/derived/sns-functions.derived";
-import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
+import { snsTotalTokenSupplyStore } from "$lib/derived/sns-total-token-supply.derived";
 import { tokensStore } from "$lib/stores/tokens.store";
 import {
   mockAuthStoreSubscribe,

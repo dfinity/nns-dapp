@@ -1,5 +1,5 @@
+import { snsTotalTokenSupplyStore } from "$lib/derived/sns-total-token-supply.derived";
 import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
-import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";

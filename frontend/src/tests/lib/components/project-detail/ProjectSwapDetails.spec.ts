@@ -1,5 +1,5 @@
 import ProjectSwapDetails from "$lib/components/project-detail/ProjectSwapDetails.svelte";
-import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
+import { snsTotalTokenSupplyStore } from "$lib/derived/sns-total-token-supply.derived";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import {

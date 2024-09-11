@@ -4,7 +4,7 @@ import { buildAndStoreWrapper } from "$lib/api/sns-wrapper.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
-import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
+import { snsTotalTokenSupplyStore } from "$lib/derived/sns-total-token-supply.derived";
 import { snsProposalsStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { isForceCallStrategy } from "$lib/utils/env.utils";

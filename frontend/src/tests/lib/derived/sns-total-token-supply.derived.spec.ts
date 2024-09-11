@@ -1,4 +1,4 @@
-import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
+import { snsTotalTokenSupplyStore } from "$lib/derived/sns-total-token-supply.derived";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
