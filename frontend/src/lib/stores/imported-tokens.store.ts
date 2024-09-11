@@ -1,5 +1,5 @@
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
-import { CanisterIdString } from "@dfinity/nns";
+import type { CanisterIdString } from "@dfinity/nns";
 import { writable } from "svelte/store";
 
 export interface ImportedTokensStore {
