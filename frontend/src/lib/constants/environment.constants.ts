@@ -42,6 +42,7 @@ export interface FeatureFlags<T> {
   ENABLE_CKTESTBTC: T;
   ENABLE_PROJECTS_TABLE: T;
   ENABLE_IMPORT_TOKEN: T;
+  DISABLE_IMPORT_TOKEN_VALIDATION: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;
