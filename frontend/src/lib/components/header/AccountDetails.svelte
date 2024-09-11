@@ -5,6 +5,7 @@
   import TooltipIcon from "../ui/TooltipIcon.svelte";
   import IdentifierHash from "../ui/IdentifierHash.svelte";
   import { nonNullish } from "@dfinity/utils";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   let principalId: string | undefined;
   let accountId: string | undefined;
@@ -13,30 +14,32 @@
   $: accountId = $icpAccountsStore.main?.identifier;
 </script>
 
-{#if nonNullish(accountId) || nonNullish(principalId)}
-  <div class="account-details" data-tid="account-details-container">
-    {#if nonNullish(accountId)}
-      <div class="detail-row">
-        <span class="description">{$i18n.header.main_icp_account_id}</span>
-        <div class="id-container" data-tid="main-icp-account-id-container">
-          <IdentifierHash identifier={accountId} />
-          <TooltipIcon
-            text={$i18n.header.account_id_tooltip}
-            tooltipId="main-icp-account-id-tooltip"
-          />
+<TestIdWrapper testId="account-details-container">
+  {#if nonNullish(accountId) || nonNullish(principalId)}
+    <div class="account-details">
+      {#if nonNullish(accountId)}
+        <div class="detail-row">
+          <span class="description">{$i18n.header.main_icp_account_id}</span>
+          <div class="id-container" data-tid="main-icp-account-id-container">
+            <IdentifierHash identifier={accountId} />
+            <TooltipIcon
+              text={$i18n.header.account_id_tooltip}
+              tooltipId="main-icp-account-id-tooltip"
+            />
+          </div>
         </div>
-      </div>
-    {/if}
-    {#if nonNullish(principalId)}
-      <div class="detail-row" data-tid="principal-id-container">
-        <span class="description">{$i18n.core.principal_id}</span>
-        <div class="id-container">
-          <IdentifierHash identifier={principalId} />
+      {/if}
+      {#if nonNullish(principalId)}
+        <div class="detail-row" data-tid="principal-id-container">
+          <span class="description">{$i18n.core.principal_id}</span>
+          <div class="id-container">
+            <IdentifierHash identifier={principalId} />
+          </div>
         </div>
-      </div>
-    {/if}
-  </div>
-{/if}
+      {/if}
+    </div>
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   .account-details {
