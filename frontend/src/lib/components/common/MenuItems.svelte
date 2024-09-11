@@ -27,6 +27,7 @@
     MenuItem,
   } from "@dfinity/gix-components";
   import type { ComponentType } from "svelte";
+  import SourceCodeButton from "./SourceCodeButton.svelte";
 
   let routes: {
     context: string;
@@ -107,10 +108,41 @@
       <svelte:component this={statusIcon} slot="statusIcon" />
     </MenuItem>
   {/each}
+  <div class="menu-container">
+    <div data-tid="menu-items-container">
+      {#if IS_TESTNET}
+        <GetTokens />
+      {/if}
+    </div>
 
-  {#if IS_TESTNET}
-    <GetTokens />
-  {/if}
-
-  <MenuMetrics />
+    <div class="menu-footer">
+      <MenuMetrics />
+      <div class="menu-footer-buttons" data-tid="menu-footer-buttons">
+        <SourceCodeButton />
+      </div>
+    </div>
+  </div>
 </TestIdWrapper>
+
+<style lang="scss">
+  .menu-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    margin-bottom: 70px;
+  }
+
+  .menu-footer {
+    display: flex;
+    flex-direction: column;
+    justify-self: flex-end;
+  }
+
+  .menu-footer-buttons {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 8px;
+    margin-right: var(--padding-2x);
+  }
+</style>
