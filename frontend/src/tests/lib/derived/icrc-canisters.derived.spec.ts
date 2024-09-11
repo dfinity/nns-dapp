@@ -64,7 +64,7 @@ describe("icrcCanistersStore", () => {
       ],
       certified: true,
     });
-    failedImportedTokenLedgerIdsStore.add(ledgerCanisterId);
+    failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
 
     expect(get(icrcCanistersStore)).toEqual({});
   });

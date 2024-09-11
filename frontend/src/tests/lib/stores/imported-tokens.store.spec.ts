@@ -7,7 +7,7 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
 
 describe("imported-tokens-store", () => {
-  afterEach(() => {
+  beforeEach(() => {
     importedTokensStore.reset();
     failedImportedTokenLedgerIdsStore.reset();
   });
@@ -60,8 +60,8 @@ describe("imported-tokens-store", () => {
   });
 
   describe("failedImportedTokenLedgerIdsStore", () => {
-    const canisterIdA = principal(0);
-    const canisterIdB = principal(1);
+    const canisterIdA = "aaaaa-aa";
+    const canisterIdB = "bbbbb-bb";
 
     it("should add canister IDs", () => {
       expect(get(failedImportedTokenLedgerIdsStore)).toEqual([]);

@@ -9,9 +9,7 @@ export const loadedImportedTokensStore = derived(
   ([importedTokensStore, failedImportedTokenLedgerIds]) => {
     return (importedTokensStore.importedTokens ?? []).filter(
       ({ ledgerCanisterId }) =>
-        !failedImportedTokenLedgerIds.some(
-          (id) => id.toText() === ledgerCanisterId.toText()
-        )
+        !failedImportedTokenLedgerIds.includes(ledgerCanisterId.toText())
     );
   }
 );

@@ -41,7 +41,9 @@ describe("imported tokens derived stores", () => {
         importedTokens: [importedTokenA, importedTokenB],
         certified: true,
       });
-      failedImportedTokenLedgerIdsStore.add(importedTokenA.ledgerCanisterId);
+      failedImportedTokenLedgerIdsStore.add(
+        importedTokenA.ledgerCanisterId.toText()
+      );
       expect(get(loadedImportedTokensStore)).toEqual([importedTokenB]);
     });
   });

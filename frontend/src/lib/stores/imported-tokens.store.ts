@@ -1,5 +1,5 @@
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
-import { Principal } from "@dfinity/principal";
+import { CanisterIdString } from "@dfinity/nns";
 import { writable } from "svelte/store";
 
 export interface ImportedTokensStore {
@@ -47,19 +47,16 @@ export const importedTokensStore = initImportedTokensStore();
  * A store that contains ledger canister IDs of imported tokens that failed to load
  */
 const initFailedImportedTokenLedgerIdsStore = () => {
-  const { subscribe, set, update } = writable<Principal[]>([]);
+  const { subscribe, set, update } = writable<CanisterIdString[]>([]);
 
   return {
     subscribe,
 
-    add(ledgerCanisterId: Principal) {
+    add(ledgerCanisterId: CanisterIdString) {
       update((failedLedgerCanisterIds) =>
-        Array.from(
-          new Set([
-            ...failedLedgerCanisterIds.map((principal) => principal.toText()),
-            ledgerCanisterId.toText(),
-          ])
-        ).map((text) => Principal.fromText(text))
+        failedLedgerCanisterIds.includes(ledgerCanisterId)
+          ? failedLedgerCanisterIds
+          : [...failedLedgerCanisterIds, ledgerCanisterId]
       );
     },
 

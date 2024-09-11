@@ -34,11 +34,6 @@ import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
-const isFailedImportedToken = (ledgerCanisterId: Principal) =>
-  get(failedImportedTokenLedgerIdsStore).some(
-    (id) => id.toText() === ledgerCanisterId.toText()
-  );
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
   // TODO: Support Hardware Wallets
@@ -69,7 +64,9 @@ export const loadIcrcToken = ({
     // SNS tokens are derived from aggregator data instead.
     return;
   }
-  if (isFailedImportedToken(ledgerCanisterId)) {
+  if (
+    get(failedImportedTokenLedgerIdsStore).includes(ledgerCanisterId.toText())
+  ) {
     // Ensures that imported tokens that failed to load are not fetched again.
     return;
   }
@@ -103,7 +100,7 @@ export const loadIcrcToken = ({
         })
       ) {
         // Do not display error toasts for imported tokens, as this is not an NNS-dapp error.
-        failedImportedTokenLedgerIdsStore.add(ledgerCanisterId);
+        failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
       } else {
         // Explicitly handle only UPDATE errors
         toastsError({
@@ -165,7 +162,9 @@ export const loadAccounts = async ({
   ledgerCanisterId: Principal;
   strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
-  if (isFailedImportedToken(ledgerCanisterId)) {
+  if (
+    get(failedImportedTokenLedgerIdsStore).includes(ledgerCanisterId.toText())
+  ) {
     // Ensures that imported tokens that failed to load are not fetched again.
     return;
   }
@@ -201,7 +200,7 @@ export const loadAccounts = async ({
         })
       ) {
         // Do not display error toasts for imported tokens, as this is not an NNS-dapp error.
-        failedImportedTokenLedgerIdsStore.add(ledgerCanisterId);
+        failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
       } else {
         toastsError(
           toToastError({

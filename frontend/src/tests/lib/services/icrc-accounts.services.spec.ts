@@ -234,7 +234,7 @@ describe("icrc-accounts-services", () => {
     });
 
     it("doesn't load imported token if in failed imported tokens store", async () => {
-      failedImportedTokenLedgerIdsStore.add(ledgerCanisterId);
+      failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
       expect(ledgerApi.queryIcrcBalance).not.toBeCalled();
       await loadAccounts({ ledgerCanisterId });
       expect(ledgerApi.queryIcrcBalance).not.toBeCalled();
@@ -257,7 +257,7 @@ describe("icrc-accounts-services", () => {
       await loadAccounts({ ledgerCanisterId });
       expect(ledgerApi.queryIcrcBalance).toBeCalledTimes(2);
       expect(get(failedImportedTokenLedgerIdsStore)).toEqual([
-        ledgerCanisterId,
+        ledgerCanisterId.toText(),
       ]);
     });
 
@@ -450,7 +450,7 @@ describe("icrc-accounts-services", () => {
     });
 
     it("doesn't load imported token if in failed imported tokens store", async () => {
-      failedImportedTokenLedgerIdsStore.add(ledgerCanisterId);
+      failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
       expect(ledgerApi.queryIcrcToken).not.toBeCalled();
       await loadIcrcToken({ ledgerCanisterId });
       expect(ledgerApi.queryIcrcToken).not.toBeCalled();
@@ -473,7 +473,7 @@ describe("icrc-accounts-services", () => {
       await loadIcrcToken({ ledgerCanisterId });
       expect(ledgerApi.queryIcrcToken).toBeCalledTimes(2);
       expect(get(failedImportedTokenLedgerIdsStore)).toEqual([
-        ledgerCanisterId,
+        ledgerCanisterId.toText(),
       ]);
     });
 
