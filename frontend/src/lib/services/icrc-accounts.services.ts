@@ -89,6 +89,7 @@ export const loadIcrcToken = ({
     onLoad: async ({ response: token, certified }) =>
       tokensStore.setToken({ certified, canisterId: ledgerCanisterId, token }),
     onError: ({ error: err, certified }) => {
+      // Explicitly handle only UPDATE errors
       if (!certified && notForceCallStrategy()) {
         return;
       }
@@ -102,7 +103,6 @@ export const loadIcrcToken = ({
         // Do not display error toasts for imported tokens, as this is not an NNS-dapp error.
         failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
       } else {
-        // Explicitly handle only UPDATE errors
         toastsError({
           labelKey: "error.token_not_found",
           err,
