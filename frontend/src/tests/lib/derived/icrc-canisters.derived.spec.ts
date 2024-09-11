@@ -81,7 +81,7 @@ describe("icrcCanistersStore", () => {
         indexCanisterId,
       },
       [ledgerCanisterId3.toText()]: {
-        ledgerCanisterId: ledgerCanisterId2,
+        ledgerCanisterId: ledgerCanisterId3,
       },
     });
   });
