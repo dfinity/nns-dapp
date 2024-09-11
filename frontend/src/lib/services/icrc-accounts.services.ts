@@ -11,12 +11,17 @@ import {
 } from "$lib/services/auth.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
+import {
+  failedImportedTokenLedgerIdsStore,
+  importedTokensStore,
+} from "$lib/stores/imported-tokens.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
+import { isImportedToken } from "$lib/utils/imported-tokens.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import type { Identity } from "@dfinity/agent";
 import {
@@ -59,6 +64,12 @@ export const loadIcrcToken = ({
     // SNS tokens are derived from aggregator data instead.
     return;
   }
+  if (
+    get(failedImportedTokenLedgerIdsStore).includes(ledgerCanisterId.toText())
+  ) {
+    // Ensures that imported tokens that failed to load are not fetched again.
+    return;
+  }
 
   const currentToken = get(tokensStore)[ledgerCanisterId.toText()];
 
@@ -78,15 +89,26 @@ export const loadIcrcToken = ({
     onLoad: async ({ response: token, certified }) =>
       tokensStore.setToken({ certified, canisterId: ledgerCanisterId, token }),
     onError: ({ error: err, certified }) => {
+      // Explicitly handle only UPDATE errors
       if (!certified && notForceCallStrategy()) {
         return;
       }
 
-      // Explicitly handle only UPDATE errors
-      toastsError({
-        labelKey: "error.token_not_found",
-        err,
-      });
+      if (
+        isImportedToken({
+          ledgerCanisterId,
+          importedTokens: get(importedTokensStore)?.importedTokens,
+        })
+      ) {
+        // Do not display error toasts for imported tokens.
+        // Failed imported tokens will be shown with a warning icon in the UI.
+        failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
+      } else {
+        toastsError({
+          labelKey: "error.token_not_found",
+          err,
+        });
+      }
 
       // Hide unproven data
       tokensStore.resetUniverse(ledgerCanisterId);
@@ -141,6 +163,13 @@ export const loadAccounts = async ({
   ledgerCanisterId: Principal;
   strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
+  if (
+    get(failedImportedTokenLedgerIdsStore).includes(ledgerCanisterId.toText())
+  ) {
+    // Ensures that imported tokens that failed to load are not fetched again.
+    return;
+  }
+
   return queryAndUpdate<Account[], unknown>({
     strategy,
     request: ({ certified, identity }) =>
@@ -165,12 +194,23 @@ export const loadAccounts = async ({
       icrcAccountsStore.reset();
       icrcTransactionsStore.resetUniverse(ledgerCanisterId);
 
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error.accounts_load",
+      if (
+        isImportedToken({
+          ledgerCanisterId,
+          importedTokens: get(importedTokensStore)?.importedTokens,
         })
-      );
+      ) {
+        // Do not display error toasts for imported tokens.
+        // Failed imported tokens will be shown with a warning icon in the UI.
+        failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
+      } else {
+        toastsError(
+          toToastError({
+            err,
+            fallbackErrorLabelKey: "error.accounts_load",
+          })
+        );
+      }
 
       handleError?.();
     },

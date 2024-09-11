@@ -1,10 +1,16 @@
-import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+import {
+  failedImportedTokenLedgerIdsStore,
+  importedTokensStore,
+} from "$lib/stores/imported-tokens.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
 
 describe("imported-tokens-store", () => {
-  afterEach(() => importedTokensStore.reset());
+  beforeEach(() => {
+    importedTokensStore.reset();
+    failedImportedTokenLedgerIdsStore.reset();
+  });
 
   describe("importedTokensStore", () => {
     const importedTokenA: ImportedTokenData = {
@@ -50,6 +56,30 @@ describe("imported-tokens-store", () => {
         importedTokens: undefined,
         certified: undefined,
       });
+    });
+  });
+
+  describe("failedImportedTokenLedgerIdsStore", () => {
+    const canisterIdA = "aaaaa-aa";
+    const canisterIdB = "bbbbb-bb";
+
+    it("should add canister IDs", () => {
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([]);
+      failedImportedTokenLedgerIdsStore.add(canisterIdA);
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([canisterIdA]);
+      failedImportedTokenLedgerIdsStore.add(canisterIdB);
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([
+        canisterIdA,
+        canisterIdB,
+      ]);
+    });
+
+    it("should not add duplicates", () => {
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([]);
+      failedImportedTokenLedgerIdsStore.add(canisterIdA);
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([canisterIdA]);
+      failedImportedTokenLedgerIdsStore.add(canisterIdA);
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([canisterIdA]);
     });
   });
 });
