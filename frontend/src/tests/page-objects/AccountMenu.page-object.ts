@@ -17,7 +17,7 @@ export class AccountMenuPo extends BasePageObject {
     return this.click("logout");
   }
 
-  getAccountDetailsPo(): AccountDetailsPo {
+  getAccountDetailsPoRoot(): AccountDetailsPo {
     return AccountDetailsPo.under(this.root);
   }
 }

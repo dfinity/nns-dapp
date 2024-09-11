@@ -14,7 +14,7 @@
   $: accountId = $icpAccountsStore.main?.identifier;
 </script>
 
-<TestIdWrapper testId="account-details-container">
+<TestIdWrapper testId="account-details-component">
   {#if nonNullish(accountId) || nonNullish(principalId)}
     <div class="account-details">
       {#if nonNullish(accountId)}
@@ -30,9 +30,9 @@
         </div>
       {/if}
       {#if nonNullish(principalId)}
-        <div class="detail-row" data-tid="principal-id-container">
+        <div class="detail-row">
           <span class="description">{$i18n.core.principal_id}</span>
-          <div class="id-container">
+          <div class="id-container" data-tid="principal-id-container">
             <IdentifierHash identifier={principalId} />
           </div>
         </div>

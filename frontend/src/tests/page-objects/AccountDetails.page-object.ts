@@ -4,7 +4,7 @@ import { IdentifierHashPo } from "./IdentifierHash.page-object";
 import { TooltipIconPo } from "./TooltipIcon.page-object";
 
 export class AccountDetailsPo extends BasePageObject {
-  private static readonly TID = "account-details-container";
+  private static readonly TID = "account-details-component";
 
   static under(element: PageObjectElement): AccountDetailsPo {
     return new AccountDetailsPo(element.byTestId(AccountDetailsPo.TID));
