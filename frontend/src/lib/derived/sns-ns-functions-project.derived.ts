@@ -33,16 +33,6 @@ export const createSnsNsFunctionsProjectStore = (
       if (nonNullish(snsFunctions[rootCanisterIdText])) {
         return snsFunctions[rootCanisterIdText].nsFunctions;
       }
-      const aggregatorProject: CachedSnsDto | undefined =
-        aggregatorData.data?.find(
-          ({ canister_ids: { root_canister_id } }) =>
-            rootCanisterIdText === root_canister_id
-        );
-      if (nonNullish(aggregatorProject)) {
-        return aggregatorProject.parameters.functions.map(
-          convertNervousFunction
-        );
-      }
       return undefined;
     }
   );
