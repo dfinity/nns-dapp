@@ -3,6 +3,7 @@ import type {
   UserTokenFailed,
   UserTokenLoading,
 } from "$lib/types/tokens-page";
+import { Principal } from "@dfinity/principal";
 
 export const isUserTokenLoading = (
   userToken: UserTokenData | UserTokenLoading | UserTokenFailed
@@ -21,3 +22,15 @@ export const isUserTokenData = (
 ): userToken is UserTokenData => {
   return !isUserTokenLoading(userToken) && !isUserTokenFailed(userToken);
 };
+
+export const toUserTokenFailed = (
+  ledgerCanisterIdText: string
+): UserTokenFailed => ({
+  universeId: Principal.fromText(ledgerCanisterIdText),
+  // Title will be used for sorting.
+  title: ledgerCanisterIdText,
+  logo: "",
+  balance: "failed",
+  domKey: ledgerCanisterIdText,
+  actions: [],
+});
