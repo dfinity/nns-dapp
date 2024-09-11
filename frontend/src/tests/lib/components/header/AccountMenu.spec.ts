@@ -109,11 +109,7 @@ describe("AccountMenu", () => {
 
       const mainAccountId = await accountDetailsPo.getMainIcpAccountId();
 
-      if (mainAccountId) {
-        expect(mainAccountId).toContain("d4685b3...711682f");
-      } else {
-        assert(false, "Main ICP account ID not rendered");
-      }
+      expect(mainAccountId).toContain("d4685b3...711682f");
     });
 
     it("should display principal ID if available", async () => {
@@ -121,13 +117,9 @@ describe("AccountMenu", () => {
 
       await show(renderResult);
 
-      const principalId = await accountDetailsPo.getPrincipalId();
-
-      if (principalId) {
-        expect(principalId).toContain("xlmdg-v...4rh-oqe");
-      } else {
-        assert(false, "Principal ID not rendered");
-      }
+      expect(await accountDetailsPo.getPrincipalId()).toContain(
+        "xlmdg-v...4rh-oqe"
+      );
     });
 
     it("should display tooltip for main ICP account ID if available", async () => {
@@ -135,18 +127,12 @@ describe("AccountMenu", () => {
 
       await show(renderResult);
 
-      const tooltipId = await accountDetailsPo.getMainIcpAccountIdTooltipId();
-      const tooltipText =
-        await accountDetailsPo.getMainIcpAccountIdTooltipText();
-
-      if (tooltipId && tooltipText) {
-        expect(tooltipId).toMatch(/main-icp-account-id-tooltip/);
-        expect(tooltipText).toBe(
-          "You can send ICP both to your principal ID and account ID, however some exchanges or wallets may not support transactions using a principal ID."
-        );
-      } else {
-        assert(false, "Main ICP account ID tooltip not rendered");
-      }
+      expect(await accountDetailsPo.getMainIcpAccountIdTooltipId()).toMatch(
+        /main-icp-account-id-tooltip/
+      );
+      expect(await accountDetailsPo.getMainIcpAccountIdTooltipText()).toBe(
+        "You can send ICP both to your principal ID and account ID, however some exchanges or wallets may not support transactions using a principal ID."
+      );
     });
   });
 });
