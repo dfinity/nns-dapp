@@ -11,7 +11,8 @@ impl Partitions {
     ///   - The `Map` schema does not use partitions, so may not be used with this method.
     #[must_use]
     pub fn new(memory: DefaultMemoryImpl) -> Partitions {
-        let memory_manager = MemoryManager::init(Self::copy_memory_reference(&memory));
-        Partitions { memory_manager }
+        Partitions {
+            memory_manager: MemoryManager::init(memory),
+        }
     }
 }

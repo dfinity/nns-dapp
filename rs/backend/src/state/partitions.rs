@@ -8,8 +8,6 @@ use core::borrow::Borrow;
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
-#[cfg(not(target_arch = "wasm32"))]
-use std::rc::Rc;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
@@ -107,28 +105,12 @@ impl Partitions {
         self.memory_manager.borrow().get(memory_id)
     }
 
-    /// Copies a reference to memory.  Note:  Does NOT copy the underlying memory.
-    ///
-    /// Note:
-    /// - Canister stable memory is, in Rust, a stateless `struct` that makes API calls.  It implements Copy.
-    /// - Vector memory uses an `Rc` so we use `Rc::clone()` to copy the reference.
-    #[must_use]
-    #[allow(clippy::trivially_copy_pass_by_ref)] // The implementation changes depending on target, so clippy is wrong.
-    pub fn copy_memory_reference(memory: &DefaultMemoryImpl) -> DefaultMemoryImpl {
-        // Empty structure that makes API calls.  Can be cloned.
-        #[cfg(target_arch = "wasm32")]
-        let ans = *memory;
-        // Reference counted pointer.  Make a copy of the pointer.
-        #[cfg(not(target_arch = "wasm32"))]
-        let ans = Rc::clone(memory);
-        ans
-    }
-
     /// Returns the raw memory, discarding the partitions data structure in RAM.
     ///
     /// Note: The memory manager is still represented in the underlying memory,
     /// so converting from `Partitions` to `DefaultMemoryImpl` and back again
     /// returns to the original state.
+    /// TODO: remove `into_memory` after simplifying `post_upgrade`.
     #[cfg(test)]
     pub fn into_memory(self) -> DefaultMemoryImpl {
         self.memory_manager.into_memory().expect("No underlying memory")
@@ -147,21 +129,6 @@ impl Partitions {
         }
         memory.write(offset, bytes);
     }
-
-    /// Reads the exact number of bytes needed to fill `buffer`.
-    #[cfg(test)]
-    pub fn read_exact(&self, memory_id: MemoryId, offset: u64, buffer: &mut [u8]) -> Result<(), String> {
-        let memory = self.get(memory_id);
-        let bytes_in_memory = memory.size() * WASM_PAGE_SIZE_IN_BYTES;
-        if offset.saturating_add(u64::try_from(buffer.len()).unwrap_or_else(|err| {
-            unreachable!("Buffer for read_exact is longer than 2**64.  This seems extremely implausible.  Err: {err}")
-        })) > bytes_in_memory
-        {
-            return Err(format!("Out of bounds memory access: Failed to read exactly {} bytes at offset {} as memory size is only {} bytes.", buffer.len(), offset, bytes_in_memory));
-        }
-        memory.read(offset, buffer);
-        Ok(())
-    }
 }
 
 /// Gets an existing memory manager, if there is one.  If not, returns the unmodified memory.
@@ -173,10 +140,10 @@ impl Partitions {
 ///
 /// Note: Would prefer to use `TryFrom`, but that causes a conflict.  `DefaultMemoryImpl` a type alias which
 /// may refer to a type that has a generic implementation of `TryFrom`.  This is frustrating.
-impl Partitions {
+impl From<DefaultMemoryImpl> for Partitions {
     #[must_use]
-    pub fn from(memory: DefaultMemoryImpl) -> Self {
-        let memory_manager = MemoryManager::init(Self::copy_memory_reference(&memory));
+    fn from(memory: DefaultMemoryImpl) -> Self {
+        let memory_manager = MemoryManager::init(memory);
         Partitions { memory_manager }
     }
 }

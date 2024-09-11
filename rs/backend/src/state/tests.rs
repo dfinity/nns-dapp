@@ -1,9 +1,6 @@
 use crate::{
     accounts_store::schema::{map::AccountsDbAsMap, proxy::AccountsDb, AccountsDbTrait},
-    state::{
-        partitions::{Partitions, PartitionsMaybe},
-        AssetHashes, Assets, PerformanceCounts, StableState, State,
-    },
+    state::{partitions::PartitionsMaybe, AssetHashes, Assets, PerformanceCounts, StableState, State},
     tvl::state::TvlState,
 };
 use dfn_candid::Candid;
@@ -11,7 +8,7 @@ use ic_stable_structures::{DefaultMemoryImpl, VectorMemory};
 use on_wire::FromWire;
 use pretty_assertions::assert_eq;
 use proptest::proptest;
-use std::cell::RefCell;
+use std::{cell::RefCell, rc::Rc};
 
 /// Creates a populated test state for testing.
 pub fn setup_test_state() -> State {
@@ -89,7 +86,7 @@ fn state_can_be_saved_and_recovered_from_stable_memory(num_accounts: u64) {
     // State is backed by stable memory:
     let memory = DefaultMemoryImpl::default();
     // We will get a second reference to the same memory so that we can compare the initial state to the state post-upgrade.
-    let memory_after_upgrade = Partitions::copy_memory_reference(&memory); // The same memory.
+    let memory_after_upgrade = Rc::clone(&memory);
 
     // On init, the state is created using a schema specified in the init arguments:
     let state = State::new(memory);

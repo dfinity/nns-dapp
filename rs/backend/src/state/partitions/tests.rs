@@ -118,7 +118,7 @@ fn should_be_able_to_convert_memory_to_partitions_and_back() {
     // Populate the memory and hash it.
     {
         toy_memory.grow(5);
-        let memory_manager = MemoryManager::init(Partitions::copy_memory_reference(&toy_memory));
+        let memory_manager = MemoryManager::init(Rc::clone(&toy_memory));
         memory_manager.get(PartitionType::Accounts.memory_id()).grow(1);
         memory_manager.get(PartitionType::Accounts.memory_id()).write(0, b"foo");
     }
@@ -208,7 +208,7 @@ fn growing_write_should_work(memory_id: MemoryId, test_vector: &GrowingWriteTest
         expected_final_memory_pages,
     } = test_vector;
     let toy_memory = DefaultMemoryImpl::default();
-    MemoryManager::init(Partitions::copy_memory_reference(&toy_memory));
+    MemoryManager::init(Rc::clone(&toy_memory));
     let partitions = Partitions::from(Rc::clone(&toy_memory));
     partitions.get(memory_id).grow(*initial_memory_pages);
     assert_eq!(
@@ -227,9 +227,7 @@ fn growing_write_should_work(memory_id: MemoryId, test_vector: &GrowingWriteTest
         test_vector
     );
     let mut read_buffer = vec![0u8; buffer.len()];
-    partitions
-        .read_exact(memory_id, *write_offset, &mut read_buffer)
-        .expect("Failed to read back what we wrote.");
+    partitions.get(memory_id).read(*write_offset, &mut read_buffer);
     assert_eq!(
         read_buffer, *buffer,
         "growing_write did not write the expected data for test vector: {:?} {:?}",
