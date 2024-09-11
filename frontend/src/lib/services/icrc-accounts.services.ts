@@ -100,7 +100,8 @@ export const loadIcrcToken = ({
           importedTokens: get(importedTokensStore)?.importedTokens,
         })
       ) {
-        // Do not display error toasts for imported tokens, as this is not an NNS-dapp error.
+        // Do not display error toasts for imported tokens.
+        // Failed imported tokens will be shown with a warning icon in the UI.
         failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
       } else {
         toastsError({
@@ -199,7 +200,8 @@ export const loadAccounts = async ({
           importedTokens: get(importedTokensStore)?.importedTokens,
         })
       ) {
-        // Do not display error toasts for imported tokens, as this is not an NNS-dapp error.
+        // Do not display error toasts for imported tokens.
+        // Failed imported tokens will be shown with a warning icon in the UI.
         failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
       } else {
         toastsError(
