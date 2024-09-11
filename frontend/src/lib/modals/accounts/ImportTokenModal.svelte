@@ -24,7 +24,7 @@
   import { createEventDispatcher } from "svelte";
   import { goto } from "$app/navigation";
   import { get } from "svelte/store";
-  import { DISABLE_IMPORT_TOKEN_VALIDATION } from "$lib/stores/feature-flags.store";
+  import { DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING } from "$lib/stores/feature-flags.store";
 
   let currentStep: WizardStep | undefined = undefined;
 
@@ -96,7 +96,7 @@
     if (isNullish(ledgerCanisterId)) return;
 
     // For testing purposes only.
-    if (get(DISABLE_IMPORT_TOKEN_VALIDATION)) {
+    if (get(DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING)) {
       tokenMetaData = {
         symbol: "",
         name: "",
