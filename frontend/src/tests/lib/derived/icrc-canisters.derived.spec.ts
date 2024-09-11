@@ -11,6 +11,7 @@ describe("icrcCanistersStore", () => {
   const ledgerCanisterId = principal(0);
   const indexCanisterId = principal(1);
   const ledgerCanisterId2 = principal(2);
+  const ledgerCanisterId3 = principal(3);
 
   beforeEach(() => {
     defaultIcrcCanistersStore.reset();
@@ -54,19 +55,35 @@ describe("icrcCanistersStore", () => {
     });
   });
 
-  it("ignores failed imported tokens", () => {
+  it("excludes failed imported tokens", () => {
+    defaultIcrcCanistersStore.setCanisters({
+      ledgerCanisterId,
+      indexCanisterId,
+    });
     importedTokensStore.set({
       importedTokens: [
         {
-          ledgerCanisterId,
+          ledgerCanisterId: ledgerCanisterId2,
+          indexCanisterId: undefined,
+        },
+        {
+          ledgerCanisterId: ledgerCanisterId3,
           indexCanisterId: undefined,
         },
       ],
       certified: true,
     });
-    failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
+    failedImportedTokenLedgerIdsStore.add(ledgerCanisterId2.toText());
 
-    expect(get(icrcCanistersStore)).toEqual({});
+    expect(get(icrcCanistersStore)).toEqual({
+      [ledgerCanisterId.toText()]: {
+        ledgerCanisterId,
+        indexCanisterId,
+      },
+      [ledgerCanisterId3.toText()]: {
+        ledgerCanisterId: ledgerCanisterId2,
+      },
+    });
   });
 
   it("return data from the defaultIcrcCanistersStore and the importedTokensStore", () => {
