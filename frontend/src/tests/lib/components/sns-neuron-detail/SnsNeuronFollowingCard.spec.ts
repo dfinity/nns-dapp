@@ -76,7 +76,7 @@ describe("SnsNeuronFollowingCard", () => {
         neuron,
       });
 
-    afterEach(() => {
+    beforeEach(() => {
       vi.clearAllMocks();
       resetSnsProjects();
     });
@@ -145,7 +145,7 @@ describe("SnsNeuronFollowingCard", () => {
         neuron,
       });
 
-    afterEach(() => {
+    beforeEach(() => {
       vi.clearAllMocks();
     });
 
