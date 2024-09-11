@@ -7,12 +7,17 @@ import {
   mergeComparators,
 } from "$lib/utils/responsive-table.utils";
 import { TokenAmountV2 } from "@dfinity/utils";
+import { isUserTokenFailed } from "./user-token.utils";
 
 const getTokenBalanceOrZero = (token: UserToken) =>
   token.balance instanceof TokenAmountV2 ? token.balance.toUlps() : 0n;
 
 export const compareTokensIcpFirst = createDescendingComparator(
   (token: UserToken) => token.universeId.toText() === OWN_CANISTER_ID_TEXT
+);
+
+export const compareFailedTokensLast = createAscendingComparator(
+  (token: UserToken) => isUserTokenFailed(token)
 );
 
 export const compareTokensWithBalanceOrImportedFirst = ({
@@ -49,6 +54,7 @@ export const compareTokensForTokensTable = ({
 }) =>
   mergeComparators([
     compareTokensIcpFirst,
+    compareFailedTokensLast,
     compareTokensWithBalanceOrImportedFirst({ importedTokenIds }),
     compareTokensByImportance,
     compareTokensAlphabetically,
