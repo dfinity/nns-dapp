@@ -1,63 +1,28 @@
 import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
-import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
-import { convertNervousFunction } from "$lib/utils/sns-aggregator-converters.utils";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
-import {
-  aggregatorSnsMockDto,
-  aggregatorSnsMockWith,
-} from "$tests/mocks/sns-aggregator.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { get } from "svelte/store";
 
 describe("nsFunctionsProjectStore", () => {
   const rootCanisterId = rootCanisterIdMock;
-  const aggregatorProject = aggregatorSnsMockWith({
-    rootCanisterId: rootCanisterId.toText(),
-  });
 
   beforeEach(() => {
-    snsAggregatorStore.reset();
-    snsFunctionsStore.reset();
+    resetSnsProjects();
   });
 
-  it("returns the functions from snsFunctionsStore", () => {
+  it("returns the functions", () => {
     const rootCanisterId = rootCanisterIdMock;
-    snsFunctionsStore.setProjectsFunctions([
+    setSnsProjects([
       {
         rootCanisterId,
-        nsFunctions: [nervousSystemFunctionMock],
-        certified: true,
+        nervousFunctions: [nervousSystemFunctionMock],
       },
     ]);
 
     const store = createSnsNsFunctionsProjectStore(rootCanisterId);
     expect(get(store)).toEqual([nervousSystemFunctionMock]);
-  });
-
-  it("returns the functions from snsFunctionsStore when snsAggregatorStore has data", () => {
-    snsAggregatorStore.setData([aggregatorProject]);
-    const functions = aggregatorSnsMockDto.parameters.functions;
-    snsFunctionsStore.setProjectsFunctions([
-      {
-        rootCanisterId,
-        nsFunctions: [nervousSystemFunctionMock],
-        certified: true,
-      },
-    ]);
-
-    const store = createSnsNsFunctionsProjectStore(rootCanisterId);
-    expect(get(store)).toEqual([nervousSystemFunctionMock]);
-    expect(get(store)).not.toEqual(functions.map(convertNervousFunction));
-  });
-
-  it("returns the functions from snsAggregator if no functions in snsFunctionsStore", () => {
-    snsAggregatorStore.setData([aggregatorProject]);
-    const functions = aggregatorSnsMockDto.parameters.functions;
-
-    const store = createSnsNsFunctionsProjectStore(rootCanisterId);
-    expect(get(store)).toEqual(functions.map(convertNervousFunction));
   });
 
   it("returns undefined if project is not set in no store", () => {
@@ -66,11 +31,10 @@ describe("nsFunctionsProjectStore", () => {
   });
 
   it("returns undefined if another project has ns functions but not this one", () => {
-    snsFunctionsStore.setProjectsFunctions([
+    setSnsProjects([
       {
         rootCanisterId,
-        nsFunctions: [nervousSystemFunctionMock],
-        certified: true,
+        nervousFunctions: [nervousSystemFunctionMock],
       },
     ]);
     const storeWithNsFunctions =
