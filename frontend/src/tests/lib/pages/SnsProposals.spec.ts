@@ -2,7 +2,6 @@ import SnsProposals from "$lib/pages/SnsProposals.svelte";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
@@ -49,7 +48,6 @@ describe("SnsProposals", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     snsProposalsStore.reset();
-    snsFunctionsStore.reset();
     snsFiltersStore.reset();
     // Reset to default value
     page.mock({ data: { universe: rootCanisterId.toText() } });
@@ -232,10 +230,12 @@ describe("SnsProposals", () => {
         ...proposals[1],
         action: functionId2,
       });
-      snsFunctionsStore.setProjectsFunctions([
+      setSnsProjects([
         {
           rootCanisterId,
-          nsFunctions: [
+          projectName,
+          lifecycle: SnsSwapLifecycle.Committed,
+          nervousFunctions: [
             {
               ...nervousSystemFunctionMock,
               id: functionId1,
@@ -245,7 +245,6 @@ describe("SnsProposals", () => {
               id: functionId2,
             },
           ],
-          certified: true,
         },
       ]);
     });

@@ -1,6 +1,5 @@
 import SnsNeuronFollowingCard from "$lib/components/sns-neuron-detail/SnsNeuronFollowingCard.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import {
@@ -14,6 +13,7 @@ import {
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   SnsNeuronPermissionType,
   type SnsNervousSystemFunction,
@@ -78,16 +78,15 @@ describe("SnsNeuronFollowingCard", () => {
 
     afterEach(() => {
       vi.clearAllMocks();
-      snsFunctionsStore.reset();
+      resetSnsProjects();
     });
 
     it("renders followees and their topics", () => {
       // Use same rootCanisterId as in `renderSelectedSnsNeuronContext`
-      snsFunctionsStore.setProjectsFunctions([
+      setSnsProjects([
         {
           rootCanisterId: rootCanisterIdMock,
-          nsFunctions: [function0, function1, function2],
-          certified: true,
+          nervousFunctions: [function0, function1, function2],
         },
       ]);
       const { getAllByText } = renderCard(neuronWithFollowees);
@@ -109,13 +108,13 @@ describe("SnsNeuronFollowingCard", () => {
     });
 
     it("shows loading while no ns functions", () => {
-      snsFunctionsStore.reset();
+      resetSnsProjects();
       const { queryByTestId } = renderCard(neuronWithFollowees);
       expect(queryByTestId("skeleton-followees")).toBeInTheDocument();
     });
 
     it("does not render skeletong if no followees", () => {
-      snsFunctionsStore.reset();
+      resetSnsProjects();
       const { queryByTestId } = renderCard(controlledNeuron);
       expect(queryByTestId("skeleton-followees")).not.toBeInTheDocument();
     });

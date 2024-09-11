@@ -1,5 +1,5 @@
 import ProposalSystemInfoSection from "$lib/components/sns-proposals/SnsProposalSystemInfoSection.svelte";
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
+import { snsFunctionsStore } from "$lib/derived/sns-functions.derived";
 import { secondsToDateTime } from "$lib/utils/date.utils";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
@@ -9,8 +9,9 @@ import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsProposalSystemInfoSectionPo } from "$tests/page-objects/SnsProposalSystemInfoSection.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { resetSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsProposalDecisionStatus } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
@@ -42,7 +43,7 @@ describe("ProposalSystemInfoSection", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    snsFunctionsStore.reset();
+    resetSnsProjects();
     fakeSnsGovernanceApi.addNervousSystemFunctionWith({
       rootCanisterId,
       ...nervousFunction,

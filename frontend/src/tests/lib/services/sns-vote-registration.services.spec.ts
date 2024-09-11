@@ -3,7 +3,6 @@ import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import * as actionableProposalsService from "$lib/services/actionable-proposals.services";
 import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { enumValues } from "$lib/utils/enum.utils";
@@ -17,6 +16,7 @@ import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
@@ -112,11 +112,10 @@ describe("sns-vote-registration-services", () => {
     resetIdentity();
     vi.clearAllMocks();
 
-    snsFunctionsStore.setProjectsFunctions([
+    setSnsProjects([
       {
         rootCanisterId,
-        nsFunctions: [nervousSystemFunctionMock],
-        certified: true,
+        nervousFunctions: [nervousSystemFunctionMock],
       },
     ]);
     snsProposalsStore.setProposals({

@@ -1,11 +1,11 @@
 import {
+  snsFunctionsStore,
+  type SnsNervousSystemFunctionsStore,
+} from "$lib/derived/sns-functions.derived";
+import {
   snsAggregatorStore,
   type SnsAggregatorStore,
 } from "$lib/stores/sns-aggregator.store";
-import {
-  snsFunctionsStore,
-  type SnsNervousSystemFunctionsStore,
-} from "$lib/stores/sns-functions.store";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { convertNervousFunction } from "$lib/utils/sns-aggregator-converters.utils";
 import type { Principal } from "@dfinity/principal";

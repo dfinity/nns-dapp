@@ -1,10 +1,10 @@
-import type { Principal } from "@dfinity/principal";
+import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+import { convertNervousFunction } from "$lib/utils/sns-aggregator-converters.utils";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
-import { writable, type Readable } from "svelte/store";
+import { derived, type Readable } from "svelte/store";
 
 interface SnsNervousSystemFunctions {
   nsFunctions: SnsNervousSystemFunction[];
-  certified: boolean;
 }
 export interface SnsNervousSystemFunctionsData {
   // Each SNS Project is an entry in this Store.
@@ -12,50 +12,21 @@ export interface SnsNervousSystemFunctionsData {
   [rootCanisterId: string]: SnsNervousSystemFunctions;
 }
 
-interface SnsFunctionProject extends SnsNervousSystemFunctions {
-  rootCanisterId: Principal;
-}
-
 export interface SnsNervousSystemFunctionsStore
-  extends Readable<SnsNervousSystemFunctionsData> {
-  setProjectsFunctions: (projects: SnsFunctionProject[]) => void;
-  reset: () => void;
-}
+  extends Readable<SnsNervousSystemFunctionsData> {}
 
 /**
  * A store that contains the nervous system functions for each sns project.
- *
- * - setProjectsFunctions: replace the list of functions for multiple projects at once.
  */
-const initSnsFunctionsStore = (): SnsNervousSystemFunctionsStore => {
-  const { subscribe, update, set } = writable<SnsNervousSystemFunctionsData>(
-    {}
-  );
-
-  return {
-    subscribe,
-
-    setProjectsFunctions(wrappedFunctions: SnsFunctionProject[]) {
-      update((currentState: SnsNervousSystemFunctionsData) =>
-        wrappedFunctions.reduce(
-          (acc, { rootCanisterId, nsFunctions, certified }) => ({
-            ...acc,
-            [rootCanisterId.toText()]: {
-              certified,
-              nsFunctions,
-            },
-          }),
-          currentState
-        )
-      );
-    },
-
-    // Used for testing purposes
-    reset() {
-      set({});
-    },
-  };
-};
-
-// TODO: expose update only functions instead of a readable store
-export const snsFunctionsStore = initSnsFunctionsStore();
+export const snsFunctionsStore: SnsNervousSystemFunctionsStore = derived(
+  snsAggregatorStore,
+  (aggregatorStore) =>
+    Object.fromEntries(
+      aggregatorStore.data?.map((sns) => [
+        sns.canister_ids.root_canister_id,
+        {
+          nsFunctions: sns.parameters.functions.map(convertNervousFunction),
+        },
+      ]) ?? []
+    )
+);

@@ -5,7 +5,7 @@ import { clearWrapperCache, wrapper } from "$lib/api/sns-wrapper.api";
 import { loadSnsProjects } from "$lib/services/public/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
+import { snsFunctionsStore } from "$lib/derived/sns-functions.derived";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import {
@@ -79,7 +79,6 @@ describe("SNS public services", () => {
 
   describe("loadSnsProjects", () => {
     beforeEach(() => {
-      snsFunctionsStore.reset();
       snsAggregatorStore.reset();
       clearWrapperCache();
       vi.clearAllMocks();
