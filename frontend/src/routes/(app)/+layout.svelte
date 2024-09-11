@@ -6,14 +6,14 @@
   import {
     initAppAuth,
     initAppPublicData,
-  } from "$lib/services/$public/app.services";
+  } from "$lib/services/public/app.services";
   import { authStore } from "$lib/stores/auth.store";
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
   import { confirmCloseApp } from "$lib/utils/before-unload.utils";
   import { referrerPathForNav } from "$lib/utils/page.utils";
   import { voteRegistrationActive } from "$lib/utils/proposals.utils";
-  import { Toasts, BusyScreen } from "@dfinity/gix-components";
+  import { BusyScreen, Toasts } from "@dfinity/gix-components";
   import type { AfterNavigate } from "@sveltejs/kit";
   import { onMount } from "svelte";
 

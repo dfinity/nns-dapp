@@ -6,7 +6,9 @@ use crate::{
     },
     tvl::state::TvlState,
 };
+use dfn_candid::Candid;
 use ic_stable_structures::{DefaultMemoryImpl, VectorMemory};
+use on_wire::FromWire;
 use pretty_assertions::assert_eq;
 use proptest::proptest;
 use std::cell::RefCell;
@@ -19,7 +21,7 @@ pub fn setup_test_state() -> State {
         asset_hashes: RefCell::new(AssetHashes::default()),
         performance: RefCell::new(PerformanceCounts::test_data()),
         partitions_maybe: RefCell::new(PartitionsMaybe::None(VectorMemory::default())),
-        tvl_state: RefCell::new(TvlState::default()),
+        tvl_state: RefCell::new(TvlState::test_data()),
     }
 }
 
@@ -43,6 +45,31 @@ fn state_heap_contents_can_be_serialized_and_deserialized() {
     // It's nice if we keep these:
     assert_eq!(toy_state.assets, parsed.assets, "Assets have changed");
     assert_eq!(toy_state.asset_hashes, parsed.asset_hashes, "Asset hashes have changed");
+    // TODO(NNS1-3281): Verify TVL state once it's read from stable memory.
+    // assert_eq!(toy_state.tvl_state, parsed.tvl_state, "TVL state has changed");
+}
+
+// TODO(NNS1-3281): Remove this test, and uncomment the assert in the
+// previous test, once TVL state is decoded.
+#[test]
+fn state_encodes_but_does_not_decode_tvl_state() {
+    let toy_state = setup_test_state();
+    let bytes: Vec<u8> = toy_state.encode();
+    let (_, _, tvl_state_bytes): (Vec<u8>, Vec<u8>, Vec<u8>) = Candid::from_bytes(bytes.clone()).map(|c| c.0).unwrap();
+    let parsed_tvl_state = TvlState::decode(tvl_state_bytes).unwrap();
+
+    assert_eq!(
+        *toy_state.tvl_state.borrow(),
+        parsed_tvl_state,
+        "TVL state should be encoded"
+    );
+
+    let parsed = State::decode(bytes).expect("Failed to parse");
+    assert_eq!(
+        *parsed.tvl_state.borrow(),
+        TvlState::default(),
+        "TVL state should not be decoded"
+    );
 }
 
 #[test]

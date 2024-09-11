@@ -1,6 +1,7 @@
 import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { ActionType } from "$lib/types/actions";
 import {
   UserTokenAction,
@@ -19,7 +20,6 @@ import { createActionEvent } from "$tests/utils/actions.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import type { Mock } from "vitest";
-import { importedTokensStore } from "../../../../lib/stores/imported-tokens.store";
 import TokensTableTest from "./TokensTableTest.svelte";
 
 describe("TokensTable", () => {

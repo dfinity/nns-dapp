@@ -5,8 +5,8 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { debugSelectedProposalStore } from "$lib/derived/debug.derived";
-  import { loadProposal } from "$lib/services/$public/proposals.services";
   import { listNeurons } from "$lib/services/neurons.services";
+  import { loadProposal } from "$lib/services/public/proposals.services";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";

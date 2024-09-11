@@ -36,7 +36,7 @@ const proposalInfo = (): ProposalInfo => ({
   ...mockProposalInfo,
   id: BigInt(++proposalInfoIdIndex),
 });
-vi.mock("$lib/services/$public/proposals.services", () => {
+vi.mock("$lib/services/public/proposals.services", () => {
   return {
     loadProposal: ({ setProposal }) => {
       setProposal(proposalInfo);
