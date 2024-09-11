@@ -96,9 +96,9 @@ describe("AccountMenu", () => {
 
       await show(renderResult);
 
-      expect(
-        await accountMenuPo.getAccountDetailsPoRoot().root.isPresent()
-      ).toBe(true);
+      expect(await accountMenuPo.getAccountDetailsPo().root.isPresent()).toBe(
+        true
+      );
     });
   });
 });
