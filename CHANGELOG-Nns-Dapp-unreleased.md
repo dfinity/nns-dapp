@@ -20,7 +20,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Changes for cleaning up the stable structure migration.
-*`CanistersButton` is moved from sidebar to account menu and renamed to `LinkToCanisters`.
+* `CanistersButton` is moved from sidebar to account menu and renamed to `LinkToCanisters`.
 
 #### Deprecated
 
