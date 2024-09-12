@@ -5,7 +5,6 @@ import { SnsProposalPayloadSectionPo } from "$tests/page-objects/SnsProposalPayl
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SnsProposalData } from "@dfinity/sns";
-import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 
 describe("SnsProposalPayloadSection", () => {
@@ -38,9 +37,9 @@ describe("SnsProposalPayloadSection", () => {
     it("should contain summary", async () => {
       const po = await renderComponent(props);
 
-      await waitFor(async () => {
-        expect(await (await po.getPayloadText()).trim()).toBe(payload);
-      });
+      await runResolvedPromises();
+
+      expect(await (await po.getPayloadText()).trim()).toBe(payload);
     });
   });
 
