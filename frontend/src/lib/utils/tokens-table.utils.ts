@@ -54,8 +54,8 @@ export const compareTokensForTokensTable = ({
 }) =>
   mergeComparators([
     compareTokensIcpFirst,
-    compareFailedTokensLast,
     compareTokensWithBalanceOrImportedFirst({ importedTokenIds }),
+    compareFailedTokensLast,
     compareTokensByImportance,
     compareTokensAlphabetically,
   ]);

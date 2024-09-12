@@ -8,7 +8,7 @@
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { nonNullish } from "@dfinity/utils";
-  import { IconError, IconWarning, Tag } from "@dfinity/gix-components";
+  import { IconError, Tag } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import LogoWrapper from "$lib/components/ui/LogoWrapper.svelte";
   import Hash from "$lib/components/ui/Hash.svelte";
@@ -24,22 +24,16 @@
 </script>
 
 <div class="title-logo-wrapper">
+  <Logo src={rowData.logo} alt={rowData.title} size="medium" framed />
   {#if isUserTokenFailed(rowData)}
-    <LogoWrapper size="medium" framed testId="failed-logo">
-      <div data-tid="vote-icon">
-        <IconWarning size="24px" />
-      </div>
-    </LogoWrapper>
     <Hash
       testId="failed-ledger-canister-id"
       text={`${rowData.universeId.toText()}`}
       tagName="span"
       splitLength={6}
       tooltipTop
-      showCopy
     />
   {:else}
-    <Logo src={rowData.logo} alt={rowData.title} size="medium" framed />
     <div class="title-wrapper">
       <h5 data-tid="project-name">{rowData.title}</h5>
       {#if nonNullish(rowData.subtitle)}

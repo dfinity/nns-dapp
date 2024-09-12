@@ -2,6 +2,7 @@ import type {
   UserTokenData,
   UserTokenFailed,
   UserTokenLoading,
+import UNKNOWN_LOGO from "$lib/assets/question-mark.svg";
 } from "$lib/types/tokens-page";
 import { Principal } from "@dfinity/principal";
 
@@ -29,7 +30,7 @@ export const toUserTokenFailed = (
   universeId: Principal.fromText(ledgerCanisterIdText),
   // Title will be used for sorting.
   title: ledgerCanisterIdText,
-  logo: "",
+  logo: UNKNOWN_LOGO,
   balance: "failed",
   domKey: ledgerCanisterIdText,
   actions: [],
