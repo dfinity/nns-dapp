@@ -1,4 +1,3 @@
-
 # Unreleased changelog NNS Dapp
 
 All notable changes to the NNS Dapp will be documented in this file.
@@ -15,7 +14,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Added `get_tvl` method to `nns-dapp` canister.
+- Added `get_tvl` method to `nns-dapp` canister.
+
+- Display of principal Id and main ICP account Id in the account menu.
 
 #### Changed
 
