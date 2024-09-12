@@ -65,16 +65,6 @@ test.describe("Design", () => {
       for (const row of rows) {
         await row.waitForBalance();
       }
-      // We need to replace the content to not rely on the SNS project name.
-      await replaceContent({
-        page,
-        selectors: [
-          '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="project-name"]',
-          '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="token-value-label"] .label',
-        ],
-        pattern: /[A-Za-z ]+/,
-        replacements: ["XXXXX"],
-      });
 
       await expect(page).toHaveScreenshot();
     };
