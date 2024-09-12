@@ -14,15 +14,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Added `get_tvl` method to `nns-dapp` canister.
-
-- Display of principal Id and main ICP account Id in the account menu.
+* Added `get_tvl` method to `nns-dapp` canister.
+* Display of principal Id and main ICP account Id in the account menu.
 
 #### Changed
 
-- Changes for cleaning up the stable structure migration.
-
-- TooltipIcon component now uses `var(--elements-icons)` as the default color for the icon.
+* Changes for cleaning up the stable structure migration.
+* TooltipIcon component now uses `var(--elements-icons)` as the default color for the icon.
 
 #### Deprecated
 
