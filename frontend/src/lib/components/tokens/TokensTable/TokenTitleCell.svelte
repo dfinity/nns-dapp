@@ -60,6 +60,8 @@
     display: flex;
     align-items: center;
     gap: var(--padding);
+    // Fix squashed logo for failed imported tokens caused by too many elements being displayed.
+    flex-wrap: wrap;
 
     .title-wrapper {
       display: flex;
