@@ -19,7 +19,7 @@
     <div class="account-details">
       {#if nonNullish(accountId)}
         <div class="detail-row">
-          <span class="description text-sm"
+          <span class="description text-small"
             >{$i18n.header.main_icp_account_id}</span
           >
           <div class="id-container" data-tid="main-icp-account-id-container">
@@ -33,7 +33,7 @@
       {/if}
       {#if nonNullish(principalId)}
         <div class="detail-row">
-          <span class="description text-sm">{$i18n.core.principal_id}</span>
+          <span class="description text-small">{$i18n.core.principal_id}</span>
           <div class="id-container" data-tid="principal-id-container">
             <IdentifierHash identifier={principalId} />
           </div>
@@ -44,7 +44,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  .text-sm {
+  .text-small {
     font-size: var(--font-size-small);
   }
   .account-details {

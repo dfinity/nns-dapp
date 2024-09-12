@@ -96,9 +96,7 @@ describe("AccountMenu", () => {
 
       await accountMenuPo.openMenu();
 
-      expect(await accountMenuPo.getAccountDetailsPo().root.isPresent()).toBe(
-        true
-      );
+      expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(true);
     });
   });
 });
