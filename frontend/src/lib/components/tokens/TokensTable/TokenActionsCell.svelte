@@ -5,9 +5,14 @@
     type UserTokenData,
     type UserTokenLoading,
   } from "$lib/types/tokens-page";
-  import { isUserTokenData } from "$lib/utils/user-token.utils";
+  import {
+    isUserTokenData,
+    isUserTokenFailed,
+  } from "$lib/utils/user-token.utils";
+  import GoToDashboardButton from "./actions/GoToDashboardButton.svelte";
   import GoToDetailIcon from "./actions/GoToDetailIcon.svelte";
   import ReceiveButton from "./actions/ReceiveButton.svelte";
+  import RemoveButton from "./actions/RemoveButton.svelte";
   import SendButton from "./actions/SendButton.svelte";
   import { nonNullish } from "@dfinity/utils";
   import type { SvelteComponent, ComponentType } from "svelte";
@@ -21,10 +26,15 @@
     [UserTokenAction.GoToDetail]: GoToDetailIcon,
     [UserTokenAction.Receive]: ReceiveButton,
     [UserTokenAction.Send]: SendButton,
+    [UserTokenAction.GoToDashboard]: GoToDashboardButton,
+    [UserTokenAction.Remove]: RemoveButton,
   };
 
-  let userToken: UserTokenData | undefined;
-  $: userToken = isUserTokenData(rowData) ? rowData : undefined;
+  let userToken: UserTokenData | UserTokenFailed | undefined;
+  $: userToken =
+    isUserTokenData(rowData) || isUserTokenFailed(rowData)
+      ? rowData
+      : undefined;
 </script>
 
 {#if nonNullish(userToken)}
