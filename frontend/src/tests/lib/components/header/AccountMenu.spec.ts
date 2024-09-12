@@ -83,7 +83,7 @@ describe("AccountMenu", () => {
 
       await AccountMenuPo.openMenu();
 
-      expect(await AccountMenuPo.getCanistersButtonPo().isPresent()).toBe(true);
+      expect(await AccountMenuPo.getCanistersLinkPo().isPresent()).toBe(true);
     });
 
     it("should close popover on click on settings", async () => {

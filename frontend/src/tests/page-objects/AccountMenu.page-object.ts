@@ -1,7 +1,7 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { AccountDetailsPo } from "./AccountDetails.page-object";
-import type { ButtonPo } from "./Button.page-object";
+import { LinkPo } from "./Link.page-object";
 
 export class AccountMenuPo extends BasePageObject {
   private static readonly TID = "account-menu-component";
@@ -18,12 +18,15 @@ export class AccountMenuPo extends BasePageObject {
     return this.click("logout");
   }
 
-  getCanistersButtonPo(): ButtonPo {
-    return this.getButton("canisters-button");
+  getCanistersLinkPo(): LinkPo {
+    return LinkPo.under({
+      element: this.root,
+      testId: "canisters-button",
+    });
   }
 
   clickCanisters(): Promise<void> {
-    return this.getCanistersButtonPo().click();
+    return this.getCanistersLinkPo().click();
   }
 
   getAccountDetailsPo(): AccountDetailsPo {
