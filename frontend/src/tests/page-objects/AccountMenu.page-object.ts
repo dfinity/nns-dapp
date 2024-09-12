@@ -22,6 +22,6 @@ export class AccountMenuPo extends BasePageObject {
   }
 
   clickCanisters(): Promise<void> {
-    return this.click("canisters-button");
+    return this.getCanistersButtonPo().click();
   }
 }
