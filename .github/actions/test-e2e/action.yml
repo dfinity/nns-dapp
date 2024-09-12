@@ -73,6 +73,7 @@ runs:
       id: check-screenshots
       run: |
         list_changed_or_new_screenshots() {
+          # List both changed and new screenshots.
           git status --short --porcelain -- frontend/src/tests/e2e/screenshots | awk '{print $2}'
         }
         if [[ -n "$(list_changed_or_new_screenshots)" ]]; then
