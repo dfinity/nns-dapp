@@ -46,7 +46,7 @@ describe("AccountMenu", () => {
       expect(renderResult.getByTestId("theme-toggle")).not.toBeNull();
     });
 
-    it("should display logout button if signed in", async () => {
+    it("should display logout button", async () => {
       const renderResult = render(AccountMenu);
 
       await show(renderResult);
@@ -54,7 +54,7 @@ describe("AccountMenu", () => {
       expect(renderResult.getByTestId("logout")).not.toBeNull();
     });
 
-    it("should display settings button if signed in", async () => {
+    it("should display settings button", async () => {
       const renderResult = render(AccountMenu);
 
       await show(renderResult);
@@ -62,7 +62,7 @@ describe("AccountMenu", () => {
       expect(renderResult.getByTestId("settings")).not.toBeNull();
     });
 
-    it('should display "Manage ii" button if signed in', async () => {
+    it('should display "Manage ii" button', async () => {
       const renderResult = render(AccountMenu);
 
       await show(renderResult);
@@ -70,7 +70,7 @@ describe("AccountMenu", () => {
       expect(renderResult.getByTestId("manage-ii-link")).not.toBeNull();
     });
 
-    it('should display "Source code" button if signed in', async () => {
+    it('should display "Source code" button', async () => {
       const renderResult = render(AccountMenu);
 
       await show(renderResult);
