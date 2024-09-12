@@ -94,7 +94,7 @@ describe("AccountMenu", () => {
         new JestPageObjectElement(renderResult.container)
       );
 
-      await show(renderResult);
+      await accountMenuPo.openMenu();
 
       expect(await accountMenuPo.getAccountDetailsPo().root.isPresent()).toBe(
         true
