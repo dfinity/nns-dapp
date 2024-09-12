@@ -3,7 +3,6 @@ import { ProposalSummarySectionPo } from "$tests/page-objects/ProposalSummarySec
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { expect } from "@playwright/test";
-import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 
 describe("ProposalSummarySection", () => {
@@ -31,9 +30,9 @@ describe("ProposalSummarySection", () => {
   it("should render summary", async () => {
     const po = await renderComponent();
 
-    await waitFor(async () => {
-      expect(await po.getProposalSummary()).toContain(summary);
-    });
+    await runResolvedPromises();
+
+    expect(await po.getProposalSummary()).toContain(summary);
   });
 
   it("should render url", async () => {

@@ -5,7 +5,6 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SnsProposalData } from "@dfinity/sns";
 import { expect } from "@playwright/test";
-import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 
 describe("SnsProposalSummarySection", () => {
@@ -45,9 +44,9 @@ describe("SnsProposalSummarySection", () => {
     it("should contain summary", async () => {
       const po = await renderComponent(props);
 
-      await waitFor(async () => {
-        expect(await po.getProposalSummary()).toContain(summary);
-      });
+      await runResolvedPromises();
+
+      expect(await po.getProposalSummary()).toContain(summary);
     });
 
     it("should render url", async () => {
