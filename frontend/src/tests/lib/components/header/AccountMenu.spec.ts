@@ -99,5 +99,17 @@ describe("AccountMenu", () => {
         expect(() => renderResult.getByRole("menu")).toThrow()
       );
     });
+
+    it("should render account details component", async () => {
+      const renderResult = render(AccountMenu);
+
+      const accountMenuPo = AccountMenuPo.under(
+        new JestPageObjectElement(renderResult.container)
+      );
+
+      await accountMenuPo.openMenu();
+
+      expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(true);
+    });
   });
 });

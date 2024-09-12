@@ -1,5 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { AccountDetailsPo } from "./AccountDetails.page-object";
 import type { ButtonPo } from "./Button.page-object";
 
 export class AccountMenuPo extends BasePageObject {
@@ -23,5 +24,9 @@ export class AccountMenuPo extends BasePageObject {
 
   clickCanisters(): Promise<void> {
     return this.getCanistersButtonPo().click();
+  }
+
+  getAccountDetailsPo(): AccountDetailsPo {
+    return AccountDetailsPo.under(this.root);
   }
 }
