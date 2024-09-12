@@ -1,10 +1,11 @@
 import SnsProposalPayloadSection from "$lib/components/sns-proposals/SnsProposalPayloadSection.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsProposalPayloadSectionPo } from "$tests/page-objects/SnsProposalPayloadSection.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SnsProposalData } from "@dfinity/sns";
+import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 
 describe("SnsProposalPayloadSection", () => {
@@ -37,7 +38,9 @@ describe("SnsProposalPayloadSection", () => {
     it("should contain summary", async () => {
       const po = await renderComponent(props);
 
-      expect(await (await po.getPayloadText()).trim()).toBe(payload);
+      await waitFor(async () => {
+        expect(await (await po.getPayloadText()).trim()).toBe(payload);
+      });
     });
   });
 
