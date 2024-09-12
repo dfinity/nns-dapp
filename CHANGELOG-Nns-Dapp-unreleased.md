@@ -20,8 +20,9 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Changes for cleaning up the stable structure migration.
-
 * Move Canisters button from sidebar to account menu.
+* Use `<a>` tag instead of `<button>` for the `CanisterButton` component.
+* Change the name of `CanisterButton` to `LinkToCanisters`.
 
 #### Deprecated
 
