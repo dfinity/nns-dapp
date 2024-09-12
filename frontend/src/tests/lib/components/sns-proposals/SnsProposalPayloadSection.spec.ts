@@ -7,10 +7,6 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SnsProposalData } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
-vi.mock("$lib/utils/html.utils", () => ({
-  markdownToHTML: (value) => Promise.resolve(value),
-}));
-
 describe("SnsProposalPayloadSection", () => {
   const renderComponent = async (props) => {
     const { container } = render(SnsProposalPayloadSection, {
@@ -25,7 +21,7 @@ describe("SnsProposalPayloadSection", () => {
   };
 
   describe("when payload is defined", () => {
-    const payload = "# Some Summary";
+    const payload = "Some Summary";
     const proposal: SnsProposalData = {
       ...mockSnsProposal,
       payload_text_rendering: [payload],
