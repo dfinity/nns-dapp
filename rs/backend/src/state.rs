@@ -110,7 +110,7 @@ impl State {
     /// Creates new state with the specified schema.
     #[must_use]
     pub fn new(memory: DefaultMemoryImpl) -> Self {
-        let partitions = Partitions::new(memory);
+        let partitions = Partitions::from(memory);
         let accounts_store = AccountsStore::from(AccountsDb::UnboundedStableBTreeMap(
             AccountsDbAsUnboundedStableBTreeMap::new(partitions.get(PartitionType::Accounts.memory_id())),
         ));
@@ -125,10 +125,11 @@ impl State {
     }
 }
 
-/// Restores state from managed memory.
-impl From<Partitions> for State {
-    fn from(partitions: Partitions) -> Self {
-        println!("START state::from<Partitions>: ()");
+/// Restores state from stable memory.
+impl From<DefaultMemoryImpl> for State {
+    fn from(memory: DefaultMemoryImpl) -> Self {
+        println!("START state::from<DefaultMemoryImpl>: ())");
+        let partitions = Partitions::from(memory);
         let state = Self::recover_heap_from_managed_memory(&partitions.get(PartitionType::Heap.memory_id()));
         let accounts_db = AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(
             partitions.get(PartitionType::Accounts.memory_id()),
@@ -136,16 +137,6 @@ impl From<Partitions> for State {
         // Replace the default accountsdb created by `serde` with the one from stable memory.
         let _deserialized_accounts_db = state.accounts_store.borrow_mut().replace_accounts_db(accounts_db);
         state.partitions_maybe.replace(PartitionsMaybe::Partitions(partitions));
-        state
-    }
-}
-
-/// Restores state from stable memory.
-impl From<DefaultMemoryImpl> for State {
-    fn from(memory: DefaultMemoryImpl) -> Self {
-        println!("START state::from<DefaultMemoryImpl>: ())");
-        let partitions = Partitions::from(memory);
-        let state = Self::from(partitions);
         println!("END   state::from<DefaultMemoryImpl>: ()");
         state
     }
