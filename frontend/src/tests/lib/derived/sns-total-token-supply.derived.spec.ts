@@ -43,14 +43,17 @@ describe("SNS Total Tokens Supply store", () => {
     expect(initialStore[rootCanisterId.toText()]).toEqual(totalSupplyData);
 
     const rootCanisterId2 = principal(1);
+    const totalTokenSupply2 = 2n * totalTokenSupply;
     const project2 = {
       rootCanisterId2,
-      totalTokenSupply,
+      totalTokenSupply: totalTokenSupply2,
     };
     setSnsProjects([project1, project2]);
     const store = get(snsTotalTokenSupplyStore);
     expect(store[rootCanisterId.toText()]).toEqual(totalSupplyData);
-    expect(store[rootCanisterId2.toText()]).toEqual(totalSupplyData);
+    expect(store[rootCanisterId2.toText()]).toEqual({
+      totalSupply: totalTokenSupply2,
+    });
   });
 
   it("should override supply data on the same project", () => {
