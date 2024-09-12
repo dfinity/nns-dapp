@@ -1,22 +1,25 @@
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
+import { snsFunctionsStore } from "$lib/derived/sns-functions.derived";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
 describe("sns functions store", () => {
-  afterEach(() => snsFunctionsStore.reset());
+  beforeEach(() => {
+    resetSnsProjects();
+  });
+
   it("should be set to an empty object", () => {
     const store = get(snsFunctionsStore);
     expect(store).toEqual({});
   });
 
   it("should set functions for one project", () => {
-    snsFunctionsStore.setProjectsFunctions([
+    setSnsProjects([
       {
         rootCanisterId: mockPrincipal,
-        nsFunctions: [nervousSystemFunctionMock],
-        certified: true,
+        nervousFunctions: [nervousSystemFunctionMock],
       },
     ]);
     const store = get(snsFunctionsStore);
@@ -25,27 +28,23 @@ describe("sns functions store", () => {
     ]);
   });
 
-  it("should set functions for more than one project", () => {
-    snsFunctionsStore.setProjectsFunctions([
-      {
-        rootCanisterId: mockPrincipal,
-        nsFunctions: [nervousSystemFunctionMock],
-        certified: true,
-      },
-    ]);
+  it("should have functions for more than one project", () => {
+    const project1 = {
+      rootCanisterId: mockPrincipal,
+      nervousFunctions: [nervousSystemFunctionMock],
+    };
+    setSnsProjects([project1]);
     const store = get(snsFunctionsStore);
     expect(store[mockPrincipal.toText()]?.nsFunctions).toEqual([
       nervousSystemFunctionMock,
     ]);
 
     const rootCanister2 = Principal.from("aaaaa-aa");
-    snsFunctionsStore.setProjectsFunctions([
-      {
-        rootCanisterId: rootCanister2,
-        nsFunctions: [nervousSystemFunctionMock],
-        certified: true,
-      },
-    ]);
+    const project2 = {
+      rootCanisterId: rootCanister2,
+      nervousFunctions: [nervousSystemFunctionMock],
+    };
+    setSnsProjects([project1, project2]);
     const store2 = get(snsFunctionsStore);
     expect(store2[rootCanister2.toText()]?.nsFunctions).toEqual([
       nervousSystemFunctionMock,
@@ -54,16 +53,14 @@ describe("sns functions store", () => {
 
   it("should set functions for more than one project at once", () => {
     const rootCanister2 = Principal.from("aaaaa-aa");
-    snsFunctionsStore.setProjectsFunctions([
+    setSnsProjects([
       {
         rootCanisterId: mockPrincipal,
-        nsFunctions: [nervousSystemFunctionMock],
-        certified: true,
+        nervousFunctions: [nervousSystemFunctionMock],
       },
       {
         rootCanisterId: rootCanister2,
-        nsFunctions: [nervousSystemFunctionMock],
-        certified: true,
+        nervousFunctions: [nervousSystemFunctionMock],
       },
     ]);
     const store = get(snsFunctionsStore);
@@ -76,11 +73,10 @@ describe("sns functions store", () => {
   });
 
   it("should reset functions for more than one project", () => {
-    snsFunctionsStore.setProjectsFunctions([
+    setSnsProjects([
       {
         rootCanisterId: mockPrincipal,
-        nsFunctions: [nervousSystemFunctionMock],
-        certified: true,
+        nervousFunctions: [nervousSystemFunctionMock],
       },
     ]);
     const store = get(snsFunctionsStore);
@@ -88,11 +84,10 @@ describe("sns functions store", () => {
       nervousSystemFunctionMock,
     ]);
 
-    snsFunctionsStore.setProjectsFunctions([
+    setSnsProjects([
       {
         rootCanisterId: mockPrincipal,
-        nsFunctions: [],
-        certified: true,
+        nervousFunctions: [],
       },
     ]);
     const store2 = get(snsFunctionsStore);

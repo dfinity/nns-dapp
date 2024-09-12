@@ -16,9 +16,9 @@ import type { Identity } from "@dfinity/agent";
 import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { loadProposal } from "./$public/proposals.services";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
+import { loadProposal } from "./public/proposals.services";
 
 /**
  * Makes multiple registerVote calls (1 per neuronId).

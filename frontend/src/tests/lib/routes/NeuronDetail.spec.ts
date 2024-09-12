@@ -3,7 +3,7 @@ import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import NeuronDetail from "$lib/routes/NeuronDetail.svelte";
-import { loadSnsProjects } from "$lib/services/$public/sns.services";
+import { loadSnsProjects } from "$lib/services/public/sns.services";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";

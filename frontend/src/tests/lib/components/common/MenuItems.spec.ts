@@ -15,7 +15,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { ProposalInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
-vi.mock("$lib/services/$public/worker-metrics.services", () => ({
+vi.mock("$lib/services/public/worker-metrics.services", () => ({
   initMetricsWorker: vi.fn(() =>
     Promise.resolve({
       startMetricsTimer: () => {

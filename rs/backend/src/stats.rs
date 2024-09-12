@@ -42,7 +42,6 @@ pub struct Stats {
     //       production, CI and snsdemo populate these fields.
     pub stable_memory_size_bytes: Option<u64>,
     pub wasm_memory_size_bytes: Option<u64>,
-    pub schema: Option<u32>,              // The numeric form of a SchemaLabel.
     pub migration_countdown: Option<u32>, // When non-zero, a migration is in progress.
     pub exceptional_transactions_count: Option<u32>,
     // TODO[NNS1-2913]: Delete this once the stable memory migration is complete.  This is used purely to get
@@ -97,11 +96,6 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
         "nns_dapp_wasm_memory_size_gib",
         gibibytes(wasm_memory_size_bytes()),
         "Amount of wasm memory used by this canister, in binary gigabytes",
-    )?;
-    w.encode_gauge(
-        "nns_dapp_schema",
-        f64::from(stats.schema.unwrap_or(0)),
-        "The nns-dapp schema version",
     )?;
     w.encode_gauge(
         "nns_dapp_migration_countdown",

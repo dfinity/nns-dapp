@@ -8,7 +8,7 @@ import {
   listProposals,
   loadProposal,
   loadProposalPayload,
-} from "$lib/services/$public/proposals.services";
+} from "$lib/services/public/proposals.services";
 import { getCurrentIdentity } from "$lib/services/auth.services";
 import { authStore } from "$lib/stores/auth.store";
 import {

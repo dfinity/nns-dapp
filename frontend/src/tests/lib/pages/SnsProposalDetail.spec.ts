@@ -8,7 +8,6 @@ import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposal
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
@@ -74,7 +73,6 @@ describe("SnsProposalDetail", () => {
       actionableProposalsSegmentStore.resetForTesting();
       vi.spyOn(console, "error").mockImplementation(() => undefined);
       authStore.setForTesting(undefined);
-      snsFunctionsStore.reset();
       page.mock({ data: { universe: rootCanisterId.toText() } });
       setSnsProjects([
         {

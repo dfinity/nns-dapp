@@ -4,13 +4,11 @@ import { buildAndStoreWrapper } from "$lib/api/sns-wrapper.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import { snsProposalsStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
-import { convertNervousFunction } from "$lib/utils/sns-aggregator-converters.utils";
 import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { getCurrentIdentity } from "../auth.services";
@@ -56,13 +54,6 @@ export const loadSnsProjects = async (): Promise<void> => {
       aggregatorData.map(({ icrc1_total_supply, canister_ids }) => ({
         rootCanisterId: Principal.fromText(canister_ids.root_canister_id),
         totalSupply: BigInt(icrc1_total_supply),
-        certified: true,
-      }))
-    );
-    snsFunctionsStore.setProjectsFunctions(
-      aggregatorData.map((sns) => ({
-        rootCanisterId: Principal.fromText(sns.canister_ids.root_canister_id),
-        nsFunctions: sns.parameters.functions.map(convertNervousFunction),
         certified: true,
       }))
     );

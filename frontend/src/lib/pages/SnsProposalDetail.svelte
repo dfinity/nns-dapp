@@ -16,7 +16,7 @@
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
   import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
-  import { getSnsProposalById } from "$lib/services/$public/sns-proposals.services";
+  import { getSnsProposalById } from "$lib/services/public/sns-proposals.services";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
@@ -32,10 +32,10 @@
   import {
     getUniversalProposalStatus,
     mapProposalInfo,
-    type SnsProposalDataMap,
     snsProposalId,
     snsProposalIdString,
     sortSnsProposalsById,
+    type SnsProposalDataMap,
   } from "$lib/utils/sns-proposals.utils";
   import { isUniverseNns } from "$lib/utils/universe.utils";
   import { debugSnsProposalStore } from "../derived/debug.derived";
