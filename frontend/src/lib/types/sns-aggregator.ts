@@ -52,7 +52,7 @@ export type CachedDefaultFolloweesDto = {
 
 export type CachedNeuronPermissionListDto = {
   permissions: number[];
-}
+};
 
 export type CachedVotingRewardsParametersDto = {
   final_reward_rate_basis_points?: number;
@@ -60,7 +60,6 @@ export type CachedVotingRewardsParametersDto = {
   reward_rate_transition_duration_seconds?: number;
   round_duration_seconds?: number;
 };
-
 
 export type CachedNervousSystemParametersDto = {
   default_followees?: CachedDefaultFolloweesDto;
