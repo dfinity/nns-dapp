@@ -1,14 +1,18 @@
-import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
+import { snsTotalTokenSupplyStore } from "$lib/derived/sns-total-token-supply.derived";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { get } from "svelte/store";
 
 describe("SNS Total Tokens Supply store", () => {
-  beforeEach(() => snsTotalTokenSupplyStore.reset());
+  beforeEach(() => {
+    resetSnsProjects();
+  });
+
+  const totalTokenSupply = 1_000_000_000n;
 
   const totalSupplyData = {
-    totalSupply: 1_000_000_000n,
-    certified: true,
+    totalSupply: totalTokenSupply,
   };
 
   it("should set supply data on one project", () => {
@@ -17,10 +21,10 @@ describe("SNS Total Tokens Supply store", () => {
 
     const rootCanisterId = mockCanisterId;
 
-    snsTotalTokenSupplyStore.setTotalTokenSupplies([
+    setSnsProjects([
       {
         rootCanisterId,
-        ...totalSupplyData,
+        totalTokenSupply,
       },
     ]);
 
@@ -30,33 +34,34 @@ describe("SNS Total Tokens Supply store", () => {
 
   it("should set supply data without affecting other projects", () => {
     const rootCanisterId = principal(0);
-    snsTotalTokenSupplyStore.setTotalTokenSupplies([
-      {
-        rootCanisterId,
-        ...totalSupplyData,
-      },
-    ]);
+    const project1 = {
+      rootCanisterId,
+      totalTokenSupply,
+    };
+    setSnsProjects([project1]);
     const initialStore = get(snsTotalTokenSupplyStore);
     expect(initialStore[rootCanisterId.toText()]).toEqual(totalSupplyData);
 
     const rootCanisterId2 = principal(1);
-    snsTotalTokenSupplyStore.setTotalTokenSupplies([
-      {
-        rootCanisterId: rootCanisterId2,
-        ...totalSupplyData,
-      },
-    ]);
+    const totalTokenSupply2 = 2n * totalTokenSupply;
+    const project2 = {
+      rootCanisterId2,
+      totalTokenSupply: totalTokenSupply2,
+    };
+    setSnsProjects([project1, project2]);
     const store = get(snsTotalTokenSupplyStore);
     expect(store[rootCanisterId.toText()]).toEqual(totalSupplyData);
-    expect(store[rootCanisterId2.toText()]).toEqual(totalSupplyData);
+    expect(store[rootCanisterId2.toText()]).toEqual({
+      totalSupply: totalTokenSupply2,
+    });
   });
 
   it("should override supply data on the same project", () => {
     const rootCanisterId = principal(0);
-    snsTotalTokenSupplyStore.setTotalTokenSupplies([
+    setSnsProjects([
       {
         rootCanisterId,
-        ...totalSupplyData,
+        totalTokenSupply,
       },
     ]);
     const initialStore = get(snsTotalTokenSupplyStore);
@@ -65,11 +70,10 @@ describe("SNS Total Tokens Supply store", () => {
     );
 
     const newSupply = 2_000_000_000n;
-    snsTotalTokenSupplyStore.setTotalTokenSupplies([
+    setSnsProjects([
       {
         rootCanisterId,
-        totalSupply: newSupply,
-        certified: true,
+        totalTokenSupply: newSupply,
       },
     ]);
     const store = get(snsTotalTokenSupplyStore);
