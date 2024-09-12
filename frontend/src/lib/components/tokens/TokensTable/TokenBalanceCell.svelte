@@ -20,6 +20,8 @@
   >
 {:else if isUserTokenData(rowData)}
   <AmountDisplay singleLine amount={rowData.balance} />
+{:else}
+  <span class="value">-/-</span>
 {/if}
 
 <style lang="scss">
