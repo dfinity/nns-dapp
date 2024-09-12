@@ -1,11 +1,11 @@
 import FollowSnsNeuronsModal from "$lib/modals/sns/neurons/FollowSnsNeuronsModal.svelte";
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { FollowSnsNeuronsModalPo } from "$tests/page-objects/FollowSnsNeuronsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
 
 describe("FollowSnsNeuronsModal", () => {
@@ -32,7 +32,7 @@ describe("FollowSnsNeuronsModal", () => {
   };
 
   beforeEach(() => {
-    snsFunctionsStore.reset();
+    resetSnsProjects();
   });
 
   it("renders title", async () => {
@@ -67,11 +67,10 @@ describe("FollowSnsNeuronsModal", () => {
       ...nervousSystemFunctionMock,
       id: 2n,
     };
-    snsFunctionsStore.setProjectsFunctions([
+    setSnsProjects([
       {
         rootCanisterId,
-        nsFunctions: [function0, function1, function2],
-        certified: true,
+        nervousFunctions: [function0, function1, function2],
       },
     ]);
 

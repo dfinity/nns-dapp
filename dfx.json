@@ -372,7 +372,8 @@
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "ENABLE_PROJECTS_TABLE": true,
-          "ENABLE_IMPORT_TOKEN": false
+          "ENABLE_IMPORT_TOKEN": false,
+          "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false
         }
       }
     },

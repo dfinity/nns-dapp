@@ -23,6 +23,8 @@
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import { createEventDispatcher } from "svelte";
   import { goto } from "$app/navigation";
+  import { get } from "svelte/store";
+  import { DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING } from "$lib/stores/feature-flags.store";
 
   let currentStep: WizardStep | undefined = undefined;
 
@@ -92,6 +94,18 @@
 
   const onSubmit = async () => {
     if (isNullish(ledgerCanisterId)) return;
+
+    // For testing purposes only.
+    if (get(DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING)) {
+      tokenMetaData = {
+        symbol: "",
+        name: "",
+        decimals: 0,
+        fee: 0n,
+      };
+      next();
+      return;
+    }
 
     const { errorLabelKey } = validateLedgerCanister(ledgerCanisterId);
     if (nonNullish(errorLabelKey)) {

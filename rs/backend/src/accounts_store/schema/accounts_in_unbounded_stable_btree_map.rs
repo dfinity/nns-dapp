@@ -5,7 +5,7 @@
 //! with values that are [`ic_stable_structures::storable::Bound::Unbounded`](https://docs.rs/ic-stable-structures/0.6.0/ic_stable_structures/storable/enum.Bound.html#variant.Unbounded)
 //! as described on the [dfinity forum](https://forum.dfinity.org/t/stable-structures-removing-the-bounded-size-requirement/21167).
 
-use super::{Account, AccountsDbTrait, SchemaLabel};
+use super::{Account, AccountsDbTrait};
 use core::ops::RangeBounds;
 use ic_stable_structures::memory_manager::VirtualMemory;
 use ic_stable_structures::DefaultMemoryImpl;
@@ -84,9 +84,6 @@ where
     fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
         let iterator = self.accounts.range(key_range);
         Box::new(iterator)
-    }
-    fn schema_label(&self) -> SchemaLabel {
-        SchemaLabel::AccountsInStableMemory
     }
 }
 

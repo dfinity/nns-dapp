@@ -2,15 +2,10 @@ pub mod partitions;
 #[cfg(test)]
 pub mod tests;
 mod with_accounts_in_stable_memory;
-mod with_raw_memory;
 
 use self::partitions::{PartitionType, Partitions, PartitionsMaybe};
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
-#[cfg(test)]
-use crate::accounts_store::schema::map::AccountsDbAsMap;
 use crate::accounts_store::schema::proxy::AccountsDb;
-use crate::accounts_store::schema::AccountsDbTrait;
-use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::AccountsStore;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
@@ -18,7 +13,6 @@ use crate::perf::PerformanceCounts;
 use crate::tvl::state::TvlState;
 
 use dfn_candid::Candid;
-use dfn_core::api::trap_with;
 use ic_cdk::println;
 use ic_stable_structures::DefaultMemoryImpl;
 use on_wire::{FromWire, IntoWire};
@@ -135,28 +129,13 @@ impl State {
 impl From<Partitions> for State {
     fn from(partitions: Partitions) -> Self {
         println!("START state::from<Partitions>: ()");
-        let schema = partitions.schema_label();
-        println!("      state::from<Partitions>: from_schema: {schema:#?}");
-        let state = match schema {
-            // The schema claims to read from raw memory, but we got the label from managed memory.  This is a bug.
-            SchemaLabel::Map => {
-                trap_with(
-                    "Decoding stable memory failed: Found label 'Map' in managed memory, but these are incompatible.",
-                );
-            }
-            // Accounts are in stable structures in one partition, the rest of the heap is serialized as candid in another partition.
-            SchemaLabel::AccountsInStableMemory => {
-                let state = Self::recover_heap_from_managed_memory(&partitions.get(PartitionType::Heap.memory_id()));
-                let accounts_db = AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(
-                    partitions.get(PartitionType::Accounts.memory_id()),
-                ));
-                // Replace the default accountsdb created by `serde`` with the one from stable memory.
-                let _deserialized_accounts_db = state.accounts_store.borrow_mut().replace_accounts_db(accounts_db);
-                state.partitions_maybe.replace(PartitionsMaybe::Partitions(partitions));
-                state
-            }
-        };
-        println!("END   state::from<Partitions>: ()");
+        let state = Self::recover_heap_from_managed_memory(&partitions.get(PartitionType::Heap.memory_id()));
+        let accounts_db = AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(
+            partitions.get(PartitionType::Accounts.memory_id()),
+        ));
+        // Replace the default accountsdb created by `serde` with the one from stable memory.
+        let _deserialized_accounts_db = state.accounts_store.borrow_mut().replace_accounts_db(accounts_db);
+        state.partitions_maybe.replace(PartitionsMaybe::Partitions(partitions));
         state
     }
 }
@@ -165,10 +144,8 @@ impl From<Partitions> for State {
 impl From<DefaultMemoryImpl> for State {
     fn from(memory: DefaultMemoryImpl) -> Self {
         println!("START state::from<DefaultMemoryImpl>: ())");
-        let state = match Partitions::try_from_memory(memory) {
-            Ok(partitions) => Self::from(partitions),
-            Err(_memory) => Self::recover_from_raw_memory(),
-        };
+        let partitions = Partitions::from(memory);
+        let state = Self::from(partitions);
         println!("END   state::from<DefaultMemoryImpl>: ()");
         state
     }
@@ -217,31 +194,6 @@ impl StableState for State {
 impl State {
     /// Saves any unsaved state to stable memory.
     pub fn save(&self) {
-        // When saving data to stable memory, ask the accountsdb.  If we migrated from
-        // `AccountsInStableMemory` to `Map`, the stable memory will still have the `AccountsInStableMemory` layout
-        // but we want to save as `Map`.  There is no such issue when migrating from `Map` to `AccountsInStableMemory`.
-        let schema = self.accounts_store.borrow().schema_label();
-        println!(
-            "START State save: {:?} (accounts: {:?})",
-            &schema,
-            self.accounts_store.borrow().schema_label()
-        );
-        match schema {
-            // Note: For 'Map', data is saved to raw stable memory using the original API
-            //       that does not take a memory as an argument but rather gets
-            //       the default memory implementation from the global context and
-            //       writes to that.  This API is impossible to test outside a canister
-            //       and should be deprecated as soon as possible.
-            // Note: The 'Map' schema stores all the data on the heap and, before upgrade,
-            //       all the data is saved directly to the heap.  As the number of accounts
-            //       has grown, this saving and later restoring has become seriously slow.
-            SchemaLabel::Map => self.save_to_raw_memory(),
-            // Note: In the `AccountsInStableMemory` schema, accounts are stored in a managed
-            //       stable virtual memory, so they do not need to be serialized and restored on
-            //       canister upgrade.  However other data _is_ still stored on the heap and this
-            //       other data must be saved in the pre-upgrade hook to a different managed
-            //       stable virtual memory and restored after upgrade.
-            SchemaLabel::AccountsInStableMemory => self.save_heap_to_managed_memory(),
-        }
+        self.save_heap_to_managed_memory();
     }
 }

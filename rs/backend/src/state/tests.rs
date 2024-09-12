@@ -1,9 +1,6 @@
 use crate::{
-    accounts_store::schema::{proxy::AccountsDb, AccountsDbTrait, SchemaLabel},
-    state::{
-        partitions::{Partitions, PartitionsMaybe},
-        AccountsDbAsMap, AssetHashes, Assets, PerformanceCounts, StableState, State,
-    },
+    accounts_store::schema::{map::AccountsDbAsMap, proxy::AccountsDb, AccountsDbTrait},
+    state::{partitions::PartitionsMaybe, AssetHashes, Assets, PerformanceCounts, StableState, State},
     tvl::state::TvlState,
 };
 use dfn_candid::Candid;
@@ -11,7 +8,7 @@ use ic_stable_structures::{DefaultMemoryImpl, VectorMemory};
 use on_wire::FromWire;
 use pretty_assertions::assert_eq;
 use proptest::proptest;
-use std::cell::RefCell;
+use std::{cell::RefCell, rc::Rc};
 
 /// Creates a populated test state for testing.
 pub fn setup_test_state() -> State {
@@ -73,39 +70,23 @@ fn state_encodes_but_does_not_decode_tvl_state() {
 }
 
 #[test]
-fn state_can_be_created_accounts_in_stable_memory() {
+fn state_can_be_created() {
     // State is backed by stable memory:
     let memory = DefaultMemoryImpl::default();
     let state = State::new(memory);
-    assert_eq!(
-        state.accounts_store.borrow().schema_label(),
-        SchemaLabel::AccountsInStableMemory,
-        "Newly created state does not have the expected schema"
-    );
 
     // Basic functionality check - we can insert an account?
     state
         .accounts_store
         .borrow_mut()
         .db_insert_account(&[0u8; 32], crate::accounts_store::schema::tests::toy_account(1, 2));
-
-    // Do the partitions look as expected?
-    let partitions_maybe_label = format!("{}", state.partitions_maybe.borrow());
-    assert_eq!(partitions_maybe_label.as_str(), "Partitions");
-
-    // Are accounts stored in the expected partition?
-    assert_eq!(
-        state.accounts_store.borrow().schema_label(),
-        SchemaLabel::AccountsInStableMemory,
-        "Accounts are not stored in the expected schema"
-    );
 }
 
 fn state_can_be_saved_and_recovered_from_stable_memory(num_accounts: u64) {
     // State is backed by stable memory:
     let memory = DefaultMemoryImpl::default();
     // We will get a second reference to the same memory so that we can compare the initial state to the state post-upgrade.
-    let memory_after_upgrade = Partitions::copy_memory_reference(&memory); // The same memory.
+    let memory_after_upgrade = Rc::clone(&memory);
 
     // On init, the state is created using a schema specified in the init arguments:
     let state = State::new(memory);

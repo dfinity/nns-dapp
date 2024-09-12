@@ -23,6 +23,7 @@ export const setSnsProjects = (
     nervousFunctions?: SnsNervousSystemFunction[];
     swapDueTimestampSeconds?: number;
     nnsProposalId?: number;
+    totalTokenSupply?: bigint;
   }[]
 ) => {
   const aggregatorProjects = params.map((params, index) => {
@@ -41,6 +42,7 @@ export const setSnsProjects = (
       nervousFunctions: params.nervousFunctions,
       swapDueTimestampSeconds: params.swapDueTimestampSeconds,
       nnsProposalId: params.nnsProposalId,
+      totalTokenSupply: params.totalTokenSupply,
     });
   });
   snsLifecycleStore.reset();
