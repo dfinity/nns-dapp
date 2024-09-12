@@ -78,7 +78,7 @@ describe("AccountMenu", () => {
       expect(renderResult.getByTestId("source-code-link")).not.toBeNull();
     });
 
-    it('should display "Canisters" button if signed in', async () => {
+    it('should display "Canisters" button', async () => {
       const AccountMenuPo = renderComponent();
 
       await AccountMenuPo.openMenu();
