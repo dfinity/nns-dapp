@@ -21,6 +21,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Changes for cleaning up the stable structure migration.
 
+* Move Canisters button from sidebar to account menu.
+
 #### Deprecated
 
 #### Removed
