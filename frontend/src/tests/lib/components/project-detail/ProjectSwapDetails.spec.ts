@@ -1,5 +1,4 @@
 import ProjectSwapDetails from "$lib/components/project-detail/ProjectSwapDetails.svelte";
-import { snsTotalTokenSupplyStore } from "$lib/derived/sns-total-token-supply.derived";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import {
@@ -21,10 +20,6 @@ describe("ProjectSwapDetails", () => {
 
     return ProjectSwapDetailsPo.under(new JestPageObjectElement(container));
   };
-
-  beforeEach(() => {
-    snsTotalTokenSupplyStore.reset();
-  });
 
   it("should render total distributed tokens", async () => {
     const po = await renderComponent({

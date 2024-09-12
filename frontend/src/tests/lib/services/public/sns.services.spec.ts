@@ -185,7 +185,6 @@ describe("SNS public services", () => {
       const supplies = get(snsTotalTokenSupplyStore);
       const data = supplies[rootCanisterId.toText()];
       expect(data).not.toBeUndefined();
-      expect(data?.certified).toBeTruthy();
       expect(data?.totalSupply).toEqual(BigInt(totalSupply));
     });
   });

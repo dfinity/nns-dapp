@@ -78,6 +78,7 @@ export const aggregatorSnsMockWith = ({
   nervousFunctions,
   swapDueTimestampSeconds,
   nnsProposalId,
+  totalTokenSupply,
 }: {
   rootCanisterId?: string;
   governanceCanisterId?: string;
@@ -94,6 +95,7 @@ export const aggregatorSnsMockWith = ({
   nervousFunctions?: SnsNervousSystemFunction[];
   swapDueTimestampSeconds?: number;
   nnsProposalId?: number;
+  totalTokenSupply?: bigint;
 }): CachedSnsDto => ({
   index: index ?? aggregatorSnsMockDto.index,
   ...aggregatorSnsMockDto,
@@ -135,6 +137,8 @@ export const aggregatorSnsMockWith = ({
         : aggregatorSnsMockDto.swap_state.derived.direct_participant_count,
     },
   },
+  icrc1_total_supply:
+    Number(totalTokenSupply) ?? aggregatorSnsMockDto.icrc1_total_supply,
   parameters: {
     ...aggregatorSnsMockDto.parameters,
     functions:
