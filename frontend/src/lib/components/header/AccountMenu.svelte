@@ -5,6 +5,7 @@
   import SourceCodeButton from "$lib/components/header/SourceCodeButton.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { i18n } from "$lib/stores/i18n";
+  import AccountDetails from "./AccountDetails.svelte";
   import LoginIconOnly from "./LoginIconOnly.svelte";
   import Logout from "./Logout.svelte";
   import { IconUser, ThemeToggle, Popover } from "@dfinity/gix-components";
@@ -29,6 +30,8 @@
 
     <Popover bind:visible anchor={button} direction="rtl">
       <div class="info">
+        <AccountDetails />
+
         <ThemeToggle />
 
         <ManageInternetIdentityButton />

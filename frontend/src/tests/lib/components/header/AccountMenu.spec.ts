@@ -1,5 +1,7 @@
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
+import { AccountMenuPo } from "$tests/page-objects/AccountMenu.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("AccountMenu", () => {
@@ -83,6 +85,18 @@ describe("AccountMenu", () => {
       await waitFor(() =>
         expect(() => renderResult.getByRole("menu")).toThrow()
       );
+    });
+
+    it("should render account details component", async () => {
+      const renderResult = render(AccountMenu);
+
+      const accountMenuPo = AccountMenuPo.under(
+        new JestPageObjectElement(renderResult.container)
+      );
+
+      await accountMenuPo.openMenu();
+
+      expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(true);
     });
   });
 });
