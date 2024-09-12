@@ -72,11 +72,11 @@ test.describe("Design", () => {
       await expect(page).toHaveScreenshot();
     };
 
-    test("Accounts", async () => {
+    test("My Tokens", async () => {
       await testMyTokens();
     });
 
-    test("Accounts (wide screen)", async () => {
+    test("My Tokens (wide screen)", async () => {
       await page.setViewportSize({ width: 1300, height: 720 });
 
       await testMyTokens();
