@@ -30,10 +30,6 @@ export class MenuItemsPo extends BasePageObject {
     return this.click("menuitem-launchpad");
   }
 
-  clickCanisters(): Promise<void> {
-    return this.click("menuitem-canisters");
-  }
-
   getGetTokensPo(): GetTokensPo {
     return GetTokensPo.under(this.root);
   }
