@@ -22,8 +22,8 @@ test.describe("Design", () => {
   });
 
   test("App loading spinner is removed", async ({ page }) => {
-    await page.goto("/accounts");
-    await expect(page).toHaveTitle("ICP Tokens / NNS Dapp");
+    await page.goto("/");
+    await expect(page).toHaveTitle("Tokens / NNS Dapp");
 
     // Wait for the button to make sure the app is loaded
     await page.locator("[data-tid=login-button]").waitFor();
@@ -41,8 +41,8 @@ test.describe("Design", () => {
     test.beforeAll(async ({ browser }) => {
       page = await browser.newPage();
 
-      await page.goto("/accounts");
-      await expect(page).toHaveTitle("ICP Tokens / NNS Dapp");
+      await page.goto("/");
+      await expect(page).toHaveTitle("Tokens / NNS Dapp");
 
       await signInWithNewUser({ page, context: browser.contexts()[0] });
     });
@@ -55,28 +55,25 @@ test.describe("Design", () => {
       const pageElement = PlaywrightPageObjectElement.fromPage(page);
       const appPo = new AppPo(pageElement);
 
-      // Wait for balance in the first row of the table to make sure the screenshot is taken after the app is loaded.
-      await appPo
-        .getAccountsPo()
-        .getNnsAccountsPo()
-        .getTokensTablePo()
-        .waitFor();
-      const firstRow = await appPo
-        .getAccountsPo()
-        .getNnsAccountsPo()
-        .getTokensTablePo()
-        .getRows();
-
-      await firstRow[0].waitForBalance();
+      await appPo.getTokensPo().waitFor();
+      const tokensTablePo = appPo
+        .getTokensPo()
+        .getTokensPagePo()
+        .getTokensTable();
+      await tokensTablePo.waitFor();
+      const rows = await tokensTablePo.getRows();
+      for (const row of rows) {
+        await row.waitForBalance();
+      }
 
       await expect(page).toHaveScreenshot();
     };
 
-    test("Accounts", async () => {
+    test("My Tokens", async () => {
       await testMyTokens();
     });
 
-    test("Accounts (wide screen)", async () => {
+    test("My Tokens (wide screen)", async () => {
       await page.setViewportSize({ width: 1300, height: 720 });
 
       await testMyTokens();

@@ -11,7 +11,6 @@ import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import * as checkNeuronsService from "$lib/services/sns-neurons-check-balances.services";
 import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -67,7 +66,6 @@ describe("SnsNeuronDetail", () => {
     vi.clearAllMocks();
     snsParametersStore.reset();
     tokensStore.reset();
-    snsFunctionsStore.reset();
     snsParametersStore.reset();
     snsNeuronsStore.reset();
     icrcAccountsStore.reset();
