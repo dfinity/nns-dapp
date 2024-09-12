@@ -196,7 +196,6 @@ export class AppPo extends BasePageObject {
   }
 
   async goToCanisters(): Promise<void> {
-    await this.goBackAllTheWay();
     await this.getAccountMenuPo().openMenu();
     await this.getAccountMenuPo().clickCanisters();
     // Menu closes automatically.
