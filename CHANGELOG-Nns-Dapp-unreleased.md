@@ -15,7 +15,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Added `get_tvl` method to `nns-dapp` canister.
-
 * Display of principal Id and main ICP account Id in the account menu.
 
 #### Changed
