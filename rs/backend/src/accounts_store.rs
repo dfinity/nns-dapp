@@ -31,8 +31,6 @@ use schema::{
     AccountsDbTrait,
 };
 
-use self::schema::SchemaLabel;
-
 // This limit is for DoS protection but should be increased if we get close to
 // the limit.
 const ACCOUNT_LIMIT: u64 = 300_000;
@@ -128,9 +126,6 @@ impl AccountsDbTrait for AccountsStore {
     }
     fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
         self.accounts_db.range(key_range)
-    }
-    fn schema_label(&self) -> SchemaLabel {
-        self.accounts_db.schema_label()
     }
 }
 
@@ -852,7 +847,6 @@ impl AccountsStore {
         stats.neurons_created_count = self.neuron_accounts.len() as u64;
         stats.neurons_topped_up_count = self.neurons_topped_up_count;
         stats.transactions_to_process_queue_length = self.multi_part_transactions_processor.get_queue_length();
-        stats.schema = Some(self.accounts_db.schema_label() as u32);
         stats.migration_countdown = Some(self.accounts_db.migration_countdown());
         stats.accounts_db_stats_recomputed_on_upgrade = self.accounts_db_stats_recomputed_on_upgrade.0;
     }
