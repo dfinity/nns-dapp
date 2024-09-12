@@ -1,5 +1,6 @@
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
+import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
 import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/neurons/IncreaseSnsDissolveDelayModal.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { loadSnsParameters } from "$lib/services/sns-parameters.services";

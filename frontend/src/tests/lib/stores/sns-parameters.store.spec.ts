@@ -1,4 +1,4 @@
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { snsNervousSystemParametersMock } from "$tests/mocks/sns-neurons.mock";
 import { Principal } from "@dfinity/principal";

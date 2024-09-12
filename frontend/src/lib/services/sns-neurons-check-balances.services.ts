@@ -4,11 +4,11 @@ import {
   getSnsNeuron,
   refreshNeuron,
 } from "$lib/api/sns-governance.api";
+import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import {
   getSnsNeuronIdAsHexString,
   needsRefresh,

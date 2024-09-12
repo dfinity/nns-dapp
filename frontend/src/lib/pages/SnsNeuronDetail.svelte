@@ -21,6 +21,7 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
+  import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
@@ -29,7 +30,6 @@
   import { getSnsNeuron } from "$lib/services/sns-neurons.services";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { queuedStore } from "$lib/stores/queued-store";
-  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,

@@ -3,8 +3,8 @@ import {
   SECONDS_IN_HOUR,
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
+import type { SnsParameters } from "$lib/derived/sns-parameters.derived";
 import type { ProjectNeuronStore } from "$lib/stores/sns-neurons.store";
-import type { SnsParameters } from "$lib/stores/sns-parameters.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import { convertNervousSystemParameters } from "$lib/utils/sns-aggregator-converters.utils";

@@ -1,4 +1,5 @@
 import * as governanceApi from "$lib/api/sns-governance.api";
+import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
 import {
   claimNextNeuronIfNeeded,
   neuronNeedsRefresh,

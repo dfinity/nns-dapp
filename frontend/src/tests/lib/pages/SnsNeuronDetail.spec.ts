@@ -7,12 +7,12 @@ import {
   MANAGE_HOTKEY_PERMISSIONS,
 } from "$lib/constants/sns-neurons.constants";
 import { pageStore } from "$lib/derived/page.derived";
+import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
 import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import * as checkNeuronsService from "$lib/services/sns-neurons-check-balances.services";
 import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import {
   getSnsNeuronIdAsHexString,
