@@ -69,7 +69,7 @@
   }
 
   .failed-token-icon {
-    color: var(--alert);
+    color: var(--orange);
     line-height: 0;
   }
 </style>
