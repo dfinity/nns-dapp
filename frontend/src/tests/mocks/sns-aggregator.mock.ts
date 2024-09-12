@@ -137,8 +137,9 @@ export const aggregatorSnsMockWith = ({
         : aggregatorSnsMockDto.swap_state.derived.direct_participant_count,
     },
   },
-  icrc1_total_supply:
-    Number(totalTokenSupply) ?? aggregatorSnsMockDto.icrc1_total_supply,
+  icrc1_total_supply: nonNullish(totalTokenSupply)
+    ? Number(totalTokenSupply)
+    : aggregatorSnsMockDto.icrc1_total_supply,
   parameters: {
     ...aggregatorSnsMockDto.parameters,
     functions:
