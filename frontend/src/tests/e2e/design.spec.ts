@@ -1,6 +1,6 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser } from "$tests/utils/e2e.test-utils";
+import { replaceContent, signInWithNewUser } from "$tests/utils/e2e.test-utils";
 import { expect, test, type Page } from "@playwright/test";
 
 test.describe("Design", () => {
@@ -22,8 +22,8 @@ test.describe("Design", () => {
   });
 
   test("App loading spinner is removed", async ({ page }) => {
-    await page.goto("/accounts");
-    await expect(page).toHaveTitle("ICP Tokens / NNS Dapp");
+    await page.goto("/");
+    await expect(page).toHaveTitle("Tokens / NNS Dapp");
 
     // Wait for the button to make sure the app is loaded
     await page.locator("[data-tid=login-button]").waitFor();
@@ -41,8 +41,8 @@ test.describe("Design", () => {
     test.beforeAll(async ({ browser }) => {
       page = await browser.newPage();
 
-      await page.goto("/accounts");
-      await expect(page).toHaveTitle("ICP Tokens / NNS Dapp");
+      await page.goto("/");
+      await expect(page).toHaveTitle("Tokens / NNS Dapp");
 
       await signInWithNewUser({ page, context: browser.contexts()[0] });
     });
@@ -55,19 +55,26 @@ test.describe("Design", () => {
       const pageElement = PlaywrightPageObjectElement.fromPage(page);
       const appPo = new AppPo(pageElement);
 
-      // Wait for balance in the first row of the table to make sure the screenshot is taken after the app is loaded.
-      await appPo
-        .getAccountsPo()
-        .getNnsAccountsPo()
-        .getTokensTablePo()
-        .waitFor();
-      const firstRow = await appPo
-        .getAccountsPo()
-        .getNnsAccountsPo()
-        .getTokensTablePo()
-        .getRows();
-
-      await firstRow[0].waitForBalance();
+      await appPo.getTokensPo().waitFor();
+      const tokensTablePo = appPo
+        .getTokensPo()
+        .getTokensPagePo()
+        .getTokensTable();
+      await tokensTablePo.waitFor();
+      const rows = await tokensTablePo.getRows();
+      for (const row of rows) {
+        await row.waitForBalance();
+      }
+      // We need to replace the content to not rely on the SNS project name.
+      await replaceContent({
+        page,
+        selectors: [
+          '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="project-name"]',
+          '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="token-value-label"] .label',
+        ],
+        pattern: /[A-Za-z ]+/,
+        replacements: ["XXXXX"],
+      });
 
       await expect(page).toHaveScreenshot();
     };
