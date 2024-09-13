@@ -237,3 +237,15 @@ e.g.
 ./bin/bitcoin-cli -conf=$(pwd)/bitcoin.conf getnewaddress
 ./bin/bitcoin-cli -conf=$(pwd)/bitcoin.conf generatetoaddress 100 "bcrt1qtq30nuztv40nkncckn70n09tlype96snkxzhmt"
 ```
+
+## NPM Link
+
+From time to time you will have a task that requires changes on gix-components. For those tasks you can follow the steps below to link gix-components to nns-dapp so you can test your changes faster.
+
+1. Run `npm run package -- --watch` from gix-components, this will also watch for changes and rebuild the package
+2. Run `npm link <gix-component-path>` from nns-dapp/frontend to link the gix-components package
+3. Run `npx nodemon --watch <gix-component-path>/dist --ext js,ts,svelte --exec 'npm run dev'` from nns-dapp/frontend to watch for changes and rebuild nns-dapp
+4. Make your changes and test
+5. Once you are done run `npm unlink gix-components` from nns-dapp/frontend to unlink the gix-components package
+
+The steps above are specifically for gix-components, but the process is the same for other local packages that nns-dapp depends on.
