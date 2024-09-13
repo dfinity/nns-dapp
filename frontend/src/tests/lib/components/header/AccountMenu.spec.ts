@@ -10,6 +10,11 @@ describe("AccountMenu", () => {
     await waitFor(() => expect(getByRole("menu")).not.toBeNull());
   };
 
+  const renderComponent = () => {
+    const { container } = render(AccountMenu);
+    return AccountMenuPo.under(new JestPageObjectElement(container));
+  };
+
   it("should be closed by default", () => {
     const { getByRole } = render(AccountMenu);
     expect(() => getByRole("menu")).toThrow();
@@ -41,7 +46,7 @@ describe("AccountMenu", () => {
       expect(renderResult.getByTestId("theme-toggle")).not.toBeNull();
     });
 
-    it("should display logout button if signed in", async () => {
+    it("should display logout button", async () => {
       const renderResult = render(AccountMenu);
 
       await show(renderResult);
@@ -49,7 +54,7 @@ describe("AccountMenu", () => {
       expect(renderResult.getByTestId("logout")).not.toBeNull();
     });
 
-    it("should display settings button if signed in", async () => {
+    it("should display settings button", async () => {
       const renderResult = render(AccountMenu);
 
       await show(renderResult);
@@ -57,12 +62,20 @@ describe("AccountMenu", () => {
       expect(renderResult.getByTestId("settings")).not.toBeNull();
     });
 
-    it('should display "Manage ii" button if signed in', async () => {
+    it('should display "Manage ii" button', async () => {
       const renderResult = render(AccountMenu);
 
       await show(renderResult);
 
       expect(renderResult.getByTestId("manage-ii-link")).not.toBeNull();
+    });
+
+    it('should display "Canisters" button', async () => {
+      const AccountMenuPo = renderComponent();
+
+      await AccountMenuPo.openMenu();
+
+      expect(await AccountMenuPo.getCanistersLinkPo().isPresent()).toBe(true);
     });
 
     it("should close popover on click on settings", async () => {

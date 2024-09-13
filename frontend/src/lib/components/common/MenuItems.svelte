@@ -8,7 +8,6 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import {
-    canistersPathStore,
     neuronsPathStore,
     proposalsPathStore,
   } from "$lib/derived/paths.derived";
@@ -19,7 +18,6 @@
     isSelectedPath,
   } from "$lib/utils/navigation.utils";
   import {
-    IconExplore,
     IconNeurons,
     IconRocketLaunch,
     IconVote,
@@ -38,8 +36,7 @@
       | typeof IconWallet
       | typeof IconNeurons
       | typeof IconVote
-      | typeof IconRocketLaunch
-      | typeof IconExplore;
+      | typeof IconRocketLaunch;
     statusIcon?: ComponentType;
   }[];
   $: routes = [
@@ -86,16 +83,6 @@
       }),
       title: $i18n.navigation.launchpad,
       icon: IconRocketLaunch,
-    },
-    {
-      context: "canisters",
-      href: $canistersPathStore,
-      selected: isSelectedPath({
-        currentPath: $pageStore.path,
-        paths: [AppPath.Canisters, AppPath.Canister],
-      }),
-      title: $i18n.navigation.canisters,
-      icon: IconExplore,
     },
   ];
 </script>

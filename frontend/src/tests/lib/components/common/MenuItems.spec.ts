@@ -76,9 +76,6 @@ describe("MenuItems", () => {
   it("should render voting menu item", () =>
     shouldRenderMenuItem({ context: "proposals", labelKey: "voting" }));
 
-  it("should render canisters menu item", () =>
-    shouldRenderMenuItem({ context: "canisters", labelKey: "canisters" }));
-
   it("should not render a get icps feature", async () => {
     const renderResult = render(MenuItems);
 
