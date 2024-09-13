@@ -44,24 +44,15 @@
     align-items: center;
     justify-content: center;
     gap: var(--padding-0_5x);
-    padding: var(--padding-1_5x);
+    padding: var(--padding);
     border-radius: var(--border-radius);
     color: var(--text-color);
     font-size: var(--font-size-small);
     text-decoration: none;
 
-    background: rgb(255, 255, 255, 0.45);
+    background: var(--sidebar-button-background);
     &:hover {
-      background: var(--cp-light-50);
-    }
-  }
-
-  @include media.dark-theme {
-    .source-code-button {
-      background: rgb(0, 0, 0, 0.2);
-      &:hover {
-        background: var(--cp-dark-900);
-      }
+      background: var(--sidebar-button-background-hover);
     }
   }
 </style>

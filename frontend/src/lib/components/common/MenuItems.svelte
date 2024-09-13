@@ -128,8 +128,7 @@
 
   .menu-footer-buttons {
     display: grid;
-    grid-template-columns: 3fr 1fr;
     gap: 8px;
-    margin-right: var(--padding-2x);
+    margin-right: var(--padding-3x);
   }
 </style>
