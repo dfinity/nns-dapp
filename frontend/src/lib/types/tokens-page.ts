@@ -28,7 +28,7 @@ export type UserTokenBase = {
   title: string;
   subtitle?: string;
   logo: string;
-  actions: Array<UserTokenAction | UserTokenFailedAction>;
+  actions: Array<UserTokenAction>;
 };
 
 /**
@@ -45,9 +45,9 @@ export type UserTokenLoading = UserTokenBase & {
   domKey: string;
 };
 
-export type UserTokenFailed = UserTokenBase & {
+export type UserTokenFailed = Omit<UserTokenBase, "actions"> & {
   balance: "failed";
-  actions: UserTokenFailedAction[];
+  actions: Array<UserTokenFailedAction>;
   domKey: string;
 };
 
