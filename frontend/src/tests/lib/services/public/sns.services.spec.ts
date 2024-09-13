@@ -5,8 +5,8 @@ import { clearWrapperCache, wrapper } from "$lib/api/sns-wrapper.api";
 import { loadSnsProjects } from "$lib/services/public/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
-import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
+import { snsFunctionsStore } from "$lib/derived/sns-functions.derived";
+import { snsTotalTokenSupplyStore } from "$lib/derived/sns-total-token-supply.derived";
 import { tokensStore } from "$lib/stores/tokens.store";
 import {
   mockAuthStoreSubscribe,
@@ -79,7 +79,6 @@ describe("SNS public services", () => {
 
   describe("loadSnsProjects", () => {
     beforeEach(() => {
-      snsFunctionsStore.reset();
       snsAggregatorStore.reset();
       clearWrapperCache();
       vi.clearAllMocks();
@@ -186,7 +185,6 @@ describe("SNS public services", () => {
       const supplies = get(snsTotalTokenSupplyStore);
       const data = supplies[rootCanisterId.toText()];
       expect(data).not.toBeUndefined();
-      expect(data?.certified).toBeTruthy();
       expect(data?.totalSupply).toEqual(BigInt(totalSupply));
     });
   });

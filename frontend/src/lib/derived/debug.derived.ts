@@ -1,4 +1,5 @@
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+import { snsFunctionsStore } from "$lib/derived/sns-functions.derived";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
@@ -12,7 +13,6 @@ import {
   proposalsStore,
 } from "$lib/stores/proposals.store";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import {

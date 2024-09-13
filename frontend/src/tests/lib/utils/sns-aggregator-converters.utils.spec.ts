@@ -176,6 +176,39 @@ describe("sns aggregator converters utils", () => {
           },
         ],
       },
+      nervous_system_parameters: {
+        default_followees: {
+          followees: [],
+        },
+        max_dissolve_delay_seconds: 252460800,
+        max_dissolve_delay_bonus_percentage: 100,
+        max_followees_per_function: 15,
+        neuron_claimer_permissions: {
+          permissions: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+        },
+        neuron_minimum_stake_e8s: 100000000000,
+        max_neuron_age_for_age_bonus: 252460800,
+        initial_voting_period_seconds: 345600,
+        neuron_minimum_dissolve_delay_to_vote_seconds: 2629800,
+        reject_cost_e8s: 5000000000000,
+        max_proposals_to_keep_per_action: 100,
+        wait_for_quiet_deadline_increase_seconds: 86400,
+        max_number_of_neurons: 200000,
+        transaction_fee_e8s: 100000,
+        max_number_of_proposals_with_ballots: 700,
+        max_age_bonus_percentage: 25,
+        neuron_grantable_permissions: {
+          permissions: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+        },
+        voting_rewards_parameters: {
+          final_reward_rate_basis_points: 0,
+          initial_reward_rate_basis_points: 0,
+          reward_rate_transition_duration_seconds: 31557600,
+          round_duration_seconds: 86400,
+        },
+        maturity_modulation_disabled: null,
+        max_number_of_principals_per_neuron: 5,
+      },
       swap_state: {
         swap: {
           lifecycle: 2,
