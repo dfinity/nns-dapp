@@ -117,7 +117,7 @@
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
-    margin-bottom: 70px;
+    margin-bottom: var(--padding-8x);
   }
 
   .menu-footer {

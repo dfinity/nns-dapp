@@ -21,23 +21,23 @@
     align-items: center;
     justify-content: center;
     gap: var(--padding-0_5x);
-    padding: calc(var(--padding) * 1.5) var(--padding-2x);
+    padding: var(--padding-1_5x);
     border-radius: var(--border-radius);
     color: var(--text-color);
     font-size: var(--font-size-small);
     text-decoration: none;
 
-    background: rgba(var(--focus-background-rgb), 1);
+    background: var(--cp-light-50, rgba(255, 255, 255, 0.45));
     &:hover {
-      background: rgba(var(--focus-background-rgb), 0.6);
+      background: var(--cp-light-50);
     }
   }
 
   @include media.dark-theme {
     .source-code-button {
-      background: rgba(var(--background-disable-rgb), 1);
+      background: var(--cp-dark-100, rgba(0, 0, 0, 0.2));
       &:hover {
-        background: rgba(var(--background-disable-rgb), 0.6);
+        background: var(--cp-dark-900);
       }
     }
   }
