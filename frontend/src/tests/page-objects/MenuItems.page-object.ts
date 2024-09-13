@@ -1,5 +1,6 @@
 import { ActionableProposalCountBadgePo } from "$tests/page-objects/ActionableProposalCountBadge.page-object";
 import { GetTokensPo } from "$tests/page-objects/GetTokens.page-object";
+import { LinkPo } from "$tests/page-objects/Link.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -34,9 +35,12 @@ export class MenuItemsPo extends BasePageObject {
     return this.click("menuitem-canisters");
   }
 
-  async getSourceCodeButtonLink(): Promise<string | null> {
-    const element = await this.root.byTestId("source-code-link");
-    return element ? await element.getAttribute("href") : "null";
+  getSourceCodeButtonPo(): LinkPo {
+    return LinkPo.under({ element: this.root, testId: "source-code-link" });
+  }
+
+  getSourceCodeButtonLink(): Promise<string | null> {
+    return this.getSourceCodeButtonPo().getHref();
   }
 
   getGetTokensPo(): GetTokensPo {

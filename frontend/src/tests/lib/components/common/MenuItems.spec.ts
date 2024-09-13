@@ -198,6 +198,7 @@ describe("MenuItems", () => {
     it("should display Source code button", async () => {
       const menuItemsPo = renderComponent();
 
+      expect(await menuItemsPo.getSourceCodeButtonPo().isPresent()).toBe(true);
       expect(await menuItemsPo.getSourceCodeButtonLink()).toBe(
         "https://github.com/dfinity/nns-dapp"
       );
