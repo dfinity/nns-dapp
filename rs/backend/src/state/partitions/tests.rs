@@ -1,7 +1,6 @@
 //! Tests for stable memory layout code.
 use super::*;
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
-use ic_crypto_sha2::Sha256;
 use pretty_assertions::assert_eq;
 use std::rc::Rc;
 
@@ -98,39 +97,6 @@ fn partitions_should_get_correct_virtual_memory() {
         "Heap partition should still be 2."
     );
     // Basic sanity check seems OK!
-}
-
-#[test]
-fn should_be_able_to_convert_memory_to_partitions_and_back() {
-    /// Memory hasher, used to check that the memory is the same before and after.
-    fn hash_memory(memory: &DefaultMemoryImpl) -> [u8; 32] {
-        let mut hasher = Sha256::new();
-        let mut buf = [0u8; WASM_PAGE_SIZE_IN_BYTES as usize];
-        for page_num in 0..memory.size() {
-            let byte_offset = page_num * u64::try_from(WASM_PAGE_SIZE_IN_BYTES).expect("Amazingly large pages");
-            memory.read(byte_offset, &mut buf);
-            hasher.write(&buf);
-        }
-        hasher.finish()
-    }
-    // Create some toy memory.
-    let toy_memory = DefaultMemoryImpl::default();
-    // Populate the memory and hash it.
-    {
-        toy_memory.grow(5);
-        let memory_manager = MemoryManager::init(Rc::clone(&toy_memory));
-        memory_manager.get(PartitionType::Accounts.memory_id()).grow(1);
-        memory_manager.get(PartitionType::Accounts.memory_id()).write(0, b"foo");
-    }
-    let memory_hash_before = hash_memory(&toy_memory);
-    // Load the memory into partitions and back again.
-    let partitions = Partitions::from(Rc::clone(&toy_memory));
-    let toy_memory_after = partitions.into_memory();
-    let memory_hash_after = hash_memory(&toy_memory_after);
-    assert_eq!(
-        memory_hash_before, memory_hash_after,
-        "Memory should be unchanged after converting to partitions and back."
-    );
 }
 
 #[derive(Debug, Clone)]
@@ -246,7 +212,7 @@ fn growing_write_should_work_for_all() {
 
 #[test]
 fn debug_should_portray_partitions_accurately() {
-    let partitions = Partitions::new(DefaultMemoryImpl::default());
+    let partitions = Partitions::from(DefaultMemoryImpl::default());
     partitions.get(PartitionType::Metadata.memory_id()).grow(5); // Has one page already, storing the schema label.  Increase this to 6.
     partitions.get(PartitionType::Accounts.memory_id()).grow(2);
     assert_eq!(

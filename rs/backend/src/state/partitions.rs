@@ -10,8 +10,6 @@ use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemor
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
-
-pub mod schemas;
 #[cfg(test)]
 pub mod tests;
 
@@ -103,17 +101,6 @@ impl Partitions {
     #[must_use]
     pub fn get(&self, memory_id: MemoryId) -> VirtualMemory<DefaultMemoryImpl> {
         self.memory_manager.borrow().get(memory_id)
-    }
-
-    /// Returns the raw memory, discarding the partitions data structure in RAM.
-    ///
-    /// Note: The memory manager is still represented in the underlying memory,
-    /// so converting from `Partitions` to `DefaultMemoryImpl` and back again
-    /// returns to the original state.
-    /// TODO: remove `into_memory` after simplifying `post_upgrade`.
-    #[cfg(test)]
-    pub fn into_memory(self) -> DefaultMemoryImpl {
-        self.memory_manager.into_memory().expect("No underlying memory")
     }
 
     /// Writes, growing the memory if necessary.
