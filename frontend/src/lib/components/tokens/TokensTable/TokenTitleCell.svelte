@@ -10,7 +10,6 @@
   import { nonNullish } from "@dfinity/utils";
   import { IconError, Tag } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import LogoWrapper from "$lib/components/ui/LogoWrapper.svelte";
   import Hash from "$lib/components/ui/Hash.svelte";
   import { isUserTokenFailed } from "$lib/utils/user-token.utils";
 
