@@ -50,13 +50,16 @@ type Cycles = u128;
 fn init(args: Option<CanisterArguments>) {
     println!("START init with args: {args:#?}");
     set_canister_arguments(args);
-    perf::record_instruction_count("init after set_canister_arguments");
+    // Saving the instruction counter now will not have the desired effect
+    // as the storage is about to be wiped out and replaced with stable memory.
+    let counter_before = PerformanceCount::new("init set_canister_arguments");
     let stable_memory = DefaultMemoryImpl::default();
     let state = State::new(stable_memory);
     STATE.with(|s| {
         s.replace(state);
         println!("init state after: {s:?}");
     });
+    perf::save_instruction_count(counter_before);
     // Legacy:
     assets::init_assets();
     tvl::init_timers();
