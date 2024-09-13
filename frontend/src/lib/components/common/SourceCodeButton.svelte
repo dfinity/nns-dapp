@@ -1,28 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { IconGitHub } from "@dfinity/gix-components";
-  function colorToRgb(color: string): string {
-    // Create a temporary element to use for color conversion
-    const temp = document.createElement("div");
-    temp.style.color = color;
-    document.body.appendChild(temp);
-
-    // Get the computed style
-    const style = window.getComputedStyle(temp);
-    const rgb = style.color;
-
-    // Remove the temporary element
-    document.body.removeChild(temp);
-
-    // Extract RGB values
-    const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-    if (match) {
-      return `${match[1]}, ${match[2]}, ${match[3]}`;
-    }
-
-    // Return a default value if conversion fails
-    return "0, 0, 0";
-  }
 </script>
 
 <a
@@ -31,7 +9,6 @@
   rel="noopener noreferrer external"
   target="_blank"
   class="source-code-button"
-  style="--light-background: rgb({colorToRgb('var(--cp-light-50)')})"
 >
   <IconGitHub />
   {$i18n.navigation.source_code}
