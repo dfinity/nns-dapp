@@ -88,19 +88,17 @@
 </script>
 
 <TestIdWrapper testId="menu-items-component">
-  {#each routes as { context, title, href, icon, statusIcon, selected } (context)}
-    <MenuItem {href} testId={`menuitem-${context}`} {selected} {title}>
-      <svelte:component this={icon} slot="icon" />
-      <svelte:fragment>{title}</svelte:fragment>
-      <svelte:component this={statusIcon} slot="statusIcon" />
-    </MenuItem>
-  {/each}
   <div class="menu-container">
-    <div data-tid="menu-items-container">
-      {#if IS_TESTNET}
-        <GetTokens />
-      {/if}
-    </div>
+    {#each routes as { context, title, href, icon, statusIcon, selected } (context)}
+      <MenuItem {href} testId={`menuitem-${context}`} {selected} {title}>
+        <svelte:component this={icon} slot="icon" />
+        <svelte:fragment>{title}</svelte:fragment>
+        <svelte:component this={statusIcon} slot="statusIcon" />
+      </MenuItem>
+    {/each}
+    {#if IS_TESTNET}
+      <GetTokens />
+    {/if}
 
     <div class="menu-footer">
       <MenuMetrics />
@@ -115,15 +113,14 @@
   .menu-container {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     height: 100%;
-    margin-bottom: var(--padding-8x);
   }
 
   .menu-footer {
-    display: flex;
+    margin-top: auto;
     flex-direction: column;
     justify-self: flex-end;
+    margin-bottom: var(--padding-8x);
   }
 
   .menu-footer-buttons {
