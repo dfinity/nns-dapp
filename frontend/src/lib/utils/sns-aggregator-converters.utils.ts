@@ -115,8 +115,6 @@ const convertDefaultFollowees = (
       ]),
     },
   ];
-  /*.map(([functionId, followees]) => Principal.from(id)),
-   */
 };
 
 const numberToNullableBigInt = (num?: number): [] | [bigint] =>
