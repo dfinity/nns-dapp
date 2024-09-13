@@ -4,6 +4,7 @@
     type UserTokenFailed,
     type UserTokenData,
     type UserTokenLoading,
+    UserTokenFailedAction,
   } from "$lib/types/tokens-page";
   import {
     isUserTokenData,
@@ -26,8 +27,13 @@
     [UserTokenAction.GoToDetail]: GoToDetailIcon,
     [UserTokenAction.Receive]: ReceiveButton,
     [UserTokenAction.Send]: SendButton,
-    [UserTokenAction.GoToDashboard]: GoToDashboardButton,
-    [UserTokenAction.Remove]: RemoveButton,
+  };
+  const failedTokenActionMapper: Record<
+    UserTokenFailedAction,
+    ComponentType<SvelteComponent<{ userToken: UserTokenFailed }>>
+  > = {
+    [UserTokenFailedAction.GoToDashboard]: GoToDashboardButton,
+    [UserTokenFailedAction.Remove]: RemoveButton,
   };
 
   let userToken: UserTokenData | UserTokenFailed | undefined;
@@ -39,9 +45,23 @@
 
 {#if nonNullish(userToken)}
   <div class="container">
-    {#each userToken.actions as action}
-      <svelte:component this={actionMapper[action]} {userToken} on:nnsAction />
-    {/each}
+    {#if isUserTokenData(userToken)}
+      {#each userToken.actions as action}
+        <svelte:component
+          this={actionMapper[action]}
+          {userToken}
+          on:nnsAction
+        />
+      {/each}
+    {:else if isUserTokenFailed(userToken)}
+      {#each userToken.actions as action}
+        <svelte:component
+          this={failedTokenActionMapper[action]}
+          {userToken}
+          on:nnsAction
+        />
+      {/each}
+    {/if}
   </div>
 {/if}
 

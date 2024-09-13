@@ -16,6 +16,9 @@ export enum UserTokenAction {
   Send = "send",
   GoToDetail = "goToDetail",
   Receive = "receive",
+}
+
+export enum UserTokenFailedAction {
   GoToDashboard = "goToDashboard",
   Remove = "remove",
 }
@@ -25,7 +28,7 @@ export type UserTokenBase = {
   title: string;
   subtitle?: string;
   logo: string;
-  actions: UserTokenAction[];
+  actions: Array<UserTokenAction | UserTokenFailedAction>;
 };
 
 /**
@@ -44,7 +47,7 @@ export type UserTokenLoading = UserTokenBase & {
 
 export type UserTokenFailed = UserTokenBase & {
   balance: "failed";
-  actions: UserTokenAction[];
+  actions: UserTokenFailedAction[];
   domKey: string;
 };
 
@@ -57,6 +60,7 @@ export type UserTokenData = UserTokenBase & {
   fee: TokenAmountV2;
   rowHref: string;
   domKey: string;
+  actions: UserTokenAction[];
 };
 
 export type UserToken = UserTokenLoading | UserTokenFailed | UserTokenData;
