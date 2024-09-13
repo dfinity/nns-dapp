@@ -20,8 +20,6 @@ describe("ConfirmSnsDissolveDelay", () => {
   });
 
   beforeEach(() => {
-    //vi.useFakeTimers().setSystemTime(Date.now());
-
     snsParametersStore.setParameters({
       certified: true,
       rootCanisterId: mockPrincipal,
