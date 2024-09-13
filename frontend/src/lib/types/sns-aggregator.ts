@@ -46,8 +46,12 @@ export type CachedNeuronIdDto = {
   id: Uint8Array;
 };
 
-export type CachedDefaultFolloweesDto = {
+export type CachedFolloweesDto = {
   followees: CachedNeuronIdDto[];
+};
+
+export type CachedDefaultFolloweesDto = {
+  followees: Array<[number, CachedFolloweesDto]>;
 };
 
 export type CachedNeuronPermissionListDto = {

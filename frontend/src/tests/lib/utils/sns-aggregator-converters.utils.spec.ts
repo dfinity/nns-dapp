@@ -1,4 +1,6 @@
 import type {
+  CachedNervousSystemParametersDto,
+  CachedNeuronIdDto,
   CachedSnsDto,
   CachedSnsTokenMetadataDto,
 } from "$lib/types/sns-aggregator";
@@ -7,9 +9,11 @@ import {
   convertDtoToSnsSummary,
   convertIcrc1Metadata,
   convertNervousFunction,
+  convertNervousSystemParameters,
 } from "$lib/utils/sns-aggregator-converters.utils";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { Principal } from "@dfinity/principal";
+import type { SnsNervousSystemParameters } from "@dfinity/sns";
 
 describe("sns aggregator converters utils", () => {
   describe("convertDtoData", () => {
@@ -683,6 +687,151 @@ describe("sns aggregator converters utils", () => {
         ],
         function_type: [],
       });
+    });
+  });
+
+  describe("convertNervousSystemParameters", () => {
+    it("converts nervous system parameters to ic-js type", () => {
+      const neuronId1: CachedNeuronIdDto = { id: Uint8Array.from([1, 2, 3]) };
+      const neuronId2: CachedNeuronIdDto = { id: Uint8Array.from([4, 5, 6]) };
+      const neuronId3: CachedNeuronIdDto = { id: Uint8Array.from([7, 8, 9]) };
+      const nervousSystemParameterData: CachedNervousSystemParametersDto = {
+        default_followees: {
+          followees: [
+            [2, { followees: [neuronId1, neuronId2] }],
+            [5, { followees: [neuronId2, neuronId3] }],
+          ],
+        },
+        max_dissolve_delay_seconds: 252460800,
+        max_dissolve_delay_bonus_percentage: 100,
+        max_followees_per_function: 15,
+        neuron_claimer_permissions: {
+          permissions: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+        },
+        neuron_minimum_stake_e8s: 100000000000,
+        max_neuron_age_for_age_bonus: 252460800,
+        initial_voting_period_seconds: 345600,
+        neuron_minimum_dissolve_delay_to_vote_seconds: 2629800,
+        reject_cost_e8s: 5000000000000,
+        max_proposals_to_keep_per_action: 150,
+        wait_for_quiet_deadline_increase_seconds: 86400,
+        max_number_of_neurons: 200000,
+        transaction_fee_e8s: 100000,
+        max_number_of_proposals_with_ballots: 700,
+        max_age_bonus_percentage: 25,
+        neuron_grantable_permissions: {
+          permissions: [0, 1, 2, 3, 4],
+        },
+        voting_rewards_parameters: {
+          final_reward_rate_basis_points: 75,
+          initial_reward_rate_basis_points: 20,
+          reward_rate_transition_duration_seconds: 31557600,
+          round_duration_seconds: 86400,
+        },
+        maturity_modulation_disabled: true,
+        max_number_of_principals_per_neuron: 5,
+      };
+
+      const expectedSnsNervousSystemParameters: SnsNervousSystemParameters = {
+        default_followees: [
+          {
+            followees: [
+              [2n, { followees: [neuronId1, neuronId2] }],
+              [5n, { followees: [neuronId2, neuronId3] }],
+            ],
+          },
+        ],
+        max_dissolve_delay_seconds: [252460800n],
+        max_dissolve_delay_bonus_percentage: [100n],
+        max_followees_per_function: [15n],
+        neuron_claimer_permissions: [
+          {
+            permissions: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+          },
+        ],
+        neuron_minimum_stake_e8s: [100000000000n],
+        max_neuron_age_for_age_bonus: [252460800n],
+        initial_voting_period_seconds: [345600n],
+        neuron_minimum_dissolve_delay_to_vote_seconds: [2629800n],
+        reject_cost_e8s: [5000000000000n],
+        max_proposals_to_keep_per_action: [150],
+        wait_for_quiet_deadline_increase_seconds: [86400n],
+        max_number_of_neurons: [200000n],
+        transaction_fee_e8s: [100000n],
+        max_number_of_proposals_with_ballots: [700n],
+        max_age_bonus_percentage: [25n],
+        neuron_grantable_permissions: [
+          {
+            permissions: [0, 1, 2, 3, 4],
+          },
+        ],
+        voting_rewards_parameters: [
+          {
+            final_reward_rate_basis_points: [75n],
+            initial_reward_rate_basis_points: [20n],
+            reward_rate_transition_duration_seconds: [31557600n],
+            round_duration_seconds: [86400n],
+          },
+        ],
+        maturity_modulation_disabled: [true],
+        max_number_of_principals_per_neuron: [5n],
+      };
+
+      expect(
+        convertNervousSystemParameters(nervousSystemParameterData)
+      ).toEqual(expectedSnsNervousSystemParameters);
+    });
+
+    it("converts nervous system parameters with empty optionals to ic-js type", () => {
+      const nervousSystemParameterData: CachedNervousSystemParametersDto = {
+        default_followees: null,
+        max_dissolve_delay_seconds: null,
+        max_dissolve_delay_bonus_percentage: null,
+        max_followees_per_function: null,
+        neuron_claimer_permissions: null,
+        neuron_minimum_stake_e8s: null,
+        max_neuron_age_for_age_bonus: null,
+        initial_voting_period_seconds: null,
+        neuron_minimum_dissolve_delay_to_vote_seconds: null,
+        reject_cost_e8s: null,
+        max_proposals_to_keep_per_action: null,
+        wait_for_quiet_deadline_increase_seconds: null,
+        max_number_of_neurons: null,
+        transaction_fee_e8s: null,
+        max_number_of_proposals_with_ballots: null,
+        max_age_bonus_percentage: null,
+        neuron_grantable_permissions: null,
+        voting_rewards_parameters: null,
+        maturity_modulation_disabled: null,
+        max_number_of_principals_per_neuron: null,
+      };
+
+      const expectedSnsNervousSystemParameters: SnsNervousSystemParameters = {
+        default_followees: [],
+        max_dissolve_delay_seconds: [],
+        max_dissolve_delay_bonus_percentage: [],
+        max_followees_per_function: [],
+        neuron_claimer_permissions: [],
+        neuron_minimum_stake_e8s: [],
+        max_neuron_age_for_age_bonus: [],
+        initial_voting_period_seconds: [],
+        neuron_minimum_dissolve_delay_to_vote_seconds: [],
+        reject_cost_e8s: [],
+        max_proposals_to_keep_per_action: [],
+        wait_for_quiet_deadline_increase_seconds: [],
+        max_number_of_neurons: [],
+        transaction_fee_e8s: [],
+        max_number_of_proposals_with_ballots: [],
+        max_age_bonus_percentage: [],
+        neuron_grantable_permissions: [],
+        voting_rewards_parameters: [],
+        maturity_modulation_disabled: [],
+        max_number_of_principals_per_neuron: [],
+      };
+
+      expect(
+        convertNervousSystemParameters(nervousSystemParameterData)
+      ).toEqual(expectedSnsNervousSystemParameters);
     });
   });
 });
