@@ -9,7 +9,7 @@ use crate::arguments::{set_canister_arguments, CanisterArguments};
 use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
 use crate::perf::PerformanceCount;
 use crate::periodic_tasks_runner::run_periodic_tasks;
-use crate::state::{StableState, State, STATE};
+use crate::state::{init_state, restore_state, save_state, with_state, with_state_mut, StableState};
 use crate::tvl::TvlResponse;
 use candid::candid_method;
 
@@ -20,7 +20,6 @@ use dfn_core::{over, over_async};
 use ic_cdk::api::call::RejectionCode;
 use ic_cdk::{eprintln, println};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
-use ic_stable_structures::DefaultMemoryImpl;
 use icp_ledger::AccountIdentifier;
 pub use serde::Serialize;
 
@@ -52,12 +51,7 @@ fn init(args: Option<CanisterArguments>) {
     // Saving the instruction counter now will not have the desired effect
     // as the storage is about to be wiped out and replaced with stable memory.
     let counter_before = PerformanceCount::new("init start");
-    let stable_memory = DefaultMemoryImpl::default();
-    let state = State::new(stable_memory);
-    STATE.with(|s| {
-        s.replace(state);
-        println!("init state after: {s:?}");
-    });
+    init_state();
     perf::save_instruction_count(counter_before);
     set_canister_arguments(args);
     perf::record_instruction_count("init after set_canister_arguments");
@@ -79,9 +73,7 @@ fn pre_upgrade() {
         stats::gibibytes(stats::stable_memory_size_bytes()),
         stats::gibibytes(stats::wasm_memory_size_bytes())
     );
-    STATE.with(|s| {
-        s.save();
-    });
+    save_state();
     println!(
         "pre_upgrade instruction_counter after saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
         ic_cdk::api::instruction_counter(),
@@ -96,11 +88,7 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
     // Saving the instruction counter now will not have the desired effect
     // as the storage is about to be wiped out and replaced with stable memory.
     let counter_before = PerformanceCount::new("post_upgrade start");
-    STATE.with(|s| {
-        let stable_memory = DefaultMemoryImpl::default();
-        let state = State::from(stable_memory);
-        s.replace(state);
-    });
+    restore_state();
     perf::save_instruction_count(counter_before);
     perf::record_instruction_count("post_upgrade after state_recovery");
     set_canister_arguments(args_maybe);
@@ -134,7 +122,7 @@ pub fn get_account() {
 #[candid_method(query, rename = "get_account")]
 fn get_account_impl() -> GetAccountResponse {
     let principal = dfn_core::api::caller();
-    STATE.with(|s| match s.accounts_store.borrow().get_account(principal) {
+    with_state(|s| match s.accounts_store.get_account(principal) {
         Some(account) => GetAccountResponse::Ok(account),
         None => GetAccountResponse::AccountNotFound,
     })
@@ -152,7 +140,7 @@ fn add_account() {
 #[candid_method(update, rename = "add_account")]
 fn add_account_impl() -> AccountIdentifier {
     let principal = dfn_core::api::caller();
-    STATE.with(|s| s.accounts_store.borrow_mut().add_account(principal));
+    with_state_mut(|s| s.accounts_store.add_account(principal));
     AccountIdentifier::from(principal)
 }
 
@@ -169,11 +157,7 @@ pub fn create_sub_account() {
 #[candid_method(update, rename = "create_sub_account")]
 fn create_sub_account_impl(sub_account_name: String) -> CreateSubAccountResponse {
     let principal = dfn_core::api::caller();
-    STATE.with(|s| {
-        s.accounts_store
-            .borrow_mut()
-            .create_sub_account(principal, sub_account_name)
-    })
+    with_state_mut(|s| s.accounts_store.create_sub_account(principal, sub_account_name))
 }
 
 /// Changes the alias given to the chosen sub account.
@@ -187,7 +171,7 @@ pub fn rename_sub_account() {
 #[candid_method(update, rename = "rename_sub_account")]
 fn rename_sub_account_impl(request: RenameSubAccountRequest) -> RenameSubAccountResponse {
     let principal = dfn_core::api::caller();
-    STATE.with(|s| s.accounts_store.borrow_mut().rename_sub_account(principal, request))
+    with_state_mut(|s| s.accounts_store.rename_sub_account(principal, request))
 }
 
 /// Links a hardware wallet to the user's account.
@@ -203,11 +187,7 @@ pub fn register_hardware_wallet() {
 #[candid_method(update, rename = "register_hardware_wallet")]
 fn register_hardware_wallet_impl(request: RegisterHardwareWalletRequest) -> RegisterHardwareWalletResponse {
     let principal = dfn_core::api::caller();
-    STATE.with(|s| {
-        s.accounts_store
-            .borrow_mut()
-            .register_hardware_wallet(principal, request)
-    })
+    with_state_mut(|s| s.accounts_store.register_hardware_wallet(principal, request))
 }
 
 /// Returns the list of canisters which the user has attached to their account.
@@ -219,7 +199,7 @@ pub fn get_canisters() {
 #[candid_method(query, rename = "get_canisters")]
 fn get_canisters_impl() -> Vec<NamedCanister> {
     let principal = dfn_core::api::caller();
-    STATE.with(|s| s.accounts_store.borrow_mut().get_canisters(principal))
+    with_state_mut(|s| s.accounts_store.get_canisters(principal))
 }
 
 /// Attaches a canister to the user's account.
@@ -231,7 +211,7 @@ pub fn attach_canister() {
 #[candid_method(update, rename = "attach_canister")]
 fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterResponse {
     let principal = dfn_core::api::caller();
-    STATE.with(|s| s.accounts_store.borrow_mut().attach_canister(principal, request))
+    with_state_mut(|s| s.accounts_store.attach_canister(principal, request))
 }
 
 /// Renames a canister of the user.
@@ -243,7 +223,7 @@ pub fn rename_canister() {
 #[candid_method(update, rename = "rename_canister")]
 fn rename_canister_impl(request: RenameCanisterRequest) -> RenameCanisterResponse {
     let principal = dfn_core::api::caller();
-    STATE.with(|s| s.accounts_store.borrow_mut().rename_canister(principal, request))
+    with_state_mut(|s| s.accounts_store.rename_canister(principal, request))
 }
 
 /// Detaches a canister from the user's account.
@@ -255,7 +235,7 @@ pub fn detach_canister() {
 #[candid_method(update, rename = "detach_canister")]
 fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterResponse {
     let principal = dfn_core::api::caller();
-    STATE.with(|s| s.accounts_store.borrow_mut().detach_canister(principal, request))
+    with_state_mut(|s| s.accounts_store.detach_canister(principal, request))
 }
 
 #[export_name = "canister_update set_imported_tokens"]
@@ -266,7 +246,7 @@ pub fn set_imported_tokens() {
 #[candid_method(update, rename = "set_imported_tokens")]
 fn set_imported_tokens_impl(settings: ImportedTokens) -> SetImportedTokensResponse {
     let principal = dfn_core::api::caller();
-    STATE.with(|s| s.accounts_store.borrow_mut().set_imported_tokens(principal, settings))
+    with_state_mut(|s| s.accounts_store.set_imported_tokens(principal, settings))
 }
 
 #[export_name = "canister_query get_imported_tokens"]
@@ -277,7 +257,7 @@ pub fn get_imported_tokens() {
 #[candid_method(query, rename = "get_imported_tokens")]
 fn get_imported_tokens_impl() -> GetImportedTokensResponse {
     let principal = dfn_core::api::caller();
-    STATE.with(|s| s.accounts_store.borrow_mut().get_imported_tokens(principal))
+    with_state_mut(|s| s.accounts_store.get_imported_tokens(principal))
 }
 
 #[export_name = "canister_update get_proposal_payload"]
@@ -301,7 +281,7 @@ pub fn get_stats() {
 
 #[candid_method(query, rename = "get_stats")]
 fn get_stats_impl() -> stats::Stats {
-    STATE.with(stats::get_stats)
+    with_state(stats::get_stats)
 }
 
 /// Makes a histogram of the number of sub-accounts etc per account.
@@ -326,10 +306,7 @@ pub fn get_histogram_impl() -> AccountsStoreHistogram {
         dfn_core::api::trap_with("Sorry, the histogram is available only as a query call.");
     }
     // Gets the histogram:
-    STATE.with(|state| {
-        let accounts_store = state.accounts_store.borrow();
-        accounts_store.get_histogram()
-    })
+    with_state(|state| state.accounts_store.get_histogram())
 }
 
 /// Executes on every block height and is used to run background processes.
@@ -343,7 +320,7 @@ pub fn canister_heartbeat() {
     let future = run_periodic_tasks();
 
     dfn_core::api::futures::spawn(future);
-    let migration_in_progress = STATE.with(|s| s.accounts_store.borrow().migration_in_progress());
+    let migration_in_progress = with_state_mut(|s| s.accounts_store.migration_in_progress());
     if migration_in_progress {
         dfn_core::api::futures::spawn(call_step_migration_with_retries());
     }
@@ -362,8 +339,8 @@ fn step_migration_impl(step_size: u32) {
     if caller != own_canister_id {
         dfn_core::api::trap_with("Only the canister itself may call step_migration");
     }
-    STATE.with(|s| {
-        s.accounts_store.borrow_mut().step_migration(step_size);
+    with_state_mut(|s| {
+        s.accounts_store.step_migration(step_size);
     });
 }
 
@@ -454,9 +431,8 @@ pub fn create_toy_accounts() {
         if !ic_cdk::api::is_controller(&caller) {
             dfn_core::api::trap_with("Only the controller may generate toy accounts");
         }
-        STATE.with(|s| {
+        with_state_mut(|s| {
             s.accounts_store
-                .borrow_mut()
                 .create_toy_accounts(u64::try_from(num_accounts).unwrap_or_else(|_| {
                     unreachable!("The number of accounts is well below the number of atoms in the universe")
                 }))
@@ -479,7 +455,7 @@ fn get_toy_account_impl(toy_account_index: u64) -> GetAccountResponse {
         dfn_core::api::trap_with("Only the controller may access toy accounts");
     }
     let principal = PrincipalId::new_user_test_id(toy_account_index);
-    STATE.with(|s| match s.accounts_store.borrow().get_account(principal) {
+    with_state(|s| match s.accounts_store.get_account(principal) {
         Some(account) => GetAccountResponse::Ok(account),
         None => GetAccountResponse::AccountNotFound,
     })
@@ -492,9 +468,8 @@ pub fn get_exceptional_transactions() {
 
 #[candid_method(query, rename = "get_exceptional_transactions")]
 fn get_exceptional_transactions_impl() -> Option<Vec<u64>> {
-    STATE.with(|s| {
+    with_state(|s| {
         s.performance
-            .borrow()
             .exceptional_transactions
             .as_ref()
             .map(|transactions| transactions.iter().copied().collect::<Vec<u64>>())

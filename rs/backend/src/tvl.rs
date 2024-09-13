@@ -2,7 +2,7 @@ use crate::{
     canisters::{exchange_rate_canister, governance},
     constants::{E8S_PER_UNIT, NANOS_PER_UNIT},
     spawn,
-    state::STATE,
+    state::{with_state, with_state_mut},
     time,
     timer::{set_timer, set_timer_interval},
 };
@@ -103,20 +103,20 @@ pub async fn update_exchange_rate() {
     let exchange_rate = match xrc_result {
         Ok(exchange_rate_canister::GetExchangeRateResult::Ok(exchange_rate)) => exchange_rate,
         Ok(exchange_rate_canister::GetExchangeRateResult::Err(err)) => {
-            STATE.with(|s| {
+            with_state(|s| {
                 ic_cdk::println!(
                     "Keeping usd_e8s_per_icp for TVL at {} because of response error: {:?}",
-                    s.tvl_state.borrow().usd_e8s_per_icp,
+                    s.tvl_state.usd_e8s_per_icp,
                     err
                 );
             });
             return;
         }
         Err(err) => {
-            STATE.with(|s| {
+            with_state(|s| {
                 ic_cdk::println!(
                     "Keeping usd_e8s_per_icp for TVL at {} because of call error: {:?}",
-                    s.tvl_state.borrow().usd_e8s_per_icp,
+                    s.tvl_state.usd_e8s_per_icp,
                     err
                 );
             });
@@ -132,32 +132,32 @@ pub async fn update_exchange_rate() {
     } = exchange_rate;
     let decimals = metadata.decimals;
     let usd_e8s_per_icp = convert_to_e8s(rate, decimals);
-    STATE.with(|s| {
-        s.tvl_state.borrow_mut().usd_e8s_per_icp = usd_e8s_per_icp;
-        s.tvl_state.borrow_mut().exchange_rate_timestamp_seconds = timestamp;
+    with_state_mut(|s| {
+        s.tvl_state.usd_e8s_per_icp = usd_e8s_per_icp;
+        s.tvl_state.exchange_rate_timestamp_seconds = timestamp;
     });
     ic_cdk::println!("Updated usd_e8s_per_icp for TVL to {}", usd_e8s_per_icp);
 }
 
 pub async fn update_locked_icp_e8s() {
     let metrics_result = governance::get_metrics().await;
-    STATE.with(|s| {
+    with_state_mut(|s| {
         match metrics_result {
             Ok(Ok(metrics)) => {
-                s.tvl_state.borrow_mut().total_locked_icp_e8s = metrics.total_locked_e8s;
+                s.tvl_state.total_locked_icp_e8s = metrics.total_locked_e8s;
                 ic_cdk::println!("Updated total_locked_icp_e8s for TVL to {}", metrics.total_locked_e8s);
             }
             Ok(Err(err)) => {
                 ic_cdk::println!(
                     "Keeping total_locked_icp_e8s for TVL at {} because of response error: {}",
-                    s.tvl_state.borrow().total_locked_icp_e8s,
+                    s.tvl_state.total_locked_icp_e8s,
                     err
                 );
             }
             Err(err) => {
                 ic_cdk::println!(
                     "Keeping total_locked_icp_e8s for TVL at {} because of call error: {}",
-                    s.tvl_state.borrow().total_locked_icp_e8s,
+                    s.tvl_state.total_locked_icp_e8s,
                     err
                 );
             }
@@ -166,8 +166,8 @@ pub async fn update_locked_icp_e8s() {
 }
 
 pub fn get_tvl() -> TvlResponse {
-    STATE.with(|s| {
-        let state = s.tvl_state.borrow();
+    with_state(|s| {
+        let state = &s.tvl_state;
         let locked_u128 = state.total_locked_icp_e8s as u128;
         let rate_u128 = state.usd_e8s_per_icp as u128;
         let e8s_per_unit = E8S_PER_UNIT as u128;
