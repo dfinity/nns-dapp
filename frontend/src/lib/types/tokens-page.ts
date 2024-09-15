@@ -3,6 +3,7 @@
  *
  * - `UserTokenBase` is not used directly, but it is used to create the `UserTokenLoading` and `UserTokenData` types.
  * - `UserTokenLoading` is to render a loading row in the tokens table. Used when either balance or token are not present.
+ * - `UserTokenFailed` is to render a failed token row in the tokens table. Used when an error occurred while fetching the imported token data.
  * - `UserTokenData` is used to render a row in the tokens table. Used when both balance and token are present.
  * - `UserTokenAction` is a list of actions supported by the tokens page and hardcoded in the TokensTable.
  * - `UserToken` is the union of `UserTokenLoading` and `UserTokenData`.
@@ -16,9 +17,6 @@ export enum UserTokenAction {
   Send = "send",
   GoToDetail = "goToDetail",
   Receive = "receive",
-}
-
-export enum UserTokenFailedAction {
   GoToDashboard = "goToDashboard",
   Remove = "remove",
 }
@@ -28,7 +26,7 @@ export type UserTokenBase = {
   title: string;
   subtitle?: string;
   logo: string;
-  actions: Array<UserTokenAction>;
+  actions: UserTokenAction[];
 };
 
 /**
@@ -47,8 +45,8 @@ export type UserTokenLoading = UserTokenBase & {
 
 export type UserTokenFailed = Omit<UserTokenBase, "actions"> & {
   balance: "failed";
-  actions: Array<UserTokenFailedAction>;
   domKey: string;
+  actions: UserTokenAction[];
 };
 
 export type UserTokenData = UserTokenBase & {

@@ -1,6 +1,6 @@
 import UNKNOWN_LOGO from "$lib/assets/question-mark.svg";
 import {
-  UserTokenFailedAction,
+  UserTokenAction,
   type UserTokenData,
   type UserTokenFailed,
   type UserTokenLoading,
@@ -34,5 +34,5 @@ export const toUserTokenFailed = (
   logo: UNKNOWN_LOGO,
   balance: "failed",
   domKey: ledgerCanisterIdText,
-  actions: [UserTokenFailedAction.GoToDashboard, UserTokenFailedAction.Remove],
+  actions: [UserTokenAction.GoToDashboard, UserTokenAction.Remove],
 });
