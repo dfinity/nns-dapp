@@ -29,6 +29,8 @@
   import WalletMorePopover from "./WalletMorePopover.svelte";
   import { isImportedToken as checkImportedToken } from "$lib/utils/imported-tokens.utils";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { removeImportedTokens } from "$lib/services/imported-tokens.services";
   import ImportTokenRemoveConfirmation from "./ImportTokenRemoveConfirmation.svelte";
   import type { Universe } from "$lib/types/universe";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
@@ -166,6 +168,33 @@
   $: universe = $selectableUniversesStore.find(
     ({ canisterId }) => canisterId === ledgerCanisterId?.toText()
   );
+
+  const removeImportedToken = async () => {
+    // Just for type safety. This should never happen.
+    if (isNullish(ledgerCanisterId)) return;
+
+    startBusy({
+      initiator: "import-token-removing",
+      labelKey: "import_token.removing",
+    });
+
+    try {
+      const importedTokens = $importedTokensStore.importedTokens ?? [];
+      const { success } = await removeImportedTokens({
+        tokensToRemove: importedTokens.filter(
+          ({ ledgerCanisterId: id }) =>
+            id.toText() === ledgerCanisterId?.toText()
+        ),
+        importedTokens,
+      });
+
+      if (success) {
+        goto(AppPath.Tokens);
+      }
+    } finally {
+      stopBusy("import-token-removing");
+    }
+  };
 </script>
 
 <TestIdWrapper {testId}>
@@ -246,6 +275,7 @@
     <ImportTokenRemoveConfirmation
       {universe}
       on:nnsClose={() => (removeImportedTokenConfirmationVisible = false)}
+      on:nnsConfirm={removeImportedToken}
     />
   {/if}
 </TestIdWrapper>
