@@ -8,7 +8,7 @@
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { nonNullish } from "@dfinity/utils";
-  import { IconError, Tag } from "@dfinity/gix-components";
+  import { IconError, Tag, Tooltip } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import Hash from "$lib/components/ui/Hash.svelte";
   import { isUserTokenFailed } from "$lib/utils/user-token.utils";
@@ -46,7 +46,12 @@
     <Tag testId="imported-token-tag">{$i18n.import_token.imported_token}</Tag>
   {/if}
   {#if isUserTokenFailed(rowData)}
-    <div class="failed-token-icon"><IconError size="20px" /></div>
+    <Tooltip
+      id="failed-imported-token"
+      text={$i18n.import_token.failed_tooltip}
+    >
+      <div class="failed-token-icon"><IconError size="20px" /></div>
+    </Tooltip>
   {/if}
 </div>
 
