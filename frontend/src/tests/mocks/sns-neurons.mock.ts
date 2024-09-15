@@ -43,7 +43,7 @@ export const mockActiveDisbursement: DisburseMaturityInProgress = {
 
 export const createMockSnsNeuron = ({
   stake = 1_000_000_000n,
-  id,
+  id = [1, 5, 3, 9, 9, 3, 2],
   state,
   permissions = [],
   vesting,
@@ -60,7 +60,7 @@ export const createMockSnsNeuron = ({
   activeDisbursementsE8s = [],
 }: {
   stake?: bigint;
-  id: number[];
+  id?: number[];
   state?: NeuronState;
   permissions?: NeuronPermission[];
   // `undefined` means no vesting at all (default)
@@ -131,10 +131,7 @@ export const mockSnsNeuronId = {
   id: arrayOfNumberToUint8Array([1, 5, 3, 9, 9, 3, 2]),
 };
 
-export const mockSnsNeuron = createMockSnsNeuron({
-  stake: 1_000_000_000n,
-  id: [1, 5, 3, 9, 9, 3, 2],
-});
+export const mockSnsNeuron = createMockSnsNeuron({});
 
 export const mockSnsNeuronWithPermissions = (
   permissions: SnsNeuronPermissionType[]

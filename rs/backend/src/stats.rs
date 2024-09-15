@@ -1,7 +1,6 @@
 use crate::metrics_encoder::MetricsEncoder;
 use crate::perf::PerformanceCount;
-use crate::state::State;
-use crate::STATE;
+use crate::state::{with_state, State};
 use candid::CandidType;
 use serde::Deserialize;
 #[cfg(test)]
@@ -15,11 +14,12 @@ use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 const GIBIBYTE: u64 = 1 << 30;
 
 /// Returns basic stats for frequent monitoring.
+#[must_use]
 pub fn get_stats(state: &State) -> Stats {
     let mut ans = Stats::default();
     // Collect values from various subcomponents
-    state.accounts_store.borrow().get_stats(&mut ans);
-    state.performance.borrow().get_stats(&mut ans);
+    state.accounts_store.get_stats(&mut ans);
+    state.performance.get_stats(&mut ans);
     ans.stable_memory_size_bytes = Some(stable_memory_size_bytes());
     ans.wasm_memory_size_bytes = Some(wasm_memory_size_bytes());
     // Return all the values
@@ -56,7 +56,7 @@ pub struct Stats {
 /// TODO: Use the new `ic_metrics_encoder` crate instead.  See: <https://docs.rs/ic-metrics-encoder/1.1.1/ic_metrics_encoder/struct.MetricsEncoder.html>
 #[allow(clippy::cast_precision_loss)] // We are converting u64 to f64
 pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
-    let stats = STATE.with(get_stats);
+    let stats = with_state(get_stats);
     w.encode_gauge(
         "neurons_created_count",
         stats.neurons_created_count as f64,

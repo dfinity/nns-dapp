@@ -17,4 +17,4 @@ pub mod tvl {
     pub mod state;
 }
 
-use crate::state::{StableState, STATE};
+use crate::state::StableState;

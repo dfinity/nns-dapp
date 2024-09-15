@@ -8,23 +8,23 @@ use ic_stable_structures::{DefaultMemoryImpl, VectorMemory};
 use on_wire::FromWire;
 use pretty_assertions::assert_eq;
 use proptest::proptest;
-use std::{cell::RefCell, rc::Rc};
+use std::rc::Rc;
 
 /// Creates a populated test state for testing.
 pub fn setup_test_state() -> State {
     State {
-        accounts_store: RefCell::new(crate::accounts_store::tests::setup_test_store()),
-        assets: RefCell::new(Assets::default()),
-        asset_hashes: RefCell::new(AssetHashes::default()),
-        performance: RefCell::new(PerformanceCounts::test_data()),
-        partitions_maybe: RefCell::new(PartitionsMaybe::None(VectorMemory::default())),
-        tvl_state: RefCell::new(TvlState::test_data()),
+        accounts_store: crate::accounts_store::tests::setup_test_store(),
+        assets: Assets::default(),
+        asset_hashes: AssetHashes::default(),
+        performance: PerformanceCounts::test_data(),
+        partitions_maybe: PartitionsMaybe::None(VectorMemory::default()),
+        tvl_state: TvlState::test_data(),
     }
 }
 
 #[test]
 fn state_heap_contents_can_be_serialized_and_deserialized() {
-    let toy_state = setup_test_state();
+    let mut toy_state = setup_test_state();
     let bytes: Vec<u8> = toy_state.encode();
     let parsed = State::decode(bytes).expect("Failed to parse");
     // Drop the accounts DB from the accounts store before comparing. We use
@@ -32,7 +32,6 @@ fn state_heap_contents_can_be_serialized_and_deserialized() {
     // so we don't encode/decode them as part of the accounts store.
     let _dropped_accounts_db = toy_state
         .accounts_store
-        .borrow_mut()
         .replace_accounts_db(AccountsDb::Map(AccountsDbAsMap::default()));
     // This is the highly valuable state:
     assert_eq!(
@@ -55,30 +54,21 @@ fn state_encodes_but_does_not_decode_tvl_state() {
     let (_, _, tvl_state_bytes): (Vec<u8>, Vec<u8>, Vec<u8>) = Candid::from_bytes(bytes.clone()).map(|c| c.0).unwrap();
     let parsed_tvl_state = TvlState::decode(tvl_state_bytes).unwrap();
 
-    assert_eq!(
-        *toy_state.tvl_state.borrow(),
-        parsed_tvl_state,
-        "TVL state should be encoded"
-    );
+    assert_eq!(toy_state.tvl_state, parsed_tvl_state, "TVL state should be encoded");
 
     let parsed = State::decode(bytes).expect("Failed to parse");
-    assert_eq!(
-        *parsed.tvl_state.borrow(),
-        TvlState::default(),
-        "TVL state should not be decoded"
-    );
+    assert_eq!(parsed.tvl_state, TvlState::default(), "TVL state should not be decoded");
 }
 
 #[test]
 fn state_can_be_created() {
     // State is backed by stable memory:
     let memory = DefaultMemoryImpl::default();
-    let state = State::new(memory);
+    let mut state = State::new(memory);
 
     // Basic functionality check - we can insert an account?
     state
         .accounts_store
-        .borrow_mut()
         .db_insert_account(&[0u8; 32], crate::accounts_store::schema::tests::toy_account(1, 2));
 }
 
@@ -89,13 +79,13 @@ fn state_can_be_saved_and_recovered_from_stable_memory(num_accounts: u64) {
     let memory_after_upgrade = Rc::clone(&memory);
 
     // On init, the state is created using a schema specified in the init arguments:
-    let state = State::new(memory);
+    let mut state = State::new(memory);
     // Typically the state is populated with data:
     // Inserting an account creates:
     // - An account entry, that is stored on the heap or in stable structures depending on the schema.
     // - Database stats that record the number of accounts; these are currently stored on the heap for all schemas.
     for toy_account_index in 0..num_accounts {
-        state.accounts_store.borrow_mut().db_insert_account(
+        state.accounts_store.db_insert_account(
             &toy_account_index.to_be_bytes()[..],
             crate::accounts_store::schema::tests::toy_account(toy_account_index, 2),
         );
@@ -103,7 +93,7 @@ fn state_can_be_saved_and_recovered_from_stable_memory(num_accounts: u64) {
     // The state is backed by stable memory.  Pre-upgrade, any state that is not already in stable memory must be saved.
     state.save();
     // Post-upgrade state can then be restored from memory.
-    let new_state = State::from(memory_after_upgrade);
+    let new_state = State::new_restored(memory_after_upgrade);
     // The state should be restored to the same state as before:
     assert_eq!(state, new_state);
 }

@@ -1,39 +1,25 @@
 import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
-import { SECONDS_IN_DAY } from "$lib/constants/constants";
+import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
-import { formatVotingPower } from "$lib/utils/neuron.utils";
-import {
-  getSnsNeuronIdAsHexString,
-  getSnsNeuronStake,
-  snsNeuronVotingPower,
-} from "$lib/utils/sns-neuron.utils";
-import { formatTokenE8s } from "$lib/utils/token.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
-import en from "$tests/mocks/i18n.mock";
 import {
-  mockSnsNeuron,
+  createMockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
-import type { SnsNeuron } from "@dfinity/sns";
-import { ICPToken, secondsToDuration } from "@dfinity/utils";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
+import { ConfirmSnsDissolveDelayPo } from "$tests/page-objects/ConfirmSnsDissolveDelay.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { NeuronState } from "@dfinity/nns";
+import { nonNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("ConfirmSnsDissolveDelay", () => {
   const delayInSeconds = Math.round(12.3 * SECONDS_IN_DAY);
-  const neuron: SnsNeuron = {
-    ...mockSnsNeuron,
-    dissolve_state: [
-      {
-        DissolveDelaySeconds: 0n,
-      },
-    ],
-  };
+  const neuron = createMockSnsNeuron({
+    state: NeuronState.Dissolved,
+  });
 
-  // freeze time
-  beforeAll(() => {
-    vi.useFakeTimers().setSystemTime(Date.now());
-
+  beforeEach(() => {
     snsParametersStore.setParameters({
       certified: true,
       rootCanisterId: mockPrincipal,
@@ -41,103 +27,147 @@ describe("ConfirmSnsDissolveDelay", () => {
     });
   });
 
-  afterAll(() => {
-    vi.useRealTimers();
-    snsParametersStore.reset();
-  });
-
-  it("renders a delay", () => {
-    const { getByText } = render(ConfirmSnsDissolveDelay, {
-      props: {
-        rootCanisterId: mockPrincipal,
-        delayInSeconds,
-        neuron,
-        token: ICPToken,
-      },
-    });
-
-    expect(
-      getByText(secondsToDuration({ seconds: BigInt(delayInSeconds) }))
-    ).toBeInTheDocument();
-  });
-
-  it("renders a neuron ID", () => {
-    const { getAllByText } = render(ConfirmSnsDissolveDelay, {
-      props: {
-        rootCanisterId: mockPrincipal,
-        delayInSeconds,
-        neuron,
-        token: ICPToken,
-      },
-    });
-    const id = shortenWithMiddleEllipsis(
-      getSnsNeuronIdAsHexString(mockSnsNeuron)
+  const renderComponent = ({
+    props,
+    onNnsBack = null,
+    onNnsConfirm = null,
+  }) => {
+    const { container, component } = render(ConfirmSnsDissolveDelay, props);
+    if (nonNullish(onNnsBack)) {
+      component.$on("nnsBack", onNnsBack);
+    }
+    if (nonNullish(onNnsConfirm)) {
+      component.$on("nnsConfirm", onNnsConfirm);
+    }
+    return ConfirmSnsDissolveDelayPo.under(
+      new JestPageObjectElement(container)
     );
+  };
 
-    expect(getAllByText(id).length).toBeGreaterThan(0);
-  });
-
-  it("renders a neuron stake", () => {
-    const { getByText } = render(ConfirmSnsDissolveDelay, {
-      props: {
-        rootCanisterId: mockPrincipal,
-        delayInSeconds,
-        neuron,
-        token: ICPToken,
-      },
-    });
-
-    expect(
-      getByText(
-        formatTokenE8s({
-          value: getSnsNeuronStake(mockSnsNeuron),
-          detailed: true,
-        })
-      )
-    ).toBeInTheDocument();
-  });
-
-  it("renders voting power", () => {
-    const { getByText } = render(ConfirmSnsDissolveDelay, {
-      props: {
-        rootCanisterId: mockPrincipal,
-        delayInSeconds,
-        neuron,
-        token: ICPToken,
-      },
-    });
-    const value = formatVotingPower(
-      snsNeuronVotingPower({
-        neuron,
-        newDissolveDelayInSeconds: BigInt(delayInSeconds),
-        snsParameters: snsNervousSystemParametersMock,
-      })
+  it("renders a delay", async () => {
+    const delayInSeconds = Math.round(
+      2 * SECONDS_IN_YEAR + 10 * SECONDS_IN_DAY
     );
+    const delayDuration = "2 years, 10 days";
 
-    expect(getByText(value)).toBeInTheDocument();
-  });
-
-  it("renders cancel button", () => {
-    const { getByText } = render(ConfirmSnsDissolveDelay, {
+    const po = renderComponent({
       props: {
         rootCanisterId: mockPrincipal,
         delayInSeconds,
         neuron,
-        token: ICPToken,
+        token: mockSnsToken,
       },
     });
-    expect(getByText(en.neurons.edit_delay)).toBeInTheDocument();
+
+    expect(await po.getDissolveDelay()).toBe(delayDuration);
   });
 
-  it("renders confirm button", () => {
-    const { getByText } = render(ConfirmSnsDissolveDelay, {
+  it("renders a neuron ID", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1, 2, 3, 4, 10, 11, 12, 13],
+    });
+    const po = renderComponent({
       props: {
         rootCanisterId: mockPrincipal,
         delayInSeconds,
         neuron,
-        token: ICPToken,
+        token: mockSnsToken,
       },
     });
-    expect(getByText(en.neurons.confirm_update_delay)).toBeInTheDocument();
+
+    expect(await po.getNeuronId()).toBe("010203040a0b0c0d");
+  });
+
+  it("renders a neuron stake", async () => {
+    const neuron = createMockSnsNeuron({
+      stake: 12_300_000_000n,
+    });
+    const tokenSymbol = "ZZZ";
+    const po = renderComponent({
+      props: {
+        rootCanisterId: mockPrincipal,
+        delayInSeconds,
+        neuron,
+        token: {
+          ...mockSnsToken,
+          symbol: tokenSymbol,
+        },
+      },
+    });
+
+    expect(await po.getNeuronStake()).toBe("123.00 ZZZ Stake");
+  });
+
+  it("renders voting power", async () => {
+    // Stake of 20.00 with max dissolve delay will result in 40.00 voting power.
+    snsParametersStore.setParameters({
+      certified: true,
+      rootCanisterId: mockPrincipal,
+      parameters: {
+        ...snsNervousSystemParametersMock,
+        neuron_minimum_dissolve_delay_to_vote_seconds: [
+          BigInt(delayInSeconds / 5),
+        ],
+        max_dissolve_delay_seconds: [BigInt(delayInSeconds)],
+        max_dissolve_delay_bonus_percentage: [100n],
+        max_age_bonus_percentage: [0n],
+      },
+    });
+    const neuron = createMockSnsNeuron({
+      stake: 2_000_000_000n,
+      stakedMaturity: 0n,
+    });
+
+    const po = renderComponent({
+      props: {
+        rootCanisterId: mockPrincipal,
+        delayInSeconds,
+        neuron,
+        token: mockSnsToken,
+      },
+    });
+
+    expect(await po.getVotingPower()).toBe("40.00");
+  });
+
+  it("edit button dispatches nnsBack", async () => {
+    const onNnsBack = vi.fn();
+    const onNnsConfirm = vi.fn();
+    const po = renderComponent({
+      props: {
+        rootCanisterId: mockPrincipal,
+        delayInSeconds,
+        neuron,
+        token: mockSnsToken,
+      },
+      onNnsBack,
+      onNnsConfirm,
+    });
+
+    expect(onNnsBack).toBeCalledTimes(0);
+    await po.getEditButtonPo().click();
+    expect(onNnsBack).toBeCalledTimes(1);
+
+    expect(onNnsConfirm).toBeCalledTimes(0);
+  });
+
+  it("confirm button dispatches nnsConfirm", async () => {
+    const onNnsBack = vi.fn();
+    const onNnsConfirm = vi.fn();
+    const po = renderComponent({
+      props: {
+        rootCanisterId: mockPrincipal,
+        delayInSeconds,
+        neuron,
+        token: mockSnsToken,
+      },
+      onNnsBack,
+      onNnsConfirm,
+    });
+    expect(onNnsConfirm).toBeCalledTimes(0);
+    await po.getConfirmButtonPo().click();
+    expect(onNnsConfirm).toBeCalledTimes(1);
+
+    expect(onNnsBack).toBeCalledTimes(0);
   });
 });
