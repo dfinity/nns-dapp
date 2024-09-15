@@ -10,12 +10,14 @@
   import { removeImportedTokens } from "$lib/services/imported-tokens.services";
   import { AppPath } from "$lib/constants/routes.constants";
   import { goto } from "$app/navigation";
+  import { Principal } from "@dfinity/principal";
+  import { createEventDispatcher } from "svelte";
 
-  export let universe: Universe;
+  export let universe: Universe | undefined = undefined;
+  export let ledgerCanisterId: Principal;
 
+  const dispatch = createEventDispatcher();
   const removeImportedToken = async () => {
-    const ledgerCanisterIdText = universe.canisterId;
-
     startBusy({
       initiator: "import-token-removing",
       labelKey: "import_token.removing",
@@ -25,12 +27,14 @@
       const importedTokens = $importedTokensStore.importedTokens ?? [];
       const { success } = await removeImportedTokens({
         tokensToRemove: importedTokens.filter(
-          ({ ledgerCanisterId: id }) => id.toText() === ledgerCanisterIdText
+          ({ ledgerCanisterId: id }) =>
+            id.toText() === ledgerCanisterId.toText()
         ),
         importedTokens,
       });
 
       if (success) {
+        dispatch("nnsClose");
         goto(AppPath.Tokens);
       }
     } finally {

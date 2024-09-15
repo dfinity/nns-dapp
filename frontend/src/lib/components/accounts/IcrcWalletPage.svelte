@@ -21,7 +21,7 @@
   } from "$lib/utils/accounts.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { IconDots, Island, Spinner } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import { Principal } from "@dfinity/principal";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import type { Writable } from "svelte/store";
   import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
@@ -245,6 +245,7 @@
   {#if removeImportedTokenConfirmationVisible && nonNullish(universe)}
     <ImportTokenRemoveConfirmation
       {universe}
+      ledgerCanisterId={Principal.fromText(universe.canisterId)}
       on:nnsClose={() => (removeImportedTokenConfirmationVisible = false)}
     />
   {/if}
