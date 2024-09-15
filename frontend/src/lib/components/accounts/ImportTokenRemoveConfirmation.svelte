@@ -5,14 +5,44 @@
   import { nonNullish } from "@dfinity/utils";
   import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
   import { Tag } from "@dfinity/gix-components";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { removeImportedTokens } from "$lib/services/imported-tokens.services";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { goto } from "$app/navigation";
 
-  export let universe: Universe | undefined;
+  export let universe: Universe;
+
+  const removeImportedToken = async () => {
+    const ledgerCanisterIdText = universe.canisterId;
+
+    startBusy({
+      initiator: "import-token-removing",
+      labelKey: "import_token.removing",
+    });
+
+    try {
+      const importedTokens = $importedTokensStore.importedTokens ?? [];
+      const { success } = await removeImportedTokens({
+        tokensToRemove: importedTokens.filter(
+          ({ ledgerCanisterId: id }) => id.toText() === ledgerCanisterIdText
+        ),
+        importedTokens,
+      });
+
+      if (success) {
+        goto(AppPath.Tokens);
+      }
+    } finally {
+      stopBusy("import-token-removing");
+    }
+  };
 </script>
 
 <ConfirmationModal
   testId="import-token-remove-confirmation-component"
   on:nnsClose
-  on:nnsConfirm
+  on:nnsConfirm={removeImportedToken}
   yesLabel={$i18n.core.remove}
 >
   <div class="content">
