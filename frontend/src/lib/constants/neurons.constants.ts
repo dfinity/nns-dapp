@@ -10,8 +10,8 @@ export const MATURITY_MODULATION_VARIANCE_PERCENTAGE = 0.95;
 // Neuron ids are random u64. Max digits of a u64 is 20.
 export const MAX_NEURON_ID_DIGITS = 20;
 
-export const MAX_DISSOLVE_DELAY_BONUS = 1;
-export const MAX_AGE_BONUS = 0.25;
+export const MAX_DISSOLVE_DELAY_BONUS = 1; // = +100%
+export const MAX_AGE_BONUS = 0.25; // = +25%
 export const NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE = SECONDS_IN_HALF_YEAR;
 
 const FIRST_TOPICS = [
