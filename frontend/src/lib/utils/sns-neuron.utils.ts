@@ -13,7 +13,6 @@ import {
   type NeuronIneligibilityReason,
   type NeuronTagData,
 } from "$lib/utils/neuron.utils";
-import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, Vote, type E8s, type NeuronInfo } from "@dfinity/nns";
@@ -211,8 +210,9 @@ export const canIdentityManageHotkeys = ({
   identity: Identity | undefined | null;
   parameters: SnsNervousSystemParameters;
 }): boolean => {
-  const { neuron_grantable_permissions } =
-    mapNervousSystemParameters(parameters);
+  const neuron_grantable_permissions = Array.from(
+    fromDefinedNullable(parameters.neuron_grantable_permissions).permissions
+  );
   const grantableSet = new Set(neuron_grantable_permissions);
   const hotkeyPermissionsGrantable = HOTKEY_PERMISSIONS.every((permission) =>
     grantableSet.has(permission)
