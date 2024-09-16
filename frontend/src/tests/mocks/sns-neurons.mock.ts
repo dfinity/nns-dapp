@@ -7,6 +7,8 @@ import type { ProjectNeuronStore } from "$lib/stores/sns-neurons.store";
 import type { SnsParameters } from "$lib/stores/sns-parameters.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
+import { convertNervousSystemParameters } from "$lib/utils/sns-aggregator-converters.utils";
+import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { NeuronState, type NeuronId } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
@@ -43,7 +45,7 @@ export const mockActiveDisbursement: DisburseMaturityInProgress = {
 
 export const createMockSnsNeuron = ({
   stake = 1_000_000_000n,
-  id,
+  id = [1, 5, 3, 9, 9, 3, 2],
   state,
   permissions = [],
   vesting,
@@ -60,7 +62,7 @@ export const createMockSnsNeuron = ({
   activeDisbursementsE8s = [],
 }: {
   stake?: bigint;
-  id: number[];
+  id?: number[];
   state?: NeuronState;
   permissions?: NeuronPermission[];
   // `undefined` means no vesting at all (default)
@@ -131,10 +133,7 @@ export const mockSnsNeuronId = {
   id: arrayOfNumberToUint8Array([1, 5, 3, 9, 9, 3, 2]),
 };
 
-export const mockSnsNeuron = createMockSnsNeuron({
-  stake: 1_000_000_000n,
-  id: [1, 5, 3, 9, 9, 3, 2],
-});
+export const mockSnsNeuron = createMockSnsNeuron({});
 
 export const mockSnsNeuronWithPermissions = (
   permissions: SnsNeuronPermissionType[]
@@ -178,47 +177,10 @@ export const buildMockSortedSnsNeuronsStoreSubscribe =
     return () => undefined;
   };
 
-export const snsNervousSystemParametersMock: SnsNervousSystemParameters = {
-  default_followees: [
-    {
-      followees: [[0n, { followees: [mockSnsNeuronId] }]],
-    },
-  ],
-  max_dissolve_delay_seconds: [3_155_760_000n],
-  max_dissolve_delay_bonus_percentage: [100n],
-  max_followees_per_function: [15n],
-  neuron_claimer_permissions: [
-    {
-      permissions: Int32Array.from(enumValues(SnsNeuronPermissionType)),
-    },
-  ],
-  neuron_minimum_stake_e8s: [100_000_000n],
-  max_neuron_age_for_age_bonus: [15_778_800n],
-  initial_voting_period_seconds: [345_600n],
-  neuron_minimum_dissolve_delay_to_vote_seconds: [2_629_800n],
-  reject_cost_e8s: [100_000_000n],
-  max_proposals_to_keep_per_action: [100],
-  wait_for_quiet_deadline_increase_seconds: [86_400n],
-  max_number_of_neurons: [200_000n],
-  transaction_fee_e8s: [10_000n],
-  max_number_of_proposals_with_ballots: [700n],
-  max_age_bonus_percentage: [25n],
-  neuron_grantable_permissions: [
-    {
-      permissions: Int32Array.from(enumValues(SnsNeuronPermissionType)),
-    },
-  ],
-  voting_rewards_parameters: [
-    {
-      final_reward_rate_basis_points: [0n],
-      initial_reward_rate_basis_points: [0n],
-      reward_rate_transition_duration_seconds: [31_557_600n],
-      round_duration_seconds: [86_400n],
-    },
-  ],
-  max_number_of_principals_per_neuron: [5n],
-  maturity_modulation_disabled: [false],
-};
+export const snsNervousSystemParametersMock: SnsNervousSystemParameters =
+  convertNervousSystemParameters(
+    aggregatorSnsMockDto.nervous_system_parameters
+  );
 
 export const buildMockSnsParametersStore =
   (notDefined = false) =>

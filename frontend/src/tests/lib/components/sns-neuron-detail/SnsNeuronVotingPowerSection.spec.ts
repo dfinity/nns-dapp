@@ -14,29 +14,36 @@ import { render } from "@testing-library/svelte";
 
 describe("NnsStakeItemAction", () => {
   const nowInSeconds = 1689843195;
+  const minDissolveDelayToVote = 2_629_800n;
+
   const neuronCanVote = createMockSnsNeuron({
     id: [1],
     stake: 314000000n,
     stakedMaturity: 100000000n,
     state: NeuronState.Locked,
-    dissolveDelaySeconds:
-      snsNervousSystemParametersMock
-        .neuron_minimum_dissolve_delay_to_vote_seconds[0],
+    dissolveDelaySeconds: minDissolveDelayToVote,
     ageSinceTimestampSeconds: BigInt(nowInSeconds - SECONDS_IN_YEAR),
   });
   const neuronCanNotVote = createMockSnsNeuron({
     id: [1],
     stake: 314000000n,
     state: NeuronState.Locked,
-    dissolveDelaySeconds:
-      snsNervousSystemParametersMock
-        .neuron_minimum_dissolve_delay_to_vote_seconds[0] - 1n,
+    dissolveDelaySeconds: minDissolveDelayToVote - 1n,
   });
   const renderComponent = (neuron: SnsNeuron) => {
     const { container } = render(SnsNeuronVotingPowerSection, {
       props: {
         neuron,
-        parameters: snsNervousSystemParametersMock,
+        parameters: {
+          ...snsNervousSystemParametersMock,
+          max_dissolve_delay_seconds: [3_155_760_000n],
+          max_dissolve_delay_bonus_percentage: [100n],
+          neuron_minimum_stake_e8s: [100_000_000n],
+          max_neuron_age_for_age_bonus: [15_778_800n],
+          neuron_minimum_dissolve_delay_to_vote_seconds: [
+            minDissolveDelayToVote,
+          ],
+        },
         token: mockToken,
       },
     });

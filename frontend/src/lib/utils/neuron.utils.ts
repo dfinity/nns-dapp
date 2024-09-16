@@ -10,9 +10,9 @@ import {
   E8S_PER_ICP,
 } from "$lib/constants/icp.constants";
 import {
-  AGE_MULTIPLIER,
-  DISSOLVE_DELAY_MULTIPLIER,
   MATURITY_MODULATION_VARIANCE_PERCENTAGE,
+  MAX_AGE_BONUS,
+  MAX_DISSOLVE_DELAY_BONUS,
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
   TOPICS_TO_FOLLOW_NNS,
@@ -139,8 +139,8 @@ interface VotingPowerParams {
   stakeE8s: bigint;
   ageSeconds: bigint;
   // Params
-  ageBonusMultiplier?: number;
-  dissolveBonusMultiplier?: number;
+  maxAgeBonus?: number;
+  maxDissolveDelayBonus?: number;
   maxAgeSeconds?: number;
   maxDissolveDelaySeconds?: number;
   minDissolveDelaySeconds?: number;
@@ -157,8 +157,8 @@ export const votingPower = ({
   stakeE8s,
   dissolveDelay,
   ageSeconds,
-  ageBonusMultiplier = AGE_MULTIPLIER,
-  dissolveBonusMultiplier = DISSOLVE_DELAY_MULTIPLIER,
+  maxAgeBonus = MAX_AGE_BONUS,
+  maxDissolveDelayBonus = MAX_DISSOLVE_DELAY_BONUS,
   maxDissolveDelaySeconds = SECONDS_IN_EIGHT_YEARS,
   maxAgeSeconds = SECONDS_IN_FOUR_YEARS,
   minDissolveDelaySeconds = SECONDS_IN_HALF_YEAR,
@@ -168,13 +168,13 @@ export const votingPower = ({
   }
   const dissolveDelayMultiplier = bonusMultiplier({
     amount: dissolveDelay,
-    multiplier: dissolveBonusMultiplier,
-    max: maxDissolveDelaySeconds,
+    maxBonus: maxDissolveDelayBonus,
+    maxAmount: maxDissolveDelaySeconds,
   });
   const ageMultiplier = bonusMultiplier({
     amount: ageSeconds,
-    multiplier: ageBonusMultiplier,
-    max: maxAgeSeconds,
+    maxBonus: maxAgeBonus,
+    maxAmount: maxAgeSeconds,
   });
   // We don't use dissolveDelayMultiplier and ageMultiplier directly because those are specific to NNS.
   // This function is generic and could be used for SNS.
@@ -186,31 +186,40 @@ export const votingPower = ({
 export const dissolveDelayMultiplier = (delayInSeconds: bigint): number =>
   bonusMultiplier({
     amount: delayInSeconds,
-    multiplier: DISSOLVE_DELAY_MULTIPLIER,
-    max: SECONDS_IN_EIGHT_YEARS,
+    maxBonus: MAX_DISSOLVE_DELAY_BONUS,
+    maxAmount: SECONDS_IN_EIGHT_YEARS,
   });
 
 export const ageMultiplier = (ageSeconds: bigint): number =>
   bonusMultiplier({
     amount: ageSeconds,
-    multiplier: AGE_MULTIPLIER,
-    max: SECONDS_IN_FOUR_YEARS,
+    maxBonus: MAX_AGE_BONUS,
+    maxAmount: SECONDS_IN_FOUR_YEARS,
   });
 
+// Calculates the bonus multiplier for an amount (such as dissolve delay or age)
+// which results in bonus eligibility which scales linearly from 1 to
+// `maxBonus`. For example for dissolve delay, the values
+//   amount: 4 years
+//   maxBonusAmount: 8 years
+//   maxBonus: 1
+// Would mean that there is a maximum bonus of 1 = 100% (which means a
+// multiplier of 2) but with a dissolve delay of 4 years out of a maximum of
+// 8 years, the bonus would be 50%, which means a multiplier of 1.5.
+// So in this case the return value would be 1.5.
 export const bonusMultiplier = ({
   amount,
-  multiplier,
-  max,
+  maxAmount,
+  maxBonus,
 }: {
   amount: bigint;
-  multiplier: number;
-  max: number;
-}): number =>
-  1 +
-  multiplier *
-    (Math.min(Number(amount), max) /
-      // to avoid NaN
-      (max === 0 ? 1 : max));
+  maxAmount: number;
+  maxBonus: number;
+}): number => {
+  const bonusProportion =
+    maxAmount === 0 ? 0 : Math.min(Number(amount), maxAmount) / maxAmount;
+  return 1 + maxBonus * bonusProportion;
+};
 
 // TODO: Do we need this? What does it mean to have a valid stake?
 // TODO: https://dfinity.atlassian.net/browse/L2-507

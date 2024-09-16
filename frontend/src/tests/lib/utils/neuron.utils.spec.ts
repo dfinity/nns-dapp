@@ -288,32 +288,32 @@ describe("neuron-utils", () => {
       expect(
         bonusMultiplier({
           amount: 300n,
-          multiplier: 0.25,
-          max: 600,
+          maxBonus: 0.25,
+          maxAmount: 600,
         })
       ).toBe(1.125);
 
       expect(
         bonusMultiplier({
           amount: 600n,
-          multiplier: 0.5,
-          max: 600,
+          maxBonus: 0.5,
+          maxAmount: 600,
         })
       ).toBe(1.5);
 
       expect(
         bonusMultiplier({
           amount: 400n,
-          multiplier: 1,
-          max: 200,
+          maxBonus: 1,
+          maxAmount: 200,
         })
       ).toBe(2);
 
       expect(
         bonusMultiplier({
           amount: 400n,
-          multiplier: 0.25,
-          max: 0,
+          maxBonus: 0.25,
+          maxAmount: 0,
         })
       ).toBe(1);
     });
