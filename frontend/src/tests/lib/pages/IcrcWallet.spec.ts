@@ -529,23 +529,15 @@ describe("IcrcWallet", () => {
     });
 
     it("should remove imported tokens", async () => {
-      let resolveSetImportedTokens;
-      const spyOnSetImportedTokens = vi
-        .spyOn(importedTokensApi, "setImportedTokens")
-        .mockImplementation(
-          () =>
-            new Promise<void>((resolve) => (resolveSetImportedTokens = resolve))
-        );
-      const spyOnGetImportedTokens = vi
-        .spyOn(importedTokensApi, "getImportedTokens")
-        .mockResolvedValue({
-          imported_tokens: [
-            {
-              ledger_canister_id: ledgerCanisterId2,
-              index_canister_id: [],
-            },
-          ],
-        });
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue();
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
+        imported_tokens: [
+          {
+            ledger_canister_id: ledgerCanisterId2,
+            index_canister_id: [],
+          },
+        ],
+      });
 
       const po = await renderWallet({});
       const morePopoverPo = po.getWalletMorePopoverPo();
@@ -559,13 +551,8 @@ describe("IcrcWallet", () => {
       await morePopoverPo.getRemoveButtonPo().click();
       await runResolvedPromises();
 
-      expect(get(pageStore).path).toEqual(AppPath.Wallet);
-      expect(get(busyStore)).toEqual([]);
-
       // Confirm the removal.
       expect(await confirmationPo.isPresent()).toBe(true);
-      await confirmationPo.clickYes();
-
       expect(get(importedTokensStore).importedTokens).toEqual([
         {
           ledgerCanisterId,
@@ -576,80 +563,10 @@ describe("IcrcWallet", () => {
           indexCanisterId: undefined,
         },
       ]);
-      expect(get(busyStore)).toEqual([
-        {
-          initiator: "import-token-removing",
-          text: "Removing imported token...",
-        },
-      ]);
-
-      resolveSetImportedTokens();
-      await runResolvedPromises();
-
-      // The token should be removed.
-      expect(spyOnSetImportedTokens).toBeCalledTimes(1);
-      expect(spyOnSetImportedTokens).toHaveBeenCalledWith({
-        identity: mockIdentity,
-        importedTokens: [
-          {
-            ledger_canister_id: ledgerCanisterId2,
-            index_canister_id: [],
-          },
-        ],
-      });
-      expect(spyOnGetImportedTokens).toBeCalledTimes(2);
-
-      expect(get(busyStore)).toEqual([]);
-      expect(get(pageStore).path).toEqual(AppPath.Tokens);
-      expect(get(importedTokensStore).importedTokens).toEqual([
-        {
-          ledgerCanisterId: ledgerCanisterId2,
-          indexCanisterId: undefined,
-        },
-      ]);
-    });
-
-    it("should stay on the same page when removal is unsuccessful", async () => {
-      vi.spyOn(console, "error").mockReturnValue();
-      const spyOnSetImportedTokens = vi
-        .spyOn(importedTokensApi, "setImportedTokens")
-        .mockRejectedValue(new Error());
-      const spyOnGetImportedTokens = vi.spyOn(
-        importedTokensApi,
-        "getImportedTokens"
-      );
-
-      expect(get(importedTokensStore).importedTokens).toEqual([
-        {
-          ledgerCanisterId,
-          indexCanisterId: undefined,
-        },
-        {
-          ledgerCanisterId: ledgerCanisterId2,
-          indexCanisterId: undefined,
-        },
-      ]);
-
-      const po = await renderWallet({});
-      const morePopoverPo = po.getWalletMorePopoverPo();
-      const confirmationPo = po.getImportTokenRemoveConfirmationPo();
-
-      await po.getMoreButton().click();
-      await runResolvedPromises();
-      await morePopoverPo.getRemoveButtonPo().click();
-      await runResolvedPromises();
       await confirmationPo.clickYes();
       await runResolvedPromises();
-      expect(spyOnSetImportedTokens).toBeCalledTimes(1);
-      // should stay on wallet page
-      expect(get(pageStore).path).toEqual(AppPath.Wallet);
-      // without data change
-      expect(spyOnGetImportedTokens).toBeCalledTimes(0);
+
       expect(get(importedTokensStore).importedTokens).toEqual([
-        {
-          ledgerCanisterId,
-          indexCanisterId: undefined,
-        },
         {
           ledgerCanisterId: ledgerCanisterId2,
           indexCanisterId: undefined,

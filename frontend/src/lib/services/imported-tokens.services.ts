@@ -10,7 +10,10 @@ import type { ImportedTokens } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
-import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+import {
+  failedImportedTokenLedgerIdsStore,
+  importedTokensStore,
+} from "$lib/stores/imported-tokens.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
@@ -33,11 +36,22 @@ export const loadImportedTokens = async ({
   return queryAndUpdate<ImportedTokens, unknown>({
     request: (options) => getImportedTokens(options),
     strategy: FORCE_CALL_STRATEGY,
-    onLoad: ({ response: { imported_tokens: importedTokens }, certified }) =>
+    onLoad: ({ response: { imported_tokens: importedTokens }, certified }) => {
       importedTokensStore.set({
         importedTokens: importedTokens.map(toImportedTokenData),
         certified,
-      }),
+      });
+      /* 
+      The failed imported token store needs to be reset to remove the failed table rows,
+      but this should only happen after the imported tokens are fully loaded.
+      
+      If we remove record A from the failed imported token store before that, it will still exist
+      in the imported tokens store, triggering the loading of account data for record A;
+      However, if we update the imported tokens store in the next step (removing record A),
+      the error handling will treat this token as a `not imported token` and display all errors.
+       */
+      failedImportedTokenLedgerIdsStore.reset();
+    },
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -58,6 +72,8 @@ export const loadImportedTokens = async ({
 
       // Explicitly handle only UPDATE errors
       importedTokensStore.reset();
+      // Also reset the failed imported token store to remove the failed table rows.
+      failedImportedTokenLedgerIdsStore.reset();
 
       toastsError({
         labelKey: "error__imported_tokens.load_imported_tokens",
