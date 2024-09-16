@@ -244,8 +244,22 @@ From time to time you will have a task that requires changes on gix-components. 
 
 1. Run `npm run package -- --watch` from gix-components, this will also watch for changes and rebuild the package
 2. Run `npm link <gix-component-path>` from nns-dapp/frontend to link the gix-components package
-3. Run `npx nodemon --watch <gix-component-path>/dist --ext js,ts,svelte --exec 'npm run dev'` from nns-dapp/frontend to watch for changes and rebuild nns-dapp
-4. Make your changes and test
-5. Once you are done run `npm unlink gix-components` from nns-dapp/frontend to unlink the gix-components package
+3. Run `npx nodemon --delay 2 --watch ../../gix-components/dist --ext js,ts,svelte --exec 'npm run dev''` from nns-dapp/frontend to watch for changes and rebuild nns-dapp
+4. Accept installation of nodemon when prompted by npm
+
+```
+Need to install the following packages:
+  nodemon@3.1.4
+Ok to proceed? (y)
+```
+
+5. Make your changes and test. You will see that nns-dapp restarts due to changes in gix-components. Althought there is a delay of 2 seconds to wait for all the changes to be complete you might see multiple lines of `[nodemon] restarting due to changes...`, that is okay.
+
+```
+[nodemon] restarting due to changes...
+[nodemon] starting `npm run dev`
+```
+
+6. Once you are done run `npm unlink gix-components` from nns-dapp/frontend to unlink the gix-components package
 
 The steps above are specifically for gix-components, but the process is the same for other local packages that nns-dapp depends on.
