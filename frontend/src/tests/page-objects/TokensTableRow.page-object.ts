@@ -1,6 +1,8 @@
 import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { AmountDisplayPo } from "./AmountDisplay.page-object";
+import { HashPo } from "./Hash.page-object";
+import { TooltipPo } from "./Tooltip.page-object";
 
 export type TokensTableRowData = {
   projectName: string;
@@ -53,6 +55,18 @@ export class TokensTableRowPo extends ResponsiveTableRowPo {
 
   async getBalanceNumber(): Promise<number> {
     return Number(await AmountDisplayPo.under(this.root).getAmount());
+  }
+
+  hasUnavailableBalance(): Promise<boolean> {
+    return this.root.byTestId("unavailable-balance").isPresent();
+  }
+
+  getFailedLedgerCanisterHashPo(): HashPo {
+    return new HashPo(this.root.byTestId("failed-ledger-canister-id"));
+  }
+
+  getFailedTokenTooltipPo(): TooltipPo {
+    return TooltipPo.under(this.root);
   }
 
   async waitForBalance(): Promise<void> {

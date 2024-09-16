@@ -605,19 +605,10 @@ describe("Tokens route", () => {
               canisterId: importedToken1Id,
               token: importedToken1Metadata,
             });
-            defaultIcrcCanistersStore.setCanisters({
-              ledgerCanisterId: importedToken1Id,
-              indexCanisterId: undefined,
-            });
             tokensStore.setToken({
               canisterId: importedToken2Id,
               token: importedToken2Metadata,
             });
-            defaultIcrcCanistersStore.setCanisters({
-              ledgerCanisterId: importedToken2Id,
-              indexCanisterId: undefined,
-            });
-
             importedTokensStore.set({
               importedTokens: [importedToken1Data, importedToken2Data],
               certified: true,

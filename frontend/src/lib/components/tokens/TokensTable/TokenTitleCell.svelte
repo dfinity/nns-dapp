@@ -48,6 +48,7 @@
   {#if isUserTokenFailed(rowData)}
     <Tooltip
       id="failed-imported-token"
+      testId="failed-imported-token-tooltip"
       text={$i18n.import_token.failed_tooltip}
     >
       <div class="failed-token-icon"><IconError size="20px" /></div>
