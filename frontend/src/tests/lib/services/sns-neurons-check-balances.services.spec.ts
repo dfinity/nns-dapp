@@ -1,5 +1,4 @@
 import * as governanceApi from "$lib/api/sns-governance.api";
-import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
 import {
   claimNextNeuronIfNeeded,
   neuronNeedsRefresh,
@@ -14,10 +13,7 @@ import {
   mockPrincipal,
   resetIdentity,
 } from "$tests/mocks/auth.store.mock";
-import {
-  mockSnsNeuron,
-  snsNervousSystemParametersMock,
-} from "$tests/mocks/sns-neurons.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
@@ -70,6 +66,12 @@ describe("sns-neurons-check-balances-services", () => {
     snsNeuronsStore.reset();
     checkedNeuronSubaccountsStore.reset();
     resetSnsProjects();
+
+    setSnsProjects([
+      {
+        rootCanisterId: mockPrincipal,
+      },
+    ]);
   });
 
   describe("neuronNeedsRefresh", () => {
@@ -199,74 +201,30 @@ describe("sns-neurons-check-balances-services", () => {
 
   describe("claimNextNeuronIfNeeded", () => {
     let spyNeuronBalance;
-    let spyNervousSystemParameters;
     let spyClaimNeuron;
     let spyGetSnsNeuron;
 
     beforeEach(() => {
       spyNeuronBalance = vi.spyOn(governanceApi, "getNeuronBalance");
-      spyNervousSystemParameters = vi.spyOn(
-        governanceApi,
-        "nervousSystemParameters"
-      );
       spyClaimNeuron = vi.spyOn(governanceApi, "claimNeuron");
       spyGetSnsNeuron = vi.spyOn(governanceApi, "getSnsNeuron");
-    });
-
-    it("should not load sns params for zero balance", async () => {
-      const neuronAccountBalance = 0n;
-
-      spyNeuronBalance.mockResolvedValue(neuronAccountBalance);
-      spyNervousSystemParameters.mockResolvedValue(
-        snsNervousSystemParametersMock
-      );
-      spyClaimNeuron.mockRejectedValue("Neuron does not exist");
-
-      expect(spyNeuronBalance).toBeCalledTimes(0);
-
-      await claimNextNeuronIfNeeded({
-        rootCanisterId: mockPrincipal,
-        neurons: [],
-      });
-
-      expect(spyNeuronBalance).toBeCalledTimes(1);
-      expect(spyNeuronBalance).toBeCalledWith({
-        rootCanisterId: mockPrincipal,
-        neuronId: neuronId,
-        certified: false,
-        identity: mockIdentity,
-      });
-      expect(spyNervousSystemParameters).not.toBeCalled();
-      expect(spyClaimNeuron).not.toBeCalled();
-    });
-
-    it("should not load sns parameters if already loaded", async () => {
-      const neuronAccountBalance = 1_000_000n;
-
-      setSnsProjects([{ rootCanisterId: mockPrincipal }]);
-      spyNeuronBalance.mockResolvedValue(neuronAccountBalance);
-
-      await claimNextNeuronIfNeeded({
-        rootCanisterId: mockPrincipal,
-        neurons: [],
-      });
-
-      expect(spyNervousSystemParameters).not.toBeCalled();
     });
 
     it("should not claim neuron if balance too small", async () => {
       const neuronMinimumStake = 100_000_000n;
       const neuronAccountBalance = 1_000_000n;
 
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          neuronMinimumStakeE8s: neuronMinimumStake,
+        },
+      ]);
+
       spyNeuronBalance.mockResolvedValue(neuronAccountBalance);
-      spyNervousSystemParameters.mockResolvedValue({
-        ...snsNervousSystemParametersMock,
-        neuron_minimum_stake_e8s: [neuronMinimumStake],
-      });
       spyClaimNeuron.mockRejectedValue("Neuron does not exist");
 
       expect(spyNeuronBalance).toBeCalledTimes(0);
-      expect(spyNervousSystemParameters).toBeCalledTimes(0);
 
       await claimNextNeuronIfNeeded({
         rootCanisterId: mockPrincipal,
@@ -274,7 +232,6 @@ describe("sns-neurons-check-balances-services", () => {
       });
 
       expect(spyNeuronBalance).toBeCalledTimes(1);
-      expect(spyNervousSystemParameters).toBeCalledTimes(2);
       expect(spyClaimNeuron).not.toBeCalled();
     });
 
@@ -294,16 +251,18 @@ describe("sns-neurons-check-balances-services", () => {
         cached_neuron_stake_e8s: neuronAccountBalance,
       };
 
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          neuronMinimumStakeE8s: neuronMinimumStake,
+        },
+      ]);
+
       spyNeuronBalance.mockResolvedValue(neuronAccountBalance);
-      spyNervousSystemParameters.mockResolvedValue({
-        ...snsNervousSystemParametersMock,
-        neuron_minimum_stake_e8s: [neuronMinimumStake],
-      });
       spyClaimNeuron.mockResolvedValue(unclaimedNeuronId);
       spyGetSnsNeuron.mockResolvedValue(unclaimedNeuron);
 
       expect(spyNeuronBalance).toBeCalledTimes(0);
-      expect(spyNervousSystemParameters).toBeCalledTimes(0);
       expect(spyClaimNeuron).toBeCalledTimes(0);
       expect(
         get(snsNeuronsStore)[mockPrincipal.toText()]?.neurons
@@ -315,7 +274,6 @@ describe("sns-neurons-check-balances-services", () => {
       });
 
       expect(spyNeuronBalance).toBeCalledTimes(1);
-      expect(spyNervousSystemParameters).toBeCalledTimes(2);
       expect(spyClaimNeuron).toBeCalledTimes(1);
       expect(spyClaimNeuron).toBeCalledWith({
         controller: mockIdentity.getPrincipal(),
@@ -366,6 +324,13 @@ describe("sns-neurons-check-balances-services", () => {
       const neuronMinimumStake = 100_000_000n;
       const neuronAccountBalance = neuronMinimumStake;
 
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          neuronMinimumStakeE8s: neuronMinimumStake,
+        },
+      ]);
+
       const createNeuron = (index: number): SnsNeuron => {
         const subaccount = neuronSubaccount({
           controller: mockIdentity.getPrincipal(),
@@ -387,19 +352,15 @@ describe("sns-neurons-check-balances-services", () => {
       const unclaimedSubaccount = unclaimedNeuronId.id;
 
       spyNeuronBalance.mockResolvedValue(neuronAccountBalance);
-      spyNervousSystemParameters.mockResolvedValue({
-        ...snsNervousSystemParametersMock,
-        neuron_minimum_stake_e8s: [neuronMinimumStake],
-      });
       spyClaimNeuron.mockResolvedValue(unclaimedNeuronId);
       spyGetSnsNeuron.mockResolvedValue(unclaimedNeuron);
 
       expect(spyNeuronBalance).toBeCalledTimes(0);
-      expect(spyNervousSystemParameters).toBeCalledTimes(0);
       expect(spyClaimNeuron).toBeCalledTimes(0);
       expect(
         get(snsNeuronsStore)[mockPrincipal.toText()]?.neurons
       ).toBeUndefined();
+
       await claimNextNeuronIfNeeded({
         rootCanisterId: mockPrincipal,
         neurons: existingNeurons,
@@ -412,7 +373,6 @@ describe("sns-neurons-check-balances-services", () => {
         certified: false,
         identity: mockIdentity,
       });
-      expect(spyNervousSystemParameters).toBeCalledTimes(2);
       expect(spyClaimNeuron).toBeCalledTimes(1);
       expect(spyClaimNeuron).toBeCalledWith({
         controller: mockIdentity.getPrincipal(),
@@ -453,16 +413,18 @@ describe("sns-neurons-check-balances-services", () => {
         cached_neuron_stake_e8s: neuronAccountBalance,
       };
 
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          neuronMinimumStakeE8s: neuronMinimumStake,
+        },
+      ]);
+
       spyNeuronBalance.mockResolvedValue(neuronAccountBalance);
-      spyNervousSystemParameters.mockResolvedValue({
-        ...snsNervousSystemParametersMock,
-        neuron_minimum_stake_e8s: [neuronMinimumStake],
-      });
       spyClaimNeuron.mockResolvedValue(unclaimedNeuronId);
       spyGetSnsNeuron.mockResolvedValue(unclaimedNeuron);
 
       expect(spyNeuronBalance).toBeCalledTimes(0);
-      expect(spyNervousSystemParameters).toBeCalledTimes(0);
       expect(spyClaimNeuron).toBeCalledTimes(0);
       expect(
         get(snsNeuronsStore)[mockPrincipal.toText()]?.neurons
@@ -474,7 +436,6 @@ describe("sns-neurons-check-balances-services", () => {
       });
 
       expect(spyNeuronBalance).toBeCalledTimes(1);
-      expect(spyNervousSystemParameters).toBeCalledTimes(2);
       expect(spyClaimNeuron).toBeCalledTimes(1);
       expect(spyClaimNeuron).toBeCalledWith({
         controller: mockIdentity.getPrincipal(),

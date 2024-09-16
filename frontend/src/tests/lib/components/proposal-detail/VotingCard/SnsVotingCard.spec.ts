@@ -2,7 +2,6 @@ import * as api from "$lib/api/sns-governance.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
-import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
 import { authStore } from "$lib/stores/auth.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";

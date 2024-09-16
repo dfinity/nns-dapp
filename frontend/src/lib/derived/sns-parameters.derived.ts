@@ -1,11 +1,10 @@
-import { removeKeys } from "$lib/utils/utils";
-import type { Principal } from "@dfinity/principal";
+import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+import { convertNervousSystemParameters } from "$lib/utils/sns-aggregator-converters.utils";
 import type { SnsNervousSystemParameters } from "@dfinity/sns";
-import { writable } from "svelte/store";
+import { derived, type Readable } from "svelte/store";
 
 export interface SnsParameters {
   parameters: SnsNervousSystemParameters;
-  certified: boolean;
 }
 
 export interface SnsParametersStore {
@@ -15,49 +14,20 @@ export interface SnsParametersStore {
 
 /**
  * A store that contains the sns nervous system parameters for each project.
- *
- * - setParameters: replace the current parameters for a specific sns project.
- * - reset: reset the store to an empty state.
- * - resetParameters: removed the parameters for a specific project.
  */
-const initSnsParametersStore = () => {
-  const { subscribe, update, set } = writable<SnsParametersStore>({});
-
-  return {
-    subscribe,
-
-    setParameters({
-      rootCanisterId,
-      parameters,
-      certified,
-    }: {
-      rootCanisterId: Principal;
-      parameters: SnsNervousSystemParameters;
-      certified: boolean;
-    }) {
-      update((currentState: SnsParametersStore) => ({
-        ...currentState,
-        [rootCanisterId.toText()]: {
-          parameters,
-          certified,
-        },
-      }));
-    },
-
-    // Used in tests
-    reset() {
-      set({});
-    },
-
-    resetProject(rootCanisterId: Principal) {
-      update((currentState: SnsParametersStore) =>
-        removeKeys({
-          obj: currentState,
-          keysToRemove: [rootCanisterId.toText()],
-        })
-      );
-    },
-  };
-};
-
-export const snsParametersStore = initSnsParametersStore();
+export const snsParametersStore: Readable<SnsParametersStore> = derived(
+  snsAggregatorStore,
+  (aggregatorStore) =>
+    Object.fromEntries(
+      aggregatorStore.data?.map((sns) => {
+        return [
+          sns.canister_ids.root_canister_id,
+          {
+            parameters: convertNervousSystemParameters(
+              sns.nervous_system_parameters
+            ),
+          },
+        ];
+      }) ?? []
+    )
+);

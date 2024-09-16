@@ -1,5 +1,4 @@
 import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
-import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";
 import { stakeNeuron } from "$lib/services/sns-neurons.services";

@@ -7,7 +7,6 @@ import {
   MANAGE_HOTKEY_PERMISSIONS,
 } from "$lib/constants/sns-neurons.constants";
 import { pageStore } from "$lib/derived/page.derived";
-import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
 import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import * as checkNeuronsService from "$lib/services/sns-neurons-check-balances.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -64,9 +63,7 @@ describe("SnsNeuronDetail", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    snsParametersStore.reset();
     tokensStore.reset();
-    snsParametersStore.reset();
     snsNeuronsStore.reset();
     icrcAccountsStore.reset();
     setSnsProjects([

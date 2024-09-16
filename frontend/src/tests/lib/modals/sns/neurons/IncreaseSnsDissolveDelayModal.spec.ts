@@ -1,9 +1,7 @@
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
-import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
 import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/neurons/IncreaseSnsDissolveDelayModal.svelte";
 import * as authServices from "$lib/services/auth.services";
-import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
 import { page } from "$mocks/$app/stores";
 import {
@@ -99,6 +97,14 @@ describe("IncreaseSnsDissolveDelayModal", () => {
       state: NeuronState.Locked,
       dissolveDelaySeconds: BigInt(delayInSeconds),
     });
+    setSnsProjects([
+      {
+        rootCanisterId: mockPrincipal,
+        lifecycle: SnsSwapLifecycle.Committed,
+        maxDissolveDelaySeconds: 10n * BigInt(delayInSeconds),
+      },
+    ]);
+
     const { container } = await renderIncreaseDelayModal(neuron);
 
     expect(getProgressBarValue(container)).toBe(delayInSeconds.toString());
@@ -226,11 +232,5 @@ describe("IncreaseSnsDissolveDelayModal", () => {
         `${secondsToDays(Number(maxValue))}`
       )
     );
-  });
-
-  it("should trigger `loadSnsParameters`", async () => {
-    await renderIncreaseDelayModal(neuron);
-
-    expect(loadSnsParameters).toBeCalled();
   });
 });

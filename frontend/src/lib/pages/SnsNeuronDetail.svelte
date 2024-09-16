@@ -28,7 +28,6 @@
   import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
   import { refreshNeuronIfNeeded } from "$lib/services/sns-neurons-check-balances.services";
   import { getSnsNeuron } from "$lib/services/sns-neurons.services";
-  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { queuedStore } from "$lib/stores/queued-store";
   import { toastsError } from "$lib/stores/toasts.store";
   import {
@@ -139,11 +138,7 @@
         certified: true,
       });
 
-      await Promise.all([
-        loadNeuron(),
-        loadSnsParameters(rootCanisterId),
-        loadSnsAccounts({ rootCanisterId }),
-      ]);
+      await Promise.all([loadNeuron(), loadSnsAccounts({ rootCanisterId })]);
     } catch (err: unknown) {
       // $pageStore.universe might be an invalid principal, like empty or yolo
       await goBack(true);

@@ -1,12 +1,10 @@
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
-import { convertNervousSystemParameters } from "$lib/utils/sns-aggregator-converters.utils";
 import { aggregatorSnsMockWith } from "$tests/mocks/sns-aggregator.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { Principal } from "@dfinity/principal";
+import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsNervousSystemFunction } from "@dfinity/sns";
 
 export const setSnsProjects = (
@@ -61,21 +59,10 @@ export const setSnsProjects = (
   snsLifecycleStore.reset();
   snsDerivedStateStore.reset();
   snsAggregatorStore.setData(aggregatorProjects);
-  snsParametersStore.reset();
-  aggregatorProjects.forEach((project) => {
-    snsParametersStore.setParameters({
-      rootCanisterId: Principal.fromText(project.canister_ids.root_canister_id),
-      parameters: convertNervousSystemParameters(
-        project.nervous_system_parameters
-      ),
-      certified: true,
-    });
-  });
 };
 
 export const resetSnsProjects = () => {
   snsLifecycleStore.reset();
   snsDerivedStateStore.reset();
   snsAggregatorStore.reset();
-  snsParametersStore.reset();
 };
