@@ -97,13 +97,6 @@ describe("IncreaseSnsDissolveDelayModal", () => {
       state: NeuronState.Locked,
       dissolveDelaySeconds: BigInt(delayInSeconds),
     });
-    setSnsProjects([
-      {
-        rootCanisterId: mockPrincipal,
-        lifecycle: SnsSwapLifecycle.Committed,
-        maxDissolveDelaySeconds: 10n * BigInt(delayInSeconds),
-      },
-    ]);
 
     const { container } = await renderIncreaseDelayModal(neuron);
 
