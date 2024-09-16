@@ -10,7 +10,7 @@
   import { removeImportedTokens } from "$lib/services/imported-tokens.services";
   import { AppPath } from "$lib/constants/routes.constants";
   import { goto } from "$app/navigation";
-  import { Principal } from "@dfinity/principal";
+  import type { Principal } from "@dfinity/principal";
   import { createEventDispatcher } from "svelte";
 
   export let universe: Universe | undefined = undefined;
