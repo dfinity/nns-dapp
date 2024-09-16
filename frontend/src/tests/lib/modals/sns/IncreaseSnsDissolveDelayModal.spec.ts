@@ -3,7 +3,6 @@ import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/neurons/IncreaseSnsDissolveDelayModal.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { loadSnsParameters } from "$lib/services/sns-parameters.services";
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
 import { page } from "$mocks/$app/stores";
 import {
@@ -68,13 +67,6 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     vi.clearAllTimers();
     vi.useFakeTimers().setSystemTime(now);
 
-    snsParametersStore.reset();
-    snsParametersStore.setParameters({
-      certified: true,
-      rootCanisterId: mockPrincipal,
-      parameters: snsNervousSystemParametersMock,
-    });
-
     setSnsProjects([
       {
         rootCanisterId: mockPrincipal,
@@ -94,6 +86,13 @@ describe("IncreaseSnsDissolveDelayModal", () => {
   it("should use current dissolve delay value when locked", async () => {
     const dissolveDelayDays = 12345;
     const delayInSeconds = dissolveDelayDays * SECONDS_IN_DAY;
+    setSnsProjects([
+      {
+        rootCanisterId: mockPrincipal,
+        lifecycle: SnsSwapLifecycle.Committed,
+        maxDissolveDelaySeconds: BigInt(2 * delayInSeconds),
+      },
+    ]);
     const neuron = createMockSnsNeuron({
       id: [1],
       state: NeuronState.Locked,

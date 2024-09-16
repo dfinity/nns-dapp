@@ -109,11 +109,11 @@ describe("sns-neurons-services", () => {
       snsNeuronsStore.reset();
 
       snsParametersStore.reset();
-      snsParametersStore.setParameters({
-        rootCanisterId: mockPrincipal,
-        certified: true,
-        parameters: snsNervousSystemParametersMock,
-      });
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+        },
+      ]);
     });
 
     describe("when sns parameteres are not loaded", () => {
