@@ -748,8 +748,8 @@ export const snsNeuronVotingPower = ({
       stakeE8s,
       dissolveDelay,
       ageSeconds: neuronAge(neuron),
-      ageBonusMultiplier: Number(maxAgeBonusPercentage) / 100,
-      dissolveBonusMultiplier: Number(maxDissolveDelayBonusPercentage) / 100,
+      maxAgeBonus: Number(maxAgeBonusPercentage) / 100,
+      maxDissolveDelayBonus: Number(maxDissolveDelayBonusPercentage) / 100,
       maxDissolveDelaySeconds: Number(maxDissolveDelaySeconds),
       maxAgeSeconds: Number(maxNeuronAgeForAgeBonus),
       minDissolveDelaySeconds: Number(neuronMinimumDissolveDelayToVoteSeconds),
@@ -794,8 +794,8 @@ export const dissolveDelayMultiplier = ({
 
   return bonusMultiplier({
     amount: dissolveDelay,
-    multiplier: Number(maxDissolveDelayBonusPercentage) / 100,
-    max: Number(maxDissolveDelaySeconds),
+    maxBonus: Number(maxDissolveDelayBonusPercentage) / 100,
+    maxAmount: Number(maxDissolveDelaySeconds),
   });
 };
 
@@ -813,8 +813,8 @@ export const ageMultiplier = ({
 
   return bonusMultiplier({
     amount: neuronAge(neuron),
-    multiplier: Number(maxAgeBonusPercentage) / 100,
-    max: Number(maxNeuronAgeForAgeBonus),
+    maxBonus: Number(maxAgeBonusPercentage) / 100,
+    maxAmount: Number(maxNeuronAgeForAgeBonus),
   });
 };
 
