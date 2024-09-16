@@ -1,16 +1,20 @@
 <script lang="ts">
   import type { UserTokenData, UserTokenFailed } from "$lib/types/tokens-page";
   import { IconBin } from "@dfinity/gix-components";
+  import { createEventDispatcher } from "svelte";
+  import { ActionType } from "$lib/types/actions";
 
   // svelte-ignore unused-export-let
   export let userToken: UserTokenData | UserTokenFailed;
+
+  const dispatcher = createEventDispatcher();
 </script>
 
 <button
   class="icon-only remove-button"
   data-tid="send-button-component"
-  on:click|stopPropagation|preventDefault={() => {
-    // TODO: Implement remove imported token action
+  on:click|preventDefault|stopPropagation={() => {
+    dispatcher("nnsAction", { type: ActionType.Remove, data: userToken });
   }}
 >
   <IconBin />
