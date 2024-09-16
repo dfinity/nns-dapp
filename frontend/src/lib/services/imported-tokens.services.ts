@@ -63,8 +63,6 @@ export const loadImportedTokens = async ({
           importedTokens: [],
           certified,
         });
-        // Also reset the failed imported token store to remove the failed table rows.
-        failedImportedTokenLedgerIdsStore.reset();
         return;
       }
 
@@ -74,6 +72,8 @@ export const loadImportedTokens = async ({
 
       // Explicitly handle only UPDATE errors
       importedTokensStore.reset();
+      // Also reset the failed imported token store to remove the failed table rows.
+      failedImportedTokenLedgerIdsStore.reset();
 
       toastsError({
         labelKey: "error__imported_tokens.load_imported_tokens",
