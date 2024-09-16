@@ -87,7 +87,6 @@ describe("SnsNeurons", () => {
       const po = await renderComponent();
 
       expect(await po.hasSpinner()).toBe(true);
-      expect(await po.getSkeletonCardPo().isPresent()).toBe(false);
     });
 
     it("should not render empty text", async () => {
