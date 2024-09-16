@@ -101,9 +101,7 @@
 
   <div class="menu-footer">
     <MenuMetrics />
-    <div class="menu-footer-buttons" data-tid="menu-footer-buttons">
-      <SourceCodeButton />
-    </div>
+    <SourceCodeButton />
   </div>
 </div>
 
@@ -115,13 +113,11 @@
   }
 
   .menu-footer {
-    margin-top: auto;
+    display: flex;
     flex-direction: column;
-    justify-self: flex-end;
-    margin-bottom: var(--padding-8x);
-  }
-
-  .menu-footer-buttons {
-    margin-right: var(--padding-3x);
+    gap: var(--padding);
+    // To accomodate the 100% on-chain logo
+    // if that logo changes please update this margin as well
+    margin: auto var(--padding-3x) var(--padding-8x) 0;
   }
 </style>
