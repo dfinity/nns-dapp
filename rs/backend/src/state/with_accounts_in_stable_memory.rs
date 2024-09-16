@@ -12,7 +12,7 @@ impl State {
     pub fn save_heap_to_managed_memory(&self) {
         println!("START state::save_heap: ()");
         let bytes = self.encode();
-        match &*self.partitions_maybe.borrow() {
+        match &self.partitions_maybe {
             PartitionsMaybe::Partitions(partitions) => {
                 let len = bytes.len();
                 let length_field = u64::try_from(len)

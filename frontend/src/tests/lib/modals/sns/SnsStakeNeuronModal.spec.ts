@@ -4,7 +4,6 @@ import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.sve
 import { stakeNeuron } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { page } from "$mocks/$app/stores";
 import {
   mockAuthStoreSubscribe,
@@ -12,7 +11,6 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import { snsNervousSystemParametersMock } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { SnsStakeNeuronModalPo } from "$tests/page-objects/SnsStakeNeuronModal.page-object";
@@ -20,7 +18,6 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { Principal } from "@dfinity/principal";
-import type { SnsNervousSystemParameters } from "@dfinity/sns";
 import { TokenAmount } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 
@@ -31,6 +28,7 @@ vi.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("SnsStakeNeuronModal", () => {
+  const ledgerCanisterId = principal(3);
   const token = { name: "POP", symbol: "POP", decimals: 8 };
   const renderTransactionModal = () =>
     renderModal({
@@ -54,7 +52,6 @@ describe("SnsStakeNeuronModal", () => {
     resetSnsProjects();
     icrcAccountsStore.reset();
 
-    const ledgerCanisterId = principal(3);
     setSnsProjects([
       {
         rootCanisterId: mockPrincipal,
@@ -80,8 +77,6 @@ describe("SnsStakeNeuronModal", () => {
     );
 
     page.mock({ data: { universe: mockPrincipal.toText() } });
-
-    snsParametersStore.reset();
   });
 
   const renderComponent = async () => {
@@ -110,15 +105,13 @@ describe("SnsStakeNeuronModal", () => {
 
   it("should show error if amount is less than minimum stake in parameter", async () => {
     const minimumAmount = 1;
-    const snsParameters: SnsNervousSystemParameters = {
-      ...snsNervousSystemParametersMock,
-      neuron_minimum_stake_e8s: [100_000_000n],
-    };
-    snsParametersStore.setParameters({
-      rootCanisterId: mockPrincipal,
-      parameters: snsParameters,
-      certified: true,
-    });
+    setSnsProjects([
+      {
+        rootCanisterId: mockPrincipal,
+        ledgerCanisterId,
+        neuronMinimumStakeE8s: 100_000_000n,
+      },
+    ]);
     const po = await renderComponent();
 
     await runResolvedPromises();

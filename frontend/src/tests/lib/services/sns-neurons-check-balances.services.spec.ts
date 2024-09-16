@@ -6,7 +6,6 @@ import {
 } from "$lib/services/sns-neurons-check-balances.services";
 import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import {
@@ -19,6 +18,7 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   SnsNeuronPermissionType,
   neuronSubaccount,
@@ -68,7 +68,7 @@ describe("sns-neurons-check-balances-services", () => {
     resetIdentity();
     snsNeuronsStore.reset();
     checkedNeuronSubaccountsStore.reset();
-    snsParametersStore.reset();
+    resetSnsProjects();
   });
 
   describe("neuronNeedsRefresh", () => {
@@ -242,12 +242,7 @@ describe("sns-neurons-check-balances-services", () => {
     it("should not load sns parameters if already loaded", async () => {
       const neuronAccountBalance = 1_000_000n;
 
-      snsParametersStore.setParameters({
-        rootCanisterId: mockPrincipal,
-        parameters: snsNervousSystemParametersMock,
-        certified: true,
-      });
-
+      setSnsProjects([{ rootCanisterId: mockPrincipal }]);
       spyNeuronBalance.mockResolvedValue(neuronAccountBalance);
 
       await claimNextNeuronIfNeeded({
@@ -391,9 +386,10 @@ describe("sns-neurons-check-balances-services", () => {
       const unclaimedSubaccount = unclaimedNeuronId.id;
 
       spyNeuronBalance.mockResolvedValue(neuronAccountBalance);
-      spyNervousSystemParameters.mockResolvedValue(
-        snsNervousSystemParametersMock
-      );
+      spyNervousSystemParameters.mockResolvedValue({
+        ...snsNervousSystemParametersMock,
+        neuron_minimum_stake_e8s: [neuronMinimumStake],
+      });
       spyClaimNeuron.mockResolvedValue(unclaimedNeuronId);
       spyGetSnsNeuron.mockResolvedValue(unclaimedNeuron);
 

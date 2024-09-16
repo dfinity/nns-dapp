@@ -29,6 +29,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Fixed a bug where a performance counter in `init` is wiped during state initialization.
+
 #### Security
 
 #### Not Published
@@ -42,6 +44,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Deprecated
 
 #### Removed
+
+* Removed unused `pocket-ic` dependency.
 
 #### Fixed
 
