@@ -307,6 +307,7 @@
     <ImportTokenRemoveConfirmation
       ledgerCanisterId={modal.data.universeId}
       on:nnsClose={closeModal}
+      on:nnsConfirm={removeImportedToken}
     />
   {/if}
 </TestIdWrapper>
