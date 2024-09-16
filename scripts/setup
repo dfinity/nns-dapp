@@ -271,20 +271,6 @@ install_didc_darwin() {
   rm "$tempfile"
 }
 
-install_pocketic_linux() {
-  local version
-  version="$(jq -r .defaults.build.config.POCKETIC_VERSION dfx.json)"
-  curl -Lf "https://github.com/dfinity/pocketic/releases/download/${version}/pocket-ic-x86_64-linux.gz" | gunzip | install -m 755 /dev/stdin "$USER_BIN/pocket-ic"
-}
-install_pocketic_darwin() {
-  local version
-  version="$(jq -r .defaults.build.config.POCKETIC_VERSION dfx.json)"
-  tempfile="$(mktemp ,pocketic-XXXXXXXX)"
-  curl -Lf "https://github.com/dfinity/pocketic/releases/download/${version}/pocket-ic-x86_64-darwin.gz" | gunzip >"$tempfile"
-  install -m 755 "$tempfile" "$USER_BIN/pocket-ic"
-  rm "$tempfile"
-}
-
 OS="$(uname | tr '[:upper:]' '[:lower:]')"
 
 echo "Checking that you can install software..."
@@ -313,7 +299,6 @@ command -v gtar || tar --help | grep GNU >/dev/null || "install_tar_$OS"
 command -v cmake || "install_cmake_$OS"
 command -v idl2json || install_idl2json
 command -v didc || "install_didc_$OS"
-command -v pocket-ic || "install_pocketic_$OS"
 
 echo "OK, all set to go!"
 [[ "$NEW_TERMINAL_NEEDED" == "false" ]] || echo "Please open a fresh terminal for these changes to take effect."

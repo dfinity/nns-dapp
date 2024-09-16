@@ -1,6 +1,7 @@
 //! Capture and store performance counters.
+use crate::state::with_state_mut;
 use crate::stats::Stats;
-use crate::{StableState, STATE};
+use crate::StableState;
 use candid::CandidType;
 use dfn_candid::Candid;
 use ic_cdk::api::instruction_counter;
@@ -113,5 +114,5 @@ pub fn record_instruction_count(name: &str) {
 
 /// Saves an instruction count; useful if the instruction count was captured independently.
 pub fn save_instruction_count(count: PerformanceCount) {
-    STATE.with(|s| s.performance.borrow_mut().save_instruction_count(count));
+    with_state_mut(|s| s.performance.save_instruction_count(count));
 }
