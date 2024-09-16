@@ -173,26 +173,9 @@
     // Just for type safety. This should never happen.
     if (isNullish(ledgerCanisterId)) return;
 
-    startBusy({
-      initiator: "import-token-removing",
-      labelKey: "import_token.removing",
-    });
-
-    try {
-      const importedTokens = $importedTokensStore.importedTokens ?? [];
-      const { success } = await removeImportedTokens({
-        tokensToRemove: importedTokens.filter(
-          ({ ledgerCanisterId: id }) =>
-            id.toText() === ledgerCanisterId?.toText()
-        ),
-        importedTokens,
-      });
-
-      if (success) {
-        goto(AppPath.Tokens);
-      }
-    } finally {
-      stopBusy("import-token-removing");
+    const { success } = await removeImportedTokens(ledgerCanisterId);
+    if (success) {
+      goto(AppPath.Tokens);
     }
   };
 </script>
