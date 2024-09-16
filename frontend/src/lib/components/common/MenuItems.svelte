@@ -123,12 +123,11 @@
     margin: auto var(--padding-3x) var(--padding-8x) 0;
     // Handle menu collapse animation
     opacity: 1;
-    transform-origin: center center;
     transition:
       transform linear var(--animation-time-normal),
       opacity linear calc(var(--animation-time-short) / 2);
     &.hidden {
-      opacity: 1;
+      opacity: 0;
       transform: translate(-150%, 0);
     }
     //Hide menu footer similar to surrounding elements
