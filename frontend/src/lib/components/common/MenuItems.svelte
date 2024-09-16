@@ -25,6 +25,7 @@
   } from "@dfinity/gix-components";
   import type { ComponentType } from "svelte";
   import SourceCodeButton from "./SourceCodeButton.svelte";
+  import { layoutMenuOpen, menuCollapsed } from "@dfinity/gix-components";
 
   let routes: {
     context: string;
@@ -99,13 +100,14 @@
     <GetTokens />
   {/if}
 
-  <div class="menu-footer">
+  <div class="menu-footer" class:hidden={$menuCollapsed && !$layoutMenuOpen}>
     <MenuMetrics />
     <SourceCodeButton />
   </div>
 </div>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
   .menu-container {
     display: flex;
     flex-direction: column;
@@ -113,11 +115,25 @@
   }
 
   .menu-footer {
-    display: flex;
+    display: none;
     flex-direction: column;
     gap: var(--padding);
     // To accomodate the 100% on-chain logo
     // if that logo changes please update this margin as well
     margin: auto var(--padding-3x) var(--padding-8x) 0;
+    // Handle menu collapse animation
+    opacity: 1;
+    transform-origin: center center;
+    transition:
+      transform linear var(--animation-time-normal),
+      opacity linear calc(var(--animation-time-short) / 2);
+    &.hidden {
+      opacity: 1;
+      transform: translate(-150%, 0);
+    }
+    //Hide menu footer similar to surrounding elements
+    @media (min-height: 654px) {
+      display: flex;
+    }
   }
 </style>
