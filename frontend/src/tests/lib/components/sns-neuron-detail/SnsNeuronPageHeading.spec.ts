@@ -19,11 +19,23 @@ import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
 describe("SnsNeuronPageHeading", () => {
+  const minDissolveDelayToVote = 2_629_800n;
+
   const renderSnsNeuronCmp = (neuron: SnsNeuron) => {
     const { container } = render(SnsNeuronPageHeading, {
       props: {
         neuron,
-        parameters: snsNervousSystemParametersMock,
+        parameters: {
+          ...snsNervousSystemParametersMock,
+          max_dissolve_delay_seconds: [3_155_760_000n],
+          max_dissolve_delay_bonus_percentage: [100n],
+          neuron_minimum_stake_e8s: [100_000_000n],
+          max_neuron_age_for_age_bonus: [15_778_800n],
+          neuron_minimum_dissolve_delay_to_vote_seconds: [
+            minDissolveDelayToVote,
+          ],
+          max_age_bonus_percentage: [25n],
+        },
       },
     });
 
@@ -63,9 +75,7 @@ describe("SnsNeuronPageHeading", () => {
     const neuron = createMockSnsNeuron({
       id: [1],
       state: NeuronState.Locked,
-      dissolveDelaySeconds:
-        snsNervousSystemParametersMock
-          .neuron_minimum_dissolve_delay_to_vote_seconds[0] - 100n,
+      dissolveDelaySeconds: minDissolveDelayToVote - 100n,
       stake,
     });
     const po = renderSnsNeuronCmp(neuron);
