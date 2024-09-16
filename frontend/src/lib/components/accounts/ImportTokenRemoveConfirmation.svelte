@@ -5,7 +5,7 @@
   import { nonNullish } from "@dfinity/utils";
   import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
   import { Tag } from "@dfinity/gix-components";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { removeImportedTokens } from "$lib/services/imported-tokens.services";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -18,27 +18,17 @@
 
   const dispatch = createEventDispatcher();
   const removeImportedToken = async () => {
-    startBusy({
-      initiator: "import-token-removing",
-      labelKey: "import_token.removing",
+    const importedTokens = $importedTokensStore.importedTokens ?? [];
+    const { success } = await removeImportedTokens({
+      tokensToRemove: importedTokens.filter(
+        ({ ledgerCanisterId: id }) => id.toText() === ledgerCanisterId.toText()
+      ),
+      importedTokens,
     });
 
-    try {
-      const importedTokens = $importedTokensStore.importedTokens ?? [];
-      const { success } = await removeImportedTokens({
-        tokensToRemove: importedTokens.filter(
-          ({ ledgerCanisterId: id }) =>
-            id.toText() === ledgerCanisterId.toText()
-        ),
-        importedTokens,
-      });
-
-      if (success) {
-        dispatch("nnsClose");
-        goto(AppPath.Tokens);
-      }
-    } finally {
-      stopBusy("import-token-removing");
+    if (success) {
+      dispatch("nnsClose");
+      goto(AppPath.Tokens);
     }
   };
 </script>

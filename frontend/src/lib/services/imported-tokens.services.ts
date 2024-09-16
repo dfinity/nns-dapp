@@ -10,6 +10,7 @@ import type { ImportedTokens } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
@@ -179,28 +180,38 @@ export const removeImportedTokens = async ({
   tokensToRemove: ImportedTokenData[];
   importedTokens: ImportedTokenData[];
 }): Promise<{ success: boolean }> => {
-  // Compare imported tokens by their ledgerCanisterId because they should be unique.
-  const ledgerIdsToRemove = new Set(
-    tokensToRemove.map(({ ledgerCanisterId }) => ledgerCanisterId.toText())
-  );
-  const tokens = importedTokens.filter(
-    ({ ledgerCanisterId }) => !ledgerIdsToRemove.has(ledgerCanisterId.toText())
-  );
-  const { err } = await saveImportedToken({ tokens });
-
-  if (isNullish(err)) {
-    await loadImportedTokens();
-    toastsSuccess({
-      labelKey: "tokens.remove_imported_token_success",
+  try {
+    startBusy({
+      initiator: "import-token-removing",
+      labelKey: "import_token.removing",
     });
 
-    return { success: true };
+    // Compare imported tokens by their ledgerCanisterId because they should be unique.
+    const ledgerIdsToRemove = new Set(
+      tokensToRemove.map(({ ledgerCanisterId }) => ledgerCanisterId.toText())
+    );
+    const tokens = importedTokens.filter(
+      ({ ledgerCanisterId }) =>
+        !ledgerIdsToRemove.has(ledgerCanisterId.toText())
+    );
+    const { err } = await saveImportedToken({ tokens });
+
+    if (isNullish(err)) {
+      await loadImportedTokens();
+      toastsSuccess({
+        labelKey: "tokens.remove_imported_token_success",
+      });
+
+      return { success: true };
+    }
+
+    toastsError({
+      labelKey: "error__imported_tokens.remove_imported_token",
+      err,
+    });
+
+    return { success: false };
+  } finally {
+    stopBusy("import-token-removing");
   }
-
-  toastsError({
-    labelKey: "error__imported_tokens.remove_imported_token",
-    err,
-  });
-
-  return { success: false };
 };

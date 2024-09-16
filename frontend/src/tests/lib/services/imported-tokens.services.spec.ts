@@ -15,7 +15,11 @@ import * as toastsStore from "$lib/stores/toasts.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { toastsStore as toastsStoreEntry } from "@dfinity/gix-components";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import {
+  busyStore,
+  toastsStore as toastsStoreEntry,
+} from "@dfinity/gix-components";
 import * as dfinityUtils from "@dfinity/utils";
 import { get } from "svelte/store";
 
@@ -43,6 +47,7 @@ describe("imported-tokens-services", () => {
     resetIdentity();
     importedTokensStore.reset();
     toastsStoreEntry.reset();
+    busyStore.resetForTesting();
     vi.spyOn(console, "error").mockReturnValue();
     vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
   });
@@ -284,6 +289,37 @@ describe("imported-tokens-services", () => {
         identity: mockIdentity,
         importedTokens: [importedTokenB],
       });
+    });
+
+    it("should display busy store", async () => {
+      let resolveSetImportedTokens;
+      const spyOnSetImportedTokens = vi
+        .spyOn(importedTokensApi, "setImportedTokens")
+        .mockImplementation(
+          () =>
+            new Promise<void>((resolve) => (resolveSetImportedTokens = resolve))
+        );
+      expect(spyOnSetImportedTokens).toBeCalledTimes(0);
+      expect(get(busyStore)).toEqual([]);
+
+      removeImportedTokens({
+        tokensToRemove: [importedTokenDataA],
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+      });
+      await runResolvedPromises();
+
+      expect(spyOnSetImportedTokens).toBeCalledTimes(1);
+      expect(get(busyStore)).toEqual([
+        {
+          initiator: "import-token-removing",
+          text: "Removing imported token...",
+        },
+      ]);
+
+      resolveSetImportedTokens();
+      await runResolvedPromises();
+
+      expect(get(busyStore)).toEqual([]);
     });
 
     it("should remove multiple tokens", async () => {
