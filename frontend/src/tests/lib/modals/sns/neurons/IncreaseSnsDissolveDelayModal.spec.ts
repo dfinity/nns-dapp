@@ -97,7 +97,6 @@ describe("IncreaseSnsDissolveDelayModal", () => {
       state: NeuronState.Locked,
       dissolveDelaySeconds: BigInt(delayInSeconds),
     });
-
     const { container } = await renderIncreaseDelayModal(neuron);
 
     expect(getProgressBarValue(container)).toBe(delayInSeconds.toString());

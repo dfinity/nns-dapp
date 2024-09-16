@@ -360,7 +360,6 @@ describe("sns-neurons-check-balances-services", () => {
       expect(
         get(snsNeuronsStore)[mockPrincipal.toText()]?.neurons
       ).toBeUndefined();
-
       await claimNextNeuronIfNeeded({
         rootCanisterId: mockPrincipal,
         neurons: existingNeurons,
