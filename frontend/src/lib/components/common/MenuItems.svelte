@@ -87,27 +87,26 @@
   ];
 </script>
 
-<TestIdWrapper testId="menu-items-component">
-  <div class="menu-container">
-    {#each routes as { context, title, href, icon, statusIcon, selected } (context)}
-      <MenuItem {href} testId={`menuitem-${context}`} {selected} {title}>
-        <svelte:component this={icon} slot="icon" />
-        <svelte:fragment>{title}</svelte:fragment>
-        <svelte:component this={statusIcon} slot="statusIcon" />
-      </MenuItem>
-    {/each}
-    {#if IS_TESTNET}
-      <GetTokens />
-    {/if}
+<div data-tid="menu-items-component" class="menu-container">
+  {#each routes as { context, title, href, icon, statusIcon, selected } (context)}
+    <MenuItem {href} testId={`menuitem-${context}`} {selected} {title}>
+      <svelte:component this={icon} slot="icon" />
+      <svelte:fragment>{title}</svelte:fragment>
+      <svelte:component this={statusIcon} slot="statusIcon" />
+    </MenuItem>
+  {/each}
 
-    <div class="menu-footer">
-      <MenuMetrics />
-      <div class="menu-footer-buttons" data-tid="menu-footer-buttons">
-        <SourceCodeButton />
-      </div>
+  {#if IS_TESTNET}
+    <GetTokens />
+  {/if}
+
+  <div class="menu-footer">
+    <MenuMetrics />
+    <div class="menu-footer-buttons" data-tid="menu-footer-buttons">
+      <SourceCodeButton />
     </div>
   </div>
-</TestIdWrapper>
+</div>
 
 <style lang="scss">
   .menu-container {
@@ -124,8 +123,6 @@
   }
 
   .menu-footer-buttons {
-    display: grid;
-    gap: var(--padding);
     margin-right: var(--padding-3x);
   }
 </style>
