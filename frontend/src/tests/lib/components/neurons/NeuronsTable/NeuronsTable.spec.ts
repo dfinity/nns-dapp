@@ -479,7 +479,7 @@ describe("NeuronsTable", () => {
     expect(rowPos).toHaveLength(2);
     expect(await rowPos[0].getTableRowTooltipColorVariable()).toBe("");
     expect(await rowPos[1].getTableRowTooltipColorVariable()).toBe(
-      "var(--tertiary)"
+      "var(--table-row-text-color)"
     );
   });
 
