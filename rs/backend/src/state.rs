@@ -21,12 +21,12 @@ use std::cell::RefCell;
 pub struct State {
     // NOTE: When adding new persistent fields here, ensure that these fields
     // are being persisted in the `replace` method below.
-    pub accounts_store: RefCell<AccountsStore>,
-    pub assets: RefCell<Assets>,
-    pub asset_hashes: RefCell<AssetHashes>,
-    pub performance: RefCell<PerformanceCounts>,
-    pub partitions_maybe: RefCell<PartitionsMaybe>,
-    pub tvl_state: RefCell<TvlState>,
+    pub accounts_store: AccountsStore,
+    pub assets: Assets,
+    pub asset_hashes: AssetHashes,
+    pub performance: PerformanceCounts,
+    pub partitions_maybe: PartitionsMaybe,
+    pub tvl_state: TvlState,
 }
 
 #[cfg(test)]
@@ -42,19 +42,6 @@ impl PartialEq for State {
 #[cfg(test)]
 impl Eq for State {}
 
-impl Default for State {
-    fn default() -> Self {
-        Self {
-            accounts_store: RefCell::new(AccountsStore::default()),
-            assets: RefCell::new(Assets::default()),
-            asset_hashes: RefCell::new(AssetHashes::default()),
-            performance: RefCell::new(PerformanceCounts::default()),
-            partitions_maybe: RefCell::new(PartitionsMaybe::None(DefaultMemoryImpl::default())),
-            tvl_state: RefCell::new(TvlState::default()),
-        }
-    }
-}
-
 impl core::fmt::Debug for State {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         // Destructure to ensure that we don't forget to update this when new fields are added:
@@ -67,33 +54,13 @@ impl core::fmt::Debug for State {
             tvl_state,
         } = self;
         writeln!(f, "State {{")?;
-        writeln!(f, "  accounts: {:?}", accounts_store.borrow())?;
+        writeln!(f, "  accounts: {accounts_store:?}")?;
         writeln!(f, "  assets: <html etc> (elided)")?;
         writeln!(f, "  asset_hashes: <hashes of the assets> (elided)")?;
         writeln!(f, "  performance: <stats for the metrics endpoint> (elided)")?;
-        writeln!(f, "  partitions_maybe: {:?}", partitions_maybe.borrow())?;
-        writeln!(f, "  tvl_state: {:?}", tvl_state.borrow())?;
+        writeln!(f, "  partitions_maybe: {partitions_maybe:?}")?;
+        writeln!(f, "  tvl_state: {tvl_state:?}")?;
         writeln!(f, "}}")
-    }
-}
-
-impl State {
-    pub fn replace(&self, new_state: State) {
-        let State {
-            accounts_store,
-            assets,
-            asset_hashes,
-            performance,
-            partitions_maybe,
-            tvl_state,
-        } = new_state;
-        let partitions_maybe = partitions_maybe.into_inner();
-        self.accounts_store.replace(accounts_store.into_inner());
-        self.assets.replace(assets.into_inner());
-        self.asset_hashes.replace(asset_hashes.into_inner());
-        self.performance.replace(performance.into_inner());
-        self.partitions_maybe.replace(partitions_maybe);
-        self.tvl_state.replace(tvl_state.into_inner());
     }
 }
 
@@ -103,7 +70,41 @@ pub trait StableState: Sized {
 }
 
 thread_local! {
-    pub static STATE: State = State::default();
+    static STATE: RefCell<Option<State>> = const { RefCell::new(None) };
+}
+
+/// Initializes the state when the canister is initialized.
+pub fn init_state() {
+    STATE.with_borrow_mut(|s| *s = Some(State::new(DefaultMemoryImpl::default())));
+}
+
+/// Initializes the state when the canister is upgraded.
+pub fn restore_state() {
+    STATE.with_borrow_mut(|s| *s = Some(State::new_restored(DefaultMemoryImpl::default())));
+}
+
+/// Saves the state to stable memory.
+///
+/// # Panics
+/// Panics when the function is called before the `init_state` or `restore_state` is called.
+pub fn save_state() {
+    STATE.with_borrow(|s| s.as_ref().expect("State not initialized").save());
+}
+
+/// An accessor for the state.
+///
+/// # Panics
+/// Panics when the function is called before the `init_state` or `restore_state` is called.
+pub fn with_state<R>(f: impl FnOnce(&State) -> R) -> R {
+    STATE.with_borrow(|s| f(s.as_ref().expect("State not initialized")))
+}
+
+/// A mutable accessor for the state.
+///
+/// # Panics
+/// Panics when the function is called before the `init_state` or `restore_state` is called.
+pub fn with_state_mut<R>(f: impl FnOnce(&mut State) -> R) -> R {
+    STATE.with_borrow_mut(|s| f(s.as_mut().expect("State not initialized")))
 }
 
 impl State {
@@ -115,29 +116,27 @@ impl State {
             AccountsDbAsUnboundedStableBTreeMap::new(partitions.get(PartitionType::Accounts.memory_id())),
         ));
         State {
-            accounts_store: RefCell::new(accounts_store),
-            assets: RefCell::new(Assets::default()),
-            asset_hashes: RefCell::new(AssetHashes::default()),
-            performance: RefCell::new(PerformanceCounts::default()),
-            partitions_maybe: RefCell::new(PartitionsMaybe::Partitions(partitions)),
-            tvl_state: RefCell::new(TvlState::default()),
+            accounts_store,
+            assets: Assets::default(),
+            asset_hashes: AssetHashes::default(),
+            performance: PerformanceCounts::default(),
+            partitions_maybe: PartitionsMaybe::Partitions(partitions),
+            tvl_state: TvlState::default(),
         }
     }
-}
 
-/// Restores state from stable memory.
-impl From<DefaultMemoryImpl> for State {
-    fn from(memory: DefaultMemoryImpl) -> Self {
-        println!("START state::from<DefaultMemoryImpl>: ())");
+    #[must_use]
+    pub fn new_restored(memory: DefaultMemoryImpl) -> Self {
+        println!("START state::new_restored: ())");
         let partitions = Partitions::from(memory);
-        let state = Self::recover_heap_from_managed_memory(&partitions.get(PartitionType::Heap.memory_id()));
+        let mut state = Self::recover_heap_from_managed_memory(&partitions.get(PartitionType::Heap.memory_id()));
         let accounts_db = AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(
             partitions.get(PartitionType::Accounts.memory_id()),
         ));
         // Replace the default accountsdb created by `serde` with the one from stable memory.
-        let _deserialized_accounts_db = state.accounts_store.borrow_mut().replace_accounts_db(accounts_db);
-        state.partitions_maybe.replace(PartitionsMaybe::Partitions(partitions));
-        println!("END   state::from<DefaultMemoryImpl>: ()");
+        let _deserialized_accounts_db = state.accounts_store.replace_accounts_db(accounts_db);
+        state.partitions_maybe = PartitionsMaybe::Partitions(partitions);
+        println!("END   state::new_restored: ()");
         state
     }
 }
@@ -145,9 +144,9 @@ impl From<DefaultMemoryImpl> for State {
 impl StableState for State {
     fn encode(&self) -> Vec<u8> {
         Candid((
-            self.accounts_store.borrow().encode(),
-            self.assets.borrow().encode(),
-            self.tvl_state.borrow().encode(),
+            self.accounts_store.encode(),
+            self.assets.encode(),
+            self.tvl_state.encode(),
         ))
         .into_bytes()
         .unwrap()
@@ -171,12 +170,12 @@ impl StableState for State {
         // let tvl_state = TvlState::decode(tvl_state_bytes)?;
 
         Ok(State {
-            accounts_store: RefCell::new(AccountsStore::decode(account_store_bytes)?),
-            assets: RefCell::new(assets),
-            asset_hashes: RefCell::new(asset_hashes),
-            performance: RefCell::new(performance),
-            partitions_maybe: RefCell::new(PartitionsMaybe::None(DefaultMemoryImpl::default())),
-            tvl_state: RefCell::new(tvl_state),
+            accounts_store: AccountsStore::decode(account_store_bytes)?,
+            assets,
+            asset_hashes,
+            performance,
+            partitions_maybe: PartitionsMaybe::None(DefaultMemoryImpl::default()),
+            tvl_state,
         })
     }
 }

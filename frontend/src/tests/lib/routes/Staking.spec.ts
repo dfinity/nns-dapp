@@ -18,10 +18,7 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import {
-  mockSnsNeuron,
-  snsNervousSystemParametersMock,
-} from "$tests/mocks/sns-neurons.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { StakingPo } from "$tests/page-objects/Staking.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -244,6 +241,7 @@ describe("Staking", () => {
             symbol: snsTokenSymbol,
             fee: snsTransactionFee,
           },
+          neuronMinimumStakeE8s: snsMinimumStakeE8s,
         },
       ]);
       snsNeuronsStore.setNeurons({
@@ -261,10 +259,6 @@ describe("Staking", () => {
       vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([
         mockSnsNeuron,
       ]);
-      vi.spyOn(snsGovernanceApi, "nervousSystemParameters").mockResolvedValue({
-        ...snsNervousSystemParametersMock,
-        neuron_minimum_stake_e8s: [snsMinimumStakeE8s],
-      });
     });
 
     it("should open SNS stake neuron modal", async () => {
@@ -373,8 +367,12 @@ describe("Staking", () => {
       ).toBe("0.00123000");
 
       await modal.getTransactionFormPo().enterAmount(1);
+      expect(await modal.getTransactionFormPo().isContinueButtonEnabled()).toBe(
+        true
+      );
       await modal.getTransactionFormPo().clickContinue();
 
+      expect(await modal.getTransactionReviewPo().isPresent()).toBe(true);
       expect(await modal.getTransactionReviewPo().getDestinationAddress()).toBe(
         `Subaccount of ${snsGovernanceIdText}`
       );

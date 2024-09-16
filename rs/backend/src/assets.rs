@@ -1,7 +1,7 @@
 pub mod upload;
 use crate::arguments::{TemplateEngine, CANISTER_ARGUMENTS};
 use crate::metrics_encoder::MetricsEncoder;
-use crate::state::{State, STATE};
+use crate::state::{with_state, with_state_mut, State};
 use crate::stats::encode_metrics;
 use crate::StableState;
 use base64::{engine::general_purpose::STANDARD as BASE64_ENGINE, Engine};
@@ -234,12 +234,12 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
                 },
             }
         }
-        request_path => STATE.with(|s| {
+        request_path => with_state(|s| {
             let mut headers = security_headers();
-            let certificate_header = make_asset_certificate_header(&s.asset_hashes.borrow(), request_path);
+            let certificate_header = make_asset_certificate_header(&s.asset_hashes, request_path);
             headers.push(certificate_header);
 
-            match s.assets.borrow().get(request_path) {
+            match s.assets.get(request_path) {
                 Some((content_encoding, asset)) => {
                     headers.extend(asset.headers.clone());
                     if let Some(content_type) = content_type_of(request_path) {
@@ -349,18 +349,18 @@ pub fn hash_bytes(value: impl AsRef<[u8]>) -> Hash {
 
 /// Insert an asset into the state and update the certificates.
 pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
-    STATE.with(|state| {
+    with_state_mut(|state| {
         insert_asset_into_state(state, path, asset);
-        update_root_hash(&state.asset_hashes.borrow_mut());
+        update_root_hash(&state.asset_hashes);
     });
 }
 /// Insert an asset into the given state.
 ///
 /// Note:  This does NOT update the certificates.  To insert multiple assets, call
 ///        this repeatedly and then update the root hash.
-pub fn insert_asset_into_state<S: Into<String> + Clone>(state: &State, path: S, asset: Asset) {
-    let mut asset_hashes = state.asset_hashes.borrow_mut();
-    let mut assets = state.assets.borrow_mut();
+pub fn insert_asset_into_state<S: Into<String> + Clone>(state: &mut State, path: S, asset: Asset) {
+    let asset_hashes = &mut state.asset_hashes;
+    let assets = &mut state.assets;
     let path: String = path.into();
     let hash = hash_bytes(&asset.bytes);
     for alternate_path in Assets::alternate_paths(&path) {
@@ -401,7 +401,7 @@ pub fn insert_tar_xz(compressed: Vec<u8>) {
     let mut tar: tar::Archive<&[u8]> = tar::Archive::new(decompressed.as_ref());
     let arguments_html = CANISTER_ARGUMENTS.with(|args| args.borrow().to_html());
     let template_engine = CANISTER_ARGUMENTS.with(|args| TemplateEngine::new(&args.borrow().args));
-    STATE.with(|state| {
+    with_state_mut(|state| {
         for entry in tar.entries().expect("Failed to get entry from tarball.") {
             let mut entry = entry.expect("Invalid entry in tarball.");
 
@@ -443,7 +443,7 @@ pub fn insert_tar_xz(compressed: Vec<u8>) {
             insert_asset_into_state(state, name, Asset::new(bytes));
             num_assets += 1;
         }
-        update_root_hash(&state.asset_hashes.borrow_mut());
+        update_root_hash(&state.asset_hashes);
     });
     println!("Inserted {num_assets} assets.");
 }
