@@ -100,7 +100,7 @@
     if (neuron.state === NeuronState.Spawning) {
       return "--table-row-text-color: var(--text-description-tint); --elements-icons:var(--tertiary);";
     }
-    return "--elements-icons:var(--tertiary);";
+    return undefined;
   };
 </script>
 
