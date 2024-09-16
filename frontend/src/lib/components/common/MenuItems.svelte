@@ -1,6 +1,5 @@
 <script lang="ts">
   import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
   import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
