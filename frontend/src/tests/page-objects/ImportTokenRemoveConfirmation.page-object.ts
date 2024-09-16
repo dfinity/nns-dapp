@@ -14,4 +14,8 @@ export class ImportTokenRemoveConfirmationPo extends ConfirmationModalPo {
   getUniverseSummaryPo(): UniverseSummaryPo {
     return UniverseSummaryPo.under(this.root);
   }
+
+  getLedgerCanisterIdText(): Promise<string> {
+    return this.getText("ledger-canister-id");
+  }
 }

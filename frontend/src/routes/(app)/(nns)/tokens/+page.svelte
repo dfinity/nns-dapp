@@ -46,7 +46,8 @@
   import { compareTokensForTokensTable } from "$lib/utils/tokens-table.utils";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import ImportTokenRemoveConfirmation from "$lib/components/accounts/ImportTokenRemoveConfirmation.svelte";
-  import { isUserTokenData } from "../../../../lib/utils/user-token.utils";
+  import { isUserTokenData } from "$lib/utils/user-token.utils";
+  import { removeImportedTokens } from "$lib/services/imported-tokens.services";
 
   onMount(() => {
     loadCkBTCTokens();
@@ -206,6 +207,13 @@
     }
     if (detail.type === ActionType.Remove) {
       modal = { type: "imported-remove", data: detail.data };
+    }
+  };
+
+  const removeImportedToken = async () => {
+    // Just for type safety. This should never happen.
+    if (nonNullish(modal?.data.universeId)) {
+      await removeImportedTokens(modal.data.universeId);
     }
   };
 

@@ -21,7 +21,7 @@
   } from "$lib/utils/accounts.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { IconDots, Island, Spinner } from "@dfinity/gix-components";
-  import { Principal } from "@dfinity/principal";
+  import type { Principal } from "@dfinity/principal";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import type { Writable } from "svelte/store";
   import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
@@ -29,6 +29,7 @@
   import WalletMorePopover from "./WalletMorePopover.svelte";
   import { isImportedToken as checkImportedToken } from "$lib/utils/imported-tokens.utils";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { removeImportedTokens } from "$lib/services/imported-tokens.services";
   import ImportTokenRemoveConfirmation from "./ImportTokenRemoveConfirmation.svelte";
   import type { Universe } from "$lib/types/universe";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
@@ -166,6 +167,16 @@
   $: universe = $selectableUniversesStore.find(
     ({ canisterId }) => canisterId === ledgerCanisterId?.toText()
   );
+
+  const removeImportedToken = async () => {
+    // Just for type safety. This should never happen.
+    if (isNullish(ledgerCanisterId)) return;
+
+    const { success } = await removeImportedTokens(ledgerCanisterId);
+    if (success) {
+      goto(AppPath.Tokens);
+    }
+  };
 </script>
 
 <TestIdWrapper {testId}>
@@ -245,8 +256,8 @@
   {#if removeImportedTokenConfirmationVisible && nonNullish(universe)}
     <ImportTokenRemoveConfirmation
       {universe}
-      ledgerCanisterId={Principal.fromText(universe.canisterId)}
       on:nnsClose={() => (removeImportedTokenConfirmationVisible = false)}
+      on:nnsConfirm={removeImportedToken}
     />
   {/if}
 </TestIdWrapper>

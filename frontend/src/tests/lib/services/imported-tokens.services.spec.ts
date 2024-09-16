@@ -10,15 +10,16 @@ import {
   loadImportedTokens,
   removeImportedTokens,
 } from "$lib/services/imported-tokens.services";
-import {
-  failedImportedTokenLedgerIdsStore,
-  importedTokensStore,
-} from "$lib/stores/imported-tokens.store";
+import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { toastsStore as toastsStoreEntry } from "@dfinity/gix-components";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import {
+  busyStore,
+  toastsStore as toastsStoreEntry,
+} from "@dfinity/gix-components";
 import * as dfinityUtils from "@dfinity/utils";
 import { get } from "svelte/store";
 
@@ -45,8 +46,8 @@ describe("imported-tokens-services", () => {
     vi.clearAllMocks();
     resetIdentity();
     importedTokensStore.reset();
-    failedImportedTokenLedgerIdsStore.reset();
     toastsStoreEntry.reset();
+    busyStore.resetForTesting();
     vi.spyOn(console, "error").mockReturnValue();
     vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
   });
@@ -110,17 +111,11 @@ describe("imported-tokens-services", () => {
         importedTokens: [importedTokenDataA],
         certified: true,
       });
-      failedImportedTokenLedgerIdsStore.add(
-        importedTokenDataA.ledgerCanisterId.toString()
-      );
 
       expect(get(importedTokensStore)).toEqual({
         importedTokens: [importedTokenDataA],
         certified: true,
       });
-      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([
-        importedTokenDataA.ledgerCanisterId.toText(),
-      ]);
 
       await loadImportedTokens();
 
@@ -128,7 +123,6 @@ describe("imported-tokens-services", () => {
         importedTokens: undefined,
         certified: undefined,
       });
-      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([]);
     });
 
     it("should handle ignoreAccountNotFoundError parameter (no error toast, no imported tokens)", async () => {
@@ -137,21 +131,12 @@ describe("imported-tokens-services", () => {
       vi.spyOn(importedTokensApi, "getImportedTokens").mockRejectedValue(
         accountNotFoundError
       );
-      importedTokensStore.set({
-        importedTokens: [importedTokenDataA],
-        certified: true,
-      });
-      failedImportedTokenLedgerIdsStore.add(
-        importedTokenDataA.ledgerCanisterId.toString()
-      );
+
       expect(spyToastError).toBeCalledTimes(0);
       expect(get(importedTokensStore)).toEqual({
-        importedTokens: [importedTokenDataA],
-        certified: true,
+        importedTokens: undefined,
+        certified: undefined,
       });
-      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([
-        importedTokenDataA.ledgerCanisterId.toText(),
-      ]);
 
       // default = ignoreAccountNotFoundError: false
       await loadImportedTokens();
@@ -170,7 +155,6 @@ describe("imported-tokens-services", () => {
         importedTokens: [],
         certified: true,
       });
-      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([]);
     });
   });
 
@@ -292,12 +276,15 @@ describe("imported-tokens-services", () => {
       const spySetImportedTokens = vi
         .spyOn(importedTokensApi, "setImportedTokens")
         .mockResolvedValue(undefined);
+      importedTokensStore.set({
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+        certified: true,
+      });
       expect(spySetImportedTokens).toBeCalledTimes(0);
 
-      const { success } = await removeImportedTokens({
-        tokensToRemove: [importedTokenDataA],
-        importedTokens: [importedTokenDataA, importedTokenDataB],
-      });
+      const { success } = await removeImportedTokens(
+        importedTokenDataA.ledgerCanisterId
+      );
 
       expect(success).toEqual(true);
       expect(spySetImportedTokens).toBeCalledTimes(1);
@@ -307,23 +294,36 @@ describe("imported-tokens-services", () => {
       });
     });
 
-    it("should remove multiple tokens", async () => {
-      const spySetImportedTokens = vi
+    it("should display busy store", async () => {
+      let resolveSetImportedTokens;
+      const spyOnSetImportedTokens = vi
         .spyOn(importedTokensApi, "setImportedTokens")
-        .mockResolvedValue(undefined);
-      expect(spySetImportedTokens).toBeCalledTimes(0);
-
-      const { success } = await removeImportedTokens({
-        tokensToRemove: [importedTokenDataA, importedTokenDataB],
+        .mockImplementation(
+          () =>
+            new Promise<void>((resolve) => (resolveSetImportedTokens = resolve))
+        );
+      importedTokensStore.set({
         importedTokens: [importedTokenDataA, importedTokenDataB],
+        certified: true,
       });
+      expect(spyOnSetImportedTokens).toBeCalledTimes(0);
+      expect(get(busyStore)).toEqual([]);
 
-      expect(success).toEqual(true);
-      expect(spySetImportedTokens).toBeCalledTimes(1);
-      expect(spySetImportedTokens).toBeCalledWith({
-        identity: mockIdentity,
-        importedTokens: [],
-      });
+      removeImportedTokens(importedTokenDataA.ledgerCanisterId);
+      await runResolvedPromises();
+
+      expect(spyOnSetImportedTokens).toBeCalledTimes(1);
+      expect(get(busyStore)).toEqual([
+        {
+          initiator: "import-token-removing",
+          text: "Removing imported token...",
+        },
+      ]);
+
+      resolveSetImportedTokens();
+      await runResolvedPromises();
+
+      expect(get(busyStore)).toEqual([]);
     });
 
     it("should update the store", async () => {
@@ -345,10 +345,7 @@ describe("imported-tokens-services", () => {
         certified: true,
       });
 
-      await removeImportedTokens({
-        tokensToRemove: [importedTokenDataA],
-        importedTokens: [importedTokenDataA, importedTokenDataB],
-      });
+      await removeImportedTokens(importedTokenDataA.ledgerCanisterId);
 
       expect(spyGetImportedTokens).toBeCalledTimes(2);
       expect(get(importedTokensStore)).toEqual({
@@ -365,12 +362,12 @@ describe("imported-tokens-services", () => {
       vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
         imported_tokens: [importedTokenB],
       });
-      expect(spyToastSuccess).not.toBeCalled();
-
-      await removeImportedTokens({
-        tokensToRemove: [importedTokenDataA],
+      importedTokensStore.set({
         importedTokens: [importedTokenDataA, importedTokenDataB],
+        certified: true,
       });
+      expect(spyToastSuccess).not.toBeCalled();
+      await removeImportedTokens(importedTokenDataA.ledgerCanisterId);
 
       expect(spyToastSuccess).toBeCalledTimes(1);
       expect(spyToastSuccess).toBeCalledWith({
@@ -383,12 +380,14 @@ describe("imported-tokens-services", () => {
       vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
         testError
       );
-      expect(spyToastError).not.toBeCalled();
-
-      const { success } = await removeImportedTokens({
-        tokensToRemove: [importedTokenDataA],
+      importedTokensStore.set({
         importedTokens: [importedTokenDataA, importedTokenDataB],
+        certified: true,
       });
+      expect(spyToastError).not.toBeCalled();
+      const { success } = await removeImportedTokens(
+        importedTokenDataA.ledgerCanisterId
+      );
 
       expect(success).toEqual(false);
       expect(spyToastError).toBeCalledTimes(1);
