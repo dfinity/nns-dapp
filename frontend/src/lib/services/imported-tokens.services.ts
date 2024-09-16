@@ -10,6 +10,7 @@ import type { ImportedTokens } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
@@ -20,6 +21,7 @@ import {
 } from "$lib/utils/imported-tokens.utils";
 import type { Principal } from "@dfinity/principal";
 import { isNullish } from "@dfinity/utils";
+import { get } from "svelte/store";
 import { queryAndUpdate } from "./utils.services";
 
 /** Load imported tokens from the `nns-dapp` backend and update the `importedTokensStore` store.
@@ -172,35 +174,38 @@ export const addIndexCanister = async ({
  *  - Displays a success toast if the operation is successful.
  *  - Displays an error toast if the operation fails.
  */
-export const removeImportedTokens = async ({
-  tokensToRemove,
-  importedTokens,
-}: {
-  tokensToRemove: ImportedTokenData[];
-  importedTokens: ImportedTokenData[];
-}): Promise<{ success: boolean }> => {
-  // Compare imported tokens by their ledgerCanisterId because they should be unique.
-  const ledgerIdsToRemove = new Set(
-    tokensToRemove.map(({ ledgerCanisterId }) => ledgerCanisterId.toText())
-  );
-  const tokens = importedTokens.filter(
-    ({ ledgerCanisterId }) => !ledgerIdsToRemove.has(ledgerCanisterId.toText())
-  );
-  const { err } = await saveImportedToken({ tokens });
-
-  if (isNullish(err)) {
-    await loadImportedTokens();
-    toastsSuccess({
-      labelKey: "tokens.remove_imported_token_success",
+export const removeImportedTokens = async (
+  ledgerCanisterId: Principal
+): Promise<{ success: boolean }> => {
+  try {
+    startBusy({
+      initiator: "import-token-removing",
+      labelKey: "import_token.removing",
     });
 
-    return { success: true };
+    const remainingTokens = (
+      get(importedTokensStore).importedTokens ?? []
+    ).filter(
+      ({ ledgerCanisterId: id }) => id.toText() !== ledgerCanisterId.toText()
+    );
+    const { err } = await saveImportedToken({ tokens: remainingTokens });
+
+    if (isNullish(err)) {
+      await loadImportedTokens();
+      toastsSuccess({
+        labelKey: "tokens.remove_imported_token_success",
+      });
+
+      return { success: true };
+    }
+
+    toastsError({
+      labelKey: "error__imported_tokens.remove_imported_token",
+      err,
+    });
+
+    return { success: false };
+  } finally {
+    stopBusy("import-token-removing");
   }
-
-  toastsError({
-    labelKey: "error__imported_tokens.remove_imported_token",
-    err,
-  });
-
-  return { success: false };
 };
