@@ -29,7 +29,6 @@
   import WalletMorePopover from "./WalletMorePopover.svelte";
   import { isImportedToken as checkImportedToken } from "$lib/utils/imported-tokens.utils";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { removeImportedTokens } from "$lib/services/imported-tokens.services";
   import ImportTokenRemoveConfirmation from "./ImportTokenRemoveConfirmation.svelte";
   import type { Universe } from "$lib/types/universe";
