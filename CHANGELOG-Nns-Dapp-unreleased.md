@@ -44,6 +44,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* Removed unused `pocket-ic` dependency.
+
 #### Fixed
 
 #### Security
