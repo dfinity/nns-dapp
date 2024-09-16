@@ -16,7 +16,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore } from "@dfinity/gix-components";
-import { Principal } from "@dfinity/principal";
+import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
 describe("ImportTokenRemoveConfirmation", () => {
