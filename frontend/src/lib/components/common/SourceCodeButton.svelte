@@ -15,7 +15,6 @@
 </a>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
   .source-code-button {
     display: flex;
     align-items: center;
