@@ -670,7 +670,7 @@ describe("Tokens route", () => {
     describe("failed imported tokens", () => {
       // "ZTOKEN1" token.
       const failedTokenLedgerIdText = importedToken1Id.toText();
-      const failedTokenHash = "xlmdg-...rh-oqe";
+      const failedTokenHash = "xlmdg-v...4rh-oqe";
 
       beforeEach(() => {
         resetIdentity();
@@ -719,7 +719,7 @@ describe("Tokens route", () => {
         expect(
           await failedTokenRow.getFailedTokenTooltipPo().getTooltipText()
         ).toEqual(
-          "The NNS dapp couldn’t load your token. Please try again later, or contact the developers."
+          "The NNS dapp couldn’t load an imported token. Please try again later, or contact the developers."
         );
       });
 
