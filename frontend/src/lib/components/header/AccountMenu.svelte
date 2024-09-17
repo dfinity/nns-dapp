@@ -2,7 +2,6 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ManageInternetIdentityButton from "$lib/components/header/ManageInternetIdentityButton.svelte";
   import SettingsButton from "$lib/components/header/SettingsButton.svelte";
-  import SourceCodeButton from "$lib/components/header/SourceCodeButton.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { i18n } from "$lib/stores/i18n";
   import AccountDetails from "./AccountDetails.svelte";
@@ -36,8 +35,6 @@
         <ThemeToggle />
 
         <ManageInternetIdentityButton />
-
-        <SourceCodeButton />
 
         <SettingsButton on:nnsLink={() => (visible = false)} />
 
