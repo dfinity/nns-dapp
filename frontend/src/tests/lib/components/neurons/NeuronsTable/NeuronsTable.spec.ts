@@ -473,6 +473,16 @@ describe("NeuronsTable", () => {
     );
   });
 
+  it("should render a different style for spawning neuron rows tooltip icon", async () => {
+    const po = renderComponent({ neurons: [neuron1, spawningNeuron] });
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getTableRowTooltipColorVariable()).toBe("");
+    expect(await rowPos[1].getTableRowTooltipColorVariable()).toBe(
+      "var(--table-row-text-color)"
+    );
+  });
+
   it("should render tags", async () => {
     const tags = ["Neuron's fund", "Hotkey control"];
     const po = renderComponent({
