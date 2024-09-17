@@ -1061,6 +1061,6 @@
     "link_to_dashboard": "https://dashboard.internetcomputer.org/canister/$canisterId",
     "add_index_canister": "Add Index Canister",
     "add_index_description": "Transaction history is not available. To see this token’s transaction history in the NNS dapp, you need to provide an index canister. <strong>Note:</strong> not all tokens have index canisters.",
-    "failed_tooltip": "The NNS dapp couldn’t load your token. Please try again later, or contact the developers."
+    "failed_tooltip": "The NNS dapp couldn’t load an imported token. Please try again later, or contact the developers."
   }
 }
