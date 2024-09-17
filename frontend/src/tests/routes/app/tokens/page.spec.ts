@@ -17,7 +17,10 @@ import {
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+import {
+  failedImportedTokenLedgerIdsStore,
+  importedTokensStore,
+} from "$lib/stores/imported-tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
@@ -47,6 +50,7 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AuthClient } from "@dfinity/auth-client";
 import { MinterNoNewUtxosError, type UpdateBalanceOk } from "@dfinity/ckbtc";
 import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
+import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
@@ -92,7 +96,9 @@ describe("Tokens route", () => {
     pending_utxos: [],
     required_confirmations: 0,
   });
-  const importedToken1Id = principal(100);
+  const importedToken1Id = Principal.fromText(
+    "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
+  );
   const importedToken1Metadata = {
     name: "ZTOKEN1",
     symbol: "ZTOKEN1",
@@ -106,6 +112,14 @@ describe("Tokens route", () => {
     fee: 4_000n,
     decimals: 6,
   } as IcrcTokenMetadata;
+  const importedToken1Data: ImportedTokenData = {
+    ledgerCanisterId: importedToken1Id,
+    indexCanisterId: principal(111),
+  };
+  const importedToken2Data: ImportedTokenData = {
+    ledgerCanisterId: importedToken2Id,
+    indexCanisterId: undefined,
+  };
 
   const renderPage = async () => {
     const { container } = render(TokensRoute);
@@ -122,6 +136,7 @@ describe("Tokens route", () => {
       tokensStore.reset();
       defaultIcrcCanistersStore.reset();
       importedTokensStore.reset();
+      failedImportedTokenLedgerIdsStore.reset();
       ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
       ckETHBalanceUlps = ckETHDefaultBalanceUlps;
       tetrisBalanceE8s = tetrisDefaultBalanceE8s;
@@ -158,6 +173,9 @@ describe("Tokens route", () => {
             [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
             [ledgerCanisterIdTetris.toText()]: tetrisBalanceE8s,
             [ledgerCanisterIdPacman.toText()]: pacmanBalanceE8s,
+            // imported tokens
+            [importedToken1Id.toText()]: 10n,
+            [importedToken2Id.toText()]: 0n,
           };
           if (isNullish(balancesMap[canisterId.toText()])) {
             throw new Error(
@@ -567,16 +585,22 @@ describe("Tokens route", () => {
         });
 
         describe("imported tokens", () => {
-          const importedToken1Data: ImportedTokenData = {
-            ledgerCanisterId: importedToken1Id,
             indexCanisterId: principal(111),
-          };
-          const importedToken2Data: ImportedTokenData = {
-            ledgerCanisterId: importedToken2Id,
-            indexCanisterId: undefined,
-          };
-
           beforeEach(() => {
+            // Add 2 imported tokens
+            tokensStore.setToken({
+              canisterId: importedToken1Id,
+              token: importedToken1Metadata,
+            });
+            tokensStore.setToken({
+              canisterId: importedToken2Id,
+              token: importedToken2Metadata,
+            });
+            importedTokensStore.set({
+              importedTokens: [importedToken1Data, importedToken2Data],
+              certified: true,
+            });
+
             vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
               async ({ canisterId }) => {
                 const balancesMap = {
@@ -599,20 +623,6 @@ describe("Tokens route", () => {
                 return balancesMap[canisterId.toText()];
               }
             );
-
-            // Add 2 imported tokens
-            tokensStore.setToken({
-              canisterId: importedToken1Id,
-              token: importedToken1Metadata,
-            });
-            tokensStore.setToken({
-              canisterId: importedToken2Id,
-              token: importedToken2Metadata,
-            });
-            importedTokensStore.set({
-              importedTokens: [importedToken1Data, importedToken2Data],
-              certified: true,
-            });
           });
 
           it("should display imported tokens after important with balance", async () => {
