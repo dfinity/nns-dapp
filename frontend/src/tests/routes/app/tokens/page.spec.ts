@@ -106,7 +106,8 @@ describe("Tokens route", () => {
     fee: 4_000n,
     decimals: 6,
   } as IcrcTokenMetadata;
-  const importedToken2Id = principal(101);
+  const importedToken2IdText = "fzkl3-c3fae";
+  const importedToken2Id = Principal.fromText(importedToken2IdText);
   const importedToken2Metadata = {
     name: "ATOKEN2",
     symbol: "ATOKEN2",
@@ -687,8 +688,10 @@ describe("Tokens route", () => {
         const tokensPagePo = po.getTokensPagePo();
         const tokenNames = await tokensPagePo.getTokenNames();
 
-        expect(tokenNames.includes("ATOKEN2")).toEqual(true);
+        // failed
         expect(tokenNames.includes(failedTokenHash)).toEqual(true);
+        // loaded
+        expect(tokenNames.includes("ATOKEN2")).toEqual(true);
       });
 
       it("should render multiple failed imported tokens", async () => {
@@ -698,7 +701,7 @@ describe("Tokens route", () => {
         const tokensPagePo = po.getTokensPagePo();
         const tokenNames = await tokensPagePo.getTokenNames();
 
-        expect(tokenNames.includes("xlmdg-...rh-oqe")).toEqual(true);
+        expect(tokenNames.includes(importedToken2IdText)).toEqual(true);
         expect(tokenNames.includes(failedTokenHash)).toEqual(true);
       });
 
@@ -712,7 +715,6 @@ describe("Tokens route", () => {
         expect(
           await failedTokenRow.getFailedLedgerCanisterHashPo().getFullText()
         ).toEqual(failedTokenLedgerIdText);
-
         expect(await failedTokenRow.hasUnavailableBalance()).toEqual(true);
         expect(
           await failedTokenRow.getFailedTokenTooltipPo().getTooltipText()
