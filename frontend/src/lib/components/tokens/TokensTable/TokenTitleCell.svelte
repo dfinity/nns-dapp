@@ -25,12 +25,7 @@
 <div class="title-logo-wrapper">
   <Logo src={rowData.logo} alt={rowData.title} size="medium" framed />
   {#if isUserTokenFailed(rowData)}
-    <Hash
-      id="failed-ledger-canister-id"
-      text={`${rowData.universeId.toText()}`}
-      tagName="span"
-      tooltipTop
-    />
+    <Hash text={`${rowData.universeId.toText()}`} tagName="span" tooltipTop />
   {:else}
     <div class="title-wrapper">
       <h5 data-tid="project-name">{rowData.title}</h5>

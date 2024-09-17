@@ -668,10 +668,6 @@ describe("Tokens route", () => {
     });
 
     describe("failed imported tokens", () => {
-      // "ZTOKEN1" token.
-      const failedTokenLedgerIdText = importedToken1Id.toText();
-      const failedTokenHash = "xlmdg-v...4rh-oqe";
-
       beforeEach(() => {
         resetIdentity();
 
@@ -680,7 +676,7 @@ describe("Tokens route", () => {
           importedTokens: [importedToken1Data, importedToken2Data],
           certified: true,
         });
-        failedImportedTokenLedgerIdsStore.add(failedTokenLedgerIdText);
+        failedImportedTokenLedgerIdsStore.add(importedToken1Id.toText());
       });
 
       it("should render failed imported tokens in the table", async () => {
@@ -696,7 +692,7 @@ describe("Tokens route", () => {
           "ATOKEN2", // loaded imported token
           "Pacman",
           "Tetris",
-          "xlmdg-v...4rh-oqe", // failed imported token
+          importedToken1Id.toText(), // failed imported token
         ]);
       });
 
@@ -712,10 +708,10 @@ describe("Tokens route", () => {
           "ckBTC",
           "ckETH",
           "ckUSDC",
-          "fzkl3-c3fae", // failed imported token
+          importedToken2Id.toText(),
           "Pacman",
           "Tetris",
-          "xlmdg-v...4rh-oqe", // failed imported token
+          importedToken1Id.toText(),
         ]);
       });
 
@@ -724,11 +720,11 @@ describe("Tokens route", () => {
         const tokensPagePo = po.getTokensPagePo();
         const failedTokenRow = await tokensPagePo
           .getTokensTable()
-          .getRowByName(failedTokenHash);
+          .getRowByName(importedToken1Id.toText());
 
         expect(
           await failedTokenRow.getFailedLedgerCanisterHashPo().getFullText()
-        ).toEqual(failedTokenLedgerIdText);
+        ).toEqual(importedToken1Id.toText());
         expect(await failedTokenRow.hasUnavailableBalance()).toEqual(true);
         expect(
           await failedTokenRow.getFailedTokenTooltipPo().getTooltipText()
@@ -753,7 +749,7 @@ describe("Tokens route", () => {
         };
 
         for (const rowPo of rowsPos) {
-          if ((await rowPo.getProjectName()) !== failedTokenHash) {
+          if ((await rowPo.getProjectName()) !== importedToken1Id.toText()) {
             await checkForFailedUI(rowPo);
           }
         }

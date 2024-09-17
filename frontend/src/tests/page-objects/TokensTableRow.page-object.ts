@@ -51,7 +51,7 @@ export class TokensTableRowPo extends ResponsiveTableRowPo {
     // Loaded or failed project name.
     return nonNullish(loadedProjectName)
       ? loadedProjectName.trim()
-      : (await this.getFailedLedgerCanisterHashPo().getText())?.trim();
+      : (await this.getFailedLedgerCanisterHashPo().getFullText())?.trim();
   }
 
   getBalance(): Promise<string> {
