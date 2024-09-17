@@ -1,10 +1,10 @@
 <script lang="ts">
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+  import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
   import SnsNeuronTransactionModal from "$lib/modals/sns/neurons/SnsNeuronTransactionModal.svelte";
   import { stakeNeuron } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type {
     NewTransaction,
