@@ -42,6 +42,7 @@ import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { mockCkUSDCToken } from "$tests/mocks/tokens.mock";
 import { TokensRoutePo } from "$tests/page-objects/TokensRoute.page-object";
+import type { TokensTableRowPo } from "$tests/page-objects/TokensTableRow.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
@@ -585,7 +586,6 @@ describe("Tokens route", () => {
         });
 
         describe("imported tokens", () => {
-            indexCanisterId: principal(111),
           beforeEach(() => {
             // Add 2 imported tokens
             tokensStore.setToken({
@@ -663,6 +663,82 @@ describe("Tokens route", () => {
             ]);
           });
         });
+      });
+    });
+
+    describe("failed imported tokens", () => {
+      // "ZTOKEN1" token.
+      const failedTokenLedgerIdText = importedToken1Id.toText();
+      const failedTokenHash = "xlmdg-...rh-oqe";
+
+      beforeEach(() => {
+        resetIdentity();
+
+        // Add 2 imported tokens
+        importedTokensStore.set({
+          importedTokens: [importedToken1Data, importedToken2Data],
+          certified: true,
+        });
+        failedImportedTokenLedgerIdsStore.add(failedTokenLedgerIdText);
+      });
+
+      it("should render failed imported tokens in the table", async () => {
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+
+        expect(await tokensPagePo.getTokenNames()).toContain("ATOKEN2");
+        expect(await tokensPagePo.getTokenNames()).toContain(failedTokenHash);
+      });
+
+      it("should render multiple failed imported tokens", async () => {
+        failedImportedTokenLedgerIdsStore.add(importedToken2Id.toText());
+
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+
+        expect(await tokensPagePo.getTokenNames()).toContain("fzkl3-c3fae");
+        expect(await tokensPagePo.getTokenNames()).toContain(failedTokenHash);
+      });
+
+      it("should display failed imported token UI", async () => {
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+        const failedTokenRow = await tokensPagePo
+          .getTokensTable()
+          .getRowByName(failedTokenHash);
+
+        // expect(
+        //   await failedTokenRow.getFailedLedgerCanisterHashPo().getFullText()
+        // ).toEqual(failedTokenLedgerIdText);
+
+        expect(await failedTokenRow.hasUnavailableBalance()).toEqual(true);
+        expect(
+          await failedTokenRow.getFailedTokenTooltipPo().getTooltipText()
+        ).toEqual(
+          "The NNS dapp couldn’t load your token. Please try again later, or contact the developers."
+        );
+      });
+
+      it("should not display failed token UI for not failed tokens", async () => {
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+        const rowsPos = await tokensPagePo.getTokensTable().getRows();
+
+        const checkForFailedUI = async (rowPo: TokensTableRowPo) => {
+          expect(
+            await rowPo.getFailedLedgerCanisterHashPo().isPresent()
+          ).toEqual(false);
+          expect(await rowPo.hasUnavailableBalance()).toEqual(false);
+          expect(await rowPo.getFailedTokenTooltipPo().isPresent()).toEqual(
+            false
+          );
+        };
+
+        for (const rowPo of rowsPos) {
+          if ((await rowPo.getProjectName()) !== failedTokenHash) {
+            await checkForFailedUI(rowPo);
+          }
+        }
       });
     });
 
