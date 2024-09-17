@@ -1,8 +1,8 @@
 import UNKNOWN_LOGO from "$lib/assets/question-mark.svg";
-import {
-  type UserTokenData,
-  type UserTokenFailed,
-  type UserTokenLoading,
+import type {
+  UserTokenData,
+  UserTokenFailed,
+  UserTokenLoading,
 } from "$lib/types/tokens-page";
 import { Principal } from "@dfinity/principal";
 
