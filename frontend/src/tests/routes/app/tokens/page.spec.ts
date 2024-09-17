@@ -688,10 +688,16 @@ describe("Tokens route", () => {
         const tokensPagePo = po.getTokensPagePo();
         const tokenNames = await tokensPagePo.getTokenNames();
 
-        // failed
-        expect(tokenNames.includes(failedTokenHash)).toEqual(true);
-        // loaded
-        expect(tokenNames.includes("ATOKEN2")).toEqual(true);
+        expect(tokenNames).toEqual([
+          "Internet Computer",
+          "ckBTC",
+          "ckETH",
+          "ckUSDC",
+          "ATOKEN2", // loaded imported token
+          "Pacman",
+          "Tetris",
+          "xlmdg-v...4rh-oqe", // failed imported token
+        ]);
       });
 
       it("should render multiple failed imported tokens", async () => {
@@ -701,8 +707,16 @@ describe("Tokens route", () => {
         const tokensPagePo = po.getTokensPagePo();
         const tokenNames = await tokensPagePo.getTokenNames();
 
-        expect(tokenNames.includes(importedToken2IdText)).toEqual(true);
-        expect(tokenNames.includes(failedTokenHash)).toEqual(true);
+        expect(tokenNames).toEqual([
+          "Internet Computer",
+          "ckBTC",
+          "ckETH",
+          "ckUSDC",
+          "fzkl3-c3fae", // failed imported token
+          "Pacman",
+          "Tetris",
+          "xlmdg-v...4rh-oqe", // failed imported token
+        ]);
       });
 
       it("should display failed imported token UI", async () => {
