@@ -22,6 +22,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Changes for cleaning up the stable structure migration.
 * Move Canisters button from sidebar to account menu.
 * Move GitHub button from account menu to sidebar.
+* Reduce calls to `sns-governance` canister by getting `nervous_system_parameters` from the aggregator instead.
 * Move theme toggle from account menu to sidebar.
 
 #### Deprecated

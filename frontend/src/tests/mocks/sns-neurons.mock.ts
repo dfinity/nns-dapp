@@ -4,7 +4,6 @@ import {
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
 import type { ProjectNeuronStore } from "$lib/stores/sns-neurons.store";
-import type { SnsParameters } from "$lib/stores/sns-parameters.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import { convertNervousSystemParameters } from "$lib/utils/sns-aggregator-converters.utils";
@@ -27,7 +26,6 @@ import {
 } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "./auth.store.mock";
-import { rootCanisterIdMock } from "./sns.api.mock";
 
 export const mockSnsNeuronTimestampSeconds = 3600 * 24 * 6;
 
@@ -181,24 +179,6 @@ export const snsNervousSystemParametersMock: SnsNervousSystemParameters =
   convertNervousSystemParameters(
     aggregatorSnsMockDto.nervous_system_parameters
   );
-
-export const buildMockSnsParametersStore =
-  (notDefined = false) =>
-  (
-    run: Subscriber<{ [rootCanisterId: string]: SnsParameters }>
-  ): (() => void) => {
-    run(
-      notDefined
-        ? undefined
-        : {
-            [rootCanisterIdMock.toText()]: {
-              parameters: snsNervousSystemParametersMock,
-              certified: true,
-            },
-          }
-    );
-    return () => undefined;
-  };
 
 export const allSnsNeuronPermissions = Int32Array.from(
   enumValues(SnsNeuronPermissionType)

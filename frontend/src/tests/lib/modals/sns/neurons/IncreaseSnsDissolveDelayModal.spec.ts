@@ -2,7 +2,6 @@ import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/neurons/IncreaseSnsDissolveDelayModal.svelte";
 import * as authServices from "$lib/services/auth.services";
-import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
 import { page } from "$mocks/$app/stores";
 import {
@@ -225,11 +224,5 @@ describe("IncreaseSnsDissolveDelayModal", () => {
         `${secondsToDays(Number(maxValue))}`
       )
     );
-  });
-
-  it("should trigger `loadSnsParameters`", async () => {
-    await renderIncreaseDelayModal(neuron);
-
-    expect(loadSnsParameters).toBeCalled();
   });
 });

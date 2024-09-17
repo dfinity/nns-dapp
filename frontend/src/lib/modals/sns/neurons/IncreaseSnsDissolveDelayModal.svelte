@@ -1,9 +1,7 @@
 <script lang="ts">
   import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
   import SetSnsDissolveDelay from "$lib/components/sns-neurons/SetSnsDissolveDelay.svelte";
-  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { updateDelay } from "$lib/services/sns-neurons.services";
-  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
@@ -13,8 +11,8 @@
   } from "$lib/utils/sns-neuron.utils";
   import {
     WizardModal,
-    type WizardSteps,
     type WizardStep,
+    type WizardSteps,
   } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
@@ -45,10 +43,6 @@
       getSnsDissolvingTimeInSeconds(neuron) ??
       0n
   );
-
-  $: if ($snsOnlyProjectStore !== undefined) {
-    loadSnsParameters($snsOnlyProjectStore);
-  }
 
   const dispatcher = createEventDispatcher();
   const goNext = () => {

@@ -1,8 +1,8 @@
 <script lang="ts">
   import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
   import Hash from "$lib/components/ui/Hash.svelte";
+  import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
