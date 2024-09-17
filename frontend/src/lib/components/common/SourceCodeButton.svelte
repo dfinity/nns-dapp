@@ -15,7 +15,9 @@
 </a>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
   .source-code-button {
+    @include fonts.small;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -23,7 +25,6 @@
     padding: var(--padding);
     border-radius: var(--border-radius);
     color: var(--text-color);
-    font-size: var(--font-size-small);
     text-decoration: none;
 
     background: var(--sidebar-button-background);
