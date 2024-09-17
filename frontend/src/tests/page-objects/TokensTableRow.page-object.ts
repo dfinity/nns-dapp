@@ -1,5 +1,6 @@
 import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { nonNullish } from "@dfinity/utils";
 import { AmountDisplayPo } from "./AmountDisplay.page-object";
 import { HashPo } from "./Hash.page-object";
 import { TooltipPo } from "./Tooltip.page-object";
@@ -45,8 +46,12 @@ export class TokensTableRowPo extends ResponsiveTableRowPo {
       .map((el) => new TokensTableRowPo(el));
   }
 
-  getProjectName(): Promise<string> {
-    return this.getText("project-name");
+  async getProjectName(): Promise<string> {
+    const loadedProjectName = await this.getText("project-name");
+    // Loaded or failed project name.
+    return nonNullish(loadedProjectName)
+      ? loadedProjectName
+      : this.getFailedLedgerCanisterHashPo().getText();
   }
 
   getBalance(): Promise<string> {
@@ -66,7 +71,7 @@ export class TokensTableRowPo extends ResponsiveTableRowPo {
   }
 
   getFailedTokenTooltipPo(): TooltipPo {
-    return TooltipPo.under(this.root);
+    return TooltipPo.under(this.root.byTestId("failed-token-info"));
   }
 
   async waitForBalance(): Promise<void> {

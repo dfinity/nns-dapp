@@ -26,6 +26,7 @@
   <Logo src={rowData.logo} alt={rowData.title} size="medium" framed />
   {#if isUserTokenFailed(rowData)}
     <Hash
+      id="failed-ledger-canister-id"
       testId="failed-ledger-canister-id"
       text={`${rowData.universeId.toText()}`}
       tagName="span"
@@ -46,13 +47,11 @@
     <Tag testId="imported-token-tag">{$i18n.import_token.imported_token}</Tag>
   {/if}
   {#if isUserTokenFailed(rowData)}
-    <Tooltip
-      id="failed-imported-token"
-      testId="failed-imported-token-tooltip"
-      text={$i18n.import_token.failed_tooltip}
-    >
-      <div class="failed-token-icon"><IconError size="20px" /></div>
-    </Tooltip>
+    <div data-tid="failed-token-info" class="failed-token-info">
+      <Tooltip id="failed-token-info" text={$i18n.import_token.failed_tooltip}>
+        <IconError size="20px" />
+      </Tooltip>
+    </div>
   {/if}
 </div>
 
@@ -75,7 +74,7 @@
     }
   }
 
-  .failed-token-icon {
+  .failed-token-info {
     color: var(--orange);
     line-height: 0;
   }
