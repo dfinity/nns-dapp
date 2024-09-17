@@ -12,7 +12,6 @@
   import { i18n } from "$lib/stores/i18n";
   import Hash from "$lib/components/ui/Hash.svelte";
   import { isUserTokenFailed } from "$lib/utils/user-token.utils";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let rowData: UserTokenData | UserTokenLoading | UserTokenFailed;
 
@@ -26,15 +25,13 @@
 <div class="title-logo-wrapper">
   <Logo src={rowData.logo} alt={rowData.title} size="medium" framed />
   {#if isUserTokenFailed(rowData)}
-    <TestIdWrapper testId="failed-ledger-canister-id">
-      <Hash
-        id="failed-ledger-canister-id"
-        text={`${rowData.universeId.toText()}`}
-        tagName="span"
-        splitLength={6}
-        tooltipTop
-      />
-    </TestIdWrapper>
+    <Hash
+      id="failed-ledger-canister-id"
+      text={`${rowData.universeId.toText()}`}
+      tagName="span"
+      splitLength={6}
+      tooltipTop
+    />
   {:else}
     <div class="title-wrapper">
       <h5 data-tid="project-name">{rowData.title}</h5>

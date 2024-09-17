@@ -67,7 +67,7 @@ export class TokensTableRowPo extends ResponsiveTableRowPo {
   }
 
   getFailedLedgerCanisterHashPo(): HashPo {
-    return new HashPo(this.root.byTestId("failed-ledger-canister-id"));
+    return HashPo.under(this.root);
   }
 
   getFailedTokenTooltipPo(): TooltipPo {
