@@ -50,8 +50,8 @@ export class TokensTableRowPo extends ResponsiveTableRowPo {
     const loadedProjectName = await this.getText("project-name");
     // Loaded or failed project name.
     return nonNullish(loadedProjectName)
-      ? loadedProjectName
-      : this.getFailedLedgerCanisterHashPo().getText();
+      ? loadedProjectName.trim()
+      : (await this.getFailedLedgerCanisterHashPo().getText())?.trim();
   }
 
   getBalance(): Promise<string> {
