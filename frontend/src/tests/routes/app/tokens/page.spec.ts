@@ -685,9 +685,10 @@ describe("Tokens route", () => {
       it("should render failed imported tokens in the table", async () => {
         const po = await renderPage();
         const tokensPagePo = po.getTokensPagePo();
+        const tokenNames = await tokensPagePo.getTokenNames();
 
-        expect(await tokensPagePo.getTokenNames()).toContain("ATOKEN2");
-        expect(await tokensPagePo.getTokenNames()).toContain(failedTokenHash);
+        expect(tokenNames.includes("ATOKEN2")).toEqual(true);
+        expect(tokenNames.includes(failedTokenHash)).toEqual(true);
       });
 
       it("should render multiple failed imported tokens", async () => {
@@ -695,9 +696,10 @@ describe("Tokens route", () => {
 
         const po = await renderPage();
         const tokensPagePo = po.getTokensPagePo();
+        const tokenNames = await tokensPagePo.getTokenNames();
 
-        expect(await tokensPagePo.getTokenNames()).toContain("fzkl3-c3fae");
-        expect(await tokensPagePo.getTokenNames()).toContain(failedTokenHash);
+        expect(tokenNames.includes("xlmdg-...rh-oqe")).toEqual(true);
+        expect(tokenNames.includes(failedTokenHash)).toEqual(true);
       });
 
       it("should display failed imported token UI", async () => {
@@ -707,9 +709,9 @@ describe("Tokens route", () => {
           .getTokensTable()
           .getRowByName(failedTokenHash);
 
-        // expect(
-        //   await failedTokenRow.getFailedLedgerCanisterHashPo().getFullText()
-        // ).toEqual(failedTokenLedgerIdText);
+        expect(
+          await failedTokenRow.getFailedLedgerCanisterHashPo().getFullText()
+        ).toEqual(failedTokenLedgerIdText);
 
         expect(await failedTokenRow.hasUnavailableBalance()).toEqual(true);
         expect(
