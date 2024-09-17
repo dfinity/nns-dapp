@@ -29,7 +29,6 @@
       id="failed-ledger-canister-id"
       text={`${rowData.universeId.toText()}`}
       tagName="span"
-      splitLength={6}
       tooltipTop
     />
   {:else}
