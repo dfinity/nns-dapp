@@ -5,8 +5,10 @@
   import { nonNullish } from "@dfinity/utils";
   import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
   import { Tag } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
 
-  export let universe: Universe | undefined;
+  export let universe: Universe | undefined = undefined;
+  export let ledgerCanisterId: Principal;
 </script>
 
 <ConfirmationModal
@@ -18,7 +20,13 @@
   <div class="content">
     <h4>{$i18n.import_token.remove_confirmation_header}</h4>
     <div class="token">
-      {#if nonNullish(universe)}<UniverseSummary {universe} />{/if}
+      {#if nonNullish(universe)}
+        <UniverseSummary {universe} />
+      {:else}
+        <span class="value" data-tid="ledger-canister-id"
+          >{ledgerCanisterId.toText()}</span
+        >
+      {/if}
       <Tag>{$i18n.import_token.imported_token}</Tag>
     </div>
     <p class="description text_small">
