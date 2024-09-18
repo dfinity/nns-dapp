@@ -11,7 +11,6 @@
     ACTIONABLE_PROPOSALS_URL,
     isSelectedPath,
   } from "$lib/utils/navigation.utils";
-  import type { ComponentType } from "svelte";
   import SourceCodeButton from "./SourceCodeButton.svelte";
   import {
     IconNeurons,
@@ -22,6 +21,7 @@
     ThemeToggleButton,
   } from "@dfinity/gix-components";
   import { layoutMenuOpen, menuCollapsed } from "@dfinity/gix-components";
+  import type { ComponentType } from "svelte";
   import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
   import { ENABLE_METRICS } from "$lib/constants/mockable.constants";
 
