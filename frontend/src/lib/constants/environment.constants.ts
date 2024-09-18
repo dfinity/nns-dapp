@@ -40,7 +40,6 @@ export const SNS_AGGREGATOR_CANISTER_URL: string | undefined =
 export interface FeatureFlags<T> {
   ENABLE_CKBTC: T;
   ENABLE_CKTESTBTC: T;
-  ENABLE_PROJECTS_TABLE: T;
   ENABLE_IMPORT_TOKEN: T;
   DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: T;
   // Used only in tests and set up in jest-setup.ts
@@ -57,7 +56,7 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
   envVars?.featureFlags ??
-    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_SNS_TYPES_FILTER": false, "ENABLE_PROJECTS_TABLE": false}'
+    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_SNS_TYPES_FILTER": false}'
 );
 
 export const IS_TESTNET: boolean =
