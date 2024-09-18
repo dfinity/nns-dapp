@@ -1,8 +1,5 @@
 <script lang="ts">
-  import {
-    firstAndLastDigits,
-    shortenWithMiddleEllipsis,
-  } from "$lib/utils/format.utils";
+  import { firstAndLastDigits } from "$lib/utils/format.utils";
   import { Copy } from "@dfinity/gix-components";
   import { Tooltip } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
