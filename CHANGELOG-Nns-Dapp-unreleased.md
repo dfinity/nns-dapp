@@ -14,16 +14,16 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Added `get_tvl` method to `nns-dapp` canister.
-* Display of principal Id and main ICP account Id in the account menu.
+- Added `get_tvl` method to `nns-dapp` canister.
+- Display of principal Id and main ICP account Id in the account menu.
 
 #### Changed
 
-* Changes for cleaning up the stable structure migration.
-* Move Canisters button from sidebar to account menu.
-* Move GitHub button from account menu to sidebar.
-* Reduce calls to `sns-governance` canister by getting `nervous_system_parameters` from the aggregator instead.
-* Move theme toggle from account menu to sidebar.
+- Changes for cleaning up the stable structure migration.
+- Move Canisters button from sidebar to account menu.
+- Move GitHub button from account menu to sidebar.
+- Reduce calls to `sns-governance` canister by getting `nervous_system_parameters` from the aggregator instead.
+- Move theme toggle from account menu to sidebar.
 
 #### Deprecated
 
@@ -31,7 +31,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-* Fixed a bug where a performance counter in `init` is wiped during state initialization.
+- Fixed a bug where a performance counter in `init` is wiped during state initialization.
 
 #### Security
 
@@ -47,7 +47,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
-* Removed unused `pocket-ic` dependency.
+- Removed unused `pocket-ic` dependency.
 
 #### Fixed
 
