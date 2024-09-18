@@ -2,7 +2,6 @@ import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import {
   replaceContent,
-  setFeatureFlag,
   signInWithNewUser,
   step,
 } from "$tests/utils/e2e.test-utils";
@@ -26,11 +25,6 @@ const createHotkeyNeuronsInOtherAccount = async ({
   const page = await context.newPage();
   await page.goto("/");
   await expect(page).toHaveTitle("Tokens / NNS Dapp");
-  await setFeatureFlag({
-    page,
-    featureFlag: "ENABLE_PROJECTS_TABLE",
-    value: true,
-  });
   await signInWithNewUser({ page, context });
 
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
@@ -66,11 +60,6 @@ const createHotkeyNeuronsInOtherAccount = async ({
 test("Test neurons table", async ({ page, context, browser }) => {
   await page.goto("/canisters");
   await expect(page).toHaveTitle("Canisters / NNS Dapp");
-  await setFeatureFlag({
-    page,
-    featureFlag: "ENABLE_PROJECTS_TABLE",
-    value: true,
-  });
 
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
 
