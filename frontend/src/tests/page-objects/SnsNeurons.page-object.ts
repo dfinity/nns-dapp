@@ -1,5 +1,4 @@
 import { NeuronsTablePo } from "$tests/page-objects/NeuronsTable.page-object";
-import { SnsNeuronCardPo } from "$tests/page-objects/SnsNeuronCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -12,10 +11,6 @@ export class SnsNeuronsPo extends BasePageObject {
 
   getNeuronsTablePo(): NeuronsTablePo {
     return NeuronsTablePo.under(this.root);
-  }
-
-  getNeuronCardPos(): Promise<SnsNeuronCardPo[]> {
-    return SnsNeuronCardPo.allUnder(this.root);
   }
 
   async isContentLoaded(): Promise<boolean> {

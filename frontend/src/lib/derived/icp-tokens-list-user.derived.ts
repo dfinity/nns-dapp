@@ -46,7 +46,7 @@ const convertAccountToUserTokenData = ({
   };
 
   const title: string =
-    account.type === "main" ? i18nObj.accounts.main : account.name ?? "";
+    account.type === "main" ? i18nObj.accounts.main : (account.name ?? "");
 
   return {
     universeId: Principal.fromText(nnsUniverse.canisterId),

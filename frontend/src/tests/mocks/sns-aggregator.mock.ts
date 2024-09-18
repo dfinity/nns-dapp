@@ -143,7 +143,7 @@ export const aggregatorSnsMockWith = ({
     derived: {
       ...aggregatorSnsMockDto.swap_state.derived,
       direct_participant_count: nonNullish(directParticipantCount?.[0])
-        ? Number(directParticipantCount[0]) ?? null
+        ? (Number(directParticipantCount[0]) ?? null)
         : aggregatorSnsMockDto.swap_state.derived.direct_participant_count,
     },
   },
@@ -207,7 +207,7 @@ export const aggregatorSnsMockWith = ({
   derived_state: {
     ...aggregatorSnsMockDto.derived_state,
     direct_participant_count: nonNullish(directParticipantCount?.[0])
-      ? Number(directParticipantCount[0]) ?? null
+      ? (Number(directParticipantCount[0]) ?? null)
       : aggregatorSnsMockDto.swap_state.derived.direct_participant_count,
   },
   icrc1_metadata: nonNullish(tokenMetadata)

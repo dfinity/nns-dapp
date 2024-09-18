@@ -141,7 +141,8 @@
 
   let disableInfiniteScroll: boolean;
   $: disableInfiniteScroll = nonNullish(currentProjectCanisterId)
-    ? $snsProposalsStore[currentProjectCanisterId.toText()]?.completed ?? false
+    ? ($snsProposalsStore[currentProjectCanisterId.toText()]?.completed ??
+      false)
     : false;
 </script>
 

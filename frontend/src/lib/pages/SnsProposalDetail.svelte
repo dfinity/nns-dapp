@@ -198,15 +198,15 @@
   $: proposalIds = $pageStore.actionable
     ? $actionableProposalsNavigationIdsStore
     : nonNullish(universeIdText)
-    ? sortSnsProposalsById(
-        $actionableProposalsActiveStore
-          ? $actionableSnsProposalsStore[universeIdText]?.proposals
-          : $snsFilteredProposalsStore[universeIdText]?.proposals
-      )?.map((proposal) => ({
-        proposalId: snsProposalId(proposal),
-        universe: $pageStore.universe,
-      })) ?? []
-    : [];
+      ? (sortSnsProposalsById(
+          $actionableProposalsActiveStore
+            ? $actionableSnsProposalsStore[universeIdText]?.proposals
+            : $snsFilteredProposalsStore[universeIdText]?.proposals
+        )?.map((proposal) => ({
+          proposalId: snsProposalId(proposal),
+          universe: $pageStore.universe,
+        })) ?? [])
+      : [];
 
   // The `update` function cares about the necessary data to be refetched.
   $: universeIdText, proposalIdText, $snsNeuronsStore, $authStore, update();

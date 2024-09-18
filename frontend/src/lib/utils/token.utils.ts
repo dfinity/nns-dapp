@@ -89,8 +89,8 @@ const formatTokenUlps = ({
     converted < 0.01 && extraDetailForSmallAmount
       ? Math.max(countDecimals(converted), defaultDisplayedDecimals)
       : detailed
-      ? Math.min(countDecimals(converted), maxDisplayedDecimals)
-      : defaultDisplayedDecimals;
+        ? Math.min(countDecimals(converted), maxDisplayedDecimals)
+        : defaultDisplayedDecimals;
 
   const decimals =
     detailed === "height_decimals" ? maxDisplayedDecimals : decimalsForAmount();
