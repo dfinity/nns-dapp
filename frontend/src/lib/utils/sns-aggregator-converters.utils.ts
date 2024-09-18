@@ -8,9 +8,11 @@ import type {
   SnsSummarySwap,
 } from "$lib/types/sns";
 import type {
+  CachedDefaultFolloweesDto,
   CachedFunctionTypeDto,
   CachedLifecycleResponseDto,
   CachedNervousFunctionDto,
+  CachedNervousSystemParametersDto,
   CachedNeuronsFundParticipationConstraints,
   CachedSnsDto,
   CachedSnsMetadataDto,
@@ -19,18 +21,22 @@ import type {
   CachedSnsTokenMetadataDto,
   CachedSwapInitParamsDto,
   CachedSwapParamsDto,
+  CachedVotingRewardsParametersDto,
 } from "$lib/types/sns-aggregator";
 import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import type {
+  SnsDefaultFollowees,
   SnsFunctionType,
   SnsGetLifecycleResponse,
   SnsNervousSystemFunction,
+  SnsNervousSystemParameters,
   SnsNeuronsFundParticipationConstraints,
   SnsParams,
   SnsSwapDerivedState,
   SnsSwapInit,
+  SnsVotingRewardsParameters,
 } from "@dfinity/sns";
 import {
   candidNumberArrayToBigInt,
@@ -93,6 +99,116 @@ export const convertNervousFunction = ({
   function_type: nonNullish(function_type)
     ? toNullable(convertFunctionType(function_type))
     : [],
+});
+
+const convertDefaultFollowees = (
+  defaultFollowees: undefined | CachedDefaultFolloweesDto
+): [] | [SnsDefaultFollowees] => {
+  if (isNullish(defaultFollowees)) {
+    return [];
+  }
+  return [
+    {
+      followees: defaultFollowees.followees.map(([functionId, followees]) => [
+        BigInt(functionId),
+        followees,
+      ]),
+    },
+  ];
+};
+
+const numberToNullableBigInt = (num?: number): [] | [bigint] =>
+  toNullable(convertOptionalNumToBigInt(num));
+
+const convertVotingRewardsParameters = (
+  votingRewardsParameters: undefined | CachedVotingRewardsParametersDto
+): [] | [SnsVotingRewardsParameters] => {
+  if (isNullish(votingRewardsParameters)) {
+    return [];
+  }
+  return [
+    {
+      final_reward_rate_basis_points: numberToNullableBigInt(
+        votingRewardsParameters.final_reward_rate_basis_points
+      ),
+      initial_reward_rate_basis_points: numberToNullableBigInt(
+        votingRewardsParameters.initial_reward_rate_basis_points
+      ),
+      reward_rate_transition_duration_seconds: numberToNullableBigInt(
+        votingRewardsParameters.reward_rate_transition_duration_seconds
+      ),
+      round_duration_seconds: numberToNullableBigInt(
+        votingRewardsParameters.round_duration_seconds
+      ),
+    },
+  ];
+};
+
+export const convertNervousSystemParameters = ({
+  default_followees,
+  max_dissolve_delay_seconds,
+  max_dissolve_delay_bonus_percentage,
+  max_followees_per_function,
+  neuron_claimer_permissions,
+  neuron_minimum_stake_e8s,
+  max_neuron_age_for_age_bonus,
+  initial_voting_period_seconds,
+  neuron_minimum_dissolve_delay_to_vote_seconds,
+  reject_cost_e8s,
+  max_proposals_to_keep_per_action,
+  wait_for_quiet_deadline_increase_seconds,
+  max_number_of_neurons,
+  transaction_fee_e8s,
+  max_number_of_proposals_with_ballots,
+  max_age_bonus_percentage,
+  neuron_grantable_permissions,
+  voting_rewards_parameters,
+  maturity_modulation_disabled,
+  max_number_of_principals_per_neuron,
+}: CachedNervousSystemParametersDto): SnsNervousSystemParameters => ({
+  default_followees: convertDefaultFollowees(default_followees),
+  max_dissolve_delay_seconds: numberToNullableBigInt(
+    max_dissolve_delay_seconds
+  ),
+  max_dissolve_delay_bonus_percentage: numberToNullableBigInt(
+    max_dissolve_delay_bonus_percentage
+  ),
+  max_followees_per_function: numberToNullableBigInt(
+    max_followees_per_function
+  ),
+  //
+  neuron_claimer_permissions: toNullable(neuron_claimer_permissions),
+  neuron_minimum_stake_e8s: numberToNullableBigInt(neuron_minimum_stake_e8s),
+  max_neuron_age_for_age_bonus: numberToNullableBigInt(
+    max_neuron_age_for_age_bonus
+  ),
+  initial_voting_period_seconds: numberToNullableBigInt(
+    initial_voting_period_seconds
+  ),
+  neuron_minimum_dissolve_delay_to_vote_seconds: numberToNullableBigInt(
+    neuron_minimum_dissolve_delay_to_vote_seconds
+  ),
+  reject_cost_e8s: numberToNullableBigInt(reject_cost_e8s),
+  max_proposals_to_keep_per_action: toNullable(
+    max_proposals_to_keep_per_action
+  ),
+  wait_for_quiet_deadline_increase_seconds: numberToNullableBigInt(
+    wait_for_quiet_deadline_increase_seconds
+  ),
+  max_number_of_neurons: numberToNullableBigInt(max_number_of_neurons),
+  transaction_fee_e8s: numberToNullableBigInt(transaction_fee_e8s),
+  max_number_of_proposals_with_ballots: numberToNullableBigInt(
+    max_number_of_proposals_with_ballots
+  ),
+  max_age_bonus_percentage: numberToNullableBigInt(max_age_bonus_percentage),
+  neuron_grantable_permissions: toNullable(neuron_grantable_permissions),
+  voting_rewards_parameters: convertVotingRewardsParameters(
+    voting_rewards_parameters
+  ),
+  maturity_modulation_disabled: toNullable(maturity_modulation_disabled),
+  max_number_of_principals_per_neuron: numberToNullableBigInt(
+    max_number_of_principals_per_neuron
+  ),
 });
 
 const convertNeuronsFundParticipationConstraints = (

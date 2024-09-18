@@ -15,7 +15,6 @@ import {
   updateDelay,
 } from "$lib/services/sns-neurons.services";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { enumValues } from "$lib/utils/enum.utils";
@@ -34,7 +33,6 @@ import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   buildMockSnsNeuronsStoreSubscribe,
   mockSnsNeuron,
-  snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { resetMockedConstants } from "$tests/utils/mockable-constants.test-utils";
@@ -108,69 +106,24 @@ describe("sns-neurons-services", () => {
     beforeEach(() => {
       snsNeuronsStore.reset();
 
-      snsParametersStore.reset();
-      snsParametersStore.setParameters({
-        rootCanisterId: mockPrincipal,
-        certified: true,
-        parameters: snsNervousSystemParametersMock,
-      });
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+        },
+      ]);
     });
 
-    describe("when sns parameteres are not loaded", () => {
-      beforeEach(() => {
-        snsParametersStore.reset();
-      });
+    it("should call api.querySnsNeurons and load neurons in store", async () => {
+      const spyQuery = vi
+        .spyOn(governanceApi, "querySnsNeurons")
+        .mockImplementation(() => Promise.resolve([neuron]));
 
-      it("should call api.querySnsNeurons and load neurons in store", async () => {
-        const spyQuery = vi
-          .spyOn(governanceApi, "querySnsNeurons")
-          .mockImplementation(() => Promise.resolve([neuron]));
-        const spyOnNervousSystemParameters = vi
-          .spyOn(governanceApi, "nervousSystemParameters")
-          .mockResolvedValue(snsNervousSystemParametersMock);
+      await syncSnsNeurons(mockPrincipal);
 
-        expect(spyOnNervousSystemParameters).not.toBeCalled();
-        // expect parameters not to be in store
-        expect(get(snsParametersStore)[mockPrincipal.toText()]).toBeUndefined();
-
-        await syncSnsNeurons(mockPrincipal);
-
-        await tick();
-
-        const store = get(snsNeuronsStore);
-        expect(store[mockPrincipal.toText()]?.neurons).toHaveLength(1);
-        expect(spyOnNervousSystemParameters).toBeCalled();
-        expect(spyQuery).toBeCalled();
-      });
-    });
-
-    describe("when sns parameters are loaded", () => {
-      let spyOnNervousSystemParameters;
-
-      beforeEach(() => {
-        spyOnNervousSystemParameters = vi
-          .spyOn(governanceApi, "nervousSystemParameters")
-          .mockRejectedValue("should not be called");
-      });
-
-      it("should call api.querySnsNeurons and load neurons in store", async () => {
-        const spyQuery = vi
-          .spyOn(governanceApi, "querySnsNeurons")
-          .mockImplementation(() => Promise.resolve([neuron]));
-
-        // expect parameters to be in store
-        expect(
-          get(snsParametersStore)[mockPrincipal.toText()]
-        ).not.toBeUndefined();
-
-        await syncSnsNeurons(mockPrincipal);
-
-        await tick();
-        const store = get(snsNeuronsStore);
-        expect(store[mockPrincipal.toText()]?.neurons).toHaveLength(1);
-        expect(spyQuery).toBeCalled();
-        expect(spyOnNervousSystemParameters).not.toBeCalled();
-      });
+      await tick();
+      const store = get(snsNeuronsStore);
+      expect(store[mockPrincipal.toText()]?.neurons).toHaveLength(1);
+      expect(spyQuery).toBeCalled();
     });
 
     it("should empty store if update call fails", async () => {

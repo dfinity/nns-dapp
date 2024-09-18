@@ -1,7 +1,7 @@
 <script lang="ts">
   import Hash from "$lib/components/ui/Hash.svelte";
+  import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import {
@@ -47,7 +47,7 @@
 
 <div class="wrapper" data-tid="confirm-dissolve-delay-container">
   <div class="main-info">
-    <h3>
+    <h3 data-tid="dissolve-delay">
       {secondsToDuration({ seconds: BigInt(delayInSeconds), i18n: $i18n.time })}
     </h3>
   </div>
@@ -57,7 +57,7 @@
   </div>
   <div>
     <p class="label">{$i18n.neurons.neuron_balance}</p>
-    <p>
+    <p data-tid="neuron-stake">
       <Html
         text={replacePlaceholders($i18n.sns_neurons.token_stake, {
           $amount: valueSpan(
@@ -70,7 +70,7 @@
   </div>
   <div class="voting-power">
     <p class="label">{$i18n.neurons.voting_power}</p>
-    <p class="value">
+    <p class="value" data-tid="voting-power">
       {#if votingPower !== undefined}
         {formatVotingPower(votingPower)}
       {/if}
@@ -78,6 +78,7 @@
   </div>
   <div class="toolbar">
     <button
+      data-tid="edit-delay-button"
       class="secondary"
       disabled={$busy}
       on:click={() => dispatcher("nnsBack")}

@@ -17,7 +17,10 @@ import {
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+import {
+  failedImportedTokenLedgerIdsStore,
+  importedTokensStore,
+} from "$lib/stores/imported-tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
@@ -39,6 +42,7 @@ import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { mockCkUSDCToken } from "$tests/mocks/tokens.mock";
 import { TokensRoutePo } from "$tests/page-objects/TokensRoute.page-object";
+import type { TokensTableRowPo } from "$tests/page-objects/TokensTableRow.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
@@ -47,6 +51,7 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AuthClient } from "@dfinity/auth-client";
 import { MinterNoNewUtxosError, type UpdateBalanceOk } from "@dfinity/ckbtc";
 import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
+import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
@@ -92,20 +97,31 @@ describe("Tokens route", () => {
     pending_utxos: [],
     required_confirmations: 0,
   });
-  const importedToken1Id = principal(100);
+  const importedToken1Id = Principal.fromText(
+    "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
+  );
   const importedToken1Metadata = {
     name: "ZTOKEN1",
     symbol: "ZTOKEN1",
     fee: 4_000n,
     decimals: 6,
   } as IcrcTokenMetadata;
-  const importedToken2Id = principal(101);
+  const importedToken2IdText = "fzkl3-c3fae";
+  const importedToken2Id = Principal.fromText(importedToken2IdText);
   const importedToken2Metadata = {
     name: "ATOKEN2",
     symbol: "ATOKEN2",
     fee: 4_000n,
     decimals: 6,
   } as IcrcTokenMetadata;
+  const importedToken1Data: ImportedTokenData = {
+    ledgerCanisterId: importedToken1Id,
+    indexCanisterId: principal(111),
+  };
+  const importedToken2Data: ImportedTokenData = {
+    ledgerCanisterId: importedToken2Id,
+    indexCanisterId: undefined,
+  };
 
   const renderPage = async () => {
     const { container } = render(TokensRoute);
@@ -122,6 +138,7 @@ describe("Tokens route", () => {
       tokensStore.reset();
       defaultIcrcCanistersStore.reset();
       importedTokensStore.reset();
+      failedImportedTokenLedgerIdsStore.reset();
       ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
       ckETHBalanceUlps = ckETHDefaultBalanceUlps;
       tetrisBalanceE8s = tetrisDefaultBalanceE8s;
@@ -158,6 +175,9 @@ describe("Tokens route", () => {
             [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
             [ledgerCanisterIdTetris.toText()]: tetrisBalanceE8s,
             [ledgerCanisterIdPacman.toText()]: pacmanBalanceE8s,
+            // imported tokens
+            [importedToken1Id.toText()]: 10n,
+            [importedToken2Id.toText()]: 0n,
           };
           if (isNullish(balancesMap[canisterId.toText()])) {
             throw new Error(
@@ -567,16 +587,21 @@ describe("Tokens route", () => {
         });
 
         describe("imported tokens", () => {
-          const importedToken1Data: ImportedTokenData = {
-            ledgerCanisterId: importedToken1Id,
-            indexCanisterId: principal(111),
-          };
-          const importedToken2Data: ImportedTokenData = {
-            ledgerCanisterId: importedToken2Id,
-            indexCanisterId: undefined,
-          };
-
           beforeEach(() => {
+            // Add 2 imported tokens
+            tokensStore.setToken({
+              canisterId: importedToken1Id,
+              token: importedToken1Metadata,
+            });
+            tokensStore.setToken({
+              canisterId: importedToken2Id,
+              token: importedToken2Metadata,
+            });
+            importedTokensStore.set({
+              importedTokens: [importedToken1Data, importedToken2Data],
+              certified: true,
+            });
+
             vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
               async ({ canisterId }) => {
                 const balancesMap = {
@@ -599,29 +624,6 @@ describe("Tokens route", () => {
                 return balancesMap[canisterId.toText()];
               }
             );
-
-            // Add 2 imported tokens
-            tokensStore.setToken({
-              canisterId: importedToken1Id,
-              token: importedToken1Metadata,
-            });
-            defaultIcrcCanistersStore.setCanisters({
-              ledgerCanisterId: importedToken1Id,
-              indexCanisterId: undefined,
-            });
-            tokensStore.setToken({
-              canisterId: importedToken2Id,
-              token: importedToken2Metadata,
-            });
-            defaultIcrcCanistersStore.setCanisters({
-              ledgerCanisterId: importedToken2Id,
-              indexCanisterId: undefined,
-            });
-
-            importedTokensStore.set({
-              importedTokens: [importedToken1Data, importedToken2Data],
-              certified: true,
-            });
           });
 
           it("should display imported tokens after important with balance", async () => {
@@ -662,6 +664,95 @@ describe("Tokens route", () => {
             ]);
           });
         });
+      });
+    });
+
+    describe("failed imported tokens", () => {
+      beforeEach(() => {
+        resetIdentity();
+
+        // Add 2 imported tokens
+        importedTokensStore.set({
+          importedTokens: [importedToken1Data, importedToken2Data],
+          certified: true,
+        });
+        failedImportedTokenLedgerIdsStore.add(importedToken1Id.toText());
+      });
+
+      it("should render failed imported tokens in the table", async () => {
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+        const tokenNames = await tokensPagePo.getTokenNames();
+
+        expect(tokenNames).toEqual([
+          "Internet Computer",
+          "ckBTC",
+          "ckETH",
+          "ckUSDC",
+          "ATOKEN2", // loaded imported token
+          "Pacman",
+          "Tetris",
+          importedToken1Id.toText(), // failed imported token
+        ]);
+      });
+
+      it("should render multiple failed imported tokens", async () => {
+        failedImportedTokenLedgerIdsStore.add(importedToken2Id.toText());
+
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+        const tokenNames = await tokensPagePo.getTokenNames();
+
+        expect(tokenNames).toEqual([
+          "Internet Computer",
+          "ckBTC",
+          "ckETH",
+          "ckUSDC",
+          importedToken2Id.toText(),
+          "Pacman",
+          "Tetris",
+          importedToken1Id.toText(),
+        ]);
+      });
+
+      it("should display failed imported token UI", async () => {
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+        const failedTokenRow = await tokensPagePo
+          .getTokensTable()
+          .getRowByName(importedToken1Id.toText());
+
+        expect(
+          await failedTokenRow.getFailedLedgerCanisterHashPo().getFullText()
+        ).toEqual(importedToken1Id.toText());
+        expect(await failedTokenRow.hasUnavailableBalance()).toEqual(true);
+        expect(
+          await failedTokenRow.getFailedTokenTooltipPo().getTooltipText()
+        ).toEqual(
+          "The NNS dapp couldn’t load an imported token. Please try again later, or contact the developers."
+        );
+      });
+
+      it("should not display failed token UI for not failed tokens", async () => {
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+        const rowsPos = await tokensPagePo.getTokensTable().getRows();
+
+        const checkForFailedUI = async (rowPo: TokensTableRowPo) => {
+          expect(
+            await rowPo.getFailedLedgerCanisterHashPo().isPresent()
+          ).toEqual(false);
+          expect(await rowPo.hasUnavailableBalance()).toEqual(false);
+          expect(await rowPo.getFailedTokenTooltipPo().isPresent()).toEqual(
+            false
+          );
+        };
+
+        for (const rowPo of rowsPos) {
+          if ((await rowPo.getProjectName()) !== importedToken1Id.toText()) {
+            await checkForFailedUI(rowPo);
+          }
+        }
       });
     });
 

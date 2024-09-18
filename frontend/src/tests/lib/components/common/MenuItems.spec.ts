@@ -76,9 +76,6 @@ describe("MenuItems", () => {
   it("should render voting menu item", () =>
     shouldRenderMenuItem({ context: "proposals", labelKey: "voting" }));
 
-  it("should render canisters menu item", () =>
-    shouldRenderMenuItem({ context: "canisters", labelKey: "canisters" }));
-
   it("should not render a get icps feature", async () => {
     const renderResult = render(MenuItems);
 
@@ -195,6 +192,15 @@ describe("MenuItems", () => {
 
       expect(await po.getProposalsActionableCountBadgePo().isPresent()).toBe(
         false
+      );
+    });
+
+    it("should display Source code button", async () => {
+      const menuItemsPo = renderComponent();
+
+      expect(await menuItemsPo.getSourceCodeButtonPo().isPresent()).toBe(true);
+      expect(await menuItemsPo.getSourceCodeButtonLink()).toBe(
+        "https://github.com/dfinity/nns-dapp"
       );
     });
   });

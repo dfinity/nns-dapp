@@ -485,11 +485,11 @@ export const updateProposalVote = ({
       yes:
         vote === Vote.Yes
           ? (proposalInfo.latestTally?.yes ?? 0n) + votingPower
-          : proposalInfo.latestTally?.yes ?? 0n,
+          : (proposalInfo.latestTally?.yes ?? 0n),
       no:
         vote === Vote.No
           ? (proposalInfo.latestTally?.no ?? 0n) + votingPower
-          : proposalInfo.latestTally?.no ?? 0n,
+          : (proposalInfo.latestTally?.no ?? 0n),
     },
   };
 };

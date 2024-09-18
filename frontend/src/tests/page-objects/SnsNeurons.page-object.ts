@@ -1,5 +1,4 @@
 import { NeuronsTablePo } from "$tests/page-objects/NeuronsTable.page-object";
-import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { SnsNeuronCardPo } from "$tests/page-objects/SnsNeuronCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -15,11 +14,6 @@ export class SnsNeuronsPo extends BasePageObject {
     return NeuronsTablePo.under(this.root);
   }
 
-  getSkeletonCardPo(): SkeletonCardPo {
-    // There are multiple but we only need one.
-    return SkeletonCardPo.under(this.root);
-  }
-
   getNeuronCardPos(): Promise<SnsNeuronCardPo[]> {
     return SnsNeuronCardPo.allUnder(this.root);
   }
@@ -29,14 +23,12 @@ export class SnsNeuronsPo extends BasePageObject {
   }
 
   async isContentLoading(): Promise<boolean> {
-    return (
-      (await this.getSkeletonCardPo().isPresent()) || (await this.hasSpinner())
-    );
+    return await this.hasSpinner();
   }
 
   async waitForContentLoaded(): Promise<void> {
     await this.waitFor();
-    await this.getSkeletonCardPo().waitForAbsent();
+    await this.waitForAbsent("spinner");
   }
 
   getEmptyMessage(): Promise<string> {

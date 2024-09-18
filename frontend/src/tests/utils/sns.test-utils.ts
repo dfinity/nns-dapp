@@ -24,6 +24,11 @@ export const setSnsProjects = (
     swapDueTimestampSeconds?: number;
     nnsProposalId?: number;
     totalTokenSupply?: bigint;
+    neuronMinimumDissolveDelayToVoteSeconds?: bigint;
+    maxDissolveDelaySeconds?: bigint;
+    maxDissolveDelayBonusPercentage?: number;
+    maxAgeBonusPercentage?: number;
+    neuronMinimumStakeE8s?: bigint;
   }[]
 ) => {
   const aggregatorProjects = params.map((params, index) => {
@@ -43,6 +48,12 @@ export const setSnsProjects = (
       swapDueTimestampSeconds: params.swapDueTimestampSeconds,
       nnsProposalId: params.nnsProposalId,
       totalTokenSupply: params.totalTokenSupply,
+      neuronMinimumDissolveDelayToVoteSeconds:
+        params.neuronMinimumDissolveDelayToVoteSeconds,
+      maxDissolveDelaySeconds: params.maxDissolveDelaySeconds,
+      maxDissolveDelayBonusPercentage: params.maxDissolveDelayBonusPercentage,
+      maxAgeBonusPercentage: params.maxAgeBonusPercentage,
+      neuronMinimumStakeE8s: params.neuronMinimumStakeE8s,
     });
   });
   snsLifecycleStore.reset();

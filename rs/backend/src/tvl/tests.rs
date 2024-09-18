@@ -1,5 +1,6 @@
+use crate::state::{init_state, with_state, with_state_mut};
 use crate::timer;
-use crate::tvl::{self, exchange_rate_canister, governance, spawn, time, STATE};
+use crate::tvl::{self, exchange_rate_canister, governance, spawn, time};
 use candid::Nat;
 use lazy_static::lazy_static;
 
@@ -21,19 +22,19 @@ lazy_static! {
 }
 
 fn get_usd_e8s_per_icp() -> u64 {
-    STATE.with(|s| s.tvl_state.borrow().usd_e8s_per_icp)
+    with_state(|s| s.tvl_state.usd_e8s_per_icp)
 }
 
 fn set_usd_e8s_per_icp(new_value: u64) {
-    STATE.with(|s| s.tvl_state.borrow_mut().usd_e8s_per_icp = new_value);
+    with_state_mut(|s| s.tvl_state.usd_e8s_per_icp = new_value);
 }
 
 fn get_exchange_rate_timestamp_seconds() -> u64 {
-    STATE.with(|s| s.tvl_state.borrow().exchange_rate_timestamp_seconds)
+    with_state(|s| s.tvl_state.exchange_rate_timestamp_seconds)
 }
 
 fn set_exchange_rate_timestamp_seconds(new_value: u64) {
-    STATE.with(|s| s.tvl_state.borrow_mut().exchange_rate_timestamp_seconds = new_value);
+    with_state_mut(|s| s.tvl_state.exchange_rate_timestamp_seconds = new_value);
 }
 
 fn get_only_xrc_request() -> exchange_rate_canister::GetExchangeRateRequest {
@@ -43,15 +44,16 @@ fn get_only_xrc_request() -> exchange_rate_canister::GetExchangeRateRequest {
 }
 
 fn get_total_locked_icp_e8s() -> u64 {
-    STATE.with(|s| s.tvl_state.borrow().total_locked_icp_e8s)
+    with_state(|s| s.tvl_state.total_locked_icp_e8s)
 }
 
 fn set_total_locked_icp_e8s(new_value: u64) {
-    STATE.with(|s| s.tvl_state.borrow_mut().total_locked_icp_e8s = new_value);
+    with_state_mut(|s| s.tvl_state.total_locked_icp_e8s = new_value);
 }
 
 #[tokio::test]
 async fn update_exchange_rate() {
+    init_state();
     let initial_usd_e8s_per_icp = 850_000_000;
     let later_usd_e8s_per_icp = 920_000_000;
     let decimals = 8;
@@ -91,6 +93,7 @@ async fn update_exchange_rate() {
 
 #[tokio::test]
 async fn update_exchange_rate_with_3_decimals() {
+    init_state();
     let initial_usd_e8s_per_icp = 850_000_000;
     let later_usd_e8s_per_icp = 920_000_000;
     let decimals = 3;
@@ -131,6 +134,7 @@ async fn update_exchange_rate_with_3_decimals() {
 
 #[tokio::test]
 async fn update_exchange_rate_with_12_decimals() {
+    init_state();
     let initial_usd_e8s_per_icp = 850_000_000;
     let later_usd_e8s_per_icp = 920_000_000;
     let decimals = 12;
@@ -171,6 +175,7 @@ async fn update_exchange_rate_with_12_decimals() {
 
 #[tokio::test]
 async fn update_exchange_rate_with_call_error() {
+    init_state();
     let initial_usd_e8s_per_icp = 0;
     let initial_exchange_rate_timestamp_seconds = 0;
 
@@ -212,6 +217,7 @@ async fn update_exchange_rate_with_call_error() {
 
 #[tokio::test]
 async fn update_exchange_rate_with_method_error() {
+    init_state();
     let initial_usd_e8s_per_icp = 0;
     let initial_exchange_rate_timestamp_seconds = 0;
 
@@ -257,6 +263,7 @@ async fn update_exchange_rate_with_method_error() {
 
 #[tokio::test]
 async fn update_locked_icp_e8s() {
+    init_state();
     let initial_locked_icp_e8s = 50_000_000_000;
     let later_locked_icp_e8s = 90_000_000_000;
 
@@ -276,6 +283,7 @@ async fn update_locked_icp_e8s() {
 
 #[tokio::test]
 async fn update_locked_icp_e8s_with_call_error() {
+    init_state();
     let initial_locked_icp_e8s = 50_000_000_000;
 
     // Step 1: Set up the environment.
@@ -295,6 +303,7 @@ async fn update_locked_icp_e8s_with_call_error() {
 
 #[tokio::test]
 async fn update_locked_icp_e8s_with_method_error() {
+    init_state();
     let initial_locked_icp_e8s = 50_000_000_000;
 
     // Step 1: Set up the environment.
@@ -317,6 +326,7 @@ async fn update_locked_icp_e8s_with_method_error() {
 
 #[test]
 fn get_tvl() {
+    init_state();
     let timestamp = 1_738_485_470;
     let locked_icp_units = 15_000;
     let usd_per_icp_units = 8;
@@ -337,6 +347,7 @@ fn get_tvl() {
 
 #[tokio::test]
 async fn start_updating_exchange_rate_in_background() {
+    init_state();
     tvl::time::testing::set_time(NOW_SECONDS * 1_000_000_000);
 
     let initial_usd_e8s_per_icp = 850_000_000;
@@ -454,6 +465,7 @@ async fn start_updating_exchange_rate_in_background() {
 
 #[tokio::test]
 async fn start_updating_locked_icp_in_the_background() {
+    init_state();
     let initial_locked_icp_e8s = 1_500_000_000;
     let later_locked_icp_e8s = 2_300_000_000;
 

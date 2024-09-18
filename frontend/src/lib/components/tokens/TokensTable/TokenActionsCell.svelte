@@ -1,6 +1,7 @@
 <script lang="ts">
   import {
     UserTokenAction,
+    type UserTokenFailed,
     type UserTokenData,
     type UserTokenLoading,
   } from "$lib/types/tokens-page";
@@ -11,7 +12,7 @@
   import { nonNullish } from "@dfinity/utils";
   import type { SvelteComponent, ComponentType } from "svelte";
 
-  export let rowData: UserTokenData | UserTokenLoading;
+  export let rowData: UserTokenData | UserTokenLoading | UserTokenFailed;
 
   const actionMapper: Record<
     UserTokenAction,

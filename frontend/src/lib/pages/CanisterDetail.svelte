@@ -82,8 +82,8 @@
     $selectedCanisterStore.controller === false
       ? "error.not_canister_controller"
       : $selectedCanisterStore.controller === undefined && !loadingDetails
-      ? "error.canister_details_not_found"
-      : undefined;
+        ? "error.canister_details_not_found"
+        : undefined;
 
   const reloadDetails = async (canisterId: Principal) => {
     try {

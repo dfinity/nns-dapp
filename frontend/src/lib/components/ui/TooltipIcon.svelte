@@ -19,6 +19,6 @@
   .wrapper {
     display: inline-flex;
     align-items: center;
-    color: var(--tertiary);
+    color: var(--elements-icons);
   }
 </style>

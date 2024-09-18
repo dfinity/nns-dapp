@@ -68,8 +68,8 @@
       ? $i18n.ckbtc.test_bitcoin
       : $i18n.ckbtc.bitcoin
     : ckTESTBTC
-    ? $i18n.ckbtc.test_title
-    : $i18n.ckbtc.title;
+      ? $i18n.ckbtc.test_title
+      : $i18n.ckbtc.title;
 
   let segmentLabel: string;
   $: segmentLabel = ckTESTBTC ? $i18n.ckbtc.test_title : $i18n.ckbtc.title;

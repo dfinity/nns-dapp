@@ -63,5 +63,7 @@ export class StakingPo extends BasePageObject {
     await snsRow.getStakeButtonPo().click();
     const modal = this.getSnsStakeNeuronModalPo();
     await modal.stake(amount);
+    // After staking the first neuron, we get redirected to the SNS neurons page.
+    await this.waitForAbsent();
   }
 }

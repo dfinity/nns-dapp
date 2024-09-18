@@ -24,7 +24,6 @@ import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { snsTokensByRootCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
 import { loadActionableProposalsForSns } from "$lib/services/actionable-sns-proposals.services";
-import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
@@ -73,9 +72,7 @@ import { queryAndUpdate } from "./utils.services";
 export const syncSnsNeurons = async (
   rootCanisterId: Principal
 ): Promise<void> => {
-  const snsParametersRequest = loadSnsParameters(rootCanisterId);
-
-  const syncSnsNeuronsRequest = queryAndUpdate<SnsNeuron[], unknown>({
+  return queryAndUpdate<SnsNeuron[], unknown>({
     strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       querySnsNeurons({
@@ -109,8 +106,6 @@ export const syncSnsNeurons = async (
     },
     logMessage: "Syncing Sns Neurons",
   });
-
-  return Promise.all([snsParametersRequest, syncSnsNeuronsRequest]).then();
 };
 
 export const loadSnsNeurons = async ({

@@ -18,7 +18,6 @@
   import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
   import { getSnsProposalById } from "$lib/services/public/sns-proposals.services";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
-  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
@@ -149,8 +148,6 @@
           neuronsReady || !$authSignedInStore
             ? undefined
             : syncSnsNeurons(universeId),
-          //
-          !$authSignedInStore ? undefined : loadSnsParameters(universeId),
         ]);
         await reloadProposal();
       } catch (error) {
@@ -201,15 +198,15 @@
   $: proposalIds = $pageStore.actionable
     ? $actionableProposalsNavigationIdsStore
     : nonNullish(universeIdText)
-    ? sortSnsProposalsById(
-        $actionableProposalsActiveStore
-          ? $actionableSnsProposalsStore[universeIdText]?.proposals
-          : $snsFilteredProposalsStore[universeIdText]?.proposals
-      )?.map((proposal) => ({
-        proposalId: snsProposalId(proposal),
-        universe: $pageStore.universe,
-      })) ?? []
-    : [];
+      ? (sortSnsProposalsById(
+          $actionableProposalsActiveStore
+            ? $actionableSnsProposalsStore[universeIdText]?.proposals
+            : $snsFilteredProposalsStore[universeIdText]?.proposals
+        )?.map((proposal) => ({
+          proposalId: snsProposalId(proposal),
+          universe: $pageStore.universe,
+        })) ?? [])
+      : [];
 
   // The `update` function cares about the necessary data to be refetched.
   $: universeIdText, proposalIdText, $snsNeuronsStore, $authStore, update();

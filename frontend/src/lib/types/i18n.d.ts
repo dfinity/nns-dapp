@@ -152,6 +152,8 @@ interface I18nHeader {
   menu: string;
   logout: string;
   account_menu: string;
+  main_icp_account_id: string;
+  account_id_tooltip: string;
 }
 
 interface I18nAuth {
@@ -892,7 +894,6 @@ interface I18nError__sns {
   load_swap_commitment: string;
   load_sale_total_commitments: string;
   load_sale_lifecycle: string;
-  load_parameters: string;
   sns_remove_hotkey: string;
   sns_split_neuron: string;
   sns_disburse: string;
@@ -1118,6 +1119,7 @@ interface I18nImport_token {
   link_to_dashboard: string;
   add_index_canister: string;
   add_index_description: string;
+  failed_tooltip: string;
 }
 
 interface I18nNeuron_state {

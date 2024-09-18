@@ -1,4 +1,3 @@
-
 # Unreleased changelog NNS Dapp
 
 All notable changes to the NNS Dapp will be documented in this file.
@@ -16,10 +15,14 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Added `get_tvl` method to `nns-dapp` canister.
+* Display of principal Id and main ICP account Id in the account menu.
 
 #### Changed
 
 * Changes for cleaning up the stable structure migration.
+* Move Canisters button from sidebar to account menu.
+* Move GitHub button from account menu to sidebar.
+* Reduce calls to `sns-governance` canister by getting `nervous_system_parameters` from the aggregator instead.
 * The `Markdown` UI component was migrated to `@dfinity/gix-components`.
 
 #### Deprecated
@@ -27,6 +30,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 #### Fixed
+
+* Fixed a bug where a performance counter in `init` is wiped during state initialization.
 
 #### Security
 
@@ -41,6 +46,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Deprecated
 
 #### Removed
+
+* Removed unused `pocket-ic` dependency.
 
 #### Fixed
 

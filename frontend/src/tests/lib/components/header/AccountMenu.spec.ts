@@ -1,11 +1,18 @@
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
+import { AccountMenuPo } from "$tests/page-objects/AccountMenu.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("AccountMenu", () => {
   const show = async ({ container, getByRole }) => {
     await fireEvent.click(container.querySelector("button.toggle"));
     await waitFor(() => expect(getByRole("menu")).not.toBeNull());
+  };
+
+  const renderComponent = () => {
+    const { container } = render(AccountMenu);
+    return AccountMenuPo.under(new JestPageObjectElement(container));
   };
 
   it("should be closed by default", () => {
@@ -39,7 +46,7 @@ describe("AccountMenu", () => {
       expect(renderResult.getByTestId("theme-toggle")).not.toBeNull();
     });
 
-    it("should display logout button if signed in", async () => {
+    it("should display logout button", async () => {
       const renderResult = render(AccountMenu);
 
       await show(renderResult);
@@ -47,7 +54,7 @@ describe("AccountMenu", () => {
       expect(renderResult.getByTestId("logout")).not.toBeNull();
     });
 
-    it("should display settings button if signed in", async () => {
+    it("should display settings button", async () => {
       const renderResult = render(AccountMenu);
 
       await show(renderResult);
@@ -55,7 +62,7 @@ describe("AccountMenu", () => {
       expect(renderResult.getByTestId("settings")).not.toBeNull();
     });
 
-    it('should display "Manage ii" button if signed in', async () => {
+    it('should display "Manage ii" button', async () => {
       const renderResult = render(AccountMenu);
 
       await show(renderResult);
@@ -63,12 +70,12 @@ describe("AccountMenu", () => {
       expect(renderResult.getByTestId("manage-ii-link")).not.toBeNull();
     });
 
-    it('should display "Source code" button if signed in', async () => {
-      const renderResult = render(AccountMenu);
+    it('should display "Canisters" button', async () => {
+      const AccountMenuPo = renderComponent();
 
-      await show(renderResult);
+      await AccountMenuPo.openMenu();
 
-      expect(renderResult.getByTestId("source-code-link")).not.toBeNull();
+      expect(await AccountMenuPo.getCanistersLinkPo().isPresent()).toBe(true);
     });
 
     it("should close popover on click on settings", async () => {
@@ -83,6 +90,18 @@ describe("AccountMenu", () => {
       await waitFor(() =>
         expect(() => renderResult.getByRole("menu")).toThrow()
       );
+    });
+
+    it("should render account details component", async () => {
+      const renderResult = render(AccountMenu);
+
+      const accountMenuPo = AccountMenuPo.under(
+        new JestPageObjectElement(renderResult.container)
+      );
+
+      await accountMenuPo.openMenu();
+
+      expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(true);
     });
   });
 });
