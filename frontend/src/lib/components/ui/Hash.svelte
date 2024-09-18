@@ -31,9 +31,11 @@
       on:click|stopPropagation={() => isClickable && dispatcher("nnsHash")}
     >
       {firstAndLastDigitsArray[0]}
-      <span class="ellipsis">...</span>
-      {firstAndLastDigitsArray[1]}</svelte:element
-    >
+      {#if firstAndLastDigitsArray[1]}
+        <span class="ellipsis">...</span>
+        {firstAndLastDigitsArray[1]}
+      {/if}
+    </svelte:element>
   </Tooltip>
   {#if showCopy}
     <div class="copy">
