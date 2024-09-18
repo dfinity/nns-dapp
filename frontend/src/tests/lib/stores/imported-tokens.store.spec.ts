@@ -37,6 +37,29 @@ describe("imported-tokens-store", () => {
       });
     });
 
+    it("should remove from imported tokens", () => {
+      importedTokensStore.set({
+        importedTokens: [importedTokenA, importedTokenB],
+        certified: true,
+      });
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: [importedTokenA, importedTokenB],
+        certified: true,
+      });
+
+      importedTokensStore.remove(importedTokenA.ledgerCanisterId);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: [importedTokenB],
+        certified: true,
+      });
+
+      importedTokensStore.remove(importedTokenB.ledgerCanisterId);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: [],
+        certified: true,
+      });
+    });
+
     it("should reset imported tokens", () => {
       const importedTokens = [importedTokenA, importedTokenB];
       expect(get(importedTokensStore)).toEqual({
