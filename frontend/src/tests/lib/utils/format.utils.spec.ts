@@ -1,4 +1,5 @@
 import {
+  firstAndLastDigits,
   formatNumber,
   formatPercentage,
   shortenWithMiddleEllipsis,
@@ -86,5 +87,50 @@ describe("format.utils", () => {
     expect(shortenWithMiddleEllipsis("1234567890123456", 6)).toEqual(
       "123456...123456"
     );
+
+    it("should return first and last digits", () => {
+      expect(firstAndLastDigits("123456789")).toEqual(["1234567", ""]);
+      expect(firstAndLastDigits("1234567890123456")).toEqual([
+        "1234567",
+        "0123456",
+      ]);
+      expect(firstAndLastDigits("12345678901234567")).toEqual([
+        "1234567",
+        "1234567",
+      ]);
+      expect(firstAndLastDigits("123456789012345678901234")).toEqual([
+        "1234567",
+        "8901234",
+      ]);
+    });
+
+    it("should return first and last digits with custom split length", () => {
+      expect(firstAndLastDigits("123456789", 5)).toEqual(["12345", "56789"]);
+      expect(firstAndLastDigits("123456789", 2)).toEqual(["12", "89"]);
+      expect(firstAndLastDigits("1234567890123456", 8)).toEqual([
+        "12345678",
+        "90123456",
+      ]);
+      expect(firstAndLastDigits("1234567890123456", 7)).toEqual([
+        "1234567",
+        "0123456",
+      ]);
+      expect(firstAndLastDigits("1234567890123456", 6)).toEqual([
+        "123456",
+        "123456",
+      ]);
+    });
+
+    it("should return only first part when string is shorter than split length", () => {
+      expect(firstAndLastDigits("123", 5)).toEqual(["123", ""]);
+      expect(firstAndLastDigits("12345", 5)).toEqual(["12345", ""]);
+      expect(firstAndLastDigits("123456", 5)).toEqual(["12345", ""]);
+    });
+
+    it("should handle edge cases", () => {
+      expect(firstAndLastDigits("", 5)).toEqual(["", ""]);
+      expect(firstAndLastDigits("a", 5)).toEqual(["a", ""]);
+      expect(firstAndLastDigits("ab", 1)).toEqual(["a", "b"]);
+    });
   });
 });

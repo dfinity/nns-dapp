@@ -46,7 +46,7 @@ export const formatPercentage = (
  */
 export const shortenWithMiddleEllipsis = (
   text: string,
-  splitLength: number
+  splitLength?: number
 ): string => {
   const [first, last] = firstAndLastDigits(text, splitLength);
   return last !== "" ? `${first}...${last}` : first;
