@@ -49,7 +49,7 @@ describe("ImportTokenRemoveConfirmation", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should render token logo", async () => {
