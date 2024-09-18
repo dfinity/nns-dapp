@@ -89,7 +89,7 @@ const updateToastAfterNeuronRegistration = ({
     ({ id }) => id === proposalId
   );
   const proposalType = nonNullish(proposalInfo)
-    ? mapNnsProposal(proposalInfo).type ?? ""
+    ? (mapNnsProposal(proposalInfo).type ?? "")
     : "";
 
   voteRegistrationStore.addSuccessfullyVotedNeuronId({

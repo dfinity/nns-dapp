@@ -33,8 +33,8 @@
           $token: token.symbol,
         })
       : currentStep?.name === "QRCode"
-      ? $i18n.accounts.scan_qr_code
-      : $i18n.accounts.you_are_sending;
+        ? $i18n.accounts.scan_qr_code
+        : $i18n.accounts.you_are_sending;
 
   const dispatcher = createEventDispatcher();
   const transfer = async ({
