@@ -700,7 +700,7 @@ export const snsNeuronVotingPower = ({
   const dissolveDelayInSeconds =
     newDissolveDelayInSeconds !== undefined
       ? newDissolveDelayInSeconds
-      : getSnsDissolveDelaySeconds(neuron) ?? 0n;
+      : (getSnsDissolveDelaySeconds(neuron) ?? 0n);
   const {
     max_dissolve_delay_seconds,
     max_neuron_age_for_age_bonus,
