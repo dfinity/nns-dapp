@@ -1,13 +1,19 @@
 <script lang="ts">
-  import type { UserTokenData, UserTokenLoading } from "$lib/types/tokens-page";
+  import type {
+    UserTokenData,
+    UserTokenFailed,
+    UserTokenLoading,
+  } from "$lib/types/tokens-page";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
-  import Logo from "../../ui/Logo.svelte";
+  import Logo from "$lib/components/ui/Logo.svelte";
   import { nonNullish } from "@dfinity/utils";
-  import { Tag } from "@dfinity/gix-components";
+  import { IconError, Tag, Tooltip } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
+  import Hash from "$lib/components/ui/Hash.svelte";
+  import { isUserTokenFailed } from "$lib/utils/user-token.utils";
 
-  export let rowData: UserTokenData | UserTokenLoading;
+  export let rowData: UserTokenData | UserTokenLoading | UserTokenFailed;
 
   let importedToken = false;
   $: importedToken = isImportedToken({
@@ -18,20 +24,33 @@
 
 <div class="title-logo-wrapper">
   <Logo src={rowData.logo} alt={rowData.title} size="medium" framed />
-  <div class="title-wrapper">
-    <h5 data-tid="project-name">{rowData.title}</h5>
-    {#if nonNullish(rowData.subtitle)}
-      <span data-tid="project-subtitle" class="description"
-        >{rowData.subtitle}</span
-      >
-    {/if}
-  </div>
+  {#if isUserTokenFailed(rowData)}
+    <Hash text={`${rowData.universeId.toText()}`} tagName="span" tooltipTop />
+  {:else}
+    <div class="title-wrapper">
+      <h5 data-tid="project-name">{rowData.title}</h5>
+      {#if nonNullish(rowData.subtitle)}
+        <span data-tid="project-subtitle" class="description"
+          >{rowData.subtitle}</span
+        >
+      {/if}
+    </div>
+  {/if}
   {#if importedToken}
     <Tag testId="imported-token-tag">{$i18n.import_token.imported_token}</Tag>
+  {/if}
+  {#if isUserTokenFailed(rowData)}
+    <div data-tid="failed-token-info" class="failed-token-info">
+      <Tooltip id="failed-token-info" text={$i18n.import_token.failed_tooltip}>
+        <IconError size="20px" />
+      </Tooltip>
+    </div>
   {/if}
 </div>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
   h5 {
     margin: 0;
   }
@@ -41,10 +60,21 @@
     align-items: center;
     gap: var(--padding);
 
+    // Fix squashed logo on mobile for failed imported tokens caused by too many elements being displayed.
+    flex-wrap: wrap;
+    @include media.min-width(medium) {
+      flex-wrap: nowrap;
+    }
+
     .title-wrapper {
       display: flex;
       flex-direction: column;
       gap: var(--padding-0_5x);
     }
+  }
+
+  .failed-token-info {
+    color: var(--orange);
+    line-height: 0;
   }
 </style>

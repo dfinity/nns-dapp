@@ -3,6 +3,7 @@
  *
  * - `UserTokenBase` is not used directly, but it is used to create the `UserTokenLoading` and `UserTokenData` types.
  * - `UserTokenLoading` is to render a loading row in the tokens table. Used when either balance or token are not present.
+ * - `UserTokenFailed` is to render a failed token row in the tokens table. Used when an error occurred while fetching the imported token data.
  * - `UserTokenData` is used to render a row in the tokens table. Used when both balance and token are present.
  * - `UserTokenAction` is a list of actions supported by the tokens page and hardcoded in the TokensTable.
  * - `UserToken` is the union of `UserTokenLoading` and `UserTokenData`.
@@ -40,6 +41,11 @@ export type UserTokenLoading = UserTokenBase & {
   domKey: string;
 };
 
+export type UserTokenFailed = UserTokenBase & {
+  balance: "failed";
+  domKey: string;
+};
+
 export type UserTokenData = UserTokenBase & {
   balance: TokenAmountV2 | UnavailableTokenAmount;
   // Identifier of the account related to the row (only if the row represents one account, not multiple)
@@ -51,5 +57,5 @@ export type UserTokenData = UserTokenBase & {
   domKey: string;
 };
 
-export type UserToken = UserTokenLoading | UserTokenData;
+export type UserToken = UserTokenLoading | UserTokenFailed | UserTokenData;
 export type TokensTableColumn = ResponsiveTableColumn<UserToken>;
