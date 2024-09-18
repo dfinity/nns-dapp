@@ -19,6 +19,7 @@
     IconVote,
     IconWallet,
     MenuItem,
+    ThemeToggleButton,
   } from "@dfinity/gix-components";
   import { layoutMenuOpen, menuCollapsed } from "@dfinity/gix-components";
   import type { ComponentType } from "svelte";
@@ -98,7 +99,10 @@
 
   <div class="menu-footer" class:hidden={$menuCollapsed && !$layoutMenuOpen}>
     <MenuMetrics />
-    <SourceCodeButton />
+    <div class="menu-footer-buttons">
+      <div class="grow-item"><SourceCodeButton /></div>
+      <ThemeToggleButton />
+    </div>
   </div>
 </div>
 
@@ -129,6 +133,13 @@
     //Hide menu footer similar to surrounding elements
     @media (min-height: 654px) {
       display: flex;
+    }
+  }
+  .menu-footer-buttons {
+    display: flex;
+    gap: var(--padding);
+    .grow-item {
+      flex-grow: 1;
     }
   }
 </style>

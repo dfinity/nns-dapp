@@ -8,7 +8,7 @@
   import LinkToCanisters from "./LinkToCanisters.svelte";
   import LoginIconOnly from "./LoginIconOnly.svelte";
   import Logout from "./Logout.svelte";
-  import { IconUser, ThemeToggle, Popover } from "@dfinity/gix-components";
+  import { IconUser, Popover } from "@dfinity/gix-components";
 
   let visible = false;
   let button: HTMLButtonElement | undefined;
@@ -31,8 +31,6 @@
     <Popover bind:visible anchor={button} direction="rtl">
       <div class="info">
         <AccountDetails />
-
-        <ThemeToggle />
 
         <ManageInternetIdentityButton />
 
