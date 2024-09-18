@@ -43,15 +43,6 @@ export const loadImportedTokens = async ({
         importedTokens: importedTokens.map(toImportedTokenData),
         certified,
       });
-      /* 
-      The failed imported token store needs to be reset to remove the failed table rows,
-      but this should only happen after the imported tokens are fully loaded.
-      
-      If we remove record A from the failed imported token store before that, it will still exist
-      in the imported tokens store, triggering the loading of account data for record A;
-      However, if we update the imported tokens store in the next step (removing record A),
-      the error handling will treat this token as a `not imported token` and display all errors.
-       */
       failedImportedTokenLedgerIdsStore.reset();
     },
     onError: ({ error: err, certified }) => {
@@ -74,7 +65,6 @@ export const loadImportedTokens = async ({
 
       // Explicitly handle only UPDATE errors
       importedTokensStore.reset();
-      // Also reset the failed imported token store to remove the failed table rows.
       failedImportedTokenLedgerIdsStore.reset();
 
       toastsError({
