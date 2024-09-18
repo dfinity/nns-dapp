@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+  import { firstAndLastDigits } from "$lib/utils/format.utils";
   import { Copy } from "@dfinity/gix-components";
   import { Tooltip } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
@@ -17,8 +17,8 @@
 
   const dispatcher = createEventDispatcher();
 
-  let shortenText: string;
-  $: shortenText = shortenWithMiddleEllipsis(text, splitLength);
+  let firstAndLastDigitsArray: [string, string];
+  $: firstAndLastDigitsArray = firstAndLastDigits(text, splitLength);
 </script>
 
 <span data-tid="hash-component">
@@ -30,7 +30,9 @@
       role={isClickable ? "button" : undefined}
       on:click|stopPropagation={() => isClickable && dispatcher("nnsHash")}
     >
-      {shortenText}</svelte:element
+      {firstAndLastDigitsArray[0]}
+      <span class="ellipsis">...</span>
+      {firstAndLastDigitsArray[1]}</svelte:element
     >
   </Tooltip>
   {#if showCopy}
@@ -42,6 +44,7 @@
 
 <style lang="scss">
   span {
+    font-variant: tabular-nums;
     align-items: center;
     display: inline-flex;
 
@@ -50,6 +53,10 @@
       display: inline-flex;
       // Make sure the icon doesn't increase the line height.
       max-height: 0;
+    }
+
+    .ellipsis {
+      font-variant: normal;
     }
   }
 </style>

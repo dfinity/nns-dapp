@@ -54,3 +54,20 @@ export const shortenWithMiddleEllipsis = (
     ? `${text.slice(0, splitLength)}...${text.slice(-1 * splitLength)}`
     : text;
 };
+
+/**
+ * Returns the first and last digits of a string.
+ * @param text
+ * @param splitLength
+ * @returns [firstDigits, lastDigits]
+ */
+export const firstAndLastDigits = (
+  text: string,
+  splitLength = 7
+): [string, string] => {
+  // Original min length was 16 to extract 7 split
+  const minLength = splitLength * 2 + 2;
+  return text.length > minLength
+    ? [text.slice(0, splitLength), text.slice(-1 * splitLength)]
+    : [text, ""];
+};
