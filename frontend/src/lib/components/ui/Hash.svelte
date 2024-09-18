@@ -34,7 +34,7 @@
     >
       <span class="tabular-nums">
         {firstAndLastDigitsArray[0]}
-        {#if firstAndLastDigitsArray[1]}
+        {#if firstAndLastDigitsArray[1] !== ""}
           <span>&hellip;</span>
           {firstAndLastDigitsArray[1]}
         {/if}
