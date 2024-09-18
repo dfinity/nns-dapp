@@ -17,13 +17,10 @@
   export let splitLength: number | undefined = undefined;
   export let tooltipTop: boolean | undefined = undefined;
   export let isClickable: boolean | undefined = undefined;
-  export let tabularNums: boolean | undefined = undefined;
   const dispatcher = createEventDispatcher();
 
   let firstAndLastDigitsArray: [string, string];
   $: firstAndLastDigitsArray = firstAndLastDigits(text, splitLength);
-  let shortText: string;
-  $: shortText = shortenWithMiddleEllipsis(text, splitLength);
 </script>
 
 <span data-tid="hash-component">
@@ -35,17 +32,13 @@
       role={isClickable ? "button" : undefined}
       on:click|stopPropagation={() => isClickable && dispatcher("nnsHash")}
     >
-      {#if tabularNums}
-        <span class="tabular-nums">
-          {firstAndLastDigitsArray[0]}
-          {#if firstAndLastDigitsArray[1]}
-            <span class="ellipsis">...</span>
-            {firstAndLastDigitsArray[1]}
-          {/if}
-        </span>
-      {:else}
-        {shortText}
-      {/if}
+      <span class="tabular-nums">
+        {firstAndLastDigitsArray[0]}
+        {#if firstAndLastDigitsArray[1]}
+          <span class="ellipsis">...</span>
+          {firstAndLastDigitsArray[1]}
+        {/if}
+      </span>
     </svelte:element>
   </Tooltip>
   {#if showCopy}
@@ -59,7 +52,9 @@
   span {
     align-items: center;
     display: inline-flex;
-
+    justify-content: space-around;
+    margin: 0;
+    padding: 0;
     .copy {
       align-items: center;
       display: inline-flex;
