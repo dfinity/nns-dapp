@@ -5,8 +5,7 @@
   import { createEventDispatcher } from "svelte";
   import { isUserTokenData } from "$lib/utils/user-token.utils";
 
-  // The UserTokenFailed type was added to unify the action types.
-  // However, the Receive action is only applicable to UserTokenData due to the requirement for the account to be loaded.
+  // The UserTokenFailed type was added to unify the action types. However, this action only works with UserTokenData.
   export let userToken: UserTokenData | UserTokenFailed;
 
   const dispatcher = createEventDispatcher();
