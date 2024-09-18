@@ -13,6 +13,7 @@
     tagName="span"
     idPrefix="neuron-id-cell"
     showCopy
+    tabularNums
   />
   {#if rowData.tags.length > 0}
     <span class="tags" data-tid="neuron-tags">

@@ -1,5 +1,8 @@
 <script lang="ts">
-  import { firstAndLastDigits } from "$lib/utils/format.utils";
+  import {
+    firstAndLastDigits,
+    shortenWithMiddleEllipsis,
+  } from "$lib/utils/format.utils";
   import { Copy } from "@dfinity/gix-components";
   import { Tooltip } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
@@ -14,11 +17,13 @@
   export let splitLength: number | undefined = undefined;
   export let tooltipTop: boolean | undefined = undefined;
   export let isClickable: boolean | undefined = undefined;
-
+  export let tabularNums: boolean | undefined = undefined;
   const dispatcher = createEventDispatcher();
 
   let firstAndLastDigitsArray: [string, string];
   $: firstAndLastDigitsArray = firstAndLastDigits(text, splitLength);
+  let shortText: string;
+  $: shortText = shortenWithMiddleEllipsis(text, splitLength);
 </script>
 
 <span data-tid="hash-component">
@@ -30,10 +35,14 @@
       role={isClickable ? "button" : undefined}
       on:click|stopPropagation={() => isClickable && dispatcher("nnsHash")}
     >
-      {firstAndLastDigitsArray[0]}
-      {#if firstAndLastDigitsArray[1]}
-        <span class="ellipsis">...</span>
-        {firstAndLastDigitsArray[1]}
+      {#if tabularNums}
+        {firstAndLastDigitsArray[0]}
+        {#if firstAndLastDigitsArray[1]}
+          <span class="ellipsis">...</span>
+          {firstAndLastDigitsArray[1]}
+        {/if}
+      {:else}
+        {shortText}
       {/if}
     </svelte:element>
   </Tooltip>
@@ -46,7 +55,6 @@
 
 <style lang="scss">
   span {
-    font-variant: tabular-nums;
     align-items: center;
     display: inline-flex;
 
