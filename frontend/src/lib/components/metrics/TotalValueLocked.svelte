@@ -62,6 +62,13 @@
 
     z-index: var(--z-index);
 
+    visibility: hidden;
+    opacity: 0;
+    &.visible {
+      visibility: visible;
+      opacity: 1;
+    }
+
     &.stacked {
       display: flex;
       flex-direction: column-reverse;
