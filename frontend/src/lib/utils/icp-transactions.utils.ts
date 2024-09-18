@@ -172,8 +172,9 @@ export const mapIcpTransaction = ({
     });
     const otherParty = isReceive ? txInfo.from : txInfo.to;
 
-    const blockTimestampNanos = fromNullable(transaction.transaction.timestamp)
-      ?.timestamp_nanos;
+    const blockTimestampNanos = fromNullable(
+      transaction.transaction.timestamp
+    )?.timestamp_nanos;
     const createdTimestampNanos = fromNullable(
       transaction.transaction.created_at_time
     )?.timestamp_nanos;

@@ -1,7 +1,7 @@
 <script lang="ts">
   import Hash from "$lib/components/ui/Hash.svelte";
+  import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import {

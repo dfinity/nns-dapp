@@ -1,22 +1,18 @@
 <script lang="ts">
   import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
   import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
-  import {
-    neuronsPathStore,
-    proposalsPathStore,
-  } from "$lib/derived/paths.derived";
-  import { ENABLE_PROJECTS_TABLE } from "$lib/stores/feature-flags.store";
+  import { proposalsPathStore } from "$lib/derived/paths.derived";
   import { i18n } from "$lib/stores/i18n";
   import {
     ACTIONABLE_PROPOSALS_URL,
     isSelectedPath,
   } from "$lib/utils/navigation.utils";
+  import SourceCodeButton from "./SourceCodeButton.svelte";
   import {
     IconNeurons,
     IconRocketLaunch,
@@ -24,6 +20,7 @@
     IconWallet,
     MenuItem,
   } from "@dfinity/gix-components";
+  import { layoutMenuOpen, menuCollapsed } from "@dfinity/gix-components";
   import type { ComponentType } from "svelte";
 
   let routes: {
@@ -51,7 +48,7 @@
     },
     {
       context: "neurons",
-      href: $ENABLE_PROJECTS_TABLE ? AppPath.Staking : $neuronsPathStore,
+      href: AppPath.Staking,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
         paths: [AppPath.Staking, AppPath.Neurons, AppPath.Neuron],
@@ -86,7 +83,7 @@
   ];
 </script>
 
-<TestIdWrapper testId="menu-items-component">
+<div data-tid="menu-items-component" class="menu-container">
   {#each routes as { context, title, href, icon, statusIcon, selected } (context)}
     <MenuItem {href} testId={`menuitem-${context}`} {selected} {title}>
       <svelte:component this={icon} slot="icon" />
@@ -99,5 +96,39 @@
     <GetTokens />
   {/if}
 
-  <MenuMetrics />
-</TestIdWrapper>
+  <div class="menu-footer" class:hidden={$menuCollapsed && !$layoutMenuOpen}>
+    <MenuMetrics />
+    <SourceCodeButton />
+  </div>
+</div>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  .menu-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .menu-footer {
+    display: none;
+    flex-direction: column;
+    gap: var(--padding);
+    // To accomodate the 100% on-chain logo
+    // if that logo changes please update this margin as well
+    margin: auto var(--padding-3x) var(--padding-8x) 0;
+    // Handle menu collapse animation
+    opacity: 1;
+    transition:
+      transform linear var(--animation-time-normal),
+      opacity linear calc(var(--animation-time-short) / 2);
+    &.hidden {
+      opacity: 0;
+      transform: translate(-150%, 0);
+    }
+    //Hide menu footer similar to surrounding elements
+    @media (min-height: 654px) {
+      display: flex;
+    }
+  }
+</style>

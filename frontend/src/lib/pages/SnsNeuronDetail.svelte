@@ -21,15 +21,14 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
+  import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
   import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
   import { refreshNeuronIfNeeded } from "$lib/services/sns-neurons-check-balances.services";
   import { getSnsNeuron } from "$lib/services/sns-neurons.services";
-  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { queuedStore } from "$lib/stores/queued-store";
-  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
@@ -139,11 +138,7 @@
         certified: true,
       });
 
-      await Promise.all([
-        loadNeuron(),
-        loadSnsParameters(rootCanisterId),
-        loadSnsAccounts({ rootCanisterId }),
-      ]);
+      await Promise.all([loadNeuron(), loadSnsAccounts({ rootCanisterId })]);
     } catch (err: unknown) {
       // $pageStore.universe might be an invalid principal, like empty or yolo
       await goBack(true);
