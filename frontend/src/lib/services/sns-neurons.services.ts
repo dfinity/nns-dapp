@@ -21,6 +21,7 @@ import {
 } from "$lib/api/sns.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { snsTokensByRootCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
 import { loadActionableProposalsForSns } from "$lib/services/actionable-sns-proposals.services";
@@ -505,6 +506,21 @@ export const stakeNeuron = async ({
     // TODO: Get identity depending on account to support HW accounts
     const identity = await getAuthenticatedIdentity();
     const stakeE8s = numberToE8s(amount);
+
+    // The stakeNeuron function should not be called with an amount smaller than
+    // the minimum stake. This check is only here to prevent people losing
+    // tokens if the check is accidentally not done before, but does not provide
+    // a proper error message.
+    const paramsStore = get(snsParametersStore);
+    const minimumStakeE8s = fromDefinedNullable(
+      paramsStore[rootCanisterId.toText()]?.parameters
+        ?.neuron_minimum_stake_e8s ?? []
+    );
+    if (stakeE8s < minimumStakeE8s) {
+      throw new Error(
+        "The caller should make sure the amount is at least the minimum stake"
+      );
+    }
 
     const fee = get(snsTokensByRootCanisterIdStore)[rootCanisterId.toText()]
       ?.fee;

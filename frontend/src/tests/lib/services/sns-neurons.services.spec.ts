@@ -460,6 +460,7 @@ describe("sns-neurons-services", () => {
         {
           rootCanisterId: mockPrincipal,
           tokenMetadata: { ...mockSnsToken, fee: 100n },
+          neuronMinimumStakeE8s: 100_000_000n,
         },
       ]);
       const spyStake = vi
@@ -502,6 +503,7 @@ describe("sns-neurons-services", () => {
         {
           rootCanisterId: mockPrincipal,
           tokenMetadata: { ...mockSnsToken, fee: 0n },
+          neuronMinimumStakeE8s: 100_000_000n,
         },
       ]);
       const spyStake = vi
@@ -521,6 +523,33 @@ describe("sns-neurons-services", () => {
       expect(spyStake).toBeCalled();
       expect(spyQuery).toBeCalled();
       expect(loadSnsAccounts).toBeCalled();
+    });
+
+    it("should fail if staked amount is too low", async () => {
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          tokenMetadata: { ...mockSnsToken, fee: 100n },
+          neuronMinimumStakeE8s: 200_000_001n,
+        },
+      ]);
+      const spyStake = vi
+        .spyOn(api, "stakeNeuron")
+        .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
+      const spyQuery = vi
+        .spyOn(governanceApi, "querySnsNeurons")
+        .mockImplementation(() => Promise.resolve([mockSnsNeuron]));
+
+      const { success } = await stakeNeuron({
+        rootCanisterId: mockPrincipal,
+        amount: 2,
+        account: mockSnsMainAccount,
+      });
+
+      expect(success).toBe(false);
+      expect(spyStake).not.toBeCalled();
+      expect(spyQuery).not.toBeCalled();
+      expect(loadSnsAccounts).not.toBeCalled();
     });
   });
 
