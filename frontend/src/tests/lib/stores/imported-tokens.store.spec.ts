@@ -97,6 +97,21 @@ describe("imported-tokens-store", () => {
       ]);
     });
 
+    it("should remove by canister ID", () => {
+      failedImportedTokenLedgerIdsStore.add(canisterIdA);
+      failedImportedTokenLedgerIdsStore.add(canisterIdB);
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([
+        canisterIdA,
+        canisterIdB,
+      ]);
+
+      failedImportedTokenLedgerIdsStore.remove(canisterIdA);
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([canisterIdB]);
+
+      failedImportedTokenLedgerIdsStore.remove(canisterIdB);
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([]);
+    });
+
     it("should not add duplicates", () => {
       expect(get(failedImportedTokenLedgerIdsStore)).toEqual([]);
       failedImportedTokenLedgerIdsStore.add(canisterIdA);

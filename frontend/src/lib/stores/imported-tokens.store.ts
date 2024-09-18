@@ -71,6 +71,12 @@ const initFailedImportedTokenLedgerIdsStore = () => {
       );
     },
 
+    remove(ledgerCanisterId: CanisterIdString) {
+      update((failedLedgerCanisterIds) =>
+        failedLedgerCanisterIds.filter((id) => id !== ledgerCanisterId)
+      );
+    },
+
     reset() {
       set([]);
     },
