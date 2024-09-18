@@ -2,7 +2,9 @@ import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.pag
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { nonNullish } from "@dfinity/utils";
 import { AmountDisplayPo } from "./AmountDisplay.page-object";
+import type { ButtonPo } from "./Button.page-object";
 import { HashPo } from "./Hash.page-object";
+import { LinkToDashboardCanisterPo } from "./LinkToDashboardCanister.page-object";
 import { TooltipPo } from "./Tooltip.page-object";
 
 export type TokensTableRowData = {
@@ -132,6 +134,14 @@ export class TokensTableRowPo extends ResponsiveTableRowPo {
 
   getGoToDetailIcon(): PageObjectElement {
     return this.root.byTestId("go-to-detail-icon-component");
+  }
+
+  getGoToDashboardButton(): LinkToDashboardCanisterPo {
+    return LinkToDashboardCanisterPo.under({ element: this.root });
+  }
+
+  getRemoveActionButton(): ButtonPo {
+    return this.getButton("remove-button-component");
   }
 
   hasGoToDetailIcon(): Promise<boolean> {

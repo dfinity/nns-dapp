@@ -1,5 +1,6 @@
 import * as ckBTCMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import * as importedTokensApi from "$lib/api/imported-tokens.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
@@ -55,6 +56,7 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/sns-ledger.api");
@@ -114,9 +116,10 @@ describe("Tokens route", () => {
     fee: 4_000n,
     decimals: 6,
   } as IcrcTokenMetadata;
+  const importedToken1IndexCanisterId = principal(111);
   const importedToken1Data: ImportedTokenData = {
     ledgerCanisterId: importedToken1Id,
-    indexCanisterId: principal(111),
+    indexCanisterId: importedToken1IndexCanisterId,
   };
   const importedToken2Data: ImportedTokenData = {
     ledgerCanisterId: importedToken2Id,
@@ -753,6 +756,62 @@ describe("Tokens route", () => {
             await checkForFailedUI(rowPo);
           }
         }
+      });
+
+      it("should have view on dashboard action button", async () => {
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+        const failedTokenRow = await tokensPagePo
+          .getTokensTable()
+          .getRowByName(importedToken1Id.toText());
+
+        expect(
+          await failedTokenRow.getGoToDashboardButton().isPresent()
+        ).toEqual(true);
+        expect(await failedTokenRow.getGoToDashboardButton().getHref()).toEqual(
+          `https://dashboard.internetcomputer.org/canister/${importedToken1Id.toText()}`
+        );
+      });
+
+      it("provides possibility to remove failed imported token", async () => {
+        vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue();
+        vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
+          imported_tokens: [
+            {
+              ledger_canister_id: importedToken2Id,
+              index_canister_id: [],
+            },
+          ],
+        });
+        const po = await renderPage();
+        const removeConfirmationPo = po.getImportTokenRemoveConfirmationPo();
+        const tokensPagePo = po.getTokensPagePo();
+        const failedTokenRow = await tokensPagePo
+          .getTokensTable()
+          .getRowByName(importedToken1Id.toText());
+
+        // Initiating the removal.
+        expect(
+          await failedTokenRow.getRemoveActionButton().isPresent()
+        ).toEqual(true);
+        await failedTokenRow.getRemoveActionButton().click();
+        await runResolvedPromises();
+
+        // Confirm the removal.
+        expect(await removeConfirmationPo.isPresent()).toBe(true);
+        expect(get(importedTokensStore).importedTokens).toEqual([
+          importedToken1Data,
+          importedToken2Data,
+        ]);
+
+        await removeConfirmationPo.clickYes();
+        await removeConfirmationPo.waitForClosed();
+
+        expect(get(importedTokensStore).importedTokens).toEqual([
+          importedToken2Data,
+        ]);
+
+        // TODO(https://github.com/dfinity/nns-dapp/pull/5488): check that the token is removed from the table
       });
     });
 

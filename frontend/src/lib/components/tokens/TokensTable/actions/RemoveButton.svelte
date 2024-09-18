@@ -11,7 +11,7 @@
 
 <button
   class="icon-only remove-button"
-  data-tid="send-button-component"
+  data-tid="remove-button-component"
   on:click|preventDefault|stopPropagation={() => {
     dispatcher("nnsAction", { type: ActionType.Remove, data: userToken });
   }}
