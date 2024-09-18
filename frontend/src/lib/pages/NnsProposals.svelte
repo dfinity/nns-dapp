@@ -137,8 +137,8 @@
   $: loadingAnimation = !loading
     ? undefined
     : $sortedProposals.proposals.length > 0
-    ? "spinner"
-    : "skeleton";
+      ? "spinner"
+      : "skeleton";
 </script>
 
 <NnsProposalsList

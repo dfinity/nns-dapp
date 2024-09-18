@@ -118,8 +118,8 @@ export const createMockSnsNeuron = ({
       vesting === undefined
         ? []
         : vesting
-        ? [BigInt(SECONDS_IN_MONTH)]
-        : [BigInt(SECONDS_IN_HOUR)],
+          ? [BigInt(SECONDS_IN_MONTH)]
+          : [BigInt(SECONDS_IN_HOUR)],
     disburse_maturity_in_progress: activeDisbursementsE8s.map((amountE8s) => ({
       ...mockActiveDisbursement,
       amount_e8s: amountE8s,

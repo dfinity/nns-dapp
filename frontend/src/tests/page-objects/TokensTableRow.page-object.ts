@@ -1,6 +1,9 @@
 import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { nonNullish } from "@dfinity/utils";
 import { AmountDisplayPo } from "./AmountDisplay.page-object";
+import { HashPo } from "./Hash.page-object";
+import { TooltipPo } from "./Tooltip.page-object";
 
 export type TokensTableRowData = {
   projectName: string;
@@ -43,8 +46,12 @@ export class TokensTableRowPo extends ResponsiveTableRowPo {
       .map((el) => new TokensTableRowPo(el));
   }
 
-  getProjectName(): Promise<string> {
-    return this.getText("project-name");
+  async getProjectName(): Promise<string> {
+    const loadedProjectName = await this.getText("project-name");
+    // Loaded or failed project name.
+    return nonNullish(loadedProjectName)
+      ? loadedProjectName.trim()
+      : (await this.getFailedLedgerCanisterHashPo().getFullText())?.trim();
   }
 
   getBalance(): Promise<string> {
@@ -53,6 +60,18 @@ export class TokensTableRowPo extends ResponsiveTableRowPo {
 
   async getBalanceNumber(): Promise<number> {
     return Number(await AmountDisplayPo.under(this.root).getAmount());
+  }
+
+  hasUnavailableBalance(): Promise<boolean> {
+    return this.root.byTestId("unavailable-balance").isPresent();
+  }
+
+  getFailedLedgerCanisterHashPo(): HashPo {
+    return HashPo.under(this.root);
+  }
+
+  getFailedTokenTooltipPo(): TooltipPo {
+    return TooltipPo.under(this.root.byTestId("failed-token-info"));
   }
 
   async waitForBalance(): Promise<void> {

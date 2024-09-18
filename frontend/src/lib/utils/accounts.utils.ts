@@ -239,7 +239,8 @@ export const accountName = ({
   account: Account | undefined;
   mainName: string;
 }): string =>
-  account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");
+  account?.name ??
+  (account?.type === "main" ? mainName : (account?.name ?? ""));
 
 export function sumAccounts(acconts: Account[]): bigint;
 export function sumAccounts(acconts: Account[] | undefined): bigint | undefined;
