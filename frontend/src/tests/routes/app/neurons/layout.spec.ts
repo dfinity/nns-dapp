@@ -1,6 +1,5 @@
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import NeuronsLayout from "$routes/(app)/(u)/(list)/neurons/+layout.svelte";
 import { render } from "@testing-library/svelte";
@@ -21,7 +20,6 @@ describe("Neurons layout", () => {
   });
 
   it("should have a back button", () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_PROJECTS_TABLE", true);
     const { getByTestId } = render(NeuronsLayout);
     const backButton = getByTestId("back");
     expect(backButton).toBeInTheDocument();
