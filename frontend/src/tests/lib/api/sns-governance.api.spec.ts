@@ -6,7 +6,6 @@ import {
   disburseMaturity,
   getNeuronBalance,
   getSnsNeuron,
-  nervousSystemParameters,
   queryProposal,
   queryProposals,
   querySnsNeuron,
@@ -27,10 +26,7 @@ import {
 } from "$lib/proxy/api.import.proxy";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
-import {
-  mockSnsNeuron,
-  snsNervousSystemParametersMock,
-} from "$tests/mocks/sns-neurons.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import {
   mockQueryMetadataResponse,
   mockQueryTokenResponse,
@@ -93,9 +89,6 @@ describe("sns-api", () => {
     functions: [nervousSystemFunctionMock],
   };
   const getFunctionsSpy = vi.fn().mockResolvedValue(nervousSystemFunctionsMock);
-  const nervousSystemParametersSpy = vi
-    .fn()
-    .mockResolvedValue(snsNervousSystemParametersMock);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -137,7 +130,6 @@ describe("sns-api", () => {
         refreshNeuron: refreshNeuronSpy,
         claimNeuron: claimNeuronSpy,
         listNervousSystemFunctions: getFunctionsSpy,
-        nervousSystemParameters: nervousSystemParametersSpy,
         setTopicFollowees: setTopicFolloweesSpy,
         stakeMaturity: stakeMaturitySpy,
         registerVote: registerVoteSpy,
@@ -346,17 +338,6 @@ describe("sns-api", () => {
     });
 
     expect(setTopicFolloweesSpy).toBeCalled();
-  });
-
-  it("should get nervous system parameters", async () => {
-    const res = await nervousSystemParameters({
-      identity: mockIdentity,
-      rootCanisterId: rootCanisterIdMock,
-      certified: false,
-    });
-
-    expect(nervousSystemParametersSpy).toBeCalled();
-    expect(res).toEqual(snsNervousSystemParametersMock);
   });
 
   it("should get proposals", async () => {

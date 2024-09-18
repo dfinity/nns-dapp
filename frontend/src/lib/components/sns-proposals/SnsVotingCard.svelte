@@ -1,15 +1,15 @@
 <script lang="ts">
   import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
+  import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { snsSortedNeuronStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
   import { authStore } from "$lib/stores/auth.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import {
     voteRegistrationStore,
-    type VoteRegistrationStoreEntry,
     votingNeuronSelectStore,
+    type VoteRegistrationStoreEntry,
   } from "$lib/stores/vote-registration.store";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import type {
@@ -25,8 +25,8 @@
   import { ineligibleSnsNeurons } from "$lib/utils/sns-neuron.utils";
   import {
     snsNeuronToVotingNeuron,
-    snsProposalIdString,
     snsProposalAcceptingVotes,
+    snsProposalIdString,
   } from "$lib/utils/sns-proposals.utils";
   import { Principal } from "@dfinity/principal";
   import type {

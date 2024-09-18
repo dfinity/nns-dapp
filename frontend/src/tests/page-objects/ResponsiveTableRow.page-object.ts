@@ -68,4 +68,8 @@ export class ResponsiveTableRowPo extends BasePageObject {
   async getTableRowTextColorVariable(): Promise<string> {
     return this.getStyleVariable("table-row-text-color");
   }
+
+  async getTableRowTooltipColorVariable(): Promise<string> {
+    return this.getStyleVariable("elements-icons");
+  }
 }

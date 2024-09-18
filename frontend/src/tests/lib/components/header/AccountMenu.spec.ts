@@ -70,14 +70,6 @@ describe("AccountMenu", () => {
       expect(renderResult.getByTestId("manage-ii-link")).not.toBeNull();
     });
 
-    it('should display "Source code" button', async () => {
-      const renderResult = render(AccountMenu);
-
-      await show(renderResult);
-
-      expect(renderResult.getByTestId("source-code-link")).not.toBeNull();
-    });
-
     it('should display "Canisters" button', async () => {
       const AccountMenuPo = renderComponent();
 

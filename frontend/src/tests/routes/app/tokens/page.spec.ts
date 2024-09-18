@@ -668,10 +668,6 @@ describe("Tokens route", () => {
     });
 
     describe("failed imported tokens", () => {
-      // "ZTOKEN1" token.
-      const failedTokenLedgerIdText = importedToken1Id.toText();
-      const failedTokenHash = "xlmdg-v...4rh-oqe";
-
       beforeEach(() => {
         resetIdentity();
 
@@ -680,7 +676,7 @@ describe("Tokens route", () => {
           importedTokens: [importedToken1Data, importedToken2Data],
           certified: true,
         });
-        failedImportedTokenLedgerIdsStore.add(failedTokenLedgerIdText);
+        failedImportedTokenLedgerIdsStore.add(importedToken1Id.toText());
       });
 
       it("should render failed imported tokens in the table", async () => {
@@ -688,10 +684,16 @@ describe("Tokens route", () => {
         const tokensPagePo = po.getTokensPagePo();
         const tokenNames = await tokensPagePo.getTokenNames();
 
-        // failed
-        expect(tokenNames.includes(failedTokenHash)).toEqual(true);
-        // loaded
-        expect(tokenNames.includes("ATOKEN2")).toEqual(true);
+        expect(tokenNames).toEqual([
+          "Internet Computer",
+          "ckBTC",
+          "ckETH",
+          "ckUSDC",
+          "ATOKEN2", // loaded imported token
+          "Pacman",
+          "Tetris",
+          importedToken1Id.toText(), // failed imported token
+        ]);
       });
 
       it("should render multiple failed imported tokens", async () => {
@@ -701,8 +703,16 @@ describe("Tokens route", () => {
         const tokensPagePo = po.getTokensPagePo();
         const tokenNames = await tokensPagePo.getTokenNames();
 
-        expect(tokenNames.includes(importedToken2IdText)).toEqual(true);
-        expect(tokenNames.includes(failedTokenHash)).toEqual(true);
+        expect(tokenNames).toEqual([
+          "Internet Computer",
+          "ckBTC",
+          "ckETH",
+          "ckUSDC",
+          importedToken2Id.toText(),
+          "Pacman",
+          "Tetris",
+          importedToken1Id.toText(),
+        ]);
       });
 
       it("should display failed imported token UI", async () => {
@@ -710,11 +720,11 @@ describe("Tokens route", () => {
         const tokensPagePo = po.getTokensPagePo();
         const failedTokenRow = await tokensPagePo
           .getTokensTable()
-          .getRowByName(failedTokenHash);
+          .getRowByName(importedToken1Id.toText());
 
         expect(
           await failedTokenRow.getFailedLedgerCanisterHashPo().getFullText()
-        ).toEqual(failedTokenLedgerIdText);
+        ).toEqual(importedToken1Id.toText());
         expect(await failedTokenRow.hasUnavailableBalance()).toEqual(true);
         expect(
           await failedTokenRow.getFailedTokenTooltipPo().getTooltipText()
@@ -739,7 +749,7 @@ describe("Tokens route", () => {
         };
 
         for (const rowPo of rowsPos) {
-          if ((await rowPo.getProjectName()) !== failedTokenHash) {
+          if ((await rowPo.getProjectName()) !== importedToken1Id.toText()) {
             await checkForFailedUI(rowPo);
           }
         }

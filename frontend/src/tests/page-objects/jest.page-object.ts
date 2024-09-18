@@ -21,7 +21,7 @@ export class JestPageObjectElement implements PageObjectElement {
   getElement(): Element | null {
     return isNullish(this.selector)
       ? this.baseElement
-      : this.baseElement?.querySelector(this.selector) ?? null;
+      : (this.baseElement?.querySelector(this.selector) ?? null);
   }
 
   querySelector(selector: string): JestPageObjectElement {

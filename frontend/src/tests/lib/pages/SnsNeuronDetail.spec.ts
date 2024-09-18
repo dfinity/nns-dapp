@@ -12,7 +12,6 @@ import * as checkNeuronsService from "$lib/services/sns-neurons-check-balances.s
 import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import {
   getSnsNeuronIdAsHexString,
@@ -64,9 +63,7 @@ describe("SnsNeuronDetail", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    snsParametersStore.reset();
     tokensStore.reset();
-    snsParametersStore.reset();
     snsNeuronsStore.reset();
     icrcAccountsStore.reset();
     setSnsProjects([

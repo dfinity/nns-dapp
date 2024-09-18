@@ -142,8 +142,8 @@ export const createUserToken = (params: Partial<UserTokenData> = {}) => {
   const rowHref = nonNullish(params.rowHref)
     ? params.rowHref
     : nonNullish(params.universeId)
-    ? `/wallet/?u=${params.universeId.toText()}`
-    : userTokenPageMock.rowHref;
+      ? `/wallet/?u=${params.universeId.toText()}`
+      : userTokenPageMock.rowHref;
   return {
     ...userTokenPageMock,
     ...params,

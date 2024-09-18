@@ -1,14 +1,11 @@
 import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
 import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "$lib/constants/constants";
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
-import {
-  createMockSnsNeuron,
-  snsNervousSystemParametersMock,
-} from "$tests/mocks/sns-neurons.mock";
+import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { ConfirmSnsDissolveDelayPo } from "$tests/page-objects/ConfirmSnsDissolveDelay.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
@@ -20,11 +17,11 @@ describe("ConfirmSnsDissolveDelay", () => {
   });
 
   beforeEach(() => {
-    snsParametersStore.setParameters({
-      certified: true,
-      rootCanisterId: mockPrincipal,
-      parameters: snsNervousSystemParametersMock,
-    });
+    setSnsProjects([
+      {
+        rootCanisterId: mockPrincipal,
+      },
+    ]);
   });
 
   const renderComponent = ({
@@ -100,19 +97,15 @@ describe("ConfirmSnsDissolveDelay", () => {
 
   it("renders voting power", async () => {
     // Stake of 20.00 with max dissolve delay will result in 40.00 voting power.
-    snsParametersStore.setParameters({
-      certified: true,
-      rootCanisterId: mockPrincipal,
-      parameters: {
-        ...snsNervousSystemParametersMock,
-        neuron_minimum_dissolve_delay_to_vote_seconds: [
-          BigInt(delayInSeconds / 5),
-        ],
-        max_dissolve_delay_seconds: [BigInt(delayInSeconds)],
-        max_dissolve_delay_bonus_percentage: [100n],
-        max_age_bonus_percentage: [0n],
+    setSnsProjects([
+      {
+        rootCanisterId: mockPrincipal,
+        neuronMinimumDissolveDelayToVoteSeconds: BigInt(delayInSeconds / 5),
+        maxDissolveDelaySeconds: BigInt(delayInSeconds),
+        maxDissolveDelayBonusPercentage: 100,
+        maxAgeBonusPercentage: 0,
       },
-    });
+    ]);
     const neuron = createMockSnsNeuron({
       stake: 2_000_000_000n,
       stakedMaturity: 0n,

@@ -25,12 +25,7 @@
 <div class="title-logo-wrapper">
   <Logo src={rowData.logo} alt={rowData.title} size="medium" framed />
   {#if isUserTokenFailed(rowData)}
-    <Hash
-      id="failed-ledger-canister-id"
-      text={`${rowData.universeId.toText()}`}
-      tagName="span"
-      tooltipTop
-    />
+    <Hash text={`${rowData.universeId.toText()}`} tagName="span" tooltipTop />
   {:else}
     <div class="title-wrapper">
       <h5 data-tid="project-name">{rowData.title}</h5>
@@ -54,6 +49,8 @@
 </div>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
   h5 {
     margin: 0;
   }
@@ -62,8 +59,12 @@
     display: flex;
     align-items: center;
     gap: var(--padding);
+
     // Fix squashed logo on mobile for failed imported tokens caused by too many elements being displayed.
     flex-wrap: wrap;
+    @include media.min-width(medium) {
+      flex-wrap: nowrap;
+    }
 
     .title-wrapper {
       display: flex;

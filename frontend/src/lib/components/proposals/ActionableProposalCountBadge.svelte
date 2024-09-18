@@ -20,15 +20,15 @@
           $count: `${count}`,
         })
       : isUniverseNns(Principal.fromText(universe.canisterId))
-      ? // NNS
-        replacePlaceholders($i18n.voting.nns_actionable_proposal_tooltip, {
-          $count: `${count}`,
-        })
-      : // SNS
-        replacePlaceholders($i18n.voting.sns_actionable_proposal_tooltip, {
-          $count: `${count}`,
-          $snsName: universe.title,
-        });
+        ? // NNS
+          replacePlaceholders($i18n.voting.nns_actionable_proposal_tooltip, {
+            $count: `${count}`,
+          })
+        : // SNS
+          replacePlaceholders($i18n.voting.sns_actionable_proposal_tooltip, {
+            $count: `${count}`,
+            $snsName: universe.title,
+          });
 </script>
 
 <TestIdWrapper testId="actionable-proposal-count-badge-component">
