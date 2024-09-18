@@ -1,15 +1,12 @@
 import SnsProposalPayloadSection from "$lib/components/sns-proposals/SnsProposalPayloadSection.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsProposalPayloadSectionPo } from "$tests/page-objects/SnsProposalPayloadSection.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SnsProposalData } from "@dfinity/sns";
+import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-
-vi.mock("$lib/utils/html.utils", () => ({
-  markdownToHTML: (value) => Promise.resolve(value),
-}));
 
 describe("SnsProposalPayloadSection", () => {
   const renderComponent = async (props) => {
@@ -25,7 +22,7 @@ describe("SnsProposalPayloadSection", () => {
   };
 
   describe("when payload is defined", () => {
-    const payload = "# Some Summary";
+    const payload = "Some Summary";
     const proposal: SnsProposalData = {
       ...mockSnsProposal,
       payload_text_rendering: [payload],
@@ -41,7 +38,10 @@ describe("SnsProposalPayloadSection", () => {
     it("should contain summary", async () => {
       const po = await renderComponent(props);
 
-      expect(await (await po.getPayloadText()).trim()).toBe(payload);
+      // We use waitFor instead of runResolvedPromises because markdown is sometimes too slow for runResolvedPromises.
+      await waitFor(async () => {
+        expect(await (await po.getPayloadText()).trim()).toBe(payload);
+      });
     });
   });
 
