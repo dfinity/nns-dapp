@@ -3,7 +3,6 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -55,17 +54,7 @@ describe("MenuItems", () => {
   it("should render accounts menu item", () =>
     shouldRenderMenuItem({ context: "accounts", labelKey: "tokens" }));
 
-  it("should render neurons menu item without projects table", () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_PROJECTS_TABLE", false);
-    shouldRenderMenuItem({
-      context: "neurons",
-      labelKey: "neurons",
-      href: "/neurons/?u=qhbym-qaaaa-aaaaa-aaafq-cai",
-    });
-  });
-
-  it("should render neurons menu item with projects table", () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_PROJECTS_TABLE", true);
+  it("should render neurons menu item", () => {
     shouldRenderMenuItem({
       context: "neurons",
       labelKey: "neurons",
