@@ -11,7 +11,10 @@ import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
-import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+import {
+  failedImportedTokenLedgerIdsStore,
+  importedTokensStore,
+} from "$lib/stores/imported-tokens.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
@@ -191,7 +194,10 @@ export const removeImportedTokens = async (
     const { err } = await saveImportedToken({ tokens: remainingTokens });
 
     if (isNullish(err)) {
-      await loadImportedTokens();
+      // There is no need to reload imported tokens if the remove operation is successful.
+      importedTokensStore.remove(ledgerCanisterId);
+      failedImportedTokenLedgerIdsStore.remove(ledgerCanisterId.toText());
+
       toastsSuccess({
         labelKey: "tokens.remove_imported_token_success",
       });
