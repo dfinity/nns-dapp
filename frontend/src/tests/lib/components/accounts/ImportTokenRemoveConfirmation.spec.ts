@@ -81,7 +81,7 @@ describe("ImportTokenRemoveConfirmation", () => {
     expect(onConfirm).toBeCalledTimes(1);
   });
 
-  it("should display ledger ID when universe is not available", async () => {
+  it("should display ledger ID when universe is not provided", async () => {
     const po = renderComponent({
       ledgerCanisterId: ledgerCanisterId1,
       universe: undefined,
