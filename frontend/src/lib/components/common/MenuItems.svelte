@@ -5,16 +5,14 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
-  import {
-    neuronsPathStore,
-    proposalsPathStore,
-  } from "$lib/derived/paths.derived";
-  import { ENABLE_PROJECTS_TABLE } from "$lib/stores/feature-flags.store";
+  import { proposalsPathStore } from "$lib/derived/paths.derived";
   import { i18n } from "$lib/stores/i18n";
   import {
     ACTIONABLE_PROPOSALS_URL,
     isSelectedPath,
   } from "$lib/utils/navigation.utils";
+  import type { ComponentType } from "svelte";
+  import SourceCodeButton from "./SourceCodeButton.svelte";
   import {
     IconNeurons,
     IconRocketLaunch,
@@ -23,8 +21,6 @@
     MenuItem,
     ThemeToggleButton,
   } from "@dfinity/gix-components";
-  import type { ComponentType } from "svelte";
-  import SourceCodeButton from "./SourceCodeButton.svelte";
   import { layoutMenuOpen, menuCollapsed } from "@dfinity/gix-components";
   import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
   import { ENABLE_METRICS } from "$lib/constants/mockable.constants";
@@ -54,7 +50,7 @@
     },
     {
       context: "neurons",
-      href: $ENABLE_PROJECTS_TABLE ? AppPath.Staking : $neuronsPathStore,
+      href: AppPath.Staking,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
         paths: [AppPath.Staking, AppPath.Neurons, AppPath.Neuron],
