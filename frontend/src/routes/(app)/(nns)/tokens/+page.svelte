@@ -28,7 +28,11 @@
   import type { Account } from "$lib/types/account";
   import { ActionType, type Action } from "$lib/types/actions";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
-  import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
+  import type {
+    UserToken,
+    UserTokenData,
+    UserTokenFailed,
+  } from "$lib/types/tokens-page";
   import type { Universe, UniverseCanisterIdText } from "$lib/types/universe";
   import {
     isIcrcTokenUniverse,
@@ -41,6 +45,9 @@
   import { onMount } from "svelte";
   import { compareTokensForTokensTable } from "$lib/utils/tokens-table.utils";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import ImportTokenRemoveConfirmation from "$lib/components/accounts/ImportTokenRemoveConfirmation.svelte";
+  import { isUserTokenData } from "$lib/utils/user-token.utils";
+  import { removeImportedTokens } from "$lib/services/imported-tokens.services";
 
   onMount(() => {
     loadCkBTCTokens();
@@ -147,11 +154,12 @@
     | "ckbtc-send"
     | "icrc-send"
     | "icrc-receive"
-    | "ckbtc-receive";
+    | "ckbtc-receive"
+    | "imported-remove";
   let modal:
     | {
         type: ModalType;
-        data: UserTokenData;
+        data: UserTokenData | UserTokenFailed;
       }
     | undefined;
   const closeModal = () => {
@@ -166,10 +174,11 @@
 
   let account: Account | undefined;
   $: account =
-    modal &&
-    $universesAccountsStore[modal.data.universeId.toText()].find(
-      ({ type }) => type === "main"
-    );
+    modal && isUserTokenData(modal.data)
+      ? $universesAccountsStore[modal.data.universeId.toText()].find(
+          ({ type }) => type === "main"
+        )
+      : undefined;
 
   const handleAction = ({ detail }: { detail: Action }) => {
     if (detail.type === ActionType.Send) {
@@ -195,6 +204,17 @@
       } else {
         modal = { type: "icrc-receive", data: detail.data };
       }
+    }
+    if (detail.type === ActionType.Remove) {
+      modal = { type: "imported-remove", data: detail.data };
+    }
+  };
+
+  const removeImportedToken = async () => {
+    // For type safety. This should never happen.
+    if (nonNullish(modal)) {
+      await removeImportedTokens(modal.data.universeId);
+      closeModal();
     }
   };
 
@@ -222,63 +242,73 @@
     />
   {/if}
 
-  {#if modal?.type === "sns-send"}
-    <IcrcTokenTransactionModal
-      on:nnsClose={closeModal}
-      ledgerCanisterId={$snsLedgerCanisterIdsStore[
-        modal.data.universeId.toText()
-      ]}
-      universeId={modal.data.universeId}
-      token={modal.data.token}
-      transactionFee={modal.data.fee}
-    />
+  {#if nonNullish(modal) && isUserTokenData(modal.data)}
+    {#if modal.type === "sns-send"}
+      <IcrcTokenTransactionModal
+        on:nnsClose={closeModal}
+        ledgerCanisterId={$snsLedgerCanisterIdsStore[
+          modal.data.universeId.toText()
+        ]}
+        universeId={modal.data.universeId}
+        token={modal.data.token}
+        transactionFee={modal.data.fee}
+      />
+    {/if}
+
+    {#if modal.type === "ckbtc-send"}
+      <CkBtcTransactionModal
+        on:nnsClose={closeModal}
+        on:nnsTransfer={closeModal}
+        token={modal.data.token}
+        transactionFee={modal.data.fee}
+        universeId={modal.data.universeId}
+        canisters={CKBTC_ADDITIONAL_CANISTERS[modal.data.universeId.toText()]}
+      />
+    {/if}
+
+    {#if modal.type === "icrc-send"}
+      <IcrcTokenTransactionModal
+        on:nnsClose={closeModal}
+        ledgerCanisterId={modal.data.universeId}
+        universeId={modal.data.universeId}
+        token={modal.data.token}
+        transactionFee={modal.data.fee}
+      />
+    {/if}
+
+    {#if modal.type === "ckbtc-receive" && nonNullish(ckBTCCanisters) && nonNullish(account)}
+      <CkBtcReceiveModal
+        data={{
+          canisters: ckBTCCanisters,
+          account,
+          universeId: modal.data.universeId,
+          canSelectAccount: false,
+          reload: createReloadAccountBalance(modal.data.universeId),
+        }}
+        on:nnsClose={closeModal}
+      />
+    {/if}
+
+    {#if modal.type === "icrc-receive" && nonNullish(account)}
+      <IcrcReceiveModal
+        data={{
+          account,
+          universeId: modal.data.universeId,
+          canSelectAccount: false,
+          reload: createReloadAccountBalance(modal.data.universeId),
+          tokenSymbol: modal.data.token.symbol,
+          logo: modal.data.logo,
+        }}
+        on:nnsClose={closeModal}
+      />
+    {/if}
   {/if}
 
-  {#if modal?.type === "ckbtc-send"}
-    <CkBtcTransactionModal
-      on:nnsClose={closeModal}
-      on:nnsTransfer={closeModal}
-      token={modal.data.token}
-      transactionFee={modal.data.fee}
-      universeId={modal.data.universeId}
-      canisters={CKBTC_ADDITIONAL_CANISTERS[modal.data.universeId.toText()]}
-    />
-  {/if}
-
-  {#if modal?.type === "icrc-send"}
-    <IcrcTokenTransactionModal
-      on:nnsClose={closeModal}
+  {#if modal?.type === "imported-remove"}
+    <ImportTokenRemoveConfirmation
       ledgerCanisterId={modal.data.universeId}
-      universeId={modal.data.universeId}
-      token={modal.data.token}
-      transactionFee={modal.data.fee}
-    />
-  {/if}
-
-  {#if modal?.type === "ckbtc-receive" && nonNullish(ckBTCCanisters) && nonNullish(account)}
-    <CkBtcReceiveModal
-      data={{
-        canisters: ckBTCCanisters,
-        account,
-        universeId: modal.data.universeId,
-        canSelectAccount: false,
-        reload: createReloadAccountBalance(modal.data.universeId),
-      }}
       on:nnsClose={closeModal}
-    />
-  {/if}
-
-  {#if modal?.type === "icrc-receive" && nonNullish(account)}
-    <IcrcReceiveModal
-      data={{
-        account,
-        universeId: modal.data.universeId,
-        canSelectAccount: false,
-        reload: createReloadAccountBalance(modal.data.universeId),
-        tokenSymbol: modal.data.token.symbol,
-        logo: modal.data.logo,
-      }}
-      on:nnsClose={closeModal}
+      on:nnsConfirm={removeImportedToken}
     />
   {/if}
 </TestIdWrapper>
