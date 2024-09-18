@@ -35,7 +35,7 @@
       <span class="tabular-nums">
         {firstAndLastDigitsArray[0]}
         {#if firstAndLastDigitsArray[1]}
-          <span class="ellipsis">...</span>
+          <span>&hellip;</span>
           {firstAndLastDigitsArray[1]}
         {/if}
       </span>
@@ -64,10 +64,6 @@
 
     .tabular-nums {
       font-variant: tabular-nums;
-    }
-
-    .ellipsis {
-      font-variant: normal;
     }
   }
 </style>
