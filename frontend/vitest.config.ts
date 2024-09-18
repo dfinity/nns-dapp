@@ -83,7 +83,11 @@ export default defineConfig(
       //
       // Use atomics to synchronize threads seem to resolve the issue according our tests.
       // https://vitest.dev/config/#pooloptions-threads-useatomics
-      useAtomics: true,
+      poolOptions: {
+        threads: {
+          useAtomics: true,
+        }
+      }
     },
   })
 );
