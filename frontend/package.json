@@ -47,9 +47,9 @@
     "fake-indexeddb": "^5.0.0",
     "node-fetch": "^3.3.2",
     "postcss": "^8.4.47",
-    "prettier": "^3.0.3",
-    "prettier-plugin-organize-imports": "^3.2.4",
-    "prettier-plugin-svelte": "^3.0.3",
+    "prettier": "^3.3.3",
+    "prettier-plugin-organize-imports": "^4.0.0",
+    "prettier-plugin-svelte": "^3.2.6",
     "sass": "^1.69.4",
     "svelte": "^4.2.19",
     "svelte-check": "^4.0.2",
@@ -79,8 +79,7 @@
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.8",
     "@ledgerhq/hw-transport-webhid": "^6.27.8",
     "@zondax/ledger-icp": "^0.6.1",
-    "buffer": "^6.0.3",
-    "marked": "^9.1.0"
+    "buffer": "^6.0.3"
   },
   "overrides": {
     "semver": "^7.5.3"

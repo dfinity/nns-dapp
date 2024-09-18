@@ -25,7 +25,7 @@
     ({ vote }) => neuronsVotedForProposal[0]?.vote !== vote
   )
     ? Vote.Unspecified
-    : neuronsVotedForProposal[0]?.vote ?? Vote.Unspecified;
+    : (neuronsVotedForProposal[0]?.vote ?? Vote.Unspecified);
 </script>
 
 {#if votedNeuronCount > 0}

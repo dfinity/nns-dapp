@@ -64,7 +64,7 @@
 
   export const setSelectedAccount = () => {
     const accounts = nonNullish(ledgerCanisterId)
-      ? $icrcAccountsStore[ledgerCanisterId.toText()]?.accounts ?? []
+      ? ($icrcAccountsStore[ledgerCanisterId.toText()]?.accounts ?? [])
       : [];
     const account = findAccountOrDefaultToMain({
       identifier: accountIdentifier,

@@ -62,8 +62,8 @@ const initIcpTransactionsStore = (): IcpTransactionsStore => {
           oldestTxId === undefined
             ? accountState?.oldestTxId
             : oldestTxId <= (accountState?.oldestTxId ?? oldestTxId)
-            ? oldestTxId
-            : accountState?.oldestTxId;
+              ? oldestTxId
+              : accountState?.oldestTxId;
         return {
           ...currentState,
           [accountIdentifier]: {
