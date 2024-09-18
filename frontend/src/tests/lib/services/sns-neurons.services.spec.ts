@@ -550,6 +550,15 @@ describe("sns-neurons-services", () => {
       expect(spyStake).not.toBeCalled();
       expect(spyQuery).not.toBeCalled();
       expect(loadSnsAccounts).not.toBeCalled();
+
+      expect(toastsError).toBeCalledWith({
+        err: new Error(
+          "The caller should make sure the amount is at least the minimum stake"
+        ),
+        labelKey: "error__sns.sns_stake",
+        renderAsHtml: false,
+      });
+      expect(toastsError).toBeCalledTimes(1);
     });
   });
 
