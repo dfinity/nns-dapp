@@ -48,20 +48,19 @@
     text-decoration: none;
     text-align: center;
 
+    padding: var(--padding) var(--padding-2x);
     gap: var(--padding-0_5x);
-    z-index: var(--z-index);
+    border-radius: var(--border-radius);
 
     @include fonts.small;
     color: var(--text-color);
 
     background: var(--sidebar-button-background);
-    border-radius: var(--border-radius);
-
     &:hover {
       background: var(--sidebar-button-background-hover);
     }
 
-    padding: var(--padding) var(--padding-2x);
+    z-index: var(--z-index);
 
     &.stacked {
       display: flex;
