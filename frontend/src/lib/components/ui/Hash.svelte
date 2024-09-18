@@ -36,11 +36,13 @@
       on:click|stopPropagation={() => isClickable && dispatcher("nnsHash")}
     >
       {#if tabularNums}
-        {firstAndLastDigitsArray[0]}
-        {#if firstAndLastDigitsArray[1]}
-          <span class="ellipsis">...</span>
-          {firstAndLastDigitsArray[1]}
-        {/if}
+        <span class="tabular-nums">
+          {firstAndLastDigitsArray[0]}
+          {#if firstAndLastDigitsArray[1]}
+            <span class="ellipsis">...</span>
+            {firstAndLastDigitsArray[1]}
+          {/if}
+        </span>
       {:else}
         {shortText}
       {/if}
@@ -63,6 +65,10 @@
       display: inline-flex;
       // Make sure the icon doesn't increase the line height.
       max-height: 0;
+    }
+
+    .tabular-nums {
+      font-variant: tabular-nums;
     }
 
     .ellipsis {
