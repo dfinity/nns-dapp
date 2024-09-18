@@ -11,7 +11,10 @@ import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
-import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+import {
+  failedImportedTokenLedgerIdsStore,
+  importedTokensStore,
+} from "$lib/stores/imported-tokens.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
@@ -35,11 +38,13 @@ export const loadImportedTokens = async ({
   return queryAndUpdate<ImportedTokens, unknown>({
     request: (options) => getImportedTokens(options),
     strategy: FORCE_CALL_STRATEGY,
-    onLoad: ({ response: { imported_tokens: importedTokens }, certified }) =>
+    onLoad: ({ response: { imported_tokens: importedTokens }, certified }) => {
       importedTokensStore.set({
         importedTokens: importedTokens.map(toImportedTokenData),
         certified,
-      }),
+      });
+      failedImportedTokenLedgerIdsStore.reset();
+    },
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -60,6 +65,7 @@ export const loadImportedTokens = async ({
 
       // Explicitly handle only UPDATE errors
       importedTokensStore.reset();
+      failedImportedTokenLedgerIdsStore.reset();
 
       toastsError({
         labelKey: "error__imported_tokens.load_imported_tokens",
