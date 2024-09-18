@@ -43,7 +43,7 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
 import { writable } from "svelte/store";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 
 vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/icp-ledger.api");
@@ -283,8 +283,8 @@ describe("ParticipateSwapModal", () => {
 
   describe("when accounts are not available", () => {
     const mainBalanceE8s = 10_000_000n;
-    let queryAccountSpy: SpyInstance;
-    let queryAccountBalanceSpy: SpyInstance;
+    let queryAccountSpy: MockInstance;
+    let queryAccountBalanceSpy: MockInstance;
     let resolveQueryAccounts;
 
     beforeEach(() => {
@@ -323,7 +323,7 @@ describe("ParticipateSwapModal", () => {
       spy,
       params,
     }: {
-      spy: SpyInstance;
+      spy: MockInstance;
       params: object;
     }) => {
       expect(spy).toBeCalledWith({
@@ -356,7 +356,7 @@ describe("ParticipateSwapModal", () => {
   });
 
   describe("when no accounts and user navigates away", () => {
-    let spyQueryAccount: SpyInstance;
+    let spyQueryAccount: MockInstance;
     beforeEach(() => {
       resetAccountsForTesting();
       vi.clearAllTimers();

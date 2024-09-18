@@ -13,7 +13,7 @@ import { UniverseSummaryPo } from "$tests/page-objects/UniverseSummary.page-obje
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 
 vi.mock("$lib/services/canisters.services", () => {
   return {
@@ -36,7 +36,7 @@ vi.mock("$lib/services/worker-cycles.services", () => ({
 }));
 
 describe("Canisters", () => {
-  let authStoreMock: SpyInstance;
+  let authStoreMock: MockInstance;
 
   beforeEach(() => {
     vi.clearAllMocks();

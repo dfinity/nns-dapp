@@ -196,7 +196,7 @@ describe("proposals-services", () => {
 
         await loadProposal({
           proposalId: 0n,
-          setProposal: vi.fn,
+          setProposal: vi.fn(),
         });
         expect(toastsShow).toBeCalledTimes(1);
         expect(toastsShow).toBeCalledWith({

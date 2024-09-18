@@ -27,7 +27,7 @@ import type {
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 
 const {
   getSwapAccount,
@@ -200,7 +200,7 @@ describe("sns-services", () => {
   });
 
   describe("loadSnsSwapCommitment", () => {
-    let queryCommitmentSpy: SpyInstance;
+    let queryCommitmentSpy: MockInstance;
     const commitment1 = mockSnsSwapCommitment(principal(0));
     beforeEach(() => {
       queryCommitmentSpy = vi

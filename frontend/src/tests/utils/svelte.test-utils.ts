@@ -11,6 +11,6 @@ export const render = (
   document.body.appendChild(container);
   return svelteRender(component, componentOptions, {
     ...renderOptions,
-    container,
+    baseElement: container,
   });
 };
