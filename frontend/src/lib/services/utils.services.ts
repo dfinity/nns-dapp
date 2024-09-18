@@ -54,8 +54,8 @@ export const queryAndUpdate = async <R, E>({
     identityType === "anonymous"
       ? getAnonymousIdentity()
       : identityType === "current"
-      ? getCurrentIdentity()
-      : await getAuthenticatedIdentity();
+        ? getCurrentIdentity()
+        : await getAuthenticatedIdentity();
 
   if (
     identity.getPrincipal().isAnonymous() &&
@@ -69,7 +69,7 @@ export const queryAndUpdate = async <R, E>({
 
   const currentStrategy = identity.getPrincipal().isAnonymous()
     ? "query"
-    : strategy ?? "query_and_update";
+    : (strategy ?? "query_and_update");
 
   const log = ({ postfix }: { postfix: string }) => {
     if (currentStrategy !== "query_and_update") {

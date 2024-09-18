@@ -42,10 +42,10 @@
   $: iconType = isReimbursement
     ? "reimbursed"
     : isFailed
-    ? "failed"
-    : isIncoming
-    ? "received"
-    : "sent";
+      ? "failed"
+      : isIncoming
+        ? "received"
+        : "sent";
 
   let label: string;
   $: label = isIncoming

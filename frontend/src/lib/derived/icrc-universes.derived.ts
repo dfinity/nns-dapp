@@ -31,8 +31,8 @@ const convertIcrcCanistersToUniverse = ({
     (universeId === CKETH_UNIVERSE_CANISTER_ID.toText()
       ? CKETH_LOGO
       : universeId === CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()
-      ? CKSEPOLIAETH_LOGO
-      : UNKNOWN_LOGO);
+        ? CKSEPOLIAETH_LOGO
+        : UNKNOWN_LOGO);
   return {
     canisterId: universeId,
     title: tokenData.token.name,
