@@ -5,11 +5,7 @@
     type UserTokenData,
     type UserTokenLoading,
   } from "$lib/types/tokens-page";
-  import {
-    isUserTokenData,
-    isUserTokenFailed,
-    isUserTokenLoading,
-  } from "$lib/utils/user-token.utils";
+  import { isUserTokenLoading } from "$lib/utils/user-token.utils";
   import GoToDashboardButton from "./actions/GoToDashboardButton.svelte";
   import GoToDetailIcon from "./actions/GoToDetailIcon.svelte";
   import ReceiveButton from "./actions/ReceiveButton.svelte";
