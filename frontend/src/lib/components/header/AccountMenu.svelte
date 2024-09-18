@@ -32,8 +32,6 @@
       <div class="info">
         <AccountDetails />
 
-        <ThemeToggle />
-
         <ManageInternetIdentityButton />
 
         <SettingsButton on:nnsLink={() => (visible = false)} />

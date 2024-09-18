@@ -38,14 +38,6 @@ describe("AccountMenu", () => {
       await show(renderResult);
     });
 
-    it("should display theme toggle", async () => {
-      const renderResult = render(AccountMenu);
-
-      await show(renderResult);
-
-      expect(renderResult.getByTestId("theme-toggle")).not.toBeNull();
-    });
-
     it("should display logout button", async () => {
       const renderResult = render(AccountMenu);
 
