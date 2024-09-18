@@ -63,10 +63,6 @@
 
     padding: var(--padding) var(--padding-2x);
 
-    &:hover {
-      background: var(--sidebar-button-background-hover);
-    }
-
     &.stacked {
       display: flex;
       flex-direction: column-reverse;
