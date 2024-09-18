@@ -10,7 +10,10 @@ import {
   loadImportedTokens,
   removeImportedTokens,
 } from "$lib/services/imported-tokens.services";
-import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+import {
+  failedImportedTokenLedgerIdsStore,
+  importedTokensStore,
+} from "$lib/stores/imported-tokens.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -46,6 +49,7 @@ describe("imported-tokens-services", () => {
     vi.clearAllMocks();
     resetIdentity();
     importedTokensStore.reset();
+    failedImportedTokenLedgerIdsStore.reset();
     toastsStoreEntry.reset();
     busyStore.resetForTesting();
     vi.spyOn(console, "error").mockReturnValue();
@@ -111,11 +115,17 @@ describe("imported-tokens-services", () => {
         importedTokens: [importedTokenDataA],
         certified: true,
       });
+      failedImportedTokenLedgerIdsStore.add(
+        importedTokenDataA.ledgerCanisterId.toString()
+      );
 
       expect(get(importedTokensStore)).toEqual({
         importedTokens: [importedTokenDataA],
         certified: true,
       });
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([
+        importedTokenDataA.ledgerCanisterId.toText(),
+      ]);
 
       await loadImportedTokens();
 
@@ -123,6 +133,7 @@ describe("imported-tokens-services", () => {
         importedTokens: undefined,
         certified: undefined,
       });
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([]);
     });
 
     it("should handle ignoreAccountNotFoundError parameter (no error toast, no imported tokens)", async () => {
@@ -131,12 +142,21 @@ describe("imported-tokens-services", () => {
       vi.spyOn(importedTokensApi, "getImportedTokens").mockRejectedValue(
         accountNotFoundError
       );
-
+      importedTokensStore.set({
+        importedTokens: [importedTokenDataA],
+        certified: true,
+      });
+      failedImportedTokenLedgerIdsStore.add(
+        importedTokenDataA.ledgerCanisterId.toString()
+      );
       expect(spyToastError).toBeCalledTimes(0);
       expect(get(importedTokensStore)).toEqual({
-        importedTokens: undefined,
-        certified: undefined,
+        importedTokens: [importedTokenDataA],
+        certified: true,
       });
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([
+        importedTokenDataA.ledgerCanisterId.toText(),
+      ]);
 
       // default = ignoreAccountNotFoundError: false
       await loadImportedTokens();
@@ -155,6 +175,7 @@ describe("imported-tokens-services", () => {
         importedTokens: [],
         certified: true,
       });
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([]);
     });
   });
 

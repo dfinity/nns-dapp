@@ -38,11 +38,13 @@ export const loadImportedTokens = async ({
   return queryAndUpdate<ImportedTokens, unknown>({
     request: (options) => getImportedTokens(options),
     strategy: FORCE_CALL_STRATEGY,
-    onLoad: ({ response: { imported_tokens: importedTokens }, certified }) =>
+    onLoad: ({ response: { imported_tokens: importedTokens }, certified }) => {
       importedTokensStore.set({
         importedTokens: importedTokens.map(toImportedTokenData),
         certified,
-      }),
+      });
+      failedImportedTokenLedgerIdsStore.reset();
+    },
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -63,6 +65,7 @@ export const loadImportedTokens = async ({
 
       // Explicitly handle only UPDATE errors
       importedTokensStore.reset();
+      failedImportedTokenLedgerIdsStore.reset();
 
       toastsError({
         labelKey: "error__imported_tokens.load_imported_tokens",
