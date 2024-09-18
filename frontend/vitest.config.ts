@@ -1,11 +1,12 @@
 import { sveltekit } from "@sveltejs/kit/vite";
+import { svelteTesting } from '@testing-library/svelte/vite';
 import { resolve } from "path";
 import type { UserConfig } from "vite";
 import { configDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig(
   ({ mode }: UserConfig): UserConfig => ({
-    plugins: [sveltekit()],
+    plugins: [sveltekit(), svelteTesting()],
     resolve: {
       alias: [
         {
