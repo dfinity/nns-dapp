@@ -68,3 +68,11 @@ export const firstAndLastDigits = (
     ? [text.slice(0, splitLength), text.slice(-1 * splitLength)]
     : [text, ""];
 };
+
+export const firstAndLastDigitsWithMiddleHellip = (
+  text: string,
+  splitLength?: number
+): string => {
+  const [first, last] = firstAndLastDigits(text, splitLength);
+  return last !== "" ? `${first}…${last}` : first;
+};

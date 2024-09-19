@@ -1,4 +1,4 @@
-import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+import { firstAndLastDigitsWithMiddleHellip } from "$lib/utils/format.utils";
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import { createDummyProposal } from "$tests/utils/e2e.nns-proposals.test-utils";
@@ -129,7 +129,7 @@ test("Test proposals", async ({ page, context }) => {
     "Accepting Votes"
   );
   expect(await systemInfoSectionPo.getProposalProposerNeuronIdText()).toBe(
-    shortenWithMiddleEllipsis(proposerNeuronId, 6)
+    firstAndLastDigitsWithMiddleHellip(proposerNeuronId, 6)
   );
 
   // Votes result
