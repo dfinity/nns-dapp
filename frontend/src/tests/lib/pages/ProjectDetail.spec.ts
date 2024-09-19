@@ -337,7 +337,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
 
       it("should not reload proposal when derived state updates", async () => {
-        const { unmount } = render(ProjectDetail, props);
+        render(ProjectDetail, props);
 
         await runResolvedPromises();
 

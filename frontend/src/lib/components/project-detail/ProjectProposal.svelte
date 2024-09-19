@@ -15,7 +15,7 @@
 
   let proposalInfo: ProposalInfo | undefined;
 
-  const loadProposalFromId = (proposalId: ProposalId) => {
+  const loadProposalFromId = (proposalId: ProposalId | undefined) => {
     if (nonNullish(proposalId)) {
       loadProposal({
         proposalId,
