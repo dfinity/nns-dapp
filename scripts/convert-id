@@ -144,16 +144,16 @@ function hex_to_icrc1() {
   subaccount_hex="$(get_subaccount_hex)"
 
   # Remove leading zeros.
-  subaccount_hex="$(echo -n "$subaccount_hex" | sed -e 's@^0*@@')"
+  trimmed_subaccount_hex="$(echo -n "$subaccount_hex" | sed -e 's@^0*@@')"
 
-  if [[ -z "$subaccount_hex" ]]; then
+  if [[ -z "$trimmed_subaccount_hex" ]]; then
     echo -n "$hex" | hex_to_text
     return
   fi
 
   checksum="$(echo -n "${hex}${subaccount_hex}" | xxd -r -p | /usr/bin/crc32 /dev/stdin | xxd -p -r | base32 | tr -d = | tr '[:upper:]' '[:lower:]')"
 
-  echo "$(echo "$hex" | hex_to_text)-${checksum}.${subaccount_hex}"
+  echo "$(echo "$hex" | hex_to_text)-${checksum}.${trimmed_subaccount_hex}"
 }
 
 function check_hex() {
