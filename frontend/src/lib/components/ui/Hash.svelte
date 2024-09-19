@@ -47,9 +47,6 @@
   span {
     align-items: center;
     display: inline-flex;
-    justify-content: space-around;
-    margin: 0;
-    padding: 0;
     .copy {
       align-items: center;
       display: inline-flex;
