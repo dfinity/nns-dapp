@@ -3,7 +3,7 @@ import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-manag
 import CanisterDetail from "$lib/pages/CanisterDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { canistersStore } from "$lib/stores/canisters.store";
-import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+import { firstAndLastDigitsWithMiddleHellip } from "$lib/utils/format.utils";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCanisterDetails,
@@ -110,7 +110,7 @@ describe("CanisterDetail", () => {
       await runResolvedPromises();
 
       expect(queryByTestId("identifier").textContent.trim()).toEqual(
-        shortenWithMiddleEllipsis(canisterId.toText())
+        firstAndLastDigitsWithMiddleHellip(canisterId.toText())
       );
     });
   });

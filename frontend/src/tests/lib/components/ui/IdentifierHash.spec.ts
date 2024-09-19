@@ -14,7 +14,7 @@ describe("IdentifierHash", () => {
   it("should render a hashed identifier", async () => {
     const po = renderComponent({ identifier: "12345678901234567890" });
 
-    expect(await po.getDisplayedText()).toBe("1234567...4567890");
+    expect(await po.getDisplayedText()).toBe("1234567…4567890");
     expect(await po.getFullText()).toBe("12345678901234567890");
   });
 

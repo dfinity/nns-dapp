@@ -1,5 +1,5 @@
 import Hash from "$lib/components/ui/Hash.svelte";
-import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+import { firstAndLastDigitsWithMiddleHellip } from "$lib/utils/format.utils";
 import { render } from "@testing-library/svelte";
 
 describe("Hash", () => {
@@ -12,7 +12,9 @@ describe("Hash", () => {
     });
 
     const small = getByTestId(testId);
-    expect(small?.textContent).toEqual(shortenWithMiddleEllipsis(identifier));
+    expect(small?.textContent).toEqual(
+      firstAndLastDigitsWithMiddleHellip(identifier)
+    );
   });
 
   it("should use the splitLength prop", () => {
@@ -23,7 +25,7 @@ describe("Hash", () => {
 
     const small = getByTestId(testId);
     expect(small?.textContent).toEqual(
-      shortenWithMiddleEllipsis(identifier, splitLength)
+      firstAndLastDigitsWithMiddleHellip(identifier, splitLength)
     );
   });
 

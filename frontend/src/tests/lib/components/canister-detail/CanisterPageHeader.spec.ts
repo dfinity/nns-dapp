@@ -26,6 +26,6 @@ describe("CanisterPageHeader", () => {
       canister_id: Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"),
     };
     const po = renderComponent(canister);
-    expect(await po.getCanisterIdText()).toBe("ryjl3-t...aba-cai");
+    expect(await po.getCanisterIdText()).toBe("ryjl3-t…aba-cai");
   });
 });

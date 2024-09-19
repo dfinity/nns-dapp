@@ -84,7 +84,7 @@ describe("SnsNeuronAdvancedSection", () => {
       "Jun 19, 2023 10:23 PM"
     );
     expect(await po.neuronAge()).toBe("20 days, 10 hours");
-    expect(await po.neuronAccount()).toBe("xlmdg-v...813ee24");
+    expect(await po.neuronAccount()).toBe("xlmdg-v…813ee24");
   });
 
   it("should render actions", async () => {
