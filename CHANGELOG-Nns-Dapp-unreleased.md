@@ -30,6 +30,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* Stop making unnecessary calls to load the SNS proposal every time we load the derived state.
+
 #### Fixed
 
 * Fixed a bug where a performance counter in `init` is wiped during state initialization.
