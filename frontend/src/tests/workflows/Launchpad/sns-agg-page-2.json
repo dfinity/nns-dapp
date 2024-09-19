@@ -1475,7 +1475,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100435481034084220,
+    "icrc1_total_supply": 100435532847715040,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2951,6 +2951,32 @@
               "target_method_name": "withdraw_vector"
             }
           }
+        },
+        {
+          "id": 6110,
+          "name": "DeVeFi:ICP/DKP:Create Vector",
+          "description": "Creates a new vector",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
+              "target_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
+              "validator_method_name": "validate_create_vector",
+              "target_method_name": "create_vector"
+            }
+          }
+        },
+        {
+          "id": 6210,
+          "name": "DeVeFi:ICP/nICP:Create Vector",
+          "description": "Creates a new vector",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "ol6b4-pqaaa-aaaal-qjqia-cai",
+              "target_canister_id": "ol6b4-pqaaa-aaaal-qjqia-cai",
+              "validator_method_name": "validate_create_vector",
+              "target_method_name": "create_vector"
+            }
+          }
         }
       ]
     },
@@ -3406,7 +3432,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100402414667898,
+    "icrc1_total_supply": 100486037144290,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4150,7 +4176,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995578919980,
+    "icrc1_total_supply": 995578140980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7050,7 +7076,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20034261230143572,
+    "icrc1_total_supply": 20155372508130356,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9050,7 +9076,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25127639849170740,
+    "icrc1_total_supply": 25132309667154780,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -10517,7 +10543,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10025412203637622,
+    "icrc1_total_supply": 10025613453950780,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11053,7 +11079,13 @@
         "c63a7-6yaaa-aaaap-ab3gq-cai",
         "a7cug-2qaaa-aaaap-ab3la-cai",
         "f75us-gyaaa-aaaap-ab3wq-cai",
-        "6sul7-xqaaa-aaaap-ahdsq-cai"
+        "6sul7-xqaaa-aaaap-ahdsq-cai",
+        "4jxyd-pqaaa-aaaah-qdqtq-cai",
+        "zof5a-5yaaa-aaaai-acr2q-cai",
+        "n3bau-gaaaa-aaaaj-qa4oq-cai",
+        "nscli-qiaaa-aaaaj-qa4pa-cai",
+        "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+        "ijyxz-wyaaa-aaaaj-qa4qa-cai"
       ],
       "archives": ["apf7i-uiaaa-aaaaq-aac2q-cai"]
     },
@@ -11555,7 +11587,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 101962211036929890,
+    "icrc1_total_supply": 101964808964515660,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -12622,7 +12654,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99286230890591970,
+    "icrc1_total_supply": 99296599453265740,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -13795,7 +13827,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 100005302936370990,
+    "icrc1_total_supply": 100005311937889090,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14967,7 +14999,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100051995106342670,
+    "icrc1_total_supply": 100052110663144290,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
