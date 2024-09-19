@@ -29,13 +29,11 @@
       role={isClickable ? "button" : undefined}
       on:click|stopPropagation={() => isClickable && dispatcher("nnsHash")}
     >
-      <span class="tabular-nums">
-        {firstAndLastDigitsArray[0]}
-        {#if firstAndLastDigitsArray[1] !== ""}
-          <span>&hellip;</span>
-          {firstAndLastDigitsArray[1]}
-        {/if}
-      </span>
+      <span class="tabular-nums"
+        >{firstAndLastDigitsArray[0]}{#if firstAndLastDigitsArray[1] !== ""}<span
+            >&hellip;</span
+          >{firstAndLastDigitsArray[1]}{/if}</span
+      >
     </svelte:element>
   </Tooltip>
   {#if showCopy}
