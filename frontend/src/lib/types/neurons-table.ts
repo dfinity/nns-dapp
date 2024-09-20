@@ -2,7 +2,7 @@ import type {
   Comparator,
   ResponsiveTableColumn,
 } from "$lib/types/responsive-table";
-import type { NeuronState } from "@dfinity/nns";
+import type { NeuronState, NeuronVisibility, Option } from "@dfinity/nns";
 import type { TokenAmountV2 } from "@dfinity/utils";
 
 export type TableNeuron = {
@@ -15,6 +15,7 @@ export type TableNeuron = {
   dissolveDelaySeconds: bigint;
   state: NeuronState;
   tags: string[];
+  visibility: Option<NeuronVisibility>;
 };
 
 // Should define a partial ordering on TableNeuron by return -1 if a < b, +1 if

@@ -69,6 +69,7 @@ export const tableNeuronsFromNeuronInfos = ({
         accounts,
         i18n,
       }).map(({ text }) => text),
+      visibility: neuronInfo.visibility,
     };
   });
 };
