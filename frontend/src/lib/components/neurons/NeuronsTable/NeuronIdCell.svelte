@@ -39,6 +39,7 @@
     align-items: center;
 
     .public-icon-container {
+      color: var(--elements-badge);
       line-height: 0;
     }
   }
