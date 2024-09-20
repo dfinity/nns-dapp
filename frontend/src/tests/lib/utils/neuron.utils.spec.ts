@@ -49,6 +49,7 @@ import {
   isNeuronControllable,
   isNeuronControllableByUser,
   isNeuronControlledByHardwareWallet,
+  isNeuronVisibilityPublic,
   isSpawning,
   isValidInputAmount,
   mapMergeableNeurons,
@@ -90,6 +91,7 @@ import type { WizardStep } from "@dfinity/gix-components";
 import {
   NeuronState,
   NeuronType,
+  NeuronVisibility,
   Topic,
   Vote,
   type BallotInfo,
@@ -2941,6 +2943,38 @@ describe("neuron-utils", () => {
       ).toBe(
         "All proposals to manage the canisters of service nervous systems (SNS), including upgrading relevant canisters and managing SNS framework canister WASMs through SNS-W."
       );
+    });
+  });
+
+  describe("isNeuronVisibilityPublic", () => {
+    it("should correctly identify public neurons", () => {
+      const publicNeuron = {
+        ...mockNeuron,
+        visibility: NeuronVisibility.Public,
+      };
+      expect(isNeuronVisibilityPublic(publicNeuron.visibility)).toBe(true);
+    });
+
+    it("should correctly identify non-public neurons", () => {
+      const privateNeuron = {
+        ...mockNeuron,
+        visibility: NeuronVisibility.Private,
+      };
+      const unspecifiedNeuron = {
+        ...mockNeuron,
+        visibility: NeuronVisibility.Unspecified,
+      };
+      const undefinedVisibilityNeuron = {
+        ...mockNeuron,
+        visibility: undefined,
+      };
+      expect(isNeuronVisibilityPublic(privateNeuron.visibility)).toBe(false);
+      expect(isNeuronVisibilityPublic(unspecifiedNeuron.visibility)).toBe(
+        false
+      );
+      expect(
+        isNeuronVisibilityPublic(undefinedVisibilityNeuron.visibility)
+      ).toBe(false);
     });
   });
 });
