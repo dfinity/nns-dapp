@@ -35,8 +35,11 @@ export class MenuItemsPo extends BasePageObject {
     return LinkPo.under({ element: this.root, testId: "source-code-link" });
   }
 
-  getSourceCodeButtonLink(): Promise<string | null> {
-    return this.getSourceCodeButtonPo().getHref();
+  getTotalValueLockedLinkPo(): LinkPo {
+    return LinkPo.under({
+      element: this.root,
+      testId: "total-value-locked-component",
+    });
   }
 
   getGetTokensPo(): GetTokensPo {
