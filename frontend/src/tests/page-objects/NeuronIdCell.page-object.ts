@@ -1,6 +1,7 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { HashPo } from "$tests/page-objects/Hash.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { TooltipPo } from "./Tooltip.page-object";
 
 export class NeuronIdCellPo extends BasePageObject {
   private static readonly TID = "neuron-id-cell-component";
@@ -24,5 +25,9 @@ export class NeuronIdCellPo extends BasePageObject {
   async getTags(): Promise<string[]> {
     const tagElements = await this.root.allByTestId("neuron-tag");
     return Promise.all(tagElements.map((el) => el.getText()));
+  }
+
+  getVisibilityTooltipPo(): TooltipPo {
+    return TooltipPo.under(this.root.byTestId("public-icon-container"));
   }
 }

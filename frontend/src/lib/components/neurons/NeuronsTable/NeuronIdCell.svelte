@@ -1,7 +1,9 @@
 <script lang="ts">
   import Hash from "$lib/components/ui/Hash.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import type { TableNeuron } from "$lib/types/neurons-table";
-  import { Tag } from "@dfinity/gix-components";
+  import { isNeuronVisibilityPublic } from "$lib/utils/neuron.utils";
+  import { Tag, IconPublicBadge, Tooltip } from "@dfinity/gix-components";
 
   export let rowData: TableNeuron;
 </script>
@@ -14,6 +16,13 @@
     idPrefix="neuron-id-cell"
     showCopy
   />
+  {#if isNeuronVisibilityPublic(rowData.visibility)}
+    <span class="public-icon-container" data-tid="public-icon-container">
+      <Tooltip top id="neuron-id-cell-public-icon" text={$i18n.neurons.public}>
+        <IconPublicBadge />
+      </Tooltip>
+    </span>
+  {/if}
   {#if rowData.tags.length > 0}
     <span class="tags" data-tid="neuron-tags">
       {#each rowData.tags as tag}
@@ -26,6 +35,12 @@
 <style lang="scss">
   .container {
     line-height: 1.5;
+    display: flex;
+    align-items: center;
+
+    .public-icon-container {
+      line-height: 0;
+    }
   }
 
   .tags {

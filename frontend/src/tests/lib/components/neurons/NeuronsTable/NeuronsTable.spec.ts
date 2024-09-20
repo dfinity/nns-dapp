@@ -11,7 +11,7 @@ import { NeuronsTablePo } from "$tests/page-objects/NeuronsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState, NeuronVisibility } from "@dfinity/nns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { get, writable, type Writable } from "svelte/store";
 
@@ -505,5 +505,28 @@ describe("NeuronsTable", () => {
     const cell2 = rowPos[1].getNeuronIdCellPo();
     expect(await cell2.getTags()).toEqual(tags);
     expect(await cell2.hasTagsElement()).toBe(true);
+  });
+
+  it("should render visibility icon and tooltip for public neuron", async () => {
+    const po = renderComponent({
+      neurons: [
+        {
+          ...neuron1,
+          visibility: NeuronVisibility.Public,
+        },
+        {
+          ...neuron2,
+        },
+      ],
+    });
+
+    const visibilityTooltipPo = (
+      await po.getNeuronsTableRowPo(neuron1.neuronId)
+    )
+      .getNeuronIdCellPo()
+      .getVisibilityTooltipPo();
+
+    expect(await visibilityTooltipPo.isPresent()).toBe(true);
+    expect(await visibilityTooltipPo.getTooltipText()).toBe("Neuron is public");
   });
 });
