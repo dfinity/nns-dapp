@@ -1,5 +1,4 @@
 <script lang="ts">
-  import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
   import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
@@ -23,6 +22,8 @@
   } from "@dfinity/gix-components";
   import { layoutMenuOpen, menuCollapsed } from "@dfinity/gix-components";
   import type { ComponentType } from "svelte";
+  import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
+  import { ENABLE_METRICS } from "$lib/constants/mockable.constants";
 
   let routes: {
     context: string;
@@ -98,7 +99,9 @@
   {/if}
 
   <div class="menu-footer" class:hidden={$menuCollapsed && !$layoutMenuOpen}>
-    <MenuMetrics />
+    {#if ENABLE_METRICS}
+      <TotalValueLocked layout="stacked" />
+    {/if}
     <div class="menu-footer-buttons">
       <div class="grow-item"><SourceCodeButton /></div>
       <ThemeToggleButton />
@@ -115,22 +118,28 @@
   }
 
   .menu-footer {
-    display: none;
     flex-direction: column;
     gap: var(--padding);
     // To accomodate the 100% on-chain logo
     // if that logo changes please update this margin as well
-    margin: auto var(--padding-3x) var(--padding-8x) 0;
+    margin: auto var(--padding-3x) calc(var(--padding-8x) + var(--padding-1_5x))
+      0;
     // Handle menu collapse animation
+    visibility: visible;
     opacity: 1;
     transition:
       transform linear var(--animation-time-normal),
-      opacity linear calc(var(--animation-time-short) / 2);
+      opacity linear var(--animation-time-normal);
     &.hidden {
+      visibility: hidden;
       opacity: 0;
-      transform: translate(-150%, 0);
+      transform: translate(-300%, 0);
+      transition:
+        transform linear var(--animation-time-short),
+        opacity linear calc(var(--animation-time-short) / 2);
     }
-    //Hide menu footer similar to surrounding elements
+    //Hide menu footer on short screens
+    display: none;
     @media (min-height: 654px) {
       display: flex;
     }
