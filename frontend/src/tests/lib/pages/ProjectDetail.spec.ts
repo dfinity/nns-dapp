@@ -320,7 +320,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         setSnsProjects([
           {
             rootCanisterId,
-            lifecycle: SnsSwapLifecycle.Committed,
+            // Open lifecycle makes the watcher poll for derived state.
+            lifecycle: SnsSwapLifecycle.Open,
             certified: true,
             nnsProposalId: Number(mockProposalInfo.id),
           },
@@ -333,6 +334,25 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         await runResolvedPromises();
 
         expect(queryByTestId("proposal-card")).toBeInTheDocument();
+      });
+
+      it("should not reload proposal when derived state updates", async () => {
+        render(ProjectDetail, props);
+
+        await runResolvedPromises();
+
+        vi.mocked(proposalsApi.queryProposal).mockClear();
+
+        expect(snsApi.querySnsDerivedState).toBeCalledTimes(0);
+        expect(proposalsApi.queryProposal).toBeCalledTimes(0);
+
+        await advanceTime(WATCH_SALE_STATE_EVERY_MILLISECONDS);
+
+        // There used to be a bug where the proposal get reloaded every time the
+        // derived state was updated, even though the proposal card won't change.
+        // So we verify that the derived state is queried but the proposal is not.
+        expect(snsApi.querySnsDerivedState).toBeCalledTimes(1);
+        expect(proposalsApi.queryProposal).toBeCalledTimes(0);
       });
     });
   });

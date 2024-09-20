@@ -29,10 +29,6 @@ import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import NnsProposalTest from "./NnsProposalTest.svelte";
 
-vi.mock("$lib/utils/html.utils", () => ({
-  markdownToHTML: (value) => Promise.resolve(value),
-}));
-
 vi.mock("$lib/api/nns-dapp.api");
 
 describe("Proposal", () => {

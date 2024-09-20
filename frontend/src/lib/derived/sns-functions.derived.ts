@@ -1,7 +1,7 @@
-import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { convertNervousFunction } from "$lib/utils/sns-aggregator-converters.utils";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
-import { derived, type Readable } from "svelte/store";
+import { type Readable } from "svelte/store";
+import { snsAggregatorDerived } from "./sns-aggregator.derived";
 
 interface SnsNervousSystemFunctions {
   nsFunctions: SnsNervousSystemFunction[];
@@ -18,15 +18,7 @@ export interface SnsNervousSystemFunctionsStore
 /**
  * A store that contains the nervous system functions for each sns project.
  */
-export const snsFunctionsStore: SnsNervousSystemFunctionsStore = derived(
-  snsAggregatorStore,
-  (aggregatorStore) =>
-    Object.fromEntries(
-      aggregatorStore.data?.map((sns) => [
-        sns.canister_ids.root_canister_id,
-        {
-          nsFunctions: sns.parameters.functions.map(convertNervousFunction),
-        },
-      ]) ?? []
-    )
-);
+export const snsFunctionsStore: SnsNervousSystemFunctionsStore =
+  snsAggregatorDerived((sns) => ({
+    nsFunctions: sns.parameters.functions.map(convertNervousFunction),
+  }));
