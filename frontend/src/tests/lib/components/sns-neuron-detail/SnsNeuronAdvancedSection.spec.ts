@@ -79,7 +79,7 @@ describe("SnsNeuronAdvancedSection", () => {
     });
     const po = renderComponent(neuron);
 
-    expect(await po.neuronId()).toBe("9aaefb3...813ee24");
+    expect(await po.neuronId()).toBe("9aaefb3…813ee24");
     expect(normalizeWhitespace(await po.neuronCreated())).toBe(
       "Jun 19, 2023 10:23 PM"
     );
