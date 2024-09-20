@@ -1,5 +1,9 @@
 import SnsNeuronVotingPowerSection from "$lib/components/sns-neuron-detail/SnsNeuronVotingPowerSection.svelte";
-import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import {
+  SECONDS_IN_DAY,
+  SECONDS_IN_EIGHT_YEARS,
+  SECONDS_IN_YEAR,
+} from "$lib/constants/constants";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
@@ -14,19 +18,26 @@ import { render } from "@testing-library/svelte";
 
 describe("NnsStakeItemAction", () => {
   const nowInSeconds = 1689843195;
-  const minDissolveDelayToVote = 2_629_800n;
+  const minDissolveDelayToVote = BigInt(30 * SECONDS_IN_DAY);
+  const maxDissolveDelay = BigInt(SECONDS_IN_EIGHT_YEARS);
+  const maxDissolveDelayBonusMultiplier = 2;
+  const maxDissolveDelayBonusPercentage =
+    100 * (maxDissolveDelayBonusMultiplier - 1);
+  const maxAgeForBonus = BigInt(SECONDS_IN_YEAR);
+  const maxAgeBonusMultiplier = 1.25;
+  const maxAgeBonusPercentage = 100 * (maxAgeBonusMultiplier - 1);
 
   const neuronCanVote = createMockSnsNeuron({
     id: [1],
-    stake: 314000000n,
-    stakedMaturity: 100000000n,
+    stake: 300_000_000n,
+    stakedMaturity: 100_000_000n,
     state: NeuronState.Locked,
-    dissolveDelaySeconds: minDissolveDelayToVote,
-    ageSinceTimestampSeconds: BigInt(nowInSeconds - SECONDS_IN_YEAR),
+    dissolveDelaySeconds: maxDissolveDelay,
+    ageSinceTimestampSeconds: BigInt(nowInSeconds) - maxAgeForBonus,
   });
   const neuronCanNotVote = createMockSnsNeuron({
     id: [1],
-    stake: 314000000n,
+    stake: 314_000_000n,
     state: NeuronState.Locked,
     dissolveDelaySeconds: minDissolveDelayToVote - 1n,
   });
@@ -36,13 +47,16 @@ describe("NnsStakeItemAction", () => {
         neuron,
         parameters: {
           ...snsNervousSystemParametersMock,
-          max_dissolve_delay_seconds: [3_155_760_000n],
-          max_dissolve_delay_bonus_percentage: [100n],
+          max_dissolve_delay_seconds: [maxDissolveDelay],
+          max_dissolve_delay_bonus_percentage: [
+            BigInt(maxDissolveDelayBonusPercentage),
+          ],
           neuron_minimum_stake_e8s: [100_000_000n],
-          max_neuron_age_for_age_bonus: [15_778_800n],
+          max_neuron_age_for_age_bonus: [maxAgeForBonus],
           neuron_minimum_dissolve_delay_to_vote_seconds: [
             minDissolveDelayToVote,
           ],
+          max_age_bonus_percentage: [BigInt(maxAgeBonusPercentage)],
         },
         token: mockToken,
       },
@@ -58,11 +72,6 @@ describe("NnsStakeItemAction", () => {
     vi.setSystemTime(nowInSeconds * 1000);
   });
 
-  it("should render voting power", async () => {
-    const po = renderComponent(neuronCanVote);
-    expect(await po.getVotingPower()).toBe("5.18");
-  });
-
   it("should render no voting power if neuron can't vote", async () => {
     const po = renderComponent(neuronCanNotVote);
     expect(await po.getVotingPower()).toBe("None");
@@ -72,15 +81,16 @@ describe("NnsStakeItemAction", () => {
     const po = renderComponent(neuronCanNotVote);
 
     expect(await po.getDescription()).toBe(
-      "The dissolve delay must be at least 30 days, 10 hours for the neuron to have voting power. Learn more about voting power on the dashboard."
+      "The dissolve delay must be at least 30 days for the neuron to have voting power. Learn more about voting power on the dashboard."
     );
   });
 
-  it("should render voting power description if neuron can vote", async () => {
+  it("should render voting power and description if neuron can vote", async () => {
     const po = renderComponent(neuronCanVote);
 
+    expect(await po.getVotingPower()).toBe("10.00");
     expect(await po.getDescription()).toBe(
-      "voting_power = (3.14 + 1.00) × 1.25 × 1.00 = 5.18"
+      "voting_power = (3.00 + 1.00) × 1.25 × 2.00 = 10.00"
     );
   });
 
