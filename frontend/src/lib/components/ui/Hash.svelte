@@ -31,7 +31,7 @@
     >
       <span class="tabular-nums"
         >{firstAndLastDigitsArray[0]}{#if firstAndLastDigitsArray[1] !== ""}<span
-            class="ellipsis">...</span
+            >…</span
           >{firstAndLastDigitsArray[1]}{/if}</span
       >
     </svelte:element>
@@ -56,9 +56,6 @@
 
     .tabular-nums {
       font-variant: tabular-nums;
-    }
-    .ellipsis {
-      font-variant: normal;
     }
   }
 </style>
