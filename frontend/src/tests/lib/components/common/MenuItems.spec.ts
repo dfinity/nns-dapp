@@ -192,7 +192,7 @@ describe("MenuItems", () => {
       const menuItemsPo = renderComponent();
 
       expect(await menuItemsPo.getSourceCodeButtonPo().isPresent()).toBe(true);
-      expect(await menuItemsPo.getSourceCodeButtonLink()).toBe(
+      expect(await menuItemsPo.getSourceCodeButtonPo().getHref()).toBe(
         "https://github.com/dfinity/nns-dapp"
       );
     });
