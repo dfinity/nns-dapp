@@ -34,6 +34,7 @@ import {
 import {
   NeuronState,
   NeuronType,
+  NeuronVisibility,
   Topic,
   Vote,
   ineligibleNeurons,
@@ -43,6 +44,7 @@ import {
   type Neuron,
   type NeuronId,
   type NeuronInfo,
+  type Option,
   type ProposalInfo,
   type RewardEvent,
 } from "@dfinity/nns";
@@ -1061,4 +1063,10 @@ export const getTopicSubtitle = ({
       i18n.follow_neurons.topic_18_subtitle,
   };
   return mapper[topic];
+};
+
+export const isNeuronVisibilityPublic = (
+  visibility: Option<NeuronVisibility>
+): boolean => {
+  return visibility === NeuronVisibility.Public;
 };
