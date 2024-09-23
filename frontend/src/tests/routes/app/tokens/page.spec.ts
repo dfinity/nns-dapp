@@ -741,8 +741,8 @@ describe("Tokens route", () => {
           "Internet Computer",
           "ckBTC",
           "ckUSDC",
-          "ZTOKEN1",
           "Tetris",
+          "ZTOKEN1",
           failedImportedTokenIdText, // failed
           importedToken2Id.toText(), // failed
           "ckETH",
