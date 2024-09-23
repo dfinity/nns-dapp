@@ -11,10 +11,10 @@ import { expect, test } from "@playwright/test";
 // consistent. We use different ones for each neuron to make sure the copy
 // icons are correctly aligned with neuron IDs of differing width.
 const replacementNeuronIds = [
-  "2151613...5151617",
-  "03a3234...db988b5",
-  "02b87f0...ed11c4c",
-  "5afd2dc...43c101d",
+  "2151613…5151617",
+  "03a3234…db988b5",
+  "02b87f0…ed11c4c",
+  "5afd2dc…43c101d",
 ];
 
 const createHotkeyNeuronsInOtherAccount = async ({
