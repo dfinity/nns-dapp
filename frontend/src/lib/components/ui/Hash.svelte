@@ -29,7 +29,7 @@
       role={isClickable ? "button" : undefined}
       on:click|stopPropagation={() => isClickable && dispatcher("nnsHash")}
     >
-      <span class="tabular-nums">{shortenText}</span>
+      {shortenText}
     </svelte:element>
   </Tooltip>
   {#if showCopy}
@@ -43,15 +43,12 @@
   span {
     align-items: center;
     display: inline-flex;
+    font-variant: tabular-nums;
     .copy {
       align-items: center;
       display: inline-flex;
       // Make sure the icon doesn't increase the line height.
       max-height: 0;
-    }
-
-    .tabular-nums {
-      font-variant: tabular-nums;
     }
   }
 </style>
