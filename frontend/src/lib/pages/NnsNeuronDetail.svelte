@@ -187,6 +187,7 @@
   section {
     display: flex;
     flex-direction: column;
-    gap: var(--padding-4x);
+    gap: var(--padding-3x);
+    padding: var(--padding-3x);
   }
 </style>

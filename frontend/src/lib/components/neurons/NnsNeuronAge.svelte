@@ -19,3 +19,10 @@
     </KeyValuePair>
   {/if}
 </TestIdWrapper>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  .label {
+    color: var(--description-color);
+  }
+</style>
