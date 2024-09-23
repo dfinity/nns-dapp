@@ -37,6 +37,8 @@
     line-height: 1.5;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
+    gap: var(--padding);
 
     .public-icon-container {
       color: var(--elements-badge);
@@ -46,6 +48,7 @@
 
   .tags {
     display: inline-flex;
+    flex-wrap: wrap;
     gap: var(--padding);
   }
 </style>
