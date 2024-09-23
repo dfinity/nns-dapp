@@ -16,6 +16,10 @@ export const compareTokensIcpFirst = createDescendingComparator(
   (token: UserToken) => token.universeId.toText() === OWN_CANISTER_ID_TEXT
 );
 
+export const compareFailedTokensFirst = createDescendingComparator(
+  (token: UserToken) => isUserTokenFailed(token)
+);
+
 export const compareTokensWithBalanceOrImportedFirst = ({
   importedTokenIds,
 }: {

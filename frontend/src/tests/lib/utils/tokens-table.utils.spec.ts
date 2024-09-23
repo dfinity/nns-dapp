@@ -1,8 +1,9 @@
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
-import type { UserTokenData } from "$lib/types/tokens-page";
+import type { UserTokenData, UserTokenFailed } from "$lib/types/tokens-page";
 import {
+  compareFailedTokensFirst,
   compareTokensAlphabetically,
   compareTokensByImportance,
   compareTokensIcpFirst,
@@ -45,6 +46,20 @@ describe("tokens-table.utils", () => {
         },
       }),
     }) as UserTokenData;
+  const importedTokenWithBalance = createTokenWithBalance({
+    id: 2,
+    amount: 1n,
+  });
+  const importedTokenNoBalance = createTokenWithBalance({
+    id: 3,
+    amount: 0n,
+  });
+  const failedImportedToken = {
+    balance: "failed",
+    universeId: principal(13),
+    actions: [],
+    domKey: "",
+  } as UserTokenFailed;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -108,17 +123,10 @@ describe("tokens-table.utils", () => {
   describe("compareTokensWithBalanceOrImportedFirst", () => {
     const token0 = createTokenWithBalance({ id: 0, amount: 0n });
     const token1 = createTokenWithBalance({ id: 1, amount: 1n });
-    const importedTokenWithBalance = createTokenWithBalance({
-      id: 2,
-      amount: 1n,
-    });
-    const importedTokenNoBalance = createTokenWithBalance({
-      id: 3,
-      amount: 0n,
-    });
     const importedTokenIds = new Set([
       importedTokenWithBalance.universeId.toText(),
       importedTokenNoBalance.universeId.toText(),
+      failedImportedToken.universeId.toText(),
     ]);
 
     it("should compare by balance", () => {
@@ -214,6 +222,38 @@ describe("tokens-table.utils", () => {
           importedTokenIds,
         })(createUserTokenLoading(), importedTokenNoBalance)
       ).toEqual(1);
+    });
+  });
+
+  describe("compareFailedTokensFirst", () => {
+    it("should keep ICP first", () => {
+      const icpToken = createIcpUserToken();
+      const ckBTCUserToken = createUserToken(ckBTCTokenBase);
+
+      expect(
+        compareFailedTokensFirst(importedTokenNoBalance, failedImportedToken)
+      ).toEqual(1);
+      expect(
+        compareFailedTokensFirst(importedTokenWithBalance, failedImportedToken)
+      ).toEqual(1);
+      expect(compareFailedTokensFirst(icpToken, failedImportedToken)).toEqual(
+        1
+      );
+      expect(
+        compareFailedTokensFirst(ckBTCUserToken, failedImportedToken)
+      ).toEqual(1);
+      expect(
+        compareFailedTokensFirst(failedImportedToken, importedTokenNoBalance)
+      ).toEqual(-1);
+      expect(
+        compareFailedTokensFirst(failedImportedToken, failedImportedToken)
+      ).toEqual(0);
+      expect(
+        compareFailedTokensFirst(
+          importedTokenWithBalance,
+          importedTokenWithBalance
+        )
+      ).toEqual(0);
     });
   });
 });
