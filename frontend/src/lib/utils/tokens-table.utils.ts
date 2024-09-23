@@ -28,6 +28,8 @@ export const compareTokensWithBalanceOrImportedFirst = ({
   createDescendingComparator(
     (token: UserToken) =>
       getTokenBalanceOrZero(token) > 0n ||
+      // We treat failed imported tokens as if they are not imported,
+      // to move them after tokens with a balance and other imported tokens.
       (importedTokenIds.has(token.universeId.toText()) &&
         !isUserTokenFailed(token))
   );
