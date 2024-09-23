@@ -6,6 +6,7 @@ import {
   createDescendingComparator,
   mergeComparators,
 } from "$lib/utils/responsive-table.utils";
+import { isUserTokenFailed } from "$lib/utils/user-token.utils";
 import { TokenAmountV2 } from "@dfinity/utils";
 
 const getTokenBalanceOrZero = (token: UserToken) =>
@@ -23,7 +24,8 @@ export const compareTokensWithBalanceOrImportedFirst = ({
   createDescendingComparator(
     (token: UserToken) =>
       getTokenBalanceOrZero(token) > 0n ||
-      importedTokenIds.has(token.universeId.toText())
+      (importedTokenIds.has(token.universeId.toText()) &&
+        !isUserTokenFailed(token))
   );
 
 // These tokens should be placed before others (but after ICP)
@@ -50,6 +52,7 @@ export const compareTokensForTokensTable = ({
   mergeComparators([
     compareTokensIcpFirst,
     compareTokensWithBalanceOrImportedFirst({ importedTokenIds }),
+    compareFailedTokensFirst,
     compareTokensByImportance,
     compareTokensAlphabetically,
   ]);

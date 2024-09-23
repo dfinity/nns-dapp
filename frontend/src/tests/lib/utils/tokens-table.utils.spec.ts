@@ -166,8 +166,8 @@ describe("tokens-table.utils", () => {
       expect(
         compareTokensWithBalanceOrImportedFirst({
           importedTokenIds,
-        })(importedTokenNoBalance, token1)
-      ).toEqual(0);
+        })(importedTokenNoBalance, token0)
+      ).toEqual(-1);
       expect(
         compareTokensWithBalanceOrImportedFirst({
           importedTokenIds,
@@ -176,8 +176,26 @@ describe("tokens-table.utils", () => {
       expect(
         compareTokensWithBalanceOrImportedFirst({
           importedTokenIds,
-        })(importedTokenWithBalance, token0)
+        })(importedTokenWithBalance, importedTokenNoBalance)
+      ).toEqual(0);
+    });
+
+    it("should treat failed imported tokens as being not imported", () => {
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(failedImportedToken, importedTokenWithBalance)
+      ).toEqual(1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(importedTokenWithBalance, failedImportedToken)
       ).toEqual(-1);
+      expect(
+        compareTokensWithBalanceOrImportedFirst({
+          importedTokenIds,
+        })(token0, failedImportedToken)
+      ).toEqual(0);
     });
 
     it("should treat token in loading state as having a balance of 0", () => {
