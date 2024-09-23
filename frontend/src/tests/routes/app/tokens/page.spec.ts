@@ -668,15 +668,48 @@ describe("Tokens route", () => {
     });
 
     describe("failed imported tokens", () => {
+      const failedImportedTokenIdText = "aaaaa-aa";
+      const failedImportedTokenId = Principal.fromText(
+        failedImportedTokenIdText
+      );
       beforeEach(() => {
         resetIdentity();
 
+        vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
+          async ({ canisterId }) => {
+            const balancesMap = {
+              [CKBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
+              [CKETH_UNIVERSE_CANISTER_ID.toText()]: 0n,
+              [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: ckUSDCBalanceE8s,
+              [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
+              [ledgerCanisterIdTetris.toText()]: tetrisBalanceE8s,
+              [ledgerCanisterIdPacman.toText()]: 0n,
+              [importedToken1Id.toText()]: 10n,
+              [importedToken2Id.toText()]: 0n,
+              [failedImportedTokenIdText]: 0n,
+            };
+            if (isNullish(balancesMap[canisterId.toText()])) {
+              throw new Error(
+                `Account not found for canister ${canisterId.toText()}`
+              );
+            }
+            return balancesMap[canisterId.toText()];
+          }
+        );
+
         // Add 2 imported tokens
         importedTokensStore.set({
-          importedTokens: [importedToken1Data, importedToken2Data],
+          importedTokens: [
+            importedToken1Data,
+            importedToken2Data,
+            {
+              ledgerCanisterId: failedImportedTokenId,
+              indexCanisterId: undefined,
+            },
+          ],
           certified: true,
         });
-        failedImportedTokenLedgerIdsStore.add(importedToken1Id.toText());
+        failedImportedTokenLedgerIdsStore.add(failedImportedTokenIdText);
       });
 
       it("should render failed imported tokens in the table", async () => {
@@ -687,12 +720,13 @@ describe("Tokens route", () => {
         expect(tokenNames).toEqual([
           "Internet Computer",
           "ckBTC",
-          "ckETH",
           "ckUSDC",
-          "ATOKEN2", // loaded imported token
-          "Pacman",
+          "ATOKEN2",
           "Tetris",
-          importedToken1Id.toText(), // failed imported token
+          "ZTOKEN1",
+          failedImportedTokenIdText, // failed imported token
+          "ckETH",
+          "Pacman",
         ]);
       });
 
@@ -706,12 +740,13 @@ describe("Tokens route", () => {
         expect(tokenNames).toEqual([
           "Internet Computer",
           "ckBTC",
-          "ckETH",
           "ckUSDC",
-          importedToken2Id.toText(),
-          "Pacman",
+          "ZTOKEN1",
           "Tetris",
-          importedToken1Id.toText(),
+          failedImportedTokenIdText, // failed
+          importedToken2Id.toText(), // failed
+          "ckETH",
+          "Pacman",
         ]);
       });
 
@@ -720,11 +755,11 @@ describe("Tokens route", () => {
         const tokensPagePo = po.getTokensPagePo();
         const failedTokenRow = await tokensPagePo
           .getTokensTable()
-          .getRowByName(importedToken1Id.toText());
+          .getRowByName(failedImportedTokenIdText);
 
         expect(
           await failedTokenRow.getFailedLedgerCanisterHashPo().getFullText()
-        ).toEqual(importedToken1Id.toText());
+        ).toEqual(failedImportedTokenIdText);
         expect(await failedTokenRow.hasUnavailableBalance()).toEqual(true);
         expect(
           await failedTokenRow.getFailedTokenTooltipPo().getTooltipText()
@@ -749,7 +784,7 @@ describe("Tokens route", () => {
         };
 
         for (const rowPo of rowsPos) {
-          if ((await rowPo.getProjectName()) !== importedToken1Id.toText()) {
+          if ((await rowPo.getProjectName()) !== failedImportedTokenIdText) {
             await checkForFailedUI(rowPo);
           }
         }
