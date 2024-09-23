@@ -1,8 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { formattedStakedMaturity } from "$lib/utils/neuron.utils";
   import CommonItemAction from "../ui/CommonItemAction.svelte";
-  import TooltipIcon from "../ui/TooltipIcon.svelte";
   import { IconPublicBadge, Toggle } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
 
