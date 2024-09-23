@@ -69,6 +69,12 @@ export const firstAndLastDigits = (
     : [text, ""];
 };
 
+/**
+ * Shortens the text from the middle. Ex: "12345678901234567890" -> "1234567…5678901"
+ * @param text
+ * @param splitLength An optional length for the split. e.g. 12345678 becomes, if splitLength = 2, 12…78
+ * @returns text
+ */
 export const firstAndLastDigitsWithMiddleHellip = (
   text: string,
   splitLength?: number

@@ -1,5 +1,8 @@
 <script lang="ts">
-  import { firstAndLastDigits } from "$lib/utils/format.utils";
+  import {
+    firstAndLastDigits,
+    firstAndLastDigitsWithMiddleHellip,
+  } from "$lib/utils/format.utils";
   import { Copy } from "@dfinity/gix-components";
   import { Tooltip } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
@@ -16,8 +19,8 @@
   export let isClickable: boolean | undefined = undefined;
   const dispatcher = createEventDispatcher();
 
-  let firstAndLastDigitsArray: [string, string];
-  $: firstAndLastDigitsArray = firstAndLastDigits(text, splitLength);
+  let shortenText: string;
+  $: shortenText = firstAndLastDigitsWithMiddleHellip(text, splitLength);
 </script>
 
 <span data-tid="hash-component">
@@ -29,11 +32,7 @@
       role={isClickable ? "button" : undefined}
       on:click|stopPropagation={() => isClickable && dispatcher("nnsHash")}
     >
-      <span class="tabular-nums"
-        >{firstAndLastDigitsArray[0]}{#if firstAndLastDigitsArray[1] !== ""}<span
-            >…</span
-          >{firstAndLastDigitsArray[1]}{/if}</span
-      >
+      <span class="tabular-nums">{shortenText}</span>
     </svelte:element>
   </Tooltip>
   {#if showCopy}
