@@ -37,6 +37,29 @@ describe("imported-tokens-store", () => {
       });
     });
 
+    it("should remove from imported tokens", () => {
+      importedTokensStore.set({
+        importedTokens: [importedTokenA, importedTokenB],
+        certified: true,
+      });
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: [importedTokenA, importedTokenB],
+        certified: true,
+      });
+
+      importedTokensStore.remove(importedTokenA.ledgerCanisterId);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: [importedTokenB],
+        certified: true,
+      });
+
+      importedTokensStore.remove(importedTokenB.ledgerCanisterId);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: [],
+        certified: true,
+      });
+    });
+
     it("should reset imported tokens", () => {
       const importedTokens = [importedTokenA, importedTokenB];
       expect(get(importedTokensStore)).toEqual({
@@ -72,6 +95,21 @@ describe("imported-tokens-store", () => {
         canisterIdA,
         canisterIdB,
       ]);
+    });
+
+    it("should remove by canister ID", () => {
+      failedImportedTokenLedgerIdsStore.add(canisterIdA);
+      failedImportedTokenLedgerIdsStore.add(canisterIdB);
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([
+        canisterIdA,
+        canisterIdB,
+      ]);
+
+      failedImportedTokenLedgerIdsStore.remove(canisterIdA);
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([canisterIdB]);
+
+      failedImportedTokenLedgerIdsStore.remove(canisterIdB);
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([]);
     });
 
     it("should not add duplicates", () => {

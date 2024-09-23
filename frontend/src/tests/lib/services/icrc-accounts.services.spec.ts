@@ -234,6 +234,15 @@ describe("icrc-accounts-services", () => {
     });
 
     it("doesn't load imported token if in failed imported tokens store", async () => {
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
       failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
       expect(ledgerApi.queryIcrcBalance).not.toBeCalled();
       await loadAccounts({ ledgerCanisterId });
@@ -450,6 +459,15 @@ describe("icrc-accounts-services", () => {
     });
 
     it("doesn't load imported token if in failed imported tokens store", async () => {
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
       failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
       expect(ledgerApi.queryIcrcToken).not.toBeCalled();
       await loadIcrcToken({ ledgerCanisterId });
