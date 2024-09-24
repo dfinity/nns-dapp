@@ -16,7 +16,7 @@ export const compareTokensIcpFirst = createDescendingComparator(
   (token: UserToken) => token.universeId.toText() === OWN_CANISTER_ID_TEXT
 );
 
-export const compareFailedTokensFirst = createDescendingComparator(
+export const compareFailedTokensLast = createAscendingComparator(
   (token: UserToken) => isUserTokenFailed(token)
 );
 
@@ -28,10 +28,7 @@ export const compareTokensWithBalanceOrImportedFirst = ({
   createDescendingComparator(
     (token: UserToken) =>
       getTokenBalanceOrZero(token) > 0n ||
-      // We treat failed imported tokens as if they are not imported,
-      // to move them after tokens with a balance and other imported tokens.
-      (importedTokenIds.has(token.universeId.toText()) &&
-        !isUserTokenFailed(token))
+      importedTokenIds.has(token.universeId.toText())
   );
 
 // These tokens should be placed before others (but after ICP)
@@ -58,7 +55,7 @@ export const compareTokensForTokensTable = ({
   mergeComparators([
     compareTokensIcpFirst,
     compareTokensWithBalanceOrImportedFirst({ importedTokenIds }),
-    compareFailedTokensFirst,
+    compareFailedTokensLast,
     compareTokensByImportance,
     compareTokensAlphabetically,
   ]);

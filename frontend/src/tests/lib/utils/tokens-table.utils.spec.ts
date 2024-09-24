@@ -3,7 +3,7 @@ import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.co
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import type { UserTokenData, UserTokenFailed } from "$lib/types/tokens-page";
 import {
-  compareFailedTokensFirst,
+  compareFailedTokensLast,
   compareTokensAlphabetically,
   compareTokensByImportance,
   compareTokensIcpFirst,
@@ -188,24 +188,6 @@ describe("tokens-table.utils", () => {
       ).toEqual(0);
     });
 
-    it("should treat failed imported tokens as being not imported", () => {
-      expect(
-        compareTokensWithBalanceOrImportedFirst({
-          importedTokenIds,
-        })(failedImportedToken, importedTokenWithBalance)
-      ).toEqual(1);
-      expect(
-        compareTokensWithBalanceOrImportedFirst({
-          importedTokenIds,
-        })(importedTokenWithBalance, failedImportedToken)
-      ).toEqual(-1);
-      expect(
-        compareTokensWithBalanceOrImportedFirst({
-          importedTokenIds,
-        })(token0, failedImportedToken)
-      ).toEqual(0);
-    });
-
     it("should treat token in loading state as having a balance of 0", () => {
       expect(
         compareTokensWithBalanceOrImportedFirst({
@@ -225,31 +207,29 @@ describe("tokens-table.utils", () => {
     });
   });
 
-  describe("compareFailedTokensFirst", () => {
-    it("should keep ICP first", () => {
+  describe("compareFailedTokensLast", () => {
+    it("should keep failed tokens last", () => {
       const icpToken = createIcpUserToken();
       const ckBTCUserToken = createUserToken(ckBTCTokenBase);
 
       expect(
-        compareFailedTokensFirst(importedTokenNoBalance, failedImportedToken)
+        compareFailedTokensLast(failedImportedToken, importedTokenNoBalance)
       ).toEqual(1);
       expect(
-        compareFailedTokensFirst(importedTokenWithBalance, failedImportedToken)
+        compareFailedTokensLast(failedImportedToken, importedTokenWithBalance)
       ).toEqual(1);
-      expect(compareFailedTokensFirst(icpToken, failedImportedToken)).toEqual(
-        1
-      );
+      expect(compareFailedTokensLast(failedImportedToken, icpToken)).toEqual(1);
       expect(
-        compareFailedTokensFirst(ckBTCUserToken, failedImportedToken)
+        compareFailedTokensLast(failedImportedToken, ckBTCUserToken)
       ).toEqual(1);
       expect(
-        compareFailedTokensFirst(failedImportedToken, importedTokenNoBalance)
+        compareFailedTokensLast(importedTokenNoBalance, failedImportedToken)
       ).toEqual(-1);
       expect(
-        compareFailedTokensFirst(failedImportedToken, failedImportedToken)
+        compareFailedTokensLast(failedImportedToken, failedImportedToken)
       ).toEqual(0);
       expect(
-        compareFailedTokensFirst(
+        compareFailedTokensLast(
           importedTokenWithBalance,
           importedTokenWithBalance
         )
