@@ -31,6 +31,7 @@ describe("NnsNeuronPublicVisibilityAction", () => {
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
     expect(await po.getTogglePo().isEnabled()).toBe(true);
+    expect(await po.getTogglePo().hasToggleDisabledAttribute()).toBe(true);
   });
 
   it("should render elements and text for private neuron", async () => {
@@ -49,6 +50,7 @@ describe("NnsNeuronPublicVisibilityAction", () => {
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
     expect(await po.getTogglePo().isEnabled()).toBe(false);
+    expect(await po.getTogglePo().hasToggleDisabledAttribute()).toBe(true);
   });
 
   it("should render elements and text for unspecified neuron", async () => {
@@ -68,6 +70,7 @@ describe("NnsNeuronPublicVisibilityAction", () => {
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
     expect(await po.getTogglePo().isEnabled()).toBe(false);
+    expect(await po.getTogglePo().hasToggleDisabledAttribute()).toBe(true);
   });
 
   it("should render elements and text for neuron with no visibility", async () => {
@@ -86,5 +89,6 @@ describe("NnsNeuronPublicVisibilityAction", () => {
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
     expect(await po.getTogglePo().isEnabled()).toBe(false);
+    expect(await po.getTogglePo().hasToggleDisabledAttribute()).toBe(true);
   });
 });

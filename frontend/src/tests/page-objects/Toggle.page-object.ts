@@ -23,4 +23,12 @@ export class TogglePo extends BasePageObject {
   setDisabled(): Promise<void> {
     return this.setEnabled(false);
   }
+
+  async hasToggleDisabledAttribute(): Promise<boolean> {
+    return (
+      (await this.root
+        .querySelector("input[type=checkbox]")
+        .getAttribute("disabled")) !== null
+    );
+  }
 }
