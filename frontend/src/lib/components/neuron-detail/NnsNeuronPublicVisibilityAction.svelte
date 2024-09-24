@@ -1,5 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
+  import { isNeuronVisibilityPublic } from "$lib/utils/neuron.utils";
   import CommonItemAction from "../ui/CommonItemAction.svelte";
   import { IconPublicBadge, Toggle } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
@@ -7,7 +8,7 @@
   export let neuron: NeuronInfo;
 
   let isPublic: boolean;
-  $: isPublic = neuron.visibility === 2 || false;
+  $: isPublic = isNeuronVisibilityPublic(neuron.visibility);
 </script>
 
 <CommonItemAction testId="nns-neuron-public-visibility-action-component">
