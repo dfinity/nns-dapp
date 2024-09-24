@@ -7,11 +7,11 @@ import { render } from "$tests/utils/svelte.test-utils";
 import type { Principal } from "@dfinity/principal";
 
 describe("ImportTokenRemoveConfirmation", () => {
-  const ledgerCanisterId1 = principal(0);
+  const ledgerCanisterId = principal(1);
   const tokenLogo = "data:image/svg+xml;base64,PHN2ZyB3...";
   const tokenName = "ckTest";
   const mockUniverse: Universe = {
-    canisterId: ledgerCanisterId1.toText(),
+    canisterId: ledgerCanisterId.toText(),
     title: tokenName,
     logo: tokenLogo,
   };
@@ -77,10 +77,10 @@ describe("ImportTokenRemoveConfirmation", () => {
   it("should display ledger ID when universe is not provided", async () => {
     const po = renderComponent({
       tokenToRemove: {
-        ledgerCanisterId: ledgerCanisterId1,
+        ledgerCanisterId,
       },
     });
     expect(await po.getUniverseSummaryPo().isPresent()).toEqual(false);
-    expect(await po.getLedgerCanisterId()).toEqual(ledgerCanisterId1.toText());
+    expect(await po.getLedgerCanisterId()).toEqual(ledgerCanisterId.toText());
   });
 });
