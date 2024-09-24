@@ -348,13 +348,28 @@
       ],
       "type": "persistent"
     },
+    "devenv_cosku": {
+      "config": {
+        "HOST": "https://cosku-ingress.devenv.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_CKBTC": true,
+          "ENABLE_CKTESTBTC": false,
+          "ENABLE_NEURON_VISIBILITY": true
+        }
+      },
+      "providers": [
+        "https://cosku-ingress.devenv.dfinity.network"
+      ],
+      "type": "persistent"
+    },
     "local": {
       "config": {
         "HOST": "http://localhost:8080",
         "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_CKBTC": true,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKTESTBTC": false,
+          "ENABLE_NEURON_VISIBILITY": true
         }
       },
       "bind": "127.0.0.1:8080",
@@ -372,7 +387,8 @@
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "ENABLE_IMPORT_TOKEN": false,
-          "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false
+          "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
+          "ENABLE_NEURON_VISIBILITY": false
         }
       }
     },
