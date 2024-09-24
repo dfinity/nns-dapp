@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-09-12_01-30-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-09-19_01-31-base/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -473,6 +473,7 @@ pub struct Governance {
     pub proposals: Vec<(u64, ProposalData)>,
     pub in_flight_commands: Vec<(String, NeuronInFlightCommand)>,
     pub sns_metadata: Option<ManageSnsMetadata>,
+    pub migrated_root_wasm_memory_limit: Option<bool>,
     pub neurons: Vec<(String, Neuron)>,
     pub genesis_timestamp_seconds: u64,
 }

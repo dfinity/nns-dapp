@@ -795,7 +795,7 @@ export const dissolveDelayMultiplier = ({
   return bonusMultiplier({
     amount: dissolveDelay,
     maxBonus: Number(maxDissolveDelayBonusPercentage) / 100,
-    maxAmount: Number(maxDissolveDelaySeconds),
+    amountForMaxBonus: Number(maxDissolveDelaySeconds),
   });
 };
 
@@ -814,7 +814,7 @@ export const ageMultiplier = ({
   return bonusMultiplier({
     amount: neuronAge(neuron),
     maxBonus: Number(maxAgeBonusPercentage) / 100,
-    maxAmount: Number(maxNeuronAgeForAgeBonus),
+    amountForMaxBonus: Number(maxNeuronAgeForAgeBonus),
   });
 };
 
