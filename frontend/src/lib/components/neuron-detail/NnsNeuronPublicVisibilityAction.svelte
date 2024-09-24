@@ -16,19 +16,22 @@
     <IconPublicBadge />
   </div>
 
-  <span slot="title" data-tid="neuron-visiblitiy">
+  <span slot="title" data-tid="neuron-visibility-title">
     {isPublic
       ? $i18n.neurons.public_neuron
       : $i18n.neurons.private_neuron}</span
   >
   <svelte:fragment slot="subtitle">
-    {isPublic
-      ? $i18n.neurons.public_neuron_description
-      : $i18n.neurons.private_neuron_description}
-    <a
-      href="https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
-      target="_blank">{$i18n.neurons.learn_more}</a
-    >
+    <span data-tid="neuron-visibility-description">
+      {isPublic
+        ? $i18n.neurons.public_neuron_description
+        : $i18n.neurons.private_neuron_description}
+      <a
+        data-tid="neuron-visibility-learn-more"
+        href="https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
+        target="_blank">{$i18n.neurons.learn_more}</a
+      >
+    </span>
   </svelte:fragment>
 
   <div class="toggle-container">

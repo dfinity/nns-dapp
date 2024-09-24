@@ -18,16 +18,17 @@ export class NnsNeuronPublicVisibilityActionPo extends BasePageObject {
   }
 
   getTitleText(): Promise<string> {
-    return this.root.querySelector("[slot='title']").getText();
+    return this.getText("neuron-visibility-title");
   }
 
   getSubtitleText(): Promise<string> {
-    return this.root.querySelector("[slot='subtitle']").getText();
+    return this.getText("neuron-visibility-description");
   }
 
   getSubtitleLinkPo(): LinkPo {
     return LinkPo.under({
-      element: this.root.querySelector("[slot='subtitle'] a"),
+      element: this.root,
+      testId: "neuron-visibility-learn-more",
     });
   }
 
