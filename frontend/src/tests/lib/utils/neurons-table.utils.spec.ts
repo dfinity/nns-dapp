@@ -271,6 +271,7 @@ describe("neurons-table.utils", () => {
       dissolveDelaySeconds,
       state: NeuronState.Locked,
       tags: [],
+      isPublic: false,
     };
 
     const convert = (snsNeurons: SnsNeuron[]) =>
