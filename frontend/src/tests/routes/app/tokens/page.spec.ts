@@ -697,7 +697,7 @@ describe("Tokens route", () => {
           }
         );
 
-        // Add 2 imported tokens
+        // Add 3 imported tokens
         importedTokensStore.set({
           importedTokens: [
             importedToken1Data,
