@@ -15,7 +15,7 @@
     idPrefix="neuron-id-cell"
     showCopy
   />
-  {#if get(ENABLE_NEURON_VISIBILITY) && rowData.isPublic}
+  {#if $ENABLE_NEURON_VISIBILITY && rowData.isPublic}
     <span class="public-icon-container" data-tid="public-icon-container">
       <Tooltip top id="neuron-id-cell-public-icon" text={$i18n.neurons.public}>
         <IconPublicBadge />
