@@ -2,6 +2,7 @@ import SnsNeuronVotingPowerSection from "$lib/components/sns-neuron-detail/SnsNe
 import {
   SECONDS_IN_DAY,
   SECONDS_IN_EIGHT_YEARS,
+  SECONDS_IN_HOUR,
   SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
 import {
@@ -18,7 +19,9 @@ import { render } from "@testing-library/svelte";
 
 describe("NnsStakeItemAction", () => {
   const nowInSeconds = 1689843195;
-  const minDissolveDelayToVote = BigInt(30 * SECONDS_IN_DAY);
+  const minDissolveDelayToVote = BigInt(
+    30 * SECONDS_IN_DAY + 10 * SECONDS_IN_HOUR
+  );
   const maxDissolveDelay = BigInt(SECONDS_IN_EIGHT_YEARS);
   const maxDissolveDelayBonusMultiplier = 2;
   const maxDissolveDelayBonusPercentage =
@@ -81,7 +84,7 @@ describe("NnsStakeItemAction", () => {
     const po = renderComponent(neuronCanNotVote);
 
     expect(await po.getDescription()).toBe(
-      "The dissolve delay must be at least 30 days for the neuron to have voting power. Learn more about voting power on the dashboard."
+      "The dissolve delay must be at least 30 days, 10 hours for the neuron to have voting power. Learn more about voting power on the dashboard."
     );
   });
 
