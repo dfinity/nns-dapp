@@ -2,7 +2,6 @@
   import Hash from "$lib/components/ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { TableNeuron } from "$lib/types/neurons-table";
-  import { isNeuronVisibilityPublic } from "$lib/utils/neuron.utils";
   import { Tag, IconPublicBadge, Tooltip } from "@dfinity/gix-components";
 
   export let rowData: TableNeuron;
@@ -16,7 +15,7 @@
     idPrefix="neuron-id-cell"
     showCopy
   />
-  {#if isNeuronVisibilityPublic(rowData.visibility)}
+  {#if get(ENABLE_NEURON_VISIBILITY) && rowData.isPublic}
     <span class="public-icon-container" data-tid="public-icon-container">
       <Tooltip top id="neuron-id-cell-public-icon" text={$i18n.neurons.public}>
         <IconPublicBadge />

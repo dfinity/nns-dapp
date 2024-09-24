@@ -11,7 +11,7 @@ import { NeuronsTablePo } from "$tests/page-objects/NeuronsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { NeuronState, NeuronVisibility } from "@dfinity/nns";
+import { NeuronState } from "@dfinity/nns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { get, writable, type Writable } from "svelte/store";
 
@@ -512,7 +512,7 @@ describe("NeuronsTable", () => {
       neurons: [
         {
           ...neuron1,
-          visibility: NeuronVisibility.Public,
+          isPublic: true,
         },
         {
           ...neuron2,
