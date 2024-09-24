@@ -24,6 +24,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
   import NnsNeuronPublicVisibilityAction from "./NnsNeuronPublicVisibilityAction.svelte";
+  import { ENABLE_NEURON_VISIBILITY } from "$lib/stores/feature-flags.store";
 
   export let neuron: NeuronInfo;
 
@@ -48,7 +49,9 @@
 <Section testId="nns-neuron-advanced-section-component">
   <h3 slot="title">{$i18n.neuron_detail.advanced_settings_title}</h3>
   <div class="content">
-    <NnsNeuronPublicVisibilityAction {neuron} />
+    {#if $ENABLE_NEURON_VISIBILITY}
+      <NnsNeuronPublicVisibilityAction {neuron} />
+    {/if}
     <div class="inner-section">
       <KeyValuePair>
         <span slot="key" class="label">{$i18n.neurons.neuron_id}</span>
