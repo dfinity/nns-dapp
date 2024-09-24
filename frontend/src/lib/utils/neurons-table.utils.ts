@@ -112,7 +112,7 @@ export const tableNeuronsFromSnsNeurons = ({
         identity,
         i18n,
       }).map(({ text }) => text),
-      isPublic: undefined,
+      isPublic: false,
     };
   });
 };
