@@ -27,7 +27,7 @@ export class NeuronIdCellPo extends BasePageObject {
     return Promise.all(tagElements.map((el) => el.getText()));
   }
 
-  getVisibilityTooltipPo(): TooltipPo {
+  getPublicNeuronTooltipPo(): TooltipPo {
     return TooltipPo.under(this.root.byTestId("public-icon-container"));
   }
 }
