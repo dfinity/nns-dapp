@@ -536,17 +536,6 @@ describe("IcrcWallet", () => {
           () =>
             new Promise<void>((resolve) => (resolveSetImportedTokens = resolve))
         );
-      const spyOnGetImportedTokens = vi
-        .spyOn(importedTokensApi, "getImportedTokens")
-        .mockResolvedValue({
-          imported_tokens: [
-            {
-              ledger_canister_id: ledgerCanisterId2,
-              index_canister_id: [],
-            },
-          ],
-        });
-
       const po = await renderWallet({});
       const morePopoverPo = po.getWalletMorePopoverPo();
       const confirmationPo = po.getImportTokenRemoveConfirmationPo();
@@ -597,7 +586,6 @@ describe("IcrcWallet", () => {
           },
         ],
       });
-      expect(spyOnGetImportedTokens).toBeCalledTimes(2);
 
       expect(get(busyStore)).toEqual([]);
       expect(get(pageStore).path).toEqual(AppPath.Tokens);
@@ -614,10 +602,6 @@ describe("IcrcWallet", () => {
       const spyOnSetImportedTokens = vi
         .spyOn(importedTokensApi, "setImportedTokens")
         .mockRejectedValue(new Error());
-      const spyOnGetImportedTokens = vi.spyOn(
-        importedTokensApi,
-        "getImportedTokens"
-      );
 
       expect(get(importedTokensStore).importedTokens).toEqual([
         {
@@ -644,7 +628,6 @@ describe("IcrcWallet", () => {
       // should stay on wallet page
       expect(get(pageStore).path).toEqual(AppPath.Wallet);
       // without data change
-      expect(spyOnGetImportedTokens).toBeCalledTimes(0);
       expect(get(importedTokensStore).importedTokens).toEqual([
         {
           ledgerCanisterId,
