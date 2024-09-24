@@ -38,11 +38,11 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: var(--padding);
 
     .public-icon-container {
       color: var(--elements-badge);
       line-height: 0;
+      margin-right: var(--padding);
     }
   }
 
