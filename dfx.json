@@ -368,8 +368,7 @@
         "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_CKBTC": true,
-          "ENABLE_CKTESTBTC": false,
-          "ENABLE_NEURON_VISIBILITY": true
+          "ENABLE_CKTESTBTC": false
         }
       },
       "bind": "127.0.0.1:8080",
