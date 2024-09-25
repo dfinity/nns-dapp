@@ -852,10 +852,19 @@ describe("Tokens route", () => {
           .getTokensTable()
           .getRowByName(failedImportedTokenIdText);
 
+        expect(await po.getTokensPagePo().getTokenNames()).toEqual([
+          "Internet Computer",
+          "ckBTC",
+          "ckUSDC",
+          "ATOKEN2",
+          "Tetris",
+          "ZTOKEN1",
+          "aaaaa-aa", // failedTokenRow
+          "ckETH",
+          "Pacman",
+        ]);
+
         // Initiating the removal.
-        expect(
-          await failedTokenRow.getRemoveActionButton().isPresent()
-        ).toEqual(true);
         await failedTokenRow.getRemoveActionButton().click();
         await runResolvedPromises();
 
@@ -872,15 +881,22 @@ describe("Tokens route", () => {
 
         await removeConfirmationPo.clickYes();
         await removeConfirmationPo.waitForClosed();
+        await runResolvedPromises();
 
         expect(get(importedTokensStore).importedTokens).toEqual([
           importedToken1Data,
           importedToken2Data,
         ]);
-
-        expect(
-          await failedTokenRow.getRemoveActionButton().isPresent()
-        ).toEqual(false);
+        expect(await po.getTokensPagePo().getTokenNames()).toEqual([
+          "Internet Computer",
+          "ckBTC",
+          "ckUSDC",
+          "ATOKEN2",
+          "Tetris",
+          "ZTOKEN1",
+          "ckETH",
+          "Pacman",
+        ]);
       });
     });
 
