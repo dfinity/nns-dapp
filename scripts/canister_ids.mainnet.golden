@@ -1,0 +1,38 @@
+{
+  "nns-index": {
+    "mainnet": "qhbym-qaaaa-aaaaa-aaafq-cai"
+  },
+  "ckbtc_index": {
+    "mainnet": "n5wcd-faaaa-aaaar-qaaea-cai"
+  },
+  "ckbtc_ledger": {
+    "mainnet": "mxzaz-hqaaa-aaaar-qaada-cai"
+  },
+  "ckbtc_minter": {
+    "mainnet": "mqygn-kiaaa-aaaar-qaadq-cai"
+  },
+  "cketh_index": {
+    "mainnet": "s3zol-vqaaa-aaaar-qacpa-cai"
+  },
+  "cketh_ledger": {
+    "mainnet": "ss2fx-dyaaa-aaaar-qacoq-cai"
+  },
+  "ckusdc_index": {
+    "mainnet": "xrs4b-hiaaa-aaaar-qafoa-cai"
+  },
+  "ckusdc_ledger": {
+    "mainnet": "xevnm-gaaaa-aaaar-qafnq-cai"
+  },
+  "nns-sns-wasm": {
+    "mainnet": "qaa6y-5yaaa-aaaaa-aaafa-cai"
+  },
+  "internet_identity": {
+    "mainnet": "identity"
+  },
+  "nns-dapp": {
+    "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai"
+  },
+  "sns_aggregator": {
+    "mainnet": "3r4gx-wqaaa-aaaaq-aaaia-cai"
+  }
+}

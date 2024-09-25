@@ -1,0 +1,38 @@
+{
+  "nns-index": {
+    "local": "bkyz2-fmaaa-aaaaa-qaaaq-cai"
+  },
+  "ckbtc_index": {
+    "local": "olzyh-buaaa-aaaaa-qabga-cai"
+  },
+  "ckbtc_ledger": {
+    "local": "oz7p6-neaaa-aaaaa-qabfa-cai"
+  },
+  "ckbtc_minter": {
+    "local": "o66jk-a4aaa-aaaaa-qabfq-cai"
+  },
+  "cketh_index": {
+    "local": "of3vp-2eaaa-aaaaa-qabha-cai"
+  },
+  "cketh_ledger": {
+    "local": "omy6t-mmaaa-aaaaa-qabgq-cai"
+  },
+  "ckusdc_index": {
+    "local": "m7h5t-euaaa-aaaaa-qabia-cai"
+  },
+  "ckusdc_ledger": {
+    "local": "oc2t3-x4aaa-aaaaa-qabhq-cai"
+  },
+  "nns-sns-wasm": {
+    "local": "qaa6y-5yaaa-aaaaa-aaafa-cai"
+  },
+  "internet_identity": {
+    "local": "http://qhbym-qaaaa-aaaaa-aaafq-cai.localhost:8080"
+  },
+  "nns-dapp": {
+    "local": "qsgjb-riaaa-aaaaa-aaaga-cai"
+  },
+  "sns_aggregator": {
+    "local": "http://sgymv-uiaaa-aaaaa-aaaia-cai.localhost:8080"
+  }
+}
