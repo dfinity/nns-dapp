@@ -27,47 +27,46 @@
 </script>
 
 <!-- DO NOT use a Svelte transition. It caused issues with navigation -->
-<div
+<a
   class="tvl"
   class:visible={nonNullish(total) && total > 0 && nonNullish(formattedTotal)}
   class:stacked={layout === "stacked"}
   data-tid="total-value-locked-component"
+  href="https://dashboard.internetcomputer.org/neurons"
+  target="_blank"
+  rel="noopener noreferrer"
 >
   <span>{$i18n.metrics.tvl}</span>
   <span data-tid="tvl-metric" class="total">{formattedTotal}</span>
-</div>
+</a>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
   .tvl {
     display: inline-block;
-
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity ease-out var(--animation-time-normal);
-
-    &.visible {
-      visibility: visible;
-      opacity: 1;
-    }
-
+    text-decoration: none;
     text-align: center;
 
+    padding: var(--padding) var(--padding-2x);
     gap: var(--padding-0_5x);
-    z-index: var(--z-index);
+    border-radius: var(--border-radius);
 
     @include fonts.small;
     color: var(--text-color);
 
     background: var(--sidebar-button-background);
-    border-radius: var(--border-radius);
-
-    width: 100%;
-    padding: var(--padding) var(--padding-2x);
-
     &:hover {
       background: var(--sidebar-button-background-hover);
+    }
+
+    z-index: var(--z-index);
+
+    visibility: hidden;
+    opacity: 0;
+    &.visible {
+      visibility: visible;
+      opacity: 1;
     }
 
     &.stacked {

@@ -23,10 +23,14 @@ proposal is successful, the changes it released will be moved from this file to
 * Move Canisters button from sidebar to account menu.
 * Move GitHub button from account menu to sidebar.
 * Reduce calls to `sns-governance` canister by getting `nervous_system_parameters` from the aggregator instead.
+* Move theme toggle from account menu to sidebar.
+* The `Markdown` UI component was migrated to `@dfinity/gix-components`.
 
 #### Deprecated
 
 #### Removed
+
+* Stop making unnecessary calls to load the SNS proposal every time we load the derived state.
 
 #### Fixed
 

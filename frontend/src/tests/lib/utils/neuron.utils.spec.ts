@@ -289,7 +289,7 @@ describe("neuron-utils", () => {
         bonusMultiplier({
           amount: 300n,
           maxBonus: 0.25,
-          maxAmount: 600,
+          amountForMaxBonus: 600,
         })
       ).toBe(1.125);
 
@@ -297,7 +297,7 @@ describe("neuron-utils", () => {
         bonusMultiplier({
           amount: 600n,
           maxBonus: 0.5,
-          maxAmount: 600,
+          amountForMaxBonus: 600,
         })
       ).toBe(1.5);
 
@@ -305,7 +305,7 @@ describe("neuron-utils", () => {
         bonusMultiplier({
           amount: 400n,
           maxBonus: 1,
-          maxAmount: 200,
+          amountForMaxBonus: 200,
         })
       ).toBe(2);
 
@@ -313,7 +313,7 @@ describe("neuron-utils", () => {
         bonusMultiplier({
           amount: 400n,
           maxBonus: 0.25,
-          maxAmount: 0,
+          amountForMaxBonus: 0,
         })
       ).toBe(1);
     });

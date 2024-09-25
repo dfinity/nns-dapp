@@ -306,7 +306,7 @@
 
   {#if modal?.type === "imported-remove"}
     <ImportTokenRemoveConfirmation
-      ledgerCanisterId={modal.data.universeId}
+      tokenToRemove={{ ledgerCanisterId: modal.data.universeId }}
       on:nnsClose={closeModal}
       on:nnsConfirm={removeImportedToken}
     />

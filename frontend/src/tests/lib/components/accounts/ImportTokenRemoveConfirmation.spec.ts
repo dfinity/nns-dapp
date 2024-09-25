@@ -7,35 +7,25 @@ import { render } from "$tests/utils/svelte.test-utils";
 import type { Principal } from "@dfinity/principal";
 
 describe("ImportTokenRemoveConfirmation", () => {
-  const ledgerCanisterId1 = principal(0);
+  const ledgerCanisterId = principal(1);
   const tokenLogo = "data:image/svg+xml;base64,PHN2ZyB3...";
   const tokenName = "ckTest";
   const mockUniverse: Universe = {
-    canisterId: ledgerCanisterId1.toText(),
+    canisterId: ledgerCanisterId.toText(),
     title: tokenName,
     logo: tokenLogo,
   };
-  const renderComponent = (
-    {
-      ledgerCanisterId,
-      universe,
-      onClose,
-      onConfirm,
-    }: {
-      ledgerCanisterId: Principal;
-      universe: Universe;
-      onClose?: () => void;
-      onConfirm?: () => void;
-    } = {
-      ledgerCanisterId: ledgerCanisterId1,
-      universe: mockUniverse,
-    }
-  ) => {
+  const renderComponent = ({
+    tokenToRemove,
+    onClose,
+    onConfirm,
+  }: {
+    tokenToRemove: { ledgerCanisterId: Principal } | { universe: Universe };
+    onClose?: () => void;
+    onConfirm?: () => void;
+  }) => {
     const { container, component } = render(ImportTokenRemoveConfirmation, {
-      props: {
-        ledgerCanisterId,
-        universe,
-      },
+      props: { tokenToRemove },
     });
     if (onClose) {
       component.$on("nnsClose", onClose);
@@ -53,12 +43,16 @@ describe("ImportTokenRemoveConfirmation", () => {
   });
 
   it("should render token logo", async () => {
-    const po = renderComponent();
+    const po = renderComponent({
+      tokenToRemove: { universe: mockUniverse },
+    });
     expect(await po.getUniverseSummaryPo().getLogoUrl()).toEqual(tokenLogo);
   });
 
   it("should render token name", async () => {
-    const po = renderComponent();
+    const po = renderComponent({
+      tokenToRemove: { universe: mockUniverse },
+    });
     expect(await po.getUniverseSummaryPo().getTitle()).toEqual(tokenName);
   });
 
@@ -66,8 +60,7 @@ describe("ImportTokenRemoveConfirmation", () => {
     const onClose = vi.fn();
     const onConfirm = vi.fn();
     const po = renderComponent({
-      ledgerCanisterId: ledgerCanisterId1,
-      universe: mockUniverse,
+      tokenToRemove: { universe: mockUniverse },
       onClose,
       onConfirm,
     });
@@ -83,10 +76,11 @@ describe("ImportTokenRemoveConfirmation", () => {
 
   it("should display ledger ID when universe is not provided", async () => {
     const po = renderComponent({
-      ledgerCanisterId: ledgerCanisterId1,
-      universe: undefined,
+      tokenToRemove: {
+        ledgerCanisterId,
+      },
     });
     expect(await po.getUniverseSummaryPo().isPresent()).toEqual(false);
-    expect(await po.getLedgerCanisterId()).toEqual(ledgerCanisterId1.toText());
+    expect(await po.getLedgerCanisterId()).toEqual(ledgerCanisterId.toText());
   });
 });

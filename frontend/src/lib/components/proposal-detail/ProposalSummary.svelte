@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Markdown from "$lib/components/ui/Markdown.svelte";
+  import { Markdown } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
   export let summary: string | undefined;

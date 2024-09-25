@@ -4,6 +4,7 @@ import {
   queryIcrcToken,
 } from "$lib/api/icrc-ledger.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
+import { failedExistentImportedTokenLedgerIdsStore } from "$lib/derived/imported-tokens.derived";
 import { snsTokensByLedgerCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
 import {
   getAuthenticatedIdentity,
@@ -65,7 +66,9 @@ export const loadIcrcToken = ({
     return;
   }
   if (
-    get(failedImportedTokenLedgerIdsStore).includes(ledgerCanisterId.toText())
+    get(failedExistentImportedTokenLedgerIdsStore).includes(
+      ledgerCanisterId.toText()
+    )
   ) {
     // Ensures that imported tokens that failed to load are not fetched again.
     return;
@@ -164,7 +167,9 @@ export const loadAccounts = async ({
   strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
   if (
-    get(failedImportedTokenLedgerIdsStore).includes(ledgerCanisterId.toText())
+    get(failedExistentImportedTokenLedgerIdsStore).includes(
+      ledgerCanisterId.toText()
+    )
   ) {
     // Ensures that imported tokens that failed to load are not fetched again.
     return;
