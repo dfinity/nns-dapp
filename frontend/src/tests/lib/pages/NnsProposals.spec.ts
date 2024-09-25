@@ -23,7 +23,7 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { type ProposalInfo, Topic } from "@dfinity/nns";
+import { Topic, type ProposalInfo } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
@@ -237,17 +237,15 @@ describe("NnsProposals", () => {
         // filters.
         proposalsFiltersStore.filterTopics([Topic.Governance]);
 
-        let proposalRequests = [];;
-        vi.spyOn(proposalsApi, "queryProposals").mockImplementation(
-          (args) => {
-            return new Promise<ProposalInfo[]>((resolve) => {
-              proposalRequests.push({
-                args,
-                resolve
-              });
-            })
-          }
-        );
+        const proposalRequests = [];
+        vi.spyOn(proposalsApi, "queryProposals").mockImplementation((args) => {
+          return new Promise<ProposalInfo[]>((resolve) => {
+            proposalRequests.push({
+              args,
+              resolve,
+            });
+          });
+        });
 
         const matchingProposal: ProposalInfo = {
           ...mockProposals[0],
@@ -262,9 +260,13 @@ describe("NnsProposals", () => {
 
         expect(proposalRequests).toHaveLength(2);
         expect(proposalRequests[0].args.certified).toBe(false);
-        expect(proposalRequests[0].args.includeTopics).toEqual([Topic.Governance]);
+        expect(proposalRequests[0].args.includeTopics).toEqual([
+          Topic.Governance,
+        ]);
         expect(proposalRequests[1].args.certified).toBe(true);
-        expect(proposalRequests[1].args.includeTopics).toEqual([Topic.Governance]);
+        expect(proposalRequests[1].args.includeTopics).toEqual([
+          Topic.Governance,
+        ]);
         // We resolve the uncertified request but not yet the certified request.
         proposalRequests[0].resolve([matchingProposal]);
 
