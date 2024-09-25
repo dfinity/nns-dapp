@@ -792,7 +792,7 @@ describe("Tokens route", () => {
         }
       });
 
-      it("should not display goto dashboard for not failed tokens", async () => {
+      it("should not display failed token actions for not failed tokens", async () => {
         const po = await renderPage();
         const tokensPagePo = po.getTokensPagePo();
         const ckBTCTokenRow = await tokensPagePo
@@ -805,8 +805,14 @@ describe("Tokens route", () => {
         expect(
           await ckBTCTokenRow.getGoToDashboardButton().isPresent()
         ).toEqual(false);
+        expect(await ckBTCTokenRow.getRemoveActionButton().isPresent()).toEqual(
+          false
+        );
         expect(
           await notFailedTokenRow.getGoToDashboardButton().isPresent()
+        ).toEqual(false);
+        expect(
+          await notFailedTokenRow.getRemoveActionButton().isPresent()
         ).toEqual(false);
       });
 
