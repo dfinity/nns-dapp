@@ -506,4 +506,27 @@ describe("NeuronsTable", () => {
     expect(await cell2.getTags()).toEqual(tags);
     expect(await cell2.hasTagsElement()).toBe(true);
   });
+
+  it("should render visibility icon and tooltip for public neuron", async () => {
+    const po = renderComponent({
+      neurons: [
+        {
+          ...neuron1,
+          isPublic: true,
+        },
+        {
+          ...neuron2,
+        },
+      ],
+    });
+
+    const visibilityTooltipPo = (
+      await po.getNeuronsTableRowPo(neuron1.neuronId)
+    )
+      .getNeuronIdCellPo()
+      .getPublicNeuronTooltipPo();
+
+    expect(await visibilityTooltipPo.isPresent()).toBe(true);
+    expect(await visibilityTooltipPo.getTooltipText()).toBe("Neuron is public");
+  });
 });

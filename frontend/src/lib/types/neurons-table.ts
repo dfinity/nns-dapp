@@ -15,6 +15,7 @@ export type TableNeuron = {
   dissolveDelaySeconds: bigint;
   state: NeuronState;
   tags: string[];
+  isPublic: boolean;
 };
 
 // Should define a partial ordering on TableNeuron by return -1 if a < b, +1 if

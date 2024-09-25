@@ -34,6 +34,7 @@ import {
 import {
   NeuronState,
   NeuronType,
+  NeuronVisibility,
   Topic,
   Vote,
   ineligibleNeurons,
@@ -1063,4 +1064,8 @@ export const getTopicSubtitle = ({
       i18n.follow_neurons.topic_18_subtitle,
   };
   return mapper[topic];
+};
+
+export const isPublicNeuron = (neuronInfo: NeuronInfo): boolean => {
+  return neuronInfo.visibility === NeuronVisibility.Public;
 };

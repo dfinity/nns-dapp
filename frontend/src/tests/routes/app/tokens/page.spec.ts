@@ -116,10 +116,9 @@ describe("Tokens route", () => {
     fee: 4_000n,
     decimals: 6,
   } as IcrcTokenMetadata;
-  const importedToken1IndexCanisterId = principal(111);
   const importedToken1Data: ImportedTokenData = {
     ledgerCanisterId: importedToken1Id,
-    indexCanisterId: importedToken1IndexCanisterId,
+    indexCanisterId: principal(111),
   };
   const importedToken2Data: ImportedTokenData = {
     ledgerCanisterId: importedToken2Id,
@@ -793,18 +792,36 @@ describe("Tokens route", () => {
         }
       });
 
+      it("should not display goto dashboard for not failed tokens", async () => {
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+        const ckBTCTokenRow = await tokensPagePo
+          .getTokensTable()
+          .getRowByName("ckBTC");
+        const notFailedTokenRow = await tokensPagePo
+          .getTokensTable()
+          .getRowByName("ZTOKEN1");
+
+        expect(
+          await ckBTCTokenRow.getGoToDashboardButton().isPresent()
+        ).toEqual(false);
+        expect(
+          await notFailedTokenRow.getGoToDashboardButton().isPresent()
+        ).toEqual(false);
+      });
+
       it("should have view on dashboard action button", async () => {
         const po = await renderPage();
         const tokensPagePo = po.getTokensPagePo();
         const failedTokenRow = await tokensPagePo
           .getTokensTable()
-          .getRowByName(importedToken1Id.toText());
+          .getRowByName(failedImportedTokenIdText);
 
         expect(
           await failedTokenRow.getGoToDashboardButton().isPresent()
         ).toEqual(true);
         expect(await failedTokenRow.getGoToDashboardButton().getHref()).toEqual(
-          `https://dashboard.internetcomputer.org/canister/${importedToken1Id.toText()}`
+          `https://dashboard.internetcomputer.org/canister/${failedImportedTokenIdText}`
         );
       });
 
@@ -812,6 +829,10 @@ describe("Tokens route", () => {
         vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue();
         vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
           imported_tokens: [
+            {
+              ledger_canister_id: importedToken1Id,
+              index_canister_id: [],
+            },
             {
               ledger_canister_id: importedToken2Id,
               index_canister_id: [],
@@ -823,7 +844,7 @@ describe("Tokens route", () => {
         const tokensPagePo = po.getTokensPagePo();
         const failedTokenRow = await tokensPagePo
           .getTokensTable()
-          .getRowByName(importedToken1Id.toText());
+          .getRowByName(failedImportedTokenIdText);
 
         // Initiating the removal.
         expect(
@@ -837,12 +858,17 @@ describe("Tokens route", () => {
         expect(get(importedTokensStore).importedTokens).toEqual([
           importedToken1Data,
           importedToken2Data,
+          {
+            ledgerCanisterId: failedImportedTokenId,
+            indexCanisterId: undefined,
+          },
         ]);
 
         await removeConfirmationPo.clickYes();
         await removeConfirmationPo.waitForClosed();
 
         expect(get(importedTokensStore).importedTokens).toEqual([
+          importedToken1Data,
           importedToken2Data,
         ]);
 
