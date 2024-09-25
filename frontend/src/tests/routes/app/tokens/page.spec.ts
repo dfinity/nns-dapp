@@ -789,6 +789,39 @@ describe("Tokens route", () => {
           }
         }
       });
+
+      it("should not display goto dashboard for not failed tokens", async () => {
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+        const ckBTCTokenRow = await tokensPagePo
+          .getTokensTable()
+          .getRowByName("ckBTC");
+        const notFailedTokenRow = await tokensPagePo
+          .getTokensTable()
+          .getRowByName("ZTOKEN1");
+
+        expect(
+          await ckBTCTokenRow.getGoToDashboardButton().isPresent()
+        ).toEqual(false);
+        expect(
+          await notFailedTokenRow.getGoToDashboardButton().isPresent()
+        ).toEqual(false);
+      });
+
+      it("should have view on dashboard action button", async () => {
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+        const failedTokenRow = await tokensPagePo
+          .getTokensTable()
+          .getRowByName(failedImportedTokenIdText);
+
+        expect(
+          await failedTokenRow.getGoToDashboardButton().isPresent()
+        ).toEqual(true);
+        expect(await failedTokenRow.getGoToDashboardButton().getHref()).toEqual(
+          `https://dashboard.internetcomputer.org/canister/${failedImportedTokenIdText}`
+        );
+      });
     });
 
     describe("when logged out", () => {
