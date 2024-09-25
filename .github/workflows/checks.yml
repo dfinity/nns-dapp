@@ -343,7 +343,7 @@ jobs:
           Swap canister ID:       n223b-vqaaa-aaaaq-aadsa-cai
           Transaction fee:      50
           Minimum neuron stake: 100
-          Proposal fee:         1500")
+          Proposal fee:         15000")
   checks-pass:
     needs:
       - formatting
