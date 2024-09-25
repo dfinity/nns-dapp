@@ -6,6 +6,7 @@
     type UserTokenLoading,
   } from "$lib/types/tokens-page";
   import { isUserTokenLoading } from "$lib/utils/user-token.utils";
+  import GoToDashboardButton from "./actions/GoToDashboardButton.svelte";
   import GoToDetailIcon from "./actions/GoToDetailIcon.svelte";
   import ReceiveButton from "./actions/ReceiveButton.svelte";
   import SendButton from "./actions/SendButton.svelte";
@@ -23,6 +24,7 @@
     [UserTokenAction.GoToDetail]: GoToDetailIcon,
     [UserTokenAction.Receive]: ReceiveButton,
     [UserTokenAction.Send]: SendButton,
+    [UserTokenAction.GoToDashboard]: GoToDashboardButton,
   };
 
   let userToken: UserTokenData | UserTokenFailed | undefined;
