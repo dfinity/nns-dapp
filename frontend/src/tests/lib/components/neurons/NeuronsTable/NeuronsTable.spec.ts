@@ -524,7 +524,7 @@ describe("NeuronsTable", () => {
       await po.getNeuronsTableRowPo(neuron1.neuronId)
     )
       .getNeuronIdCellPo()
-      .getVisibilityTooltipPo();
+      .getPublicNeuronTooltipPo();
 
     expect(await visibilityTooltipPo.isPresent()).toBe(true);
     expect(await visibilityTooltipPo.getTooltipText()).toBe("Neuron is public");

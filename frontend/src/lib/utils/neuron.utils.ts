@@ -44,7 +44,6 @@ import {
   type Neuron,
   type NeuronId,
   type NeuronInfo,
-  type Option,
   type ProposalInfo,
   type RewardEvent,
 } from "@dfinity/nns";
@@ -1067,8 +1066,6 @@ export const getTopicSubtitle = ({
   return mapper[topic];
 };
 
-export const isNeuronVisibilityPublic = (
-  visibility: Option<NeuronVisibility>
-): boolean => {
-  return visibility === NeuronVisibility.Public;
+export const isPublicNeuron = (neuronInfo: NeuronInfo): boolean => {
+  return neuronInfo.visibility === NeuronVisibility.Public;
 };

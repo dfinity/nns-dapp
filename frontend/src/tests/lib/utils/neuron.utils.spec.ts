@@ -49,7 +49,7 @@ import {
   isNeuronControllable,
   isNeuronControllableByUser,
   isNeuronControlledByHardwareWallet,
-  isNeuronVisibilityPublic,
+  isPublicNeuron,
   isSpawning,
   isValidInputAmount,
   mapMergeableNeurons,
@@ -2946,13 +2946,13 @@ describe("neuron-utils", () => {
     });
   });
 
-  describe("isNeuronVisibilityPublic", () => {
+  describe("isPublicNeuron", () => {
     it("should correctly identify public neurons", () => {
       const publicNeuron = {
         ...mockNeuron,
         visibility: NeuronVisibility.Public,
       };
-      expect(isNeuronVisibilityPublic(publicNeuron.visibility)).toBe(true);
+      expect(isPublicNeuron(publicNeuron)).toBe(true);
     });
 
     it("should correctly identify non-public neurons", () => {
@@ -2968,13 +2968,9 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         visibility: undefined,
       };
-      expect(isNeuronVisibilityPublic(privateNeuron.visibility)).toBe(false);
-      expect(isNeuronVisibilityPublic(unspecifiedNeuron.visibility)).toBe(
-        false
-      );
-      expect(
-        isNeuronVisibilityPublic(undefinedVisibilityNeuron.visibility)
-      ).toBe(false);
+      expect(isPublicNeuron(privateNeuron)).toBe(false);
+      expect(isPublicNeuron(unspecifiedNeuron)).toBe(false);
+      expect(isPublicNeuron(undefinedVisibilityNeuron)).toBe(false);
     });
   });
 });
