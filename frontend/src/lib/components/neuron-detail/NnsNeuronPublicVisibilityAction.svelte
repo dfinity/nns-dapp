@@ -51,6 +51,5 @@
 
   .toggle-container {
     --card-background-contrast: var(--primary);
-    transform: scale(1.15);
   }
 </style>
