@@ -789,6 +789,21 @@ describe("Tokens route", () => {
           }
         }
       });
+
+      it("should have view on dashboard action button", async () => {
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+        const failedTokenRow = await tokensPagePo
+          .getTokensTable()
+          .getRowByName(failedImportedTokenIdText);
+
+        expect(
+          await failedTokenRow.getGoToDashboardButton().isPresent()
+        ).toEqual(true);
+        expect(await failedTokenRow.getGoToDashboardButton().getHref()).toEqual(
+          `https://dashboard.internetcomputer.org/canister/${failedImportedTokenIdText}`
+        );
+      });
     });
 
     describe("when logged out", () => {
