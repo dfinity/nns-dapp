@@ -4,7 +4,7 @@
   import type { Universe } from "$lib/types/universe";
   import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
   import { Tag } from "@dfinity/gix-components";
-  import { Principal } from "@dfinity/principal";
+  import type { Principal } from "@dfinity/principal";
 
   export let tokenToRemove:
     | { universe: Universe }
