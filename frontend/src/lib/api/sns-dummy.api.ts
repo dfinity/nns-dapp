@@ -164,7 +164,7 @@ const transferFundsProposal = {
         to_principal: [Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai")],
         to_subaccount: [],
         memo: [33_333n],
-        amount_e8s: 100_000_000_000n,
+        amount_e8s: 10_000_000_000n,
       },
     },
   ] as [SnsAction],
