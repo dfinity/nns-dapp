@@ -17,6 +17,7 @@ export enum UserTokenAction {
   Send = "send",
   GoToDetail = "goToDetail",
   Receive = "receive",
+  GoToDashboard = "goToDashboard",
 }
 
 export type UserTokenBase = {
