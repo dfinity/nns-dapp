@@ -35,7 +35,8 @@
       "remote": {
         "id": {
           "app": "qhbym-qaaaa-aaaaa-aaafq-cai",
-          "mainnet": "qhbym-qaaaa-aaaaa-aaafq-cai"
+          "mainnet": "qhbym-qaaaa-aaaaa-aaafq-cai",
+          "local": "q3fc5-haaaa-aaaaa-aaahq-cai"
         }
       }
     },
