@@ -333,7 +333,7 @@ jobs:
         run: scripts/network-config.test
       - name: Get SNS tool
         run: |
-          [[ "$(scripts/sns/aggregator/get-sns dog)" == "Name:   DOGMI
+          diff <(scripts/sns/aggregator/get-sns dog) <(echo "Name:   DOGMI
 Symbol: DOGMI
 Aggregator URL:         https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/root/nb7he-piaaa-aaaaq-aadqq-cai/slow.json
 Root canister ID:       nb7he-piaaa-aaaaq-aadqq-cai
@@ -343,7 +343,7 @@ Index canister ID:      n535v-yiaaa-aaaaq-aadsq-cai
 Swap canister ID:       n223b-vqaaa-aaaaq-aadsa-cai
 Transaction fee:      50
 Minimum neuron stake: 100
-Proposal fee:         1500" ]]
+Proposal fee:         1500")
   checks-pass:
     needs:
       - formatting
