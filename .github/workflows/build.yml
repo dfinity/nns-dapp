@@ -244,6 +244,13 @@ jobs:
       - name: Test TVL
         run: |
           scripts/nns-dapp/test-tvl --nns_dapp_wasm nns-dapp.wasm.gz --nns_dapp_arg nns-dapp-arg-local.did
+      - name: Test import canister IDs
+        run: |
+          ./scripts/canister_ids --import-from-index-html http://qsgjb-riaaa-aaaaa-aaaga-cai.localhost:8080/ --network local --create
+          diff canister_ids.json scripts/canister_ids.local.golden
+          rm canister_ids.json
+          ./scripts/canister_ids --import-from-index-html https://nns.ic0.app --network mainnet --create
+          diff canister_ids.json scripts/canister_ids.mainnet.golden
       - name: Release
         run: |
           for tag in $(git tag --points-at HEAD) ; do
