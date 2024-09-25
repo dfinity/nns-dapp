@@ -28,7 +28,7 @@ export class TogglePo extends BasePageObject {
     return (
       (await this.root
         .querySelector("input[type=checkbox]")
-        .getAttribute("disabled")) !== null
+        .getAttribute("disabled")) === ""
     );
   }
 }
