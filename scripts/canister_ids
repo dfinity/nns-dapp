@@ -127,9 +127,6 @@ canister_id_from_url() {
 if [ "$command" = "import-from-index-html" ]; then
   tmp_index_html="$(mktemp)"
   trap 'rm -f "$tmp_index_html"' EXIT
-  if [[ $IMPORT_FROM != *".raw."* ]]; then
-    IMPORT_FROM=${IMPORT_FROM/./.raw.}
-  fi
   curl -sS "$IMPORT_FROM" >"$tmp_index_html"
   if [ "$(file --brief --mime-type "$tmp_index_html")" = "application/gzip" ]; then
     mv "$tmp_index_html" "${tmp_index_html}.gz"

@@ -255,7 +255,7 @@
 
   {#if removeImportedTokenConfirmationVisible && nonNullish(universe)}
     <ImportTokenRemoveConfirmation
-      {universe}
+      tokenToRemove={{ universe }}
       on:nnsClose={() => (removeImportedTokenConfirmationVisible = false)}
       on:nnsConfirm={removeImportedToken}
     />
