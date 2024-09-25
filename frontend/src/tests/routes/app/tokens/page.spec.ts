@@ -878,7 +878,9 @@ describe("Tokens route", () => {
           importedToken2Data,
         ]);
 
-        // TODO(https://github.com/dfinity/nns-dapp/pull/5488): check that the token is removed from the table
+        expect(
+          await failedTokenRow.getRemoveActionButton().isPresent()
+        ).toEqual(false);
       });
     });
 
