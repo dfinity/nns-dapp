@@ -790,6 +790,21 @@ describe("Tokens route", () => {
         }
       });
 
+      it("should not display goto dashboard for not failed tokens", async () => {
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+        const rowsPos = await tokensPagePo.getTokensTable().getRows();
+
+        expect(rowsPos.length).toBeGreaterThan(0);
+        for (const rowPo of rowsPos) {
+          if ((await rowPo.getProjectName()) !== failedImportedTokenIdText) {
+            expect(await rowPo.getGoToDashboardButton().isPresent()).toEqual(
+              false
+            );
+          }
+        }
+      });
+
       it("should have view on dashboard action button", async () => {
         const po = await renderPage();
         const tokensPagePo = po.getTokensPagePo();
