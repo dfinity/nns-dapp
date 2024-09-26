@@ -8,13 +8,14 @@ source "$SOURCE_DIR/clap.bash"
 clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
 clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="${DFX_IDENTITY:-$(dfx identity whoami)}"
 clap.define long=mode desc="The dfx install mode" variable=DFX_MODE default="upgrade"
+clap.define short=a long=assets desc="The assets.tar.xz to split" variable=ORIGINAL_ASSETS_TAR_XZ default="out/assets.tar.xz"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
 mkdir -p out
 CANISTER_NAME="nns-dapp"
 
-"$SOURCE_DIR/nns-dapp/split-assets" --assets assets.tar.xz
+"$SOURCE_DIR/nns-dapp/split-assets" --assets "$ORIGINAL_ASSETS_TAR_XZ"
 
 ARGUMENT="$(cat "nns-dapp-arg-${DFX_NETWORK}.did")"
 
