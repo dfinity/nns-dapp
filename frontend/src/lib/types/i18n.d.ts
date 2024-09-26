@@ -338,8 +338,6 @@ interface I18nNeurons {
   public_neuron_description: string;
   private_neuron_description: string;
   learn_more: string;
-  make_neuron_private: string;
-  make_neuron_public: string;
 }
 
 interface I18nNew_followee {
@@ -721,6 +719,18 @@ interface I18nNeuron_detail {
   created: string;
   neuron_state_tooltip: string;
   dissolve_delay_tooltip: string;
+  change_neuron_make_neuron_public: string;
+  change_neuron_make_neuron_private: string;
+  change_neuron_make_neuron_public_confirmation: string;
+  change_neuron_make_neuron_private_confirmation: string;
+  change_neuron_make_neuron_public_description: string;
+  change_neuron_make_neuron_private_description: string;
+  change_neuron_apply_to_all_neurons: string;
+  change_neuron_here: string;
+  change_neuron_public_neuron_modal_description: string;
+  change_neuron_private_neuron_modal_description: string;
+  make_neuron_private: string;
+  make_neuron_public: string;
 }
 
 interface I18nSns_launchpad {
