@@ -1,5 +1,6 @@
 import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as governanceApi from "$lib/api/governance.api";
+import * as icpIndexApi from "$lib/api/icp-index.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -31,7 +32,7 @@ import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -40,7 +41,6 @@ import { get } from "svelte/store";
 
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/ckbtc-minter.api");
-vi.mock("$lib/api/icp-index.api");
 
 vi.mock("$lib/services/icrc-transactions.services", () => {
   return {
@@ -277,34 +277,33 @@ describe("Wallet", () => {
   describe("unknown token", () => {
     const unknownUniverseId = "aaaaa-aa";
 
+    beforeEach(() => {
+      // Mock the getTransactions call from the Tokens page.
+      vi.spyOn(icpIndexApi, "getTransactions").mockResolvedValue({
+        transactions: [],
+        oldestTxId: undefined,
+      } as icpIndexApi.GetTransactionsResponse);
+    });
+
     it("redirect to tokens when unknown universe", async () => {
-      // Ignore errors after redirect.
-      vi.spyOn(console, "error").mockReturnValue();
       page.mock({
         data: { universe: unknownUniverseId },
         routeId: AppPath.Wallet,
       });
-      setSnsProjects([]);
+      resetSnsProjects();
 
       expect(get(pageStore).path).toEqual(AppPath.Wallet);
 
       render(Wallet, {
         props: {
           accountIdentifier: undefined,
-          // accountIdentifier: mockIcrcMainAccount.identifier,
         },
       });
       await runResolvedPromises();
 
       // Waits for the sns projects to be available
       expect(get(pageStore).path).toEqual(AppPath.Wallet);
-      setSnsProjects([
-        {
-          rootCanisterId: mockSnsFullProject.rootCanisterId,
-          ledgerCanisterId: mockSnsFullProject.summary.ledgerCanisterId,
-          lifecycle: SnsSwapLifecycle.Committed,
-        },
-      ]);
+      setSnsProjects([{}]);
       await runResolvedPromises();
 
       expect(get(pageStore).path).toEqual(AppPath.Tokens);
