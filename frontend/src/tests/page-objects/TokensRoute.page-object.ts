@@ -3,6 +3,7 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import { CkBTCReceiveModalPo } from "./CkBTCReceiveModal.page-object";
 import { CkBTCTransactionModalPo } from "./CkBTCTransactionModal.page-object";
 import { IcrcTokenTransactionModalPo } from "./IcrcTokenTransactionModal.page-object";
+import { ImportTokenRemoveConfirmationPo } from "./ImportTokenRemoveConfirmation.page-object";
 import { ReceiveModalPo } from "./ReceiveModal.page-object";
 import { SignInTokensPagePo } from "./SignInTokens.page-object";
 import { TokensPagePo } from "./TokensPage.page-object";
@@ -58,5 +59,9 @@ export class TokensRoutePo extends BasePageObject {
     amount: number;
   }): Promise<void> {
     return this.getIcrcTokenTransactionModal().transferToAddress(params);
+  }
+
+  getImportTokenRemoveConfirmationPo(): ImportTokenRemoveConfirmationPo {
+    return ImportTokenRemoveConfirmationPo.under(this.root);
   }
 }
