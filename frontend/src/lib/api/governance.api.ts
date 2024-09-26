@@ -15,7 +15,11 @@ import type {
   Topic,
   Vote,
 } from "@dfinity/nns";
-import { GovernanceCanister, type RewardEvent } from "@dfinity/nns";
+import {
+  GovernanceCanister,
+  NeuronVisibility,
+  type RewardEvent,
+} from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { ledgerCanister as getLedgerCanister } from "./icp-ledger.api";
 
@@ -574,3 +578,30 @@ export const governanceCanister = async ({
     agent,
   };
 };
+export type ApiChangeNeuronVisibilityParams = ApiCallParams & {
+  neuronIds: NeuronId[];
+  visibility: NeuronVisibility;
+};
+
+export const changeNeuronVisibility = async ({
+  neuronIds,
+  visibility,
+  identity,
+}: ApiChangeVisibilityParams): Promise<void> => {
+  // Log the start of the operation with more details
+  logWithTimestamp(
+    `Changing visibility for ${neuronIds.length} neurons. IDs: ${neuronIds.join(", ")}. New visibility: ${visibility}`
+  );
+  const { canister } = await governanceCanister({ identity });
+
+  await Promise.all(
+    neuronIds.map((neuronId) => canister.setVisibility(neuronId, visibility))
+  );
+
+  // Log the completion of the operation with more details
+  logWithTimestamp(
+    `Visibility change complete for ${neuronIds.length} neurons. IDs: ${neuronIds.join(", ")}. New visibility: ${visibility}`
+  );
+};
+
+// ... existing code ...
