@@ -37,6 +37,6 @@ export class WalletPageHeadingPo extends BasePageObject {
   }
 
   async hasImportedTokenTag(): Promise<boolean> {
-    return this.root.byTestId("imported-token-tag").isPresent();
+    return this.isPresent("imported-token-tag");
   }
 }
