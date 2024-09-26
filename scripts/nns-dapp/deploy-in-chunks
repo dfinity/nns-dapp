@@ -14,6 +14,8 @@ clap.define short=w long=wasm desc="The canister WASM to install" variable=WASM 
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
+set -x
+
 mkdir -p out
 CANISTER_NAME="nns-dapp"
 
