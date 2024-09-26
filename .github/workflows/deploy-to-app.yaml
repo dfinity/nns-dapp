@@ -106,6 +106,7 @@ jobs:
             --assets "out/assets.tar.xz" \
             --network "$DFX_NETWORK" \
             --mode "${{ inputs.mode || 'upgrade' }}" \
+            --wasm "out/nns-dapp_noassets.wasm.gz" \
             --argument_file "out/nns-dapp-arg-${DFX_NETWORK}.did"
       - name: Deploy sns_aggregator
         if: (inputs.canisters == 'all') || (inputs.canisters == 'sns_aggregator') || ( github.event_name != 'workflow_dispatch' )

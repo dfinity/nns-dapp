@@ -10,6 +10,7 @@ clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_ID
 clap.define long=mode desc="The dfx install mode" variable=DFX_MODE default="upgrade"
 clap.define short=a long=assets desc="The assets.tar.xz to split" variable=ORIGINAL_ASSETS_TAR_XZ default="out/assets.tar.xz"
 clap.define long=argument_file desc="The .did file with the canister argument" variable=ARGUMENT_FILE default="out/nns-dapp-arg-local.did"
+clap.define short=w long=wasm desc="The canister WASM to install" variable=WASM default="out/nns-dapp_noassets.wasm.gz"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
@@ -27,7 +28,7 @@ ARGUMENT="$(cat "$ARGUMENT_FILE")"
 # before and after every step to miss as little as possible.
 dfx canister logs --network "$DFX_NETWORK" "$CANISTER_NAME"
 
-dfx canister install --mode upgrade --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$ARGUMENT" --wasm nns-dapp_noassets.wasm.gz
+dfx canister install --mode upgrade --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$ARGUMENT" --wasm "$WASM"
 
 dfx canister logs --network "$DFX_NETWORK" "$CANISTER_NAME"
 ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xaa.tar.xz
