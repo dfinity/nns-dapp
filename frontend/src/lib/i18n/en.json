@@ -704,7 +704,12 @@
     "change_neuron_public_neuron_modal_description": "This neuron is public. Its information is visible to everyone.",
     "change_neuron_private_neuron_modal_description": "This neuron is private. Its information is only visible to you.",
     "make_neuron_private": "Make Neuron Private",
-    "make_neuron_public": "Make Neuron Public"
+    "make_neuron_public": "Make Neuron Public",
+    "change_neuron_public_success": "{count, plural, one {This neuron is} other {These neurons are}} public. {count, plural, one {Its information is} other {Their information is}} visible to everyone.",
+    "change_neuron_private_failure": "{count, plural, one {This neuron is} other {These neurons are}} private. {count, plural, one {Its information is} other {Their information is}} only visible to you.",
+
+    "change_neuron_visibility_partial_failure": "{{failedCount, plural, one {# neuron has} other {# neurons have}}} failed to update {{failedCount, plural, one {its} other {their}}} visibility. Please try again later. You can always change neuron visibility settings under \"Advanced Details & Settings\".",
+    "change_neuron_visibility_failure": "All neurons have failed to update their visibility. Please try again later. You can always change neuron visibility settings under \"Advanced Details & Settings\""
   },
   "sns_launchpad": {
     "header": "Launchpad",

@@ -731,6 +731,10 @@ interface I18nNeuron_detail {
   change_neuron_private_neuron_modal_description: string;
   make_neuron_private: string;
   make_neuron_public: string;
+  change_neuron_public_success: string;
+  change_neuron_private_failure: string;
+  change_neuron_visibility_partial_failure: string;
+  change_neuron_visibility_failure: string;
 }
 
 interface I18nSns_launchpad {
