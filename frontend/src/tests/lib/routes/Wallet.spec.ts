@@ -8,6 +8,7 @@ import {
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import Wallet from "$lib/routes/Wallet.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
@@ -35,9 +36,11 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/ckbtc-minter.api");
+vi.mock("$lib/api/icp-index.api");
 
 vi.mock("$lib/services/icrc-transactions.services", () => {
   return {
@@ -269,5 +272,42 @@ describe("Wallet", () => {
     expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(4);
 
     expect(await pagePo.getWalletPageHeadingPo().getTitle()).toBe("1.11 ckETH");
+  });
+
+  describe("unknown token", () => {
+    const unknownUniverseId = "aaaaa-aa";
+
+    it("redirect to tokens when unknown universe", async () => {
+      // Ignore errors after redirect.
+      vi.spyOn(console, "error").mockReturnValue();
+      page.mock({
+        data: { universe: unknownUniverseId },
+        routeId: AppPath.Wallet,
+      });
+      setSnsProjects([]);
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+
+      render(Wallet, {
+        props: {
+          accountIdentifier: undefined,
+          // accountIdentifier: mockIcrcMainAccount.identifier,
+        },
+      });
+      await runResolvedPromises();
+
+      // Waits for the sns projects to be available
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+      setSnsProjects([
+        {
+          rootCanisterId: mockSnsFullProject.rootCanisterId,
+          ledgerCanisterId: mockSnsFullProject.summary.ledgerCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+        },
+      ]);
+      await runResolvedPromises();
+
+      expect(get(pageStore).path).toEqual(AppPath.Tokens);
+    });
   });
 });
