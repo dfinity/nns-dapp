@@ -16,8 +16,12 @@
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { nonNullish } from "@dfinity/utils";
+  import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 
   export let accountIdentifier: string | undefined | null = undefined;
+
+  let snsReady = false;
+  $: snsReady = $snsProjectsStore.length > 0;
 
   layoutTitleStore.set({
     title: $i18n.wallet.title,
@@ -29,10 +33,10 @@
     <NnsWallet {accountIdentifier} />
   {:else if $isCkBTCUniverseStore}
     <CkBTCWallet {accountIdentifier} />
-  {:else if $isIcrcTokenUniverseStore}
-    <IcrcWallet {accountIdentifier} />
   {:else if nonNullish($snsProjectSelectedStore)}
     <SnsWallet {accountIdentifier} />
+  {:else if $isIcrcTokenUniverseStore || snsReady}
+    <IcrcWallet {accountIdentifier} />
   {/if}
 
   {#if $isCkBTCUniverseStore}
