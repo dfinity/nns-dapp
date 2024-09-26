@@ -50,7 +50,12 @@ import {
 } from "$lib/utils/neuron.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import { AnonymousIdentity, type Identity } from "@dfinity/agent";
-import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
+import {
+  NeuronVisibility,
+  Topic,
+  type NeuronId,
+  type NeuronInfo,
+} from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
@@ -1006,5 +1011,60 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
   } catch (error) {
     console.error(error);
     toastsShow(mapNeuronErrorToToastMessage(error));
+  }
+};
+
+export const changeNeuronVisibility = async ({
+  neurons,
+  makePublic,
+}: {
+  neurons: NeuronInfo[];
+  makePublic: boolean;
+}): Promise<void> => {
+  const results = await Promise.allSettled(
+    neurons.map(async (neuron) => {
+      try {
+        const identity: Identity = await getIdentityOfControllerByNeuronId(
+          neuron.neuronId
+        );
+        await governanceApiService.changeNeuronVisibility({
+          neuronIds: [neuron.neuronId],
+          identity,
+          visibility: makePublic
+            ? NeuronVisibility.Public
+            : NeuronVisibility.Private,
+        });
+        await getAndLoadNeuron(neuron.neuronId);
+        return true;
+      } catch (err) {
+        console.error(
+          `Failed to change visibility for neuron ${neuron.neuronId}:`,
+          err
+        );
+        return false;
+      }
+    })
+  );
+
+  const failedCount = results.filter(
+    (result) => result.status === "rejected" || result.value === false
+  ).length;
+
+  if (failedCount === 0) {
+    toastsSuccess({
+      labelKey: makePublic
+        ? "neuron_detail.change_neuron_make_neuron_public"
+        : "neuron_detail.change_neuron_make_neuron_private",
+      substitutions: { $count: neurons.length.toString() },
+    });
+  } else if (failedCount < neurons.length) {
+    toastsError({
+      labelKey: "neuron_detail.change_neuron_visibility_partial_failure",
+      substitutions: { $failedCount: failedCount.toString() },
+    });
+  } else {
+    toastsError({
+      labelKey: "neuron_detail.change_neuron_visibility_failure",
+    });
   }
 };
