@@ -1,5 +1,6 @@
 import * as ckBTCMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import * as importedTokensApi from "$lib/api/imported-tokens.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
@@ -55,6 +56,7 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/sns-ledger.api");
@@ -790,7 +792,7 @@ describe("Tokens route", () => {
         }
       });
 
-      it("should not display goto dashboard for not failed tokens", async () => {
+      it("should not display failed token actions for not failed tokens", async () => {
         const po = await renderPage();
         const tokensPagePo = po.getTokensPagePo();
         const ckBTCTokenRow = await tokensPagePo
@@ -803,8 +805,14 @@ describe("Tokens route", () => {
         expect(
           await ckBTCTokenRow.getGoToDashboardButton().isPresent()
         ).toEqual(false);
+        expect(await ckBTCTokenRow.getRemoveActionButton().isPresent()).toEqual(
+          false
+        );
         expect(
           await notFailedTokenRow.getGoToDashboardButton().isPresent()
+        ).toEqual(false);
+        expect(
+          await notFailedTokenRow.getRemoveActionButton().isPresent()
         ).toEqual(false);
       });
 
@@ -821,6 +829,74 @@ describe("Tokens route", () => {
         expect(await failedTokenRow.getGoToDashboardButton().getHref()).toEqual(
           `https://dashboard.internetcomputer.org/canister/${failedImportedTokenIdText}`
         );
+      });
+
+      it("provides possibility to remove failed imported token", async () => {
+        vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue();
+        vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
+          imported_tokens: [
+            {
+              ledger_canister_id: importedToken1Id,
+              index_canister_id: [],
+            },
+            {
+              ledger_canister_id: importedToken2Id,
+              index_canister_id: [],
+            },
+          ],
+        });
+        const po = await renderPage();
+        const removeConfirmationPo = po.getImportTokenRemoveConfirmationPo();
+        const tokensPagePo = po.getTokensPagePo();
+        const failedTokenRow = await tokensPagePo
+          .getTokensTable()
+          .getRowByName(failedImportedTokenIdText);
+
+        expect(await po.getTokensPagePo().getTokenNames()).toEqual([
+          "Internet Computer",
+          "ckBTC",
+          "ckUSDC",
+          "ATOKEN2",
+          "Tetris",
+          "ZTOKEN1",
+          "aaaaa-aa", // failedTokenRow
+          "ckETH",
+          "Pacman",
+        ]);
+
+        // Initiating the removal.
+        await failedTokenRow.getRemoveActionButton().click();
+        await runResolvedPromises();
+
+        // Confirm the removal.
+        expect(await removeConfirmationPo.isPresent()).toBe(true);
+        expect(get(importedTokensStore).importedTokens).toEqual([
+          importedToken1Data,
+          importedToken2Data,
+          {
+            ledgerCanisterId: failedImportedTokenId,
+            indexCanisterId: undefined,
+          },
+        ]);
+
+        await removeConfirmationPo.clickYes();
+        await removeConfirmationPo.waitForClosed();
+        await runResolvedPromises();
+
+        expect(get(importedTokensStore).importedTokens).toEqual([
+          importedToken1Data,
+          importedToken2Data,
+        ]);
+        expect(await po.getTokensPagePo().getTokenNames()).toEqual([
+          "Internet Computer",
+          "ckBTC",
+          "ckUSDC",
+          "ATOKEN2",
+          "Tetris",
+          "ZTOKEN1",
+          "ckETH",
+          "Pacman",
+        ]);
       });
     });
 
