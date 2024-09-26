@@ -6,21 +6,41 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { isPublicNeuron } from "$lib/utils/neuron.utils";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import { changeNeuronVisibility } from "$lib/services/neurons.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
 
   export let neuron: NeuronInfo;
 
-  const dispatch = createEventDispatcher();
+  const dispatcher = createEventDispatcher();
   const close = () => {
-    dispatch("nnsClose");
+    dispatcher("nnsClose");
   };
 
   let applyToAllNeurons = false;
   $: isPublic = isPublicNeuron(neuron);
 
-  const handleConfirm = () => {
-    // TODO: Implement the logic to change neuron visibility
-    close();
-  };
+  async function handleChangeVisibility() {
+    startBusy({
+      initiator: "change-neuron-visibility",
+      labelKey: isPublic
+        ? "neuron_detail.change_neuron_make_neuron_private"
+        : "neuron_detail.change_neuron_make_neuron_public",
+    });
+
+    try {
+      await changeNeuronVisibility({
+        neurons: [neuron],
+        makePublic: !isPublic,
+      });
+      close();
+    } catch (error) {
+      console.error("Error changing neuron visibility:", error);
+      // You might want to show an error toast here
+    } finally {
+      stopBusy("change-neuron-visibility");
+      dispatcher("nnsClose");
+    }
+  }
 </script>
 
 <Modal on:nnsClose testId="change-neuron-visibility-modal">
@@ -66,7 +86,7 @@
     <button class="secondary" on:click={close}>
       {$i18n.core.cancel}
     </button>
-    <button class="primary" on:click={handleConfirm}>
+    <button class="primary" on:click={handleChangeVisibility}>
       {$i18n.core.confirm}
     </button>
   </div>
