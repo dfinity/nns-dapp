@@ -41,7 +41,6 @@
     // (imported tokens are not available when signed out).
     goto(AppPath.Tokens);
   }
-
 </script>
 
 <TestIdWrapper testId="wallet-component">
