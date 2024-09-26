@@ -1086,4 +1086,34 @@ describe("neurons api-service", () => {
       });
     });
   });
+
+  describe("changeNeuronVisibility", () => {
+    const params: ApiChangeNeuronVisibilityParams = {
+      neuronId,
+      identity: mockIdentity,
+      visible: true,
+    };
+
+    it("should call changeNeuronVisibility api", () => {
+      governanceApiService.changeNeuronVisibility(params);
+      expect(api.changeNeuronVisibility).toHaveBeenCalledWith(params);
+      expect(api.changeNeuronVisibility).toHaveBeenCalledTimes(1);
+    });
+
+    it("should invalidate the cache", async () => {
+      await shouldInvalidateCache({
+        apiFunc: api.changeNeuronVisibility,
+        apiServiceFunc: governanceApiService.changeNeuronVisibility,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.changeNeuronVisibility,
+        apiServiceFunc: governanceApiService.changeNeuronVisibility,
+        params,
+      });
+    });
+  });
 });

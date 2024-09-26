@@ -1,6 +1,7 @@
 import {
   addHotkey,
   autoStakeMaturity,
+  changeNeuronVisibility,
   claimOrRefreshNeuron,
   disburse,
   increaseDissolveDelay,
@@ -23,6 +24,7 @@ import {
   startDissolving,
   stopDissolving,
   type ApiAutoStakeMaturityParams,
+  type ApiChangeNeuronVisibilityParams,
   type ApiDisburseParams,
   type ApiIncreaseDissolveDelayParams,
   type ApiManageHotkeyParams,
@@ -203,5 +205,8 @@ export const governanceApiService = {
   },
   stopDissolving(params: ApiManageNeuronParams) {
     return clearCacheAfter(stopDissolving(params));
+  },
+  changeNeuronVisibility(params: ApiChangeNeuronVisibilityParams) {
+    return clearCacheAfter(changeNeuronVisibility(params));
   },
 };
