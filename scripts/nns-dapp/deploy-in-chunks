@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="${DFX_IDENTITY:-$(dfx identity whoami)}"
+clap.define long=mode desc="The dfx install mode" variable=DFX_MODE default="upgrade"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+mkdir -p out
+CANISTER_NAME="nns-dapp"
+
+"$SOURCE_DIR/nns-dapp/split-assets" --assets assets.tar.xz
+
+ARGUMENT="$(cat "nns-dapp-arg-${DFX_NETWORK}.did")"
+
+# There have been issues with the uploading of assets causing
+# "heap out of bounds" so we output logs to help debug when it happens
+# again.
+# The canister only keeps a small amount of logs so we output them
+# before and after every step to miss as little as possible.
+dfx canister logs --network "$DFX_NETWORK" "$CANISTER_NAME"
+
+dfx canister install --mode upgrade --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$ARGUMENT" --wasm nns-dapp_noassets.wasm.gz
+
+dfx canister logs --network "$DFX_NETWORK" "$CANISTER_NAME"
+./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xaa.tar.xz
+
+dfx canister logs --network "$DFX_NETWORK" "$CANISTER_NAME"
+./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xab.tar.xz
+
+dfx canister logs --network "$DFX_NETWORK" "$CANISTER_NAME"
+./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xac.tar.xz
+
+dfx canister logs --network "$DFX_NETWORK" "$CANISTER_NAME"
