@@ -587,7 +587,7 @@ export const changeNeuronVisibility = async ({
   neuronIds,
   visibility,
   identity,
-}: ApiChangeVisibilityParams): Promise<void> => {
+}: ApiChangeNeuronVisibilityParams): Promise<void> => {
   // Log the start of the operation with more details
   logWithTimestamp(
     `Changing visibility for ${neuronIds.length} neurons. IDs: ${neuronIds.join(", ")}. New visibility: ${visibility}`

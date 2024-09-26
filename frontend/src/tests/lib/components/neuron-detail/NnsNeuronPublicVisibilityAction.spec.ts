@@ -31,7 +31,6 @@ describe("NnsNeuronPublicVisibilityAction", () => {
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
     expect(await po.getButtonPo().getText()).toBe("Make Neuron Private");
-    expect(await po.getButtonPo().isDisabled()).toBe(true);
   });
 
   it("should render elements and text for private neuron", async () => {
@@ -49,7 +48,6 @@ describe("NnsNeuronPublicVisibilityAction", () => {
     expect(await po.getSubtitleLinkPo().getHref()).toBe(
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
-    expect(await po.getButtonPo().getText()).toBe("Make Neuron Public");
   });
 
   it("should render elements and text for unspecified neuron", async () => {

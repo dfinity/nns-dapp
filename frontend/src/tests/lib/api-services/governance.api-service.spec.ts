@@ -15,7 +15,7 @@ import {
 } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import { Topic, Vote } from "@dfinity/nns";
+import { NeuronVisibility, Topic, Vote } from "@dfinity/nns";
 import type { RewardEvent } from "@dfinity/nns/dist/candid/governance";
 import type { Mock } from "vitest";
 
@@ -1088,10 +1088,10 @@ describe("neurons api-service", () => {
   });
 
   describe("changeNeuronVisibility", () => {
-    const params: ApiChangeNeuronVisibilityParams = {
-      neuronId,
+    const params: api.ApiChangeNeuronVisibilityParams = {
+      neuronIds: [neuronId],
       identity: mockIdentity,
-      visible: true,
+      visibility: NeuronVisibility.Public,
     };
 
     it("should call changeNeuronVisibility api", () => {

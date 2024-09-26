@@ -1862,121 +1862,112 @@ describe("neurons-services", () => {
     });
   });
   describe("changeNeuronVisibility", () => {
-  it("should change visibility to public for all neurons", async () => {
-    neuronsStore.setNeurons({ neurons: [controlledNeuron], certified: true });
+    it("should change visibility to public for all neurons", async () => {
+      neuronsStore.setNeurons({ neurons: [controlledNeuron], certified: true });
 
-    await changeNeuronVisibility({
-      neurons: [controlledNeuron],
-      makePublic: true,
+      await changeNeuronVisibility({
+        neurons: [controlledNeuron],
+        makePublic: true,
+      });
+
+      expect(spyChangeNeuronVisibility).toBeCalledWith({
+        neuronIds: [controlledNeuron.neuronId],
+        identity: mockIdentity,
+        visibility: NeuronVisibility.Public,
+      });
+      expect(spyChangeNeuronVisibility).toBeCalledTimes(1);
+      expect(spyGetNeuron).toBeCalled();
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: "Make Neuron Public",
+        },
+      ]);
     });
 
-    expect(spyChangeNeuronVisibility).toBeCalledWith({
-      neuronIds: [controlledNeuron.neuronId],
-      identity: mockIdentity,
-      visibility: NeuronVisibility.Public,
-    });
-    expect(spyChangeNeuronVisibility).toBeCalledTimes(1);
-    expect(spyGetNeuron).toBeCalled();
-    expect(get(toastsStore)).toEqual([
-      {
-        level: "success",
-        text: expect.stringContaining(
-          "neuron_detail.change_neuron_make_neuron_public"
-        ),
-      },
-    ]);
-  });
+    it("should change visibility to private for all neurons", async () => {
+      neuronsStore.setNeurons({ neurons: [controlledNeuron], certified: true });
 
-  it("should change visibility to private for all neurons", async () => {
-    neuronsStore.setNeurons({ neurons: [controlledNeuron], certified: true });
+      await changeNeuronVisibility({
+        neurons: [controlledNeuron],
+        makePublic: false,
+      });
 
-    await changeNeuronVisibility({
-      neurons: [controlledNeuron],
-      makePublic: false,
+      expect(spyChangeNeuronVisibility).toBeCalledWith({
+        neuronIds: [controlledNeuron.neuronId],
+        identity: mockIdentity,
+        visibility: NeuronVisibility.Private,
+      });
+      expect(spyChangeNeuronVisibility).toBeCalledTimes(1);
+      expect(spyGetNeuron).toBeCalled();
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: "Make Neuron Private",
+        },
+      ]);
     });
 
-    expect(spyChangeNeuronVisibility).toBeCalledWith({
-      neuronIds: [controlledNeuron.neuronId],
-      identity: mockIdentity,
-      visibility: NeuronVisibility.Private,
-    });
-    expect(spyChangeNeuronVisibility).toBeCalledTimes(1);
-    expect(spyGetNeuron).toBeCalled();
-    expect(get(toastsStore)).toEqual([
-      {
-        level: "success",
-        text: expect.stringContaining(
-          "neuron_detail.change_neuron_make_neuron_private"
-        ),
-      },
-    ]);
-  });
+    it("should handle partial failure", async () => {
+      const neuron1 = { ...controlledNeuron, neuronId: 1n };
+      const neuron2 = { ...controlledNeuron, neuronId: 2n };
+      neuronsStore.setNeurons({ neurons: [neuron1, neuron2], certified: true });
 
-  it("should handle partial failure", async () => {
-    const neuron1 = { ...controlledNeuron, neuronId: 1n };
-    const neuron2 = { ...controlledNeuron, neuronId: 2n };
-    neuronsStore.setNeurons({ neurons: [neuron1, neuron2], certified: true });
+      spyChangeNeuronVisibility.mockResolvedValueOnce(undefined);
+      spyChangeNeuronVisibility.mockRejectedValueOnce(new Error("Test error"));
 
-    spyChangeNeuronVisibility.mockResolvedValueOnce(undefined);
-    spyChangeNeuronVisibility.mockRejectedValueOnce(new Error("Test error"));
+      await changeNeuronVisibility({
+        neurons: [neuron1, neuron2],
+        makePublic: true,
+      });
 
-    await changeNeuronVisibility({
-      neurons: [neuron1, neuron2],
-      makePublic: true,
+      expect(spyChangeNeuronVisibility).toBeCalledTimes(2);
+      expect(spyGetNeuron).toBeCalledTimes(1);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: '{{failedCount, plural, one {# neuron has} other {# neurons have}}} failed to update {{failedCount, plural, one {its} other {their}}} visibility. Please try again later. You can always change neuron visibility settings under "Advanced Details & Settings".',
+        },
+      ]);
     });
 
-    expect(spyChangeNeuronVisibility).toBeCalledTimes(2);
-    expect(spyGetNeuron).toBeCalledTimes(1);
-    expect(get(toastsStore)).toEqual([
-      {
-        level: "error",
-        text: expect.stringContaining(
-          "neuron_detail.change_neuron_visibility_partial_failure"
-        ),
-      },
-    ]);
-  });
+    it("should handle complete failure", async () => {
+      neuronsStore.setNeurons({ neurons: [controlledNeuron], certified: true });
+      spyChangeNeuronVisibility.mockRejectedValue(new Error("Test error"));
 
-  it("should handle complete failure", async () => {
-    neuronsStore.setNeurons({ neurons: [controlledNeuron], certified: true });
-    spyChangeNeuronVisibility.mockRejectedValue(new Error("Test error"));
+      await changeNeuronVisibility({
+        neurons: [controlledNeuron],
+        makePublic: true,
+      });
 
-    await changeNeuronVisibility({
-      neurons: [controlledNeuron],
-      makePublic: true,
+      expect(spyChangeNeuronVisibility).toBeCalledTimes(1);
+      expect(spyGetNeuron).not.toBeCalled();
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: 'All neurons have failed to update their visibility. Please try again later. You can always change neuron visibility settings under "Advanced Details & Settings"',
+        },
+      ]);
     });
 
-    expect(spyChangeNeuronVisibility).toBeCalledTimes(1);
-    expect(spyGetNeuron).not.toBeCalled();
-    expect(get(toastsStore)).toEqual([
-      {
-        level: "error",
-        text: expect.stringContaining(
-          "neuron_detail.change_neuron_visibility_failure"
-        ),
-      },
-    ]);
-  });
+    it("should handle multiple neurons", async () => {
+      const neuron1 = { ...controlledNeuron, neuronId: 1n };
+      const neuron2 = { ...controlledNeuron, neuronId: 2n };
+      neuronsStore.setNeurons({ neurons: [neuron1, neuron2], certified: true });
 
-  it("should handle multiple neurons", async () => {
-    const neuron1 = { ...controlledNeuron, neuronId: 1n };
-    const neuron2 = { ...controlledNeuron, neuronId: 2n };
-    neuronsStore.setNeurons({ neurons: [neuron1, neuron2], certified: true });
+      await changeNeuronVisibility({
+        neurons: [neuron1, neuron2],
+        makePublic: true,
+      });
 
-    await changeNeuronVisibility({
-      neurons: [neuron1, neuron2],
-      makePublic: true,
+      expect(spyChangeNeuronVisibility).toBeCalledTimes(2);
+      expect(spyGetNeuron).toBeCalledTimes(2);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: "Make Neuron Public",
+        },
+      ]);
     });
-
-    expect(spyChangeNeuronVisibility).toBeCalledTimes(2);
-    expect(spyGetNeuron).toBeCalledTimes(2);
-    expect(get(toastsStore)).toEqual([
-      {
-        level: "success",
-        text: expect.stringContaining(
-          "neuron_detail.change_neuron_make_neuron_public"
-        ),
-      },
-    ]);
   });
 });
