@@ -4,6 +4,7 @@
   import CommonItemAction from "../ui/CommonItemAction.svelte";
   import { IconPublicBadge, Toggle } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
+  import NnsChangeNeuronVisibilityButton from "./actions/NnsChangeNeuronVisibilityButton.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -34,11 +35,7 @@
     </span>
   </svelte:fragment>
 
-  <button class="secondary" data-tid="change-neuron-visibility-button" disabled
-    >{isPublic
-      ? $i18n.neurons.make_neuron_private
-      : $i18n.neurons.make_neuron_public}</button
-  >
+  <NnsChangeNeuronVisibilityButton {neuron} />
 </CommonItemAction>
 
 <style lang="scss">
@@ -52,9 +49,5 @@
 
   a {
     color: var(--link-color);
-  }
-
-  button {
-    text-wrap: nowrap;
   }
 </style>

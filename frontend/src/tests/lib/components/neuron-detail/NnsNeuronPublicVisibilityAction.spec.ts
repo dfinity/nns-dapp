@@ -50,7 +50,6 @@ describe("NnsNeuronPublicVisibilityAction", () => {
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
     expect(await po.getButtonPo().getText()).toBe("Make Neuron Public");
-    expect(await po.getButtonPo().isDisabled()).toBe(true);
   });
 
   it("should render elements and text for unspecified neuron", async () => {
@@ -70,7 +69,6 @@ describe("NnsNeuronPublicVisibilityAction", () => {
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
     expect(await po.getButtonPo().getText()).toBe("Make Neuron Public");
-    expect(await po.getButtonPo().isDisabled()).toBe(true);
   });
 
   it("should render elements and text for neuron with no visibility", async () => {
@@ -89,6 +87,5 @@ describe("NnsNeuronPublicVisibilityAction", () => {
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
     expect(await po.getButtonPo().getText()).toBe("Make Neuron Public");
-    expect(await po.getButtonPo().isDisabled()).toBe(true);
   });
 });
