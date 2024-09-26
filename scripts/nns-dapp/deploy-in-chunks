@@ -21,6 +21,8 @@ CANISTER_NAME="nns-dapp"
 
 "$SOURCE_DIR/nns-dapp/split-assets" --assets "$ORIGINAL_ASSETS_TAR_XZ"
 
+ls -l out
+
 ARGUMENT="$(cat "$ARGUMENT_FILE")"
 
 # There have been issues with the uploading of assets causing
