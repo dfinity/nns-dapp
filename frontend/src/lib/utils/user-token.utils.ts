@@ -34,5 +34,5 @@ export const toUserTokenFailed = (
   logo: UNKNOWN_LOGO,
   balance: "failed",
   domKey: ledgerCanisterIdText,
-  actions: [UserTokenAction.GoToDashboard],
+  actions: [UserTokenAction.GoToDashboard, UserTokenAction.Remove],
 });

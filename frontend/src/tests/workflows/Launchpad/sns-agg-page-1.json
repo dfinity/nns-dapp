@@ -312,7 +312,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98155081086499360,
+    "icrc1_total_supply": 98164130842847710,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -768,7 +768,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100659308216649490,
+    "icrc1_total_supply": 100664915648953940,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1424,7 +1424,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50285955999650150,
+    "icrc1_total_supply": 50308240470224060,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2301,7 +2301,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9955994393223880,
+    "icrc1_total_supply": 9955995091754052,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3369,7 +3369,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10063159320586224,
+    "icrc1_total_supply": 10069380616784136,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4448,7 +4448,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12612207000343716,
+    "icrc1_total_supply": 12612261809874656,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5703,13 +5703,10 @@
       "index": "efv5g-kqaaa-aaaaq-aacaa-cai",
       "governance": "tr3th-kiaaa-aaaaq-aab6q-cai",
       "dapps": [
-        "oh54a-baaaa-aaaap-abryq-cai",
-        "oo6x4-xiaaa-aaaap-abrza-cai",
-        "o4yaf-3yaaa-aaaap-abr2a-cai",
-        "bojx2-iaaaa-aaaag-ab3jq-cai",
-        "j4jiq-sqaaa-aaaap-ab23a-cai",
+        "rbsh4-yyaaa-aaaal-qdigq-cai",
         "iyehc-lqaaa-aaaap-ab25a-cai",
-        "rbsh4-yyaaa-aaaal-qdigq-cai"
+        "j4jiq-sqaaa-aaaap-ab23a-cai",
+        "bojx2-iaaaa-aaaag-ab3jq-cai"
       ],
       "archives": ["fgzua-6iaaa-aaaaq-aacgq-cai"]
     },
@@ -6343,7 +6340,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99832777829037070,
+    "icrc1_total_supply": 99816883634597000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,
