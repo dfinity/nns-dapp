@@ -35,10 +35,8 @@
       close();
     } catch (error) {
       console.error("Error changing neuron visibility:", error);
-      // You might want to show an error toast here
     } finally {
       stopBusy("change-neuron-visibility");
-      dispatcher("nnsClose");
     }
   }
 </script>
