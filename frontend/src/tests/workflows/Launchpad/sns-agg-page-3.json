@@ -1431,7 +1431,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 999878760000,
+    "icrc1_total_supply": 999874020000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1818,7 +1818,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 99999859540000,
+    "icrc1_total_supply": 99999852650000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2212,7 +2212,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041761167331897700,
+    "icrc1_total_supply": 1041757559388853200,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2498,7 +2498,7 @@
       "max_number_of_proposals_with_ballots": 700,
       "max_age_bonus_percentage": 25,
       "neuron_grantable_permissions": {
-        "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        "permissions": [0, 1, 3, 4, 5, 6, 7, 8, 9]
       },
       "voting_rewards_parameters": {
         "final_reward_rate_basis_points": 24,
@@ -2846,7 +2846,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11639657071386826,
+    "icrc1_total_supply": 11640991137446582,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -3356,6 +3356,19 @@
               "target_method_name": "upgrade_top_level_canister"
             }
           }
+        },
+        {
+          "id": 40001,
+          "name": "Upgrade the trade-contracts",
+          "description": "This proposal type calls the cycles-market-main (cm_main) canister and then the cycles-market-main canister upgrades the trade-contract canisters.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "el2py-miaaa-aaaar-qabxq-cai",
+              "target_canister_id": "el2py-miaaa-aaaar-qabxq-cai",
+              "validator_method_name": "sns_validate_controller_upgrade_tcs",
+              "target_method_name": "controller_upgrade_tcs"
+            }
+          }
         }
       ]
     },
@@ -3732,7 +3745,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 2003301737538769,
+    "icrc1_total_supply": 2003475126896391,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 400000000,
@@ -4340,7 +4353,7 @@
       ]
     ],
     "icrc1_fee": [705032704, 1],
-    "icrc1_total_supply": 2467193479353053000,
+    "icrc1_total_supply": 2423783138890657000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4879,7 +4892,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999999990330000,
+    "icrc1_total_supply": 1999999988820000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
