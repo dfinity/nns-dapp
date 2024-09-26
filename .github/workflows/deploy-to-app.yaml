@@ -102,7 +102,11 @@ jobs:
           CANISTER_NAME="nns-dapp"
           # Note: inputs.mode is set if this workflow is run manually, using `workflow_dispatch` defined above.
           #       If the workflow is triggered in another way, the inputs are not defined so we need to specify a default again.
-          scripts/nns-dapp/deploy-in-chunks --assets "out/assets.tar.xz" --network "$DFX_NETWORK" --mode "${{ inputs.mode || 'upgrade' }}"
+          scripts/nns-dapp/deploy-in-chunks \
+            --assets "out/assets.tar.xz" \
+            --network "$DFX_NETWORK" \
+            --mode "${{ inputs.mode || 'upgrade' }}" \
+            --argument_file "out/nns-dapp-arg-${DFX_NETWORK}.did"
       - name: Deploy sns_aggregator
         if: (inputs.canisters == 'all') || (inputs.canisters == 'sns_aggregator') || ( github.event_name != 'workflow_dispatch' )
         run: |
