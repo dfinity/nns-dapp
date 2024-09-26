@@ -1,7 +1,7 @@
-import { TogglePo } from "$tests/page-objects/Toggle.page-object";
 import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { ButtonPo } from "./Button.page-object";
 import { LinkPo } from "./Link.page-object";
 
 export class NnsNeuronPublicVisibilityActionPo extends BasePageObject {
@@ -32,7 +32,10 @@ export class NnsNeuronPublicVisibilityActionPo extends BasePageObject {
     });
   }
 
-  getTogglePo(): TogglePo {
-    return TogglePo.under(this.root.querySelector(".toggle-container"));
+  getButtonPo(): ButtonPo {
+    return ButtonPo.under({
+      element: this.root,
+      testId: "change-neuron-visibility-button",
+    });
   }
 }

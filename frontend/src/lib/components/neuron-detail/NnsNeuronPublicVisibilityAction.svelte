@@ -12,7 +12,7 @@
 </script>
 
 <CommonItemAction testId="nns-neuron-public-visibility-action-component">
-  <div slot="icon" class="public-badge-container">
+  <div slot="icon" class={`public-badge-container ${!isPublic && "private"}`}>
     <IconPublicBadge />
   </div>
 
@@ -22,7 +22,7 @@
       : $i18n.neurons.private_neuron}</span
   >
   <svelte:fragment slot="subtitle">
-    <span data-tid="neuron-visibility-description">
+    <span class="description" data-tid="neuron-visibility-description">
       {isPublic
         ? $i18n.neurons.public_neuron_description
         : $i18n.neurons.private_neuron_description}
@@ -34,22 +34,27 @@
     </span>
   </svelte:fragment>
 
-  <div class="toggle-container">
-    <Toggle ariaLabel="Public Neuron" bind:checked={isPublic} disabled />
-  </div>
+  <button class="secondary" data-tid="change-neuron-visibility-button" disabled
+    >{isPublic
+      ? $i18n.neurons.make_neuron_private
+      : $i18n.neurons.make_neuron_public}</button
+  >
 </CommonItemAction>
 
 <style lang="scss">
   .public-badge-container {
     line-height: 0;
-    color: var(--elements-badge);
+    color: var(--elements-badges);
+  }
+  .private {
+    color: var(--elements-badges-inactive);
   }
 
   a {
     color: var(--link-color);
   }
 
-  .toggle-container {
-    --card-background-contrast: var(--primary);
+  button {
+    text-wrap: nowrap;
   }
 </style>

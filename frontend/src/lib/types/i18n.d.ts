@@ -338,6 +338,8 @@ interface I18nNeurons {
   public_neuron_description: string;
   private_neuron_description: string;
   learn_more: string;
+  make_neuron_private: string;
+  make_neuron_public: string;
 }
 
 interface I18nNew_followee {

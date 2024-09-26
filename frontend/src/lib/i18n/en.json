@@ -325,7 +325,9 @@
     "private_neuron": "Private Neuron",
     "public_neuron_description": "This neuron exposes additional information, including its votes.",
     "private_neuron_description": "This neuron limits information it exposes publicly.",
-    "learn_more": "Learn more."
+    "learn_more": "Learn more.",
+    "make_neuron_private": "Make Neuron Private",
+    "make_neuron_public": "Make Neuron Public"
   },
   "new_followee": {
     "title": "Enter New Followee",
