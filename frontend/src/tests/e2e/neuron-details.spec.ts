@@ -37,9 +37,30 @@ test("Test neuron details", async ({ page, context }) => {
   step("Make screenshots");
   await replaceContent({
     page,
-    selectors: ['[data-tid="identifier"]'],
+    selectors: ['[data-tid="identifier"]', '[data-tid="neuron-id"]'],
     pattern: /[0-9a-f]{19}/,
-    replacements: ["7737260276268288098"],
+    replacements: ["7737260276268288098", "7737260276268288098"],
+  });
+  await replaceContent({
+    page,
+    selectors: [
+      '[data-tid="neuron-created"]',
+      '[data-tid="neuron-dissolve-date"]',
+    ],
+    pattern: /\b[A-Za-z]{3} \d{1,2}, \d{4} \d{1,2}:\d{2} [AP]M\b/,
+    replacements: ["Sep 23, 2024 11:04 AM", "Mar 25, 2025 2:51 AM"],
+  });
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="neuron-account"]'],
+    pattern: /[0-9a-f]{7}...[0-9a-f]{7}/,
+    replacements: ["364747d...0946316"],
+  });
+  await replaceContent({
+    page,
+    selectors: ['[last-rewards-distribution"]'],
+    pattern: /\b[A-Za-z]{3} \d{1,2}, \d{4}\b/,
+    replacements: ["Sep 26, 2024"],
   });
 
   const neuronDetailElement = await page.locator('[data-tid="neuron-detail"]');
