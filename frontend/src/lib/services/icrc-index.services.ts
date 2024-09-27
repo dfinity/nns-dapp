@@ -32,12 +32,12 @@ export const matchLedgerIndexPair = async ({
   indexCanisterId: Principal;
 }): Promise<boolean> => {
   try {
-    const ledgerIdFromIndexCaniter = await getLedgerId({
+    const ledgerIdFromIndexCanister = await getLedgerId({
       indexCanisterId,
       certified: true,
     });
     const match =
-      ledgerIdFromIndexCaniter.toText() === ledgerCanisterId.toText();
+      ledgerIdFromIndexCanister.toText() === ledgerCanisterId.toText();
 
     if (!match) {
       toastsError({
