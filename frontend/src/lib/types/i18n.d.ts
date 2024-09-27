@@ -727,12 +727,10 @@ interface I18nNeuron_detail {
   change_neuron_make_neuron_private_description: string;
   change_neuron_apply_to_all_neurons: string;
   change_neuron_here: string;
-  change_neuron_public_neuron_modal_description: string;
-  change_neuron_private_neuron_modal_description: string;
   make_neuron_private: string;
   make_neuron_public: string;
   change_neuron_public_success: string;
-  change_neuron_private_failure: string;
+  change_neuron_private_success: string;
   change_neuron_visibility_partial_failure: string;
   change_neuron_visibility_failure: string;
 }
