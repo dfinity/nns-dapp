@@ -1,5 +1,6 @@
 <script lang="ts">
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
+  import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
   import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -22,7 +23,6 @@
   } from "@dfinity/gix-components";
   import { layoutMenuOpen, menuCollapsed } from "@dfinity/gix-components";
   import type { ComponentType } from "svelte";
-  import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
 
   let routes: {
     context: string;
