@@ -1,5 +1,4 @@
 <script lang="ts">
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import AddHotkeyModal from "$lib/modals/neurons/AddHotkeyModal.svelte";
   import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
