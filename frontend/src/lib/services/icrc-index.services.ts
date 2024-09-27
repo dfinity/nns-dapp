@@ -34,7 +34,7 @@ export const matchLedgerIndexPair = async ({
   try {
     const ledgerIdFromIndexCaniter = await getLedgerId({
       indexCanisterId,
-      certified: false,
+      certified: true,
     });
     const match =
       ledgerIdFromIndexCaniter.toText() === ledgerCanisterId.toText();
