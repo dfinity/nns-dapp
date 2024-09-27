@@ -2,6 +2,7 @@ import {
   formatNumber,
   formatPercentage,
   shortenWithMiddleEllipsis,
+  truncateText,
 } from "$lib/utils/format.utils";
 
 describe("format.utils", () => {
@@ -85,6 +86,19 @@ describe("format.utils", () => {
     );
     expect(shortenWithMiddleEllipsis("1234567890123456", 6)).toEqual(
       "123456...123456"
+    );
+  });
+
+  it("should truncate text", () => {
+    expect(truncateText({ text: "1234567890", maxLength: 3 })).toEqual(
+      "123..."
+    );
+    expect(truncateText({ text: "1234567890", maxLength: 0 })).toEqual("...");
+    expect(truncateText({ text: "1234567890", maxLength: 10 })).toEqual(
+      "1234567890"
+    );
+    expect(truncateText({ text: "1234567890", maxLength: 11 })).toEqual(
+      "1234567890"
     );
   });
 });

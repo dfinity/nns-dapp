@@ -54,3 +54,12 @@ export const shortenWithMiddleEllipsis = (
     ? `${text.slice(0, splitLength)}...${text.slice(-1 * splitLength)}`
     : text;
 };
+
+export const truncateText = ({
+  text,
+  maxLength,
+}: {
+  text: string;
+  maxLength: number;
+}): string =>
+  text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
