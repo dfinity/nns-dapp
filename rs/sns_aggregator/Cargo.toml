@@ -12,7 +12,7 @@ anyhow = "1.0.86"
 base64 = "0.22.1"
 candid = "0.10.10"
 dfn_candid = { workspace = true }
-dfn_core = { workspace = true }
+ic-base-types = { workspace = true }
 # This next candid is 0.9.0_beta code that fixes serde Nat but has other issues.  Keep checking until the issues are fixed.
 #candid = { git = "https://github.com/dfinity/candid" , rev = "42ffed660ded37585c4b9f97e3ce90919e24c518" }
 ic-cdk = { version = "0.16.0" }

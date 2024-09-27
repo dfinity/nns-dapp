@@ -4,7 +4,7 @@ use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use crate::state::with_state_mut;
 use crate::Cycles;
 use cycles_minting_canister::{NotifyCreateCanister, NotifyError, NotifyTopUp};
-use dfn_core::api::{CanisterId, PrincipalId};
+use ic_base_types::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
 use ic_nns_governance::pb::v1::{claim_or_refresh_neuron_from_account_response, ClaimOrRefreshNeuronFromAccount};
 use icp_ledger::{BlockIndex, Memo};

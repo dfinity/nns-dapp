@@ -8,7 +8,7 @@ pub use ic_nns_governance::pb::v1::{
 pub async fn claim_or_refresh_neuron_from_account(
     request: ClaimOrRefreshNeuronFromAccount,
 ) -> Result<ClaimOrRefreshNeuronFromAccountResponse, String> {
-    dfn_core::call(
+    ic_cdk::call(
         GOVERNANCE_CANISTER_ID,
         "claim_or_refresh_neuron_from_account",
         candid,
@@ -31,7 +31,7 @@ mod prod {
     use super::{candid, GetMetricsCallResult, GOVERNANCE_CANISTER_ID};
 
     pub async fn get_metrics() -> GetMetricsCallResult {
-        dfn_core::call(GOVERNANCE_CANISTER_ID, "get_metrics", candid, ())
+        ic_cdk::call(GOVERNANCE_CANISTER_ID, "get_metrics", candid, ())
             .await
             .map_err(|e| e.1)
     }

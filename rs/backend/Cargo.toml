@@ -23,7 +23,6 @@ tar = "0.4.40"
 
 cycles-minting-canister = { workspace = true }
 dfn_candid = { workspace = true }
-dfn_core = { workspace = true }
 dfn_protobuf = { workspace = true }
 ic-base-types = { workspace = true }
 ic-cdk = { workspace = true }

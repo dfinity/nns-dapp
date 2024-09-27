@@ -2,7 +2,7 @@
 use super::State;
 use crate::state::partitions::{PartitionType, PartitionsMaybe};
 use crate::state::StableState;
-use dfn_core::api::trap_with;
+use ic_cdk::api::trap;
 use ic_cdk::println;
 use ic_stable_structures::memory_manager::VirtualMemory;
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
@@ -17,7 +17,7 @@ impl State {
                 let len = bytes.len();
                 let length_field = u64::try_from(len)
                     .unwrap_or_else(|e| {
-                        trap_with(&format!(
+                        trap(&format!(
                             "The serialized memory takes more than 2**64 bytes.  Amazing: {e:?}"
                         ));
                     })
@@ -27,7 +27,7 @@ impl State {
             }
             PartitionsMaybe::None(_) => {
                 println!("END state::save_heap: ()");
-                trap_with("No memory manager found.  Cannot save heap.");
+                trap("No memory manager found.  Cannot save heap.");
             }
         }
     }
@@ -46,7 +46,7 @@ impl State {
             candid_bytes
         };
         State::decode(candid_bytes).unwrap_or_else(|e| {
-            trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
+            trap(&format!("Decoding stable memory failed. Error: {e:?}"));
         })
     }
 }

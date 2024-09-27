@@ -6,10 +6,10 @@ use crate::stats::encode_metrics;
 use crate::StableState;
 use base64::{engine::general_purpose::STANDARD as BASE64_ENGINE, Engine};
 use candid::{CandidType, Decode, Encode};
-use dfn_core::api::ic0::time;
 use flate2::read::GzDecoder;
 use flate2::write::GzEncoder;
 use flate2::Compression;
+use ic_cdk::api::time;
 use ic_cdk::println;
 use ic_certified_map::{labeled, labeled_hash, AsHashTree, Hash, RbTree};
 use serde::{Deserialize, Serialize};
@@ -210,10 +210,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
     let parts: Vec<&str> = req.url.split('?').collect();
     match *parts.first().unwrap_or(&"") {
         "/metrics" => {
-            let now;
-            unsafe {
-                now = time();
-            };
+            let now = time();
             let mut writer = MetricsEncoder::new(vec![], now / 1_000_000);
             match encode_metrics(&mut writer) {
                 Ok(()) => {
@@ -322,15 +319,15 @@ fn security_headers() -> Vec<HeaderField> {
 }
 
 fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> (String, String) {
-    let certificate = dfn_core::api::data_certificate().unwrap_or_else(|| {
-        dfn_core::api::trap_with("data certificate is only available in query calls");
+    let certificate = ic_cdk::api::data_certificate().unwrap_or_else(|| {
+        ic_cdk::api::trap("data certificate is only available in query calls");
     });
     let witness = asset_hashes.0.witness(asset_name.as_bytes());
     let tree = labeled(LABEL_ASSETS, witness);
     let mut serializer = serde_cbor::ser::Serializer::new(vec![]);
     serializer.self_describe().unwrap();
     tree.serialize(&mut serializer)
-        .unwrap_or_else(|e| dfn_core::api::trap_with(&format!("failed to serialize a hash tree: {e}")));
+        .unwrap_or_else(|e| ic_cdk::api::trap(&format!("failed to serialize a hash tree: {e}")));
     (
         "IC-Certificate".to_string(),
         format!(
@@ -419,7 +416,7 @@ pub fn insert_tar_xz(compressed: Vec<u8>) {
                 .to_vec();
 
             let name = String::from_utf8(name_bytes.clone()).unwrap_or_else(|e| {
-                dfn_core::api::trap_with(&format!(
+                ic_cdk::api::trap(&format!(
                     "non-utf8 file name {}: {}",
                     String::from_utf8_lossy(&name_bytes),
                     e
@@ -463,7 +460,7 @@ impl StableState for Assets {
 
 fn update_root_hash(a: &AssetHashes) {
     let prefixed_root_hash = &labeled_hash(LABEL_ASSETS, &a.0.root_hash());
-    dfn_core::api::set_certified_data(&prefixed_root_hash[..]);
+    ic_cdk::api::set_certified_data(&prefixed_root_hash[..]);
 }
 
 #[test]

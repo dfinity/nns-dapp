@@ -1,5 +1,5 @@
-use dfn_core::CanisterId;
 use dfn_protobuf::protobuf;
+use ic_base_types::CanisterId;
 use ic_ledger_core::block::EncodedBlock;
 use ic_nns_constants::LEDGER_CANISTER_ID;
 use icp_ledger::protobuf::get_blocks_response::GetBlocksContent;
@@ -11,7 +11,7 @@ use icp_ledger::{BlockIndex, GetBlocksArgs};
 
 pub async fn tip_of_chain() -> Result<BlockIndex, String> {
     let response: TipOfChainResponsePb =
-        dfn_core::call(LEDGER_CANISTER_ID, "tip_of_chain_pb", protobuf, TipOfChainRequestPb {})
+        ic_cdk::call(LEDGER_CANISTER_ID, "tip_of_chain_pb", protobuf, TipOfChainRequestPb {})
             .await
             .map_err(|e| e.1)?;
 
@@ -19,13 +19,13 @@ pub async fn tip_of_chain() -> Result<BlockIndex, String> {
 }
 
 pub async fn get_archive_index() -> Result<ArchiveIndexResponsePb, String> {
-    dfn_core::call(LEDGER_CANISTER_ID, "get_archive_index_pb", protobuf, ())
+    ic_cdk::call(LEDGER_CANISTER_ID, "get_archive_index_pb", protobuf, ())
         .await
         .map_err(|e| e.1)
 }
 
 pub async fn get_blocks(canister_id: CanisterId, from: BlockIndex, length: u32) -> Result<Vec<EncodedBlock>, String> {
-    let response: GetBlocksResponsePb = dfn_core::call(
+    let response: GetBlocksResponsePb = ic_cdk::call(
         canister_id,
         "get_blocks_pb",
         protobuf,

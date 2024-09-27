@@ -25,6 +25,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Reduce calls to `sns-governance` canister by getting `nervous_system_parameters` from the aggregator instead.
 * Move theme toggle from account menu to sidebar.
 * The `Markdown` UI component was migrated to `@dfinity/gix-components`.
+* Migrate canister code from `dfn_core` to `ic_cdk`.
 
 #### Deprecated
 

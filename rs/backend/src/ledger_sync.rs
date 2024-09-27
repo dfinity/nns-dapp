@@ -1,7 +1,7 @@
 use crate::canisters::ledger;
 use crate::state::{with_state, with_state_mut};
 use candid::Principal;
-use dfn_core::CanisterId;
+use ic_base_types::CanisterId;
 use ic_cdk::println;
 use ic_ledger_core::block::BlockType;
 use ic_ledger_core::Tokens;

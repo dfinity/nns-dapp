@@ -102,7 +102,7 @@ mod prod {
     use ic_nns_constants::EXCHANGE_RATE_CANISTER_ID;
 
     pub async fn get_exchange_rate(request: GetExchangeRateRequest) -> Result<GetExchangeRateResult, String> {
-        dfn_core::call(EXCHANGE_RATE_CANISTER_ID, "get_exchange_rate", candid, (request,))
+        ic_cdk::call(EXCHANGE_RATE_CANISTER_ID, "get_exchange_rate", candid, (request,))
             .await
             .map_err(|e| e.1)
     }

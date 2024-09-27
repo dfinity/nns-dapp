@@ -21,7 +21,7 @@ use std::cmp::Ordering;
 use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use std::fmt;
 use std::ops::RangeBounds;
-use std::time::{Duration, SystemTime};
+use std::time::Duration;
 
 pub mod constructors;
 pub mod histogram;
@@ -614,13 +614,7 @@ impl AccountsStore {
     }
 
     pub fn mark_ledger_sync_complete(&mut self) {
-        self.last_ledger_sync_timestamp_nanos = u64::try_from(
-            dfn_core::api::now()
-                .duration_since(SystemTime::UNIX_EPOCH)
-                .unwrap_or_else(|err| unreachable!("The current time is well after the Unix epoch. Error: {err}"))
-                .as_nanos(),
-        )
-        .unwrap_or_else(|_| unreachable!("Not impossible, but centuries in the future"));
+        self.last_ledger_sync_timestamp_nanos = ic_cdk::api::time();
     }
 
     /// Initializes the `block_height_synced_up_to` value.
@@ -827,15 +821,7 @@ impl AccountsStore {
     }
 
     pub fn get_stats(&self, stats: &mut Stats) {
-        let timestamp_now_nanos = u64::try_from(
-            dfn_core::api::now()
-                .duration_since(SystemTime::UNIX_EPOCH)
-                .unwrap_or_else(|err| unreachable!("Hey, we are back in the sixties!  Seriously, if we get here, the system time is before the Unix epoch.  This should be impossible.  Error: {err}"))
-                .as_nanos(),
-        )
-        .unwrap_or_else(|_| {
-            unreachable!("Well, this could kill us if the code is still running in 500 years.  Not impossible.")
-        });
+        let timestamp_now_nanos = ic_cdk::api::time();
         let duration_since_last_sync =
             Duration::from_nanos(timestamp_now_nanos - self.last_ledger_sync_timestamp_nanos);
 
