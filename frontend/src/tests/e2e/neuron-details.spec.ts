@@ -35,6 +35,8 @@ test("Test neuron details", async ({ page, context }) => {
   await appPo.goToNeuronDetails(neuronId);
 
   step("Make screenshots");
+
+  // Replace neuron details with fixed values
   await replaceContent({
     page,
     selectors: ['[data-tid="identifier"]', '[data-tid="neuron-id"]'],
@@ -43,12 +45,15 @@ test("Test neuron details", async ({ page, context }) => {
   });
   await replaceContent({
     page,
-    selectors: [
-      '[data-tid="neuron-created"]',
-      '[data-tid="neuron-dissolve-date"]',
-    ],
+    selectors: ['[data-tid="neuron-created"]'],
     pattern: /\b[A-Za-z]{3} \d{1,2}, \d{4} \d{1,2}:\d{2} [AP]M\b/,
-    replacements: ["Sep 23, 2024 11:04 AM", "Mar 25, 2025 2:51 AM"],
+    replacements: ["Sep 23, 2024 11:04 AM"],
+  });
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="nns-neuron-age"]'],
+    pattern: /(\d+)\s+(second|seconds)/,
+    replacements: ["9 seconds"],
   });
   await replaceContent({
     page,
@@ -58,31 +63,40 @@ test("Test neuron details", async ({ page, context }) => {
   });
   await replaceContent({
     page,
-    selectors: ['[last-rewards-distribution"]'],
+    selectors: ['[data-tid="last-rewards-distribution"]'],
     pattern: /\b[A-Za-z]{3} \d{1,2}, \d{4}\b/,
     replacements: ["Sep 26, 2024"],
   });
 
-  const neuronDetailElement = await page.locator('[data-tid="neuron-detail"]');
-  const boundingBox = await neuronDetailElement.boundingBox();
+  // set viewport to capture the entire advanced section
+  const advancedSectionElement = await page.locator(
+    '[data-tid="nns-neuron-advanced-section-component"]'
+  );
+  const advancedSectionBoundingBox = await advancedSectionElement.boundingBox();
 
-  // Set the viewport height based on the element's height
-  // Adding some padding to ensure the entire element is visible
   await page.setViewportSize({
     width: 1023, // Use the original desktop width
-    height: Math.ceil(boundingBox.height) + Math.ceil(boundingBox.y) * 2, // Add 20px padding
+    height:
+      Math.ceil(
+        advancedSectionBoundingBox.y + advancedSectionBoundingBox.height
+      ) + 20, // Add 20px padding
   });
   await expect(page).toHaveScreenshot("desktop.png");
 
   // Set mobile viewport
+
   await page.setViewportSize({ width: 480, height: 960 });
-  // Get updated bounding box of the neuron detail element
-  const boundingBoxMobile = await neuronDetailElement.boundingBox();
-  // Set viewport to mobile size with updated height
+  // Get updated bounding box of the advanced section
+  const advancedSectionBoundingBoxMobile =
+    await advancedSectionElement.boundingBox();
+  // Set viewport to capture the entire advanced section
   await page.setViewportSize({
-    width: 480,
+    width: 480, // Use the original mobile width
     height:
-      Math.ceil(boundingBoxMobile.height) + Math.ceil(boundingBoxMobile.y) * 2,
+      Math.ceil(
+        advancedSectionBoundingBoxMobile.y +
+          advancedSectionBoundingBoxMobile.height
+      ) + 20, // Add 20px padding
   });
 
   await expect(page).toHaveScreenshot("mobile.png");

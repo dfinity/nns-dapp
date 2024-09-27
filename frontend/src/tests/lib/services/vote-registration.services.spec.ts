@@ -76,12 +76,12 @@ describe("vote-registration-services", () => {
     // Cleanup:
     vi.clearAllMocks();
     voteRegistrationStore.reset();
-    proposalsStore.reset();
+    proposalsStore.resetForTesting();
     resetIdentity();
 
     // Setup:
     proposal = proposalInfo();
-    proposalsStore.setProposals({
+    proposalsStore.setProposalsForTesting({
       proposals: [proposal],
       certified: true,
     });
