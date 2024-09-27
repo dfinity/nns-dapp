@@ -22,7 +22,7 @@ export class NnsProposalPo extends BasePageObject {
     return VotesResultPo.under(this.root);
   }
 
-  getProposalProposalSystemInfoSectionPo(): ProposalSystemInfoSectionPo {
+  getProposalSystemInfoSectionPo(): ProposalSystemInfoSectionPo {
     return ProposalSystemInfoSectionPo.under(this.root);
   }
 

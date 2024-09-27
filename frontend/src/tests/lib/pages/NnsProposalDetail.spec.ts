@@ -1,86 +1,68 @@
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
-import * as agent from "$lib/api/agent.api";
 import * as governanceApi from "$lib/api/governance.api";
-import ProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
-import { authStore } from "$lib/stores/auth.store";
-import { neuronsStore } from "$lib/stores/neurons.store";
-import { proposalsStore } from "$lib/stores/proposals.store";
+import * as proposalsApi from "$lib/api/proposals.api";
+import NnsProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
+import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import {
-  authStoreMock,
-  mockAuthStoreSubscribe,
   mockIdentity,
-  mutableMockAuthStoreSubscribe,
+  resetIdentity,
+  setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
-import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
-import { buildMockNeuronsStoreSubscribe } from "$tests/mocks/neurons.mock";
-import {
-  mockEmptyProposalsStoreSubscribe,
-  mockProposals,
-} from "$tests/mocks/proposals.store.mock";
-import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
-import type { HttpAgent } from "@dfinity/agent";
-import { GovernanceCanister } from "@dfinity/nns";
-import { render, waitFor } from "@testing-library/svelte";
-import { mock } from "vitest-mock-extended";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import { NnsProposalPo } from "$tests/page-objects/NnsProposal.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/governance.api");
 
-describe("ProposalDetail", () => {
-  vi.spyOn(authStore, "subscribe").mockImplementation(
-    mutableMockAuthStoreSubscribe
-  );
-
-  const mockGovernanceCanister: MockGovernanceCanister =
-    new MockGovernanceCanister(mockProposals);
-
+describe("NnsProposalDetail", () => {
   beforeEach(() => {
-    silentConsoleErrors();
-    vi.clearAllMocks();
+    resetIdentity();
+    vi.restoreAllMocks();
     resetNeuronsApiService();
     vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
 
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
-
-    vi.spyOn(proposalsStore, "subscribe").mockImplementation(
-      mockEmptyProposalsStoreSubscribe
-    );
-
-    vi.spyOn(GovernanceCanister, "create").mockReturnValue(
-      mockGovernanceCanister
-    );
-
-    vi.spyOn(neuronsStore, "subscribe").mockImplementation(
-      buildMockNeuronsStoreSubscribe([], false)
-    );
-    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    actionableProposalsSegmentStore.set("all");
+    vi.spyOn(proposalsApi, "queryProposal").mockResolvedValue(mockProposalInfo);
   });
 
   const props = {
-    proposalIdText: `${mockProposals[0].id}`,
+    proposalIdText: `${mockProposalInfo.id}`,
+  };
+
+  const renderComponent = () => {
+    const { container } = render(NnsProposalDetail, props);
+    return NnsProposalPo.under(new JestPageObjectElement(container));
   };
 
   describe("logged in user", () => {
     beforeEach(() => {
-      authStoreMock.next({
-        identity: mockIdentity,
-      });
+      resetIdentity();
     });
+
     it("should render proposal detail if signed in", async () => {
-      const { queryByTestId } = render(ProposalDetail, props);
-      await waitFor(() =>
-        expect(queryByTestId("proposal-details-grid")).toBeInTheDocument()
+      const po = renderComponent();
+      await runResolvedPromises();
+
+      expect(await po.isPresent("proposal-details-grid")).toBe(true);
+      expect(await po.isContentLoaded()).toBe(true);
+      expect(await po.getProposalSystemInfoSectionPo().isPresent()).toBe(true);
+      expect(await po.getProposalSummaryPo().isPresent()).toBe(true);
+      expect(await po.getProposalProposerActionsEntryPo().isPresent()).toBe(
+        true
       );
     });
 
     it("should query neurons", async () => {
-      render(ProposalDetail, props);
-      await waitFor(() =>
-        expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
-          identity: mockIdentity,
-          certified: true,
-          includeEmptyNeurons: false,
-        })
-      );
+      renderComponent();
+      await runResolvedPromises();
+
+      expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: true,
+        includeEmptyNeurons: false,
+      });
       expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
         identity: mockIdentity,
         certified: false,
@@ -92,22 +74,27 @@ describe("ProposalDetail", () => {
 
   describe("logged out user", () => {
     beforeEach(() => {
-      authStoreMock.next({
-        identity: undefined,
-      });
+      setNoIdentity();
     });
+
     it("should render proposal detail if not signed in", async () => {
-      const { queryByTestId } = render(ProposalDetail, props);
-      await waitFor(() =>
-        expect(queryByTestId("proposal-details-grid")).toBeInTheDocument()
+      const po = renderComponent();
+      await runResolvedPromises();
+
+      expect(await po.isPresent("proposal-details-grid")).toBe(true);
+      expect(await po.isContentLoaded()).toBe(true);
+      expect(await po.getProposalSystemInfoSectionPo().isPresent()).toBe(true);
+      expect(await po.getProposalSummaryPo().isPresent()).toBe(true);
+      expect(await po.getProposalProposerActionsEntryPo().isPresent()).toBe(
+        true
       );
     });
 
     it("should NOT query neurons", async () => {
-      render(ProposalDetail, props);
-      await waitFor(() =>
-        expect(governanceApi.queryNeurons).not.toHaveBeenCalled()
-      );
+      renderComponent();
+      await runResolvedPromises();
+
+      expect(governanceApi.queryNeurons).not.toHaveBeenCalled();
     });
   });
 });
