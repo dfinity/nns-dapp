@@ -23,7 +23,6 @@
   import { layoutMenuOpen, menuCollapsed } from "@dfinity/gix-components";
   import type { ComponentType } from "svelte";
   import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
-  import { ENABLE_METRICS } from "$lib/constants/mockable.constants";
 
   let routes: {
     context: string;
@@ -99,9 +98,7 @@
   {/if}
 
   <div class="menu-footer" class:hidden={$menuCollapsed && !$layoutMenuOpen}>
-    {#if ENABLE_METRICS}
-      <TotalValueLocked layout="stacked" />
-    {/if}
+    <TotalValueLocked layout="stacked" />
     <div class="menu-footer-buttons">
       <div class="grow-item"><SourceCodeButton /></div>
       <ThemeToggleButton />

@@ -198,8 +198,6 @@ describe("MenuItems", () => {
     });
 
     it("should display Total Value Locked button", async () => {
-      mockedConstants.ENABLE_METRICS = true;
-
       const menuItemsPo = renderComponent();
 
       expect(await menuItemsPo.getTotalValueLockedLinkPo().isPresent()).toBe(
