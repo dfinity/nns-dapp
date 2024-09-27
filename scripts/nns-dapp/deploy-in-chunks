@@ -21,7 +21,7 @@ CANISTER_NAME="nns-dapp"
 
 "$SOURCE_DIR/nns-dapp/split-assets" --assets "$ORIGINAL_ASSETS_TAR_XZ"
 
-ls -l out
+ls -l out/chunks
 
 ARGUMENT="$(cat "$ARGUMENT_FILE")"
 
