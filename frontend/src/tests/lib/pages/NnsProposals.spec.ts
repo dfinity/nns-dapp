@@ -46,7 +46,7 @@ describe("NnsProposals", () => {
 
   beforeEach(() => {
     vi.restoreAllMocks();
-    proposalsStore.reset();
+    proposalsStore.resetForTesting();
     resetNeuronsApiService();
     neuronsStore.reset();
     proposalsFiltersStore.reset();
@@ -308,8 +308,7 @@ describe("NnsProposals", () => {
         await runResolvedPromises();
         // We should still see both proposals from the request from after the
         // filter was removed.
-        // TODO: Change this to 2 when the bug is fixed.
-        expect(await po.getProposalCardPos()).toHaveLength(1);
+        expect(await po.getProposalCardPos()).toHaveLength(2);
       });
 
       it("should not have actionable parameter in a proposal card href", async () => {

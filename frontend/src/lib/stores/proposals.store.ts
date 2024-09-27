@@ -1,5 +1,6 @@
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
+import type { QueryAndUpdateStrategy } from "$lib/services/utils.services";
 import {
   concatenateUniqueProposals,
   excludeProposals,
@@ -13,6 +14,7 @@ import type {
   Topic,
 } from "@dfinity/nns";
 import { writable } from "svelte/store";
+import { queuedStore } from "./queued-store";
 import { writableStored } from "./writable-stored";
 
 export interface ProposalsFiltersStore {
@@ -25,8 +27,53 @@ export interface ProposalsStore {
   certified: boolean | undefined;
 }
 
+export interface SingleMutationProposalsStore {
+  set: ({
+    data,
+    certified,
+  }: {
+    data: ProposalsStore;
+    certified: boolean;
+  }) => void;
+
+  setProposals: ({
+    proposals,
+    certified,
+  }: {
+    proposals: ProposalInfo[];
+    certified: boolean;
+  }) => void;
+
+  removeProposals: ({
+    proposalsToRemove,
+    certified,
+  }: {
+    proposalsToRemove: ProposalInfo[];
+    certified: boolean;
+  }) => void;
+
+  pushProposals: ({
+    proposals,
+    certified,
+  }: {
+    proposals: ProposalInfo[];
+    certified: boolean;
+  }) => void;
+
+  replaceProposals: ({
+    proposals,
+    certified,
+  }: {
+    proposals: ProposalInfo[];
+    certified: boolean;
+  }) => void;
+
+  cancel: () => void;
+}
+
 type ProposalPayload = object | null | undefined;
 export type ProposalPayloadsStore = Map<ProposalId, ProposalPayload>;
+
 /**
  * A store that contains the proposals
  *
@@ -34,69 +81,122 @@ export type ProposalPayloadsStore = Map<ProposalId, ProposalPayload>;
  * - pushProposals: append proposals to the current list of proposals. Notably useful when the proposals are fetched in a page that implements an infinite scrolling.
  */
 const initProposalsStore = () => {
-  const { subscribe, update, set } = writable<ProposalsStore>({
-    proposals: [],
-    certified: undefined,
-  });
+  const { subscribe, getSingleMutationStore, resetForTesting } =
+    queuedStore<ProposalsStore>({
+      proposals: [],
+      certified: undefined,
+    });
+
+  const getSingleMutationProposalsStore = (
+    strategy?: QueryAndUpdateStrategy | undefined
+  ): SingleMutationProposalsStore => {
+    const { set, update, cancel } = getSingleMutationStore(strategy);
+
+    return {
+      set,
+
+      setProposals({
+        proposals,
+        certified,
+      }: {
+        proposals: ProposalInfo[];
+        certified: boolean;
+      }) {
+        set({
+          data: {
+            proposals: [...proposals],
+            certified,
+          },
+          certified,
+        });
+      },
+
+      /**
+       * Replace the current list of proposals with a new list without provided proposals to remove untrusted proposals from the store.
+       */
+      removeProposals({
+        proposalsToRemove,
+        certified,
+      }: {
+        proposalsToRemove: ProposalInfo[];
+        certified: boolean;
+      }) {
+        update({
+          mutation: ({ proposals, certified }) => ({
+            proposals: excludeProposals({
+              proposals,
+              exclusion: proposalsToRemove,
+            }),
+            certified,
+          }),
+          certified,
+        });
+      },
+
+      pushProposals({
+        proposals,
+        certified,
+      }: {
+        proposals: ProposalInfo[];
+        certified: boolean;
+      }) {
+        update({
+          mutation: ({ proposals: oldProposals }) => ({
+            proposals:
+              certified === true
+                ? replaceAndConcatenateProposals({
+                    oldProposals,
+                    newProposals: proposals,
+                  })
+                : concatenateUniqueProposals({
+                    oldProposals,
+                    newProposals: proposals,
+                  }),
+            certified,
+          }),
+          certified,
+        });
+      },
+
+      replaceProposals({
+        proposals,
+        certified: newCertified,
+      }: {
+        proposals: ProposalInfo[];
+        certified: boolean;
+      }) {
+        update({
+          mutation: ({ proposals: oldProposals, certified: oldCertified }) => ({
+            proposals: replaceProposals({
+              oldProposals,
+              newProposals: proposals,
+            }),
+            // Whether the data in the store is certified.
+            certified: oldCertified && newCertified,
+          }),
+          // Whether the data from this mutation is certified.
+          certified: newCertified,
+        });
+      },
+
+      cancel,
+    };
+  };
 
   return {
     subscribe,
+    getSingleMutationProposalsStore,
+    resetForTesting,
 
-    setProposals({ proposals, certified }: ProposalsStore) {
-      set({ proposals: [...proposals], certified });
-    },
-
-    /**
-     * Replace the current list of proposals with a new list without provided proposals to remove untrusted proposals from the store.
-     */
-    removeProposals(proposalsToRemove: ProposalInfo[]) {
-      update(({ proposals, certified }) => ({
-        proposals: excludeProposals({
-          proposals,
-          exclusion: proposalsToRemove,
-        }),
-        certified,
-      }));
-    },
-
-    pushProposals({
+    setProposalsForTesting({
       proposals,
       certified,
     }: {
       proposals: ProposalInfo[];
       certified: boolean;
     }) {
-      update(({ proposals: oldProposals }) => ({
-        proposals:
-          certified === true
-            ? replaceAndConcatenateProposals({
-                oldProposals,
-                newProposals: proposals,
-              })
-            : concatenateUniqueProposals({
-                oldProposals,
-                newProposals: proposals,
-              }),
-        certified,
-      }));
-    },
-
-    replaceProposals(proposals: ProposalInfo[]) {
-      update(({ proposals: oldProposals, certified }) => ({
-        proposals: replaceProposals({
-          oldProposals,
-          newProposals: proposals,
-        }),
-        certified,
-      }));
-    },
-
-    // Used in tests
-    reset(): void {
-      this.setProposals({
-        proposals: [],
-        certified: true,
-      });
+      const mutationStore = getSingleMutationProposalsStore();
+      mutationStore.setProposals({ proposals, certified });
     },
   };
 };

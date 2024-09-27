@@ -107,7 +107,14 @@
 
     // Show spinner right away avoiding debounce
     loading = true;
-    proposalsStore.setProposals({ proposals: [], certified: undefined });
+    const mutableProposalsStore =
+      proposalsStore.getSingleMutationProposalsStore();
+    mutableProposalsStore.set({
+      // This `certified` is what the subscriber of the store sees.
+      data: { proposals: [], certified: undefined },
+      // This `certified` indicates that the store mutation is final.
+      certified: true,
+    });
 
     debounceFindProposals?.();
   };
