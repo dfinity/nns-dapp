@@ -6,6 +6,7 @@ import {
   CKETHSEPOLIA_INDEX_CANISTER_ID,
   CKETHSEPOLIA_LEDGER_CANISTER_ID,
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
@@ -526,6 +527,24 @@ describe("IcrcWallet", () => {
         },
         ledgerCanisterId,
       });
+    });
+
+    it('displays "Imported token" tag', async () => {
+      const po = await renderWallet({});
+      expect(await po.getWalletPageHeadingPo().hasImportedTokenTag()).toEqual(
+        true
+      );
+    });
+
+    it('should not display "Imported token" tag for not imported tokens', async () => {
+      page.mock({
+        data: { universe: CKETH_LEDGER_CANISTER_ID.toText() },
+        routeId: AppPath.Wallet,
+      });
+      const po = await renderWallet({});
+      expect(await po.getWalletPageHeadingPo().hasImportedTokenTag()).toEqual(
+        false
+      );
     });
 
     it("should remove imported tokens", async () => {

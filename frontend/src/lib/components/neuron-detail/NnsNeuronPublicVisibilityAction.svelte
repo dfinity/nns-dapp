@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { isPublicNeuron } from "$lib/utils/neuron.utils";
   import CommonItemAction from "../ui/CommonItemAction.svelte";
-  import { IconPublicBadge, Toggle } from "@dfinity/gix-components";
+  import { IconPublicBadge } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import NnsChangeNeuronVisibilityButton from "./actions/NnsChangeNeuronVisibilityButton.svelte";
 

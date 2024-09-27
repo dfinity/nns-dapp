@@ -20,7 +20,7 @@
     hasAccounts,
   } from "$lib/utils/accounts.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { IconDots, Island, Spinner } from "@dfinity/gix-components";
+  import { IconDots, Island, Spinner, Tag } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import type { Writable } from "svelte/store";
@@ -221,6 +221,12 @@
           >
             <slot name="header-actions" />
             <SignInGuard />
+
+            {#if isImportedToken}
+              <Tag testId="imported-token-tag"
+                >{$i18n.import_token.imported_token}</Tag
+              >
+            {/if}
           </WalletPageHeading>
 
           {#if $$slots["info-card"]}

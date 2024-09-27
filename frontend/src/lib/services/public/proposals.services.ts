@@ -14,6 +14,7 @@ import {
   proposalsFiltersStore,
   proposalsStore,
   type ProposalsFiltersStore,
+  type SingleMutationProposalsStore,
 } from "$lib/stores/proposals.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { hashCode } from "$lib/utils/dev.utils";
@@ -38,10 +39,12 @@ const handleFindProposalsError = ({
   error: err,
   certified,
   identity,
+  mutableProposalsStore,
 }: {
   error: unknown;
   certified: boolean;
   identity: Identity;
+  mutableProposalsStore: SingleMutationProposalsStore;
 }) => {
   console.error(err);
   if (
@@ -49,7 +52,7 @@ const handleFindProposalsError = ({
     identity.getPrincipal().isAnonymous() ||
     isForceCallStrategy()
   ) {
-    proposalsStore.setProposals({ proposals: [], certified });
+    mutableProposalsStore.setProposals({ proposals: [], certified });
 
     const resultsTooLarge = isPayloadSizeError(err);
 
@@ -70,17 +73,29 @@ export const listProposals = async ({
     certified: boolean | undefined;
   }) => void;
 }): Promise<void> => {
+  const mutableProposalsStore =
+    proposalsStore.getSingleMutationProposalsStore();
   return findProposals({
     beforeProposal: undefined,
     onLoad: ({ response: proposals, certified }) => {
-      proposalsStore.setProposals({ proposals, certified });
+      mutableProposalsStore.setProposals({ proposals, certified });
 
       loadFinished({
         paginationOver: proposals.length < DEFAULT_LIST_PAGINATION_LIMIT,
         certified,
       });
     },
-    onError: handleFindProposalsError,
+    onError: (onErrorParams: {
+      error: unknown;
+      certified: boolean;
+      identity: Identity;
+    }) => {
+      handleFindProposalsError({
+        ...onErrorParams,
+        mutableProposalsStore,
+      });
+    },
+    mutableProposalsStore,
   });
 };
 
@@ -99,8 +114,10 @@ export const listNextProposals = async ({
     paginationOver: boolean;
     certified: boolean | undefined;
   }) => void;
-}): Promise<void> =>
-  findProposals({
+}): Promise<void> => {
+  const mutableProposalsStore =
+    proposalsStore.getSingleMutationProposalsStore();
+  return findProposals({
     beforeProposal,
     onLoad: ({ response: proposals, certified }) => {
       if (proposals.length === 0) {
@@ -110,30 +127,46 @@ export const listNextProposals = async ({
         return;
       }
 
-      proposalsStore.pushProposals({ proposals, certified });
+      mutableProposalsStore.pushProposals({ proposals, certified });
       loadFinished({
         paginationOver: proposals.length < DEFAULT_LIST_PAGINATION_LIMIT,
         certified,
       });
     },
-    onError: handleFindProposalsError,
+    onError: (onErrorParams: {
+      error: unknown;
+      certified: boolean;
+      identity: Identity;
+    }) => {
+      handleFindProposalsError({
+        ...onErrorParams,
+        mutableProposalsStore,
+      });
+    },
+    mutableProposalsStore,
   });
+};
 
 const findProposals = async ({
   beforeProposal,
   onLoad,
   onError,
+  mutableProposalsStore,
 }: {
   beforeProposal: ProposalId | undefined;
   onLoad: QueryAndUpdateOnResponse<ProposalInfo[]>;
   onError: QueryAndUpdateOnError<unknown>;
+  mutableProposalsStore: SingleMutationProposalsStore;
 }): Promise<void> => {
   const filters: ProposalsFiltersStore = get(proposalsFiltersStore);
 
-  const validateResponses = (
-    trustedProposals: ProposalInfo[],
-    untrustedProposals: ProposalInfo[]
-  ) => {
+  const validateResponses = ({
+    trustedProposals,
+    untrustedProposals,
+  }:{
+    trustedProposals: ProposalInfo[];
+    untrustedProposals: ProposalInfo[];
+  }) => {
     if (
       proposalsHaveSameIds({
         proposalsA: untrustedProposals,
@@ -151,7 +184,10 @@ const findProposals = async ({
       exclusion: trustedProposals,
     });
     if (proposalsToRemove.length > 0) {
-      proposalsStore.removeProposals(proposalsToRemove);
+      mutableProposalsStore.removeProposals({
+        proposalsToRemove,
+        certified: true,
+      });
     }
   };
   let uncertifiedProposals: ProposalInfo[] | undefined;
@@ -175,7 +211,10 @@ const findProposals = async ({
       }
 
       if (uncertifiedProposals) {
-        validateResponses(proposals, uncertifiedProposals);
+        validateResponses({
+          trustedProposals: proposals,
+          untrustedProposals: uncertifiedProposals,
+        });
       }
 
       onLoad({ response: proposals, certified });

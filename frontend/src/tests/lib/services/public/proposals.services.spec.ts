@@ -27,7 +27,7 @@ import { get } from "svelte/store";
 describe("proposals-services", () => {
   beforeEach(() => {
     toastsStore.reset();
-    proposalsStore.setProposals({ proposals: [], certified: true });
+    proposalsStore.setProposalsForTesting({ proposals: [], certified: true });
     proposalPayloadsStore.reset();
     vi.clearAllMocks();
     vi.spyOn(console, "error").mockRestore();
@@ -93,7 +93,7 @@ describe("proposals-services", () => {
       });
 
       it("should push new proposals to the list", async () => {
-        proposalsStore.setProposals({
+        proposalsStore.setProposalsForTesting({
           proposals: [mockProposals[0]],
           certified: true,
         });
@@ -176,7 +176,7 @@ describe("proposals-services", () => {
       beforeEach(() => {
         spyQueryProposal.mockResolvedValue(
           { ...mockProposals[0], id: 666n });
-        proposalsStore.setProposals({
+        proposalsStore.setProposalsForTesting({
           proposals: mockProposals,
           certified: true,
         });
@@ -223,7 +223,7 @@ describe("proposals-services", () => {
       });
 
       it("should not push empty proposals to the list", async () => {
-        proposalsStore.setProposals({
+        proposalsStore.setProposalsForTesting({
           proposals: mockProposals,
           certified: true,
         });
