@@ -245,13 +245,18 @@ export const loadProposal = async ({
   silentErrorMessages?: boolean;
   strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
+  const identity = getCurrentIdentity();
+
   const catchError: QueryAndUpdateOnError<Error | unknown> = (
     erroneusResponse
   ) => {
     console.error(erroneusResponse);
 
     if (silentErrorMessages !== true && (
-      erroneusResponse.certified || strategy === "query"
+      erroneusResponse.certified || (
+        strategy === "query" ||
+        identity.getPrincipal().isAnonymous()
+      )
     )) {
       const details = errorToString(erroneusResponse?.error);
       toastsShow({
@@ -266,7 +271,6 @@ export const loadProposal = async ({
     handleError?.(erroneusResponse.certified);
   };
 
-  const identity = getCurrentIdentity();
   try {
     return await getProposal({
       proposalId,

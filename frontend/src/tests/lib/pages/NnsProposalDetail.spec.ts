@@ -1,3 +1,5 @@
+import { get } from "svelte/store";
+import { toastsStore } from "@dfinity/gix-components";
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
@@ -21,6 +23,7 @@ describe("NnsProposalDetail", () => {
     resetIdentity();
     vi.restoreAllMocks();
     resetNeuronsApiService();
+    toastsStore.reset();
     vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
 
     actionableProposalsSegmentStore.set("all");
@@ -52,6 +55,21 @@ describe("NnsProposalDetail", () => {
       expect(await po.getProposalProposerActionsEntryPo().isPresent()).toBe(
         true
       );
+      expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("should show one toast if queryProposal fails", async () => {
+      vi.spyOn(console, "error").mockReturnValue(undefined);
+      const errorMessage = "proposal not found";
+      vi.spyOn(proposalsApi, "queryProposal").mockRejectedValue(new Error(errorMessage));
+
+      renderComponent();
+      await runResolvedPromises();
+
+      expect(get(toastsStore)).toMatchObject([{
+        level: "error",
+        text: `An error occurred while loading the proposal. id: "${mockProposalInfo.id}". ${errorMessage}`,
+      }]);
     });
 
     it("should query neurons", async () => {
@@ -88,6 +106,20 @@ describe("NnsProposalDetail", () => {
       expect(await po.getProposalProposerActionsEntryPo().isPresent()).toBe(
         true
       );
+    });
+
+    it("should show one toast if queryProposal fails", async () => {
+      vi.spyOn(console, "error").mockReturnValue(undefined);
+      const errorMessage = "proposal not found";
+      vi.spyOn(proposalsApi, "queryProposal").mockRejectedValue(new Error(errorMessage));
+
+      renderComponent();
+      await runResolvedPromises();
+
+      expect(get(toastsStore)).toMatchObject([{
+        level: "error",
+        text: `An error occurred while loading the proposal. id: "${mockProposalInfo.id}". ${errorMessage}`,
+      }]);
     });
 
     it("should NOT query neurons", async () => {
