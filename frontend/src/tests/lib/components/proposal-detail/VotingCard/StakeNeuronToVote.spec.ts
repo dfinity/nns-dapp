@@ -1,6 +1,9 @@
 import StakeNeuronToVote from "$lib/components/proposal-detail/VotingCard/StakeNeuronToVote.svelte";
 import { page } from "$mocks/$app/stores";
-import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import {
+  mockSnsFullProject,
+  mockSnsToken,
+} from "$tests/mocks/sns-projects.mock";
 import { StakeNeuronToVotePo } from "$tests/page-objects/StakeNeuronToVote.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
@@ -61,6 +64,12 @@ describe("StakeNeuronToVote", () => {
 
   describe("for SNS", () => {
     const rootCanisterId = mockSnsFullProject.rootCanisterId;
+    const projectName = "Fish tank";
+    const tokenSymbol = "FISH";
+    const tokenMetadata = {
+      ...mockSnsToken,
+      symbol: tokenSymbol,
+    };
     beforeEach(() => {
       page.mock({
         data: { universe: rootCanisterId.toText() },
@@ -68,6 +77,8 @@ describe("StakeNeuronToVote", () => {
       setSnsProjects([
         {
           rootCanisterId,
+          projectName,
+          tokenMetadata,
           lifecycle: SnsSwapLifecycle.Committed,
         },
       ]);
@@ -83,7 +94,7 @@ describe("StakeNeuronToVote", () => {
       const po = await renderAndExpand();
 
       expect(await po.getTitleText()).toBe(
-        "You don't have any Catalyze neurons to vote"
+        `You don't have any ${projectName} neurons to vote`
       );
     });
 
@@ -91,14 +102,16 @@ describe("StakeNeuronToVote", () => {
       const po = await renderAndExpand();
 
       expect(await po.getDescriptionText()).toBe(
-        "You have no Catalyze neurons. Create a neuron by staking CAT to vote on Catalyze proposals."
+        `You have no ${projectName} neurons. Create a neuron by staking ${tokenSymbol} to vote on ${projectName} proposals.`
       );
     });
 
     it("should display SNS version of the button", async () => {
       const po = await renderAndExpand();
 
-      await expect(await po.getGotoNeuronsLinkText()).toBe("Stake CAT");
+      await expect(await po.getGotoNeuronsLinkText()).toBe(
+        `Stake ${tokenSymbol}`
+      );
     });
 
     it("should navigate to sns neurons page", async () => {

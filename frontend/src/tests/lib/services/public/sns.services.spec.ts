@@ -4,7 +4,7 @@ import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import { clearWrapperCache, wrapper } from "$lib/api/sns-wrapper.api";
 import { loadSnsProjects } from "$lib/services/public/sns.services";
 import { authStore } from "$lib/stores/auth.store";
-import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+import { snsAggregatorStore, snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
 import { snsFunctionsStore } from "$lib/derived/sns-functions.derived";
 import { snsTotalTokenSupplyStore } from "$lib/derived/sns-total-token-supply.derived";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -79,7 +79,7 @@ describe("SNS public services", () => {
 
   describe("loadSnsProjects", () => {
     beforeEach(() => {
-      snsAggregatorStore.reset();
+      snsAggregatorIncludingAbortedProjectsStore.reset();
       clearWrapperCache();
       vi.clearAllMocks();
       vi.spyOn(authStore, "subscribe").mockImplementation(
@@ -160,7 +160,7 @@ describe("SNS public services", () => {
 
       await loadSnsProjects();
 
-      expect(get(snsAggregatorStore).data).toEqual(aggregatorMockSnsesDataDto);
+      expect(get(snsAggregatorIncludingAbortedProjectsStore).data).toEqual(aggregatorMockSnsesDataDto);
     });
 
     it("should load and map total token supply", async () => {

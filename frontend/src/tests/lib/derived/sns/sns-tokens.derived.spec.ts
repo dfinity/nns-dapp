@@ -3,7 +3,11 @@ import {
   snsTokensByRootCanisterIdStore,
 } from "$lib/derived/sns/sns-tokens.derived";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import {
+  resetSnsProjects,
+  setProdSnsProjects,
+  setSnsProjects,
+} from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
@@ -51,6 +55,12 @@ describe("sns-tokens.derived", () => {
         [batmanRootCanisterIdText]: batmanToken,
         [robinRootCanisterIdText]: robinToken,
       });
+    });
+
+    it("should convert prod SNSes without error", async () => {
+      await setProdSnsProjects();
+      const store = get(snsTokensByRootCanisterIdStore);
+      expect(Object.keys(store).length).toBeGreaterThan(25);
     });
   });
 
