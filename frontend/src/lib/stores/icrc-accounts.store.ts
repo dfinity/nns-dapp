@@ -1,4 +1,5 @@
 import type { Account } from "$lib/types/account";
+import { removeKeys } from "$lib/utils/utils";
 import type { Principal } from "@dfinity/principal";
 import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
@@ -21,6 +22,7 @@ export interface IcrcAccountsStore extends Readable<IcrcAccountStoreData> {
     accounts: IcrcAccounts;
     ledgerCanisterId: Principal;
   }) => void;
+  resetUniverse: (ledgerCanisterId: Principal) => void;
   reset: () => void;
 }
 
@@ -70,6 +72,15 @@ const initIcrcAccountsStore = (): IcrcAccountsStore => {
           certified,
         },
       }));
+    },
+
+    resetUniverse: (ledgerCanisterId: Principal) => {
+      update((currentState: IcrcAccountStoreData) =>
+        removeKeys({
+          obj: currentState,
+          keysToRemove: [ledgerCanisterId.toText()],
+        })
+      );
     },
 
     reset: () => set(initialAccounts),
