@@ -332,7 +332,12 @@ interface I18nNeurons {
   merge_neurons_more_info: string;
   stake_amount: string;
   state: string;
-  public: string;
+  public_neuron_tooltip: string;
+  public_neuron: string;
+  private_neuron: string;
+  public_neuron_description: string;
+  private_neuron_description: string;
+  learn_more: string;
 }
 
 interface I18nNew_followee {
@@ -714,6 +719,8 @@ interface I18nNeuron_detail {
   created: string;
   neuron_state_tooltip: string;
   dissolve_delay_tooltip: string;
+  change_neuron_visibility_partial_failure: string;
+  change_neuron_visibility_failure: string;
 }
 
 interface I18nSns_launchpad {
