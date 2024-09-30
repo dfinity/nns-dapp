@@ -7,6 +7,7 @@ import SnsProposalDetail from "$lib/pages/SnsProposalDetail.svelte";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
+import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
@@ -26,12 +27,17 @@ import {
 } from "$tests/mocks/sns-proposals.mock";
 import { SnsProposalDetailPo } from "$tests/page-objects/SnsProposalDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import {
+  resetSnsProjects,
+  setProdSnsProjects,
+  setSnsProjects,
+} from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
+import { toastsStore } from "@dfinity/gix-components";
 import { Vote } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
   SnsProposalDecisionStatus,
@@ -73,6 +79,7 @@ describe("SnsProposalDetail", () => {
     actionableProposalsSegmentStore.resetForTesting();
     snsProposalsStore.reset();
     snsNeuronsStore.reset();
+    toastsStore.reset();
   });
 
   describe("not logged in", () => {
@@ -799,6 +806,115 @@ describe("SnsProposalDetail", () => {
       expect(spyRegisterVoteApi).toBeCalledTimes(2);
       // Proposals should be reloaded after voting
       expect(spyQueryProposalApi).toBeCalledTimes(2);
+    });
+  });
+
+  describe("With aborted SNS without nervous system parameters", () => {
+    beforeEach(() => {
+      setNoIdentity();
+      page.mock({ data: { universe: rootCanisterId.toText() } });
+      setSnsProjects([
+        {
+          rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+        },
+        // This project is not used, but its presence also shouldn't cause
+        // errors.
+        {
+          nervousSystemParameters: null,
+          lifecycle: SnsSwapLifecycle.Aborted,
+        },
+      ]);
+    });
+
+    it("should render content without errors", async () => {
+      const proposal = createSnsProposal({
+        status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+        rewardStatus:
+          SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+        proposalId: proposalId.id,
+      });
+      fakeSnsGovernanceApi.addProposalWith({
+        identity: new AnonymousIdentity(),
+        rootCanisterId,
+        ...proposal,
+      });
+
+      expect(get(toastsStore)).toEqual([]);
+
+      const { container } = render(SnsProposalDetail, {
+        props: {
+          proposalIdText: proposalId.id.toString(),
+        },
+      });
+
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
+      await runResolvedPromises();
+
+      expect(get(toastsStore)).toEqual([]);
+      expect(await po.isContentLoaded()).toBe(true);
+      expect(await po.hasSummarySection()).toBe(true);
+      expect(await po.hasSystemInfoSection()).toBe(true);
+      expect(await po.getSnsProposalVotingSectionPo().isPresent()).toBe(true);
+      expect(
+        await po.getSnsProposalVotingSectionPo().getVotingCardPo().isPresent()
+      ).toBe(true);
+      expect(await po.getSkeletonDetails().isPresent()).toBe(false);
+    });
+  });
+
+  describe("With prod SNSes", () => {
+    let rootCanisterId;
+
+    beforeEach(async () => {
+      setNoIdentity();
+      await setProdSnsProjects();
+
+      expect(get(snsAggregatorStore).data.length).toBeGreaterThan(25);
+      rootCanisterId = Principal.fromText(
+        get(snsAggregatorStore).data[0].canister_ids.root_canister_id
+      );
+
+      page.mock({ data: { universe: rootCanisterId.toText() } });
+    });
+
+    it("should render content without errors", async () => {
+      const proposal = createSnsProposal({
+        status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+        rewardStatus:
+          SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+        proposalId: proposalId.id,
+      });
+      fakeSnsGovernanceApi.addProposalWith({
+        identity: new AnonymousIdentity(),
+        rootCanisterId,
+        ...proposal,
+      });
+
+      expect(get(toastsStore)).toEqual([]);
+
+      const { container } = render(SnsProposalDetail, {
+        props: {
+          proposalIdText: proposalId.id.toString(),
+        },
+      });
+
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
+      await runResolvedPromises();
+
+      expect(get(toastsStore)).toEqual([]);
+      expect(await po.isContentLoaded()).toBe(true);
+      expect(await po.hasSummarySection()).toBe(true);
+      expect(await po.hasSystemInfoSection()).toBe(true);
+      expect(await po.getSnsProposalVotingSectionPo().isPresent()).toBe(true);
+      expect(
+        await po.getSnsProposalVotingSectionPo().getVotingCardPo().isPresent()
+      ).toBe(true);
+      expect(await po.getSkeletonDetails().isPresent()).toBe(false);
     });
   });
 });
