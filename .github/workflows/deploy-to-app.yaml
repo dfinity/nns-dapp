@@ -80,6 +80,15 @@ jobs:
           jq 'del(.canisters[env.CANISTER_NAME].remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
           DFX_NETWORK="$DFX_NETWORK" jq 'del(.canisters.internet_identity.remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
           dfx-canister set-id --network "$DFX_NETWORK" --canister_name "$CANISTER_NAME" --canister_id "$SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID"
+      - name: Do dfx commands
+        run: |
+          set -x
+          dfx canister status nns-dapp --network "$DFX_NETWORK"
+          dfx canister update-settings nns-dapp --compute-allocation 0 --network "$DFX_NETWORK"
+          dfx canister status nns-dapp --network "$DFX_NETWORK"
+          dfx canister update-settings nns-dapp --freezing-threshold 2592000 --network "$DFX_NETWORK"
+          dfx canister status nns-dapp --network "$DFX_NETWORK"
+          false
       - name: Build wasms and config
         uses: ./.github/actions/build_nns_dapp # Builds sns_aggregator as well.
         with:
