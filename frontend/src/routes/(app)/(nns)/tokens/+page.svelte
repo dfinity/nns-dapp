@@ -48,6 +48,7 @@
   import ImportTokenRemoveConfirmation from "$lib/components/accounts/ImportTokenRemoveConfirmation.svelte";
   import { isUserTokenData } from "$lib/utils/user-token.utils";
   import { removeImportedTokens } from "$lib/services/imported-tokens.services";
+  import type { CanisterIdString } from "@dfinity/nns";
 
   onMount(() => {
     loadCkBTCTokens();
@@ -55,6 +56,7 @@
 
   let loadSnsAccountsBalancesRequested = false;
   let loadCkBTCAccountsBalancesRequested = false;
+  let loadedIcrcAccountsBalancesRequested = new Set<CanisterIdString>();
 
   const loadSnsAccountsBalances = async (projects: SnsFullProject[]) => {
     // We start when the projects are fetched
@@ -108,7 +110,16 @@
   const loadIcrcTokenAccounts = async (
     icrcCanisters: IcrcCanistersStoreData
   ) => {
-    await loadAccountsBalances(Object.keys(icrcCanisters));
+    const ids = Object.keys(icrcCanisters);
+    const newIds = ids.filter(
+      (id) => !loadedIcrcAccountsBalancesRequested.has(id)
+    );
+    // Skip loading if there are no new ids
+    if (newIds.length === 0) {
+      return;
+    }
+    newIds.forEach((id) => loadedIcrcAccountsBalancesRequested.add(id));
+    await loadAccountsBalances(newIds);
   };
 
   const loadAccountsBalances = async (
