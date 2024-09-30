@@ -50,6 +50,7 @@ describe("SelectUniverseNav", () => {
   });
 
   it("should display actionable proposal count", async () => {
+    const projectName = "Fish tank";
     const votableProposal: ProposalInfo = {
       ...mockProposalInfo,
       id: 0n,
@@ -78,7 +79,12 @@ describe("SelectUniverseNav", () => {
       proposals: [votableSnsProposal1, votableSnsProposal2],
     });
 
-    setSnsProjects([{ lifecycle: SnsSwapLifecycle.Committed }]);
+    setSnsProjects([
+      {
+        projectName,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
     const po = await renderComponent();
     await runResolvedPromises();
 
@@ -98,7 +104,7 @@ describe("SelectUniverseNav", () => {
     // nns is the second card
     expect(await cardPos[1].getName()).toEqual("Internet Computer");
     expect((await cardPos[1].getActionableProposalCount()).trim()).toEqual("1");
-    expect(await cardPos[2].getName()).toEqual("Catalyze");
+    expect(await cardPos[2].getName()).toEqual(projectName);
     expect((await cardPos[2].getActionableProposalCount()).trim()).toEqual("2");
   });
 });
