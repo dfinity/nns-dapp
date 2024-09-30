@@ -102,6 +102,7 @@ jobs:
           CANISTER_NAME="nns-dapp"
           # Note: inputs.mode is set if this workflow is run manually, using `workflow_dispatch` defined above.
           #       If the workflow is triggered in another way, the inputs are not defined so we need to specify a default again.
+          dfx canister update-settings nns-dapp --freezing-threshold 10000 --network "$DFX_NETWORK"
           dfx canister update-settings nns-dapp --compute-allocation 1 --network "$DFX_NETWORK"
           dfx canister status nns-dapp --network "$DFX_NETWORK"
           scripts/nns-dapp/deploy-in-chunks \
@@ -110,6 +111,7 @@ jobs:
             --mode "${{ inputs.mode || 'upgrade' }}" \
             --wasm "out/nns-dapp_noassets.wasm.gz" \
             --argument_file "out/nns-dapp-arg-${DFX_NETWORK}.did"
+          dfx canister update-settings nns-dapp --freezing-threshold 2592000 --network "$DFX_NETWORK"
       - name: Deploy sns_aggregator
         if: (inputs.canisters == 'all') || (inputs.canisters == 'sns_aggregator') || ( github.event_name != 'workflow_dispatch' )
         run: |
