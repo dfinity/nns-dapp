@@ -6,7 +6,7 @@ import {
 import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 import type { RenderResult } from "@testing-library/svelte";
 import { render, waitFor } from "@testing-library/svelte";
-import type { ComponentProps, ComponentType, SvelteComponent } from "svelte";
+import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
 
 // TODO: rename and move this modal.mock.ts to modal.test-utils.ts
@@ -27,13 +27,14 @@ export const waitModalIntroEnd = async ({
 
 export const modalToolbarSelector = "div.content";
 
-export const renderModal = async <T extends SvelteComponent>({
+export const renderModal = async ({
   component,
   props,
 }: {
-  component: ComponentType<T>;
-  props?: ComponentProps<T>;
-}): Promise<RenderResult<T>> => {
+  component: typeof SvelteComponent;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  props?: Record<string, any>;
+}): Promise<RenderResult<SvelteComponent>> => {
   const modal = render(component, {
     props,
   });
