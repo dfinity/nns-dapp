@@ -33,11 +33,9 @@ export const snsAggregatorIncludingAbortedProjectsStore =
 
 export const snsAggregatorStore: SnsAggregatorStore = derived(
   snsAggregatorIncludingAbortedProjectsStore,
-  (store) => {
-    return {
-      data: store.data?.filter(
-        (sns) => sns.lifecycle.lifecycle !== SnsSwapLifecycle.Aborted
-      ),
-    };
-  }
+  (store) => ({
+    data: store.data?.filter(
+      (sns) => sns.lifecycle.lifecycle !== SnsSwapLifecycle.Aborted
+    ),
+  })
 );
