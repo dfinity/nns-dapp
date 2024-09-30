@@ -898,6 +898,29 @@ describe("Tokens route", () => {
           "Pacman",
         ]);
       });
+
+      it("should not reload balances after an imported token becomes failed", async () => {
+        const po = await renderPage();
+        const rows = await po.getTokensPagePo().getTokensTable().getRows();
+        const notFailedTokenCount = (
+          await Promise.all(
+            rows.map(
+              async (row) => !(await row.getFailedTokenTooltipPo().isPresent())
+            )
+          )
+        ).filter(Boolean).length;
+
+        await runResolvedPromises();
+        expect(icrcLedgerApi.queryIcrcBalance).toBeCalledTimes(
+          notFailedTokenCount
+        );
+
+        failedImportedTokenLedgerIdsStore.add(importedToken2Id.toText());
+        await runResolvedPromises();
+        expect(icrcLedgerApi.queryIcrcBalance).toBeCalledTimes(
+          notFailedTokenCount
+        );
+      });
     });
 
     describe("when logged out", () => {
