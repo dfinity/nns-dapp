@@ -10,8 +10,8 @@ import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
-import { principal } from "../../mocks/sns-projects.mock";
 
 describe("icrc Accounts store", () => {
   afterEach(() => icrcAccountsStore.reset());
