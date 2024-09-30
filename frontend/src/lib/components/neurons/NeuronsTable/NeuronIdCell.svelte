@@ -40,7 +40,7 @@
     flex-wrap: wrap;
 
     .public-icon-container {
-      color: var(--elements-badge);
+      color: var(--elements-badges);
       line-height: 0;
       margin-right: var(--padding);
     }
