@@ -4,6 +4,7 @@ import type {
   CachedSnsDto,
   CachedSnsTokenMetadataDto,
 } from "$lib/types/sns-aggregator";
+import { convertDtoToTokenMetadata } from "$lib/utils/sns-aggregator-converters.utils";
 import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle, type SnsNervousSystemFunction } from "@dfinity/sns";
@@ -12,17 +13,21 @@ import { mockQueryTokenResponse } from "./sns-projects.mock";
 
 export const aggregatorMockSnsesDataDto: CachedSnsDto[] = tenAggregatedSnses;
 
-// It should match the token below
-export const aggregatorTokenMock: IcrcTokenMetadata = {
-  name: "CatalyzeDAO",
-  symbol: "CAT",
-  fee: 100000n,
-  decimals: 8,
+export const aggregatorSnsMockDto: CachedSnsDto = {
+  // This is the YRAL (fka HotOrNot) SNS.
+  // We picked this as a suitable mock because:
+  // 1. It was not aborted.
+  // 2. It was not sold out, so it doesn't prevent testing additional sales.
+  // 3. It did not have restricted countries.
+  // But any test that depends on specific values should declare those
+  // explcitily in the test.
+  ...aggregatorMockSnsesDataDto[4],
 };
 
-export const aggregatorSnsMockDto: CachedSnsDto = {
-  ...aggregatorMockSnsesDataDto[7],
-};
+// It should match the token in the aggregatorSnsMockDto above.
+export const aggregatorTokenMock: IcrcTokenMetadata = convertDtoToTokenMetadata(
+  aggregatorSnsMockDto.icrc1_metadata
+);
 
 const convertToNervousFunctionDto = ({
   id,
