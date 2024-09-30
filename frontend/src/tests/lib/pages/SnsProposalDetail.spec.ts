@@ -6,14 +6,17 @@ import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposa
 import SnsProposalDetail from "$lib/pages/SnsProposalDetail.svelte";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
-import { authStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
-import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockIdentity,
+  resetIdentity,
+  setNoIdentity,
+} from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
@@ -62,17 +65,20 @@ describe("SnsProposalDetail", () => {
   };
 
   beforeEach(() => {
+    vi.clearAllMocks();
+    resetIdentity();
     page.reset();
     resetSnsProjects();
     actionableSnsProposalsStore.resetForTesting();
+    actionableProposalsSegmentStore.resetForTesting();
+    snsProposalsStore.reset();
+    snsNeuronsStore.reset();
   });
 
   describe("not logged in", () => {
     beforeEach(() => {
-      vi.clearAllMocks();
-      actionableProposalsSegmentStore.resetForTesting();
       vi.spyOn(console, "error").mockImplementation(() => undefined);
-      authStore.setForTesting(undefined);
+      setNoIdentity();
       page.mock({ data: { universe: rootCanisterId.toText() } });
       setSnsProjects([
         {
@@ -471,13 +477,12 @@ describe("SnsProposalDetail", () => {
 
   describe("not logged in that logs in afterwards", () => {
     beforeEach(() => {
-      vi.clearAllMocks();
       vi.spyOn(console, "error").mockImplementation(() => undefined);
       page.mock({ data: { universe: rootCanisterId.toText() } });
     });
 
     it("show neurons that can vote", async () => {
-      authStore.setForTesting(undefined);
+      setNoIdentity();
       setSnsProjects([
         {
           rootCanisterId,
@@ -539,19 +544,15 @@ describe("SnsProposalDetail", () => {
 
       expect(await po.hasVotingToolbar()).toBe(false);
 
-      authStore.setForTesting(mockIdentity);
+      resetIdentity();
       await runResolvedPromises();
 
-      // await waitFor(async () => expect(await po.hasVotingToolbar()).toBe(true));
       expect(await po.hasVotingToolbar()).toBe(true);
     });
   });
 
   describe("An issue when the proposal w/o ballots from the store (from `proposalList` response) is used on proposal detail page", () => {
     beforeEach(() => {
-      vi.clearAllMocks();
-
-      resetIdentity();
       page.mock({ data: { universe: rootCanisterId.toText() } });
       setSnsProjects([
         {
@@ -559,8 +560,6 @@ describe("SnsProposalDetail", () => {
           lifecycle: SnsSwapLifecycle.Committed,
         },
       ]);
-      snsProposalsStore.reset();
-      snsNeuronsStore.reset();
     });
 
     // This test is related to the fix: https://github.com/dfinity/nns-dapp/pull/4420
@@ -637,9 +636,6 @@ describe("SnsProposalDetail", () => {
 
   describe('When one voting neuron follows another voting neuron and the second vote returns "Neuron already voted" error', () => {
     beforeEach(() => {
-      vi.clearAllMocks();
-
-      resetIdentity();
       page.mock({ data: { universe: rootCanisterId.toText() } });
       setSnsProjects([
         {
@@ -647,8 +643,6 @@ describe("SnsProposalDetail", () => {
           lifecycle: SnsSwapLifecycle.Committed,
         },
       ]);
-      snsProposalsStore.reset();
-      snsNeuronsStore.reset();
     });
 
     it("should keep the voting buttons disabled throughout the entire voting process", async () => {
