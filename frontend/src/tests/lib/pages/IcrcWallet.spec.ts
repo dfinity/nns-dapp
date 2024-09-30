@@ -804,7 +804,7 @@ describe("IcrcWallet", () => {
         expect(get(busyStore)).toEqual([]);
         expect(spyOnGetLedgerId).toBeCalledTimes(1);
         expect(spyOnGetLedgerId).toBeCalledWith({
-          certified: false,
+          certified: true,
           identity: mockIdentity,
           indexCanisterId,
         });
