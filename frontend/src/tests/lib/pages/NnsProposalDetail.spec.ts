@@ -1,5 +1,3 @@
-import { get } from "svelte/store";
-import { toastsStore } from "@dfinity/gix-components";
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
@@ -14,7 +12,9 @@ import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { NnsProposalPo } from "$tests/page-objects/NnsProposal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 vi.mock("$lib/api/governance.api");
 
@@ -61,15 +61,19 @@ describe("NnsProposalDetail", () => {
     it("should show one toast if queryProposal fails", async () => {
       vi.spyOn(console, "error").mockReturnValue(undefined);
       const errorMessage = "proposal not found";
-      vi.spyOn(proposalsApi, "queryProposal").mockRejectedValue(new Error(errorMessage));
+      vi.spyOn(proposalsApi, "queryProposal").mockRejectedValue(
+        new Error(errorMessage)
+      );
 
       renderComponent();
       await runResolvedPromises();
 
-      expect(get(toastsStore)).toMatchObject([{
-        level: "error",
-        text: `An error occurred while loading the proposal. id: "${mockProposalInfo.id}". ${errorMessage}`,
-      }]);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: `An error occurred while loading the proposal. id: "${mockProposalInfo.id}". ${errorMessage}`,
+        },
+      ]);
     });
 
     it("should query neurons", async () => {
@@ -111,15 +115,19 @@ describe("NnsProposalDetail", () => {
     it("should show one toast if queryProposal fails", async () => {
       vi.spyOn(console, "error").mockReturnValue(undefined);
       const errorMessage = "proposal not found";
-      vi.spyOn(proposalsApi, "queryProposal").mockRejectedValue(new Error(errorMessage));
+      vi.spyOn(proposalsApi, "queryProposal").mockRejectedValue(
+        new Error(errorMessage)
+      );
 
       renderComponent();
       await runResolvedPromises();
 
-      expect(get(toastsStore)).toMatchObject([{
-        level: "error",
-        text: `An error occurred while loading the proposal. id: "${mockProposalInfo.id}". ${errorMessage}`,
-      }]);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: `An error occurred while loading the proposal. id: "${mockProposalInfo.id}". ${errorMessage}`,
+        },
+      ]);
     });
 
     it("should NOT query neurons", async () => {
