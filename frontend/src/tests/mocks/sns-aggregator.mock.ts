@@ -1,9 +1,11 @@
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type {
   CachedNervousFunctionDto,
+  CachedNervousSystemParametersDto,
   CachedSnsDto,
   CachedSnsTokenMetadataDto,
 } from "$lib/types/sns-aggregator";
+import { convertDtoToTokenMetadata } from "$lib/utils/sns-aggregator-converters.utils";
 import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle, type SnsNervousSystemFunction } from "@dfinity/sns";
@@ -12,17 +14,21 @@ import { mockQueryTokenResponse } from "./sns-projects.mock";
 
 export const aggregatorMockSnsesDataDto: CachedSnsDto[] = tenAggregatedSnses;
 
-// It should match the token below
-export const aggregatorTokenMock: IcrcTokenMetadata = {
-  name: "CatalyzeDAO",
-  symbol: "CAT",
-  fee: 100000n,
-  decimals: 8,
+export const aggregatorSnsMockDto: CachedSnsDto = {
+  // This is the YRAL (fka HotOrNot) SNS.
+  // We picked this as a suitable mock because:
+  // 1. It was not aborted.
+  // 2. It was not sold out, so it doesn't prevent testing additional sales.
+  // 3. It did not have restricted countries.
+  // But any test that depends on specific values should declare those
+  // explcitily in the test.
+  ...aggregatorMockSnsesDataDto[4],
 };
 
-export const aggregatorSnsMockDto: CachedSnsDto = {
-  ...aggregatorMockSnsesDataDto[7],
-};
+// It should match the token in the aggregatorSnsMockDto above.
+export const aggregatorTokenMock: IcrcTokenMetadata = convertDtoToTokenMetadata(
+  aggregatorSnsMockDto.icrc1_metadata
+);
 
 const convertToNervousFunctionDto = ({
   id,
@@ -79,6 +85,7 @@ export const aggregatorSnsMockWith = ({
   swapDueTimestampSeconds,
   nnsProposalId,
   totalTokenSupply,
+  nervousSystemParameters,
   neuronMinimumDissolveDelayToVoteSeconds,
   maxDissolveDelaySeconds,
   maxDissolveDelayBonusPercentage,
@@ -101,6 +108,7 @@ export const aggregatorSnsMockWith = ({
   swapDueTimestampSeconds?: number;
   nnsProposalId?: number;
   totalTokenSupply?: bigint;
+  nervousSystemParameters?: CachedNervousSystemParametersDto;
   neuronMinimumDissolveDelayToVoteSeconds?: bigint;
   maxDissolveDelaySeconds?: bigint;
   maxDissolveDelayBonusPercentage?: number;
@@ -156,29 +164,35 @@ export const aggregatorSnsMockWith = ({
       nervousFunctions?.map(convertToNervousFunctionDto) ??
       aggregatorSnsMockDto.parameters.functions,
   },
-  nervous_system_parameters: {
-    ...aggregatorSnsMockDto.nervous_system_parameters,
-    neuron_minimum_dissolve_delay_to_vote_seconds: nonNullish(
-      neuronMinimumDissolveDelayToVoteSeconds
-    )
-      ? Number(neuronMinimumDissolveDelayToVoteSeconds)
-      : aggregatorSnsMockDto.nervous_system_parameters
-          .neuron_minimum_dissolve_delay_to_vote_seconds,
-    max_dissolve_delay_seconds: nonNullish(maxDissolveDelaySeconds)
-      ? Number(maxDissolveDelaySeconds)
-      : aggregatorSnsMockDto.nervous_system_parameters
-          .max_dissolve_delay_seconds,
-    max_dissolve_delay_bonus_percentage:
-      maxDissolveDelayBonusPercentage ??
-      aggregatorSnsMockDto.nervous_system_parameters
-        .max_dissolve_delay_bonus_percentage,
-    max_age_bonus_percentage:
-      maxAgeBonusPercentage ??
-      aggregatorSnsMockDto.nervous_system_parameters.max_age_bonus_percentage,
-    neuron_minimum_stake_e8s: nonNullish(neuronMinimumStakeE8s)
-      ? Number(neuronMinimumStakeE8s)
-      : aggregatorSnsMockDto.nervous_system_parameters.neuron_minimum_stake_e8s,
-  },
+  // Don't use `isNullish` to allow setting to `null`.
+  nervous_system_parameters:
+    nervousSystemParameters !== undefined
+      ? nervousSystemParameters
+      : {
+          ...aggregatorSnsMockDto.nervous_system_parameters,
+          neuron_minimum_dissolve_delay_to_vote_seconds: nonNullish(
+            neuronMinimumDissolveDelayToVoteSeconds
+          )
+            ? Number(neuronMinimumDissolveDelayToVoteSeconds)
+            : aggregatorSnsMockDto.nervous_system_parameters
+                .neuron_minimum_dissolve_delay_to_vote_seconds,
+          max_dissolve_delay_seconds: nonNullish(maxDissolveDelaySeconds)
+            ? Number(maxDissolveDelaySeconds)
+            : aggregatorSnsMockDto.nervous_system_parameters
+                .max_dissolve_delay_seconds,
+          max_dissolve_delay_bonus_percentage:
+            maxDissolveDelayBonusPercentage ??
+            aggregatorSnsMockDto.nervous_system_parameters
+              .max_dissolve_delay_bonus_percentage,
+          max_age_bonus_percentage:
+            maxAgeBonusPercentage ??
+            aggregatorSnsMockDto.nervous_system_parameters
+              .max_age_bonus_percentage,
+          neuron_minimum_stake_e8s: nonNullish(neuronMinimumStakeE8s)
+            ? Number(neuronMinimumStakeE8s)
+            : aggregatorSnsMockDto.nervous_system_parameters
+                .neuron_minimum_stake_e8s,
+        },
   meta: {
     ...aggregatorSnsMockDto.meta,
     name: projectName ?? aggregatorSnsMockDto.meta.name,

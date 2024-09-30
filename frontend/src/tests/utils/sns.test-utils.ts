@@ -1,7 +1,11 @@
-import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+import { snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import type {
+  CachedNervousSystemParametersDto,
+  CachedSnsDto,
+} from "$lib/types/sns-aggregator";
 import { aggregatorSnsMockWith } from "$tests/mocks/sns-aggregator.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import type { Principal } from "@dfinity/principal";
@@ -24,6 +28,7 @@ export const setSnsProjects = (
     swapDueTimestampSeconds?: number;
     nnsProposalId?: number;
     totalTokenSupply?: bigint;
+    nervousSystemParameters?: CachedNervousSystemParametersDto;
     neuronMinimumDissolveDelayToVoteSeconds?: bigint;
     maxDissolveDelaySeconds?: bigint;
     maxDissolveDelayBonusPercentage?: number;
@@ -48,6 +53,7 @@ export const setSnsProjects = (
       swapDueTimestampSeconds: params.swapDueTimestampSeconds,
       nnsProposalId: params.nnsProposalId,
       totalTokenSupply: params.totalTokenSupply,
+      nervousSystemParameters: params.nervousSystemParameters,
       neuronMinimumDissolveDelayToVoteSeconds:
         params.neuronMinimumDissolveDelayToVoteSeconds,
       maxDissolveDelaySeconds: params.maxDissolveDelaySeconds,
@@ -58,11 +64,36 @@ export const setSnsProjects = (
   });
   snsLifecycleStore.reset();
   snsDerivedStateStore.reset();
-  snsAggregatorStore.setData(aggregatorProjects);
+  snsAggregatorIncludingAbortedProjectsStore.setData(aggregatorProjects);
 };
 
 export const resetSnsProjects = () => {
   snsLifecycleStore.reset();
   snsDerivedStateStore.reset();
-  snsAggregatorStore.reset();
+  snsAggregatorIncludingAbortedProjectsStore.reset();
+};
+
+export const setProdSnsProjects = async () => {
+  const allAggregatorData: CachedSnsDto[] = [];
+  let page = 0;
+  try {
+    for (;;) {
+      const moduleData = (await import(
+        `../workflows/Launchpad/sns-agg-page-${page}.json`
+      )) as unknown as { default: CachedSnsDto[] };
+      if (moduleData.default.length === 0) {
+        break;
+      }
+      allAggregatorData.push(...moduleData.default);
+      page++;
+    }
+  } catch (e) {
+    if (page === 0) {
+      throw e;
+    }
+    // Ignore because we've reached past the last page.
+  }
+  snsLifecycleStore.reset();
+  snsDerivedStateStore.reset();
+  snsAggregatorIncludingAbortedProjectsStore.setData(allAggregatorData);
 };

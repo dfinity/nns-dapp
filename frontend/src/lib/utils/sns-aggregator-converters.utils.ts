@@ -417,7 +417,7 @@ const convertDtoToSnsSummaryMetadata = (
 /**
  * Token metadata is given only if all IcrcTokenMetadata properties are defined.
  */
-const convertDtoToTokenMetadata = (
+export const convertDtoToTokenMetadata = (
   data: CachedSnsTokenMetadataDto
 ): IcrcTokenMetadata | undefined =>
   mapOptionalToken(convertIcrc1Metadata(data));
