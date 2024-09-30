@@ -1,21 +1,24 @@
 import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
-import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+import { snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { convertNervousSystemParameters } from "$lib/utils/sns-aggregator-converters.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
-import { resetSnsProjects } from "$tests/utils/sns.test-utils";
+import {
+  resetSnsProjects,
+  setProdSnsProjects,
+} from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
 describe("SNS Parameters store", () => {
   beforeEach(() => {
-    snsAggregatorStore.reset();
+    snsAggregatorIncludingAbortedProjectsStore.reset();
   });
 
   describe("snsParametersStore", () => {
     it("should set parameters for a project", () => {
-      snsAggregatorStore.setData([
+      snsAggregatorIncludingAbortedProjectsStore.setData([
         {
           ...aggregatorSnsMockDto,
           canister_ids: {
@@ -34,7 +37,7 @@ describe("SNS Parameters store", () => {
     });
 
     it("should reset parameters for a project", () => {
-      snsAggregatorStore.setData([
+      snsAggregatorIncludingAbortedProjectsStore.setData([
         {
           ...aggregatorSnsMockDto,
           canister_ids: {
@@ -74,7 +77,7 @@ describe("SNS Parameters store", () => {
         },
       };
 
-      snsAggregatorStore.setData([project1, project2]);
+      snsAggregatorIncludingAbortedProjectsStore.setData([project1, project2]);
 
       const parametersInStore = get(snsParametersStore);
       expect(
@@ -86,5 +89,11 @@ describe("SNS Parameters store", () => {
           .max_age_bonus_percentage
       ).toEqual([321n]);
     });
+  });
+
+  it("should convert prod SNSes without error", async () => {
+    await setProdSnsProjects();
+    const store = get(snsParametersStore);
+    expect(Object.keys(store).length).toBeGreaterThan(25);
   });
 });

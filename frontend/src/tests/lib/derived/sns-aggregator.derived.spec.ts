@@ -1,11 +1,11 @@
 import { snsAggregatorDerived } from "$lib/derived/sns-aggregator.derived";
-import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+import { snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { get } from "svelte/store";
 
 describe("snsAggregatorDerived", () => {
   beforeEach(() => {
-    snsAggregatorStore.reset();
+    snsAggregatorIncludingAbortedProjectsStore.reset();
   });
 
   it("should create a derived store", () => {
@@ -18,7 +18,7 @@ describe("snsAggregatorDerived", () => {
 
     expect(get(snsLedgerCanisterIdStore)).toEqual({});
 
-    snsAggregatorStore.setData([
+    snsAggregatorIncludingAbortedProjectsStore.setData([
       {
         ...aggregatorSnsMockDto,
         canister_ids: {

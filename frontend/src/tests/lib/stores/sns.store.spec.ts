@@ -1,4 +1,4 @@
-import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+import { snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import {
@@ -33,7 +33,7 @@ import { get } from "svelte/store";
 describe("sns.store", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    snsAggregatorStore.reset();
+    snsAggregatorIncludingAbortedProjectsStore.reset();
     snsDerivedStateStore.reset();
     snsLifecycleStore.reset();
   });
@@ -119,10 +119,12 @@ describe("sns.store", () => {
 
   describe("isLoadingSnsProjectsStore", () => {
     it("should not be loading if sns aggregator store is set", () => {
-      snsAggregatorStore.reset();
+      snsAggregatorIncludingAbortedProjectsStore.reset();
       expect(get(isLoadingSnsProjectsStore)).toBe(true);
 
-      snsAggregatorStore.setData([aggregatorSnsMockDto]);
+      snsAggregatorIncludingAbortedProjectsStore.setData([
+        aggregatorSnsMockDto,
+      ]);
       expect(get(isLoadingSnsProjectsStore)).toBe(false);
     });
   });
@@ -131,7 +133,9 @@ describe("sns.store", () => {
     const rootCanisterId = rootCanisterIdMock;
 
     it("uses snsAggregator as source of data", () => {
-      snsAggregatorStore.setData([aggregatorSnsMockDto]);
+      snsAggregatorIncludingAbortedProjectsStore.setData([
+        aggregatorSnsMockDto,
+      ]);
 
       expect(get(snsSummariesStore)).toHaveLength(1);
     });
@@ -141,7 +145,7 @@ describe("sns.store", () => {
       const aggregatorData = aggregatorSnsMockWith({
         rootCanisterId: rootCanisterId.toText(),
       });
-      snsAggregatorStore.setData([aggregatorData]);
+      snsAggregatorIncludingAbortedProjectsStore.setData([aggregatorData]);
 
       expect(get(snsSummariesStore)[0].derived.sns_tokens_per_icp).not.toBe(
         newSnsTokensPerIcp
@@ -167,7 +171,7 @@ describe("sns.store", () => {
       const aggregatorData = aggregatorSnsMockWith({
         rootCanisterId: rootCanisterId.toText(),
       });
-      snsAggregatorStore.setData([aggregatorData]);
+      snsAggregatorIncludingAbortedProjectsStore.setData([aggregatorData]);
 
       expect(get(snsSummariesStore)[0].swap.lifecycle).not.toBe(newLifecycle);
 
