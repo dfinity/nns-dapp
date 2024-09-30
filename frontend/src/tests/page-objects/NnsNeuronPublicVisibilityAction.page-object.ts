@@ -33,9 +33,6 @@ export class NnsNeuronPublicVisibilityActionPo extends BasePageObject {
   }
 
   getButtonPo(): ButtonPo {
-    return ButtonPo.under({
-      element: this.root,
-      testId: "change-neuron-visibility-button",
-    });
+    return this.getButton("change-neuron-visibility-button");
   }
 }
