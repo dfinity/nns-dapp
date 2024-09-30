@@ -79,7 +79,7 @@ export const setProdSnsProjects = async () => {
   try {
     for (;;) {
       const moduleData = (await import(
-        `../workflows/LaunchPad/sns-agg-page-${page}.json`
+        `../workflows/Launchpad/sns-agg-page-${page}.json`
       )) as unknown as { default: CachedSnsDto[] };
       if (moduleData.default.length === 0) {
         break;
