@@ -1020,7 +1020,7 @@ export const changeNeuronVisibility = async ({
 }: {
   neurons: NeuronInfo[];
   makePublic: boolean;
-}): Promise<void> => {
+}): Promise<{ success: boolean }> => {
   const results = await Promise.allSettled(
     neurons.map(async (neuron) => {
       try {
@@ -1051,20 +1051,19 @@ export const changeNeuronVisibility = async ({
   ).length;
 
   if (failedCount === 0) {
-    toastsSuccess({
-      labelKey: makePublic
-        ? "neuron_detail.change_neuron_make_neuron_public"
-        : "neuron_detail.change_neuron_make_neuron_private",
-      substitutions: { $count: neurons.length.toString() },
-    });
+    return { success: true };
   } else if (failedCount < neurons.length) {
     toastsError({
       labelKey: "neuron_detail.change_neuron_visibility_partial_failure",
-      substitutions: { $failedCount: failedCount.toString() },
+      substitutions: {
+        $failedCount: failedCount.toString(),
+        $totalCount: neurons.length.toString(),
+      },
     });
   } else {
     toastsError({
       labelKey: "neuron_detail.change_neuron_visibility_failure",
     });
   }
+  return { success: false };
 };
