@@ -332,12 +332,7 @@ interface I18nNeurons {
   merge_neurons_more_info: string;
   stake_amount: string;
   state: string;
-  public_neuron_tooltip: string;
-  public_neuron: string;
-  private_neuron: string;
-  public_neuron_description: string;
-  private_neuron_description: string;
-  learn_more: string;
+  public: string;
 }
 
 interface I18nNew_followee {
