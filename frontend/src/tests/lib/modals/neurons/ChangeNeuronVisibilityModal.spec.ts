@@ -1,17 +1,20 @@
 import ChangeNeuronVisibilityModal from "$lib/modals/neurons/ChangeNeuronVisibilityModal.svelte";
 import { changeNeuronVisibility } from "$lib/services/neurons.services";
 import * as busyServices from "$lib/stores/busy.store";
+import { toastsSuccess } from "$lib/stores/toasts.store";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronVisibility } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
-vi.mock("$lib/services/neurons.services", () => {
-  return {
-    changeNeuronVisibility: vi.fn().mockResolvedValue(undefined),
-  };
-});
+vi.mock("$lib/services/neurons.services", () => ({
+  changeNeuronVisibility: vi.fn().mockResolvedValue({ success: true }),
+}));
+
+vi.mock("$lib/stores/toasts.store", () => ({
+  toastsSuccess: vi.fn(),
+}));
 
 describe("ChangeNeuronVisibilityModal", () => {
   const startBusySpy = vi.spyOn(busyServices, "startBusy");
@@ -81,7 +84,7 @@ describe("ChangeNeuronVisibilityModal", () => {
 
     expect(startBusySpy).toHaveBeenCalledWith({
       initiator: "change-neuron-visibility",
-      labelKey: "neuron_detail.change_neuron_make_neuron_public",
+      labelKey: "change_neuron_visibility_loading",
     });
 
     await waitFor(() => {
@@ -89,7 +92,7 @@ describe("ChangeNeuronVisibilityModal", () => {
     });
   });
 
-  it("should close modal after successful visibility change", async () => {
+  it("should show success toast and close modal after successful visibility change", async () => {
     const { getByText, component } = await renderChangeNeuronVisibilityModal();
 
     const onClose = vi.fn();
@@ -99,6 +102,10 @@ describe("ChangeNeuronVisibilityModal", () => {
     await fireEvent.click(confirmButton);
 
     await waitFor(() => {
+      expect(toastsSuccess).toHaveBeenCalledWith({
+        labelKey: "neuron_detail.change_neuron_make_neuron_public",
+        substitutions: { $count: "1" },
+      });
       expect(onClose).toHaveBeenCalled();
     });
   });
@@ -108,9 +115,7 @@ describe("ChangeNeuronVisibilityModal", () => {
       .spyOn(console, "error")
       .mockImplementation(() => {});
 
-    vi.mocked(changeNeuronVisibility).mockRejectedValueOnce(
-      new Error("Test error")
-    );
+    vi.mocked(changeNeuronVisibility).mockResolvedValueOnce({ success: false });
 
     const { getByText } = await renderChangeNeuronVisibilityModal();
 
@@ -119,8 +124,7 @@ describe("ChangeNeuronVisibilityModal", () => {
 
     await waitFor(() => {
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error changing neuron visibility:",
-        expect.any(Error)
+        "Error changing neuron visibility"
       );
     });
 

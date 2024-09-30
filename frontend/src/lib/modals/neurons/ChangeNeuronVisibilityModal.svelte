@@ -2,12 +2,12 @@
   import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { Checkbox, Modal } from "@dfinity/gix-components";
-  import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { isPublicNeuron } from "$lib/utils/neuron.utils";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { changeNeuronVisibility } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
 
   export let neuron: NeuronInfo;
 
@@ -22,19 +22,28 @@
   async function handleChangeVisibility() {
     startBusy({
       initiator: "change-neuron-visibility",
-      labelKey: isPublic
-        ? "neuron_detail.change_neuron_make_neuron_private"
-        : "neuron_detail.change_neuron_make_neuron_public",
+      labelKey: "change_neuron_visibility_loading",
     });
 
     try {
-      await changeNeuronVisibility({
+      const { success } = await changeNeuronVisibility({
         neurons: [neuron],
         makePublic: !isPublic,
       });
-      close();
+      if (success) {
+        toastsSuccess({
+          labelKey: isPublic
+            ? "neuron_detail.change_neuron_make_neuron_private"
+            : "neuron_detail.change_neuron_make_neuron_public",
+          substitutions: { $count: "1" },
+        });
+
+        close();
+      } else {
+        throw new Error("Error changing neuron visibility");
+      }
     } catch (error) {
-      console.error("Error changing neuron visibility:", error);
+      console.error(error instanceof Error ? error.message : String(error));
     } finally {
       stopBusy("change-neuron-visibility");
     }
