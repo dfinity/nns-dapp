@@ -14,27 +14,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Added `get_tvl` method to `nns-dapp` canister.
-* Display of principal Id and main ICP account Id in the account menu.
-
 #### Changed
-
-* Changes for cleaning up the stable structure migration.
-* Move Canisters button from sidebar to account menu.
-* Move GitHub button from account menu to sidebar.
-* Reduce calls to `sns-governance` canister by getting `nervous_system_parameters` from the aggregator instead.
-* Move theme toggle from account menu to sidebar.
-* The `Markdown` UI component was migrated to `@dfinity/gix-components`.
 
 #### Deprecated
 
 #### Removed
 
-* Stop making unnecessary calls to load the SNS proposal every time we load the derived state.
-
 #### Fixed
-
-* Fixed a bug where a performance counter in `init` is wiped during state initialization.
 
 #### Security
 
@@ -49,8 +35,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Deprecated
 
 #### Removed
-
-* Removed unused `pocket-ic` dependency.
 
 #### Fixed
 
