@@ -140,8 +140,4 @@
     --checkbox-padding: 0;
     --checkbox-label-order: 1;
   }
-
-  .label {
-    color: var(--description-color);
-  }
 </style>
