@@ -50,7 +50,9 @@
   <h3 slot="title">{$i18n.neuron_detail.advanced_settings_title}</h3>
   <div class="content">
     {#if $ENABLE_NEURON_VISIBILITY}
-      <NnsNeuronPublicVisibilityAction {neuron} />
+      <div class="visibility-action-container">
+        <NnsNeuronPublicVisibilityAction {neuron} />
+      </div>
     {/if}
     <KeyValuePair>
       <span slot="key" class="label">{$i18n.neurons.neuron_id}</span>
@@ -139,5 +141,9 @@
 
     --checkbox-padding: 0;
     --checkbox-label-order: 1;
+  }
+
+  .visibility-action-container {
+    padding: var(--padding) 0;
   }
 </style>
