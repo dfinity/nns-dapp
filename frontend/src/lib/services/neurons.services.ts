@@ -1021,7 +1021,7 @@ export const changeNeuronVisibility = async ({
   neurons: NeuronInfo[];
   makePublic: boolean;
 }): Promise<{ success: boolean }> => {
-  const results = await Promise.allSettled(
+  const results = await Promise.all(
     neurons.map(async (neuron) => {
       try {
         const identity: Identity = await getIdentityOfControllerByNeuronId(
@@ -1046,9 +1046,7 @@ export const changeNeuronVisibility = async ({
     })
   );
 
-  const failedCount = results.filter(
-    (result) => result.status === "rejected" || result.value === false
-  ).length;
+  const failedCount = results.filter((result) => result === false).length;
 
   if (failedCount === 0) {
     return { success: true };

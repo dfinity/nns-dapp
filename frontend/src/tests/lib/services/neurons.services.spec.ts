@@ -1923,7 +1923,7 @@ describe("neurons-services", () => {
       expect(spyChangeNeuronVisibility).toBeCalledTimes(2);
       expect(spyGetNeuron).toBeCalledTimes(1);
       expectToastError(
-        '1 of 2 neurons failed to update. Please try again later. You can always change neuron visibility settings under "Advanced Details & Settings".'
+        '1 out of 2 neurons have failed to update their visibility, please try again later. You can always change neuron visibility under "Advanced Details & Settings".'
       );
     });
 
@@ -1942,7 +1942,7 @@ describe("neurons-services", () => {
       expect(spyChangeNeuronVisibility).toBeCalledTimes(1);
       expect(spyGetNeuron).not.toBeCalled();
       expectToastError(
-        'All neurons have failed to update their visibility. Please try again later. You can always change neuron visibility settings under "Advanced Details & Settings".'
+        'Your neurons have failed to update their visibility, please try again later. You can always change neuron visibility under "Advanced Details & Settings".'
       );
     });
 
