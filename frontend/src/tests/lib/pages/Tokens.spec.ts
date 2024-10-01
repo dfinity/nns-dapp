@@ -243,6 +243,7 @@ describe("Tokens page", () => {
 
       setImportedTokens(MAX_IMPORTED_TOKENS - 1);
       const po = renderPage([]);
+      await runResolvedPromises();
 
       expect(await po.getImportTokenButtonPo().isPresent()).toBe(true);
       expect(await po.getImportTokenButtonPo().isDisabled()).toBe(false);
