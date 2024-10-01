@@ -80,15 +80,6 @@ jobs:
           jq 'del(.canisters[env.CANISTER_NAME].remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
           DFX_NETWORK="$DFX_NETWORK" jq 'del(.canisters.internet_identity.remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
           dfx-canister set-id --network "$DFX_NETWORK" --canister_name "$CANISTER_NAME" --canister_id "$SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID"
-      - name: Do dfx commands
-        run: |
-          set -x
-          dfx canister status nns-dapp --network "$DFX_NETWORK"
-          dfx canister update-settings nns-dapp --compute-allocation 0 --network "$DFX_NETWORK"
-          dfx canister status nns-dapp --network "$DFX_NETWORK"
-          dfx canister update-settings nns-dapp --freezing-threshold 2592000 --network "$DFX_NETWORK"
-          dfx canister status nns-dapp --network "$DFX_NETWORK"
-          false
       - name: Build wasms and config
         uses: ./.github/actions/build_nns_dapp # Builds sns_aggregator as well.
         with:
@@ -104,6 +95,11 @@ jobs:
             dfx canister status --network app "$canister"
             set +x
           done
+      - name: Set compute allocation of nns-dapp
+        run: |
+          set -x
+          dfx canister update-settings nns-dapp --freezing-threshold 10000 --network "$DFX_NETWORK"
+          dfx canister update-settings sns_aggregator --compute-allocation 1 --network "$DFX_NETWORK"
       - name: Deploy nns-dapp
         if: (inputs.canisters == 'all') || (inputs.canisters == 'nns-dapp') || ( github.event_name != 'workflow_dispatch' )
         run: |
@@ -120,6 +116,11 @@ jobs:
             --mode "${{ inputs.mode || 'upgrade' }}" \
             --wasm "out/nns-dapp_noassets.wasm.gz" \
             --argument_file "out/nns-dapp-arg-${DFX_NETWORK}.did"
+      - name: Restore compute allocation of nns-dapp
+        if: always()
+        run: |
+          set -x
+          dfx canister update-settings nns-dapp --compute-allocation 0 --network "$DFX_NETWORK"
           dfx canister update-settings nns-dapp --freezing-threshold 2592000 --network "$DFX_NETWORK"
       - name: Deploy sns_aggregator
         if: (inputs.canisters == 'all') || (inputs.canisters == 'sns_aggregator') || ( github.event_name != 'workflow_dispatch' )

@@ -32,9 +32,13 @@ ARGUMENT="$(cat "$ARGUMENT_FILE")"
 # before and after every step to miss as little as possible.
 dfx canister logs --network "$DFX_NETWORK" "$CANISTER_NAME"
 
-dfx canister install --mode "$DFX_MODE" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$ARGUMENT" --wasm "$WASM"
+#dfx canister install --mode "$DFX_MODE" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$ARGUMENT" --wasm "$WASM"
+dfx canister install --mode "$DFX_MODE" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$ARGUMENT" --wasm "out/nns-dapp.wasm.gz"
 
 dfx canister logs --network "$DFX_NETWORK" "$CANISTER_NAME"
+
+exit 0
+
 ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xaa.tar.xz
 
 dfx canister logs --network "$DFX_NETWORK" "$CANISTER_NAME"
