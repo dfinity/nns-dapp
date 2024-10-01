@@ -52,80 +52,72 @@
     {#if $ENABLE_NEURON_VISIBILITY}
       <NnsNeuronPublicVisibilityAction {neuron} />
     {/if}
-    <div class="inner-section">
+    <KeyValuePair>
+      <span slot="key" class="label">{$i18n.neurons.neuron_id}</span>
+      <span slot="value" class="value" data-tid="neuron-id"
+        >{neuron.neuronId}</span
+      >
+    </KeyValuePair>
+    <KeyValuePair>
+      <span slot="key" class="label">{$i18n.neuron_detail.created}</span>
+      <span slot="value" class="value" data-tid="neuron-created"
+        >{secondsToDateTime(neuron.createdTimestampSeconds)}</span
+      >
+    </KeyValuePair>
+    <NnsNeuronAge {neuron} />
+    {#if nonNullish(dissolvingTimestamp)}
       <KeyValuePair>
-        <span slot="key" class="label">{$i18n.neurons.neuron_id}</span>
-        <span slot="value" class="value" data-tid="neuron-id"
-          >{neuron.neuronId}</span
+        <span slot="key" class="label">{$i18n.neuron_detail.dissolve_date}</span
+        >
+        <span slot="value" class="value" data-tid="neuron-dissolve-date"
+          >{secondsToDateTime(dissolvingTimestamp)}</span
         >
       </KeyValuePair>
-      <KeyValuePair>
-        <span slot="key" class="label">{$i18n.neuron_detail.created}</span>
-        <span slot="value" class="value" data-tid="neuron-created"
-          >{secondsToDateTime(neuron.createdTimestampSeconds)}</span
+    {/if}
+    {#if nonNullish(neuron.fullNeuron)}
+      <KeyValuePair testId="neuron-account-row">
+        <span slot="key" class="label"
+          >{$i18n.neuron_detail.neuron_account}</span
         >
+        <Hash
+          slot="value"
+          className="value"
+          tagName="span"
+          testId="neuron-account"
+          text={neuron.fullNeuron.accountIdentifier}
+          id="neuron-account"
+          showCopy
+        />
       </KeyValuePair>
-      <NnsNeuronAge {neuron} />
-      {#if nonNullish(dissolvingTimestamp)}
-        <KeyValuePair>
+    {/if}
+    {#if nonNullish($nnsLatestRewardEventStore)}
+      <!-- Extra div to avoid the gap of the flex container to be applied between the collapsible header and its content -->
+      <div>
+        <KeyValuePairInfo>
           <span slot="key" class="label"
-            >{$i18n.neuron_detail.dissolve_date}</span
+            >{$i18n.neuron_detail.maturity_last_distribution}</span
           >
-          <span slot="value" class="value" data-tid="neuron-dissolve-date"
-            >{secondsToDateTime(dissolvingTimestamp)}</span
+          <span slot="value" class="value" data-tid="last-rewards-distribution"
+            >{secondsToDate(
+              Number(
+                maturityLastDistribution($nnsLatestRewardEventStore.rewardEvent)
+              )
+            )}</span
           >
-        </KeyValuePair>
-      {/if}
-      {#if nonNullish(neuron.fullNeuron)}
-        <KeyValuePair testId="neuron-account-row">
-          <span slot="key" class="label"
-            >{$i18n.neuron_detail.neuron_account}</span
+          <svelte:fragment slot="info"
+            ><Html
+              text={$i18n.neuron_detail.maturity_last_distribution_info}
+            /></svelte:fragment
           >
-          <Hash
-            slot="value"
-            className="value"
-            tagName="span"
-            testId="neuron-account"
-            text={neuron.fullNeuron.accountIdentifier}
-            id="neuron-account"
-            showCopy
-          />
-        </KeyValuePair>
-      {/if}
-      {#if nonNullish($nnsLatestRewardEventStore)}
-        <!-- Extra div to avoid the gap of the flex container to be applied between the collapsible header and its content -->
-        <div>
-          <KeyValuePairInfo>
-            <span slot="key" class="label"
-              >{$i18n.neuron_detail.maturity_last_distribution}</span
-            >
-            <span
-              slot="value"
-              class="value"
-              data-tid="last-rewards-distribution"
-              >{secondsToDate(
-                Number(
-                  maturityLastDistribution(
-                    $nnsLatestRewardEventStore.rewardEvent
-                  )
-                )
-              )}</span
-            >
-            <svelte:fragment slot="info"
-              ><Html
-                text={$i18n.neuron_detail.maturity_last_distribution_info}
-              /></svelte:fragment
-            >
-          </KeyValuePairInfo>
-        </div>
-      {/if}
-    </div>
-    <div class="inner-section">
-      <NnsAutoStakeMaturity {neuron} />
-      {#if canManageNFParticipation}
-        <JoinCommunityFundCheckbox {neuron} />
-      {/if}
-    </div>
+        </KeyValuePairInfo>
+      </div>
+    {/if}
+
+    <NnsAutoStakeMaturity {neuron} />
+    {#if canManageNFParticipation}
+      <JoinCommunityFundCheckbox {neuron} />
+    {/if}
+
     {#if isControllable}
       <SplitNnsNeuronButton {neuron} />
     {/if}
@@ -141,19 +133,12 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--padding-3x);
+    gap: var(--padding-2x);
 
     padding: 0;
-    padding-top: var(--padding);
 
     --checkbox-padding: 0;
     --checkbox-label-order: 1;
-  }
-
-  .inner-section {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-2x);
   }
 
   .label {
