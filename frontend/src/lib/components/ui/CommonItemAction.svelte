@@ -45,14 +45,14 @@
   }
 
   .icon {
-    width: 100%;
-    height: 100%;
+    color: var(--elements-icons);
+    padding: var(--padding-2x);
 
     display: flex;
     justify-content: center;
     align-items: center;
 
     border-radius: var(--border-radius);
-    background: var(--content-background);
+    background-color: var(--card-background-tint);
   }
 </style>

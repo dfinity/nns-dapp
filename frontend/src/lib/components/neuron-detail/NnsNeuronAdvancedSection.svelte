@@ -23,6 +23,8 @@
   } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
+  import NnsNeuronPublicVisibilityAction from "./NnsNeuronPublicVisibilityAction.svelte";
+  import { ENABLE_NEURON_VISIBILITY } from "$lib/stores/feature-flags.store";
 
   export let neuron: NeuronInfo;
 
@@ -47,6 +49,11 @@
 <Section testId="nns-neuron-advanced-section-component">
   <h3 slot="title">{$i18n.neuron_detail.advanced_settings_title}</h3>
   <div class="content">
+    {#if $ENABLE_NEURON_VISIBILITY}
+      <div class="visibility-action-container">
+        <NnsNeuronPublicVisibilityAction {neuron} />
+      </div>
+    {/if}
     <KeyValuePair>
       <span slot="key" class="label">{$i18n.neurons.neuron_id}</span>
       <span slot="value" class="value" data-tid="neuron-id"
@@ -107,10 +114,12 @@
         </KeyValuePairInfo>
       </div>
     {/if}
+
     <NnsAutoStakeMaturity {neuron} />
     {#if canManageNFParticipation}
       <JoinCommunityFundCheckbox {neuron} />
     {/if}
+
     {#if isControllable}
       <SplitNnsNeuronButton {neuron} />
     {/if}
@@ -132,5 +141,9 @@
 
     --checkbox-padding: 0;
     --checkbox-label-order: 1;
+  }
+
+  .visibility-action-container {
+    padding: var(--padding) 0;
   }
 </style>

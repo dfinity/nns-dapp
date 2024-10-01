@@ -3,6 +3,7 @@ import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page
 import { getNnsNeuronCardsIds } from "$tests/utils/e2e.nns-neuron.test-utils";
 import {
   replaceContent,
+  setFeatureFlag,
   signInWithNewUser,
   step,
 } from "$tests/utils/e2e.test-utils";
@@ -36,12 +37,18 @@ test("Test neuron details", async ({ page, context }) => {
 
   step("Make screenshots");
 
+  await setFeatureFlag({
+    page,
+    featureFlag: "ENABLE_NEURON_VISIBILITY",
+    value: true,
+  });
+
   // Replace neuron details with fixed values
   await replaceContent({
     page,
     selectors: ['[data-tid="identifier"]', '[data-tid="neuron-id"]'],
     pattern: /[0-9a-f]{19}/,
-    replacements: ["7737260276268288098"],
+    replacements: ["7737260276268288098", "7737260276268288098"],
   });
   await replaceContent({
     page,
