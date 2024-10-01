@@ -69,7 +69,7 @@
       >
     </div>
     <div slot="last-row">
-      {#if $ENABLE_IMPORT_TOKEN}
+      {#if $ENABLE_IMPORT_TOKEN && nonNullish($importedTokensStore.importedTokens)}
         <div class="last-row">
           {#if shouldHideZeroBalances}
             <div class="show-all-button-container">
