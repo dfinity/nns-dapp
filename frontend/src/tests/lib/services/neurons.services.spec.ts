@@ -40,7 +40,7 @@ import type { Identity } from "@dfinity/agent";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import { LedgerCanister } from "@dfinity/ledger-icp";
-import { Topic, type NeuronInfo } from "@dfinity/nns";
+import { NeuronVisibility, Topic, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
 import { tick } from "svelte";
@@ -65,6 +65,7 @@ const {
   simulateMergeNeurons,
   reloadNeuron,
   topUpNeuron,
+  changeNeuronVisibility,
 } = services;
 
 const expectToastError = (contained: string) =>
@@ -159,6 +160,7 @@ describe("neurons-services", () => {
   const spyStopDissolving = vi.spyOn(api, "stopDissolving");
   const spySetFollowees = vi.spyOn(api, "setFollowees");
   const spyClaimOrRefresh = vi.spyOn(api, "claimOrRefreshNeuron");
+  const spyChangeNeuronVisibility = vi.spyOn(api, "changeNeuronVisibility");
 
   beforeEach(() => {
     spyGetNeuron.mockClear();
@@ -197,6 +199,7 @@ describe("neurons-services", () => {
     spyStopDissolving.mockResolvedValue();
     spySetFollowees.mockResolvedValue();
     spyClaimOrRefresh.mockResolvedValue(undefined);
+    spyChangeNeuronVisibility.mockResolvedValue(undefined);
     resetIdentity();
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
       mockGetIdentity
@@ -1856,6 +1859,108 @@ describe("neurons-services", () => {
       expect(transferICP).not.toBeCalled();
       expect(spyClaimOrRefresh).not.toBeCalled();
       expect(spyGetNeuron).not.toBeCalled();
+    });
+  });
+
+  describe("changeNeuronVisibility", () => {
+    it("should call changeNeuronVisibility and getNeuron", async () => {
+      expect(spyChangeNeuronVisibility).not.toHaveBeenCalled();
+      expect(spyGetNeuron).not.toHaveBeenCalled();
+
+      neuronsStore.setNeurons({ neurons: [controlledNeuron], certified: true });
+
+      const { success } = await changeNeuronVisibility({
+        neurons: [controlledNeuron],
+        makePublic: true,
+      });
+
+      expect(success).toBe(true);
+      expect(spyChangeNeuronVisibility).toBeCalledWith({
+        neuronIds: [controlledNeuron.neuronId],
+        identity: mockIdentity,
+        visibility: NeuronVisibility.Public,
+      });
+      expect(spyChangeNeuronVisibility).toBeCalledTimes(1);
+      expect(spyGetNeuron).toBeCalled();
+    });
+
+    it("should change visibility to private for all neurons", async () => {
+      expect(spyChangeNeuronVisibility).not.toHaveBeenCalled();
+      expect(spyGetNeuron).not.toHaveBeenCalled();
+      neuronsStore.setNeurons({ neurons: [controlledNeuron], certified: true });
+
+      const { success } = await changeNeuronVisibility({
+        neurons: [controlledNeuron],
+        makePublic: false,
+      });
+
+      expect(success).toBe(true);
+      expect(spyChangeNeuronVisibility).toBeCalledWith({
+        neuronIds: [controlledNeuron.neuronId],
+        identity: mockIdentity,
+        visibility: NeuronVisibility.Private,
+      });
+      expect(spyChangeNeuronVisibility).toBeCalledTimes(1);
+      expect(spyGetNeuron).toBeCalled();
+    });
+
+    it("should handle partial failure", async () => {
+      expect(spyChangeNeuronVisibility).not.toHaveBeenCalled();
+      expect(spyGetNeuron).not.toHaveBeenCalled();
+      const neuron1 = { ...controlledNeuron, neuronId: 1n };
+      const neuron2 = { ...controlledNeuron, neuronId: 2n };
+      neuronsStore.setNeurons({ neurons: [neuron1, neuron2], certified: true });
+
+      spyChangeNeuronVisibility.mockResolvedValueOnce(undefined);
+      spyChangeNeuronVisibility.mockRejectedValueOnce(new Error("Test error"));
+
+      const { success } = await changeNeuronVisibility({
+        neurons: [neuron1, neuron2],
+        makePublic: true,
+      });
+
+      expect(success).toBe(false);
+      expect(spyChangeNeuronVisibility).toBeCalledTimes(2);
+      expect(spyGetNeuron).toBeCalledTimes(1);
+      expectToastError(
+        '1 out of 2 neurons have failed to update their visibility, please try again later. You can always change neuron visibility under "Advanced Details & Settings".'
+      );
+    });
+
+    it("should handle complete failure", async () => {
+      expect(spyChangeNeuronVisibility).not.toHaveBeenCalled();
+      expect(spyGetNeuron).not.toHaveBeenCalled();
+      neuronsStore.setNeurons({ neurons: [controlledNeuron], certified: true });
+      spyChangeNeuronVisibility.mockRejectedValue(new Error("Test error"));
+
+      const { success } = await changeNeuronVisibility({
+        neurons: [controlledNeuron],
+        makePublic: true,
+      });
+
+      expect(success).toBe(false);
+      expect(spyChangeNeuronVisibility).toBeCalledTimes(1);
+      expect(spyGetNeuron).not.toBeCalled();
+      expectToastError(
+        'Your neurons have failed to update their visibility, please try again later. You can always change neuron visibility under "Advanced Details & Settings".'
+      );
+    });
+
+    it("should handle multiple neurons", async () => {
+      expect(spyChangeNeuronVisibility).not.toHaveBeenCalled();
+      expect(spyGetNeuron).not.toHaveBeenCalled();
+      const neuron1 = { ...controlledNeuron, neuronId: 1n };
+      const neuron2 = { ...controlledNeuron, neuronId: 2n };
+      neuronsStore.setNeurons({ neurons: [neuron1, neuron2], certified: true });
+
+      const { success } = await changeNeuronVisibility({
+        neurons: [neuron1, neuron2],
+        makePublic: true,
+      });
+
+      expect(success).toBe(true);
+      expect(spyChangeNeuronVisibility).toBeCalledTimes(2);
+      expect(spyGetNeuron).toBeCalledTimes(2);
     });
   });
 });
