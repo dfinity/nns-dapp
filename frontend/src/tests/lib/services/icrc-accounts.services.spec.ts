@@ -217,6 +217,46 @@ describe("icrc-accounts-services", () => {
       ).toBeUndefined();
     });
 
+    it("should remove only failed account from the store", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcBalance")
+        .mockResolvedValueOnce(mockCkBTCMainAccount.balanceUlps)
+        .mockRejectedValueOnce(new Error());
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkBTCMainAccount],
+          certified: true,
+        },
+        ledgerCanisterId: ledgerCanisterId,
+      });
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkBTCMainAccount],
+          certified: false,
+        },
+        ledgerCanisterId: ledgerCanisterId2,
+      });
+
+      expect(get(icrcAccountsStore)).toEqual({
+        [ledgerCanisterId.toText()]: {
+          accounts: [mockCkBTCMainAccount],
+          certified: true,
+        },
+        [ledgerCanisterId2.toText()]: {
+          accounts: [mockCkBTCMainAccount],
+          certified: false,
+        },
+      });
+
+      await loadAccounts({ ledgerCanisterId });
+
+      expect(get(icrcAccountsStore)).toEqual({
+        [ledgerCanisterId2.toText()]: {
+          accounts: [mockCkBTCMainAccount],
+          certified: false,
+        },
+      });
+    });
+
     it("displays a toast on error", async () => {
       vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(
         new Error("test")
