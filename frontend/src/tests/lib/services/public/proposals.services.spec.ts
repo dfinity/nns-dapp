@@ -195,15 +195,16 @@ describe("proposals-services", () => {
     });
 
     describe("error message in details", () => {
+      let spyQueryProposal;
+
       beforeEach(() => {
-        vi.spyOn(api, "queryProposal").mockImplementation(() => {
-          // TODO: Return a promise to be more realistic.
-          throw new Error("test-message");
-        });
+        spyQueryProposal = vi.spyOn(api, "queryProposal").mockRejectedValue(
+          new Error("test-message")
+        );
         vi.spyOn(console, "error").mockReturnValue();
       });
 
-      it("should show error message in details", async () => {
+      it("should show one error message in details", async () => {
         expect(get(toastsStore)).toEqual([]);
 
         await loadProposal({
@@ -214,6 +215,10 @@ describe("proposals-services", () => {
           level: "error",
           text: "An error occurred while loading the proposal. id: \"0\". test-message",
         }]);
+
+        // `queryProposal` gave an error twice (query + update) but it should
+        // result only in a single toast message.
+        expect(spyQueryProposal).toBeCalledTimes(2);
       });
     });
 

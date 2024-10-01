@@ -588,20 +588,17 @@ export const changeNeuronVisibility = async ({
   visibility,
   identity,
 }: ApiChangeNeuronVisibilityParams): Promise<void> => {
-  // Log the start of the operation with more details
   logWithTimestamp(
     `Changing visibility for ${neuronIds.length} neurons. IDs: ${neuronIds.join(", ")}. New visibility: ${visibility}`
   );
+
   const { canister } = await governanceCanister({ identity });
 
   await Promise.all(
     neuronIds.map((neuronId) => canister.setVisibility(neuronId, visibility))
   );
 
-  // Log the completion of the operation with more details
   logWithTimestamp(
     `Visibility change complete for ${neuronIds.length} neurons. IDs: ${neuronIds.join(", ")}. New visibility: ${visibility}`
   );
 };
-
-// ... existing code ...

@@ -705,9 +705,9 @@
     "make_neuron_public": "Make Neuron Public",
     "change_neuron_public_success": "Visibility updated to public successfully.",
     "change_neuron_private_success": "Visibility updated to private successfully.",
-    "change_neuron_visibility_partial_failure": "$failedCount of $totalCount neurons failed to update. Please try again later. You can always change neuron visibility settings under \"Advanced Details & Settings\".",
-    "change_neuron_visibility_failure": "All neurons have failed to update their visibility. Please try again later. You can always change neuron visibility settings under \"Advanced Details & Settings\".",
-    "change_neuron_visibility_loading": "Updating visibility"
+    "change_neuron_visibility_loading": "Updating visibility",
+    "change_neuron_visibility_partial_failure": "$failedCount out of $totalCount neurons have failed to update their visibility, please try again later. You can always change neuron visibility under \"Advanced Details & Settings\".",
+    "change_neuron_visibility_failure": "Your neurons have failed to update their visibility, please try again later. You can always change neuron visibility under \"Advanced Details & Settings\"."
   },
   "sns_launchpad": {
     "header": "Launchpad",
