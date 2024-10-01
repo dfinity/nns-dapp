@@ -12,10 +12,9 @@
   import { TokenAmountV2, nonNullish } from "@dfinity/utils";
   import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
-  import { importedTokensStore } from "../stores/imported-tokens.store";
-  import { MAX_IMPORTED_TOKENS } from "../constants/imported-tokens.constants";
-  import { replacePlaceholders } from "../utils/i18n.utils";
-  import { isImportedToken } from "$lib/utils/imported-tokens.utils";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   export let userTokensData: UserToken[];
 
