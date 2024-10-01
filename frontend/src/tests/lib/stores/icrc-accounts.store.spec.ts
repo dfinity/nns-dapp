@@ -109,30 +109,26 @@ describe("icrc Accounts store", () => {
       ledgerCanisterId: ledgerCanisterId2,
     });
 
-    expect(get(icrcAccountsStore)[ledgerCanisterId1.toText()]).toEqual({
-      accounts,
-      certified: true,
-    });
-    expect(get(icrcAccountsStore)[ledgerCanisterId2.toText()]).toEqual({
-      accounts,
-      certified: false,
+    expect(get(icrcAccountsStore)).toEqual({
+      [ledgerCanisterId1.toText()]: {
+        accounts,
+        certified: true,
+      },
+      [ledgerCanisterId2.toText()]: {
+        accounts,
+        certified: false,
+      },
     });
 
     icrcAccountsStore.resetUniverse(ledgerCanisterId1);
-    expect(get(icrcAccountsStore)[ledgerCanisterId1.toText()]).toEqual(
-      undefined
-    );
-    expect(get(icrcAccountsStore)[ledgerCanisterId2.toText()]).toEqual({
-      accounts,
-      certified: false,
+    expect(get(icrcAccountsStore)).toEqual({
+      [ledgerCanisterId2.toText()]: {
+        accounts,
+        certified: false,
+      },
     });
 
     icrcAccountsStore.resetUniverse(ledgerCanisterId2);
-    expect(get(icrcAccountsStore)[ledgerCanisterId1.toText()]).toEqual(
-      undefined
-    );
-    expect(get(icrcAccountsStore)[ledgerCanisterId2.toText()]).toEqual(
-      undefined
-    );
+    expect(get(icrcAccountsStore)).toEqual({});
   });
 });
