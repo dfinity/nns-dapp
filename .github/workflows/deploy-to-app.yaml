@@ -99,7 +99,7 @@ jobs:
         run: |
           set -x
           dfx canister update-settings nns-dapp --freezing-threshold 10000 --network "$DFX_NETWORK"
-          dfx canister update-settings sns_aggregator --compute-allocation 1 --network "$DFX_NETWORK"
+          dfx canister update-settings nns-dapp --compute-allocation 1 --network "$DFX_NETWORK"
       - name: Deploy nns-dapp
         if: (inputs.canisters == 'all') || (inputs.canisters == 'nns-dapp') || ( github.event_name != 'workflow_dispatch' )
         run: |
