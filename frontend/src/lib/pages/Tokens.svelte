@@ -15,6 +15,7 @@
   import { importedTokensStore } from "../stores/imported-tokens.store";
   import { MAX_IMPORTED_TOKENS } from "../constants/imported-tokens.constants";
   import { replacePlaceholders } from "../utils/i18n.utils";
+  import { isImportedToken } from "$lib/utils/imported-tokens.utils";
 
   export let userTokensData: UserToken[];
 
