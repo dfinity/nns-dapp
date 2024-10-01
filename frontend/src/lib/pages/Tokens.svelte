@@ -69,7 +69,7 @@
       >
     </div>
     <div slot="last-row">
-      {#if $ENABLE_IMPORT_TOKEN && nonNullish($importedTokensStore.importedTokens)}
+      {#if $ENABLE_IMPORT_TOKEN}
         <div class="last-row">
           {#if shouldHideZeroBalances}
             <div class="show-all-button-container">
@@ -84,31 +84,26 @@
             </div>
           {/if}
 
-          {#if maximumImportedTokensReached}
+          {#if nonNullish($importedTokensStore.importedTokens)}
             <Tooltip
+              top
               testId="maximum-imported-tokens-tooltip"
-              text={replacePlaceholders(
-                $i18n.import_token.maximum_reached_tooltip,
-                { $max: `${MAX_IMPORTED_TOKENS}` }
-              )}
+              text={maximumImportedTokensReached
+                ? replacePlaceholders(
+                    $i18n.import_token.maximum_reached_tooltip,
+                    { $max: `${MAX_IMPORTED_TOKENS}` }
+                  )
+                : undefined}
             >
               <button
                 data-tid="import-token-button"
                 class="ghost with-icon import-token-button"
-                disabled
+                on:click={() => (showImportTokenModal = true)}
+                disabled={maximumImportedTokensReached}
               >
                 <IconPlus />{$i18n.import_token.import_token}
               </button>
             </Tooltip>
-          {:else}
-            <button
-              data-tid="import-token-button"
-              class="ghost with-icon import-token-button"
-              on:click={() => (showImportTokenModal = true)}
-              disabled={maximumImportedTokensReached}
-            >
-              <IconPlus />{$i18n.import_token.import_token}
-            </button>
           {/if}
         </div>
       {:else if shouldHideZeroBalances}
