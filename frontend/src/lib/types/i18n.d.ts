@@ -1130,6 +1130,7 @@ interface I18nImport_token {
   add_index_canister: string;
   add_index_description: string;
   failed_tooltip: string;
+  maximum_reached_tooltip: string;
 }
 
 interface I18nNeuron_state {
