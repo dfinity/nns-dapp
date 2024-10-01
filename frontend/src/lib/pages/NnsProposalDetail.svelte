@@ -95,7 +95,6 @@
         }));
       },
       handleError: onError,
-      silentUpdateErrorMessages: true,
     });
   };
 

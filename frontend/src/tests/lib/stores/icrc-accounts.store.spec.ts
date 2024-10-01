@@ -10,6 +10,7 @@ import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
 
 describe("icrc Accounts store", () => {
@@ -87,5 +88,47 @@ describe("icrc Accounts store", () => {
       accounts: [mockSnsMainAccount, updateSnsSubAccount],
       certified: true,
     });
+  });
+
+  it("should reset for a project", () => {
+    const ledgerCanisterId1 = principal(0);
+    const ledgerCanisterId2 = principal(1);
+    const accounts: Account[] = [mockSnsMainAccount, mockSnsSubAccount];
+    icrcAccountsStore.set({
+      accounts: {
+        accounts,
+        certified: true,
+      },
+      ledgerCanisterId: ledgerCanisterId1,
+    });
+    icrcAccountsStore.set({
+      accounts: {
+        accounts,
+        certified: false,
+      },
+      ledgerCanisterId: ledgerCanisterId2,
+    });
+
+    expect(get(icrcAccountsStore)).toEqual({
+      [ledgerCanisterId1.toText()]: {
+        accounts,
+        certified: true,
+      },
+      [ledgerCanisterId2.toText()]: {
+        accounts,
+        certified: false,
+      },
+    });
+
+    icrcAccountsStore.resetUniverse(ledgerCanisterId1);
+    expect(get(icrcAccountsStore)).toEqual({
+      [ledgerCanisterId2.toText()]: {
+        accounts,
+        certified: false,
+      },
+    });
+
+    icrcAccountsStore.resetUniverse(ledgerCanisterId2);
+    expect(get(icrcAccountsStore)).toEqual({});
   });
 });
