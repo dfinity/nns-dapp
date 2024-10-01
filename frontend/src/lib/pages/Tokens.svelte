@@ -7,11 +7,14 @@
   import { i18n } from "$lib/stores/i18n";
   import type { UserToken } from "$lib/types/tokens-page";
   import { heightTransition } from "$lib/utils/transition.utils";
-  import { IconPlus, IconSettings } from "@dfinity/gix-components";
+  import { IconPlus, IconSettings, Tooltip } from "@dfinity/gix-components";
   import { Popover } from "@dfinity/gix-components";
-  import { TokenAmountV2 } from "@dfinity/utils";
+  import { TokenAmountV2, nonNullish } from "@dfinity/utils";
   import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
+  import { importedTokensStore } from "../stores/imported-tokens.store";
+  import { MAX_IMPORTED_TOKENS } from "../constants/imported-tokens.constants";
+  import { replacePlaceholders } from "../utils/i18n.utils";
 
   export let userTokensData: UserToken[];
 
@@ -43,6 +46,9 @@
   };
 
   let showImportTokenModal = false;
+  let maximumImportedTokensReached = false;
+  $: maximumImportedTokensReached =
+    ($importedTokensStore.importedTokens?.length ?? 0) >= MAX_IMPORTED_TOKENS;
 
   // TODO(Import token): After removing ENABLE_IMPORT_TOKEN combine divs -> <div slot="last-row" class="last-row">
 </script>
@@ -78,13 +84,32 @@
             </div>
           {/if}
 
-          <button
-            data-tid="import-token-button"
-            class="ghost with-icon import-token-button"
-            on:click={() => (showImportTokenModal = true)}
-          >
-            <IconPlus />{$i18n.import_token.import_token}
-          </button>
+          {#if maximumImportedTokensReached}
+            <Tooltip
+              testId="maximum-imported-tokens-tooltip"
+              text={replacePlaceholders(
+                $i18n.import_token.maximum_reached_tooltip,
+                { $max: `${MAX_IMPORTED_TOKENS}` }
+              )}
+            >
+              <button
+                data-tid="import-token-button"
+                class="ghost with-icon import-token-button"
+                disabled
+              >
+                <IconPlus />{$i18n.import_token.import_token}
+              </button>
+            </Tooltip>
+          {:else}
+            <button
+              data-tid="import-token-button"
+              class="ghost with-icon import-token-button"
+              on:click={() => (showImportTokenModal = true)}
+              disabled={maximumImportedTokensReached}
+            >
+              <IconPlus />{$i18n.import_token.import_token}
+            </button>
+          {/if}
         </div>
       {:else if shouldHideZeroBalances}
         <div
@@ -183,6 +208,10 @@
     .import-token-button {
       gap: var(--padding);
       color: var(--primary);
+
+      &:disabled {
+        color: var(--button-disable-color);
+      }
     }
   }
 </style>
