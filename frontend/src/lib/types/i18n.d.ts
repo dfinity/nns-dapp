@@ -721,6 +721,8 @@ interface I18nNeuron_detail {
   created: string;
   neuron_state_tooltip: string;
   dissolve_delay_tooltip: string;
+  change_neuron_visibility_partial_failure: string;
+  change_neuron_visibility_failure: string;
 }
 
 interface I18nSns_launchpad {
