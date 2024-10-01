@@ -63,7 +63,7 @@
     }
   };
 
-  $: $definedNeuronsStore, updateVotingNeuronSelectedStore();
+  $: $definedNeuronsStore, proposalInfo, updateVotingNeuronSelectedStore();
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
