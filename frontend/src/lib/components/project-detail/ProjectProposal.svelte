@@ -27,7 +27,6 @@
           }
           proposalInfo = proposal;
         },
-        silentUpdateErrorMessages: true,
       });
     }
   };

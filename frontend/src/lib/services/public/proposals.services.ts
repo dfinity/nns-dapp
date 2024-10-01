@@ -236,7 +236,6 @@ export const loadProposal = async ({
   handleError,
   callback,
   silentErrorMessages,
-  silentUpdateErrorMessages,
   strategy,
 }: {
   proposalId: ProposalId;
@@ -244,20 +243,21 @@ export const loadProposal = async ({
   handleError?: (certified: boolean) => void;
   callback?: (certified: boolean) => void;
   silentErrorMessages?: boolean;
-  silentUpdateErrorMessages?: boolean;
   strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
+  const identity = getCurrentIdentity();
+
   const catchError: QueryAndUpdateOnError<Error | unknown> = (
     erroneusResponse
   ) => {
     console.error(erroneusResponse);
 
-    const skipUpdateErrorHandling =
-      silentUpdateErrorMessages === true &&
-      (erroneusResponse.certified === true ||
-        (erroneusResponse.certified === false && isForceCallStrategy()));
-
-    if (silentErrorMessages !== true && !skipUpdateErrorHandling) {
+    if (silentErrorMessages !== true && (
+      erroneusResponse.certified || (
+        strategy === "query" ||
+        identity.getPrincipal().isAnonymous()
+      )
+    )) {
       const details = errorToString(erroneusResponse?.error);
       toastsShow({
         labelKey: "error.proposal_not_found",
@@ -271,7 +271,6 @@ export const loadProposal = async ({
     handleError?.(erroneusResponse.certified);
   };
 
-  const identity = getCurrentIdentity();
   try {
     return await getProposal({
       proposalId,

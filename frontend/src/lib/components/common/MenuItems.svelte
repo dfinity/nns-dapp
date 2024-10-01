@@ -118,6 +118,7 @@
   }
 
   .menu-footer {
+    display: flex;
     flex-direction: column;
     gap: var(--padding);
     // To accomodate the 100% on-chain logo
@@ -137,11 +138,6 @@
       transition:
         transform linear var(--animation-time-short),
         opacity linear calc(var(--animation-time-short) / 2);
-    }
-    //Hide menu footer on short screens
-    display: none;
-    @media (min-height: 654px) {
-      display: flex;
     }
   }
   .menu-footer-buttons {

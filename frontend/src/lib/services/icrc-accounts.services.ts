@@ -196,7 +196,7 @@ export const loadAccounts = async ({
       }
 
       // hide unproven data
-      icrcAccountsStore.reset();
+      icrcAccountsStore.resetUniverse(ledgerCanisterId);
       icrcTransactionsStore.resetUniverse(ledgerCanisterId);
 
       if (
