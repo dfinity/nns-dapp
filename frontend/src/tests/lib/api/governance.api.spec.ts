@@ -741,6 +741,8 @@ describe("neurons-api", () => {
     const visibility = NeuronVisibility.Public;
 
     it("changes visibility for multiple neurons", async () => {
+      expect(mockGovernanceCanister.setVisibility).not.toHaveBeenCalled();
+
       mockGovernanceCanister.setVisibility.mockResolvedValue(undefined);
 
       await changeNeuronVisibility({
@@ -759,6 +761,8 @@ describe("neurons-api", () => {
     });
 
     it("throws error when changing visibility fails", async () => {
+      expect(mockGovernanceCanister.setVisibility).not.toHaveBeenCalled();
+
       const error = new Error("Visibility change failed");
       mockGovernanceCanister.setVisibility.mockRejectedValue(error);
 

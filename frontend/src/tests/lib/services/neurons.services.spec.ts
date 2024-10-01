@@ -1863,7 +1863,10 @@ describe("neurons-services", () => {
   });
 
   describe("changeNeuronVisibility", () => {
-    it("should change visibility to public for all neurons", async () => {
+    it("should call changeNeuronVisibility and getNeuron", async () => {
+      expect(spyChangeNeuronVisibility).not.toHaveBeenCalled();
+      expect(spyGetNeuron).not.toHaveBeenCalled();
+
       neuronsStore.setNeurons({ neurons: [controlledNeuron], certified: true });
 
       const { success } = await changeNeuronVisibility({
@@ -1882,6 +1885,8 @@ describe("neurons-services", () => {
     });
 
     it("should change visibility to private for all neurons", async () => {
+      expect(spyChangeNeuronVisibility).not.toHaveBeenCalled();
+      expect(spyGetNeuron).not.toHaveBeenCalled();
       neuronsStore.setNeurons({ neurons: [controlledNeuron], certified: true });
 
       const { success } = await changeNeuronVisibility({
@@ -1900,6 +1905,8 @@ describe("neurons-services", () => {
     });
 
     it("should handle partial failure", async () => {
+      expect(spyChangeNeuronVisibility).not.toHaveBeenCalled();
+      expect(spyGetNeuron).not.toHaveBeenCalled();
       const neuron1 = { ...controlledNeuron, neuronId: 1n };
       const neuron2 = { ...controlledNeuron, neuronId: 2n };
       neuronsStore.setNeurons({ neurons: [neuron1, neuron2], certified: true });
@@ -1921,6 +1928,8 @@ describe("neurons-services", () => {
     });
 
     it("should handle complete failure", async () => {
+      expect(spyChangeNeuronVisibility).not.toHaveBeenCalled();
+      expect(spyGetNeuron).not.toHaveBeenCalled();
       neuronsStore.setNeurons({ neurons: [controlledNeuron], certified: true });
       spyChangeNeuronVisibility.mockRejectedValue(new Error("Test error"));
 
@@ -1938,6 +1947,8 @@ describe("neurons-services", () => {
     });
 
     it("should handle multiple neurons", async () => {
+      expect(spyChangeNeuronVisibility).not.toHaveBeenCalled();
+      expect(spyGetNeuron).not.toHaveBeenCalled();
       const neuron1 = { ...controlledNeuron, neuronId: 1n };
       const neuron2 = { ...controlledNeuron, neuronId: 2n };
       neuronsStore.setNeurons({ neurons: [neuron1, neuron2], certified: true });
