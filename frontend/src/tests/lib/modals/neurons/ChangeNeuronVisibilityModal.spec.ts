@@ -84,7 +84,7 @@ describe("ChangeNeuronVisibilityModal", () => {
 
     expect(startBusySpy).toHaveBeenCalledWith({
       initiator: "change-neuron-visibility",
-      labelKey: "change_neuron_visibility_loading",
+      labelKey: "neuron_detail.change_neuron_visibility_loading",
     });
 
     await waitFor(() => {
@@ -92,8 +92,14 @@ describe("ChangeNeuronVisibilityModal", () => {
     });
   });
 
-  it("should show success toast and close modal after successful visibility change", async () => {
-    const { getByText, component } = await renderChangeNeuronVisibilityModal();
+  it("should show success toast and close modal after successful visibility change for private neuron", async () => {
+    const privateNeuron = {
+      ...mockNeuron,
+      visibility: NeuronVisibility.Private,
+    };
+
+    const { getByText, component } =
+      await renderChangeNeuronVisibilityModal(privateNeuron);
 
     const onClose = vi.fn();
     component.$on("nnsClose", onClose);
@@ -103,8 +109,27 @@ describe("ChangeNeuronVisibilityModal", () => {
 
     await waitFor(() => {
       expect(toastsSuccess).toHaveBeenCalledWith({
-        labelKey: "neuron_detail.change_neuron_make_neuron_public",
-        substitutions: { $count: "1" },
+        labelKey: "neuron_detail.change_neuron_public_success",
+      });
+      expect(onClose).toHaveBeenCalled();
+    });
+  });
+
+  it("should show success toast and close modal after successful visibility change for public neuron", async () => {
+    const publicNeuron = { ...mockNeuron, visibility: NeuronVisibility.Public };
+
+    const { getByText, component } =
+      await renderChangeNeuronVisibilityModal(publicNeuron);
+
+    const onClose = vi.fn();
+    component.$on("nnsClose", onClose);
+
+    const confirmButton = getByText("Confirm");
+    await fireEvent.click(confirmButton);
+
+    await waitFor(() => {
+      expect(toastsSuccess).toHaveBeenCalledWith({
+        labelKey: "neuron_detail.change_neuron_private_success",
       });
       expect(onClose).toHaveBeenCalled();
     });
