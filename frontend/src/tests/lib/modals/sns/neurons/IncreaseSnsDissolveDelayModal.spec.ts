@@ -166,17 +166,16 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     );
 
     expect(confirmButton).toBeDefined();
-    expect(snsGovernanceApi.setDissolveDelay).toBeCalledTimes(0);
+    expect(snsGovernanceApi.increaseDissolveDelay).toBeCalledTimes(0);
 
     confirmButton && (await fireEvent.click(confirmButton));
 
     await waitFor(() =>
-      expect(snsGovernanceApi.setDissolveDelay).toBeCalledTimes(1)
+      expect(snsGovernanceApi.increaseDissolveDelay).toBeCalledTimes(1)
     );
-    expect(snsGovernanceApi.setDissolveDelay).toBeCalledWith(
+    expect(snsGovernanceApi.increaseDissolveDelay).toBeCalledWith(
       expect.objectContaining({
-        dissolveTimestampSeconds:
-          daysToSeconds(increaseDelayDays) + nowInSeconds,
+        additionalDissolveDelaySeconds: daysToSeconds(increaseDelayDays),
       })
     );
   });

@@ -7,12 +7,12 @@ import * as services from "$lib/services/sns-neurons.services";
 import {
   disburse,
   disburseMaturity,
+  increaseDissolveDelay,
   increaseStakeNeuron,
   stakeMaturity,
   startDissolving,
   stopDissolving,
   toggleAutoStakeMaturity,
-  updateDelay,
 } from "$lib/services/sns-neurons.services";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { toastsError } from "$lib/stores/toasts.store";
@@ -415,37 +415,37 @@ describe("sns-neurons-services", () => {
     });
   });
 
-  describe("updateDelay ", () => {
-    let spyOnSetDissolveDelay;
+  describe("increaseDissolveDelay ", () => {
+    let spyOnIncreaseDissolveDelay;
     const nowInSeconds = 1689063315;
     const now = nowInSeconds * 1000;
 
     beforeEach(() => {
-      spyOnSetDissolveDelay = vi
-        .spyOn(governanceApi, "setDissolveDelay")
+      spyOnIncreaseDissolveDelay = vi
+        .spyOn(governanceApi, "increaseDissolveDelay")
         .mockImplementation(() => Promise.resolve());
       vi.useFakeTimers().setSystemTime(now);
-      spyOnSetDissolveDelay.mockClear();
+      spyOnIncreaseDissolveDelay.mockClear();
     });
 
-    it("should call sns api setDissolveDelay with dissolve timestamp", async () => {
+    it("should call sns api increaseDissolveDelay with additional dissolve delay in seconds", async () => {
       const neuronId = fromDefinedNullable(mockSnsNeuron.id);
       const identity = mockIdentity;
       const rootCanisterId = mockPrincipal;
-      const dissolveDelaySeconds = 123;
-      const { success } = await updateDelay({
+      const additionalDissolveDelaySeconds = 123;
+      const { success } = await increaseDissolveDelay({
         rootCanisterId,
-        dissolveDelaySeconds,
+        additionalDissolveDelaySeconds,
         neuron: mockSnsNeuron,
       });
 
       expect(success).toBeTruthy();
 
-      expect(spyOnSetDissolveDelay).toBeCalledWith({
+      expect(spyOnIncreaseDissolveDelay).toBeCalledWith({
         neuronId,
         identity,
         rootCanisterId,
-        dissolveTimestampSeconds: nowInSeconds + dissolveDelaySeconds,
+        additionalDissolveDelaySeconds,
       });
     });
   });

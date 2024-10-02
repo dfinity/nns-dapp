@@ -1,7 +1,7 @@
 <script lang="ts">
   import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
   import SetSnsDissolveDelay from "$lib/components/sns-neurons/SetSnsDissolveDelay.svelte";
-  import { updateDelay } from "$lib/services/sns-neurons.services";
+  import { increaseDissolveDelay } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
@@ -38,12 +38,12 @@
   let currentStep: WizardStep | undefined;
   let modal: WizardModal;
 
-  let delayInSeconds = Number(
+  let existingDissolveDelay = Number(
     getSnsLockedTimeInSeconds(neuron) ??
       getSnsDissolvingTimeInSeconds(neuron) ??
       0n
   );
-
+  let delayInSeconds = existingDissolveDelay;
   const dispatcher = createEventDispatcher();
   const goNext = () => {
     modal.next();
@@ -55,10 +55,10 @@
         initiator: "dissolve-sns-action",
       });
 
-      const { success } = await updateDelay({
+      const { success } = await increaseDissolveDelay({
         rootCanisterId,
         neuron,
-        dissolveDelaySeconds: delayInSeconds,
+        additionalDissolveDelaySeconds: delayInSeconds - existingDissolveDelay,
       });
 
       await reloadNeuron();
