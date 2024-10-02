@@ -45,7 +45,7 @@
 
 <svelte:window on:nnsNeuronDetailModal={onNnsNeuronDetailModal} />
 
-<div class="dialog-container" data-tid="nns-neuron-modal">
+<TestIdWrapper testId="nns-neuron-modals-component">
   {#if nonNullish(neuron)}
     {#if type === "increase-dissolve-delay"}
       <IncreaseDissolveDelayModal {neuron} on:nnsClose={close} />
@@ -103,10 +103,4 @@
   {#if type === "voting-history" && nonNullish(followee)}
     <VotingHistoryModal neuronId={followee.neuronId} on:nnsClose={close} />
   {/if}
-</div>
-
-<style lang="scss">
-  .dialog-container {
-    --dialog-min-height: 0;
-  }
-</style>
+</TestIdWrapper>
