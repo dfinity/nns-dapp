@@ -29,17 +29,22 @@
     type Vote,
     votableNeurons as getVotableNeurons,
   } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
   import { getContext } from "svelte";
 
   export let proposalInfo: ProposalInfo;
 
-  const votableNeurons = () =>
+  const votableNeurons = ({
+    neurons,
+    proposal,
+  }: {
+    neurons: NeuronInfo[];
+    proposal: ProposalInfo;
+  }) =>
     getVotableNeurons({
-      neurons: $definedNeuronsStore,
-      proposal: proposalInfo,
-    }).map((neuron) =>
-      nnsNeuronToVotingNeuron({ neuron, proposal: proposalInfo })
-    );
+      neurons,
+      proposal,
+    }).map((neuron) => nnsNeuronToVotingNeuron({ neuron, proposal }));
 
   let visible = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
@@ -53,17 +58,36 @@
   $: $definedNeuronsStore,
     (visible = isProposalDeadlineInTheFuture(proposalInfo));
 
-  const updateVotingNeuronSelectedStore = () => {
+  const updateVotingNeuronSelectedStore = ({
+    neurons,
+    proposal,
+  }: {
+    neurons: NeuronInfo[];
+    proposal: ProposalInfo;
+  }) => {
     if (!initialSelectionDone) {
       initialSelectionDone = true;
-      votingNeuronSelectStore.set(votableNeurons());
+      votingNeuronSelectStore.set(
+        votableNeurons({
+          neurons,
+          proposal,
+        })
+      );
     } else {
       // preserve user selection after neurons update (e.g. queryAndUpdate second callback)
-      votingNeuronSelectStore.updateNeurons(votableNeurons());
+      votingNeuronSelectStore.updateNeurons(
+        votableNeurons({
+          neurons,
+          proposal,
+        })
+      );
     }
   };
 
-  $: $definedNeuronsStore, proposalInfo, updateVotingNeuronSelectedStore();
+  $: updateVotingNeuronSelectedStore({
+    neurons: $definedNeuronsStore,
+    proposal: proposalInfo,
+  });
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
