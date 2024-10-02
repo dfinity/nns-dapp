@@ -58,7 +58,7 @@
       const { success } = await updateDelay({
         rootCanisterId,
         neuron,
-        dissolveDelay: delayInSeconds,
+        dissolveDelaySeconds: delayInSeconds,
       });
 
       await reloadNeuron();

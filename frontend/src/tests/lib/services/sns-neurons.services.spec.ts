@@ -442,7 +442,7 @@ describe("sns-neurons-services", () => {
       const delayInSeconds = 150;
       const { success } = await updateDelay({
         rootCanisterId,
-        dissolveDelay: delayInSeconds,
+        dissolveDelaySeconds: delayInSeconds,
         neuron: mockNeuronWithWhenDissolvedTS,
       });
 

@@ -428,11 +428,11 @@ export const stopDissolving = async ({
 export const updateDelay = async ({
   rootCanisterId,
   neuron,
-  dissolveDelay,
+  dissolveDelaySeconds,
 }: {
   rootCanisterId: Principal;
   neuron: SnsNeuron;
-  dissolveDelay: number;
+  dissolveDelaySeconds: number;
 }): Promise<{ success: boolean }> => {
   try {
     const identity = await getSnsNeuronIdentity();
@@ -447,7 +447,8 @@ export const updateDelay = async ({
       rootCanisterId,
       identity,
       neuronId: fromDefinedNullable(neuron.id),
-      additionalDissolveDelaySeconds: dissolveDelay - existingDissolveDelay,
+      additionalDissolveDelaySeconds:
+        dissolveDelaySeconds - existingDissolveDelay,
     });
 
     return { success: true };
