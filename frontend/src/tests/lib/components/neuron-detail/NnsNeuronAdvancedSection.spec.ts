@@ -272,9 +272,7 @@ describe("NnsNeuronAdvancedSection", () => {
   it("should pass the correct neuron to NnsNeuronPublicVisibilityAction", async () => {
     overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", true);
 
-    const testNeuron = createMockNeuron(123);
-
-    const po = renderComponent(testNeuron);
+    const po = renderComponent(createMockNeuron(123));
 
     expect(await po.getNnsNeuronPublicVisibilityActionPo().isPresent()).toBe(
       true
