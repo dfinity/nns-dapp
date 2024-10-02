@@ -3,20 +3,20 @@
   import { IconExplore } from "@dfinity/gix-components";
   import { goto } from "$app/navigation";
   import { createEventDispatcher } from "svelte";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { canistersPathStore } from "$lib/derived/paths.derived";
 
   const dispatcher = createEventDispatcher();
 
   function navigateToCanisters(event: MouseEvent) {
     event.preventDefault();
-    goto(AppPath.Canisters);
+    goto($canistersPathStore);
     dispatcher("closeMenu");
   }
 </script>
 
 <a
   data-tid="canisters-button"
-  href={AppPath.Canisters}
+  href={$canistersPathStore}
   on:click={navigateToCanisters}
   class="text"
 >
