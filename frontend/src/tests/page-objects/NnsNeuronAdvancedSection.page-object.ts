@@ -68,9 +68,7 @@ export class NnsNeuronAdvancedSectionPo extends BasePageObject {
   }
 
   getNnsNeuronPublicVisibilityActionPo(): NnsNeuronPublicVisibilityActionPo {
-    return NnsNeuronPublicVisibilityActionPo.under(
-      this.root.byTestId("nns-neuron-public-visibility-action-component")
-    );
+    return NnsNeuronPublicVisibilityActionPo.under(this.root);
   }
 
   getNeuronId(): Promise<string> {
