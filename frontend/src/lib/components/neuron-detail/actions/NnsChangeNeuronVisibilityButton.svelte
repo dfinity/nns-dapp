@@ -16,19 +16,11 @@
     });
 </script>
 
-<div>
-  <button
-    class="secondary"
-    data-tid="change-neuron-visibility-button"
-    on:click={openModal}
-    >{isPublic
-      ? $i18n.neuron_detail.make_neuron_private
-      : $i18n.neuron_detail.make_neuron_public}
-  </button>
-</div>
-
-<style lang="scss">
-  button {
-    text-wrap: nowrap;
-  }
-</style>
+<button
+  class="secondary"
+  data-tid="change-neuron-visibility-button"
+  on:click={openModal}
+  >{isPublic
+    ? $i18n.neuron_detail.make_neuron_private
+    : $i18n.neuron_detail.make_neuron_public}
+</button>

@@ -135,6 +135,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    gap: var(--padding-2x);
 
     padding: 0;
 
@@ -143,6 +144,7 @@
   }
 
   .visibility-action-container {
+    width: 100%;
     padding: var(--padding) 0;
   }
 </style>
