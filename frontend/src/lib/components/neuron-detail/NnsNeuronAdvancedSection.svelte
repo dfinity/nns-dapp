@@ -135,10 +135,8 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--padding-3x);
 
     padding: 0;
-    padding-top: var(--padding);
 
     --checkbox-padding: 0;
     --checkbox-label-order: 1;
