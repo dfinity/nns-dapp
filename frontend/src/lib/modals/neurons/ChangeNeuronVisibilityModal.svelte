@@ -89,10 +89,14 @@
   </div>
 
   <div class="toolbar alert footer">
-    <button class="secondary" on:click={close}>
+    <button class="secondary" on:click={close} data-tid="cancel-button">
       {$i18n.core.cancel}
     </button>
-    <button class="primary" on:click={handleChangeVisibility}>
+    <button
+      class="primary"
+      on:click={handleChangeVisibility}
+      data-tid="confirm-button"
+    >
       {$i18n.core.confirm}
     </button>
   </div>

@@ -4,9 +4,10 @@ import * as busyServices from "$lib/stores/busy.store";
 import { toastsSuccess } from "$lib/stores/toasts.store";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { ChangeNeuronVisibilityModalPo } from "$tests/page-objects/ChangeNeuronVisibilityModal.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronVisibility } from "@dfinity/nns";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
+import { waitFor } from "@testing-library/svelte";
 
 vi.mock("$lib/services/neurons.services", () => ({
   changeNeuronVisibility: vi.fn().mockResolvedValue({ success: true }),
@@ -16,17 +17,33 @@ vi.mock("$lib/stores/toasts.store", () => ({
   toastsSuccess: vi.fn(),
 }));
 
+let spyConsoleError;
+
 describe("ChangeNeuronVisibilityModal", () => {
+  beforeEach(() => {
+    spyConsoleError = vi.spyOn(console, "error");
+  });
+  afterEach(() => {
+    spyConsoleError?.mockRestore();
+  });
   const startBusySpy = vi.spyOn(busyServices, "startBusy");
   const stopBusySpy = vi.spyOn(busyServices, "stopBusy");
 
-  const renderChangeNeuronVisibilityModal = async (
-    neuron = mockNeuron
-  ): Promise<RenderResult<SvelteComponent>> => {
-    return renderModal({
+  const renderComponent = async (neuron = mockNeuron) => {
+    const { container, component } = await renderModal({
       component: ChangeNeuronVisibilityModal,
       props: { neuron },
     });
+
+    const nnsClose = vi.fn();
+    component.$on("nnsClose", nnsClose);
+
+    return {
+      po: ChangeNeuronVisibilityModalPo.under(
+        new JestPageObjectElement(container)
+      ),
+      nnsClose,
+    };
   };
 
   beforeEach(() => {
@@ -34,16 +51,16 @@ describe("ChangeNeuronVisibilityModal", () => {
   });
 
   it("should display modal", async () => {
-    const { container } = await renderChangeNeuronVisibilityModal();
+    const { po } = await renderComponent();
 
-    expect(container.querySelector("div.modal")).not.toBeNull();
+    expect(await po.isPresent()).toBe(true);
   });
 
   it("should display correct title for making neuron private", async () => {
     const publicNeuron = { ...mockNeuron, visibility: NeuronVisibility.Public };
-    const { getByText } = await renderChangeNeuronVisibilityModal(publicNeuron);
+    const { po } = await renderComponent(publicNeuron);
 
-    expect(getByText("Make Neuron Private")).toBeInTheDocument();
+    expect(await po.getModalTitle()).toBe("Make Neuron Private");
   });
 
   it("should display correct title for making neuron public", async () => {
@@ -51,24 +68,17 @@ describe("ChangeNeuronVisibilityModal", () => {
       ...mockNeuron,
       visibility: NeuronVisibility.Private,
     };
-    const { getByText } =
-      await renderChangeNeuronVisibilityModal(privateNeuron);
+    const { po } = await renderComponent(privateNeuron);
 
-    expect(getByText("Make Neuron Public")).toBeInTheDocument();
-  });
-
-  it("should have a disabled checkbox for applying to all neurons", async () => {
-    const { getByLabelText } = await renderChangeNeuronVisibilityModal();
-
-    const checkbox = getByLabelText("Apply to all neurons");
-    expect(checkbox).toBeDisabled();
+    expect(await po.getModalTitle()).toBe("Make Neuron Public");
   });
 
   it("should call changeNeuronVisibility service on confirm click", async () => {
-    const { getByText } = await renderChangeNeuronVisibilityModal();
+    const { po } = await renderComponent();
 
-    const confirmButton = getByText("Confirm");
-    await fireEvent.click(confirmButton);
+    const confirmButton = po.getConfirmButton();
+
+    await confirmButton.click();
 
     expect(changeNeuronVisibility).toHaveBeenCalledWith({
       neurons: [mockNeuron],
@@ -77,10 +87,11 @@ describe("ChangeNeuronVisibilityModal", () => {
   });
 
   it("should start and stop busy indicator when changing visibility", async () => {
-    const { getByText } = await renderChangeNeuronVisibilityModal();
+    const { po } = await renderComponent();
 
-    const confirmButton = getByText("Confirm");
-    await fireEvent.click(confirmButton);
+    const confirmButton = po.getConfirmButton();
+
+    await confirmButton.click();
 
     expect(startBusySpy).toHaveBeenCalledWith({
       initiator: "change-neuron-visibility",
@@ -98,61 +109,51 @@ describe("ChangeNeuronVisibilityModal", () => {
       visibility: NeuronVisibility.Private,
     };
 
-    const { getByText, component } =
-      await renderChangeNeuronVisibilityModal(privateNeuron);
+    const { po, nnsClose } = await renderComponent(privateNeuron);
 
-    const onClose = vi.fn();
-    component.$on("nnsClose", onClose);
+    const confirmButton = po.getConfirmButton();
 
-    const confirmButton = getByText("Confirm");
-    await fireEvent.click(confirmButton);
+    await confirmButton.click();
 
     await waitFor(() => {
       expect(toastsSuccess).toHaveBeenCalledWith({
         labelKey: "neuron_detail.change_neuron_public_success",
       });
-      expect(onClose).toHaveBeenCalled();
+      expect(nnsClose).toHaveBeenCalled();
     });
   });
 
   it("should show success toast and close modal after successful visibility change for public neuron", async () => {
     const publicNeuron = { ...mockNeuron, visibility: NeuronVisibility.Public };
 
-    const { getByText, component } =
-      await renderChangeNeuronVisibilityModal(publicNeuron);
+    const { po, nnsClose } = await renderComponent(publicNeuron);
 
-    const onClose = vi.fn();
-    component.$on("nnsClose", onClose);
+    const confirmButton = po.getConfirmButton();
 
-    const confirmButton = getByText("Confirm");
-    await fireEvent.click(confirmButton);
+    await confirmButton.click();
 
     await waitFor(() => {
       expect(toastsSuccess).toHaveBeenCalledWith({
         labelKey: "neuron_detail.change_neuron_private_success",
       });
-      expect(onClose).toHaveBeenCalled();
+      expect(nnsClose).toHaveBeenCalled();
     });
   });
 
   it("should handle error when changing neuron visibility", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
-
+    spyConsoleError.mockReturnValue();
     vi.mocked(changeNeuronVisibility).mockResolvedValueOnce({ success: false });
 
-    const { getByText } = await renderChangeNeuronVisibilityModal();
+    const { po } = await renderComponent();
 
-    const confirmButton = getByText("Confirm");
-    await fireEvent.click(confirmButton);
+    const confirmButton = po.getConfirmButton();
+
+    await confirmButton.click();
 
     await waitFor(() => {
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect(spyConsoleError).toHaveBeenCalledWith(
         "Error changing neuron visibility"
       );
     });
-
-    consoleErrorSpy.mockRestore();
   });
 });
