@@ -161,8 +161,11 @@ describe("neurons-services", () => {
   const spySetFollowees = vi.spyOn(api, "setFollowees");
   const spyClaimOrRefresh = vi.spyOn(api, "claimOrRefreshNeuron");
   const spyChangeNeuronVisibility = vi.spyOn(api, "changeNeuronVisibility");
+  let spyConsoleError;
 
   beforeEach(() => {
+    spyConsoleError?.mockRestore();
+    spyConsoleError = vi.spyOn(console, "error");
     spyGetNeuron.mockClear();
     vi.clearAllMocks();
     neuronsStore.reset();
@@ -1636,7 +1639,6 @@ describe("neurons-services", () => {
     });
 
     it("should call the api to get neuron if not in store", async () => {
-      vi.spyOn(console, "error").mockReturnValue();
       expect(spyGetNeuron).not.toBeCalled();
       await loadNeuron({
         neuronId: mockNeuron.neuronId,
@@ -1905,6 +1907,7 @@ describe("neurons-services", () => {
     });
 
     it("should handle partial failure", async () => {
+      spyConsoleError.mockReturnValue();
       expect(spyChangeNeuronVisibility).not.toHaveBeenCalled();
       expect(spyGetNeuron).not.toHaveBeenCalled();
       const neuron1 = { ...controlledNeuron, neuronId: 1n };
@@ -1928,6 +1931,7 @@ describe("neurons-services", () => {
     });
 
     it("should handle complete failure", async () => {
+      spyConsoleError.mockReturnValue();
       expect(spyChangeNeuronVisibility).not.toHaveBeenCalled();
       expect(spyGetNeuron).not.toHaveBeenCalled();
       neuronsStore.setNeurons({ neurons: [controlledNeuron], certified: true });
