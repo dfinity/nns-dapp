@@ -24,6 +24,7 @@
   import NnsAddMaturityModal from "../sns/neurons/NnsAddMaturityModal.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   let modal: NnsNeuronModal<NnsNeuronModalData> | undefined;
   const close = () => (modal = undefined);
