@@ -420,11 +420,9 @@ describe("sns-neurons-services", () => {
 
   describe("updateDelay ", () => {
     let spyOnIncreaseDissolveDelay;
-    let nowInSecondsSpy;
     const nowInSeconds = 10;
     const now = nowInSeconds * 1000;
     beforeEach(() => {
-      nowInSecondsSpy?.mockRestore();
       spyOnIncreaseDissolveDelay = vi
         .spyOn(governanceApi, "increaseDissolveDelay")
         .mockImplementation(() => Promise.resolve());
