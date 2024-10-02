@@ -1,10 +1,25 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { IconExplore } from "@dfinity/gix-components";
-  import { canistersPathStore } from "$lib/derived/paths.derived";
+  import { goto } from "$app/navigation";
+  import { createEventDispatcher } from "svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
+
+  const dispatcher = createEventDispatcher();
+
+  function navigateToCanisters(event: MouseEvent) {
+    event.preventDefault();
+    goto(AppPath.Canisters);
+    dispatcher("closeMenu");
+  }
 </script>
 
-<a data-tid="canisters-button" href={$canistersPathStore} class="text">
+<a
+  data-tid="canisters-button"
+  href={AppPath.Canisters}
+  on:click={navigateToCanisters}
+  class="text"
+>
   <IconExplore />
   {$i18n.navigation.canisters}
 </a>

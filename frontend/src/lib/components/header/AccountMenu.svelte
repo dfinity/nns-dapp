@@ -36,7 +36,7 @@
 
         <SettingsButton on:nnsLink={() => (visible = false)} />
 
-        <LinkToCanisters />
+        <LinkToCanisters on:nnsLink={() => (visible = false)} />
 
         <Logout on:nnsLogoutTriggered={toggle} />
       </div>
