@@ -37,6 +37,29 @@ describe("api-utils", () => {
 
         expect(call).rejects.toThrowError();
       });
+
+      it("should use 'query' strategy by default", async () => {
+        const testResponse = "test";
+        const request = vi
+          .fn()
+          .mockImplementation(() => Promise.resolve(testResponse));
+        const onLoad = vi.fn();
+        const onError = vi.fn();
+
+        await queryAndUpdate<number, unknown>({
+          request,
+          onLoad,
+          onError,
+          identityType: "current",
+        });
+
+        expect(onLoad).toHaveBeenCalledTimes(1);
+        expect(onLoad).toHaveBeenCalledWith({
+          certified: false,
+          strategy: "query",
+          response: testResponse,
+        });
+      });
     });
 
     describe("logged in user", () => {
@@ -47,9 +70,10 @@ describe("api-utils", () => {
         );
       });
       it("should request twice", async () => {
+        const response = { certified: true };
         const request = vi
           .fn()
-          .mockImplementation(() => Promise.resolve({ certified: true }));
+          .mockImplementation(() => Promise.resolve(response));
         const onLoad = vi.fn();
         const onError = vi.fn();
 
@@ -61,6 +85,16 @@ describe("api-utils", () => {
 
         expect(request).toHaveBeenCalledTimes(2);
         expect(onLoad).toHaveBeenCalledTimes(2);
+        expect(onLoad).toHaveBeenCalledWith({
+          certified: false,
+          strategy: "query_and_update",
+          response,
+        });
+        expect(onLoad).toHaveBeenCalledWith({
+          certified: true,
+          strategy: "query_and_update",
+          response,
+        });
         expect(onError).not.toBeCalled();
       });
 
@@ -119,6 +153,12 @@ describe("api-utils", () => {
         });
 
         expect(requestCertified.sort()).toEqual([false]);
+        expect(onLoad).toHaveBeenCalledTimes(1);
+        expect(onLoad).toHaveBeenCalledWith({
+          certified: false,
+          strategy: "query",
+          response: undefined,
+        });
       });
 
       it('should support "update" strategy', async () => {
@@ -138,6 +178,12 @@ describe("api-utils", () => {
         });
 
         expect(requestCertified.sort()).toEqual([true]);
+        expect(onLoad).toHaveBeenCalledTimes(1);
+        expect(onLoad).toHaveBeenCalledWith({
+          certified: true,
+          strategy: "update",
+          response: undefined,
+        });
       });
 
       it("should catch errors", async () => {
@@ -157,6 +203,13 @@ describe("api-utils", () => {
         expect(onError).toBeCalledTimes(2);
         expect(onError).toBeCalledWith({
           certified: false,
+          strategy: "query_and_update",
+          error: "test",
+          identity: mockIdentity,
+        });
+        expect(onError).toBeCalledWith({
+          certified: true,
+          strategy: "query_and_update",
           error: "test",
           identity: mockIdentity,
         });

@@ -17,7 +17,7 @@ import {
 } from "$lib/stores/imported-tokens.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
-import { notForceCallStrategy } from "$lib/utils/env.utils";
+import { isLastCall } from "$lib/utils/env.utils";
 import {
   fromImportedTokenData,
   toImportedTokenData,
@@ -45,7 +45,7 @@ export const loadImportedTokens = async ({
       });
       failedImportedTokenLedgerIdsStore.reset();
     },
-    onError: ({ error: err, certified }) => {
+    onError: ({ error: err, certified, strategy }) => {
       console.error(err);
 
       if (ignoreAccountNotFoundError && err instanceof AccountNotFoundError) {
@@ -59,7 +59,7 @@ export const loadImportedTokens = async ({
         return;
       }
 
-      if (!certified && notForceCallStrategy()) {
+      if (!isLastCall({ strategy, certified })) {
         return;
       }
 

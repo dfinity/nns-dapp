@@ -5,7 +5,7 @@ import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import type { UniverseCanisterId } from "$lib/types/universe";
-import { notForceCallStrategy } from "$lib/utils/env.utils";
+import { isLastCall } from "$lib/utils/env.utils";
 import { isUniverseCkBTC } from "$lib/utils/universe.utils";
 import type { MinterInfo } from "@dfinity/ckbtc";
 import { isNullish } from "@dfinity/utils";
@@ -50,8 +50,8 @@ export const loadCkBTCInfo = async ({
         canisterId: universeId,
         info,
       }),
-    onError: ({ error: err, certified }) => {
-      if (!certified && notForceCallStrategy()) {
+    onError: ({ error: err, certified, strategy }) => {
+      if (!isLastCall({ strategy, certified })) {
         return;
       }
 

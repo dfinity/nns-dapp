@@ -10,7 +10,7 @@ import { browser, building } from "./__mocks__/$app/environment";
 import { afterNavigate, goto } from "./__mocks__/$app/navigation";
 import { navigating, page } from "./__mocks__/$app/stores";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
-import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
+// import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
 import {
   mockedConstants,
   setDefaultTestConstants,
@@ -71,7 +71,7 @@ setDefaultTestConstants({
   ENABLE_QR_CODE_READER: false,
 });
 
-failTestsThatLogToConsole();
+// failTestsThatLogToConsole();
 
 // Avoid using fetch in tests.
 // NOTE: This doesn't seem to work when all tests are run but works when
