@@ -1697,6 +1697,41 @@ describe("neurons-services", () => {
       expect(spyGetNeuron).toBeCalledTimes(2);
     });
 
+    it("should show a toast on error", async () => {
+      spyConsoleError.mockReturnValue();
+      const errorMessage = "error message";
+      spyGetNeuron.mockRejectedValue(new Error(errorMessage));
+
+      expect(get(toastsStore)).toEqual([]);
+
+      await loadNeuron({
+        neuronId: mockNeuron.neuronId,
+        setNeuron: vi.fn(),
+      });
+
+      expectToastError(`An error occurred while loading the neuron. ${errorMessage}`);
+    });
+
+    it("should not show a toast on uncertified error", async () => {
+      spyConsoleError.mockReturnValue();
+      const errorMessage = "error message";
+      spyGetNeuron.mockImplementation(async ({ certified }) => {
+        if (!certified) {
+          throw new Error(errorMessage);
+        }
+        return mockNeuron;
+      });
+
+      expect(get(toastsStore)).toEqual([]);
+
+      await loadNeuron({
+        neuronId: mockNeuron.neuronId,
+        setNeuron: vi.fn(),
+      });
+
+      expect(get(toastsStore)).toEqual([]);
+    });
+
     it("should call setNeuron even if the neuron doesn't have fullNeuron", async () => {
       const neuronId = 333_333n;
       const publicInfoNeuron = {
