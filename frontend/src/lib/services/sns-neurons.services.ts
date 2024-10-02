@@ -5,7 +5,7 @@ import {
   disburse as disburseApi,
   disburseMaturity as disburseMaturityApi,
   getSnsNeuron as getSnsNeuronApi,
-  increaseDissolveDelay as increaseDissolveDelayApi,
+  increaseDissolveDelay,
   querySnsNeuron,
   querySnsNeurons,
   removeNeuronPermissions,
@@ -36,6 +36,8 @@ import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import {
   followeesByFunction,
+  getSnsDissolvingTimeInSeconds,
+  getSnsLockedTimeInSeconds,
   getSnsNeuronByHexId,
   hasAutoStakeMaturityOn,
   isEnoughAmountToSplit,
@@ -423,22 +425,29 @@ export const stopDissolving = async ({
   }
 };
 
-export const increaseDissolveDelay = async ({
+export const updateDelay = async ({
   rootCanisterId,
   neuron,
-  additionalDissolveDelaySeconds,
+  dissolveDelay,
 }: {
   rootCanisterId: Principal;
   neuron: SnsNeuron;
-  additionalDissolveDelaySeconds: number;
+  dissolveDelay: number;
 }): Promise<{ success: boolean }> => {
   try {
     const identity = await getSnsNeuronIdentity();
-    await increaseDissolveDelayApi({
+
+    const existingDissolveDelay = Number(
+      getSnsLockedTimeInSeconds(neuron) ??
+        getSnsDissolvingTimeInSeconds(neuron) ??
+        0n
+    );
+
+    await increaseDissolveDelay({
       rootCanisterId,
       identity,
       neuronId: fromDefinedNullable(neuron.id),
-      additionalDissolveDelaySeconds: additionalDissolveDelaySeconds,
+      additionalDissolveDelaySeconds: dissolveDelay - existingDissolveDelay,
     });
 
     return { success: true };

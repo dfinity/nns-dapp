@@ -7,13 +7,14 @@ import * as services from "$lib/services/sns-neurons.services";
 import {
   disburse,
   disburseMaturity,
-  increaseDissolveDelay,
   increaseStakeNeuron,
   stakeMaturity,
   startDissolving,
   stopDissolving,
   toggleAutoStakeMaturity,
+  updateDelay,
 } from "$lib/services/sns-neurons.services";
+
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -32,12 +33,14 @@ import {
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   buildMockSnsNeuronsStoreSubscribe,
+  createMockSnsNeuron,
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { resetMockedConstants } from "$tests/utils/mockable-constants.test-utils";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { NeuronState } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
@@ -415,12 +418,13 @@ describe("sns-neurons-services", () => {
     });
   });
 
-  describe("increaseDissolveDelay ", () => {
+  describe("updateDelay ", () => {
     let spyOnIncreaseDissolveDelay;
-    const nowInSeconds = 1689063315;
+    let nowInSecondsSpy;
+    const nowInSeconds = 10;
     const now = nowInSeconds * 1000;
-
     beforeEach(() => {
+      nowInSecondsSpy?.mockRestore();
       spyOnIncreaseDissolveDelay = vi
         .spyOn(governanceApi, "increaseDissolveDelay")
         .mockImplementation(() => Promise.resolve());
@@ -428,15 +432,20 @@ describe("sns-neurons-services", () => {
       spyOnIncreaseDissolveDelay.mockClear();
     });
 
-    it("should call sns api increaseDissolveDelay with additional dissolve delay in seconds", async () => {
-      const neuronId = fromDefinedNullable(mockSnsNeuron.id);
+    it("should call sns api setDissolveDelay with additional dissolve delay in seconds", async () => {
+      const mockNeuronWithWhenDissolvedTS = createMockSnsNeuron({
+        state: NeuronState.Dissolving,
+        whenDissolvedTimestampSeconds: BigInt(100),
+      });
+
+      const neuronId = fromDefinedNullable(mockNeuronWithWhenDissolvedTS.id);
       const identity = mockIdentity;
       const rootCanisterId = mockPrincipal;
-      const additionalDissolveDelaySeconds = 123;
-      const { success } = await increaseDissolveDelay({
+      const delayInSeconds = 150;
+      const { success } = await updateDelay({
         rootCanisterId,
-        additionalDissolveDelaySeconds,
-        neuron: mockSnsNeuron,
+        dissolveDelay: delayInSeconds,
+        neuron: mockNeuronWithWhenDissolvedTS,
       });
 
       expect(success).toBeTruthy();
@@ -445,7 +454,7 @@ describe("sns-neurons-services", () => {
         neuronId,
         identity,
         rootCanisterId,
-        additionalDissolveDelaySeconds,
+        additionalDissolveDelaySeconds: 60,
       });
     });
   });
