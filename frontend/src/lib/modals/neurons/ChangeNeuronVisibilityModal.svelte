@@ -22,7 +22,7 @@
   async function handleChangeVisibility() {
     startBusy({
       initiator: "change-neuron-visibility",
-      labelKey: "change_neuron_visibility_loading",
+      labelKey: "neuron_detail.change_neuron_visibility_loading",
     });
 
     try {
@@ -33,9 +33,8 @@
       if (success) {
         toastsSuccess({
           labelKey: isPublic
-            ? "neuron_detail.change_neuron_make_neuron_private"
-            : "neuron_detail.change_neuron_make_neuron_public",
-          substitutions: { $count: "1" },
+            ? "neuron_detail.change_neuron_private_success"
+            : "neuron_detail.change_neuron_public_success",
         });
 
         close();
