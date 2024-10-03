@@ -2,9 +2,20 @@
   import { i18n } from "$lib/stores/i18n";
   import { IconExplore } from "@dfinity/gix-components";
   import { canistersPathStore } from "$lib/derived/paths.derived";
+  import { createEventDispatcher } from "svelte";
+
+  const dispatcher = createEventDispatcher();
+
+  const closeMenu = () => dispatcher("nnsLink");
 </script>
 
-<a data-tid="canisters-button" href={$canistersPathStore} class="text">
+<a
+  data-tid="canisters-button"
+  href={$canistersPathStore}
+  on:keypress={closeMenu}
+  on:click={closeMenu}
+  class="text"
+>
   <IconExplore />
   {$i18n.navigation.canisters}
 </a>
