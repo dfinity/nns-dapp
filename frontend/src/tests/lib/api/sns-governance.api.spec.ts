@@ -6,6 +6,7 @@ import {
   disburseMaturity,
   getNeuronBalance,
   getSnsNeuron,
+  increaseDissolveDelay,
   queryProposal,
   queryProposals,
   querySnsNeuron,
@@ -13,7 +14,6 @@ import {
   refreshNeuron,
   registerVote,
   removeNeuronPermissions,
-  setDissolveDelay,
   setFollowees,
   splitNeuron,
   stakeMaturity,
@@ -73,7 +73,7 @@ describe("sns-api", () => {
   const splitNeuronSpy = vi.fn().mockResolvedValue(undefined);
   const startDissolvingSpy = vi.fn().mockResolvedValue(undefined);
   const stopDissolvingSpy = vi.fn().mockResolvedValue(undefined);
-  const setDissolveDelaySpy = vi.fn().mockResolvedValue(undefined);
+  const increaseDissolveDelaySpy = vi.fn().mockResolvedValue(undefined);
   const getNeuronBalanceSpy = vi.fn().mockResolvedValue(undefined);
   const refreshNeuronSpy = vi.fn().mockResolvedValue(undefined);
   const claimNeuronSpy = vi.fn().mockResolvedValue(undefined);
@@ -125,7 +125,7 @@ describe("sns-api", () => {
         splitNeuron: splitNeuronSpy,
         startDissolving: startDissolvingSpy,
         stopDissolving: stopDissolvingSpy,
-        setDissolveTimestamp: setDissolveDelaySpy,
+        increaseDissolveDelay: increaseDissolveDelaySpy,
         getNeuronBalance: getNeuronBalanceSpy,
         refreshNeuron: refreshNeuronSpy,
         claimNeuron: claimNeuronSpy,
@@ -243,18 +243,18 @@ describe("sns-api", () => {
     expect(stopDissolvingSpy).toBeCalled();
   });
 
-  it("should setDissolveDelay", async () => {
-    const dissolveTimestampSeconds = 123;
+  it("should increaseDissolveDelay", async () => {
+    const additionalDissolveDelaySeconds = 123;
     const neuronId = { id: arrayOfNumberToUint8Array([1, 2, 3]) };
-    await setDissolveDelay({
+    await increaseDissolveDelay({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
       neuronId,
-      dissolveTimestampSeconds,
+      additionalDissolveDelaySeconds,
     });
 
-    expect(setDissolveDelaySpy).toBeCalledWith({
-      dissolveTimestampSeconds: BigInt(dissolveTimestampSeconds),
+    expect(increaseDissolveDelaySpy).toBeCalledWith({
+      additionalDissolveDelaySeconds: additionalDissolveDelaySeconds,
       neuronId,
     });
   });

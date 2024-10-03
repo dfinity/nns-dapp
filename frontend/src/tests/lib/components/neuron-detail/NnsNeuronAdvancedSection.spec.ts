@@ -4,6 +4,7 @@ import {
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
 import {
   mockAuthStoreSubscribe,
@@ -15,7 +16,7 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { createMockNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { NnsNeuronAdvancedSectionPo } from "$tests/page-objects/NnsNeuronAdvancedSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -49,6 +50,7 @@ describe("NnsNeuronAdvancedSection", () => {
 
   beforeEach(() => {
     nnsLatestRewardEventStore.reset();
+    overrideFeatureFlagsStore.reset();
     vi.useFakeTimers();
     vi.setSystemTime(nowInSeconds * 1000);
     vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
@@ -245,5 +247,37 @@ describe("NnsNeuronAdvancedSection", () => {
     const po = renderComponent(neuron);
 
     expect(await po.dissolveDate()).toBeNull();
+  });
+
+  it("should not display NnsNeuronPublicVisibilityAction when ENABLE_NEURON_VISIBILITY is false", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", false);
+
+    const po = renderComponent(mockNeuron);
+
+    expect(await po.getNnsNeuronPublicVisibilityActionPo().isPresent()).toBe(
+      false
+    );
+  });
+
+  it("should display NnsNeuronPublicVisibilityAction when ENABLE_NEURON_VISIBILITY is true", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", true);
+
+    const po = renderComponent(mockNeuron);
+
+    expect(await po.getNnsNeuronPublicVisibilityActionPo().isPresent()).toBe(
+      true
+    );
+  });
+
+  it("should pass the correct neuron to NnsNeuronPublicVisibilityAction", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", true);
+
+    const po = renderComponent(createMockNeuron(123));
+
+    expect(await po.getNnsNeuronPublicVisibilityActionPo().isPresent()).toBe(
+      true
+    );
+
+    expect(await po.getNeuronId()).toBe("123");
   });
 });
