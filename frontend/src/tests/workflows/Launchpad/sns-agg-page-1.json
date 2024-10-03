@@ -312,7 +312,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98164130842847710,
+    "icrc1_total_supply": 98172185097680380,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -768,7 +768,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100664915648953940,
+    "icrc1_total_supply": 100673269229128600,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1424,7 +1424,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50308240470224060,
+    "icrc1_total_supply": 50317622546850630,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1515,7 +1515,7 @@
       "archives": ["qupim-xaaaa-aaaaq-aabva-cai"]
     },
     "meta": {
-      "url": "https://icx.one",
+      "url": "https://seers.social",
       "name": "Seers",
       "description": "Social network for forecasters. Bet on politics, sports, tech, science and more with play money. Create your own markets. Receive airdrops.",
       "logo": "/v1/sns/root/u67kc-jyaaa-aaaaq-aabpq-cai/logo.png"
@@ -2301,7 +2301,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9955995091754052,
+    "icrc1_total_supply": 9956014003556332,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3369,7 +3369,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10069380616784136,
+    "icrc1_total_supply": 10071723658517120,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4448,7 +4448,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12612261809874656,
+    "icrc1_total_supply": 12612329808117816,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -6340,7 +6340,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99816883634597000,
+    "icrc1_total_supply": 99814764521025040,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,
