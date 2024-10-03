@@ -14,7 +14,6 @@ import {
   toggleAutoStakeMaturity,
   updateDelay,
 } from "$lib/services/sns-neurons.services";
-
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
