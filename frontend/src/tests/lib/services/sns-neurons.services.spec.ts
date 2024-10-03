@@ -32,12 +32,14 @@ import {
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   buildMockSnsNeuronsStoreSubscribe,
+  createMockSnsNeuron,
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { resetMockedConstants } from "$tests/utils/mockable-constants.test-utils";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { NeuronState } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
@@ -416,36 +418,40 @@ describe("sns-neurons-services", () => {
   });
 
   describe("updateDelay ", () => {
-    let spyOnSetDissolveDelay;
-    const nowInSeconds = 1689063315;
+    let spyOnIncreaseDissolveDelay;
+    const nowInSeconds = 10;
     const now = nowInSeconds * 1000;
-
     beforeEach(() => {
-      spyOnSetDissolveDelay = vi
-        .spyOn(governanceApi, "setDissolveDelay")
+      spyOnIncreaseDissolveDelay = vi
+        .spyOn(governanceApi, "increaseDissolveDelay")
         .mockImplementation(() => Promise.resolve());
       vi.useFakeTimers().setSystemTime(now);
-      spyOnSetDissolveDelay.mockClear();
+      spyOnIncreaseDissolveDelay.mockClear();
     });
 
-    it("should call sns api setDissolveDelay with dissolve timestamp", async () => {
-      const neuronId = fromDefinedNullable(mockSnsNeuron.id);
+    it("should call sns api setDissolveDelay with additional dissolve delay in seconds", async () => {
+      const mockNeuronWithWhenDissolvedTS = createMockSnsNeuron({
+        state: NeuronState.Dissolving,
+        whenDissolvedTimestampSeconds: BigInt(100),
+      });
+
+      const neuronId = fromDefinedNullable(mockNeuronWithWhenDissolvedTS.id);
       const identity = mockIdentity;
       const rootCanisterId = mockPrincipal;
-      const dissolveDelaySeconds = 123;
+      const delayInSeconds = 150;
       const { success } = await updateDelay({
         rootCanisterId,
-        dissolveDelaySeconds,
-        neuron: mockSnsNeuron,
+        dissolveDelaySeconds: delayInSeconds,
+        neuron: mockNeuronWithWhenDissolvedTS,
       });
 
       expect(success).toBeTruthy();
 
-      expect(spyOnSetDissolveDelay).toBeCalledWith({
+      expect(spyOnIncreaseDissolveDelay).toBeCalledWith({
         neuronId,
         identity,
         rootCanisterId,
-        dissolveTimestampSeconds: nowInSeconds + dissolveDelaySeconds,
+        additionalDissolveDelaySeconds: 60,
       });
     });
   });
