@@ -1,8 +1,9 @@
 import NnsChangeNeuronVisibilityButton from "$lib/components/neuron-detail/actions/NnsChangeNeuronVisibilityButton.svelte";
-import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronVisibility } from "@dfinity/nns";
-import { fireEvent, render } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 describe("NnsChangeNeuronVisibilityButton", () => {
@@ -10,42 +11,40 @@ describe("NnsChangeNeuronVisibilityButton", () => {
     vi.clearAllMocks();
   });
 
-  it("should display 'Make Neuron Private' for public neurons", () => {
-    const { getByText } = render(NeuronContextActionsTest, {
+  const renderComponent = (visibility: NeuronVisibility = undefined) => {
+    const { container, queryByTestId } = render(NeuronContextActionsTest, {
       props: {
-        neuron: { ...mockNeuron, visibility: NeuronVisibility.Public },
+        neuron: { ...mockNeuron, visibility },
         testComponent: NnsChangeNeuronVisibilityButton,
       },
     });
+    return {
+      po: ButtonPo.under({
+        element: new JestPageObjectElement(container),
+        testId: "change-neuron-visibility-button",
+      }),
+      queryByTestId,
+    };
+  };
 
-    expect(getByText(en.neuron_detail.make_neuron_private)).toBeInTheDocument();
+  it("should display 'Make Neuron Private' for public neurons", async () => {
+    const { po } = renderComponent(NeuronVisibility.Public);
+
+    expect(await po.getText()).toBe("Make Neuron Private");
   });
 
-  it("should display 'Make Neuron Public' for private neurons", () => {
-    const { getByText } = render(NeuronContextActionsTest, {
-      props: {
-        neuron: { ...mockNeuron, visibility: NeuronVisibility.Private },
-        testComponent: NnsChangeNeuronVisibilityButton,
-      },
-    });
+  it("should display 'Make Neuron Public' for private neurons", async () => {
+    const { po } = renderComponent(NeuronVisibility.Private);
 
-    expect(getByText(en.neuron_detail.make_neuron_public)).toBeInTheDocument();
+    expect(await po.getText()).toBe("Make Neuron Public");
   });
 
   it("opens change neuron visibility modal", async () => {
-    const { container, queryByTestId } = render(NeuronContextActionsTest, {
-      props: {
-        neuron: {
-          ...mockNeuron,
-        },
-        testComponent: NnsChangeNeuronVisibilityButton,
-      },
-    });
+    const { po, queryByTestId } = renderComponent();
 
-    const buttonElement = container.querySelector("button");
-    expect(buttonElement).not.toBeNull();
+    expect(await po.isPresent()).toBe(true);
 
-    buttonElement && (await fireEvent.click(buttonElement));
+    await po.click();
 
     const modal = queryByTestId("change-neuron-visibility-modal");
     expect(modal).toBeInTheDocument();
