@@ -490,6 +490,68 @@ describe("icrc-accounts-services", () => {
       expect(get(toastsStore)).toMatchObject([]);
       await loadIcrcToken({ ledgerCanisterId });
       expect(ledgerApi.queryIcrcToken).toBeCalledTimes(2);
+      expect(ledgerApi.queryIcrcToken).toBeCalledWith({
+        certified: false,
+        canisterId: ledgerCanisterId,
+        identity: mockIdentity,
+      });
+      expect(ledgerApi.queryIcrcToken).toBeCalledWith({
+        certified: true,
+        canisterId: ledgerCanisterId,
+        identity: mockIdentity,
+      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, there was an error loading the token metadata information. test",
+        },
+      ]);
+    });
+
+    it("displays no toast on uncertified error", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockImplementation(
+        async ({ certified }) => {
+          if (!certified) {
+            throw new Error("test");
+          }
+          return mockToken;
+        }
+      );
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
+      await loadIcrcToken({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcToken).toBeCalledTimes(2);
+      expect(ledgerApi.queryIcrcToken).toBeCalledWith({
+        certified: false,
+        canisterId: ledgerCanisterId,
+        identity: mockIdentity,
+      });
+      expect(ledgerApi.queryIcrcToken).toBeCalledWith({
+        certified: true,
+        canisterId: ledgerCanisterId,
+        identity: mockIdentity,
+      });
+      expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("displays a toast on uncertified error for query call", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockImplementation(
+        async ({ certified }) => {
+          if (!certified) {
+            throw new Error("test");
+          }
+          return mockToken;
+        }
+      );
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
+      await loadIcrcToken({ ledgerCanisterId, certified: false });
+      expect(ledgerApi.queryIcrcToken).toBeCalledTimes(1);
+      expect(ledgerApi.queryIcrcToken).toBeCalledWith({
+        certified: false,
+        canisterId: ledgerCanisterId,
+        identity: mockIdentity,
+      });
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
