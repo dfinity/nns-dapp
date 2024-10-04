@@ -97,7 +97,7 @@ describe("ChangeNeuronVisibilityModal", () => {
     expect(await po.getModalTitle()).toBe("Make Neuron Public");
   });
 
-  it("should call changeNeuronVisibility service on confirm click", async () => {
+  it("should call changeNeuronVisibility with correct values for privateNeurons on confirm click", async () => {
     const { po } = await renderComponent(privateNeuron);
     queryNeuronSpy.mockImplementation(async () => privateNeuron);
     const confirmButton = po.getConfirmButton();
@@ -107,6 +107,19 @@ describe("ChangeNeuronVisibilityModal", () => {
     expect(changeNeuronVisibilitySpy).toHaveBeenCalledWith({
       neurons: [privateNeuron],
       makePublic: true,
+    });
+  });
+
+  it("should call changeNeuronVisibility with correct values for publicNeurons on confirm click", async () => {
+    const { po } = await renderComponent(publicNeuron);
+    queryNeuronSpy.mockImplementation(async () => publicNeuron);
+    const confirmButton = po.getConfirmButton();
+
+    await confirmButton.click();
+
+    expect(changeNeuronVisibilitySpy).toHaveBeenCalledWith({
+      neurons: [publicNeuron],
+      makePublic: false,
     });
   });
 
