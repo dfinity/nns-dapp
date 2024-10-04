@@ -1,9 +1,8 @@
 import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
-import { authStore } from "$lib/stores/auth.store";
 import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 import type { CompactNeuronInfo } from "$lib/utils/neuron.utils";
 import { nnsNeuronToVotingNeuron } from "$lib/utils/proposals.utils";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { VotingCardPo } from "$tests/page-objects/VotingCard.page-object";
@@ -97,9 +96,7 @@ describe("VotingCard", () => {
 
   describe("Signed in", () => {
     beforeEach(() => {
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
+      resetIdentity();
     });
 
     it("should display voting buttons when no neurons available", async () => {

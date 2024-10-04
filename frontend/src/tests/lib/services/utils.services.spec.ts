@@ -1,10 +1,9 @@
 import { queryAndUpdate } from "$lib/services/utils.services";
-import { authStore } from "$lib/stores/auth.store";
 import * as devUtils from "$lib/utils/dev.utils";
 import {
-  mockAuthStoreNoIdentitySubscribe,
-  mockAuthStoreSubscribe,
   mockIdentity,
+  resetIdentity,
+  setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { tick } from "svelte";
 
@@ -13,9 +12,7 @@ describe("api-utils", () => {
     describe("not logged in user", () => {
       beforeEach(() => {
         vi.clearAllMocks();
-        vi.spyOn(authStore, "subscribe").mockImplementation(
-          mockAuthStoreNoIdentitySubscribe
-        );
+        setNoIdentity();
       });
 
       it("should raise error if another strategy than 'query' is passed", async () => {
@@ -42,9 +39,7 @@ describe("api-utils", () => {
     describe("logged in user", () => {
       beforeEach(() => {
         vi.clearAllMocks();
-        vi.spyOn(authStore, "subscribe").mockImplementation(
-          mockAuthStoreSubscribe
-        );
+        resetIdentity();
       });
       it("should request twice", async () => {
         const request = vi

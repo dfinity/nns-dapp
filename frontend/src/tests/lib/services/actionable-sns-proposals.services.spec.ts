@@ -5,16 +5,11 @@ import {
   actionableSnsProposalsStore,
   failedActionableSnsesStore,
 } from "$lib/stores/actionable-sns-proposals.store";
-import { authStore } from "$lib/stores/auth.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { snsProposalId } from "$lib/utils/sns-proposals.utils";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-  resetIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
@@ -139,9 +134,7 @@ describe("actionable-sns-proposals.services", () => {
       actionableSnsProposalsStore.resetForTesting();
       resetIdentity();
 
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
+      resetIdentity();
       vi.spyOn(snsProjectsCommittedStore, "subscribe").mockClear();
 
       spyQuerySnsNeurons = vi

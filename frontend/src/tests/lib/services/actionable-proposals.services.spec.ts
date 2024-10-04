@@ -2,12 +2,8 @@ import * as governanceApi from "$lib/api/governance.api";
 import * as api from "$lib/api/proposals.api";
 import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
@@ -108,9 +104,7 @@ describe("actionable-proposals.services", () => {
       vi.clearAllMocks();
       neuronsStore.reset();
       actionableNnsProposalsStore.reset();
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
+      resetIdentity();
       spyQueryProposals = vi
         .spyOn(api, "queryProposals")
         .mockImplementation((requestData) =>

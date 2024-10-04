@@ -1,10 +1,7 @@
 import Settings from "$lib/routes/Settings.svelte";
-import { authRemainingTimeStore, authStore } from "$lib/stores/auth.store";
+import { authRemainingTimeStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
-import {
-  mockAuthStoreSubscribe,
-  mockPrincipalText,
-} from "$tests/mocks/auth.store.mock";
+import { mockPrincipalText, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -12,7 +9,7 @@ import { get } from "svelte/store";
 describe("Settings", () => {
   beforeEach(() => {
     authRemainingTimeStore.set(undefined);
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
   });
 
   it("should set title", async () => {

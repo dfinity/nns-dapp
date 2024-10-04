@@ -1,7 +1,6 @@
 import * as agent from "$lib/api/agent.api";
 import BallotSummary from "$lib/components/neuron-detail/Ballots/BallotSummary.svelte";
-import { authStore } from "$lib/stores/auth.store";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { BallotSummaryPo } from "$tests/page-objects/BallotSummary.page-object";
@@ -30,7 +29,7 @@ describe("BallotSummary", () => {
       (): GovernanceCanister => mockGovernanceCanister
     );
 
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
