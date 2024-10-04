@@ -1709,7 +1709,9 @@ describe("neurons-services", () => {
         setNeuron: vi.fn(),
       });
 
-      expectToastError(`An error occurred while loading the neuron. ${errorMessage}`);
+      expectToastError(
+        `An error occurred while loading the neuron. ${errorMessage}`
+      );
     });
 
     it("should not show a toast on uncertified error", async () => {

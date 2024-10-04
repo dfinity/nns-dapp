@@ -80,9 +80,8 @@ export const loadIcrcToken = ({
     return;
   }
 
-
   return queryAndUpdate<IcrcTokenMetadata, unknown>({
-    strategy: certified ? FORCE_CALL_STRATEGY : "query";
+    strategy: certified ? FORCE_CALL_STRATEGY : "query",
     identityType: "current",
     request: ({ certified, identity }) =>
       queryIcrcToken({
