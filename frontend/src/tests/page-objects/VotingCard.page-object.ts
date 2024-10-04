@@ -93,4 +93,9 @@ export class VotingCardPo extends BasePageObject {
     await this.getVotingConfirmationToolbarPo().getVoteYesButtonPo().click();
     await this.getConfirmYesButtonPo().click();
   }
+
+  async voteNo(): Promise<void> {
+    await this.getVotingConfirmationToolbarPo().getVoteNoButtonPo().click();
+    await this.getConfirmYesButtonPo().click();
+  }
 }
