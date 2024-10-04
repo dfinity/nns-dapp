@@ -1,7 +1,8 @@
 import * as agent from "$lib/api/agent.api";
+import * as governanceApi from "$lib/api/governance.api";
+import * as proposalsApi from "$lib/api/proposals.api";
 import NnsVotingCard from "$lib/components/proposal-detail/VotingCard/NnsVotingCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
-import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import {
   voteRegistrationStore,
@@ -12,17 +13,17 @@ import {
   type SelectedProposalContext,
   type SelectedProposalStore,
 } from "$lib/types/selected-proposal.context";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
-import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import { VotingCardPo } from "$tests/page-objects/VotingCard.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import type { Ballot, NeuronInfo, ProposalInfo } from "@dfinity/nns";
-import { GovernanceCanister, ProposalStatus, Vote } from "@dfinity/nns";
+import { ProposalStatus, Vote } from "@dfinity/nns";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
-import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
+import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 import ContextWrapperTest from "../../ContextWrapperTest.svelte";
@@ -62,132 +63,124 @@ describe("VotingCard", () => {
       },
     });
 
-  beforeAll(() => {
-    vi.spyOn(console, "error").mockImplementation(() => undefined);
-  });
+  const renderComponent = () => {
+    const { container } = renderVotingCard();
+    return VotingCardPo.under(new JestPageObjectElement(container));
+  };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     voteRegistrationStore.reset();
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     neuronsStore.setNeurons({ neurons: [], certified: true });
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
-  });
-
-  afterAll(() => {
-    neuronsStore.setNeurons({ neurons: [], certified: true });
-    vi.resetAllMocks();
+    resetIdentity();
   });
 
   it("should not be hidden if there is no not-voted-neurons", async () => {
     neuronsStore.setNeurons({ neurons: [], certified: true });
-    const { getByTestId } = renderVotingCard();
-    expect(getByTestId("voting-confirmation-toolbar")).toBeInTheDocument();
+    const po = renderComponent();
+    expect(await po.hasVotingConfirmationToolbar()).toBe(true);
   });
 
   it("should be visible if there are some not-voted-neurons", async () => {
     neuronsStore.setNeurons({ neurons, certified: true });
-    const { getByTestId } = renderVotingCard();
-
-    await waitFor(() =>
-      expect(getByTestId("voting-confirmation-toolbar")).toBeInTheDocument()
-    );
+    const po = renderComponent();
+    expect(await po.hasVotingConfirmationToolbar()).toBe(true);
   });
 
   it("should disable action buttons if no neurons selected", async () => {
     neuronsStore.setNeurons({ neurons, certified: true });
-    const { container } = renderVotingCard();
+    const po = renderComponent();
+
+    await runResolvedPromises();
+    expect(await po.getVoteYesButtonPo().isDisabled()).toBe(false);
+    expect(await po.getVoteNoButtonPo().isDisabled()).toBe(false);
+
     // remove neuron selection
     votingNeuronSelectStore.reset();
-    // wait for UI update (src/lib/components/proposal-detail/VotingCard/VotingCard.svelte#34)
-    await tick();
-    expect(container.querySelectorAll("button[disabled]").length).toBe(2);
-  });
-
-  it("should enable action buttons when neurons are selected", async () => {
-    // changing the neuronStore automatically updates votingNeuronSelectStore with initial pre-selection of all neurons
-    neuronsStore.setNeurons({ neurons, certified: true });
-    const { container } = renderVotingCard();
-    expect(container.querySelector("button[disabled]")).toBeNull();
+    await runResolvedPromises();
+    expect(await po.getVoteYesButtonPo().isDisabled()).toBe(true);
+    expect(await po.getVoteNoButtonPo().isDisabled()).toBe(true);
   });
 
   describe("voting", () => {
-    const mockGovernanceCanister: MockGovernanceCanister =
-      new MockGovernanceCanister([proposalInfo]);
-
-    let spyListNeurons;
+    let spyQueryNeurons;
     let spyRegisterVote;
 
     beforeEach(() => {
-      vi.resetAllMocks();
-
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
-
-      vi.spyOn(GovernanceCanister, "create").mockImplementation(
-        (): GovernanceCanister =>
-          mockGovernanceCanister as unknown as GovernanceCanister
-      );
-      spyRegisterVote = vi.spyOn(mockGovernanceCanister, "registerVote");
-      spyListNeurons = vi.spyOn(mockGovernanceCanister, "listNeurons");
+      spyRegisterVote = vi.spyOn(governanceApi, "registerVote");
+      spyQueryNeurons = vi
+        .spyOn(governanceApi, "queryNeurons")
+        .mockResolvedValue(neurons);
+      vi.spyOn(proposalsApi, "queryProposal").mockResolvedValue(proposalInfo);
+      vi.spyOn(proposalsApi, "queryProposals").mockResolvedValue([
+        proposalInfo,
+      ]);
 
       neuronsStore.setNeurons({ neurons, certified: true });
     });
 
-    it("should trigger register-vote and neuron-list updates", async () => {
-      const { queryByTestId } = renderVotingCard();
-
-      expect(spyRegisterVote).not.toBeCalled();
-      await fireEvent.click(queryByTestId("vote-yes") as Element);
-      await fireEvent.click(queryByTestId("confirm-yes") as Element);
-      await waitFor(() =>
-        expect(spyRegisterVote).toBeCalledTimes(neurons.length)
-      );
-      await waitFor(() => expect(spyListNeurons).toBeCalledTimes(1));
-    });
-
     it("should trigger register-vote YES", async () => {
-      const { queryByTestId } = renderVotingCard();
+      const po = renderComponent();
 
       expect(spyRegisterVote).not.toBeCalled();
-      await fireEvent.click(queryByTestId("vote-yes") as Element);
-      await fireEvent.click(queryByTestId("confirm-yes") as Element);
-      await waitFor(() =>
-        expect(spyRegisterVote).toBeCalledWith({
-          neuronId: neuronIds[0],
-          vote: Vote.Yes,
-          proposalId: proposalInfo.id,
-        })
-      );
-      expect(spyRegisterVote).toBeCalledTimes(neurons.length);
+      expect(spyQueryNeurons).not.toBeCalled();
+
+      await po.voteYes();
+      await runResolvedPromises();
+
+      expect(spyRegisterVote).toBeCalledTimes(2);
+      expect(spyRegisterVote).toBeCalledWith({
+        neuronId: neuronIds[0],
+        vote: Vote.Yes,
+        proposalId: proposalInfo.id,
+        identity: mockIdentity,
+      });
+      expect(spyRegisterVote).toBeCalledWith({
+        neuronId: neuronIds[1],
+        vote: Vote.Yes,
+        proposalId: proposalInfo.id,
+        identity: mockIdentity,
+      });
+
+      expect(spyQueryNeurons).toBeCalledTimes(1);
+      expect(spyQueryNeurons).toBeCalledWith({
+        certified: true,
+        includeEmptyNeurons: false,
+        identity: mockIdentity,
+      });
     });
 
-    // it's on to show "console.error('vote:..." in the output (because of NO mock in canister)
     it("should trigger register-vote NO", async () => {
-      const { queryByTestId } = renderVotingCard();
+      const po = renderComponent();
 
       expect(spyRegisterVote).not.toBeCalled();
-      await fireEvent.click(queryByTestId("vote-no") as Element);
-      await fireEvent.click(queryByTestId("confirm-yes") as Element);
+      expect(spyQueryNeurons).not.toBeCalled();
 
-      await waitFor(() =>
-        expect(spyRegisterVote).toHaveBeenCalledWith({
-          neuronId: neuronIds[1],
-          vote: Vote.No,
-          proposalId: proposalInfo.id,
-        })
-      );
+      await po.voteNo();
+      await runResolvedPromises();
 
-      await waitFor(() =>
-        expect(spyRegisterVote).toBeCalledWith({
-          neuronId: neuronIds[0],
-          vote: Vote.No,
-          proposalId: proposalInfo.id,
-        })
-      );
-      expect(spyRegisterVote).toBeCalledTimes(neurons.length);
+      expect(spyRegisterVote).toBeCalledTimes(2);
+      expect(spyRegisterVote).toBeCalledWith({
+        neuronId: neuronIds[0],
+        vote: Vote.No,
+        proposalId: proposalInfo.id,
+        identity: mockIdentity,
+      });
+      expect(spyRegisterVote).toBeCalledWith({
+        neuronId: neuronIds[1],
+        vote: Vote.No,
+        proposalId: proposalInfo.id,
+        identity: mockIdentity,
+      });
+
+      expect(spyQueryNeurons).toBeCalledTimes(1);
+      expect(spyQueryNeurons).toBeCalledWith({
+        certified: true,
+        includeEmptyNeurons: false,
+        identity: mockIdentity,
+      });
     });
   });
 });
