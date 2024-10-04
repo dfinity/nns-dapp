@@ -1,24 +1,18 @@
 import type { Navigation } from "@sveltejs/kit";
 import { page } from "./stores";
 
-import { vi } from "vitest";
-
 let beforeNavigateCallback: ((navigation: Navigation) => void) | null = null;
 let afterNavigateCallback: ((navigation: Navigation) => void) | null = null;
 
-export const beforeNavigate = vi.fn(
-  (callback: (navigation: Navigation) => void) => {
-    beforeNavigateCallback = callback;
-  }
-);
+export const beforeNavigate = (callback: (navigation: Navigation) => void) => {
+  beforeNavigateCallback = callback;
+};
 
-export const afterNavigate = vi.fn(
-  (callback: (navigation: Navigation) => void) => {
-    afterNavigateCallback = callback;
-  }
-);
+export const afterNavigate = (callback: (navigation: Navigation) => void) => {
+  afterNavigateCallback = callback;
+};
 
-export const goto = vi.fn(
+export const goto =
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
   async (
     url: string | URL,
@@ -71,5 +65,4 @@ export const goto = vi.fn(
     if (afterNavigateCallback) {
       afterNavigateCallback(navigation);
     }
-  }
-);
+  };
