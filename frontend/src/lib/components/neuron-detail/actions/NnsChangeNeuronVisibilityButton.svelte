@@ -24,3 +24,9 @@
     ? $i18n.neuron_detail.make_neuron_private
     : $i18n.neuron_detail.make_neuron_public}
 </button>
+
+<style lang="scss">
+  button {
+    text-wrap: nowrap;
+  }
+</style>

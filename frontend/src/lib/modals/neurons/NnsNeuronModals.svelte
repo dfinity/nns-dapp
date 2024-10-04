@@ -1,4 +1,5 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import AddHotkeyModal from "$lib/modals/neurons/AddHotkeyModal.svelte";
   import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
@@ -13,7 +14,6 @@
   import SplitNeuronModal from "$lib/modals/neurons/SplitNnsNeuronModal.svelte";
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
   import ChangeNeuronVisibilityModal from "./ChangeNeuronVisibilityModal.svelte";
-
   import type {
     NnsNeuronModal,
     NnsNeuronModalData,
@@ -24,7 +24,6 @@
   import NnsAddMaturityModal from "../sns/neurons/NnsAddMaturityModal.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   let modal: NnsNeuronModal<NnsNeuronModalData> | undefined;
   const close = () => (modal = undefined);

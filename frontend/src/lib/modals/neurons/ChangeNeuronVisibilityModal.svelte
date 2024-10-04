@@ -16,7 +16,6 @@
     dispatcher("nnsClose");
   };
 
-  let applyToAllNeurons = false;
   $: isPublic = isPublicNeuron(neuron);
 
   async function handleChangeVisibility() {
@@ -78,16 +77,6 @@
 
   <Separator spacing="medium" />
 
-  <div class="filters">
-    <Checkbox
-      bind:checked={applyToAllNeurons}
-      inputId="apply-to-all-neurons"
-      disabled
-    >
-      {$i18n.neuron_detail.change_neuron_apply_to_all_neurons}
-    </Checkbox>
-  </div>
-
   <div class="toolbar alert footer">
     <button class="secondary" on:click={close} data-tid="cancel-button">
       {$i18n.core.cancel}
@@ -101,14 +90,3 @@
     </button>
   </div>
 </Modal>
-
-<style lang="scss">
-  .filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--padding);
-    --checkbox-label-order: 1;
-    --checkbox-padding: 0;
-    flex-grow: 1;
-  }
-</style>

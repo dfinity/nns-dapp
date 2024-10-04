@@ -1,13 +1,8 @@
 import NnsNeuronPublicVisibilityAction from "$lib/components/neuron-detail/NnsNeuronPublicVisibilityAction.svelte";
-import { authStore } from "$lib/stores/auth.store";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronPublicVisibilityActionPo } from "$tests/page-objects/NnsNeuronPublicVisibilityAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { NeuronVisibility, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
@@ -31,8 +26,7 @@ describe("NnsNeuronPublicVisibilityAction", () => {
   };
 
   beforeEach(() => {
-    resetAccountsForTesting();
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
   });
 
   it("should render elements and text for public neuron", async () => {
