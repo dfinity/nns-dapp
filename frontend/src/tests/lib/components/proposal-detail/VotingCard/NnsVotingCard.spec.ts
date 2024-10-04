@@ -159,7 +159,6 @@ describe("VotingCard", () => {
       expect(spyQueryNeurons).not.toBeCalled();
 
       await po.voteNo();
-      return;
       await runResolvedPromises();
 
       expect(spyRegisterVote).toBeCalledTimes(2);
