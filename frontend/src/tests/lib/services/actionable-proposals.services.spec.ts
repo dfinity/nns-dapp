@@ -67,16 +67,37 @@ describe("actionable-proposals.services", () => {
     };
     const votableProposal: ProposalInfo = {
       ...mockProposalInfo,
+      ballots: [
+        {
+          neuronId,
+          vote: Vote.Unspecified,
+          votingPower: 1n,
+        },
+      ],
       id: 0n,
     };
     const votedProposal: ProposalInfo = {
       ...mockProposalInfo,
+      ballots: [
+        {
+          neuronId,
+          vote: Vote.Yes,
+          votingPower: 1n,
+        },
+      ],
       id: votedProposalId,
     };
     const fiveHundredsProposal = Array.from(Array(500))
       .map((_, index) => ({
         ...mockProposalInfo,
         id: BigInt(index),
+        ballots: [
+          {
+            neuronId,
+            vote: Vote.Unspecified,
+            votingPower: 1n,
+          },
+        ],
       }))
       .reverse();
     let spyQueryProposals;
@@ -227,14 +248,35 @@ describe("actionable-proposals.services", () => {
       const proposal0 = {
         ...mockProposalInfo,
         id: 0n,
+        ballots: [
+          {
+            neuronId,
+            vote: Vote.Unspecified,
+            votingPower: 1n,
+          },
+        ],
       } as ProposalInfo;
       const proposal1 = {
         ...mockProposalInfo,
         id: 1n,
+        ballots: [
+          {
+            neuronId,
+            vote: Vote.Unspecified,
+            votingPower: 1n,
+          },
+        ],
       } as ProposalInfo;
       const proposal2 = {
         ...mockProposalInfo,
         id: 2n,
+        ballots: [
+          {
+            neuronId,
+            vote: Vote.Unspecified,
+            votingPower: 1n,
+          },
+        ],
       } as ProposalInfo;
 
       it("should query list proposals also with ManageNeurons payload", async () => {
