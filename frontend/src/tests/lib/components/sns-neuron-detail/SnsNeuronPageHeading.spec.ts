@@ -5,12 +5,8 @@ import {
   SECONDS_IN_FOUR_YEARS,
 } from "$lib/constants/constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
-import { authStore } from "$lib/stores/auth.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
@@ -57,7 +53,7 @@ describe("SnsNeuronPageHeading", () => {
   };
 
   beforeEach(() => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
     // Make sure that nowInSeconds() returns a fixed value for the calculation
     // of the neuron age.
     vi.useFakeTimers();

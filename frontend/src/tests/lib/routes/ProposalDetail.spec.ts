@@ -1,9 +1,8 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import ProposalDetail from "$lib/routes/ProposalDetail.svelte";
-import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -28,7 +27,7 @@ describe("ProposalDetail", () => {
         lifecycle: SnsSwapLifecycle.Committed,
       },
     ]);
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
   });
 
   it("should render NnsProposalDetail by default", () => {
