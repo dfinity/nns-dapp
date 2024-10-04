@@ -1,33 +1,75 @@
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import NnsProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
+import { page } from "$mocks/$app/stores";
 import {
   mockIdentity,
   resetIdentity,
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { NnsProposalPo } from "$tests/page-objects/NnsProposal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
+import { ProposalRewardStatus, Vote, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/governance.api");
 
 describe("NnsProposalDetail", () => {
+  const neuronId1 = 0n;
+  const neuronId2 = 1n;
+  const testNeurons = [
+    {
+      ...mockNeuron,
+      neuronId: neuronId1,
+    },
+    {
+      ...mockNeuron,
+      neuronId: neuronId2,
+    },
+  ] as NeuronInfo[];
+  const testProposal = {
+    ...mockProposalInfo,
+    rewardStatus: ProposalRewardStatus.AcceptVotes,
+    ballots: [
+      {
+        neuronId: BigInt(0),
+        vote: Vote.Unspecified,
+        votingPower: BigInt(1),
+      },
+      {
+        neuronId: BigInt(1),
+        vote: Vote.Unspecified,
+        votingPower: BigInt(1),
+      },
+    ],
+  };
+
   beforeEach(() => {
     resetIdentity();
     vi.restoreAllMocks();
     resetNeuronsApiService();
     toastsStore.reset();
-    vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+    vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue(testNeurons);
 
     actionableProposalsSegmentStore.set("all");
-    vi.spyOn(proposalsApi, "queryProposal").mockResolvedValue(mockProposalInfo);
+    vi.spyOn(proposalsApi, "queryProposal").mockResolvedValue(testProposal);
+    vi.spyOn(proposalsApi, "queryProposals").mockResolvedValue([testProposal]); // actionable proposals update
+    page.mock({
+      routeId: AppPath.Proposal,
+      data: {
+        universe: OWN_CANISTER_ID_TEXT,
+        proposal: `${testProposal.id}`,
+      },
+    });
   });
 
   const props = {
@@ -91,6 +133,66 @@ describe("NnsProposalDetail", () => {
         includeEmptyNeurons: false,
       });
       expect(governanceApi.queryNeurons).toHaveBeenCalledTimes(2);
+    });
+
+    it("should update votable neurons after voting", async () => {
+      const spyOnQueryProposal = vi
+        .spyOn(proposalsApi, "queryProposal")
+        .mockResolvedValueOnce(testProposal)
+        .mockResolvedValueOnce(testProposal)
+        // state after voting
+        .mockResolvedValueOnce({
+          ...testProposal,
+          ballots: [
+            {
+              neuronId: neuronId1,
+              vote: Vote.Yes,
+              votingPower: BigInt(1),
+            },
+            {
+              neuronId: neuronId2,
+              vote: Vote.Yes,
+              votingPower: BigInt(1),
+            },
+          ],
+        });
+
+      const po = renderComponent();
+      const votingCardPo = po.getVotingCardPo();
+      await runResolvedPromises();
+
+      expect(await votingCardPo.isPresent()).toBe(true);
+      expect(
+        await po.getVotingCardPo().getVotingNeuronSelectListPo().isPresent()
+      ).toBe(true);
+      expect(await votingCardPo.getVoteYesButtonPo().isDisabled()).toBe(false);
+      expect(await votingCardPo.getVoteNoButtonPo().isDisabled()).toBe(false);
+
+      const votingNeuronListItemPos = await po
+        .getVotingCardPo()
+        .getVotingNeuronSelectListPo()
+        .getVotingNeuronListItemPos();
+      expect(votingNeuronListItemPos.length).toBe(testNeurons.length);
+      expect(await votingNeuronListItemPos[0].getNeuronId()).toBe(
+        `${neuronId1}`
+      );
+      expect(await votingNeuronListItemPos[1].getNeuronId()).toBe(
+        `${neuronId2}`
+      );
+      expect(spyOnQueryProposal).toBeCalledTimes(2);
+
+      await votingCardPo.voteYes();
+      await runResolvedPromises();
+
+      expect(spyOnQueryProposal).toBeCalledTimes(3);
+      expect(
+        (
+          await po
+            .getVotingCardPo()
+            .getVotingNeuronSelectListPo()
+            .getVotingNeuronListItemPos()
+        ).length
+      ).toBe(0);
     });
   });
 
