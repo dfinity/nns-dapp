@@ -15,7 +15,8 @@ SEARCH_PATTERN="$1"
 # find which SNS to query but then get the actual data from the aggregator.
 AGGREGATOR_PAGES=("$SOURCE_DIR"/../../../frontend/src/tests/workflows/Launchpad/sns-agg-page-*.json)
 
-ROOT_CANISTER_ID="$(jq -c '.[] | select(.lifecycle.lifecycle != 4) | .canister_ids * {name: .meta.name, symbol: (.icrc1_metadata | .[] | select(.[0] == "icrc1:symbol") | .[1].Text) }' "${AGGREGATOR_PAGES[@]}" | grep -m 1 -i "$SEARCH_PATTERN" | jq -r .root_canister_id)"
+ROOT_CANISTER_ID="$(jq -c '.[] | select(.lifecycle.lifecycle != 4) |
+.canister_ids * {name: .meta.name, symbol: (.icrc1_metadata | .[] | select(.[0] == "icrc1:symbol") | .[1].Text) }' "${AGGREGATOR_PAGES[@]}" | grep -i "$SEARCH_PATTERN" | head -n 1 | jq -r .root_canister_id)"
 
 AGGREGATOR_URL="https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/root/$ROOT_CANISTER_ID/slow.json"
 
