@@ -37,3 +37,13 @@ export const afterNavigate = (callback: (navigation: Navigation) => void) => {
     delta: undefined,
   });
 };
+
+export const beforeNavigate = (callback: (navigation: Navigation) => void) => {
+  callback({
+    from: null,
+    to: null,
+    type: "goto",
+    willUnload: true,
+    delta: undefined,
+  });
+};
