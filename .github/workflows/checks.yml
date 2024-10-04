@@ -333,7 +333,8 @@ jobs:
         run: scripts/network-config.test
       - name: Get SNS tool
         run: |
-          diff <(scripts/sns/aggregator/get-sns dog) <(echo "Name:   DOGMI
+          ACTUAL_OUTPUT="$(scripts/sns/aggregator/get-sns dog)"
+          diff <(echo "$ACTUAL_OUTPUT") <(echo "Name:   DOGMI
           Symbol: DOGMI
           Aggregator URL:         https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/root/nb7he-piaaa-aaaaq-aadqq-cai/slow.json
           Root canister ID:       nb7he-piaaa-aaaaq-aadqq-cai
