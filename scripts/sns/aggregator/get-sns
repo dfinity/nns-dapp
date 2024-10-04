@@ -28,12 +28,16 @@ if [[ "${ENABLE_JSON:-}" == "true" ]]; then
   exit 0
 fi
 
+SNS_DATA_FILE="$(mktemp)"
+
 get_sns_field() {
   field_path="$1"
-  echo "$SNS_DATA" | jq -r "$field_path"
+  jq -r "$field_path" "$SNS_DATA_FILE"
 }
 
-SNS_DATA="$(get_sns_data)"
+trap 'rm -f "$SNS_DATA_FILE"' EXIT
+
+get_sns_data > "$SNS_DATA_FILE"
 
 echo "Name:   $(get_sns_field .meta.name)"
 echo "Symbol: $(echo "$SNS_DATA" | jq -r '.icrc1_metadata | .[] | select(.[0] == "icrc1:symbol") | .[1].Text')"
