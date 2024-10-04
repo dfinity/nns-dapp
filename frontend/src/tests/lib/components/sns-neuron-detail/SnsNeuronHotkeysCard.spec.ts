@@ -1,12 +1,8 @@
 import SnsNeuronHotkeysCard from "$lib/components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { removeHotkey } from "$lib/services/sns-neurons.services";
-import { authStore } from "$lib/stores/auth.store";
 import { enumValues } from "$lib/utils/enum.utils";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
@@ -70,7 +66,7 @@ describe("SnsNeuronHotkeysCard", () => {
     });
 
   beforeAll(() => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
   });
 
   afterEach(() => {

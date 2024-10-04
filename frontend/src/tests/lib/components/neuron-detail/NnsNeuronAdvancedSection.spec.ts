@@ -3,13 +3,9 @@ import {
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
-import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import {
   mockHardwareWalletAccount,
@@ -53,7 +49,7 @@ describe("NnsNeuronAdvancedSection", () => {
     overrideFeatureFlagsStore.reset();
     vi.useFakeTimers();
     vi.setSystemTime(nowInSeconds * 1000);
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
     resetAccountsForTesting();
   });
 

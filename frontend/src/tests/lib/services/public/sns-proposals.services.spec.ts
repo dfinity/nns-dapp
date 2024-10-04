@@ -5,7 +5,6 @@ import {
   loadSnsProposals,
   registerVote,
 } from "$lib/services/public/sns-proposals.services";
-import { authStore } from "$lib/stores/auth.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
@@ -13,8 +12,8 @@ import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
 import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
-  mockAuthStoreNoIdentitySubscribe,
-  mockAuthStoreSubscribe,
+  setNoIdentity,
+  resetIdentity,
   mockIdentity,
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
@@ -66,9 +65,7 @@ describe("sns-proposals services", () => {
         snsFiltersStore.reset();
         snsProposalsStore.reset();
         vi.clearAllMocks();
-        vi.spyOn(authStore, "subscribe").mockImplementation(
-          mockAuthStoreNoIdentitySubscribe
-        );
+        setNoIdentity();
       });
       it("should call queryProposals with the default params", async () => {
         await loadSnsProposals({
@@ -231,9 +228,7 @@ describe("sns-proposals services", () => {
       beforeEach(() => {
         snsProposalsStore.reset();
         vi.clearAllMocks();
-        vi.spyOn(authStore, "subscribe").mockImplementation(
-          mockAuthStoreSubscribe
-        );
+        resetIdentity();
       });
 
       it("should call queryProposals with user's identity", async () => {
@@ -293,9 +288,7 @@ describe("sns-proposals services", () => {
 
     beforeEach(() => {
       vi.clearAllMocks();
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
+      resetIdentity();
     });
 
     it("should call registerVote api", async () => {
@@ -349,9 +342,7 @@ describe("sns-proposals services", () => {
 
     describe("not logged in", () => {
       beforeEach(() => {
-        vi.spyOn(authStore, "subscribe").mockImplementation(
-          mockAuthStoreNoIdentitySubscribe
-        );
+        setNoIdentity();
       });
 
       it("should call api regardless of having a certified proposal in store", () =>
@@ -384,9 +375,7 @@ describe("sns-proposals services", () => {
 
     describe("logged in", () => {
       beforeEach(() => {
-        vi.spyOn(authStore, "subscribe").mockImplementation(
-          mockAuthStoreSubscribe
-        );
+        resetIdentity();
       });
 
       it("should call api regardless of having a certified proposal in store", async () => {
