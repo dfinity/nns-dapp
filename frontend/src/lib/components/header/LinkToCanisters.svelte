@@ -3,19 +3,14 @@
   import { IconExplore } from "@dfinity/gix-components";
   import { canistersPathStore } from "$lib/derived/paths.derived";
   import { createEventDispatcher } from "svelte";
+  import { beforeNavigate } from "$app/navigation";
 
   const dispatcher = createEventDispatcher();
 
-  const closeMenu = () => dispatcher("nnsLink");
+  beforeNavigate(() => dispatcher("nnsLink"));
 </script>
 
-<a
-  data-tid="canisters-button"
-  href={$canistersPathStore}
-  on:keypress={closeMenu}
-  on:click={closeMenu}
-  class="text"
->
+<a data-tid="canisters-button" href={$canistersPathStore} class="text">
   <IconExplore />
   {$i18n.navigation.canisters}
 </a>
