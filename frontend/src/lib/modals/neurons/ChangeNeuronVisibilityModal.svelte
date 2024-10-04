@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { Checkbox, Modal } from "@dfinity/gix-components";
+  import { Modal } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { isPublicNeuron } from "$lib/utils/neuron.utils";
   import Separator from "$lib/components/ui/Separator.svelte";
