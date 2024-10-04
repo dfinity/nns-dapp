@@ -136,26 +136,30 @@ describe("NnsProposalDetail", () => {
     });
 
     it("should update votable neurons after voting", async () => {
+      let beforeVoting = true;
       const spyOnQueryProposal = vi
         .spyOn(proposalsApi, "queryProposal")
-        .mockResolvedValueOnce(testProposal)
-        .mockResolvedValueOnce(testProposal)
-        // state after voting
-        .mockResolvedValueOnce({
-          ...testProposal,
-          ballots: [
-            {
-              neuronId: neuronId1,
-              vote: Vote.Yes,
-              votingPower: BigInt(1),
-            },
-            {
-              neuronId: neuronId2,
-              vote: Vote.Yes,
-              votingPower: BigInt(1),
-            },
-          ],
-        });
+        .mockImplementation(() =>
+          Promise.resolve(
+            beforeVoting
+              ? testProposal
+              : {
+                  ...testProposal,
+                  ballots: [
+                    {
+                      neuronId: neuronId1,
+                      vote: Vote.Yes,
+                      votingPower: BigInt(1),
+                    },
+                    {
+                      neuronId: neuronId2,
+                      vote: Vote.Yes,
+                      votingPower: BigInt(1),
+                    },
+                  ],
+                }
+          )
+        );
 
       const po = renderComponent();
       const votingCardPo = po.getVotingCardPo();
@@ -181,6 +185,7 @@ describe("NnsProposalDetail", () => {
       );
       expect(spyOnQueryProposal).toBeCalledTimes(2);
 
+      beforeVoting = false;
       await votingCardPo.voteYes();
       await runResolvedPromises();
 
