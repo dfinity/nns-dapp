@@ -70,9 +70,8 @@
       target="_blank"
       rel="noopener noreferrer"
     >
-      {$i18n.neuron_detail.change_neuron_here}
+      {$i18n.neurons.learn_more}
     </a>
-    .
   </p>
 
   <Separator spacing="medium" />
