@@ -3,6 +3,7 @@ import { StakeNeuronToVotePo } from "$tests/page-objects/StakeNeuronToVote.page-
 import { VotingConfirmationToolbarPo } from "$tests/page-objects/VotingConfirmationToolbar.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { VotingNeuronSelectListPo } from "./VotingNeuronSelectList.page-object";
 
 export class VotingCardPo extends BasePageObject {
   private static readonly TID = "voting-card-component";
@@ -33,6 +34,10 @@ export class VotingCardPo extends BasePageObject {
 
   getVotableNeurons(): PageObjectElement {
     return this.root.byTestId("votable-neurons");
+  }
+
+  getVotingNeuronSelectListPo(): VotingNeuronSelectListPo {
+    return VotingNeuronSelectListPo.under(this.root);
   }
 
   getVotedNeurons(): PageObjectElement {

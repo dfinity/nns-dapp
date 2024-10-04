@@ -36,6 +36,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Fixed a bug where a performance counter in `init` is wiped during state initialization.
 * Bug with parsing nervous system parameters from aborted SNSes.
+* Bug where neurons are displayed as eligible to vote, even though they have already voted.
 
 #### Security
 

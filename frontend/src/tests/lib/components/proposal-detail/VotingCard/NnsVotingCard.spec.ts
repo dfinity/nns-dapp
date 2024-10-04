@@ -32,7 +32,10 @@ describe("VotingCard", () => {
   const neuronIds = [111, 222].map(BigInt);
   const proposalInfo: ProposalInfo = {
     ...mockProposalInfo,
-    ballots: neuronIds.map((neuronId) => ({ neuronId }) as Ballot),
+    ballots: neuronIds.map(
+      (neuronId) =>
+        ({ neuronId, vote: Vote.Unspecified, votingPower: 1n }) as Ballot
+    ),
     proposalTimestampSeconds: 2_000n,
     status: ProposalStatus.Open,
   };

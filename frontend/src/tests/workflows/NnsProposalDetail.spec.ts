@@ -4,13 +4,12 @@ import { queryProposal } from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import NnsProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
-import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { page } from "$mocks/$app/stores";
 import {
-  mockAuthStoreNoIdentitySubscribe,
-  mockAuthStoreSubscribe,
   mockIdentity,
+  resetIdentity,
+  setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
@@ -83,9 +82,7 @@ describe("Proposal detail page when not logged in user", () => {
           });
         }
       );
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
+      resetIdentity();
     });
 
     it("should render proposal with certified data", async () => {
@@ -175,9 +172,7 @@ describe("Proposal detail page when not logged in user", () => {
   describe("when not logged in user", () => {
     beforeEach(() => {
       vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreNoIdentitySubscribe
-      );
+      setNoIdentity();
     });
 
     it("should render proposal with uncertified data", async () => {

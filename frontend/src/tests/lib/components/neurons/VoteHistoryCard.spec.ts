@@ -1,7 +1,6 @@
 import * as agent from "$lib/api/agent.api";
 import VotingHistoryCard from "$lib/components/neurons/VotingHistoryCard.svelte";
-import { authStore } from "$lib/stores/auth.store";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
@@ -40,7 +39,7 @@ describe("VoteHistoryCard", () => {
       (): GovernanceCanister => mockGovernanceCanister
     );
 
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
