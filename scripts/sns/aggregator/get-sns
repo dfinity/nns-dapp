@@ -37,10 +37,10 @@ get_sns_field() {
 
 trap 'rm -f "$SNS_DATA_FILE"' EXIT
 
-get_sns_data > "$SNS_DATA_FILE"
+get_sns_data >"$SNS_DATA_FILE"
 
 echo "Name:   $(get_sns_field .meta.name)"
-echo "Symbol: $(echo "$SNS_DATA" | jq -r '.icrc1_metadata | .[] | select(.[0] == "icrc1:symbol") | .[1].Text')"
+echo "Symbol: $(jq -r '.icrc1_metadata | .[] | select(.[0] == "icrc1:symbol") | .[1].Text' "$SNS_DATA_FILE")"
 echo "Aggregator URL:         $AGGREGATOR_URL"
 echo "Root canister ID:       $(get_sns_field .canister_ids.root_canister_id)"
 echo "Governance canister ID: $(get_sns_field .canister_ids.governance_canister_id)"
