@@ -82,9 +82,7 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
     onError: ({ error: err, certified, strategy }) => {
       console.error(err);
 
-      if (
-        isLastCall({ strategy, certified })
-      ) {
+      if (isLastCall({ strategy, certified })) {
         snsProposalsStore.reset();
 
         toastsError(
