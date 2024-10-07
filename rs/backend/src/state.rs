@@ -156,18 +156,13 @@ impl StableState for State {
         let (
             account_store_bytes,
             assets_bytes,
-            // TODO(NNS1-3281): Restore TVL state from stable memory after we've
-            // had a release that has written the TVL state to stable memory.
-            // tvl_state_bytes,
+            tvl_state_bytes,
         ) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
         let assets = Assets::decode(assets_bytes)?;
         let asset_hashes = AssetHashes::from(&assets);
         let performance = PerformanceCounts::default();
-        let tvl_state = TvlState::default();
-        // TODO(NNS1-3281): Restore TVL state from stable memory after we've had
-        // a release that has written the TVL state to stable memory.  let
-        // let tvl_state = TvlState::decode(tvl_state_bytes)?;
+        let tvl_state = TvlState::decode(tvl_state_bytes)?;
 
         Ok(State {
             accounts_store: AccountsStore::decode(account_store_bytes)?,
