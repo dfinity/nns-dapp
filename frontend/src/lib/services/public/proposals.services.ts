@@ -25,6 +25,7 @@ import {
   proposalsHaveSameIds,
 } from "$lib/utils/proposals.utils";
 import type { ProposalId, ProposalInfo } from "@dfinity/nns";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getCurrentIdentity } from "../auth.services";
 import {
@@ -46,9 +47,7 @@ const handleFindProposalsError = ({
   mutableProposalsStore: SingleMutationProposalsStore;
 }) => {
   console.error(err);
-  if (
-    isLastCall({ strategy, certified })
-  ) {
+  if (isLastCall({ strategy, certified })) {
     mutableProposalsStore.setProposals({ proposals: [], certified });
 
     const resultsTooLarge = isPayloadSizeError(err);
@@ -160,7 +159,7 @@ const findProposals = async ({
   const validateResponses = ({
     trustedProposals,
     untrustedProposals,
-  }:{
+  }: {
     trustedProposals: ProposalInfo[];
     untrustedProposals: ProposalInfo[];
   }) => {
@@ -249,12 +248,14 @@ export const loadProposal = async ({
   ) => {
     console.error(erroneusResponse);
 
-    if (silentErrorMessages !== true && (
-      erroneusResponse.certified || (
-        strategy === "query" ||
-        identity.getPrincipal().isAnonymous()
-      )
-    )) {
+    if (
+      silentErrorMessages !== true &&
+      nonNullish(erroneusResponse) &&
+      isLastCall({
+        strategy: erroneusResponse.strategy,
+        certified: erroneusResponse.certified,
+      })
+    ) {
       const details = errorToString(erroneusResponse?.error);
       toastsShow({
         labelKey: "error.proposal_not_found",
@@ -286,8 +287,10 @@ export const loadProposal = async ({
     });
   } catch (error: unknown) {
     catchError({
+      // `certified` and `strategy` are irrelevant since we are outside the
+      // `queryAndUpdate` context.
       certified: true,
-      strategy: strategy ?? "query_and_update",
+      strategy: "query_and_update",
       error,
       identity,
     });
