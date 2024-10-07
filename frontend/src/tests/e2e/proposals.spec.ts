@@ -119,8 +119,7 @@ test("Test proposals", async ({ page, context }) => {
   const nnsProposalPo = appPo.getProposalDetailPo().getNnsProposalPo();
 
   // System info
-  const systemInfoSectionPo =
-    nnsProposalPo.getProposalProposalSystemInfoSectionPo();
+  const systemInfoSectionPo = nnsProposalPo.getProposalSystemInfoSectionPo();
 
   expect(await systemInfoSectionPo.getProposalTypeText()).toBe("Motion");
   expect(await systemInfoSectionPo.getProposalTopicText()).toBe("Governance");

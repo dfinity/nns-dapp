@@ -49,6 +49,7 @@ import {
   isNeuronControllable,
   isNeuronControllableByUser,
   isNeuronControlledByHardwareWallet,
+  isPublicNeuron,
   isSpawning,
   isValidInputAmount,
   mapMergeableNeurons,
@@ -90,6 +91,7 @@ import type { WizardStep } from "@dfinity/gix-components";
 import {
   NeuronState,
   NeuronType,
+  NeuronVisibility,
   Topic,
   Vote,
   type BallotInfo,
@@ -289,7 +291,7 @@ describe("neuron-utils", () => {
         bonusMultiplier({
           amount: 300n,
           maxBonus: 0.25,
-          maxAmount: 600,
+          amountForMaxBonus: 600,
         })
       ).toBe(1.125);
 
@@ -297,7 +299,7 @@ describe("neuron-utils", () => {
         bonusMultiplier({
           amount: 600n,
           maxBonus: 0.5,
-          maxAmount: 600,
+          amountForMaxBonus: 600,
         })
       ).toBe(1.5);
 
@@ -305,7 +307,7 @@ describe("neuron-utils", () => {
         bonusMultiplier({
           amount: 400n,
           maxBonus: 1,
-          maxAmount: 200,
+          amountForMaxBonus: 200,
         })
       ).toBe(2);
 
@@ -313,7 +315,7 @@ describe("neuron-utils", () => {
         bonusMultiplier({
           amount: 400n,
           maxBonus: 0.25,
-          maxAmount: 0,
+          amountForMaxBonus: 0,
         })
       ).toBe(1);
     });
@@ -2941,6 +2943,34 @@ describe("neuron-utils", () => {
       ).toBe(
         "All proposals to manage the canisters of service nervous systems (SNS), including upgrading relevant canisters and managing SNS framework canister WASMs through SNS-W."
       );
+    });
+  });
+
+  describe("isPublicNeuron", () => {
+    it("should correctly identify public neurons", () => {
+      const publicNeuron = {
+        ...mockNeuron,
+        visibility: NeuronVisibility.Public,
+      };
+      expect(isPublicNeuron(publicNeuron)).toBe(true);
+    });
+
+    it("should correctly identify non-public neurons", () => {
+      const privateNeuron = {
+        ...mockNeuron,
+        visibility: NeuronVisibility.Private,
+      };
+      const unspecifiedNeuron = {
+        ...mockNeuron,
+        visibility: NeuronVisibility.Unspecified,
+      };
+      const undefinedVisibilityNeuron = {
+        ...mockNeuron,
+        visibility: undefined,
+      };
+      expect(isPublicNeuron(privateNeuron)).toBe(false);
+      expect(isPublicNeuron(unspecifiedNeuron)).toBe(false);
+      expect(isPublicNeuron(undefinedVisibilityNeuron)).toBe(false);
     });
   });
 });

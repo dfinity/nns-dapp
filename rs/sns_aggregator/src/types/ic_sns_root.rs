@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_root --out ic_sns_root.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-09-12_01-30-base/rs/sns/root/canister/root.did>
+//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-09-26_01-31-no-canister-snapshots/rs/sns/root/canister/root.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -20,7 +20,6 @@ use ic_cdk::api::call::CallResult;
 pub struct SnsRootCanister {
     pub dapp_canister_ids: Vec<Principal>,
     pub testflight: bool,
-    pub latest_ledger_archive_poll_timestamp_seconds: Option<u64>,
     pub archive_canister_ids: Vec<Principal>,
     pub governance_canister_id: Option<Principal>,
     pub index_canister_id: Option<Principal>,

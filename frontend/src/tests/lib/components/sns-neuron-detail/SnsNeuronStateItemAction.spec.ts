@@ -1,10 +1,6 @@
 import SnsNeuronStateItemAction from "$lib/components/sns-neuron-detail/SnsNeuronStateItemAction.svelte";
 import { SECONDS_IN_FOUR_YEARS } from "$lib/constants/constants";
-import { authStore } from "$lib/stores/auth.store";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   allSnsNeuronPermissions,
   createMockSnsNeuron,
@@ -61,7 +57,7 @@ describe("SnsNeuronStateItemAction", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(nowInSeconds * 1000);
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
   });
 
   it("should render locked text and Start dissolving button if neuron is locked", async () => {

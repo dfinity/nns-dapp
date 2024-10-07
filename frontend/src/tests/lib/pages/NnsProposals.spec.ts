@@ -8,7 +8,6 @@ import NnsProposals from "$lib/pages/NnsProposals.svelte";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import {
   proposalsFiltersStore,
@@ -24,7 +23,7 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import type { ProposalInfo } from "@dfinity/nns";
+import { Topic, type ProposalInfo } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
@@ -47,7 +46,7 @@ describe("NnsProposals", () => {
 
   beforeEach(() => {
     vi.restoreAllMocks();
-    proposalsStore.reset();
+    proposalsStore.resetForTesting();
     resetNeuronsApiService();
     neuronsStore.reset();
     proposalsFiltersStore.reset();
@@ -64,7 +63,6 @@ describe("NnsProposals", () => {
   describe("logged in user", () => {
     describe("Matching results", () => {
       beforeEach(() => {
-        overrideFeatureFlagsStore.reset();
         vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
         actionableProposalsSegmentStore.set("all");
       });
@@ -227,6 +225,90 @@ describe("NnsProposals", () => {
         expect(await cardPos[1].getProposalId()).toEqual(
           `ID: ${secondProposal.id}`
         );
+      });
+
+      it("should not show old certified data if there is newer uncertified data", async () => {
+        // The test first loads proposals with a filter.
+        // While proposals are displayed based on the uncertified response,
+        // before the certified response arrives, the filter is removed.
+        // If the certified response for the filtered proposals arrives after
+        // the uncertified response for the unfiltered proposals, this should
+        // not result in displaying old data which doesn't match the current
+        // filters.
+        proposalsFiltersStore.filterTopics([Topic.Governance]);
+
+        const proposalRequests = [];
+        vi.spyOn(proposalsApi, "queryProposals").mockImplementation((args) => {
+          return new Promise<ProposalInfo[]>((resolve) => {
+            proposalRequests.push({
+              args,
+              resolve,
+            });
+          });
+        });
+
+        const matchingProposal: ProposalInfo = {
+          ...mockProposals[0],
+          topic: Topic.Governance,
+        };
+        const nonMatchingProposal: ProposalInfo = {
+          ...mockProposals[1],
+          topic: Topic.ProtocolCanisterManagement,
+        };
+
+        const po = await renderComponent();
+
+        expect(proposalRequests).toHaveLength(2);
+        expect(proposalRequests[0].args.certified).toBe(false);
+        expect(proposalRequests[0].args.includeTopics).toEqual([
+          Topic.Governance,
+        ]);
+        expect(proposalRequests[1].args.certified).toBe(true);
+        expect(proposalRequests[1].args.includeTopics).toEqual([
+          Topic.Governance,
+        ]);
+        // We resolve the uncertified request but not yet the certified request.
+        proposalRequests[0].resolve([matchingProposal]);
+
+        await runResolvedPromises();
+        // There is 1 proposal that matches the filter.
+        expect(await po.getProposalCardPos()).toHaveLength(1);
+
+        // Remove the filter.
+        const filters = po.getNnsProposalFiltersPo();
+        await filters.clickFiltersByTopicsButton();
+        const filterModal = filters.getFilterModalPo();
+        await filterModal.clickClearSelectionButton();
+        await filterModal.clickConfirmButton();
+
+        // Finish the fade transition of the modal.
+        await advanceTime(25);
+        await filterModal.waitForAbsent();
+
+        // Stop waiting for the debounce to reload proposals.
+        await advanceTime(500);
+
+        expect(proposalRequests).toHaveLength(4);
+        expect(proposalRequests[2].args.certified).toBe(false);
+        expect(proposalRequests[2].args.includeTopics).toEqual([]);
+        expect(proposalRequests[3].args.certified).toBe(true);
+        expect(proposalRequests[3].args.includeTopics).toEqual([]);
+
+        // We resolve the second *uncertified* request before the first
+        // *certified* request. Now there are 2 proposals.
+        proposalRequests[2].resolve([matchingProposal, nonMatchingProposal]);
+        await runResolvedPromises();
+        expect(await po.getProposalCardPos()).toHaveLength(2);
+
+        // When the old certified request (with 1 proposal) resolves, this
+        // should not result in displaying old data which doesn't match the
+        // current filters.
+        proposalRequests[1].resolve([matchingProposal]);
+        //await advanceTime(500);
+        await runResolvedPromises();
+        // We should still see both proposals from the request from after the
+        // filter was removed.
+        expect(await po.getProposalCardPos()).toHaveLength(2);
       });
 
       it("should not have actionable parameter in a proposal card href", async () => {

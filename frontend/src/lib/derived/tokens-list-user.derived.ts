@@ -1,5 +1,5 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { failedImportedTokenLedgerIdsStore } from "$lib/stores/imported-tokens.store";
+import { failedExistentImportedTokenLedgerIdsStore } from "$lib/derived/imported-tokens.derived";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import {
   UserTokenAction,
@@ -85,7 +85,7 @@ export const tokensListUserStore = derived<
     tokensListBaseStore,
     universesAccountsStore,
     tokensByUniverseIdStore,
-    failedImportedTokenLedgerIdsStore,
+    failedExistentImportedTokenLedgerIdsStore,
   ],
   ([tokensList, accounts, tokensByUniverse, failedImportedTokenLedgerIds]) => [
     ...tokensList.map((baseTokenData) =>

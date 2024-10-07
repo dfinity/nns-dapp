@@ -1,9 +1,8 @@
 import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
-import { authStore } from "$lib/stores/auth.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   createBuyersState,
   mockSnsFullProject,
@@ -19,7 +18,7 @@ describe("ProjectStatusSection", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     snsTicketsStore.reset();
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
   });
 
   const render = ({

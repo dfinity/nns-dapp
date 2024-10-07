@@ -42,6 +42,7 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_CKTESTBTC: true,
       ENABLE_IMPORT_TOKEN: true,
       DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
+      ENABLE_NEURON_VISIBILITY: true,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
     }),
@@ -63,11 +64,16 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
 vi.mock("./src/lib/constants/mockable.constants.ts", () => mockedConstants);
 setDefaultTestConstants({
   DEV: false,
-  ENABLE_METRICS: false,
   FORCE_CALL_STRATEGY: undefined,
   IS_TEST_ENV: true,
   QR_CODE_RENDERED_DEFAULT_STATE: true,
   ENABLE_QR_CODE_READER: false,
+  isForceCallStrategy: function () {
+    return this.FORCE_CALL_STRATEGY === "query";
+  },
+  notForceCallStrategy: function () {
+    return !this.isForceCallStrategy();
+  },
 });
 
 failTestsThatLogToConsole();

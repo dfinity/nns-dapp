@@ -1,8 +1,7 @@
 import NewFolloweeModal from "$lib/modals/neurons/NewFolloweeModal.svelte";
 import { addFollowee, removeFollowee } from "$lib/services/neurons.services";
-import { authStore } from "$lib/stores/auth.store";
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockFullNeuron,
@@ -40,7 +39,7 @@ describe("NewFolloweeModal", () => {
     },
   };
   beforeEach(() => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
   });
 
   afterEach(() => {

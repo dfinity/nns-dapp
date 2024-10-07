@@ -1475,7 +1475,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100435532847715040,
+    "icrc1_total_supply": 100503155432150510,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2966,6 +2966,19 @@
           }
         },
         {
+          "id": 6111,
+          "name": "DeVeFi:ICP/DKP:Modify Vector",
+          "description": "Modifies a vector",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
+              "target_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
+              "validator_method_name": "validate_modify_vector",
+              "target_method_name": "modify_vector"
+            }
+          }
+        },
+        {
           "id": 6210,
           "name": "DeVeFi:ICP/nICP:Create Vector",
           "description": "Creates a new vector",
@@ -2975,6 +2988,19 @@
               "target_canister_id": "ol6b4-pqaaa-aaaal-qjqia-cai",
               "validator_method_name": "validate_create_vector",
               "target_method_name": "create_vector"
+            }
+          }
+        },
+        {
+          "id": 6211,
+          "name": "transfer ICS",
+          "description": "transfer ICS from Neutrinite",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "2kusx-raaaa-aaaal-qjaxq-cai",
+              "target_canister_id": "ca6gz-lqaaa-aaaaq-aacwa-cai",
+              "validator_method_name": "validate_icrc_transfer",
+              "target_method_name": "icrc1_transfer"
             }
           }
         }
@@ -3432,7 +3458,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100486037144290,
+    "icrc1_total_supply": 100487448942505,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4037,6 +4063,19 @@
               "target_method_name": "deploy_icrc1_tokens_to_icpswap"
             }
           }
+        },
+        {
+          "id": 2005,
+          "name": "transfer_icpex_lp_position",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "ok64y-uiaaa-aaaag-qdcbq-cai",
+              "target_canister_id": "ok64y-uiaaa-aaaag-qdcbq-cai",
+              "validator_method_name": "validate_transfer_icpex_lp_position",
+              "target_method_name": "transfer_icpex_lp_position"
+            }
+          }
         }
       ]
     },
@@ -4176,7 +4215,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995578140980,
+    "icrc1_total_supply": 995576286980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7076,7 +7115,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20155372508130356,
+    "icrc1_total_supply": 20161401915499056,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9076,7 +9115,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25132309667154780,
+    "icrc1_total_supply": 25133158546111704,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -10543,7 +10582,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10025613453950780,
+    "icrc1_total_supply": 10029385313295964,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11085,7 +11124,8 @@
         "n3bau-gaaaa-aaaaj-qa4oq-cai",
         "nscli-qiaaa-aaaaj-qa4pa-cai",
         "nvdn4-5qaaa-aaaaj-qa4pq-cai",
-        "ijyxz-wyaaa-aaaaj-qa4qa-cai"
+        "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+        "2fvu6-tqaaa-aaaap-akksa-cai"
       ],
       "archives": ["apf7i-uiaaa-aaaaq-aac2q-cai"]
     },
@@ -11280,6 +11320,71 @@
               "target_canister_id": "6sul7-xqaaa-aaaap-ahdsq-cai",
               "validator_method_name": "validate_withdraw",
               "target_method_name": "withdraw"
+            }
+          }
+        },
+        {
+          "id": 1100,
+          "name": "Commit proposed assets for upgrading the ic_message_frontend canister",
+          "description": "Commit proposed assets for upgrading the ic_message_frontend canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "2fvu6-tqaaa-aaaap-akksa-cai",
+              "target_canister_id": "2fvu6-tqaaa-aaaap-akksa-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
+            }
+          }
+        },
+        {
+          "id": 1101,
+          "name": "`admin_add_canister` function",
+          "description": "It is used to add more COSE, Profile, and Channel service canisters to the messaging cluster.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "validator_method_name": "validate_admin_add_canister",
+              "target_method_name": "admin_add_canister"
+            }
+          }
+        },
+        {
+          "id": 1102,
+          "name": "`admin_update_price` function",
+          "description": "It is used to update the price for registering a username and creating a channel.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "validator_method_name": "validate_admin_update_price",
+              "target_method_name": "admin_update_price"
+            }
+          }
+        },
+        {
+          "id": 1103,
+          "name": "`admin_collect_token` function",
+          "description": "It is used to collect tokens to a account.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "validator_method_name": "validate_admin_collect_token",
+              "target_method_name": "admin_collect_token"
+            }
+          }
+        },
+        {
+          "id": 1104,
+          "name": "`admin_update_price` function",
+          "description": "It is used to update the price for registering a username and creating a channel.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "validator_method_name": "validate2_admin_update_price",
+              "target_method_name": "admin_update_price"
             }
           }
         }
@@ -11587,7 +11692,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 101964808964515660,
+    "icrc1_total_supply": 102444912051954080,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -12654,7 +12759,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99296599453265740,
+    "icrc1_total_supply": 99310763119867680,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -13827,7 +13932,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 100005311937889090,
+    "icrc1_total_supply": 100005682181081380,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14999,7 +15104,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100052110663144290,
+    "icrc1_total_supply": 100053268098605100,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

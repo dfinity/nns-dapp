@@ -1,7 +1,11 @@
 import { snsTotalTokenSupplyStore } from "$lib/derived/sns-total-token-supply.derived";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import {
+  resetSnsProjects,
+  setProdSnsProjects,
+  setSnsProjects,
+} from "$tests/utils/sns.test-utils";
 import { get } from "svelte/store";
 
 describe("SNS Total Tokens Supply store", () => {
@@ -78,5 +82,11 @@ describe("SNS Total Tokens Supply store", () => {
     ]);
     const store = get(snsTotalTokenSupplyStore);
     expect(store[rootCanisterId.toText()].totalSupply).toEqual(newSupply);
+  });
+
+  it("should convert prod SNSes without error", async () => {
+    await setProdSnsProjects();
+    const store = get(snsTotalTokenSupplyStore);
+    expect(Object.keys(store).length).toBeGreaterThan(25);
   });
 });

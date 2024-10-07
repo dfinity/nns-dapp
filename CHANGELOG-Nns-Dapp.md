@@ -11,6 +11,71 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 133306
+
+### Application
+
+#### Added
+
+* Added `get_tvl` method to `nns-dapp` canister.
+* Display of principal Id and main ICP account Id in the account menu.
+
+#### Changed
+
+* Changes for cleaning up the stable structure migration.
+* Move Canisters button from sidebar to account menu.
+* Move GitHub button from account menu to sidebar.
+* Reduce calls to `sns-governance` canister by getting `nervous_system_parameters` from the aggregator instead.
+* Move theme toggle from account menu to sidebar.
+* The `Markdown` UI component was migrated to `@dfinity/gix-components`.
+
+#### Removed
+
+* Stop making unnecessary calls to load the SNS proposal every time we load the derived state.
+
+#### Fixed
+
+* Fixed a bug where a performance counter in `init` is wiped during state initialization.
+* Bug with parsing nervous system parameters from aborted SNSes.
+
+### Operations
+
+#### Removed
+
+* Removed unused `pocket-ic` dependency.
+
+## Proposal 133098
+
+### Application
+
+#### Added
+
+* Added `get_tvl` method to `nns-dapp` canister.
+* Display of principal Id and main ICP account Id in the account menu.
+
+#### Changed
+
+* Changes for cleaning up the stable structure migration.
+* Move Canisters button from sidebar to account menu.
+* Move GitHub button from account menu to sidebar.
+* Reduce calls to `sns-governance` canister by getting `nervous_system_parameters` from the aggregator instead.
+* Move theme toggle from account menu to sidebar.
+* The `Markdown` UI component was migrated to `@dfinity/gix-components`.
+
+#### Removed
+
+* Stop making unnecessary calls to load the SNS proposal every time we load the derived state.
+
+#### Fixed
+
+* Fixed a bug where a performance counter in `init` is wiped during state initialization.
+
+### Operations
+
+#### Removed
+
+* Removed unused `pocket-ic` dependency.
+
 ## Proposal 132374
 
 ### Application

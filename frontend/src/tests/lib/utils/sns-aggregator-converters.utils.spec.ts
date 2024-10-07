@@ -18,23 +18,27 @@ import type { SnsNervousSystemParameters } from "@dfinity/sns";
 describe("sns aggregator converters utils", () => {
   describe("convertDtoData", () => {
     it("converts aggregator icrc metadata to ic-js types", () => {
-      expect(convertIcrc1Metadata(aggregatorSnsMockDto.icrc1_metadata)).toEqual(
-        [
-          ["icrc1:decimals", { Nat: 8n }],
-          ["icrc1:name", { Text: "CatalyzeDAO" }],
-          ["icrc1:symbol", { Text: "CAT" }],
-          ["icrc1:fee", { Nat: 100000n }],
-        ]
-      );
+      const metadata: CachedSnsTokenMetadataDto = [
+        ["icrc1:decimals", { Nat: [8] }],
+        ["icrc1:name", { Text: "CatalyzeDAO" }],
+        ["icrc1:symbol", { Text: "CAT" }],
+        ["icrc1:fee", { Nat: [100000] }],
+      ];
+      expect(convertIcrc1Metadata(metadata)).toEqual([
+        ["icrc1:decimals", { Nat: 8n }],
+        ["icrc1:name", { Text: "CatalyzeDAO" }],
+        ["icrc1:symbol", { Text: "CAT" }],
+        ["icrc1:fee", { Nat: 100000n }],
+      ]);
     });
 
     it("converts icrc1:fee using not only lower parts of a 64-bit value", () => {
-      const metadata = aggregatorSnsMockDto.icrc1_metadata.map(
-        ([key, value]) => [
-          key,
-          key === "icrc1:fee" ? { Nat: [705032704, 1] } : value,
-        ]
-      ) as CachedSnsTokenMetadataDto;
+      const metadata: CachedSnsTokenMetadataDto = [
+        ["icrc1:decimals", { Nat: [8] }],
+        ["icrc1:name", { Text: "CatalyzeDAO" }],
+        ["icrc1:symbol", { Text: "CAT" }],
+        ["icrc1:fee", { Nat: [705032704, 1] }],
+      ];
       expect(convertIcrc1Metadata(metadata)).toEqual([
         ["icrc1:decimals", { Nat: 8n }],
         ["icrc1:name", { Text: "CatalyzeDAO" }],

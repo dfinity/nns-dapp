@@ -2,10 +2,7 @@ import Canisters from "$lib/pages/Canisters.svelte";
 import { listCanisters } from "$lib/services/canisters.services";
 import { authStore } from "$lib/stores/auth.store";
 import { canistersStore } from "$lib/stores/canisters.store";
-import {
-  mockAuthStoreSubscribe,
-  mockPrincipal,
-} from "$tests/mocks/auth.store.mock";
+import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanistersStoreSubscribe } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
@@ -40,9 +37,8 @@ describe("Canisters", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    authStoreMock = vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    authStoreMock = vi.spyOn(authStore, "subscribe");
+    resetIdentity();
 
     vi.spyOn(canistersStore, "subscribe").mockImplementation(
       mockCanistersStoreSubscribe

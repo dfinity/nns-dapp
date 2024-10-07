@@ -1,5 +1,6 @@
 <script lang="ts">
   import NnsProposalsList from "$lib/components/proposals/NnsProposalsList.svelte";
+  import { notForceCallStrategy } from "$lib/constants/mockable.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import {
     filteredProposals,
@@ -15,7 +16,6 @@
   } from "$lib/stores/proposals.store";
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { notForceCallStrategy } from "$lib/utils/env.utils";
   import { reloadRouteData } from "$lib/utils/navigation.utils";
   import {
     hasMatchingProposals,
@@ -107,7 +107,14 @@
 
     // Show spinner right away avoiding debounce
     loading = true;
-    proposalsStore.setProposals({ proposals: [], certified: undefined });
+    const mutableProposalsStore =
+      proposalsStore.getSingleMutationProposalsStore();
+    mutableProposalsStore.set({
+      // This `certified` is what the subscriber of the store sees.
+      data: { proposals: [], certified: undefined },
+      // This `certified` indicates that the store mutation is final.
+      certified: true,
+    });
 
     debounceFindProposals?.();
   };

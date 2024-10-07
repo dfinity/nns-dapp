@@ -3,24 +3,19 @@ import {
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
 } from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import { getCurrentIdentity } from "$lib/services/auth.services";
 import {
   listNextProposals,
   listProposals,
   loadProposal,
   loadProposalPayload,
 } from "$lib/services/public/proposals.services";
-import { getCurrentIdentity } from "$lib/services/auth.services";
-import { authStore } from "$lib/stores/auth.store";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
 } from "$lib/stores/proposals.store";
-import * as toastsFunctions from "$lib/stores/toasts.store";
-import {
-  mockAuthStoreNoIdentitySubscribe,
-  mockAuthStoreSubscribe,
-} from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import type { ProposalInfo } from "@dfinity/nns";
@@ -29,27 +24,24 @@ import { get } from "svelte/store";
 describe("proposals-services", () => {
   beforeEach(() => {
     toastsStore.reset();
-    proposalsStore.setProposals({ proposals: [], certified: true });
+    proposalsStore.setProposalsForTesting({ proposals: [], certified: true });
+    proposalPayloadsStore.reset();
     vi.clearAllMocks();
     vi.spyOn(console, "error").mockRestore();
   });
 
   describe("logged in user", () => {
     beforeEach(() => {
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
+      resetIdentity();
     });
 
     describe("list", () => {
-      const spySetProposals = vi.spyOn(proposalsStore, "setProposals");
-      const spyPushProposals = vi.spyOn(proposalsStore, "pushProposals");
       let spyQueryProposals;
 
       beforeEach(() => {
         spyQueryProposals = vi
           .spyOn(api, "queryProposals")
-          .mockImplementation(() => Promise.resolve(mockProposals));
+          .mockResolvedValue(mockProposals);
       });
 
       it("should call the canister to list proposals", async () => {
@@ -82,24 +74,42 @@ describe("proposals-services", () => {
       });
 
       it("should not clear the list proposals before query", async () => {
-        expect(spySetProposals).not.toHaveBeenCalled();
+        expect(get(proposalsStore)).toEqual({
+          proposals: [],
+          certified: true,
+        });
         await listProposals({
           loadFinished: () => {
             // do nothing here
           },
         });
-        expect(spySetProposals).toHaveBeenCalledTimes(2);
+        expect(get(proposalsStore)).toEqual({
+          proposals: mockProposals,
+          certified: true,
+        });
       });
 
       it("should push new proposals to the list", async () => {
-        expect(spyPushProposals).not.toHaveBeenCalled();
+        proposalsStore.setProposalsForTesting({
+          proposals: [mockProposals[0]],
+          certified: true,
+        });
+        spyQueryProposals.mockResolvedValue([mockProposals[1]]);
+
+        expect(get(proposalsStore)).toEqual({
+          proposals: [mockProposals[0]],
+          certified: true,
+        });
         await listNextProposals({
           beforeProposal: mockProposals[mockProposals.length - 1].id,
           loadFinished: () => {
             // do nothing here
           },
         });
-        expect(spyPushProposals).toHaveBeenCalledTimes(2);
+        expect(get(proposalsStore)).toEqual({
+          proposals: mockProposals,
+          certified: true,
+        });
       });
 
       it("should call callback when load finished", async () => {
@@ -115,7 +125,7 @@ describe("proposals-services", () => {
 
     describe("list proposal fails", () => {
       beforeEach(() => {
-        vi.spyOn(console, "error").mockImplementation(() => undefined);
+        vi.spyOn(console, "error").mockReturnValue(undefined);
       });
 
       it("show add toast error size too large", async () => {
@@ -155,16 +165,33 @@ describe("proposals-services", () => {
           text: "There was an unexpected issue while searching for the proposals. Error message from api.",
         });
       });
+
+      it("show no error message from api on uncertified error", async () => {
+        const errorMessage = "Error message from api.";
+        vi.spyOn(api, "queryProposals").mockImplementation(
+          async ({ certified }) => {
+            if (!certified) {
+              throw new Error(errorMessage);
+            }
+            return mockProposals;
+          }
+        );
+        await listProposals({
+          loadFinished: () => {
+            // do nothing here
+          },
+        });
+
+        expect(get(toastsStore)).toEqual([]);
+      });
     });
 
     describe("load", () => {
       const spyQueryProposal = vi.spyOn(api, "queryProposal");
 
       beforeEach(() => {
-        spyQueryProposal.mockImplementation(() =>
-          Promise.resolve({ ...mockProposals[0], id: 666n })
-        );
-        proposalsStore.setProposals({
+        spyQueryProposal.mockResolvedValue({ ...mockProposals[0], id: 666n });
+        proposalsStore.setProposalsForTesting({
           proposals: mockProposals,
           certified: true,
         });
@@ -183,52 +210,62 @@ describe("proposals-services", () => {
     });
 
     describe("error message in details", () => {
+      let spyQueryProposal;
+
       beforeEach(() => {
-        vi.spyOn(api, "queryProposal").mockImplementation(() => {
-          throw new Error("test-message");
-        });
+        spyQueryProposal = vi
+          .spyOn(api, "queryProposal")
+          .mockRejectedValue(new Error("test-message"));
         vi.spyOn(console, "error").mockReturnValue();
       });
 
-      it("should show error message in details", async () => {
-        const toastsShow = vi.spyOn(toastsFunctions, "toastsShow");
-        expect(toastsShow).not.toBeCalled();
+      it("should show one error message in details", async () => {
+        expect(get(toastsStore)).toEqual([]);
 
         await loadProposal({
           proposalId: 0n,
           setProposal: vi.fn(),
         });
-        expect(toastsShow).toBeCalledTimes(1);
-        expect(toastsShow).toBeCalledWith({
-          detail: 'id: "0". test-message',
-          labelKey: "error.proposal_not_found",
-          level: "error",
-        });
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: 'An error occurred while loading the proposal. id: "0". test-message',
+          },
+        ]);
+
+        // `queryProposal` gave an error twice (query + update) but it should
+        // result only in a single toast message.
+        expect(spyQueryProposal).toBeCalledTimes(2);
       });
     });
 
     describe("empty list", () => {
-      it("should not push empty proposals to the list", async () => {
-        vi.spyOn(api, "queryProposals").mockImplementation(() =>
-          Promise.resolve([])
-        );
+      beforeEach(() => {
+        vi.spyOn(api, "queryProposals").mockResolvedValue([]);
+      });
 
-        const spy = vi.spyOn(proposalsStore, "pushProposals");
+      it("should not push empty proposals to the list", async () => {
+        proposalsStore.setProposalsForTesting({
+          proposals: mockProposals,
+          certified: true,
+        });
+        expect(get(proposalsStore)).toEqual({
+          proposals: mockProposals,
+          certified: true,
+        });
         await listNextProposals({
           beforeProposal: mockProposals[mockProposals.length - 1].id,
           loadFinished: () => {
             // do nothing here
           },
         });
-        expect(spy).toHaveBeenCalledTimes(0);
-        spy.mockClear();
+        expect(get(proposalsStore)).toEqual({
+          proposals: mockProposals,
+          certified: true,
+        });
       });
 
       it("should call callback with pagination over", async () => {
-        vi.spyOn(api, "queryProposals").mockImplementation(() =>
-          Promise.resolve([])
-        );
-
         const spyCallback = vi.fn();
 
         await listNextProposals({
@@ -237,9 +274,13 @@ describe("proposals-services", () => {
         });
 
         expect(spyCallback).toHaveBeenCalledTimes(2);
-        expect(spyCallback).toHaveBeenLastCalledWith({
+        expect(spyCallback).toHaveBeenCalledWith({
           paginationOver: true,
           certified: true,
+        });
+        expect(spyCallback).toHaveBeenCalledWith({
+          paginationOver: true,
+          certified: false,
         });
       });
     });
@@ -248,9 +289,7 @@ describe("proposals-services", () => {
   describe("no identity", () => {
     beforeEach(() => {
       vi.spyOn(console, "error").mockReturnValue();
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreNoIdentitySubscribe
-      );
+      setNoIdentity();
     });
 
     it("should use anonymous identity", () => {
@@ -281,9 +320,7 @@ describe("proposals-services", () => {
     it("should load proposal if no identity", async () => {
       const spyQueryProposal = vi
         .spyOn(api, "queryProposal")
-        .mockImplementation(() =>
-          Promise.resolve({ ...mockProposals[0], id: 666n })
-        );
+        .mockResolvedValue({ ...mockProposals[0], id: 666n });
       expect(spyQueryProposal).not.toBeCalled();
 
       let result;
@@ -300,12 +337,10 @@ describe("proposals-services", () => {
     let spyQueryProposals;
 
     beforeEach(() => {
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreNoIdentitySubscribe
-      );
+      setNoIdentity();
       spyQueryProposals = vi
         .spyOn(api, "queryProposals")
-        .mockImplementation(() => Promise.resolve(mockProposals));
+        .mockResolvedValue(mockProposals);
     });
 
     it("should load proposals if filters are empty", async () => {
@@ -330,12 +365,11 @@ describe("proposals-services", () => {
 
   describe("getProposalPayload", () => {
     const spyQueryProposalPayload = vi.spyOn(api, "queryProposalPayload");
+    const mockProposalPayload = { data: "test" };
 
     beforeEach(() => {
       vi.spyOn(console, "error").mockReturnValue();
-      spyQueryProposalPayload.mockImplementation(() =>
-        Promise.resolve({ data: "test" })
-      );
+      spyQueryProposalPayload.mockResolvedValue(mockProposalPayload);
     });
 
     it("should call queryProposalPayload", async () => {
@@ -345,23 +379,20 @@ describe("proposals-services", () => {
     });
 
     it("should update proposalPayloadsStore", async () => {
-      const spyOnSetPayload = vi.spyOn(proposalPayloadsStore, "setPayload");
-      expect(spyOnSetPayload).not.toBeCalled();
+      expect(get(proposalPayloadsStore)).toEqual(new Map());
       await loadProposalPayload({ proposalId: 0n });
 
-      expect(spyOnSetPayload).toBeCalledTimes(2);
-      expect(spyOnSetPayload).toHaveBeenLastCalledWith({
-        payload: { data: "test" },
-        proposalId: 0n,
-      });
+      expect(get(proposalPayloadsStore)).toEqual(
+        new Map([[0n, mockProposalPayload]])
+      );
     });
 
     it("should update proposalPayloadsStore with null if the payload was not found", async () => {
       proposalPayloadsStore.reset();
 
-      vi.spyOn(api, "queryProposalPayload").mockImplementation(() => {
-        throw new ProposalPayloadNotFoundError();
-      });
+      vi.spyOn(api, "queryProposalPayload").mockRejectedValue(
+        new ProposalPayloadNotFoundError()
+      );
 
       await loadProposalPayload({ proposalId: 0n });
 
@@ -371,9 +402,9 @@ describe("proposals-services", () => {
     it("should update proposalPayloadsStore with null if the payload was not found", async () => {
       proposalPayloadsStore.reset();
 
-      vi.spyOn(api, "queryProposalPayload").mockImplementation(() => {
-        throw new ProposalPayloadTooLargeError();
-      });
+      vi.spyOn(api, "queryProposalPayload").mockRejectedValue(
+        new ProposalPayloadTooLargeError()
+      );
 
       await loadProposalPayload({ proposalId: 0n });
 

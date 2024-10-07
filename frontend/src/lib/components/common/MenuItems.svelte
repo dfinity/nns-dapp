@@ -1,6 +1,6 @@
 <script lang="ts">
-  import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
+  import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
   import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -98,7 +98,7 @@
   {/if}
 
   <div class="menu-footer" class:hidden={$menuCollapsed && !$layoutMenuOpen}>
-    <MenuMetrics />
+    <TotalValueLocked layout="stacked" />
     <div class="menu-footer-buttons">
       <div class="grow-item"><SourceCodeButton /></div>
       <ThemeToggleButton />
@@ -115,24 +115,26 @@
   }
 
   .menu-footer {
-    display: none;
+    display: flex;
     flex-direction: column;
     gap: var(--padding);
     // To accomodate the 100% on-chain logo
     // if that logo changes please update this margin as well
-    margin: auto var(--padding-3x) var(--padding-8x) 0;
+    margin: auto var(--padding-3x) calc(var(--padding-8x) + var(--padding-1_5x))
+      0;
     // Handle menu collapse animation
+    visibility: visible;
     opacity: 1;
     transition:
       transform linear var(--animation-time-normal),
-      opacity linear calc(var(--animation-time-short) / 2);
+      opacity linear var(--animation-time-normal);
     &.hidden {
+      visibility: hidden;
       opacity: 0;
-      transform: translate(-150%, 0);
-    }
-    //Hide menu footer similar to surrounding elements
-    @media (min-height: 654px) {
-      display: flex;
+      transform: translate(-300%, 0);
+      transition:
+        transform linear var(--animation-time-short),
+        opacity linear calc(var(--animation-time-short) / 2);
     }
   }
   .menu-footer-buttons {

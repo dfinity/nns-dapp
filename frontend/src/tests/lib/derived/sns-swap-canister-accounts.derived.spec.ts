@@ -1,5 +1,5 @@
 import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
-import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+import { snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
@@ -17,11 +17,11 @@ describe("sns swap canisters accounts store", () => {
   };
 
   beforeEach(() => {
-    snsAggregatorStore.reset();
+    snsAggregatorIncludingAbortedProjectsStore.reset();
   });
 
   it("should convert swap canisters to accounts for a given controller", () => {
-    snsAggregatorStore.setData([aggregatorData]);
+    snsAggregatorIncludingAbortedProjectsStore.setData([aggregatorData]);
 
     const controller = mockPrincipal;
     const store = createSwapCanisterAccountsStore(controller);
@@ -39,7 +39,7 @@ describe("sns swap canisters accounts store", () => {
   });
 
   it("should empty array if no controller", () => {
-    snsAggregatorStore.setData([aggregatorData]);
+    snsAggregatorIncludingAbortedProjectsStore.setData([aggregatorData]);
 
     const store = createSwapCanisterAccountsStore(undefined);
 
@@ -55,7 +55,10 @@ describe("sns swap canisters accounts store", () => {
         swap_canister_id: swapCanisterId2.toText(),
       },
     };
-    snsAggregatorStore.setData([aggregatorData, aggregatorData2]);
+    snsAggregatorIncludingAbortedProjectsStore.setData([
+      aggregatorData,
+      aggregatorData2,
+    ]);
 
     const controller = mockPrincipal;
     const store = createSwapCanisterAccountsStore(controller);

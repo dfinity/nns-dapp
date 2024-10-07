@@ -1,11 +1,12 @@
 import SnsNeuronPageHeading from "$lib/components/sns-neuron-detail/SnsNeuronPageHeading.svelte";
-import { SECONDS_IN_EIGHT_YEARS } from "$lib/constants/constants";
-import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
-import { authStore } from "$lib/stores/auth.store";
 import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+  SECONDS_IN_DAY,
+  SECONDS_IN_EIGHT_YEARS,
+  SECONDS_IN_FOUR_YEARS,
+} from "$lib/constants/constants";
+import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import { nowInSeconds } from "$lib/utils/date.utils";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
@@ -19,7 +20,14 @@ import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
 describe("SnsNeuronPageHeading", () => {
-  const minDissolveDelayToVote = 2_629_800n;
+  const minDissolveDelayToVote = BigInt(30 * SECONDS_IN_DAY);
+  const maxDissolveDelay = BigInt(SECONDS_IN_EIGHT_YEARS);
+  const maxDissolveDelayBonusMultiplier = 2;
+  const maxDissolveDelayBonusPercentage =
+    100 * (maxDissolveDelayBonusMultiplier - 1);
+  const maxAgeForBonus = BigInt(SECONDS_IN_FOUR_YEARS);
+  const maxAgeBonusMultiplier = 1.25;
+  const maxAgeBonusPercentage = 100 * (maxAgeBonusMultiplier - 1);
 
   const renderSnsNeuronCmp = (neuron: SnsNeuron) => {
     const { container } = render(SnsNeuronPageHeading, {
@@ -27,14 +35,16 @@ describe("SnsNeuronPageHeading", () => {
         neuron,
         parameters: {
           ...snsNervousSystemParametersMock,
-          max_dissolve_delay_seconds: [3_155_760_000n],
-          max_dissolve_delay_bonus_percentage: [100n],
+          max_dissolve_delay_seconds: [maxDissolveDelay],
+          max_dissolve_delay_bonus_percentage: [
+            BigInt(maxDissolveDelayBonusPercentage),
+          ],
           neuron_minimum_stake_e8s: [100_000_000n],
-          max_neuron_age_for_age_bonus: [15_778_800n],
+          max_neuron_age_for_age_bonus: [maxAgeForBonus],
           neuron_minimum_dissolve_delay_to_vote_seconds: [
             minDissolveDelayToVote,
           ],
-          max_age_bonus_percentage: [25n],
+          max_age_bonus_percentage: [BigInt(maxAgeBonusPercentage)],
         },
       },
     });
@@ -43,7 +53,10 @@ describe("SnsNeuronPageHeading", () => {
   };
 
   beforeEach(() => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
+    // Make sure that nowInSeconds() returns a fixed value for the calculation
+    // of the neuron age.
+    vi.useFakeTimers();
   });
 
   it("should render the neuron's stake", async () => {
@@ -57,17 +70,23 @@ describe("SnsNeuronPageHeading", () => {
   });
 
   it("should render the neuron's voting power", async () => {
-    const stake = 314_000_000n;
     const neuron = createMockSnsNeuron({
       id: [1],
       state: NeuronState.Locked,
-      dissolveDelaySeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
+      stake: 200_000_000n,
       stakedMaturity: 100_000_000n,
-      stake,
+      dissolveDelaySeconds: maxDissolveDelay,
+      ageSinceTimestampSeconds: BigInt(nowInSeconds()) - 2n * maxAgeForBonus,
     });
     const po = renderSnsNeuronCmp(neuron);
 
-    expect(await po.getVotingPower()).toEqual("Voting Power: 5.59");
+    // Expected voting power is:
+    // (stake + staked maturity)
+    //   * max dissolve delay multiplier
+    //   * max age bonus multiplier
+    // = (2.00 + 1.00) * 2.00 * 1.25
+    // = 7.50
+    expect(await po.getVotingPower()).toEqual("Voting Power: 7.50");
   });
 
   it("should render no votig power if neuron can't vote", async () => {

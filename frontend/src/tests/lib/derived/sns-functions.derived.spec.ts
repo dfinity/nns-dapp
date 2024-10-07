@@ -1,7 +1,11 @@
 import { snsFunctionsStore } from "$lib/derived/sns-functions.derived";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import {
+  resetSnsProjects,
+  setProdSnsProjects,
+  setSnsProjects,
+} from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
@@ -92,5 +96,11 @@ describe("sns functions store", () => {
     ]);
     const store2 = get(snsFunctionsStore);
     expect(store2[mockPrincipal.toText()]?.nsFunctions).toEqual([]);
+  });
+
+  it("should convert prod SNSes without error", async () => {
+    await setProdSnsProjects();
+    const store = get(snsFunctionsStore);
+    expect(Object.keys(store).length).toBeGreaterThan(25);
   });
 });
