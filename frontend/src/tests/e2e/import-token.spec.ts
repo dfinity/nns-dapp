@@ -1,6 +1,10 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  setFeatureFlag,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 const TEST_TOKEN_NAME = "ckRED";
@@ -17,6 +21,12 @@ test("Test imported tokens", async ({ page, context }) => {
   const tokensPagePo = appPo.getTokensPo().getTokensPagePo();
   const importButtonPo = tokensPagePo.getImportTokenButtonPo();
   const tokenNames = () => tokensPagePo.getTokenNames();
+
+  await setFeatureFlag({
+    page,
+    featureFlag: "ENABLE_IMPORT_TOKEN",
+    value: true,
+  });
 
   step("Wait for the import token button is present");
 
