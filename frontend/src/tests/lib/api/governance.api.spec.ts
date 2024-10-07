@@ -1,6 +1,7 @@
 import {
   addHotkey,
   autoStakeMaturity,
+  changeNeuronVisibility,
   disburse,
   increaseDissolveDelay,
   joinCommunityFund,
@@ -27,7 +28,12 @@ import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { Agent } from "@dfinity/agent";
 import { LedgerCanister } from "@dfinity/ledger-icp";
-import { GovernanceCanister, Topic, Vote } from "@dfinity/nns";
+import {
+  GovernanceCanister,
+  NeuronVisibility,
+  Topic,
+  Vote,
+} from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mock } from "vitest-mock-extended";
 
@@ -727,6 +733,48 @@ describe("neurons-api", () => {
       expect(mockGovernanceCanister.getLastestRewardEvent).toHaveBeenCalledWith(
         certified
       );
+    });
+  });
+
+  describe("changeNeuronVisibility", () => {
+    const neuronIds = [10n, 20n, 30n];
+    const visibility = NeuronVisibility.Public;
+
+    it("changes visibility for multiple neurons", async () => {
+      expect(mockGovernanceCanister.setVisibility).not.toHaveBeenCalled();
+
+      mockGovernanceCanister.setVisibility.mockResolvedValue(undefined);
+
+      await changeNeuronVisibility({
+        neuronIds,
+        visibility,
+        identity: mockIdentity,
+      });
+
+      expect(mockGovernanceCanister.setVisibility).toHaveBeenCalledTimes(3);
+      neuronIds.forEach((neuronId) => {
+        expect(mockGovernanceCanister.setVisibility).toHaveBeenCalledWith(
+          neuronId,
+          visibility
+        );
+      });
+    });
+
+    it("throws error when changing visibility fails", async () => {
+      expect(mockGovernanceCanister.setVisibility).not.toHaveBeenCalled();
+
+      const error = new Error("Visibility change failed");
+      mockGovernanceCanister.setVisibility.mockRejectedValue(error);
+
+      await expect(
+        changeNeuronVisibility({
+          neuronIds,
+          visibility,
+          identity: mockIdentity,
+        })
+      ).rejects.toThrow(error);
+
+      expect(mockGovernanceCanister.setVisibility).toHaveBeenCalledTimes(3);
     });
   });
 });

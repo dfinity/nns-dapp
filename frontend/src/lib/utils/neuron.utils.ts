@@ -34,6 +34,7 @@ import {
 import {
   NeuronState,
   NeuronType,
+  NeuronVisibility,
   Topic,
   Vote,
   ineligibleNeurons,
@@ -169,12 +170,12 @@ export const votingPower = ({
   const dissolveDelayMultiplier = bonusMultiplier({
     amount: dissolveDelay,
     maxBonus: maxDissolveDelayBonus,
-    maxAmount: maxDissolveDelaySeconds,
+    amountForMaxBonus: maxDissolveDelaySeconds,
   });
   const ageMultiplier = bonusMultiplier({
     amount: ageSeconds,
     maxBonus: maxAgeBonus,
-    maxAmount: maxAgeSeconds,
+    amountForMaxBonus: maxAgeSeconds,
   });
   // We don't use dissolveDelayMultiplier and ageMultiplier directly because those are specific to NNS.
   // This function is generic and could be used for SNS.
@@ -187,21 +188,21 @@ export const dissolveDelayMultiplier = (delayInSeconds: bigint): number =>
   bonusMultiplier({
     amount: delayInSeconds,
     maxBonus: MAX_DISSOLVE_DELAY_BONUS,
-    maxAmount: SECONDS_IN_EIGHT_YEARS,
+    amountForMaxBonus: SECONDS_IN_EIGHT_YEARS,
   });
 
 export const ageMultiplier = (ageSeconds: bigint): number =>
   bonusMultiplier({
     amount: ageSeconds,
     maxBonus: MAX_AGE_BONUS,
-    maxAmount: SECONDS_IN_FOUR_YEARS,
+    amountForMaxBonus: SECONDS_IN_FOUR_YEARS,
   });
 
 // Calculates the bonus multiplier for an amount (such as dissolve delay or age)
 // which results in bonus eligibility which scales linearly from 1 to
 // `maxBonus`. For example for dissolve delay, the values
 //   amount: 4 years
-//   maxBonusAmount: 8 years
+//   amountForMaxBonus: 8 years
 //   maxBonus: 1
 // Would mean that there is a maximum bonus of 1 = 100% (which means a
 // multiplier of 2) but with a dissolve delay of 4 years out of a maximum of
@@ -209,15 +210,17 @@ export const ageMultiplier = (ageSeconds: bigint): number =>
 // So in this case the return value would be 1.5.
 export const bonusMultiplier = ({
   amount,
-  maxAmount,
+  amountForMaxBonus,
   maxBonus,
 }: {
   amount: bigint;
-  maxAmount: number;
+  amountForMaxBonus: number;
   maxBonus: number;
 }): number => {
   const bonusProportion =
-    maxAmount === 0 ? 0 : Math.min(Number(amount), maxAmount) / maxAmount;
+    amountForMaxBonus === 0
+      ? 0
+      : Math.min(Number(amount), amountForMaxBonus) / amountForMaxBonus;
   return 1 + maxBonus * bonusProportion;
 };
 
@@ -1061,4 +1064,8 @@ export const getTopicSubtitle = ({
       i18n.follow_neurons.topic_18_subtitle,
   };
   return mapper[topic];
+};
+
+export const isPublicNeuron = (neuronInfo: NeuronInfo): boolean => {
+  return neuronInfo.visibility === NeuronVisibility.Public;
 };

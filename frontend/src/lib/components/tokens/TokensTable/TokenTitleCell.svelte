@@ -28,9 +28,9 @@
     <Hash text={`${rowData.universeId.toText()}`} tagName="span" tooltipTop />
   {:else}
     <div class="title-wrapper">
-      <h5 data-tid="project-name">{rowData.title}</h5>
+      <h5 data-tid="project-name" class="title">{rowData.title}</h5>
       {#if nonNullish(rowData.subtitle)}
-        <span data-tid="project-subtitle" class="description"
+        <span data-tid="project-subtitle" class="description subtitle"
           >{rowData.subtitle}</span
         >
       {/if}
@@ -50,6 +50,13 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/text";
+
+  .title,
+  .subtitle {
+    @include text.clamp(2);
+    word-break: break-word;
+  }
 
   h5 {
     margin: 0;

@@ -22,7 +22,7 @@ import type { Account } from "$lib/types/account";
 import { LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { isController } from "$lib/utils/canisters.utils";
-import { notForceCallStrategy } from "$lib/utils/env.utils";
+import { isLastCall } from "$lib/utils/env.utils";
 import {
   mapCanisterErrorToToastMessage,
   toToastError,
@@ -48,10 +48,10 @@ export const listCanisters = async ({
     strategy: FORCE_CALL_STRATEGY,
     onLoad: ({ response: canisters, certified }) =>
       canistersStore.setCanisters({ canisters, certified }),
-    onError: ({ error: err, certified }) => {
+    onError: ({ error: err, certified, strategy }) => {
       console.error(err);
 
-      if (!certified && notForceCallStrategy()) {
+      if (!isLastCall({ strategy, certified })) {
         return;
       }
 

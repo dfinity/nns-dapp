@@ -35,4 +35,8 @@ export class WalletPageHeadingPo extends BasePageObject {
       this.root.byTestId("wallet-page-heading-principal")
     ).getFullText();
   }
+
+  async hasImportedTokenTag(): Promise<boolean> {
+    return this.isPresent("imported-token-tag");
+  }
 }

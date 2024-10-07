@@ -1,5 +1,6 @@
 import * as ckBTCMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import * as importedTokensApi from "$lib/api/imported-tokens.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
@@ -55,6 +56,7 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/sns-ledger.api");
@@ -668,15 +670,48 @@ describe("Tokens route", () => {
     });
 
     describe("failed imported tokens", () => {
+      const failedImportedTokenIdText = "aaaaa-aa";
+      const failedImportedTokenId = Principal.fromText(
+        failedImportedTokenIdText
+      );
       beforeEach(() => {
         resetIdentity();
 
-        // Add 2 imported tokens
+        vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
+          async ({ canisterId }) => {
+            const balancesMap = {
+              [CKBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
+              [CKETH_UNIVERSE_CANISTER_ID.toText()]: 0n,
+              [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: ckUSDCBalanceE8s,
+              [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
+              [ledgerCanisterIdTetris.toText()]: tetrisBalanceE8s,
+              [ledgerCanisterIdPacman.toText()]: 0n,
+              [importedToken1Id.toText()]: 10n,
+              [importedToken2Id.toText()]: 0n,
+              [failedImportedTokenIdText]: 0n,
+            };
+            if (isNullish(balancesMap[canisterId.toText()])) {
+              throw new Error(
+                `Account not found for canister ${canisterId.toText()}`
+              );
+            }
+            return balancesMap[canisterId.toText()];
+          }
+        );
+
+        // Add 3 imported tokens
         importedTokensStore.set({
-          importedTokens: [importedToken1Data, importedToken2Data],
+          importedTokens: [
+            importedToken1Data,
+            importedToken2Data,
+            {
+              ledgerCanisterId: failedImportedTokenId,
+              indexCanisterId: undefined,
+            },
+          ],
           certified: true,
         });
-        failedImportedTokenLedgerIdsStore.add(importedToken1Id.toText());
+        failedImportedTokenLedgerIdsStore.add(failedImportedTokenIdText);
       });
 
       it("should render failed imported tokens in the table", async () => {
@@ -687,12 +722,13 @@ describe("Tokens route", () => {
         expect(tokenNames).toEqual([
           "Internet Computer",
           "ckBTC",
-          "ckETH",
           "ckUSDC",
-          "ATOKEN2", // loaded imported token
-          "Pacman",
+          "ATOKEN2",
           "Tetris",
-          importedToken1Id.toText(), // failed imported token
+          "ZTOKEN1",
+          failedImportedTokenIdText, // failed imported token
+          "ckETH",
+          "Pacman",
         ]);
       });
 
@@ -706,12 +742,13 @@ describe("Tokens route", () => {
         expect(tokenNames).toEqual([
           "Internet Computer",
           "ckBTC",
-          "ckETH",
           "ckUSDC",
-          importedToken2Id.toText(),
-          "Pacman",
           "Tetris",
-          importedToken1Id.toText(),
+          "ZTOKEN1",
+          failedImportedTokenIdText, // failed
+          importedToken2Id.toText(), // failed
+          "ckETH",
+          "Pacman",
         ]);
       });
 
@@ -720,11 +757,11 @@ describe("Tokens route", () => {
         const tokensPagePo = po.getTokensPagePo();
         const failedTokenRow = await tokensPagePo
           .getTokensTable()
-          .getRowByName(importedToken1Id.toText());
+          .getRowByName(failedImportedTokenIdText);
 
         expect(
           await failedTokenRow.getFailedLedgerCanisterHashPo().getFullText()
-        ).toEqual(importedToken1Id.toText());
+        ).toEqual(failedImportedTokenIdText);
         expect(await failedTokenRow.hasUnavailableBalance()).toEqual(true);
         expect(
           await failedTokenRow.getFailedTokenTooltipPo().getTooltipText()
@@ -749,10 +786,117 @@ describe("Tokens route", () => {
         };
 
         for (const rowPo of rowsPos) {
-          if ((await rowPo.getProjectName()) !== importedToken1Id.toText()) {
+          if ((await rowPo.getProjectName()) !== failedImportedTokenIdText) {
             await checkForFailedUI(rowPo);
           }
         }
+      });
+
+      it("should not display failed token actions for not failed tokens", async () => {
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+        const ckBTCTokenRow = await tokensPagePo
+          .getTokensTable()
+          .getRowByName("ckBTC");
+        const notFailedTokenRow = await tokensPagePo
+          .getTokensTable()
+          .getRowByName("ZTOKEN1");
+
+        expect(
+          await ckBTCTokenRow.getGoToDashboardButton().isPresent()
+        ).toEqual(false);
+        expect(await ckBTCTokenRow.getRemoveActionButton().isPresent()).toEqual(
+          false
+        );
+        expect(
+          await notFailedTokenRow.getGoToDashboardButton().isPresent()
+        ).toEqual(false);
+        expect(
+          await notFailedTokenRow.getRemoveActionButton().isPresent()
+        ).toEqual(false);
+      });
+
+      it("should have view on dashboard action button", async () => {
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+        const failedTokenRow = await tokensPagePo
+          .getTokensTable()
+          .getRowByName(failedImportedTokenIdText);
+
+        expect(
+          await failedTokenRow.getGoToDashboardButton().isPresent()
+        ).toEqual(true);
+        expect(await failedTokenRow.getGoToDashboardButton().getHref()).toEqual(
+          `https://dashboard.internetcomputer.org/canister/${failedImportedTokenIdText}`
+        );
+      });
+
+      it("provides possibility to remove failed imported token", async () => {
+        vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue();
+        vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
+          imported_tokens: [
+            {
+              ledger_canister_id: importedToken1Id,
+              index_canister_id: [],
+            },
+            {
+              ledger_canister_id: importedToken2Id,
+              index_canister_id: [],
+            },
+          ],
+        });
+        const po = await renderPage();
+        const removeConfirmationPo = po.getImportTokenRemoveConfirmationPo();
+        const tokensPagePo = po.getTokensPagePo();
+        const failedTokenRow = await tokensPagePo
+          .getTokensTable()
+          .getRowByName(failedImportedTokenIdText);
+
+        expect(await po.getTokensPagePo().getTokenNames()).toEqual([
+          "Internet Computer",
+          "ckBTC",
+          "ckUSDC",
+          "ATOKEN2",
+          "Tetris",
+          "ZTOKEN1",
+          "aaaaa-aa", // failedTokenRow
+          "ckETH",
+          "Pacman",
+        ]);
+
+        // Initiating the removal.
+        await failedTokenRow.getRemoveActionButton().click();
+        await runResolvedPromises();
+
+        // Confirm the removal.
+        expect(await removeConfirmationPo.isPresent()).toBe(true);
+        expect(get(importedTokensStore).importedTokens).toEqual([
+          importedToken1Data,
+          importedToken2Data,
+          {
+            ledgerCanisterId: failedImportedTokenId,
+            indexCanisterId: undefined,
+          },
+        ]);
+
+        await removeConfirmationPo.clickYes();
+        await removeConfirmationPo.waitForClosed();
+        await runResolvedPromises();
+
+        expect(get(importedTokensStore).importedTokens).toEqual([
+          importedToken1Data,
+          importedToken2Data,
+        ]);
+        expect(await po.getTokensPagePo().getTokenNames()).toEqual([
+          "Internet Computer",
+          "ckBTC",
+          "ckUSDC",
+          "ATOKEN2",
+          "Tetris",
+          "ZTOKEN1",
+          "ckETH",
+          "Pacman",
+        ]);
       });
     });
 

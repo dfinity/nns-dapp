@@ -21,6 +21,7 @@
 
   .summary-title {
     @include fonts.h3;
-    @include text.truncate;
+    @include text.clamp(1);
+    word-break: break-word;
   }
 </style>

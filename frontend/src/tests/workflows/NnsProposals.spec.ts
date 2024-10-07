@@ -8,10 +8,7 @@ import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposal
 import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { page } from "$mocks/$app/stores";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
@@ -53,9 +50,7 @@ describe('NnsProposals when "all proposals" selected', () => {
   describe("when signed in user", () => {
     beforeEach(() => {
       vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
+      resetIdentity();
     });
 
     it("should list proposals certified and uncertified", async () => {

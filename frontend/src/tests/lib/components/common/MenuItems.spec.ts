@@ -11,6 +11,7 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { resetMockedConstants } from "$tests/utils/mockable-constants.test-utils";
 import type { ProposalInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
@@ -188,9 +189,24 @@ describe("MenuItems", () => {
       const menuItemsPo = renderComponent();
 
       expect(await menuItemsPo.getSourceCodeButtonPo().isPresent()).toBe(true);
-      expect(await menuItemsPo.getSourceCodeButtonLink()).toBe(
+      expect(await menuItemsPo.getSourceCodeButtonPo().getHref()).toBe(
         "https://github.com/dfinity/nns-dapp"
       );
+    });
+
+    it("should display Total Value Locked button", async () => {
+      const menuItemsPo = renderComponent();
+
+      expect(await menuItemsPo.getTotalValueLockedLinkPo().isPresent()).toBe(
+        true
+      );
+      expect(await menuItemsPo.getTotalValueLockedLinkPo().getHref()).toBe(
+        "https://dashboard.internetcomputer.org/neurons"
+      );
+
+      afterAll(() => {
+        resetMockedConstants();
+      });
     });
   });
 });

@@ -1,7 +1,9 @@
 import * as agent from "$lib/api/agent.api";
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import { queryFinalizationStatus } from "$lib/api/sns-sale.api";
 import { authStore } from "$lib/stores/auth.store";
+import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { LaunchpadPo } from "$tests/page-objects/Launchpad.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import Launchpad from "$tests/workflows/Launchpad/LaunchpadWithLayout.svelte";
@@ -32,6 +34,8 @@ describe("Launchpad", () => {
 
     // TODO: agent mocked because some calls to global.fetch were exposed when we migrated to agent-js v0.20.2
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+
+    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
 
     // Depends on the `snsAggregatorUrl` set in `vi-setup.ts`.
     const aggUrlRegex =

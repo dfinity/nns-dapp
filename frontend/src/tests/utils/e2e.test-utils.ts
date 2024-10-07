@@ -110,13 +110,18 @@ export const replaceContent = async ({
   pattern: RegExp;
   replacements: string[];
 }): Promise<void> => {
-  await page.evaluate(
-    ({ selectors, pattern, replacements }) =>
+  const replacementCount = await page.evaluate(
+    ({ selectors, pattern, replacements }) => {
+      let replacementCount = 0;
       document.querySelectorAll(selectors.join(", ")).forEach((el, i) => {
         if (pattern.test(el.innerHTML)) {
           el.innerHTML = replacements[i % replacements.length];
+          replacementCount++;
         }
-      }),
+      });
+      return replacementCount;
+    },
     { selectors, pattern, replacements }
   );
+  expect(replacementCount).toBeGreaterThan(0);
 };

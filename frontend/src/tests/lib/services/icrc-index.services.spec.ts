@@ -1,7 +1,7 @@
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import { matchLedgerIndexPair } from "$lib/services/icrc-index.services";
 import * as toastsStore from "$lib/stores/toasts.store";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 
 describe("icrc-index.services", () => {
@@ -16,14 +16,23 @@ describe("icrc-index.services", () => {
     });
 
     it("should return true when the ledger canister IDs match", async () => {
-      vi.spyOn(icrcIndexApi, "getLedgerId").mockResolvedValue(ledgerCanisterId);
+      const spyOnGetLedgerId = vi
+        .spyOn(icrcIndexApi, "getLedgerId")
+        .mockResolvedValue(ledgerCanisterId);
 
+      expect(spyOnGetLedgerId).toBeCalledTimes(0);
       const result = await matchLedgerIndexPair({
         ledgerCanisterId,
         indexCanisterId,
       });
 
       expect(result).toEqual(true);
+      expect(spyOnGetLedgerId).toBeCalledTimes(1);
+      expect(spyOnGetLedgerId).toBeCalledWith({
+        certified: true,
+        identity: mockIdentity,
+        indexCanisterId,
+      });
     });
 
     it("should return false when the ledger canister IDs don't match", async () => {

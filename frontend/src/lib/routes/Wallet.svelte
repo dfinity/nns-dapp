@@ -16,12 +16,31 @@
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { nonNullish } from "@dfinity/utils";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { goto } from "$app/navigation";
+  import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
   layoutTitleStore.set({
     title: $i18n.wallet.title,
   });
+
+  let isUnknownToken = false;
+  $: isUnknownToken =
+    !$isNnsUniverseStore &&
+    !$isCkBTCUniverseStore &&
+    !$isIcrcTokenUniverseStore &&
+    // We can't be sure that the token is unknown
+    // before we have the list of Sns projects.
+    nonNullish($snsAggregatorStore.data) &&
+    !nonNullish($snsProjectSelectedStore);
+  $: if (isUnknownToken) {
+    // This will also cover the case when the user was logged out
+    // being on the wallet page of an imported token
+    // (imported tokens are not available when signed out).
+    goto(AppPath.Tokens);
+  }
 </script>
 
 <TestIdWrapper testId="wallet-component">

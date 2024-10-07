@@ -2,11 +2,7 @@ import NnsNeuronHotkeysCard from "$lib/components/neuron-detail/NnsNeuronHotkeys
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { removeHotkey } from "$lib/services/neurons.services";
-import { authStore } from "$lib/stores/auth.store";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
@@ -43,7 +39,7 @@ describe("NnsNeuronHotkeysCard", () => {
   };
 
   beforeEach(() => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
     vi.clearAllMocks();
   });
 

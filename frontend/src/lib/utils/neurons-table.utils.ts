@@ -5,6 +5,7 @@ import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { buildNeuronUrl } from "$lib/utils/navigation.utils";
 import {
   getNeuronTags,
+  isPublicNeuron,
   isSpawning,
   neuronAvailableMaturity,
   neuronStake,
@@ -69,6 +70,7 @@ export const tableNeuronsFromNeuronInfos = ({
         accounts,
         i18n,
       }).map(({ text }) => text),
+      isPublic: isPublicNeuron(neuronInfo),
     };
   });
 };
@@ -110,6 +112,7 @@ export const tableNeuronsFromSnsNeurons = ({
         identity,
         i18n,
       }).map(({ text }) => text),
+      isPublic: false,
     };
   });
 };

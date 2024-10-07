@@ -106,6 +106,26 @@ describe("imported-tokens-services", () => {
       });
     });
 
+    it("should not display toast on uncertified error", async () => {
+      const spyToastError = vi.spyOn(toastsStore, "toastsError");
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockImplementation(
+        async ({ certified }) => {
+          if (!certified) {
+            throw testError;
+          }
+          return {
+            imported_tokens: [importedTokenA, importedTokenB],
+          };
+        }
+      );
+
+      expect(spyToastError).not.toBeCalled();
+
+      await loadImportedTokens();
+
+      expect(spyToastError).not.toBeCalled();
+    });
+
     it("should reset store on error", async () => {
       vi.spyOn(importedTokensApi, "getImportedTokens").mockRejectedValue(
         testError
@@ -348,11 +368,6 @@ describe("imported-tokens-services", () => {
     });
 
     it("should update the store", async () => {
-      const spyGetImportedTokens = vi
-        .spyOn(importedTokensApi, "getImportedTokens")
-        .mockResolvedValue({
-          imported_tokens: [importedTokenB],
-        });
       vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue(
         undefined
       );
@@ -360,7 +375,6 @@ describe("imported-tokens-services", () => {
         importedTokens: [importedTokenDataA, importedTokenDataB],
         certified: true,
       });
-      expect(spyGetImportedTokens).toBeCalledTimes(0);
       expect(get(importedTokensStore)).toEqual({
         importedTokens: [importedTokenDataA, importedTokenDataB],
         certified: true,
@@ -368,7 +382,6 @@ describe("imported-tokens-services", () => {
 
       await removeImportedTokens(importedTokenDataA.ledgerCanisterId);
 
-      expect(spyGetImportedTokens).toBeCalledTimes(2);
       expect(get(importedTokensStore)).toEqual({
         importedTokens: [importedTokenDataB],
         certified: true,
@@ -380,9 +393,6 @@ describe("imported-tokens-services", () => {
       vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
         undefined
       );
-      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
-        imported_tokens: [importedTokenB],
-      });
       importedTokensStore.set({
         importedTokens: [importedTokenDataA, importedTokenDataB],
         certified: true,

@@ -331,6 +331,19 @@ jobs:
         run: scripts/convert-id.test
       - name: Getting network config works
         run: scripts/network-config.test
+      - name: Get SNS tool
+        run: |
+          diff <(scripts/sns/aggregator/get-sns dog) <(echo "Name:   DOGMI
+          Symbol: DOGMI
+          Aggregator URL:         https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/root/nb7he-piaaa-aaaaq-aadqq-cai/slow.json
+          Root canister ID:       nb7he-piaaa-aaaaq-aadqq-cai
+          Governance canister ID: ni4my-zaaaa-aaaaq-aadra-cai
+          Ledger canister ID:     np5km-uyaaa-aaaaq-aadrq-cai
+          Index canister ID:      n535v-yiaaa-aaaaq-aadsq-cai
+          Swap canister ID:       n223b-vqaaa-aaaaq-aadsa-cai
+          Transaction fee:      50
+          Minimum neuron stake: 100
+          Proposal fee:         15000")
   checks-pass:
     needs:
       - formatting

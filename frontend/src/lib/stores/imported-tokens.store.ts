@@ -1,5 +1,6 @@
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import type { CanisterIdString } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
 import { writable } from "svelte/store";
 
 export interface ImportedTokensStore {
@@ -11,7 +12,7 @@ export interface ImportedTokensStore {
  * A store that contains user imported tokens
  */
 const initImportedTokensStore = () => {
-  const { subscribe, set } = writable<ImportedTokensStore>({
+  const { update, subscribe, set } = writable<ImportedTokensStore>({
     importedTokens: undefined,
     certified: undefined,
   });
@@ -30,6 +31,16 @@ const initImportedTokensStore = () => {
         importedTokens,
         certified,
       });
+    },
+
+    remove(ledgerCanisterId: Principal) {
+      update(({ importedTokens, certified }) => ({
+        importedTokens: importedTokens?.filter(
+          (token) =>
+            token.ledgerCanisterId.toText() !== ledgerCanisterId.toText()
+        ),
+        certified,
+      }));
     },
 
     reset() {
@@ -57,6 +68,12 @@ const initFailedImportedTokenLedgerIdsStore = () => {
         failedLedgerCanisterIds.includes(ledgerCanisterId)
           ? failedLedgerCanisterIds
           : [...failedLedgerCanisterIds, ledgerCanisterId]
+      );
+    },
+
+    remove(ledgerCanisterId: CanisterIdString) {
+      update((failedLedgerCanisterIds) =>
+        failedLedgerCanisterIds.filter((id) => id !== ledgerCanisterId)
       );
     },
 
