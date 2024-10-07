@@ -9,9 +9,7 @@
   export let testEnvironmentWarning = false;
 </script>
 
-{#if !IS_TEST_ENV}
-  <Metrics />
-{/if}
+<Metrics />
 
 <div class:forward={bringToastsForward}>
   <Toasts position="top" />

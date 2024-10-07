@@ -273,8 +273,8 @@
       "wasm": "TODO-deploy-tvl-testnet",
       "remote": {
         "id": {
-          "app": "ewh3f-3qaaa-aaaap-aazjq-cai",
-          "mainnet": "ewh3f-3qaaa-aaaap-aazjq-cai"
+          "app": "qoctq-giaaa-aaaaa-aaaea-cai",
+          "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai"
         }
       }
     }
