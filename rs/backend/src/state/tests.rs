@@ -3,9 +3,7 @@ use crate::{
     state::{partitions::PartitionsMaybe, AssetHashes, Assets, PerformanceCounts, StableState, State},
     tvl::state::TvlState,
 };
-use dfn_candid::Candid;
 use ic_stable_structures::{DefaultMemoryImpl, VectorMemory};
-use on_wire::FromWire;
 use pretty_assertions::assert_eq;
 use proptest::proptest;
 use std::rc::Rc;
