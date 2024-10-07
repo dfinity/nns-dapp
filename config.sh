@@ -120,7 +120,7 @@ local_deployment_data="$(
     # subnet nns-dapp (Beta) to fetch it from the system subnet nns-dapp,
     # because the app subnet nns-dapp doesn't have permission to fetch exchange
     # rates for free.
-    TVL_CANISTER_ID="$OWN_CANISTER_ID"
+    TVL_CANISTER_ID="${OWN_CANISTER_ID:-}"
   fi
   export TVL_CANISTER_ID
 
