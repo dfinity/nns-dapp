@@ -7,6 +7,11 @@ export const DEV = import.meta.env.DEV;
 
 export const FORCE_CALL_STRATEGY: "query" | undefined = "query";
 
+export const isForceCallStrategy = (): boolean =>
+  FORCE_CALL_STRATEGY === "query";
+
+export const notForceCallStrategy = (): boolean => !isForceCallStrategy();
+
 export const IS_TEST_ENV = process.env.NODE_ENV === "test";
 
 // When the QR code is rendered (draw), it triggers an event that is replicated to a property to get to know if the QR code has been or not rendered.

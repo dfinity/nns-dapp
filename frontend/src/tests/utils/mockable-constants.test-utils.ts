@@ -15,6 +15,8 @@ export const mockedConstants: MockableConstants = {
   IS_TEST_ENV: undefined,
   QR_CODE_RENDERED_DEFAULT_STATE: undefined,
   ENABLE_QR_CODE_READER: undefined,
+  isForceCallStrategy: undefined,
+  notForceCallStrategy: undefined,
 };
 
 export const resetMockedConstants = () => {

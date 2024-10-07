@@ -16,6 +16,7 @@
   import SkeletonHeader from "$lib/components/ui/SkeletonHeader.svelte";
   import SkeletonHeading from "$lib/components/ui/SkeletonHeading.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import { isForceCallStrategy } from "$lib/constants/mockable.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
   import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
@@ -30,7 +31,6 @@
     NnsNeuronStore,
   } from "$lib/types/nns-neuron-detail.context";
   import { NNS_NEURON_CONTEXT_KEY } from "$lib/types/nns-neuron-detail.context";
-  import { isForceCallStrategy } from "$lib/utils/env.utils";
   import {
     getNeuronById,
     isSpawning,

@@ -1,6 +1,7 @@
 <script lang="ts">
   import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+  import { isForceCallStrategy } from "$lib/constants/mockable.constants";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
   import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
@@ -13,23 +14,22 @@
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
   } from "$lib/types/selected-proposal.context";
-  import { isForceCallStrategy } from "$lib/utils/env.utils";
   import {
-    type CompactNeuronInfo,
     filterIneligibleNnsNeurons,
-    type IneligibleNeuronData,
     votedNeuronDetails,
+    type CompactNeuronInfo,
+    type IneligibleNeuronData,
   } from "$lib/utils/neuron.utils";
   import {
     isProposalDeadlineInTheFuture,
     nnsNeuronToVotingNeuron,
   } from "$lib/utils/proposals.utils";
+  import type { NeuronInfo } from "@dfinity/nns";
   import {
+    votableNeurons as getVotableNeurons,
     type ProposalInfo,
     type Vote,
-    votableNeurons as getVotableNeurons,
   } from "@dfinity/nns";
-  import type { NeuronInfo } from "@dfinity/nns";
   import { getContext } from "svelte";
 
   export let proposalInfo: ProposalInfo;

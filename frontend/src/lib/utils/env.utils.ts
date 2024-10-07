@@ -1,4 +1,3 @@
-import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { NNS_IC_ORG_ALTERNATIVE_ORIGINS } from "$lib/constants/origin.constants";
 
 /**
@@ -45,9 +44,6 @@ export const addRawToUrl = (urlString: string): string => {
 export const isLocalhost = (hostname: string) =>
   hostname.includes("localhost") || hostname.includes("127.0.0.1");
 
-export const isForceCallStrategy = (): boolean =>
-  FORCE_CALL_STRATEGY === "query";
-
 // Given the used strategy and whether the current call is certified, returns
 // whether this is the last call.
 //
@@ -60,5 +56,3 @@ export const isLastCall = ({
   strategy: "query_and_update" | "query" | "update";
   certified: boolean;
 }): boolean => certified || strategy !== "query_and_update";
-
-export const notForceCallStrategy = (): boolean => !isForceCallStrategy();
