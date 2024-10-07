@@ -153,11 +153,7 @@ impl StableState for State {
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
-        let (
-            account_store_bytes,
-            assets_bytes,
-            tvl_state_bytes,
-        ) = Candid::from_bytes(bytes).map(|c| c.0)?;
+        let (account_store_bytes, assets_bytes, tvl_state_bytes) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
         let assets = Assets::decode(assets_bytes)?;
         let asset_hashes = AssetHashes::from(&assets);
