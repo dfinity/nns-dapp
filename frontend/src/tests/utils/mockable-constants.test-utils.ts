@@ -11,7 +11,6 @@ let defaultTestConstants: MockableConstants;
 
 export const mockedConstants: MockableConstants = {
   DEV: undefined,
-  ENABLE_METRICS: undefined,
   FORCE_CALL_STRATEGY: undefined,
   IS_TEST_ENV: undefined,
   QR_CODE_RENDERED_DEFAULT_STATE: undefined,

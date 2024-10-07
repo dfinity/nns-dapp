@@ -64,7 +64,6 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
 vi.mock("./src/lib/constants/mockable.constants.ts", () => mockedConstants);
 setDefaultTestConstants({
   DEV: false,
-  ENABLE_METRICS: false,
   FORCE_CALL_STRATEGY: undefined,
   IS_TEST_ENV: true,
   QR_CODE_RENDERED_DEFAULT_STATE: true,
