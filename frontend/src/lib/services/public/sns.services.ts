@@ -6,7 +6,7 @@ import { queryAndUpdate } from "$lib/services/utils.services";
 import { snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
 import { snsProposalsStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { isForceCallStrategy } from "$lib/utils/env.utils";
+import { isLastCall } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -79,13 +79,11 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
         proposals,
         certified,
       }),
-    onError: ({ error: err, certified, identity }) => {
+    onError: ({ error: err, certified, strategy }) => {
       console.error(err);
 
       if (
-        certified ||
-        identity.getPrincipal().isAnonymous() ||
-        isForceCallStrategy()
+        isLastCall({ strategy, certified })
       ) {
         snsProposalsStore.reset();
 

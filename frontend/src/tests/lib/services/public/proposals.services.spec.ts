@@ -168,6 +168,23 @@ describe("proposals-services", () => {
           text: "There was an unexpected issue while searching for the proposals. Error message from api.",
         });
       });
+
+      it("show no error message from api on uncertified error", async () => {
+        const errorMessage = "Error message from api.";
+        vi.spyOn(api, "queryProposals").mockImplementation(async ({certified}) => {
+          if (!certified) {
+            throw new Error(errorMessage);
+          }
+          return mockProposals;
+        });
+        await listProposals({
+          loadFinished: () => {
+            // do nothing here
+          },
+        });
+
+        expect(get(toastsStore)).toEqual([]);
+      });
     });
 
     describe("load", () => {

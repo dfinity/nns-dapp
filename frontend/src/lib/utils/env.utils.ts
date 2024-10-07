@@ -48,4 +48,17 @@ export const isLocalhost = (hostname: string) =>
 export const isForceCallStrategy = (): boolean =>
   FORCE_CALL_STRATEGY === "query";
 
+// Given the used strategy and whether the current call is certified, returns
+// whether this is the last call.
+//
+// If the strategy is "query_and_update", the last call is the certied one.
+// Otherwise there is only a single call and the current call is the last one.
+export const isLastCall = ({
+  strategy,
+  certified,
+}: {
+  strategy: "query_and_update" | "query" | "update";
+  certified: boolean;
+}): boolean => certified || strategy !== "query_and_update";
+
 export const notForceCallStrategy = (): boolean => !isForceCallStrategy();
