@@ -1,17 +1,6 @@
 import type { Navigation } from "@sveltejs/kit";
 import { page } from "./stores";
 
-let beforeNavigateCallback: ((navigation: Navigation) => void) | null = null;
-let afterNavigateCallback: ((navigation: Navigation) => void) | null = null;
-
-export const beforeNavigate = (callback: (navigation: Navigation) => void) => {
-  beforeNavigateCallback = callback;
-};
-
-export const afterNavigate = (callback: (navigation: Navigation) => void) => {
-  afterNavigateCallback = callback;
-};
-
 export const goto =
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
   async (
@@ -66,3 +55,14 @@ export const goto =
       afterNavigateCallback(navigation);
     }
   };
+
+let beforeNavigateCallback: ((navigation: Navigation) => void) | null = null;
+let afterNavigateCallback: ((navigation: Navigation) => void) | null = null;
+
+export const beforeNavigate = (callback: (navigation: Navigation) => void) => {
+  beforeNavigateCallback = callback;
+};
+
+export const afterNavigate = (callback: (navigation: Navigation) => void) => {
+  afterNavigateCallback = callback;
+};
