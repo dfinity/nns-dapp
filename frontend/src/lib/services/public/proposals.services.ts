@@ -287,8 +287,9 @@ export const loadProposal = async ({
     });
   } catch (error: unknown) {
     catchError({
-      // `certified` and `strategy` are irrelevant since we are outside the
-      // `queryAndUpdate` context.
+      // `certified` and `strategy` are not meaningful since we are outside the
+      // `queryAndUpdate` context. We just pass values that act as if this is
+      // the last call.
       certified: true,
       strategy: "query_and_update",
       error,
