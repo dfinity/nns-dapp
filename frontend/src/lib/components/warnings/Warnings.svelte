@@ -2,7 +2,6 @@
   import Metrics from "$lib/components/metrics/Metrics.svelte";
   import TestEnvironmentWarning from "$lib/components/warnings/TestEnvironmentWarning.svelte";
   import TransactionRateWarning from "$lib/components/warnings/TransactionRateWarning.svelte";
-  import { IS_TEST_ENV } from "$lib/constants/mockable.constants";
   import { Toasts } from "@dfinity/gix-components";
 
   export let bringToastsForward = false;
