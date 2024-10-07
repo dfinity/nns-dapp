@@ -1,5 +1,6 @@
 import {
   addRawToUrl,
+  isLastCall,
   isLocalhost,
   isNnsAlternativeOrigin,
 } from "$lib/utils/env.utils";
@@ -125,6 +126,26 @@ describe("env-utils", () => {
       expect(isLocalhost("localhost:3000")).toBe(true);
       expect(isLocalhost("127.0.0.1:3000")).toBe(true);
       expect(isLocalhost("xxxx.localhost")).toBe(true);
+    });
+  });
+
+  describe("isLastCall", () => {
+    it("should return true when certified", () => {
+      expect(
+        isLastCall({ strategy: "query_and_update", certified: true })
+      ).toBe(true);
+      expect(isLastCall({ strategy: "update", certified: true })).toBe(true);
+    });
+
+    it("should return true for single call", () => {
+      expect(isLastCall({ strategy: "query", certified: false })).toBe(true);
+      expect(isLastCall({ strategy: "update", certified: true })).toBe(true);
+    });
+
+    it("should return false for query of query_and_update ", () => {
+      expect(
+        isLastCall({ strategy: "query_and_update", certified: false })
+      ).toBe(false);
     });
   });
 });

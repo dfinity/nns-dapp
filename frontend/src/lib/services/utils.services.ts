@@ -8,11 +8,13 @@ import {
 
 export type QueryAndUpdateOnResponse<R> = (options: {
   certified: boolean;
+  strategy: QueryAndUpdateStrategy;
   response: R;
 }) => void;
 
 export type QueryAndUpdateOnError<E> = (options: {
   certified: boolean;
+  strategy: QueryAndUpdateStrategy;
   error: E;
   // The identity used for the request
   identity: Identity;
@@ -83,12 +85,12 @@ export const queryAndUpdate = async <R, E>({
     request({ certified, identity })
       .then((response) => {
         if (certifiedDone) return;
-        onLoad({ certified, response });
+        onLoad({ certified, strategy: currentStrategy, response });
         log({ postfix: ` ${certified ? "update" : "query"} complete.` });
       })
       .catch((error: E) => {
         if (certifiedDone) return;
-        onError?.({ certified, error, identity });
+        onError?.({ certified, strategy: currentStrategy, error, identity });
       })
       .finally(() => (certifiedDone = certifiedDone || certified));
 
