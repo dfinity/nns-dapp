@@ -5,7 +5,7 @@ import "fake-indexeddb/auto";
 // jsdom does not implement TextEncoder
 // Polyfill the encoders with node
 import { TextDecoder, TextEncoder } from "util";
-import { vi } from "vitest";
+import { afterEach, beforeEach, expect, vi } from "vitest";
 import { browser, building } from "./__mocks__/$app/environment";
 import {
   afterNavigate,
