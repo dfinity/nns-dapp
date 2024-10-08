@@ -54,9 +54,14 @@
     loadCkBTCTokens();
   });
 
-  let loadSnsAccountsBalancesRequested = false;
-  let loadCkBTCAccountsBalancesRequested = false;
-  let loadedIcrcAccountsBalancesRequested = new Set<CanisterIdString>();
+  const loadedIcrcAccountsBalancesRequested = new Set<CanisterIdString>();
+  const getAndUpdateNotLoadedIds = (canisterIds: CanisterIdString[]) => {
+    const ids = canisterIds.filter(
+      (id) => !loadedIcrcAccountsBalancesRequested.has(id)
+    );
+    ids.forEach((id) => loadedIcrcAccountsBalancesRequested.add(id));
+    return ids;
+  };
 
   const loadSnsAccountsBalances = async (projects: SnsFullProject[]) => {
     // We start when the projects are fetched
@@ -64,22 +69,30 @@
       return;
     }
 
+    const rootCanisterIds = projects.map(({ rootCanisterId }) =>
+      rootCanisterId.toText()
+    );
+    const notLoadedCanisterIds = getAndUpdateNotLoadedIds(rootCanisterIds);
+
     // We trigger the loading of the Sns Accounts Balances only once
-    if (loadSnsAccountsBalancesRequested) {
+    if (notLoadedCanisterIds.length === 0) {
       return;
     }
 
-    loadSnsAccountsBalancesRequested = true;
-
     await uncertifiedLoadSnsesAccountsBalances({
-      rootCanisterIds: projects.map(({ rootCanisterId }) => rootCanisterId),
+      rootCanisterIds: notLoadedCanisterIds.map((id) => Principal.fromText(id)),
       excludeRootCanisterIds: [],
     });
   };
 
   const loadCkBTCAccountsBalances = async (universes: Universe[]) => {
     // We trigger the loading of the ckBTC Accounts Balances only once
-    if (loadCkBTCAccountsBalancesRequested) {
+    const canisterIds = universes.map(
+      (universe: Universe) => universe.canisterId
+    );
+    const notLoadedCanisterIds = getAndUpdateNotLoadedIds(canisterIds);
+
+    if (notLoadedCanisterIds.length === 0) {
       return;
     }
 
@@ -90,6 +103,10 @@
      * There is also a "Check for incoming BTC" button in the Wallet page.
      */
     universes.forEach((universe: Universe) => {
+      if (!notLoadedCanisterIds.includes(universe.canisterId)) {
+        return;
+      }
+
       const ckBTCCanisters = CKBTC_ADDITIONAL_CANISTERS[universe.canisterId];
       if (nonNullish(ckBTCCanisters.minterCanisterId)) {
         updateBalance({
@@ -102,8 +119,6 @@
       }
     });
 
-    loadCkBTCAccountsBalancesRequested = true;
-
     await loadAccountsBalances(universes.map(({ canisterId }) => canisterId));
   };
 
@@ -111,15 +126,12 @@
     icrcCanisters: IcrcCanistersStoreData
   ) => {
     const ids = Object.keys(icrcCanisters);
-    const newIds = ids.filter(
-      (id) => !loadedIcrcAccountsBalancesRequested.has(id)
-    );
+    const notLoadedCanisterIds = getAndUpdateNotLoadedIds(ids);
     // Skip loading if there are no new ids
-    if (newIds.length === 0) {
+    if (notLoadedCanisterIds.length === 0) {
       return;
     }
-    newIds.forEach((id) => loadedIcrcAccountsBalancesRequested.add(id));
-    await loadAccountsBalances(newIds);
+    await loadAccountsBalances(notLoadedCanisterIds);
   };
 
   const loadAccountsBalances = async (
