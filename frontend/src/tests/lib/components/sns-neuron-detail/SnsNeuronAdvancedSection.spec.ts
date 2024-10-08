@@ -4,11 +4,10 @@ import {
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
-import { authStore } from "$lib/stores/auth.store";
 import {
-  mockAuthStoreSubscribe,
   mockIdentity,
   mockPrincipal,
+  resetIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
 import {
@@ -63,7 +62,7 @@ describe("SnsNeuronAdvancedSection", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(nowInSeconds * 1000);
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
   });
 
   it("should render neuron data", async () => {

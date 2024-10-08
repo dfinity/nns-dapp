@@ -1,11 +1,7 @@
 import SnsNeuronFollowingCard from "$lib/components/sns-neuron-detail/SnsNeuronFollowingCard.svelte";
-import { authStore } from "$lib/stores/auth.store";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-import {
-  mockAuthStoreSubscribe,
-  mockPrincipal,
-} from "$tests/mocks/auth.store.mock";
+import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import {
@@ -22,7 +18,7 @@ import {
 
 describe("SnsNeuronFollowingCard", () => {
   beforeAll(() => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
   });
 
   describe("user has permissions to manage followees", () => {

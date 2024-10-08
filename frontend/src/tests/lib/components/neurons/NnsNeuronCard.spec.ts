@@ -1,11 +1,7 @@
 import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
-import { authStore } from "$lib/stores/auth.store";
 import { formatTokenE8s } from "$lib/utils/token.utils";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockHardwareWalletAccount,
@@ -26,7 +22,7 @@ describe("NnsNeuronCard", () => {
   const nowInSeconds = 1689843195;
   beforeEach(() => {
     vi.useFakeTimers().setSystemTime(nowInSeconds * 1000);
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
 
     resetAccountsForTesting();
   });

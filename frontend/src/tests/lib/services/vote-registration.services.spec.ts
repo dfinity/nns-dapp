@@ -59,6 +59,11 @@ describe("vote-registration-services", () => {
   const votableProposal: ProposalInfo = {
     ...mockProposalInfo,
     id: 0n,
+    ballots: [
+      { neuronId: 0n, vote: Vote.Unspecified, votingPower: 1n },
+      { neuronId: 1n, vote: Vote.Unspecified, votingPower: 1n },
+      { neuronId: 2n, vote: Vote.Unspecified, votingPower: 1n },
+    ],
   };
   let resolveSpyQueryProposals;
   const spyQueryProposals = vi

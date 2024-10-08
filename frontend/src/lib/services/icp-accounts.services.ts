@@ -14,7 +14,10 @@ import {
   SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
   SYNC_ACCOUNTS_RETRY_SECONDS,
 } from "$lib/constants/accounts.constants";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
+import {
+  FORCE_CALL_STRATEGY,
+  isForceCallStrategy,
+} from "$lib/constants/mockable.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
@@ -39,7 +42,6 @@ import {
   invalidIcrcAddress,
   toIcpAccountIdentifier,
 } from "$lib/utils/accounts.utils";
-import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import {
   cancelPoll,

@@ -1,9 +1,5 @@
 import JoinCommunityFundModal from "$lib/modals/neurons/JoinCommunityFundModal.svelte";
-import { authStore } from "$lib/stores/auth.store";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { JoinCommunityFundModalPo } from "$tests/page-objects/JoinCommunityFundModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -25,7 +21,7 @@ describe("ConfirmationModal", () => {
   };
 
   beforeEach(() => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
   });
 
   it("should render leave text if neuron is part of the Neurons' Fund", async () => {

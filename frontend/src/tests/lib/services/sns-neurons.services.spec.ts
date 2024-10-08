@@ -98,7 +98,7 @@ describe("sns-neurons-services", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     resetIdentity();
     resetMockedConstants();
     resetSnsProjects();
@@ -145,6 +145,31 @@ describe("sns-neurons-services", () => {
       await tick();
       const store = get(snsNeuronsStore);
       expect(store[mockPrincipal.toText()]).toBeUndefined();
+      expect(spyQuery).toBeCalled();
+    });
+
+    it("should not empty store if query call fails but update call succeeds", async () => {
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: mockPrincipal,
+        neurons: [mockSnsNeuron],
+        certified: true,
+      });
+      const spyQuery = vi
+        .spyOn(governanceApi, "querySnsNeurons")
+        .mockImplementation(async ({ certified }) => {
+          if (!certified) {
+            throw new Error();
+          }
+          return [neuron];
+        });
+
+      await syncSnsNeurons(mockPrincipal);
+
+      await tick();
+      const store = get(snsNeuronsStore);
+      expect(store[mockPrincipal.toText()]).not.toBeUndefined();
       expect(spyQuery).toBeCalled();
     });
   });

@@ -1,10 +1,6 @@
 import NnsNeuronPageHeading from "$lib/components/neuron-detail/NnsNeuronPageHeading.svelte";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
-import { authStore } from "$lib/stores/auth.store";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -28,7 +24,7 @@ describe("NnsNeuronPageHeading", () => {
   };
 
   beforeEach(() => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
     resetAccountsForTesting();
   });
 

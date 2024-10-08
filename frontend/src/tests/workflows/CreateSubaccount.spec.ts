@@ -4,12 +4,8 @@ import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import Accounts from "$lib/routes/Accounts.svelte";
-import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountDetails,
   mockMainAccount,
@@ -41,7 +37,7 @@ describe("Accounts", () => {
   };
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
     vi.spyOn(console, "error").mockImplementation(vi.fn);
 
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(0n);
