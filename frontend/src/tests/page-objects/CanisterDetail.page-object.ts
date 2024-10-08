@@ -58,4 +58,8 @@ export class CanisterDetailPo extends BasePageObject {
     await modal.addCycles({ icpAmount });
     await modal.waitForClosed();
   }
+
+  async getErrorMessage(): Promise<string> {
+    return (await this.getText("canister-details-error-card")).trim();
+  }
 }
