@@ -37,6 +37,7 @@ describe("SnsNeurons", () => {
     id: [1, 2, 5],
     stake: disbursedNeuronStake,
     maturity: 0n,
+    stakedMaturity: 0n,
   });
   const neuronNFStake = 400_000_000n;
   const neuronNF: SnsNeuron = {

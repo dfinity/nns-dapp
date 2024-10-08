@@ -230,7 +230,8 @@ export const hasValidStake = (neuron: NeuronInfo): boolean =>
   // Ignore if we can't validate the stake
   nonNullish(neuron.fullNeuron)
     ? neuron.fullNeuron.cachedNeuronStake +
-        neuron.fullNeuron.maturityE8sEquivalent >
+        neuronAvailableMaturity(neuron) +
+        neuronStakedMaturity(neuron) >
       BigInt(DEFAULT_TRANSACTION_FEE_E8S)
     : false;
 

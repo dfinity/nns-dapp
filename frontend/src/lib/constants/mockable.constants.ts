@@ -5,10 +5,12 @@
 
 export const DEV = import.meta.env.DEV;
 
-// Disable TVL or transaction rate warning locally because that information is not crucial when we develop
-export const ENABLE_METRICS = !DEV;
-
 export const FORCE_CALL_STRATEGY: "query" | undefined = "query";
+
+export const isForceCallStrategy = (): boolean =>
+  FORCE_CALL_STRATEGY === "query";
+
+export const notForceCallStrategy = (): boolean => !isForceCallStrategy();
 
 export const IS_TEST_ENV = process.env.NODE_ENV === "test";
 
