@@ -118,10 +118,8 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding);
-    // To accomodate the 100% on-chain logo
-    // if that logo changes please update this margin as well
-    margin: auto var(--padding-3x) calc(var(--padding-8x) + var(--padding-1_5x))
-      0;
+    margin-top: auto;
+    margin-right: var(--padding-3x);
     // Handle menu collapse animation
     visibility: visible;
     opacity: 1;
