@@ -161,21 +161,15 @@
     return loadAccountsBalances([universeId.toText()]);
   };
 
-  $: (async () => {
-    if ($authSignedInStore) {
-      await loadSnsAccountsBalances($snsProjectsCommittedStore);
-    }
-  })();
-  $: (async () => {
-    if ($authSignedInStore) {
-      await loadCkBTCAccountsBalances($ckBTCUniversesStore);
-    }
-  })();
-  $: (async () => {
-    if ($authSignedInStore) {
-      await loadIcrcTokenAccounts($icrcCanistersStore);
-    }
-  })();
+  $: if ($authSignedInStore) {
+    loadSnsAccountsBalances($snsProjectsCommittedStore);
+  }
+  $: if ($authSignedInStore) {
+    loadCkBTCAccountsBalances($ckBTCUniversesStore);
+  }
+  $: if ($authSignedInStore) {
+    loadIcrcTokenAccounts($icrcCanistersStore);
+  }
 
   type ModalType =
     | "sns-send"
