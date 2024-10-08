@@ -11,14 +11,10 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Wallet from "$lib/routes/Wallet.svelte";
-import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
@@ -134,7 +130,7 @@ describe("Wallet", () => {
   });
 
   beforeAll(() => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
   });
 
   describe("nns context", () => {

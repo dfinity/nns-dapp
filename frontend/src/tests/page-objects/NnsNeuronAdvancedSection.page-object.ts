@@ -3,6 +3,7 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { HashPo } from "./Hash.page-object";
 import { NnsNeuronAgePo } from "./NnsNeuronAge.page-object";
+import { NnsNeuronPublicVisibilityActionPo } from "./NnsNeuronPublicVisibilityAction.page-object";
 
 export class NnsNeuronAdvancedSectionPo extends BasePageObject {
   private static readonly TID = "nns-neuron-advanced-section-component";
@@ -64,5 +65,13 @@ export class NnsNeuronAdvancedSectionPo extends BasePageObject {
       element: this.root,
       testId: "join-community-fund-checkbox-component",
     }).toggle();
+  }
+
+  getNnsNeuronPublicVisibilityActionPo(): NnsNeuronPublicVisibilityActionPo {
+    return NnsNeuronPublicVisibilityActionPo.under(this.root);
+  }
+
+  getNeuronId(): Promise<string> {
+    return this.getText("neuron-id");
   }
 }

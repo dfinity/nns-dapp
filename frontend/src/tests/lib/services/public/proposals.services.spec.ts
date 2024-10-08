@@ -3,22 +3,19 @@ import {
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
 } from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import { getCurrentIdentity } from "$lib/services/auth.services";
 import {
   listNextProposals,
   listProposals,
   loadProposal,
   loadProposalPayload,
 } from "$lib/services/public/proposals.services";
-import { getCurrentIdentity } from "$lib/services/auth.services";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
 } from "$lib/stores/proposals.store";
-import {
-  resetIdentity,
-  setNoIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import type { ProposalInfo } from "@dfinity/nns";
@@ -168,14 +165,32 @@ describe("proposals-services", () => {
           text: "There was an unexpected issue while searching for the proposals. Error message from api.",
         });
       });
+
+      it("show no error message from api on uncertified error", async () => {
+        const errorMessage = "Error message from api.";
+        vi.spyOn(api, "queryProposals").mockImplementation(
+          async ({ certified }) => {
+            if (!certified) {
+              throw new Error(errorMessage);
+            }
+            return mockProposals;
+          }
+        );
+        await listProposals({
+          loadFinished: () => {
+            // do nothing here
+          },
+        });
+
+        expect(get(toastsStore)).toEqual([]);
+      });
     });
 
     describe("load", () => {
       const spyQueryProposal = vi.spyOn(api, "queryProposal");
 
       beforeEach(() => {
-        spyQueryProposal.mockResolvedValue(
-          { ...mockProposals[0], id: 666n });
+        spyQueryProposal.mockResolvedValue({ ...mockProposals[0], id: 666n });
         proposalsStore.setProposalsForTesting({
           proposals: mockProposals,
           certified: true,
@@ -195,25 +210,32 @@ describe("proposals-services", () => {
     });
 
     describe("error message in details", () => {
+      let spyQueryProposal;
+
       beforeEach(() => {
-        vi.spyOn(api, "queryProposal").mockImplementation(() => {
-          // TODO: Return a promise to be more realistic.
-          throw new Error("test-message");
-        });
+        spyQueryProposal = vi
+          .spyOn(api, "queryProposal")
+          .mockRejectedValue(new Error("test-message"));
         vi.spyOn(console, "error").mockReturnValue();
       });
 
-      it("should show error message in details", async () => {
+      it("should show one error message in details", async () => {
         expect(get(toastsStore)).toEqual([]);
 
         await loadProposal({
           proposalId: 0n,
           setProposal: vi.fn,
         });
-        expect(get(toastsStore)).toMatchObject([{
-          level: "error",
-          text: "An error occurred while loading the proposal. id: \"0\". test-message",
-        }]);
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: 'An error occurred while loading the proposal. id: "0". test-message',
+          },
+        ]);
+
+        // `queryProposal` gave an error twice (query + update) but it should
+        // result only in a single toast message.
+        expect(spyQueryProposal).toBeCalledTimes(2);
       });
     });
 
@@ -298,7 +320,7 @@ describe("proposals-services", () => {
     it("should load proposal if no identity", async () => {
       const spyQueryProposal = vi
         .spyOn(api, "queryProposal")
-        .mockResolvedValue({ ...mockProposals[0], id: 666n })
+        .mockResolvedValue({ ...mockProposals[0], id: 666n });
       expect(spyQueryProposal).not.toBeCalled();
 
       let result;
@@ -360,9 +382,9 @@ describe("proposals-services", () => {
       expect(get(proposalPayloadsStore)).toEqual(new Map());
       await loadProposalPayload({ proposalId: 0n });
 
-      expect(get(proposalPayloadsStore)).toEqual(new Map([
-        [0n, mockProposalPayload],
-      ]));
+      expect(get(proposalPayloadsStore)).toEqual(
+        new Map([[0n, mockProposalPayload]])
+      );
     });
 
     it("should update proposalPayloadsStore with null if the payload was not found", async () => {

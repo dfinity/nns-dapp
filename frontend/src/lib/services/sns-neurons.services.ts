@@ -5,10 +5,10 @@ import {
   disburse as disburseApi,
   disburseMaturity as disburseMaturityApi,
   getSnsNeuron as getSnsNeuronApi,
+  increaseDissolveDelay,
   querySnsNeuron,
   querySnsNeurons,
   removeNeuronPermissions,
-  setDissolveDelay,
   setFollowees,
   splitNeuron as splitNeuronApi,
   stakeMaturity as stakeMaturityApi,
@@ -31,12 +31,13 @@ import {
 } from "$lib/stores/sns-neurons.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
-import { nowInSeconds } from "$lib/utils/date.utils";
-import { notForceCallStrategy } from "$lib/utils/env.utils";
+import { isLastCall } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import {
   followeesByFunction,
+  getSnsDissolvingTimeInSeconds,
+  getSnsLockedTimeInSeconds,
   getSnsNeuronByHexId,
   hasAutoStakeMaturityOn,
   isEnoughAmountToSplit,
@@ -88,10 +89,10 @@ export const syncSnsNeurons = async (
         certified,
       });
     },
-    onError: ({ error: err, certified }) => {
+    onError: ({ error: err, certified, strategy }) => {
       console.error(err);
 
-      if (!certified && notForceCallStrategy()) {
+      if (!isLastCall({ strategy, certified })) {
         return;
       }
 
@@ -436,11 +437,18 @@ export const updateDelay = async ({
   try {
     const identity = await getSnsNeuronIdentity();
 
-    await setDissolveDelay({
+    const existingDissolveDelay = Number(
+      getSnsLockedTimeInSeconds(neuron) ??
+        getSnsDissolvingTimeInSeconds(neuron) ??
+        0n
+    );
+
+    await increaseDissolveDelay({
       rootCanisterId,
       identity,
       neuronId: fromDefinedNullable(neuron.id),
-      dissolveTimestampSeconds: nowInSeconds() + dissolveDelaySeconds,
+      additionalDissolveDelaySeconds:
+        dissolveDelaySeconds - existingDissolveDelay,
     });
 
     return { success: true };

@@ -7,11 +7,16 @@
   import { i18n } from "$lib/stores/i18n";
   import type { UserToken } from "$lib/types/tokens-page";
   import { heightTransition } from "$lib/utils/transition.utils";
-  import { IconPlus, IconSettings } from "@dfinity/gix-components";
+  import { IconPlus, IconSettings, Tooltip } from "@dfinity/gix-components";
   import { Popover } from "@dfinity/gix-components";
-  import { TokenAmountV2 } from "@dfinity/utils";
+  import { TokenAmountV2, nonNullish } from "@dfinity/utils";
   import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { isImportedToken } from "$lib/utils/imported-tokens.utils";
+  import type { ImportedTokenData } from "$lib/types/imported-tokens";
 
   export let userTokensData: UserToken[];
 
@@ -25,13 +30,29 @@
   let shouldHideZeroBalances: boolean;
   $: shouldHideZeroBalances = $hideZeroBalancesStore === "hide";
 
+  const getNonZeroBalanceTokensData = ({
+    userTokensData,
+    importedTokens,
+  }: {
+    userTokensData: UserToken[];
+    importedTokens: ImportedTokenData[] | undefined;
+  }) =>
+    userTokensData.filter(
+      (token) =>
+        // Internet Computer is shown, even with zero balance.
+        token.universeId.toText() === OWN_CANISTER_ID_TEXT ||
+        // Imported tokens are shown, even with zero balance.
+        isImportedToken({
+          ledgerCanisterId: token.universeId,
+          importedTokens,
+        }) ||
+        (token.balance instanceof TokenAmountV2 && token.balance.toUlps() > 0n)
+    );
   let nonZeroBalanceTokensData: UserToken[] = [];
-  $: nonZeroBalanceTokensData = userTokensData.filter(
-    (token) =>
-      // Internet Computer is shown, even with zero balance.
-      token.universeId.toText() === OWN_CANISTER_ID_TEXT ||
-      (token.balance instanceof TokenAmountV2 && token.balance.toUlps() > 0n)
-  );
+  $: nonZeroBalanceTokensData = getNonZeroBalanceTokensData({
+    userTokensData,
+    importedTokens: $importedTokensStore.importedTokens,
+  });
 
   let shownTokensData: UserToken[] = [];
   $: shownTokensData = shouldHideZeroBalances
@@ -43,6 +64,9 @@
   };
 
   let showImportTokenModal = false;
+  let maximumImportedTokensReached = false;
+  $: maximumImportedTokensReached =
+    ($importedTokensStore.importedTokens?.length ?? 0) >= MAX_IMPORTED_TOKENS;
 
   // TODO(Import token): After removing ENABLE_IMPORT_TOKEN combine divs -> <div slot="last-row" class="last-row">
 </script>
@@ -78,13 +102,27 @@
             </div>
           {/if}
 
-          <button
-            data-tid="import-token-button"
-            class="ghost with-icon import-token-button"
-            on:click={() => (showImportTokenModal = true)}
-          >
-            <IconPlus />{$i18n.import_token.import_token}
-          </button>
+          {#if nonNullish($importedTokensStore.importedTokens)}
+            <Tooltip
+              top
+              testId="maximum-imported-tokens-tooltip"
+              text={maximumImportedTokensReached
+                ? replacePlaceholders(
+                    $i18n.import_token.maximum_reached_tooltip,
+                    { $max: `${MAX_IMPORTED_TOKENS}` }
+                  )
+                : undefined}
+            >
+              <button
+                data-tid="import-token-button"
+                class="ghost with-icon import-token-button"
+                on:click={() => (showImportTokenModal = true)}
+                disabled={maximumImportedTokensReached}
+              >
+                <IconPlus />{$i18n.import_token.import_token}
+              </button>
+            </Tooltip>
+          {/if}
         </div>
       {:else if shouldHideZeroBalances}
         <div
@@ -183,6 +221,10 @@
     .import-token-button {
       gap: var(--padding);
       color: var(--primary);
+
+      &:disabled {
+        color: var(--button-disable-color);
+      }
     }
   }
 </style>

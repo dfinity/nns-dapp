@@ -1,5 +1,6 @@
 <script lang="ts">
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
+  import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
   import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -22,8 +23,6 @@
   } from "@dfinity/gix-components";
   import { layoutMenuOpen, menuCollapsed } from "@dfinity/gix-components";
   import type { ComponentType } from "svelte";
-  import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
-  import { ENABLE_METRICS } from "$lib/constants/mockable.constants";
 
   let routes: {
     context: string;
@@ -99,9 +98,7 @@
   {/if}
 
   <div class="menu-footer" class:hidden={$menuCollapsed && !$layoutMenuOpen}>
-    {#if ENABLE_METRICS}
-      <TotalValueLocked layout="stacked" />
-    {/if}
+    <TotalValueLocked layout="stacked" />
     <div class="menu-footer-buttons">
       <div class="grow-item"><SourceCodeButton /></div>
       <ThemeToggleButton />
@@ -118,6 +115,7 @@
   }
 
   .menu-footer {
+    display: flex;
     flex-direction: column;
     gap: var(--padding);
     // To accomodate the 100% on-chain logo
@@ -137,11 +135,6 @@
       transition:
         transform linear var(--animation-time-short),
         opacity linear calc(var(--animation-time-short) / 2);
-    }
-    //Hide menu footer on short screens
-    display: none;
-    @media (min-height: 654px) {
-      display: flex;
     }
   }
   .menu-footer-buttons {

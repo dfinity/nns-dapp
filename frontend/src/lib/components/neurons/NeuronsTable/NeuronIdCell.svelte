@@ -18,7 +18,11 @@
   />
   {#if $ENABLE_NEURON_VISIBILITY && rowData.isPublic}
     <span class="public-icon-container" data-tid="public-icon-container">
-      <Tooltip top id="neuron-id-cell-public-icon" text={$i18n.neurons.public}>
+      <Tooltip
+        top
+        id="neuron-id-cell-public-icon"
+        text={$i18n.neurons.public_neuron_tooltip}
+      >
         <IconPublicBadge />
       </Tooltip>
     </span>
@@ -40,7 +44,7 @@
     flex-wrap: wrap;
 
     .public-icon-container {
-      color: var(--elements-badge);
+      color: var(--elements-badges);
       line-height: 0;
       margin-right: var(--padding);
     }

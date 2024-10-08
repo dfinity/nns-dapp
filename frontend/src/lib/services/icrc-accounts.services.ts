@@ -20,7 +20,7 @@ import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
-import { notForceCallStrategy } from "$lib/utils/env.utils";
+import { isLastCall } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { isImportedToken } from "$lib/utils/imported-tokens.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
@@ -91,9 +91,9 @@ export const loadIcrcToken = ({
       }),
     onLoad: async ({ response: token, certified }) =>
       tokensStore.setToken({ certified, canisterId: ledgerCanisterId, token }),
-    onError: ({ error: err, certified }) => {
+    onError: ({ error: err, certified, strategy }) => {
       // Explicitly handle only UPDATE errors
-      if (!certified && notForceCallStrategy()) {
+      if (!isLastCall({ strategy, certified })) {
         return;
       }
 
@@ -196,7 +196,7 @@ export const loadAccounts = async ({
       }
 
       // hide unproven data
-      icrcAccountsStore.reset();
+      icrcAccountsStore.resetUniverse(ledgerCanisterId);
       icrcTransactionsStore.resetUniverse(ledgerCanisterId);
 
       if (

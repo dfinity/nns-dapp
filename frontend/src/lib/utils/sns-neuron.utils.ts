@@ -433,7 +433,10 @@ export const isSnsNeuron = (
  * @returns {boolean}
  */
 export const hasValidStake = (neuron: SnsNeuron): boolean =>
-  neuron.cached_neuron_stake_e8s + neuron.maturity_e8s_equivalent > 0n;
+  neuron.cached_neuron_stake_e8s +
+    getSnsNeuronAvailableMaturity(neuron) +
+    getSnsNeuronStakedMaturity(neuron) >
+  0n;
 
 /*
 - The amount to split minus the transfer fee is more than the minimum stake (thus the child neuron will have at least the minimum stake)

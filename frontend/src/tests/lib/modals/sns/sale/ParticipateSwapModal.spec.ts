@@ -4,7 +4,6 @@ import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
-import { authStore } from "$lib/stores/auth.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import {
   PROJECT_DETAIL_CONTEXT_KEY,
@@ -12,10 +11,7 @@ import {
   type ProjectDetailStore,
 } from "$lib/types/project-detail.context";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
@@ -72,7 +68,7 @@ describe("ParticipateSwapModal", () => {
   beforeEach(() => {
     cancelPollAccounts();
     vi.clearAllMocks();
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
     vi.mocked(initiateSnsSaleParticipation).mockClear();
     resetAccountsForTesting();
     snsTicketsStore.setNoTicket(rootCanisterIdMock);

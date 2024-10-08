@@ -22,9 +22,9 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import {
-  mockAuthStoreSubscribe,
   mockIdentity,
   mockPrincipal,
+  resetIdentity,
 } from "$tests/mocks/auth.store.mock";
 import {
   mockMainAccount,
@@ -220,7 +220,7 @@ describe("sns-api", () => {
       (): SnsSwapCanister => snsSwapCanister
     );
 
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
   });
 
   describe("loadOpenTicket", () => {
@@ -1226,14 +1226,9 @@ describe("sns-api", () => {
         ticket: testTicket,
       });
       // corrupt the current identity principal
-      vi.spyOn(authStore, "subscribe").mockImplementation((run) => {
-        run({
-          identity: {
-            ...mockIdentity,
-            getPrincipal: () => Principal.fromText("aaaaa-aa"),
-          },
-        });
-        return () => undefined;
+      authStore.setForTesting({
+        ...mockIdentity,
+        getPrincipal: () => Principal.fromText("aaaaa-aa"),
       });
 
       await participateInSnsSale({

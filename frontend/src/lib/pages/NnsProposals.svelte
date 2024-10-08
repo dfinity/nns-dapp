@@ -1,5 +1,6 @@
 <script lang="ts">
   import NnsProposalsList from "$lib/components/proposals/NnsProposalsList.svelte";
+  import { notForceCallStrategy } from "$lib/constants/mockable.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import {
     filteredProposals,
@@ -15,7 +16,6 @@
   } from "$lib/stores/proposals.store";
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { notForceCallStrategy } from "$lib/utils/env.utils";
   import { reloadRouteData } from "$lib/utils/navigation.utils";
   import {
     hasMatchingProposals,

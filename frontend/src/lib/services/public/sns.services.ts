@@ -3,10 +3,10 @@ import { queryProposals } from "$lib/api/proposals.api";
 import { buildAndStoreWrapper } from "$lib/api/sns-wrapper.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { queryAndUpdate } from "$lib/services/utils.services";
-import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+import { snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
 import { snsProposalsStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { isForceCallStrategy } from "$lib/utils/env.utils";
+import { isLastCall } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -48,7 +48,7 @@ export const loadSnsProjects = async (): Promise<void> => {
     // This call is not necessary because the canister ids are already provided by the SNS aggregator.
     // As soon as the aggregator store is filled, SNS components may start rendering, resulting in calls on the SNS wrappers.
     // We set the aggregator store after building the wrappers' caches to avoid calls to the root canister when the SNS wrapper is initialized.
-    snsAggregatorStore.setData(aggregatorData);
+    snsAggregatorIncludingAbortedProjectsStore.setData(aggregatorData);
     // TODO: PENDING to be implemented, load SNS parameters.
   } catch (err) {
     toastsError(
@@ -79,14 +79,10 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
         proposals,
         certified,
       }),
-    onError: ({ error: err, certified, identity }) => {
+    onError: ({ error: err, certified, strategy }) => {
       console.error(err);
 
-      if (
-        certified ||
-        identity.getPrincipal().isAnonymous() ||
-        isForceCallStrategy()
-      ) {
+      if (isLastCall({ strategy, certified })) {
         snsProposalsStore.reset();
 
         toastsError(

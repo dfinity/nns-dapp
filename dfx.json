@@ -273,8 +273,8 @@
       "wasm": "TODO-deploy-tvl-testnet",
       "remote": {
         "id": {
-          "app": "ewh3f-3qaaa-aaaap-aazjq-cai",
-          "mainnet": "ewh3f-3qaaa-aaaap-aazjq-cai"
+          "app": "qoctq-giaaa-aaaaa-aaaea-cai",
+          "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai"
         }
       }
     }
@@ -386,7 +386,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
-          "ENABLE_IMPORT_TOKEN": false,
+          "ENABLE_IMPORT_TOKEN": true,
           "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
           "ENABLE_NEURON_VISIBILITY": false
         }
@@ -402,9 +402,9 @@
         "DIDC_VERSION": "2024-05-14",
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2024-09-25",
+        "SNSDEMO_RELEASE": "release-2024-10-02",
         "IC_COMMIT_FOR_PROPOSALS": "release-2024-09-26_01-31-no-canister-snapshots",
-        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-09-19_01-31-base"
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-09-26_01-31-no-canister-snapshots"
       },
       "packtool": ""
     }
