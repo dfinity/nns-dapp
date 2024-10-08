@@ -151,11 +151,17 @@
 
   $: (async () => {
     if ($authSignedInStore) {
-      await Promise.allSettled([
-        loadSnsAccountsBalances($snsProjectsCommittedStore),
-        loadCkBTCAccountsBalances($ckBTCUniversesStore),
-        loadIcrcTokenAccounts($icrcCanistersStore),
-      ]);
+      await loadSnsAccountsBalances($snsProjectsCommittedStore);
+    }
+  })();
+  $: (async () => {
+    if ($authSignedInStore) {
+      await loadCkBTCAccountsBalances($ckBTCUniversesStore);
+    }
+  })();
+  $: (async () => {
+    if ($authSignedInStore) {
+      await loadIcrcTokenAccounts($icrcCanistersStore);
     }
   })();
 
