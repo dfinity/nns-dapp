@@ -44,7 +44,7 @@
         // Imported tokens are shown, even with zero balance.
         isImportedToken({
           ledgerCanisterId: token.universeId,
-          importedTokens: $importedTokensStore.importedTokens,
+          importedTokens,
         }) ||
         (token.balance instanceof TokenAmountV2 && token.balance.toUlps() > 0n)
     );
