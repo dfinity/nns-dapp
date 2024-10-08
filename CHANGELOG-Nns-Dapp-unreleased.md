@@ -16,6 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Fetch TVL from NNS dapp canister instead of TVL canister.
+
 #### Deprecated
 
 #### Removed
@@ -24,6 +26,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Bug where neurons are displayed as eligible to vote, even though they have already voted.
 * Issue with setting exact dissolve delay on SNS neurons.
+* Error on canister page for canisters that are not controlled by the user.
+* Don't hide neurons which have only staked maturity.
 
 #### Security
 
