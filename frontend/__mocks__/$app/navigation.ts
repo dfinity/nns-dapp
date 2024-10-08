@@ -1,15 +1,19 @@
-import type { Navigation } from "@sveltejs/kit";
+import type { AfterNavigate, BeforeNavigate, Navigation } from "@sveltejs/kit";
 import { page } from "./stores";
+
+let beforeNavigateCallbacks: ((navigation: BeforeNavigate) => void)[] = [];
+let afterNavigateCallbacks: ((navigation: AfterNavigate) => void)[] = [];
 
 export const goto = async (
   url: string | URL,
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   opts?: {
     replaceState?: boolean;
-    noscroll?: boolean;
-    keepfocus?: boolean;
+    noScroll?: boolean;
+    keepFocus?: boolean;
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    state?: any;
+    state?: Record<string, any>;
+    invalidateAll?: boolean;
   }
 ): Promise<void> => {
   const { search, pathname: routeId } =
@@ -25,18 +29,25 @@ export const goto = async (
   const navigation: Navigation = {
     from: null,
     to: {
-      url: typeof url === "string" ? new URL(url, "http://localhost") : url,
       params: Object.fromEntries(new URLSearchParams(search)),
       route: { id: routeId },
+      url: typeof url === "string" ? new URL(url, "http://localhost") : url,
     },
     type: "goto",
-    willUnload: true,
-    delta: undefined,
     complete: completePromise,
+    willUnload: false,
   };
 
-  if (beforeNavigateCallback) {
-    beforeNavigateCallback(navigation);
+  let cancelled = false;
+  for (const callback of beforeNavigateCallbacks) {
+    const beforeNav: BeforeNavigate = {
+      ...navigation,
+      cancel: () => {
+        cancelled = true;
+      },
+    };
+    callback(beforeNav);
+    if (cancelled) return;
   }
 
   page.mock({
@@ -46,21 +57,50 @@ export const goto = async (
     },
     routeId,
   });
-  // Simulate some async operation
+
   await completePromise;
 
-  if (afterNavigateCallback) {
-    afterNavigateCallback(navigation);
+  for (const callback of afterNavigateCallbacks) {
+    const afterNav: AfterNavigate = {
+      ...navigation,
+      type: "goto",
+      willUnload: false,
+    };
+    callback(afterNav);
   }
 };
 
-let beforeNavigateCallback: ((navigation: Navigation) => void) | null = null;
-let afterNavigateCallback: ((navigation: Navigation) => void) | null = null;
-
-export const beforeNavigate = (callback: (navigation: Navigation) => void) => {
-  beforeNavigateCallback = callback;
+export const beforeNavigate = (
+  callback: (navigation: BeforeNavigate) => void
+) => {
+  beforeNavigateCallbacks.push(callback);
+  return () => {
+    beforeNavigateCallbacks = beforeNavigateCallbacks.filter(
+      (cb) => cb !== callback
+    );
+  };
 };
 
-export const afterNavigate = (callback: (navigation: Navigation) => void) => {
-  afterNavigateCallback = callback;
+export const afterNavigate = (
+  callback: (navigation: AfterNavigate) => void
+) => {
+  afterNavigateCallbacks.push(callback);
+  return () => {
+    afterNavigateCallbacks = afterNavigateCallbacks.filter(
+      (cb) => cb !== callback
+    );
+  };
+};
+
+export const mockLinkClickEvent = (event) => {
+  if (event.target.tagName === "A" && event.target.href) {
+    event.preventDefault();
+    const to = new URL(event.target.href).pathname;
+    goto(to);
+  }
+};
+
+export const resetNavigationCallbacks = () => {
+  beforeNavigateCallbacks = [];
+  afterNavigateCallbacks = [];
 };
