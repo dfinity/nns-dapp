@@ -4,22 +4,21 @@ import type { PostMessageDataRequestTransactions } from "$lib/types/post-message
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { indexCanisterIdMock } from "$tests/mocks/sns.api.mock";
 
-describe("initTransactionsWorker", () => {
-  let spyPostMessage;
+let spyPostMessage;
+vi.doMock("$lib/workers/transactions.worker?worker", () => ({
+  default: class TransactionsWorker {
+    postMessage(data: {
+      msg: "nnsStartTransactionsTimer";
+      data: PostMessageDataRequestTransactions;
+    }) {
+      spyPostMessage(data);
+    }
+  },
+}));
 
+describe("initTransactionsWorker", () => {
   beforeEach(() => {
     spyPostMessage = vi.fn();
-
-    vi.doMock("$lib/workers/transactions.worker?worker", () => ({
-      default: class TransactionsWorker {
-        postMessage(data: {
-          msg: "nnsStartTransactionsTimer";
-          data: PostMessageDataRequestTransactions;
-        }) {
-          spyPostMessage(data);
-        }
-      },
-    }));
   });
 
   it("should start worker with params", async () => {

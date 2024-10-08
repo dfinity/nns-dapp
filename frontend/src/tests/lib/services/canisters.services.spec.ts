@@ -35,7 +35,7 @@ import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 
 vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/canisters.api");
@@ -46,16 +46,16 @@ describe("canisters-services", () => {
 
   const newBalanceE8s = 100_000_000n;
   const exchangeRate = 10_000n;
-  let spyQueryCanisters: SpyInstance;
-  let spyQueryAccountBalance: SpyInstance;
-  let spyAttachCanister: SpyInstance;
-  let spyRenameCanister: SpyInstance;
-  let spyDetachCanister: SpyInstance;
-  let spyUpdateSettings: SpyInstance;
-  let spyCreateCanister: SpyInstance;
-  let spyTopUpCanister: SpyInstance;
-  let spyQueryCanisterDetails: SpyInstance;
-  let spyGetExchangeRate: SpyInstance;
+  let spyQueryCanisters: MockInstance;
+  let spyQueryAccountBalance: MockInstance;
+  let spyAttachCanister: MockInstance;
+  let spyRenameCanister: MockInstance;
+  let spyDetachCanister: MockInstance;
+  let spyUpdateSettings: MockInstance;
+  let spyCreateCanister: MockInstance;
+  let spyTopUpCanister: MockInstance;
+  let spyQueryCanisterDetails: MockInstance;
+  let spyGetExchangeRate: MockInstance;
 
   beforeEach(() => {
     vi.restoreAllMocks();

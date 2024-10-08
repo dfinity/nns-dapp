@@ -36,7 +36,7 @@ import { LedgerCanister } from "@dfinity/ledger-icp";
 import type { NeuronInfo } from "@dfinity/nns";
 import { GovernanceCanister } from "@dfinity/nns";
 import { get } from "svelte/store";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/nns-dapp.api");
@@ -80,7 +80,7 @@ vi.mock("$lib/stores/toasts.store", () => {
 });
 
 describe("NnsStakeNeuronModal", () => {
-  let queryBalanceSpy: SpyInstance;
+  let queryBalanceSpy: MockInstance;
   const newBalanceE8s = 10_000_000n;
 
   beforeEach(() => {
@@ -445,7 +445,7 @@ describe("NnsStakeNeuronModal", () => {
   });
 
   describe("when no accounts and user navigates away", () => {
-    let spyQueryAccount: SpyInstance;
+    let spyQueryAccount: MockInstance;
     beforeEach(() => {
       resetAccountsForTesting();
       vi.clearAllTimers();

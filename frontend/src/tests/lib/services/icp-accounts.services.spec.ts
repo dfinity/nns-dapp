@@ -60,7 +60,7 @@ import { AccountIdentifier } from "@dfinity/ledger-icp";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 
 vi.mock("$lib/proxy/icp-ledger.services.proxy", () => {
   return {
@@ -492,7 +492,7 @@ describe("icp-accounts.services", () => {
   describe("services", () => {
     const mainBalanceE8s = 10_000_000n;
 
-    let spyCreateSubAccount: SpyInstance;
+    let spyCreateSubAccount: MockInstance;
     beforeEach(() => {
       vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
         mainBalanceE8s
@@ -551,8 +551,8 @@ describe("icp-accounts.services", () => {
       destinationAddress: mockSubAccount.identifier,
       amount: 1,
     };
-    let queryAccountBalanceSpy: SpyInstance;
-    let spySendICP: SpyInstance;
+    let queryAccountBalanceSpy: MockInstance;
+    let spySendICP: MockInstance;
     beforeEach(() => {
       queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
@@ -655,9 +655,9 @@ describe("icp-accounts.services", () => {
   });
 
   describe("rename", () => {
-    let queryAccountBalanceSpy: SpyInstance;
-    let queryAccountSpy: SpyInstance;
-    let spyRenameSubAccount: SpyInstance;
+    let queryAccountBalanceSpy: MockInstance;
+    let queryAccountSpy: MockInstance;
+    let spyRenameSubAccount: MockInstance;
     beforeEach(() => {
       queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")

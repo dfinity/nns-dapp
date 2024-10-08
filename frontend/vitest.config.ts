@@ -1,11 +1,12 @@
 import { sveltekit } from "@sveltejs/kit/vite";
+import { svelteTesting } from "@testing-library/svelte/vite";
 import { resolve } from "path";
 import type { UserConfig } from "vite";
 import { configDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig(
   ({ mode }: UserConfig): UserConfig => ({
-    plugins: [sveltekit()],
+    plugins: [sveltekit(), svelteTesting()],
     resolve: {
       alias: [
         {
@@ -83,7 +84,11 @@ export default defineConfig(
       //
       // Use atomics to synchronize threads seem to resolve the issue according our tests.
       // https://vitest.dev/config/#pooloptions-threads-useatomics
-      useAtomics: true,
+      poolOptions: {
+        threads: {
+          useAtomics: true,
+        },
+      },
     },
   })
 );
