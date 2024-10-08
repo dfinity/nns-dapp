@@ -16,6 +16,7 @@
   import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
+  import type { ImportedTokenData } from "$lib/types/imported-tokens";
 
   export let userTokensData: UserToken[];
 
@@ -29,18 +30,29 @@
   let shouldHideZeroBalances: boolean;
   $: shouldHideZeroBalances = $hideZeroBalancesStore === "hide";
 
+  const getNonZeroBalanceTokensData = ({
+    userTokensData,
+    importedTokens,
+  }: {
+    userTokensData: UserToken[];
+    importedTokens: ImportedTokenData[] | undefined;
+  }) =>
+    userTokensData.filter(
+      (token) =>
+        // Internet Computer is shown, even with zero balance.
+        token.universeId.toText() === OWN_CANISTER_ID_TEXT ||
+        // Imported tokens are shown, even with zero balance.
+        isImportedToken({
+          ledgerCanisterId: token.universeId,
+          importedTokens: $importedTokensStore.importedTokens,
+        }) ||
+        (token.balance instanceof TokenAmountV2 && token.balance.toUlps() > 0n)
+    );
   let nonZeroBalanceTokensData: UserToken[] = [];
-  $: nonZeroBalanceTokensData = userTokensData.filter(
-    (token) =>
-      // Internet Computer is shown, even with zero balance.
-      token.universeId.toText() === OWN_CANISTER_ID_TEXT ||
-      // Imported tokens are shown, even with zero balance.
-      isImportedToken({
-        ledgerCanisterId: token.universeId,
-        importedTokens: $importedTokensStore.importedTokens,
-      }) ||
-      (token.balance instanceof TokenAmountV2 && token.balance.toUlps() > 0n)
-  );
+  $: nonZeroBalanceTokensData = getNonZeroBalanceTokensData({
+    userTokensData,
+    importedTokens: $importedTokensStore.importedTokens,
+  });
 
   let shownTokensData: UserToken[] = [];
   $: shownTokensData = shouldHideZeroBalances
