@@ -134,6 +134,35 @@ describe("Tokens page", () => {
     ]);
   });
 
+  it("should not hide imported tokens, even if they have a zero balance.", async () => {
+    importedTokensStore.set({
+      importedTokens: [
+        {
+          ledgerCanisterId: zeroBalance.universeId,
+          indexCanisterId: undefined,
+        },
+      ],
+      certified: true,
+    });
+    const po = renderPage([positiveBalance, zeroBalance]);
+
+    expect(await po.getTokensTable().getTokenNames()).toEqual([
+      "Positive balance",
+      "Zero balance",
+    ]);
+
+    await po.getSettingsButtonPo().click();
+    await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
+
+    // Finish transitions
+    await advanceTime();
+
+    expect(await po.getTokensTable().getTokenNames()).toEqual([
+      "Positive balance",
+      "Zero balance",
+    ]);
+  });
+
   it("should hide tokens without balance", async () => {
     const po = renderPage([unavailableBalance, positiveBalance]);
 

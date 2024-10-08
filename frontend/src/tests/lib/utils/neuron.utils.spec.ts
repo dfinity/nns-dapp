@@ -322,39 +322,63 @@ describe("neuron-utils", () => {
   });
 
   describe("hasValidStake", () => {
-    it("returns whether the stake is valid or not", () => {
+    it("returns true for ordinary stake", () => {
       const fullNeuronWithEnoughStake = {
         ...mockFullNeuron,
         cachedNeuronStake: 3_000_000_000n,
+        maturityE8sEquivalent: 0n,
+        stakedMaturityE8sEquivalent: 0n,
       };
       const neuronWithEnoughStake = {
         ...mockNeuron,
         fullNeuron: fullNeuronWithEnoughStake,
       };
       expect(hasValidStake(neuronWithEnoughStake)).toBeTruthy();
+    });
 
+    it("returns true for maturity", () => {
       const fullNeuronWithEnoughStakeInMaturity = {
         ...mockFullNeuron,
-        cachedNeuronStake: 100_000_000n,
+        cachedNeuronStake: 0n,
         maturityE8sEquivalent: 3_000_000_000n,
+        stakedMaturityE8sEquivalent: 0n,
       };
       const neuronWithEnoughStakeInMaturity = {
         ...mockNeuron,
         fullNeuron: fullNeuronWithEnoughStakeInMaturity,
       };
       expect(hasValidStake(neuronWithEnoughStakeInMaturity)).toBeTruthy();
+    });
 
+    it("returns true for staked maturity", () => {
+      const fullNeuronWithEnoughStakeInStakedMaturity = {
+        ...mockFullNeuron,
+        cachedNeuronStake: 0n,
+        maturityE8sEquivalent: 0n,
+        stakedMaturityE8sEquivalent: 3_000_000_000n,
+      };
+      const neuronWithEnoughStakeInStakedMaturity = {
+        ...mockNeuron,
+        fullNeuron: fullNeuronWithEnoughStakeInStakedMaturity,
+      };
+      expect(hasValidStake(neuronWithEnoughStakeInStakedMaturity)).toBeTruthy();
+    });
+
+    it("returns false for total stake and maturity below fee", () => {
       const fullNeuronWithoutEnoughStake = {
         ...mockFullNeuron,
         cachedNeuronStake: BigInt(DEFAULT_TRANSACTION_FEE_E8S / 4),
         maturityE8sEquivalent: BigInt(DEFAULT_TRANSACTION_FEE_E8S / 4),
+        stakedMaturityE8sEquivalent: BigInt(DEFAULT_TRANSACTION_FEE_E8S / 4),
       };
       const neuronWithoutEnoughStake = {
         ...mockNeuron,
         fullNeuron: fullNeuronWithoutEnoughStake,
       };
       expect(hasValidStake(neuronWithoutEnoughStake)).toBe(false);
+    });
 
+    it("returns false for absent full neuron", () => {
       const neuronWithoutFullNeuron = {
         ...mockNeuron,
       };

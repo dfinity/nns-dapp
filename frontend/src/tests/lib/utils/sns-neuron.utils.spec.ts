@@ -1234,6 +1234,7 @@ describe("sns-neuron utils", () => {
         ...mockSnsNeuron,
         cached_neuron_stake_e8s: 10_000_000n,
         maturity_e8s_equivalent: 0n,
+        staked_maturity_e8s_equivalent: [0n],
       };
       expect(hasValidStake(neuron)).toBeTruthy();
     });
@@ -1243,6 +1244,7 @@ describe("sns-neuron utils", () => {
         ...mockSnsNeuron,
         cached_neuron_stake_e8s: 0n,
         maturity_e8s_equivalent: 10_000_000n,
+        staked_maturity_e8s_equivalent: [0n],
       };
       expect(hasValidStake(neuron)).toBeTruthy();
     });
@@ -1252,6 +1254,17 @@ describe("sns-neuron utils", () => {
         ...mockSnsNeuron,
         cached_neuron_stake_e8s: 10_000_000n,
         maturity_e8s_equivalent: 10_000_000n,
+        staked_maturity_e8s_equivalent: [0n],
+      };
+      expect(hasValidStake(neuron)).toBeTruthy();
+    });
+
+    it("returns true if neuron has staked maturity greater than 0", () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        cached_neuron_stake_e8s: 0n,
+        maturity_e8s_equivalent: 0n,
+        staked_maturity_e8s_equivalent: [10_000_000n],
       };
       expect(hasValidStake(neuron)).toBeTruthy();
     });
@@ -1261,6 +1274,7 @@ describe("sns-neuron utils", () => {
         ...mockSnsNeuron,
         cached_neuron_stake_e8s: 0n,
         maturity_e8s_equivalent: 0n,
+        staked_maturity_e8s_equivalent: [0n],
       };
       expect(hasValidStake(neuron)).toBe(false);
     });
