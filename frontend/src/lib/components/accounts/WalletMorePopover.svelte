@@ -15,6 +15,10 @@
   export let showRemoveButton = false;
 
   const dispatch = createEventDispatcher();
+  const remove = () => {
+    visible = false;
+    dispatch("nnsRemove");
+  };
 </script>
 
 <TestIdWrapper testId="wallet-more-popover-component">
@@ -41,7 +45,7 @@
         <button
           class="remove-button button ghost with-icon"
           data-tid="remove-button"
-          on:click={() => dispatch("nnsRemove")}
+          on:click={remove}
         >
           <IconBin />
           {$i18n.core.remove}
