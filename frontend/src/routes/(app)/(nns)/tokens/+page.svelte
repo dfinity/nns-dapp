@@ -44,7 +44,10 @@
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
   import { compareTokensForTokensTable } from "$lib/utils/tokens-table.utils";
-  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import {
+    failedImportedTokenLedgerIdsStore,
+    importedTokensStore,
+  } from "$lib/stores/imported-tokens.store";
   import ImportTokenRemoveConfirmation from "$lib/components/accounts/ImportTokenRemoveConfirmation.svelte";
   import { isUserTokenData } from "$lib/utils/user-token.utils";
   import { removeImportedTokens } from "$lib/services/imported-tokens.services";
@@ -236,8 +239,13 @@
   const removeImportedToken = async () => {
     // For type safety. This should never happen.
     if (nonNullish(modal)) {
-      await removeImportedTokens(modal.data.universeId);
-      closeModal();
+      const ledgerCanisterId = modal.data.universeId;
+      const { success } = await removeImportedTokens(ledgerCanisterId);
+      if (success) {
+        importedTokensStore.remove(ledgerCanisterId);
+        failedImportedTokenLedgerIdsStore.remove(ledgerCanisterId.toText());
+        closeModal();
+      }
     }
   };
 

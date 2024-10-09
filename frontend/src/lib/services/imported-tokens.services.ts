@@ -197,10 +197,6 @@ export const removeImportedTokens = async (
     const { err } = await saveImportedToken({ tokens: remainingTokens });
 
     if (isNullish(err)) {
-      // There is no need to reload imported tokens if the remove operation is successful.
-      importedTokensStore.remove(ledgerCanisterId);
-      failedImportedTokenLedgerIdsStore.remove(ledgerCanisterId.toText());
-
       toastsSuccess({
         labelKey: "tokens.remove_imported_token_success",
       });
