@@ -56,6 +56,8 @@ describe("LinkToCanisters", () => {
   it("should dispatch nnsLink event before navigation", async () => {
     const { po, onNnsClick } = renderComponent();
 
+    expect(onNnsClick).toHaveBeenCalledTimes(0);
+
     await po.click();
 
     expect(onNnsClick).toHaveBeenCalledTimes(1);
