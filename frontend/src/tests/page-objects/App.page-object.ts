@@ -264,7 +264,7 @@ export class AppPo extends BasePageObject {
       }
 
       await this.getButton("back").click();
-      currentView.waitForAbsent();
+      await currentView.waitForAbsent();
     }
   }
 
