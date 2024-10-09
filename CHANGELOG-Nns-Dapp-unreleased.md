@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Fetch TVL from NNS dapp canister instead of TVL canister.
+* 10% rollout of re-enabling of certification of certain calls.
 
 #### Deprecated
 
