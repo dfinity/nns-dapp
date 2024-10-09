@@ -20,13 +20,6 @@ const RESTORE_QUERY_AND_UPDATE_ROLLOUT_PERCENTAGE: number = 10;
 const getForceCallStrategyForPercentage = (
   percentage: number
 ): undefined | "query" => {
-  // Treat 0 and 100 explicitly to avoid edge cases.
-  if (percentage === 0) {
-    return "query";
-  }
-  if (percentage === 100) {
-    return undefined;
-  }
   return Math.random() * 100 <= percentage ? undefined : "query";
 };
 
