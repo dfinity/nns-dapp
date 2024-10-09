@@ -224,7 +224,7 @@ describe("proposals-services", () => {
 
         await loadProposal({
           proposalId: 0n,
-          setProposal: vi.fn,
+          setProposal: vi.fn(),
         });
         expect(get(toastsStore)).toMatchObject([
           {

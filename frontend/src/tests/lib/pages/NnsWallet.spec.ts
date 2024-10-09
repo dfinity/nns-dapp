@@ -56,7 +56,7 @@ import { toastsStore } from "@dfinity/gix-components";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 import AccountsTest from "./AccountsTest.svelte";
 
 vi.mock("$lib/api/nns-dapp.api");
@@ -921,7 +921,7 @@ describe("NnsWallet", () => {
   });
 
   describe("when no accounts and user navigates away", () => {
-    let spyQueryAccount: SpyInstance;
+    let spyQueryAccount: MockInstance;
     beforeEach(() => {
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);

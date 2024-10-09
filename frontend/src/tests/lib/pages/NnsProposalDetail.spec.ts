@@ -160,6 +160,14 @@ describe("NnsProposalDetail", () => {
                 }
           )
         );
+      vi.spyOn(governanceApi, "queryNeurons").mockImplementation(
+        ({ certified }) =>
+          certified
+            ? Promise.resolve(testNeurons)
+            : // Throw just to be sure that only certified version is used.
+              // Otherwise neuronsStoreReady is never true: https://github.com/dfinity/nns-dapp/blob/07a9e3e53df469e63798fdf9c7fc0317eeda79c1/frontend/src/lib/components/proposal-detail/VotingCard/NnsVotingCard.svelte#L126
+              Promise.reject(new Error("to ignore uncertified response"))
+      );
 
       const po = renderComponent();
       const votingCardPo = po.getVotingCardPo();

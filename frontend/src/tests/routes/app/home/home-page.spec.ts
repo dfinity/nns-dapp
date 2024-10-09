@@ -1,16 +1,14 @@
-import * as agent from "$lib/api/agent.api";
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import HomePage from "$routes/(app)/(home)/+page.svelte";
-import type { HttpAgent } from "@dfinity/agent";
+import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import { render } from "@testing-library/svelte";
-import { mock } from "vitest-mock-extended";
 
 describe("Home page", () => {
   beforeEach(() => {
     overrideFeatureFlagsStore.reset();
 
-    // TODO: agent mocked because some calls to global.fetch were exposed when we migrated to agent-js v0.20.2
-    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockCkBTCToken);
   });
 
   describe("Tokens flag enabled", () => {

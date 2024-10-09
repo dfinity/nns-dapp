@@ -6,22 +6,21 @@ import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { ledgerCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
-describe("IcrcBalancesObserver", () => {
-  let spyPostMessage;
+let spyPostMessage;
+vi.mock("$lib/workers/balances.worker?worker", () => ({
+  default: class BalancesWorker {
+    postMessage(data: {
+      msg: "nnsStartBalancesTimer" | "nnsStopBalancesTimer";
+      data?: PostMessageDataRequestBalances;
+    }) {
+      spyPostMessage(data);
+    }
+  },
+}));
 
+describe("IcrcBalancesObserver", () => {
   beforeEach(() => {
     spyPostMessage = vi.fn();
-
-    vi.doMock("$lib/workers/balances.worker?worker", () => ({
-      default: class BalancesWorker {
-        postMessage(data: {
-          msg: "nnsStartBalancesTimer" | "nnsStopBalancesTimer";
-          data?: PostMessageDataRequestBalances;
-        }) {
-          spyPostMessage(data);
-        }
-      },
-    }));
   });
 
   const data: BalancesObserverData = {
