@@ -82,6 +82,7 @@ describe("Wallet", () => {
   let ckEthBalance = 1000000000000000000n;
   beforeEach(() => {
     vi.clearAllMocks();
+    importedTokensStore.reset();
     setCkETHCanisters();
     setSnsProjects([
       {
@@ -288,12 +289,12 @@ describe("Wallet", () => {
         routeId: AppPath.Wallet,
       });
       resetSnsProjects();
-
-      expect(get(pageStore).path).toEqual(AppPath.Wallet);
       importedTokensStore.set({
         importedTokens: [],
         certified: true,
       });
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
 
       render(Wallet, {
         props: {
@@ -301,12 +302,42 @@ describe("Wallet", () => {
         },
       });
       await runResolvedPromises();
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
 
       // Waits for the sns projects to be available
-      expect(get(pageStore).path).toEqual(AppPath.Wallet);
       setSnsProjects([{}]);
       await runResolvedPromises();
 
+      expect(get(pageStore).path).toEqual(AppPath.Tokens);
+    });
+
+    it("waits for imported tokens being loaded before initiate the redirection", async () => {
+      page.mock({
+        data: { universe: unknownUniverseId },
+        routeId: AppPath.Wallet,
+      });
+      setSnsProjects([{}]);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: undefined,
+        certified: undefined,
+      });
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+
+      render(Wallet, {
+        props: {
+          accountIdentifier: undefined,
+        },
+      });
+      await runResolvedPromises();
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+
+      // Waits for the imported tokens to be available
+      importedTokensStore.set({
+        importedTokens: [],
+        certified: true,
+      });
+      await runResolvedPromises();
       expect(get(pageStore).path).toEqual(AppPath.Tokens);
     });
   });
