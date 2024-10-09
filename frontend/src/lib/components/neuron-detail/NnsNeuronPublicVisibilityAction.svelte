@@ -1,14 +1,27 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { isPublicNeuron } from "$lib/utils/neuron.utils";
+  import {
+    isNeuronControllable,
+    isPublicNeuron,
+  } from "$lib/utils/neuron.utils";
+  import { authStore } from "$lib/stores/auth.store";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import CommonItemAction from "../ui/CommonItemAction.svelte";
   import { IconPublicBadge } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
+  import NnsChangeNeuronVisibilityButton from "./actions/NnsChangeNeuronVisibilityButton.svelte";
 
   export let neuron: NeuronInfo;
 
   let isPublic: boolean;
   $: isPublic = isPublicNeuron(neuron);
+
+  let isControllable: boolean;
+  $: isControllable = isNeuronControllable({
+    neuron,
+    identity: $authStore.identity,
+    accounts: $icpAccountsStore,
+  });
 </script>
 
 <CommonItemAction testId="nns-neuron-public-visibility-action-component">
@@ -34,11 +47,9 @@
     </span>
   </svelte:fragment>
 
-  <button class="secondary" data-tid="change-neuron-visibility-button" disabled
-    >{isPublic
-      ? $i18n.neurons.make_neuron_private
-      : $i18n.neurons.make_neuron_public}</button
-  >
+  {#if isControllable}
+    <NnsChangeNeuronVisibilityButton {neuron} />
+  {/if}
 </CommonItemAction>
 
 <style lang="scss">
@@ -52,9 +63,5 @@
 
   a {
     color: var(--link-color);
-  }
-
-  button {
-    text-wrap: nowrap;
   }
 </style>
