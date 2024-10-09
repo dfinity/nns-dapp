@@ -878,6 +878,9 @@ describe("Tokens route", () => {
             indexCanisterId: undefined,
           },
         ]);
+        expect(get(failedImportedTokenLedgerIdsStore)).toEqual([
+          failedImportedTokenId.toText(),
+        ]);
 
         await removeConfirmationPo.clickYes();
         await removeConfirmationPo.waitForClosed();
@@ -887,6 +890,7 @@ describe("Tokens route", () => {
           importedToken1Data,
           importedToken2Data,
         ]);
+        expect(get(failedImportedTokenLedgerIdsStore)).toEqual([]);
         expect(await po.getTokensPagePo().getTokenNames()).toEqual([
           "Internet Computer",
           "ckBTC",
