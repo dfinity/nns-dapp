@@ -5,9 +5,13 @@ import "fake-indexeddb/auto";
 // jsdom does not implement TextEncoder
 // Polyfill the encoders with node
 import { TextDecoder, TextEncoder } from "util";
-import { vi } from "vitest";
+import { afterEach, beforeEach, expect, vi } from "vitest";
 import { browser, building } from "./__mocks__/$app/environment";
-import { afterNavigate, goto } from "./__mocks__/$app/navigation";
+import {
+  afterNavigate,
+  beforeNavigate,
+  goto,
+} from "./__mocks__/$app/navigation";
 import { navigating, page } from "./__mocks__/$app/stores";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
@@ -107,6 +111,7 @@ vi.mock("$app/environment", () => ({
 vi.mock("$app/navigation", () => ({
   goto,
   afterNavigate,
+  beforeNavigate,
 }));
 
 vi.mock("$app/stores", () => ({

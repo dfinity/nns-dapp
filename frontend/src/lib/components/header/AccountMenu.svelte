@@ -14,6 +14,7 @@
   let button: HTMLButtonElement | undefined;
 
   const toggle = () => (visible = !visible);
+  const closeMenu = () => (visible = false);
 </script>
 
 <TestIdWrapper testId="account-menu-component">
@@ -34,9 +35,9 @@
 
         <ManageInternetIdentityButton />
 
-        <SettingsButton on:nnsLink={() => (visible = false)} />
+        <SettingsButton on:nnsLink={closeMenu} />
 
-        <LinkToCanisters />
+        <LinkToCanisters on:nnsLink={closeMenu} />
 
         <Logout on:nnsLogoutTriggered={toggle} />
       </div>
