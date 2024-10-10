@@ -607,6 +607,7 @@ describe("IcrcWallet", () => {
       });
 
       expect(get(busyStore)).toEqual([]);
+      expect(get(pageStore).path).toEqual(AppPath.Tokens);
       expect(get(importedTokensStore).importedTokens).toEqual([
         {
           ledgerCanisterId: ledgerCanisterId2,

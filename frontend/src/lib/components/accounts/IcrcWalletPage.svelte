@@ -28,10 +28,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import WalletMorePopover from "./WalletMorePopover.svelte";
   import { isImportedToken as checkImportedToken } from "$lib/utils/imported-tokens.utils";
-  import {
-    failedImportedTokenLedgerIdsStore,
-    importedTokensStore,
-  } from "$lib/stores/imported-tokens.store";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { removeImportedTokens } from "$lib/services/imported-tokens.services";
   import ImportTokenRemoveConfirmation from "./ImportTokenRemoveConfirmation.svelte";
   import type { Universe } from "$lib/types/universe";
@@ -177,12 +174,7 @@
 
     const { success } = await removeImportedTokens(ledgerCanisterId);
     if (success) {
-      // The modal should be closed before the token is removed,
-      // because the removal will trigger a navigation
-      // and the open modal will prevent the component from being destroyed.
-      removeImportedTokenConfirmationVisible = false;
-      importedTokensStore.remove(ledgerCanisterId);
-      failedImportedTokenLedgerIdsStore.remove(ledgerCanisterId.toText());
+      goto(AppPath.Tokens);
     }
   };
 </script>

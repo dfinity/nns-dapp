@@ -367,6 +367,27 @@ describe("imported-tokens-services", () => {
       expect(get(busyStore)).toEqual([]);
     });
 
+    it("should update the store", async () => {
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue(
+        undefined
+      );
+      importedTokensStore.set({
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+        certified: true,
+      });
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+        certified: true,
+      });
+
+      await removeImportedTokens(importedTokenDataA.ledgerCanisterId);
+
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: [importedTokenDataB],
+        certified: true,
+      });
+    });
+
     it("should display success toast", async () => {
       const spyToastSuccess = vi.spyOn(toastsStore, "toastsSuccess");
       vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
