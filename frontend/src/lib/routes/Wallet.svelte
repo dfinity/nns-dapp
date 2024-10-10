@@ -15,7 +15,7 @@
   import SnsWallet from "$lib/pages/SnsWallet.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
-  import { nonNullish } from "@dfinity/utils";
+  import { nonNullish, isNullish } from "@dfinity/utils";
   import { AppPath } from "$lib/constants/routes.constants";
   import { goto } from "$app/navigation";
   import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
@@ -28,22 +28,31 @@
     title: $i18n.wallet.title,
   });
 
-  let isUnknownToken = false;
-  $: isUnknownToken =
-    !$isNnsUniverseStore &&
-    !$isCkBTCUniverseStore &&
-    !$isIcrcTokenUniverseStore &&
+  const redirectIfUnknownToken = () => {
+    if (
+      !$isNnsUniverseStore &&
+      !$isCkBTCUniverseStore &&
+      !$isIcrcTokenUniverseStore &&
+      isNullish($snsProjectSelectedStore)
+    ) {
+      // When we can't determine the token type, rather than making guesses,
+      // it’s more reliable to navigate the user to the all tokens page.
+      // (imported tokens are not available when signed out).
+      goto(AppPath.Tokens);
+    }
+  };
+  let tokensReady = false;
+  $: tokensReady ||=
     // We can't be sure that the token is unknown
     // before we have the list of Sns projects.
-    nonNullish($snsAggregatorStore.data) &&
     // and imported tokens being loaded
-    (!$authSignedInStore || nonNullish($importedTokensStore.importedTokens)) &&
-    !nonNullish($snsProjectSelectedStore);
-  $: if (isUnknownToken) {
-    // This will also cover the case when the user was logged out
-    // being on the wallet page of an imported token
-    // (imported tokens are not available when signed out).
-    goto(AppPath.Tokens);
+    nonNullish($snsAggregatorStore.data) &&
+    (!$authSignedInStore || nonNullish($importedTokensStore.importedTokens));
+  $: if (tokensReady) {
+    // Check once per page load to handle navigation after signing out from the imported token page.
+    // Redirecting after token removal may cause a broken state on the tokens page (e.g., blocked scrolling or actions)
+    // as the Wallet component still waits for the remove completion while the tokens page is already rendered.
+    redirectIfUnknownToken();
   }
 </script>
 

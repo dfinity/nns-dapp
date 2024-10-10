@@ -284,7 +284,7 @@ describe("Wallet", () => {
     expect(await pagePo.getWalletPageHeadingPo().getTitle()).toBe("1.11 ckETH");
   });
 
-  describe("unknown token", () => {
+  describe("unknown token redirection", () => {
     const unknownUniverseId = "aaaaa-aa";
 
     beforeEach(() => {
@@ -406,6 +406,38 @@ describe("Wallet", () => {
       });
       await runResolvedPromises();
 
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+    });
+
+    it("should not redirect when a token becomes unknown during session", async () => {
+      page.mock({
+        data: { universe: importedTokenId.toText() },
+        routeId: AppPath.Wallet,
+      });
+      setSnsProjects([{}]);
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId: importedTokenId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+      render(Wallet, {
+        props: {
+          accountIdentifier: undefined,
+        },
+      });
+      await runResolvedPromises();
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+
+      // Remove the imported token
+      importedTokensStore.remove(importedTokenId);
+      await runResolvedPromises();
       expect(get(pageStore).path).toEqual(AppPath.Wallet);
     });
   });
