@@ -29,27 +29,30 @@
     title: $i18n.wallet.title,
   });
 
-  let tokensReady = false;
-  $: tokensReady =
-    // We can't be sure that the token is unknown
-    // before we have the list of Sns projects.
-    // and imported tokens being loaded
-    nonNullish($snsAggregatorStore.data) &&
-    (!$authSignedInStore || nonNullish($importedTokensStore.importedTokens));
-  let hasCheckedForUnknownToken = false;
-  $: if (tokensReady && !hasCheckedForUnknownToken) {
-    hasCheckedForUnknownToken = true;
+  const redirectIfUnknownToken = () => {
     if (
-      !get(isNnsUniverseStore) &&
-      !get(isCkBTCUniverseStore) &&
-      !get(isIcrcTokenUniverseStore) &&
-      isNullish(get(snsProjectSelectedStore))
+      !$isNnsUniverseStore &&
+      !$isCkBTCUniverseStore &&
+      !$isIcrcTokenUniverseStore &&
+      isNullish($snsProjectSelectedStore)
     ) {
       // When we can't determine the token type, rather than making guesses,
       // it’s more reliable to navigate the user to the all tokens page.
       // (imported tokens are not available when signed out).
       goto(AppPath.Tokens);
     }
+  };
+  let tokensReady = false;
+  $: tokensReady ||=
+    // We can't be sure that the token is unknown
+    // before we have the list of Sns projects.
+    // and imported tokens being loaded
+    nonNullish($snsAggregatorStore.data) &&
+    (!$authSignedInStore || nonNullish($importedTokensStore.importedTokens));
+  $: if (tokensReady) {
+    // We only need to check this once per page load,
+    // as the main goal is to navigate after signing out from the imported token page.
+    redirectIfUnknownToken();
   }
 </script>
 
