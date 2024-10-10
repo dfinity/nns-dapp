@@ -566,7 +566,6 @@ describe("IcrcWallet", () => {
       expect(await morePopoverPo.getRemoveButtonPo().isPresent()).toBe(true);
       await morePopoverPo.getRemoveButtonPo().click();
       await runResolvedPromises();
-      // expect(await morePopoverPo.getRemoveButtonPo().isPresent()).toBe(false);
 
       expect(get(pageStore).path).toEqual(AppPath.Wallet);
       expect(get(busyStore)).toEqual([]);
