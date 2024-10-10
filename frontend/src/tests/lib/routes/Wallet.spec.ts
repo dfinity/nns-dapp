@@ -15,7 +15,11 @@ import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
-import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockIdentity,
+  resetIdentity,
+  setNoIdentity,
+} from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
@@ -86,6 +90,7 @@ describe("Wallet", () => {
   let ckEthBalance = 1000000000000000000n;
   const importedTokenId = principal(123);
   beforeEach(() => {
+    resetIdentity();
     vi.clearAllMocks();
     importedTokensStore.reset();
     setCkETHCanisters();
@@ -140,10 +145,6 @@ describe("Wallet", () => {
       }
     );
     vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
-  });
-
-  beforeAll(() => {
-    resetIdentity();
   });
 
   describe("nns context", () => {
@@ -347,6 +348,29 @@ describe("Wallet", () => {
       importedTokensStore.set({
         importedTokens: [],
         certified: true,
+      });
+      await runResolvedPromises();
+      expect(get(pageStore).path).toEqual(AppPath.Tokens);
+    });
+
+    it("not waits for imported tokens being loaded when signed out", async () => {
+      setNoIdentity();
+      page.mock({
+        data: { universe: unknownUniverseId },
+        routeId: AppPath.Wallet,
+      });
+      setSnsProjects([{}]);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: undefined,
+        certified: undefined,
+      });
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+
+      render(Wallet, {
+        props: {
+          accountIdentifier: undefined,
+        },
       });
       await runResolvedPromises();
       expect(get(pageStore).path).toEqual(AppPath.Tokens);

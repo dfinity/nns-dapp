@@ -20,6 +20,7 @@
   import { goto } from "$app/navigation";
   import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -36,7 +37,7 @@
     // before we have the list of Sns projects.
     nonNullish($snsAggregatorStore.data) &&
     // and imported tokens being loaded
-    nonNullish($importedTokensStore.importedTokens) &&
+    (!$authSignedInStore || nonNullish($importedTokensStore.importedTokens)) &&
     !nonNullish($snsProjectSelectedStore);
   $: if (isUnknownToken) {
     // This will also cover the case when the user was logged out
