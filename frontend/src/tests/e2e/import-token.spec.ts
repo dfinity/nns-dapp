@@ -95,4 +95,48 @@ test("Test imported tokens", async ({ page, context }) => {
 
   await tokensPagePo.waitFor();
   expect(await tokenNames()).toEqual(initialTokenNames);
+
+  step("Import the token again");
+
+  await importButtonPo.waitFor();
+  expect(initialTokenNames).not.toContain(TEST_TOKEN_NAME);
+
+  step("Enter the ledger canister id only");
+
+  await importButtonPo.click();
+  await importTokenModalPo.waitFor();
+  await formPo.getLedgerCanisterInputPo().typeText(TEST_LEDGER_CANISTER_ID);
+
+  await formPo.getSubmitButtonPo().click();
+  await reviewPo.waitFor();
+
+  step("Review imported token");
+
+  expect(await reviewPo.getTokenName()).toBe(TEST_TOKEN_NAME);
+  expect(await reviewPo.getLedgerCanisterIdPo().getCanisterIdText()).toBe(
+    TEST_LEDGER_CANISTER_ID
+  );
+  expect(
+    await reviewPo.getIndexCanisterIdPo().getCanisterIdFallback().isPresent()
+  ).toBe(true);
+
+  step("Import the token");
+
+  await reviewPo.getConfirmButtonPo().click();
+  await walletPo.waitFor();
+  expect(
+    await appPo
+      .getWalletPo()
+      .getIcrcWalletPo()
+      .getWalletPageHeaderPo()
+      .getUniverseSummaryPo()
+      .getTitle()
+  ).toEqual(TEST_TOKEN_NAME);
+
+  step("The imported token should be present in the tokens table");
+
+  await appPo.goBack();
+  await appPo.getTokensPo().getTokensPagePo().getTokensTable().waitFor();
+
+  expect(await tokenNames()).toContain(TEST_TOKEN_NAME);
 });
