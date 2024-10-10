@@ -13,7 +13,11 @@ import {
   proposalsFiltersStore,
   proposalsStore,
 } from "$lib/stores/proposals.store";
-import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockIdentity,
+  resetIdentity,
+  setNoIdentity,
+} from "$tests/mocks/auth.store.mock";
 import { IntersectionObserverActive } from "$tests/mocks/infinitescroll.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { NnsProposalListPo } from "$tests/page-objects/NnsProposalList.page-object";
@@ -380,6 +384,13 @@ describe("NnsProposals", () => {
       });
 
       it("should render not found text", async () => {
+        const po = await renderComponent();
+
+        expect(await po.getNoProposalsPo().isPresent()).toBe(true);
+      });
+
+      it("should render not found text when not signed in", async () => {
+        setNoIdentity();
         const po = await renderComponent();
 
         expect(await po.getNoProposalsPo().isPresent()).toBe(true);
