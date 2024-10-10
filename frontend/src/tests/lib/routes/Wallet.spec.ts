@@ -353,7 +353,7 @@ describe("Wallet", () => {
       expect(get(pageStore).path).toEqual(AppPath.Tokens);
     });
 
-    it("not waits for imported tokens being loaded when signed out", async () => {
+    it("redirects to tokens for unknown universe when not signed in", async () => {
       setNoIdentity();
       page.mock({
         data: { universe: unknownUniverseId },
