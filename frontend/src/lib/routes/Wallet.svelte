@@ -20,7 +20,6 @@
   import { goto } from "$app/navigation";
   import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-  import { get } from "svelte/store";
   import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let accountIdentifier: string | undefined | null = undefined;
