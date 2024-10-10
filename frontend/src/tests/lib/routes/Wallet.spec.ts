@@ -90,6 +90,7 @@ describe("Wallet", () => {
   let ckEthBalance = 1000000000000000000n;
   const importedTokenId = principal(123);
   beforeEach(() => {
+    resetIdentity();
     vi.clearAllMocks();
     importedTokensStore.reset();
     setCkETHCanisters();
@@ -144,10 +145,6 @@ describe("Wallet", () => {
       }
     );
     vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
-  });
-
-  beforeAll(() => {
-    resetIdentity();
   });
 
   describe("nns context", () => {
@@ -356,6 +353,29 @@ describe("Wallet", () => {
       expect(get(pageStore).path).toEqual(AppPath.Tokens);
     });
 
+    it("redirects to tokens for unknown universe when not signed in", async () => {
+      setNoIdentity();
+      page.mock({
+        data: { universe: unknownUniverseId },
+        routeId: AppPath.Wallet,
+      });
+      setSnsProjects([{}]);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: undefined,
+        certified: undefined,
+      });
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+
+      render(Wallet, {
+        props: {
+          accountIdentifier: undefined,
+        },
+      });
+      await runResolvedPromises();
+      expect(get(pageStore).path).toEqual(AppPath.Tokens);
+    });
+
     it("should not redirect on valid token", async () => {
       page.mock({
         data: { universe: importedTokenId.toText() },
@@ -387,29 +407,6 @@ describe("Wallet", () => {
       await runResolvedPromises();
 
       expect(get(pageStore).path).toEqual(AppPath.Wallet);
-    });
-
-    it("not waits for imported tokens being loaded when signed out", async () => {
-      setNoIdentity();
-      page.mock({
-        data: { universe: unknownUniverseId },
-        routeId: AppPath.Wallet,
-      });
-      setSnsProjects([{}]);
-      expect(get(importedTokensStore)).toEqual({
-        importedTokens: undefined,
-        certified: undefined,
-      });
-
-      expect(get(pageStore).path).toEqual(AppPath.Wallet);
-
-      render(Wallet, {
-        props: {
-          accountIdentifier: undefined,
-        },
-      });
-      await runResolvedPromises();
-      expect(get(pageStore).path).toEqual(AppPath.Tokens);
     });
 
     it("should not redirect when a token becomes unknown during session", async () => {
