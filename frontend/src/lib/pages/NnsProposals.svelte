@@ -24,13 +24,15 @@
   let hidden = false;
   let initialized = false;
 
+  // Used to determine if a request is still the most recent request when its
+  // response comes back.
+  let lastProposalsRequestToken: object = {};
+
   const loadFinished = ({ paginationOver }: { paginationOver: boolean }) => {
-    loading = false;
     disableInfiniteScroll = paginationOver;
   };
 
   const loadError = (err: unknown) => {
-    loading = false;
     disableInfiniteScroll = true;
 
     toastsError({
@@ -39,28 +41,33 @@
     });
   };
 
-  const findNextProposals = async () => {
+  const wrapProposalLoading = async (promise: Promise<void>) => {
+    const proposalsRequestToken = {};
+    lastProposalsRequestToken = proposalsRequestToken;
     loading = true;
 
     try {
-      await listNextProposals({
+      await promise;
+    } catch (err: unknown) {
+      loadError(err);
+    } finally {
+      // Only reset loading if there isn't a newer request in flight.
+      if (lastProposalsRequestToken === proposalsRequestToken) {
+        loading = false;
+      }
+    }
+  };
+
+  const findNextProposals = () =>
+    wrapProposalLoading(
+      listNextProposals({
         beforeProposal: lastProposalId($sortedProposals.proposals),
         loadFinished,
-      });
-    } catch (err: unknown) {
-      loadError(err);
-    }
-  };
+      })
+    );
 
-  const findProposals = async () => {
-    loading = true;
-
-    try {
-      await listProposals({ loadFinished });
-    } catch (err: unknown) {
-      loadError(err);
-    }
-  };
+  const findProposals = () =>
+    wrapProposalLoading(listProposals({ loadFinished }));
 
   let debounceFindProposals: () => void | undefined;
 

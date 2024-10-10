@@ -396,6 +396,77 @@ describe("NnsProposals", () => {
         expect(await po.getNoProposalsPo().isPresent()).toBe(true);
       });
     });
+
+    describe("Async results", () => {
+      const resolveQueryProposals = [];
+      beforeEach(() => {
+        resolveQueryProposals.length = 0;
+        actionableProposalsSegmentStore.set("all");
+        vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+        vi.spyOn(proposalsApi, "queryProposals").mockImplementation(() => {
+          return new Promise<ProposalInfo[]>((resolve) => {
+            resolveQueryProposals.push(resolve);
+          });
+        });
+      });
+
+      it("should not stop showing loading skeletons when a newer request is still loading", async () => {
+        const po = await renderComponent();
+
+        const changeFilters = async () => {
+          const filters = po.getNnsProposalFiltersPo();
+          await filters.clickFiltersByTopicsButton();
+          const filtersModal = filters.getFilterModalPo();
+          // We just change one entry. We don't care what it is.
+          const filterEntry = (await filtersModal.getFilterEntryPos())[0];
+          await filterEntry.click();
+          await filtersModal.clickConfirmButton();
+
+          // Stop waiting for the debounce to load proposals.
+          await advanceTime();
+        };
+
+        expect(resolveQueryProposals).toHaveLength(2);
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(true);
+        expect(await po.getNoProposalsPo().isPresent()).toBe(false);
+
+        // Finish initialization.
+        resolveQueryProposals[0]([]); // query
+        resolveQueryProposals[1]([]); // update
+        resolveQueryProposals.length = 0;
+
+        // Change filters to start a new request.
+        await changeFilters();
+
+        // Stop waiting for the debounce to load proposals.
+        await advanceTime();
+
+        expect(resolveQueryProposals).toHaveLength(2);
+
+        // Change filters again to start a new request before the first request
+        // finishes.
+        await changeFilters();
+
+        expect(resolveQueryProposals).toHaveLength(4);
+
+        // The first request has become obsolete so resolving it should not take
+        // the component out of the loading state.
+        resolveQueryProposals[0]([]); // query
+        resolveQueryProposals[1]([]); // update
+        await runResolvedPromises();
+
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(true);
+        expect(await po.getNoProposalsPo().isPresent()).toBe(false);
+
+        // Resolving the last request should end the loading state.
+        resolveQueryProposals[2]([]); // query
+        resolveQueryProposals[3]([]); // update
+        await runResolvedPromises();
+
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
+        expect(await po.getNoProposalsPo().isPresent()).toBe(true);
+      });
+    });
   });
 
   describe("when not logged in", () => {

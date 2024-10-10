@@ -30,6 +30,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Error on canister page for canisters that are not controlled by the user.
 * Don't hide neurons which have only staked maturity.
 * Not showing the "no proposals" message when not signed in.
+* Race condition in proposal loading.
 
 #### Security
 
