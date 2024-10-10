@@ -2,6 +2,7 @@
   import NnsProposalsList from "$lib/components/proposals/NnsProposalsList.svelte";
   import { notForceCallStrategy } from "$lib/constants/mockable.constants";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import {
     filteredProposals,
     sortedProposals,
@@ -123,7 +124,11 @@
 
   const updateNothingFound = () => {
     // Update the "nothing found" UI information only when the results of the certified query has been received to minimize UI glitches
-    if ($filteredProposals.certified === false && notForceCallStrategy()) {
+    if (
+      $filteredProposals.certified === false &&
+      notForceCallStrategy() &&
+      $authSignedInStore
+    ) {
       if (loading) nothingFound = false;
       return;
     }
