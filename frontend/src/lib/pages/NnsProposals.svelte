@@ -1,11 +1,7 @@
 <script lang="ts">
   import NnsProposalsList from "$lib/components/proposals/NnsProposalsList.svelte";
-  import { notForceCallStrategy } from "$lib/constants/mockable.constants";
   import { AppPath } from "$lib/constants/routes.constants";
-  import {
-    filteredProposals,
-    sortedProposals,
-  } from "$lib/derived/proposals.derived";
+  import { sortedProposals } from "$lib/derived/proposals.derived";
   import {
     listNextProposals,
     listProposals,
@@ -17,10 +13,7 @@
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import { reloadRouteData } from "$lib/utils/navigation.utils";
-  import {
-    hasMatchingProposals,
-    lastProposalId,
-  } from "$lib/utils/proposals.utils";
+  import { lastProposalId } from "$lib/utils/proposals.utils";
   import { debounce } from "@dfinity/utils";
   import { onMount } from "svelte";
 
