@@ -35,7 +35,9 @@
     // before we have the list of Sns projects.
     nonNullish($snsAggregatorStore.data) &&
     !nonNullish($snsProjectSelectedStore);
-  $: if (isUnknownToken) {
+  let hasCheckedForUnknownToken = false;
+  $: if (isUnknownToken && hasCheckedForUnknownToken) {
+    hasCheckedForUnknownToken = true;
     // This will also cover the case when the user was logged out
     // being on the wallet page of an imported token
     // (imported tokens are not available when signed out).
