@@ -15,10 +15,13 @@
   import SnsWallet from "$lib/pages/SnsWallet.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
-  import { nonNullish } from "@dfinity/utils";
+  import { nonNullish, isNullish } from "@dfinity/utils";
   import { AppPath } from "$lib/constants/routes.constants";
   import { goto } from "$app/navigation";
   import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { get } from "svelte/store";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -26,22 +29,26 @@
     title: $i18n.wallet.title,
   });
 
-  let isUnknownToken = false;
-  $: isUnknownToken =
-    !$isNnsUniverseStore &&
-    !$isCkBTCUniverseStore &&
-    !$isIcrcTokenUniverseStore &&
+  let tokensReady = false;
+  $: tokensReady =
     // We can't be sure that the token is unknown
     // before we have the list of Sns projects.
+    // and imported tokens being loaded
     nonNullish($snsAggregatorStore.data) &&
-    !nonNullish($snsProjectSelectedStore);
+    (!$authSignedInStore || nonNullish($importedTokensStore.importedTokens));
   let hasCheckedForUnknownToken = false;
-  $: if (isUnknownToken && hasCheckedForUnknownToken) {
-    hasCheckedForUnknownToken = true;
-    // This will also cover the case when the user was logged out
-    // being on the wallet page of an imported token
-    // (imported tokens are not available when signed out).
-    goto(AppPath.Tokens);
+  $: if (tokensReady && !hasCheckedForUnknownToken) {
+    if (
+      !get(isNnsUniverseStore) &&
+      !get(isCkBTCUniverseStore) &&
+      !get(isIcrcTokenUniverseStore) &&
+      isNullish(get(snsProjectSelectedStore))
+    ) {
+      // When we can't determine the token type, rather than making guesses,
+      // it’s more reliable to navigate the user to the all tokens page.
+      // (imported tokens are not available when signed out).
+      goto(AppPath.Tokens);
+    }
   }
 </script>
 
