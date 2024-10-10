@@ -49,8 +49,9 @@
     nonNullish($snsAggregatorStore.data) &&
     (!$authSignedInStore || nonNullish($importedTokensStore.importedTokens));
   $: if (tokensReady) {
-    // We only need to check this once per page load,
-    // as the main goal is to navigate after signing out from the imported token page.
+    // Check once per page load to handle navigation after signing out from the imported token page.
+    // Redirecting after token removal may cause a broken state on the tokens page (e.g., blocked scrolling or actions)
+    // as the Wallet component still waits for the remove completion while the tokens page is already rendered.
     redirectIfUnknownToken();
   }
 </script>
