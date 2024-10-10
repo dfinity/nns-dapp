@@ -19,6 +19,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { goto } from "$app/navigation";
   import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -34,6 +35,8 @@
     // We can't be sure that the token is unknown
     // before we have the list of Sns projects.
     nonNullish($snsAggregatorStore.data) &&
+    // and imported tokens being loaded
+    nonNullish($importedTokensStore.importedTokens) &&
     !nonNullish($snsProjectSelectedStore);
   $: if (isUnknownToken) {
     // This will also cover the case when the user was logged out

@@ -12,6 +12,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Wallet from "$lib/routes/Wallet.svelte";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -23,7 +24,11 @@ import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcrcMainAccount } from "$tests/mocks/icrc-accounts.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import { mockSnsFullProject, principal } from "$tests/mocks/sns-projects.mock";
+import {
+  mockSnsFullProject,
+  mockToken,
+  principal,
+} from "$tests/mocks/sns-projects.mock";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
@@ -79,8 +84,10 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
 
 describe("Wallet", () => {
   let ckEthBalance = 1000000000000000000n;
+  const importedTokenId = principal(123);
   beforeEach(() => {
     vi.clearAllMocks();
+    importedTokensStore.reset();
     setCkETHCanisters();
     setSnsProjects([
       {
@@ -112,6 +119,9 @@ describe("Wallet", () => {
         ) {
           return mockSnsMainAccount.balanceUlps;
         }
+        if (canisterId.toText() === importedTokenId.toText()) {
+          return mockSnsMainAccount.balanceUlps;
+        }
         throw new Error(`Unexpected canisterId: ${canisterId.toText()}`);
       }
     );
@@ -122,6 +132,9 @@ describe("Wallet", () => {
         }
         if (canisterId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText()) {
           return mockCkBTCToken;
+        }
+        if (canisterId.toText() === importedTokenId.toText()) {
+          return mockToken;
         }
         throw new Error(`Unexpected canisterId: ${canisterId.toText()}`);
       }
@@ -287,6 +300,10 @@ describe("Wallet", () => {
         routeId: AppPath.Wallet,
       });
       resetSnsProjects();
+      importedTokensStore.set({
+        importedTokens: [],
+        certified: true,
+      });
 
       expect(get(pageStore).path).toEqual(AppPath.Wallet);
 
@@ -296,13 +313,76 @@ describe("Wallet", () => {
         },
       });
       await runResolvedPromises();
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
 
       // Waits for the sns projects to be available
-      expect(get(pageStore).path).toEqual(AppPath.Wallet);
       setSnsProjects([{}]);
       await runResolvedPromises();
 
       expect(get(pageStore).path).toEqual(AppPath.Tokens);
+    });
+
+    it("waits for imported tokens being loaded before initiate the redirection", async () => {
+      page.mock({
+        data: { universe: unknownUniverseId },
+        routeId: AppPath.Wallet,
+      });
+      setSnsProjects([{}]);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: undefined,
+        certified: undefined,
+      });
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+
+      render(Wallet, {
+        props: {
+          accountIdentifier: undefined,
+        },
+      });
+      await runResolvedPromises();
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+
+      // Waits for the imported tokens to be available
+      importedTokensStore.set({
+        importedTokens: [],
+        certified: true,
+      });
+      await runResolvedPromises();
+      expect(get(pageStore).path).toEqual(AppPath.Tokens);
+    });
+
+    it("should not redirect on valid token", async () => {
+      page.mock({
+        data: { universe: importedTokenId.toText() },
+        routeId: AppPath.Wallet,
+      });
+      setSnsProjects([{}]);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: undefined,
+        certified: undefined,
+      });
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+      render(Wallet, {
+        props: {
+          accountIdentifier: undefined,
+        },
+      });
+      await runResolvedPromises();
+
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId: importedTokenId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+      await runResolvedPromises();
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
     });
   });
 });
