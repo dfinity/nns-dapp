@@ -38,6 +38,7 @@
     (!$authSignedInStore || nonNullish($importedTokensStore.importedTokens));
   let hasCheckedForUnknownToken = false;
   $: if (tokensReady && !hasCheckedForUnknownToken) {
+    hasCheckedForUnknownToken = true;
     if (
       !get(isNnsUniverseStore) &&
       !get(isCkBTCUniverseStore) &&
