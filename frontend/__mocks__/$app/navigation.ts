@@ -1,3 +1,4 @@
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { AfterNavigate, BeforeNavigate, Navigation } from "@sveltejs/kit";
 import { page } from "./stores";
 
@@ -9,11 +10,10 @@ export const goto = async (
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   opts?: {
     replaceState?: boolean;
-    noScroll?: boolean;
-    keepFocus?: boolean;
+    noscroll?: boolean;
+    keepfocus?: boolean;
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    state?: Record<string, any>;
-    invalidateAll?: boolean;
+    state?: any;
   }
 ): Promise<void> => {
   const { search, pathname: routeId } =
@@ -22,9 +22,7 @@ export const goto = async (
   const params = Object.fromEntries(new URLSearchParams(search));
   const { u: universe, ...rest }: Record<string, string> = params;
 
-  const completePromise = new Promise<void>((resolve) =>
-    setTimeout(resolve, 0)
-  );
+  const completePromise = runResolvedPromises() as Promise<void>;
 
   const navigation: Navigation = {
     from: null,
