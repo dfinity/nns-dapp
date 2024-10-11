@@ -7,6 +7,7 @@
   import { createEventDispatcher } from "svelte";
   import { isNullish } from "@dfinity/utils";
   import CalloutWarning from "$lib/components/common/CalloutWarning.svelte";
+  import ImportTokenCanisterId from "$lib/components/accounts/ImportTokenCanisterId.svelte";
 
   export let ledgerCanisterId: Principal | undefined = undefined;
   export let indexCanisterId: Principal | undefined = undefined;
@@ -24,17 +25,25 @@
   <p class="description">{$i18n.import_token.description}</p>
 
   <form on:submit|preventDefault={() => dispatch("nnsSubmit")}>
-    <PrincipalInput
-      bind:principal={ledgerCanisterId}
-      placeholderLabelKey="import_token.placeholder"
-      name="ledger-canister-id"
-      testId="ledger-canister-id"
-      disabled={addIndexCanisterMode}
-    >
-      <svelte:fragment slot="label"
-        >{$i18n.import_token.ledger_label}</svelte:fragment
+    {#if addIndexCanisterMode}
+      <ImportTokenCanisterId
+        testId="ledger-canister-id-view"
+        label={$i18n.import_token.ledger_label}
+        canisterId={ledgerCanisterId}
+      />
+    {:else}
+      <PrincipalInput
+        bind:principal={ledgerCanisterId}
+        placeholderLabelKey="import_token.placeholder"
+        name="ledger-canister-id"
+        testId="ledger-canister-id"
+        disabled={addIndexCanisterMode}
       >
-    </PrincipalInput>
+        <svelte:fragment slot="label"
+          >{$i18n.import_token.ledger_label}</svelte:fragment
+        >
+      </PrincipalInput>
+    {/if}
 
     <PrincipalInput
       bind:principal={indexCanisterId}
