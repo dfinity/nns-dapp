@@ -312,7 +312,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98172198257892130,
+    "icrc1_total_supply": 98177103994039740,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -768,7 +768,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100677754233604960,
+    "icrc1_total_supply": 100687068207873780,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1323,6 +1323,19 @@
               "target_method_name": "manage_neuron"
             }
           }
+        },
+        {
+          "id": 1004,
+          "name": "manage WTN neuron",
+          "description": "Manage CTZ neuron owned by Catalyze",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "2kusx-raaaa-aaaal-qjaxq-cai",
+              "target_canister_id": "jfnic-kaaaa-aaaaq-aadla-cai",
+              "validator_method_name": "validate_manage_neuron",
+              "target_method_name": "manage_neuron"
+            }
+          }
         }
       ]
     },
@@ -1450,7 +1463,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50317625753664150,
+    "icrc1_total_supply": 50323449861503304,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2327,7 +2340,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9956014012054212,
+    "icrc1_total_supply": 9956077443900992,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3395,7 +3408,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10072324084763560,
+    "icrc1_total_supply": 10072344397804742,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4474,7 +4487,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12612331467293208,
+    "icrc1_total_supply": 12656407237308572,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -6366,7 +6379,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99814126009671200,
+    "icrc1_total_supply": 99810945499110610,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

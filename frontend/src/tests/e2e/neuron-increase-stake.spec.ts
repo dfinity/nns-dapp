@@ -77,7 +77,6 @@ test("Test neuron increase stake", async ({ page, context }) => {
     .getAdvancedSectionPo()
     .neuronAccount();
 
-  await appPo.goBack();
   await appPo.goToAccounts();
   await appPo.goToNnsMainAccountWallet();
   await appPo.getWalletPo().getNnsWalletPo().transferToAddress({
@@ -85,10 +84,9 @@ test("Test neuron increase stake", async ({ page, context }) => {
     amount: increase2,
   });
 
-  await appPo.goBack();
-  await appPo.getAccountsPo().waitFor();
-  await appPo.goBack();
   await appPo.goToNeuronDetails(neuronId);
+  // Reload the page to bypass the governance.api-service.ts cache.
+  await page.reload();
   const neuronStake3 = Number(
     await appPo
       .getNeuronDetailPo()

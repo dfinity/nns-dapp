@@ -16,7 +16,6 @@
   import type { ProposalInfo } from "@dfinity/nns";
   import { isNullish } from "@dfinity/utils";
   import { fade } from "svelte/transition";
-  export let nothingFound: boolean;
   export let hidden: boolean;
   export let disableInfiniteScroll: boolean;
   export let loading: boolean;
@@ -39,7 +38,7 @@
       <div in:fade data-tid="all-proposal-list">
         {#if loadingAnimation === "skeleton"}
           <LoadingProposals />
-        {:else if nothingFound}
+        {:else if $filteredActionableProposals.proposals.length === 0}
           <NoProposals />
         {:else}
           <ListLoader loading={loadingAnimation === "spinner"}>
