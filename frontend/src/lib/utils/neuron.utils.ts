@@ -532,7 +532,7 @@ export const getVisibilityCellUncontrolledNeuronDetails = ({
     neuron,
     identity,
   });
-  if (hotKeyControllableNeuron) {
+  if (hotKeyControllableNeuron && neuron.fullNeuron?.controller) {
     return {
       type: "hotkey",
       text: neuron.fullNeuron?.controller,
