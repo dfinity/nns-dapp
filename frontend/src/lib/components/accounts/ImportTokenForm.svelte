@@ -27,7 +27,7 @@
   <form on:submit|preventDefault={() => dispatch("nnsSubmit")}>
     {#if addIndexCanisterMode}
       <ImportTokenCanisterId
-        testId="ledger-canister-id"
+        testId="ledger-canister-id-view"
         label={$i18n.import_token.ledger_label}
         canisterId={ledgerCanisterId}
       />
