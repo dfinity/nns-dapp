@@ -1,10 +1,7 @@
 <script lang="ts">
   import NnsProposalsList from "$lib/components/proposals/NnsProposalsList.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import {
-    filteredProposals,
-    sortedProposals,
-  } from "$lib/derived/proposals.derived";
+  import { sortedProposals } from "$lib/derived/proposals.derived";
   import {
     listNextProposals,
     listProposals,
@@ -15,12 +12,8 @@
   } from "$lib/stores/proposals.store";
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { notForceCallStrategy } from "$lib/utils/env.utils";
   import { reloadRouteData } from "$lib/utils/navigation.utils";
-  import {
-    hasMatchingProposals,
-    lastProposalId,
-  } from "$lib/utils/proposals.utils";
+  import { lastProposalId } from "$lib/utils/proposals.utils";
   import { debounce } from "@dfinity/utils";
   import { onMount } from "svelte";
 
@@ -31,13 +24,15 @@
   let hidden = false;
   let initialized = false;
 
+  // Used to determine if a request is still the most recent request when its
+  // response comes back.
+  let lastProposalsRequestToken: object = {};
+
   const loadFinished = ({ paginationOver }: { paginationOver: boolean }) => {
-    loading = false;
     disableInfiniteScroll = paginationOver;
   };
 
   const loadError = (err: unknown) => {
-    loading = false;
     disableInfiniteScroll = true;
 
     toastsError({
@@ -46,28 +41,33 @@
     });
   };
 
-  const findNextProposals = async () => {
+  const wrapProposalLoading = async (promise: Promise<void>) => {
+    const proposalsRequestToken = {};
+    lastProposalsRequestToken = proposalsRequestToken;
     loading = true;
 
     try {
-      await listNextProposals({
+      await promise;
+    } catch (err: unknown) {
+      loadError(err);
+    } finally {
+      // Only reset loading if there isn't a newer request in flight.
+      if (lastProposalsRequestToken === proposalsRequestToken) {
+        loading = false;
+      }
+    }
+  };
+
+  const findNextProposals = () =>
+    wrapProposalLoading(
+      listNextProposals({
         beforeProposal: lastProposalId($sortedProposals.proposals),
         loadFinished,
-      });
-    } catch (err: unknown) {
-      loadError(err);
-    }
-  };
+      })
+    );
 
-  const findProposals = async () => {
-    loading = true;
-
-    try {
-      await listProposals({ loadFinished });
-    } catch (err: unknown) {
-      loadError(err);
-    }
-  };
+  const findProposals = () =>
+    wrapProposalLoading(listProposals({ loadFinished }));
 
   let debounceFindProposals: () => void | undefined;
 
@@ -121,25 +121,6 @@
 
   $: $proposalsFiltersStore, applyFilter();
 
-  const updateNothingFound = () => {
-    // Update the "nothing found" UI information only when the results of the certified query has been received to minimize UI glitches
-    if ($filteredProposals.certified === false && notForceCallStrategy()) {
-      if (loading) nothingFound = false;
-      return;
-    }
-
-    nothingFound =
-      initialized &&
-      !loading &&
-      !hasMatchingProposals({
-        proposals: $filteredProposals.proposals,
-        filters: $proposalsFiltersStore,
-      });
-  };
-
-  let nothingFound: boolean;
-  $: initialized, loading, $filteredProposals, (() => updateNothingFound())();
-
   let loadingAnimation: "spinner" | "skeleton" | undefined = undefined;
   $: loadingAnimation = !loading
     ? undefined
@@ -150,7 +131,6 @@
 
 <NnsProposalsList
   {hidden}
-  {nothingFound}
   {disableInfiniteScroll}
   {loading}
   {loadingAnimation}

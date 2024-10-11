@@ -30,7 +30,7 @@ import {
   assertEnoughAccountFunds,
   isAccountHardwareWallet,
 } from "$lib/utils/accounts.utils";
-import { notForceCallStrategy } from "$lib/utils/env.utils";
+import { isLastCall } from "$lib/utils/env.utils";
 import {
   errorToString,
   mapNeuronErrorToToastMessage,
@@ -266,8 +266,8 @@ export const listNeurons = async ({
 
       callback?.(certified);
     },
-    onError: ({ error, certified }) => {
-      if (!certified && notForceCallStrategy()) {
+    onError: ({ error, certified, strategy }) => {
+      if (!isLastCall({ strategy, certified })) {
         return;
       }
 
@@ -908,10 +908,10 @@ export const loadNeuron = ({
       }
       setNeuron({ neuron, certified });
     },
-    onError: ({ error, certified }) => {
+    onError: ({ error, certified, strategy }) => {
       console.error(error);
 
-      if (!certified && notForceCallStrategy()) {
+      if (!isLastCall({ strategy, certified })) {
         return;
       }
       catchError(error);

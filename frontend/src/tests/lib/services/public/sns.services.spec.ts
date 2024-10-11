@@ -2,15 +2,15 @@ import { clearSnsAggregatorCache } from "$lib/api-services/sns-aggregator.api-se
 import * as agent from "$lib/api/agent.api";
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import { clearWrapperCache, wrapper } from "$lib/api/sns-wrapper.api";
-import { loadSnsProjects } from "$lib/services/public/sns.services";
-import { snsAggregatorStore, snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
 import { snsFunctionsStore } from "$lib/derived/sns-functions.derived";
 import { snsTotalTokenSupplyStore } from "$lib/derived/sns-total-token-supply.derived";
-import { tokensStore } from "$lib/stores/tokens.store";
+import { loadSnsProjects } from "$lib/services/public/sns.services";
 import {
-  resetIdentity,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+  snsAggregatorIncludingAbortedProjectsStore,
+  snsAggregatorStore,
+} from "$lib/stores/sns-aggregator.store";
+import { tokensStore } from "$lib/stores/tokens.store";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   aggregatorMockSnsesDataDto,
   aggregatorSnsMockDto,
@@ -157,7 +157,9 @@ describe("SNS public services", () => {
 
       await loadSnsProjects();
 
-      expect(get(snsAggregatorIncludingAbortedProjectsStore).data).toEqual(aggregatorMockSnsesDataDto);
+      expect(get(snsAggregatorIncludingAbortedProjectsStore).data).toEqual(
+        aggregatorMockSnsesDataDto
+      );
     });
 
     it("should load and map total token supply", async () => {

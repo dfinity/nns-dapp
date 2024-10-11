@@ -51,7 +51,9 @@ jobs:
           title: "bot: Bump ${{ inputs.gix_components && 'gix-components' || '' }}${{ inputs.gix_components && inputs.ic_js && ' and ' || '' }}${{ inputs.ic_js && 'ic-js' || '' }}"
           body: |
             # Motivation
+
             We want to pull in the latest changes.
+            This PR was requested by ${{ github.actor }}.
 
             # Changes
 

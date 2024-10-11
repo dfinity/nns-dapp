@@ -14,10 +14,7 @@ import {
 } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import {
-  isForceCallStrategy,
-  notForceCallStrategy,
-} from "$lib/utils/env.utils";
+import { isLastCall } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { AccountIdentifier } from "@dfinity/ledger-icp";
@@ -73,10 +70,10 @@ export const loadSnsSwapCommitments = async (): Promise<void> => {
         });
       }
     },
-    onError: ({ error: err, certified }) => {
+    onError: ({ error: err, certified, strategy }) => {
       console.error(err);
 
-      if (!certified && notForceCallStrategy()) {
+      if (!isLastCall({ strategy, certified })) {
         return;
       }
 
@@ -123,14 +120,10 @@ export const loadSnsSwapCommitment = async ({
       }),
     onLoad: ({ response: swapCommitment, certified }) =>
       snsSwapCommitmentsStore.setSwapCommitment({ swapCommitment, certified }),
-    onError: ({ error: err, certified, identity }) => {
+    onError: ({ error: err, certified, strategy }) => {
       console.error(err);
 
-      if (
-        certified ||
-        identity.getPrincipal().isAnonymous() ||
-        isForceCallStrategy()
-      ) {
+      if (isLastCall({ strategy, certified })) {
         toastsError(
           toToastError({
             err,

@@ -15,6 +15,7 @@ import { ProposalsPo } from "$tests/page-objects/Proposals.page-object";
 import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.page-object";
 import { SignInPo } from "$tests/page-objects/SignIn.page-object";
 import { StakingPo } from "$tests/page-objects/Staking.page-object";
+import { ToastsPo } from "$tests/page-objects/Toasts.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { isNullish } from "@dfinity/utils";
@@ -104,6 +105,10 @@ export class AppPo extends BasePageObject {
 
   getBusyScreenPo(): BusyScreenPo {
     return BusyScreenPo.under(this.root);
+  }
+
+  getToastsPo(): ToastsPo {
+    return ToastsPo.under(this.root);
   }
 
   toggleMenu(): Promise<void> {
@@ -259,7 +264,7 @@ export class AppPo extends BasePageObject {
       }
 
       await this.getButton("back").click();
-      currentView.waitForAbsent();
+      await currentView.waitForAbsent();
     }
   }
 

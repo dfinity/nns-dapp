@@ -23,24 +23,60 @@ test("Test canisters", async ({ page, context }) => {
     icpAmount: "1",
   });
 
+  expect(await appPo.getToastsPo().getMessages()).toEqual([
+    `New canister "${canisterName}" created successfully`,
+  ]);
+  await appPo.getToastsPo().closeAll();
+
+  step("Link a non-controlled canister");
+  const linkedCanisterId = "qsgjb-riaaa-aaaaa-aaaga-cai";
+  const linkedCanisterName = "NNS dapp";
+  await canistersPo.linkCanister({
+    canisterId: linkedCanisterId,
+    name: linkedCanisterName,
+  });
+
+  expect(await appPo.getToastsPo().getMessages()).toEqual([
+    `The canister (${linkedCanisterId}) was linked successfully`,
+  ]);
+  await appPo.getToastsPo().closeAll();
+
   step("Rename canister");
   const canisterCards = await canistersPo.getCanisterCardPos();
-  expect(canisterCards).toHaveLength(1);
-  const canisterCard = canisterCards[0];
-  expect(await canisterCard.getCanisterName()).toBe(canisterName);
-  await canisterCard.click();
+  expect(canisterCards).toHaveLength(2);
+  const [myCanisterCard, linkedCanisterCard] = canisterCards;
+  expect(await myCanisterCard.getCanisterName()).toBe(canisterName);
+  expect(await linkedCanisterCard.getCanisterName()).toBe(linkedCanisterName);
+  await myCanisterCard.click();
 
   const newCanisterName = "MyCanister2";
   const canisterDetail = appPo.getCanisterDetailPo();
   await canisterDetail.clickRename();
   await canisterDetail.renameCanister(newCanisterName);
 
+  expect(await appPo.getToastsPo().getMessages()).toEqual([
+    `Canister successfully renamed to "${newCanisterName}"`,
+  ]);
+  await appPo.getToastsPo().closeAll();
+
   step("Top up canister");
   await canisterDetail.addCycles({ icpAmount: "2" });
 
+  expect(await appPo.getToastsPo().getMessages()).toEqual([
+    "Cycles added successfully",
+  ]);
+  await appPo.getToastsPo().closeAll();
+
   step("Verify name");
   await appPo.goBack();
-  expect(await canisterCard.getCanisterName()).toBe(newCanisterName);
+  expect(await myCanisterCard.getCanisterName()).toBe(newCanisterName);
+
+  step("Open linked canister");
+  await linkedCanisterCard.click();
+  expect(await appPo.getCanisterDetailPo().getErrorMessage()).toBe(
+    "You are not the controller of this canister. Only controllers have access to its cycles and controllers."
+  );
+  expect(await appPo.getToastsPo().getMessages()).toEqual([]);
 
   step("Check transaction descriptions");
   await appPo.goToNnsMainAccountWallet();

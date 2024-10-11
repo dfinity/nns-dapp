@@ -13,5 +13,5 @@ pnpm-lock.yaml
 package-lock.json
 yarn.lock
 
-public
-static/assets/libs
+/public
+/static/assets/libs

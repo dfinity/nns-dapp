@@ -1,6 +1,6 @@
 import { browser } from "$app/environment";
-import { loadSnsProjects } from "$lib/services/public/sns.services";
 import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
+import { loadSnsProjects } from "$lib/services/public/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutAuthReady } from "$lib/stores/layout.store";
 import { toastsError } from "$lib/stores/toasts.store";

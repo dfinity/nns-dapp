@@ -18,14 +18,14 @@ import {
 } from "$lib/stores/proposals.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { hashCode } from "$lib/utils/dev.utils";
-import { isForceCallStrategy } from "$lib/utils/env.utils";
+import { isLastCall } from "$lib/utils/env.utils";
 import { errorToString, isPayloadSizeError } from "$lib/utils/error.utils";
 import {
   excludeProposals,
   proposalsHaveSameIds,
 } from "$lib/utils/proposals.utils";
-import type { Identity } from "@dfinity/agent";
 import type { ProposalId, ProposalInfo } from "@dfinity/nns";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getCurrentIdentity } from "../auth.services";
 import {
@@ -38,20 +38,16 @@ import {
 const handleFindProposalsError = ({
   error: err,
   certified,
-  identity,
+  strategy,
   mutableProposalsStore,
 }: {
   error: unknown;
   certified: boolean;
-  identity: Identity;
+  strategy: QueryAndUpdateStrategy;
   mutableProposalsStore: SingleMutationProposalsStore;
 }) => {
   console.error(err);
-  if (
-    certified ||
-    identity.getPrincipal().isAnonymous() ||
-    isForceCallStrategy()
-  ) {
+  if (isLastCall({ strategy, certified })) {
     mutableProposalsStore.setProposals({ proposals: [], certified });
 
     const resultsTooLarge = isPayloadSizeError(err);
@@ -88,7 +84,7 @@ export const listProposals = async ({
     onError: (onErrorParams: {
       error: unknown;
       certified: boolean;
-      identity: Identity;
+      strategy: QueryAndUpdateStrategy;
     }) => {
       handleFindProposalsError({
         ...onErrorParams,
@@ -136,7 +132,7 @@ export const listNextProposals = async ({
     onError: (onErrorParams: {
       error: unknown;
       certified: boolean;
-      identity: Identity;
+      strategy: QueryAndUpdateStrategy;
     }) => {
       handleFindProposalsError({
         ...onErrorParams,
@@ -163,7 +159,7 @@ const findProposals = async ({
   const validateResponses = ({
     trustedProposals,
     untrustedProposals,
-  }:{
+  }: {
     trustedProposals: ProposalInfo[];
     untrustedProposals: ProposalInfo[];
   }) => {
@@ -203,10 +199,10 @@ const findProposals = async ({
         includeStatus: filters.status,
         certified,
       }),
-    onLoad: ({ response: proposals, certified }) => {
+    onLoad: ({ response: proposals, certified, strategy }) => {
       if (!certified) {
         uncertifiedProposals = proposals;
-        onLoad({ response: proposals, certified });
+        onLoad({ response: proposals, certified, strategy });
         return;
       }
 
@@ -217,7 +213,7 @@ const findProposals = async ({
         });
       }
 
-      onLoad({ response: proposals, certified });
+      onLoad({ response: proposals, certified, strategy });
     },
     onError,
     logMessage: `Syncing proposals ${
@@ -252,12 +248,14 @@ export const loadProposal = async ({
   ) => {
     console.error(erroneusResponse);
 
-    if (silentErrorMessages !== true && (
-      erroneusResponse.certified || (
-        strategy === "query" ||
-        identity.getPrincipal().isAnonymous()
-      )
-    )) {
+    if (
+      silentErrorMessages !== true &&
+      nonNullish(erroneusResponse) &&
+      isLastCall({
+        strategy: erroneusResponse.strategy,
+        certified: erroneusResponse.certified,
+      })
+    ) {
       const details = errorToString(erroneusResponse?.error);
       toastsShow({
         labelKey: "error.proposal_not_found",
@@ -274,9 +272,9 @@ export const loadProposal = async ({
   try {
     return await getProposal({
       proposalId,
-      onLoad: ({ response: proposal, certified }) => {
+      onLoad: ({ response: proposal, certified, strategy }) => {
         if (!proposal) {
-          catchError({ certified, error: undefined, identity });
+          catchError({ certified, strategy, error: undefined, identity });
           return;
         }
 
@@ -288,7 +286,15 @@ export const loadProposal = async ({
       strategy,
     });
   } catch (error: unknown) {
-    catchError({ certified: true, error, identity });
+    catchError({
+      // `certified` and `strategy` are not meaningful since we are outside the
+      // `queryAndUpdate` context. We just pass values that act as if this is
+      // the last call.
+      certified: true,
+      strategy: "query_and_update",
+      error,
+      identity,
+    });
   }
 };
 

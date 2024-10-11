@@ -560,6 +560,22 @@ describe("icrc-accounts-services", () => {
       ]);
     });
 
+    it("displays no toast on uncertified error", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockImplementation(
+        async ({ certified }) => {
+          if (!certified) {
+            throw new Error("test");
+          }
+          return mockToken;
+        }
+      );
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
+      await loadIcrcToken({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcToken).toBeCalledTimes(2);
+      expect(get(toastsStore)).toEqual([]);
+    });
+
     it("doesn't load imported token if in failed imported tokens store", async () => {
       importedTokensStore.set({
         importedTokens: [

@@ -345,9 +345,11 @@ describe("neurons-services", () => {
   });
 
   describe("list neurons", () => {
-    const spyQueryNeurons = vi
-      .spyOn(api, "queryNeurons")
-      .mockResolvedValue(neurons);
+    const spyQueryNeurons = vi.spyOn(api, "queryNeurons");
+
+    beforeEach(() => {
+      spyQueryNeurons.mockResolvedValue(neurons);
+    });
 
     it("should list neurons", async () => {
       const oldNeuronsList = get(definedNeuronsStore);
@@ -370,6 +372,44 @@ describe("neurons-services", () => {
 
       const newNeuronsList = get(definedNeuronsStore);
       expect(newNeuronsList).toEqual(neurons);
+    });
+
+    it("should reset store and show toast on error", async () => {
+      spyConsoleError.mockReturnValue();
+      const errorMessage = "Test error";
+      spyQueryNeurons.mockRejectedValue(new Error(errorMessage));
+
+      neuronsStore.pushNeurons({ neurons, certified: true });
+
+      expect(get(definedNeuronsStore)).not.toEqual([]);
+      expect(get(toastsStore)).toEqual([]);
+
+      await listNeurons();
+
+      expect(get(definedNeuronsStore)).toEqual([]);
+      expectToastError(
+        `There was an unexpected issue while searching for the neurons. ${errorMessage}`
+      );
+    });
+
+    it("should not reset store or show toast on uncertified error", async () => {
+      const errorMessage = "Test error";
+      spyQueryNeurons.mockImplementation(async ({ certified }) => {
+        if (!certified) {
+          throw new Error(errorMessage);
+        }
+        return neurons;
+      });
+
+      neuronsStore.pushNeurons({ neurons, certified: true });
+
+      expect(get(definedNeuronsStore)).not.toEqual([]);
+      expect(get(toastsStore)).toEqual([]);
+
+      await listNeurons();
+
+      expect(get(definedNeuronsStore)).not.toEqual([]);
+      expect(get(toastsStore)).toEqual([]);
     });
 
     it("should not call api when called twice and cache is not reset", async () => {
@@ -1655,6 +1695,43 @@ describe("neurons-services", () => {
         neuronId: mockNeuron.neuronId,
       });
       expect(spyGetNeuron).toBeCalledTimes(2);
+    });
+
+    it("should show a toast on error", async () => {
+      spyConsoleError.mockReturnValue();
+      const errorMessage = "error message";
+      spyGetNeuron.mockRejectedValue(new Error(errorMessage));
+
+      expect(get(toastsStore)).toEqual([]);
+
+      await loadNeuron({
+        neuronId: mockNeuron.neuronId,
+        setNeuron: vi.fn(),
+      });
+
+      expectToastError(
+        `An error occurred while loading the neuron. ${errorMessage}`
+      );
+    });
+
+    it("should not show a toast on uncertified error", async () => {
+      spyConsoleError.mockReturnValue();
+      const errorMessage = "error message";
+      spyGetNeuron.mockImplementation(async ({ certified }) => {
+        if (!certified) {
+          throw new Error(errorMessage);
+        }
+        return mockNeuron;
+      });
+
+      expect(get(toastsStore)).toEqual([]);
+
+      await loadNeuron({
+        neuronId: mockNeuron.neuronId,
+        setNeuron: vi.fn(),
+      });
+
+      expect(get(toastsStore)).toEqual([]);
     });
 
     it("should call setNeuron even if the neuron doesn't have fullNeuron", async () => {

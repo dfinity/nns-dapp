@@ -106,6 +106,26 @@ describe("imported-tokens-services", () => {
       });
     });
 
+    it("should not display toast on uncertified error", async () => {
+      const spyToastError = vi.spyOn(toastsStore, "toastsError");
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockImplementation(
+        async ({ certified }) => {
+          if (!certified) {
+            throw testError;
+          }
+          return {
+            imported_tokens: [importedTokenA, importedTokenB],
+          };
+        }
+      );
+
+      expect(spyToastError).not.toBeCalled();
+
+      await loadImportedTokens();
+
+      expect(spyToastError).not.toBeCalled();
+    });
+
     it("should reset store on error", async () => {
       vi.spyOn(importedTokensApi, "getImportedTokens").mockRejectedValue(
         testError

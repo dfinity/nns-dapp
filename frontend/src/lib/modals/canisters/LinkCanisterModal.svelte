@@ -6,7 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { errorCanisterNameMessage } from "$lib/utils/canisters.utils";
-  import { busy, Modal } from "@dfinity/gix-components";
+  import { Modal, busy } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
@@ -44,7 +44,7 @@
   };
 </script>
 
-<Modal on:nnsClose>
+<Modal testId="link-canister-modal-component" on:nnsClose>
   <svelte:fragment slot="title"
     ><span data-tid="link-canister-modal-title"
       >{$i18n.canisters.link_canister}</span
@@ -54,6 +54,7 @@
   <form on:submit|preventDefault={attach}>
     <div class="fields">
       <PrincipalInput
+        testId="canister-id-input"
         bind:principal
         placeholderLabelKey="core.principal_id"
         name="principal"
@@ -63,6 +64,7 @@
         >
       </PrincipalInput>
       <InputWithError
+        testId="canister-name-input"
         bind:value={name}
         inputType="text"
         placeholderLabelKey="canisters.name"

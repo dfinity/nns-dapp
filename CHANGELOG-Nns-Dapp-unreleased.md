@@ -14,29 +14,23 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Added `get_tvl` method to `nns-dapp` canister.
-* Display of principal Id and main ICP account Id in the account menu.
-
 #### Changed
 
-* Changes for cleaning up the stable structure migration.
-* Move Canisters button from sidebar to account menu.
-* Move GitHub button from account menu to sidebar.
-* Reduce calls to `sns-governance` canister by getting `nervous_system_parameters` from the aggregator instead.
-* Move theme toggle from account menu to sidebar.
-* The `Markdown` UI component was migrated to `@dfinity/gix-components`.
+* Fetch TVL from NNS dapp canister instead of TVL canister.
+* `10%` rollout of re-enabling of certification of certain calls.
 
 #### Deprecated
 
 #### Removed
 
-* Stop making unnecessary calls to load the SNS proposal every time we load the derived state.
-
 #### Fixed
 
-* Fixed a bug where a performance counter in `init` is wiped during state initialization.
-* Bug with parsing nervous system parameters from aborted SNSes.
 * Bug where neurons are displayed as eligible to vote, even though they have already voted.
+* Issue with setting exact dissolve delay on SNS neurons.
+* Error on canister page for canisters that are not controlled by the user.
+* Don't hide neurons which have only staked maturity.
+* Not showing the "no proposals" message when not signed in.
+* Race condition in proposal loading.
 
 #### Security
 
@@ -51,8 +45,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Deprecated
 
 #### Removed
-
-* Removed unused `pocket-ic` dependency.
 
 #### Fixed
 

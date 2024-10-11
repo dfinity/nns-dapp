@@ -20,6 +20,7 @@ import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import { isLastCall } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { isImportedToken } from "$lib/utils/imported-tokens.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
@@ -79,10 +80,8 @@ export const loadIcrcToken = ({
     return;
   }
 
-  const strategy = certified ? FORCE_CALL_STRATEGY : "query";
-
   return queryAndUpdate<IcrcTokenMetadata, unknown>({
-    strategy,
+    strategy: certified ? FORCE_CALL_STRATEGY : "query",
     identityType: "current",
     request: ({ certified, identity }) =>
       queryIcrcToken({
@@ -92,9 +91,9 @@ export const loadIcrcToken = ({
       }),
     onLoad: async ({ response: token, certified }) =>
       tokensStore.setToken({ certified, canisterId: ledgerCanisterId, token }),
-    onError: ({ error: err, certified }) => {
+    onError: ({ error: err, certified, strategy }) => {
       // Explicitly handle only UPDATE errors
-      if (!certified && strategy !== "query") {
+      if (!isLastCall({ strategy, certified })) {
         return;
       }
 
