@@ -1,7 +1,12 @@
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
+import {
+  mockLinkClickEvent,
+  resetNavigationCallbacks,
+} from "$mocks/$app/navigation";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { AccountMenuPo } from "$tests/page-objects/AccountMenu.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("AccountMenu", () => {
@@ -12,7 +17,15 @@ describe("AccountMenu", () => {
 
   const renderComponent = () => {
     const { container } = render(AccountMenu);
-    return AccountMenuPo.under(new JestPageObjectElement(container));
+
+    const accountMenuPo = AccountMenuPo.under(
+      new JestPageObjectElement(container)
+    );
+    const canistersLinkPo = accountMenuPo.getCanistersLinkPo();
+
+    canistersLinkPo.root.addEventListener("click", mockLinkClickEvent);
+
+    return { accountMenuPo, canistersLinkPo };
   };
 
   it("should be closed by default", () => {
@@ -29,6 +42,7 @@ describe("AccountMenu", () => {
 
   describe("signed in", () => {
     beforeEach(() => {
+      resetNavigationCallbacks();
       resetIdentity();
     });
 
@@ -63,11 +77,11 @@ describe("AccountMenu", () => {
     });
 
     it('should display "Canisters" button', async () => {
-      const AccountMenuPo = renderComponent();
+      const { accountMenuPo } = renderComponent();
 
-      await AccountMenuPo.openMenu();
+      await accountMenuPo.openMenu();
 
-      expect(await AccountMenuPo.getCanistersLinkPo().isPresent()).toBe(true);
+      expect(await accountMenuPo.getCanistersLinkPo().isPresent()).toBe(true);
     });
 
     it("should close popover on click on settings", async () => {
@@ -94,6 +108,21 @@ describe("AccountMenu", () => {
       await accountMenuPo.openMenu();
 
       expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(true);
+    });
+
+    it("should close the account menu when LinkToCanisters is clicked", async () => {
+      const { accountMenuPo, canistersLinkPo } = renderComponent();
+
+      await accountMenuPo.openMenu();
+
+      expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(true);
+
+      await canistersLinkPo.click();
+
+      //wait for goto to be triggered
+      await runResolvedPromises();
+
+      expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(false);
     });
   });
 });
