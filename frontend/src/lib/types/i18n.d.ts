@@ -895,6 +895,7 @@ interface I18nError__imported_tokens {
   is_duplication: string;
   is_sns: string;
   is_important: string;
+  is_icp: string;
 }
 
 interface I18nError__sns {
