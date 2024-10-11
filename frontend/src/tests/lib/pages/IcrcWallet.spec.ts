@@ -729,6 +729,12 @@ describe("IcrcWallet", () => {
         expect(spyOnSetImportedTokens).toBeCalledTimes(0);
         expect(await addIndexCanisterModalPo.isPresent()).toBe(true);
         expect(get(busyStore)).toEqual([]);
+        expect(
+          await addIndexCanisterModalPo
+            .getImportTokenFormPo()
+            .getLedgerCanisterIdPo()
+            .getCanisterIdText()
+        ).toEqual(ledgerCanisterId.toText());
 
         await addIndexCanisterModalPo.typeIndexCanisterId(
           indexCanisterId.toText()
