@@ -9,13 +9,20 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
 
-  export let neuron: NeuronInfo;
-
   const dispatcher = createEventDispatcher();
   const close = () => {
     dispatcher("nnsClose");
   };
+  import ChangeBulkNeuronVisibilityForm from "./ChangeBulkNeuronVisibilityForm.svelte";
+  import { neuronsStore } from "$lib/stores/neurons.store";
 
+  export let neuronId: BigInt;
+
+  let selectedNeurons: NeuronInfo[];
+  let neuron: NeuronInfo;
+  $: neuron = $neuronsStore.neurons.find((n) => n.neuronId === neuronId);
+
+  let isPublic: Boolean;
   $: isPublic = isPublicNeuron(neuron);
 
   async function handleChangeVisibility() {
@@ -26,7 +33,7 @@
 
     try {
       const { success } = await changeNeuronVisibility({
-        neurons: [neuron],
+        neurons: selectedNeurons,
         makePublic: !isPublic,
       });
       if (success) {
@@ -76,16 +83,10 @@
 
   <Separator spacing="medium" />
 
-  <div class="toolbar alert footer">
-    <button class="secondary" on:click={close} data-tid="cancel-button">
-      {$i18n.core.cancel}
-    </button>
-    <button
-      class="primary"
-      on:click={handleChangeVisibility}
-      data-tid="confirm-button"
-    >
-      {$i18n.core.confirm}
-    </button>
-  </div>
+  <ChangeBulkNeuronVisibilityForm
+    bind:selectedNeurons
+    on:nnsSubmit={handleChangeVisibility}
+    on:nnsCancel={close}
+    {neuron}
+  />
 </Modal>
