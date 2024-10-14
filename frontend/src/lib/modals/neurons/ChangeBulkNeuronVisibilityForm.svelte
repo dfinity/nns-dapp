@@ -141,8 +141,8 @@
             {/if}
           </div>
 
-          <Separator spacing="none" />
           {#if uncontrollableNeurons.length > 0}
+            <Separator spacing="none" />
             <div class="neurons-list">
               <p class="description small">
                 These neurons have different controllers and won’t be updated

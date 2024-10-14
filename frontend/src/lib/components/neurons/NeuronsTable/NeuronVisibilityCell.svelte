@@ -53,8 +53,8 @@
         />
       </span>
 
-      <span class="uncontrolled-neuron-id">
-        {shortenWithMiddleEllipsis(cellData.uncontrolledNeuronDetails.text)}
+      <span class="uncontrolled-neuron-detail">
+        {cellData.uncontrolledNeuronDetails.text}
       </span>
     </span>
   {/if}
@@ -81,7 +81,7 @@
     }
   }
 
-  .uncontrolled-neuron-id {
+  .uncontrolled-neuron-detail {
     color: var(--text-color);
   }
 

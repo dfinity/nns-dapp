@@ -58,7 +58,7 @@ import {
   isAccountHardwareWallet,
 } from "./accounts.utils";
 import { nowInSeconds } from "./date.utils";
-import { formatNumber } from "./format.utils";
+import { formatNumber, shortenWithMiddleEllipsis } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
 import { formatTokenE8s, numberToUlps } from "./token.utils";
 import { isDefined } from "./utils";
@@ -537,7 +537,7 @@ export const getVisibilityCellUncontrolledNeuronDetails = ({
   if (hotKeyControllableNeuron && neuron.fullNeuron?.controller) {
     return {
       type: "hotkey",
-      text: neuron.fullNeuron?.controller,
+      text: shortenWithMiddleEllipsis(neuron.fullNeuron?.controller),
     };
   }
 };
