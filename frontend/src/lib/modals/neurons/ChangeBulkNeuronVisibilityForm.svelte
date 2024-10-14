@@ -4,7 +4,7 @@
     isPublicNeuron,
     isNeuronControllable,
     isPrivateNeuron,
-    createNeuronVisibilityCellNeuron,
+    createNeuronVisibilityCellNeuronData,
   } from "$lib/utils/neuron.utils";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { authStore } from "$lib/stores/auth.store";
@@ -134,7 +134,7 @@
                   on:nnsChange={() => handleCheckboxChange(n)}
                 >
                   <NeuronVisibilityCell
-                    cellData={createNeuronVisibilityCellNeuron({
+                    cellData={createNeuronVisibilityCellNeuronData({
                       neuron: n,
                       identity: $authStore.identity,
                       accounts: $icpAccountsStore,
@@ -168,7 +168,7 @@
                   disabled
                 >
                   <NeuronVisibilityCell
-                    cellData={createNeuronVisibilityCellNeuron({
+                    cellData={createNeuronVisibilityCellNeuronData({
                       neuron: n,
                       identity: $authStore.identity,
                       accounts: $icpAccountsStore,

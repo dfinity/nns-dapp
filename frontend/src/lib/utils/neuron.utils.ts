@@ -456,7 +456,7 @@ export const getNeuronTags = ({
   return tags;
 };
 
-export const createNeuronVisibilityCellNeuron = ({
+export const createNeuronVisibilityCellNeuronData = ({
   neuron,
   identity,
   accounts,
