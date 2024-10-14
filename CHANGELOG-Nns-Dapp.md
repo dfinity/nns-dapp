@@ -28,7 +28,7 @@ here after a successful release.
 
 * Bug where neurons are displayed as eligible to vote, even though they have already voted.
 * Issue with setting exact dissolve delay on SNS neurons.
-* Error on canister page for canisters that are not controlled by the user.
+* Error on canister page.
 * Don't hide neurons which have only staked maturity.
 * Not showing the "no proposals" message when not signed in.
 
