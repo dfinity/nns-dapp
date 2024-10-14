@@ -36,9 +36,6 @@
   let applyToAllNeurons: boolean;
   $: applyToAllNeurons = false;
 
-  $: {
-    console.log(neuron.visibility, "thisone");
-  }
   let isPublic: Boolean;
   isPublic = isPublicNeuron(neuron);
 

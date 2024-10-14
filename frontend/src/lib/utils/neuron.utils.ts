@@ -522,9 +522,11 @@ export const getVisibilityCellUncontrolledNeuronDetails = ({
       accounts,
     })
   ) {
+    // Currently hardware wallet target Ids are not stored when creating a neruon, so hardware wallet is hardcoded.
+    // We can start collecting these details and save them in nnsDapp to provide more accurate feedback to users using zondax/ledger-js
     return {
       type: "hardwareWallet",
-      text: "Ledger nano",
+      text: "Hardware wallet",
     };
     // All HW controlled are hotkeys, but we don't want to show both details to the user.
   }
