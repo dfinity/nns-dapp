@@ -102,7 +102,7 @@
       <span>
         <Spinner inline />
       </span>
-      <p class="description">Retrieving data on neurons...</p>
+      <p class="description">{$i18n.neuron_detail.retrieving_data}</p>
     </div>
   {:else}
     {#if controllableNeurons.length > 0}
@@ -112,7 +112,7 @@
           checked={applyToAllNeurons}
           on:nnsChange={handleApplyToAllChange}
         >
-          Apply to all neurons
+          {$i18n.neuron_detail.apply_to_all}
         </Checkbox>
       </div>
     {/if}
@@ -120,7 +120,7 @@
       <div class="neurons-lists-container" data-tid="neurons-lists-container">
         <div class="neurons-list" data-tid="controllable-neurons-list">
           <p class="description" data-tid="controllable-neurons-description">
-            Neurons
+            {$i18n.neuron_detail.neurons}
           </p>
           {#if controllableNeurons.length > 0}
             {#each controllableNeurons as n (n.neuronId)}
@@ -154,7 +154,7 @@
               class="description small"
               data-tid="uncontrollable-neurons-description"
             >
-              These neurons have different controllers and won't be updated
+              {$i18n.neuron_detail.uncontrollable_neurons_description}
             </p>
             {#each uncontrollableNeurons as n (n.neuronId)}
               <div

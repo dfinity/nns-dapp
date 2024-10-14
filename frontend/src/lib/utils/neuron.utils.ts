@@ -480,6 +480,7 @@ export const createNeuronVisibilityCellNeuron = ({
       neuron,
       identity,
       accounts,
+      i18n,
     }),
   };
 };
@@ -511,10 +512,12 @@ export const getVisibilityCellUncontrolledNeuronDetails = ({
   neuron,
   identity,
   accounts,
+  i18n,
 }: {
   neuron: NeuronInfo;
   identity?: Identity | null;
   accounts: IcpAccountsStoreData;
+  i18n: I18n;
 }): UncontrolledNeuronDetailsData | undefined => {
   if (
     isNeuronControlledByHardwareWallet({
@@ -526,7 +529,7 @@ export const getVisibilityCellUncontrolledNeuronDetails = ({
     // We can start collecting these details and save them in nnsDapp to provide more accurate feedback to users using zondax/ledger-js
     return {
       type: "hardwareWallet",
-      text: "Hardware wallet",
+      text: i18n.neuron_detail.hardware_wallet,
     };
     // All HW controlled are hotkeys, but we don't want to show both details to the user.
   }
