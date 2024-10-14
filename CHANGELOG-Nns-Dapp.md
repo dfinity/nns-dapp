@@ -15,6 +15,10 @@ here after a successful release.
 
 ### Application
 
+#### Added
+
+* Importing custom tokens.
+
 #### Changed
 
 * Fetch TVL from NNS dapp canister instead of TVL canister.
