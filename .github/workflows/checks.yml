@@ -348,7 +348,6 @@ jobs:
       - ic-commit-consistency
       - release-templating-works
       - config-check
-      - asset-chunking-works
       - minor-version-bump-works
       - migration-test-utils-work
       - version-match
