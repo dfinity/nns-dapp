@@ -55,8 +55,13 @@
         />
       </span>
 
-      <span class="uncontrolled-neuron-detail" data-tid="uncontrolled-neuron-detail">
-        {cellData.uncontrolledNeuronDetails.type === 'hotkey' ? shortenWithMiddleEllipsis(cellData.uncontrolledNeuronDetails.text):cellData.uncontrolledNeuronDetails.text}
+      <span
+        class="uncontrolled-neuron-detail"
+        data-tid="uncontrolled-neuron-detail"
+      >
+        {cellData.uncontrolledNeuronDetails.type === "hotkey"
+          ? shortenWithMiddleEllipsis(cellData.uncontrolledNeuronDetails.text)
+          : cellData.uncontrolledNeuronDetails.text}
       </span>
     </span>
   {/if}
