@@ -49,7 +49,7 @@
         identity: $authStore.identity,
         accounts: $icpAccountsStore,
       }) &&
-      (isPublic ? isPublicNeuron(n) : isPrivateNeuron(n)) &&
+      (isPublic ? !isPrivateNeuron(n) : !isPublicNeuron(n)) &&
       n.neuronId !== neuron.neuronId
   );
 
@@ -60,7 +60,7 @@
         neuron: n,
         identity: $authStore.identity,
         accounts: $icpAccountsStore,
-      }) && (isPublic ? isPublicNeuron(n) : isPrivateNeuron(n))
+      }) && (isPublic ? !isPrivateNeuron(n) : !isPublicNeuron(n))
   );
 
   $: isNeuronSelected = (n: NeuronInfo) =>
