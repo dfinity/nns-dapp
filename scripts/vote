@@ -89,14 +89,17 @@ get_all_proposal_ids() {
 }
 
 if [[ "${PROPOSAL_ID:-}" == "all" ]]; then
+  pids=()
   for proposal_id in $(get_all_proposal_ids); do
     "$0" \
       --neuron "$NEURON_ID" \
       --proposal "$proposal_id" \
       "${MAYBE_REJECT[@]}" \
       --identity "$DFX_IDENTITY" \
-      --network "$DFX_NETWORK"
+      --network "$DFX_NETWORK" &
+    pids+=("$!")
   done
+  wait "${pids[@]}"
   exit 0
 fi
 

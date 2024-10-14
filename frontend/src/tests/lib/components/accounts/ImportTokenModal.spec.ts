@@ -1,6 +1,7 @@
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import * as importedTokensApi from "$lib/api/imported-tokens.api";
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
@@ -69,6 +70,26 @@ describe("ImportTokenModal", () => {
   });
 
   describe("Form Step", () => {
+    it("should catch icp", async () => {
+      const po = renderComponent();
+      const formPo = po.getImportTokenFormPo();
+
+      await formPo
+        .getLedgerCanisterInputPo()
+        .typeText(LEDGER_CANISTER_ID.toText());
+
+      expect(queryIcrcTokenSpy).toBeCalledTimes(0);
+      expect(await formPo.isPresent()).toEqual(true);
+
+      await formPo.getSubmitButtonPo().click();
+
+      expect(get(busyStore)).toEqual([]);
+      expectToastError("You cannot import ICP.");
+      expect(queryIcrcTokenSpy).toBeCalledTimes(0);
+      // Stays on the form.
+      expect(await formPo.isPresent()).toEqual(true);
+    });
+
     it("should catch duplications", async () => {
       importedTokensStore.set({
         importedTokens: [
