@@ -25,6 +25,7 @@
   import { goto } from "$app/navigation";
   import { get } from "svelte/store";
   import { DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING } from "$lib/stores/feature-flags.store";
+  import { LEDGER_CANISTER_ID } from "../../constants/canister-ids.constants";
 
   let currentStep: WizardStep | undefined = undefined;
 
@@ -65,6 +66,9 @@
   const validateLedgerCanister = (
     ledgerCanisterId: Principal
   ): { errorLabelKey: string | undefined } => {
+    if (ledgerCanisterId.toText() === LEDGER_CANISTER_ID.toText()) {
+      return { errorLabelKey: "error__imported_tokens.is_icp" };
+    }
     if (
       isImportedToken({
         ledgerCanisterId,

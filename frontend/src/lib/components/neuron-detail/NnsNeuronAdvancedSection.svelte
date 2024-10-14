@@ -144,6 +144,7 @@
   }
 
   .visibility-action-container {
+    width: 100%;
     padding: var(--padding) 0;
   }
 </style>

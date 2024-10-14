@@ -163,13 +163,18 @@ describe("ImportTokenForm", () => {
   });
 
   it("should display addIndexCanister mode ", async () => {
+    const ledgerCanisterId = principal(0);
     const { po } = renderComponent({
-      ledgerCanisterId: principal(0),
+      ledgerCanisterId,
       indexCanisterId: undefined,
       addIndexCanisterMode: true,
     });
 
-    expect(await po.getLedgerCanisterInputPo().isDisabled()).toEqual(true);
+    expect(await po.getLedgerCanisterInputPo().isPresent()).toEqual(false);
+    expect(await po.getLedgerCanisterIdPo().isPresent()).toEqual(true);
+    expect(await po.getLedgerCanisterIdPo().getCanisterIdText()).toEqual(
+      ledgerCanisterId.toText()
+    );
     expect(await po.getIndexCanisterInputPo().isRequired()).toEqual(true);
     expect((await po.getIndexCanisterInputPo().getText()).trim()).toEqual(
       "Index Canister ID"

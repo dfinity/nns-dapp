@@ -338,8 +338,6 @@ interface I18nNeurons {
   public_neuron_description: string;
   private_neuron_description: string;
   learn_more: string;
-  make_neuron_private: string;
-  make_neuron_public: string;
 }
 
 interface I18nNew_followee {
@@ -721,6 +719,17 @@ interface I18nNeuron_detail {
   created: string;
   neuron_state_tooltip: string;
   dissolve_delay_tooltip: string;
+  change_neuron_make_neuron_public: string;
+  change_neuron_make_neuron_private: string;
+  change_neuron_make_neuron_public_confirmation: string;
+  change_neuron_make_neuron_private_confirmation: string;
+  change_neuron_make_neuron_public_description: string;
+  change_neuron_make_neuron_private_description: string;
+  make_neuron_private: string;
+  make_neuron_public: string;
+  change_neuron_public_success: string;
+  change_neuron_private_success: string;
+  change_neuron_visibility_loading: string;
   change_neuron_visibility_partial_failure: string;
   change_neuron_visibility_failure: string;
 }
@@ -895,6 +904,7 @@ interface I18nError__imported_tokens {
   is_duplication: string;
   is_sns: string;
   is_important: string;
+  is_icp: string;
 }
 
 interface I18nError__sns {

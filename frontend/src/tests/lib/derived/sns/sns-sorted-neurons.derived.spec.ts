@@ -44,6 +44,7 @@ describe("definedSnsNeuronStore", () => {
           id: [1, 5, 3, 9, 1, 1, 1],
         }),
         maturity_e8s_equivalent: 0n,
+        staked_maturity_e8s_equivalent: [0n],
       },
       {
         ...createMockSnsNeuron({
@@ -213,6 +214,7 @@ describe("sortedSnsNeuronStore", () => {
           id: [1, 5, 3, 9, 1, 1, 1],
         }),
         maturity_e8s_equivalent: 0n,
+        staked_maturity_e8s_equivalent: [0n],
       },
       {
         ...createMockSnsNeuron({
