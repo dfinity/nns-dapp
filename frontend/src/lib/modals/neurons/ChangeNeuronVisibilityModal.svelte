@@ -8,19 +8,19 @@
   import { changeNeuronVisibility } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
+  import ChangeBulkNeuronVisibilityForm from "./ChangeBulkNeuronVisibilityForm.svelte";
+  import { neuronsStore } from "$lib/stores/neurons.store";
 
   const dispatcher = createEventDispatcher();
   const close = () => {
     dispatcher("nnsClose");
   };
-  import ChangeBulkNeuronVisibilityForm from "./ChangeBulkNeuronVisibilityForm.svelte";
-  import { neuronsStore } from "$lib/stores/neurons.store";
 
   export let neuronId: BigInt;
 
   let selectedNeurons: NeuronInfo[];
   let neuron: NeuronInfo;
-  $: neuron = $neuronsStore.neurons.find((n) => n.neuronId === neuronId);
+  $: neuron = $neuronsStore?.neurons.find((n) => n.neuronId === neuronId);
 
   let isPublic: Boolean;
   $: isPublic = isPublicNeuron(neuron);
