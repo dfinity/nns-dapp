@@ -25,28 +25,30 @@
   data-tid="neuron-visibility-cell-component-{cellData.neuronId}"
   class="container"
 >
-  <div class="neuron-id-wrapper">
-    <p data-tid="neuron-id" class="neuron-id">{cellData.neuronId}</p>
-    {#if cellData?.isPublic}
-      <span class="public-icon-container" data-tid="public-icon-container">
-        <Tooltip
-          top
-          id="neuron-visibility-cell-public-icon"
-          text={$i18n.neurons.public_neuron_tooltip}
-        >
-          <IconPublicBadge />
-        </Tooltip>
+  <div class="neuron-details">
+    <div class="neuron-id-wrapper">
+      <p data-tid="neuron-id" class="neuron-id">{cellData.neuronId}</p>
+      {#if cellData?.isPublic}
+        <span class="public-icon-container" data-tid="public-icon-container">
+          <Tooltip
+            top
+            id="neuron-visibility-cell-public-icon"
+            text={$i18n.neurons.public_neuron_tooltip}
+          >
+            <IconPublicBadge />
+          </Tooltip>
+        </span>
+      {/if}
+    </div>
+    {#if cellData.tags.length > 0}
+      <span class="tags" data-tid="neuron-tags">
+        {#each cellData.tags as tag}
+          <Tag testId="neuron-tag">{tag}</Tag>
+        {/each}
       </span>
     {/if}
   </div>
 
-  {#if cellData.tags.length > 0}
-    <span class="tags" data-tid="neuron-tags">
-      {#each cellData.tags as tag}
-        <Tag testId="neuron-tag">{tag}</Tag>
-      {/each}
-    </span>
-  {/if}
   {#if cellData?.uncontrolledNeuronDetails}
     <span class="tags">
       <span class="uncontrolled-tag-icons">
@@ -77,10 +79,17 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    .neuron-details {
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: var(--padding);
+    }
     .neuron-id-wrapper {
       display: inline-flex;
       align-items: center;
     }
+
     .public-icon-container {
       color: var(--elements-badges);
       line-height: 0;
