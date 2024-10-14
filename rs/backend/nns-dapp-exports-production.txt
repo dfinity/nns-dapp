@@ -13,7 +13,6 @@ canister_query get_tvl
 canister_query http_request
 canister_update <ic-cdk internal> timer_executor
 canister_update add_account
-canister_update add_assets_tar_xz
 canister_update add_stable_asset
 canister_update attach_canister
 canister_update create_sub_account
