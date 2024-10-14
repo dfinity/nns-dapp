@@ -106,8 +106,6 @@ export const addImportedToken = async ({
   tokenToAdd: ImportedTokenData;
   importedTokens: ImportedTokenData[];
 }): Promise<{ success: boolean }> => {
-  // TODO: validate importedToken (not sns, not ck, is unique, etc.)
-
   const tokens = [...importedTokens, tokenToAdd];
   const { err } = await saveImportedToken({ tokens });
 

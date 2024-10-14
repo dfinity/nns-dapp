@@ -13,6 +13,7 @@
   import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
   import SplitNeuronModal from "$lib/modals/neurons/SplitNnsNeuronModal.svelte";
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
+  import ChangeNeuronVisibilityModal from "./ChangeNeuronVisibilityModal.svelte";
   import type {
     NnsNeuronModal,
     NnsNeuronModalData,
@@ -92,6 +93,10 @@
 
     {#if type === "dev-add-maturity" && IS_TESTNET}
       <NnsAddMaturityModal {neuron} on:nnsClose={close} />
+    {/if}
+
+    {#if type === "change-neuron-visibility"}
+      <ChangeNeuronVisibilityModal {neuron} on:nnsClose={close} />
     {/if}
   {/if}
 
