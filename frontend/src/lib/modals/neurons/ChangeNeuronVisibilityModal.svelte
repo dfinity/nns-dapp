@@ -16,14 +16,14 @@
     dispatcher("nnsClose");
   };
 
-  export let neuronId: BigInt;
+  export let neuronId: bigint;
 
   let selectedNeurons: NeuronInfo[];
 
   let neuron: NeuronInfo | undefined;
   $: neuron = $neuronsStore?.neurons?.find((n) => n.neuronId === neuronId);
 
-  let isPublic: Boolean;
+  let isPublic: boolean;
   $: isPublic = neuron ? isPublicNeuron(neuron) : false;
 
   async function handleChangeVisibility() {

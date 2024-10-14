@@ -35,7 +35,7 @@
   let applyToAllNeurons: boolean;
   $: applyToAllNeurons = false;
 
-  let isPublic: Boolean;
+  let isPublic: boolean;
   isPublic = isPublicNeuron(neuron);
 
   let allNeurons: NeuronInfo[];
