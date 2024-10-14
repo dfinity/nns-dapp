@@ -10,10 +10,9 @@
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { i18n } from "$lib/stores/i18n";
-  import NeuronVisibilityCell from "$lib/components/neurons/NeuronsTable/NeuronVisibilityCell.svelte";
+  import NeuronVisibilityCell from "$lib/modals/neurons/NeuronVisibilityCell.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { Checkbox, Spinner } from "@dfinity/gix-components";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
 
   export let neuron: NeuronInfo;
@@ -94,94 +93,106 @@
   }
 </script>
 
-<TestIdWrapper testId="change-bulk-visibility-form-container">
-  <div class="change-bulk-visibility-container">
-    {#if isLoading}
-      <div class="loading-container">
-        <span>
-          <Spinner inline />
-        </span>
-        <p class="description">Retrieving data on neurons...</p>
+<div
+  class="change-bulk-visibility-container"
+  data-tid="change-bulk-visibility-component"
+>
+  {#if isLoading}
+    <div class="loading-container" data-tid="loading-container">
+      <span>
+        <Spinner inline />
+      </span>
+      <p class="description">Retrieving data on neurons...</p>
+    </div>
+  {:else}
+    {#if controllableNeurons.length > 0}
+      <div class="apply-to-all" data-tid="apply-to-all-container">
+        <Checkbox
+          inputId="apply-to-all"
+          checked={applyToAllNeurons}
+          on:nnsChange={handleApplyToAllChange}
+        >
+          Apply to all neurons
+        </Checkbox>
       </div>
-    {:else}
-      {#if controllableNeurons.length > 0}
-        <div class="apply-to-all">
-          <Checkbox
-            inputId="apply-to-all"
-            checked={applyToAllNeurons}
-            on:nnsChange={handleApplyToAllChange}
-          >
-            Apply to all neurons
-          </Checkbox>
-        </div>
-      {/if}
-      {#if controllableNeurons.length + uncontrollableNeurons.length > 0}
-        <div class="neurons-lists-container">
-          <div class="neurons-list">
-            <p class="description">Neurons</p>
-            {#if controllableNeurons.length > 0}
-              {#each controllableNeurons as n (n.neuronId)}
-                <div class="neuron-row">
-                  <Checkbox
-                    inputId={n.neuronId.toString()}
-                    checked={isNeuronSelected(n)}
-                    on:nnsChange={() => handleCheckboxChange(n)}
-                  >
-                    <NeuronVisibilityCell
-                      cellData={createNeuronVisibilityCellNeuron({
-                        neuron: n,
-                        identity: $authStore.identity,
-                        accounts: $icpAccountsStore,
-                        i18n: $i18n,
-                      })}
-                    /></Checkbox
-                  >
-                </div>
-              {/each}
-            {/if}
-          </div>
-
-          {#if uncontrollableNeurons.length > 0}
-            <Separator spacing="none" />
-            <div class="neurons-list">
-              <p class="description small">
-                These neurons have different controllers and won’t be updated
-              </p>
-              {#each uncontrollableNeurons as n (n.neuronId)}
-                <div class="neuron-row disabled">
-                  <Checkbox
-                    inputId="neuron-{n.neuronId}"
-                    text="block"
-                    checked={false}
-                    disabled
-                  >
-                    <NeuronVisibilityCell
-                      cellData={createNeuronVisibilityCellNeuron({
-                        neuron: n,
-                        identity: $authStore.identity,
-                        accounts: $icpAccountsStore,
-                        i18n: $i18n,
-                      })}
-                    />
-                  </Checkbox>
-                </div>
-              {/each}
-            </div>
+    {/if}
+    {#if controllableNeurons.length + uncontrollableNeurons.length > 0}
+      <div class="neurons-lists-container" data-tid="neurons-lists-container">
+        <div class="neurons-list" data-tid="controllable-neurons-list">
+          <p class="description" data-tid="controllable-neurons-description">
+            Neurons
+          </p>
+          {#if controllableNeurons.length > 0}
+            {#each controllableNeurons as n (n.neuronId)}
+              <div
+                class="neuron-row"
+                data-tid="neuron-row-{n.neuronId.toString()}"
+              >
+                <Checkbox
+                  inputId={n.neuronId.toString()}
+                  checked={isNeuronSelected(n)}
+                  on:nnsChange={() => handleCheckboxChange(n)}
+                >
+                  <NeuronVisibilityCell
+                    cellData={createNeuronVisibilityCellNeuron({
+                      neuron: n,
+                      identity: $authStore.identity,
+                      accounts: $icpAccountsStore,
+                      i18n: $i18n,
+                    })}
+                  /></Checkbox
+                >
+              </div>
+            {/each}
           {/if}
         </div>
-      {/if}
-    {/if}
 
-    <div class="toolbar alert footer">
-      <button class="secondary" on:click={cancel} data-tid="cancel-button">
-        {$i18n.core.cancel}
-      </button>
-      <button on:click={nnsSubmit} class="primary" data-tid="confirm-button">
-        {$i18n.core.confirm}
-      </button>
-    </div>
-  </div></TestIdWrapper
->
+        {#if uncontrollableNeurons.length > 0}
+          <Separator spacing="none" />
+          <div class="neurons-list" data-tid="uncontrollable-neurons-list">
+            <p
+              class="description small"
+              data-tid="uncontrollable-neurons-description"
+            >
+              These neurons have different controllers and won't be updated
+            </p>
+            {#each uncontrollableNeurons as n (n.neuronId)}
+              <div
+                class="neuron-row disabled"
+                data-tid="uncontrollable-neuron-row-{n.neuronId}"
+              >
+                <Checkbox
+                  inputId="neuron-{n.neuronId}"
+                  text="block"
+                  checked={false}
+                  disabled
+                >
+                  <NeuronVisibilityCell
+                    cellData={createNeuronVisibilityCellNeuron({
+                      neuron: n,
+                      identity: $authStore.identity,
+                      accounts: $icpAccountsStore,
+                      i18n: $i18n,
+                    })}
+                  />
+                </Checkbox>
+              </div>
+            {/each}
+          </div>
+        {/if}
+      </div>
+    {/if}
+  {/if}
+
+  <div class="toolbar alert footer">
+    <button class="secondary" on:click={cancel} data-tid="cancel-button">
+      {$i18n.core.cancel}
+    </button>
+    <button on:click={nnsSubmit} class="primary" data-tid="confirm-button">
+      {$i18n.core.confirm}
+    </button>
+  </div>
+</div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";

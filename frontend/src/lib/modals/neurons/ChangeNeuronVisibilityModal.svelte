@@ -19,11 +19,12 @@
   export let neuronId: BigInt;
 
   let selectedNeurons: NeuronInfo[];
-  let neuron: NeuronInfo;
-  $: neuron = $neuronsStore?.neurons.find((n) => n.neuronId === neuronId);
+
+  let neuron: NeuronInfo | undefined;
+  $: neuron = $neuronsStore?.neurons?.find((n) => n.neuronId === neuronId);
 
   let isPublic: Boolean;
-  $: isPublic = isPublicNeuron(neuron);
+  $: isPublic = neuron ? isPublicNeuron(neuron) : false;
 
   async function handleChangeVisibility() {
     startBusy({
@@ -83,10 +84,12 @@
 
   <Separator spacing="medium" />
 
-  <ChangeBulkNeuronVisibilityForm
-    bind:selectedNeurons
-    on:nnsSubmit={handleChangeVisibility}
-    on:nnsCancel={close}
-    {neuron}
-  />
+  {#if neuron}
+    <ChangeBulkNeuronVisibilityForm
+      bind:selectedNeurons
+      on:nnsSubmit={handleChangeVisibility}
+      on:nnsCancel={close}
+      {neuron}
+    />
+  {/if}
 </Modal>

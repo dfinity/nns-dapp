@@ -1,6 +1,5 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-
   import {
     Tag,
     IconPublicBadge,
@@ -22,7 +21,10 @@
   };
 </script>
 
-<div data-tid="neuron-visibility-cell-component" class="container">
+<div
+  data-tid="neuron-visibility-cell-component-{cellData.neuronId}"
+  class="container"
+>
   <div class="neuron-id-wrapper">
     <p data-tid="neuron-id" class="neuron-id">{cellData.neuronId}</p>
     {#if cellData?.isPublic}
@@ -46,15 +48,15 @@
     </span>
   {/if}
   {#if cellData?.uncontrolledNeuronDetails}
-    <span class="tags" data-tid="uncontrolled-neuron-details">
+    <span class="tags">
       <span class="uncontrolled-tag-icons">
         <svelte:component
           this={typeToIcon[cellData.uncontrolledNeuronDetails.type]}
         />
       </span>
 
-      <span class="uncontrolled-neuron-detail">
-        {cellData.uncontrolledNeuronDetails.text}
+      <span class="uncontrolled-neuron-detail" data-tid="uncontrolled-neuron-detail">
+        {cellData.uncontrolledNeuronDetails.type === 'hotkey' ? shortenWithMiddleEllipsis(cellData.uncontrolledNeuronDetails.text):cellData.uncontrolledNeuronDetails.text}
       </span>
     </span>
   {/if}
