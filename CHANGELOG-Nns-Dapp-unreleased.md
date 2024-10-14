@@ -16,20 +16,12 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* Fetch TVL from NNS dapp canister instead of TVL canister.
-* `10%` rollout of re-enabling of certification of certain calls.
-
 #### Deprecated
 
 #### Removed
 
 #### Fixed
 
-* Bug where neurons are displayed as eligible to vote, even though they have already voted.
-* Issue with setting exact dissolve delay on SNS neurons.
-* Error on canister page for canisters that are not controlled by the user.
-* Don't hide neurons which have only staked maturity.
-* Not showing the "no proposals" message when not signed in.
 * Race condition in proposal loading.
 
 #### Security
