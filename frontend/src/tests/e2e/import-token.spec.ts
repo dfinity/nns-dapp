@@ -24,7 +24,7 @@ test("Test imported tokens", async ({ page, context }) => {
   const initialTokenNames = await tokenNames();
   expect(initialTokenNames).not.toContain(TEST_TOKEN_NAME);
 
-  step("Enter the ledger and index canister ids");
+  step("First import / Enter the ledger and index canister ids");
 
   await importButtonPo.click();
   const importTokenModalPo = appPo
@@ -42,7 +42,7 @@ test("Test imported tokens", async ({ page, context }) => {
   await formPo.getSubmitButtonPo().click();
   await reviewPo.waitFor();
 
-  step("Review imported token");
+  step("First import / Review imported token");
 
   expect(await reviewPo.getTokenName()).toBe(TEST_TOKEN_NAME);
   expect(await reviewPo.getLedgerCanisterIdPo().getCanisterIdText()).toBe(
@@ -52,7 +52,7 @@ test("Test imported tokens", async ({ page, context }) => {
     TEST_INDEX_CANISTER_ID
   );
 
-  step("Import the token");
+  step("First import / Import the token");
 
   await reviewPo.getConfirmButtonPo().click();
 
@@ -67,7 +67,9 @@ test("Test imported tokens", async ({ page, context }) => {
       .getTitle()
   ).toEqual(TEST_TOKEN_NAME);
 
-  step("The imported token should be present in the tokens table");
+  step(
+    "First import / The imported token should be present in the tokens table"
+  );
 
   await appPo.goBack();
   await appPo.getTokensPo().getTokensPagePo().getTokensTable().waitFor();
@@ -82,7 +84,7 @@ test("Test imported tokens", async ({ page, context }) => {
   (await importedTokenRowPo).click();
   await walletPo.waitFor();
 
-  step("The user can remove the imported token");
+  step("First import / The user can remove the imported token");
 
   await walletPo.getMoreButton().click();
   await walletPo.getWalletMorePopoverPo().waitFor();
@@ -95,4 +97,48 @@ test("Test imported tokens", async ({ page, context }) => {
 
   await tokensPagePo.waitFor();
   expect(await tokenNames()).toEqual(initialTokenNames);
+
+  step("Second import / Import the token without index canister");
+
+  await importButtonPo.waitFor();
+  expect(initialTokenNames).not.toContain(TEST_TOKEN_NAME);
+
+  await importButtonPo.click();
+  await importTokenModalPo.waitFor();
+  await formPo.getLedgerCanisterInputPo().typeText(TEST_LEDGER_CANISTER_ID);
+
+  await formPo.getSubmitButtonPo().click();
+  await reviewPo.waitFor();
+
+  step("Second import / Review imported token");
+
+  expect(await reviewPo.getTokenName()).toBe(TEST_TOKEN_NAME);
+  expect(await reviewPo.getLedgerCanisterIdPo().getCanisterIdText()).toBe(
+    TEST_LEDGER_CANISTER_ID
+  );
+  expect(
+    await reviewPo.getIndexCanisterIdPo().getCanisterIdFallback().isPresent()
+  ).toBe(true);
+
+  step("Second import / Import the token");
+
+  await reviewPo.getConfirmButtonPo().click();
+  await walletPo.waitFor();
+  expect(
+    await appPo
+      .getWalletPo()
+      .getIcrcWalletPo()
+      .getWalletPageHeaderPo()
+      .getUniverseSummaryPo()
+      .getTitle()
+  ).toEqual(TEST_TOKEN_NAME);
+
+  step(
+    "Second import / The imported token should be present in the tokens table"
+  );
+
+  await appPo.goBack();
+  await appPo.getTokensPo().getTokensPagePo().getTokensTable().waitFor();
+
+  expect(await tokenNames()).toContain(TEST_TOKEN_NAME);
 });
