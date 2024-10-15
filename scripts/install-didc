@@ -27,7 +27,7 @@ fi
 USER_BIN="$HOME/.local/bin"
 mkdir -p "$USER_BIN"
 tmpfile="$(mktemp)"
-curl -Lf "$DIDC_URL" > "$tmpfile"
+curl -Lf "$DIDC_URL" >"$tmpfile"
 install -m 755 "$tmpfile" "$USER_BIN/didc"
 
 echo "Installed $("$USER_BIN/didc" --version)"
