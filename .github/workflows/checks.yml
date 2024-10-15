@@ -289,11 +289,13 @@ jobs:
             brew install bash coreutils moreutils
           fi
       - name: Install didc
-        run: scripts/install-didc
-      - name: Ensure required didc version
         run: |
-          echo "Current path: $PATH"
-          ./scripts/ensure-required-didc-version.test
+          scripts/install-didc
+          # `didc` is installed in $HOME/.local/bin, which is in the path by
+          # default on Linux but not on Mac.
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Ensure required didc version
+        run: ./scripts/ensure-required-didc-version.test
       - name: docker-build prints help
         run: ./scripts/docker-build --help | grep -i usage
       - name: Download NNS-dapp CI wasm
