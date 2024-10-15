@@ -432,9 +432,9 @@ export const getNeuronTags = ({
   accounts: IcpAccountsStoreData;
   i18n: I18n;
 }): NeuronTagData[] => {
-  const tags: NeuronTagData[] = [];
+  const tags = [];
 
-  tags.push(...getNeuronTagUnrelatedToController({ neuron, i18n }));
+  tags.push(...getNeuronTagsUnrelatedToController({ neuron, i18n }));
 
   const isHWControlled = isNeuronControlledByHardwareWallet({
     neuron,
@@ -449,13 +449,13 @@ export const getNeuronTags = ({
   return tags;
 };
 
-const getNeuronTagUnrelatedToController = ({
+const getNeuronTagsUnrelatedToController = ({
   neuron,
   i18n,
 }: {
   neuron: NeuronInfo;
   i18n: I18n;
-}) => {
+}): NeuronTagData[] => {
   const tags: NeuronTagData[] = [];
 
   if (isSeedNeuron(neuron)) {
@@ -470,7 +470,7 @@ const getNeuronTagUnrelatedToController = ({
   return tags;
 };
 
-export const createNeuronNeuronVisibilityRowData = ({
+export const createNeuronVisibilityRowData = ({
   neuron,
   identity,
   accounts,
@@ -484,11 +484,11 @@ export const createNeuronNeuronVisibilityRowData = ({
   return {
     neuronId: neuron.neuronId.toString(),
     isPublic: isPublicNeuron(neuron),
-    tags: getNeuronTagUnrelatedToController({
+    tags: getNeuronTagsUnrelatedToController({
       neuron,
       i18n,
     }).map(({ text }) => text),
-    uncontrolledNeuronDetails: getVisibilityCellUncontrolledNeuronDetails({
+    uncontrolledNeuronDetails: getNeuronVisibilityRowUncontrolledNeuronDetails({
       neuron,
       identity,
       accounts,
@@ -497,7 +497,7 @@ export const createNeuronNeuronVisibilityRowData = ({
   };
 };
 
-const getVisibilityCellUncontrolledNeuronDetails = ({
+const getNeuronVisibilityRowUncontrolledNeuronDetails = ({
   neuron,
   identity,
   accounts,
