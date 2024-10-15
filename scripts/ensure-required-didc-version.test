@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+# Make sure we have the correct version before overwriting the installed
+# version. That way we guarantee that when we install the same version at the
+# end, we didn't change the version the user has.
+"$SOURCE_DIR/ensure-required-didc-version"
+
+"$SOURCE_DIR/install-didc" --release 2024-04-11
+if "$SOURCE_DIR/ensure-required-didc-version"; then
+  echo "Release 2024-04-11 should not have been accepted as the required version"
+  exit 1
+fi
+
+"$SOURCE_DIR/install-didc"
+if ! "$SOURCE_DIR/ensure-required-didc-version"; then
+  echo "The default installed version should be accepted as the required version"
+  exit 1
+fi
