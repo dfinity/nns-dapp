@@ -279,7 +279,6 @@ jobs:
             # libarchive-zip-perl is needed for crc32, used by convert-id.test
             sudo apt-get update -yy && sudo apt-get install -yy moreutils libarchive-zip-perl && command -v sponge
           fi
-          scripts/install-didc
       - name: Install tools on Mac
         run: |
           if command -v brew ; then
@@ -289,7 +288,8 @@ jobs:
             # moreutils is needed for sponge, used by network-config.test
             brew install bash coreutils moreutils
           fi
-          scripts/install-didc
+      - name: Install didc
+        run: scripts/install-didc
       - name: Ensure required didc version
         run: ./scripts/ensure-required-didc-version.test
       - name: docker-build prints help
