@@ -61,7 +61,7 @@ cd "$GIT_ROOT"
 
 : "Ensure that tools are installed and working.  Rustfmt in particular can self-upgrade when called and the self-upgrade can fail."
 {
-  didc --version
+  "$SOURCE_DIR/ensure-required-didc-version"
   rustfmt --version
 } >/dev/null
 

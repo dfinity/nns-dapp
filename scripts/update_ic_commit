@@ -52,7 +52,7 @@ bump_ic_commit() {
     mkdir -p "$(dirname "$local_path")"
     {
       echo "//! Candid for canister \`$canister\` obtained by \`scripts/update_ic_commit\` from: <$IC_URL$upstream_path>"
-      curl -sfL --retry 5 "$IC_URL$upstream_path"
+      curl -SsfL --retry 5 "$IC_URL$upstream_path"
     } >"${local_path}"
   }
   if [[ "$CRATE" = "proposals" ]]; then
@@ -66,7 +66,7 @@ bump_ic_commit() {
     did_curl sns_aggregator sns_root /rs/sns/root/canister/root.did
     did_curl sns_aggregator sns_swap /rs/sns/swap/canister/swap.did
     did_curl sns_aggregator sns_wasm /rs/nns/sns-wasm/canister/sns-wasm.did
-    did_curl sns_aggregator sns_ledger /rs/rosetta-api/icrc1/ledger/ledger.did
+    did_curl sns_aggregator sns_ledger /rs/ledger_suite/icrc1/ledger/ledger.did
   else
     echo "ERROR: --crate should be 'proposals' or 'sns_aggregator' or 'all'."
     exit 1

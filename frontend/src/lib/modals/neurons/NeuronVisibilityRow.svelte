@@ -7,10 +7,10 @@
     IconLedger,
     IconKey,
   } from "@dfinity/gix-components";
-  import type { VisibilityCellNeuronData } from "$lib/types/visibility-cell-neuron";
+  import type { NeuronVisibilityRowData } from "$lib/types/neuron-visibility-row";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 
-  export let cellData: VisibilityCellNeuronData;
+  export let rowData: NeuronVisibilityRowData;
 
   const typeToIcon: {
     hardwareWallet: typeof IconLedger;
@@ -22,17 +22,17 @@
 </script>
 
 <div
-  data-tid="neuron-visibility-cell-component-{cellData.neuronId}"
+  data-tid="neuron-visibility-row-component-{rowData.neuronId}"
   class="container"
 >
   <div class="neuron-details">
     <div class="neuron-id-wrapper">
-      <p data-tid="neuron-id" class="neuron-id">{cellData.neuronId}</p>
-      {#if cellData?.isPublic}
+      <p data-tid="neuron-id" class="neuron-id">{rowData.neuronId}</p>
+      {#if rowData?.isPublic}
         <span class="public-icon-container" data-tid="public-icon-container">
           <Tooltip
             top
-            id="neuron-visibility-cell-public-icon"
+            id="neuron-visibility-row-public-icon"
             text={$i18n.neurons.public_neuron_tooltip}
           >
             <IconPublicBadge />
@@ -40,20 +40,20 @@
         </span>
       {/if}
     </div>
-    {#if cellData.tags.length > 0}
+    {#if rowData.tags.length > 0}
       <span class="tags" data-tid="neuron-tags">
-        {#each cellData.tags as tag}
+        {#each rowData.tags as tag}
           <Tag testId="neuron-tag">{tag}</Tag>
         {/each}
       </span>
     {/if}
   </div>
 
-  {#if cellData?.uncontrolledNeuronDetails}
+  {#if rowData?.uncontrolledNeuronDetails}
     <span class="tags">
       <span class="uncontrolled-tag-icons">
         <svelte:component
-          this={typeToIcon[cellData.uncontrolledNeuronDetails.type]}
+          this={typeToIcon[rowData.uncontrolledNeuronDetails.type]}
         />
       </span>
 
@@ -61,9 +61,7 @@
         class="uncontrolled-neuron-detail"
         data-tid="uncontrolled-neuron-detail"
       >
-        {cellData.uncontrolledNeuronDetails.type === "hotkey"
-          ? shortenWithMiddleEllipsis(cellData.uncontrolledNeuronDetails.text)
-          : cellData.uncontrolledNeuronDetails.text}
+        {rowData.uncontrolledNeuronDetails.text}
       </span>
     </span>
   {/if}

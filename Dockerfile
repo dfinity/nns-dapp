@@ -35,7 +35,7 @@ COPY dfx.json dfx.json
 ENV NODE_VERSION=16.17.1
 RUN jq -r .dfx dfx.json > config/dfx_version
 RUN jq -r '.defaults.build.config.NODE_VERSION' dfx.json > config/node_version
-RUN jq -r '.defaults.build.config.DIDC_VERSION' dfx.json > config/didc_version
+RUN jq -r '.defaults.build.config.DIDC_RELEASE' dfx.json > config/didc_version
 RUN jq -r '.defaults.build.config.OPTIMIZER_VERSION' dfx.json > config/optimizer_version
 RUN jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json > config/ic_wasm_version
 RUN jq -r '.defaults.build.config.BINSTALL_VERSION' dfx.json > config/binstall_version

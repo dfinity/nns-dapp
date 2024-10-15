@@ -1,4 +1,4 @@
-export type VisibilityCellNeuronData = {
+export type NeuronVisibilityRowData = {
   neuronId: string;
   isPublic: boolean;
   tags: string[];
