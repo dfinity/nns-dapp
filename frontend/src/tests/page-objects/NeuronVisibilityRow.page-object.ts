@@ -2,7 +2,7 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class NeuronVisibilityCellPo extends BasePageObject {
+export class NeuronVisibilityRowPo extends BasePageObject {
   private static readonly BASE_TID = "neuron-visibility-cell-component";
   private readonly neuronId: string;
 
@@ -14,9 +14,9 @@ export class NeuronVisibilityCellPo extends BasePageObject {
   static under(
     element: PageObjectElement,
     neuronId: string
-  ): NeuronVisibilityCellPo {
-    const testId = `${NeuronVisibilityCellPo.BASE_TID}-${neuronId}`;
-    return new NeuronVisibilityCellPo(element.byTestId(testId), neuronId);
+  ): NeuronVisibilityRowPo {
+    const testId = `${NeuronVisibilityRowPo.BASE_TID}-${neuronId}`;
+    return new NeuronVisibilityRowPo(element.byTestId(testId), neuronId);
   }
 
   async getNeuronId(): Promise<string> {
