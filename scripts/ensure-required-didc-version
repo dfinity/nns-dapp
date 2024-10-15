@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+ACTUAL_VERSION="$(didc --version)"
+EXPECTED_VERSION="$(jq -r '.defaults.build.config.DIDC_VERSION' "$SOURCE_DIR/../dfx.json")"
+
+if [[ "${ACTUAL_VERSION:-}" != "${EXPECTED_VERSION:-}" ]]; then
+  echo "Expected didc version '$EXPECTED_VERSION', but found '$ACTUAL_VERSION'"
+  echo "Run 'scripts/install_didc' to install the correct version."
+  exit 1
+fi
+
+echo "didc version ($ACTUAL_VERSION) is correct"
