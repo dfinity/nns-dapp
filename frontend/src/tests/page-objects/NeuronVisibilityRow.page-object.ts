@@ -4,18 +4,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class NeuronVisibilityRowPo extends BasePageObject {
   private static readonly BASE_TID = "neuron-visibility-row-component";
-  private readonly neuronId: string;
-
-  constructor({
-    element,
-    neuronId,
-  }: {
-    element: PageObjectElement;
-    neuronId: string;
-  }) {
-    super(element);
-    this.neuronId = neuronId;
-  }
 
   static under({
     element,
@@ -25,10 +13,7 @@ export class NeuronVisibilityRowPo extends BasePageObject {
     neuronId: string;
   }): NeuronVisibilityRowPo {
     const testId = `${NeuronVisibilityRowPo.BASE_TID}-${neuronId}`;
-    return new NeuronVisibilityRowPo({
-      element: element.byTestId(testId),
-      neuronId,
-    });
+    return new NeuronVisibilityRowPo(element.byTestId(testId));
   }
 
   async getNeuronId(): Promise<string> {
@@ -36,9 +21,7 @@ export class NeuronVisibilityRowPo extends BasePageObject {
   }
 
   async isPublic(): Promise<boolean> {
-    return this.root
-      .querySelector("[data-tid='public-icon-container']")
-      .isPresent();
+    return this.isPresent("public-icon-container");
   }
 
   getPublicNeuronTooltipPo(): TooltipPo {
@@ -52,9 +35,7 @@ export class NeuronVisibilityRowPo extends BasePageObject {
     return Promise.all(tagElements.map((el) => el.getText()));
   }
 
-  async getUncontrolledNeuronDetailsText(): Promise<string | null> {
-    return await this.root
-      .querySelector("[data-tid='uncontrolled-neuron-detail']")
-      .getText();
+  async getUncontrolledNeuronDetailsText(): Promise<string> {
+    return this.getText("uncontrolled-neuron-detail");
   }
 }
