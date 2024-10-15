@@ -291,7 +291,7 @@ jobs:
           fi
           scripts/install-didc
       - name: Ensure required didc version
-        run: ./ensure-required-didc-version.test
+        run: ./scripts/ensure-required-didc-version.test
       - name: docker-build prints help
         run: ./scripts/docker-build --help | grep -i usage
       - name: Download NNS-dapp CI wasm
