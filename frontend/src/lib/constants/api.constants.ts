@@ -6,7 +6,7 @@ export const DFINITY_NEURON = {
 
 export const IC_NEURON = {
   id: 28n,
-  name: "Internet Computer Association",
+  name: "Internet Computer Association (winding down)",
   description: undefined,
 };
 
