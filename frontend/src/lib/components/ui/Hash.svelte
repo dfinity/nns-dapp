@@ -28,7 +28,8 @@
       data-tid={testId}
       class={className}
       role={isClickable ? "button" : undefined}
-      on:click|stopPropagation={() => isClickable && dispatcher("nnsHash")}
+      on:click|stopPropagation|preventDefault={() =>
+        isClickable && dispatcher("nnsHash")}
     >
       {shortenText}</svelte:element
     >
