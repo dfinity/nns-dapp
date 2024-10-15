@@ -22,6 +22,10 @@ import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { VoteRegistrationStoreData } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
+import type {
+  NeuronVisibilityRowData,
+  UncontrolledNeuronDetailsData,
+} from "$lib/types/neuron-visibility-row";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import type { Identity } from "@dfinity/agent";
 import type { WizardStep } from "@dfinity/gix-components";
@@ -54,7 +58,7 @@ import {
   isAccountHardwareWallet,
 } from "./accounts.utils";
 import { nowInSeconds } from "./date.utils";
-import { formatNumber } from "./format.utils";
+import { formatNumber, shortenWithMiddleEllipsis } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
 import { formatTokenE8s, numberToUlps } from "./token.utils";
 import { isDefined } from "./utils";
@@ -430,15 +434,8 @@ export const getNeuronTags = ({
 }): NeuronTagData[] => {
   const tags: NeuronTagData[] = [];
 
-  if (isSeedNeuron(neuron)) {
-    tags.push({ text: i18n.neuron_types.seed });
-  } else if (isEctNeuron(neuron)) {
-    tags.push({ text: i18n.neuron_types.ect });
-  }
+  tags.push(...getNeuronTagsUnrelatedToController({ neuron, i18n }));
 
-  if (hasJoinedCommunityFund(neuron)) {
-    tags.push({ text: i18n.neurons.community_fund });
-  }
   const isHWControlled = isNeuronControlledByHardwareWallet({
     neuron,
     accounts,
@@ -450,6 +447,89 @@ export const getNeuronTags = ({
     tags.push({ text: i18n.neurons.hotkey_control });
   }
   return tags;
+};
+
+const getNeuronTagsUnrelatedToController = ({
+  neuron,
+  i18n,
+}: {
+  neuron: NeuronInfo;
+  i18n: I18n;
+}): NeuronTagData[] => {
+  const tags: NeuronTagData[] = [];
+
+  if (isSeedNeuron(neuron)) {
+    tags.push({ text: i18n.neuron_types.seed });
+  } else if (isEctNeuron(neuron)) {
+    tags.push({ text: i18n.neuron_types.ect });
+  }
+
+  if (hasJoinedCommunityFund(neuron)) {
+    tags.push({ text: i18n.neurons.community_fund });
+  }
+  return tags;
+};
+
+export const createNeuronVisibilityRowData = ({
+  neuron,
+  identity,
+  accounts,
+  i18n,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+  accounts: IcpAccountsStoreData;
+  i18n: I18n;
+}): NeuronVisibilityRowData => {
+  return {
+    neuronId: neuron.neuronId.toString(),
+    isPublic: isPublicNeuron(neuron),
+    tags: getNeuronTagsUnrelatedToController({
+      neuron,
+      i18n,
+    }).map(({ text }) => text),
+    uncontrolledNeuronDetails: getNeuronVisibilityRowUncontrolledNeuronDetails({
+      neuron,
+      identity,
+      accounts,
+      i18n,
+    }),
+  };
+};
+
+const getNeuronVisibilityRowUncontrolledNeuronDetails = ({
+  neuron,
+  identity,
+  accounts,
+  i18n,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+  accounts: IcpAccountsStoreData;
+  i18n: I18n;
+}): UncontrolledNeuronDetailsData | undefined => {
+  if (
+    isNeuronControlledByHardwareWallet({
+      neuron,
+      accounts,
+    })
+  ) {
+    return {
+      type: "hardwareWallet",
+      text: i18n.neuron_detail.hardware_wallet,
+    };
+    // All HW controlled are hotkeys, but we don't want to show both details to the user.
+  }
+  const hotKeyControllableNeuron = isHotKeyControllable({
+    neuron,
+    identity,
+  });
+  if (hotKeyControllableNeuron && neuron.fullNeuron?.controller) {
+    return {
+      type: "hotkey",
+      text: shortenWithMiddleEllipsis(neuron.fullNeuron?.controller),
+    };
+  }
 };
 
 /**
