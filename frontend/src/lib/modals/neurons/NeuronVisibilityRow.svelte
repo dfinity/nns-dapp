@@ -22,7 +22,7 @@
 </script>
 
 <div
-  data-tid="neuron-visibility-cell-component-{rowData.neuronId}"
+  data-tid="neuron-visibility-row-component-{rowData.neuronId}"
   class="container"
 >
   <div class="neuron-details">
@@ -32,7 +32,7 @@
         <span class="public-icon-container" data-tid="public-icon-container">
           <Tooltip
             top
-            id="neuron-visibility-cell-public-icon"
+            id="neuron-visibility-row-public-icon"
             text={$i18n.neurons.public_neuron_tooltip}
           >
             <IconPublicBadge />
@@ -61,9 +61,7 @@
         class="uncontrolled-neuron-detail"
         data-tid="uncontrolled-neuron-detail"
       >
-        {rowData.uncontrolledNeuronDetails.type === "hotkey"
-          ? shortenWithMiddleEllipsis(rowData.uncontrolledNeuronDetails.text)
-          : rowData.uncontrolledNeuronDetails.text}
+        {rowData.uncontrolledNeuronDetails.text}
       </span>
     </span>
   {/if}

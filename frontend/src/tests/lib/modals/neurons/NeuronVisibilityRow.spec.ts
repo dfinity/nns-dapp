@@ -10,12 +10,10 @@ describe("NeuronVisibilityRow", () => {
       props: { rowData },
     });
 
-    return {
-      po: NeuronVisibilityRowPo.under(
-        new JestPageObjectElement(container),
-        rowData.neuronId.toString()
-      ),
-    };
+    return NeuronVisibilityRowPo.under({
+      element: new JestPageObjectElement(container),
+      neuronId: rowData.neuronId.toString(),
+    });
   };
 
   it("should display the correct neuron ID", async () => {
@@ -25,7 +23,7 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
     };
 
-    const { po } = renderComponent(rowData);
+    const po = renderComponent(rowData);
 
     expect(await po.getNeuronId()).toBe("123");
   });
@@ -37,7 +35,7 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
     };
 
-    const { po } = renderComponent(rowData);
+    const po = renderComponent(rowData);
 
     expect(await po.isPublic()).toBe(true);
   });
@@ -49,7 +47,7 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
     };
 
-    const { po } = renderComponent(rowData);
+    const po = renderComponent(rowData);
 
     expect(await po.isPublic()).toBe(false);
   });
@@ -61,7 +59,7 @@ describe("NeuronVisibilityRow", () => {
       tags: ["Tag1", "Tag2"],
     };
 
-    const { po } = renderComponent(rowData);
+    const po = renderComponent(rowData);
 
     expect(await po.getTags()).toEqual(["Tag1", "Tag2"]);
   });
@@ -73,7 +71,7 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
     };
 
-    const { po } = renderComponent(rowData);
+    const po = renderComponent(rowData);
 
     expect(await po.getTags()).toEqual([]);
   });
@@ -89,7 +87,7 @@ describe("NeuronVisibilityRow", () => {
       },
     };
 
-    const { po } = renderComponent(rowData);
+    const po = renderComponent(rowData);
 
     expect(await po.getUncontrolledNeuronDetailsText()).toEqual(
       "Hardware Wallet"
@@ -107,7 +105,7 @@ describe("NeuronVisibilityRow", () => {
       },
     };
 
-    const { po } = renderComponent(rowData);
+    const po = renderComponent(rowData);
 
     expect(await po.getUncontrolledNeuronDetailsText()).toEqual(
       "1231392...2831823"
@@ -121,7 +119,7 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
     };
 
-    const { po } = renderComponent(rowData);
+    const po = renderComponent(rowData);
 
     expect(await po.getUncontrolledNeuronDetailsText()).toBeNull();
   });
@@ -133,7 +131,7 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
     };
 
-    const { po } = renderComponent(rowData);
+    const po = renderComponent(rowData);
 
     const tooltipPo = await po.getPublicNeuronTooltipPo();
     expect(await tooltipPo.getTooltipText()).toBe("Neuron is public");
@@ -146,7 +144,7 @@ describe("NeuronVisibilityRow", () => {
       tags: ["First tag", "Second tag"],
     };
 
-    const { po } = renderComponent(rowData);
+    const po = renderComponent(rowData);
 
     const tags = await po.getTags();
     expect(tags).toEqual(["First tag", "Second tag"]);
