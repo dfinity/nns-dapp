@@ -432,7 +432,7 @@ export const getNeuronTags = ({
   accounts: IcpAccountsStoreData;
   i18n: I18n;
 }): NeuronTagData[] => {
-  const tags = [];
+  const tags: NeuronTagData[] = [];
 
   tags.push(...getNeuronTagsUnrelatedToController({ neuron, i18n }));
 
