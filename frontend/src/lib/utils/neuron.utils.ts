@@ -421,26 +421,6 @@ export type NeuronTagData = {
   text: string;
 };
 
-const getNeuronRelatedTag = ({
-  neuron,
-  i18n,
-}: {
-  neuron: NeuronInfo;
-  i18n: I18n;
-}) => {
-  const tags: NeuronTagData[] = [];
-  if (isSeedNeuron(neuron)) {
-    tags.push({ text: i18n.neuron_types.seed });
-  } else if (isEctNeuron(neuron)) {
-    tags.push({ text: i18n.neuron_types.ect });
-  }
-
-  if (hasJoinedCommunityFund(neuron)) {
-    tags.push({ text: i18n.neurons.community_fund });
-  }
-  return tags;
-};
-
 export const getNeuronTags = ({
   neuron,
   identity,
@@ -454,7 +434,7 @@ export const getNeuronTags = ({
 }): NeuronTagData[] => {
   const tags: NeuronTagData[] = [];
 
-  tags.push(...getNeuronRelatedTag({ neuron, i18n }));
+  tags.push(...getNeuronTagUnrelatedToController({ neuron, i18n }));
 
   const isHWControlled = isNeuronControlledByHardwareWallet({
     neuron,
@@ -465,6 +445,27 @@ export const getNeuronTags = ({
     // All HW controlled are hotkeys, but we don't want to show both tags to the user.
   } else if (isHotKeyControllable({ neuron, identity })) {
     tags.push({ text: i18n.neurons.hotkey_control });
+  }
+  return tags;
+};
+
+const getNeuronTagUnrelatedToController = ({
+  neuron,
+  i18n,
+}: {
+  neuron: NeuronInfo;
+  i18n: I18n;
+}) => {
+  const tags: NeuronTagData[] = [];
+
+  if (isSeedNeuron(neuron)) {
+    tags.push({ text: i18n.neuron_types.seed });
+  } else if (isEctNeuron(neuron)) {
+    tags.push({ text: i18n.neuron_types.ect });
+  }
+
+  if (hasJoinedCommunityFund(neuron)) {
+    tags.push({ text: i18n.neurons.community_fund });
   }
   return tags;
 };
@@ -483,7 +484,7 @@ export const createNeuronNeuronVisibilityRowData = ({
   return {
     neuronId: neuron.neuronId.toString(),
     isPublic: isPublicNeuron(neuron),
-    tags: getNeuronRelatedTag({
+    tags: getNeuronTagUnrelatedToController({
       neuron,
       i18n,
     }).map(({ text }) => text),
