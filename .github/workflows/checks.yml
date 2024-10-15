@@ -130,13 +130,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install didc
-        run: |
-          USER_BIN="$HOME/.local/bin"
-          mkdir -p "$USER_BIN"
-          echo "$USER_BIN" >> $GITHUB_PATH
-          version="$(jq -r .defaults.build.config.DIDC_RELEASE dfx.json)"
-          # TODO: Make `didc` support `binstall`, then use `binstall` here.
-          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
+        run: scripts/install-didc
       - name: Check didc
         run: command -v didc
       - name: Run the ic_commit code generator for proposals
@@ -162,13 +156,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install didc
-        run: |
-          USER_BIN="$HOME/.local/bin"
-          mkdir -p "$USER_BIN"
-          echo "$USER_BIN" >> $GITHUB_PATH
-          version="$(jq -r .defaults.build.config.DIDC_RELEASE dfx.json)"
-          # TODO: Use `binstall`, once `didc` supports it.
-          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
+        run: scripts/install-didc
       - name: Check didc
         run: command -v didc
       - name: Install dfx
@@ -217,13 +205,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install didc
-        run: |
-          USER_BIN="$HOME/.local/bin"
-          mkdir -p "$USER_BIN"
-          echo "$USER_BIN" >> $GITHUB_PATH
-          version="$(jq -r .defaults.build.config.DIDC_RELEASE dfx.json)"
-          # TODO: Make `didc` support `binstall`, then use `binstall` here.
-          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
+        run: scripts/install-didc
       - name: Install cargo binstall
         uses: ./.github/actions/install_binstall
       - name: Install idl2json

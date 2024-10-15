@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=r long=release desc="The didc release to install" variable=RELEASE default="pinned"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+if [[ "${RELEASE:-}" == "pinned" ]]; then
+  RELEASE="$(jq -r '.defaults.build.config.DIDC_RELEASE' "$SOURCE_DIR/../dfx.json")"
+fi
+
+echo "Installing didc release $RELEASE"
+
+if [[ "$(uname)" == "Darwin" ]]; then
+  echo "Installing MacOS version"
+  DIDC_URL="https://github.com/dfinity/candid/releases/download/${RELEASE}/didc-macos"
+else
+  echo "Installing Linux version"
+  DIDC_URL="https://github.com/dfinity/candid/releases/download/${RELEASE}/didc-linux64"
+fi
+
+USER_BIN="$HOME/.local/bin"
+mkdir -p "$USER_BIN"
+tmpfile="$(mktemp)"
+curl -Lf "$DIDC_URL" >"$tmpfile"
+install -m 755 "$tmpfile" "$USER_BIN/didc"
+
+echo "Installed $("$USER_BIN/didc" --version)"
