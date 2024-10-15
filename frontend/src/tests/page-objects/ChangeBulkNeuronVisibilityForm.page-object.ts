@@ -51,13 +51,9 @@ export class ChangeBulkNeuronVisibilityFormPo extends BasePageObject {
   }
 
   getNeuronCheckbox(neuron: NeuronInfo): CheckboxPo {
-    return CheckboxPo.under({ element: this.getNeuronRow(neuron) });
-  }
-
-  getUncontrollableNeuronRow(neuron: NeuronInfo): PageObjectElement {
-    return this.root.byTestId(
-      `uncontrollable-neuron-row-${neuron.neuronId.toString()}`
-    );
+    return CheckboxPo.under({
+      element: this.root.byTestId(`neuron-row-${neuron.neuronId.toString()}`),
+    });
   }
 
   getConfirmButton(): ButtonPo {
@@ -68,59 +64,7 @@ export class ChangeBulkNeuronVisibilityFormPo extends BasePageObject {
     return ButtonPo.under({ element: this.root, testId: "cancel-button" });
   }
 
-  async isLoading(): Promise<boolean> {
-    return this.getLoadingContainer().isPresent();
-  }
-
-  async isApplyToAllVisible(): Promise<boolean> {
-    return this.getApplyToAllContainer().isPresent();
-  }
-
-  async isControllableNeuronsListVisible(): Promise<boolean> {
-    return this.getControllableNeuronsList().isPresent();
-  }
-
-  async isUncontrollableNeuronsListVisible(): Promise<boolean> {
-    return this.getUncontrollableNeuronsList().isPresent();
-  }
-
-  async isNeuronRowVisible(neuron: NeuronInfo): Promise<boolean> {
-    return this.getNeuronRow(neuron).isPresent();
-  }
-
-  async isUncontrollableNeuronRowVisible(neuron: NeuronInfo): Promise<boolean> {
-    return this.getUncontrollableNeuronRow(neuron).isPresent();
-  }
-
-  async clickApplyToAll(): Promise<void> {
-    await this.getApplyToAllCheckbox().click();
-  }
-
-  async clickNeuronCheckbox(neuron: NeuronInfo): Promise<void> {
-    await this.getNeuronCheckbox(neuron).click();
-  }
-
-  async isNeuronCheckboxChecked(neuron: NeuronInfo): Promise<boolean> {
-    return this.getNeuronCheckbox(neuron).isChecked();
-  }
-
-  async clickConfirm(): Promise<void> {
-    await this.getConfirmButton().click();
-  }
-
-  async clickCancel(): Promise<void> {
-    await this.getCancelButton().click();
-  }
-
-  async getApplyToAllText(): Promise<string> {
-    return this.getApplyToAllCheckbox().getText();
-  }
-
-  async getUncontrollableNeuronsDescriptionText(): Promise<string> {
-    return this.getUncontrollableNeuronsDescription().getText();
-  }
-
-  getNeuronVisibilityCell(neuron: NeuronInfo): NeuronVisibilityRowPo {
+  getNeuronVisibilityRowPo(neuron: NeuronInfo): NeuronVisibilityRowPo {
     return NeuronVisibilityRowPo.under({
       element: this.root,
       neuronId: neuron.neuronId.toString(),

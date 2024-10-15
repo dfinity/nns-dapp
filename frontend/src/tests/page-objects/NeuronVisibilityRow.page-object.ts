@@ -1,5 +1,5 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class NeuronVisibilityRowPo extends BasePageObject {
