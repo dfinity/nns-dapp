@@ -133,7 +133,7 @@
                   on:nnsChange={() => handleCheckboxChange(n)}
                 >
                   <NeuronVisibilityRow
-                    cellData={createNeuronVisibilityRowData({
+                    rowData={createNeuronVisibilityRowData({
                       neuron: n,
                       identity: $authStore.identity,
                       accounts: $icpAccountsStore,
@@ -167,7 +167,7 @@
                   disabled
                 >
                   <NeuronVisibilityRow
-                    cellData={createNeuronVisibilityRowData({
+                    rowData={createNeuronVisibilityRowData({
                       neuron: n,
                       identity: $authStore.identity,
                       accounts: $icpAccountsStore,
