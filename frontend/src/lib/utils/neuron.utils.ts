@@ -23,9 +23,9 @@ import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { VoteRegistrationStoreData } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
 import type {
+  NeuronVisibilityRowData,
   UncontrolledNeuronDetailsData,
-  VisibilityCellNeuronData,
-} from "$lib/types/visibility-cell-neuron";
+} from "$lib/types/neuron-visibility-row";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import type { Identity } from "@dfinity/agent";
 import type { WizardStep } from "@dfinity/gix-components";
@@ -434,15 +434,8 @@ export const getNeuronTags = ({
 }): NeuronTagData[] => {
   const tags: NeuronTagData[] = [];
 
-  if (isSeedNeuron(neuron)) {
-    tags.push({ text: i18n.neuron_types.seed });
-  } else if (isEctNeuron(neuron)) {
-    tags.push({ text: i18n.neuron_types.ect });
-  }
+  tags.push(...getNeuronTagsUnrelatedToController({ neuron, i18n }));
 
-  if (hasJoinedCommunityFund(neuron)) {
-    tags.push({ text: i18n.neurons.community_fund });
-  }
   const isHWControlled = isNeuronControlledByHardwareWallet({
     neuron,
     accounts,
@@ -456,42 +449,11 @@ export const getNeuronTags = ({
   return tags;
 };
 
-export const createNeuronVisibilityCellNeuronData = ({
-  neuron,
-  identity,
-  accounts,
-  i18n,
-}: {
-  neuron: NeuronInfo;
-  identity?: Identity | null;
-  accounts: IcpAccountsStoreData;
-  i18n: I18n;
-}): VisibilityCellNeuronData => {
-  return {
-    neuronId: neuron.neuronId.toString(),
-    isPublic: isPublicNeuron(neuron),
-    tags: getVisibilityCellNeuronTags({
-      neuron,
-      identity,
-      accounts,
-      i18n,
-    }).map(({ text }) => text),
-    uncontrolledNeuronDetails: getVisibilityCellUncontrolledNeuronDetails({
-      neuron,
-      identity,
-      accounts,
-      i18n,
-    }),
-  };
-};
-
-export const getVisibilityCellNeuronTags = ({
+const getNeuronTagsUnrelatedToController = ({
   neuron,
   i18n,
 }: {
   neuron: NeuronInfo;
-  identity?: Identity | null;
-  accounts: IcpAccountsStoreData;
   i18n: I18n;
 }): NeuronTagData[] => {
   const tags: NeuronTagData[] = [];
@@ -508,7 +470,34 @@ export const getVisibilityCellNeuronTags = ({
   return tags;
 };
 
-export const getVisibilityCellUncontrolledNeuronDetails = ({
+export const createNeuronVisibilityRowData = ({
+  neuron,
+  identity,
+  accounts,
+  i18n,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+  accounts: IcpAccountsStoreData;
+  i18n: I18n;
+}): NeuronVisibilityRowData => {
+  return {
+    neuronId: neuron.neuronId.toString(),
+    isPublic: isPublicNeuron(neuron),
+    tags: getNeuronTagsUnrelatedToController({
+      neuron,
+      i18n,
+    }).map(({ text }) => text),
+    uncontrolledNeuronDetails: getNeuronVisibilityRowUncontrolledNeuronDetails({
+      neuron,
+      identity,
+      accounts,
+      i18n,
+    }),
+  };
+};
+
+const getNeuronVisibilityRowUncontrolledNeuronDetails = ({
   neuron,
   identity,
   accounts,
@@ -525,8 +514,6 @@ export const getVisibilityCellUncontrolledNeuronDetails = ({
       accounts,
     })
   ) {
-    // Currently hardware wallet target Ids are not stored when creating a neruon, so hardware wallet is hardcoded.
-    // We can start collecting these details and save them in nnsDapp to provide more accurate feedback to users using zondax/ledger-js
     return {
       type: "hardwareWallet",
       text: i18n.neuron_detail.hardware_wallet,
@@ -1162,8 +1149,4 @@ export const getTopicSubtitle = ({
 
 export const isPublicNeuron = (neuronInfo: NeuronInfo): boolean => {
   return neuronInfo.visibility === NeuronVisibility.Public;
-};
-
-export const isPrivateNeuron = (neuronInfo: NeuronInfo): boolean => {
-  return neuronInfo.visibility === NeuronVisibility.Private;
 };
