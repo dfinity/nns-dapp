@@ -3,14 +3,13 @@
   import {
     isPublicNeuron,
     isNeuronControllable,
-    isPrivateNeuron,
-    createNeuronVisibilityCellNeuronData,
+    createNeuronVisibilityRowData,
   } from "$lib/utils/neuron.utils";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { i18n } from "$lib/stores/i18n";
-  import NeuronVisibilityCell from "$lib/modals/neurons/NeuronVisibilityCell.svelte";
+  import NeuronVisibilityRow from "$lib/modals/neurons/NeuronVisibilityRow.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { Checkbox, Spinner } from "@dfinity/gix-components";
   import Separator from "$lib/components/ui/Separator.svelte";
@@ -49,7 +48,7 @@
         identity: $authStore.identity,
         accounts: $icpAccountsStore,
       }) &&
-      (isPublic ? !isPrivateNeuron(n) : !isPublicNeuron(n)) &&
+      (isPublic ? isPublicNeuron(n) : !isPublicNeuron(n)) &&
       n.neuronId !== neuron.neuronId
   );
 
@@ -60,7 +59,7 @@
         neuron: n,
         identity: $authStore.identity,
         accounts: $icpAccountsStore,
-      }) && (isPublic ? !isPrivateNeuron(n) : !isPublicNeuron(n))
+      }) && (isPublic ? isPublicNeuron(n) : !isPublicNeuron(n))
   );
 
   $: isNeuronSelected = (n: NeuronInfo) =>
@@ -133,8 +132,8 @@
                   checked={isNeuronSelected(n)}
                   on:nnsChange={() => handleCheckboxChange(n)}
                 >
-                  <NeuronVisibilityCell
-                    cellData={createNeuronVisibilityCellNeuronData({
+                  <NeuronVisibilityRow
+                    cellData={createNeuronVisibilityRowData({
                       neuron: n,
                       identity: $authStore.identity,
                       accounts: $icpAccountsStore,
@@ -167,8 +166,8 @@
                   checked={false}
                   disabled
                 >
-                  <NeuronVisibilityCell
-                    cellData={createNeuronVisibilityCellNeuronData({
+                  <NeuronVisibilityRow
+                    cellData={createNeuronVisibilityRowData({
                       neuron: n,
                       identity: $authStore.identity,
                       accounts: $icpAccountsStore,

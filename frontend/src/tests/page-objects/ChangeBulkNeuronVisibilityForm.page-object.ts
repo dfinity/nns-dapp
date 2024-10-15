@@ -2,7 +2,7 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import type { NeuronInfo } from "@dfinity/nns";
 import { ButtonPo } from "./Button.page-object";
 import { CheckboxPo } from "./Checkbox.page-object";
-import { NeuronVisibilityCellPo } from "./NeuronVisibilityCell.page-object";
+import { NeuronVisibilityRowPo } from "./NeuronVisibilityRow.page-object";
 import { BasePageObject } from "./base.page-object";
 
 export class ChangeBulkNeuronVisibilityFormPo extends BasePageObject {
@@ -120,7 +120,10 @@ export class ChangeBulkNeuronVisibilityFormPo extends BasePageObject {
     return this.getUncontrollableNeuronsDescription().getText();
   }
 
-  getNeuronVisibilityCell(neuron: NeuronInfo): NeuronVisibilityCellPo {
-    return NeuronVisibilityCellPo.under(this.root, neuron.neuronId.toString());
+  getNeuronVisibilityCell(neuron: NeuronInfo): NeuronVisibilityRowPo {
+    return NeuronVisibilityRowPo.under({
+      element: this.root,
+      neuronId: neuron.neuronId.toString(),
+    });
   }
 }
