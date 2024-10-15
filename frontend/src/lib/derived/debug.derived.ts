@@ -5,6 +5,10 @@ import { canistersStore } from "$lib/stores/canisters.store";
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
+import {
+  failedImportedTokenLedgerIdsStore,
+  importedTokensStore,
+} from "$lib/stores/imported-tokens.store";
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import {
@@ -118,6 +122,8 @@ export const initDebugStore = () =>
       tokensStore,
       icrcAccountsStore,
       defaultIcrcCanistersStore,
+      importedTokensStore,
+      failedImportedTokenLedgerIdsStore,
     ],
     ([
       $busyStore,
@@ -146,6 +152,8 @@ export const initDebugStore = () =>
       $tokensStore,
       $icrcAccountsStore,
       $defaultIcrcCanistersStore,
+      $importedTokensStore,
+      $failedImportedTokenLedgerIdsStore,
     ]) => ({
       busy: $busyStore,
       accounts: $accountsStore,
@@ -173,5 +181,7 @@ export const initDebugStore = () =>
       tokensStore: $tokensStore,
       icrcAccountsStore: $icrcAccountsStore,
       defaultIcrcCanistersStore: $defaultIcrcCanistersStore,
+      importedTokensStore: $importedTokensStore,
+      failedImportedTokenLedgerIdsStore: $failedImportedTokenLedgerIdsStore,
     })
   );
