@@ -196,13 +196,6 @@ jobs:
           cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
       - name: Check mainnet config
         run: bash -x config.test
-  asset-chunking-works:
-    name: Asset chunking works
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v4
-      - name: Test chunking
-        run: scripts/nns-dapp/split-assets.test
   migration-test-utils-work:
     name: Migration test utilities work
     runs-on: ubuntu-20.04
@@ -355,7 +348,6 @@ jobs:
       - ic-commit-consistency
       - release-templating-works
       - config-check
-      - asset-chunking-works
       - minor-version-bump-works
       - migration-test-utils-work
       - version-match
