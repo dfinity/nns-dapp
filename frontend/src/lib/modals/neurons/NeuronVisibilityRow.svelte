@@ -8,7 +8,6 @@
     IconKey,
   } from "@dfinity/gix-components";
   import type { NeuronVisibilityRowData } from "$lib/types/neuron-visibility-row";
-  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 
   export let rowData: NeuronVisibilityRowData;
 
