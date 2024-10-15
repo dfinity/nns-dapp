@@ -103,7 +103,7 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
       uncontrolledNeuronDetails: {
         type: "hotkey",
-        text: "12313921238123812831823",
+        text: "1231392...2831823",
       },
     };
 
