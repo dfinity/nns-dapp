@@ -17,7 +17,7 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 
 vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/icp-ledger.api");
@@ -104,7 +104,7 @@ describe("NnsAccounts", () => {
 
   // TODO: Move the pollAccounts to Accounts route when universe selected is NNS instead of the child.
   describe("when no accounts and user navigates away", () => {
-    let spyQueryAccount: SpyInstance;
+    let spyQueryAccount: MockInstance;
     beforeEach(() => {
       vi.clearAllTimers();
       vi.clearAllMocks();

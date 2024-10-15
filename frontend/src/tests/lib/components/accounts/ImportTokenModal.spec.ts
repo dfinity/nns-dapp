@@ -18,7 +18,7 @@ import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 
 const expectToastError = (contained: string) =>
   expect(get(toastsStore)).toMatchObject([
@@ -43,7 +43,7 @@ describe("ImportTokenModal", () => {
 
     return po;
   };
-  let queryIcrcTokenSpy: SpyInstance;
+  let queryIcrcTokenSpy: MockInstance;
 
   beforeEach(() => {
     vi.restoreAllMocks();

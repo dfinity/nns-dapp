@@ -10,10 +10,10 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { get } from "svelte/store";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 
 describe("nns-reward-event-services", () => {
-  let spyQueryLatestRewardEvent: SpyInstance;
+  let spyQueryLatestRewardEvent: MockInstance;
 
   beforeEach(() => {
     nnsLatestRewardEventStore.reset();

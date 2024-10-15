@@ -6,22 +6,22 @@ import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { indexCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
-describe("TransactionsObserver", () => {
-  let spyPostMessage;
+let spyPostMessage;
 
+vi.mock("$lib/workers/transactions.worker?worker", () => ({
+  default: class TransactionsWorker {
+    postMessage(data: {
+      msg: "nnsStartTransactionsTimer";
+      data: PostMessageDataRequestTransactions;
+    }) {
+      spyPostMessage(data);
+    }
+  },
+}));
+
+describe("TransactionsObserver", () => {
   beforeEach(() => {
     spyPostMessage = vi.fn();
-
-    vi.doMock("$lib/workers/transactions.worker?worker", () => ({
-      default: class TransactionsWorker {
-        postMessage(data: {
-          msg: "nnsStartTransactionsTimer";
-          data: PostMessageDataRequestTransactions;
-        }) {
-          spyPostMessage(data);
-        }
-      },
-    }));
   });
 
   const data: TransactionsObserverData = {
