@@ -17,7 +17,7 @@ jobs:
         run: |
           pwd
           find .github/actions
-          current_didc_release=$(jq -r '.defaults.build.config.DIDC_VERSION' dfx.json)
+          current_didc_release=$(jq -r '.defaults.build.config.DIDC_RELEASE' dfx.json)
           echo "current didc release '$current_didc_release'"
 
           latest_didc_release=$(curl -sSL https://api.github.com/repos/dfinity/candid/releases/latest | jq .tag_name -r)
@@ -27,14 +27,14 @@ jobs:
           then
             echo didc needs an update
             sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
-            DIDC_RELEASE="$latest_didc_release" jq '.defaults.build.config.DIDC_VERSION=(env.DIDC_RELEASE)' dfx.json  | sponge dfx.json
+            DIDC_RELEASE="$latest_didc_release" jq '.defaults.build.config.DIDC_RELEASE=(env.DIDC_RELEASE)' dfx.json  | sponge dfx.json
             echo "updated=1" >> "$GITHUB_OUTPUT"
             echo "version=$latest_didc_release" >> "$GITHUB_OUTPUT"
           else
             echo "updated=0" >> "$GITHUB_OUTPUT"
           fi
 
-          jq '.defaults.build.config.DIDC_VERSION' dfx.json
+          jq '.defaults.build.config.DIDC_RELEASE' dfx.json
           echo "Git status:"
           git status
           echo "Changes:"

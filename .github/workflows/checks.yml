@@ -134,7 +134,7 @@ jobs:
           USER_BIN="$HOME/.local/bin"
           mkdir -p "$USER_BIN"
           echo "$USER_BIN" >> $GITHUB_PATH
-          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          version="$(jq -r .defaults.build.config.DIDC_RELEASE dfx.json)"
           # TODO: Make `didc` support `binstall`, then use `binstall` here.
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
@@ -166,7 +166,7 @@ jobs:
           USER_BIN="$HOME/.local/bin"
           mkdir -p "$USER_BIN"
           echo "$USER_BIN" >> $GITHUB_PATH
-          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          version="$(jq -r .defaults.build.config.DIDC_RELEASE dfx.json)"
           # TODO: Use `binstall`, once `didc` supports it.
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
@@ -221,7 +221,7 @@ jobs:
           USER_BIN="$HOME/.local/bin"
           mkdir -p "$USER_BIN"
           echo "$USER_BIN" >> $GITHUB_PATH
-          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          version="$(jq -r .defaults.build.config.DIDC_RELEASE dfx.json)"
           # TODO: Make `didc` support `binstall`, then use `binstall` here.
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Install cargo binstall

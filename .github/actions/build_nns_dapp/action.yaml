@@ -56,7 +56,7 @@ runs:
         set -euxo pipefail
         if command -v didc
         then echo "Skipping didc installation, as didc is already installed"
-        else dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+        else dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_RELEASE dfx.json)"
         fi
     - name: Create local arguments
       shell: bash
