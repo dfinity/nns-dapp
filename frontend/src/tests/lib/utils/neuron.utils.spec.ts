@@ -23,7 +23,7 @@ import {
   canBeMerged,
   canUserManageNeuronFundParticipation,
   checkInvalidState,
-  createNeuronVisibilityCellNeuronData,
+  createNeuronNeuronVisibilityRowData,
   dissolveDelayMultiplier,
   filterIneligibleNnsNeurons,
   followeesByTopic,
@@ -40,8 +40,6 @@ import {
   getSpawningTimeInSeconds,
   getTopicSubtitle,
   getTopicTitle,
-  getVisibilityCellNeuronTags,
-  getVisibilityCellUncontrolledNeuronDetails,
   hasEnoughMaturityToStake,
   hasJoinedCommunityFund,
   hasValidStake,
@@ -3030,13 +3028,13 @@ describe("neuron-utils", () => {
     });
   });
 
-  describe("createNeuronVisibilityCellNeuronData", () => {
+  describe("createNeuronNeuronVisibilityRowData", () => {
     it("should create visibility cell neuron data for a public neuron", () => {
       const neuron: NeuronInfo = {
         ...mockNeuron,
         visibility: NeuronVisibility.Public,
       };
-      const result = createNeuronVisibilityCellNeuronData({
+      const result = createNeuronNeuronVisibilityRowData({
         neuron,
         identity: mockIdentity,
         accounts: { main: mockMainAccount },
@@ -3055,13 +3053,27 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         neuronType: NeuronType.Seed,
       };
-      const result = createNeuronVisibilityCellNeuronData({
+      const result = createNeuronNeuronVisibilityRowData({
         neuron,
         identity: mockIdentity,
         accounts: { main: mockMainAccount },
         i18n: en,
       });
-      expect(result.tags).toContain("Seed");
+      expect(result.tags).toEqual(["Seed"]);
+    });
+
+    it("should create visibility cell neuron data for an ECT neuron", () => {
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        neuronType: NeuronType.Ect,
+      };
+      const result = createNeuronNeuronVisibilityRowData({
+        neuron,
+        identity: mockIdentity,
+        accounts: { main: mockMainAccount },
+        i18n: en,
+      });
+      expect(result.tags).toEqual(["Early Contributor Token"]);
     });
 
     it("should create visibility cell neuron data for a neuron in the community fund", () => {
@@ -3069,61 +3081,15 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         joinedCommunityFundTimestampSeconds: 123n,
       };
-      const result = createNeuronVisibilityCellNeuronData({
+      const result = createNeuronNeuronVisibilityRowData({
         neuron,
         identity: mockIdentity,
         accounts: { main: mockMainAccount },
         i18n: en,
       });
-      expect(result.tags).toContain("Neurons' fund");
-    });
-  });
-
-  describe("getVisibilityCellNeuronTags", () => {
-    it("should return seed tag for seed neuron", () => {
-      const neuron: NeuronInfo = {
-        ...mockNeuron,
-        neuronType: NeuronType.Seed,
-      };
-      const tags = getVisibilityCellNeuronTags({
-        neuron,
-        identity: mockIdentity,
-        accounts: { main: mockMainAccount },
-        i18n: en,
-      });
-      expect(tags).toContainEqual({ text: "Seed" });
+      expect(result.tags).toEqual(["Neurons' fund"]);
     });
 
-    it("should return ect tag for ect neuron", () => {
-      const neuron: NeuronInfo = {
-        ...mockNeuron,
-        neuronType: NeuronType.Ect,
-      };
-      const tags = getVisibilityCellNeuronTags({
-        neuron,
-        identity: mockIdentity,
-        accounts: { main: mockMainAccount },
-        i18n: en,
-      });
-      expect(tags).toContainEqual({ text: "Early Contributor Token" });
-    });
-
-    it("should return community fund tag for neuron in community fund", () => {
-      const neuron: NeuronInfo = {
-        ...mockNeuron,
-        joinedCommunityFundTimestampSeconds: 123n,
-      };
-      const tags = getVisibilityCellNeuronTags({
-        neuron,
-        identity: mockIdentity,
-        accounts: { main: mockMainAccount },
-        i18n: en,
-      });
-      expect(tags).toContainEqual({ text: "Neurons' fund" });
-    });
-  });
-
-  describe("getVisibilityCellUncontrolledNeuronDetails", () => {
     it("should return hardware wallet details for hardware wallet controlled neuron", () => {
       const neuron: NeuronInfo = {
         ...mockNeuron,
@@ -3132,7 +3098,7 @@ describe("neuron-utils", () => {
           controller: mockHardwareWalletAccount.principal?.toText(),
         },
       };
-      const result = getVisibilityCellUncontrolledNeuronDetails({
+      const result = createNeuronNeuronVisibilityRowData({
         neuron,
         identity: mockIdentity,
         accounts: {
@@ -3141,7 +3107,7 @@ describe("neuron-utils", () => {
         },
         i18n: en,
       });
-      expect(result).toEqual({
+      expect(result.uncontrolledNeuronDetails).toEqual({
         type: "hardwareWallet",
         text: "Hardware wallet",
       });
@@ -3157,19 +3123,19 @@ describe("neuron-utils", () => {
           hotKeys: [mockIdentity.getPrincipal().toText()],
         },
       };
-      const result = getVisibilityCellUncontrolledNeuronDetails({
+      const result = createNeuronNeuronVisibilityRowData({
         neuron,
         identity: mockIdentity,
         accounts: { main: mockMainAccount },
         i18n: en,
       });
-      expect(result).toEqual({
+      expect(result.uncontrolledNeuronDetails).toEqual({
         type: "hotkey",
         text: "abcdef-...-fsdfdf",
       });
     });
 
-    it("should return undefined for user-controlled neuron", () => {
+    it("should return undefined uncontrolledNeuronDetails for user-controlled neuron", () => {
       const neuron: NeuronInfo = {
         ...mockNeuron,
         fullNeuron: {
@@ -3177,13 +3143,13 @@ describe("neuron-utils", () => {
           controller: mockIdentity.getPrincipal().toText(),
         },
       };
-      const result = getVisibilityCellUncontrolledNeuronDetails({
+      const result = createNeuronNeuronVisibilityRowData({
         neuron,
         identity: mockIdentity,
         accounts: { main: mockMainAccount },
         i18n: en,
       });
-      expect(result).toBeUndefined();
+      expect(result.uncontrolledNeuronDetails).toBeUndefined();
     });
   });
 });
