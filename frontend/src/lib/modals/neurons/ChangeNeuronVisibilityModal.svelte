@@ -26,7 +26,7 @@
   let isPublic: boolean;
   $: isPublic = neuron ? isPublicNeuron(neuron) : false;
 
-  async function handleChangeVisibility() {
+  async function handleChangeVisibility(isPublic: boolean) {
     startBusy({
       initiator: "change-neuron-visibility",
       labelKey: "neuron_detail.change_neuron_visibility_loading",
@@ -87,7 +87,7 @@
   {#if neuron}
     <ChangeBulkNeuronVisibilityForm
       bind:selectedNeurons
-      on:nnsSubmit={handleChangeVisibility}
+      on:nnsSubmit={() => handleChangeVisibility(isPublic)}
       on:nnsCancel={close}
       {neuron}
     />
