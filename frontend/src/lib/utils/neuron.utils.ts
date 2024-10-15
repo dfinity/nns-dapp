@@ -1150,7 +1150,3 @@ export const getTopicSubtitle = ({
 export const isPublicNeuron = (neuronInfo: NeuronInfo): boolean => {
   return neuronInfo.visibility === NeuronVisibility.Public;
 };
-
-export const isPrivateNeuron = (neuronInfo: NeuronInfo): boolean => {
-  return neuronInfo.visibility === NeuronVisibility.Private;
-};

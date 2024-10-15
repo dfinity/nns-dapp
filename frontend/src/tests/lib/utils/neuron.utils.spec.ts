@@ -50,7 +50,6 @@ import {
   isNeuronControllable,
   isNeuronControllableByUser,
   isNeuronControlledByHardwareWallet,
-  isPrivateNeuron,
   isPublicNeuron,
   isSpawning,
   isValidInputAmount,
@@ -2997,34 +2996,6 @@ describe("neuron-utils", () => {
       expect(isPublicNeuron(privateNeuron)).toBe(false);
       expect(isPublicNeuron(unspecifiedNeuron)).toBe(false);
       expect(isPublicNeuron(undefinedVisibilityNeuron)).toBe(false);
-    });
-  });
-
-  describe("isPrivateNeuron", () => {
-    it("should correctly identify private neurons", () => {
-      const privateNeuron = {
-        ...mockNeuron,
-        visibility: NeuronVisibility.Private,
-      };
-      expect(isPrivateNeuron(privateNeuron)).toBe(true);
-    });
-
-    it("should correctly identify non-private neurons", () => {
-      const publicNeuron = {
-        ...mockNeuron,
-        visibility: NeuronVisibility.Public,
-      };
-      const unspecifiedNeuron = {
-        ...mockNeuron,
-        visibility: NeuronVisibility.Unspecified,
-      };
-      const undefinedVisibilityNeuron = {
-        ...mockNeuron,
-        visibility: undefined,
-      };
-      expect(isPrivateNeuron(publicNeuron)).toBe(false);
-      expect(isPrivateNeuron(unspecifiedNeuron)).toBe(false);
-      expect(isPrivateNeuron(undefinedVisibilityNeuron)).toBe(false);
     });
   });
 
