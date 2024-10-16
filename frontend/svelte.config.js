@@ -17,9 +17,6 @@ const config = {
       plugins: [autoprefixer],
     },
   }),
-  compilerOptions: {
-    accessors: !!process.env.TEST,
-  },
   kit: {
     adapter: adapter({
       pages: "public",
