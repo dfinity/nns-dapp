@@ -16,11 +16,11 @@ export class NeuronVisibilityRowPo extends BasePageObject {
     return new NeuronVisibilityRowPo(element.byTestId(testId));
   }
 
-  async getNeuronId(): Promise<string> {
+  getNeuronId(): Promise<string> {
     return this.getText("neuron-id");
   }
 
-  async isPublic(): Promise<boolean> {
+  isPublic(): Promise<boolean> {
     return this.isPresent("public-icon-container");
   }
 
@@ -35,7 +35,7 @@ export class NeuronVisibilityRowPo extends BasePageObject {
     return Promise.all(tagElements.map((el) => el.getText()));
   }
 
-  async getUncontrolledNeuronDetailsText(): Promise<string> {
+  getUncontrolledNeuronDetailsText(): Promise<string> {
     return this.getText("uncontrolled-neuron-detail");
   }
 }
