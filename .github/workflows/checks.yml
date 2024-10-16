@@ -82,7 +82,7 @@ jobs:
         with:
           shard_number: 1
           shard_count: 2
-  vitest-shard-1-of-2:
+  vitest-shard-2-of-2:
     runs-on: ubuntu-latest-m
     steps:
       - name: Checkout nns-dapp
