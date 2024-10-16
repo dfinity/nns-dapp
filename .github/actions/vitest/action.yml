@@ -27,5 +27,5 @@ runs:
       working-directory: ./frontend
     - name: Test
       shell: bash
-      run: npm run test -- $(find frontend/src/tests -name '*.spec.ts' | grep -v '^frontend/src/tests/e2e' | sed -e 's@^frontend/@@' | split -n r/${{ inputs.shard_number }}/${{ inputs.shard_count }})
+      run: npm run test -- $(find src/tests -name '*.spec.ts' | sort | grep -v '^src/tests/e2e' | split -n r/${{ inputs.shard_number }}/${{ inputs.shard_count }})
       working-directory: ./frontend
