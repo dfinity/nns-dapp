@@ -17,7 +17,7 @@ export class NeuronVisibilityRowPo extends BasePageObject {
   }
 
   async getNeuronId(): Promise<string> {
-    return this.root.querySelector("[data-tid='neuron-id']").getText();
+    return this.getText("neuron-id");
   }
 
   async isPublic(): Promise<boolean> {
