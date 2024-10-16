@@ -6,11 +6,15 @@ import { render } from "@testing-library/svelte";
 import { vi } from "vitest";
 
 describe("NeuronVisibilityRow", () => {
-  const renderComponent = (
-    rowData: NeuronVisibilityRowData,
+  const renderComponent = ({
+    rowData,
     checked = false,
-    disabled = false
-  ) => {
+    disabled = false,
+  }: {
+    rowData: NeuronVisibilityRowData;
+    checked?: boolean;
+    disabled?: boolean;
+  }) => {
     const nnsChangeMock = vi.fn();
     const { container, component } = render(NeuronVisibilityRow, {
       props: { rowData, checked, disabled },
@@ -33,7 +37,7 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
     };
 
-    const { po } = renderComponent(rowData);
+    const { po } = renderComponent({ rowData });
 
     expect(await po.getNeuronId()).toBe("123");
   });
@@ -45,7 +49,7 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
     };
 
-    const { po } = renderComponent(rowData);
+    const { po } = renderComponent({ rowData });
 
     expect(await po.isPublic()).toBe(true);
   });
@@ -57,7 +61,7 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
     };
 
-    const { po } = renderComponent(rowData);
+    const { po } = renderComponent({ rowData });
 
     expect(await po.isPublic()).toBe(false);
   });
@@ -69,7 +73,7 @@ describe("NeuronVisibilityRow", () => {
       tags: ["Tag1", "Tag2"],
     };
 
-    const { po } = renderComponent(rowData);
+    const { po } = renderComponent({ rowData });
 
     expect(await po.getTags()).toEqual(["Tag1", "Tag2"]);
   });
@@ -81,7 +85,7 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
     };
 
-    const { po } = renderComponent(rowData);
+    const { po } = renderComponent({ rowData });
 
     expect(await po.getTags()).toEqual([]);
   });
@@ -97,7 +101,7 @@ describe("NeuronVisibilityRow", () => {
       },
     };
 
-    const { po } = renderComponent(rowData);
+    const { po } = renderComponent({ rowData });
 
     expect(await po.getUncontrolledNeuronDetailsText()).toEqual(
       "Hardware Wallet"
@@ -115,7 +119,7 @@ describe("NeuronVisibilityRow", () => {
       },
     };
 
-    const { po } = renderComponent(rowData);
+    const { po } = renderComponent({ rowData });
 
     expect(await po.getUncontrolledNeuronDetailsText()).toEqual(
       "1231392...2831823"
@@ -129,7 +133,7 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
     };
 
-    const { po } = renderComponent(rowData);
+    const { po } = renderComponent({ rowData });
 
     expect(await po.getUncontrolledNeuronDetailsText()).toBeNull();
   });
@@ -141,7 +145,7 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
     };
 
-    const { po } = renderComponent(rowData);
+    const { po } = renderComponent({ rowData });
 
     const tooltipPo = await po.getPublicNeuronTooltipPo();
     expect(await tooltipPo.getTooltipText()).toBe("Neuron is public");
@@ -154,7 +158,7 @@ describe("NeuronVisibilityRow", () => {
       tags: ["First tag", "Second tag"],
     };
 
-    const { po } = renderComponent(rowData);
+    const { po } = renderComponent({ rowData });
 
     const tags = await po.getTags();
     expect(tags).toEqual(["First tag", "Second tag"]);
@@ -168,9 +172,9 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
     };
 
-    const { po } = renderComponent(rowData);
+    const { po } = renderComponent({ rowData });
 
-    expect(await po.getCheckbox().isChecked()).toBe(false);
+    expect(await po.getCheckboxPo().isChecked()).toBe(false);
   });
 
   it("should render checkbox in checked state when checked prop is true", async () => {
@@ -180,9 +184,9 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
     };
 
-    const { po } = renderComponent(rowData, true);
+    const { po } = renderComponent({ rowData, checked: true });
 
-    expect(await po.getCheckbox().isChecked()).toBe(true);
+    expect(await po.getCheckboxPo().isChecked()).toBe(true);
   });
 
   it("should emit nnsChange event when checkbox is clicked", async () => {
@@ -192,9 +196,11 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
     };
 
-    const { po, nnsChangeMock } = renderComponent(rowData);
+    const { po, nnsChangeMock } = renderComponent({ rowData });
 
-    await po.getCheckbox().click();
+    expect(nnsChangeMock).not.toHaveBeenCalled();
+
+    await po.getCheckboxPo().click();
 
     expect(nnsChangeMock).toHaveBeenCalled();
   });
@@ -206,9 +212,9 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
     };
 
-    const { po } = renderComponent(rowData, false, true);
+    const { po } = renderComponent({ rowData, checked: false, disabled: true });
 
-    const checkboxPo = po.getCheckbox();
+    const checkboxPo = po.getCheckboxPo();
     checkboxPo.click();
 
     expect(await checkboxPo.isDisabled()).toBe(true);
@@ -221,9 +227,13 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
     };
 
-    const { po, nnsChangeMock } = renderComponent(rowData, false, true);
+    const { po, nnsChangeMock } = renderComponent({
+      rowData,
+      checked: false,
+      disabled: true,
+    });
 
-    const checkboxPo = po.getCheckbox();
+    const checkboxPo = po.getCheckboxPo();
     await checkboxPo.click();
 
     expect(nnsChangeMock).not.toHaveBeenCalled();
