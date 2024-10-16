@@ -1,5 +1,5 @@
-import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { CheckboxPo } from "./Checkbox.page-object";
 
@@ -17,11 +17,11 @@ export class NeuronVisibilityRowPo extends BasePageObject {
     return new NeuronVisibilityRowPo(element.byTestId(testId));
   }
 
-  async getNeuronId(): Promise<string> {
+  getNeuronId(): Promise<string> {
     return this.getText("neuron-id");
   }
 
-  async isPublic(): Promise<boolean> {
+  isPublic(): Promise<boolean> {
     return this.isPresent("public-icon-container");
   }
 
