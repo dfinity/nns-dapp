@@ -93,7 +93,6 @@
 </script>
 
 <form
-  class="change-bulk-visibility-container"
   data-tid="change-bulk-visibility-component"
   on:submit|preventDefault={nnsSubmit}
 >
@@ -124,21 +123,16 @@
           </p>
           {#if controllableNeurons.length > 0}
             {#each controllableNeurons as n (n.neuronId)}
-              <div
-                class="neuron-row"
-                data-tid="neuron-row-{n.neuronId.toString()}"
-              >
-                <NeuronVisibilityRow
-                  rowData={createNeuronVisibilityRowData({
-                    neuron: n,
-                    identity: $authStore.identity,
-                    accounts: $icpAccountsStore,
-                    i18n: $i18n,
-                  })}
-                  checked={isNeuronSelected(n)}
-                  on:nnsChange={() => handleCheckboxChange(n)}
-                />
-              </div>
+              <NeuronVisibilityRow
+                rowData={createNeuronVisibilityRowData({
+                  neuron: n,
+                  identity: $authStore.identity,
+                  accounts: $icpAccountsStore,
+                  i18n: $i18n,
+                })}
+                checked={isNeuronSelected(n)}
+                on:nnsChange={() => handleCheckboxChange(n)}
+              />
             {/each}
           {/if}
         </div>
@@ -201,12 +195,6 @@
     border-radius: var(--border-radius);
     padding: 0 var(--padding-2x);
   }
-
-  .change-bulk-visibility-container {
-    --checkbox-label-order: 1;
-    --checkbox-padding: 0 var(--padding) 0 0;
-  }
-
   .apply-to-all {
     --checkbox-padding: var(--padding) var(--padding) var(--padding-3x) 0;
     --checkbox-label-order: 1;
