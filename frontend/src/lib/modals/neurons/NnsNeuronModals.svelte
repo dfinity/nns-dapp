@@ -96,10 +96,7 @@
     {/if}
 
     {#if type === "change-neuron-visibility"}
-      <ChangeNeuronVisibilityModal
-        neuronId={neuron.neuronId}
-        on:nnsClose={close}
-      />
+      <ChangeNeuronVisibilityModal {neuron} on:nnsClose={close} />
     {/if}
   {/if}
 

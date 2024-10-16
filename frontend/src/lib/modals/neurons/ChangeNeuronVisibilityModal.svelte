@@ -9,25 +9,16 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import ChangeBulkNeuronVisibilityForm from "./ChangeBulkNeuronVisibilityForm.svelte";
-  import { neuronsStore } from "$lib/stores/neurons.store";
+
+  export let neuron: NeuronInfo;
 
   const dispatcher = createEventDispatcher();
   const close = () => {
     dispatcher("nnsClose");
   };
 
-  export let neuronId: bigint;
-
-  let neuron: NeuronInfo | undefined;
-  $: neuron = $neuronsStore?.neurons?.find((n) => n.neuronId === neuronId);
-
   let isPublic: boolean;
-
-  $: {
-    if (neuron) {
-      isPublic = isPublicNeuron(neuron);
-    }
-  }
+  $: isPublic = isPublicNeuron(neuron);
 
   const handleChangeVisibility =
     (isPublic: boolean) =>
