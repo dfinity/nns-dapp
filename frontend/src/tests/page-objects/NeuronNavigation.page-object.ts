@@ -23,11 +23,11 @@ export class NeuronNavigationPo extends BasePageObject {
     });
   }
 
-  async getPreviousNeuronId(): Promise<string | null> {
+  getPreviousNeuronId(): Promise<string | null> {
     return this.getPreviousButtonPo().root.getAttribute("data-test-neuron-id");
   }
 
-  async getNextNeuronId(): Promise<string | null> {
+  getNextNeuronId(): Promise<string | null> {
     return this.getNextButtonPo().root.getAttribute("data-test-neuron-id");
   }
 
@@ -39,13 +39,13 @@ export class NeuronNavigationPo extends BasePageObject {
     return this.getNextButtonPo().click();
   }
 
-  async isPreviousButtonHidden(): Promise<boolean> {
+  isPreviousButtonHidden(): Promise<boolean> {
     return (await this.getPreviousButtonPo().root.getClasses()).includes(
       "hidden"
     );
   }
 
-  async isNextButtonHidden(): Promise<boolean> {
+  isNextButtonHidden(): Promise<boolean> {
     return (await this.getNextButtonPo().root.getClasses()).includes("hidden");
   }
 }
