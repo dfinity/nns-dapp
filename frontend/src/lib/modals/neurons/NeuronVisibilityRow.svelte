@@ -96,6 +96,8 @@
   }
 
   .neuron-row {
+    --checkbox-label-order: 1;
+    --checkbox-padding: 0 var(--padding) 0 0;
     display: flex;
     &.disabled {
       --disable-contrast: var(--table-divider);
