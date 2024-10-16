@@ -1,6 +1,7 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { CheckboxPo } from "./Checkbox.page-object";
 
 export class NeuronVisibilityRowPo extends BasePageObject {
   private static readonly BASE_TID = "neuron-visibility-row-component";
@@ -37,5 +38,11 @@ export class NeuronVisibilityRowPo extends BasePageObject {
 
   getUncontrolledNeuronDetailsText(): Promise<string> {
     return this.getText("uncontrolled-neuron-detail");
+  }
+
+  getCheckbox(): CheckboxPo {
+    return CheckboxPo.under({
+      element: this.root,
+    });
   }
 }
