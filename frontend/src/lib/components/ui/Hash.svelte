@@ -13,12 +13,19 @@
   export let className: string | undefined = undefined;
   export let splitLength: number | undefined = undefined;
   export let tooltipTop: boolean | undefined = undefined;
-  export let isClickable: boolean | undefined = undefined;
+  export let isClickable = false;
 
   const dispatcher = createEventDispatcher();
 
   let shortenText: string;
   $: shortenText = shortenWithMiddleEllipsis(text, splitLength);
+
+  const handleClick = (e: MouseEvent) => {
+    if (isClickable) {
+      e.stopPropagation();
+      dispatcher("nnsHash");
+    }
+  };
 </script>
 
 <span data-tid="hash-component">
@@ -28,7 +35,7 @@
       data-tid={testId}
       class={className}
       role={isClickable ? "button" : undefined}
-      on:click|stopPropagation={() => isClickable && dispatcher("nnsHash")}
+      on:click={handleClick}
     >
       {shortenText}</svelte:element
     >
