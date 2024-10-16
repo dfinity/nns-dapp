@@ -18,12 +18,10 @@ export class ChangeBulkNeuronVisibilityFormPo extends BasePageObject {
     return this.root.byTestId("loading-container");
   }
 
-  getApplyToAllContainer(): PageObjectElement {
-    return this.root.byTestId("apply-to-all-container");
-  }
-
   getApplyToAllCheckbox(): CheckboxPo {
-    return CheckboxPo.under({ element: this.getApplyToAllContainer() });
+    return CheckboxPo.under({
+      element: this.root.byTestId("apply-to-all-container"),
+    });
   }
 
   getNeuronsListsContainer(): PageObjectElement {

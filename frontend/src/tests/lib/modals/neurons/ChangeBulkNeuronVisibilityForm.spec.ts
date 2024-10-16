@@ -254,7 +254,7 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
 
     const { po } = renderComponent(publicNeuron1);
 
-    expect(await po.getApplyToAllContainer().isPresent()).toBe(true);
+    expect(await po.getApplyToAllCheckbox().isPresent()).toBe(true);
     expect((await po.getApplyToAllCheckbox().getText()).trim()).toBe(
       "Apply to all neurons"
     );
