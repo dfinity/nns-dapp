@@ -46,16 +46,6 @@ export class ChangeBulkNeuronVisibilityFormPo extends BasePageObject {
     return this.root.byTestId("uncontrollable-neurons-description");
   }
 
-  getNeuronRow(neuron: NeuronInfo): PageObjectElement {
-    return this.root.byTestId(`neuron-row-${neuron.neuronId.toString()}`);
-  }
-
-  getNeuronCheckbox(neuron: NeuronInfo): CheckboxPo {
-    return CheckboxPo.under({
-      element: this.root.byTestId(`neuron-row-${neuron.neuronId.toString()}`),
-    });
-  }
-
   getConfirmButton(): ButtonPo {
     return ButtonPo.under({ element: this.root, testId: "confirm-button" });
   }

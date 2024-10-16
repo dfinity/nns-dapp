@@ -114,7 +114,9 @@ describe("ChangeNeuronVisibilityModal", () => {
 
     const { po } = await renderComponent(privateNeuron);
 
-    const confirmButton = po.getConfirmButton();
+    const confirmButton = po
+      .getChangeBulkNeuronVisibilityFormPo()
+      .getConfirmButton();
 
     await confirmButton.click();
 
@@ -129,7 +131,9 @@ describe("ChangeNeuronVisibilityModal", () => {
 
     const { po } = await renderComponent(publicNeuron);
 
-    const confirmButton = po.getConfirmButton();
+    const confirmButton = po
+      .getChangeBulkNeuronVisibilityFormPo()
+      .getConfirmButton();
 
     await confirmButton.click();
 
@@ -144,7 +148,9 @@ describe("ChangeNeuronVisibilityModal", () => {
 
     const { po } = await renderComponent(privateNeuron);
 
-    const confirmButton = po.getConfirmButton();
+    const confirmButton = po
+      .getChangeBulkNeuronVisibilityFormPo()
+      .getConfirmButton();
 
     await confirmButton.click();
 
@@ -162,7 +168,9 @@ describe("ChangeNeuronVisibilityModal", () => {
       privateNeuronWithUpdatedVisibility
     );
 
-    const confirmButton = po.getConfirmButton();
+    const confirmButton = po
+      .getChangeBulkNeuronVisibilityFormPo()
+      .getConfirmButton();
 
     await confirmButton.click();
 
@@ -187,7 +195,9 @@ describe("ChangeNeuronVisibilityModal", () => {
 
     const { po, nnsClose } = await renderComponent(publicNeuron);
 
-    const confirmButton = po.getConfirmButton();
+    const confirmButton = po
+      .getChangeBulkNeuronVisibilityFormPo()
+      .getConfirmButton();
 
     await confirmButton.click();
 
@@ -207,7 +217,9 @@ describe("ChangeNeuronVisibilityModal", () => {
 
     const { po } = await renderComponent();
 
-    const confirmButton = po.getConfirmButton();
+    const confirmButton = po
+      .getChangeBulkNeuronVisibilityFormPo()
+      .getConfirmButton();
 
     await confirmButton.click();
 

@@ -22,10 +22,10 @@
   };
 
   const nnsSubmit = () => {
-    dispatch("nnsSubmit");
+    dispatch("nnsSubmit", { selectedNeurons });
   };
 
-  export let selectedNeurons: NeuronInfo[];
+  let selectedNeurons: NeuronInfo[];
   $: selectedNeurons = [neuron];
 
   let isLoading = false;
@@ -92,9 +92,10 @@
   }
 </script>
 
-<div
+<form
   class="change-bulk-visibility-container"
   data-tid="change-bulk-visibility-component"
+  on:submit|preventDefault={nnsSubmit}
 >
   {#if isLoading}
     <div class="loading-container" data-tid="loading-container">
@@ -127,20 +128,17 @@
                 class="neuron-row"
                 data-tid="neuron-row-{n.neuronId.toString()}"
               >
-                <Checkbox
-                  inputId={n.neuronId.toString()}
+                <NeuronVisibilityRow
+                  rowData={createNeuronVisibilityRowData({
+                    neuron: n,
+                    identity: $authStore.identity,
+                    accounts: $icpAccountsStore,
+                    i18n: $i18n,
+                  })}
                   checked={isNeuronSelected(n)}
                   on:nnsChange={() => handleCheckboxChange(n)}
-                >
-                  <NeuronVisibilityRow
-                    rowData={createNeuronVisibilityRowData({
-                      neuron: n,
-                      identity: $authStore.identity,
-                      accounts: $icpAccountsStore,
-                      i18n: $i18n,
-                    })}
-                  /></Checkbox
-                >
+                  disabled={false}
+                />
               </div>
             {/each}
           {/if}
@@ -156,26 +154,16 @@
               {$i18n.neuron_detail.uncontrollable_neurons_description}
             </p>
             {#each uncontrollableNeurons as n (n.neuronId)}
-              <div
-                class="neuron-row disabled"
-                data-tid="uncontrollable-neuron-row-{n.neuronId}"
-              >
-                <Checkbox
-                  inputId="neuron-{n.neuronId}"
-                  text="block"
-                  checked={false}
-                  disabled
-                >
-                  <NeuronVisibilityRow
-                    rowData={createNeuronVisibilityRowData({
-                      neuron: n,
-                      identity: $authStore.identity,
-                      accounts: $icpAccountsStore,
-                      i18n: $i18n,
-                    })}
-                  />
-                </Checkbox>
-              </div>
+              <NeuronVisibilityRow
+                rowData={createNeuronVisibilityRowData({
+                  neuron: n,
+                  identity: $authStore.identity,
+                  accounts: $icpAccountsStore,
+                  i18n: $i18n,
+                })}
+                checked={false}
+                disabled
+              />
             {/each}
           </div>
         {/if}
@@ -184,14 +172,18 @@
   {/if}
 
   <div class="toolbar alert footer">
-    <button class="secondary" on:click={cancel} data-tid="cancel-button">
+    <button
+      class="secondary"
+      on:click|preventDefault={cancel}
+      data-tid="cancel-button"
+    >
       {$i18n.core.cancel}
     </button>
-    <button on:click={nnsSubmit} class="primary" data-tid="confirm-button">
+    <button type="submit" class="primary" data-tid="confirm-button">
       {$i18n.core.confirm}
     </button>
   </div>
-</div>
+</form>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
@@ -229,14 +221,5 @@
   .neurons-list {
     display: flex;
     flex-direction: column;
-  }
-
-  .neuron-row {
-    display: flex;
-    &.disabled {
-      --disable-contrast: var(--table-divider);
-      --value-color: var(--text-description-tint);
-      --elements-badges: var(--text-description-tint);
-    }
   }
 </style>
