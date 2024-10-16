@@ -72,6 +72,26 @@ jobs:
           RUST_BACKTRACE: 1
       - name: Lint rustdoc
         run: ./scripts/lint-rustdoc
+  vitest-shard-1-of-2:
+    runs-on: ubuntu-latest-m
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v4
+      - name: Run vitest shard 1/2
+        uses: ./.github/actions/vitest
+        with:
+          shard_number: 1
+          shard_count: 2
+  vitest-shard-1-of-2:
+    runs-on: ubuntu-latest-m
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v4
+      - name: Run vitest shard 2/2
+        uses: ./.github/actions/vitest
+        with:
+          shard_number: 2
+          shard_count: 2
   svelte-tests:
     runs-on: ubuntu-latest-m
     defaults:
