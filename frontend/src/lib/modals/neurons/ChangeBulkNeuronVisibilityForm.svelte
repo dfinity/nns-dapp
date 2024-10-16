@@ -137,7 +137,6 @@
                   })}
                   checked={isNeuronSelected(n)}
                   on:nnsChange={() => handleCheckboxChange(n)}
-                  disabled={false}
                 />
               </div>
             {/each}
@@ -161,7 +160,6 @@
                   accounts: $icpAccountsStore,
                   i18n: $i18n,
                 })}
-                checked={false}
                 disabled
               />
             {/each}
