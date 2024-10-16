@@ -100,7 +100,6 @@
     --checkbox-padding: 0 var(--padding) 0 0;
     display: flex;
     &.disabled {
-      --disable-contrast: var(--table-divider);
       --value-color: var(--text-description-tint);
       --elements-badges: var(--text-description-tint);
     }

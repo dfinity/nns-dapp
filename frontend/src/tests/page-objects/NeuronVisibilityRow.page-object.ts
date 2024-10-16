@@ -40,7 +40,7 @@ export class NeuronVisibilityRowPo extends BasePageObject {
     return this.getText("uncontrolled-neuron-detail");
   }
 
-  getCheckbox(): CheckboxPo {
+  getCheckboxPo(): CheckboxPo {
     return CheckboxPo.under({
       element: this.root,
     });
