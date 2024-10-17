@@ -4,13 +4,13 @@ import { i18n } from "$lib/stores/i18n";
 import { neuronsTableOrderStore } from "$lib/stores/neurons-table.store";
 import { definedNeuronsStore } from "$lib/stores/neurons.store";
 import {
-  createNeuronsStore,
+  createTableNeuronsToSortStore,
   sortNeuronIds,
 } from "$lib/utils/neurons-table-order-sorted-neuronids-store.utils";
 import { tableNeuronsFromNeuronInfos } from "$lib/utils/neurons-table.utils";
 import { derived } from "svelte/store";
 
-export const neuronsStore = createNeuronsStore(
+const tableNeuronsToSortStore = createTableNeuronsToSortStore(
   [authStore, icpAccountsStore, i18n, definedNeuronsStore],
   ($authStore, $icpAccountsStore, $i18n, $definedNeuronsStore) =>
     tableNeuronsFromNeuronInfos({
@@ -22,6 +22,6 @@ export const neuronsStore = createNeuronsStore(
 );
 
 export const neuronsTableOrderSortedNeuronIdsStore = derived(
-  [neuronsTableOrderStore, neuronsStore],
+  [neuronsTableOrderStore, tableNeuronsToSortStore],
   ([$order, $neurons]) => sortNeuronIds($order, $neurons)
 );
