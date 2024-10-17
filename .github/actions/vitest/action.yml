@@ -1,0 +1,31 @@
+name: 'Run vitest shard'
+description: |
+  Install dependencies and run (non-e2e) frontend tests with `npm run test`.
+inputs:
+  shard_count:
+    description: "The total number shards to split the tests into"
+    required: false
+    default: 1
+  shard_number:
+    description: "Which of the shards to run"
+    required: false
+    default: 1
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout nns-dapp
+      uses: actions/checkout@v4
+    - name: Get node version
+      shell: bash
+      run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    - name: Install dependencies
+      shell: bash
+      run: npm ci
+      working-directory: ./frontend
+    - name: Test
+      shell: bash
+      run: npm run test -- $(find src/tests -name '*.spec.ts' | sort | grep -v '^src/tests/e2e' | split -n r/${{ inputs.shard_number }}/${{ inputs.shard_count }})
+      working-directory: ./frontend

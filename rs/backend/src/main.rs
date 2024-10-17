@@ -6,7 +6,7 @@ use crate::accounts_store::{
     RenameSubAccountResponse, SetImportedTokensResponse,
 };
 use crate::arguments::{set_canister_arguments, CanisterArguments};
-use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
+use crate::assets::{hash_bytes, insert_asset, Asset};
 use crate::perf::PerformanceCount;
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{init_state, restore_state, save_state, with_state, with_state_mut, StableState};
@@ -390,27 +390,6 @@ fn add_stable_asset_impl(asset_bytes: Vec<u8>) {
             dfn_core::api::trap_with(&format!("Unknown asset with hash {unknown_hash}"));
         }
     }
-}
-
-/// Add assets to be served by the canister.
-///
-/// # Panics
-/// - Permission to upload may be denied; see `may_upload()` for details.
-#[export_name = "canister_update add_assets_tar_xz"]
-pub fn add_assets_tar_xz() {
-    over(candid_one, add_assets_tar_xz_impl);
-}
-
-/// # Panics
-/// If the caller is not the controller.
-#[candid_method(update, rename = "add_assets_tar_xz")]
-fn add_assets_tar_xz_impl(asset_bytes: Vec<u8>) {
-    let caller = ic_cdk::caller();
-    let is_controller = ic_cdk::api::is_controller(&caller);
-    assets::upload::may_upload(&caller, is_controller)
-        .map_err(|e| format!("Permission to upload denied: {e}"))
-        .unwrap();
-    insert_tar_xz(asset_bytes);
 }
 
 /// Generates a lot of toy accounts for testing.

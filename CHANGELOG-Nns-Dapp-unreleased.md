@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Upgrade frontend dev dependencies (`SvelteKit v2`, `vite`, `vitest`, etc.)
+* Change Internet Computer Association neuron title.
 
 #### Deprecated
 

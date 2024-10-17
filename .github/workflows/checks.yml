@@ -72,27 +72,26 @@ jobs:
           RUST_BACKTRACE: 1
       - name: Lint rustdoc
         run: ./scripts/lint-rustdoc
-  svelte-tests:
+  vitest-shard-1-of-2:
     runs-on: ubuntu-latest-m
-    defaults:
-      run:
-        shell: bash
-    env:
-      DFX_NETWORK: mainnet
     steps:
-      - name: Checkout
+      - name: Checkout nns-dapp
         uses: actions/checkout@v4
-      - name: Get node version
-        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
-      - uses: actions/setup-node@v4
+      - name: Run vitest shard 1/2
+        uses: ./.github/actions/vitest
         with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: Install dependencies
-        run: npm ci
-        working-directory: ./frontend
-      - name: Test
-        run: npm run test
-        working-directory: ./frontend
+          shard_number: 1
+          shard_count: 2
+  vitest-shard-2-of-2:
+    runs-on: ubuntu-latest-m
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v4
+      - name: Run vitest shard 2/2
+        uses: ./.github/actions/vitest
+        with:
+          shard_number: 2
+          shard_count: 2
   svelte-lint:
     runs-on: ubuntu-20.04
     defaults:
@@ -130,13 +129,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install didc
-        run: |
-          USER_BIN="$HOME/.local/bin"
-          mkdir -p "$USER_BIN"
-          echo "$USER_BIN" >> $GITHUB_PATH
-          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
-          # TODO: Make `didc` support `binstall`, then use `binstall` here.
-          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
+        run: scripts/install-didc
       - name: Check didc
         run: command -v didc
       - name: Run the ic_commit code generator for proposals
@@ -162,13 +155,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install didc
-        run: |
-          USER_BIN="$HOME/.local/bin"
-          mkdir -p "$USER_BIN"
-          echo "$USER_BIN" >> $GITHUB_PATH
-          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
-          # TODO: Use `binstall`, once `didc` supports it.
-          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
+        run: scripts/install-didc
       - name: Check didc
         run: command -v didc
       - name: Install dfx
@@ -196,13 +183,6 @@ jobs:
           cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
       - name: Check mainnet config
         run: bash -x config.test
-  asset-chunking-works:
-    name: Asset chunking works
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v4
-      - name: Test chunking
-        run: scripts/nns-dapp/split-assets.test
   migration-test-utils-work:
     name: Migration test utilities work
     runs-on: ubuntu-20.04
@@ -224,13 +204,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install didc
-        run: |
-          USER_BIN="$HOME/.local/bin"
-          mkdir -p "$USER_BIN"
-          echo "$USER_BIN" >> $GITHUB_PATH
-          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
-          # TODO: Make `didc` support `binstall`, then use `binstall` here.
-          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
+        run: scripts/install-didc
       - name: Install cargo binstall
         uses: ./.github/actions/install_binstall
       - name: Install idl2json
@@ -313,6 +287,14 @@ jobs:
             # moreutils is needed for sponge, used by network-config.test
             brew install bash coreutils moreutils
           fi
+      - name: Install didc
+        run: |
+          scripts/install-didc
+          # `didc` is installed in $HOME/.local/bin, which is in the path by
+          # default on Linux but not on Mac.
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Ensure required didc version
+        run: ./scripts/ensure-required-didc-version.test
       - name: docker-build prints help
         run: ./scripts/docker-build --help | grep -i usage
       - name: Download NNS-dapp CI wasm
@@ -350,12 +332,12 @@ jobs:
       - spelling
       - cargo-tests
       - svelte-lint
-      - svelte-tests
+      - vitest-shard-1-of-2
+      - vitest-shard-2-of-2
       - shell-checks
       - ic-commit-consistency
       - release-templating-works
       - config-check
-      - asset-chunking-works
       - minor-version-bump-works
       - migration-test-utils-work
       - version-match

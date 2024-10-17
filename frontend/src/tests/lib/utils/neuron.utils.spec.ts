@@ -23,6 +23,7 @@ import {
   canBeMerged,
   canUserManageNeuronFundParticipation,
   checkInvalidState,
+  createNeuronVisibilityRowData,
   dissolveDelayMultiplier,
   filterIneligibleNnsNeurons,
   followeesByTopic,
@@ -2995,6 +2996,132 @@ describe("neuron-utils", () => {
       expect(isPublicNeuron(privateNeuron)).toBe(false);
       expect(isPublicNeuron(unspecifiedNeuron)).toBe(false);
       expect(isPublicNeuron(undefinedVisibilityNeuron)).toBe(false);
+    });
+  });
+
+  describe("createNeuronVisibilityRowData", () => {
+    it("should create neuron visibility row data for a public neuron", () => {
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        visibility: NeuronVisibility.Public,
+      };
+      const result = createNeuronVisibilityRowData({
+        neuron,
+        identity: mockIdentity,
+        accounts: { main: mockMainAccount },
+        i18n: en,
+      });
+      expect(result).toEqual({
+        neuronId: neuron.neuronId.toString(),
+        isPublic: true,
+        tags: [],
+        uncontrolledNeuronDetails: undefined,
+      });
+    });
+
+    it("should create neuron visibility row data for a seed neuron", () => {
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        neuronType: NeuronType.Seed,
+      };
+      const result = createNeuronVisibilityRowData({
+        neuron,
+        identity: mockIdentity,
+        accounts: { main: mockMainAccount },
+        i18n: en,
+      });
+      expect(result.tags).toEqual(["Seed"]);
+    });
+
+    it("should create neuron visibility row data for an ECT neuron", () => {
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        neuronType: NeuronType.Ect,
+      };
+      const result = createNeuronVisibilityRowData({
+        neuron,
+        identity: mockIdentity,
+        accounts: { main: mockMainAccount },
+        i18n: en,
+      });
+      expect(result.tags).toEqual(["Early Contributor Token"]);
+    });
+
+    it("should create neuron visibility row data for a neuron in the community fund", () => {
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        joinedCommunityFundTimestampSeconds: 123n,
+      };
+      const result = createNeuronVisibilityRowData({
+        neuron,
+        identity: mockIdentity,
+        accounts: { main: mockMainAccount },
+        i18n: en,
+      });
+      expect(result.tags).toEqual(["Neurons' fund"]);
+    });
+
+    it("should return hardware wallet details for hardware wallet controlled neuron", () => {
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: mockHardwareWalletAccount.principal?.toText(),
+        },
+      };
+      const result = createNeuronVisibilityRowData({
+        neuron,
+        identity: mockIdentity,
+        accounts: {
+          main: mockMainAccount,
+          hardwareWallets: [mockHardwareWalletAccount],
+        },
+        i18n: en,
+      });
+      expect(result.uncontrolledNeuronDetails).toEqual({
+        type: "hardwareWallet",
+        text: "Hardware wallet",
+      });
+    });
+
+    it("should return hotkey details for hotkey controlled neuron", () => {
+      const controller = "abcdef-ghijkl-fsdfdf";
+      const shortenedController = "abcdef-...-fsdfdf";
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller,
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      const result = createNeuronVisibilityRowData({
+        neuron,
+        identity: mockIdentity,
+        accounts: { main: mockMainAccount },
+        i18n: en,
+      });
+      expect(result.uncontrolledNeuronDetails).toEqual({
+        type: "hotkey",
+        text: shortenedController,
+      });
+    });
+
+    it("should return undefined uncontrolledNeuronDetails for user-controlled neuron", () => {
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: mockIdentity.getPrincipal().toText(),
+        },
+      };
+      const result = createNeuronVisibilityRowData({
+        neuron,
+        identity: mockIdentity,
+        accounts: { main: mockMainAccount },
+        i18n: en,
+      });
+      expect(result.uncontrolledNeuronDetails).toBeUndefined();
     });
   });
 });
