@@ -37,7 +37,12 @@
   };
 </script>
 
-<div class="neuron-nav" role="toolbar" data-tid="neuron-navigation">
+<div
+  class="neuron-nav"
+  class:dont-display={isNullish(previousId) && isNullish(nextId)}
+  role="toolbar"
+  data-tid="neuron-navigation"
+>
   <button
     class="icon-only previous"
     type="button"
@@ -64,11 +69,11 @@
 
 <style lang="scss">
   .neuron-nav {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
     color: var(--elements-icons);
+  }
+
+  .dont-display {
+    display: none;
   }
 
   button {

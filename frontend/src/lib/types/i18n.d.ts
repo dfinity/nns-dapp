@@ -733,6 +733,8 @@ interface I18nNeuron_detail {
   change_neuron_visibility_partial_failure: string;
   change_neuron_visibility_failure: string;
   hardware_wallet: string;
+  next: string;
+  previous: string;
 }
 
 interface I18nSns_launchpad {

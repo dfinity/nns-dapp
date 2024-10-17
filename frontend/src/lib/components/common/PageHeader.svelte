@@ -5,7 +5,7 @@
 </script>
 
 <div class="container" data-tid={testId}>
-  <div class="page-header" class:has={hasNavigation}>
+  <div class="page-header" class:has-navigation={hasNavigation}>
     <slot name="start" />
     <slot name="end" />
   </div>
@@ -21,16 +21,6 @@
   .container {
     position: relative;
     display: flex;
-    padding: var(--padding3x) 0;
-    @include media.min-width(medium) {
-      padding: 0;
-    }
-    .has {
-      padding-top: var(--padding-6x);
-      @include media.min-width(medium) {
-        padding: 0;
-      }
-    }
   }
 
   .page-header {
@@ -44,6 +34,12 @@
     @include media.min-width(medium) {
       flex-direction: row;
       justify-content: space-between;
+    }
+  }
+  .has-navigation {
+    padding-top: var(--padding-6x);
+    @include media.min-width(medium) {
+      padding: 0;
     }
   }
   .navigation {
