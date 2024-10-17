@@ -12,13 +12,7 @@
     TableNeuron,
     NeuronsTableColumn,
   } from "$lib/types/neurons-table";
-  import {
-    compareByDissolveDelay,
-    compareById,
-    compareByMaturity,
-    compareByStake,
-    compareByState,
-  } from "$lib/utils/neurons-table.utils";
+  import { comparators, compareById } from "$lib/utils/neurons-table.utils";
   import { NeuronState } from "@dfinity/nns";
 
   export let neurons: TableNeuron[];
@@ -47,7 +41,6 @@
       cellComponent: NeuronStakeCell,
       alignment: "right",
       templateColumns: ["max-content"],
-      comparator: compareByStake,
     },
     {
       title: "",
@@ -60,7 +53,6 @@
       cellComponent: NeuronMaturityCell,
       alignment: "right",
       templateColumns: ["max-content"],
-      comparator: compareByMaturity,
     },
     {
       title: "",
@@ -73,7 +65,6 @@
       cellComponent: NeuronDissolveDelayCell,
       alignment: "left",
       templateColumns: ["max-content"],
-      comparator: compareByDissolveDelay,
     },
     {
       title: "",
@@ -86,7 +77,6 @@
       cellComponent: NeuronStateCell,
       alignment: "left",
       templateColumns: ["max-content"],
-      comparator: compareByState,
     },
     {
       title: "",
@@ -94,7 +84,16 @@
       alignment: "right",
       templateColumns: ["max-content"],
     },
-  ];
+  ].map(
+    (column) =>
+      ({
+        ...column,
+        ...(column.id &&
+          comparators[column.id] && {
+            comparator: comparators[column.id],
+          }),
+      }) as NeuronsTableColumn
+  );
 
   const getRowStyle = (neuron: TableNeuron) => {
     if (neuron.state === NeuronState.Spawning) {
