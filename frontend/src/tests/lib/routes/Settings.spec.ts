@@ -35,7 +35,7 @@ describe("Settings", () => {
     expect(element).not.toBeNull();
   });
 
-  it("should render a dynamic expired session time", () => {
+  it("should render a dynamic expired session time", async () => {
     const { getByTestId, rerender } = render(Settings);
 
     const element = getByTestId("session-duration");
@@ -43,21 +43,21 @@ describe("Settings", () => {
 
     authRemainingTimeStore.set(250000);
 
-    rerender(Settings);
+    await rerender({});
 
     const element1 = getByTestId("session-duration");
     expect(element1?.textContent ?? "").toEqual("4 minutes");
 
     authRemainingTimeStore.set(20000);
 
-    rerender(Settings);
+    await rerender({});
 
     const element2 = getByTestId("session-duration");
     expect(element2.textContent ?? "").toEqual("20 seconds");
 
     authRemainingTimeStore.set(0);
 
-    rerender(Settings);
+    await rerender({});
 
     const element3 = getByTestId("session-duration");
     expect(element3.textContent ?? "").toEqual("0");
