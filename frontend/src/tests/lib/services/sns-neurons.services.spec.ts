@@ -54,7 +54,7 @@ import {
 } from "@dfinity/utils";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 
 const {
   syncSnsNeurons,
@@ -664,7 +664,7 @@ describe("sns-neurons-services", () => {
     const owner = Principal.fromText(ownerText);
     const subaccount = new Uint8Array(32).fill(0);
     subaccount[31] = 1;
-    let spyOnDisburseMaturity: SpyInstance;
+    let spyOnDisburseMaturity: MockInstance;
 
     beforeEach(() => {
       spyOnDisburseMaturity = vi
@@ -1049,8 +1049,8 @@ describe("sns-neurons-services", () => {
 
   describe("splitNeuron", () => {
     const transactionFee = 100n;
-    let snsNeuronsStoreSpy: SpyInstance;
-    let snsTokenSymbolSelectedStoreSpy: SpyInstance;
+    let snsNeuronsStoreSpy: MockInstance;
+    let snsTokenSymbolSelectedStoreSpy: MockInstance;
 
     beforeEach(() => {
       snsNeuronsStoreSpy = vi
