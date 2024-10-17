@@ -150,7 +150,6 @@ export const compareById = mergeComparators([
 ]);
 
 export const comparators: { [key: string]: TableNeuronComparator } = {
-  id: compareById,
   stake: compareByStake,
   maturity: compareByMaturity,
   dissolveDelay: compareByDissolveDelay,
