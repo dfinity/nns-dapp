@@ -71,13 +71,16 @@
       <IdentifierHash identifier={getSnsNeuronIdAsHexString(neuron)} />
     {/if}
   </span>
+
   <div slot="navigation">
-    <NeuronNavigation
-      currentNeuronId={getSnsNeuronIdAsHexString(neuron)}
-      currentUniverse={$pageStore.universe}
-      {neuronIds}
-      {selectNeuron}
-    />
+    {#if nonNullish(neuron)}
+      <NeuronNavigation
+        currentNeuronId={getSnsNeuronIdAsHexString(neuron)}
+        currentUniverse={$pageStore.universe}
+        {neuronIds}
+        {selectNeuron}
+      />
+    {/if}
   </div>
 </PageHeader>
 
