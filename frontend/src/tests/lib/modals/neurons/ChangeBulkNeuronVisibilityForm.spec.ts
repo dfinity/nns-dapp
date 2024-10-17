@@ -124,7 +124,9 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     expect(await po.getNeuronVisibilityRowPo(privateNeuron1).isPresent()).toBe(
       false
     );
-    const checkboxPo = po.getNeuronVisibilityRowPo(publicNeuron2).getCheckbox();
+    const checkboxPo = po
+      .getNeuronVisibilityRowPo(publicNeuron2)
+      .getCheckboxPo();
 
     await checkboxPo.click();
     await po.getConfirmButton().click();
@@ -174,7 +176,9 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     const applyToAllCheckboxPo = po.getApplyToAllCheckbox();
     await applyToAllCheckboxPo.click();
 
-    const checkboxPo = po.getNeuronVisibilityRowPo(publicNeuron2).getCheckbox();
+    const checkboxPo = po
+      .getNeuronVisibilityRowPo(publicNeuron2)
+      .getCheckboxPo();
     await checkboxPo.click();
 
     await po.getConfirmButton().click();
