@@ -30,9 +30,14 @@ export class TooltipPo extends BasePageObject {
   }
 
   async getTooltipElement(): Promise<PageObjectElement> {
+    // This could be done with CSS.escape but that's not available in
+    // Playwright tests which run in NodeJS.
+    // This is necessary for IDs that start with a digit.
+    const cssEscape = (id: string) =>
+      `\\${id.charCodeAt(0).toString(16)} ${id.substr(1)}`;
     const id = await this.getAriaDescribedBy();
     const body = await this.root.getDocumentBody();
-    const tooltipElements = await body.querySelectorAll(`#${CSS.escape(id)}`);
+    const tooltipElements = await body.querySelectorAll(`#${cssEscape(id)}`);
     if (tooltipElements.length !== 1) {
       throw new Error(
         `Found ${tooltipElements.length} tooltip elements with id ${id}`
