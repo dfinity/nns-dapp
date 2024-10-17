@@ -28,7 +28,7 @@ import {
   type SnsNeuronId,
   type SnsProposalData,
 } from "@dfinity/sns";
-import type { SpyInstance } from "@vitest/spy";
+import type { MockInstance } from "@vitest/spy";
 import { get } from "svelte/store";
 
 describe("actionable-sns-proposals.services", () => {
@@ -124,7 +124,7 @@ describe("actionable-sns-proposals.services", () => {
       limit: 20,
     };
 
-    let spyQuerySnsProposals: SpyInstance;
+    let spyQuerySnsProposals: MockInstance;
     let spyQuerySnsNeurons;
     let spyConsoleError;
 
