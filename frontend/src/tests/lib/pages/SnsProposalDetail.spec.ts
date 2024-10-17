@@ -236,7 +236,8 @@ describe("SnsProposalDetail", () => {
       });
       fakeSnsGovernanceApi.pause();
 
-      const { container, rerender } = render(SnsProposalDetail, {
+      const spyQueryProposalApi = vi.spyOn(snsGovernanceApi, "queryProposal");
+      const { container, component } = render(SnsProposalDetail, {
         props: {
           proposalIdText: proposalId.id.toString(),
         },
@@ -249,16 +250,14 @@ describe("SnsProposalDetail", () => {
 
       fakeSnsGovernanceApi.resume();
       await waitFor(async () => expect(await po.isContentLoaded()).toBe(true));
+      expect(spyQueryProposalApi).toBeCalledTimes(1);
 
       page.mock({ data: { universe: OWN_CANISTER_ID.toText() } });
-
-      rerender({
-        props: {
-          proposalIdText: proposalId.id.toString(),
-        },
-      });
-
+      component.$set({ proposalIdText: proposalId.id.toString() });
       await waitFor(async () => expect(await po.isContentLoaded()).toBe(false));
+
+      expect(spyQueryProposalApi).toBeCalledTimes(1);
+      expect(await po.isContentLoaded()).toBe(false);
     });
 
     it("should display proposal navigation", async () => {
