@@ -17,6 +17,7 @@ const config = {
       plugins: [autoprefixer],
     },
   }),
+
   kit: {
     adapter: adapter({
       pages: "public",
