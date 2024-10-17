@@ -12,25 +12,19 @@ import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { enumKeys } from "$lib/utils/enum.utils";
 import { followeesByTopic } from "$lib/utils/neuron.utils";
-import { saveToJSONFile } from "$lib/utils/save.utils";
-import { stringifyJson } from "$lib/utils/utils";
 import { Topic, type NeuronId } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "../services/auth.services";
 import { claimSeedNeurons } from "../services/seed-neurons.services";
 
 /**
- * co - original stringified -> console
  * coo - original as object -> console
- * fo - original -> json file
  * cn - claim neurons
  * ah - Tries to add the current user's principal as hotkey to the given neuron.
  * rfds - Removes any followee of the deprecated topic SnsDecentralizationSale for all the user's neurons.
  */
 export enum LogType {
-  ConsoleOriginal = "co",
   ConsoleOriginalObject = "coo",
-  FileOriginal = "fo",
   ClaimNeurons = "cn",
   AddHotkey = "ah",
   RemoveFolloweesDecentralizedSale = "rfds",
@@ -105,7 +99,11 @@ export function triggerDebugReport(node: HTMLElement) {
           return;
         }
 
-        generateDebugLog(logType);
+        if (LogType.ConsoleOriginalObject === logType) {
+          const debugStore = initDebugStore();
+          logWithTimestamp(get(debugStore));
+          return;
+        }
       }
     } else {
       startTime = now;
@@ -179,33 +177,6 @@ const removeFolloweesDecentralizedSale = async () => {
       labelKey: "neurons.remove_followees_sale_prompt_error",
       err,
     });
-  }
-};
-
-// Log it to the dev console or generates a json file with the debug state.
-const generateDebugLog = async (logType: LogType) => {
-  const debugStore = initDebugStore();
-  const saveToFile = [LogType.FileOriginal].includes(logType);
-  const state = get(debugStore);
-
-  if (logType === LogType.ConsoleOriginalObject) {
-    logWithTimestamp(state);
-    return;
-  }
-
-  const stringifiedState = stringifyJson(state, {
-    indentation: 2,
-  });
-
-  if (saveToFile) {
-    const date = new Date().toJSON().split(".")[0].replace(/:/g, "-");
-
-    saveToJSONFile({
-      blob: new Blob([stringifiedState]),
-      filename: `${date}_nns-local-state.json`,
-    });
-  } else {
-    logWithTimestamp(stringifiedState);
   }
 };
 
