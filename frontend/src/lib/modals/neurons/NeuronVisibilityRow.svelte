@@ -11,17 +11,6 @@
   import type { NeuronVisibilityRowData } from "$lib/types/neuron-visibility-row";
   import { createEventDispatcher } from "svelte";
 
-  const dispatch = createEventDispatcher();
-
-  export let rowData: NeuronVisibilityRowData;
-  export let checked: boolean = false;
-  export let disabled: boolean = false;
-
-  const onNnsChange = () => {
-    if (!disabled) {
-      dispatch("nnsChange");
-    }
-  };
   const typeToIcon: {
     hardwareWallet: typeof IconLedger;
     hotkey: typeof IconKey;
@@ -29,6 +18,12 @@
     hardwareWallet: IconLedger,
     hotkey: IconKey,
   };
+
+  const dispatch = createEventDispatcher();
+
+  export let rowData: NeuronVisibilityRowData;
+  export let checked: boolean = false;
+  export let disabled: boolean = false;
 </script>
 
 <div
@@ -36,12 +31,7 @@
   class:disabled
   data-tid="neuron-visibility-row-component-{rowData.neuronId}"
 >
-  <Checkbox
-    inputId={rowData.neuronId}
-    {checked}
-    {disabled}
-    on:nnsChange={onNnsChange}
-  >
+  <Checkbox inputId={rowData.neuronId} {checked} {disabled} on:nnsChange>
     <div class="label-container">
       <div class="neuron-details">
         <div class="neuron-id-wrapper">
