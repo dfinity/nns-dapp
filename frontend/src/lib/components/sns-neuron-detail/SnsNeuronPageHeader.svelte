@@ -16,6 +16,12 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import { isNullish, nonNullish, type Token } from "@dfinity/utils";
   import { getContext } from "svelte";
+  import { pageStore } from "$lib/derived/page.derived";
+  import type { UniverseCanisterIdText } from "$lib/types/universe";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import NeuronNavigation from "../neuron-detail/NeuronNavigation.svelte";
+  import { goto } from "$app/navigation";
+  import { snsNeuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/sns-neurons-table-order-sorted-neuronIds-store";
 
   export let token: Token;
 
@@ -42,6 +48,13 @@
           : `${token.symbol} - ${shortenWithMiddleEllipsis(neuronId)}`,
     });
   };
+
+  let neuronIds: string[] = [];
+  $: neuronIds = $snsNeuronsTableOrderSortedNeuronIdsStore;
+
+  const selectNeuron = (id: string, universe: UniverseCanisterIdText) => {
+    goto(`${AppPath.Neuron}/?u=${universe}&neuron=${id}`);
+  };
 </script>
 
 <PageHeader testId="sns-neuron-page-header-component">
@@ -57,6 +70,17 @@
       <IdentifierHash identifier={getSnsNeuronIdAsHexString(neuron)} />
     {/if}
   </span>
+
+  <div slot="navigation">
+    {#if nonNullish(neuron)}
+      <NeuronNavigation
+        currentNeuronId={getSnsNeuronIdAsHexString(neuron)}
+        currentUniverse={$pageStore.universe}
+        {neuronIds}
+        {selectNeuron}
+      />
+    {/if}
+  </div>
 </PageHeader>
 
 <style lang="scss">
