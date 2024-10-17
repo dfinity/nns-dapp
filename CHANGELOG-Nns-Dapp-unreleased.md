@@ -16,7 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-- Change Internet Computer Association neuron title.
+* Change Internet Computer Association neuron title.
 
 #### Deprecated
 
