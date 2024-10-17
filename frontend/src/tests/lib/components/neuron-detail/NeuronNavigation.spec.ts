@@ -91,7 +91,7 @@ describe("NeuronNavigation", () => {
       selectNeuron,
     });
 
-    await po.clickPreviousButton();
+    await po.getPreviousButtonPo().click();
 
     expect(selectNeuron).toHaveBeenCalledWith("1", OWN_CANISTER_ID_TEXT);
   });
@@ -103,7 +103,7 @@ describe("NeuronNavigation", () => {
       selectNeuron,
     });
 
-    await po.clickNextButton();
+    await po.getNextButtonPo().click();
 
     expect(selectNeuron).toHaveBeenCalledWith("3", OWN_CANISTER_ID_TEXT);
   });
