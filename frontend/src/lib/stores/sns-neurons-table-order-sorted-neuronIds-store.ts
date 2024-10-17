@@ -5,7 +5,7 @@ import { authStore } from "$lib/stores/auth.store";
 import { i18n } from "$lib/stores/i18n";
 
 import {
-  createNeuronsStore,
+  createTableNeuronsToSortStore,
   sortNeuronIds,
 } from "$lib/utils/neurons-table-order-sorted-neuronids-store.utils";
 import { tableNeuronsFromSnsNeurons } from "$lib/utils/neurons-table.utils";
@@ -13,7 +13,7 @@ import { nonNullish } from "@dfinity/utils";
 import { derived } from "svelte/store";
 import { neuronsTableOrderStore } from "./neurons-table.store";
 
-export const snsNeuronsStore = createNeuronsStore(
+const snsTableNeuronsToSortStore = createTableNeuronsToSortStore(
   [authStore, i18n, definedSnsNeuronStore, snsProjectSelectedStore, pageStore],
   (
     $authStore,
@@ -36,6 +36,6 @@ export const snsNeuronsStore = createNeuronsStore(
 );
 
 export const snsNeuronsTableOrderSortedNeuronIdsStore = derived(
-  [neuronsTableOrderStore, snsNeuronsStore],
+  [neuronsTableOrderStore, snsTableNeuronsToSortStore],
   ([$order, $neurons]) => sortNeuronIds($order, $neurons)
 );
