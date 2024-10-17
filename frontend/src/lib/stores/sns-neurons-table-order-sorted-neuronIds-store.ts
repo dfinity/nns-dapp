@@ -3,24 +3,25 @@ import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.d
 import { definedSnsNeuronStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
 import { authStore } from "$lib/stores/auth.store";
 import { i18n } from "$lib/stores/i18n";
+
 import {
-  comparators,
-  tableNeuronsFromSnsNeurons,
-} from "$lib/utils/neurons-table.utils";
-import { mergeComparators, negate } from "$lib/utils/responsive-table.utils";
+  createNeuronsStore,
+  sortNeuronIds,
+} from "$lib/utils/neurons-table-order-sorted-neuronids-store.utils";
+import { tableNeuronsFromSnsNeurons } from "$lib/utils/neurons-table.utils";
 import { nonNullish } from "@dfinity/utils";
 import { derived } from "svelte/store";
 import { neuronsTableOrderStore } from "./neurons-table.store";
 
-export const snsNeuronsStore = derived(
+export const snsNeuronsStore = createNeuronsStore(
   [authStore, i18n, definedSnsNeuronStore, snsProjectSelectedStore, pageStore],
-  ([
+  (
     $authStore,
     $i18n,
     $definedSnsNeuronStore,
     $snsProjectSelectedStore,
-    $pageStore,
-  ]) => {
+    $pageStore
+  ) => {
     const summary = $snsProjectSelectedStore?.summary;
     return nonNullish(summary)
       ? tableNeuronsFromSnsNeurons({
@@ -36,25 +37,5 @@ export const snsNeuronsStore = derived(
 
 export const snsNeuronsTableOrderSortedNeuronIdsStore = derived(
   [neuronsTableOrderStore, snsNeuronsStore],
-  ([$order, $neurons]) => {
-    const comparatorByColumnId = comparators;
-    const comparatorsArray = $order
-      .map(({ columnId, reversed }) => {
-        const comparator = comparatorByColumnId[columnId];
-        return comparator
-          ? reversed
-            ? negate(comparator)
-            : comparator
-          : undefined;
-      })
-      .filter((c): c is NonNullable<typeof c> => c !== undefined);
-
-    if (comparatorsArray.length === 0) {
-      return $neurons.map((n) => n.neuronId);
-    }
-
-    return [...$neurons]
-      .sort(mergeComparators(comparatorsArray))
-      .map((n) => n.neuronId);
-  }
+  ([$order, $neurons]) => sortNeuronIds($order, $neurons)
 );
