@@ -1,5 +1,6 @@
 import NnsAutoStakeMaturity from "$lib/components/neuron-detail/actions/NnsAutoStakeMaturity.svelte";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
+import { mockPrincipalText, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { toastsStore } from "@dfinity/gix-components";
@@ -14,9 +15,10 @@ vi.mock("$lib/services/neurons.services", () => {
 });
 
 describe("NnsAutoStakeMaturity", () => {
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
     toastsStore.reset();
+    resetIdentity();
   });
 
   it("renders checkbox", () => {
@@ -37,6 +39,7 @@ describe("NnsAutoStakeMaturity", () => {
     ...mockNeuron,
     fullNeuron: {
       ...mockNeuron.fullNeuron,
+      controller: mockPrincipalText,
       autoStakeMaturity,
     },
   });
@@ -87,6 +90,20 @@ describe("NnsAutoStakeMaturity", () => {
 
     expect(inputElement.checked).toBeTruthy();
     expect(inputElement.disabled).toBeTruthy();
+  });
+
+  it("renders a enabled checkbox if neuron is controllable", async () => {
+    const { queryByTestId } = render(NeuronContextActionsTest, {
+      props: {
+        neuron: neuronProps(true),
+        testComponent: NnsAutoStakeMaturity,
+      },
+    });
+
+    const inputElement = queryByTestId("checkbox") as HTMLInputElement;
+
+    expect(inputElement.checked).toBeTruthy();
+    expect(inputElement.disabled).toBeFalsy();
   });
 
   const toggleAutoStake = async ({

@@ -1,11 +1,12 @@
 import SnsAutoStakeMaturity from "$lib/components/sns-neuron-detail/actions/SnsAutoStakeMaturity.svelte";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { toggleAutoStakeMaturity } from "$lib/services/sns-neurons.services";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { toastsStore } from "@dfinity/gix-components";
+import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
@@ -20,6 +21,7 @@ describe("SnsAutoStakeMaturity", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     toastsStore.reset();
+    resetIdentity();
     vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
       mockTokenStore
     );
@@ -88,6 +90,32 @@ describe("SnsAutoStakeMaturity", () => {
     expect(inputElement.disabled).toBeTruthy();
   });
 
+  it("renders an enabled checkbox if neuron is controllable", async () => {
+    const { queryByTestId } = render(SnsNeuronContextTest, {
+      props: {
+        neuron: {
+          ...mockSnsNeuron,
+          auto_stake_maturity: [true],
+          permissions: [
+            {
+              principal: [mockPrincipal],
+              permission_type: Int32Array.from([
+                SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY,
+              ]),
+            },
+          ],
+        },
+        rootCanisterId: mockPrincipal,
+        testComponent: SnsAutoStakeMaturity,
+      },
+    });
+
+    const inputElement = queryByTestId("checkbox") as HTMLInputElement;
+
+    expect(inputElement.checked).toBeTruthy();
+    expect(inputElement.disabled).toBeFalsy();
+  });
+
   const toggleAutoStake = async ({
     neuronAutoStakeMaturity,
   }: {
@@ -98,6 +126,14 @@ describe("SnsAutoStakeMaturity", () => {
         neuron: {
           ...mockSnsNeuron,
           auto_stake_maturity: [neuronAutoStakeMaturity],
+          permissions: [
+            {
+              principal: [mockPrincipal],
+              permission_type: Int32Array.from([
+                SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY,
+              ]),
+            },
+          ],
         },
         rootCanisterId: mockPrincipal,
         testComponent: SnsAutoStakeMaturity,
