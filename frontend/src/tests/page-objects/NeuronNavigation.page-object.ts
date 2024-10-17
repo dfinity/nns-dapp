@@ -31,14 +31,6 @@ export class NeuronNavigationPo extends BasePageObject {
     return this.getNextButtonPo().root.getAttribute("data-test-neuron-id");
   }
 
-  clickPreviousButton(): Promise<void> {
-    return this.getPreviousButtonPo().click();
-  }
-
-  clickNextButton(): Promise<void> {
-    return this.getNextButtonPo().click();
-  }
-
   async isPreviousButtonHidden(): Promise<boolean> {
     return (await this.getPreviousButtonPo().root.getClasses()).includes(
       "hidden"
