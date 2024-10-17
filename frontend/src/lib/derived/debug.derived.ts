@@ -95,7 +95,6 @@ export const debugSnsProposalStore = (
 export const initDebugStore = () =>
   derived(
     [
-      // TODO (L2-611): anonymize wallet id and neuron ids
       busyStore,
       icpAccountsStore,
       neuronsStore,

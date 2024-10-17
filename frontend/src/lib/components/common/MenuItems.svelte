@@ -120,10 +120,6 @@
     gap: var(--padding);
     margin-top: auto;
     margin-right: var(--padding-3x);
-    // This 65px matches the design with 24px above the logo + 17px for the
-    // logo + 24px below the logo. This is temporary until the logo takes up
-    // its own space and this bottom margin can be removed.
-    margin-bottom: 65px;
     // Handle menu collapse animation
     visibility: visible;
     opacity: 1;
