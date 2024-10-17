@@ -69,6 +69,9 @@
 
 <style lang="scss">
   .neuron-nav {
+    display: flex;
+    align-items: center;
+    column-gap: var(--padding);
     color: var(--elements-icons);
   }
 
