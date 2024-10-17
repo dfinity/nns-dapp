@@ -9,7 +9,6 @@
     Checkbox,
   } from "@dfinity/gix-components";
   import type { NeuronVisibilityRowData } from "$lib/types/neuron-visibility-row";
-  import { createEventDispatcher } from "svelte";
 
   const typeToIcon: {
     hardwareWallet: typeof IconLedger;
@@ -18,8 +17,6 @@
     hardwareWallet: IconLedger,
     hotkey: IconKey,
   };
-
-  const dispatch = createEventDispatcher();
 
   export let rowData: NeuronVisibilityRowData;
   export let checked: boolean = false;
