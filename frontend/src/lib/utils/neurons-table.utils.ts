@@ -1,6 +1,9 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
-import type { TableNeuron } from "$lib/types/neurons-table";
+import type {
+  TableNeuron,
+  TableNeuronComparator,
+} from "$lib/types/neurons-table";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { buildNeuronUrl } from "$lib/utils/navigation.utils";
 import {
@@ -145,3 +148,11 @@ export const compareById = mergeComparators([
   createAscendingComparator((neuron: TableNeuron) => neuron.neuronId.length),
   createAscendingComparator((neuron: TableNeuron) => neuron.neuronId),
 ]);
+
+export const comparators: { [key: string]: TableNeuronComparator } = {
+  id: compareById,
+  stake: compareByStake,
+  maturity: compareByMaturity,
+  dissolveDelay: compareByDissolveDelay,
+  state: compareByState,
+};

@@ -14,12 +14,12 @@
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { AppPath } from "$lib/constants/routes.constants";
   import { goto } from "$app/navigation";
-  import { sortedNeuronStore } from "$lib/stores/neurons.store";
+  import { neuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/neurons-table-order-sorted-neuronIds-store";
 
   export let neuron: NeuronInfo;
 
   let neuronIds: string[] = [];
-  $: neuronIds = $sortedNeuronStore?.map((n) => n.neuronId.toString()) ?? [];
+  $: neuronIds = $neuronsTableOrderSortedNeuronIdsStore;
 
   const selectNeuron = (id: string, universe: UniverseCanisterIdText) => {
     goto(`${AppPath.Neuron}/?u=${universe}&neuron=${id}`);

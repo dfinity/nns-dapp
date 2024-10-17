@@ -37,7 +37,7 @@ export const createDescendingComparator = <RowDataType, Comparable>(
   };
 };
 
-const negate = <T>(comparator: Comparator<T>): Comparator<T> => {
+export const negate = <T>(comparator: Comparator<T>): Comparator<T> => {
   // `|| 0` is to avoid the value `-0`.
   return (a, b) => -comparator(a, b) || 0;
 };

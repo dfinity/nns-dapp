@@ -17,11 +17,11 @@
   import { isNullish, nonNullish, type Token } from "@dfinity/utils";
   import { getContext } from "svelte";
   import { pageStore } from "$lib/derived/page.derived";
-  import { snsSortedNeuronStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { AppPath } from "$lib/constants/routes.constants";
   import NeuronNavigation from "../neuron-detail/NeuronNavigation.svelte";
   import { goto } from "$app/navigation";
+  import { snsNeuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/sns-neurons-table-order-sorted-neuronIds-store";
 
   export let token: Token;
 
@@ -50,8 +50,7 @@
   };
 
   let neuronIds: string[] = [];
-  $: neuronIds =
-    $snsSortedNeuronStore?.map((n) => getSnsNeuronIdAsHexString(n)) ?? [];
+  $: neuronIds = $snsNeuronsTableOrderSortedNeuronIdsStore;
 
   const selectNeuron = (id: string, universe: UniverseCanisterIdText) => {
     goto(`${AppPath.Neuron}/?u=${universe}&neuron=${id}`);
