@@ -1475,7 +1475,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100594711151741120,
+    "icrc1_total_supply": 100644908686392000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3458,7 +3458,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100487863895788,
+    "icrc1_total_supply": 100488805305577,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4215,7 +4215,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995575888980,
+    "icrc1_total_supply": 995575397980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7115,7 +7115,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20163361143676576,
+    "icrc1_total_supply": 20158838743223252,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9115,7 +9115,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25153712212771364,
+    "icrc1_total_supply": 25154474453529230,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -10582,7 +10582,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10029566658009296,
+    "icrc1_total_supply": 10038530357506584,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11387,6 +11387,19 @@
               "target_method_name": "admin_update_price"
             }
           }
+        },
+        {
+          "id": 1105,
+          "name": "`admin_add_canister` function",
+          "description": "It is used to add more IC-OSS canisters to ic_message_profile service.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+              "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+              "validator_method_name": "validate_admin_add_canister",
+              "target_method_name": "admin_add_canister"
+            }
+          }
         }
       ]
     },
@@ -11692,7 +11705,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 102466485263300560,
+    "icrc1_total_supply": 102487905843536300,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -12759,7 +12772,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99316773078373890,
+    "icrc1_total_supply": 99252289843138190,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -13932,7 +13945,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 100005688025881220,
+    "icrc1_total_supply": 100005688497805870,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15104,7 +15117,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100053337135676580,
+    "icrc1_total_supply": 100054554853098720,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

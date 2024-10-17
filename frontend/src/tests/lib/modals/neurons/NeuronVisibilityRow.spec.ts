@@ -202,7 +202,7 @@ describe("NeuronVisibilityRow", () => {
 
     await po.getCheckboxPo().click();
 
-    expect(nnsChangeMock).toHaveBeenCalled();
+    expect(nnsChangeMock).toHaveBeenCalledTimes(1);
   });
 
   it("should render checkbox in disabled state when disabled prop is true", async () => {
