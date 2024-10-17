@@ -32,7 +32,7 @@ export class TooltipPo extends BasePageObject {
   async getTooltipElement(): Promise<PageObjectElement> {
     const id = await this.getAriaDescribedBy();
     const body = await this.root.getDocumentBody();
-    const tooltipElements = await body.querySelectorAll(`#${id}`);
+    const tooltipElements = await body.querySelectorAll(`#${CSS.escape(id)}`);
     if (tooltipElements.length !== 1) {
       throw new Error(
         `Found ${tooltipElements.length} tooltip elements with id ${id}`
