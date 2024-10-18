@@ -253,7 +253,9 @@ describe("SnsProposalDetail", () => {
       page.mock({ data: { universe: OWN_CANISTER_ID.toText() } });
 
       rerender({
-        proposalIdText: proposalId.id.toString(),
+        props: {
+          proposalIdText: proposalId.id.toString(),
+        },
       });
 
       await waitFor(async () => expect(await po.isContentLoaded()).toBe(false));
