@@ -21,7 +21,6 @@
   .container {
     position: relative;
     display: flex;
-    gap: var(--padding);
   }
 
   .page-header {
