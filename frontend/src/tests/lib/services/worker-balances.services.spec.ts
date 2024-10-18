@@ -8,34 +8,34 @@ import type { PostMessageDataResponseSync } from "$lib/types/post-message.sync";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { ledgerCanisterIdMock } from "$tests/mocks/sns.api.mock";
 
-let spyPostMessage;
-let workerOnMessage;
-
-vi.mock("$lib/workers/balances.worker?worker", () => ({
-  default: class BalancesWorker {
-    postMessage(data: {
-      msg: "nnsStartBalancesTimer";
-      data: PostMessageDataRequestBalances;
-    }) {
-      spyPostMessage(data);
-    }
-
-    set onmessage(
-      callback: (
-        event: MessageEvent<
-          PostMessageDataResponseBalances | PostMessageDataResponseSync
-        >
-      ) => void
-    ) {
-      workerOnMessage = callback;
-    }
-  },
-}));
-
 describe("initBalancesWorker", () => {
+  let spyPostMessage;
+  let workerOnMessage;
+
   beforeEach(() => {
     workerOnMessage = undefined;
     spyPostMessage = vi.fn();
+
+    vi.doMock("$lib/workers/balances.worker?worker", () => ({
+      default: class BalancesWorker {
+        postMessage(data: {
+          msg: "nnsStartBalancesTimer";
+          data: PostMessageDataRequestBalances;
+        }) {
+          spyPostMessage(data);
+        }
+
+        set onmessage(
+          callback: (
+            event: MessageEvent<
+              PostMessageDataResponseBalances | PostMessageDataResponseSync
+            >
+          ) => void
+        ) {
+          workerOnMessage = callback;
+        }
+      },
+    }));
   });
 
   it("should start worker with params", async () => {

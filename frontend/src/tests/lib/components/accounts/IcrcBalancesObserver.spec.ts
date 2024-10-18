@@ -19,32 +19,13 @@ import { PostMessageMock } from "$tests/mocks/post-message.mocks";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-type BalancesMessageEvent = MessageEvent<
-  PostMessage<PostMessageDataResponseBalances | PostMessageDataResponseSync>
->;
-
-let postMessageMock: PostMessageMock<BalancesMessageEvent>;
-
-vi.mock("$lib/workers/balances.worker?worker", () => ({
-  default: class BalancesWorker {
-    constructor() {
-      postMessageMock.subscribe(async (msg) => await this.onmessage(msg));
-    }
-
-    postMessage(_data: {
-      msg: "nnsStartBalancesTimer" | "nnsStopBalancesTimer";
-      data?: PostMessageDataRequestBalances;
-    }) {
-      // Nothing here
-    }
-
-    onmessage = async (_params: BalancesMessageEvent) => {
-      // Nothing here
-    };
-  },
-}));
-
 describe("IcrcBalancesObserver", () => {
+  type BalancesMessageEvent = MessageEvent<
+    PostMessage<PostMessageDataResponseBalances | PostMessageDataResponseSync>
+  >;
+
+  let postMessageMock: PostMessageMock<BalancesMessageEvent>;
+
   beforeEach(() => {
     const accounts: Account[] = [mockCkBTCMainAccount];
     icrcAccountsStore.set({
@@ -58,6 +39,25 @@ describe("IcrcBalancesObserver", () => {
     });
 
     postMessageMock = new PostMessageMock();
+
+    vi.doMock("$lib/workers/balances.worker?worker", () => ({
+      default: class BalancesWorker {
+        constructor() {
+          postMessageMock.subscribe(async (msg) => await this.onmessage(msg));
+        }
+
+        postMessage(_data: {
+          msg: "nnsStartBalancesTimer" | "nnsStopBalancesTimer";
+          data?: PostMessageDataRequestBalances;
+        }) {
+          // Nothing here
+        }
+
+        onmessage = async (_params: BalancesMessageEvent) => {
+          // Nothing here
+        };
+      },
+    }));
   });
 
   it("should init data and render slotted content", async () => {

@@ -20,32 +20,15 @@ import { jsonReplacer } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-type TransactionsMessageEvent = MessageEvent<
-  PostMessage<PostMessageDataResponseTransactions | PostMessageDataResponseSync>
->;
-
-let postMessageMock: PostMessageMock<TransactionsMessageEvent>;
-
-vi.mock("$lib/workers/transactions.worker?worker", () => ({
-  default: class TransactionsWorker {
-    constructor() {
-      postMessageMock.subscribe(async (msg) => await this.onmessage(msg));
-    }
-
-    postMessage(_data: {
-      msg: "nnsStartTransactionsTimer" | "nnsStopTransactionsTimer";
-      data?: PostMessageDataRequestTransactions;
-    }) {
-      // Nothing here
-    }
-
-    onmessage = async (_params: TransactionsMessageEvent) => {
-      // Nothing here
-    };
-  },
-}));
-
 describe("IcrcWalletTransactionsObserver", () => {
+  type TransactionsMessageEvent = MessageEvent<
+    PostMessage<
+      PostMessageDataResponseTransactions | PostMessageDataResponseSync
+    >
+  >;
+
+  let postMessageMock: PostMessageMock<TransactionsMessageEvent>;
+
   const transaction = {
     canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
     transactions: [mockIcrcTransactionWithId],
@@ -63,6 +46,25 @@ describe("IcrcWalletTransactionsObserver", () => {
     });
 
     postMessageMock = new PostMessageMock();
+
+    vi.doMock("$lib/workers/transactions.worker?worker", () => ({
+      default: class TransactionsWorker {
+        constructor() {
+          postMessageMock.subscribe(async (msg) => await this.onmessage(msg));
+        }
+
+        postMessage(_data: {
+          msg: "nnsStartTransactionsTimer" | "nnsStopTransactionsTimer";
+          data?: PostMessageDataRequestTransactions;
+        }) {
+          // Nothing here
+        }
+
+        onmessage = async (_params: TransactionsMessageEvent) => {
+          // Nothing here
+        };
+      },
+    }));
   });
 
   it("should init data and render slotted content", async () => {
