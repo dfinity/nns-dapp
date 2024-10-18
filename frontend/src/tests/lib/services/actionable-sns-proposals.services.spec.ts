@@ -28,8 +28,8 @@ import {
   type SnsNeuronId,
   type SnsProposalData,
 } from "@dfinity/sns";
+import type { MockInstance } from "@vitest/spy";
 import { get } from "svelte/store";
-import type { MockInstance } from "vitest";
 
 describe("actionable-sns-proposals.services", () => {
   beforeEach(() => {
