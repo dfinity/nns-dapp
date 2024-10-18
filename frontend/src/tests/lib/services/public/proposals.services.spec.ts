@@ -220,11 +220,12 @@ describe("proposals-services", () => {
       });
 
       it("should show one error message in details", async () => {
+        const setProposalSpy = vi.fn();
         expect(get(toastsStore)).toEqual([]);
 
         await loadProposal({
           proposalId: 0n,
-          setProposal: vi.fn,
+          setProposal: setProposalSpy,
         });
         expect(get(toastsStore)).toMatchObject([
           {
@@ -236,6 +237,7 @@ describe("proposals-services", () => {
         // `queryProposal` gave an error twice (query + update) but it should
         // result only in a single toast message.
         expect(spyQueryProposal).toBeCalledTimes(2);
+        expect(setProposalSpy).not.toBeCalled();
       });
     });
 
