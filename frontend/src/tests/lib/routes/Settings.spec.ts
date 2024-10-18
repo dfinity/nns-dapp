@@ -3,7 +3,6 @@ import { authRemainingTimeStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { mockPrincipalText, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -36,14 +35,13 @@ describe("Settings", () => {
     expect(element).not.toBeNull();
   });
 
-  it("should render a dynamic expired session time", async () => {
+  it("should render a dynamic expired session time", () => {
     const { getByTestId, rerender } = render(Settings);
 
     const element = getByTestId("session-duration");
     expect(element?.textContent.trim() ?? "").toEqual("");
 
     authRemainingTimeStore.set(250000);
-    await runResolvedPromises();
 
     rerender(Settings);
 
@@ -51,7 +49,6 @@ describe("Settings", () => {
     expect(element1?.textContent ?? "").toEqual("4 minutes");
 
     authRemainingTimeStore.set(20000);
-    await runResolvedPromises();
 
     rerender(Settings);
 
@@ -59,7 +56,6 @@ describe("Settings", () => {
     expect(element2.textContent ?? "").toEqual("20 seconds");
 
     authRemainingTimeStore.set(0);
-    await runResolvedPromises();
 
     rerender(Settings);
 
