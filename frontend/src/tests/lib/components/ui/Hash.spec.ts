@@ -32,8 +32,7 @@ describe("Hash", () => {
       props: { text: identifier, testId, id: identifier },
     });
 
-    const body = container.ownerDocument.body;
-    const tooltipElement = body.querySelector("[role='tooltip']");
+    const tooltipElement = container.querySelector("[role='tooltip']");
     expect(tooltipElement?.textContent).toEqual(identifier);
   });
 
