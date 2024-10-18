@@ -236,7 +236,7 @@ describe("SnsProposalDetail", () => {
       });
       fakeSnsGovernanceApi.pause();
 
-      const { container, rerender } = render(SnsProposalDetail, {
+      const { container, component } = render(SnsProposalDetail, {
         props: {
           proposalIdText: proposalId.id.toString(),
         },
@@ -251,13 +251,7 @@ describe("SnsProposalDetail", () => {
       await waitFor(async () => expect(await po.isContentLoaded()).toBe(true));
 
       page.mock({ data: { universe: OWN_CANISTER_ID.toText() } });
-
-      rerender({
-        props: {
-          proposalIdText: proposalId.id.toString(),
-        },
-      });
-
+      component.$set({ proposalIdText: proposalId.id.toString() });
       await waitFor(async () => expect(await po.isContentLoaded()).toBe(false));
     });
 
