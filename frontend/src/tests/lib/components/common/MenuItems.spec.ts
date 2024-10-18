@@ -12,8 +12,18 @@ import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { resetMockedConstants } from "$tests/utils/mockable-constants.test-utils";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "$tests/utils/timers.test-utils";
+import {
+  layoutMenuOpen,
+  menuCollapsed,
+  menuStore,
+} from "@dfinity/gix-components";
 import type { ProposalInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 vi.mock("$lib/services/public/worker-metrics.services", () => ({
   initMetricsWorker: vi.fn(() =>
@@ -52,6 +62,12 @@ describe("MenuItems", () => {
     }
   };
 
+  beforeEach(() => {
+    menuStore.resetForTesting();
+    layoutMenuOpen.set(false);
+    vi.useFakeTimers();
+  });
+
   it("should render accounts menu item", () =>
     shouldRenderMenuItem({ context: "accounts", labelKey: "tokens" }));
 
@@ -72,6 +88,54 @@ describe("MenuItems", () => {
     const { getByTestId } = renderResult;
 
     expect(() => getByTestId("get-icp-button")).toThrow();
+  });
+
+  it("should not have a footer when collapsed", async () => {
+    const po = renderComponent();
+
+    expect(get(menuCollapsed)).toBe(false);
+    expect(await po.hasFooter()).toBe(true);
+
+    menuStore.toggle();
+
+    // Wait for the animation.
+    await advanceTime();
+
+    expect(get(menuCollapsed)).toBe(true);
+    expect(await po.hasFooter()).toBe(false);
+
+    menuStore.toggle();
+    await runResolvedPromises();
+
+    expect(get(menuCollapsed)).toBe(false);
+    expect(await po.hasFooter()).toBe(true);
+  });
+
+  it("should have a footer when open", async () => {
+    // This can only happen if you collapse the menu with a large view port,
+    // then reduce the viewport size and then open the menu.
+
+    const po = renderComponent();
+
+    menuStore.toggle();
+    // Wait for the animation.
+    await advanceTime();
+
+    expect(get(menuCollapsed)).toBe(true);
+    expect(await po.hasFooter()).toBe(false);
+
+    layoutMenuOpen.set(true);
+    await runResolvedPromises();
+
+    expect(get(menuCollapsed)).toBe(true);
+    expect(await po.hasFooter()).toBe(true);
+
+    layoutMenuOpen.set(false);
+    // Wait for the animation.
+    await advanceTime();
+
+    expect(get(menuCollapsed)).toBe(true);
+    expect(await po.hasFooter()).toBe(false);
   });
 
   describe("when My Tokens page is enabled", () => {
