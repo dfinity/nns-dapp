@@ -3,14 +3,26 @@
 </script>
 
 <div class="container" data-tid={testId}>
-  <slot name="start" />
-  <slot name="end" />
+  <div class="page-header">
+    <slot name="start" />
+    <slot name="end" />
+  </div>
+
+  <div class="navigation">
+    <slot name="navigation" />
+  </div>
 </div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .container {
+    position: relative;
+    display: flex;
+  }
+
+  .page-header {
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     gap: var(--padding);
@@ -20,6 +32,17 @@
     @include media.min-width(medium) {
       flex-direction: row;
       justify-content: space-between;
+    }
+  }
+
+  .navigation {
+    position: absolute;
+    top: 0;
+    right: 0;
+    @include media.min-width(medium) {
+      position: static;
+      display: flex;
+      align-items: center;
     }
   }
 </style>
