@@ -248,19 +248,19 @@ jobs:
         run: |
           ./scripts/canister_ids --import-from-index-html http://qsgjb-riaaa-aaaaa-aaaga-cai.localhost:8080/ --network local --create
           diff <(jq -r 'keys | .[]' canister_ids.json) <(cat <<-EOF
-						ckbtc_index
-						ckbtc_ledger
-						ckbtc_minter
-						cketh_index
-						cketh_ledger
-						ckusdc_index
-						ckusdc_ledger
-						internet_identity
-						nns-dapp
-						nns-index
-						nns-sns-wasm
-						sns_aggregator
-						EOF
+          	ckbtc_index
+          	ckbtc_ledger
+          	ckbtc_minter
+          	cketh_index
+          	cketh_ledger
+          	ckusdc_index
+          	ckusdc_ledger
+          	internet_identity
+          	nns-dapp
+          	nns-index
+          	nns-sns-wasm
+          	sns_aggregator
+          	EOF
           )
           rm canister_ids.json
           ./scripts/canister_ids --import-from-index-html https://nns.ic0.app --network mainnet --create
