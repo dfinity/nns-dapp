@@ -137,8 +137,7 @@
       nonNullish(proposalIdText) &&
       nonNullish(universeIdText) &&
       nonNullish(universeCanisterId) &&
-      // This is a workaround to avoid proposal reloading (using the SNS proposal id)
-      // after navigating to the NNS universe.
+      // TODO: improve testing to ensure reloadProposal is not called
       !isUniverseNns(universeCanisterId)
     ) {
       try {
