@@ -1,6 +1,6 @@
 import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { ButtonPo } from "./Button.page-object";
+import { ChangeBulkNeuronVisibilityFormPo } from "./ChangeBulkNeuronVisibilityForm.page-object";
 
 export class ChangeNeuronVisibilityModalPo extends ModalPo {
   private static readonly TID = "change-neuron-visibility-modal";
@@ -11,7 +11,7 @@ export class ChangeNeuronVisibilityModalPo extends ModalPo {
     );
   }
 
-  getConfirmButton(): ButtonPo {
-    return ButtonPo.under({ element: this.root, testId: "confirm-button" });
+  getChangeBulkNeuronVisibilityFormPo(): ChangeBulkNeuronVisibilityFormPo {
+    return ChangeBulkNeuronVisibilityFormPo.under(this.root);
   }
 }
