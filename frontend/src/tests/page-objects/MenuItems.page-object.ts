@@ -45,4 +45,8 @@ export class MenuItemsPo extends BasePageObject {
   getGetTokensPo(): GetTokensPo {
     return GetTokensPo.under(this.root);
   }
+
+  hasFooter(): Promise<boolean> {
+    return this.isPresent("menu-footer");
+  }
 }

@@ -17,6 +17,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Change Internet Computer Association neuron title.
+* Stop hiding the bottom menu logo and collapse button on small screens.
+* Remove menu footer on collapsed menu.
 
 #### Deprecated
 
