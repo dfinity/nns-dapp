@@ -20,37 +20,37 @@
   let isPublic: boolean;
   $: isPublic = isPublicNeuron(neuron);
 
-  const handleChangeVisibility =
-    (isPublic: boolean) =>
-    async (event: CustomEvent<{ selectedNeurons: NeuronInfo[] }>) => {
-      const { selectedNeurons } = event.detail;
-      startBusy({
-        initiator: "change-neuron-visibility",
-        labelKey: "neuron_detail.change_neuron_visibility_loading",
+  const handleChangeVisibility = async (
+    event: CustomEvent<{ selectedNeurons: NeuronInfo[] }>
+  ) => {
+    const { selectedNeurons } = event.detail;
+    startBusy({
+      initiator: "change-neuron-visibility",
+      labelKey: "neuron_detail.change_neuron_visibility_loading",
+    });
+
+    try {
+      const { success } = await changeNeuronVisibility({
+        neurons: selectedNeurons,
+        makePublic: !isPublic,
       });
-
-      try {
-        const { success } = await changeNeuronVisibility({
-          neurons: selectedNeurons,
-          makePublic: !isPublic,
+      if (success) {
+        toastsSuccess({
+          labelKey: isPublic
+            ? "neuron_detail.change_neuron_private_success"
+            : "neuron_detail.change_neuron_public_success",
         });
-        if (success) {
-          toastsSuccess({
-            labelKey: isPublic
-              ? "neuron_detail.change_neuron_private_success"
-              : "neuron_detail.change_neuron_public_success",
-          });
 
-          close();
-        } else {
-          throw new Error("Error changing neuron visibility");
-        }
-      } catch (error) {
-        console.error(error instanceof Error ? error.message : String(error));
-      } finally {
-        stopBusy("change-neuron-visibility");
+        close();
+      } else {
+        throw new Error("Error changing neuron visibility");
       }
-    };
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : String(error));
+    } finally {
+      stopBusy("change-neuron-visibility");
+    }
+  };
 </script>
 
 <Modal on:nnsClose testId="change-neuron-visibility-modal">
@@ -84,7 +84,7 @@
   {#if neuron}
     <ChangeBulkNeuronVisibilityForm
       on:nnsCancel={close}
-      on:nnsSubmit={(e) => handleChangeVisibility(isPublic)(e)}
+      on:nnsSubmit={handleChangeVisibility}
       {neuron}
     />
   {/if}
