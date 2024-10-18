@@ -1,5 +1,6 @@
 import type { FeatureKey } from "$lib/constants/environment.constants";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
+import { exec } from "child_process";
 
 let resolvePreviousStep = () => {
   /* this function will be replaced at each step */
@@ -124,4 +125,15 @@ export const replaceContent = async ({
     { selectors, pattern, replacements }
   );
   expect(replacementCount).toBeGreaterThan(0);
+};
+
+export const dfxCanisterId = async (canisterName: string) => {
+  return new Promise<string>((resolve, reject) => {
+    exec(`dfx canister id ${canisterName}`, (error, stdout, _stderr) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(stdout.trim());
+    });
+  });
 };
