@@ -168,9 +168,9 @@ pub async fn update_locked_icp_e8s() {
 pub fn get_tvl() -> TvlResponse {
     with_state(|s| {
         let state = &s.tvl_state;
-        let locked_u128 = state.total_locked_icp_e8s as u128;
-        let rate_u128 = state.usd_e8s_per_icp as u128;
-        let e8s_per_unit = E8S_PER_UNIT as u128;
+        let locked_u128 = u128::from(state.total_locked_icp_e8s);
+        let rate_u128 = u128::from(state.usd_e8s_per_icp);
+        let e8s_per_unit = u128::from(E8S_PER_UNIT);
         let tvl = locked_u128 * rate_u128 / e8s_per_unit / e8s_per_unit;
         let time_sec = state.exchange_rate_timestamp_seconds;
 
