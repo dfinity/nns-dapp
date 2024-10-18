@@ -253,8 +253,6 @@ describe("SnsProposalDetail", () => {
       page.mock({ data: { universe: OWN_CANISTER_ID.toText() } });
       component.$set({ proposalIdText: proposalId.id.toString() });
       await waitFor(async () => expect(await po.isContentLoaded()).toBe(false));
-
-      expect(await po.isContentLoaded()).toBe(false);
     });
 
     it("should display proposal navigation", async () => {
