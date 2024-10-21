@@ -145,9 +145,6 @@ describe("MakeNeuronsPublicBanner", () => {
     expect(await po.getSubtitleText()).toBe(
       "If you would like to make your neurons public, you can open one and change it under “Advanced Details & Settings”. Learn more"
     );
-    expect(await po.getSubtitleText()).toBe(
-      "If you would like to make your neurons public, you can open one and change it under “Advanced Details & Settings”. Learn more"
-    );
     expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more");
     expect(await po.getSubtitleLinkPo().getHref()).toBe(
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
