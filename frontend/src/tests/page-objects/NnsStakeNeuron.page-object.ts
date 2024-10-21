@@ -4,6 +4,7 @@ import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
 import { TransactionFromAccountPo } from "$tests/page-objects/TransactionFromAccount.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { TooltipIconPo } from "./TooltipIcon.page-object";
 
 export class NnsStakeNeuronPo extends BasePageObject {
   private static readonly TID = "nns-stake-neuron-component";
@@ -50,5 +51,13 @@ export class NnsStakeNeuronPo extends BasePageObject {
       element: this.root,
       testId: "as-public-neuron-checkbox",
     });
+  }
+
+  getAsPublicNeuronCheckboxLabelText(): Promise<string> {
+    return this.getText("as-public-neuron-checkbox-label");
+  }
+
+  getAsPublicNeuronTooltipPo(): TooltipIconPo {
+    return new TooltipIconPo(this.root.byTestId("as-public-neuron-checkbox"));
   }
 }

@@ -400,6 +400,23 @@ describe("NnsStakeNeuronModal", () => {
             asPublicNeuron: true,
           });
         });
+
+        it("should display correct text for checkbox and tooltip", async () => {
+          const po = await renderComponent({});
+
+          const checkboxLabel = await po
+            .getNnsStakeNeuronPo()
+            .getAsPublicNeuronCheckboxLabelText();
+          expect(checkboxLabel).toBe("Create as a public neuron");
+
+          const tooltipText = await po
+            .getNnsStakeNeuronPo()
+            .getAsPublicNeuronTooltipPo()
+            .getTooltipText();
+          expect(tooltipText).toBe(
+            "Public neurons reveal more information about themselves including how they vote on proposals."
+          );
+        });
       });
     });
   });

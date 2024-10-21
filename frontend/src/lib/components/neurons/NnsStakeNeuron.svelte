@@ -108,13 +108,13 @@
       --checkbox-label-order="1"
       --checkbox-padding="0"
     >
-      <span
+      <span data-tid="as-public-neuron-checkbox-label"
         >{$i18n.neurons.create_as_public}
-        <TooltipIcon
-          text={$i18n.header.account_id_tooltip}
-          tooltipId="main-icp-account-id-tooltip"
-        /></span
-      >
+      </span>
+      <TooltipIcon
+        text={$i18n.neurons.create_as_public_tooltip}
+        tooltipId="create_as_public_tooltip"
+      />
     </Checkbox>
   {/if}
 
