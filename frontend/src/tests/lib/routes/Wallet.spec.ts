@@ -186,7 +186,6 @@ describe("Wallet", () => {
     it("should render SnsWallet", async () => {
       const po = renderComponent();
       expect(await po.getSnsWalletPo().isPresent()).toBe(true);
-      await runResolvedPromises();
     });
 
     it("should open transaction modal", async () => {
