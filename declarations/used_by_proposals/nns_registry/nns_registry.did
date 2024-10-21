@@ -1,4 +1,4 @@
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-09-26_01-31-no-canister-snapshots/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-17_03-07-scheduler-changes-guestos-revert/rs/registry/canister/canister/registry.did>
 // A brief note about the history of this file: This file used to be
 // automatically generated, but now, it is hand-crafted, because the
 // auto-generator has some some pretty degenerate behaviors. The worst of those
@@ -43,6 +43,7 @@ type AddNodePayload = record {
   transport_tls_cert : blob;
   ni_dkg_dealing_encryption_pk : blob;
   p2p_flow_endpoints : vec text;
+  node_reward_type : opt text;
 };
 
 type AddNodesToSubnetPayload = record {
