@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-09-26_01-31-no-canister-snapshots/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-17_03-07-scheduler-changes-guestos-revert/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -63,6 +63,7 @@ pub struct AddNodePayload {
     pub xnet_endpoint: String,
     pub chip_id: Option<serde_bytes::ByteBuf>,
     pub committee_signing_pk: serde_bytes::ByteBuf,
+    pub node_reward_type: Option<String>,
     pub node_signing_pk: serde_bytes::ByteBuf,
     pub transport_tls_cert: serde_bytes::ByteBuf,
     pub ni_dkg_dealing_encryption_pk: serde_bytes::ByteBuf,
