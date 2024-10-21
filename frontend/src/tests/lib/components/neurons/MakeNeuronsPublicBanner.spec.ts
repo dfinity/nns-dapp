@@ -34,13 +34,10 @@ describe("MakeNeuronsPublicBanner", () => {
     );
   };
 
-  const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
-  const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
-
   beforeEach(() => {
     vi.useFakeTimers();
     neuronsStore.reset();
-    vi.resetAllMocks();
+    localStorage.clear();
     resetIdentity();
     overrideFeatureFlagsStore.reset();
     vi.setSystemTime(new Date("2024-01-01"));
@@ -48,14 +45,13 @@ describe("MakeNeuronsPublicBanner", () => {
   });
 
   it("should not render when localStorage is set to false", async () => {
-    getItemSpy.mockReturnValue("false");
+    localStorage.setItem("makeNeuronsPublicBannerVisible", "false");
     const po = renderComponent();
 
     expect(await po.isPresent()).toBe(false);
   });
 
   it("should render when localStorage is not set", async () => {
-    getItemSpy.mockReturnValue(null);
     neuronsStore.setNeurons({
       neurons: [createTestNeuron({})],
       certified: true,
@@ -106,16 +102,12 @@ describe("MakeNeuronsPublicBanner", () => {
 
     expect(await po.isPresent()).toBe(true);
 
-    expect(setItemSpy).not.toBeCalledWith(
-      "makeNeuronsPublicBannerVisible",
-      "false"
-    );
+    expect(localStorage.getItem("makeNeuronsPublicBannerVisible")).toBeNull();
 
     await po.getCloseButtonPo().click();
 
     expect(await po.isPresent()).toBe(false);
-    expect(setItemSpy).toHaveBeenCalledWith(
-      "makeNeuronsPublicBannerVisible",
+    expect(localStorage.getItem("makeNeuronsPublicBannerVisible")).toBe(
       "false"
     );
   });
