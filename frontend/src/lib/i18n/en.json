@@ -709,7 +709,11 @@
     "change_neuron_visibility_loading": "Updating visibility",
     "change_neuron_visibility_partial_failure": "$failedCount out of $totalCount neurons have failed to update their visibility, please try again later. You can always change neuron visibility under \"Advanced Details & Settings\".",
     "change_neuron_visibility_failure": "Your neurons have failed to update their visibility, please try again later. You can always change neuron visibility under \"Advanced Details & Settings\".",
-    "hardware_wallet": "Hardware wallet"
+    "apply_to_all": "Apply to all neurons",
+    "neurons": "Neurons",
+    "uncontrollable_neurons_description": "These neurons have different controllers and won't be updated",
+    "hardware_wallet": "Hardware wallet",
+    "retrieving_data": "Retrieving data on neurons..."
   },
   "sns_launchpad": {
     "header": "Launchpad",

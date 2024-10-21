@@ -9,8 +9,8 @@
   } from "$lib/utils/neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
-  import ChangeNeuronVisibilityModal from "$lib/modals/neurons/ChangeNeuronVisibilityModal.svelte";
   import { ENABLE_NEURON_VISIBILITY } from "$lib/stores/feature-flags.store";
+  import MakeNeuronsPublicModal from "$lib/modals/neurons/MakeNeuronsPublicModal.svelte";
 
   const LOCAL_STORAGE_KEY = "makeNeuronsPublicBannerVisible";
   const CUTOFF_DATE = new Date(2025, 0, 31);
@@ -41,7 +41,7 @@
     modalVisible = false;
   }
 
-  $: privateNeuron = $definedNeuronsStore.find(
+  $: hasControllablePrivateNeurons = $definedNeuronsStore.some(
     (n) =>
       !isPublicNeuron(n) &&
       isNeuronControllable({
@@ -52,7 +52,7 @@
   );
 </script>
 
-{#if $ENABLE_NEURON_VISIBILITY && privateNeuron && visible}
+{#if $ENABLE_NEURON_VISIBILITY && hasControllablePrivateNeurons && visible}
   <div class="banner" data-tid="make-neurons-public-banner-component">
     <div class="icon-and-text-content-wrapper">
       <div class="icon-background">
@@ -88,10 +88,7 @@
       <IconClose />
     </button>
     {#if modalVisible}
-      <ChangeNeuronVisibilityModal
-        neuron={privateNeuron}
-        on:nnsClose={closeModal}
-      />
+      <MakeNeuronsPublicModal on:nnsClose={closeModal} />
     {/if}
   </div>
 {/if}
