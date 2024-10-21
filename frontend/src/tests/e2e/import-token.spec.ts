@@ -1,13 +1,18 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  dfxCanisterId,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 const TEST_TOKEN_NAME = "ckRED";
-const TEST_LEDGER_CANISTER_ID = "myg3h-jmaaa-aaaaa-qabiq-cai";
-const TEST_INDEX_CANISTER_ID = "mrfq3-7eaaa-aaaaa-qabja-cai";
 
 test("Test imported tokens", async ({ page, context }) => {
+  const testLedgerCanisterId = await dfxCanisterId("ckred_ledger");
+  const testIndexCanisterId = await dfxCanisterId("ckred_index");
+
   await page.goto("/tokens");
   await expect(page).toHaveTitle("Tokens / NNS Dapp");
   await signInWithNewUser({ page, context });
@@ -36,8 +41,8 @@ test("Test imported tokens", async ({ page, context }) => {
 
   await importTokenModalPo.waitFor();
 
-  await formPo.getLedgerCanisterInputPo().typeText(TEST_LEDGER_CANISTER_ID);
-  await formPo.getIndexCanisterInputPo().typeText(TEST_INDEX_CANISTER_ID);
+  await formPo.getLedgerCanisterInputPo().typeText(testLedgerCanisterId);
+  await formPo.getIndexCanisterInputPo().typeText(testIndexCanisterId);
 
   await formPo.getSubmitButtonPo().click();
   await reviewPo.waitFor();
@@ -46,10 +51,10 @@ test("Test imported tokens", async ({ page, context }) => {
 
   expect(await reviewPo.getTokenName()).toBe(TEST_TOKEN_NAME);
   expect(await reviewPo.getLedgerCanisterIdPo().getCanisterIdText()).toBe(
-    TEST_LEDGER_CANISTER_ID
+    testLedgerCanisterId
   );
   expect(await reviewPo.getIndexCanisterIdPo().getCanisterIdText()).toBe(
-    TEST_INDEX_CANISTER_ID
+    testIndexCanisterId
   );
 
   step("First import / Import the token");
@@ -105,7 +110,7 @@ test("Test imported tokens", async ({ page, context }) => {
 
   await importButtonPo.click();
   await importTokenModalPo.waitFor();
-  await formPo.getLedgerCanisterInputPo().typeText(TEST_LEDGER_CANISTER_ID);
+  await formPo.getLedgerCanisterInputPo().typeText(testLedgerCanisterId);
 
   await formPo.getSubmitButtonPo().click();
   await reviewPo.waitFor();
@@ -114,7 +119,7 @@ test("Test imported tokens", async ({ page, context }) => {
 
   expect(await reviewPo.getTokenName()).toBe(TEST_TOKEN_NAME);
   expect(await reviewPo.getLedgerCanisterIdPo().getCanisterIdText()).toBe(
-    TEST_LEDGER_CANISTER_ID
+    testLedgerCanisterId
   );
   expect(
     await reviewPo.getIndexCanisterIdPo().getCanisterIdFallback().isPresent()

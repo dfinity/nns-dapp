@@ -18,6 +18,10 @@ export class HashPo extends BasePageObject {
     return this.getButton("copy-component");
   }
 
+  getDisplayedText(): Promise<string> {
+    return this.getTooltipPo().getDisplayedText();
+  }
+
   getFullText(): Promise<string> {
     return this.getTooltipPo().getTooltipText();
   }

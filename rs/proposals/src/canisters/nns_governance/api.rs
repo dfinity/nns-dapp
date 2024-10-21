@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-09-26_01-31-no-canister-snapshots/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-17_03-07-scheduler-changes-guestos-revert/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -107,9 +107,13 @@ pub struct Configure {
     pub operation: Option<Operation>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct ProposalId {
+    pub id: u64,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct RegisterVote {
     pub vote: i32,
-    pub proposal: Option<NeuronId>,
+    pub proposal: Option<ProposalId>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct Merge {
@@ -557,7 +561,7 @@ pub struct RewardEvent {
     pub total_available_e8s_equivalent: u64,
     pub latest_round_available_e8s_equivalent: Option<u64>,
     pub distributed_e8s_equivalent: u64,
-    pub settled_proposals: Vec<NeuronId>,
+    pub settled_proposals: Vec<ProposalId>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronStakeTransfer {
@@ -686,7 +690,7 @@ pub struct WaitForQuietState {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ProposalData {
-    pub id: Option<NeuronId>,
+    pub id: Option<ProposalId>,
     pub failure_reason: Option<GovernanceError>,
     pub ballots: Vec<(u64, Ballot)>,
     pub proposal_timestamp_seconds: u64,
@@ -724,7 +728,7 @@ pub struct NeuronInFlightCommand {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct BallotInfo {
     pub vote: i32,
-    pub proposal_id: Option<NeuronId>,
+    pub proposal_id: Option<ProposalId>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum DissolveState {
@@ -832,7 +836,7 @@ pub enum Result5 {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct GetNeuronsFundAuditInfoRequest {
-    pub nns_proposal_id: Option<NeuronId>,
+    pub nns_proposal_id: Option<ProposalId>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronsFundAuditInfo {
@@ -860,7 +864,7 @@ pub enum Result7 {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ProposalInfo {
-    pub id: Option<NeuronId>,
+    pub id: Option<ProposalId>,
     pub status: i32,
     pub topic: i32,
     pub failure_reason: Option<GovernanceError>,
@@ -915,7 +919,7 @@ pub struct ListNodeProvidersResponse {
 pub struct ListProposalInfo {
     pub include_reward_status: Vec<i32>,
     pub omit_large_fields: Option<bool>,
-    pub before_proposal: Option<NeuronId>,
+    pub before_proposal: Option<ProposalId>,
     pub limit: u32,
     pub exclude_topic: Vec<i32>,
     pub include_all_manage_neuron_proposals: Option<bool>,
@@ -995,7 +999,7 @@ pub struct MergeResponse {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct MakeProposalResponse {
     pub message: Option<String>,
-    pub proposal_id: Option<NeuronId>,
+    pub proposal_id: Option<ProposalId>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct StakeMaturityResponse {
