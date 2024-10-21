@@ -4,13 +4,12 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import * as authServices from "$lib/services/auth.services";
 import * as neuronsServices from "$lib/services/neurons.services";
 import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
+import * as proposalsServices from "$lib/services/public/proposals.services";
 import { processRegisterVoteErrors } from "$lib/services/vote-registration.services";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { proposalsStore } from "$lib/stores/proposals.store";
-import * as toastsStore from "$lib/stores/toasts.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
-import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
   mockGetIdentity,
   mockIdentity,
@@ -19,30 +18,35 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import {
+  mockProposalInfo,
+  proposalActionMotion,
+} from "$tests/mocks/proposal.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import {
   GovernanceError,
   ProposalRewardStatus,
+  Topic,
   Vote,
   type ProposalInfo,
 } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-// mock loadProposal
+const proposalTopic = Topic.Governance;
+const proposalTopicName = en.topics[Topic[proposalTopic]];
+const proposalTypeName = en.actions.Motion;
+
 let proposalInfoIdIndex = 0;
 const proposalInfo = (): ProposalInfo => ({
   ...mockProposalInfo,
   id: BigInt(++proposalInfoIdIndex),
-});
-vi.mock("$lib/services/public/proposals.services", () => {
-  return {
-    loadProposal: ({ setProposal }) => {
-      setProposal(proposalInfo);
-      return Promise.resolve();
-    },
-  };
+  topic: proposalTopic,
+  proposal: {
+    ...mockProposalInfo.proposal,
+    action: proposalActionMotion,
+  },
 });
 
 describe("vote-registration-services", () => {
@@ -51,10 +55,8 @@ describe("vote-registration-services", () => {
     ...mockNeuron,
     neuronId,
   }));
-  const spyOnToastsUpdate = vi.spyOn(toastsStore, "toastsUpdate");
-  const spyOnToastsShow = vi.spyOn(toastsStore, "toastsShow");
-  const spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
   const spyRegisterVote = vi.spyOn(governanceApi, "registerVote");
+  const spyLoadProposal = vi.spyOn(proposalsServices, "loadProposal");
 
   const votableProposal: ProposalInfo = {
     ...mockProposalInfo,
@@ -81,6 +83,7 @@ describe("vote-registration-services", () => {
     // Cleanup:
     vi.clearAllMocks();
     voteRegistrationStore.reset();
+    toastsStore.reset();
     proposalsStore.resetForTesting();
     resetIdentity();
 
@@ -101,6 +104,9 @@ describe("vote-registration-services", () => {
       Promise.resolve()
     );
     spyRegisterVote.mockResolvedValue(undefined);
+    spyLoadProposal.mockImplementation(async ({ setProposal }) => {
+      setProposal(proposal);
+    });
   });
 
   describe("success voting", () => {
@@ -120,7 +126,7 @@ describe("vote-registration-services", () => {
     });
 
     it("should not display errors on successful vote registration", async () => {
-      const spyToastError = vi.spyOn(toastsStore, "toastsError");
+      expect(get(toastsStore)).toEqual([]);
       await registerNnsVotes({
         neuronIds,
         proposalInfo: proposal,
@@ -129,7 +135,7 @@ describe("vote-registration-services", () => {
           // do nothing
         },
       });
-      expect(spyToastError).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
     });
 
     describe("voting in progress", () => {
@@ -181,7 +187,13 @@ describe("vote-registration-services", () => {
       });
 
       it("should show the vote adopt_in_progress toast", async () => {
-        await registerNnsVotes({
+        // Make registerVote never resolve because when registerNnsVotes
+        // finishes the toast that was visible is hidden again.
+        const never = new Promise<void>(() => {});
+        spyRegisterVote.mockReturnValue(never);
+        expect(get(toastsStore)).toEqual([]);
+
+        registerNnsVotes({
           neuronIds,
           proposalInfo: proposal,
           vote: Vote.Yes,
@@ -190,17 +202,22 @@ describe("vote-registration-services", () => {
           },
         });
 
-        await waitFor(() =>
-          expect(spyOnToastsShow).toBeCalledWith(
-            expect.objectContaining({
-              labelKey: "proposal_detail__vote.vote_adopt_in_progress",
-            })
-          )
-        );
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "info",
+            text: `Adopting proposal ${proposalTopicName} (${proposal.id}). Neurons registered: 0/3. Keep the dapp open until completed.`,
+          },
+        ]);
       });
 
       it("should show the vote reject_in_progress toast", async () => {
-        await registerNnsVotes({
+        // Make registerVote never resolve because when registerNnsVotes
+        // finishes the toast that was visible is hidden again.
+        const never = new Promise<void>(() => {});
+        spyRegisterVote.mockReturnValue(never);
+        expect(get(toastsStore)).toEqual([]);
+
+        registerNnsVotes({
           neuronIds,
           proposalInfo: proposal,
           vote: Vote.No,
@@ -209,19 +226,25 @@ describe("vote-registration-services", () => {
           },
         });
 
-        await waitFor(() =>
-          expect(spyOnToastsShow).toBeCalledWith(
-            expect.objectContaining({
-              labelKey: "proposal_detail__vote.vote_reject_in_progress",
-            })
-          )
-        );
+        await runResolvedPromises();
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "info",
+            text: `Rejecting proposal ${proposalTopicName} (${proposal.id}). Neurons registered: 0/3. Keep the dapp open until completed.`,
+          },
+        ]);
       });
 
       it("should display voted neurons count", async () => {
-        expect(spyOnToastsUpdate).toBeCalledTimes(0);
+        const resolveRegisterVote = [];
+        spyRegisterVote.mockImplementation(() => {
+          return new Promise<void>((resolve) => {
+            resolveRegisterVote.push(resolve);
+          });
+        });
+        expect(get(toastsStore)).toEqual([]);
 
-        await registerNnsVotes({
+        registerNnsVotes({
           neuronIds,
           proposalInfo: proposal,
           vote: Vote.No,
@@ -229,37 +252,46 @@ describe("vote-registration-services", () => {
             // do nothing
           },
         });
+        await runResolvedPromises();
 
-        // NO initial message, 1 per neuron complete + update message
-        await waitFor(() =>
-          expect(spyOnToastsUpdate).toHaveBeenCalledTimes(neuronIds.length + 1)
-        );
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "info",
+            text: `Rejecting proposal ${proposalTopicName} (${proposal.id}). Neurons registered: 0/3. Keep the dapp open until completed.`,
+          },
+        ]);
 
-        for (let i = 1; i <= neuronIds.length; i++) {
-          expect(spyOnToastsUpdate).toHaveBeenCalledWith(
-            expect.objectContaining({
-              content: expect.objectContaining({
-                substitutions: {
-                  $proposalId: `${proposal.id}`,
-                  $status: replacePlaceholders(
-                    en.proposal_detail__vote.vote_status_registering,
-                    {
-                      $completed: `${i}`,
-                      $amount: `${neuronIds.length}`,
-                    }
-                  ),
-                  $proposalType: "Motion",
-                },
-              }),
-            })
-          );
+        resolveRegisterVote.shift()();
+        await runResolvedPromises();
+
+        for (let i = 1; i < neuronIds.length; i++) {
+          // NOTE: Above we display the proposal topic and here the proposal type.
+          // Should this really be different?
+          expect(get(toastsStore)).toMatchObject([
+            {
+              level: "info",
+              text: `Rejecting proposal ${proposalTypeName} (${proposal.id}). Neurons registered: ${i}/3. Keep the dapp open until completed.`,
+            },
+          ]);
+
+          resolveRegisterVote.shift()();
+          await runResolvedPromises();
         }
+
+        // There is also code that shows a toast  with
+        // "Neurons registered: 3/3" but it is immediately replaced by another
+        // toast so it never visible.
+        expect(get(toastsStore)).toEqual([]);
       });
 
       it("should display updating... message", async () => {
-        expect(spyOnToastsUpdate).toBeCalledTimes(0);
+        // Make loadProposal never resolve because when registerNnsVotes
+        // finishes the toast that was visible is hidden again.
+        const never = new Promise<void>(() => {});
+        spyLoadProposal.mockReturnValue(never);
+        expect(get(toastsStore)).toEqual([]);
 
-        await registerNnsVotes({
+        registerNnsVotes({
           neuronIds,
           proposalInfo: proposal,
           vote: Vote.No,
@@ -267,17 +299,17 @@ describe("vote-registration-services", () => {
             // do nothing
           },
         });
+        await runResolvedPromises();
 
         for (let i = 1; i <= neuronIds.length; i++) {
-          expect(spyOnToastsUpdate).toBeCalledWith(
-            expect.objectContaining({
-              content: expect.objectContaining({
-                substitutions: expect.objectContaining({
-                  $status: en.proposal_detail__vote.vote_status_updating,
-                }),
-              }),
-            })
-          );
+          // NOTE: This expectation does not depend on i.
+          // Probably something else was intended to be expected?
+          expect(get(toastsStore)).toMatchObject([
+            {
+              level: "info",
+              text: `Rejecting proposal ${proposalTopicName} (${proposal.id}). Updating proposal state...`,
+            },
+          ]);
         }
       });
 
@@ -355,6 +387,7 @@ describe("vote-registration-services", () => {
     });
 
     it("should ignore already voted error", async () => {
+      expect(get(toastsStore)).toEqual([]);
       expect(spyRegisterVote).not.toBeCalled();
 
       await registerNnsVotes({
@@ -366,7 +399,7 @@ describe("vote-registration-services", () => {
         },
       });
 
-      expect(spyOnToastsError).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
       expect(spyRegisterVote).toBeCalled();
     });
   });
@@ -387,7 +420,7 @@ describe("vote-registration-services", () => {
     });
 
     it("should show error.register_vote_unknown on not nns-js-based error", async () => {
-      expect(spyOnToastsError).toBeCalledTimes(0);
+      expect(get(toastsStore)).toEqual([]);
 
       await registerNnsVotes({
         neuronIds: [],
@@ -398,17 +431,23 @@ describe("vote-registration-services", () => {
         },
       });
 
-      expect(spyOnToastsError).toBeCalledTimes(1);
-
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({ labelKey: "error.register_vote_unknown" })
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "info",
+          text: `Rejecting proposal ${proposalTopicName} (${proposal.id}). Updating proposal state...`,
+        },
+        {
+          level: "error",
+          text: "Sorry, there was an unexpected error while registering the vote. Please try again later. test",
+        },
+      ]);
     });
 
     it("should show error.register_vote on nns-js-based errors", async () => {
       vi.spyOn(governanceApi, "registerVote").mockImplementation(
         mockRegisterVoteError
       );
+      expect(get(toastsStore)).toEqual([]);
 
       await registerNnsVotes({
         neuronIds,
@@ -419,18 +458,19 @@ describe("vote-registration-services", () => {
         },
       });
 
-      expect(spyOnToastsShow).toHaveBeenCalledWith(
-        expect.objectContaining({
-          labelKey: "error.register_vote",
+      expect(get(toastsStore)).toMatchObject([
+        {
           level: "error",
-        })
-      );
+          text: `Sorry, there was an error while registering the vote for the proposal ${proposalTopicName} (${proposal.id}). Please try again. 0: test, 1: test, 2: test`,
+        },
+      ]);
     });
 
     it("should display proopsalId in error detail", async () => {
       vi.spyOn(governanceApi, "registerVote").mockImplementation(
         mockRegisterVoteError
       );
+      expect(get(toastsStore)).toEqual([]);
 
       await registerNnsVotes({
         neuronIds,
@@ -441,20 +481,19 @@ describe("vote-registration-services", () => {
         },
       });
 
-      expect(spyOnToastsShow).toHaveBeenCalledWith(
-        expect.objectContaining({
-          substitutions: expect.objectContaining({
-            $proposalId: `${proposal.id}`,
-          }),
+      expect(get(toastsStore)).toMatchObject([
+        {
           level: "error",
-        })
-      );
+          text: `Sorry, there was an error while registering the vote for the proposal ${proposalTopicName} (${proposal.id}). Please try again. 0: test, 1: test, 2: test`,
+        },
+      ]);
     });
 
     it("should show reason per neuron Error in detail", async () => {
       vi.spyOn(governanceApi, "registerVote").mockImplementation(
         mockRegisterVoteError
       );
+      expect(get(toastsStore)).toEqual([]);
 
       await registerNnsVotes({
         neuronIds,
@@ -466,18 +505,19 @@ describe("vote-registration-services", () => {
       });
 
       // expect(error?.detail?.split(/test/).length).toBe(neuronIds.length + 1);
-      expect(spyOnToastsShow).toHaveBeenCalledWith(
-        expect.objectContaining({
-          detail: neuronIds.map((_, i) => `${i}: test`).join(", "),
+      expect(get(toastsStore)).toMatchObject([
+        {
           level: "error",
-        })
-      );
+          text: `Sorry, there was an error while registering the vote for the proposal ${proposalTopicName} (16). Please try again. ${neuronIds.map((_, i) => `${i}: test`).join(", ")}`,
+        },
+      ]);
     });
 
     it("should show reason per neuron GovernanceError in detail", async () => {
       vi.spyOn(governanceApi, "registerVote").mockImplementation(
         mockRegisterVoteGovernanceError
       );
+      expect(get(toastsStore)).toEqual([]);
 
       await registerNnsVotes({
         neuronIds,
@@ -488,12 +528,12 @@ describe("vote-registration-services", () => {
         },
       });
 
-      expect(spyOnToastsShow).toHaveBeenCalledWith(
-        expect.objectContaining({
-          detail: neuronIds.map((_, i) => `${i}: governance-error`).join(", "),
+      expect(get(toastsStore)).toMatchObject([
+        {
           level: "error",
-        })
-      );
+          text: `Sorry, there was an error while registering the vote for the proposal ${proposalTopicName} (${proposal.id}). Please try again. ${neuronIds.map((_, i) => `${i}: governance-error`).join(", ")}`,
+        },
+      ]);
     });
   });
 
@@ -504,6 +544,8 @@ describe("vote-registration-services", () => {
     });
 
     it("should display error if no identity", async () => {
+      expect(get(toastsStore)).toEqual([]);
+
       await registerNnsVotes({
         neuronIds: [0n],
         proposalInfo: proposal,
@@ -513,10 +555,16 @@ describe("vote-registration-services", () => {
         },
       });
 
-      expect(spyOnToastsError).toHaveBeenCalledWith({
-        err: new Error(en.error.missing_identity),
-        labelKey: "error.register_vote_unknown",
-      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "info",
+          text: `Adopting proposal ${proposalTopicName} (${proposal.id}). Neurons registered: 0/1. Keep the dapp open until completed.`,
+        },
+        {
+          level: "error",
+          text: "Sorry, there was an unexpected error while registering the vote. Please try again later. The operation cannot be executed without any identity.",
+        },
+      ]);
     });
   });
 
@@ -536,6 +584,8 @@ describe("vote-registration-services", () => {
       const proposalIdString = "56";
       const proposalType = "Motion";
 
+      expect(get(toastsStore)).toEqual([]);
+
       processRegisterVoteErrors({
         registerVoteResponses,
         neuronIdStrings,
@@ -543,17 +593,12 @@ describe("vote-registration-services", () => {
         proposalType,
       });
 
-      expect(spyOnToastsShow).toBeCalledTimes(1);
-
-      expect(spyOnToastsShow).toBeCalledWith({
-        level: "error",
-        labelKey: "error.register_vote",
-        detail: "01: test",
-        substitutions: {
-          $proposalId: "56",
-          $proposalType: "Motion",
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: `Sorry, there was an error while registering the vote for the proposal ${proposalType} (${proposalIdString}). Please try again. 01: test`,
         },
-      });
+      ]);
     });
 
     it("should display multiple errors", async () => {
@@ -579,6 +624,8 @@ describe("vote-registration-services", () => {
       const proposalIdString = "56";
       const proposalType = "Motion";
 
+      expect(get(toastsStore)).toEqual([]);
+
       processRegisterVoteErrors({
         registerVoteResponses,
         neuronIdStrings,
@@ -586,17 +633,12 @@ describe("vote-registration-services", () => {
         proposalType,
       });
 
-      expect(spyOnToastsShow).toBeCalledTimes(1);
-
-      expect(spyOnToastsShow).toBeCalledWith({
-        level: "error",
-        labelKey: "error.register_vote",
-        detail: "02: test, 04: critical test",
-        substitutions: {
-          $proposalId: "56",
-          $proposalType: "Motion",
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: `Sorry, there was an error while registering the vote for the proposal ${proposalType} (${proposalIdString}). Please try again. 02: test, 04: critical test`,
         },
-      });
+      ]);
     });
   });
 });
