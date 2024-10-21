@@ -139,7 +139,13 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
 
   it("should select all controllable neurons when 'Apply to all' is clicked", async () => {
     neuronsStore.setNeurons({
-      neurons: [publicNeuron1, publicNeuron2, hwPublicNeuron, hwPrivateNeuron],
+      neurons: [
+        publicNeuron1,
+        publicNeuron2,
+        publicSeedNeuron,
+        hwPublicNeuron,
+        hwPrivateNeuron,
+      ],
       certified: true,
     });
     const onNnsSubmit = vi.fn();
@@ -152,6 +158,9 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     expect(await po.getNeuronVisibilityRowPo(publicNeuron2).isPresent()).toBe(
       true
     );
+    expect(
+      await po.getNeuronVisibilityRowPo(publicSeedNeuron).isPresent()
+    ).toBe(true);
     expect(await po.getNeuronVisibilityRowPo(hwPublicNeuron).isPresent()).toBe(
       true
     );
@@ -160,13 +169,15 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     );
 
     expect(onNnsSubmit).toHaveBeenCalledWith({
-      detail: { selectedNeurons: [publicNeuron1, publicNeuron2] },
+      detail: {
+        selectedNeurons: [publicNeuron1, publicNeuron2, publicSeedNeuron],
+      },
     });
   });
 
   it("should update selection correctly when deselecting a neuron after 'Apply to all'", async () => {
     neuronsStore.setNeurons({
-      neurons: [publicNeuron1, publicNeuron2, privateNeuron1],
+      neurons: [publicNeuron1, publicNeuron2, publicSeedNeuron, privateNeuron1],
       certified: true,
     });
     const onNnsSubmit = vi.fn();
@@ -186,7 +197,7 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     expect(await checkboxPo.isChecked()).toBe(false);
     expect(await applyToAllCheckboxPo.isChecked()).toBe(false);
     expect(onNnsSubmit).toHaveBeenCalledWith({
-      detail: { selectedNeurons: [publicNeuron1] },
+      detail: { selectedNeurons: [publicNeuron1, publicSeedNeuron] },
     });
   });
 
@@ -250,9 +261,9 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     expect(await po.getLoadingContainer().isPresent()).toBe(false);
   });
 
-  it("should show 'Apply to all' checkbox when there are controllable neurons", async () => {
+  it("should show 'Apply to all' checkbox when there are more than 1 controllable neurons to list", async () => {
     neuronsStore.setNeurons({
-      neurons: [publicNeuron1, publicNeuron2],
+      neurons: [publicNeuron1, publicNeuron2, publicSeedNeuron],
       certified: true,
     });
 
@@ -262,6 +273,17 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     expect((await po.getApplyToAllCheckbox().getText()).trim()).toBe(
       "Apply to all neurons"
     );
+  });
+
+  it("should not show 'Apply to all' checkbox when there is only than 1 controllable neurons to list", async () => {
+    neuronsStore.setNeurons({
+      neurons: [publicNeuron1, publicNeuron2],
+      certified: true,
+    });
+
+    const { po } = renderComponent(publicNeuron1);
+
+    expect(await po.getApplyToAllCheckbox().isPresent()).toBe(false);
   });
 
   it("should trigger appropriate events on button clicks", async () => {

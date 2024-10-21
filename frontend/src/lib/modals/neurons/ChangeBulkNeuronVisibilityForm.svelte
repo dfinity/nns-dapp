@@ -104,7 +104,7 @@
       <p class="description">{$i18n.neuron_detail.retrieving_data}</p>
     </div>
   {:else}
-    {#if controllableNeurons.length > 0}
+    {#if controllableNeurons.length > 1}
       <div class="apply-to-all" data-tid="apply-to-all-container">
         <Checkbox
           inputId="apply-to-all"
