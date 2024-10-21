@@ -5,16 +5,13 @@
     isNeuronControllable,
     createNeuronVisibilityRowData,
   } from "$lib/utils/neuron.utils";
-  import { neuronsStore } from "$lib/stores/neurons.store";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { i18n } from "$lib/stores/i18n";
   import NeuronVisibilityRow from "$lib/modals/neurons/NeuronVisibilityRow.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { Checkbox, Spinner } from "@dfinity/gix-components";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { changeNeuronVisibility } from "$lib/services/neurons.services";
   import Separator from "$lib/components/ui/Separator.svelte";
 
   const dispatch = createEventDispatcher();
@@ -23,17 +20,21 @@
     dispatch("nnsCancel");
   };
 
+  const nnsSubmit = () => {
+    dispatch("nnsSubmit", { selectedNeurons });
+  };
+
   let selectedNeurons: NeuronInfo[];
   $: selectedNeurons = [];
 
   let isLoading = false;
-  $: isLoading = $neuronsStore.neurons === undefined;
+  $: isLoading = $definedNeuronsStore.length === 0;
 
   let applyToAllNeurons: boolean;
   $: applyToAllNeurons = false;
 
   let allNeurons: NeuronInfo[];
-  $: allNeurons = $neuronsStore.neurons || [];
+  $: allNeurons = $definedNeuronsStore || [];
 
   let controllablePrivateNeurons: NeuronInfo[];
   $: controllablePrivateNeurons = allNeurons.filter(
@@ -83,38 +84,11 @@
     }
     updateApplyToAllNeuronsCheckState();
   }
-
-  const handleChangeVisibility = async () => {
-    startBusy({
-      initiator: "change-neuron-visibility",
-      labelKey: "neuron_detail.change_neuron_visibility_loading",
-    });
-
-    try {
-      const { success } = await changeNeuronVisibility({
-        neurons: selectedNeurons,
-        makePublic: true,
-      });
-      if (success) {
-        toastsSuccess({
-          labelKey: "neuron_detail.change_neuron_public_success",
-        });
-
-        close();
-      } else {
-        throw new Error("Error changing neuron visibility");
-      }
-    } catch (error) {
-      console.error(error instanceof Error ? error.message : String(error));
-    } finally {
-      stopBusy("change-neuron-visibility");
-    }
-  };
 </script>
 
 <form
   data-tid="make-neurons-public-form-component"
-  on:submit|preventDefault={() => handleChangeVisibility()}
+  on:submit|preventDefault={nnsSubmit}
 >
   {#if isLoading}
     <div class="loading-container" data-tid="loading-container">

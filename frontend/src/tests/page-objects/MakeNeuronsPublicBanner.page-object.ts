@@ -1,8 +1,8 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import type { ButtonPo } from "./Button.page-object";
-import { ChangeNeuronVisibilityModalPo } from "./ChangeNeuronVisibilityModal.page-object";
 import { LinkPo } from "./Link.page-object";
+import { MakeNeuronsPublicModalPo } from "./MakeNeuronsPublicModal.page-object";
 
 export class MakeNeuronsPublicBannerPo extends BasePageObject {
   private static readonly TID = "make-neurons-public-banner-component";
@@ -36,7 +36,7 @@ export class MakeNeuronsPublicBannerPo extends BasePageObject {
     return this.getButton("banner-change-neuron-visibility-button");
   }
 
-  getChangeNeuronVisibilityModalPo(): ChangeNeuronVisibilityModalPo {
-    return ChangeNeuronVisibilityModalPo.under(this.root);
+  getMakeNeuronsPublicModalPo(): MakeNeuronsPublicModalPo {
+    return MakeNeuronsPublicModalPo.under(this.root);
   }
 }

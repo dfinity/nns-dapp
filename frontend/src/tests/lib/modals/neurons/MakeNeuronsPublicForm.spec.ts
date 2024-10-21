@@ -1,14 +1,13 @@
 import MakeNeuronsPublicForm from "$lib/modals/neurons/MakeNeuronsPublicForm.svelte";
-import * as neuronsService from "$lib/services/neurons.services";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockFullNeuron } from "$tests/mocks/neurons.mock";
 import { MakeNeuronsPublicFormPo } from "$tests/page-objects/MakeNeuronsPublicForm.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { NeuronType, NeuronVisibility, type NeuronInfo } from "@dfinity/nns";
+import { nonNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import { vi } from "vitest";
 
@@ -66,32 +65,32 @@ describe("MakeNeuronsPublicForm", () => {
     controller: "hardware-wallet",
   });
 
-  let changeNeuronVisibilitySpy;
-
   beforeEach(() => {
-    allowLoggingInOneTestForDebugging();
     vi.restoreAllMocks();
     setAccountsForTesting({
       main: mockMainAccount,
       hardwareWallets: [],
     });
-    changeNeuronVisibilitySpy = vi.spyOn(
-      neuronsService,
-      "changeNeuronVisibility"
-    );
     neuronsStore.reset();
   });
 
-  const renderComponent = () => {
+  const renderComponent = (onNnsSubmit = null) => {
     const mockCancel = vi.fn();
 
     const { container, component } = render(MakeNeuronsPublicForm);
+
+    if (nonNullish(onNnsSubmit)) {
+      component.$on("nnsSubmit", ({ detail }) => {
+        onNnsSubmit({ detail });
+      });
+    }
 
     component.$on("nnsCancel", mockCancel);
 
     return {
       po: MakeNeuronsPublicFormPo.under(new JestPageObjectElement(container)),
       mockCancel,
+      onNnsSubmit,
     };
   };
 
@@ -120,7 +119,10 @@ describe("MakeNeuronsPublicForm", () => {
       neurons: [privateNeuron1, privateNeuron2, publicNeuron1],
       certified: true,
     });
-    const { po } = renderComponent();
+
+    const nnsSubmitMock = vi.fn();
+
+    const { po, onNnsSubmit } = renderComponent(nnsSubmitMock);
 
     expect(await po.getNeuronVisibilityRowPo(privateNeuron1).isPresent()).toBe(
       true
@@ -142,9 +144,8 @@ describe("MakeNeuronsPublicForm", () => {
     await po.getConfirmButton().click();
 
     expect(await checkboxPo.isChecked()).toBe(true);
-    expect(changeNeuronVisibilitySpy).toHaveBeenCalledWith({
-      neurons: [privateNeuron1],
-      makePublic: true,
+    expect(onNnsSubmit).toHaveBeenCalledWith({
+      detail: { selectedNeurons: [privateNeuron1] },
     });
   });
 
@@ -154,16 +155,17 @@ describe("MakeNeuronsPublicForm", () => {
       certified: true,
     });
 
-    const { po } = renderComponent();
+    const onNnsSubmit = vi.fn();
+
+    const { po } = renderComponent(onNnsSubmit);
 
     await po.getApplyToAllCheckbox().click();
     expect(await po.getConfirmButton().isDisabled()).toBe(false);
 
     await po.getConfirmButton().click();
 
-    expect(changeNeuronVisibilitySpy).toHaveBeenCalledWith({
-      neurons: [privateNeuron1, privateNeuron2],
-      makePublic: true,
+    expect(onNnsSubmit).toHaveBeenCalledWith({
+      detail: { selectedNeurons: [privateNeuron1, privateNeuron2] },
     });
   });
 
@@ -173,7 +175,9 @@ describe("MakeNeuronsPublicForm", () => {
       certified: true,
     });
 
-    const { po } = renderComponent();
+    const nnsSubmitMock = vi.fn();
+
+    const { po, onNnsSubmit } = renderComponent(nnsSubmitMock);
 
     const applyToAllCheckboxPo = po.getApplyToAllCheckbox();
     await applyToAllCheckboxPo.click();
@@ -188,9 +192,8 @@ describe("MakeNeuronsPublicForm", () => {
     expect(await checkboxPo.isChecked()).toBe(false);
     expect(await applyToAllCheckboxPo.isChecked()).toBe(false);
 
-    expect(changeNeuronVisibilitySpy).toHaveBeenCalledWith({
-      neurons: [privateNeuron1],
-      makePublic: true,
+    expect(onNnsSubmit).toHaveBeenCalledWith({
+      detail: { selectedNeurons: [privateNeuron1] },
     });
   });
 
@@ -292,7 +295,9 @@ describe("MakeNeuronsPublicForm", () => {
       certified: true,
     });
 
-    const { po } = renderComponent();
+    const nnsSubmitMock = vi.fn();
+
+    const { po, onNnsSubmit } = renderComponent(nnsSubmitMock);
 
     expect(await po.getControllableNeuronsList().isPresent()).toBe(true);
     expect(await po.getUncontrollableNeuronsList().isPresent()).toBe(true);
@@ -312,6 +317,13 @@ describe("MakeNeuronsPublicForm", () => {
       hwPrivateNeuron.neuronId.toString()
     );
     expect(await hwPrivateNeuronRowPo.isPublic()).toBe(false);
+
+    await po.getNeuronVisibilityRowPo(privateNeuron1).getCheckboxPo().click();
+    await po.getConfirmButton().click();
+
+    expect(onNnsSubmit).toHaveBeenCalledWith({
+      detail: { selectedNeurons: [privateNeuron1] },
+    });
   });
 
   it("should not allow selection of uncontrolled neurons", async () => {
@@ -319,8 +331,9 @@ describe("MakeNeuronsPublicForm", () => {
       neurons: [privateNeuron1, uncontrolledPrivateNeuron1],
       certified: true,
     });
+    const nnsSubmitMock = vi.fn();
 
-    const { po } = renderComponent();
+    const { po, onNnsSubmit } = renderComponent(nnsSubmitMock);
 
     const controllableCheckboxPo = po
       .getNeuronVisibilityRowPo(privateNeuron1)
@@ -335,9 +348,8 @@ describe("MakeNeuronsPublicForm", () => {
     await controllableCheckboxPo.click();
     await po.getConfirmButton().click();
 
-    expect(changeNeuronVisibilitySpy).toHaveBeenCalledWith({
-      neurons: [privateNeuron1],
-      makePublic: true,
+    expect(onNnsSubmit).toHaveBeenCalledWith({
+      detail: { selectedNeurons: [privateNeuron1] },
     });
   });
 });

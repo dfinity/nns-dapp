@@ -4,10 +4,45 @@
   import { Modal } from "@dfinity/gix-components";
   import Separator from "$lib/components/ui/Separator.svelte";
   import MakeNeuronsPublicForm from "./MakeNeuronsPublicForm.svelte";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import { changeNeuronVisibility } from "$lib/services/neurons.services";
 
   const dispatcher = createEventDispatcher();
+
   const close = () => {
     dispatcher("nnsClose");
+  };
+
+  const handleChangeVisibility = async (
+    event: CustomEvent<{ selectedNeurons: NeuronInfo[] }>
+  ) => {
+    const { selectedNeurons } = event.detail;
+    startBusy({
+      initiator: "change-neuron-visibility",
+      labelKey: "neuron_detail.change_neuron_visibility_loading",
+    });
+
+    try {
+      const { success } = await changeNeuronVisibility({
+        neurons: selectedNeurons,
+        makePublic: true,
+      });
+      if (success) {
+        toastsSuccess({
+          labelKey: "neuron_detail.change_neuron_public_success",
+        });
+
+        close();
+      } else {
+        throw new Error("Error changing neuron visibility");
+      }
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : String(error));
+    } finally {
+      stopBusy("change-neuron-visibility");
+    }
   };
 </script>
 
@@ -33,5 +68,8 @@
 
   <Separator spacing="medium" />
 
-  <MakeNeuronsPublicForm on:nnsCancel={close} />
+  <MakeNeuronsPublicForm
+    on:nnsCancel={close}
+    on:nnsSubmit={handleChangeVisibility}
+  />
 </Modal>

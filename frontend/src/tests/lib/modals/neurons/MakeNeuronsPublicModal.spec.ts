@@ -1,12 +1,12 @@
+import * as api from "$lib/api/governance.api";
 import MakeNeuronsPublicModal from "$lib/modals/neurons/MakeNeuronsPublicModal.svelte";
 import * as neuronsService from "$lib/services/neurons.services";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
-import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
-import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { MakeNeuronsPublicModalPo } from "$tests/page-objects/MakeNeuronsPublicModal.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { NeuronVisibility, type NeuronInfo } from "@dfinity/nns";
@@ -20,22 +20,35 @@ describe("MakeNeuronsPublicModal", () => {
     ...mockNeuron,
     visibility: NeuronVisibility.Private,
     fullNeuron: {
-      ...mockFullNeuron,
-      controller: mockMainAccount.principal.toString(),
+      ...mockNeuron.fullNeuron,
+      controller: mockIdentity.getPrincipal().toText(),
+    },
+  };
+  const privateNeuron2: NeuronInfo = {
+    ...mockNeuron,
+    neuronId: 2n,
+    visibility: NeuronVisibility.Private,
+    fullNeuron: {
+      ...mockNeuron.fullNeuron,
+      id: 2n,
+      controller: mockIdentity.getPrincipal().toText(),
     },
   };
 
   let changeNeuronVisibilitySpy;
+  let queryNeuronSpy;
 
   beforeEach(() => {
     vi.restoreAllMocks();
     resetIdentity();
     neuronsStore.reset();
     toastsStore.reset();
+    queryNeuronSpy?.mockRestore();
     neuronsStore.setNeurons({
-      neurons: [privateNeuron],
+      neurons: [privateNeuron, privateNeuron2],
       certified: true,
     });
+    queryNeuronSpy = vi.spyOn(api, "queryNeuron");
     changeNeuronVisibilitySpy = vi.spyOn(
       neuronsService,
       "changeNeuronVisibility"
@@ -69,6 +82,11 @@ describe("MakeNeuronsPublicModal", () => {
   });
 
   it("should call changeNeuronVisibility with correct values for privateNeurons on confirm click", async () => {
+    queryNeuronSpy.mockResolvedValue({
+      ...privateNeuron,
+      visibility: NeuronVisibility.Public,
+    });
+
     const { po } = await renderComponent();
 
     const confirmButton = po.getMakeNeuronsPublicFormPo().getConfirmButton();
@@ -88,7 +106,11 @@ describe("MakeNeuronsPublicModal", () => {
   });
 
   it("should show success toast and close modal after successful visibility change for private neuron", async () => {
-    changeNeuronVisibilitySpy.mockResolvedValue(undefined);
+    queryNeuronSpy.mockResolvedValue({
+      ...privateNeuron,
+      visibility: NeuronVisibility.Public,
+    });
+
     const { po, nnsClose } = await renderComponent();
 
     await po
@@ -107,6 +129,7 @@ describe("MakeNeuronsPublicModal", () => {
         text: "Visibility updated to public successfully.",
       },
     ]);
+
     expect(nnsClose).toHaveBeenCalled();
   });
 });
