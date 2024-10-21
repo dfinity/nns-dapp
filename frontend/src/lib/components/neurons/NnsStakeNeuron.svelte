@@ -19,8 +19,8 @@
   import { ICPToken } from "@dfinity/utils";
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
-  import TooltipIcon from "../ui/TooltipIcon.svelte";
-  import Separator from "../ui/Separator.svelte";
+  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
   import { ENABLE_NEURON_VISIBILITY } from "$lib/stores/feature-flags.store";
 
   export let account: Account | undefined;
@@ -97,7 +97,7 @@
   </TransactionFormFee>
 
   {#if $ENABLE_NEURON_VISIBILITY}
-    <Separator spacing="x-small" />
+    <Separator spacing="small" />
 
     <Checkbox
       preventDefault

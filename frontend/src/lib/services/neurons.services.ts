@@ -231,11 +231,17 @@ export const stakeNeuron = async ({
     });
 
     if (asPublicNeuron) {
-      await governanceApiService.changeNeuronVisibility({
-        neuronIds: [newNeuronId],
-        visibility: NeuronVisibility.Public,
-        identity: accountIdentity,
-      });
+      try {
+        await governanceApiService.changeNeuronVisibility({
+          neuronIds: [newNeuronId],
+          visibility: NeuronVisibility.Public,
+          identity: accountIdentity,
+        });
+      } catch (err) {
+        toastsError({
+          labelKey: "neuron_detail.change_neuron_visibility_failure",
+        });
+      }
     }
 
     if (loadNeuron) {

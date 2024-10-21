@@ -375,6 +375,29 @@ describe("neurons-services", () => {
 
       expect(result).toEqual(newNeuronId);
     });
+
+    it("should show error toast if changing neuron visibility fails", async () => {
+      const newNeuronId = 12345n;
+      spyStakeNeuron.mockResolvedValue(newNeuronId);
+      spyChangeNeuronVisibility.mockRejectedValue(
+        new Error("Visibility change failed")
+      );
+
+      const result = await stakeNeuron({
+        amount: 10,
+        account: mockMainAccount,
+        asPublicNeuron: true,
+      });
+
+      expect(spyStakeNeuron).toBeCalledTimes(1);
+      expect(spyChangeNeuronVisibility).toBeCalledTimes(1);
+
+      expect(result).toEqual(newNeuronId);
+
+      expectToastError(
+        'Your neurons have failed to update their visibility, please try again later. You can always change neuron visibility under "Advanced Details & Settings".'
+      );
+    });
   });
 
   describe("list neurons", () => {

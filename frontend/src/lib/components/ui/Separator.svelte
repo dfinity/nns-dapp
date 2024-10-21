@@ -1,12 +1,12 @@
 <script lang="ts">
-  export let spacing: "x-small" | "medium" | "large" | "none" = "large";
+  export let spacing: "small" | "medium" | "large" | "none" = "large";
   export let testId: string | undefined = undefined;
 </script>
 
 <hr
   data-tid={testId}
   class:medium={spacing === "medium"}
-  class:x-small={spacing === "x-small"}
+  class:small={spacing === "small"}
   class:no-margin={spacing === "none"}
 />
 
@@ -20,7 +20,7 @@
     margin: var(--padding-3x) 0;
   }
 
-  .x-small {
+  .small {
     margin: var(--padding) 0;
   }
 
