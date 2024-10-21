@@ -1,5 +1,6 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import MakeNeuronsPublicBanner from "$lib/components/neurons/MakeNeuronsPublicBanner.svelte";
   import NeuronsTable from "$lib/components/neurons/NeuronsTable/NeuronsTable.svelte";
   import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
@@ -32,6 +33,7 @@
   {#if isLoading}
     <Spinner />
   {:else if tableNeurons.length > 0}
+    <MakeNeuronsPublicBanner />
     <NeuronsTable neurons={tableNeurons} />
   {:else}
     <EmptyMessage>{$i18n.neurons.text}</EmptyMessage>
