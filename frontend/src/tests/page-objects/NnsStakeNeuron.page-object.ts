@@ -1,7 +1,8 @@
 import { AmountInputPo } from "$tests/page-objects/AmountInput.page-object";
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
 import { TransactionFromAccountPo } from "$tests/page-objects/TransactionFromAccount.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class NnsStakeNeuronPo extends BasePageObject {
@@ -42,5 +43,12 @@ export class NnsStakeNeuronPo extends BasePageObject {
   async stake(amount: number): Promise<void> {
     await this.enterAmount(amount);
     await this.clickCreate();
+  }
+
+  getAsPublicNeuronCheckboxPo(): CheckboxPo {
+    return CheckboxPo.under({
+      element: this.root,
+      testId: "as-public-neuron-checkbox",
+    });
   }
 }

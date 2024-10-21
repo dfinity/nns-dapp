@@ -11,6 +11,7 @@ import {
   stakeNeuron,
   updateDelay,
 } from "$lib/services/neurons.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -167,6 +168,7 @@ describe("NnsStakeNeuronModal", () => {
         account: mockMainAccount,
         amount: 22,
         loadNeuron: true,
+        asPublicNeuron: false,
       });
     });
 
@@ -327,6 +329,78 @@ describe("NnsStakeNeuronModal", () => {
 
       await runResolvedPromises();
       expect(onClose).toBeCalledTimes(1);
+    });
+
+    describe("public neuron checkbox", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.reset();
+      });
+
+      it("should not display public neuron checkbox when feature flag is false", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", false);
+        const po = await renderComponent({});
+
+        expect(
+          await po
+            .getNnsStakeNeuronPo()
+            .getAsPublicNeuronCheckboxPo()
+            .isPresent()
+        ).toBe(false);
+      });
+
+      describe("when feature flag is enabled", () => {
+        beforeEach(() => {
+          overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", true);
+        });
+
+        it("should have unchecked public neuron checkbox by default", async () => {
+          const po = await renderComponent({});
+
+          expect(
+            await po
+              .getNnsStakeNeuronPo()
+              .getAsPublicNeuronCheckboxPo()
+              .isChecked()
+          ).toBe(false);
+        });
+
+        it("should be able to toggle public neuron checkbox", async () => {
+          const po = await renderComponent({});
+
+          await po.getNnsStakeNeuronPo().getAsPublicNeuronCheckboxPo().toggle();
+          expect(
+            await po
+              .getNnsStakeNeuronPo()
+              .getAsPublicNeuronCheckboxPo()
+              .isChecked()
+          ).toBe(true);
+
+          await po.getNnsStakeNeuronPo().getAsPublicNeuronCheckboxPo().toggle();
+          expect(
+            await po
+              .getNnsStakeNeuronPo()
+              .getAsPublicNeuronCheckboxPo()
+              .isChecked()
+          ).toBe(false);
+        });
+
+        it("should create a public neuron when checkbox is checked", async () => {
+          const po = await renderComponent({});
+
+          await po.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(22);
+          await po.getNnsStakeNeuronPo().getAsPublicNeuronCheckboxPo().toggle();
+
+          await po.getNnsStakeNeuronPo().clickCreate();
+
+          expect(stakeNeuron).toBeCalledTimes(1);
+          expect(stakeNeuron).toBeCalledWith({
+            account: mockMainAccount,
+            amount: 22,
+            loadNeuron: true,
+            asPublicNeuron: true,
+          });
+        });
+      });
     });
   });
 
