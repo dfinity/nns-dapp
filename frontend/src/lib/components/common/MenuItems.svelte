@@ -23,6 +23,8 @@
   } from "@dfinity/gix-components";
   import { layoutMenuOpen, menuCollapsed } from "@dfinity/gix-components";
   import type { ComponentType } from "svelte";
+  import { cubicIn, cubicOut } from "svelte/easing";
+  import { scale } from "svelte/transition";
 
   let routes: {
     context: string;
@@ -97,13 +99,20 @@
     <GetTokens />
   {/if}
 
-  <div class="menu-footer" class:hidden={$menuCollapsed && !$layoutMenuOpen}>
-    <TotalValueLocked layout="stacked" />
-    <div class="menu-footer-buttons">
-      <div class="grow-item"><SourceCodeButton /></div>
-      <ThemeToggleButton />
+  {#if !$menuCollapsed || $layoutMenuOpen}
+    <div
+      data-tid="menu-footer"
+      class="menu-footer"
+      out:scale={{ duration: 200, easing: cubicOut }}
+      in:scale={{ duration: 200, easing: cubicIn }}
+    >
+      <TotalValueLocked layout="stacked" />
+      <div class="menu-footer-buttons">
+        <div class="grow-item"><SourceCodeButton /></div>
+        <ThemeToggleButton />
+      </div>
     </div>
-  </div>
+  {/if}
 </div>
 
 <style lang="scss">
@@ -120,20 +129,6 @@
     gap: var(--padding);
     margin-top: auto;
     margin-right: var(--padding-3x);
-    // Handle menu collapse animation
-    visibility: visible;
-    opacity: 1;
-    transition:
-      transform linear var(--animation-time-normal),
-      opacity linear var(--animation-time-normal);
-    &.hidden {
-      visibility: hidden;
-      opacity: 0;
-      transform: translate(-300%, 0);
-      transition:
-        transform linear var(--animation-time-short),
-        opacity linear calc(var(--animation-time-short) / 2);
-    }
   }
   .menu-footer-buttons {
     display: flex;
