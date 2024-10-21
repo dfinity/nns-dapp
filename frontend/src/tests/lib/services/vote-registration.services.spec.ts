@@ -266,7 +266,7 @@ describe("vote-registration-services", () => {
 
         for (let i = 1; i < neuronIds.length; i++) {
           // NOTE: Above we display the proposal topic and here the proposal type.
-          // Should this really be different?
+          // TODO: Fix this.
           expect(get(toastsStore)).toMatchObject([
             {
               level: "info",
