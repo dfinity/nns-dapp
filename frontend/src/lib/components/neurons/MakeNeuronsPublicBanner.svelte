@@ -5,6 +5,7 @@
   import { i18n } from "$lib/stores/i18n";
   import {
     isNeuronControllable,
+    isNeuronControllableByUser,
     isPublicNeuron,
   } from "$lib/utils/neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
@@ -44,10 +45,9 @@
   $: hasControllablePrivateNeurons = $definedNeuronsStore.some(
     (n) =>
       !isPublicNeuron(n) &&
-      isNeuronControllable({
+      isNeuronControllableByUser({
         neuron: n,
-        identity: $authStore.identity,
-        accounts: $icpAccountsStore,
+        mainAccount: $icpAccountsStore.main,
       })
   );
 </script>

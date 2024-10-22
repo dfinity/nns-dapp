@@ -93,7 +93,7 @@ describe("MakeNeuronsPublicModal", () => {
 
     await po
       .getMakeNeuronsPublicFormPo()
-      .getNeuronVisibilityRowPo(privateNeuron)
+      .getControllableNeuronVisibilityRowPo(privateNeuron.neuronId.toString())
       .getCheckboxPo()
       .click();
 
@@ -115,7 +115,7 @@ describe("MakeNeuronsPublicModal", () => {
 
     await po
       .getMakeNeuronsPublicFormPo()
-      .getNeuronVisibilityRowPo(privateNeuron)
+      .getControllableNeuronVisibilityRowPo(privateNeuron.neuronId.toString())
       .getCheckboxPo()
       .click();
 

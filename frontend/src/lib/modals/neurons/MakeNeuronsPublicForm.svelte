@@ -2,8 +2,8 @@
   import { createEventDispatcher } from "svelte";
   import {
     isPublicNeuron,
-    isNeuronControllable,
     createNeuronVisibilityRowData,
+    isNeuronControllableByUser,
   } from "$lib/utils/neuron.utils";
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { authStore } from "$lib/stores/auth.store";
@@ -39,20 +39,18 @@
   let controllablePrivateNeurons: NeuronInfo[];
   $: controllablePrivateNeurons = allNeurons.filter(
     (n) =>
-      isNeuronControllable({
+      isNeuronControllableByUser({
         neuron: n,
-        identity: $authStore.identity,
-        accounts: $icpAccountsStore,
+        mainAccount: $icpAccountsStore.main,
       }) && !isPublicNeuron(n)
   );
 
   let uncontrollablePrivateNeurons: NeuronInfo[];
   $: uncontrollablePrivateNeurons = allNeurons.filter(
     (n) =>
-      !isNeuronControllable({
+      !isNeuronControllableByUser({
         neuron: n,
-        identity: $authStore.identity,
-        accounts: $icpAccountsStore,
+        mainAccount: $icpAccountsStore.main,
       }) && !isPublicNeuron(n)
   );
 

@@ -1,10 +1,11 @@
 import MakeNeuronsPublicBanner from "$lib/components/neurons/MakeNeuronsPublicBanner.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { MakeNeuronsPublicBannerPo } from "$tests/page-objects/MakeNeuronsPublicBanner.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { NeuronVisibility, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -20,9 +21,7 @@ const createTestNeuron = ({
   visibility,
   fullNeuron: {
     ...mockNeuron.fullNeuron,
-    controller: controlled
-      ? mockIdentity.getPrincipal().toText()
-      : "other-user",
+    controller: controlled ? mockMainAccount.principal.toText() : "other-user",
   },
 });
 
@@ -38,7 +37,10 @@ describe("MakeNeuronsPublicBanner", () => {
     vi.useFakeTimers();
     neuronsStore.reset();
     localStorage.clear();
-    resetIdentity();
+    setAccountsForTesting({
+      main: mockMainAccount,
+      hardwareWallets: [],
+    });
     overrideFeatureFlagsStore.reset();
     vi.setSystemTime(new Date("2024-01-01"));
     overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", true);

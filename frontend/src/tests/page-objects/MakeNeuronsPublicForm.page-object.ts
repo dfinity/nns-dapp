@@ -1,5 +1,4 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import type { NeuronInfo } from "@dfinity/nns";
 import { ButtonPo } from "./Button.page-object";
 import { CheckboxPo } from "./Checkbox.page-object";
 import { NeuronVisibilityRowPo } from "./NeuronVisibilityRow.page-object";
@@ -52,10 +51,45 @@ export class MakeNeuronsPublicFormPo extends BasePageObject {
     return ButtonPo.under({ element: this.root, testId: "cancel-button" });
   }
 
-  getNeuronVisibilityRowPo(neuron: NeuronInfo): NeuronVisibilityRowPo {
+  getControllableNeuronVisibilityRowPo(
+    neuronId: string
+  ): NeuronVisibilityRowPo {
     return NeuronVisibilityRowPo.under({
-      element: this.root,
-      neuronId: neuron.neuronId.toString(),
+      element: this.root.byTestId("controllable-neurons-list"),
+      neuronId,
     });
+  }
+
+  getUncontrollableNeuronVisibilityRowPo(
+    neuronId: string
+  ): NeuronVisibilityRowPo {
+    return NeuronVisibilityRowPo.under({
+      element: this.root.byTestId("uncontrollable-neurons-list"),
+      neuronId,
+    });
+  }
+
+  async getControllableNeuronIds(): Promise<string[]> {
+    const controllableList = this.getControllableNeuronsList();
+    return this.getNeuronIdsFromList(controllableList);
+  }
+
+  async getUncontrollableNeuronIds(): Promise<string[]> {
+    const uncontrollableList = this.getUncontrollableNeuronsList();
+    return this.getNeuronIdsFromList(uncontrollableList);
+  }
+
+  private async getNeuronIdsFromList(
+    list: PageObjectElement
+  ): Promise<string[]> {
+    const neuronIdElements = await list.querySelectorAll(
+      '[data-tid="neuron-id"]'
+    );
+    return Promise.all(
+      neuronIdElements.map(async (element) => {
+        const text = await element.getText();
+        return text.trim();
+      })
+    );
   }
 }
