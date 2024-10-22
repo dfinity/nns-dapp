@@ -72,14 +72,6 @@ vi.mock("$lib/services/known-neurons.services", () => {
   };
 });
 
-vi.mock("$lib/stores/toasts.store", () => {
-  return {
-    toastsError: vi.fn(),
-    toastsShow: vi.fn(),
-    toastsSuccess: vi.fn(),
-  };
-});
-
 describe("NnsStakeNeuronModal", () => {
   let queryBalanceSpy: MockInstance;
   const newBalanceE8s = 10_000_000n;

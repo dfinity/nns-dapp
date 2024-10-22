@@ -1,5 +1,4 @@
 import {
-  addRawToUrl,
   isLastCall,
   isLocalhost,
   isNnsAlternativeOrigin,
@@ -68,46 +67,6 @@ describe("env-utils", () => {
 
       setOrigin("https://beta.ic0.app");
       expect(isNnsAlternativeOrigin()).toBe(false);
-    });
-  });
-
-  describe("addRawToUrl", () => {
-    it("adds raw to url", () => {
-      expect(
-        addRawToUrl(
-          "https://53zcu-tiaaa-aaaaa-qaaba-cai.medium09.testnet.dfinity.network"
-        )
-      ).toBe(
-        "https://53zcu-tiaaa-aaaaa-qaaba-cai.raw.medium09.testnet.dfinity.network"
-      );
-
-      expect(
-        addRawToUrl(
-          "https://53zcu-tiaaa-aaaaa-qaaba-cai.nnsdapp.testnet.dfinity.network"
-        )
-      ).toBe(
-        "https://53zcu-tiaaa-aaaaa-qaaba-cai.raw.nnsdapp.testnet.dfinity.network"
-      );
-
-      expect(
-        addRawToUrl(
-          "https://53zcu-tiaaa-aaaaa-qaaba-cai.nnsdapp.testnet.dfinity.network/"
-        )
-      ).toBe(
-        "https://53zcu-tiaaa-aaaaa-qaaba-cai.raw.nnsdapp.testnet.dfinity.network/"
-      );
-    });
-
-    it("raises if url is not a valid url", () => {
-      const invalid1 = "http**://example.com";
-      expect(() => addRawToUrl(invalid1)).toThrow(
-        new TypeError(`Invalid URL: ${invalid1}`)
-      );
-
-      const invalid2 = "";
-      expect(() => addRawToUrl(invalid2)).toThrow(
-        new TypeError(`Invalid URL: ${invalid2}`)
-      );
     });
   });
 
