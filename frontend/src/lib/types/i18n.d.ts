@@ -340,6 +340,7 @@ interface I18nNeurons {
   learn_more: string;
   create_as_public: string;
   create_as_public_tooltip: string;
+  create_as_public_neuron_failure: string;
 }
 
 interface I18nNew_followee {

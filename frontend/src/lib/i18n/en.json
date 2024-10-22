@@ -327,7 +327,8 @@
     "private_neuron_description": "This neuron limits information it exposes publicly.",
     "learn_more": "Learn more.",
     "create_as_public": "Create as a public neuron",
-    "create_as_public_tooltip": "Public neurons reveal more information about themselves including how they vote on proposals."
+    "create_as_public_tooltip": "Public neurons reveal more information about themselves including how they vote on proposals.",
+    "create_as_public_neuron_failure": "Making your neuron public has failed, so it was created as a private neuron. You can change neuron visibility at any time under \"Advanced Details & Settings\""
   },
   "new_followee": {
     "title": "Enter New Followee",

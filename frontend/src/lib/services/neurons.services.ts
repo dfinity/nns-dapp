@@ -239,7 +239,7 @@ export const stakeNeuron = async ({
         });
       } catch (err) {
         toastsError({
-          labelKey: "neuron_detail.change_neuron_visibility_failure",
+          labelKey: "neurons.create_as_public_neuron_failure",
         });
       }
     }

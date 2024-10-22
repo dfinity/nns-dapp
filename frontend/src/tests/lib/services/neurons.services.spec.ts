@@ -395,7 +395,7 @@ describe("neurons-services", () => {
       expect(result).toEqual(newNeuronId);
 
       expectToastError(
-        'Your neurons have failed to update their visibility, please try again later. You can always change neuron visibility under "Advanced Details & Settings".'
+        'Making your neuron public has failed, so it was created as a private neuron. You can change neuron visibility at any time under "Advanced Details & Settings"'
       );
     });
   });
