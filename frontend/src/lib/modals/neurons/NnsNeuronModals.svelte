@@ -20,7 +20,10 @@
     NnsNeuronModalType,
     NnsNeuronModalVotingHistory,
   } from "$lib/types/nns-neuron-detail.modal";
-  import type { FolloweesNeuron } from "$lib/utils/neuron.utils";
+  import {
+    isPublicNeuron,
+    type FolloweesNeuron,
+  } from "$lib/utils/neuron.utils";
   import NnsAddMaturityModal from "../sns/neurons/NnsAddMaturityModal.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
@@ -96,7 +99,11 @@
     {/if}
 
     {#if type === "change-neuron-visibility"}
-      <ChangeNeuronVisibilityModal {neuron} on:nnsClose={close} />
+      <ChangeNeuronVisibilityModal
+        defaultSelectedNeuron={neuron}
+        isPublic={isPublicNeuron(neuron)}
+        on:nnsClose={close}
+      />
     {/if}
   {/if}
 
