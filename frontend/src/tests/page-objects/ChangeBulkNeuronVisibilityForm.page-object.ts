@@ -82,9 +82,7 @@ export class ChangeBulkNeuronVisibilityFormPo extends BasePageObject {
   private async getNeuronIdsFromList(
     list: PageObjectElement
   ): Promise<string[]> {
-    const neuronIdElements = await list.querySelectorAll(
-      '[data-tid="neuron-id"]'
-    );
+    const neuronIdElements = await list.allByTestId("neuron-id");
     return Promise.all(
       neuronIdElements.map(async (element) => {
         const text = await element.getText();
