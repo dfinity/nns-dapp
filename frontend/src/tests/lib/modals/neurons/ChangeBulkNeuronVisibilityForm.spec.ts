@@ -1,6 +1,7 @@
 import ChangeBulkNeuronVisibilityForm from "$lib/modals/neurons/ChangeBulkNeuronVisibilityForm.svelte";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { isPublicNeuron } from "$lib/utils/neuron.utils";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -11,7 +12,6 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { NeuronType, NeuronVisibility, type NeuronInfo } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import { vi } from "vitest";
@@ -21,10 +21,12 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     id,
     visibility,
     controller = mockMainAccount.principal.toString(),
+    hotKeyController = null,
   }: {
     id: bigint;
     visibility: NeuronVisibility;
     controller?: string;
+    hotKeyController?: string;
   }): NeuronInfo =>
     ({
       neuronId: id,
@@ -33,12 +35,9 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
         ...mockFullNeuron,
         id,
         controller,
+        hotKeys: [hotKeyController],
       },
     }) as NeuronInfo;
-
-  const uncontrolledHardwareWalletPrincipal = Principal.fromText(
-    "pin7y-wyaaa-aaaaa-aacpa-cai"
-  );
 
   const publicNeuron1 = createMockNeuron({
     id: 1n,
@@ -52,11 +51,11 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     id: 3n,
     visibility: NeuronVisibility.Private,
   });
-  const publicSeedNeuron = createMockNeuron({
-    id: 9n,
-    visibility: NeuronVisibility.Public,
+
+  const privateNeuron2 = createMockNeuron({
+    id: 4n,
+    visibility: NeuronVisibility.Private,
   });
-  publicSeedNeuron.neuronType = NeuronType.Seed;
 
   const uncontrolledPublicNeuron = createMockNeuron({
     id: 5n,
@@ -78,18 +77,21 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     visibility: NeuronVisibility.Private,
     controller: mockHardwareWalletAccount.principal.toText(),
   });
-  const uncontrolledHwPublicNeuron = createMockNeuron({
+  const publicSeedNeuron = createMockNeuron({
     id: 9n,
     visibility: NeuronVisibility.Public,
-    controller: uncontrolledHardwareWalletPrincipal.toText(),
   });
-  const uncontrolledHwPrivateNeuron = createMockNeuron({
+  publicSeedNeuron.neuronType = NeuronType.Seed;
+
+  const hotkeyPublicNeuron = createMockNeuron({
     id: 10n,
-    visibility: NeuronVisibility.Private,
-    controller: uncontrolledHardwareWalletPrincipal.toText(),
+    visibility: NeuronVisibility.Public,
+    controller: "other-controller",
+    hotKeyController: mockIdentity.getPrincipal().toText(),
   });
 
   beforeEach(() => {
+    resetIdentity();
     vi.restoreAllMocks();
     setAccountsForTesting({
       main: mockMainAccount,
@@ -127,11 +129,9 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
       component.$on("nnsCancel", onNnsCancel);
     }
 
-    return {
-      po: ChangeBulkNeuronVisibilityFormPo.under(
-        new JestPageObjectElement(container)
-      ),
-    };
+    return ChangeBulkNeuronVisibilityFormPo.under(
+      new JestPageObjectElement(container)
+    );
   };
 
   it("should initialize with the provided defaultSelectedNeuron selected and listed", async () => {
@@ -141,7 +141,7 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     });
     const onNnsSubmit = vi.fn();
 
-    const { po } = renderComponent({
+    const po = renderComponent({
       defaultSelectedNeuron: publicNeuron1,
       isPublic: isPublicNeuron(publicNeuron1),
       onNnsSubmit,
@@ -174,7 +174,7 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     });
     const onNnsSubmit = vi.fn();
 
-    const { po } = renderComponent({
+    const po = renderComponent({
       isPublic: true,
       onNnsSubmit,
     });
@@ -206,24 +206,21 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
       certified: true,
     });
     const onNnsSubmit = vi.fn();
-    const { po } = renderComponent({
-      defaultSelectedNeuron: publicNeuron1,
-      isPublic: isPublicNeuron(publicNeuron1),
+    const po = renderComponent({
+      isPublic: true,
       onNnsSubmit,
     });
 
-    expect(
-      await po
-        .getControllableNeuronVisibilityRowPo(publicNeuron2.neuronId.toString())
-        .isPresent()
-    ).toBe(true);
-    expect(
-      await po
-        .getControllableNeuronVisibilityRowPo(
-          privateNeuron1.neuronId.toString()
-        )
-        .isPresent()
-    ).toBe(false);
+    const controllableNeuronIds = await po.getControllableNeuronIds();
+    const uncontrollableNeuronIds = await po.getUncontrollableNeuronIds();
+
+    expect(controllableNeuronIds).toEqual([
+      publicNeuron1.neuronId.toString(),
+      publicNeuron2.neuronId.toString(),
+    ]);
+
+    expect(uncontrollableNeuronIds).toEqual([]);
+
     const checkboxPo = po
       .getControllableNeuronVisibilityRowPo(publicNeuron2.neuronId.toString())
       .getCheckboxPo();
@@ -233,7 +230,41 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
 
     expect(await checkboxPo.isChecked()).toBe(true);
     expect(onNnsSubmit).toHaveBeenCalledWith({
-      detail: { selectedNeurons: [publicNeuron1, publicNeuron2] },
+      detail: { selectedNeurons: [publicNeuron2] },
+    });
+  });
+
+  it("should display and allow selection of private controlled neurons", async () => {
+    neuronsStore.setNeurons({
+      neurons: [privateNeuron1, privateNeuron2, publicNeuron1],
+      certified: true,
+    });
+    const onNnsSubmit = vi.fn();
+    const po = renderComponent({
+      isPublic: false,
+      onNnsSubmit,
+    });
+
+    const controllableNeuronIds = await po.getControllableNeuronIds();
+    const uncontrollableNeuronIds = await po.getUncontrollableNeuronIds();
+
+    expect(controllableNeuronIds).toEqual([
+      privateNeuron1.neuronId.toString(),
+      privateNeuron2.neuronId.toString(),
+    ]);
+
+    expect(uncontrollableNeuronIds).toEqual([]);
+
+    const checkboxPo = po
+      .getControllableNeuronVisibilityRowPo(privateNeuron2.neuronId.toString())
+      .getCheckboxPo();
+
+    await checkboxPo.click();
+    await po.getConfirmButton().click();
+
+    expect(await checkboxPo.isChecked()).toBe(true);
+    expect(onNnsSubmit).toHaveBeenCalledWith({
+      detail: { selectedNeurons: [privateNeuron2] },
     });
   });
 
@@ -250,41 +281,50 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     });
     const onNnsSubmit = vi.fn();
 
-    const { po } = renderComponent({
-      defaultSelectedNeuron: publicNeuron1,
-      isPublic: isPublicNeuron(publicNeuron1),
+    const po = renderComponent({
+      isPublic: true,
       onNnsSubmit,
     });
 
     await po.getApplyToAllCheckbox().click();
-    await po.getConfirmButton().click();
 
     expect(
       await po
         .getControllableNeuronVisibilityRowPo(publicNeuron2.neuronId.toString())
-        .isPresent()
+        .getCheckboxPo()
+        .isChecked()
     ).toBe(true);
     expect(
       await po
         .getControllableNeuronVisibilityRowPo(
           publicSeedNeuron.neuronId.toString()
         )
-        .isPresent()
+        .getCheckboxPo()
+        .isChecked()
     ).toBe(true);
     expect(
       await po
-        .getControllableNeuronVisibilityRowPo(
+        .getUncontrollableNeuronVisibilityRowPo(
           hwPublicNeuron.neuronId.toString()
         )
-        .isPresent()
+        .getCheckboxPo()
+        .isChecked()
     ).toBe(false);
-    expect(
-      await po
-        .getControllableNeuronVisibilityRowPo(
-          hwPrivateNeuron.neuronId.toString()
-        )
-        .isPresent()
-    ).toBe(false);
+
+    const controllableNeuronIds = await po.getControllableNeuronIds();
+    const uncontrollableNeuronIds = await po.getUncontrollableNeuronIds();
+
+    expect(controllableNeuronIds).toEqual([
+      publicNeuron1.neuronId.toString(),
+      publicNeuron2.neuronId.toString(),
+      publicSeedNeuron.neuronId.toString(),
+    ]);
+
+    expect(uncontrollableNeuronIds).toEqual([
+      hwPublicNeuron.neuronId.toString(),
+    ]);
+
+    await po.getConfirmButton().click();
 
     expect(onNnsSubmit).toHaveBeenCalledWith({
       detail: {
@@ -300,9 +340,8 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     });
     const onNnsSubmit = vi.fn();
 
-    const { po } = renderComponent({
-      defaultSelectedNeuron: publicNeuron1,
-      isPublic: isPublicNeuron(publicNeuron1),
+    const po = renderComponent({
+      isPublic: true,
       onNnsSubmit,
     });
 
@@ -336,9 +375,8 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
       certified: true,
     });
 
-    const { po } = renderComponent({
-      defaultSelectedNeuron: publicNeuron1,
-      isPublic: isPublicNeuron(publicNeuron1),
+    const po = renderComponent({
+      isPublic: true,
     });
 
     expect(await po.getUncontrollableNeuronsList().isPresent()).toBe(true);
@@ -351,15 +389,21 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     );
   });
 
-  it("should display correct neuron information and tags", async () => {
+  it("should display correct neuron information, tags and detail", async () => {
     neuronsStore.setNeurons({
-      neurons: [publicNeuron1, publicNeuron2, publicSeedNeuron, privateNeuron1],
+      neurons: [
+        publicNeuron1,
+        publicNeuron2,
+        publicSeedNeuron,
+        privateNeuron1,
+        hwPublicNeuron,
+        hotkeyPublicNeuron,
+      ],
       certified: true,
     });
 
-    const { po } = renderComponent({
-      defaultSelectedNeuron: publicNeuron1,
-      isPublic: isPublicNeuron(publicNeuron1),
+    const po = renderComponent({
+      isPublic: true,
     });
 
     expect(await po.getControllableNeuronsDescription().getText()).toBe(
@@ -369,33 +413,65 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     const publicNeuronRowPo = po.getControllableNeuronVisibilityRowPo(
       publicNeuron2.neuronId.toString()
     );
+    expect(await publicNeuronRowPo.getNeuronId()).toBe(
+      publicNeuron2.neuronId.toString()
+    );
     expect(await publicNeuronRowPo.isPublic()).toBe(true);
     expect(await publicNeuronRowPo.getTags()).toEqual([]);
 
     const seedNeuronRowPo = po.getControllableNeuronVisibilityRowPo(
       publicSeedNeuron.neuronId.toString()
     );
-    expect(await publicNeuronRowPo.isPublic()).toBe(true);
+
     expect(await seedNeuronRowPo.getNeuronId()).toBe(
       publicSeedNeuron.neuronId.toString()
     );
     expect(await seedNeuronRowPo.isPublic()).toBe(true);
     expect(await seedNeuronRowPo.getTags()).toEqual(["Seed"]);
 
+    const hwPublicNeuronRowPo = po.getUncontrollableNeuronVisibilityRowPo(
+      hwPublicNeuron.neuronId.toString()
+    );
+
+    expect(await hwPublicNeuronRowPo.getNeuronId()).toBe(
+      hwPublicNeuron.neuronId.toString()
+    );
+    expect(await hwPublicNeuronRowPo.isPublic()).toBe(true);
+    expect(await hwPublicNeuronRowPo.getUncontrolledNeuronDetailsText()).toBe(
+      "Hardware wallet"
+    );
+
+    const hotkeyPublicNeuronRowPo = po.getUncontrollableNeuronVisibilityRowPo(
+      hotkeyPublicNeuron.neuronId.toString()
+    );
+
+    expect(await hotkeyPublicNeuronRowPo.getNeuronId()).toBe(
+      hotkeyPublicNeuron.neuronId.toString()
+    );
+    expect(await hotkeyPublicNeuronRowPo.isPublic()).toBe(true);
     expect(
-      await po
-        .getControllableNeuronVisibilityRowPo(
-          privateNeuron1.neuronId.toString()
-        )
-        .isPresent()
-    ).toBe(false);
+      await hotkeyPublicNeuronRowPo.getUncontrolledNeuronDetailsText()
+    ).toBe(hotkeyPublicNeuron.fullNeuron.controller);
+
+    const controllableNeuronIds = await po.getControllableNeuronIds();
+    const uncontrollableNeuronIds = await po.getUncontrollableNeuronIds();
+
+    expect(controllableNeuronIds).toEqual([
+      publicNeuron1.neuronId.toString(),
+      publicNeuron2.neuronId.toString(),
+      publicSeedNeuron.neuronId.toString(),
+    ]);
+
+    expect(uncontrollableNeuronIds).toEqual([
+      hwPublicNeuron.neuronId.toString(),
+      hotkeyPublicNeuron.neuronId.toString(),
+    ]);
   });
 
   it("should handle loading state correctly", async () => {
     neuronsStore.setNeurons({ neurons: undefined, certified: false });
-    const { po } = renderComponent({
-      defaultSelectedNeuron: publicNeuron1,
-      isPublic: isPublicNeuron(publicNeuron1),
+    const po = renderComponent({
+      isPublic: true,
     });
 
     expect(await po.getLoadingContainer().isPresent()).toBe(true);
@@ -412,9 +488,8 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
       certified: true,
     });
 
-    const { po } = renderComponent({
-      defaultSelectedNeuron: publicNeuron1,
-      isPublic: isPublicNeuron(publicNeuron1),
+    const po = renderComponent({
+      isPublic: true,
     });
 
     expect(await po.getApplyToAllCheckbox().isPresent()).toBe(true);
@@ -429,9 +504,8 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
       certified: true,
     });
 
-    const { po } = renderComponent({
-      defaultSelectedNeuron: publicNeuron1,
-      isPublic: isPublicNeuron(publicNeuron1),
+    const po = renderComponent({
+      isPublic: true,
     });
 
     expect(await po.getApplyToAllCheckbox().isPresent()).toBe(false);
@@ -440,9 +514,8 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
   it("should trigger appropriate events on button clicks", async () => {
     const onNnsSubmit = vi.fn();
     const onNnsCancel = vi.fn();
-    const { po } = renderComponent({
-      defaultSelectedNeuron: publicNeuron1,
-      isPublic: isPublicNeuron(publicNeuron1),
+    const po = renderComponent({
+      isPublic: true,
       onNnsSubmit,
       onNnsCancel,
     });
@@ -454,21 +527,20 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     expect(onNnsCancel).toHaveBeenCalled();
   });
 
-  it("should display controlled hardware wallet, uncontrolled hardware wallets and hotkey uncontrolled neurons in uncontrollable neurons list", async () => {
+  it("should display controlled hardware wallet, hotkey uncontrolled neurons and uncontrolled neurons in uncontrollable neurons list", async () => {
     neuronsStore.setNeurons({
       neurons: [
         publicNeuron1,
         hwPublicNeuron,
         hwPrivateNeuron,
-        uncontrolledHwPublicNeuron,
-        uncontrolledHwPrivateNeuron,
+        uncontrolledPublicNeuron,
+        hotkeyPublicNeuron,
       ],
       certified: true,
     });
 
-    const { po } = renderComponent({
-      defaultSelectedNeuron: publicNeuron1,
-      isPublic: isPublicNeuron(publicNeuron1),
+    const po = renderComponent({
+      isPublic: true,
     });
 
     expect(await po.getControllableNeuronsList().isPresent()).toBe(true);
@@ -481,7 +553,8 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
 
     expect(uncontrollableNeuronIds).toEqual([
       hwPublicNeuron.neuronId.toString(),
-      uncontrolledHwPublicNeuron.neuronId.toString(),
+      uncontrolledPublicNeuron.neuronId.toString(),
+      hotkeyPublicNeuron.neuronId.toString(),
     ]);
   });
 });

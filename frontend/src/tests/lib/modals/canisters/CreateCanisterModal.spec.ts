@@ -8,7 +8,6 @@ import {
   createCanister,
   getIcpToCyclesExchangeRate,
 } from "$lib/services/canisters.services";
-import { toastsShow } from "$lib/stores/toasts.store";
 import { mockCanister } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
@@ -19,9 +18,11 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
+import { get } from "svelte/store";
 
 vi.mock("$lib/services/canisters.services", () => {
   return {
@@ -32,13 +33,6 @@ vi.mock("$lib/services/canisters.services", () => {
   };
 });
 
-vi.mock("$lib/stores/toasts.store", () => {
-  return {
-    toastsShow: vi.fn(),
-    toastsSuccess: vi.fn(),
-  };
-});
-
 describe("CreateCanisterModal", () => {
   vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
     mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
@@ -46,6 +40,7 @@ describe("CreateCanisterModal", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    toastsStore.reset();
   });
 
   it("should display modal", () => {
@@ -148,6 +143,8 @@ describe("CreateCanisterModal", () => {
     const done = vi.fn();
     component.$on("nnsClose", done);
 
+    expect(get(toastsStore)).toEqual([]);
+
     await clickByTestId(queryByTestId, "confirm-cycles-canister-button");
 
     await waitFor(() => expect(done).toBeCalled());
@@ -156,7 +153,15 @@ describe("CreateCanisterModal", () => {
       amount: icpAmount,
       account: selectedAccount ?? mockMainAccount,
     });
-    expect(toastsShow).toBeCalled();
+    expect(get(toastsStore)).toMatchObject([
+      {
+        level: "success",
+        text:
+          canisterName !== ""
+            ? `New canister "${canisterName}" created successfully`
+            : `New canister with id ${mockCanister.canister_id} created successfully`,
+      },
+    ]);
   };
 
   it("should create a canister from ICP and close modal", async () => {

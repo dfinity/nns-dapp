@@ -3,7 +3,6 @@
   import { i18n } from "$lib/stores/i18n";
   import { Modal } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { isPublicNeuron } from "$lib/utils/neuron.utils";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { changeNeuronVisibility } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
