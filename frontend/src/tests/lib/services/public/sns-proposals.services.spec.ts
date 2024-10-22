@@ -7,7 +7,6 @@ import {
 } from "$lib/services/public/sns-proposals.services";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
-import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
 import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -317,7 +316,7 @@ describe("sns-proposals services", () => {
     it("should handle errors", async () => {
       vi.spyOn(console, "error").mockImplementation(() => undefined);
       vi.spyOn(api, "registerVote").mockRejectedValue(new Error());
-      const spyToastError = vi.spyOn(toastsFunctions, "toastsError");
+      expect(get(toastsStore)).toEqual([]);
 
       const result = await registerVote({
         rootCanisterId: mockPrincipal,
@@ -328,11 +327,12 @@ describe("sns-proposals services", () => {
 
       expect(result).toEqual({ success: false });
 
-      expect(spyToastError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.sns_register_vote",
-        })
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "There was an error while registering vote (Neuron: 010203). ",
+        },
+      ]);
     });
   });
 

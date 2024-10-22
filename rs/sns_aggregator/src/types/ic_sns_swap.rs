@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_swap --out ic_sns_swap.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-11_14-35-overload/rs/sns/swap/canister/swap.did>
+//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-17_03-07-scheduler-changes-guestos-revert/rs/sns/swap/canister/swap.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -364,6 +364,12 @@ pub struct SnsNeuronRecipe {
     pub investor: Option<Investor>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Timers {
+    pub last_spawned_timestamp_seconds: Option<u64>,
+    pub last_reset_timestamp_seconds: Option<u64>,
+    pub requires_periodic_tasks: Option<bool>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CfNeuron {
     pub has_created_neuron_recipes: Option<bool>,
     pub hotkeys: Option<Principals>,
@@ -383,6 +389,7 @@ pub struct Swap {
     pub next_ticket_id: Option<u64>,
     pub decentralization_sale_open_timestamp_seconds: Option<u64>,
     pub finalize_swap_in_progress: Option<bool>,
+    pub timers: Option<Timers>,
     pub cf_participants: Vec<CfParticipant>,
     pub init: Option<Init>,
     pub already_tried_to_auto_finalize: Option<bool>,
@@ -480,6 +487,10 @@ pub struct RefreshBuyerTokensResponse {
     pub icp_accepted_participation_e8s: u64,
     pub icp_ledger_account_balance_e8s: u64,
 }
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ResetTimersArg {}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ResetTimersRet {}
 
 pub struct Service(pub Principal);
 impl Service {
@@ -551,5 +562,8 @@ impl Service {
         arg0: RefreshBuyerTokensRequest,
     ) -> CallResult<(RefreshBuyerTokensResponse,)> {
         ic_cdk::call(self.0, "refresh_buyer_tokens", (arg0,)).await
+    }
+    pub async fn reset_timers(&self, arg0: ResetTimersArg) -> CallResult<(ResetTimersRet,)> {
+        ic_cdk::call(self.0, "reset_timers", (arg0,)).await
     }
 }

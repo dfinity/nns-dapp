@@ -2,20 +2,14 @@ import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
 import * as services from "$lib/services/sns-accounts-balance.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-
-vi.mock("$lib/stores/toasts.store", () => {
-  return {
-    toastsError: vi.fn(),
-  };
-});
 
 describe("sns-accounts-balance.services", () => {
   const rootCanisterId = principal(1);
@@ -26,6 +20,7 @@ describe("sns-accounts-balance.services", () => {
     vi.clearAllMocks();
     icrcAccountsStore.reset();
     tokensStore.reset();
+    toastsStore.reset();
     resetSnsProjects();
 
     setSnsProjects([
@@ -60,10 +55,17 @@ describe("sns-accounts-balance.services", () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(new Error());
 
+    expect(get(toastsStore)).toEqual([]);
+
     await services.uncertifiedLoadSnsesAccountsBalances({
       rootCanisterIds: [rootCanisterId],
     });
 
-    expect(toastsError).toHaveBeenCalled();
+    expect(get(toastsStore)).toMatchObject([
+      {
+        level: "error",
+        text: "An error occurred while loading the accounts. ",
+      },
+    ]);
   });
 });
