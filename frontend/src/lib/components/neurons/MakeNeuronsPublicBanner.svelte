@@ -9,7 +9,7 @@
   } from "$lib/utils/neuron.utils";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { ENABLE_NEURON_VISIBILITY } from "$lib/stores/feature-flags.store";
-  import MakeNeuronsPublicModal from "$lib/modals/neurons/MakeNeuronsPublicModal.svelte";
+  import ChangeNeuronVisibilityModal from "$lib/modals/neurons/ChangeNeuronVisibilityModal.svelte";
 
   const LOCAL_STORAGE_KEY = "makeNeuronsPublicBannerVisible";
   const CUTOFF_DATE = new Date(2025, 0, 31);
@@ -86,7 +86,7 @@
       <IconClose />
     </button>
     {#if modalVisible}
-      <MakeNeuronsPublicModal on:nnsClose={closeModal} />
+      <ChangeNeuronVisibilityModal isPublic={false} on:nnsClose={closeModal} />
     {/if}
   </div>
 {/if}

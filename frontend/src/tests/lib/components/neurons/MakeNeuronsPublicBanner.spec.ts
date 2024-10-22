@@ -158,7 +158,7 @@ describe("MakeNeuronsPublicBanner", () => {
       "Make Neurons Public"
     );
     expect(await po.getCloseButtonPo().isPresent()).toBe(true);
-    expect(await po.getMakeNeuronsPublicModalPo().isPresent()).toBe(false);
+    expect(await po.getChangeNeuronVisibilityModalPo().isPresent()).toBe(false);
   });
 
   it("should display changeNeuronVisibilityModal when action button is clicked", async () => {
@@ -169,7 +169,7 @@ describe("MakeNeuronsPublicBanner", () => {
     });
     const po = renderComponent();
 
-    const modalPo = po.getMakeNeuronsPublicModalPo();
+    const modalPo = po.getChangeNeuronVisibilityModalPo();
 
     expect(await modalPo.isPresent()).toBe(false);
 
