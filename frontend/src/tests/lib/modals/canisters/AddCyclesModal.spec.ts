@@ -3,7 +3,6 @@ import {
   getIcpToCyclesExchangeRate,
   topUpCanister,
 } from "$lib/services/canisters.services";
-import { toastsSuccess } from "$lib/stores/toasts.store";
 import { mockCanister } from "$tests/mocks/canisters.mock";
 import {
   mockAccountsStoreSubscribe,
@@ -13,21 +12,17 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
+import { get } from "svelte/store";
 import AddCyclesModalTest from "./AddCyclesModalTest.svelte";
 
 vi.mock("$lib/services/canisters.services", () => {
   return {
     getIcpToCyclesExchangeRate: vi.fn().mockResolvedValue(100_000n),
     topUpCanister: vi.fn().mockResolvedValue({ success: true }),
-  };
-});
-
-vi.mock("$lib/stores/toasts.store", () => {
-  return {
-    toastsSuccess: vi.fn(),
   };
 });
 
@@ -38,8 +33,9 @@ describe("AddCyclesModal", () => {
 
   const reloadDetails = vi.fn();
   const props = { reloadDetails };
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
+    toastsStore.reset();
   });
   it("should display modal", () => {
     const { container } = render(AddCyclesModalTest, { props });
@@ -145,6 +141,8 @@ describe("AddCyclesModal", () => {
     const done = vi.fn();
     component.$on("nnsClose", done);
 
+    expect(get(toastsStore)).toEqual([]);
+
     await clickByTestId(queryByTestId, "confirm-cycles-canister-button");
 
     await waitFor(() => expect(done).toBeCalled());
@@ -154,7 +152,12 @@ describe("AddCyclesModal", () => {
       account: selectedAccount ?? mockMainAccount,
     });
     expect(reloadDetails).toBeCalled();
-    expect(toastsSuccess).toBeCalled();
+    expect(get(toastsStore)).toMatchObject([
+      {
+        level: "success",
+        text: "Cycles added successfully",
+      },
+    ]);
   };
 
   it("should top up a canister from ICP and close modal", async () => {

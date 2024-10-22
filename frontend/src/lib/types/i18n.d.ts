@@ -81,6 +81,8 @@ interface I18nError {
   amount_not_enough_stake_neuron: string;
   amount_not_enough_top_up_neuron: string;
   transaction_error: string;
+  transaction_too_old: string;
+  transaction_created_in_future: string;
   unexpected_number_neurons_merge: string;
   cannot_merge: string;
   not_authorized_neuron_action: string;
@@ -957,6 +959,7 @@ interface I18nError__sns {
   sns_add_hotkey: string;
   sns_stake_maturity: string;
   sns_disburse_maturity: string;
+  sns_amount_not_enough_stake_neuron: string;
 }
 
 interface I18nAuth_accounts {
