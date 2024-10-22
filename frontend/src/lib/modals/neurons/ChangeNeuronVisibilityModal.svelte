@@ -31,7 +31,7 @@
     try {
       const { success } = await changeNeuronVisibility({
         neurons: selectedNeurons,
-        makePublic: makePublic,
+        makePublic,
       });
       if (success) {
         toastsSuccess({
