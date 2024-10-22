@@ -1,4 +1,4 @@
-//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-11_14-35-overload/rs/sns/swap/canister/swap.did>
+//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-17_03-07-scheduler-changes-guestos-revert/rs/sns/swap/canister/swap.did>
 type BuyerState = record {
   icp : opt TransferableAmount;
   has_created_neuron_recipes : opt bool;
@@ -413,6 +413,13 @@ type Swap = record {
   buyers : vec record { text; BuyerState };
   params : opt Params;
   open_sns_token_swap_proposal_id : opt nat64;
+  timers : opt Timers;
+};
+
+type Timers = record {
+  requires_periodic_tasks : opt bool;
+  last_reset_timestamp_seconds : opt nat64;
+  last_spawned_timestamp_seconds : opt nat64;
 };
 
 type SweepResult = record {
@@ -467,4 +474,5 @@ service : (Init) -> {
   refresh_buyer_tokens : (RefreshBuyerTokensRequest) -> (
       RefreshBuyerTokensResponse,
     );
+  reset_timers : (record {}) -> (record {});
 }
