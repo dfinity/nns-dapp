@@ -86,7 +86,7 @@
       <IconClose />
     </button>
     {#if modalVisible}
-      <ChangeNeuronVisibilityModal isPublic={false} on:nnsClose={closeModal} />
+      <ChangeNeuronVisibilityModal makePublic={true} on:nnsClose={closeModal} />
     {/if}
   </div>
 {/if}
