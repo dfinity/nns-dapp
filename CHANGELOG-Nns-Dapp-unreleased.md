@@ -27,6 +27,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Race condition in proposal loading.
+* Consistently identify a proposal by its type in voting progress toasts.
 
 #### Security
 
