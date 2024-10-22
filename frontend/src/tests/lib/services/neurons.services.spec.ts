@@ -342,6 +342,90 @@ describe("neurons-services", () => {
       expect(spyStakeNeuron).not.toBeCalled();
       expect(spyStakeNeuronIcrc1).not.toBeCalled();
     });
+
+    it("should create a public neuron when asPublicNeuron is true", async () => {
+      const newNeuronId = 12345n;
+      spyStakeNeuron.mockResolvedValue(newNeuronId);
+
+      expect(spyStakeNeuron).not.toBeCalled();
+      expect(spyChangeNeuronVisibility).not.toBeCalled();
+
+      const result = await stakeNeuron({
+        amount: 10,
+        account: mockMainAccount,
+        asPublicNeuron: true,
+      });
+
+      expect(spyStakeNeuron).toBeCalledWith({
+        controller: mockIdentity.getPrincipal(),
+        fromSubAccount: undefined,
+        identity: mockIdentity,
+        ledgerCanisterIdentity: mockIdentity,
+        stake: 1_000_000_000n,
+        fee: NNS_TOKEN_DATA.fee,
+      });
+      expect(spyStakeNeuron).toBeCalledTimes(1);
+
+      expect(spyChangeNeuronVisibility).toBeCalledWith({
+        neuronIds: [newNeuronId],
+        visibility: NeuronVisibility.Public,
+        identity: mockIdentity,
+      });
+      expect(spyChangeNeuronVisibility).toBeCalledTimes(1);
+
+      expect(result).toEqual(newNeuronId);
+    });
+
+    it("should not create a public neuron when asPublicNeuron is false", async () => {
+      const newNeuronId = 12345n;
+      spyStakeNeuron.mockResolvedValue(newNeuronId);
+
+      expect(spyStakeNeuron).not.toBeCalled();
+      expect(spyChangeNeuronVisibility).not.toBeCalled();
+
+      const result = await stakeNeuron({
+        amount: 10,
+        account: mockMainAccount,
+        asPublicNeuron: false,
+      });
+
+      expect(spyStakeNeuron).toBeCalledWith({
+        controller: mockIdentity.getPrincipal(),
+        fromSubAccount: undefined,
+        identity: mockIdentity,
+        ledgerCanisterIdentity: mockIdentity,
+        stake: 1_000_000_000n,
+        fee: NNS_TOKEN_DATA.fee,
+      });
+      expect(spyStakeNeuron).toBeCalledTimes(1);
+
+      expect(spyChangeNeuronVisibility).not.toBeCalled();
+
+      expect(result).toEqual(newNeuronId);
+    });
+
+    it("should show error toast if changing neuron visibility fails", async () => {
+      const newNeuronId = 12345n;
+      spyStakeNeuron.mockResolvedValue(newNeuronId);
+      spyChangeNeuronVisibility.mockRejectedValue(
+        new Error("Visibility change failed")
+      );
+
+      const result = await stakeNeuron({
+        amount: 10,
+        account: mockMainAccount,
+        asPublicNeuron: true,
+      });
+
+      expect(spyStakeNeuron).toBeCalledTimes(1);
+      expect(spyChangeNeuronVisibility).toBeCalledTimes(1);
+
+      expect(result).toEqual(newNeuronId);
+
+      expectToastError(
+        'Making your neuron public has failed, so it was created as a private neuron. You can change neuron visibility at any time under "Advanced Details & Settings"'
+      );
+    });
   });
 
   describe("list neurons", () => {

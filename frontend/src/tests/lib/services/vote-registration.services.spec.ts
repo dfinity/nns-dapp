@@ -35,7 +35,6 @@ import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 const proposalTopic = Topic.Governance;
-const proposalTopicName = en.topics[Topic[proposalTopic]];
 const proposalTypeName = en.actions.Motion;
 
 let proposalInfoIdIndex = 0;
@@ -205,7 +204,7 @@ describe("vote-registration-services", () => {
         expect(get(toastsStore)).toMatchObject([
           {
             level: "info",
-            text: `Adopting proposal ${proposalTopicName} (${proposal.id}). Neurons registered: 0/3. Keep the dapp open until completed.`,
+            text: `Adopting proposal ${proposalTypeName} (${proposal.id}). Neurons registered: 0/3. Keep the dapp open until completed.`,
           },
         ]);
       });
@@ -230,7 +229,7 @@ describe("vote-registration-services", () => {
         expect(get(toastsStore)).toMatchObject([
           {
             level: "info",
-            text: `Rejecting proposal ${proposalTopicName} (${proposal.id}). Neurons registered: 0/3. Keep the dapp open until completed.`,
+            text: `Rejecting proposal ${proposalTypeName} (${proposal.id}). Neurons registered: 0/3. Keep the dapp open until completed.`,
           },
         ]);
       });
@@ -254,19 +253,7 @@ describe("vote-registration-services", () => {
         });
         await runResolvedPromises();
 
-        expect(get(toastsStore)).toMatchObject([
-          {
-            level: "info",
-            text: `Rejecting proposal ${proposalTopicName} (${proposal.id}). Neurons registered: 0/3. Keep the dapp open until completed.`,
-          },
-        ]);
-
-        resolveRegisterVote.shift()();
-        await runResolvedPromises();
-
-        for (let i = 1; i < neuronIds.length; i++) {
-          // NOTE: Above we display the proposal topic and here the proposal type.
-          // TODO: Fix this.
+        for (let i = 0; i < neuronIds.length; i++) {
           expect(get(toastsStore)).toMatchObject([
             {
               level: "info",
@@ -307,7 +294,7 @@ describe("vote-registration-services", () => {
           expect(get(toastsStore)).toMatchObject([
             {
               level: "info",
-              text: `Rejecting proposal ${proposalTopicName} (${proposal.id}). Updating proposal state...`,
+              text: `Rejecting proposal ${proposalTypeName} (${proposal.id}). Updating proposal state...`,
             },
           ]);
         }
@@ -434,7 +421,7 @@ describe("vote-registration-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "info",
-          text: `Rejecting proposal ${proposalTopicName} (${proposal.id}). Updating proposal state...`,
+          text: `Rejecting proposal ${proposalTypeName} (${proposal.id}). Updating proposal state...`,
         },
         {
           level: "error",
@@ -461,7 +448,7 @@ describe("vote-registration-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: `Sorry, there was an error while registering the vote for the proposal ${proposalTopicName} (${proposal.id}). Please try again. 0: test, 1: test, 2: test`,
+          text: `Sorry, there was an error while registering the vote for the proposal ${proposalTypeName} (${proposal.id}). Please try again. 0: test, 1: test, 2: test`,
         },
       ]);
     });
@@ -484,7 +471,7 @@ describe("vote-registration-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: `Sorry, there was an error while registering the vote for the proposal ${proposalTopicName} (${proposal.id}). Please try again. 0: test, 1: test, 2: test`,
+          text: `Sorry, there was an error while registering the vote for the proposal ${proposalTypeName} (${proposal.id}). Please try again. 0: test, 1: test, 2: test`,
         },
       ]);
     });
@@ -508,7 +495,7 @@ describe("vote-registration-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: `Sorry, there was an error while registering the vote for the proposal ${proposalTopicName} (16). Please try again. ${neuronIds.map((_, i) => `${i}: test`).join(", ")}`,
+          text: `Sorry, there was an error while registering the vote for the proposal ${proposalTypeName} (16). Please try again. ${neuronIds.map((_, i) => `${i}: test`).join(", ")}`,
         },
       ]);
     });
@@ -531,7 +518,7 @@ describe("vote-registration-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: `Sorry, there was an error while registering the vote for the proposal ${proposalTopicName} (${proposal.id}). Please try again. ${neuronIds.map((_, i) => `${i}: governance-error`).join(", ")}`,
+          text: `Sorry, there was an error while registering the vote for the proposal ${proposalTypeName} (${proposal.id}). Please try again. ${neuronIds.map((_, i) => `${i}: governance-error`).join(", ")}`,
         },
       ]);
     });
@@ -558,7 +545,7 @@ describe("vote-registration-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "info",
-          text: `Adopting proposal ${proposalTopicName} (${proposal.id}). Neurons registered: 0/1. Keep the dapp open until completed.`,
+          text: `Adopting proposal ${proposalTypeName} (${proposal.id}). Neurons registered: 0/1. Keep the dapp open until completed.`,
         },
         {
           level: "error",

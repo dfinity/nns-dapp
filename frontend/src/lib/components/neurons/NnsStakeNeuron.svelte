@@ -15,13 +15,18 @@
   import type { Account } from "$lib/types/account";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import { getMaxTransactionAmount } from "$lib/utils/token.utils";
-  import { busy } from "@dfinity/gix-components";
+  import { busy, Checkbox } from "@dfinity/gix-components";
   import { ICPToken } from "@dfinity/utils";
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
+  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
+  import { ENABLE_NEURON_VISIBILITY } from "$lib/stores/feature-flags.store";
 
   export let account: Account | undefined;
   let amount: number;
+
+  let asPublicNeuron = false;
 
   const dispatcher = createEventDispatcher();
 
@@ -46,6 +51,7 @@
       amount,
       account,
       loadNeuron: !isHardwareWallet,
+      asPublicNeuron,
     });
     if (neuronId !== undefined) {
       // We don't wait for `loadBalance` to finish to give a better UX to the user.
@@ -89,6 +95,28 @@
       >{$i18n.neurons.transaction_fee}</svelte:fragment
     >
   </TransactionFormFee>
+
+  {#if $ENABLE_NEURON_VISIBILITY}
+    <Separator spacing="small" />
+
+    <Checkbox
+      preventDefault
+      testId="as-public-neuron-checkbox"
+      inputId="as-public-neuron-checkbox"
+      checked={asPublicNeuron}
+      on:nnsChange={() => (asPublicNeuron = !asPublicNeuron)}
+      --checkbox-label-order="1"
+      --checkbox-padding="0"
+    >
+      <span data-tid="as-public-neuron-checkbox-label"
+        >{$i18n.neurons.create_as_public}
+      </span>
+      <TooltipIcon
+        text={$i18n.neurons.create_as_public_tooltip}
+        tooltipId="create_as_public_tooltip"
+      />
+    </Checkbox>
+  {/if}
 
   <div class="toolbar">
     <button
