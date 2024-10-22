@@ -80,7 +80,7 @@ describe("ChangeNeuronVisibilityModal", () => {
       component: ChangeNeuronVisibilityModal,
       props: {
         defaultSelectedNeuron: neuron,
-        isPublic: isPublicNeuron(neuron),
+        makePublic: !isPublicNeuron(neuron),
       },
     });
 

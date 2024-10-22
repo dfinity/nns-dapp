@@ -101,7 +101,7 @@
     {#if type === "change-neuron-visibility"}
       <ChangeNeuronVisibilityModal
         defaultSelectedNeuron={neuron}
-        isPublic={isPublicNeuron(neuron)}
+        makePublic={!isPublicNeuron(neuron)}
         on:nnsClose={close}
       />
     {/if}

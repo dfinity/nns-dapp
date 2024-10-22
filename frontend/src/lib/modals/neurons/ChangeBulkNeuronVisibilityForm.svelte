@@ -16,7 +16,7 @@
   import { nonNullish } from "@dfinity/utils";
 
   export let defaultSelectedNeuron: NeuronInfo | null = null;
-  export let isPublic: boolean;
+  export let makePublic: boolean;
 
   const dispatch = createEventDispatcher();
 
@@ -48,7 +48,7 @@
       isNeuronControllableByUser({
         neuron: n,
         mainAccount: $icpAccountsStore.main,
-      }) && isPublic === isPublicNeuron(n)
+      }) && (makePublic ? !isPublicNeuron(n) : isPublicNeuron(n))
   );
 
   let uncontrollableNeurons: NeuronInfo[];
@@ -57,7 +57,7 @@
       !isNeuronControllableByUser({
         neuron: n,
         mainAccount: $icpAccountsStore.main,
-      }) && isPublic === isPublicNeuron(n)
+      }) && (makePublic ? !isPublicNeuron(n) : isPublicNeuron(n))
   );
 
   $: isNeuronSelected = (n: NeuronInfo) =>
