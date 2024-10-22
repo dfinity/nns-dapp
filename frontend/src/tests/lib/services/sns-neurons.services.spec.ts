@@ -1142,7 +1142,7 @@ describe("sns-neurons-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "Sorry, the amount is too small. You need a minimum of 0.00002 TST to stake a neuron.",
+          text: "Sorry, the amount is too small. You need a minimum of 0.00002 TST to stake.",
         },
       ]);
       expect(success).toBe(false);
