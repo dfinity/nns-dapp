@@ -190,10 +190,12 @@ export const stakeNeuron = async ({
   amount,
   account,
   loadNeuron = true,
+  asPublicNeuron,
 }: {
   amount: number;
   account: Account;
   loadNeuron?: boolean;
+  asPublicNeuron?: boolean;
 }): Promise<NeuronId | undefined> => {
   try {
     const stake = numberToE8s(amount);
@@ -227,6 +229,20 @@ export const stakeNeuron = async ({
       fromSubAccount,
       fee,
     });
+
+    if (asPublicNeuron) {
+      try {
+        await governanceApiService.changeNeuronVisibility({
+          neuronIds: [newNeuronId],
+          visibility: NeuronVisibility.Public,
+          identity: accountIdentity,
+        });
+      } catch (err) {
+        toastsError({
+          labelKey: "neurons.create_as_public_neuron_failure",
+        });
+      }
+    }
 
     if (loadNeuron) {
       await getAndLoadNeuron(newNeuronId);
