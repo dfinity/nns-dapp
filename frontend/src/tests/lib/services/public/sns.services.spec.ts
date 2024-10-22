@@ -33,11 +33,6 @@ import { mock } from "vitest-mock-extended";
 vi.mock("$lib/api/sns.api");
 vi.mock("$lib/api/sns-aggregator.api");
 vi.mock("$lib/api/sns-governance.api");
-vi.mock("$lib/stores/toasts.store", () => {
-  return {
-    toastsError: vi.fn(),
-  };
-});
 
 const listSnsesSpy = vi.fn().mockResolvedValue(deployedSnsMock);
 const initSnsWrapperSpy = vi.fn().mockResolvedValue(
