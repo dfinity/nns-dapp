@@ -253,8 +253,6 @@ export const listNeurons = async ({
   callback?: (certified: boolean) => void;
   strategy?: QueryAndUpdateStrategy;
 } = {}): Promise<void> => {
-  let hasCertified = false;
-
   return queryAndUpdate<NeuronInfo[], unknown>({
     strategy: strategy ?? FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
@@ -264,11 +262,6 @@ export const listNeurons = async ({
         includeEmptyNeurons: false,
       }),
     onLoad: async ({ response: neurons, certified }) => {
-      if (certified === false && hasCertified) {
-        return;
-      }
-      hasCertified ||= certified;
-
       neuronsStore.setNeurons({ neurons, certified });
 
       callback?.(certified);
