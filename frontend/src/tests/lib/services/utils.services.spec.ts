@@ -243,6 +243,38 @@ describe("api-utils", () => {
         expect(onError).toBeCalledTimes(0);
       });
 
+      it("should ignore QUERY error when UPDATE comes first", async () => {
+        let resolveUpdate: (value: unknown) => void;
+        let rejectQuery: (value: unknown) => void;
+        const request = vi
+          .fn()
+          .mockImplementation(({ certified }: { certified: boolean }) =>
+            certified
+              ? new Promise((resolve) => (resolveUpdate = resolve))
+              : new Promise((_, reject) => (rejectQuery = reject))
+          );
+        const onLoad = vi.fn();
+        const onError = vi.fn();
+
+        queryAndUpdate<number, unknown>({
+          request,
+          onLoad,
+          onError,
+        });
+        await runResolvedPromises();
+
+        expect(request).toBeCalledTimes(2);
+        expect(onLoad).toBeCalledTimes(0);
+        expect(onError).toBeCalledTimes(0);
+
+        resolveUpdate({});
+        rejectQuery({});
+        await runResolvedPromises();
+
+        expect(onLoad).toBeCalledTimes(1);
+        expect(onError).toBeCalledTimes(0);
+      });
+
       it("should resolve promise when the first response is done", async () => {
         let updateDone = false;
         let queryDone = false;
