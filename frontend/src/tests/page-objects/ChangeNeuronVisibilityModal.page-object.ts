@@ -1,5 +1,6 @@
 import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import type { ButtonPo } from "./Button.page-object";
 import { ChangeBulkNeuronVisibilityFormPo } from "./ChangeBulkNeuronVisibilityForm.page-object";
 
 export class ChangeNeuronVisibilityModalPo extends ModalPo {
@@ -13,5 +14,9 @@ export class ChangeNeuronVisibilityModalPo extends ModalPo {
 
   getChangeBulkNeuronVisibilityFormPo(): ChangeBulkNeuronVisibilityFormPo {
     return ChangeBulkNeuronVisibilityFormPo.under(this.root);
+  }
+
+  getConfirmButton(): ButtonPo {
+    return this.getChangeBulkNeuronVisibilityFormPo().getConfirmButton();
   }
 }

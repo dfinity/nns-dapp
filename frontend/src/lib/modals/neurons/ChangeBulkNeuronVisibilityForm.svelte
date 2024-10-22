@@ -2,10 +2,10 @@
   import { createEventDispatcher } from "svelte";
   import {
     isPublicNeuron,
-    isNeuronControllable,
+    isNeuronControllableByUser,
     createNeuronVisibilityRowData,
   } from "$lib/utils/neuron.utils";
-  import { neuronsStore } from "$lib/stores/neurons.store";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { i18n } from "$lib/stores/i18n";
@@ -29,7 +29,7 @@
   $: selectedNeurons = [neuron];
 
   let isLoading = false;
-  $: isLoading = $neuronsStore.neurons === undefined;
+  $: isLoading = $definedNeuronsStore.length === 0;
 
   let applyToAllNeurons: boolean;
   $: applyToAllNeurons = false;
@@ -38,28 +38,26 @@
   isPublic = isPublicNeuron(neuron);
 
   let allNeurons: NeuronInfo[];
-  $: allNeurons = $neuronsStore.neurons || [];
+  $: allNeurons = $definedNeuronsStore || [];
 
   let controllableNeurons: NeuronInfo[];
   $: controllableNeurons = allNeurons.filter(
     (n) =>
-      isNeuronControllable({
+      isNeuronControllableByUser({
         neuron: n,
-        identity: $authStore.identity,
-        accounts: $icpAccountsStore,
+        mainAccount: $icpAccountsStore.main,
       }) &&
-      (isPublic ? isPublicNeuron(n) : !isPublicNeuron(n)) &&
+      isPublic === isPublicNeuron(n) &&
       n.neuronId !== neuron.neuronId
   );
 
   let uncontrollableNeurons: NeuronInfo[];
   $: uncontrollableNeurons = allNeurons.filter(
     (n) =>
-      !isNeuronControllable({
+      !isNeuronControllableByUser({
         neuron: n,
-        identity: $authStore.identity,
-        accounts: $icpAccountsStore,
-      }) && (isPublic ? isPublicNeuron(n) : !isPublicNeuron(n))
+        mainAccount: $icpAccountsStore.main,
+      }) && isPublic === isPublicNeuron(n)
   );
 
   $: isNeuronSelected = (n: NeuronInfo) =>
@@ -163,7 +161,7 @@
     {/if}
   {/if}
 
-  <div class="toolbar alert footer">
+  <div class="toolbar footer">
     <button
       class="secondary"
       on:click|preventDefault={cancel}
