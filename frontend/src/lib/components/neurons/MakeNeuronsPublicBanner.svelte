@@ -4,11 +4,9 @@
   import { browser } from "$app/environment";
   import { i18n } from "$lib/stores/i18n";
   import {
-    isNeuronControllable,
     isNeuronControllableByUser,
     isPublicNeuron,
   } from "$lib/utils/neuron.utils";
-  import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { ENABLE_NEURON_VISIBILITY } from "$lib/stores/feature-flags.store";
   import MakeNeuronsPublicModal from "$lib/modals/neurons/MakeNeuronsPublicModal.svelte";
