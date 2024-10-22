@@ -14,7 +14,6 @@ import {
   resetIdentitiesCachedForTesting,
   showAddressAndPubKeyOnHardwareWallet,
 } from "$lib/services/icp-ledger.services";
-import * as toastsStore from "$lib/stores/toasts.store";
 import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
@@ -33,8 +32,10 @@ import {
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { MockNNSDappCanister } from "$tests/mocks/nns-dapp.canister.mock";
 import type { Agent } from "@dfinity/agent";
+import { toastsStore } from "@dfinity/gix-components";
 import { principalToAccountIdentifier } from "@dfinity/ledger-icp";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
+import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
 describe("icp-ledger.services", () => {
@@ -48,6 +49,7 @@ describe("icp-ledger.services", () => {
   beforeEach(() => {
     resetIdentitiesCachedForTesting();
     vi.clearAllMocks();
+    toastsStore.reset();
     resetIdentity();
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
       mockGetIdentity
@@ -102,16 +104,16 @@ describe("icp-ledger.services", () => {
             message: "error__ledger.browser_not_supported",
           });
         });
-        const spyToastError = vi.spyOn(toastsStore, "toastsError");
+        expect(get(toastsStore)).toEqual([]);
 
         await connectToHardwareWallet(callback);
 
-        expect(spyToastError).toBeCalled();
-        expect(spyToastError).toBeCalledWith({
-          labelKey: "error__ledger.browser_not_supported",
-        });
-
-        spyToastError.mockRestore();
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: "Sorry, the browser does not support the WebHID API needed to connect the hardware wallet. Check support in https://caniuse.com/?search=WebHID",
+          },
+        ]);
       });
     });
   });
@@ -153,35 +155,35 @@ describe("icp-ledger.services", () => {
 
     describe("error", () => {
       it("should throw an error if no name provided", async () => {
-        const spyToastError = vi.spyOn(toastsStore, "toastsError");
+        expect(get(toastsStore)).toEqual([]);
 
         await registerHardwareWallet({
           name: undefined,
           ledgerIdentity,
         });
 
-        expect(spyToastError).toBeCalled();
-        expect(spyToastError).toBeCalledWith({
-          labelKey: "error__attach_wallet.no_name",
-        });
-
-        spyToastError.mockRestore();
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: "No account name provided.",
+          },
+        ]);
       });
 
       it("should throw an error if no ledger identity provided", async () => {
-        const spyToastError = vi.spyOn(toastsStore, "toastsError");
+        expect(get(toastsStore)).toEqual([]);
 
         await registerHardwareWallet({
           name: "test",
           ledgerIdentity: undefined,
         });
 
-        expect(spyToastError).toBeCalled();
-        expect(spyToastError).toBeCalledWith({
-          labelKey: "error__attach_wallet.no_identity",
-        });
-
-        spyToastError.mockRestore();
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: "No identity connected to your hardware wallet.",
+          },
+        ]);
       });
 
       it("should not register and sync accounts if no identity", async () => {
@@ -289,17 +291,16 @@ describe("icp-ledger.services", () => {
           });
         });
 
-        const spyToastError = vi.spyOn(toastsStore, "toastsError");
+        expect(get(toastsStore)).toEqual([]);
 
         await showAddressAndPubKeyOnHardwareWallet();
 
-        expect(spyToastError).toBeCalled();
-        expect(spyToastError).toBeCalledWith({
-          labelKey: "error__ledger.unexpected_wallet",
-          renderAsHtml: false,
-        });
-
-        spyToastError.mockRestore();
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: "Found unexpected public key. Are you sure you're using the right hardware wallet?",
+          },
+        ]);
       });
     });
   });
@@ -344,19 +345,18 @@ describe("icp-ledger.services", () => {
       });
 
       it("should not list neurons if ledger throw an error", async () => {
-        const spyToastError = vi.spyOn(toastsStore, "toastsError");
+        expect(get(toastsStore)).toEqual([]);
 
         const { err } = await listNeuronsHardwareWallet();
 
-        expect(spyToastError).toBeCalled();
-        expect(spyToastError).toBeCalledWith({
-          labelKey: "error__ledger.please_open",
-          renderAsHtml: false,
-        });
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: "Please open the Internet Computer app on your hardware wallet and try again.",
+          },
+        ]);
 
         expect(err).not.toBeUndefined();
-
-        spyToastError.mockRestore();
       });
     });
   });

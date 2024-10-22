@@ -4,7 +4,6 @@ import * as actionableProposalsService from "$lib/services/actionable-proposals.
 import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
-import * as toastsStore from "$lib/stores/toasts.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import {
@@ -18,6 +17,7 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SnsBallot, SnsProposalData } from "@dfinity/sns";
@@ -61,9 +61,6 @@ describe("sns-vote-registration-services", () => {
       createdTimestampSeconds: 0n,
     }),
   ];
-  const spyOnToastsUpdate = vi.spyOn(toastsStore, "toastsUpdate");
-  const spyOnToastsShow = vi.spyOn(toastsStore, "toastsShow");
-  const spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
   const testBallots = neurons.map((neuron) => [
     getSnsNeuronIdAsHexString(neuron),
     {
@@ -111,6 +108,7 @@ describe("sns-vote-registration-services", () => {
   beforeEach(() => {
     resetIdentity();
     vi.clearAllMocks();
+    toastsStore.reset();
 
     setSnsProjects([
       {
@@ -124,10 +122,6 @@ describe("sns-vote-registration-services", () => {
       completed: true,
       proposals: [proposal1],
     });
-
-    spyOnToastsUpdate.mockClear();
-    spyOnToastsError.mockClear();
-    spyOnToastsShow.mockClear();
   });
 
   describe("registerSnsVotes", () => {
@@ -320,6 +314,8 @@ describe("sns-vote-registration-services", () => {
         .mockRejectedValue(new Error("test error"));
       const spyReloadProposalCallback = vi.fn();
 
+      expect(get(toastsStore)).toEqual([]);
+
       await callRegisterVote({
         vote: SnsVote.Yes,
         reloadProposalCallback: spyReloadProposalCallback,
@@ -330,15 +326,12 @@ describe("sns-vote-registration-services", () => {
         expect(spyRegisterVoteApi).toBeCalledTimes(votableNeuronCount)
       );
 
-      expect(spyOnToastsShow).toBeCalledWith({
-        detail: "01: test error, 02: test error, 03: test error",
-        labelKey: "error.register_vote",
-        level: "error",
-        substitutions: {
-          $proposalId: "123",
-          $proposalType: "Governance",
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, there was an error while registering the vote for the proposal Governance (123). Please try again. 01: test error, 02: test error, 03: test error",
         },
-      });
+      ]);
     });
   });
 });
