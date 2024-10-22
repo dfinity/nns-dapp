@@ -55,7 +55,11 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { AccountIdentifier } from "@dfinity/ledger-icp";
+import {
+  AccountIdentifier,
+  TxCreatedInFutureError,
+  TxTooOldError,
+} from "@dfinity/ledger-icp";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -562,6 +566,8 @@ describe("icp-accounts.services", () => {
       await transferICP(transferICPParams);
 
       expect(spySendICP).toHaveBeenCalled();
+
+      expect(get(toastsStore)).toEqual([]);
     });
 
     it("should not transfer ICP for invalid address", async () => {
@@ -649,6 +655,57 @@ describe("icp-accounts.services", () => {
         certified: true,
       });
       expect(queryAccountBalanceSpy).toHaveBeenCalledTimes(4);
+    });
+
+    it("should show toast on error", async () => {
+      spySendICP.mockRejectedValue(new Error());
+
+      expect(get(toastsStore)).toEqual([]);
+
+      await transferICP(transferICPParams);
+
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, there was an error trying to execute the transaction. ",
+        },
+      ]);
+
+      expect(queryAccountBalanceSpy).not.toHaveBeenCalled();
+    });
+
+    it("should show toast on TxTooOldError", async () => {
+      spySendICP.mockRejectedValue(new TxTooOldError());
+
+      expect(get(toastsStore)).toEqual([]);
+
+      await transferICP(transferICPParams);
+
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Transaction is too old, could not be completed. Make sure your computer’s clock is set correctly, and try again. ",
+        },
+      ]);
+
+      expect(queryAccountBalanceSpy).not.toHaveBeenCalled();
+    });
+
+    it("should show toast on TxCreatedInFutureError", async () => {
+      spySendICP.mockRejectedValue(new TxCreatedInFutureError());
+
+      expect(get(toastsStore)).toEqual([]);
+
+      await transferICP(transferICPParams);
+
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Transaction was created in the future, could not be completed. Make sure your computer’s clock is set correctly, and try again. ",
+        },
+      ]);
+
+      expect(queryAccountBalanceSpy).not.toHaveBeenCalled();
     });
   });
 
