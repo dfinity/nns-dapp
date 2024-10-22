@@ -13,6 +13,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { Checkbox, Spinner } from "@dfinity/gix-components";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   export let defaultSelectedNeuron: NeuronInfo | null = null;
   export let isPublic: boolean;
@@ -28,7 +29,9 @@
   };
 
   let selectedNeurons: NeuronInfo[];
-  $: selectedNeurons = defaultSelectedNeuron ? [defaultSelectedNeuron] : [];
+  $: selectedNeurons = nonNullish(defaultSelectedNeuron)
+    ? [defaultSelectedNeuron]
+    : [];
 
   let isLoading = false;
   $: isLoading = $definedNeuronsStore.length === 0;

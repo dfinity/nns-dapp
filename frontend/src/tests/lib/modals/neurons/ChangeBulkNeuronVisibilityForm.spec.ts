@@ -56,35 +56,29 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     id: 4n,
     visibility: NeuronVisibility.Private,
   });
-
-  const uncontrolledPublicNeuron = createMockNeuron({
-    id: 5n,
-    visibility: NeuronVisibility.Public,
-    controller: "other-controller",
-  });
-  const uncontrolledPrivateNeuron = createMockNeuron({
-    id: 6n,
-    visibility: NeuronVisibility.Private,
-    controller: "other-controller",
-  });
   const hwPublicNeuron = createMockNeuron({
-    id: 7n,
+    id: 5n,
     visibility: NeuronVisibility.Public,
     controller: mockHardwareWalletAccount.principal.toText(),
   });
   const hwPrivateNeuron = createMockNeuron({
-    id: 8n,
+    id: 6n,
     visibility: NeuronVisibility.Private,
     controller: mockHardwareWalletAccount.principal.toText(),
   });
   const publicSeedNeuron = createMockNeuron({
-    id: 9n,
+    id: 7n,
     visibility: NeuronVisibility.Public,
   });
   publicSeedNeuron.neuronType = NeuronType.Seed;
-
   const hotkeyPublicNeuron = createMockNeuron({
-    id: 10n,
+    id: 8n,
+    visibility: NeuronVisibility.Public,
+    controller: "other-controller",
+    hotKeyController: mockIdentity.getPrincipal().toText(),
+  });
+  const hotkeyPrivateNeuron = createMockNeuron({
+    id: 9n,
     visibility: NeuronVisibility.Public,
     controller: "other-controller",
     hotKeyController: mockIdentity.getPrincipal().toText(),
@@ -367,11 +361,7 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
 
   it("should display both lists descriptions when there are no neurons to list in controllable neurons", async () => {
     neuronsStore.setNeurons({
-      neurons: [
-        publicNeuron1,
-        uncontrolledPublicNeuron,
-        uncontrolledPrivateNeuron,
-      ],
+      neurons: [publicNeuron1, hotkeyPrivateNeuron],
       certified: true,
     });
 
@@ -527,13 +517,12 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     expect(onNnsCancel).toHaveBeenCalled();
   });
 
-  it("should display controlled hardware wallet, hotkey uncontrolled neurons and uncontrolled neurons in uncontrollable neurons list", async () => {
+  it("should display controlled hardware wallet, and hotkey uncontrolled neurons in uncontrollable neurons list", async () => {
     neuronsStore.setNeurons({
       neurons: [
         publicNeuron1,
         hwPublicNeuron,
         hwPrivateNeuron,
-        uncontrolledPublicNeuron,
         hotkeyPublicNeuron,
       ],
       certified: true,
@@ -553,7 +542,6 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
 
     expect(uncontrollableNeuronIds).toEqual([
       hwPublicNeuron.neuronId.toString(),
-      uncontrolledPublicNeuron.neuronId.toString(),
       hotkeyPublicNeuron.neuronId.toString(),
     ]);
   });

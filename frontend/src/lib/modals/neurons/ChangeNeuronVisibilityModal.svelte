@@ -10,6 +10,7 @@
   import ChangeBulkNeuronVisibilityForm from "./ChangeBulkNeuronVisibilityForm.svelte";
 
   export let defaultSelectedNeuron: NeuronInfo | null = null;
+  //isPublic property is used as comparison in form while filtering neurons based on visibility
   export let isPublic: boolean;
 
   const dispatcher = createEventDispatcher();
