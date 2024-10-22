@@ -14,7 +14,9 @@
   import { Checkbox, Spinner } from "@dfinity/gix-components";
   import Separator from "$lib/components/ui/Separator.svelte";
 
-  export let neuron: NeuronInfo;
+  export let defaultSelectedNeuron: NeuronInfo | null = null;
+  export let isPublic: boolean;
+
   const dispatch = createEventDispatcher();
 
   const cancel = () => {
@@ -26,16 +28,13 @@
   };
 
   let selectedNeurons: NeuronInfo[];
-  $: selectedNeurons = [neuron];
+  $: selectedNeurons = defaultSelectedNeuron ? [defaultSelectedNeuron] : [];
 
   let isLoading = false;
   $: isLoading = $definedNeuronsStore.length === 0;
 
   let applyToAllNeurons: boolean;
   $: applyToAllNeurons = false;
-
-  let isPublic: boolean;
-  isPublic = isPublicNeuron(neuron);
 
   let allNeurons: NeuronInfo[];
   $: allNeurons = $definedNeuronsStore || [];
@@ -46,9 +45,7 @@
       isNeuronControllableByUser({
         neuron: n,
         mainAccount: $icpAccountsStore.main,
-      }) &&
-      isPublic === isPublicNeuron(n) &&
-      n.neuronId !== neuron.neuronId
+      }) && isPublic === isPublicNeuron(n)
   );
 
   let uncontrollableNeurons: NeuronInfo[];
@@ -64,8 +61,7 @@
     selectedNeurons.some((selected) => selected.neuronId === n.neuronId);
 
   function updateApplyToAllNeuronsCheckState() {
-    applyToAllNeurons =
-      selectedNeurons.length === controllableNeurons.length + 1;
+    applyToAllNeurons = selectedNeurons.length === controllableNeurons.length;
   }
 
   function handleCheckboxChange(n: NeuronInfo): void {
@@ -82,9 +78,9 @@
 
   function handleApplyToAllChange(): void {
     if (!applyToAllNeurons) {
-      selectedNeurons = [neuron, ...controllableNeurons];
+      selectedNeurons = [...controllableNeurons];
     } else {
-      selectedNeurons = [neuron];
+      selectedNeurons = [];
     }
     updateApplyToAllNeuronsCheckState();
   }

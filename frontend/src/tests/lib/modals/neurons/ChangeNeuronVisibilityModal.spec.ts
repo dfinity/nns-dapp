@@ -3,6 +3,7 @@ import ChangeNeuronVisibilityModal from "$lib/modals/neurons/ChangeNeuronVisibil
 import * as neuronsService from "$lib/services/neurons.services";
 import * as busyServices from "$lib/stores/busy.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
+import { isPublicNeuron } from "$lib/utils/neuron.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
@@ -77,7 +78,10 @@ describe("ChangeNeuronVisibilityModal", () => {
   const renderComponent = async (neuron = mockNeuron) => {
     const { container, component } = await renderModal({
       component: ChangeNeuronVisibilityModal,
-      props: { neuron },
+      props: {
+        defaultSelectedNeuron: neuron,
+        isPublic: isPublicNeuron(neuron),
+      },
     });
 
     const nnsClose = vi.fn();

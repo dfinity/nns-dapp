@@ -10,15 +10,13 @@
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import ChangeBulkNeuronVisibilityForm from "./ChangeBulkNeuronVisibilityForm.svelte";
 
-  export let neuron: NeuronInfo;
+  export let defaultSelectedNeuron: NeuronInfo | null = null;
+  export let isPublic: boolean;
 
   const dispatcher = createEventDispatcher();
   const close = () => {
     dispatcher("nnsClose");
   };
-
-  let isPublic: boolean;
-  $: isPublic = isPublicNeuron(neuron);
 
   const handleChangeVisibility = async (
     event: CustomEvent<{ selectedNeurons: NeuronInfo[] }>
@@ -81,11 +79,10 @@
 
   <Separator spacing="medium" />
 
-  {#if neuron}
-    <ChangeBulkNeuronVisibilityForm
-      on:nnsCancel={close}
-      on:nnsSubmit={handleChangeVisibility}
-      {neuron}
-    />
-  {/if}
+  <ChangeBulkNeuronVisibilityForm
+    on:nnsCancel={close}
+    on:nnsSubmit={handleChangeVisibility}
+    {defaultSelectedNeuron}
+    {isPublic}
+  />
 </Modal>

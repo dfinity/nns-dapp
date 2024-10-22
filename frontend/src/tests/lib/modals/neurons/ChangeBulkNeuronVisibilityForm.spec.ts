@@ -1,5 +1,6 @@
 import ChangeBulkNeuronVisibilityForm from "$lib/modals/neurons/ChangeBulkNeuronVisibilityForm.svelte";
 import { neuronsStore } from "$lib/stores/neurons.store";
+import { isPublicNeuron } from "$lib/utils/neuron.utils";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -98,11 +99,13 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
   });
 
   const renderComponent = ({
-    neuron,
+    defaultSelectedNeuron,
+    isPublic,
     onNnsSubmit = null,
     onNnsCancel = null,
   }: {
-    neuron: NeuronInfo;
+    defaultSelectedNeuron?: NeuronInfo;
+    isPublic: boolean;
     onNnsSubmit?:
       | ((event: { detail: { selectedNeurons: NeuronInfo[] } }) => void)
       | null;
@@ -110,7 +113,8 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
   }) => {
     const { container, component } = render(ChangeBulkNeuronVisibilityForm, {
       props: {
-        neuron,
+        defaultSelectedNeuron,
+        isPublic: isPublic,
       },
     });
 
@@ -130,23 +134,70 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     };
   };
 
-  it("should initialize with the provided neuron selected and not listed", async () => {
+  it("should initialize with the provided defaultSelectedNeuron selected and listed", async () => {
     neuronsStore.setNeurons({
       neurons: [publicNeuron1, publicNeuron2, privateNeuron1],
       certified: true,
     });
     const onNnsSubmit = vi.fn();
 
-    const { po } = renderComponent({ neuron: publicNeuron1, onNnsSubmit });
+    const { po } = renderComponent({
+      defaultSelectedNeuron: publicNeuron1,
+      isPublic: isPublicNeuron(publicNeuron1),
+      onNnsSubmit,
+    });
 
-    await po.getConfirmButton().click();
+    expect(
+      await po
+        .getControllableNeuronVisibilityRowPo(publicNeuron1.neuronId.toString())
+        .getCheckboxPo()
+        .isChecked()
+    ).toBe(true);
 
     const controllableNeuronIds = await po.getControllableNeuronIds();
-    expect(controllableNeuronIds).toEqual([publicNeuron2.neuronId.toString()]);
+    expect(controllableNeuronIds).toEqual([
+      publicNeuron1.neuronId.toString(),
+      publicNeuron2.neuronId.toString(),
+    ]);
+
+    await po.getConfirmButton().click();
 
     expect(onNnsSubmit).toHaveBeenCalledWith({
       detail: { selectedNeurons: [publicNeuron1] },
     });
+  });
+
+  it("when no defaultSelectedNeuron provided it should list all controllable neurons matching isPublic with checkbox unchecked ", async () => {
+    neuronsStore.setNeurons({
+      neurons: [publicNeuron1, publicNeuron2, privateNeuron1],
+      certified: true,
+    });
+    const onNnsSubmit = vi.fn();
+
+    const { po } = renderComponent({
+      isPublic: true,
+      onNnsSubmit,
+    });
+
+    const controllableNeuronIds = await po.getControllableNeuronIds();
+
+    expect(controllableNeuronIds).toEqual([
+      publicNeuron1.neuronId.toString(),
+      publicNeuron2.neuronId.toString(),
+    ]);
+
+    expect(
+      await po
+        .getControllableNeuronVisibilityRowPo(publicNeuron1.neuronId.toString())
+        .getCheckboxPo()
+        .isChecked()
+    ).toBe(false);
+    expect(
+      await po
+        .getControllableNeuronVisibilityRowPo(publicNeuron2.neuronId.toString())
+        .getCheckboxPo()
+        .isChecked()
+    ).toBe(false);
   });
 
   it("should display and allow selection of public controlled neurons", async () => {
@@ -156,7 +207,8 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     });
     const onNnsSubmit = vi.fn();
     const { po } = renderComponent({
-      neuron: publicNeuron1,
+      defaultSelectedNeuron: publicNeuron1,
+      isPublic: isPublicNeuron(publicNeuron1),
       onNnsSubmit,
     });
 
@@ -198,7 +250,11 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     });
     const onNnsSubmit = vi.fn();
 
-    const { po } = renderComponent({ neuron: publicNeuron1, onNnsSubmit });
+    const { po } = renderComponent({
+      defaultSelectedNeuron: publicNeuron1,
+      isPublic: isPublicNeuron(publicNeuron1),
+      onNnsSubmit,
+    });
 
     await po.getApplyToAllCheckbox().click();
     await po.getConfirmButton().click();
@@ -244,7 +300,11 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     });
     const onNnsSubmit = vi.fn();
 
-    const { po } = renderComponent({ neuron: publicNeuron1, onNnsSubmit });
+    const { po } = renderComponent({
+      defaultSelectedNeuron: publicNeuron1,
+      isPublic: isPublicNeuron(publicNeuron1),
+      onNnsSubmit,
+    });
 
     const applyToAllCheckboxPo = po.getApplyToAllCheckbox();
     await applyToAllCheckboxPo.click();
@@ -276,7 +336,10 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
       certified: true,
     });
 
-    const { po } = renderComponent({ neuron: publicNeuron1 });
+    const { po } = renderComponent({
+      defaultSelectedNeuron: publicNeuron1,
+      isPublic: isPublicNeuron(publicNeuron1),
+    });
 
     expect(await po.getUncontrollableNeuronsList().isPresent()).toBe(true);
     expect(await po.getControllableNeuronsList().isPresent()).toBe(true);
@@ -294,7 +357,10 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
       certified: true,
     });
 
-    const { po } = renderComponent({ neuron: publicNeuron1 });
+    const { po } = renderComponent({
+      defaultSelectedNeuron: publicNeuron1,
+      isPublic: isPublicNeuron(publicNeuron1),
+    });
 
     expect(await po.getControllableNeuronsDescription().getText()).toBe(
       "Neurons"
@@ -327,7 +393,10 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
 
   it("should handle loading state correctly", async () => {
     neuronsStore.setNeurons({ neurons: undefined, certified: false });
-    const { po } = renderComponent({ neuron: publicNeuron1 });
+    const { po } = renderComponent({
+      defaultSelectedNeuron: publicNeuron1,
+      isPublic: isPublicNeuron(publicNeuron1),
+    });
 
     expect(await po.getLoadingContainer().isPresent()).toBe(true);
 
@@ -339,11 +408,14 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
 
   it("should show 'Apply to all' checkbox when there are more than 1 controllable neurons to list", async () => {
     neuronsStore.setNeurons({
-      neurons: [publicNeuron1, publicNeuron2, publicSeedNeuron],
+      neurons: [publicNeuron1, publicNeuron2],
       certified: true,
     });
 
-    const { po } = renderComponent({ neuron: publicNeuron1 });
+    const { po } = renderComponent({
+      defaultSelectedNeuron: publicNeuron1,
+      isPublic: isPublicNeuron(publicNeuron1),
+    });
 
     expect(await po.getApplyToAllCheckbox().isPresent()).toBe(true);
     expect((await po.getApplyToAllCheckbox().getText()).trim()).toBe(
@@ -353,11 +425,14 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
 
   it("should not show 'Apply to all' checkbox when there is only than 1 controllable neurons to list", async () => {
     neuronsStore.setNeurons({
-      neurons: [publicNeuron1, publicNeuron2],
+      neurons: [publicNeuron1],
       certified: true,
     });
 
-    const { po } = renderComponent({ neuron: publicNeuron1 });
+    const { po } = renderComponent({
+      defaultSelectedNeuron: publicNeuron1,
+      isPublic: isPublicNeuron(publicNeuron1),
+    });
 
     expect(await po.getApplyToAllCheckbox().isPresent()).toBe(false);
   });
@@ -366,7 +441,8 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     const onNnsSubmit = vi.fn();
     const onNnsCancel = vi.fn();
     const { po } = renderComponent({
-      neuron: publicNeuron1,
+      defaultSelectedNeuron: publicNeuron1,
+      isPublic: isPublicNeuron(publicNeuron1),
       onNnsSubmit,
       onNnsCancel,
     });
@@ -390,7 +466,10 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
       certified: true,
     });
 
-    const { po } = renderComponent({ neuron: publicNeuron1 });
+    const { po } = renderComponent({
+      defaultSelectedNeuron: publicNeuron1,
+      isPublic: isPublicNeuron(publicNeuron1),
+    });
 
     expect(await po.getControllableNeuronsList().isPresent()).toBe(true);
     expect(await po.getUncontrollableNeuronsList().isPresent()).toBe(true);
@@ -398,7 +477,7 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     const controllableNeuronIds = await po.getControllableNeuronIds();
     const uncontrollableNeuronIds = await po.getUncontrollableNeuronIds();
 
-    expect(controllableNeuronIds).toEqual([]);
+    expect(controllableNeuronIds).toEqual(["1"]);
 
     expect(uncontrollableNeuronIds).toEqual([
       hwPublicNeuron.neuronId.toString(),
