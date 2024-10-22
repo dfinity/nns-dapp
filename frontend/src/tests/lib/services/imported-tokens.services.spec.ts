@@ -14,15 +14,11 @@ import {
   failedImportedTokenLedgerIdsStore,
   importedTokensStore,
 } from "$lib/stores/imported-tokens.store";
-import * as toastsStore from "$lib/stores/toasts.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import {
-  busyStore,
-  toastsStore as toastsStoreEntry,
-} from "@dfinity/gix-components";
+import { busyStore, toastsStore } from "@dfinity/gix-components";
 import * as dfinityUtils from "@dfinity/utils";
 import { get } from "svelte/store";
 
@@ -50,7 +46,7 @@ describe("imported-tokens-services", () => {
     resetIdentity();
     importedTokensStore.reset();
     failedImportedTokenLedgerIdsStore.reset();
-    toastsStoreEntry.reset();
+    toastsStore.reset();
     busyStore.resetForTesting();
     vi.spyOn(console, "error").mockReturnValue();
     vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
@@ -89,25 +85,24 @@ describe("imported-tokens-services", () => {
     });
 
     it("should display toast on error", async () => {
-      const spyToastError = vi.spyOn(toastsStore, "toastsError");
       const spyGetImportedTokens = vi
         .spyOn(importedTokensApi, "getImportedTokens")
         .mockRejectedValue(testError);
 
       expect(spyGetImportedTokens).toBeCalledTimes(0);
-      expect(spyToastError).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
 
       await loadImportedTokens();
 
-      expect(spyToastError).toBeCalledTimes(1);
-      expect(spyToastError).toBeCalledWith({
-        labelKey: "error__imported_tokens.load_imported_tokens",
-        err: testError,
-      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "There was an unexpected issue while loading imported tokens. test",
+        },
+      ]);
     });
 
     it("should not display toast on uncertified error", async () => {
-      const spyToastError = vi.spyOn(toastsStore, "toastsError");
       vi.spyOn(importedTokensApi, "getImportedTokens").mockImplementation(
         async ({ certified }) => {
           if (!certified) {
@@ -119,11 +114,11 @@ describe("imported-tokens-services", () => {
         }
       );
 
-      expect(spyToastError).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
 
       await loadImportedTokens();
 
-      expect(spyToastError).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
     });
 
     it("should reset store on error", async () => {
@@ -158,7 +153,6 @@ describe("imported-tokens-services", () => {
 
     it("should handle ignoreAccountNotFoundError parameter (no error toast, no imported tokens)", async () => {
       const accountNotFoundError = new AccountNotFoundError("test");
-      const spyToastError = vi.spyOn(toastsStore, "toastsError");
       vi.spyOn(importedTokensApi, "getImportedTokens").mockRejectedValue(
         accountNotFoundError
       );
@@ -169,7 +163,7 @@ describe("imported-tokens-services", () => {
       failedImportedTokenLedgerIdsStore.add(
         importedTokenDataA.ledgerCanisterId.toString()
       );
-      expect(spyToastError).toBeCalledTimes(0);
+      expect(get(toastsStore)).toEqual([]);
       expect(get(importedTokensStore)).toEqual({
         importedTokens: [importedTokenDataA],
         certified: true,
@@ -180,7 +174,13 @@ describe("imported-tokens-services", () => {
 
       // default = ignoreAccountNotFoundError: false
       await loadImportedTokens();
-      expect(spyToastError).toBeCalledTimes(1);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "There was an unexpected issue while loading imported tokens. test",
+        },
+      ]);
+      toastsStore.reset();
       expect(get(importedTokensStore)).toEqual({
         importedTokens: undefined,
         certified: undefined,
@@ -190,7 +190,7 @@ describe("imported-tokens-services", () => {
       await loadImportedTokens({
         ignoreAccountNotFoundError: true,
       });
-      expect(spyToastError).toBeCalledTimes(1);
+      expect(get(toastsStore)).toEqual([]);
       expect(get(importedTokensStore)).toEqual({
         importedTokens: [],
         certified: true,
@@ -251,32 +251,32 @@ describe("imported-tokens-services", () => {
     });
 
     it("should display success toast", async () => {
-      const spyToastSuccess = vi.spyOn(toastsStore, "toastsSuccess");
       vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
         undefined
       );
       vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
         imported_tokens: [importedTokenA, importedTokenB],
       });
-      expect(spyToastSuccess).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
 
       await addImportedToken({
         tokenToAdd: importedTokenDataB,
         importedTokens: [importedTokenDataA],
       });
 
-      expect(spyToastSuccess).toBeCalledTimes(1);
-      expect(spyToastSuccess).toBeCalledWith({
-        labelKey: "tokens.add_imported_token_success",
-      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: "New token has been successfully imported!",
+        },
+      ]);
     });
 
     it("should display toast on error", async () => {
-      const spyToastError = vi.spyOn(toastsStore, "toastsError");
       vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
         testError
       );
-      expect(spyToastError).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
 
       const { success } = await addImportedToken({
         tokenToAdd: importedTokenDataB,
@@ -284,19 +284,19 @@ describe("imported-tokens-services", () => {
       });
 
       expect(success).toEqual(false);
-      expect(spyToastError).toBeCalledTimes(1);
-      expect(spyToastError).toBeCalledWith({
-        labelKey: "error__imported_tokens.add_imported_token",
-        err: testError,
-      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "There was an unexpected issue while importing the token. test",
+        },
+      ]);
     });
 
     it("should handle too many tokens errors", async () => {
-      const spyToastError = vi.spyOn(toastsStore, "toastsError");
       vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
         new TooManyImportedTokensError("too many tokens")
       );
-      expect(spyToastError).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
 
       const { success } = await addImportedToken({
         tokenToAdd: importedTokenDataB,
@@ -304,11 +304,12 @@ describe("imported-tokens-services", () => {
       });
 
       expect(success).toEqual(false);
-      expect(spyToastError).toBeCalledTimes(1);
-      expect(spyToastError).toBeCalledWith({
-        labelKey: "error__imported_tokens.too_many",
-        substitutions: { $limit: "20" },
-      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "You can't import more than 20 tokens.",
+        },
+      ]);
     });
   });
 
@@ -389,7 +390,6 @@ describe("imported-tokens-services", () => {
     });
 
     it("should display success toast", async () => {
-      const spyToastSuccess = vi.spyOn(toastsStore, "toastsSuccess");
       vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
         undefined
       );
@@ -397,17 +397,18 @@ describe("imported-tokens-services", () => {
         importedTokens: [importedTokenDataA, importedTokenDataB],
         certified: true,
       });
-      expect(spyToastSuccess).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
       await removeImportedTokens(importedTokenDataA.ledgerCanisterId);
 
-      expect(spyToastSuccess).toBeCalledTimes(1);
-      expect(spyToastSuccess).toBeCalledWith({
-        labelKey: "tokens.remove_imported_token_success",
-      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: "The token has been successfully removed!",
+        },
+      ]);
     });
 
     it("should display toast on error", async () => {
-      const spyToastError = vi.spyOn(toastsStore, "toastsError");
       vi.spyOn(importedTokensApi, "setImportedTokens").mockRejectedValue(
         testError
       );
@@ -415,17 +416,18 @@ describe("imported-tokens-services", () => {
         importedTokens: [importedTokenDataA, importedTokenDataB],
         certified: true,
       });
-      expect(spyToastError).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
       const { success } = await removeImportedTokens(
         importedTokenDataA.ledgerCanisterId
       );
 
       expect(success).toEqual(false);
-      expect(spyToastError).toBeCalledTimes(1);
-      expect(spyToastError).toBeCalledWith({
-        labelKey: "error__imported_tokens.remove_imported_token",
-        err: testError,
-      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "There was an unexpected issue while removing the imported token. test",
+        },
+      ]);
     });
   });
 
@@ -493,7 +495,7 @@ describe("imported-tokens-services", () => {
         undefined
       );
 
-      expect(get(toastsStoreEntry)).toMatchObject([]);
+      expect(get(toastsStore)).toEqual([]);
 
       await addIndexCanister({
         ledgerCanisterId: importedTokenDataB.ledgerCanisterId,
@@ -501,7 +503,7 @@ describe("imported-tokens-services", () => {
         importedTokens: [importedTokenDataA, importedTokenDataB],
       });
 
-      expect(get(toastsStoreEntry)).toMatchObject([
+      expect(get(toastsStore)).toMatchObject([
         {
           level: "success",
           text: "The token has been successfully updated!",
@@ -514,7 +516,7 @@ describe("imported-tokens-services", () => {
         new Error("test")
       );
 
-      expect(get(toastsStoreEntry)).toMatchObject([]);
+      expect(get(toastsStore)).toEqual([]);
 
       const { success } = await addIndexCanister({
         ledgerCanisterId: importedTokenDataB.ledgerCanisterId,
@@ -523,7 +525,7 @@ describe("imported-tokens-services", () => {
       });
 
       expect(success).toEqual(false);
-      expect(get(toastsStoreEntry)).toMatchObject([
+      expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
           text: "There was an unexpected issue while updating the imported token. test",
