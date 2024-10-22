@@ -376,6 +376,34 @@ describe("neurons-services", () => {
       expect(result).toEqual(newNeuronId);
     });
 
+    it("should not create a public neuron when asPublicNeuron is false", async () => {
+      const newNeuronId = 12345n;
+      spyStakeNeuron.mockResolvedValue(newNeuronId);
+
+      expect(spyStakeNeuron).not.toBeCalled();
+      expect(spyChangeNeuronVisibility).not.toBeCalled();
+
+      const result = await stakeNeuron({
+        amount: 10,
+        account: mockMainAccount,
+        asPublicNeuron: false,
+      });
+
+      expect(spyStakeNeuron).toBeCalledWith({
+        controller: mockIdentity.getPrincipal(),
+        fromSubAccount: undefined,
+        identity: mockIdentity,
+        ledgerCanisterIdentity: mockIdentity,
+        stake: 1_000_000_000n,
+        fee: NNS_TOKEN_DATA.fee,
+      });
+      expect(spyStakeNeuron).toBeCalledTimes(1);
+
+      expect(spyChangeNeuronVisibility).not.toBeCalled();
+
+      expect(result).toEqual(newNeuronId);
+    });
+
     it("should show error toast if changing neuron visibility fails", async () => {
       const newNeuronId = 12345n;
       spyStakeNeuron.mockResolvedValue(newNeuronId);

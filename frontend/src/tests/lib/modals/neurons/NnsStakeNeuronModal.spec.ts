@@ -80,6 +80,7 @@ describe("NnsStakeNeuronModal", () => {
     resetIdentity();
     cancelPollAccounts();
     vi.clearAllMocks();
+    overrideFeatureFlagsStore.reset();
 
     vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
       mock<LedgerCanister>()
@@ -324,10 +325,6 @@ describe("NnsStakeNeuronModal", () => {
     });
 
     describe("public neuron checkbox", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.reset();
-      });
-
       it("should not display public neuron checkbox when feature flag is false", async () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", false);
         const po = await renderComponent({});
@@ -340,25 +337,25 @@ describe("NnsStakeNeuronModal", () => {
         ).toBe(false);
       });
 
-      it("should create a private neuron when checkbox is unchecked", async () => {
-        const po = await renderComponent({});
-
-        await po.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(22);
-
-        await po.getNnsStakeNeuronPo().clickCreate();
-
-        expect(stakeNeuron).toBeCalledTimes(1);
-        expect(stakeNeuron).toBeCalledWith({
-          account: mockMainAccount,
-          amount: 22,
-          loadNeuron: true,
-          asPublicNeuron: false,
-        });
-      });
-
       describe("when feature flag is enabled", () => {
         beforeEach(() => {
           overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", true);
+        });
+
+        it("should create a private neuron when checkbox is unchecked", async () => {
+          const po = await renderComponent({});
+
+          await po.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(22);
+
+          await po.getNnsStakeNeuronPo().clickCreate();
+
+          expect(stakeNeuron).toBeCalledTimes(1);
+          expect(stakeNeuron).toBeCalledWith({
+            account: mockMainAccount,
+            amount: 22,
+            loadNeuron: true,
+            asPublicNeuron: false,
+          });
         });
 
         it("should have unchecked public neuron checkbox by default", async () => {
