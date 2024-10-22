@@ -21,23 +21,35 @@ describe("ChangeNeuronVisibilityModal", () => {
   let queryNeuronSpy;
 
   const publicNeuron = {
-    id: 1n,
     ...mockNeuron,
+    neuronId: 1n,
     visibility: NeuronVisibility.Public,
     fullNeuron: {
       ...mockFullNeuron,
+      id: 1n,
       controller: mockIdentity.getPrincipal().toText(),
     },
   };
 
+  const publicNeuronWithUpdatedVisibility = {
+    ...publicNeuron,
+    visibility: NeuronVisibility.Private,
+  };
+
   const privateNeuron = {
-    id: 2n,
     ...mockNeuron,
+    neuronId: 2n,
     visibility: NeuronVisibility.Private,
     fullNeuron: {
       ...mockFullNeuron,
+      id: 2n,
       controller: mockIdentity.getPrincipal().toText(),
     },
+  };
+
+  const privateNeuronWithUpdatedVisibility = {
+    ...privateNeuron,
+    visibility: NeuronVisibility.Public,
   };
 
   beforeEach(() => {
@@ -98,8 +110,10 @@ describe("ChangeNeuronVisibilityModal", () => {
   });
 
   it("should call changeNeuronVisibility with correct values for privateNeurons on confirm click", async () => {
+    queryNeuronSpy.mockResolvedValue(privateNeuronWithUpdatedVisibility);
+
     const { po } = await renderComponent(privateNeuron);
-    queryNeuronSpy.mockResolvedValue(privateNeuron);
+
     const confirmButton = po.getConfirmButton();
 
     await confirmButton.click();
@@ -111,8 +125,10 @@ describe("ChangeNeuronVisibilityModal", () => {
   });
 
   it("should call changeNeuronVisibility with correct values for publicNeurons on confirm click", async () => {
+    queryNeuronSpy.mockResolvedValue(publicNeuronWithUpdatedVisibility);
+
     const { po } = await renderComponent(publicNeuron);
-    queryNeuronSpy.mockResolvedValue(publicNeuron);
+
     const confirmButton = po.getConfirmButton();
 
     await confirmButton.click();
@@ -124,7 +140,7 @@ describe("ChangeNeuronVisibilityModal", () => {
   });
 
   it("should start and stop busy indicator when changing visibility", async () => {
-    queryNeuronSpy.mockResolvedValue(privateNeuron);
+    queryNeuronSpy.mockResolvedValue(privateNeuronWithUpdatedVisibility);
 
     const { po } = await renderComponent(privateNeuron);
 
@@ -142,13 +158,7 @@ describe("ChangeNeuronVisibilityModal", () => {
   });
 
   it("should show success toast and close modal after successful visibility change for private neuron", async () => {
-    const privateNeuron = {
-      ...mockNeuron,
-      visibility: NeuronVisibility.Private,
-    };
-
-    queryNeuronSpy.mockResolvedValue(privateNeuron);
-
+    queryNeuronSpy.mockResolvedValue(privateNeuronWithUpdatedVisibility);
     const { po, nnsClose } = await renderComponent(privateNeuron);
 
     const confirmButton = po.getConfirmButton();
@@ -167,7 +177,7 @@ describe("ChangeNeuronVisibilityModal", () => {
   });
 
   it("should show success toast and close modal after successful visibility change for public neuron", async () => {
-    queryNeuronSpy.mockResolvedValue(publicNeuron);
+    queryNeuronSpy.mockResolvedValue(publicNeuronWithUpdatedVisibility);
 
     const { po, nnsClose } = await renderComponent(publicNeuron);
 
