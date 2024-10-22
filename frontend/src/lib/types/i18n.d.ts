@@ -343,6 +343,9 @@ interface I18nNeurons {
   make_neurons_public_banner_title: string;
   make_neurons_public_banner_description: string;
   make_neurons_public_action_text: string;
+  create_as_public: string;
+  create_as_public_tooltip: string;
+  create_as_public_neuron_failure: string;
 }
 
 interface I18nNew_followee {

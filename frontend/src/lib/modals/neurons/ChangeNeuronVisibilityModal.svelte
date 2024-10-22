@@ -10,7 +10,9 @@
   import ChangeBulkNeuronVisibilityForm from "./ChangeBulkNeuronVisibilityForm.svelte";
 
   export let defaultSelectedNeuron: NeuronInfo | null = null;
-  export let isPublic: boolean;
+  // makePublic is also passed to ChangeBulkNeuronVisibilityForm
+  // to select the filter that is going to be applied to definedNeuronsStore
+  export let makePublic: boolean;
 
   const dispatcher = createEventDispatcher();
   const close = () => {
@@ -29,13 +31,13 @@
     try {
       const { success } = await changeNeuronVisibility({
         neurons: selectedNeurons,
-        makePublic: !isPublic,
+        makePublic,
       });
       if (success) {
         toastsSuccess({
-          labelKey: isPublic
-            ? "neuron_detail.change_neuron_private_success"
-            : "neuron_detail.change_neuron_public_success",
+          labelKey: makePublic
+            ? "neuron_detail.change_neuron_public_success"
+            : "neuron_detail.change_neuron_private_success",
         });
 
         close();
@@ -52,21 +54,21 @@
 
 <Modal on:nnsClose testId="change-neuron-visibility-modal">
   <svelte:fragment slot="title">
-    {isPublic
-      ? $i18n.neuron_detail.change_neuron_make_neuron_private
-      : $i18n.neuron_detail.change_neuron_make_neuron_public}
+    {makePublic
+      ? $i18n.neuron_detail.change_neuron_make_neuron_public
+      : $i18n.neuron_detail.change_neuron_make_neuron_private}
   </svelte:fragment>
 
   <h4>
-    {isPublic
-      ? $i18n.neuron_detail.change_neuron_make_neuron_private_confirmation
-      : $i18n.neuron_detail.change_neuron_make_neuron_public_confirmation}
+    {makePublic
+      ? $i18n.neuron_detail.change_neuron_make_neuron_public_confirmation
+      : $i18n.neuron_detail.change_neuron_make_neuron_private_confirmation}
   </h4>
 
   <p class="description">
-    {isPublic
-      ? $i18n.neuron_detail.change_neuron_make_neuron_private_description
-      : $i18n.neuron_detail.change_neuron_make_neuron_public_description}
+    {makePublic
+      ? $i18n.neuron_detail.change_neuron_make_neuron_public_description
+      : $i18n.neuron_detail.change_neuron_make_neuron_private_description}
     <a
       href="https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
       target="_blank"
@@ -82,6 +84,6 @@
     on:nnsCancel={close}
     on:nnsSubmit={handleChangeVisibility}
     {defaultSelectedNeuron}
-    {isPublic}
+    {makePublic}
   />
 </Modal>

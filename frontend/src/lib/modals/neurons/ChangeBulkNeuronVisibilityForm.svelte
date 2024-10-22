@@ -13,9 +13,10 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { Checkbox, Spinner } from "@dfinity/gix-components";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   export let defaultSelectedNeuron: NeuronInfo | null = null;
-  export let isPublic: boolean;
+  export let makePublic: boolean;
 
   const dispatch = createEventDispatcher();
 
@@ -28,7 +29,9 @@
   };
 
   let selectedNeurons: NeuronInfo[];
-  $: selectedNeurons = defaultSelectedNeuron ? [defaultSelectedNeuron] : [];
+  $: selectedNeurons = nonNullish(defaultSelectedNeuron)
+    ? [defaultSelectedNeuron]
+    : [];
 
   let isLoading = false;
   $: isLoading = $definedNeuronsStore.length === 0;
@@ -45,7 +48,7 @@
       isNeuronControllableByUser({
         neuron: n,
         mainAccount: $icpAccountsStore.main,
-      }) && isPublic === isPublicNeuron(n)
+      }) && (makePublic ? !isPublicNeuron(n) : isPublicNeuron(n))
   );
 
   let uncontrollableNeurons: NeuronInfo[];
@@ -54,7 +57,7 @@
       !isNeuronControllableByUser({
         neuron: n,
         mainAccount: $icpAccountsStore.main,
-      }) && isPublic === isPublicNeuron(n)
+      }) && (makePublic ? !isPublicNeuron(n) : isPublicNeuron(n))
   );
 
   $: isNeuronSelected = (n: NeuronInfo) =>
