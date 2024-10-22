@@ -50,6 +50,7 @@ import {
   pollingLimit,
 } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
+import { TxCreatedInFutureError, TxTooOldError } from "@dfinity/ledger-icp";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { ICPToken, TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -327,17 +328,17 @@ export const transferICP = async ({
 
     return { success: true };
   } catch (err) {
-    return transferError({ labelKey: "error.transaction_error", err });
+    return transferError(err);
   }
 };
 
-const transferError = ({
-  labelKey,
-  err,
-}: {
-  labelKey: string;
-  err?: unknown;
-}): { success: boolean; err?: string } => {
+const transferError = (err: unknown): { success: boolean; err?: string } => {
+  let labelKey = "error.transaction_error";
+  if (err instanceof TxTooOldError) {
+    labelKey = "error.transaction_too_old";
+  } else if (err instanceof TxCreatedInFutureError) {
+    labelKey = "error.transaction_created_in_future";
+  }
   toastsError(
     toToastError({
       err,
