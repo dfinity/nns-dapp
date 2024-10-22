@@ -75,12 +75,6 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     controller: "other-controller",
     hotKeyController: mockIdentity.getPrincipal().toText(),
   });
-  const hotkeyPrivateNeuron = createMockNeuron({
-    id: 9n,
-    visibility: NeuronVisibility.Private,
-    controller: "other-controller",
-    hotKeyController: mockIdentity.getPrincipal().toText(),
-  });
 
   beforeEach(() => {
     resetIdentity();
