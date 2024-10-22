@@ -77,6 +77,8 @@
     "amount_not_enough_stake_neuron": "Sorry, the amount is too small. You need to stake a minimum of 1 ICP.",
     "amount_not_enough_top_up_neuron": "Sorry, the amount is too small. The amount plus the current stake need to be at least 1 ICP",
     "transaction_error": "Sorry, there was an error trying to execute the transaction.",
+    "transaction_too_old": "Transaction is too old, could not be completed. Make sure your computer’s clock is set correctly, and try again.",
+    "transaction_created_in_future": "Transaction was created in the future, could not be completed. Make sure your computer’s clock is set correctly, and try again.",
     "unexpected_number_neurons_merge": "Sorry, the number of neurons to merge should be only 2. Please try selecting again.",
     "cannot_merge": "Those two neurons cannot be merged.",
     "not_authorized_neuron_action": "Sorry, none of your principals is the controller of the neuron.",
