@@ -38,6 +38,8 @@ describe("TotalValueLocked", () => {
     currency?: FiatCurrency;
     symbol: string;
   }) => {
+    expect(metricsCallback).toBeUndefined();
+
     const { getByTestId } = render(TotalValueLockedTest);
 
     // Wait for initialization of the callback
