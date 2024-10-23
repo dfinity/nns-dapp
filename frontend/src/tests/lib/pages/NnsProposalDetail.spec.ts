@@ -202,6 +202,10 @@ describe("NnsProposalDetail", () => {
       ).toBe(0);
     });
 
+    // There was a bug where queryAndUpdate failed to hide the query response
+    // after an update response was already returned.
+    // In this case neuronsReady in NnsVotingCard.svelte would be set to false
+    // and the VotingNeuronSelectList would not be displayed.
     it("It should work when the queryNeuron update response comes before the query", async () => {
       let beforeVoting = true;
       let resolveListNeuronsUpdate: (value: NeuronInfo[]) => void;
