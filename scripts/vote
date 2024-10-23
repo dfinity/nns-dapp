@@ -46,17 +46,10 @@ else
 fi
 
 get_all_neuron_ids() {
-  dfx canister call nns-governance list_neurons \
+  "$SOURCE_DIR/get-neurons" \
     --identity "$DFX_IDENTITY" \
     --network "$DFX_NETWORK" \
-    '(
-      record {
-        include_public_neurons_in_full_neurons = null;
-        neuron_ids = vec {};
-        include_empty_neurons_readable_by_caller = null;
-        include_neurons_readable_by_caller = true;
-      },
-    )' | idl2json | jq -r '.neuron_infos[]["0"]'
+    --can-vote
 }
 
 if [[ "${NEURON_ID:-}" == "all" ]]; then
