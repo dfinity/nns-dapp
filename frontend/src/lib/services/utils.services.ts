@@ -85,14 +85,16 @@ export const queryAndUpdate = async <R, E>({
     request({ certified, identity })
       .then((response) => {
         if (certifiedDone) return;
+        certifiedDone ||= certified;
+
         onLoad({ certified, strategy: currentStrategy, response });
         log({ postfix: ` ${certified ? "update" : "query"} complete.` });
       })
       .catch((error: E) => {
         if (certifiedDone) return;
+        certifiedDone ||= certified;
         onError?.({ certified, strategy: currentStrategy, error, identity });
-      })
-      .finally(() => (certifiedDone = certifiedDone || certified));
+      });
 
   // apply fetching strategy
   if (currentStrategy === "query") {
