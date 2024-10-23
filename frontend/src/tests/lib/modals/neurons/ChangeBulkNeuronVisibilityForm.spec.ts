@@ -88,15 +88,20 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     visibility: NeuronVisibility.Public,
     stake: 500_000_000n,
   });
-  const hotkeyPublicNeuronWithStake = createMockNeuron({
+  const publicNeuronWithStake3 = createMockNeuron({
     id: 11n,
+    visibility: NeuronVisibility.Public,
+    stake: 1_000_000_000n,
+  });
+  const hotkeyPublicNeuronWithStake = createMockNeuron({
+    id: 12n,
     visibility: NeuronVisibility.Public,
     controller: "other-controller",
     hotKeyController: mockIdentity.getPrincipal().toText(),
     stake: 200_000_000n,
   });
   const hwPublicNeuronWithStake = createMockNeuron({
-    id: 12n,
+    id: 13n,
     visibility: NeuronVisibility.Public,
     controller: mockHardwareWalletAccount.principal.toText(),
     stake: 300_000_000n,
@@ -619,13 +624,44 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     const uncontrollableNeuronIds = await po.getUncontrollableNeuronIds();
 
     expect(controllableNeuronIds).toEqual([
-      publicNeuronWithStake1.neuronId.toString(),
       publicNeuronWithStake2.neuronId.toString(),
+      publicNeuronWithStake1.neuronId.toString(),
     ]);
 
     expect(uncontrollableNeuronIds).toEqual([
-      hotkeyPublicNeuronWithStake.neuronId.toString(),
       hwPublicNeuronWithStake.neuronId.toString(),
+      hotkeyPublicNeuronWithStake.neuronId.toString(),
+    ]);
+  });
+
+  it("should sort controlled and uncontrolled neurons based on StakedAmount", async () => {
+    neuronsStore.setNeurons({
+      neurons: [
+        publicNeuronWithStake1,
+        publicNeuronWithStake2,
+        publicNeuronWithStake3,
+        hotkeyPublicNeuronWithStake,
+        hwPublicNeuronWithStake,
+      ],
+      certified: true,
+    });
+
+    const po = renderComponent({
+      makePublic: false,
+    });
+
+    const controllableNeuronIds = await po.getControllableNeuronIds();
+    const uncontrollableNeuronIds = await po.getUncontrollableNeuronIds();
+
+    expect(controllableNeuronIds).toEqual([
+      publicNeuronWithStake3.neuronId.toString(),
+      publicNeuronWithStake2.neuronId.toString(),
+      publicNeuronWithStake1.neuronId.toString(),
+    ]);
+
+    expect(uncontrollableNeuronIds).toEqual([
+      hwPublicNeuronWithStake.neuronId.toString(),
+      hotkeyPublicNeuronWithStake.neuronId.toString(),
     ]);
   });
 });
