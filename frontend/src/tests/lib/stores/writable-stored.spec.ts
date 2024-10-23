@@ -3,7 +3,7 @@ import { writableStored } from "$lib/stores/writable-stored";
 import { get } from "svelte/store";
 
 describe("writableStored", () => {
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
   });

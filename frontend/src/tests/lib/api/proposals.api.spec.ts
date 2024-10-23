@@ -31,8 +31,6 @@ describe("proposals-api", () => {
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
-  afterEach(() => spyListProposals.mockClear());
-
   describe("list", () => {
     it("should call the canister to list proposals", async () => {
       await queryProposals({

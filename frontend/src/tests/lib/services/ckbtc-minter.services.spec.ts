@@ -33,13 +33,10 @@ import { get } from "svelte/store";
 
 describe("ckbtc-minter-services", () => {
   beforeEach(() => {
+    vi.clearAllMocks();
     resetIdentity();
     toastsStore.reset();
     ckbtcRetrieveBtcStatusesStore.reset();
-  });
-
-  afterEach(() => {
-    vi.clearAllMocks();
   });
 
   describe("loadBtcAddress", () => {

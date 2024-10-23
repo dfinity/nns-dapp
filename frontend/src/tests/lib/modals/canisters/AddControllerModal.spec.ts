@@ -22,7 +22,7 @@ describe("AddControllerModal", () => {
     });
   };
 
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
   });
 

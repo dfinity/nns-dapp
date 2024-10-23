@@ -10,7 +10,7 @@ import AddAccountTest from "./AddAccountTest.svelte";
 describe("AddAccountType", () => {
   const props = { testComponent: AddAccountType };
 
-  afterEach(() =>
+  beforeEach(() =>
     addAccountStoreMock.set({
       type: undefined,
       hardwareWalletName: undefined,
