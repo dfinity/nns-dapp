@@ -119,9 +119,6 @@
       display: inline-flex;
       align-items: center;
     }
-    .neuron-id {
-      margin: 0;
-    }
 
     .public-icon-container {
       color: var(--elements-badges);
