@@ -62,9 +62,7 @@
         <span class="amount-display">
           <AmountDisplay singleLine amount={rowData.stake} />
         </span>
-      {/if}
-
-      {#if rowData?.uncontrolledNeuronDetails}
+      {:else if rowData?.uncontrolledNeuronDetails}
         <span class="tags">
           <span class="uncontrolled-tag-icons">
             <svelte:component
@@ -101,7 +99,7 @@
   }
 
   .amount-display {
-    --label-color: var(--text-description);
+    --amount-display-symbol-color: var(--text-description);
   }
 
   .label-container {
