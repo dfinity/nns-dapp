@@ -1,7 +1,8 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
+import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
 import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { CheckboxPo } from "./Checkbox.page-object";
 
 export class NeuronVisibilityRowPo extends BasePageObject {
   private static readonly BASE_TID = "neuron-visibility-row-component";
@@ -44,5 +45,9 @@ export class NeuronVisibilityRowPo extends BasePageObject {
     return CheckboxPo.under({
       element: this.root,
     });
+  }
+
+  getAmountDisplayPo(): AmountDisplayPo {
+    return AmountDisplayPo.under(this.root);
   }
 }

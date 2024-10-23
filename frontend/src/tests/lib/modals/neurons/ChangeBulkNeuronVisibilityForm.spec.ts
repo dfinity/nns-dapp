@@ -20,12 +20,14 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     id,
     visibility,
     controller = mockMainAccount.principal.toString(),
-    hotKeyController = null,
+    hotKeyController,
+    stake,
   }: {
     id: bigint;
     visibility: NeuronVisibility;
     controller?: string;
     hotKeyController?: string;
+    stake?: bigint;
   }): NeuronInfo =>
     ({
       neuronId: id,
@@ -34,7 +36,8 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
         ...mockFullNeuron,
         id,
         controller,
-        hotKeys: [hotKeyController],
+        ...(hotKeyController !== undefined && { hotKeys: [hotKeyController] }),
+        ...(stake !== undefined && { cachedNeuronStake: stake }),
       },
     }) as NeuronInfo;
 
@@ -74,6 +77,29 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     visibility: NeuronVisibility.Public,
     controller: "other-controller",
     hotKeyController: mockIdentity.getPrincipal().toText(),
+  });
+  const publicNeuronWithStake1 = createMockNeuron({
+    id: 9n,
+    visibility: NeuronVisibility.Public,
+    stake: 100_000_000n,
+  });
+  const publicNeuronWithStake2 = createMockNeuron({
+    id: 10n,
+    visibility: NeuronVisibility.Public,
+    stake: 500_000_000n,
+  });
+  const hotkeyPublicNeuronWithStake = createMockNeuron({
+    id: 11n,
+    visibility: NeuronVisibility.Public,
+    controller: "other-controller",
+    hotKeyController: mockIdentity.getPrincipal().toText(),
+    stake: 200_000_000n,
+  });
+  const hwPublicNeuronWithStake = createMockNeuron({
+    id: 12n,
+    visibility: NeuronVisibility.Public,
+    controller: mockHardwareWalletAccount.principal.toText(),
+    stake: 300_000_000n,
   });
 
   beforeEach(() => {
@@ -535,6 +561,71 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     expect(uncontrollableNeuronIds).toEqual([
       hwPublicNeuron.neuronId.toString(),
       hotkeyPublicNeuron.neuronId.toString(),
+    ]);
+  });
+
+  it("should display correct StakedAmount for each neuron", async () => {
+    neuronsStore.setNeurons({
+      neurons: [
+        publicNeuronWithStake1,
+        publicNeuronWithStake2,
+        hotkeyPublicNeuronWithStake,
+        hwPublicNeuronWithStake,
+      ],
+      certified: true,
+    });
+
+    const po = renderComponent({
+      makePublic: false,
+    });
+
+    expect(
+      await po
+        .getControllableNeuronVisibilityRowPo(
+          publicNeuronWithStake1.neuronId.toString()
+        )
+        .getAmountDisplayPo()
+        .getText()
+    ).toBe("1.00 ICP");
+
+    expect(
+      await po
+        .getControllableNeuronVisibilityRowPo(
+          publicNeuronWithStake2.neuronId.toString()
+        )
+        .getAmountDisplayPo()
+        .getText()
+    ).toBe("5.00 ICP");
+
+    expect(
+      await po
+        .getUncontrollableNeuronVisibilityRowPo(
+          hotkeyPublicNeuronWithStake.neuronId.toString()
+        )
+        .getAmountDisplayPo()
+        .isPresent()
+    ).toBe(false);
+
+    expect(
+      await po
+        .getUncontrollableNeuronVisibilityRowPo(
+          hwPublicNeuronWithStake.neuronId.toString()
+        )
+        .getAmountDisplayPo()
+        .isPresent()
+    ).toBe(false);
+
+    const controllableNeuronIds = await po.getControllableNeuronIds();
+    const uncontrollableNeuronIds = await po.getUncontrollableNeuronIds();
+
+    expect(controllableNeuronIds).toEqual([
+      publicNeuronWithStake1.neuronId.toString(),
+      publicNeuronWithStake2.neuronId.toString(),
+    ]);
+
+    expect(uncontrollableNeuronIds).toEqual([
+      hotkeyPublicNeuronWithStake.neuronId.toString(),
+      hwPublicNeuronWithStake.neuronId.toString(),
     ]);
   });
 });
