@@ -17,7 +17,7 @@ vi.mock("$lib/services/neurons.services", () => {
 });
 
 describe("DissolveActionButton", () => {
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
   });
 

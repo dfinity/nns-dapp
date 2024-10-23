@@ -17,25 +17,20 @@ import { fireEvent, render } from "@testing-library/svelte";
 describe("CkBTCUpdateBalanceButton", () => {
   const now = Date.now();
 
-  beforeAll(() => {
-    page.mock({
-      data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
-      routeId: AppPath.Wallet,
-    });
-  });
-
   beforeEach(() => {
     resetIdentity();
     vi.useFakeTimers().setSystemTime(now);
+    vi.clearAllTimers();
     vi.spyOn(api, "updateBalance").mockRejectedValue(
       new MinterNoNewUtxosError({
         required_confirmations: 12,
         pending_utxos: [],
       })
     );
-  });
-  afterEach(() => {
-    vi.clearAllTimers();
+    page.mock({
+      data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
+      routeId: AppPath.Wallet,
+    });
   });
 
   const props = {

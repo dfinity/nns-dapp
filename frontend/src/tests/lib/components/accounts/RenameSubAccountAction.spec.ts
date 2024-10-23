@@ -10,14 +10,11 @@ import type { Mock } from "vitest";
 vi.mock("$lib/services/icp-accounts.services");
 
 describe("RenameSubAccountAction", () => {
-  afterEach(() => {
-    vi.clearAllMocks();
-    vi.restoreAllMocks();
-  });
-
   let spy;
 
-  beforeAll(() => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+
     spy = (renameSubAccount as Mock).mockImplementation(async () => {
       // Do nothing test
     });

@@ -14,7 +14,7 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
 
 describe("icrc Accounts store", () => {
-  afterEach(() => icrcAccountsStore.reset());
+  beforeEach(() => icrcAccountsStore.reset());
 
   const accounts: Account[] = [mockCkBTCMainAccount];
 
