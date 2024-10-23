@@ -141,7 +141,7 @@ describe("NnsProposalDetail", () => {
       let resolveListNeuronsQuery: (value: NeuronInfo[]) => void;
       const spyQueryNeurons = vi
         .spyOn(governanceApi, "queryNeurons")
-        .mockImplementationOnce(({ certified }: { certified: boolean }) =>
+        .mockImplementation(({ certified }: { certified: boolean }) =>
           beforeVoting
             ? certified
               ? new Promise((resolve) => (resolveListNeuronsUpdate = resolve))
@@ -203,6 +203,7 @@ describe("NnsProposalDetail", () => {
       );
       expect(spyOnQueryProposal).toBeCalledTimes(2);
 
+      // Vote
       beforeVoting = false;
       await votingCardPo.voteYes();
       await runResolvedPromises();
