@@ -328,6 +328,9 @@
     "public_neuron_description": "This neuron exposes additional information, including its votes.",
     "private_neuron_description": "This neuron limits information it exposes publicly.",
     "learn_more": "Learn more",
+    "make_neurons_public_banner_title": "Neurons can now be private or public",
+    "make_neurons_public_banner_description": "If you would like to make your neurons public, you can open one and change it under “Advanced Details & Settings”.",
+    "make_neurons_public_action_text": "Make Neurons Public",
     "create_as_public": "Create as a public neuron",
     "create_as_public_tooltip": "Public neurons reveal more information about themselves including how they vote on proposals.",
     "create_as_public_neuron_failure": "Making your neuron public has failed, so it was created as a private neuron. You can change neuron visibility at any time under \"Advanced Details & Settings\""
