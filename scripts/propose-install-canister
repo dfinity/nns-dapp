@@ -16,7 +16,7 @@ source "$SOURCE_DIR/clap.bash"
 clap.define short=c long=canister desc="The name of the canister to install to" variable=CANISTER default=""
 clap.define short=w long=wasm desc="The WASM file to install" variable=WASM default=""
 clap.define short=m long=mode desc="The install mode to use" variable=MODE default="upgrade"
-clap.define short=a long=arg desc="Optional canister args binary file" variable=ARG_FILE default=""
+clap.define short=a long=arg-did-file desc="Optional canister args candid file" variable=ARG_DID_FILE default=""
 clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
 clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="snsdemo8"
 # Source the output file ----------------------------------------------------------
@@ -61,8 +61,10 @@ if [[ -z "${PROPOSER_NEURON_ID:-}" ]]; then
 fi
 
 ARG_ARGS=()
-if [[ -n "${ARG_FILE:-}" ]]; then
-  ARG_ARGS=(--arg "$ARG_FILE")
+if [[ -n "${ARG_DID_FILE:-}" ]]; then
+  ARG_BIN_FILE="$(mktemp "${ARG_DID_FILE}.XXXXXX.bin")"
+  didc encode "$(cat "$ARG_DID_FILE")" |xxd -r -p >"$ARG_BIN_FILE"
+  ARG_ARGS=(--arg "$ARG_BIN_FILE")
 fi
 
 set ic-admin \
@@ -78,6 +80,7 @@ set ic-admin \
   "${ARG_ARGS[@]}"
 
 printf "%q " "$@"
+echo
 echo "Do you want to execute this command? [y/N]"
 read -r response
 if [[ "$response" =~ ^[yY] ]]; then
