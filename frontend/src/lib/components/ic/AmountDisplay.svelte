@@ -59,6 +59,10 @@
       font-size: var(--token-font-size, var(--font-size-h3));
     }
 
+    .label {
+      color: var(--label-color, inherit);
+    }
+
     &.singleLine span:first-of-type {
       font-weight: normal;
       font-size: var(--font-size-h5);

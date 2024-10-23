@@ -9,6 +9,7 @@
     Checkbox,
   } from "@dfinity/gix-components";
   import type { NeuronVisibilityRowData } from "$lib/types/neuron-visibility-row";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
 
   const typeToIcon: {
     hardwareWallet: typeof IconLedger;
@@ -57,6 +58,12 @@
         {/if}
       </div>
 
+      {#if rowData.stake}
+        <span class="amount-display">
+          <AmountDisplay singleLine amount={rowData.stake} />
+        </span>
+      {/if}
+
       {#if rowData?.uncontrolledNeuronDetails}
         <span class="tags">
           <span class="uncontrolled-tag-icons">
@@ -80,7 +87,7 @@
 <style lang="scss">
   .neuron-row {
     --checkbox-label-order: 1;
-    --checkbox-padding: 0;
+    --checkbox-padding: var(--padding-1_5x) 0;
     display: flex;
 
     &.disabled {
@@ -91,6 +98,10 @@
     :global(.checkbox) {
       width: 100%;
     }
+  }
+
+  .amount-display {
+    --label-color: var(--text-description);
   }
 
   .label-container {
@@ -107,6 +118,9 @@
     .neuron-id-wrapper {
       display: inline-flex;
       align-items: center;
+    }
+    .neuron-id {
+      margin: 0;
     }
 
     .public-icon-container {

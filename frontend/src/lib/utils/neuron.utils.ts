@@ -51,7 +51,13 @@ import {
   type ProposalInfo,
   type RewardEvent,
 } from "@dfinity/nns";
-import { ICPToken, fromNullable, isNullish, nonNullish } from "@dfinity/utils";
+import {
+  ICPToken,
+  TokenAmountV2,
+  fromNullable,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
 import type { ComponentType } from "svelte";
 import {
   getAccountByPrincipal,
@@ -484,6 +490,12 @@ export const createNeuronVisibilityRowData = ({
   return {
     neuronId: neuron.neuronId.toString(),
     isPublic: isPublicNeuron(neuron),
+    stake: isNeuronControllableByUser({ neuron, mainAccount: accounts.main })
+      ? TokenAmountV2.fromUlps({
+          amount: neuronStake(neuron),
+          token: ICPToken,
+        })
+      : undefined,
     tags: getNeuronTagsUnrelatedToController({
       neuron,
       i18n,
