@@ -90,7 +90,6 @@
 </script>
 
 <form
-  class="visibility-form-component"
   data-tid="change-bulk-visibility-component"
   on:submit|preventDefault={nnsSubmit}
 >
@@ -178,10 +177,6 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
-  .visibility-form-component {
-    row-gap: var(--padding-3x);
-  }
-
   .loading-container {
     width: 100%;
     min-height: 150px;
@@ -198,7 +193,7 @@
     padding: 0 var(--padding-2x);
   }
   .apply-to-all {
-    --checkbox-padding: 0;
+    --checkbox-padding: var(--padding) var(--padding) var(--padding-3x) 0;
     --checkbox-label-order: 1;
   }
 
