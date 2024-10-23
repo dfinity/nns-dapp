@@ -1,11 +1,6 @@
 import * as agent from "$lib/api/agent.api";
 import ProposalSystemInfoProposerEntry from "$lib/components/proposal-detail/ProposalSystemInfoProposerEntry.svelte";
-import { authStore } from "$lib/stores/auth.store";
-import {
-  authStoreMock,
-  mockIdentity,
-  mutableMockAuthStoreSubscribe,
-} from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
@@ -18,10 +13,6 @@ describe("ProposalMeta", () => {
     vi.spyOn(console, "error").mockReturnValue();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
-
-  vi.spyOn(authStore, "subscribe").mockImplementation(
-    mutableMockAuthStoreSubscribe
-  );
 
   const props = {
     proposer: mockProposalInfo.proposer,
@@ -39,10 +30,8 @@ describe("ProposalMeta", () => {
   });
 
   describe("signed in", () => {
-    beforeAll(() => {
-      authStoreMock.next({
-        identity: mockIdentity,
-      });
+    beforeEach(() => {
+      resetIdentity();
     });
 
     it("should open proposer modal", async () => {
@@ -64,10 +53,8 @@ describe("ProposalMeta", () => {
   });
 
   describe("not signed in", () => {
-    beforeAll(() => {
-      authStoreMock.next({
-        identity: undefined,
-      });
+    beforeEach(() => {
+      setNoIdentity();
     });
 
     it("should render a static proposer information", async () => {

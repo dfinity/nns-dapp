@@ -1,11 +1,6 @@
 import AccountSyncIndicator from "$lib/components/header/AccountSyncIndicator.svelte";
-import { authStore } from "$lib/stores/auth.store";
 import { syncStore } from "$lib/stores/sync.store";
-import {
-  authStoreMock,
-  mockIdentity,
-  mutableMockAuthStoreSubscribe,
-} from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   fireEvent,
@@ -16,19 +11,13 @@ import {
 import type { SvelteComponent } from "svelte";
 
 describe("AccountSyncIndicator", () => {
-  vi.spyOn(authStore, "subscribe").mockImplementation(
-    mutableMockAuthStoreSubscribe
-  );
-
   beforeEach(() => {
     syncStore.reset();
   });
 
   describe("not signed in", () => {
     beforeEach(() => {
-      authStoreMock.next({
-        identity: undefined,
-      });
+      setNoIdentity();
     });
 
     it("should not render an indicator", () => {
@@ -49,9 +38,7 @@ describe("AccountSyncIndicator", () => {
 
   describe("signed in", () => {
     beforeEach(() => {
-      authStoreMock.next({
-        identity: mockIdentity,
-      });
+      resetIdentity();
     });
 
     it("should not render an indicator if idle", () => {

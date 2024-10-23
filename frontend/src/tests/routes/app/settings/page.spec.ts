@@ -1,22 +1,15 @@
-import { authStore } from "$lib/stores/auth.store";
 import SettingsPage from "$routes/(app)/(nns)/settings/+page.svelte";
 import {
-  authStoreMock,
   mockIdentity,
-  mutableMockAuthStoreSubscribe,
+  resetIdentity,
+  setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { render } from "@testing-library/svelte";
 
 describe("Settings page", () => {
-  vi.spyOn(authStore, "subscribe").mockImplementation(
-    mutableMockAuthStoreSubscribe
-  );
-
   describe("not signed in", () => {
-    beforeAll(() => {
-      authStoreMock.next({
-        identity: undefined,
-      });
+    beforeEach(() => {
+      setNoIdentity();
     });
 
     it("should render sign-in if not logged in", () => {
@@ -27,10 +20,8 @@ describe("Settings page", () => {
   });
 
   describe("signed in", () => {
-    beforeAll(() => {
-      authStoreMock.next({
-        identity: mockIdentity,
-      });
+    beforeEach(() => {
+      resetIdentity();
     });
 
     it("should render principal", () => {
