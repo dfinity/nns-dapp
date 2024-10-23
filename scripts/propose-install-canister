@@ -63,6 +63,7 @@ fi
 ARG_ARGS=()
 if [[ -n "${ARG_DID_FILE:-}" ]]; then
   ARG_BIN_FILE="$(mktemp "${ARG_DID_FILE}.XXXXXX.bin")"
+  trap 'rm -- "$ARG_BIN_FILE"' EXIT
   didc encode "$(cat "$ARG_DID_FILE")" | xxd -r -p >"$ARG_BIN_FILE"
   ARG_ARGS=(--arg "$ARG_BIN_FILE")
 fi
