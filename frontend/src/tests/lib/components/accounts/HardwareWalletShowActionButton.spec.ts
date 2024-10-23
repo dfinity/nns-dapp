@@ -7,14 +7,11 @@ import type { Mock } from "vitest";
 vi.mock("$lib/proxy/icp-ledger.services.proxy");
 
 describe("HardwareWalletShowActionButton", () => {
-  afterEach(() => {
-    vi.clearAllMocks();
-    vi.restoreAllMocks();
-  });
-
   let spy;
 
-  beforeAll(() => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+
     spy = (
       showAddressAndPubKeyOnHardwareWalletProxy as Mock
     ).mockImplementation(async () => {

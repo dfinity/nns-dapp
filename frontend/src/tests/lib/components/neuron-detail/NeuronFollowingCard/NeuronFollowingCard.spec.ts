@@ -29,12 +29,8 @@ describe("NeuronFollowingCard", () => {
     },
   };
   beforeEach(() => {
-    resetIdentity();
-  });
-
-  afterEach(() => {
-    vi.clearAllMocks();
     vi.resetAllMocks();
+    resetIdentity();
   });
 
   it("should render texts", () => {

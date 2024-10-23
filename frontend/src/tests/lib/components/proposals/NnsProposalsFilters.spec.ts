@@ -44,6 +44,7 @@ describe("NnsProposalsFilters", () => {
 
   beforeEach(() => {
     actionableProposalsSegmentStore.resetForTesting();
+    proposalsFiltersStore.reset();
   });
 
   describe("default filters", () => {
@@ -84,10 +85,6 @@ describe("NnsProposalsFilters", () => {
   });
 
   describe("custom filter selection", () => {
-    afterEach(() => {
-      proposalsFiltersStore.reset();
-    });
-
     it("should not count deprecated selected filters in the count", () => {
       actionableProposalsSegmentStore.set("all");
 

@@ -65,12 +65,9 @@ describe("SnsNeuronHotkeysCard", () => {
       },
     });
 
-  beforeAll(() => {
-    resetIdentity();
-  });
-
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
+    resetIdentity();
   });
 
   it("renders hotkeys title", () => {

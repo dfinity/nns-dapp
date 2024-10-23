@@ -30,19 +30,19 @@ vi.mock("$lib/services/sns.services", () => {
 });
 
 describe("Launchpad", () => {
-  describe("signed in", () => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(
-      mutableMockAuthStoreSubscribe
-    );
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-    beforeAll(() =>
+  describe("signed in", () => {
+    beforeEach(() => {
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mutableMockAuthStoreSubscribe
+      );
+
       authStoreMock.next({
         identity: mockIdentity,
-      })
-    );
-
-    afterEach(() => {
-      vi.clearAllMocks();
+      });
     });
 
     it("should render titles", () => {

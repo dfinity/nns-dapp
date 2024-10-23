@@ -9,7 +9,7 @@ vitest.mock("$lib/services/canisters.services", () => {
 });
 
 describe("DissolveActionButton", () => {
-  afterEach(() => {
+  beforeEach(() => {
     vitest.clearAllMocks();
   });
 

@@ -1066,21 +1066,17 @@ describe("sns-neurons-services", () => {
 
   describe("splitNeuron", () => {
     const transactionFee = 100n;
-    let snsNeuronsStoreSpy: MockInstance;
-    let snsTokenSymbolSelectedStoreSpy: MockInstance;
 
     beforeEach(() => {
-      snsNeuronsStoreSpy = vi
-        .spyOn(snsNeuronsStore, "subscribe")
-        .mockImplementation(
-          buildMockSnsNeuronsStoreSubscribe({
-            rootCanisterId: mockPrincipal,
-            neurons: [mockSnsNeuron],
-          })
-        );
-      snsTokenSymbolSelectedStoreSpy = vi
-        .spyOn(snsTokenSymbolSelectedStore, "subscribe")
-        .mockImplementation(mockTokenStore);
+      vi.spyOn(snsNeuronsStore, "subscribe").mockImplementation(
+        buildMockSnsNeuronsStoreSubscribe({
+          rootCanisterId: mockPrincipal,
+          neurons: [mockSnsNeuron],
+        })
+      );
+      vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
+        mockTokenStore
+      );
 
       tokensStore.reset();
       setSnsProjects([
@@ -1089,11 +1085,6 @@ describe("sns-neurons-services", () => {
           tokenMetadata: { ...mockSnsToken, fee: transactionFee },
         },
       ]);
-    });
-
-    afterEach(() => {
-      snsNeuronsStoreSpy.mockClear();
-      snsTokenSymbolSelectedStoreSpy.mockClear();
     });
 
     it("should call api.addNeuronPermissions", async () => {

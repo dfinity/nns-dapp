@@ -1,5 +1,6 @@
 import type { FiatCurrency } from "$lib/canisters/tvl/tvl.types";
 import type { MetricsCallback } from "$lib/services/public/worker-metrics.services";
+import * as workerMetricsServices from "$lib/services/public/worker-metrics.services";
 import { metricsStore } from "$lib/stores/metrics.store";
 import { nonNullish } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
@@ -7,25 +8,22 @@ import TotalValueLockedTest from "./TotalValueLockedTest.svelte";
 
 let metricsCallback: MetricsCallback | undefined;
 
-vi.mock("$lib/services/public/worker-metrics.services", () => ({
-  initMetricsWorker: vi.fn(() =>
-    Promise.resolve({
-      startMetricsTimer: ({ callback }: { callback: MetricsCallback }) => {
-        metricsCallback = callback;
-      },
-      stopMetricsTimer: () => {
-        // Do nothing
-      },
-    })
-  ),
-}));
-
 describe("TotalValueLocked", () => {
-  beforeEach(() => metricsStore.set(undefined));
-
-  afterEach(() => {
-    vi.clearAllMocks();
+  beforeEach(() => {
     vi.resetAllMocks();
+    metricsCallback = undefined;
+    metricsStore.set(undefined);
+
+    vi.spyOn(workerMetricsServices, "initMetricsWorker").mockImplementation(
+      async () => ({
+        startMetricsTimer: ({ callback }: { callback: MetricsCallback }) => {
+          metricsCallback = callback;
+        },
+        stopMetricsTimer: () => {
+          // Do nothing
+        },
+      })
+    );
   });
 
   const tvl = {
@@ -90,6 +88,8 @@ describe("TotalValueLocked", () => {
   });
 
   it("should not render TVL if response has zero metrics", async () => {
+    expect(metricsCallback).toBeUndefined();
+
     const { getByTestId } = render(TotalValueLockedTest);
 
     // Wait for initialization of the callback

@@ -10,7 +10,7 @@ import { get } from "svelte/store";
 
 describe("SNS Transactions store", () => {
   describe("snsTransactionsStore", () => {
-    afterEach(() => icrcTransactionsStore.reset());
+    beforeEach(() => icrcTransactionsStore.reset());
     it("should set transactions for a project and account when it doesn't exist", () => {
       icrcTransactionsStore.addTransactions({
         canisterId: mockPrincipal,

@@ -33,10 +33,6 @@ describe("icrc-index api", () => {
     vi.spyOn(agent, "createAgent").mockResolvedValue(agentMock);
   });
 
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe("getTransactions", () => {
     const transactions = [mockIcrcTransactionWithId];
     const oldestTxId = 1234n;

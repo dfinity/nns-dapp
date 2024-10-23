@@ -15,7 +15,7 @@ describe("RemoveCanisterControllerButton", () => {
   const reloadDetailsMock = vi.fn();
   const props = { controller, reloadDetails: reloadDetailsMock };
 
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
   });
 

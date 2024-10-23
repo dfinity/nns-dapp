@@ -104,12 +104,10 @@ import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("neuron-utils", () => {
-  beforeAll(() => {
+  beforeEach(() => {
+    vi.clearAllMocks();
     vi.useFakeTimers().setSystemTime(Date.now());
-  });
-
-  afterAll(() => {
-    vi.useRealTimers();
+    neuronsStore.setNeurons({ neurons: [], certified: true });
   });
 
   describe("votingPower", () => {
@@ -1267,10 +1265,6 @@ describe("neuron-utils", () => {
   });
 
   describe("checkInvalidState", () => {
-    afterEach(() => {
-      vi.clearAllMocks();
-    });
-
     const stepName = "ok";
     const spyOnInvalid = vi.fn();
     const invalidStates: InvalidState<boolean>[] = [
@@ -2485,7 +2479,6 @@ describe("neuron-utils", () => {
   });
 
   describe("getNeuronById", () => {
-    afterEach(() => neuronsStore.setNeurons({ neurons: [], certified: true }));
     it("returns neuron when present in store", () => {
       const neuronId = 1_234n;
       const neuron = {
