@@ -1,5 +1,4 @@
 import MakeNeuronsPublicBanner from "$lib/components/neurons/MakeNeuronsPublicBanner.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
@@ -26,6 +25,7 @@ const createTestNeuron = ({
 });
 
 describe("MakeNeuronsPublicBanner", () => {
+  const localStorageKey = "isNeuronsPublicBannerDismissed";
   const renderComponent = () => {
     const { container } = render(MakeNeuronsPublicBanner);
     return MakeNeuronsPublicBannerPo.under(
@@ -41,13 +41,11 @@ describe("MakeNeuronsPublicBanner", () => {
       main: mockMainAccount,
       hardwareWallets: [],
     });
-    overrideFeatureFlagsStore.reset();
     vi.setSystemTime(new Date("2024-01-01"));
-    overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", true);
   });
 
-  it("should not render when localStorage is set to false", async () => {
-    localStorage.setItem("makeNeuronsPublicBannerVisible", "false");
+  it("should not render when localStorageKey is set to true", async () => {
+    localStorage.setItem(localStorageKey, "true");
     const po = renderComponent();
 
     expect(await po.isPresent()).toBe(false);
@@ -63,7 +61,8 @@ describe("MakeNeuronsPublicBanner", () => {
     expect(await po.isPresent()).toBe(true);
   });
 
-  it("should render when localStorage is set to true", async () => {
+  it("should render when localStorageKey is set to false", async () => {
+    localStorage.setItem(localStorageKey, "false");
     neuronsStore.setNeurons({
       neurons: [createTestNeuron({})],
       certified: true,
@@ -84,18 +83,7 @@ describe("MakeNeuronsPublicBanner", () => {
     expect(await po.isPresent()).toBe(false);
   });
 
-  it("should not render when ENABLE_NEURON_VISIBILITY flag is false", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", false);
-    neuronsStore.setNeurons({
-      neurons: [createTestNeuron({})],
-      certified: true,
-    });
-    const po = renderComponent();
-
-    expect(await po.isPresent()).toBe(false);
-  });
-
-  it("should disappear when close button is clicked", async () => {
+  it("should disappear and set localStorageKey to true when close button is clicked", async () => {
     neuronsStore.setNeurons({
       neurons: [createTestNeuron({ visibility: NeuronVisibility.Private })],
       certified: true,
@@ -104,14 +92,12 @@ describe("MakeNeuronsPublicBanner", () => {
 
     expect(await po.isPresent()).toBe(true);
 
-    expect(localStorage.getItem("makeNeuronsPublicBannerVisible")).toBeNull();
+    expect(localStorage.getItem(localStorageKey)).toBeNull();
 
     await po.getCloseButtonPo().click();
 
     expect(await po.isPresent()).toBe(false);
-    expect(localStorage.getItem("makeNeuronsPublicBannerVisible")).toBe(
-      "false"
-    );
+    expect(localStorage.getItem(localStorageKey)).toBe("true");
   });
 
   it("should not render when there is no private neuron", async () => {

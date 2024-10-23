@@ -8,10 +8,9 @@
     isPublicNeuron,
   } from "$lib/utils/neuron.utils";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
-  import { ENABLE_NEURON_VISIBILITY } from "$lib/stores/feature-flags.store";
   import ChangeNeuronVisibilityModal from "$lib/modals/neurons/ChangeNeuronVisibilityModal.svelte";
 
-  const LOCAL_STORAGE_KEY = "makeNeuronsPublicBannerVisible";
+  const LOCAL_STORAGE_KEY = "isNeuronsPublicBannerDismissed";
   const CUTOFF_DATE = new Date(2025, 0, 31);
 
   let modalVisible: boolean;
@@ -21,15 +20,15 @@
     return new Date() > CUTOFF_DATE;
   }
 
-  let visible = browser
+  let isDismissed = browser
     ? (JSON.parse(
-        localStorage.getItem(LOCAL_STORAGE_KEY) ?? "true"
-      ) as boolean) && !isAfterCutoffDate()
+        localStorage.getItem(LOCAL_STORAGE_KEY) ?? "false"
+      ) as boolean) || isAfterCutoffDate()
     : false;
 
-  function setVisibilityFalse() {
-    visible = false;
-    localStorage.setItem(LOCAL_STORAGE_KEY, "false");
+  function dismissBanner() {
+    isDismissed = true;
+    localStorage.setItem(LOCAL_STORAGE_KEY, "true");
   }
 
   function openModal() {
@@ -50,7 +49,7 @@
   );
 </script>
 
-{#if $ENABLE_NEURON_VISIBILITY && hasControllablePrivateNeurons && visible}
+{#if hasControllablePrivateNeurons && !isDismissed}
   <div class="banner" data-tid="make-neurons-public-banner-component">
     <div class="icon-and-text-content-wrapper">
       <div class="icon-background">
@@ -80,7 +79,7 @@
     </button>
     <button
       class="close-button icon-only"
-      on:click={setVisibilityFalse}
+      on:click={dismissBanner}
       data-tid="close-button"
     >
       <IconClose />
