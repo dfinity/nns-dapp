@@ -78,17 +78,18 @@
 </div>
 
 <style lang="scss">
-  :global(.checkbox) {
-    width: 100%;
-  }
-
   .neuron-row {
     --checkbox-label-order: 1;
-    --checkbox-padding: 0 var(--padding) 0 0;
+    --checkbox-padding: 0;
     display: flex;
+
     &.disabled {
       --value-color: var(--text-description-tint);
       --elements-badges: var(--text-description-tint);
+    }
+
+    :global(.checkbox) {
+      width: 100%;
     }
   }
 
