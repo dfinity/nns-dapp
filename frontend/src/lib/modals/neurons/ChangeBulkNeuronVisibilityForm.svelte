@@ -5,7 +5,7 @@
     isNeuronControllableByUser,
     createNeuronVisibilityRowData,
   } from "$lib/utils/neuron.utils";
-  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import { sortedNeuronStore } from "$lib/stores/neurons.store";
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { i18n } from "$lib/stores/i18n";
@@ -34,16 +34,13 @@
     : [];
 
   let isLoading = false;
-  $: isLoading = $definedNeuronsStore.length === 0;
+  $: isLoading = $sortedNeuronStore.length === 0;
 
   let applyToAllNeurons: boolean;
   $: applyToAllNeurons = false;
 
-  let allNeurons: NeuronInfo[];
-  $: allNeurons = $definedNeuronsStore || [];
-
   let controllableNeurons: NeuronInfo[];
-  $: controllableNeurons = allNeurons.filter(
+  $: controllableNeurons = $sortedNeuronStore.filter(
     (n) =>
       isNeuronControllableByUser({
         neuron: n,
@@ -52,7 +49,7 @@
   );
 
   let uncontrollableNeurons: NeuronInfo[];
-  $: uncontrollableNeurons = allNeurons.filter(
+  $: uncontrollableNeurons = $sortedNeuronStore.filter(
     (n) =>
       !isNeuronControllableByUser({
         neuron: n,
