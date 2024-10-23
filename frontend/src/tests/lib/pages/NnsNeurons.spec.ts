@@ -5,11 +5,13 @@ import * as authServices from "$lib/services/auth.services";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronsPo } from "$tests/page-objects/NnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState, NeuronVisibility } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 
@@ -105,6 +107,44 @@ describe("NnsNeurons", () => {
       // Spawning neuron without stake comes last.
       expect(await rows[2].getStake()).toBe("0 ICP");
       expect(await rows[2].hasGoToDetailButton()).toBe(false);
+    });
+  });
+
+  describe("MakeNeuronsVisibilityBanner", () => {
+    const privateControlledNeuron = {
+      ...mockNeuron,
+      visibility: NeuronVisibility.Private,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        controller: mockMainAccount.principal.toText(),
+      },
+    };
+    beforeEach(() => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date("2024-01-01"));
+      vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+        mockIdentity
+      );
+      setAccountsForTesting({
+        main: mockMainAccount,
+        hardwareWallets: [],
+      });
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([
+        privateControlledNeuron,
+      ]);
+    });
+    it("should render makeNeuronsPublicBanner when ENABLE_NEURON_VISIBILITY set to true", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", true);
+      const po = await renderComponent();
+
+      expect(await po.getMakeNeuronsPublicBannerPo().isPresent()).toBe(true);
+    });
+
+    it("should render makeNeuronsPublicBanner when ENABLE_NEURON_VISIBILITY set to false", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", false);
+      const po = await renderComponent();
+
+      expect(await po.getMakeNeuronsPublicBannerPo().isPresent()).toBe(false);
     });
   });
 
