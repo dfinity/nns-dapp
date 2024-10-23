@@ -137,7 +137,10 @@
 
         {#if uncontrollableNeurons.length > 0}
           <Separator spacing="none" />
-          <div class="neurons-list" data-tid="uncontrollable-neurons-list">
+          <div
+            class="neurons-list uncontrolled"
+            data-tid="uncontrollable-neurons-list"
+          >
             <p
               class="description small"
               data-tid="uncontrollable-neurons-description"
@@ -195,7 +198,6 @@
   .neurons-lists-container {
     background: var(--table-header-background);
     border-radius: var(--border-radius);
-    padding: 0 var(--padding-2x);
   }
   .apply-to-all {
     --checkbox-padding: 0;
@@ -207,7 +209,11 @@
   }
 
   .neurons-list {
+    padding: 0 var(--padding-2x);
     display: flex;
     flex-direction: column;
+    &.uncontrolled {
+      padding-top: var(--padding);
+    }
   }
 </style>
