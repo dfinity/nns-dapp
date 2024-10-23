@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+print_help() {
+  cat <<-EOF
+	
+	Get a list of neurons IDs for a dfx identity.
+	Optionally filtered by several criteria.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=v long=can-vote desc="Only include neurons with enough dissolve delay to vote" variable=CAN_VOTE nargs=0 default="false"
+clap.define short=p long=can-propose desc="Only include neurons with enough dissolve delay and stake to propose" variable=CAN_PROPOSE nargs=0 default="false"
+clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="snsdemo8"
+clap.define long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+SECONDS_IN_YEAR=$((60 * 60 * 24 * (4 * 365 + 1) / 4))
+MIN_DISSOLVE_DELAY_TO_VOTE=$((SECONDS_IN_YEAR / 2))
+MIN_STAKE_TO_PROPOSE=1000000000
+
+filter_can_vote() {
+  if [[ "$CAN_VOTE" != "true" ]]; then
+    cat
+    return
+  fi
+
+  jq "select((.[\"1\"].dissolve_delay_seconds | tonumber) >= $MIN_DISSOLVE_DELAY_TO_VOTE)"
+}
+
+filter_can_propose() {
+  if [[ "$CAN_PROPOSE" != "true" ]]; then
+    cat
+    return
+  fi
+
+  filter_can_vote | jq "select((.[\"1\"].stake_e8s | tonumber) >= $MIN_STAKE_TO_PROPOSE)"
+}
+
+dfx canister call nns-governance list_neurons \
+  --identity "$DFX_IDENTITY" \
+  --network "$DFX_NETWORK" \
+  '(
+    record {
+      include_public_neurons_in_full_neurons = null;
+      neuron_ids = vec {};
+      include_empty_neurons_readable_by_caller = null;
+      include_neurons_readable_by_caller = true;
+    },
+  )' | idl2json | jq '.neuron_infos[]' | filter_can_vote | filter_can_propose | jq -r '.["0"]'
