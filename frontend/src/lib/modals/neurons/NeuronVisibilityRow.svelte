@@ -32,7 +32,7 @@
     <div class="label-container">
       <div class="neuron-details">
         <div class="neuron-id-wrapper">
-          <p data-tid="neuron-id" class="neuron-id">{rowData.neuronId}</p>
+          <div data-tid="neuron-id">{rowData.neuronId}</div>
           {#if rowData?.isPublic}
             <span
               class="public-icon-container"
@@ -81,14 +81,9 @@
   .neuron-row {
     --checkbox-label-order: 1;
     --checkbox-padding: var(--padding-1_5x) 0;
-    display: flex;
     &.disabled {
       --value-color: var(--text-description-tint);
       --elements-badges: var(--text-description-tint);
-    }
-
-    :global(.checkbox) {
-      width: 100%;
     }
   }
 
@@ -107,10 +102,6 @@
     .neuron-id-wrapper {
       display: inline-flex;
       align-items: center;
-    }
-
-    .neuron-id {
-      margin: 0;
     }
 
     .public-icon-container {
