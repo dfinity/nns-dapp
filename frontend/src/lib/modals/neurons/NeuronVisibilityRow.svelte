@@ -103,9 +103,14 @@
       flex-wrap: wrap;
       column-gap: var(--padding);
     }
+
     .neuron-id-wrapper {
       display: inline-flex;
       align-items: center;
+    }
+
+    .neuron-id {
+      margin: 0;
     }
 
     .public-icon-container {
