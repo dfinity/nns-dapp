@@ -235,11 +235,16 @@ describe("api-utils", () => {
         expect(onLoad).toBeCalledTimes(0);
         expect(onError).toBeCalledTimes(0);
 
-        resolveUpdate({});
-        resolveQuery({});
+        resolveUpdate({ update: true });
+        resolveQuery({ query: true });
         await runResolvedPromises();
 
         expect(onLoad).toBeCalledTimes(1);
+        expect(onLoad).toBeCalledWith({
+          certified: true,
+          response: { update: true },
+          strategy: "query_and_update",
+        });
         expect(onError).toBeCalledTimes(0);
       });
 
