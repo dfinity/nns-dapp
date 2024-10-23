@@ -60,7 +60,7 @@
     }
 
     .label {
-      color: var(--label-color, inherit);
+      color: var(--amount-display-symbol-color, inherit);
     }
 
     &.singleLine span:first-of-type {
