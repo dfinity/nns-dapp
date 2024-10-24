@@ -8,6 +8,7 @@
   import { isNullish } from "@dfinity/utils";
   import CalloutWarning from "$lib/components/common/CalloutWarning.svelte";
   import ImportTokenCanisterId from "$lib/components/accounts/ImportTokenCanisterId.svelte";
+  import { IconOpenInNew } from "@dfinity/gix-components";
 
   export let ledgerCanisterId: Principal | undefined = undefined;
   export let indexCanisterId: Principal | undefined = undefined;
@@ -23,6 +24,16 @@
 
 <TestIdWrapper testId="import-token-form-component">
   <p class="description">{$i18n.import_token.description}</p>
+  <a
+    class="button ghost with-icon"
+    data-tid="doc-link"
+    href={$i18n.import_token.doc_link_url}
+    target="_blank"
+    rel="external noopener noreferrer"
+  >
+    <IconOpenInNew />
+    {$i18n.import_token.doc_link_label}
+  </a>
 
   <form on:submit|preventDefault={() => dispatch("nnsSubmit")}>
     {#if addIndexCanisterMode}
@@ -93,5 +104,13 @@
 <style lang="scss">
   p.description {
     margin: 0 0 var(--padding-2x);
+  }
+
+  a {
+    margin-bottom: var(--padding-3x);
+    color: var(--primary);
+    &:hover {
+      text-decoration: underline;
+    }
   }
 </style>
