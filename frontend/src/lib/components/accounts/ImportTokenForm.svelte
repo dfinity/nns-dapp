@@ -102,11 +102,14 @@
 </TestIdWrapper>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
   p.description {
     margin: 0 0 var(--padding-2x);
   }
 
   a {
+    @include fonts.standard(true);
     margin-bottom: var(--padding-3x);
     color: var(--primary);
     &:hover {
