@@ -4,6 +4,7 @@ import {
   createDescendingComparator,
   getCellGridAreaName,
   mergeComparators,
+  negate,
   selectPrimaryOrder,
   sortTableData,
 } from "$lib/utils/responsive-table.utils";
@@ -188,6 +189,30 @@ describe("responsive-table.utils", () => {
           columns,
         })
       ).toEqual([item2, item1, item4, item3]);
+    });
+  });
+
+  describe("negate", () => {
+    it("should negate the result of a comparator", () => {
+      const ascendingComparator = (a: number, b: number) => a - b;
+      const negatedComparator = negate(ascendingComparator);
+
+      expect(ascendingComparator(1, 2)).toBe(-1);
+      expect(negatedComparator(1, 2)).toBe(1);
+
+      expect(ascendingComparator(2, 1)).toBe(1);
+      expect(negatedComparator(2, 1)).toBe(-1);
+
+      expect(ascendingComparator(1, 1)).toBe(0);
+      expect(negatedComparator(1, 1)).toBe(0);
+    });
+
+    it("should avoid returning -0", () => {
+      const alwaysZeroComparator = () => 0;
+      const negatedComparator = negate(alwaysZeroComparator);
+
+      expect(Object.is(negatedComparator(1, 2), -0)).toBe(false);
+      expect(negatedComparator(1, 2)).toBe(0);
     });
   });
 });
