@@ -28,33 +28,30 @@
   };
 </script>
 
-<div
-  class="neuron-nav"
-  class:dont-display={isNullish(previousId) && isNullish(nextId)}
-  role="toolbar"
-  data-tid="neuron-navigation"
->
-  <a
-    class="previous"
-    aria-label={$i18n.neuron_detail.previous}
-    href={getNeuronHref(previousId)}
-    class:hidden={isNullish(previousId)}
-    data-tid="neuron-navigation-previous"
-    data-test-neuron-id={previousId ?? ""}
-  >
-    <IconLeft />
-  </a>
-  <a
-    class="next"
-    aria-label={$i18n.neuron_detail.next}
-    href={getNeuronHref(nextId)}
-    class:hidden={isNullish(nextId)}
-    data-tid="neuron-navigation-next"
-    data-test-neuron-id={nextId ?? ""}
-  >
-    <IconRight />
-  </a>
-</div>
+{#if nonNullish(previousId) || nonNullish(nextId)}
+  <div class="neuron-nav" role="toolbar" data-tid="neuron-navigation">
+    <a
+      class="previous"
+      aria-label={$i18n.neuron_detail.previous}
+      href={getNeuronHref(previousId)}
+      class:hidden={isNullish(previousId)}
+      data-tid="neuron-navigation-previous"
+      data-test-neuron-id={previousId ?? ""}
+    >
+      <IconLeft />
+    </a>
+    <a
+      class="next"
+      aria-label={$i18n.neuron_detail.next}
+      href={getNeuronHref(nextId)}
+      class:hidden={isNullish(nextId)}
+      data-tid="neuron-navigation-next"
+      data-test-neuron-id={nextId ?? ""}
+    >
+      <IconRight />
+    </a>
+  </div>
+{/if}
 
 <style lang="scss">
   .neuron-nav {
@@ -62,10 +59,6 @@
     align-items: center;
     column-gap: var(--padding);
     color: var(--elements-icons);
-  }
-
-  .dont-display {
-    display: none;
   }
 
   a {

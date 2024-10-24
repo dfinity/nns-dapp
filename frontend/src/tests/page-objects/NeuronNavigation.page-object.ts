@@ -1,4 +1,4 @@
-import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { LinkPo } from "$tests/page-objects/Link.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -9,35 +9,35 @@ export class NeuronNavigationPo extends BasePageObject {
     return new NeuronNavigationPo(element.byTestId(NeuronNavigationPo.TID));
   }
 
-  getPreviousButtonPo(): ButtonPo {
-    return ButtonPo.under({
+  getPreviousLinkPo(): LinkPo {
+    return LinkPo.under({
       element: this.root,
       testId: "neuron-navigation-previous",
     });
   }
 
-  getNextButtonPo(): ButtonPo {
-    return ButtonPo.under({
+  getNextLinkPo(): LinkPo {
+    return LinkPo.under({
       element: this.root,
       testId: "neuron-navigation-next",
     });
   }
 
   getPreviousNeuronId(): Promise<string | null> {
-    return this.getPreviousButtonPo().root.getAttribute("data-test-neuron-id");
+    return this.getPreviousLinkPo().root.getAttribute("data-test-neuron-id");
   }
 
   getNextNeuronId(): Promise<string | null> {
-    return this.getNextButtonPo().root.getAttribute("data-test-neuron-id");
+    return this.getNextLinkPo().root.getAttribute("data-test-neuron-id");
   }
 
-  async isPreviousButtonHidden(): Promise<boolean> {
-    return (await this.getPreviousButtonPo().root.getClasses()).includes(
+  async isPreviousLinkHidden(): Promise<boolean> {
+    return (await this.getPreviousLinkPo().root.getClasses())?.includes(
       "hidden"
     );
   }
 
-  async isNextButtonHidden(): Promise<boolean> {
-    return (await this.getNextButtonPo().root.getClasses()).includes("hidden");
+  async isNextLinkHidden(): Promise<boolean> {
+    return (await this.getNextLinkPo().root.getClasses())?.includes("hidden");
   }
 }
