@@ -16,6 +16,8 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import { isNullish, nonNullish, type Token } from "@dfinity/utils";
   import { getContext } from "svelte";
+  import NeuronNavigation from "../neuron-detail/NeuronNavigation.svelte";
+  import { snsNeuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/sns-neurons-table-order-sorted-neuronIds-store";
 
   export let token: Token;
 
@@ -42,6 +44,9 @@
           : `${token.symbol} - ${shortenWithMiddleEllipsis(neuronId)}`,
     });
   };
+
+  let neuronIds: string[] = [];
+  $: neuronIds = $snsNeuronsTableOrderSortedNeuronIdsStore;
 </script>
 
 <PageHeader testId="sns-neuron-page-header-component">
@@ -57,6 +62,15 @@
       <IdentifierHash identifier={getSnsNeuronIdAsHexString(neuron)} />
     {/if}
   </span>
+
+  <div slot="navigation">
+    {#if nonNullish(neuron)}
+      <NeuronNavigation
+        currentNeuronId={getSnsNeuronIdAsHexString(neuron)}
+        {neuronIds}
+      />
+    {/if}
+  </div>
 </PageHeader>
 
 <style lang="scss">

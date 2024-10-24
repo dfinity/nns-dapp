@@ -1,6 +1,7 @@
 import { UniverseSummaryPo } from "$tests/page-objects/UniverseSummary.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { NeuronNavigationPo } from "./NeuronNavigation.page-object";
 
 export class NnsNeuronPageHeaderPo extends BasePageObject {
   private static readonly TID = "nns-neuron-page-header-component";
@@ -21,5 +22,9 @@ export class NnsNeuronPageHeaderPo extends BasePageObject {
 
   getNeuronId(): Promise<string> {
     return this.root.byTestId("identifier").getText();
+  }
+
+  getNeuronNavigationPo(): NeuronNavigationPo {
+    return NeuronNavigationPo.under(this.root);
   }
 }
