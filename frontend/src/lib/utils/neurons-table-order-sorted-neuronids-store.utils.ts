@@ -19,7 +19,7 @@ export const sortNeuronIds = (
           : comparator
         : undefined;
     })
-    .filter((c) => nonNullish(c));
+    .filter(nonNullish);
 
   return [...neurons]
     .sort(mergeComparators(comparatorsArray))
