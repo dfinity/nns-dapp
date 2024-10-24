@@ -1,7 +1,6 @@
 import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
 import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
-import type { Subscriber } from "svelte/store";
 import { get } from "svelte/store";
 import en from "./i18n.mock";
 
@@ -69,13 +68,3 @@ export class AuthStoreMock {
     this._callback?.(this._store);
   }
 }
-
-export const authStoreMock = new AuthStoreMock();
-
-export const mutableMockAuthStoreSubscribe = (
-  run: Subscriber<AuthStoreData>
-): (() => void) => {
-  authStoreMock.subscribe((store: AuthStoreData) => run(store));
-
-  return () => undefined;
-};

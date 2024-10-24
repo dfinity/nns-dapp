@@ -158,10 +158,6 @@ describe("ckbtc-info-services", () => {
       });
     });
 
-    afterEach(() => {
-      vi.clearAllMocks();
-    });
-
     it("should not reload info if already loaded", async () => {
       const spyGetMinterInfo = vi
         .spyOn(minterApi, "minterInfo")

@@ -9,7 +9,7 @@ import { mockTokens, mockUniversesTokens } from "$tests/mocks/tokens.mock";
 import { get } from "svelte/store";
 
 describe("Tokens store", () => {
-  afterEach(() => tokensStore.reset());
+  beforeEach(() => tokensStore.reset());
 
   const ckBtcData = {
     canisterId: CKBTC_UNIVERSE_CANISTER_ID,

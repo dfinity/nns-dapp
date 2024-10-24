@@ -38,9 +38,9 @@ describe("NnsNeuronPublicVisibilityAction", () => {
 
     expect(await po.getTitleText()).toBe("Public Neuron");
     expect(await po.getSubtitleText()).toBe(
-      "This neuron exposes additional information, including its votes. Learn more."
+      "This neuron exposes additional information, including its votes. Learn more"
     );
-    expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more.");
+    expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more");
     expect(await po.getSubtitleLinkPo().getHref()).toBe(
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
@@ -56,9 +56,9 @@ describe("NnsNeuronPublicVisibilityAction", () => {
 
     expect(await po.getTitleText()).toBe("Private Neuron");
     expect(await po.getSubtitleText()).toBe(
-      "This neuron limits information it exposes publicly. Learn more."
+      "This neuron limits information it exposes publicly. Learn more"
     );
-    expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more.");
+    expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more");
     expect(await po.getSubtitleLinkPo().getHref()).toBe(
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
@@ -74,10 +74,10 @@ describe("NnsNeuronPublicVisibilityAction", () => {
 
     expect(await po.getTitleText()).toBe("Private Neuron");
     expect(await po.getSubtitleText()).toBe(
-      "This neuron limits information it exposes publicly. Learn more."
+      "This neuron limits information it exposes publicly. Learn more"
     );
 
-    expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more.");
+    expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more");
     expect(await po.getSubtitleLinkPo().getHref()).toBe(
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
@@ -93,9 +93,9 @@ describe("NnsNeuronPublicVisibilityAction", () => {
 
     expect(await po.getTitleText()).toBe("Private Neuron");
     expect(await po.getSubtitleText()).toBe(
-      "This neuron limits information it exposes publicly. Learn more."
+      "This neuron limits information it exposes publicly. Learn more"
     );
-    expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more.");
+    expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more");
     expect(await po.getSubtitleLinkPo().getHref()).toBe(
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
@@ -111,9 +111,9 @@ describe("NnsNeuronPublicVisibilityAction", () => {
 
     expect(await po.getTitleText()).toBe("Private Neuron");
     expect(await po.getSubtitleText()).toBe(
-      "This neuron limits information it exposes publicly. Learn more."
+      "This neuron limits information it exposes publicly. Learn more"
     );
-    expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more.");
+    expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more");
     expect(await po.getSubtitleLinkPo().getHref()).toBe(
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );

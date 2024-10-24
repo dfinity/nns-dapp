@@ -2,6 +2,7 @@ import NeuronVisibilityRow from "$lib/modals/neurons/NeuronVisibilityRow.svelte"
 import type { NeuronVisibilityRowData } from "$lib/types/neuron-visibility-row";
 import { NeuronVisibilityRowPo } from "$tests/page-objects/NeuronVisibilityRow.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import { vi } from "vitest";
 
@@ -237,5 +238,34 @@ describe("NeuronVisibilityRow", () => {
     await checkboxPo.click();
 
     expect(nnsChangeMock).not.toHaveBeenCalled();
+  });
+
+  it("should display the correct amount when stake is provided", async () => {
+    const rowData: NeuronVisibilityRowData = {
+      neuronId: BigInt(123).toString(),
+      isPublic: false,
+      tags: [],
+      stake: TokenAmountV2.fromUlps({
+        amount: 1_000_000_000n,
+        token: ICPToken,
+      }),
+    };
+
+    const { po } = renderComponent({ rowData });
+
+    expect(await po.getAmountDisplayPo().isPresent()).toBe(true);
+    expect(await po.getAmountDisplayPo().getText()).toBe("10.00 ICP");
+  });
+
+  it("should not display amount when stake is not provided", async () => {
+    const rowData: NeuronVisibilityRowData = {
+      neuronId: BigInt(123).toString(),
+      isPublic: false,
+      tags: [],
+    };
+
+    const { po } = renderComponent({ rowData });
+
+    expect(await po.getAmountDisplayPo().isPresent()).toBe(false);
   });
 });

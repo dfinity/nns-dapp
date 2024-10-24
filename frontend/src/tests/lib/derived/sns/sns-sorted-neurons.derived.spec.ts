@@ -318,7 +318,7 @@ describe("sortedSnsNeuronStore", () => {
 });
 
 describe("sortedSnsUserNeuronsStore", () => {
-  afterEach(() => snsNeuronsStore.reset());
+  beforeEach(() => snsNeuronsStore.reset());
   it("should not return CF neurons", async () => {
     const cfNeuron: SnsNeuron = {
       ...createMockSnsNeuron({
@@ -357,7 +357,7 @@ describe("sortedSnsUserNeuronsStore", () => {
 });
 
 describe("sortedSnsCFNeuronsStore", () => {
-  afterEach(() => snsNeuronsStore.reset());
+  beforeEach(() => snsNeuronsStore.reset());
   it("should not return CF neurons", async () => {
     const cfNeuron1: SnsNeuron = {
       ...createMockSnsNeuron({

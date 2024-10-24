@@ -14,13 +14,6 @@ vi.mock("$lib/services/canisters.services", () => {
   };
 });
 
-vi.mock("$lib/stores/toasts.store", () => {
-  return {
-    toastsShow: vi.fn(),
-    toastsSuccess: vi.fn(),
-  };
-});
-
 describe("LinkCanisterModal", () => {
   beforeEach(() => {
     vi.clearAllMocks();

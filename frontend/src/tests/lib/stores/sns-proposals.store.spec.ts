@@ -19,7 +19,7 @@ describe("SNS Proposals stores", () => {
     id: [{ id: 3n }],
   };
   describe("snsProposalsStore", () => {
-    afterEach(() => snsProposalsStore.reset());
+    beforeEach(() => snsProposalsStore.reset());
     it("should set proposals for a project", () => {
       const proposals: SnsProposalData[] = [
         snsProposal1,

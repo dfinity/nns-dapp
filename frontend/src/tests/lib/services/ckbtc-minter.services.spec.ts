@@ -11,7 +11,6 @@ import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import * as busyStore from "$lib/stores/busy.store";
 import { ckbtcPendingUtxosStore } from "$lib/stores/ckbtc-pending-utxos.store";
 import { ckbtcRetrieveBtcStatusesStore } from "$lib/stores/ckbtc-retrieve-btc-statuses.store";
-import * as toastsStore from "$lib/stores/toasts.store";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -28,17 +27,16 @@ import {
   MinterNoNewUtxosError,
   MinterTemporaryUnavailableError,
 } from "@dfinity/ckbtc";
+import { toastsStore } from "@dfinity/gix-components";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("ckbtc-minter-services", () => {
   beforeEach(() => {
-    resetIdentity();
-    ckbtcRetrieveBtcStatusesStore.reset();
-  });
-
-  afterEach(() => {
     vi.clearAllMocks();
+    resetIdentity();
+    toastsStore.reset();
+    ckbtcRetrieveBtcStatusesStore.reset();
   });
 
   describe("loadBtcAddress", () => {
@@ -201,14 +199,17 @@ describe("ckbtc-minter-services", () => {
         });
       });
 
-      const spyOnToastsSuccess = vi.spyOn(toastsStore, "toastsSuccess");
+      expect(get(toastsStore)).toEqual([]);
 
       const result = await services.updateBalance(params);
 
       expect(result).toEqual({ success: true });
-      expect(spyOnToastsSuccess).toHaveBeenCalledWith({
-        labelKey: "error__ckbtc.no_new_confirmed_btc",
-      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: "Updated available ckBTC : No new confirmed BTC.",
+        },
+      ]);
 
       expect(get(ckbtcPendingUtxosStore)).toEqual({
         [CKBTC_UNIVERSE_CANISTER_ID.toText()]: [],
@@ -228,16 +229,18 @@ describe("ckbtc-minter-services", () => {
         });
       });
 
-      const spyOnToastsSuccess = vi.spyOn(toastsStore, "toastsSuccess");
+      expect(get(toastsStore)).toEqual([]);
 
       const result = await services.updateBalance(params);
 
       expect(result).toEqual({ success: true });
 
-      expect(spyOnToastsSuccess).toBeCalledTimes(1);
-      expect(spyOnToastsSuccess).toBeCalledWith({
-        labelKey: "error__ckbtc.no_new_confirmed_btc",
-      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: "Updated available ckBTC : No new confirmed BTC.",
+        },
+      ]);
 
       expect(get(ckbtcPendingUtxosStore)).toEqual({
         [CKBTC_UNIVERSE_CANISTER_ID.toText()]: [pendingUtxo],
@@ -259,15 +262,17 @@ describe("ckbtc-minter-services", () => {
           });
         });
 
-      const spyOnToastsSuccess = vi.spyOn(toastsStore, "toastsSuccess");
+      expect(get(toastsStore)).toEqual([]);
 
       const result = await services.updateBalance(params);
 
       expect(result).toEqual({ success: true });
-      expect(spyOnToastsSuccess).toBeCalledTimes(1);
-      expect(spyOnToastsSuccess).toBeCalledWith({
-        labelKey: "ckbtc.ckbtc_balance_updated",
-      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: "Updated available ckBTC : New confirmed BTC.",
+        },
+      ]);
 
       expect(get(ckbtcPendingUtxosStore)).toEqual({
         [CKBTC_UNIVERSE_CANISTER_ID.toText()]: [pendingUtxo],
@@ -279,17 +284,19 @@ describe("ckbtc-minter-services", () => {
         .spyOn(minterApi, "updateBalance")
         .mockResolvedValue(mockUpdateBalanceOk);
 
-      const spyOnToastsSuccess = vi.spyOn(toastsStore, "toastsSuccess");
+      expect(get(toastsStore)).toEqual([]);
 
       const result = await services.updateBalance(params);
 
       expect(result).toEqual({ success: true });
       expect(updateBalanceSpy).toBeCalledTimes(3);
 
-      expect(spyOnToastsSuccess).toBeCalledTimes(1);
-      expect(spyOnToastsSuccess).toBeCalledWith({
-        labelKey: "ckbtc.ckbtc_balance_updated",
-      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: "Updated available ckBTC : New confirmed BTC.",
+        },
+      ]);
     });
 
     it("should return generic error even if no ui indicators", async () => {
@@ -341,7 +348,7 @@ describe("ckbtc-minter-services", () => {
           .spyOn(minterApi, "updateBalance")
           .mockResolvedValue(mockUpdateBalanceOk);
 
-        const spyOnToastsShow = vi.spyOn(toastsStore, "toastsShow");
+        expect(get(toastsStore)).toEqual([]);
 
         await services.updateBalance({
           ...params,
@@ -355,7 +362,7 @@ describe("ckbtc-minter-services", () => {
           })
         );
 
-        expect(spyOnToastsShow).not.toHaveBeenCalled();
+        expect(get(toastsStore)).toEqual([]);
       });
 
       it("should not toast error on error if no ui indicators", async () => {
@@ -365,7 +372,7 @@ describe("ckbtc-minter-services", () => {
             throw new MinterAlreadyProcessingError();
           });
 
-        const spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
+        expect(get(toastsStore)).toEqual([]);
 
         await services.updateBalance({
           ...params,
@@ -379,7 +386,7 @@ describe("ckbtc-minter-services", () => {
           })
         );
 
-        expect(spyOnToastsError).not.toHaveBeenCalled();
+        expect(get(toastsStore)).toEqual([]);
       });
 
       it("should not handle no new UTXOs success if no ui indicators", async () => {
@@ -390,7 +397,7 @@ describe("ckbtc-minter-services", () => {
           });
         });
 
-        const spyOnToastsShow = vi.spyOn(toastsStore, "toastsShow");
+        expect(get(toastsStore)).toEqual([]);
 
         const result = await services.updateBalance({
           ...params,
@@ -398,7 +405,7 @@ describe("ckbtc-minter-services", () => {
         });
 
         expect(result).toEqual({ success: true });
-        expect(spyOnToastsShow).not.toHaveBeenCalled();
+        expect(get(toastsStore)).toEqual([]);
       });
     });
   });

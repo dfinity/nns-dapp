@@ -8,14 +8,12 @@ import { fireEvent, render } from "@testing-library/svelte";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 describe("FollowSnsNeuronsButton", () => {
-  beforeAll(() => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+
     vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
       mockTokenStore
     );
-  });
-
-  afterEach(() => {
-    vi.clearAllMocks();
   });
 
   it("renders Follow Neurons message", () => {

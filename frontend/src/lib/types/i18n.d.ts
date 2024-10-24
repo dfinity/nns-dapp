@@ -81,6 +81,8 @@ interface I18nError {
   amount_not_enough_stake_neuron: string;
   amount_not_enough_top_up_neuron: string;
   transaction_error: string;
+  transaction_too_old: string;
+  transaction_created_in_future: string;
   unexpected_number_neurons_merge: string;
   cannot_merge: string;
   not_authorized_neuron_action: string;
@@ -338,6 +340,12 @@ interface I18nNeurons {
   public_neuron_description: string;
   private_neuron_description: string;
   learn_more: string;
+  make_neurons_public_banner_title: string;
+  make_neurons_public_banner_description: string;
+  make_neurons_public_action_text: string;
+  create_as_public: string;
+  create_as_public_tooltip: string;
+  create_as_public_neuron_failure: string;
 }
 
 interface I18nNew_followee {
@@ -732,9 +740,13 @@ interface I18nNeuron_detail {
   change_neuron_visibility_loading: string;
   change_neuron_visibility_partial_failure: string;
   change_neuron_visibility_failure: string;
+  apply_to_all: string;
+  neurons: string;
+  uncontrollable_neurons_description: string;
   hardware_wallet: string;
   next: string;
   previous: string;
+  retrieving_data: string;
 }
 
 interface I18nSns_launchpad {
@@ -952,6 +964,7 @@ interface I18nError__sns {
   sns_add_hotkey: string;
   sns_stake_maturity: string;
   sns_disburse_maturity: string;
+  sns_amount_not_enough_stake_neuron: string;
 }
 
 interface I18nAuth_accounts {

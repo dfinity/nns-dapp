@@ -19,7 +19,7 @@ vi.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("DissolveSnsNeuronButton", () => {
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
   });
 

@@ -4,16 +4,11 @@ import {
   DEPRECATED_TOPICS,
 } from "$lib/constants/proposals.constants";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
-import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
 import { enumSize } from "$lib/utils/enum.utils";
-import {
-  authStoreMock,
-  mockIdentity,
-  mutableMockAuthStoreSubscribe,
-} from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { NnsProposalFiltersPo } from "$tests/page-objects/NnsProposalFilters.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -44,14 +39,12 @@ describe("NnsProposalsFilters", () => {
 
   beforeEach(() => {
     actionableProposalsSegmentStore.resetForTesting();
+    proposalsFiltersStore.reset();
+    resetIdentity();
   });
 
   describe("default filters", () => {
     beforeEach(() => {
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mutableMockAuthStoreSubscribe
-      );
-
       actionableProposalsSegmentStore.set("all");
     });
 
@@ -84,10 +77,6 @@ describe("NnsProposalsFilters", () => {
   });
 
   describe("custom filter selection", () => {
-    afterEach(() => {
-      proposalsFiltersStore.reset();
-    });
-
     it("should not count deprecated selected filters in the count", () => {
       actionableProposalsSegmentStore.set("all");
 
@@ -125,17 +114,11 @@ describe("NnsProposalsFilters", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.reset();
       proposalsFiltersStore.reset();
-
-      authStoreMock.next({
-        identity: undefined,
-      });
     });
 
     describe("when signed out", () => {
       beforeEach(() => {
-        authStoreMock.next({
-          identity: undefined,
-        });
+        setNoIdentity();
       });
 
       it("should not render actionable proposals segment", async () => {
@@ -155,9 +138,7 @@ describe("NnsProposalsFilters", () => {
 
     describe("when signed in", () => {
       beforeEach(() => {
-        authStoreMock.next({
-          identity: mockIdentity,
-        });
+        resetIdentity();
       });
 
       it("should render actionable proposals segment", async () => {

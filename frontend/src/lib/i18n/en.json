@@ -77,6 +77,8 @@
     "amount_not_enough_stake_neuron": "Sorry, the amount is too small. You need to stake a minimum of 1 ICP.",
     "amount_not_enough_top_up_neuron": "Sorry, the amount is too small. The amount plus the current stake need to be at least 1 ICP",
     "transaction_error": "Sorry, there was an error trying to execute the transaction.",
+    "transaction_too_old": "Transaction is too old, could not be completed. Make sure your computer’s clock is set correctly, and try again.",
+    "transaction_created_in_future": "Transaction was created in the future, could not be completed. Make sure your computer’s clock is set correctly, and try again.",
     "unexpected_number_neurons_merge": "Sorry, the number of neurons to merge should be only 2. Please try selecting again.",
     "cannot_merge": "Those two neurons cannot be merged.",
     "not_authorized_neuron_action": "Sorry, none of your principals is the controller of the neuron.",
@@ -325,7 +327,13 @@
     "private_neuron": "Private Neuron",
     "public_neuron_description": "This neuron exposes additional information, including its votes.",
     "private_neuron_description": "This neuron limits information it exposes publicly.",
-    "learn_more": "Learn more."
+    "learn_more": "Learn more",
+    "make_neurons_public_banner_title": "Neurons can now be private or public",
+    "make_neurons_public_banner_description": "If you would like to make your neurons public, you can open one and change it under “Advanced Details & Settings”.",
+    "make_neurons_public_action_text": "Make Neurons Public",
+    "create_as_public": "Create as a public neuron",
+    "create_as_public_tooltip": "Public neurons reveal more information about themselves including how they vote on proposals.",
+    "create_as_public_neuron_failure": "Making your neuron public has failed, so it was created as a private neuron. You can change neuron visibility at any time under \"Advanced Details & Settings\""
   },
   "new_followee": {
     "title": "Enter New Followee",
@@ -704,11 +712,15 @@
     "change_neuron_public_success": "Visibility updated to public successfully.",
     "change_neuron_private_success": "Visibility updated to private successfully.",
     "change_neuron_visibility_loading": "Updating visibility",
-    "change_neuron_visibility_partial_failure": "$failedCount out of $totalCount neurons have failed to update their visibility, please try again later. You can always change neuron visibility under \"Advanced Details & Settings\".",
-    "change_neuron_visibility_failure": "Your neurons have failed to update their visibility, please try again later. You can always change neuron visibility under \"Advanced Details & Settings\".",
-    "hardware_wallet": "Hardware wallet",
     "next": "Navigate to next neuron",
-    "previous": "Navigate to previous neuron"
+    "previous": "Navigate to previous neuron",
+    "change_neuron_visibility_partial_failure": "$failedCount out of $totalCount neurons have failed to update their visibility, please try again later. You can change neuron visibility at any time under \"Advanced Details & Settings\".",
+    "change_neuron_visibility_failure": "Your neurons have failed to update their visibility, please try again later. You can change neuron visibility at any time under \"Advanced Details & Settings\".",
+    "apply_to_all": "Apply to all neurons",
+    "neurons": "Neurons",
+    "uncontrollable_neurons_description": "These neurons have different controllers and won't be updated",
+    "hardware_wallet": "Hardware wallet",
+    "retrieving_data": "Retrieving data on neurons..."
   },
   "sns_launchpad": {
     "header": "Launchpad",
@@ -912,7 +924,8 @@
     "sns_remove_followee": "There was an error while unfollowing the neuron.",
     "sns_add_hotkey": "There was an error adding the hotkey.",
     "sns_stake_maturity": "There was an error while staking the maturity of the neuron.",
-    "sns_disburse_maturity": "There was an error while disbursing the maturity of the neuron."
+    "sns_disburse_maturity": "There was an error while disbursing the maturity of the neuron.",
+    "sns_amount_not_enough_stake_neuron": "Sorry, the amount is too small. You need a minimum of $minimum $token to stake."
   },
   "auth_accounts": {
     "title": "100% on-chain governance",
