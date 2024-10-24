@@ -1,8 +1,13 @@
 import NnsNeuronPublicVisibilityAction from "$lib/components/neuron-detail/NnsNeuronPublicVisibilityAction.svelte";
-import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockHardwareWalletAccount,
+  mockMainAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronPublicVisibilityActionPo } from "$tests/page-objects/NnsNeuronPublicVisibilityAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { NeuronVisibility, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
@@ -21,12 +26,24 @@ describe("NnsNeuronPublicVisibilityAction", () => {
     ...mockNeuron,
     fullNeuron: {
       ...mockNeuron.fullNeuron,
-      controller: mockIdentity.getPrincipal().toText(),
+      controller: mockMainAccount.principal.toText(),
+    },
+  };
+
+  const hwControlledNeuron = {
+    ...mockNeuron,
+    fullNeuron: {
+      ...mockNeuron.fullNeuron,
+      controller: mockHardwareWalletAccount.principal.toText(),
     },
   };
 
   beforeEach(() => {
     resetIdentity();
+    setAccountsForTesting({
+      main: mockMainAccount,
+      hardwareWallets: [mockHardwareWalletAccount],
+    });
   });
 
   it("should render elements and text for public neuron", async () => {
@@ -102,12 +119,22 @@ describe("NnsNeuronPublicVisibilityAction", () => {
     expect(await po.getButtonPo().getText()).toBe("Make Neuron Public");
   });
 
-  it("should not render button but render rest for uncontroled neurons", async () => {
-    const uncontroledNeuron: NeuronInfo = {
-      ...mockNeuron,
-      visibility: undefined,
-    };
-    const po = await renderComponent(uncontroledNeuron);
+  it("should only not render button for uncontrolled neurons", async () => {
+    const po = await renderComponent(mockNeuron);
+
+    expect(await po.getTitleText()).toBe("Private Neuron");
+    expect(await po.getSubtitleText()).toBe(
+      "This neuron limits information it exposes publicly. Learn more"
+    );
+    expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more");
+    expect(await po.getSubtitleLinkPo().getHref()).toBe(
+      "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
+    );
+    expect(await po.getButtonPo().isPresent()).toBe(false);
+  });
+
+  it("should only not render button for hardware wallet controlled neurons", async () => {
+    const po = await renderComponent(hwControlledNeuron);
 
     expect(await po.getTitleText()).toBe("Private Neuron");
     expect(await po.getSubtitleText()).toBe(

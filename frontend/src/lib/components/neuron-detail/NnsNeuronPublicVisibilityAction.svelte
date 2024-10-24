@@ -1,10 +1,9 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import {
-    isNeuronControllable,
+    isNeuronControllableByUser,
     isPublicNeuron,
   } from "$lib/utils/neuron.utils";
-  import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import CommonItemAction from "../ui/CommonItemAction.svelte";
   import { IconPublicBadge } from "@dfinity/gix-components";
@@ -17,10 +16,9 @@
   $: isPublic = isPublicNeuron(neuron);
 
   let isControllable: boolean;
-  $: isControllable = isNeuronControllable({
+  $: isControllable = isNeuronControllableByUser({
     neuron,
-    identity: $authStore.identity,
-    accounts: $icpAccountsStore,
+    mainAccount: $icpAccountsStore.main,
   });
 </script>
 
