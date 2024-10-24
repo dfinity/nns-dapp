@@ -1,5 +1,4 @@
 import NnsNeuronPublicVisibilityAction from "$lib/components/neuron-detail/NnsNeuronPublicVisibilityAction.svelte";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -39,7 +38,6 @@ describe("NnsNeuronPublicVisibilityAction", () => {
   };
 
   beforeEach(() => {
-    resetIdentity();
     setAccountsForTesting({
       main: mockMainAccount,
       hardwareWallets: [mockHardwareWalletAccount],
