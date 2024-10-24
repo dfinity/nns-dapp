@@ -45,7 +45,6 @@
     @include media.min-width(medium) {
       align-self: auto;
       order: initial;
-      position: static;
       display: flex;
       align-items: center;
     }
