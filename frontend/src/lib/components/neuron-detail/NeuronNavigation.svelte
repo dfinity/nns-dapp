@@ -54,11 +54,18 @@
 {/if}
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
   .neuron-nav {
     display: flex;
     align-items: center;
     column-gap: var(--padding);
     color: var(--elements-icons);
+    padding-bottom: var(--padding-3x);
+
+    @include media.min-width(medium) {
+      padding-bottom: 0;
+    }
   }
 
   a {

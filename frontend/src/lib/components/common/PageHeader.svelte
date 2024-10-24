@@ -1,15 +1,12 @@
 <script lang="ts">
   export let testId: string | undefined = undefined;
-
-  $: hasNavigation = $$slots.navigation;
 </script>
 
 <div class="container" data-tid={testId}>
-  <div class="page-header" class:has-navigation={hasNavigation}>
+  <div class="page-header">
     <slot name="start" />
     <slot name="end" />
   </div>
-
   <div class="navigation">
     <slot name="navigation" />
   </div>
@@ -21,6 +18,11 @@
   .container {
     position: relative;
     display: flex;
+    flex-direction: column;
+
+    @include media.min-width(medium) {
+      flex-direction: row;
+    }
   }
 
   .page-header {
@@ -36,17 +38,13 @@
       justify-content: space-between;
     }
   }
-  .has-navigation {
-    padding-top: var(--padding-6x);
-    @include media.min-width(medium) {
-      padding: 0;
-    }
-  }
   .navigation {
-    position: absolute;
-    top: 0;
-    right: 0;
+    order: -1;
+    align-self: end;
+
     @include media.min-width(medium) {
+      align-self: auto;
+      order: initial;
       position: static;
       display: flex;
       align-items: center;
