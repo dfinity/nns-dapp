@@ -33,6 +33,14 @@ export class ImportTokenFormPo extends BasePageObject {
     });
   }
 
+  getDocLink(): PageObjectElement {
+    return this.root.byTestId("doc-link");
+  }
+
+  getDocLinkHref(): Promise<string> {
+    return this.getDocLink().getAttribute("href");
+  }
+
   getWarningPo(): CalloutWarningPo {
     return CalloutWarningPo.under(this.root);
   }
