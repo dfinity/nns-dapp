@@ -14,13 +14,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Provide better error messages when the transaction timestamp is off.
+* Provide better error messages when the transaction timestamp is off.
 
 #### Changed
 
-- Change Internet Computer Association neuron title.
-- Stop hiding the bottom menu logo and collapse button on small screens.
-- Remove menu footer on collapsed menu.
+* Change Internet Computer Association neuron title.
+* Stop hiding the bottom menu logo and collapse button on small screens.
+* Remove menu footer on collapsed menu.
 
 #### Deprecated
 
@@ -28,8 +28,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-- Race condition in proposal loading.
-- Consistently identify a proposal by its type in voting progress toasts.
+* Race condition in proposal loading.
+* Consistently identify a proposal by its type in voting progress toasts.
 
 #### Security
 
