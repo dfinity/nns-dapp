@@ -738,14 +738,14 @@ interface I18nNeuron_detail {
   change_neuron_public_success: string;
   change_neuron_private_success: string;
   change_neuron_visibility_loading: string;
+  next: string;
+  previous: string;
   change_neuron_visibility_partial_failure: string;
   change_neuron_visibility_failure: string;
   apply_to_all: string;
   neurons: string;
   uncontrollable_neurons_description: string;
   hardware_wallet: string;
-  next: string;
-  previous: string;
   retrieving_data: string;
 }
 
