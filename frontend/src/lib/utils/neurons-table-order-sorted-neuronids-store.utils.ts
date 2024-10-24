@@ -21,6 +21,10 @@ export const sortNeuronIds = (
     })
     .filter((c) => nonNullish(c));
 
+  if (comparatorsArray.length === 0) {
+    return neurons.map((n) => n.neuronId);
+  }
+
   return [...neurons]
     .sort(mergeComparators(comparatorsArray))
     .map((n) => n.neuronId);
