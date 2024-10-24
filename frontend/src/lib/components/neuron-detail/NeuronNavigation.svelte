@@ -1,16 +1,12 @@
 <script lang="ts">
   import { IconLeft, IconRight } from "@dfinity/gix-components";
-  import { isNullish } from "@dfinity/utils";
+  import { nonNullish, isNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
-  import type { UniverseCanisterIdText } from "$lib/types/universe";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   export let currentNeuronId: string;
-  export let currentUniverse: UniverseCanisterIdText;
   export let neuronIds: string[] = [];
-  export let selectNeuron: (
-    id: string,
-    universe: UniverseCanisterIdText
-  ) => void;
 
   let currentIndex: number;
   let previousId: string | undefined;
@@ -25,15 +21,10 @@
         : undefined;
   }
 
-  const selectPrevious = () => {
-    if (previousId) {
-      selectNeuron(previousId, currentUniverse);
-    }
-  };
-  const selectNext = () => {
-    if (nextId) {
-      selectNeuron(nextId, currentUniverse);
-    }
+  const getNeuronHref = (id: string | undefined) => {
+    return nonNullish(id)
+      ? `${AppPath.Neuron}/?u=${$pageStore.universe}&neuron=${id}`
+      : "";
   };
 </script>
 
@@ -43,28 +34,26 @@
   role="toolbar"
   data-tid="neuron-navigation"
 >
-  <button
-    class="icon-only previous"
-    type="button"
+  <a
+    class="previous"
     aria-label={$i18n.neuron_detail.previous}
-    on:click={selectPrevious}
+    href={getNeuronHref(previousId)}
     class:hidden={isNullish(previousId)}
     data-tid="neuron-navigation-previous"
     data-test-neuron-id={previousId ?? ""}
   >
     <IconLeft />
-  </button>
-  <button
-    class="icon-only next"
-    type="button"
+  </a>
+  <a
+    class="next"
     aria-label={$i18n.neuron_detail.next}
-    on:click={selectNext}
+    href={getNeuronHref(nextId)}
     class:hidden={isNullish(nextId)}
     data-tid="neuron-navigation-next"
     data-test-neuron-id={nextId ?? ""}
   >
     <IconRight />
-  </button>
+  </a>
 </div>
 
 <style lang="scss">
@@ -79,7 +68,9 @@
     display: none;
   }
 
-  button {
+  a {
+    display: flex;
+    align-items: center;
     &.hidden {
       visibility: hidden;
       opacity: 0;

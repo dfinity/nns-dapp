@@ -10,20 +10,12 @@
   import UniverseSummary from "../universe/UniverseSummary.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import NeuronNavigation from "./NeuronNavigation.svelte";
-  import { OWN_CANISTER_ID_TEXT as currentUniverse } from "$lib/constants/canister-ids.constants";
-  import type { UniverseCanisterIdText } from "$lib/types/universe";
-  import { AppPath } from "$lib/constants/routes.constants";
-  import { goto } from "$app/navigation";
   import { neuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/neurons-table-order-sorted-neuronIds-store";
 
   export let neuron: NeuronInfo;
 
   let neuronIds: string[] = [];
   $: neuronIds = $neuronsTableOrderSortedNeuronIdsStore;
-
-  const selectNeuron = (id: string, universe: UniverseCanisterIdText) => {
-    goto(`${AppPath.Neuron}/?u=${universe}&neuron=${id}`);
-  };
 
   const updateLayoutTitle = ($event: Event) => {
     const {
@@ -57,9 +49,7 @@
   <div slot="navigation">
     <NeuronNavigation
       currentNeuronId={neuron.neuronId.toString()}
-      {currentUniverse}
       {neuronIds}
-      {selectNeuron}
     />
   </div>
 </PageHeader>
