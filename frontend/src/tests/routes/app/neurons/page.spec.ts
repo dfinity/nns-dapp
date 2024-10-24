@@ -1,24 +1,10 @@
-import { authStore } from "$lib/stores/auth.store";
 import NeuronsPage from "$routes/(app)/(u)/(list)/neurons/+page.svelte";
-import {
-  authStoreMock,
-  mutableMockAuthStoreSubscribe,
-} from "$tests/mocks/auth.store.mock";
+import { setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { render } from "@testing-library/svelte";
 
 describe("Neurons page", () => {
-  vi.spyOn(authStore, "subscribe").mockImplementation(
-    mutableMockAuthStoreSubscribe
-  );
-
-  beforeAll(() => {
-    authStoreMock.next({
-      identity: undefined,
-    });
-  });
-
-  afterAll(() => {
-    vi.clearAllMocks();
+  beforeEach(() => {
+    setNoIdentity();
   });
 
   it("should render sign-in if not logged in", () => {

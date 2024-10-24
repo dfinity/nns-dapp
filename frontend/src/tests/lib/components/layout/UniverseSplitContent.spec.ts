@@ -1,23 +1,16 @@
 import UniverseSplitContent from "$lib/components/layout/UniverseSplitContent.svelte";
-import { authStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
-import {
-  authStoreMock,
-  mockIdentity,
-  mutableMockAuthStoreSubscribe,
-} from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { render } from "@testing-library/svelte";
 
 describe("UniverseSplitContent", () => {
-  vi.spyOn(authStore, "subscribe").mockImplementation(
-    mutableMockAuthStoreSubscribe
-  );
+  beforeEach(() => {
+    resetIdentity();
 
-  beforeAll(() =>
     layoutTitleStore.set({
       title: "the header",
-    })
-  );
+    });
+  });
 
   it("should render the universe nav", () => {
     const { getByTestId } = render(UniverseSplitContent);
@@ -31,18 +24,14 @@ describe("UniverseSplitContent", () => {
   });
 
   it("should render the login button in the header", () => {
-    authStoreMock.next({
-      identity: undefined,
-    });
+    setNoIdentity();
 
     const { getByTestId } = render(UniverseSplitContent);
     expect(getByTestId("toolbar-login")).not.toBeNull();
   });
 
   it("should render the account menu", () => {
-    authStoreMock.next({
-      identity: mockIdentity,
-    });
+    resetIdentity();
 
     const { getByTestId } = render(UniverseSplitContent);
     expect(getByTestId("account-menu")).not.toBeNull();
