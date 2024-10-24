@@ -8,7 +8,6 @@ import {
 import { convertCkBTCToBtcIcrc2 } from "$lib/services/ckbtc-convert.services";
 import * as walletAccountsServices from "$lib/services/icrc-accounts.services";
 import { loadIcrcAccountTransactions } from "$lib/services/icrc-transactions.services";
-import * as toastsStore from "$lib/stores/toasts.store";
 import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import { numberToE8s } from "$lib/utils/token.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -24,6 +23,8 @@ import {
   MinterInsufficientFundsError,
   type RetrieveBtcOk,
 } from "@dfinity/ckbtc";
+import { toastsStore } from "@dfinity/gix-components";
+import { get } from "svelte/store";
 import type { Mock } from "vitest";
 import { mock } from "vitest-mock-extended";
 
@@ -81,7 +82,6 @@ describe("ckbtc-convert-services", () => {
     let resolveRetrieveBtc;
     let rejectRetrieveBtc;
     let resolveLoadWalletTransactions;
-    let spyOnToastsError;
 
     beforeEach(() => {
       resolveApproveTransfer = undefined;
@@ -111,7 +111,6 @@ describe("ckbtc-convert-services", () => {
             resolveLoadWalletTransactions = resolve;
           })
       );
-      spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
     });
 
     it("should approve the transfer", async () => {
@@ -247,7 +246,7 @@ describe("ckbtc-convert-services", () => {
       expect(loadAccountsSpy).toBeCalledTimes(1);
 
       expect(await convertPromise).toEqual({ success: true });
-      expect(spyOnToastsError).toBeCalledTimes(0);
+      expect(get(toastsStore)).toEqual([]);
     });
 
     it("fails when minter throws", async () => {
@@ -257,6 +256,8 @@ describe("ckbtc-convert-services", () => {
         ...params,
         updateProgress: updateProgressSpy,
       });
+
+      expect(get(toastsStore)).toEqual([]);
 
       await runResolvedPromises();
       resolveApproveTransfer(123n);
@@ -280,7 +281,12 @@ describe("ckbtc-convert-services", () => {
       expect(loadIcrcAccountTransactions).toBeCalledTimes(1);
 
       expect(await convertPromise).toEqual({ success: false });
-      expect(spyOnToastsError).toBeCalledTimes(1);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Insufficient funds. ",
+        },
+      ]);
     });
   });
 });

@@ -9,6 +9,7 @@
     Checkbox,
   } from "@dfinity/gix-components";
   import type { NeuronVisibilityRowData } from "$lib/types/neuron-visibility-row";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
 
   const typeToIcon: {
     hardwareWallet: typeof IconLedger;
@@ -57,7 +58,11 @@
         {/if}
       </div>
 
-      {#if rowData?.uncontrolledNeuronDetails}
+      {#if rowData.stake}
+        <span class="amount-display">
+          <AmountDisplay singleLine amount={rowData.stake} />
+        </span>
+      {:else if rowData?.uncontrolledNeuronDetails}
         <span class="tags">
           <span class="uncontrolled-tag-icons">
             <svelte:component
@@ -86,10 +91,15 @@
     --checkbox-label-order: 1;
     --checkbox-padding: 0 var(--padding) 0 0;
     display: flex;
+
     &.disabled {
       --value-color: var(--text-description-tint);
       --elements-badges: var(--text-description-tint);
     }
+  }
+
+  .amount-display {
+    --amount-display-symbol-color: var(--text-description);
   }
 
   .label-container {

@@ -1,8 +1,9 @@
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import { matchLedgerIndexPair } from "$lib/services/icrc-index.services";
-import * as toastsStore from "$lib/stores/toasts.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { toastsStore } from "@dfinity/gix-components";
+import { get } from "svelte/store";
 
 describe("icrc-index.services", () => {
   describe("matchLedgerIndexPair", () => {
@@ -13,6 +14,7 @@ describe("icrc-index.services", () => {
     beforeEach(() => {
       vi.clearAllMocks();
       resetIdentity();
+      toastsStore.reset();
     });
 
     it("should return true when the ledger canister IDs match", async () => {
@@ -36,45 +38,42 @@ describe("icrc-index.services", () => {
     });
 
     it("should return false when the ledger canister IDs don't match", async () => {
-      const spyToastError = vi.spyOn(toastsStore, "toastsError");
       vi.spyOn(icrcIndexApi, "getLedgerId").mockResolvedValue(
         differentLedgerCanisterId
       );
 
-      expect(spyToastError).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
       const result = await matchLedgerIndexPair({
         ledgerCanisterId,
         indexCanisterId,
       });
 
       expect(result).toEqual(false);
-      expect(spyToastError).toBeCalledTimes(1);
-      expect(spyToastError).toBeCalledWith({
-        labelKey: "error.invalid_ledger_index_pair",
-      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "The provided index canister ID does not match the associated ledger canister ID.",
+        },
+      ]);
     });
 
     it("should handle errors", async () => {
       vi.spyOn(console, "error").mockReturnValue();
-      const spyToastError = vi.spyOn(toastsStore, "toastsError");
       const error = new Error("test");
       vi.spyOn(icrcIndexApi, "getLedgerId").mockRejectedValue(error);
 
-      expect(spyToastError).not.toBeCalled();
       const result = await matchLedgerIndexPair({
         ledgerCanisterId,
         indexCanisterId,
       });
 
       expect(result).toEqual(false);
-      expect(spyToastError).toBeCalledTimes(1);
-      expect(spyToastError).toBeCalledWith({
-        labelKey: "error.index_canister_validation",
-        substitutions: {
-          $indexCanister: indexCanisterId.toText(),
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: `An error occurred while validating the index canister ID. It appears that ${indexCanisterId} might not be a valid index canister ID. ${error.message}`,
         },
-        err: error,
-      });
+      ]);
     });
   });
 });

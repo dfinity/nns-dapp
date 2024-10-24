@@ -39,13 +39,11 @@ describe("NewFolloweeModal", () => {
     },
   };
   beforeEach(() => {
+    vi.clearAllMocks();
     resetIdentity();
+    knownNeuronsStore.setNeurons([]);
   });
 
-  afterEach(() => {
-    knownNeuronsStore.setNeurons([]);
-    vi.clearAllMocks();
-  });
   it("renders an input for a neuron address", () => {
     const { container } = render(NewFolloweeModal, {
       props: { neuron: mockNeuron, topic: Topic.Unspecified },

@@ -8,6 +8,13 @@ import { AuthClient } from "@dfinity/auth-client";
 import { mock } from "vitest-mock-extended";
 
 describe("auth-utils", () => {
+  const { host: originalWindowLocationHost } = window.location;
+
+  beforeEach(() => {
+    // restore original host
+    window.location.host = originalWindowLocationHost;
+  });
+
   describe("isSignedIn", () => {
     it("should not be signed in", () => {
       expect(isSignedIn(undefined)).toBe(false);
@@ -52,13 +59,6 @@ describe("auth-utils", () => {
     });
   });
   describe("getIdentityProviderUrl", () => {
-    const { host } = window.location;
-
-    afterEach(() => {
-      // restore original host
-      window.location.host = host;
-    });
-
     it("should return old mainnet identity from ic0.app", async () => {
       Object.defineProperty(window, "location", {
         writable: true,

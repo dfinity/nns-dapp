@@ -38,13 +38,11 @@ describe('NnsProposals when "all proposals" selected', () => {
     DEFAULT_PROPOSALS_FILTERS;
 
   beforeEach(() => {
-    actionableProposalsSegmentStore.set("all");
-  });
-
-  afterEach(() => {
     vi.clearAllMocks();
     neuronsStore.reset();
     resetNeuronsApiService();
+
+    actionableProposalsSegmentStore.set("all");
   });
 
   describe("when signed in user", () => {

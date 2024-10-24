@@ -37,7 +37,7 @@ export const registerNnsVotes = async ({
   vote: Vote;
   reloadProposalCallback: (proposalInfo: ProposalInfo) => void;
 }): Promise<void> => {
-  const proposalType = mapNnsProposal(proposalInfo).topic ?? "";
+  const proposalType = mapNnsProposal(proposalInfo).type ?? "";
 
   await manageVotesRegistration({
     universeCanisterId: OWN_CANISTER_ID,
@@ -135,7 +135,7 @@ const registerNnsNeuronsVote = async ({
   const identity: Identity = await getAuthenticatedIdentity();
   const { id } = proposalInfo;
   const proposalId = id as ProposalId;
-  const proposalType = mapNnsProposal(proposalInfo).topic ?? "";
+  const proposalType = mapNnsProposal(proposalInfo).type ?? "";
 
   try {
     const requests = neuronIds.map(

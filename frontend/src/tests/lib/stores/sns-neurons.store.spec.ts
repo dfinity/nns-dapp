@@ -7,7 +7,7 @@ import { get } from "svelte/store";
 
 describe("SNS Neurons stores", () => {
   describe("snsNeurons store", () => {
-    afterEach(() => snsNeuronsStore.reset());
+    beforeEach(() => snsNeuronsStore.reset());
     it("should set neurons for a project", () => {
       const neurons: SnsNeuron[] = [
         createMockSnsNeuron({

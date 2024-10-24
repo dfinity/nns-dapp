@@ -19,7 +19,7 @@ describe("voting-store", () => {
     proposalIdString: "2",
   };
 
-  afterEach(() => {
+  beforeEach(() => {
     voteRegistrationStore.reset();
   });
 

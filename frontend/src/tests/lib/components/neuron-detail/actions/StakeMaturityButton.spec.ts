@@ -3,7 +3,7 @@ import en from "$tests/mocks/i18n.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
 describe("StakeMaturityButton", () => {
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
   });
 

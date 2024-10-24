@@ -100,16 +100,14 @@ import {
   type ProposalInfo,
   type RewardEvent,
 } from "@dfinity/nns";
-import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("neuron-utils", () => {
-  beforeAll(() => {
+  beforeEach(() => {
+    vi.clearAllMocks();
     vi.useFakeTimers().setSystemTime(Date.now());
-  });
-
-  afterAll(() => {
-    vi.useRealTimers();
+    neuronsStore.setNeurons({ neurons: [], certified: true });
   });
 
   describe("votingPower", () => {
@@ -1267,10 +1265,6 @@ describe("neuron-utils", () => {
   });
 
   describe("checkInvalidState", () => {
-    afterEach(() => {
-      vi.clearAllMocks();
-    });
-
     const stepName = "ok";
     const spyOnInvalid = vi.fn();
     const invalidStates: InvalidState<boolean>[] = [
@@ -2485,7 +2479,6 @@ describe("neuron-utils", () => {
   });
 
   describe("getNeuronById", () => {
-    afterEach(() => neuronsStore.setNeurons({ neurons: [], certified: true }));
     it("returns neuron when present in store", () => {
       const neuronId = 1_234n;
       const neuron = {
@@ -3122,6 +3115,81 @@ describe("neuron-utils", () => {
         i18n: en,
       });
       expect(result.uncontrolledNeuronDetails).toBeUndefined();
+    });
+
+    it("should include stake for user-controlled neuron", () => {
+      const stake = 100_000_000n;
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: mockMainAccount.principal.toText(),
+          cachedNeuronStake: stake,
+          neuronFees: 0n,
+        },
+      };
+      const result = createNeuronVisibilityRowData({
+        neuron,
+        identity: mockIdentity,
+        accounts: { main: mockMainAccount },
+        i18n: en,
+      });
+      expect(result.stake).toEqual(
+        TokenAmountV2.fromUlps({
+          amount: stake,
+          token: ICPToken,
+        })
+      );
+      expect(result.uncontrolledNeuronDetails).toBeUndefined();
+    });
+
+    it("should not include stake for hardware wallet controlled neuron", () => {
+      const stake = 200_000_000n;
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: mockHardwareWalletAccount.principal?.toText(),
+          cachedNeuronStake: stake,
+          neuronFees: 0n,
+        },
+      };
+      const result = createNeuronVisibilityRowData({
+        neuron,
+        identity: mockIdentity,
+        accounts: {
+          main: mockMainAccount,
+          hardwareWallets: [mockHardwareWalletAccount],
+        },
+        i18n: en,
+      });
+      expect(result.stake).toBeUndefined();
+      expect(result.uncontrolledNeuronDetails).toEqual({
+        type: "hardwareWallet",
+        text: "Hardware wallet",
+      });
+    });
+
+    it("should not include stake for hotkey controlled neuron", () => {
+      const controller = "other-controller";
+      const stake = 300_000_000n;
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller,
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+          cachedNeuronStake: stake,
+          neuronFees: 0n,
+        },
+      };
+      const result = createNeuronVisibilityRowData({
+        neuron,
+        identity: mockIdentity,
+        accounts: { main: mockMainAccount },
+        i18n: en,
+      });
+      expect(result.stake).toBeUndefined();
     });
   });
 });

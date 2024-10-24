@@ -36,7 +36,7 @@ describe("SplitSnsNeuronButton", () => {
     token: mockToken,
   };
 
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
   });
 

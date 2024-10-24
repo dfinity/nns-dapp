@@ -5,7 +5,7 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 describe("NnsStakeMaturityButton", () => {
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
   });
 

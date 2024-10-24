@@ -8,7 +8,7 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("SnsFilterTypesModal", () => {
-  afterEach(() => {
+  beforeEach(() => {
     snsFiltersStore.reset();
   });
   const filters: Filter<SnsProposalTypeFilterId>[] = [
