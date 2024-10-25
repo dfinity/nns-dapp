@@ -3,11 +3,7 @@ import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page
 import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
-// Disbursing a new neuron is no longer possible because neurons are created
-// with a dissolve delay of 7 days.
-// TODO: Re-enable this test if the governance canister provides a
-// work-around for testing or otherwise delete this test.
-test.skip("Test disburse neuron", async ({ page, context }) => {
+test("Test disburse neuron", async ({ page, context }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("Tokens / NNS Dapp");
   await signInWithNewUser({ page, context });
@@ -48,6 +44,9 @@ test.skip("Test disburse neuron", async ({ page, context }) => {
     .getNeuronsTableRowPos();
   expect(neuronRows).toHaveLength(1);
   neuronRows[0].click();
+
+  step("Unlock the neuron for testing");
+  await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().unlockNeuron();
 
   step("Disburse the neuron");
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().disburseNeuron();

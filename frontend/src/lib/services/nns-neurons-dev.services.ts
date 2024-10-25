@@ -5,6 +5,43 @@ import { isNullish } from "@dfinity/utils";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { getAndLoadNeuron } from "./neurons.services";
 
+const u64Max = 2n ** 64n - 1n;
+
+export const unlockNeuron = async (neuron: NeuronInfo): Promise<void> => {
+  try {
+    const identity = await getAuthenticatedIdentity();
+
+    if (isNullish(neuron.fullNeuron)) {
+      throw new Error(
+        `Full neuron is not defined for neuron ${neuron.neuronId}`
+      );
+    }
+
+    const newNeuron: Neuron = {
+      ...neuron.fullNeuron,
+      dissolveState: { WhenDissolvedTimestampSeconds: 0n },
+      // Backend requirement: https://github.com/dfinity/ic/blob/a00685bd42a1d33e7c8c821b0216cb83f8e6f798/rs/nns/governance/src/neuron/types.rs#L1692
+      agingSinceTimestampSeconds: u64Max,
+    };
+
+    await updateNeuron({
+      neuron: newNeuron,
+      identity,
+    });
+
+    await getAndLoadNeuron(neuron.neuronId);
+
+    toastsSuccess({
+      labelKey: "neuron_detail.unlock_neuron_success",
+    });
+  } catch (err) {
+    toastsError({
+      labelKey: "error.unlock_neuron",
+      err,
+    });
+  }
+};
+
 export const addMaturity = async ({
   neuron,
   amountE8s,
