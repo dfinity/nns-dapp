@@ -1,4 +1,4 @@
-import { neuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/neurons-table-order-sorted-neuronIds-store";
+import { neuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/neurons-table-order-sorted-neuron-ids-store";
 import { neuronsTableOrderStore } from "$lib/stores/neurons-table.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";

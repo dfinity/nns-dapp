@@ -149,7 +149,7 @@ export const compareById = mergeComparators([
   createAscendingComparator((neuron: TableNeuron) => neuron.neuronId),
 ]);
 
-export const comparators: { [key: string]: TableNeuronComparator } = {
+export const comparatorsByColumnId: { [key: string]: TableNeuronComparator } = {
   stake: compareByStake,
   maturity: compareByMaturity,
   dissolveDelay: compareByDissolveDelay,

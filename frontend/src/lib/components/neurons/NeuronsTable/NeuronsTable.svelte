@@ -12,14 +12,17 @@
     TableNeuron,
     NeuronsTableColumn,
   } from "$lib/types/neurons-table";
-  import { comparators, compareById } from "$lib/utils/neurons-table.utils";
+  import {
+    comparatorsByColumnId,
+    compareById,
+  } from "$lib/utils/neurons-table.utils";
   import { NeuronState } from "@dfinity/nns";
 
   export let neurons: TableNeuron[];
 
   // Make sure there is a consistent order even if the selected sorting
   // criteria don't tiebreak all neurons.
-  // Make sure to update neurons-table-order-sorted-neuronids-store.utils when sorting is changed
+  // Make sure to update neurons-table-order-sorted-neuron-ids-store.utils when sorting is changed
   let neuronsSortedById: TableNeuron[];
   $: neuronsSortedById = [...neurons].sort(compareById);
 
@@ -90,8 +93,8 @@
       ({
         ...column,
         ...(column.id &&
-          comparators[column.id] && {
-            comparator: comparators[column.id],
+          comparatorsByColumnId[column.id] && {
+            comparator: comparatorsByColumnId[column.id],
           }),
       }) as NeuronsTableColumn
   );

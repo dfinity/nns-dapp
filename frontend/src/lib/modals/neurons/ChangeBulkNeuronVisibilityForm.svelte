@@ -87,6 +87,7 @@
 </script>
 
 <form
+  class="visibility-form-component"
   data-tid="change-bulk-visibility-component"
   on:submit|preventDefault={nnsSubmit}
 >
@@ -133,7 +134,10 @@
 
         {#if uncontrollableNeurons.length > 0}
           <Separator spacing="none" />
-          <div class="neurons-list" data-tid="uncontrollable-neurons-list">
+          <div
+            class="neurons-list uncontrolled"
+            data-tid="uncontrollable-neurons-list"
+          >
             <p
               class="description small"
               data-tid="uncontrollable-neurons-description"
@@ -174,6 +178,10 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
+  .visibility-form-component {
+    row-gap: var(--padding-3x);
+  }
+
   .loading-container {
     width: 100%;
     min-height: 150px;
@@ -187,10 +195,9 @@
   .neurons-lists-container {
     background: var(--table-header-background);
     border-radius: var(--border-radius);
-    padding: 0 var(--padding-2x);
   }
   .apply-to-all {
-    --checkbox-padding: var(--padding) var(--padding) var(--padding-3x) 0;
+    --checkbox-padding: 0;
     --checkbox-label-order: 1;
   }
 
@@ -199,7 +206,11 @@
   }
 
   .neurons-list {
+    padding: 0 var(--padding-2x);
     display: flex;
     flex-direction: column;
+    &.uncontrolled {
+      padding-top: var(--padding);
+    }
   }
 </style>
