@@ -3,6 +3,7 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { ButtonPo } from "./Button.page-object";
 import { LinkPo } from "./Link.page-object";
+import { TooltipPo } from "./Tooltip.page-object";
 
 export class NnsNeuronPublicVisibilityActionPo extends BasePageObject {
   private static readonly TID = "nns-neuron-public-visibility-action-component";
@@ -34,5 +35,9 @@ export class NnsNeuronPublicVisibilityActionPo extends BasePageObject {
 
   getButtonPo(): ButtonPo {
     return this.getButton("change-neuron-visibility-button");
+  }
+
+  getTooltipPo(): TooltipPo {
+    return TooltipPo.under(this.root);
   }
 }
