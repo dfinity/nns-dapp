@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+print_help() {
+  cat <<-EOF
+
+	Reruns a failed GitHub Actions run based on its URL.
+
+	EXAMPLE USAGE:
+		$0 https://github.com/dfinity/snsdemo/actions/runs/11514250845/job/32052488208
+	EOF
+}
+
+URL="${1:-}"
+URL_PATTERN="https://github.com/([^/]*/[^/]*)/actions/runs/([^/]*).*"
+
+if [[ -z "${URL:-}" ]]; then
+  print_help
+  exit 0
+fi
+
+if ! [[ "$URL" =~ $URL_PATTERN ]]; then
+  echo "Invalid URL: $URL" >&2
+  echo "URL should match the pattern: $URL_PATTERN" >&2
+  exit 1
+fi
+
+REPO=$(echo "$URL" | sed -E "s|$URL_PATTERN|\\1|")
+RUN_ID=$(echo "$URL" | sed -E "s|$URL_PATTERN|\\2|")
+
+echo "Rerunning $REPO run $RUN_ID..."
+COMMAND=(gh run rerun --repo "$REPO" --failed "$RUN_ID")
+while ! "${COMMAND[@]}"; do
+  echo "Failed. Retrying in 1 minute..."
+  sleep 60
+done
