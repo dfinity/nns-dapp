@@ -32,6 +32,14 @@ export class NnsNeuronDetailPo extends BasePageObject {
       .waitForAbsent();
   }
 
+  async unlockNeuron(): Promise<void> {
+    await this.click("unlock-neuron-button");
+    await this.root
+      .byTestId("unlock-neuron-button")
+      .byTestId("spinner")
+      .waitForAbsent();
+  }
+
   getNnsNeuronModalsPo(): NnsNeuronModalsPo {
     return NnsNeuronModalsPo.under(this.root);
   }

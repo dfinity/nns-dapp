@@ -34,11 +34,6 @@ const createHotkeyNeuronsInOtherAccount = async ({
   await appPo
     .getStakingPo()
     .stakeFirstNnsNeuron({ amount: 10, dissolveDelayDays: "max" });
-  // This is supposed to create an unlocked neuron but since the governance
-  // canister now creates neurons with a dissolve delay of 7 days, it is also
-  // locked.
-  // TODO: If a work-around is provided, create this as an unlocked neuron
-  // again.
   await appPo
     .getNeuronsPo()
     .getNnsNeuronsFooterPo()
@@ -59,6 +54,7 @@ const createHotkeyNeuronsInOtherAccount = async ({
     .getNnsNeuronDetailPo()
     .addHotkey(hotkeyPrincipal);
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().joinCommunityFund();
+  await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().unlockNeuron();
   await page.close();
 };
 
