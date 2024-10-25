@@ -13,11 +13,8 @@
     NeuronsTableColumn,
   } from "$lib/types/neurons-table";
   import {
-    compareByDissolveDelay,
+    comparatorsByColumnId,
     compareById,
-    compareByMaturity,
-    compareByStake,
-    compareByState,
   } from "$lib/utils/neurons-table.utils";
   import { NeuronState } from "@dfinity/nns";
 
@@ -25,6 +22,7 @@
 
   // Make sure there is a consistent order even if the selected sorting
   // criteria don't tiebreak all neurons.
+  // Make sure to update neurons-table-order-sorted-neuron-ids-store.utils when sorting is changed
   let neuronsSortedById: TableNeuron[];
   $: neuronsSortedById = [...neurons].sort(compareById);
 
@@ -47,7 +45,6 @@
       cellComponent: NeuronStakeCell,
       alignment: "right",
       templateColumns: ["max-content"],
-      comparator: compareByStake,
     },
     {
       title: "",
@@ -60,7 +57,6 @@
       cellComponent: NeuronMaturityCell,
       alignment: "right",
       templateColumns: ["max-content"],
-      comparator: compareByMaturity,
     },
     {
       title: "",
@@ -73,7 +69,6 @@
       cellComponent: NeuronDissolveDelayCell,
       alignment: "left",
       templateColumns: ["max-content"],
-      comparator: compareByDissolveDelay,
     },
     {
       title: "",
@@ -86,7 +81,6 @@
       cellComponent: NeuronStateCell,
       alignment: "left",
       templateColumns: ["max-content"],
-      comparator: compareByState,
     },
     {
       title: "",
@@ -94,7 +88,16 @@
       alignment: "right",
       templateColumns: ["max-content"],
     },
-  ];
+  ].map(
+    (column) =>
+      ({
+        ...column,
+        ...(column.id &&
+          comparatorsByColumnId[column.id] && {
+            comparator: comparatorsByColumnId[column.id],
+          }),
+      }) as NeuronsTableColumn
+  );
 
   const getRowStyle = (neuron: TableNeuron) => {
     if (neuron.state === NeuronState.Spawning) {
