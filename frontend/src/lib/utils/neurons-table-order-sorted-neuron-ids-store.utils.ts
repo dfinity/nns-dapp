@@ -1,38 +1,18 @@
 import type { TableNeuron } from "$lib/types/neurons-table";
 import type { ResponsiveTableOrder } from "$lib/types/responsive-table";
-import {
-  comparatorsByColumnId,
-  compareById,
-} from "$lib/utils/neurons-table.utils";
+import { comparatorsByColumnId } from "$lib/utils/neurons-table.utils";
 import { mergeComparators, negate } from "$lib/utils/responsive-table.utils";
-import { nonNullish } from "@dfinity/utils";
-import { derived, type Stores, type StoresValues } from "svelte/store";
 
-export const sortNeuronIds = (
+export const getSortedNeuronIds = (
   order: ResponsiveTableOrder,
   neurons: TableNeuron[]
 ): string[] => {
-  const comparatorsArray = order
-    .map(({ columnId, reversed }) => {
-      const comparator = comparatorsByColumnId[columnId];
-      return comparator
-        ? reversed
-          ? negate(comparator)
-          : comparator
-        : undefined;
-    })
-    .filter(nonNullish);
+  const comparatorsArray = order.map(({ columnId, reversed }) => {
+    const comparator = comparatorsByColumnId[columnId];
+    return reversed ? negate(comparator) : comparator;
+  });
 
   return [...neurons]
     .sort(mergeComparators(comparatorsArray))
     .map((n) => n.neuronId);
-};
-
-export const createTableNeuronsToSortStore = <T extends Stores>(
-  deps: T,
-  createTableNeurons: (...values: StoresValues<T>) => TableNeuron[]
-) => {
-  return derived(deps, ($deps) =>
-    createTableNeurons(...$deps).sort(compareById)
-  );
 };

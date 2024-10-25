@@ -3,27 +3,26 @@ import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.d
 import { definedSnsNeuronStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
 import { authStore } from "$lib/stores/auth.store";
 import { i18n } from "$lib/stores/i18n";
-
+import { getSortedNeuronIds } from "$lib/utils/neurons-table-order-sorted-neuron-ids-store.utils";
 import {
-  createTableNeuronsToSortStore,
-  sortNeuronIds,
-} from "$lib/utils/neurons-table-order-sorted-neuron-ids-store.utils";
-import { tableNeuronsFromSnsNeurons } from "$lib/utils/neurons-table.utils";
+  compareById,
+  tableNeuronsFromSnsNeurons,
+} from "$lib/utils/neurons-table.utils";
 import { nonNullish } from "@dfinity/utils";
 import { derived } from "svelte/store";
 import { neuronsTableOrderStore } from "./neurons-table.store";
 
-const snsTableNeuronsToSortStore = createTableNeuronsToSortStore(
+const snsTableNeuronsToSortStore = derived(
   [authStore, i18n, definedSnsNeuronStore, snsProjectSelectedStore, pageStore],
-  (
+  ([
     $authStore,
     $i18n,
     $definedSnsNeuronStore,
     $snsProjectSelectedStore,
-    $pageStore
-  ) => {
+    $pageStore,
+  ]) => {
     const summary = $snsProjectSelectedStore?.summary;
-    return nonNullish(summary)
+    const tableNeurons = nonNullish(summary)
       ? tableNeuronsFromSnsNeurons({
           universe: $pageStore.universe,
           token: summary.token,
@@ -32,10 +31,11 @@ const snsTableNeuronsToSortStore = createTableNeuronsToSortStore(
           snsNeurons: $definedSnsNeuronStore,
         })
       : [];
+    return tableNeurons.sort(compareById);
   }
 );
 
 export const snsNeuronsTableOrderSortedNeuronIdsStore = derived(
   [neuronsTableOrderStore, snsTableNeuronsToSortStore],
-  ([$order, $neurons]) => sortNeuronIds($order, $neurons)
+  ([$order, $neurons]) => getSortedNeuronIds($order, $neurons)
 );
