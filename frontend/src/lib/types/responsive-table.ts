@@ -31,7 +31,7 @@ export type Comparator<RowDataType> = (
   b: RowDataType
 ) => number;
 
-export type ResponsiveTableOrder<NeuronsTableColumnId = string> = Array<{
-  columnId: NeuronsTableColumnId;
+export type ResponsiveTableOrder<ColumnIdType = string> = Array<{
+  columnId: ColumnIdType;
   reversed?: boolean;
 }>;
