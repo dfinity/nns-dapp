@@ -2,8 +2,8 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import type {
   NeuronsTableColumnId,
-  NeuronsTableComparator,
   TableNeuron,
+  TableNeuronComparator,
 } from "$lib/types/neurons-table";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { buildNeuronUrl } from "$lib/utils/navigation.utils";
@@ -151,7 +151,7 @@ export const compareById = mergeComparators([
 ]);
 
 export const comparatorsByColumnId: {
-  [key in NeuronsTableColumnId]?: NeuronsTableComparator;
+  [key in NeuronsTableColumnId]?: TableNeuronComparator;
 } = {
   stake: compareByStake,
   maturity: compareByMaturity,

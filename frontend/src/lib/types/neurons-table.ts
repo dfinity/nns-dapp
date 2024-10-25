@@ -28,7 +28,7 @@ export type NeuronsTableColumnId =
 
 // Should define a partial ordering on TableNeuron by return -1 if a < b, +1 if
 // a > b and 0 if a and b are equivalent.
-export type NeuronsTableComparator = Comparator<TableNeuron>;
+export type TableNeuronComparator = Comparator<TableNeuron>;
 
 export type NeuronsTableColumn = ResponsiveTableColumn<
   TableNeuron,
