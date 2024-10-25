@@ -88,7 +88,16 @@
       alignment: "right",
       templateColumns: ["max-content"],
     },
-  ];
+  ].map(
+    (column) =>
+      ({
+        ...column,
+        ...(column.id &&
+          comparatorsByColumnId[column.id] && {
+            comparator: comparatorsByColumnId[column.id],
+          }),
+      }) as NeuronsTableColumn
+  );
 
   const columnsWithComparator = columns.map((column) => ({
     ...column,
