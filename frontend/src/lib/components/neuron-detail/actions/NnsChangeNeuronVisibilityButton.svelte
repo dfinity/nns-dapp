@@ -11,6 +11,9 @@
   $: isPublic = isPublicNeuron(neuron);
 
   const openModal = () => {
+    // In a real browser environment, disabled buttons don't trigger onClick events.
+    // However, in our testing environment, these events are triggered even when elements are disabled.
+    // This conditional check ensures consistent behavior across both environments.
     if (!disabled)
       openNnsNeuronModal({
         type: "change-neuron-visibility",
