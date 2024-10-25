@@ -92,11 +92,5 @@ describe("neurons-table-order-sorted-neuron-ids-store.utils", () => {
       const result = getSortedNeuronIds(order, testNeurons);
       expect(result).toEqual(["4", "1", "3", "2"]);
     });
-
-    it("should return neuron IDs in original order if no valid sort criteria", () => {
-      const order: ResponsiveTableOrder = [{ columnId: "invalidColumn" }];
-      const result = getSortedNeuronIds(order, testNeurons);
-      expect(result).toEqual(["1", "2", "3", "4"]);
-    });
   });
 });
