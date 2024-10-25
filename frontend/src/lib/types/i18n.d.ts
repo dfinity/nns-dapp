@@ -1155,7 +1155,6 @@ interface I18nImport_token {
   add_index_description: string;
   failed_tooltip: string;
   maximum_reached_tooltip: string;
-  doc_link_url: string;
   doc_link_label: string;
 }
 

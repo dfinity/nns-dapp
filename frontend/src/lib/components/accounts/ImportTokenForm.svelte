@@ -27,7 +27,7 @@
   <a
     class="button ghost with-icon"
     data-tid="doc-link"
-    href={$i18n.import_token.doc_link_url}
+    href="https://internetcomputer.org/docs/current/developer-docs/daos/nns/using-the-nns-dapp/nns-dapp-importing-tokens"
     target="_blank"
     rel="external noopener noreferrer"
   >
