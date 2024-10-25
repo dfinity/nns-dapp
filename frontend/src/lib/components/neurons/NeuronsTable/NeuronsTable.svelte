@@ -88,16 +88,15 @@
       alignment: "right",
       templateColumns: ["max-content"],
     },
-  ].map(
-    (column) =>
-      ({
-        ...column,
-        ...(column.id &&
-          comparatorsByColumnId[column.id] && {
-            comparator: comparatorsByColumnId[column.id],
-          }),
-      }) as NeuronsTableColumn
-  );
+  ];
+
+  const columnWithComparator = columns.map((column) => ({
+    ...column,
+    ...(column.id &&
+      comparatorsByColumnId[column.id] && {
+        comparator: comparatorsByColumnId[column.id],
+      }),
+  }));
 
   const getRowStyle = (neuron: TableNeuron) => {
     if (neuron.state === NeuronState.Spawning) {
@@ -109,7 +108,7 @@
 
 <ResponsiveTable
   testId="neurons-table-component"
-  {columns}
+  columns={columnWithComparator}
   tableData={neuronsSortedById}
   bind:order={$neuronsTableOrderStore}
   {getRowStyle}

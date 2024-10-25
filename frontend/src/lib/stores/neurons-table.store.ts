@@ -1,7 +1,7 @@
-import type { ResponsiveTableOrder } from "$lib/types/responsive-table";
+import type { NeuronsTableOrder } from "$lib/types/neurons-table";
 import { writable } from "svelte/store";
 
-const initialNeuronsTableOrder: ResponsiveTableOrder = [
+const initialNeuronsTableOrder: NeuronsTableOrder = [
   {
     columnId: "stake",
   },
@@ -11,7 +11,7 @@ const initialNeuronsTableOrder: ResponsiveTableOrder = [
 ];
 
 const initNeuronsTableOrderStore = () => {
-  const { subscribe, set } = writable<ResponsiveTableOrder>(
+  const { subscribe, set } = writable<NeuronsTableOrder>(
     initialNeuronsTableOrder
   );
 

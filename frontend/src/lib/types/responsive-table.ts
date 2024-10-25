@@ -16,8 +16,9 @@ export type TemplateItem =
 
 export interface ResponsiveTableColumn<
   RowDataType extends ResponsiveTableRowData,
+  IdType = string,
 > {
-  id?: string;
+  id?: IdType;
   title: string;
   cellComponent?: ComponentType<SvelteComponent<{ rowData: RowDataType }>>;
   alignment: ColumnAlignment;
@@ -30,7 +31,7 @@ export type Comparator<RowDataType> = (
   b: RowDataType
 ) => number;
 
-export type ResponsiveTableOrder = Array<{
-  columnId: string;
+export type ResponsiveTableOrder<NeuronsTableColumnId = string> = Array<{
+  columnId: NeuronsTableColumnId;
   reversed?: boolean;
 }>;
