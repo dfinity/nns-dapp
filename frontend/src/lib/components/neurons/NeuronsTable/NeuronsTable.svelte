@@ -90,7 +90,7 @@
     },
   ];
 
-  const columnWithComparator = columns.map((column) => ({
+  const columnsWithComparator = columns.map((column) => ({
     ...column,
     ...(column.id &&
       comparatorsByColumnId[column.id] && {
@@ -108,7 +108,7 @@
 
 <ResponsiveTable
   testId="neurons-table-component"
-  columns={columnWithComparator}
+  columns={columnsWithComparator}
   tableData={neuronsSortedById}
   bind:order={$neuronsTableOrderStore}
   {getRowStyle}
