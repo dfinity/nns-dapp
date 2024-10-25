@@ -1,9 +1,22 @@
 <script lang="ts">
+  import { unlockNeuron } from "$lib/services/nns-neurons-dev.services";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import CardInfo from "../ui/CardInfo.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;
+
+  let unlocking = false;
+
+  const unlock = async () => {
+    try {
+      unlocking = true;
+      await unlockNeuron(neuron);
+    } finally {
+      unlocking = false;
+    }
+  };
 
   const openAddMaturityModal = async () => {
     openNnsNeuronModal({ type: "dev-add-maturity", data: { neuron } });
@@ -14,7 +27,14 @@
 <CardInfo testId="nns-neuron-testnet-functions-card-component">
   <h3 slot="start">Neuron TESTNET ONLY</h3>
 
-  <div>
+  <div class="functions">
+    <button on:click={unlock} class="primary" data-tid="unlock-neuron-button">
+      {#if unlocking}
+        <Spinner inline size="small" />
+      {/if}
+      Unlock neuron</button
+    >
+
     <button
       on:click={openAddMaturityModal}
       class="primary"
@@ -28,8 +48,9 @@
     line-height: var(--line-height-standard);
   }
 
-  div {
+  .functions {
     display: flex;
     justify-content: flex-start;
+    gap: var(--padding-2x);
   }
 </style>
