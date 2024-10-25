@@ -17,7 +17,7 @@
   import { isNullish, nonNullish, type Token } from "@dfinity/utils";
   import { getContext } from "svelte";
   import NeuronNavigation from "../neuron-detail/NeuronNavigation.svelte";
-  import { snsNeuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/sns-neurons-table-order-sorted-neuronIds-store";
+  import { snsNeuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/sns-neurons-table-order-sorted-neuron-ids-store";
 
   export let token: Token;
 

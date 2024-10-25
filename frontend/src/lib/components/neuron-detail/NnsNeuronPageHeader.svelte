@@ -10,7 +10,7 @@
   import UniverseSummary from "../universe/UniverseSummary.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import NeuronNavigation from "./NeuronNavigation.svelte";
-  import { neuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/neurons-table-order-sorted-neuronIds-store";
+  import { neuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/neurons-table-order-sorted-neuron-ids-store";
 
   export let neuron: NeuronInfo;
 
