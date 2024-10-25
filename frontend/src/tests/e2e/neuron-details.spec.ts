@@ -48,7 +48,7 @@ test("Test neuron details", async ({ page, context }) => {
     page,
     selectors: ['[data-tid="identifier"]', '[data-tid="neuron-id"]'],
     pattern: /^[0-9a-f]+$/,
-    replacements: ["7737260276268288098", "7737260276268288098"],
+    replacements: ["7737260276268288098"],
   });
   await replaceContent({
     page,

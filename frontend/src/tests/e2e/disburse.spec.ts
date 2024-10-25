@@ -45,6 +45,9 @@ test("Test disburse neuron", async ({ page, context }) => {
   expect(neuronRows).toHaveLength(1);
   neuronRows[0].click();
 
+  step("Unlock the neuron for testing");
+  await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().unlockNeuron();
+
   step("Disburse the neuron");
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().disburseNeuron();
   // After disburing, the app navigatings to the neurons table.
