@@ -4,6 +4,12 @@ import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test disburse neuron", async ({ page, context }) => {
+  // Disbursing a new neuron is no longer possible because neurons are
+  // created with a dissolve delay of 7 days.
+  // TODO: Re-enable this test if the governance canister provides a
+  // work-around for testing or otherwise delete this test.
+  return;
+
   await page.goto("/");
   await expect(page).toHaveTitle("Tokens / NNS Dapp");
   await signInWithNewUser({ page, context });
