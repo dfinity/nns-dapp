@@ -12,7 +12,10 @@
     TableNeuron,
     NeuronsTableColumn,
   } from "$lib/types/neurons-table";
-  import { comparators, compareById } from "$lib/utils/neurons-table.utils";
+  import {
+    comparatorsByColumnId,
+    compareById,
+  } from "$lib/utils/neurons-table.utils";
   import { NeuronState } from "@dfinity/nns";
 
   export let neurons: TableNeuron[];
@@ -90,8 +93,8 @@
       ({
         ...column,
         ...(column.id &&
-          comparators[column.id] && {
-            comparator: comparators[column.id],
+          comparatorsByColumnId[column.id] && {
+            comparator: comparatorsByColumnId[column.id],
           }),
       }) as NeuronsTableColumn
   );
