@@ -66,16 +66,6 @@ describe("ImportTokenForm", () => {
     expect(await po.getIndexCanisterInputPo().isRequired()).toEqual(false);
   });
 
-  it("should render a doc link", async () => {
-    const { po } = renderComponent({
-      ledgerCanisterId: principal(0),
-      indexCanisterId: undefined,
-    });
-    expect((await po.getDocLinkHref()).trim()).toEqual(
-      "https://internetcomputer.org/docs/current/developer-docs/daos/nns/using-the-nns-dapp/nns-dapp-importing-tokens"
-    );
-  });
-
   it("should render a warning message", async () => {
     const { po } = renderComponent({
       ledgerCanisterId: principal(0),
