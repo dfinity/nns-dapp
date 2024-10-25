@@ -1,5 +1,5 @@
 import { neuronsTableOrderStore } from "$lib/stores/neurons-table.store";
-import { snsNeuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/sns-neurons-table-order-sorted-neuronIds-store";
+import { snsNeuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/sns-neurons-table-order-sorted-neuron-ids-store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";

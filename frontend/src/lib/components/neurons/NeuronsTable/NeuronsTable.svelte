@@ -19,7 +19,7 @@
 
   // Make sure there is a consistent order even if the selected sorting
   // criteria don't tiebreak all neurons.
-  // Make sure to update neurons-table-order-sorted-neuronids-store.utils when sorting is changed
+  // Make sure to update neurons-table-order-sorted-neuron-ids-store.utils when sorting is changed
   let neuronsSortedById: TableNeuron[];
   $: neuronsSortedById = [...neurons].sort(compareById);
 

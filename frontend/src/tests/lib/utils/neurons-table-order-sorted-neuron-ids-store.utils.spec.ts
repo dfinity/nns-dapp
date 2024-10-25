@@ -3,13 +3,13 @@ import type { ResponsiveTableOrder } from "$lib/types/responsive-table";
 import {
   createTableNeuronsToSortStore,
   sortNeuronIds,
-} from "$lib/utils/neurons-table-order-sorted-neuronids-store.utils";
+} from "$lib/utils/neurons-table-order-sorted-neuron-ids-store.utils";
 import { mockTableNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronState } from "@dfinity/nns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { get, writable } from "svelte/store";
 
-describe("neurons-table-order-sorted-neuronids-store.utils", () => {
+describe("neurons-table-order-sorted-neuron-ids-store.utils", () => {
   const makeStake = (amount: bigint) =>
     TokenAmountV2.fromUlps({
       amount,

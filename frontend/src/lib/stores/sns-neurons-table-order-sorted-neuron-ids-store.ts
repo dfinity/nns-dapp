@@ -7,7 +7,7 @@ import { i18n } from "$lib/stores/i18n";
 import {
   createTableNeuronsToSortStore,
   sortNeuronIds,
-} from "$lib/utils/neurons-table-order-sorted-neuronids-store.utils";
+} from "$lib/utils/neurons-table-order-sorted-neuron-ids-store.utils";
 import { tableNeuronsFromSnsNeurons } from "$lib/utils/neurons-table.utils";
 import { nonNullish } from "@dfinity/utils";
 import { derived } from "svelte/store";

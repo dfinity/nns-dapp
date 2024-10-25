@@ -6,7 +6,7 @@ import { definedNeuronsStore } from "$lib/stores/neurons.store";
 import {
   createTableNeuronsToSortStore,
   sortNeuronIds,
-} from "$lib/utils/neurons-table-order-sorted-neuronids-store.utils";
+} from "$lib/utils/neurons-table-order-sorted-neuron-ids-store.utils";
 import { tableNeuronsFromNeuronInfos } from "$lib/utils/neurons-table.utils";
 import { derived } from "svelte/store";
 
