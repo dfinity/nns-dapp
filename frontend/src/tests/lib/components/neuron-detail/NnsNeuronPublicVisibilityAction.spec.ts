@@ -60,6 +60,8 @@ describe("NnsNeuronPublicVisibilityAction", () => {
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
     expect(await po.getButtonPo().getText()).toBe("Make Neuron Private");
+    expect(await po.getButtonPo().isDisabled()).toBe(false);
+    expect(await po.getTooltipPo().isPresent()).toBe(false);
   });
 
   it("should render elements and text for private neuron", async () => {
@@ -78,6 +80,8 @@ describe("NnsNeuronPublicVisibilityAction", () => {
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
     expect(await po.getButtonPo().getText()).toBe("Make Neuron Public");
+    expect(await po.getButtonPo().isDisabled()).toBe(false);
+    expect(await po.getTooltipPo().isPresent()).toBe(false);
   });
 
   it("should render elements and text for unspecified neuron", async () => {
@@ -97,6 +101,8 @@ describe("NnsNeuronPublicVisibilityAction", () => {
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
     expect(await po.getButtonPo().getText()).toBe("Make Neuron Public");
+    expect(await po.getButtonPo().isDisabled()).toBe(false);
+    expect(await po.getTooltipPo().isPresent()).toBe(false);
   });
 
   it("should render elements and text for neuron with no visibility", async () => {
@@ -115,6 +121,8 @@ describe("NnsNeuronPublicVisibilityAction", () => {
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
     expect(await po.getButtonPo().getText()).toBe("Make Neuron Public");
+    expect(await po.getButtonPo().isDisabled()).toBe(false);
+    expect(await po.getTooltipPo().isPresent()).toBe(false);
   });
 
   it("should only not render button for uncontrolled neurons", async () => {
@@ -131,7 +139,7 @@ describe("NnsNeuronPublicVisibilityAction", () => {
     expect(await po.getButtonPo().isPresent()).toBe(false);
   });
 
-  it("should only not render button for hardware wallet controlled neurons", async () => {
+  it("should render button disabled with tooltip for hardware wallet controlled neurons", async () => {
     const po = await renderComponent(hwControlledNeuron);
 
     expect(await po.getTitleText()).toBe("Private Neuron");
@@ -142,6 +150,10 @@ describe("NnsNeuronPublicVisibilityAction", () => {
     expect(await po.getSubtitleLinkPo().getHref()).toBe(
       "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
     );
-    expect(await po.getButtonPo().isPresent()).toBe(false);
+
+    expect(await po.getButtonPo().isDisabled()).toBe(true);
+    expect(await po.getTooltipPo().getTooltipText()).toBe(
+      "Updating visibility of hardware wallet controlled neurons is not supported at the moment"
+    );
   });
 });

@@ -2,11 +2,12 @@
   import { i18n } from "$lib/stores/i18n";
   import {
     isNeuronControllableByUser,
+    isNeuronControlledByHardwareWallet,
     isPublicNeuron,
   } from "$lib/utils/neuron.utils";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import CommonItemAction from "../ui/CommonItemAction.svelte";
-  import { IconPublicBadge } from "@dfinity/gix-components";
+  import { IconPublicBadge, Tooltip } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import NnsChangeNeuronVisibilityButton from "./actions/NnsChangeNeuronVisibilityButton.svelte";
 
@@ -20,10 +21,15 @@
     neuron,
     mainAccount: $icpAccountsStore.main,
   });
+
+  $: isHwNeuron = isNeuronControlledByHardwareWallet({
+    neuron,
+    accounts: $icpAccountsStore,
+  });
 </script>
 
 <CommonItemAction testId="nns-neuron-public-visibility-action-component">
-  <div slot="icon" class={`public-badge-container ${!isPublic && "private"}`}>
+  <div slot="icon" class="public-badge-container" class:private={!isPublic}>
     <IconPublicBadge />
   </div>
 
@@ -47,6 +53,13 @@
 
   {#if isControllable}
     <NnsChangeNeuronVisibilityButton {neuron} />
+  {:else if isHwNeuron}
+    <Tooltip
+      id={"public_visibility_action_hw_tooltip"}
+      text={$i18n.neuron_detail.public_visibility_action_hw_tooltip}
+    >
+      <NnsChangeNeuronVisibilityButton {neuron} disabled={isHwNeuron} />
+    </Tooltip>
   {/if}
 </CommonItemAction>
 
