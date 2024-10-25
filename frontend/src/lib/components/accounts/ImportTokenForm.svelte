@@ -8,6 +8,7 @@
   import { isNullish } from "@dfinity/utils";
   import CalloutWarning from "$lib/components/common/CalloutWarning.svelte";
   import ImportTokenCanisterId from "$lib/components/accounts/ImportTokenCanisterId.svelte";
+  import { IconOpenInNew } from "@dfinity/gix-components";
 
   export let ledgerCanisterId: Principal | undefined = undefined;
   export let indexCanisterId: Principal | undefined = undefined;
@@ -23,6 +24,16 @@
 
 <TestIdWrapper testId="import-token-form-component">
   <p class="description">{$i18n.import_token.description}</p>
+  <a
+    class="button ghost with-icon"
+    data-tid="doc-link"
+    href="https://internetcomputer.org/docs/current/developer-docs/daos/nns/using-the-nns-dapp/nns-dapp-importing-tokens"
+    target="_blank"
+    rel="external noopener noreferrer"
+  >
+    <IconOpenInNew />
+    {$i18n.import_token.doc_link_label}
+  </a>
 
   <form on:submit|preventDefault={() => dispatch("nnsSubmit")}>
     {#if addIndexCanisterMode}
@@ -91,7 +102,18 @@
 </TestIdWrapper>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
   p.description {
     margin: 0 0 var(--padding-2x);
+  }
+
+  a {
+    @include fonts.standard(true);
+    margin-bottom: var(--padding-3x);
+    color: var(--primary);
+    &:hover {
+      text-decoration: underline;
+    }
   }
 </style>

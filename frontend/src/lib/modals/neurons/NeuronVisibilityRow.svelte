@@ -33,7 +33,7 @@
     <div class="label-container">
       <div class="neuron-details">
         <div class="neuron-id-wrapper">
-          <p data-tid="neuron-id" class="neuron-id">{rowData.neuronId}</p>
+          <div data-tid="neuron-id">{rowData.neuronId}</div>
           {#if rowData?.isPublic}
             <span
               class="public-icon-container"
@@ -83,14 +83,9 @@
 </div>
 
 <style lang="scss">
-  :global(.checkbox) {
-    width: 100%;
-  }
-
   .neuron-row {
     --checkbox-label-order: 1;
-    --checkbox-padding: 0 var(--padding) 0 0;
-    display: flex;
+    --checkbox-padding: var(--padding-1_5x) 0;
 
     &.disabled {
       --value-color: var(--text-description-tint);
@@ -113,6 +108,7 @@
       flex-wrap: wrap;
       column-gap: var(--padding);
     }
+
     .neuron-id-wrapper {
       display: inline-flex;
       align-items: center;
