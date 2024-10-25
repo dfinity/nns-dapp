@@ -403,7 +403,7 @@
         "DIDC_VERSION": "didc 0.4.0",
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2024-10-16",
+        "SNSDEMO_RELEASE": "release-2024-10-23",
         "IC_COMMIT_FOR_PROPOSALS": "release-2024-10-17_03-07-scheduler-changes-guestos-revert",
         "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-10-17_03-07-scheduler-changes-guestos-revert"
       },
