@@ -78,9 +78,9 @@ dependencies = [
 
 [[package]]
 name = "anstream"
-version = "0.6.15"
+version = "0.6.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "64e15c1ab1f89faffbf04a634d5e1962e9074f2741eef6d97f3c4e322426d526"
+checksum = "23a1e53f0f5d86382dafe1cf314783b2044280f406e7e1506368220ad11b1338"
 dependencies = [
  "anstyle",
  "anstyle-parse",
@@ -93,43 +93,43 @@ dependencies = [
 
 [[package]]
 name = "anstyle"
-version = "1.0.8"
+version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1bec1de6f59aedf83baf9ff929c98f2ad654b97c9510f4e70cf6f661d49fd5b1"
+checksum = "8365de52b16c035ff4fcafe0092ba9390540e3e352870ac09933bebcaa2c8c56"
 
 [[package]]
 name = "anstyle-parse"
-version = "0.2.5"
+version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eb47de1e80c2b463c735db5b217a0ddc39d612e7ac9e2e96a5aed1f57616c1cb"
+checksum = "3b2d16507662817a6a20a9ea92df6652ee4f94f914589377d69f3b21bc5798a9"
 dependencies = [
  "utf8parse",
 ]
 
 [[package]]
 name = "anstyle-query"
-version = "1.1.1"
+version = "1.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6d36fc52c7f6c869915e99412912f22093507da8d9e942ceaf66fe4b7c14422a"
+checksum = "79947af37f4177cfead1110013d678905c37501914fba0efea834c3fe9a8d60c"
 dependencies = [
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
 name = "anstyle-wincon"
-version = "3.0.4"
+version = "3.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5bf74e1b6e971609db8ca7a9ce79fd5768ab6ae46441c572e46cf596f59e57f8"
+checksum = "2109dbce0e72be3ec00bed26e6a7479ca384ad226efdd66db8fa2e3a38c83125"
 dependencies = [
  "anstyle",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
 name = "anyhow"
-version = "1.0.90"
+version = "1.0.91"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "37bf3594c4c988a53154954629820791dde498571819ae4ca50ca811e060cc95"
+checksum = "c042108f3ed77fd83760a5fd79b53be043192bb3b9dba91d8c574c0ada7850c8"
 
 [[package]]
 name = "arbitrary"
@@ -182,7 +182,7 @@ checksum = "965c2d33e53cb6b267e148a4cb0760bc01f4904c1cd4bb4002a085bb016d1490"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
  "synstructure",
 ]
 
@@ -194,7 +194,7 @@ checksum = "7b18050c2cd6fe86c3a76584ef5e0baf286d038cda203eb6223df2cc413565f7"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -205,18 +205,7 @@ checksum = "721cae7de5c34fbb2acd27e21e6d2cf7b886dce0c27388d46c4e6c47ea4318dd"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.81",
-]
-
-[[package]]
-name = "atty"
-version = "0.2.14"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9b39be18770d11421cdb1b9947a45dd3f37e93092cbf377614828a319d5fee8"
-dependencies = [
- "hermit-abi 0.1.19",
- "libc",
- "winapi",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -325,12 +314,6 @@ checksum = "349f9b6a179ed607305526ca489b34ad0a41aed5f7980fa90eb03160b69598fb"
 
 [[package]]
 name = "bitflags"
-version = "1.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
-
-[[package]]
-name = "bitflags"
 version = "2.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b048fb63fd8b5923fc5aa7b340d8e156aec7ec02f0c78fa8a6ddc2613f6f71de"
@@ -376,7 +359,7 @@ dependencies = [
  "proc-macro-crate",
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
  "syn_derive",
 ]
 
@@ -491,9 +474,9 @@ checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 
 [[package]]
 name = "bytes"
-version = "1.7.2"
+version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "428d9aa8fbc0670b7b8d6030a7fadd0f86151cae55e4dbbece15f3780a3dfaf3"
+checksum = "9ac0150caa2ae65ca5bd83f25c7de183dea78d4d366469f148435e2acfbad0da"
 
 [[package]]
 name = "cached"
@@ -548,7 +531,7 @@ dependencies = [
  "lazy_static",
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -655,29 +638,12 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "3.2.25"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4ea181bf566f71cb9a5d17a59e1871af638180a18fb0035c92ae62b705207123"
-dependencies = [
- "atty",
- "bitflags 1.3.2",
- "clap_derive 3.2.25",
- "clap_lex 0.2.4",
- "indexmap 1.9.3",
- "once_cell",
- "strsim 0.10.0",
- "termcolor",
- "textwrap",
-]
-
-[[package]]
-name = "clap"
 version = "4.5.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b97f376d85a664d5837dbae44bf546e6477a679ff6610010f17276f686d867e8"
 dependencies = [
  "clap_builder",
- "clap_derive 4.5.18",
+ "clap_derive",
 ]
 
 [[package]]
@@ -688,21 +654,8 @@ checksum = "19bc80abd44e4bed93ca373a0704ccbd1b710dc5749406201bb018272808dc54"
 dependencies = [
  "anstream",
  "anstyle",
- "clap_lex 0.7.2",
+ "clap_lex",
  "strsim 0.11.1",
-]
-
-[[package]]
-name = "clap_derive"
-version = "3.2.25"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ae6371b8bdc8b7d3959e9cf7b22d4435ef3e79e138688421ec654acf8c81b008"
-dependencies = [
- "heck 0.4.1",
- "proc-macro-error",
- "proc-macro2",
- "quote",
- "syn 1.0.109",
 ]
 
 [[package]]
@@ -714,16 +667,7 @@ dependencies = [
  "heck 0.5.0",
  "proc-macro2",
  "quote",
- "syn 2.0.81",
-]
-
-[[package]]
-name = "clap_lex"
-version = "0.2.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2850f2f5a82cbf437dd5af4d49848fbdfc27c157c3d010345776f952765261c5"
-dependencies = [
- "os_str_bytes",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -744,9 +688,9 @@ dependencies = [
 
 [[package]]
 name = "colorchoice"
-version = "1.0.2"
+version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d3fd119d74b830634cea2a0f58bbd0d54540518a14397557951e79340abc28c0"
+checksum = "5b63caa9aa9397e2d9480a9b13673856c78d8ac123288526c37d7839f2a86990"
 
 [[package]]
 name = "comparable"
@@ -928,13 +872,13 @@ checksum = "f46882e17999c6cc590af592290432be3bce0428cb0d5f8b6715e4dc7b383eb3"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
 name = "cycles-minting-canister"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "async-trait",
  "base64 0.13.1",
@@ -978,18 +922,8 @@ version = "0.13.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a01d95850c592940db9b8194bc39f4bc0e89dee5c4265e4b1807c34a9aba453c"
 dependencies = [
- "darling_core 0.13.4",
- "darling_macro 0.13.4",
-]
-
-[[package]]
-name = "darling"
-version = "0.20.10"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6f63b86c8a8826a49b8c21f08a2d07338eec8d900540f8630dc76284be802989"
-dependencies = [
- "darling_core 0.20.10",
- "darling_macro 0.20.10",
+ "darling_core",
+ "darling_macro",
 ]
 
 [[package]]
@@ -1007,39 +941,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "darling_core"
-version = "0.20.10"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95133861a8032aaea082871032f5815eb9e98cef03fa916ab4500513994df9e5"
-dependencies = [
- "fnv",
- "ident_case",
- "proc-macro2",
- "quote",
- "strsim 0.11.1",
- "syn 2.0.81",
-]
-
-[[package]]
 name = "darling_macro"
 version = "0.13.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9c972679f83bdf9c42bd905396b6c3588a843a17f0f16dfcfa3e2c5d57441835"
 dependencies = [
- "darling_core 0.13.4",
+ "darling_core",
  "quote",
  "syn 1.0.109",
-]
-
-[[package]]
-name = "darling_macro"
-version = "0.20.10"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d336a2a514f6ccccaa3e09b02d41d35330c07ddf03a62165fcec10bb561c7806"
-dependencies = [
- "darling_core 0.20.10",
- "quote",
- "syn 2.0.81",
 ]
 
 [[package]]
@@ -1098,13 +1007,13 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rustc_version",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
 name = "dfn_candid"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "dfn_core",
@@ -1116,7 +1025,7 @@ dependencies = [
 [[package]]
 name = "dfn_core"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-base-types",
  "on_wire",
@@ -1125,7 +1034,7 @@ dependencies = [
 [[package]]
 name = "dfn_http"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "dfn_candid",
@@ -1137,7 +1046,7 @@ dependencies = [
 [[package]]
 name = "dfn_http_metrics"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "dfn_candid",
  "dfn_core",
@@ -1150,7 +1059,7 @@ dependencies = [
 [[package]]
 name = "dfn_protobuf"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "on_wire",
  "prost",
@@ -1203,7 +1112,7 @@ checksum = "97369cbbc041bc366949bc74d34658d6cda5621039731c6310521892a3a20ae0"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -1334,7 +1243,7 @@ checksum = "e8c02a5121d4ea3eb16a80748c74f5549a5665e4c21333c6098f283870fbdea6"
 [[package]]
 name = "fe-derive"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "hex",
  "num-bigint-dig",
@@ -1471,7 +1380,7 @@ checksum = "162ee34ebcb7c64a8abebc059ce0fee27c2262618d7b60ed8faf72fef13c3650"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -1613,24 +1522,9 @@ dependencies = [
 
 [[package]]
 name = "heck"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95505c38b4572b2d910cecb0281560f54b440a19336cbbcb27bf6ce6adc6f5a8"
-
-[[package]]
-name = "heck"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
-
-[[package]]
-name = "hermit-abi"
-version = "0.1.19"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "62b467343b94ba476dcb2500d242dadbb39557df889310ac77c5d99100aaac33"
-dependencies = [
- "libc",
-]
 
 [[package]]
 name = "hermit-abi"
@@ -1697,7 +1591,7 @@ dependencies = [
 [[package]]
 name = "ic-base-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "byte-unit",
  "bytes",
@@ -1727,7 +1621,7 @@ dependencies = [
 [[package]]
 name = "ic-btc-replica-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "ic-btc-interface",
@@ -1740,7 +1634,7 @@ dependencies = [
 [[package]]
 name = "ic-canister-client-sender"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-base-types",
  "ic-crypto-ed25519",
@@ -1753,7 +1647,7 @@ dependencies = [
 [[package]]
 name = "ic-canister-log"
 version = "0.2.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "serde",
 ]
@@ -1761,7 +1655,7 @@ dependencies = [
 [[package]]
 name = "ic-canister-profiler"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-metrics-encoder",
  "ic0 0.18.11",
@@ -1770,7 +1664,7 @@ dependencies = [
 [[package]]
 name = "ic-canisters-http-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "dfn_candid",
@@ -1843,7 +1737,7 @@ dependencies = [
  "quote",
  "serde",
  "serde_tokenstream 0.2.2",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -1898,7 +1792,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-ed25519"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "curve25519-dalek",
  "ed25519-dalek",
@@ -1912,7 +1806,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-getrandom-for-wasm"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "getrandom",
 ]
@@ -1920,7 +1814,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-basic-sig-der-utils"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "hex",
  "ic-types",
@@ -1930,7 +1824,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-basic-sig-ed25519"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "base64 0.13.1",
  "curve25519-dalek",
@@ -1952,7 +1846,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-bls12-381-type"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "hex",
  "ic_bls12_381",
@@ -1970,7 +1864,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-hmac"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-crypto-internal-sha2",
 ]
@@ -1978,7 +1872,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-multi-sig-bls12381"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "base64 0.13.1",
  "hex",
@@ -1997,7 +1891,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-seed"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "hex",
  "ic-crypto-sha2",
@@ -2010,7 +1904,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-sha2"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "sha2",
 ]
@@ -2018,7 +1912,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-threshold-sig-bls12381"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "base64 0.13.1",
  "cached",
@@ -2044,7 +1938,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-threshold-sig-canister-threshold-sig"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "curve25519-dalek",
  "fe-derive",
@@ -2074,7 +1968,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "arrayvec 0.7.6",
  "hex",
@@ -2091,7 +1985,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-node-key-validation"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "hex",
  "ic-base-types",
@@ -2109,7 +2003,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-secp256k1"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "hmac",
  "k256",
@@ -2125,7 +2019,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-secrets-containers"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "serde",
  "zeroize",
@@ -2134,7 +2028,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-sha2"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-crypto-internal-sha2",
 ]
@@ -2142,7 +2036,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-tls-cert-validation"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "hex",
  "ic-crypto-internal-basic-sig-ed25519",
@@ -2155,7 +2049,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-tree-hash"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-crypto-internal-types",
  "ic-crypto-sha2",
@@ -2168,7 +2062,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-utils-basic-sig"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-base-types",
  "ic-crypto-ed25519",
@@ -2178,7 +2072,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-utils-ni-dkg"
 version = "0.8.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-crypto-internal-types",
  "ic-protobuf",
@@ -2188,7 +2082,7 @@ dependencies = [
 [[package]]
 name = "ic-error-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-protobuf",
  "ic-utils",
@@ -2200,7 +2094,7 @@ dependencies = [
 [[package]]
 name = "ic-icrc1"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "ciborium",
@@ -2223,7 +2117,7 @@ dependencies = [
 [[package]]
 name = "ic-icrc1-index-ng"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "ciborium",
@@ -2251,7 +2145,7 @@ dependencies = [
 [[package]]
 name = "ic-icrc1-ledger"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "async-trait",
  "candid",
@@ -2280,7 +2174,7 @@ dependencies = [
 [[package]]
 name = "ic-icrc1-tokens-u64"
 version = "0.1.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "ic-ledger-core",
@@ -2292,7 +2186,7 @@ dependencies = [
 [[package]]
 name = "ic-ledger-canister-core"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "async-trait",
  "candid",
@@ -2310,10 +2204,11 @@ dependencies = [
 [[package]]
 name = "ic-ledger-core"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "ic-ledger-hash-of",
+ "ic-stable-structures",
  "num-traits",
  "serde",
  "serde_bytes",
@@ -2322,7 +2217,7 @@ dependencies = [
 [[package]]
 name = "ic-ledger-hash-of"
 version = "0.1.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "hex",
@@ -2332,12 +2227,12 @@ dependencies = [
 [[package]]
 name = "ic-limits"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 
 [[package]]
 name = "ic-management-canister-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2363,7 +2258,7 @@ checksum = "8b5c7628eac357aecda461130f8074468be5aa4d258a002032d82d817f79f1f8"
 [[package]]
 name = "ic-nervous-system-canisters"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "async-trait",
  "candid",
@@ -2380,7 +2275,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-clients"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "async-trait",
  "candid",
@@ -2403,12 +2298,12 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-collections-union-multi-map"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 
 [[package]]
 name = "ic-nervous-system-common"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "async-trait",
  "base64 0.13.1",
@@ -2443,12 +2338,12 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-common-build-metadata"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 
 [[package]]
 name = "ic-nervous-system-common-test-keys"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-base-types",
  "ic-canister-client-sender",
@@ -2461,12 +2356,12 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-common-validation"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 
 [[package]]
 name = "ic-nervous-system-governance"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-base-types",
  "ic-stable-structures",
@@ -2478,7 +2373,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-initial-supply"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "async-trait",
  "candid",
@@ -2492,12 +2387,12 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-lock"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 
 [[package]]
 name = "ic-nervous-system-proto"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "comparable",
@@ -2510,7 +2405,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-proxied-canister-calls-tracker"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-base-types",
 ]
@@ -2518,7 +2413,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-root"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "dfn_core",
@@ -2534,7 +2429,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-runtime"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "async-trait",
  "candid",
@@ -2547,17 +2442,17 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-string"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 
 [[package]]
 name = "ic-nervous-system-temporary"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 
 [[package]]
 name = "ic-neurons-fund"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-nervous-system-common",
  "lazy_static",
@@ -2570,7 +2465,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-common"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "comparable",
@@ -2596,7 +2491,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-constants"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-base-types",
  "maplit",
@@ -2605,7 +2500,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-governance"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "async-trait",
  "build-info",
@@ -2678,7 +2573,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-governance-api"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "bytes",
  "candid",
@@ -2706,7 +2601,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-governance-init"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "csv",
  "ic-base-types",
@@ -2723,12 +2618,12 @@ dependencies = [
 [[package]]
 name = "ic-nns-gtc-accounts"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 
 [[package]]
 name = "ic-nns-handler-root-interface"
 version = "0.1.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "async-trait",
  "candid",
@@ -2743,7 +2638,7 @@ dependencies = [
 [[package]]
 name = "ic-protobuf"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "bincode",
  "candid",
@@ -2757,7 +2652,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-canister-api"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2768,7 +2663,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-keys"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2780,7 +2675,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-node-provider-rewards"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-base-types",
  "ic-protobuf",
@@ -2789,7 +2684,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-routing-table"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2800,7 +2695,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-subnet-features"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "ic-management-canister-types",
@@ -2811,7 +2706,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-subnet-type"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "ic-protobuf",
@@ -2823,7 +2718,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-transport"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2835,14 +2730,14 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "async-trait",
  "base64 0.13.1",
  "build-info",
  "build-info-build",
  "candid",
- "clap 3.2.25",
+ "clap",
  "comparable",
  "futures",
  "hex",
@@ -2852,6 +2747,7 @@ dependencies = [
  "ic-canisters-http-types",
  "ic-cdk 0.16.0",
  "ic-cdk-macros 0.9.0",
+ "ic-cdk-timers 0.7.0",
  "ic-crypto-sha2",
  "ic-icrc1-ledger",
  "ic-ledger-core",
@@ -2895,7 +2791,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance-proposal-criticality"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-nervous-system-proto",
 ]
@@ -2903,7 +2799,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance-proposals-amount-total-limit"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-sns-governance-token-valuation",
  "num-traits",
@@ -2914,7 +2810,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance-token-valuation"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "async-trait",
  "candid",
@@ -2936,7 +2832,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-init"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "base64 0.13.1",
  "candid",
@@ -2964,7 +2860,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-root"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "async-trait",
  "build-info",
@@ -2994,7 +2890,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-swap"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "async-trait",
  "build-info",
@@ -3034,7 +2930,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-swap-proto-library"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "comparable",
@@ -3049,7 +2945,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-wasm"
 version = "1.0.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "async-trait",
  "candid",
@@ -3095,7 +2991,7 @@ dependencies = [
 [[package]]
 name = "ic-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "base64 0.13.1",
  "bincode",
@@ -3132,7 +3028,7 @@ dependencies = [
 [[package]]
 name = "ic-utils"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "hex",
  "scoped_threadpool",
@@ -3143,7 +3039,7 @@ dependencies = [
 [[package]]
 name = "ic-validate-eq"
 version = "0.0.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "ic-validate-eq-derive",
 ]
@@ -3151,9 +3047,8 @@ dependencies = [
 [[package]]
 name = "ic-validate-eq-derive"
 version = "0.0.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
- "darling 0.20.10",
  "proc-macro2",
  "quote",
  "syn 1.0.109",
@@ -3167,7 +3062,7 @@ checksum = "19fabaeecfe37f24b433c62489242fc54503d98d4cc8d0f9ef7544dfdfc0ddcb"
 dependencies = [
  "anyhow",
  "candid",
- "clap 4.5.20",
+ "clap",
  "libflate",
  "rustc-demangle",
  "serde",
@@ -3236,7 +3131,7 @@ dependencies = [
 [[package]]
 name = "icp-ledger"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "comparable",
@@ -3266,7 +3161,7 @@ dependencies = [
 [[package]]
 name = "icrc-ledger-client"
 version = "0.1.2"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "async-trait",
  "candid",
@@ -3277,12 +3172,13 @@ dependencies = [
 [[package]]
 name = "icrc-ledger-types"
 version = "0.1.6"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "base32",
  "candid",
  "crc32fast",
  "hex",
+ "ic-stable-structures",
  "itertools 0.12.1",
  "num-bigint",
  "num-traits",
@@ -3409,7 +3305,7 @@ checksum = "1ec89e9337638ecdc08744df490b221a7399bf8d164eb52a665454e60e075ad6"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -3664,9 +3560,9 @@ dependencies = [
 
 [[package]]
 name = "libm"
-version = "0.2.8"
+version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4ec2a862134d2a7d32d7983ddcdd1c4923530833c9f2ea1a44fc5fa473989058"
+checksum = "3bda4c6077b0b08da2c48b172195795498381a7c8988c9e6212a6c55c5b9bd70"
 
 [[package]]
 name = "libredox"
@@ -3674,7 +3570,7 @@ version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c0ff37bd590ca25063e35af745c343cb7a0271906fb7b37e4813e8f79f00268d"
 dependencies = [
- "bitflags 2.6.0",
+ "bitflags",
  "libc",
  "redox_syscall",
 ]
@@ -3727,7 +3623,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "regex-syntax 0.6.29",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -3805,7 +3701,7 @@ version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "80e04d1dcff3aae0704555fe5fee3bcfaf3d1fdf8a7e521d5b9d2b42acb52cec"
 dependencies = [
- "hermit-abi 0.3.9",
+ "hermit-abi",
  "libc",
  "wasi",
  "windows-sys 0.52.0",
@@ -3834,7 +3730,7 @@ dependencies = [
  "cfg-if",
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -3993,19 +3889,13 @@ dependencies = [
 [[package]]
 name = "on_wire"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 
 [[package]]
 name = "once_cell"
 version = "1.20.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1261fe7e33c73b354eab43b1273a57c8f967d0391e80353e51f764ac02cf6775"
-
-[[package]]
-name = "os_str_bytes"
-version = "6.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e2355d85b9a3786f481747ced0e0ff2ba35213a1f9bd406ed906554d7af805a1"
 
 [[package]]
 name = "p256"
@@ -4112,7 +4002,7 @@ dependencies = [
  "pest_meta",
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -4139,7 +4029,7 @@ dependencies = [
 [[package]]
 name = "phantom_newtype"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "candid",
  "num-traits",
@@ -4164,9 +4054,9 @@ checksum = "5be167a7af36ee22fe3115051bc51f6e6c7054c9348e28deb4f49bd6f705a315"
 
 [[package]]
 name = "pin-project-lite"
-version = "0.2.14"
+version = "0.2.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bda66fc9667c18cb2758a2ac84d1167245054bcf85d5d1aaa6923f45801bdd02"
+checksum = "915a1e146535de9163f3987b8944ed8cf49a18bb0056bcebcdcece385cece4ff"
 
 [[package]]
 name = "pin-utils"
@@ -4260,12 +4150,12 @@ dependencies = [
 
 [[package]]
 name = "prettyplease"
-version = "0.2.24"
+version = "0.2.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "910d41a655dac3b764f1ade94821093d3610248694320cd072303a8eedcf221d"
+checksum = "64d1ec885c64d0457d564db4ec299b2dae3f9c02808b8ad9c3a089c591b18033"
 dependencies = [
  "proc-macro2",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -4328,9 +4218,9 @@ checksum = "dc375e1527247fe1a97d8b7156678dfe7c1af2fc075c9a4db3690ecd2a148068"
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.88"
+version = "1.0.89"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7c3a7fc5db1e57d5a779a352c8cdb57b29aa4c40cc69c3a68a7fedc815fbf2f9"
+checksum = "f139b0662de085916d1fb67d2b4169d1addddda1919e696f3252b740b629986e"
 dependencies = [
  "unicode-ident",
 ]
@@ -4384,7 +4274,7 @@ checksum = "b4c2511913b88df1637da85cc8d96ec8e43a3f8bb8ccb71ee1ac240d6f3df58d"
 dependencies = [
  "bit-set",
  "bit-vec",
- "bitflags 2.6.0",
+ "bitflags",
  "lazy_static",
  "num-traits",
  "rand",
@@ -4423,7 +4313,7 @@ dependencies = [
  "prost",
  "prost-types",
  "regex",
- "syn 2.0.81",
+ "syn 2.0.85",
  "tempfile",
 ]
 
@@ -4437,7 +4327,7 @@ dependencies = [
  "itertools 0.13.0",
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -4544,7 +4434,7 @@ version = "0.5.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9b6dfecf2c74bce2466cabf93f6664d6998a69eb21e39f4207930065b27b771f"
 dependencies = [
- "bitflags 2.6.0",
+ "bitflags",
 ]
 
 [[package]]
@@ -4560,9 +4450,9 @@ dependencies = [
 
 [[package]]
 name = "regex"
-version = "1.11.0"
+version = "1.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "38200e5ee88914975b69f657f0801b6f6dccafd44fd9326302a4aaeecfacb1d8"
+checksum = "b544ef1b4eac5dc2db33ea63606ae9ffcfac26c1416a2806ae0bf5f56b201191"
 dependencies = [
  "aho-corasick",
  "memchr",
@@ -4596,7 +4486,7 @@ checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
 [[package]]
 name = "registry-canister"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-17_03-07-scheduler-changes-guestos-revert#3c76b9142f67da01393d9280c705f88b6e522a93"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
 dependencies = [
  "build-info",
  "build-info-build",
@@ -4749,7 +4639,7 @@ version = "0.38.37"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8acb788b847c24f28525660c4d7758620a7210875711f79e7f663cc152726811"
 dependencies = [
- "bitflags 2.6.0",
+ "bitflags",
  "errno",
  "libc",
  "linux-raw-sys",
@@ -4832,9 +4722,9 @@ dependencies = [
 
 [[package]]
 name = "serde"
-version = "1.0.210"
+version = "1.0.213"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c8e3592472072e6e22e0a54d5904d9febf8508f65fb8552499a1abc7d1078c3a"
+checksum = "3ea7893ff5e2466df8d720bb615088341b295f849602c6956047f8f80f0e9bc1"
 dependencies = [
  "serde_derive",
 ]
@@ -4860,13 +4750,13 @@ dependencies = [
 
 [[package]]
 name = "serde_derive"
-version = "1.0.210"
+version = "1.0.213"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "243902eda00fad750862fc144cea25caca5e20d615af0a81bee94ca738f1df1f"
+checksum = "7e85ad2009c50b58e87caa8cd6dac16bdf511bbfb7af6c33df902396aa480fa5"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -4901,7 +4791,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "serde",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -4920,7 +4810,7 @@ version = "1.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e182d6ec6f05393cc0e5ed1bf81ad6db3a8feedf8ee515ecdd369809bcce8082"
 dependencies = [
- "darling 0.13.4",
+ "darling",
  "proc-macro2",
  "quote",
  "syn 1.0.109",
@@ -5147,7 +5037,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rustversion",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -5169,9 +5059,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.81"
+version = "2.0.85"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "198514704ca887dd5a1e408c6c6cdcba43672f9b4062e1b24aa34e74e6d7faae"
+checksum = "5023162dfcd14ef8f32034d8bcd4cc5ddc61ef7a247c024a33e24e1f24d21b56"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -5187,7 +5077,7 @@ dependencies = [
  "proc-macro-error",
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -5198,7 +5088,7 @@ checksum = "c8af7666ab7b6390ab78131fb5b0fce11d6b7a6951602017c35fa82800708971"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -5258,29 +5148,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3369f5ac52d5eb6ab48c6b4ffdc8efbcad6b89c765749064ba298f2c68a16a76"
 
 [[package]]
-name = "textwrap"
-version = "0.16.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23d434d3f8967a09480fb04132ebe0a3e088c173e6d0ee7897abbdf4eab0f8b9"
-
-[[package]]
 name = "thiserror"
-version = "1.0.64"
+version = "1.0.65"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d50af8abc119fb8bb6dbabcfa89656f46f84aa0ac7688088608076ad2b459a84"
+checksum = "5d11abd9594d9b38965ef50805c5e469ca9cc6f197f883f717e0269a3057b3d5"
 dependencies = [
  "thiserror-impl",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "1.0.64"
+version = "1.0.65"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "08904e7672f5eb876eaaf87e0ce17857500934f4981c4a0ab2b4aa98baac7fc3"
+checksum = "ae71770322cbd277e69d762a16c444af02aa0575ac0d174f0b9562d3b37f8602"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -5356,9 +5240,9 @@ checksum = "1f3ccbac311fea05f86f61904b462b55fb3df8837a366dfc601a0161d0532f20"
 
 [[package]]
 name = "tokio"
-version = "1.40.0"
+version = "1.41.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e2b070231665d27ad9ec9b8df639893f46727666c6767db40317fbe920a5d998"
+checksum = "145f3413504347a2be84393cc8a7d2fb4d863b375909ea59f2158261aa258bbb"
 dependencies = [
  "backtrace",
  "bytes",
@@ -5380,7 +5264,7 @@ checksum = "693d596312e88961bc67d7f1f97af8a70227d9f90c31bba5806eec004978d752"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -5592,7 +5476,7 @@ dependencies = [
  "once_cell",
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
  "wasm-bindgen-shared",
 ]
 
@@ -5614,7 +5498,7 @@ checksum = "26c6ab57572f7a24a4985830b120de1594465e5d500f24afe89e16b4e833ef68"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
@@ -5641,7 +5525,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8d28bc49ba1e5c5b61ffa7a2eace10820443c4b7d1c0b144109261d14570fdf8"
 dependencies = [
  "ahash 0.8.11",
- "bitflags 2.6.0",
+ "bitflags",
  "hashbrown 0.14.5",
  "indexmap 2.6.0",
  "semver",
@@ -5869,7 +5753,7 @@ checksum = "28cc31741b18cb6f1d5ff12f5b7523e3d6eb0852bbbad19d73905511d9849b95"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
  "synstructure",
 ]
 
@@ -5891,7 +5775,7 @@ checksum = "fa4f8080344d4671fb4e831a13ad1e68092748387dfc4f55e356242fae12ce3e"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -5911,7 +5795,7 @@ checksum = "0ea7b4a3637ea8669cedf0f1fd5c286a17f3de97b8dd5a70a6c167a1730e63a5"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
  "synstructure",
 ]
 
@@ -5932,7 +5816,7 @@ checksum = "ce36e65b0d2999d2aafac989fb249189a141aee1f53c612c1f37d72631959f69"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -5954,5 +5838,5 @@ checksum = "6eafa6dfb17584ea3e2bd6e76e0cc15ad7af12b09abdd1ca55961bed9b1063c6"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.81",
+ "syn 2.0.85",
 ]
