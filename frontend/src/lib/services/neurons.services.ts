@@ -1020,7 +1020,7 @@ export const refreshNeuronIfNeeded = async (
   }
   const accountIdentifier = neuron.fullNeuron.accountIdentifier;
 
-  // We only check neurons to recover from an interrupted stake/top-up.
+  // We only check neurons to recover from an interrupted top-up.
   // Doing this once per neuron per session is often enough.
   if (
     !checkedNeuronSubaccountsStore.addSubaccount({
