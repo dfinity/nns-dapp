@@ -1,6 +1,8 @@
 import { governanceApiService } from "$lib/api-services/governance.api-service";
 import { makeDummyProposals as makeDummyProposalsApi } from "$lib/api/dev.api";
+import { queryAccountBalance } from "$lib/api/icp-ledger.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { IS_TESTNET } from "$lib/constants/environment.constants";
 import {
   CANDID_PARSER_VERSION,
@@ -13,6 +15,7 @@ import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
+import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import {
   toastsError,
@@ -53,10 +56,12 @@ import { AnonymousIdentity, type Identity } from "@dfinity/agent";
 import {
   NeuronVisibility,
   Topic,
+  type Neuron,
   type NeuronId,
   type NeuronInfo,
 } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import {
@@ -993,6 +998,46 @@ export const topUpNeuron = async ({
   }
 
   return { success };
+};
+
+const neuronNeedsRefresh = async (fullNeuron: Neuron): Promise<boolean> => {
+  const expectedBalance: bigint = fullNeuron.cachedNeuronStake;
+  const actualBalance: bigint = await queryAccountBalance({
+    icpAccountIdentifier: fullNeuron.accountIdentifier,
+    identity: new AnonymousIdentity(),
+    // This is just a fallback. Worst case a malicious node prevents us from
+    // refreshing the neuron but then it will be refreshed next time.
+    certified: false,
+  });
+  return expectedBalance !== actualBalance;
+};
+
+export const refreshNeuronIfNeeded = async (
+  neuron: NeuronInfo
+): Promise<void> => {
+  if (isNullish(neuron.fullNeuron)) {
+    return;
+  }
+  const accountIdentifier = neuron.fullNeuron.accountIdentifier;
+
+  // We only check neurons to recover from an interrupted top-up.
+  // Doing this once per neuron per session is often enough.
+  if (
+    !checkedNeuronSubaccountsStore.addSubaccount({
+      universeId: OWN_CANISTER_ID_TEXT,
+      // It's not actually the subaccount but rather the full account
+      // identifier. But ic-js doesn't expose the neuron's subaccount and it
+      // really just needs to be a unique consistent identifier to avoid
+      // checking too often.
+      subaccountHex: accountIdentifier,
+    })
+  ) {
+    return;
+  }
+
+  if (await neuronNeedsRefresh(neuron.fullNeuron)) {
+    await reloadNeuron(neuron.neuronId);
+  }
 };
 
 export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
