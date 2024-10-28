@@ -747,6 +747,7 @@ interface I18nNeuron_detail {
   uncontrollable_neurons_description: string;
   hardware_wallet: string;
   retrieving_data: string;
+  public_visibility_action_hw_tooltip: string;
 }
 
 interface I18nSns_launchpad {
