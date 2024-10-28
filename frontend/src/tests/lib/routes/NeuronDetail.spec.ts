@@ -1,4 +1,5 @@
 import * as agent from "$lib/api/agent.api";
+import * as icpLedgerApi from "$lib/api/icp-ledger.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -23,6 +24,7 @@ import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";
 
+vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/sns-aggregator.api");
 vi.mock("$lib/api/governance.api");
@@ -37,7 +39,7 @@ const nnsProps = {
   neuronId: testNnsNeuronId,
 };
 
-const blockedPaths = ["$lib/api/icrc-ledger.api"];
+const blockedPaths = ["$lib/api/icrc-ledger.api", "$lib/api/icp-ledger.api"];
 
 describe("NeuronDetail", () => {
   blockAllCallsTo(blockedPaths);
@@ -51,6 +53,7 @@ describe("NeuronDetail", () => {
     resetSnsProjects();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(0n);
+    vi.spyOn(icpLedgerApi, "queryAccountBalance").mockResolvedValue(0n);
   });
 
   describe("nns neuron", () => {

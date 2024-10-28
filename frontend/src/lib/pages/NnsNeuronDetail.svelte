@@ -20,7 +20,10 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
   import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
-  import { listNeurons } from "$lib/services/neurons.services";
+  import {
+    listNeurons,
+    refreshNeuronIfNeeded,
+  } from "$lib/services/neurons.services";
   import { loadLatestRewardEvent } from "$lib/services/nns-reward-event.services";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsStore } from "$lib/stores/neurons.store";
@@ -38,6 +41,7 @@
   } from "$lib/utils/neuron.utils";
   import { Island } from "@dfinity/gix-components";
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
+  import { nonNullish } from "@dfinity/utils";
   import { onMount, setContext } from "svelte";
   import { writable } from "svelte/store";
 
@@ -139,6 +143,10 @@
   setContext<NnsNeuronContext>(NNS_NEURON_CONTEXT_KEY, {
     store: selectedNeuronStore,
   });
+
+  $: if (nonNullish(neuron)) {
+    refreshNeuronIfNeeded(neuron);
+  }
 </script>
 
 <TestIdWrapper testId="nns-neuron-detail-component">
