@@ -1026,7 +1026,7 @@ export const refreshNeuronIfNeeded = async (
     !checkedNeuronSubaccountsStore.addSubaccount({
       universeId: OWN_CANISTER_ID_TEXT,
       // It's not actually the subaccount but rather the full account
-      // identifier. But ic-js doesn't expect the neuron's subaccount and it
+      // identifier. But ic-js doesn't expose the neuron's subaccount and it
       // really just needs to be a unique consistent identifier to avoid
       // checking too often.
       subaccountHex: accountIdentifier,
