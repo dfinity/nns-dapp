@@ -37,6 +37,7 @@ const swapToQuerySwap = (swap: SnsSummarySwap): [SnsSwap] => [
     direct_participation_icp_e8s: [],
     neurons_fund_participation_icp_e8s: [],
     decentralization_swap_termination_timestamp_seconds: [],
+    timers: [],
   },
 ];
 
