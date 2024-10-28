@@ -1,5 +1,5 @@
-import type { TableNeuron } from "$lib/types/neurons-table";
-import type { ResponsiveTableOrder } from "$lib/types/responsive-table";
+import type { NeuronsTableOrder, TableNeuron } from "$lib/types/neurons-table";
+
 import { getSortedNeuronIds } from "$lib/utils/neurons-table-order-sorted-neuron-ids-store.utils";
 import { mockTableNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronState } from "@dfinity/nns";
@@ -59,38 +59,43 @@ describe("neurons-table-order-sorted-neuron-ids-store.utils", () => {
 
   describe("getSortedNeuronIds", () => {
     it("should sort neurons by stake in descending order", () => {
-      const order: ResponsiveTableOrder = [{ columnId: "stake" }];
+      const order: NeuronsTableOrder = [{ columnId: "stake" }];
       const result = getSortedNeuronIds(order, testNeurons);
       expect(result).toEqual(["1", "3", "2", "4"]);
     });
 
     it("should sort neurons by stake in ascending order when reversed", () => {
-      const order: ResponsiveTableOrder = [
-        { columnId: "stake", reversed: true },
-      ];
+      const order: NeuronsTableOrder = [{ columnId: "stake", reversed: true }];
       const result = getSortedNeuronIds(order, testNeurons);
       expect(result).toEqual(["4", "2", "3", "1"]);
     });
 
     it("should sort neurons by dissolve delay in descending order", () => {
-      const order: ResponsiveTableOrder = [{ columnId: "dissolveDelay" }];
+      const order: NeuronsTableOrder = [{ columnId: "dissolveDelay" }];
       const result = getSortedNeuronIds(order, testNeurons);
       expect(result).toEqual(["4", "1", "2", "3"]);
     });
 
     it("should sort neurons by state", () => {
-      const order: ResponsiveTableOrder = [{ columnId: "state" }];
+      const order: NeuronsTableOrder = [{ columnId: "state" }];
       const result = getSortedNeuronIds(order, testNeurons);
       expect(result).toEqual(["1", "4", "2", "3"]);
     });
 
     it("should use multiple sort criteria", () => {
-      const order: ResponsiveTableOrder = [
+      const order: NeuronsTableOrder = [
         { columnId: "dissolveDelay" },
         { columnId: "stake" },
       ];
       const result = getSortedNeuronIds(order, testNeurons);
       expect(result).toEqual(["4", "1", "3", "2"]);
+    });
+
+    it("should throw error for order with column id equals 'id'", () => {
+      const order: NeuronsTableOrder = [{ columnId: "id" }];
+      expect(() => getSortedNeuronIds(order, testNeurons)).toThrow(
+        "No comparator found for column: id"
+      );
     });
   });
 });

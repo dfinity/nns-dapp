@@ -26,78 +26,77 @@
   let neuronsSortedById: TableNeuron[];
   $: neuronsSortedById = [...neurons].sort(compareById);
 
-  const columns: NeuronsTableColumn[] = [
-    {
-      id: "id",
-      title: $i18n.neurons.title,
-      cellComponent: NeuronIdCell,
-      alignment: "left",
-      templateColumns: ["minmax(min-content, max-content)"],
-    },
-    {
-      title: "",
-      alignment: "left",
-      templateColumns: ["1fr"],
-    },
-    {
-      id: "stake",
-      title: $i18n.neuron_detail.stake,
-      cellComponent: NeuronStakeCell,
-      alignment: "right",
-      templateColumns: ["max-content"],
-    },
-    {
-      title: "",
-      alignment: "left",
-      templateColumns: ["1fr"],
-    },
-    {
-      id: "maturity",
-      title: $i18n.neuron_detail.maturity_title,
-      cellComponent: NeuronMaturityCell,
-      alignment: "right",
-      templateColumns: ["max-content"],
-    },
-    {
-      title: "",
-      alignment: "left",
-      templateColumns: ["1fr"],
-    },
-    {
-      id: "dissolveDelay",
-      title: $i18n.neurons.dissolve_delay_title,
-      cellComponent: NeuronDissolveDelayCell,
-      alignment: "left",
-      templateColumns: ["max-content"],
-    },
-    {
-      title: "",
-      alignment: "left",
-      templateColumns: ["1fr"],
-    },
-    {
-      id: "state",
-      title: $i18n.neurons.state,
-      cellComponent: NeuronStateCell,
-      alignment: "left",
-      templateColumns: ["max-content"],
-    },
-    {
-      title: "",
-      cellComponent: NeuronActionsCell,
-      alignment: "right",
-      templateColumns: ["max-content"],
-    },
-  ].map(
-    (column) =>
-      ({
-        ...column,
-        ...(column.id &&
-          comparatorsByColumnId[column.id] && {
-            comparator: comparatorsByColumnId[column.id],
-          }),
-      }) as NeuronsTableColumn
-  );
+  const columns = (
+    [
+      {
+        id: "id",
+        title: $i18n.neurons.title,
+        cellComponent: NeuronIdCell,
+        alignment: "left",
+        templateColumns: ["minmax(min-content, max-content)"],
+      },
+      {
+        title: "",
+        alignment: "left",
+        templateColumns: ["1fr"],
+      },
+      {
+        id: "stake",
+        title: $i18n.neuron_detail.stake,
+        cellComponent: NeuronStakeCell,
+        alignment: "right",
+        templateColumns: ["max-content"],
+      },
+      {
+        title: "",
+        alignment: "left",
+        templateColumns: ["1fr"],
+      },
+      {
+        id: "maturity",
+        title: $i18n.neuron_detail.maturity_title,
+        cellComponent: NeuronMaturityCell,
+        alignment: "right",
+        templateColumns: ["max-content"],
+      },
+      {
+        title: "",
+        alignment: "left",
+        templateColumns: ["1fr"],
+      },
+      {
+        id: "dissolveDelay",
+        title: $i18n.neurons.dissolve_delay_title,
+        cellComponent: NeuronDissolveDelayCell,
+        alignment: "left",
+        templateColumns: ["max-content"],
+      },
+      {
+        title: "",
+        alignment: "left",
+        templateColumns: ["1fr"],
+      },
+      {
+        id: "state",
+        title: $i18n.neurons.state,
+        cellComponent: NeuronStateCell,
+        alignment: "left",
+        templateColumns: ["max-content"],
+      },
+      {
+        title: "",
+        cellComponent: NeuronActionsCell,
+        alignment: "right",
+        templateColumns: ["max-content"],
+      },
+    ] as NeuronsTableColumn[]
+  ).map((column) => ({
+    ...column,
+    ...(column.id &&
+      comparatorsByColumnId[column.id] && {
+        comparator: comparatorsByColumnId[column.id],
+      }),
+  }));
 
   const getRowStyle = (neuron: TableNeuron) => {
     if (neuron.state === NeuronState.Spawning) {
