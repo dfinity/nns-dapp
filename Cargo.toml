@@ -14,23 +14,23 @@ ic-cdk = "0.16.0"
 ic-cdk-macros = "0.16.0"
 ic-cdk-timers = "0.10.0"
 
-cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-17_03-07-scheduler-changes-guestos-revert" }
-dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-17_03-07-scheduler-changes-guestos-revert" }
-dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-17_03-07-scheduler-changes-guestos-revert" }
-dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-17_03-07-scheduler-changes-guestos-revert" }
-ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-17_03-07-scheduler-changes-guestos-revert" }
-ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-17_03-07-scheduler-changes-guestos-revert" }
-ic-management-canister-types = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-17_03-07-scheduler-changes-guestos-revert" }
-ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-17_03-07-scheduler-changes-guestos-revert" }
-ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-17_03-07-scheduler-changes-guestos-revert" }
-ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-17_03-07-scheduler-changes-guestos-revert" }
-ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-17_03-07-scheduler-changes-guestos-revert" }
-ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-17_03-07-scheduler-changes-guestos-revert" }
-ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-17_03-07-scheduler-changes-guestos-revert" }
-ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-17_03-07-scheduler-changes-guestos-revert" }
-ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-17_03-07-scheduler-changes-guestos-revert" }
-icp-ledger = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-17_03-07-scheduler-changes-guestos-revert" }
-on_wire = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-17_03-07-scheduler-changes-guestos-revert" }
+cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-23_03-07-ubuntu20.04" }
+dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-23_03-07-ubuntu20.04" }
+dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-23_03-07-ubuntu20.04" }
+dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-23_03-07-ubuntu20.04" }
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-23_03-07-ubuntu20.04" }
+ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-23_03-07-ubuntu20.04" }
+ic-management-canister-types = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-23_03-07-ubuntu20.04" }
+ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-23_03-07-ubuntu20.04" }
+ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-23_03-07-ubuntu20.04" }
+ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-23_03-07-ubuntu20.04" }
+ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-23_03-07-ubuntu20.04" }
+ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-23_03-07-ubuntu20.04" }
+ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-23_03-07-ubuntu20.04" }
+ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-23_03-07-ubuntu20.04" }
+ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-23_03-07-ubuntu20.04" }
+icp-ledger = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-23_03-07-ubuntu20.04" }
+on_wire = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-23_03-07-ubuntu20.04" }
 
 [profile.release]
 lto = false
