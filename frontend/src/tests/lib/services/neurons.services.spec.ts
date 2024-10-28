@@ -2133,6 +2133,7 @@ describe("neurons-services", () => {
 
       await refreshNeuronIfNeeded(neuron);
       expect(spyQueryAccountBalance).toBeCalledTimes(1);
+      expect(spyClaimOrRefresh).toBeCalledTimes(0);
     });
   });
 
