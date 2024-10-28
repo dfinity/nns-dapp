@@ -3,6 +3,7 @@ import type {
   ApiMergeNeuronsParams,
   ApiQueryParams,
 } from "$lib/api/governance.api";
+import { queryAccountBalance } from "$lib/api/icp-ledger.api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
@@ -10,16 +11,23 @@ import {
   installImplAndBlockRest,
   makePausable,
 } from "$tests/utils/module.test-utils";
-import type { Identity } from "@dfinity/agent";
-import type { KnownNeuron, NeuronInfo, RewardEvent } from "@dfinity/nns";
+import { AnonymousIdentity, type Identity } from "@dfinity/agent";
+import type {
+  KnownNeuron,
+  NeuronId,
+  NeuronInfo,
+  RewardEvent,
+} from "@dfinity/nns";
 import { NeuronState, NeuronType } from "@dfinity/nns";
 import { isNullish, nonNullish } from "@dfinity/utils";
 
 const modulePath = "$lib/api/governance.api";
 const fakeFunctions = {
   queryNeurons,
+  queryNeuron,
   queryKnownNeurons,
   queryLastestRewardEvent,
+  claimOrRefreshNeuron,
   startDissolving,
   mergeNeurons,
   simulateMergeNeurons,
@@ -68,6 +76,13 @@ async function queryNeurons({
   return getNeurons(identity);
 }
 
+async function queryNeuron({
+  neuronId,
+  identity,
+}: ApiManageNeuronParams): Promise<NeuronInfo> {
+  return getNeuron({ identity, neuronId });
+}
+
 async function queryKnownNeurons({
   identity: _,
   certified: __,
@@ -80,6 +95,23 @@ async function queryLastestRewardEvent({
   certified: __,
 }: ApiQueryParams): Promise<RewardEvent> {
   return latestRewardEvent;
+}
+
+async function claimOrRefreshNeuron({
+  neuronId,
+  identity,
+}: ApiManageNeuronParams): Promise<NeuronId | undefined> {
+  const neuron = getNeuron({ identity, neuronId });
+  if (isNullish(neuron)) {
+    return undefined;
+  }
+  const neuronAccountBalance = await queryAccountBalance({
+    icpAccountIdentifier: neuron?.fullNeuron.accountIdentifier,
+    identity: new AnonymousIdentity(),
+    certified: false,
+  });
+  neuron.fullNeuron.cachedNeuronStake = neuronAccountBalance;
+  return neuronId;
 }
 
 async function startDissolving({
