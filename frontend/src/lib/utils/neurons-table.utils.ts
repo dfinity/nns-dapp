@@ -1,6 +1,7 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import type {
+  NeuronsTableColumnId,
   TableNeuron,
   TableNeuronComparator,
 } from "$lib/types/neurons-table";
@@ -149,7 +150,12 @@ export const compareById = mergeComparators([
   createAscendingComparator((neuron: TableNeuron) => neuron.neuronId),
 ]);
 
-export const comparatorsByColumnId: { [key: string]: TableNeuronComparator } = {
+// The 'id' comparator is intentionally omitted from this mapping to prevent the Neurons column
+// from being sortable in the neurons table. This is a deliberate UX decision to avoid confusion,
+// as sorting by neuron ID typically doesn't provide meaningful information to users.
+export const comparatorsByColumnId: Partial<
+  Record<NeuronsTableColumnId, TableNeuronComparator>
+> = {
   stake: compareByStake,
   maturity: compareByMaturity,
   dissolveDelay: compareByDissolveDelay,
