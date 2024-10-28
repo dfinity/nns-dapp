@@ -722,7 +722,8 @@
     "neurons": "Neurons",
     "uncontrollable_neurons_description": "These neurons have different controllers and won't be updated",
     "hardware_wallet": "Hardware wallet",
-    "retrieving_data": "Retrieving data on neurons..."
+    "retrieving_data": "Retrieving data on neurons...",
+    "public_visibility_action_hw_tooltip": "Updating visibility of hardware wallet controlled neurons is not supported at the moment"
   },
   "sns_launchpad": {
     "header": "Launchpad",
