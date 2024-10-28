@@ -150,9 +150,9 @@ export const compareById = mergeComparators([
   createAscendingComparator((neuron: TableNeuron) => neuron.neuronId),
 ]);
 
-export const comparatorsByColumnId: {
-  [key in NeuronsTableColumnId]?: TableNeuronComparator;
-} = {
+export const comparatorsByColumnId: Partial<
+  Record<NeuronsTableColumnId, TableNeuronComparator>
+> = {
   stake: compareByStake,
   maturity: compareByMaturity,
   dissolveDelay: compareByDissolveDelay,

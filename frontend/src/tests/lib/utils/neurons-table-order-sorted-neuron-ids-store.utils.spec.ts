@@ -90,5 +90,12 @@ describe("neurons-table-order-sorted-neuron-ids-store.utils", () => {
       const result = getSortedNeuronIds(order, testNeurons);
       expect(result).toEqual(["4", "1", "3", "2"]);
     });
+
+    it("should throw error for order with column id equals 'id'", () => {
+      const order: NeuronsTableOrder = [{ columnId: "id" }];
+      expect(() => getSortedNeuronIds(order, testNeurons)).toThrow(
+        "No comparator found for column: id"
+      );
+    });
   });
 });
