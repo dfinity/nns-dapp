@@ -251,6 +251,7 @@
     "title": "Neurons",
     "text": "Earn voting rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by submitting and voting on Network Nervous System (NNS) proposals.",
     "stake_token": "Stake $token",
+    "icp_will_be_locked": "Your ICP will be locked for at least 7 days.",
     "merge_neurons": "Merge Neurons",
     "merge_neurons_modal_title": "Select two neurons to merge",
     "merge_neurons_modal_confirm": "Confirm merge",
