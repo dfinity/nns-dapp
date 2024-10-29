@@ -405,7 +405,7 @@
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2024-10-23",
         "IC_COMMIT_FOR_PROPOSALS": "release-2024-10-23_03-07-ubuntu20.04",
-        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-10-17_03-07-scheduler-changes-guestos-revert"
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-10-23_03-07-ubuntu20.04"
       },
       "packtool": ""
     }
