@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Provide better error messages when the transaction timestamp is off.
 * A link to the imported tokens documentation page.
 * Refresh NNS neurons from neuron details page if needed.
+* Inform the user in the staking modal that the minimum dissolve delay for NNS neurons is 7 days.
 
 #### Changed
 
