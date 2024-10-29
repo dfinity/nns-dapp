@@ -88,10 +88,6 @@ describe("IcrcWalletTransactionList", () => {
     vi.useFakeTimers().setSystemTime(new Date());
   });
 
-  afterAll(() => {
-    vi.useRealTimers();
-  });
-
   it("should call service to load transactions", () => {
     const spy = vi.spyOn(services, "loadIcrcAccountNextTransactions");
 

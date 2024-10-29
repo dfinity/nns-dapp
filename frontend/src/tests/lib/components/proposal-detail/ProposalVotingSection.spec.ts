@@ -29,17 +29,12 @@ describe("ProposalVotingSection", () => {
     neuronId,
   }));
 
-  beforeAll(() =>
+  beforeEach(() =>
     neuronsStore.setNeurons({
       neurons: [...neurons, ineligibleNeuron],
       certified: true,
     })
   );
-
-  afterAll(() => {
-    neuronsStore.setNeurons({ neurons: [], certified: true });
-    vi.resetAllMocks();
-  });
 
   const proposalInfo = {
     ...mockProposalInfo,

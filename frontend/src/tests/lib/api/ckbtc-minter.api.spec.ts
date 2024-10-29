@@ -25,17 +25,10 @@ import { mock } from "vitest-mock-extended";
 describe("ckbtc-minter api", () => {
   const minterCanisterMock = mock<CkBTCMinterCanister>();
 
-  beforeAll(() => {
+  beforeEach(() => {
     vi.spyOn(CkBTCMinterCanister, "create").mockImplementation(
       () => minterCanisterMock
     );
-  });
-
-  afterAll(() => {
-    vi.clearAllMocks();
-  });
-
-  beforeEach(() => {
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 

@@ -8,15 +8,8 @@ describe("env-utils", () => {
   describe("isNnsAlternativeOrigin", () => {
     let location;
 
-    beforeAll(() => {
+    beforeEach(() => {
       location = window.location;
-    });
-
-    afterAll(() => {
-      Object.defineProperty(window, "location", {
-        writable: true,
-        value: { ...location },
-      });
     });
 
     const setOrigin = (origin: string) => {

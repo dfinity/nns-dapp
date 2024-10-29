@@ -49,6 +49,7 @@ describe("project-utils", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.useRealTimers();
   });
 
   describe("filter", () => {
@@ -170,9 +171,6 @@ describe("project-utils", () => {
       vi.useFakeTimers().setSystemTime(now);
     });
 
-    afterAll(() => {
-      vi.useRealTimers();
-    });
     it("should return duration until swap deadline", () => {
       const dueSeconds = 3600;
       const dueTimestampSeconds = BigInt(nowInSeconds() + dueSeconds);
@@ -193,9 +191,6 @@ describe("project-utils", () => {
       vi.useFakeTimers().setSystemTime(now);
     });
 
-    afterAll(() => {
-      vi.useRealTimers();
-    });
     it("should return duration until swap deadline", () => {
       const dueSeconds = 3600;
       const dueTimestampSeconds = BigInt(nowInSeconds() + dueSeconds);

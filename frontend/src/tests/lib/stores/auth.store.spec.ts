@@ -12,7 +12,7 @@ describe("auth-store", () => {
   mockAuthClient.isAuthenticated.mockResolvedValue(false);
   mockAuthClient.logout.mockResolvedValue(undefined);
 
-  beforeAll(() => {
+  beforeEach(() => {
     vi.spyOn(AuthClient, "create").mockImplementation(
       async (): Promise<AuthClient> => mockAuthClient
     );

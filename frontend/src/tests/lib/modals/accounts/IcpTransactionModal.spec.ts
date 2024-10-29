@@ -19,10 +19,6 @@ vi.mock("$lib/services/icp-accounts.services", () => {
 });
 
 describe("IcpTransactionModal", () => {
-  beforeAll(() => {
-    resetIdentity();
-  });
-
   const renderTransactionModal = () =>
     renderModal({
       component: IcpTransactionModal,
@@ -36,6 +32,8 @@ describe("IcpTransactionModal", () => {
   };
 
   beforeEach(() => {
+    resetIdentity();
+
     vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
       mockAccountsStoreSubscribe([mockSubAccount])
     );

@@ -17,8 +17,10 @@ import {
 } from "@dfinity/sns";
 
 describe("SnsNeuronFollowingCard", () => {
-  beforeAll(() => {
+  beforeEach(() => {
+    vi.clearAllMocks();
     resetIdentity();
+    resetSnsProjects();
   });
 
   describe("user has permissions to manage followees", () => {
@@ -71,11 +73,6 @@ describe("SnsNeuronFollowingCard", () => {
         Component: SnsNeuronFollowingCard,
         neuron,
       });
-
-    beforeEach(() => {
-      vi.clearAllMocks();
-      resetSnsProjects();
-    });
 
     it("renders followees and their topics", () => {
       // Use same rootCanisterId as in `renderSelectedSnsNeuronContext`
@@ -140,10 +137,6 @@ describe("SnsNeuronFollowingCard", () => {
         Component: SnsNeuronFollowingCard,
         neuron,
       });
-
-    beforeEach(() => {
-      vi.clearAllMocks();
-    });
 
     it("does not render button to follow neurons", () => {
       const { queryByTestId } = renderCard(uncontrolledNeuron);

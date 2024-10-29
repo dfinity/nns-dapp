@@ -52,10 +52,6 @@ describe("SnsProposalVotingSection", () => {
     vi.useFakeTimers().setSystemTime(0);
   });
 
-  afterAll(() => {
-    vi.useRealTimers();
-  });
-
   it("should render vote results", async () => {
     const po = await renderComponent();
 

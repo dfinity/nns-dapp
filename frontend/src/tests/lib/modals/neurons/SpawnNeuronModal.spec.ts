@@ -26,15 +26,11 @@ describe("SpawnNeuronModal", () => {
     },
   };
 
-  beforeAll(() =>
+  beforeEach(() => {
     setAccountsForTesting({
       main: mockMainAccount,
       hardwareWallets: [mockHardwareWalletAccount],
-    })
-  );
-
-  afterAll(() => {
-    vi.clearAllMocks();
+    });
   });
 
   it("should display modal", async () => {

@@ -63,6 +63,7 @@ describe("MenuItems", () => {
   };
 
   beforeEach(() => {
+    resetMockedConstants();
     menuStore.resetForTesting();
     layoutMenuOpen.set(false);
     vi.useFakeTimers();
@@ -267,10 +268,6 @@ describe("MenuItems", () => {
       expect(await menuItemsPo.getTotalValueLockedLinkPo().getHref()).toBe(
         "https://dashboard.internetcomputer.org/neurons"
       );
-
-      afterAll(() => {
-        resetMockedConstants();
-      });
     });
   });
 });

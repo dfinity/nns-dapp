@@ -160,10 +160,6 @@ describe("neurons api-service", () => {
     resetNeuronsApiService();
   });
 
-  afterAll(() => {
-    vi.useRealTimers();
-  });
-
   // Read calls
 
   describe("queryNeuron", () => {
