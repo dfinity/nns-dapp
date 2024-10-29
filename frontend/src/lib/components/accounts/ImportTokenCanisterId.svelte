@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Copy } from "@dfinity/gix-components";
-  import { nonNullish } from "@dfinity/utils";
   import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
+  import { Copy } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
+  import { nonNullish } from "@dfinity/utils";
 
   export let label: string;
   export let testId: string = "import-token-canister-id-component";

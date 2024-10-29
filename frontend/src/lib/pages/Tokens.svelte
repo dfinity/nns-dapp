@@ -3,20 +3,20 @@
   import HideZeroBalancesToggle from "$lib/components/tokens/TokensTable/HideZeroBalancesToggle.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+  import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
+  import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
+  import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
   import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
   import { i18n } from "$lib/stores/i18n";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import type { ImportedTokenData } from "$lib/types/imported-tokens";
   import type { UserToken } from "$lib/types/tokens-page";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { isImportedToken } from "$lib/utils/imported-tokens.utils";
   import { heightTransition } from "$lib/utils/transition.utils";
   import { IconPlus, IconSettings, Tooltip } from "@dfinity/gix-components";
   import { Popover } from "@dfinity/gix-components";
   import { TokenAmountV2, nonNullish } from "@dfinity/utils";
-  import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
-  import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
-  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-  import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { isImportedToken } from "$lib/utils/imported-tokens.utils";
-  import type { ImportedTokenData } from "$lib/types/imported-tokens";
 
   export let userTokensData: UserToken[];
 

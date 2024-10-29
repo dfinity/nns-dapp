@@ -1,19 +1,19 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-  import {
-    isPublicNeuron,
-    isNeuronControllableByUser,
-    createNeuronVisibilityRowData,
-  } from "$lib/utils/neuron.utils";
-  import { sortedNeuronStore } from "$lib/stores/neurons.store";
-  import { authStore } from "$lib/stores/auth.store";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
-  import { i18n } from "$lib/stores/i18n";
-  import NeuronVisibilityRow from "$lib/modals/neurons/NeuronVisibilityRow.svelte";
-  import type { NeuronInfo } from "@dfinity/nns";
-  import { Checkbox, Spinner } from "@dfinity/gix-components";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import NeuronVisibilityRow from "$lib/modals/neurons/NeuronVisibilityRow.svelte";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { sortedNeuronStore } from "$lib/stores/neurons.store";
+  import {
+    createNeuronVisibilityRowData,
+    isNeuronControllableByUser,
+    isPublicNeuron,
+  } from "$lib/utils/neuron.utils";
+  import { Checkbox, Spinner } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let defaultSelectedNeuron: NeuronInfo | null = null;
   export let makePublic: boolean;

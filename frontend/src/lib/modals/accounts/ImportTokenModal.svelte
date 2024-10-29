@@ -1,31 +1,31 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
+  import ImportTokenForm from "$lib/components/accounts/ImportTokenForm.svelte";
+  import ImportTokenReview from "$lib/components/accounts/ImportTokenReview.svelte";
+  import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
+  import { getIcrcTokenMetaData } from "$lib/services/icrc-accounts.services";
+  import { matchLedgerIndexPair } from "$lib/services/icrc-index.services";
+  import { addImportedToken } from "$lib/services/imported-tokens.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING } from "$lib/stores/feature-flags.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
+  import { isImportedToken } from "$lib/utils/imported-tokens.utils";
+  import { buildWalletUrl } from "$lib/utils/navigation.utils";
+  import { isSnsLedgerCanisterId } from "$lib/utils/sns.utils";
+  import { LEDGER_CANISTER_ID } from "../../constants/canister-ids.constants";
   import {
     WizardModal,
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
   import type { Principal } from "@dfinity/principal";
-  import ImportTokenForm from "$lib/components/accounts/ImportTokenForm.svelte";
-  import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import { getIcrcTokenMetaData } from "$lib/services/icrc-accounts.services";
-  import { toastsError } from "$lib/stores/toasts.store";
-  import { isImportedToken } from "$lib/utils/imported-tokens.utils";
-  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-  import { isSnsLedgerCanisterId } from "$lib/utils/sns.utils";
-  import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
-  import { matchLedgerIndexPair } from "$lib/services/icrc-index.services";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
-  import ImportTokenReview from "$lib/components/accounts/ImportTokenReview.svelte";
-  import { addImportedToken } from "$lib/services/imported-tokens.services";
-  import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import { createEventDispatcher } from "svelte";
-  import { goto } from "$app/navigation";
   import { get } from "svelte/store";
-  import { DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING } from "$lib/stores/feature-flags.store";
-  import { LEDGER_CANISTER_ID } from "../../constants/canister-ids.constants";
 
   let currentStep: WizardStep | undefined = undefined;
 

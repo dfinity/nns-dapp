@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Value, Copy } from "@dfinity/gix-components";
+  import { Copy, Value } from "@dfinity/gix-components";
 
   export let identifier: string;
   export let label: string | undefined = undefined;

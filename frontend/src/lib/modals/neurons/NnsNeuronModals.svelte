@@ -13,7 +13,6 @@
   import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
   import SplitNeuronModal from "$lib/modals/neurons/SplitNnsNeuronModal.svelte";
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
-  import ChangeNeuronVisibilityModal from "./ChangeNeuronVisibilityModal.svelte";
   import type {
     NnsNeuronModal,
     NnsNeuronModalData,
@@ -25,6 +24,7 @@
     type FolloweesNeuron,
   } from "$lib/utils/neuron.utils";
   import NnsAddMaturityModal from "../sns/neurons/NnsAddMaturityModal.svelte";
+  import ChangeNeuronVisibilityModal from "./ChangeNeuronVisibilityModal.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
 

@@ -7,12 +7,17 @@
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import RenameSubAccountButton from "$lib/components/accounts/RenameSubAccountButton.svelte";
   import UiTransactionsList from "$lib/components/accounts/UiTransactionsList.svelte";
+  import WalletMorePopover from "$lib/components/accounts/WalletMorePopover.svelte";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import {
+    INDEX_CANISTER_ID,
+    LEDGER_CANISTER_ID,
+  } from "$lib/constants/canister-ids.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -32,6 +37,7 @@
   } from "$lib/services/icp-transactions.services";
   import { listNeurons } from "$lib/services/neurons.services";
   import { authStore } from "$lib/stores/auth.store";
+  import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
   import {
@@ -66,14 +72,8 @@
     isNullish,
     nonNullish,
   } from "@dfinity/utils";
-  import { onMount, onDestroy, setContext } from "svelte";
+  import { onDestroy, onMount, setContext } from "svelte";
   import { writable, type Readable } from "svelte/store";
-  import {
-    INDEX_CANISTER_ID,
-    LEDGER_CANISTER_ID,
-  } from "$lib/constants/canister-ids.constants";
-  import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
-  import WalletMorePopover from "$lib/components/accounts/WalletMorePopover.svelte";
 
   $: if ($authSignedInStore) {
     pollAccounts();

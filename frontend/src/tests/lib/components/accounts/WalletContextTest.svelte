@@ -6,7 +6,7 @@
     WalletContext,
     WalletStore,
   } from "$lib/types/wallet.context";
-  import { setContext, SvelteComponent } from "svelte";
+  import { SvelteComponent, setContext } from "svelte";
   import { writable } from "svelte/store";
 
   export let testComponent: typeof SvelteComponent;

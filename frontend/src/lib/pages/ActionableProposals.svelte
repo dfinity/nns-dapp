@@ -4,8 +4,8 @@
   import ActionableSnses from "$lib/components/proposals/ActionableSnses.svelte";
   import LoadingActionableProposals from "$lib/components/proposals/LoadingActionableProposals.svelte";
   import {
-    actionableProposalsLoadedStore,
     actionableProposalTotalCountStore,
+    actionableProposalsLoadedStore,
   } from "$lib/derived/actionable-proposals.derived";
 </script>
 

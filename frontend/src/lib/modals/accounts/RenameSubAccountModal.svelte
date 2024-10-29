@@ -3,8 +3,8 @@
   import { i18n } from "$lib/stores/i18n";
   import {
     WizardModal,
-    type WizardSteps,
     type WizardStep,
+    type WizardSteps,
   } from "@dfinity/gix-components";
 
   let steps: WizardSteps = [

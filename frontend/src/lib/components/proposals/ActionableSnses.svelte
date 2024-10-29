@@ -2,8 +2,8 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ActionableSnsProposals from "$lib/components/proposals/ActionableSnsProposals.svelte";
   import {
-    type ActionableSnsProposalsByUniverseData,
     actionableSnsProposalsByUniverseStore,
+    type ActionableSnsProposalsByUniverseData,
   } from "$lib/derived/actionable-proposals.derived";
 
   let actionableUniverses: ActionableSnsProposalsByUniverseData[] = [];

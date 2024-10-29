@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { i18n } from "$lib/stores/i18n";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { isPublicNeuron } from "$lib/utils/neuron.utils";
-  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;

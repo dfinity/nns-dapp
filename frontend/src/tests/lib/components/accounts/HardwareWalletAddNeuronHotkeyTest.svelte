@@ -4,7 +4,7 @@
     mockHardwareWalletNeuronsStore,
     mockNeuronStake,
   } from "$tests/mocks/hardware-wallet-neurons.store.mock";
-  import { setContext, SvelteComponent } from "svelte";
+  import { SvelteComponent, setContext } from "svelte";
 
   export let testComponent: typeof SvelteComponent;
 

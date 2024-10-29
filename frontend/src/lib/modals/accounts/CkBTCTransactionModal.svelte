@@ -30,7 +30,7 @@
   import { numberToE8s } from "$lib/utils/token.utils";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
   import type { WizardStep } from "@dfinity/gix-components";
-  import type { TokenAmountV2, Token } from "@dfinity/utils";
+  import type { Token, TokenAmountV2 } from "@dfinity/utils";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 

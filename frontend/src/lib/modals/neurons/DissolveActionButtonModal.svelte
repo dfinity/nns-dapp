@@ -7,7 +7,7 @@
   } from "$lib/services/neurons.services";
   import { stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { type NeuronId, type NeuronInfo, NeuronState } from "@dfinity/nns";
+  import { NeuronState, type NeuronId, type NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;

@@ -5,11 +5,11 @@
     UserTokenFailed,
     UserTokenLoading,
   } from "$lib/types/tokens-page";
-  import { Spinner } from "@dfinity/gix-components";
   import {
     isUserTokenData,
     isUserTokenLoading,
   } from "$lib/utils/user-token.utils";
+  import { Spinner } from "@dfinity/gix-components";
 
   export let rowData: UserTokenData | UserTokenLoading | UserTokenFailed;
 </script>

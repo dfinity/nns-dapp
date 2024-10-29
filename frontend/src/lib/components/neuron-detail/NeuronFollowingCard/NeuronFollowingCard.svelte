@@ -5,10 +5,10 @@
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import {
-    type FolloweesNeuron,
     followeesNeurons,
-    isNeuronControllable,
     isHotKeyControllable,
+    isNeuronControllable,
+    type FolloweesNeuron,
   } from "$lib/utils/neuron.utils";
   import FollowNeuronsButton from "../actions/FollowNeuronsButton.svelte";
   import Followee from "./Followee.svelte";

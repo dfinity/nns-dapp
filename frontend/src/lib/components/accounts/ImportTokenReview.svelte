@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { Principal } from "@dfinity/principal";
-  import { i18n } from "$lib/stores/i18n";
-  import { createEventDispatcher } from "svelte";
-  import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import Logo from "$lib/components/ui/Logo.svelte";
   import ImportTokenCanisterId from "$lib/components/accounts/ImportTokenCanisterId.svelte";
   import CalloutWarning from "$lib/components/common/CalloutWarning.svelte";
+  import Logo from "$lib/components/ui/Logo.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import type { Principal } from "@dfinity/principal";
+  import { createEventDispatcher } from "svelte";
 
   export let ledgerCanisterId: Principal;
   export let indexCanisterId: Principal | undefined = undefined;

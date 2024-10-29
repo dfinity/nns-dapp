@@ -4,8 +4,8 @@
   import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
   import { i18n } from "$lib/stores/i18n";
   import {
-    type VoteRegistrationStoreEntry,
     votingNeuronSelectStore,
+    type VoteRegistrationStoreEntry,
   } from "$lib/stores/vote-registration.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";

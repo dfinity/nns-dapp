@@ -16,8 +16,8 @@
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
   import {
-    getSnsNeuronHotkeys,
     canIdentityManageHotkeys,
+    getSnsNeuronHotkeys,
   } from "$lib/utils/sns-neuron.utils";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
   import AddSnsHotkeyButton from "./actions/AddSnsHotkeyButton.svelte";

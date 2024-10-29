@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import {
-    Tag,
-    IconPublicBadge,
-    Tooltip,
-    IconLedger,
-    IconKey,
-    Checkbox,
-  } from "@dfinity/gix-components";
-  import type { NeuronVisibilityRowData } from "$lib/types/neuron-visibility-row";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import type { NeuronVisibilityRowData } from "$lib/types/neuron-visibility-row";
+  import {
+    Checkbox,
+    IconKey,
+    IconLedger,
+    IconPublicBadge,
+    Tag,
+    Tooltip,
+  } from "@dfinity/gix-components";
 
   const typeToIcon: {
     hardwareWallet: typeof IconLedger;

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import {
-    type AccountType,
     ADD_ACCOUNT_CONTEXT_KEY,
+    type AccountType,
     type AddAccountContext,
   } from "$lib/types/add-account.context";
   import { Card } from "@dfinity/gix-components";

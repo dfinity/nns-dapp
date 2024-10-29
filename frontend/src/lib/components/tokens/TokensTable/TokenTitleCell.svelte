@@ -1,17 +1,17 @@
 <script lang="ts">
+  import Hash from "$lib/components/ui/Hash.svelte";
+  import Logo from "$lib/components/ui/Logo.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import type {
     UserTokenData,
     UserTokenFailed,
     UserTokenLoading,
   } from "$lib/types/tokens-page";
-  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
-  import Logo from "$lib/components/ui/Logo.svelte";
-  import { nonNullish } from "@dfinity/utils";
-  import { IconError, Tag, Tooltip } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
-  import Hash from "$lib/components/ui/Hash.svelte";
   import { isUserTokenFailed } from "$lib/utils/user-token.utils";
+  import { IconError, Tag, Tooltip } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
 
   export let rowData: UserTokenData | UserTokenLoading | UserTokenFailed;
 
