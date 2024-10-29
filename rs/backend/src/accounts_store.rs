@@ -591,7 +591,7 @@ impl AccountsStore {
                     if let Some(principal) = self.try_get_principal(&from) {
                         let canister_ids: Vec<CanisterId> =
                             self.get_canisters(principal).iter().map(|c| c.canister_id).collect();
-                        let transaction_type = self.get_transaction_type(
+                        let transaction_type = Self::get_transaction_type(
                             from,
                             to,
                             memo,
@@ -913,7 +913,6 @@ impl AccountsStore {
 
     #[allow(clippy::too_many_arguments)]
     fn get_transaction_type(
-        &self,
         from: AccountIdentifier,
         to: AccountIdentifier,
         memo: Memo,
