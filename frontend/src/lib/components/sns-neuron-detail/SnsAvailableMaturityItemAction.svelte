@@ -13,7 +13,7 @@
   import SnsStakeMaturityButton from "./actions/SnsStakeMaturityButton.svelte";
   import { IconExpandCircleDown } from "@dfinity/gix-components";
   import type { SnsNeuron } from "@dfinity/sns";
-  import type { TokenAmountV2, Token } from "@dfinity/utils";
+  import type { Token, TokenAmountV2 } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
   export let fee: TokenAmountV2;

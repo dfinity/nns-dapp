@@ -20,9 +20,9 @@
   } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import {
+    ICPToken,
     TokenAmount,
     TokenAmountV2,
-    ICPToken,
     type Token,
   } from "@dfinity/utils";
   import { isNullish, nonNullish } from "@dfinity/utils";

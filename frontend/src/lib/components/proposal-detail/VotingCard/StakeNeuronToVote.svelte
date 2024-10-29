@@ -6,7 +6,7 @@
   import { nnsTokenStore } from "$lib/derived/universes-tokens.derived";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { IconExpandCircleDown, Collapsible } from "@dfinity/gix-components";
+  import { Collapsible, IconExpandCircleDown } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
   import { fade } from "svelte/transition";
 

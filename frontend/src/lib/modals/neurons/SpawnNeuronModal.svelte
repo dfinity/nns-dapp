@@ -14,10 +14,10 @@
     isNeuronControlledByHardwareWallet,
   } from "$lib/utils/neuron.utils";
   import {
-    WizardModal,
     Html,
-    type WizardSteps,
+    WizardModal,
     type WizardStep,
+    type WizardSteps,
   } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";

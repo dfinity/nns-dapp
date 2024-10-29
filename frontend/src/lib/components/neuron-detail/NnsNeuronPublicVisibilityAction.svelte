@@ -1,15 +1,15 @@
 <script lang="ts">
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { i18n } from "$lib/stores/i18n";
   import {
     isNeuronControllableByUser,
     isNeuronControlledByHardwareWallet,
     isPublicNeuron,
   } from "$lib/utils/neuron.utils";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import CommonItemAction from "../ui/CommonItemAction.svelte";
+  import NnsChangeNeuronVisibilityButton from "./actions/NnsChangeNeuronVisibilityButton.svelte";
   import { IconPublicBadge, Tooltip } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import NnsChangeNeuronVisibilityButton from "./actions/NnsChangeNeuronVisibilityButton.svelte";
 
   export let neuron: NeuronInfo;
 

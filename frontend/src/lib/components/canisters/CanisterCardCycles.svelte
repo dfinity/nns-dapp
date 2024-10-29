@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { CanisterDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import {
-    type CyclesWorker,
     initCyclesWorker,
+    type CyclesWorker,
   } from "$lib/services/worker-cycles.services";
   import { i18n } from "$lib/stores/i18n";
   import type { CanisterSync } from "$lib/types/canister";

@@ -10,8 +10,8 @@
   } from "$lib/utils/neuron.utils";
   import {
     WizardModal,
-    type WizardSteps,
     type WizardStep,
+    type WizardSteps,
   } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";

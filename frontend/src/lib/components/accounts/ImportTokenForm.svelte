@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type { Principal } from "@dfinity/principal";
+  import ImportTokenCanisterId from "$lib/components/accounts/ImportTokenCanisterId.svelte";
+  import CalloutWarning from "$lib/components/common/CalloutWarning.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { Html } from "@dfinity/gix-components";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { createEventDispatcher } from "svelte";
-  import { isNullish } from "@dfinity/utils";
-  import CalloutWarning from "$lib/components/common/CalloutWarning.svelte";
-  import ImportTokenCanisterId from "$lib/components/accounts/ImportTokenCanisterId.svelte";
   import { IconOpenInNew } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
+  import { isNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let ledgerCanisterId: Principal | undefined = undefined;
   export let indexCanisterId: Principal | undefined = undefined;

@@ -7,7 +7,7 @@
     mapProposalInfo,
   } from "$lib/utils/proposals.utils";
   import ProposalCard from "./ProposalCard.svelte";
-  import type { NeuronId, ProposalInfo, ProposalId } from "@dfinity/nns";
+  import type { NeuronId, ProposalId, ProposalInfo } from "@dfinity/nns";
 
   export let proposalInfo: ProposalInfo;
   export let hidden = false;

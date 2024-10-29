@@ -1,11 +1,11 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import Separator from "../ui/Separator.svelte";
   import { IconBin, Popover } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
-  import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import Separator from "../ui/Separator.svelte";
   import { createEventDispatcher } from "svelte";
 
   export let anchor: HTMLElement | undefined;

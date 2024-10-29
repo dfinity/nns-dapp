@@ -6,7 +6,7 @@
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
-  import { busy, Modal, startBusy, stopBusy } from "@dfinity/gix-components";
+  import { Modal, busy, startBusy, stopBusy } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
   import { createEventDispatcher, getContext } from "svelte";

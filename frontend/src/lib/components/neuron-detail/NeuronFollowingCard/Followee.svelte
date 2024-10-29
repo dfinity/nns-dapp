@@ -9,7 +9,7 @@
   } from "$lib/types/nns-neuron-detail.context";
   import type { NnsNeuronModalVotingHistory } from "$lib/types/nns-neuron-detail.modal";
   import { emit } from "$lib/utils/events.utils";
-  import { type FolloweesNeuron, getTopicTitle } from "$lib/utils/neuron.utils";
+  import { getTopicTitle, type FolloweesNeuron } from "$lib/utils/neuron.utils";
   import { Copy, Tag } from "@dfinity/gix-components";
   import type { Topic } from "@dfinity/nns";
   import { getContext } from "svelte";

@@ -18,12 +18,12 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import {
-    SkeletonText,
-    Spinner,
-    QRCode,
     Copy,
     Html,
     IconQRCode,
+    QRCode,
+    SkeletonText,
+    Spinner,
   } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 

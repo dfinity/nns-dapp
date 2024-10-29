@@ -6,15 +6,15 @@
   import { debugAddAccountStore } from "$lib/derived/debug.derived";
   import { i18n } from "$lib/stores/i18n";
   import type {
+    AccountType,
     AddAccountContext,
     AddAccountStore,
-    AccountType,
   } from "$lib/types/add-account.context";
   import { ADD_ACCOUNT_CONTEXT_KEY } from "$lib/types/add-account.context";
   import {
     WizardModal,
-    type WizardSteps,
     type WizardStep,
+    type WizardSteps,
   } from "@dfinity/gix-components";
   import { setContext, tick } from "svelte";
   import { writable } from "svelte/store";

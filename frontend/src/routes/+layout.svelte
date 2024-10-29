@@ -1,8 +1,8 @@
 <script lang="ts">
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
   import {
-    type AuthWorker,
     initAuthWorker,
+    type AuthWorker,
   } from "$lib/services/worker-auth.services";
   import type { AuthStoreData } from "$lib/stores/auth.store";
   import { authStore } from "$lib/stores/auth.store";

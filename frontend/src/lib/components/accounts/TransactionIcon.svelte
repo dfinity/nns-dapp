@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { TransactionIconType } from "$lib/types/transaction";
   import {
-    IconReimbursed,
-    IconErrorOutline,
-    IconUp,
     IconDown,
+    IconErrorOutline,
+    IconReimbursed,
+    IconUp,
   } from "@dfinity/gix-components";
 
   export let type: TransactionIconType;

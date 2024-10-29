@@ -4,35 +4,35 @@
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
+  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { syncAccounts as syncWalletAccounts } from "$lib/services/icrc-accounts.services";
+  import { removeImportedTokens } from "$lib/services/imported-tokens.services";
+  import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import type { Universe } from "$lib/types/universe";
   import type { WalletStore } from "$lib/types/wallet.context";
   import {
     findAccountOrDefaultToMain,
     hasAccounts,
   } from "$lib/utils/accounts.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { isImportedToken as checkImportedToken } from "$lib/utils/imported-tokens.utils";
+  import ImportTokenRemoveConfirmation from "./ImportTokenRemoveConfirmation.svelte";
+  import WalletMorePopover from "./WalletMorePopover.svelte";
   import { IconDots, Island, Spinner, Tag } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import { get, type Writable } from "svelte/store";
-  import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import WalletMorePopover from "./WalletMorePopover.svelte";
-  import { isImportedToken as checkImportedToken } from "$lib/utils/imported-tokens.utils";
-  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-  import { removeImportedTokens } from "$lib/services/imported-tokens.services";
-  import ImportTokenRemoveConfirmation from "./ImportTokenRemoveConfirmation.svelte";
-  import type { Universe } from "$lib/types/universe";
-  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 
   export let testId: string = "icrc-wallet-page";
   export let accountIdentifier: string | undefined | null = undefined;

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
   import UniverseSummary from "$lib/components/universe/UniverseSummary.svelte";
-  import type { Universe } from "$lib/types/universe";
   import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Universe } from "$lib/types/universe";
   import { Tag } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
 

@@ -1,11 +1,11 @@
 <script lang="ts">
   import {
-    AccountType,
     ADD_ACCOUNT_CONTEXT_KEY,
+    AccountType,
     AddAccountContext,
   } from "$lib/types/add-account.context";
   import { addAccountStoreMock } from "$tests/mocks/add-account.store.mock";
-  import { setContext, SvelteComponent } from "svelte";
+  import { SvelteComponent, setContext } from "svelte";
 
   export let testComponent: typeof SvelteComponent;
   export let nextCallback: () => void | undefined = undefined;

@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-  import { i18n } from "$lib/stores/i18n";
-  import { Modal } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { changeNeuronVisibility } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import ChangeBulkNeuronVisibilityForm from "./ChangeBulkNeuronVisibilityForm.svelte";
+  import { Modal } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { createEventDispatcher } from "svelte";
 
   export let defaultSelectedNeuron: NeuronInfo | null = null;
   // makePublic is also passed to ChangeBulkNeuronVisibilityForm

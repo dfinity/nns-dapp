@@ -3,7 +3,7 @@
   import { ICP_DISPLAYED_DECIMALS_DETAILED } from "$lib/constants/icp.constants";
   import { i18n } from "$lib/stores/i18n";
   import InputWithError from "./InputWithError.svelte";
-  import { type Token, isNullish } from "@dfinity/utils";
+  import { isNullish, type Token } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   export let amount: number | undefined = undefined;

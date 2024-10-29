@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
-  import TooltipIcon from "../ui/TooltipIcon.svelte";
-  import IdentifierHash from "../ui/IdentifierHash.svelte";
-  import { nonNullish } from "@dfinity/utils";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import IdentifierHash from "../ui/IdentifierHash.svelte";
+  import TooltipIcon from "../ui/TooltipIcon.svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   let principalId: string | undefined;
   let accountId: string | undefined;

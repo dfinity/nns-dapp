@@ -20,7 +20,7 @@
   import { Principal } from "@dfinity/principal";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import { secondsToDuration } from "@dfinity/utils";
-  import { type Token, fromDefinedNullable } from "@dfinity/utils";
+  import { fromDefinedNullable, type Token } from "@dfinity/utils";
 
   export let parameters: SnsNervousSystemParameters;
   export let neuron: SnsNeuron;

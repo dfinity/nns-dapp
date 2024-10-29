@@ -17,10 +17,10 @@
   import { formatTokenE8s } from "$lib/utils/token.utils";
   import {
     Html,
-    WizardModal,
-    type WizardSteps,
-    type WizardStep,
     KeyValuePair,
+    WizardModal,
+    type WizardStep,
+    type WizardSteps,
   } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { assertNonNullish, type Token } from "@dfinity/utils";

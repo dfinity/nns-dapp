@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { IconInfo, IconClose } from "@dfinity/gix-components";
-  import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { browser } from "$app/environment";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import ChangeNeuronVisibilityModal from "$lib/modals/neurons/ChangeNeuronVisibilityModal.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import {
     isNeuronControllableByUser,
     isPublicNeuron,
   } from "$lib/utils/neuron.utils";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
-  import ChangeNeuronVisibilityModal from "$lib/modals/neurons/ChangeNeuronVisibilityModal.svelte";
+  import { IconClose, IconInfo } from "@dfinity/gix-components";
 
   const LOCAL_STORAGE_KEY = "isNeuronsPublicBannerDismissed";
   const CUTOFF_DATE = new Date(2025, 0, 31);

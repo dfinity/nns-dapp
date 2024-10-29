@@ -15,8 +15,8 @@
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import {
     WizardModal,
-    type WizardSteps,
     type WizardStep,
+    type WizardSteps,
   } from "@dfinity/gix-components";
   import { wizardStepIndex } from "@dfinity/gix-components";
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";

@@ -1,9 +1,9 @@
 <script lang="ts">
   import Hash from "$lib/components/ui/Hash.svelte";
+  import { ENABLE_NEURON_VISIBILITY } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { TableNeuron } from "$lib/types/neurons-table";
-  import { Tag, IconPublicBadge, Tooltip } from "@dfinity/gix-components";
-  import { ENABLE_NEURON_VISIBILITY } from "$lib/stores/feature-flags.store";
+  import { IconPublicBadge, Tag, Tooltip } from "@dfinity/gix-components";
 
   export let rowData: TableNeuron;
 </script>

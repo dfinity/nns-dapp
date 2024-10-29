@@ -9,8 +9,8 @@
   import { i18n } from "$lib/stores/i18n";
   import { neuronsTableOrderStore } from "$lib/stores/neurons-table.store";
   import type {
-    TableNeuron,
     NeuronsTableColumn,
+    TableNeuron,
   } from "$lib/types/neurons-table";
   import {
     comparatorsByColumnId,

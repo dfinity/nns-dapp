@@ -8,12 +8,12 @@
   import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
   import {
     followeesByTopic,
-    getTopicTitle,
     getTopicSubtitle,
+    getTopicTitle,
   } from "$lib/utils/neuron.utils";
   import FollowTopicSection from "./FollowTopicSection.svelte";
   import { IconClose, Value } from "@dfinity/gix-components";
-  import type { NeuronId, Topic, NeuronInfo } from "@dfinity/nns";
+  import type { NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
 
   export let topic: Topic;
   export let neuron: NeuronInfo;
