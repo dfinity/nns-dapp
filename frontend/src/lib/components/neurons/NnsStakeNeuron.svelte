@@ -81,6 +81,8 @@
   on:submit|preventDefault={createNeuron}
   data-tid="nns-stake-neuron-component"
 >
+  <p class="description">{$i18n.neurons.icp_will_be_locked}</p>
+
   <TransactionFromAccount
     bind:selectedAccount={account}
     canSelectSource={true}

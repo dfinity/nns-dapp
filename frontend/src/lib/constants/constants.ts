@@ -11,6 +11,7 @@ export const MINUTES_IN_HOUR = 60;
 export const HOURS_IN_DAY = 24;
 export const SECONDS_IN_HOUR = SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
 export const SECONDS_IN_DAY = SECONDS_IN_HOUR * HOURS_IN_DAY;
+export const SECONDS_IN_7_DAYS = 7 * SECONDS_IN_DAY;
 // Taking into account 1/4 of leap year
 export const SECONDS_IN_YEAR = ((4 * 365 + 1) * SECONDS_IN_DAY) / 4;
 export const SECONDS_IN_HALF_YEAR = SECONDS_IN_YEAR / 2;

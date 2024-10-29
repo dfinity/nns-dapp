@@ -263,6 +263,7 @@ interface I18nNeurons {
   title: string;
   text: string;
   stake_token: string;
+  icp_will_be_locked: string;
   merge_neurons: string;
   merge_neurons_modal_title: string;
   merge_neurons_modal_confirm: string;

@@ -119,7 +119,13 @@
       close();
     }
   }
+
   let delayInSeconds = 0;
+
+  const updateDelayFromNeuron = (neuron: NeuronInfo | undefined) => {
+    delayInSeconds = Number(neuron?.dissolveDelaySeconds ?? 0);
+  };
+  $: updateDelayFromNeuron(newNeuron);
 
   // If source account is a hardware wallet, ask user to add a hotkey
   const extendWizardSteps = async () => {
