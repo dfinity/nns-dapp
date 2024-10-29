@@ -161,7 +161,7 @@ describe("Wallet", () => {
   });
 
   describe("sns context", () => {
-    beforeEach(() => {
+    beforeAll(() => {
       page.mock({
         data: { universe: mockSnsFullProject.rootCanisterId.toText() },
         routeId: AppPath.Wallet,
