@@ -382,6 +382,32 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     });
   });
 
+  it("should disable confirm button when no neurons are selected", async () => {
+    neuronsStore.setNeurons({
+      neurons: [publicNeuron1, publicNeuron2],
+      certified: true,
+    });
+    const onNnsSubmit = vi.fn();
+
+    const po = renderComponent({
+      makePublic: false,
+      onNnsSubmit,
+    });
+
+    expect(await po.getConfirmButton().isDisabled()).toBe(true);
+
+    const checkboxPo = po
+      .getControllableNeuronVisibilityRowPo(publicNeuron2.neuronId.toString())
+      .getCheckboxPo();
+    await checkboxPo.click();
+
+    expect(await po.getConfirmButton().isDisabled()).toBe(false);
+
+    await checkboxPo.click();
+
+    expect(await po.getConfirmButton().isDisabled()).toBe(true);
+  });
+
   it("should display both lists descriptions when there are no neurons to list in controllable neurons", async () => {
     neuronsStore.setNeurons({
       neurons: [hotkeyPublicNeuron],
@@ -525,10 +551,16 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
   });
 
   it("should trigger appropriate events on button clicks", async () => {
+    neuronsStore.setNeurons({
+      neurons: [publicNeuron1],
+      certified: true,
+    });
+
     const onNnsSubmit = vi.fn();
     const onNnsCancel = vi.fn();
     const po = renderComponent({
       makePublic: false,
+      defaultSelectedNeuron: publicNeuron1,
       onNnsSubmit,
       onNnsCancel,
     });

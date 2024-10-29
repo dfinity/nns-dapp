@@ -169,7 +169,12 @@
     >
       {$i18n.core.cancel}
     </button>
-    <button type="submit" class="primary" data-tid="confirm-button">
+    <button
+      type="submit"
+      class="primary"
+      data-tid="confirm-button"
+      disabled={selectedNeurons.length === 0}
+    >
       {$i18n.core.confirm}
     </button>
   </div>
