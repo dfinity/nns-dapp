@@ -19,15 +19,15 @@ import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("universes-tokens", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   describe("complete data set", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       vi.spyOn(tokensStore, "subscribe").mockImplementation(
         mockTokensSubscribe(mockUniversesTokens)
       );
-    });
-
-    afterAll(() => {
-      vi.clearAllMocks();
     });
 
     it("should derive Nns token only", () => {
@@ -69,16 +69,12 @@ describe("universes-tokens", () => {
   });
 
   describe("ckBTC empty", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       vi.spyOn(tokensStore, "subscribe").mockImplementation(
         mockTokensSubscribe({
           [OWN_CANISTER_ID.toText()]: NNS_TOKEN,
         })
       );
-    });
-
-    afterAll(() => {
-      vi.clearAllMocks();
     });
 
     it("should derive no ckBTC token", () => {

@@ -17,14 +17,10 @@ describe("SelectUniverseModal", () => {
     mockProjectSubscribe([mockSnsFullProject])
   );
 
-  beforeAll(() => {
+  beforeEach(() => {
     page.mock({
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
     });
-  });
-
-  afterAll(() => {
-    vi.clearAllMocks();
   });
 
   it("should render title", async () => {

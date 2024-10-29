@@ -41,11 +41,10 @@ import { render } from "@testing-library/svelte";
 
 describe("UniverseAccountsBalance", () => {
   beforeEach(() => {
+    vi.clearAllMocks();
     resetSnsProjects();
     icrcAccountsStore.reset();
-  });
 
-  beforeAll(() => {
     page.mock({
       data: { universe: mockSnsCanisterId.toText() },
     });
@@ -57,10 +56,6 @@ describe("UniverseAccountsBalance", () => {
     vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
       mockProjectSubscribe([mockSnsFullProject])
     );
-  });
-
-  afterAll(() => {
-    vi.clearAllMocks();
   });
 
   // Not the same sns canister id to test that the balance is not displayed
@@ -88,10 +83,6 @@ describe("UniverseAccountsBalance", () => {
     vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
       mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
     );
-
-    afterAll(() => {
-      vi.clearAllMocks();
-    });
 
     it("should render a total balance for Nns", () => {
       const { getByTestId } = render(ProjectAccountsBalance, {

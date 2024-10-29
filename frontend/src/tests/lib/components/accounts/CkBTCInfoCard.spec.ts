@@ -22,13 +22,6 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("CkBTCInfoCard", () => {
-  beforeAll(() => {
-    page.mock({
-      data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
-      routeId: AppPath.Wallet,
-    });
-  });
-
   const props = {
     account: mockCkBTCMainAccount,
     minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
@@ -47,6 +40,11 @@ describe("CkBTCInfoCard", () => {
     vi.clearAllMocks();
     bitcoinAddressStore.reset();
     ckBTCInfoStore.reset();
+
+    page.mock({
+      data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
+      routeId: AppPath.Wallet,
+    });
   });
 
   describe("not matching bitcoin address store", () => {

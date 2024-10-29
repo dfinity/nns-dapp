@@ -125,7 +125,7 @@ describe("icp-ledger.services", () => {
 
     let spySyncAccounts;
 
-    beforeAll(() => {
+    beforeEach(() => {
       vi.spyOn(NNSDappCanister, "create").mockImplementation(
         (): NNSDappCanister => mockNNSDappCanister
       );
@@ -267,7 +267,7 @@ describe("icp-ledger.services", () => {
   describe("show info on ledger", () => {
     let spy;
 
-    beforeAll(() => {
+    beforeEach(() => {
       vi.spyOn(LedgerIdentity, "create").mockImplementation(
         async (): Promise<LedgerIdentity> => mockLedgerIdentity
       );
@@ -308,14 +308,14 @@ describe("icp-ledger.services", () => {
   describe("query neurons", () => {
     const mockNeurons = [mockNeuron];
 
-    beforeAll(() => {
+    beforeEach(() => {
       vi.spyOn(api, "queryNeurons").mockImplementation(() =>
         Promise.resolve(mockNeurons)
       );
     });
 
     describe("success", () => {
-      beforeAll(() => {
+      beforeEach(() => {
         vi.spyOn(LedgerIdentity, "create").mockImplementation(
           async (): Promise<LedgerIdentity> => mockLedgerIdentity
         );
@@ -336,7 +336,7 @@ describe("icp-ledger.services", () => {
     });
 
     describe("error", () => {
-      beforeAll(() => {
+      beforeEach(() => {
         vi.spyOn(LedgerIdentity, "create").mockImplementation(
           async (): Promise<LedgerIdentity> => {
             throw new LedgerErrorKey({ message: "error__ledger.please_open" });

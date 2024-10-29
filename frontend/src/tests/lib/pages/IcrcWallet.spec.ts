@@ -116,6 +116,7 @@ describe("IcrcWallet", () => {
     balancesObserverCallback = undefined;
     vi.clearAllMocks();
     vi.clearAllTimers();
+    vi.useRealTimers();
     vi.restoreAllMocks();
     tokensStore.reset();
     overrideFeatureFlagsStore.reset();
@@ -260,10 +261,6 @@ describe("IcrcWallet", () => {
             : mockCkETHMainAccount.balanceUlps
         );
       });
-    });
-
-    afterAll(() => {
-      vi.useRealTimers();
     });
 
     it("should render Icrc token name", async () => {

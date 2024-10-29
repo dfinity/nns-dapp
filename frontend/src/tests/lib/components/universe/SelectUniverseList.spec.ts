@@ -39,14 +39,12 @@ describe("SelectUniverseList", () => {
   );
 
   beforeEach(() => {
+    vi.clearAllMocks();
+
     page.mock({
       routeId: AppPath.Accounts,
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
     });
-  });
-
-  afterAll(() => {
-    vi.clearAllMocks();
   });
 
   it("should render universe cards", () => {

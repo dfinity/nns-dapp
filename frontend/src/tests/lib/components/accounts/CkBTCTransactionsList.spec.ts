@@ -66,10 +66,6 @@ describe("CkBTCTransactionList", () => {
     vi.useFakeTimers().setSystemTime(new Date());
   });
 
-  afterAll(() => {
-    vi.useRealTimers();
-  });
-
   it("should render burn without memo as BTC Sent to BTC Network", async () => {
     const errorLog = [];
     vi.spyOn(console, "error").mockImplementation((msg) => {

@@ -115,6 +115,7 @@ describe("CkBTCWallet", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.clearAllTimers();
+    vi.useRealTimers();
     tokensStore.reset();
     ckBTCInfoStore.reset();
     bitcoinAddressStore.reset();
@@ -285,10 +286,6 @@ describe("CkBTCWallet", () => {
             : mockCkBTCMainAccount.balanceUlps
         );
       });
-    });
-
-    afterAll(() => {
-      vi.useRealTimers();
     });
 
     it("should render ckTESTBTC name", async () => {

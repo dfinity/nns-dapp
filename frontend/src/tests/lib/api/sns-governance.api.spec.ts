@@ -92,9 +92,7 @@ describe("sns-api", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-  });
 
-  beforeAll(() => {
     vi.spyOn(LedgerCanister, "create").mockImplementation(
       () => ledgerCanisterMock
     );

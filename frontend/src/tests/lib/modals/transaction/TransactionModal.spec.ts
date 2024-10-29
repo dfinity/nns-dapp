@@ -70,11 +70,8 @@ describe("TransactionModal", () => {
       },
     });
 
-  beforeAll(() => {
-    resetIdentity();
-  });
-
   beforeEach(() => {
+    resetIdentity();
     resetSnsProjects();
     icrcAccountsStore.reset();
 

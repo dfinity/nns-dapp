@@ -11,14 +11,9 @@ import WalletContextTest from "./WalletContextTest.svelte";
 vi.mock("$lib/proxy/icp-ledger.services.proxy");
 
 describe("HardwareWalletListNeuronsButton", () => {
-  afterAll(() => {
-    vi.clearAllMocks();
-    vi.restoreAllMocks();
-  });
-
   let spy;
 
-  beforeAll(() => {
+  beforeEach(() => {
     spy = (listNeuronsHardwareWalletProxy as Mock).mockImplementation(
       async () => ({
         neurons: [mockNeuron],

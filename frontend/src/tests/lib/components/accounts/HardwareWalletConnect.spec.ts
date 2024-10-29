@@ -16,7 +16,7 @@ vi.mock("$lib/proxy/icp-ledger.services.proxy");
 describe("HardwareWalletConnect", () => {
   const props = { testComponent: HardwareWalletConnect };
 
-  beforeAll(() => {
+  beforeEach(() => {
     addAccountStoreMock.set({
       type: "hardwareWallet",
       hardwareWalletName: undefined,
@@ -33,16 +33,6 @@ describe("HardwareWalletConnect", () => {
     (registerHardwareWalletProxy as Mock).mockImplementation(async () => {
       // Do nothing test
     });
-  });
-
-  afterAll(() => {
-    addAccountStoreMock.set({
-      type: undefined,
-      hardwareWalletName: undefined,
-    });
-
-    vi.clearAllMocks();
-    vi.restoreAllMocks();
   });
 
   it("should render a connect action", () => {

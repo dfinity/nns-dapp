@@ -171,7 +171,7 @@ describe("ProjectCard", () => {
   });
 
   describe("not signed in", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       setNoIdentity();
     });
 
