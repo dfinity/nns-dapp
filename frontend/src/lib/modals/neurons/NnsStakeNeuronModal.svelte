@@ -125,6 +125,8 @@
   const updateDelayFromNeuron = (neuron: NeuronInfo | undefined) => {
     delayInSeconds = Number(neuron?.dissolveDelaySeconds ?? 0);
   };
+  // If we update delayInSeconds directly, then it doesn't get updated by the
+  // binding from SetNnsDissolveDelay.
   $: updateDelayFromNeuron(newNeuron);
 
   // If source account is a hardware wallet, ask user to add a hotkey
