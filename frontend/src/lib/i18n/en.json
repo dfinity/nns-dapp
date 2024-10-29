@@ -704,6 +704,7 @@
     "created": "Date Created",
     "neuron_state_tooltip": "Your neuron can be locked, unlocked or dissolving. In a locked state, it is accruing age bonus, while its dissolve delay stays constant. If the neuron is in a dissolving state, its age bonus is set to 0, while dissolve delay decreases with time. After dissolve delay reaches 0, the neuron is unlocked, and $token held in it can be sent to any $token account.",
     "dissolve_delay_tooltip": "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and $token to be available again. If your neuron is dissolving, your $token will be available in $duration.",
+    "neuron_stake_refreshed": "Your neuron's stake was refreshed successfully.",
     "change_neuron_make_neuron_public": "Make Neuron Public",
     "change_neuron_make_neuron_private": "Make Neuron Private",
     "change_neuron_make_neuron_public_confirmation": "Are you sure you want to make your neuron public?",

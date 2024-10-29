@@ -2053,6 +2053,8 @@ describe("neurons-services", () => {
       expect(spyQueryAccountBalance).toBeCalledTimes(0);
       expect(spyClaimOrRefresh).toBeCalledTimes(0);
 
+      expect(get(toastsStore)).toEqual([]);
+
       await refreshNeuronIfNeeded(neuron);
 
       expect(spyQueryAccountBalance).toBeCalledTimes(1);
@@ -2066,6 +2068,13 @@ describe("neurons-services", () => {
         identity: mockIdentity,
         neuronId: neuronId,
       });
+
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: "Your neuron's stake was refreshed successfully.",
+        },
+      ]);
     });
 
     it("should not refresh the neuron if its account balance does match", async () => {
