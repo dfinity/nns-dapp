@@ -23,7 +23,7 @@
   import { IconDots, Island, Spinner, Tag } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
-  import type { Writable } from "svelte/store";
+  import { get, type Writable } from "svelte/store";
   import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import WalletMorePopover from "./WalletMorePopover.svelte";
@@ -84,7 +84,7 @@
     setSelectedAccount();
 
     // We found an account in store for the provided account identifier, all data are set
-    if (nonNullish($selectedAccountStore.account)) {
+    if (nonNullish(get(selectedAccountStore).account)) {
       return { state: "loaded" };
     }
 

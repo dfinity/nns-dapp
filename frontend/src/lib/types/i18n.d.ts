@@ -75,6 +75,7 @@ interface I18nError {
   canister_not_found: string;
   fail: string;
   dummy_proposal: string;
+  unlock_neuron: string;
   add_maturity: string;
   unknown: string;
   amount_not_valid: string;
@@ -671,6 +672,7 @@ interface I18nNeuron_detail {
   join_community_fund_success: string;
   leave_community_fund_success: string;
   dummy_proposal_success: string;
+  unlock_neuron_success: string;
   add_maturity_success: string;
   following_title: string;
   following_description: string;
@@ -745,6 +747,7 @@ interface I18nNeuron_detail {
   uncontrollable_neurons_description: string;
   hardware_wallet: string;
   retrieving_data: string;
+  public_visibility_action_hw_tooltip: string;
 }
 
 interface I18nSns_launchpad {
@@ -1155,6 +1158,7 @@ interface I18nImport_token {
   add_index_description: string;
   failed_tooltip: string;
   maximum_reached_tooltip: string;
+  doc_link_label: string;
 }
 
 interface I18nNeuron_state {

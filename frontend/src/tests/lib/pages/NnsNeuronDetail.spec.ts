@@ -1,9 +1,12 @@
+import * as governanceApi from "$lib/api/governance.api";
+import * as icpLedgerApi from "$lib/api/icp-ledger.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
+import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
 import { NnsNeuronDetailPo } from "$tests/page-objects/NnsNeuronDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -23,9 +26,12 @@ describe("NeuronDetail", () => {
   fakeGovernanceApi.install();
 
   const neuronId = 314n;
+  const neuronStake = 300_000_000n;
   const latestRewardEventTimestamp = Math.floor(
     new Date("1992-05-22T21:00:00").getTime() / 1000
   );
+  const spyQueryAccountBalance = vi.spyOn(icpLedgerApi, "queryAccountBalance");
+
   const renderComponent = async (neuronId: string) => {
     const { container } = render(NnsNeuronDetail, {
       props: {
@@ -39,15 +45,18 @@ describe("NeuronDetail", () => {
   };
 
   beforeEach(() => {
+    vi.clearAllMocks();
     resetIdentity();
     neuronsStore.reset();
     voteRegistrationStore.reset();
-    fakeGovernanceApi.addNeuronWith({ neuronId });
+    checkedNeuronSubaccountsStore.reset();
+    fakeGovernanceApi.addNeuronWith({ neuronId, stake: neuronStake });
     fakeGovernanceApi.addNeuronWith({ neuronId: 1234n });
     fakeGovernanceApi.setLatestRewardEvent({
       rounds_since_last_distribution: [3n] as [bigint],
       actual_timestamp_seconds: BigInt(latestRewardEventTimestamp),
     });
+    spyQueryAccountBalance.mockResolvedValue(neuronStake);
   });
 
   it("renders new sections", async () => {
@@ -119,6 +128,51 @@ describe("NeuronDetail", () => {
 
     expect(await po.getAdvancedSectionPo().lastRewardsDistribution()).toEqual(
       "May 19, 1992"
+    );
+  });
+
+  it("should not refresh neuron if not needed", async () => {
+    expect(spyQueryAccountBalance).toBeCalledTimes(0);
+
+    await renderComponent(`${neuronId}`);
+    await runResolvedPromises();
+
+    expect(spyQueryAccountBalance).toBeCalledTimes(1);
+    expect(governanceApi.claimOrRefreshNeuron).toBeCalledTimes(0);
+
+    const newNeuron = fakeGovernanceApi.getNeuron({
+      identity: mockIdentity,
+      neuronId,
+    });
+    expect(newNeuron.fullNeuron.cachedNeuronStake).toEqual(neuronStake);
+  });
+
+  it("should refresh neuron if needed", async () => {
+    const stakeIncrease = 100_000_000n;
+    spyQueryAccountBalance.mockResolvedValue(neuronStake + stakeIncrease);
+
+    expect(spyQueryAccountBalance).toBeCalledTimes(0);
+
+    const oldNeuron = fakeGovernanceApi.getNeuron({
+      identity: mockIdentity,
+      neuronId,
+    });
+    expect(oldNeuron.fullNeuron.cachedNeuronStake).toEqual(neuronStake);
+
+    await renderComponent(`${neuronId}`);
+    await runResolvedPromises();
+
+    // The balance is queried once by the service and once by the fake
+    // governance API.
+    expect(spyQueryAccountBalance).toBeCalledTimes(2);
+    expect(governanceApi.claimOrRefreshNeuron).toBeCalledTimes(1);
+
+    const newNeuron = fakeGovernanceApi.getNeuron({
+      identity: mockIdentity,
+      neuronId,
+    });
+    expect(newNeuron.fullNeuron.cachedNeuronStake).toEqual(
+      neuronStake + stakeIncrease
     );
   });
 });

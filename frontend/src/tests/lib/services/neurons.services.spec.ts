@@ -1,5 +1,6 @@
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
+import * as icpLedgerApi from "$lib/api/icp-ledger.api";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import { MIN_NEURON_STAKE } from "$lib/constants/neurons.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
@@ -12,6 +13,7 @@ import {
 import * as services from "$lib/services/neurons.services";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
 import * as busyStore from "$lib/stores/busy.store";
+import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
@@ -66,6 +68,7 @@ const {
   reloadNeuron,
   topUpNeuron,
   changeNeuronVisibility,
+  refreshNeuronIfNeeded,
 } = services;
 
 const expectToastError = (contained: string) =>
@@ -161,6 +164,7 @@ describe("neurons-services", () => {
   const spySetFollowees = vi.spyOn(api, "setFollowees");
   const spyClaimOrRefresh = vi.spyOn(api, "claimOrRefreshNeuron");
   const spyChangeNeuronVisibility = vi.spyOn(api, "changeNeuronVisibility");
+  const spyQueryAccountBalance = vi.spyOn(icpLedgerApi, "queryAccountBalance");
   let spyConsoleError;
 
   beforeEach(() => {
@@ -174,6 +178,7 @@ describe("neurons-services", () => {
     toastsStore.reset();
     resetNeuronsApiService();
     overrideFeatureFlagsStore.reset();
+    checkedNeuronSubaccountsStore.reset();
 
     spyStakeNeuron.mockImplementation(() =>
       Promise.resolve(mockNeuron.neuronId)
@@ -2022,6 +2027,113 @@ describe("neurons-services", () => {
       expect(transferICP).not.toBeCalled();
       expect(spyClaimOrRefresh).not.toBeCalled();
       expect(spyGetNeuron).not.toBeCalled();
+    });
+  });
+
+  describe("refreshNeuronIfNeeded", () => {
+    it("should refresh the neuron if its account balance doesn't match", async () => {
+      const oldStake = 1_000_000_000n;
+      const newStake = 2_000_000_000n;
+      const neuronId = 31n;
+      const neuronAccountIdentifier = "23847628347623847623847269";
+
+      const neuron = {
+        ...mockNeuron,
+        neuronId,
+        stake: oldStake,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: oldStake,
+          accountIdentifier: neuronAccountIdentifier,
+        },
+      };
+
+      spyQueryAccountBalance.mockResolvedValue(newStake);
+
+      expect(spyQueryAccountBalance).toBeCalledTimes(0);
+      expect(spyClaimOrRefresh).toBeCalledTimes(0);
+
+      await refreshNeuronIfNeeded(neuron);
+
+      expect(spyQueryAccountBalance).toBeCalledTimes(1);
+      expect(spyQueryAccountBalance).toBeCalledWith({
+        icpAccountIdentifier: neuronAccountIdentifier,
+        certified: false,
+        identity: new AnonymousIdentity(),
+      });
+      expect(spyClaimOrRefresh).toBeCalledTimes(1);
+      expect(spyClaimOrRefresh).toBeCalledWith({
+        identity: mockIdentity,
+        neuronId: neuronId,
+      });
+    });
+
+    it("should not refresh the neuron if its account balance does match", async () => {
+      const stake = 1_000_000_000n;
+      const neuronId = 31n;
+      const neuronAccountIdentifier = "23847628347623847623847269";
+
+      const neuron = {
+        ...mockNeuron,
+        neuronId,
+        stake,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: stake,
+          accountIdentifier: neuronAccountIdentifier,
+        },
+      };
+
+      spyQueryAccountBalance.mockResolvedValue(stake);
+
+      expect(spyQueryAccountBalance).toBeCalledTimes(0);
+      expect(spyClaimOrRefresh).toBeCalledTimes(0);
+
+      await refreshNeuronIfNeeded(neuron);
+
+      expect(spyQueryAccountBalance).toBeCalledTimes(1);
+      expect(spyQueryAccountBalance).toBeCalledWith({
+        icpAccountIdentifier: neuronAccountIdentifier,
+        certified: false,
+        identity: new AnonymousIdentity(),
+      });
+      expect(spyClaimOrRefresh).toBeCalledTimes(0);
+    });
+
+    it("should query neuron's balance only once per session", async () => {
+      const stake = 1_000_000_000n;
+      const neuronId = 31n;
+      const neuronAccountIdentifier = "23847628347623847623847269";
+
+      const neuron = {
+        ...mockNeuron,
+        neuronId,
+        stake,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: stake,
+          accountIdentifier: neuronAccountIdentifier,
+        },
+      };
+
+      spyQueryAccountBalance.mockResolvedValue(stake);
+
+      expect(spyQueryAccountBalance).toBeCalledTimes(0);
+      expect(spyClaimOrRefresh).toBeCalledTimes(0);
+
+      await refreshNeuronIfNeeded(neuron);
+
+      expect(spyQueryAccountBalance).toBeCalledTimes(1);
+      expect(spyQueryAccountBalance).toBeCalledWith({
+        icpAccountIdentifier: neuronAccountIdentifier,
+        certified: false,
+        identity: new AnonymousIdentity(),
+      });
+      expect(spyClaimOrRefresh).toBeCalledTimes(0);
+
+      await refreshNeuronIfNeeded(neuron);
+      expect(spyQueryAccountBalance).toBeCalledTimes(1);
+      expect(spyClaimOrRefresh).toBeCalledTimes(0);
     });
   });
 
