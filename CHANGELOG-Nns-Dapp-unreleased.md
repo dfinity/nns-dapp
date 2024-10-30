@@ -18,6 +18,7 @@ proposal is successful, the changes it released will be moved from this file to
 * A link to the imported tokens documentation page.
 * Refresh NNS neurons from neuron details page if needed, instead of from the nns-dapp canister.
 * Inform the user in the staking modal that the minimum dissolve delay for NNS neurons is 7 days.
+* Support public/private neuron visibility.
 
 #### Changed
 
