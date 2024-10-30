@@ -305,28 +305,22 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
 
     await po.getApplyToAllCheckbox().click();
 
-    expect(
+    const isControlledChecked = async (neuron: NeuronInfo) =>
       await po
-        .getControllableNeuronVisibilityRowPo(publicNeuron2.neuronId.toString())
+        .getControllableNeuronVisibilityRowPo(neuron.neuronId.toString())
         .getCheckboxPo()
-        .isChecked()
-    ).toBe(true);
-    expect(
+        .isChecked();
+
+    const isUncontrolledChecked = async (neuron: NeuronInfo) =>
       await po
-        .getControllableNeuronVisibilityRowPo(
-          publicSeedNeuron.neuronId.toString()
-        )
+        .getUncontrollableNeuronVisibilityRowPo(neuron.neuronId.toString())
         .getCheckboxPo()
-        .isChecked()
-    ).toBe(true);
-    expect(
-      await po
-        .getUncontrollableNeuronVisibilityRowPo(
-          hwPublicNeuron.neuronId.toString()
-        )
-        .getCheckboxPo()
-        .isChecked()
-    ).toBe(false);
+        .isChecked();
+
+    expect(await isControlledChecked(publicNeuron1)).toBe(true);
+    expect(await isControlledChecked(publicNeuron2)).toBe(true);
+    expect(await isControlledChecked(publicSeedNeuron)).toBe(true);
+    expect(await isUncontrolledChecked(hwPublicNeuron)).toBe(false);
 
     const controllableNeuronIds = await po.getControllableNeuronIds();
     const uncontrollableNeuronIds = await po.getUncontrollableNeuronIds();
@@ -348,6 +342,69 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
         selectedNeurons: [publicNeuron1, publicNeuron2, publicSeedNeuron],
       },
     });
+  });
+
+  it("should deselect all neurons when 'Apply to all' is clicked when all neurons are select", async () => {
+    neuronsStore.setNeurons({
+      neurons: [publicNeuron1, publicNeuron2, publicSeedNeuron],
+      certified: true,
+    });
+    const onNnsSubmit = vi.fn();
+
+    const po = renderComponent({
+      makePublic: false,
+      onNnsSubmit,
+    });
+
+    await po.getApplyToAllCheckbox().click();
+
+    const isChecked = async (neuron: NeuronInfo) =>
+      await po
+        .getControllableNeuronVisibilityRowPo(neuron.neuronId.toString())
+        .getCheckboxPo()
+        .isChecked();
+
+    expect(await isChecked(publicNeuron1)).toBe(true);
+    expect(await isChecked(publicNeuron2)).toBe(true);
+    expect(await isChecked(publicSeedNeuron)).toBe(true);
+
+    await po.getApplyToAllCheckbox().click();
+
+    expect(await isChecked(publicNeuron1)).toBe(false);
+    expect(await isChecked(publicNeuron2)).toBe(false);
+    expect(await isChecked(publicSeedNeuron)).toBe(false);
+  });
+
+  it("should keep only the default neuron selected when 'Apply to all' is clicked when all neurons are select", async () => {
+    neuronsStore.setNeurons({
+      neurons: [publicNeuron1, publicNeuron2, publicSeedNeuron],
+      certified: true,
+    });
+    const onNnsSubmit = vi.fn();
+
+    const po = renderComponent({
+      defaultSelectedNeuron: publicNeuron2,
+      makePublic: false,
+      onNnsSubmit,
+    });
+
+    await po.getApplyToAllCheckbox().click();
+
+    const isChecked = async (neuron: NeuronInfo) =>
+      await po
+        .getControllableNeuronVisibilityRowPo(neuron.neuronId.toString())
+        .getCheckboxPo()
+        .isChecked();
+
+    expect(await isChecked(publicNeuron1)).toBe(true);
+    expect(await isChecked(publicNeuron2)).toBe(true);
+    expect(await isChecked(publicSeedNeuron)).toBe(true);
+
+    await po.getApplyToAllCheckbox().click();
+
+    expect(await isChecked(publicNeuron1)).toBe(false);
+    expect(await isChecked(publicNeuron2)).toBe(true);
+    expect(await isChecked(publicSeedNeuron)).toBe(false);
   });
 
   it("should call nnsSubmit with selected neurons correctly when deselecting a neuron after 'Apply to all'", async () => {

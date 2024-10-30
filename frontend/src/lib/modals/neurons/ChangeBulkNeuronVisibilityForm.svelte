@@ -80,7 +80,9 @@
     if (!applyToAllNeurons) {
       selectedNeurons = [...controllableNeurons];
     } else {
-      selectedNeurons = [];
+      selectedNeurons = nonNullish(defaultSelectedNeuron)
+        ? [defaultSelectedNeuron]
+        : [];
     }
     updateApplyToAllNeuronsCheckState();
   }
