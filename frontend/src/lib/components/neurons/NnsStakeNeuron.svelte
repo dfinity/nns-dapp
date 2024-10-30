@@ -102,7 +102,6 @@
     <Separator spacing="small" />
 
     <Checkbox
-      preventDefault
       testId="as-public-neuron-checkbox"
       inputId="as-public-neuron-checkbox"
       checked={asPublicNeuron}
