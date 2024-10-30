@@ -9,6 +9,10 @@ export class ToastsPo extends BasePageObject {
     return new ToastsPo(element.byTestId(ToastsPo.TID));
   }
 
+  getToastPo(): ToastPo {
+    return ToastPo.under(this.root);
+  }
+
   getToastPos(): Promise<ToastPo[]> {
     return ToastPo.allUnder(this.root);
   }

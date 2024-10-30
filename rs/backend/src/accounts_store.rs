@@ -53,6 +53,10 @@ pub struct AccountsStore {
     // pending_transactions: HashMap<(from, to), (TransactionType, timestamp_ms_since_epoch)>
     pending_transactions: HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
 
+    // TODO: Remove neuron_accounts once not topping up neurons has been
+    //       released for some time. Removing this field will have to be done in
+    //       multiple steps because it is stored in stable memory during
+    //       upgrades.
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
     block_height_synced_up_to: Option<BlockIndex>,
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
@@ -249,7 +253,6 @@ pub enum TransactionType {
     TransferFrom,
     StakeNeuron,
     StakeNeuronNotification,
-    TopUpNeuron,
     CreateCanister,
     TopUpCanister(CanisterId),
     ParticipateSwap(CanisterId),
@@ -588,7 +591,7 @@ impl AccountsStore {
                     if let Some(principal) = self.try_get_principal(&from) {
                         let canister_ids: Vec<CanisterId> =
                             self.get_canisters(principal).iter().map(|c| c.canister_id).collect();
-                        let transaction_type = self.get_transaction_type(
+                        let transaction_type = Self::get_transaction_type(
                             from,
                             to,
                             memo,
@@ -598,12 +601,6 @@ impl AccountsStore {
                         );
                         self.process_transaction_type(transaction_type, principal, from, to, memo, block_height);
                     }
-                } else if let Some(neuron_details) = self.neuron_accounts.get(&to) {
-                    // Handle the case where people top up their neuron from an external account
-                    self.multi_part_transactions_processor.push(
-                        block_height,
-                        MultiPartTransactionToBeProcessed::TopUpNeuron(neuron_details.principal, neuron_details.memo),
-                    );
                 }
             }
         }
@@ -814,10 +811,6 @@ impl AccountsStore {
         self.neuron_accounts.get_mut(&account_identifier).unwrap_or_else(|| panic!("Failed to mark neuron created for account {account_identifier} as the account has no neuron_accounts entry.")).neuron_id = Some(neuron_id);
     }
 
-    pub fn mark_neuron_topped_up(&mut self) {
-        self.neurons_topped_up_count += 1;
-    }
-
     pub fn enqueue_multi_part_transaction(
         &mut self,
         block_height: BlockIndex,
@@ -920,7 +913,6 @@ impl AccountsStore {
 
     #[allow(clippy::too_many_arguments)]
     fn get_transaction_type(
-        &self,
         from: AccountIdentifier,
         to: AccountIdentifier,
         memo: Memo,
@@ -932,8 +924,6 @@ impl AccountsStore {
         // use the default value passed when the function is called
         if from == to {
             default_transaction_type
-        } else if self.neuron_accounts.contains_key(&to) {
-            TransactionType::TopUpNeuron
         } else if memo.0 > 0 {
             if Self::is_create_canister_transaction(memo, &to, principal) {
                 TransactionType::CreateCanister
@@ -1037,15 +1027,6 @@ impl AccountsStore {
                     block_height,
                     MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo),
                 );
-            }
-            TransactionType::TopUpNeuron => {
-                if let Some(neuron_account) = self.neuron_accounts.get(&to) {
-                    // We need to use the memo from the original stake neuron transaction
-                    self.multi_part_transactions_processor.push(
-                        block_height,
-                        MultiPartTransactionToBeProcessed::TopUpNeuron(neuron_account.principal, neuron_account.memo),
-                    );
-                }
             }
             TransactionType::CreateCanister => {
                 self.multi_part_transactions_processor.push(
