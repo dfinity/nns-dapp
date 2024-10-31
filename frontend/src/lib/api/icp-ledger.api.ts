@@ -43,49 +43,53 @@ export const sendICP = async ({
   const { canister } = await ledgerCanister({ identity });
   const durations: string[] = [];
 
-  let startTime = Date.now();
-  const duration_in_minutes = 60;
-  const duration_in_ms =  duration_in_minutes * 60 * 1000;
-  while (Date.now() - startTime < duration_in_ms) {
-    let start = Date.now();
-    const response = await canister.transfer({
-    to: AccountIdentifier.fromHex(to),
-    amount,
-    fromSubAccount,
-    memo,
-    createdAt: createdAt ?? nowInBigIntNanoSeconds(),
-    fee,
-  });
-    let end = Date.now();
-    let duration_ms = end - start;
+  let startTime = performance.now();
+  const duration_in_minutes = 5;
+  const duration_in_ms = duration_in_minutes * 60 * 1000;
+  while (performance.now() - startTime < duration_in_ms) {
+    try {
+      let start = performance.now();
+      const response = await canister.transfer({
+        to: AccountIdentifier.fromHex(to),
+        amount,
+        fromSubAccount,
+        memo,
+        createdAt: createdAt ?? nowInBigIntNanoSeconds(),
+        fee,
+      });
+      let end = performance.now();
+      let duration_ms = end - start;
+      // Collect the duration data
+      durations.push(`${duration_ms}\n`);
+      console.log(`${duration_ms}`);
+    } catch (e) {
+      console.error("Retrying after error");
+      // console.error(e);
+    }
+  }
 
-    // Collect the duration data
-    durations.push(`${duration_ms}\n`);
-    console.log(`${duration_ms}`);
-  };
-
-
-  
   const now = new Date();
   // Format the date and time as 'YYYY-MM-DD_HH-MM-SS'
-  const formattedDateTime = now.toISOString().replace(/:\s*/g, "-").replace("T", "_").split(".")[0];
+  const formattedDateTime = now
+    .toISOString()
+    .replace(/:\s*/g, "-")
+    .replace("T", "_")
+    .split(".")[0];
   // Append the formatted date and time to the filename
   const filename = `${formattedDateTime}.txt`;
 
   // Convert the durations array to a Blob
-  const blob = new Blob(durations, { type: 'text/plain' });
+  const blob = new Blob(durations, { type: "text/plain" });
   const url = window.URL.createObjectURL(blob);
 
   // Create an anchor element and trigger a download
-  const a = document.createElement('a');
+  const a = document.createElement("a");
   a.href = url;
   a.download = filename;
   document.body.appendChild(a); // Required for Firefox
   a.click();
   window.URL.revokeObjectURL(url);
   a.remove();
-
-
 
   let start = Date.now();
   const response = await canister.transfer({
