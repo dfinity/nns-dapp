@@ -12,7 +12,6 @@ import type {
   SnsProposalId,
   SnsVote,
 } from "@dfinity/sns";
-import { isNullish } from "@dfinity/utils";
 import { wrapper } from "./sns-wrapper.api";
 
 export const querySnsNeurons = async ({
@@ -248,27 +247,27 @@ export const stopDissolving = async ({
   logWithTimestamp(`Stop dissolving sns neuron complete.`);
 };
 
-export const setDissolveDelay = async ({
+export const increaseDissolveDelay = async ({
   identity,
   rootCanisterId,
   neuronId,
-  dissolveTimestampSeconds,
+  additionalDissolveDelaySeconds,
 }: {
   identity: Identity;
   rootCanisterId: Principal;
   neuronId: SnsNeuronId;
-  dissolveTimestampSeconds: number;
+  additionalDissolveDelaySeconds: number;
 }): Promise<void> => {
   logWithTimestamp(`Increase sns dissolve delay call...`);
 
-  const { setDissolveTimestamp } = await wrapper({
+  const { increaseDissolveDelay } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
   });
-  await setDissolveTimestamp({
+  await increaseDissolveDelay({
     neuronId,
-    dissolveTimestampSeconds: BigInt(dissolveTimestampSeconds),
+    additionalDissolveDelaySeconds: additionalDissolveDelaySeconds,
   });
 
   logWithTimestamp(`Increase sns dissolve delay complete.`);
@@ -555,11 +554,6 @@ export const queryProposals = async ({
   });
 
   const response = await listProposals(params);
-
-  if (isNullish(response.include_ballots_by_caller)) {
-    // Normalise the response for all canister versions, since the old versions do not return this field.
-    response.include_ballots_by_caller = [false];
-  }
 
   logWithTimestamp(`Getting proposals call complete.`);
   return response;

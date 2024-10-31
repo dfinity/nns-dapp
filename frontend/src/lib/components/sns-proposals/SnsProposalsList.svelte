@@ -1,7 +1,6 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ActionableProposalsEmpty from "$lib/components/proposals/ActionableProposalsEmpty.svelte";
-  import ActionableProposalsNotSupported from "$lib/components/proposals/ActionableProposalsNotSupported.svelte";
   import ActionableProposalsSignIn from "$lib/components/proposals/ActionableProposalsSignIn.svelte";
   import SnsProposalCard from "$lib/components/sns-proposals/SnsProposalCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -16,9 +15,7 @@
   import { fromNullable, isNullish } from "@dfinity/utils";
   import { fade } from "svelte/transition";
 
-  export let snsName: string;
   export let proposals: SnsProposalActionableData[] | undefined;
-  export let includeBallots: boolean;
   export let actionableSelected: boolean;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
   export let disableInfiniteScroll = false;
@@ -59,8 +56,6 @@
         <ActionableProposalsSignIn />
       {:else if isNullish(proposals)}
         <LoadingProposals />
-      {:else if includeBallots === false}
-        <ActionableProposalsNotSupported {snsName} />
       {:else if proposals.length === 0}
         <ActionableProposalsEmpty />
       {:else}

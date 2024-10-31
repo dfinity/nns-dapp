@@ -1,9 +1,5 @@
 import NnsAvailableMaturityItemAction from "$lib/components/neuron-detail/NnsAvailableMaturityItemAction.svelte";
-import { authStore } from "$lib/stores/auth.store";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import {
   mockHardwareWalletAccount,
@@ -35,7 +31,7 @@ describe("NnsAvailableMaturityItemAction", () => {
   };
 
   beforeEach(() => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
     resetAccountsForTesting();
   });
 

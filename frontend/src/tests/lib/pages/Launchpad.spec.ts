@@ -4,12 +4,7 @@ import {
 } from "$lib/derived/sns/sns-projects.derived";
 import Launchpad from "$lib/pages/Launchpad.svelte";
 import { loadSnsSwapCommitments } from "$lib/services/sns.services";
-import { authStore } from "$lib/stores/auth.store";
-import {
-  authStoreMock,
-  mockIdentity,
-  mutableMockAuthStoreSubscribe,
-} from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockProjectSubscribe,
@@ -17,7 +12,7 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
-vi.mock("$lib/services/$public/sns.services", () => {
+vi.mock("$lib/services/public/sns.services", () => {
   return {
     loadProposalsSnsCF: vi.fn().mockResolvedValue(Promise.resolve()),
   };
@@ -30,19 +25,13 @@ vi.mock("$lib/services/sns.services", () => {
 });
 
 describe("Launchpad", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   describe("signed in", () => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(
-      mutableMockAuthStoreSubscribe
-    );
-
-    beforeAll(() =>
-      authStoreMock.next({
-        identity: mockIdentity,
-      })
-    );
-
-    afterEach(() => {
-      vi.clearAllMocks();
+    beforeEach(() => {
+      resetIdentity();
     });
 
     it("should render titles", () => {
@@ -101,15 +90,9 @@ describe("Launchpad", () => {
   });
 
   describe("not logged in", () => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(
-      mutableMockAuthStoreSubscribe
-    );
-
-    beforeAll(() =>
-      authStoreMock.next({
-        identity: undefined,
-      })
-    );
+    beforeEach(() => {
+      setNoIdentity();
+    });
     it("should not call loadSnsSwapCommitments", async () => {
       render(Launchpad);
 

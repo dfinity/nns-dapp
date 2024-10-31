@@ -14,15 +14,14 @@ test("Test disburse neuron", async ({ page, context }) => {
   step("Get some ICP");
   await appPo.getIcpTokens(10);
 
-  step("Go to the neurons tab");
-  await appPo.goToNeurons();
+  step("Go to the staking tab");
+  await appPo.goToStaking();
 
   step("Stake a neuron");
   const stake = 3;
   await appPo
-    .getNeuronsPo()
-    .getNnsNeuronsFooterPo()
-    .stakeNeuron({ amount: stake, dissolveDelayDays: 0 });
+    .getStakingPo()
+    .stakeFirstNnsNeuron({ amount: stake, dissolveDelayDays: 0 });
 
   step("Check account balance before disburse");
   await appPo.goToAccounts();
@@ -36,7 +35,7 @@ test("Test disburse neuron", async ({ page, context }) => {
     await icpRowBeforeDisburse.getBalanceNumber();
 
   step("Open the neuron details");
-  await appPo.goToNeurons();
+  await appPo.goToNnsNeurons();
   await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
   const neuronRows = await appPo
     .getNeuronsPo()
@@ -46,8 +45,13 @@ test("Test disburse neuron", async ({ page, context }) => {
   expect(neuronRows).toHaveLength(1);
   neuronRows[0].click();
 
+  step("Unlock the neuron for testing");
+  await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().unlockNeuron();
+
   step("Disburse the neuron");
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().disburseNeuron();
+  // After disburing, the app navigatings to the neurons table.
+  await appPo.getNeuronDetailPo().waitForAbsent();
 
   step("Check account balance after disburse");
   await appPo.goToAccounts();

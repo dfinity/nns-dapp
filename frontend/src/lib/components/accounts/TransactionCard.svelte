@@ -5,8 +5,8 @@
   import Identifier from "$lib/components/ui/Identifier.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type {
-    UiTransaction,
     TransactionIconType,
+    UiTransaction,
   } from "$lib/types/transaction";
   import TransactionIcon from "./TransactionIcon.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
@@ -42,10 +42,10 @@
   $: iconType = isReimbursement
     ? "reimbursed"
     : isFailed
-    ? "failed"
-    : isIncoming
-    ? "received"
-    : "sent";
+      ? "failed"
+      : isIncoming
+        ? "received"
+        : "sent";
 
   let label: string;
   $: label = isIncoming

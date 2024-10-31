@@ -17,7 +17,7 @@
     type SelectCanisterDetailsStore,
   } from "$lib/types/canister-detail.context";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
-  import { busy, Island } from "@dfinity/gix-components";
+  import { Island, busy } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { onMount, setContext } from "svelte";
   import { writable } from "svelte/store";
@@ -82,8 +82,8 @@
     $selectedCanisterStore.controller === false
       ? "error.not_canister_controller"
       : $selectedCanisterStore.controller === undefined && !loadingDetails
-      ? "error.canister_details_not_found"
-      : undefined;
+        ? "error.canister_details_not_found"
+        : undefined;
 
   const reloadDetails = async (canisterId: Principal) => {
     try {

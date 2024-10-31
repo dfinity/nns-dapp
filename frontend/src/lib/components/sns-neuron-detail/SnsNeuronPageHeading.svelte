@@ -14,7 +14,7 @@
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { Tag } from "@dfinity/gix-components";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
-  import { type Token, nonNullish, TokenAmountV2 } from "@dfinity/utils";
+  import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;
@@ -44,7 +44,7 @@
 <PageHeading testId="sns-neuron-page-heading-component">
   <svelte:fragment slot="title">
     {#if nonNullish(amount)}
-      <AmountDisplay {amount} size="huge" singleLine />
+      <AmountDisplay {amount} size="huge" singleLine detailed />
     {/if}
   </svelte:fragment>
   <HeadingSubtitle slot="subtitle" testId="voting-power">

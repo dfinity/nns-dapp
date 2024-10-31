@@ -40,16 +40,13 @@ describe("SelectUniverseNav", () => {
     });
   });
 
-  afterAll(() => {
-    vi.clearAllMocks();
-  });
-
   it("should render select universe component", async () => {
     const po = await renderComponent();
     expect(await po.getSelectUniverseCardPo().isPresent()).toEqual(true);
   });
 
   it("should display actionable proposal count", async () => {
+    const projectName = "Fish tank";
     const votableProposal: ProposalInfo = {
       ...mockProposalInfo,
       id: 0n,
@@ -76,10 +73,14 @@ describe("SelectUniverseNav", () => {
     actionableSnsProposalsStore.set({
       rootCanisterId: mockSnsFullProject.rootCanisterId,
       proposals: [votableSnsProposal1, votableSnsProposal2],
-      includeBallotsByCaller: true,
     });
 
-    setSnsProjects([{ lifecycle: SnsSwapLifecycle.Committed }]);
+    setSnsProjects([
+      {
+        projectName,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
     const po = await renderComponent();
     await runResolvedPromises();
 
@@ -99,7 +100,7 @@ describe("SelectUniverseNav", () => {
     // nns is the second card
     expect(await cardPos[1].getName()).toEqual("Internet Computer");
     expect((await cardPos[1].getActionableProposalCount()).trim()).toEqual("1");
-    expect(await cardPos[2].getName()).toEqual("Catalyze");
+    expect(await cardPos[2].getName()).toEqual(projectName);
     expect((await cardPos[2].getActionableProposalCount()).trim()).toEqual("2");
   });
 });

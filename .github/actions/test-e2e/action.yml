@@ -63,7 +63,7 @@ runs:
       uses: actions/upload-artifact@v4
       if: ${{ failure() }}
       with:
-        name: playwright-failure-results
+        name: playwright-failure-results-${{ inputs.shard_number }}
         path: |
           frontend/playwright-report/*
           frontend/playwright-results/*
@@ -72,9 +72,13 @@ runs:
       shell: bash
       id: check-screenshots
       run: |
-        if ! git diff --quiet -- frontend/src/tests/e2e/screenshots; then
+        list_changed_or_new_screenshots() {
+          # List both changed and new screenshots.
+          git status --short --porcelain -- frontend/src/tests/e2e/screenshots | awk '{print $2}'
+        }
+        if [[ -n "$(list_changed_or_new_screenshots)" ]]; then
           echo "screenshots<<EOF" >> "$GITHUB_OUTPUT"
-          git diff --name-only -- frontend/src/tests/e2e/screenshots >> "$GITHUB_OUTPUT"
+          list_changed_or_new_screenshots >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
         fi
     - name: Upload screenshots

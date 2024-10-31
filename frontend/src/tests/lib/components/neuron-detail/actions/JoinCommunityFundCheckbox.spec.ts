@@ -11,7 +11,7 @@ vi.mock("$lib/services/neurons.services", () => {
 });
 
 describe("JoinCommunityFundCheckbox", () => {
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
   });
 

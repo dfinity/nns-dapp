@@ -1,5 +1,5 @@
 {
-  "dfx": "0.20.1",
+  "dfx": "0.24.0",
   "canisters": {
     "nns-governance": {
       "type": "custom",
@@ -35,7 +35,8 @@
       "remote": {
         "id": {
           "app": "qhbym-qaaaa-aaaaa-aaafq-cai",
-          "mainnet": "qhbym-qaaaa-aaaaa-aaafq-cai"
+          "mainnet": "qhbym-qaaaa-aaaaa-aaafq-cai",
+          "local": "q3fc5-haaaa-aaaaa-aaahq-cai"
         }
       }
     },
@@ -272,8 +273,8 @@
       "wasm": "TODO-deploy-tvl-testnet",
       "remote": {
         "id": {
-          "app": "ewh3f-3qaaa-aaaap-aazjq-cai",
-          "mainnet": "ewh3f-3qaaa-aaaap-aazjq-cai"
+          "app": "qoctq-giaaa-aaaaa-aaaea-cai",
+          "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai"
         }
       }
     }
@@ -348,6 +349,20 @@
       ],
       "type": "persistent"
     },
+    "devenv_cosku": {
+      "config": {
+        "HOST": "https://cosku-ingress.devenv.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_CKBTC": true,
+          "ENABLE_CKTESTBTC": false,
+          "ENABLE_NEURON_VISIBILITY": true
+        }
+      },
+      "providers": [
+        "https://cosku-ingress.devenv.dfinity.network"
+      ],
+      "type": "persistent"
+    },
     "local": {
       "config": {
         "HOST": "http://localhost:8080",
@@ -371,8 +386,9 @@
         "FEATURE_FLAGS": {
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
-          "ENABLE_PROJECTS_TABLE": false,
-          "ENABLE_IMPORT_TOKEN": false
+          "ENABLE_IMPORT_TOKEN": true,
+          "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
+          "ENABLE_NEURON_VISIBILITY": true
         }
       }
     },
@@ -383,12 +399,13 @@
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
         "BINSTALL_VERSION": "1.3.0",
-        "DIDC_VERSION": "2024-05-14",
+        "DIDC_RELEASE": "2024-05-14",
+        "DIDC_VERSION": "didc 0.4.0",
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2024-07-17",
-        "IC_COMMIT_FOR_PROPOSALS": "release-2024-07-18_01-30--github-base",
-        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-07-18_01-30--github-base"
+        "SNSDEMO_RELEASE": "release-2024-10-23",
+        "IC_COMMIT_FOR_PROPOSALS": "release-2024-10-23_03-07-ubuntu20.04",
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-10-23_03-07-ubuntu20.04"
       },
       "packtool": ""
     }

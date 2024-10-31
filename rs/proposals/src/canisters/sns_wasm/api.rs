@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_wasm --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-18_01-30--github-base/rs/nns/sns-wasm/canister/sns-wasm.did>
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-23_03-07-ubuntu20.04/rs/nns/sns-wasm/canister/sns-wasm.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -80,21 +80,6 @@ pub struct NeuronsFundParticipationConstraints {
     pub ideal_matched_participation_function: Option<IdealMatchedParticipationFunction>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct CfNeuron {
-    pub has_created_neuron_recipes: Option<bool>,
-    pub nns_neuron_id: u64,
-    pub amount_icp_e8s: u64,
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct CfParticipant {
-    pub hotkey_principal: String,
-    pub cf_neurons: Vec<CfNeuron>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct NeuronsFundParticipants {
-    pub participants: Vec<CfParticipant>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
 pub struct TreasuryDistribution {
     pub total_e8s: u64,
 }
@@ -163,7 +148,6 @@ pub struct SnsInitPayload {
     pub transaction_fee_e8s: Option<u64>,
     pub dapp_canisters: Option<DappCanisters>,
     pub neurons_fund_participation_constraints: Option<NeuronsFundParticipationConstraints>,
-    pub neurons_fund_participants: Option<NeuronsFundParticipants>,
     pub max_age_bonus_percentage: Option<u64>,
     pub initial_token_distribution: Option<InitialTokenDistribution>,
     pub reward_rate_transition_duration_seconds: Option<u64>,

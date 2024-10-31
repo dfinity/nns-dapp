@@ -1,8 +1,7 @@
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
 import { transferICP } from "$lib/services/icp-accounts.services";
-import { authStore } from "$lib/stores/auth.store";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountsStoreSubscribe,
   mockSubAccount,
@@ -20,10 +19,6 @@ vi.mock("$lib/services/icp-accounts.services", () => {
 });
 
 describe("IcpTransactionModal", () => {
-  beforeAll(() => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
-  });
-
   const renderTransactionModal = () =>
     renderModal({
       component: IcpTransactionModal,
@@ -37,6 +32,8 @@ describe("IcpTransactionModal", () => {
   };
 
   beforeEach(() => {
+    resetIdentity();
+
     vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
       mockAccountsStoreSubscribe([mockSubAccount])
     );

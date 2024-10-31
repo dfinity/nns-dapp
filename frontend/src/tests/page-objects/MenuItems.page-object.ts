@@ -1,5 +1,6 @@
 import { ActionableProposalCountBadgePo } from "$tests/page-objects/ActionableProposalCountBadge.page-object";
 import { GetTokensPo } from "$tests/page-objects/GetTokens.page-object";
+import { LinkPo } from "$tests/page-objects/Link.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -30,11 +31,22 @@ export class MenuItemsPo extends BasePageObject {
     return this.click("menuitem-launchpad");
   }
 
-  clickCanisters(): Promise<void> {
-    return this.click("menuitem-canisters");
+  getSourceCodeButtonPo(): LinkPo {
+    return LinkPo.under({ element: this.root, testId: "source-code-link" });
+  }
+
+  getTotalValueLockedLinkPo(): LinkPo {
+    return LinkPo.under({
+      element: this.root,
+      testId: "total-value-locked-component",
+    });
   }
 
   getGetTokensPo(): GetTokensPo {
     return GetTokensPo.under(this.root);
+  }
+
+  hasFooter(): Promise<boolean> {
+    return this.isPresent("menu-footer");
   }
 }

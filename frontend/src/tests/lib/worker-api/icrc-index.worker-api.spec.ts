@@ -3,6 +3,7 @@ import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import { getIcrcTransactions } from "$lib/worker-api/icrc-index.worker-api";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger-icrc";
+import * as dfinityUtils from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
 
 describe("icrc-index.worker-api", () => {
@@ -14,6 +15,9 @@ describe("icrc-index.worker-api", () => {
     vi.spyOn(IcrcIndexCanister, "create").mockImplementation(
       () => indexCanisterMock
     );
+    // Prevent HttpAgent.create(), which is called by createAgent, from making a
+    // real network request via agent.syncTime().
+    vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
   });
 
   const params = {

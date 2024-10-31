@@ -15,7 +15,7 @@ import {
 } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import { Topic, Vote } from "@dfinity/nns";
+import { NeuronVisibility, Topic, Vote } from "@dfinity/nns";
 import type { RewardEvent } from "@dfinity/nns/dist/candid/governance";
 import type { Mock } from "vitest";
 
@@ -158,10 +158,6 @@ describe("neurons api-service", () => {
   beforeEach(() => {
     vi.resetAllMocks();
     resetNeuronsApiService();
-  });
-
-  afterAll(() => {
-    vi.useRealTimers();
   });
 
   // Read calls
@@ -1082,6 +1078,36 @@ describe("neurons api-service", () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.registerVote,
         apiServiceFunc: governanceApiService.registerVote,
+        params,
+      });
+    });
+  });
+
+  describe("changeNeuronVisibility", () => {
+    const params: api.ApiChangeNeuronVisibilityParams = {
+      neuronIds: [neuronId],
+      identity: mockIdentity,
+      visibility: NeuronVisibility.Public,
+    };
+
+    it("should call changeNeuronVisibility api", () => {
+      governanceApiService.changeNeuronVisibility(params);
+      expect(api.changeNeuronVisibility).toHaveBeenCalledWith(params);
+      expect(api.changeNeuronVisibility).toHaveBeenCalledTimes(1);
+    });
+
+    it("should invalidate the cache", async () => {
+      await shouldInvalidateCache({
+        apiFunc: api.changeNeuronVisibility,
+        apiServiceFunc: governanceApiService.changeNeuronVisibility,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.changeNeuronVisibility,
+        apiServiceFunc: governanceApiService.changeNeuronVisibility,
         params,
       });
     });

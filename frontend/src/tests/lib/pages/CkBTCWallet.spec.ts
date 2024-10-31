@@ -2,6 +2,7 @@ import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import {
+  CKTESTBTC_INDEX_CANISTER_ID,
   CKTESTBTC_LEDGER_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -18,6 +19,7 @@ import { page } from "$mocks/$app/stores";
 import CkBTCAccountsTest from "$tests/lib/components/accounts/CkBTCAccountsTest.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import {
+  mockBTCAddressTestnet,
   mockCkBTCMainAccount,
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
@@ -34,7 +36,6 @@ import {
 import type { RetrieveBtcStatusV2WithId } from "@dfinity/ckbtc";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { mockBTCAddressTestnet } from "../../mocks/ckbtc-accounts.mock";
 
 const expectedBalanceAfterTransfer = 11_111n;
 const testnetBtcAddress = "mziXLoUuJs427ATrgn5bMdxtUnXZMZCc3L";
@@ -114,6 +115,7 @@ describe("CkBTCWallet", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.clearAllTimers();
+    vi.useRealTimers();
     tokensStore.reset();
     ckBTCInfoStore.reset();
     bitcoinAddressStore.reset();
@@ -284,10 +286,6 @@ describe("CkBTCWallet", () => {
             : mockCkBTCMainAccount.balanceUlps
         );
       });
-    });
-
-    afterAll(() => {
-      vi.useRealTimers();
     });
 
     it("should render ckTESTBTC name", async () => {
@@ -506,5 +504,24 @@ describe("CkBTCWallet", () => {
         [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: [statusWithId],
       });
     });
+  });
+
+  it('should have canister links in "more" popup', async () => {
+    const po = await renderWallet();
+    const morePopoverPo = po.getWalletMorePopoverPo();
+
+    await po.getMoreButton().click();
+    await runResolvedPromises();
+
+    expect(await morePopoverPo.isPresent()).toBe(true);
+    expect(await morePopoverPo.getLinkToLedgerCanisterPo().getHref()).toBe(
+      `https://dashboard.internetcomputer.org/canister/${CKTESTBTC_LEDGER_CANISTER_ID.toText()}`
+    );
+    expect(await morePopoverPo.getLinkToIndexCanisterPo().isPresent()).toBe(
+      true
+    );
+    expect(await morePopoverPo.getLinkToIndexCanisterPo().getHref()).toBe(
+      `https://dashboard.internetcomputer.org/canister/${CKTESTBTC_INDEX_CANISTER_ID.toText()}`
+    );
   });
 });

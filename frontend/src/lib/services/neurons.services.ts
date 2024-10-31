@@ -1,6 +1,8 @@
 import { governanceApiService } from "$lib/api-services/governance.api-service";
 import { makeDummyProposals as makeDummyProposalsApi } from "$lib/api/dev.api";
+import { queryAccountBalance } from "$lib/api/icp-ledger.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { IS_TESTNET } from "$lib/constants/environment.constants";
 import {
   CANDID_PARSER_VERSION,
@@ -13,6 +15,7 @@ import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
+import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import {
   toastsError,
@@ -30,7 +33,7 @@ import {
   assertEnoughAccountFunds,
   isAccountHardwareWallet,
 } from "$lib/utils/accounts.utils";
-import { notForceCallStrategy } from "$lib/utils/env.utils";
+import { isLastCall } from "$lib/utils/env.utils";
 import {
   errorToString,
   mapNeuronErrorToToastMessage,
@@ -50,8 +53,15 @@ import {
 } from "$lib/utils/neuron.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import { AnonymousIdentity, type Identity } from "@dfinity/agent";
-import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
+import {
+  NeuronVisibility,
+  Topic,
+  type Neuron,
+  type NeuronId,
+  type NeuronInfo,
+} from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import {
@@ -185,10 +195,12 @@ export const stakeNeuron = async ({
   amount,
   account,
   loadNeuron = true,
+  asPublicNeuron,
 }: {
   amount: number;
   account: Account;
   loadNeuron?: boolean;
+  asPublicNeuron?: boolean;
 }): Promise<NeuronId | undefined> => {
   try {
     const stake = numberToE8s(amount);
@@ -223,6 +235,20 @@ export const stakeNeuron = async ({
       fee,
     });
 
+    if (asPublicNeuron) {
+      try {
+        await governanceApiService.changeNeuronVisibility({
+          neuronIds: [newNeuronId],
+          visibility: NeuronVisibility.Public,
+          identity: accountIdentity,
+        });
+      } catch (err) {
+        toastsError({
+          labelKey: "neurons.create_as_public_neuron_failure",
+        });
+      }
+    }
+
     if (loadNeuron) {
       await getAndLoadNeuron(newNeuronId);
     }
@@ -238,7 +264,6 @@ export const stakeNeuron = async ({
  * This gets all neurons linked to the current user's principal, even those with a stake of 0. And adds them to the store
  *
  * @param {Object} params
- * @param {skipCheck} params.skipCheck it true, the neurons' balance won't be checked and those that are not synced won't be refreshed. It avoids possible infinite loops.
  * @param {callback} params.callback an optional callback that can be called when the data are successfully loaded (certified or not). Useful for example to close synchronously a busy spinner once all data have been fetched.
  */
 export const listNeurons = async ({
@@ -261,8 +286,8 @@ export const listNeurons = async ({
 
       callback?.(certified);
     },
-    onError: ({ error, certified }) => {
-      if (!certified && notForceCallStrategy()) {
+    onError: ({ error, certified, strategy }) => {
+      if (!isLastCall({ strategy, certified })) {
         return;
       }
 
@@ -777,7 +802,7 @@ const setFolloweesHelper = async ({
       identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
     }
     // ManageNeuron topic followes can only be handled by controllers
-    if (topic === Topic.ManageNeuron) {
+    if (topic === Topic.NeuronManagement) {
       identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
     }
     await governanceApiService.setFollowees({
@@ -867,7 +892,6 @@ export const loadNeuron = ({
 }: {
   neuronId: NeuronId;
   forceFetch?: boolean;
-  skipCheck?: boolean;
   setNeuron: (params: { neuron: NeuronInfo; certified: boolean }) => void;
   handleError?: () => void;
   strategy?: QueryAndUpdateStrategy;
@@ -903,10 +927,10 @@ export const loadNeuron = ({
       }
       setNeuron({ neuron, certified });
     },
-    onError: ({ error, certified }) => {
+    onError: ({ error, certified, strategy }) => {
       console.error(error);
 
-      if (!certified && notForceCallStrategy()) {
+      if (!isLastCall({ strategy, certified })) {
         return;
       }
       catchError(error);
@@ -976,6 +1000,49 @@ export const topUpNeuron = async ({
   return { success };
 };
 
+const neuronNeedsRefresh = async (fullNeuron: Neuron): Promise<boolean> => {
+  const expectedBalance: bigint = fullNeuron.cachedNeuronStake;
+  const actualBalance: bigint = await queryAccountBalance({
+    icpAccountIdentifier: fullNeuron.accountIdentifier,
+    identity: new AnonymousIdentity(),
+    // This is just a fallback. Worst case a malicious node prevents us from
+    // refreshing the neuron but then it will be refreshed next time.
+    certified: false,
+  });
+  return expectedBalance !== actualBalance;
+};
+
+export const refreshNeuronIfNeeded = async (
+  neuron: NeuronInfo
+): Promise<void> => {
+  if (isNullish(neuron.fullNeuron)) {
+    return;
+  }
+  const accountIdentifier = neuron.fullNeuron.accountIdentifier;
+
+  // We only check neurons to recover from an interrupted top-up.
+  // Doing this once per neuron per session is often enough.
+  if (
+    !checkedNeuronSubaccountsStore.addSubaccount({
+      universeId: OWN_CANISTER_ID_TEXT,
+      // It's not actually the subaccount but rather the full account
+      // identifier. But ic-js doesn't expose the neuron's subaccount and it
+      // really just needs to be a unique consistent identifier to avoid
+      // checking too often.
+      subaccountHex: accountIdentifier,
+    })
+  ) {
+    return;
+  }
+
+  if (await neuronNeedsRefresh(neuron.fullNeuron)) {
+    await reloadNeuron(neuron.neuronId);
+    toastsSuccess({
+      labelKey: "neuron_detail.neuron_stake_refreshed",
+    });
+  }
+};
+
 export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
   // Only available in testnet
   if (!IS_TESTNET) {
@@ -1007,4 +1074,56 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
     console.error(error);
     toastsShow(mapNeuronErrorToToastMessage(error));
   }
+};
+
+export const changeNeuronVisibility = async ({
+  neurons,
+  makePublic,
+}: {
+  neurons: NeuronInfo[];
+  makePublic: boolean;
+}): Promise<{ success: boolean }> => {
+  const results = await Promise.all(
+    neurons.map(async (neuron) => {
+      try {
+        const identity: Identity = await getIdentityOfControllerByNeuronId(
+          neuron.neuronId
+        );
+        await governanceApiService.changeNeuronVisibility({
+          neuronIds: [neuron.neuronId],
+          identity,
+          visibility: makePublic
+            ? NeuronVisibility.Public
+            : NeuronVisibility.Private,
+        });
+        await getAndLoadNeuron(neuron.neuronId);
+        return true;
+      } catch (err) {
+        console.error(
+          `Failed to change visibility for neuron ${neuron.neuronId}:`,
+          err
+        );
+        return false;
+      }
+    })
+  );
+
+  const failedCount = results.filter((result) => result === false).length;
+
+  if (failedCount === 0) {
+    return { success: true };
+  } else if (failedCount < neurons.length) {
+    toastsError({
+      labelKey: "neuron_detail.change_neuron_visibility_partial_failure",
+      substitutions: {
+        $failedCount: failedCount.toString(),
+        $totalCount: neurons.length.toString(),
+      },
+    });
+  } else {
+    toastsError({
+      labelKey: "neuron_detail.change_neuron_visibility_failure",
+    });
+  }
+  return { success: false };
 };

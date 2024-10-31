@@ -120,7 +120,6 @@ export const mockInit: SnsSwapInit = {
     "2lwez-knpss-xe26y-sqpx3-7m5ev-gbqwb-ogdk4-af53j-r7fed-k5df4-uqe",
   sns_ledger_canister_id:
     "nv24n-kslcc-636yn-hazy3-t2zgj-fsrkg-2uhfm-vumlm-vqolw-6ciai-tae",
-  neurons_fund_participants: [],
   should_auto_finalize: [true],
   max_participant_icp_e8s: [5_000_000_000n],
   sns_governance_canister_id:
@@ -170,6 +169,7 @@ export const mockQuerySwap: SnsSwap = {
   direct_participation_icp_e8s: [],
   neurons_fund_participation_icp_e8s: [],
   decentralization_swap_termination_timestamp_seconds: [],
+  timers: [],
 };
 
 export const mockDerived: SnsSwapDerivedState = {

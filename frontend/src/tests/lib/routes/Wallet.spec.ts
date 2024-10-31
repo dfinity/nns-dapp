@@ -1,5 +1,6 @@
 import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as governanceApi from "$lib/api/governance.api";
+import * as icpIndexApi from "$lib/api/icp-index.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -8,14 +9,16 @@ import {
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import Wallet from "$lib/routes/Wallet.svelte";
-import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import {
-  mockAuthStoreSubscribe,
   mockIdentity,
+  resetIdentity,
+  setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
@@ -25,16 +28,21 @@ import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcrcMainAccount } from "$tests/mocks/icrc-accounts.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import { mockSnsFullProject, principal } from "$tests/mocks/sns-projects.mock";
+import {
+  mockSnsFullProject,
+  mockToken,
+  principal,
+} from "$tests/mocks/sns-projects.mock";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/ckbtc-minter.api");
@@ -80,8 +88,11 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
 
 describe("Wallet", () => {
   let ckEthBalance = 1000000000000000000n;
+  const importedTokenId = principal(123);
   beforeEach(() => {
+    resetIdentity();
     vi.clearAllMocks();
+    importedTokensStore.reset();
     setCkETHCanisters();
     setSnsProjects([
       {
@@ -113,6 +124,9 @@ describe("Wallet", () => {
         ) {
           return mockSnsMainAccount.balanceUlps;
         }
+        if (canisterId.toText() === importedTokenId.toText()) {
+          return mockSnsMainAccount.balanceUlps;
+        }
         throw new Error(`Unexpected canisterId: ${canisterId.toText()}`);
       }
     );
@@ -124,14 +138,13 @@ describe("Wallet", () => {
         if (canisterId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText()) {
           return mockCkBTCToken;
         }
+        if (canisterId.toText() === importedTokenId.toText()) {
+          return mockToken;
+        }
         throw new Error(`Unexpected canisterId: ${canisterId.toText()}`);
       }
     );
     vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
-  });
-
-  beforeAll(() => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   describe("nns context", () => {
@@ -148,7 +161,7 @@ describe("Wallet", () => {
   });
 
   describe("sns context", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       page.mock({
         data: { universe: mockSnsFullProject.rootCanisterId.toText() },
         routeId: AppPath.Wallet,
@@ -269,5 +282,163 @@ describe("Wallet", () => {
     expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(4);
 
     expect(await pagePo.getWalletPageHeadingPo().getTitle()).toBe("1.11 ckETH");
+  });
+
+  describe("unknown token redirection", () => {
+    const unknownUniverseId = "aaaaa-aa";
+
+    beforeEach(() => {
+      // Mock the getTransactions call from the Tokens page.
+      vi.spyOn(icpIndexApi, "getTransactions").mockResolvedValue({
+        transactions: [],
+        oldestTxId: undefined,
+      } as icpIndexApi.GetTransactionsResponse);
+    });
+
+    it("redirect to tokens when unknown universe", async () => {
+      page.mock({
+        data: { universe: unknownUniverseId },
+        routeId: AppPath.Wallet,
+      });
+      resetSnsProjects();
+      importedTokensStore.set({
+        importedTokens: [],
+        certified: true,
+      });
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+
+      render(Wallet, {
+        props: {
+          accountIdentifier: undefined,
+        },
+      });
+      await runResolvedPromises();
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+
+      // Waits for the sns projects to be available
+      setSnsProjects([{}]);
+      await runResolvedPromises();
+
+      expect(get(pageStore).path).toEqual(AppPath.Tokens);
+    });
+
+    it("waits for imported tokens being loaded before initiate the redirection", async () => {
+      page.mock({
+        data: { universe: unknownUniverseId },
+        routeId: AppPath.Wallet,
+      });
+      setSnsProjects([{}]);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: undefined,
+        certified: undefined,
+      });
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+
+      render(Wallet, {
+        props: {
+          accountIdentifier: undefined,
+        },
+      });
+      await runResolvedPromises();
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+
+      // Waits for the imported tokens to be available
+      importedTokensStore.set({
+        importedTokens: [],
+        certified: true,
+      });
+      await runResolvedPromises();
+      expect(get(pageStore).path).toEqual(AppPath.Tokens);
+    });
+
+    it("redirects to tokens for unknown universe when not signed in", async () => {
+      setNoIdentity();
+      page.mock({
+        data: { universe: unknownUniverseId },
+        routeId: AppPath.Wallet,
+      });
+      setSnsProjects([{}]);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: undefined,
+        certified: undefined,
+      });
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+
+      render(Wallet, {
+        props: {
+          accountIdentifier: undefined,
+        },
+      });
+      await runResolvedPromises();
+      expect(get(pageStore).path).toEqual(AppPath.Tokens);
+    });
+
+    it("should not redirect on valid token", async () => {
+      page.mock({
+        data: { universe: importedTokenId.toText() },
+        routeId: AppPath.Wallet,
+      });
+      setSnsProjects([{}]);
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: undefined,
+        certified: undefined,
+      });
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+      render(Wallet, {
+        props: {
+          accountIdentifier: undefined,
+        },
+      });
+      await runResolvedPromises();
+
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId: importedTokenId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+      await runResolvedPromises();
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+    });
+
+    it("should not redirect when a token becomes unknown during session", async () => {
+      page.mock({
+        data: { universe: importedTokenId.toText() },
+        routeId: AppPath.Wallet,
+      });
+      setSnsProjects([{}]);
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId: importedTokenId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+      render(Wallet, {
+        props: {
+          accountIdentifier: undefined,
+        },
+      });
+      await runResolvedPromises();
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+
+      // Remove the imported token
+      importedTokensStore.remove(importedTokenId);
+      await runResolvedPromises();
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+    });
   });
 });

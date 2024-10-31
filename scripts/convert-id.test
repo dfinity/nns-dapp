@@ -8,7 +8,7 @@ function expect_convert() {
   SCRIPT_UNDER_TEST="$SOURCE_DIR/convert-id"
   actual_output=$("$SCRIPT_UNDER_TEST" "$@")
   if [ "$expected_output" != "$actual_output" ]; then
-    printf "Command: %s " "$(basename "$SCRIPT_UNDER_TEST")"
+    printf "Command: %s" "$(basename "$SCRIPT_UNDER_TEST")"
     printf " %q" "$@"
     echo
     echo "Expected: $expected_output"
@@ -59,7 +59,7 @@ expect_convert "$SUBACCOUNT_IDENTIFIER" --output account_identifier --input text
 expect_convert "$HEX_AS_SUBACCOUNT" --output hex --as_subaccount --input text "$TEXT"
 expect_convert "$SUBACCOUNT_IDENTIFIER" --output account_identifier --input text --subaccount_format hex "$TEXT2" "$HEX_AS_SUBACCOUNT"
 
-ICRC1_CHECKSUM="3vbe6yq"
+ICRC1_CHECKSUM="vyqwuvy"
 ICRC1="$TEXT2-$ICRC1_CHECKSUM.1"
 expect_convert "$ICRC1" --output icrc1 --input icrc1 "$ICRC1"
 expect_convert "$ICRC1" --output icrc1 --input text "$TEXT2" 1

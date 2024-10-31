@@ -4,7 +4,7 @@ import {
   snsOnlyProjectStore,
   snsProjectSelectedStore,
 } from "$lib/derived/sns/sns-selected-project.derived";
-import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
+import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
@@ -33,7 +33,7 @@ describe("selected sns project derived stores", () => {
           lifecycle: SnsSwapLifecycle.Committed,
         },
       ]);
-      icrcCanistersStore.reset();
+      defaultIcrcCanistersStore.reset();
       tokensStore.reset();
     });
 

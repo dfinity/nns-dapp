@@ -32,7 +32,8 @@
     "receive": "Receive",
     "send_with_token": "Send $token",
     "collapse_all": "Collapse All",
-    "or": "or"
+    "or": "or",
+    "add": "Add"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -70,12 +71,15 @@
     "canister_not_found": "Sorry, the canister \"$canister_id\" was not found",
     "fail": "fail",
     "dummy_proposal": "There was an error creating the proposals. Check the console for more details.",
+    "unlock_neuron": "There was an error unlocking the neuron. Check the console for more details.",
     "add_maturity": "There was an error adding maturity. Check the console for more details.",
     "unknown": "Sorry, there was an unexpected error. Please try again later.",
     "amount_not_valid": "Sorry, the amount is not valid",
     "amount_not_enough_stake_neuron": "Sorry, the amount is too small. You need to stake a minimum of 1 ICP.",
     "amount_not_enough_top_up_neuron": "Sorry, the amount is too small. The amount plus the current stake need to be at least 1 ICP",
     "transaction_error": "Sorry, there was an error trying to execute the transaction.",
+    "transaction_too_old": "Transaction is too old, could not be completed. Make sure your computer’s clock is set correctly, and try again.",
+    "transaction_created_in_future": "Transaction was created in the future, could not be completed. Make sure your computer’s clock is set correctly, and try again.",
     "unexpected_number_neurons_merge": "Sorry, the number of neurons to merge should be only 2. Please try selecting again.",
     "cannot_merge": "Those two neurons cannot be merged.",
     "not_authorized_neuron_action": "Sorry, none of your principals is the controller of the neuron.",
@@ -119,13 +123,13 @@
     "adding_permissions": "There was an error adding permissions.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
     "qrcode_camera_error": "An error occurred while initializing the camera to read the QR code.",
-    "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction."
+    "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction.",
+    "invalid_ledger_index_pair": "The provided index canister ID does not match the associated ledger canister ID.",
+    "index_canister_validation": "An error occurred while validating the index canister ID. It appears that $indexCanister might not be a valid index canister ID."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired.",
-    "test_env_welcome": "Welcome to the Testing Environment.",
-    "test_env_note": "Please note that you are currently using a <strong>test</strong> version of NNS-dapp that operates on the Internet Computer <strong>mainnet</strong>. Although it utilizes real data, it is intended solely for testing purposes.",
-    "test_env_request": "We kindly remind you that the functionality and availability of this testing dapp may change or even disappear at any time. Therefore, it is crucial to refrain from relying on it for any production or critical activities.",
+    "test_env_note": "<strong>Use with caution!</strong> This is not stable software, and it is not securely updated by the Network Nervous System. However, it accesses your real wallets and neurons. <br /><br />Functionality you see here can change at any time, and this dapp may not always be available.",
     "test_env_confirm": "I understand and want to continue",
     "test_env_title": "Warning"
   },
@@ -143,7 +147,9 @@
   "header": {
     "menu": "Open menu to access navigation options",
     "logout": "Logout",
-    "account_menu": "Open menu to access logout button"
+    "account_menu": "Open menu to access logout button",
+    "main_icp_account_id": "Main ICP Account ID",
+    "account_id_tooltip": "You can send ICP both to your principal ID and account ID, however some exchanges or wallets may not support transactions using a principal ID."
   },
   "auth": {
     "login": "Sign in with Internet Identity",
@@ -245,6 +251,7 @@
     "title": "Neurons",
     "text": "Earn voting rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by submitting and voting on Network Nervous System (NNS) proposals.",
     "stake_token": "Stake $token",
+    "icp_will_be_locked": "Your ICP will be locked for at least 7 days.",
     "merge_neurons": "Merge Neurons",
     "merge_neurons_modal_title": "Select two neurons to merge",
     "merge_neurons_modal_confirm": "Confirm merge",
@@ -316,7 +323,19 @@
     "merge_neurons_source_neuron_disappear": "The neuron <strong>$neuronId</strong> will disappear.",
     "merge_neurons_more_info": "Learn more about merging neurons <a href=\"https://medium.com/dfinity/internet-computer-nns-neurons-can-now-be-merged-8b4e44584dc2\" rel=\"noopener noreferrer\" aria-label=\"more info about merging neurons\" target=\"_blank\">here</a>.",
     "stake_amount": "Stake Amount",
-    "state": "State"
+    "state": "State",
+    "public_neuron_tooltip": "Neuron is public",
+    "public_neuron": "Public Neuron",
+    "private_neuron": "Private Neuron",
+    "public_neuron_description": "This neuron exposes additional information, including its votes.",
+    "private_neuron_description": "This neuron limits information it exposes publicly.",
+    "learn_more": "Learn more",
+    "make_neurons_public_banner_title": "Neurons can now be private or public",
+    "make_neurons_public_banner_description": "If you would like to make your neurons public, you can open one and change it under “Advanced Details & Settings”.",
+    "make_neurons_public_action_text": "Make Neurons Public",
+    "create_as_public": "Create as a public neuron",
+    "create_as_public_tooltip": "Public neurons reveal more information about themselves including how they vote on proposals.",
+    "create_as_public_neuron_failure": "Making your neuron public has failed, so it was created as a private neuron. You can change neuron visibility at any time under \"Advanced Details & Settings\""
   },
   "new_followee": {
     "title": "Enter New Followee",
@@ -348,8 +367,8 @@
     "topic_6_subtitle": "All proposals that administer network participants, for example, granting and revoking DCIDs (data center identities) or NOIDs (node operator identities).",
     "topic_7_title": "Subnet Management",
     "topic_7_subtitle": "All proposals that administer network subnets, for example creating new subnets, adding and removing subnet nodes, and splitting subnets.",
-    "topic_8_title": "System Canister Management",
-    "topic_8_subtitle": "Installing and upgrading “system” canisters that belong to the network. For example, upgrading the NNS.",
+    "topic_8_title": "Application Canister Management",
+    "topic_8_subtitle": "All proposals to manage NNS-controlled canisters not covered by other topics (Protocol Canister Management or Service Nervous System Management).",
     "topic_9_title": "KYC",
     "topic_9_subtitle": "Proposals that update KYC information for regulatory purposes, for example during the initial Genesis distribution of ICP in the form of neurons.",
     "topic_10_title": "Node Provider Rewards",
@@ -367,9 +386,9 @@
     "topic_16_title": "Subnet Rental",
     "topic_16_subtitle": "All proposals related to renting a subnet, for example a subnet rental request.",
     "topic_17_title": "Protocol Canister Management",
-    "topic_17_subtitle": "Proposals related to managing canisters that are considered as part of the IC protocol.",
+    "topic_17_subtitle": "All proposals to manage protocol canisters, which are considered part of the ICP protocol and are essential for its proper functioning.",
     "topic_18_title": "Service Nervous System Management",
-    "topic_18_subtitle": "Proposals related to managing the canisters related to service nervous system (SNS).",
+    "topic_18_subtitle": "All proposals to manage the canisters of service nervous systems (SNS), including upgrading relevant canisters and managing SNS framework canister WASMs through SNS-W.",
     "current_followees": "Currently Following",
     "add": "Add Followee",
     "unknown_topic_title": "Unknown Topic ($topicId)"
@@ -394,17 +413,7 @@
   },
   "actionable_proposals_empty": {
     "title": "You're all caught up.",
-    "text": "Check back later!",
-    "text_unsupported": "Check back later! Note, that not all SNS DAOs support actionable proposals. You will need to check proposals manually if you hold $snsNames neurons."
-  },
-  "actionable_proposals_not_supported": {
-    "title": "$snsName doesn't yet support actionable proposals.",
-    "text": "$snsName SNS governance canister needs to be updated to the latest version to show actionable proposals. You can still vote on all proposals, but they will not have the visual indication.",
-    "dot_tooltip": "This SNS doesn't yet support actionable proposals."
-  },
-  "actionable_proposals_not_supported_snses": {
-    "title": "$snsNames don’t yet support actionable proposals.",
-    "text": "If an SNS DAO wishes to support actionable proposals, it needs to upgrade to a newer version of the SNS governance canister."
+    "text": "Check back later!"
   },
   "canisters": {
     "aria_label_canister_card": "Go to canister details",
@@ -519,8 +528,6 @@
     "remaining": "remaining",
     "next": "Navigate to next proposal",
     "previous": "Navigate to previous proposal",
-    "next_short": "Next",
-    "previous_short": "Previous",
     "sign_in": "Sign in to vote",
     "toggle_lable": "Switch between user-friendly and raw data representation",
     "toggle_tree": "Tree",
@@ -640,6 +647,7 @@
     "join_community_fund_success": "Your neuron has successfully joined the neurons' fund.",
     "leave_community_fund_success": "Your neuron has successfully left the neurons' fund.",
     "dummy_proposal_success": "Dummy proposals created successfully",
+    "unlock_neuron_success": "Neuron unlocked successfully",
     "add_maturity_success": "Maturity successfully added",
     "following_title": "Following",
     "following_description": "Following allows you to delegate your votes to another neuron holder. You still earn rewards if you delegate your voting rights. You can change your following at any time.",
@@ -695,7 +703,27 @@
     "amount_maturity": "$amount maturity",
     "created": "Date Created",
     "neuron_state_tooltip": "Your neuron can be locked, unlocked or dissolving. In a locked state, it is accruing age bonus, while its dissolve delay stays constant. If the neuron is in a dissolving state, its age bonus is set to 0, while dissolve delay decreases with time. After dissolve delay reaches 0, the neuron is unlocked, and $token held in it can be sent to any $token account.",
-    "dissolve_delay_tooltip": "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and $token to be available again. If your neuron is dissolving, your $token will be available in $duration."
+    "dissolve_delay_tooltip": "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and $token to be available again. If your neuron is dissolving, your $token will be available in $duration.",
+    "neuron_stake_refreshed": "Your neuron's stake was refreshed successfully.",
+    "change_neuron_make_neuron_public": "Make Neuron Public",
+    "change_neuron_make_neuron_private": "Make Neuron Private",
+    "change_neuron_make_neuron_public_confirmation": "Are you sure you want to make your neuron public?",
+    "change_neuron_make_neuron_private_confirmation": "Are you sure you want to make your neuron private?",
+    "change_neuron_make_neuron_public_description": "Making your neuron public will reveal certain information about it such as how it voted on past proposals.",
+    "change_neuron_make_neuron_private_description": "Making your neuron private will hide certain information about it such as how it voted on past proposals.",
+    "make_neuron_private": "Make Neuron Private",
+    "make_neuron_public": "Make Neuron Public",
+    "change_neuron_public_success": "Visibility updated to public successfully.",
+    "change_neuron_private_success": "Visibility updated to private successfully.",
+    "change_neuron_visibility_loading": "Updating visibility",
+    "change_neuron_visibility_partial_failure": "$failedCount out of $totalCount neurons have failed to update their visibility, please try again later. You can change neuron visibility at any time under \"Advanced Details & Settings\".",
+    "change_neuron_visibility_failure": "Your neurons have failed to update their visibility, please try again later. You can change neuron visibility at any time under \"Advanced Details & Settings\".",
+    "apply_to_all": "Apply to all neurons",
+    "neurons": "Neurons",
+    "uncontrollable_neurons_description": "These neurons have different controllers and won't be updated",
+    "hardware_wallet": "Hardware wallet",
+    "retrieving_data": "Retrieving data on neurons...",
+    "public_visibility_action_hw_tooltip": "Updating visibility of hardware wallet controlled neurons is not supported at the moment"
   },
   "sns_launchpad": {
     "header": "Launchpad",
@@ -846,6 +874,18 @@
     "unknown_unlink": "Error unlinking canister.",
     "get_exchange_rate": "Error getting the exchange rate of ICP to Cycles."
   },
+  "error__imported_tokens": {
+    "load_imported_tokens": "There was an unexpected issue while loading imported tokens.",
+    "add_imported_token": "There was an unexpected issue while importing the token.",
+    "remove_imported_token": "There was an unexpected issue while removing the imported token.",
+    "update_imported_token": "There was an unexpected issue while updating the imported token.",
+    "too_many": "You can't import more than $limit tokens.",
+    "ledger_canister_loading": "Unable to load token details using the provided ledger canister ID.",
+    "is_duplication": "You have already imported this token, you can find it in the token list.",
+    "is_sns": "You cannot import SNS tokens, they are added by the NNS.",
+    "is_important": "This token is already in the token list.",
+    "is_icp": "You cannot import ICP."
+  },
   "error__sns": {
     "undefined_project": "The requested project is invalid or throws an error.",
     "list_summaries": "There was an unexpected error while loading the summaries of all deployed projects.",
@@ -853,7 +893,6 @@
     "load_swap_commitment": "There was an unexpected error while loading the commitment of the project.",
     "load_sale_total_commitments": "There was an unexpected error while loading the commitments of the project.",
     "load_sale_lifecycle": "There was an unexpected error while loading the status of the project.",
-    "load_parameters": "There was an unexpected error while loading the parameters of the project.",
     "sns_remove_hotkey": "There was an error removing the hotkey.",
     "sns_split_neuron": "There was an error while splitting the neuron.",
     "sns_disburse": "There was an error while disbursing the neuron.",
@@ -888,7 +927,8 @@
     "sns_remove_followee": "There was an error while unfollowing the neuron.",
     "sns_add_hotkey": "There was an error adding the hotkey.",
     "sns_stake_maturity": "There was an error while staking the maturity of the neuron.",
-    "sns_disburse_maturity": "There was an error while disbursing the maturity of the neuron."
+    "sns_disburse_maturity": "There was an error while disbursing the maturity of the neuron.",
+    "sns_amount_not_enough_stake_neuron": "Sorry, the amount is too small. You need a minimum of $minimum $token to stake."
   },
   "auth_accounts": {
     "title": "100% on-chain governance",
@@ -1031,6 +1071,36 @@
     "hide_zero_balances_toggle_label": "Switch between showing and hiding tokens with a balance of zero",
     "zero_balance_hidden": "Tokens with 0 balances are hidden.",
     "show_all": "Show all",
-    "import_token": "Import Token"
+    "add_imported_token_success": "New token has been successfully imported!",
+    "remove_imported_token_success": "The token has been successfully removed!",
+    "update_imported_token_success": "The token has been successfully updated!",
+    "ledger_canister": "Ledger Canister",
+    "index_canister": "Index Canister"
+  },
+  "import_token": {
+    "import_token": "Import Token",
+    "imported_token": "Imported token",
+    "verifying": "Verifying token details...",
+    "importing": "Importing new token...",
+    "removing": "Removing imported token...",
+    "updating": "Updating imported token...",
+    "description": "You can import a new token to your NNS dapp wallet by providing its ledger canister ID.",
+    "ledger_label": "Ledger Canister ID",
+    "index_label_optional": "Index Canister ID <span class='description'>(Optional)</span>",
+    "placeholder": "_____-_____-_____-_____-cai",
+    "index_canister_description": "To see this token's transaction history in the NNS dapp, you need to provide its index canister. <strong>Note:</strong> not all tokens have index canisters.",
+    "review_token_info": "Review token info",
+    "warning": "<strong>Warning:</strong> Be careful what token you import! Anyone can create a token including one with the same name as existing tokens, such as ckBTC.",
+    "remove_confirmation_header": "Are you sure you want to remove this token from your account?",
+    "remove_confirmation_description": "Tokens you hold in your account will not be lost. You can import this token in the future again.",
+    "index_label": "Index Canister ID",
+    "index_fallback_label": "Transaction history won't be displayed.",
+    "import_button": "Import",
+    "link_to_dashboard": "https://dashboard.internetcomputer.org/canister/$canisterId",
+    "add_index_canister": "Add Index Canister",
+    "add_index_description": "Transaction history is not available. To see this token’s transaction history in the NNS dapp, you need to provide an index canister. <strong>Note:</strong> not all tokens have index canisters.",
+    "failed_tooltip": "The NNS dapp couldn’t load an imported token. Please try again later, or contact the developers.",
+    "maximum_reached_tooltip": "You've already imported the maximum number of $max tokens. You need to remove another token before you can import more.",
+    "doc_link_label": "How to find ICRC token ledger"
   }
 }

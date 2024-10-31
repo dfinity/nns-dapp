@@ -45,7 +45,12 @@ export type BusyStateInitiatorType =
   | "dev-add-sns-neuron-maturity"
   | "dev-add-nns-neuron-maturity"
   | "update-ckbtc-balance"
-  | "reload-receive-account";
+  | "reload-receive-account"
+  | "import-token-validation"
+  | "import-token-importing"
+  | "import-token-removing"
+  | "import-token-updating"
+  | "change-neuron-visibility";
 
 export interface BusyState {
   initiator: BusyStateInitiatorType;

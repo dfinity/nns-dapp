@@ -1,10 +1,6 @@
 import NnsNeuronPageHeading from "$lib/components/neuron-detail/NnsNeuronPageHeading.svelte";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
-import { authStore } from "$lib/stores/auth.store";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -28,12 +24,12 @@ describe("NnsNeuronPageHeading", () => {
   };
 
   beforeEach(() => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
     resetAccountsForTesting();
   });
 
   it("should render the neuron's stake", async () => {
-    const stake = 314_000_000n;
+    const stake = 314_560_000n;
     const po = renderComponent({
       ...mockNeuron,
       fullNeuron: {
@@ -43,7 +39,7 @@ describe("NnsNeuronPageHeading", () => {
       },
     });
 
-    expect(await po.getStake()).toEqual("3.14");
+    expect(await po.getStake()).toEqual("3.1456");
   });
 
   it("should render neuron's voting power", async () => {

@@ -18,12 +18,12 @@ test("Test neuron voting", async ({ page, context }) => {
 
   // should be created before dummy proposals
   step("Stake neuron (for voting)");
-  await appPo.goToNeurons();
+  await appPo.goToStaking();
   const stake = 15;
   await appPo
-    .getNeuronsPo()
-    .getNnsNeuronsFooterPo()
-    .stakeNeuron({ amount: stake, dissolveDelayDays: "max" });
+    .getStakingPo()
+    .stakeFirstNnsNeuron({ amount: stake, dissolveDelayDays: "max" });
+  await appPo.getNeuronsPo().waitFor();
 
   const neuronIds = await getNnsNeuronCardsIds(appPo);
   expect(neuronIds).toHaveLength(1);
@@ -33,7 +33,7 @@ test("Test neuron voting", async ({ page, context }) => {
   const proposer = await createDummyProposal(appPo);
 
   step("Go to the neurons tab");
-  await appPo.goToNeurons();
+  await appPo.goToNnsNeurons();
   await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
 
   // get neuron
@@ -51,12 +51,9 @@ test("Test neuron voting", async ({ page, context }) => {
 
   // vp=stake*2 when max dissolve delay (https://support.dfinity.org/hc/en-us/articles/4404284534420-What-is-voting-power-)
   expect(neuronAVotingPower).toBe(stake * 2);
-  // back to neurons otherwise the menu is not available
-  await appPo.goBack();
 
   step("Open proposals list");
   await appPo.goToProposals();
-  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
 
   step("Open Internet Computer proposals");
   await appPo.openUniverses();

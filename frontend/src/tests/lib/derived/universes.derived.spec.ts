@@ -7,8 +7,8 @@ import {
   CKETH_LEDGER_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import { universesStore } from "$lib/derived/universes.derived";
+import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { aggregatorCanisterLogoPath } from "$lib/utils/sns-aggregator-converters.utils";
 import {
@@ -32,7 +32,7 @@ describe("universes derived stores", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     resetSnsProjects();
-    icrcCanistersStore.reset();
+    defaultIcrcCanistersStore.reset();
     tokensStore.reset();
   });
 
@@ -87,7 +87,7 @@ describe("universes derived stores", () => {
     });
 
     it("should return Nns, ckBTC and ckETH", () => {
-      icrcCanistersStore.setCanisters({
+      defaultIcrcCanistersStore.setCanisters({
         ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
         indexCanisterId: CKETH_INDEX_CANISTER_ID,
       });
@@ -107,11 +107,11 @@ describe("universes derived stores", () => {
     });
 
     it("should return Nns, ckBTC, ckETH and ckETHSEPOLIA", () => {
-      icrcCanistersStore.setCanisters({
+      defaultIcrcCanistersStore.setCanisters({
         ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
         indexCanisterId: CKETH_INDEX_CANISTER_ID,
       });
-      icrcCanistersStore.setCanisters({
+      defaultIcrcCanistersStore.setCanisters({
         ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
         indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
       });

@@ -1,6 +1,5 @@
 import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
 import {
@@ -15,6 +14,7 @@ import {
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import { ICPToken, secondsToDuration } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
@@ -31,19 +31,14 @@ describe("ConfirmSnsDissolveDelay", () => {
   };
 
   // freeze time
-  beforeAll(() => {
+  beforeEach(() => {
     vi.useFakeTimers().setSystemTime(Date.now());
 
-    snsParametersStore.setParameters({
-      certified: true,
-      rootCanisterId: mockPrincipal,
-      parameters: snsNervousSystemParametersMock,
-    });
-  });
-
-  afterAll(() => {
-    vi.useRealTimers();
-    snsParametersStore.reset();
+    setSnsProjects([
+      {
+        rootCanisterId: mockPrincipal,
+      },
+    ]);
   });
 
   it("renders a delay", () => {

@@ -13,9 +13,8 @@ pnpm-lock.yaml
 package-lock.json
 yarn.lock
 
-static
-public
-scripts
-jest-setup.ts
+/static
+/public
+/scripts
 
 src/lib/canisters/nns-dapp/**/*

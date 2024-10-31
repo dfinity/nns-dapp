@@ -3,6 +3,7 @@ import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import { getIcrcBalance } from "$lib/worker-api/icrc-ledger.worker-api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
+import * as dfinityUtils from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
 
 describe("icrc-ledger.worker-api", () => {
@@ -14,6 +15,9 @@ describe("icrc-ledger.worker-api", () => {
     vi.spyOn(IcrcLedgerCanister, "create").mockImplementation(
       () => ledgerCanisterMock
     );
+    // Prevent HttpAgent.create(), which is called by createAgent, from making a
+    // real network request via agent.syncTime().
+    vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
   });
 
   const params = {

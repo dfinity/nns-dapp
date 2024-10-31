@@ -1,11 +1,11 @@
 import { queryAndUpdate } from "$lib/services/utils.services";
-import { authStore } from "$lib/stores/auth.store";
 import * as devUtils from "$lib/utils/dev.utils";
 import {
-  mockAuthStoreNoIdentitySubscribe,
-  mockAuthStoreSubscribe,
   mockIdentity,
+  resetIdentity,
+  setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { tick } from "svelte";
 
 describe("api-utils", () => {
@@ -13,9 +13,7 @@ describe("api-utils", () => {
     describe("not logged in user", () => {
       beforeEach(() => {
         vi.clearAllMocks();
-        vi.spyOn(authStore, "subscribe").mockImplementation(
-          mockAuthStoreNoIdentitySubscribe
-        );
+        setNoIdentity();
       });
 
       it("should raise error if another strategy than 'query' is passed", async () => {
@@ -37,19 +35,41 @@ describe("api-utils", () => {
 
         expect(call).rejects.toThrowError();
       });
+
+      it("should use 'query' strategy by default", async () => {
+        const testResponse = "test";
+        const request = vi
+          .fn()
+          .mockImplementation(() => Promise.resolve(testResponse));
+        const onLoad = vi.fn();
+        const onError = vi.fn();
+
+        await queryAndUpdate<number, unknown>({
+          request,
+          onLoad,
+          onError,
+          identityType: "current",
+        });
+
+        expect(onLoad).toHaveBeenCalledTimes(1);
+        expect(onLoad).toHaveBeenCalledWith({
+          certified: false,
+          strategy: "query",
+          response: testResponse,
+        });
+      });
     });
 
     describe("logged in user", () => {
       beforeEach(() => {
         vi.clearAllMocks();
-        vi.spyOn(authStore, "subscribe").mockImplementation(
-          mockAuthStoreSubscribe
-        );
+        resetIdentity();
       });
       it("should request twice", async () => {
+        const response = { certified: true };
         const request = vi
           .fn()
-          .mockImplementation(() => Promise.resolve({ certified: true }));
+          .mockImplementation(() => Promise.resolve(response));
         const onLoad = vi.fn();
         const onError = vi.fn();
 
@@ -61,6 +81,16 @@ describe("api-utils", () => {
 
         expect(request).toHaveBeenCalledTimes(2);
         expect(onLoad).toHaveBeenCalledTimes(2);
+        expect(onLoad).toHaveBeenCalledWith({
+          certified: false,
+          strategy: "query_and_update",
+          response,
+        });
+        expect(onLoad).toHaveBeenCalledWith({
+          certified: true,
+          strategy: "query_and_update",
+          response,
+        });
         expect(onError).not.toBeCalled();
       });
 
@@ -119,6 +149,12 @@ describe("api-utils", () => {
         });
 
         expect(requestCertified.sort()).toEqual([false]);
+        expect(onLoad).toHaveBeenCalledTimes(1);
+        expect(onLoad).toHaveBeenCalledWith({
+          certified: false,
+          strategy: "query",
+          response: undefined,
+        });
       });
 
       it('should support "update" strategy', async () => {
@@ -138,6 +174,12 @@ describe("api-utils", () => {
         });
 
         expect(requestCertified.sort()).toEqual([true]);
+        expect(onLoad).toHaveBeenCalledTimes(1);
+        expect(onLoad).toHaveBeenCalledWith({
+          certified: true,
+          strategy: "update",
+          response: undefined,
+        });
       });
 
       it("should catch errors", async () => {
@@ -157,39 +199,85 @@ describe("api-utils", () => {
         expect(onError).toBeCalledTimes(2);
         expect(onError).toBeCalledWith({
           certified: false,
+          strategy: "query_and_update",
+          error: "test",
+          identity: mockIdentity,
+        });
+        expect(onError).toBeCalledWith({
+          certified: true,
+          strategy: "query_and_update",
           error: "test",
           identity: mockIdentity,
         });
       });
 
       it("should not call QUERY onLoad when UPDATE comes first", async () => {
-        let queryDone = false;
+        let resolveUpdate: (value: unknown) => void;
+        let resolveQuery: (value: unknown) => void;
         const request = vi
           .fn()
           .mockImplementation(({ certified }: { certified: boolean }) =>
             certified
-              ? Promise.resolve()
-              : new Promise((resolve) =>
-                  setTimeout(() => {
-                    queryDone = true;
-                    resolve({});
-                  }, 1)
-                )
+              ? new Promise((resolve) => (resolveUpdate = resolve))
+              : new Promise((resolve) => (resolveQuery = resolve))
           );
         const onLoad = vi.fn();
         const onError = vi.fn();
 
-        await queryAndUpdate<number, unknown>({
+        queryAndUpdate<number, unknown>({
           request,
           onLoad,
           onError,
         });
-        await new Promise((resolve) => setTimeout(resolve, 10));
+        await runResolvedPromises();
 
-        expect(queryDone).toBe(true);
         expect(request).toBeCalledTimes(2);
+        expect(onLoad).toBeCalledTimes(0);
+        expect(onError).toBeCalledTimes(0);
+
+        resolveUpdate({ update: true });
+        resolveQuery({ query: true });
+        await runResolvedPromises();
+
         expect(onLoad).toBeCalledTimes(1);
-        expect(onError).not.toBeCalled();
+        expect(onLoad).toBeCalledWith({
+          certified: true,
+          response: { update: true },
+          strategy: "query_and_update",
+        });
+        expect(onError).toBeCalledTimes(0);
+      });
+
+      it("should ignore QUERY error when UPDATE comes first", async () => {
+        let resolveUpdate: (value: unknown) => void;
+        let rejectQuery: (value: unknown) => void;
+        const request = vi
+          .fn()
+          .mockImplementation(({ certified }: { certified: boolean }) =>
+            certified
+              ? new Promise((resolve) => (resolveUpdate = resolve))
+              : new Promise((_, reject) => (rejectQuery = reject))
+          );
+        const onLoad = vi.fn();
+        const onError = vi.fn();
+
+        queryAndUpdate<number, unknown>({
+          request,
+          onLoad,
+          onError,
+        });
+        await runResolvedPromises();
+
+        expect(request).toBeCalledTimes(2);
+        expect(onLoad).toBeCalledTimes(0);
+        expect(onError).toBeCalledTimes(0);
+
+        resolveUpdate({});
+        rejectQuery({});
+        await runResolvedPromises();
+
+        expect(onLoad).toBeCalledTimes(1);
+        expect(onError).toBeCalledTimes(0);
       });
 
       it("should resolve promise when the first response is done", async () => {

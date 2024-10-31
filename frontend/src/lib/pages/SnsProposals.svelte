@@ -10,7 +10,7 @@
     snsOnlyProjectStore,
     snsProjectSelectedStore,
   } from "$lib/derived/sns/sns-selected-project.derived";
-  import { loadSnsProposals } from "$lib/services/$public/sns-proposals.services";
+  import { loadSnsProposals } from "$lib/services/public/sns-proposals.services";
   import { loadSnsFilters } from "$lib/services/sns-filters.services";
   import {
     actionableSnsProposalsStore,
@@ -127,9 +127,6 @@
       }) as SnsProposalActionableData
   );
 
-  let includeBallots: boolean;
-  $: includeBallots = actionableProposalsData?.includeBallotsByCaller ?? false;
-
   // `undefined` means that we haven't loaded the proposals yet.
   let proposals: SnsProposalActionableData[] | undefined;
   $: proposals = nonNullish(currentProjectCanisterId)
@@ -144,16 +141,15 @@
 
   let disableInfiniteScroll: boolean;
   $: disableInfiniteScroll = nonNullish(currentProjectCanisterId)
-    ? $snsProposalsStore[currentProjectCanisterId.toText()]?.completed ?? false
+    ? ($snsProposalsStore[currentProjectCanisterId.toText()]?.completed ??
+      false)
     : false;
 </script>
 
 {#if nonNullish(snsName)}
   <SnsProposalsList
-    {snsName}
     {proposals}
     actionableSelected={$actionableProposalsActiveStore}
-    {includeBallots}
     nsFunctions={$nsFunctionsStore}
     on:nnsIntersect={loadNextPage}
     {disableInfiniteScroll}

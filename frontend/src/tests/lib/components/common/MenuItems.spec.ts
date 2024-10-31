@@ -3,7 +3,6 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -12,10 +11,21 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { resetMockedConstants } from "$tests/utils/mockable-constants.test-utils";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "$tests/utils/timers.test-utils";
+import {
+  layoutMenuOpen,
+  menuCollapsed,
+  menuStore,
+} from "@dfinity/gix-components";
 import type { ProposalInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
-vi.mock("$lib/services/$public/worker-metrics.services", () => ({
+vi.mock("$lib/services/public/worker-metrics.services", () => ({
   initMetricsWorker: vi.fn(() =>
     Promise.resolve({
       startMetricsTimer: () => {
@@ -52,20 +62,17 @@ describe("MenuItems", () => {
     }
   };
 
+  beforeEach(() => {
+    resetMockedConstants();
+    menuStore.resetForTesting();
+    layoutMenuOpen.set(false);
+    vi.useFakeTimers();
+  });
+
   it("should render accounts menu item", () =>
     shouldRenderMenuItem({ context: "accounts", labelKey: "tokens" }));
 
-  it("should render neurons menu item without projects table", () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_PROJECTS_TABLE", false);
-    shouldRenderMenuItem({
-      context: "neurons",
-      labelKey: "neurons",
-      href: "/neurons/?u=qhbym-qaaaa-aaaaa-aaafq-cai",
-    });
-  });
-
-  it("should render neurons menu item with projects table", () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_PROJECTS_TABLE", true);
+  it("should render neurons menu item", () => {
     shouldRenderMenuItem({
       context: "neurons",
       labelKey: "neurons",
@@ -76,15 +83,60 @@ describe("MenuItems", () => {
   it("should render voting menu item", () =>
     shouldRenderMenuItem({ context: "proposals", labelKey: "voting" }));
 
-  it("should render canisters menu item", () =>
-    shouldRenderMenuItem({ context: "canisters", labelKey: "canisters" }));
-
   it("should not render a get icps feature", async () => {
     const renderResult = render(MenuItems);
 
     const { getByTestId } = renderResult;
 
     expect(() => getByTestId("get-icp-button")).toThrow();
+  });
+
+  it("should not have a footer when collapsed", async () => {
+    const po = renderComponent();
+
+    expect(get(menuCollapsed)).toBe(false);
+    expect(await po.hasFooter()).toBe(true);
+
+    menuStore.toggle();
+
+    // Wait for the animation.
+    await advanceTime();
+
+    expect(get(menuCollapsed)).toBe(true);
+    expect(await po.hasFooter()).toBe(false);
+
+    menuStore.toggle();
+    await runResolvedPromises();
+
+    expect(get(menuCollapsed)).toBe(false);
+    expect(await po.hasFooter()).toBe(true);
+  });
+
+  it("should have a footer when open", async () => {
+    // This can only happen if you collapse the menu with a large view port,
+    // then reduce the viewport size and then open the menu.
+
+    const po = renderComponent();
+
+    menuStore.toggle();
+    // Wait for the animation.
+    await advanceTime();
+
+    expect(get(menuCollapsed)).toBe(true);
+    expect(await po.hasFooter()).toBe(false);
+
+    layoutMenuOpen.set(true);
+    await runResolvedPromises();
+
+    expect(get(menuCollapsed)).toBe(true);
+    expect(await po.hasFooter()).toBe(true);
+
+    layoutMenuOpen.set(false);
+    // Wait for the animation.
+    await advanceTime();
+
+    expect(get(menuCollapsed)).toBe(true);
+    expect(await po.hasFooter()).toBe(false);
   });
 
   describe("when My Tokens page is enabled", () => {
@@ -167,7 +219,6 @@ describe("MenuItems", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId: snsRootCanisterId,
         proposals: snsProposals,
-        includeBallotsByCaller: true,
       });
 
       const po = renderComponent();
@@ -196,6 +247,26 @@ describe("MenuItems", () => {
 
       expect(await po.getProposalsActionableCountBadgePo().isPresent()).toBe(
         false
+      );
+    });
+
+    it("should display Source code button", async () => {
+      const menuItemsPo = renderComponent();
+
+      expect(await menuItemsPo.getSourceCodeButtonPo().isPresent()).toBe(true);
+      expect(await menuItemsPo.getSourceCodeButtonPo().getHref()).toBe(
+        "https://github.com/dfinity/nns-dapp"
+      );
+    });
+
+    it("should display Total Value Locked button", async () => {
+      const menuItemsPo = renderComponent();
+
+      expect(await menuItemsPo.getTotalValueLockedLinkPo().isPresent()).toBe(
+        true
+      );
+      expect(await menuItemsPo.getTotalValueLockedLinkPo().getHref()).toBe(
+        "https://dashboard.internetcomputer.org/neurons"
       );
     });
   });

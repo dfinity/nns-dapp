@@ -1,15 +1,11 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
-import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import type { ValidateAmountFn } from "$lib/types/transaction";
 import { formatTokenE8s } from "$lib/utils/token.utils";
-import {
-  mockAuthStoreSubscribe,
-  mockPrincipal,
-} from "$tests/mocks/auth.store.mock";
+import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -74,11 +70,8 @@ describe("TransactionModal", () => {
       },
     });
 
-  beforeAll(() => {
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
-  });
-
   beforeEach(() => {
+    resetIdentity();
     resetSnsProjects();
     icrcAccountsStore.reset();
 

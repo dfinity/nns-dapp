@@ -7,7 +7,11 @@ import "fake-indexeddb/auto";
 import { TextDecoder, TextEncoder } from "util";
 import { vi } from "vitest";
 import { browser, building } from "./__mocks__/$app/environment";
-import { afterNavigate, goto } from "./__mocks__/$app/navigation";
+import {
+  afterNavigate,
+  beforeNavigate,
+  goto,
+} from "./__mocks__/$app/navigation";
 import { navigating, page } from "./__mocks__/$app/stores";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
@@ -40,8 +44,9 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
     featureFlags: JSON.stringify({
       ENABLE_CKBTC: true,
       ENABLE_CKTESTBTC: true,
-      ENABLE_PROJECTS_TABLE: true,
       ENABLE_IMPORT_TOKEN: true,
+      DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
+      ENABLE_NEURON_VISIBILITY: true,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
     }),
@@ -63,11 +68,16 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
 vi.mock("./src/lib/constants/mockable.constants.ts", () => mockedConstants);
 setDefaultTestConstants({
   DEV: false,
-  ENABLE_METRICS: false,
   FORCE_CALL_STRATEGY: undefined,
   IS_TEST_ENV: true,
   QR_CODE_RENDERED_DEFAULT_STATE: true,
   ENABLE_QR_CODE_READER: false,
+  isForceCallStrategy: function () {
+    return this.FORCE_CALL_STRATEGY === "query";
+  },
+  notForceCallStrategy: function () {
+    return !this.isForceCallStrategy();
+  },
 });
 
 failTestsThatLogToConsole();
@@ -101,6 +111,7 @@ vi.mock("$app/environment", () => ({
 vi.mock("$app/navigation", () => ({
   goto,
   afterNavigate,
+  beforeNavigate,
 }));
 
 vi.mock("$app/stores", () => ({

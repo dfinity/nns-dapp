@@ -17,15 +17,15 @@
   import { neuronStake } from "$lib/utils/neuron.utils";
   import type {
     WizardModal,
-    WizardSteps,
     WizardStep,
+    WizardSteps,
   } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import {
     ICPToken,
-    type Token,
-    assertNonNullish,
     TokenAmountV2,
+    assertNonNullish,
+    type Token,
   } from "@dfinity/utils";
   import { createEventDispatcher, onDestroy } from "svelte";
   import { onMount } from "svelte";

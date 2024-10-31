@@ -16,12 +16,12 @@ test("Test neuron increase stake", async ({ page, context }) => {
   await appPo.getIcpTokens(20);
 
   step("Stake neuron");
-  await appPo.goToNeurons();
+  await appPo.goToStaking();
   const initialStake = 10;
   await appPo
-    .getNeuronsPo()
-    .getNnsNeuronsFooterPo()
-    .stakeNeuron({ amount: initialStake, dissolveDelayDays: "max" });
+    .getStakingPo()
+    .stakeFirstNnsNeuron({ amount: initialStake, dissolveDelayDays: "max" });
+  await appPo.getNeuronsPo().waitFor();
 
   const neuronIds = await getNnsNeuronCardsIds(appPo);
   expect(neuronIds).toHaveLength(1);
@@ -58,17 +58,6 @@ test("Test neuron increase stake", async ({ page, context }) => {
 
   expect(neuronStake2).toBe(initialStake + increase1);
 
-  // Increasing neuron stake is a 2-step process:
-  // 1. Transfer ICP to the neuron account.
-  // 2. Refresh the neuron.
-  // These steps are normally performed by the frontend code, but it's
-  // possible the process gets interrupted between steps 1 and 2.
-  // To recover from this, the nns-dapp canister watches all
-  // transactions to see if it needs to refresh any neurons.
-  // This is why transferring ICP to the neuron account works to
-  // increase the neuron stake.
-  // When we switch to using ICRC-2 this is no longer necessary and
-  // this test can be removed.
   step("Increase neuron stake with transfer to neuron account");
   const increase2 = 3;
   const neuronAccount = await appPo
@@ -77,7 +66,6 @@ test("Test neuron increase stake", async ({ page, context }) => {
     .getAdvancedSectionPo()
     .neuronAccount();
 
-  await appPo.goBack();
   await appPo.goToAccounts();
   await appPo.goToNnsMainAccountWallet();
   await appPo.getWalletPo().getNnsWalletPo().transferToAddress({
@@ -85,10 +73,17 @@ test("Test neuron increase stake", async ({ page, context }) => {
     amount: increase2,
   });
 
-  await appPo.goBack({ waitAbsent: false });
-  await appPo.getAccountsPo().waitFor();
-  await appPo.goBack();
   await appPo.goToNeuronDetails(neuronId);
+  // Reload the page to bypass checkedNeuronSubaccountsStore preventing
+  // checking a neuron more than once per session.
+  await page.reload();
+
+  const toast = appPo.getToastsPo().getToastPo();
+  await toast.waitFor();
+  expect(await toast.getMessage()).toBe(
+    "Your neuron's stake was refreshed successfully."
+  );
+
   const neuronStake3 = Number(
     await appPo
       .getNeuronDetailPo()

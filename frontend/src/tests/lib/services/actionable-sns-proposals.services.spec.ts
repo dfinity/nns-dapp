@@ -5,16 +5,11 @@ import {
   actionableSnsProposalsStore,
   failedActionableSnsesStore,
 } from "$lib/stores/actionable-sns-proposals.store";
-import { authStore } from "$lib/stores/auth.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { snsProposalId } from "$lib/utils/sns-proposals.utils";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-  resetIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
@@ -33,7 +28,7 @@ import {
   type SnsNeuronId,
   type SnsProposalData,
 } from "@dfinity/sns";
-import type { SpyInstance } from "@vitest/spy";
+import type { MockInstance } from "@vitest/spy";
 import { get } from "svelte/store";
 
 describe("actionable-sns-proposals.services", () => {
@@ -129,10 +124,9 @@ describe("actionable-sns-proposals.services", () => {
       limit: 20,
     };
 
-    let spyQuerySnsProposals: SpyInstance;
+    let spyQuerySnsProposals: MockInstance;
     let spyQuerySnsNeurons;
     let spyConsoleError;
-    let includeBallotsByCaller = true;
 
     beforeEach(() => {
       vi.clearAllMocks();
@@ -140,15 +134,12 @@ describe("actionable-sns-proposals.services", () => {
       actionableSnsProposalsStore.resetForTesting();
       resetIdentity();
 
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
+      resetIdentity();
       vi.spyOn(snsProjectsCommittedStore, "subscribe").mockClear();
 
       spyQuerySnsNeurons = vi
         .spyOn(api, "querySnsNeurons")
         .mockImplementation(() => Promise.resolve([neuron]));
-      includeBallotsByCaller = true;
       spyQuerySnsProposals = vi.spyOn(api, "queryProposals").mockImplementation(
         async ({ rootCanisterId }) =>
           ({
@@ -156,10 +147,7 @@ describe("actionable-sns-proposals.services", () => {
               rootCanisterId.toText() === rootCanisterId1.toText()
                 ? [votableProposal1, votedProposal]
                 : [votableProposal2, votedProposal],
-            // Upgraded canisters return always include_ballots_by_caller: [true], and by old canisters it's not presented.
-            include_ballots_by_caller: includeBallotsByCaller
-              ? [includeBallotsByCaller]
-              : undefined,
+            include_ballots_by_caller: [true],
           }) as SnsListProposalsResponse
       );
     });
@@ -230,7 +218,7 @@ describe("actionable-sns-proposals.services", () => {
         .mockRejectedValueOnce(snsQueryError)
         .mockImplementation(async () => ({
           proposals: [],
-          include_ballots_by_caller: undefined,
+          include_ballots_by_caller: [true] as [boolean],
         }));
       spyConsoleError = silentConsoleErrors();
 
@@ -273,7 +261,7 @@ describe("actionable-sns-proposals.services", () => {
         .spyOn(api, "queryProposals")
         .mockImplementation(async () => ({
           proposals: [],
-          include_ballots_by_caller: undefined,
+          include_ballots_by_caller: [true] as [boolean],
         }));
       failedActionableSnsesStore.add(rootCanisterId1.toText());
 
@@ -329,7 +317,6 @@ describe("actionable-sns-proposals.services", () => {
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId1.toText()]: {
           proposals: [...firstResponse, ...secondResponse],
-          includeBallotsByCaller: true,
         },
       });
     });
@@ -382,38 +369,9 @@ describe("actionable-sns-proposals.services", () => {
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId1.toText()]: {
           proposals: [votableProposal1],
-          includeBallotsByCaller: true,
         },
         [rootCanisterId2.toText()]: {
           proposals: [votableProposal2],
-          includeBallotsByCaller: true,
-        },
-      });
-    });
-
-    it("should not query neurons when the sns doesn't support ballots", async () => {
-      mockSnsProjectsCommittedStore([rootCanisterId1]);
-      includeBallotsByCaller = false;
-
-      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(0);
-      expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(0);
-
-      await loadActionableSnsProposals();
-
-      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(1);
-      expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(0);
-    });
-
-    it("should not update the store when api doesn't support ballots", async () => {
-      mockSnsProjectsCommittedStore([rootCanisterId1]);
-      includeBallotsByCaller = false;
-
-      await loadActionableSnsProposals();
-
-      expect(get(actionableSnsProposalsStore)).toEqual({
-        [rootCanisterId1.toText()]: {
-          proposals: [],
-          includeBallotsByCaller: false,
         },
       });
     });

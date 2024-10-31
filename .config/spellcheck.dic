@@ -13,6 +13,7 @@ OWASP
 +
 iframe
 SNSs
+SNSes
 deserialization
 Stringifies
 xz
@@ -54,3 +55,4 @@ M1
 M2
 protobuf
 se
+TVL

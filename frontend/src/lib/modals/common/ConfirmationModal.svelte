@@ -4,6 +4,8 @@
   import { createEventDispatcher } from "svelte";
 
   export let testId = "confirmation-modal-component";
+  export let yesLabel: string | undefined = undefined;
+
   const dispatch = createEventDispatcher();
 </script>
 
@@ -23,7 +25,8 @@
       data-tid="confirm-yes"
       disabled={$busy}
       class="primary"
-      on:click={() => dispatch("nnsConfirm")}>{$i18n.core.confirm_yes}</button
+      on:click={() => dispatch("nnsConfirm")}
+      >{yesLabel ?? $i18n.core.confirm_yes}</button
     >
   </svelte:fragment>
 </Modal>

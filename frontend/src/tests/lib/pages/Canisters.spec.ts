@@ -2,18 +2,15 @@ import Canisters from "$lib/pages/Canisters.svelte";
 import { listCanisters } from "$lib/services/canisters.services";
 import { authStore } from "$lib/stores/auth.store";
 import { canistersStore } from "$lib/stores/canisters.store";
-import {
-  mockAuthStoreSubscribe,
-  mockPrincipal,
-} from "$tests/mocks/auth.store.mock";
+import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanistersStoreSubscribe } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
-import { UniversePageSummaryPo } from "$tests/page-objects/UniversePageSummary.page-object";
+import { UniverseSummaryPo } from "$tests/page-objects/UniverseSummary.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 
 vi.mock("$lib/services/canisters.services", () => {
   return {
@@ -36,13 +33,12 @@ vi.mock("$lib/services/worker-cycles.services", () => ({
 }));
 
 describe("Canisters", () => {
-  let authStoreMock: SpyInstance;
+  let authStoreMock: MockInstance;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    authStoreMock = vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    authStoreMock = vi.spyOn(authStore, "subscribe");
+    resetIdentity();
 
     vi.spyOn(canistersStore, "subscribe").mockImplementation(
       mockCanistersStoreSubscribe
@@ -57,9 +53,7 @@ describe("Canisters", () => {
 
   it("should render the IC summary", async () => {
     const { container } = render(Canisters);
-    const po = UniversePageSummaryPo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = UniverseSummaryPo.under(new JestPageObjectElement(container));
 
     expect(await po.getLogoUrl()).toBe(nnsUniverseMock.logo);
     expect(await po.getTitle()).toBe(nnsUniverseMock.title);

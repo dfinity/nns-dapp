@@ -9,11 +9,8 @@ import {
 import { pageStore } from "$lib/derived/page.derived";
 import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import * as checkNeuronsService from "$lib/services/sns-neurons-check-balances.services";
-import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import {
   getSnsNeuronIdAsHexString,
@@ -23,10 +20,7 @@ import { numberToE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsApi from "$tests/fakes/sns-api.fake";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   createMockSnsNeuron,
@@ -65,10 +59,7 @@ describe("SnsNeuronDetail", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    snsParametersStore.reset();
     tokensStore.reset();
-    snsFunctionsStore.reset();
-    snsParametersStore.reset();
     snsNeuronsStore.reset();
     icrcAccountsStore.reset();
     setSnsProjects([
@@ -88,7 +79,7 @@ describe("SnsNeuronDetail", () => {
       routeId: AppPath.Neuron,
     });
 
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
   });
 
   const renderComponent = async (props) => {

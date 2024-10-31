@@ -1,8 +1,13 @@
 <script lang="ts">
+  import ImportTokenRemoveConfirmation from "$lib/components/accounts/ImportTokenRemoveConfirmation.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
+  import {
+    icrcCanistersStore,
+    type IcrcCanistersStoreData,
+  } from "$lib/derived/icrc-canisters.derived";
   import { snsLedgerCanisterIdsStore } from "$lib/derived/sns/sns-canisters.derived";
   import {
     snsProjectsCommittedStore,
@@ -19,34 +24,44 @@
   import Tokens from "$lib/pages/Tokens.svelte";
   import { updateBalance } from "$lib/services/ckbtc-minter.services";
   import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
+  import { removeImportedTokens } from "$lib/services/imported-tokens.services";
   import { uncertifiedLoadSnsesAccountsBalances } from "$lib/services/sns-accounts-balance.services";
   import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
-  import {
-    icrcCanistersStore,
-    type IcrcCanistersStoreData,
-  } from "$lib/stores/icrc-canisters.store";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import type { Account } from "$lib/types/account";
   import { ActionType, type Action } from "$lib/types/actions";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
-  import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
+  import type {
+    UserToken,
+    UserTokenData,
+    UserTokenFailed,
+  } from "$lib/types/tokens-page";
   import type { Universe, UniverseCanisterIdText } from "$lib/types/universe";
+  import { compareTokensForTokensTable } from "$lib/utils/tokens-table.utils";
   import {
     isIcrcTokenUniverse,
     isUniverseCkBTC,
     isUniverseNns,
   } from "$lib/utils/universe.utils";
+  import { isUserTokenData } from "$lib/utils/user-token.utils";
   import { isArrayEmpty } from "$lib/utils/utils";
+  import type { CanisterIdString } from "@dfinity/nns";
   import { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
-  import { compareTokensForTokensTable } from "$lib/utils/tokens-table.utils";
 
   onMount(() => {
     loadCkBTCTokens();
   });
 
-  let loadSnsAccountsBalancesRequested = false;
-  let loadCkBTCAccountsBalancesRequested = false;
+  const loadedIcrcAccountsBalancesRequested = new Set<CanisterIdString>();
+  const getAndUpdateNotLoadedIds = (canisterIds: CanisterIdString[]) => {
+    const ids = canisterIds.filter(
+      (id) => !loadedIcrcAccountsBalancesRequested.has(id)
+    );
+    ids.forEach((id) => loadedIcrcAccountsBalancesRequested.add(id));
+    return ids;
+  };
 
   const loadSnsAccountsBalances = async (projects: SnsFullProject[]) => {
     // We start when the projects are fetched
@@ -54,22 +69,30 @@
       return;
     }
 
+    const rootCanisterIds = projects.map(({ rootCanisterId }) =>
+      rootCanisterId.toText()
+    );
+    const notLoadedCanisterIds = getAndUpdateNotLoadedIds(rootCanisterIds);
+
     // We trigger the loading of the Sns Accounts Balances only once
-    if (loadSnsAccountsBalancesRequested) {
+    if (notLoadedCanisterIds.length === 0) {
       return;
     }
 
-    loadSnsAccountsBalancesRequested = true;
-
     await uncertifiedLoadSnsesAccountsBalances({
-      rootCanisterIds: projects.map(({ rootCanisterId }) => rootCanisterId),
+      rootCanisterIds: notLoadedCanisterIds.map((id) => Principal.fromText(id)),
       excludeRootCanisterIds: [],
     });
   };
 
   const loadCkBTCAccountsBalances = async (universes: Universe[]) => {
     // We trigger the loading of the ckBTC Accounts Balances only once
-    if (loadCkBTCAccountsBalancesRequested) {
+    const canisterIds = universes.map(
+      (universe: Universe) => universe.canisterId
+    );
+    const notLoadedCanisterIds = getAndUpdateNotLoadedIds(canisterIds);
+
+    if (notLoadedCanisterIds.length === 0) {
       return;
     }
 
@@ -80,6 +103,10 @@
      * There is also a "Check for incoming BTC" button in the Wallet page.
      */
     universes.forEach((universe: Universe) => {
+      if (!notLoadedCanisterIds.includes(universe.canisterId)) {
+        return;
+      }
+
       const ckBTCCanisters = CKBTC_ADDITIONAL_CANISTERS[universe.canisterId];
       if (nonNullish(ckBTCCanisters.minterCanisterId)) {
         updateBalance({
@@ -92,15 +119,19 @@
       }
     });
 
-    loadCkBTCAccountsBalancesRequested = true;
-
     await loadAccountsBalances(universes.map(({ canisterId }) => canisterId));
   };
 
   const loadIcrcTokenAccounts = async (
     icrcCanisters: IcrcCanistersStoreData
   ) => {
-    await loadAccountsBalances(Object.keys(icrcCanisters));
+    const ids = Object.keys(icrcCanisters);
+    const notLoadedCanisterIds = getAndUpdateNotLoadedIds(ids);
+    // Skip loading if there are no new ids
+    if (notLoadedCanisterIds.length === 0) {
+      return;
+    }
+    await loadAccountsBalances(notLoadedCanisterIds);
   };
 
   const loadAccountsBalances = async (
@@ -130,15 +161,15 @@
     return loadAccountsBalances([universeId.toText()]);
   };
 
-  $: (async () => {
-    if ($authSignedInStore) {
-      await Promise.allSettled([
-        loadSnsAccountsBalances($snsProjectsCommittedStore),
-        loadCkBTCAccountsBalances($ckBTCUniversesStore),
-        loadIcrcTokenAccounts($icrcCanistersStore),
-      ]);
-    }
-  })();
+  $: if ($authSignedInStore) {
+    loadSnsAccountsBalances($snsProjectsCommittedStore);
+  }
+  $: if ($authSignedInStore) {
+    loadCkBTCAccountsBalances($ckBTCUniversesStore);
+  }
+  $: if ($authSignedInStore) {
+    loadIcrcTokenAccounts($icrcCanistersStore);
+  }
 
   type ModalType =
     | "sns-send"
@@ -146,11 +177,12 @@
     | "ckbtc-send"
     | "icrc-send"
     | "icrc-receive"
-    | "ckbtc-receive";
+    | "ckbtc-receive"
+    | "imported-remove";
   let modal:
     | {
         type: ModalType;
-        data: UserTokenData;
+        data: UserTokenData | UserTokenFailed;
       }
     | undefined;
   const closeModal = () => {
@@ -165,10 +197,11 @@
 
   let account: Account | undefined;
   $: account =
-    modal &&
-    $universesAccountsStore[modal.data.universeId.toText()].find(
-      ({ type }) => type === "main"
-    );
+    modal && isUserTokenData(modal.data)
+      ? $universesAccountsStore[modal.data.universeId.toText()].find(
+          ({ type }) => type === "main"
+        )
+      : undefined;
 
   const handleAction = ({ detail }: { detail: Action }) => {
     if (detail.type === ActionType.Send) {
@@ -195,10 +228,28 @@
         modal = { type: "icrc-receive", data: detail.data };
       }
     }
+    if (detail.type === ActionType.Remove) {
+      modal = { type: "imported-remove", data: detail.data };
+    }
   };
 
+  const removeImportedToken = async () => {
+    // For type safety. This should never happen.
+    if (nonNullish(modal)) {
+      await removeImportedTokens(modal.data.universeId);
+      closeModal();
+    }
+  };
+
+  let importedTokenIds: Set<string> = new Set();
+  $: importedTokenIds = new Set(
+    ($importedTokensStore.importedTokens ?? []).map(({ ledgerCanisterId }) =>
+      ledgerCanisterId.toText()
+    )
+  );
+
   const sortTokens = (tokens: UserToken[]) =>
-    [...tokens].sort(compareTokensForTokensTable);
+    [...tokens].sort(compareTokensForTokensTable({ importedTokenIds }));
 </script>
 
 <TestIdWrapper testId="tokens-route-component">
@@ -214,63 +265,73 @@
     />
   {/if}
 
-  {#if modal?.type === "sns-send"}
-    <IcrcTokenTransactionModal
-      on:nnsClose={closeModal}
-      ledgerCanisterId={$snsLedgerCanisterIdsStore[
-        modal.data.universeId.toText()
-      ]}
-      universeId={modal.data.universeId}
-      token={modal.data.token}
-      transactionFee={modal.data.fee}
-    />
+  {#if nonNullish(modal) && isUserTokenData(modal.data)}
+    {#if modal.type === "sns-send"}
+      <IcrcTokenTransactionModal
+        on:nnsClose={closeModal}
+        ledgerCanisterId={$snsLedgerCanisterIdsStore[
+          modal.data.universeId.toText()
+        ]}
+        universeId={modal.data.universeId}
+        token={modal.data.token}
+        transactionFee={modal.data.fee}
+      />
+    {/if}
+
+    {#if modal.type === "ckbtc-send"}
+      <CkBtcTransactionModal
+        on:nnsClose={closeModal}
+        on:nnsTransfer={closeModal}
+        token={modal.data.token}
+        transactionFee={modal.data.fee}
+        universeId={modal.data.universeId}
+        canisters={CKBTC_ADDITIONAL_CANISTERS[modal.data.universeId.toText()]}
+      />
+    {/if}
+
+    {#if modal.type === "icrc-send"}
+      <IcrcTokenTransactionModal
+        on:nnsClose={closeModal}
+        ledgerCanisterId={modal.data.universeId}
+        universeId={modal.data.universeId}
+        token={modal.data.token}
+        transactionFee={modal.data.fee}
+      />
+    {/if}
+
+    {#if modal.type === "ckbtc-receive" && nonNullish(ckBTCCanisters) && nonNullish(account)}
+      <CkBtcReceiveModal
+        data={{
+          canisters: ckBTCCanisters,
+          account,
+          universeId: modal.data.universeId,
+          canSelectAccount: false,
+          reload: createReloadAccountBalance(modal.data.universeId),
+        }}
+        on:nnsClose={closeModal}
+      />
+    {/if}
+
+    {#if modal.type === "icrc-receive" && nonNullish(account)}
+      <IcrcReceiveModal
+        data={{
+          account,
+          universeId: modal.data.universeId,
+          canSelectAccount: false,
+          reload: createReloadAccountBalance(modal.data.universeId),
+          tokenSymbol: modal.data.token.symbol,
+          logo: modal.data.logo,
+        }}
+        on:nnsClose={closeModal}
+      />
+    {/if}
   {/if}
 
-  {#if modal?.type === "ckbtc-send"}
-    <CkBtcTransactionModal
+  {#if modal?.type === "imported-remove"}
+    <ImportTokenRemoveConfirmation
+      tokenToRemove={{ ledgerCanisterId: modal.data.universeId }}
       on:nnsClose={closeModal}
-      on:nnsTransfer={closeModal}
-      token={modal.data.token}
-      transactionFee={modal.data.fee}
-      universeId={modal.data.universeId}
-      canisters={CKBTC_ADDITIONAL_CANISTERS[modal.data.universeId.toText()]}
-    />
-  {/if}
-
-  {#if modal?.type === "icrc-send"}
-    <IcrcTokenTransactionModal
-      on:nnsClose={closeModal}
-      ledgerCanisterId={modal.data.universeId}
-      universeId={modal.data.universeId}
-      token={modal.data.token}
-      transactionFee={modal.data.fee}
-    />
-  {/if}
-
-  {#if modal?.type === "ckbtc-receive" && nonNullish(ckBTCCanisters) && nonNullish(account)}
-    <CkBtcReceiveModal
-      data={{
-        canisters: ckBTCCanisters,
-        account,
-        universeId: modal.data.universeId,
-        canSelectAccount: false,
-        reload: createReloadAccountBalance(modal.data.universeId),
-      }}
-      on:nnsClose={closeModal}
-    />
-  {/if}
-
-  {#if modal?.type === "icrc-receive" && nonNullish(account)}
-    <IcrcReceiveModal
-      data={{
-        account,
-        universeId: modal.data.universeId,
-        canSelectAccount: false,
-        reload: createReloadAccountBalance(modal.data.universeId),
-        tokenSymbol: modal.data.token.symbol,
-        logo: modal.data.logo,
-      }}
-      on:nnsClose={closeModal}
+      on:nnsConfirm={removeImportedToken}
     />
   {/if}
 </TestIdWrapper>

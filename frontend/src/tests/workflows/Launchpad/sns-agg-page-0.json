@@ -282,7 +282,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999988910994000,
+    "icrc1_total_supply": 799999981848994000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -337,11 +337,11 @@
     "derived_state": {
       "sns_tokens_per_icp": 1,
       "buyer_total_icp_e8s": 314100000000,
-      "cf_participant_count": null,
-      "neurons_fund_participation_icp_e8s": null,
-      "direct_participation_icp_e8s": null,
-      "direct_participant_count": null,
-      "cf_neuron_count": null
+      "cf_participant_count": 0,
+      "neurons_fund_participation_icp_e8s": 0,
+      "direct_participation_icp_e8s": 314100000000,
+      "direct_participant_count": 3151,
+      "cf_neuron_count": 0
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": null,
@@ -384,7 +384,8 @@
         "64dy3-wqaaa-aaaaf-biicq-cai",
         "2notu-qyaaa-aaaar-qaeha-cai",
         "2kpva-5aaaa-aaaar-qaehq-cai",
-        "zi2i7-nqaaa-aaaar-qaemq-cai"
+        "zi2i7-nqaaa-aaaar-qaemq-cai",
+        "62rh2-kiaaa-aaaaf-bmy5q-cai"
       ],
       "archives": ["2sqpr-ciaaa-aaaaq-aaaoq-cai"]
     },
@@ -1071,7 +1072,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10093721177692796,
+    "icrc1_total_supply": 10117762555101692,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1125,11 +1126,11 @@
     "derived_state": {
       "sns_tokens_per_icp": 25,
       "buyer_total_icp_e8s": 100000000000000,
-      "cf_participant_count": null,
-      "neurons_fund_participation_icp_e8s": null,
-      "direct_participation_icp_e8s": null,
-      "direct_participant_count": null,
-      "cf_neuron_count": null
+      "cf_participant_count": 113,
+      "neurons_fund_participation_icp_e8s": 33317301010214,
+      "direct_participation_icp_e8s": 66682698989786,
+      "direct_participant_count": 2375,
+      "cf_neuron_count": 154
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1677826762,
@@ -1435,14 +1436,16 @@
         "nw5jb-vqaaa-aaaaf-qaj4a-cai",
         "74iy7-xqaaa-aaaaf-qagra-cai",
         "ny7ej-oaaaa-aaaaf-qaj5a-cai",
-        "va3nt-myaaa-aaaak-afjga-cai"
+        "va3nt-myaaa-aaaak-afjga-cai",
+        "xcvai-qiaaa-aaaak-afowq-cai",
+        "xfug4-5qaaa-aaaak-afowa-cai"
       ],
       "archives": ["6yan7-4qaaa-aaaaq-aaaua-cai"]
     },
     "meta": {
       "url": "https://kinic.io/",
       "name": "Kinic",
-      "description": "The first and only dedicated search engine for web3 content that is hosted on blockchain or decentralized storage networks",
+      "description": "The home of portable and verifiable AI.  A DAO for push to deploy vector DB, zkML, search, trading bots and much more.",
       "logo": "/v1/sns/root/7jkta-eyaaa-aaaaq-aaarq-cai/logo.png"
     },
     "parameters": {
@@ -1483,7 +1486,7 @@
         {
           "id": 4,
           "name": "Add nervous system function",
-          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1491,7 +1494,7 @@
         {
           "id": 5,
           "name": "Remove nervous system function",
-          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1499,7 +1502,7 @@
         {
           "id": 6,
           "name": "Execute nervous system function",
-          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "description": "Proposal to execute a user-defined nervous system function, previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1546,7 +1549,7 @@
         },
         {
           "id": 12,
-          "name": "Mint SNS Tokens",
+          "name": "Mint SNS tokens",
           "description": "Proposal to mint SNS tokens to a specified recipient.",
           "function_type": {
             "NativeNervousSystemFunction": {}
@@ -1628,6 +1631,19 @@
             "GenericNervousSystemFunction": {
               "validator_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
               "target_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
+            }
+          }
+        },
+        {
+          "id": 1006,
+          "name": "commit_proposed_batch_of_kinic_ui",
+          "description": "commit the batch that proposed by community who has Prepare permission",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "xcvai-qiaaa-aaaak-afowq-cai",
+              "target_canister_id": "xcvai-qiaaa-aaaak-afowq-cai",
               "validator_method_name": "validate_commit_proposed_batch",
               "target_method_name": "commit_proposed_batch"
             }
@@ -1786,7 +1802,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 605858586340519,
+    "icrc1_total_supply": 609289657485583,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1843,8 +1859,8 @@
       "sns_tokens_per_icp": 2.941617488861084,
       "buyer_total_icp_e8s": 50992351828093,
       "cf_participant_count": 90,
-      "neurons_fund_participation_icp_e8s": null,
-      "direct_participation_icp_e8s": null,
+      "neurons_fund_participation_icp_e8s": 25184413606377,
+      "direct_participation_icp_e8s": 25807938221716,
       "direct_participant_count": 741,
       "cf_neuron_count": 130
     },
@@ -1878,8 +1894,8 @@
       "archives": ["4zzzg-yyaaa-aaaaq-aaazq-cai"]
     },
     "meta": {
-      "url": "https://hotornot.wtf",
-      "name": "Hot or Not",
+      "url": "https://yral.com",
+      "name": "YRAL",
       "description": "A decentralized short-video social media platform governed by the people for the people",
       "logo": "/v1/sns/root/67bll-riaaa-aaaaq-aaauq-cai/logo.png"
     },
@@ -2160,13 +2176,13 @@
       [
         "icrc1:name",
         {
-          "Text": "HotOrNot"
+          "Text": "YRAL"
         }
       ],
       [
         "icrc1:symbol",
         {
-          "Text": "HOT"
+          "Text": "DOLR"
         }
       ],
       [
@@ -2183,7 +2199,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 101598115227376770,
+    "icrc1_total_supply": 102540130403050350,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2238,8 +2254,8 @@
       "sns_tokens_per_icp": 307.25457763671875,
       "buyer_total_icp_e8s": 107402789035875,
       "cf_participant_count": 142,
-      "neurons_fund_participation_icp_e8s": null,
-      "direct_participation_icp_e8s": null,
+      "neurons_fund_participation_icp_e8s": 50081576649922,
+      "direct_participation_icp_e8s": 57321212385953,
       "direct_participant_count": 1157,
       "cf_neuron_count": 179
     },
@@ -2596,7 +2612,7 @@
         {
           "id": 4,
           "name": "Add nervous system function",
-          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -2604,7 +2620,7 @@
         {
           "id": 5,
           "name": "Remove nervous system function",
-          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -2612,7 +2628,7 @@
         {
           "id": 6,
           "name": "Execute nervous system function",
-          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "description": "Proposal to execute a user-defined nervous system function, previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -2659,7 +2675,7 @@
         },
         {
           "id": 12,
-          "name": "Mint SNS Tokens",
+          "name": "Mint SNS tokens",
           "description": "Proposal to mint SNS tokens to a specified recipient.",
           "function_type": {
             "NativeNervousSystemFunction": {}
@@ -2832,7 +2848,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 924284911162108300,
+    "icrc1_total_supply": 926543733507357000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2887,8 +2903,8 @@
       "sns_tokens_per_icp": 100000,
       "buyer_total_icp_e8s": 2000000000000,
       "cf_participant_count": 0,
-      "neurons_fund_participation_icp_e8s": null,
-      "direct_participation_icp_e8s": null,
+      "neurons_fund_participation_icp_e8s": 0,
+      "direct_participation_icp_e8s": 2000000000000,
       "direct_participant_count": 586,
       "cf_neuron_count": 0
     },

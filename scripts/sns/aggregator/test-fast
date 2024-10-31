@@ -152,7 +152,7 @@ MAY_BUY="$(curl -sSL --fail "$AGGREGATOR_URL" | jq '(.swap_params.params.max_par
 dfx-sns-sale-buy --icp "$MAY_BUY"
 EXPECTED_FIELDS="$(curl -sSL --fail "$AGGREGATOR_URL" | jq -c '{buyer_total_icp_e8s: .swap_params.params.max_participant_icp_e8s, direct_participant_count: 1, lifecycle: 3}')"
 printf "Waiting for the SNS lifecycle to change..."
-wait_for_aggregator_to_contain "$EXPECTED_FIELDS"
+wait_for_aggregator_to_contain "$EXPECTED_FIELDS" 60
 
 : TODO: Make a slow update counter. Verify that the last number of slow updates is as expected.
 : TODO: Make a fast update counter. Verify that the number of fast updates is as expected.

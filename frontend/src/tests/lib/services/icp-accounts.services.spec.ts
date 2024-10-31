@@ -25,7 +25,6 @@ import {
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
 import { icpAccountDetailsStore } from "$lib/stores/icp-account-details.store";
-import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { NewTransaction } from "$lib/types/transaction";
 import { toIcpAccountIdentifier } from "$lib/utils/accounts.utils";
 import {
@@ -56,11 +55,15 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { AccountIdentifier } from "@dfinity/ledger-icp";
+import {
+  AccountIdentifier,
+  TxCreatedInFutureError,
+  TxTooOldError,
+} from "@dfinity/ledger-icp";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 
 vi.mock("$lib/proxy/icp-ledger.services.proxy", () => {
   return {
@@ -492,7 +495,7 @@ describe("icp-accounts.services", () => {
   describe("services", () => {
     const mainBalanceE8s = 10_000_000n;
 
-    let spyCreateSubAccount: SpyInstance;
+    let spyCreateSubAccount: MockInstance;
     beforeEach(() => {
       vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
         mainBalanceE8s
@@ -524,21 +527,20 @@ describe("icp-accounts.services", () => {
     });
 
     it("should not add subaccount if no identity", async () => {
-      const spyToastError = vi.spyOn(toastsFunctions, "toastsError");
-
       setNoIdentity();
+
+      expect(get(toastsStore)).toEqual([]);
 
       await addSubAccount({
         name: "test subaccount",
       });
 
-      expect(spyToastError).toBeCalled();
-      expect(spyToastError).toBeCalledWith({
-        labelKey: "error__account.create_subaccount",
-        err: new Error(en.error.missing_identity),
-        renderAsHtml: false,
-      });
-
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, there was an unexpected error when creating your linked account, please try again. The operation cannot be executed without any identity.",
+        },
+      ]);
       resetIdentity();
     });
   });
@@ -551,8 +553,8 @@ describe("icp-accounts.services", () => {
       destinationAddress: mockSubAccount.identifier,
       amount: 1,
     };
-    let queryAccountBalanceSpy: SpyInstance;
-    let spySendICP: SpyInstance;
+    let queryAccountBalanceSpy: MockInstance;
+    let spySendICP: MockInstance;
     beforeEach(() => {
       queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
@@ -564,6 +566,8 @@ describe("icp-accounts.services", () => {
       await transferICP(transferICPParams);
 
       expect(spySendICP).toHaveBeenCalled();
+
+      expect(get(toastsStore)).toEqual([]);
     });
 
     it("should not transfer ICP for invalid address", async () => {
@@ -652,12 +656,63 @@ describe("icp-accounts.services", () => {
       });
       expect(queryAccountBalanceSpy).toHaveBeenCalledTimes(4);
     });
+
+    it("should show toast on error", async () => {
+      spySendICP.mockRejectedValue(new Error());
+
+      expect(get(toastsStore)).toEqual([]);
+
+      await transferICP(transferICPParams);
+
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, there was an error trying to execute the transaction. ",
+        },
+      ]);
+
+      expect(queryAccountBalanceSpy).not.toHaveBeenCalled();
+    });
+
+    it("should show toast on TxTooOldError", async () => {
+      spySendICP.mockRejectedValue(new TxTooOldError());
+
+      expect(get(toastsStore)).toEqual([]);
+
+      await transferICP(transferICPParams);
+
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Transaction is too old, could not be completed. Make sure your computer’s clock is set correctly, and try again. ",
+        },
+      ]);
+
+      expect(queryAccountBalanceSpy).not.toHaveBeenCalled();
+    });
+
+    it("should show toast on TxCreatedInFutureError", async () => {
+      spySendICP.mockRejectedValue(new TxCreatedInFutureError());
+
+      expect(get(toastsStore)).toEqual([]);
+
+      await transferICP(transferICPParams);
+
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Transaction was created in the future, could not be completed. Make sure your computer’s clock is set correctly, and try again. ",
+        },
+      ]);
+
+      expect(queryAccountBalanceSpy).not.toHaveBeenCalled();
+    });
   });
 
   describe("rename", () => {
-    let queryAccountBalanceSpy: SpyInstance;
-    let queryAccountSpy: SpyInstance;
-    let spyRenameSubAccount: SpyInstance;
+    let queryAccountBalanceSpy: MockInstance;
+    let queryAccountSpy: MockInstance;
+    let spyRenameSubAccount: MockInstance;
     beforeEach(() => {
       queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
@@ -716,59 +771,55 @@ describe("icp-accounts.services", () => {
     });
 
     it("should not rename subaccount if no identity", async () => {
-      const spyToastError = vi.spyOn(toastsFunctions, "toastsError");
-
       setNoIdentity();
+
+      expect(get(toastsStore)).toEqual([]);
 
       await renameSubAccount({
         newName: "test subaccount",
         selectedAccount: mockSubAccount,
       });
 
-      expect(spyToastError).toBeCalled();
-      expect(spyToastError).toBeCalledWith({
-        labelKey: "error.rename_subaccount",
-        err: new Error(en.error.missing_identity),
-        renderAsHtml: false,
-      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "An error occurred while renaming your linked account. The operation cannot be executed without any identity.",
+        },
+      ]);
 
       resetIdentity();
-
-      spyToastError.mockClear();
     });
 
     it("should not rename subaccount if no selected account", async () => {
-      const spyToastError = vi.spyOn(toastsFunctions, "toastsError");
+      expect(get(toastsStore)).toEqual([]);
 
       await renameSubAccount({
         newName: "test subaccount",
         selectedAccount: undefined,
       });
 
-      expect(spyToastError).toBeCalled();
-      expect(spyToastError).toBeCalledWith({
-        labelKey: "error.rename_subaccount_no_account",
-        renderAsHtml: false,
-      });
-
-      spyToastError.mockClear();
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "No linked account provided.",
+        },
+      ]);
     });
 
     it("should not rename subaccount if type is not subaccount", async () => {
-      const spyToastError = vi.spyOn(toastsFunctions, "toastsError");
+      expect(get(toastsStore)).toEqual([]);
 
       await renameSubAccount({
         newName: "test subaccount",
         selectedAccount: mockMainAccount,
       });
 
-      expect(spyToastError).toBeCalled();
-      expect(spyToastError).toBeCalledWith({
-        labelKey: "error.rename_subaccount_type",
-        renderAsHtml: false,
-      });
-
-      spyToastError.mockClear();
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "The account provided is not a linked account. Only linked account can be renamed.",
+        },
+      ]);
     });
   });
 

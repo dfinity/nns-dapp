@@ -1,50 +1,38 @@
 <script lang="ts">
   import NnsProposalsList from "$lib/components/proposals/NnsProposalsList.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
-  import {
-    sortedProposals,
-    filteredProposals,
-  } from "$lib/derived/proposals.derived";
+  import { sortedProposals } from "$lib/derived/proposals.derived";
   import {
     listNextProposals,
     listProposals,
-  } from "$lib/services/$public/proposals.services";
-  import { listNeurons } from "$lib/services/neurons.services";
-  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  } from "$lib/services/public/proposals.services";
   import {
     proposalsFiltersStore,
     proposalsStore,
   } from "$lib/stores/proposals.store";
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { notForceCallStrategy } from "$lib/utils/env.utils";
   import { reloadRouteData } from "$lib/utils/navigation.utils";
-  import {
-    hasMatchingProposals,
-    lastProposalId,
-  } from "$lib/utils/proposals.utils";
+  import { lastProposalId } from "$lib/utils/proposals.utils";
   import { debounce } from "@dfinity/utils";
   import { onMount } from "svelte";
 
   // It's exported so that we can test the value
   export let disableInfiniteScroll = false;
 
-  $: if ($authSignedInStore) {
-    listNeurons();
-  }
-
   let loading = true;
   let hidden = false;
   let initialized = false;
 
+  // Used to determine if a request is still the most recent request when its
+  // response comes back.
+  let lastProposalsRequestToken: object = {};
+
   const loadFinished = ({ paginationOver }: { paginationOver: boolean }) => {
-    loading = false;
     disableInfiniteScroll = paginationOver;
   };
 
   const loadError = (err: unknown) => {
-    loading = false;
     disableInfiniteScroll = true;
 
     toastsError({
@@ -53,28 +41,33 @@
     });
   };
 
-  const findNextProposals = async () => {
+  const wrapProposalLoading = async (promise: Promise<void>) => {
+    const proposalsRequestToken = {};
+    lastProposalsRequestToken = proposalsRequestToken;
     loading = true;
 
     try {
-      await listNextProposals({
+      await promise;
+    } catch (err: unknown) {
+      loadError(err);
+    } finally {
+      // Only reset loading if there isn't a newer request in flight.
+      if (lastProposalsRequestToken === proposalsRequestToken) {
+        loading = false;
+      }
+    }
+  };
+
+  const findNextProposals = () =>
+    wrapProposalLoading(
+      listNextProposals({
         beforeProposal: lastProposalId($sortedProposals.proposals),
         loadFinished,
-      });
-    } catch (err: unknown) {
-      loadError(err);
-    }
-  };
+      })
+    );
 
-  const findProposals = async () => {
-    loading = true;
-
-    try {
-      await listProposals({ loadFinished });
-    } catch (err: unknown) {
-      loadError(err);
-    }
-  };
+  const findProposals = () =>
+    wrapProposalLoading(listProposals({ loadFinished }));
 
   let debounceFindProposals: () => void | undefined;
 
@@ -114,48 +107,30 @@
 
     // Show spinner right away avoiding debounce
     loading = true;
-    proposalsStore.setProposals({ proposals: [], certified: undefined });
+    const mutableProposalsStore =
+      proposalsStore.getSingleMutationProposalsStore();
+    mutableProposalsStore.set({
+      // This `certified` is what the subscriber of the store sees.
+      data: { proposals: [], certified: undefined },
+      // This `certified` indicates that the store mutation is final.
+      certified: true,
+    });
 
     debounceFindProposals?.();
   };
 
-  // Neurons and proposals are loaded at the same time. But once neurons are
-  // loaded, proposals are loaded again. So it's possible that the component
-  // goes back into loading state immediately after proposals are loaded.
-  // TODO: Fix NnsProposals to load proposals only once and remove the
-  // work-around from NnsProposalList.page-object.ts
-  $: $definedNeuronsStore, $proposalsFiltersStore, applyFilter();
-
-  const updateNothingFound = () => {
-    // Update the "nothing found" UI information only when the results of the certified query has been received to minimize UI glitches
-    if ($filteredProposals.certified === false && notForceCallStrategy()) {
-      if (loading) nothingFound = false;
-      return;
-    }
-
-    nothingFound =
-      initialized &&
-      !loading &&
-      !hasMatchingProposals({
-        proposals: $filteredProposals.proposals,
-        filters: $proposalsFiltersStore,
-      });
-  };
-
-  let nothingFound: boolean;
-  $: initialized, loading, $filteredProposals, (() => updateNothingFound())();
+  $: $proposalsFiltersStore, applyFilter();
 
   let loadingAnimation: "spinner" | "skeleton" | undefined = undefined;
   $: loadingAnimation = !loading
     ? undefined
     : $sortedProposals.proposals.length > 0
-    ? "spinner"
-    : "skeleton";
+      ? "spinner"
+      : "skeleton";
 </script>
 
 <NnsProposalsList
   {hidden}
-  {nothingFound}
   {disableInfiniteScroll}
   {loading}
   {loadingAnimation}

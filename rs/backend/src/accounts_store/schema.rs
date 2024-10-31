@@ -112,9 +112,6 @@ pub trait AccountsDbTrait {
 
     /// Returns an iterator over the entries in the map where keys belong to the specified range.
     fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_>;
-
-    /// Gets the label of the storage schema.
-    fn schema_label(&self) -> SchemaLabel;
 }
 
 /// A label to identify the schema.

@@ -27,6 +27,7 @@ export const mockFullNeuron: Neuron = {
   joinedCommunityFundTimestampSeconds: undefined,
   dissolveState: undefined,
   followees: [],
+  visibility: undefined,
 };
 
 export const createMockFullNeuron = (id: number | bigint) => {
@@ -50,6 +51,7 @@ export const mockNeuron: NeuronInfo = {
   retrievedAtTimestampSeconds: 10n,
   votingPower: 300_000_000n,
   ageSeconds: 100n,
+  visibility: undefined,
   fullNeuron: mockFullNeuron,
 };
 
@@ -115,4 +117,5 @@ export const mockTableNeuron: TableNeuron = {
   dissolveDelaySeconds: 1n,
   state: NeuronState.Locked,
   tags: [],
+  isPublic: undefined,
 };

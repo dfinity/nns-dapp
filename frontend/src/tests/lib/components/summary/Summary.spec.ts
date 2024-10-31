@@ -5,7 +5,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { page } from "$mocks/$app/stores";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
-import { UniversePageSummaryPo } from "$tests/page-objects/UniversePageSummary.page-object";
+import { UniverseSummaryPo } from "$tests/page-objects/UniverseSummary.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -14,7 +14,7 @@ import { render } from "@testing-library/svelte";
 describe("Summary", () => {
   const renderComponent = () => {
     const { container } = render(Summary);
-    return UniversePageSummaryPo.under(new JestPageObjectElement(container));
+    return UniverseSummaryPo.under(new JestPageObjectElement(container));
   };
 
   beforeEach(() => {

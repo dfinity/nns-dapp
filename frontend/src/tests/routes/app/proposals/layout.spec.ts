@@ -8,10 +8,6 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("Layout", () => {
-  afterAll(() => {
-    vi.clearAllMocks();
-  });
-
   it("should go back to the proposal page", async () => {
     page.mock({
       data: {

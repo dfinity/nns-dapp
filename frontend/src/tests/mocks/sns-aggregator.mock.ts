@@ -1,9 +1,11 @@
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type {
   CachedNervousFunctionDto,
+  CachedNervousSystemParametersDto,
   CachedSnsDto,
   CachedSnsTokenMetadataDto,
 } from "$lib/types/sns-aggregator";
+import { convertDtoToTokenMetadata } from "$lib/utils/sns-aggregator-converters.utils";
 import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle, type SnsNervousSystemFunction } from "@dfinity/sns";
@@ -12,17 +14,21 @@ import { mockQueryTokenResponse } from "./sns-projects.mock";
 
 export const aggregatorMockSnsesDataDto: CachedSnsDto[] = tenAggregatedSnses;
 
-// It should match the token below
-export const aggregatorTokenMock: IcrcTokenMetadata = {
-  name: "CatalyzeDAO",
-  symbol: "CAT",
-  fee: 100000n,
-  decimals: 8,
+export const aggregatorSnsMockDto: CachedSnsDto = {
+  // This is the YRAL (fka HotOrNot) SNS.
+  // We picked this as a suitable mock because:
+  // 1. It was not aborted.
+  // 2. It was not sold out, so it doesn't prevent testing additional sales.
+  // 3. It did not have restricted countries.
+  // But any test that depends on specific values should declare those
+  // explcitily in the test.
+  ...aggregatorMockSnsesDataDto[4],
 };
 
-export const aggregatorSnsMockDto: CachedSnsDto = {
-  ...aggregatorMockSnsesDataDto[7],
-};
+// It should match the token in the aggregatorSnsMockDto above.
+export const aggregatorTokenMock: IcrcTokenMetadata = convertDtoToTokenMetadata(
+  aggregatorSnsMockDto.icrc1_metadata
+);
 
 const convertToNervousFunctionDto = ({
   id,
@@ -65,7 +71,9 @@ const createQueryMetadataResponse = ({
 
 export const aggregatorSnsMockWith = ({
   rootCanisterId = "4nwps-saaaa-aaaaa-aabjq-cai",
+  governanceCanisterId = "5grkr-3aaaa-aaaaq-aaa5a-cai",
   ledgerCanisterId = "5bqmf-wyaaa-aaaaq-aaa5q-cai",
+  indexCanisterId = "5tw34-2iaaa-aaaaq-aaa6q-cai",
   swapCanisterId = "5ux5i-xqaaa-aaaaq-aaa6a-cai",
   lifecycle = SnsSwapLifecycle.Committed,
   restrictedCountries,
@@ -76,9 +84,18 @@ export const aggregatorSnsMockWith = ({
   nervousFunctions,
   swapDueTimestampSeconds,
   nnsProposalId,
+  totalTokenSupply,
+  nervousSystemParameters,
+  neuronMinimumDissolveDelayToVoteSeconds,
+  maxDissolveDelaySeconds,
+  maxDissolveDelayBonusPercentage,
+  maxAgeBonusPercentage,
+  neuronMinimumStakeE8s,
 }: {
   rootCanisterId?: string;
+  governanceCanisterId?: string;
   ledgerCanisterId?: string;
+  indexCanisterId?: string;
   swapCanisterId?: string;
   lifecycle?: SnsSwapLifecycle;
   restrictedCountries?: string[];
@@ -90,13 +107,22 @@ export const aggregatorSnsMockWith = ({
   nervousFunctions?: SnsNervousSystemFunction[];
   swapDueTimestampSeconds?: number;
   nnsProposalId?: number;
+  totalTokenSupply?: bigint;
+  nervousSystemParameters?: CachedNervousSystemParametersDto;
+  neuronMinimumDissolveDelayToVoteSeconds?: bigint;
+  maxDissolveDelaySeconds?: bigint;
+  maxDissolveDelayBonusPercentage?: number;
+  maxAgeBonusPercentage?: number;
+  neuronMinimumStakeE8s?: bigint;
 }): CachedSnsDto => ({
   index: index ?? aggregatorSnsMockDto.index,
   ...aggregatorSnsMockDto,
   canister_ids: {
     ...aggregatorSnsMockDto.canister_ids,
     root_canister_id: rootCanisterId,
+    governance_canister_id: governanceCanisterId,
     ledger_canister_id: ledgerCanisterId,
+    index_canister_id: indexCanisterId,
     swap_canister_id: swapCanisterId,
   },
   list_sns_canisters: {
@@ -125,16 +151,48 @@ export const aggregatorSnsMockWith = ({
     derived: {
       ...aggregatorSnsMockDto.swap_state.derived,
       direct_participant_count: nonNullish(directParticipantCount?.[0])
-        ? Number(directParticipantCount[0]) ?? null
+        ? (Number(directParticipantCount[0]) ?? null)
         : aggregatorSnsMockDto.swap_state.derived.direct_participant_count,
     },
   },
+  icrc1_total_supply: nonNullish(totalTokenSupply)
+    ? Number(totalTokenSupply)
+    : aggregatorSnsMockDto.icrc1_total_supply,
   parameters: {
     ...aggregatorSnsMockDto.parameters,
     functions:
       nervousFunctions?.map(convertToNervousFunctionDto) ??
       aggregatorSnsMockDto.parameters.functions,
   },
+  // Don't use `isNullish` to allow setting to `null`.
+  nervous_system_parameters:
+    nervousSystemParameters !== undefined
+      ? nervousSystemParameters
+      : {
+          ...aggregatorSnsMockDto.nervous_system_parameters,
+          neuron_minimum_dissolve_delay_to_vote_seconds: nonNullish(
+            neuronMinimumDissolveDelayToVoteSeconds
+          )
+            ? Number(neuronMinimumDissolveDelayToVoteSeconds)
+            : aggregatorSnsMockDto.nervous_system_parameters
+                .neuron_minimum_dissolve_delay_to_vote_seconds,
+          max_dissolve_delay_seconds: nonNullish(maxDissolveDelaySeconds)
+            ? Number(maxDissolveDelaySeconds)
+            : aggregatorSnsMockDto.nervous_system_parameters
+                .max_dissolve_delay_seconds,
+          max_dissolve_delay_bonus_percentage:
+            maxDissolveDelayBonusPercentage ??
+            aggregatorSnsMockDto.nervous_system_parameters
+              .max_dissolve_delay_bonus_percentage,
+          max_age_bonus_percentage:
+            maxAgeBonusPercentage ??
+            aggregatorSnsMockDto.nervous_system_parameters
+              .max_age_bonus_percentage,
+          neuron_minimum_stake_e8s: nonNullish(neuronMinimumStakeE8s)
+            ? Number(neuronMinimumStakeE8s)
+            : aggregatorSnsMockDto.nervous_system_parameters
+                .neuron_minimum_stake_e8s,
+        },
   meta: {
     ...aggregatorSnsMockDto.meta,
     name: projectName ?? aggregatorSnsMockDto.meta.name,
@@ -163,7 +221,7 @@ export const aggregatorSnsMockWith = ({
   derived_state: {
     ...aggregatorSnsMockDto.derived_state,
     direct_participant_count: nonNullish(directParticipantCount?.[0])
-      ? Number(directParticipantCount[0]) ?? null
+      ? (Number(directParticipantCount[0]) ?? null)
       : aggregatorSnsMockDto.swap_state.derived.direct_participant_count,
   },
   icrc1_metadata: nonNullish(tokenMetadata)

@@ -8,7 +8,7 @@
   import type { NewTransaction } from "$lib/types/transaction";
   import type { TransactionNetwork } from "$lib/types/transaction";
   import { busy } from "@dfinity/gix-components";
-  import type { TokenAmountV2, TokenAmount, Token } from "@dfinity/utils";
+  import type { Token, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   export let transaction: NewTransaction;

@@ -43,7 +43,7 @@ describe("proposals-derived", () => {
       },
     ];
 
-    proposalsStore.setProposals({
+    proposalsStore.setProposalsForTesting({
       proposals: storeProposals as ProposalInfo[],
       certified: true,
     });
@@ -54,13 +54,13 @@ describe("proposals-derived", () => {
 
   describe("filteredActionableProposals", () => {
     beforeEach(() => {
-      proposalsStore.reset();
+      proposalsStore.resetForTesting();
       proposalsFiltersStore.reset();
       actionableNnsProposalsStore.reset();
     });
 
     it("should append isActionable", () => {
-      proposalsStore.setProposals({
+      proposalsStore.setProposalsForTesting({
         proposals: [...mockProposals],
         certified: true,
       });
@@ -87,7 +87,7 @@ describe("proposals-derived", () => {
     });
 
     it("should add isActionable=undefined when actionables not available", () => {
-      proposalsStore.setProposals({
+      proposalsStore.setProposalsForTesting({
         proposals: [...mockProposals],
         certified: true,
       });

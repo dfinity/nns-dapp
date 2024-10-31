@@ -11,8 +11,7 @@ import type { Mock } from "vitest";
 vi.mock("$lib/proxy/icp-ledger.services.proxy");
 
 describe("HardwareWalletConnectAction", () => {
-  afterEach(() => {
-    vi.clearAllMocks();
+  beforeEach(() => {
     vi.restoreAllMocks();
   });
 
@@ -25,7 +24,7 @@ describe("HardwareWalletConnectAction", () => {
   });
 
   describe("connecting", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       (connectToHardwareWalletProxy as Mock).mockImplementation(
         async (callback) =>
           callback({ connectionState: LedgerConnectionState.CONNECTING })
@@ -42,7 +41,7 @@ describe("HardwareWalletConnectAction", () => {
   });
 
   describe("connected", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       (connectToHardwareWalletProxy as Mock).mockImplementation(
         async (callback) =>
           callback({
@@ -71,7 +70,7 @@ describe("HardwareWalletConnectAction", () => {
   });
 
   describe("not connected", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       (connectToHardwareWalletProxy as Mock).mockImplementation(
         async (callback) =>
           callback({

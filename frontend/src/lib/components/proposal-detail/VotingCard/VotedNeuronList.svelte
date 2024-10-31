@@ -6,8 +6,8 @@
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
-    type CompactNeuronInfo,
     neuronsVotingPower,
+    type CompactNeuronInfo,
   } from "$lib/utils/neuron.utils";
   import { Vote } from "@dfinity/nns";
 
@@ -25,7 +25,7 @@
     ({ vote }) => neuronsVotedForProposal[0]?.vote !== vote
   )
     ? Vote.Unspecified
-    : neuronsVotedForProposal[0]?.vote ?? Vote.Unspecified;
+    : (neuronsVotedForProposal[0]?.vote ?? Vote.Unspecified);
 </script>
 
 {#if votedNeuronCount > 0}

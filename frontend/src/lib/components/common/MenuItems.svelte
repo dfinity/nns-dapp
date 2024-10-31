@@ -1,32 +1,30 @@
 <script lang="ts">
-  import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
+  import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
   import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
-  import {
-    canistersPathStore,
-    neuronsPathStore,
-    proposalsPathStore,
-  } from "$lib/derived/paths.derived";
-  import { ENABLE_PROJECTS_TABLE } from "$lib/stores/feature-flags.store";
+  import { proposalsPathStore } from "$lib/derived/paths.derived";
   import { i18n } from "$lib/stores/i18n";
   import {
     ACTIONABLE_PROPOSALS_URL,
     isSelectedPath,
   } from "$lib/utils/navigation.utils";
+  import SourceCodeButton from "./SourceCodeButton.svelte";
   import {
-    IconExplore,
     IconNeurons,
     IconRocketLaunch,
     IconVote,
     IconWallet,
     MenuItem,
+    ThemeToggleButton,
   } from "@dfinity/gix-components";
+  import { layoutMenuOpen, menuCollapsed } from "@dfinity/gix-components";
   import type { ComponentType } from "svelte";
+  import { cubicIn, cubicOut } from "svelte/easing";
+  import { scale } from "svelte/transition";
 
   let routes: {
     context: string;
@@ -37,8 +35,7 @@
       | typeof IconWallet
       | typeof IconNeurons
       | typeof IconVote
-      | typeof IconRocketLaunch
-      | typeof IconExplore;
+      | typeof IconRocketLaunch;
     statusIcon?: ComponentType;
   }[];
   $: routes = [
@@ -54,7 +51,7 @@
     },
     {
       context: "neurons",
-      href: $ENABLE_PROJECTS_TABLE ? AppPath.Staking : $neuronsPathStore,
+      href: AppPath.Staking,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
         paths: [AppPath.Staking, AppPath.Neurons, AppPath.Neuron],
@@ -86,20 +83,10 @@
       title: $i18n.navigation.launchpad,
       icon: IconRocketLaunch,
     },
-    {
-      context: "canisters",
-      href: $canistersPathStore,
-      selected: isSelectedPath({
-        currentPath: $pageStore.path,
-        paths: [AppPath.Canisters, AppPath.Canister],
-      }),
-      title: $i18n.navigation.canisters,
-      icon: IconExplore,
-    },
   ];
 </script>
 
-<TestIdWrapper testId="menu-items-component">
+<div data-tid="menu-items-component" class="menu-container">
   {#each routes as { context, title, href, icon, statusIcon, selected } (context)}
     <MenuItem {href} testId={`menuitem-${context}`} {selected} {title}>
       <svelte:component this={icon} slot="icon" />
@@ -112,5 +99,42 @@
     <GetTokens />
   {/if}
 
-  <MenuMetrics />
-</TestIdWrapper>
+  {#if !$menuCollapsed || $layoutMenuOpen}
+    <div
+      data-tid="menu-footer"
+      class="menu-footer"
+      out:scale={{ duration: 200, easing: cubicOut }}
+      in:scale={{ duration: 200, easing: cubicIn }}
+    >
+      <TotalValueLocked layout="stacked" />
+      <div class="menu-footer-buttons">
+        <div class="grow-item"><SourceCodeButton /></div>
+        <ThemeToggleButton />
+      </div>
+    </div>
+  {/if}
+</div>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  .menu-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .menu-footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+    margin-top: auto;
+    margin-right: var(--padding-3x);
+  }
+  .menu-footer-buttons {
+    display: flex;
+    gap: var(--padding);
+    .grow-item {
+      flex-grow: 1;
+    }
+  }
+</style>

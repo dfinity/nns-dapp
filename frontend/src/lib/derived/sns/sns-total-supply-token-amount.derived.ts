@@ -1,7 +1,7 @@
 import {
   snsTotalTokenSupplyStore,
   type SnsTotalTokenSupplyStoreData,
-} from "$lib/stores/sns-total-token-supply.store";
+} from "$lib/derived/sns-total-token-supply.derived";
 import { snsSummariesStore } from "$lib/stores/sns.store";
 import type { RootCanisterIdText, SnsSummary } from "$lib/types/sns";
 import { nonNullish, TokenAmountV2 } from "@dfinity/utils";

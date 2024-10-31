@@ -16,13 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install didc
-        run: |
-          USER_BIN="$HOME/.local/bin"
-          mkdir -p "$USER_BIN"
-          echo "$USER_BIN" >> $GITHUB_PATH
-          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
-          # TODO: Make `didc` support `binstall`, then use `binstall` here.
-          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
+        run: scripts/install-didc
       - name: Find newer IC release, if any
         id: update
         run: |
@@ -56,14 +50,14 @@ jobs:
       - name: Create Pull Request
         id: cpr
         # Note: If there were no changes, this step creates no PR.
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GIX_CREATE_PR_PAT }}
           commit-message: Update aggregator
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>
           base: main
-          reviewers: mstrasinskis, dskloetd
+          reviewers: mstrasinskis, dskloetd, anchpop, aterga
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
           add-paths: |
             dfx.json

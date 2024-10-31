@@ -100,14 +100,10 @@ jobs:
         run: |
           set -x
           CANISTER_NAME="nns-dapp"
-          scripts/nns-dapp/split-assets
           # Note: inputs.mode is set if this workflow is run manually, using `workflow_dispatch` defined above.
           #       If the workflow is triggered in another way, the inputs are not defined so we need to specify a default again.
           ARGUMENT="$(cat "out/nns-dapp-arg-${DFX_NETWORK}.did")"
-          dfx canister install --mode "${{ inputs.mode || 'upgrade' }}" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$ARGUMENT" --wasm out/nns-dapp_noassets.wasm.gz
-          ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xaa.tar.xz
-          ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xab.tar.xz
-          ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xac.tar.xz
+          dfx canister install --mode "${{ inputs.mode || 'upgrade' }}" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$ARGUMENT" --wasm out/nns-dapp.wasm.gz
       - name: Deploy sns_aggregator
         if: (inputs.canisters == 'all') || (inputs.canisters == 'sns_aggregator') || ( github.event_name != 'workflow_dispatch' )
         run: |

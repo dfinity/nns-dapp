@@ -155,6 +155,28 @@ type HttpResponse =
         body: blob;
     };
 
+type ImportedToken = record {
+  ledger_canister_id: principal;
+  index_canister_id: opt principal;
+};
+
+type ImportedTokens = record {
+  imported_tokens: vec ImportedToken;
+};
+
+type SetImportedTokensResponse =
+    variant {
+        Ok;
+        AccountNotFound;
+        TooManyImportedTokens: record{limit: int32};
+    };
+
+type GetImportedTokensResponse =
+    variant {
+        Ok: ImportedTokens;
+        AccountNotFound;
+    };
+
 service : {
     get_account: () -> (GetAccountResponse) query;
     add_account: () -> (AccountIdentifier);
@@ -165,6 +187,8 @@ service : {
     attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
     rename_canister: (RenameCanisterRequest) -> (RenameCanisterResponse);
     detach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
+    set_imported_tokens: (ImportedTokens) -> (SetImportedTokensResponse);
+    get_imported_tokens: () -> (GetImportedTokensResponse) query;
     get_proposal_payload: (nat64) -> (GetProposalPayloadResponse);
     get_stats: () -> (Stats) query;
 

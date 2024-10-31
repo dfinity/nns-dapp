@@ -11,15 +11,15 @@ import {
   CKUSDC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckusdc-canister-ids.constants";
 import { loadIcrcCanisters } from "$lib/services/icrc-canisters.services";
+import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { get } from "svelte/store";
 
 describe("icrc-canisters.services", () => {
   describe("loadIcrcCanisters", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
-      icrcCanistersStore.reset();
+      defaultIcrcCanistersStore.reset();
     });
 
     describe("if ckethtest is enabled", () => {
@@ -28,10 +28,10 @@ describe("icrc-canisters.services", () => {
       });
 
       it("should load cketh and ckusdc canisters", async () => {
-        expect(get(icrcCanistersStore)).toEqual({});
+        expect(get(defaultIcrcCanistersStore)).toEqual({});
         await loadIcrcCanisters();
 
-        expect(get(icrcCanistersStore)).toEqual({
+        expect(get(defaultIcrcCanistersStore)).toEqual({
           [CKETH_UNIVERSE_CANISTER_ID.toText()]: {
             ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,
             indexCanisterId: CKETH_INDEX_CANISTER_ID,
@@ -48,31 +48,31 @@ describe("icrc-canisters.services", () => {
       });
 
       it("should not load canisters if already present", async () => {
-        vi.spyOn(icrcCanistersStore, "setCanisters");
-        icrcCanistersStore.setCanisters({
+        vi.spyOn(defaultIcrcCanistersStore, "setCanisters");
+        defaultIcrcCanistersStore.setCanisters({
           ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,
           indexCanisterId: CKETH_INDEX_CANISTER_ID,
         });
-        icrcCanistersStore.setCanisters({
+        defaultIcrcCanistersStore.setCanisters({
           ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
           indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
         });
-        icrcCanistersStore.setCanisters({
+        defaultIcrcCanistersStore.setCanisters({
           ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
           indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
         });
-        expect(icrcCanistersStore.setCanisters).toHaveBeenCalledTimes(3);
+        expect(defaultIcrcCanistersStore.setCanisters).toHaveBeenCalledTimes(3);
         await loadIcrcCanisters();
-        expect(icrcCanistersStore.setCanisters).toHaveBeenCalledTimes(3);
+        expect(defaultIcrcCanistersStore.setCanisters).toHaveBeenCalledTimes(3);
       });
     });
 
     describe("if ckethtest is disabled", () => {
       it("should load cketh and ckusdc canisters", async () => {
-        expect(get(icrcCanistersStore)).toEqual({});
+        expect(get(defaultIcrcCanistersStore)).toEqual({});
         await loadIcrcCanisters();
 
-        expect(get(icrcCanistersStore)).toEqual({
+        expect(get(defaultIcrcCanistersStore)).toEqual({
           [CKETH_UNIVERSE_CANISTER_ID.toText()]: {
             ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,
             indexCanisterId: CKETH_INDEX_CANISTER_ID,

@@ -3,15 +3,11 @@ import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
 import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import {
-  createMockSnsNeuron,
-  snsNervousSystemParametersMock,
-} from "$tests/mocks/sns-neurons.mock";
+import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { SnsNeuronsPo } from "$tests/page-objects/SnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -41,6 +37,7 @@ describe("SnsNeurons", () => {
     id: [1, 2, 5],
     stake: disbursedNeuronStake,
     maturity: 0n,
+    stakedMaturity: 0n,
   });
   const neuronNFStake = 400_000_000n;
   const neuronNF: SnsNeuron = {
@@ -61,11 +58,6 @@ describe("SnsNeurons", () => {
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
       mockSnsMainAccount.balanceUlps
     );
-    snsParametersStore.setParameters({
-      rootCanisterId,
-      certified: true,
-      parameters: snsNervousSystemParametersMock,
-    });
 
     setSnsProjects([
       {
@@ -96,7 +88,6 @@ describe("SnsNeurons", () => {
       const po = await renderComponent();
 
       expect(await po.hasSpinner()).toBe(true);
-      expect(await po.getSkeletonCardPo().isPresent()).toBe(false);
     });
 
     it("should not render empty text", async () => {
@@ -146,6 +137,12 @@ describe("SnsNeurons", () => {
     });
 
     it("should claim unclaimed neuron", async () => {
+      setSnsProjects([
+        {
+          rootCanisterId,
+          neuronMinimumStakeE8s: 50_000_000n,
+        },
+      ]);
       const unclaimedNeuronIndex1 = 0;
       const unclaimedNeuronIndex2 = 1;
       const unclaimedNeuronSubaccount1 = neuronSubaccount({

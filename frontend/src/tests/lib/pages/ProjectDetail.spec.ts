@@ -11,7 +11,6 @@ import { NOT_LOADED } from "$lib/constants/stores.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import { cancelPollGetOpenTicket } from "$lib/services/sns-sale.services";
-import { authStore } from "$lib/stores/auth.store";
 import { getOrCreateSnsFinalizationStatusStore } from "$lib/stores/sns-finalization-status.store";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
@@ -22,9 +21,9 @@ import { formatTokenE8s, numberToE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeLocationApi from "$tests/fakes/location-api.fake";
 import {
-  mockAuthStoreNoIdentitySubscribe,
-  mockAuthStoreSubscribe,
   mockPrincipal,
+  resetIdentity,
+  setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import {
@@ -126,9 +125,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
   describe("not logged in user", () => {
     beforeEach(() => {
       page.mock({ data: { universe: null } });
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreNoIdentitySubscribe
-      );
+      setNoIdentity();
     });
 
     // TODO: Remove once all SNSes support buyers count in derived state
@@ -320,7 +317,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         setSnsProjects([
           {
             rootCanisterId,
-            lifecycle: SnsSwapLifecycle.Committed,
+            // Open lifecycle makes the watcher poll for derived state.
+            lifecycle: SnsSwapLifecycle.Open,
             certified: true,
             nnsProposalId: Number(mockProposalInfo.id),
           },
@@ -334,14 +332,31 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
         expect(queryByTestId("proposal-card")).toBeInTheDocument();
       });
+
+      it("should not reload proposal when derived state updates", async () => {
+        render(ProjectDetail, props);
+
+        await runResolvedPromises();
+
+        vi.mocked(proposalsApi.queryProposal).mockClear();
+
+        expect(snsApi.querySnsDerivedState).toBeCalledTimes(0);
+        expect(proposalsApi.queryProposal).toBeCalledTimes(0);
+
+        await advanceTime(WATCH_SALE_STATE_EVERY_MILLISECONDS);
+
+        // There used to be a bug where the proposal get reloaded every time the
+        // derived state was updated, even though the proposal card won't change.
+        // So we verify that the derived state is queried but the proposal is not.
+        expect(snsApi.querySnsDerivedState).toBeCalledTimes(1);
+        expect(proposalsApi.queryProposal).toBeCalledTimes(0);
+      });
     });
   });
 
   describe("logged in user", () => {
     beforeEach(() => {
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
+      resetIdentity();
 
       vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
       vi.spyOn(snsApi, "querySnsLifecycle").mockResolvedValue({
@@ -766,9 +781,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         },
       ]);
       page.mock({ data: { universe: null } });
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreNoIdentitySubscribe
-      );
+      setNoIdentity();
     });
 
     it("should redirect to launchpad", async () => {
@@ -795,9 +808,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         },
       ]);
       page.mock({ data: { universe: null } });
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreNoIdentitySubscribe
-      );
+      setNoIdentity();
     });
 
     it("should redirect to launchpad", async () => {

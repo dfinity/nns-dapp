@@ -1,7 +1,8 @@
 use crate::canisters::{cmc, governance};
+use crate::ledger_sync;
 use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
-use crate::state::STATE;
-use crate::{ledger_sync, Cycles};
+use crate::state::with_state_mut;
+use crate::Cycles;
 use cycles_minting_canister::{NotifyCreateCanister, NotifyError, NotifyTopUp};
 use dfn_core::api::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
@@ -11,12 +12,11 @@ use icp_ledger::{BlockIndex, Memo};
 pub async fn run_periodic_tasks() {
     ledger_sync::sync_transactions().await;
 
-    STATE.with(|state| {
-        state.performance.borrow_mut().increment_periodic_tasks_run();
+    with_state_mut(|state| {
+        state.performance.increment_periodic_tasks_run();
     });
 
-    let maybe_transaction_to_process =
-        STATE.with(|s| s.accounts_store.borrow_mut().try_take_next_transaction_to_process());
+    let maybe_transaction_to_process = with_state_mut(|s| s.accounts_store.try_take_next_transaction_to_process());
     if let Some((block_height, transaction_to_process)) = maybe_transaction_to_process {
         match transaction_to_process {
             MultiPartTransactionToBeProcessed::ParticipateSwap(_principal, _from, _to, _swap_canister_id) => {
@@ -26,9 +26,10 @@ pub async fn run_periodic_tasks() {
             MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo) => {
                 handle_stake_neuron(principal, memo).await;
             }
-            MultiPartTransactionToBeProcessed::TopUpNeuron(principal, memo) => {
-                handle_top_up_neuron(principal, memo).await;
-            }
+            // TODO: Remove TopUpNeuron after a version has been released that
+            //       does not add TopUpNeuron to the multi-part transaction
+            //       queue anymore.
+            MultiPartTransactionToBeProcessed::TopUpNeuron(_principal, _memo) => {}
             MultiPartTransactionToBeProcessed::CreateCanisterV2(controller) => {
                 handle_create_canister_v2(block_height, controller).await;
             }
@@ -41,32 +42,21 @@ pub async fn run_periodic_tasks() {
 
 async fn handle_stake_neuron(principal: PrincipalId, memo: Memo) {
     match claim_or_refresh_neuron(principal, memo).await {
-        Ok(neuron_id) => STATE.with(|s| {
-            s.accounts_store
-                .borrow_mut()
-                .mark_neuron_created(&principal, memo, neuron_id);
+        Ok(neuron_id) => with_state_mut(|s| {
+            s.accounts_store.mark_neuron_created(&principal, memo, neuron_id);
         }),
-        Err(_error) => (),
-    }
-}
-
-async fn handle_top_up_neuron(principal: PrincipalId, memo: Memo) {
-    match claim_or_refresh_neuron(principal, memo).await {
-        Ok(_) => STATE.with(|s| s.accounts_store.borrow_mut().mark_neuron_topped_up()),
         Err(_error) => (),
     }
 }
 
 async fn handle_create_canister_v2(block_height: BlockIndex, controller: PrincipalId) {
     match create_canister_v2(block_height, controller).await {
-        Ok(Ok(canister_id)) => STATE.with(|s| {
-            s.accounts_store
-                .borrow_mut()
-                .attach_newly_created_canister(controller, canister_id);
+        Ok(Ok(canister_id)) => with_state_mut(|s| {
+            s.accounts_store.attach_newly_created_canister(controller, canister_id);
         }),
         Ok(Err(NotifyError::Processing)) => {
-            STATE.with(|s| {
-                s.accounts_store.borrow_mut().enqueue_multi_part_transaction(
+            with_state_mut(|s| {
+                s.accounts_store.enqueue_multi_part_transaction(
                     block_height,
                     MultiPartTransactionToBeProcessed::CreateCanisterV2(controller),
                 );
@@ -81,8 +71,8 @@ async fn handle_top_up_canister_v2(block_height: BlockIndex, principal: Principa
     match top_up_canister_v2(block_height, canister_id).await {
         Ok(Ok(_)) => (),
         Ok(Err(NotifyError::Processing)) => {
-            STATE.with(|s| {
-                s.accounts_store.borrow_mut().enqueue_multi_part_transaction(
+            with_state_mut(|s| {
+                s.accounts_store.enqueue_multi_part_transaction(
                     block_height,
                     MultiPartTransactionToBeProcessed::CreateCanisterV2(principal),
                 );

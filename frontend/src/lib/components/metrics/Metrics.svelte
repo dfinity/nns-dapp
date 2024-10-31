@@ -1,10 +1,10 @@
 <script lang="ts">
   import {
-    type MetricsWorker,
     initMetricsWorker,
-  } from "$lib/services/$public/worker-metrics.services";
+    type MetricsWorker,
+  } from "$lib/services/public/worker-metrics.services";
   import { metricsStore } from "$lib/stores/metrics.store";
-  import { onMount, onDestroy } from "svelte";
+  import { onDestroy, onMount } from "svelte";
 
   import type { PostMessageDataResponseMetrics } from "$lib/types/post-message.metrics";
 

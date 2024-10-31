@@ -14,8 +14,8 @@
   import { IconClose, Value } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import type {
-    SnsNeuron,
     SnsNervousSystemFunction,
+    SnsNeuron,
     SnsNeuronId,
   } from "@dfinity/sns";
   import { fromNullable } from "@dfinity/utils";

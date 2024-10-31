@@ -2,12 +2,8 @@ import * as governanceApi from "$lib/api/governance.api";
 import * as api from "$lib/api/proposals.api";
 import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
@@ -32,7 +28,7 @@ describe("actionable-proposals.services", () => {
       beforeProposal: undefined,
       certified: false,
       includeStatus: [ProposalStatus.Open],
-      includeTopics: [Topic.ManageNeuron],
+      includeTopics: [Topic.NeuronManagement],
       includeRewardStatus: [ProposalRewardStatus.Ineligible],
     };
     const callLoadActionableProposals = async ({
@@ -67,16 +63,37 @@ describe("actionable-proposals.services", () => {
     };
     const votableProposal: ProposalInfo = {
       ...mockProposalInfo,
+      ballots: [
+        {
+          neuronId,
+          vote: Vote.Unspecified,
+          votingPower: 1n,
+        },
+      ],
       id: 0n,
     };
     const votedProposal: ProposalInfo = {
       ...mockProposalInfo,
+      ballots: [
+        {
+          neuronId,
+          vote: Vote.Yes,
+          votingPower: 1n,
+        },
+      ],
       id: votedProposalId,
     };
     const fiveHundredsProposal = Array.from(Array(500))
       .map((_, index) => ({
         ...mockProposalInfo,
         id: BigInt(index),
+        ballots: [
+          {
+            neuronId,
+            vote: Vote.Unspecified,
+            votingPower: 1n,
+          },
+        ],
       }))
       .reverse();
     let spyQueryProposals;
@@ -87,9 +104,7 @@ describe("actionable-proposals.services", () => {
       vi.clearAllMocks();
       neuronsStore.reset();
       actionableNnsProposalsStore.reset();
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
+      resetIdentity();
       spyQueryProposals = vi
         .spyOn(api, "queryProposals")
         .mockImplementation((requestData) =>
@@ -97,7 +112,7 @@ describe("actionable-proposals.services", () => {
             ProposalRewardStatus.AcceptVotes
           )
             ? Promise.resolve([votableProposal, votedProposal])
-            : // Return nothing for Topic.ManageNeuron proposals
+            : // Return nothing for Topic.NeuronManagement proposals
               Promise.resolve([])
         );
       spyQueryNeurons = vi
@@ -227,14 +242,35 @@ describe("actionable-proposals.services", () => {
       const proposal0 = {
         ...mockProposalInfo,
         id: 0n,
+        ballots: [
+          {
+            neuronId,
+            vote: Vote.Unspecified,
+            votingPower: 1n,
+          },
+        ],
       } as ProposalInfo;
       const proposal1 = {
         ...mockProposalInfo,
         id: 1n,
+        ballots: [
+          {
+            neuronId,
+            vote: Vote.Unspecified,
+            votingPower: 1n,
+          },
+        ],
       } as ProposalInfo;
       const proposal2 = {
         ...mockProposalInfo,
         id: 2n,
+        ballots: [
+          {
+            neuronId,
+            vote: Vote.Unspecified,
+            votingPower: 1n,
+          },
+        ],
       } as ProposalInfo;
 
       it("should query list proposals also with ManageNeurons payload", async () => {

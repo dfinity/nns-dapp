@@ -1,4 +1,3 @@
-
 # Unreleased changelog NNS Dapp
 
 All notable changes to the NNS Dapp will be documented in this file.
@@ -15,23 +14,26 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Add 2 new topics `ProtocolCanisterMangement` and
-* Make the WASM accessible via beta subdomains so we can deploy early versions there.
-* Enable warning dialog on beta deployment.
-* Back-end support for storing imported tokens.
+* Provide better error messages when the transaction timestamp is off.
+* A link to the imported tokens documentation page.
+* Refresh NNS neurons from neuron details page if needed, instead of from the nns-dapp canister.
+* Inform the user in the staking modal that the minimum dissolve delay for NNS neurons is 7 days.
+* Support public/private neuron visibility.
 
 #### Changed
+
+* Change Internet Computer Association neuron title.
+* Stop hiding the bottom menu logo and collapse button on small screens.
+* Remove menu footer on collapsed menu.
 
 #### Deprecated
 
 #### Removed
 
-* Removed `unsafe-eval` from Content Security Policy.
-
 #### Fixed
 
-* HTML injection in error toast.
-* Show unknown topic as "Unknown Topic (...")".
+* Race condition in proposal loading.
+* Consistently identify a proposal by its type in voting progress toasts.
 
 #### Security
 
@@ -46,8 +48,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Deprecated
 
 #### Removed
-
-* Deleted Reproducible Assets workflow.
 
 #### Fixed
 

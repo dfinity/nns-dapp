@@ -30,10 +30,6 @@ describe("icrc-ledger api", () => {
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe("execute transfer", () => {
     it("successfully calls transfer api", async () => {
       const transferSpy = vi.fn().mockResolvedValue(undefined);

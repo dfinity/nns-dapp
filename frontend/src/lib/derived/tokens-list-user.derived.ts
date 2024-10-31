@@ -1,4 +1,5 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { failedExistentImportedTokenLedgerIdsStore } from "$lib/derived/imported-tokens.derived";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import {
   UserTokenAction,
@@ -8,6 +9,7 @@ import {
 import { sumAccounts } from "$lib/utils/accounts.utils";
 import { buildAccountsUrl, buildWalletUrl } from "$lib/utils/navigation.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
+import { toUserTokenFailed } from "$lib/utils/user-token.utils";
 import { TokenAmountV2, isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import type { UniversesAccounts } from "./accounts-list.derived";
@@ -75,16 +77,24 @@ export const tokensListUserStore = derived<
     Readable<UserTokenBase[]>,
     Readable<UniversesAccounts>,
     Readable<Record<string, IcrcTokenMetadata>>,
+    Readable<Array<string>>,
   ],
   UserToken[]
 >(
-  [tokensListBaseStore, universesAccountsStore, tokensByUniverseIdStore],
-  ([tokensList, accounts, tokensByUniverse]) =>
-    tokensList.map((baseTokenData) =>
+  [
+    tokensListBaseStore,
+    universesAccountsStore,
+    tokensByUniverseIdStore,
+    failedExistentImportedTokenLedgerIdsStore,
+  ],
+  ([tokensList, accounts, tokensByUniverse, failedImportedTokenLedgerIds]) => [
+    ...tokensList.map((baseTokenData) =>
       convertToUserTokenData({
         baseTokenData,
         accounts,
         tokensByUniverse,
       })
-    )
+    ),
+    ...failedImportedTokenLedgerIds.map(toUserTokenFailed),
+  ]
 );

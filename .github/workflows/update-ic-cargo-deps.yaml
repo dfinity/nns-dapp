@@ -2,8 +2,8 @@
 name: Update IC Cargo Dependencies
 on:
   schedule:
-    # Check for new IC releases every wednesday at 7:30.
-    - cron: '30 7 * * MON'
+    # Check for new IC releases every Sunday at 7:30am UTC.
+    - cron: '30 7 * * SUN'
   workflow_dispatch:
 jobs:
   update-ic-cargo-deps:
@@ -23,7 +23,7 @@ jobs:
         run: if git diff --quiet --exit-code; then echo "updated=0" >> "$GITHUB_OUTPUT"; else echo "updated=1" >> "$GITHUB_OUTPUT"; fi
       - name: Create Pull Request
         if: ${{ steps.update.outputs.updated == '1' }}
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GIX_CREATE_PR_PAT }}
           base: main

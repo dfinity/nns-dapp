@@ -443,9 +443,10 @@ const votingPeriodEndFallback = ({
   proposalTimestampSeconds,
   topic,
 }: ProposalInfo): Date => {
-  const durationInSeconds = [Topic.ManageNeuron, Topic.ExchangeRate].includes(
-    topic
-  )
+  const durationInSeconds = [
+    Topic.NeuronManagement,
+    Topic.ExchangeRate,
+  ].includes(topic)
     ? SHORT_VOTING_PERIOD_SECONDS
     : WAIT_FOR_QUIET_THRESHOLD_SECONDS;
 
@@ -484,11 +485,11 @@ export const updateProposalVote = ({
       yes:
         vote === Vote.Yes
           ? (proposalInfo.latestTally?.yes ?? 0n) + votingPower
-          : proposalInfo.latestTally?.yes ?? 0n,
+          : (proposalInfo.latestTally?.yes ?? 0n),
       no:
         vote === Vote.No
           ? (proposalInfo.latestTally?.no ?? 0n) + votingPower
-          : proposalInfo.latestTally?.no ?? 0n,
+          : (proposalInfo.latestTally?.no ?? 0n),
     },
   };
 };

@@ -59,6 +59,7 @@ describe("neurons-table.utils", () => {
       dissolveDelaySeconds: defaultDissolveDelaySeconds,
       state: NeuronState.Locked,
       tags: [],
+      isPublic: false,
     };
 
     const convert = (neuronInfos: NeuronInfo[]) =>
@@ -270,6 +271,7 @@ describe("neurons-table.utils", () => {
       dissolveDelaySeconds,
       state: NeuronState.Locked,
       tags: [],
+      isPublic: false,
     };
 
     const convert = (snsNeurons: SnsNeuron[]) =>

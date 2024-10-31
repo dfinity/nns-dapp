@@ -6,7 +6,7 @@ import {
   disburseMaturity,
   getNeuronBalance,
   getSnsNeuron,
-  nervousSystemParameters,
+  increaseDissolveDelay,
   queryProposal,
   queryProposals,
   querySnsNeuron,
@@ -14,7 +14,6 @@ import {
   refreshNeuron,
   registerVote,
   removeNeuronPermissions,
-  setDissolveDelay,
   setFollowees,
   splitNeuron,
   stakeMaturity,
@@ -27,10 +26,7 @@ import {
 } from "$lib/proxy/api.import.proxy";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
-import {
-  mockSnsNeuron,
-  snsNervousSystemParametersMock,
-} from "$tests/mocks/sns-neurons.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import {
   mockQueryMetadataResponse,
   mockQueryTokenResponse,
@@ -77,7 +73,7 @@ describe("sns-api", () => {
   const splitNeuronSpy = vi.fn().mockResolvedValue(undefined);
   const startDissolvingSpy = vi.fn().mockResolvedValue(undefined);
   const stopDissolvingSpy = vi.fn().mockResolvedValue(undefined);
-  const setDissolveDelaySpy = vi.fn().mockResolvedValue(undefined);
+  const increaseDissolveDelaySpy = vi.fn().mockResolvedValue(undefined);
   const getNeuronBalanceSpy = vi.fn().mockResolvedValue(undefined);
   const refreshNeuronSpy = vi.fn().mockResolvedValue(undefined);
   const claimNeuronSpy = vi.fn().mockResolvedValue(undefined);
@@ -93,15 +89,10 @@ describe("sns-api", () => {
     functions: [nervousSystemFunctionMock],
   };
   const getFunctionsSpy = vi.fn().mockResolvedValue(nervousSystemFunctionsMock);
-  const nervousSystemParametersSpy = vi
-    .fn()
-    .mockResolvedValue(snsNervousSystemParametersMock);
 
   beforeEach(() => {
     vi.clearAllMocks();
-  });
 
-  beforeAll(() => {
     vi.spyOn(LedgerCanister, "create").mockImplementation(
       () => ledgerCanisterMock
     );
@@ -132,12 +123,11 @@ describe("sns-api", () => {
         splitNeuron: splitNeuronSpy,
         startDissolving: startDissolvingSpy,
         stopDissolving: stopDissolvingSpy,
-        setDissolveTimestamp: setDissolveDelaySpy,
+        increaseDissolveDelay: increaseDissolveDelaySpy,
         getNeuronBalance: getNeuronBalanceSpy,
         refreshNeuron: refreshNeuronSpy,
         claimNeuron: claimNeuronSpy,
         listNervousSystemFunctions: getFunctionsSpy,
-        nervousSystemParameters: nervousSystemParametersSpy,
         setTopicFollowees: setTopicFolloweesSpy,
         stakeMaturity: stakeMaturitySpy,
         registerVote: registerVoteSpy,
@@ -251,18 +241,18 @@ describe("sns-api", () => {
     expect(stopDissolvingSpy).toBeCalled();
   });
 
-  it("should setDissolveDelay", async () => {
-    const dissolveTimestampSeconds = 123;
+  it("should increaseDissolveDelay", async () => {
+    const additionalDissolveDelaySeconds = 123;
     const neuronId = { id: arrayOfNumberToUint8Array([1, 2, 3]) };
-    await setDissolveDelay({
+    await increaseDissolveDelay({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
       neuronId,
-      dissolveTimestampSeconds,
+      additionalDissolveDelaySeconds,
     });
 
-    expect(setDissolveDelaySpy).toBeCalledWith({
-      dissolveTimestampSeconds: BigInt(dissolveTimestampSeconds),
+    expect(increaseDissolveDelaySpy).toBeCalledWith({
+      additionalDissolveDelaySeconds: additionalDissolveDelaySeconds,
       neuronId,
     });
   });
@@ -348,17 +338,6 @@ describe("sns-api", () => {
     expect(setTopicFolloweesSpy).toBeCalled();
   });
 
-  it("should get nervous system parameters", async () => {
-    const res = await nervousSystemParameters({
-      identity: mockIdentity,
-      rootCanisterId: rootCanisterIdMock,
-      certified: false,
-    });
-
-    expect(nervousSystemParametersSpy).toBeCalled();
-    expect(res).toEqual(snsNervousSystemParametersMock);
-  });
-
   it("should get proposals", async () => {
     const res = await queryProposals({
       identity: mockIdentity,
@@ -369,20 +348,6 @@ describe("sns-api", () => {
 
     expect(listProposalsSpy).toBeCalled();
     expect(res).toEqual(expect.objectContaining({ proposals }));
-  });
-
-  it("should solve missing flag for outdated canisters", async () => {
-    const res = await queryProposals({
-      identity: mockIdentity,
-      rootCanisterId: rootCanisterIdMock,
-      certified: false,
-      params: {},
-    });
-
-    expect(listProposalsSpy).toBeCalled();
-    expect(res).toEqual(
-      expect.objectContaining({ include_ballots_by_caller: [false] })
-    );
   });
 
   it("should get a proposal", async () => {

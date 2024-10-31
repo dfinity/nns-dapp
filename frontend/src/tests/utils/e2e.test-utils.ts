@@ -1,5 +1,6 @@
 import type { FeatureKey } from "$lib/constants/environment.constants";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
+import { exec } from "child_process";
 
 let resolvePreviousStep = () => {
   /* this function will be replaced at each step */
@@ -110,13 +111,29 @@ export const replaceContent = async ({
   pattern: RegExp;
   replacements: string[];
 }): Promise<void> => {
-  await page.evaluate(
-    ({ selectors, pattern, replacements }) =>
+  const replacementCount = await page.evaluate(
+    ({ selectors, pattern, replacements }) => {
+      let replacementCount = 0;
       document.querySelectorAll(selectors.join(", ")).forEach((el, i) => {
         if (pattern.test(el.innerHTML)) {
           el.innerHTML = replacements[i % replacements.length];
+          replacementCount++;
         }
-      }),
+      });
+      return replacementCount;
+    },
     { selectors, pattern, replacements }
   );
+  expect(replacementCount).toBeGreaterThan(0);
+};
+
+export const dfxCanisterId = async (canisterName: string) => {
+  return new Promise<string>((resolve, reject) => {
+    exec(`dfx canister id ${canisterName}`, (error, stdout, _stderr) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(stdout.trim());
+    });
+  });
 };

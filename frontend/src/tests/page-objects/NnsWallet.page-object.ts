@@ -1,6 +1,7 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.page-object";
 import { SignInPo } from "$tests/page-objects/SignIn.page-object";
+import { WalletMorePopoverPo } from "$tests/page-objects/WalletMorePopover.page-object";
 import { WalletPageHeaderPo } from "$tests/page-objects/WalletPageHeader.page-object";
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -54,6 +55,14 @@ export class NnsWalletPo extends BasePageObject {
     return this.getButton("ledger-show-button");
   }
 
+  getMoreButton(): ButtonPo {
+    return this.getButton("more-button");
+  }
+
+  getWalletMorePopoverPo(): WalletMorePopoverPo {
+    return WalletMorePopoverPo.under(this.root);
+  }
+
   hasSignInButton(): Promise<boolean> {
     return this.getSignInPo().isPresent();
   }
@@ -76,6 +85,14 @@ export class NnsWalletPo extends BasePageObject {
 
   clickRename(): Promise<void> {
     return this.getRenameButtonPo().click();
+  }
+
+  hasMoreButton(): Promise<boolean> {
+    return this.getMoreButton().isPresent();
+  }
+
+  clickMore(): Promise<void> {
+    return this.getMoreButton().click();
   }
 
   async transferToAccount({

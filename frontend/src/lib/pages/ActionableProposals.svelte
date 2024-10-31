@@ -1,12 +1,11 @@
 <script lang="ts">
   import ActionableNnsProposals from "$lib/components/proposals/ActionableNnsProposals.svelte";
   import ActionableProposalsEmpty from "$lib/components/proposals/ActionableProposalsEmpty.svelte";
-  import ActionableProposalsNotSupportedSnses from "$lib/components/proposals/ActionableProposalsNotSupportedSnses.svelte";
   import ActionableSnses from "$lib/components/proposals/ActionableSnses.svelte";
   import LoadingActionableProposals from "$lib/components/proposals/LoadingActionableProposals.svelte";
   import {
-    actionableProposalsLoadedStore,
     actionableProposalTotalCountStore,
+    actionableProposalsLoadedStore,
   } from "$lib/derived/actionable-proposals.derived";
 </script>
 
@@ -15,7 +14,6 @@
     {#if $actionableProposalTotalCountStore > 0}
       <ActionableNnsProposals />
       <ActionableSnses />
-      <ActionableProposalsNotSupportedSnses />
     {:else}
       <ActionableProposalsEmpty />
     {/if}

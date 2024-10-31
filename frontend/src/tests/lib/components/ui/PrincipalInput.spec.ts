@@ -4,7 +4,11 @@ import { render, waitFor } from "@testing-library/svelte";
 import PrincipalInputTest from "./PrincipalInputTest.svelte";
 
 describe("PrincipalInput", () => {
-  const props = { name: "name", placeholderLabelKey: "test.placeholder" };
+  const props = {
+    name: "name",
+    placeholderLabelKey: "test.placeholder",
+    disabled: undefined,
+  };
 
   it("should render an input", () => {
     const { getByTestId } = render(PrincipalInputTest, {
@@ -28,5 +32,26 @@ describe("PrincipalInput", () => {
     await waitFor(() =>
       expect(getByText(en.error.principal_not_valid)).toBeInTheDocument()
     );
+  });
+
+  it("should be not disabled by default", async () => {
+    const { getByTestId } = render(PrincipalInputTest, {
+      props: {
+        ...props,
+      },
+    });
+    expect(getByTestId("input-ui-element").getAttribute("disabled")).toBeNull();
+  });
+
+  it("should provide disable state", async () => {
+    const { getByTestId: getByTestId2 } = render(PrincipalInputTest, {
+      props: {
+        ...props,
+        disabled: true,
+      },
+    });
+    expect(
+      getByTestId2("input-ui-element").getAttribute("disabled")
+    ).not.toBeNull();
   });
 });

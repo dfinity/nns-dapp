@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_swap --out ic_sns_swap.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-18_01-30--github-base/rs/sns/swap/canister/swap.did>
+//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-23_03-07-ubuntu20.04/rs/sns/swap/canister/swap.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -16,12 +16,12 @@ use ic_cdk::api::call::CallResult;
 // use candid::{self, CandidType, Deserialize, Principal};
 // use ic_cdk::api::call::CallResult as Result;
 
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct NeuronBasketConstructionParameters {
     pub dissolve_delay_interval_seconds: u64,
     pub count: u64,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct LinearScalingCoefficient {
     pub slope_numerator: Option<u64>,
     pub intercept_icp_e8s: Option<u64>,
@@ -29,37 +29,22 @@ pub struct LinearScalingCoefficient {
     pub slope_denominator: Option<u64>,
     pub to_direct_participation_icp_e8s: Option<u64>,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct IdealMatchedParticipationFunction {
     pub serialized_representation: Option<String>,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct NeuronsFundParticipationConstraints {
     pub coefficient_intervals: Vec<LinearScalingCoefficient>,
     pub max_neurons_fund_participation_icp_e8s: Option<u64>,
     pub min_direct_participation_threshold_icp_e8s: Option<u64>,
     pub ideal_matched_participation_function: Option<IdealMatchedParticipationFunction>,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
-pub struct CfNeuron {
-    pub has_created_neuron_recipes: Option<bool>,
-    pub nns_neuron_id: u64,
-    pub amount_icp_e8s: u64,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
-pub struct CfParticipant {
-    pub hotkey_principal: String,
-    pub cf_neurons: Vec<CfNeuron>,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
-pub struct NeuronsFundParticipants {
-    pub cf_participants: Vec<CfParticipant>,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Countries {
     pub iso_codes: Vec<String>,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Init {
     pub nns_proposal_id: Option<u64>,
     pub sns_root_canister_id: String,
@@ -79,7 +64,6 @@ pub struct Init {
     pub icp_ledger_canister_id: String,
     pub sns_ledger_canister_id: String,
     pub neurons_fund_participation_constraints: Option<NeuronsFundParticipationConstraints>,
-    pub neurons_fund_participants: Option<NeuronsFundParticipants>,
     pub should_auto_finalize: Option<bool>,
     pub max_participant_icp_e8s: Option<u64>,
     pub sns_governance_canister_id: String,
@@ -250,6 +234,7 @@ pub enum CanisterStatusType {
 pub struct DefiniteCanisterSettingsArgs {
     pub freezing_threshold: candid::Nat,
     pub controllers: Vec<Principal>,
+    pub wasm_memory_limit: Option<candid::Nat>,
     pub memory_allocation: candid::Nat,
     pub compute_allocation: candid::Nat,
 }
@@ -321,7 +306,7 @@ pub struct GetOpenTicketResponse {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetSaleParametersArg {}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Params {
     pub min_participant_icp_e8s: u64,
     pub neuron_basket_construction_parameters: Option<NeuronBasketConstructionParameters>,
@@ -352,8 +337,14 @@ pub struct NeuronAttributes {
     pub followees: Vec<NeuronId>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Principals {
+    pub principals: Vec<Principal>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CfInvestment {
+    pub controller: Option<Principal>,
     pub hotkey_principal: String,
+    pub hotkeys: Option<Principals>,
     pub nns_neuron_id: u64,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -373,12 +364,32 @@ pub struct SnsNeuronRecipe {
     pub investor: Option<Investor>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Timers {
+    pub last_spawned_timestamp_seconds: Option<u64>,
+    pub last_reset_timestamp_seconds: Option<u64>,
+    pub requires_periodic_tasks: Option<bool>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct CfNeuron {
+    pub has_created_neuron_recipes: Option<bool>,
+    pub hotkeys: Option<Principals>,
+    pub nns_neuron_id: u64,
+    pub amount_icp_e8s: u64,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct CfParticipant {
+    pub controller: Option<Principal>,
+    pub hotkey_principal: String,
+    pub cf_neurons: Vec<CfNeuron>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Swap {
     pub auto_finalize_swap_response: Option<FinalizeSwapResponse>,
     pub neuron_recipes: Vec<SnsNeuronRecipe>,
     pub next_ticket_id: Option<u64>,
     pub decentralization_sale_open_timestamp_seconds: Option<u64>,
     pub finalize_swap_in_progress: Option<bool>,
+    pub timers: Option<Timers>,
     pub cf_participants: Vec<CfParticipant>,
     pub init: Option<Init>,
     pub already_tried_to_auto_finalize: Option<bool>,
@@ -411,6 +422,10 @@ pub struct GetStateResponse {
 pub struct ListCommunityFundParticipantsRequest {
     pub offset: Option<u64>,
     pub limit: Option<u32>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ListCommunityFundParticipantsResponse {
+    pub cf_participants: Vec<CfParticipant>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ListDirectParticipantsRequest {
@@ -463,14 +478,6 @@ pub struct NewSaleTicketResponse {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct NotifyPaymentFailureArg {}
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct OpenRequest {
-    pub cf_participants: Vec<CfParticipant>,
-    pub params: Option<Params>,
-    pub open_sns_token_swap_proposal_id: Option<u64>,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct OpenRet {}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct RefreshBuyerTokensRequest {
     pub confirmation_text: Option<String>,
     pub buyer: String,
@@ -480,6 +487,10 @@ pub struct RefreshBuyerTokensResponse {
     pub icp_accepted_participation_e8s: u64,
     pub icp_ledger_account_balance_e8s: u64,
 }
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ResetTimersArg {}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ResetTimersRet {}
 
 pub struct Service(pub Principal);
 impl Service {
@@ -525,7 +536,7 @@ impl Service {
     pub async fn list_community_fund_participants(
         &self,
         arg0: ListCommunityFundParticipantsRequest,
-    ) -> CallResult<(NeuronsFundParticipants,)> {
+    ) -> CallResult<(ListCommunityFundParticipantsResponse,)> {
         ic_cdk::call(self.0, "list_community_fund_participants", (arg0,)).await
     }
     pub async fn list_direct_participants(
@@ -546,13 +557,13 @@ impl Service {
     pub async fn notify_payment_failure(&self, arg0: NotifyPaymentFailureArg) -> CallResult<(Ok2,)> {
         ic_cdk::call(self.0, "notify_payment_failure", (arg0,)).await
     }
-    pub async fn open(&self, arg0: OpenRequest) -> CallResult<(OpenRet,)> {
-        ic_cdk::call(self.0, "open", (arg0,)).await
-    }
     pub async fn refresh_buyer_tokens(
         &self,
         arg0: RefreshBuyerTokensRequest,
     ) -> CallResult<(RefreshBuyerTokensResponse,)> {
         ic_cdk::call(self.0, "refresh_buyer_tokens", (arg0,)).await
+    }
+    pub async fn reset_timers(&self, arg0: ResetTimersArg) -> CallResult<(ResetTimersRet,)> {
+        ic_cdk::call(self.0, "reset_timers", (arg0,)).await
     }
 }

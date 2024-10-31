@@ -13,7 +13,7 @@ describe("busy-services", () => {
     .spyOn(busyStore, "startBusy")
     .mockImplementation(vi.fn());
 
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
   });
 

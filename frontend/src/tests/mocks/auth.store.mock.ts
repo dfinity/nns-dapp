@@ -1,7 +1,6 @@
 import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
 import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
-import type { Subscriber } from "svelte/store";
 import { get } from "svelte/store";
 import en from "./i18n.mock";
 
@@ -10,14 +9,24 @@ export const mockPrincipalText =
 
 export const mockPrincipal = Principal.fromText(mockPrincipalText);
 
+const transformRequest = () => {
+  console.error(
+    "It looks like the agent is trying to make a request that should have been mocked at",
+    new Error().stack
+  );
+  throw new Error("Not implemented");
+};
+
 export const mockIdentity = {
   getPrincipal: () => mockPrincipal,
+  transformRequest,
 } as unknown as Identity;
 
 export const createMockIdentity = (p: number) => {
   const principal = Principal.fromHex(p.toString(16));
   return {
     getPrincipal: () => principal,
+    transformRequest,
   } as Identity;
 };
 
@@ -33,25 +42,6 @@ export const mockGetIdentity = async () => {
   }
 
   return identity;
-};
-
-/**
- * A static mock of the auth store. The component that uses it will be rendered for test with a value that is already defined on mount.
- */
-export const mockAuthStoreSubscribe = (
-  run?: Subscriber<AuthStoreData>
-): (() => void) => {
-  run?.({ identity: mockIdentity });
-
-  return () => undefined;
-};
-
-export const mockAuthStoreNoIdentitySubscribe = (
-  run: Subscriber<AuthStoreData>
-): (() => void) => {
-  run({ identity: undefined });
-
-  return () => undefined;
 };
 
 /**
@@ -78,13 +68,3 @@ export class AuthStoreMock {
     this._callback?.(this._store);
   }
 }
-
-export const authStoreMock = new AuthStoreMock();
-
-export const mutableMockAuthStoreSubscribe = (
-  run: Subscriber<AuthStoreData>
-): (() => void) => {
-  authStoreMock.subscribe((store: AuthStoreData) => run(store));
-
-  return () => undefined;
-};

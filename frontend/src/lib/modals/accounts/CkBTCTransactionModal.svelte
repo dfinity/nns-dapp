@@ -30,7 +30,7 @@
   import { numberToE8s } from "$lib/utils/token.utils";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
   import type { WizardStep } from "@dfinity/gix-components";
-  import type { TokenAmountV2, Token } from "@dfinity/utils";
+  import type { Token, TokenAmountV2 } from "@dfinity/utils";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
@@ -58,10 +58,10 @@
           $token: networkBtc ? $i18n.ckbtc.btc : token.symbol,
         })
       : currentStep?.name === "Progress"
-      ? $i18n.ckbtc.sending_ckbtc_to_btc
-      : currentStep?.name === "QRCode"
-      ? $i18n.accounts.scan_qr_code
-      : $i18n.accounts.you_are_sending;
+        ? $i18n.ckbtc.sending_ckbtc_to_btc
+        : currentStep?.name === "QRCode"
+          ? $i18n.accounts.scan_qr_code
+          : $i18n.accounts.you_are_sending;
 
   let modal: TransactionModal;
   let progressStep: ConvertBtcStep = ConvertBtcStep.APPROVE_TRANSFER;

@@ -30,11 +30,10 @@ const createHotkeyNeuronsInOtherAccount = async ({
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
   await appPo.getIcpTokens(21);
 
-  await appPo.goToNeurons();
+  await appPo.goToStaking();
   await appPo
-    .getNeuronsPo()
-    .getNnsNeuronsFooterPo()
-    .stakeNeuron({ amount: 10, dissolveDelayDays: "max" });
+    .getStakingPo()
+    .stakeFirstNnsNeuron({ amount: 10, dissolveDelayDays: "max" });
   await appPo
     .getNeuronsPo()
     .getNnsNeuronsFooterPo()
@@ -55,6 +54,7 @@ const createHotkeyNeuronsInOtherAccount = async ({
     .getNnsNeuronDetailPo()
     .addHotkey(hotkeyPrincipal);
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().joinCommunityFund();
+  await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().unlockNeuron();
   await page.close();
 };
 
@@ -78,11 +78,11 @@ test("Test neurons table", async ({ page, context, browser }) => {
   await appPo.getIcpTokens(41);
 
   step("Stake a neuron");
-  await appPo.goToNeurons();
+  await appPo.goToStaking();
   await appPo
-    .getNeuronsPo()
-    .getNnsNeuronsFooterPo()
-    .stakeNeuron({ amount: 20, dissolveDelayDays: 365 });
+    .getStakingPo()
+    .stakeFirstNnsNeuron({ amount: 20, dissolveDelayDays: 365 });
+  await appPo.getNeuronsPo().waitFor();
 
   const neuronIds = await appPo.getNeuronsPo().getNnsNeuronsPo().getNeuronIds();
   expect(neuronIds).toHaveLength(1);

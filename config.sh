@@ -114,6 +114,14 @@ local_deployment_data="$(
 
   : "Try to find the TVL canister ID"
   TVL_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id tvl 2>/dev/null || true)"
+  if [[ -z "${TVL_CANISTER_ID:-}" ]]; then
+    # The TVL is now served by the nns-dapp canister.
+    # We still pass the canister ID as a separate variable to allow the app
+    # subnet nns-dapp (Beta) to fetch it from the system subnet nns-dapp,
+    # because the app subnet nns-dapp doesn't have permission to fetch exchange
+    # rates for free.
+    TVL_CANISTER_ID="${OWN_CANISTER_ID:-}"
+  fi
   export TVL_CANISTER_ID
 
   : "Define the robots text, if any"
@@ -228,7 +236,6 @@ cat <<EOF >"$CANDID_ARGS_FILE"
   args = vec {
 $(jq -r 'to_entries | .[] | "    record{ 0=\(.key | tojson); 1=\(.value | tostring | tojson) };"' "$JSON_OUT")
   };
-  schema = opt variant { AccountsInStableMemory };
 })
 EOF
 

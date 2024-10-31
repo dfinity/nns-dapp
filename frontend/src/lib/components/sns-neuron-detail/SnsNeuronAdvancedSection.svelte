@@ -16,7 +16,7 @@
   import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
-  import { nonNullish, type Token, TokenAmountV2 } from "@dfinity/utils";
+  import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
 
   export let governanceCanisterId: Principal | undefined;
   export let neuron: SnsNeuron;

@@ -8,17 +8,13 @@ import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.sv
 import * as services from "$lib/services/ckbtc-convert.services";
 import { convertCkBTCToBtcIcrc2 } from "$lib/services/ckbtc-convert.services";
 import { transferTokens } from "$lib/services/icrc-accounts.services";
-import { authStore } from "$lib/stores/auth.store";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { ulpsToNumber } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
   mockBTCAddressTestnet,
@@ -92,7 +88,7 @@ describe("CkBTCTransactionModal", () => {
     ckBTCInfoStore.reset();
 
     vi.mocked(transferTokens).mockResolvedValue({ blockIndex: undefined });
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
 
     icrcAccountsStore.set({
       accounts: {

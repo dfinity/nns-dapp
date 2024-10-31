@@ -19,23 +19,21 @@ test("Test proposals", async ({ page, context }) => {
 
   // should be created before dummy proposals
   step("Stake a neuron for voting");
-  await appPo.goToNeurons();
+  await appPo.goToStaking();
   await appPo
-    .getNeuronsPo()
-    .getNnsNeuronsFooterPo()
-    .stakeNeuron({ amount: 10, dissolveDelayDays: "max" });
+    .getStakingPo()
+    .stakeFirstNnsNeuron({ amount: 10, dissolveDelayDays: "max" });
 
   step("Create dummy proposals");
   const proposerNeuronId = await createDummyProposal(appPo);
 
   step("Open proposals list");
   await appPo.goToProposals();
-  const nnsProposalListPo = appPo.getProposalsPo().getNnsProposalListPo();
-  await nnsProposalListPo.waitForContentLoaded();
 
   step("Open Internet Computer proposals");
   await appPo.openUniverses();
   await appPo.getSelectUniverseListPo().clickOnInternetComputer();
+  const nnsProposalListPo = appPo.getProposalsPo().getNnsProposalListPo();
   await nnsProposalListPo.waitForContentLoaded();
 
   step('Switch to "All Proposals"');
@@ -121,8 +119,7 @@ test("Test proposals", async ({ page, context }) => {
   const nnsProposalPo = appPo.getProposalDetailPo().getNnsProposalPo();
 
   // System info
-  const systemInfoSectionPo =
-    nnsProposalPo.getProposalProposalSystemInfoSectionPo();
+  const systemInfoSectionPo = nnsProposalPo.getProposalSystemInfoSectionPo();
 
   expect(await systemInfoSectionPo.getProposalTypeText()).toBe("Motion");
   expect(await systemInfoSectionPo.getProposalTopicText()).toBe("Governance");

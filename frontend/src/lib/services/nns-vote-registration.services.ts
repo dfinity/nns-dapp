@@ -16,9 +16,9 @@ import type { Identity } from "@dfinity/agent";
 import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { loadProposal } from "./$public/proposals.services";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
+import { loadProposal } from "./public/proposals.services";
 
 /**
  * Makes multiple registerVote calls (1 per neuronId).
@@ -37,7 +37,7 @@ export const registerNnsVotes = async ({
   vote: Vote;
   reloadProposalCallback: (proposalInfo: ProposalInfo) => void;
 }): Promise<void> => {
-  const proposalType = mapNnsProposal(proposalInfo).topic ?? "";
+  const proposalType = mapNnsProposal(proposalInfo).type ?? "";
 
   await manageVotesRegistration({
     universeCanisterId: OWN_CANISTER_ID,
@@ -61,7 +61,12 @@ export const registerNnsVotes = async ({
       );
 
       // the one that was called
-      proposalsStore.replaceProposals([updatedProposalInfo]);
+      const mutableProposalsStore =
+        proposalsStore.getSingleMutationProposalsStore();
+      mutableProposalsStore.replaceProposals({
+        proposals: [updatedProposalInfo],
+        certified: true,
+      });
       updateProposalContext(updatedProposalInfo);
 
       // Reset and reload actionable nns proposals.
@@ -89,7 +94,7 @@ const updateToastAfterNeuronRegistration = ({
     ({ id }) => id === proposalId
   );
   const proposalType = nonNullish(proposalInfo)
-    ? mapNnsProposal(proposalInfo).type ?? ""
+    ? (mapNnsProposal(proposalInfo).type ?? "")
     : "";
 
   voteRegistrationStore.addSuccessfullyVotedNeuronId({
@@ -130,7 +135,7 @@ const registerNnsNeuronsVote = async ({
   const identity: Identity = await getAuthenticatedIdentity();
   const { id } = proposalInfo;
   const proposalId = id as ProposalId;
-  const proposalType = mapNnsProposal(proposalInfo).topic ?? "";
+  const proposalType = mapNnsProposal(proposalInfo).type ?? "";
 
   try {
     const requests = neuronIds.map(

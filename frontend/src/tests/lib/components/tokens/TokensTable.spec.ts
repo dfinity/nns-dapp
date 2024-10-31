@@ -1,6 +1,7 @@
 import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { ActionType } from "$lib/types/actions";
 import {
   UserTokenAction,
@@ -375,5 +376,33 @@ describe("TokensTable", () => {
         data: userToken,
       })
     );
+  });
+
+  it("should render an imported token tag", async () => {
+    const token1 = createUserToken({
+      universeId: OWN_CANISTER_ID,
+    });
+    const importedTokenLedgerId = principal(0);
+    const token2 = createUserToken({
+      universeId: importedTokenLedgerId,
+    });
+
+    importedTokensStore.set({
+      importedTokens: [
+        {
+          ledgerCanisterId: importedTokenLedgerId,
+          indexCanisterId: undefined,
+        },
+      ],
+      certified: true,
+    });
+
+    const po = renderTable({ userTokensData: [token1, token2] });
+    const rows = await po.getRows();
+    const row1Po = rows[0];
+    const row2Po = rows[1];
+
+    expect(await row1Po.hasImportedTokenTag()).toBe(false);
+    expect(await row2Po.hasImportedTokenTag()).toBe(true);
   });
 });

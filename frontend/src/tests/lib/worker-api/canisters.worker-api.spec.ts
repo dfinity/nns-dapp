@@ -4,9 +4,8 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterDetails } from "$tests/mocks/canisters.mock";
 import type { CanisterStatusResponse } from "@dfinity/ic-management";
 import { ICManagementCanister } from "@dfinity/ic-management";
+import * as dfinityUtils from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
-
-vi.mock("@dfinity/agent");
 
 describe("canisters-worker-api", () => {
   const response: CanisterStatusResponse = {
@@ -42,6 +41,9 @@ describe("canisters-worker-api", () => {
     );
 
     mockICManagementCanister.canisterStatus.mockResolvedValue(response);
+    // Prevent HttpAgent.create(), which is called by createAgent, from making a
+    // real network request via agent.syncTime().
+    vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
   });
 
   describe("queryCanisterDetails", () => {

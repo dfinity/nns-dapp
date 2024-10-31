@@ -6,19 +6,18 @@ edition = "2021"
 
 [dependencies]
 base64 = "0.22.1"
-candid = "0.10.9"
+candid = "0.10.10"
 flate2 = "1.0.30"
-futures = "0.3.30"
 hex = "0.4.3"
 itertools = "0.13.0"
 lazy_static = "1.5.0"
 lzma-rs = "0.3.0"
-regex = "1.10.5"
-serde = "1.0.204"
+regex = "1.11.0"
+serde = "1.0.209"
 serde_bytes = "0.11.15"
 serde_cbor = "0.11.2"
 sha2 = "0.10.8"
-strum = "0.25.0"
+strum = "0.26.3"
 strum_macros = "0.26.4"
 tar = "0.4.40"
 
@@ -29,6 +28,7 @@ dfn_protobuf = { workspace = true }
 ic-base-types = { workspace = true }
 ic-cdk = { workspace = true }
 ic-cdk-macros = { workspace = true }
+ic-cdk-timers = { workspace = true }
 ic-certified-map = "0.3.4" # == https://github.com/dfinity/cdk-rs 6a15aa1616bcfdfdc4c120d17d37a089f5700c36
 ic-crypto-sha2 = { workspace = true }
 ic-ledger-core = { workspace = true }
@@ -44,12 +44,14 @@ proposals = { path = "../proposals" }
 
 [dev-dependencies]
 anyhow = "1.0.86"
+candid_parser = "0.1.2"
 ic_principal = "0.1.0"
 maplit = "1.0.2"
-pocket-ic = "3.1.0"
 pretty_assertions = "1.4.0"
 proptest = "1.5.0"
 rand = "0.8.5"
+slotmap = "1"
+tokio = { version = "1.39.3", features = ["full"] }
 
 [features]
 # Build flavours; these should not normally be referred to directly in code.

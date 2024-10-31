@@ -14,7 +14,10 @@ import {
   SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
   SYNC_ACCOUNTS_RETRY_SECONDS,
 } from "$lib/constants/accounts.constants";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
+import {
+  FORCE_CALL_STRATEGY,
+  isForceCallStrategy,
+} from "$lib/constants/mockable.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
@@ -39,7 +42,6 @@ import {
   invalidIcrcAddress,
   toIcpAccountIdentifier,
 } from "$lib/utils/accounts.utils";
-import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import {
   cancelPoll,
@@ -48,6 +50,7 @@ import {
   pollingLimit,
 } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
+import { TxCreatedInFutureError, TxTooOldError } from "@dfinity/ledger-icp";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { ICPToken, TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -337,17 +340,17 @@ export const transferICP = async ({
 
     return { success: true, transaction_time: extractedNumber };
   } catch (err) {
-    return transferError({ labelKey: "error.transaction_error", err });
+    return transferError(err);
   }
 };
 
-const transferError = ({
-  labelKey,
-  err,
-}: {
-  labelKey: string;
-  err?: unknown;
-}): { success: boolean; err?: string } => {
+const transferError = (err: unknown): { success: boolean; err?: string } => {
+  let labelKey = "error.transaction_error";
+  if (err instanceof TxTooOldError) {
+    labelKey = "error.transaction_too_old";
+  } else if (err instanceof TxCreatedInFutureError) {
+    labelKey = "error.transaction_created_in_future";
+  }
   toastsError(
     toToastError({
       err,

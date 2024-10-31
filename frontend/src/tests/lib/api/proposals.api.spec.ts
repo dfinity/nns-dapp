@@ -23,6 +23,8 @@ describe("proposals-api", () => {
   let spyListProposals;
 
   beforeEach(() => {
+    vi.clearAllMocks();
+
     vi.spyOn(GovernanceCanister, "create").mockImplementation(
       (): GovernanceCanister => mockGovernanceCanister
     );
@@ -30,8 +32,6 @@ describe("proposals-api", () => {
     spyListProposals = vi.spyOn(mockGovernanceCanister, "listProposals");
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
-
-  afterEach(() => spyListProposals.mockClear());
 
   describe("list", () => {
     it("should call the canister to list proposals", async () => {
@@ -137,10 +137,6 @@ describe("proposals-api", () => {
     const nnsDappMock = mock<NNSDappCanister>();
     nnsDappMock.getProposalPayload.mockResolvedValue({});
     vi.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
-
-    afterAll(() => {
-      vi.clearAllMocks();
-    });
 
     it("should call the canister to get proposal payload", async () => {
       const spyGetProposalPayload = vi.spyOn(nnsDappMock, "getProposalPayload");

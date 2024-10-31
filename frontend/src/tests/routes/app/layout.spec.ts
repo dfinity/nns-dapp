@@ -1,11 +1,11 @@
 import {
   initAppAuth,
   initAppPublicData,
-} from "$lib/services/$public/app.services";
+} from "$lib/services/public/app.services";
 import App from "$routes/(app)/+layout.svelte";
 import { render, waitFor } from "@testing-library/svelte";
 
-vi.mock("$lib/services/$public/app.services", () => ({
+vi.mock("$lib/services/public/app.services", () => ({
   initAppAuth: vi.fn(() => Promise.resolve()),
   initAppPublicData: vi.fn(() => Promise.resolve()),
 }));

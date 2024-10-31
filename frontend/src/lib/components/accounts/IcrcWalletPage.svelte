@@ -4,30 +4,40 @@
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
+  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { syncAccounts as syncWalletAccounts } from "$lib/services/icrc-accounts.services";
+  import { removeImportedTokens } from "$lib/services/imported-tokens.services";
+  import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import type { Universe } from "$lib/types/universe";
   import type { WalletStore } from "$lib/types/wallet.context";
   import {
     findAccountOrDefaultToMain,
     hasAccounts,
   } from "$lib/utils/accounts.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { Island, Spinner } from "@dfinity/gix-components";
+  import { isImportedToken as checkImportedToken } from "$lib/utils/imported-tokens.utils";
+  import ImportTokenRemoveConfirmation from "./ImportTokenRemoveConfirmation.svelte";
+  import WalletMorePopover from "./WalletMorePopover.svelte";
+  import { IconDots, Island, Spinner, Tag } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
-  import type { Writable } from "svelte/store";
+  import { get, type Writable } from "svelte/store";
 
-  export let testId: string;
+  export let testId: string = "icrc-wallet-page";
   export let accountIdentifier: string | undefined | null = undefined;
   export let ledgerCanisterId: Principal | undefined;
+  export let indexCanisterId: Principal | undefined;
   export let token: IcrcTokenMetadata | undefined = undefined;
   export let selectedAccountStore: Writable<WalletStore>;
   export let reloadTransactions: () => Promise<void>;
@@ -54,7 +64,7 @@
 
   export const setSelectedAccount = () => {
     const accounts = nonNullish(ledgerCanisterId)
-      ? $icrcAccountsStore[ledgerCanisterId.toText()]?.accounts ?? []
+      ? ($icrcAccountsStore[ledgerCanisterId.toText()]?.accounts ?? [])
       : [];
     const account = findAccountOrDefaultToMain({
       identifier: accountIdentifier,
@@ -74,7 +84,7 @@
     setSelectedAccount();
 
     // We found an account in store for the provided account identifier, all data are set
-    if (nonNullish($selectedAccountStore.account)) {
+    if (nonNullish(get(selectedAccountStore).account)) {
       return { state: "loaded" };
     }
 
@@ -142,58 +152,121 @@
         ledgerCanisterId,
         isSignedIn: $authSignedInStore,
       }))();
+
+  let moreButton: HTMLButtonElement | undefined;
+  let morePopupVisible = false;
+
+  let isImportedToken = false;
+  $: isImportedToken = checkImportedToken({
+    ledgerCanisterId,
+    importedTokens: $importedTokensStore.importedTokens,
+  });
+
+  let removeImportedTokenConfirmationVisible = false;
+  let universe: Universe | undefined;
+  $: universe = $selectableUniversesStore.find(
+    ({ canisterId }) => canisterId === ledgerCanisterId?.toText()
+  );
+
+  const removeImportedToken = async () => {
+    // Just for type safety. This should never happen.
+    if (isNullish(ledgerCanisterId)) return;
+
+    const { success } = await removeImportedTokens(ledgerCanisterId);
+    if (success) {
+      goto(AppPath.Tokens);
+    }
+  };
 </script>
 
-<Island {testId}>
-  <main class="legacy">
-    <section>
-      {#if loaded && nonNullish(ledgerCanisterId)}
-        {#if nonNullish($selectedAccountStore.account) && nonNullish(token)}
-          <IcrcBalancesObserver
-            {ledgerCanisterId}
-            accounts={[$selectedAccountStore.account]}
-            reload={reloadOnlyAccountFromStore}
-          />
-        {/if}
-        <WalletPageHeader
-          universe={$selectedUniverseStore}
-          walletAddress={$selectedAccountStore.account?.identifier}
-        />
-        <WalletPageHeading
-          accountName={$selectedAccountStore.account?.name ??
-            $i18n.accounts.main}
-          balance={nonNullish($selectedAccountStore.account) &&
-          nonNullish(token)
-            ? TokenAmountV2.fromUlps({
-                amount: $selectedAccountStore.account.balanceUlps,
-                token,
-              })
-            : undefined}
-        >
-          <slot name="header-actions" />
-          <SignInGuard />
-        </WalletPageHeading>
+<TestIdWrapper {testId}>
+  <Island>
+    <main class="legacy">
+      <section>
+        {#if loaded && nonNullish(ledgerCanisterId)}
+          {#if nonNullish($selectedAccountStore.account) && nonNullish(token)}
+            <IcrcBalancesObserver
+              {ledgerCanisterId}
+              accounts={[$selectedAccountStore.account]}
+              reload={reloadOnlyAccountFromStore}
+            />
+          {/if}
+          <WalletPageHeader
+            universe={$selectedUniverseStore}
+            walletAddress={$selectedAccountStore.account?.identifier}
+          >
+            <svelte:fragment slot="actions">
+              {#if $ENABLE_IMPORT_TOKEN}
+                <button
+                  bind:this={moreButton}
+                  class="icon-only"
+                  data-tid="more-button"
+                  on:click={() => (morePopupVisible = true)}
+                >
+                  <IconDots />
+                </button>
+              {/if}
+            </svelte:fragment>
+          </WalletPageHeader>
+          <WalletPageHeading
+            accountName={$selectedAccountStore.account?.name ??
+              $i18n.accounts.main}
+            balance={nonNullish($selectedAccountStore.account) &&
+            nonNullish(token)
+              ? TokenAmountV2.fromUlps({
+                  amount: $selectedAccountStore.account.balanceUlps,
+                  token,
+                })
+              : undefined}
+          >
+            <slot name="header-actions" />
+            <SignInGuard />
 
-        {#if $$slots["info-card"]}
-          <div class="content-cell-island info-card">
-            <slot name="info-card" />
+            {#if isImportedToken}
+              <Tag testId="imported-token-tag"
+                >{$i18n.import_token.imported_token}</Tag
+              >
+            {/if}
+          </WalletPageHeading>
+
+          {#if $$slots["info-card"]}
+            <div class="content-cell-island info-card">
+              <slot name="info-card" />
+            </div>
+          {/if}
+
+          <Separator spacing="none" />
+
+          <!-- Transactions and the explanation go together. -->
+          <div>
+            <slot name="page-content" />
           </div>
+        {:else}
+          <Spinner />
         {/if}
+      </section>
+    </main>
 
-        <Separator spacing="none" />
+    <slot name="footer-actions" />
+  </Island>
 
-        <!-- Transactions and the explanation go together. -->
-        <div>
-          <slot name="page-content" />
-        </div>
-      {:else}
-        <Spinner />
-      {/if}
-    </section>
-  </main>
+  <WalletMorePopover
+    on:nnsRemove={() => (removeImportedTokenConfirmationVisible = true)}
+    bind:visible={morePopupVisible}
+    anchor={moreButton}
+    {ledgerCanisterId}
+    {indexCanisterId}
+    showRemoveButton={isImportedToken}
+  />
 
-  <slot name="footer-actions" />
-</Island>
+  {#if removeImportedTokenConfirmationVisible && nonNullish(universe)}
+    <ImportTokenRemoveConfirmation
+      tokenToRemove={{ universe }}
+      on:nnsClose={() => (removeImportedTokenConfirmationVisible = false)}
+      on:nnsConfirm={removeImportedToken}
+    />
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   section {

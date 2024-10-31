@@ -1,8 +1,8 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import {
-    MIN_NEURON_STAKE,
     MATURITY_MODULATION_VARIANCE_PERCENTAGE,
+    MIN_NEURON_STAKE,
   } from "$lib/constants/neurons.constants";
   import { ULPS_PER_MATURITY } from "$lib/constants/neurons.constants";
   import { i18n } from "$lib/stores/i18n";

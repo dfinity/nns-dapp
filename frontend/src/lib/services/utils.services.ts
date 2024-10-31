@@ -8,11 +8,13 @@ import {
 
 export type QueryAndUpdateOnResponse<R> = (options: {
   certified: boolean;
+  strategy: QueryAndUpdateStrategy;
   response: R;
 }) => void;
 
 export type QueryAndUpdateOnError<E> = (options: {
   certified: boolean;
+  strategy: QueryAndUpdateStrategy;
   error: E;
   // The identity used for the request
   identity: Identity;
@@ -54,8 +56,8 @@ export const queryAndUpdate = async <R, E>({
     identityType === "anonymous"
       ? getAnonymousIdentity()
       : identityType === "current"
-      ? getCurrentIdentity()
-      : await getAuthenticatedIdentity();
+        ? getCurrentIdentity()
+        : await getAuthenticatedIdentity();
 
   if (
     identity.getPrincipal().isAnonymous() &&
@@ -69,7 +71,7 @@ export const queryAndUpdate = async <R, E>({
 
   const currentStrategy = identity.getPrincipal().isAnonymous()
     ? "query"
-    : strategy ?? "query_and_update";
+    : (strategy ?? "query_and_update");
 
   const log = ({ postfix }: { postfix: string }) => {
     if (currentStrategy !== "query_and_update") {
@@ -83,14 +85,16 @@ export const queryAndUpdate = async <R, E>({
     request({ certified, identity })
       .then((response) => {
         if (certifiedDone) return;
-        onLoad({ certified, response });
+        certifiedDone ||= certified;
+
+        onLoad({ certified, strategy: currentStrategy, response });
         log({ postfix: ` ${certified ? "update" : "query"} complete.` });
       })
       .catch((error: E) => {
         if (certifiedDone) return;
-        onError?.({ certified, error, identity });
-      })
-      .finally(() => (certifiedDone = certifiedDone || certified));
+        certifiedDone ||= certified;
+        onError?.({ certified, strategy: currentStrategy, error, identity });
+      });
 
   // apply fetching strategy
   if (currentStrategy === "query") {

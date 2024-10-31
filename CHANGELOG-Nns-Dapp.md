@@ -11,6 +11,205 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 133373
+
+### Application
+
+#### Added
+
+* Importing custom tokens.
+
+#### Changed
+
+* Fetch TVL from NNS dapp canister instead of TVL canister.
+* `10%` rollout of re-enabling of certification of certain calls.
+
+#### Fixed
+
+* Bug where neurons are displayed as eligible to vote, even though they have already voted.
+* Issue with setting exact dissolve delay on SNS neurons.
+* Error on canister page.
+* Don't hide neurons which have only staked maturity.
+* Not showing the "no proposals" message when not signed in.
+
+### Operations
+
+## Proposal 133306
+
+### Application
+
+#### Added
+
+* Added `get_tvl` method to `nns-dapp` canister.
+* Display of principal Id and main ICP account Id in the account menu.
+
+#### Changed
+
+* Changes for cleaning up the stable structure migration.
+* Move Canisters button from sidebar to account menu.
+* Move GitHub button from account menu to sidebar.
+* Reduce calls to `sns-governance` canister by getting `nervous_system_parameters` from the aggregator instead.
+* Move theme toggle from account menu to sidebar.
+* The `Markdown` UI component was migrated to `@dfinity/gix-components`.
+
+#### Removed
+
+* Stop making unnecessary calls to load the SNS proposal every time we load the derived state.
+
+#### Fixed
+
+* Fixed a bug where a performance counter in `init` is wiped during state initialization.
+* Bug with parsing nervous system parameters from aborted SNSes.
+
+### Operations
+
+#### Removed
+
+* Removed unused `pocket-ic` dependency.
+
+## Proposal 133098
+
+### Application
+
+#### Added
+
+* Added `get_tvl` method to `nns-dapp` canister.
+* Display of principal Id and main ICP account Id in the account menu.
+
+#### Changed
+
+* Changes for cleaning up the stable structure migration.
+* Move Canisters button from sidebar to account menu.
+* Move GitHub button from account menu to sidebar.
+* Reduce calls to `sns-governance` canister by getting `nervous_system_parameters` from the aggregator instead.
+* Move theme toggle from account menu to sidebar.
+* The `Markdown` UI component was migrated to `@dfinity/gix-components`.
+
+#### Removed
+
+* Stop making unnecessary calls to load the SNS proposal every time we load the derived state.
+
+#### Fixed
+
+* Fixed a bug where a performance counter in `init` is wiped during state initialization.
+
+### Operations
+
+#### Removed
+
+* Removed unused `pocket-ic` dependency.
+
+## Proposal 132374
+
+### Application
+
+#### Changed
+
+* Staking project rows are not clickable when not signed in.
+* Changes for cleaning up the stable structure migration.
+* Upgrade agent-js to version 2.
+
+#### Removed
+
+* Rendering for `InstallCode`, `BlessReplicaVersion` and `RetireReplicaVersion` proposals.
+* Message informing users of the System Canister Management topic split.
+
+#### Fixed
+
+* Enforce minimum stake when staking SNS tokens from the staking table.
+
+### Operations
+
+#### Changed
+
+* Change the release process to submitting `InstallCode` proposals.
+
+## Proposal 132133
+
+### Application
+
+#### Added
+
+* Stake tokens, the first time, directly from the Nervous Systems table.
+
+#### Changed
+
+* Bump ic-js so that NNS Dapp can parse `InstallCode` proposal correctly.
+* Display of the new/renamed topics and proposals.
+
+#### Fixed
+
+* Empty space in the Tokens and Neurons tables in Safari.
+* Staking for SNS with zero transaction fee.
+
+### Operations
+
+#### Removed
+
+* Integration test setup code and related script and documentation.
+
+## Proposal 131754
+
+### Application
+
+#### Added
+
+* Parse and trim proposal payload for `InstallCode` within the `get_proposal_payload` back-end endpoint.
+* Support rendering `InstallCode` proposal payload by calling `get_proposal_payload`.
+
+#### Changed
+
+* Round neuron stake and maturity to 2 decimals in tables.
+* Show detailed stake amount in neuron details page.
+
+#### Fixed
+
+* Fixed incorrect interpretation of ICRC fees (#5314).
+
+### Operations
+
+## Proposal 131698
+
+### Application
+
+#### Added
+
+* Enable warning dialog on beta deployment.
+* Back-end support for storing imported tokens.
+* Message informing users of the System Canister Management topic split.
+
+#### Changed
+
+* Replace the nervous system left navigation on the staking tab with a new table.
+* Bump ic-js to a version with new proposal types and neuron visibility.
+* Enable following on the new topics `ProtocolCansiterManagement` and `ServiceNervousSystemManagement`.
+
+### Operations
+
+## Proposal 131389
+
+### Application
+
+#### Added
+
+* Add 2 new topics `ProtocolCanisterMangement` and `ServiceNervousSystemManagement` while not allowing following to be set.
+* Make the WASM accessible via beta subdomains so we can deploy early versions there.
+
+#### Removed
+
+* Removed `unsafe-eval` from Content Security Policy.
+
+#### Fixed
+
+* HTML injection in error toast.
+* Show unknown topic as "Unknown Topic (...")".
+
+### Operations
+
+#### Removed
+
+* Deleted Reproducible Assets workflow.
+
 ## Proposal 131363
 
 ### Application

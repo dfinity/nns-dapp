@@ -4,7 +4,11 @@ import * as indexApi from "$lib/api/icp-index.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import {
+  INDEX_CANISTER_ID,
+  LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import NnsWallet from "$lib/pages/NnsWallet.svelte";
@@ -43,6 +47,7 @@ import {
   setAccountsForTesting,
 } from "$tests/utils/accounts.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { render } from "$tests/utils/svelte.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -50,9 +55,8 @@ import {
 import { toastsStore } from "@dfinity/gix-components";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";
-import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 import AccountsTest from "./AccountsTest.svelte";
 
 vi.mock("$lib/api/nns-dapp.api");
@@ -240,6 +244,45 @@ describe("NnsWallet", () => {
           text: 'Sorry, the account "invalid-account-identifier" was not found',
         },
       ]);
+    });
+
+    it('should render "more" button', async () => {
+      const po = await renderWallet({});
+      expect(await po.getMoreButton().isPresent()).toBe(true);
+    });
+
+    it("should not display more button when ENABLE_IMPORT_TOKEN disabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN", false);
+
+      const po = await renderWallet({});
+      expect(await po.hasMoreButton()).toBe(false);
+    });
+
+    it('should have canister links in "more" popup', async () => {
+      const po = await renderWallet({});
+      const morePopoverPo = po.getWalletMorePopoverPo();
+
+      // The popover should not be visible initially.
+      expect(await morePopoverPo.getLinkToLedgerCanisterPo().isPresent()).toBe(
+        false
+      );
+
+      await po.clickMore();
+
+      await runResolvedPromises();
+
+      expect(await morePopoverPo.getLinkToLedgerCanisterPo().isPresent()).toBe(
+        true
+      );
+      expect(await morePopoverPo.getLinkToLedgerCanisterPo().getHref()).toBe(
+        `https://dashboard.internetcomputer.org/canister/${LEDGER_CANISTER_ID.toText()}`
+      );
+      expect(await morePopoverPo.getLinkToIndexCanisterPo().isPresent()).toBe(
+        true
+      );
+      expect(await morePopoverPo.getLinkToIndexCanisterPo().getHref()).toBe(
+        `https://dashboard.internetcomputer.org/canister/${INDEX_CANISTER_ID.toText()}`
+      );
     });
   });
 
@@ -858,10 +901,6 @@ describe("NnsWallet", () => {
       accountIdentifier: mockHardwareWalletAccount.identifier,
     };
 
-    afterAll(() => {
-      vi.clearAllMocks();
-    });
-
     it("should display principal", async () => {
       const po = await renderWallet(props);
 
@@ -878,7 +917,7 @@ describe("NnsWallet", () => {
   });
 
   describe("when no accounts and user navigates away", () => {
-    let spyQueryAccount: SpyInstance;
+    let spyQueryAccount: MockInstance;
     beforeEach(() => {
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);

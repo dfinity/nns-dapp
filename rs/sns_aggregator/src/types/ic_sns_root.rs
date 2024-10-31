@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_root --out ic_sns_root.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-07-18_01-30--github-base/rs/sns/root/canister/root.did>
+//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-23_03-07-ubuntu20.04/rs/sns/root/canister/root.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -20,7 +20,6 @@ use ic_cdk::api::call::CallResult;
 pub struct SnsRootCanister {
     pub dapp_canister_ids: Vec<Principal>,
     pub testflight: bool,
-    pub latest_ledger_archive_poll_timestamp_seconds: Option<u64>,
     pub archive_canister_ids: Vec<Principal>,
     pub governance_canister_id: Option<Principal>,
     pub index_canister_id: Option<Principal>,
@@ -41,10 +40,19 @@ pub enum CanisterStatusType {
     Running,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum LogVisibility {
+    #[serde(rename = "controllers")]
+    Controllers,
+    #[serde(rename = "public")]
+    Public,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DefiniteCanisterSettings {
     pub freezing_threshold: Option<candid::Nat>,
     pub controllers: Vec<Principal>,
     pub reserved_cycles_limit: Option<candid::Nat>,
+    pub log_visibility: Option<LogVisibility>,
+    pub wasm_memory_limit: Option<candid::Nat>,
     pub memory_allocation: Option<candid::Nat>,
     pub compute_allocation: Option<candid::Nat>,
 }
@@ -85,6 +93,7 @@ pub struct GetSnsCanistersSummaryRequest {
 pub struct DefiniteCanisterSettingsArgs {
     pub freezing_threshold: candid::Nat,
     pub controllers: Vec<Principal>,
+    pub wasm_memory_limit: Option<candid::Nat>,
     pub memory_allocation: candid::Nat,
     pub compute_allocation: candid::Nat,
 }

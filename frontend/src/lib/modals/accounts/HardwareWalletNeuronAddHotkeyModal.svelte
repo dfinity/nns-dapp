@@ -7,8 +7,8 @@
   import type { Account } from "$lib/types/account";
   import {
     WALLET_CONTEXT_KEY,
-    type WalletContext,
     type HardwareWalletNeuronInfo,
+    type WalletContext,
   } from "$lib/types/wallet.context";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { NeuronId } from "@dfinity/nns";

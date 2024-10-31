@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { ProgressBar } from "@dfinity/gix-components";
-  import { ICPToken, nonNullish, TokenAmountV2 } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2, nonNullish } from "@dfinity/utils";
 
   export let max: bigint;
   export let participationE8s: bigint;

@@ -36,7 +36,7 @@ jobs:
       - name: Create Pull Request
         id: cpr
         # Note: If there were no changes, this step creates no PR.
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GIX_CREATE_PR_PAT }}
           commit-message: Bump
@@ -51,7 +51,9 @@ jobs:
           title: "bot: Bump ${{ inputs.gix_components && 'gix-components' || '' }}${{ inputs.gix_components && inputs.ic_js && ' and ' || '' }}${{ inputs.ic_js && 'ic-js' || '' }}"
           body: |
             # Motivation
+
             We want to pull in the latest changes.
+            This PR was requested by ${{ github.actor }}.
 
             # Changes
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { loadProposalPayload } from "$lib/services/$public/proposals.services";
+  import { loadProposalPayload } from "$lib/services/public/proposals.services";
   import { proposalPayloadsStore } from "$lib/stores/proposals.store";
   import { getNnsFunctionKey } from "$lib/utils/proposals.utils";
   import ProposalProposerPayloadEntry from "./ProposalProposerPayloadEntry.svelte";
@@ -30,7 +30,6 @@
   }
 </script>
 
-<!-- Only proposals with nnsFunctionKey and proposalId have payload -->
 {#if nnsFunctionKey !== undefined && proposalId !== undefined}
   <ProposalProposerPayloadEntry {payload} />
 {/if}

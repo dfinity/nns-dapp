@@ -12,7 +12,7 @@
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
   import PageHeader from "../common/PageHeader.svelte";
   import IdentifierHash from "../ui/IdentifierHash.svelte";
-  import UniversePageSummary from "../universe/UniversePageSummary.svelte";
+  import UniverseSummary from "../universe/UniverseSummary.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import { isNullish, nonNullish, type Token } from "@dfinity/utils";
   import { getContext } from "svelte";
@@ -45,7 +45,7 @@
 </script>
 
 <PageHeader testId="sns-neuron-page-header-component">
-  <UniversePageSummary slot="start" universe={$selectedUniverseStore} />
+  <UniverseSummary slot="start" universe={$selectedUniverseStore} />
   <span
     slot="end"
     class="description header-end"
@@ -62,7 +62,7 @@
 <style lang="scss">
   .header-end {
     // The IdentifierHash has the copy button at the end which has some extra padding.
-    // This is needed to align in the center the UniversePageSummary and the IdentifierHash in mobile view.
+    // This is needed to align in the center the UniverseSummary and the IdentifierHash in mobile view.
     padding-left: var(--padding-1_5x);
   }
 </style>

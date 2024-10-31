@@ -35,7 +35,7 @@ import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 
 vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/canisters.api");
@@ -46,19 +46,19 @@ describe("canisters-services", () => {
 
   const newBalanceE8s = 100_000_000n;
   const exchangeRate = 10_000n;
-  let spyQueryCanisters: SpyInstance;
-  let spyQueryAccountBalance: SpyInstance;
-  let spyAttachCanister: SpyInstance;
-  let spyRenameCanister: SpyInstance;
-  let spyDetachCanister: SpyInstance;
-  let spyUpdateSettings: SpyInstance;
-  let spyCreateCanister: SpyInstance;
-  let spyTopUpCanister: SpyInstance;
-  let spyQueryCanisterDetails: SpyInstance;
-  let spyGetExchangeRate: SpyInstance;
+  let spyQueryCanisters: MockInstance;
+  let spyQueryAccountBalance: MockInstance;
+  let spyAttachCanister: MockInstance;
+  let spyRenameCanister: MockInstance;
+  let spyDetachCanister: MockInstance;
+  let spyUpdateSettings: MockInstance;
+  let spyCreateCanister: MockInstance;
+  let spyTopUpCanister: MockInstance;
+  let spyQueryCanisterDetails: MockInstance;
+  let spyGetExchangeRate: MockInstance;
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     vi.spyOn(console, "error").mockImplementation(() => undefined);
 
     toastsStore.reset();
@@ -126,6 +126,54 @@ describe("canisters-services", () => {
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
 
       resetIdentity();
+    });
+
+    it("should reset canister and show toast on error", async () => {
+      const errorMessage = "no canisters found";
+      spyQueryCanisters = vi
+        .spyOn(api, "queryCanisters")
+        .mockRejectedValue(new Error(errorMessage));
+
+      canistersStore.setCanisters({
+        canisters: mockCanisters,
+        certified: true,
+      });
+
+      expect(get(canistersStore).canisters).not.toEqual([]);
+      expect(get(toastsStore)).toEqual([]);
+
+      await listCanisters({});
+
+      expect(get(canistersStore).canisters).toEqual([]);
+      expect(get(toastsStore)[0]).toMatchObject({
+        level: "error",
+        text: `There was an unexpected issue while searching for the canisters. ${errorMessage}`,
+      });
+    });
+
+    it("should not reset canisters or show toast on uncertified error", async () => {
+      const errorMessage = "no canisters found";
+      spyQueryCanisters = vi
+        .spyOn(api, "queryCanisters")
+        .mockImplementation(async ({ certified }) => {
+          if (!certified) {
+            throw new Error(errorMessage);
+          }
+          return mockCanisters;
+        });
+
+      canistersStore.setCanisters({
+        canisters: mockCanisters,
+        certified: true,
+      });
+
+      expect(get(canistersStore).canisters).not.toEqual([]);
+      expect(get(toastsStore)).toEqual([]);
+
+      await listCanisters({});
+
+      expect(get(canistersStore).canisters).not.toEqual([]);
+      expect(get(toastsStore)).toEqual([]);
     });
   });
 

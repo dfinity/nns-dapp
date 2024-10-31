@@ -31,11 +31,9 @@ use schema::{
     AccountsDbTrait,
 };
 
-use self::schema::SchemaLabel;
-
-/// The data migration is more complicated if there are too many accounts.  With below this many
-/// accounts we avoid some complications.
-const PRE_MIGRATION_LIMIT: u64 = 300_000;
+// This limit is for DoS protection but should be increased if we get close to
+// the limit.
+const ACCOUNT_LIMIT: u64 = 300_000;
 
 // Conservatively limit the number of imported tokens to prevent using too much memory.
 // Can be revisited if users find this too restrictive.
@@ -55,6 +53,10 @@ pub struct AccountsStore {
     // pending_transactions: HashMap<(from, to), (TransactionType, timestamp_ms_since_epoch)>
     pending_transactions: HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
 
+    // TODO: Remove neuron_accounts once not topping up neurons has been
+    //       released for some time. Removing this field will have to be done in
+    //       multiple steps because it is stored in stable memory during
+    //       upgrades.
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
     block_height_synced_up_to: Option<BlockIndex>,
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
@@ -128,9 +130,6 @@ impl AccountsDbTrait for AccountsStore {
     }
     fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
         self.accounts_db.range(key_range)
-    }
-    fn schema_label(&self) -> SchemaLabel {
-        self.accounts_db.schema_label()
     }
 }
 
@@ -254,7 +253,6 @@ pub enum TransactionType {
     TransferFrom,
     StakeNeuron,
     StakeNeuronNotification,
-    TopUpNeuron,
     CreateCanister,
     TopUpCanister(CanisterId),
     ParticipateSwap(CanisterId),
@@ -376,10 +374,6 @@ impl AccountsStore {
     pub fn migration_in_progress(&self) -> bool {
         self.accounts_db.migration_in_progress()
     }
-    /// Starts migrating accounts to the new db.
-    pub fn start_migrating_accounts_to(&mut self, accounts_db: AccountsDb) {
-        self.accounts_db.start_migrating_accounts_to(accounts_db);
-    }
     /// Advances the migration by one step.
     ///
     /// Note: This is a pass-through to the underlying `AccountsDb::step_migration`.  Please see that for further details.
@@ -430,7 +424,7 @@ impl AccountsStore {
     // yet been stored, allowing us to set the principal (since originally we created accounts
     // without storing each user's principal).
     pub fn add_account(&mut self, caller: PrincipalId) -> bool {
-        self.assert_pre_migration_limit();
+        self.assert_account_limit();
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
             if account.principal.is_none() {
@@ -452,7 +446,7 @@ impl AccountsStore {
 
     /// Creates a sub-account for the given user.
     pub fn create_sub_account(&mut self, caller: PrincipalId, sub_account_name: String) -> CreateSubAccountResponse {
-        self.assert_pre_migration_limit();
+        self.assert_account_limit();
         let account_identifier = AccountIdentifier::from(caller);
 
         if !Self::validate_account_name(&sub_account_name) {
@@ -597,7 +591,7 @@ impl AccountsStore {
                     if let Some(principal) = self.try_get_principal(&from) {
                         let canister_ids: Vec<CanisterId> =
                             self.get_canisters(principal).iter().map(|c| c.canister_id).collect();
-                        let transaction_type = self.get_transaction_type(
+                        let transaction_type = Self::get_transaction_type(
                             from,
                             to,
                             memo,
@@ -607,12 +601,6 @@ impl AccountsStore {
                         );
                         self.process_transaction_type(transaction_type, principal, from, to, memo, block_height);
                     }
-                } else if let Some(neuron_details) = self.neuron_accounts.get(&to) {
-                    // Handle the case where people top up their neuron from an external account
-                    self.multi_part_transactions_processor.push(
-                        block_height,
-                        MultiPartTransactionToBeProcessed::TopUpNeuron(neuron_details.principal, neuron_details.memo),
-                    );
                 }
             }
         }
@@ -823,10 +811,6 @@ impl AccountsStore {
         self.neuron_accounts.get_mut(&account_identifier).unwrap_or_else(|| panic!("Failed to mark neuron created for account {account_identifier} as the account has no neuron_accounts entry.")).neuron_id = Some(neuron_id);
     }
 
-    pub fn mark_neuron_topped_up(&mut self) {
-        self.neurons_topped_up_count += 1;
-    }
-
     pub fn enqueue_multi_part_transaction(
         &mut self,
         block_height: BlockIndex,
@@ -856,7 +840,6 @@ impl AccountsStore {
         stats.neurons_created_count = self.neuron_accounts.len() as u64;
         stats.neurons_topped_up_count = self.neurons_topped_up_count;
         stats.transactions_to_process_queue_length = self.multi_part_transactions_processor.get_queue_length();
-        stats.schema = Some(self.accounts_db.schema_label() as u32);
         stats.migration_countdown = Some(self.accounts_db.migration_countdown());
         stats.accounts_db_stats_recomputed_on_upgrade = self.accounts_db_stats_recomputed_on_upgrade.0;
     }
@@ -930,7 +913,6 @@ impl AccountsStore {
 
     #[allow(clippy::too_many_arguments)]
     fn get_transaction_type(
-        &self,
         from: AccountIdentifier,
         to: AccountIdentifier,
         memo: Memo,
@@ -942,8 +924,6 @@ impl AccountsStore {
         // use the default value passed when the function is called
         if from == to {
             default_transaction_type
-        } else if self.neuron_accounts.contains_key(&to) {
-            TransactionType::TopUpNeuron
         } else if memo.0 > 0 {
             if Self::is_create_canister_transaction(memo, &to, principal) {
                 TransactionType::CreateCanister
@@ -1048,15 +1028,6 @@ impl AccountsStore {
                     MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo),
                 );
             }
-            TransactionType::TopUpNeuron => {
-                if let Some(neuron_account) = self.neuron_accounts.get(&to) {
-                    // We need to use the memo from the original stake neuron transaction
-                    self.multi_part_transactions_processor.push(
-                        block_height,
-                        MultiPartTransactionToBeProcessed::TopUpNeuron(neuron_account.principal, neuron_account.memo),
-                    );
-                }
-            }
             TransactionType::CreateCanister => {
                 self.multi_part_transactions_processor.push(
                     block_height,
@@ -1072,10 +1043,10 @@ impl AccountsStore {
             _ => {}
         };
     }
-    fn assert_pre_migration_limit(&self) {
+    fn assert_account_limit(&self) {
         let db_accounts_len = self.accounts_db.db_accounts_len();
         assert!(
-            db_accounts_len < PRE_MIGRATION_LIMIT,
+            db_accounts_len < ACCOUNT_LIMIT,
             "Pre migration account limit exceeded {db_accounts_len}"
         );
     }

@@ -1,5 +1,5 @@
 import {
-  addRawToUrl,
+  isLastCall,
   isLocalhost,
   isNnsAlternativeOrigin,
 } from "$lib/utils/env.utils";
@@ -8,15 +8,8 @@ describe("env-utils", () => {
   describe("isNnsAlternativeOrigin", () => {
     let location;
 
-    beforeAll(() => {
+    beforeEach(() => {
       location = window.location;
-    });
-
-    afterAll(() => {
-      Object.defineProperty(window, "location", {
-        writable: true,
-        value: { ...location },
-      });
     });
 
     const setOrigin = (origin: string) => {
@@ -70,46 +63,6 @@ describe("env-utils", () => {
     });
   });
 
-  describe("addRawToUrl", () => {
-    it("adds raw to url", () => {
-      expect(
-        addRawToUrl(
-          "https://53zcu-tiaaa-aaaaa-qaaba-cai.medium09.testnet.dfinity.network"
-        )
-      ).toBe(
-        "https://53zcu-tiaaa-aaaaa-qaaba-cai.raw.medium09.testnet.dfinity.network"
-      );
-
-      expect(
-        addRawToUrl(
-          "https://53zcu-tiaaa-aaaaa-qaaba-cai.nnsdapp.testnet.dfinity.network"
-        )
-      ).toBe(
-        "https://53zcu-tiaaa-aaaaa-qaaba-cai.raw.nnsdapp.testnet.dfinity.network"
-      );
-
-      expect(
-        addRawToUrl(
-          "https://53zcu-tiaaa-aaaaa-qaaba-cai.nnsdapp.testnet.dfinity.network/"
-        )
-      ).toBe(
-        "https://53zcu-tiaaa-aaaaa-qaaba-cai.raw.nnsdapp.testnet.dfinity.network/"
-      );
-    });
-
-    it("raises if url is not a valid url", () => {
-      const invalid1 = "http**://example.com";
-      expect(() => addRawToUrl(invalid1)).toThrow(
-        new TypeError(`Invalid URL: ${invalid1}`)
-      );
-
-      const invalid2 = "";
-      expect(() => addRawToUrl(invalid2)).toThrow(
-        new TypeError(`Invalid URL: ${invalid2}`)
-      );
-    });
-  });
-
   describe("isLocalhost", () => {
     it("return false when hostname is not localhost", () => {
       expect(
@@ -125,6 +78,26 @@ describe("env-utils", () => {
       expect(isLocalhost("localhost:3000")).toBe(true);
       expect(isLocalhost("127.0.0.1:3000")).toBe(true);
       expect(isLocalhost("xxxx.localhost")).toBe(true);
+    });
+  });
+
+  describe("isLastCall", () => {
+    it("should return true when certified", () => {
+      expect(
+        isLastCall({ strategy: "query_and_update", certified: true })
+      ).toBe(true);
+      expect(isLastCall({ strategy: "update", certified: true })).toBe(true);
+    });
+
+    it("should return true for single call", () => {
+      expect(isLastCall({ strategy: "query", certified: false })).toBe(true);
+      expect(isLastCall({ strategy: "update", certified: true })).toBe(true);
+    });
+
+    it("should return false for query of query_and_update ", () => {
+      expect(
+        isLastCall({ strategy: "query_and_update", certified: false })
+      ).toBe(false);
     });
   });
 });

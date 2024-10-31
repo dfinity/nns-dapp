@@ -8,7 +8,7 @@
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { setContext, SvelteComponent } from "svelte";
+  import { SvelteComponent, setContext } from "svelte";
   import { writable } from "svelte/store";
 
   export let neuron: SnsNeuron | undefined;

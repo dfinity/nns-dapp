@@ -1,18 +1,21 @@
 <script lang="ts">
   import { getProjectProposal } from "$lib/getters/sns-summary";
-  import { loadProposal } from "$lib/services/$public/proposals.services";
+  import { loadProposal } from "$lib/services/public/proposals.services";
   import { i18n } from "$lib/stores/i18n";
   import type { SnsSummary } from "$lib/types/sns";
   import NnsProposalCard from "../proposals/NnsProposalCard.svelte";
+  import type { ProposalId } from "@dfinity/nns";
   import type { ProposalInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
 
   export let summary: SnsSummary;
 
+  let proposalId: ProposalId | undefined;
+  $: proposalId = getProjectProposal(summary);
+
   let proposalInfo: ProposalInfo | undefined;
 
-  $: {
-    const proposalId = getProjectProposal(summary);
+  const loadProposalFromId = (proposalId: ProposalId | undefined) => {
     if (nonNullish(proposalId)) {
       loadProposal({
         proposalId,
@@ -24,10 +27,11 @@
           }
           proposalInfo = proposal;
         },
-        silentUpdateErrorMessages: true,
       });
     }
-  }
+  };
+
+  $: loadProposalFromId(proposalId);
 </script>
 
 {#if nonNullish(proposalInfo)}

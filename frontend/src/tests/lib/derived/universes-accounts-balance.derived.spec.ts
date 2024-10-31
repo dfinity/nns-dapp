@@ -19,7 +19,7 @@ describe("universes-accounts-balance.derived", () => {
   const rootCanisterId = mockSnsFullProject.rootCanisterId;
   const ledgerCanisterId = mockSnsFullProject.summary.ledgerCanisterId;
 
-  beforeAll(() => {
+  beforeEach(() => {
     setSnsProjects([
       {
         rootCanisterId,
@@ -30,10 +30,6 @@ describe("universes-accounts-balance.derived", () => {
       ledgerCanisterId,
       accounts: { accounts: [mockSnsMainAccount], certified: true },
     });
-  });
-
-  afterAll(() => {
-    vi.clearAllMocks();
   });
 
   it("should derive a balance of Nns accounts", () => {

@@ -17,14 +17,11 @@ import {
 import { authStore } from "$lib/stores/auth.store";
 import * as busyStore from "$lib/stores/busy.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
-import * as toastsStore from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
-import { formatTokenE8s } from "$lib/utils/token.utils";
 import {
-  mockAuthStoreSubscribe,
   mockIdentity,
   mockPrincipal,
+  resetIdentity,
 } from "$tests/mocks/auth.store.mock";
 import {
   mockMainAccount,
@@ -55,6 +52,7 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import type { Agent, Identity } from "@dfinity/agent";
+import { toastsStore } from "@dfinity/gix-components";
 import {
   InsufficientFundsError,
   TransferError,
@@ -132,10 +130,6 @@ describe("sns-api", () => {
   const newBalanceE8s = 100_000_000n;
   const spyOnQueryBalance = vi.spyOn(ledgerApi, "queryAccountBalance");
   const spyOnNotifyParticipation = vi.fn();
-  const spyOnToastsShow = vi.spyOn(toastsStore, "toastsShow");
-  const spyOnToastsSuccess = vi.spyOn(toastsStore, "toastsSuccess");
-  const spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
-  const spyOnToastsHide = vi.spyOn(toastsStore, "toastsHide");
   const testRootCanisterId = rootCanisterIdMock;
   const swapCanisterId = swapCanisterIdMock;
   const testSnsTicket = snsTicketMock({
@@ -155,13 +149,6 @@ describe("sns-api", () => {
     spyOnSendICP.mockReset();
     spyOnSendICP.mockReset();
     spyOnNotifyParticipation.mockReset();
-    spyOnToastsShow.mockReset();
-    // `mockReset` seems to add a mock not calling the actual function and not only reset the spy.
-    // And because the service relies on the return value of the spy, we need to mock the return value.
-    // Jest was calling the original function instead.
-    spyOnToastsShow.mockReturnValue(Symbol("toast-id"));
-    spyOnToastsSuccess.mockReset();
-    spyOnToastsError.mockReset();
     snsSwapCanister.getOpenTicket.mockReset();
     spyOnNewSaleTicketApi.mockReset();
     spyOnNotifyPaymentFailureApi.mockReset();
@@ -169,6 +156,7 @@ describe("sns-api", () => {
     vi.useFakeTimers();
     vi.clearAllMocks();
 
+    toastsStore.reset();
     snsTicketsStore.reset();
     resetAccountsForTesting();
     tokensStore.reset();
@@ -220,7 +208,7 @@ describe("sns-api", () => {
       (): SnsSwapCanister => snsSwapCanister
     );
 
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
   });
 
   describe("loadOpenTicket", () => {
@@ -350,17 +338,20 @@ describe("sns-api", () => {
           new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_SALE_CLOSED)
         );
 
+        expect(get(toastsStore)).toEqual([]);
+
         await loadOpenTicket({
           rootCanisterId: testSnsTicket.rootCanisterId,
           swapCanisterId: swapCanisterIdMock,
           certified: true,
         });
 
-        expect(spyOnToastsError).toBeCalledWith(
-          expect.objectContaining({
-            labelKey: "error__sns.sns_sale_closed",
-          })
-        );
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: "Sorry, the swap was already closed. Please reload the page.",
+          },
+        ]);
       });
 
       it("should set store to `null` on unspecified type error", async () => {
@@ -384,17 +375,20 @@ describe("sns-api", () => {
           new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_UNSPECIFIED)
         );
 
+        expect(get(toastsStore)).toEqual([]);
+
         await loadOpenTicket({
           rootCanisterId: testSnsTicket.rootCanisterId,
           swapCanisterId: swapCanisterIdMock,
           certified: true,
         });
 
-        expect(spyOnToastsError).toBeCalledWith(
-          expect.objectContaining({
-            labelKey: "error__sns.sns_sale_final_error",
-          })
-        );
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: "Sorry, there was an unexpected error connection with the SNS swap. Please reload the page and try again.",
+          },
+        ]);
       });
 
       it("should set store to `null` on not open error", async () => {
@@ -422,17 +416,20 @@ describe("sns-api", () => {
           )
         );
 
+        expect(get(toastsStore)).toEqual([]);
+
         await loadOpenTicket({
           rootCanisterId: testSnsTicket.rootCanisterId,
           swapCanisterId: swapCanisterIdMock,
           certified: true,
         });
 
-        expect(spyOnToastsError).toBeCalledWith(
-          expect.objectContaining({
-            labelKey: "error__sns.sns_sale_not_open",
-          })
-        );
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: "Sorry, the swap is not yet open. Please reload the page.",
+          },
+        ]);
       });
 
       it("should show 'high load' toast after 6 failures", async () => {
@@ -460,17 +457,27 @@ describe("sns-api", () => {
           expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
 
           if (expectedCalls < expectFailuresBeforeToast) {
-            expect(spyOnToastsError).not.toBeCalled();
+            expect(get(toastsStore)).toMatchObject([
+              {
+                level: "info",
+                text: "We're connecting with the SNS swap. This might take more than a minute.",
+              },
+            ]);
           }
         }
         expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(
           expectFailuresBeforeToast
         );
-        expect(spyOnToastsError).toBeCalledWith(
-          expect.objectContaining({
-            labelKey: "error.high_load_retrying",
-          })
-        );
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "info",
+            text: "We're connecting with the SNS swap. This might take more than a minute.",
+          },
+          {
+            level: "error",
+            text: "The Internet Computer is experiencing high load. We'll keep retrying.",
+          },
+        ]);
       });
     });
 
@@ -525,9 +532,14 @@ describe("sns-api", () => {
           maxAttempts: 10,
         });
 
-        expect(spyOnToastsShow).toBeCalledTimes(0);
+        expect(get(toastsStore)).toEqual([]);
         await runResolvedPromises();
-        expect(spyOnToastsShow).toBeCalledTimes(1);
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "info",
+            text: "We're connecting with the SNS swap. This might take more than a minute.",
+          },
+        ]);
 
         let expectedCalls = 1;
         expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
@@ -541,12 +553,16 @@ describe("sns-api", () => {
           expectedCalls += 1;
           expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
         }
-        expect(spyOnToastsShow).toBeCalledTimes(1);
-        expect(spyOnToastsHide).not.toBeCalled();
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "info",
+            text: "We're connecting with the SNS swap. This might take more than a minute.",
+          },
+        ]);
         cancelPollGetOpenTicket();
 
         await runResolvedPromises();
-        expect(spyOnToastsHide).toBeCalledTimes(1);
+        expect(get(toastsStore)).toEqual([]);
       });
     });
   });
@@ -582,17 +598,20 @@ describe("sns-api", () => {
         })
       );
 
+      expect(get(toastsStore)).toEqual([]);
+
       await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
 
       expect(spyOnNewSaleTicketApi).toBeCalled();
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.sns_sale_closed",
-        })
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, the swap was already closed. Please reload the page. ",
+        },
+      ]);
       expect(ticketFromStore()?.ticket).toEqual(null);
     });
 
@@ -603,17 +622,20 @@ describe("sns-api", () => {
         })
       );
 
+      expect(get(toastsStore)).toEqual([]);
+
       await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
 
       expect(spyOnNewSaleTicketApi).toBeCalled();
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.sns_sale_not_open",
-        })
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, the swap is not yet open. Please reload the page. ",
+        },
+      ]);
       expect(ticketFromStore()?.ticket).toEqual(null);
     });
 
@@ -625,21 +647,20 @@ describe("sns-api", () => {
         })
       );
 
+      expect(get(toastsStore)).toEqual([]);
+
       await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
 
       expect(spyOnNewSaleTicketApi).toBeCalled();
-      expect(spyOnToastsError).toBeCalledTimes(1);
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
-          substitutions: {
-            $time: nanoSecondsToDateTime(testSnsTicket.ticket.creation_time),
-          },
-        })
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "There is an existing participation started at Jan 1, 1970 12:00 AM. Completing that participation.",
+        },
+      ]);
       expect(ticketFromStore()?.ticket).toEqual(testTicket);
     });
 
@@ -656,21 +677,20 @@ describe("sns-api", () => {
         })
       );
 
+      expect(get(toastsStore)).toEqual([]);
+
       await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
 
       expect(spyOnNewSaleTicketApi).toBeCalled();
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.sns_sale_invalid_amount",
-          substitutions: {
-            $min: formatTokenE8s({ value: min_amount_icp_e8s_included }),
-            $max: formatTokenE8s({ value: max_amount_icp_e8s_included }),
-          },
-        })
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Can't participate with the selected amount. Please participate with a different amount (0.00000123 - 0.00000321).",
+        },
+      ]);
       expect(ticketFromStore()?.ticket).toEqual(null);
     });
 
@@ -681,17 +701,20 @@ describe("sns-api", () => {
         })
       );
 
+      expect(get(toastsStore)).toEqual([]);
+
       await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
 
       expect(spyOnNewSaleTicketApi).toBeCalled();
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.sns_sale_invalid_subaccount",
-        })
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Can't participate with the selected subaccount.",
+        },
+      ]);
       expect(ticketFromStore()?.ticket).toEqual(null);
     });
 
@@ -702,17 +725,20 @@ describe("sns-api", () => {
         })
       );
 
+      expect(get(toastsStore)).toEqual([]);
+
       await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
 
       expect(spyOnNewSaleTicketApi).toBeCalled();
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.sns_sale_try_later",
-        })
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, there was an unexpected error while participating. Please try again later.",
+        },
+      ]);
       expect(ticketFromStore()?.ticket).toEqual(null);
     });
 
@@ -800,15 +826,16 @@ describe("sns-api", () => {
         expect(spyOnNewSaleTicketApi).toBeCalledTimes(expectedCalls);
 
         if (expectedCalls < expectFailuresBeforeToast) {
-          expect(spyOnToastsError).not.toBeCalled();
+          expect(get(toastsStore)).toEqual([]);
         }
       }
       expect(spyOnNewSaleTicketApi).toBeCalledTimes(expectFailuresBeforeToast);
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error.high_load_retrying",
-        })
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "The Internet Computer is experiencing high load. We'll keep retrying.",
+        },
+      ]);
     });
   });
 
@@ -817,6 +844,8 @@ describe("sns-api", () => {
       snsSwapCanister.getOpenTicket.mockResolvedValue(testSnsTicket.ticket);
       const postprocessSpy = vi.fn().mockResolvedValue(undefined);
       const updateProgressSpy = vi.fn().mockResolvedValue(undefined);
+
+      expect(get(toastsStore)).toEqual([]);
 
       await restoreSnsSaleParticipation({
         rootCanisterId: rootCanisterIdMock,
@@ -835,7 +864,16 @@ describe("sns-api", () => {
       // null after ready
       expect(ticketFromStore().ticket).toEqual(null);
       // no errors
-      expect(spyOnToastsError).not.toBeCalled();
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "warn",
+          text: "Your total committed: 0.00000666 ICP",
+        },
+        {
+          level: "success",
+          text: "Your participation has been successfully committed.",
+        },
+      ]);
     });
 
     it("should not start flow if no open ticket", async () => {
@@ -928,6 +966,8 @@ describe("sns-api", () => {
       const postprocessSpy = vi.fn().mockResolvedValue(undefined);
       const updateProgressSpy = vi.fn().mockResolvedValue(undefined);
 
+      expect(get(toastsStore)).toEqual([]);
+
       await initiateSnsSaleParticipation({
         rootCanisterId: rootCanisterIdMock,
         amount: TokenAmount.fromNumber({
@@ -952,14 +992,16 @@ describe("sns-api", () => {
       expect(updateProgressSpy).toBeCalledTimes(5);
       // null after ready
       expect(ticketFromStore().ticket).toEqual(null);
-      expect(spyOnToastsSuccess).toBeCalledTimes(1);
-      expect(spyOnToastsSuccess).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "sns_project_detail.participate_success",
-        })
-      );
-      // no errors
-      expect(spyOnToastsError).not.toBeCalled();
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "warn",
+          text: "Your total committed: 0.00000666 ICP",
+        },
+        {
+          level: "success",
+          text: "Your participation has been successfully committed.",
+        },
+      ]);
     });
 
     it("should handle errors", async () => {
@@ -976,6 +1018,8 @@ describe("sns-api", () => {
         }),
       };
 
+      expect(get(toastsStore)).toEqual([]);
+
       await initiateSnsSaleParticipation({
         rootCanisterId: rootCanisterIdMock,
         amount: TokenAmount.fromNumber({
@@ -989,7 +1033,12 @@ describe("sns-api", () => {
       });
 
       expect(spyOnNewSaleTicketApi).not.toBeCalled();
-      expect(spyOnToastsError).toBeCalled();
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, the project was not found. Please refresh and try again",
+        },
+      ]);
       // null after ready
       expect(ticketFromStore().ticket).toEqual(null);
     });
@@ -1226,15 +1275,12 @@ describe("sns-api", () => {
         ticket: testTicket,
       });
       // corrupt the current identity principal
-      vi.spyOn(authStore, "subscribe").mockImplementation((run) => {
-        run({
-          identity: {
-            ...mockIdentity,
-            getPrincipal: () => Principal.fromText("aaaaa-aa"),
-          },
-        });
-        return () => undefined;
+      authStore.setForTesting({
+        ...mockIdentity,
+        getPrincipal: () => Principal.fromText("aaaaa-aa"),
       });
+
+      expect(get(toastsStore)).toEqual([]);
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
@@ -1247,11 +1293,12 @@ describe("sns-api", () => {
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
       expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.sns_sale_unexpected_error",
-        })
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, There was an unexpected error while participating. Please refresh the page and try again.",
+        },
+      ]);
       // do not enable the UI
       expect(ticketFromStore().ticket).not.toEqual(null);
     });
@@ -1303,6 +1350,8 @@ describe("sns-api", () => {
     it("should display transfer api unknown errors", async () => {
       spyOnSendICP.mockRejectedValue(new TransferError("test"));
 
+      expect(get(toastsStore)).toEqual([]);
+
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         swapCanisterId,
@@ -1314,16 +1363,19 @@ describe("sns-api", () => {
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
       expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.sns_sale_unexpected_error",
-        })
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, There was an unexpected error while participating. Please refresh the page and try again. test",
+        },
+      ]);
       expect(ticketFromStore().ticket).toEqual(null);
     });
 
     it("should display InsufficientFundsError errors", async () => {
       spyOnSendICP.mockRejectedValue(new InsufficientFundsError(0n));
+
+      expect(get(toastsStore)).toEqual([]);
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
@@ -1336,18 +1388,20 @@ describe("sns-api", () => {
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
       expect(spyOnNotifyPaymentFailureApi).toBeCalledTimes(1);
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.ledger_insufficient_funds",
-        })
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, the account doesn't have enough funds for this transaction. ",
+        },
+      ]);
       expect(ticketFromStore().ticket).toEqual(null);
-      expect(spyOnToastsSuccess).not.toBeCalled();
     });
 
     describe("TooOldError", () => {
       it("should succeed when no errors on notify participation", async () => {
         spyOnSendICP.mockRejectedValue(new TxTooOldError(0));
+
+        expect(get(toastsStore)).toEqual([]);
 
         await participateInSnsSale({
           rootCanisterId: testRootCanisterId,
@@ -1360,13 +1414,16 @@ describe("sns-api", () => {
 
         expect(spyOnNotifyParticipation).toBeCalledTimes(1);
         expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
-        expect(spyOnToastsError).not.toBeCalled();
-        expect(spyOnToastsSuccess).toBeCalledTimes(1);
-        expect(spyOnToastsSuccess).toBeCalledWith(
-          expect.objectContaining({
-            labelKey: "sns_project_detail.participate_success",
-          })
-        );
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "warn",
+            text: "Your total committed: 0.00000666 ICP",
+          },
+          {
+            level: "success",
+            text: "Your participation has been successfully committed.",
+          },
+        ]);
         // to enable the button/increase_participation
         expect(ticketFromStore().ticket).toEqual(null);
       });
@@ -1383,6 +1440,8 @@ describe("sns-api", () => {
         );
         spyOnSendICP.mockRejectedValue(new TxTooOldError(0));
 
+        expect(get(toastsStore)).toEqual([]);
+
         await participateInSnsSale({
           rootCanisterId: testRootCanisterId,
           swapCanisterId,
@@ -1394,13 +1453,12 @@ describe("sns-api", () => {
 
         expect(spyOnNotifyParticipation).toBeCalledTimes(1);
         expect(spyOnNotifyPaymentFailureApi).toBeCalledTimes(1);
-        expect(spyOnToastsError).toBeCalledTimes(1);
-        expect(spyOnToastsError).toBeCalledWith(
-          expect.objectContaining({
-            labelKey: "error__sns.sns_sale_unexpected_and_refresh",
-          })
-        );
-        expect(spyOnToastsSuccess).not.toBeCalled();
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: "Sorry, There was an unexpected error while participating. Please refresh and try again The token amount can only be refreshed when the canister is in the OPEN state",
+          },
+        ]);
         // the button/increase_participation should not be enabled
         expect(ticketFromStore().ticket).not.toBeNull();
       });
@@ -1409,7 +1467,7 @@ describe("sns-api", () => {
     it("should ignore Duplicate error", async () => {
       spyOnSendICP.mockRejectedValue(new TxDuplicateError(0n));
 
-      expect(spyOnToastsError).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
@@ -1421,7 +1479,16 @@ describe("sns-api", () => {
       });
 
       expect(spyOnNotifyParticipation).toBeCalled();
-      expect(spyOnToastsError).not.toBeCalled();
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "warn",
+          text: "Your total committed: 0.00000666 ICP",
+        },
+        {
+          level: "success",
+          text: "Your participation has been successfully committed.",
+        },
+      ]);
       expect(ticketFromStore().ticket).toEqual(null);
     });
 
@@ -1433,6 +1500,7 @@ describe("sns-api", () => {
       spyOnNotifyParticipation.mockResolvedValue({
         icp_accepted_participation_e8s: 100n,
       });
+      expect(get(toastsStore)).toEqual([]);
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         swapCanisterId,
@@ -1442,12 +1510,16 @@ describe("sns-api", () => {
         ticket,
       });
 
-      expect(spyOnToastsShow).toBeCalledWith(
-        expect.objectContaining({
+      expect(get(toastsStore)).toMatchObject([
+        {
           level: "warn",
-          labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
-        })
-      );
+          text: "Your total committed: 0.000001 ICP",
+        },
+        {
+          level: "success",
+          text: "Your participation has been successfully committed.",
+        },
+      ]);
       expect(ticketFromStore().ticket).toEqual(null);
     });
 
@@ -1459,6 +1531,7 @@ describe("sns-api", () => {
       spyOnNotifyParticipation.mockResolvedValue({
         icp_accepted_participation_e8s: 1n,
       });
+      expect(get(toastsStore)).toEqual([]);
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         swapCanisterId,
@@ -1468,11 +1541,12 @@ describe("sns-api", () => {
         ticket,
       });
 
-      expect(spyOnToastsShow).not.toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
-        })
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: "Your participation has been successfully committed.",
+        },
+      ]);
     });
 
     it("should not display a waring when current_committed = ticket.amount for increase participation", async () => {
@@ -1483,6 +1557,7 @@ describe("sns-api", () => {
       spyOnNotifyParticipation.mockResolvedValue({
         icp_accepted_participation_e8s: 10n,
       });
+      expect(get(toastsStore)).toEqual([]);
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         swapCanisterId,
@@ -1492,11 +1567,12 @@ describe("sns-api", () => {
         ticket,
       });
 
-      expect(spyOnToastsShow).not.toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
-        })
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: "Your participation has been successfully committed.",
+        },
+      ]);
     });
 
     it("should show 'high load' toast after 6 failures", async () => {
@@ -1525,17 +1601,18 @@ describe("sns-api", () => {
         expect(spyOnNotifyParticipation).toBeCalledTimes(expectedCalls);
 
         if (expectedCalls < expectFailuresBeforeToast) {
-          expect(spyOnToastsError).not.toBeCalled();
+          expect(get(toastsStore)).toEqual([]);
         }
       }
       expect(spyOnNotifyParticipation).toBeCalledTimes(
         expectFailuresBeforeToast
       );
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error.high_load_retrying",
-        })
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "The Internet Computer is experiencing high load. We'll keep retrying.",
+        },
+      ]);
     });
 
     it("transfer should show 'high load' toast after 6 failures", async () => {
@@ -1564,15 +1641,16 @@ describe("sns-api", () => {
         expect(spyOnSendICP).toBeCalledTimes(expectedCalls);
 
         if (expectedCalls < expectFailuresBeforeToast) {
-          expect(spyOnToastsError).not.toBeCalled();
+          expect(get(toastsStore)).toEqual([]);
         }
       }
       expect(spyOnSendICP).toBeCalledTimes(expectFailuresBeforeToast);
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error.high_load_retrying",
-        })
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "The Internet Computer is experiencing high load. We'll keep retrying.",
+        },
+      ]);
     });
   });
 });

@@ -27,69 +27,56 @@
 </script>
 
 <!-- DO NOT use a Svelte transition. It caused issues with navigation -->
-<div
+<a
   class="tvl"
   class:visible={nonNullish(total) && total > 0 && nonNullish(formattedTotal)}
   class:stacked={layout === "stacked"}
   data-tid="total-value-locked-component"
+  href="https://dashboard.internetcomputer.org/neurons"
+  target="_blank"
+  rel="noopener noreferrer"
 >
   <span>{$i18n.metrics.tvl}</span>
   <span data-tid="tvl-metric" class="total">{formattedTotal}</span>
-</div>
+</a>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .tvl {
     display: inline-block;
+    text-decoration: none;
+    text-align: center;
+
+    padding: var(--padding) var(--padding-2x);
+    gap: var(--padding-0_5x);
+    border-radius: var(--border-radius);
+
+    @include fonts.small;
+    color: var(--text-color);
+
+    background: var(--sidebar-button-background);
+    &:hover {
+      background: var(--sidebar-button-background-hover);
+    }
+
+    z-index: var(--z-index);
 
     visibility: hidden;
     opacity: 0;
-    transition: opacity ease-out var(--animation-time-normal);
-
     &.visible {
       visibility: visible;
       opacity: 1;
     }
-
-    text-align: center;
-
-    gap: var(--padding-0_5x);
-    z-index: var(--z-index);
-
-    @include fonts.small;
-
-    background: rgba(var(--background-disable-rgb), 0.1);
-    color: var(--body-color);
-
-    border-radius: var(--border-radius);
-
-    width: 100%;
-    padding: var(--padding) var(--padding-2x);
 
     &.stacked {
       display: flex;
       flex-direction: column-reverse;
       gap: var(--padding-0_5x);
 
-      background: rgba(var(--focus-background-rgb), 0.8);
-      color: var(--description-color);
-
       .total {
-        color: var(--text-color);
         @include fonts.h5(false);
       }
-    }
-  }
-
-  .total {
-    color: var(--menu-select-color);
-  }
-
-  @include media.dark-theme {
-    .tvl {
-      background: rgba(var(--background-disable-rgb), 1);
     }
   }
 </style>

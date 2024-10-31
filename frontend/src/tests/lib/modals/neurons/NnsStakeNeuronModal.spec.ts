@@ -3,6 +3,7 @@ import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
+import { NNS_MINIMUM_DISSOLVE_DELAY } from "$lib/constants/neurons.constants";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import NnsStakeNeuronModal from "$lib/modals/neurons/NnsStakeNeuronModal.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
@@ -11,6 +12,7 @@ import {
   stakeNeuron,
   updateDelay,
 } from "$lib/services/neurons.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -36,7 +38,7 @@ import { LedgerCanister } from "@dfinity/ledger-icp";
 import type { NeuronInfo } from "@dfinity/nns";
 import { GovernanceCanister } from "@dfinity/nns";
 import { get } from "svelte/store";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/nns-dapp.api");
@@ -44,7 +46,7 @@ vi.mock("$lib/api/icp-ledger.api");
 const neuronStakeE8s = 220_000_000n;
 const newNeuron: NeuronInfo = {
   ...mockNeuron,
-  dissolveDelaySeconds: 0n,
+  dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY),
   ageSeconds: 0n,
   fullNeuron: {
     ...mockFullNeuron,
@@ -71,22 +73,15 @@ vi.mock("$lib/services/known-neurons.services", () => {
   };
 });
 
-vi.mock("$lib/stores/toasts.store", () => {
-  return {
-    toastsError: vi.fn(),
-    toastsShow: vi.fn(),
-    toastsSuccess: vi.fn(),
-  };
-});
-
 describe("NnsStakeNeuronModal", () => {
-  let queryBalanceSpy: SpyInstance;
+  let queryBalanceSpy: MockInstance;
   const newBalanceE8s = 10_000_000n;
 
   beforeEach(() => {
     resetIdentity();
     cancelPollAccounts();
     vi.clearAllMocks();
+    overrideFeatureFlagsStore.reset();
 
     vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
       mock<LedgerCanister>()
@@ -167,6 +162,7 @@ describe("NnsStakeNeuronModal", () => {
         account: mockMainAccount,
         amount: 22,
         loadNeuron: true,
+        asPublicNeuron: false,
       });
     });
 
@@ -271,6 +267,11 @@ describe("NnsStakeNeuronModal", () => {
       await po.getNnsStakeNeuronPo().clickCreate();
       await runResolvedPromises();
 
+      const initialDelayDays = Number(
+        await po.getSetDissolveDelayPo().getInputWithErrorPo().getValue()
+      );
+      expect(initialDelayDays).toBe(7);
+
       const ONE_YEAR = 365;
       await po
         .getSetDissolveDelayPo()
@@ -291,7 +292,7 @@ describe("NnsStakeNeuronModal", () => {
       await runResolvedPromises();
       expect(updateDelay).toBeCalledTimes(1);
       expect(updateDelay).toBeCalledWith({
-        dissolveDelayInSeconds: ONE_YEAR * SECONDS_IN_DAY,
+        dissolveDelayInSeconds: (ONE_YEAR - initialDelayDays) * SECONDS_IN_DAY,
         neuronId: newNeuron.neuronId,
       });
     });
@@ -327,6 +328,107 @@ describe("NnsStakeNeuronModal", () => {
 
       await runResolvedPromises();
       expect(onClose).toBeCalledTimes(1);
+    });
+
+    describe("public neuron checkbox", () => {
+      it("should not display public neuron checkbox when feature flag is false", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", false);
+        const po = await renderComponent({});
+
+        expect(
+          await po
+            .getNnsStakeNeuronPo()
+            .getAsPublicNeuronCheckboxPo()
+            .isPresent()
+        ).toBe(false);
+      });
+
+      describe("when feature flag is enabled", () => {
+        beforeEach(() => {
+          overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", true);
+        });
+
+        it("should create a private neuron when checkbox is unchecked", async () => {
+          const po = await renderComponent({});
+
+          await po.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(22);
+
+          await po.getNnsStakeNeuronPo().clickCreate();
+
+          expect(stakeNeuron).toBeCalledTimes(1);
+          expect(stakeNeuron).toBeCalledWith({
+            account: mockMainAccount,
+            amount: 22,
+            loadNeuron: true,
+            asPublicNeuron: false,
+          });
+        });
+
+        it("should have unchecked public neuron checkbox by default", async () => {
+          const po = await renderComponent({});
+
+          expect(
+            await po
+              .getNnsStakeNeuronPo()
+              .getAsPublicNeuronCheckboxPo()
+              .isChecked()
+          ).toBe(false);
+        });
+
+        it("should be able to toggle public neuron checkbox", async () => {
+          const po = await renderComponent({});
+
+          await po.getNnsStakeNeuronPo().getAsPublicNeuronCheckboxPo().toggle();
+          expect(
+            await po
+              .getNnsStakeNeuronPo()
+              .getAsPublicNeuronCheckboxPo()
+              .isChecked()
+          ).toBe(true);
+
+          await po.getNnsStakeNeuronPo().getAsPublicNeuronCheckboxPo().toggle();
+          expect(
+            await po
+              .getNnsStakeNeuronPo()
+              .getAsPublicNeuronCheckboxPo()
+              .isChecked()
+          ).toBe(false);
+        });
+
+        it("should create a public neuron when checkbox is checked", async () => {
+          const po = await renderComponent({});
+
+          await po.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(22);
+          await po.getNnsStakeNeuronPo().getAsPublicNeuronCheckboxPo().toggle();
+
+          await po.getNnsStakeNeuronPo().clickCreate();
+
+          expect(stakeNeuron).toBeCalledTimes(1);
+          expect(stakeNeuron).toBeCalledWith({
+            account: mockMainAccount,
+            amount: 22,
+            loadNeuron: true,
+            asPublicNeuron: true,
+          });
+        });
+
+        it("should display correct text for checkbox and tooltip", async () => {
+          const po = await renderComponent({});
+
+          const checkboxLabel = await po
+            .getNnsStakeNeuronPo()
+            .getAsPublicNeuronCheckboxLabelText();
+          expect(checkboxLabel).toBe("Create as a public neuron");
+
+          const tooltipText = await po
+            .getNnsStakeNeuronPo()
+            .getAsPublicNeuronTooltipPo()
+            .getTooltipText();
+          expect(tooltipText).toBe(
+            "Public neurons reveal more information about themselves including how they vote on proposals."
+          );
+        });
+      });
     });
   });
 
@@ -379,6 +481,12 @@ describe("NnsStakeNeuronModal", () => {
       const ONE_YEAR = 365;
       await po.getSetDissolveDelayPo().waitFor();
       await po.getSetDissolveDelayPo().getInputWithErrorPo().waitFor();
+
+      const initialDelayDays = Number(
+        await po.getSetDissolveDelayPo().getInputWithErrorPo().getValue()
+      );
+      expect(initialDelayDays).toBe(7);
+
       await po
         .getSetDissolveDelayPo()
         .getInputWithErrorPo()
@@ -393,7 +501,7 @@ describe("NnsStakeNeuronModal", () => {
       await runResolvedPromises();
       expect(updateDelay).toBeCalledTimes(1);
       expect(updateDelay).toBeCalledWith({
-        dissolveDelayInSeconds: ONE_YEAR * SECONDS_IN_DAY,
+        dissolveDelayInSeconds: (ONE_YEAR - initialDelayDays) * SECONDS_IN_DAY,
         neuronId: newNeuron.neuronId,
       });
     });
@@ -445,7 +553,7 @@ describe("NnsStakeNeuronModal", () => {
   });
 
   describe("when no accounts and user navigates away", () => {
-    let spyQueryAccount: SpyInstance;
+    let spyQueryAccount: MockInstance;
     beforeEach(() => {
       resetAccountsForTesting();
       vi.clearAllTimers();

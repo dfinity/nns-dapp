@@ -144,7 +144,7 @@ jobs:
       - name: Start dfx
         run: dfx start --clean --background &>test-upgrade-stable-dfx.log
       - name: Downgrade nns-dapp to prod and upgrade back again
-        run: ./scripts/nns-dapp/migration-test --schema1 AccountsInStableMemory --schema2 AccountsInStableMemory --accounts 1000 --chunk 100
+        run: ./scripts/nns-dapp/migration-test --accounts 1000 --chunk 100
       - name: Upload dfx logs
         if: failure()
         uses: actions/upload-artifact@v4
@@ -241,6 +241,30 @@ jobs:
           scripts/dfx-wasm-metadata-add.test --verbose
       - name: Verify that metrics are present
         run: scripts/nns-dapp/e2e-test-metrics-present
+      - name: Test TVL
+        run: |
+          scripts/nns-dapp/test-tvl --nns_dapp_wasm nns-dapp.wasm.gz --nns_dapp_arg nns-dapp-arg-local.did
+      - name: Test import canister IDs
+        run: |
+          ./scripts/canister_ids --import-from-index-html http://qsgjb-riaaa-aaaaa-aaaga-cai.localhost:8080/ --network local --create
+          diff <(jq -r 'keys | .[]' canister_ids.json) <(cat <<-EOF
+          	ckbtc_index
+          	ckbtc_ledger
+          	ckbtc_minter
+          	cketh_index
+          	cketh_ledger
+          	ckusdc_index
+          	ckusdc_ledger
+          	internet_identity
+          	nns-dapp
+          	nns-index
+          	nns-sns-wasm
+          	sns_aggregator
+          	EOF
+          )
+          rm canister_ids.json
+          ./scripts/canister_ids --import-from-index-html https://nns.ic0.app --network mainnet --create
+          diff canister_ids.json scripts/canister_ids.mainnet.golden
       - name: Release
         run: |
           for tag in $(git tag --points-at HEAD) ; do
@@ -435,21 +459,6 @@ jobs:
           scripts/sns/aggregator/test-fast
       - name: Stop replica
         run: dfx stop
-  integration:
-    name: "Integration tests"
-    needs: build
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v4
-      - name: Get docker build outputs
-        uses: actions/download-artifact@v4
-        with:
-          name: out
-          path: out
-      - name: Install pocket-ic
-        run: curl -sSL https://github.com/dfinity/pocketic/releases/download/3.0.1/pocket-ic-x86_64-linux.gz | gunzip | install -m 755 /dev/stdin pocket-ic
-      - name: Run integration tests
-        run: ./scripts/test-integration
   assets:
     name: "Upload assets"
     needs: build
@@ -522,7 +531,7 @@ jobs:
           ) | tee -a $GITHUB_STEP_SUMMARY
           (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
   build-pass:
-    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-upgrade-downgrade", "test-test-account-api", "test-upgrade-stable", "integration"]
+    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-upgrade-downgrade", "test-test-account-api", "test-upgrade-stable"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

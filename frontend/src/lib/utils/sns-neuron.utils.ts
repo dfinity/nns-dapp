@@ -13,7 +13,6 @@ import {
   type NeuronIneligibilityReason,
   type NeuronTagData,
 } from "$lib/utils/neuron.utils";
-import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, Vote, type E8s, type NeuronInfo } from "@dfinity/nns";
@@ -211,8 +210,9 @@ export const canIdentityManageHotkeys = ({
   identity: Identity | undefined | null;
   parameters: SnsNervousSystemParameters;
 }): boolean => {
-  const { neuron_grantable_permissions } =
-    mapNervousSystemParameters(parameters);
+  const neuron_grantable_permissions = Array.from(
+    fromDefinedNullable(parameters.neuron_grantable_permissions).permissions
+  );
   const grantableSet = new Set(neuron_grantable_permissions);
   const hotkeyPermissionsGrantable = HOTKEY_PERMISSIONS.every((permission) =>
     grantableSet.has(permission)
@@ -433,7 +433,10 @@ export const isSnsNeuron = (
  * @returns {boolean}
  */
 export const hasValidStake = (neuron: SnsNeuron): boolean =>
-  neuron.cached_neuron_stake_e8s + neuron.maturity_e8s_equivalent > 0n;
+  neuron.cached_neuron_stake_e8s +
+    getSnsNeuronAvailableMaturity(neuron) +
+    getSnsNeuronStakedMaturity(neuron) >
+  0n;
 
 /*
 - The amount to split minus the transfer fee is more than the minimum stake (thus the child neuron will have at least the minimum stake)
@@ -700,7 +703,7 @@ export const snsNeuronVotingPower = ({
   const dissolveDelayInSeconds =
     newDissolveDelayInSeconds !== undefined
       ? newDissolveDelayInSeconds
-      : getSnsDissolveDelaySeconds(neuron) ?? 0n;
+      : (getSnsDissolveDelaySeconds(neuron) ?? 0n);
   const {
     max_dissolve_delay_seconds,
     max_neuron_age_for_age_bonus,
@@ -748,8 +751,8 @@ export const snsNeuronVotingPower = ({
       stakeE8s,
       dissolveDelay,
       ageSeconds: neuronAge(neuron),
-      ageBonusMultiplier: Number(maxAgeBonusPercentage) / 100,
-      dissolveBonusMultiplier: Number(maxDissolveDelayBonusPercentage) / 100,
+      maxAgeBonus: Number(maxAgeBonusPercentage) / 100,
+      maxDissolveDelayBonus: Number(maxDissolveDelayBonusPercentage) / 100,
       maxDissolveDelaySeconds: Number(maxDissolveDelaySeconds),
       maxAgeSeconds: Number(maxNeuronAgeForAgeBonus),
       minDissolveDelaySeconds: Number(neuronMinimumDissolveDelayToVoteSeconds),
@@ -794,8 +797,8 @@ export const dissolveDelayMultiplier = ({
 
   return bonusMultiplier({
     amount: dissolveDelay,
-    multiplier: Number(maxDissolveDelayBonusPercentage) / 100,
-    max: Number(maxDissolveDelaySeconds),
+    maxBonus: Number(maxDissolveDelayBonusPercentage) / 100,
+    amountForMaxBonus: Number(maxDissolveDelaySeconds),
   });
 };
 
@@ -813,8 +816,8 @@ export const ageMultiplier = ({
 
   return bonusMultiplier({
     amount: neuronAge(neuron),
-    multiplier: Number(maxAgeBonusPercentage) / 100,
-    max: Number(maxNeuronAgeForAgeBonus),
+    maxBonus: Number(maxAgeBonusPercentage) / 100,
+    amountForMaxBonus: Number(maxNeuronAgeForAgeBonus),
   });
 };
 

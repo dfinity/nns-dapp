@@ -1,5 +1,5 @@
 <script lang="ts">
-  import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
+  import UniverseSummary from "$lib/components/universe/UniverseSummary.svelte";
   import type { Universe } from "$lib/types/universe";
   import { InfiniteScroll } from "@dfinity/gix-components";
 
@@ -8,7 +8,7 @@
 
 <div class="container" data-tid="universe-with-actionable-proposals-component">
   <div class="title">
-    <UniversePageSummary {universe} />
+    <UniverseSummary {universe} />
   </div>
 
   <InfiniteScroll layout="grid" disabled>

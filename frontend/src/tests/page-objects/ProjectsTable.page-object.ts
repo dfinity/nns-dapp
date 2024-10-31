@@ -12,4 +12,18 @@ export class ProjectsTablePo extends ResponsiveTablePo {
   getProjectsTableRowPos(): Promise<ProjectsTableRowPo[]> {
     return ProjectsTableRowPo.allUnder(this.root);
   }
+
+  async getRowByTitle(title: string): Promise<ProjectsTableRowPo> {
+    const rows = await this.getProjectsTableRowPos();
+    const titles = await Promise.all(rows.map((row) => row.getProjectTitle()));
+    const index = titles.indexOf(title);
+    if (index === -1) {
+      throw new Error(
+        `Project with title ${title} not found. Available titles: ${titles.join(
+          ", "
+        )}`
+      );
+    }
+    return rows[index];
+  }
 }

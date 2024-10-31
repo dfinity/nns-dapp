@@ -8,10 +8,7 @@ import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposal
 import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { page } from "$mocks/$app/stores";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
@@ -41,21 +38,17 @@ describe('NnsProposals when "all proposals" selected', () => {
     DEFAULT_PROPOSALS_FILTERS;
 
   beforeEach(() => {
-    actionableProposalsSegmentStore.set("all");
-  });
-
-  afterEach(() => {
     vi.clearAllMocks();
     neuronsStore.reset();
     resetNeuronsApiService();
+
+    actionableProposalsSegmentStore.set("all");
   });
 
   describe("when signed in user", () => {
     beforeEach(() => {
       vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
+      resetIdentity();
     });
 
     it("should list proposals certified and uncertified", async () => {
@@ -80,24 +73,6 @@ describe('NnsProposals when "all proposals" selected', () => {
         includeTopics: defaultIncludeTopcis,
         includeStatus: defaultIncludeStatus,
         identity: mockIdentity,
-      });
-    });
-
-    it("should query neurons", async () => {
-      page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
-      render(NnsProposals);
-
-      await waitFor(() =>
-        expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
-          identity: mockIdentity,
-          certified: true,
-          includeEmptyNeurons: false,
-        })
-      );
-      expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
-        identity: mockIdentity,
-        certified: false,
-        includeEmptyNeurons: false,
       });
     });
   });

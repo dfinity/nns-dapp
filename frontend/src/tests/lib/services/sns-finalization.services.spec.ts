@@ -13,21 +13,21 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 
 describe("sns-finalization-services", () => {
+  const now = Date.now();
+
   beforeEach(() => {
     resetIdentity();
+    vi.clearAllMocks();
+    resetSnsProjects();
+    resetSnsFinalizationStatusStore();
+
+    vi.useFakeTimers().setSystemTime(now);
   });
 
   describe("loadSnsFinalizationStatus", () => {
     const rootCanisterId = principal(0);
-    const now = Date.now();
     const nowInSeconds = Math.floor(now / 1000);
     const yesterdayInSeconds = nowInSeconds - SECONDS_IN_DAY;
-    afterEach(() => {
-      vi.useFakeTimers().setSystemTime(now);
-      vi.clearAllMocks();
-      resetSnsProjects();
-      resetSnsFinalizationStatusStore();
-    });
 
     describe("if swap finished less than a week ago", () => {
       beforeEach(() => {

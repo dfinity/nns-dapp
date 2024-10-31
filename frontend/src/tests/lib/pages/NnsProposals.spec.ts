@@ -1,38 +1,36 @@
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
-import * as agent from "$lib/api/agent.api";
 import * as governanceApi from "$lib/api/governance.api";
+import * as proposalsApi from "$lib/api/proposals.api";
+import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { ACTIONABLE_PROPOSALS_PARAM } from "$lib/constants/routes.constants";
 import NnsProposals from "$lib/pages/NnsProposals.svelte";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import {
   proposalsFiltersStore,
   proposalsStore,
 } from "$lib/stores/proposals.store";
 import {
-  authStoreMock,
-  mockAuthStoreSubscribe,
   mockIdentity,
+  resetIdentity,
+  setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
-import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
-import {
-  mockEmptyProposalsStoreSubscribe,
-  mockProposals,
-  mockProposalsStoreSubscribe,
-} from "$tests/mocks/proposals.store.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { IntersectionObserverActive } from "$tests/mocks/infinitescroll.mock";
+import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { NnsProposalListPo } from "$tests/page-objects/NnsProposalList.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { HttpAgent } from "@dfinity/agent";
-import { GovernanceCanister, type ProposalInfo } from "@dfinity/nns";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "$tests/utils/timers.test-utils";
+import { Topic, type ProposalInfo } from "@dfinity/nns";
+import { isNullish } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
-import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/governance.api");
 
@@ -52,63 +50,23 @@ describe("NnsProposals", () => {
 
   beforeEach(() => {
     vi.restoreAllMocks();
+    proposalsStore.resetForTesting();
     resetNeuronsApiService();
     neuronsStore.reset();
     proposalsFiltersStore.reset();
+    actionableNnsProposalsStore.reset();
     actionableProposalsSegmentStore.resetForTesting();
-    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
 
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
-
-    // TODO: Mock the canister call instead of the canister itself
-    const mockGovernanceCanister: MockGovernanceCanister =
-      new MockGovernanceCanister([]);
-    vi.spyOn(GovernanceCanister, "create").mockReturnValue(
-      mockGovernanceCanister
-    );
+    resetIdentity();
+    vi.spyOn(proposalsApi, "queryProposals").mockResolvedValue(mockProposals);
+    // Loading proposals is debounced but we don't want to wait for the delay in
+    // the unit tests so we use fake timers.
+    vi.useFakeTimers();
   });
 
   describe("logged in user", () => {
-    describe("neurons", () => {
-      beforeEach(() => {
-        vi.spyOn(proposalsStore, "subscribe").mockImplementation(
-          mockProposalsStoreSubscribe
-        );
-        vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
-        actionableProposalsSegmentStore.set("all");
-      });
-
-      it("should load neurons", async () => {
-        await renderComponent();
-
-        await waitFor(() =>
-          expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
-            identity: mockIdentity,
-            certified: true,
-            includeEmptyNeurons: false,
-          })
-        );
-        expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
-          identity: mockIdentity,
-          certified: false,
-          includeEmptyNeurons: false,
-        });
-      });
-    });
-
     describe("Matching results", () => {
       beforeEach(() => {
-        overrideFeatureFlagsStore.reset();
-        const mockGovernanceCanister: MockGovernanceCanister =
-          new MockGovernanceCanister(mockProposals);
-
-        vi.spyOn(proposalsStore, "subscribe").mockImplementation(
-          mockProposalsStoreSubscribe
-        );
-        vi.spyOn(GovernanceCanister, "create").mockImplementation(
-          (): GovernanceCanister => mockGovernanceCanister
-        );
-
         vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
         actionableProposalsSegmentStore.set("all");
       });
@@ -130,13 +88,132 @@ describe("NnsProposals", () => {
         ).toBe(true);
       });
 
-      it("should render a spinner while searching proposals", async () => {
+      it("should render a skeleton while searching proposals", async () => {
+        let resolveQueryProposals;
+        vi.spyOn(proposalsApi, "queryProposals").mockImplementation(
+          () =>
+            new Promise<ProposalInfo[]>((resolve) => {
+              resolveQueryProposals = resolve;
+            })
+        );
+
         const po = await renderComponent();
 
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(true);
+
+        // Let the proposals load.
+        resolveQueryProposals(mockProposals);
+        await runResolvedPromises();
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
+      });
+
+      it("should reload proposals when proposal filter is set", async () => {
+        let resolveQueryProposals;
+        const queryProposalsSpy = vi
+          .spyOn(proposalsApi, "queryProposals")
+          .mockImplementation(
+            () =>
+              new Promise<ProposalInfo[]>((resolve) => {
+                resolveQueryProposals = resolve;
+              })
+          );
+
+        expect(queryProposalsSpy).toBeCalledTimes(0);
+
+        const po = await renderComponent();
+
+        // Let the proposals load the first time.
+        resolveQueryProposals(mockProposals);
+        resolveQueryProposals = undefined;
+
+        await runResolvedPromises();
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
+
+        const expectedQueryProposalsParams = {
+          identity: mockIdentity,
+          includeStatus: [],
+          includeTopics: [],
+        };
+        expect(queryProposalsSpy).toBeCalledTimes(2);
+        expect(queryProposalsSpy).toBeCalledWith({
+          ...expectedQueryProposalsParams,
+          certified: false,
+        });
+        expect(queryProposalsSpy).toBeCalledWith({
+          ...expectedQueryProposalsParams,
+          certified: true,
+        });
+
+        queryProposalsSpy.mockClear();
+        expect(queryProposalsSpy).toBeCalledTimes(0);
+
+        // Setting the filter should reload the proposals.
         proposalsFiltersStore.filterTopics(DEFAULT_PROPOSALS_FILTERS.topics);
         await runResolvedPromises();
 
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(true);
+
+        // Stop waiting for the debounce to load proposals.
+        await advanceTime();
+
+        expect(queryProposalsSpy).toBeCalledTimes(2);
+        expect(queryProposalsSpy).toBeCalledWith({
+          ...expectedQueryProposalsParams,
+          certified: false,
+        });
+        expect(queryProposalsSpy).toBeCalledWith({
+          ...expectedQueryProposalsParams,
+          certified: true,
+        });
+
+        // Let the proposals load the second time.
+        resolveQueryProposals(mockProposals);
+        await runResolvedPromises();
+
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
+      });
+
+      it("should render a spinner while loading more proposals", async () => {
+        // Make sure that the infinite scroll container thinks we are scrolling
+        // to the bottom.
+        vi.stubGlobal("IntersectionObserver", IntersectionObserverActive);
+
+        // The first page must have DEFAULT_LIST_PAGINATION_LIMIT proposals
+        // otherwise the service thinks we've already loaded all proposals.
+        const firstPageProposals = Promise.resolve<ProposalInfo[]>(
+          Array.from({ length: DEFAULT_LIST_PAGINATION_LIMIT }, (_, i) => ({
+            ...mockProposals[0],
+            id: BigInt(i),
+          }))
+        );
+
+        // The second page doesn't resolve immediately so we can see the spinner
+        // while it's loading.
+        let resolveSecondPage;
+        const secondPageProposals = new Promise<ProposalInfo[]>((resolve) => {
+          resolveSecondPage = resolve;
+        });
+
+        // Return the first or second page depending on the beforeProposal parameter.
+        vi.spyOn(proposalsApi, "queryProposals").mockImplementation(
+          ({ beforeProposal }) => {
+            return isNullish(beforeProposal)
+              ? firstPageProposals
+              : secondPageProposals;
+          }
+        );
+
+        const po = await renderComponent();
+
+        // The first page of proposals loads immediately.
+
+        // Now the infinite scroll is loading the second page of proposals.
         expect(await po.hasListLoaderSpinner()).toEqual(true);
+
+        // Finish loading the second page.
+        resolveSecondPage(mockProposals);
+        await advanceTime();
+        expect(await po.hasListLoaderSpinner()).toEqual(false);
       });
 
       it("should render proposals", async () => {
@@ -152,6 +229,90 @@ describe("NnsProposals", () => {
         expect(await cardPos[1].getProposalId()).toEqual(
           `ID: ${secondProposal.id}`
         );
+      });
+
+      it("should not show old certified data if there is newer uncertified data", async () => {
+        // The test first loads proposals with a filter.
+        // While proposals are displayed based on the uncertified response,
+        // before the certified response arrives, the filter is removed.
+        // If the certified response for the filtered proposals arrives after
+        // the uncertified response for the unfiltered proposals, this should
+        // not result in displaying old data which doesn't match the current
+        // filters.
+        proposalsFiltersStore.filterTopics([Topic.Governance]);
+
+        const proposalRequests = [];
+        vi.spyOn(proposalsApi, "queryProposals").mockImplementation((args) => {
+          return new Promise<ProposalInfo[]>((resolve) => {
+            proposalRequests.push({
+              args,
+              resolve,
+            });
+          });
+        });
+
+        const matchingProposal: ProposalInfo = {
+          ...mockProposals[0],
+          topic: Topic.Governance,
+        };
+        const nonMatchingProposal: ProposalInfo = {
+          ...mockProposals[1],
+          topic: Topic.ProtocolCanisterManagement,
+        };
+
+        const po = await renderComponent();
+
+        expect(proposalRequests).toHaveLength(2);
+        expect(proposalRequests[0].args.certified).toBe(false);
+        expect(proposalRequests[0].args.includeTopics).toEqual([
+          Topic.Governance,
+        ]);
+        expect(proposalRequests[1].args.certified).toBe(true);
+        expect(proposalRequests[1].args.includeTopics).toEqual([
+          Topic.Governance,
+        ]);
+        // We resolve the uncertified request but not yet the certified request.
+        proposalRequests[0].resolve([matchingProposal]);
+
+        await runResolvedPromises();
+        // There is 1 proposal that matches the filter.
+        expect(await po.getProposalCardPos()).toHaveLength(1);
+
+        // Remove the filter.
+        const filters = po.getNnsProposalFiltersPo();
+        await filters.clickFiltersByTopicsButton();
+        const filterModal = filters.getFilterModalPo();
+        await filterModal.clickClearSelectionButton();
+        await filterModal.clickConfirmButton();
+
+        // Finish the fade transition of the modal.
+        await advanceTime(25);
+        await filterModal.waitForAbsent();
+
+        // Stop waiting for the debounce to reload proposals.
+        await advanceTime(500);
+
+        expect(proposalRequests).toHaveLength(4);
+        expect(proposalRequests[2].args.certified).toBe(false);
+        expect(proposalRequests[2].args.includeTopics).toEqual([]);
+        expect(proposalRequests[3].args.certified).toBe(true);
+        expect(proposalRequests[3].args.includeTopics).toEqual([]);
+
+        // We resolve the second *uncertified* request before the first
+        // *certified* request. Now there are 2 proposals.
+        proposalRequests[2].resolve([matchingProposal, nonMatchingProposal]);
+        await runResolvedPromises();
+        expect(await po.getProposalCardPos()).toHaveLength(2);
+
+        // When the old certified request (with 1 proposal) resolves, this
+        // should not result in displaying old data which doesn't match the
+        // current filters.
+        proposalRequests[1].resolve([matchingProposal]);
+        //await advanceTime(500);
+        await runResolvedPromises();
+        // We should still see both proposals from the request from after the
+        // filter was removed.
+        expect(await po.getProposalCardPos()).toHaveLength(2);
       });
 
       it("should not have actionable parameter in a proposal card href", async () => {
@@ -216,25 +377,93 @@ describe("NnsProposals", () => {
     });
 
     describe("No results", () => {
-      const mockGovernanceCanister: MockGovernanceCanister =
-        new MockGovernanceCanister([]);
-
       beforeEach(() => {
-        vi.spyOn(GovernanceCanister, "create").mockImplementation(
-          (): GovernanceCanister => mockGovernanceCanister
-        );
-
         vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
         actionableProposalsSegmentStore.set("all");
+        vi.spyOn(proposalsApi, "queryProposals").mockResolvedValue([]);
       });
 
       it("should render not found text", async () => {
-        vi.spyOn(proposalsStore, "subscribe").mockImplementation(
-          mockEmptyProposalsStoreSubscribe
-        );
-
         const po = await renderComponent();
 
+        expect(await po.getNoProposalsPo().isPresent()).toBe(true);
+      });
+
+      it("should render not found text when not signed in", async () => {
+        setNoIdentity();
+        const po = await renderComponent();
+
+        expect(await po.getNoProposalsPo().isPresent()).toBe(true);
+      });
+    });
+
+    describe("Async results", () => {
+      const resolveQueryProposals = [];
+      beforeEach(() => {
+        resolveQueryProposals.length = 0;
+        actionableProposalsSegmentStore.set("all");
+        vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+        vi.spyOn(proposalsApi, "queryProposals").mockImplementation(() => {
+          return new Promise<ProposalInfo[]>((resolve) => {
+            resolveQueryProposals.push(resolve);
+          });
+        });
+      });
+
+      it("should not stop showing loading skeletons when a newer request is still loading", async () => {
+        const po = await renderComponent();
+
+        const changeFilters = async () => {
+          const filters = po.getNnsProposalFiltersPo();
+          await filters.clickFiltersByTopicsButton();
+          const filtersModal = filters.getFilterModalPo();
+          // We just change one entry. We don't care what it is.
+          const filterEntry = (await filtersModal.getFilterEntryPos())[0];
+          await filterEntry.click();
+          await filtersModal.clickConfirmButton();
+
+          // Stop waiting for the debounce to load proposals.
+          await advanceTime();
+        };
+
+        expect(resolveQueryProposals).toHaveLength(2);
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(true);
+        expect(await po.getNoProposalsPo().isPresent()).toBe(false);
+
+        // Finish initialization.
+        resolveQueryProposals[0]([]); // query
+        resolveQueryProposals[1]([]); // update
+        resolveQueryProposals.length = 0;
+
+        // Change filters to start a new request.
+        await changeFilters();
+
+        // Stop waiting for the debounce to load proposals.
+        await advanceTime();
+
+        expect(resolveQueryProposals).toHaveLength(2);
+
+        // Change filters again to start a new request before the first request
+        // finishes.
+        await changeFilters();
+
+        expect(resolveQueryProposals).toHaveLength(4);
+
+        // The first request has become obsolete so resolving it should not take
+        // the component out of the loading state.
+        resolveQueryProposals[0]([]); // query
+        resolveQueryProposals[1]([]); // update
+        await runResolvedPromises();
+
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(true);
+        expect(await po.getNoProposalsPo().isPresent()).toBe(false);
+
+        // Resolving the last request should end the loading state.
+        resolveQueryProposals[2]([]); // query
+        resolveQueryProposals[3]([]); // update
+        await runResolvedPromises();
+
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
         expect(await po.getNoProposalsPo().isPresent()).toBe(true);
       });
     });
@@ -254,15 +483,6 @@ describe("NnsProposals", () => {
     });
 
     describe("neurons", () => {
-      beforeEach(() => {
-        // TODO: Mock the canister call instead of the canister itself
-        const mockGovernanceCanister: MockGovernanceCanister =
-          new MockGovernanceCanister([]);
-        vi.spyOn(GovernanceCanister, "create").mockReturnValue(
-          mockGovernanceCanister
-        );
-      });
-
       it("should NOT load neurons", async () => {
         await renderComponent();
 
@@ -273,23 +493,7 @@ describe("NnsProposals", () => {
     });
 
     describe("Matching results", () => {
-      const mockGovernanceCanister: MockGovernanceCanister =
-        new MockGovernanceCanister(mockProposals);
-
-      const mockLoadProposals = () =>
-        vi
-          .spyOn(proposalsStore, "subscribe")
-          .mockImplementation(mockProposalsStoreSubscribe);
-
-      beforeEach(() => {
-        vi.spyOn(GovernanceCanister, "create").mockImplementation(
-          (): GovernanceCanister => mockGovernanceCanister
-        );
-      });
-
       it("should render proposals", async () => {
-        mockLoadProposals();
-
         const po = await renderComponent();
         const cardPos = await po.getProposalCardPos();
         const firstProposal = mockProposals[0] as ProposalInfo;
@@ -307,14 +511,6 @@ describe("NnsProposals", () => {
   });
 
   describe("actionable proposals segment", () => {
-    beforeEach(() => {
-      actionableNnsProposalsStore.reset();
-
-      authStoreMock.next({
-        identity: mockIdentity,
-      });
-    });
-
     it("should render actionable proposals by default", async () => {
       const po = await renderComponent();
 

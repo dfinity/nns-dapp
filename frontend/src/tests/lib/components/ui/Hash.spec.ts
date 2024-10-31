@@ -1,49 +1,50 @@
 import Hash from "$lib/components/ui/Hash.svelte";
-import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+import { HashPo } from "$tests/page-objects/Hash.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("Hash", () => {
   const identifier = "12345678901234567890";
+  const shortenedIdentifier = "1234567...4567890";
   const testId = "tests-hash";
 
-  it("should render a hashed identifier", () => {
-    const { getByTestId } = render(Hash, {
+  const renderComponent = (props) => {
+    const { container } = render(Hash, props);
+    return HashPo.under(new JestPageObjectElement(container));
+  };
+
+  it("should render a hashed identifier", async () => {
+    const po = renderComponent({
       props: { text: identifier, testId, id: identifier },
     });
 
-    const small = getByTestId(testId);
-    expect(small?.textContent).toEqual(shortenWithMiddleEllipsis(identifier));
+    expect(await po.getDisplayedText()).toEqual(shortenedIdentifier);
   });
 
-  it("should use the splitLength prop", () => {
+  it("should use the splitLength prop", async () => {
     const splitLength = 3;
-    const { getByTestId } = render(Hash, {
+    const po = renderComponent({
       props: { text: identifier, testId, id: identifier, splitLength },
     });
 
-    const small = getByTestId(testId);
-    expect(small?.textContent).toEqual(
-      shortenWithMiddleEllipsis(identifier, splitLength)
-    );
+    expect(await po.getDisplayedText()).toEqual("123...890");
   });
 
-  it("should render a tooltip with all identifier", () => {
-    const { container } = render(Hash, {
+  it("should render a tooltip with full identifier", async () => {
+    const po = renderComponent({
       props: { text: identifier, testId, id: identifier },
     });
 
-    const tooltipElement = container.querySelector("[role='tooltip']");
-    expect(tooltipElement?.textContent).toEqual(identifier);
+    expect(await po.getTooltipPo().getTooltipText()).toBe(identifier);
   });
 
-  it("should render the identifier as aria-label when copy icon", () => {
-    const { container } = render(Hash, {
+  it("should render the identifier as aria-label when copy icon", async () => {
+    const po = renderComponent({
       props: { text: identifier, testId, id: identifier, showCopy: true },
     });
 
-    const button = container.querySelector("button");
-    expect(
-      button?.getAttribute("aria-label").includes(identifier)
-    ).toBeTruthy();
+    expect(await po.getCopyButtonPo().getAriaLabel()).toBe(
+      `Copy to clipboard: ${identifier}`
+    );
   });
 });

@@ -9,7 +9,7 @@ import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("Layout", () => {
-  beforeAll(() => {
+  beforeEach(() => {
     vi.resetAllMocks();
   });
 

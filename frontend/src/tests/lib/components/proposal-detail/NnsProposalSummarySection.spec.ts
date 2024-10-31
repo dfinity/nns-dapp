@@ -3,10 +3,6 @@ import { mapProposalInfo } from "$lib/utils/proposals.utils";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
-vi.mock("$lib/utils/html.utils", () => ({
-  markdownToHTML: (value) => Promise.resolve(value),
-}));
-
 describe("NnsProposalSummarySection", () => {
   const { title, proposal, url } = mapProposalInfo(mockProposalInfo);
 

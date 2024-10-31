@@ -5,10 +5,10 @@ import {
   disburse as disburseApi,
   disburseMaturity as disburseMaturityApi,
   getSnsNeuron as getSnsNeuronApi,
+  increaseDissolveDelay,
   querySnsNeuron,
   querySnsNeurons,
   removeNeuronPermissions,
-  setDissolveDelay,
   setFollowees,
   splitNeuron as splitNeuronApi,
   stakeMaturity as stakeMaturityApi,
@@ -21,22 +21,23 @@ import {
 } from "$lib/api/sns.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { snsTokensByRootCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
 import { loadActionableProposalsForSns } from "$lib/services/actionable-sns-proposals.services";
-import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
 } from "$lib/stores/sns-neurons.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
-import { nowInSeconds } from "$lib/utils/date.utils";
-import { notForceCallStrategy } from "$lib/utils/env.utils";
+import { isLastCall } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import {
   followeesByFunction,
+  getSnsDissolvingTimeInSeconds,
+  getSnsLockedTimeInSeconds,
   getSnsNeuronByHexId,
   hasAutoStakeMaturityOn,
   isEnoughAmountToSplit,
@@ -55,6 +56,7 @@ import {
   assertNonNullish,
   fromDefinedNullable,
   fromNullable,
+  isNullish,
   nonNullish,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -72,9 +74,7 @@ import { queryAndUpdate } from "./utils.services";
 export const syncSnsNeurons = async (
   rootCanisterId: Principal
 ): Promise<void> => {
-  const snsParametersRequest = loadSnsParameters(rootCanisterId);
-
-  const syncSnsNeuronsRequest = queryAndUpdate<SnsNeuron[], unknown>({
+  return queryAndUpdate<SnsNeuron[], unknown>({
     strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       querySnsNeurons({
@@ -89,10 +89,10 @@ export const syncSnsNeurons = async (
         certified,
       });
     },
-    onError: ({ error: err, certified }) => {
+    onError: ({ error: err, certified, strategy }) => {
       console.error(err);
 
-      if (!certified && notForceCallStrategy()) {
+      if (!isLastCall({ strategy, certified })) {
         return;
       }
 
@@ -108,8 +108,6 @@ export const syncSnsNeurons = async (
     },
     logMessage: "Syncing Sns Neurons",
   });
-
-  return Promise.all([snsParametersRequest, syncSnsNeuronsRequest]).then();
 };
 
 export const loadSnsNeurons = async ({
@@ -439,11 +437,18 @@ export const updateDelay = async ({
   try {
     const identity = await getSnsNeuronIdentity();
 
-    await setDissolveDelay({
+    const existingDissolveDelay = Number(
+      getSnsLockedTimeInSeconds(neuron) ??
+        getSnsDissolvingTimeInSeconds(neuron) ??
+        0n
+    );
+
+    await increaseDissolveDelay({
       rootCanisterId,
       identity,
       neuronId: fromDefinedNullable(neuron.id),
-      dissolveTimestampSeconds: nowInSeconds() + dissolveDelaySeconds,
+      additionalDissolveDelaySeconds:
+        dissolveDelaySeconds - existingDissolveDelay,
     });
 
     return { success: true };
@@ -510,10 +515,25 @@ export const stakeNeuron = async ({
     const identity = await getAuthenticatedIdentity();
     const stakeE8s = numberToE8s(amount);
 
+    // The stakeNeuron function should not be called with an amount smaller than
+    // the minimum stake. This check is only here to prevent people losing
+    // tokens if the check is accidentally not done before, but does not provide
+    // a proper error message.
+    const paramsStore = get(snsParametersStore);
+    const minimumStakeE8s = fromDefinedNullable(
+      paramsStore[rootCanisterId.toText()]?.parameters
+        ?.neuron_minimum_stake_e8s ?? []
+    );
+    if (stakeE8s < minimumStakeE8s) {
+      throw new Error(
+        "The caller should make sure the amount is at least the minimum stake"
+      );
+    }
+
     const fee = get(snsTokensByRootCanisterIdStore)[rootCanisterId.toText()]
       ?.fee;
 
-    if (!fee) {
+    if (isNullish(fee)) {
       throw new Error("error.transaction_fee_not_found");
     }
 

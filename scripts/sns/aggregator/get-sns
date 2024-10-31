@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../../clap.bash"
+clap.define long=json desc="Output as json" variable="ENABLE_JSON" nargs=0
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+SEARCH_PATTERN="$1"
+
+# These exist for a frontend test but they are kept up-to-date weekly so they
+# are useful to have quick access to the list of SNSes. We only use them to
+# find which SNS to query but then get the actual data from the aggregator.
+AGGREGATOR_PAGES=("$SOURCE_DIR"/../../../frontend/src/tests/workflows/Launchpad/sns-agg-page-*.json)
+
+ROOT_CANISTER_ID="$(jq -c '.[] | select(.lifecycle.lifecycle != 4) | .canister_ids * {name: .meta.name, symbol: (.icrc1_metadata | .[] | select(.[0] == "icrc1:symbol") | .[1].Text) }' "${AGGREGATOR_PAGES[@]}" | grep -i "$SEARCH_PATTERN" | head -n 1 | jq -r .root_canister_id)"
+
+AGGREGATOR_URL="https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/root/$ROOT_CANISTER_ID/slow.json"
+
+get_sns_data() {
+  curl -LsSf "$AGGREGATOR_URL"
+}
+
+if [[ "${ENABLE_JSON:-}" == "true" ]]; then
+  get_sns_data
+  exit 0
+fi
+
+get_sns_field() {
+  field_path="$1"
+  echo "$SNS_DATA" | jq -r "$field_path"
+}
+
+SNS_DATA="$(get_sns_data)"
+
+echo "Name:   $(get_sns_field .meta.name)"
+echo "Symbol: $(echo "$SNS_DATA" | jq -r '.icrc1_metadata | .[] | select(.[0] == "icrc1:symbol") | .[1].Text')"
+echo "Aggregator URL:         $AGGREGATOR_URL"
+echo "Root canister ID:       $(get_sns_field .canister_ids.root_canister_id)"
+echo "Governance canister ID: $(get_sns_field .canister_ids.governance_canister_id)"
+echo "Ledger canister ID:     $(get_sns_field .canister_ids.ledger_canister_id)"
+echo "Index canister ID:      $(get_sns_field .canister_ids.index_canister_id)"
+echo "Swap canister ID:       $(get_sns_field .canister_ids.swap_canister_id)"
+echo "Transaction fee:      $(get_sns_field '.nervous_system_parameters.transaction_fee_e8s / 100000000')"
+echo "Minimum neuron stake: $(get_sns_field '.nervous_system_parameters.neuron_minimum_stake_e8s / 100000000')"
+echo "Proposal fee:         $(get_sns_field '.nervous_system_parameters.reject_cost_e8s / 100000000')"

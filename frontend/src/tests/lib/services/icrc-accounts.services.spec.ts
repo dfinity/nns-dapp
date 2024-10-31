@@ -7,6 +7,7 @@ import {
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import {
   getIcrcAccountIdentity,
+  getIcrcTokenMetaData,
   loadAccounts,
   loadIcrcToken,
   syncAccounts,
@@ -14,6 +15,10 @@ import {
 } from "$lib/services/icrc-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
+import {
+  failedImportedTokenLedgerIdsStore,
+  importedTokensStore,
+} from "$lib/stores/imported-tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -26,6 +31,7 @@ import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import { tick } from "svelte";
@@ -44,6 +50,9 @@ describe("icrc-accounts-services", () => {
     resetIdentity();
     tokensStore.reset();
     icrcAccountsStore.reset();
+    importedTokensStore.reset();
+    failedImportedTokenLedgerIdsStore.reset();
+    toastsStore.reset();
     resetSnsProjects();
 
     vi.spyOn(ledgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
@@ -207,6 +216,119 @@ describe("icrc-accounts-services", () => {
         transactionsStore[CKBTC_UNIVERSE_CANISTER_ID.toText()]
       ).toBeUndefined();
     });
+
+    it("should remove only failed account from the store", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcBalance")
+        .mockResolvedValueOnce(mockCkBTCMainAccount.balanceUlps)
+        .mockRejectedValueOnce(new Error());
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkBTCMainAccount],
+          certified: true,
+        },
+        ledgerCanisterId: ledgerCanisterId,
+      });
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkBTCMainAccount],
+          certified: false,
+        },
+        ledgerCanisterId: ledgerCanisterId2,
+      });
+
+      expect(get(icrcAccountsStore)).toEqual({
+        [ledgerCanisterId.toText()]: {
+          accounts: [mockCkBTCMainAccount],
+          certified: true,
+        },
+        [ledgerCanisterId2.toText()]: {
+          accounts: [mockCkBTCMainAccount],
+          certified: false,
+        },
+      });
+
+      await loadAccounts({ ledgerCanisterId });
+
+      expect(get(icrcAccountsStore)).toEqual({
+        [ledgerCanisterId2.toText()]: {
+          accounts: [mockCkBTCMainAccount],
+          certified: false,
+        },
+      });
+    });
+
+    it("displays a toast on error", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(
+        new Error("test")
+      );
+      expect(ledgerApi.queryIcrcBalance).not.toBeCalled();
+      expect(get(toastsStore)).toMatchObject([]);
+      await loadAccounts({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcBalance).toBeCalledTimes(2);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "An error occurred while loading the accounts. test",
+        },
+      ]);
+    });
+
+    it("doesn't load imported token if in failed imported tokens store", async () => {
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+      failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
+      expect(ledgerApi.queryIcrcBalance).not.toBeCalled();
+      await loadAccounts({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcBalance).not.toBeCalled();
+    });
+
+    it("updates failed imported tokens store on error", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(new Error());
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+
+      expect(ledgerApi.queryIcrcBalance).not.toBeCalled();
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([]);
+      await loadAccounts({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcBalance).toBeCalledTimes(2);
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([
+        ledgerCanisterId.toText(),
+      ]);
+    });
+
+    it("don't display toast errors when imported token fails to load", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(
+        new Error("test")
+      );
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+      expect(ledgerApi.queryIcrcBalance).not.toBeCalled();
+      expect(get(toastsStore)).toMatchObject([]);
+      await loadAccounts({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcBalance).toBeCalledTimes(2);
+      expect(get(toastsStore)).toMatchObject([]);
+    });
   });
 
   describe("syncAccounts", () => {
@@ -359,6 +481,157 @@ describe("icrc-accounts-services", () => {
 
       expect(ledgerApi.queryIcrcToken).not.toBeCalled();
     });
+
+    it("displays a toast on error", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(
+        new Error("test")
+      );
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+      expect(get(toastsStore)).toMatchObject([]);
+      await loadIcrcToken({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcToken).toBeCalledTimes(2);
+      expect(ledgerApi.queryIcrcToken).toBeCalledWith({
+        certified: false,
+        canisterId: ledgerCanisterId,
+        identity: mockIdentity,
+      });
+      expect(ledgerApi.queryIcrcToken).toBeCalledWith({
+        certified: true,
+        canisterId: ledgerCanisterId,
+        identity: mockIdentity,
+      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, there was an error loading the token metadata information. test",
+        },
+      ]);
+    });
+
+    it("displays no toast on uncertified error", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockImplementation(
+        async ({ certified }) => {
+          if (!certified) {
+            throw new Error("test");
+          }
+          return mockToken;
+        }
+      );
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
+      await loadIcrcToken({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcToken).toBeCalledTimes(2);
+      expect(ledgerApi.queryIcrcToken).toBeCalledWith({
+        certified: false,
+        canisterId: ledgerCanisterId,
+        identity: mockIdentity,
+      });
+      expect(ledgerApi.queryIcrcToken).toBeCalledWith({
+        certified: true,
+        canisterId: ledgerCanisterId,
+        identity: mockIdentity,
+      });
+      expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("displays a toast on uncertified error for query call", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockImplementation(
+        async ({ certified }) => {
+          if (!certified) {
+            throw new Error("test");
+          }
+          return mockToken;
+        }
+      );
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
+      await loadIcrcToken({ ledgerCanisterId, certified: false });
+      expect(ledgerApi.queryIcrcToken).toBeCalledTimes(1);
+      expect(ledgerApi.queryIcrcToken).toBeCalledWith({
+        certified: false,
+        canisterId: ledgerCanisterId,
+        identity: mockIdentity,
+      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, there was an error loading the token metadata information. test",
+        },
+      ]);
+    });
+
+    it("displays no toast on uncertified error", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockImplementation(
+        async ({ certified }) => {
+          if (!certified) {
+            throw new Error("test");
+          }
+          return mockToken;
+        }
+      );
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
+      await loadIcrcToken({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcToken).toBeCalledTimes(2);
+      expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("doesn't load imported token if in failed imported tokens store", async () => {
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+      failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+      await loadIcrcToken({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+    });
+
+    it("updates failed imported tokens store on error", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(new Error());
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([]);
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+      await loadIcrcToken({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcToken).toBeCalledTimes(2);
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([
+        ledgerCanisterId.toText(),
+      ]);
+    });
+
+    it("don't display toast errors when imported token fails to load", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(
+        new Error("test")
+      );
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+      expect(get(toastsStore)).toMatchObject([]);
+      await loadIcrcToken({ ledgerCanisterId });
+      expect(ledgerApi.queryIcrcToken).toBeCalledTimes(2);
+      expect(get(toastsStore)).toMatchObject([]);
+    });
   });
 
   describe("transferTokens", () => {
@@ -429,6 +702,41 @@ describe("icrc-accounts-services", () => {
       const finalAccount =
         get(icrcAccountsStore)[ledgerCanisterId.toText()]?.accounts[0];
       expect(finalAccount.balanceUlps).toEqual(balanceE8s);
+    });
+  });
+
+  describe("getIcrcTokenMetaData", () => {
+    it("calls queryIcrcToken from icrc ledger api", async () => {
+      const result = await getIcrcTokenMetaData({
+        ledgerCanisterId,
+      });
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: false,
+        canisterId: ledgerCanisterId,
+      });
+      expect(result).toEqual(mockToken);
+    });
+
+    it("throws an error", async () => {
+      const testError = new Error("test");
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(testError);
+
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(0);
+
+      const call = () =>
+        getIcrcTokenMetaData({
+          ledgerCanisterId,
+        });
+
+      expect(call).rejects.toThrow(testError);
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: false,
+        canisterId: ledgerCanisterId,
+      });
     });
   });
 });

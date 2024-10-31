@@ -10,19 +10,22 @@ import {
   E8S_PER_ICP,
 } from "$lib/constants/icp.constants";
 import {
-  AGE_MULTIPLIER,
-  DISSOLVE_DELAY_MULTIPLIER,
   MATURITY_MODULATION_VARIANCE_PERCENTAGE,
+  MAX_AGE_BONUS,
+  MAX_DISSOLVE_DELAY_BONUS,
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
   TOPICS_TO_FOLLOW_NNS,
-  TOPICS_WITH_FOLLOWING_DISABLED,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { VoteRegistrationStoreData } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
+import type {
+  NeuronVisibilityRowData,
+  UncontrolledNeuronDetailsData,
+} from "$lib/types/neuron-visibility-row";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import type { Identity } from "@dfinity/agent";
 import type { WizardStep } from "@dfinity/gix-components";
@@ -35,6 +38,7 @@ import {
 import {
   NeuronState,
   NeuronType,
+  NeuronVisibility,
   Topic,
   Vote,
   ineligibleNeurons,
@@ -47,14 +51,20 @@ import {
   type ProposalInfo,
   type RewardEvent,
 } from "@dfinity/nns";
-import { ICPToken, fromNullable, isNullish, nonNullish } from "@dfinity/utils";
+import {
+  ICPToken,
+  TokenAmountV2,
+  fromNullable,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
 import type { ComponentType } from "svelte";
 import {
   getAccountByPrincipal,
   isAccountHardwareWallet,
 } from "./accounts.utils";
 import { nowInSeconds } from "./date.utils";
-import { formatNumber } from "./format.utils";
+import { formatNumber, shortenWithMiddleEllipsis } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
 import { formatTokenE8s, numberToUlps } from "./token.utils";
 import { isDefined } from "./utils";
@@ -140,8 +150,8 @@ interface VotingPowerParams {
   stakeE8s: bigint;
   ageSeconds: bigint;
   // Params
-  ageBonusMultiplier?: number;
-  dissolveBonusMultiplier?: number;
+  maxAgeBonus?: number;
+  maxDissolveDelayBonus?: number;
   maxAgeSeconds?: number;
   maxDissolveDelaySeconds?: number;
   minDissolveDelaySeconds?: number;
@@ -158,8 +168,8 @@ export const votingPower = ({
   stakeE8s,
   dissolveDelay,
   ageSeconds,
-  ageBonusMultiplier = AGE_MULTIPLIER,
-  dissolveBonusMultiplier = DISSOLVE_DELAY_MULTIPLIER,
+  maxAgeBonus = MAX_AGE_BONUS,
+  maxDissolveDelayBonus = MAX_DISSOLVE_DELAY_BONUS,
   maxDissolveDelaySeconds = SECONDS_IN_EIGHT_YEARS,
   maxAgeSeconds = SECONDS_IN_FOUR_YEARS,
   minDissolveDelaySeconds = SECONDS_IN_HALF_YEAR,
@@ -169,13 +179,13 @@ export const votingPower = ({
   }
   const dissolveDelayMultiplier = bonusMultiplier({
     amount: dissolveDelay,
-    multiplier: dissolveBonusMultiplier,
-    max: maxDissolveDelaySeconds,
+    maxBonus: maxDissolveDelayBonus,
+    amountForMaxBonus: maxDissolveDelaySeconds,
   });
   const ageMultiplier = bonusMultiplier({
     amount: ageSeconds,
-    multiplier: ageBonusMultiplier,
-    max: maxAgeSeconds,
+    maxBonus: maxAgeBonus,
+    amountForMaxBonus: maxAgeSeconds,
   });
   // We don't use dissolveDelayMultiplier and ageMultiplier directly because those are specific to NNS.
   // This function is generic and could be used for SNS.
@@ -187,31 +197,42 @@ export const votingPower = ({
 export const dissolveDelayMultiplier = (delayInSeconds: bigint): number =>
   bonusMultiplier({
     amount: delayInSeconds,
-    multiplier: DISSOLVE_DELAY_MULTIPLIER,
-    max: SECONDS_IN_EIGHT_YEARS,
+    maxBonus: MAX_DISSOLVE_DELAY_BONUS,
+    amountForMaxBonus: SECONDS_IN_EIGHT_YEARS,
   });
 
 export const ageMultiplier = (ageSeconds: bigint): number =>
   bonusMultiplier({
     amount: ageSeconds,
-    multiplier: AGE_MULTIPLIER,
-    max: SECONDS_IN_FOUR_YEARS,
+    maxBonus: MAX_AGE_BONUS,
+    amountForMaxBonus: SECONDS_IN_FOUR_YEARS,
   });
 
+// Calculates the bonus multiplier for an amount (such as dissolve delay or age)
+// which results in bonus eligibility which scales linearly from 1 to
+// `maxBonus`. For example for dissolve delay, the values
+//   amount: 4 years
+//   amountForMaxBonus: 8 years
+//   maxBonus: 1
+// Would mean that there is a maximum bonus of 1 = 100% (which means a
+// multiplier of 2) but with a dissolve delay of 4 years out of a maximum of
+// 8 years, the bonus would be 50%, which means a multiplier of 1.5.
+// So in this case the return value would be 1.5.
 export const bonusMultiplier = ({
   amount,
-  multiplier,
-  max,
+  amountForMaxBonus,
+  maxBonus,
 }: {
   amount: bigint;
-  multiplier: number;
-  max: number;
-}): number =>
-  1 +
-  multiplier *
-    (Math.min(Number(amount), max) /
-      // to avoid NaN
-      (max === 0 ? 1 : max));
+  amountForMaxBonus: number;
+  maxBonus: number;
+}): number => {
+  const bonusProportion =
+    amountForMaxBonus === 0
+      ? 0
+      : Math.min(Number(amount), amountForMaxBonus) / amountForMaxBonus;
+  return 1 + maxBonus * bonusProportion;
+};
 
 // TODO: Do we need this? What does it mean to have a valid stake?
 // TODO: https://dfinity.atlassian.net/browse/L2-507
@@ -219,7 +240,8 @@ export const hasValidStake = (neuron: NeuronInfo): boolean =>
   // Ignore if we can't validate the stake
   nonNullish(neuron.fullNeuron)
     ? neuron.fullNeuron.cachedNeuronStake +
-        neuron.fullNeuron.maturityE8sEquivalent >
+        neuronAvailableMaturity(neuron) +
+        neuronStakedMaturity(neuron) >
       BigInt(DEFAULT_TRANSACTION_FEE_E8S)
     : false;
 
@@ -418,15 +440,8 @@ export const getNeuronTags = ({
 }): NeuronTagData[] => {
   const tags: NeuronTagData[] = [];
 
-  if (isSeedNeuron(neuron)) {
-    tags.push({ text: i18n.neuron_types.seed });
-  } else if (isEctNeuron(neuron)) {
-    tags.push({ text: i18n.neuron_types.ect });
-  }
+  tags.push(...getNeuronTagsUnrelatedToController({ neuron, i18n }));
 
-  if (hasJoinedCommunityFund(neuron)) {
-    tags.push({ text: i18n.neurons.community_fund });
-  }
   const isHWControlled = isNeuronControlledByHardwareWallet({
     neuron,
     accounts,
@@ -438,6 +453,95 @@ export const getNeuronTags = ({
     tags.push({ text: i18n.neurons.hotkey_control });
   }
   return tags;
+};
+
+const getNeuronTagsUnrelatedToController = ({
+  neuron,
+  i18n,
+}: {
+  neuron: NeuronInfo;
+  i18n: I18n;
+}): NeuronTagData[] => {
+  const tags: NeuronTagData[] = [];
+
+  if (isSeedNeuron(neuron)) {
+    tags.push({ text: i18n.neuron_types.seed });
+  } else if (isEctNeuron(neuron)) {
+    tags.push({ text: i18n.neuron_types.ect });
+  }
+
+  if (hasJoinedCommunityFund(neuron)) {
+    tags.push({ text: i18n.neurons.community_fund });
+  }
+  return tags;
+};
+
+export const createNeuronVisibilityRowData = ({
+  neuron,
+  identity,
+  accounts,
+  i18n,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+  accounts: IcpAccountsStoreData;
+  i18n: I18n;
+}): NeuronVisibilityRowData => {
+  return {
+    neuronId: neuron.neuronId.toString(),
+    isPublic: isPublicNeuron(neuron),
+    stake: isNeuronControllableByUser({ neuron, mainAccount: accounts.main })
+      ? TokenAmountV2.fromUlps({
+          amount: neuronStake(neuron),
+          token: ICPToken,
+        })
+      : undefined,
+    tags: getNeuronTagsUnrelatedToController({
+      neuron,
+      i18n,
+    }).map(({ text }) => text),
+    uncontrolledNeuronDetails: getNeuronVisibilityRowUncontrolledNeuronDetails({
+      neuron,
+      identity,
+      accounts,
+      i18n,
+    }),
+  };
+};
+
+const getNeuronVisibilityRowUncontrolledNeuronDetails = ({
+  neuron,
+  identity,
+  accounts,
+  i18n,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+  accounts: IcpAccountsStoreData;
+  i18n: I18n;
+}): UncontrolledNeuronDetailsData | undefined => {
+  if (
+    isNeuronControlledByHardwareWallet({
+      neuron,
+      accounts,
+    })
+  ) {
+    return {
+      type: "hardwareWallet",
+      text: i18n.neuron_detail.hardware_wallet,
+    };
+    // All HW controlled are hotkeys, but we don't want to show both details to the user.
+  }
+  const hotKeyControllableNeuron = isHotKeyControllable({
+    neuron,
+    identity,
+  });
+  if (hotKeyControllableNeuron && neuron.fullNeuron?.controller) {
+    return {
+      type: "hotkey",
+      text: shortenWithMiddleEllipsis(neuron.fullNeuron?.controller),
+    };
+  }
 };
 
 /**
@@ -699,8 +803,8 @@ const sameManageNeuronFollowees = (neurons: NeuronInfo[]): boolean => {
   const sortedFollowees: NeuronId[][] = fullNeurons
     .map(
       ({ followees }): Followees =>
-        followees.find(({ topic }) => topic === Topic.ManageNeuron) ?? {
-          topic: Topic.ManageNeuron,
+        followees.find(({ topic }) => topic === Topic.NeuronManagement) ?? {
+          topic: Topic.NeuronManagement,
           followees: [],
         }
     )
@@ -819,14 +923,10 @@ export const followeesByTopic = ({
  * Filter out deprecated topics.
  */
 export const topicsToFollow = (neuron: NeuronInfo): Topic[] =>
-  (followeesByTopic({ neuron, topic: Topic.ManageNeuron }) === undefined
-    ? TOPICS_TO_FOLLOW_NNS.filter((topic) => topic !== Topic.ManageNeuron)
+  (followeesByTopic({ neuron, topic: Topic.NeuronManagement }) === undefined
+    ? TOPICS_TO_FOLLOW_NNS.filter((topic) => topic !== Topic.NeuronManagement)
     : TOPICS_TO_FOLLOW_NNS
-  ).filter(
-    (topic) =>
-      !DEPRECATED_TOPICS.includes(topic) &&
-      !TOPICS_WITH_FOLLOWING_DISABLED.includes(topic)
-  );
+  ).filter((topic) => !DEPRECATED_TOPICS.includes(topic));
 
 // NeuronInfo is public info.
 // fullNeuron is only for users with access.
@@ -1000,7 +1100,7 @@ export const getTopicTitle = ({
 }): string => {
   const mapper: Record<Topic, string> = {
     [Topic.Unspecified]: i18n.follow_neurons.topic_0_title,
-    [Topic.ManageNeuron]: i18n.follow_neurons.topic_1_title,
+    [Topic.NeuronManagement]: i18n.follow_neurons.topic_1_title,
     [Topic.ExchangeRate]: i18n.follow_neurons.topic_2_title,
     [Topic.NetworkEconomics]: i18n.follow_neurons.topic_3_title,
     [Topic.Governance]: i18n.follow_neurons.topic_4_title,
@@ -1011,8 +1111,8 @@ export const getTopicTitle = ({
     [Topic.Kyc]: i18n.follow_neurons.topic_9_title,
     [Topic.NodeProviderRewards]: i18n.follow_neurons.topic_10_title,
     [Topic.SnsDecentralizationSale]: i18n.follow_neurons.topic_11_title,
-    [Topic.SubnetReplicaVersionManagement]: i18n.follow_neurons.topic_12_title,
-    [Topic.ReplicaVersionManagement]: i18n.follow_neurons.topic_13_title,
+    [Topic.IcOsVersionDeployment]: i18n.follow_neurons.topic_12_title,
+    [Topic.IcOsVersionElection]: i18n.follow_neurons.topic_13_title,
     [Topic.SnsAndCommunityFund]: i18n.follow_neurons.topic_14_title,
     [Topic.ApiBoundaryNodeManagement]: i18n.follow_neurons.topic_15_title,
     [Topic.SubnetRental]: i18n.follow_neurons.topic_16_title,
@@ -1036,7 +1136,7 @@ export const getTopicSubtitle = ({
 }): string => {
   const mapper: Record<Topic, string> = {
     [Topic.Unspecified]: i18n.follow_neurons.topic_0_subtitle,
-    [Topic.ManageNeuron]: i18n.follow_neurons.topic_1_subtitle,
+    [Topic.NeuronManagement]: i18n.follow_neurons.topic_1_subtitle,
     [Topic.ExchangeRate]: i18n.follow_neurons.topic_2_subtitle,
     [Topic.NetworkEconomics]: i18n.follow_neurons.topic_3_subtitle,
     [Topic.Governance]: i18n.follow_neurons.topic_4_subtitle,
@@ -1047,9 +1147,8 @@ export const getTopicSubtitle = ({
     [Topic.Kyc]: i18n.follow_neurons.topic_9_subtitle,
     [Topic.NodeProviderRewards]: i18n.follow_neurons.topic_10_subtitle,
     [Topic.SnsDecentralizationSale]: i18n.follow_neurons.topic_11_subtitle,
-    [Topic.SubnetReplicaVersionManagement]:
-      i18n.follow_neurons.topic_12_subtitle,
-    [Topic.ReplicaVersionManagement]: i18n.follow_neurons.topic_13_subtitle,
+    [Topic.IcOsVersionDeployment]: i18n.follow_neurons.topic_12_subtitle,
+    [Topic.IcOsVersionElection]: i18n.follow_neurons.topic_13_subtitle,
     [Topic.SnsAndCommunityFund]: i18n.follow_neurons.topic_14_subtitle,
     [Topic.ApiBoundaryNodeManagement]: i18n.follow_neurons.topic_15_subtitle,
     [Topic.SubnetRental]: i18n.follow_neurons.topic_16_subtitle,
@@ -1058,4 +1157,8 @@ export const getTopicSubtitle = ({
       i18n.follow_neurons.topic_18_subtitle,
   };
   return mapper[topic];
+};
+
+export const isPublicNeuron = (neuronInfo: NeuronInfo): boolean => {
+  return neuronInfo.visibility === NeuronVisibility.Public;
 };

@@ -23,11 +23,8 @@ vitest.mock("$lib/services/worker-cycles.services", () => ({
 }));
 
 describe("CanisterCardCycles", () => {
-  beforeEach(() => (cyclesCallback = undefined));
-
-  afterAll(() => {
-    vitest.clearAllMocks();
-    vitest.resetAllMocks();
+  beforeEach(() => {
+    cyclesCallback = undefined;
   });
 
   const props = { props: { canister: mockCanister } };

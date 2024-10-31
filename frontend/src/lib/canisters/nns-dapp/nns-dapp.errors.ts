@@ -13,6 +13,14 @@ export class AccountNotFoundError extends AccountTranslateError {
   }
 }
 
+export class TooManyImportedTokensError extends AccountTranslateError {
+  constructor(message: string, substitutions?: I18nSubstitutions) {
+    super(message);
+
+    this.substitutions = substitutions;
+  }
+}
+
 export class SubAccountLimitExceededError extends Error {}
 
 export class NameTooLongError extends AccountTranslateError {

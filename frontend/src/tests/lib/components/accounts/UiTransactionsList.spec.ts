@@ -27,7 +27,7 @@ describe("UiTransactionsList", () => {
     return UiTransactionsListPo.under(new JestPageObjectElement(container));
   };
 
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
   });
 

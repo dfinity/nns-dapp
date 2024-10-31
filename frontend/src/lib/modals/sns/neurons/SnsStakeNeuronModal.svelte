@@ -1,21 +1,21 @@
 <script lang="ts">
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+  import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
   import SnsNeuronTransactionModal from "$lib/modals/sns/neurons/SnsNeuronTransactionModal.svelte";
   import { stakeNeuron } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type {
     NewTransaction,
     ValidateAmountFn,
   } from "$lib/types/transaction";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
   import type { WizardStep } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import type { Token, TokenAmountV2 } from "@dfinity/utils";
+  import { fromNullable } from "@dfinity/utils";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
@@ -41,13 +41,12 @@
 
   let parameters: SnsNervousSystemParameters | undefined;
   $: parameters = $snsParametersStore[rootCanisterId.toText()]?.parameters;
+  let minimumStakeE8s: bigint | undefined;
+  $: minimumStakeE8s = fromNullable(parameters?.neuron_minimum_stake_e8s ?? []);
   let minimumStake: number | undefined;
-  $: minimumStake =
-    parameters !== undefined
-      ? Number(
-          mapNervousSystemParameters(parameters).neuron_minimum_stake_e8s
-        ) / E8S_PER_ICP
-      : undefined;
+  $: minimumStake = nonNullish(minimumStakeE8s)
+    ? Number(minimumStakeE8s) / E8S_PER_ICP
+    : undefined;
   let checkMinimumStake: ValidateAmountFn;
   $: checkMinimumStake = ({ amount }) => {
     if (

@@ -3,7 +3,7 @@
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { UserToken } from "$lib/types/tokens-page";
-  import { PageBanner, IconAccountsPage } from "@dfinity/gix-components";
+  import { IconAccountsPage, PageBanner } from "@dfinity/gix-components";
 
   export let userTokensData: UserToken[];
 </script>

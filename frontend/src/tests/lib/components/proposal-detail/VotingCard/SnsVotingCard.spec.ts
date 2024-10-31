@@ -2,20 +2,12 @@ import * as api from "$lib/api/sns-governance.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
-import { authStore } from "$lib/stores/auth.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
-import {
-  createMockSnsNeuron,
-  snsNervousSystemParametersMock,
-} from "$tests/mocks/sns-neurons.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { mockSnsCanisterId } from "$tests/mocks/sns.api.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
@@ -118,7 +110,7 @@ describe("SnsVotingCard", () => {
   beforeEach(() => {
     vi.useFakeTimers().setSystemTime(nowInSeconds * 1000);
     snsNeuronsStore.reset();
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
 
     spyOnReloadProposal.mockClear();
     spyRegisterVote.mockClear();
@@ -131,12 +123,6 @@ describe("SnsVotingCard", () => {
         lifecycle: SnsSwapLifecycle.Committed,
       },
     ]);
-
-    snsParametersStore.setParameters({
-      rootCanisterId: mockSnsCanisterId,
-      parameters: snsNervousSystemParametersMock,
-      certified: true,
-    });
   });
 
   it("should be hidden if there is no not-voted-neurons", async () => {

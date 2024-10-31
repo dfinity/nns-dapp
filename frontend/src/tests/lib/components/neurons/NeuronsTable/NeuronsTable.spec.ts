@@ -182,7 +182,7 @@ describe("NeuronsTable", () => {
     expect(await rowPos[1].getStake()).toBe("5.00 ICP");
   });
 
-  it("should render detailed neuron stake", async () => {
+  it("should not render detailed neuron stake", async () => {
     const po = renderComponent({
       neurons: [
         {
@@ -193,7 +193,7 @@ describe("NeuronsTable", () => {
     });
     const rowPos = await po.getNeuronsTableRowPos();
     expect(rowPos).toHaveLength(1);
-    expect(await rowPos[0].getStake()).toBe("9.9999 ICP");
+    expect(await rowPos[0].getStake()).toBe("10.00 ICP");
   });
 
   it("should render neuron maturity", async () => {
@@ -473,6 +473,16 @@ describe("NeuronsTable", () => {
     );
   });
 
+  it("should render a different style for spawning neuron rows tooltip icon", async () => {
+    const po = renderComponent({ neurons: [neuron1, spawningNeuron] });
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getTableRowTooltipColorVariable()).toBe("");
+    expect(await rowPos[1].getTableRowTooltipColorVariable()).toBe(
+      "var(--table-row-text-color)"
+    );
+  });
+
   it("should render tags", async () => {
     const tags = ["Neuron's fund", "Hotkey control"];
     const po = renderComponent({
@@ -495,5 +505,28 @@ describe("NeuronsTable", () => {
     const cell2 = rowPos[1].getNeuronIdCellPo();
     expect(await cell2.getTags()).toEqual(tags);
     expect(await cell2.hasTagsElement()).toBe(true);
+  });
+
+  it("should render visibility icon and tooltip for public neuron", async () => {
+    const po = renderComponent({
+      neurons: [
+        {
+          ...neuron1,
+          isPublic: true,
+        },
+        {
+          ...neuron2,
+        },
+      ],
+    });
+
+    const visibilityTooltipPo = (
+      await po.getNeuronsTableRowPo(neuron1.neuronId)
+    )
+      .getNeuronIdCellPo()
+      .getPublicNeuronTooltipPo();
+
+    expect(await visibilityTooltipPo.isPresent()).toBe(true);
+    expect(await visibilityTooltipPo.getTooltipText()).toBe("Neuron is public");
   });
 });

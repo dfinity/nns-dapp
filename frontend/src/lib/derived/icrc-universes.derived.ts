@@ -8,7 +8,7 @@ import {
 import {
   icrcCanistersStore,
   type IcrcCanisters,
-} from "$lib/stores/icrc-canisters.store";
+} from "$lib/derived/icrc-canisters.derived";
 import { tokensStore, type TokensStoreData } from "$lib/stores/tokens.store";
 import type { Universe } from "$lib/types/universe";
 import { isNullish, nonNullish } from "@dfinity/utils";
@@ -31,8 +31,8 @@ const convertIcrcCanistersToUniverse = ({
     (universeId === CKETH_UNIVERSE_CANISTER_ID.toText()
       ? CKETH_LOGO
       : universeId === CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()
-      ? CKSEPOLIAETH_LOGO
-      : UNKNOWN_LOGO);
+        ? CKSEPOLIAETH_LOGO
+        : UNKNOWN_LOGO);
   return {
     canisterId: universeId,
     title: tokenData.token.name,

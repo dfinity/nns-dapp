@@ -1,14 +1,9 @@
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
-import { authStore } from "$lib/stores/auth.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { userCountryStore } from "$lib/stores/user-country.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import {
-  authStoreMock,
-  mockIdentity,
-  mutableMockAuthStoreSubscribe,
-} from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import {
@@ -35,15 +30,9 @@ describe("ParticipateButton", () => {
     owner: rootCanisterIdMock,
   });
 
-  vi.spyOn(authStore, "subscribe").mockImplementation(
-    mutableMockAuthStoreSubscribe
-  );
-
   describe("signed in", () => {
     beforeEach(() => {
-      authStoreMock.next({
-        identity: mockIdentity,
-      });
+      resetIdentity();
       snsTicketsStore.reset();
       vi.clearAllMocks();
       userCountryStore.set(NOT_LOADED);
@@ -337,10 +326,8 @@ describe("ParticipateButton", () => {
   });
 
   describe("not signed in", () => {
-    beforeAll(() => {
-      authStoreMock.next({
-        identity: undefined,
-      });
+    beforeEach(() => {
+      setNoIdentity();
     });
 
     it("should not render participate button", () => {

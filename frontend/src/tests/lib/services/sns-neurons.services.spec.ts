@@ -15,8 +15,6 @@ import {
   updateDelay,
 } from "$lib/services/sns-neurons.services";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
@@ -33,13 +31,15 @@ import {
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   buildMockSnsNeuronsStoreSubscribe,
+  createMockSnsNeuron,
   mockSnsNeuron,
-  snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { resetMockedConstants } from "$tests/utils/mockable-constants.test-utils";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { NeuronState } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
@@ -54,7 +54,7 @@ import {
 } from "@dfinity/utils";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 
 const {
   syncSnsNeurons,
@@ -66,12 +66,6 @@ const {
   loadSnsNeurons,
   addFollowee,
 } = services;
-
-vi.mock("$lib/stores/toasts.store", () => {
-  return {
-    toastsError: vi.fn(),
-  };
-});
 
 vi.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -98,79 +92,36 @@ describe("sns-neurons-services", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
+    toastsStore.reset();
     resetIdentity();
     resetMockedConstants();
     resetSnsProjects();
+    vi.spyOn(console, "error").mockReturnValue(undefined);
   });
 
   describe("syncSnsNeurons", () => {
     beforeEach(() => {
       snsNeuronsStore.reset();
 
-      snsParametersStore.reset();
-      snsParametersStore.setParameters({
-        rootCanisterId: mockPrincipal,
-        certified: true,
-        parameters: snsNervousSystemParametersMock,
-      });
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+        },
+      ]);
     });
 
-    describe("when sns parameteres are not loaded", () => {
-      beforeEach(() => {
-        snsParametersStore.reset();
-      });
+    it("should call api.querySnsNeurons and load neurons in store", async () => {
+      const spyQuery = vi
+        .spyOn(governanceApi, "querySnsNeurons")
+        .mockImplementation(() => Promise.resolve([neuron]));
 
-      it("should call api.querySnsNeurons and load neurons in store", async () => {
-        const spyQuery = vi
-          .spyOn(governanceApi, "querySnsNeurons")
-          .mockImplementation(() => Promise.resolve([neuron]));
-        const spyOnNervousSystemParameters = vi
-          .spyOn(governanceApi, "nervousSystemParameters")
-          .mockResolvedValue(snsNervousSystemParametersMock);
+      await syncSnsNeurons(mockPrincipal);
 
-        expect(spyOnNervousSystemParameters).not.toBeCalled();
-        // expect parameters not to be in store
-        expect(get(snsParametersStore)[mockPrincipal.toText()]).toBeUndefined();
-
-        await syncSnsNeurons(mockPrincipal);
-
-        await tick();
-
-        const store = get(snsNeuronsStore);
-        expect(store[mockPrincipal.toText()]?.neurons).toHaveLength(1);
-        expect(spyOnNervousSystemParameters).toBeCalled();
-        expect(spyQuery).toBeCalled();
-      });
-    });
-
-    describe("when sns parameters are loaded", () => {
-      let spyOnNervousSystemParameters;
-
-      beforeEach(() => {
-        spyOnNervousSystemParameters = vi
-          .spyOn(governanceApi, "nervousSystemParameters")
-          .mockRejectedValue("should not be called");
-      });
-
-      it("should call api.querySnsNeurons and load neurons in store", async () => {
-        const spyQuery = vi
-          .spyOn(governanceApi, "querySnsNeurons")
-          .mockImplementation(() => Promise.resolve([neuron]));
-
-        // expect parameters to be in store
-        expect(
-          get(snsParametersStore)[mockPrincipal.toText()]
-        ).not.toBeUndefined();
-
-        await syncSnsNeurons(mockPrincipal);
-
-        await tick();
-        const store = get(snsNeuronsStore);
-        expect(store[mockPrincipal.toText()]?.neurons).toHaveLength(1);
-        expect(spyQuery).toBeCalled();
-        expect(spyOnNervousSystemParameters).not.toBeCalled();
-      });
+      await tick();
+      const store = get(snsNeuronsStore);
+      expect(store[mockPrincipal.toText()]?.neurons).toHaveLength(1);
+      expect(spyQuery).toBeCalled();
     });
 
     it("should empty store if update call fails", async () => {
@@ -190,6 +141,31 @@ describe("sns-neurons-services", () => {
       await tick();
       const store = get(snsNeuronsStore);
       expect(store[mockPrincipal.toText()]).toBeUndefined();
+      expect(spyQuery).toBeCalled();
+    });
+
+    it("should not empty store if query call fails but update call succeeds", async () => {
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: mockPrincipal,
+        neurons: [mockSnsNeuron],
+        certified: true,
+      });
+      const spyQuery = vi
+        .spyOn(governanceApi, "querySnsNeurons")
+        .mockImplementation(async ({ certified }) => {
+          if (!certified) {
+            throw new Error();
+          }
+          return [neuron];
+        });
+
+      await syncSnsNeurons(mockPrincipal);
+
+      await tick();
+      const store = get(snsNeuronsStore);
+      expect(store[mockPrincipal.toText()]).not.toBeUndefined();
       expect(spyQuery).toBeCalled();
     });
   });
@@ -463,36 +439,40 @@ describe("sns-neurons-services", () => {
   });
 
   describe("updateDelay ", () => {
-    let spyOnSetDissolveDelay;
-    const nowInSeconds = 1689063315;
+    let spyOnIncreaseDissolveDelay;
+    const nowInSeconds = 10;
     const now = nowInSeconds * 1000;
-
     beforeEach(() => {
-      spyOnSetDissolveDelay = vi
-        .spyOn(governanceApi, "setDissolveDelay")
+      spyOnIncreaseDissolveDelay = vi
+        .spyOn(governanceApi, "increaseDissolveDelay")
         .mockImplementation(() => Promise.resolve());
       vi.useFakeTimers().setSystemTime(now);
-      spyOnSetDissolveDelay.mockClear();
+      spyOnIncreaseDissolveDelay.mockClear();
     });
 
-    it("should call sns api setDissolveDelay with dissolve timestamp", async () => {
-      const neuronId = fromDefinedNullable(mockSnsNeuron.id);
+    it("should call sns api setDissolveDelay with additional dissolve delay in seconds", async () => {
+      const mockNeuronWithWhenDissolvedTS = createMockSnsNeuron({
+        state: NeuronState.Dissolving,
+        whenDissolvedTimestampSeconds: BigInt(100),
+      });
+
+      const neuronId = fromDefinedNullable(mockNeuronWithWhenDissolvedTS.id);
       const identity = mockIdentity;
       const rootCanisterId = mockPrincipal;
-      const dissolveDelaySeconds = 123;
+      const delayInSeconds = 150;
       const { success } = await updateDelay({
         rootCanisterId,
-        dissolveDelaySeconds,
-        neuron: mockSnsNeuron,
+        dissolveDelaySeconds: delayInSeconds,
+        neuron: mockNeuronWithWhenDissolvedTS,
       });
 
       expect(success).toBeTruthy();
 
-      expect(spyOnSetDissolveDelay).toBeCalledWith({
+      expect(spyOnIncreaseDissolveDelay).toBeCalledWith({
         neuronId,
         identity,
         rootCanisterId,
-        dissolveTimestampSeconds: nowInSeconds + dissolveDelaySeconds,
+        additionalDissolveDelaySeconds: 60,
       });
     });
   });
@@ -507,6 +487,7 @@ describe("sns-neurons-services", () => {
         {
           rootCanisterId: mockPrincipal,
           tokenMetadata: { ...mockSnsToken, fee: 100n },
+          neuronMinimumStakeE8s: 100_000_000n,
         },
       ]);
       const spyStake = vi
@@ -542,6 +523,69 @@ describe("sns-neurons-services", () => {
 
       expect(success).toBe(false);
       expect(spyStake).not.toBeCalled();
+    });
+
+    it("should call sns api stakeNeuron if fee is 0", async () => {
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          tokenMetadata: { ...mockSnsToken, fee: 0n },
+          neuronMinimumStakeE8s: 100_000_000n,
+        },
+      ]);
+      const spyStake = vi
+        .spyOn(api, "stakeNeuron")
+        .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
+      const spyQuery = vi
+        .spyOn(governanceApi, "querySnsNeurons")
+        .mockImplementation(() => Promise.resolve([mockSnsNeuron]));
+
+      const { success } = await stakeNeuron({
+        rootCanisterId: mockPrincipal,
+        amount: 2,
+        account: mockSnsMainAccount,
+      });
+
+      expect(success).toBeTruthy();
+      expect(spyStake).toBeCalled();
+      expect(spyQuery).toBeCalled();
+      expect(loadSnsAccounts).toBeCalled();
+    });
+
+    it("should fail if staked amount is too low", async () => {
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          tokenMetadata: { ...mockSnsToken, fee: 100n },
+          neuronMinimumStakeE8s: 200_000_001n,
+        },
+      ]);
+      const spyStake = vi
+        .spyOn(api, "stakeNeuron")
+        .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
+      const spyQuery = vi
+        .spyOn(governanceApi, "querySnsNeurons")
+        .mockImplementation(() => Promise.resolve([mockSnsNeuron]));
+
+      expect(get(toastsStore)).toEqual([]);
+
+      const { success } = await stakeNeuron({
+        rootCanisterId: mockPrincipal,
+        amount: 2,
+        account: mockSnsMainAccount,
+      });
+
+      expect(success).toBe(false);
+      expect(spyStake).not.toBeCalled();
+      expect(spyQuery).not.toBeCalled();
+      expect(loadSnsAccounts).not.toBeCalled();
+
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "There was an error while staking the neuron. The caller should make sure the amount is at least the minimum stake",
+        },
+      ]);
     });
   });
 
@@ -616,7 +660,7 @@ describe("sns-neurons-services", () => {
     const owner = Principal.fromText(ownerText);
     const subaccount = new Uint8Array(32).fill(0);
     subaccount[31] = 1;
-    let spyOnDisburseMaturity: SpyInstance;
+    let spyOnDisburseMaturity: MockInstance;
 
     beforeEach(() => {
       spyOnDisburseMaturity = vi
@@ -670,6 +714,7 @@ describe("sns-neurons-services", () => {
       const wrongChecksum = "wrong";
       const destinationAddress = `${ownerText}-${wrongChecksum}.1`;
       expect(spyOnDisburseMaturity).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
       await disburseMaturity({
         rootCanisterId,
         neuronId: mockSnsNeuron.id[0],
@@ -678,10 +723,12 @@ describe("sns-neurons-services", () => {
       });
 
       expect(spyOnDisburseMaturity).not.toBeCalled();
-      expect(toastsError).toBeCalledWith({
-        err: new Error("Invalid account. Invalid checksum."),
-        labelKey: "error__sns.sns_disburse_maturity",
-      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "There was an error while disbursing the maturity of the neuron. Invalid account. Invalid checksum.",
+        },
+      ]);
     });
   });
 
@@ -757,6 +804,7 @@ describe("sns-neurons-services", () => {
       vi.spyOn(governanceApi, "querySnsNeuron").mockResolvedValue(
         mockSnsNeuron
       );
+      expect(get(toastsStore)).toEqual([]);
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
         followees: [[functionId, { followees: [followee2] }]],
@@ -769,7 +817,12 @@ describe("sns-neurons-services", () => {
       });
 
       expect(setFolloweesSpy).not.toBeCalled();
-      expect(toastsError).toBeCalled();
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "You are already following this neuron.",
+        },
+      ]);
     });
 
     it("should call sns api setFollowees when new followee is the same neuron", async () => {
@@ -796,6 +849,7 @@ describe("sns-neurons-services", () => {
 
     it("should not call sns api setFollowees when new followee does not exist", async () => {
       vi.spyOn(governanceApi, "querySnsNeuron").mockResolvedValue(undefined);
+      expect(get(toastsStore)).toEqual([]);
       const neuronIdHext = getSnsNeuronIdAsHexString(mockSnsNeuron);
       await addFollowee({
         rootCanisterId,
@@ -805,7 +859,12 @@ describe("sns-neurons-services", () => {
       });
 
       expect(setFolloweesSpy).not.toBeCalled();
-      expect(toastsError).toBeCalled();
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: `Neuron with id ${neuronIdHext} does not exist.`,
+        },
+      ]);
     });
   });
 
@@ -873,6 +932,7 @@ describe("sns-neurons-services", () => {
       vi.spyOn(governanceApi, "querySnsNeuron").mockResolvedValue(
         mockSnsNeuron
       );
+      expect(get(toastsStore)).toEqual([]);
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
         followees: [[functionId, { followees: [followee2] }]],
@@ -885,7 +945,12 @@ describe("sns-neurons-services", () => {
       });
 
       expect(setFolloweesSpy).not.toBeCalled();
-      expect(toastsError).toBeCalled();
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, you can't unfollow neuron $neuronId because you are not following it.",
+        },
+      ]);
     });
   });
 
@@ -1001,21 +1066,17 @@ describe("sns-neurons-services", () => {
 
   describe("splitNeuron", () => {
     const transactionFee = 100n;
-    let snsNeuronsStoreSpy: SpyInstance;
-    let snsTokenSymbolSelectedStoreSpy: SpyInstance;
 
     beforeEach(() => {
-      snsNeuronsStoreSpy = vi
-        .spyOn(snsNeuronsStore, "subscribe")
-        .mockImplementation(
-          buildMockSnsNeuronsStoreSubscribe({
-            rootCanisterId: mockPrincipal,
-            neurons: [mockSnsNeuron],
-          })
-        );
-      snsTokenSymbolSelectedStoreSpy = vi
-        .spyOn(snsTokenSymbolSelectedStore, "subscribe")
-        .mockImplementation(mockTokenStore);
+      vi.spyOn(snsNeuronsStore, "subscribe").mockImplementation(
+        buildMockSnsNeuronsStoreSubscribe({
+          rootCanisterId: mockPrincipal,
+          neurons: [mockSnsNeuron],
+        })
+      );
+      vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
+        mockTokenStore
+      );
 
       tokensStore.reset();
       setSnsProjects([
@@ -1024,11 +1085,6 @@ describe("sns-neurons-services", () => {
           tokenMetadata: { ...mockSnsToken, fee: transactionFee },
         },
       ]);
-    });
-
-    afterEach(() => {
-      snsNeuronsStoreSpy.mockClear();
-      snsTokenSymbolSelectedStoreSpy.mockClear();
     });
 
     it("should call api.addNeuronPermissions", async () => {
@@ -1066,6 +1122,7 @@ describe("sns-neurons-services", () => {
         .mockReset();
       const amount = 0.00001;
       const neuronMinimumStake = 2_000n;
+      expect(get(toastsStore)).toEqual([]);
       const { success } = await splitNeuron({
         neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
         rootCanisterId: mockPrincipal,
@@ -1073,7 +1130,12 @@ describe("sns-neurons-services", () => {
         neuronMinimumStake,
       });
 
-      expect(toastsError).toBeCalled();
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, the amount is too small. You need a minimum of 0.00002 TST to stake.",
+        },
+      ]);
       expect(success).toBe(false);
       expect(spySplitNeuron).not.toBeCalled();
     });

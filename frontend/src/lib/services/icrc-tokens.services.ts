@@ -1,4 +1,4 @@
-import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
+import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
 import type { Unsubscriber } from "svelte/store";
 import { loadIcrcToken } from "./icrc-accounts.services";
 

@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+print_help() {
+  cat <<-EOF
+	
+	Vote on proposals with a dfx identity.
+	
+	USAGE:
+	  # vote YES with 1 neuron on 1 proposal
+	  vote --neuron 123 --proposal 456
+	
+	  # votes NO
+	  vote --neuron 123 --proposal 456 --reject
+	
+	  # votes with all neurons of the identity
+	  vote --proposal 456
+	
+	  # votes on all open proposals
+	  vote
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=p long=proposal desc="The ID of the proposal to vote on" variable=PROPOSAL_ID default="all"
+clap.define short=n long=neuron desc="The ID of the neuron to vote with" variable=NEURON_ID default="all"
+clap.define short=r long=reject desc="Reject the proposal instead of adopting" variable=REJECT nargs=0 default="false"
+clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="snsdemo8"
+clap.define long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+VOTE_YES_ID=1
+VOTE_NO_ID=2
+
+if [[ "$REJECT" == "true" ]]; then
+  VOTE_ID="$VOTE_NO_ID"
+  MAYBE_REJECT=("--reject")
+else
+  VOTE_ID="$VOTE_YES_ID"
+  MAYBE_REJECT=()
+fi
+
+get_all_neuron_ids() {
+  "$SOURCE_DIR/get-neurons" \
+    --identity "$DFX_IDENTITY" \
+    --network "$DFX_NETWORK" \
+    --can-vote
+}
+
+if [[ "${NEURON_ID:-}" == "all" ]]; then
+  for neuron_id in $(get_all_neuron_ids); do
+    "$0" \
+      --neuron "$neuron_id" \
+      --proposal "${PROPOSAL_ID:-}" \
+      "${MAYBE_REJECT[@]}" \
+      --identity "$DFX_IDENTITY" \
+      --network "$DFX_NETWORK"
+  done
+  exit 0
+fi
+
+get_all_proposal_ids() {
+  dfx canister call nns-governance list_proposals \
+    --identity "$DFX_IDENTITY" \
+    --network "$DFX_NETWORK" \
+    '(
+      record {
+        include_reward_status = vec { };
+        omit_large_fields = opt true;
+        before_proposal = null;
+        limit = 100 : nat32;
+        exclude_topic = vec {};
+        include_all_manage_neuron_proposals = opt true;
+        include_status = vec { 1 : int32 };
+      },
+    )' | idl2json | jq -r '.proposal_info[] | .id[0].id'
+}
+
+if [[ "${PROPOSAL_ID:-}" == "all" ]]; then
+  pids=()
+  for proposal_id in $(get_all_proposal_ids); do
+    "$0" \
+      --neuron "$NEURON_ID" \
+      --proposal "$proposal_id" \
+      "${MAYBE_REJECT[@]}" \
+      --identity "$DFX_IDENTITY" \
+      --network "$DFX_NETWORK" &
+    pids+=("$!")
+  done
+  wait "${pids[@]}"
+  exit 0
+fi
+
+dfx canister call nns-governance manage_neuron \
+  --identity "$DFX_IDENTITY" \
+  --network "$DFX_NETWORK" \
+  "(
+  record {
+    id = opt record { id = $NEURON_ID : nat64 };
+    command = opt variant {
+      RegisterVote = record {
+        vote = $VOTE_ID : int32;
+        proposal = opt record { id = $PROPOSAL_ID : nat64 };
+      }
+    };
+    neuron_id_or_subaccount = null;
+  },
+)"

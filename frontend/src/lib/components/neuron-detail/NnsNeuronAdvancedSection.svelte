@@ -1,6 +1,7 @@
 <script lang="ts">
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { authStore } from "$lib/stores/auth.store";
+  import { ENABLE_NEURON_VISIBILITY } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
   import { secondsToDate, secondsToDateTime } from "$lib/utils/date.utils";
@@ -12,6 +13,7 @@
   } from "$lib/utils/neuron.utils";
   import NnsNeuronAge from "../neurons/NnsNeuronAge.svelte";
   import Hash from "../ui/Hash.svelte";
+  import NnsNeuronPublicVisibilityAction from "./NnsNeuronPublicVisibilityAction.svelte";
   import JoinCommunityFundCheckbox from "./actions/JoinCommunityFundCheckbox.svelte";
   import NnsAutoStakeMaturity from "./actions/NnsAutoStakeMaturity.svelte";
   import SplitNnsNeuronButton from "./actions/SplitNnsNeuronButton.svelte";
@@ -47,6 +49,11 @@
 <Section testId="nns-neuron-advanced-section-component">
   <h3 slot="title">{$i18n.neuron_detail.advanced_settings_title}</h3>
   <div class="content">
+    {#if $ENABLE_NEURON_VISIBILITY}
+      <div class="visibility-action-container">
+        <NnsNeuronPublicVisibilityAction {neuron} />
+      </div>
+    {/if}
     <KeyValuePair>
       <span slot="key" class="label">{$i18n.neurons.neuron_id}</span>
       <span slot="value" class="value" data-tid="neuron-id"
@@ -107,10 +114,12 @@
         </KeyValuePairInfo>
       </div>
     {/if}
+
     <NnsAutoStakeMaturity {neuron} />
     {#if canManageNFParticipation}
       <JoinCommunityFundCheckbox {neuron} />
     {/if}
+
     {#if isControllable}
       <SplitNnsNeuronButton {neuron} />
     {/if}
@@ -132,5 +141,10 @@
 
     --checkbox-padding: 0;
     --checkbox-label-order: 1;
+  }
+
+  .visibility-action-container {
+    width: 100%;
+    padding: var(--padding) 0;
   }
 </style>
