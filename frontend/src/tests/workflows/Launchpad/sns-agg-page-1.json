@@ -312,7 +312,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98198708392782460,
+    "icrc1_total_supply": 98198900638974340,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -371,8 +371,8 @@
       "sns_tokens_per_icp": 343.7032470703125,
       "buyer_total_icp_e8s": 65463447851118,
       "cf_participant_count": 149,
-      "neurons_fund_participation_icp_e8s": null,
-      "direct_participation_icp_e8s": null,
+      "neurons_fund_participation_icp_e8s": 39981225021946,
+      "direct_participation_icp_e8s": 25482222829172,
       "direct_participant_count": 351,
       "cf_neuron_count": 187
     },
@@ -407,7 +407,8 @@
         "j474s-uqaaa-aaaap-abf6q-cai",
         "7p3gx-jaaaa-aaaal-acbda-cai",
         "awcae-maaaa-aaaam-abmyq-cai",
-        "d6dgo-aaaaa-aaaap-akpqq-cai"
+        "d6dgo-aaaaa-aaaap-akpqq-cai",
+        "4wk3i-nyaaa-aaaam-qbiiq-cai"
       ],
       "archives": ["r6akw-vqaaa-aaaaq-aabsa-cai"]
     },
@@ -645,6 +646,19 @@
           }
         },
         {
+          "id": 1008,
+          "name": "BOOM Launchpad Swap canister function mint_pow_supply",
+          "description": "Call mint_pow_supply function to mint Proof of Work mining event token supply to Proof of Work Minter canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "d6dgo-aaaaa-aaaap-akpqq-cai",
+              "target_canister_id": "d6dgo-aaaaa-aaaap-akpqq-cai",
+              "validator_method_name": "validate_mint_pow_supply",
+              "target_method_name": "mint_pow_supply"
+            }
+          }
+        },
+        {
           "id": 1010,
           "name": "Game Launcher asset canister function commit_proposed_batch",
           "description": "Call commit_proposed_batch function to commit changes to upgrade Game Launcher asset canister",
@@ -821,7 +835,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100704741575921870,
+    "icrc1_total_supply": 100735776771322140,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -876,8 +890,8 @@
       "sns_tokens_per_icp": 978.0310668945312,
       "buyer_total_icp_e8s": 40898495383898,
       "cf_participant_count": 111,
-      "neurons_fund_participation_icp_e8s": null,
-      "direct_participation_icp_e8s": null,
+      "neurons_fund_participation_icp_e8s": 23818137895345,
+      "direct_participation_icp_e8s": 17080357488553,
       "direct_participant_count": 731,
       "cf_neuron_count": 145
     },
@@ -1516,7 +1530,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50339306997238250,
+    "icrc1_total_supply": 50346916559562790,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1572,8 +1586,8 @@
       "sns_tokens_per_icp": 186.87535095214844,
       "buyer_total_icp_e8s": 60200554902099,
       "cf_participant_count": 165,
-      "neurons_fund_participation_icp_e8s": null,
-      "direct_participation_icp_e8s": null,
+      "neurons_fund_participation_icp_e8s": 34979623897742,
+      "direct_participation_icp_e8s": 25220931004357,
       "direct_participant_count": 344,
       "cf_neuron_count": 206
     },
@@ -1831,490 +1845,7 @@
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
           "sns_ledger_canister_id": "rffwt-piaaa-aaaaq-aabqq-cai",
           "neurons_fund_participation_constraints": null,
-          "neurons_fund_participants": {
-            "cf_participants": [
-              {
-                "controller": null,
-                "hotkey_principal": "2rixd-sr6c5-hkwej-ukpj6-2o4ov-ijyy7-n752j-4sf4o-4htzv-r7jzs-sqe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 13566927722377878000,
-                    "amount_icp_e8s": 130468975
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "2xnq2-d3onx-x6irj-qz2ag-w52bi-iett5-uk5jp-gvoeo-frbf5-2hrtv-cqe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 12334166125915505000,
-                    "amount_icp_e8s": 197982278
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "3ty73-ykirl-b5ia4-dllwd-mc7gn-kd6zf-pvvtw-ddt3u-onf2r-m54ce-lqe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 15011532945690833000,
-                    "amount_icp_e8s": 154282197
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "4qwmx-2gpwj-gzp7n-pp7if-zmlky-wwi72-blvhr-en56l-hudfc-4tqp3-zqe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 3699891520180225500,
-                    "amount_icp_e8s": 105305157
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "6vopw-owdui-i5ff3-xjeki-dc5on-3htcs-skgck-jetkh-4v7sn-2qud2-pae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 13026850397162486000,
-                    "amount_icp_e8s": 145693109
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "amatj-baend-pdd4b-tantp-b3heu-uvusn-abmj5-hkhf2-xlvfm-jy6xp-uae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 17975038099807255000,
-                    "amount_icp_e8s": 1171302892
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "bgmtq-s5ra3-l4ftn-zmi5f-wg2o4-zolb4-pyyez-hyttd-7rvuw-r3gyl-4ae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 7938858946561142000,
-                    "amount_icp_e8s": 1222631620
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "bqjsc-ygbpe-gtqrs-nq3mf-d4iot-n2m7r-cfld2-iynvs-ls5qf-ffu2w-vqe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 2504480713879988700,
-                    "amount_icp_e8s": 150128501782
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 2878461234890177000,
-                    "amount_icp_e8s": 150128616220
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 3363957719032828400,
-                    "amount_icp_e8s": 150128521042
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 3928908328151602700,
-                    "amount_icp_e8s": 150595256742
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 9901651796743560000,
-                    "amount_icp_e8s": 150656886820
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 11071803212533250000,
-                    "amount_icp_e8s": 150128650551
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 12976690934798137000,
-                    "amount_icp_e8s": 150128597799
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 13153673844000453000,
-                    "amount_icp_e8s": 150130337319
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "byfqe-a6vvd-vxehg-k5hi3-ij3v3-7n6qv-smmxm-v3vg7-mye6g-thgrs-kae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 8049406915244895000,
-                    "amount_icp_e8s": 1425225386
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "c4dgi-zb67y-vgmq3-gpm55-szzjo-mc3kt-jjov3-yytoy-ltq6t-ptyyv-lqe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 11083087099833900000,
-                    "amount_icp_e8s": 106987558
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 15956582264088936000,
-                    "amount_icp_e8s": 651610678
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "d6bux-wmarh-t3eee-dsp2z-kvh6t-pimjq-s7gll-lzjtc-663t5-it7h5-yae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 11784998591443650000,
-                    "amount_icp_e8s": 104825662
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "d6pn6-d32kv-lbaoo-kcxxn-rgljj-6nbot-sunrr-jrstf-m3nua-qrral-qae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 9778540899787258000,
-                    "amount_icp_e8s": 820447910
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "dhusf-pil4u-7e7v4-whsae-gy4tv-dcfob-gxz6m-gq7k5-pxen3-qsu5s-eqe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 14761547506790228000,
-                    "amount_icp_e8s": 415849540
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "dk77b-z5q54-cqk3s-rrxa5-byor2-udjpq-5sgko-bcxsu-7kmiq-vlosx-sae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 13563066032962700000,
-                    "amount_icp_e8s": 384790604
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "etynm-5engo-23sxo-jlss2-7jnkl-zxqv2-3s3s7-w7kpt-uaqnb-ckg6m-rae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 15150883666369389000,
-                    "amount_icp_e8s": 1691231934
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "gmk4q-vviqd-2vtq3-qmkcv-lbji5-pg2ca-g4rnn-r5cid-7rvm6-yxurj-pqe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 13483663432099512000,
-                    "amount_icp_e8s": 272026681
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "hqfya-v75jf-zapzr-v6bs4-pfvzf-kstkc-wepop-qfyl3-wv3vt-4nftn-oae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 11467699673977594000,
-                    "amount_icp_e8s": 423566766
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 16774420619260834000,
-                    "amount_icp_e8s": 233891037
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "hrpgd-p2dys-gd5tb-krk4d-nswtt-un5h3-x6btw-j4sdm-wvscw-o2yej-iqe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 1242658343111789300,
-                    "amount_icp_e8s": 144281049797
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 4897496680725431000,
-                    "amount_icp_e8s": 144281002269
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 6910740987914010000,
-                    "amount_icp_e8s": 144281083094
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 7932924058197673000,
-                    "amount_icp_e8s": 144281017575
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 10758769332711887000,
-                    "amount_icp_e8s": 144281975203
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 11516097501595611000,
-                    "amount_icp_e8s": 144280206291
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 14046564505849618000,
-                    "amount_icp_e8s": 144281946471
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 16300745642354040000,
-                    "amount_icp_e8s": 144280187226
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "j2tnr-f5tmm-afnyl-762n7-o272x-ji2xi-bcpld-ihimy-fw52d-2zqov-xae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 5944070935127278000,
-                    "amount_icp_e8s": 135137836
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "jaeq4-2jsak-axs4w-c5vft-vcmuz-zk2jr-tivwj-qquon-yctzw-ffrje-yqe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 16055835907877358000,
-                    "amount_icp_e8s": 166058527
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "k24kl-ozdhe-47ebv-3ikez-yh5kb-c57ou-lsuwf-ldrib-h2jfu-mqjnp-2qe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 3035116862528258000,
-                    "amount_icp_e8s": 184743409
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "kiwgh-ukhca-7rr2l-vxvrx-23mn5-a24pn-b42ly-f55n3-wm5e2-xnoiz-aqe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 16063193423312542000,
-                    "amount_icp_e8s": 231186834
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "l6etj-xc4xh-wf3gz-r773b-s2oha-xscp7-bbo5g-grv2t-whvr7-cwmvm-mqe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 1160176308921370600,
-                    "amount_icp_e8s": 133120680
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "lsyd6-e7avj-lnf7q-fqga7-nb3x4-gum2h-fajff-4urd5-gve2l-tppm2-7ae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 15870086969632063000,
-                    "amount_icp_e8s": 1923749235878
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "lvsje-wfazq-xzrha-quuz7-quwur-67jl7-nbb7v-5llqf-vclab-slswv-rae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 7840257629152634000,
-                    "amount_icp_e8s": 534171912
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "pqght-cm7pc-q3h4w-7raxx-5z6fx-smio3-m3mz6-2bydy-7ldor-6maon-eae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 5504697524318487000,
-                    "amount_icp_e8s": 139261979
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "s7zrw-ihhhp-bi7cu-lz5uz-lkltf-ctuzp-jcgbn-dldjd-h6lkv-4cp4h-nae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 10656995968046604000,
-                    "amount_icp_e8s": 992536243
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "tax4q-3y6oa-ykj5u-wg6um-6uwiy-nrfvt-gzfsg-vh4vl-nvzfn-jybcc-mqe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 15232784191673766000,
-                    "amount_icp_e8s": 947023568
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "tip3a-m7ftw-edteu-2rcbe-6bxwf-hrogu-fpi3f-arlmu-277wl-trfst-sae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 7672559291963316000,
-                    "amount_icp_e8s": 166500874
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "vflfz-xlfyj-fxenl-yb7wy-jatmr-szhkp-4fsam-ov3o4-2mihb-emnbi-5ae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 2065739200102969000,
-                    "amount_icp_e8s": 165095420
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "xpytn-tb72l-zar2h-umv3j-wpiyz-aoc3g-gxn7s-n4wcr-oap4c-sm6yf-bae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 8789748484325812000,
-                    "amount_icp_e8s": 135367766
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "yjjc4-kc4ge-io5mm-m5kye-pcm2v-qwgci-yn7zh-tyj6w-ur33e-ncsmx-xae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 8769572786406259000,
-                    "amount_icp_e8s": 1697020317936
-                  }
-                ]
-              }
-            ]
-          },
+          "neurons_fund_participants": null,
           "should_auto_finalize": true,
           "max_participant_icp_e8s": 5000000000000,
           "sns_governance_canister_id": "rceqh-cqaaa-aaaaq-aabqa-cai",
@@ -2388,7 +1919,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9961206656635820,
+    "icrc1_total_supply": 9961345125088024,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2432,490 +1963,7 @@
         "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
         "sns_ledger_canister_id": "rffwt-piaaa-aaaaq-aabqq-cai",
         "neurons_fund_participation_constraints": null,
-        "neurons_fund_participants": {
-          "cf_participants": [
-            {
-              "controller": null,
-              "hotkey_principal": "2rixd-sr6c5-hkwej-ukpj6-2o4ov-ijyy7-n752j-4sf4o-4htzv-r7jzs-sqe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 13566927722377878000,
-                  "amount_icp_e8s": 130468975
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "2xnq2-d3onx-x6irj-qz2ag-w52bi-iett5-uk5jp-gvoeo-frbf5-2hrtv-cqe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 12334166125915505000,
-                  "amount_icp_e8s": 197982278
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "3ty73-ykirl-b5ia4-dllwd-mc7gn-kd6zf-pvvtw-ddt3u-onf2r-m54ce-lqe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 15011532945690833000,
-                  "amount_icp_e8s": 154282197
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "4qwmx-2gpwj-gzp7n-pp7if-zmlky-wwi72-blvhr-en56l-hudfc-4tqp3-zqe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 3699891520180225500,
-                  "amount_icp_e8s": 105305157
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "6vopw-owdui-i5ff3-xjeki-dc5on-3htcs-skgck-jetkh-4v7sn-2qud2-pae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 13026850397162486000,
-                  "amount_icp_e8s": 145693109
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "amatj-baend-pdd4b-tantp-b3heu-uvusn-abmj5-hkhf2-xlvfm-jy6xp-uae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 17975038099807255000,
-                  "amount_icp_e8s": 1171302892
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "bgmtq-s5ra3-l4ftn-zmi5f-wg2o4-zolb4-pyyez-hyttd-7rvuw-r3gyl-4ae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 7938858946561142000,
-                  "amount_icp_e8s": 1222631620
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "bqjsc-ygbpe-gtqrs-nq3mf-d4iot-n2m7r-cfld2-iynvs-ls5qf-ffu2w-vqe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 2504480713879988700,
-                  "amount_icp_e8s": 150128501782
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 2878461234890177000,
-                  "amount_icp_e8s": 150128616220
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 3363957719032828400,
-                  "amount_icp_e8s": 150128521042
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 3928908328151602700,
-                  "amount_icp_e8s": 150595256742
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 9901651796743560000,
-                  "amount_icp_e8s": 150656886820
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 11071803212533250000,
-                  "amount_icp_e8s": 150128650551
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 12976690934798137000,
-                  "amount_icp_e8s": 150128597799
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 13153673844000453000,
-                  "amount_icp_e8s": 150130337319
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "byfqe-a6vvd-vxehg-k5hi3-ij3v3-7n6qv-smmxm-v3vg7-mye6g-thgrs-kae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 8049406915244895000,
-                  "amount_icp_e8s": 1425225386
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "c4dgi-zb67y-vgmq3-gpm55-szzjo-mc3kt-jjov3-yytoy-ltq6t-ptyyv-lqe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 11083087099833900000,
-                  "amount_icp_e8s": 106987558
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 15956582264088936000,
-                  "amount_icp_e8s": 651610678
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "d6bux-wmarh-t3eee-dsp2z-kvh6t-pimjq-s7gll-lzjtc-663t5-it7h5-yae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 11784998591443650000,
-                  "amount_icp_e8s": 104825662
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "d6pn6-d32kv-lbaoo-kcxxn-rgljj-6nbot-sunrr-jrstf-m3nua-qrral-qae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 9778540899787258000,
-                  "amount_icp_e8s": 820447910
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "dhusf-pil4u-7e7v4-whsae-gy4tv-dcfob-gxz6m-gq7k5-pxen3-qsu5s-eqe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 14761547506790228000,
-                  "amount_icp_e8s": 415849540
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "dk77b-z5q54-cqk3s-rrxa5-byor2-udjpq-5sgko-bcxsu-7kmiq-vlosx-sae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 13563066032962700000,
-                  "amount_icp_e8s": 384790604
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "etynm-5engo-23sxo-jlss2-7jnkl-zxqv2-3s3s7-w7kpt-uaqnb-ckg6m-rae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 15150883666369389000,
-                  "amount_icp_e8s": 1691231934
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "gmk4q-vviqd-2vtq3-qmkcv-lbji5-pg2ca-g4rnn-r5cid-7rvm6-yxurj-pqe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 13483663432099512000,
-                  "amount_icp_e8s": 272026681
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "hqfya-v75jf-zapzr-v6bs4-pfvzf-kstkc-wepop-qfyl3-wv3vt-4nftn-oae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 11467699673977594000,
-                  "amount_icp_e8s": 423566766
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 16774420619260834000,
-                  "amount_icp_e8s": 233891037
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "hrpgd-p2dys-gd5tb-krk4d-nswtt-un5h3-x6btw-j4sdm-wvscw-o2yej-iqe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 1242658343111789300,
-                  "amount_icp_e8s": 144281049797
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 4897496680725431000,
-                  "amount_icp_e8s": 144281002269
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 6910740987914010000,
-                  "amount_icp_e8s": 144281083094
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 7932924058197673000,
-                  "amount_icp_e8s": 144281017575
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 10758769332711887000,
-                  "amount_icp_e8s": 144281975203
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 11516097501595611000,
-                  "amount_icp_e8s": 144280206291
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 14046564505849618000,
-                  "amount_icp_e8s": 144281946471
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 16300745642354040000,
-                  "amount_icp_e8s": 144280187226
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "j2tnr-f5tmm-afnyl-762n7-o272x-ji2xi-bcpld-ihimy-fw52d-2zqov-xae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 5944070935127278000,
-                  "amount_icp_e8s": 135137836
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "jaeq4-2jsak-axs4w-c5vft-vcmuz-zk2jr-tivwj-qquon-yctzw-ffrje-yqe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 16055835907877358000,
-                  "amount_icp_e8s": 166058527
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "k24kl-ozdhe-47ebv-3ikez-yh5kb-c57ou-lsuwf-ldrib-h2jfu-mqjnp-2qe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 3035116862528258000,
-                  "amount_icp_e8s": 184743409
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "kiwgh-ukhca-7rr2l-vxvrx-23mn5-a24pn-b42ly-f55n3-wm5e2-xnoiz-aqe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 16063193423312542000,
-                  "amount_icp_e8s": 231186834
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "l6etj-xc4xh-wf3gz-r773b-s2oha-xscp7-bbo5g-grv2t-whvr7-cwmvm-mqe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 1160176308921370600,
-                  "amount_icp_e8s": 133120680
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "lsyd6-e7avj-lnf7q-fqga7-nb3x4-gum2h-fajff-4urd5-gve2l-tppm2-7ae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 15870086969632063000,
-                  "amount_icp_e8s": 1923749235878
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "lvsje-wfazq-xzrha-quuz7-quwur-67jl7-nbb7v-5llqf-vclab-slswv-rae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 7840257629152634000,
-                  "amount_icp_e8s": 534171912
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "pqght-cm7pc-q3h4w-7raxx-5z6fx-smio3-m3mz6-2bydy-7ldor-6maon-eae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 5504697524318487000,
-                  "amount_icp_e8s": 139261979
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "s7zrw-ihhhp-bi7cu-lz5uz-lkltf-ctuzp-jcgbn-dldjd-h6lkv-4cp4h-nae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 10656995968046604000,
-                  "amount_icp_e8s": 992536243
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "tax4q-3y6oa-ykj5u-wg6um-6uwiy-nrfvt-gzfsg-vh4vl-nvzfn-jybcc-mqe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 15232784191673766000,
-                  "amount_icp_e8s": 947023568
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "tip3a-m7ftw-edteu-2rcbe-6bxwf-hrogu-fpi3f-arlmu-277wl-trfst-sae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 7672559291963316000,
-                  "amount_icp_e8s": 166500874
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "vflfz-xlfyj-fxenl-yb7wy-jatmr-szhkp-4fsam-ov3o4-2mihb-emnbi-5ae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 2065739200102969000,
-                  "amount_icp_e8s": 165095420
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "xpytn-tb72l-zar2h-umv3j-wpiyz-aoc3g-gxn7s-n4wcr-oap4c-sm6yf-bae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 8789748484325812000,
-                  "amount_icp_e8s": 135367766
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "yjjc4-kc4ge-io5mm-m5kye-pcm2v-qwgci-yn7zh-tyj6w-ur33e-ncsmx-xae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 8769572786406259000,
-                  "amount_icp_e8s": 1697020317936
-                }
-              ]
-            }
-          ]
-        },
+        "neurons_fund_participants": null,
         "should_auto_finalize": true,
         "max_participant_icp_e8s": 5000000000000,
         "sns_governance_canister_id": "rceqh-cqaaa-aaaaq-aabqa-cai",
@@ -2931,8 +1979,8 @@
       "sns_tokens_per_icp": 106.66666412353516,
       "buyer_total_icp_e8s": 15000000000000,
       "cf_participant_count": 32,
-      "neurons_fund_participation_icp_e8s": null,
-      "direct_participation_icp_e8s": null,
+      "neurons_fund_participation_icp_e8s": 5990631715047,
+      "direct_participation_icp_e8s": 9009368284953,
       "direct_participant_count": 359,
       "cf_neuron_count": 48
     },
@@ -3099,6 +2147,32 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 1010,
+          "name": "nuance_assets_commit_proposed_batch",
+          "description": "Commit frontend canister assets via proposal",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "exwqn-uaaaa-aaaaf-qaeaa-cai",
+              "target_canister_id": "exwqn-uaaaa-aaaaf-qaeaa-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
+            }
+          }
+        },
+        {
+          "id": 1011,
+          "name": "nuance_assets_revoke_permission",
+          "description": "revoke_permission can revoke Prepare, ManagePermissions, and Commit",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "exwqn-uaaaa-aaaaf-qaeaa-cai",
+              "target_canister_id": "exwqn-uaaaa-aaaaf-qaeaa-cai",
+              "validator_method_name": "validate_revoke_permission",
+              "target_method_name": "revoke_permission"
+            }
+          }
         }
       ]
     },
@@ -3164,226 +2238,7 @@
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
           "sns_ledger_canister_id": "rxdbk-dyaaa-aaaaq-aabtq-cai",
           "neurons_fund_participation_constraints": null,
-          "neurons_fund_participants": {
-            "cf_participants": [
-              {
-                "controller": null,
-                "hotkey_principal": "amatj-baend-pdd4b-tantp-b3heu-uvusn-abmj5-hkhf2-xlvfm-jy6xp-uae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 17975038099807255000,
-                    "amount_icp_e8s": 2029808825
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "bgmtq-s5ra3-l4ftn-zmi5f-wg2o4-zolb4-pyyez-hyttd-7rvuw-r3gyl-4ae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 7938858946561142000,
-                    "amount_icp_e8s": 2063009462
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "bqjsc-ygbpe-gtqrs-nq3mf-d4iot-n2m7r-cfld2-iynvs-ls5qf-ffu2w-vqe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 2504480713879988700,
-                    "amount_icp_e8s": 249387966609
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 2878461234890177000,
-                    "amount_icp_e8s": 249388156587
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 3363957719032828400,
-                    "amount_icp_e8s": 249387998581
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 3928908328151602700,
-                    "amount_icp_e8s": 250156674052
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 9901651796743560000,
-                    "amount_icp_e8s": 250258085637
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 11071803212533250000,
-                    "amount_icp_e8s": 249388213580
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 12976690934798137000,
-                    "amount_icp_e8s": 249388126005
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 13153673844000453000,
-                    "amount_icp_e8s": 249390989377
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "byfqe-a6vvd-vxehg-k5hi3-ij3v3-7n6qv-smmxm-v3vg7-mye6g-thgrs-kae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 8049406915244895000,
-                    "amount_icp_e8s": 2388776587
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "c4dgi-zb67y-vgmq3-gpm55-szzjo-mc3kt-jjov3-yytoy-ltq6t-ptyyv-lqe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 15956582264088936000,
-                    "amount_icp_e8s": 1088347146
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "etynm-5engo-23sxo-jlss2-7jnkl-zxqv2-3s3s7-w7kpt-uaqnb-ckg6m-rae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 15150883666369389000,
-                    "amount_icp_e8s": 2858269506
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "hrpgd-p2dys-gd5tb-krk4d-nswtt-un5h3-x6btw-j4sdm-wvscw-o2yej-iqe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 1242658343111789300,
-                    "amount_icp_e8s": 239758758749
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 4897496680725431000,
-                    "amount_icp_e8s": 239758679820
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 6910740987914010000,
-                    "amount_icp_e8s": 239758814044
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 7932924058197673000,
-                    "amount_icp_e8s": 239758705238
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 10758769332711887000,
-                    "amount_icp_e8s": 239760283771
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 11516097501595611000,
-                    "amount_icp_e8s": 239757369734
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 14046564505849618000,
-                    "amount_icp_e8s": 239760236057
-                  },
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 16300745642354040000,
-                    "amount_icp_e8s": 239757338073
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "lsyd6-e7avj-lnf7q-fqga7-nb3x4-gum2h-fajff-4urd5-gve2l-tppm2-7ae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 15870086969632063000,
-                    "amount_icp_e8s": 3212619049127
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "s7zrw-ihhhp-bi7cu-lz5uz-lkltf-ctuzp-jcgbn-dldjd-h6lkv-4cp4h-nae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 10656995968046604000,
-                    "amount_icp_e8s": 1675015379
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "tax4q-3y6oa-ykj5u-wg6um-6uwiy-nrfvt-gzfsg-vh4vl-nvzfn-jybcc-mqe",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 15232784191673766000,
-                    "amount_icp_e8s": 1678801180
-                  }
-                ]
-              },
-              {
-                "controller": null,
-                "hotkey_principal": "yjjc4-kc4ge-io5mm-m5kye-pcm2v-qwgci-yn7zh-tyj6w-ur33e-ncsmx-xae",
-                "cf_neurons": [
-                  {
-                    "has_created_neuron_recipes": null,
-                    "hotkeys": null,
-                    "nns_neuron_id": 8769572786406259000,
-                    "amount_icp_e8s": 2834538351801
-                  }
-                ]
-              }
-            ]
-          },
+          "neurons_fund_participants": null,
           "should_auto_finalize": true,
           "max_participant_icp_e8s": 5000000000000,
           "sns_governance_canister_id": "rqch6-oaaaa-aaaaq-aabta-cai",
@@ -3457,7 +2312,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10072404416738966,
+    "icrc1_total_supply": 10072440371198292,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -3503,226 +2358,7 @@
         "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
         "sns_ledger_canister_id": "rxdbk-dyaaa-aaaaq-aabtq-cai",
         "neurons_fund_participation_constraints": null,
-        "neurons_fund_participants": {
-          "cf_participants": [
-            {
-              "controller": null,
-              "hotkey_principal": "amatj-baend-pdd4b-tantp-b3heu-uvusn-abmj5-hkhf2-xlvfm-jy6xp-uae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 17975038099807255000,
-                  "amount_icp_e8s": 2029808825
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "bgmtq-s5ra3-l4ftn-zmi5f-wg2o4-zolb4-pyyez-hyttd-7rvuw-r3gyl-4ae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 7938858946561142000,
-                  "amount_icp_e8s": 2063009462
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "bqjsc-ygbpe-gtqrs-nq3mf-d4iot-n2m7r-cfld2-iynvs-ls5qf-ffu2w-vqe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 2504480713879988700,
-                  "amount_icp_e8s": 249387966609
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 2878461234890177000,
-                  "amount_icp_e8s": 249388156587
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 3363957719032828400,
-                  "amount_icp_e8s": 249387998581
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 3928908328151602700,
-                  "amount_icp_e8s": 250156674052
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 9901651796743560000,
-                  "amount_icp_e8s": 250258085637
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 11071803212533250000,
-                  "amount_icp_e8s": 249388213580
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 12976690934798137000,
-                  "amount_icp_e8s": 249388126005
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 13153673844000453000,
-                  "amount_icp_e8s": 249390989377
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "byfqe-a6vvd-vxehg-k5hi3-ij3v3-7n6qv-smmxm-v3vg7-mye6g-thgrs-kae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 8049406915244895000,
-                  "amount_icp_e8s": 2388776587
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "c4dgi-zb67y-vgmq3-gpm55-szzjo-mc3kt-jjov3-yytoy-ltq6t-ptyyv-lqe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 15956582264088936000,
-                  "amount_icp_e8s": 1088347146
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "etynm-5engo-23sxo-jlss2-7jnkl-zxqv2-3s3s7-w7kpt-uaqnb-ckg6m-rae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 15150883666369389000,
-                  "amount_icp_e8s": 2858269506
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "hrpgd-p2dys-gd5tb-krk4d-nswtt-un5h3-x6btw-j4sdm-wvscw-o2yej-iqe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 1242658343111789300,
-                  "amount_icp_e8s": 239758758749
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 4897496680725431000,
-                  "amount_icp_e8s": 239758679820
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 6910740987914010000,
-                  "amount_icp_e8s": 239758814044
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 7932924058197673000,
-                  "amount_icp_e8s": 239758705238
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 10758769332711887000,
-                  "amount_icp_e8s": 239760283771
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 11516097501595611000,
-                  "amount_icp_e8s": 239757369734
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 14046564505849618000,
-                  "amount_icp_e8s": 239760236057
-                },
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 16300745642354040000,
-                  "amount_icp_e8s": 239757338073
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "lsyd6-e7avj-lnf7q-fqga7-nb3x4-gum2h-fajff-4urd5-gve2l-tppm2-7ae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 15870086969632063000,
-                  "amount_icp_e8s": 3212619049127
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "s7zrw-ihhhp-bi7cu-lz5uz-lkltf-ctuzp-jcgbn-dldjd-h6lkv-4cp4h-nae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 10656995968046604000,
-                  "amount_icp_e8s": 1675015379
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "tax4q-3y6oa-ykj5u-wg6um-6uwiy-nrfvt-gzfsg-vh4vl-nvzfn-jybcc-mqe",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 15232784191673766000,
-                  "amount_icp_e8s": 1678801180
-                }
-              ]
-            },
-            {
-              "controller": null,
-              "hotkey_principal": "yjjc4-kc4ge-io5mm-m5kye-pcm2v-qwgci-yn7zh-tyj6w-ur33e-ncsmx-xae",
-              "cf_neurons": [
-                {
-                  "has_created_neuron_recipes": null,
-                  "hotkeys": null,
-                  "nns_neuron_id": 8769572786406259000,
-                  "amount_icp_e8s": 2834538351801
-                }
-              ]
-            }
-          ]
-        },
+        "neurons_fund_participants": null,
         "should_auto_finalize": true,
         "max_participant_icp_e8s": 5000000000000,
         "sns_governance_canister_id": "rqch6-oaaaa-aaaaq-aabta-cai",
@@ -3738,8 +2374,8 @@
       "sns_tokens_per_icp": 114.32588958740234,
       "buyer_total_icp_e8s": 26240775503592,
       "cf_participant_count": 11,
-      "neurons_fund_participation_icp_e8s": null,
-      "direct_participation_icp_e8s": null,
+      "neurons_fund_participation_icp_e8s": 9975755824927,
+      "direct_participation_icp_e8s": 16265019678665,
       "direct_participant_count": 424,
       "cf_neuron_count": 25
     },
@@ -4536,7 +3172,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12656949963101160,
+    "icrc1_total_supply": 12657356410860096,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5795,7 +4431,9 @@
         "iyehc-lqaaa-aaaap-ab25a-cai",
         "j4jiq-sqaaa-aaaap-ab23a-cai",
         "bojx2-iaaaa-aaaag-ab3jq-cai",
-        "atslz-hiaaa-aaaam-acq6q-cai"
+        "atslz-hiaaa-aaaam-acq6q-cai",
+        "6c7su-kiaaa-aaaar-qaira-cai",
+        "oo6x4-xiaaa-aaaap-abrza-cai"
       ],
       "archives": ["fgzua-6iaaa-aaaaq-aacgq-cai"]
     },
@@ -6429,7 +5067,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99784049725334100,
+    "icrc1_total_supply": 99770341326002380,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,
