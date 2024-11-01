@@ -19,7 +19,6 @@ import {
   splitNeuron,
   stakeMaturity,
   stakeNeuron,
-  stakeNeuronIcrc1,
   startDissolving,
   stopDissolving,
 } from "$lib/api/governance.api";
@@ -94,37 +93,6 @@ describe("neurons-api", () => {
         fee,
       })
     );
-  });
-
-  it("stakeNeuronIcrc1 creates a new neuron", async () => {
-    vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
-      mock<LedgerCanister>()
-    );
-
-    expect(mockGovernanceCanister.stakeNeuronIcrc1).not.toBeCalled();
-
-    const stake = 20_000_000n;
-    const controller = mockIdentity.getPrincipal();
-    const fromSubAccount = new Uint8Array([5, 6, 7]);
-
-    await stakeNeuronIcrc1({
-      stake,
-      controller,
-      ledgerCanisterIdentity: mockIdentity,
-      identity: mockIdentity,
-      fromSubAccount,
-    });
-
-    expect(mockGovernanceCanister.stakeNeuronIcrc1).toBeCalledTimes(1);
-    expect(mockGovernanceCanister.stakeNeuronIcrc1).toBeCalledWith(
-      expect.objectContaining({
-        stake,
-        principal: controller,
-        fromSubAccount,
-      })
-    );
-
-    expect(mockGovernanceCanister.stakeNeuron).not.toBeCalled();
   });
 
   it("queryNeurons fetches neurons", async () => {
