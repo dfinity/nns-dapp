@@ -112,7 +112,6 @@ inject_canister_id() {
     # Raw may be inserted, except on localhost.
     local RAW_PART
     RAW_PART="${DFX_RAW:+.raw}"
-    [[ "$DFX_NETWORK" != "local" ]] || RAW_PART=""
     printf "%s\n" "$root_url" | sed -E "s,^(https?://)?,&${CANISTER_ID}${RAW_PART:-}.,g"
     ;;
   *) printf "%s\n" "$root_url" ;;
