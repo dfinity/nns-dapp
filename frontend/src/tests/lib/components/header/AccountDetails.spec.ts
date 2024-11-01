@@ -7,18 +7,23 @@ import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("AccountDetails", () => {
-  const renderComponent = () => {
-    const { container } = render(AccountDetails);
-    return AccountDetailsPo.under(new JestPageObjectElement(container));
-  };
-  it("should display main ICP account ID if available", async () => {
-    const accountIdForTesting = "82376428374628347628347263847263847623";
+  const accountIdForTesting = "82376428374628347628347263847263847623";
+
+  beforeEach(() => {
     setAccountsForTesting({
       main: {
         ...mockMainAccount,
         identifier: accountIdForTesting,
       },
     });
+  });
+
+  const renderComponent = () => {
+    const { container } = render(AccountDetails);
+    return AccountDetailsPo.under(new JestPageObjectElement(container));
+  };
+
+  it("should display main ICP account ID if available", async () => {
     const accountDetailsPo = renderComponent();
 
     const mainAccountId = await accountDetailsPo.getMainIcpAccountId();
