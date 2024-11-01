@@ -62,7 +62,7 @@ describe("icpAccountsStore", () => {
 
   beforeEach(() => {
     overrideFeatureFlagsStore.reset();
-    icpAccountDetailsStore.reset();
+    icpAccountDetailsStore.resetForTesting();
     icpAccountBalancesStore.resetForTesting();
   });
 
@@ -75,7 +75,7 @@ describe("icpAccountsStore", () => {
   });
 
   it("should derive main account and balance", () => {
-    icpAccountDetailsStore.set({
+    icpAccountDetailsStore.setForTesting({
       accountDetails: {
         ...accountDetails,
         sub_accounts: [],
@@ -103,7 +103,7 @@ describe("icpAccountsStore", () => {
   });
 
   it("should derive all accounts and balances", () => {
-    icpAccountDetailsStore.set(accountDetailsData);
+    icpAccountDetailsStore.setForTesting(accountDetailsData);
 
     setBalance({
       accountIdentifier: mainAccountIdentifier,

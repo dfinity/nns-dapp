@@ -33,7 +33,7 @@ describe("icpAccountDetailsStore", () => {
   };
 
   beforeEach(() => {
-    icpAccountDetailsStore.reset();
+    icpAccountDetailsStore.resetForTesting();
   });
 
   it("should be initialized to undefined", () => {
@@ -41,16 +41,59 @@ describe("icpAccountDetailsStore", () => {
   });
 
   it("should set data", () => {
-    icpAccountDetailsStore.set(accountDetailsData);
+    const singleMutationStore = icpAccountDetailsStore.getSingleMutationStore();
+
+    expect(get(icpAccountDetailsStore)).toBeUndefined();
+    singleMutationStore.set({ data: accountDetailsData, certified: true });
 
     expect(get(icpAccountDetailsStore)).toEqual(accountDetailsData);
   });
 
   it("should reset data", () => {
-    icpAccountDetailsStore.set(accountDetailsData);
+    icpAccountDetailsStore.setForTesting(accountDetailsData);
 
     expect(get(icpAccountDetailsStore)).toBeDefined();
-    icpAccountDetailsStore.reset();
+    icpAccountDetailsStore.resetForTesting();
     expect(get(icpAccountDetailsStore)).toBeUndefined();
+  });
+
+  it("should not override new uncertified data with old certified data", () => {
+    const oldDetails = accountDetails;
+    const newDetails = {
+      ...accountDetails,
+      principal: principal(11),
+    };
+
+    const mutation1 = icpAccountDetailsStore.getSingleMutationStore();
+    mutation1.set({
+      data: { accountDetails: oldDetails, certified: false },
+      certified: false,
+    });
+
+    expect(get(icpAccountDetailsStore)).toEqual({
+      accountDetails: oldDetails,
+      certified: false,
+    });
+
+    const mutation2 = icpAccountDetailsStore.getSingleMutationStore();
+    mutation2.set({
+      data: { accountDetails: newDetails, certified: false },
+      certified: false,
+    });
+
+    expect(get(icpAccountDetailsStore)).toEqual({
+      accountDetails: newDetails,
+      certified: false,
+    });
+
+    // When the update response from mutation 1 comes, it should not override the newer data.
+    mutation1.set({
+      data: { accountDetails: oldDetails, certified: true },
+      certified: true,
+    });
+    expect(get(icpAccountDetailsStore)).toEqual({
+      accountDetails: newDetails,
+      certified: false,
+    });
   });
 });
