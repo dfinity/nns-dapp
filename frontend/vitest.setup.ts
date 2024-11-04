@@ -34,7 +34,7 @@ vi.mock("svelte/store", async (importOriginal) => {
       resetStoreFunctions.push(() => store.set(initialValue));
       return store;
     },
-  }
+  };
 });
 
 beforeEach(() => {
