@@ -12,7 +12,6 @@
   import type { UserToken } from "$lib/types/tokens-page";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
-  import { heightTransition } from "$lib/utils/transition.utils";
   import { IconPlus, IconSettings, Tooltip } from "@dfinity/gix-components";
   import { Popover } from "@dfinity/gix-components";
   import { TokenAmountV2, nonNullish } from "@dfinity/utils";
