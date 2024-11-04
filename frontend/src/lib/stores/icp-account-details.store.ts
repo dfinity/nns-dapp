@@ -1,28 +1,15 @@
 import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { writable, type Readable } from "svelte/store";
+import { queuedStore, type QueuedStore } from "$lib/stores/queued-store";
 
 export interface IcpAccountDetailsStoreData {
   accountDetails: AccountDetails;
   certified: boolean;
 }
 
-export interface IcpAccountDetailsStore
-  extends Readable<IcpAccountDetailsStoreData | undefined> {
-  set: (accountDetails: IcpAccountDetailsStoreData | undefined) => void;
-  reset: () => void;
-}
+export type IcpAccountDetailsStore = QueuedStore<
+  IcpAccountDetailsStoreData | undefined
+>;
 
-const initIpcAccountDetailsStore = (): IcpAccountDetailsStore => {
-  const initialStoreData = undefined;
-  const { subscribe, set } = writable<IcpAccountDetailsStoreData | undefined>(
-    initialStoreData
-  );
-
-  return {
-    subscribe,
-    set,
-    reset: () => set(initialStoreData),
-  };
-};
-
-export const icpAccountDetailsStore = initIpcAccountDetailsStore();
+export const icpAccountDetailsStore = queuedStore<
+  IcpAccountDetailsStoreData | undefined
+>(undefined);

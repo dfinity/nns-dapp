@@ -50,11 +50,12 @@ export interface SingleMutationStore<StoreData> {
   cancel: () => void;
 }
 
-interface QueuedStore<StoreData> extends Readable<StoreData> {
+export interface QueuedStore<StoreData> extends Readable<StoreData> {
   getSingleMutationStore: (
     strategy?: QueryAndUpdateStrategy | undefined
   ) => SingleMutationStore<StoreData>;
   resetForTesting: () => void;
+  setForTesting: (data: StoreData) => void;
 }
 
 export const queuedStore = <StoreData>(
@@ -196,6 +197,12 @@ export const queuedStore = <StoreData>(
       certifiedData = initialData;
       mutationQueue = [];
       set(initialData);
+    },
+
+    setForTesting(data: StoreData) {
+      certifiedData = data;
+      mutationQueue = [];
+      set(data);
     },
   };
 };
