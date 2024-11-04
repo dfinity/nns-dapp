@@ -121,6 +121,7 @@ describe("CkBTCWallet", () => {
     bitcoinAddressStore.reset();
     ckbtcRetrieveBtcStatusesStore.reset();
     resetIdentity();
+    icrcAccountsStore.reset();
 
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
@@ -504,24 +505,24 @@ describe("CkBTCWallet", () => {
         [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: [statusWithId],
       });
     });
-  });
 
-  it('should have canister links in "more" popup', async () => {
-    const po = await renderWallet();
-    const morePopoverPo = po.getWalletMorePopoverPo();
+    it('should have canister links in "more" popup', async () => {
+      const po = await renderWallet();
+      const morePopoverPo = po.getWalletMorePopoverPo();
 
-    await po.getMoreButton().click();
-    await runResolvedPromises();
+      await po.getMoreButton().click();
+      await runResolvedPromises();
 
-    expect(await morePopoverPo.isPresent()).toBe(true);
-    expect(await morePopoverPo.getLinkToLedgerCanisterPo().getHref()).toBe(
-      `https://dashboard.internetcomputer.org/canister/${CKTESTBTC_LEDGER_CANISTER_ID.toText()}`
-    );
-    expect(await morePopoverPo.getLinkToIndexCanisterPo().isPresent()).toBe(
-      true
-    );
-    expect(await morePopoverPo.getLinkToIndexCanisterPo().getHref()).toBe(
-      `https://dashboard.internetcomputer.org/canister/${CKTESTBTC_INDEX_CANISTER_ID.toText()}`
-    );
+      expect(await morePopoverPo.isPresent()).toBe(true);
+      expect(await morePopoverPo.getLinkToLedgerCanisterPo().getHref()).toBe(
+        `https://dashboard.internetcomputer.org/canister/${CKTESTBTC_LEDGER_CANISTER_ID.toText()}`
+      );
+      expect(await morePopoverPo.getLinkToIndexCanisterPo().isPresent()).toBe(
+        true
+      );
+      expect(await morePopoverPo.getLinkToIndexCanisterPo().getHref()).toBe(
+        `https://dashboard.internetcomputer.org/canister/${CKTESTBTC_INDEX_CANISTER_ID.toText()}`
+      );
+    });
   });
 });
