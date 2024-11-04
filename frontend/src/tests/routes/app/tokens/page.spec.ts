@@ -136,6 +136,7 @@ describe("Tokens route", () => {
   describe("when feature flag enabled", () => {
     beforeEach(() => {
       vi.clearAllMocks();
+      overrideFeatureFlagsStore.reset();
       icrcAccountsStore.reset();
       tokensStore.reset();
       defaultIcrcCanistersStore.reset();
@@ -535,6 +536,7 @@ describe("Tokens route", () => {
       describe("when logged in", () => {
         beforeEach(() => {
           resetIdentity();
+          overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
         });
 
         it("should display tokens in specific order", async () => {
@@ -676,6 +678,7 @@ describe("Tokens route", () => {
       );
       beforeEach(() => {
         resetIdentity();
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
 
         vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
           async ({ canisterId }) => {
