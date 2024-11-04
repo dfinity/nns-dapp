@@ -20,6 +20,29 @@ import {
   setDefaultTestConstants,
 } from "./src/tests/utils/mockable-constants.test-utils";
 
+// Reset every store before each test.
+const resetStoreFunctions = vi.hoisted(() => {
+  return [];
+});
+
+vi.mock("svelte/store", async (importOriginal) => {
+  const svelteStoreModule = await importOriginal();
+  return {
+    ...svelteStoreModule,
+    writable: <T>(initialValue, ...otherArgs) => {
+      const store = svelteStoreModule.writable<T>(initialValue, ...otherArgs);
+      resetStoreFunctions.push(() => store.set(initialValue));
+      return store;
+    },
+  }
+});
+
+beforeEach(() => {
+  for (const reset of resetStoreFunctions) {
+    reset();
+  }
+});
+
 // Mock SubtleCrypto to test @dfinity/auth-client
 const crypto = new SubtleCrypto();
 Object.defineProperty(global, "crypto", {
