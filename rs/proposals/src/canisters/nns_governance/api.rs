@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-23_03-07-ubuntu20.04/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-31_03-09-ubuntu20.04/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -741,6 +741,7 @@ pub struct Neuron {
     pub staked_maturity_e8s_equivalent: Option<u64>,
     pub controller: Option<Principal>,
     pub recent_ballots: Vec<BallotInfo>,
+    pub voting_power_refreshed_timestamp_seconds: Option<u64>,
     pub kyc_verified: bool,
     pub neuron_type: Option<i32>,
     pub not_for_profit: bool,
@@ -818,6 +819,7 @@ pub enum Result4 {
 pub struct NeuronInfo {
     pub dissolve_delay_seconds: u64,
     pub recent_ballots: Vec<BallotInfo>,
+    pub voting_power_refreshed_timestamp_seconds: Option<u64>,
     pub neuron_type: Option<i32>,
     pub created_timestamp_seconds: u64,
     pub state: i32,
