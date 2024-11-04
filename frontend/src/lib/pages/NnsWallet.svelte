@@ -37,7 +37,6 @@
   } from "$lib/services/icp-transactions.services";
   import { listNeurons } from "$lib/services/neurons.services";
   import { authStore } from "$lib/stores/auth.store";
-  import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
   import {
@@ -314,16 +313,14 @@
             walletAddress={$selectedAccountStore.account?.identifier}
           >
             <svelte:fragment slot="actions">
-              {#if $ENABLE_IMPORT_TOKEN}
-                <button
-                  bind:this={moreButton}
-                  class="icon-only"
-                  data-tid="more-button"
-                  on:click={() => (morePopupVisible = true)}
-                >
-                  <IconDots />
-                </button>
-              {/if}
+              <button
+                bind:this={moreButton}
+                class="icon-only"
+                data-tid="more-button"
+                on:click={() => (morePopupVisible = true)}
+              >
+                <IconDots />
+              </button>
             </svelte:fragment>
           </WalletPageHeader>
           <WalletPageHeading
