@@ -1,4 +1,4 @@
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-23_03-07-ubuntu20.04/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-31_03-09-ubuntu20.04/rs/nns/governance/canister/governance.did>
 type AccountIdentifier = record {
   hash : blob;
 };
@@ -578,6 +578,7 @@ type Neuron = record {
   transfer : opt NeuronStakeTransfer;
   known_neuron_data : opt KnownNeuronData;
   spawn_at_timestamp_seconds : opt nat64;
+  voting_power_refreshed_timestamp_seconds : opt nat64;
 };
 
 type NeuronBasketConstructionParameters = record {
@@ -629,6 +630,7 @@ type NeuronInfo = record {
   known_neuron_data : opt KnownNeuronData;
   voting_power : nat64;
   age_seconds : nat64;
+  voting_power_refreshed_timestamp_seconds : opt nat64;
 };
 
 type NeuronStakeTransfer = record {
