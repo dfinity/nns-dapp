@@ -32,6 +32,7 @@ import {
   icpAccountDetailsStore,
   type IcpAccountDetailsStoreData,
 } from "$lib/stores/icp-account-details.store";
+import type { SingleMutationStore } from "$lib/stores/queued-store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account, AccountIdentifierText } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
@@ -131,6 +132,9 @@ const loadAccountsStoresData = async ({
 
 type SyncAccontsErrorHandler = (params: {
   mutableBalancesStore: SingleMutationIcpAccountBalancesStore;
+  mutableAccountDetailsStore: SingleMutationStore<
+    IcpAccountDetailsStoreData | undefined
+  >;
   err: unknown;
   certified: boolean;
 }) => void;
@@ -143,10 +147,14 @@ type SyncAccontsErrorHandler = (params: {
  */
 const defaultErrorHandlerAccounts: SyncAccontsErrorHandler = ({
   mutableBalancesStore,
+  mutableAccountDetailsStore,
   err,
   certified,
 }: {
   mutableBalancesStore: SingleMutationIcpAccountBalancesStore;
+  mutableAccountDetailsStore: SingleMutationStore<
+    IcpAccountDetailsStoreData | undefined
+  >;
   err: unknown;
   certified: boolean;
 }) => {
@@ -154,7 +162,7 @@ const defaultErrorHandlerAccounts: SyncAccontsErrorHandler = ({
     return;
   }
 
-  icpAccountDetailsStore.reset();
+  mutableAccountDetailsStore.set({ data: undefined, certified });
   mutableBalancesStore.reset({ certified });
 
   toastsError(
@@ -175,16 +183,23 @@ const syncAccountsWithErrorHandler = (
     icpAccountBalancesStore.getSingleMutationIcpAccountBalancesStore(
       FORCE_CALL_STRATEGY
     );
+  const mutableAccountDetailsStore =
+    icpAccountDetailsStore.getSingleMutationStore(FORCE_CALL_STRATEGY);
   return queryAndUpdate<AccountStoresData, unknown>({
     request: (options) => loadAccountsStoresData(options),
     onLoad: ({ response: { accountDetailsData, balancesData, certified } }) => {
-      icpAccountDetailsStore.set(accountDetailsData);
+      mutableAccountDetailsStore.set({ data: accountDetailsData, certified });
       mutableBalancesStore.set({ data: balancesData, certified });
     },
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      errorHandler({ mutableBalancesStore, err, certified });
+      errorHandler({
+        mutableBalancesStore,
+        mutableAccountDetailsStore,
+        err,
+        certified,
+      });
     },
     logMessage: "Syncing Accounts",
     strategy: FORCE_CALL_STRATEGY,
@@ -490,17 +505,21 @@ export const pollAccounts = async (certified = true) => {
     return;
   }
 
+  const strategy = overrideCertified ? "update" : "query";
+  const mutableAccountDetailsStore =
+    icpAccountDetailsStore.getSingleMutationStore(strategy);
   const mutableBalancesStore =
-    icpAccountBalancesStore.getSingleMutationIcpAccountBalancesStore(
-      certified ? "update" : "query"
-    );
+    icpAccountBalancesStore.getSingleMutationIcpAccountBalancesStore(strategy);
   try {
     const identity = await getAuthenticatedIdentity();
     const { accountDetailsData, balancesData } = await pollLoadAccounts({
       identity,
       certified: overrideCertified,
     });
-    icpAccountDetailsStore.set(accountDetailsData);
+    mutableAccountDetailsStore.set({
+      data: accountDetailsData,
+      certified: overrideCertified,
+    });
     mutableBalancesStore.set({
       data: balancesData,
       certified: overrideCertified,
