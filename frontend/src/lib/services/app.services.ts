@@ -9,10 +9,10 @@ export const initAppPrivateData = async (): Promise<void> => {
   // Reload the SNS projects even if they were loaded.
   // Get latest data and create wrapper caches for the logged in identity.
   const initSns: Promise<void>[] = [loadSnsProjects()];
+  // Load imported tokens
   const initImportedTokens: Promise<void>[] = [
     loadImportedTokens({ ignoreAccountNotFoundError: true }),
   ];
-  // TODO: load imported tokens after Nns.
   /**
    * If Nns load but Sns load fails it is "fine" to go on because Nns are core features.
    */
