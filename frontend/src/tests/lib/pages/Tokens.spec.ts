@@ -1,7 +1,6 @@
 import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import TokensPage from "$lib/pages/Tokens.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import type { UserTokenData } from "$lib/types/tokens-page";
@@ -67,7 +66,6 @@ describe("Tokens page", () => {
   };
 
   beforeEach(() => {
-    overrideFeatureFlagsStore.reset();
     hideZeroBalancesStore.resetForTesting();
     vi.useFakeTimers();
 
@@ -228,10 +226,6 @@ describe("Tokens page", () => {
   });
 
   describe("when import token feature flag is enabled", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN", true);
-    });
-
     it("should show import token button", async () => {
       const po = renderPage([positiveBalance, zeroBalance]);
       expect(await po.getImportTokenButtonPo().isPresent()).toBe(true);
@@ -292,17 +286,6 @@ describe("Tokens page", () => {
       await po.getImportTokenButtonPo().click();
 
       expect(await po.getImportTokenModalPo().isPresent()).toBe(true);
-    });
-  });
-
-  describe("when import token feature flag is disabled", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN", false);
-    });
-
-    it("should not show import token button", async () => {
-      const po = renderPage([positiveBalance, zeroBalance]);
-      expect(await po.getImportTokenButtonPo().isPresent()).toBe(false);
     });
   });
 });
