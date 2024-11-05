@@ -610,7 +610,7 @@
     "no_dissolve_bonus": "No dissolve delay bonus",
     "available_description": "Available",
     "join_community_fund_description_1": "Are you sure you want this neuron to join the neurons' fund?",
-    "join_community_fund_description_2": "If you do, your neuron may use some of its maturity to participate in upcoming SNS swaps, resulting in an SNS neuron.",
+    "join_community_fund_description_2": "If you do, your neuron may use some of its maturity to participate in future SNS swaps, resulting in an SNS neuron(s).",
     "join_community_fund_hw_alert_1": "Note that the resulting SNS neuron will have NNS governance as a controller. Since you are not the controller of the SNS neuron, you will not be able to manage or disburse it.",
     "join_community_fund_hw_alert_2": "However, you will be able to vote on SNS proposals as your NNS neuron’s controller and up to three of its hotkeys will be set as hotkeys for the SNS neuron.",
     "leave_community_fund_description": "Are you sure you want this neuron to leave the neurons' fund?",
