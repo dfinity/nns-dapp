@@ -16,6 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Updated the dark theme and page icons.
+
 #### Deprecated
 
 #### Removed
