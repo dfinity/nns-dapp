@@ -1,4 +1,4 @@
-//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-23_03-07-ubuntu20.04/rs/sns/swap/canister/swap.did>
+//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-31_03-09-ubuntu20.04/rs/sns/swap/canister/swap.did>
 type BuyerState = record {
   icp : opt TransferableAmount;
   has_created_neuron_recipes : opt bool;
@@ -422,6 +422,10 @@ type Timers = record {
   last_spawned_timestamp_seconds : opt nat64;
 };
 
+type GetTimersResponse = record {
+  timers : opt Timers;
+};
+
 type SweepResult = record {
   failure : nat32;
   skipped : nat32;
@@ -475,4 +479,5 @@ service : (Init) -> {
       RefreshBuyerTokensResponse,
     );
   reset_timers : (record {}) -> (record {});
+  get_timers : (record {}) -> (GetTimersResponse) query;
 }

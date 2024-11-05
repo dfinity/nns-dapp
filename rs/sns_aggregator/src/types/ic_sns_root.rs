@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_root --out ic_sns_root.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-23_03-07-ubuntu20.04/rs/sns/root/canister/root.did>
+//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-31_03-09-ubuntu20.04/rs/sns/root/canister/root.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -17,8 +17,15 @@ use ic_cdk::api::call::CallResult;
 // use ic_cdk::api::call::CallResult as Result;
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Timers {
+    pub last_spawned_timestamp_seconds: Option<u64>,
+    pub last_reset_timestamp_seconds: Option<u64>,
+    pub requires_periodic_tasks: Option<bool>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SnsRootCanister {
     pub dapp_canister_ids: Vec<Principal>,
+    pub timers: Option<Timers>,
     pub testflight: bool,
     pub archive_canister_ids: Vec<Principal>,
     pub governance_canister_id: Option<Principal>,
@@ -122,6 +129,12 @@ pub struct GetSnsCanistersSummaryResponse {
     pub archives: Vec<CanisterSummary>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct GetTimersArg {}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct GetTimersResponse {
+    pub timers: Option<Timers>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ListSnsCanistersArg {}
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize, Default)]
 pub struct ListSnsCanistersResponse {
@@ -160,6 +173,10 @@ pub struct RegisterDappCanistersRequest {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct RegisterDappCanistersRet {}
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ResetTimersArg {}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ResetTimersRet {}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SetDappControllersRequest {
     pub canister_ids: Option<RegisterDappCanistersRequest>,
     pub controller_principal_ids: Vec<Principal>,
@@ -196,6 +213,9 @@ impl Service {
     ) -> CallResult<(GetSnsCanistersSummaryResponse,)> {
         ic_cdk::call(self.0, "get_sns_canisters_summary", (arg0,)).await
     }
+    pub async fn get_timers(&self, arg0: GetTimersArg) -> CallResult<(GetTimersResponse,)> {
+        ic_cdk::call(self.0, "get_timers", (arg0,)).await
+    }
     pub async fn list_sns_canisters(&self, arg0: ListSnsCanistersArg) -> CallResult<(ListSnsCanistersResponse,)> {
         ic_cdk::call(self.0, "list_sns_canisters", (arg0,)).await
     }
@@ -216,6 +236,9 @@ impl Service {
         arg0: RegisterDappCanistersRequest,
     ) -> CallResult<(RegisterDappCanistersRet,)> {
         ic_cdk::call(self.0, "register_dapp_canisters", (arg0,)).await
+    }
+    pub async fn reset_timers(&self, arg0: ResetTimersArg) -> CallResult<(ResetTimersRet,)> {
+        ic_cdk::call(self.0, "reset_timers", (arg0,)).await
     }
     pub async fn set_dapp_controllers(
         &self,
