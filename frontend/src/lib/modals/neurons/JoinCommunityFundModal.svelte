@@ -55,9 +55,8 @@
         <Html text={$i18n.neuron_detail.leave_community_fund_description} />
       </p>
     {:else}
-      <p>
-        <Html text={$i18n.neuron_detail.join_community_fund_description} />
-      </p>
+      <p>{$i18n.neuron_detail.join_community_fund_description_1}</p>
+      <p>{$i18n.neuron_detail.join_community_fund_description_2}</p>
       {#if isHotkeyControlled}
         <p class="description">
           {$i18n.neuron_detail.join_community_fund_hw_alert_1}
