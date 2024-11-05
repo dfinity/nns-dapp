@@ -9,7 +9,6 @@
     hasJoinedCommunityFund,
     isHotKeyControllable,
   } from "$lib/utils/neuron.utils";
-  import { Html } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
 
