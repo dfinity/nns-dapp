@@ -58,7 +58,7 @@ describe("ConfirmationModal", () => {
     };
     const po = renderComponent(neuron);
     expect(await po.getContentText()).toBe(
-      "Confirm Are you sure you want this neuron to join the neurons' fund? If you do, your neuron may use some of its maturity to participate in upcoming SNS swaps, resulting in an SNS neuron. Note that the resulting SNS neuron will have NNS governance as a controller. Since you are not the controller of the SNS neuron, you will not be able to manage or disburse it. However, you will be able to vote on SNS proposals as your NNS neuron’s controller and up to three of its hotkeys will be set as hotkeys for the SNS neuron."
+      "Confirm Are you sure you want this neuron to join the neurons' fund? If you do, your neuron may use some of its maturity to participate in future SNS swaps, resulting in an SNS neuron(s). Note that the resulting SNS neuron will have NNS governance as a controller. Since you are not the controller of the SNS neuron, you will not be able to manage or disburse it. However, you will be able to vote on SNS proposals as your NNS neuron’s controller and up to three of its hotkeys will be set as hotkeys for the SNS neuron."
     );
   });
 });
