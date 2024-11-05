@@ -12,7 +12,6 @@ export const SNS_AGGREGATOR_CANISTER_URL = envVars.snsAggregatorUrl ?? "";
 export interface FeatureFlags<T> {
   ENABLE_CKBTC: T;
   ENABLE_CKTESTBTC: T;
-  ENABLE_IMPORT_TOKEN: T;
   DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: T;
   ENABLE_NEURON_VISIBILITY: T;
   // Used only in tests and set up in jest-setup.ts

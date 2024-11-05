@@ -13,7 +13,6 @@
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { syncAccounts as syncWalletAccounts } from "$lib/services/icrc-accounts.services";
   import { removeImportedTokens } from "$lib/services/imported-tokens.services";
-  import { ENABLE_IMPORT_TOKEN } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
@@ -196,16 +195,14 @@
             walletAddress={$selectedAccountStore.account?.identifier}
           >
             <svelte:fragment slot="actions">
-              {#if $ENABLE_IMPORT_TOKEN}
-                <button
-                  bind:this={moreButton}
-                  class="icon-only"
-                  data-tid="more-button"
-                  on:click={() => (morePopupVisible = true)}
-                >
-                  <IconDots />
-                </button>
-              {/if}
+              <button
+                bind:this={moreButton}
+                class="icon-only"
+                data-tid="more-button"
+                on:click={() => (morePopupVisible = true)}
+              >
+                <IconDots />
+              </button>
             </svelte:fragment>
           </WalletPageHeader>
           <WalletPageHeading

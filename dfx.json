@@ -386,7 +386,6 @@
         "FEATURE_FLAGS": {
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
-          "ENABLE_IMPORT_TOKEN": true,
           "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
           "ENABLE_NEURON_VISIBILITY": true
         }
