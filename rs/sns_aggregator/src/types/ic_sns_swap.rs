@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_swap --out ic_sns_swap.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-23_03-07-ubuntu20.04/rs/sns/swap/canister/swap.did>
+//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-31_03-09-ubuntu20.04/rs/sns/swap/canister/swap.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -419,6 +419,12 @@ pub struct GetStateResponse {
     pub derived: Option<DerivedState>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct GetTimersArg {}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct GetTimersResponse {
+    pub timers: Option<Timers>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ListCommunityFundParticipantsRequest {
     pub offset: Option<u64>,
     pub limit: Option<u32>,
@@ -532,6 +538,9 @@ impl Service {
     }
     pub async fn get_state(&self, arg0: GetStateArg) -> CallResult<(GetStateResponse,)> {
         ic_cdk::call(self.0, "get_state", (arg0,)).await
+    }
+    pub async fn get_timers(&self, arg0: GetTimersArg) -> CallResult<(GetTimersResponse,)> {
+        ic_cdk::call(self.0, "get_timers", (arg0,)).await
     }
     pub async fn list_community_fund_participants(
         &self,

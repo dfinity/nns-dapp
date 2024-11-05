@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-23_03-07-ubuntu20.04/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-31_03-09-ubuntu20.04/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -20,6 +20,7 @@ use ic_cdk::api::call::CallResult;
 pub struct Timers {
     pub last_spawned_timestamp_seconds: Option<u64>,
     pub last_reset_timestamp_seconds: Option<u64>,
+    pub requires_periodic_tasks: Option<bool>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Version {
@@ -83,6 +84,59 @@ pub struct MaturityModulation {
     pub updated_at_timestamp_seconds: Option<u64>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct TargetVersionSet {
+    pub old_target_version: Option<Version>,
+    pub new_target_version: Option<Version>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum UpgradeOutcomeStatusInner {
+    Success(EmptyRecord),
+    Timeout(EmptyRecord),
+    ExternalFailure(EmptyRecord),
+    InvalidState { version: Option<Version> },
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct UpgradeOutcome {
+    pub status: Option<UpgradeOutcomeStatusInner>,
+    pub human_readable: Option<String>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ProposalId {
+    pub id: u64,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum UpgradeStartedReasonInner {
+    UpgradeSnsToNextVersionProposal(ProposalId),
+    BehindTargetVersion(EmptyRecord),
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct UpgradeStarted {
+    pub current_version: Option<Version>,
+    pub expected_version: Option<Version>,
+    pub reason: Option<UpgradeStartedReasonInner>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct UpgradeStepsRefreshed {
+    pub upgrade_steps: Option<Versions>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum UpgradeJournalEntryEventInner {
+    TargetVersionSet(TargetVersionSet),
+    UpgradeOutcome(UpgradeOutcome),
+    UpgradeStarted(UpgradeStarted),
+    UpgradeStepsRefreshed(UpgradeStepsRefreshed),
+    TargetVersionReset(TargetVersionSet),
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct UpgradeJournalEntry {
+    pub event: Option<UpgradeJournalEntryEventInner>,
+    pub timestamp_seconds: Option<u64>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct UpgradeJournal {
+    pub entries: Vec<UpgradeJournalEntry>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct NeuronId {
     pub id: serde_bytes::ByteBuf,
 }
@@ -127,10 +181,6 @@ pub struct NervousSystemParameters {
     pub voting_rewards_parameters: Option<VotingRewardsParameters>,
     pub maturity_modulation_disabled: Option<bool>,
     pub max_number_of_principals_per_neuron: Option<u64>,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct ProposalId {
-    pub id: u64,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct RewardEvent {
@@ -478,6 +528,7 @@ pub struct Governance {
     pub id_to_nervous_system_functions: Vec<(u64, NervousSystemFunction)>,
     pub metrics: Option<GovernanceCachedMetrics>,
     pub maturity_modulation: Option<MaturityModulation>,
+    pub upgrade_journal: Option<UpgradeJournal>,
     pub mode: i32,
     pub parameters: Option<NervousSystemParameters>,
     pub is_finalizing_disburse_maturity: Option<bool>,
@@ -648,6 +699,7 @@ pub struct GetTimersResponse {
 pub struct GetUpgradeJournalRequest {}
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetUpgradeJournalResponse {
+    pub upgrade_journal: Option<UpgradeJournal>,
     pub upgrade_steps: Option<Versions>,
     pub response_timestamp_seconds: Option<u64>,
     pub target_version: Option<Version>,
