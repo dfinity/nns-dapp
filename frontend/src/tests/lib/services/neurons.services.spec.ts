@@ -34,6 +34,7 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { MockLedgerIdentity } from "$tests/mocks/ledger.identity.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
 import {
   resetAccountsForTesting,
   setAccountsForTesting,
@@ -41,6 +42,7 @@ import {
 import type { Identity } from "@dfinity/agent";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
+import type { TransactionWithId } from "@dfinity/ledger-icp";
 import { LedgerCanister } from "@dfinity/ledger-icp";
 import { NeuronVisibility, Topic, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -2150,20 +2152,17 @@ describe("neurons-services", () => {
     const neuronAccountIdentifier =
       "4fd80d693ceec3278efd81e570e86647de9f3279e7d145fc47d1b5c43c26f104";
     const stakingTransaction: TransactionWithId = {
+      ...mockTransactionWithId,
       id: 1n,
       transaction: {
+        ...mockTransactionWithId.transaction,
         memo,
-        icrc1_memo: [],
         operation: {
+          ...mockTransactionWithId.transaction.operation,
           Transfer: {
+            ...mockTransactionWithId.transaction.operation["Transfer"],
             to: neuronAccountIdentifier,
-            fee: 10_000n,
-            from: mockMainAccount.identifier,
-            amount: 100_000_000n,
-            spender: [],
           },
-          timestamp: [],
-          created_at_time: [],
         },
       },
     };
