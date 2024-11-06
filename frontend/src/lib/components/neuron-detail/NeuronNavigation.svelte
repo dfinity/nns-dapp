@@ -32,7 +32,7 @@
   <div class="neuron-nav" role="toolbar" data-tid="neuron-navigation">
     <a
       class="previous"
-      aria-label={$i18n.neuron_detail.previous}
+      title={$i18n.neuron_detail.previous}
       href={getNeuronHref(previousId)}
       class:hidden={isNullish(previousId)}
       data-tid="neuron-navigation-previous"
@@ -42,7 +42,7 @@
     </a>
     <a
       class="next"
-      aria-label={$i18n.neuron_detail.next}
+      title={$i18n.neuron_detail.next}
       href={getNeuronHref(nextId)}
       class:hidden={isNullish(nextId)}
       data-tid="neuron-navigation-next"
