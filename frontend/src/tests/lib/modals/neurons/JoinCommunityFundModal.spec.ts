@@ -42,7 +42,7 @@ describe("ConfirmationModal", () => {
     };
     const po = renderComponent(neuron);
     expect(await po.getContentText()).toBe(
-      "Confirm Are you sure you want this neuron to join the neurons' fund?"
+      "Confirm Are you sure you want this neuron to join the neurons' fund? If you do, your neuron may use some of its maturity to participate in future SNS swaps, resulting in a basket of SNS neurons."
     );
   });
 
@@ -58,7 +58,7 @@ describe("ConfirmationModal", () => {
     };
     const po = renderComponent(neuron);
     expect(await po.getContentText()).toBe(
-      "Confirm Are you sure you want this neuron to join the neurons' fund? Note that only the controllers of Neurons' Fund neurons get added as hotkeys to SNS neurons resulting from Neurons' Fund swap participation. Since you are not the controller of this neuron, you will not be able to manage the resulting SNS neurons, even if you control this neuron with a hardware wallet."
+      "Confirm Are you sure you want this neuron to join the neurons' fund? If you do, your neuron may use some of its maturity to participate in future SNS swaps, resulting in a basket of SNS neurons. Note that the resulting SNS neurons will have the NNS governance canister as their controller. Since you are not the controller of these SNS neurons, you will not be able to manage or disburse them. However, you will be able to vote on SNS proposals as your NNS neuron’s controller and up to three of its hotkeys will be set as hotkeys for the SNS neuron(s)."
     );
   });
 });

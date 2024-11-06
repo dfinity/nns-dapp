@@ -9,7 +9,6 @@
     hasJoinedCommunityFund,
     isHotKeyControllable,
   } from "$lib/utils/neuron.utils";
-  import { Html } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
 
@@ -51,13 +50,10 @@
   <div data-tid="join-community-fund-modal">
     <h4>{$i18n.core.confirm}</h4>
     {#if isCommunityFund}
-      <p>
-        <Html text={$i18n.neuron_detail.leave_community_fund_description} />
-      </p>
+      <p>{$i18n.neuron_detail.leave_community_fund_description}</p>
     {:else}
-      <p>
-        <Html text={$i18n.neuron_detail.join_community_fund_description} />
-      </p>
+      <p>{$i18n.neuron_detail.join_community_fund_description_1}</p>
+      <p>{$i18n.neuron_detail.join_community_fund_description_2}</p>
       {#if isHotkeyControlled}
         <p class="description">
           {$i18n.neuron_detail.join_community_fund_hw_alert_1}

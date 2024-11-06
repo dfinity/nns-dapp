@@ -635,7 +635,8 @@ interface I18nNeuron_detail {
   no_age_bonus: string;
   no_dissolve_bonus: string;
   available_description: string;
-  join_community_fund_description: string;
+  join_community_fund_description_1: string;
+  join_community_fund_description_2: string;
   join_community_fund_hw_alert_1: string;
   join_community_fund_hw_alert_2: string;
   leave_community_fund_description: string;
