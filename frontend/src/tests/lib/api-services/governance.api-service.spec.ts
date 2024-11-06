@@ -594,6 +594,39 @@ describe("neurons api-service", () => {
     });
   });
 
+  describe("claimOrRefreshNeuronByMemo", () => {
+    const params = {
+      memo: 321n,
+      controller: mockPrincipal,
+      identity: mockIdentity,
+    };
+
+    it("should call claimOrRefreshNeuronByMemo api", async () => {
+      vi.spyOn(api, "claimOrRefreshNeuronByMemo").mockResolvedValue(neuronId);
+      expect(
+        await governanceApiService.claimOrRefreshNeuronByMemo(params)
+      ).toEqual(neuronId);
+      expect(api.claimOrRefreshNeuronByMemo).toHaveBeenCalledWith(params);
+      expect(api.claimOrRefreshNeuronByMemo).toHaveBeenCalledTimes(1);
+    });
+
+    it("should invalidate the cache", async () => {
+      await shouldInvalidateCache({
+        apiFunc: api.claimOrRefreshNeuronByMemo,
+        apiServiceFunc: governanceApiService.claimOrRefreshNeuronByMemo,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.claimOrRefreshNeuronByMemo,
+        apiServiceFunc: governanceApiService.claimOrRefreshNeuronByMemo,
+        params,
+      });
+    });
+  });
+
   describe("disburse", () => {
     const params = {
       neuronId,
