@@ -131,7 +131,7 @@ describe("NnsNeuronPageHeader", () => {
     );
   });
 
-  it("should display correct order in navigation when table order based on dissolbeDelay", async () => {
+  it("should display correct order in navigation when table order based on dissolveDelay", async () => {
     neuronsTableOrderStore.set([
       {
         columnId: "dissolveDelay",
