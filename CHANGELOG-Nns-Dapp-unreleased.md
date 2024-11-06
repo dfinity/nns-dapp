@@ -15,7 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Provide better error messages when the transaction timestamp is off.
-* Add navigation between neuron detail modals
+* Add navigation between neuron detail pages.
 * A link to the imported tokens documentation page.
 * Refresh NNS neurons from neuron details page if needed.
 
