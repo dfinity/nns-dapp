@@ -1016,13 +1016,6 @@ impl AccountsStore {
                 );
             }
             TransactionType::StakeNeuron => {
-                let neuron_details = NeuronDetails {
-                    account_identifier: to,
-                    principal,
-                    memo,
-                    neuron_id: None,
-                };
-                self.neuron_accounts.insert(to, neuron_details);
                 self.multi_part_transactions_processor.push(
                     block_height,
                     MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo),
