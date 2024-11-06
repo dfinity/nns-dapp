@@ -47,7 +47,7 @@ describe("NnsNeuronPageHeader", () => {
     createTestNeuron({
       id: 3n,
       stake: 300_000_000n,
-      dissolveDelaySeconds: 2000n,
+      dissolveDelaySeconds: 6000n,
     }),
     createTestNeuron({
       id: 4n,
@@ -163,7 +163,7 @@ describe("NnsNeuronPageHeader", () => {
 
     await runResolvedPromises();
 
-    expect(await po.getNeuronNavigationPo().getPreviousNeuronId()).toBe("3");
+    expect(await po.getNeuronNavigationPo().getPreviousNeuronId()).toBe("2");
     expect(await po.getNeuronNavigationPo().getNextNeuronId()).toBe("4");
   });
 

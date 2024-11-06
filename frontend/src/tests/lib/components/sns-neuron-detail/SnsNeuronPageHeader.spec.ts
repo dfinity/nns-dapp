@@ -32,7 +32,7 @@ describe("SnsNeuronPageHeader", () => {
     createMockSnsNeuron({
       id: [3],
       stake: 300_000_000n,
-      dissolveDelaySeconds: 2000n,
+      dissolveDelaySeconds: 6000n,
     }),
     createMockSnsNeuron({
       id: [4],
@@ -179,7 +179,7 @@ describe("SnsNeuronPageHeader", () => {
 
     await runResolvedPromises();
 
-    expect(await po.getNeuronNavigationPo().getPreviousNeuronId()).toBe("03");
+    expect(await po.getNeuronNavigationPo().getPreviousNeuronId()).toBe("02");
     expect(await po.getNeuronNavigationPo().getNextNeuronId()).toBe("04");
   });
 
