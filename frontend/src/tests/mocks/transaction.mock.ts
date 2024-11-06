@@ -49,10 +49,12 @@ export const createMockSendTransactionWithId = ({
   amount = 110_000_023n,
   fee = 10_000n,
   to = mockSubAccount.identifier,
+  memo = 0n,
 }: {
   amount?: bigint;
   fee?: bigint;
   to?: string;
+  memo?: bigint;
 }): TransactionWithId => {
   const transfer = {
     ...mockTransactionWithId.transaction["Transfer"],
@@ -66,6 +68,7 @@ export const createMockSendTransactionWithId = ({
   const transaction = {
     ...mockTransactionWithId.transaction,
     operation,
+    memo,
   };
   return {
     ...mockTransactionWithId,

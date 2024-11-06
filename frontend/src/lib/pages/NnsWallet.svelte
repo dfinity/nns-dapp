@@ -35,7 +35,10 @@
     loadIcpAccountNextTransactions,
     loadIcpAccountTransactions,
   } from "$lib/services/icp-transactions.services";
-  import { listNeurons } from "$lib/services/neurons.services";
+  import {
+    claimNeuronsIfNeeded,
+    listNeurons,
+  } from "$lib/services/neurons.services";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
@@ -120,6 +123,39 @@
     }
     return false;
   };
+
+  const tryClaimNeurons = ({
+    account,
+    transactionsStore,
+    neuronAccounts,
+  }: {
+    account: Account | undefined;
+    transactionsStore: IcpTransactionsStoreData;
+    neuronAccounts: Set<string>;
+  }) => {
+    const controller =
+      account?.principal ?? $authStore.identity?.getPrincipal();
+    if (
+      isNullish(controller) ||
+      isNullish(neuronAccounts) ||
+      isNullish(account) ||
+      isNullish(transactionsStore[account.identifier])
+    ) {
+      return;
+    }
+    const transactions = transactionsStore[account.identifier].transactions;
+    claimNeuronsIfNeeded({
+      controller,
+      transactions,
+      neuronAccounts,
+    });
+  };
+
+  $: tryClaimNeurons({
+    account: $selectedAccountStore.account,
+    transactionsStore: $icpTransactionsStore,
+    neuronAccounts: $neuronAccountsStore,
+  });
 
   let uiTransactions: UiTransaction[] | undefined;
   $: uiTransactions = makeUiTransactions({

@@ -5,6 +5,7 @@ import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import {
+  GOVERNANCE_CANISTER_ID,
   INDEX_CANISTER_ID,
   LEDGER_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
@@ -53,6 +54,7 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
+import { memoToNeuronAccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
@@ -851,6 +853,64 @@ describe("NnsWallet", () => {
       });
       expect(get(toastsStore)).toEqual([]);
     });
+
+    describe("when there are staking transactions", () => {
+      const neuronController = mockMainAccount.principal;
+      const memo = 54321n;
+      const neuronAccountIdentifier = memoToNeuronAccountIdentifier({
+        controller: neuronController,
+        memo,
+        governanceCanisterId: GOVERNANCE_CANISTER_ID,
+      });
+      const stakingTransaction = createMockSendTransactionWithId({
+        to: neuronAccountIdentifier.toHex(),
+        memo,
+      });
+      const claimedNeuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          accountIdentifier: neuronAccountIdentifier.toHex(),
+        },
+      };
+
+      let spyClaimNeuron;
+
+      beforeEach(() => {
+        vi.spyOn(governanceApi, "queryNeuron").mockResolvedValue(claimedNeuron);
+        vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
+          transactions: [stakingTransaction],
+          oldestTxId,
+          balance: mainBalanceE8s,
+        });
+
+        spyClaimNeuron = vi
+          .spyOn(governanceApi, "claimOrRefreshNeuronByMemo")
+          .mockResolvedValue(claimedNeuron.neuronId);
+      });
+
+      it("should claim unclaimed neurons", async () => {
+        expect(spyClaimNeuron).toBeCalledTimes(0);
+
+        await renderWallet({
+          accountIdentifier: mockMainAccount.identifier,
+        });
+
+        expect(spyClaimNeuron).toBeCalledTimes(1);
+      });
+
+      it("should not claim neurons which already exist in the store", async () => {
+        neuronsStore.setNeurons({ neurons: [claimedNeuron], certified: true });
+
+        expect(spyClaimNeuron).toBeCalledTimes(0);
+
+        await renderWallet({
+          accountIdentifier: mockMainAccount.identifier,
+        });
+
+        expect(spyClaimNeuron).toBeCalledTimes(0);
+      });
+    });
   });
 
   describe("accounts loaded (Subaccount)", () => {
@@ -869,6 +929,52 @@ describe("NnsWallet", () => {
       const po = await renderWallet(props);
 
       expect(await po.getRenameButtonPo().isPresent()).toBe(true);
+    });
+
+    describe("when there are staking transactions", () => {
+      // Subaccounts don't have a principal so we use the principal of the user
+      // as the controller.
+      const neuronController = mockIdentity.getPrincipal();
+      const memo = 54321n;
+      const neuronAccountIdentifier = memoToNeuronAccountIdentifier({
+        controller: neuronController,
+        memo,
+        governanceCanisterId: GOVERNANCE_CANISTER_ID,
+      });
+      const stakingTransaction = createMockSendTransactionWithId({
+        to: neuronAccountIdentifier.toHex(),
+        memo,
+      });
+      const claimedNeuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          accountIdentifier: neuronAccountIdentifier.toHex(),
+        },
+      };
+
+      let spyClaimNeuron;
+
+      beforeEach(() => {
+        vi.spyOn(governanceApi, "queryNeuron").mockResolvedValue(claimedNeuron);
+        vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
+          transactions: [stakingTransaction],
+          oldestTxId,
+          balance: mainBalanceE8s,
+        });
+
+        spyClaimNeuron = vi
+          .spyOn(governanceApi, "claimOrRefreshNeuronByMemo")
+          .mockResolvedValue(claimedNeuron.neuronId);
+      });
+
+      it("should claim unclaimed neurons", async () => {
+        expect(spyClaimNeuron).toBeCalledTimes(0);
+
+        await renderWallet(props);
+
+        expect(spyClaimNeuron).toBeCalledTimes(1);
+      });
     });
   });
 
@@ -904,6 +1010,50 @@ describe("NnsWallet", () => {
       const po = await renderWallet(props);
       expect(await po.getListNeuronsButtonPo().isPresent()).toBe(true);
       expect(await po.getShowHardwareWalletButtonPo().isPresent()).toBe(true);
+    });
+
+    describe("when there are staking transactions", () => {
+      const neuronController = testHwPrincipal;
+      const memo = 54321n;
+      const neuronAccountIdentifier = memoToNeuronAccountIdentifier({
+        controller: neuronController,
+        memo,
+        governanceCanisterId: GOVERNANCE_CANISTER_ID,
+      });
+      const stakingTransaction = createMockSendTransactionWithId({
+        to: neuronAccountIdentifier.toHex(),
+        memo,
+      });
+      const claimedNeuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          accountIdentifier: neuronAccountIdentifier.toHex(),
+        },
+      };
+
+      let spyClaimNeuron;
+
+      beforeEach(() => {
+        vi.spyOn(governanceApi, "queryNeuron").mockResolvedValue(claimedNeuron);
+        vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
+          transactions: [stakingTransaction],
+          oldestTxId,
+          balance: mainBalanceE8s,
+        });
+
+        spyClaimNeuron = vi
+          .spyOn(governanceApi, "claimOrRefreshNeuronByMemo")
+          .mockResolvedValue(claimedNeuron.neuronId);
+      });
+
+      it("should claim unclaimed neurons", async () => {
+        expect(spyClaimNeuron).toBeCalledTimes(0);
+
+        await renderWallet(props);
+
+        expect(spyClaimNeuron).toBeCalledTimes(1);
+      });
     });
   });
 
