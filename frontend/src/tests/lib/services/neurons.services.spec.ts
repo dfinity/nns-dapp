@@ -69,6 +69,7 @@ const {
   topUpNeuron,
   changeNeuronVisibility,
   refreshNeuronIfNeeded,
+  claimNeuronsIfNeeded,
 } = services;
 
 const expectToastError = (contained: string) =>
@@ -162,6 +163,7 @@ describe("neurons-services", () => {
   const spyStopDissolving = vi.spyOn(api, "stopDissolving");
   const spySetFollowees = vi.spyOn(api, "setFollowees");
   const spyClaimOrRefresh = vi.spyOn(api, "claimOrRefreshNeuron");
+  const spyClaimOrRefreshByMemo = vi.spyOn(api, "claimOrRefreshNeuronByMemo");
   const spyChangeNeuronVisibility = vi.spyOn(api, "changeNeuronVisibility");
   const spyQueryAccountBalance = vi.spyOn(icpLedgerApi, "queryAccountBalance");
   let spyConsoleError;
@@ -203,6 +205,7 @@ describe("neurons-services", () => {
     spyStopDissolving.mockResolvedValue();
     spySetFollowees.mockResolvedValue();
     spyClaimOrRefresh.mockResolvedValue(undefined);
+    spyClaimOrRefreshByMemo.mockResolvedValue(undefined);
     spyChangeNeuronVisibility.mockResolvedValue(undefined);
     resetIdentity();
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
@@ -2132,6 +2135,206 @@ describe("neurons-services", () => {
       await refreshNeuronIfNeeded(neuron);
       expect(spyQueryAccountBalance).toBeCalledTimes(1);
       expect(spyClaimOrRefresh).toBeCalledTimes(0);
+    });
+  });
+
+  describe("claimNeuronsIfNeeded", () => {
+    const neuronController = Principal.fromText("oa3zv-mbqe4-3ekjz-w");
+    const memo = 54321n;
+    // Neuron account identifier calculated with
+    // $ GOVERNANCE_CANISTER_ID=rrkah-fqaaa-aaaaa-aaaaq-cai
+    // $ CONTROLLER=oa3zv-mbqe4-3ekjz-w
+    // $ MEMO=54321
+    // $ SUBACCOUNT="$(scripts/convert-id --input text --output hex --as_neuron_subaccount $CONTROLLER $MEMO)"
+    // $ ACCOUNT_IDENTIFIER=$(scripts/convert-id --input text --output account_identifier --subaccount_format hex $GOVERNANCE_CANISTER_ID $SUBACCOUNT)"
+    const neuronAccountIdentifier =
+      "4fd80d693ceec3278efd81e570e86647de9f3279e7d145fc47d1b5c43c26f104";
+    const stakingTransaction: TransactionWithId = {
+      id: 1n,
+      transaction: {
+        memo,
+        icrc1_memo: [],
+        operation: {
+          Transfer: {
+            to: neuronAccountIdentifier,
+            fee: 10_000n,
+            from: mockMainAccount.identifier,
+            amount: 100_000_000n,
+            spender: [],
+          },
+          timestamp: [],
+          created_at_time: [],
+        },
+      },
+    };
+    const claimedNeuronId = 761243637n;
+    const claimedNeuron = {
+      neuronId: claimedNeuronId,
+      ...mockNeuron,
+    };
+
+    beforeEach(() => {
+      spyClaimOrRefreshByMemo.mockResolvedValue(claimedNeuronId);
+      spyGetNeuron.mockResolvedValue(claimedNeuron);
+    });
+
+    it("should claim a neuron from a staking transaction", async () => {
+      expect(get(neuronsStore)).toEqual({
+        neurons: undefined,
+        certified: undefined,
+      });
+
+      expect(spyClaimOrRefreshByMemo).toBeCalledTimes(0);
+      expect(spyGetNeuron).toBeCalledTimes(0);
+
+      await claimNeuronsIfNeeded({
+        controller: neuronController,
+        transactions: [stakingTransaction],
+        neuronAccounts: new Set(),
+      });
+
+      expect(spyClaimOrRefreshByMemo).toBeCalledTimes(1);
+      expect(spyClaimOrRefreshByMemo).toBeCalledWith({
+        controller: neuronController,
+        memo,
+        identity: new AnonymousIdentity(),
+      });
+      expect(spyGetNeuron).toBeCalledTimes(1);
+      expect(spyGetNeuron).toBeCalledWith({
+        certified: true,
+        identity: mockIdentity,
+        neuronId: claimedNeuronId,
+      });
+
+      expect(get(neuronsStore)).toEqual({
+        neurons: [claimedNeuron],
+        certified: true,
+      });
+      expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("should not claim a neuron that's already known", async () => {
+      expect(get(neuronsStore)).toEqual({
+        neurons: undefined,
+        certified: undefined,
+      });
+
+      expect(spyClaimOrRefreshByMemo).toBeCalledTimes(0);
+      expect(spyGetNeuron).toBeCalledTimes(0);
+
+      await claimNeuronsIfNeeded({
+        controller: neuronController,
+        transactions: [stakingTransaction],
+        neuronAccounts: new Set([neuronAccountIdentifier]),
+      });
+
+      expect(spyClaimOrRefreshByMemo).toBeCalledTimes(0);
+      expect(spyGetNeuron).toBeCalledTimes(0);
+
+      expect(get(neuronsStore)).toEqual({
+        neurons: undefined,
+        certified: undefined,
+      });
+      expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("should not claim a neuron from a transaction with memo that does not match the account identifier", async () => {
+      expect(get(neuronsStore)).toEqual({
+        neurons: undefined,
+        certified: undefined,
+      });
+
+      expect(spyClaimOrRefreshByMemo).toBeCalledTimes(0);
+      expect(spyGetNeuron).toBeCalledTimes(0);
+
+      await claimNeuronsIfNeeded({
+        controller: neuronController,
+        transactions: [
+          {
+            ...stakingTransaction,
+            transaction: {
+              ...stakingTransaction.transaction,
+              memo: memo + 1n,
+            },
+          },
+        ],
+        neuronAccounts: new Set(),
+      });
+
+      expect(spyClaimOrRefreshByMemo).toBeCalledTimes(0);
+      expect(spyGetNeuron).toBeCalledTimes(0);
+
+      expect(get(neuronsStore)).toEqual({
+        neurons: undefined,
+        certified: undefined,
+      });
+      expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("should not claim a neuron from a transaction without memo", async () => {
+      expect(get(neuronsStore)).toEqual({
+        neurons: undefined,
+        certified: undefined,
+      });
+
+      expect(spyClaimOrRefreshByMemo).toBeCalledTimes(0);
+      expect(spyGetNeuron).toBeCalledTimes(0);
+
+      await claimNeuronsIfNeeded({
+        controller: neuronController,
+        transactions: [
+          {
+            ...stakingTransaction,
+            transaction: {
+              ...stakingTransaction.transaction,
+              memo: 0n,
+            },
+          },
+        ],
+        neuronAccounts: new Set(),
+      });
+
+      expect(spyClaimOrRefreshByMemo).toBeCalledTimes(0);
+      expect(spyGetNeuron).toBeCalledTimes(0);
+
+      expect(get(neuronsStore)).toEqual({
+        neurons: undefined,
+        certified: undefined,
+      });
+      expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("should ignore errors from claiming", async () => {
+      spyClaimOrRefreshByMemo.mockRejectedValue(new Error("Test error"));
+
+      expect(get(neuronsStore)).toEqual({
+        neurons: undefined,
+        certified: undefined,
+      });
+
+      expect(spyClaimOrRefreshByMemo).toBeCalledTimes(0);
+      expect(spyGetNeuron).toBeCalledTimes(0);
+
+      await claimNeuronsIfNeeded({
+        controller: neuronController,
+        transactions: [stakingTransaction],
+        neuronAccounts: new Set(),
+      });
+
+      expect(spyClaimOrRefreshByMemo).toBeCalledTimes(1);
+      expect(spyClaimOrRefreshByMemo).toBeCalledWith({
+        controller: neuronController,
+        memo,
+        identity: new AnonymousIdentity(),
+      });
+      expect(spyGetNeuron).toBeCalledTimes(0);
+
+      expect(get(neuronsStore)).toEqual({
+        neurons: undefined,
+        certified: undefined,
+      });
+
+      expect(get(toastsStore)).toEqual([]);
     });
   });
 

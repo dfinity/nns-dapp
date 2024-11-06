@@ -2,7 +2,10 @@ import { governanceApiService } from "$lib/api-services/governance.api-service";
 import { makeDummyProposals as makeDummyProposalsApi } from "$lib/api/dev.api";
 import { queryAccountBalance } from "$lib/api/icp-ledger.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import {
+  GOVERNANCE_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import { IS_TESTNET } from "$lib/constants/environment.constants";
 import {
   CANDID_PARSER_VERSION,
@@ -53,15 +56,17 @@ import {
 } from "$lib/utils/neuron.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import { AnonymousIdentity, type Identity } from "@dfinity/agent";
+import type { TransactionWithId } from "@dfinity/ledger-icp";
 import {
   NeuronVisibility,
   Topic,
+  memoToNeuronAccountIdentifier,
   type Neuron,
   type NeuronId,
   type NeuronInfo,
 } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { isNullish } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import {
@@ -1040,6 +1045,103 @@ export const refreshNeuronIfNeeded = async (
     toastsSuccess({
       labelKey: "neuron_detail.neuron_stake_refreshed",
     });
+  }
+};
+
+const getMemosFromStakingTransactions = ({
+  controller,
+  transactions,
+}: {
+  controller: Principal;
+  transactions: TransactionWithId[];
+}): {
+  memo: bigint;
+  accountIdentifier: string;
+}[] => {
+  return transactions
+    .map(({ transaction }) => {
+      const { memo } = transaction;
+      if (memo === 0n) {
+        undefined;
+      }
+      const accountIdentifier = memoToNeuronAccountIdentifier({
+        controller,
+        memo,
+        governanceCanisterId: GOVERNANCE_CANISTER_ID,
+      }).toHex();
+      // For a staking transaction, the transfer should be to the neuron account
+      // derived from the memo.
+      if (
+        "Transfer" in transaction.operation &&
+        transaction.operation.Transfer.to === accountIdentifier
+      ) {
+        return {
+          memo,
+          accountIdentifier,
+        };
+      }
+    })
+    .filter(nonNullish);
+};
+
+const claimNeuron = async ({
+  memo,
+  controller,
+}: {
+  memo: bigint;
+  controller: Principal;
+}) => {
+  const neuronId = await governanceApiService.claimOrRefreshNeuronByMemo({
+    memo,
+    controller,
+    identity: new AnonymousIdentity(),
+  });
+  if (isNullish(neuronId)) {
+    // This is unexpected.
+    throw new Error(
+      "claimOrRefreshNeuronByMemo should either throw or return a neuronId."
+    );
+  }
+  await loadNeuron({
+    neuronId,
+    forceFetch: true,
+    strategy: "update",
+    setNeuron: ({ neuron, certified }) => {
+      neuronsStore.pushNeurons({ neurons: [neuron], certified });
+    },
+    handleError: () => {},
+  });
+};
+
+// Scans the transactions to see if there are any staking transactions without a
+// corresponding known neuron account.
+export const claimNeuronsIfNeeded = async ({
+  controller,
+  transactions,
+  neuronAccounts,
+}: {
+  controller: Principal;
+  transactions: TransactionWithId[];
+  neuronAccounts: Set<string>;
+}): Promise<void> => {
+  const memos = getMemosFromStakingTransactions({
+    controller,
+    transactions,
+  });
+  for (const { memo, accountIdentifier } of memos) {
+    if (neuronAccounts.has(accountIdentifier)) {
+      // Neuron already exists.
+      continue;
+    }
+    try {
+      await claimNeuron({
+        memo,
+        controller,
+      });
+    } catch (err) {
+      // The neuron might already be disbursed. Regardless we did this in the
+      // background so we don't want to bother the user with this.
+    }
   }
 };
 
