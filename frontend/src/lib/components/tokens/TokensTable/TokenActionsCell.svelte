@@ -1,8 +1,8 @@
 <script lang="ts">
   import {
     UserTokenAction,
-    type UserTokenFailed,
     type UserTokenData,
+    type UserTokenFailed,
     type UserTokenLoading,
   } from "$lib/types/tokens-page";
   import { isUserTokenLoading } from "$lib/utils/user-token.utils";
@@ -12,7 +12,7 @@
   import RemoveButton from "./actions/RemoveButton.svelte";
   import SendButton from "./actions/SendButton.svelte";
   import { nonNullish } from "@dfinity/utils";
-  import type { SvelteComponent, ComponentType } from "svelte";
+  import type { ComponentType, SvelteComponent } from "svelte";
 
   export let rowData: UserTokenData | UserTokenLoading | UserTokenFailed;
 

@@ -14,25 +14,17 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Provide better error messages when the transaction timestamp is off.
 * Add navigation between neuron detail pages.
-* A link to the imported tokens documentation page.
-* Refresh NNS neurons from neuron details page if needed.
 
 #### Changed
 
-* Change Internet Computer Association neuron title.
-* Stop hiding the bottom menu logo and collapse button on small screens.
-* Remove menu footer on collapsed menu.
+* Updated the dark theme and page icons.
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
-
-* Race condition in proposal loading.
-* Consistently identify a proposal by its type in voting progress toasts.
 
 #### Security
 

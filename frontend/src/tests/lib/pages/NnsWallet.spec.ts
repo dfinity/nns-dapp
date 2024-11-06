@@ -13,7 +13,6 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import NnsWallet from "$lib/pages/NnsWallet.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpTransactionsStore } from "$lib/stores/icp-transactions.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
@@ -105,7 +104,6 @@ describe("NnsWallet", () => {
       data: { universe: OWN_CANISTER_ID_TEXT },
       routeId: AppPath.Wallet,
     });
-    overrideFeatureFlagsStore.reset();
   });
 
   const renderWallet = async (props) => {
@@ -249,13 +247,6 @@ describe("NnsWallet", () => {
     it('should render "more" button', async () => {
       const po = await renderWallet({});
       expect(await po.getMoreButton().isPresent()).toBe(true);
-    });
-
-    it("should not display more button when ENABLE_IMPORT_TOKEN disabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN", false);
-
-      const po = await renderWallet({});
-      expect(await po.hasMoreButton()).toBe(false);
     });
 
     it('should have canister links in "more" popup', async () => {
@@ -900,10 +891,6 @@ describe("NnsWallet", () => {
     const props = {
       accountIdentifier: mockHardwareWalletAccount.identifier,
     };
-
-    afterAll(() => {
-      vi.clearAllMocks();
-    });
 
     it("should display principal", async () => {
       const po = await renderWallet(props);

@@ -3,6 +3,7 @@ import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
+import { NNS_MINIMUM_DISSOLVE_DELAY } from "$lib/constants/neurons.constants";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import NnsStakeNeuronModal from "$lib/modals/neurons/NnsStakeNeuronModal.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
@@ -45,7 +46,7 @@ vi.mock("$lib/api/icp-ledger.api");
 const neuronStakeE8s = 220_000_000n;
 const newNeuron: NeuronInfo = {
   ...mockNeuron,
-  dissolveDelaySeconds: 0n,
+  dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY),
   ageSeconds: 0n,
   fullNeuron: {
     ...mockFullNeuron,
@@ -266,6 +267,11 @@ describe("NnsStakeNeuronModal", () => {
       await po.getNnsStakeNeuronPo().clickCreate();
       await runResolvedPromises();
 
+      const initialDelayDays = Number(
+        await po.getSetDissolveDelayPo().getInputWithErrorPo().getValue()
+      );
+      expect(initialDelayDays).toBe(7);
+
       const ONE_YEAR = 365;
       await po
         .getSetDissolveDelayPo()
@@ -286,7 +292,7 @@ describe("NnsStakeNeuronModal", () => {
       await runResolvedPromises();
       expect(updateDelay).toBeCalledTimes(1);
       expect(updateDelay).toBeCalledWith({
-        dissolveDelayInSeconds: ONE_YEAR * SECONDS_IN_DAY,
+        dissolveDelayInSeconds: (ONE_YEAR - initialDelayDays) * SECONDS_IN_DAY,
         neuronId: newNeuron.neuronId,
       });
     });
@@ -475,6 +481,12 @@ describe("NnsStakeNeuronModal", () => {
       const ONE_YEAR = 365;
       await po.getSetDissolveDelayPo().waitFor();
       await po.getSetDissolveDelayPo().getInputWithErrorPo().waitFor();
+
+      const initialDelayDays = Number(
+        await po.getSetDissolveDelayPo().getInputWithErrorPo().getValue()
+      );
+      expect(initialDelayDays).toBe(7);
+
       await po
         .getSetDissolveDelayPo()
         .getInputWithErrorPo()
@@ -489,7 +501,7 @@ describe("NnsStakeNeuronModal", () => {
       await runResolvedPromises();
       expect(updateDelay).toBeCalledTimes(1);
       expect(updateDelay).toBeCalledWith({
-        dissolveDelayInSeconds: ONE_YEAR * SECONDS_IN_DAY,
+        dissolveDelayInSeconds: (ONE_YEAR - initialDelayDays) * SECONDS_IN_DAY,
         neuronId: newNeuron.neuronId,
       });
     });

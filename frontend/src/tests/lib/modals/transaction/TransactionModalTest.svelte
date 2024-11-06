@@ -3,7 +3,7 @@
   import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import type { WizardStep } from "@dfinity/gix-components";
-  import { TokenAmount, ICPToken } from "@dfinity/utils";
+  import { ICPToken, TokenAmount } from "@dfinity/utils";
 
   export let currentStep: WizardStep | undefined;
 

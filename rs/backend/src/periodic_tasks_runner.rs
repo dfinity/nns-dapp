@@ -26,9 +26,10 @@ pub async fn run_periodic_tasks() {
             MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo) => {
                 handle_stake_neuron(principal, memo).await;
             }
-            MultiPartTransactionToBeProcessed::TopUpNeuron(principal, memo) => {
-                handle_top_up_neuron(principal, memo).await;
-            }
+            // TODO: Remove TopUpNeuron after a version has been released that
+            //       does not add TopUpNeuron to the multi-part transaction
+            //       queue anymore.
+            MultiPartTransactionToBeProcessed::TopUpNeuron(_principal, _memo) => {}
             MultiPartTransactionToBeProcessed::CreateCanisterV2(controller) => {
                 handle_create_canister_v2(block_height, controller).await;
             }
@@ -44,13 +45,6 @@ async fn handle_stake_neuron(principal: PrincipalId, memo: Memo) {
         Ok(neuron_id) => with_state_mut(|s| {
             s.accounts_store.mark_neuron_created(&principal, memo, neuron_id);
         }),
-        Err(_error) => (),
-    }
-}
-
-async fn handle_top_up_neuron(principal: PrincipalId, memo: Memo) {
-    match claim_or_refresh_neuron(principal, memo).await {
-        Ok(_) => with_state_mut(|s| s.accounts_store.mark_neuron_topped_up()),
         Err(_error) => (),
     }
 }

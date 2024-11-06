@@ -22,10 +22,10 @@
   import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
   import { valueSpan } from "$lib/utils/utils";
   import {
-    WizardModal,
     Html,
-    type WizardSteps,
+    WizardModal,
     type WizardStep,
+    type WizardSteps,
   } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { ICPToken } from "@dfinity/utils";

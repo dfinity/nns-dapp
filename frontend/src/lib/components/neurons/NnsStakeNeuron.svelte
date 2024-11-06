@@ -2,26 +2,26 @@
   import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
   import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
+  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import {
-    mainTransactionFeeStoreAsToken,
     mainTransactionFeeE8sStore,
+    mainTransactionFeeStoreAsToken,
   } from "$lib/derived/main-transaction-fee.derived";
   import { loadBalance } from "$lib/services/icp-accounts.services";
   import { stakeNeuron } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { ENABLE_NEURON_VISIBILITY } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
   import type { Account } from "$lib/types/account";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import { getMaxTransactionAmount } from "$lib/utils/token.utils";
-  import { busy, Checkbox } from "@dfinity/gix-components";
+  import { Checkbox, busy } from "@dfinity/gix-components";
   import { ICPToken } from "@dfinity/utils";
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
-  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
-  import Separator from "$lib/components/ui/Separator.svelte";
-  import { ENABLE_NEURON_VISIBILITY } from "$lib/stores/feature-flags.store";
 
   export let account: Account | undefined;
   let amount: number;
@@ -81,6 +81,8 @@
   on:submit|preventDefault={createNeuron}
   data-tid="nns-stake-neuron-component"
 >
+  <p class="description">{$i18n.neurons.icp_will_be_locked}</p>
+
   <TransactionFromAccount
     bind:selectedAccount={account}
     canSelectSource={true}
@@ -100,7 +102,6 @@
     <Separator spacing="small" />
 
     <Checkbox
-      preventDefault
       testId="as-public-neuron-checkbox"
       inputId="as-public-neuron-checkbox"
       checked={asPublicNeuron}

@@ -1,8 +1,13 @@
 <script lang="ts">
+  import ImportTokenRemoveConfirmation from "$lib/components/accounts/ImportTokenRemoveConfirmation.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
+  import {
+    icrcCanistersStore,
+    type IcrcCanistersStoreData,
+  } from "$lib/derived/icrc-canisters.derived";
   import { snsLedgerCanisterIdsStore } from "$lib/derived/sns/sns-canisters.derived";
   import {
     snsProjectsCommittedStore,
@@ -19,12 +24,10 @@
   import Tokens from "$lib/pages/Tokens.svelte";
   import { updateBalance } from "$lib/services/ckbtc-minter.services";
   import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
+  import { removeImportedTokens } from "$lib/services/imported-tokens.services";
   import { uncertifiedLoadSnsesAccountsBalances } from "$lib/services/sns-accounts-balance.services";
   import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
-  import {
-    icrcCanistersStore,
-    type IcrcCanistersStoreData,
-  } from "$lib/derived/icrc-canisters.derived";
+  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import type { Account } from "$lib/types/account";
   import { ActionType, type Action } from "$lib/types/actions";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
@@ -34,21 +37,18 @@
     UserTokenFailed,
   } from "$lib/types/tokens-page";
   import type { Universe, UniverseCanisterIdText } from "$lib/types/universe";
+  import { compareTokensForTokensTable } from "$lib/utils/tokens-table.utils";
   import {
     isIcrcTokenUniverse,
     isUniverseCkBTC,
     isUniverseNns,
   } from "$lib/utils/universe.utils";
+  import { isUserTokenData } from "$lib/utils/user-token.utils";
   import { isArrayEmpty } from "$lib/utils/utils";
+  import type { CanisterIdString } from "@dfinity/nns";
   import { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
-  import { compareTokensForTokensTable } from "$lib/utils/tokens-table.utils";
-  import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-  import ImportTokenRemoveConfirmation from "$lib/components/accounts/ImportTokenRemoveConfirmation.svelte";
-  import { isUserTokenData } from "$lib/utils/user-token.utils";
-  import { removeImportedTokens } from "$lib/services/imported-tokens.services";
-  import type { CanisterIdString } from "@dfinity/nns";
 
   onMount(() => {
     loadCkBTCTokens();

@@ -76,7 +76,7 @@ describe("sns-api", () => {
   const stakeNeuronSpy = vi.fn().mockResolvedValue(mockSnsNeuron.id);
   const increaseStakeNeuronSpy = vi.fn();
 
-  beforeAll(() => {
+  beforeEach(() => {
     vi.spyOn(LedgerCanister, "create").mockImplementation(
       () => ledgerCanisterMock
     );
@@ -107,11 +107,6 @@ describe("sns-api", () => {
         getLifecycle: getLifecycleSpy,
       })
     );
-  });
-
-  afterAll(() => {
-    vi.clearAllMocks();
-    vi.restoreAllMocks();
   });
 
   it("should query sns metadata", async () => {

@@ -7,8 +7,8 @@
   import {
     Html,
     WizardModal,
-    type WizardSteps,
     type WizardStep,
+    type WizardSteps,
   } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
 

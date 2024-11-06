@@ -23,6 +23,11 @@ describe("auth-services", () => {
   });
 
   beforeAll(() => {
+    // CAUTION: This replaces window.location but history.replaceState still
+    // changes the original value of window.location so code looking at the
+    // replaced value of window.location will not see such changes.
+    // So if we do this in beforeEach instead of beforeAll, it results in
+    // changes caused by tests being copied over to the new replaced value.
     Object.defineProperty(window, "location", {
       writable: true,
       value: {
@@ -30,10 +35,6 @@ describe("auth-services", () => {
         reload: vi.fn(),
       },
     });
-  });
-
-  afterAll(() => {
-    window.location = originalLocation;
   });
 
   describe("auth-client", () => {

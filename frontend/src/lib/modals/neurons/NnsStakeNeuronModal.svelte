@@ -15,8 +15,8 @@
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import {
     WizardModal,
-    type WizardSteps,
     type WizardStep,
+    type WizardSteps,
   } from "@dfinity/gix-components";
   import { wizardStepIndex } from "@dfinity/gix-components";
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
@@ -119,7 +119,15 @@
       close();
     }
   }
+
   let delayInSeconds = 0;
+
+  const updateDelayFromNeuron = (neuron: NeuronInfo | undefined) => {
+    delayInSeconds = Number(neuron?.dissolveDelaySeconds ?? 0);
+  };
+  // If we update delayInSeconds directly, then it doesn't get updated by the
+  // binding from SetNnsDissolveDelay.
+  $: updateDelayFromNeuron(newNeuron);
 
   // If source account is a hardware wallet, ask user to add a hotkey
   const extendWizardSteps = async () => {

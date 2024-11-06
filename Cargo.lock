@@ -93,9 +93,9 @@ dependencies = [
 
 [[package]]
 name = "anstyle"
-version = "1.0.9"
+version = "1.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8365de52b16c035ff4fcafe0092ba9390540e3e352870ac09933bebcaa2c8c56"
+checksum = "55cc3b69f167a1ef2e161439aa98aed94e6028e5f9a59be9a6ffb47aef1651f9"
 
 [[package]]
 name = "anstyle-parse"
@@ -127,9 +127,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.91"
+version = "1.0.92"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c042108f3ed77fd83760a5fd79b53be043192bb3b9dba91d8c574c0ada7850c8"
+checksum = "74f37166d7d48a0284b99dd824694c26119c700b53bf0d1540cdb147dbdaaf13"
 
 [[package]]
 name = "arbitrary"
@@ -182,7 +182,7 @@ checksum = "965c2d33e53cb6b267e148a4cb0760bc01f4904c1cd4bb4002a085bb016d1490"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
  "synstructure",
 ]
 
@@ -194,7 +194,7 @@ checksum = "7b18050c2cd6fe86c3a76584ef5e0baf286d038cda203eb6223df2cc413565f7"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -205,7 +205,7 @@ checksum = "721cae7de5c34fbb2acd27e21e6d2cf7b886dce0c27388d46c4e6c47ea4318dd"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -359,7 +359,7 @@ dependencies = [
  "proc-macro-crate",
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
  "syn_derive",
 ]
 
@@ -531,7 +531,7 @@ dependencies = [
  "lazy_static",
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -577,9 +577,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.1.31"
+version = "1.1.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c2e7962b54006dcfcc61cb72735f4d89bb97061dd6a7ed882ec6b8ee53714c6f"
+checksum = "67b9470d453346108f93a59222a9a1a5724db32d0a4727b7ab7ace4b4d822dc9"
 dependencies = [
  "shlex",
 ]
@@ -667,7 +667,7 @@ dependencies = [
  "heck 0.5.0",
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -872,13 +872,13 @@ checksum = "f46882e17999c6cc590af592290432be3bce0428cb0d5f8b6715e4dc7b383eb3"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
 name = "cycles-minting-canister"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "async-trait",
  "base64 0.13.1",
@@ -1007,13 +1007,13 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rustc_version",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
 name = "dfn_candid"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "dfn_core",
@@ -1025,7 +1025,7 @@ dependencies = [
 [[package]]
 name = "dfn_core"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-base-types",
  "on_wire",
@@ -1034,7 +1034,7 @@ dependencies = [
 [[package]]
 name = "dfn_http"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "dfn_candid",
@@ -1046,7 +1046,7 @@ dependencies = [
 [[package]]
 name = "dfn_http_metrics"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "dfn_candid",
  "dfn_core",
@@ -1059,7 +1059,7 @@ dependencies = [
 [[package]]
 name = "dfn_protobuf"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "on_wire",
  "prost",
@@ -1112,7 +1112,7 @@ checksum = "97369cbbc041bc366949bc74d34658d6cda5621039731c6310521892a3a20ae0"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -1243,7 +1243,7 @@ checksum = "e8c02a5121d4ea3eb16a80748c74f5549a5665e4c21333c6098f283870fbdea6"
 [[package]]
 name = "fe-derive"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "hex",
  "num-bigint-dig",
@@ -1380,7 +1380,7 @@ checksum = "162ee34ebcb7c64a8abebc059ce0fee27c2262618d7b60ed8faf72fef13c3650"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -1591,7 +1591,7 @@ dependencies = [
 [[package]]
 name = "ic-base-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "byte-unit",
  "bytes",
@@ -1621,7 +1621,7 @@ dependencies = [
 [[package]]
 name = "ic-btc-replica-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "ic-btc-interface",
@@ -1634,7 +1634,7 @@ dependencies = [
 [[package]]
 name = "ic-canister-client-sender"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-base-types",
  "ic-crypto-ed25519",
@@ -1647,7 +1647,7 @@ dependencies = [
 [[package]]
 name = "ic-canister-log"
 version = "0.2.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "serde",
 ]
@@ -1655,7 +1655,7 @@ dependencies = [
 [[package]]
 name = "ic-canister-profiler"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-metrics-encoder",
  "ic0 0.18.11",
@@ -1664,7 +1664,7 @@ dependencies = [
 [[package]]
 name = "ic-canisters-http-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "dfn_candid",
@@ -1737,7 +1737,7 @@ dependencies = [
  "quote",
  "serde",
  "serde_tokenstream 0.2.2",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -1792,7 +1792,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-ed25519"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "curve25519-dalek",
  "ed25519-dalek",
@@ -1806,7 +1806,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-getrandom-for-wasm"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "getrandom",
 ]
@@ -1814,7 +1814,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-basic-sig-der-utils"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "hex",
  "ic-types",
@@ -1824,7 +1824,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-basic-sig-ed25519"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "base64 0.13.1",
  "curve25519-dalek",
@@ -1846,7 +1846,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-bls12-381-type"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "hex",
  "ic_bls12_381",
@@ -1864,7 +1864,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-hmac"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-crypto-internal-sha2",
 ]
@@ -1872,7 +1872,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-multi-sig-bls12381"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "base64 0.13.1",
  "hex",
@@ -1891,7 +1891,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-seed"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "hex",
  "ic-crypto-sha2",
@@ -1904,7 +1904,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-sha2"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "sha2",
 ]
@@ -1912,7 +1912,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-threshold-sig-bls12381"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "base64 0.13.1",
  "cached",
@@ -1938,7 +1938,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-threshold-sig-canister-threshold-sig"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "curve25519-dalek",
  "fe-derive",
@@ -1968,7 +1968,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "arrayvec 0.7.6",
  "hex",
@@ -1985,7 +1985,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-node-key-validation"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "hex",
  "ic-base-types",
@@ -2003,7 +2003,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-secp256k1"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "hmac",
  "k256",
@@ -2019,7 +2019,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-secrets-containers"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "serde",
  "zeroize",
@@ -2028,7 +2028,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-sha2"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-crypto-internal-sha2",
 ]
@@ -2036,7 +2036,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-tls-cert-validation"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "hex",
  "ic-crypto-internal-basic-sig-ed25519",
@@ -2049,7 +2049,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-tree-hash"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-crypto-internal-types",
  "ic-crypto-sha2",
@@ -2062,7 +2062,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-utils-basic-sig"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-base-types",
  "ic-crypto-ed25519",
@@ -2072,7 +2072,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-utils-ni-dkg"
 version = "0.8.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-crypto-internal-types",
  "ic-protobuf",
@@ -2082,7 +2082,7 @@ dependencies = [
 [[package]]
 name = "ic-error-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-protobuf",
  "ic-utils",
@@ -2094,7 +2094,7 @@ dependencies = [
 [[package]]
 name = "ic-icrc1"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "ciborium",
@@ -2117,7 +2117,7 @@ dependencies = [
 [[package]]
 name = "ic-icrc1-index-ng"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "ciborium",
@@ -2145,7 +2145,7 @@ dependencies = [
 [[package]]
 name = "ic-icrc1-ledger"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "async-trait",
  "candid",
@@ -2174,7 +2174,7 @@ dependencies = [
 [[package]]
 name = "ic-icrc1-tokens-u64"
 version = "0.1.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "ic-ledger-core",
@@ -2186,7 +2186,7 @@ dependencies = [
 [[package]]
 name = "ic-ledger-canister-core"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "async-trait",
  "candid",
@@ -2204,7 +2204,7 @@ dependencies = [
 [[package]]
 name = "ic-ledger-core"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "ic-ledger-hash-of",
@@ -2217,7 +2217,7 @@ dependencies = [
 [[package]]
 name = "ic-ledger-hash-of"
 version = "0.1.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "hex",
@@ -2227,12 +2227,12 @@ dependencies = [
 [[package]]
 name = "ic-limits"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 
 [[package]]
 name = "ic-management-canister-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2258,7 +2258,7 @@ checksum = "8b5c7628eac357aecda461130f8074468be5aa4d258a002032d82d817f79f1f8"
 [[package]]
 name = "ic-nervous-system-canisters"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "async-trait",
  "candid",
@@ -2275,7 +2275,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-clients"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "async-trait",
  "candid",
@@ -2298,12 +2298,12 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-collections-union-multi-map"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 
 [[package]]
 name = "ic-nervous-system-common"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "async-trait",
  "base64 0.13.1",
@@ -2338,12 +2338,12 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-common-build-metadata"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 
 [[package]]
 name = "ic-nervous-system-common-test-keys"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-base-types",
  "ic-canister-client-sender",
@@ -2356,12 +2356,12 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-common-validation"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 
 [[package]]
 name = "ic-nervous-system-governance"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-base-types",
  "ic-stable-structures",
@@ -2373,7 +2373,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-initial-supply"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "async-trait",
  "candid",
@@ -2387,12 +2387,12 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-lock"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 
 [[package]]
 name = "ic-nervous-system-proto"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "comparable",
@@ -2405,7 +2405,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-proxied-canister-calls-tracker"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-base-types",
 ]
@@ -2413,7 +2413,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-root"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "dfn_core",
@@ -2429,7 +2429,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-runtime"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "async-trait",
  "candid",
@@ -2442,17 +2442,17 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-string"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 
 [[package]]
 name = "ic-nervous-system-temporary"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 
 [[package]]
 name = "ic-neurons-fund"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-nervous-system-common",
  "lazy_static",
@@ -2465,7 +2465,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-common"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "comparable",
@@ -2491,7 +2491,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-constants"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-base-types",
  "maplit",
@@ -2500,7 +2500,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-governance"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "async-trait",
  "build-info",
@@ -2573,7 +2573,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-governance-api"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "bytes",
  "candid",
@@ -2601,7 +2601,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-governance-init"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "csv",
  "ic-base-types",
@@ -2618,12 +2618,12 @@ dependencies = [
 [[package]]
 name = "ic-nns-gtc-accounts"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 
 [[package]]
 name = "ic-nns-handler-root-interface"
 version = "0.1.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "async-trait",
  "candid",
@@ -2638,7 +2638,7 @@ dependencies = [
 [[package]]
 name = "ic-protobuf"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "bincode",
  "candid",
@@ -2652,7 +2652,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-canister-api"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2663,7 +2663,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-keys"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2675,7 +2675,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-node-provider-rewards"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-base-types",
  "ic-protobuf",
@@ -2684,7 +2684,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-routing-table"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2695,7 +2695,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-subnet-features"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "ic-management-canister-types",
@@ -2706,7 +2706,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-subnet-type"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "ic-protobuf",
@@ -2718,7 +2718,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-transport"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2730,7 +2730,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "async-trait",
  "base64 0.13.1",
@@ -2791,7 +2791,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance-proposal-criticality"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-nervous-system-proto",
 ]
@@ -2799,7 +2799,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance-proposals-amount-total-limit"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-sns-governance-token-valuation",
  "num-traits",
@@ -2810,7 +2810,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance-token-valuation"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "async-trait",
  "candid",
@@ -2832,7 +2832,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-init"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "base64 0.13.1",
  "candid",
@@ -2860,7 +2860,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-root"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "async-trait",
  "build-info",
@@ -2879,6 +2879,7 @@ dependencies = [
  "ic-nervous-system-clients",
  "ic-nervous-system-common",
  "ic-nervous-system-common-build-metadata",
+ "ic-nervous-system-proto",
  "ic-nervous-system-root",
  "ic-nervous-system-runtime",
  "ic-sns-swap",
@@ -2890,7 +2891,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-swap"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "async-trait",
  "build-info",
@@ -2930,7 +2931,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-swap-proto-library"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "comparable",
@@ -2945,7 +2946,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-wasm"
 version = "1.0.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "async-trait",
  "candid",
@@ -2991,7 +2992,7 @@ dependencies = [
 [[package]]
 name = "ic-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "base64 0.13.1",
  "bincode",
@@ -3028,7 +3029,7 @@ dependencies = [
 [[package]]
 name = "ic-utils"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "hex",
  "scoped_threadpool",
@@ -3039,7 +3040,7 @@ dependencies = [
 [[package]]
 name = "ic-validate-eq"
 version = "0.0.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "ic-validate-eq-derive",
 ]
@@ -3047,7 +3048,7 @@ dependencies = [
 [[package]]
 name = "ic-validate-eq-derive"
 version = "0.0.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3131,7 +3132,7 @@ dependencies = [
 [[package]]
 name = "icp-ledger"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "comparable",
@@ -3161,7 +3162,7 @@ dependencies = [
 [[package]]
 name = "icrc-ledger-client"
 version = "0.1.2"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "async-trait",
  "candid",
@@ -3172,7 +3173,7 @@ dependencies = [
 [[package]]
 name = "icrc-ledger-types"
 version = "0.1.6"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "base32",
  "candid",
@@ -3305,7 +3306,7 @@ checksum = "1ec89e9337638ecdc08744df490b221a7399bf8d164eb52a665454e60e075ad6"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -3560,9 +3561,9 @@ dependencies = [
 
 [[package]]
 name = "libm"
-version = "0.2.9"
+version = "0.2.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3bda4c6077b0b08da2c48b172195795498381a7c8988c9e6212a6c55c5b9bd70"
+checksum = "8355be11b20d696c8f18f6cc018c4e372165b1fa8126cef092399c9951984ffa"
 
 [[package]]
 name = "libredox"
@@ -3623,7 +3624,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "regex-syntax 0.6.29",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -3730,7 +3731,7 @@ dependencies = [
  "cfg-if",
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -3747,7 +3748,7 @@ checksum = "650eef8c711430f1a879fdd01d4745a7deea475becfb90269c06775983bbf086"
 
 [[package]]
 name = "nns-dapp"
-version = "2.0.92"
+version = "2.0.93"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -3889,7 +3890,7 @@ dependencies = [
 [[package]]
 name = "on_wire"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 
 [[package]]
 name = "once_cell"
@@ -4002,7 +4003,7 @@ dependencies = [
  "pest_meta",
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -4029,7 +4030,7 @@ dependencies = [
 [[package]]
 name = "phantom_newtype"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "candid",
  "num-traits",
@@ -4155,7 +4156,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "64d1ec885c64d0457d564db4ec299b2dae3f9c02808b8ad9c3a089c591b18033"
 dependencies = [
  "proc-macro2",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -4239,7 +4240,7 @@ dependencies = [
 
 [[package]]
 name = "proposals"
-version = "2.0.92"
+version = "2.0.93"
 dependencies = [
  "anyhow",
  "candid",
@@ -4313,7 +4314,7 @@ dependencies = [
  "prost",
  "prost-types",
  "regex",
- "syn 2.0.85",
+ "syn 2.0.87",
  "tempfile",
 ]
 
@@ -4327,7 +4328,7 @@ dependencies = [
  "itertools 0.13.0",
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -4486,7 +4487,7 @@ checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
 [[package]]
 name = "registry-canister"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-10-23_03-07-ubuntu20.04#a6ef5933e981873fdbdbbed4cd1eae02e2917aa6"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-10-31_03-09-ubuntu20.04#51f6f4e4ab7fa2a8ad4cf573e04fc2686e14fa57"
 dependencies = [
  "build-info",
  "build-info-build",
@@ -4635,9 +4636,9 @@ dependencies = [
 
 [[package]]
 name = "rustix"
-version = "0.38.37"
+version = "0.38.38"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8acb788b847c24f28525660c4d7758620a7210875711f79e7f663cc152726811"
+checksum = "aa260229e6538e52293eeb577aabd09945a09d6d9cc0fc550ed7529056c2e32a"
 dependencies = [
  "bitflags",
  "errno",
@@ -4722,9 +4723,9 @@ dependencies = [
 
 [[package]]
 name = "serde"
-version = "1.0.213"
+version = "1.0.214"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ea7893ff5e2466df8d720bb615088341b295f849602c6956047f8f80f0e9bc1"
+checksum = "f55c3193aca71c12ad7890f1785d2b73e1b9f63a0bbc353c08ef26fe03fc56b5"
 dependencies = [
  "serde_derive",
 ]
@@ -4750,13 +4751,13 @@ dependencies = [
 
 [[package]]
 name = "serde_derive"
-version = "1.0.213"
+version = "1.0.214"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7e85ad2009c50b58e87caa8cd6dac16bdf511bbfb7af6c33df902396aa480fa5"
+checksum = "de523f781f095e28fa605cdce0f8307e451cc0fd14e2eb4cd2e98a355b147766"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -4791,7 +4792,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "serde",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -4924,7 +4925,7 @@ checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
 
 [[package]]
 name = "sns_aggregator"
-version = "2.0.92"
+version = "2.0.93"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -5037,7 +5038,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rustversion",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -5059,9 +5060,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.85"
+version = "2.0.87"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5023162dfcd14ef8f32034d8bcd4cc5ddc61ef7a247c024a33e24e1f24d21b56"
+checksum = "25aa4ce346d03a6dcd68dd8b4010bcb74e54e62c90c573f394c46eae99aba32d"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -5077,7 +5078,7 @@ dependencies = [
  "proc-macro-error",
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -5088,7 +5089,7 @@ checksum = "c8af7666ab7b6390ab78131fb5b0fce11d6b7a6951602017c35fa82800708971"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -5099,9 +5100,9 @@ checksum = "55937e1799185b12863d447f42597ed69d9928686b8d88a1df17376a097d8369"
 
 [[package]]
 name = "tar"
-version = "0.4.42"
+version = "0.4.43"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4ff6c40d3aedb5e06b57c6f669ad17ab063dd1e63d977c6a88e7f4dfa4f04020"
+checksum = "c65998313f8e17d0d553d28f91a0df93e4dbbbf770279c7bc21ca0f09ea1a1f6"
 dependencies = [
  "filetime",
  "libc",
@@ -5149,22 +5150,22 @@ checksum = "3369f5ac52d5eb6ab48c6b4ffdc8efbcad6b89c765749064ba298f2c68a16a76"
 
 [[package]]
 name = "thiserror"
-version = "1.0.65"
+version = "1.0.66"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d11abd9594d9b38965ef50805c5e469ca9cc6f197f883f717e0269a3057b3d5"
+checksum = "5d171f59dbaa811dbbb1aee1e73db92ec2b122911a48e1390dfe327a821ddede"
 dependencies = [
  "thiserror-impl",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "1.0.65"
+version = "1.0.66"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ae71770322cbd277e69d762a16c444af02aa0575ac0d174f0b9562d3b37f8602"
+checksum = "b08be0f17bd307950653ce45db00cd31200d82b624b36e181337d9c7d92765b5"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -5264,7 +5265,7 @@ checksum = "693d596312e88961bc67d7f1f97af8a70227d9f90c31bba5806eec004978d752"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -5476,7 +5477,7 @@ dependencies = [
  "once_cell",
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
  "wasm-bindgen-shared",
 ]
 
@@ -5498,7 +5499,7 @@ checksum = "26c6ab57572f7a24a4985830b120de1594465e5d500f24afe89e16b4e833ef68"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
@@ -5753,7 +5754,7 @@ checksum = "28cc31741b18cb6f1d5ff12f5b7523e3d6eb0852bbbad19d73905511d9849b95"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
  "synstructure",
 ]
 
@@ -5775,7 +5776,7 @@ checksum = "fa4f8080344d4671fb4e831a13ad1e68092748387dfc4f55e356242fae12ce3e"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -5795,7 +5796,7 @@ checksum = "0ea7b4a3637ea8669cedf0f1fd5c286a17f3de97b8dd5a70a6c167a1730e63a5"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
  "synstructure",
 ]
 
@@ -5816,7 +5817,7 @@ checksum = "ce36e65b0d2999d2aafac989fb249189a141aee1f53c612c1f37d72631959f69"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]
 
 [[package]]
@@ -5838,5 +5839,5 @@ checksum = "6eafa6dfb17584ea3e2bd6e76e0cc15ad7af12b09abdd1ca55961bed9b1063c6"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.87",
 ]

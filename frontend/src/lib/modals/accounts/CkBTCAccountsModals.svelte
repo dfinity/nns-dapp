@@ -2,11 +2,11 @@
   import CkBTCReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
   import CkBTCTransactionTokenModal from "$lib/modals/accounts/CkBTCTransactionTokenModal.svelte";
   import type {
+    CkBTCReceiveModalData,
+    CkBTCTransactionModalData,
     CkBTCWalletModal,
     CkBTCWalletModalData,
     CkBTCWalletModalType,
-    CkBTCReceiveModalData,
-    CkBTCTransactionModalData,
   } from "$lib/types/ckbtc-accounts.modal";
   import { nonNullish } from "@dfinity/utils";
 

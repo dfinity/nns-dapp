@@ -22,10 +22,6 @@ describe("SelectUniverseNavList", () => {
     });
   });
 
-  afterAll(() => {
-    vi.clearAllMocks();
-  });
-
   it("should render universe cards as buttons", () => {
     const { getAllByRole } = render(SelectUniverseNavList);
     // 1 for Sns project + 1 for Internet Computer / NNS + 1 for ckBTC + 1 for ckTESTBTC

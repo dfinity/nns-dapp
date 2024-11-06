@@ -11,6 +11,31 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 133898
+
+### Application
+
+#### Added
+
+* Provide better error messages when the transaction timestamp is off.
+* A link to the imported tokens documentation page.
+* Refresh NNS neurons from neuron details page if needed, instead of from the nns-dapp canister.
+* Inform the user in the staking modal that the minimum dissolve delay for NNS neurons is 7 days.
+* Support public/private neuron visibility.
+
+#### Changed
+
+* Change Internet Computer Association neuron title.
+* Stop hiding the bottom menu logo and collapse button on small screens.
+* Remove menu footer on collapsed menu.
+
+#### Fixed
+
+* Race condition in proposal loading.
+* Consistently identify a proposal by its type in voting progress toasts.
+
+### Operations
+
 ## Proposal 133373
 
 ### Application

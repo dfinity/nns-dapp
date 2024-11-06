@@ -1,5 +1,5 @@
 {
-  "dfx": "0.24.0",
+  "dfx": "0.24.1",
   "canisters": {
     "nns-governance": {
       "type": "custom",
@@ -386,9 +386,8 @@
         "FEATURE_FLAGS": {
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
-          "ENABLE_IMPORT_TOKEN": true,
           "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
-          "ENABLE_NEURON_VISIBILITY": false
+          "ENABLE_NEURON_VISIBILITY": true
         }
       }
     },
@@ -403,9 +402,9 @@
         "DIDC_VERSION": "didc 0.4.0",
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2024-10-23",
-        "IC_COMMIT_FOR_PROPOSALS": "release-2024-10-23_03-07-ubuntu20.04",
-        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-10-17_03-07-scheduler-changes-guestos-revert"
+        "SNSDEMO_RELEASE": "release-2024-10-30",
+        "IC_COMMIT_FOR_PROPOSALS": "release-2024-10-31_03-09-ubuntu20.04",
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-10-31_03-09-ubuntu20.04"
       },
       "packtool": ""
     }

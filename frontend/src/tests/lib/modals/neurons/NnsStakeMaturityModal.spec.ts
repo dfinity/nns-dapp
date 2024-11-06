@@ -1,5 +1,6 @@
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import NnsStakeMaturityModal from "$lib/modals/neurons/NnsStakeMaturityModal.svelte";
+import * as neuronsServices from "$lib/services/neurons.services";
 import { stakeMaturity } from "$lib/services/neurons.services";
 import { formattedMaturity } from "$lib/utils/neuron.utils";
 import {
@@ -12,15 +13,16 @@ import { selectPercentage } from "$tests/utils/neurons-modal.test-utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
-vi.mock("$lib/services/neurons.services", () => {
-  return {
-    stakeMaturity: vi.fn().mockResolvedValue({ success: true }),
-    mergeMaturity: vi.fn().mockResolvedValue({ success: true }),
-    getNeuronFromStore: vi.fn(),
-  };
-});
-
 describe("NnsStakeMaturityModal", () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+
+    vi.spyOn(neuronsServices, "stakeMaturity").mockResolvedValue({
+      success: true,
+    });
+    vi.spyOn(neuronsServices, "getNeuronFromStore").mockReturnValue(undefined);
+  });
+
   const neuronIc = {
     ...mockNeuron,
     fullNeuron: {
@@ -97,7 +99,7 @@ describe("NnsStakeMaturityModal", () => {
   });
 
   describe("HW", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
         mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
       );

@@ -1431,7 +1431,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 999841440000,
+    "icrc1_total_supply": 999838320000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1818,7 +1818,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 99999847880000,
+    "icrc1_total_supply": 99999846580000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2212,7 +2212,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041743063321991200,
+    "icrc1_total_supply": 1041739287339957600,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2846,7 +2846,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11646723196649698,
+    "icrc1_total_supply": 11647207784499956,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -3744,7 +3744,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 2004568869617489,
+    "icrc1_total_supply": 2004896004714371,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 400000000,
@@ -4352,7 +4352,7 @@
       ]
     ],
     "icrc1_fee": [705032704, 1],
-    "icrc1_total_supply": 2426562853829327000,
+    "icrc1_total_supply": 2426956748177057000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4891,7 +4891,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999999985440000,
+    "icrc1_total_supply": 1999999984680000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
@@ -8166,8 +8166,8 @@
         "decentralization_sale_open_timestamp_seconds": 1729615500
       },
       "derived": {
-        "buyer_total_icp_e8s": 20247083317975,
-        "sns_tokens_per_icp": 1086.5763
+        "buyer_total_icp_e8s": 22298985267068,
+        "sns_tokens_per_icp": 986.592
       }
     },
     "icrc1_metadata": [
@@ -9051,12 +9051,12 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 1086.5762939453125,
-      "buyer_total_icp_e8s": 20247083317975,
+      "sns_tokens_per_icp": 986.5919799804688,
+      "buyer_total_icp_e8s": 22298985267068,
       "cf_participant_count": 0,
-      "neurons_fund_participation_icp_e8s": 9551008537079,
-      "direct_participation_icp_e8s": 10696074780896,
-      "direct_participant_count": 279,
+      "neurons_fund_participation_icp_e8s": 10224222783547,
+      "direct_participation_icp_e8s": 12074762483521,
+      "direct_participant_count": 482,
       "cf_neuron_count": 0
     },
     "lifecycle": {

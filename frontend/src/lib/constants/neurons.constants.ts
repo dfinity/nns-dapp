@@ -1,4 +1,7 @@
-import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
+import {
+  SECONDS_IN_7_DAYS,
+  SECONDS_IN_HALF_YEAR,
+} from "$lib/constants/constants";
 import { enumValues } from "$lib/utils/enum.utils";
 import { Topic } from "@dfinity/nns";
 
@@ -12,6 +15,7 @@ export const MAX_NEURON_ID_DIGITS = 20;
 
 export const MAX_DISSOLVE_DELAY_BONUS = 1; // = +100%
 export const MAX_AGE_BONUS = 0.25; // = +25%
+export const NNS_MINIMUM_DISSOLVE_DELAY = SECONDS_IN_7_DAYS;
 export const NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE = SECONDS_IN_HALF_YEAR;
 
 const FIRST_TOPICS = [

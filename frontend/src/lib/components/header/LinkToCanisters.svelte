@@ -1,9 +1,9 @@
 <script lang="ts">
+  import { beforeNavigate } from "$app/navigation";
+  import { canistersPathStore } from "$lib/derived/paths.derived";
   import { i18n } from "$lib/stores/i18n";
   import { IconExplore } from "@dfinity/gix-components";
-  import { canistersPathStore } from "$lib/derived/paths.derived";
   import { createEventDispatcher } from "svelte";
-  import { beforeNavigate } from "$app/navigation";
 
   const dispatcher = createEventDispatcher();
 

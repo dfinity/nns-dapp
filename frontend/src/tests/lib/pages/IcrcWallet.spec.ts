@@ -12,7 +12,6 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import IcrcWallet from "$lib/pages/IcrcWallet.svelte";
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -116,9 +115,9 @@ describe("IcrcWallet", () => {
     balancesObserverCallback = undefined;
     vi.clearAllMocks();
     vi.clearAllTimers();
+    vi.useRealTimers();
     vi.restoreAllMocks();
     tokensStore.reset();
-    overrideFeatureFlagsStore.reset();
     toastsStore.reset();
     resetIdentity();
     defaultIcrcCanistersStore.reset();
@@ -260,10 +259,6 @@ describe("IcrcWallet", () => {
             : mockCkETHMainAccount.balanceUlps
         );
       });
-    });
-
-    afterAll(() => {
-      vi.useRealTimers();
     });
 
     it("should render Icrc token name", async () => {
@@ -408,13 +403,6 @@ describe("IcrcWallet", () => {
     it('should render "more" button', async () => {
       const po = await renderWallet({});
       expect(await po.getMoreButton().isPresent()).toBe(true);
-    });
-
-    it("should not display more button when ENABLE_IMPORT_TOKEN disabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN", false);
-
-      const po = await renderWallet({});
-      expect(await po.getMoreButton().isPresent()).toBe(false);
     });
 
     it('should have canister links in "more" popup', async () => {

@@ -1,5 +1,8 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import {
     isCkBTCUniverseStore,
     isIcrcTokenUniverseStore,
@@ -14,13 +17,10 @@
   import NnsWallet from "$lib/pages/NnsWallet.svelte";
   import SnsWallet from "$lib/pages/SnsWallet.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { layoutTitleStore } from "$lib/stores/layout.store";
-  import { nonNullish, isNullish } from "@dfinity/utils";
-  import { AppPath } from "$lib/constants/routes.constants";
-  import { goto } from "$app/navigation";
-  import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
+  import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let accountIdentifier: string | undefined | null = undefined;
 

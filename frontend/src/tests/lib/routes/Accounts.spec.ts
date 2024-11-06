@@ -20,7 +20,10 @@ import {
 import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetAccountsForTesting } from "$tests/utils/accounts.test-utils";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
@@ -176,6 +179,93 @@ describe("Accounts", () => {
 
         await modalPo.addAccount(subaccountName);
 
+        await runResolvedPromises();
+
+        expect(await tablePo.getRowsData()).toEqual([
+          {
+            balance: "3.14 ICP",
+            projectName: "Main",
+          },
+          {
+            balance: "0 ICP",
+            projectName: subaccountName,
+          },
+        ]);
+      });
+
+      it("should not show a stale subaccounts update response after a newer query response", async () => {
+        // Simulate the account already having been loaded before navigating
+        // to the accounts view.
+        setAccountsForTesting({
+          main: {
+            ...mockMainAccount,
+            balanceUlps: mainAccountBalance,
+          },
+          certified: false,
+        });
+
+        const resolveQueryAccountsQueryResponse = [];
+        const resolveQueryAccountsUpdateResponse = [];
+
+        vi.spyOn(nnsDappApi, "queryAccount").mockImplementation(
+          ({ certified }) =>
+            new Promise((resolve) => {
+              if (certified) {
+                resolveQueryAccountsUpdateResponse.push(resolve);
+              } else {
+                resolveQueryAccountsQueryResponse.push(resolve);
+              }
+            })
+        );
+
+        const po = await renderComponent();
+        await runResolvedPromises();
+
+        expect(resolveQueryAccountsQueryResponse).toHaveLength(0);
+        expect(resolveQueryAccountsUpdateResponse).toHaveLength(1);
+
+        // Don't resolve the queryAccounts response yet. The component renders
+        // what was already in the store.
+
+        const tablePo = po.getNnsAccountsPo().getTokensTablePo();
+        expect(await tablePo.getRowsData()).toEqual([
+          {
+            balance: "3.14 ICP",
+            projectName: "Main",
+          },
+        ]);
+
+        const pagePo = po.getNnsAccountsPo();
+
+        await pagePo.clickAddAccount();
+
+        const modalPo = po.getAddAccountModalPo();
+        expect(await modalPo.isPresent()).toBe(true);
+
+        await modalPo.addAccount(subaccountName);
+        await runResolvedPromises();
+
+        expect(resolveQueryAccountsQueryResponse).toHaveLength(1);
+        expect(resolveQueryAccountsUpdateResponse).toHaveLength(2);
+
+        resolveQueryAccountsQueryResponse.shift()({
+          ...mockAccountDetails,
+          sub_accounts: [subaccountDetails],
+        });
+        await runResolvedPromises();
+
+        expect(await tablePo.getRowsData()).toEqual([
+          {
+            balance: "3.14 ICP",
+            projectName: "Main",
+          },
+          {
+            balance: "0 ICP",
+            projectName: subaccountName,
+          },
+        ]);
+
+        resolveQueryAccountsUpdateResponse.shift()(mockAccountDetails);
         await runResolvedPromises();
 
         expect(await tablePo.getRowsData()).toEqual([

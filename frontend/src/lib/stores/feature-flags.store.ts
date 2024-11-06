@@ -32,7 +32,6 @@ const assertEditableFeatureFlag = (flag: FeatureKey) => {
 export const EDITABLE_FEATURE_FLAGS: Array<FeatureKey> = [
   "TEST_FLAG_EDITABLE",
   "ENABLE_CKTESTBTC",
-  "ENABLE_IMPORT_TOKEN",
   "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING",
   "ENABLE_NEURON_VISIBILITY",
 ];
@@ -150,7 +149,6 @@ const featureFlagsStore = initFeatureFlagsStore();
 export const {
   ENABLE_CKBTC,
   ENABLE_CKTESTBTC,
-  ENABLE_IMPORT_TOKEN,
   DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING,
   ENABLE_NEURON_VISIBILITY,
   // Used only in tests only

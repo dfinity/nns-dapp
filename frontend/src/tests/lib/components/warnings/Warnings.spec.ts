@@ -35,6 +35,7 @@ vi.mock("$lib/constants/environment.constants.ts", async () => {
 
 describe("Warnings", () => {
   beforeEach(() => {
+    vi.clearAllMocks();
     metricsCallback = undefined;
   });
 
@@ -42,11 +43,6 @@ describe("Warnings", () => {
     beforeEach(() => {
       metricsStore.set(undefined);
       toastsStore.reset();
-    });
-
-    afterAll(() => {
-      vi.clearAllMocks();
-      vi.resetAllMocks();
     });
 
     const transactionRateHighLoad: DashboardMessageExecutionRateResponse = {

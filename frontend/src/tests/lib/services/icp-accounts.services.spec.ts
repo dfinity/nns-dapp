@@ -4,6 +4,7 @@ import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as nnsdappApi from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
@@ -25,6 +26,7 @@ import {
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
 import { icpAccountDetailsStore } from "$lib/stores/icp-account-details.store";
+import type { Account } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import { toIcpAccountIdentifier } from "$lib/utils/accounts.utils";
 import {
@@ -40,6 +42,7 @@ import {
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
+  mockSubAccountDetails,
 } from "$tests/mocks/icp-accounts.store.mock";
 import {
   mockSnsMainAccount,
@@ -303,28 +306,45 @@ describe("icp-accounts.services", () => {
       const queryMainBalanceE8s = 10_000_000n;
       const updateMainBalanceE8s = 20_000_000n;
       const queryBalanceResponse = Promise.resolve(queryMainBalanceE8s);
-      let resolveUpdateResponse;
+      let resolveBalanceUpdateResponse;
       const updateBalanceResponse = new Promise<bigint>((resolve) => {
-        resolveUpdateResponse = () => resolve(updateMainBalanceE8s);
+        resolveBalanceUpdateResponse = () => resolve(updateMainBalanceE8s);
+      });
+
+      const oldAccountDetails: AccountDetails = {
+        ...mockAccountDetails,
+        sub_accounts: [],
+      };
+      const newAccountDetails: AccountDetails = {
+        ...mockAccountDetails,
+        sub_accounts: [mockSubAccountDetails],
+      };
+      const queryAccountResponse = Promise.resolve(oldAccountDetails);
+      let resolveAccountUpdateResponse;
+      const updateAccountResponse = new Promise<AccountDetails>((resolve) => {
+        resolveAccountUpdateResponse = () => resolve(oldAccountDetails);
       });
 
       vi.spyOn(ledgerApi, "queryAccountBalance").mockImplementation(
         ({ certified }) =>
           certified ? updateBalanceResponse : queryBalanceResponse
       );
-      vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(
-        mockAccountDetails
+      vi.spyOn(nnsdappApi, "queryAccount").mockImplementation(
+        ({ certified }) =>
+          certified ? updateAccountResponse : queryAccountResponse
       );
       const accountsWith = ({
         mainBalanceE8s,
+        subAccounts,
       }: {
         mainBalanceE8s: bigint;
+        subAccounts?: Account[];
       }) => ({
         main: {
           ...mockMainAccount,
           balanceUlps: mainBalanceE8s,
         },
-        subAccounts: [],
+        subAccounts: subAccounts ?? [],
         hardwareWallets: [],
       });
       await syncAccounts();
@@ -337,19 +357,28 @@ describe("icp-accounts.services", () => {
       vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
         newerMainBalanceE8s
       );
+      vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(newAccountDetails);
       await syncAccounts();
       await runResolvedPromises();
 
-      expect(get(icpAccountsStore)).toEqual(
-        accountsWith({ mainBalanceE8s: newerMainBalanceE8s })
-      );
+      const expectedAccountsStoreContent = accountsWith({
+        mainBalanceE8s: newerMainBalanceE8s,
+        subAccounts: [
+          {
+            ...mockSubAccount,
+            balanceUlps: newerMainBalanceE8s,
+            name: mockSubAccountDetails.name,
+            subAccount: mockSubAccountDetails.sub_account,
+          },
+        ],
+      });
+      expect(get(icpAccountsStore)).toEqual(expectedAccountsStoreContent);
 
-      resolveUpdateResponse();
+      resolveBalanceUpdateResponse();
+      resolveAccountUpdateResponse();
       await runResolvedPromises();
 
-      expect(get(icpAccountsStore)).toEqual(
-        accountsWith({ mainBalanceE8s: newerMainBalanceE8s })
-      );
+      expect(get(icpAccountsStore)).toEqual(expectedAccountsStoreContent);
     });
   });
 

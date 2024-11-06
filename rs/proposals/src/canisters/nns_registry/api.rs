@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-23_03-07-ubuntu20.04/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-31_03-09-ubuntu20.04/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -158,8 +158,19 @@ pub struct SchnorrKeyId {
     pub name: String,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub enum VetKdCurve {
+    #[serde(rename = "bls12_381_g2")]
+    Bls12381G2,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct VetKdKeyId {
+    pub name: String,
+    pub curve: VetKdCurve,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub enum MasterPublicKeyId {
     Schnorr(SchnorrKeyId),
+    VetKd(VetKdKeyId),
     Ecdsa(EcdsaKeyId),
 }
 #[derive(Serialize, CandidType, Deserialize)]

@@ -6,8 +6,8 @@
   import type { SnsProposalDataMap } from "$lib/utils/sns-proposals.utils";
   import { basisPointsToPercent } from "$lib/utils/utils";
   import {
-    type SnsProposalData,
     SnsProposalRewardStatus,
+    type SnsProposalData,
     type SnsTally,
   } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";

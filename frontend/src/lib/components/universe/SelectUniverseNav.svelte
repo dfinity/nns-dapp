@@ -2,7 +2,7 @@
   import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
   import SelectUniverseNavList from "$lib/components/universe/SelectUniverseNavList.svelte";
   import { titleTokenSelectorStore } from "$lib/derived/title-token-selector.derived";
-  import { Nav, BREAKPOINT_LARGE } from "@dfinity/gix-components";
+  import { BREAKPOINT_LARGE, Nav } from "@dfinity/gix-components";
 
   let innerWidth = 0;
   let list = false;

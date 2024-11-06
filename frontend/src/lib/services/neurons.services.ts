@@ -1037,6 +1037,9 @@ export const refreshNeuronIfNeeded = async (
 
   if (await neuronNeedsRefresh(neuron.fullNeuron)) {
     await reloadNeuron(neuron.neuronId);
+    toastsSuccess({
+      labelKey: "neuron_detail.neuron_stake_refreshed",
+    });
   }
 };
 

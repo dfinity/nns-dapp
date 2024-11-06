@@ -20,7 +20,6 @@ import {
   splitNeuron,
   stakeMaturity,
   stakeNeuron,
-  stakeNeuronIcrc1,
   startDissolving,
   stopDissolving,
   type ApiAutoStakeMaturityParams,
@@ -37,7 +36,6 @@ import {
   type ApiSpawnNeuronParams,
   type ApiSplitNeuronParams,
   type ApiStakeMaturityParams,
-  type ApiStakeNeuronIcrc1Params,
   type ApiStakeNeuronParams,
   type RegisterVoteParams,
 } from "$lib/api/governance.api";
@@ -196,9 +194,6 @@ export const governanceApiService = {
   },
   stakeNeuron(params: ApiStakeNeuronParams) {
     return clearCacheAfter(stakeNeuron(params));
-  },
-  stakeNeuronIcrc1(params: ApiStakeNeuronIcrc1Params) {
-    return clearCacheAfter(stakeNeuronIcrc1(params));
   },
   startDissolving(params: ApiManageNeuronParams) {
     return clearCacheAfter(startDissolving(params));

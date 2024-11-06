@@ -17,14 +17,16 @@ vi.mock("$lib/services/public/worker-metrics.services", () => ({
 }));
 
 describe("Layout", () => {
+  beforeEach(() => {
+    layoutTitleStore.set({ title: "" });
+  });
+
   describe("Main layout", () => {
-    beforeAll(() =>
+    beforeEach(() => {
       layoutTitleStore.set({
         title: "the header",
-      })
-    );
-
-    afterAll(() => layoutTitleStore.set({ title: "" }));
+      });
+    });
 
     it("should render a menu button", () => {
       const { getByTestId } = render(LayoutTest, { props: { spy: undefined } });

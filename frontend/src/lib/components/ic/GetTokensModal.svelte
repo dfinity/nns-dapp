@@ -7,13 +7,13 @@
     getTestIcpAccountBalance,
   } from "$lib/api/dev.api";
   import Input from "$lib/components/ui/Input.svelte";
+  import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { snsLedgerCanisterIdsStore } from "$lib/derived/sns/sns-canisters.derived";
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
   import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
   import { universesStore } from "$lib/derived/universes.derived";
-  import { getICPs, getBTC, getIcrcTokens } from "$lib/services/dev.services";
-  import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
+  import { getBTC, getICPs, getIcrcTokens } from "$lib/services/dev.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import type { Universe } from "$lib/types/universe";
   import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";

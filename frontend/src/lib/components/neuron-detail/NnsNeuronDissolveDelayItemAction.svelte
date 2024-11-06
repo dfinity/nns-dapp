@@ -15,7 +15,7 @@
   import IncreaseDissolveDelayButton from "./actions/IncreaseDissolveDelayButton.svelte";
   import { IconClockNoFill } from "@dfinity/gix-components";
   import { NeuronState, type NeuronInfo } from "@dfinity/nns";
-  import { secondsToDuration, ICPToken } from "@dfinity/utils";
+  import { ICPToken, secondsToDuration } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;
 

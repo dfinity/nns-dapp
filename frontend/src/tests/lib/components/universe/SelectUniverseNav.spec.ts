@@ -40,10 +40,6 @@ describe("SelectUniverseNav", () => {
     });
   });
 
-  afterAll(() => {
-    vi.clearAllMocks();
-  });
-
   it("should render select universe component", async () => {
     const po = await renderComponent();
     expect(await po.getSelectUniverseCardPo().isPresent()).toEqual(true);

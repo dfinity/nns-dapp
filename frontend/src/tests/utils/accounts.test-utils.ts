@@ -41,7 +41,7 @@ export const setAccountsForTesting = ({
 }: IcpAccountsStoreData & {
   certified?: boolean;
 }) => {
-  icpAccountDetailsStore.set({
+  icpAccountDetailsStore.setForTesting({
     accountDetails: {
       principal: main.principal,
       account_identifier: main.identifier,
@@ -112,6 +112,6 @@ export const setAccountBalanceForTesting = ({
 };
 
 export const resetAccountsForTesting = () => {
-  icpAccountDetailsStore.reset();
+  icpAccountDetailsStore.resetForTesting();
   icpAccountBalancesStore.resetForTesting();
 };

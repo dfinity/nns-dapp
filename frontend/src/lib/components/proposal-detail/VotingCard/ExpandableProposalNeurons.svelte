@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconExpandCircleDown, Collapsible } from "@dfinity/gix-components";
+  import { Collapsible, IconExpandCircleDown } from "@dfinity/gix-components";
   import { fade } from "svelte/transition";
 
   export let testId: string;

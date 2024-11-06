@@ -31,7 +31,7 @@ describe("ConfirmSnsDissolveDelay", () => {
   };
 
   // freeze time
-  beforeAll(() => {
+  beforeEach(() => {
     vi.useFakeTimers().setSystemTime(Date.now());
 
     setSnsProjects([
@@ -39,10 +39,6 @@ describe("ConfirmSnsDissolveDelay", () => {
         rootCanisterId: mockPrincipal,
       },
     ]);
-  });
-
-  afterAll(() => {
-    vi.useRealTimers();
   });
 
   it("renders a delay", () => {

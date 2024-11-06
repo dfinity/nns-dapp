@@ -263,6 +263,7 @@ interface I18nNeurons {
   title: string;
   text: string;
   stake_token: string;
+  icp_will_be_locked: string;
   merge_neurons: string;
   merge_neurons_modal_title: string;
   merge_neurons_modal_confirm: string;
@@ -729,6 +730,7 @@ interface I18nNeuron_detail {
   created: string;
   neuron_state_tooltip: string;
   dissolve_delay_tooltip: string;
+  neuron_stake_refreshed: string;
   change_neuron_make_neuron_public: string;
   change_neuron_make_neuron_private: string;
   change_neuron_make_neuron_public_confirmation: string;

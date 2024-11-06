@@ -20,6 +20,29 @@ import {
   setDefaultTestConstants,
 } from "./src/tests/utils/mockable-constants.test-utils";
 
+// Reset every store before each test.
+const resetStoreFunctions = vi.hoisted(() => {
+  return [];
+});
+
+vi.mock("svelte/store", async (importOriginal) => {
+  const svelteStoreModule = await importOriginal();
+  return {
+    ...svelteStoreModule,
+    writable: <T>(initialValue, ...otherArgs) => {
+      const store = svelteStoreModule.writable<T>(initialValue, ...otherArgs);
+      resetStoreFunctions.push(() => store.set(initialValue));
+      return store;
+    },
+  };
+});
+
+beforeEach(() => {
+  for (const reset of resetStoreFunctions) {
+    reset();
+  }
+});
+
 // Mock SubtleCrypto to test @dfinity/auth-client
 const crypto = new SubtleCrypto();
 Object.defineProperty(global, "crypto", {
@@ -44,7 +67,6 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
     featureFlags: JSON.stringify({
       ENABLE_CKBTC: true,
       ENABLE_CKTESTBTC: true,
-      ENABLE_IMPORT_TOKEN: true,
       DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
       ENABLE_NEURON_VISIBILITY: true,
       TEST_FLAG_EDITABLE: true,

@@ -3,9 +3,12 @@
   import IcrcWalletPage from "$lib/components/accounts/IcrcWalletPage.svelte";
   import IcrcWalletTransactionsList from "$lib/components/accounts/IcrcWalletTransactionsList.svelte";
   import NoTransactions from "$lib/components/accounts/NoTransactions.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
   import { selectedIcrcTokenUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
+  import AddIndexCanisterModal from "$lib/modals/accounts/AddIndexCanisterModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import type { CanisterId } from "$lib/types/canister";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
@@ -14,9 +17,6 @@
   import { Html, IconCanistersPage, IconPlus } from "@dfinity/gix-components";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { writable } from "svelte/store";
-  import AddIndexCanisterModal from "$lib/modals/accounts/AddIndexCanisterModal.svelte";
-  import { i18n } from "$lib/stores/i18n";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
 

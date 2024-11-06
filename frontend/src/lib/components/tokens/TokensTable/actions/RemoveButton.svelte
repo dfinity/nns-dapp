@@ -1,8 +1,8 @@
 <script lang="ts">
+  import { ActionType } from "$lib/types/actions";
   import type { UserTokenData, UserTokenFailed } from "$lib/types/tokens-page";
   import { IconBin } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
-  import { ActionType } from "$lib/types/actions";
 
   export let userToken: UserTokenData | UserTokenFailed;
 

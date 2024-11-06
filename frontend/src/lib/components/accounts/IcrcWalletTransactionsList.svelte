@@ -15,8 +15,8 @@
   import type { CanisterId } from "$lib/types/canister";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import type {
-    UiTransaction,
     IcrcTransactionData,
+    UiTransaction,
   } from "$lib/types/transaction";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import {

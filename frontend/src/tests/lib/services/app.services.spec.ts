@@ -6,7 +6,6 @@ import * as actionableProposalsServices from "$lib/services/actionable-proposals
 import * as actionableSnsProposalsServices from "$lib/services/actionable-sns-proposals.services";
 import { initAppPrivateData } from "$lib/services/app.services";
 import * as importedTokensServices from "$lib/services/imported-tokens.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
@@ -29,7 +28,6 @@ describe("app-services", () => {
     toastsStore.reset();
     vi.clearAllMocks();
     clearSnsAggregatorCache();
-    overrideFeatureFlagsStore.reset();
     // resetSnsProjects();
     vi.spyOn(LedgerCanister, "create").mockImplementation(
       (): LedgerCanister => mockLedgerCanister
@@ -137,20 +135,5 @@ describe("app-services", () => {
     expect(spyLoadImportedTokens).toHaveBeenCalledWith({
       ignoreAccountNotFoundError: true,
     });
-  });
-
-  it("should not loadImportedTokens when ENABLE_IMPORT_TOKEN is disabled", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN", false);
-    const spyLoadImportedTokens = vi
-      .spyOn(importedTokensServices, "loadImportedTokens")
-      .mockResolvedValue();
-
-    expect(mockNNSDappCanister.getAccount).toHaveBeenCalledTimes(0);
-    expect(spyLoadImportedTokens).toHaveBeenCalledTimes(0);
-
-    await initAppPrivateData();
-
-    expect(mockNNSDappCanister.getAccount).toHaveBeenCalledTimes(2);
-    expect(spyLoadImportedTokens).toHaveBeenCalledTimes(0);
   });
 });

@@ -3,8 +3,8 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import {
-    isVesting,
     hasEnoughStakeToSplit,
+    isVesting,
   } from "$lib/utils/sns-neuron.utils";
   import { minNeuronSplittable } from "$lib/utils/sns-neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
