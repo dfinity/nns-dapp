@@ -13,9 +13,6 @@ pub struct MultiPartTransactionsProcessor {
 #[derive(Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub enum MultiPartTransactionToBeProcessed {
     StakeNeuron(PrincipalId, Memo),
-    // TODO: Remove TopUpNeuron after a version has been released that does not
-    //       add TopUpNeuron to the multi-part transaction queue anymore.
-    TopUpNeuron(PrincipalId, Memo),
     CreateCanisterV2(PrincipalId),
     TopUpCanisterV2(PrincipalId, CanisterId),
     // ParticipateSwap(buyer_id, from, to, swap_canister_id)
