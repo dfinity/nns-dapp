@@ -42,9 +42,7 @@ pub async fn run_periodic_tasks() {
 
 async fn handle_stake_neuron(principal: PrincipalId, memo: Memo) {
     match claim_or_refresh_neuron(principal, memo).await {
-        Ok(neuron_id) => with_state_mut(|s| {
-            s.accounts_store.mark_neuron_created(&principal, memo, neuron_id);
-        }),
+        Ok(_neuron_id) => (),
         Err(_error) => (),
     }
 }

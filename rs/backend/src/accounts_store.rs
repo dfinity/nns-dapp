@@ -802,15 +802,6 @@ impl AccountsStore {
         self.multi_part_transactions_processor.take_next()
     }
 
-    /// Records that a neuron has been created for the given account.
-    ///
-    /// # Panics
-    /// - If the account does not exist.
-    pub fn mark_neuron_created(&mut self, principal: &PrincipalId, memo: Memo, neuron_id: NeuronId) {
-        let account_identifier = Self::generate_stake_neuron_address(principal, memo);
-        self.neuron_accounts.get_mut(&account_identifier).unwrap_or_else(|| panic!("Failed to mark neuron created for account {account_identifier} as the account has no neuron_accounts entry.")).neuron_id = Some(neuron_id);
-    }
-
     pub fn enqueue_multi_part_transaction(
         &mut self,
         block_height: BlockIndex,
