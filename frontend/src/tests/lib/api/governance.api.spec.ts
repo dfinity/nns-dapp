@@ -2,6 +2,7 @@ import {
   addHotkey,
   autoStakeMaturity,
   changeNeuronVisibility,
+  claimOrRefreshNeuronByMemo,
   disburse,
   increaseDissolveDelay,
   joinCommunityFund,
@@ -22,7 +23,7 @@ import {
   startDissolving,
   stopDissolving,
 } from "$lib/api/governance.api";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { Agent } from "@dfinity/agent";
@@ -743,6 +744,70 @@ describe("neurons-api", () => {
       ).rejects.toThrow(error);
 
       expect(mockGovernanceCanister.setVisibility).toHaveBeenCalledTimes(3);
+    });
+  });
+
+  describe("claimOrRefreshNeuronByMemo", () => {
+    const memo = 555n;
+    const controller = mockPrincipal;
+    const neuronId = 7n;
+
+    it("should call the canister to claim or refresh neuron by memo", async () => {
+      mockGovernanceCanister.claimOrRefreshNeuronFromAccount.mockResolvedValue(
+        neuronId
+      );
+
+      expect(
+        mockGovernanceCanister.claimOrRefreshNeuronFromAccount
+      ).toBeCalledTimes(0);
+
+      expect(
+        await claimOrRefreshNeuronByMemo({
+          memo,
+          controller,
+          identity: mockIdentity,
+        })
+      ).toBe(neuronId);
+
+      expect(
+        mockGovernanceCanister.claimOrRefreshNeuronFromAccount
+      ).toBeCalledTimes(1);
+      expect(
+        mockGovernanceCanister.claimOrRefreshNeuronFromAccount
+      ).toBeCalledWith({
+        memo,
+        controller,
+      });
+    });
+
+    it("should throw when canister call throws", async () => {
+      const error = new Error("Not enough balance");
+      mockGovernanceCanister.claimOrRefreshNeuronFromAccount.mockRejectedValue(
+        error
+      );
+
+      expect(
+        mockGovernanceCanister.claimOrRefreshNeuronFromAccount
+      ).toBeCalledTimes(0);
+
+      const call = () =>
+        claimOrRefreshNeuronByMemo({
+          memo,
+          controller,
+          identity: mockIdentity,
+        });
+
+      await expect(call).rejects.toThrow(error);
+
+      expect(
+        mockGovernanceCanister.claimOrRefreshNeuronFromAccount
+      ).toBeCalledTimes(1);
+      expect(
+        mockGovernanceCanister.claimOrRefreshNeuronFromAccount
+      ).toBeCalledWith({
+        memo,
+        controller,
+      });
     });
   });
 });

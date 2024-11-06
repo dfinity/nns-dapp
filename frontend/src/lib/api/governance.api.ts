@@ -42,6 +42,11 @@ export type ApiManageNeuronParams = ApiCallParams & {
   neuronId: NeuronId;
 };
 
+export type ApiClaimNeuronParams = ApiCallParams & {
+  memo: bigint;
+  controller: Principal;
+};
+
 /**
  * API FUNCTIONS
  */
@@ -462,6 +467,22 @@ export const claimOrRefreshNeuron = async ({
   logWithTimestamp(
     `ClaimingOrRefreshing Neurons (${hashCode(neuronId)}) complete.`
   );
+  return response;
+};
+
+export const claimOrRefreshNeuronByMemo = async ({
+  memo,
+  controller,
+  identity,
+}: ApiClaimNeuronParams): Promise<NeuronId | undefined> => {
+  logWithTimestamp(`claimOrRefreshNeuronByMemo call...`);
+  const { canister } = await governanceCanister({ identity });
+
+  const response = await canister.claimOrRefreshNeuronFromAccount({
+    memo,
+    controller,
+  });
+  logWithTimestamp(`claimOrRefreshNeuronByMemo complete.`);
   return response;
 };
 
