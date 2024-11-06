@@ -11,21 +11,21 @@ import { vi } from "vitest";
 const testNeurons = [
   {
     ...mockNeuron,
-    neuronId: BigInt(1),
+    neuronId: BigInt(5),
     fullNeuron: {
       ...mockFullNeuron,
     },
   },
   {
     ...mockNeuron,
-    neuronId: BigInt(2),
+    neuronId: BigInt(7),
     fullNeuron: {
       ...mockFullNeuron,
     },
   },
   {
     ...mockNeuron,
-    neuronId: BigInt(3),
+    neuronId: BigInt(13),
     fullNeuron: {
       ...mockFullNeuron,
     },
@@ -41,8 +41,8 @@ describe("NeuronNavigation", () => {
   });
 
   const renderComponent = async ({
-    currentNeuronId = "1",
-    neuronIds = ["1", "2", "3"],
+    currentNeuronId = "13",
+    neuronIds = ["13", "5", "7"],
   }: {
     currentNeuronId?: string;
     neuronIds?: string[];
@@ -64,7 +64,10 @@ describe("NeuronNavigation", () => {
   });
 
   it("should not render navigation component if there is only 1 neuron", async () => {
-    const po = await renderComponent({ neuronIds: ["1"] });
+    const po = await renderComponent({
+      currentNeuronId: "5",
+      neuronIds: ["5"],
+    });
 
     expect(await po.isPresent()).toBe(false);
   });
@@ -77,21 +80,21 @@ describe("NeuronNavigation", () => {
   });
 
   it("should disable previous link for first neuron", async () => {
-    const po = await renderComponent({ currentNeuronId: "1" });
+    const po = await renderComponent({ currentNeuronId: "13" });
 
     expect(await po.isPreviousLinkHidden()).toBe(true);
     expect(await po.isNextLinkHidden()).toBe(false);
   });
 
   it("should disable next link for last neuron", async () => {
-    const po = await renderComponent({ currentNeuronId: "3" });
+    const po = await renderComponent({ currentNeuronId: "7" });
 
     expect(await po.isPreviousLinkHidden()).toBe(false);
     expect(await po.isNextLinkHidden()).toBe(true);
   });
 
   it("should enable both links for middle neuron", async () => {
-    const po = await renderComponent({ currentNeuronId: "2" });
+    const po = await renderComponent({ currentNeuronId: "5" });
 
     expect(await po.isPreviousLinkHidden()).toBe(false);
     expect(await po.isNextLinkHidden()).toBe(false);
@@ -99,21 +102,21 @@ describe("NeuronNavigation", () => {
 
   it("should have correct href for previous link", async () => {
     const po = await renderComponent({
-      currentNeuronId: "2",
+      currentNeuronId: "7",
     });
 
     expect(await po.getPreviousLinkPo().getHref()).toBe(
-      "/neuron/?u=qhbym-qaaaa-aaaaa-aaafq-cai&neuron=1"
+      "/neuron/?u=qhbym-qaaaa-aaaaa-aaafq-cai&neuron=5"
     );
   });
 
   it("should have correct href for next link", async () => {
     const po = await renderComponent({
-      currentNeuronId: "2",
+      currentNeuronId: "5",
     });
 
     expect(await po.getNextLinkPo().getHref()).toBe(
-      "/neuron/?u=qhbym-qaaaa-aaaaa-aaafq-cai&neuron=3"
+      "/neuron/?u=qhbym-qaaaa-aaaaa-aaafq-cai&neuron=7"
     );
   });
 });
