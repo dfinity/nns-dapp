@@ -9,6 +9,8 @@
   import IdentifierHash from "../ui/IdentifierHash.svelte";
   import UniverseSummary from "../universe/UniverseSummary.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
+  import NeuronNavigation from "./NeuronNavigation.svelte";
+  import { neuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/neurons-table-order-sorted-neuron-ids-store";
 
   export let neuron: NeuronInfo;
 
@@ -28,18 +30,25 @@
 
 <PageHeader testId="nns-neuron-page-header-component">
   <UniverseSummary slot="start" universe={$nnsUniverseStore} />
-  <span
-    slot="end"
-    class="description header-end"
-    data-tid="neuron-id-element"
-    use:onIntersection
-    on:nnsIntersecting={updateLayoutTitle}
-  >
-    <IdentifierHash
-      identifier={neuron.neuronId.toString()}
-      splitLength={MAX_NEURON_ID_DIGITS / 2}
+  <div slot="end">
+    <span
+      class="description header-end"
+      data-tid="neuron-id-element"
+      use:onIntersection
+      on:nnsIntersecting={updateLayoutTitle}
+    >
+      <IdentifierHash
+        identifier={neuron.neuronId.toString()}
+        splitLength={MAX_NEURON_ID_DIGITS / 2}
+      />
+    </span>
+  </div>
+  <div slot="navigation">
+    <NeuronNavigation
+      currentNeuronId={neuron.neuronId.toString()}
+      neuronIds={$neuronsTableOrderSortedNeuronIdsStore}
     />
-  </span>
+  </div>
 </PageHeader>
 
 <style lang="scss">
