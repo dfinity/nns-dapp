@@ -62,7 +62,11 @@
     column-gap: var(--padding);
     color: var(--elements-icons);
     // This gap is not possible to apply to the parent component because it's needed only when the NeuronNavigation is rendered.
-    margin-left: var(--padding);
+    margin-bottom: var(--padding-3x);
+    @include media.min-width(medium) {
+      margin-bottom: 0;
+      margin-left: var(--padding);
+    }
   }
 
   a {

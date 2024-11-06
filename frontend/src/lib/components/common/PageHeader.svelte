@@ -19,7 +19,6 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    row-gap: var(--padding-3x);
 
     @include media.min-width(medium) {
       flex-direction: row;
