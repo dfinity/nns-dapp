@@ -602,9 +602,7 @@ describe("neurons api-service", () => {
     };
 
     it("should call claimOrRefreshNeuronByMemo api", async () => {
-      vi.spyOn(api, "claimOrRefreshNeuronByMemo").mockResolvedValueOnce(
-        neuronId
-      );
+      vi.spyOn(api, "claimOrRefreshNeuronByMemo").mockResolvedValue(neuronId);
       expect(
         await governanceApiService.claimOrRefreshNeuronByMemo(params)
       ).toEqual(neuronId);
