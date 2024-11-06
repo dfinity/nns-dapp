@@ -14,9 +14,6 @@
 
   export let neuron: NeuronInfo;
 
-  let neuronIds: string[] = [];
-  $: neuronIds = $neuronsTableOrderSortedNeuronIdsStore;
-
   const updateLayoutTitle = ($event: Event) => {
     const {
       detail: { intersecting },
@@ -49,7 +46,7 @@
   <div slot="navigation">
     <NeuronNavigation
       currentNeuronId={neuron.neuronId.toString()}
-      {neuronIds}
+      neuronIds={$neuronsTableOrderSortedNeuronIdsStore}
     />
   </div>
 </PageHeader>
