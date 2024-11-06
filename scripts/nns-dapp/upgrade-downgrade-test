@@ -35,7 +35,7 @@ if ! [ -f "$ARGS_FILE" ]; then
 fi
 
 # Check if a replica is running:
-if pgrep replica; then
+if pgrep -x replica; then
   echo "A replica is already running. Shut it down first." >&2
   exit 1
 fi
