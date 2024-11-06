@@ -1129,6 +1129,20 @@ export const claimNeuronsIfNeeded = async ({
     transactions,
   });
   for (const { memo, accountIdentifier } of memos) {
+    // We only check neurons to recover from interrupted staking.
+    // Doing this once per neuron per session is often enough.
+    if (
+      !checkedNeuronSubaccountsStore.addSubaccount({
+        universeId: OWN_CANISTER_ID_TEXT,
+        // It's not actually the subaccount but rather the full account
+        // identifier. But ic-js doesn't expose the neuron's subaccount and it
+        // really just needs to be a unique consistent identifier to avoid
+        // checking too often.
+        subaccountHex: accountIdentifier,
+      })
+    ) {
+      return;
+    }
     if (neuronAccounts.has(accountIdentifier)) {
       // Neuron already exists.
       continue;

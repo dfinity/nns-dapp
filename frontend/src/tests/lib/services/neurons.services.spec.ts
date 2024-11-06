@@ -2335,6 +2335,33 @@ describe("neurons-services", () => {
 
       expect(get(toastsStore)).toEqual([]);
     });
+
+    it("should not try to claim a neuron more than once per session", async () => {
+      spyClaimOrRefreshByMemo.mockRejectedValue(new Error("Test error"));
+
+      expect(spyClaimOrRefreshByMemo).toBeCalledTimes(0);
+      expect(spyGetNeuron).toBeCalledTimes(0);
+
+      await claimNeuronsIfNeeded({
+        controller: neuronController,
+        transactions: [stakingTransaction],
+        neuronAccounts: new Set(),
+      });
+
+      expect(spyClaimOrRefreshByMemo).toBeCalledTimes(1);
+      expect(spyGetNeuron).toBeCalledTimes(0);
+
+      await claimNeuronsIfNeeded({
+        controller: neuronController,
+        transactions: [stakingTransaction],
+        neuronAccounts: new Set(),
+      });
+
+      expect(spyClaimOrRefreshByMemo).toBeCalledTimes(1);
+      expect(spyGetNeuron).toBeCalledTimes(0);
+
+      expect(get(toastsStore)).toEqual([]);
+    });
   });
 
   describe("changeNeuronVisibility", () => {
