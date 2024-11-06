@@ -44,9 +44,6 @@
           : `${token.symbol} - ${shortenWithMiddleEllipsis(neuronId)}`,
     });
   };
-
-  let neuronIds: string[] = [];
-  $: neuronIds = $snsNeuronsTableOrderSortedNeuronIdsStore;
 </script>
 
 <PageHeader testId="sns-neuron-page-header-component">
@@ -67,7 +64,7 @@
     {#if nonNullish(neuron)}
       <NeuronNavigation
         currentNeuronId={getSnsNeuronIdAsHexString(neuron)}
-        {neuronIds}
+        neuronIds={$snsNeuronsTableOrderSortedNeuronIdsStore}
       />
     {/if}
   </div>
