@@ -20,7 +20,6 @@
     display: flex;
     flex-direction: column;
     row-gap: var(--padding-3x);
-    column-gap: var(--padding);
 
     @include media.min-width(medium) {
       flex-direction: row;
