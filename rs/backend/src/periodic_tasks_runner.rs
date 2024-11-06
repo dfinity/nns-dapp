@@ -26,10 +26,6 @@ pub async fn run_periodic_tasks() {
             MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo) => {
                 handle_stake_neuron(principal, memo).await;
             }
-            // TODO: Remove TopUpNeuron after a version has been released that
-            //       does not add TopUpNeuron to the multi-part transaction
-            //       queue anymore.
-            MultiPartTransactionToBeProcessed::TopUpNeuron(_principal, _memo) => {}
             MultiPartTransactionToBeProcessed::CreateCanisterV2(controller) => {
                 handle_create_canister_v2(block_height, controller).await;
             }
