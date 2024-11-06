@@ -1062,7 +1062,7 @@ const getMemosFromStakingTransactions = ({
     .map(({ transaction }) => {
       const { memo } = transaction;
       if (memo === 0n) {
-        undefined;
+        return undefined;
       }
       const accountIdentifier = memoToNeuronAccountIdentifier({
         controller,
