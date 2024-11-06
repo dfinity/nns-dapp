@@ -61,19 +61,14 @@
     align-items: center;
     column-gap: var(--padding);
     color: var(--elements-icons);
-    padding-bottom: var(--padding-3x);
-
-    @include media.min-width(medium) {
-      padding-bottom: 0;
-    }
   }
 
   a {
     display: flex;
     align-items: center;
+
     &.hidden {
       visibility: hidden;
-      opacity: 0;
     }
   }
 </style>

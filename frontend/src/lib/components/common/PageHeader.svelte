@@ -19,6 +19,8 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    row-gap: var(--padding-3x);
+    column-gap: var(--padding);
 
     @include media.min-width(medium) {
       flex-direction: row;
@@ -38,15 +40,17 @@
       justify-content: space-between;
     }
   }
+
   .navigation {
+    display: flex;
+    align-items: center;
+
     order: -1;
     align-self: end;
 
     @include media.min-width(medium) {
-      align-self: auto;
       order: initial;
-      display: flex;
-      align-items: center;
+      align-self: auto;
     }
   }
 </style>
