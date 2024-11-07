@@ -1,8 +1,11 @@
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import { clearSnsAggregatorCache } from "$lib/api-services/sns-aggregator.api-service";
 import * as agent from "$lib/api/agent.api";
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
-import { clearWrapperCache, wrapper, wrappers as getWrappers} from "$lib/api/sns-wrapper.api";
+import {
+  clearWrapperCache,
+  wrappers as getWrappers,
+  wrapper,
+} from "$lib/api/sns-wrapper.api";
 import { snsFunctionsStore } from "$lib/derived/sns-functions.derived";
 import { snsTotalTokenSupplyStore } from "$lib/derived/sns-total-token-supply.derived";
 import { loadSnsProjects } from "$lib/services/public/sns.services";
@@ -27,6 +30,7 @@ import {
 } from "$tests/mocks/sns.api.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
@@ -169,19 +173,19 @@ describe("SNS public services", () => {
     it("should build and store wrappers, only for non-aborted SNSes", async () => {
       const committedSns1 = aggregatorSnsMockWith({
         rootCanisterId: principal(0).toText(),
-        lifecycle: SnsSwapLifecycle.Committed
+        lifecycle: SnsSwapLifecycle.Committed,
       });
       const committedSns2 = aggregatorSnsMockWith({
         rootCanisterId: principal(1).toText(),
-        lifecycle: SnsSwapLifecycle.Committed
+        lifecycle: SnsSwapLifecycle.Committed,
       });
       const abortedSns1 = aggregatorSnsMockWith({
         rootCanisterId: principal(2).toText(),
-        lifecycle: SnsSwapLifecycle.Aborted
+        lifecycle: SnsSwapLifecycle.Aborted,
       });
       const abortedSns2 = aggregatorSnsMockWith({
         rootCanisterId: principal(3).toText(),
-        lifecycle: SnsSwapLifecycle.Aborted
+        lifecycle: SnsSwapLifecycle.Aborted,
       });
 
       vi.spyOn(aggregatorApi, "querySnsProjects").mockResolvedValue([
@@ -193,10 +197,17 @@ describe("SNS public services", () => {
 
       await loadSnsProjects();
 
-      const wrappers = await getWrappers({identity: mockIdentity, certified: true});
+      const wrappers = await getWrappers({
+        identity: mockIdentity,
+        certified: true,
+      });
       expect(wrappers).toHaveLength(2);
-      expect(wrappers.has(committedSns1.canister_ids.root_canister_id)).toBe(true);
-      expect(wrappers.has(committedSns2.canister_ids.root_canister_id)).toBe(true);
+      expect(wrappers.has(committedSns1.canister_ids.root_canister_id)).toBe(
+        true
+      );
+      expect(wrappers.has(committedSns2.canister_ids.root_canister_id)).toBe(
+        true
+      );
     });
   });
 });

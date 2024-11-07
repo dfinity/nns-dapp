@@ -1,4 +1,3 @@
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import { snsAggregatorApiService } from "$lib/api-services/sns-aggregator.api-service";
 import { queryProposals } from "$lib/api/proposals.api";
 import { buildAndStoreWrapper } from "$lib/api/sns-wrapper.api";
@@ -11,6 +10,7 @@ import { isLastCall } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { getCurrentIdentity } from "../auth.services";
 
 export const loadSnsProjects = async (): Promise<void> => {
