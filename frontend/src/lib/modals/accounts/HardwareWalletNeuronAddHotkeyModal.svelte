@@ -85,18 +85,18 @@
 </ConfirmationModal>
 
 <style lang="scss">
-  h4,
-  p {
-    text-align: center;
+  @use "../../themes/mixins/confirmation-modal";
+  
+  div {
+    @include confirmation-modal.wrapper;
   }
 
   h4 {
-    padding-bottom: var(--padding-0_5x);
+    @include confirmation-modal.title;
   }
 
   p {
-    padding-bottom: var(--padding);
-
+    @include confirmation-modal.text;
     &:last-of-type {
       padding-bottom: var(--padding-2x);
     }
