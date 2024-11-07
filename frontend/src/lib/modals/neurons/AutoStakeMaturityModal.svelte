@@ -7,7 +7,7 @@
 </script>
 
 <ConfirmationModal on:nnsClose on:nnsConfirm>
-  <div data-tid="auto-stake-confirm-modal">
+  <div data-tid="auto-stake-confirm-modal" class="wrapper">
     <h4>{$i18n.core.confirm}</h4>
     <p>
       <Html
@@ -22,7 +22,7 @@
 <style lang="scss">
   @use "../../themes/mixins/confirmation-modal";
 
-  div {
+  .wrapper {
     @include confirmation-modal.wrapper;
   }
 

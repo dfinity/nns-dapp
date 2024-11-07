@@ -39,7 +39,7 @@
   on:nnsClose
   on:nnsConfirm={dissolveAction}
 >
-  <div data-tid="dissolve-action-modal">
+  <div data-tid="dissolve-action-modal" class="wrapper">
     <h4>{$i18n.core.confirm}</h4>
     <p>{description}</p>
   </div>
@@ -48,7 +48,7 @@
 <style lang="scss">
   @use "../../themes/mixins/confirmation-modal";
 
-  div {
+  .wrapper {
     @include confirmation-modal.wrapper;
   }
 

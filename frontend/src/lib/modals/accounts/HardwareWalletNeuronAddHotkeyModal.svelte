@@ -61,7 +61,7 @@
 </script>
 
 <ConfirmationModal on:nnsClose on:nnsConfirm={addCurrentUserToHotkey}>
-  <div>
+  <div class="wrapper">
     <h4>{$i18n.accounts.hardware_wallet_add_hotkey_title}</h4>
 
     <p>
@@ -89,7 +89,7 @@
 <style lang="scss">
   @use "../../themes/mixins/confirmation-modal";
 
-  div {
+  .wrapper {
     @include confirmation-modal.wrapper;
   }
 

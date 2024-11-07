@@ -40,7 +40,6 @@
 
   .wrapper {
     @include confirmation-modal.wrapper;
-    align-items: flex-start;
   }
 
   h4 {

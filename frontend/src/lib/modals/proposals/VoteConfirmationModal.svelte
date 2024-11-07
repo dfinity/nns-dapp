@@ -11,7 +11,7 @@
 </script>
 
 <ConfirmationModal on:nnsClose on:nnsConfirm>
-  <div>
+  <div class="wrapper">
     {#if voteType === Vote.Yes}
       <IconThumbUp />
       <h4>{$i18n.proposal_detail__vote.confirm_adopt_headline}</h4>
@@ -35,7 +35,7 @@
 <style lang="scss">
   @use "../../themes/mixins/confirmation-modal";
 
-  div {
+  .wrapper {
     @include confirmation-modal.wrapper;
 
     :global(svg) {
