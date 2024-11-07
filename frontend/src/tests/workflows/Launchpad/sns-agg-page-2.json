@@ -1399,9 +1399,7 @@
               "serialized_representation": "{\"t_1\":\"33000\",\"t_2\":\"100000\",\"t_3\":\"167000\",\"t_4\":\"525649.8998719240\",\"cap\":\"262824.949935962\"}"
             }
           },
-          "neurons_fund_participants": {
-            "cf_participants": []
-          },
+          "neurons_fund_participants": null,
           "should_auto_finalize": true,
           "max_participant_icp_e8s": 15000000000000,
           "sns_governance_canister_id": "elxqo-raaaa-aaaaq-aacba-cai",
@@ -1475,7 +1473,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100669968571646370,
+    "icrc1_total_supply": 100770128395413680,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2703,9 +2701,7 @@
             "serialized_representation": "{\"t_1\":\"33000\",\"t_2\":\"100000\",\"t_3\":\"167000\",\"t_4\":\"525649.8998719240\",\"cap\":\"262824.949935962\"}"
           }
         },
-        "neurons_fund_participants": {
-          "cf_participants": []
-        },
+        "neurons_fund_participants": null,
         "should_auto_finalize": true,
         "max_participant_icp_e8s": 15000000000000,
         "sns_governance_canister_id": "elxqo-raaaa-aaaaq-aacba-cai",
@@ -3001,6 +2997,32 @@
               "target_canister_id": "ca6gz-lqaaa-aaaaq-aacwa-cai",
               "validator_method_name": "validate_icrc_transfer",
               "target_method_name": "icrc1_transfer"
+            }
+          }
+        },
+        {
+          "id": 6212,
+          "name": "manage WTN neuron",
+          "description": "Manage NTN neuron owned by Neutrinite",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "2kusx-raaaa-aaaal-qjaxq-cai",
+              "target_canister_id": "jfnic-kaaaa-aaaaq-aadla-cai",
+              "validator_method_name": "validate_manage_neuron",
+              "target_method_name": "manage_neuron"
+            }
+          }
+        },
+        {
+          "id": 6213,
+          "name": "manage KONG neuron",
+          "description": "Manage NTN neuron owned by Neutrinite",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "2kusx-raaaa-aaaal-qjaxq-cai",
+              "target_canister_id": "oypg6-faaaa-aaaaq-aadza-cai",
+              "validator_method_name": "validate_manage_neuron",
+              "target_method_name": "manage_neuron"
             }
           }
         }
@@ -3382,9 +3404,7 @@
               "serialized_representation": "{\"t_1\":\"33000\",\"t_2\":\"100000\",\"t_3\":\"167000\",\"t_4\":\"475847.5034794820\",\"cap\":\"237923.751739741\"}"
             }
           },
-          "neurons_fund_participants": {
-            "cf_participants": []
-          },
+          "neurons_fund_participants": null,
           "should_auto_finalize": true,
           "max_participant_icp_e8s": 10000000000000,
           "sns_governance_canister_id": "eqsml-lyaaa-aaaaq-aacdq-cai",
@@ -3458,7 +3478,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100735400667853,
+    "icrc1_total_supply": 100736092625971,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -3818,9 +3838,7 @@
             "serialized_representation": "{\"t_1\":\"33000\",\"t_2\":\"100000\",\"t_3\":\"167000\",\"t_4\":\"475847.5034794820\",\"cap\":\"237923.751739741\"}"
           }
         },
-        "neurons_fund_participants": {
-          "cf_participants": []
-        },
+        "neurons_fund_participants": null,
         "should_auto_finalize": true,
         "max_participant_icp_e8s": 10000000000000,
         "sns_governance_canister_id": "eqsml-lyaaa-aaaaq-aacdq-cai",
@@ -3914,7 +3932,7 @@
         {
           "id": 4,
           "name": "Add nervous system function",
-          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -3922,7 +3940,7 @@
         {
           "id": 5,
           "name": "Remove nervous system function",
-          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -3930,7 +3948,7 @@
         {
           "id": 6,
           "name": "Execute nervous system function",
-          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "description": "Proposal to execute a user-defined nervous system function, previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -3977,7 +3995,7 @@
         },
         {
           "id": 12,
-          "name": "Mint SNS Tokens",
+          "name": "Mint SNS tokens",
           "description": "Proposal to mint SNS tokens to a specified recipient.",
           "function_type": {
             "NativeNervousSystemFunction": {}
@@ -4152,9 +4170,7 @@
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
           "sns_ledger_canister_id": "hvgxa-wqaaa-aaaaq-aacia-cai",
           "neurons_fund_participation_constraints": null,
-          "neurons_fund_participants": {
-            "cf_participants": []
-          },
+          "neurons_fund_participants": null,
           "should_auto_finalize": true,
           "max_participant_icp_e8s": 300000000000,
           "sns_governance_canister_id": "fi3zi-fyaaa-aaaaq-aachq-cai",
@@ -4228,7 +4244,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995573997980,
+    "icrc1_total_supply": 995573360980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7025,9 +7041,7 @@
               "serialized_representation": "{\"t_1\":\"33000\",\"t_2\":\"100000\",\"t_3\":\"167000\",\"t_4\":\"565958.6170971060\",\"cap\":\"282979.308548553\"}"
             }
           },
-          "neurons_fund_participants": {
-            "cf_participants": []
-          },
+          "neurons_fund_participants": null,
           "should_auto_finalize": true,
           "max_participant_icp_e8s": 10000000000000,
           "sns_governance_canister_id": "hodlf-miaaa-aaaaq-aackq-cai",
@@ -7128,7 +7142,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20160166524174616,
+    "icrc1_total_supply": 20162119717772120,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9128,7 +9142,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25154820274031384,
+    "icrc1_total_supply": 25154940206986110,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -10595,7 +10609,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10040187042745824,
+    "icrc1_total_supply": 10040230879529164,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11518,6 +11532,19 @@
               "target_method_name": "admin_remove_managers"
             }
           }
+        },
+        {
+          "id": 1114,
+          "name": "`admin_update_bucket_canister_settings` function",
+          "description": "It is used to update bucket canister settings from the ic_oss_cluster canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
+              "target_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
+              "validator_method_name": "validate_admin_update_bucket_canister_settings",
+              "target_method_name": "admin_update_bucket_canister_settings"
+            }
+          }
         }
       ]
     },
@@ -11823,7 +11850,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 102807739257364660,
+    "icrc1_total_supply": 102841383061540350,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -12890,7 +12917,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99253069652975100,
+    "icrc1_total_supply": 99261944623616640,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14063,7 +14090,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 100006243571395040,
+    "icrc1_total_supply": 100006256385724540,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15235,7 +15262,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100056813790648690,
+    "icrc1_total_supply": 100057076340556420,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
