@@ -44,3 +44,20 @@
     <p>{description}</p>
   </div>
 </ConfirmationModal>
+
+
+<style lang="scss">
+  @use "../../themes/mixins/confirmation-modal";
+
+  div {
+    @include confirmation-modal.wrapper;
+  }
+
+  h4 {
+    @include confirmation-modal.title;
+  }
+
+  p {
+    @include confirmation-modal.text;
+  }
+</style>
