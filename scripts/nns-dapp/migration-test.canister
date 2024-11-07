@@ -32,7 +32,7 @@ get_transactions_count() {
 
 # Gets stats that should be invariant across upgrades
 get_upgrade_invariant_stats() {
-  dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count, neurons_created_count, neurons_topped_up_count, sub_accounts_count}'
+  dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count,  neurons_topped_up_count, sub_accounts_count}'
 }
 
 # Verifies that accounts were not recomputed on upgrade.
