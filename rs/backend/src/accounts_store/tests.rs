@@ -1,7 +1,6 @@
 use super::histogram::AccountsStoreHistogram;
 use super::*;
 use crate::accounts_store::toy_data::{toy_account, ToyAccountSize};
-use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use icp_ledger::Tokens;
 use pretty_assertions::assert_eq;
 use std::str::FromStr;
@@ -133,37 +132,6 @@ fn register_hardware_wallet_hardware_wallet_already_registered() {
         AccountIdentifier::from(hw1),
         account.hardware_wallet_accounts[0].account_identifier
     );
-}
-
-#[test]
-fn maybe_process_transaction_detects_neuron_transactions() {
-    let mut store = setup_test_store();
-
-    let block_height = store.get_block_height_synced_up_to().unwrap_or(0) + 1;
-
-    let neuron_principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-    let neuron_memo = Memo(16656605094239839590);
-    let neuron_account = AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
-
-    let transfer = Transfer {
-        from: AccountIdentifier::new(neuron_principal, None),
-        to: neuron_account,
-        spender: None,
-        amount: Tokens::from_tokens(1).unwrap(),
-        fee: Tokens::from_e8s(10000),
-    };
-    store
-        .maybe_process_transaction(&transfer, neuron_memo, block_height)
-        .unwrap();
-
-    if let Some((_, MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo))) =
-        store.multi_part_transactions_processor.take_next()
-    {
-        assert_eq!(principal, neuron_principal);
-        assert_eq!(memo, neuron_memo);
-    } else {
-        panic!();
-    }
 }
 
 #[test]

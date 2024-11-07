@@ -1,22 +1,4 @@
-use dfn_candid::candid;
-use ic_nns_constants::GOVERNANCE_CANISTER_ID;
-pub use ic_nns_governance::pb::v1::{
-    governance::GovernanceCachedMetrics, ClaimOrRefreshNeuronFromAccount, ClaimOrRefreshNeuronFromAccountResponse,
-    GovernanceError,
-};
-
-pub async fn claim_or_refresh_neuron_from_account(
-    request: ClaimOrRefreshNeuronFromAccount,
-) -> Result<ClaimOrRefreshNeuronFromAccountResponse, String> {
-    dfn_core::call(
-        GOVERNANCE_CANISTER_ID,
-        "claim_or_refresh_neuron_from_account",
-        candid,
-        (request,),
-    )
-    .await
-    .map_err(|e| e.1)
-}
+pub use ic_nns_governance::pb::v1::{governance::GovernanceCachedMetrics, GovernanceError};
 
 #[cfg(not(test))]
 pub use prod::get_metrics;
@@ -28,7 +10,9 @@ type GetMetricsCallResult = Result<Result<GovernanceCachedMetrics, GovernanceErr
 
 #[cfg(not(test))]
 mod prod {
-    use super::{candid, GetMetricsCallResult, GOVERNANCE_CANISTER_ID};
+    use super::GetMetricsCallResult;
+    use dfn_candid::candid;
+    use ic_nns_constants::GOVERNANCE_CANISTER_ID;
 
     pub async fn get_metrics() -> GetMetricsCallResult {
         dfn_core::call(GOVERNANCE_CANISTER_ID, "get_metrics", candid, ())
