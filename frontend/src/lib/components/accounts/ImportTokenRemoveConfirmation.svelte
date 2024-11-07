@@ -17,7 +17,7 @@
   on:nnsConfirm
   yesLabel={$i18n.core.remove}
 >
-  <div class="content">
+  <div class="wrapper">
     <h4>{$i18n.import_token.remove_confirmation_header}</h4>
     <div class="token">
       {#if "universe" in tokenToRemove}
@@ -36,10 +36,15 @@
 </ConfirmationModal>
 
 <style lang="scss">
-  .content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-2x);
+  @use "../../themes/mixins/confirmation-modal";
+
+  .wrapper {
+    @include confirmation-modal.wrapper;
+    align-items: flex-start;
+  }
+
+  h4 {
+    @include confirmation-modal.title;
   }
 
   .token {
