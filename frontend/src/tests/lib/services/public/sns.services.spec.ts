@@ -26,7 +26,6 @@ import {
 } from "$tests/mocks/sns.api.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
-import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
@@ -95,52 +94,36 @@ describe("SNS public services", () => {
       expect(functionsStore[rootCanisterId]).not.toBeUndefined();
     });
 
-    it("SNS certified calls after aggregator store is filled don't trigger a call to list_sns_canisters", () => {
+    it("SNS certified calls after aggregator store is filled don't trigger a call to list_sns_canisters", async () => {
       vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(() =>
         Promise.resolve([aggregatorSnsMockDto, aggregatorSnsMockDto])
       );
 
-      return new Promise<void>((done) => {
-        snsAggregatorStore.subscribe(async ({ data }) => {
-          // There is an initial call to subscribe with undefined data
-          if (nonNullish(data)) {
-            await wrapper({
-              identity: mockIdentity,
-              rootCanisterId:
-                aggregatorSnsMockDto.canister_ids.root_canister_id,
-              certified: true,
-            });
-            expect(listSnsesSpy).not.toBeCalled();
-            done();
-          }
-        });
+      await loadSnsProjects();
 
-        loadSnsProjects();
+      await wrapper({
+        identity: mockIdentity,
+        rootCanisterId: aggregatorSnsMockDto.canister_ids.root_canister_id,
+        certified: true,
       });
+
+      expect(listSnsesSpy).not.toBeCalled();
     });
 
-    it("SNS uncertified calls after aggregator store is filled don't trigger a call to list_sns_canisters", () => {
+    it("SNS uncertified calls after aggregator store is filled don't trigger a call to list_sns_canisters", async () => {
       vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(() =>
         Promise.resolve([aggregatorSnsMockDto, aggregatorSnsMockDto])
       );
 
-      return new Promise<void>((done) => {
-        snsAggregatorStore.subscribe(async ({ data }) => {
-          // There is an initial call to subscribe with undefined data
-          if (nonNullish(data)) {
-            await wrapper({
-              identity: mockIdentity,
-              rootCanisterId:
-                aggregatorSnsMockDto.canister_ids.root_canister_id,
-              certified: false,
-            });
-            expect(listSnsesSpy).not.toBeCalled();
-            done();
-          }
-        });
+      await loadSnsProjects();
 
-        loadSnsProjects();
+      await wrapper({
+        identity: mockIdentity,
+        rootCanisterId: aggregatorSnsMockDto.canister_ids.root_canister_id,
+        certified: false,
       });
+
+      expect(listSnsesSpy).not.toBeCalled();
     });
 
     it("should load sns aggregator store", async () => {
