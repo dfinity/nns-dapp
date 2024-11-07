@@ -1,3 +1,4 @@
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { snsAggregatorApiService } from "$lib/api-services/sns-aggregator.api-service";
 import { queryProposals } from "$lib/api/proposals.api";
 import { buildAndStoreWrapper } from "$lib/api/sns-wrapper.api";
@@ -19,7 +20,7 @@ export const loadSnsProjects = async (): Promise<void> => {
     // We load the wrappers to avoid making calls to SNS-W and Root canister for each project.
     // The SNS Aggregator gives us the canister ids of the SNS projects.
     await Promise.all(
-      aggregatorData.map(async ({ canister_ids }) => {
+      aggregatorData.map(async ({ canister_ids, lifecycle }) => {
         const canisterIds = {
           rootCanisterId: Principal.fromText(canister_ids.root_canister_id),
           swapCanisterId: Principal.fromText(canister_ids.swap_canister_id),
@@ -29,6 +30,9 @@ export const loadSnsProjects = async (): Promise<void> => {
           ledgerCanisterId: Principal.fromText(canister_ids.ledger_canister_id),
           indexCanisterId: Principal.fromText(canister_ids.index_canister_id),
         };
+        if (lifecycle.lifecycle === SnsSwapLifecycle.Aborted) {
+          return;
+        }
         // Build certified and uncertified wrappers because SNS aggregator gives certified data.
         await buildAndStoreWrapper({
           identity,
