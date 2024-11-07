@@ -1049,7 +1049,9 @@ impl StableState for AccountsStore {
             // Transactions are unused but we need to encode them for backwards
             // compatibility.
             VecDeque::<candid::Empty>::new(),
-            &self.neuron_accounts,
+            // Neuron accounts are unused but we need to encode them for
+            // backwards compatibility.
+            HashMap::<AccountIdentifier, candid::Empty>::new(),
             &self.block_height_synced_up_to,
             &self.multi_part_transactions_processor,
             &self.last_ledger_sync_timestamp_nanos,
@@ -1071,7 +1073,7 @@ impl StableState for AccountsStore {
             // Transactions are unused but we need to decode something for backwards
             // compatibility.
             _transactions,
-            neuron_accounts,
+            _neuron_accounts,
             block_height_synced_up_to,
             multi_part_transactions_processor,
             last_ledger_sync_timestamp_nanos,
@@ -1082,7 +1084,7 @@ impl StableState for AccountsStore {
             HashMap<AccountIdentifier, AccountWrapper>,
             HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
             candid::Reserved,
-            HashMap<AccountIdentifier, NeuronDetails>,
+            candid::Reserved,
             Option<BlockIndex>,
             MultiPartTransactionsProcessor,
             u64,
@@ -1110,7 +1112,7 @@ impl StableState for AccountsStore {
             accounts_db: AccountsDbAsProxy::default(),
             hardware_wallets_and_sub_accounts,
             pending_transactions,
-            neuron_accounts,
+            neuron_accounts: HashMap::new(),
             block_height_synced_up_to,
             multi_part_transactions_processor,
             accounts_db_stats,
