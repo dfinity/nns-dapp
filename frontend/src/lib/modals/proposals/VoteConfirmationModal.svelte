@@ -37,6 +37,11 @@
 
   div {
     @include confirmation-modal.wrapper;
+
+    :global(svg) {
+      width: var(--padding-6x);
+      height: var(--padding-6x);
+    }
   }
 
   h4 {
