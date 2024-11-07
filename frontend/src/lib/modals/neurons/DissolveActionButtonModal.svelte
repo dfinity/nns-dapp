@@ -45,7 +45,6 @@
   </div>
 </ConfirmationModal>
 
-
 <style lang="scss">
   @use "../../themes/mixins/confirmation-modal";
 
