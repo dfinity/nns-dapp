@@ -61,32 +61,34 @@
 </script>
 
 <ConfirmationModal on:nnsClose on:nnsConfirm={addCurrentUserToHotkey}>
-  <h4>{$i18n.accounts.hardware_wallet_add_hotkey_title}</h4>
+  <div>
+    <h4>{$i18n.accounts.hardware_wallet_add_hotkey_title}</h4>
 
-  <p>
-    {replacePlaceholders(
-      $i18n.accounts.hardware_wallet_add_hotkey_text_neuron,
-      {
-        $neuronId: neuronId.toString(),
-      }
-    )}
-  </p>
+    <p>
+      {replacePlaceholders(
+        $i18n.accounts.hardware_wallet_add_hotkey_text_neuron,
+        {
+          $neuronId: neuronId.toString(),
+        }
+      )}
+    </p>
 
-  <p>
-    {replacePlaceholders(
-      $i18n.accounts.hardware_wallet_add_hotkey_text_principal,
-      {
-        $principalId: $authStore.identity?.getPrincipal().toText() ?? "",
-      }
-    )}
-  </p>
+    <p>
+      {replacePlaceholders(
+        $i18n.accounts.hardware_wallet_add_hotkey_text_principal,
+        {
+          $principalId: $authStore.identity?.getPrincipal().toText() ?? "",
+        }
+      )}
+    </p>
 
-  <p>{$i18n.accounts.hardware_wallet_add_hotkey_text_confirm}</p>
+    <p>{$i18n.accounts.hardware_wallet_add_hotkey_text_confirm}</p>
+  </div>
 </ConfirmationModal>
 
 <style lang="scss">
   @use "../../themes/mixins/confirmation-modal";
-  
+
   div {
     @include confirmation-modal.wrapper;
   }
