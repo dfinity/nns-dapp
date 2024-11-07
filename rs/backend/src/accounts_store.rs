@@ -7,9 +7,8 @@ use candid::CandidType;
 use dfn_candid::Candid;
 use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
-use ic_crypto_sha2::Sha256;
 use ic_nns_common::types::NeuronId;
-use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
+use ic_nns_constants::CYCLES_MINTING_CANISTER_ID;
 use ic_stable_structures::{storable::Bound, Storable};
 use icp_ledger::Operation::{self, Approve, Burn, Mint, Transfer};
 use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount};
@@ -251,7 +250,6 @@ pub enum TransactionType {
     Transfer,
     Approve,
     TransferFrom,
-    StakeNeuron,
     StakeNeuronNotification,
     CreateCanister,
     TopUpCanister(CanisterId),
@@ -599,7 +597,7 @@ impl AccountsStore {
                             &canister_ids,
                             default_transaction_type,
                         );
-                        self.process_transaction_type(transaction_type, principal, from, to, memo, block_height);
+                        self.process_transaction_type(transaction_type, principal, from, to, block_height);
                     }
                 }
             }
@@ -920,8 +918,6 @@ impl AccountsStore {
                 TransactionType::CreateCanister
             } else if let Some(canister_id) = Self::is_topup_canister_transaction(memo, &to, canister_ids) {
                 TransactionType::TopUpCanister(canister_id)
-            } else if Self::is_stake_neuron_transaction(memo, &to, principal) {
-                TransactionType::StakeNeuron
             } else {
                 default_transaction_type
             }
@@ -964,27 +960,6 @@ impl AccountsStore {
         None
     }
 
-    fn is_stake_neuron_transaction(memo: Memo, to: &AccountIdentifier, principal: &PrincipalId) -> bool {
-        if memo.0 > 0 {
-            let expected_to = Self::generate_stake_neuron_address(principal, memo);
-            *to == expected_to
-        } else {
-            false
-        }
-    }
-
-    fn generate_stake_neuron_address(principal: &PrincipalId, memo: Memo) -> AccountIdentifier {
-        let subaccount = Subaccount({
-            let mut state = Sha256::new();
-            state.write(&[0x0c]);
-            state.write(b"neuron-stake");
-            state.write(principal.as_slice());
-            state.write(&memo.0.to_be_bytes());
-            state.finish()
-        });
-        AccountIdentifier::new(GOVERNANCE_CANISTER_ID.get(), Some(subaccount))
-    }
-
     /// Certain transaction types require additional processing (Stake Neuron, Create Canister,
     /// etc). Each time we detect one of these transaction types we need to add the details to the
     /// `multi_part_transactions_processor` which will work through the required actions in the
@@ -996,7 +971,6 @@ impl AccountsStore {
         principal: PrincipalId,
         from: AccountIdentifier,
         to: AccountIdentifier,
-        memo: Memo,
         block_height: BlockIndex,
     ) {
         match transaction_type {
@@ -1004,12 +978,6 @@ impl AccountsStore {
                 self.multi_part_transactions_processor.push(
                     block_height,
                     MultiPartTransactionToBeProcessed::ParticipateSwap(principal, from, to, swap_canister_id),
-                );
-            }
-            TransactionType::StakeNeuron => {
-                self.multi_part_transactions_processor.push(
-                    block_height,
-                    MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo),
                 );
             }
             TransactionType::CreateCanister => {

@@ -19,7 +19,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Updated the dark theme and page icons.
-* Claim unclaimed neurons from the frontend.
+* Claim unclaimed neurons from the frontend instead of the backend.
 
 #### Deprecated
 

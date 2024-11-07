@@ -1,13 +1,11 @@
-use crate::canisters::{cmc, governance};
+use crate::canisters::cmc;
 use crate::ledger_sync;
 use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use crate::state::with_state_mut;
 use crate::Cycles;
 use cycles_minting_canister::{NotifyCreateCanister, NotifyError, NotifyTopUp};
 use dfn_core::api::{CanisterId, PrincipalId};
-use ic_nns_common::types::NeuronId;
-use ic_nns_governance::pb::v1::{claim_or_refresh_neuron_from_account_response, ClaimOrRefreshNeuronFromAccount};
-use icp_ledger::{BlockIndex, Memo};
+use icp_ledger::BlockIndex;
 
 pub async fn run_periodic_tasks() {
     ledger_sync::sync_transactions().await;
@@ -23,9 +21,10 @@ pub async fn run_periodic_tasks() {
                 // DO NOTHING
                 // Handling ParticipateSwap is not supported.
             }
-            MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo) => {
-                handle_stake_neuron(principal, memo).await;
-            }
+            // TODO: Remove StakeNeuron after a version has been released that
+            //       does not add StakeNeuron to the multi-part transaction
+            //       queue anymore.
+            MultiPartTransactionToBeProcessed::StakeNeuron(_principal, _memo) => {}
             MultiPartTransactionToBeProcessed::CreateCanisterV2(controller) => {
                 handle_create_canister_v2(block_height, controller).await;
             }
@@ -33,13 +32,6 @@ pub async fn run_periodic_tasks() {
                 handle_top_up_canister_v2(block_height, principal, canister_id).await;
             }
         }
-    }
-}
-
-async fn handle_stake_neuron(principal: PrincipalId, memo: Memo) {
-    match claim_or_refresh_neuron(principal, memo).await {
-        Ok(_neuron_id) => (),
-        Err(_error) => (),
     }
 }
 
@@ -74,22 +66,6 @@ async fn handle_top_up_canister_v2(block_height: BlockIndex, principal: Principa
         }
         Ok(Err(_error)) => (),
         Err(_error) => (),
-    }
-}
-
-async fn claim_or_refresh_neuron(principal: PrincipalId, memo: Memo) -> Result<NeuronId, String> {
-    let request = ClaimOrRefreshNeuronFromAccount {
-        controller: Some(principal),
-        memo: memo.0,
-    };
-
-    match governance::claim_or_refresh_neuron_from_account(request).await {
-        Ok(response) => match response.result {
-            Some(claim_or_refresh_neuron_from_account_response::Result::NeuronId(neuron_id)) => Ok(neuron_id.into()),
-            Some(claim_or_refresh_neuron_from_account_response::Result::Error(e)) => Err(e.error_message),
-            None => Err("'response.result' was empty".to_string()),
-        },
-        Err(e) => Err(e),
     }
 }
 

@@ -12,6 +12,8 @@ pub struct MultiPartTransactionsProcessor {
 
 #[derive(Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub enum MultiPartTransactionToBeProcessed {
+    // TODO: Remove StakeNeuron after a version has been released that does not
+    //       add StakeNeuron to the multi-part transaction queue anymore.
     StakeNeuron(PrincipalId, Memo),
     CreateCanisterV2(PrincipalId),
     TopUpCanisterV2(PrincipalId, CanisterId),
