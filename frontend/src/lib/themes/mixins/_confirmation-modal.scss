@@ -11,10 +11,9 @@
 
 @mixin title {
   margin: 0;
-  font-size: var(--font-size-h3);
+  font-size: var(--font-size-h4);
 }
 
 @mixin text {
   margin: 0;
-  font-size: var(--font-size-h4);
 }
