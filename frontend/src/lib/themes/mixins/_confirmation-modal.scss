@@ -17,7 +17,7 @@
 @mixin text {
   margin: 0;
   padding-bottom: var(--padding);
-  
+
   &:last-child {
     padding-bottom: 0;
   }
