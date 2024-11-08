@@ -1,22 +1,17 @@
 @mixin wrapper {
-  padding-bottom: var(--padding-2x);
-
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  gap: var(--padding-1_5x);
+  gap: var(--padding);
 
   color: var(--background-contrast);
 }
 
 @mixin title {
   margin: 0;
-  font-size: var(--font-size-h3);
+  font-size: var(--font-size-h4);
 }
 
 @mixin text {
   margin: 0;
-  align-self: stretch;
-  font-size: var(--font-size-h4);
 }
