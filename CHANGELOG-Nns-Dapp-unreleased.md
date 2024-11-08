@@ -25,6 +25,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* Stop storing neuron accounts in the nns-dapp canister.
+
 #### Fixed
 
 #### Security
