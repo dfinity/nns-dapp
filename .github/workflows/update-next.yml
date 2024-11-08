@@ -44,7 +44,7 @@ jobs:
           author: gix-bot <gix-bot@users.noreply.github.com>
           branch: bot-bump-next
           branch-suffix: timestamp
-          reviewers: mstrasinskis, dskloetd
+          reviewers: mstrasinskis, dskloetd, yhabib
           add-paths: |
             frontend
           delete-branch: true
