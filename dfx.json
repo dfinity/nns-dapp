@@ -35,6 +35,7 @@
       "remote": {
         "id": {
           "app": "qhbym-qaaaa-aaaaa-aaafq-cai",
+          "beta": "qhbym-qaaaa-aaaaa-aaafq-cai",
           "mainnet": "qhbym-qaaaa-aaaaa-aaafq-cai",
           "local": "q3fc5-haaaa-aaaaa-aaahq-cai"
         }
@@ -63,6 +64,7 @@
       "remote": {
         "id": {
           "app": "xnjld-hqaaa-aaaal-qb56q-cai",
+          "beta": "qsnoo-jiaaa-aaaal-amsea-cai",
           "ic": "qoctq-giaaa-aaaaa-aaaea-cai",
           "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai"
         }
@@ -75,7 +77,8 @@
       "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2023-01-31/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
       "url": {
         "mainnet": "https://identity.internetcomputer.org/",
-        "app": "https://identity.internetcomputer.org/"
+        "app": "https://identity.internetcomputer.org/",
+        "beta": "https://identity.internetcomputer.org/"
       },
       "remote": {
         "id": {
@@ -155,6 +158,7 @@
       "remote": {
         "id": {
           "app": "otgyv-wyaaa-aaaak-qcgba-cai",
+          "beta": "3r4gx-wqaaa-aaaaq-aaaia-cai",
           "mainnet": "3r4gx-wqaaa-aaaaq-aaaia-cai"
         }
       }
@@ -176,6 +180,7 @@
       "remote": {
         "id": {
           "app": "mxzaz-hqaaa-aaaar-qaada-cai",
+          "beta": "mxzaz-hqaaa-aaaar-qaada-cai",
           "mainnet": "mxzaz-hqaaa-aaaar-qaada-cai"
         }
       }
@@ -190,6 +195,7 @@
       "remote": {
         "id": {
           "app": "mqygn-kiaaa-aaaar-qaadq-cai",
+          "beta": "mqygn-kiaaa-aaaar-qaadq-cai",
           "mainnet": "mqygn-kiaaa-aaaar-qaadq-cai"
         }
       }
@@ -204,6 +210,7 @@
       "remote": {
         "id": {
           "app": "n5wcd-faaaa-aaaar-qaaea-cai",
+          "beta": "n5wcd-faaaa-aaaar-qaaea-cai",
           "mainnet": "n5wcd-faaaa-aaaar-qaaea-cai"
         }
       }
@@ -218,6 +225,7 @@
       "remote": {
         "id": {
           "app": "ss2fx-dyaaa-aaaar-qacoq-cai",
+          "beta": "ss2fx-dyaaa-aaaar-qacoq-cai",
           "mainnet": "ss2fx-dyaaa-aaaar-qacoq-cai"
         }
       }
@@ -232,6 +240,7 @@
       "remote": {
         "id": {
           "app": "s3zol-vqaaa-aaaar-qacpa-cai",
+          "beta": "s3zol-vqaaa-aaaar-qacpa-cai",
           "mainnet": "s3zol-vqaaa-aaaar-qacpa-cai"
         }
       }
@@ -246,6 +255,7 @@
       "remote": {
         "id": {
           "app": "xevnm-gaaaa-aaaar-qafnq-cai",
+          "beta": "xevnm-gaaaa-aaaar-qafnq-cai",
           "mainnet": "xevnm-gaaaa-aaaar-qafnq-cai"
         }
       }
@@ -260,6 +270,7 @@
       "remote": {
         "id": {
           "app": "xrs4b-hiaaa-aaaar-qafoa-cai",
+          "beta": "xrs4b-hiaaa-aaaar-qafoa-cai",
           "mainnet": "xrs4b-hiaaa-aaaar-qafoa-cai"
         }
       }
@@ -274,6 +285,7 @@
       "remote": {
         "id": {
           "app": "qoctq-giaaa-aaaaa-aaaea-cai",
+          "beta": "qoctq-giaaa-aaaaa-aaaea-cai",
           "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai"
         }
       }
@@ -296,6 +308,21 @@
       "type": "persistent"
     },
     "app": {
+      "config": {
+        "FETCH_ROOT_KEY": false,
+        "API_HOST": "https://icp-api.io",
+        "STATIC_HOST": "https://icp0.io",
+        "FEATURE_FLAGS": {
+          "ENABLE_CKBTC": true,
+          "ENABLE_CKTESTBTC": false
+        }
+      },
+      "providers": [
+        "https://icp0.io"
+      ],
+      "type": "persistent"
+    },
+    "beta": {
       "config": {
         "FETCH_ROOT_KEY": false,
         "API_HOST": "https://icp-api.io",

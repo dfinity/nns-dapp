@@ -37,6 +37,10 @@ export const IS_TESTNET: boolean =
   !(HOST.includes(".icp-api.io") || HOST.includes(".ic0.app"));
 
 // This is the network name used in the dfx.json file
-const BETA_TEST_DFX_NETWORK = "app";
+const APP_TEST_DFX_NETWORK = "app";
+const BETA_TEST_DFX_NETWORK = "beta";
 
-export const IS_TEST_MAINNET = envVars.dfxNetwork === BETA_TEST_DFX_NETWORK;
+export const IS_TEST_MAINNET = [
+  APP_TEST_DFX_NETWORK,
+  BETA_TEST_DFX_NETWORK,
+].includes(envVars.dfxNetwork);
