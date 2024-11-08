@@ -17,6 +17,6 @@
 
 @mixin text {
   margin: 0;
-
+  align-self: stretch;
   font-size: var(--font-size-h4);
 }

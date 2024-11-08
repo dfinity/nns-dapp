@@ -35,7 +35,7 @@
 </script>
 
 <ConfirmationModal on:nnsClose on:nnsConfirm={detach}>
-  <div data-tid="unlink-canister-confirmation-modal">
+  <div data-tid="unlink-canister-confirmation-modal" class="wrapper">
     <h4>{$i18n.canister_detail.confirm_unlink_title}</h4>
     <p class="description">
       {$i18n.canister_detail.confirm_unlink_description_1}
@@ -49,7 +49,7 @@
 <style lang="scss">
   @use "../../themes/mixins/confirmation-modal";
 
-  div {
+  .wrapper {
     @include confirmation-modal.wrapper;
   }
 

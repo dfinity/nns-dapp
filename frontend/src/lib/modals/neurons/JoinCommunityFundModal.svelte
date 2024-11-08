@@ -47,7 +47,7 @@
   on:nnsClose
   on:nnsConfirm={joinFund}
 >
-  <div data-tid="join-community-fund-modal">
+  <div data-tid="join-community-fund-modal" class="wrapper">
     <h4>{$i18n.core.confirm}</h4>
     {#if isCommunityFund}
       <p>{$i18n.neuron_detail.leave_community_fund_description}</p>
@@ -68,7 +68,7 @@
 
 <style lang="scss">
   @use "../../themes/mixins/confirmation-modal";
-  div {
+  .wrapper {
     @include confirmation-modal.wrapper;
   }
 

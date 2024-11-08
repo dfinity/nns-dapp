@@ -4,7 +4,7 @@
 </script>
 
 <ConfirmationModal on:nnsClose on:nnsConfirm>
-  <div data-tid="remove-current-user-hotkey-confirmation">
+  <div data-tid="remove-current-user-hotkey-confirmation" class="wrapper">
     <h4>{$i18n.neurons.remove_user_hotkey_confirm_title}</h4>
     <p>{$i18n.neurons.remove_user_hotkey_confirm_text}</p>
   </div>
@@ -13,7 +13,7 @@
 <style lang="scss">
   @use "../../themes/mixins/confirmation-modal";
 
-  div {
+  .wrapper {
     @include confirmation-modal.wrapper;
   }
 
