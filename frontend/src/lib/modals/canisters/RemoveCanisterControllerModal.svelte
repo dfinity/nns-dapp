@@ -53,7 +53,7 @@
 </script>
 
 <ConfirmationModal on:nnsClose on:nnsConfirm={remove}>
-  <div data-tid="remove-canister-controller-confirmation-modal">
+  <div data-tid="remove-canister-controller-confirmation-modal" class="wrapper">
     <h4>{$i18n.canister_detail.confirm_remove_controller_title}</h4>
     {#if userController}
       <p class="description">
@@ -79,7 +79,7 @@
 <style lang="scss">
   @use "../../themes/mixins/confirmation-modal";
 
-  div {
+  .wrapper {
     @include confirmation-modal.wrapper;
   }
 

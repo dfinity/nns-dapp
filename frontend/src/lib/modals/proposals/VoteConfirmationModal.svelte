@@ -11,7 +11,7 @@
 </script>
 
 <ConfirmationModal on:nnsClose on:nnsConfirm>
-  <div>
+  <div class="wrapper">
     {#if voteType === Vote.Yes}
       <IconThumbUp />
       <h4>{$i18n.proposal_detail__vote.confirm_adopt_headline}</h4>
@@ -33,19 +33,10 @@
 </ConfirmationModal>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../themes/mixins/confirmation-modal";
 
-  div {
-    padding: var(--padding-2x) 0;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: var(--padding-1_5x);
-
-    color: var(--background-contrast);
+  .wrapper {
+    @include confirmation-modal.wrapper;
 
     :global(svg) {
       width: var(--padding-6x);
@@ -54,14 +45,10 @@
   }
 
   h4 {
-    margin: 0;
-    font-size: var(--font-size-h3);
+    @include confirmation-modal.title;
   }
 
   p {
-    margin: 0;
-
-    font-size: var(--font-size-h4);
-    text-align: center;
+    @include confirmation-modal.text;
   }
 </style>

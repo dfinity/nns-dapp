@@ -61,42 +61,44 @@
 </script>
 
 <ConfirmationModal on:nnsClose on:nnsConfirm={addCurrentUserToHotkey}>
-  <h4>{$i18n.accounts.hardware_wallet_add_hotkey_title}</h4>
+  <div class="wrapper">
+    <h4>{$i18n.accounts.hardware_wallet_add_hotkey_title}</h4>
 
-  <p>
-    {replacePlaceholders(
-      $i18n.accounts.hardware_wallet_add_hotkey_text_neuron,
-      {
-        $neuronId: neuronId.toString(),
-      }
-    )}
-  </p>
+    <p>
+      {replacePlaceholders(
+        $i18n.accounts.hardware_wallet_add_hotkey_text_neuron,
+        {
+          $neuronId: neuronId.toString(),
+        }
+      )}
+    </p>
 
-  <p>
-    {replacePlaceholders(
-      $i18n.accounts.hardware_wallet_add_hotkey_text_principal,
-      {
-        $principalId: $authStore.identity?.getPrincipal().toText() ?? "",
-      }
-    )}
-  </p>
+    <p>
+      {replacePlaceholders(
+        $i18n.accounts.hardware_wallet_add_hotkey_text_principal,
+        {
+          $principalId: $authStore.identity?.getPrincipal().toText() ?? "",
+        }
+      )}
+    </p>
 
-  <p>{$i18n.accounts.hardware_wallet_add_hotkey_text_confirm}</p>
+    <p>{$i18n.accounts.hardware_wallet_add_hotkey_text_confirm}</p>
+  </div>
 </ConfirmationModal>
 
 <style lang="scss">
-  h4,
-  p {
-    text-align: center;
+  @use "../../themes/mixins/confirmation-modal";
+
+  .wrapper {
+    @include confirmation-modal.wrapper;
   }
 
   h4 {
-    padding-bottom: var(--padding-0_5x);
+    @include confirmation-modal.title;
   }
 
   p {
-    padding-bottom: var(--padding);
-
+    @include confirmation-modal.text;
     &:last-of-type {
       padding-bottom: var(--padding-2x);
     }
