@@ -29,6 +29,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Stop trying to get swap commitments from aborted SNSes.
+
 #### Security
 
 #### Not Published
