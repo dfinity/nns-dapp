@@ -1,4 +1,4 @@
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-31_03-09-ubuntu20.04/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-11-07_03-07-6.11-kernel/rs/nns/governance/canister/governance.did>
 type AccountIdentifier = record {
   hash : blob;
 };
@@ -812,6 +812,7 @@ type ProposalData = record {
   wait_for_quiet_state : opt WaitForQuietState;
   executed_timestamp_seconds : nat64;
   original_total_community_fund_maturity_e8s_equivalent : opt nat64;
+  total_potential_voting_power : opt nat64;
 };
 
 type ProposalInfo = record {
@@ -832,6 +833,7 @@ type ProposalInfo = record {
   proposal : opt Proposal;
   proposer : opt NeuronId;
   executed_timestamp_seconds : nat64;
+  total_potential_voting_power : opt nat64;
 };
 
 type RegisterVote = record {
