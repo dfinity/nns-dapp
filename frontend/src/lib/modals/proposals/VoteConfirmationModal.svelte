@@ -45,12 +45,12 @@
     :global(svg) {
       width: var(--padding-4x);
       height: var(--padding-4x);
-      margin-bottom: var(--padding);
     }
 
     .icon-wrapper {
       width: var(--padding-6x);
       height: var(--padding-6x);
+      margin-bottom: var(--padding);
 
       border-radius: 50%;
       aspect-ratio: 1;
