@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: var(--padding);
 
   color: var(--background-contrast);
 }
@@ -11,14 +12,9 @@
 @mixin title {
   margin: 0;
   font-size: var(--font-size-h4);
-  padding-bottom: var(--padding-2x);
+  padding-bottom: var(--padding);
 }
 
 @mixin text {
   margin: 0;
-  padding-bottom: var(--padding);
-
-  &:last-child {
-    padding-bottom: 0;
-  }
 }
