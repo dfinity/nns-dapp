@@ -53,7 +53,6 @@
       margin-bottom: var(--padding);
 
       border-radius: 50%;
-      aspect-ratio: 1;
 
       display: flex;
       align-items: center;
