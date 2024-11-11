@@ -28,7 +28,7 @@ jobs:
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>
           base: main
-          reviewers: mstrasinskis, dskloetd
+          reviewers: mstrasinskis, dskloetd, yhabib
           # Note: Please be careful when updating the add-paths field.
           add-paths: frontend/src/tests/workflows/Launchpad/*.json
           branch: bot-aggregator-response-update
