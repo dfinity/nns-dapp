@@ -1698,6 +1698,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "ic-cdk"
+version = "0.17.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b2abdf9341da9f9f6b451a40609cb69645a05a8e9eb7784c16209f16f2c0f76f"
+dependencies = [
+ "candid",
+ "ic-cdk-macros 0.17.0",
+ "ic0 0.23.0",
+ "serde",
+ "serde_bytes",
+]
+
+[[package]]
 name = "ic-cdk-macros"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1740,6 +1753,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "ic-cdk-macros"
+version = "0.17.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b8df41980e95dead28735ab0f748c75477b0c5eab37a09a5641c78ec406a1db0"
+dependencies = [
+ "candid",
+ "proc-macro2",
+ "quote",
+ "serde",
+ "serde_tokenstream 0.2.2",
+ "syn 2.0.87",
+]
+
+[[package]]
 name = "ic-cdk-timers"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1755,12 +1782,12 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk-timers"
-version = "0.10.0"
+version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0c7c528bbb3d4d934b43a364855995d318649217c7510f40f92ad52eba3ff7be"
+checksum = "fb8fd812a9e26f6aa00594546f8fbf4d4853f39c3ba794c8ff11ecf86fd3c9e4"
 dependencies = [
  "futures",
- "ic-cdk 0.16.0",
+ "ic-cdk 0.17.0",
  "ic0 0.23.0",
  "serde",
  "serde_bytes",
@@ -3756,7 +3783,7 @@ checksum = "650eef8c711430f1a879fdd01d4745a7deea475becfb90269c06775983bbf086"
 
 [[package]]
 name = "nns-dapp"
-version = "2.0.93"
+version = "2.0.94"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -3769,9 +3796,9 @@ dependencies = [
  "flate2",
  "hex",
  "ic-base-types",
- "ic-cdk 0.16.0",
- "ic-cdk-macros 0.16.0",
- "ic-cdk-timers 0.10.0",
+ "ic-cdk 0.17.0",
+ "ic-cdk-macros 0.17.0",
+ "ic-cdk-timers 0.11.0",
  "ic-certified-map 0.3.4",
  "ic-crypto-sha2",
  "ic-ledger-core",
@@ -4248,7 +4275,7 @@ dependencies = [
 
 [[package]]
 name = "proposals"
-version = "2.0.93"
+version = "2.0.94"
 dependencies = [
  "anyhow",
  "candid",
@@ -4259,8 +4286,8 @@ dependencies = [
  "hex",
  "ic-base-types",
  "ic-btc-interface",
- "ic-cdk 0.16.0",
- "ic-cdk-macros 0.16.0",
+ "ic-cdk 0.17.0",
+ "ic-cdk-macros 0.17.0",
  "ic-crypto-sha2",
  "ic-management-canister-types",
  "ic-nervous-system-common",
@@ -4933,16 +4960,16 @@ checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
 
 [[package]]
 name = "sns_aggregator"
-version = "2.0.93"
+version = "2.0.94"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
  "candid",
  "dfn_candid",
  "dfn_core",
- "ic-cdk 0.16.0",
- "ic-cdk-macros 0.16.0",
- "ic-cdk-timers 0.10.0",
+ "ic-cdk 0.17.0",
+ "ic-cdk-macros 0.17.0",
+ "ic-cdk-timers 0.11.0",
  "ic-certified-map 0.3.2",
  "ic-management-canister-types",
  "ic-nervous-system-common",
@@ -4999,7 +5026,7 @@ dependencies = [
  "cfg-if",
  "libc",
  "psm",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -5115,7 +5142,7 @@ dependencies = [
  "fastrand",
  "once_cell",
  "rustix",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -5536,7 +5563,7 @@ version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf221c93e13a30d793f7645a0e7762c55d169dbb0a49671918a2319d289b10bb"
 dependencies = [
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]

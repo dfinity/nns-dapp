@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-31_03-09-ubuntu20.04/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-11-07_03-07-6.11-kernel/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -700,6 +700,7 @@ pub struct ProposalData {
     pub reject_cost_e8s: u64,
     pub derived_proposal_information: Option<DerivedProposalInformation>,
     pub latest_tally: Option<Tally>,
+    pub total_potential_voting_power: Option<u64>,
     pub sns_token_swap_lifecycle: Option<i32>,
     pub decided_timestamp_seconds: u64,
     pub proposal: Option<Box<Proposal>>,
@@ -878,6 +879,7 @@ pub struct ProposalInfo {
     pub reject_cost_e8s: u64,
     pub derived_proposal_information: Option<DerivedProposalInformation>,
     pub latest_tally: Option<Tally>,
+    pub total_potential_voting_power: Option<u64>,
     pub reward_status: i32,
     pub decided_timestamp_seconds: u64,
     pub proposal: Option<Box<Proposal>>,

@@ -41,6 +41,7 @@
     :global(svg) {
       width: var(--padding-6x);
       height: var(--padding-6x);
+      margin-bottom: var(--padding);
     }
   }
 
