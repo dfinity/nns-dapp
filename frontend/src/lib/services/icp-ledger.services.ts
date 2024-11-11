@@ -120,7 +120,7 @@ export const getLedgerIdentity = async (
     return identities[identifier];
   }
   const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
-  
+
   const ledgerIdentifier = principalToAccountIdentifier(
     ledgerIdentity.getPrincipal()
   );

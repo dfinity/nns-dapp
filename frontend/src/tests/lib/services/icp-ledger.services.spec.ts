@@ -276,7 +276,7 @@ describe("icp-ledger.services", () => {
 
       // Second call should return the correct identity because the correct HW is connected.
       const identity = await getLedgerIdentity(mockLedgerIdentifier);
-      
+
       expect(LedgerIdentity.create).toHaveBeenCalledTimes(2);
       expect(identity).not.toBeNull();
       expect(principalToAccountIdentifier(identity.getPrincipal())).toEqual(
