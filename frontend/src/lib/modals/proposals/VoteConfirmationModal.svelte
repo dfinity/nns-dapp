@@ -60,7 +60,7 @@
     }
     .yes {
       color: var(--green);
-      background-color: rgb(from var(--green) r g b / 0.2);
+      background-color: rgb(from var(--green) r g b / 0.25);
     }
 
     .no {
