@@ -10,27 +10,27 @@ resolver = "2"
 version = "2.0.93"
 
 [workspace.dependencies]
-ic-cdk = "0.16.0"
-ic-cdk-macros = "0.16.0"
-ic-cdk-timers = "0.10.0"
+ic-cdk = "0.17.0"
+ic-cdk-macros = "0.17.0"
+ic-cdk-timers = "0.11.0"
 
-cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-31_03-09-ubuntu20.04" }
-dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-31_03-09-ubuntu20.04" }
-dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-31_03-09-ubuntu20.04" }
-dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-31_03-09-ubuntu20.04" }
-ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-31_03-09-ubuntu20.04" }
-ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-31_03-09-ubuntu20.04" }
-ic-management-canister-types = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-31_03-09-ubuntu20.04" }
-ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-31_03-09-ubuntu20.04" }
-ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-31_03-09-ubuntu20.04" }
-ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-31_03-09-ubuntu20.04" }
-ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-31_03-09-ubuntu20.04" }
-ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-31_03-09-ubuntu20.04" }
-ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-31_03-09-ubuntu20.04" }
-ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-31_03-09-ubuntu20.04" }
-ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-31_03-09-ubuntu20.04" }
-icp-ledger = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-31_03-09-ubuntu20.04" }
-on_wire = { git = "https://github.com/dfinity/ic", rev = "release-2024-10-31_03-09-ubuntu20.04" }
+cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-07_03-07-6.11-kernel" }
+dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-07_03-07-6.11-kernel" }
+dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-07_03-07-6.11-kernel" }
+dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-07_03-07-6.11-kernel" }
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-07_03-07-6.11-kernel" }
+ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-07_03-07-6.11-kernel" }
+ic-management-canister-types = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-07_03-07-6.11-kernel" }
+ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-07_03-07-6.11-kernel" }
+ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-07_03-07-6.11-kernel" }
+ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-07_03-07-6.11-kernel" }
+ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-07_03-07-6.11-kernel" }
+ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-07_03-07-6.11-kernel" }
+ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-07_03-07-6.11-kernel" }
+ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-07_03-07-6.11-kernel" }
+ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-07_03-07-6.11-kernel" }
+icp-ledger = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-07_03-07-6.11-kernel" }
+on_wire = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-07_03-07-6.11-kernel" }
 
 [profile.release]
 lto = false
