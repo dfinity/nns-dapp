@@ -45,6 +45,7 @@
     :global(svg) {
       width: var(--padding-4x);
       height: var(--padding-4x);
+      margin-bottom: var(--padding);
     }
 
     .icon-wrapper {
