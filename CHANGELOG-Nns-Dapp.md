@@ -11,6 +11,20 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 134037
+
+### Application
+
+#### Added
+
+* Add navigation between neuron detail pages.
+
+#### Changed
+
+* Updated the dark theme and page icons.
+
+### Operations
+
 ## Proposal 133898
 
 ### Application
