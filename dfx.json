@@ -430,7 +430,7 @@
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2024-11-06",
-        "IC_COMMIT_FOR_PROPOSALS": "release-2024-10-31_03-09-ubuntu20.04",
+        "IC_COMMIT_FOR_PROPOSALS": "release-2024-11-07_03-07-6.11-kernel",
         "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-10-31_03-09-ubuntu20.04"
       },
       "packtool": ""
