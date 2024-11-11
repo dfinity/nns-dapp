@@ -37,7 +37,7 @@
 
 <style lang="scss">
   .wrapper {
-    padding: 0 var(--padding-3x);
+    padding: 0 var(--padding);
     display: flex;
     flex-direction: column;
     gap: var(--padding-4x);
