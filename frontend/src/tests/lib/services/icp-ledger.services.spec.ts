@@ -11,7 +11,6 @@ import {
   getLedgerIdentity,
   listNeuronsHardwareWallet,
   registerHardwareWallet,
-  resetIdentitiesCachedForTesting,
   showAddressAndPubKeyOnHardwareWallet,
 } from "$lib/services/icp-ledger.services";
 import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
@@ -47,7 +46,6 @@ describe("icp-ledger.services", () => {
   });
 
   beforeEach(() => {
-    resetIdentitiesCachedForTesting();
     vi.clearAllMocks();
     toastsStore.reset();
     resetIdentity();
@@ -218,7 +216,7 @@ describe("icp-ledger.services", () => {
       );
     });
 
-    it("should cache ledger identity for same identifier", async () => {
+    it("should not cache ledger identity for same identifier", async () => {
       const identity1 = await getLedgerIdentity(mockLedgerIdentifier);
 
       expect(identity1).not.toBeNull();
@@ -226,8 +224,10 @@ describe("icp-ledger.services", () => {
 
       const identity2 = await getLedgerIdentity(mockLedgerIdentifier);
 
-      expect(identity2).toBe(identity1);
-      expect(LedgerIdentity.create).toHaveBeenCalledTimes(1);
+      expect(identity2.getPrincipal().toText()).toBe(
+        identity1.getPrincipal().toText()
+      );
+      expect(LedgerIdentity.create).toHaveBeenCalledTimes(2);
     });
 
     it("should not return cached ledger identity for different account", async () => {
