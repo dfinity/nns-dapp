@@ -14,11 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Add navigation between neuron detail pages.
-
 #### Changed
 
-* Updated the dark theme and page icons.
 * Claim unclaimed neurons from the frontend instead of the backend.
 
 #### Deprecated

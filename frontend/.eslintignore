@@ -18,3 +18,5 @@ yarn.lock
 /scripts
 
 src/lib/canisters/nns-dapp/**/*
+
+coverage
