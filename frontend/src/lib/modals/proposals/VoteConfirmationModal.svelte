@@ -57,15 +57,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-    .yes {
-      color: var(--positive-emphasis);
-      background-color: var(--positive-emphasis-light);
-    }
 
-    .no {
-      color: var(--negative-emphasis);
-      background-color: var(--negative-emphasis-light);
+      &.yes {
+        color: var(--positive-emphasis);
+        background-color: var(--positive-emphasis-light);
+      }
+
+      &.no {
+        color: var(--negative-emphasis);
+        background-color: var(--negative-emphasis-light);
+      }
     }
   }
 
