@@ -27,6 +27,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Stop trying to get swap commitments from aborted SNSes.
+* User gets the wrong identity when connecting different hardware wallets devices in a certain order.
 
 #### Security
 

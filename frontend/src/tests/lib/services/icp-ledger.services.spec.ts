@@ -11,7 +11,6 @@ import {
   getLedgerIdentity,
   listNeuronsHardwareWallet,
   registerHardwareWallet,
-  resetIdentitiesCachedForTesting,
   showAddressAndPubKeyOnHardwareWallet,
 } from "$lib/services/icp-ledger.services";
 import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
@@ -47,7 +46,6 @@ describe("icp-ledger.services", () => {
   });
 
   beforeEach(() => {
-    resetIdentitiesCachedForTesting();
     vi.clearAllMocks();
     toastsStore.reset();
     resetIdentity();
@@ -218,7 +216,15 @@ describe("icp-ledger.services", () => {
       );
     });
 
-    it("should cache ledger identity for same identifier", async () => {
+    it("should not cache ledger identity for same identifier", async () => {
+      vi.spyOn(LedgerIdentity, "create")
+        .mockImplementationOnce(
+          async (): Promise<LedgerIdentity> => mockLedgerIdentity
+        )
+        .mockImplementationOnce(
+          // Return the same identity, but a new instance.
+          async (): Promise<LedgerIdentity> => new MockLedgerIdentity()
+        );
       const identity1 = await getLedgerIdentity(mockLedgerIdentifier);
 
       expect(identity1).not.toBeNull();
@@ -226,8 +232,11 @@ describe("icp-ledger.services", () => {
 
       const identity2 = await getLedgerIdentity(mockLedgerIdentifier);
 
-      expect(identity2).toBe(identity1);
-      expect(LedgerIdentity.create).toHaveBeenCalledTimes(1);
+      expect(identity2.getPrincipal().toText()).toBe(
+        identity1.getPrincipal().toText()
+      );
+      expect(identity2).not.toBe(identity1);
+      expect(LedgerIdentity.create).toHaveBeenCalledTimes(2);
     });
 
     it("should not return cached ledger identity for different account", async () => {
@@ -250,6 +259,40 @@ describe("icp-ledger.services", () => {
 
       expect(identity2).not.toBe(identity1);
       expect(LedgerIdentity.create).toHaveBeenCalledTimes(2);
+    });
+
+    // Test for the bug found in 2024-11-08.
+    // The bug was that the wrong ledger identity was returned when the wrong HW was connected first.
+    it("should return correct identity after connection wrong HW first", async () => {
+      vi.spyOn(LedgerIdentity, "create")
+        // Return first the wrong identity. Mocking that the wrong HW is connected.
+        .mockImplementationOnce(
+          async (): Promise<LedgerIdentity> => mockLedgerIdentity2
+        )
+        .mockImplementationOnce(
+          async (): Promise<LedgerIdentity> => mockLedgerIdentity
+        );
+
+      const call = async () => getLedgerIdentity(mockLedgerIdentifier);
+
+      // Call fails because the wrong HW is connected.
+      await expect(call).rejects.toThrow(
+        replacePlaceholders(en.error__ledger.incorrect_identifier, {
+          $identifier: mockLedgerIdentifier,
+          $ledgerIdentifier: principalToAccountIdentifier(ledgerPrincipal2),
+        })
+      );
+
+      expect(LedgerIdentity.create).toHaveBeenCalledTimes(1);
+
+      // Second call should return the correct identity because the correct HW is connected.
+      const identity = await getLedgerIdentity(mockLedgerIdentifier);
+
+      expect(LedgerIdentity.create).toHaveBeenCalledTimes(2);
+      expect(identity).not.toBeNull();
+      expect(principalToAccountIdentifier(identity.getPrincipal())).toEqual(
+        mockLedgerIdentifier
+      );
     });
 
     it("should throw an error if identifier does not match", async () => {
