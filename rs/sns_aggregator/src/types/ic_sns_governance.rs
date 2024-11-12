@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-10-31_03-09-ubuntu20.04/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-11-07_03-07-6.11-kernel/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -120,12 +120,17 @@ pub struct UpgradeStepsRefreshed {
     pub upgrade_steps: Option<Versions>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct TargetVersionReset {
+    pub old_target_version: Option<Version>,
+    pub new_target_version: Option<Version>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum UpgradeJournalEntryEventInner {
     TargetVersionSet(TargetVersionSet),
     UpgradeOutcome(UpgradeOutcome),
     UpgradeStarted(UpgradeStarted),
     UpgradeStepsRefreshed(UpgradeStepsRefreshed),
-    TargetVersionReset(TargetVersionSet),
+    TargetVersionReset(TargetVersionReset),
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct UpgradeJournalEntry {
