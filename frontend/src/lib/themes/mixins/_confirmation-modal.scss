@@ -1,6 +1,4 @@
 @mixin wrapper {
-  padding-bottom: var(--padding);
-
   display: flex;
   flex-direction: column;
   justify-content: center;
