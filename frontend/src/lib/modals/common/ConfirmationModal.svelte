@@ -41,11 +41,11 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-4x);
-  }
 
-  .footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--padding-2x);
+    .footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--padding-2x);
+    }
   }
 </style>
