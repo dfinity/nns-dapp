@@ -217,6 +217,14 @@ describe("icp-ledger.services", () => {
     });
 
     it("should not cache ledger identity for same identifier", async () => {
+      vi.spyOn(LedgerIdentity, "create")
+        .mockImplementationOnce(
+          async (): Promise<LedgerIdentity> => mockLedgerIdentity
+        )
+        .mockImplementationOnce(
+          // Return the same identity, but a new instance.
+          async (): Promise<LedgerIdentity> => new MockLedgerIdentity()
+        );
       const identity1 = await getLedgerIdentity(mockLedgerIdentifier);
 
       expect(identity1).not.toBeNull();
@@ -227,6 +235,7 @@ describe("icp-ledger.services", () => {
       expect(identity2.getPrincipal().toText()).toBe(
         identity1.getPrincipal().toText()
       );
+      expect(identity2).not.toBe(identity1);
       expect(LedgerIdentity.create).toHaveBeenCalledTimes(2);
     });
 
@@ -252,7 +261,9 @@ describe("icp-ledger.services", () => {
       expect(LedgerIdentity.create).toHaveBeenCalledTimes(2);
     });
 
-    it("should not cache ledger identity for different account", async () => {
+    // Test for the bug found in 2024-11-08.
+    // The bug was that the wrong ledger identity was returned when the wrong HW was connected first.
+    it("should return correct identity after connection wrong HW first", async () => {
       vi.spyOn(LedgerIdentity, "create")
         // Return first the wrong identity. Mocking that the wrong HW is connected.
         .mockImplementationOnce(
