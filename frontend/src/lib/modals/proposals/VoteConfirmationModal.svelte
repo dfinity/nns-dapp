@@ -59,13 +59,13 @@
       justify-content: center;
     }
     .yes {
-      color: var(--green-200);
-      background-color: var(--green-200-a25);
+      color: var(--positive-emphasis);
+      background-color: var(--positive-emphasis-light);
     }
 
     .no {
-      color: var(--pink-200);
-      background-color: var(--pink-200-a25);
+      color: var(--negative-emphasis);
+      background-color: var(--negative-emphasis-light);
     }
   }
 
