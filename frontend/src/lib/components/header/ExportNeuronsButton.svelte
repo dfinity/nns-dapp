@@ -30,8 +30,8 @@
   }>();
 
   let isDisabled = true;
-  $: isDisabled = $neuronsStore.neurons === undefined;
-
+  $: isDisabled =
+    $neuronsStore.neurons === undefined || $neuronsStore.neurons.length === 0;
   let neurons: NeuronInfo[] = $neuronsStore?.neurons ?? [];
 
   // End of component code
@@ -86,7 +86,7 @@
     }
   };
 
-  // helper function to ic-js/date/utils or not needed?
+  // to ic-js/date/utils or not needed?
   const getDateFromSeconds = (seconds: number | bigint): Date => {
     const now = new Date();
     const futureDate = new Date(now.getTime() + Number(seconds) * 1000);
