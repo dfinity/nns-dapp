@@ -131,7 +131,7 @@ describe("NeuronDetail", () => {
     );
   });
 
-  it("should not refresh neuron if not needed", async () => {
+  it("should not refresh neuron if stake is equal to account balance", async () => {
     expect(spyQueryAccountBalance).toBeCalledTimes(0);
 
     await renderComponent(`${neuronId}`);
@@ -147,7 +147,7 @@ describe("NeuronDetail", () => {
     expect(newNeuron.fullNeuron.cachedNeuronStake).toEqual(neuronStake);
   });
 
-  it("should refresh neuron if needed", async () => {
+  it("should refresh neuron if stake is less than account balance", async () => {
     const stakeIncrease = 100_000_000n;
     spyQueryAccountBalance.mockResolvedValue(neuronStake + stakeIncrease);
 
