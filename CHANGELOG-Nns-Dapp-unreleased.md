@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Claim unclaimed neurons from the frontend instead of the backend.
+* Update proposal status colors.
 
 #### Deprecated
 
