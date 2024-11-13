@@ -60,34 +60,56 @@ vi.mock("$lib/api/agent.api", () => {
 describe("sns-api", () => {
   const ledgerCanisterMock = mock<LedgerCanister>();
   const proposals = [mockSnsProposal];
-  const queryNeuronsSpy = vi.fn().mockResolvedValue([mockSnsNeuron]);
-  const getNeuronSpy = vi.fn().mockResolvedValue(mockSnsNeuron);
-  const queryNeuronSpy = vi.fn().mockResolvedValue(mockSnsNeuron);
-  const addNeuronPermissionsSpy = vi.fn().mockResolvedValue(undefined);
-  const removeNeuronPermissionsSpy = vi.fn().mockResolvedValue(undefined);
-  const disburseSpy = vi.fn().mockResolvedValue(undefined);
-  const splitNeuronSpy = vi.fn().mockResolvedValue(undefined);
-  const startDissolvingSpy = vi.fn().mockResolvedValue(undefined);
-  const stopDissolvingSpy = vi.fn().mockResolvedValue(undefined);
-  const increaseDissolveDelaySpy = vi.fn().mockResolvedValue(undefined);
-  const getNeuronBalanceSpy = vi.fn().mockResolvedValue(undefined);
-  const refreshNeuronSpy = vi.fn().mockResolvedValue(undefined);
-  const claimNeuronSpy = vi.fn().mockResolvedValue(undefined);
-  const setTopicFolloweesSpy = vi.fn().mockResolvedValue(undefined);
-  const stakeMaturitySpy = vi.fn().mockResolvedValue(undefined);
-  const registerVoteSpy = vi.fn().mockResolvedValue(undefined);
-  const autoStakeMaturitySpy = vi.fn().mockResolvedValue(undefined);
-  const listProposalsSpy = vi.fn().mockResolvedValue({ proposals });
-  const getProposalSpy = vi.fn().mockResolvedValue(mockSnsProposal);
-  const disburseMaturitySpy = vi.fn().mockResolvedValue(undefined);
+  const queryNeuronsSpy = vi.fn();
+  const getNeuronSpy = vi.fn();
+  const queryNeuronSpy = vi.fn();
+  const addNeuronPermissionsSpy = vi.fn();
+  const removeNeuronPermissionsSpy = vi.fn();
+  const disburseSpy = vi.fn();
+  const splitNeuronSpy = vi.fn();
+  const startDissolvingSpy = vi.fn();
+  const stopDissolvingSpy = vi.fn();
+  const increaseDissolveDelaySpy = vi.fn();
+  const getNeuronBalanceSpy = vi.fn();
+  const refreshNeuronSpy = vi.fn();
+  const claimNeuronSpy = vi.fn();
+  const setTopicFolloweesSpy = vi.fn();
+  const stakeMaturitySpy = vi.fn();
+  const registerVoteSpy = vi.fn();
+  const autoStakeMaturitySpy = vi.fn();
+  const listProposalsSpy = vi.fn();
+  const getProposalSpy = vi.fn();
+  const disburseMaturitySpy = vi.fn();
   const nervousSystemFunctionsMock: SnsListNervousSystemFunctionsResponse = {
     reserved_ids: new BigUint64Array(),
     functions: [nervousSystemFunctionMock],
   };
-  const getFunctionsSpy = vi.fn().mockResolvedValue(nervousSystemFunctionsMock);
+  const getFunctionsSpy = vi.fn();
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
+
+    queryNeuronsSpy.mockResolvedValue([mockSnsNeuron]);
+    getNeuronSpy.mockResolvedValue(mockSnsNeuron);
+    queryNeuronSpy.mockResolvedValue(mockSnsNeuron);
+    addNeuronPermissionsSpy.mockResolvedValue(undefined);
+    removeNeuronPermissionsSpy.mockResolvedValue(undefined);
+    disburseSpy.mockResolvedValue(undefined);
+    splitNeuronSpy.mockResolvedValue(undefined);
+    startDissolvingSpy.mockResolvedValue(undefined);
+    stopDissolvingSpy.mockResolvedValue(undefined);
+    increaseDissolveDelaySpy.mockResolvedValue(undefined);
+    getNeuronBalanceSpy.mockResolvedValue(undefined);
+    refreshNeuronSpy.mockResolvedValue(undefined);
+    claimNeuronSpy.mockResolvedValue(undefined);
+    setTopicFolloweesSpy.mockResolvedValue(undefined);
+    stakeMaturitySpy.mockResolvedValue(undefined);
+    registerVoteSpy.mockResolvedValue(undefined);
+    autoStakeMaturitySpy.mockResolvedValue(undefined);
+    listProposalsSpy.mockResolvedValue({ proposals });
+    getProposalSpy.mockResolvedValue(mockSnsProposal);
+    disburseMaturitySpy.mockResolvedValue(undefined);
+    getFunctionsSpy.mockResolvedValue(nervousSystemFunctionsMock);
 
     vi.spyOn(LedgerCanister, "create").mockImplementation(
       () => ledgerCanisterMock

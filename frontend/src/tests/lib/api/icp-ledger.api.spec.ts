@@ -14,7 +14,7 @@ import { mock } from "vitest-mock-extended";
 
 describe("icp-ledger.api", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     vi.clearAllTimers();
 
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
@@ -260,9 +260,9 @@ describe("icp-ledger.api", () => {
   describe("transactionFee", () => {
     const fee = 10_000n;
     const ledgerMock = mock<LedgerCanister>();
-    ledgerMock.transactionFee.mockResolvedValue(fee);
 
     beforeEach(() => {
+      ledgerMock.transactionFee.mockResolvedValue(fee);
       vi.spyOn(LedgerCanister, "create").mockImplementation(
         (): LedgerCanister => ledgerMock
       );
@@ -278,9 +278,9 @@ describe("icp-ledger.api", () => {
   describe("queryAccountBalance", () => {
     const balance = 10_000_000n;
     const ledgerMock = mock<LedgerCanister>();
-    ledgerMock.accountBalance.mockResolvedValue(balance);
 
     beforeEach(() => {
+      ledgerMock.accountBalance.mockResolvedValue(balance);
       vi.spyOn(LedgerCanister, "create").mockImplementation(
         (): LedgerCanister => ledgerMock
       );

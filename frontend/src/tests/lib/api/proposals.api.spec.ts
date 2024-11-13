@@ -23,7 +23,7 @@ describe("proposals-api", () => {
   let spyListProposals;
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
 
     vi.spyOn(GovernanceCanister, "create").mockImplementation(
       (): GovernanceCanister => mockGovernanceCanister
@@ -135,8 +135,11 @@ describe("proposals-api", () => {
 
   describe("queryProposalPayload", () => {
     const nnsDappMock = mock<NNSDappCanister>();
-    nnsDappMock.getProposalPayload.mockResolvedValue({});
-    vi.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
+
+    beforeEach(() => {
+      nnsDappMock.getProposalPayload.mockResolvedValue({});
+      vi.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
+    });
 
     it("should call the canister to get proposal payload", async () => {
       const spyGetProposalPayload = vi.spyOn(nnsDappMock, "getProposalPayload");
