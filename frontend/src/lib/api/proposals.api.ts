@@ -23,8 +23,7 @@ export const queryProposals = async ({
   includeStatus = [],
   certified,
 }: {
-  beforeProposal: ProposalId | undefined;
-  identity: Identity;
+  beforeProposal: ProposalId | undefined; identity: Identity;
   includeTopics?: Topic[];
   includeRewardStatus?: ProposalRewardStatus[];
   includeStatus?: ProposalStatus[];

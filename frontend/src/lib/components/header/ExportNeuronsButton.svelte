@@ -2,36 +2,46 @@
   import { i18n } from "$lib/stores/i18n";
   import { IconDown } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
+  import { neuronsStore } from "$lib/stores/neurons.store";
+  import {
+    getStateInfo,
+    neuronAvailableMaturity,
+    neuronStake,
+    neuronStakedMaturity,
+  } from "$lib/utils/neuron.utils";
+  import { ICPToken, secondsToDuration, TokenAmountV2 } from "@dfinity/utils";
+  import { formatTokenV2 } from "$lib/utils/token.utils";
 
-  type Neuron = {
-    availableMaturity: bigint;
-    dissolveDelaySeconds: bigint;
-    isPublic: boolean;
-    neuronId: string;
-    stakedMaturity: bigint;
-    state: number;
-  };
+  let isDisabled = true;
+  $: isDisabled = $neuronsStore.neurons === undefined;
+  let neurons: {}[] =
+    $neuronsStore.neurons?.map((neuron) => ({
+      id: neuron.neuronId,
+      stake: formatTokenV2({
+        value: TokenAmountV2.fromUlps({
+          amount: neuronStake(neuron),
+          token: ICPToken,
+        }),
+        detailed: true,
+      }),
+      availableMaturity: neuronAvailableMaturity(neuron),
+      stakedMaturity: neuronStakedMaturity(neuron),
+      dissolveDelay: secondsToDuration({
+        seconds: neuron.dissolveDelaySeconds,
+        i18n: $i18n.time,
+      }),
+      state: $i18n.neuron_state[getStateInfo(neuron.state).textKey],
+    })) ?? [];
+
+  $: console.log(neurons);
 
   const dispatcher = createEventDispatcher();
 
+  // close menu
   const exportNeurons = () => {
     dispatcher("nnsExportNeuronsCSVTriggered");
-
-    // somehow consume list of neurons from somewhere
-    //
   };
 
-  // Function to convert BigInt to number and prepare data for CSV
-  function prepareDataForCsv(data: Neuron[]) {
-    return data.map((neuron) => ({
-      ...neuron,
-      availableMaturity: Number(neuron.availableMaturity),
-      dissolveDelaySeconds: Number(neuron.dissolveDelaySeconds),
-      stakedMaturity: Number(neuron.stakedMaturity),
-    }));
-  }
-
-  // Function to convert object array to CSV string
   function convertToCSV(data: Record<string, any>[]) {
     // Get headers from the first object
     const headers = Object.keys(data[0]);
@@ -54,51 +64,30 @@
     return csvRows.join("\n");
   }
 
-  const neurons = [
-    {
-      availableMaturity: 0n,
-      dissolveDelaySeconds: 252460800n,
-      isPublic: false,
-      neuronId: "10580015128542197304",
-      stakedMaturity: 0n,
-      state: 1,
-    },
-    {
-      availableMaturity: 0n,
-      dissolveDelaySeconds: 252460800n,
-      isPublic: false,
-      neuronId: "3",
-      stakedMaturity: 0n,
-      state: 1,
-    },
-  ];
-
-  // Function to trigger download
   function downloadCSV() {
-    // Prepare the data
-    const preparedData = prepareDataForCsv(neurons);
-    const csvContent = convertToCSV(preparedData);
+    const csvContent = convertToCSV(neurons);
 
-    // Create blob and download link
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
 
-    // Create download URL
     const url = URL.createObjectURL(blob);
     link.setAttribute("href", url);
     link.setAttribute("download", "neurons.csv");
 
-    // Trigger download
     document.body.appendChild(link);
     link.click();
 
-    // Cleanup
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   }
 </script>
 
-<button data-tid="logout" on:click={downloadCSV} class="text">
+<button
+  data-tid="logout"
+  on:click={downloadCSV}
+  class="text"
+  disabled={isDisabled}
+>
   <IconDown />
   {$i18n.header.export_neurons}
 </button>

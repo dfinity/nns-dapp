@@ -41,6 +41,8 @@
 
   let summary: SnsSummary | undefined;
   $: summary = $snsProjectSelectedStore?.summary;
+  console.log(summary);
+  $: console.log(summary);
 
   let tableNeurons: TableNeuron[] = [];
   $: tableNeurons = nonNullish(summary)
