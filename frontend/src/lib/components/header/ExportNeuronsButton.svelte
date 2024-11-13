@@ -11,7 +11,7 @@
   } from "$lib/utils/neuron.utils";
   import { ICPToken, secondsToDuration, TokenAmountV2 } from "@dfinity/utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
-  import type { NeuronInfo, NeuronState } from "@dfinity/nns";
+  import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 
   // to src/lib/types/neurons-table.ts ??
   type ExportNeuron = {
@@ -20,7 +20,7 @@
     availableMaturity: bigint;
     stakedMaturity: bigint;
     dissolveDelaySeconds: bigint;
-    dissolveDate: Date;
+    dissolveDate: Date | null;
     state: NeuronState;
   };
 
@@ -33,7 +33,7 @@
   $: isDisabled =
     $neuronsStore.neurons === undefined || $neuronsStore.neurons.length === 0;
   let neurons: NeuronInfo[] = $neuronsStore?.neurons ?? [];
-
+  $: console.log(neurons);
   // End of component code
 
   // to src/lib/utils/neurons-export.utils.ts ??
@@ -47,7 +47,10 @@
       availableMaturity: neuronAvailableMaturity(neuron),
       stakedMaturity: neuronStakedMaturity(neuron),
       dissolveDelaySeconds: neuron.dissolveDelaySeconds,
-      dissolveDate: getDateFromSeconds(neuron.dissolveDelaySeconds),
+      dissolveDate:
+        neuron.state === NeuronState.Dissolving
+          ? getDateFromSeconds(neuron.dissolveDelaySeconds)
+          : null,
       state: neuron.state,
     }));
   };
@@ -66,7 +69,7 @@
           seconds: neuron.dissolveDelaySeconds,
           i18n: $i18n.time,
         }),
-        dissolveDate: neuron.dissolveDate.toLocaleString(),
+        dissolveDate: neuron.dissolveDate?.toLocaleString() ?? "N/A",
         state: $i18n.neuron_state[getStateInfo(neuron.state).textKey],
       };
     });
