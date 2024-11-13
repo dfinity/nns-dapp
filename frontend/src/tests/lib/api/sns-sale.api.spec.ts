@@ -6,28 +6,24 @@ import {
   notifyPaymentFailure,
   queryFinalizationStatus,
 } from "$lib/api/sns-sale.api";
-import {
-  importInitSnsWrapper,
-  importSnsWasmCanister,
-} from "$lib/proxy/api.import.proxy";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
-  deployedSnsMock,
   governanceCanisterIdMock,
   ledgerCanisterIdMock,
   rootCanisterIdMock,
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
-import type { SnsWasmCanisterOptions } from "@dfinity/nns";
+import type { SnsWrapper } from "@dfinity/sns";
+import * as dfinitySns from "@dfinity/sns";
 import {
   SnsSwapCanister,
   UnsupportedMethodError,
   type SnsGetAutoFinalizationStatusResponse,
 } from "@dfinity/sns";
-import type { Mock } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/proxy/api.import.proxy");
@@ -51,28 +47,25 @@ describe("sns-sale.api", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (importSnsWasmCanister as Mock).mockResolvedValue({
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      create: (options: SnsWasmCanisterOptions) => ({
-        listSnses: () => Promise.resolve(deployedSnsMock),
-      }),
-    });
 
-    (importInitSnsWrapper as Mock).mockResolvedValue(() =>
-      Promise.resolve({
-        canisterIds: {
-          rootCanisterId: rootCanisterIdMock,
-          ledgerCanisterId: ledgerCanisterIdMock,
-          governanceCanisterId: governanceCanisterIdMock,
-          swapCanisterId: swapCanisterIdMock,
-        },
-        getOpenTicket: getOpenTicketSpy,
-        newSaleTicket: newSaleTicketSpy,
-        notifyPaymentFailure: notifyPaymentFailureSpy,
-        notifyParticipation: notifyParticipationSpy,
-        getFinalizationStatus: finalizationStatusSpy,
-      })
-    );
+    const canisterIds = {
+      rootCanisterId: rootCanisterIdMock,
+      ledgerCanisterId: ledgerCanisterIdMock,
+      governanceCanisterId: governanceCanisterIdMock,
+      swapCanisterId: swapCanisterIdMock,
+    };
+
+    setSnsProjects([canisterIds]);
+
+    vi.spyOn(dfinitySns, "SnsWrapper").mockReturnValue({
+      canisterIds,
+      getOpenTicket: getOpenTicketSpy,
+      newSaleTicket: newSaleTicketSpy,
+      notifyPaymentFailure: notifyPaymentFailureSpy,
+      notifyParticipation: notifyParticipationSpy,
+      getFinalizationStatus: finalizationStatusSpy,
+    } as unknown as SnsWrapper);
+
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 

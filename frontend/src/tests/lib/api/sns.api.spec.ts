@@ -9,10 +9,6 @@ import {
   querySnsSwapStates,
   stakeNeuron,
 } from "$lib/api/sns.api";
-import {
-  importInitSnsWrapper,
-  importSnsWasmCanister,
-} from "$lib/proxy/api.import.proxy";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import {
@@ -23,21 +19,21 @@ import {
   mockSwap,
 } from "$tests/mocks/sns-projects.mock";
 import {
-  deployedSnsMock,
   governanceCanisterIdMock,
   ledgerCanisterIdMock,
   rootCanisterIdMock,
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { Agent } from "@dfinity/agent";
 import { LedgerCanister } from "@dfinity/ledger-icp";
-import type { SnsWasmCanisterOptions } from "@dfinity/nns";
+import type { SnsWrapper } from "@dfinity/sns";
+import * as dfinitySns from "@dfinity/sns";
 import {
   SnsSwapLifecycle,
   type SnsGetLifecycleResponse,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import type { Mock } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/proxy/api.import.proxy");
@@ -81,32 +77,27 @@ describe("sns-api", () => {
       () => ledgerCanisterMock
     );
 
-    (importSnsWasmCanister as Mock).mockResolvedValue({
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      create: (options: SnsWasmCanisterOptions) => ({
-        listSnses: () => Promise.resolve(deployedSnsMock),
-      }),
-    });
+    const canisterIds = {
+      rootCanisterId: rootCanisterIdMock,
+      ledgerCanisterId: ledgerCanisterIdMock,
+      governanceCanisterId: governanceCanisterIdMock,
+      swapCanisterId: swapCanisterIdMock,
+    };
 
-    (importInitSnsWrapper as Mock).mockResolvedValue(() =>
-      Promise.resolve({
-        canisterIds: {
-          rootCanisterId: rootCanisterIdMock,
-          ledgerCanisterId: ledgerCanisterIdMock,
-          governanceCanisterId: governanceCanisterIdMock,
-          swapCanisterId: swapCanisterIdMock,
-        },
-        metadata: () =>
-          Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
-        swapState: () => Promise.resolve(mockQuerySwap),
-        notifyParticipation: notifyParticipationSpy,
-        getUserCommitment: getUserCommitmentSpy,
-        stakeNeuron: stakeNeuronSpy,
-        increaseStakeNeuron: increaseStakeNeuronSpy,
-        getDerivedState: getDerivedStateSpy,
-        getLifecycle: getLifecycleSpy,
-      })
-    );
+    setSnsProjects([canisterIds]);
+
+    vi.spyOn(dfinitySns, "SnsWrapper").mockReturnValue({
+      canisterIds,
+      metadata: () =>
+        Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
+      swapState: () => Promise.resolve(mockQuerySwap),
+      notifyParticipation: notifyParticipationSpy,
+      getUserCommitment: getUserCommitmentSpy,
+      stakeNeuron: stakeNeuronSpy,
+      increaseStakeNeuron: increaseStakeNeuronSpy,
+      getDerivedState: getDerivedStateSpy,
+      getLifecycle: getLifecycleSpy,
+    } as unknown as SnsWrapper);
   });
 
   it("should query sns metadata", async () => {

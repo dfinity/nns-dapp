@@ -1,127 +1,74 @@
 import * as agent from "$lib/api/agent.api";
-import {
-  buildAndStoreWrapper,
-  clearWrapperCache,
-  initSns,
-  wrappers,
-} from "$lib/api/sns-wrapper.api";
+import { clearWrapperCache, wrappers } from "$lib/api/sns-wrapper.api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import {
-  deployedSnsMock,
-  governanceCanisterIdMock,
-  indexCanisterIdMock,
-  ledgerCanisterIdMock,
-  rootCanisterIdMock,
-  swapCanisterIdMock,
-} from "$tests/mocks/sns.api.mock";
-import type { Agent, HttpAgent } from "@dfinity/agent";
+import { principal } from "$tests/mocks/sns-projects.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import type { HttpAgent } from "@dfinity/agent";
+import type { SnsWrapper } from "@dfinity/sns";
 import { mock } from "vitest-mock-extended";
-
-const listSnsesSpy = vi.fn().mockResolvedValue(deployedSnsMock);
-const initSnsWrapperSpy = vi.fn().mockResolvedValue(
-  Promise.resolve({
-    canisterIds: {
-      rootCanisterId: rootCanisterIdMock,
-      ledgerCanisterId: ledgerCanisterIdMock,
-      governanceCanisterId: governanceCanisterIdMock,
-      swapCanisterId: swapCanisterIdMock,
-    },
-  })
-);
-
-vi.mock("$lib/proxy/api.import.proxy", () => {
-  return {
-    importSnsWasmCanister: vi.fn().mockImplementation(() => ({
-      create: () => ({
-        listSnses: listSnsesSpy,
-      }),
-    })),
-    importInitSnsWrapper: vi.fn().mockImplementation(() => initSnsWrapperSpy),
-  };
-});
 
 describe("sns-wrapper api", () => {
   beforeEach(() => {
     clearWrapperCache();
     vi.clearAllMocks();
+    resetSnsProjects();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   describe("wrappers", () => {
-    it("calls list to all Snses", async () => {
-      await wrappers({ identity: mockIdentity, certified: false });
+    const canisterIds1 = {
+      rootCanisterId: principal(0),
+      swapCanisterId: principal(1),
+      governanceCanisterId: principal(2),
+      ledgerCanisterId: principal(3),
+      indexCanisterId: principal(4),
+    };
+    const canisterIds2 = {
+      rootCanisterId: principal(5),
+      swapCanisterId: principal(6),
+      governanceCanisterId: principal(7),
+      ledgerCanisterId: principal(8),
+      indexCanisterId: principal(9),
+    };
 
-      expect(listSnsesSpy).toHaveBeenCalled();
-    });
+    it("creates SNS wrappers", async () => {
+      setSnsProjects([canisterIds1, canisterIds2]);
 
-    it("caches wrappers", async () => {
-      await wrappers({ identity: mockIdentity, certified: false });
-      expect(listSnsesSpy).toHaveBeenCalledTimes(1);
-
-      await wrappers({ identity: mockIdentity, certified: false });
-      expect(listSnsesSpy).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe("initSns", () => {
-    it("inits sns wrapper", async () => {
-      const mockAgent = mock<Agent>();
-      await initSns({
-        agent: mockAgent,
-        rootCanisterId: rootCanisterIdMock,
+      const snsWrappers = await wrappers({
+        identity: mockIdentity,
         certified: false,
       });
 
-      expect(initSnsWrapperSpy).toHaveBeenCalled();
-    });
-  });
-
-  describe("buildAndStoreWrapper", () => {
-    const canisterIds = {
-      rootCanisterId: rootCanisterIdMock,
-      governanceCanisterId: governanceCanisterIdMock,
-      ledgerCanisterId: ledgerCanisterIdMock,
-      swapCanisterId: swapCanisterIdMock,
-      indexCanisterId: indexCanisterIdMock,
-    };
-
-    it("should build and cache certified wrapper", async () => {
-      const identity = mockIdentity;
-      const certified = true;
-      await buildAndStoreWrapper({
-        identity,
-        certified,
-        canisterIds,
-      });
-
-      expect(wrappers({ identity, certified })).resolves.not.toBeUndefined();
+      expect(snsWrappers).toHaveLength(2);
+      expect(
+        snsWrappers.get(canisterIds1.rootCanisterId.toText()).canisterIds
+      ).toEqual(canisterIds1);
+      expect(
+        snsWrappers.get(canisterIds2.rootCanisterId.toText()).canisterIds
+      ).toEqual(canisterIds2);
     });
 
-    it("should build and cache uncertified wrapper", async () => {
-      const identity = mockIdentity;
-      const certified = false;
-      await buildAndStoreWrapper({
-        identity,
-        certified,
-        canisterIds,
+    it("works if aggregator data is not yet loaded when called", async () => {
+      let snsWrappers: Map<string, SnsWrapper> | undefined;
+      const promise = wrappers({
+        identity: mockIdentity,
+        certified: false,
+      }).then((result) => {
+        snsWrappers = result;
       });
 
-      expect(wrappers({ identity, certified })).resolves.not.toBeUndefined();
-    });
+      expect(snsWrappers).toBeUndefined();
 
-    it("should not trigger listSnses when wrapper is cached", async () => {
-      const identity = mockIdentity;
-      const certified = false;
-      await buildAndStoreWrapper({
-        identity,
-        certified,
-        canisterIds,
-      });
+      setSnsProjects([canisterIds1, canisterIds2]);
+      await promise;
 
-      await wrappers({ identity, certified });
-      await wrappers({ identity, certified });
-
-      expect(listSnsesSpy).not.toBeCalled();
+      expect(snsWrappers).toHaveLength(2);
+      expect(
+        snsWrappers.get(canisterIds1.rootCanisterId.toText()).canisterIds
+      ).toEqual(canisterIds1);
+      expect(
+        snsWrappers.get(canisterIds2.rootCanisterId.toText()).canisterIds
+      ).toEqual(canisterIds2);
     });
   });
 });
