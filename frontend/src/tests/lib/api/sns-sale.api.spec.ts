@@ -34,19 +34,22 @@ describe("sns-sale.api", () => {
     owner: mockPrincipal,
   });
 
-  const getOpenTicketSpy = vi.fn().mockResolvedValue(ticket.ticket);
-  const newSaleTicketSpy = vi.fn().mockResolvedValue(ticket.ticket);
-  const notifyPaymentFailureSpy = vi.fn().mockResolvedValue(ticket.ticket);
+  const getOpenTicketSpy = vi.fn();
+  const newSaleTicketSpy = vi.fn();
+  const notifyPaymentFailureSpy = vi.fn();
   const finalizationStatusSpy = vi.fn();
   const participationResponse = {
     icp_accepted_participation_e8s: 666n,
   };
-  const notifyParticipationSpy = vi
-    .fn()
-    .mockResolvedValue(participationResponse);
+  const notifyParticipationSpy = vi.fn();
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
+
+    getOpenTicketSpy.mockResolvedValue(ticket.ticket);
+    newSaleTicketSpy.mockResolvedValue(ticket.ticket);
+    notifyPaymentFailureSpy.mockResolvedValue(ticket.ticket);
+    notifyParticipationSpy.mockResolvedValue(participationResponse);
 
     const canisterIds = {
       rootCanisterId: rootCanisterIdMock,

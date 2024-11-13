@@ -63,16 +63,24 @@ describe("sns-api", () => {
     decentralization_sale_open_timestamp_seconds: [1n],
     decentralization_swap_termination_timestamp_seconds: [],
   };
-  const notifyParticipationSpy = vi.fn().mockResolvedValue(undefined);
+  const notifyParticipationSpy = vi.fn();
   const mockUserCommitment = createBuyersState(100_000_000n);
-  const getUserCommitmentSpy = vi.fn().mockResolvedValue(mockUserCommitment);
-  const getDerivedStateSpy = vi.fn().mockResolvedValue(derivedState);
-  const getLifecycleSpy = vi.fn().mockResolvedValue(lifecycleResponse);
+  const getUserCommitmentSpy = vi.fn();
+  const getDerivedStateSpy = vi.fn();
+  const getLifecycleSpy = vi.fn();
   const ledgerCanisterMock = mock<LedgerCanister>();
-  const stakeNeuronSpy = vi.fn().mockResolvedValue(mockSnsNeuron.id);
+  const stakeNeuronSpy = vi.fn();
   const increaseStakeNeuronSpy = vi.fn();
 
   beforeEach(() => {
+    vi.restoreAllMocks();
+
+    notifyParticipationSpy.mockResolvedValue(undefined);
+    getUserCommitmentSpy.mockResolvedValue(mockUserCommitment);
+    getDerivedStateSpy.mockResolvedValue(derivedState);
+    getLifecycleSpy.mockResolvedValue(lifecycleResponse);
+    stakeNeuronSpy.mockResolvedValue(mockSnsNeuron.id);
+
     vi.spyOn(LedgerCanister, "create").mockImplementation(
       () => ledgerCanisterMock
     );

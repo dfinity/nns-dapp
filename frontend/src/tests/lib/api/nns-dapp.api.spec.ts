@@ -8,16 +8,17 @@ import { mock } from "vitest-mock-extended";
 
 describe("nns-dapp api", () => {
   beforeEach(() => {
+    vi.restoreAllMocks();
+
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   describe("addAccount", () => {
     const nnsDappCanister = mock<NNSDappCanister>();
-    nnsDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
-    nnsDappCanister.addAccount.mockResolvedValue(undefined);
 
     beforeEach(() => {
-      vi.clearAllMocks();
+      nnsDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
+      nnsDappCanister.addAccount.mockResolvedValue(undefined);
       vi.spyOn(NNSDappCanister, "create").mockImplementation(
         (): NNSDappCanister => nnsDappCanister
       );
