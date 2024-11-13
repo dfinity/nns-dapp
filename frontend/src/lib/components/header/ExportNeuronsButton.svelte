@@ -36,7 +36,6 @@
 
   // End of component code
 
-
   // to src/lib/utils/neurons-export.utils.ts ??
   const getNeuronsForExport = (neurons: NeuronInfo[]) => {
     return neurons.map((neuron) => ({
@@ -87,15 +86,15 @@
     }
   };
 
-  // Basic function - helper function
-  function getDateFromSeconds(seconds: number | bigint): Date {
+  // helper function to ic-js/date/utils or not needed?
+  const getDateFromSeconds = (seconds: number | bigint): Date => {
     const now = new Date();
     const futureDate = new Date(now.getTime() + Number(seconds) * 1000);
     return futureDate;
-  }
+  };
 
   // Move all to some export-neurons utils file or similar
-  function convertToCSV(data: Record<string, any>[]) {
+  const convertToCSV = (data: Record<string, any>[]) => {
     // Get headers from the first object
     const headers = Object.keys(data[0]);
 
@@ -115,10 +114,10 @@
     }
 
     return csvRows.join("\n");
-  }
+  };
 
   // Move all to some export-neurons utils file or similar
-  async function downloadCSV(neurons: Record<string, any>[]) {
+  const downloadCSV = async (neurons: Record<string, any>[]): Promise<void> => {
     const csvContent = convertToCSV(neurons);
     const blob = new Blob(["\uFEFF" + csvContent], {
       type: "text/csv;charset=utf-8;",
@@ -149,7 +148,7 @@
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
     }
-  }
+  };
 </script>
 
 <button
