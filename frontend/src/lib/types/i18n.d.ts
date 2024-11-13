@@ -157,6 +157,7 @@ interface I18nHeader {
   account_menu: string;
   main_icp_account_id: string;
   account_id_tooltip: string;
+  export_neurons: string;
 }
 
 interface I18nAuth {
