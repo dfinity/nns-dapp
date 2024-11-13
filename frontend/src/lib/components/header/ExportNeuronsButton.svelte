@@ -33,7 +33,6 @@
   $: isDisabled =
     $neuronsStore.neurons === undefined || $neuronsStore.neurons.length === 0;
   let neurons: NeuronInfo[] = $neuronsStore?.neurons ?? [];
-  $: console.log(neurons);
   // End of component code
 
   // to src/lib/utils/neurons-export.utils.ts ??
