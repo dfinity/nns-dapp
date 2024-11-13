@@ -23,6 +23,7 @@ import {
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
+import * as proposalsApi from "$lib/api/proposals.api";
 
 vi.mock("$lib/api/governance.api");
 
@@ -40,28 +41,20 @@ const proposal = {
   ],
 };
 
-vi.mock("$lib/api/proposals.api", () => {
-  return {
-    queryProposal: vi.fn().mockImplementation(() => Promise.resolve(proposal)),
-  };
-});
-
-vi.mock("$lib/utils/html.utils", () => ({
-  markdownToHTML: (value) => Promise.resolve(value),
-}));
-
 let resolveCertifiedPromise;
 let resolveUncertifiedPromise;
 
 describe("Proposal detail page when not logged in user", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     neuronsStore.reset();
     resetNeuronsApiService();
     resolveCertifiedPromise = undefined;
     resolveUncertifiedPromise = undefined;
     // we don't display actionable proposals for non-logged in users
     actionableProposalsSegmentStore.set("all");
+
+    vi.spyOn(proposalsApi, "queryProposal").mockResolvedValue(proposal);
   });
 
   describe("when logged in user", () => {
