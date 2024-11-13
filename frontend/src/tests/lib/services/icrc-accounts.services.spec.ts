@@ -485,9 +485,7 @@ describe("icrc-accounts-services", () => {
     it("displays a toast on error", async () => {
       const consoleSpy = vi.spyOn(console, "error").mockReturnValue(undefined);
       const error = new Error("test");
-      vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(
-        error
-      );
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(error);
       expect(ledgerApi.queryIcrcToken).not.toBeCalled();
       expect(get(toastsStore)).toMatchObject([]);
       await loadIcrcToken({ ledgerCanisterId });
