@@ -25,7 +25,6 @@
   // Make sure to update neurons-table-order-sorted-neuron-ids-store.utils when sorting is changed
   let neuronsSortedById: TableNeuron[];
   $: neuronsSortedById = [...neurons].sort(compareById);
-  console.log(neurons);
 
   const columns = (
     [

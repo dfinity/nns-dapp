@@ -12,6 +12,13 @@
   import { ICPToken, secondsToDuration, TokenAmountV2 } from "@dfinity/utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
 
+  // Basic function
+  function getDateFromSeconds(seconds: number | bigint): Date {
+    const now = new Date();
+    const futureDate = new Date(now.getTime() + Number(seconds) * 1000);
+    return futureDate;
+  }
+
   let isDisabled = true;
   $: isDisabled = $neuronsStore.neurons === undefined;
   let neurons: {}[] =
@@ -30,6 +37,7 @@
         seconds: neuron.dissolveDelaySeconds,
         i18n: $i18n.time,
       }),
+      dissolveDate: getDateFromSeconds(neuron.dissolveDelaySeconds).toLocaleString(),
       state: $i18n.neuron_state[getStateInfo(neuron.state).textKey],
     })) ?? [];
 
