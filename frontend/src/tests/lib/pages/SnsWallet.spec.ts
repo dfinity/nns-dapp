@@ -486,26 +486,26 @@ describe("SnsWallet", () => {
         await po.getWalletPageHeaderPo().getUniverseSummaryPo().getLogoUrl()
       ).not.toBe(tokenLogo);
     });
-  });
 
-  it('should have canister links in "more" popup', async () => {
-    const po = await renderComponent({});
-    const morePopoverPo = po.getWalletMorePopoverPo();
+    it('should have canister links in "more" popup', async () => {
+      const po = await renderComponent({});
+      const morePopoverPo = po.getWalletMorePopoverPo();
 
-    await po.getMoreButton().click();
-    await runResolvedPromises();
+      await po.getMoreButton().click();
+      await runResolvedPromises();
 
-    expect(await morePopoverPo.getLinkToLedgerCanisterPo().isPresent()).toBe(
-      true
-    );
-    expect(await morePopoverPo.getLinkToLedgerCanisterPo().getHref()).toBe(
-      `https://dashboard.internetcomputer.org/canister/${ledgerCanisterId.toText()}`
-    );
-    expect(await morePopoverPo.getLinkToIndexCanisterPo().isPresent()).toBe(
-      true
-    );
-    expect(await morePopoverPo.getLinkToIndexCanisterPo().getHref()).toBe(
-      `https://dashboard.internetcomputer.org/canister/${indexCanisterId.toText()}`
-    );
+      expect(await morePopoverPo.getLinkToLedgerCanisterPo().isPresent()).toBe(
+        true
+      );
+      expect(await morePopoverPo.getLinkToLedgerCanisterPo().getHref()).toBe(
+        `https://dashboard.internetcomputer.org/canister/${ledgerCanisterId.toText()}`
+      );
+      expect(await morePopoverPo.getLinkToIndexCanisterPo().isPresent()).toBe(
+        true
+      );
+      expect(await morePopoverPo.getLinkToIndexCanisterPo().getHref()).toBe(
+        `https://dashboard.internetcomputer.org/canister/${indexCanisterId.toText()}`
+      );
+    });
   });
 });
