@@ -52,11 +52,6 @@ pub struct AccountsStore {
     // pending_transactions: HashMap<(from, to), (TransactionType, timestamp_ms_since_epoch)>
     pending_transactions: HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
 
-    // TODO: Remove neuron_accounts once not topping up neurons has been
-    //       released for some time. Removing this field will have to be done in
-    //       multiple steps because it is stored in stable memory during
-    //       upgrades.
-    neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
     block_height_synced_up_to: Option<BlockIndex>,
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
     accounts_db_stats: AccountsDbStats,
@@ -85,11 +80,10 @@ impl fmt::Debug for AccountsStore {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "AccountsStore{{accounts_db: {:?}, hardware_wallets_and_sub_accounts: HashMap[{:?}], pending_transactions: HashMap[{:?}], neuron_accounts: HashMap[{:?}], block_height_synced_up_to: {:?}, multi_part_transactions_processor: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
+            "AccountsStore{{accounts_db: {:?}, hardware_wallets_and_sub_accounts: HashMap[{:?}], pending_transactions: HashMap[{:?}], block_height_synced_up_to: {:?}, multi_part_transactions_processor: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
             self.accounts_db,
             self.hardware_wallets_and_sub_accounts.len(),
             self.pending_transactions.len(),
-            self.neuron_accounts.len(),
             self.block_height_synced_up_to,
             self.multi_part_transactions_processor,
             self.accounts_db_stats,
@@ -826,7 +820,6 @@ impl AccountsStore {
         stats.hardware_wallet_accounts_count = self.accounts_db_stats.hardware_wallet_accounts_count;
         stats.block_height_synced_up_to = self.block_height_synced_up_to;
         stats.seconds_since_last_ledger_sync = duration_since_last_sync.as_secs();
-        stats.neurons_created_count = self.neuron_accounts.len() as u64;
         stats.neurons_topped_up_count = self.neurons_topped_up_count;
         stats.transactions_to_process_queue_length = self.multi_part_transactions_processor.get_queue_length();
         stats.migration_countdown = Some(self.accounts_db.migration_countdown());
@@ -1080,7 +1073,6 @@ impl StableState for AccountsStore {
             accounts_db: AccountsDbAsProxy::default(),
             hardware_wallets_and_sub_accounts,
             pending_transactions,
-            neuron_accounts: HashMap::new(),
             block_height_synced_up_to,
             multi_part_transactions_processor,
             accounts_db_stats,
