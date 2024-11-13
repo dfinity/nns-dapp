@@ -14,15 +14,6 @@ import * as utils from "@dfinity/utils";
 import type { Mocked } from "vitest";
 import { mock } from "vitest-mock-extended";
 
-vi.mock("@dfinity/utils", async () => {
-  return {
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    ...(await vi.importActual<any>("@dfinity/utils")),
-    __esModule: true,
-    createAgent: vi.fn(),
-  };
-});
-
 const host = "http://localhost:8000";
 const testPrincipal1 = Principal.fromHex("123123123");
 const testPrincipal2 = Principal.fromHex("456456456");
@@ -39,13 +30,15 @@ const createAgent = (identity: Identity) =>
   });
 
 describe("agent-api", () => {
-  const utilsCreateAgentSpy = vi.spyOn(utils, "createAgent");
+  let utilsCreateAgentSpy;
 
   beforeEach(() => {
-    vi.resetAllMocks();
+    vi.restoreAllMocks();
     agentApi.resetAgents();
 
-    utilsCreateAgentSpy.mockResolvedValue(mock<HttpAgent>());
+    utilsCreateAgentSpy = vi
+      .spyOn(utils, "createAgent")
+      .mockResolvedValue(mock<HttpAgent>());
   });
 
   it("createAgent should create an agent", async () => {
