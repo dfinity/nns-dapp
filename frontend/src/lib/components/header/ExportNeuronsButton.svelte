@@ -37,11 +37,6 @@
 
   const dispatcher = createEventDispatcher();
 
-  // close menu
-  const exportNeurons = () => {
-    dispatcher("nnsExportNeuronsCSVTriggered");
-  };
-
   function convertToCSV(data: Record<string, any>[]) {
     // Get headers from the first object
     const headers = Object.keys(data[0]);
@@ -79,11 +74,12 @@
 
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+    dispatcher("nnsExportNeuronsCSVTriggered");
   }
 </script>
 
 <button
-  data-tid="logout"
+  data-tid="export-neurons-button"
   on:click={downloadCSV}
   class="text"
   disabled={isDisabled}

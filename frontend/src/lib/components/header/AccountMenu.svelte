@@ -40,7 +40,7 @@
 
         <LinkToCanisters on:nnsLink={closeMenu} />
 
-        <ExportNeuronsButton />
+        <ExportNeuronsButton on:nnsExportNeuronsCSVTriggered={toggle} />
 
         <Logout on:nnsLogoutTriggered={toggle} />
       </div>
