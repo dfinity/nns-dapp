@@ -1,5 +1,6 @@
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
+import * as proposalsApi from "$lib/api/proposals.api";
 import { queryProposal } from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import NnsProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
@@ -23,7 +24,6 @@ import {
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
-import * as proposalsApi from "$lib/api/proposals.api";
 
 vi.mock("$lib/api/governance.api");
 
