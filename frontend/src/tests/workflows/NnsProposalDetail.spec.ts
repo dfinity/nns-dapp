@@ -1,5 +1,6 @@
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
+import * as proposalsApi from "$lib/api/proposals.api";
 import { queryProposal } from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import NnsProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
@@ -40,28 +41,20 @@ const proposal = {
   ],
 };
 
-vi.mock("$lib/api/proposals.api", () => {
-  return {
-    queryProposal: vi.fn().mockImplementation(() => Promise.resolve(proposal)),
-  };
-});
-
-vi.mock("$lib/utils/html.utils", () => ({
-  markdownToHTML: (value) => Promise.resolve(value),
-}));
-
 let resolveCertifiedPromise;
 let resolveUncertifiedPromise;
 
 describe("Proposal detail page when not logged in user", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     neuronsStore.reset();
     resetNeuronsApiService();
     resolveCertifiedPromise = undefined;
     resolveUncertifiedPromise = undefined;
     // we don't display actionable proposals for non-logged in users
     actionableProposalsSegmentStore.set("all");
+
+    vi.spyOn(proposalsApi, "queryProposal").mockResolvedValue(proposal);
   });
 
   describe("when logged in user", () => {
