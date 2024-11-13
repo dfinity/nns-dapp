@@ -14,11 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Add navigation between neuron detail pages.
-
 #### Changed
 
-* Updated the dark theme and page icons.
 * Claim unclaimed neurons from the frontend instead of the backend.
 
 #### Deprecated
@@ -30,6 +27,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Stop trying to get swap commitments from aborted SNSes.
+* Stop making unnecessary calls to SNS-W and SNS root canisters.
+* User gets the wrong identity when connecting different hardware wallets devices in a certain order.
 
 #### Security
 

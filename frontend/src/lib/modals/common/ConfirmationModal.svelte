@@ -10,29 +10,42 @@
 </script>
 
 <Modal role="alert" on:nnsClose {testId}>
-  <article data-tid="confirmation-modal-content">
-    <slot />
-  </article>
-
-  <svelte:fragment slot="footer">
-    <button
-      data-tid="confirm-no"
-      disabled={$busy}
-      on:click={() => dispatch("nnsClose")}
-      class="secondary">{$i18n.core.confirm_no}</button
-    >
-    <button
-      data-tid="confirm-yes"
-      disabled={$busy}
-      class="primary"
-      on:click={() => dispatch("nnsConfirm")}
-      >{yesLabel ?? $i18n.core.confirm_yes}</button
-    >
-  </svelte:fragment>
+  <div class="wrapper">
+    <article data-tid="confirmation-modal-content">
+      <slot />
+    </article>
+    <div class="footer">
+      <button
+        data-tid="confirm-no"
+        disabled={$busy}
+        class="secondary"
+        on:click={() => dispatch("nnsClose")}
+      >
+        {$i18n.core.confirm_no}
+      </button>
+      <button
+        data-tid="confirm-yes"
+        disabled={$busy}
+        class="primary"
+        on:click={() => dispatch("nnsConfirm")}
+      >
+        {yesLabel ?? $i18n.core.confirm_yes}
+      </button>
+    </div>
+  </div>
 </Modal>
 
 <style lang="scss">
-  article {
+  .wrapper {
     padding: 0 var(--padding);
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-4x);
+
+    .footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--padding-2x);
+    }
   }
 </style>

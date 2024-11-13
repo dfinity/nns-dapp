@@ -1,26 +1,22 @@
 import { createAgent } from "$lib/api/agent.api";
-import { WASM_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
-import {
-  importInitSnsWrapper,
-  importSnsWasmCanister,
-  type SnsWasmCanisterCreate,
-} from "$lib/proxy/api.import.proxy";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import type { QueryRootCanisterId } from "$lib/types/sns.query";
-import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Agent, Identity } from "@dfinity/agent";
 import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger-icrc";
-import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   SnsGovernanceCanister,
   SnsRootCanister,
   SnsSwapCanister,
   SnsWrapper,
-  type InitSnsWrapper,
 } from "@dfinity/sns";
-import { nonNullish } from "@dfinity/utils";
+// The API layer should not depend on the services layer.
+// Wrappers don't really fit into the API layer, but a lot of API functions
+// currently use wrappers. Ideally they would use SNS canisters directly.
+// So until we can clean this app, we make an exception to allow this one
+// dependency from the API layer to the services layer.
+import { getLoadedSnsAggregatorData } from "$lib/services/public/sns.services";
 
 interface IdentityWrapper {
   [principal: string]: Promise<Map<QueryRootCanisterId, SnsWrapper>>;
@@ -42,8 +38,9 @@ type CanisterIds = {
   swapCanisterId: Principal;
   indexCanisterId: Principal;
 };
-export const buildAndStoreWrapper = async ({
-  identity,
+
+const buildWrapper = ({
+  agent,
   certified,
   canisterIds: {
     rootCanisterId,
@@ -53,15 +50,11 @@ export const buildAndStoreWrapper = async ({
     indexCanisterId,
   },
 }: {
-  identity: Identity;
+  agent: Agent;
   certified: boolean;
   canisterIds: CanisterIds;
 }) => {
-  const agent = await createAgent({
-    identity,
-    host: HOST,
-  });
-  const wrapper = new SnsWrapper({
+  return new SnsWrapper({
     root: SnsRootCanister.create({ canisterId: rootCanisterId, agent }),
     governance: SnsGovernanceCanister.create({
       canisterId: governanceCanisterId,
@@ -72,86 +65,6 @@ export const buildAndStoreWrapper = async ({
     index: IcrcIndexCanister.create({ canisterId: indexCanisterId, agent }),
     certified,
   });
-
-  const identitiesMap = certified
-    ? identitiesCertifiedWrappers
-    : identitiesNotCertifiedWrappers;
-
-  if (nonNullish(identitiesMap[identity.getPrincipal().toText()])) {
-    const wrappersMap = await identitiesMap[identity.getPrincipal().toText()];
-    wrappersMap.set(rootCanisterId.toText(), wrapper);
-  } else {
-    identitiesMap[identity.getPrincipal().toText()] = Promise.resolve(
-      new Map([[rootCanisterId.toText(), wrapper]])
-    );
-  }
-};
-
-/**
- * List all deployed Snses - i.e list all Sns projects
- *
- * @param {Object} params
- * @param params.agent
- * @param params.certified
- * @return The list of root canister id of each deployed Sns project
- */
-const listSnses = async ({
-  agent,
-  certified,
-}: {
-  agent: Agent;
-  certified: boolean;
-}): Promise<Principal[]> => {
-  logWithTimestamp(`Loading list of Snses certified:${certified} call...`);
-
-  const SnsWasmCanister: SnsWasmCanisterCreate = await importSnsWasmCanister();
-
-  const { listSnses: getSnses }: SnsWasmCanister = SnsWasmCanister.create({
-    canisterId: Principal.fromText(WASM_CANISTER_ID),
-    agent,
-  });
-
-  const snses: DeployedSns[] = await getSnses({ certified });
-
-  logWithTimestamp(`Loading list of Snses certified:${certified} complete.`);
-
-  return snses.reduce(
-    (acc: Principal[], { root_canister_id }: DeployedSns) => [
-      ...acc,
-      ...root_canister_id,
-    ],
-    []
-  );
-};
-
-export const initSns = async ({
-  agent,
-  rootCanisterId,
-  certified,
-}: {
-  agent: Agent;
-  rootCanisterId: Principal;
-  certified: boolean;
-}): Promise<SnsWrapper> => {
-  logWithTimestamp(
-    `Initializing Sns ${rootCanisterId.toText()} certified:${certified} call...`
-  );
-
-  const initSnsWrapper: InitSnsWrapper = await importInitSnsWrapper();
-
-  const snsWrapper: SnsWrapper = await initSnsWrapper({
-    rootOptions: {
-      canisterId: rootCanisterId,
-    },
-    agent,
-    certified,
-  });
-
-  logWithTimestamp(
-    `Initializing Sns ${rootCanisterId.toText()} certified:${certified} complete.`
-  );
-
-  return snsWrapper;
 };
 
 const loadSnsWrappers = async ({
@@ -161,39 +74,33 @@ const loadSnsWrappers = async ({
   certified: boolean;
   identity: Identity;
 }): Promise<SnsWrapper[]> => {
+  const aggregatorData = await getLoadedSnsAggregatorData();
   const agent = await createAgent({
     identity,
     host: HOST,
   });
-
-  const rootCanisterIds: Principal[] = await listSnses({ agent, certified });
-
-  const results: PromiseSettledResult<SnsWrapper>[] = await Promise.allSettled(
-    rootCanisterIds.map((rootCanisterId: Principal) =>
-      initSns({ agent, rootCanisterId, certified })
-    )
-  );
-
-  // TODO(L2-837): do no throw an error but emit or display only an error while continuing loading and displaying Sns projects that could be successfully fetched
-  const error: boolean =
-    results.find(({ status }) => status === "rejected") !== undefined;
-  if (error) {
-    const rejectedReasons = results
-      .filter(({ status }) => status === "rejected")
-      .map((wrapper) =>
-        "reason" in wrapper ? wrapper.reason : "Reason not present"
-      );
-    console.error("Rejected SNSes:", rejectedReasons);
-    // Ignoring. SNSes will be filtered out below.
-  }
-
-  return (
-    results
-      .filter(({ status }) => status === "fulfilled")
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore we know for sure the type is PromiseFulfilledResult and not PromiseSettledResult since we filter with previous line
-      .map(({ value: wrapper }: PromiseFulfilledResult<SnsWrapper>) => wrapper)
-  );
+  return aggregatorData.map(({ canister_ids }) => {
+    const rootCanisterId = Principal.fromText(canister_ids.root_canister_id);
+    const swapCanisterId = Principal.fromText(canister_ids.swap_canister_id);
+    const governanceCanisterId = Principal.fromText(
+      canister_ids.governance_canister_id
+    );
+    const ledgerCanisterId = Principal.fromText(
+      canister_ids.ledger_canister_id
+    );
+    const indexCanisterId = Principal.fromText(canister_ids.index_canister_id);
+    return buildWrapper({
+      agent,
+      certified,
+      canisterIds: {
+        rootCanisterId,
+        governanceCanisterId,
+        ledgerCanisterId,
+        swapCanisterId,
+        indexCanisterId,
+      },
+    });
+  });
 };
 
 const initWrappers = async ({

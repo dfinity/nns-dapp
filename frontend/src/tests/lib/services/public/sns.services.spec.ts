@@ -8,12 +8,16 @@ import {
 } from "$lib/api/sns-wrapper.api";
 import { snsFunctionsStore } from "$lib/derived/sns-functions.derived";
 import { snsTotalTokenSupplyStore } from "$lib/derived/sns-total-token-supply.derived";
-import { loadSnsProjects } from "$lib/services/public/sns.services";
+import {
+  getLoadedSnsAggregatorData,
+  loadSnsProjects,
+} from "$lib/services/public/sns.services";
 import {
   snsAggregatorIncludingAbortedProjectsStore,
   snsAggregatorStore,
 } from "$lib/stores/sns-aggregator.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   aggregatorMockSnsesDataDto,
@@ -73,6 +77,31 @@ describe("SNS public services", () => {
     tokensStore.reset();
     clearSnsAggregatorCache();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+  });
+
+  describe("getLoadedSnsAggregatorData", () => {
+    it("should return the aggregator store data", async () => {
+      const data = [aggregatorSnsMockDto];
+      snsAggregatorIncludingAbortedProjectsStore.setData(data);
+
+      expect(await getLoadedSnsAggregatorData()).toEqual(data);
+    });
+
+    it("should work if the data is loaded after the call", async () => {
+      let receivedData: CachedSnsDto[] | undefined;
+      const promise = getLoadedSnsAggregatorData().then((data) => {
+        receivedData = data;
+      });
+
+      expect(receivedData).toBeUndefined();
+
+      const data = [aggregatorSnsMockDto];
+      snsAggregatorIncludingAbortedProjectsStore.setData(data);
+
+      await promise;
+
+      expect(receivedData).toEqual(data);
+    });
   });
 
   describe("loadSnsProjects", () => {

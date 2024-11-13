@@ -89,6 +89,10 @@ export default defineConfig(
           useAtomics: true,
         },
       },
+      coverage: {
+        provider: "v8",
+        exclude: ["playwright-report", "public", "**/.svelte-kit"],
+      },
     },
   })
 );
