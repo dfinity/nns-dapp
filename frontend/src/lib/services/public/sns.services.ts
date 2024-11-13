@@ -28,8 +28,8 @@ export const getLoadedSnsAggregatorData = async (): Promise<CachedSnsDto[]> => {
   const unsubscribe = snsAggregatorStore.subscribe(({ data }) => {
     if (nonNullish(data)) {
       resolve(data);
-      // We can't unsubscribe here because the handler can be called before the
-      // unsubscribe function is returned.
+      // We can't unsubscribe here because the handler can be called
+      // synchronously before the unsubscribe function is returned.
     }
   });
 
