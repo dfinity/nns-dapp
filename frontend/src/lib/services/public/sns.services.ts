@@ -3,15 +3,42 @@ import { queryProposals } from "$lib/api/proposals.api";
 import { buildAndStoreWrapper } from "$lib/api/sns-wrapper.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { queryAndUpdate } from "$lib/services/utils.services";
-import { snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
+import {
+  snsAggregatorIncludingAbortedProjectsStore,
+  snsAggregatorStore,
+} from "$lib/stores/sns-aggregator.store";
 import { snsProposalsStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { isLastCall } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { nonNullish } from "@dfinity/utils";
 import { getCurrentIdentity } from "../auth.services";
+
+// Returns a promise that resolves once the snsAggregatorStore data is defined.
+export const getLoadedSnsAggregatorData = async (): Promise<CachedSnsDto[]> => {
+  let resolve: (aggregatorData: CachedSnsDto[]) => void;
+  const promise = new Promise<CachedSnsDto[]>((r) => {
+    resolve = r;
+  });
+
+  const unsubscribe = snsAggregatorStore.subscribe(({ data }) => {
+    if (nonNullish(data)) {
+      resolve(data);
+      // We can't unsubscribe here because the handler can be called
+      // synchronously before the unsubscribe function is returned.
+    }
+  });
+
+  try {
+    return await promise;
+  } finally {
+    unsubscribe();
+  }
+};
 
 export const loadSnsProjects = async (): Promise<void> => {
   try {
