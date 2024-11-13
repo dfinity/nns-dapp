@@ -28,7 +28,6 @@
     i18n: $i18n,
     neuronInfos: $definedNeuronsStore,
   });
-  $: console.log(tableNeurons);
 </script>
 
 <TestIdWrapper testId="nns-neurons-component">
