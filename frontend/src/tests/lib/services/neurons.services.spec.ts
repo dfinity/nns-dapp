@@ -213,6 +213,7 @@ describe("neurons-services", () => {
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
       mockGetIdentity
     );
+    vi.spyOn(api, "queryNeurons").mockResolvedValue([]);
   });
 
   describe("stake new neuron", () => {
