@@ -23,10 +23,10 @@ import { get } from "svelte/store";
 
 describe("proposals-services", () => {
   beforeEach(() => {
+    vi.restoreAllMocks();
     toastsStore.reset();
     proposalsStore.setProposalsForTesting({ proposals: [], certified: true });
     proposalPayloadsStore.reset();
-    vi.clearAllMocks();
     vi.spyOn(console, "error").mockRestore();
   });
 
@@ -187,10 +187,12 @@ describe("proposals-services", () => {
     });
 
     describe("load", () => {
-      const spyQueryProposal = vi.spyOn(api, "queryProposal");
+      let spyQueryProposal;
 
       beforeEach(() => {
-        spyQueryProposal.mockResolvedValue({ ...mockProposals[0], id: 666n });
+        spyQueryProposal = vi
+          .spyOn(api, "queryProposal")
+          .mockResolvedValue({ ...mockProposals[0], id: 666n });
         proposalsStore.setProposalsForTesting({
           proposals: mockProposals,
           certified: true,
@@ -366,10 +368,11 @@ describe("proposals-services", () => {
   });
 
   describe("getProposalPayload", () => {
-    const spyQueryProposalPayload = vi.spyOn(api, "queryProposalPayload");
+    let spyQueryProposalPayload;
     const mockProposalPayload = { data: "test" };
 
     beforeEach(() => {
+      spyQueryProposalPayload = vi.spyOn(api, "queryProposalPayload");
       vi.spyOn(console, "error").mockReturnValue();
       spyQueryProposalPayload.mockResolvedValue(mockProposalPayload);
     });

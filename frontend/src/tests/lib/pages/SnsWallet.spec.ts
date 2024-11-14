@@ -5,7 +5,9 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import * as workerBalances from "$lib/services/worker-balances.services";
+import * as workerBalancesServices from "$lib/services/worker-balances.services";
 import * as workerTransactions from "$lib/services/worker-transactions.services";
+import * as workerTransactionsServices from "$lib/services/worker-transactions.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { aggregatorCanisterLogoPath } from "$lib/utils/sns-aggregator-converters.utils";
@@ -39,32 +41,6 @@ import { get } from "svelte/store";
 vi.mock("$lib/api/icrc-index.api");
 
 let balancesObserverCallback;
-
-vi.mock("$lib/services/worker-transactions.services", () => ({
-  initTransactionsWorker: vi.fn(() =>
-    Promise.resolve({
-      startTransactionsTimer: () => {
-        // Do nothing
-      },
-      stopTransactionsTimer: () => {
-        // Do nothing
-      },
-    })
-  ),
-}));
-
-vi.mock("$lib/services/worker-balances.services", () => ({
-  initBalancesWorker: vi.fn(() =>
-    Promise.resolve({
-      startBalancesTimer: ({ callback }) => {
-        balancesObserverCallback = callback;
-      },
-      stopBalancesTimer: () => {
-        // Do nothing
-      },
-    })
-  ),
-}));
 
 describe("SnsWallet", () => {
   const testTokenSymbol = "OOO";
@@ -100,7 +76,7 @@ describe("SnsWallet", () => {
   beforeEach(() => {
     vi.useRealTimers();
     resetIdentity();
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     icrcAccountsStore.reset();
     tokensStore.reset();
     resetSnsProjects();
@@ -109,6 +85,25 @@ describe("SnsWallet", () => {
       transactions: [],
     });
     vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(10n);
+    vi.spyOn(
+      workerTransactionsServices,
+      "initTransactionsWorker"
+    ).mockResolvedValue({
+      startTransactionsTimer: () => {
+        // Do nothing
+      },
+      stopTransactionsTimer: () => {
+        // Do nothing
+      },
+    });
+    vi.spyOn(workerBalancesServices, "initBalancesWorker").mockResolvedValue({
+      startBalancesTimer: ({ callback }) => {
+        balancesObserverCallback = callback;
+      },
+      stopBalancesTimer: () => {
+        // Do nothing
+      },
+    });
 
     setSnsProjects([
       {

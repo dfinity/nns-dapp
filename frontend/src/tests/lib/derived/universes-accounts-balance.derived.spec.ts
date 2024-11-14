@@ -12,14 +12,16 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { get } from "svelte/store";
 
 describe("universes-accounts-balance.derived", () => {
-  vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
-    mockAccountsStoreSubscribe([], [])
-  );
-
   const rootCanisterId = mockSnsFullProject.rootCanisterId;
   const ledgerCanisterId = mockSnsFullProject.summary.ledgerCanisterId;
 
   beforeEach(() => {
+    vi.restoreAllMocks();
+
+    vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe([], [])
+    );
+
     setSnsProjects([
       {
         rootCanisterId,

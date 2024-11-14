@@ -31,7 +31,8 @@ import { get } from "svelte/store";
 
 describe("utils", () => {
   beforeEach(() => {
-    vi.resetAllMocks();
+    vi.restoreAllMocks();
+    vi.useFakeTimers();
     vi.clearAllTimers();
     toastsStore.reset();
     vi.spyOn(console, "error").mockImplementation(() => undefined);
@@ -364,10 +365,6 @@ describe("utils", () => {
           text: `${en.error.high_load_retrying}`,
         },
       ];
-
-      beforeEach(() => {
-        vi.useFakeTimers();
-      });
 
       const getTimestamps = async ({
         maxAttempts,

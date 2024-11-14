@@ -38,7 +38,7 @@ describe("sns-proposals services", () => {
     snsFiltersStore.reset();
     snsProposalsStore.reset();
     toastsStore.reset();
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     vi.spyOn(console, "error").mockRestore();
   });
   const proposal1: SnsProposalData = {
@@ -55,9 +55,13 @@ describe("sns-proposals services", () => {
   };
   const proposals = [proposal1, proposal2, proposal3];
   describe("loadSnsProposals", () => {
-    const queryProposalsSpy = vi
-      .spyOn(api, "queryProposals")
-      .mockResolvedValue({ proposals, include_ballots_by_caller: [true] });
+    let queryProposalsSpy;
+
+    beforeEach(() => {
+      queryProposalsSpy = vi
+        .spyOn(api, "queryProposals")
+        .mockResolvedValue({ proposals, include_ballots_by_caller: [true] });
+    });
 
     describe("not logged in", () => {
       beforeEach(() => {

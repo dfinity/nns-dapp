@@ -12,6 +12,8 @@ describe("timer.worker-utils", () => {
   let spyPostMessage;
 
   beforeEach(() => {
+    vi.restoreAllMocks();
+
     silentConsoleErrors();
 
     vi.clearAllTimers();
@@ -23,9 +25,9 @@ describe("timer.worker-utils", () => {
 
   describe("without identity", () => {
     const mockAuthClient = mock<AuthClient>();
-    mockAuthClient.isAuthenticated.mockResolvedValue(false);
 
     beforeEach(() => {
+      mockAuthClient.isAuthenticated.mockResolvedValue(false);
       vi.spyOn(AuthClient, "create").mockImplementation(
         async (): Promise<AuthClient> => mockAuthClient
       );
@@ -48,10 +50,10 @@ describe("timer.worker-utils", () => {
 
   describe("with identity", () => {
     const mockAuthClient = mock<AuthClient>();
-    mockAuthClient.isAuthenticated.mockResolvedValue(true);
-    mockAuthClient.getIdentity.mockResolvedValue(mockIdentity as never);
 
     beforeEach(() => {
+      mockAuthClient.isAuthenticated.mockResolvedValue(true);
+      mockAuthClient.getIdentity.mockResolvedValue(mockIdentity as never);
       vi.spyOn(AuthClient, "create").mockImplementation(
         async (): Promise<AuthClient> => mockAuthClient
       );
