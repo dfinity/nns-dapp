@@ -1,16 +1,13 @@
+import * as canistersServices from "$lib/services/canisters.services";
 import { detachCanister } from "$lib/services/canisters.services";
 import { fireEvent, render } from "@testing-library/svelte";
 import UnlinkActionButtonTest from "./UnlinkActionButtonTest.svelte";
 
-vitest.mock("$lib/services/canisters.services", () => {
-  return {
-    detachCanister: vitest.fn().mockResolvedValue({ success: true }),
-  };
-});
-
 describe("DissolveActionButton", () => {
   beforeEach(() => {
-    vitest.clearAllMocks();
+    vi.spyOn(canistersServices, "detachCanister").mockResolvedValue({
+      success: true,
+    });
   });
 
   it("renders button", () => {
