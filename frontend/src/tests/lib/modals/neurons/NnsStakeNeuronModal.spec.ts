@@ -7,6 +7,8 @@ import { NNS_MINIMUM_DISSOLVE_DELAY } from "$lib/constants/neurons.constants";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import NnsStakeNeuronModal from "$lib/modals/neurons/NnsStakeNeuronModal.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
+import * as knownNeuronsServices from "$lib/services/known-neurons.services";
+import * as neuronsServices from "$lib/services/neurons.services";
 import {
   addHotkeyForHardwareWalletNeuron,
   stakeNeuron,
@@ -41,8 +43,6 @@ import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
 import { mock } from "vitest-mock-extended";
 
-vi.mock("$lib/api/nns-dapp.api");
-vi.mock("$lib/api/icp-ledger.api");
 const neuronStakeE8s = 220_000_000n;
 const newNeuron: NeuronInfo = {
   ...mockNeuron,
@@ -53,25 +53,6 @@ const newNeuron: NeuronInfo = {
     cachedNeuronStake: neuronStakeE8s,
   },
 };
-vi.mock("$lib/services/neurons.services", () => {
-  return {
-    stakeNeuron: vi
-      .fn()
-      .mockImplementation(() => Promise.resolve(newNeuron.neuronId)),
-    updateDelay: vi.fn().mockResolvedValue(undefined),
-    loadNeuron: vi.fn().mockResolvedValue(undefined),
-    addHotkeyForHardwareWalletNeuron: vi
-      .fn()
-      .mockResolvedValue({ success: true }),
-    getNeuronFromStore: vi.fn(),
-  };
-});
-
-vi.mock("$lib/services/known-neurons.services", () => {
-  return {
-    listKnownNeurons: vi.fn(),
-  };
-});
 
 describe("NnsStakeNeuronModal", () => {
   let queryBalanceSpy: MockInstance;
@@ -80,8 +61,25 @@ describe("NnsStakeNeuronModal", () => {
   beforeEach(() => {
     resetIdentity();
     cancelPollAccounts();
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     overrideFeatureFlagsStore.reset();
+
+    vi.spyOn(neuronsServices, "stakeNeuron").mockResolvedValue(
+      newNeuron.neuronId
+    );
+    vi.spyOn(neuronsServices, "updateDelay").mockResolvedValue(undefined);
+    vi.spyOn(neuronsServices, "loadNeuron").mockResolvedValue(undefined);
+    vi.spyOn(
+      neuronsServices,
+      "addHotkeyForHardwareWalletNeuron"
+    ).mockResolvedValue({
+      success: true,
+    });
+    vi.spyOn(neuronsServices, "getNeuronFromStore").mockReturnValue(undefined);
+
+    vi.spyOn(knownNeuronsServices, "listKnownNeurons").mockReturnValue(
+      undefined
+    );
 
     vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
       mock<LedgerCanister>()

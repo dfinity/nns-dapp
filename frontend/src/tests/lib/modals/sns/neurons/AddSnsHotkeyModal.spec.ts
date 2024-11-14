@@ -1,4 +1,5 @@
 import AddSnsHotkeyModal from "$lib/modals/sns/neurons/AddSnsHotkeyModal.svelte";
+import * as snsNeuronsServices from "$lib/services/sns-neurons.services";
 import { addHotkey } from "$lib/services/sns-neurons.services";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -6,14 +7,15 @@ import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
-vi.mock("$lib/services/sns-neurons.services", () => {
-  return {
-    addHotkey: vi.fn().mockResolvedValue({ success: true }),
-  };
-});
-
 describe("AddSnsHotkeyModal", () => {
   const reload = vi.fn();
+
+  beforeEach(() => {
+    vi.restoreAllMocks();
+    vi.spyOn(snsNeuronsServices, "addHotkey").mockResolvedValue({
+      success: true,
+    });
+  });
 
   const renderAddSnsHotkeyModal = async (): Promise<
     RenderResult<SvelteComponent>

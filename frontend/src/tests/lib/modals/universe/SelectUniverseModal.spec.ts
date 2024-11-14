@@ -13,11 +13,13 @@ import { fireEvent } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("SelectUniverseModal", () => {
-  vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
-    mockProjectSubscribe([mockSnsFullProject])
-  );
-
   beforeEach(() => {
+    vi.restoreAllMocks();
+
+    vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+      mockProjectSubscribe([mockSnsFullProject])
+    );
+
     page.mock({
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
     });
