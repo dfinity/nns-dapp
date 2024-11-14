@@ -429,10 +429,12 @@ describe("neurons-services", () => {
   });
 
   describe("list neurons", () => {
-    const spyQueryNeurons = vi.spyOn(api, "queryNeurons");
+    let spyQueryNeurons;
 
     beforeEach(() => {
-      spyQueryNeurons.mockResolvedValue(neurons);
+      spyQueryNeurons = vi
+        .spyOn(api, "queryNeurons")
+        .mockResolvedValue(neurons);
     });
 
     it("should list neurons", async () => {
