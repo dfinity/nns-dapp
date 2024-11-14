@@ -82,6 +82,7 @@ describe("wallet-uncertified-accounts.services", () => {
 
   it("should toast error", async () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(icrcLegerApi, "queryIcrcToken").mockResolvedValue(mockCkBTCToken);
     vi.spyOn(icrcLegerApi, "queryIcrcBalance").mockRejectedValue(new Error());
 
     await services.uncertifiedLoadAccountsBalance(params);
