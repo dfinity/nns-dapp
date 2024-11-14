@@ -77,6 +77,7 @@ interface I18nError {
   dummy_proposal: string;
   unlock_neuron: string;
   add_maturity: string;
+  update_neuron: string;
   unknown: string;
   amount_not_valid: string;
   amount_not_enough_stake_neuron: string;
@@ -676,6 +677,7 @@ interface I18nNeuron_detail {
   dummy_proposal_success: string;
   unlock_neuron_success: string;
   add_maturity_success: string;
+  update_neuron_success: string;
   following_title: string;
   following_description: string;
   follow_neurons: string;
