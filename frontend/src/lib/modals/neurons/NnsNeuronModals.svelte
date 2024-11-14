@@ -24,6 +24,7 @@
     type FolloweesNeuron,
   } from "$lib/utils/neuron.utils";
   import NnsAddMaturityModal from "../sns/neurons/NnsAddMaturityModal.svelte";
+  import UpdateVotingPowerRefreshedModal from "$lib/modals/neurons/UpdateVotingPowerRefreshedModal.svelte";
   import ChangeNeuronVisibilityModal from "./ChangeNeuronVisibilityModal.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
@@ -99,6 +100,7 @@
     {/if}
 
     {#if type === "dev-update-voting-power-refreshed" && IS_TESTNET}
+      <UpdateVotingPowerRefreshedModal {neuron} on:nnsClose={close} />
     {/if}
 
     {#if type === "change-neuron-visibility"}
