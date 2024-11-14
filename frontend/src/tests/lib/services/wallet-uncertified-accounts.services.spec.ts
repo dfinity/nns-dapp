@@ -15,20 +15,16 @@ import {
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { get } from "svelte/store";
-
-vi.mock("$lib/stores/toasts.store", () => {
-  return {
-    toastsError: vi.fn(),
-  };
-});
+import * as toastsStore from "$lib/stores/toasts.store";
 
 describe("wallet-uncertified-accounts.services", () => {
   beforeEach(() => {
     resetIdentity();
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
 
     icrcAccountsStore.reset();
     tokensStore.reset();
+    vi.spyOn(toastsStore, "toastsError");
   });
 
   const params = {
@@ -82,6 +78,7 @@ describe("wallet-uncertified-accounts.services", () => {
 
   it("should toast error", async () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(icrcLegerApi, "queryIcrcToken").mockResolvedValue(mockCkBTCToken);
     vi.spyOn(icrcLegerApi, "queryIcrcBalance").mockRejectedValue(new Error());
 
     await services.uncertifiedLoadAccountsBalance(params);

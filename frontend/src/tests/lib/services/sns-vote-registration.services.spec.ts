@@ -82,14 +82,8 @@ describe("sns-vote-registration-services", () => {
     ballots: testBallots,
   };
   let resolveQuerySnsProposals;
-  const spyQuerySnsProposals = vi
-    .spyOn(api, "queryProposals")
-    .mockReturnValue(
-      new Promise((resolve) => (resolveQuerySnsProposals = resolve))
-    );
-  const spyQuerySnsNeurons = vi
-    .spyOn(api, "querySnsNeurons")
-    .mockResolvedValue([...neurons]);
+  let spyQuerySnsProposals;
+  let spyQuerySnsNeurons;
   const callRegisterVote = async ({
     vote,
     reloadProposalCallback,
@@ -107,8 +101,17 @@ describe("sns-vote-registration-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     toastsStore.reset();
+
+    spyQuerySnsProposals = vi
+      .spyOn(api, "queryProposals")
+      .mockReturnValue(
+        new Promise((resolve) => (resolveQuerySnsProposals = resolve))
+      );
+    spyQuerySnsNeurons = vi
+      .spyOn(api, "querySnsNeurons")
+      .mockResolvedValue([...neurons]);
 
     setSnsProjects([
       {

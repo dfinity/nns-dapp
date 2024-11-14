@@ -1,3 +1,4 @@
+import * as agentApi from "$lib/api/agent.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import { SALE_PARTICIPATION_RETRY_SECONDS } from "$lib/constants/sns.constants";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
@@ -75,19 +76,6 @@ import {
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
-vi.mock("$lib/proxy/api.import.proxy");
-vi.mock("$lib/api/agent.api", () => {
-  return {
-    createAgent: () => Promise.resolve(mock<Agent>()),
-  };
-});
-
-vi.mock("$lib/constants/sns.constants", () => ({
-  SALE_PARTICIPATION_RETRY_SECONDS: 1,
-}));
-
-vi.mock("$lib/api/icp-ledger.api");
-
 const identity: Identity | undefined = mockIdentity;
 const rootCanisterIdMock = identity.getPrincipal();
 
@@ -122,9 +110,9 @@ describe("sns-api", () => {
     ],
   };
 
-  const spyOnSendICP = vi.spyOn(ledgerApi, "sendICP");
+  let spyOnSendICP;
   const newBalanceE8s = 100_000_000n;
-  const spyOnQueryBalance = vi.spyOn(ledgerApi, "queryAccountBalance");
+  let spyOnQueryBalance;
   const spyOnNotifyParticipation = vi.fn();
   const testRootCanisterId = rootCanisterIdMock;
   const swapCanisterId = swapCanisterIdMock;
@@ -140,22 +128,24 @@ describe("sns-api", () => {
     get(snsTicketsStore)[rootCanisterId.toText()];
 
   beforeEach(() => {
+    vi.restoreAllMocks();
+
     // Make sure there are no open polling timers
     cancelPollGetOpenTicket();
-    spyOnSendICP.mockReset();
-    spyOnSendICP.mockReset();
-    spyOnNotifyParticipation.mockReset();
-    snsSwapCanister.getOpenTicket.mockReset();
-    spyOnNewSaleTicketApi.mockReset();
-    spyOnNotifyPaymentFailureApi.mockReset();
 
     vi.useFakeTimers();
-    vi.clearAllMocks();
 
     toastsStore.reset();
     snsTicketsStore.reset();
     resetAccountsForTesting();
     tokensStore.reset();
+
+    vi.spyOn(agentApi, "createAgent").mockImplementation(async () =>
+      mock<Agent>()
+    );
+
+    spyOnSendICP = vi.spyOn(ledgerApi, "sendICP");
+    spyOnQueryBalance = vi.spyOn(ledgerApi, "queryAccountBalance");
 
     spyOnNewSaleTicketApi.mockResolvedValue(testSnsTicket.ticket);
     spyOnNotifyPaymentFailureApi.mockResolvedValue(undefined);

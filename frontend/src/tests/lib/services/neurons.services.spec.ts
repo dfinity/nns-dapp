@@ -4,7 +4,9 @@ import * as icpLedgerApi from "$lib/api/icp-ledger.api";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import { MIN_NEURON_STAKE } from "$lib/constants/neurons.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
+import * as icpLedgerServicesProxy from "$lib/proxy/icp-ledger.services.proxy";
 import * as authServices from "$lib/services/auth.services";
+import * as icpAccountsServices from "$lib/services/icp-accounts.services";
 import {
   getAccountIdentityByPrincipal,
   loadBalance,
@@ -88,19 +90,6 @@ const resetAccountIdentity = () => (testIdentity = mockIdentity);
 const setAccountIdentity = (newIdentity: Identity) =>
   (testIdentity = newIdentity);
 
-vi.mock("$lib/services/icp-accounts.services", () => {
-  return {
-    loadBalance: vi.fn(),
-    transferICP: vi.fn().mockResolvedValue({ success: true }),
-    getAccountIdentityByPrincipal: vi
-      .fn()
-      .mockImplementation(() => Promise.resolve(testIdentity)),
-    getAccountIdentity: vi
-      .fn()
-      .mockImplementation(() => Promise.resolve(testIdentity)),
-  };
-});
-
 const mockLedgerIdentity = () => Promise.resolve(mockIdentity);
 let getLedgerIdentityImplementation = mockLedgerIdentity;
 const setLedgerThrow = () =>
@@ -109,14 +98,6 @@ const setLedgerThrow = () =>
   });
 const resetLedger = () =>
   (getLedgerIdentityImplementation = mockLedgerIdentity);
-
-vi.mock("$lib/proxy/icp-ledger.services.proxy", () => {
-  return {
-    getLedgerIdentityProxy: vi
-      .fn()
-      .mockImplementation(() => getLedgerIdentityImplementation()),
-  };
-});
 
 describe("neurons-services", () => {
   const notControlledNeuron = {
@@ -147,34 +128,33 @@ describe("neurons-services", () => {
 
   const neurons = [sameControlledNeuron, controlledNeuron];
 
-  const spyStakeNeuron = vi.spyOn(api, "stakeNeuron");
-  const spyGetNeuron = vi.spyOn(api, "queryNeuron");
-  const spyIncreaseDissolveDelay = vi.spyOn(api, "increaseDissolveDelay");
-  const spyJoinCommunityFund = vi.spyOn(api, "joinCommunityFund");
-  const spyAutoStakeMaturity = vi.spyOn(api, "autoStakeMaturity");
-  const spyLeaveCommunityFund = vi.spyOn(api, "leaveCommunityFund");
-  const spyDisburse = vi.spyOn(api, "disburse");
-  const spyStakeMaturity = vi.spyOn(api, "stakeMaturity");
-  const spySpawnNeuron = vi.spyOn(api, "spawnNeuron");
-  const spyMergeNeurons = vi.spyOn(api, "mergeNeurons");
-  const spySimulateMergeNeurons = vi.spyOn(api, "simulateMergeNeurons");
-  const spyAddHotkey = vi.spyOn(api, "addHotkey");
-  const spyRemoveHotkey = vi.spyOn(api, "removeHotkey");
-  const spySplitNeuron = vi.spyOn(api, "splitNeuron");
-  const spyStartDissolving = vi.spyOn(api, "startDissolving");
-  const spyStopDissolving = vi.spyOn(api, "stopDissolving");
-  const spySetFollowees = vi.spyOn(api, "setFollowees");
-  const spyClaimOrRefresh = vi.spyOn(api, "claimOrRefreshNeuron");
-  const spyClaimOrRefreshByMemo = vi.spyOn(api, "claimOrRefreshNeuronByMemo");
-  const spyChangeNeuronVisibility = vi.spyOn(api, "changeNeuronVisibility");
-  const spyQueryAccountBalance = vi.spyOn(icpLedgerApi, "queryAccountBalance");
+  let spyStakeNeuron;
+  let spyGetNeuron;
+  let spyIncreaseDissolveDelay;
+  let spyJoinCommunityFund;
+  let spyAutoStakeMaturity;
+  let spyLeaveCommunityFund;
+  let spyDisburse;
+  let spyStakeMaturity;
+  let spySpawnNeuron;
+  let spyMergeNeurons;
+  let spySimulateMergeNeurons;
+  let spyAddHotkey;
+  let spyRemoveHotkey;
+  let spySplitNeuron;
+  let spyStartDissolving;
+  let spyStopDissolving;
+  let spySetFollowees;
+  let spyClaimOrRefresh;
+  let spyClaimOrRefreshByMemo;
+  let spyChangeNeuronVisibility;
+  let spyQueryAccountBalance;
   let spyConsoleError;
 
   beforeEach(() => {
-    spyConsoleError?.mockRestore();
+    vi.restoreAllMocks();
+
     spyConsoleError = vi.spyOn(console, "error");
-    spyGetNeuron.mockClear();
-    vi.clearAllMocks();
     neuronsStore.reset();
     resetAccountsForTesting();
     resetAccountIdentity();
@@ -183,32 +163,65 @@ describe("neurons-services", () => {
     overrideFeatureFlagsStore.reset();
     checkedNeuronSubaccountsStore.reset();
 
-    spyStakeNeuron.mockImplementation(() =>
-      Promise.resolve(mockNeuron.neuronId)
+    vi.spyOn(icpAccountsServices, "loadBalance").mockReturnValue(undefined);
+    vi.spyOn(icpAccountsServices, "transferICP").mockResolvedValue({
+      success: true,
+    });
+    vi.spyOn(
+      icpAccountsServices,
+      "getAccountIdentityByPrincipal"
+    ).mockImplementation(async () => testIdentity);
+    vi.spyOn(icpAccountsServices, "getAccountIdentity").mockImplementation(
+      async () => testIdentity
     );
-    spyGetNeuron.mockResolvedValue(mockNeuron);
-    spyIncreaseDissolveDelay.mockResolvedValue();
-    spyJoinCommunityFund.mockResolvedValue();
-    spyAutoStakeMaturity.mockResolvedValue();
-    spyLeaveCommunityFund.mockResolvedValue();
-    spyDisburse.mockResolvedValue();
-    spyStakeMaturity.mockResolvedValue();
-    spySpawnNeuron.mockImplementation(() =>
-      Promise.resolve(newSpawnedNeuronId)
-    );
-    spyMergeNeurons.mockResolvedValue();
-    spySimulateMergeNeurons.mockImplementation(() =>
-      Promise.resolve(mockNeuron)
-    );
-    spyAddHotkey.mockResolvedValue();
-    spyRemoveHotkey.mockResolvedValue();
-    spySplitNeuron.mockResolvedValue(11n);
-    spyStartDissolving.mockResolvedValue();
-    spyStopDissolving.mockResolvedValue();
-    spySetFollowees.mockResolvedValue();
-    spyClaimOrRefresh.mockResolvedValue(undefined);
-    spyClaimOrRefreshByMemo.mockResolvedValue(undefined);
-    spyChangeNeuronVisibility.mockResolvedValue(undefined);
+
+    vi.spyOn(
+      icpLedgerServicesProxy,
+      "getLedgerIdentityProxy"
+    ).mockImplementation(() => getLedgerIdentityImplementation());
+
+    spyStakeNeuron = vi
+      .spyOn(api, "stakeNeuron")
+      .mockImplementation(() => Promise.resolve(mockNeuron.neuronId));
+    spyGetNeuron = vi.spyOn(api, "queryNeuron").mockResolvedValue(mockNeuron);
+    spyIncreaseDissolveDelay = vi
+      .spyOn(api, "increaseDissolveDelay")
+      .mockResolvedValue();
+    spyJoinCommunityFund = vi
+      .spyOn(api, "joinCommunityFund")
+      .mockResolvedValue();
+    spyAutoStakeMaturity = vi
+      .spyOn(api, "autoStakeMaturity")
+      .mockResolvedValue();
+    spyLeaveCommunityFund = vi
+      .spyOn(api, "leaveCommunityFund")
+      .mockResolvedValue();
+    spyDisburse = vi.spyOn(api, "disburse").mockResolvedValue();
+    spyStakeMaturity = vi.spyOn(api, "stakeMaturity").mockResolvedValue();
+    spySpawnNeuron = vi
+      .spyOn(api, "spawnNeuron")
+      .mockImplementation(() => Promise.resolve(newSpawnedNeuronId));
+    spyMergeNeurons = vi.spyOn(api, "mergeNeurons").mockResolvedValue();
+    spySimulateMergeNeurons = vi
+      .spyOn(api, "simulateMergeNeurons")
+      .mockImplementation(() => Promise.resolve(mockNeuron));
+    spyAddHotkey = vi.spyOn(api, "addHotkey").mockResolvedValue();
+    spyRemoveHotkey = vi.spyOn(api, "removeHotkey").mockResolvedValue();
+    spySplitNeuron = vi.spyOn(api, "splitNeuron").mockResolvedValue(11n);
+    spyStartDissolving = vi.spyOn(api, "startDissolving").mockResolvedValue();
+    spyStopDissolving = vi.spyOn(api, "stopDissolving").mockResolvedValue();
+    spySetFollowees = vi.spyOn(api, "setFollowees").mockResolvedValue();
+    spyClaimOrRefresh = vi
+      .spyOn(api, "claimOrRefreshNeuron")
+      .mockResolvedValue(undefined);
+    spyClaimOrRefreshByMemo = vi
+      .spyOn(api, "claimOrRefreshNeuronByMemo")
+      .mockResolvedValue(undefined);
+    spyChangeNeuronVisibility = vi
+      .spyOn(api, "changeNeuronVisibility")
+      .mockResolvedValue(undefined);
+    spyQueryAccountBalance = vi.spyOn(icpLedgerApi, "queryAccountBalance");
+
     resetIdentity();
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
       mockGetIdentity
