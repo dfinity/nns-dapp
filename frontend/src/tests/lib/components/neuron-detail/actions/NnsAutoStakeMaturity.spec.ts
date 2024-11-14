@@ -1,4 +1,5 @@
 import NnsAutoStakeMaturity from "$lib/components/neuron-detail/actions/NnsAutoStakeMaturity.svelte";
+import * as neuronsServices from "$lib/services/neurons.services";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
 import { mockPrincipalText, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -8,17 +9,14 @@ import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
-vi.mock("$lib/services/neurons.services", () => {
-  return {
-    toggleAutoStakeMaturity: vi.fn().mockResolvedValue({ success: true }),
-  };
-});
-
 describe("NnsAutoStakeMaturity", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     toastsStore.reset();
     resetIdentity();
+    vi.spyOn(neuronsServices, "toggleAutoStakeMaturity").mockResolvedValue({
+      success: true,
+    });
   });
 
   it("renders checkbox", () => {

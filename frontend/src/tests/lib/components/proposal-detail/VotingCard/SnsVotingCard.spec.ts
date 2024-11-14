@@ -1,3 +1,4 @@
+import * as agentApi from "$lib/api/agent.api";
 import * as api from "$lib/api/sns-governance.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
@@ -95,9 +96,7 @@ describe("SnsVotingCard", () => {
       permissions: permissionsWithTypeVote,
     },
   ];
-  const spyRegisterVote = vi
-    .spyOn(snsGovernanceApi, "registerVote")
-    .mockResolvedValue();
+  let spyRegisterVote;
   const spyOnReloadProposal = vi.fn();
   const renderVotingCard = (proposal = testProposal) =>
     render(SnsVotingCard, {
@@ -108,12 +107,19 @@ describe("SnsVotingCard", () => {
     });
 
   beforeEach(() => {
+    vi.restoreAllMocks();
     vi.useFakeTimers().setSystemTime(nowInSeconds * 1000);
     snsNeuronsStore.reset();
     resetIdentity();
 
-    spyOnReloadProposal.mockClear();
-    spyRegisterVote.mockClear();
+    vi.spyOn(agentApi, "createAgent").mockImplementation(() => {
+      console.log('dskloetx "createAgent"', new Error().stack);
+      throw new Error();
+    });
+
+    spyRegisterVote = vi
+      .spyOn(snsGovernanceApi, "registerVote")
+      .mockResolvedValue();
 
     page.mock({ data: { universe: mockSnsCanisterId.toText() } });
 
@@ -350,15 +356,11 @@ describe("SnsVotingCard", () => {
   });
 
   describe("voting", () => {
-    const spyQuerySnsProposals = vi
-      .spyOn(api, "queryProposals")
-      .mockResolvedValue({
+    beforeEach(() => {
+      vi.spyOn(api, "queryProposals").mockResolvedValue({
         proposals: [],
         include_ballots_by_caller: [true],
       });
-
-    beforeEach(() => {
-      spyQuerySnsProposals.mockClear();
     });
 
     it("should trigger register-vote and call reloadProposal", async () => {

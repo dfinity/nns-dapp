@@ -34,17 +34,17 @@ describe("SelectUniverseList", () => {
     return SelectUniverseListPo.under(new JestPageObjectElement(container));
   };
 
-  vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
-    mockProjectSubscribe(projects)
-  );
-
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
 
     page.mock({
       routeId: AppPath.Accounts,
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
     });
+
+    vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+      mockProjectSubscribe(projects)
+    );
   });
 
   it("should render universe cards", () => {

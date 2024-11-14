@@ -1,6 +1,7 @@
 import NnsNeuronHotkeysCard from "$lib/components/neuron-detail/NnsNeuronHotkeysCard.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
+import * as neuronsServices from "$lib/services/neurons.services";
 import { removeHotkey } from "$lib/services/neurons.services";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -8,13 +9,6 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
-
-vi.mock("$lib/services/neurons.services", () => {
-  return {
-    removeHotkey: vi.fn().mockResolvedValue(10n),
-    getNeuronFromStore: vi.fn(),
-  };
-});
 
 describe("NnsNeuronHotkeysCard", () => {
   const hotKeys = [
@@ -40,7 +34,9 @@ describe("NnsNeuronHotkeysCard", () => {
 
   beforeEach(() => {
     resetIdentity();
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
+    vi.spyOn(neuronsServices, "removeHotkey").mockResolvedValue(10n);
+    vi.spyOn(neuronsServices, "getNeuronFromStore").mockReturnValue(undefined);
   });
 
   it("renders hotkeys title", () => {
