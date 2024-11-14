@@ -1,5 +1,6 @@
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
+import * as icpAccountsServices from "$lib/services/icp-accounts.services";
 import { transferICP } from "$lib/services/icp-accounts.services";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -11,12 +12,6 @@ import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.p
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
-
-vi.mock("$lib/services/icp-accounts.services", () => {
-  return {
-    transferICP: vi.fn().mockResolvedValue({ success: true }),
-  };
-});
 
 describe("IcpTransactionModal", () => {
   const renderTransactionModal = () =>
@@ -34,6 +29,9 @@ describe("IcpTransactionModal", () => {
   beforeEach(() => {
     resetIdentity();
 
+    vi.spyOn(icpAccountsServices, "transferICP").mockResolvedValue({
+      success: true,
+    });
     vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
       mockAccountsStoreSubscribe([mockSubAccount])
     );
