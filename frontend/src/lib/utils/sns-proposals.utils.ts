@@ -35,7 +35,12 @@ import {
   SnsProposalRewardStatus,
   type SnsPercentage,
 } from "@dfinity/sns";
-import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
+import {
+  fromDefinedNullable,
+  fromNullable,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
 import { get } from "svelte/store";
 import { nowInSeconds } from "./date.utils";
 import { keyOfOptional } from "./utils";
@@ -282,7 +287,7 @@ export const snsDecisionStatus = (
 /**
  * Returns the status of a proposal based on the data.
  *
- * Reference: https://github.com/dfinity/ic/blob/226ab04e0984367da356bbe27c90447863d33a27/rs/sns/governance/src/proposal.rs#L735
+ * Reference: https://github.com/dfinity/ic/blob/bc2c84c5e3dc14bedb7ef9bbe231748886a34a29/rs/sns/governance/src/proposal.rs#L1692-L1706
  *
  * @param {SnsProposalData} proposal
  * @returns {SnsProposalRewardStatus}
@@ -291,18 +296,22 @@ export const snsRewardStatus = ({
   reward_event_round,
   wait_for_quiet_state,
   is_eligible_for_rewards,
+  reward_event_end_timestamp_seconds,
+  proposal_creation_timestamp_seconds,
+  initial_voting_period_seconds,
 }: SnsProposalData): SnsProposalRewardStatus => {
-  if (reward_event_round > 0n) {
+  if (
+    nonNullish(fromNullable(reward_event_end_timestamp_seconds)) ||
+    reward_event_round > 0n
+  ) {
     return SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED;
   }
 
   const now = nowInSeconds();
   const deadline =
-    fromNullable(wait_for_quiet_state)?.current_deadline_timestamp_seconds;
-  if (!deadline) {
-    // Reference: https://github.com/dfinity/ic/blob/226ab04e0984367da356bbe27c90447863d33a27/rs/sns/governance/src/proposal.rs#L760
-    throw new Error("Proposal must have a wait_for_quiet_state.");
-  }
+    fromNullable(wait_for_quiet_state)?.current_deadline_timestamp_seconds ??
+    proposal_creation_timestamp_seconds + initial_voting_period_seconds;
+
   if (now < deadline) {
     return SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES;
   }

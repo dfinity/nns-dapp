@@ -1,11 +1,8 @@
+import * as agentApi from "$lib/api/agent.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import { SALE_PARTICIPATION_RETRY_SECONDS } from "$lib/constants/sns.constants";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
-import {
-  importInitSnsWrapper,
-  importSnsWasmCanister,
-} from "$lib/proxy/api.import.proxy";
 import {
   cancelPollGetOpenTicket,
   initiateSnsSaleParticipation,
@@ -37,7 +34,6 @@ import {
   mockSwap,
 } from "$tests/mocks/sns-projects.mock";
 import {
-  deployedSnsMock,
   governanceCanisterIdMock,
   ledgerCanisterIdMock,
   swapCanisterIdMock,
@@ -47,6 +43,7 @@ import {
   resetAccountsForTesting,
   setAccountsForTesting,
 } from "$tests/utils/accounts.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -60,8 +57,9 @@ import {
   TxDuplicateError,
   TxTooOldError,
 } from "@dfinity/ledger-icp";
-import type { SnsWasmCanisterOptions } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import type { SnsWrapper } from "@dfinity/sns";
+import * as dfinitySns from "@dfinity/sns";
 import {
   GetOpenTicketErrorType,
   NewSaleTicketResponseErrorType,
@@ -76,21 +74,7 @@ import {
   toNullable,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
-import type { Mock } from "vitest";
 import { mock } from "vitest-mock-extended";
-
-vi.mock("$lib/proxy/api.import.proxy");
-vi.mock("$lib/api/agent.api", () => {
-  return {
-    createAgent: () => Promise.resolve(mock<Agent>()),
-  };
-});
-
-vi.mock("$lib/constants/sns.constants", () => ({
-  SALE_PARTICIPATION_RETRY_SECONDS: 1,
-}));
-
-vi.mock("$lib/api/icp-ledger.api");
 
 const identity: Identity | undefined = mockIdentity;
 const rootCanisterIdMock = identity.getPrincipal();
@@ -126,9 +110,9 @@ describe("sns-api", () => {
     ],
   };
 
-  const spyOnSendICP = vi.spyOn(ledgerApi, "sendICP");
+  let spyOnSendICP;
   const newBalanceE8s = 100_000_000n;
-  const spyOnQueryBalance = vi.spyOn(ledgerApi, "queryAccountBalance");
+  let spyOnQueryBalance;
   const spyOnNotifyParticipation = vi.fn();
   const testRootCanisterId = rootCanisterIdMock;
   const swapCanisterId = swapCanisterIdMock;
@@ -144,22 +128,24 @@ describe("sns-api", () => {
     get(snsTicketsStore)[rootCanisterId.toText()];
 
   beforeEach(() => {
+    vi.restoreAllMocks();
+
     // Make sure there are no open polling timers
     cancelPollGetOpenTicket();
-    spyOnSendICP.mockReset();
-    spyOnSendICP.mockReset();
-    spyOnNotifyParticipation.mockReset();
-    snsSwapCanister.getOpenTicket.mockReset();
-    spyOnNewSaleTicketApi.mockReset();
-    spyOnNotifyPaymentFailureApi.mockReset();
 
     vi.useFakeTimers();
-    vi.clearAllMocks();
 
     toastsStore.reset();
     snsTicketsStore.reset();
     resetAccountsForTesting();
     tokensStore.reset();
+
+    vi.spyOn(agentApi, "createAgent").mockImplementation(async () =>
+      mock<Agent>()
+    );
+
+    spyOnSendICP = vi.spyOn(ledgerApi, "sendICP");
+    spyOnQueryBalance = vi.spyOn(ledgerApi, "queryAccountBalance");
 
     spyOnNewSaleTicketApi.mockResolvedValue(testSnsTicket.ticket);
     spyOnNotifyPaymentFailureApi.mockResolvedValue(undefined);
@@ -176,33 +162,28 @@ describe("sns-api", () => {
       certified: true,
     });
 
-    (importSnsWasmCanister as Mock).mockResolvedValue({
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      create: (options: SnsWasmCanisterOptions) => ({
-        listSnses: () => Promise.resolve(deployedSnsMock),
-      }),
-    });
-
     spyOnNotifyParticipation.mockResolvedValue({
       icp_accepted_participation_e8s: 666n,
     });
-    (importInitSnsWrapper as Mock).mockResolvedValue(() =>
-      Promise.resolve({
-        canisterIds: {
-          rootCanisterId: rootCanisterIdMock,
-          ledgerCanisterId: ledgerCanisterIdMock,
-          governanceCanisterId: governanceCanisterIdMock,
-          swapCanisterId: swapCanisterIdMock,
-        },
-        metadata: () =>
-          Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
-        swapState: () => Promise.resolve(mockQuerySwap),
-        notifyParticipation: spyOnNotifyParticipation,
-        newSaleTicket: spyOnNewSaleTicketApi,
-        notifyPaymentFailure: spyOnNotifyPaymentFailureApi,
-      })
-    );
 
+    const canisterIds = {
+      rootCanisterId: rootCanisterIdMock,
+      ledgerCanisterId: ledgerCanisterIdMock,
+      governanceCanisterId: governanceCanisterIdMock,
+      swapCanisterId: swapCanisterIdMock,
+    };
+
+    setSnsProjects([canisterIds]);
+
+    vi.spyOn(dfinitySns, "SnsWrapper").mockReturnValue({
+      canisterIds,
+      metadata: () =>
+        Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
+      swapState: () => Promise.resolve(mockQuerySwap),
+      notifyParticipation: spyOnNotifyParticipation,
+      newSaleTicket: spyOnNewSaleTicketApi,
+      notifyPaymentFailure: spyOnNotifyPaymentFailureApi,
+    } as unknown as SnsWrapper);
     // `getOpenTicket` is mocked from the SnsSwapCanister not the wrapper
     vi.spyOn(SnsSwapCanister, "create").mockImplementation(
       (): SnsSwapCanister => snsSwapCanister

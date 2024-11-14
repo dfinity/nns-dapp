@@ -282,7 +282,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999980961594000,
+    "icrc1_total_supply": 799999979592694000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -632,6 +632,19 @@
               "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "validator_method_name": "remove_platform_operator_validate",
               "target_method_name": "remove_platform_operator"
+            }
+          }
+        },
+        {
+          "id": 1012,
+          "name": "Register an external achievement",
+          "description": "This will register a new external achievement which users can complete to earn CHIT",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+              "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+              "validator_method_name": "register_external_achievement_validate",
+              "target_method_name": "register_external_achievement"
             }
           }
         },
@@ -1072,7 +1085,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10119926146327798,
+    "icrc1_total_supply": 10121609983929802,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1802,7 +1815,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 609463063554073,
+    "icrc1_total_supply": 609467352237780,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2199,7 +2212,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 102596192246062180,
+    "icrc1_total_supply": 102640488241658660,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2848,7 +2861,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 926615942971305500,
+    "icrc1_total_supply": 926651117729555500,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

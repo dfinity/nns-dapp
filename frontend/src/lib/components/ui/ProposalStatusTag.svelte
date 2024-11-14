@@ -40,32 +40,28 @@
     position: relative;
 
     &.unknown {
-      color: var(--disable-contrast);
-      background-color: var(--disable);
+      color: var(--tag-text);
+      background-color: var(--tag-background);
     }
     &.open {
-      color: var(--green);
-      background-color: var(--green-tint);
-
-      @include media.dark-theme {
-        background-color: var(--green-dark);
-      }
+      color: var(--tag-open-text);
+      background-color: var(--tag-open-background);
     }
     &.rejected {
-      color: var(--pink);
-      background-color: var(--pink-tint);
+      color: var(--tag-rejected-text);
+      background-color: var(--tag-rejected-background);
     }
     &.adopted {
-      color: var(--blue);
-      background-color: var(--blue-tint);
+      color: var(--tag-adopted-text);
+      background-color: var(--tag-adopted-background);
     }
     &.executed {
-      color: var(--orchid);
-      background-color: var(--indigo-tint);
+      color: var(--tag-executed-text);
+      background-color: var(--tag-executed-background);
     }
     &.failed {
-      color: var(--orange);
-      background-color: var(--orange-tint);
+      color: var(--tag-failed-text);
+      background-color: var(--tag-failed-background);
     }
 
     // Because of Tooltip wrapper the badge needs a container for positioning.

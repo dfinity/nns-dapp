@@ -483,9 +483,9 @@ describe("icrc-accounts-services", () => {
     });
 
     it("displays a toast on error", async () => {
-      vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(
-        new Error("test")
-      );
+      const consoleSpy = vi.spyOn(console, "error").mockReturnValue(undefined);
+      const error = new Error("test");
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(error);
       expect(ledgerApi.queryIcrcToken).not.toBeCalled();
       expect(get(toastsStore)).toMatchObject([]);
       await loadIcrcToken({ ledgerCanisterId });
@@ -506,6 +506,7 @@ describe("icrc-accounts-services", () => {
           text: "Sorry, there was an error loading the token metadata information. test",
         },
       ]);
+      expect(consoleSpy).toBeCalledWith(error);
     });
 
     it("displays no toast on uncertified error", async () => {
@@ -535,10 +536,12 @@ describe("icrc-accounts-services", () => {
     });
 
     it("displays a toast on uncertified error for query call", async () => {
+      const consoleSpy = vi.spyOn(console, "error").mockReturnValue(undefined);
+      const error = new Error("test");
       vi.spyOn(ledgerApi, "queryIcrcToken").mockImplementation(
         async ({ certified }) => {
           if (!certified) {
-            throw new Error("test");
+            throw error;
           }
           return mockToken;
         }
@@ -558,6 +561,7 @@ describe("icrc-accounts-services", () => {
           text: "Sorry, there was an error loading the token metadata information. test",
         },
       ]);
+      expect(consoleSpy).toBeCalledWith(error);
     });
 
     it("displays no toast on uncertified error", async () => {

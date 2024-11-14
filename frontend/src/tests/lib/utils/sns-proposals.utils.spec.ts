@@ -155,6 +155,17 @@ describe("sns-proposals utils", () => {
       );
     });
 
+    it("should return SETTLED based on reward event end timestamp", () => {
+      const proposal: SnsProposalData = {
+        ...mockSnsProposal,
+        reward_event_round: 0n,
+        reward_event_end_timestamp_seconds: [0n],
+      };
+      expect(snsRewardStatus(proposal)).toBe(
+        SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED
+      );
+    });
+
     it("should return ACCEPT_VOTES", () => {
       const now = BigInt(nowInSeconds());
       const proposal: SnsProposalData = {
@@ -165,6 +176,20 @@ describe("sns-proposals utils", () => {
             current_deadline_timestamp_seconds: now + 100n,
           },
         ],
+      };
+      expect(snsRewardStatus(proposal)).toBe(
+        SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES
+      );
+    });
+
+    it("should return ACCEPT_VOTES w/o current_deadline_timestamp_seconds ", () => {
+      const now = BigInt(nowInSeconds());
+      const proposal: SnsProposalData = {
+        ...mockSnsProposal,
+        reward_event_round: 0n,
+        wait_for_quiet_state: [],
+        proposal_creation_timestamp_seconds: now,
+        initial_voting_period_seconds: 100n,
       };
       expect(snsRewardStatus(proposal)).toBe(
         SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES

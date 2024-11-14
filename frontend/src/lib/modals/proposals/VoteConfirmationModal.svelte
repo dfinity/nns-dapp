@@ -13,7 +13,9 @@
 <ConfirmationModal on:nnsClose on:nnsConfirm>
   <div class="wrapper">
     {#if voteType === Vote.Yes}
-      <IconThumbUp />
+      <span class="icon-wrapper yes" aria-hidden="true">
+        <IconThumbUp />
+      </span>
       <h4>{$i18n.proposal_detail__vote.confirm_adopt_headline}</h4>
       <p>
         {replacePlaceholders($i18n.proposal_detail__vote.confirm_adopt_text, {
@@ -21,7 +23,9 @@
         })}
       </p>
     {:else}
-      <IconThumbDown />
+      <span class="icon-wrapper no" aria-hidden="true">
+        <IconThumbDown />
+      </span>
       <h4>{$i18n.proposal_detail__vote.confirm_reject_headline}</h4>
       <p>
         {replacePlaceholders($i18n.proposal_detail__vote.confirm_reject_text, {
@@ -39,9 +43,30 @@
     @include confirmation-modal.wrapper;
 
     :global(svg) {
+      width: var(--padding-4x);
+      height: var(--padding-4x);
+    }
+
+    .icon-wrapper {
       width: var(--padding-6x);
       height: var(--padding-6x);
       margin-bottom: var(--padding);
+
+      border-radius: 50%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &.yes {
+        color: var(--positive-emphasis);
+        background-color: var(--positive-emphasis-light);
+      }
+
+      &.no {
+        color: var(--negative-emphasis);
+        background-color: var(--negative-emphasis-light);
+      }
     }
   }
 

@@ -20,10 +20,6 @@ import {
   startDissolving,
   stopDissolving,
 } from "$lib/api/sns-governance.api";
-import {
-  importInitSnsWrapper,
-  importSnsWasmCanister,
-} from "$lib/proxy/api.import.proxy";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
@@ -33,16 +29,17 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import {
-  deployedSnsMock,
   governanceCanisterIdMock,
   ledgerCanisterIdMock,
   rootCanisterIdMock,
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { Agent } from "@dfinity/agent";
 import { LedgerCanister } from "@dfinity/ledger-icp";
-import type { SnsWasmCanisterOptions } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import type { SnsWrapper } from "@dfinity/sns";
+import * as dfinitySns from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
   SnsVote,
@@ -51,7 +48,6 @@ import {
   type SnsProposalId,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
-import type { Mock } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/proxy/api.import.proxy");
@@ -64,79 +60,96 @@ vi.mock("$lib/api/agent.api", () => {
 describe("sns-api", () => {
   const ledgerCanisterMock = mock<LedgerCanister>();
   const proposals = [mockSnsProposal];
-  const queryNeuronsSpy = vi.fn().mockResolvedValue([mockSnsNeuron]);
-  const getNeuronSpy = vi.fn().mockResolvedValue(mockSnsNeuron);
-  const queryNeuronSpy = vi.fn().mockResolvedValue(mockSnsNeuron);
-  const addNeuronPermissionsSpy = vi.fn().mockResolvedValue(undefined);
-  const removeNeuronPermissionsSpy = vi.fn().mockResolvedValue(undefined);
-  const disburseSpy = vi.fn().mockResolvedValue(undefined);
-  const splitNeuronSpy = vi.fn().mockResolvedValue(undefined);
-  const startDissolvingSpy = vi.fn().mockResolvedValue(undefined);
-  const stopDissolvingSpy = vi.fn().mockResolvedValue(undefined);
-  const increaseDissolveDelaySpy = vi.fn().mockResolvedValue(undefined);
-  const getNeuronBalanceSpy = vi.fn().mockResolvedValue(undefined);
-  const refreshNeuronSpy = vi.fn().mockResolvedValue(undefined);
-  const claimNeuronSpy = vi.fn().mockResolvedValue(undefined);
-  const setTopicFolloweesSpy = vi.fn().mockResolvedValue(undefined);
-  const stakeMaturitySpy = vi.fn().mockResolvedValue(undefined);
-  const registerVoteSpy = vi.fn().mockResolvedValue(undefined);
-  const autoStakeMaturitySpy = vi.fn().mockResolvedValue(undefined);
-  const listProposalsSpy = vi.fn().mockResolvedValue({ proposals });
-  const getProposalSpy = vi.fn().mockResolvedValue(mockSnsProposal);
-  const disburseMaturitySpy = vi.fn().mockResolvedValue(undefined);
+  const queryNeuronsSpy = vi.fn();
+  const getNeuronSpy = vi.fn();
+  const queryNeuronSpy = vi.fn();
+  const addNeuronPermissionsSpy = vi.fn();
+  const removeNeuronPermissionsSpy = vi.fn();
+  const disburseSpy = vi.fn();
+  const splitNeuronSpy = vi.fn();
+  const startDissolvingSpy = vi.fn();
+  const stopDissolvingSpy = vi.fn();
+  const increaseDissolveDelaySpy = vi.fn();
+  const getNeuronBalanceSpy = vi.fn();
+  const refreshNeuronSpy = vi.fn();
+  const claimNeuronSpy = vi.fn();
+  const setTopicFolloweesSpy = vi.fn();
+  const stakeMaturitySpy = vi.fn();
+  const registerVoteSpy = vi.fn();
+  const autoStakeMaturitySpy = vi.fn();
+  const listProposalsSpy = vi.fn();
+  const getProposalSpy = vi.fn();
+  const disburseMaturitySpy = vi.fn();
   const nervousSystemFunctionsMock: SnsListNervousSystemFunctionsResponse = {
     reserved_ids: new BigUint64Array(),
     functions: [nervousSystemFunctionMock],
   };
-  const getFunctionsSpy = vi.fn().mockResolvedValue(nervousSystemFunctionsMock);
+  const getFunctionsSpy = vi.fn();
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
+
+    queryNeuronsSpy.mockResolvedValue([mockSnsNeuron]);
+    getNeuronSpy.mockResolvedValue(mockSnsNeuron);
+    queryNeuronSpy.mockResolvedValue(mockSnsNeuron);
+    addNeuronPermissionsSpy.mockResolvedValue(undefined);
+    removeNeuronPermissionsSpy.mockResolvedValue(undefined);
+    disburseSpy.mockResolvedValue(undefined);
+    splitNeuronSpy.mockResolvedValue(undefined);
+    startDissolvingSpy.mockResolvedValue(undefined);
+    stopDissolvingSpy.mockResolvedValue(undefined);
+    increaseDissolveDelaySpy.mockResolvedValue(undefined);
+    getNeuronBalanceSpy.mockResolvedValue(undefined);
+    refreshNeuronSpy.mockResolvedValue(undefined);
+    claimNeuronSpy.mockResolvedValue(undefined);
+    setTopicFolloweesSpy.mockResolvedValue(undefined);
+    stakeMaturitySpy.mockResolvedValue(undefined);
+    registerVoteSpy.mockResolvedValue(undefined);
+    autoStakeMaturitySpy.mockResolvedValue(undefined);
+    listProposalsSpy.mockResolvedValue({ proposals });
+    getProposalSpy.mockResolvedValue(mockSnsProposal);
+    disburseMaturitySpy.mockResolvedValue(undefined);
+    getFunctionsSpy.mockResolvedValue(nervousSystemFunctionsMock);
 
     vi.spyOn(LedgerCanister, "create").mockImplementation(
       () => ledgerCanisterMock
     );
 
-    (importSnsWasmCanister as Mock).mockResolvedValue({
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      create: (options: SnsWasmCanisterOptions) => ({
-        listSnses: () => Promise.resolve(deployedSnsMock),
-      }),
-    });
+    const canisterIds = {
+      rootCanisterId: rootCanisterIdMock,
+      ledgerCanisterId: ledgerCanisterIdMock,
+      governanceCanisterId: governanceCanisterIdMock,
+      swapCanisterId: swapCanisterIdMock,
+    };
 
-    (importInitSnsWrapper as Mock).mockResolvedValue(() =>
-      Promise.resolve({
-        canisterIds: {
-          rootCanisterId: rootCanisterIdMock,
-          ledgerCanisterId: ledgerCanisterIdMock,
-          governanceCanisterId: governanceCanisterIdMock,
-          swapCanisterId: swapCanisterIdMock,
-        },
-        metadata: () =>
-          Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
-        listNeurons: queryNeuronsSpy,
-        getNeuron: getNeuronSpy,
-        queryNeuron: queryNeuronSpy,
-        addNeuronPermissions: addNeuronPermissionsSpy,
-        removeNeuronPermissions: removeNeuronPermissionsSpy,
-        disburse: disburseSpy,
-        splitNeuron: splitNeuronSpy,
-        startDissolving: startDissolvingSpy,
-        stopDissolving: stopDissolvingSpy,
-        increaseDissolveDelay: increaseDissolveDelaySpy,
-        getNeuronBalance: getNeuronBalanceSpy,
-        refreshNeuron: refreshNeuronSpy,
-        claimNeuron: claimNeuronSpy,
-        listNervousSystemFunctions: getFunctionsSpy,
-        setTopicFollowees: setTopicFolloweesSpy,
-        stakeMaturity: stakeMaturitySpy,
-        registerVote: registerVoteSpy,
-        autoStakeMaturity: autoStakeMaturitySpy,
-        listProposals: listProposalsSpy,
-        getProposal: getProposalSpy,
-        disburseMaturity: disburseMaturitySpy,
-      })
-    );
+    setSnsProjects([canisterIds]);
+
+    vi.spyOn(dfinitySns, "SnsWrapper").mockReturnValue({
+      canisterIds,
+      metadata: () =>
+        Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
+      listNeurons: queryNeuronsSpy,
+      getNeuron: getNeuronSpy,
+      queryNeuron: queryNeuronSpy,
+      addNeuronPermissions: addNeuronPermissionsSpy,
+      removeNeuronPermissions: removeNeuronPermissionsSpy,
+      disburse: disburseSpy,
+      splitNeuron: splitNeuronSpy,
+      startDissolving: startDissolvingSpy,
+      stopDissolving: stopDissolvingSpy,
+      increaseDissolveDelay: increaseDissolveDelaySpy,
+      getNeuronBalance: getNeuronBalanceSpy,
+      refreshNeuron: refreshNeuronSpy,
+      claimNeuron: claimNeuronSpy,
+      listNervousSystemFunctions: getFunctionsSpy,
+      setTopicFollowees: setTopicFolloweesSpy,
+      stakeMaturity: stakeMaturitySpy,
+      registerVote: registerVoteSpy,
+      autoStakeMaturity: autoStakeMaturitySpy,
+      listProposals: listProposalsSpy,
+      getProposal: getProposalSpy,
+      disburseMaturity: disburseMaturitySpy,
+    } as unknown as SnsWrapper);
   });
 
   it("should query sns neurons", async () => {
