@@ -13,13 +13,15 @@ describe("Proposals", () => {
       ? snsProposalsStore.reset()
       : snsProposalsStore.setProposals({ proposals, certified: true });
 
-  const queryProposalsSpy = vitest
-    .spyOn(api, "queryProposals")
-    .mockResolvedValue([mockProposalInfo]);
+  let queryProposalsSpy;
 
   beforeEach(() => {
-    vitest.clearAllMocks();
+    vi.restoreAllMocks();
     snsProposalsStore.reset();
+
+    queryProposalsSpy = vi
+      .spyOn(api, "queryProposals")
+      .mockResolvedValue([mockProposalInfo]);
   });
 
   it("should trigger call to query proposals", () => {

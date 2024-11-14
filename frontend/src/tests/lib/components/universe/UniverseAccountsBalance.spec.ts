@@ -41,7 +41,7 @@ import { render } from "@testing-library/svelte";
 
 describe("UniverseAccountsBalance", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     resetSnsProjects();
     icrcAccountsStore.reset();
 
@@ -80,9 +80,14 @@ describe("UniverseAccountsBalance", () => {
   });
 
   describe("balance", () => {
-    vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
-      mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
-    );
+    beforeEach(() => {
+      vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+        mockAccountsStoreSubscribe(
+          [mockSubAccount],
+          [mockHardwareWalletAccount]
+        )
+      );
+    });
 
     it("should render a total balance for Nns", () => {
       const { getByTestId } = render(ProjectAccountsBalance, {

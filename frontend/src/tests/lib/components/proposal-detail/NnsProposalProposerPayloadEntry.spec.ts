@@ -18,13 +18,13 @@ import { mock } from "vitest-mock-extended";
 
 describe("NnsProposalProposerPayloadEntry", () => {
   const nnsDappMock = mock<NNSDappCanister>();
-  vi.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
 
   const payload = { b: "c" };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     proposalPayloadsStore.reset();
+    vi.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 

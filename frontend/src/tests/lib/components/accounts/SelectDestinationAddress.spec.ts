@@ -15,6 +15,7 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("SelectDestinationAddress", () => {
   beforeEach(() => {
+    vi.restoreAllMocks();
     resetSnsProjects();
     icrcAccountsStore.reset();
   });
@@ -27,9 +28,11 @@ describe("SelectDestinationAddress", () => {
     const subaccounts = [mockSubAccount, mockSubAccount2];
     const hardwareWallets = [mockHardwareWalletAccount];
 
-    vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
-      mockAccountsStoreSubscribe(subaccounts, hardwareWallets)
-    );
+    beforeEach(() => {
+      vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+        mockAccountsStoreSubscribe(subaccounts, hardwareWallets)
+      );
+    });
 
     it("should render address input as default", () => {
       const { container } = render(SelectDestinationAddress, {
