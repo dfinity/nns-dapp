@@ -45,6 +45,7 @@ import {
   mockSubAccount,
   mockSubAccountDetails,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { MockLedgerIdentity } from "$tests/mocks/ledger.identity.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
@@ -74,6 +75,8 @@ vi.mock("$lib/api/icp-ledger.api");
 const blockedApiPaths = ["$lib/api/nns-dapp.api", "$lib/api/icp-ledger.api"];
 
 describe("icp-accounts.services", () => {
+  const mockLedgerIdentity = new MockLedgerIdentity();
+
   beforeEach(() => {
     // We need to do this before blockAllCallsTo otherwise it the effect of
     // blockAllCallsTo is removed again.
@@ -94,7 +97,7 @@ describe("icp-accounts.services", () => {
     vi.spyOn(
       icpLedgerServicesProxy,
       "getLedgerIdentityProxy"
-    ).mockResolvedValue(mockIdentity);
+    ).mockResolvedValue(mockLedgerIdentity);
   });
 
   const mockSnsAccountIcpAccountIdentifier = AccountIdentifier.fromPrincipal({
@@ -885,7 +888,7 @@ describe("icp-accounts.services", () => {
       const expectedIdentity = await getAccountIdentity(
         mockHardwareWalletAccount.identifier
       );
-      expect(expectedIdentity).toBe(mockIdentity);
+      expect(expectedIdentity).toBe(mockLedgerIdentity);
       expect(getLedgerIdentityProxy).toBeCalled();
     });
   });
@@ -910,7 +913,7 @@ describe("icp-accounts.services", () => {
       const expectedIdentity = await getAccountIdentityByPrincipal(
         mockHardwareWalletAccount.principal?.toText() as string
       );
-      expect(expectedIdentity).toBe(mockIdentity);
+      expect(expectedIdentity).toBe(mockLedgerIdentity);
       expect(getLedgerIdentityProxy).toBeCalled();
     });
 

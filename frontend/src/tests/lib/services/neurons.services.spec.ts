@@ -90,14 +90,15 @@ const resetAccountIdentity = () => (testIdentity = mockIdentity);
 const setAccountIdentity = (newIdentity: Identity) =>
   (testIdentity = newIdentity);
 
-const mockLedgerIdentity = () => Promise.resolve(mockIdentity);
-let getLedgerIdentityImplementation = mockLedgerIdentity;
+const mockLedgerIdentity = new MockLedgerIdentity();
+const getMockLedgerIdentity = () => Promise.resolve(mockLedgerIdentity);
+let getLedgerIdentityImplementation = getMockLedgerIdentity;
 const setLedgerThrow = () =>
   (getLedgerIdentityImplementation = () => {
     throw new Error("Test");
   });
 const resetLedger = () =>
-  (getLedgerIdentityImplementation = mockLedgerIdentity);
+  (getLedgerIdentityImplementation = getMockLedgerIdentity);
 
 describe("neurons-services", () => {
   const notControlledNeuron = {
@@ -1202,7 +1203,7 @@ describe("neurons-services", () => {
       });
 
       expect(spyAddHotkey).toBeCalledWith({
-        identity: mockIdentity,
+        identity: mockLedgerIdentity,
         neuronId: controlledNeuron.neuronId,
         principal: mockIdentity.getPrincipal(),
       });
