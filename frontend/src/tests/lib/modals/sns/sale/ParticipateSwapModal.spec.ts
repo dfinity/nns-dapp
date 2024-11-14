@@ -3,7 +3,9 @@ import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
+import * as snsSaleServices from "$lib/services/sns-sale.services";
 import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
+import * as snsServices from "$lib/services/sns.services";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import {
   PROJECT_DETAIL_CONTEXT_KEY,
@@ -41,23 +43,6 @@ import { AccountIdentifier } from "@dfinity/ledger-icp";
 import { writable } from "svelte/store";
 import type { MockInstance } from "vitest";
 
-vi.mock("$lib/api/nns-dapp.api");
-vi.mock("$lib/api/icp-ledger.api");
-vi.mock("$lib/services/sns.services", () => {
-  return {
-    initiateSnsSaleParticipation: vi.fn().mockResolvedValue({ success: true }),
-    getSwapAccount: vi
-      .fn()
-      .mockImplementation(() =>
-        Promise.resolve(AccountIdentifier.fromHex(mockMainAccount.identifier))
-      ),
-  };
-});
-
-vi.mock("$lib/services/sns-sale.services", () => ({
-  initiateSnsSaleParticipation: vi.fn().mockResolvedValue({ success: true }),
-}));
-
 type SwapModalParams = {
   swapCommitment?: SnsSwapCommitment | undefined;
   confirmationText?: string | undefined;
@@ -67,11 +52,18 @@ type SwapModalParams = {
 describe("ParticipateSwapModal", () => {
   beforeEach(() => {
     cancelPollAccounts();
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     resetIdentity();
-    vi.mocked(initiateSnsSaleParticipation).mockClear();
     resetAccountsForTesting();
     snsTicketsStore.setNoTicket(rootCanisterIdMock);
+
+    vi.spyOn(snsServices, "getSwapAccount").mockResolvedValue(
+      AccountIdentifier.fromHex(mockMainAccount.identifier)
+    );
+
+    vi.spyOn(snsSaleServices, "initiateSnsSaleParticipation").mockResolvedValue(
+      { success: true }
+    );
   });
 
   const reload = vi.fn();

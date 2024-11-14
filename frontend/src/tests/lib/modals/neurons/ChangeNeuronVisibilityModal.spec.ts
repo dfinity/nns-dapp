@@ -54,6 +54,7 @@ describe("ChangeNeuronVisibilityModal", () => {
   };
 
   beforeEach(() => {
+    vi.restoreAllMocks();
     resetIdentity();
     neuronsStore.reset();
     toastsStore.reset();
@@ -70,10 +71,13 @@ describe("ChangeNeuronVisibilityModal", () => {
       neurons: [publicNeuron, privateNeuron],
       certified: true,
     });
+
+    startBusySpy = vi.spyOn(busyServices, "startBusy");
+    stopBusySpy = vi.spyOn(busyServices, "stopBusy");
   });
 
-  const startBusySpy = vi.spyOn(busyServices, "startBusy");
-  const stopBusySpy = vi.spyOn(busyServices, "stopBusy");
+  let startBusySpy;
+  let stopBusySpy;
 
   const renderComponent = async (neuron = mockNeuron) => {
     const { container, component } = await renderModal({

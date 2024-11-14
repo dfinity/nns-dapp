@@ -1,4 +1,5 @@
 import SplitNeuronModal from "$lib/modals/neurons/SplitNnsNeuronModal.svelte";
+import * as neuronsServices from "$lib/services/neurons.services";
 import { splitNeuron } from "$lib/services/neurons.services";
 import * as busyServices from "$lib/stores/busy.store";
 import {
@@ -13,14 +14,8 @@ import { fireEvent } from "@testing-library/dom";
 import type { RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
-vi.mock("$lib/services/neurons.services", () => {
-  return {
-    splitNeuron: vi.fn().mockResolvedValue(undefined),
-  };
-});
-
 describe("SplitNeuronModal", () => {
-  const startBusySpy = vi.spyOn(busyServices, "startBusy");
+  let startBusySpy;
   const renderSplitNeuronModal = async (
     neuron: NeuronInfo
   ): Promise<RenderResult<SvelteComponent>> => {
@@ -31,7 +26,10 @@ describe("SplitNeuronModal", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
+
+    vi.spyOn(neuronsServices, "splitNeuron").mockResolvedValue(undefined);
+    startBusySpy = vi.spyOn(busyServices, "startBusy");
   });
 
   it("should display modal", async () => {

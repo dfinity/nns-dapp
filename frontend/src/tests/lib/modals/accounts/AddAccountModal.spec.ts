@@ -1,34 +1,37 @@
 import { LedgerConnectionState } from "$lib/constants/ledger.constants";
 import AddAccountModal from "$lib/modals/accounts/AddAccountModal.svelte";
+import * as icpLedgerServicesProxy from "$lib/proxy/icp-ledger.services.proxy";
+import * as icpAccountsServices from "$lib/services/icp-accounts.services";
 import { addSubAccount } from "$lib/services/icp-accounts.services";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { MockLedgerIdentity } from "$tests/mocks/ledger.identity.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
-// This is the way to mock when we import in a destructured manner
-// and we want to mock the imported function
-vi.mock("$lib/services/icp-accounts.services", () => {
-  return {
-    addSubAccount: vi.fn().mockResolvedValue(undefined),
-  };
-});
+describe("AddAccountModal", () => {
+  const mockLedgerIdentity = new MockLedgerIdentity();
 
-vi.mock("$lib/proxy/icp-ledger.services.proxy", () => {
-  return {
-    connectToHardwareWalletProxy: vi.fn().mockImplementation(async (callback) =>
+  beforeEach(() => {
+    vi.restoreAllMocks();
+
+    vi.spyOn(icpAccountsServices, "addSubAccount").mockResolvedValue(undefined);
+    vi.spyOn(
+      icpLedgerServicesProxy,
+      "connectToHardwareWalletProxy"
+    ).mockImplementation(async (callback) =>
       callback({
         connectionState: LedgerConnectionState.CONNECTED,
-        ledgerIdentity: mockIdentity,
+        ledgerIdentity: mockLedgerIdentity,
       })
-    ),
-    registerHardwareWalletProxy: vi.fn().mockResolvedValue(undefined),
-  };
-});
+    );
+    vi.spyOn(
+      icpLedgerServicesProxy,
+      "registerHardwareWalletProxy"
+    ).mockResolvedValue(undefined);
+  });
 
-describe("AddAccountModal", () => {
   it("should display modal", () => {
     const { container } = render(AddAccountModal);
 

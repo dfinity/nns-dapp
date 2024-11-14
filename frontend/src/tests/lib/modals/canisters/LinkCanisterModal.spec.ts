@@ -1,5 +1,6 @@
 import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
+import * as canistersServices from "$lib/services/canisters.services";
 import { attachCanister } from "$lib/services/canisters.services";
 import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
@@ -8,15 +9,13 @@ import { nonNullish } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 
-vi.mock("$lib/services/canisters.services", () => {
-  return {
-    attachCanister: vi.fn().mockResolvedValue({ success: true }),
-  };
-});
-
 describe("LinkCanisterModal", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
+
+    vi.spyOn(canistersServices, "attachCanister").mockResolvedValue({
+      success: true,
+    });
   });
 
   it("should display modal", () => {
