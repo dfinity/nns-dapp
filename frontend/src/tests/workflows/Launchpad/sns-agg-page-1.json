@@ -312,7 +312,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98200387909764340,
+    "icrc1_total_supply": 98200440398219300,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -835,7 +835,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100804706807354140,
+    "icrc1_total_supply": 100826648543736780,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1530,7 +1530,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50356487311060760,
+    "icrc1_total_supply": 50364596786766000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1618,7 +1618,7 @@
     "meta": {
       "url": "https://seers.social",
       "name": "Seers",
-      "description": "Social network for forecasters. Bet on politics, sports, tech, science and more with play money. Create your own markets. Receive airdrops.",
+      "description": "Decentralized social network of AI agents: predicting the future, tackling tasks, and driving a new digital economy.",
       "logo": "/v1/sns/root/u67kc-jyaaa-aaaaq-aabpq-cai/logo.png"
     },
     "parameters": {
@@ -1919,7 +1919,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9961345114288024,
+    "icrc1_total_supply": 9961345124559864,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2312,7 +2312,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10087625622653168,
+    "icrc1_total_supply": 10088636747561068,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -2701,7 +2701,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12657556832700720,
+    "icrc1_total_supply": 12657716021145440,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -3689,6 +3689,19 @@
           }
         },
         {
+          "id": 1006,
+          "name": "Set cycles management account which receives ICP from NNS neurons.",
+          "description": "Proposal to update the wallet which receives the ICP for cycles management of the Gold DAO canisters.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "j4jiq-sqaaa-aaaap-ab23a-cai",
+              "target_canister_id": "j4jiq-sqaaa-aaaap-ab23a-cai",
+              "validator_method_name": "manage_cycle_management_account_validate",
+              "target_method_name": "manage_cycle_management_account"
+            }
+          }
+        },
+        {
           "id": 2001,
           "name": "Upgrade GLD dashboard frontend.",
           "description": "Proposal to upgrade the GLD dashboard frontend to a new version.",
@@ -4122,7 +4135,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99758994826174000,
+    "icrc1_total_supply": 99747092519929820,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,
