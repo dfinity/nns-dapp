@@ -4,6 +4,7 @@
   import { createEventDispatcher } from "svelte";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import {
+    formatMaturity,
     getStateInfo,
     neuronAvailableMaturity,
     neuronStake,
@@ -62,8 +63,8 @@
           value: neuron.stake,
           detailed: true,
         }),
-        availableMaturity: neuron.availableMaturity,
-        stakedMaturity: neuron.stakedMaturity,
+        availableMaturity: formatMaturity(neuron.availableMaturity),
+        stakedMaturity: formatMaturity(neuron.stakedMaturity),
         dissolveDelay: secondsToDuration({
           seconds: neuron.dissolveDelaySeconds,
           i18n: $i18n.time,
