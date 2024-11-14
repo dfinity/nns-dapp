@@ -81,6 +81,7 @@ describe("sns-finalization-services", () => {
       });
 
       it("should call not load finalization status in store nor call api", async () => {
+        vi.spyOn(saleApi, "queryFinalizationStatus");
         await loadSnsFinalizationStatus({ rootCanisterId });
 
         const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
@@ -117,6 +118,7 @@ describe("sns-finalization-services", () => {
       });
 
       it("should call not load finalization status in store nor call api", async () => {
+        vi.spyOn(saleApi, "queryFinalizationStatus");
         await loadSnsFinalizationStatus({ rootCanisterId });
 
         const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
