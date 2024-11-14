@@ -21,6 +21,12 @@
   const openAddMaturityModal = async () => {
     openNnsNeuronModal({ type: "dev-add-maturity", data: { neuron } });
   };
+  const openUpdateVotingPowerRefreshedModal = async () => {
+    openNnsNeuronModal({
+      type: "dev-update-voting-power-refreshed",
+      data: { neuron },
+    });
+  };
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
@@ -39,6 +45,13 @@
       on:click={openAddMaturityModal}
       class="primary"
       data-tid="add-maturity-button">Add Maturity</button
+    >
+
+    <button
+      on:click={openUpdateVotingPowerRefreshedModal}
+      class="primary"
+      data-tid="update-voting-power-refreshed-button"
+      >Update Voting Power Refreshed Timestamp</button
     >
   </div>
 </CardInfo>

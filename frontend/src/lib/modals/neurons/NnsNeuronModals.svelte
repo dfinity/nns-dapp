@@ -98,6 +98,9 @@
       <NnsAddMaturityModal {neuron} on:nnsClose={close} />
     {/if}
 
+    {#if type === "dev-update-voting-power-refreshed" && IS_TESTNET}
+    {/if}
+
     {#if type === "change-neuron-visibility"}
       <ChangeNeuronVisibilityModal
         defaultSelectedNeuron={neuron}
