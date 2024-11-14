@@ -9,7 +9,7 @@
   import Input from "$lib/components/ui/Input.svelte";
   import { secondsToDateTime } from "../../utils/date.utils";
 
-  const YEAR_2099_SECONDS = 4070908800;
+  const YEAR_2099_SECONDS = new Date(2099, 0, 0).getTime() / 1000;
 
   const toBigInt = (value: number | undefined): bigint | undefined => {
     try {
