@@ -15,6 +15,7 @@
     try {
       if (value !== undefined) return BigInt(value);
     } finally {
+      // Do nothing
     }
     return undefined;
   };
