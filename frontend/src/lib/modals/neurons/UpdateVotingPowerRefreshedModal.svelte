@@ -9,6 +9,8 @@
   import Input from "$lib/components/ui/Input.svelte";
   import { secondsToDateTime } from "../../utils/date.utils";
 
+  const YEAR_2099_SECONDS = 4070908800;
+
   const toBigInt = (value: number | undefined): bigint | undefined => {
     try {
       if (value !== undefined) return BigInt(value);
@@ -33,6 +35,9 @@
   let dateTimeValue: string = "";
 
   $: if (secondsValue >= 0) {
+    if (secondsValue > YEAR_2099_SECONDS) {
+      secondsValue = YEAR_2099_SECONDS;
+    }
     const utcDate = new Date(secondsValue * 1000);
     const localDate = new Date(
       utcDate.getTime() - utcDate.getTimezoneOffset() * 60000
