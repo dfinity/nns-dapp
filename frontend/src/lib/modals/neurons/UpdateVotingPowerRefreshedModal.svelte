@@ -1,11 +1,11 @@
 <script lang="ts">
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import { toastsError } from "$lib/stores/toasts.store";
   import { Modal, Spinner } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { updateVotingPowerRefreshedTimestamp } from "$lib/services/nns-neurons-dev.services";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { isNullish } from "@dfinity/utils";
   import Input from "$lib/components/ui/Input.svelte";
   import { secondsToDateTime } from "../../utils/date.utils";
 
