@@ -7,6 +7,45 @@ import { getAndLoadNeuron } from "./neurons.services";
 
 const u64Max = 2n ** 64n - 1n;
 
+export const updateVotingPowerRefreshedTimestamp = async ({
+  seconds,
+  neuron,
+}: {
+  seconds: bigint;
+  neuron: NeuronInfo;
+}): Promise<void> => {
+  try {
+    const identity = await getAuthenticatedIdentity();
+
+    if (isNullish(neuron.fullNeuron)) {
+      throw new Error(
+        `Full neuron is not defined for neuron ${neuron.neuronId}`
+      );
+    }
+
+    const newNeuron: Neuron = {
+      ...neuron.fullNeuron,
+      votingPowerRefreshedTimestampSeconds: seconds,
+    };
+
+    await updateNeuron({
+      neuron: newNeuron,
+      identity,
+    });
+
+    await getAndLoadNeuron(neuron.neuronId);
+
+    toastsSuccess({
+      labelKey: "neuron_detail.update_neuron_success",
+    });
+  } catch (err) {
+    toastsError({
+      labelKey: "error.update_neuron",
+      err,
+    });
+  }
+};
+
 export const unlockNeuron = async (neuron: NeuronInfo): Promise<void> => {
   try {
     const identity = await getAuthenticatedIdentity();
