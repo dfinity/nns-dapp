@@ -213,6 +213,7 @@ describe("neurons-services", () => {
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
       mockGetIdentity
     );
+    vi.spyOn(api, "queryNeurons").mockResolvedValue([]);
   });
 
   describe("stake new neuron", () => {
@@ -428,10 +429,12 @@ describe("neurons-services", () => {
   });
 
   describe("list neurons", () => {
-    const spyQueryNeurons = vi.spyOn(api, "queryNeurons");
+    let spyQueryNeurons;
 
     beforeEach(() => {
-      spyQueryNeurons.mockResolvedValue(neurons);
+      spyQueryNeurons = vi
+        .spyOn(api, "queryNeurons")
+        .mockResolvedValue(neurons);
     });
 
     it("should list neurons", async () => {
