@@ -13,6 +13,8 @@ describe("auth-utils", () => {
   beforeEach(() => {
     // restore original host
     window.location.host = originalWindowLocationHost;
+
+    vi.restoreAllMocks();
   });
 
   describe("isSignedIn", () => {
@@ -44,10 +46,11 @@ describe("auth-utils", () => {
 
     describe("with identity", () => {
       const mockAuthClient = mock<AuthClient>();
-      mockAuthClient.isAuthenticated.mockResolvedValue(true);
-      mockAuthClient.getIdentity.mockResolvedValue(mockIdentity as never);
 
       beforeEach(() => {
+        mockAuthClient.isAuthenticated.mockResolvedValue(true);
+        mockAuthClient.getIdentity.mockResolvedValue(mockIdentity as never);
+
         vi.spyOn(AuthClient, "create").mockImplementation(
           async (): Promise<AuthClient> => mockAuthClient
         );

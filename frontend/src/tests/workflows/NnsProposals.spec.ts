@@ -1,5 +1,6 @@
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
+import * as proposalsApi from "$lib/api/proposals.api";
 import { queryProposals } from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
@@ -23,26 +24,18 @@ const proposal = {
   status: ProposalStatus.Open,
 };
 
-vi.mock("$lib/api/proposals.api", () => {
-  return {
-    queryProposals: vi
-      .fn()
-      .mockImplementation(() => Promise.resolve([proposal])),
-  };
-});
-
-vi.mock("$lib/api/governance.api");
-
 describe('NnsProposals when "all proposals" selected', () => {
   const { topics: defaultIncludeTopcis, status: defaultIncludeStatus } =
     DEFAULT_PROPOSALS_FILTERS;
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     neuronsStore.reset();
     resetNeuronsApiService();
 
     actionableProposalsSegmentStore.set("all");
+
+    vi.spyOn(proposalsApi, "queryProposals").mockResolvedValue([proposal]);
   });
 
   describe("when signed in user", () => {
