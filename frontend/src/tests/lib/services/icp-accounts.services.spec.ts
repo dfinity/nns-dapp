@@ -8,6 +8,7 @@ import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
+import * as icpLedgerServicesProxy from "$lib/proxy/icp-ledger.services.proxy";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import * as authServices from "$lib/services/auth.services";
 import {
@@ -44,6 +45,7 @@ import {
   mockSubAccount,
   mockSubAccountDetails,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { MockLedgerIdentity } from "$tests/mocks/ledger.identity.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
@@ -68,24 +70,23 @@ import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
 
-vi.mock("$lib/proxy/icp-ledger.services.proxy", () => {
-  return {
-    getLedgerIdentityProxy: vi
-      .fn()
-      .mockImplementation(() => Promise.resolve(mockIdentity)),
-  };
-});
-
 vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/icp-ledger.api");
 const blockedApiPaths = ["$lib/api/nns-dapp.api", "$lib/api/icp-ledger.api"];
 
 describe("icp-accounts.services", () => {
+  const mockLedgerIdentity = new MockLedgerIdentity();
+
+  beforeEach(() => {
+    // We need to do this before blockAllCallsTo otherwise it the effect of
+    // blockAllCallsTo is removed again.
+    vi.restoreAllMocks();
+  });
+
   blockAllCallsTo(blockedApiPaths);
 
   beforeEach(() => {
     vi.spyOn(console, "error").mockReturnValue();
-    vi.clearAllMocks();
     toastsStore.reset();
     resetAccountsForTesting();
     overrideFeatureFlagsStore.reset();
@@ -93,6 +94,10 @@ describe("icp-accounts.services", () => {
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
       mockGetIdentity
     );
+    vi.spyOn(
+      icpLedgerServicesProxy,
+      "getLedgerIdentityProxy"
+    ).mockResolvedValue(mockLedgerIdentity);
   });
 
   const mockSnsAccountIcpAccountIdentifier = AccountIdentifier.fromPrincipal({
@@ -883,7 +888,7 @@ describe("icp-accounts.services", () => {
       const expectedIdentity = await getAccountIdentity(
         mockHardwareWalletAccount.identifier
       );
-      expect(expectedIdentity).toBe(mockIdentity);
+      expect(expectedIdentity).toBe(mockLedgerIdentity);
       expect(getLedgerIdentityProxy).toBeCalled();
     });
   });
@@ -908,7 +913,7 @@ describe("icp-accounts.services", () => {
       const expectedIdentity = await getAccountIdentityByPrincipal(
         mockHardwareWalletAccount.principal?.toText() as string
       );
-      expect(expectedIdentity).toBe(mockIdentity);
+      expect(expectedIdentity).toBe(mockLedgerIdentity);
       expect(getLedgerIdentityProxy).toBeCalled();
     });
 
@@ -938,7 +943,6 @@ describe("icp-accounts.services", () => {
     beforeEach(() => {
       resetAccountsForTesting();
       vi.clearAllTimers();
-      vi.clearAllMocks();
       cancelPollAccounts();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);

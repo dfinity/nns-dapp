@@ -9,12 +9,11 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 
 describe("busy-services", () => {
-  const startBusySpy = vi
-    .spyOn(busyStore, "startBusy")
-    .mockImplementation(vi.fn());
+  let startBusySpy;
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
+    startBusySpy = vi.spyOn(busyStore, "startBusy").mockImplementation(vi.fn());
   });
 
   it("call start busy without message if neuron is not controlled by hardware wallet", async () => {

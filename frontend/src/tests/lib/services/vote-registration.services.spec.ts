@@ -54,8 +54,8 @@ describe("vote-registration-services", () => {
     ...mockNeuron,
     neuronId,
   }));
-  const spyRegisterVote = vi.spyOn(governanceApi, "registerVote");
-  const spyLoadProposal = vi.spyOn(proposalsServices, "loadProposal");
+  let spyRegisterVote;
+  let spyLoadProposal;
 
   const votableProposal: ProposalInfo = {
     ...mockProposalInfo,
@@ -67,20 +67,14 @@ describe("vote-registration-services", () => {
     ],
   };
   let resolveSpyQueryProposals;
-  const spyQueryProposals = vi
-    .spyOn(api, "queryProposals")
-    .mockReturnValue(
-      new Promise((resolve) => (resolveSpyQueryProposals = resolve))
-    );
-  const spyQueryNeurons = vi
-    .spyOn(governanceApi, "queryNeurons")
-    .mockResolvedValue([...neurons]);
+  let spyQueryProposals;
+  let spyQueryNeurons;
 
   let proposal: ProposalInfo = proposalInfo();
 
   beforeEach(() => {
     // Cleanup:
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     voteRegistrationStore.reset();
     toastsStore.reset();
     proposalsStore.resetForTesting();
@@ -102,10 +96,22 @@ describe("vote-registration-services", () => {
     vi.spyOn(neuronsServices, "listNeurons").mockImplementation(() =>
       Promise.resolve()
     );
-    spyRegisterVote.mockResolvedValue(undefined);
-    spyLoadProposal.mockImplementation(async ({ setProposal }) => {
-      setProposal(proposal);
-    });
+    spyRegisterVote = vi
+      .spyOn(governanceApi, "registerVote")
+      .mockResolvedValue(undefined);
+    spyLoadProposal = vi
+      .spyOn(proposalsServices, "loadProposal")
+      .mockImplementation(async ({ setProposal }) => {
+        setProposal(proposal);
+      });
+    spyQueryProposals = vi
+      .spyOn(api, "queryProposals")
+      .mockReturnValue(
+        new Promise((resolve) => (resolveSpyQueryProposals = resolve))
+      );
+    spyQueryNeurons = vi
+      .spyOn(governanceApi, "queryNeurons")
+      .mockResolvedValue([...neurons]);
   });
 
   describe("success voting", () => {
