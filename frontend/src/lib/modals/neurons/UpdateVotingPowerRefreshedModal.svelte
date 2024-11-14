@@ -95,6 +95,7 @@
         <input
           bind:value={dateTimeValue}
           on:input={onDateTimeChange}
+          disabled={updating}
           id="date-value"
           type="datetime-local"
           name="date-value"
