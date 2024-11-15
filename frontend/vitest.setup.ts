@@ -22,9 +22,10 @@ import {
 
 // Restore all mocks original behvior before each test.
 //
-// NOTE: This only affects mocks created with vi.spyOn but will leave module
-// functions of modules mocked with vi.mock as mocked. Regardless, it will make
-// sure that each test starts with the same behavior for all mocks.
+// NOTE: This restores mocks created with vi.spyOn() to their production
+// behavior, but returns mocks created on modules with vi.mock() to mocks that
+// return undefined. Regardless, it will make sure that each test starts with
+// the same behavior for all mocks.
 beforeEach(() => {
   vi.restoreAllMocks();
 });
