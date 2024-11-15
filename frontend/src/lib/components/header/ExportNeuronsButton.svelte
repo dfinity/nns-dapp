@@ -120,7 +120,9 @@
   };
 
   // Move all to some export-neurons utils file or similar
-  const downloadCSV = async (neurons: Record<string, unknown>[]): Promise<void> => {
+  const downloadCSV = async (
+    neurons: Record<string, unknown>[]
+  ): Promise<void> => {
     const csvContent = convertToCSV(neurons);
     const blob = new Blob(["\uFEFF" + csvContent], {
       type: "text/csv;charset=utf-8;",
