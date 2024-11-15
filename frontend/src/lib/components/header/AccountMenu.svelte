@@ -1,6 +1,7 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ExportNeuronsButton from "$lib/components/header/ExportNeuronsButton.svelte";
+  import ExportTransactionsButton from "$lib/components/header/ExportTransactionsButton.svelte";
   import ManageInternetIdentityButton from "$lib/components/header/ManageInternetIdentityButton.svelte";
   import SettingsButton from "$lib/components/header/SettingsButton.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -39,6 +40,8 @@
         <SettingsButton on:nnsLink={closeMenu} />
 
         <LinkToCanisters on:nnsLink={closeMenu} />
+
+        <ExportTransactionsButton on:nnsExportTransactionsCSVTriggered={toggle} />
 
         <ExportNeuronsButton on:nnsExportNeuronsCSVTriggered={toggle} />
 

@@ -1,5 +1,4 @@
-<script lang="ts">
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+<script lang="ts"> import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import HideZeroBalancesToggle from "$lib/components/tokens/TokensTable/HideZeroBalancesToggle.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";

@@ -151,7 +151,8 @@
     "account_menu": "Open menu to access logout button",
     "main_icp_account_id": "Main ICP Account ID",
     "account_id_tooltip": "You can send ICP both to your principal ID and account ID, however some exchanges or wallets may not support transactions using a principal ID.",
-    "export_neurons": "Export Neurons Info"
+    "export_neurons": "Export Neurons",
+    "export_transactions": "Export Transactions"
   },
   "auth": {
     "login": "Sign in with Internet Identity",
