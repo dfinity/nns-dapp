@@ -1,6 +1,7 @@
 import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";
+import * as snsNeuronsServices from "$lib/services/sns-neurons.services";
 import { stakeNeuron } from "$lib/services/sns-neurons.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { page } from "$mocks/$app/stores";
@@ -16,12 +17,6 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { Principal } from "@dfinity/principal";
 import { TokenAmount } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
-
-vi.mock("$lib/services/sns-neurons.services", () => {
-  return {
-    stakeNeuron: vi.fn().mockResolvedValue({ success: true }),
-  };
-});
 
 describe("SnsStakeNeuronModal", () => {
   const ledgerCanisterId = principal(3);
@@ -59,6 +54,9 @@ describe("SnsStakeNeuronModal", () => {
       },
     });
 
+    vi.spyOn(snsNeuronsServices, "stakeNeuron").mockResolvedValue({
+      success: true,
+    });
     vi.spyOn(snsSelectedTransactionFeeStore, "subscribe").mockImplementation(
       mockSnsSelectedTransactionFeeStoreSubscribe()
     );

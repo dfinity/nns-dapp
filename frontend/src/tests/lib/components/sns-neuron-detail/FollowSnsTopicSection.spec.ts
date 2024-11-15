@@ -1,4 +1,5 @@
 import FollowSnsTopicSection from "$lib/components/sns-neuron-detail/FollowSnsTopicSection.svelte";
+import * as snsNeuronsServices from "$lib/services/sns-neurons.services";
 import { removeFollowee } from "$lib/services/sns-neurons.services";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
@@ -13,10 +14,6 @@ import type { SnsNeuron } from "@dfinity/sns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
-vi.mock("$lib/services/sns-neurons.services", () => ({
-  removeFollowee: vi.fn().mockReturnValue({ success: true }),
-}));
-
 describe("FollowSnsTopicSection", () => {
   const reload = vi.fn();
   const followee1 = createMockSnsNeuron({ id: [1, 2, 3] });
@@ -26,6 +23,12 @@ describe("FollowSnsTopicSection", () => {
     ...mockSnsNeuron,
     followees: [[nervousSystemFunctionMock.id, { followees }]],
   };
+
+  beforeEach(() => {
+    vi.spyOn(snsNeuronsServices, "removeFollowee").mockResolvedValue({
+      success: true,
+    });
+  });
 
   const renderComponent = (): RenderResult<SvelteComponent> =>
     renderSelectedSnsNeuronContext({

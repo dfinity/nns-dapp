@@ -1,6 +1,7 @@
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
+import * as neuronsServices from "$lib/services/neurons.services";
 import { topUpNeuron } from "$lib/services/neurons.services";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -16,14 +17,6 @@ import {
 import { fireEvent } from "@testing-library/dom";
 import { waitFor } from "@testing-library/svelte";
 
-vi.mock("$lib/api/nns-dapp.api");
-vi.mock("$lib/api/icp-ledger.api");
-vi.mock("$lib/services/neurons.services", () => {
-  return {
-    topUpNeuron: vi.fn().mockResolvedValue({ success: true }),
-  };
-});
-
 describe("IncreaseNeuronStakeModal", () => {
   const renderTransactionModal = () =>
     renderModal({
@@ -35,6 +28,10 @@ describe("IncreaseNeuronStakeModal", () => {
 
   beforeEach(() => {
     resetIdentity();
+
+    vi.spyOn(neuronsServices, "topUpNeuron").mockResolvedValue({
+      success: true,
+    });
   });
 
   describe("when accounts store is empty", () => {
