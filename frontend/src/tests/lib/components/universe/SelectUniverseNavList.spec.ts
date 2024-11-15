@@ -11,15 +11,17 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("SelectUniverseNavList", () => {
-  vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
-    mockProjectSubscribe([mockSnsFullProject])
-  );
-
   beforeEach(() => {
+    vi.restoreAllMocks();
+
     page.mock({
       routeId: AppPath.Accounts,
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
     });
+
+    vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+      mockProjectSubscribe([mockSnsFullProject])
+    );
   });
 
   it("should render universe cards as buttons", () => {

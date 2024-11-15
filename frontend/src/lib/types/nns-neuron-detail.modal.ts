@@ -16,7 +16,8 @@ export type NnsNeuronModalType =
   | "join-community-fund"
   | "dev-add-maturity"
   | "voting-history"
-  | "change-neuron-visibility";
+  | "change-neuron-visibility"
+  | "dev-update-voting-power-refreshed";
 export interface NnsNeuronModalData {
   neuron: NeuronInfo | undefined | null;
 }

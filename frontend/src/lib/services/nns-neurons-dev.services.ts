@@ -3,9 +3,51 @@ import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { E8s, Neuron, NeuronInfo } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
 import { getAuthenticatedIdentity } from "./auth.services";
-import { getAndLoadNeuron } from "./neurons.services";
+import { getAndLoadNeuron, listNeurons } from "./neurons.services";
 
 const u64Max = 2n ** 64n - 1n;
+
+export const updateVotingPowerRefreshedTimestamp = async ({
+  seconds,
+  neuron,
+}: {
+  seconds: bigint;
+  neuron: NeuronInfo;
+}): Promise<void> => {
+  try {
+    const identity = await getAuthenticatedIdentity();
+
+    if (isNullish(neuron.fullNeuron)) {
+      throw new Error(
+        `Full neuron is not defined for neuron ${neuron.neuronId}`
+      );
+    }
+
+    const newNeuron: Neuron = {
+      ...neuron.fullNeuron,
+      votingPowerRefreshedTimestampSeconds: seconds,
+    };
+
+    await updateNeuron({
+      neuron: newNeuron,
+      identity,
+    });
+
+    // TODO: Switch to `await getAndLoadNeuron(neuron.neuronId);`
+    // after adding the voting_power_refreshed_timestamp_seconds field
+    // to ic-js/oldListNeuronsCertifiedService.
+    await listNeurons();
+
+    toastsSuccess({
+      labelKey: "neuron_detail.update_neuron_success",
+    });
+  } catch (err) {
+    toastsError({
+      labelKey: "error.update_neuron",
+      err,
+    });
+  }
+};
 
 export const unlockNeuron = async (neuron: NeuronInfo): Promise<void> => {
   try {

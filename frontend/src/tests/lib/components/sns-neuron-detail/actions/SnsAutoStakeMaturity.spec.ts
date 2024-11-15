@@ -1,5 +1,6 @@
 import SnsAutoStakeMaturity from "$lib/components/sns-neuron-detail/actions/SnsAutoStakeMaturity.svelte";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+import * as snsNeuronsServices from "$lib/services/sns-neurons.services";
 import { toggleAutoStakeMaturity } from "$lib/services/sns-neurons.services";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -11,17 +12,14 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
-vi.mock("$lib/services/sns-neurons.services", () => {
-  return {
-    toggleAutoStakeMaturity: vi.fn().mockResolvedValue({ success: true }),
-  };
-});
-
 describe("SnsAutoStakeMaturity", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     toastsStore.reset();
     resetIdentity();
+    vi.spyOn(snsNeuronsServices, "toggleAutoStakeMaturity").mockResolvedValue({
+      success: true,
+    });
     vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
       mockTokenStore
     );

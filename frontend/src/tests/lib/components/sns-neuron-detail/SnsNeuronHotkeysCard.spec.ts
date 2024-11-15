@@ -1,5 +1,6 @@
 import SnsNeuronHotkeysCard from "$lib/components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import * as snsNeuronsServices from "$lib/services/sns-neurons.services";
 import { removeHotkey } from "$lib/services/sns-neurons.services";
 import { enumValues } from "$lib/utils/enum.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -12,12 +13,6 @@ import {
 import { Principal } from "@dfinity/principal";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/svelte";
-
-vi.mock("$lib/services/sns-neurons.services", () => {
-  return {
-    removeHotkey: vi.fn().mockResolvedValue({ success: true }),
-  };
-});
 
 describe("SnsNeuronHotkeysCard", () => {
   const addHotkeyPermissions = (key) => ({
@@ -66,8 +61,11 @@ describe("SnsNeuronHotkeysCard", () => {
     });
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     resetIdentity();
+    vi.spyOn(snsNeuronsServices, "removeHotkey").mockResolvedValue({
+      success: true,
+    });
   });
 
   it("renders hotkeys title", () => {

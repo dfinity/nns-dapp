@@ -28,6 +28,7 @@ export const mockFullNeuron: Neuron = {
   dissolveState: undefined,
   followees: [],
   visibility: undefined,
+  votingPowerRefreshedTimestampSeconds: 0n,
 };
 
 export const createMockFullNeuron = (id: number | bigint) => {

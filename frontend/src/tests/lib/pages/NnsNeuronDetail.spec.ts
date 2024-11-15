@@ -2,6 +2,7 @@ import * as governanceApi from "$lib/api/governance.api";
 import * as icpLedgerApi from "$lib/api/icp-ledger.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
+import * as knownNeuronsServices from "$lib/services/known-neurons.services";
 import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
@@ -13,16 +14,15 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
 
-// Used when NeuronFollowingCard is mounted
-vi.mock("$lib/services/known-neurons.services", () => {
-  return {
-    listKnownNeurons: vi.fn().mockResolvedValue(undefined),
-  };
-});
-
 vi.mock("$lib/api/governance.api");
 
 describe("NeuronDetail", () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  // fakeGovernanceApi needs to be installed after restoreAllMocks, otherwise
+  // its mocks will be restored.
   fakeGovernanceApi.install();
 
   const neuronId = 314n;
@@ -30,7 +30,7 @@ describe("NeuronDetail", () => {
   const latestRewardEventTimestamp = Math.floor(
     new Date("1992-05-22T21:00:00").getTime() / 1000
   );
-  const spyQueryAccountBalance = vi.spyOn(icpLedgerApi, "queryAccountBalance");
+  let spyQueryAccountBalance;
 
   const renderComponent = async (neuronId: string) => {
     const { container } = render(NnsNeuronDetail, {
@@ -56,7 +56,15 @@ describe("NeuronDetail", () => {
       rounds_since_last_distribution: [3n] as [bigint],
       actual_timestamp_seconds: BigInt(latestRewardEventTimestamp),
     });
-    spyQueryAccountBalance.mockResolvedValue(neuronStake);
+
+    // Used when NeuronFollowingCard is mounted
+    vi.spyOn(knownNeuronsServices, "listKnownNeurons").mockResolvedValue(
+      undefined
+    );
+
+    spyQueryAccountBalance = vi
+      .spyOn(icpLedgerApi, "queryAccountBalance")
+      .mockResolvedValue(neuronStake);
   });
 
   it("renders new sections", async () => {

@@ -1,4 +1,5 @@
 import SnsStakeMaturityModal from "$lib/modals/sns/neurons/SnsStakeMaturityModal.svelte";
+import * as snsNeuronsServices from "$lib/services/sns-neurons.services";
 import { stakeMaturity } from "$lib/services/sns-neurons.services";
 import { formattedMaturity } from "$lib/utils/sns-neuron.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -8,14 +9,14 @@ import { selectPercentage } from "$tests/utils/neurons-modal.test-utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
-vi.mock("$lib/services/sns-neurons.services", () => {
-  return {
-    stakeMaturity: vi.fn().mockResolvedValue({ success: true }),
-  };
-});
-
 describe("SnsStakeMaturityModal", () => {
   const reloadNeuron = vi.fn();
+
+  beforeEach(() => {
+    vi.spyOn(snsNeuronsServices, "stakeMaturity").mockResolvedValue({
+      success: true,
+    });
+  });
 
   const renderSnsStakeMaturityModal = async (): Promise<
     RenderResult<SvelteComponent>

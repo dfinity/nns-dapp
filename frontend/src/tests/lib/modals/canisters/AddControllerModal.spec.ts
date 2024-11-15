@@ -1,14 +1,9 @@
+import * as canistersServices from "$lib/services/canisters.services";
 import { addController } from "$lib/services/canisters.services";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import AddControllerModal from "./AddControllerModalTest.svelte";
-
-vi.mock("$lib/services/canisters.services", () => {
-  return {
-    addController: vi.fn().mockResolvedValue({ success: true }),
-  };
-});
 
 describe("AddControllerModal", () => {
   const reloadMock = vi.fn();
@@ -23,7 +18,11 @@ describe("AddControllerModal", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
+
+    vi.spyOn(canistersServices, "addController").mockResolvedValue({
+      success: true,
+    });
   });
 
   it("should display modal", async () => {

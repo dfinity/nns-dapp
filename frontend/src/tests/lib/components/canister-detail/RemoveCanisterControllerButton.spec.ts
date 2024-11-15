@@ -1,14 +1,9 @@
+import * as canisterServices from "$lib/services/canisters.services";
 import { removeController } from "$lib/services/canisters.services";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import RemoveCanisterControllerButton from "./RemoveCanisterControllerButtonTest.svelte";
-
-vi.mock("$lib/services/canisters.services", () => {
-  return {
-    removeController: vi.fn().mockResolvedValue({ success: true }),
-  };
-});
 
 describe("RemoveCanisterControllerButton", () => {
   const controller = "ryjl3-tyaaa-aaaaa-aaaba-cai";
@@ -16,7 +11,11 @@ describe("RemoveCanisterControllerButton", () => {
   const props = { controller, reloadDetails: reloadDetailsMock };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
+
+    vi.spyOn(canisterServices, "removeController").mockResolvedValue({
+      success: true,
+    });
   });
 
   it("renders a button", () => {

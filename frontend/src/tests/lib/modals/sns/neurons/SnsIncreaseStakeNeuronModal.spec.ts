@@ -1,5 +1,7 @@
 import { AppPath } from "$lib/constants/routes.constants";
 import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
+import * as snsAccountsServices from "$lib/services/sns-accounts.services";
+import * as snsNeuronsServices from "$lib/services/sns-neurons.services";
 import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { page } from "$mocks/$app/stores";
@@ -21,25 +23,6 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { ICPToken } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-
-vi.mock("$lib/services/sns-neurons.services", () => {
-  return {
-    increaseStakeNeuron: vi.fn().mockResolvedValue({ success: true }),
-  };
-});
-
-vi.mock("$lib/services/sns-accounts.services", () => {
-  return {
-    loadSnsAccounts: vi.fn().mockResolvedValue(undefined),
-  };
-});
-
-vi.mock("$lib/stores/busy.store", () => {
-  return {
-    startBusy: vi.fn(),
-    stopBusy: vi.fn(),
-  };
-});
 
 describe("SnsIncreaseStakeNeuronModal", () => {
   const reloadNeuron = vi.fn();
@@ -77,6 +60,13 @@ describe("SnsIncreaseStakeNeuronModal", () => {
       data: { universe: rootCanisterId.toText() },
     });
     setSnsProjects([snsProjectParams]);
+
+    vi.spyOn(snsNeuronsServices, "increaseStakeNeuron").mockResolvedValue({
+      success: true,
+    });
+    vi.spyOn(snsAccountsServices, "loadSnsAccounts").mockResolvedValue(
+      undefined
+    );
   });
 
   describe("accounts and params are loaded", () => {

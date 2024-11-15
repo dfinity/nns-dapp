@@ -6,6 +6,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
+import * as neuronsServices from "$lib/services/neurons.services";
 import { disburse } from "$lib/services/neurons.services";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -32,19 +33,14 @@ import type { SvelteComponent } from "svelte";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
 
-vi.mock("$lib/api/nns-dapp.api");
-vi.mock("$lib/api/icp-ledger.api");
-vi.mock("$lib/services/neurons.services", () => {
-  return {
-    disburse: vi.fn().mockResolvedValue({ success: true }),
-    getNeuronFromStore: vi.fn(),
-  };
-});
-
 describe("DisburseNnsNeuronModal", () => {
   beforeEach(() => {
+    vi.restoreAllMocks();
     resetIdentity();
     cancelPollAccounts();
+
+    vi.spyOn(neuronsServices, "disburse").mockResolvedValue({ success: true });
+    vi.spyOn(neuronsServices, "getNeuronFromStore").mockReturnValue(undefined);
   });
 
   const renderDisburseModal = async (

@@ -4,6 +4,7 @@ import {
 } from "$lib/constants/canisters.constants";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import CreateCanisterModal from "$lib/modals/canisters/CreateCanisterModal.svelte";
+import * as canistersServices from "$lib/services/canisters.services";
 import {
   createCanister,
   getIcpToCyclesExchangeRate,
@@ -24,23 +25,20 @@ import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 
-vi.mock("$lib/services/canisters.services", () => {
-  return {
-    getIcpToCyclesExchangeRate: vi.fn().mockResolvedValue(10_000n),
-    createCanister: vi
-      .fn()
-      .mockImplementation(() => Promise.resolve(mockCanister.canister_id)),
-  };
-});
-
 describe("CreateCanisterModal", () => {
-  vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
-    mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
-  );
-
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     toastsStore.reset();
+
+    vi.spyOn(canistersServices, "getIcpToCyclesExchangeRate").mockResolvedValue(
+      10_000n
+    );
+    vi.spyOn(canistersServices, "createCanister").mockImplementation(
+      async () => mockCanister.canister_id
+    );
+    vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
+    );
   });
 
   it("should display modal", () => {

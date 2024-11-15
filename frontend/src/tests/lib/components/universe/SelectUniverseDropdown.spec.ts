@@ -22,16 +22,8 @@ import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("SelectUniverseDropdown", () => {
-  vi.spyOn(snsProjectSelectedStore, "subscribe").mockImplementation(
-    mockStoreSubscribe(mockSnsFullProject)
-  );
-
-  vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
-    mockProjectSubscribe([mockSnsFullProject])
-  );
-
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     icrcAccountsStore.reset();
     resetSnsProjects();
     resetIdentity();
@@ -39,6 +31,14 @@ describe("SelectUniverseDropdown", () => {
     page.mock({
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
     });
+
+    vi.spyOn(snsProjectSelectedStore, "subscribe").mockImplementation(
+      mockStoreSubscribe(mockSnsFullProject)
+    );
+
+    vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+      mockProjectSubscribe([mockSnsFullProject])
+    );
   });
 
   const renderComponent = () => {

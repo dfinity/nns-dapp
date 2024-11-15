@@ -1,4 +1,5 @@
 import NewSnsFolloweeModal from "$lib/modals/sns/neurons/NewSnsFolloweeModal.svelte";
+import * as snsNeuronsServices from "$lib/services/sns-neurons.services";
 import { addFollowee } from "$lib/services/sns-neurons.services";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
@@ -8,15 +9,16 @@ import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
-vi.mock("$lib/services/sns-neurons.services", () => {
-  return {
-    addFollowee: vi.fn().mockResolvedValue({ success: true }),
-  };
-});
-
 describe("NewSnsFolloweeModal", () => {
   const reload = vi.fn();
   const functionId = 4n;
+
+  beforeEach(() => {
+    vi.restoreAllMocks();
+    vi.spyOn(snsNeuronsServices, "addFollowee").mockResolvedValue({
+      success: true,
+    });
+  });
 
   const renderNewSnsFolloweeModal = (): RenderResult<SvelteComponent> =>
     renderSelectedSnsNeuronContext({
