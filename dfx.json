@@ -414,7 +414,8 @@
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
-          "ENABLE_NEURON_VISIBILITY": true
+          "ENABLE_NEURON_VISIBILITY": true,
+          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION": false
         }
       }
     },
