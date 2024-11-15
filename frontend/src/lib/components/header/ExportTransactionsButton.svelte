@@ -57,7 +57,6 @@
       const transactions = await fetchTransactionsServiceLayer({
         accountId: accountIdentifier,
       });
-      console.log(transactions);
       if (!transactions || transactions.length === 0) {
         console.log("No transactions found");
         return;
@@ -110,7 +109,6 @@
       });
       csvRows.push(values.join(","));
     }
-    console.log(csvRows);
     return csvRows.join("\n");
   };
   // Move all to some export-neurons utils file or similar
