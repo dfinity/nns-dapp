@@ -7,7 +7,7 @@
   import { updateVotingPowerRefreshedTimestamp } from "$lib/services/nns-neurons-dev.services";
   import { isNullish } from "@dfinity/utils";
   import Input from "$lib/components/ui/Input.svelte";
-  import { secondsToDateTime } from "../../utils/date.utils";
+  import { secondsToDateTime } from "$lib/utils/date.utils";
 
   const YEAR_2099_SECONDS = new Date(2099, 0, 0).getTime() / 1000;
 
@@ -46,13 +46,13 @@
     dateTimeValue = localDate.toISOString().slice(0, 16);
   }
 
-  function onDateTimeChange(event: Event) {
+  const onDateTimeChange = (event: Event) => {
     const value = (event.target as HTMLInputElement).value;
     if (value) {
       const localDate = new Date(value);
       secondsValue = Math.floor(localDate.getTime() / 1000);
     }
-  }
+  };
 
   let updating = false;
 
