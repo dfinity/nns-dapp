@@ -97,7 +97,7 @@
   };
 
   // Move all to some export-neurons utils file or similar
-  const convertToCSV = (data: Record<string, any>[]) => {
+  const convertToCSV = (data: Record<string, unknown>[]) => {
     // Get headers from the first object
     const headers = Object.keys(data[0]);
 
@@ -120,7 +120,7 @@
   };
 
   // Move all to some export-neurons utils file or similar
-  const downloadCSV = async (neurons: Record<string, any>[]): Promise<void> => {
+  const downloadCSV = async (neurons: Record<string, unknown>[]): Promise<void> => {
     const csvContent = convertToCSV(neurons);
     const blob = new Blob(["\uFEFF" + csvContent], {
       type: "text/csv;charset=utf-8;",
