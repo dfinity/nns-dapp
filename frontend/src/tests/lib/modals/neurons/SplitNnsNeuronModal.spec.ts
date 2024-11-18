@@ -26,8 +26,6 @@ describe("SplitNeuronModal", () => {
   };
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     vi.spyOn(neuronsServices, "splitNeuron").mockResolvedValue(undefined);
     startBusySpy = vi.spyOn(busyServices, "startBusy");
   });

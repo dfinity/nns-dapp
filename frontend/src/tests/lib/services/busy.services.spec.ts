@@ -12,7 +12,6 @@ describe("busy-services", () => {
   let startBusySpy;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     startBusySpy = vi.spyOn(busyStore, "startBusy").mockImplementation(vi.fn());
   });
 

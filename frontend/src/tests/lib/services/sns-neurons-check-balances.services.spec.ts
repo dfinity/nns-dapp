@@ -61,7 +61,6 @@ describe("sns-neurons-check-balances-services", () => {
   };
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     resetIdentity();
     snsNeuronsStore.reset();
     checkedNeuronSubaccountsStore.reset();

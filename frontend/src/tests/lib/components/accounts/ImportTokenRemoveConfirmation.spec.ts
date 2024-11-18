@@ -38,10 +38,6 @@ describe("ImportTokenRemoveConfirmation", () => {
     );
   };
 
-  beforeEach(() => {
-    vi.restoreAllMocks();
-  });
-
   it("should render token logo", async () => {
     const po = renderComponent({
       tokenToRemove: { universe: mockUniverse },

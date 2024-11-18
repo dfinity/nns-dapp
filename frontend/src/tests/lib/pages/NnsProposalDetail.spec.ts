@@ -56,7 +56,6 @@ describe("NnsProposalDetail", () => {
 
   beforeEach(() => {
     resetIdentity();
-    vi.restoreAllMocks();
     resetNeuronsApiService();
     toastsStore.reset();
     neuronsStore.reset();

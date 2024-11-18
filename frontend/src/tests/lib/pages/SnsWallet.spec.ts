@@ -76,7 +76,6 @@ describe("SnsWallet", () => {
   beforeEach(() => {
     vi.useRealTimers();
     resetIdentity();
-    vi.restoreAllMocks();
     icrcAccountsStore.reset();
     tokensStore.reset();
     resetSnsProjects();

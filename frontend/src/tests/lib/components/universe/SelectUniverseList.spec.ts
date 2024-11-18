@@ -35,8 +35,6 @@ describe("SelectUniverseList", () => {
   };
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     page.mock({
       routeId: AppPath.Accounts,
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },

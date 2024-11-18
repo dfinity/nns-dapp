@@ -11,7 +11,6 @@ describe("AddSnsHotkeyModal", () => {
   const reload = vi.fn();
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     vi.spyOn(snsNeuronsServices, "addHotkey").mockResolvedValue({
       success: true,
     });

@@ -33,7 +33,6 @@ import { get } from "svelte/store";
 
 describe("actionable-sns-proposals.services", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
     failedActionableSnsesStore.resetForTesting();
     snsNeuronsStore.reset();
   });

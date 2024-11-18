@@ -128,8 +128,6 @@ describe("sns-api", () => {
     get(snsTicketsStore)[rootCanisterId.toText()];
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     // Make sure there are no open polling timers
     cancelPollGetOpenTicket();
 

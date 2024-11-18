@@ -101,7 +101,6 @@ describe("sns-vote-registration-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    vi.restoreAllMocks();
     toastsStore.reset();
 
     spyQuerySnsProposals = vi

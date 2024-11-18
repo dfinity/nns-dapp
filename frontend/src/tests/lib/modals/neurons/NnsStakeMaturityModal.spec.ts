@@ -15,8 +15,6 @@ import type { SvelteComponent } from "svelte";
 
 describe("NnsStakeMaturityModal", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     vi.spyOn(neuronsServices, "stakeMaturity").mockResolvedValue({
       success: true,
     });

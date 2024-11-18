@@ -10,7 +10,6 @@ import { mock } from "vitest-mock-extended";
 describe("sns-wrapper api", () => {
   beforeEach(() => {
     clearWrapperCache();
-    vi.restoreAllMocks();
     resetSnsProjects();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });

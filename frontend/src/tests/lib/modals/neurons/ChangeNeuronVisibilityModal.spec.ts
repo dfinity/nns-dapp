@@ -54,7 +54,6 @@ describe("ChangeNeuronVisibilityModal", () => {
   };
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     resetIdentity();
     neuronsStore.reset();
     toastsStore.reset();

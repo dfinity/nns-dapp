@@ -72,7 +72,6 @@ describe("VotingCard", () => {
   };
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     voteRegistrationStore.reset();
 
     neuronsStore.setNeurons({ neurons: [], certified: true });

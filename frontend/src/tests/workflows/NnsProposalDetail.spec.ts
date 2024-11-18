@@ -46,7 +46,6 @@ let resolveUncertifiedPromise;
 
 describe("Proposal detail page when not logged in user", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
     neuronsStore.reset();
     resetNeuronsApiService();
     resolveCertifiedPromise = undefined;

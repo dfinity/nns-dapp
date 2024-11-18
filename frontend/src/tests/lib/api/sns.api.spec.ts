@@ -73,8 +73,6 @@ describe("sns-api", () => {
   const increaseStakeNeuronSpy = vi.fn();
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     notifyParticipationSpy.mockResolvedValue(undefined);
     getUserCommitmentSpy.mockResolvedValue(mockUserCommitment);
     getDerivedStateSpy.mockResolvedValue(derivedState);

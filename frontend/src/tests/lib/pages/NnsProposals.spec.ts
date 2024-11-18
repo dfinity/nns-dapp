@@ -49,7 +49,6 @@ describe("NnsProposals", () => {
   };
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     proposalsStore.resetForTesting();
     resetNeuronsApiService();
     neuronsStore.reset();

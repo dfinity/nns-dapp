@@ -52,7 +52,6 @@ type SwapModalParams = {
 describe("ParticipateSwapModal", () => {
   beforeEach(() => {
     cancelPollAccounts();
-    vi.restoreAllMocks();
     resetIdentity();
     resetAccountsForTesting();
     snsTicketsStore.setNoTicket(rootCanisterIdMock);
