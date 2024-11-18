@@ -206,15 +206,14 @@ describe("daysToSeconds", () => {
 });
 
 describe("getDateInTheFutureFromDelayedSeconds", () => {
-  const mockNow = 1700000000000; // Nov 14, 2023
-
   beforeEach(() => {
+    const mockNow = 1700000000000; // Nov 14, 2023
     vi.spyOn(Date, "now").mockImplementation(() => mockNow);
   });
 
   it("should return correct future date for zero delay", () => {
     const result = getFutureDateFromDelayInSeconds(BigInt(0));
-    expect(result).toBe("Nov 14, 2023"); // Based on mockNow
+    expect(result).toBe("Nov 14, 2023");
   });
 
   it("should return correct future date for one day delay", () => {

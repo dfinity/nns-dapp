@@ -122,3 +122,6 @@ export const downloadCSV = async ({
     throw new Error("Unexpected error during CSV download");
   }
 };
+
+// For testing purposes
+downloadCSV.convertToCSV = convertToCSV;
