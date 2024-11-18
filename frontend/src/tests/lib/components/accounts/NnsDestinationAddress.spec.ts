@@ -6,7 +6,6 @@ import {
 import { NnsDestinationAddressPo } from "$tests/page-objects/NnsDestinationAddress.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
 import { render } from "@testing-library/svelte";
 import type { Mock } from "vitest";
 
@@ -28,7 +27,6 @@ describe("NnsDestinationAddress", () => {
   let onAccountSelectedSpy: Mock;
 
   beforeEach(() => {
-    allowLoggingInOneTestForDebugging();
     vi.restoreAllMocks();
 
     setAccountsForTesting({
