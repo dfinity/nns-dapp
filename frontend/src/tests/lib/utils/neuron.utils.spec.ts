@@ -4,6 +4,7 @@ import {
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_HALF_YEAR,
   SECONDS_IN_HOUR,
+  SECONDS_IN_MONTH,
   SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
@@ -60,10 +61,13 @@ import {
   neuronAge,
   neuronAvailableMaturity,
   neuronCanBeSplit,
+  neuronLosingRewards,
+  neuronLostAllRewards,
   neuronStake,
   neuronStakedMaturity,
   neuronVotingPower,
   neuronsVotingPower,
+  shouldDisplayRewardLossNotification,
   sortNeuronsByStake,
   topicsToFollow,
   userAuthorizedNeuron,
@@ -3190,6 +3194,123 @@ describe("neuron-utils", () => {
         i18n: en,
       });
       expect(result.stake).toBeUndefined();
+    });
+  });
+
+  describe("Neuron voting power refreshed utils", () => {
+    const neuronWithRefreshedTimestamp = (timestamp: number) => ({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        votingPowerRefreshedTimestampSeconds: BigInt(timestamp),
+      },
+    });
+    const startLoosingRewardsTimestamp = nowInSeconds() - SECONDS_IN_HALF_YEAR;
+    const recentlyRefreshedTimestamp = nowInSeconds() - SECONDS_IN_DAY;
+    const activeNeuronRefreshedTimestamp =
+      startLoosingRewardsTimestamp + 30 * SECONDS_IN_DAY + 1;
+    const notifiedNeuronRefreshedTimestamp = startLoosingRewardsTimestamp + 1;
+    const loosingRewardsRefreshedTimestamp = startLoosingRewardsTimestamp;
+    const lostRewardsRefreshedTimestamp =
+      startLoosingRewardsTimestamp - SECONDS_IN_MONTH;
+
+    describe("neuronLostAllRewards", () => {
+      it("should return true", () => {
+        expect(
+          neuronLostAllRewards(
+            neuronWithRefreshedTimestamp(lostRewardsRefreshedTimestamp)
+          )
+        ).toBe(true);
+      });
+
+      it("should return false", () => {
+        expect(
+          neuronLostAllRewards(
+            neuronWithRefreshedTimestamp(recentlyRefreshedTimestamp)
+          )
+        ).toBe(false);
+        expect(
+          neuronLostAllRewards(
+            neuronWithRefreshedTimestamp(activeNeuronRefreshedTimestamp)
+          )
+        ).toBe(false);
+        expect(
+          neuronLostAllRewards(
+            neuronWithRefreshedTimestamp(notifiedNeuronRefreshedTimestamp)
+          )
+        ).toBe(false);
+        expect(
+          neuronLostAllRewards(
+            neuronWithRefreshedTimestamp(loosingRewardsRefreshedTimestamp)
+          )
+        ).toBe(false);
+      });
+    });
+
+    describe("neuronLosingRewards", () => {
+      it("should return true", () => {
+        expect(
+          neuronLosingRewards(
+            neuronWithRefreshedTimestamp(loosingRewardsRefreshedTimestamp)
+          )
+        ).toBe(true);
+      });
+
+      it("should return false", () => {
+        expect(
+          neuronLosingRewards(
+            neuronWithRefreshedTimestamp(recentlyRefreshedTimestamp)
+          )
+        ).toBe(false);
+        expect(
+          neuronLosingRewards(
+            neuronWithRefreshedTimestamp(activeNeuronRefreshedTimestamp)
+          )
+        ).toBe(false);
+        expect(
+          neuronLosingRewards(
+            neuronWithRefreshedTimestamp(notifiedNeuronRefreshedTimestamp)
+          )
+        ).toBe(false);
+        expect(
+          neuronLosingRewards(
+            neuronWithRefreshedTimestamp(lostRewardsRefreshedTimestamp)
+          )
+        ).toBe(false);
+      });
+    });
+
+    describe("shouldDisplayRewardLossNotification", () => {
+      it("should return true", () => {
+        expect(
+          shouldDisplayRewardLossNotification(
+            neuronWithRefreshedTimestamp(notifiedNeuronRefreshedTimestamp)
+          )
+        ).toBe(true);
+        expect(
+          shouldDisplayRewardLossNotification(
+            neuronWithRefreshedTimestamp(loosingRewardsRefreshedTimestamp)
+          )
+        ).toBe(true);
+        expect(
+          shouldDisplayRewardLossNotification(
+            neuronWithRefreshedTimestamp(lostRewardsRefreshedTimestamp)
+          )
+        ).toBe(true);
+      });
+
+      it("should return false", () => {
+        expect(
+          shouldDisplayRewardLossNotification(
+            neuronWithRefreshedTimestamp(activeNeuronRefreshedTimestamp)
+          )
+        ).toBe(false);
+        expect(
+          shouldDisplayRewardLossNotification(
+            neuronWithRefreshedTimestamp(recentlyRefreshedTimestamp)
+          )
+        ).toBe(false);
+      });
     });
   });
 });
