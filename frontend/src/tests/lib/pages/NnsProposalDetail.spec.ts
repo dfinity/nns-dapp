@@ -5,7 +5,6 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import NnsProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
-import { neuronsStore } from "$lib/stores/neurons.store";
 import { page } from "$mocks/$app/stores";
 import {
   mockIdentity,

@@ -7,7 +7,6 @@ import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import NnsProposals from "$lib/pages/NnsProposals.svelte";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
-import { neuronsStore } from "$lib/stores/neurons.store";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
