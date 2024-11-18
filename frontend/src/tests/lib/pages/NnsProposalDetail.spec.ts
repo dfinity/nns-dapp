@@ -58,7 +58,6 @@ describe("NnsProposalDetail", () => {
     resetIdentity();
     resetNeuronsApiService();
     toastsStore.reset();
-    neuronsStore.reset();
     vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue(testNeurons);
 
     actionableProposalsSegmentStore.set("all");

@@ -49,7 +49,6 @@ describe("MergeNeuronsModal", () => {
     );
     vi.clearAllMocks();
     resetAccountsForTesting();
-    neuronsStore.reset();
     resetNeuronsApiService();
     toastsStore.reset();
   });

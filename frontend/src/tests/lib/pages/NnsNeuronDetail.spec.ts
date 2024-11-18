@@ -41,7 +41,6 @@ describe("NeuronDetail", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resetIdentity();
-    neuronsStore.reset();
     voteRegistrationStore.reset();
     checkedNeuronSubaccountsStore.reset();
     fakeGovernanceApi.addNeuronWith({ neuronId, stake: neuronStake });

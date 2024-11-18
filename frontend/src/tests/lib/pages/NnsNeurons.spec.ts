@@ -32,7 +32,6 @@ describe("NnsNeurons", () => {
   beforeEach(() => {
     vi.resetAllMocks();
     resetNeuronsApiService();
-    neuronsStore.reset();
     overrideFeatureFlagsStore.reset();
   });
 

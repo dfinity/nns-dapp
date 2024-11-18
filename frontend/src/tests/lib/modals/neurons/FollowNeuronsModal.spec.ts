@@ -29,7 +29,6 @@ describe("FollowNeuronsModal", () => {
     });
 
   beforeEach(() => {
-    neuronsStore.reset();
     resetIdentity();
     vi.spyOn(governanceApi, "queryKnownNeurons").mockResolvedValue([]);
     fillNeuronStore();

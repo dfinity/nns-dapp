@@ -29,7 +29,6 @@ describe('NnsProposals when "all proposals" selected', () => {
     DEFAULT_PROPOSALS_FILTERS;
 
   beforeEach(() => {
-    neuronsStore.reset();
     resetNeuronsApiService();
 
     actionableProposalsSegmentStore.set("all");

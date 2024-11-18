@@ -63,7 +63,6 @@ describe("NnsNeuronPageHeader", () => {
   };
 
   beforeEach(() => {
-    neuronsStore.reset();
     neuronsTableOrderStore.reset();
     neuronsStore.setNeurons({ neurons: testNeurons, certified: true });
   });

@@ -9,8 +9,6 @@ import type { NeuronInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
 
 describe("neurons-store", () => {
-  beforeEach(() => neuronsStore.reset());
-
   describe("neuronsStore", () => {
     it("should set neurons", () => {
       const neurons: NeuronInfo[] = [

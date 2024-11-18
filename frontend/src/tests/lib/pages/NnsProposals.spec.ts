@@ -51,7 +51,6 @@ describe("NnsProposals", () => {
   beforeEach(() => {
     proposalsStore.resetForTesting();
     resetNeuronsApiService();
-    neuronsStore.reset();
     proposalsFiltersStore.reset();
     actionableNnsProposalsStore.reset();
     actionableProposalsSegmentStore.resetForTesting();
