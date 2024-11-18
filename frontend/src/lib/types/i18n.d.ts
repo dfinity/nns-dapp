@@ -162,7 +162,10 @@ interface I18nHeader {
 }
 
 interface I18nExport_error {
+  csv_generation: string;
+  file_system_access: string;
   neurons: string;
+  no_neurons: string;
 }
 
 interface I18nAuth {

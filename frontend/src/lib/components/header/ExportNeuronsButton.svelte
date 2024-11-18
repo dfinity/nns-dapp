@@ -13,7 +13,11 @@
   import { ICPToken, secondsToDuration, TokenAmountV2 } from "@dfinity/utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { NeuronState, type NeuronInfo } from "@dfinity/nns";
-  import { downloadCSV } from "$lib/utils/export-to-csv.utils";
+  import {
+    CSVGenerationError,
+    downloadCSV,
+    FileSystemAccessError,
+  } from "$lib/utils/export-to-csv.utils";
   import { toastsError } from "$lib/stores/toasts.store";
   import {
     getFutureDateFromDelayInSeconds,
@@ -34,15 +38,33 @@
     try {
       const humanFriendlyContent = neurons.map(neuronToHumanReadableFormat);
 
+      if (!humanFriendlyContent.length) {
+        toastsError({
+          labelKey: "export_error.no_neurons",
+        });
+        return;
+      }
+
       await downloadCSV({
         entity: humanFriendlyContent,
         fileName: "neurons",
       });
     } catch (error) {
       console.error("Error exporting neurons:", error);
-      toastsError({
-        labelKey: "export_error.neurons",
-      });
+
+      if (error instanceof FileSystemAccessError) {
+        toastsError({
+          labelKey: "export_error.file_system_access",
+        });
+      } else if (error instanceof CSVGenerationError) {
+        toastsError({
+          labelKey: "export_error.csv_generation",
+        });
+      } else {
+        toastsError({
+          labelKey: "export_error.neurons",
+        });
+      }
     } finally {
       dispatcher("nnsExportNeuronsCSVTriggered");
     }
@@ -64,7 +86,6 @@
     const creationDate = secondsToDate(Number(neuron.createdTimestampSeconds));
 
     // what about maturity in the stake? should I add or show it the same as the Neurons table?
-    // state: neuron.state,
     // do I need transalations for this?
     return {
       ["Neuron Id"]: neuronId,

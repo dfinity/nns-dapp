@@ -17,6 +17,20 @@ const convertToCSV = (data: Record<string, unknown>[]) => {
   return csvRows.join("\n");
 };
 
+export class FileSystemAccessError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "FileSystemAccessError";
+  }
+}
+
+export class CSVGenerationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "CSVGenerationError";
+  }
+}
+
 /**
  * Downloads data as a CSV file using either the File System Access API or fallback method.
  *
@@ -50,34 +64,61 @@ export const downloadCSV = async ({
   fileName?: string;
   description?: string;
 }): Promise<void> => {
-  const csvContent = convertToCSV(entity);
-  const blob = new Blob(["\uFEFF" + csvContent], {
-    type: "text/csv;charset=utf-8;",
-  });
+  try {
+    if (!entity?.length) {
+      throw new CSVGenerationError("No data provided for CSV generation");
+    }
 
-  // Use native file system API if available
-  if (window.showSaveFilePicker) {
-    const handle = await window.showSaveFilePicker({
-      suggestedName: `${fileName}.csv`,
-      types: [
-        {
-          description,
-          accept: { "text/csv": [".csv"] },
-        },
-      ],
+    const csvContent = convertToCSV(entity);
+    const blob = new Blob(["\uFEFF" + csvContent], {
+      type: "text/csv;charset=utf-8;",
     });
-    const writable = await handle.createWritable();
-    await writable.write(blob);
-    await writable.close();
-  } else {
-    // Fallback for browsers without File System API
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "neurons.csv";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+
+    if (window.showSaveFilePicker) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: `${fileName}.csv`,
+          types: [
+            {
+              description,
+              accept: { "text/csv": [".csv"] },
+            },
+          ],
+        });
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+      } catch (error) {
+        // User cancelled the save dialog - not an error
+        if (error instanceof Error && error.name === "AbortError") return;
+
+        throw new FileSystemAccessError(
+          "Failed to save file using File System Access API"
+        );
+      }
+    } else {
+      try {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "neurons.csv";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        throw new FileSystemAccessError(
+          "Failed to save file using fallback method"
+        );
+      }
+    }
+  } catch (error) {
+    if (
+      error instanceof FileSystemAccessError ||
+      error instanceof CSVGenerationError
+    ) {
+      throw error;
+    }
+    throw new Error("Unexpected error during CSV download");
   }
 };
