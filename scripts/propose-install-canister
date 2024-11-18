@@ -35,30 +35,9 @@ if [[ -z "${WASM:-}" ]]; then
   exit 1
 fi
 
-TOP_DIR="$(git rev-parse --show-toplevel)"
-
-IDENTITY_PATH="$HOME/.config/dfx/identity/$DFX_IDENTITY"
-PEM="${IDENTITY_PATH}/identity.pem"
-
 CANISTER_ID="$(dfx canister id "$CANISTER" --network "$DFX_NETWORK")"
 WASM_HASH="$(sha256sum "$WASM" | cut -d ' ' -f 1)"
 SUMMARY="Upgrade canister $CANISTER with module hash $WASM_HASH"
-
-if [[ "$DFX_NETWORK" == "local" ]]; then
-  NNS_URL="http://localhost:$(
-    cd ~
-    dfx info replica-port
-  )"
-else
-  NNS_URL="$(jq -er '.networks | .[env.DFX_NETWORK].providers[0] | select (.!=null)' "$TOP_DIR/dfx.json")"
-fi
-
-PROPOSER_NEURON_ID="$("$SOURCE_DIR/get-neurons" --identity "$DFX_IDENTITY" --network "$DFX_NETWORK" --can-propose | head -n 1)"
-
-if [[ -z "${PROPOSER_NEURON_ID:-}" ]]; then
-  echo "Couldn't find a neuron, for identity ${DFX_IDENTITY}, that can propose."
-  exit 1
-fi
 
 ARG_ARGS=()
 if [[ -n "${ARG_DID_FILE:-}" ]]; then
@@ -68,22 +47,13 @@ if [[ -n "${ARG_DID_FILE:-}" ]]; then
   ARG_ARGS=(--arg "$ARG_BIN_FILE")
 fi
 
-set ic-admin \
-  --secret-key-pem "$PEM" \
-  --nns-url "$NNS_URL" \
-  propose-to-change-nns-canister \
+"$SOURCE_DIR/ic-admin-propose" \
+  --identity "$DFX_IDENTITY" \
+  --network "$DFX_NETWORK" \
   --summary "$SUMMARY" \
-  --proposer "$PROPOSER_NEURON_ID" \
+  propose-to-change-nns-canister \
   --mode "$MODE" \
   --canister-id "$CANISTER_ID" \
   --wasm-module-path "$WASM" \
   --wasm-module-sha256 "$WASM_HASH" \
   "${ARG_ARGS[@]}"
-
-printf "%q " "$@"
-echo
-echo "Do you want to execute this command? [y/N]"
-read -r response
-if [[ "$response" =~ ^[yY] ]]; then
-  "$@"
-fi
