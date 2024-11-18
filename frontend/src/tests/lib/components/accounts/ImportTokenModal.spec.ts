@@ -49,7 +49,6 @@ describe("ImportTokenModal", () => {
     importedTokensStore.reset();
     resetIdentity();
     resetSnsProjects();
-    toastsStore.reset();
     busyStore.resetForTesting();
 
     queryIcrcTokenSpy = vi

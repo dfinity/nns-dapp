@@ -81,7 +81,6 @@ describe("icp-accounts.services", () => {
 
   beforeEach(() => {
     vi.spyOn(console, "error").mockReturnValue();
-    toastsStore.reset();
     resetAccountsForTesting();
     overrideFeatureFlagsStore.reset();
     resetIdentity();

@@ -60,7 +60,6 @@ describe("canisters-services", () => {
   beforeEach(() => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
 
-    toastsStore.reset();
     canistersStore.setCanisters({ canisters: [], certified: true });
 
     spyQueryCanisters = vi

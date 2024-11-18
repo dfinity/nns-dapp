@@ -25,7 +25,6 @@ describe("app-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    toastsStore.reset();
     vi.clearAllMocks();
     clearSnsAggregatorCache();
     // resetSnsProjects();

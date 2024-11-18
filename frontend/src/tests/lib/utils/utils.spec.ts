@@ -33,7 +33,6 @@ describe("utils", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.clearAllTimers();
-    toastsStore.reset();
     vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 

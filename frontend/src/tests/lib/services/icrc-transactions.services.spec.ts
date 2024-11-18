@@ -25,7 +25,6 @@ describe("icrc-transactions services", () => {
     vi.clearAllMocks();
     resetIdentity();
     icrcTransactionsStore.reset();
-    toastsStore.reset();
     vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 

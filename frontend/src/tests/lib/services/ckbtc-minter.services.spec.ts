@@ -35,7 +35,6 @@ describe("ckbtc-minter-services", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resetIdentity();
-    toastsStore.reset();
     ckbtcRetrieveBtcStatusesStore.reset();
     vi.spyOn(minterApi, "updateBalance").mockResolvedValue(mockUpdateBalanceOk);
   });

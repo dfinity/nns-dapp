@@ -20,7 +20,6 @@ describe("sns-accounts-balance.services", () => {
     vi.clearAllMocks();
     icrcAccountsStore.reset();
     tokensStore.reset();
-    toastsStore.reset();
     resetSnsProjects();
 
     setSnsProjects([

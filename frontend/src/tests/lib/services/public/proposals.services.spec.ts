@@ -23,7 +23,6 @@ import { get } from "svelte/store";
 
 describe("proposals-services", () => {
   beforeEach(() => {
-    toastsStore.reset();
     proposalsStore.setProposalsForTesting({ proposals: [], certified: true });
     proposalPayloadsStore.reset();
     vi.spyOn(console, "error").mockRestore();

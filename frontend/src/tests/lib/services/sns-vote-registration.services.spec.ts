@@ -101,7 +101,6 @@ describe("sns-vote-registration-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    toastsStore.reset();
 
     spyQuerySnsProposals = vi
       .spyOn(api, "queryProposals")

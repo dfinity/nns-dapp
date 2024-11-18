@@ -89,7 +89,6 @@ describe("NnsWallet", () => {
     resetAccountsForTesting();
     resetNeuronsApiService();
     icpTransactionsStore.reset();
-    toastsStore.reset();
     resetIdentity();
 
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(

@@ -156,7 +156,6 @@ describe("neurons-services", () => {
     spyConsoleError = vi.spyOn(console, "error");
     resetAccountsForTesting();
     resetAccountIdentity();
-    toastsStore.reset();
     resetNeuronsApiService();
     overrideFeatureFlagsStore.reset();
     checkedNeuronSubaccountsStore.reset();
