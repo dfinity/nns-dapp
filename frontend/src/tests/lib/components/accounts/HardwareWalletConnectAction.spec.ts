@@ -11,8 +11,6 @@ import type { Mock } from "vitest";
 vi.mock("$lib/proxy/icp-ledger.services.proxy");
 
 describe("HardwareWalletConnectAction", () => {
-  beforeEach(() => {});
-
   it("should render a small explanation text", () => {
     const { queryByText } = render(HardwareWalletConnectAction);
 
