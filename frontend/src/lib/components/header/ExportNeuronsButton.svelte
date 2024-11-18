@@ -38,7 +38,7 @@
     } catch (error) {
       console.error("Error exporting neurons:", error);
       toastsError({
-        labelKey: "error__ckbtc.get_btc_no_universe",
+        labelKey: "export_error.neurons",
       });
     } finally {
       dispatcher("nnsExportNeuronsCSVTriggered");
