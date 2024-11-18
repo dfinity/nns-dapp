@@ -10,11 +10,14 @@ import {
   E8S_PER_ICP,
 } from "$lib/constants/icp.constants";
 import {
+  CLEAR_FOLLOWING_AFTER_SECONDS,
   MATURITY_MODULATION_VARIANCE_PERCENTAGE,
   MAX_AGE_BONUS,
   MAX_DISSOLVE_DELAY_BONUS,
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
+  NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS,
+  START_REDUCING_VOTING_POWER_AFTER_SECONDS,
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
@@ -63,7 +66,7 @@ import {
   getAccountByPrincipal,
   isAccountHardwareWallet,
 } from "./accounts.utils";
-import { nowInSeconds } from "./date.utils";
+import { daysToSeconds, nowInSeconds } from "./date.utils";
 import { formatNumber, shortenWithMiddleEllipsis } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
 import { formatTokenE8s, numberToUlps } from "./token.utils";
@@ -1162,3 +1165,39 @@ export const getTopicSubtitle = ({
 export const isPublicNeuron = (neuronInfo: NeuronInfo): boolean => {
   return neuronInfo.visibility === NeuronVisibility.Public;
 };
+
+export const getVotingPowerRefreshedTimestampSeconds = ({
+  fullNeuron,
+}: NeuronInfo & { fullNeuron: Neuron }): bigint =>
+  // The timestamp is always defined.
+  fullNeuron.votingPowerRefreshedTimestampSeconds as bigint;
+
+export const neuronLostAllRewards = (
+  neuron: NeuronInfo & { fullNeuron: Neuron }
+): boolean =>
+  nowInSeconds() >=
+  getVotingPowerRefreshedTimestampSeconds(neuron) +
+    BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS) +
+    BigInt(CLEAR_FOLLOWING_AFTER_SECONDS);
+
+export const neuronLosingRewards = (
+  neuron: NeuronInfo & { fullNeuron: Neuron }
+): boolean =>
+  !neuronLostAllRewards(neuron) &&
+  nowInSeconds() >=
+    getVotingPowerRefreshedTimestampSeconds(neuron) +
+      BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS);
+
+// Neuron will start losing rewards in 30 days.
+export const neuronWillLoseRewardsSoon = (
+  neuron: NeuronInfo & { fullNeuron: Neuron }
+): boolean =>
+  nowInSeconds() >=
+    getVotingPowerRefreshedTimestampSeconds(neuron) +
+      BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS) -
+      BigInt(
+        daysToSeconds(NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS)
+      ) &&
+  nowInSeconds() <
+    getVotingPowerRefreshedTimestampSeconds(neuron) +
+      BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS);

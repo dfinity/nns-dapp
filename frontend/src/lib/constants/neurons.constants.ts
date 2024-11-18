@@ -39,7 +39,10 @@ export const TOPICS_TO_FOLLOW_NNS = [
 
 // If a neuron has not "refreshed" (manual voting or a following update) its voting power after this amount of time,
 // its deciding voting power starts decreasing linearly.
-const START_REDUCING_VOTING_POWER_AFTER_SECONDS = SECONDS_IN_HALF_YEAR;
+export const START_REDUCING_VOTING_POWER_AFTER_SECONDS = SECONDS_IN_HALF_YEAR;
 // After how many seconds from the start of voting power decrease,
 // a neuron followings (all topics other than NeuronManagement) will be cleared.
-const CLEAR_FOLLOWING_AFTER_SECONDS = SECONDS_IN_MONTH;
+export const CLEAR_FOLLOWING_AFTER_SECONDS = SECONDS_IN_MONTH;
+
+// To notify users that their rewards will start decreasing in 30 days.
+export const NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS = 30;
