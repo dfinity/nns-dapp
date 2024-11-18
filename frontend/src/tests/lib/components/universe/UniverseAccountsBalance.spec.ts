@@ -41,7 +41,6 @@ import { render } from "@testing-library/svelte";
 
 describe("UniverseAccountsBalance", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
     resetSnsProjects();
     icrcAccountsStore.reset();
 

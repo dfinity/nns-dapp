@@ -77,12 +77,6 @@ const blockedApiPaths = ["$lib/api/nns-dapp.api", "$lib/api/icp-ledger.api"];
 describe("icp-accounts.services", () => {
   const mockLedgerIdentity = new MockLedgerIdentity();
 
-  beforeEach(() => {
-    // We need to do this before blockAllCallsTo otherwise it the effect of
-    // blockAllCallsTo is removed again.
-    vi.restoreAllMocks();
-  });
-
   blockAllCallsTo(blockedApiPaths);
 
   beforeEach(() => {

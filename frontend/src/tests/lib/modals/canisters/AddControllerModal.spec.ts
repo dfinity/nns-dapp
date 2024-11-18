@@ -18,8 +18,6 @@ describe("AddControllerModal", () => {
   };
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     vi.spyOn(canistersServices, "addController").mockResolvedValue({
       success: true,
     });

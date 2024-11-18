@@ -34,7 +34,6 @@ describe("NnsNeuronHotkeysCard", () => {
 
   beforeEach(() => {
     resetIdentity();
-    vi.restoreAllMocks();
     vi.spyOn(neuronsServices, "removeHotkey").mockResolvedValue(10n);
     vi.spyOn(neuronsServices, "getNeuronFromStore").mockReturnValue(undefined);
   });

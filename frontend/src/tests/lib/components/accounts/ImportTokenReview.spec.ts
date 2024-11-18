@@ -33,10 +33,6 @@ describe("ImportTokenReview", () => {
     };
   };
 
-  beforeEach(() => {
-    vi.restoreAllMocks();
-  });
-
   it("should render token meta information", async () => {
     const { po } = renderComponent({
       ledgerCanisterId: principal(0),

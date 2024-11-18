@@ -46,7 +46,6 @@ describe("sns-services", () => {
     resetIdentity();
     vi.useFakeTimers();
     vi.clearAllTimers();
-    vi.restoreAllMocks();
     snsSwapCommitmentsStore.reset();
     resetSnsProjects();
     snsDerivedStateStore.reset();

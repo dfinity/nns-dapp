@@ -42,7 +42,6 @@ describe("SelectUniverseCard", () => {
   };
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     overrideFeatureFlagsStore.reset();
     actionableNnsProposalsStore.reset();
     actionableSnsProposalsStore.resetForTesting();

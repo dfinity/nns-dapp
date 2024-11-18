@@ -47,7 +47,6 @@ describe("actionable proposals derived stores", () => {
   const principal2 = principal(2);
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     resetSnsProjects();
     actionableNnsProposalsStore.reset();
     actionableSnsProposalsStore.resetForTesting();

@@ -33,7 +33,6 @@ describe("agent-api", () => {
   let utilsCreateAgentSpy;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     agentApi.resetAgents();
 
     utilsCreateAgentSpy = vi

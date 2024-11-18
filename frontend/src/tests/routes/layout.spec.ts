@@ -25,8 +25,6 @@ vi.mock("$lib/proxy/app.services.proxy");
 
 describe("Layout", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     actionableNnsProposalsStore.reset();
 
     setNoIdentity();

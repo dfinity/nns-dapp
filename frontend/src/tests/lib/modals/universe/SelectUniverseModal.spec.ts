@@ -14,8 +14,6 @@ import { get } from "svelte/store";
 
 describe("SelectUniverseModal", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
       mockProjectSubscribe([mockSnsFullProject])
     );

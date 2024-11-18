@@ -29,7 +29,6 @@ describe('NnsProposals when "all proposals" selected', () => {
     DEFAULT_PROPOSALS_FILTERS;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     neuronsStore.reset();
     resetNeuronsApiService();
 

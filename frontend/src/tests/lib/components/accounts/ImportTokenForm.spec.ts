@@ -33,10 +33,6 @@ describe("ImportTokenForm", () => {
     };
   };
 
-  beforeEach(() => {
-    vi.restoreAllMocks();
-  });
-
   it("should render ledger canister id", async () => {
     const { po } = renderComponent({
       ledgerCanisterId: principal(0),

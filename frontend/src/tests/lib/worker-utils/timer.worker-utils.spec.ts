@@ -12,8 +12,6 @@ describe("timer.worker-utils", () => {
   let spyPostMessage;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     silentConsoleErrors();
 
     vi.clearAllTimers();

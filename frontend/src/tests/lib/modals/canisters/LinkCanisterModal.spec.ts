@@ -11,8 +11,6 @@ import { render, waitFor } from "@testing-library/svelte";
 
 describe("LinkCanisterModal", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     vi.spyOn(canistersServices, "attachCanister").mockResolvedValue({
       success: true,
     });

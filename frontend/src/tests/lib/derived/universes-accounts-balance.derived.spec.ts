@@ -16,8 +16,6 @@ describe("universes-accounts-balance.derived", () => {
   const ledgerCanisterId = mockSnsFullProject.summary.ledgerCanisterId;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
       mockAccountsStoreSubscribe([], [])
     );

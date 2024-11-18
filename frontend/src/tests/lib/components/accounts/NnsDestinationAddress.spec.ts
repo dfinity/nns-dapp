@@ -27,8 +27,6 @@ describe("NnsDestinationAddress", () => {
   let onAccountSelectedSpy: Mock;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [mockSubAccount1, mockSubAccount2],

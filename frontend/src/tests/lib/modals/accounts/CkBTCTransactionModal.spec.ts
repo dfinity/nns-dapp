@@ -83,7 +83,6 @@ describe("CkBTCTransactionModal", () => {
   };
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     vi.useFakeTimers();
     ckBTCInfoStore.reset();
 

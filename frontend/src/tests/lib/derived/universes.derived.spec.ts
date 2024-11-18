@@ -30,7 +30,6 @@ import { get } from "svelte/store";
 
 describe("universes derived stores", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
     resetSnsProjects();
     defaultIcrcCanistersStore.reset();
     tokensStore.reset();

@@ -44,8 +44,6 @@ describe("sns-sale.api", () => {
   const notifyParticipationSpy = vi.fn();
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     getOpenTicketSpy.mockResolvedValue(ticket.ticket);
     newSaleTicketSpy.mockResolvedValue(ticket.ticket);
     notifyPaymentFailureSpy.mockResolvedValue(ticket.ticket);

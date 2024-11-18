@@ -102,14 +102,6 @@ describe("icrc-transaction utils", () => {
     },
   };
 
-  beforeEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  beforeEach(() => {
-    vi.restoreAllMocks();
-  });
-
   describe("getSortedTransactionsFromStore", () => {
     it("should return transactions sorted by date", () => {
       const transactions = [secondTx, oldestTx, recentTx];

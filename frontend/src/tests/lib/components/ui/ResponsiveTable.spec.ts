@@ -70,8 +70,6 @@ describe("ResponsiveTable", () => {
   ];
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     // Clicking on the rows that are links causes JSDOM to output an error about
     // navigation not being implemented. But the error is not logged immediately
     // and can happen during a different test. So we dissable error logging for

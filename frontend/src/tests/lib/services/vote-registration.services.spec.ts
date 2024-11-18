@@ -74,7 +74,6 @@ describe("vote-registration-services", () => {
 
   beforeEach(() => {
     // Cleanup:
-    vi.restoreAllMocks();
     voteRegistrationStore.reset();
     toastsStore.reset();
     proposalsStore.resetForTesting();

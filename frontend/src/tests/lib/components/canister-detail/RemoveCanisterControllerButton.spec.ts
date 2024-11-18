@@ -11,8 +11,6 @@ describe("RemoveCanisterControllerButton", () => {
   const props = { controller, reloadDetails: reloadDetailsMock };
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     vi.spyOn(canisterServices, "removeController").mockResolvedValue({
       success: true,
     });

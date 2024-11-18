@@ -20,8 +20,6 @@ import { get } from "svelte/store";
 describe("wallet-uncertified-accounts.services", () => {
   beforeEach(() => {
     resetIdentity();
-    vi.restoreAllMocks();
-
     icrcAccountsStore.reset();
     tokensStore.reset();
     vi.spyOn(toastsStore, "toastsError");

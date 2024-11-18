@@ -17,12 +17,6 @@ import { render } from "@testing-library/svelte";
 vi.mock("$lib/api/governance.api");
 
 describe("NeuronDetail", () => {
-  beforeEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  // fakeGovernanceApi needs to be installed after restoreAllMocks, otherwise
-  // its mocks will be restored.
   fakeGovernanceApi.install();
 
   const neuronId = 314n;

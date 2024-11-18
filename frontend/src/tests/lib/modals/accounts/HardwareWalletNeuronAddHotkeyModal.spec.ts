@@ -27,7 +27,6 @@ describe("HardwareWalletNeuronAddHotkeyModal", () => {
   const mockIdentity2 = createMockIdentity(0);
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     resetIdentity();
     (getLedgerIdentityProxy as Mock).mockImplementation(() =>
       Promise.resolve(mockIdentity2)

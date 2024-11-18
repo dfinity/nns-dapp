@@ -11,7 +11,6 @@ import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 describe("NnsAutoStakeMaturity", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
     toastsStore.reset();
     resetIdentity();
     vi.spyOn(neuronsServices, "toggleAutoStakeMaturity").mockResolvedValue({

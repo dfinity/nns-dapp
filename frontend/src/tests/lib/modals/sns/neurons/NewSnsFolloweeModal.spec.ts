@@ -14,7 +14,6 @@ describe("NewSnsFolloweeModal", () => {
   const functionId = 4n;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     vi.spyOn(snsNeuronsServices, "addFollowee").mockResolvedValue({
       success: true,
     });

@@ -92,7 +92,6 @@ describe("sns-neurons-services", () => {
   };
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     toastsStore.reset();
     resetIdentity();
     resetMockedConstants();

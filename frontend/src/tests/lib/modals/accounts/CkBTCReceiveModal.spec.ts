@@ -37,7 +37,6 @@ describe("BtcCkBTCReceiveModal", () => {
   const reloadSpy = vi.fn();
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     resetIdentity();
     bitcoinAddressStore.reset();
     ckBTCInfoStore.reset();

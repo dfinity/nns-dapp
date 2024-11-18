@@ -22,7 +22,6 @@ describe("NnsProposalProposerPayloadEntry", () => {
   const payload = { b: "c" };
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     proposalPayloadsStore.reset();
     vi.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
