@@ -15,7 +15,6 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("SelectDestinationAddress", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
     resetSnsProjects();
     icrcAccountsStore.reset();
   });

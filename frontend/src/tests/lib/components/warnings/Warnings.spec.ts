@@ -4,7 +4,6 @@ import { metricsStore } from "$lib/stores/metrics.store";
 import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
-import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
 import { SvelteComponent, tick } from "svelte";
@@ -42,7 +41,6 @@ describe("Warnings", () => {
   describe("TransactionRateWarning", () => {
     beforeEach(() => {
       metricsStore.set(undefined);
-      toastsStore.reset();
     });
 
     const transactionRateHighLoad: DashboardMessageExecutionRateResponse = {

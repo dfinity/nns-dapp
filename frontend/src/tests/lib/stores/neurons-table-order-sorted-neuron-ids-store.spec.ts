@@ -62,7 +62,6 @@ describe("neuronsTableOrderSortedNeuronIdsStore", () => {
   ];
 
   beforeEach(() => {
-    neuronsStore.reset();
     neuronsTableOrderStore.reset();
     resetIdentity();
     setAccountsForTesting({ main: mockMainAccount });

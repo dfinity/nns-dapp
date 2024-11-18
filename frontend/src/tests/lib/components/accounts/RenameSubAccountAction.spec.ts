@@ -13,8 +13,6 @@ describe("RenameSubAccountAction", () => {
   let spy;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     spy = (renameSubAccount as Mock).mockImplementation(async () => {
       // Do nothing test
     });

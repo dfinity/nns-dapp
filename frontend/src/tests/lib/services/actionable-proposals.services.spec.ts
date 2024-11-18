@@ -18,10 +18,6 @@ import {
 import { get } from "svelte/store";
 
 describe("actionable-proposals.services", () => {
-  beforeEach(() => {
-    vi.restoreAllMocks();
-  });
-
   describe("updateActionableProposals", () => {
     const expectedQueryManageNeuronProposalsParams = {
       identity: mockIdentity,
@@ -102,7 +98,6 @@ describe("actionable-proposals.services", () => {
 
     beforeEach(() => {
       vi.clearAllMocks();
-      neuronsStore.reset();
       actionableNnsProposalsStore.reset();
       resetIdentity();
       spyQueryProposals = vi

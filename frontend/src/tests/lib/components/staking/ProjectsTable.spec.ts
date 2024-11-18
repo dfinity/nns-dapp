@@ -31,7 +31,6 @@ describe("ProjectsTable", () => {
   };
 
   beforeEach(() => {
-    neuronsStore.reset();
     snsNeuronsStore.reset();
     resetSnsProjects();
     resetIdentity();

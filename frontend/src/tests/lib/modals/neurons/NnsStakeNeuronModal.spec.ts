@@ -61,7 +61,6 @@ describe("NnsStakeNeuronModal", () => {
   beforeEach(() => {
     resetIdentity();
     cancelPollAccounts();
-    vi.restoreAllMocks();
     overrideFeatureFlagsStore.reset();
 
     vi.spyOn(neuronsServices, "stakeNeuron").mockResolvedValue(

@@ -13,8 +13,6 @@ describe("auth-utils", () => {
   beforeEach(() => {
     // restore original host
     window.location.host = originalWindowLocationHost;
-
-    vi.restoreAllMocks();
   });
 
   describe("isSignedIn", () => {

@@ -14,8 +14,6 @@ describe("AddAccountModal", () => {
   const mockLedgerIdentity = new MockLedgerIdentity();
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     vi.spyOn(icpAccountsServices, "addSubAccount").mockResolvedValue(undefined);
     vi.spyOn(
       icpLedgerServicesProxy,

@@ -18,7 +18,6 @@ describe("auth-services", () => {
   const originalLocation = window.location;
 
   beforeEach(async () => {
-    vi.restoreAllMocks();
     await authStore.signOut();
   });
 

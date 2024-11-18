@@ -17,7 +17,6 @@ import { get } from "svelte/store";
 
 describe("selectable universes derived stores", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
     resetCkETHCanisters();
 
     page.mock({

@@ -13,7 +13,6 @@ vi.mock("$lib/services/public/app.services", () => ({
 describe("Layout", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.restoreAllMocks();
   });
 
   it("should init the auth on mount", async () => {

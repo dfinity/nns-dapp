@@ -8,7 +8,6 @@ import NnsProposals from "$lib/pages/NnsProposals.svelte";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
-import { neuronsStore } from "$lib/stores/neurons.store";
 import {
   proposalsFiltersStore,
   proposalsStore,
@@ -49,10 +48,8 @@ describe("NnsProposals", () => {
   };
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     proposalsStore.resetForTesting();
     resetNeuronsApiService();
-    neuronsStore.reset();
     proposalsFiltersStore.reset();
     actionableNnsProposalsStore.reset();
     actionableProposalsSegmentStore.resetForTesting();

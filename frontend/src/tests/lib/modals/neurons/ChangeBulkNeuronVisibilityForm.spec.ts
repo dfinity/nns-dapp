@@ -109,12 +109,10 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
 
   beforeEach(() => {
     resetIdentity();
-    vi.restoreAllMocks();
     setAccountsForTesting({
       main: mockMainAccount,
       hardwareWallets: [mockHardwareWalletAccount],
     });
-    neuronsStore.reset();
   });
 
   const renderComponent = ({

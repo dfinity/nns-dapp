@@ -10,8 +10,6 @@ describe("HardwareWalletShowActionButton", () => {
   let spy;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     spy = (
       showAddressAndPubKeyOnHardwareWalletProxy as Mock
     ).mockImplementation(async () => {

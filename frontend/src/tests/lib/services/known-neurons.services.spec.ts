@@ -15,7 +15,6 @@ describe("knownNeurons-services", () => {
   let spyQueryKnownNeurons;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     resetIdentity();
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
       mockGetIdentity

@@ -84,7 +84,6 @@ describe("IcrcWalletTransactionList", () => {
   };
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     vi.useFakeTimers().setSystemTime(new Date());
   });
 

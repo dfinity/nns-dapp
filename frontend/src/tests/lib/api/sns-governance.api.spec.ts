@@ -87,8 +87,6 @@ describe("sns-api", () => {
   const getFunctionsSpy = vi.fn();
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     queryNeuronsSpy.mockResolvedValue([mockSnsNeuron]);
     getNeuronSpy.mockResolvedValue(mockSnsNeuron);
     queryNeuronSpy.mockResolvedValue(mockSnsNeuron);

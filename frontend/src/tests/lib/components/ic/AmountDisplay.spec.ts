@@ -21,10 +21,6 @@ describe("AmountDisplay", () => {
     return AmountDisplayPo.under(new JestPageObjectElement(container));
   };
 
-  beforeEach(() => {
-    vi.restoreAllMocks();
-  });
-
   it("should render an token amount", async () => {
     const po = renderComponent(props);
     expect(await po.getAmount()).toEqual("1'234'567.89");

@@ -16,7 +16,6 @@ describe("Proposals", () => {
   let queryProposalsSpy;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     snsProposalsStore.reset();
 
     queryProposalsSpy = vi

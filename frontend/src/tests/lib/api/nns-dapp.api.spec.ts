@@ -8,8 +8,6 @@ import { mock } from "vitest-mock-extended";
 
 describe("nns-dapp api", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 

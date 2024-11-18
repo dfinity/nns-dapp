@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+clap.define short=n long=network desc="dfx network to use" variable="DFX_NETWORK" default="local"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+export DFX_NETWORK
+
+if [[ "$DFX_NETWORK" == "local" ]]; then
+  PORT="$(
+    cd ~
+    dfx info webserver-port
+  )"
+  echo "http://localhost:$PORT"
+  exit
+else
+  TOP_DIR="$(git rev-parse --show-toplevel)"
+  ORIGIN="$(jq -er '.networks | .[env.DFX_NETWORK].providers[0] | select (.!=null)' "$TOP_DIR/dfx.json")"
+  echo "$ORIGIN"
+fi

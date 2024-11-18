@@ -23,8 +23,6 @@ describe("proposals-api", () => {
   let spyListProposals;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     vi.spyOn(GovernanceCanister, "create").mockImplementation(
       (): GovernanceCanister => mockGovernanceCanister
     );

@@ -46,11 +46,9 @@ describe("ImportTokenModal", () => {
   let queryIcrcTokenSpy: MockInstance;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     importedTokensStore.reset();
     resetIdentity();
     resetSnsProjects();
-    toastsStore.reset();
     busyStore.resetForTesting();
 
     queryIcrcTokenSpy = vi

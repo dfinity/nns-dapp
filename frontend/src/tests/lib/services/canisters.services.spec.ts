@@ -58,10 +58,8 @@ describe("canisters-services", () => {
   let spyGetExchangeRate: MockInstance;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     vi.spyOn(console, "error").mockImplementation(() => undefined);
 
-    toastsStore.reset();
     canistersStore.setCanisters({ canisters: [], certified: true });
 
     spyQueryCanisters = vi

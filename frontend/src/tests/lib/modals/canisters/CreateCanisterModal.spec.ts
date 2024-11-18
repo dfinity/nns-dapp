@@ -27,9 +27,6 @@ import { get } from "svelte/store";
 
 describe("CreateCanisterModal", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
-    toastsStore.reset();
-
     vi.spyOn(canistersServices, "getIcpToCyclesExchangeRate").mockResolvedValue(
       10_000n
     );

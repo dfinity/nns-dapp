@@ -35,7 +35,6 @@ import type { MockInstance } from "vitest";
 
 describe("DisburseNnsNeuronModal", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
     resetIdentity();
     cancelPollAccounts();
 

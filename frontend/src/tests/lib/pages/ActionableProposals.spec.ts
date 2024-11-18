@@ -58,7 +58,6 @@ describe("ActionableProposals", () => {
   const snsProposal2 = createProposal(33n);
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     resetIdentity();
     resetSnsProjects();
     actionableNnsProposalsStore.reset();

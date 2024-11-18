@@ -107,7 +107,6 @@ describe("SnsVotingCard", () => {
     });
 
   beforeEach(() => {
-    vi.restoreAllMocks();
     vi.useFakeTimers().setSystemTime(nowInSeconds * 1000);
     snsNeuronsStore.reset();
     resetIdentity();

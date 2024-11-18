@@ -46,7 +46,6 @@ describe("imported-tokens-services", () => {
     resetIdentity();
     importedTokensStore.reset();
     failedImportedTokenLedgerIdsStore.reset();
-    toastsStore.reset();
     busyStore.resetForTesting();
     vi.spyOn(console, "error").mockReturnValue();
     vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);

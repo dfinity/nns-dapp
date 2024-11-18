@@ -35,7 +35,6 @@ describe("MakeNeuronsPublicBanner", () => {
 
   beforeEach(() => {
     vi.useFakeTimers();
-    neuronsStore.reset();
     localStorage.clear();
     setAccountsForTesting({
       main: mockMainAccount,

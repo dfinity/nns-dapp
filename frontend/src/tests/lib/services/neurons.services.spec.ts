@@ -153,13 +153,9 @@ describe("neurons-services", () => {
   let spyConsoleError;
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     spyConsoleError = vi.spyOn(console, "error");
-    neuronsStore.reset();
     resetAccountsForTesting();
     resetAccountIdentity();
-    toastsStore.reset();
     resetNeuronsApiService();
     overrideFeatureFlagsStore.reset();
     checkedNeuronSubaccountsStore.reset();

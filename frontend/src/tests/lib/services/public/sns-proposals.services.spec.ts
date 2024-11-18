@@ -37,8 +37,6 @@ describe("sns-proposals services", () => {
   beforeEach(() => {
     snsFiltersStore.reset();
     snsProposalsStore.reset();
-    toastsStore.reset();
-    vi.restoreAllMocks();
     vi.spyOn(console, "error").mockRestore();
   });
   const proposal1: SnsProposalData = {

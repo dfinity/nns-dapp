@@ -16,8 +16,6 @@ describe("ProjectProposal", () => {
   blockAllCallsTo(blockedApiPaths);
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-    toastsStore.reset();
     setNoIdentity();
     vi.spyOn(proposalsApi, "queryProposal").mockResolvedValue(mockProposalInfo);
   });

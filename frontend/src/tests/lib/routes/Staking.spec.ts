@@ -38,7 +38,6 @@ describe("Staking", () => {
   const snsCanisterId = principal(1112);
 
   beforeEach(() => {
-    neuronsStore.reset();
     snsNeuronsStore.reset();
     resetSnsProjects();
     resetIdentity();
@@ -64,7 +63,6 @@ describe("Staking", () => {
 
   it("should not render banner and login button when signed in but NNS neurons still loading", async () => {
     resetIdentity();
-    neuronsStore.reset();
     const po = renderComponent();
     expect(await po.getPageBannerPo().isPresent()).toBe(false);
     expect(await po.getSignInPo().isPresent()).toBe(false);

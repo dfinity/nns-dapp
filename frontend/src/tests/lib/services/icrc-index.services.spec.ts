@@ -14,7 +14,6 @@ describe("icrc-index.services", () => {
     beforeEach(() => {
       vi.clearAllMocks();
       resetIdentity();
-      toastsStore.reset();
     });
 
     it("should return true when the ledger canister IDs match", async () => {

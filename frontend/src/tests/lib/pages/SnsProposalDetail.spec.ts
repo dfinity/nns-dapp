@@ -79,7 +79,6 @@ describe("SnsProposalDetail", () => {
     actionableProposalsSegmentStore.resetForTesting();
     snsProposalsStore.reset();
     snsNeuronsStore.reset();
-    toastsStore.reset();
   });
 
   describe("not logged in", () => {
