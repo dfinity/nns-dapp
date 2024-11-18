@@ -1,6 +1,7 @@
 import {
   SECONDS_IN_7_DAYS,
   SECONDS_IN_HALF_YEAR,
+  SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
 import { enumValues } from "$lib/utils/enum.utils";
 import { Topic } from "@dfinity/nns";
@@ -35,3 +36,10 @@ export const TOPICS_TO_FOLLOW_NNS = [
   ),
   ...LAST_TOPICS,
 ];
+
+// If a neuron has not "refreshed" (manual voting or a following update) its voting power after this amount of time,
+// its deciding voting power starts decreasing linearly.
+const START_REDUCING_VOTING_POWER_AFTER_SECONDS = SECONDS_IN_HALF_YEAR;
+// After how many seconds from the start of voting power decrease,
+// a neuron followings (all topics other than NeuronManagement) will be cleared.
+const CLEAR_FOLLOWING_AFTER_SECONDS = SECONDS_IN_MONTH;
