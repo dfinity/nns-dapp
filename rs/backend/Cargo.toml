@@ -36,7 +36,7 @@ ic-nns-common = { workspace = true }
 ic-nns-constants = { workspace = true }
 ic-nns-governance = { workspace = true }
 ic-sns-swap = { workspace = true }
-ic-stable-structures = "0.6.5"
+ic-stable-structures = "0.6.6"
 icp-ledger = { workspace = true }
 on_wire = { workspace = true }
 
