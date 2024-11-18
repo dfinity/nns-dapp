@@ -30,6 +30,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Stop trying to get swap commitments from aborted SNSes.
 * Stop making unnecessary calls to SNS-W and SNS root canisters.
 * User gets the wrong identity when connecting different hardware wallets devices in a certain order.
+* Fix candid decoding error of stable memory.
 
 #### Security
 
