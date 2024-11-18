@@ -13,6 +13,7 @@
   import { ICPToken, secondsToDuration, TokenAmountV2 } from "@dfinity/utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+  import { downloadCSV } from "$lib/utils/export-to-csv";
 
   // to src/lib/types/neurons-table.ts ??
   type ExportNeuron = {
@@ -31,13 +32,38 @@
   }>();
 
   let isDisabled = true;
-  $: isDisabled =
-    $neuronsStore.neurons === undefined || $neuronsStore.neurons.length === 0;
-  let neurons: NeuronInfo[] = $neuronsStore?.neurons ?? [];
+  let neurons: NeuronInfo[] = [];
+
+  $: neurons = $neuronsStore?.neurons ?? [];
+  $: isDisabled = !neurons.length;
+
+  const exportNeurons = async () => {
+    try {
+      const neuronsforExport = buildExportNeurons(neurons);
+      const renderableNeurons = renderExportNeurons(neuronsforExport);
+
+      await downloadCSV({
+        entity: renderableNeurons,
+        fileName: "neurons",
+      });
+    } catch (error) {
+      // Handle error appropriately, what can go wrong?
+      console.error("Error exporting neurons:", error);
+    } finally {
+      dispatcher("nnsExportNeuronsCSVTriggered");
+    }
+  };
   // End of component code
 
-  // to src/lib/utils/neurons-export.utils.ts ??
-  const getNeuronsForExport = (neurons: NeuronInfo[]) => {
+  // to ic-js/date/utils or not needed?
+  const getDateFromSeconds = (seconds: number | bigint): Date => {
+    const now = new Date();
+    const futureDate = new Date(now.getTime() + Number(seconds) * 1000);
+    return futureDate;
+  };
+
+  // should I move this somewhere else?
+  const buildExportNeurons = (neurons: NeuronInfo[]) => {
     return neurons.map((neuron) => ({
       neuronId: neuron.neuronId.toString(),
       stake: TokenAmountV2.fromUlps({
@@ -73,86 +99,6 @@
         state: $i18n.neuron_state[getStateInfo(neuron.state).textKey],
       };
     });
-  };
-
-  const exportNeurons = () => {
-    try {
-      const neuronsforExport = getNeuronsForExport(neurons);
-      const renderableNeurons = renderExportNeurons(neuronsforExport);
-
-      downloadCSV(renderableNeurons);
-    } catch (error) {
-      console.error("Error exporting neurons:", error);
-      // Handle error appropriately, what can go wrong?
-    } finally {
-      dispatcher("nnsExportNeuronsCSVTriggered");
-    }
-  };
-
-  // to ic-js/date/utils or not needed?
-  const getDateFromSeconds = (seconds: number | bigint): Date => {
-    const now = new Date();
-    const futureDate = new Date(now.getTime() + Number(seconds) * 1000);
-    return futureDate;
-  };
-
-  // Move all to some export-neurons utils file or similar
-  const convertToCSV = (data: Record<string, unknown>[]) => {
-    // Get headers from the first object
-    const headers = Object.keys(data[0]);
-
-    // Create CSV header row
-    const csvRows = [headers.join(",")];
-
-    // Add data rows
-    for (const row of data) {
-      const values = headers.map((header) => {
-        const value = row[header];
-        // Handle special cases (like strings with commas)
-        return typeof value === "string" && value.includes(",")
-          ? `"${value}"`
-          : value;
-      });
-      csvRows.push(values.join(","));
-    }
-
-    return csvRows.join("\n");
-  };
-
-  // Move all to some export-neurons utils file or similar
-  const downloadCSV = async (
-    neurons: Record<string, unknown>[]
-  ): Promise<void> => {
-    const csvContent = convertToCSV(neurons);
-    const blob = new Blob(["\uFEFF" + csvContent], {
-      type: "text/csv;charset=utf-8;",
-    });
-
-    // Use native file system API if available
-    if (window.showSaveFilePicker) {
-      const handle = await window.showSaveFilePicker({
-        suggestedName: "neurons.csv",
-        types: [
-          {
-            description: "CSV File",
-            accept: { "text/csv": [".csv"] },
-          },
-        ],
-      });
-      const writable = await handle.createWritable();
-      await writable.write(blob);
-      await writable.close();
-    } else {
-      // Fallback for browsers without File System API
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "neurons.csv";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    }
   };
 </script>
 
