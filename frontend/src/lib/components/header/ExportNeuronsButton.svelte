@@ -15,7 +15,10 @@
   import { NeuronState, type NeuronInfo } from "@dfinity/nns";
   import { downloadCSV } from "$lib/utils/export-to-csv.utils";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { getFutureDateFromDelayInSeconds } from "$lib/utils/date.utils";
+  import {
+    getFutureDateFromDelayInSeconds,
+    secondsToDate,
+  } from "$lib/utils/date.utils";
 
   const dispatcher = createEventDispatcher<{
     nnsExportNeuronsCSVTriggered: void;
@@ -58,6 +61,7 @@
       neuron.state === NeuronState.Dissolving
         ? getFutureDateFromDelayInSeconds(neuron.dissolveDelaySeconds)
         : null;
+    const creationDate = secondsToDate(Number(neuron.createdTimestampSeconds));
 
     // what about maturity in the stake? should I add or show it the same as the Neurons table?
     // state: neuron.state,
@@ -74,7 +78,8 @@
         seconds: dissolveDelaySeconds,
         i18n: $i18n.time,
       }),
-      ["Dissolve Date"]: dissolveDate?.toLocaleString() ?? "N/A",
+      ["Dissolve Date"]: dissolveDate ?? "N/A",
+      ["Creation Date"]: creationDate,
       ["State"]: $i18n.neuron_state[getStateInfo(neuron.state).textKey],
     };
   };
