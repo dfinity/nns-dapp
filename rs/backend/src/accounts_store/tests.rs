@@ -1038,4 +1038,46 @@ fn accounts_should_implement_storable() {
     assert_eq!(account, parsed);
 }
 
+#[test]
+fn decode_neuron_accounts_map() {
+  let mut new_neuron_accounts = HashMap::<AccountIdentifier, NeuronDetails>::new();
+
+  for i in 100..145 {
+    let principal_id = PrincipalId::new_user_test_id(i);
+    //let account_identifier = AccountIdentifier::from_hex("0602f045a48320d94626afb2c6b84dbe0ccbdaa41f477b2d16b2e128d882dca6").unwrap();
+    let account_identifier = AccountIdentifier::new(principal_id, None);
+
+    let neuron_details = NeuronDetails {
+      account_identifier,
+      principal: principal_id,
+      memo: Memo(123),
+      //neuron_id: Some(NeuronId::from(456u64)),
+      neuron_id: None,
+    };
+
+    new_neuron_accounts.insert(account_identifier, neuron_details);
+  }
+
+  let new_neuron_accounts_bytes = 
+        Candid((
+            new_neuron_accounts,
+        ))
+        .into_bytes()
+        .unwrap();
+
+  let hex_string = hex::encode(new_neuron_accounts_bytes.clone());
+
+  ic_cdk::println!("dskloetx hex_string = {:?}", hex_string);
+
+
+  let (
+      _reserved,
+  ): (
+      candid::Reserved,
+  ) = Candid::from_bytes(new_neuron_accounts_bytes.clone()).map(|c|
+  c.0).unwrap_or_else(|err| {
+    panic!("dskloetx err = {:#?}", err);
+  });
+}
+
 crate::accounts_store::schema::tests::test_accounts_db!(AccountsStore::default());

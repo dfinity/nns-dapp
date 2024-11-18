@@ -1034,7 +1034,7 @@ impl StableState for AccountsStore {
             // Transactions are unused but we need to decode something for backwards
             // compatibility.
             _transactions,
-            _neuron_accounts,
+            neuron_accounts,
             block_height_synced_up_to,
             multi_part_transactions_processor,
             last_ledger_sync_timestamp_nanos,
@@ -1045,13 +1045,38 @@ impl StableState for AccountsStore {
             HashMap<AccountIdentifier, AccountWrapper>,
             HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
             candid::Reserved,
-            candid::Reserved,
+            HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockIndex>,
             MultiPartTransactionsProcessor,
             u64,
             u64,
             Option<AccountsDbStats>,
         ) = Candid::from_bytes(bytes).map(|c| c.0)?;
+
+        let mut new_neuron_accounts = HashMap::<AccountIdentifier, NeuronDetails>::new();
+        let mut i = 0;
+        for (id, acc) in neuron_accounts.iter() {
+          new_neuron_accounts.insert(id.clone(), acc.clone());
+          i += 1;
+          if i >= 50 {
+            break;
+          }
+        }
+        let new_neuron_accounts_bytes = 
+              Candid((
+                  new_neuron_accounts,
+              ))
+              .into_bytes()
+              .unwrap();
+
+        let (
+            _reserved,
+        ): (
+            candid::Reserved,
+        ) = Candid::from_bytes(new_neuron_accounts_bytes.clone()).map(|c|
+        c.0).unwrap_or_else(|err| {
+          panic!("dskloetx {:?} err = {:#?}", i, err);
+        });
 
         // Remove duplicate links between hardware wallets and user accounts
         for hw_or_sub in hardware_wallets_and_sub_accounts.values_mut() {
