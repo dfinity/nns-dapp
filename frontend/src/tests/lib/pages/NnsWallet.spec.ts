@@ -87,7 +87,6 @@ describe("NnsWallet", () => {
     vi.unstubAllGlobals();
     cancelPollAccounts();
     resetAccountsForTesting();
-    neuronsStore.reset();
     resetNeuronsApiService();
     icpTransactionsStore.reset();
     toastsStore.reset();

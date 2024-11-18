@@ -113,7 +113,6 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
       main: mockMainAccount,
       hardwareWallets: [mockHardwareWalletAccount],
     });
-    neuronsStore.reset();
   });
 
   const renderComponent = ({

@@ -98,7 +98,6 @@ describe("actionable-proposals.services", () => {
 
     beforeEach(() => {
       vi.clearAllMocks();
-      neuronsStore.reset();
       actionableNnsProposalsStore.reset();
       resetIdentity();
       spyQueryProposals = vi

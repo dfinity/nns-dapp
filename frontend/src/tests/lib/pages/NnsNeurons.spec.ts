@@ -3,7 +3,6 @@ import * as api from "$lib/api/governance.api";
 import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
@@ -32,7 +31,6 @@ describe("NnsNeurons", () => {
   beforeEach(() => {
     vi.resetAllMocks();
     resetNeuronsApiService();
-    neuronsStore.reset();
     overrideFeatureFlagsStore.reset();
   });
 

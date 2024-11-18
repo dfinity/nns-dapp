@@ -4,7 +4,6 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
 import * as knownNeuronsServices from "$lib/services/known-neurons.services";
 import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
-import { neuronsStore } from "$lib/stores/neurons.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -41,7 +40,6 @@ describe("NeuronDetail", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resetIdentity();
-    neuronsStore.reset();
     voteRegistrationStore.reset();
     checkedNeuronSubaccountsStore.reset();
     fakeGovernanceApi.addNeuronWith({ neuronId, stake: neuronStake });

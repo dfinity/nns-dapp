@@ -4,7 +4,6 @@ import { mergeNeurons } from "$lib/api/governance.api";
 import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { listNeurons } from "$lib/services/neurons.services";
-import { neuronsStore } from "$lib/stores/neurons.store";
 import type { Account } from "$lib/types/account";
 import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import { createMockIdentity } from "$tests/mocks/auth.store.mock";
@@ -49,7 +48,6 @@ describe("MergeNeuronsModal", () => {
     );
     vi.clearAllMocks();
     resetAccountsForTesting();
-    neuronsStore.reset();
     resetNeuronsApiService();
     toastsStore.reset();
   });
