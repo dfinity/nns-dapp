@@ -22,19 +22,10 @@ source "$(clap.build)"
 export DFX_NETWORK
 export DFX_IDENTITY
 
-TOP_DIR="$(git rev-parse --show-toplevel)"
-
 IDENTITY_PATH="$HOME/.config/dfx/identity/$DFX_IDENTITY"
 PEM="${IDENTITY_PATH}/identity.pem"
 
-if [[ "$DFX_NETWORK" == "local" ]]; then
-  NNS_URL="http://localhost:$(
-    cd ~
-    dfx info webserver-port
-  )"
-else
-  NNS_URL="$(jq -er '.networks | .[env.DFX_NETWORK].providers[0] | select (.!=null)' "$TOP_DIR/dfx.json")"
-fi
+NNS_URL="$("$SOURCE_DIR/dfx-server-origin" --network "$DFX_NETWORK")"
 
 PROPOSER_NEURON_ID="$("$SOURCE_DIR/get-neurons" --identity "$DFX_IDENTITY" --network "$DFX_NETWORK" --can-propose | head -n 1)"
 
