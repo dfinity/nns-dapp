@@ -133,7 +133,6 @@ describe("sns-api", () => {
 
     vi.useFakeTimers();
 
-    toastsStore.reset();
     snsTicketsStore.reset();
     resetAccountsForTesting();
     tokensStore.reset();

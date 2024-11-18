@@ -23,7 +23,6 @@ describe("icp-transactions services", () => {
     vi.clearAllMocks();
     resetIdentity();
     icpTransactionsStore.reset();
-    toastsStore.reset();
     vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 

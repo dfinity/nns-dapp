@@ -55,7 +55,6 @@ describe("ChangeNeuronVisibilityModal", () => {
 
   beforeEach(() => {
     resetIdentity();
-    toastsStore.reset();
     spyConsoleError?.mockRestore();
     changeNeuronVisibilitySpy?.mockRestore();
     queryNeuronSpy?.mockRestore();

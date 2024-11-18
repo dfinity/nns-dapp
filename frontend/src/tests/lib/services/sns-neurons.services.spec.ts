@@ -92,7 +92,6 @@ describe("sns-neurons-services", () => {
   };
 
   beforeEach(() => {
-    toastsStore.reset();
     resetIdentity();
     resetMockedConstants();
     resetSnsProjects();

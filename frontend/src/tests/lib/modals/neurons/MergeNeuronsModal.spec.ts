@@ -49,7 +49,6 @@ describe("MergeNeuronsModal", () => {
     vi.clearAllMocks();
     resetAccountsForTesting();
     resetNeuronsApiService();
-    toastsStore.reset();
   });
 
   const selectAndTestTwoNeurons = async ({ po, neurons }) => {

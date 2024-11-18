@@ -117,7 +117,6 @@ describe("IcrcWallet", () => {
     vi.clearAllTimers();
     vi.useRealTimers();
     tokensStore.reset();
-    toastsStore.reset();
     resetIdentity();
     defaultIcrcCanistersStore.reset();
     busyStore.resetForTesting();

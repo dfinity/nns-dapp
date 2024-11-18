@@ -49,7 +49,6 @@ describe("sns-services", () => {
     snsSwapCommitmentsStore.reset();
     resetSnsProjects();
     snsDerivedStateStore.reset();
-    toastsStore.reset();
   });
 
   describe("getSwapAccount", () => {

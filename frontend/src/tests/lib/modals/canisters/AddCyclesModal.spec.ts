@@ -24,8 +24,6 @@ describe("AddCyclesModal", () => {
   const reloadDetails = vi.fn();
   const props = { reloadDetails };
   beforeEach(() => {
-    toastsStore.reset();
-
     vi.spyOn(canistersServices, "getIcpToCyclesExchangeRate").mockResolvedValue(
       100_000n
     );
