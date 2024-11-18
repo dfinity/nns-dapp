@@ -161,6 +161,10 @@ interface I18nHeader {
   export_neurons: string;
 }
 
+interface I18nExport_error {
+  neurons: string;
+}
+
 interface I18nAuth {
   login: string;
   ic_logo: string;
@@ -1402,6 +1406,7 @@ interface I18n {
   warning: I18nWarning;
   navigation: I18nNavigation;
   header: I18nHeader;
+  export_error: I18nExport_error;
   auth: I18nAuth;
   accounts: I18nAccounts;
   neuron_types: I18nNeuron_types;
