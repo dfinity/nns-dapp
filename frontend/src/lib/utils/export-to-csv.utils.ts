@@ -1,16 +1,49 @@
+// Source: https://web.dev/patterns/files/save-a-file
+const supportsFileSystemAccess =
+  "showSaveFilePicker" in window &&
+  (() => {
+    try {
+      return window.self === window.top;
+    } catch {
+      return false;
+    }
+  })();
+
+const escapeCsvValue = (value: unknown): string => {
+  if (value === null || value === undefined) return "";
+
+  const stringValue = String(value);
+
+  // Quick check for any special characters before doing more work
+  if (!/[",\r\n=+\-@|]/.test(stringValue)) {
+    return stringValue;
+  }
+
+  // Handle formula injection
+  if (
+    stringValue[0] === "=" ||
+    stringValue[0] === "+" ||
+    stringValue[0] === "-" ||
+    stringValue[0] === "@" ||
+    stringValue[0] === "|"
+  ) {
+    return `'${stringValue}`;
+  }
+
+  // If we need to quote, do all the work
+  if (/[",\r\n]/.test(stringValue)) {
+    return `"${stringValue.replace(/"/g, '""')}"`;
+  }
+
+  return stringValue;
+};
+
 export const convertToCsv = (data: Record<string, unknown>[]) => {
   const headers = Object.keys(data[0]);
-
   const csvRows = [headers.join(",")];
 
   for (const row of data) {
-    const values = headers.map((header) => {
-      const value = row[header];
-      // Handle special cases (like strings with commas)
-      return typeof value === "string" && value.includes(",")
-        ? `"${value}"`
-        : value;
-    });
+    const values = headers.map((header) => escapeCsvValue(row[header]));
     csvRows.push(values.join(","));
   }
 
@@ -18,9 +51,10 @@ export const convertToCsv = (data: Record<string, unknown>[]) => {
 };
 
 export class FileSystemAccessError extends Error {
-  constructor(message: string) {
+  constructor(message: string, { cause }: { cause: string }) {
     super(message);
     this.name = "FileSystemAccessError";
+    this.cause = cause;
   }
 }
 
@@ -31,6 +65,55 @@ export class CSVGenerationError extends Error {
   }
 }
 
+const downloadFileWithShowSaveFilePicker = async ({
+  blob,
+  fileName,
+  description,
+}: {
+  blob: Blob;
+  fileName: string;
+  description: string;
+}) => {
+  try {
+    const handle = await window.showSaveFilePicker({
+      suggestedName: `${fileName}.csv`,
+      types: [
+        {
+          description,
+          accept: { "text/csv": [".csv"] },
+        },
+      ],
+    });
+    const writable = await handle.createWritable();
+    await writable.write(blob);
+    await writable.close();
+  } catch (error) {
+    // User cancelled the save dialog - not an error
+    if (error instanceof Error && error.name === "AbortError") return;
+
+    throw new FileSystemAccessError(
+      "Failed to save file using File System Access API",
+      { cause: error instanceof Error ? error.message : String(error) }
+    );
+  }
+};
+
+const downloadFileWithAnchor = ({ blob }: { blob: Blob }) => {
+  try {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "neurons.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    throw new Error(
+      `Failed to save file using fallback method.\n${error instanceof Error ? error.message : String(error)}`
+    );
+  }
+};
 /**
  * Downloads data as a Csv file using either the File System Access API or fallback method.
  *
@@ -65,48 +148,15 @@ export const downloadCsv = async <T extends Record<string, unknown>>({
   description?: string;
 }): Promise<void> => {
   try {
-    const csvContent = convertToCSV(entity);
-    const blob = new Blob(["\uFEFF" + csvContent], {
+    const csvContent = convertToCsv(entity);
+    const blob = new Blob([csvContent], {
       type: "text/csv;charset=utf-8;",
     });
 
-    if (window.showSaveFilePicker) {
-      try {
-        const handle = await window.showSaveFilePicker({
-          suggestedName: `${fileName}.csv`,
-          types: [
-            {
-              description,
-              accept: { "text/csv": [".csv"] },
-            },
-          ],
-        });
-        const writable = await handle.createWritable();
-        await writable.write(blob);
-        await writable.close();
-      } catch (error) {
-        // User cancelled the save dialog - not an error
-        if (error instanceof Error && error.name === "AbortError") return;
-
-        throw new FileSystemAccessError(
-          "Failed to save file using File System Access API"
-        );
-      }
+    if (supportsFileSystemAccess) {
+      downloadFileWithShowSaveFilePicker({ blob, fileName, description });
     } else {
-      try {
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "neurons.csv";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      } catch (error) {
-        throw new FileSystemAccessError(
-          "Failed to save file using fallback method"
-        );
-      }
+      downloadFileWithAnchor({ blob });
     }
   } catch (error) {
     if (
@@ -115,6 +165,8 @@ export const downloadCsv = async <T extends Record<string, unknown>>({
     ) {
       throw error;
     }
-    throw new Error("Unexpected error during Csv download");
+    throw new Error("Unexpected error during Csv download", {
+      cause: error instanceof Error ? error.message : String(error),
+    });
   }
 };
