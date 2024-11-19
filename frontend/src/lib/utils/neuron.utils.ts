@@ -10,7 +10,6 @@ import {
   E8S_PER_ICP,
 } from "$lib/constants/icp.constants";
 import {
-  CLEAR_FOLLOWING_AFTER_SECONDS,
   MATURITY_MODULATION_VARIANCE_PERCENTAGE,
   MAX_AGE_BONUS,
   MAX_DISSOLVE_DELAY_BONUS,
@@ -1173,17 +1172,10 @@ const getVotingPowerRefreshedTimestampSeconds = ({
   // to avoid unnecessary notifications.
   fullNeuron?.votingPowerRefreshedTimestampSeconds ?? BigInt(nowInSeconds());
 
-export const hasNeuronLostAllRewards = (neuron: NeuronInfo): boolean =>
-  nowInSeconds() >=
-  getVotingPowerRefreshedTimestampSeconds(neuron) +
-    BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS) +
-    BigInt(CLEAR_FOLLOWING_AFTER_SECONDS);
-
 export const isNeuronLosingRewards = (neuron: NeuronInfo): boolean =>
   nowInSeconds() >=
-    getVotingPowerRefreshedTimestampSeconds(neuron) +
-      BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS) &&
-  !hasNeuronLostAllRewards(neuron);
+  getVotingPowerRefreshedTimestampSeconds(neuron) +
+    BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS);
 
 // e.g. "Neuron will start losing rewards in 30 days"
 export const shouldDisplayRewardLossNotification = (

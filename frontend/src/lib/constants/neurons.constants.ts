@@ -1,7 +1,6 @@
 import {
   SECONDS_IN_7_DAYS,
   SECONDS_IN_HALF_YEAR,
-  SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
 import { enumValues } from "$lib/utils/enum.utils";
 import { Topic } from "@dfinity/nns";
@@ -42,11 +41,6 @@ export const TOPICS_TO_FOLLOW_NNS = [
 // Draft ic pr: https://github.com/dfinity/ic/blob/c2da5aca97a07bae4fcbf5d72a8c0448b40599d7/rs/nns/governance/canister/governance.did#L582)
 // TODO(mstr): replace with the actual ic link.
 export const START_REDUCING_VOTING_POWER_AFTER_SECONDS = SECONDS_IN_HALF_YEAR;
-// After how many seconds from the start of voting power decrease,
-// a neuron followings (all topics other than NeuronManagement) will be cleared.
-// Draft ic pr: https://github.com/dfinity/ic/blob/c2da5aca97a07bae4fcbf5d72a8c0448b40599d7/rs/nns/governance/canister/governance.did#L592
-// TODO(mstr): replace with the actual ic link.
-export const CLEAR_FOLLOWING_AFTER_SECONDS = SECONDS_IN_MONTH;
 
 // To notify users that their rewards will start decreasing in 30 days.
 export const NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS = 30;
