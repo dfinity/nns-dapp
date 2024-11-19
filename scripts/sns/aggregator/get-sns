@@ -20,7 +20,7 @@ get_aggregator_page() {
   local page="$1"
   local aggregator_url
   aggregator_url="$("$SOURCE_DIR/../../dfx-server-origin" --canister sns_aggregator --network "$DFX_NETWORK")/v1/sns/list/page/$page/slow.json"
-  curl -Lsf "$aggregator_url" > "$(get_local_page_filename "$page")"
+  curl -Lsf "$aggregator_url" >"$(get_local_page_filename "$page")"
 }
 
 if [[ "$DFX_NETWORK" = "mainnet" ]]; then
@@ -33,7 +33,7 @@ else
   AGGREGATOR_PAGES=()
   while get_aggregator_page "$page"; do
     AGGREGATOR_PAGES+=("$(get_local_page_filename "$page")")
-    page=$(( page + 1 ))
+    page=$((page + 1))
   done
   rm "$(get_local_page_filename "$page")"
 fi
