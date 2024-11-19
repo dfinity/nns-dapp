@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-11-07_03-07-6.11-kernel/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-11-14_03-07-base/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -89,6 +89,11 @@ pub struct TargetVersionSet {
     pub new_target_version: Option<Version>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct UpgradeStepsReset {
+    pub human_readable: Option<String>,
+    pub upgrade_steps: Option<Versions>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum UpgradeOutcomeStatusInner {
     Success(EmptyRecord),
     Timeout(EmptyRecord),
@@ -127,6 +132,7 @@ pub struct TargetVersionReset {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum UpgradeJournalEntryEventInner {
     TargetVersionSet(TargetVersionSet),
+    UpgradeStepsReset(UpgradeStepsReset),
     UpgradeOutcome(UpgradeOutcome),
     UpgradeStarted(UpgradeStarted),
     UpgradeStepsRefreshed(UpgradeStepsRefreshed),
@@ -198,7 +204,7 @@ pub struct RewardEvent {
     pub settled_proposals: Vec<ProposalId>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct UpgradeInProgress {
+pub struct PendingVersion {
     pub mark_failed_at_seconds: u64,
     pub checking_upgrade_lock: u64,
     pub proposal_id: u64,
@@ -540,7 +546,7 @@ pub struct Governance {
     pub deployed_version: Option<Version>,
     pub sns_initialization_parameters: String,
     pub latest_reward_event: Option<RewardEvent>,
-    pub pending_version: Option<UpgradeInProgress>,
+    pub pending_version: Option<PendingVersion>,
     pub swap_canister_id: Option<Principal>,
     pub ledger_canister_id: Option<Principal>,
     pub proposals: Vec<(u64, ProposalData)>,
@@ -683,6 +689,13 @@ pub struct CanisterStatusResultV2 {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetRunningSnsVersionArg {}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct UpgradeInProgress {
+    pub mark_failed_at_seconds: u64,
+    pub checking_upgrade_lock: u64,
+    pub proposal_id: u64,
+    pub target_version: Option<Version>,
+}
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetRunningSnsVersionResponse {
     pub deployed_version: Option<Version>,
