@@ -37,8 +37,8 @@ export const TOPICS_TO_FOLLOW_NNS = [
   ...LAST_TOPICS,
 ];
 
-// If a neuron has not "refreshed" (manual voting or a following update) its voting power after this amount of time,
-// its deciding voting power starts decreasing linearly.
+// A neuron's voting power begins to decrease linearly if it remains inactive for this duration.
+// Inactivity means no manual votes cast and no updates to the list of followed neurons (followees).
 export const START_REDUCING_VOTING_POWER_AFTER_SECONDS = SECONDS_IN_HALF_YEAR;
 // After how many seconds from the start of voting power decrease,
 // a neuron followings (all topics other than NeuronManagement) will be cleared.
