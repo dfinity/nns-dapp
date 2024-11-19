@@ -1,4 +1,4 @@
-const convertToCsv = (data: Record<string, unknown>[]) => {
+export const convertToCsv = (data: Record<string, unknown>[]) => {
   const headers = Object.keys(data[0]);
 
   const csvRows = [headers.join(",")];
@@ -118,6 +118,3 @@ export const downloadCsv = async <T extends Record<string, unknown>>({
     throw new Error("Unexpected error during Csv download");
   }
 };
-
-// For testing purposes
-downloadCsv.convertToCsv = convertToCsv;
