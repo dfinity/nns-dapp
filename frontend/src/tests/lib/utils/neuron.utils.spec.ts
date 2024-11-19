@@ -3215,6 +3215,15 @@ describe("neuron-utils", () => {
       startLosingRewardsTimestamp - SECONDS_IN_MONTH;
 
     describe("hasNeuronLostAllRewards", () => {
+      it("should return false by default", () => {
+        expect(
+          hasNeuronLostAllRewards({
+            ...mockNeuron,
+            fullNeuron: undefined,
+          })
+        ).toBe(false);
+      });
+
       it("should return true", () => {
         expect(
           hasNeuronLostAllRewards(
@@ -3248,6 +3257,15 @@ describe("neuron-utils", () => {
     });
 
     describe("isNeuronLosingRewards", () => {
+      it("should return false by default", () => {
+        expect(
+          isNeuronLosingRewards({
+            ...mockNeuron,
+            fullNeuron: undefined,
+          })
+        ).toBe(false);
+      });
+
       it("should return true", () => {
         expect(
           isNeuronLosingRewards(
@@ -3281,6 +3299,15 @@ describe("neuron-utils", () => {
     });
 
     describe("shouldDisplayRewardLossNotification", () => {
+      it("should return false by default", () => {
+        expect(
+          shouldDisplayRewardLossNotification({
+            ...mockNeuron,
+            fullNeuron: undefined,
+          })
+        ).toBe(false);
+      });
+
       it("should return true", () => {
         expect(
           shouldDisplayRewardLossNotification(
