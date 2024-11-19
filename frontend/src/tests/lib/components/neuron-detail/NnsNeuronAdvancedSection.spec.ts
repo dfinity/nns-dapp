@@ -12,7 +12,7 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { createMockNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { NnsNeuronAdvancedSectionPo } from "$tests/page-objects/NnsNeuronAdvancedSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -243,5 +243,23 @@ describe("NnsNeuronAdvancedSection", () => {
     const po = renderComponent(neuron);
 
     expect(await po.dissolveDate()).toBeNull();
+  });
+
+  it("should display NnsNeuronPublicVisibilityAction when ENABLE_NEURON_VISIBILITY is true", async () => {
+    const po = renderComponent(mockNeuron);
+
+    expect(await po.getNnsNeuronPublicVisibilityActionPo().isPresent()).toBe(
+      true
+    );
+  });
+
+  it("should pass the correct neuron to NnsNeuronPublicVisibilityAction", async () => {
+    const po = renderComponent(createMockNeuron(123));
+
+    expect(await po.getNnsNeuronPublicVisibilityActionPo().isPresent()).toBe(
+      true
+    );
+
+    expect(await po.getNeuronId()).toBe("123");
   });
 });
