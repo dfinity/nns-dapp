@@ -396,7 +396,8 @@
         "FEATURE_FLAGS": {
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
-          "ENABLE_NEURON_VISIBILITY": true
+          "ENABLE_NEURON_VISIBILITY": true,
+          "ENABLE_EXPORT_NEURONS_REPORT": false
         }
       },
       "providers": [
