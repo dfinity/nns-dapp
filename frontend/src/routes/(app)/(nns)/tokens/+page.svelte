@@ -301,16 +301,12 @@
 
     {#if modal.type === "ckbtc-receive" && nonNullish(ckBTCCanisters) && nonNullish(account)}
       <CkBtcReceiveModal
-        data="generateCsvDownload"
-        canisters:
-        ckBTCCanisters,
-        account,
-        universeId:
-        modal.data.universeId,
-        canSelectAccount:
-        false,
-        reload:
-        createReloadAccountBalance(modal.data.universeId),
+        data={{
+          canisters: ckBTCCanisters,
+          account,
+          universeId: modal.data.universeId,
+          canSelectAccount: false,
+          reload: createReloadAccountBalance(modal.data.universeId),
         }}
         on:nnsClose={closeModal}
       />
