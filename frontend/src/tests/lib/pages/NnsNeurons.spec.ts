@@ -131,18 +131,10 @@ describe("NnsNeurons", () => {
         privateControlledNeuron,
       ]);
     });
-    it("should render makeNeuronsPublicBanner when ENABLE_NEURON_VISIBILITY set to true", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", true);
+    it("should render makeNeuronsPublicBanner", async () => {
       const po = await renderComponent();
 
       expect(await po.getMakeNeuronsPublicBannerPo().isPresent()).toBe(true);
-    });
-
-    it("should render makeNeuronsPublicBanner when ENABLE_NEURON_VISIBILITY set to false", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", false);
-      const po = await renderComponent();
-
-      expect(await po.getMakeNeuronsPublicBannerPo().isPresent()).toBe(false);
     });
   });
 
