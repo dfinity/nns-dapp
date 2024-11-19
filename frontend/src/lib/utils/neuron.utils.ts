@@ -1168,22 +1168,18 @@ export const isPublicNeuron = (neuronInfo: NeuronInfo): boolean => {
 
 const getVotingPowerRefreshedTimestampSeconds = ({
   fullNeuron,
-}: NeuronInfo & { fullNeuron: Neuron }): bigint =>
-  // The timestamp is always defined.
-  // https://github.com/dfinity/ic/blob/f8c4eb15e8447f967e9b31edc305412c1741a6e6/rs/nns/governance/src/lib.rs#L186-L189
-  fullNeuron.votingPowerRefreshedTimestampSeconds as bigint;
+}: NeuronInfo): bigint =>
+  // When the fullNeuron is not presented, we assume that the neuron is not losing rewards
+  // to avoid unnecessary notifications.
+  fullNeuron?.votingPowerRefreshedTimestampSeconds ?? BigInt(nowInSeconds());
 
-export const hasNeuronLostAllRewards = (
-  neuron: NeuronInfo & { fullNeuron: Neuron }
-): boolean =>
+export const hasNeuronLostAllRewards = (neuron: NeuronInfo): boolean =>
   nowInSeconds() >=
   getVotingPowerRefreshedTimestampSeconds(neuron) +
     BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS) +
     BigInt(CLEAR_FOLLOWING_AFTER_SECONDS);
 
-export const isNeuronLosingRewards = (
-  neuron: NeuronInfo & { fullNeuron: Neuron }
-): boolean =>
+export const isNeuronLosingRewards = (neuron: NeuronInfo): boolean =>
   nowInSeconds() >=
     getVotingPowerRefreshedTimestampSeconds(neuron) +
       BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS) &&
@@ -1191,7 +1187,7 @@ export const isNeuronLosingRewards = (
 
 // e.g. "Neuron will start losing rewards in 30 days"
 export const shouldDisplayRewardLossNotification = (
-  neuron: NeuronInfo & { fullNeuron: Neuron }
+  neuron: NeuronInfo
 ): boolean =>
   nowInSeconds() >=
   getVotingPowerRefreshedTimestampSeconds(neuron) +
