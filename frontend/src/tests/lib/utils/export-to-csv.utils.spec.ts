@@ -1,5 +1,4 @@
 import {
-  CSVGenerationError,
   FileSystemAccessError,
   downloadCSV,
 } from "$lib/utils/export-to-csv.utils";
@@ -19,20 +18,17 @@ describe("CSV Utils", () => {
   });
 
   describe("downloadCSV", () => {
-    it("should throw CSVGenerationError when no data is provided", async () => {
-      await expect(downloadCSV({ entity: [] })).rejects.toThrow(
-        CSVGenerationError
-      );
-    });
-
     describe("Modern Browser (File System Access API)", () => {
-      it("should use File System Access API when available", async () => {
-        const mockWritable = {
+      let mockWritable;
+      let mockHandle;
+
+      beforeEach(() => {
+        mockWritable = {
           write: vi.fn(),
           close: vi.fn(),
         };
 
-        const mockHandle = {
+        mockHandle = {
           createWritable: vi.fn().mockResolvedValue(mockWritable),
         };
 
@@ -40,6 +36,9 @@ describe("CSV Utils", () => {
           "showSaveFilePicker",
           vi.fn().mockResolvedValue(mockHandle)
         );
+      });
+
+      it("should use File System Access API when available", async () => {
         await downloadCSV({
           entity: [{}],
           fileName: "test",
@@ -54,8 +53,9 @@ describe("CSV Utils", () => {
             },
           ],
         });
-        expect(mockWritable.write).toHaveBeenCalled();
-        expect(mockWritable.close).toHaveBeenCalled();
+        expect(mockWritable.write).toHaveBeenCalledWith(expect.any(Blob));
+        expect(mockWritable.write).toHaveBeenCalledTimes(1);
+        expect(mockWritable.close).toHaveBeenCalledTimes(1);
       });
 
       it("should gracefully handle user cancellation of save dialog", async () => {
@@ -101,20 +101,20 @@ describe("CSV Utils", () => {
           fileName: "test",
         });
 
-        expect(URL.createObjectURL).toHaveBeenCalled();
+        expect(URL.createObjectURL).toBeCalledTimes(1);
         expect(clickSpy).toHaveBeenCalled();
         expect(URL.revokeObjectURL).toHaveBeenCalled();
       });
-    });
 
-    it("should throw FileSystemAccessError on fallback method failure", async () => {
-      document.body.appendChild = vi.fn().mockReturnValueOnce(() => {
-        throw new Error("DOM Error");
+      it("should throw FileSystemAccessError on fallback method failure", async () => {
+        document.body.appendChild = vi.fn().mockReturnValueOnce(() => {
+          throw new Error("DOM Error");
+        });
+
+        await expect(downloadCSV({ entity: [{}] })).rejects.toThrow(
+          FileSystemAccessError
+        );
       });
-
-      await expect(downloadCSV({ entity: [{}] })).rejects.toThrow(
-        FileSystemAccessError
-      );
     });
   });
 });

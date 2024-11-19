@@ -35,7 +35,7 @@ export class CSVGenerationError extends Error {
  * Downloads data as a CSV file using either the File System Access API or fallback method.
  *
  * @param options - Configuration object for the CSV download
- * @param options.entity - Array of objects to be converted to CSV. Each object should have consistent keys.
+ * @param options.entity - Array of objects to be converted to CSV. Each object should have consistent keys. It uses first object to check for consistency
  * @param options.fileName - Name of the file without extension (defaults to "entity")
  * @param options.description - File description for save dialog (defaults to " CSV file")
  *
@@ -55,20 +55,16 @@ export class CSVGenerationError extends Error {
  * - Automatically handles values containing commas by wrapping them in quotes
  * - Adds BOM character for proper UTF-8 encoding in Excel
  */
-export const downloadCSV = async ({
+export const downloadCSV = async <T extends Record<string, unknown>>({
   entity,
   fileName = "entity",
   description = " CSV file",
 }: {
-  entity: Record<string, unknown>[];
+  entity: [T, ...Array<{ [K in keyof T]: T[K] }>];
   fileName?: string;
   description?: string;
 }): Promise<void> => {
   try {
-    if (!entity?.length) {
-      throw new CSVGenerationError("No data provided for CSV generation");
-    }
-
     const csvContent = convertToCSV(entity);
     const blob = new Blob(["\uFEFF" + csvContent], {
       type: "text/csv;charset=utf-8;",
