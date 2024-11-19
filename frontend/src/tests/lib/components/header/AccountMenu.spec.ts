@@ -1,4 +1,5 @@
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import {
   mockLinkClickEvent,
   resetNavigationCallbacks,
@@ -124,5 +125,24 @@ describe("AccountMenu", () => {
 
       expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(false);
     });
+
+    describe("export feature toggle", () => {
+      it("should not show the Export Neurons Report button", async () => {
+        const renderResult = render(AccountMenu);
+  
+        await show(renderResult);
+  
+        expect(renderResult.queryByTestId("export-neurons-button")).toBeNull();
+      });
+
+      it("should show the Export Neurons Report button if feature toggle is on", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", true);
+        const renderResult = render(AccountMenu);
+  
+        await show(renderResult);
+  
+        expect(renderResult.getByTestId("export-neurons-button")).not.toBeNull();
+      });
+    })
   });
 });
