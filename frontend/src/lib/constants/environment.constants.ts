@@ -15,6 +15,7 @@ export interface FeatureFlags<T> {
   DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: T;
   ENABLE_NEURON_VISIBILITY: T;
   ENABLE_PERIODIC_FOLLOWING_CONFIRMATION: T;
+  ENABLE_EXPORT_NEURONS_REPORT: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;
@@ -29,7 +30,7 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
   envVars?.featureFlags ??
-    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_SNS_TYPES_FILTER": false, "ENABLE_NEURON_VISIBILITY": false}'
+    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_SNS_TYPES_FILTER": false, "ENABLE_NEURON_VISIBILITY": false, "ENABLE_EXPORT_NEURONS_REPORT": false}'
 );
 
 export const IS_TESTNET: boolean =
