@@ -1,9 +1,9 @@
 import {
   FileSystemAccessError,
-  downloadCSV,
+  downloadCsv,
 } from "$lib/utils/export-to-csv.utils";
 
-describe("CSV Utils", () => {
+describe("Csv Utils", () => {
   describe("convertToCSV", () => {
     it("should handle values containing commas by wrapping them in quotes", () => {
       const data = [
@@ -11,7 +11,7 @@ describe("CSV Utils", () => {
         { name: "Jane", age: 25 },
       ];
 
-      const result = downloadCSV.convertToCSV(data);
+      const result = downloadCsv.convertToCsv(data);
       const expected = 'name,age\n"John, Jr.",30\nJane,25';
       expect(result).toBe(expected);
     });
@@ -48,7 +48,7 @@ describe("CSV Utils", () => {
           suggestedName: "test.csv",
           types: [
             {
-              description: " CSV file",
+              description: "Csv file",
               accept: { "text/csv": [".csv"] },
             },
           ],
