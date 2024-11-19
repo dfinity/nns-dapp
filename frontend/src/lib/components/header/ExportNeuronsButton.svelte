@@ -85,8 +85,6 @@
         : null;
     const creationDate = secondsToDate(Number(neuron.createdTimestampSeconds));
 
-    // what about maturity in the stake? should I add or show it the same as the Neurons table?
-    // do I need transalations for this?
     return {
       ["Neuron Id"]: neuronId,
       ["Stake"]: formatTokenV2({
