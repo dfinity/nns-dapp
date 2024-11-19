@@ -287,6 +287,8 @@ jobs:
             # moreutils is needed for sponge, used by network-config.test
             brew install bash coreutils moreutils
           fi
+      - name: Install dfx
+        uses: dfinity/setup-dfx@main
       - name: Install didc
         run: |
           scripts/install-didc
