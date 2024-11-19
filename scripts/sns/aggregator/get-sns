@@ -5,19 +5,42 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/../../clap.bash"
 clap.define long=json desc="Output as json" variable="ENABLE_JSON" nargs=0
+clap.define long=network desc="dfx network to use" variable="DFX_NETWORK" default="mainnet"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
 SEARCH_PATTERN="$1"
 
-# These exist for a frontend test but they are kept up-to-date weekly so they
-# are useful to have quick access to the list of SNSes. We only use them to
-# find which SNS to query but then get the actual data from the aggregator.
-AGGREGATOR_PAGES=("$SOURCE_DIR"/../../../frontend/src/tests/workflows/Launchpad/sns-agg-page-*.json)
+get_local_page_filename() {
+  local page="$1"
+  echo "sns-agg-page-$page.json"
+}
+
+get_aggregator_page() {
+  local page="$1"
+  local aggregator_url
+  aggregator_url="$("$SOURCE_DIR/../../dfx-server-origin" --canister sns_aggregator --network "$DFX_NETWORK")/v1/sns/list/page/$page/slow.json"
+  curl -Lsf "$aggregator_url" > "$(get_local_page_filename "$page")"
+}
+
+if [[ "$DFX_NETWORK" = "mainnet" ]]; then
+  # These exist for a frontend test but they are kept up-to-date weekly so they
+  # are useful to have quick access to the list of SNSes. We only use them to
+  # find which SNS to query but then get the actual data from the aggregator.
+  AGGREGATOR_PAGES=("$SOURCE_DIR"/../../../frontend/src/tests/workflows/Launchpad/sns-agg-page-*.json)
+else
+  page=0
+  AGGREGATOR_PAGES=()
+  while get_aggregator_page "$page"; do
+    AGGREGATOR_PAGES+=("$(get_local_page_filename "$page")")
+    page=$(( page + 1 ))
+  done
+  rm "$(get_local_page_filename "$page")"
+fi
 
 ROOT_CANISTER_ID="$(jq -c '.[] | select(.lifecycle.lifecycle != 4) | .canister_ids * {name: .meta.name, symbol: (.icrc1_metadata | .[] | select(.[0] == "icrc1:symbol") | .[1].Text) }' "${AGGREGATOR_PAGES[@]}" | grep -i "$SEARCH_PATTERN" | head -n 1 | jq -r .root_canister_id)"
 
-AGGREGATOR_URL="https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/root/$ROOT_CANISTER_ID/slow.json"
+AGGREGATOR_URL="$("$SOURCE_DIR/../../dfx-server-origin" --canister sns_aggregator --network "$DFX_NETWORK")/v1/sns/root/$ROOT_CANISTER_ID/slow.json"
 
 get_sns_data() {
   curl -LsSf "$AGGREGATOR_URL"
