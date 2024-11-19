@@ -158,6 +158,14 @@ interface I18nHeader {
   account_menu: string;
   main_icp_account_id: string;
   account_id_tooltip: string;
+  export_neurons: string;
+}
+
+interface I18nExport_error {
+  csv_generation: string;
+  file_system_access: string;
+  neurons: string;
+  no_neurons: string;
 }
 
 interface I18nAuth {
@@ -1401,6 +1409,7 @@ interface I18n {
   warning: I18nWarning;
   navigation: I18nNavigation;
   header: I18nHeader;
+  export_error: I18nExport_error;
   auth: I18nAuth;
   accounts: I18nAccounts;
   neuron_types: I18nNeuron_types;

@@ -3,6 +3,7 @@
   import ManageInternetIdentityButton from "$lib/components/header/ManageInternetIdentityButton.svelte";
   import SettingsButton from "$lib/components/header/SettingsButton.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { ENABLE_EXPORT_NEURONS_REPORT } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import AccountDetails from "./AccountDetails.svelte";
   import LinkToCanisters from "./LinkToCanisters.svelte";
@@ -38,6 +39,10 @@
         <SettingsButton on:nnsLink={closeMenu} />
 
         <LinkToCanisters on:nnsLink={closeMenu} />
+
+        {#if $ENABLE_EXPORT_NEURONS_REPORT}
+          <ExportNeuronsButton on:nnsExportNeuronsCSVTriggered={toggle} />
+        {/if}
 
         <Logout on:nnsLogoutTriggered={toggle} />
       </div>
