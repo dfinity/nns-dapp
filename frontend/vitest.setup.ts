@@ -80,6 +80,7 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
       ENABLE_PERIODIC_FOLLOWING_CONFIRMATION: false,
       ENABLE_NEURON_VISIBILITY: true,
+      ENABLE_EXPORT_NEURONS_REPORT: false,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
     }),
