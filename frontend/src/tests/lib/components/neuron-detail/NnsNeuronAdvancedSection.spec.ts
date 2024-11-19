@@ -12,7 +12,7 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
-import { createMockNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { NnsNeuronAdvancedSectionPo } from "$tests/page-objects/NnsNeuronAdvancedSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -244,5 +244,4 @@ describe("NnsNeuronAdvancedSection", () => {
 
     expect(await po.dissolveDate()).toBeNull();
   });
-
 });
