@@ -1173,7 +1173,7 @@ const getVotingPowerRefreshedTimestampSeconds = ({
   // https://github.com/dfinity/ic/blob/f8c4eb15e8447f967e9b31edc305412c1741a6e6/rs/nns/governance/src/lib.rs#L186-L189
   fullNeuron.votingPowerRefreshedTimestampSeconds as bigint;
 
-export const neuronLostAllRewards = (
+export const hasNeuronLostAllRewards = (
   neuron: NeuronInfo & { fullNeuron: Neuron }
 ): boolean =>
   nowInSeconds() >=
@@ -1181,13 +1181,13 @@ export const neuronLostAllRewards = (
     BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS) +
     BigInt(CLEAR_FOLLOWING_AFTER_SECONDS);
 
-export const neuronLosingRewards = (
+export const isNeuronLosingRewards = (
   neuron: NeuronInfo & { fullNeuron: Neuron }
 ): boolean =>
   nowInSeconds() >=
     getVotingPowerRefreshedTimestampSeconds(neuron) +
       BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS) &&
-  !neuronLostAllRewards(neuron);
+  !hasNeuronLostAllRewards(neuron);
 
 // e.g. "Neuron will start losing rewards in 30 days"
 export const shouldDisplayRewardLossNotification = (
