@@ -147,7 +147,9 @@ describe("Export to Csv", () => {
           vi.fn().mockRejectedValue(abortError)
         );
 
-        await expect(generateCsvDownload({ entity: [{}] })).resolves.not.toThrow();
+        await expect(
+          generateCsvDownload({ entity: [{}] })
+        ).resolves.not.toThrow();
       });
 
       it("should throw FileSystemAccessError when modern API fails", async () => {
