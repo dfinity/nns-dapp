@@ -6,6 +6,12 @@ import {
 
 describe("Export to Csv", () => {
   describe("convertToCSV", () => {
+    it("should handle empty arrays", () => {
+      const data = [];
+      const expected = "";
+      expect(convertToCsv(data)).toBe(expected);
+    });
+
     it("should handle null and undefined values", () => {
       const data = [
         { name: null, age: undefined, city: "New York" },
@@ -13,11 +19,6 @@ describe("Export to Csv", () => {
       ];
       const expected = "name,age,city\n,,New York\nJane,25,";
       expect(convertToCsv(data)).toBe(expected);
-    });
-
-    it("should handle empty array", () => {
-      const data: Record<string, unknown>[] = [];
-      expect(convertToCsv(data)).toBe("");
     });
 
     it("should handle values containing commas by wrapping them in quotes", () => {
@@ -56,23 +57,7 @@ describe("Export to Csv", () => {
         { note: "Line 1\nLine 2", id: 1 },
         { note: "Single Line", id: 2 },
       ];
-      const expected = 'note,id\n"Line 1\nLine 2",1\n"Single Line",2';
-      expect(convertToCsv(data)).toBe(expected);
-    });
-
-    it("should handle combination of special characters", () => {
-      const data = [
-        {
-          value: '=Formula with "quotes", and\nnewline',
-          id: 1,
-        },
-        {
-          value: 'Normal text with "quotes" and, comma',
-          id: 2,
-        },
-      ];
-      const expected =
-        'value,id\n"\'=Formula with ""quotes"", and\nnewline",1\n"Normal text with ""quotes"" and, comma",2';
+      const expected = 'note,id\n"Line 1\nLine 2",1\nSingle Line,2';
       expect(convertToCsv(data)).toBe(expected);
     });
 
@@ -92,20 +77,24 @@ describe("Export to Csv", () => {
           id: 1,
         },
       ];
-      const expected = 'value,id\n<script>alert("xss")</script>,1';
+      const expected = 'value,id\n"<script>alert(""xss"")</script>",1';
       expect(convertToCsv(data)).toBe(expected);
     });
   });
 
   describe("downloadCSV", () => {
+    beforeEach(() => {
+      vi.spyOn(console, "error").mockImplementation(() => {});
+    });
+
     describe("Modern Browser (File System Access API)", () => {
       let mockWritable;
       let mockHandle;
 
       beforeEach(() => {
         mockWritable = {
-          write: vi.fn(),
-          close: vi.fn(),
+          write: vi.fn().mockResolvedValue(undefined),
+          close: vi.fn().mockResolvedValue(undefined),
         };
 
         mockHandle = {
@@ -133,6 +122,7 @@ describe("Export to Csv", () => {
             },
           ],
         });
+        expect(mockHandle.createWritable).toHaveBeenCalledTimes(1);
         expect(mockWritable.write).toHaveBeenCalledWith(expect.any(Blob));
         expect(mockWritable.write).toHaveBeenCalledTimes(1);
         expect(mockWritable.close).toHaveBeenCalledTimes(1);

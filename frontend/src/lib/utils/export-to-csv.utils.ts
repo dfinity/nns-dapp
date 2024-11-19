@@ -1,14 +1,3 @@
-// Source: https://web.dev/patterns/files/save-a-file
-const supportsFileSystemAccess =
-  "showSaveFilePicker" in window &&
-  (() => {
-    try {
-      return window.self === window.top;
-    } catch {
-      return false;
-    }
-  })();
-
 const escapeCsvValue = (value: unknown): string => {
   if (value === null || value === undefined) return "";
 
@@ -39,6 +28,7 @@ const escapeCsvValue = (value: unknown): string => {
 };
 
 export const convertToCsv = (data: Record<string, unknown>[]) => {
+  if (data.length === 0) return "";
   const headers = Object.keys(data[0]);
   const csvRows = [headers.join(",")];
 
@@ -51,20 +41,28 @@ export const convertToCsv = (data: Record<string, unknown>[]) => {
 };
 
 export class FileSystemAccessError extends Error {
-  constructor(message: string, { cause }: { cause: string }) {
+  constructor(message: string, options: ErrorOptions = {}) {
     super(message);
     this.name = "FileSystemAccessError";
-    this.cause = cause;
+
+    if (options.cause) {
+      this.cause = options.cause;
+    }
   }
 }
 
 export class CSVGenerationError extends Error {
-  constructor(message: string) {
+  constructor(message: string, options: ErrorOptions = {}) {
     super(message);
     this.name = "CSVGenerationError";
+
+    if (options.cause) {
+      this.cause = options.cause;
+    }
   }
 }
 
+// Source: https://web.dev/patterns/files/save-a-file
 const downloadFileWithShowSaveFilePicker = async ({
   blob,
   fileName,
@@ -93,24 +91,33 @@ const downloadFileWithShowSaveFilePicker = async ({
 
     throw new FileSystemAccessError(
       "Failed to save file using File System Access API",
-      { cause: error instanceof Error ? error.message : String(error) }
+      { cause: error }
     );
   }
 };
 
-const downloadFileWithAnchor = ({ blob }: { blob: Blob }) => {
+const downloadFileWithAnchor = ({
+  blob,
+  fileName,
+}: {
+  blob: Blob;
+  fileName: string;
+}) => {
   try {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = "neurons.csv";
+    link.download = `${fileName}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   } catch (error) {
-    throw new Error(
-      `Failed to save file using fallback method.\n${error instanceof Error ? error.message : String(error)}`
+    throw new FileSystemAccessError(
+      "Failed to save file using fallback method",
+      {
+        cause: error,
+      }
     );
   }
 };
@@ -130,7 +137,7 @@ const downloadFileWithAnchor = ({ blob }: { blob: Blob }) => {
  *   ]
  * });
  *
- * @throws {Error} If the data array is empty or contains inconsistent object structures
+ * @throws {FileSystemAccessError|CSVGenerationError} If there is an issue accessing the file system or generating the Csv
  * @returns {Promise<void>} Promise that resolves when the file has been downloaded
  *
  * @remarks
@@ -141,7 +148,7 @@ const downloadFileWithAnchor = ({ blob }: { blob: Blob }) => {
 export const generateCsvDownload = async <T extends Record<string, unknown>>({
   entity,
   fileName = "entity",
-  description = " Csv file",
+  description = "Csv file",
 }: {
   entity: [T, ...Array<{ [K in keyof T]: T[K] }>];
   fileName?: string;
@@ -149,24 +156,28 @@ export const generateCsvDownload = async <T extends Record<string, unknown>>({
 }): Promise<void> => {
   try {
     const csvContent = convertToCsv(entity);
-    const blob = new Blob([csvContent], {
+    const blob = new Blob(["\uFEFF" + csvContent], {
       type: "text/csv;charset=utf-8;",
     });
 
-    if (supportsFileSystemAccess) {
-      downloadFileWithShowSaveFilePicker({ blob, fileName, description });
+    if (
+      "showSaveFilePicker" in window &&
+      typeof window.showSaveFilePicker === "function"
+    ) {
+      await downloadFileWithShowSaveFilePicker({ blob, fileName, description });
     } else {
-      downloadFileWithAnchor({ blob });
+      downloadFileWithAnchor({ blob, fileName });
     }
   } catch (error) {
-    if (
-      error instanceof FileSystemAccessError ||
-      error instanceof CSVGenerationError
-    ) {
+    console.error(error);
+    if (error instanceof FileSystemAccessError) {
       throw error;
     }
-    throw new Error("Unexpected error during Csv download", {
-      cause: error instanceof Error ? error.message : String(error),
-    });
+    throw new CSVGenerationError(
+      "Unexpected error generating Csv to download",
+      {
+        cause: error,
+      }
+    );
   }
 };
