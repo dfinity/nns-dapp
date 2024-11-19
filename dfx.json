@@ -381,8 +381,7 @@
         "HOST": "https://cosku-ingress.devenv.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_CKBTC": true,
-          "ENABLE_CKTESTBTC": false,
-          "ENABLE_NEURON_VISIBILITY": true
+          "ENABLE_CKTESTBTC": false
         }
       },
       "providers": [
@@ -395,8 +394,7 @@
         "HOST": "https://yhabib-ingress.devenv.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_CKBTC": true,
-          "ENABLE_CKTESTBTC": false,
-          "ENABLE_NEURON_VISIBILITY": true
+          "ENABLE_CKTESTBTC": false
         }
       },
       "providers": [
@@ -428,7 +426,6 @@
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
-          "ENABLE_NEURON_VISIBILITY": true,
           "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION": false,
           "ENABLE_EXPORT_NEURONS_REPORT": false
         }

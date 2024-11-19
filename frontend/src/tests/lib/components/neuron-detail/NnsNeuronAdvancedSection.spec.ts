@@ -245,7 +245,7 @@ describe("NnsNeuronAdvancedSection", () => {
     expect(await po.dissolveDate()).toBeNull();
   });
 
-  it("should display NnsNeuronPublicVisibilityAction when ENABLE_NEURON_VISIBILITY is true", async () => {
+  it("should display NnsNeuronPublicVisibilityAction", async () => {
     const po = renderComponent(mockNeuron);
 
     expect(await po.getNnsNeuronPublicVisibilityActionPo().isPresent()).toBe(
