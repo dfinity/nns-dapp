@@ -1,6 +1,7 @@
 <script lang="ts">
   import ImportTokenRemoveConfirmation from "$lib/components/accounts/ImportTokenRemoveConfirmation.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import AccountDetails from "$lib/components/header/AccountDetails.svelte";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
@@ -36,7 +37,8 @@
     UserTokenData,
     UserTokenFailed,
   } from "$lib/types/tokens-page";
-  import type { Universe, UniverseCanisterIdText } from "$lib/types/universe";
+  import type { Universe, UniverseCanisterIdTgenerateCsvDownload"$lib/types/universe";
+  import { downloadCsv } from "$lib/utils/export-to-csv.utils";
   import { compareTokensForTokensTable } from "$lib/utils/tokens-table.utils";
   import {
     isIcrcTokenUniverse,
@@ -265,6 +267,18 @@
     />
   {/if}
 
+  <button
+    on:click={() => {
+      downloadCsv({
+        entity: [
+          { name: "Petter", age: 30 },
+          { name: "Joöáå", age: 20 },
+        ],
+      });
+      console.log("ho");
+    }}>LOOOOL</button
+  >
+
   {#if nonNullish(modal) && isUserTokenData(modal.data)}
     {#if modal.type === "sns-send"}
       <IcrcTokenTransactionModal
@@ -301,8 +315,7 @@
 
     {#if modal.type === "ckbtc-receive" && nonNullish(ckBTCCanisters) && nonNullish(account)}
       <CkBtcReceiveModal
-        data={{
-          canisters: ckBTCCanisters,
+        data=generateCsvDownload  canisters: ckBTCCanisters,
           account,
           universeId: modal.data.universeId,
           canSelectAccount: false,

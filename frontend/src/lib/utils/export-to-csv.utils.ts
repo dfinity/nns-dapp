@@ -123,7 +123,7 @@ const downloadFileWithAnchor = ({ blob }: { blob: Blob }) => {
  * @param options.description - File description for save dialog (defaults to " Csv file")
  *
  * @example
- * await downloadCsv({
+ * await generateCsvDownload({
  *   entity: [
  *     { name: "John", age: 30 },
  *     { name: "Jane", age: 25 }
@@ -138,7 +138,7 @@ const downloadFileWithAnchor = ({ blob }: { blob: Blob }) => {
  * - Automatically handles values containing commas by wrapping them in quotes
  * - Adds BOM character for proper UTF-8 encoding in Excel
  */
-export const downloadCsv = async <T extends Record<string, unknown>>({
+export const generateCsvDownload = async <T extends Record<string, unknown>>({
   entity,
   fileName = "entity",
   description = " Csv file",

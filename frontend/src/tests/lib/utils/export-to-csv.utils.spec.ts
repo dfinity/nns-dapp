@@ -1,7 +1,7 @@
 import {
   FileSystemAccessError,
   convertToCsv,
-  downloadCsv,
+  generateCsvDownload,
 } from "$lib/utils/export-to-csv.utils";
 
 describe("Export to Csv", () => {
@@ -119,7 +119,7 @@ describe("Export to Csv", () => {
       });
 
       it("should use File System Access API when available", async () => {
-        await downloadCsv({
+        await generateCsvDownload({
           entity: [{}],
           fileName: "test",
         });
@@ -147,7 +147,7 @@ describe("Export to Csv", () => {
           vi.fn().mockRejectedValue(abortError)
         );
 
-        await expect(downloadCsv({ entity: [{}] })).resolves.not.toThrow();
+        await expect(generateCsvDownload({ entity: [{}] })).resolves.not.toThrow();
       });
 
       it("should throw FileSystemAccessError when modern API fails", async () => {
@@ -156,7 +156,7 @@ describe("Export to Csv", () => {
           vi.fn().mockRejectedValue(new Error("API Error"))
         );
 
-        await expect(downloadCsv({ entity: [{}] })).rejects.toThrow(
+        await expect(generateCsvDownload({ entity: [{}] })).rejects.toThrow(
           FileSystemAccessError
         );
       });
@@ -176,7 +176,7 @@ describe("Export to Csv", () => {
           .mockImplementationOnce(() => {});
         vi.spyOn(document, "createElement").mockReturnValue(mockLink);
 
-        await downloadCsv({
+        await generateCsvDownload({
           entity: [{}],
           fileName: "test",
         });
@@ -191,7 +191,7 @@ describe("Export to Csv", () => {
           throw new Error("DOM Error");
         });
 
-        await expect(downloadCsv({ entity: [{}] })).rejects.toThrow(
+        await expect(generateCsvDownload({ entity: [{}] })).rejects.toThrow(
           FileSystemAccessError
         );
       });
