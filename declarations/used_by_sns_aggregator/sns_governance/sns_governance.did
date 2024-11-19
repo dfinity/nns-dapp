@@ -1,4 +1,4 @@
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-11-07_03-07-6.11-kernel/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-11-14_03-07-base/rs/sns/governance/canister/governance.did>
 type Account = record {
   owner : opt principal;
   subaccount : opt Subaccount;
@@ -283,7 +283,7 @@ type Governance = record {
   cached_upgrade_steps : opt CachedUpgradeSteps;
   sns_initialization_parameters : text;
   latest_reward_event : opt RewardEvent;
-  pending_version : opt UpgradeInProgress;
+  pending_version : opt PendingVersion;
   swap_canister_id : opt principal;
   ledger_canister_id : opt principal;
   proposals : vec record { nat64; ProposalData };
@@ -679,6 +679,13 @@ type UpgradeInProgress = record {
   target_version : opt Version;
 };
 
+type PendingVersion = record {
+  mark_failed_at_seconds : nat64;
+  checking_upgrade_lock : nat64;
+  proposal_id : nat64;
+  target_version : opt Version;
+};
+
 type UpgradeSnsControlledCanister = record {
   new_canister_wasm : blob;
   mode : opt int32;
@@ -724,6 +731,7 @@ type WaitForQuietState = record {
 type UpgradeJournalEntry = record {
   event : opt variant {
     UpgradeStepsRefreshed : UpgradeStepsRefreshed;
+    UpgradeStepsReset : UpgradeStepsReset;
     TargetVersionSet : TargetVersionSet;
     TargetVersionReset : TargetVersionReset;
     UpgradeStarted : UpgradeStarted;
@@ -733,6 +741,11 @@ type UpgradeJournalEntry = record {
 };
 
 type UpgradeStepsRefreshed = record {
+  upgrade_steps : opt Versions;
+};
+
+type UpgradeStepsReset = record {
+  human_readable : opt text;
   upgrade_steps : opt Versions;
 };
 
