@@ -245,19 +245,7 @@ describe("NnsNeuronAdvancedSection", () => {
     expect(await po.dissolveDate()).toBeNull();
   });
 
-  it("should not display NnsNeuronPublicVisibilityAction when ENABLE_NEURON_VISIBILITY is false", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", false);
-
-    const po = renderComponent(mockNeuron);
-
-    expect(await po.getNnsNeuronPublicVisibilityActionPo().isPresent()).toBe(
-      false
-    );
-  });
-
-  it("should display NnsNeuronPublicVisibilityAction when ENABLE_NEURON_VISIBILITY is true", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", true);
-
+  it("should display NnsNeuronPublicVisibilityAction", async () => {
     const po = renderComponent(mockNeuron);
 
     expect(await po.getNnsNeuronPublicVisibilityActionPo().isPresent()).toBe(
@@ -266,8 +254,6 @@ describe("NnsNeuronAdvancedSection", () => {
   });
 
   it("should pass the correct neuron to NnsNeuronPublicVisibilityAction", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", true);
-
     const po = renderComponent(createMockNeuron(123));
 
     expect(await po.getNnsNeuronPublicVisibilityActionPo().isPresent()).toBe(

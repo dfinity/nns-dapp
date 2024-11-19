@@ -1,6 +1,5 @@
 <script lang="ts">
   import Hash from "$lib/components/ui/Hash.svelte";
-  import { ENABLE_NEURON_VISIBILITY } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { TableNeuron } from "$lib/types/neurons-table";
   import { IconPublicBadge, Tag, Tooltip } from "@dfinity/gix-components";
@@ -16,7 +15,7 @@
     idPrefix="neuron-id-cell"
     showCopy
   />
-  {#if $ENABLE_NEURON_VISIBILITY && rowData.isPublic}
+  {#if rowData.isPublic}
     <span class="public-icon-container" data-tid="public-icon-container">
       <Tooltip
         top
