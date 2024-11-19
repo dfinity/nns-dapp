@@ -390,6 +390,20 @@
       ],
       "type": "persistent"
     },
+    "devenv_yhabib": {
+      "config": {
+        "HOST": "https://yhabib-ingress.devenv.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_CKBTC": true,
+          "ENABLE_CKTESTBTC": false,
+          "ENABLE_NEURON_VISIBILITY": true
+        }
+      },
+      "providers": [
+        "https://yhabib-ingress.devenv.dfinity.network"
+      ],
+      "type": "persistent"
+    },
     "local": {
       "config": {
         "HOST": "http://localhost:8080",
@@ -415,7 +429,8 @@
           "ENABLE_CKTESTBTC": false,
           "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
           "ENABLE_NEURON_VISIBILITY": true,
-          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION": false
+          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION": false,
+          "ENABLE_EXPORT_NEURONS_REPORT": false
         }
       }
     },
@@ -432,7 +447,7 @@
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2024-11-13",
         "IC_COMMIT_FOR_PROPOSALS": "release-2024-11-14_03-07-base",
-        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-11-07_03-07-6.11-kernel"
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-11-14_03-07-base"
       },
       "packtool": ""
     }

@@ -1045,7 +1045,7 @@ impl StableState for AccountsStore {
             HashMap<AccountIdentifier, AccountWrapper>,
             HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
             candid::Reserved,
-            candid::Reserved,
+            HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockIndex>,
             MultiPartTransactionsProcessor,
             u64,
