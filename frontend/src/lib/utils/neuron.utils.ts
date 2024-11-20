@@ -358,6 +358,29 @@ const compareNeurons = (a: NeuronInfo, b: NeuronInfo): number => {
 export const sortNeuronsByStake = (neurons: NeuronInfo[]): NeuronInfo[] =>
   [...neurons].sort(compareNeurons);
 
+const compareNeuronsByVotingPowerRefreshedTimeout = (
+  a: NeuronInfo,
+  b: NeuronInfo
+): number => {
+  const refreshTimestampA =
+    a?.fullNeuron?.votingPowerRefreshedTimestampSeconds ?? 0n;
+  const refreshTimestampB =
+    b?.fullNeuron?.votingPowerRefreshedTimestampSeconds ?? 0n;
+  if (refreshTimestampA > refreshTimestampB) {
+    return -1;
+  }
+  if (refreshTimestampA < refreshTimestampB) {
+    return 1;
+  }
+  // Apply default sorting to avoid random order.
+  return compareNeurons(a, b);
+};
+
+export const sortNeuronsByVotingPowerRefreshedTimeout = (
+  neurons: NeuronInfo[]
+): NeuronInfo[] =>
+  [...neurons].sort(compareNeuronsByVotingPowerRefreshedTimeout);
+
 /*
  * Returns true if the neuron can be controlled by current user
  */
