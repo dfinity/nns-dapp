@@ -9,7 +9,6 @@ import * as services from "$lib/services/wallet-uncertified-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { tokensStore } from "$lib/stores/tokens.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,

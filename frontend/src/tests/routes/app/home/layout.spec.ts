@@ -1,6 +1,5 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { layoutTitleStore } from "$lib/stores/layout.store";
-import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import AccountsLayout from "$routes/(app)/(home)/+layout.svelte";
 import { render } from "@testing-library/svelte";
