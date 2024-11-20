@@ -33,7 +33,6 @@ describe("sns-accounts.derived", () => {
 
   beforeEach(() => {
     resetSnsProjects();
-    icrcAccountsStore.reset();
 
     setSnsProjects([
       {

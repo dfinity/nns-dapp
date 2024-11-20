@@ -73,7 +73,6 @@ describe("TransactionModal", () => {
   beforeEach(() => {
     resetIdentity();
     resetSnsProjects();
-    icrcAccountsStore.reset();
 
     setAccountsForTesting({
       main: mockMainAccount,

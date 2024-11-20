@@ -38,7 +38,6 @@ describe("SnsStakeNeuronModal", () => {
   beforeEach(() => {
     resetIdentity();
     resetSnsProjects();
-    icrcAccountsStore.reset();
 
     setSnsProjects([
       {

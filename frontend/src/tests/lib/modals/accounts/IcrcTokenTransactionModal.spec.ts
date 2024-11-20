@@ -33,7 +33,6 @@ describe("IcrcTokenTransactionModal", () => {
       data: { universe: ledgerCanisterId.toText() },
       routeId: AppPath.Accounts,
     });
-    icrcAccountsStore.reset();
     vi.spyOn(ledgerApi, "icrcTransfer").mockResolvedValue(1234n);
   });
 

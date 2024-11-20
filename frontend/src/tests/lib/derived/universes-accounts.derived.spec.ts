@@ -22,7 +22,6 @@ import { get } from "svelte/store";
 describe("universes-accounts", () => {
   beforeEach(() => {
     resetSnsProjects();
-    icrcAccountsStore.reset();
   });
 
   it("should derive Nns accounts", () => {

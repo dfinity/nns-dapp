@@ -44,7 +44,6 @@ describe("SnsDisburseMaturityModal", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resetSnsProjects();
-    icrcAccountsStore.reset();
 
     authStore.setForTesting(mockIdentity);
     setSnsProjects([

@@ -6,7 +6,6 @@ import {
 import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import * as services from "$lib/services/wallet-uncertified-accounts.services";
-import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -19,7 +18,6 @@ import { get } from "svelte/store";
 describe("wallet-uncertified-accounts.services", () => {
   beforeEach(() => {
     resetIdentity();
-    icrcAccountsStore.reset();
     vi.spyOn(toastsStore, "toastsError");
   });
 
