@@ -116,7 +116,6 @@ describe("CkBTCWallet", () => {
     vi.clearAllMocks();
     vi.clearAllTimers();
     vi.useRealTimers();
-    tokensStore.reset();
     ckBTCInfoStore.reset();
     bitcoinAddressStore.reset();
     ckbtcRetrieveBtcStatusesStore.reset();

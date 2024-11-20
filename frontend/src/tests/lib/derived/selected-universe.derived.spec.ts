@@ -464,7 +464,6 @@ describe("selected universe derived stores", () => {
 
     beforeEach(() => {
       defaultIcrcCanistersStore.reset();
-      tokensStore.reset();
       defaultIcrcCanistersStore.setCanisters({
         ledgerCanisterId,
         indexCanisterId: principal(1),
