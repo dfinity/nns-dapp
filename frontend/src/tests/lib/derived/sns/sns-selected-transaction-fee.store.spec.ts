@@ -19,7 +19,6 @@ describe("snsSelectedTransactionFeeStore", () => {
   };
   beforeEach(() => {
     resetSnsProjects();
-    tokensStore.reset();
     page.mock({ data: { universe: mockPrincipal.toText() } });
   });
 

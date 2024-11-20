@@ -77,7 +77,6 @@ describe("SnsWallet", () => {
     vi.useRealTimers();
     resetIdentity();
     icrcAccountsStore.reset();
-    tokensStore.reset();
     resetSnsProjects();
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],

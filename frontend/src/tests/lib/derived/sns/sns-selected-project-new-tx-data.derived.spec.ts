@@ -20,7 +20,6 @@ describe("selected-project-new-transaction-data derived store", () => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
       resetSnsProjects();
       snsSwapCommitmentsStore.reset();
-      tokensStore.reset();
     });
 
     it("returns undefined when nns", () => {

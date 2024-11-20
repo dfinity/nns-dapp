@@ -160,7 +160,6 @@ describe("tokens-list-base.derived", () => {
   describe("tokensListVisitorsStore", () => {
     beforeEach(() => {
       resetSnsProjects();
-      tokensStore.reset();
       setCkETHCanisters();
     });
 

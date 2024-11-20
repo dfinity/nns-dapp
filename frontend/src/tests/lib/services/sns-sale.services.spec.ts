@@ -135,7 +135,6 @@ describe("sns-api", () => {
 
     snsTicketsStore.reset();
     resetAccountsForTesting();
-    tokensStore.reset();
 
     vi.spyOn(agentApi, "createAgent").mockImplementation(async () =>
       mock<Agent>()

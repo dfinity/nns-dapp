@@ -34,7 +34,6 @@ describe("selected sns project derived stores", () => {
         },
       ]);
       defaultIcrcCanistersStore.reset();
-      tokensStore.reset();
     });
 
     it("should be set to undefined if NNS Universe", () => {

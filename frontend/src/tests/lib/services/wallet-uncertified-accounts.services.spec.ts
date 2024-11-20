@@ -21,7 +21,6 @@ describe("wallet-uncertified-accounts.services", () => {
   beforeEach(() => {
     resetIdentity();
     icrcAccountsStore.reset();
-    tokensStore.reset();
     vi.spyOn(toastsStore, "toastsError");
   });
 

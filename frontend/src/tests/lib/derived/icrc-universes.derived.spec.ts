@@ -21,7 +21,6 @@ import { get } from "svelte/store";
 
 describe("icrcTokensUniversesStore", () => {
   beforeEach(() => {
-    tokensStore.reset();
     defaultIcrcCanistersStore.reset();
   });
 

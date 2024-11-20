@@ -476,10 +476,6 @@ describe("sns-neurons-services", () => {
   });
 
   describe("stakeNeuron", () => {
-    beforeEach(() => {
-      tokensStore.reset();
-    });
-
     it("should call sns api stakeNeuron, query neurons again and load sns accounts", async () => {
       setSnsProjects([
         {

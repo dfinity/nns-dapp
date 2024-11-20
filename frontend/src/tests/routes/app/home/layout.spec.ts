@@ -9,7 +9,6 @@ import { get } from "svelte/store";
 describe("Home layout", () => {
   beforeEach(() => {
     layoutTitleStore.set({ title: "" });
-    tokensStore.reset();
     page.mock({
       routeId: "/",
       data: {

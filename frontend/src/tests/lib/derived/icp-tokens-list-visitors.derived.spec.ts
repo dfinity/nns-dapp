@@ -14,10 +14,6 @@ describe("icp-tokens-list-visitors.derived", () => {
   });
 
   describe("icpTokensListVisitors", () => {
-    beforeEach(() => {
-      tokensStore.reset();
-    });
-
     it("should return ICP with unavailable balance", () => {
       expect(get(icpTokensListVisitors)).toEqual([expectedIcpTokenVisitor]);
     });

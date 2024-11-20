@@ -9,8 +9,6 @@ import { mockTokens, mockUniversesTokens } from "$tests/mocks/tokens.mock";
 import { get } from "svelte/store";
 
 describe("Tokens store", () => {
-  beforeEach(() => tokensStore.reset());
-
   const ckBtcData = {
     canisterId: CKBTC_UNIVERSE_CANISTER_ID,
     token: mockCkBTCToken,

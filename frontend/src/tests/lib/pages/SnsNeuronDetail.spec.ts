@@ -59,7 +59,6 @@ describe("SnsNeuronDetail", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    tokensStore.reset();
     snsNeuronsStore.reset();
     icrcAccountsStore.reset();
     setSnsProjects([

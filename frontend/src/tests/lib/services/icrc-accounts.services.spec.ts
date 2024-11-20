@@ -48,7 +48,6 @@ describe("icrc-accounts-services", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resetIdentity();
-    tokensStore.reset();
     icrcAccountsStore.reset();
     importedTokensStore.reset();
     failedImportedTokenLedgerIdsStore.reset();

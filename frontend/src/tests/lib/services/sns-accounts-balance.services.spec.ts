@@ -19,7 +19,6 @@ describe("sns-accounts-balance.services", () => {
     resetIdentity();
     vi.clearAllMocks();
     icrcAccountsStore.reset();
-    tokensStore.reset();
     resetSnsProjects();
 
     setSnsProjects([

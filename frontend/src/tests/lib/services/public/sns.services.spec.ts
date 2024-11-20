@@ -74,7 +74,6 @@ describe("SNS public services", () => {
   blockAllCallsTo(blockedPaths);
 
   beforeEach(() => {
-    tokensStore.reset();
     clearSnsAggregatorCache();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
