@@ -5,8 +5,8 @@ const escapeCsvValue = (value: unknown): string => {
 
   let stringValue = String(value);
 
-  // Quick check for any special characters before doing more work
-  if (!/[",\r\n=+\-@|]/.test(stringValue)) {
+  const patternForSpecialCharacters = /[",\r\n=+\-@|<>]/;
+  if (!patternForSpecialCharacters.test(stringValue)) {
     return stringValue;
   }
 
@@ -16,9 +16,14 @@ const escapeCsvValue = (value: unknown): string => {
     stringValue = `${characterToBreakFormula}${stringValue}`;
   }
 
-  // If we need to quote, do all the work
-  if (/[",\r\n]/.test(stringValue)) {
-    return `"${stringValue.replace(/"/g, '""')}"`;
+  const patternForInjection = /^[<>]/;
+  if (patternForInjection.test(stringValue)) {
+    stringValue = stringValue.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  const patternForCharactersToQuote = /[",\r\n]/;
+  if (patternForCharactersToQuote.test(stringValue)) {
+    stringValue = `"${stringValue.replace(/"/g, '""')}"`;
   }
 
   return stringValue;

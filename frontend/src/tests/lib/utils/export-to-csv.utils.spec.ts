@@ -70,11 +70,21 @@ describe("Export to Csv", () => {
       expect(convertToCsv({ data, headers })).toBe(expected);
     });
 
+    it("should handle formula injection and special characters in values", () => {
+      const data = [
+        { value: "=SUM(A1:A10)", id: 1 },
+        { value: "+1234567,12", id: 2 },
+      ];
+      const headers = [{ id: "value" }, { id: "id" }];
+      const expected = "value,id\n'=SUM(A1:A10),1\n\"'+1234567,12\",2";
+      expect(convertToCsv({ data, headers })).toBe(expected);
+    });
+
     it("should handle values containing newlines by wrapping them in quotes", () => {
       const data = [
         { note: "Line 1\nLine 2", id: 1 },
         { note: "Single Line", id: 2 },
-      ];
+      ];``
       const headers = [{ id: "note" }, { id: "id" }];
       const expected = 'note,id\n"Line 1\nLine 2",1\nSingle Line,2';
       expect(convertToCsv({ data, headers })).toBe(expected);
@@ -93,12 +103,12 @@ describe("Export to Csv", () => {
     it("should handle potential XSS attempts", () => {
       const data = [
         {
-          value: '<script>alert("xss")</script>',
+          value: '<script>"text"</script>',
           id: 1,
         },
       ];
       const headers = [{ id: "value" }, { id: "id" }];
-      const expected = 'value,id\n"<script>alert(""xss"")</script>",1';
+      const expected = 'value,id\n"&lt;script&gt;""text""&lt;/script&gt;",1';
       expect(convertToCsv({ data, headers })).toBe(expected);
     });
   });
