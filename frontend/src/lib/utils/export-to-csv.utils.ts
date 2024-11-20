@@ -27,13 +27,22 @@ const escapeCsvValue = (value: unknown): string => {
   return stringValue;
 };
 
-export const convertToCsv = (data: Record<string, unknown>[]) => {
-  if (data.length === 0) return "";
-  const headers = Object.keys(data[0]);
-  const csvRows = [headers.join(",")];
+export const convertToCsv = ({
+  data,
+  headers,
+}: {
+  data: Record<string, unknown>[];
+  headers: { id: string }[];
+}) => {
+  if (headers.length === 0) return "";
+
+  const sanitizedHeaders = headers
+    .map(({ id }) => id)
+    .map((header) => escapeCsvValue(header));
+  const csvRows = [sanitizedHeaders.join(",")];
 
   for (const row of data) {
-    const values = headers.map((header) => escapeCsvValue(row[header]));
+    const values = headers.map((header) => escapeCsvValue(row[header.id]));
     csvRows.push(values.join(","));
   }
 
