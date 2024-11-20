@@ -137,7 +137,6 @@ describe("Tokens route", () => {
     beforeEach(() => {
       vi.clearAllMocks();
       icrcAccountsStore.reset();
-      tokensStore.reset();
       defaultIcrcCanistersStore.reset();
       importedTokensStore.reset();
       failedImportedTokenLedgerIdsStore.reset();

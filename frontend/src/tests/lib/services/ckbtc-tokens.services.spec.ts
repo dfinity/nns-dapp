@@ -24,7 +24,6 @@ describe("ckbtc-tokens-services", () => {
       symbol: "ckTESTBTC",
     };
     beforeEach(() => {
-      tokensStore.reset();
       vi.spyOn(ledgerApi, "queryIcrcToken").mockImplementation(
         async ({ canisterId }) => {
           if (canisterId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText()) {

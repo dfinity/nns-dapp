@@ -16,7 +16,6 @@ import {
   snsAggregatorIncludingAbortedProjectsStore,
   snsAggregatorStore,
 } from "$lib/stores/sns-aggregator.store";
-import { tokensStore } from "$lib/stores/tokens.store";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -74,7 +73,6 @@ describe("SNS public services", () => {
   blockAllCallsTo(blockedPaths);
 
   beforeEach(() => {
-    tokensStore.reset();
     clearSnsAggregatorCache();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });

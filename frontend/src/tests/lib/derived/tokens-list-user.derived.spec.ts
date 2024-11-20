@@ -212,7 +212,6 @@ describe("tokens-list-user.derived", () => {
     beforeEach(() => {
       resetAccountsForTesting();
       icrcAccountsStore.reset();
-      tokensStore.reset();
       authStore.setForTesting(mockIdentity);
       resetSnsProjects();
 

@@ -27,7 +27,6 @@ describe("public/app-services", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     defaultIcrcCanistersStore.reset();
-    tokensStore.reset();
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockCkETHToken);
     overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
   });

@@ -18,7 +18,6 @@ describe("icrc-tokens.services", () => {
 
     beforeEach(() => {
       defaultIcrcCanistersStore.reset();
-      tokensStore.reset();
       vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockImplementation(
         async ({ canisterId }) => {
           if (canisterId.toText() === ledgerCanisterId1.toText()) {
