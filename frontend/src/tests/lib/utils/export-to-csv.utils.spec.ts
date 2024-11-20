@@ -9,7 +9,7 @@ describe("Export to Csv", () => {
       expect(convertToCsv({ data, headers })).toBe(expected);
     });
 
-    it("should return a string with headers and now content when empty data is provided", () => {
+    it("should return a string with headers and no content when empty data is provided", () => {
       const data = [];
       const headers = [{ id: "name" }];
       const expected = "name";
