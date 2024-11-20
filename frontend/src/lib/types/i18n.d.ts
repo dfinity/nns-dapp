@@ -933,7 +933,6 @@ interface I18nError__imported_tokens {
 interface I18nError__sns {
   undefined_project: string;
   list_summaries: string;
-  list_swap_commitments: string;
   load_swap_commitment: string;
   load_sale_total_commitments: string;
   load_sale_lifecycle: string;

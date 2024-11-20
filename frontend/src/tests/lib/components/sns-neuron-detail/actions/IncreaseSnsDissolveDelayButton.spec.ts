@@ -29,7 +29,6 @@ describe("IncreaseSnsDissolveDelayButton", () => {
         certified: true,
       },
     ]);
-    tokensStore.reset();
     tokensStore.setToken({
       canisterId: rootCanisterId,
       certified: true,

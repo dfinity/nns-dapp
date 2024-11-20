@@ -16,7 +16,6 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 describe("SelectDestinationAddress", () => {
   beforeEach(() => {
     resetSnsProjects();
-    icrcAccountsStore.reset();
   });
 
   describe("nns accounts", () => {

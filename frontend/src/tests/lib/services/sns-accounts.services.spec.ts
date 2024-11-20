@@ -32,7 +32,6 @@ describe("sns-accounts-services", () => {
 
     beforeEach(() => {
       vi.clearAllMocks();
-      icrcAccountsStore.reset();
 
       setSnsProjects([
         {

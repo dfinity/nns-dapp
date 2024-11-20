@@ -2,7 +2,6 @@ import { resetNeuronsApiService } from "$lib/api-services/governance.api-service
 import * as api from "$lib/api/governance.api";
 import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
 import * as authServices from "$lib/services/auth.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
@@ -31,7 +30,6 @@ describe("NnsNeurons", () => {
   beforeEach(() => {
     vi.resetAllMocks();
     resetNeuronsApiService();
-    overrideFeatureFlagsStore.reset();
   });
 
   const renderComponent = async () => {

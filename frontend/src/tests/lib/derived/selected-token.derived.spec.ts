@@ -14,7 +14,6 @@ describe("selectedTokenStore", () => {
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT },
     });
-    tokensStore.reset();
   });
 
   it("should return ICPToken for NNS universe", () => {

@@ -48,8 +48,6 @@ describe("icrc-accounts-services", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resetIdentity();
-    tokensStore.reset();
-    icrcAccountsStore.reset();
     importedTokensStore.reset();
     failedImportedTokenLedgerIdsStore.reset();
     resetSnsProjects();
@@ -77,7 +75,6 @@ describe("icrc-accounts-services", () => {
   describe("loadAccounts", () => {
     beforeEach(() => {
       vi.clearAllMocks();
-      icrcAccountsStore.reset();
       vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
@@ -333,7 +330,6 @@ describe("icrc-accounts-services", () => {
   describe("syncAccounts", () => {
     beforeEach(() => {
       vi.clearAllMocks();
-      icrcAccountsStore.reset();
     });
 
     it("should call ckBTC accounts and token and load them in store", async () => {
