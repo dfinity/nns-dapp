@@ -5,7 +5,7 @@ const escapeCsvValue = (value: unknown): string => {
 
   let stringValue = String(value);
 
-  const patternForSpecialCharacters = /[",\r\n=+\-@|]/;
+  const patternForSpecialCharacters = /[",\r\n=+-@|<>]/;
   if (!patternForSpecialCharacters.test(stringValue)) {
     return stringValue;
   }
