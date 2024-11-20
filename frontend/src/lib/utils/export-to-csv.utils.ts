@@ -29,12 +29,12 @@ const escapeCsvValue = (value: unknown): string => {
   return stringValue;
 };
 
-export const convertToCsv = ({
+export const convertToCsv = <T>({
   data,
   headers,
 }: {
-  data: Record<string, unknown>[];
-  headers: { id: string }[];
+  data: T[];
+  headers: { id: keyof T }[];
 }) => {
   if (headers.length === 0) return "";
 
