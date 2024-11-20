@@ -105,7 +105,7 @@ describe("Export to Csv", () => {
           id: 1,
         },
       ];
-      const headers = [{ id: "value" }, { id: "id" }];
+      const headers: { id: "value" | "id" }[] = [{ id: "value" }, { id: "id" }];
       const expected = 'value,id\n"&lt;script&gt;""text""&lt;/script&gt;",1';
       expect(convertToCsv({ data, headers })).toBe(expected);
     });
