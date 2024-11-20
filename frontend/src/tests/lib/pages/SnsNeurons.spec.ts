@@ -2,7 +2,6 @@ import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
 import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -52,7 +51,6 @@ describe("SnsNeurons", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     checkedNeuronSubaccountsStore.reset();
-    overrideFeatureFlagsStore.reset();
     page.mock({ data: { universe: rootCanisterId.toText() } });
     resetIdentity();
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
