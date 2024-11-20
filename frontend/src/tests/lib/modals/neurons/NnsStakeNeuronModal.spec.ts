@@ -14,7 +14,6 @@ import {
   stakeNeuron,
   updateDelay,
 } from "$lib/services/neurons.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -61,7 +60,6 @@ describe("NnsStakeNeuronModal", () => {
   beforeEach(() => {
     resetIdentity();
     cancelPollAccounts();
-    overrideFeatureFlagsStore.reset();
 
     vi.spyOn(neuronsServices, "stakeNeuron").mockResolvedValue(
       newNeuron.neuronId

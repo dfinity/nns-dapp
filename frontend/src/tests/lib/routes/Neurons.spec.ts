@@ -4,7 +4,6 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import Neurons from "$lib/routes/Neurons.svelte";
 import { loadSnsProjects } from "$lib/services/public/sns.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
@@ -46,7 +45,6 @@ describe("Neurons", () => {
 
   beforeEach(async () => {
     resetIdentity();
-    overrideFeatureFlagsStore.reset();
 
     fakeGovernanceApi.addNeuronWith({ neuronId: testNnsNeuronId });
     testCommittedSnsNeuron = fakeSnsGovernanceApi.addNeuronWith({

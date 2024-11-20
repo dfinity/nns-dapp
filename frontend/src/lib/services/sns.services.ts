@@ -2,16 +2,13 @@ import {
   querySnsDerivedState,
   querySnsLifecycle,
   querySnsSwapCommitment,
-  querySnsSwapCommitments,
 } from "$lib/api/sns.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
+import { getLoadedSnsAggregatorData } from "$lib/services/public/sns.services";
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
-import {
-  snsSummariesStore,
-  snsSwapCommitmentsStore,
-} from "$lib/stores/sns.store";
+import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { isLastCall } from "$lib/utils/env.utils";
@@ -32,63 +29,17 @@ import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
  * Loads the user commitments for all projects.
  *
  * If the commitments are already loaded, it will not reload them.
- *
- * We rely that the projects are already loaded to skip loading the commitments.
- * If commitments is 0, it will load them always.
- *
- * Therefore, this can be called before the projects are loaded.
  */
 export const loadSnsSwapCommitments = async (): Promise<void> => {
-  const commitmentsCanisterIds = new Set(
-    (get(snsSwapCommitmentsStore) ?? [])
-      .filter(({ certified }) => certified)
-      .map(({ swapCommitment: { rootCanisterId } }) => rootCanisterId.toText())
-  );
-  const snsProjectsCanisterIds = new Set(
-    (get(snsSummariesStore) ?? []).map(({ rootCanisterId }) =>
-      rootCanisterId.toText()
+  const aggregatorData = await getLoadedSnsAggregatorData();
+  await Promise.allSettled(
+    aggregatorData.map(
+      ({ canister_ids: { root_canister_id: rootCanisterId } }) =>
+        loadSnsSwapCommitment({
+          rootCanisterId,
+        })
     )
   );
-  // Skip if we have commitments for all projects.
-  if (
-    commitmentsCanisterIds.size > 0 &&
-    commitmentsCanisterIds.size >= snsProjectsCanisterIds.size &&
-    [...snsProjectsCanisterIds].every((id) => commitmentsCanisterIds.has(id))
-  ) {
-    return;
-  }
-
-  return queryAndUpdate<SnsSwapCommitment[], unknown>({
-    strategy: FORCE_CALL_STRATEGY,
-    request: ({ certified, identity }) =>
-      querySnsSwapCommitments({ certified, identity }),
-    onLoad: ({ response: swapCommitments, certified }) => {
-      for (const swapCommitment of swapCommitments) {
-        snsSwapCommitmentsStore.setSwapCommitment({
-          swapCommitment,
-          certified,
-        });
-      }
-    },
-    onError: ({ error: err, certified, strategy }) => {
-      console.error(err);
-
-      if (!isLastCall({ strategy, certified })) {
-        return;
-      }
-
-      // hide unproven data
-      snsSwapCommitmentsStore.reset();
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error__sns.list_swap_commitments",
-        })
-      );
-    },
-    logMessage: "Syncing Sns swap commitments",
-  });
 };
 
 export const loadSnsSwapCommitment = async ({
@@ -110,7 +61,7 @@ export const loadSnsSwapCommitment = async ({
   }
 
   // We use update when we want to force fetch the data to make sure we have the latest data.
-  queryAndUpdate<SnsSwapCommitment, unknown>({
+  await queryAndUpdate<SnsSwapCommitment, unknown>({
     strategy: forceFetch ? "update" : FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       querySnsSwapCommitment({

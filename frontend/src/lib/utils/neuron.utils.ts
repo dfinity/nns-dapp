@@ -15,6 +15,8 @@ import {
   MAX_DISSOLVE_DELAY_BONUS,
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
+  NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS,
+  START_REDUCING_VOTING_POWER_AFTER_SECONDS,
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
@@ -63,7 +65,7 @@ import {
   getAccountByPrincipal,
   isAccountHardwareWallet,
 } from "./accounts.utils";
-import { nowInSeconds } from "./date.utils";
+import { daysToSeconds, nowInSeconds } from "./date.utils";
 import { formatNumber, shortenWithMiddleEllipsis } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
 import { formatTokenE8s, numberToUlps } from "./token.utils";
@@ -1162,3 +1164,24 @@ export const getTopicSubtitle = ({
 export const isPublicNeuron = (neuronInfo: NeuronInfo): boolean => {
   return neuronInfo.visibility === NeuronVisibility.Public;
 };
+
+const getVotingPowerRefreshedTimestampSeconds = ({
+  fullNeuron,
+}: NeuronInfo): bigint =>
+  // When the fullNeuron is not presented, we assume that the neuron is not losing rewards
+  // to avoid unnecessary notifications.
+  fullNeuron?.votingPowerRefreshedTimestampSeconds ?? BigInt(nowInSeconds());
+
+export const isNeuronLosingRewards = (neuron: NeuronInfo): boolean =>
+  nowInSeconds() >=
+  getVotingPowerRefreshedTimestampSeconds(neuron) +
+    BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS);
+
+// e.g. "Neuron will start losing rewards in 30 days"
+export const shouldDisplayRewardLossNotification = (
+  neuron: NeuronInfo
+): boolean =>
+  nowInSeconds() >=
+  getVotingPowerRefreshedTimestampSeconds(neuron) +
+    BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS) -
+    BigInt(daysToSeconds(NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS));

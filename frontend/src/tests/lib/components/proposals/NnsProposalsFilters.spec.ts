@@ -4,7 +4,6 @@ import {
   DEPRECATED_TOPICS,
 } from "$lib/constants/proposals.constants";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
 import { enumSize } from "$lib/utils/enum.utils";
@@ -112,7 +111,6 @@ describe("NnsProposalsFilters", () => {
     };
 
     beforeEach(() => {
-      overrideFeatureFlagsStore.reset();
       proposalsFiltersStore.reset();
     });
 

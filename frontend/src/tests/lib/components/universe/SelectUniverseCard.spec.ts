@@ -3,7 +3,6 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import type { Universe } from "$lib/types/universe";
 import { createUniverse } from "$lib/utils/universe.utils";
 import { page } from "$mocks/$app/stores";
@@ -42,7 +41,6 @@ describe("SelectUniverseCard", () => {
   };
 
   beforeEach(() => {
-    overrideFeatureFlagsStore.reset();
     actionableNnsProposalsStore.reset();
     actionableSnsProposalsStore.resetForTesting();
     resetAccountsForTesting();

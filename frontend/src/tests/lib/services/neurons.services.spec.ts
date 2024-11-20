@@ -16,7 +16,6 @@ import * as services from "$lib/services/neurons.services";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
 import * as busyStore from "$lib/stores/busy.store";
 import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -157,7 +156,6 @@ describe("neurons-services", () => {
     resetAccountsForTesting();
     resetAccountIdentity();
     resetNeuronsApiService();
-    overrideFeatureFlagsStore.reset();
     checkedNeuronSubaccountsStore.reset();
 
     vi.spyOn(icpAccountsServices, "loadBalance").mockReturnValue(undefined);

@@ -136,7 +136,6 @@ describe("Tokens route", () => {
   describe("when feature flag enabled", () => {
     beforeEach(() => {
       vi.clearAllMocks();
-      overrideFeatureFlagsStore.reset();
       icrcAccountsStore.reset();
       tokensStore.reset();
       defaultIcrcCanistersStore.reset();
