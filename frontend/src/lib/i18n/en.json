@@ -894,7 +894,6 @@
   "error__sns": {
     "undefined_project": "The requested project is invalid or throws an error.",
     "list_summaries": "There was an unexpected error while loading the summaries of all deployed projects.",
-    "list_swap_commitments": "There was an unexpected error while loading the commitments of all deployed projects.",
     "load_swap_commitment": "There was an unexpected error while loading the commitment of the project.",
     "load_sale_total_commitments": "There was an unexpected error while loading the commitments of the project.",
     "load_sale_lifecycle": "There was an unexpected error while loading the status of the project.",
