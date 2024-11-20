@@ -248,7 +248,6 @@ describe("Tokens route", () => {
 
       describe("when ckBTC is enabled", () => {
         beforeEach(() => {
-          overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
           overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
         });
 
@@ -960,7 +959,6 @@ describe("Tokens route", () => {
 
       describe("when ckBTC is enabled", () => {
         beforeEach(() => {
-          overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
           overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
         });
 
@@ -981,7 +979,6 @@ describe("Tokens route", () => {
 
       describe("when ckBTC is not enabled", () => {
         beforeEach(() => {
-          overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", false);
           overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
         });
 

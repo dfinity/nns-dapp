@@ -37,7 +37,6 @@ describe("ckbtc-tokens-services", () => {
 
     describe("no ckBTC enabled", () => {
       beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", false);
         overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
       });
 
@@ -55,7 +54,6 @@ describe("ckbtc-tokens-services", () => {
 
     describe("CKBTC enabled", () => {
       beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
         overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
       });
 
@@ -73,7 +71,6 @@ describe("ckbtc-tokens-services", () => {
 
     describe("CKBTCTest enabled", () => {
       beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", false);
         overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
       });
 
@@ -91,7 +88,6 @@ describe("ckbtc-tokens-services", () => {
 
     describe("both ckbtc enabled", () => {
       beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
         overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
       });
 

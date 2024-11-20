@@ -210,7 +210,7 @@ Likewise, as the configuration is not yet automated, there are no `.env` variabl
 
 ### Feature flag
 
-Because the e2e tests are using the `local` environment to perform, we cannot enable the `ENABLE_CKBTC` and `ENABLE_CKTESTBTC` per default.
+Because the e2e tests are using the `local` environment to perform, we cannot enable `ENABLE_CKTESTBTC` per default.
 
 Therefore, this flag should also be manually set to `true` in [`dfx.json`](./dfx.json) and the `.env` should be generated.
 

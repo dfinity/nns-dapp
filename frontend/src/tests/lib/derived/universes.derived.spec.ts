@@ -36,7 +36,6 @@ describe("universes derived stores", () => {
 
   describe("ckBTC both enabled", () => {
     beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
       overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
     });
 
@@ -71,7 +70,6 @@ describe("universes derived stores", () => {
 
   describe("only ckBTC enabled", () => {
     beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
       overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
     });
 
@@ -136,7 +134,6 @@ describe("universes derived stores", () => {
 
   describe("ckBTC NOT enabled", () => {
     beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", false);
       overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
     });
 
