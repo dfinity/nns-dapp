@@ -4,7 +4,6 @@ import type {
   SubAccountDetails,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
 import { icpAccountDetailsStore } from "$lib/stores/icp-account-details.store";
 import { principal } from "$tests/mocks/sns-projects.mock";
@@ -61,7 +60,6 @@ describe("icpAccountsStore", () => {
   };
 
   beforeEach(() => {
-    overrideFeatureFlagsStore.reset();
     icpAccountDetailsStore.resetForTesting();
     icpAccountBalancesStore.resetForTesting();
   });
