@@ -45,25 +45,18 @@ export const convertToCsv = <T>({
 
   return csvRows.join("\n");
 };
+
 export class FileSystemAccessError extends Error {
   constructor(message: string, options: ErrorOptions = {}) {
-    super(message);
+    super(message, options);
     this.name = "FileSystemAccessError";
-
-    if (options.cause) {
-      this.cause = options.cause;
-    }
   }
 }
 
 export class CSVGenerationError extends Error {
   constructor(message: string, options: ErrorOptions = {}) {
-    super(message);
+    super(message, options);
     this.name = "CSVGenerationError";
-
-    if (options.cause) {
-      this.cause = options.cause;
-    }
   }
 }
 
@@ -126,17 +119,18 @@ const downloadFileWithAnchor = ({
     );
   }
 };
+
 /**
  * Downloads data as a Csv file using either the File System Access API or fallback method.
  *
  * @param options - Configuration object for the Csv download
- * @param options.entity - Array of objects to be converted to Csv. Each object should have consistent keys. It uses first object to check for consistency
- * @param options.fileName - Name of the file without extension (defaults to "entity")
+ * @param options.data - Array of objects to be converted to Csv. Each object should have consistent keys. It uses first object to check for consistency
+ * @param options.fileName - Name of the file without extension (defaults to "data")
  * @param options.description - File description for save dialog (defaults to " Csv file")
  *
  * @example
  * await generateCsvDownload({
- *   entity: [
+ *   data: [
  *     { name: "John", age: 30 },
  *     { name: "Jane", age: 25 }
  *   ]
@@ -150,18 +144,21 @@ const downloadFileWithAnchor = ({
  * - Automatically handles values containing commas by wrapping them in quotes
  * - Adds BOM character for proper UTF-8 encoding in Excel
  */
-export const generateCsvDownload = async <T extends Record<string, unknown>>({
-  entity,
-  fileName = "entity",
+export const generateCsvDownload = async <T>({
+  data,
+  headers,
+  fileName = "data",
   description = "Csv file",
 }: {
-  entity: [T, ...Array<{ [K in keyof T]: T[K] }>];
+  data: T[];
+  headers: { id: keyof T }[];
   fileName?: string;
   description?: string;
 }): Promise<void> => {
   try {
-    const csvContent = convertToCsv(entity);
-    const blob = new Blob(["\uFEFF" + csvContent], {
+    const csvContent = convertToCsv<T>({ data, headers });
+
+    const blob = new Blob([csvContent], {
       type: "text/csv;charset=utf-8;",
     });
 

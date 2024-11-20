@@ -114,8 +114,8 @@ describe("Export to Csv", () => {
 
       beforeEach(() => {
         mockWritable = {
-          write: vi.fn().mockResolvedValue(undefined),
-          close: vi.fn().mockResolvedValue(undefined),
+          write: vi.fn(),
+          close: vi.fn(),
         };
 
         mockHandle = {
@@ -130,7 +130,11 @@ describe("Export to Csv", () => {
 
       it("should use File System Access API when available", async () => {
         await generateCsvDownload({
-          entity: [{}],
+          data: [
+            { name: "John Doe", age: 30, city: "New York" },
+            { name: "Jane Smith", age: 25, city: "London" },
+          ],
+          headers: [],
           fileName: "test",
         });
 
@@ -159,7 +163,7 @@ describe("Export to Csv", () => {
         );
 
         await expect(
-          generateCsvDownload({ entity: [{}] })
+          generateCsvDownload({ data: [{}], headers: [] })
         ).resolves.not.toThrow();
       });
 
@@ -169,9 +173,9 @@ describe("Export to Csv", () => {
           vi.fn().mockRejectedValue(new Error("API Error"))
         );
 
-        await expect(generateCsvDownload({ entity: [{}] })).rejects.toThrow(
-          FileSystemAccessError
-        );
+        await expect(
+          generateCsvDownload({ data: [{}], headers: [] })
+        ).rejects.toThrow(FileSystemAccessError);
       });
     });
 
@@ -190,7 +194,8 @@ describe("Export to Csv", () => {
         vi.spyOn(document, "createElement").mockReturnValue(mockLink);
 
         await generateCsvDownload({
-          entity: [{}],
+          data: [{}],
+          headers: [],
           fileName: "test",
         });
 
@@ -204,9 +209,9 @@ describe("Export to Csv", () => {
           throw new Error("DOM Error");
         });
 
-        await expect(generateCsvDownload({ entity: [{}] })).rejects.toThrow(
-          FileSystemAccessError
-        );
+        await expect(
+          generateCsvDownload({ data: [{}], headers: [] })
+        ).rejects.toThrow(FileSystemAccessError);
       });
     });
   });
