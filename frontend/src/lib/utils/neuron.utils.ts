@@ -367,10 +367,10 @@ const compareNeuronsByVotingPowerRefreshedTimeout = (
   const refreshTimestampB =
     b?.fullNeuron?.votingPowerRefreshedTimestampSeconds ?? 0n;
   if (refreshTimestampA > refreshTimestampB) {
-    return -1;
+    return 1;
   }
   if (refreshTimestampA < refreshTimestampB) {
-    return 1;
+    return -1;
   }
   // Apply default sorting to avoid random order.
   return compareNeurons(a, b);

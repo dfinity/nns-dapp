@@ -840,10 +840,10 @@ describe("neuron-utils", () => {
       ]);
       expect(
         sortNeuronsByVotingPowerRefreshedTimeout([neuron3, neuron2, neuron1])
-      ).toEqual([neuron3, neuron2, neuron1]);
+      ).toEqual([neuron1, neuron2, neuron3]);
       expect(
         sortNeuronsByVotingPowerRefreshedTimeout([neuron2, neuron1, neuron3])
-      ).toEqual([neuron3, neuron2, neuron1]);
+      ).toEqual([neuron1, neuron2, neuron3]);
     });
 
     it("should sort neurons by stake", () => {
