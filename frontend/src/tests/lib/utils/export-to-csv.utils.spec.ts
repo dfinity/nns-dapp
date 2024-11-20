@@ -97,17 +97,5 @@ describe("Export to Csv", () => {
       const expected = 'note,id\n"Line 1\nLine 2",1\nSingle Line,2';
       expect(convertToCsv({ data, headers })).toBe(expected);
     });
-
-    it("should handle potential XSS attempts", () => {
-      const data = [
-        {
-          value: '<script>"text"</script>',
-          id: 1,
-        },
-      ];
-      const headers: { id: "value" | "id" }[] = [{ id: "value" }, { id: "id" }];
-      const expected = 'value,id\n"&lt;script&gt;""text""&lt;/script&gt;",1';
-      expect(convertToCsv({ data, headers })).toBe(expected);
-    });
   });
 });
