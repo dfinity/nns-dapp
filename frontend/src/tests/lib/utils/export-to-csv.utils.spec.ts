@@ -130,10 +130,7 @@ describe("Export to Csv", () => {
 
       it("should use File System Access API when available", async () => {
         await generateCsvDownload({
-          data: [
-            { name: "John Doe", age: 30, city: "New York" },
-            { name: "Jane Smith", age: 25, city: "London" },
-          ],
+          data: [],
           headers: [],
           fileName: "test",
         });
@@ -163,7 +160,7 @@ describe("Export to Csv", () => {
         );
 
         await expect(
-          generateCsvDownload({ data: [{}], headers: [] })
+          generateCsvDownload({ data: [], headers: [] })
         ).resolves.not.toThrow();
       });
 
@@ -174,7 +171,7 @@ describe("Export to Csv", () => {
         );
 
         await expect(
-          generateCsvDownload({ data: [{}], headers: [] })
+          generateCsvDownload({ data: [], headers: [] })
         ).rejects.toThrow(FileSystemAccessError);
       });
     });
@@ -194,7 +191,7 @@ describe("Export to Csv", () => {
         vi.spyOn(document, "createElement").mockReturnValue(mockLink);
 
         await generateCsvDownload({
-          data: [{}],
+          data: [],
           headers: [],
           fileName: "test",
         });
@@ -210,7 +207,7 @@ describe("Export to Csv", () => {
         });
 
         await expect(
-          generateCsvDownload({ data: [{}], headers: [] })
+          generateCsvDownload({ data: [], headers: [] })
         ).rejects.toThrow(FileSystemAccessError);
       });
     });

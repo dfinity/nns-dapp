@@ -173,7 +173,10 @@ export const generateCsvDownload = async <T>({
     }
   } catch (error) {
     console.error(error);
-    if (error instanceof FileSystemAccessError) {
+    if (
+      error instanceof FileSystemAccessError ||
+      error instanceof CSVGenerationError
+    ) {
       throw error;
     }
     throw new CSVGenerationError(
