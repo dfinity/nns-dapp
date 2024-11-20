@@ -874,18 +874,16 @@ describe("neuron-utils", () => {
           votingPowerRefreshedTimestampSeconds: 0n,
         },
       };
-      expect(sortNeuronsByStake([])).toEqual([]);
-      expect(sortNeuronsByStake([neuron1])).toEqual([neuron1]);
-      expect(sortNeuronsByStake([neuron3, neuron2, neuron1])).toEqual([
-        neuron3,
-        neuron2,
+      expect(sortNeuronsByVotingPowerRefreshedTimeout([])).toEqual([]);
+      expect(sortNeuronsByVotingPowerRefreshedTimeout([neuron1])).toEqual([
         neuron1,
       ]);
-      expect(sortNeuronsByStake([neuron2, neuron1, neuron3])).toEqual([
-        neuron3,
-        neuron2,
-        neuron1,
-      ]);
+      expect(
+        sortNeuronsByVotingPowerRefreshedTimeout([neuron3, neuron2, neuron1])
+      ).toEqual([neuron3, neuron2, neuron1]);
+      expect(
+        sortNeuronsByVotingPowerRefreshedTimeout([neuron2, neuron1, neuron3])
+      ).toEqual([neuron3, neuron2, neuron1]);
     });
 
     it("should sort neurons by dissolve delay for equal stake", () => {
@@ -901,18 +899,16 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         dissolveDelaySeconds: 300_000_000n,
       };
-      expect(sortNeuronsByStake([])).toEqual([]);
-      expect(sortNeuronsByStake([neuron1])).toEqual([neuron1]);
-      expect(sortNeuronsByStake([neuron3, neuron2, neuron1])).toEqual([
-        neuron3,
-        neuron2,
+      expect(sortNeuronsByVotingPowerRefreshedTimeout([])).toEqual([]);
+      expect(sortNeuronsByVotingPowerRefreshedTimeout([neuron1])).toEqual([
         neuron1,
       ]);
-      expect(sortNeuronsByStake([neuron2, neuron1, neuron3])).toEqual([
-        neuron3,
-        neuron2,
-        neuron1,
-      ]);
+      expect(
+        sortNeuronsByVotingPowerRefreshedTimeout([neuron3, neuron2, neuron1])
+      ).toEqual([neuron3, neuron2, neuron1]);
+      expect(
+        sortNeuronsByVotingPowerRefreshedTimeout([neuron2, neuron1, neuron3])
+      ).toEqual([neuron3, neuron2, neuron1]);
     });
 
     it("should sort neurons by stake first and then dissolve delay", () => {
@@ -948,18 +944,22 @@ describe("neuron-utils", () => {
         },
         dissolveDelaySeconds: 200_000_000n,
       };
-      expect(sortNeuronsByStake([neuron3, neuron4, neuron2, neuron1])).toEqual([
-        neuron4,
-        neuron3,
-        neuron2,
-        neuron1,
-      ]);
-      expect(sortNeuronsByStake([neuron1, neuron2, neuron3, neuron4])).toEqual([
-        neuron4,
-        neuron3,
-        neuron2,
-        neuron1,
-      ]);
+      expect(
+        sortNeuronsByVotingPowerRefreshedTimeout([
+          neuron3,
+          neuron4,
+          neuron2,
+          neuron1,
+        ])
+      ).toEqual([neuron4, neuron3, neuron2, neuron1]);
+      expect(
+        sortNeuronsByVotingPowerRefreshedTimeout([
+          neuron1,
+          neuron2,
+          neuron3,
+          neuron4,
+        ])
+      ).toEqual([neuron4, neuron3, neuron2, neuron1]);
     });
 
     it("should sort neurons by createdTimestamp when stake and dissolve delay are equal", () => {
@@ -978,18 +978,16 @@ describe("neuron-utils", () => {
         dissolveDelaySeconds: 100_000_000n,
         createdTimestampSeconds: 2n,
       };
-      expect(sortNeuronsByStake([])).toEqual([]);
-      expect(sortNeuronsByStake([neuronA])).toEqual([neuronA]);
-      expect(sortNeuronsByStake([neuronB, neuronC, neuronA])).toEqual([
+      expect(sortNeuronsByVotingPowerRefreshedTimeout([])).toEqual([]);
+      expect(sortNeuronsByVotingPowerRefreshedTimeout([neuronA])).toEqual([
         neuronA,
-        neuronB,
-        neuronC,
       ]);
-      expect(sortNeuronsByStake([neuronA, neuronB, neuronC])).toEqual([
-        neuronA,
-        neuronB,
-        neuronC,
-      ]);
+      expect(
+        sortNeuronsByVotingPowerRefreshedTimeout([neuronB, neuronC, neuronA])
+      ).toEqual([neuronA, neuronB, neuronC]);
+      expect(
+        sortNeuronsByVotingPowerRefreshedTimeout([neuronA, neuronB, neuronC])
+      ).toEqual([neuronA, neuronB, neuronC]);
     });
   });
 
