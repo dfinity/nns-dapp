@@ -9,7 +9,6 @@ import {
 import { pageStore } from "$lib/derived/page.derived";
 import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import * as checkNeuronsService from "$lib/services/sns-neurons-check-balances.services";
-import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import {
   getSnsNeuronIdAsHexString,
@@ -59,7 +58,6 @@ describe("SnsNeuronDetail", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     snsNeuronsStore.reset();
-    icrcAccountsStore.reset();
     setSnsProjects([
       {
         projectName,
