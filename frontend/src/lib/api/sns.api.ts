@@ -172,43 +172,6 @@ export const querySnsSwapState = async ({
   };
 };
 
-export const querySnsSwapCommitments = async ({
-  identity,
-  certified,
-}: {
-  certified: boolean;
-  identity: Identity;
-}): Promise<SnsSwapCommitment[]> => {
-  logWithTimestamp(
-    `Listing all deployed Sns swap commitments certified:${certified} call...`
-  );
-
-  const snsWrappers: SnsWrapper[] = [
-    ...(
-      (await wrappers({ identity, certified })) ??
-      new Map<QueryRootCanisterId, SnsWrapper>()
-    ).values(),
-  ];
-
-  const swapCommitments: (SnsSwapCommitment | undefined)[] = await Promise.all(
-    snsWrappers.map(({ canisterIds: { rootCanisterId } }: SnsWrapper) =>
-      querySnsSwapCommitment({
-        rootCanisterId: rootCanisterId.toText(),
-        certified,
-        identity,
-      })
-    )
-  );
-
-  logWithTimestamp(
-    `Listing all deployed Sns swap commitments certified:${certified} done.`
-  );
-
-  return swapCommitments.filter(
-    (state: SnsSwapCommitment | undefined) => state !== undefined
-  ) as SnsSwapCommitment[];
-};
-
 export const querySnsSwapCommitment = async ({
   rootCanisterId,
   identity,
