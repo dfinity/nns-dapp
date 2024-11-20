@@ -125,6 +125,7 @@ const downloadFileWithAnchor = ({
  *
  * @param options - Configuration object for the Csv download
  * @param options.data - Array of objects to be converted to Csv. Each object should have consistent keys. It uses first object to check for consistency
+ * @param options.headers - Array of objects defining the headers of the Csv. Each object should have an `id` key that corresponds to a key in the data objects
  * @param options.fileName - Name of the file without extension (defaults to "data")
  * @param options.description - File description for save dialog (defaults to " Csv file")
  *
