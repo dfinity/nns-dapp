@@ -3197,15 +3197,15 @@ describe("neuron-utils", () => {
 
   describe("Neuron voting power refreshed utils", () => {
     const neuronWithRefreshedTimestamp = ({
-      secondsSinceLastRefresh,
+      votingPowerRefreshedTimestampAgeSecs,
     }: {
-      secondsSinceLastRefresh: number;
+      votingPowerRefreshedTimestampAgeSecs: number;
     }) => ({
       ...mockNeuron,
       fullNeuron: {
         ...mockFullNeuron,
         votingPowerRefreshedTimestampSeconds: BigInt(
-          nowInSeconds() - secondsSinceLastRefresh
+          nowInSeconds() - votingPowerRefreshedTimestampAgeSecs
         ),
       },
     });
@@ -3226,14 +3226,14 @@ describe("neuron-utils", () => {
         expect(
           isNeuronLosingRewards(
             neuronWithRefreshedTimestamp({
-              secondsSinceLastRefresh: losingRewardsPeriod,
+              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod,
             })
           )
         ).toBe(true);
         expect(
           isNeuronLosingRewards(
             neuronWithRefreshedTimestamp({
-              secondsSinceLastRefresh: losingRewardsPeriod + 1,
+              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod + 1,
             })
           )
         ).toBe(true);
@@ -3243,7 +3243,7 @@ describe("neuron-utils", () => {
         expect(
           isNeuronLosingRewards(
             neuronWithRefreshedTimestamp({
-              secondsSinceLastRefresh: losingRewardsPeriod - 1,
+              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod - 1,
             })
           )
         ).toBe(false);
@@ -3264,14 +3264,15 @@ describe("neuron-utils", () => {
         expect(
           shouldDisplayRewardLossNotification(
             neuronWithRefreshedTimestamp({
-              secondsSinceLastRefresh: losingRewardsPeriod - notificationPeriod,
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod - notificationPeriod,
             })
           )
         ).toBe(true);
         expect(
           shouldDisplayRewardLossNotification(
             neuronWithRefreshedTimestamp({
-              secondsSinceLastRefresh:
+              votingPowerRefreshedTimestampAgeSecs:
                 losingRewardsPeriod - notificationPeriod + 1,
             })
           )
@@ -3282,7 +3283,7 @@ describe("neuron-utils", () => {
         expect(
           shouldDisplayRewardLossNotification(
             neuronWithRefreshedTimestamp({
-              secondsSinceLastRefresh:
+              votingPowerRefreshedTimestampAgeSecs:
                 losingRewardsPeriod - (notificationPeriod + 1),
             })
           )
