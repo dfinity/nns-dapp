@@ -1,3 +1,4 @@
+import { defaultFeatureFlagValues } from "$lib/constants/environment.constants";
 import * as envVarsUtils from "$lib/utils/env-vars.utils";
 
 describe("FEATURE_FLAG_ENVIRONMENT", () => {
@@ -24,14 +25,6 @@ describe("FEATURE_FLAG_ENVIRONMENT", () => {
     const { FEATURE_FLAG_ENVIRONMENT } = await import(
       "$lib/constants/environment.constants"
     );
-    expect(FEATURE_FLAG_ENVIRONMENT).toEqual({
-      ENABLE_CKBTC: true,
-      ENABLE_CKTESTBTC: false,
-      DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
-      ENABLE_NEURON_VISIBILITY: false,
-      ENABLE_PERIODIC_FOLLOWING_CONFIRMATION: false,
-      TEST_FLAG_EDITABLE: false,
-      TEST_FLAG_NOT_EDITABLE: false,
-    });
+    expect(FEATURE_FLAG_ENVIRONMENT).toEqual(defaultFeatureFlagValues);
   });
 });

@@ -19,7 +19,7 @@ export interface FeatureFlags<T> {
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;
 }
-const defaultFeatureFlags: FeatureFlags<boolean> = {
+export const defaultFeatureFlagValues: FeatureFlags<boolean> = {
   ENABLE_CKBTC: true,
   ENABLE_CKTESTBTC: false,
   DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
@@ -39,7 +39,7 @@ const getFeatureFlagsFromEnv = (): FeatureFlags<boolean> => {
     // do nothing
   }
   // Complement the default flags with the ones from the environment to avoid missing flags.
-  return { ...defaultFeatureFlags, ...featureFlags };
+  return { ...defaultFeatureFlagValues, ...featureFlags };
 };
 
 /**
