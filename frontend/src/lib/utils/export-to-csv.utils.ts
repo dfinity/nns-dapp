@@ -1,5 +1,20 @@
 import { isNullish } from "@dfinity/utils";
 
+export type CsvHeader<T> = {
+  id: keyof T;
+  label: string;
+};
+
+interface CsvBaseConfig<T> {
+  data: T[];
+  headers: CsvHeader<T>[];
+}
+
+interface CsvFileConfig<T> extends CsvBaseConfig<T> {
+  fileName?: string;
+  description?: string;
+}
+
 const escapeCsvValue = (value: unknown): string => {
   if (isNullish(value)) return "";
 
@@ -24,13 +39,7 @@ const escapeCsvValue = (value: unknown): string => {
   return stringValue;
 };
 
-export const convertToCsv = <T>({
-  data,
-  headers,
-}: {
-  data: T[];
-  headers: { id: keyof T; label?: string }[];
-}) => {
+export const convertToCsv = <T>({ data, headers }: CsvBaseConfig<T>) => {
   if (headers.length === 0) return "";
 
   const sanitizedHeaders = headers
@@ -153,12 +162,7 @@ export const generateCsvFileToSave = async <T>({
   headers,
   fileName = "data",
   description = "Csv file",
-}: {
-  data: T[];
-  headers: { id: keyof T; label?: string }[];
-  fileName?: string;
-  description?: string;
-}): Promise<void> => {
+}: CsvFileConfig<T>): Promise<void> => {
   try {
     const csvContent = convertToCsv<T>({ data, headers });
 
