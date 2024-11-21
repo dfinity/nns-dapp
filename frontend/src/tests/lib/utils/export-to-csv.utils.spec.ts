@@ -34,10 +34,10 @@ describe("Export to Csv", () => {
         { name: "John", age: 30 },
       ];
       const headers: CsvHeader<TestPersonData>[] = [
-        { id: "age", label: "age" },
-        { id: "name", label: "name" },
+        { id: "age", label: "Age" },
+        { id: "name", label: "Name" },
       ];
-      const expected = "age,name\n25,Peter\n30,John";
+      const expected = "Age,Name\n25,Peter\n30,John";
       expect(convertToCsv({ data, headers })).toBe(expected);
     });
 
@@ -118,23 +118,10 @@ describe("Export to Csv", () => {
       ];
       ``;
       const headers: CsvHeader<TestPersonData>[] = [
-        { id: "name", label: "name" },
-        { id: "age", label: "age" },
-      ];
-      const expected = 'name,age\n"Peter\nParker",24\nJane Doe,25';
-      expect(convertToCsv({ data, headers })).toBe(expected);
-    });
-
-    it("should use labels in the header when provided", () => {
-      const data: TestPersonData[] = [
-        { name: "John", age: 30 },
-        { name: "Jane", age: 25 },
-      ];
-      const headers: CsvHeader<TestPersonData>[] = [
         { id: "name", label: "Full Name" },
-        { id: "age", label: "Years" },
+        { id: "age", label: "Age" },
       ];
-      const expected = "Full Name,Years\nJohn,30\nJane,25";
+      const expected = 'Full Name,Age\n"Peter\nParker",24\nJane Doe,25';
       expect(convertToCsv({ data, headers })).toBe(expected);
     });
   });
