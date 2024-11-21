@@ -35,8 +35,8 @@ const getFeatureFlagsFromEnv = (): FeatureFlags<boolean> => {
   let featureFlags = {};
   try {
     featureFlags = JSON.parse(envVars?.featureFlags);
-  } finally {
-    // do nothing
+  } catch (e) {
+    console.error("Error parsing featureFlags", e);
   }
   // Complement the default flags with the ones from the environment to avoid missing flags.
   return { ...defaultFeatureFlagValues, ...featureFlags };

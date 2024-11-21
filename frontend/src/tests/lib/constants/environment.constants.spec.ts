@@ -27,4 +27,20 @@ describe("FEATURE_FLAG_ENVIRONMENT", () => {
     );
     expect(FEATURE_FLAG_ENVIRONMENT).toEqual(defaultFeatureFlagValues);
   });
+
+  it("should fallback to default on error", async () => {
+    const spyConsoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+    vi.spyOn(envVarsUtils, "getEnvVars").mockReturnValue({
+      ...environmentVars,
+      featureFlags: `{"TEST_FLAG_NOT_EDITABLE": TRUE}`,
+    });
+
+    const { FEATURE_FLAG_ENVIRONMENT } = await import(
+      "$lib/constants/environment.constants"
+    );
+    expect(FEATURE_FLAG_ENVIRONMENT).toEqual(defaultFeatureFlagValues);
+    expect(spyConsoleError).toBeCalledTimes(1);
+  });
 });
