@@ -146,8 +146,7 @@ const saveFileWithAnchor = ({
  *
  * @remarks
  * - Uses the modern File System Access API when available, falling back to traditional download method
- * - Automatically handles values containing commas by wrapping them in quotes
- * - Adds BOM character for proper UTF-8 encoding in Excel
+ * - Automatically handles values containing especial characters like commans and new lines
  */
 export const generateCsvFileToSave = async <T>({
   data,
