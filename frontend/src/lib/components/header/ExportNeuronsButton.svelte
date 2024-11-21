@@ -19,10 +19,7 @@
     generateCsvFileToSave,
   } from "$lib/utils/export-to-csv.utils";
   import { toastsError } from "$lib/stores/toasts.store";
-  import {
-    getFutureDateFromDelayInSeconds,
-    secondsToDate,
-  } from "$lib/utils/date.utils";
+  import { secondsToDate } from "$lib/utils/date.utils";
 
   const dispatcher = createEventDispatcher<{
     nnsExportNeuronsCSVTriggered: void;
@@ -50,22 +47,20 @@
     const creationDate = secondsToDate(Number(neuron.createdTimestampSeconds));
 
     return {
-      [$i18n.export_csv_neurons.neuron_id]: neuronId,
-      [$i18n.export_csv_neurons.stake]: formatTokenV2({
+      neuronId,
+      stake: formatTokenV2({
         value: stake,
         detailed: true,
       }),
-      [$i18n.export_csv_neurons.available_maturity]:
-        formatMaturity(availableMaturity),
-      [$i18n.export_csv_neurons.staked_maturity]:
-        formatMaturity(stakedMaturity),
-      [$i18n.export_csv_neurons.dissolve_delay]: secondsToDuration({
+      availableMaturity: formatMaturity(availableMaturity),
+      stakedMaturity: formatMaturity(stakedMaturity),
+      dissolveDelaySeconds: secondsToDuration({
         seconds: dissolveDelaySeconds,
         i18n: $i18n.time,
       }),
-      ["Dissolve Date"]: dissolveDate ?? "N/A",
-      ["Creation Date"]: creationDate,
-      ["State"]: $i18n.neuron_state[getStateInfo(neuron.state).textKey],
+      dissolveDate: dissolveDate ?? "N/A",
+      creationDate,
+      state: $i18n.neuron_state[getStateInfo(neuron.state).textKey],
     };
   };
 
@@ -82,7 +77,40 @@
 
       await generateCsvFileToSave({
         data: humanFriendlyContent,
-        headers: Object.keys(humanFriendlyContent[0]),
+        headers: [
+          {
+            id: "neuronId",
+            label: $i18n.export_csv_neurons.neuron_id,
+          },
+          {
+            id: "stake",
+            label: $i18n.export_csv_neurons.stake,
+          },
+          {
+            id: "availableMaturity",
+            label: $i18n.export_csv_neurons.available_maturity,
+          },
+          {
+            id: "stakedMaturity",
+            label: $i18n.export_csv_neurons.staked_maturity,
+          },
+          {
+            id: "dissolveDelaySeconds",
+            label: $i18n.export_csv_neurons.dissolve_delay,
+          },
+          {
+            id: "dissolveDate",
+            label: $i18n.export_csv_neurons.dissolve_date,
+          },
+          {
+            id: "creationDate",
+            label: $i18n.export_csv_neurons.creation_date,
+          },
+          {
+            id: "state",
+            label: $i18n.export_csv_neurons.state,
+          },
+        ],
         fileName: "neurons",
       });
     } catch (error) {
