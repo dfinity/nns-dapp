@@ -229,5 +229,5 @@ export type CachedSnsDto = {
   derived_state: CachedSnsSwapDerivedDto;
   swap_params: CachedSwapParamsResponseDto;
   init: CachedInitResponseDto;
-  lifecycle: CachedLifecycleResponseDto;
+  lifecycle: CachedLifecycleResponseDto | null;
 };

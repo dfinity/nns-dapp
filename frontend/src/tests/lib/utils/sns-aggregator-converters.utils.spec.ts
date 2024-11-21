@@ -537,6 +537,16 @@ describe("sns aggregator converters utils", () => {
       ).toBeUndefined();
     });
 
+    it("returns undefined if a lifecycle required field is missing", () => {
+      const aggregatorMissingLifecycle: CachedSnsDto = {
+        ...mockData,
+        lifecycle: null,
+      };
+      expect(
+        convertDtoToSnsSummary(aggregatorMissingLifecycle)
+      ).toBeUndefined();
+    });
+
     it("converts fields related to NF participation enhancements", () => {
       const aggregatorNFAndDirectParticipationFields: CachedSnsDto = {
         ...mockData,

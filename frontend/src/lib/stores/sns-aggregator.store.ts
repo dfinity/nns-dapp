@@ -1,5 +1,6 @@
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { nonNullish } from "@dfinity/utils";
 import { derived, writable, type Readable } from "svelte/store";
 
 /**
@@ -35,7 +36,9 @@ export const snsAggregatorStore: SnsAggregatorStore = derived(
   snsAggregatorIncludingAbortedProjectsStore,
   (store) => ({
     data: store.data?.filter(
-      (sns) => sns.lifecycle.lifecycle !== SnsSwapLifecycle.Aborted
+      (sns) =>
+        nonNullish(sns.lifecycle) &&
+        sns.lifecycle.lifecycle !== SnsSwapLifecycle.Aborted
     ),
   })
 );
