@@ -16,7 +16,7 @@ describe("FEATURE_FLAG_ENVIRONMENT", () => {
     expect(FEATURE_FLAG_ENVIRONMENT).toEqual(expectedFlags);
   });
 
-  it("should contain entries substituted with default values", async () => {
+  it("should contain missing entries substituted with default values", async () => {
     vi.spyOn(envVarsUtils, "getEnvVars").mockReturnValue({
       ...environmentVars,
       featureFlags: JSON.stringify({}),
