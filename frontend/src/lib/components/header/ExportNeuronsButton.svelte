@@ -14,9 +14,9 @@
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { NeuronState, type NeuronInfo } from "@dfinity/nns";
   import {
-    CSVGenerationError,
-    downloadCSV,
+    CsvGenerationError,
     FileSystemAccessError,
+    generateCsvFileToSave,
   } from "$lib/utils/export-to-csv.utils";
   import { toastsError } from "$lib/stores/toasts.store";
   import {
@@ -34,42 +34,6 @@
   $: neurons = $neuronsStore?.neurons ?? [];
   $: isDisabled = !neurons.length;
 
-  const exportNeurons = async () => {
-    try {
-      const humanFriendlyContent = neurons.map(neuronToHumanReadableFormat);
-
-      if (!humanFriendlyContent.length) {
-        toastsError({
-          labelKey: "export_error.no_neurons",
-        });
-        return;
-      }
-
-      await downloadCSV({
-        entity: humanFriendlyContent,
-        fileName: "neurons",
-      });
-    } catch (error) {
-      console.error("Error exporting neurons:", error);
-
-      if (error instanceof FileSystemAccessError) {
-        toastsError({
-          labelKey: "export_error.file_system_access",
-        });
-      } else if (error instanceof CSVGenerationError) {
-        toastsError({
-          labelKey: "export_error.csv_generation",
-        });
-      } else {
-        toastsError({
-          labelKey: "export_error.neurons",
-        });
-      }
-    } finally {
-      dispatcher("nnsExportNeuronsCSVTriggered");
-    }
-  };
-
   const neuronToHumanReadableFormat = (neuron: NeuronInfo) => {
     const neuronId = neuron.neuronId.toString();
     const stake = TokenAmountV2.fromUlps({
@@ -86,14 +50,16 @@
     const creationDate = secondsToDate(Number(neuron.createdTimestampSeconds));
 
     return {
-      ["Neuron Id"]: neuronId,
-      ["Stake"]: formatTokenV2({
+      [$i18n.export_csv_neurons.neuron_id]: neuronId,
+      [$i18n.export_csv_neurons.stake]: formatTokenV2({
         value: stake,
         detailed: true,
       }),
-      ["Available Maturity"]: formatMaturity(availableMaturity),
-      ["Staked Maturity"]: formatMaturity(stakedMaturity),
-      ["Dissolve Delay"]: secondsToDuration({
+      [$i18n.export_csv_neurons.available_maturity]:
+        formatMaturity(availableMaturity),
+      [$i18n.export_csv_neurons.staked_maturity]:
+        formatMaturity(stakedMaturity),
+      [$i18n.export_csv_neurons.dissolve_delay]: secondsToDuration({
         seconds: dissolveDelaySeconds,
         i18n: $i18n.time,
       }),
@@ -101,6 +67,43 @@
       ["Creation Date"]: creationDate,
       ["State"]: $i18n.neuron_state[getStateInfo(neuron.state).textKey],
     };
+  };
+
+  const exportNeurons = async () => {
+    try {
+      const humanFriendlyContent = neurons.map(neuronToHumanReadableFormat);
+
+      if (!humanFriendlyContent.length) {
+        toastsError({
+          labelKey: "export_error.no_neurons",
+        });
+        return;
+      }
+
+      await generateCsvFileToSave({
+        data: humanFriendlyContent,
+        headers: Object.keys(humanFriendlyContent[0]),
+        fileName: "neurons",
+      });
+    } catch (error) {
+      console.error("Error exporting neurons:", error);
+
+      if (error instanceof FileSystemAccessError) {
+        toastsError({
+          labelKey: "export_error.file_system_access",
+        });
+      } else if (error instanceof CsvGenerationError) {
+        toastsError({
+          labelKey: "export_error.csv_generation",
+        });
+      } else {
+        toastsError({
+          labelKey: "export_error.neurons",
+        });
+      }
+    } finally {
+      dispatcher("nnsExportNeuronsCSVTriggered");
+    }
   };
 </script>
 

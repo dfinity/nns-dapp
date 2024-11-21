@@ -161,6 +161,17 @@ interface I18nHeader {
   export_neurons: string;
 }
 
+interface I18nExport_csv_neurons {
+  neuron_id: string;
+  stake: string;
+  available_maturity: string;
+  staked_maturity: string;
+  dissolve_delay: string;
+  dissolve_date: string;
+  created_at: string;
+  state: string;
+}
+
 interface I18nExport_error {
   csv_generation: string;
   file_system_access: string;
@@ -1408,6 +1419,7 @@ interface I18n {
   warning: I18nWarning;
   navigation: I18nNavigation;
   header: I18nHeader;
+  export_csv_neurons: I18nExport_csv_neurons;
   export_error: I18nExport_error;
   auth: I18nAuth;
   accounts: I18nAccounts;

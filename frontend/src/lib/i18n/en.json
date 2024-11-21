@@ -153,6 +153,16 @@
     "account_id_tooltip": "You can send ICP both to your principal ID and account ID, however some exchanges or wallets may not support transactions using a principal ID.",
     "export_neurons": "Export Neurons Info"
   },
+  "export_csv_neurons": {
+    "neuron_id": "Neuron ID",
+    "stake": "Stake",
+    "available_maturity": "Available Maturity",
+    "staked_maturity": "Staked Maturity",
+    "dissolve_delay": "Dissolve Delay",
+    "dissolve_date": "Dissolve Date",
+    "created_at": "Created Date",
+    "state": "State"
+  },
   "export_error": {
     "csv_generation": "Failed to generate CSV file",
     "file_system_access": "Unable to save file. Please check your permissions.",
