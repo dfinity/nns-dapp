@@ -131,47 +131,4 @@ describe("universes derived stores", () => {
       expect(store[3]).toEqual(ckETHSEPOLIAUniverseMock);
     });
   });
-
-  describe("ckBTC NOT enabled", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
-    });
-
-    it("should return Nns per default", () => {
-      const store = get(universesStore);
-      expect(store.length).toEqual(1);
-      expect(store[0].summary).toBeUndefined();
-      expect(store[0].canisterId).toEqual(OWN_CANISTER_ID.toText());
-    });
-
-    it("should return Nns and SNS projects", () => {
-      const snsRootCanisterId = rootCanisterIdMock;
-      setSnsProjects([
-        {
-          lifecycle: SnsSwapLifecycle.Committed,
-          rootCanisterId: snsRootCanisterId,
-        },
-      ]);
-      const store = get(universesStore);
-      expect(store.length).toEqual(2);
-      expect(store[1].summary).not.toBeUndefined();
-      expect(store[1].canisterId).toEqual(snsRootCanisterId.toText());
-    });
-
-    it("should not include open SNS projects", () => {
-      const snsRootCanisterId = rootCanisterIdMock;
-      setSnsProjects([
-        {
-          lifecycle: SnsSwapLifecycle.Committed,
-          rootCanisterId: snsRootCanisterId,
-        },
-        {
-          lifecycle: SnsSwapLifecycle.Open,
-          rootCanisterId: principal(2),
-        },
-      ]);
-      const store = get(universesStore);
-      expect(store.length).toEqual(2);
-    });
-  });
 });

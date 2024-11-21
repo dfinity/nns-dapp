@@ -100,14 +100,6 @@ describe("selected universe derived stores", () => {
 
       expect($store).toBe(false);
     });
-
-    it("should not be ckBTC with feature flag disabled", () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
-      expect(get(isCkBTCUniverseStore)).toBe(true);
-
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
-      expect(get(isCkBTCUniverseStore)).toBe(false);
-    });
   });
 
   describe("isIcrcTokenUniverseStore", () => {
