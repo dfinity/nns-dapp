@@ -122,3 +122,12 @@ export const daysToSeconds = (days: number): number =>
 export const nowInSeconds = (): number => Math.round(Date.now() / 1000);
 export const nowInBigIntNanoSeconds = (): bigint =>
   BigInt(Date.now()) * BigInt(1e6);
+
+export const getFutureDateFromDelayInSeconds = (seconds: bigint): string => {
+  if (seconds < 0n) {
+    throw new Error("Delay cannot be negative");
+  }
+
+  const todayPlusDelayedSeconds = nowInSeconds() + Number(seconds);
+  return secondsToDate(todayPlusDelayedSeconds);
+};
