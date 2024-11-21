@@ -5,10 +5,6 @@ import { fireEvent, render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 describe("SplitNeuronButton", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("renders split neuron message", () => {
     const { getByText } = render(NeuronContextActionsTest, {
       props: {

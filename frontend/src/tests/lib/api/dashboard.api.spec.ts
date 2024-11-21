@@ -3,7 +3,6 @@ import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard
 
 describe("Dashboard API", () => {
   beforeEach(() => {
-    vi.resetAllMocks();
     vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 

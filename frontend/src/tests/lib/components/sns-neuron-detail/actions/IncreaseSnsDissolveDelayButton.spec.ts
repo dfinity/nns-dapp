@@ -21,7 +21,6 @@ vi.mock("$lib/services/sns-parameters.services");
 describe("IncreaseSnsDissolveDelayButton", () => {
   const rootCanisterId = mockPrincipal;
   beforeEach(() => {
-    vi.clearAllMocks();
     setSnsProjects([
       {
         rootCanisterId,

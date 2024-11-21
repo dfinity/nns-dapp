@@ -23,7 +23,6 @@ describe("SelectAccountDropdown", () => {
 
   describe("no accounts", () => {
     beforeEach(() => {
-      vi.clearAllMocks();
       resetAccountsForTesting();
     });
 

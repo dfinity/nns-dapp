@@ -9,16 +9,16 @@ import {
   hasValidStake as nnsHasValidStake,
 } from "$lib/utils/neuron.utils";
 import {
-  createAscendingComparator,
-  createDescendingComparator,
-  mergeComparators,
-} from "$lib/utils/responsive-table.utils";
-import {
   getSnsNeuronAvailableMaturity,
   getSnsNeuronStake,
   getSnsNeuronStakedMaturity,
   hasValidStake as snsHasValidStake,
 } from "$lib/utils/sns-neuron.utils";
+import {
+  createAscendingComparator,
+  createDescendingComparator,
+  mergeComparators,
+} from "$lib/utils/sort.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";

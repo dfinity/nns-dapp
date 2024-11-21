@@ -10,7 +10,6 @@ let metricsCallback: MetricsCallback | undefined;
 
 describe("TotalValueLocked", () => {
   beforeEach(() => {
-    vi.resetAllMocks();
     metricsCallback = undefined;
     metricsStore.set(undefined);
 

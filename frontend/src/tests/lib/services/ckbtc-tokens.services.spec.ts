@@ -14,7 +14,6 @@ vi.mock("$lib/api/icrc-ledger.api");
 
 describe("ckbtc-tokens-services", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     resetIdentity();
   });
 

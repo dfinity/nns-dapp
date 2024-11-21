@@ -168,7 +168,6 @@ describe("DisburseNnsNeuronModal", () => {
     beforeEach(() => {
       resetAccountsForTesting();
       vi.clearAllTimers();
-      vi.clearAllMocks();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = 10_000_000n;

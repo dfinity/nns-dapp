@@ -5,7 +5,7 @@ import {
   createAscendingComparator,
   createDescendingComparator,
   mergeComparators,
-} from "$lib/utils/responsive-table.utils";
+} from "$lib/utils/sort.utils";
 import { isUserTokenFailed } from "$lib/utils/user-token.utils";
 import { TokenAmountV2 } from "@dfinity/utils";
 

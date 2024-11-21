@@ -25,10 +25,6 @@ describe("imported tokens utils", () => {
     indexCanisterId: undefined,
   };
 
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
-
   describe("toImportedTokenData", () => {
     it("should convert imported token", () => {
       expect(toImportedTokenData(importedToken)).toEqual(importedTokenData);

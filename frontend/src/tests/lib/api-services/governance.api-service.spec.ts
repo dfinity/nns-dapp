@@ -156,7 +156,6 @@ describe("neurons api-service", () => {
   const neuronId = 12n;
 
   beforeEach(() => {
-    vi.resetAllMocks();
     resetNeuronsApiService();
   });
 

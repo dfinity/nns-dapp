@@ -113,7 +113,6 @@ describe("CkBTCWallet", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.clearAllTimers();
     vi.useRealTimers();
     ckBTCInfoStore.reset();

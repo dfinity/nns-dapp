@@ -22,7 +22,6 @@ describe("CanisterDetail", () => {
   blockAllCallsTo(["$lib/api/canisters.api"]);
 
   beforeEach(() => {
-    vi.clearAllMocks();
     authStore.setForTesting(mockIdentity);
     canistersStore.setCanisters({ canisters: undefined, certified: true });
   });

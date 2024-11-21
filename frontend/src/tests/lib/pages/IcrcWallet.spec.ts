@@ -113,7 +113,6 @@ describe("IcrcWallet", () => {
 
   beforeEach(() => {
     balancesObserverCallback = undefined;
-    vi.clearAllMocks();
     vi.clearAllTimers();
     vi.useRealTimers();
     resetIdentity();

@@ -3,10 +3,6 @@ import en from "$tests/mocks/i18n.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
 describe("StakeMaturityButton", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("renders stake maturity cta", () => {
     const { getByText } = render(StakeMaturityButton, {
       props: {

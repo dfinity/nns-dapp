@@ -42,7 +42,6 @@ describe("SnsDisburseMaturityModal", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetSnsProjects();
 
     authStore.setForTesting(mockIdentity);

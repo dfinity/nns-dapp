@@ -37,7 +37,6 @@ describe("CkBTCInfoCard", () => {
 
   beforeEach(() => {
     resetIdentity();
-    vi.clearAllMocks();
     bitcoinAddressStore.reset();
     ckBTCInfoStore.reset();
 

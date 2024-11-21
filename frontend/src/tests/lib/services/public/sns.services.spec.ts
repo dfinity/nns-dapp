@@ -106,7 +106,6 @@ describe("SNS public services", () => {
     beforeEach(() => {
       snsAggregatorIncludingAbortedProjectsStore.reset();
       clearWrapperCache();
-      vi.clearAllMocks();
       resetIdentity();
     });
 

@@ -45,7 +45,6 @@ describe("DisburseSnsNeuronModal", () => {
   };
 
   beforeEach(() => {
-    vi.resetAllMocks();
     resetSnsProjects();
 
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(

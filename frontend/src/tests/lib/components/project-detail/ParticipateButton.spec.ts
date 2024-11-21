@@ -34,7 +34,6 @@ describe("ParticipateButton", () => {
     beforeEach(() => {
       resetIdentity();
       snsTicketsStore.reset();
-      vi.clearAllMocks();
       userCountryStore.set(NOT_LOADED);
     });
 

@@ -33,8 +33,6 @@ describe("canisters-worker-api", () => {
   };
 
   beforeEach(async () => {
-    vi.resetAllMocks();
-
     const mockICManagementCanister = mock<ICManagementCanister>();
     vi.spyOn(ICManagementCanister, "create").mockImplementation(
       () => mockICManagementCanister

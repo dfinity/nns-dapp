@@ -6,10 +6,6 @@ import { fireEvent, render } from "@testing-library/svelte";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 describe("AddSnsHotkeyButton", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   const renderCard = () =>
     render(SnsNeuronContextTest, {
       props: {
