@@ -1,7 +1,6 @@
 import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
 import * as services from "$lib/services/sns-accounts-balance.services";
-import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
@@ -17,7 +16,6 @@ describe("sns-accounts-balance.services", () => {
   beforeEach(() => {
     resetIdentity();
     vi.clearAllMocks();
-    icrcAccountsStore.reset();
     resetSnsProjects();
 
     setSnsProjects([

@@ -8,7 +8,6 @@ import * as workerBalances from "$lib/services/worker-balances.services";
 import * as workerBalancesServices from "$lib/services/worker-balances.services";
 import * as workerTransactions from "$lib/services/worker-transactions.services";
 import * as workerTransactionsServices from "$lib/services/worker-transactions.services";
-import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { aggregatorCanisterLogoPath } from "$lib/utils/sns-aggregator-converters.utils";
 import { page } from "$mocks/$app/stores";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
@@ -75,7 +74,6 @@ describe("SnsWallet", () => {
   beforeEach(() => {
     vi.useRealTimers();
     resetIdentity();
-    icrcAccountsStore.reset();
     resetSnsProjects();
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],

@@ -42,7 +42,6 @@ import { render } from "@testing-library/svelte";
 describe("UniverseAccountsBalance", () => {
   beforeEach(() => {
     resetSnsProjects();
-    icrcAccountsStore.reset();
 
     page.mock({
       data: { universe: mockSnsCanisterId.toText() },

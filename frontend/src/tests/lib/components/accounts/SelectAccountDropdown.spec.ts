@@ -19,7 +19,6 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 describe("SelectAccountDropdown", () => {
   beforeEach(() => {
     resetSnsProjects();
-    icrcAccountsStore.reset();
   });
 
   describe("no accounts", () => {
