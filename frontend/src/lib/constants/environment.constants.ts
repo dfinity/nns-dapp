@@ -20,7 +20,7 @@ export interface FeatureFlags<T> {
   TEST_FLAG_NOT_EDITABLE: T;
 }
 const defaultFeatureFlags: FeatureFlags<boolean> = {
-  ENABLE_CKBTC: false,
+  ENABLE_CKBTC: true,
   ENABLE_CKTESTBTC: false,
   DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
   ENABLE_NEURON_VISIBILITY: false,
@@ -31,15 +31,24 @@ const defaultFeatureFlags: FeatureFlags<boolean> = {
 
 export type FeatureKey = keyof FeatureFlags<boolean>;
 
+const getFeatureFlagsFromEnv = (): FeatureFlags<boolean> => {
+  let featureFlags = {};
+  try {
+    featureFlags = JSON.parse(envVars?.featureFlags);
+  } finally {
+    // do nothing
+  }
+  // Complement the default flags with the ones from the environment to avoid missing flags.
+  return { ...defaultFeatureFlags, ...featureFlags };
+};
+
 /**
  * DO NOT USE DIRECTLY
  *
  * @see feature-flags.store.ts to use feature flags
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> =
-  envVars?.featureFlags
-    ? JSON.parse(envVars?.featureFlags)
-    : defaultFeatureFlags;
+  getFeatureFlagsFromEnv();
 
 export const IS_TESTNET: boolean =
   DFX_NETWORK !== "mainnet" &&
