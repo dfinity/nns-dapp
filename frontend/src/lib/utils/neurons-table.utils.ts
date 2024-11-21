@@ -16,11 +16,6 @@ import {
   neuronStakedMaturity,
 } from "$lib/utils/neuron.utils";
 import {
-  createAscendingComparator,
-  createDescendingComparator,
-  mergeComparators,
-} from "$lib/utils/responsive-table.utils";
-import {
   getSnsDissolveDelaySeconds,
   getSnsNeuronAvailableMaturity,
   getSnsNeuronIdAsHexString,
@@ -29,6 +24,11 @@ import {
   getSnsNeuronState,
   getSnsNeuronTags,
 } from "$lib/utils/sns-neuron.utils";
+import {
+  createAscendingComparator,
+  createDescendingComparator,
+  mergeComparators,
+} from "$lib/utils/sort.utils";
 import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo } from "@dfinity/nns";
 import { NeuronState } from "@dfinity/nns";
