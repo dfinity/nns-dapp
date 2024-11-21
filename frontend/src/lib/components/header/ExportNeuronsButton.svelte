@@ -19,7 +19,10 @@
     generateCsvFileToSave,
   } from "$lib/utils/export-to-csv.utils";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { secondsToDate } from "$lib/utils/date.utils";
+  import {
+    getFutureDateFromDelayInSeconds,
+    secondsToDate,
+  } from "$lib/utils/date.utils";
 
   const dispatcher = createEventDispatcher<{
     nnsExportNeuronsCSVTriggered: void;
