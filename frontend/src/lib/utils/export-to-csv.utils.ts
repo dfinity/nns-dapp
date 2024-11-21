@@ -29,12 +29,12 @@ export const convertToCsv = <T>({
   headers,
 }: {
   data: T[];
-  headers: { id: keyof T }[];
+  headers: { id: keyof T; label?: string }[];
 }) => {
   if (headers.length === 0) return "";
 
   const sanitizedHeaders = headers
-    .map(({ id }) => id)
+    .map(({ label, id }) => label ?? id)
     .map((header) => escapeCsvValue(header));
   const csvRows = [sanitizedHeaders.join(",")];
 
@@ -155,7 +155,7 @@ export const generateCsvFileToSave = async <T>({
   description = "Csv file",
 }: {
   data: T[];
-  headers: { id: keyof T }[];
+  headers: { id: keyof T; label: string }[];
   fileName?: string;
   description?: string;
 }): Promise<void> => {

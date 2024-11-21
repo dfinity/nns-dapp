@@ -105,6 +105,20 @@ describe("Export to Csv", () => {
       const expected = 'note,id\n"Line 1\nLine 2",1\nSingle Line,2';
       expect(convertToCsv({ data, headers })).toBe(expected);
     });
+
+    it("should use labels in the header when provided", () => {
+      const data = [
+        { name: "John", age: 30, city: "Zurich" },
+        { name: "Jane", age: 25, city: "" },
+      ];
+      const headers: { id: "name" | "age" | "city"; label?: string }[] = [
+        { id: "name", label: "Full Name" },
+        { id: "age", label: "Years" },
+        { id: "city" },
+      ];
+      const expected = "Full Name,Years,city\nJohn,30,Zurich\nJane,25,";
+      expect(convertToCsv({ data, headers })).toBe(expected);
+    });
   });
 
   describe("downloadCSV", () => {
