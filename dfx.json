@@ -298,7 +298,6 @@
         "API_HOST": "https://icp-api.io",
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
-          "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
         }
       },
@@ -313,7 +312,6 @@
         "API_HOST": "https://icp-api.io",
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
-          "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
         }
       },
@@ -328,7 +326,6 @@
         "API_HOST": "https://icp-api.io",
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
-          "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
         }
       },
@@ -341,7 +338,6 @@
       "config": {
         "HOST": "https://llorenc-ingress.devenv.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
         }
       },
@@ -354,7 +350,6 @@
       "config": {
         "HOST": "https://dskloet-ingress.devenv.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
         }
       },
@@ -367,7 +362,6 @@
       "config": {
         "HOST": "https://mstr-ingress.devenv.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
         }
       },
@@ -380,7 +374,6 @@
       "config": {
         "HOST": "https://cosku-ingress.devenv.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
         }
       },
@@ -393,7 +386,6 @@
       "config": {
         "HOST": "https://yhabib-ingress.devenv.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
         }
       },
@@ -407,7 +399,6 @@
         "HOST": "http://localhost:8080",
         "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
-          "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
         }
       },
@@ -423,7 +414,6 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "FEATURE_FLAGS": {
-          "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
           "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION": false,

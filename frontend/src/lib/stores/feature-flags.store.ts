@@ -148,7 +148,6 @@ const initFeatureFlagsStore = (): FeatureFlags<Readable<boolean>> => {
 const featureFlagsStore = initFeatureFlagsStore();
 
 export const {
-  ENABLE_CKBTC,
   ENABLE_CKTESTBTC,
   DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING,
   ENABLE_PERIODIC_FOLLOWING_CONFIRMATION,
