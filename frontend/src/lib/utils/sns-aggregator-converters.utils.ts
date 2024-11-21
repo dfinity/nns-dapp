@@ -479,7 +479,7 @@ const convertDtoToLifecycle = (
       )
     ),
     lifecycle: toNullable(data.lifecycle),
-    // TODO: Add support in SNS Aggregaro for these fields
+    // TODO: Add support in SNS Aggregator for these fields
     decentralization_swap_termination_timestamp_seconds: [],
   };
 };
