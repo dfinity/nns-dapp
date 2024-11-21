@@ -121,17 +121,6 @@ export const hexStringToBytes = (hexString: string): number[] => {
   return bytes;
 };
 
-export const mapPromises = async <T, R>(
-  items: Array<T> | undefined,
-  fun: (args: T) => Promise<R>
-): Promise<Array<R> | undefined> => {
-  if (items === undefined) {
-    return undefined;
-  }
-
-  return Promise.all(items.map(async (item) => await fun(item)));
-};
-
 export const isArrayEmpty = <T>({ length }: T[]): boolean => length === 0;
 
 const AMOUNT_VERSION_PARTS = 3;
