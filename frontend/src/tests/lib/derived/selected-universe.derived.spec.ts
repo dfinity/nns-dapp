@@ -387,11 +387,6 @@ describe("selected universe derived stores", () => {
       expect(get(selectedUniverseIdStore)).toEqual(OWN_CANISTER_ID);
     });
 
-    it("returns OWN_CANISTER_ID if universe is ckTESTBTC but flag disabled, even with ckBTC enabled", () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
-      expect(get(selectedUniverseIdStore)).toEqual(OWN_CANISTER_ID);
-    });
-
     it("returns OWN_CANISTER_ID if universe is ckBTC but path not supported", () => {
       page.mock({
         data: {

@@ -22,6 +22,7 @@ describe("ckbtc-tokens-services", () => {
       ...mockCkBTCToken,
       symbol: "ckTESTBTC",
     };
+
     beforeEach(() => {
       vi.spyOn(ledgerApi, "queryIcrcToken").mockImplementation(
         async ({ canisterId }) => {
@@ -32,23 +33,18 @@ describe("ckbtc-tokens-services", () => {
           }
         }
       );
+      overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
     });
 
-    describe("CKBTC enabled", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
-      });
+    it("should load the ckBTC token", async () => {
+      await services.loadCkBTCTokens();
 
-      it("should load the ckBTC token", async () => {
-        await services.loadCkBTCTokens();
-
-        expect(
-          get(tokensStore)[CKBTC_UNIVERSE_CANISTER_ID.toText()]?.token
-        ).toEqual(mockCkBTCToken);
-        expect(
-          get(tokensStore)[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]
-        ).toBeUndefined();
-      });
+      expect(
+        get(tokensStore)[CKBTC_UNIVERSE_CANISTER_ID.toText()]?.token
+      ).toEqual(mockCkBTCToken);
+      expect(
+        get(tokensStore)[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]
+      ).toBeUndefined();
     });
 
     describe("CKBTCTest enabled", () => {
@@ -62,12 +58,6 @@ describe("ckbtc-tokens-services", () => {
         expect(
           get(tokensStore)[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]?.token
         ).toEqual(mockCkTestBTCToken);
-      });
-    });
-
-    describe("both ckbtc enabled", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
       });
 
       it("should load both ckBTC tokes", async () => {
