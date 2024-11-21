@@ -33,7 +33,7 @@ describe("universes derived stores", () => {
     defaultIcrcCanistersStore.reset();
   });
 
-  describe("ckBTC both enabled", () => {
+  describe("ckTESTBTC enabled", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
     });
