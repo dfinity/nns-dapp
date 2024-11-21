@@ -211,11 +211,6 @@ describe("daysToSeconds", () => {
     });
 
     it("should return correct future date for zero delay", () => {
-      const result = getFutureDateFromDelayInSeconds(BigInt(0));
-      expect(result).toBe("Nov 14, 2023");
-    });
-
-    it("should return correct future date for zero delay", () => {
       const result = getFutureDateFromDelayInSeconds(BigInt(-0));
       expect(result).toBe("Nov 14, 2023");
     });
