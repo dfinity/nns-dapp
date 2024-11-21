@@ -93,32 +93,6 @@ export const uniqueObjects = <T>(list: T[]): T[] => {
 export const isDefined = <T>(argument: T | undefined): argument is T =>
   argument !== undefined;
 
-export const targetBlankLinkRenderer = (
-  href: string | null,
-  title: string | null,
-  text: string
-): string =>
-  `<a${
-    href === null
-      ? ""
-      : ` target="_blank" rel="noopener noreferrer" href="${href}"`
-  }${title === null ? "" : ` title="${title}"`}>${text}</a>`;
-
-/**
- * Returns an array of arrays of size <= `chunkSize`
- */
-export const createChunks = <T>(
-  elements: Array<T>,
-  chunkSize = 10
-): Array<Array<T>> => {
-  const chunks: Array<Array<T>> = [];
-  for (let i = 0; i < elements.length; i += chunkSize) {
-    const chunk = elements.slice(i, i + chunkSize);
-    chunks.push(chunk);
-  }
-  return chunks;
-};
-
 // e.g. payloads.did/state_hash
 export const isHash = (bytes: number[]): boolean =>
   bytes.length === 32 &&
