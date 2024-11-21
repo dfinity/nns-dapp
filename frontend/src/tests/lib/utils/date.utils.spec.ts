@@ -206,7 +206,7 @@ describe("daysToSeconds", () => {
 
   describe("getDateInTheFutureFromDelayedSeconds", () => {
     beforeEach(() => {
-      const mockNow = 1700000000000; // Nov 14, 2023
+      const mockNow = new Date(2023, 10, 14).getTime();
       vi.spyOn(Date, "now").mockImplementation(() => mockNow);
     });
 
