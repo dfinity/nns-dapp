@@ -2,7 +2,6 @@ import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import {
   daysToDuration,
   daysToSeconds,
-  getFutureDateFromDelayInSeconds,
   nanoSecondsToDateTime,
   secondsToDate,
   secondsToDateTime,
@@ -202,36 +201,5 @@ describe("daysToSeconds", () => {
   it("returns integers only", () => {
     expect(daysToSeconds(1.123456)).not.toBe(SECONDS_IN_DAY * 1.123456);
     expect(daysToSeconds(1.123456)).toBe(97067);
-  });
-
-  describe("getDateInTheFutureFromDelayedSeconds", () => {
-    beforeEach(() => {
-      const mockNow = 1700000000000; // Nov 14, 2023
-      vi.spyOn(Date, "now").mockImplementation(() => mockNow);
-    });
-
-    it("should return correct future date for zero delay", () => {
-      const result = getFutureDateFromDelayInSeconds(BigInt(0));
-      expect(result).toBe("Nov 14, 2023");
-    });
-
-    it("should return correct future date for one day delay", () => {
-      const oneDayInSeconds = BigInt(24 * 60 * 60);
-      const result = getFutureDateFromDelayInSeconds(oneDayInSeconds);
-      expect(result).toBe("Nov 15, 2023"); // One day after mockNow
-    });
-
-    it("should return correct future date for large delay", () => {
-      const oneYearInSeconds = BigInt(365 * 24 * 60 * 60);
-      const result = getFutureDateFromDelayInSeconds(oneYearInSeconds);
-      expect(result).toBe("Nov 13, 2024"); // One year after mockNow
-    });
-
-    it("should handle maximum safe bigint value", () => {
-      const maxSafeDelay = BigInt(Number.MAX_SAFE_INTEGER);
-      expect(() => {
-        getFutureDateFromDelayInSeconds(maxSafeDelay);
-      }).not.toThrow();
-    });
   });
 });
