@@ -34,7 +34,6 @@ vi.mock("$lib/constants/environment.constants.ts", async () => {
 
 describe("Warnings", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     metricsCallback = undefined;
   });
 

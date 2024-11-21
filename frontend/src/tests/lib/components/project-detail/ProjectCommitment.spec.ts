@@ -27,10 +27,6 @@ describe("ProjectCommitment", () => {
     return ProjectCommitmentPo.under(new JestPageObjectElement(container));
   };
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("should render min and max commitment", async () => {
     const summary = createSummary({
       maxTotalCommitment: 50000000000n,

@@ -11,7 +11,6 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Wallet from "$lib/routes/Wallet.svelte";
-import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
@@ -91,7 +90,6 @@ describe("Wallet", () => {
   const importedTokenId = principal(123);
   beforeEach(() => {
     resetIdentity();
-    vi.clearAllMocks();
     importedTokensStore.reset();
     setCkETHCanisters();
     setSnsProjects([
@@ -108,7 +106,6 @@ describe("Wallet", () => {
       []
     );
 
-    icrcAccountsStore.reset();
     ckEthBalance = 1000000000000000000n;
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
       async ({ canisterId }) => {

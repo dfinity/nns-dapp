@@ -58,7 +58,6 @@ describe("Accounts", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetIdentity();
     resetAccountsForTesting();
 

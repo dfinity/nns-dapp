@@ -46,7 +46,6 @@ describe("icp-ledger.services", () => {
   });
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetIdentity();
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
       mockGetIdentity

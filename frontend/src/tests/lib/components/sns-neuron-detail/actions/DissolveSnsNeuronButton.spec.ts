@@ -19,10 +19,6 @@ vi.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("DissolveSnsNeuronButton", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("renders start dissolve message when neuron is locked", () => {
     const { getByText } = render(DissolveSnsNeuronButtonTest, {
       props: {

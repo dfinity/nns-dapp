@@ -1,6 +1,6 @@
 import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
 import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
-import { createAscendingComparator } from "$lib/utils/responsive-table.utils";
+import { createAscendingComparator } from "$lib/utils/sort.utils";
 import TestTableAgeCell from "$tests/lib/components/ui/TestTableAgeCell.svelte";
 import TestTableNameCell from "$tests/lib/components/ui/TestTableNameCell.svelte";
 import { ResponsiveTablePo } from "$tests/page-objects/ResponsiveTable.page-object";

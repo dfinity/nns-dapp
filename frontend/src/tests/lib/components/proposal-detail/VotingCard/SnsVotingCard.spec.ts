@@ -1,4 +1,3 @@
-import * as agentApi from "$lib/api/agent.api";
 import * as api from "$lib/api/sns-governance.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
@@ -110,11 +109,6 @@ describe("SnsVotingCard", () => {
     vi.useFakeTimers().setSystemTime(nowInSeconds * 1000);
     snsNeuronsStore.reset();
     resetIdentity();
-
-    vi.spyOn(agentApi, "createAgent").mockImplementation(() => {
-      console.log('dskloetx "createAgent"', new Error().stack);
-      throw new Error();
-    });
 
     spyRegisterVote = vi
       .spyOn(snsGovernanceApi, "registerVote")

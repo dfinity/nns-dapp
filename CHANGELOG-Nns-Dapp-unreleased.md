@@ -31,6 +31,8 @@ proposal is successful, the changes it released will be moved from this file to
 * Stop making unnecessary calls to SNS-W and SNS root canisters.
 * User gets the wrong identity when connecting different hardware wallets devices in a certain order.
 * Fix candid decoding error of stable memory.
+* Show successfully loaded swap commitments even if some fail to load.
+* Hide SNSes for which the aggregator doesn't have a lifecycle.
 
 #### Security
 

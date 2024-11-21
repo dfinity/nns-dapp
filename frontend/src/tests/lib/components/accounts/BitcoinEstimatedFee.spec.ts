@@ -14,7 +14,6 @@ describe("BitcoinEstimatedFee", () => {
   const result = { minter_fee: 123n, bitcoin_fee: 456n };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetIdentity();
     spyEstimateFee = vi
       .spyOn(minterApi, "estimateFee")

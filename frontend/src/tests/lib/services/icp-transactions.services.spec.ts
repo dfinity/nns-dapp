@@ -20,7 +20,6 @@ describe("icp-transactions services", () => {
   const accountIdentifier2 = mockSnsMainAccount.identifier;
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetIdentity();
     icpTransactionsStore.reset();
     vi.spyOn(console, "error").mockImplementation(() => undefined);

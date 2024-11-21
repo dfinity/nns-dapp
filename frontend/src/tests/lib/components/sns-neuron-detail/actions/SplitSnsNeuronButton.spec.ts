@@ -36,10 +36,6 @@ describe("SplitSnsNeuronButton", () => {
     token: mockToken,
   };
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("should display enabled button", async () => {
     const { getByTestId } = render(SplitSnsNeuronButton, {
       props,

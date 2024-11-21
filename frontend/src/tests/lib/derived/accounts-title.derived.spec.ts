@@ -13,7 +13,6 @@ describe("accountsTitleStore", () => {
       routeId: AppPath.Accounts,
       data: { universe: OWN_CANISTER_ID_TEXT },
     });
-    tokensStore.reset();
   });
 
   it("returns 'Tokens' if no token is found", () => {

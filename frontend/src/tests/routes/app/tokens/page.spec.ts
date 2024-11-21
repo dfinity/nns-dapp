@@ -17,7 +17,6 @@ import {
 } from "$lib/constants/ckusdc-canister-ids.constants";
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import {
   failedImportedTokenLedgerIdsStore,
   importedTokensStore,
@@ -135,10 +134,6 @@ describe("Tokens route", () => {
 
   describe("when feature flag enabled", () => {
     beforeEach(() => {
-      vi.clearAllMocks();
-      overrideFeatureFlagsStore.reset();
-      icrcAccountsStore.reset();
-      tokensStore.reset();
       defaultIcrcCanistersStore.reset();
       importedTokensStore.reset();
       failedImportedTokenLedgerIdsStore.reset();

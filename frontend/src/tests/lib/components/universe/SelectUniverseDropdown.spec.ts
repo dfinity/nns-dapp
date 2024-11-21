@@ -23,7 +23,6 @@ import { render } from "@testing-library/svelte";
 
 describe("SelectUniverseDropdown", () => {
   beforeEach(() => {
-    icrcAccountsStore.reset();
     resetSnsProjects();
     resetIdentity();
 

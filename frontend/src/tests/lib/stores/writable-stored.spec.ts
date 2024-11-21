@@ -4,7 +4,6 @@ import { get } from "svelte/store";
 
 describe("writableStored", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     localStorage.clear();
   });
 

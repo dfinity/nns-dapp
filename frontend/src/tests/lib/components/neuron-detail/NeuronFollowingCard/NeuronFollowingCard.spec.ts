@@ -29,7 +29,6 @@ describe("NeuronFollowingCard", () => {
     },
   };
   beforeEach(() => {
-    vi.resetAllMocks();
     resetIdentity();
   });
 

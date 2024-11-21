@@ -26,7 +26,6 @@ describe("icrc-index api", () => {
   let spyOnIndexCanisterCreate;
 
   beforeEach(() => {
-    vi.clearAllMocks();
     spyOnIndexCanisterCreate = vi
       .spyOn(IcrcIndexCanister, "create")
       .mockImplementation(() => indexCanisterMock);

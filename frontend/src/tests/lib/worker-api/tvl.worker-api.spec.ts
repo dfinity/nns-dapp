@@ -21,7 +21,6 @@ describe("tvl worker-api", () => {
   };
 
   beforeEach(async () => {
-    vi.clearAllMocks();
     vi.spyOn(TVLCanister, "create").mockImplementation(() => tvlCanisterMock);
     // Prevent HttpAgent.create(), which is called by createAgent, from making a
     // real network request via agent.syncTime().

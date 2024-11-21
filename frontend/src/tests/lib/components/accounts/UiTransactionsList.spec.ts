@@ -27,10 +27,6 @@ describe("UiTransactionsList", () => {
     return UiTransactionsListPo.under(new JestPageObjectElement(container));
   };
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("renders skeleton when loading transactions", async () => {
     vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
       mockIcrcTransactionsStoreSubscribe({})

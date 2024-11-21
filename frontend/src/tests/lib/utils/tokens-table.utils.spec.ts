@@ -61,10 +61,6 @@ describe("tokens-table.utils", () => {
     domKey: "",
   } as UserTokenFailed;
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe("compareTokensIcpFirst", () => {
     it("should keep ICP first", () => {
       const icpToken = createIcpUserToken();

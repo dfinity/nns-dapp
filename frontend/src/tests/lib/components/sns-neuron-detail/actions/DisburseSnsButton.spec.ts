@@ -12,8 +12,6 @@ import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 describe("DisburseSnsButton", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-
     vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
       mockTokenStore
     );

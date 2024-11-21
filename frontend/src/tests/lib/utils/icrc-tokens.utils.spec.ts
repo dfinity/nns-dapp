@@ -27,10 +27,6 @@ import { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
 import { get } from "svelte/store";
 
 describe("ICRC tokens utils", () => {
-  beforeEach(() => {
-    tokensStore.reset();
-  });
-
   describe("mapOptionalToken", () => {
     it("should return token", () => {
       const token = mapOptionalToken(mockQueryTokenResponse);

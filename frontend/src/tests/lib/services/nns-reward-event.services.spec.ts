@@ -17,7 +17,6 @@ describe("nns-reward-event-services", () => {
 
   beforeEach(() => {
     nnsLatestRewardEventStore.reset();
-    vi.clearAllMocks();
     spyQueryLatestRewardEvent = vi
       .spyOn(api, "queryLastestRewardEvent")
       .mockResolvedValue(mockRewardEvent);

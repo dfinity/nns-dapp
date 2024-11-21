@@ -36,7 +36,6 @@ describe("Canisters", () => {
   let authStoreMock: MockInstance;
 
   beforeEach(() => {
-    vi.clearAllMocks();
     authStoreMock = vi.spyOn(authStore, "subscribe");
     resetIdentity();
 

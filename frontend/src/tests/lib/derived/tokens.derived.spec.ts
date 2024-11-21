@@ -39,7 +39,6 @@ describe("tokens.derived", () => {
   };
 
   beforeEach(() => {
-    tokensStore.reset();
     resetSnsProjects();
 
     setSnsProjects([

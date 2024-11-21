@@ -7,7 +7,6 @@ import { NeuronNavigationPo } from "$tests/page-objects/NeuronNavigation.page-ob
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 const testNeurons = [
   {
     ...mockNeuron,
@@ -34,7 +33,6 @@ const testNeurons = [
 
 describe("NeuronNavigation", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     neuronsStore.setNeurons({ neurons: testNeurons, certified: true });
     page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
   });

@@ -30,7 +30,6 @@ describe("ProjectCard", () => {
   const yesterdayInSeconds = nowInSeconds - SECONDS_IN_DAY;
 
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.useFakeTimers().setSystemTime(now);
     vi.spyOn(saleApi, "queryFinalizationStatus").mockResolvedValue(
       createFinalizationStatusMock(false)

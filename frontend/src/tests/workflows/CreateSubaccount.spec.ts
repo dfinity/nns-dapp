@@ -36,7 +36,6 @@ describe("Accounts", () => {
     name: newSubaccountName,
   };
   beforeEach(() => {
-    vi.clearAllMocks();
     resetIdentity();
     vi.spyOn(console, "error").mockImplementation(vi.fn);
 

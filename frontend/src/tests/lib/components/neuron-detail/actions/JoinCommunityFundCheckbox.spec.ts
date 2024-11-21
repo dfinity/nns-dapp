@@ -11,10 +11,6 @@ vi.mock("$lib/services/neurons.services", () => {
 });
 
 describe("JoinCommunityFundCheckbox", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("renders enabled checkbox", () => {
     const neuron = {
       ...mockNeuron,

@@ -42,7 +42,6 @@ describe("imported-tokens-services", () => {
   const testError = new Error("test");
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetIdentity();
     importedTokensStore.reset();
     failedImportedTokenLedgerIdsStore.reset();

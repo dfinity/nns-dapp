@@ -7,7 +7,6 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Staking from "$lib/routes/Staking.svelte";
-import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { page } from "$mocks/$app/stores";
@@ -42,7 +41,6 @@ describe("Staking", () => {
     resetSnsProjects();
     resetIdentity();
     resetAccountsForTesting();
-    icrcAccountsStore.reset();
 
     page.mock({
       routeId: AppPath.Staking,
