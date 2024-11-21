@@ -111,11 +111,6 @@ describe("SnsVotingCard", () => {
     snsNeuronsStore.reset();
     resetIdentity();
 
-    vi.spyOn(agentApi, "createAgent").mockImplementation(() => {
-      console.log('dskloetx "createAgent"', new Error().stack);
-      throw new Error();
-    });
-
     spyRegisterVote = vi
       .spyOn(snsGovernanceApi, "registerVote")
       .mockResolvedValue();
