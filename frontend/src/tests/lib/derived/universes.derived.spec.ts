@@ -67,7 +67,7 @@ describe("universes derived stores", () => {
     });
   });
 
-  describe("only ckBTC enabled", () => {
+  describe("ckTESTBTC disabled", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
     });
