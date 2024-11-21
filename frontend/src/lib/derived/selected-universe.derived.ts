@@ -56,9 +56,6 @@ export const selectedUniverseIdStore: Readable<Principal> = derived<
     if ((isCkBTC || isIcrcToken) && !isAllTokensPath(page)) {
       return OWN_CANISTER_ID;
     }
-    if (canisterId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText()) {
-      return OWN_CANISTER_ID;
-    }
     if (isUniverseCkTESTBTC(canisterId) && !$ENABLE_CKTESTBTC) {
       return OWN_CANISTER_ID;
     }
