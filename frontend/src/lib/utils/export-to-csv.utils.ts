@@ -155,7 +155,7 @@ export const generateCsvFileToSave = async <T>({
   description = "Csv file",
 }: {
   data: T[];
-  headers: { id: keyof T; label: string }[];
+  headers: { id: keyof T; label?: string }[];
   fileName?: string;
   description?: string;
 }): Promise<void> => {
