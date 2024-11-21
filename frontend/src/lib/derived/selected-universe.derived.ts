@@ -2,7 +2,6 @@ import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import {
   icrcCanistersStore,
   type IcrcCanistersStore,
@@ -10,10 +9,7 @@ import {
 } from "$lib/derived/icrc-canisters.derived";
 import { pageStore, type Page } from "$lib/derived/page.derived";
 import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
-import {
-  ENABLE_CKBTC,
-  ENABLE_CKTESTBTC,
-} from "$lib/stores/feature-flags.store";
+import { ENABLE_CKTESTBTC } from "$lib/stores/feature-flags.store";
 import type { Universe, UniverseCanisterId } from "$lib/types/universe";
 import {
   isAllTokensPath,
@@ -48,33 +44,15 @@ const pageUniverseIdStore: Readable<Principal> = derived(
 );
 
 export const selectedUniverseIdStore: Readable<Principal> = derived<
-  [
-    Readable<Principal>,
-    Readable<Page>,
-    IcrcCanistersStore,
-    Readable<boolean>,
-    Readable<boolean>,
-  ],
+  [Readable<Principal>, Readable<Page>, IcrcCanistersStore, Readable<boolean>],
   Principal
 >(
-  [
-    pageUniverseIdStore,
-    pageStore,
-    icrcCanistersStore,
-    ENABLE_CKBTC,
-    ENABLE_CKTESTBTC,
-  ],
-  ([canisterId, page, icrcCanisters, $ENABLE_CKBTC, $ENABLE_CKTESTBTC]) => {
+  [pageUniverseIdStore, pageStore, icrcCanistersStore, ENABLE_CKTESTBTC],
+  ([canisterId, page, icrcCanisters, $ENABLE_CKTESTBTC]) => {
     const isCkBTC = isUniverseCkBTC(canisterId);
     const isIcrcToken = nonNullish(icrcCanisters[canisterId.toText()]);
     // ckBTC and ICRC Tokens are only available on Accounts therefore we fallback to Nns if selected and user switch to another view
     if ((isCkBTC || isIcrcToken) && !isAllTokensPath(page)) {
-      return OWN_CANISTER_ID;
-    }
-    if (
-      canisterId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText() &&
-      !$ENABLE_CKBTC
-    ) {
       return OWN_CANISTER_ID;
     }
     if (isUniverseCkTESTBTC(canisterId) && !$ENABLE_CKTESTBTC) {

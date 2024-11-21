@@ -75,7 +75,6 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
     ckethIndexCanisterId: "s3zol-vqaaa-aaaar-qacpa-cai",
     dfxNetwork: "testnet",
     featureFlags: JSON.stringify({
-      ENABLE_CKBTC: true,
       ENABLE_CKTESTBTC: true,
       DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
       ENABLE_PERIODIC_FOLLOWING_CONFIRMATION: false,
