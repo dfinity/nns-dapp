@@ -1,4 +1,3 @@
-import * as agentApi from "$lib/api/agent.api";
 import * as api from "$lib/api/sns-governance.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
