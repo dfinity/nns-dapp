@@ -245,7 +245,6 @@ describe("Tokens route", () => {
 
       describe("when ckBTC is enabled", () => {
         beforeEach(() => {
-          overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
           overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
         });
 
@@ -957,7 +956,6 @@ describe("Tokens route", () => {
 
       describe("when ckBTC is enabled", () => {
         beforeEach(() => {
-          overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
           overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
         });
 
@@ -968,26 +966,6 @@ describe("Tokens route", () => {
           expect(await signInPo.getTokenNames()).toEqual([
             "Internet Computer",
             "ckBTC",
-            "ckETH",
-            "ckUSDC",
-            "Pacman",
-            "Tetris",
-          ]);
-        });
-      });
-
-      describe("when ckBTC is not enabled", () => {
-        beforeEach(() => {
-          overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", false);
-          overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
-        });
-
-        it("should render ICP and SNS tokens", async () => {
-          const po = await renderPage();
-
-          const signInPo = po.getSignInTokensPagePo();
-          expect(await signInPo.getTokenNames()).toEqual([
-            "Internet Computer",
             "ckETH",
             "ckUSDC",
             "Pacman",

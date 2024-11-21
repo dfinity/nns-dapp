@@ -65,7 +65,6 @@ sample_local_config() {
 		"API_HOST": "https://icp-api.io",
 		"STATIC_HOST": "https://icp0.io",
 		"FEATURE_FLAGS": {
-		  "ENABLE_CKBTC": true,
 		  "ENABLE_CKTESTBTC": false
 		}
 	      },

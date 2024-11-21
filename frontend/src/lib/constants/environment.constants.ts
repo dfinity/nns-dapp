@@ -10,7 +10,6 @@ export const FETCH_ROOT_KEY: boolean = envVars.fetchRootKey === "true";
 export const SNS_AGGREGATOR_CANISTER_URL = envVars.snsAggregatorUrl ?? "";
 
 export interface FeatureFlags<T> {
-  ENABLE_CKBTC: T;
   ENABLE_CKTESTBTC: T;
   DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: T;
   ENABLE_PERIODIC_FOLLOWING_CONFIRMATION: T;
@@ -29,7 +28,7 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
   envVars?.featureFlags ??
-    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_SNS_TYPES_FILTER": false, "ENABLE_EXPORT_NEURONS_REPORT": false}'
+    '{"ENABLE_CKTESTBTC": false, "ENABLE_SNS_TYPES_FILTER": false, "ENABLE_EXPORT_NEURONS_REPORT": false}'
 );
 
 export const IS_TESTNET: boolean =
