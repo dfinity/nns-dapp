@@ -5,6 +5,9 @@ describe("FEATURE_FLAG_ENVIRONMENT", () => {
   const environmentVars = envVarsUtils.getEnvVars();
 
   beforeEach(() => {
+    // The FEATURE_FLAG_ENVIRONMENT is a constant that is set once when the module
+    // `environment.constants` is imported. To test different states of it,
+    // we need to reset the imported modules and reimport `environment.constants` for each test.
     vi.resetModules();
   });
 
