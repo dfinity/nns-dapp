@@ -46,7 +46,6 @@ describe("tokens-list-base.derived", () => {
   describe("tokensListBaseStore", () => {
     beforeEach(() => {
       resetSnsProjects();
-      tokensStore.reset();
     });
 
     it("should return ICP, ckBTC and ckTESTBTC without any other data loaded", () => {

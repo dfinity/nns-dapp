@@ -18,7 +18,6 @@ import {
 
 describe("SnsNeuronFollowingCard", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     resetIdentity();
     resetSnsProjects();
   });

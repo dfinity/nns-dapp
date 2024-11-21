@@ -19,10 +19,6 @@ describe("BuyIcpModal", () => {
     return BuyICPModalPo.under(new JestPageObjectElement(container));
   };
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("renders the account's identifier", async () => {
     const po = renderModal(account);
 

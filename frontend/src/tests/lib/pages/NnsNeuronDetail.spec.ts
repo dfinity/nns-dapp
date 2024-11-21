@@ -38,7 +38,6 @@ describe("NeuronDetail", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetIdentity();
     voteRegistrationStore.reset();
     checkedNeuronSubaccountsStore.reset();

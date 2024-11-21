@@ -39,7 +39,6 @@ import { get } from "svelte/store";
 
 describe("selected universe derived stores", () => {
   beforeEach(() => {
-    overrideFeatureFlagsStore.reset();
     setSnsProjects([
       {
         rootCanisterId: mockSnsCanisterId,
@@ -465,7 +464,6 @@ describe("selected universe derived stores", () => {
 
     beforeEach(() => {
       defaultIcrcCanistersStore.reset();
-      tokensStore.reset();
       defaultIcrcCanistersStore.setCanisters({
         ledgerCanisterId,
         indexCanisterId: principal(1),

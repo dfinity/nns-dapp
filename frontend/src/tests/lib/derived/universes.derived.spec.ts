@@ -32,7 +32,6 @@ describe("universes derived stores", () => {
   beforeEach(() => {
     resetSnsProjects();
     defaultIcrcCanistersStore.reset();
-    tokensStore.reset();
   });
 
   describe("ckBTC both enabled", () => {

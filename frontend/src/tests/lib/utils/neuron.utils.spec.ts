@@ -50,6 +50,7 @@ import {
   isNeuronControllable,
   isNeuronControllableByUser,
   isNeuronControlledByHardwareWallet,
+  isNeuronLosingRewards,
   isPublicNeuron,
   isSpawning,
   isValidInputAmount,
@@ -64,6 +65,7 @@ import {
   neuronStakedMaturity,
   neuronVotingPower,
   neuronsVotingPower,
+  shouldDisplayRewardLossNotification,
   sortNeuronsByStake,
   topicsToFollow,
   userAuthorizedNeuron,
@@ -105,7 +107,6 @@ import { get } from "svelte/store";
 
 describe("neuron-utils", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.useFakeTimers().setSystemTime(Date.now());
     neuronsStore.setNeurons({ neurons: [], certified: true });
   });
@@ -3190,6 +3191,103 @@ describe("neuron-utils", () => {
         i18n: en,
       });
       expect(result.stake).toBeUndefined();
+    });
+  });
+
+  describe("Neuron voting power refreshed utils", () => {
+    const neuronWithRefreshedTimestamp = ({
+      votingPowerRefreshedTimestampAgeSecs,
+    }: {
+      votingPowerRefreshedTimestampAgeSecs: number;
+    }) => ({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        votingPowerRefreshedTimestampSeconds: BigInt(
+          nowInSeconds() - votingPowerRefreshedTimestampAgeSecs
+        ),
+      },
+    });
+    const losingRewardsPeriod = SECONDS_IN_HALF_YEAR;
+    const notificationPeriod = 30 * SECONDS_IN_DAY;
+
+    describe("isNeuronLosingRewards", () => {
+      it("should return false by default", () => {
+        expect(
+          isNeuronLosingRewards({
+            ...mockNeuron,
+            fullNeuron: undefined,
+          })
+        ).toBe(false);
+      });
+
+      it("should return true after the reward loss has started", () => {
+        expect(
+          isNeuronLosingRewards(
+            neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod,
+            })
+          )
+        ).toBe(true);
+        expect(
+          isNeuronLosingRewards(
+            neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod + 1,
+            })
+          )
+        ).toBe(true);
+      });
+
+      it("should return false", () => {
+        expect(
+          isNeuronLosingRewards(
+            neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod - 1,
+            })
+          )
+        ).toBe(false);
+      });
+    });
+
+    describe("shouldDisplayRewardLossNotification", () => {
+      it("should return false by default", () => {
+        expect(
+          shouldDisplayRewardLossNotification({
+            ...mockNeuron,
+            fullNeuron: undefined,
+          })
+        ).toBe(false);
+      });
+
+      it("should return true after notification period starts", () => {
+        expect(
+          shouldDisplayRewardLossNotification(
+            neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod - notificationPeriod,
+            })
+          )
+        ).toBe(true);
+        expect(
+          shouldDisplayRewardLossNotification(
+            neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod - notificationPeriod + 1,
+            })
+          )
+        ).toBe(true);
+      });
+
+      it("should return false before notification period", () => {
+        expect(
+          shouldDisplayRewardLossNotification(
+            neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod - (notificationPeriod + 1),
+            })
+          )
+        ).toBe(false);
+      });
     });
   });
 });

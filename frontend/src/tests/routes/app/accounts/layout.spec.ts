@@ -13,7 +13,6 @@ import { get } from "svelte/store";
 describe("Accounts layout", () => {
   beforeEach(() => {
     layoutTitleStore.set({ title: "" });
-    tokensStore.reset();
     page.mock({
       routeId: AppPath.Accounts,
       data: {

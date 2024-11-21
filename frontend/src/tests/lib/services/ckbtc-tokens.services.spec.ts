@@ -14,7 +14,6 @@ vi.mock("$lib/api/icrc-ledger.api");
 
 describe("ckbtc-tokens-services", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     resetIdentity();
   });
 
@@ -24,7 +23,6 @@ describe("ckbtc-tokens-services", () => {
       symbol: "ckTESTBTC",
     };
     beforeEach(() => {
-      tokensStore.reset();
       vi.spyOn(ledgerApi, "queryIcrcToken").mockImplementation(
         async ({ canisterId }) => {
           if (canisterId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText()) {

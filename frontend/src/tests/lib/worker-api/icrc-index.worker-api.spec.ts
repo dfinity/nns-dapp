@@ -10,8 +10,6 @@ describe("icrc-index.worker-api", () => {
   const indexCanisterMock = mock<IcrcIndexCanister>();
 
   beforeEach(() => {
-    vi.clearAllMocks();
-
     vi.spyOn(IcrcIndexCanister, "create").mockImplementation(
       () => indexCanisterMock
     );

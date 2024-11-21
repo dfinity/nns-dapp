@@ -7,7 +7,6 @@ import { get } from "svelte/store";
 
 describe("sns-swap-metrics", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     snsSwapMetricsStore.reset();
   });
 

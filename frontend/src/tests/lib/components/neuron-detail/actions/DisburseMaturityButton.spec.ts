@@ -13,10 +13,6 @@ describe("DisburseMaturityButton", () => {
     return DisburseMaturityButtonPo.under(new JestPageObjectElement(container));
   };
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("renders disburse maturity cta", async () => {
     const po = renderComponent(undefined);
 

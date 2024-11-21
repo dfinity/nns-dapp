@@ -28,7 +28,6 @@ describe("SelectUniverseNav", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetSnsProjects();
     actionableNnsProposalsStore.reset();
     actionableSnsProposalsStore.resetForTesting();

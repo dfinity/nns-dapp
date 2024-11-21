@@ -3,7 +3,6 @@ import {
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
@@ -46,7 +45,6 @@ describe("NnsNeuronAdvancedSection", () => {
 
   beforeEach(() => {
     nnsLatestRewardEventStore.reset();
-    overrideFeatureFlagsStore.reset();
     vi.useFakeTimers();
     vi.setSystemTime(nowInSeconds * 1000);
     resetIdentity();
@@ -245,19 +243,7 @@ describe("NnsNeuronAdvancedSection", () => {
     expect(await po.dissolveDate()).toBeNull();
   });
 
-  it("should not display NnsNeuronPublicVisibilityAction when ENABLE_NEURON_VISIBILITY is false", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", false);
-
-    const po = renderComponent(mockNeuron);
-
-    expect(await po.getNnsNeuronPublicVisibilityActionPo().isPresent()).toBe(
-      false
-    );
-  });
-
-  it("should display NnsNeuronPublicVisibilityAction when ENABLE_NEURON_VISIBILITY is true", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", true);
-
+  it("should display NnsNeuronPublicVisibilityAction", async () => {
     const po = renderComponent(mockNeuron);
 
     expect(await po.getNnsNeuronPublicVisibilityActionPo().isPresent()).toBe(
@@ -266,8 +252,6 @@ describe("NnsNeuronAdvancedSection", () => {
   });
 
   it("should pass the correct neuron to NnsNeuronPublicVisibilityAction", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_VISIBILITY", true);
-
     const po = renderComponent(createMockNeuron(123));
 
     expect(await po.getNnsNeuronPublicVisibilityActionPo().isPresent()).toBe(

@@ -35,3 +35,12 @@ export const TOPICS_TO_FOLLOW_NNS = [
   ),
   ...LAST_TOPICS,
 ];
+
+// A neuron's voting power begins to decrease linearly if it remains inactive for this duration.
+// Inactivity means no manual votes cast and no updates to the list of followed neurons (followees).
+// Draft ic pr: https://github.com/dfinity/ic/blob/c2da5aca97a07bae4fcbf5d72a8c0448b40599d7/rs/nns/governance/canister/governance.did#L582)
+// TODO(mstr): replace with the actual ic link.
+export const START_REDUCING_VOTING_POWER_AFTER_SECONDS = SECONDS_IN_HALF_YEAR;
+
+// To notify users that their rewards will start decreasing in 30 days.
+export const NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS = 30;

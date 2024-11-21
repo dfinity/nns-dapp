@@ -12,8 +12,6 @@ describe("imported-tokens-api", () => {
   const mockNNSDappCanister = mock<NNSDappCanister>();
 
   beforeEach(() => {
-    vi.resetAllMocks();
-
     vi.spyOn(NNSDappCanister, "create").mockImplementation(
       (): NNSDappCanister => mockNNSDappCanister
     );

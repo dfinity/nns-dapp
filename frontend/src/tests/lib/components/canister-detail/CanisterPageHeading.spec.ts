@@ -24,7 +24,6 @@ describe("CanisterHeadingTitle", () => {
   };
 
   beforeEach(() => {
-    vitest.clearAllMocks();
     window.removeEventListener("nnsCanisterDetailModal", eventListener);
   });
 

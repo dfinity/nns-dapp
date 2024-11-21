@@ -24,7 +24,6 @@ import {
   syncAccounts,
   transferICP,
 } from "$lib/services/icp-accounts.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
 import { icpAccountDetailsStore } from "$lib/stores/icp-account-details.store";
 import type { Account } from "$lib/types/account";
@@ -82,7 +81,6 @@ describe("icp-accounts.services", () => {
   beforeEach(() => {
     vi.spyOn(console, "error").mockReturnValue();
     resetAccountsForTesting();
-    overrideFeatureFlagsStore.reset();
     resetIdentity();
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
       mockGetIdentity

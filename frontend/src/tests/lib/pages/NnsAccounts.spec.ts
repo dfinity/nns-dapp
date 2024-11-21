@@ -29,7 +29,6 @@ describe("NnsAccounts", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetIdentity();
     resetAccountsForTesting();
     // TODO: Move the pollAccounts to Accounts route when universe selected is NNS instead of the child.
@@ -107,7 +106,6 @@ describe("NnsAccounts", () => {
     let spyQueryAccount: MockInstance;
     beforeEach(() => {
       vi.clearAllTimers();
-      vi.clearAllMocks();
       cancelPollAccounts();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);

@@ -16,7 +16,6 @@ import { waitFor } from "@testing-library/svelte";
 
 describe("ProjectStatusSection", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     snsTicketsStore.reset();
     resetIdentity();
   });

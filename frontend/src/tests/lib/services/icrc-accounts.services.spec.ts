@@ -46,10 +46,7 @@ describe("icrc-accounts-services", () => {
   const balanceE8s2 = 222000000n;
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetIdentity();
-    tokensStore.reset();
-    icrcAccountsStore.reset();
     importedTokensStore.reset();
     failedImportedTokenLedgerIdsStore.reset();
     resetSnsProjects();
@@ -76,8 +73,6 @@ describe("icrc-accounts-services", () => {
 
   describe("loadAccounts", () => {
     beforeEach(() => {
-      vi.clearAllMocks();
-      icrcAccountsStore.reset();
       vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
@@ -331,11 +326,6 @@ describe("icrc-accounts-services", () => {
   });
 
   describe("syncAccounts", () => {
-    beforeEach(() => {
-      vi.clearAllMocks();
-      icrcAccountsStore.reset();
-    });
-
     it("should call ckBTC accounts and token and load them in store", async () => {
       const spyAccountsQuery = vi
         .spyOn(ledgerApi, "queryIcrcBalance")
