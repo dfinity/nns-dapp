@@ -394,9 +394,7 @@
         "HOST": "https://yhabib-ingress.devenv.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_CKBTC": true,
-          "ENABLE_CKTESTBTC": false,
-          "ENABLE_NEURON_VISIBILITY": true,
-          "ENABLE_EXPORT_NEURONS_REPORT": true
+          "ENABLE_CKTESTBTC": false
         }
       },
       "providers": [
