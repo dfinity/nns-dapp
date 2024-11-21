@@ -93,17 +93,6 @@ export const uniqueObjects = <T>(list: T[]): T[] => {
 export const isDefined = <T>(argument: T | undefined): argument is T =>
   argument !== undefined;
 
-export const targetBlankLinkRenderer = (
-  href: string | null,
-  title: string | null,
-  text: string
-): string =>
-  `<a${
-    href === null
-      ? ""
-      : ` target="_blank" rel="noopener noreferrer" href="${href}"`
-  }${title === null ? "" : ` title="${title}"`}>${text}</a>`;
-
 /**
  * Returns an array of arrays of size <= `chunkSize`
  */
