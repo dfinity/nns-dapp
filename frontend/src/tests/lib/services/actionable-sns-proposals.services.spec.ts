@@ -128,7 +128,6 @@ describe("actionable-sns-proposals.services", () => {
     let spyConsoleError;
 
     beforeEach(() => {
-      vi.clearAllMocks();
       resetSnsProjects();
       actionableSnsProposalsStore.resetForTesting();
       resetIdentity();

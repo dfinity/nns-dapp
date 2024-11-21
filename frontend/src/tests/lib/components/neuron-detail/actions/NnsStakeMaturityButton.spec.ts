@@ -5,10 +5,6 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 describe("NnsStakeMaturityButton", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("should open stake maturity modal", async () => {
     const { getByText, getByTestId } = render(NeuronContextActionsTest, {
       props: {

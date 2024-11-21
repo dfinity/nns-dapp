@@ -25,10 +25,6 @@ vi.mock("$lib/services/sns.services", () => {
 });
 
 describe("Launchpad", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe("signed in", () => {
     beforeEach(() => {
       resetIdentity();

@@ -5,6 +5,7 @@ import {
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { aggregatorMockSnsesDataDto } from "$tests/mocks/sns-aggregator.mock";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("sns-aggregator store", () => {
@@ -57,10 +58,13 @@ describe("sns-aggregator store", () => {
   });
 
   describe("snsAggregatorStore", () => {
-    const snsWithLifecycle = (
-      sns: CachedSnsDto,
-      lifecycle: SnsSwapLifecycle
-    ) => ({
+    const snsWithLifecycle = ({
+      sns,
+      lifecycle,
+    }: {
+      sns: CachedSnsDto;
+      lifecycle: SnsSwapLifecycle;
+    }) => ({
       ...sns,
       swap_state: {
         ...sns.swap_state,
@@ -69,20 +73,33 @@ describe("sns-aggregator store", () => {
           lifecycle,
         },
       },
-      lifecycle: {
-        ...sns.lifecycle,
-        lifecycle,
-      },
+      ...(nonNullish(lifecycle)
+        ? {
+            lifecycle: {
+              ...sns.lifecycle,
+              lifecycle,
+            },
+          }
+        : { lifecycle: null }),
     });
 
     const nonAbortedData = [
-      snsWithLifecycle(aggregatorMockSnsesDataDto[0], SnsSwapLifecycle.Pending),
-      snsWithLifecycle(aggregatorMockSnsesDataDto[1], SnsSwapLifecycle.Open),
-      snsWithLifecycle(
-        aggregatorMockSnsesDataDto[2],
-        SnsSwapLifecycle.Committed
-      ),
-      snsWithLifecycle(aggregatorMockSnsesDataDto[3], SnsSwapLifecycle.Adopted),
+      snsWithLifecycle({
+        sns: aggregatorMockSnsesDataDto[0],
+        lifecycle: SnsSwapLifecycle.Pending,
+      }),
+      snsWithLifecycle({
+        sns: aggregatorMockSnsesDataDto[1],
+        lifecycle: SnsSwapLifecycle.Open,
+      }),
+      snsWithLifecycle({
+        sns: aggregatorMockSnsesDataDto[2],
+        lifecycle: SnsSwapLifecycle.Committed,
+      }),
+      snsWithLifecycle({
+        sns: aggregatorMockSnsesDataDto[3],
+        lifecycle: SnsSwapLifecycle.Adopted,
+      }),
     ];
 
     it("should start empty", () => {
@@ -95,15 +112,26 @@ describe("sns-aggregator store", () => {
     });
 
     it("should not hold aborted projects", () => {
-      const abortedProject1 = snsWithLifecycle(
-        aggregatorMockSnsesDataDto[4],
-        SnsSwapLifecycle.Aborted
-      );
-      const abortedProject2 = snsWithLifecycle(
-        aggregatorMockSnsesDataDto[5],
-        SnsSwapLifecycle.Aborted
-      );
+      const abortedProject1 = snsWithLifecycle({
+        sns: aggregatorMockSnsesDataDto[4],
+        lifecycle: SnsSwapLifecycle.Aborted,
+      });
+      const abortedProject2 = snsWithLifecycle({
+        sns: aggregatorMockSnsesDataDto[5],
+        lifecycle: SnsSwapLifecycle.Aborted,
+      });
       const data = [abortedProject1, ...nonAbortedData, abortedProject2];
+
+      snsAggregatorIncludingAbortedProjectsStore.setData(data);
+      expect(get(snsAggregatorStore).data).toEqual(nonAbortedData);
+    });
+
+    it("should not hold projects without lifecycle", () => {
+      const projectWithoutLifecycle = snsWithLifecycle({
+        sns: aggregatorMockSnsesDataDto[4],
+        lifecycle: null,
+      });
+      const data = [projectWithoutLifecycle, ...nonAbortedData];
 
       snsAggregatorIncludingAbortedProjectsStore.setData(data);
       expect(get(snsAggregatorStore).data).toEqual(nonAbortedData);

@@ -113,10 +113,8 @@ describe("IcrcWallet", () => {
 
   beforeEach(() => {
     balancesObserverCallback = undefined;
-    vi.clearAllMocks();
     vi.clearAllTimers();
     vi.useRealTimers();
-    tokensStore.reset();
     resetIdentity();
     defaultIcrcCanistersStore.reset();
     busyStore.resetForTesting();
@@ -196,8 +194,6 @@ describe("IcrcWallet", () => {
     let resolveAccounts: (bigint) => void;
 
     beforeEach(() => {
-      icrcAccountsStore.reset();
-
       page.mock({
         data: { universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Wallet,

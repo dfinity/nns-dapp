@@ -57,7 +57,6 @@ describe("SnsNeuronPageHeader", () => {
   };
 
   beforeEach(() => {
-    vi.resetAllMocks();
     resetSnsProjects();
     snsNeuronsStore.reset();
     neuronsTableOrderStore.reset();

@@ -82,7 +82,6 @@ describe("NnsWallet", () => {
   const accountTransactions = [mockTransactionWithId];
 
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.clearAllTimers();
     vi.unstubAllGlobals();
     cancelPollAccounts();

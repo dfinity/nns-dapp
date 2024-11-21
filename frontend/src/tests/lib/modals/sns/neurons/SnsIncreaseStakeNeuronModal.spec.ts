@@ -52,9 +52,7 @@ describe("SnsIncreaseStakeNeuronModal", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetSnsProjects();
-    icrcAccountsStore.reset();
     page.mock({
       routeId: AppPath.Neuron,
       data: { universe: rootCanisterId.toText() },

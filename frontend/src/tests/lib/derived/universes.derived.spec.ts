@@ -15,7 +15,6 @@ import {
   mockCkETHTESTToken,
   mockCkETHToken,
 } from "$tests/mocks/cketh-accounts.mock";
-import { principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import {
   ckBTCUniverseMock,
@@ -32,12 +31,10 @@ describe("universes derived stores", () => {
   beforeEach(() => {
     resetSnsProjects();
     defaultIcrcCanistersStore.reset();
-    tokensStore.reset();
   });
 
-  describe("ckBTC both enabled", () => {
+  describe("ckTESTBTC enabled", () => {
     beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
       overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
     });
 
@@ -70,9 +67,8 @@ describe("universes derived stores", () => {
     });
   });
 
-  describe("only ckBTC enabled", () => {
+  describe("ckTESTBTC disabled", () => {
     beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
       overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
     });
 
@@ -132,50 +128,6 @@ describe("universes derived stores", () => {
       expect(store[1].canisterId).toEqual(CKBTC_UNIVERSE_CANISTER_ID.toText());
       expect(store[2]).toEqual(ckETHUniverseMock);
       expect(store[3]).toEqual(ckETHSEPOLIAUniverseMock);
-    });
-  });
-
-  describe("ckBTC NOT enabled", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", false);
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
-    });
-
-    it("should return Nns per default", () => {
-      const store = get(universesStore);
-      expect(store.length).toEqual(1);
-      expect(store[0].summary).toBeUndefined();
-      expect(store[0].canisterId).toEqual(OWN_CANISTER_ID.toText());
-    });
-
-    it("should return Nns and SNS projects", () => {
-      const snsRootCanisterId = rootCanisterIdMock;
-      setSnsProjects([
-        {
-          lifecycle: SnsSwapLifecycle.Committed,
-          rootCanisterId: snsRootCanisterId,
-        },
-      ]);
-      const store = get(universesStore);
-      expect(store.length).toEqual(2);
-      expect(store[1].summary).not.toBeUndefined();
-      expect(store[1].canisterId).toEqual(snsRootCanisterId.toText());
-    });
-
-    it("should not include open SNS projects", () => {
-      const snsRootCanisterId = rootCanisterIdMock;
-      setSnsProjects([
-        {
-          lifecycle: SnsSwapLifecycle.Committed,
-          rootCanisterId: snsRootCanisterId,
-        },
-        {
-          lifecycle: SnsSwapLifecycle.Open,
-          rootCanisterId: principal(2),
-        },
-      ]);
-      const store = get(universesStore);
-      expect(store.length).toEqual(2);
     });
   });
 });

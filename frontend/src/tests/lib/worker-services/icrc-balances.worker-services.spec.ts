@@ -14,8 +14,6 @@ describe("balances.worker-services", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();
 
   beforeEach(() => {
-    vi.clearAllMocks();
-
     vi.spyOn(IcrcLedgerCanister, "create").mockImplementation(
       () => ledgerCanisterMock
     );

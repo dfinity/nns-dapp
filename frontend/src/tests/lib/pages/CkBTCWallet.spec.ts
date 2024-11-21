@@ -113,15 +113,12 @@ describe("CkBTCWallet", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.clearAllTimers();
     vi.useRealTimers();
-    tokensStore.reset();
     ckBTCInfoStore.reset();
     bitcoinAddressStore.reset();
     ckbtcRetrieveBtcStatusesStore.reset();
     resetIdentity();
-    icrcAccountsStore.reset();
 
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
@@ -215,8 +212,6 @@ describe("CkBTCWallet", () => {
     let resolveAccounts: (Account) => void;
 
     beforeEach(() => {
-      icrcAccountsStore.reset();
-
       page.mock({
         data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Wallet,

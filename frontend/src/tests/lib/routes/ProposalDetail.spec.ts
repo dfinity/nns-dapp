@@ -12,8 +12,6 @@ vi.mock("$lib/api/governance.api");
 
 describe("ProposalDetail", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-
     // Reset to default value
     page.mock({
       data: {

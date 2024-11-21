@@ -33,7 +33,6 @@ import { get } from "svelte/store";
 
 describe("ckbtc-minter-services", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     resetIdentity();
     ckbtcRetrieveBtcStatusesStore.reset();
     vi.spyOn(minterApi, "updateBalance").mockResolvedValue(mockUpdateBalanceOk);

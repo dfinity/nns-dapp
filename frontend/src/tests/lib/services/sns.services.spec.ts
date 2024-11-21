@@ -60,71 +60,65 @@ describe("sns-services", () => {
 
   describe("loadSnsSwapCommitments", () => {
     it("should call api to get commitments and load them in store", async () => {
-      const commitment1 = mockSnsSwapCommitment(principal(0));
-      const commitment2 = mockSnsSwapCommitment(principal(1));
+      setSnsProjects([
+        { rootCanisterId: rootCanisterId1 },
+        { rootCanisterId: rootCanisterId2 },
+      ]);
+      const commitment1 = mockSnsSwapCommitment(rootCanisterId1);
+      const commitment2 = mockSnsSwapCommitment(rootCanisterId2);
       const commitments = [commitment1, commitment2];
       const spy = vi
-        .spyOn(api, "querySnsSwapCommitments")
-        .mockImplementation(() => Promise.resolve(commitments));
+        .spyOn(api, "querySnsSwapCommitment")
+        .mockImplementation(async ({ rootCanisterId }) =>
+          commitments.find(
+            (commitment) =>
+              commitment.rootCanisterId.toText() === rootCanisterId
+          )
+        );
+
       await loadSnsSwapCommitments();
-      expect(spy).toBeCalled();
 
-      const store = get(snsSwapCommitmentsStore);
-      expect(store).toHaveLength(commitments.length);
-    });
-
-    it("should reset store and show toast on error", async () => {
-      vi.spyOn(console, "error").mockReturnValue();
-      const errorMessage = "Error fetching commitments";
-      const spy = vi
-        .spyOn(api, "querySnsSwapCommitments")
-        .mockRejectedValue(new Error(errorMessage));
-
-      setSnsProjects([
-        {
-          rootCanisterId: rootCanisterId1,
-          lifecycle: SnsSwapLifecycle.Open,
-        },
-        {
-          rootCanisterId: rootCanisterId2,
-          lifecycle: SnsSwapLifecycle.Open,
-        },
-      ]);
-
-      snsSwapCommitmentsStore.setSwapCommitment({
-        swapCommitment: mockSnsSwapCommitment(principal(0)),
+      expect(spy).toBeCalledTimes(4);
+      expect(spy).toBeCalledWith({
+        certified: false,
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterId1.toText(),
+      });
+      expect(spy).toBeCalledWith({
+        certified: false,
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterId2.toText(),
+      });
+      expect(spy).toBeCalledWith({
         certified: true,
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterId1.toText(),
+      });
+      expect(spy).toBeCalledWith({
+        certified: true,
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterId2.toText(),
       });
 
-      expect(get(snsSwapCommitmentsStore)).not.toBe(undefined);
-      expect(get(toastsStore)).toEqual([]);
-
-      await loadSnsSwapCommitments();
-      expect(spy).toBeCalled();
-
-      expect(get(snsSwapCommitmentsStore)).toBe(undefined);
-      expect(get(toastsStore)).toMatchObject([
-        {
-          level: "error",
-          text: `There was an unexpected error while loading the commitments of all deployed projects. ${errorMessage}`,
-        },
+      const store = get(snsSwapCommitmentsStore);
+      expect(store).toEqual([
+        { swapCommitment: commitment1, certified: true },
+        { swapCommitment: commitment2, certified: true },
       ]);
     });
 
-    it("should not reset store or show toast on uncertified error", async () => {
-      vi.spyOn(console, "error").mockReturnValue();
-      const commitment1 = mockSnsSwapCommitment(principal(0));
-      const commitment2 = mockSnsSwapCommitment(principal(1));
-      const commitments = [commitment1, commitment2];
-
-      const errorMessage = "Error fetching commitments";
+    it("should show toast and load remaining commitments on error", async () => {
+      const consoleErrorSpy = vi.spyOn(console, "error").mockReturnValue();
+      const commitment2 = mockSnsSwapCommitment(rootCanisterId2);
+      const errorMessage = "Error fetching commitment";
+      const error = new Error(errorMessage);
       const spy = vi
-        .spyOn(api, "querySnsSwapCommitments")
-        .mockImplementation(async ({ certified }) => {
-          if (!certified) {
-            throw new Error(errorMessage);
+        .spyOn(api, "querySnsSwapCommitment")
+        .mockImplementation(async ({ rootCanisterId }) => {
+          if (rootCanisterId === rootCanisterId1.toText()) {
+            throw error;
           }
-          return commitments;
+          return commitment2;
         });
 
       setSnsProjects([
@@ -138,12 +132,53 @@ describe("sns-services", () => {
         },
       ]);
 
-      snsSwapCommitmentsStore.setSwapCommitment({
-        swapCommitment: mockSnsSwapCommitment(principal(0)),
-        certified: true,
-      });
+      expect(get(snsSwapCommitmentsStore)).toBeUndefined();
+      expect(get(toastsStore)).toEqual([]);
 
-      expect(get(snsSwapCommitmentsStore)).not.toBe(undefined);
+      await loadSnsSwapCommitments();
+      expect(spy).toBeCalled();
+
+      expect(get(snsSwapCommitmentsStore)).toEqual([
+        { swapCommitment: commitment2, certified: true },
+      ]);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: `There was an unexpected error while loading the commitment of the project. ${errorMessage}`,
+        },
+      ]);
+
+      // loadSnsSwapCommitment logs the error for the certified and uncertified
+      // call but toastsError logs it again for a total of 3 times.
+      // I'm not sure this is desired but this is what's currently implemented.
+      expect(consoleErrorSpy).toBeCalledTimes(3);
+      expect(consoleErrorSpy).toHaveBeenNthCalledWith(1, error);
+      expect(consoleErrorSpy).toHaveBeenNthCalledWith(2, error);
+      expect(consoleErrorSpy).toHaveBeenNthCalledWith(3, error);
+    });
+
+    it("should not show toast on uncertified error", async () => {
+      vi.spyOn(console, "error").mockReturnValue();
+      const commitment1 = mockSnsSwapCommitment(principal(0));
+
+      const errorMessage = "Error fetching commitments";
+      const spy = vi
+        .spyOn(api, "querySnsSwapCommitment")
+        .mockImplementation(async ({ certified }) => {
+          if (!certified) {
+            throw new Error(errorMessage);
+          }
+          return commitment1;
+        });
+
+      setSnsProjects([
+        {
+          rootCanisterId: rootCanisterId1,
+          lifecycle: SnsSwapLifecycle.Open,
+        },
+      ]);
+
+      expect(get(snsSwapCommitmentsStore)).toBeUndefined();
       expect(get(toastsStore)).toEqual([]);
 
       await loadSnsSwapCommitments();
@@ -167,7 +202,6 @@ describe("sns-services", () => {
 
       const commitment1 = mockSnsSwapCommitment(rootCanisterId1);
       const commitment2 = mockSnsSwapCommitment(rootCanisterId2);
-      const commitments = [commitment1, commitment2];
       snsSwapCommitmentsStore.setSwapCommitment({
         swapCommitment: commitment1,
         certified: true,
@@ -177,10 +211,53 @@ describe("sns-services", () => {
         certified: true,
       });
       const spy = vi
-        .spyOn(api, "querySnsSwapCommitments")
-        .mockImplementation(() => Promise.resolve(commitments));
+        .spyOn(api, "querySnsSwapCommitment")
+        .mockImplementation(() => Promise.resolve(commitment1));
       await loadSnsSwapCommitments();
       expect(spy).not.toBeCalled();
+    });
+
+    it("should only call api for commitments not yet loaded", async () => {
+      setSnsProjects([
+        { rootCanisterId: rootCanisterId1 },
+        { rootCanisterId: rootCanisterId2 },
+      ]);
+      const commitment1 = mockSnsSwapCommitment(rootCanisterId1);
+      const commitment2 = mockSnsSwapCommitment(rootCanisterId2);
+      const commitments = [commitment1, commitment2];
+      const spy = vi
+        .spyOn(api, "querySnsSwapCommitment")
+        .mockImplementation(async ({ rootCanisterId }) =>
+          commitments.find(
+            (commitment) =>
+              commitment.rootCanisterId.toText() === rootCanisterId
+          )
+        );
+
+      snsSwapCommitmentsStore.setSwapCommitment({
+        swapCommitment: commitment1,
+        certified: true,
+      });
+
+      await loadSnsSwapCommitments();
+
+      expect(spy).toBeCalledTimes(2);
+      expect(spy).toBeCalledWith({
+        certified: false,
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterId2.toText(),
+      });
+      expect(spy).toBeCalledWith({
+        certified: true,
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterId2.toText(),
+      });
+
+      const store = get(snsSwapCommitmentsStore);
+      expect(store).toEqual([
+        { swapCommitment: commitment1, certified: true },
+        { swapCommitment: commitment2, certified: true },
+      ]);
     });
   });
 

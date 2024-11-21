@@ -6,17 +6,12 @@ import {
   neuronsPathStore,
   proposalsPathStore,
 } from "$lib/derived/paths.derived";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
 import { mockSnsCanisterIdText } from "$tests/mocks/sns.api.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { get } from "svelte/store";
 
 describe("paths derived stores", () => {
-  beforeEach(() => {
-    overrideFeatureFlagsStore.reset();
-  });
-
   describe("accountsPathStore", () => {
     it("should return NNS accounts path as default", () => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });

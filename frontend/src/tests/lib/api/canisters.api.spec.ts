@@ -43,7 +43,6 @@ describe("canisters-api", () => {
   const fee = 10_000n;
 
   beforeEach(() => {
-    vi.resetAllMocks();
     vi.clearAllTimers();
 
     // Prevent HttpAgent.create(), which is called by createAgent, from making a

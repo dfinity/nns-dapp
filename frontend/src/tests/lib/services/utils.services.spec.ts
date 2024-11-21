@@ -12,7 +12,6 @@ describe("api-utils", () => {
   describe("queryAndUpdate", () => {
     describe("not logged in user", () => {
       beforeEach(() => {
-        vi.clearAllMocks();
         setNoIdentity();
       });
 
@@ -62,7 +61,6 @@ describe("api-utils", () => {
 
     describe("logged in user", () => {
       beforeEach(() => {
-        vi.clearAllMocks();
         resetIdentity();
       });
       it("should request twice", async () => {

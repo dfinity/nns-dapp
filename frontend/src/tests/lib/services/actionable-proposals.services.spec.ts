@@ -97,7 +97,6 @@ describe("actionable-proposals.services", () => {
     let spyConsoleError;
 
     beforeEach(() => {
-      vi.clearAllMocks();
       actionableNnsProposalsStore.reset();
       resetIdentity();
       spyQueryProposals = vi

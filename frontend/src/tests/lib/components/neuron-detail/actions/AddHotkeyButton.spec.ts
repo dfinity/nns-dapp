@@ -5,10 +5,6 @@ import { fireEvent, render } from "@testing-library/svelte";
 import NeuronContextTest from "../NeuronContextTest.svelte";
 
 describe("AddHotkeyButton", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("renders add hotkey message", () => {
     const { getByText } = render(NeuronContextTest, {
       props: {

@@ -12,9 +12,6 @@ describe("featureFlags store", () => {
   const notEditable: FeatureKey = "TEST_FLAG_NOT_EDITABLE";
   const notEditableError = `Feature flag is not editable: ${notEditable}`;
   const editableFlag: FeatureKey = "TEST_FLAG_EDITABLE";
-  beforeEach(() => {
-    overrideFeatureFlagsStore.reset();
-  });
 
   it("should export all feature flags on the module with default values", () => {
     let feature: FeatureKey;

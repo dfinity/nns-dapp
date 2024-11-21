@@ -3,7 +3,7 @@ import type {
   ResponsiveTableColumn,
   ResponsiveTableOrder,
 } from "$lib/types/responsive-table";
-import { createAscendingComparator } from "$lib/utils/responsive-table.utils";
+import { createAscendingComparator } from "$lib/utils/sort.utils";
 import TestTableAgeCell from "$tests/lib/components/ui/TestTableAgeCell.svelte";
 import TestTableNameCell from "$tests/lib/components/ui/TestTableNameCell.svelte";
 import { ResponsiveTableSortModalPo } from "$tests/page-objects/ResponsiveTableSortModal.page-object";

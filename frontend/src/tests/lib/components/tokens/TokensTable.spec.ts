@@ -41,10 +41,6 @@ describe("TokensTable", () => {
     return TokensTablePo.under(new JestPageObjectElement(container));
   };
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("should render a row per token", async () => {
     const token1 = createUserToken({
       universeId: OWN_CANISTER_ID,

@@ -1,3 +1,4 @@
+import type { Comparator } from "$lib/utils/sort.utils";
 import type { ComponentType, SvelteComponent } from "svelte";
 
 export interface ResponsiveTableRowData {
@@ -25,11 +26,6 @@ export interface ResponsiveTableColumn<
   templateColumns: TemplateItem[];
   comparator?: Comparator<RowDataType>;
 }
-
-export type Comparator<RowDataType> = (
-  a: RowDataType,
-  b: RowDataType
-) => number;
 
 export type ResponsiveTableOrder<ColumnIdType = string> = Array<{
   columnId: ColumnIdType;

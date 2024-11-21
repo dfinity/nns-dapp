@@ -13,6 +13,12 @@ jobs:
   update-aggregator-response:
     runs-on: ubuntu-latest
     steps:
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.PR_AUTOMATION_BOT_PUBLIC_APP_ID }}
+          private-key: ${{ secrets.PR_AUTOMATION_BOT_PUBLIC_PRIVATE_KEY }}
       - uses: actions/checkout@v4
       - name: Update the SNS aggregator response files
         run: scripts/nns-dapp/replace-sns-aggregator-response.sh
@@ -23,7 +29,7 @@ jobs:
         # Note: If there were no changes, this step creates no PR.
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.GIX_CREATE_PR_PAT }}
+          token: ${{ steps.app-token.outputs.token }}
           commit-message: Update SNS aggregator response
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>
