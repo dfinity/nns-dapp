@@ -15,7 +15,6 @@ import {
   mockCkETHTESTToken,
   mockCkETHToken,
 } from "$tests/mocks/cketh-accounts.mock";
-import { principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import {
   ckBTCUniverseMock,

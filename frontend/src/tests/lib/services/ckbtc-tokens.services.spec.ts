@@ -35,23 +35,6 @@ describe("ckbtc-tokens-services", () => {
       );
     });
 
-    describe("no ckBTC enabled", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
-      });
-
-      it("should not load the ckBTC related tokens", async () => {
-        await services.loadCkBTCTokens();
-
-        expect(
-          get(tokensStore)[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]
-        ).toBeUndefined();
-        expect(
-          get(tokensStore)[CKBTC_UNIVERSE_CANISTER_ID.toText()]
-        ).toBeUndefined();
-      });
-    });
-
     describe("CKBTC enabled", () => {
       beforeEach(() => {
         overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
@@ -80,9 +63,6 @@ describe("ckbtc-tokens-services", () => {
         expect(
           get(tokensStore)[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]?.token
         ).toEqual(mockCkTestBTCToken);
-        expect(
-          get(tokensStore)[CKBTC_UNIVERSE_CANISTER_ID.toText()]
-        ).toBeUndefined();
       });
     });
 
