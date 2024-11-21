@@ -1,7 +1,7 @@
 import {
   convertToCsv,
   FileSystemAccessError,
-  generateCsvDownload,
+  generateCsvFileToSave,
 } from "$lib/utils/export-to-csv.utils";
 
 describe("Export to Csv", () => {
@@ -129,7 +129,7 @@ describe("Export to Csv", () => {
       });
 
       it("should use File System Access API when available", async () => {
-        await generateCsvDownload({
+        await generateCsvFileToSave({
           data: [],
           headers: [],
           fileName: "test",
@@ -160,7 +160,7 @@ describe("Export to Csv", () => {
         );
 
         await expect(
-          generateCsvDownload({ data: [], headers: [] })
+          generateCsvFileToSave({ data: [], headers: [] })
         ).resolves.not.toThrow();
       });
 
@@ -171,7 +171,7 @@ describe("Export to Csv", () => {
         );
 
         await expect(
-          generateCsvDownload({ data: [], headers: [] })
+          generateCsvFileToSave({ data: [], headers: [] })
         ).rejects.toThrow(FileSystemAccessError);
       });
     });
@@ -190,7 +190,7 @@ describe("Export to Csv", () => {
           .mockImplementationOnce(() => {});
         vi.spyOn(document, "createElement").mockReturnValue(mockLink);
 
-        await generateCsvDownload({
+        await generateCsvFileToSave({
           data: [],
           headers: [],
           fileName: "test",
@@ -207,7 +207,7 @@ describe("Export to Csv", () => {
         });
 
         await expect(
-          generateCsvDownload({ data: [], headers: [] })
+          generateCsvFileToSave({ data: [], headers: [] })
         ).rejects.toThrow(FileSystemAccessError);
       });
     });
