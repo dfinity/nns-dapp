@@ -25,7 +25,6 @@ describe("app-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    vi.clearAllMocks();
     clearSnsAggregatorCache();
     // resetSnsProjects();
     vi.spyOn(LedgerCanister, "create").mockImplementation(

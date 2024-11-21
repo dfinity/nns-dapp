@@ -2,10 +2,6 @@ import { queryUserCountryLocation } from "$lib/api/location.api";
 
 describe("location api", () => {
   describe("queryUserCountryLocation", () => {
-    beforeEach(() => {
-      vi.resetAllMocks();
-    });
-
     describe("if GeoIP service works", () => {
       it("should return country code", async () => {
         const countryCode = "CH";

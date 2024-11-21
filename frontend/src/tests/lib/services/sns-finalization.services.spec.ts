@@ -17,7 +17,6 @@ describe("sns-finalization-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    vi.clearAllMocks();
     resetSnsProjects();
     resetSnsFinalizationStatusStore();
 

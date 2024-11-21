@@ -107,7 +107,6 @@ import { get } from "svelte/store";
 
 describe("neuron-utils", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.useFakeTimers().setSystemTime(Date.now());
     neuronsStore.setNeurons({ neurons: [], certified: true });
   });

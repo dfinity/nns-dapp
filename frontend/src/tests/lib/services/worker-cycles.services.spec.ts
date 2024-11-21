@@ -7,7 +7,6 @@ vi.mock("$lib/workers/cycles.worker?worker");
 describe("initCyclesWorker", () => {
   const postMessage = vi.fn();
   beforeEach(async () => {
-    vi.clearAllMocks();
     const module = await import("$lib/workers/cycles.worker?worker");
     module.default = vi.fn().mockReturnValue({
       postMessage,

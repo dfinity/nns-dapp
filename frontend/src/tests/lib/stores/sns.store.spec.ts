@@ -32,7 +32,6 @@ import { get } from "svelte/store";
 
 describe("sns.store", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     snsAggregatorIncludingAbortedProjectsStore.reset();
     snsDerivedStateStore.reset();
     snsLifecycleStore.reset();

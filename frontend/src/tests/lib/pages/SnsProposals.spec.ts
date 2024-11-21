@@ -46,7 +46,6 @@ describe("SnsProposals", () => {
   const projectName = "🪙";
 
   beforeEach(() => {
-    vi.clearAllMocks();
     snsProposalsStore.reset();
     snsFiltersStore.reset();
     // Reset to default value

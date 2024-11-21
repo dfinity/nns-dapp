@@ -10,10 +10,6 @@ describe("IcrcReceiveModal", () => {
   const reloadSpy = vi.fn();
   const tokenSymbol = "TST";
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   const renderComponent = async ({
     account = mockSnsMainAccount,
     tokenSymbol,

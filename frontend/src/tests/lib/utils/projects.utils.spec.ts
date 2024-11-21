@@ -48,7 +48,6 @@ describe("project-utils", () => {
   });
 
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.useRealTimers();
   });
 
@@ -288,10 +287,6 @@ describe("project-utils", () => {
   });
 
   describe("userCountryIsNeeded", () => {
-    beforeEach(() => {
-      vi.clearAllMocks();
-    });
-
     it("country not needed", () => {
       expect(
         userCountryIsNeeded({

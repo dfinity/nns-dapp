@@ -46,8 +46,6 @@ vi.mock("$lib/api/agent.api", () => {
 describe("neurons-api", () => {
   const mockGovernanceCanister = mock<GovernanceCanister>();
   beforeEach(() => {
-    vi.resetAllMocks();
-
     mockGovernanceCanister.listNeurons.mockImplementation(
       vi.fn().mockResolvedValue([])
     );

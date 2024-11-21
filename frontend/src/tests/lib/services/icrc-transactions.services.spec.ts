@@ -22,7 +22,6 @@ describe("icrc-transactions services", () => {
   const ledgerCanisterId = principal(1);
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetIdentity();
     icrcTransactionsStore.reset();
     vi.spyOn(console, "error").mockImplementation(() => undefined);

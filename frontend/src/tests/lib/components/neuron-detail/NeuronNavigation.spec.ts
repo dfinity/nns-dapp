@@ -34,7 +34,6 @@ const testNeurons = [
 
 describe("NeuronNavigation", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     neuronsStore.setNeurons({ neurons: testNeurons, certified: true });
     page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
   });

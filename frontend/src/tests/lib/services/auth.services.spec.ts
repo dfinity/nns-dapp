@@ -57,8 +57,6 @@ describe("auth-services", () => {
     mockAuthClient.logout.mockResolvedValue(undefined);
 
     beforeEach(() => {
-      vi.clearAllMocks();
-
       vi.spyOn(AuthClient, "create").mockImplementation(
         async (): Promise<AuthClient> => mockAuthClient
       );

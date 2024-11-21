@@ -84,7 +84,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
   const nowInSeconds = Math.floor(now / 1000);
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetSnsProjects();
     snsSwapCommitmentsStore.reset();
     snsSwapMetricsStore.reset();

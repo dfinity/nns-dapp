@@ -65,7 +65,6 @@ describe("sns-proposals services", () => {
       beforeEach(() => {
         snsFiltersStore.reset();
         snsProposalsStore.reset();
-        vi.clearAllMocks();
         setNoIdentity();
       });
       it("should call queryProposals with the default params", async () => {
@@ -228,7 +227,6 @@ describe("sns-proposals services", () => {
     describe("logged in", () => {
       beforeEach(() => {
         snsProposalsStore.reset();
-        vi.clearAllMocks();
         resetIdentity();
       });
 
@@ -288,7 +286,6 @@ describe("sns-proposals services", () => {
     const vote = SnsVote.Yes;
 
     beforeEach(() => {
-      vi.clearAllMocks();
       resetIdentity();
     });
 

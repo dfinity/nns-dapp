@@ -10,8 +10,6 @@ describe("icrc-ledger.worker-api", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();
 
   beforeEach(() => {
-    vi.clearAllMocks();
-
     vi.spyOn(IcrcLedgerCanister, "create").mockImplementation(
       () => ledgerCanisterMock
     );

@@ -46,7 +46,6 @@ describe("MergeNeuronsModal", () => {
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
       testIdentity
     );
-    vi.clearAllMocks();
     resetAccountsForTesting();
     resetNeuronsApiService();
   });

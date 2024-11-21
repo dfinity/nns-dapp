@@ -39,7 +39,6 @@ describe("NewFolloweeModal", () => {
     },
   };
   beforeEach(() => {
-    vi.clearAllMocks();
     resetIdentity();
     knownNeuronsStore.setNeurons([]);
   });

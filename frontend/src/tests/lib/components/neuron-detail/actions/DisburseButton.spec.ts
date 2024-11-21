@@ -7,10 +7,6 @@ import { fireEvent, render } from "@testing-library/svelte";
 import NeuronContextTest from "../NeuronContextTest.svelte";
 
 describe("DisburseButton", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("renders title", () => {
     const { getByText } = render(NeuronContextTest, {
       props: {

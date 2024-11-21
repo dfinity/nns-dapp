@@ -49,7 +49,6 @@ describe("SnsNeurons", () => {
   const projectName = "Tetris";
 
   beforeEach(() => {
-    vi.clearAllMocks();
     checkedNeuronSubaccountsStore.reset();
     page.mock({ data: { universe: rootCanisterId.toText() } });
     resetIdentity();

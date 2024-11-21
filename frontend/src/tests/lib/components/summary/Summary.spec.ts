@@ -18,7 +18,6 @@ describe("Summary", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     page.reset();
     resetSnsProjects();
   });

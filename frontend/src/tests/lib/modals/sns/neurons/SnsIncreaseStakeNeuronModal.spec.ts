@@ -52,7 +52,6 @@ describe("SnsIncreaseStakeNeuronModal", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetSnsProjects();
     page.mock({
       routeId: AppPath.Neuron,
