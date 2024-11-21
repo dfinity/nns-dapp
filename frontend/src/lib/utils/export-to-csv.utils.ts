@@ -43,7 +43,7 @@ export const convertToCsv = <T>({ data, headers }: CsvBaseConfig<T>) => {
   if (headers.length === 0) return "";
 
   const sanitizedHeaders = headers
-    .map(({ label, id }) => label ?? id)
+    .map(({ label }) => label)
     .map((header) => escapeCsvValue(header));
   const csvRows = [sanitizedHeaders.join(",")];
 
