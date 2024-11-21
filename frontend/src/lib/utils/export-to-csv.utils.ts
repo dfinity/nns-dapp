@@ -146,7 +146,7 @@ const saveFileWithAnchor = ({
  *
  * @remarks
  * - Uses the modern File System Access API when available, falling back to traditional download method
- * - Automatically handles values containing especial characters like commans and new lines
+ * - Automatically handles values containing special characters like commas and new lines
  */
 export const generateCsvFileToSave = async <T>({
   data,

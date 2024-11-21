@@ -113,6 +113,8 @@ describe("Export to Csv", () => {
       let mockHandle;
 
       beforeEach(() => {
+        vi.unstubAllGlobals();
+
         mockWritable = {
           write: vi.fn(),
           close: vi.fn(),
