@@ -19,7 +19,6 @@ vi.mock("$lib/api/sns-sale.api");
 
 describe("Launchpad", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     authStore.setForTesting(null);
 
     vi.spyOn(proposalsApi, "queryProposals").mockImplementation(() =>

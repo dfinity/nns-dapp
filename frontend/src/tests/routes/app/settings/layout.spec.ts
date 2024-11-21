@@ -9,10 +9,6 @@ import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("Layout", () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
-
   const renderSettingsAndBack = () => {
     page.mock({
       data: {

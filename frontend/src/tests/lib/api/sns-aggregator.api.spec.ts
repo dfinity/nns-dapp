@@ -3,10 +3,6 @@ import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 
 describe("sns-aggregator api", () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
-
   describe("querySnsProjects", () => {
     it("should fetch json once if less than 10 SNSes", async () => {
       const mockFetch = vi.fn();

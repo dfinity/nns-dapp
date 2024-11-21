@@ -22,7 +22,6 @@ describe("Accounts page", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetAccountsForTesting();
     vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(mockAccountDetails);
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(314000000n);

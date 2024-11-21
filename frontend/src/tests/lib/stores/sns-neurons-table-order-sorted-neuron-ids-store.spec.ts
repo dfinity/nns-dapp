@@ -37,7 +37,6 @@ describe("snsNeuronsTableOrderSortedNeuronIdsStore", () => {
   const mockRootCanisterId = Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai");
 
   beforeEach(() => {
-    vi.resetAllMocks();
     neuronsTableOrderStore.reset();
     snsNeuronsStore.reset();
     resetSnsProjects();

@@ -56,7 +56,6 @@ describe("SnsNeuronDetail", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     snsNeuronsStore.reset();
     setSnsProjects([
       {

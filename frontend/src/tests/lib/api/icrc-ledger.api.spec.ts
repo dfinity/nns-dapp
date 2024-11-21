@@ -22,7 +22,6 @@ describe("icrc-ledger api", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();
 
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.useFakeTimers();
     vi.spyOn(IcrcLedgerCanister, "create").mockImplementation(
       () => ledgerCanisterMock

@@ -7,10 +7,6 @@ import { render } from "@testing-library/svelte";
 import NeuronContextTest from "../NeuronContextTest.svelte";
 
 describe("IncreaseDissolveDelayButton", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   const renderComponent = (neuron: NeuronInfo) => {
     const { container } = render(NeuronContextTest, {
       props: {

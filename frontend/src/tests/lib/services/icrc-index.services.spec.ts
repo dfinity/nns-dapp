@@ -12,7 +12,6 @@ describe("icrc-index.services", () => {
     const differentLedgerCanisterId = principal(11);
 
     beforeEach(() => {
-      vi.clearAllMocks();
       resetIdentity();
     });
 

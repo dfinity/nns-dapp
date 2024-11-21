@@ -28,7 +28,6 @@ describe("NnsNeurons", () => {
   };
 
   beforeEach(() => {
-    vi.resetAllMocks();
     resetNeuronsApiService();
   });
 

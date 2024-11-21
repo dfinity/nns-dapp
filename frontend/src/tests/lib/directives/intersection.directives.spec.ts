@@ -11,8 +11,6 @@ describe("IntersectionDirectives", () => {
   let testIntersecting: boolean;
 
   beforeEach(() => {
-    vi.clearAllMocks();
-
     spy = vi
       .spyOn(dispatchEvents, "dispatchIntersecting")
       .mockImplementation(

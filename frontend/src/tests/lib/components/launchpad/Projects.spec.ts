@@ -6,7 +6,6 @@ import { render, waitFor } from "@testing-library/svelte";
 describe("Projects", () => {
   beforeEach(() => {
     resetSnsProjects();
-    vitest.clearAllMocks();
   });
 
   it("should render 'Open' projects", () => {

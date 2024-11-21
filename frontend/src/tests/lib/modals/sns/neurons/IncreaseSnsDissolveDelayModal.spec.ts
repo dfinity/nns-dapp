@@ -58,7 +58,6 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     container.querySelector("progress").getAttribute("value");
 
   beforeEach(() => {
-    vi.resetAllMocks();
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
       testIdentity
     );

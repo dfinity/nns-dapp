@@ -42,7 +42,6 @@ describe("ProposalSystemInfoSection", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetSnsProjects();
     fakeSnsGovernanceApi.addNervousSystemFunctionWith({
       rootCanisterId,

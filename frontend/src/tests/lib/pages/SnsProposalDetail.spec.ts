@@ -71,7 +71,6 @@ describe("SnsProposalDetail", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetIdentity();
     page.reset();
     resetSnsProjects();

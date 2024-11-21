@@ -90,7 +90,6 @@ describe("Wallet", () => {
   const importedTokenId = principal(123);
   beforeEach(() => {
     resetIdentity();
-    vi.clearAllMocks();
     importedTokensStore.reset();
     setCkETHCanisters();
     setSnsProjects([

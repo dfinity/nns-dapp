@@ -8,7 +8,6 @@ import { mock } from "vitest-mock-extended";
 
 describe("accounts-api", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 

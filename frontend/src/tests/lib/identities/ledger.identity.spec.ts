@@ -54,7 +54,6 @@ describe("LedgerIdentity", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.spyOn(console, "warn").mockImplementation(() => undefined);
     mockLedgerApp.getAddressAndPubKey.mockResolvedValue({
       errorMessage: undefined,

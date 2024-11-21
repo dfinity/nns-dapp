@@ -15,7 +15,6 @@ describe("sns-accounts-balance.services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    vi.clearAllMocks();
     resetSnsProjects();
 
     setSnsProjects([

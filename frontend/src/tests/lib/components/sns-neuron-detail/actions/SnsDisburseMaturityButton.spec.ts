@@ -18,10 +18,6 @@ describe("SnsDisburseMaturityButton", () => {
     return DisburseMaturityButtonPo.under(new JestPageObjectElement(container));
   };
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("should be enabled if enough maturity is available", async () => {
     const po = renderComponent(
       {

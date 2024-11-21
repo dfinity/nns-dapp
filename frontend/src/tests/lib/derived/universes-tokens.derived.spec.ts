@@ -19,10 +19,6 @@ import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("universes-tokens", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe("complete data set", () => {
     beforeEach(() => {
       vi.spyOn(tokensStore, "subscribe").mockImplementation(

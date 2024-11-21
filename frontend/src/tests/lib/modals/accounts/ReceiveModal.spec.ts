@@ -18,7 +18,6 @@ describe("ReceiveModal", () => {
   const reloadSpy = vi.fn();
 
   beforeEach(() => {
-    vi.clearAllMocks();
     resetAccountsForTesting();
   });
 

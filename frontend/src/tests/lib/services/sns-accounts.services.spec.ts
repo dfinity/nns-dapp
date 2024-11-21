@@ -31,8 +31,6 @@ describe("sns-accounts-services", () => {
     const snsLedgerCanisterId = principal(2);
 
     beforeEach(() => {
-      vi.clearAllMocks();
-
       setSnsProjects([
         {
           rootCanisterId,
