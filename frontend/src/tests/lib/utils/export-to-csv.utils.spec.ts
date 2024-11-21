@@ -5,6 +5,10 @@ import {
 } from "$lib/utils/export-to-csv.utils";
 
 describe("Export to Csv", () => {
+  beforeEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   describe("convertToCSV", () => {
     it("should return an empty string when empty headers are provided", () => {
       const data = [];
@@ -113,8 +117,6 @@ describe("Export to Csv", () => {
       let mockHandle;
 
       beforeEach(() => {
-        vi.unstubAllGlobals();
-
         mockWritable = {
           write: vi.fn(),
           close: vi.fn(),
