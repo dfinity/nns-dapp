@@ -52,7 +52,7 @@ export post_upgrade_instruction_count mainnet_state_recovery_instruction_count
   echo "The test state size should be similar to production."
   echo "| Data type                             | Num in Production | Num in test | % test/production |"
   echo "|---------------------------------------|-------------------|-------------|-------------------|"
-  for metric in accounts_count sub_accounts_count hardware_wallet_accounts_count neurons_created_count transactions_count; do
+  for metric in accounts_count sub_accounts_count hardware_wallet_accounts_count transactions_count; do
     mainnet_metric="$(jq -r ".$metric // 0" ,counts-mainnet.json)"
     mainnet_metric_str="$(humreadable mainnet_metric)"
     local_metric="$(jq -r ".$metric // 0" ,counts-local.json)"

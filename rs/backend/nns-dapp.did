@@ -132,7 +132,6 @@ type Stats =
         hardware_wallet_accounts_count: nat64;
         block_height_synced_up_to: opt nat64;
         seconds_since_last_ledger_sync: nat64;
-        neurons_created_count: nat64;
         neurons_topped_up_count: nat64;
         transactions_to_process_queue_length: nat32;
         performance_counts: vec PerformanceCount;
