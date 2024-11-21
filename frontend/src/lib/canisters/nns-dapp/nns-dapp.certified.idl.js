@@ -70,7 +70,6 @@ export const idlFactory = ({ IDL }) => {
     sub_accounts_count: IDL.Nat64,
     neurons_topped_up_count: IDL.Nat64,
     transactions_to_process_queue_length: IDL.Nat32,
-    neurons_created_count: IDL.Nat64,
     hardware_wallet_accounts_count: IDL.Nat64,
     accounts_count: IDL.Nat64,
     block_height_synced_up_to: IDL.Opt(IDL.Nat64),

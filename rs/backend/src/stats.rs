@@ -33,7 +33,6 @@ pub struct Stats {
     pub hardware_wallet_accounts_count: u64,
     pub block_height_synced_up_to: Option<u64>,
     pub seconds_since_last_ledger_sync: u64,
-    pub neurons_created_count: u64,
     pub neurons_topped_up_count: u64,
     pub transactions_to_process_queue_length: u32,
     pub performance_counts: Vec<PerformanceCount>,
@@ -57,11 +56,6 @@ pub struct Stats {
 #[allow(clippy::cast_precision_loss)] // We are converting u64 to f64
 pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
     let stats = with_state(get_stats);
-    w.encode_gauge(
-        "neurons_created_count",
-        stats.neurons_created_count as f64,
-        "Number of neurons created.",
-    )?;
     w.encode_gauge(
         "neurons_topped_up_count",
         stats.neurons_topped_up_count as f64,
