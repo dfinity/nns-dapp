@@ -35,7 +35,9 @@
   $: isDisabled = !neurons.length;
 
   const neuronToHumanReadableFormat = (neuron: NeuronInfo) => {
+    const controllerId = neuron.fullNeuron?.controller?.toString();
     const neuronId = neuron.neuronId.toString();
+    const neuronAccountId = neuron.fullNeuron?.accountIdentifier.toString();
     const stake = TokenAmountV2.fromUlps({
       amount: neuronStake(neuron),
       token: ICPToken,
@@ -50,7 +52,9 @@
     const creationDate = secondsToDate(Number(neuron.createdTimestampSeconds));
 
     return {
+      controllerId,
       neuronId,
+      neuronAccountId,
       stake: formatTokenV2({
         value: stake,
         detailed: true,
@@ -82,9 +86,17 @@
         data: humanFriendlyContent,
         headers: [
           {
-            id: "neuronId",
+            id: "controllerId",
             label: $i18n.export_csv_neurons.neuron_id,
           },
+          {
+            id: "neuronId",
+            label: $i18n.export_csv_neurons.neuron_id,
+          }, 
+          {
+            id: "neuronAccountId",
+            label: $i18n.export_csv_neurons.neuron_id,
+          }, 
           {
             id: "stake",
             label: $i18n.export_csv_neurons.stake,
