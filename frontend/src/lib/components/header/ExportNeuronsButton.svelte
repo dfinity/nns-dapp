@@ -74,24 +74,17 @@
     try {
       const humanFriendlyContent = neurons.map(neuronToHumanReadableFormat);
 
-      if (!humanFriendlyContent.length) {
-        toastsError({
-          labelKey: "export_error.no_neurons",
-        });
-        return;
-      }
-
       await generateCsvFileToSave({
         data: humanFriendlyContent,
         headers: [
           {
             id: "neuronId",
             label: $i18n.export_csv_neurons.neuron_id,
-          }, 
+          },
           {
             id: "neuronAccountId",
             label: $i18n.export_csv_neurons.neuron_account_id,
-          }, 
+          },
           {
             id: "controllerId",
             label: $i18n.export_csv_neurons.controllerId,

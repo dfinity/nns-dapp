@@ -169,7 +169,7 @@
     "csv_generation": "Failed to generate CSV file",
     "file_system_access": "Unable to save file. Please check your permissions.",
     "neurons": "There was an error exporting the neurons. Please try again.",
-    "no_neurons": "No neurons available to export"
+    "no_neurons": "No neurons are available for export."
   },
   "auth": {
     "login": "Sign in with Internet Identity",
