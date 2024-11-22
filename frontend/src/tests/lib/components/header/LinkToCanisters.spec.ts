@@ -6,7 +6,6 @@ import {
 import { LinkToCanistersPo } from "$tests/page-objects/LinkToCanisters.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("LinkToCanisters", () => {
   beforeEach(() => {

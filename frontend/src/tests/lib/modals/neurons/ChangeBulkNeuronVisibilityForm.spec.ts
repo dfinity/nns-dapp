@@ -13,7 +13,6 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { NeuronType, NeuronVisibility, type NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("ChangeBulkNeuronVisibilityForm", () => {
   const createMockNeuron = ({
