@@ -1,5 +1,10 @@
 import { isNullish } from "@dfinity/utils";
 
+export type Metadata = {
+  label: string;
+  value: string;
+};
+
 export type CsvHeader<T> = {
   id: keyof T;
   label: string;
@@ -8,6 +13,7 @@ export type CsvHeader<T> = {
 interface CsvBaseConfig<T> {
   data: T[];
   headers: CsvHeader<T>[];
+  metadata?: Metadata[];
 }
 
 interface CsvFileConfig<T> extends CsvBaseConfig<T> {
@@ -39,17 +45,43 @@ const escapeCsvValue = (value: unknown): string => {
   return stringValue;
 };
 
-export const convertToCsv = <T>({ data, headers }: CsvBaseConfig<T>) => {
+export const convertToCsv = <T>({
+  data,
+  headers,
+  metadata = [],
+}: CsvBaseConfig<T>) => {
   if (headers.length === 0) return "";
+  
+  const PAD_LEFT_WHEN_METADATA_PRESENT = 2;
+  const csvRows: string[] = [];
+  let padLeft = 0;
 
+  if (metadata.length > 0) {
+    const sanitizedMetadata = metadata.map(({ label, value }) => ({
+      label: escapeCsvValue(label),
+      value: escapeCsvValue(value),
+    }));
+
+    const metadataRow = sanitizedMetadata
+      .map(({ label, value }) => `${label},${value}`)
+      .join("\n");
+    csvRows.push(metadataRow);
+
+    // Add an empty row to separate metadata from data
+    csvRows.push("");
+
+    padLeft = PAD_LEFT_WHEN_METADATA_PRESENT;
+  }
+
+  const emptyPrefix = Array(padLeft).fill("");
   const sanitizedHeaders = headers
     .map(({ label }) => label)
     .map((header) => escapeCsvValue(header));
-  const csvRows = [sanitizedHeaders.join(",")];
+  csvRows.push([...emptyPrefix, ...sanitizedHeaders].join(","));
 
   for (const row of data) {
     const values = headers.map((header) => escapeCsvValue(row[header.id]));
-    csvRows.push(values.join(","));
+    csvRows.push([...emptyPrefix, ...values].join(","));
   }
 
   return csvRows.join("\n");
