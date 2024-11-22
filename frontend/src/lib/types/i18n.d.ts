@@ -168,7 +168,7 @@ interface I18nExport_csv_neurons {
   staked_maturity: string;
   dissolve_delay: string;
   dissolve_date: string;
-  created_at: string;
+  creation_date: string;
   state: string;
 }
 

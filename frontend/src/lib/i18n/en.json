@@ -160,7 +160,7 @@
     "staked_maturity": "Staked Maturity",
     "dissolve_delay": "Dissolve Delay",
     "dissolve_date": "Dissolve Date",
-    "created_at": "Created Date",
+    "creation_date": "Creation Date",
     "state": "State"
   },
   "export_error": {
