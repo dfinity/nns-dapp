@@ -140,7 +140,7 @@ describe("Export to Csv", () => {
           value: new Date('2021-10-10').toLocaleString()
         }
       ];
-      const expected = `Title,This is a test file\nExport Date,"10/10/2021, 2:00:00 AM"\n\n,,name,age\n,,John,30`;
+      const expected = `Title,This is a test file\nExport Date,"10/10/2021, 2:00:00 AM"\n,,,\n,,name,age\n,,John,30`;
 
       expect(convertToCsv({ data, headers, metadata })).toBe(expected);
     });
