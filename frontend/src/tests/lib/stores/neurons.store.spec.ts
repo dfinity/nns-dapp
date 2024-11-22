@@ -214,6 +214,14 @@ describe("neurons-store", () => {
       },
     };
 
+    it("should return empty list when no neurons", () => {
+      neuronsStore.setNeurons({
+        neurons: [],
+        certified: true,
+      });
+      expect(get(soonLosingRewardNeuronsStore)).toEqual([]);
+    });
+
     it("should include only neurons that will soon losing its rewards", () => {
       neuronsStore.setNeurons({
         neurons: [neuron3, freshNeuron, neuron2, neuron1],
@@ -225,6 +233,7 @@ describe("neurons-store", () => {
         neuron1,
       ]);
     });
+
     it("should sort neurons by votingPowerRefreshedTimestampSeconds", () => {
       neuronsStore.setNeurons({
         neurons: [neuron2, neuron1, neuron3],
