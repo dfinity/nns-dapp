@@ -422,6 +422,7 @@ describe("canisters-api", () => {
     });
 
     it("should not notify if transfer fails", async () => {
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
       mockLedgerCanister.transfer.mockRejectedValue(new Error());
 
       const call = () =>
