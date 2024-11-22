@@ -1,9 +1,12 @@
+import { SECONDS_IN_DAY, SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import {
   definedNeuronsStore,
   neuronAccountsStore,
   neuronsStore,
+  soonLosingRewardNeuronsStore,
   sortedNeuronStore,
 } from "$lib/stores/neurons.store";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { NeuronInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
@@ -173,6 +176,65 @@ describe("neurons-store", () => {
       expect(get(neuronAccountsStore)).toEqual(
         new Set([accountIdentifier1, accountIdentifier2, accountIdentifier3])
       );
+    });
+  });
+
+  describe("soonLosingRewardNeuronsStore", () => {
+    const neuron1 = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        votingPowerRefreshedTimestampSeconds: BigInt(
+          nowInSeconds() - SECONDS_IN_HALF_YEAR - 30 * SECONDS_IN_DAY
+        ),
+        cachedNeuronStake: 5_000_000_000n,
+      },
+    };
+    const neuron2 = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        votingPowerRefreshedTimestampSeconds: 0n,
+        cachedNeuronStake: 1_000_000_000n,
+      },
+    };
+    const neuron3 = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        votingPowerRefreshedTimestampSeconds: 0n,
+        cachedNeuronStake: 3_000_000_000n,
+      },
+    };
+    const freshNeuron = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        votingPowerRefreshedTimestampSeconds: BigInt(nowInSeconds()),
+      },
+    };
+
+    it("should include only neurons that will soon losing its rewards", () => {
+      neuronsStore.setNeurons({
+        neurons: [neuron3, freshNeuron, neuron2, neuron1],
+        certified: true,
+      });
+      expect(get(soonLosingRewardNeuronsStore)).toEqual([
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
+    });
+    it("should sort neurons by votingPowerRefreshedTimestampSeconds", () => {
+      neuronsStore.setNeurons({
+        neurons: [neuron2, neuron1, neuron3],
+        certified: true,
+      });
+      expect(get(soonLosingRewardNeuronsStore)).toEqual([
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
     });
   });
 });
