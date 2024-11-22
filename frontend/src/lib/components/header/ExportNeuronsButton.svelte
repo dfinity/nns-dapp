@@ -33,7 +33,6 @@
 
   $: neurons = $neuronsStore?.neurons ?? [];
   $: isDisabled = !neurons.length;
-
   const neuronToHumanReadableFormat = (neuron: NeuronInfo) => {
     const controllerId = neuron.fullNeuron?.controller?.toString();
     const neuronId = neuron.neuronId.toString();
@@ -86,17 +85,17 @@
         data: humanFriendlyContent,
         headers: [
           {
-            id: "controllerId",
-            label: $i18n.export_csv_neurons.neuron_id,
-          },
-          {
             id: "neuronId",
             label: $i18n.export_csv_neurons.neuron_id,
           }, 
           {
             id: "neuronAccountId",
-            label: $i18n.export_csv_neurons.neuron_id,
+            label: $i18n.export_csv_neurons.neuron_account_id,
           }, 
+          {
+            id: "controllerId",
+            label: $i18n.export_csv_neurons.controllerId,
+          },
           {
             id: "stake",
             label: $i18n.export_csv_neurons.stake,

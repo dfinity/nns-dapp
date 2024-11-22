@@ -12,8 +12,17 @@ describe("ExportNeuronsButton", () => {
     vi.spyOn(exportToCsv, "generateCsvFileToSave").mockImplementation(vi.fn());
     vi.spyOn(toastsStore, "toastsError");
     vi.spyOn(console, "error").mockImplementation(() => {});
-
-    neuronsStore.setNeurons({ neurons: [mockNeuron], certified: true });
+    const neuronWithController = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        controller: "1",
+      },
+    };
+    neuronsStore.setNeurons({
+      neurons: [neuronWithController],
+      certified: true,
+    });
   });
 
   it("should be disabled when there are no neurons", () => {
@@ -39,6 +48,9 @@ describe("ExportNeuronsButton", () => {
         data: expect.arrayContaining([
           expect.objectContaining({
             neuronId: "1",
+            neuronAccountId:
+              "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
+            controllerId: "1",
             creationDate: "Jan 1, 1970",
             dissolveDate: "N/A",
             dissolveDelaySeconds: "3 hours, 5 minutes",

@@ -154,7 +154,7 @@
     "export_neurons": "Export Neurons Info"
   },
   "export_csv_neurons": {
-    "controllerId": "Controller ID",
+    "controllerId": "Controller Principal ID",
     "neuron_id": "Neuron ID",
     "neuron_account_id": "Neuron Account ID",
     "stake": "Stake",
