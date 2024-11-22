@@ -45,5 +45,9 @@ describe("FEATURE_FLAG_ENVIRONMENT", () => {
     );
     expect(FEATURE_FLAG_ENVIRONMENT).toEqual(defaultFeatureFlagValues);
     expect(spyConsoleError).toBeCalledTimes(1);
+    expect(spyConsoleError).toBeCalledWith(
+      "Error parsing featureFlags",
+      new SyntaxError("Unexpected token T in JSON at position 27")
+    );
   });
 });
