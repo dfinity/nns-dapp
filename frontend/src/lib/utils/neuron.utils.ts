@@ -68,6 +68,7 @@ import {
 import { daysToSeconds, nowInSeconds } from "./date.utils";
 import { formatNumber, shortenWithMiddleEllipsis } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
+import { createAscendingComparator, mergeComparators } from "./sort.utils";
 import { formatTokenE8s, numberToUlps } from "./token.utils";
 import { isDefined } from "./utils";
 
@@ -358,28 +359,18 @@ const compareNeurons = (a: NeuronInfo, b: NeuronInfo): number => {
 export const sortNeuronsByStake = (neurons: NeuronInfo[]): NeuronInfo[] =>
   [...neurons].sort(compareNeurons);
 
-const compareNeuronsByVotingPowerRefreshedTimeout = (
-  a: NeuronInfo,
-  b: NeuronInfo
-): number => {
-  const refreshTimestampA =
-    a?.fullNeuron?.votingPowerRefreshedTimestampSeconds ?? 0n;
-  const refreshTimestampB =
-    b?.fullNeuron?.votingPowerRefreshedTimestampSeconds ?? 0n;
-  if (refreshTimestampA > refreshTimestampB) {
-    return 1;
-  }
-  if (refreshTimestampA < refreshTimestampB) {
-    return -1;
-  }
-  // Apply default sorting to avoid random order.
-  return compareNeurons(a, b);
-};
-
 export const sortNeuronsByVotingPowerRefreshedTimeout = (
   neurons: NeuronInfo[]
 ): NeuronInfo[] =>
-  [...neurons].sort(compareNeuronsByVotingPowerRefreshedTimeout);
+  [...neurons].sort(
+    mergeComparators([
+      createAscendingComparator(
+        (neuron) =>
+          neuron?.fullNeuron?.votingPowerRefreshedTimestampSeconds ?? 0n
+      ),
+      compareNeurons,
+    ])
+  );
 
 /*
  * Returns true if the neuron can be controlled by current user
