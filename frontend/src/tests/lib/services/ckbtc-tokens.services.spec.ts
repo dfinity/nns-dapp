@@ -22,6 +22,7 @@ describe("ckbtc-tokens-services", () => {
       ...mockCkBTCToken,
       symbol: "ckTESTBTC",
     };
+
     beforeEach(() => {
       vi.spyOn(ledgerApi, "queryIcrcToken").mockImplementation(
         async ({ canisterId }) => {
@@ -34,27 +35,8 @@ describe("ckbtc-tokens-services", () => {
       );
     });
 
-    describe("no ckBTC enabled", () => {
+    describe("CKBTCTest disabled", () => {
       beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", false);
-        overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
-      });
-
-      it("should not load the ckBTC related tokens", async () => {
-        await services.loadCkBTCTokens();
-
-        expect(
-          get(tokensStore)[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]
-        ).toBeUndefined();
-        expect(
-          get(tokensStore)[CKBTC_UNIVERSE_CANISTER_ID.toText()]
-        ).toBeUndefined();
-      });
-    });
-
-    describe("CKBTC enabled", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
         overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
       });
 
@@ -72,7 +54,6 @@ describe("ckbtc-tokens-services", () => {
 
     describe("CKBTCTest enabled", () => {
       beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", false);
         overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
       });
 
@@ -82,16 +63,6 @@ describe("ckbtc-tokens-services", () => {
         expect(
           get(tokensStore)[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]?.token
         ).toEqual(mockCkTestBTCToken);
-        expect(
-          get(tokensStore)[CKBTC_UNIVERSE_CANISTER_ID.toText()]
-        ).toBeUndefined();
-      });
-    });
-
-    describe("both ckbtc enabled", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
-        overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
       });
 
       it("should load both ckBTC tokes", async () => {

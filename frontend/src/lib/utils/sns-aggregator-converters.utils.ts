@@ -467,27 +467,33 @@ const convertDtoToSnsSummarySwap = (
 };
 
 const convertDtoToLifecycle = (
-  data: CachedLifecycleResponseDto
-): SnsGetLifecycleResponse => ({
-  decentralization_sale_open_timestamp_seconds: toNullable(
-    convertOptionalNumToBigInt(
-      data.decentralization_sale_open_timestamp_seconds
-    )
-  ),
-  lifecycle: toNullable(data.lifecycle),
-  // TODO: Add support in SNS Aggregaro for these fields
-  decentralization_swap_termination_timestamp_seconds: [],
-});
+  data: CachedLifecycleResponseDto | null
+): SnsGetLifecycleResponse | undefined => {
+  if (isNullish(data)) {
+    return undefined;
+  }
+  return {
+    decentralization_sale_open_timestamp_seconds: toNullable(
+      convertOptionalNumToBigInt(
+        data.decentralization_sale_open_timestamp_seconds
+      )
+    ),
+    lifecycle: toNullable(data.lifecycle),
+    // TODO: Add support in SNS Aggregator for these fields
+    decentralization_swap_termination_timestamp_seconds: [],
+  };
+};
 
 type PartialSummary = Omit<
   SnsSummary,
-  "metadata" | "token" | "swap" | "init" | "swapParams"
+  "metadata" | "token" | "swap" | "init" | "swapParams" | "lifecycle"
 > & {
   metadata?: SnsSummaryMetadata;
   token?: IcrcTokenMetadata;
   swap?: SnsSummarySwap;
   init?: SnsSwapInit;
   swapParams?: SnsParams;
+  lifecycle?: SnsGetLifecycleResponse;
 };
 
 const isValidSummary = (entry: PartialSummary): entry is SnsSummary =>
@@ -495,7 +501,8 @@ const isValidSummary = (entry: PartialSummary): entry is SnsSummary =>
   nonNullish(entry.token) &&
   nonNullish(entry.swap) &&
   nonNullish(entry.init) &&
-  nonNullish(entry.swapParams);
+  nonNullish(entry.swapParams) &&
+  nonNullish(entry.lifecycle);
 
 export const convertDtoToSnsSummary = ({
   canister_ids: {

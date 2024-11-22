@@ -102,7 +102,6 @@ export interface Stats {
   sub_accounts_count: bigint;
   neurons_topped_up_count: bigint;
   transactions_to_process_queue_length: number;
-  neurons_created_count: bigint;
   hardware_wallet_accounts_count: bigint;
   accounts_count: bigint;
   block_height_synced_up_to: [] | [bigint];
