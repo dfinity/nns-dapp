@@ -4,7 +4,6 @@ import { NeuronVisibilityRowPo } from "$tests/page-objects/NeuronVisibilityRow.p
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("NeuronVisibilityRow", () => {
   const renderComponent = ({
