@@ -2,16 +2,17 @@ import ExportNeuronsButton from "$lib/components/header/ExportNeuronsButton.svel
 import { neuronsStore } from "$lib/stores/neurons.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import * as exportToCsv from "$lib/utils/export-to-csv.utils";
 import { generateCsvFileToSave } from "$lib/utils/export-to-csv.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, render, screen } from "@testing-library/svelte";
 
 describe("ExportNeuronsButton", () => {
   beforeEach(() => {
-    vi.mock("$lib/utils/export-to-csv.utils", () => ({
-      generateCsvFileToSave: vi.fn(),
-    }));
+    vi.spyOn(exportToCsv, "generateCsvFileToSave").mockImplementation(vi.fn());
     vi.spyOn(toastsStore, "toastsError");
+    vi.spyOn(console, "error").mockImplementation(() => {});
+
     neuronsStore.setNeurons({ neurons: [mockNeuron], certified: true });
   });
 
@@ -38,6 +39,12 @@ describe("ExportNeuronsButton", () => {
         data: expect.arrayContaining([
           expect.objectContaining({
             neuronId: "1",
+            creationDate: "Jan 1, 1970",
+            dissolveDate: "N/A",
+            dissolveDelaySeconds: "3 hours, 5 minutes",
+            stakedMaturity: "0",
+            stake: "30.00",
+            state: "Locked",
           }),
         ]),
       })
@@ -53,18 +60,48 @@ describe("ExportNeuronsButton", () => {
     const button = screen.getByRole("button");
     await fireEvent.click(button);
 
-    expect(mockDispatch).toHaveBeenCalled();
+    expect(mockDispatch).toHaveBeenCalledTimes(1);
+    expect(mockDispatch.mock.calls[0][0].type).toBe(
+      "nnsExportNeuronsCSVTriggered"
+    );
   });
 
   it("should show error toast when file system access fails", async () => {
-    // generateCsvFileToSave.mockRejectedValueOnce(new FileSystemAccessError());
+    vi.spyOn(exportToCsv, "generateCsvFileToSave").mockRejectedValueOnce(
+      new exportToCsv.FileSystemAccessError("File system access denied")
+    );
 
     render(ExportNeuronsButton);
     const button = screen.getByRole("button");
     await fireEvent.click(button);
-
     expect(toastsError).toHaveBeenCalledWith({
       labelKey: "export_error.file_system_access",
+    });
+  });
+
+  it("should show error toast when Csv generation fails", async () => {
+    vi.spyOn(exportToCsv, "generateCsvFileToSave").mockRejectedValueOnce(
+      new exportToCsv.CsvGenerationError("Csv generation failed")
+    );
+
+    render(ExportNeuronsButton);
+    const button = screen.getByRole("button");
+    await fireEvent.click(button);
+    expect(toastsError).toHaveBeenCalledWith({
+      labelKey: "export_error.csv_generation",
+    });
+  });
+
+  it("should show error toast when file saving fails", async () => {
+    vi.spyOn(exportToCsv, "generateCsvFileToSave").mockRejectedValueOnce(
+      new Error("Something wrong happened")
+    );
+
+    render(ExportNeuronsButton);
+    const button = screen.getByRole("button");
+    await fireEvent.click(button);
+    expect(toastsError).toHaveBeenCalledWith({
+      labelKey: "export_error.neurons",
     });
   });
 });
