@@ -51,7 +51,7 @@ export const convertToCsv = <T>({
   metadata = [],
 }: CsvBaseConfig<T>) => {
   if (headers.length === 0) return "";
-  
+
   const PAD_LEFT_WHEN_METADATA_PRESENT = 2;
   const csvRows: string[] = [];
   let padLeft = 0;
@@ -68,7 +68,9 @@ export const convertToCsv = <T>({
     csvRows.push(metadataRow);
 
     // Add an empty row to separate metadata from data
-    const emptyRow = Array(headers.length + metadata.length).fill("").join(",");
+    const emptyRow = Array(headers.length + metadata.length)
+      .fill("")
+      .join(",");
     csvRows.push(emptyRow);
 
     padLeft = PAD_LEFT_WHEN_METADATA_PRESENT;
