@@ -5,8 +5,8 @@
   export let isCritical: boolean | undefined = undefined;
 </script>
 
-<article class="banner" class:isCritical data-tid={testId}>
-  <div class="icon">
+<article data-tid={testId} class="banner" class:isCritical>
+  <div class="icon" aria-hidden="true">
     <slot name="icon"></slot>
   </div>
   <div class="content-wrapper">
@@ -31,18 +31,22 @@
 
   .banner {
     display: grid;
-    grid-template-columns: 32px 1fr;
-    grid-template-rows: auto auto;
     grid-template-areas:
-      "icon content"
-      "actions actions";
-    align-items: start;
+      "icon"
+      "content"
+      "actions";
     grid-gap: var(--padding-1_5x);
 
+    @include media.min-width(small) {
+      grid-template-areas:
+        "icon content"
+        "actions actions";
+      grid-template-columns: auto 1fr;
+    }
+
     @include media.min-width(medium) {
-      grid-template-columns: 32px 1fr auto;
-      grid-template-rows: auto;
       grid-template-areas: "icon content actions";
+      grid-template-columns: auto 1fr auto;
       align-items: center;
     }
 
