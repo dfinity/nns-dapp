@@ -50,6 +50,18 @@
     border-radius: var(--border-radius);
     background: var(--input-background);
   }
+
+  .banner.isCritical {
+    background: var(--tooltip-background);
+
+    .title {
+      color: var(--tooltip-text-color);
+    }
+    .text {
+      color: var(--tooltip-description-color);
+    }
+  }
+
   .icon {
     grid-area: icon;
   }
@@ -65,6 +77,7 @@
     display: flex;
     gap: var(--padding-1_5x);
   }
+
   .title {
     margin: 0;
     @include fonts.standard(true);
