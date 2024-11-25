@@ -20,10 +20,6 @@ import {
 import { get } from "svelte/store";
 
 describe("icrcTokensUniversesStore", () => {
-  beforeEach(() => {
-    defaultIcrcCanistersStore.reset();
-  });
-
   it("returns empty array if no tokens are present", () => {
     defaultIcrcCanistersStore.setCanisters({
       ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,

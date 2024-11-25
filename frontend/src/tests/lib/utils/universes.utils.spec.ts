@@ -159,10 +159,6 @@ describe("universes-utils", () => {
   });
 
   describe("isIcrcTokenUniverse", () => {
-    beforeEach(() => {
-      defaultIcrcCanistersStore.reset();
-    });
-
     it("should return true if universe is in ICRC Canisters store", () => {
       const universeId = principal(0);
       defaultIcrcCanistersStore.setCanisters({

@@ -19,7 +19,6 @@ describe("icrc-canisters.services", () => {
   describe("loadIcrcCanisters", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
-      defaultIcrcCanistersStore.reset();
     });
 
     describe("if ckethtest is enabled", () => {

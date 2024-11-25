@@ -65,7 +65,23 @@ echo "*  starting the replica may just hang after a panic.                *"
 echo "*                                                                   *"
 echo "*********************************************************************"
 
+if [ "$(uname)" = "Darwin" ]; then
+  DFX_LOCAL_DATA_DIR="$HOME/Library/Application Support/org.dfinity.dfx/network/local"
+else
+  DFX_LOCAL_DATA_DIR="$HOME/.local/share/dfx/network/local"
+fi
+
+SNAPSHOT_TYPE="$(jq -r '.type' "$DFX_LOCAL_DATA_DIR/replica-effective-config.json")"
+
 DFX_ARGS=()
+
+if [ "$SNAPSHOT_TYPE" = "pocket_ic" ]; then
+  DFX_ARGS+=("--pocketic")
+# TODO: Add when --replica flag is supported.
+# else
+#   DFX_ARGS+=("--replica")
+#
+fi
 
 if [ "${DFX_HOST:-}" ]; then
   DFX_ARGS+=("--host" "$DFX_HOST")

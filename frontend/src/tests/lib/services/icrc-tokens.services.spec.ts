@@ -17,7 +17,6 @@ describe("icrc-tokens.services", () => {
     const token2 = { ...mockToken, name: "Token 2" };
 
     beforeEach(() => {
-      defaultIcrcCanistersStore.reset();
       vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockImplementation(
         async ({ canisterId }) => {
           if (canisterId.toText() === ledgerCanisterId1.toText()) {
