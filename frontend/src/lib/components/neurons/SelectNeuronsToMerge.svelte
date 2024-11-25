@@ -2,7 +2,7 @@
   import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import { definedNeuronsStore } from "$lib/derived/neurons.derived";
   import { translate } from "$lib/utils/i18n.utils";
   import {
     mapMergeableNeurons,

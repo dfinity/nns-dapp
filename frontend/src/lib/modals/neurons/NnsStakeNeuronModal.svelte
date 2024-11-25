@@ -9,7 +9,7 @@
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
   import { i18n } from "$lib/stores/i18n";
-  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import { definedNeuronsStore } from "$lib/derived/neurons.derived";
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import type { Account } from "$lib/types/account";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";

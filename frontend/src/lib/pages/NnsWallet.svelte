@@ -46,7 +46,7 @@
     icpTransactionsStore,
     type IcpTransactionsStoreData,
   } from "$lib/stores/icp-transactions.store";
-  import { neuronAccountsStore } from "$lib/stores/neurons.store";
+  import { neuronAccountsStore } from "$lib/derived/neurons.derived";
   import { toastsError } from "$lib/stores/toasts.store";
   import type { Account } from "$lib/types/account";
   import type { AccountIdentifierText } from "$lib/types/account";

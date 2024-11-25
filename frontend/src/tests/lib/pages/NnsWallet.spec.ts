@@ -83,7 +83,6 @@ describe("NnsWallet", () => {
 
   beforeEach(() => {
     vi.clearAllTimers();
-    vi.unstubAllGlobals();
     cancelPollAccounts();
     resetAccountsForTesting();
     resetNeuronsApiService();
