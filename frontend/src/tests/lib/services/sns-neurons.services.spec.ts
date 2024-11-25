@@ -100,8 +100,6 @@ describe("sns-neurons-services", () => {
 
   describe("syncSnsNeurons", () => {
     beforeEach(() => {
-      snsNeuronsStore.reset();
-
       setSnsProjects([
         {
           rootCanisterId: mockPrincipal,
@@ -170,7 +168,6 @@ describe("sns-neurons-services", () => {
 
   describe("loadSnsNeurons", () => {
     beforeEach(() => {
-      snsNeuronsStore.reset();
       vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
@@ -189,7 +186,6 @@ describe("sns-neurons-services", () => {
 
   describe("getSnsNeuron", () => {
     beforeEach(() => {
-      snsNeuronsStore.reset();
       vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
     it("should call api.querySnsNeuron and call load neuron when neuron not in store", () =>

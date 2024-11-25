@@ -8,7 +8,6 @@ import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposal
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
-import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
@@ -77,7 +76,6 @@ describe("SnsProposalDetail", () => {
     actionableSnsProposalsStore.resetForTesting();
     actionableProposalsSegmentStore.resetForTesting();
     snsProposalsStore.reset();
-    snsNeuronsStore.reset();
   });
 
   describe("not logged in", () => {

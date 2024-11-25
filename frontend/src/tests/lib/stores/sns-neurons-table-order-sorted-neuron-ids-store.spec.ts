@@ -38,7 +38,6 @@ describe("snsNeuronsTableOrderSortedNeuronIdsStore", () => {
 
   beforeEach(() => {
     neuronsTableOrderStore.reset();
-    snsNeuronsStore.reset();
     resetSnsProjects();
     snsNeuronsStore.setNeurons({
       rootCanisterId: mockRootCanisterId,

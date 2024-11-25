@@ -58,7 +58,6 @@ describe("SnsNeuronPageHeader", () => {
 
   beforeEach(() => {
     resetSnsProjects();
-    snsNeuronsStore.reset();
     neuronsTableOrderStore.reset();
     setSnsProjects([
       {
