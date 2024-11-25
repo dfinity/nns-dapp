@@ -2,6 +2,7 @@ import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import {
   daysToDuration,
   daysToSeconds,
+  formatDateCompact,
   getFutureDateFromDelayInSeconds,
   nanoSecondsToDateTime,
   secondsToDate,
@@ -231,6 +232,17 @@ describe("daysToSeconds", () => {
       expect(() => getFutureDateFromDelayInSeconds(-60n)).toThrow(
         "Delay cannot be negative"
       );
+    });
+  });
+  describe("formatDateCompact", () => {
+    it("should return the date formatted as YYYYMMDD", () => {
+      const date = new Date("2024-11-22");
+      expect(formatDateCompact(date)).toBe("20241122");
+    });
+
+    it("should pad single digit month and day", () => {
+      const date = new Date("2024-01-01");
+      expect(formatDateCompact(date)).toBe("20240101");
     });
   });
 });
