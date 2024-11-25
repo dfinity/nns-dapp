@@ -1,4 +1,9 @@
-import { hasValidStake, sortNeuronsByStake } from "$lib/utils/neuron.utils";
+import {
+  hasValidStake,
+  shouldDisplayRewardLossNotification,
+  sortNeuronsByStake,
+  sortNeuronsByVotingPowerRefreshedTimeout,
+} from "$lib/utils/neuron.utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
 import { derived, writable, type Readable } from "svelte/store";
@@ -92,6 +97,14 @@ export const definedNeuronsStore: Readable<NeuronInfo[]> = derived(
 export const sortedNeuronStore: Readable<NeuronInfo[]> = derived(
   definedNeuronsStore,
   (initializedNeuronsStore) => sortNeuronsByStake(initializedNeuronsStore)
+);
+
+export const soonLosingRewardNeuronsStore: Readable<NeuronInfo[]> = derived(
+  definedNeuronsStore,
+  ($definedNeuronsStore) =>
+    sortNeuronsByVotingPowerRefreshedTimeout(
+      $definedNeuronsStore.filter(shouldDisplayRewardLossNotification)
+    )
 );
 
 export const neuronAccountsStore: Readable<Set<string>> = derived(
