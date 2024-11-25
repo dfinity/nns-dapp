@@ -119,7 +119,7 @@
           },
           {
             id: "controllerId",
-            label: $i18n.export_csv_neurons.controllerId,
+            label: $i18n.export_csv_neurons.controller_id,
           },
           {
             id: "stake",
