@@ -11,6 +11,29 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 134254
+
+### Application
+
+#### Changed
+
+* Claim unclaimed neurons from the frontend instead of the backend.
+* Update proposal status colors.
+
+#### Removed
+
+* Stop storing neuron accounts in the nns-dapp canister.
+
+#### Fixed
+
+* Stop trying to get swap commitments from aborted SNSes.
+* Stop making unnecessary calls to SNS-W and SNS root canisters.
+* User gets the wrong identity when connecting different hardware wallets devices in a certain order.
+* Fix candid decoding error of stable memory.
+* Show successfully loaded swap commitments even if some fail to load.
+
+### Operations
+
 ## Proposal 134037
 
 ### Application
