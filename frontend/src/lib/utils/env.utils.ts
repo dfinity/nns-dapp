@@ -20,9 +20,6 @@ export const isNnsAlternativeOrigin = (): boolean => {
   return NNS_IC_ORG_ALTERNATIVE_ORIGINS.includes(origin);
 };
 
-export const isLocalhost = (hostname: string) =>
-  hostname.includes("localhost") || hostname.includes("127.0.0.1");
-
 // Given the used strategy and whether the current call is certified, returns
 // whether this is the last call.
 //
