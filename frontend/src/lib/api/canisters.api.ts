@@ -351,6 +351,33 @@ export const topUpCanister = async ({
   logWithTimestamp(`Topping up canister ${canisterId.toText()} complete.`);
 };
 
+// Returns the number of cycles that were topped up. But if called again, it
+// will return the same number. So this can't be used to tell if the top-up
+// wasn't done before.
+export const notifyTopUpCanister = async ({
+  identity,
+  blockHeight,
+  canisterId,
+}: {
+  identity: Identity;
+  blockHeight: bigint;
+  canisterId: Principal;
+}): Promise<bigint> => {
+  logWithTimestamp(`Notifying canister topup ${canisterId.toText()} call...`);
+
+  const { cmc } = await canisters(identity);
+  try {
+    return cmc.notifyTopUp({
+      canister_id: canisterId,
+      block_index: blockHeight,
+    });
+  } finally {
+    logWithTimestamp(
+      `Notifying canister topup ${canisterId.toText()} complete.`
+    );
+  }
+};
+
 const canisters = async (
   identity: Identity
 ): Promise<{

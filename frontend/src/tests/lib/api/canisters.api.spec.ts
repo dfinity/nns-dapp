@@ -3,6 +3,7 @@ import {
   createCanister,
   detachCanister,
   getIcpToCyclesExchangeRate,
+  notifyTopUpCanister,
   queryCanisterDetails,
   queryCanisters,
   renameCanister,
@@ -31,6 +32,7 @@ import {
   LedgerCanister,
   SubAccount,
 } from "@dfinity/ledger-icp";
+import { Principal } from "@dfinity/principal";
 import * as dfinityUtils from "@dfinity/utils";
 import { principalToSubAccount } from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
@@ -422,7 +424,6 @@ describe("canisters-api", () => {
     });
 
     it("should not notify if transfer fails", async () => {
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
       mockLedgerCanister.transfer.mockRejectedValue(new Error());
 
       const call = () =>
@@ -434,6 +435,32 @@ describe("canisters-api", () => {
         });
       expect(call).rejects.toThrow();
       expect(mockCMCCanister.notifyTopUp).not.toBeCalled();
+    });
+  });
+
+  describe("notifyTopUpCanister", () => {
+    const canisterId = Principal.fromText("mkam6-f4aaa-aaaaa-qablq-cai");
+
+    it("should call cmc.notifyTopUp", async () => {
+      const cycles = 3_000_000_000_000n;
+      const blockHeight = 14545n;
+
+      mockCMCCanister.notifyTopUp.mockResolvedValue(cycles);
+
+      const call = () =>
+        notifyTopUpCanister({
+          identity: mockIdentity,
+          blockHeight,
+          canisterId,
+        });
+
+      await expect(call()).resolves.toBe(cycles);
+
+      expect(mockCMCCanister.notifyTopUp).toBeCalledTimes(1);
+      expect(mockCMCCanister.notifyTopUp).toBeCalledWith({
+        canister_id: canisterId,
+        block_index: blockHeight,
+      });
     });
   });
 });
