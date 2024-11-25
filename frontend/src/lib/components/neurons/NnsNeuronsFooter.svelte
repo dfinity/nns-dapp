@@ -6,7 +6,7 @@
   import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
   import NnsStakeNeuronModal from "$lib/modals/neurons/NnsStakeNeuronModal.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { sortedNeuronStore } from "$lib/stores/neurons.store";
+  import { sortedNeuronStore } from "$lib/derived/neurons.derived";
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
   import { Tooltip } from "@dfinity/gix-components";
 

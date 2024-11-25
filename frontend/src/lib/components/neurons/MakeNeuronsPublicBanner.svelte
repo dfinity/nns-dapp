@@ -3,7 +3,7 @@
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import ChangeNeuronVisibilityModal from "$lib/modals/neurons/ChangeNeuronVisibilityModal.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import { definedNeuronsStore } from "$lib/derived/neurons.derived";
   import {
     isNeuronControllableByUser,
     isPublicNeuron,

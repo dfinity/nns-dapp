@@ -1,8 +1,8 @@
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+import { definedNeuronsStore } from "$lib/derived/neurons.derived";
 import { authStore } from "$lib/stores/auth.store";
 import { i18n } from "$lib/stores/i18n";
 import { neuronsTableOrderStore } from "$lib/stores/neurons-table.store";
-import { definedNeuronsStore } from "$lib/stores/neurons.store";
 import { getSortedNeuronIds } from "$lib/utils/neurons-table-order-sorted-neuron-ids-store.utils";
 import {
   compareById,
