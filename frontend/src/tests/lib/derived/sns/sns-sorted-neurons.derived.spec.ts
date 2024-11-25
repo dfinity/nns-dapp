@@ -19,7 +19,6 @@ describe("definedSnsNeuronStore", () => {
   const principal2 = Principal.fromText("aaaaa-aa");
 
   beforeEach(() => {
-    snsNeuronsStore.reset();
     setSnsProjects([
       {
         rootCanisterId: mockPrincipal,
@@ -151,7 +150,6 @@ describe("sortedSnsNeuronStore", () => {
   const principal2 = Principal.fromText("aaaaa-aa");
 
   beforeEach(() => {
-    snsNeuronsStore.reset();
     setSnsProjects([
       {
         rootCanisterId: mockPrincipal,
@@ -318,7 +316,6 @@ describe("sortedSnsNeuronStore", () => {
 });
 
 describe("sortedSnsUserNeuronsStore", () => {
-  beforeEach(() => snsNeuronsStore.reset());
   it("should not return CF neurons", async () => {
     const cfNeuron: SnsNeuron = {
       ...createMockSnsNeuron({
@@ -357,7 +354,6 @@ describe("sortedSnsUserNeuronsStore", () => {
 });
 
 describe("sortedSnsCFNeuronsStore", () => {
-  beforeEach(() => snsNeuronsStore.reset());
   it("should not return CF neurons", async () => {
     const cfNeuron1: SnsNeuron = {
       ...createMockSnsNeuron({

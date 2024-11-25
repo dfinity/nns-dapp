@@ -9,7 +9,6 @@ import {
 import { pageStore } from "$lib/derived/page.derived";
 import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import * as checkNeuronsService from "$lib/services/sns-neurons-check-balances.services";
-import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import {
   getSnsNeuronIdAsHexString,
   subaccountToHexString,
@@ -56,7 +55,6 @@ describe("SnsNeuronDetail", () => {
   };
 
   beforeEach(() => {
-    snsNeuronsStore.reset();
     setSnsProjects([
       {
         projectName,

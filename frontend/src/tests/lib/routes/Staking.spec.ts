@@ -37,7 +37,6 @@ describe("Staking", () => {
   const snsCanisterId = principal(1112);
 
   beforeEach(() => {
-    snsNeuronsStore.reset();
     resetSnsProjects();
     resetIdentity();
     resetAccountsForTesting();

@@ -34,7 +34,6 @@ import { get } from "svelte/store";
 describe("actionable-sns-proposals.services", () => {
   beforeEach(() => {
     failedActionableSnsesStore.resetForTesting();
-    snsNeuronsStore.reset();
   });
 
   describe("loadActionableProposalsForSns", () => {
