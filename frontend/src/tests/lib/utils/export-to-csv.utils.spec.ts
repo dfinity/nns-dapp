@@ -124,6 +124,27 @@ describe("Export to Csv", () => {
       const expected = 'Full Name,Age\n"Peter\nParker",24\nJane Doe,25';
       expect(convertToCsv({ data, headers })).toBe(expected);
     });
+
+    it("should add metadata to the CSV file", () => {
+      const data: TestPersonData[] = [{ name: "John", age: 30 }];
+      const headers: CsvHeader<TestPersonData>[] = [
+        { id: "name", label: "name" },
+        { id: "age", label: "age" },
+      ];
+      const metadata = [
+        {
+          label: "Title",
+          value: "This is a test file",
+        },
+        {
+          label: "Export Date",
+          value: "10/10/2021, 2:00:00 AM",
+        },
+      ];
+      const expected = `Title,This is a test file\nExport Date,"10/10/2021, 2:00:00 AM"\n\n,,name,age\n,,John,30`;
+
+      expect(convertToCsv({ data, headers, metadata })).toBe(expected);
+    });
   });
 
   describe("downloadCSV", () => {

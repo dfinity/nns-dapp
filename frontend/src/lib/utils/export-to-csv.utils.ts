@@ -1,5 +1,10 @@
 import { isNullish } from "@dfinity/utils";
 
+export type Metadata = {
+  label: string;
+  value: string;
+};
+
 export type CsvHeader<T> = {
   id: keyof T;
   label: string;
@@ -8,6 +13,7 @@ export type CsvHeader<T> = {
 interface CsvBaseConfig<T> {
   data: T[];
   headers: CsvHeader<T>[];
+  metadata?: Metadata[];
 }
 
 interface CsvFileConfig<T> extends CsvBaseConfig<T> {
@@ -39,17 +45,44 @@ const escapeCsvValue = (value: unknown): string => {
   return stringValue;
 };
 
-export const convertToCsv = <T>({ data, headers }: CsvBaseConfig<T>) => {
+export const convertToCsv = <T>({
+  data,
+  headers,
+  metadata = [],
+}: CsvBaseConfig<T>) => {
   if (headers.length === 0) return "";
 
+  const PAD_LEFT_WHEN_METADATA_PRESENT = 2;
+  const csvRows: string[] = [];
+  let padLeft = 0;
+
+  if (metadata.length > 0) {
+    const sanitizedMetadata = metadata.map(({ label, value }) => ({
+      label: escapeCsvValue(label),
+      value: escapeCsvValue(value),
+    }));
+
+    const metadataRow = sanitizedMetadata
+      .map(({ label, value }) => `${label},${value}`)
+      .join("\n");
+    csvRows.push(metadataRow);
+
+    // Add an empty row to separate metadata from data
+    const emptyRow = "";
+    csvRows.push(emptyRow);
+
+    padLeft = PAD_LEFT_WHEN_METADATA_PRESENT;
+  }
+
+  const emptyPrefix = Array(padLeft).fill("");
   const sanitizedHeaders = headers
     .map(({ label }) => label)
     .map((header) => escapeCsvValue(header));
-  const csvRows = [sanitizedHeaders.join(",")];
+  csvRows.push([...emptyPrefix, ...sanitizedHeaders].join(","));
 
   for (const row of data) {
     const values = headers.map((header) => escapeCsvValue(row[header.id]));
-    csvRows.push(values.join(","));
+    csvRows.push([...emptyPrefix, ...values].join(","));
   }
 
   return csvRows.join("\n");
@@ -135,6 +168,7 @@ const saveFileWithAnchor = ({
  * @param options - Configuration object for the Csv download
  * @param options.data - Array of objects to be converted to Csv. Each object should have consistent keys. It uses first object to check for consistency
  * @param options.headers - Array of objects defining the headers and their order in the CSV. Each object should include an `id` key that corresponds to a key in the data objects.
+ * @param options.meatadata - Array of objects defining the metadata to be included in the CSV. Each object should include a `label` and `value` key. When present the main table will be shifted two columns to the left.
  * @param options.fileName - Name of the file without extension (defaults to "data")
  * @param options.description - File description for save dialog (defaults to " Csv file")
  *
@@ -160,11 +194,12 @@ const saveFileWithAnchor = ({
 export const generateCsvFileToSave = async <T>({
   data,
   headers,
+  metadata,
   fileName = "data",
   description = "Csv file",
 }: CsvFileConfig<T>): Promise<void> => {
   try {
-    const csvContent = convertToCsv<T>({ data, headers });
+    const csvContent = convertToCsv<T>({ data, headers, metadata });
 
     const blob = new Blob([csvContent], {
       type: "text/csv;charset=utf-8;",
