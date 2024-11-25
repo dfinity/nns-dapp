@@ -4,7 +4,7 @@
   import NeuronVisibilityRow from "$lib/modals/neurons/NeuronVisibilityRow.svelte";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
-  import { sortedNeuronStore } from "$lib/stores/neurons.store";
+  import { sortedNeuronStore } from "$lib/derived/neurons.derived";
   import {
     createNeuronVisibilityRowData,
     isNeuronControllableByUser,

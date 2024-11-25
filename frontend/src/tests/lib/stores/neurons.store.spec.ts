@@ -2,10 +2,10 @@ import { SECONDS_IN_DAY, SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import {
   definedNeuronsStore,
   neuronAccountsStore,
-  neuronsStore,
   soonLosingRewardNeuronsStore,
   sortedNeuronStore,
-} from "$lib/stores/neurons.store";
+} from "$lib/derived/neurons.derived";
+import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { NeuronInfo } from "@dfinity/nns";
