@@ -134,7 +134,6 @@ describe("Tokens route", () => {
 
   describe("when feature flag enabled", () => {
     beforeEach(() => {
-      defaultIcrcCanistersStore.reset();
       importedTokensStore.reset();
       failedImportedTokenLedgerIdsStore.reset();
       ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;

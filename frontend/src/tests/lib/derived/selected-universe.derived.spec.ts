@@ -105,10 +105,6 @@ describe("selected universe derived stores", () => {
   describe("isIcrcTokenUniverseStore", () => {
     const ledgerCanisterId = principal(0);
 
-    beforeEach(() => {
-      defaultIcrcCanistersStore.reset();
-    });
-
     it("should be ICRC Token inside ICRC Token universe", () => {
       page.mock({
         data: { universe: ledgerCanisterId.toText() },
@@ -431,7 +427,6 @@ describe("selected universe derived stores", () => {
     const ledgerCanisterId = principal(0);
 
     beforeEach(() => {
-      defaultIcrcCanistersStore.reset();
       defaultIcrcCanistersStore.setCanisters({
         ledgerCanisterId,
         indexCanisterId: principal(1),

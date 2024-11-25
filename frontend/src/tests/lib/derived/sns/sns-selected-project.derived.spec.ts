@@ -4,7 +4,6 @@ import {
   snsOnlyProjectStore,
   snsProjectSelectedStore,
 } from "$lib/derived/sns/sns-selected-project.derived";
-import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import {
@@ -32,7 +31,6 @@ describe("selected sns project derived stores", () => {
           lifecycle: SnsSwapLifecycle.Committed,
         },
       ]);
-      defaultIcrcCanistersStore.reset();
     });
 
     it("should be set to undefined if NNS Universe", () => {
