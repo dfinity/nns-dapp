@@ -30,6 +30,12 @@ beforeEach(() => {
   vi.restoreAllMocks();
 });
 
+
+// Resets/restores any global objects(eg. window, document, Date, ) that were stubbed/mocked during testing  
+beforeEach(() => {
+  vi.unstubAllGlobals();
+});
+
 // Reset every store before each test.
 const resetStoreFunctions = vi.hoisted(() => {
   return [];
