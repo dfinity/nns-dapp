@@ -5,14 +5,21 @@ import { toastsError } from "$lib/stores/toasts.store";
 import * as exportToCsv from "$lib/utils/export-to-csv.utils";
 import { generateCsvFileToSave } from "$lib/utils/export-to-csv.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { ExportNeuronsButtonPo } from "$tests/page-objects/ExportNeuronsButton.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { fireEvent, render, screen } from "@testing-library/svelte";
 
 describe("ExportNeuronsButton", () => {
   beforeEach(() => {
+    vi.clearAllTimers();
     vi.spyOn(exportToCsv, "generateCsvFileToSave").mockImplementation(vi.fn());
     vi.spyOn(toastsStore, "toastsError");
     vi.spyOn(console, "error").mockImplementation(() => {});
-    
+
+    const mockDate = new Date("2023-10-14T00:00:00Z");
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(mockDate));
+
     const neuronWithController = {
       ...mockNeuron,
       fullNeuron: {
@@ -26,24 +33,30 @@ describe("ExportNeuronsButton", () => {
     });
   });
 
-  it("should be disabled when there are no neurons", () => {
+  const renderComponent = () => {
+    const { container, component } = render(ExportNeuronsButton);
+
+    const po = ExportNeuronsButtonPo.under({
+      element: new JestPageObjectElement(container),
+    });
+    return { po, component };
+  };
+
+  it("should be disabled when there are no neurons", async () => {
     neuronsStore.setNeurons({ neurons: [], certified: true });
-    render(ExportNeuronsButton);
-    const button = screen.getByRole("button");
-    expect(button).toBeDisabled();
+    const { po } = renderComponent();
+    expect(await po.isDisabled()).toBe(true);
   });
 
-  it("should be enabled when neurons are present", () => {
-    render(ExportNeuronsButton);
-    const button = screen.getByRole("button");
-    expect(button).toBeEnabled();
+  it("should be enabled when neurons are present", async () => {
+    const { po } = renderComponent();
+    expect(await po.isDisabled()).toBe(false);
   });
 
   it("should name the file with the date of the export", async () => {
-    render(ExportNeuronsButton);
-    const button = screen.getByRole("button");
-    await fireEvent.click(button);
-    const expectedFileName = `neurons-export-01/01/1970`;
+    const { po } = renderComponent();
+    await po.click();
+    const expectedFileName = `neurons_export_20231014`;
     expect(generateCsvFileToSave).toHaveBeenCalledWith(
       expect.objectContaining({
         fileName: expectedFileName,
@@ -77,13 +90,12 @@ describe("ExportNeuronsButton", () => {
   });
 
   it("should dispatch event after export", async () => {
-    const { component } = render(ExportNeuronsButton);
+    const { po, component } = renderComponent();
 
     const mockDispatch = vi.fn();
     component.$on("nnsExportNeuronsCSVTriggered", mockDispatch);
 
-    const button = screen.getByRole("button");
-    await fireEvent.click(button);
+    await po.click();
 
     expect(mockDispatch).toHaveBeenCalledTimes(1);
     expect(mockDispatch.mock.calls[0][0].type).toBe(
@@ -96,9 +108,8 @@ describe("ExportNeuronsButton", () => {
       new exportToCsv.FileSystemAccessError("File system access denied")
     );
 
-    render(ExportNeuronsButton);
-    const button = screen.getByRole("button");
-    await fireEvent.click(button);
+    const { po } = renderComponent();
+    await po.click();
     expect(toastsError).toHaveBeenCalledWith({
       labelKey: "export_error.file_system_access",
     });
@@ -109,9 +120,8 @@ describe("ExportNeuronsButton", () => {
       new exportToCsv.CsvGenerationError("Csv generation failed")
     );
 
-    render(ExportNeuronsButton);
-    const button = screen.getByRole("button");
-    await fireEvent.click(button);
+    const { po } = renderComponent();
+    await po.click();
     expect(toastsError).toHaveBeenCalledWith({
       labelKey: "export_error.csv_generation",
     });
@@ -122,9 +132,8 @@ describe("ExportNeuronsButton", () => {
       new Error("Something wrong happened")
     );
 
-    render(ExportNeuronsButton);
-    const button = screen.getByRole("button");
-    await fireEvent.click(button);
+    const { po } = renderComponent();
+    await po.click();
     expect(toastsError).toHaveBeenCalledWith({
       labelKey: "export_error.neurons",
     });
