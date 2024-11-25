@@ -22,8 +22,11 @@
   import {
     formatDateCompact,
     getFutureDateFromDelayInSeconds,
+    nanoSecondsToDateTime,
+    nowInBigIntNanoSeconds,
     secondsToDate,
   } from "$lib/utils/date.utils";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 
   const dispatcher = createEventDispatcher<{
     nnsExportNeuronsCSVTriggered: void;
@@ -33,7 +36,8 @@
   let neurons: NeuronInfo[] = [];
 
   $: neurons = $neuronsStore?.neurons ?? [];
-  $: isDisabled = !neurons.length;
+  $: nnsAccountPrincipal = $icpAccountsStore.main?.principal;
+  $: isDisabled = !neurons.length || !nnsAccountPrincipal;
 
   const neuronToHumanReadableFormat = (neuron: NeuronInfo) => {
     const controllerId = neuron.fullNeuron?.controller?.toString();
@@ -43,7 +47,6 @@
       amount: neuronStake(neuron),
       token: ICPToken,
     });
-    console.log(stake);
     const project = stake.token.name;
     const symbol = stake.token.symbol;
     const availableMaturity = neuronAvailableMaturity(neuron);
@@ -78,11 +81,25 @@
   };
 
   const exportNeurons = async () => {
+    if (!nnsAccountPrincipal) return;
+
     try {
       const humanFriendlyContent = neurons.map(neuronToHumanReadableFormat);
       const fileName = `neurons_export_${formatDateCompact(new Date())}`;
+      const metadataDate = nanoSecondsToDateTime(nowInBigIntNanoSeconds());
+
       await generateCsvFileToSave({
         data: humanFriendlyContent,
+        metadata: [
+          {
+            label: $i18n.export_csv_neurons.account_id_label,
+            value: nnsAccountPrincipal.toString(),
+          },
+          {
+            label: $i18n.export_csv_neurons.date_label,
+            value: metadataDate,
+          },
+        ],
         headers: [
           {
             id: "neuronId",

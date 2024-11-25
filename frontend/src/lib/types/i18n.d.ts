@@ -162,6 +162,8 @@ interface I18nHeader {
 }
 
 interface I18nExport_csv_neurons {
+  account_id_label: string;
+  date_label: string;
   controllerId: string;
   neuron_id: string;
   project: string;

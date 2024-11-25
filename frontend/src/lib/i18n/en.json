@@ -154,6 +154,8 @@
     "export_neurons": "Export Neurons Info"
   },
   "export_csv_neurons": {
+    "account_id_label": "NNS Account Principal ID",
+    "date_label": "Export Date Time",
     "controllerId": "Controller Principal ID",
     "neuron_id": "Neuron ID",
     "project": "Project",
