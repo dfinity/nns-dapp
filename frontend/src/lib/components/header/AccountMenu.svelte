@@ -41,10 +41,6 @@
 
         <LinkToCanisters on:nnsLink={closeMenu} />
 
-        {#if $ENABLE_EXPORT_NEURONS_REPORT}
-          <ExportNeuronsButton on:nnsExportNeuronsCSVTriggered={toggle} />
-        {/if}
-
         <Logout on:nnsLogoutTriggered={toggle} />
       </div>
     </Popover>
