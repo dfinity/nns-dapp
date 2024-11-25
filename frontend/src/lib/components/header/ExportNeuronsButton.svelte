@@ -26,7 +26,7 @@
     nowInBigIntNanoSeconds,
     secondsToDate,
   } from "$lib/utils/date.utils";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import { authStore } from "$lib/stores/auth.store";
 
   const dispatcher = createEventDispatcher<{
     nnsExportNeuronsCSVTriggered: void;
@@ -34,9 +34,8 @@
 
   let isDisabled = true;
   let neurons: NeuronInfo[] = [];
-
   $: neurons = $neuronsStore?.neurons ?? [];
-  $: nnsAccountPrincipal = $icpAccountsStore.main?.principal;
+  $: nnsAccountPrincipal = $authStore.identity?.getPrincipal().toText() ?? "";
   $: isDisabled = !neurons.length || !nnsAccountPrincipal;
 
   const neuronToHumanReadableFormat = (neuron: NeuronInfo) => {

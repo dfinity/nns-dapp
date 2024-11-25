@@ -1,9 +1,11 @@
 import ExportNeuronsButton from "$lib/components/header/ExportNeuronsButton.svelte";
+import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import * as exportToCsv from "$lib/utils/export-to-csv.utils";
 import { generateCsvFileToSave } from "$lib/utils/export-to-csv.utils";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ExportNeuronsButtonPo } from "$tests/page-objects/ExportNeuronsButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -19,6 +21,7 @@ describe("ExportNeuronsButton", () => {
     const mockDate = new Date("2023-10-14T00:00:00Z");
     vi.useFakeTimers();
     vi.setSystemTime(new Date(mockDate));
+    authStore.setForTesting(mockIdentity);
 
     const neuronWithController = {
       ...mockNeuron,
@@ -73,7 +76,7 @@ describe("ExportNeuronsButton", () => {
         data: expect.arrayContaining([
           expect.objectContaining({
             neuronId: "1",
-            project: "NNS",
+            project: "Internet Computer",
             symbol: "ICP",
             neuronAccountId:
               "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
