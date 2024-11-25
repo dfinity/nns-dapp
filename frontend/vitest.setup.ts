@@ -30,8 +30,7 @@ beforeEach(() => {
   vi.restoreAllMocks();
 });
 
-
-// Resets/restores any global objects(eg. window, document, Date, ) that were stubbed/mocked during testing  
+// Resets/restores any global objects(eg. window, document, Date, ) that were stubbed/mocked during testing
 beforeEach(() => {
   vi.unstubAllGlobals();
 });
