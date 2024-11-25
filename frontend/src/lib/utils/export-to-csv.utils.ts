@@ -68,9 +68,7 @@ export const convertToCsv = <T>({
     csvRows.push(metadataRow);
 
     // Add an empty row to separate metadata from data
-    const emptyRow = Array(headers.length + metadata.length)
-      .fill("")
-      .join(",");
+    const emptyRow = "";
     csvRows.push(emptyRow);
 
     padLeft = PAD_LEFT_WHEN_METADATA_PRESENT;
