@@ -73,7 +73,7 @@
   const exportNeurons = async () => {
     try {
       const humanFriendlyContent = neurons.map(neuronToHumanReadableFormat);
-
+      const fileName = `neurons-export-${new Date().toISOString()}`;
       await generateCsvFileToSave({
         data: humanFriendlyContent,
         headers: [
@@ -118,7 +118,7 @@
             label: $i18n.export_csv_neurons.state,
           },
         ],
-        fileName: "neurons",
+        fileName,
       });
     } catch (error) {
       console.error("Error exporting neurons:", error);

@@ -12,6 +12,7 @@ describe("ExportNeuronsButton", () => {
     vi.spyOn(exportToCsv, "generateCsvFileToSave").mockImplementation(vi.fn());
     vi.spyOn(toastsStore, "toastsError");
     vi.spyOn(console, "error").mockImplementation(() => {});
+    
     const neuronWithController = {
       ...mockNeuron,
       fullNeuron: {
@@ -36,6 +37,18 @@ describe("ExportNeuronsButton", () => {
     render(ExportNeuronsButton);
     const button = screen.getByRole("button");
     expect(button).toBeEnabled();
+  });
+
+  it("should name the file with the date of the export", async () => {
+    render(ExportNeuronsButton);
+    const button = screen.getByRole("button");
+    await fireEvent.click(button);
+    const expectedFileName = `neurons-export-01/01/1970`;
+    expect(generateCsvFileToSave).toHaveBeenCalledWith(
+      expect.objectContaining({
+        fileName: expectedFileName,
+      })
+    );
   });
 
   it("should transform neuron data correctly", async () => {
