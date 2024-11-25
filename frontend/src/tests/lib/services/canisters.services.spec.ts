@@ -1,4 +1,5 @@
 import * as api from "$lib/api/canisters.api";
+import * as icpIndexApi from "$lib/api/icp-index.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
 import * as authServices from "$lib/services/auth.services";
@@ -10,6 +11,7 @@ import {
   getCanisterDetails,
   getIcpToCyclesExchangeRate,
   listCanisters,
+  notifyTopUpIfNeeded,
   removeController,
   renameCanister,
   topUpCanister,
@@ -31,8 +33,11 @@ import {
 } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
+import { AnonymousIdentity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
+import { Principal } from "@dfinity/principal";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
@@ -54,6 +59,7 @@ describe("canisters-services", () => {
   let spyUpdateSettings: MockInstance;
   let spyCreateCanister: MockInstance;
   let spyTopUpCanister: MockInstance;
+  let spyNotifyTopUpCanister: MockInstance;
   let spyQueryCanisterDetails: MockInstance;
   let spyGetExchangeRate: MockInstance;
 
@@ -90,6 +96,10 @@ describe("canisters-services", () => {
 
     spyTopUpCanister = vi
       .spyOn(api, "topUpCanister")
+      .mockImplementation(() => Promise.resolve(undefined));
+
+    spyNotifyTopUpCanister = vi
+      .spyOn(api, "notifyTopUpCanister")
       .mockImplementation(() => Promise.resolve(undefined));
 
     spyQueryCanisterDetails = vi
@@ -598,6 +608,135 @@ describe("canisters-services", () => {
       });
 
       resetIdentity();
+    });
+  });
+
+  describe("notifyTopUpIfNeeded", () => {
+    const canisterId = Principal.fromText("mkam6-f4aaa-aaaaa-qablq-cai");
+    // Can be reconstructed with:
+    // CMC_ID=rkp4c-7iaaa-aaaaa-aaaca-cai
+    // CANISTER_ID=mkam6-f4aaa-aaaaa-qablq-cai
+    // scripts/convert-id --input text --subaccount_format text --output account_identifier $CMC_ID $CANISTER_ID
+    const cmcAccountIdentifierHex =
+      "addb464aaaa06f2e7dabf929fb5f729519848fdce636894806797859d23724eb";
+
+    it("should notify if there is a non-zero balance from an unburned top-up", async () => {
+      const blockHeight = 34n;
+      const memo = 0x50555054n; // TPUP
+      const topupTransaction = createTransactionWithId({
+        id: blockHeight,
+        memo,
+      });
+
+      const spyGetTransactions = vi.spyOn(icpIndexApi, "getTransactions");
+      spyGetTransactions.mockResolvedValue({
+        balance: 100_000_000n,
+        transactions: [topupTransaction],
+      });
+
+      const result = await notifyTopUpIfNeeded({
+        canisterId,
+      });
+
+      expect(result).toBe(true);
+
+      expect(spyNotifyTopUpCanister).toBeCalledTimes(1);
+      expect(spyNotifyTopUpCanister).toBeCalledWith({
+        canisterId,
+        blockHeight,
+        identity: new AnonymousIdentity(),
+      });
+
+      expect(spyGetTransactions).toBeCalledTimes(1);
+      expect(spyGetTransactions).toBeCalledWith({
+        accountIdentifier: cmcAccountIdentifierHex,
+        identity: new AnonymousIdentity(),
+        maxResults: 1n,
+      });
+    });
+
+    it("should not notify if there is a zero balance in the cmc account", async () => {
+      const balance = 0n;
+
+      const spyGetTransactions = vi.spyOn(icpIndexApi, "getTransactions");
+      spyGetTransactions.mockResolvedValue({
+        balance,
+        transactions: [],
+      });
+
+      const result = await notifyTopUpIfNeeded({
+        canisterId,
+      });
+
+      expect(result).toBe(false);
+
+      expect(spyNotifyTopUpCanister).toBeCalledTimes(0);
+    });
+
+    it("should not notify if there is a non-zero balance from a non-topup transaction", async () => {
+      const blockHeight = 34n;
+      const memo = 0n;
+      const nonTopupTransaction = createTransactionWithId({
+        id: blockHeight,
+        memo,
+      });
+      const balance = 100_000_000n;
+
+      const spyConsoleWarn = vi.spyOn(console, "warn").mockReturnValue();
+
+      const spyGetTransactions = vi.spyOn(icpIndexApi, "getTransactions");
+      spyGetTransactions.mockResolvedValue({
+        balance,
+        transactions: [nonTopupTransaction],
+      });
+
+      const result = await notifyTopUpIfNeeded({
+        canisterId,
+      });
+
+      expect(result).toBe(false);
+
+      expect(spyNotifyTopUpCanister).toBeCalledTimes(0);
+
+      expect(spyConsoleWarn).toBeCalledTimes(1);
+      expect(spyConsoleWarn).toBeCalledWith(
+        "CMC subaccount has non-zero balance but the most recent transaction is not a top-up",
+        {
+          balance,
+          canisterId: canisterId.toText(),
+          cmcAccountIdentifierHex,
+          transaction: nonTopupTransaction,
+        }
+      );
+    });
+
+    it("should ignore errors on notifying", async () => {
+      const blockHeight = 34n;
+      const memo = 0x50555054n; // TPUP
+      const topupTransaction = createTransactionWithId({
+        id: blockHeight,
+        memo,
+      });
+
+      const spyConsoleError = vi.spyOn(console, "error").mockReturnValue();
+
+      const spyGetTransactions = vi.spyOn(icpIndexApi, "getTransactions");
+      spyGetTransactions.mockResolvedValue({
+        balance: 100_000_000n,
+        transactions: [topupTransaction],
+      });
+
+      const error = new Error("Notify in progress");
+      spyNotifyTopUpCanister.mockRejectedValue(error);
+
+      const result = await notifyTopUpIfNeeded({
+        canisterId,
+      });
+
+      expect(result).toBe(true);
+
+      expect(spyConsoleError).toBeCalledTimes(1);
+      expect(spyConsoleError).toBeCalledWith(error);
     });
   });
 });

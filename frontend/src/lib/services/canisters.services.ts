@@ -3,17 +3,21 @@ import {
   createCanister as createCanisterApi,
   detachCanister as detachCanisterApi,
   getIcpToCyclesExchangeRate as getIcpToCyclesExchangeRateApi,
+  notifyTopUpCanister,
   queryCanisterDetails as queryCanisterDetailsApi,
   queryCanisters,
   renameCanister as renameCanisterApi,
   topUpCanister as topUpCanisterApi,
   updateSettings as updateSettingsApi,
 } from "$lib/api/canisters.api";
+import { getTransactions } from "$lib/api/icp-index.api";
 import type {
   CanisterDetails,
   CanisterSettings,
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { TOP_UP_CANISTER_MEMO } from "$lib/constants/api.constants";
+import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 import { canistersStore } from "$lib/stores/canisters.store";
@@ -27,8 +31,19 @@ import {
   mapCanisterErrorToToastMessage,
   toToastError,
 } from "$lib/utils/error.utils";
+import { AnonymousIdentity } from "@dfinity/agent";
+import {
+  AccountIdentifier,
+  SubAccount,
+  type TransactionWithId,
+} from "@dfinity/ledger-icp";
 import type { Principal } from "@dfinity/principal";
-import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import {
+  ICPToken,
+  TokenAmountV2,
+  isNullish,
+  principalToSubAccount,
+} from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { getAccountIdentity, loadBalance } from "./icp-accounts.services";
@@ -164,6 +179,73 @@ export const topUpCanister = async ({
     );
     return { success: false };
   }
+};
+
+// Returns the blockheight of the transaction, if it was a canister topup, or
+// undefined otherwise.
+const getBlockHeightFromCanisterTopup = ({
+  id: blockHeight,
+  transaction: { memo, operation },
+}: TransactionWithId): bigint | undefined => {
+  if (memo !== TOP_UP_CANISTER_MEMO || !("Transfer" in operation)) {
+    return undefined;
+  }
+  return blockHeight;
+};
+
+// Returns true if notify_top_up was called (whether successful or not).
+export const notifyTopUpIfNeeded = async ({
+  canisterId,
+}: {
+  canisterId: Principal;
+}): Promise<boolean> => {
+  const subAccount = principalToSubAccount(canisterId);
+  const cmcAccountIdentifier = AccountIdentifier.fromPrincipal({
+    principal: CYCLES_MINTING_CANISTER_ID,
+    subAccount: SubAccount.fromBytes(subAccount) as SubAccount,
+  });
+  const cmcAccountIdentifierHex = cmcAccountIdentifier.toHex();
+
+  const {
+    balance,
+    transactions: [transaction],
+  } = await getTransactions({
+    identity: new AnonymousIdentity(),
+    maxResults: 1n,
+    accountIdentifier: cmcAccountIdentifierHex,
+  });
+
+  if (balance === 0n || isNullish(transaction)) {
+    return false;
+  }
+
+  const blockHeight = getBlockHeightFromCanisterTopup(transaction);
+
+  if (isNullish(blockHeight)) {
+    // This should be very rare but it might be useful to know if it happens.
+    console.warn(
+      "CMC subaccount has non-zero balance but the most recent transaction is not a top-up",
+      {
+        canisterId: canisterId.toText(),
+        cmcAccountIdentifierHex,
+        balance,
+        transaction,
+      }
+    );
+    return false;
+  }
+
+  try {
+    await notifyTopUpCanister({
+      identity: new AnonymousIdentity(),
+      blockHeight,
+      canisterId,
+    });
+  } catch (error: unknown) {
+    console.error(error);
+    // Ignore. This is just a background fallback.
+  }
+  return true;
 };
 
 export const addController = async ({
