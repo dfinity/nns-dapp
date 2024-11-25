@@ -131,3 +131,18 @@ export const getFutureDateFromDelayInSeconds = (seconds: bigint): string => {
   const todayPlusDelayedSeconds = nowInSeconds() + Number(seconds);
   return secondsToDate(todayPlusDelayedSeconds);
 };
+
+/**
+ * Formats a date into YYYYMMDD string
+ * @param {Date} date - The date to format
+ * @returns {string} Date formatted as YYYYMMDD
+ * @example
+ * formatDateCompact(new Date('2024-11-22')) // Returns "20241122"
+ */
+export const formatDateCompact = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+
+  return `${year}${month}${day}`;
+};
