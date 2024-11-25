@@ -9,10 +9,6 @@ type TestPersonData = { name: string; age: number };
 type TestFormulaData = { formula: string; value: number };
 
 describe("Export to Csv", () => {
-  beforeEach(() => {
-    vi.unstubAllGlobals();
-  });
-
   describe("convertToCSV", () => {
     it("should return an empty string when empty headers are provided", () => {
       const data = [];
