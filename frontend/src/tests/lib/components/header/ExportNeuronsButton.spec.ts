@@ -7,7 +7,7 @@ import { generateCsvFileToSave } from "$lib/utils/export-to-csv.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ExportNeuronsButtonPo } from "$tests/page-objects/ExportNeuronsButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { fireEvent, render, screen } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 
 describe("ExportNeuronsButton", () => {
   beforeEach(() => {
