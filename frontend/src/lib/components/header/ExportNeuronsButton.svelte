@@ -37,14 +37,15 @@
 
   const neuronToHumanReadableFormat = (neuron: NeuronInfo) => {
     const controllerId = neuron.fullNeuron?.controller?.toString();
-    const project = "NNS";
-    const symbol = "ICP";
     const neuronId = neuron.neuronId.toString();
     const neuronAccountId = neuron.fullNeuron?.accountIdentifier.toString();
     const stake = TokenAmountV2.fromUlps({
       amount: neuronStake(neuron),
       token: ICPToken,
     });
+    console.log(stake);
+    const project = stake.token.name;
+    const symbol = stake.token.symbol;
     const availableMaturity = neuronAvailableMaturity(neuron);
     const stakedMaturity = neuronStakedMaturity(neuron);
     const dissolveDelaySeconds = neuron.dissolveDelaySeconds;
