@@ -1,14 +1,36 @@
 <script lang="ts">
+  import { Html, IconClose } from "@dfinity/gix-components";
+  import { createEventDispatcher } from "svelte";
+
   export let testId: string = "banner-component";
+
+  /** Dispatches `nnsClose` event */
+  export let isClosable: boolean = false;
+  /** Displayed in a high-contrast */
+  export let isCritical: boolean = false;
+
   export let title: string | undefined = undefined;
   export let text: string | undefined = undefined;
-  export let isCritical: boolean | undefined = undefined;
+  export let htmlText: string | undefined = undefined;
+
+  const dispatcher = createEventDispatcher();
 </script>
 
 <article data-tid={testId} class="banner" class:isCritical>
   <div class="icon" aria-hidden="true">
     <slot name="icon"></slot>
   </div>
+  {#if isClosable}
+    <div class="close">
+      <button
+        class="icon-only"
+        on:click={() => dispatcher("nnsClose")}
+        aria-label="Close"
+      >
+        <IconClose />
+      </button>
+    </div>
+  {/if}
   <div class="content-wrapper">
     {#if title}
       <h2 class="title">{title}</h2>
@@ -16,9 +38,9 @@
     {#if text}
       <p class="text">{text}</p>
     {/if}
-    <div class="content">
-      <slot name="content"></slot>
-    </div>
+    {#if htmlText}
+      <Html text={htmlText} />
+    {/if}
   </div>
   <div class="actions">
     <slot name="actions"></slot>
@@ -32,25 +54,22 @@
   .banner {
     display: grid;
     grid-template-areas:
-      "icon"
-      "content"
-      "actions";
-    grid-gap: var(--padding-1_5x);
-
-    @include media.min-width(small) {
-      grid-template-areas:
-        "icon content"
-        "actions actions";
-      grid-template-columns: auto 1fr;
-    }
-
+      "icon close"
+      ". ."
+      "content content"
+      ". ."
+      "actions actions";
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto var(--padding-1_5x) auto var(--padding-3x) auto;
     @include media.min-width(medium) {
-      grid-template-areas: "icon content actions";
-      grid-template-columns: auto 1fr auto;
+      grid-template-areas: "icon content actions close";
+      grid-template-columns: auto 1fr auto auto;
+      grid-template-rows: auto;
+      grid-gap: var(--padding-1_5x);
       align-items: center;
     }
 
-    padding: var(--padding-1_5x);
+    padding: var(--padding-2x);
     border-radius: var(--border-radius);
     background: var(--input-background);
   }
@@ -64,17 +83,23 @@
     .text {
       color: var(--tooltip-description-color);
     }
+    .close {
+      color: var(--tooltip-description-color);
+    }
   }
 
   .icon {
     grid-area: icon;
   }
+  .close {
+    grid-area: close;
+  }
   .content-wrapper {
     grid-area: content;
+
     display: flex;
     flex-direction: column;
-    flex: 1 1 auto;
-    overflow: hidden;
+    gap: var(--padding);
   }
   .actions {
     grid-area: actions;
