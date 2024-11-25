@@ -16,22 +16,12 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* Claim unclaimed neurons from the frontend instead of the backend.
-* Update proposal status colors.
-
 #### Deprecated
 
 #### Removed
 
-* Stop storing neuron accounts in the nns-dapp canister.
-
 #### Fixed
 
-* Stop trying to get swap commitments from aborted SNSes.
-* Stop making unnecessary calls to SNS-W and SNS root canisters.
-* User gets the wrong identity when connecting different hardware wallets devices in a certain order.
-* Fix candid decoding error of stable memory.
-* Show successfully loaded swap commitments even if some fail to load.
 * Hide SNSes for which the aggregator doesn't have a lifecycle.
 
 #### Security
