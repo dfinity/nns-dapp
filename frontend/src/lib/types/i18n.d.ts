@@ -164,6 +164,8 @@ interface I18nHeader {
 interface I18nExport_csv_neurons {
   controllerId: string;
   neuron_id: string;
+  project: string;
+  symbol: string;
   neuron_account_id: string;
   stake: string;
   available_maturity: string;

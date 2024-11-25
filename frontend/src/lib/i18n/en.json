@@ -156,6 +156,8 @@
   "export_csv_neurons": {
     "controllerId": "Controller Principal ID",
     "neuron_id": "Neuron ID",
+    "project": "Project",
+    "symbol": "Symbol",
     "neuron_account_id": "Neuron Account ID",
     "stake": "Stake",
     "available_maturity": "Available Maturity",

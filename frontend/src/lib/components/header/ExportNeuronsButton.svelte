@@ -20,6 +20,7 @@
   } from "$lib/utils/export-to-csv.utils";
   import { toastsError } from "$lib/stores/toasts.store";
   import {
+    formatDateCompact,
     getFutureDateFromDelayInSeconds,
     secondsToDate,
   } from "$lib/utils/date.utils";
@@ -33,8 +34,11 @@
 
   $: neurons = $neuronsStore?.neurons ?? [];
   $: isDisabled = !neurons.length;
+
   const neuronToHumanReadableFormat = (neuron: NeuronInfo) => {
     const controllerId = neuron.fullNeuron?.controller?.toString();
+    const project = "NNS";
+    const symbol = "ICP";
     const neuronId = neuron.neuronId.toString();
     const neuronAccountId = neuron.fullNeuron?.accountIdentifier.toString();
     const stake = TokenAmountV2.fromUlps({
@@ -52,6 +56,8 @@
 
     return {
       controllerId,
+      project,
+      symbol,
       neuronId,
       neuronAccountId,
       stake: formatTokenV2({
@@ -73,13 +79,21 @@
   const exportNeurons = async () => {
     try {
       const humanFriendlyContent = neurons.map(neuronToHumanReadableFormat);
-      const fileName = `neurons-export-${new Date().toISOString()}`;
+      const fileName = `neurons_export_${formatDateCompact(new Date())}`;
       await generateCsvFileToSave({
         data: humanFriendlyContent,
         headers: [
           {
             id: "neuronId",
             label: $i18n.export_csv_neurons.neuron_id,
+          },
+          {
+            id: "project",
+            label: $i18n.export_csv_neurons.project,
+          },
+          {
+            id: "symbol",
+            label: $i18n.export_csv_neurons.symbol,
           },
           {
             id: "neuronAccountId",
