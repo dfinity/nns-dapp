@@ -1,8 +1,4 @@
-import {
-  isLastCall,
-  isLocalhost,
-  isNnsAlternativeOrigin,
-} from "$lib/utils/env.utils";
+import { isLastCall, isNnsAlternativeOrigin } from "$lib/utils/env.utils";
 
 describe("env-utils", () => {
   describe("isNnsAlternativeOrigin", () => {
@@ -60,24 +56,6 @@ describe("env-utils", () => {
 
       setOrigin("https://beta.ic0.app");
       expect(isNnsAlternativeOrigin()).toBe(false);
-    });
-  });
-
-  describe("isLocalhost", () => {
-    it("return false when hostname is not localhost", () => {
-      expect(
-        isLocalhost(
-          "53zcu-tiaaa-aaaaa-qaaba-cai.medium09.testnet.dfinity.network"
-        )
-      ).toBe(false);
-      expect(isLocalhost("internetcomputer.org")).toBe(false);
-      expect(isLocalhost("nns.ic0.app")).toBe(false);
-    });
-
-    it("return true when hostname is localhost", () => {
-      expect(isLocalhost("localhost:3000")).toBe(true);
-      expect(isLocalhost("127.0.0.1:3000")).toBe(true);
-      expect(isLocalhost("xxxx.localhost")).toBe(true);
     });
   });
 

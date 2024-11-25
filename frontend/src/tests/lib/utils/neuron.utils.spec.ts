@@ -67,6 +67,7 @@ import {
   neuronsVotingPower,
   shouldDisplayRewardLossNotification,
   sortNeuronsByStake,
+  sortNeuronsByVotingPowerRefreshedTimeout,
   topicsToFollow,
   userAuthorizedNeuron,
   validTopUpAmount,
@@ -806,6 +807,88 @@ describe("neuron-utils", () => {
         neuronB,
         neuronC,
       ]);
+    });
+  });
+
+  describe("sortNeuronsByVotingPowerRefreshedTimeout", () => {
+    it("should sort neurons by votingPowerRefreshedTimeout", () => {
+      const neuron1 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          votingPowerRefreshedTimestampSeconds: 1n,
+          cachedNeuronStake: 400_000_000n,
+          neuronFees: 100_000_000n,
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          votingPowerRefreshedTimestampSeconds: 2n,
+          cachedNeuronStake: 300_000_000n,
+          neuronFees: 100_000_000n,
+        },
+      };
+      const neuron3 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          votingPowerRefreshedTimestampSeconds: 3n,
+          cachedNeuronStake: 500_000_000n,
+          neuronFees: 100_000_000n,
+        },
+      };
+      expect(sortNeuronsByVotingPowerRefreshedTimeout([])).toEqual([]);
+      expect(sortNeuronsByVotingPowerRefreshedTimeout([neuron1])).toEqual([
+        neuron1,
+      ]);
+      expect(
+        sortNeuronsByVotingPowerRefreshedTimeout([neuron3, neuron2, neuron1])
+      ).toEqual([neuron1, neuron2, neuron3]);
+      expect(
+        sortNeuronsByVotingPowerRefreshedTimeout([neuron2, neuron1, neuron3])
+      ).toEqual([neuron1, neuron2, neuron3]);
+    });
+
+    it("should sort by stake when same refresh timestamp", () => {
+      const neuron1 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 500_000_000n,
+          neuronFees: 400_000_000n,
+          votingPowerRefreshedTimestampSeconds: 0n,
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 400_000_000n,
+          neuronFees: 200_000_000n,
+          votingPowerRefreshedTimestampSeconds: 0n,
+        },
+      };
+      const neuron3 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 400_000_000n,
+          neuronFees: 100_000_000n,
+          votingPowerRefreshedTimestampSeconds: 0n,
+        },
+      };
+      expect(sortNeuronsByVotingPowerRefreshedTimeout([])).toEqual([]);
+      expect(sortNeuronsByVotingPowerRefreshedTimeout([neuron1])).toEqual([
+        neuron1,
+      ]);
+      expect(
+        sortNeuronsByVotingPowerRefreshedTimeout([neuron3, neuron2, neuron1])
+      ).toEqual([neuron3, neuron2, neuron1]);
+      expect(
+        sortNeuronsByVotingPowerRefreshedTimeout([neuron2, neuron1, neuron3])
+      ).toEqual([neuron3, neuron2, neuron1]);
     });
   });
 
