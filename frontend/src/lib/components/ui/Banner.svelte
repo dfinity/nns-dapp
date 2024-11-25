@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let testId: string;
+  export let testId: string = "banner-component";
   export let title: string | undefined = undefined;
   export let text: string | undefined = undefined;
   export let isCritical: boolean | undefined = undefined;
