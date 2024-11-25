@@ -3,10 +3,6 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
 
 describe("icrc canisters store", () => {
-  beforeEach(() => {
-    defaultIcrcCanistersStore.reset();
-  });
-
   const ledgerCanisterId = principal(0);
   const indexCanisterId = principal(1);
 

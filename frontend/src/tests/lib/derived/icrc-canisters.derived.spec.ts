@@ -14,7 +14,6 @@ describe("icrcCanistersStore", () => {
   const ledgerCanisterId3 = principal(3);
 
   beforeEach(() => {
-    defaultIcrcCanistersStore.reset();
     importedTokensStore.reset();
     failedImportedTokenLedgerIdsStore.reset();
   });
