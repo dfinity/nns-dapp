@@ -20,18 +20,16 @@ import {
   setDefaultTestConstants,
 } from "./src/tests/utils/mockable-constants.test-utils";
 
-// Restore all mocks original behvior before each test.
-//
-// NOTE: This restores mocks created with vi.spyOn() to their production
-// behavior, but returns mocks created on modules with vi.mock() to mocks that
-// return undefined. Regardless, it will make sure that each test starts with
-// the same behavior for all mocks.
 beforeEach(() => {
+  // Restore all mocks original behvior before each test.
+  //
+  // NOTE: This restores mocks created with vi.spyOn() to their production
+  // behavior, but returns mocks created on modules with vi.mock() to mocks that
+  // return undefined. Regardless, it will make sure that each test starts with
+  // the same behavior for all mocks.
   vi.restoreAllMocks();
-});
 
-// Resets/restores any global objects(eg. window, document, Date, ) that were stubbed/mocked during testing
-beforeEach(() => {
+  // Resets/restores any global objects(eg. window, document, Date, ) that were stubbed/mocked during testing
   vi.unstubAllGlobals();
 });
 
