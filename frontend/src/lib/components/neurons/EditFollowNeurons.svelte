@@ -2,7 +2,7 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
   import { i18n } from "$lib/stores/i18n";
-  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import { definedNeuronsStore } from "$lib/derived/neurons.derived";
   import { topicsToFollow } from "$lib/utils/neuron.utils";
   import FollowNnsTopicSection from "./FollowNnsTopicSection.svelte";
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";

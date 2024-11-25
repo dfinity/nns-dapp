@@ -4,7 +4,8 @@
   import { isForceCallStrategy } from "$lib/constants/mockable.constants";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
-  import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
+  import { neuronsStore } from "$lib/stores/neurons.store";
+  import { definedNeuronsStore } from "$lib/derived/neurons.derived";
   import {
     voteRegistrationStore,
     type VoteRegistrationStoreEntry,

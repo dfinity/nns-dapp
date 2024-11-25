@@ -3,10 +3,11 @@ import {
   DEFAULT_LIST_PAGINATION_LIMIT,
   MAX_ACTIONABLE_REQUEST_COUNT,
 } from "$lib/constants/constants";
+import { definedNeuronsStore } from "$lib/derived/neurons.derived";
 import { getCurrentIdentity } from "$lib/services/auth.services";
 import { listNeurons } from "$lib/services/neurons.services";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
+import { neuronsStore } from "$lib/stores/neurons.store";
 import {
   lastProposalId,
   sortProposalsByIdDescendingOrder,
