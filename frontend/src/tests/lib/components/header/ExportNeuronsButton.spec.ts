@@ -65,15 +65,16 @@ describe("ExportNeuronsButton", () => {
   });
 
   it("should transform neuron data correctly", async () => {
-    render(ExportNeuronsButton);
-    const button = screen.getByRole("button");
-    await fireEvent.click(button);
+    const { po } = renderComponent();
+    await po.click();
 
     expect(generateCsvFileToSave).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.arrayContaining([
           expect.objectContaining({
             neuronId: "1",
+            project: "NNS",
+            symbol: "ICP",
             neuronAccountId:
               "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
             controllerId: "1",
