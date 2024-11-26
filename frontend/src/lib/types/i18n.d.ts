@@ -37,6 +37,7 @@ interface I18nCore {
   collapse_all: string;
   or: string;
   add: string;
+  not_applicable: string;
 }
 
 interface I18nError {
@@ -158,6 +159,30 @@ interface I18nHeader {
   account_menu: string;
   main_icp_account_id: string;
   account_id_tooltip: string;
+  export_neurons: string;
+}
+
+interface I18nExport_csv_neurons {
+  account_id_label: string;
+  date_label: string;
+  controller_id: string;
+  neuron_id: string;
+  project: string;
+  symbol: string;
+  neuron_account_id: string;
+  stake: string;
+  available_maturity: string;
+  staked_maturity: string;
+  dissolve_delay: string;
+  dissolve_date: string;
+  creation_date: string;
+  state: string;
+}
+
+interface I18nExport_error {
+  csv_generation: string;
+  file_system_access: string;
+  neurons: string;
 }
 
 interface I18nAuth {
@@ -1400,6 +1425,8 @@ interface I18n {
   warning: I18nWarning;
   navigation: I18nNavigation;
   header: I18nHeader;
+  export_csv_neurons: I18nExport_csv_neurons;
+  export_error: I18nExport_error;
   auth: I18nAuth;
   accounts: I18nAccounts;
   neuron_types: I18nNeuron_types;

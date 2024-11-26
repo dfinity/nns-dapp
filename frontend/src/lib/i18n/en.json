@@ -33,7 +33,8 @@
     "send_with_token": "Send $token",
     "collapse_all": "Collapse All",
     "or": "or",
-    "add": "Add"
+    "add": "Add",
+    "not_applicable": "N/A"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -150,7 +151,29 @@
     "logout": "Logout",
     "account_menu": "Open menu to access logout button",
     "main_icp_account_id": "Main ICP Account ID",
-    "account_id_tooltip": "You can send ICP both to your principal ID and account ID, however some exchanges or wallets may not support transactions using a principal ID."
+    "account_id_tooltip": "You can send ICP both to your principal ID and account ID, however some exchanges or wallets may not support transactions using a principal ID.",
+    "export_neurons": "Export Neurons Info"
+  },
+  "export_csv_neurons": {
+    "account_id_label": "NNS Account Principal ID",
+    "date_label": "Export Date Time",
+    "controller_id": "Controller Principal ID",
+    "neuron_id": "Neuron ID",
+    "project": "Project",
+    "symbol": "Symbol",
+    "neuron_account_id": "Neuron Account ID",
+    "stake": "Stake",
+    "available_maturity": "Available Maturity",
+    "staked_maturity": "Staked Maturity",
+    "dissolve_delay": "Dissolve Delay",
+    "dissolve_date": "Dissolve Date",
+    "creation_date": "Creation Date",
+    "state": "State"
+  },
+  "export_error": {
+    "csv_generation": "Failed to generate CSV file",
+    "file_system_access": "Unable to save file. Please check your permissions.",
+    "neurons": "There was an error exporting the neurons. Please try again."
   },
   "auth": {
     "login": "Sign in with Internet Identity",
