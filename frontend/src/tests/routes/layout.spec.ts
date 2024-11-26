@@ -1,6 +1,5 @@
 import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
 import { initAuthWorker } from "$lib/services/worker-auth.services";
-import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import App from "$routes/+layout.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
@@ -25,8 +24,6 @@ vi.mock("$lib/proxy/app.services.proxy");
 
 describe("Layout", () => {
   beforeEach(() => {
-    actionableNnsProposalsStore.reset();
-
     setNoIdentity();
   });
 

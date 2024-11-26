@@ -128,7 +128,6 @@ describe("actionable-sns-proposals.services", () => {
 
     beforeEach(() => {
       resetSnsProjects();
-      actionableSnsProposalsStore.resetForTesting();
       resetIdentity();
 
       resetIdentity();

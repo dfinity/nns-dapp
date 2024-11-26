@@ -97,7 +97,6 @@ describe("actionable-proposals.services", () => {
     let spyConsoleError;
 
     beforeEach(() => {
-      actionableNnsProposalsStore.reset();
       resetIdentity();
       spyQueryProposals = vi
         .spyOn(api, "queryProposals")

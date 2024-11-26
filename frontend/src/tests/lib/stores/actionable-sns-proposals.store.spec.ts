@@ -19,9 +19,6 @@ describe("actionableSnsProposalsStore", () => {
   const principal1 = principal(0);
   const principal2 = principal(1);
   const principal3 = principal(2);
-  beforeEach(() => {
-    actionableSnsProposalsStore.resetForTesting();
-  });
 
   it("should store sns proposals", () => {
     actionableSnsProposalsStore.set({
