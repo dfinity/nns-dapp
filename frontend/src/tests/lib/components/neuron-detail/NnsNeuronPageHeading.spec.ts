@@ -128,7 +128,7 @@ describe("NnsNeuronPageHeading", () => {
       },
     });
 
-    expect(await po.getNeuronTags()).toEqual(["Hardware Wallet Controlled"]);
+    expect(await po.getNeuronTags()).toEqual(["Ledger Device Controlled"]);
   });
 
   it("should render neuron type tag", async () => {
