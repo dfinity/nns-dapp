@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-11-14_03-07-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-11-21_03-11-24.04-base-kernel/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -126,6 +126,7 @@ pub struct UpgradeStepsRefreshed {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct TargetVersionReset {
+    pub human_readable: Option<String>,
     pub old_target_version: Option<Version>,
     pub new_target_version: Option<Version>,
 }
@@ -207,7 +208,7 @@ pub struct RewardEvent {
 pub struct PendingVersion {
     pub mark_failed_at_seconds: u64,
     pub checking_upgrade_lock: u64,
-    pub proposal_id: u64,
+    pub proposal_id: Option<u64>,
     pub target_version: Option<Version>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -250,9 +251,23 @@ pub struct MintSnsTokensActionAuxiliary {
     pub valuation: Option<Valuation>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct SnsVersion {
+    pub archive_wasm_hash: Option<serde_bytes::ByteBuf>,
+    pub root_wasm_hash: Option<serde_bytes::ByteBuf>,
+    pub swap_wasm_hash: Option<serde_bytes::ByteBuf>,
+    pub ledger_wasm_hash: Option<serde_bytes::ByteBuf>,
+    pub governance_wasm_hash: Option<serde_bytes::ByteBuf>,
+    pub index_wasm_hash: Option<serde_bytes::ByteBuf>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct AdvanceSnsTargetVersionActionAuxiliary {
+    pub target_version: Option<SnsVersion>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum ActionAuxiliary {
     TransferSnsTreasuryFunds(MintSnsTokensActionAuxiliary),
     MintSnsTokens(MintSnsTokensActionAuxiliary),
+    AdvanceSnsTargetVersion(AdvanceSnsTargetVersionActionAuxiliary),
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Ballot {
@@ -313,6 +328,10 @@ pub struct MintSnsTokens {
     pub amount_e8s: Option<u64>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct AdvanceSnsTargetVersion {
+    pub new_target: Option<SnsVersion>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ManageSnsMetadata {
     pub url: Option<String>,
     pub logo: Option<String>,
@@ -347,6 +366,7 @@ pub enum Action {
     UpgradeSnsControlledCanister(UpgradeSnsControlledCanister),
     DeregisterDappCanisters(DeregisterDappCanisters),
     MintSnsTokens(MintSnsTokens),
+    AdvanceSnsTargetVersion(AdvanceSnsTargetVersion),
     Unspecified(EmptyRecord),
     ManageSnsMetadata(ManageSnsMetadata),
     ExecuteGenericNervousSystemFunction(ExecuteGenericNervousSystemFunction),
@@ -690,7 +710,7 @@ pub struct CanisterStatusResultV2 {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetRunningSnsVersionArg {}
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct UpgradeInProgress {
+pub struct GetRunningSnsVersionResponsePendingVersionInner {
     pub mark_failed_at_seconds: u64,
     pub checking_upgrade_lock: u64,
     pub proposal_id: u64,
@@ -699,7 +719,7 @@ pub struct UpgradeInProgress {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetRunningSnsVersionResponse {
     pub deployed_version: Option<Version>,
-    pub pending_version: Option<UpgradeInProgress>,
+    pub pending_version: Option<GetRunningSnsVersionResponsePendingVersionInner>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetSnsInitializationParametersArg {}
@@ -720,6 +740,7 @@ pub struct GetUpgradeJournalResponse {
     pub upgrade_journal: Option<UpgradeJournal>,
     pub upgrade_steps: Option<Versions>,
     pub response_timestamp_seconds: Option<u64>,
+    pub deployed_version: Option<Version>,
     pub target_version: Option<Version>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize, Default)]
