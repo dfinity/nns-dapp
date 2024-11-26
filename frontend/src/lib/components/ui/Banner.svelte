@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Html, IconClose } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let testId: string = "banner-component";
 
@@ -26,6 +27,7 @@
         class="icon-only"
         on:click={() => dispatcher("nnsClose")}
         aria-label="Close"
+        data-tid="close-button"
       >
         <IconClose />
       </button>
@@ -33,13 +35,15 @@
   {/if}
   <div class="content-wrapper">
     {#if title}
-      <h2 class="title">{title}</h2>
+      <h2 class="title" data-tid="title">{title}</h2>
     {/if}
     {#if text}
-      <p class="text">{text}</p>
+      <p class="text" data-tid="text">{text}</p>
     {/if}
     {#if htmlText}
-      <Html text={htmlText} />
+      <TestIdWrapper testId="html-text">
+        <Html text={htmlText} />
+      </TestIdWrapper>
     {/if}
   </div>
   <div class="actions">
