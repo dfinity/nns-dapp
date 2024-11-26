@@ -13,6 +13,9 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Deprecated
 ### Removed
 ### Fixed
+
+* Keep existing data when a call to an SNS canister fails.
+
 ### Security
 
 - Decoding quota of 10,000 in the `http_request` method.
