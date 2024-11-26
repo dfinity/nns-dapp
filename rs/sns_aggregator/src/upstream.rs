@@ -121,7 +121,11 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         ic_cdk::api::call::call(governance_canister_id, "list_nervous_system_functions", ((),))
             .await
             .map(|response: (_,)| response.0)
-            .map_err(|err| crate::state::log(format!("Call to SnsGovernance.list_nervous_system_functions failed: {err:?}")))
+            .map_err(|err| {
+                crate::state::log(format!(
+                    "Call to SnsGovernance.list_nervous_system_functions failed: {err:?}"
+                ));
+            })
             .unwrap_or(existing_data.parameters);
 
     crate::state::log(format!("Getting SNS index {index}... get_state"));
@@ -159,7 +163,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
             .map(|response: (_,)| response.0)
         {
             Err(err) => {
-                crate::state::log(format!("Call to Swap.get_sale_parameters failed: {err:?}")))
+                crate::state::log(format!("Call to Swap.get_sale_parameters failed: {err:?}"));
                 None
             }
             Ok(response) => Some(response),
@@ -172,7 +176,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
             .map(|response: (_,)| response.0)
         {
             Err(err) => {
-                crate::state::log(format!("Call to Swap.get_init failed: {err:?}")))
+                crate::state::log(format!("Call to Swap.get_init failed: {err:?}"));
                 None
             }
             Ok(response) => Some(response),
@@ -194,7 +198,11 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
     let nervous_system_parameters: Option<NervousSystemParameters> =
         get_nervous_system_parameters(governance_canister_id)
             .await
-            .map_err(|err| crate::state::log(format!("Call to SnsGovernance.get_nervous_system_parameters failed: {err:?}")))
+            .map_err(|err| {
+                crate::state::log(format!(
+                    "Call to SnsGovernance.get_nervous_system_parameters failed: {err:?}"
+                ));
+            })
             .ok()
             .or(existing_data.nervous_system_parameters);
 
