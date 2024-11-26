@@ -40,7 +40,7 @@
   let isDisabled = true;
   let neurons: NeuronInfo[] = [];
   $: neurons = $neuronsStore?.neurons ?? [];
-  $: nnsAccountPrincipal = $authStore.identity?.getPrincipal().toText() ?? "";
+  $: nnsAccountPrincipal = $authStore.identity?.getPrincipal().toText();
   $: isDisabled = neurons.length === 0 || isNullish(nnsAccountPrincipal);
 
   const nnsNeuronToHumanReadableFormat = (neuron: NeuronInfo) => {

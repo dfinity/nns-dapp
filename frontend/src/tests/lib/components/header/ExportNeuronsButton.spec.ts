@@ -51,17 +51,24 @@ describe("ExportNeuronsButton", () => {
 
   it("should be disabled when there are no neurons", async () => {
     neuronsStore.setNeurons({ neurons: [], certified: true });
-    const  po = renderComponent();
+
+    const po = renderComponent();
     expect(await po.isDisabled()).toBe(true);
   });
 
-  it("should be enabled when neurons are present", async () => {
-    const  po  = renderComponent();
+  it("should be disabled when there is no identity", async () => {
+    authStore.setForTesting(null);
+    const po = renderComponent();
+    expect(await po.isDisabled()).toBe(true);
+  });
+
+  it("should be enabled when neurons are present and there is user authenticated", async () => {
+    const po = renderComponent();
     expect(await po.isDisabled()).toBe(false);
   });
 
   it("should name the file with the date of the export", async () => {
-    const  po  = renderComponent();
+    const po = renderComponent();
 
     expect(generateCsvFileToSave).toBeCalledTimes(0);
 
