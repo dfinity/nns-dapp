@@ -46,22 +46,22 @@ describe("ExportNeuronsButton", () => {
     if (onTrigger) {
       component.$on("nnsExportNeuronsCsvTriggered", onTrigger);
     }
-    return { po };
+    return po;
   };
 
   it("should be disabled when there are no neurons", async () => {
     neuronsStore.setNeurons({ neurons: [], certified: true });
-    const { po } = renderComponent();
+    const  po = renderComponent();
     expect(await po.isDisabled()).toBe(true);
   });
 
   it("should be enabled when neurons are present", async () => {
-    const { po } = renderComponent();
+    const  po  = renderComponent();
     expect(await po.isDisabled()).toBe(false);
   });
 
   it("should name the file with the date of the export", async () => {
-    const { po } = renderComponent();
+    const  po  = renderComponent();
 
     expect(generateCsvFileToSave).toBeCalledTimes(0);
 
@@ -77,7 +77,7 @@ describe("ExportNeuronsButton", () => {
   });
 
   it("should transform neuron data correctly", async () => {
-    const { po } = renderComponent();
+    const po = renderComponent();
 
     expect(generateCsvFileToSave).toBeCalledTimes(0);
     await po.click();
@@ -106,7 +106,7 @@ describe("ExportNeuronsButton", () => {
 
   it("should dispatch nnsExportNeuronsCsvTriggered event after click to close the menu", async () => {
     const onTrigger = vi.fn();
-    const { po } = renderComponent({ onTrigger });
+    const po = renderComponent({ onTrigger });
 
     expect(onTrigger).toBeCalledTimes(0);
     await po.click();
@@ -118,7 +118,7 @@ describe("ExportNeuronsButton", () => {
       new exportToCsv.FileSystemAccessError("File system access denied")
     );
 
-    const { po } = renderComponent();
+    const po = renderComponent();
 
     expect(toastsError).toBeCalledTimes(0);
     await po.click();
@@ -133,7 +133,7 @@ describe("ExportNeuronsButton", () => {
       new exportToCsv.CsvGenerationError("Csv generation failed")
     );
 
-    const { po } = renderComponent();
+    const po = renderComponent();
 
     expect(toastsError).toBeCalledTimes(0);
     await po.click();
@@ -148,7 +148,7 @@ describe("ExportNeuronsButton", () => {
       new Error("Something wrong happened")
     );
 
-    const { po } = renderComponent();
+    const po = renderComponent();
 
     expect(toastsError).toBeCalledTimes(0);
     await po.click();
