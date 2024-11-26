@@ -1,6 +1,6 @@
 import { BannerPo } from "$tests/page-objects/Banner.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { render } from "@testing-library/svelte";
+import { render } from "$tests/utils/svelte.test-utils";
 import BannerTest from "./BannerTest.svelte";
 
 describe("Banner", () => {
@@ -41,17 +41,22 @@ describe("Banner", () => {
     expect(await po.getHtmlText()).toContain("Test HTML Text");
   });
 
-  it("should display slots", async () => {
+  it("should display icon slot content", async () => {
     const po = renderComponent();
 
-    expect(await po.getText()).toContain("test-icon");
-    expect(await po.getText()).toContain("test-action");
+    expect(await po.getBannerIcon().isPresent()).toBe(true);
+  });
+
+  it("should display actions slot content", async () => {
+    const po = renderComponent();
+
+    expect(await po.getActions().getText()).toContain("test-action");
   });
 
   it("should not have close button by default", async () => {
     const po = renderComponent();
 
-    expect(await po.isClosable()).toBe(false);
+    expect(await po.getCloseButton().isPresent()).toBe(false);
   });
 
   it("should have close button", async () => {
@@ -63,7 +68,7 @@ describe("Banner", () => {
       onClose,
     });
 
-    expect(await po.isClosable()).toBe(true);
+    expect(await po.getCloseButton().isPresent()).toBe(true);
     expect(onClose).toHaveBeenCalledTimes(0);
     await po.clickClose();
     expect(onClose).toHaveBeenCalledTimes(1);

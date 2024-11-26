@@ -1,11 +1,25 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { BannerIconPo } from "./BannerIcon.page-object";
+import type { ButtonPo } from "./Button.page-object";
 
 export class BannerPo extends BasePageObject {
   private static readonly TID = "banner-component";
 
   static under(element: PageObjectElement): BannerPo {
     return new BannerPo(element.byTestId(BannerPo.TID));
+  }
+
+  getBannerIcon(): BannerIconPo {
+    return BannerIconPo.under(this.root);
+  }
+
+  getActions(): PageObjectElement {
+    return this.root.byTestId("actions");
+  }
+
+  getCloseButton(): ButtonPo {
+    return this.getButton("close-button");
   }
 
   async getTitle(): Promise<string> {
@@ -20,16 +34,8 @@ export class BannerPo extends BasePageObject {
     return this.root.byTestId("html-text").getText();
   }
 
-  private getCloseButton(): PageObjectElement {
-    return this.root.byTestId("close-button");
-  }
-
   async clickClose(): Promise<void> {
     await this.getCloseButton().click();
-  }
-
-  async isClosable(): Promise<boolean> {
-    return this.getCloseButton().isPresent();
   }
 
   async isCritical(): Promise<boolean> {

@@ -41,12 +41,12 @@
       <p class="text" data-tid="text">{text}</p>
     {/if}
     {#if htmlText}
-      <TestIdWrapper testId="html-text">
+      <div data-tid="html-text">
         <Html text={htmlText} />
-      </TestIdWrapper>
+      </div>
     {/if}
   </div>
-  <div class="actions">
+  <div class="actions" data-tid="actions">
     <slot name="actions"></slot>
   </div>
 </article>
