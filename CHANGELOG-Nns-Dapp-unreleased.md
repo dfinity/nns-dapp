@@ -16,6 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Notify for unfinished canister top-ups from the frontend.
+
 #### Deprecated
 
 #### Removed

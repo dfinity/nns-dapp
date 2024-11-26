@@ -1,4 +1,5 @@
 import * as canisterApi from "$lib/api/canisters.api";
+import * as icpIndexApi from "$lib/api/icp-index.api";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
 import CanisterDetail from "$lib/pages/CanisterDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -9,6 +10,7 @@ import {
   mockCanisterDetails,
   mockCanisterId,
 } from "$tests/mocks/canisters.mock";
+import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import { CanisterDetailPo } from "$tests/page-objects/CanisterDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
@@ -227,6 +229,110 @@ describe("CanisterDetail", () => {
         name: newName,
         identity: mockIdentity,
       });
+    });
+  });
+
+  describe("notifyTopUpIfNeeded", () => {
+    const blockHeight = 34n;
+    const topUpMemo = 0x50555054n; // TPUP
+    const topUpTransaction = createTransactionWithId({
+      id: blockHeight,
+      memo: topUpMemo,
+    });
+
+    beforeEach(() => {
+      vi.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
+        {
+          canister_id: canisterId,
+          name: "",
+        },
+      ]);
+    });
+
+    it("should reload the canister after the CMC is notified", async () => {
+      const initialCycles = 1_000_000_000_000n;
+      const cyclesAfterTopUp = 3_000_000_000_000n;
+
+      const mockCanisterDetailsBeforeNotify = {
+        ...mockCanisterDetails,
+        cycles: initialCycles,
+      };
+      const mockCanisterDetailsAfterNotify = {
+        ...mockCanisterDetails,
+        cycles: cyclesAfterTopUp,
+      };
+      let canisterDetails = mockCanisterDetailsBeforeNotify;
+
+      vi.spyOn(canisterApi, "queryCanisterDetails").mockImplementation(
+        async () => {
+          return canisterDetails;
+        }
+      );
+
+      vi.spyOn(icpIndexApi, "getTransactions").mockResolvedValue({
+        balance: 100_000_000n,
+        transactions: [topUpTransaction],
+      });
+      let resolveNotifyTopUpCanister: () => void;
+
+      vi.spyOn(canisterApi, "notifyTopUpCanister").mockImplementation(
+        async () => {
+          return new Promise((resolve) => {
+            resolveNotifyTopUpCanister = () => {
+              canisterDetails = mockCanisterDetailsAfterNotify;
+              resolve(cyclesAfterTopUp - initialCycles);
+            };
+          });
+        }
+      );
+
+      const po = await renderComponent();
+
+      expect(await po.getTitle()).toBe("1.000 T Cycles");
+
+      expect(canisterApi.notifyTopUpCanister).toBeCalledTimes(1);
+
+      resolveNotifyTopUpCanister();
+      await runResolvedPromises();
+
+      expect(await po.getTitle()).toBe("3.000 T Cycles");
+    });
+
+    it("should not reload the canister if the CMC is not notified because the balance is 0", async () => {
+      vi.spyOn(canisterApi, "queryCanisterDetails").mockImplementation(
+        async () => {
+          return mockCanisterDetails;
+        }
+      );
+
+      vi.spyOn(icpIndexApi, "getTransactions").mockResolvedValue({
+        balance: 0n,
+        transactions: [],
+      });
+
+      vi.spyOn(canisterApi, "notifyTopUpCanister").mockResolvedValue(
+        3_000_000_000_000n
+      );
+
+      await renderComponent();
+
+      expect(canisterApi.notifyTopUpCanister).toBeCalledTimes(0);
+    });
+
+    it("should only check once per render if notifying is needed", async () => {
+      vi.spyOn(canisterApi, "queryCanisterDetails").mockImplementation(
+        async () => {
+          return mockCanisterDetails;
+        }
+      );
+      vi.spyOn(icpIndexApi, "getTransactions").mockResolvedValue({
+        balance: 0n,
+        transactions: [],
+      });
+
+      await renderComponent();
+
+      expect(icpIndexApi.getTransactions).toBeCalledTimes(1);
     });
   });
 });
