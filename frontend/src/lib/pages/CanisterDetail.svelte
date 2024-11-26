@@ -8,6 +8,7 @@
   import {
     getCanisterDetails,
     listCanisters,
+    notifyTopUpIfNeeded,
   } from "$lib/services/canisters.services";
   import { canistersStore } from "$lib/stores/canisters.store";
   import { i18n } from "$lib/stores/i18n";
@@ -37,7 +38,7 @@
   import type { CanisterDetailModal } from "$lib/types/canister-detail.modal";
   import { getCanisterFromStore } from "$lib/utils/canisters.utils";
   import { emit } from "$lib/utils/events.utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   // BEGIN: loading and navigation
 
@@ -176,6 +177,20 @@
 
   $: ({ details: canisterDetails, info: canisterInfo } =
     $selectedCanisterStore);
+
+  let notifyChecked = false;
+
+  const notifyIfNeeded = async (canisterId: Principal | undefined) => {
+    if (notifyChecked || isNullish(canisterId)) {
+      return;
+    }
+    notifyChecked = true;
+    if (await notifyTopUpIfNeeded({ canisterId })) {
+      reloadDetails(canisterId);
+    }
+  };
+
+  $: notifyIfNeeded(canisterInfo?.canister_id);
 
   // END: loading and navigation
 
