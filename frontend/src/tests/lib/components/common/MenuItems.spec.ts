@@ -206,8 +206,6 @@ describe("MenuItems", () => {
 
     beforeEach(() => {
       resetIdentity();
-      actionableNnsProposalsStore.reset();
-      actionableSnsProposalsStore.resetForTesting();
     });
 
     it("should display actionable proposal count", async () => {

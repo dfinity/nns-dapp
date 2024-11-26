@@ -3,10 +3,6 @@ import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { get } from "svelte/store";
 
 describe("actionable Nns proposals store", () => {
-  beforeEach(() => {
-    actionableNnsProposalsStore.reset();
-  });
-
   it("should push proposal", () => {
     actionableNnsProposalsStore.setProposals([mockProposalInfo]);
     expect(get(actionableNnsProposalsStore).proposals).toEqual([

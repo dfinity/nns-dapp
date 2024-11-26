@@ -56,7 +56,6 @@ describe("proposals-derived", () => {
     beforeEach(() => {
       proposalsStore.resetForTesting();
       proposalsFiltersStore.reset();
-      actionableNnsProposalsStore.reset();
     });
 
     it("should append isActionable", () => {
