@@ -10,7 +10,7 @@
     neuronStake,
     neuronStakedMaturity,
   } from "$lib/utils/neuron.utils";
-  import { ICPToken, secondsToDuration, TokenAmountV2 } from "@dfinity/utils";
+  import { ICPToken, isNullish, secondsToDuration, TokenAmountV2 } from "@dfinity/utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { NeuronState, type NeuronInfo } from "@dfinity/nns";
   import {
@@ -29,16 +29,16 @@
   import { authStore } from "$lib/stores/auth.store";
 
   const dispatcher = createEventDispatcher<{
-    nnsExportNeuronsCSVTriggered: void;
+    nnsExportNeuronsCsvTriggered: void;
   }>();
 
   let isDisabled = true;
   let neurons: NeuronInfo[] = [];
   $: neurons = $neuronsStore?.neurons ?? [];
   $: nnsAccountPrincipal = $authStore.identity?.getPrincipal().toText() ?? "";
-  $: isDisabled = !neurons.length || !nnsAccountPrincipal;
+  $: isDisabled = neurons.length === 0 || isNullish(nnsAccountPrincipal);
 
-  const neuronToHumanReadableFormat = (neuron: NeuronInfo) => {
+  const nnsNeuronToHumanReadableFormat = (neuron: NeuronInfo) => {
     const controllerId = neuron.fullNeuron?.controller?.toString();
     const neuronId = neuron.neuronId.toString();
     const neuronAccountId = neuron.fullNeuron?.accountIdentifier.toString();
@@ -73,7 +73,7 @@
         seconds: dissolveDelaySeconds,
         i18n: $i18n.time,
       }),
-      dissolveDate: dissolveDate ?? "N/A",
+      dissolveDate: dissolveDate ?? $i18n.core.not_applicable,
       creationDate,
       state: $i18n.neuron_state[getStateInfo(neuron.state).textKey],
     };
@@ -83,7 +83,7 @@
     if (!nnsAccountPrincipal) return;
 
     try {
-      const humanFriendlyContent = neurons.map(neuronToHumanReadableFormat);
+      const humanFriendlyContent = neurons.map(nnsNeuronToHumanReadableFormat);
       const fileName = `neurons_export_${formatDateCompact(new Date())}`;
       const metadataDate = nanoSecondsToDateTime(nowInBigIntNanoSeconds());
 
@@ -168,7 +168,7 @@
         });
       }
     } finally {
-      dispatcher("nnsExportNeuronsCSVTriggered");
+      dispatcher("nnsExportNeuronsCsvTriggered");
     }
   };
 </script>

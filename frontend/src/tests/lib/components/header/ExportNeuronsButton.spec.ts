@@ -36,13 +36,17 @@ describe("ExportNeuronsButton", () => {
     });
   });
 
-  const renderComponent = () => {
+  const renderComponent = ({ onTrigger }: { onTrigger?: () => void } = {}) => {
     const { container, component } = render(ExportNeuronsButton);
 
     const po = ExportNeuronsButtonPo.under({
       element: new JestPageObjectElement(container),
     });
-    return { po, component };
+
+    if (onTrigger) {
+      component.$on("nnsExportNeuronsCsvTriggered", onTrigger);
+    }
+    return { po };
   };
 
   it("should be disabled when there are no neurons", async () => {
@@ -58,19 +62,25 @@ describe("ExportNeuronsButton", () => {
 
   it("should name the file with the date of the export", async () => {
     const { po } = renderComponent();
+
+    expect(generateCsvFileToSave).not.toHaveBeenCalled();
+
     await po.click();
+
     const expectedFileName = `neurons_export_20231014`;
     expect(generateCsvFileToSave).toHaveBeenCalledWith(
       expect.objectContaining({
         fileName: expectedFileName,
       })
     );
+    expect(generateCsvFileToSave).toHaveBeenCalledOnce();
   });
 
   it("should transform neuron data correctly", async () => {
     const { po } = renderComponent();
-    await po.click();
 
+    expect(generateCsvFileToSave).not.toHaveBeenCalled();
+    await po.click();
     expect(generateCsvFileToSave).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.arrayContaining([
@@ -91,20 +101,16 @@ describe("ExportNeuronsButton", () => {
         ]),
       })
     );
+    expect(generateCsvFileToSave).toHaveBeenCalledOnce();
   });
 
-  it("should dispatch event after export", async () => {
-    const { po, component } = renderComponent();
+  it("should dispatch nnsExportNeuronsCsvTriggered event after click to close the menu", async () => {
+    const onTrigger = vi.fn();
+    const { po } = renderComponent({ onTrigger });
 
-    const mockDispatch = vi.fn();
-    component.$on("nnsExportNeuronsCSVTriggered", mockDispatch);
-
+    expect(onTrigger).not.toHaveBeenCalled();
     await po.click();
-
-    expect(mockDispatch).toHaveBeenCalledTimes(1);
-    expect(mockDispatch.mock.calls[0][0].type).toBe(
-      "nnsExportNeuronsCSVTriggered"
-    );
+    expect(onTrigger).toHaveBeenCalledOnce();
   });
 
   it("should show error toast when file system access fails", async () => {
@@ -113,10 +119,13 @@ describe("ExportNeuronsButton", () => {
     );
 
     const { po } = renderComponent();
+
+    expect(toastsError).not.toHaveBeenCalled();
     await po.click();
     expect(toastsError).toHaveBeenCalledWith({
       labelKey: "export_error.file_system_access",
     });
+    expect(toastsError).toHaveBeenCalledOnce();
   });
 
   it("should show error toast when Csv generation fails", async () => {
@@ -125,10 +134,13 @@ describe("ExportNeuronsButton", () => {
     );
 
     const { po } = renderComponent();
+
+    expect(toastsError).not.toHaveBeenCalled();
     await po.click();
     expect(toastsError).toHaveBeenCalledWith({
       labelKey: "export_error.csv_generation",
     });
+    expect(toastsError).toHaveBeenCalledOnce();
   });
 
   it("should show error toast when file saving fails", async () => {
@@ -137,9 +149,12 @@ describe("ExportNeuronsButton", () => {
     );
 
     const { po } = renderComponent();
+
+    expect(toastsError).not.toHaveBeenCalled();
     await po.click();
     expect(toastsError).toHaveBeenCalledWith({
       labelKey: "export_error.neurons",
     });
+    expect(toastsError).toHaveBeenCalledOnce();
   });
 });

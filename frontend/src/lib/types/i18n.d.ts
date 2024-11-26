@@ -37,6 +37,7 @@ interface I18nCore {
   collapse_all: string;
   or: string;
   add: string;
+  not_applicable: string;
 }
 
 interface I18nError {
