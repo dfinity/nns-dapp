@@ -531,7 +531,7 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     );
     expect(await hwPublicNeuronRowPo.isPublic()).toBe(true);
     expect(await hwPublicNeuronRowPo.getUncontrolledNeuronDetailsText()).toBe(
-      "Hardware wallet"
+      "Ledger device"
     );
 
     const hotkeyPublicNeuronRowPo = po.getUncontrollableNeuronVisibilityRowPo(

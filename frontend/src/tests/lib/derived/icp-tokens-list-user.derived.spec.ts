@@ -94,7 +94,7 @@ describe("icp-tokens-list-user.derived", () => {
         token: NNS_TOKEN_DATA,
       }),
       title: mockHardwareWalletAccount.name,
-      subtitle: "Hardware Wallet Controlled",
+      subtitle: "Ledger Device Controlled",
       rowHref: hwHref,
       domKey: hwHref,
       accountIdentifier,

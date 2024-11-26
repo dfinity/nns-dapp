@@ -153,7 +153,7 @@ describe("NnsNeuronPublicVisibilityAction", () => {
 
     expect(await po.getButtonPo().isDisabled()).toBe(true);
     expect(await po.getTooltipPo().getTooltipText()).toBe(
-      "Updating visibility of hardware wallet controlled neurons is not supported at the moment"
+      "Updating visibility of Ledger device controlled neurons is not supported at the moment"
     );
   });
 });
