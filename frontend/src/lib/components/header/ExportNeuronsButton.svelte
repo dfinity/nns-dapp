@@ -10,7 +10,12 @@
     neuronStake,
     neuronStakedMaturity,
   } from "$lib/utils/neuron.utils";
-  import { ICPToken, isNullish, secondsToDuration, TokenAmountV2 } from "@dfinity/utils";
+  import {
+    ICPToken,
+    isNullish,
+    secondsToDuration,
+    TokenAmountV2,
+  } from "@dfinity/utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { NeuronState, type NeuronInfo } from "@dfinity/nns";
   import {
