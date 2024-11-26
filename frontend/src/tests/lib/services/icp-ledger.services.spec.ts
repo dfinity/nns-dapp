@@ -107,7 +107,7 @@ describe("icp-ledger.services", () => {
         expect(get(toastsStore)).toMatchObject([
           {
             level: "error",
-            text: "Sorry, the browser does not support the WebHID API needed to connect the hardware wallet. Check support in https://caniuse.com/?search=WebHID",
+            text: "Sorry, the browser does not support the WebHID API needed to connect the Ledger device. Check support in https://caniuse.com/?search=WebHID",
           },
         ]);
       });
@@ -177,7 +177,7 @@ describe("icp-ledger.services", () => {
         expect(get(toastsStore)).toMatchObject([
           {
             level: "error",
-            text: "No identity connected to your hardware wallet.",
+            text: "No identity connected to your Ledger device.",
           },
         ]);
       });
@@ -339,7 +339,7 @@ describe("icp-ledger.services", () => {
         expect(get(toastsStore)).toMatchObject([
           {
             level: "error",
-            text: "Found unexpected public key. Are you sure you're using the right hardware wallet?",
+            text: "Found unexpected public key. Are you sure you're using the right Ledger device?",
           },
         ]);
       });
@@ -393,7 +393,7 @@ describe("icp-ledger.services", () => {
         expect(get(toastsStore)).toMatchObject([
           {
             level: "error",
-            text: "Please open the Internet Computer app on your hardware wallet and try again.",
+            text: "Please open the Internet Computer app on your Ledger device and try again.",
           },
         ]);
 

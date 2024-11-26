@@ -1428,7 +1428,7 @@ describe("neuron-utils", () => {
     };
 
     const hotkeyTag = { text: "Hotkey control" } as NeuronTagData;
-    const hwTag = { text: "Hardware Wallet Controlled" } as NeuronTagData;
+    const hwTag = { text: "Ledger Device Controlled" } as NeuronTagData;
     const nfTag = { text: "Neurons' fund" } as NeuronTagData;
     const seedTag = {
       text: "Seed",
@@ -1474,7 +1474,7 @@ describe("neuron-utils", () => {
       ).toEqual([hotkeyTag]);
     });
 
-    it("returns 'Hardware Wallet Controlled' if neuron is controllable by hotkey and hardware wallet is the controller", () => {
+    it("returns 'Ledger Device Controlled' if neuron is controllable by hotkey and hardware wallet is the controller", () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
@@ -3157,7 +3157,7 @@ describe("neuron-utils", () => {
       });
       expect(result.uncontrolledNeuronDetails).toEqual({
         type: "hardwareWallet",
-        text: "Hardware wallet",
+        text: "Ledger device",
       });
     });
 
@@ -3250,7 +3250,7 @@ describe("neuron-utils", () => {
       expect(result.stake).toBeUndefined();
       expect(result.uncontrolledNeuronDetails).toEqual({
         type: "hardwareWallet",
-        text: "Hardware wallet",
+        text: "Ledger device",
       });
     });
 
