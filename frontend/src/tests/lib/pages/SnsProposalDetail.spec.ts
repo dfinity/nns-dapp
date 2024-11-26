@@ -73,7 +73,6 @@ describe("SnsProposalDetail", () => {
     resetIdentity();
     page.reset();
     resetSnsProjects();
-    actionableSnsProposalsStore.resetForTesting();
     actionableProposalsSegmentStore.resetForTesting();
     snsProposalsStore.reset();
   });

@@ -60,8 +60,6 @@ describe("ActionableProposals", () => {
   beforeEach(() => {
     resetIdentity();
     resetSnsProjects();
-    actionableNnsProposalsStore.reset();
-    actionableSnsProposalsStore.resetForTesting();
 
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT },

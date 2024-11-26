@@ -29,9 +29,6 @@ describe("SelectUniverseNav", () => {
 
   beforeEach(() => {
     resetSnsProjects();
-    actionableNnsProposalsStore.reset();
-    actionableSnsProposalsStore.resetForTesting();
-
     resetIdentity();
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT },

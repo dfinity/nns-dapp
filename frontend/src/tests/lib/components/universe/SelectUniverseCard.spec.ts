@@ -41,8 +41,6 @@ describe("SelectUniverseCard", () => {
   };
 
   beforeEach(() => {
-    actionableNnsProposalsStore.reset();
-    actionableSnsProposalsStore.resetForTesting();
     resetAccountsForTesting();
     resetIdentity();
   });
@@ -165,7 +163,6 @@ describe("SelectUniverseCard", () => {
     describe("when signed in", () => {
       beforeEach(() => {
         resetIdentity();
-        actionableSnsProposalsStore.resetForTesting();
       });
 
       it("should display balance if selected", async () => {

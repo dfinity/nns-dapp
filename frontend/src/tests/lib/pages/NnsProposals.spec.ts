@@ -51,7 +51,6 @@ describe("NnsProposals", () => {
     proposalsStore.resetForTesting();
     resetNeuronsApiService();
     proposalsFiltersStore.reset();
-    actionableNnsProposalsStore.reset();
     actionableProposalsSegmentStore.resetForTesting();
 
     resetIdentity();
