@@ -165,7 +165,9 @@ describe("AccountMenu", () => {
         await accountMenuPo.getExportNeuronsButtonPo().click();
 
         await vi.waitFor(async () => {
-          expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(false);
+          expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(
+            false
+          );
         });
       });
     });
