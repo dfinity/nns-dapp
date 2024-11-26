@@ -878,7 +878,7 @@
     "no_name": "No account name provided.",
     "no_identity": "No identity connected to your Ledger device.",
     "already_registered": "The Ledger device is already registered with another account.",
-    "limit_exceeded": "The limit of Ledger device that can be attached has been reached.",
+    "limit_exceeded": "The maximum number of Ledger devices that can be attached has been reached.",
     "register_hardware_wallet": "Error registering Ledger device",
     "create_hardware_wallet_too_long": "The name $accountName is too long (max. 24 characters). Please, choose a shorter name."
   },
