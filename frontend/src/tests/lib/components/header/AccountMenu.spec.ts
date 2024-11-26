@@ -125,24 +125,48 @@ describe("AccountMenu", () => {
 
       expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(false);
     });
+
     describe("export feature flag", () => {
+      beforeEach(() => {
+        vi.spyOn(console, "error").mockImplementation(() => {});
+      });
+
       it("should not show the Export Neurons Report button if feature flag is off(by default)", async () => {
-        const renderResult = render(AccountMenu);
+        const { accountMenuPo } = renderComponent();
 
-        await show(renderResult);
+        await accountMenuPo.openMenu();
 
-        expect(renderResult.queryByTestId("export-neurons-button")).toBeNull();
+        expect(await accountMenuPo.getExportNeuronsButtonPo().isPresent()).toBe(
+          false
+        );
       });
 
       it("should show the Export Neurons Report button if feature flag is on", async () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", true);
-        const renderResult = render(AccountMenu);
+        const { accountMenuPo } = renderComponent();
 
-        await show(renderResult);
+        await accountMenuPo.openMenu();
 
-        expect(
-          renderResult.getByTestId("export-neurons-button-component")
-        ).not.toBeNull();
+        expect(await accountMenuPo.getExportNeuronsButtonPo().isPresent()).toBe(
+          true
+        );
+      });
+
+      it("should close the menu once the Export Neurons Report button is clicked", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", true);
+        const { accountMenuPo } = renderComponent();
+
+        await accountMenuPo.openMenu();
+
+        expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(
+          true
+        );
+
+        await accountMenuPo.getExportNeuronsButtonPo().click();
+
+        expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(
+          false
+        );
       });
     });
   });
