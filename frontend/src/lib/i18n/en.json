@@ -199,7 +199,7 @@
     "new_linked_subtitle": "Create a new account controlled by your Internet Identity",
     "attach_hardware_title": "New Account (Ledger device)",
     "attach_hardware_subtitle": "Create a new account controlled by your Ledger device",
-    "attach_hardware_name_placeholder": "Ledger device Name",
+    "attach_hardware_name_placeholder": "Ledger Device Name",
     "attach_hardware_enter_name": "Enter Wallet Name",
     "attach_hardware_description": "Create a new account controlled by your connected Ledger device.",
     "attach_hardware_show_neurons": "Show Neurons",
