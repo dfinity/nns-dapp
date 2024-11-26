@@ -247,6 +247,19 @@ impl State {
         Ok(())
     }
 
+    pub fn get_cached_sns(root_canister_id: CanisterId) -> Option<UpstreamData> {
+        STATE.with(|state| {
+            state
+                .stable
+                .borrow()
+                .sns_cache
+                .borrow_mut()
+                .upstream_data
+                .get(&root_canister_id)
+                .cloned()
+        })
+    }
+
     /// Creates a page of "slow data".
     ///
     /// This shall be used for the the "latest" and paginated responses, so that the response is consistent.
