@@ -42,7 +42,7 @@
         <LinkToCanisters on:nnsLink={closeMenu} />
 
         {#if $ENABLE_EXPORT_NEURONS_REPORT}
-          <ExportNeuronsButton on:nnsExportNeuronsCSVTriggered={toggle} />
+          <ExportNeuronsButton on:nnsExportNeuronsCsvTriggered={toggle} />
         {/if}
 
         <Logout on:nnsLogoutTriggered={toggle} />
