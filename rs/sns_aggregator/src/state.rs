@@ -253,7 +253,7 @@ impl State {
                 .stable
                 .borrow()
                 .sns_cache
-                .borrow_mut()
+                .borrow()
                 .upstream_data
                 .get(&root_canister_id)
                 .cloned()
