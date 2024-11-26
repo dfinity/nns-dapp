@@ -6,9 +6,9 @@
   export let testId: string = "banner-component";
 
   /** Dispatches `nnsClose` event */
-  export let isClosable: boolean = false;
+  export let isClosable = false;
   /** Displayed in a high-contrast */
-  export let isCritical: boolean = false;
+  export let isCritical = false;
 
   export let title: string | undefined = undefined;
   export let text: string | undefined = undefined;

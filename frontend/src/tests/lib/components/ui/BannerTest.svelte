@@ -8,6 +8,7 @@
   export let title: string | undefined = undefined;
   export let text: string | undefined = undefined;
   export let htmlText: string | undefined = undefined;
+  export let testAction: string | undefined = undefined;
 </script>
 
 <Banner {isClosable} {isCritical} {title} {text} {htmlText} on:nnsClose>
@@ -15,6 +16,6 @@
     <IconErrorOutline />
   </BannerIcon>
   <div slot="actions">
-    <button>test-action</button>
+    {testAction}
   </div>
 </Banner>

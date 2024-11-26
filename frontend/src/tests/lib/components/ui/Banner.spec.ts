@@ -48,9 +48,14 @@ describe("Banner", () => {
   });
 
   it("should display actions slot content", async () => {
-    const po = renderComponent();
+    const testAction = "test-action";
+    const po = renderComponent({
+      props: {
+        testAction,
+      },
+    });
 
-    expect(await po.getActions().getText()).toContain("test-action");
+    expect(await po.getActions().getText()).toContain(testAction);
   });
 
   it("should not have close button by default", async () => {
