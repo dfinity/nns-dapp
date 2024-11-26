@@ -97,11 +97,10 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
     let governance_canister_id = convert_canister_id!(&sns_canister_ids.governance_canister_id);
     let ledger_canister_id = convert_canister_id!(&sns_canister_ids.ledger_canister_id);
 
-    crate::state::log(format!("Getting SNS index {index}... list_sns_canisters"));
-
     // Default to existing data when some new data for an SNS can't be loaded.
     let existing_data = State::get_cached_sns(root_canister_id).unwrap_or_default();
 
+    crate::state::log(format!("Getting SNS index {index}... list_sns_canisters"));
     let list_sns_canisters: types::ListSnsCanistersResponse =
         ic_cdk::api::call::call(root_canister_id, "list_sns_canisters", (types::EmptyRecord {},))
             .await
