@@ -623,7 +623,7 @@ describe("canisters-services", () => {
     it("should notify if there is a non-zero balance from an unburned top-up", async () => {
       const blockHeight = 34n;
       const memo = 0x50555054n; // TPUP
-      const topupTransaction = createTransactionWithId({
+      const topUpTransaction = createTransactionWithId({
         id: blockHeight,
         memo,
       });
@@ -631,7 +631,7 @@ describe("canisters-services", () => {
       const spyGetTransactions = vi.spyOn(icpIndexApi, "getTransactions");
       spyGetTransactions.mockResolvedValue({
         balance: 100_000_000n,
-        transactions: [topupTransaction],
+        transactions: [topUpTransaction],
       });
 
       const result = await notifyTopUpIfNeeded({
@@ -673,10 +673,10 @@ describe("canisters-services", () => {
       expect(spyNotifyTopUpCanister).toBeCalledTimes(0);
     });
 
-    it("should not notify if there is a non-zero balance from a non-topup transaction", async () => {
+    it("should not notify if there is a non-zero balance from a non-top-up transaction", async () => {
       const blockHeight = 34n;
       const memo = 0n;
-      const nonTopupTransaction = createTransactionWithId({
+      const nonTopUpTransaction = createTransactionWithId({
         id: blockHeight,
         memo,
       });
@@ -687,7 +687,7 @@ describe("canisters-services", () => {
       const spyGetTransactions = vi.spyOn(icpIndexApi, "getTransactions");
       spyGetTransactions.mockResolvedValue({
         balance,
-        transactions: [nonTopupTransaction],
+        transactions: [nonTopUpTransaction],
       });
 
       const result = await notifyTopUpIfNeeded({
@@ -705,7 +705,7 @@ describe("canisters-services", () => {
           balance,
           canisterId: canisterId.toText(),
           cmcAccountIdentifierHex,
-          transaction: nonTopupTransaction,
+          transaction: nonTopUpTransaction,
         }
       );
     });
@@ -713,7 +713,7 @@ describe("canisters-services", () => {
     it("should ignore errors on notifying", async () => {
       const blockHeight = 34n;
       const memo = 0x50555054n; // TPUP
-      const topupTransaction = createTransactionWithId({
+      const topUpTransaction = createTransactionWithId({
         id: blockHeight,
         memo,
       });
@@ -723,7 +723,7 @@ describe("canisters-services", () => {
       const spyGetTransactions = vi.spyOn(icpIndexApi, "getTransactions");
       spyGetTransactions.mockResolvedValue({
         balance: 100_000_000n,
-        transactions: [topupTransaction],
+        transactions: [topUpTransaction],
       });
 
       const error = new Error("Notify in progress");

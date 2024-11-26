@@ -181,9 +181,9 @@ export const topUpCanister = async ({
   }
 };
 
-// Returns the blockheight of the transaction, if it was a canister topup, or
+// Returns the blockheight of the transaction, if it was a canister top-up, or
 // undefined otherwise.
-const getBlockHeightFromCanisterTopup = ({
+const getBlockHeightFromCanisterTopUp = ({
   id: blockHeight,
   transaction: { memo, operation },
 }: TransactionWithId): bigint | undefined => {
@@ -219,7 +219,7 @@ export const notifyTopUpIfNeeded = async ({
     return false;
   }
 
-  const blockHeight = getBlockHeightFromCanisterTopup(transaction);
+  const blockHeight = getBlockHeightFromCanisterTopUp(transaction);
 
   if (isNullish(blockHeight)) {
     // This should be very rare but it might be useful to know if it happens.
