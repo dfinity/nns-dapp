@@ -1,68 +1,34 @@
 import { getTransactions } from "$lib/api/icp-index.api";
 import { getCurrentIdentity } from "$lib/services/auth.services";
-import type { Account } from "$lib/types/account";
+import { AnonymousIdentity } from "@dfinity/agent";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
 import { isNullish } from "@dfinity/utils";
 
-export const getTransactionsInPeriodForAllAccounts = async ({
-  accounts,
-}: {
-  accounts: Account[];
-}) => {
-  console.time("getTransactionsInPeriodForAllAccounts");
-  const accountPromises = accounts.map((account) =>
-    getAllTransactions({
-      accountId: account.identifier,
-    }).then((transactions) => ({
-      account: {
-        identifier: account.identifier,
-        balanceUlps: account.balanceUlps,
-        name: account.name,
-      },
-      transactions,
-    }))
-  );
-
-  const results = await Promise.allSettled(accountPromises);
-
-  const accountsAndTransactions = results.map((result, index) => {
-    if (result.status === "fulfilled") return result.value;
-    else {
-      // Handle rejected promise
-      console.error(
-        `Error loading transactions for account ${accounts[index].identifier}:`,
-        result.reason
-      );
-      return {
-        account: {
-          identifier: accounts[index].identifier,
-          balanceUlps: accounts[index].balanceUlps,
-          name: accounts[index].name,
-        },
-        // should I differentiate between error and empty transactions?
-        transactions: [],
-      };
-    }
-  });
-
-  console.log(accountsAndTransactions);
-  console.timeEnd("getTransactionsInPeriodForAllAccounts");
-  return accountsAndTransactions;
-};
-
-const getAllTransactions = async ({
+export const getAllTransactions = async ({
   accountId,
-  start = undefined, // Add start parameter with default value
-  allTransactions = [], // Add accumulator for all transactions
+  start = undefined,
+  allTransactions = [],
+  currentIteration = 1,
+  maxIterations = 10,
 }: {
   accountId: string;
   start?: bigint;
   allTransactions?: TransactionWithId[];
+  maxIterations?: number;
+  currentIteration?: number;
 }): Promise<TransactionWithId[] | undefined> => {
+  const identity = getCurrentIdentity();
+  if (identity instanceof AnonymousIdentity) return;
+
+  const maxResults = 100n;
+
   try {
-    const maxResults = 100n;
-    const identity = getCurrentIdentity();
-    if (!identity) return;
+    if (currentIteration > maxIterations) {
+      console.warn(
+        `Reached maximum limit of iterations(${maxIterations}). Stopping.`
+      );
+      return allTransactions;
+    }
 
     const { transactions, oldestTxId } = await getTransactions({
       accountIdentifier: accountId,
@@ -72,7 +38,6 @@ const getAllTransactions = async ({
     });
 
     const updatedTransactions = [...allTransactions, ...transactions];
-
     const completed =
       isNullish(oldestTxId) || transactions.some(({ id }) => id === oldestTxId);
     if (!completed) {
@@ -81,6 +46,8 @@ const getAllTransactions = async ({
         accountId,
         start: lastTx.id,
         allTransactions: updatedTransactions,
+        maxIterations,
+        currentIteration: currentIteration + 1,
       });
     }
 
