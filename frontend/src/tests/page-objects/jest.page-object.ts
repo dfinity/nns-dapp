@@ -71,10 +71,6 @@ export class JestPageObjectElement implements PageObjectElement {
     // return this.querySelectorCount({ selector: `[data-tid=${tid}]`, count });
   }
 
-  private isInputElement(element: Element): element is HTMLInputElement {
-    return element.tagName === "INPUT";
-  }
-
   async getValue() {
     const element = this.getElement();
     if ("value" in element) {
