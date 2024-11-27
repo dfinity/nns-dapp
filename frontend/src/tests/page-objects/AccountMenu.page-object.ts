@@ -13,8 +13,7 @@ export class AccountMenuPo extends BasePageObject {
   }
 
   isOpen(): Promise<boolean> {
-    const popover = this.root.querySelector('[role="menu"]');
-    return popover.isPresent();
+    return this.isPresent("popover-component");
   }
 
   openMenu(): Promise<void> {
