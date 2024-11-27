@@ -2,8 +2,7 @@ use crate::canisters::cmc;
 use crate::ledger_sync;
 use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use crate::state::with_state_mut;
-use crate::Cycles;
-use cycles_minting_canister::{NotifyCreateCanister, NotifyError, NotifyTopUp};
+use cycles_minting_canister::{NotifyCreateCanister, NotifyError};
 use dfn_core::api::{CanisterId, PrincipalId};
 use icp_ledger::BlockIndex;
 
@@ -28,9 +27,10 @@ pub async fn run_periodic_tasks() {
             MultiPartTransactionToBeProcessed::CreateCanisterV2(controller) => {
                 handle_create_canister_v2(block_height, controller).await;
             }
-            MultiPartTransactionToBeProcessed::TopUpCanisterV2(principal, canister_id) => {
-                handle_top_up_canister_v2(block_height, principal, canister_id).await;
-            }
+            // TODO: Remove TopUpCanisterV2 after a version has been released
+            //       that does not add TopUpCanisterV2 to the multi-part
+            //       transaction queue anymore.
+            MultiPartTransactionToBeProcessed::TopUpCanisterV2(_principal, _canister_id) => {}
         }
     }
 }
@@ -53,22 +53,6 @@ async fn handle_create_canister_v2(block_height: BlockIndex, controller: Princip
     }
 }
 
-async fn handle_top_up_canister_v2(block_height: BlockIndex, principal: PrincipalId, canister_id: CanisterId) {
-    match top_up_canister_v2(block_height, canister_id).await {
-        Ok(Ok(_)) => (),
-        Ok(Err(NotifyError::Processing)) => {
-            with_state_mut(|s| {
-                s.accounts_store.enqueue_multi_part_transaction(
-                    block_height,
-                    MultiPartTransactionToBeProcessed::CreateCanisterV2(principal),
-                );
-            });
-        }
-        Ok(Err(_error)) => (),
-        Err(_error) => (),
-    }
-}
-
 async fn create_canister_v2(
     block_index: BlockIndex,
     controller: PrincipalId,
@@ -83,16 +67,4 @@ async fn create_canister_v2(
     };
 
     cmc::notify_create_canister(notify_request).await
-}
-
-async fn top_up_canister_v2(
-    block_index: BlockIndex,
-    canister_id: CanisterId,
-) -> Result<Result<Cycles, NotifyError>, String> {
-    let notify_request = NotifyTopUp {
-        block_index,
-        canister_id,
-    };
-
-    cmc::notify_top_up_canister(notify_request).await
 }

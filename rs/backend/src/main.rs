@@ -43,8 +43,6 @@ mod time;
 mod timer;
 mod tvl;
 
-type Cycles = u128;
-
 #[init]
 fn init(args: Option<CanisterArguments>) {
     println!("START init with args: {args:#?}");

@@ -215,8 +215,6 @@ jobs:
         run: |
           # libarchive-zip-perl is needed for crc32, used by test-cmc-notify.
           sudo apt-get update -yy && sudo apt-get install -yy libarchive-zip-perl
-      - name: Test CMC notify fallback mechanism
-        run: scripts/nns-dapp/test-cmc-notify
       - name: Verify that arguments are set in index.html
         run: |
           for ((i=5; i>0; i--)); do

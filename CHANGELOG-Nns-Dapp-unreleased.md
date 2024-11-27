@@ -16,7 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* Notify for unfinished canister top-ups from the frontend.
+* Notify for unfinished canister top-ups from the frontend instead of the backend.
 * Reword "Hardware Wallet" to "Ledger device" in the UI.
 
 #### Deprecated

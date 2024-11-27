@@ -16,6 +16,9 @@ pub enum MultiPartTransactionToBeProcessed {
     //       add StakeNeuron to the multi-part transaction queue anymore.
     StakeNeuron(PrincipalId, Memo),
     CreateCanisterV2(PrincipalId),
+    // TODO: Remove TopUpCanisterV2 after a version has been released that does
+    //       not add TopUpCanisterV2 to the multi-part transaction queue
+    //       anymore.
     TopUpCanisterV2(PrincipalId, CanisterId),
     // ParticipateSwap(buyer_id, from, to, swap_canister_id)
     ParticipateSwap(PrincipalId, AccountIdentifier, AccountIdentifier, CanisterId),
