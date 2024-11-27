@@ -1,4 +1,5 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { ExportNeuronsButtonPo } from "$tests/page-objects/ExportNeuronsButton.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { AccountDetailsPo } from "./AccountDetails.page-object";
@@ -31,28 +32,28 @@ export class AccountMenuPo extends BasePageObject {
     });
   }
 
-  getSignInButtonPo(): LinkPo {
-    return LinkPo.under({
+  getSignInButtonPo(): ButtonPo {
+    return ButtonPo.under({
       element: this.root,
       testId: "toolbar-login",
     });
   }
 
-  getSignOutButtonPo(): LinkPo {
-    return LinkPo.under({
+  getSignOutButtonPo(): ButtonPo {
+    return ButtonPo.under({
       element: this.root,
       testId: "logout",
     });
   }
 
-  getSettingsButtonPo(): LinkPo {
-    return LinkPo.under({
+  getSettingsButtonPo(): ButtonPo {
+    return ButtonPo.under({
       element: this.root,
       testId: "settings",
     });
   }
 
-  getManangeIIButtonPo(): LinkPo {
+  getManangeIILinkPo(): LinkPo {
     return LinkPo.under({
       element: this.root,
       testId: "manage-ii-link",
