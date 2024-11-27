@@ -1,5 +1,5 @@
 //! User accounts and transactions.
-use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
+use crate::constants::MEMO_CREATE_CANISTER;
 use crate::multi_part_transactions_processor::{MultiPartTransactionToBeProcessed, MultiPartTransactionsProcessor};
 use crate::state::StableState;
 use crate::stats::Stats;
@@ -246,7 +246,6 @@ pub enum TransactionType {
     TransferFrom,
     StakeNeuronNotification,
     CreateCanister,
-    TopUpCanister(CanisterId),
     ParticipateSwap(CanisterId),
 }
 
@@ -581,16 +580,8 @@ impl AccountsStore {
                 if self.store_has_account(to) {
                 } else if self.store_has_account(from) {
                     if let Some(principal) = self.try_get_principal(&from) {
-                        let canister_ids: Vec<CanisterId> =
-                            self.get_canisters(principal).iter().map(|c| c.canister_id).collect();
-                        let transaction_type = Self::get_transaction_type(
-                            from,
-                            to,
-                            memo,
-                            &principal,
-                            &canister_ids,
-                            default_transaction_type,
-                        );
+                        let transaction_type =
+                            Self::get_transaction_type(from, to, memo, &principal, default_transaction_type);
                         self.process_transaction_type(transaction_type, principal, from, to, block_height);
                     }
                 }
@@ -899,7 +890,6 @@ impl AccountsStore {
         to: AccountIdentifier,
         memo: Memo,
         principal: &PrincipalId,
-        canister_ids: &[CanisterId],
         default_transaction_type: TransactionType,
     ) -> TransactionType {
         // In case of the edge case that it's a transaction to itself
@@ -909,8 +899,6 @@ impl AccountsStore {
         } else if memo.0 > 0 {
             if Self::is_create_canister_transaction(memo, &to, principal) {
                 TransactionType::CreateCanister
-            } else if let Some(canister_id) = Self::is_topup_canister_transaction(memo, &to, canister_ids) {
-                TransactionType::TopUpCanister(canister_id)
             } else {
                 default_transaction_type
             }
@@ -931,26 +919,6 @@ impl AccountsStore {
             }
         }
         false
-    }
-
-    fn is_topup_canister_transaction(
-        memo: Memo,
-        to: &AccountIdentifier,
-        canister_ids: &[CanisterId],
-    ) -> Option<CanisterId> {
-        // Topping up a canister involves sending ICP directly to an account controlled by the CMC, the NNS
-        // Dapp canister then notifies the CMC of the transfer.
-        if memo == MEMO_TOP_UP_CANISTER {
-            for canister_id in canister_ids {
-                let subaccount = (&canister_id.get()).into();
-                // Check if sent to CMC account for this canister
-                let expected_to = AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some(subaccount));
-                if *to == expected_to {
-                    return Some(*canister_id);
-                }
-            }
-        }
-        None
     }
 
     /// Certain transaction types require additional processing (Stake Neuron, Create Canister,
@@ -977,12 +945,6 @@ impl AccountsStore {
                 self.multi_part_transactions_processor.push(
                     block_height,
                     MultiPartTransactionToBeProcessed::CreateCanisterV2(principal),
-                );
-            }
-            TransactionType::TopUpCanister(canister_id) => {
-                self.multi_part_transactions_processor.push(
-                    block_height,
-                    MultiPartTransactionToBeProcessed::TopUpCanisterV2(principal, canister_id),
                 );
             }
             _ => {}
