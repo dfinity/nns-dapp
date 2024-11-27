@@ -1,7 +1,6 @@
 <script lang="ts">
   import { Html, IconClose } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let testId: string = "banner-component";
 
