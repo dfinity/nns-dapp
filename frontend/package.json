@@ -87,6 +87,7 @@
     "buffer": "^6.0.3"
   },
   "overrides": {
-    "semver": "^7.5.3"
+    "semver": "^7.5.3",
+    "cookie": "^0.7.0"
   }
 }
