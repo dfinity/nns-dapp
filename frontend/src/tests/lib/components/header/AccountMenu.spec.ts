@@ -8,14 +8,9 @@ import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { AccountMenuPo } from "$tests/page-objects/AccountMenu.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 
 describe("AccountMenu", () => {
-  const show = async ({ container, getByRole }) => {
-    await fireEvent.click(container.querySelector("button.toggle"));
-    await waitFor(() => expect(getByRole("menu")).not.toBeNull());
-  };
-
   const renderComponent = () => {
     const { container } = render(AccountMenu);
 
@@ -29,16 +24,16 @@ describe("AccountMenu", () => {
     return { accountMenuPo, canistersLinkPo };
   };
 
-  it("should be closed by default", () => {
-    const { getByRole } = render(AccountMenu);
-    expect(() => getByRole("menu")).toThrow();
+  it("should be closed by default", async () => {
+    const { accountMenuPo } = renderComponent();
+    expect(await accountMenuPo.isOpen()).toBe(false);
   });
 
-  it("should display a sign-in button if not signed in", () => {
+  it("should display a sign-in button if not signed in", async () => {
     setNoIdentity();
-    const { getByTestId } = render(AccountMenu);
+    const { accountMenuPo } = renderComponent();
 
-    expect(getByTestId("toolbar-login")).not.toBeNull();
+    expect(await accountMenuPo.getSignInButtonPo().isPresent()).toBe(true);
   });
 
   describe("signed in", () => {
@@ -48,33 +43,31 @@ describe("AccountMenu", () => {
     });
 
     it("should be open", async () => {
-      const renderResult = render(AccountMenu);
-
-      await show(renderResult);
+      // const renderResult = render(AccountMenu);
+      const { accountMenuPo } = renderComponent();
+      await accountMenuPo.openMenu();
+      expect(await accountMenuPo.isOpen()).toBe(true);
     });
 
     it("should display logout button", async () => {
-      const renderResult = render(AccountMenu);
+      const { accountMenuPo } = renderComponent();
+      await accountMenuPo.openMenu();
 
-      await show(renderResult);
-
-      expect(renderResult.getByTestId("logout")).not.toBeNull();
+      expect(await accountMenuPo.getSignOutButtonPo().isPresent()).toBe(true);
     });
 
     it("should display settings button", async () => {
-      const renderResult = render(AccountMenu);
+      const { accountMenuPo } = renderComponent();
+      await accountMenuPo.openMenu();
 
-      await show(renderResult);
-
-      expect(renderResult.getByTestId("settings")).not.toBeNull();
+      expect(await accountMenuPo.getSettingsButtonPo().isPresent()).toBe(true);
     });
 
     it('should display "Manage ii" button', async () => {
-      const renderResult = render(AccountMenu);
+      const { accountMenuPo } = renderComponent();
+      await accountMenuPo.openMenu();
 
-      await show(renderResult);
-
-      expect(renderResult.getByTestId("manage-ii-link")).not.toBeNull();
+      expect(await accountMenuPo.getManangeIIButtonPo().isPresent()).toBe(true);
     });
 
     it('should display "Canisters" button', async () => {
@@ -86,16 +79,13 @@ describe("AccountMenu", () => {
     });
 
     it("should close popover on click on settings", async () => {
-      const renderResult = render(AccountMenu);
+      const { accountMenuPo } = renderComponent();
+      await accountMenuPo.openMenu();
 
-      await show(renderResult);
+      await accountMenuPo.getSettingsButtonPo().click();
 
-      const settings = renderResult.getByTestId("settings");
-
-      settings !== null && fireEvent.click(settings);
-
-      await waitFor(() =>
-        expect(() => renderResult.getByRole("menu")).toThrow()
+      await waitFor(async () =>
+        expect(await accountMenuPo.isOpen()).toBe(false)
       );
     });
 
@@ -164,10 +154,8 @@ describe("AccountMenu", () => {
 
         await accountMenuPo.getExportNeuronsButtonPo().click();
 
-        await vi.waitFor(async () => {
-          expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(
-            false
-          );
+        await waitFor(async () => {
+          expect(await accountMenuPo.isOpen()).toBe(false);
         });
       });
     });

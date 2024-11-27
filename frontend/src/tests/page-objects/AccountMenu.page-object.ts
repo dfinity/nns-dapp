@@ -11,6 +11,11 @@ export class AccountMenuPo extends BasePageObject {
     return new AccountMenuPo(element.byTestId(AccountMenuPo.TID));
   }
 
+  isOpen(): Promise<boolean> {
+    const popover = this.root.querySelector('[role="menu"]');
+    return popover.isPresent();
+  }
+
   openMenu(): Promise<void> {
     return this.click("account-menu");
   }
@@ -23,6 +28,34 @@ export class AccountMenuPo extends BasePageObject {
     return LinkPo.under({
       element: this.root,
       testId: "canisters-button",
+    });
+  }
+
+  getSignInButtonPo(): LinkPo {
+    return LinkPo.under({
+      element: this.root,
+      testId: "toolbar-login",
+    });
+  }
+
+  getSignOutButtonPo(): LinkPo {
+    return LinkPo.under({
+      element: this.root,
+      testId: "logout",
+    });
+  }
+
+  getSettingsButtonPo(): LinkPo {
+    return LinkPo.under({
+      element: this.root,
+      testId: "settings",
+    });
+  }
+
+  getManangeIIButtonPo(): LinkPo {
+    return LinkPo.under({
+      element: this.root,
+      testId: "manage-ii-link",
     });
   }
 
