@@ -43,7 +43,6 @@ describe("AccountMenu", () => {
     });
 
     it("should be open", async () => {
-      // const renderResult = render(AccountMenu);
       const { accountMenuPo } = renderComponent();
       await accountMenuPo.openMenu();
       expect(await accountMenuPo.isOpen()).toBe(true);
@@ -67,7 +66,7 @@ describe("AccountMenu", () => {
       const { accountMenuPo } = renderComponent();
       await accountMenuPo.openMenu();
 
-      expect(await accountMenuPo.getManangeIIButtonPo().isPresent()).toBe(true);
+      expect(await accountMenuPo.getManangeIILinkPo().isPresent()).toBe(true);
     });
 
     it('should display "Canisters" button', async () => {
