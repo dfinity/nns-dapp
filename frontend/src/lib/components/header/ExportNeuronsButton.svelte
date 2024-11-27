@@ -32,6 +32,9 @@
     secondsToDate,
   } from "$lib/utils/date.utils";
   import { authStore } from "$lib/stores/auth.store";
+  import { getTransactionsInPeriodForAllAccounts } from "$lib/services/transactions.services";
+  import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
+    import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 
   const dispatcher = createEventDispatcher<{
     nnsExportNeuronsCsvTriggered: void;
@@ -83,6 +86,25 @@
       state: $i18n.neuron_state[getStateInfo(neuron.state).textKey],
     };
   };
+
+  const nnsAccounts = Object.values($nnsAccountsListStore).flat();
+  console.log(nnsAccounts);
+  getTransactionsInPeriodForAllAccounts({ accounts: nnsAccounts });
+  // getTransactionsInPeriod({
+  //   accountId:
+  //     "138cd631841da0cbc0e71ef938df86c594d7d95b4ca7a04a3c6d77a568efd3ef",
+  // });
+
+  // getTransactionsInPeriod({
+  //   accountId:
+  //     "7b0190bba905021c24bf205441d41a92d13d41d50f5d8840f7a16b41bdda3995",
+  // });
+
+  // console.log("neuron");
+  // getTransactionsInPeriod({
+  //   accountId:
+  //     "c1dd31eef212a65479cfacb376ff040171284927859bd9c5046051c406a8b331",
+  // });
 
   const exportNeurons = async () => {
     if (!nnsAccountPrincipal) return;
