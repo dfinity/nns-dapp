@@ -59,7 +59,7 @@ describe("AccountMenu", () => {
       const { accountMenuPo } = renderComponent();
       await accountMenuPo.openMenu();
 
-      expect(await accountMenuPo.getSettingsButtonPo().isPresent()).toBe(true);
+      expect(await accountMenuPo.getLinkToSettingsPo().isPresent()).toBe(true);
     });
 
     it('should display "Manage ii" button', async () => {
@@ -81,11 +81,12 @@ describe("AccountMenu", () => {
       const { accountMenuPo } = renderComponent();
       await accountMenuPo.openMenu();
 
-      await accountMenuPo.getSettingsButtonPo().click();
+      await accountMenuPo.getLinkToSettingsPo().click();
 
-      await waitFor(async () =>
-        expect(await accountMenuPo.isOpen()).toBe(false)
-      );
+      //wait for goto to be triggered
+      await runResolvedPromises();
+
+      expect(await accountMenuPo.isOpen()).toBe(false);
     });
 
     it("should render account details component", async () => {
@@ -112,7 +113,7 @@ describe("AccountMenu", () => {
       //wait for goto to be triggered
       await runResolvedPromises();
 
-      expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(false);
+      expect(await accountMenuPo.isOpen()).toBe(false);
     });
 
     describe("export feature flag", () => {
