@@ -32,7 +32,6 @@
     secondsToDate,
   } from "$lib/utils/date.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 
   const dispatcher = createEventDispatcher<{
     nnsExportNeuronsCsvTriggered: void;
