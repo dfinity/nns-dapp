@@ -170,7 +170,7 @@ export const loadOpenTicket = async ({
   maxAttempts?: number;
 }): Promise<void> => {
   try {
-    const identity = await getCurrentIdentity();
+    const identity = getCurrentIdentity();
     const ticket = await pollGetOpenTicket({
       identity,
       swapCanisterId,
@@ -349,7 +349,7 @@ export const loadNewSaleTicket = async ({
 }): Promise<void> => {
   logWithTimestamp("[sale]newSaleTicket:", amount_icp_e8s, Boolean(subaccount));
   try {
-    const identity = await getCurrentIdentity();
+    const identity = getCurrentIdentity();
     const ticket = await pollNewSaleTicket({
       identity,
       rootCanisterId,

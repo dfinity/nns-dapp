@@ -19,7 +19,7 @@ export const loadIcpAccountTransactions = async ({
 }: LoadIcrcAccountTransactionsParams) => {
   try {
     const maxResults = DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT;
-    const identity = await getCurrentIdentity();
+    const identity = getCurrentIdentity();
     const { transactions, oldestTxId } = await getTransactions({
       accountIdentifier,
       identity,
