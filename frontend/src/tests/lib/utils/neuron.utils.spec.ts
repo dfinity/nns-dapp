@@ -3302,7 +3302,7 @@ describe("neuron-utils", () => {
             ...mockNeuron,
             fullNeuron: undefined,
           })
-        ).toEqual(BigInt(SECONDS_IN_HALF_YEAR));
+        ).toEqual(SECONDS_IN_HALF_YEAR);
       });
 
       it("should return seconds until losing rewards", () => {
