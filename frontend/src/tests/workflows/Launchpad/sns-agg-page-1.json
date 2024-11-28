@@ -152,6 +152,14 @@
           }
         },
         {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 2761,
           "name": "transferPosition",
           "description": null,
@@ -312,7 +320,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98204723708941020,
+    "icrc1_total_supply": 98205071663582060,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -835,7 +843,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100831206699534350,
+    "icrc1_total_supply": 100894224451006780,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1530,7 +1538,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50375793831105096,
+    "icrc1_total_supply": 50384594490521780,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1919,7 +1927,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9961345354582160,
+    "icrc1_total_supply": 9961346334426824,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2312,7 +2320,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10088678646266860,
+    "icrc1_total_supply": 10088713761391748,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -2701,7 +2709,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12670126159315868,
+    "icrc1_total_supply": 12633063912717414,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -3490,7 +3498,8 @@
         "j4jiq-sqaaa-aaaap-ab23a-cai",
         "oo6x4-xiaaa-aaaap-abrza-cai",
         "atslz-hiaaa-aaaam-acq6q-cai",
-        "6c7su-kiaaa-aaaar-qaira-cai"
+        "6c7su-kiaaa-aaaar-qaira-cai",
+        "54vkq-taaaa-aaaap-ahqra-cai"
       ],
       "archives": ["fgzua-6iaaa-aaaaq-aacgq-cai"]
     },
@@ -4135,7 +4144,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99737301331892510,
+    "icrc1_total_supply": 99727028842885550,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,
