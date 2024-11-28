@@ -54,6 +54,6 @@ export const getAllTransactions = async ({
     return updatedTransactions;
   } catch (error) {
     console.error("Error loading ICP account transactions:", error);
-    return allTransactions; // Return accumulated transactions even if there's an error
+    return allTransactions; 
   }
 };
