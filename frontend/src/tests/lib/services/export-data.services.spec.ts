@@ -1,8 +1,8 @@
 import * as icpIndexApi from "$lib/api/icp-index.api";
-import { getAllTransactions } from "$lib/services/export-data.services";
+import { getAllTransactionsFromAccountAndIdentity } from "$lib/services/export-data.services";
 import { authStore } from "$lib/stores/auth.store";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { createMockTransactionWithId } from "$tests/mocks/transaction.mock";
+import { mockIdentity, mockSignInIdentity } from "$tests/mocks/auth.store.mock";
+import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 
 vi.mock("$lib/api/icp-ledger.api");
 
@@ -18,25 +18,31 @@ describe("export-data service", () => {
     spyGetTransactions = vi.spyOn(icpIndexApi, "getTransactions");
   });
 
-  describe("getAllTransactions", () => {
+  describe("getAllTransactionsFromAccount", () => {
     it("should return undefined if no authenticated identity", async () => {
       authStore.setForTesting(null);
-      const result = await getAllTransactions({ accountId: mockAccountId });
+      const result = await getAllTransactionsFromAccountAndIdentity({
+        accountId: mockAccountId,
+        identity: mockSignInIdentity,
+      });
 
       expect(result).toBeUndefined();
     });
 
     it("should fetch all transactions in one singe call", async () => {
       const mockTransactions = [
-        createMockTransactionWithId(),
-        createMockTransactionWithId(),
+        createTransactionWithId({}),
+        createTransactionWithId({}),
       ];
 
       spyGetTransactions.mockResolvedValue({
         transactions: mockTransactions,
       });
 
-      const result = await getAllTransactions({ accountId: mockAccountId });
+      const result = await getAllTransactionsFromAccountAndIdentity({
+        accountId: mockAccountId,
+        identity: mockSignInIdentity,
+      });
 
       expect(spyGetTransactions).toHaveBeenCalledTimes(1);
       expect(spyGetTransactions).toHaveBeenCalledWith({
@@ -50,12 +56,12 @@ describe("export-data service", () => {
 
     it("should fetch all transactions in multiple iterations", async () => {
       const firstBatch = [
-        createMockTransactionWithId({ id: 1n }),
-        createMockTransactionWithId({ id: 2n }),
+        createTransactionWithId({ id: 1n }),
+        createTransactionWithId({ id: 2n }),
       ];
       const secondBatch = [
-        createMockTransactionWithId({ id: 3n }),
-        createMockTransactionWithId({ id: 4n }),
+        createTransactionWithId({ id: 3n }),
+        createTransactionWithId({ id: 4n }),
       ];
 
       spyGetTransactions
@@ -68,7 +74,10 @@ describe("export-data service", () => {
           oldestTxId: 4n, // Completed
         });
 
-      const result = await getAllTransactions({ accountId: mockAccountId });
+      const result = await getAllTransactionsFromAccountAndIdentity({
+        accountId: mockAccountId,
+        identity: mockSignInIdentity,
+      });
 
       expect(result).toEqual([...firstBatch, ...secondBatch]);
       expect(spyGetTransactions).toHaveBeenCalledTimes(2);
@@ -88,7 +97,7 @@ describe("export-data service", () => {
 
     it("should respect maxTransactions limit", async () => {
       const mockTransactions = Array.from({ length: 5 }, (_, i) =>
-        createMockTransactionWithId({ id: BigInt(i + 1) })
+        createTransactionWithId({ id: BigInt(i + 1) })
       );
 
       spyGetTransactions.mockResolvedValue({
@@ -96,9 +105,10 @@ describe("export-data service", () => {
         oldestTxId: 100n, // Never completed
       });
 
-      const result = await getAllTransactions({
+      const result = await getAllTransactionsFromAccountAndIdentity({
         accountId: mockAccountId,
         maxIterations: 3,
+        identity: mockSignInIdentity,
       });
 
       expect(result?.length).toBe(15);
@@ -107,8 +117,8 @@ describe("export-data service", () => {
 
     it("should handle errors and return accumulated transactions", async () => {
       const firstBatch = [
-        createMockTransactionWithId({ id: 1n }),
-        createMockTransactionWithId({ id: 2n }),
+        createTransactionWithId({ id: 1n }),
+        createTransactionWithId({ id: 2n }),
       ];
 
       spyGetTransactions
@@ -118,7 +128,10 @@ describe("export-data service", () => {
         })
         .mockRejectedValueOnce(new Error("API Error"));
 
-      const result = await getAllTransactions({ accountId: mockAccountId });
+      const result = await getAllTransactionsFromAccountAndIdentity({
+        accountId: mockAccountId,
+        identity: mockSignInIdentity,
+      });
 
       expect(result).toEqual(firstBatch);
       expect(spyGetTransactions).toHaveBeenCalledTimes(2);
