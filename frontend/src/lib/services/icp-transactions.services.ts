@@ -27,7 +27,7 @@ export const loadIcpAccountTransactions = async ({
       start,
     });
 
-    // We consider it complete if we find the oldestTxId in the list of transactions or if oldestTxId is null. 
+    // We consider it complete if we find the oldestTxId in the list of transactions or if oldestTxId is null.
     // The latter condition is necessary if the list of transactions is empty, which would otherwise return false.
     const completed =
       isNullish(oldestTxId) || transactions.some(({ id }) => id === oldestTxId);
