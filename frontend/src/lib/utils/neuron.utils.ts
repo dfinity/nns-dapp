@@ -1186,7 +1186,7 @@ const getVotingPowerRefreshedTimestampSeconds = ({
   // to avoid unnecessary notifications.
   fullNeuron?.votingPowerRefreshedTimestampSeconds ?? BigInt(nowInSeconds());
 
-export const secondsUntilLosingReward = (neuron: NeuronInfo): number => {
+export const secondsUntilLosingRewards = (neuron: NeuronInfo): number => {
   const rewardLossStart =
     Number(getVotingPowerRefreshedTimestampSeconds(neuron)) +
     START_REDUCING_VOTING_POWER_AFTER_SECONDS;
@@ -1194,11 +1194,11 @@ export const secondsUntilLosingReward = (neuron: NeuronInfo): number => {
 };
 
 export const isNeuronLosingRewards = (neuron: NeuronInfo): boolean =>
-  secondsUntilLosingReward(neuron) <= 0;
+  secondsUntilLosingRewards(neuron) <= 0;
 
 // e.g. "Neuron will start losing rewards in 30 days"
 export const shouldDisplayRewardLossNotification = (
   neuron: NeuronInfo
 ): boolean =>
-  secondsUntilLosingReward(neuron) <=
+  secondsUntilLosingRewards(neuron) <=
   daysToSeconds(NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS);

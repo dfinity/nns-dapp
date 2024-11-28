@@ -65,7 +65,7 @@ import {
   neuronStakedMaturity,
   neuronVotingPower,
   neuronsVotingPower,
-  secondsUntilLosingReward,
+  secondsUntilLosingRewards,
   shouldDisplayRewardLossNotification,
   sortNeuronsByStake,
   sortNeuronsByVotingPowerRefreshedTimeout,
@@ -3295,10 +3295,10 @@ describe("neuron-utils", () => {
     const losingRewardsPeriod = SECONDS_IN_HALF_YEAR;
     const notificationPeriod = 30 * SECONDS_IN_DAY;
 
-    describe("secondsUntilLosingReward", () => {
+    describe("secondsUntilLosingRewards", () => {
       it("should return future date when no fullNeuron", () => {
         expect(
-          secondsUntilLosingReward({
+          secondsUntilLosingRewards({
             ...mockNeuron,
             fullNeuron: undefined,
           })
@@ -3307,14 +3307,14 @@ describe("neuron-utils", () => {
 
       it("should return seconds until losing rewards", () => {
         expect(
-          secondsUntilLosingReward(
+          secondsUntilLosingRewards(
             neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs: 0,
             })
           )
         ).toBe(SECONDS_IN_HALF_YEAR);
         expect(
-          secondsUntilLosingReward(
+          secondsUntilLosingRewards(
             neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod,
             })
