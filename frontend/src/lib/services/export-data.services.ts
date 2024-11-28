@@ -20,6 +20,7 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
   const maxIterations = 10;
 
   try {
+    // TODO: Decide what to do if we reach the maximum number of iterations.
     if (currentIteration > maxIterations) {
       console.warn(
         `Reached maximum limit of iterations(${maxIterations}). Stopping.`
