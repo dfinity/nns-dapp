@@ -83,24 +83,23 @@ describe("export-data service", () => {
       });
     });
 
-    it("should respect maxTransactions limit", async () => {
+    it("should respect the 10 maxTransactions limit", async () => {
       const mockTransactions = Array.from({ length: 5 }, (_, i) =>
         createTransactionWithId({ id: BigInt(i + 1) })
       );
 
       spyGetTransactions.mockResolvedValue({
         transactions: mockTransactions,
-        oldestTxId: 100n, // Never completed
+        oldestTxId: 100n,
       });
 
       const result = await getAllTransactionsFromAccountAndIdentity({
         accountId: mockAccountId,
-        maxIterations: 3,
         identity: mockSignInIdentity,
       });
 
-      expect(result?.length).toBe(15);
-      expect(spyGetTransactions).toHaveBeenCalledTimes(3); // Should stop after second call
+      expect(result?.length).toBe(50);
+      expect(spyGetTransactions).toHaveBeenCalledTimes(10);
     });
 
     it("should handle errors and return accumulated transactions", async () => {

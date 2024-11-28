@@ -9,16 +9,15 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
   start = undefined,
   allTransactions = [],
   currentIteration = 1,
-  maxIterations = 10,
 }: {
   accountId: string;
   identity: SignIdentity;
   start?: bigint;
   allTransactions?: TransactionWithId[];
-  maxIterations?: number;
   currentIteration?: number;
 }): Promise<TransactionWithId[] | undefined> => {
   const maxResults = 100n;
+  const maxIterations = 10;
 
   try {
     if (currentIteration > maxIterations) {
@@ -45,7 +44,6 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
         identity,
         start: lastTx.id,
         allTransactions: updatedTransactions,
-        maxIterations,
         currentIteration: currentIteration + 1,
       });
     }
