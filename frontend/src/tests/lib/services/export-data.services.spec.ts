@@ -1,7 +1,6 @@
 import * as icpIndexApi from "$lib/api/icp-index.api";
 import { getAllTransactionsFromAccountAndIdentity } from "$lib/services/export-data.services";
-import { authStore } from "$lib/stores/auth.store";
-import { mockIdentity, mockSignInIdentity } from "$tests/mocks/auth.store.mock";
+import { mockSignInIdentity } from "$tests/mocks/auth.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 
 vi.mock("$lib/api/icp-ledger.api");
@@ -11,7 +10,6 @@ describe("export-data service", () => {
   let spyGetTransactions;
 
   beforeEach(() => {
-    authStore.setForTesting(mockIdentity);
     vi.spyOn(console, "error").mockImplementation(() => {});
     vi.spyOn(console, "warn").mockImplementation(() => {});
 
@@ -19,16 +17,6 @@ describe("export-data service", () => {
   });
 
   describe("getAllTransactionsFromAccount", () => {
-    it("should return undefined if no authenticated identity", async () => {
-      authStore.setForTesting(null);
-      const result = await getAllTransactionsFromAccountAndIdentity({
-        accountId: mockAccountId,
-        identity: mockSignInIdentity,
-      });
-
-      expect(result).toBeUndefined();
-    });
-
     it("should fetch all transactions in one singe call", async () => {
       const mockTransactions = [
         createTransactionWithId({}),
@@ -47,7 +35,7 @@ describe("export-data service", () => {
       expect(spyGetTransactions).toHaveBeenCalledTimes(1);
       expect(spyGetTransactions).toHaveBeenCalledWith({
         accountIdentifier: mockAccountId,
-        identity: mockIdentity,
+        identity: mockSignInIdentity,
         maxResults: 100n,
         start: undefined,
       });
@@ -83,13 +71,13 @@ describe("export-data service", () => {
       expect(spyGetTransactions).toHaveBeenCalledTimes(2);
       expect(spyGetTransactions).toHaveBeenNthCalledWith(1, {
         accountIdentifier: mockAccountId,
-        identity: mockIdentity,
+        identity: mockSignInIdentity,
         maxResults: 100n,
         start: undefined,
       });
       expect(spyGetTransactions).toHaveBeenNthCalledWith(2, {
         accountIdentifier: mockAccountId,
-        identity: mockIdentity,
+        identity: mockSignInIdentity,
         maxResults: 100n,
         start: 2n,
       });
