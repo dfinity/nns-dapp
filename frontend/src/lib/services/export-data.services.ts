@@ -42,7 +42,7 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
       const lastTx = transactions[transactions.length - 1];
       return getAllTransactionsFromAccountAndIdentity({
         accountId,
-        identity,     
+        identity,
         start: lastTx.id,
         allTransactions: updatedTransactions,
         maxIterations,

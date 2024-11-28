@@ -45,15 +45,6 @@ export const mockTransactionWithId: TransactionWithId = {
   },
 };
 
-export const createMockTransactionWithId = (
-  overrides: Partial<TransactionWithId> = {}
-): TransactionWithId => {
-  return {
-    ...mockTransactionWithId,
-    ...overrides,
-  };
-};
-
 export const createMockSendTransactionWithId = ({
   amount = 110_000_023n,
   fee = 10_000n,
