@@ -1,6 +1,11 @@
 <script lang="ts">
   import ImportTokenRemoveConfirmation from "$lib/components/accounts/ImportTokenRemoveConfirmation.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+    import ModalWrapper from "$lib/components/payment/ModalWrapper.svelte";
+    import PaymentModal from "$lib/components/payment/PaymentModal.svelte";
+    import QrButton from "$lib/components/payment/QRButton.svelte";
+    import QrScanner from "$lib/components/payment/QRScanner.svelte";
+    
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
@@ -25,6 +30,7 @@
   import { updateBalance } from "$lib/services/ckbtc-minter.services";
   import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
   import { removeImportedTokens } from "$lib/services/imported-tokens.services";
+    import { checkAllowanceAndTransfer } from "$lib/services/payment.services";
   import { uncertifiedLoadSnsesAccountsBalances } from "$lib/services/sns-accounts-balance.services";
   import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
@@ -49,11 +55,9 @@
   import { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
-
   onMount(() => {
     loadCkBTCTokens();
   });
-
   const loadedIcrcAccountsBalancesRequested = new Set<CanisterIdString>();
   const getAndUpdateNotLoadedIds = (canisterIds: CanisterIdString[]) => {
     const ids = canisterIds.filter(
@@ -62,40 +66,33 @@
     ids.forEach((id) => loadedIcrcAccountsBalancesRequested.add(id));
     return ids;
   };
-
   const loadSnsAccountsBalances = async (projects: SnsFullProject[]) => {
     // We start when the projects are fetched
     if (projects.length === 0) {
       return;
     }
-
     const rootCanisterIds = projects.map(({ rootCanisterId }) =>
       rootCanisterId.toText()
     );
     const notLoadedCanisterIds = getAndUpdateNotLoadedIds(rootCanisterIds);
-
     // We trigger the loading of the Sns Accounts Balances only once
     if (notLoadedCanisterIds.length === 0) {
       return;
     }
-
     await uncertifiedLoadSnsesAccountsBalances({
       rootCanisterIds: notLoadedCanisterIds.map((id) => Principal.fromText(id)),
       excludeRootCanisterIds: [],
     });
   };
-
   const loadCkBTCAccountsBalances = async (universes: Universe[]) => {
     // We trigger the loading of the ckBTC Accounts Balances only once
     const canisterIds = universes.map(
       (universe: Universe) => universe.canisterId
     );
     const notLoadedCanisterIds = getAndUpdateNotLoadedIds(canisterIds);
-
     if (notLoadedCanisterIds.length === 0) {
       return;
     }
-
     /**
      * Calling updateBalance because users are confused about when and how to call it and product required to add this additional call within this process.
      * That way, when user navigates to the Tokens page, the call is also triggered.
@@ -106,7 +103,6 @@
       if (!notLoadedCanisterIds.includes(universe.canisterId)) {
         return;
       }
-
       const ckBTCCanisters = CKBTC_ADDITIONAL_CANISTERS[universe.canisterId];
       if (nonNullish(ckBTCCanisters.minterCanisterId)) {
         updateBalance({
@@ -118,10 +114,8 @@
         });
       }
     });
-
     await loadAccountsBalances(universes.map(({ canisterId }) => canisterId));
   };
-
   const loadIcrcTokenAccounts = async (
     icrcCanisters: IcrcCanistersStoreData
   ) => {
@@ -133,7 +127,6 @@
     }
     await loadAccountsBalances(notLoadedCanisterIds);
   };
-
   const loadAccountsBalances = async (
     universeIds: UniverseCanisterIdText[]
   ) => {
@@ -141,13 +134,11 @@
     if (isArrayEmpty(universeIds)) {
       return;
     }
-
     await uncertifiedLoadAccountsBalance({
       universeIds,
       excludeUniverseIds: [],
     });
   };
-
   const createReloadAccountBalance = (universeId: Principal) => () => {
     const isSnsProject = $snsProjectsCommittedStore.some(
       ({ rootCanisterId }) => rootCanisterId.toText() === universeId.toText()
@@ -160,7 +151,6 @@
     }
     return loadAccountsBalances([universeId.toText()]);
   };
-
   $: if ($authSignedInStore) {
     loadSnsAccountsBalances($snsProjectsCommittedStore);
   }
@@ -170,7 +160,6 @@
   $: if ($authSignedInStore) {
     loadIcrcTokenAccounts($icrcCanistersStore);
   }
-
   type ModalType =
     | "sns-send"
     | "nns-send"
@@ -188,13 +177,11 @@
   const closeModal = () => {
     modal = undefined;
   };
-
   let ckBTCCanisters: CkBTCAdditionalCanisters | undefined;
   $: ckBTCCanisters =
     modal && isUniverseCkBTC(modal.data.universeId)
       ? CKBTC_ADDITIONAL_CANISTERS[modal?.data.universeId.toText()]
       : undefined;
-
   let account: Account | undefined;
   $: account =
     modal && isUserTokenData(modal.data)
@@ -202,7 +189,6 @@
           ({ type }) => type === "main"
         )
       : undefined;
-
   const handleAction = ({ detail }: { detail: Action }) => {
     if (detail.type === ActionType.Send) {
       if (isUniverseNns(detail.data.universeId)) {
@@ -232,7 +218,6 @@
       modal = { type: "imported-remove", data: detail.data };
     }
   };
-
   const removeImportedToken = async () => {
     // For type safety. This should never happen.
     if (nonNullish(modal)) {
@@ -240,31 +225,114 @@
       closeModal();
     }
   };
-
   let importedTokenIds: Set<string> = new Set();
   $: importedTokenIds = new Set(
     ($importedTokensStore.importedTokens ?? []).map(({ ledgerCanisterId }) =>
       ledgerCanisterId.toText()
     )
   );
-
   const sortTokens = (tokens: UserToken[]) =>
     [...tokens].sort(compareTokensForTokensTable({ importedTokenIds }));
-</script>
+     
+  let isSuccess = false;
+  let showPaymentModal = false;
+  let showPaymentLoader = false;
+  let showQRScanner = false;
+  let scannedValue: any = null;
+  let digestStore: any = null;
+  let isProcessing = false;
 
+  const handleOpenScanner = () => {
+    showQRScanner = true;
+  };
+
+  const handlePaymentModal = () => {
+    showPaymentModal = false;
+    showPaymentLoader = false;
+    digestStore = null;
+    scannedValue = null;
+  }
+
+
+  const handleOnPaymentNow = async () => {
+    showPaymentLoader = true;
+    if (isProcessing) {
+      return;
+    }
+    showPaymentLoader = true;
+    isProcessing = true; 
+    try {
+      digestStore = await checkAllowanceAndTransfer(scannedValue);
+    } catch (error) {
+      console.error('Error during payment processing', error);
+      showPaymentLoader = false;
+    } finally {
+      isProcessing = false;
+    }
+  }
+
+  const handleScannedCode = async (event: CustomEvent) => {
+    const getType = typeof event.detail.result;
+    try {
+      if(getType === "string") {
+        scannedValue = JSON.parse(event.detail.result);
+        showQRScanner = false;
+        showPaymentModal = true;
+      }
+    } catch(error){
+      console.log('Something went wrong')
+    }
+  };
+
+  const handleScannerClose = () => {
+    showQRScanner = false;
+  };
+
+</script>
 <TestIdWrapper testId="tokens-route-component">
   {#if $authSignedInStore}
     <Tokens
       userTokensData={sortTokens($tokensListUserStore)}
       on:nnsAction={handleAction}
     />
+
+    <QrButton 
+      buttonText="Scan QR Code"
+      on:openScanner={handleOpenScanner}
+      testId="56-rt"
+    />
+  
+  
+    {#if showQRScanner}
+      <QrScanner
+        on:scanned={handleScannedCode}
+        on:close={handleScannerClose}
+        on:error={(e) => console.error(e.detail.message)}
+      />
+    {/if}
+  
+    <ModalWrapper
+      show={showPaymentModal}
+      title={"Send"}            
+      onClose={handlePaymentModal}     
+    >
+        <PaymentModal         
+          handleOnPaymentNow={handleOnPaymentNow}
+          scannedValue={scannedValue}
+          source={scannedValue?.merchant_name}       
+          destination={scannedValue?.merchant_address}
+          amount={scannedValue?.amount}   
+          digestStore={digestStore == null ? null : 'success'}
+          buttonText={showPaymentLoader ? "Payment processing..." : "Pay Now"}  
+        />
+    </ModalWrapper>
+  
   {:else}
     <SignInTokens
       on:nnsAction={handleAction}
       userTokensData={sortTokens($tokensListVisitorsStore)}
     />
   {/if}
-
   {#if nonNullish(modal) && isUserTokenData(modal.data)}
     {#if modal.type === "sns-send"}
       <IcrcTokenTransactionModal
@@ -277,7 +345,6 @@
         transactionFee={modal.data.fee}
       />
     {/if}
-
     {#if modal.type === "ckbtc-send"}
       <CkBtcTransactionModal
         on:nnsClose={closeModal}
@@ -288,7 +355,6 @@
         canisters={CKBTC_ADDITIONAL_CANISTERS[modal.data.universeId.toText()]}
       />
     {/if}
-
     {#if modal.type === "icrc-send"}
       <IcrcTokenTransactionModal
         on:nnsClose={closeModal}
@@ -298,7 +364,6 @@
         transactionFee={modal.data.fee}
       />
     {/if}
-
     {#if modal.type === "ckbtc-receive" && nonNullish(ckBTCCanisters) && nonNullish(account)}
       <CkBtcReceiveModal
         data={{
@@ -311,7 +376,6 @@
         on:nnsClose={closeModal}
       />
     {/if}
-
     {#if modal.type === "icrc-receive" && nonNullish(account)}
       <IcrcReceiveModal
         data={{
@@ -326,7 +390,6 @@
       />
     {/if}
   {/if}
-
   {#if modal?.type === "imported-remove"}
     <ImportTokenRemoveConfirmation
       tokenToRemove={{ ledgerCanisterId: modal.data.universeId }}
