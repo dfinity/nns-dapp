@@ -27,7 +27,10 @@ export const loadIcpAccountTransactions = async ({
       start,
     });
 
-    const completed = transactions.some(({ id }) => id === oldestTxId);
+    const completed =
+      transactions.length === 0 ||
+      transactions.some(({ id }) => id === oldestTxId);
+
     icpTransactionsStore.addTransactions({
       accountIdentifier,
       transactions,

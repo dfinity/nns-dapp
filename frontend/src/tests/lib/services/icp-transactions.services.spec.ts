@@ -134,6 +134,24 @@ describe("icp-transactions services", () => {
       expect(get(icpTransactionsStore)[accountIdentifier].completed).toBe(true);
     });
 
+    it("sets complete to true when empty array", async () => {
+      const oldestTxId = 10n;
+      const transactions = []; 
+      
+      vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
+        oldestTxId,
+        transactions: transactions,
+        balance: 200_000_000n,
+      });
+
+      await loadIcpAccountTransactions({
+        accountIdentifier,
+        start: undefined,
+      });
+
+      expect(get(icpTransactionsStore)[accountIdentifier].completed).toBe(true);
+    });
+
     it("toasts error if api fails", async () => {
       vi.spyOn(indexApi, "getTransactions").mockRejectedValue(
         new Error("Something happened")
