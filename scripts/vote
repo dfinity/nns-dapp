@@ -53,7 +53,12 @@ get_all_neuron_ids() {
 }
 
 if [[ "${NEURON_ID:-}" == "all" ]]; then
-  for neuron_id in $(get_all_neuron_ids); do
+  mapfile -t neuron_ids < <(get_all_neuron_ids)
+  if [[ "${#neuron_ids[@]}" -eq 0 ]]; then
+    echo "No neurons found that can vote belonging to identity $DFX_IDENTITY."
+    exit 1
+  fi
+  for neuron_id in "${neuron_ids[@]}"; do
     "$0" \
       --neuron "$neuron_id" \
       --proposal "${PROPOSAL_ID:-}" \
@@ -83,7 +88,9 @@ get_all_proposal_ids() {
 
 if [[ "${PROPOSAL_ID:-}" == "all" ]]; then
   pids=()
-  for proposal_id in $(get_all_proposal_ids); do
+  mapfile -t proposal_ids < <(get_all_proposal_ids)
+  echo "Voting on ${#proposal_ids[@]} open proposals with neuron $NEURON_ID."
+  for proposal_id in "${proposal_ids[@]}"; do
     "$0" \
       --neuron "$NEURON_ID" \
       --proposal "$proposal_id" \

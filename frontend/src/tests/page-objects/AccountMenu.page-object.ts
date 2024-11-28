@@ -1,4 +1,5 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { ExportNeuronsButtonPo } from "$tests/page-objects/ExportNeuronsButton.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { AccountDetailsPo } from "./AccountDetails.page-object";
@@ -9,6 +10,10 @@ export class AccountMenuPo extends BasePageObject {
 
   static under(element: PageObjectElement): AccountMenuPo {
     return new AccountMenuPo(element.byTestId(AccountMenuPo.TID));
+  }
+
+  isOpen(): Promise<boolean> {
+    return this.isPresent("popover-component");
   }
 
   openMenu(): Promise<void> {
@@ -23,6 +28,34 @@ export class AccountMenuPo extends BasePageObject {
     return LinkPo.under({
       element: this.root,
       testId: "canisters-button",
+    });
+  }
+
+  getSignInButtonPo(): ButtonPo {
+    return ButtonPo.under({
+      element: this.root,
+      testId: "toolbar-login",
+    });
+  }
+
+  getSignOutButtonPo(): ButtonPo {
+    return ButtonPo.under({
+      element: this.root,
+      testId: "logout",
+    });
+  }
+
+  getSettingsButtonPo(): ButtonPo {
+    return ButtonPo.under({
+      element: this.root,
+      testId: "settings",
+    });
+  }
+
+  getManangeIILinkPo(): LinkPo {
+    return LinkPo.under({
+      element: this.root,
+      testId: "manage-ii-link",
     });
   }
 
