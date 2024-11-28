@@ -364,7 +364,7 @@
   "losing_rewards_banner": {
     "days_left_title": "$left left to confirm your neuron following",
     "rewards_missing_title": "One or more of your neurons are missing voting rewards",
-    "description": "Neurons that are inactive for $period start losing voting rewards. In order to avoid losing rewards, vote manually, edit or confirm your following.",
+    "description": "ICP neurons that are inactive for $period start losing voting rewards. In order to avoid losing rewards, vote manually, edit or confirm your following.",
     "confirm": "Confirm Following"
   },
   "new_followee": {
