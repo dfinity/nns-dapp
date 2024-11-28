@@ -11,7 +11,7 @@ export type CsvHeader<T> = {
 };
 
 interface CsvBaseConfig<T> {
-  data: T[];
+  data?: T[];
   headers: CsvHeader<T>[];
   metadata?: Metadata[];
 }
@@ -19,6 +19,10 @@ interface CsvBaseConfig<T> {
 interface CsvFileConfig<T> extends CsvBaseConfig<T> {
   fileName?: string;
   description?: string;
+  datasets?: {
+    data: T[];
+    metadata: Metadata[];
+  }[];
 }
 
 const escapeCsvValue = (value: unknown): string => {
@@ -197,9 +201,18 @@ export const generateCsvFileToSave = async <T>({
   metadata,
   fileName = "data",
   description = "Csv file",
+  datasets,
 }: CsvFileConfig<T>): Promise<void> => {
   try {
-    const csvContent = convertToCsv<T>({ data, headers, metadata });
+    let csvContent = "";
+    if (datasets) {
+      for (const { data, metadata } of datasets) {
+        csvContent += convertToCsv<T>({ data, headers, metadata });
+        csvContent += "\n\n";
+      }
+    } else {
+      csvContent = convertToCsv<T>({ data, headers, metadata });
+    }
 
     const blob = new Blob([csvContent], {
       type: "text/csv;charset=utf-8;",
