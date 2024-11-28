@@ -135,7 +135,7 @@ describe("icp-transactions services", () => {
     });
 
     it("sets complete to true when empty array", async () => {
-      const oldestTxId = 10n;
+      const oldestTxId = null;
       const transactions = []; 
       
       vi.spyOn(indexApi, "getTransactions").mockResolvedValue({

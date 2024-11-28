@@ -4,7 +4,7 @@ import { icpTransactionsStore } from "$lib/stores/icp-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { toToastError } from "$lib/utils/error.utils";
 import { sortTransactionsByIdDescendingOrder } from "$lib/utils/icp-transactions.utils";
-import { nonNullish } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getCurrentIdentity } from "./auth.services";
 
@@ -28,7 +28,7 @@ export const loadIcpAccountTransactions = async ({
     });
 
     const completed =
-      transactions.length === 0 ||
+      isNullish(oldestTxId) ||
       transactions.some(({ id }) => id === oldestTxId);
 
     icpTransactionsStore.addTransactions({
