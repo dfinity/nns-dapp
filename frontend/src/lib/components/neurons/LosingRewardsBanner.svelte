@@ -1,0 +1,53 @@
+<script lang="ts">
+  import { i18n } from "$lib/stores/i18n";
+  import { IconInfo } from "@dfinity/gix-components";
+  import Banner from "$lib/components/ui/Banner.svelte";
+  import BannerIcon from "$lib/components/ui/BannerIcon.svelte";
+  import {
+    isNeuronLosingRewards,
+    secondsUntilLosingRewards,
+  } from "$lib/utils/neuron.utils";
+  import { soonLosingRewardNeuronsStore } from "$lib/derived/neurons.derived";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { nonNullish, secondsToDuration } from "@dfinity/utils";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { START_REDUCING_VOTING_POWER_AFTER_SECONDS } from "$lib/constants/neurons.constants";
+  import { secondsToDissolveDelayDuration } from "../../utils/date.utils";
+
+  // The neurons in the store are sorted by the time they will lose rewards.
+  let mostInactiveNeuron: NeuronInfo | undefined;
+  $: mostInactiveNeuron = $soonLosingRewardNeuronsStore[0];
+
+  const getTitle = (neuron: NeuronInfo) =>
+    isNeuronLosingRewards(mostInactiveNeuron)
+      ? $i18n.losing_rewards_banner.rewards_missing_title
+      : replacePlaceholders($i18n.losing_rewards_banner.days_left_title, {
+          $left: secondsToDuration({
+            seconds: BigInt(secondsUntilLosingRewards(mostInactiveNeuron)),
+            i18n: $i18n.time,
+          }),
+        });
+  const text = replacePlaceholders($i18n.losing_rewards_banner.description, {
+    // TODO(mstr): Rename to secondsToRoundedDuration
+    $period: secondsToDissolveDelayDuration(
+      BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS)
+    ),
+  });
+
+  const onConfirm = () => {
+    // TBD
+  };
+</script>
+
+{#if nonNullish(mostInactiveNeuron)}
+  <Banner title={getTitle(mostInactiveNeuron)} {text}>
+    <BannerIcon slot="icon" status="error">
+      <IconInfo />
+    </BannerIcon>
+    <div slot="actions">
+      <button class="danger" on:click={onConfirm}
+        >{$i18n.losing_rewards_banner.confirm}</button
+      >
+    </div>
+  </Banner>
+{/if}

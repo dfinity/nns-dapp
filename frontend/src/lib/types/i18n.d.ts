@@ -376,6 +376,13 @@ interface I18nNeurons {
   create_as_public_neuron_failure: string;
 }
 
+interface I18nLosing_rewards_banner {
+  days_left_title: string;
+  rewards_missing_title: string;
+  description: string;
+  confirm: string;
+}
+
 interface I18nNew_followee {
   title: string;
   placeholder: string;
@@ -1432,6 +1439,7 @@ interface I18n {
   neuron_types: I18nNeuron_types;
   staking: I18nStaking;
   neurons: I18nNeurons;
+  losing_rewards_banner: I18nLosing_rewards_banner;
   new_followee: I18nNew_followee;
   follow_neurons: I18nFollow_neurons;
   voting: I18nVoting;
