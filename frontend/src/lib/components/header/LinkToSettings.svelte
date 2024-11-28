@@ -5,7 +5,7 @@
   import { createEventDispatcher } from "svelte";
 
   const dispatcher = createEventDispatcher();
-  
+
   beforeNavigate(() => dispatcher("nnsLink"));
 </script>
 
