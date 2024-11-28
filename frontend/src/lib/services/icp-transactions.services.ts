@@ -28,8 +28,7 @@ export const loadIcpAccountTransactions = async ({
     });
 
     const completed =
-      isNullish(oldestTxId) ||
-      transactions.some(({ id }) => id === oldestTxId);
+      isNullish(oldestTxId) || transactions.some(({ id }) => id === oldestTxId);
 
     icpTransactionsStore.addTransactions({
       accountIdentifier,
