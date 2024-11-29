@@ -191,7 +191,6 @@
 >
   <IconDown />
   {$i18n.header.export_neurons}
-  Lol
 </button>
 
 <style lang="scss">
