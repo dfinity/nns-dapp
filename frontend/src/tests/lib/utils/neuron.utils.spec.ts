@@ -1570,7 +1570,7 @@ describe("neuron-utils", () => {
       ).toEqual([nfTag, hotkeyTag]);
     });
 
-    it("returns 'Neurons' Fund' and 'Hardware Wallet Controlled'", () => {
+    it("returns 'Neurons' Fund' and 'Ledger Device Controlled'", () => {
       const neuron: NeuronInfo = {
         ...mockNeuron,
         joinedCommunityFundTimestampSeconds: 123_445n,
@@ -1628,7 +1628,7 @@ describe("neuron-utils", () => {
       ).toEqual([ectTag]);
     });
 
-    it("returns 'Seed' and 'Neurons' Fund' and 'Hardware Wallet Controlled'", () => {
+    it("returns 'Seed' and 'Neurons' Fund' and 'Ledger Device Controlled'", () => {
       const neuron: NeuronInfo = {
         ...mockNeuron,
         neuronType: NeuronType.Seed,
