@@ -8,6 +8,8 @@ interface I18nCore {
   icp: string;
   create: string;
   filter: string;
+  filter_select_all: string;
+  filter_clear_all: string;
   back: string;
   confirm_yes: string;
   confirm_no: string;

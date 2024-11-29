@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { i18n } from "$lib/stores/i18n";
   import { Html, IconClose } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
 
@@ -25,7 +26,7 @@
       <button
         class="icon-only"
         on:click={() => dispatcher("nnsClose")}
-        aria-label="Close"
+        aria-label={$i18n.core.close}
         data-tid="close-button"
       >
         <IconClose />
