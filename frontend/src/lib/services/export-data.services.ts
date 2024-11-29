@@ -40,11 +40,7 @@ export const getAccountTransactionsConcurrently = async ({
         transactions: result.value ?? [],
       };
     } else {
-      console.error(
-        `Failed to fetch transactions for account ${account.identifier}:`,
-        result.reason
-      );
-
+      // TODO: At the moment, this path is not possible as getAllTransactionsFromAccountAndIdentity never throws an error.
       return {
         ...baseAccountInfo,
         transactions: [],
