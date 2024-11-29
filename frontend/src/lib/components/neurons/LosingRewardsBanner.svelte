@@ -20,11 +20,11 @@
   $: mostInactiveNeuron = $soonLosingRewardNeuronsStore[0];
 
   const getTitle = (neuron: NeuronInfo) =>
-    isNeuronLosingRewards(mostInactiveNeuron)
+    isNeuronLosingRewards(neuron)
       ? $i18n.losing_rewards_banner.rewards_missing_title
       : replacePlaceholders($i18n.losing_rewards_banner.days_left_title, {
           $timeLeft: secondsToDuration({
-            seconds: BigInt(secondsUntilLosingRewards(mostInactiveNeuron)),
+            seconds: BigInt(secondsUntilLosingRewards(neuron)),
             i18n: $i18n.time,
           }),
         });
