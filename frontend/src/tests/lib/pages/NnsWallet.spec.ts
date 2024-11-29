@@ -974,7 +974,7 @@ describe("NnsWallet", () => {
     });
   });
 
-  describe("accounts loaded (Hardware Wallet)", () => {
+  describe("accounts loaded (Ledger Device)", () => {
     const testHwPrincipalText = "5dstn-f5lvo-v2xk5-lvmja-g";
     const testHwPrincipal = Principal.fromText(testHwPrincipalText);
 

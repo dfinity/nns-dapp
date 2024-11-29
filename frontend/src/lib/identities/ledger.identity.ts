@@ -352,7 +352,7 @@ export class LedgerIdentity extends SignIdentity {
   }
 
   /**
-   * Convert the HttpAgentRequest body into cbor which can be signed by the Ledger Hardware Wallet.
+   * Convert the HttpAgentRequest body into cbor which can be signed by the Ledger Ledger Device.
    * @param request - body of the HttpAgentRequest
    */
   private prepareCborForLedger = (
