@@ -1,8 +1,11 @@
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
+import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
 import * as authServices from "$lib/services/auth.services";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { nowInSeconds } from "$lib/utils/date.utils";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronsPo } from "$tests/page-objects/NnsNeurons.page-object";
@@ -102,6 +105,40 @@ describe("NnsNeurons", () => {
       // Spawning neuron without stake comes last.
       expect(await rows[2].getStake()).toBe("0 ICP");
       expect(await rows[2].hasGoToDetailButton()).toBe(false);
+    });
+  });
+
+  describe("LosingRewardsBanner", () => {
+    beforeEach(() => {
+      resetIdentity();
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([
+        {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            votingPowerRefreshedTimestampSeconds: BigInt(
+              nowInSeconds() - SECONDS_IN_HALF_YEAR
+            ),
+          },
+        },
+      ]);
+    });
+
+    it("should not display LosingRewardsBanner by default", async () => {
+      const po = await renderComponent();
+      // It should be behind the feature flag
+      expect(await po.getLosingRewardsBannerPo().isPresent()).toBe(false);
+    });
+
+    it("should display LosingRewardsBanner", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        true
+      );
+      const po = await renderComponent();
+
+      expect(await po.getLosingRewardsBannerPo().isPresent()).toBe(true);
+      expect(await po.getLosingRewardsBannerPo().isVisible()).toBe(true);
     });
   });
 
