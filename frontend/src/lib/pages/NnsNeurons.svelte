@@ -36,12 +36,22 @@
   {#if isLoading}
     <Spinner />
   {:else if tableNeurons.length > 0}
-    {#if $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION}
-      <LosingRewardsBanner />
-    {/if}
-    <MakeNeuronsPublicBanner />
-    <NeuronsTable neurons={tableNeurons} />
+    <div class="container">
+      {#if $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION}
+        <LosingRewardsBanner />
+      {/if}
+      <MakeNeuronsPublicBanner />
+      <NeuronsTable neurons={tableNeurons} />
+    </div>
   {:else}
     <EmptyMessage>{$i18n.neurons.text}</EmptyMessage>
   {/if}
 </TestIdWrapper>
+
+<style lang="scss">
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+  }
+</style>

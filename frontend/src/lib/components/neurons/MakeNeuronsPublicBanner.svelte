@@ -101,7 +101,6 @@
     border-radius: var(--border-radius);
     padding: var(--padding) var(--padding-1_5x);
     gap: var(--padding-1_5x);
-    margin-bottom: var(--padding-2x);
     flex-wrap: wrap;
     @include media.min-width(small) {
       flex-wrap: nowrap;
