@@ -32,8 +32,6 @@
     secondsToDate,
   } from "$lib/utils/date.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
-  import { getTransactionsFromAccounts } from "$lib/services/export-data.services";
 
   const dispatcher = createEventDispatcher<{
     nnsExportNeuronsCsvTriggered: void;
@@ -44,47 +42,6 @@
   $: neurons = $neuronsStore?.neurons ?? [];
   $: nnsAccountPrincipal = $authStore.identity?.getPrincipal().toText();
   $: isDisabled = neurons.length === 0 || isNullish(nnsAccountPrincipal);
-
-  async function doSth() {
-    const nnsAccounts = Object.values($nnsAccountsListStore).flat();
-
-    const data = await getTransactionsFromAccounts({ accounts: nnsAccounts });
-    if (data == undefined) {
-      console.error("Error exporting neurons: no data");
-      return;
-    }
-    const datasets = data.map((x) => ({
-      metadata: [
-        {
-          label: "Account ID",
-          value: x.account.identifier,
-        },
-        {
-          label: "Name",
-          value: x.account.name ?? "Main",
-        },
-        {
-          label: "Ammount",
-          value: x.account.balanceUlps.toString(),
-        },
-      ],
-      data: x.transactions.map((y) => ({
-        id: y.id,
-        date: y.transaction.timestamp,
-        memo: y.transaction.memo,
-        // operation: JSON.stringify(y.transaction.operation),
-      })),
-    }));
-    generateCsvFileToSave({
-      datasets,
-      headers: [
-        { id: "id", label: "TXID" },
-        // { id: "operation", label: "amount" },
-        { id: "date", label: "data" },
-        { id: "memo", label: "memo" },
-      ],
-    });
-  }
 
   const nnsNeuronToHumanReadableFormat = (neuron: NeuronInfo) => {
     const controllerId = neuron.fullNeuron?.controller?.toString();
@@ -227,7 +184,7 @@
 
 <button
   data-tid="export-neurons-button-component"
-  on:click={doSth}
+  on:click={exportNeurons}
   class="text"
   disabled={isDisabled}
   aria-label={$i18n.header.export_neurons}
