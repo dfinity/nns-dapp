@@ -5,6 +5,8 @@
     "icp": "ICP",
     "create": "Create",
     "filter": "Filter",
+    "filter_select_all": "Select all filters",
+    "filter_clear_all": "Clear all filters",
     "back": "Back",
     "confirm_yes": "Yes, I'm sure",
     "confirm_no": "Cancel",

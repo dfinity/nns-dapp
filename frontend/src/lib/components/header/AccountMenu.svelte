@@ -2,7 +2,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ExportNeuronsButton from "$lib/components/header/ExportNeuronsButton.svelte";
   import ManageInternetIdentityButton from "$lib/components/header/ManageInternetIdentityButton.svelte";
-  import SettingsButton from "$lib/components/header/SettingsButton.svelte";
+  import LinkToSettings from "$lib/components/header/LinkToSettings.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { ENABLE_EXPORT_NEURONS_REPORT } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
@@ -37,7 +37,7 @@
 
         <ManageInternetIdentityButton />
 
-        <SettingsButton on:nnsLink={closeMenu} />
+        <LinkToSettings on:nnsLink={closeMenu} />
 
         <LinkToCanisters on:nnsLink={closeMenu} />
 

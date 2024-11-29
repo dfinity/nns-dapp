@@ -45,8 +45,8 @@ export class AccountMenuPo extends BasePageObject {
     });
   }
 
-  getSettingsButtonPo(): ButtonPo {
-    return ButtonPo.under({
+  getLinkToSettingsPo(): LinkPo {
+    return LinkPo.under({
       element: this.root,
       testId: "settings",
     });
