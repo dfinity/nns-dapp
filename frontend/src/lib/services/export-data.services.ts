@@ -63,27 +63,28 @@ export const getTransactionsFromAccounts = async ({
   return accountsAndTransactions;
 };
 
+
 export const getAllTransactionsFromAccountAndIdentity = async ({
   accountId,
   identity,
-  start = undefined,
+  lastTransactionId = undefined,
   allTransactions = [],
-  currentIteration = 1,
-  maxIterations = 10,
+  currentPageIndex = 1,
 }: {
   accountId: string;
   identity: SignIdentity;
-  start?: bigint;
+  lastTransactionId?: bigint;
   allTransactions?: TransactionWithId[];
-  maxIterations?: number;
-  currentIteration?: number;
+  currentPageIndex?: number;
 }): Promise<TransactionWithId[] | undefined> => {
-  const maxResults = 100n;
+  const pageSize = 100n;
+  const maxNumberOfPages = 10;
 
   try {
-    if (currentIteration > maxIterations) {
+    // TODO: Decide what to do if we reach the maximum number of iterations.
+    if (currentPageIndex > maxNumberOfPages) {
       console.warn(
-        `Reached maximum limit of iterations(${maxIterations}). Stopping.`
+        `Reached maximum limit of iterations(${maxNumberOfPages}). Stopping.`
       );
       return allTransactions;
     }
@@ -91,22 +92,25 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
     const { transactions, oldestTxId } = await getTransactions({
       accountIdentifier: accountId,
       identity,
-      maxResults,
-      start,
+      maxResults: pageSize,
+      start: lastTransactionId,
     });
 
     const updatedTransactions = [...allTransactions, ...transactions];
+
+    // We consider it complete if we find the oldestTxId in the list of transactions or if oldestTxId is null.
+    // The latter condition is necessary if the list of transactions is empty, which would otherwise return false.
     const completed =
       isNullish(oldestTxId) || transactions.some(({ id }) => id === oldestTxId);
+
     if (!completed) {
       const lastTx = transactions[transactions.length - 1];
       return getAllTransactionsFromAccountAndIdentity({
         accountId,
         identity,
-        start: lastTx.id,
+        lastTransactionId: lastTx.id,
         allTransactions: updatedTransactions,
-        maxIterations,
-        currentIteration: currentIteration + 1,
+        currentPageIndex: currentPageIndex + 1,
       });
     }
 
