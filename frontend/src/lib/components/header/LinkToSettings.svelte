@@ -5,11 +5,12 @@
   import { createEventDispatcher } from "svelte";
 
   const dispatcher = createEventDispatcher();
+  const linkToSettings = "/settings";
 
   beforeNavigate(() => dispatcher("nnsLink"));
 </script>
 
-<a data-tid="settings" href="/settings" class="text">
+<a data-tid="settings" href={linkToSettings} class="text">
   <IconSettings />
   {$i18n.navigation.settings}
 </a>

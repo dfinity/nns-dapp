@@ -18,10 +18,12 @@ describe("AccountMenu", () => {
       new JestPageObjectElement(container)
     );
     const canistersLinkPo = accountMenuPo.getCanistersLinkPo();
+    const linkToSettingsPo = accountMenuPo.getLinkToSettingsPo();
 
     canistersLinkPo.root.addEventListener("click", mockLinkClickEvent);
+    linkToSettingsPo.root.addEventListener("click", mockLinkClickEvent);
 
-    return { accountMenuPo, canistersLinkPo };
+    return { accountMenuPo, canistersLinkPo, linkToSettingsPo };
   };
 
   it("should be closed by default", async () => {
@@ -78,10 +80,10 @@ describe("AccountMenu", () => {
     });
 
     it("should close popover on click on settings", async () => {
-      const { accountMenuPo } = renderComponent();
+      const { accountMenuPo, linkToSettingsPo } = renderComponent();
       await accountMenuPo.openMenu();
 
-      await accountMenuPo.getLinkToSettingsPo().click();
+      await linkToSettingsPo.click();
 
       //wait for goto to be triggered
       await runResolvedPromises();
