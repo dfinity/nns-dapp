@@ -12,7 +12,8 @@
   import { nonNullish, secondsToDuration } from "@dfinity/utils";
   import type { NeuronInfo } from "@dfinity/nns";
   import { START_REDUCING_VOTING_POWER_AFTER_SECONDS } from "$lib/constants/neurons.constants";
-  import { secondsToDissolveDelayDuration } from "../../utils/date.utils";
+  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   // The neurons in the store are sorted by the time they will lose rewards.
   let mostInactiveNeuron: NeuronInfo | undefined;
@@ -35,19 +36,21 @@
   });
 
   const onConfirm = () => {
-    // TBD
+    // TODO: Display the modal
   };
 </script>
 
-{#if nonNullish(mostInactiveNeuron)}
-  <Banner title={getTitle(mostInactiveNeuron)} {text}>
-    <BannerIcon slot="icon" status="error">
-      <IconInfo />
-    </BannerIcon>
-    <div slot="actions">
-      <button class="danger" on:click={onConfirm}
-        >{$i18n.losing_rewards_banner.confirm}</button
-      >
-    </div>
-  </Banner>
-{/if}
+<TestIdWrapper testId="losing-rewards-banner-component">
+  {#if nonNullish(mostInactiveNeuron)}
+    <Banner title={getTitle(mostInactiveNeuron)} {text}>
+      <BannerIcon slot="icon" status="error">
+        <IconInfo />
+      </BannerIcon>
+      <div slot="actions">
+        <button class="danger" on:click={onConfirm}
+          >{$i18n.losing_rewards_banner.confirm}</button
+        >
+      </div>
+    </Banner>
+  {/if}
+</TestIdWrapper>
