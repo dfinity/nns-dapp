@@ -30,7 +30,7 @@ export const getAccountTransactionsConcurrently = async ({
     const account = accounts[index];
     const baseAccountInfo = {
       account: {
-      ...account,
+        ...account,
       },
     };
 
