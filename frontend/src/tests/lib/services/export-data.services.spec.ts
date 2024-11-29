@@ -1,7 +1,15 @@
 import * as icpIndexApi from "$lib/api/icp-index.api";
-import { getAllTransactionsFromAccountAndIdentity } from "$lib/services/export-data.services";
+import {
+  getAccountTransactionsConcurrently,
+  getAllTransactionsFromAccountAndIdentity,
+} from "$lib/services/export-data.services";
 import { mockSignInIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
+import type { SignIdentity } from "@dfinity/agent";
 
 vi.mock("$lib/api/icp-ledger.api");
 
@@ -122,6 +130,69 @@ describe("export-data service", () => {
 
       expect(result).toEqual(firstBatch);
       expect(spyGetTransactions).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe("getAccountTransactionsConcurrently", () => {
+    const mockIdentity = {} as unknown as SignIdentity;
+    const mockAccounts = [mockMainAccount, mockSubAccount];
+
+    const mockTransactions = [
+      createTransactionWithId({}),
+      createTransactionWithId({}),
+    ];
+
+    it("should fetch transactions for all accounts successfully", async () => {
+      spyGetTransactions.mockResolvedValue({
+        transactions: mockTransactions,
+      });
+
+      const result = await getAccountTransactionsConcurrently({
+        accounts: mockAccounts,
+        identity: mockIdentity,
+      });
+
+      expect(result).toHaveLength(mockAccounts.length);
+      expect(spyGetTransactions).toHaveBeenCalledTimes(mockAccounts.length);
+
+      result.forEach((accountResult, index) => {
+        expect(accountResult.account).toEqual(mockAccounts[index]);
+        expect(accountResult.transactions).toEqual(mockTransactions);
+        expect(accountResult.error).toBeUndefined();
+      });
+    });
+
+    it("should handle failed transactions fetch for some accounts", async () => {
+      spyGetTransactions
+        .mockResolvedValueOnce({
+          transactions: mockTransactions,
+        })
+        .mockRejectedValueOnce(new Error("API Error"));
+
+      const result = await getAccountTransactionsConcurrently({
+        accounts: mockAccounts,
+        identity: mockIdentity,
+      });
+
+      expect(result).toHaveLength(mockAccounts.length);
+
+      // First account should have transactions
+      expect(result[0].transactions).toEqual(mockTransactions);
+      expect(result[0].error).toBeUndefined();
+
+      // Second account should have error and empty transactions
+      expect(result[1].transactions).toEqual([]);
+      expect(result[1].error).toBe("API Error");
+    });
+
+    it("should handle empty accounts array", async () => {
+      const result = await getAccountTransactionsConcurrently({
+        accounts: [],
+        identity: mockIdentity,
+      });
+
+      expect(result).toEqual([]);
+      expect(getAllTransactionsFromAccountAndIdentity).not.toHaveBeenCalled();
     });
   });
 });
