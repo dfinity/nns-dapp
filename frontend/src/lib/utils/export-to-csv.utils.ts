@@ -1,25 +1,19 @@
 import { isNullish } from "@dfinity/utils";
 
-export type Metadata = {
+type Metadata = {
   label: string;
   value: string;
+};
+
+type Dataset<T> = {
+  data: T[];
+  metadata?: Metadata[];
 };
 
 export type CsvHeader<T> = {
   id: keyof T;
   label: string;
 };
-
-interface CsvBaseConfig<T> {
-  data: T[];
-  headers: CsvHeader<T>[];
-  metadata?: Metadata[];
-}
-
-interface CsvFileConfig<T> extends CsvBaseConfig<T> {
-  fileName?: string;
-  description?: string;
-}
 
 const escapeCsvValue = (value: unknown): string => {
   if (isNullish(value)) return "";
@@ -49,7 +43,11 @@ export const convertToCsv = <T>({
   data,
   headers,
   metadata = [],
-}: CsvBaseConfig<T>) => {
+}: {
+  data: T[];
+  headers: CsvHeader<T>[];
+  metadata?: Metadata[];
+}) => {
   if (headers.length === 0) return "";
 
   const PAD_LEFT_WHEN_METADATA_PRESENT = 2;
@@ -162,44 +160,58 @@ const saveFileWithAnchor = ({
   }
 };
 
+export const combineDatasetsToCsv = <T>({
+  datasets,
+  headers,
+}: {
+  headers: CsvHeader<T>[];
+  datasets: Dataset<T>[];
+}): string => {
+  const csvParts: string[] = [];
+  // A double empty line break requires 3 new lines
+  const doubleCsvLineBreak = "\n\n\n";
+
+  for (const dataset of datasets) {
+    const { data, metadata } = dataset;
+    const csvContent = convertToCsv<T>({ data, headers, metadata });
+    csvParts.push(csvContent);
+  }
+  return csvParts.join(doubleCsvLineBreak);
+};
+
 /**
- * Downloads data as a Csv file using either the File System Access API or fallback method.
+ * Downloads data as a single CSV file combining multiple datasets, using either the File System Access API or fallback method.
  *
- * @param options - Configuration object for the Csv download
- * @param options.data - Array of objects to be converted to Csv. Each object should have consistent keys. It uses first object to check for consistency
- * @param options.headers - Array of objects defining the headers and their order in the CSV. Each object should include an `id` key that corresponds to a key in the data objects.
- * @param options.meatadata - Array of objects defining the metadata to be included in the CSV. Each object should include a `label` and `value` key. When present the main table will be shifted two columns to the left.
+ * @param options - Configuration object for the CSV download
+ * @param options.datasets - Array of dataset objects to be combined into a single CSV
+ * @param options.datasets[].data - Array of objects to be converted to CSV. Each object should have consistent keys
+ * @param options.datasets[].metadata - Optional array of metadata objects. Each object should include a `label` and `value` key. When present, the corresponding data will be shifted two columns to the left
+ * @param options.headers - Array of objects defining the headers and their order in the CSV. Each object should include an `id` key that corresponds to a key in the data objects
  * @param options.fileName - Name of the file without extension (defaults to "data")
- * @param options.description - File description for save dialog (defaults to " Csv file")
+ * @param options.description - File description for save dialog (defaults to "Csv file")
  *
- * @example
- * await generateCsvFileToSave({
- *   data: [
- *     { name: "John", age: 30 },
- *     { name: "Jane", age: 25 }
- *   ],
- *   headers: [
- *     { id: "name" },
- *     { id: "age" }
- *   ],
- * });
- *
- * @throws {FileSystemAccessError|CsvGenerationError} If there is an issue accessing the file system or generating the Csv
- * @returns {Promise<void>} Promise that resolves when the file has been downloaded
+ * @throws {FileSystemAccessError|CsvGenerationError} If there is an issue accessing the file system or generating the CSV
+ * @returns {Promise<void>} Promise that resolves when the combined CSV file has been downloaded
  *
  * @remarks
  * - Uses the modern File System Access API when available, falling back to traditional download method
  * - Automatically handles values containing special characters like commas and new lines
+ * - Combines multiple datasets into a single CSV file, maintaining their respective metadata
+ * - Each dataset's data and metadata will be appended sequentially in the final CSV
  */
 export const generateCsvFileToSave = async <T>({
-  data,
+  datasets,
   headers,
-  metadata,
   fileName = "data",
   description = "Csv file",
-}: CsvFileConfig<T>): Promise<void> => {
+}: {
+  fileName?: string;
+  description?: string;
+  headers: CsvHeader<T>[];
+  datasets: Dataset<T>[];
+}): Promise<void> => {
   try {
-    const csvContent = convertToCsv<T>({ data, headers, metadata });
+    const csvContent = combineDatasetsToCsv({ datasets, headers });
 
     const blob = new Blob([csvContent], {
       type: "text/csv;charset=utf-8;",
