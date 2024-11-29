@@ -1,5 +1,5 @@
 import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
-import type { Identity } from "@dfinity/agent";
+import type { Identity, SignIdentity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import en from "./i18n.mock";
@@ -29,6 +29,11 @@ export const createMockIdentity = (p: number) => {
     transformRequest,
   } as Identity;
 };
+
+export const mockSignInIdentity = {
+  getPrincipal: () => mockPrincipal,
+  transformRequest,
+} as unknown as SignIdentity;
 
 export const mockIdentityErrorMsg = en.error.missing_identity;
 
