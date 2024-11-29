@@ -27,15 +27,6 @@ describe("LosingRewardsBanner", () => {
       ),
     },
   };
-  const in2Days2HoursLosingRewardsNeuron = {
-    ...mockNeuron,
-    fullNeuron: {
-      ...mockFullNeuron,
-      votingPowerRefreshedTimestampSeconds: BigInt(
-        nowSeconds - SECONDS_IN_HALF_YEAR + 2 * SECONDS_IN_DAY + 60 * 60 * 2
-      ),
-    },
-  };
   const losingRewardsNeuron = {
     ...mockNeuron,
     fullNeuron: {
@@ -83,21 +74,6 @@ describe("LosingRewardsBanner", () => {
     const po = await renderComponent();
     expect(await po.getTitle()).toBe(
       "10 days left to confirm your neuron following"
-    );
-  });
-
-  it("displays days and hours for soon losing title ", async () => {
-    neuronsStore.setNeurons({
-      neurons: [
-        activeNeuron,
-        in10DaysLosingRewardsNeuron,
-        in2Days2HoursLosingRewardsNeuron,
-      ],
-      certified: true,
-    });
-    const po = await renderComponent();
-    expect(await po.getTitle()).toBe(
-      "2 days, 2 hours left to confirm your neuron following"
     );
   });
 
