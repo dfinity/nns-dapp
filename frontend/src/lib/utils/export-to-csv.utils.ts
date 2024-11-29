@@ -168,13 +168,15 @@ export const combineDatasetsToCsv = <T>({
   datasets: Dataset<T>[];
 }): string => {
   const csvParts: string[] = [];
+  // A double empty line break requires 3 new lines
+  const doubleCsvLineBreak = "\n\n\n";
 
   for (const dataset of datasets) {
     const { data, metadata } = dataset;
     const csvContent = convertToCsv<T>({ data, headers, metadata });
     csvParts.push(csvContent);
   }
-  return csvParts.join("\n\n\n");
+  return csvParts.join(doubleCsvLineBreak);
 };
 
 /**
