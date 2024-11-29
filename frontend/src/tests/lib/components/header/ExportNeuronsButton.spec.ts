@@ -90,20 +90,24 @@ describe("ExportNeuronsButton", () => {
     await po.click();
     expect(generateCsvFileToSave).toBeCalledWith(
       expect.objectContaining({
-        data: expect.arrayContaining([
+        datasets: expect.arrayContaining([
           expect.objectContaining({
-            neuronId: "1",
-            project: "Internet Computer",
-            symbol: "ICP",
-            neuronAccountId:
-              "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
-            controllerId: "1",
-            creationDate: "Jan 1, 1970",
-            dissolveDate: "N/A",
-            dissolveDelaySeconds: "3 hours, 5 minutes",
-            stakedMaturity: "0",
-            stake: "30.00",
-            state: "Locked",
+            data: expect.arrayContaining([
+              expect.objectContaining({
+                neuronId: "1",
+                project: "Internet Computer",
+                symbol: "ICP",
+                neuronAccountId:
+                  "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
+                controllerId: "1",
+                creationDate: "Jan 1, 1970",
+                dissolveDate: "N/A",
+                dissolveDelaySeconds: "3 hours, 5 minutes",
+                stakedMaturity: "0",
+                stake: "30.00",
+                state: "Locked",
+              }),
+            ]),
           }),
         ]),
       })

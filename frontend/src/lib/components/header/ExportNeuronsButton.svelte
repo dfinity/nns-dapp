@@ -93,15 +93,19 @@
       const metadataDate = nanoSecondsToDateTime(nowInBigIntNanoSeconds());
 
       await generateCsvFileToSave({
-        data: humanFriendlyContent,
-        metadata: [
+        datasets: [
           {
-            label: $i18n.export_csv_neurons.account_id_label,
-            value: nnsAccountPrincipal.toString(),
-          },
-          {
-            label: $i18n.export_csv_neurons.date_label,
-            value: metadataDate,
+            data: humanFriendlyContent,
+            metadata: [
+              {
+                label: $i18n.export_csv_neurons.account_id_label,
+                value: nnsAccountPrincipal.toString(),
+              },
+              {
+                label: $i18n.export_csv_neurons.date_label,
+                value: metadataDate,
+              },
+            ],
           },
         ],
         headers: [
