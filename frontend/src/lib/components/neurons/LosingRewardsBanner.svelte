@@ -23,7 +23,7 @@
     isNeuronLosingRewards(mostInactiveNeuron)
       ? $i18n.losing_rewards_banner.rewards_missing_title
       : replacePlaceholders($i18n.losing_rewards_banner.days_left_title, {
-          $left: secondsToDuration({
+          $timeLeft: secondsToDuration({
             seconds: BigInt(secondsUntilLosingRewards(mostInactiveNeuron)),
             i18n: $i18n.time,
           }),
