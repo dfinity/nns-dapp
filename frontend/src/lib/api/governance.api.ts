@@ -405,7 +405,7 @@ export const stakeNeuron = async ({
   logWithTimestamp(`Staking Neuron call...`);
   const { canister } = await governanceCanister({ identity });
 
-  // The use case of staking from Hardware wallet uses a different agent for governance and ledger canister.
+  // The use case of staking from Ledger device uses a different agent for governance and ledger canister.
   const { canister: ledgerCanister } = await getLedgerCanister({
     identity: ledgerCanisterIdentity,
   });
