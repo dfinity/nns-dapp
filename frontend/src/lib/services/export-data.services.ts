@@ -6,24 +6,24 @@ import { isNullish } from "@dfinity/utils";
 export const getAllTransactionsFromAccountAndIdentity = async ({
   accountId,
   identity,
-  start = undefined,
+  lastTransactionId = undefined,
   allTransactions = [],
-  currentIteration = 1,
+  currentPageIndex = 1,
 }: {
   accountId: string;
   identity: SignIdentity;
-  start?: bigint;
+  lastTransactionId?: bigint;
   allTransactions?: TransactionWithId[];
-  currentIteration?: number;
+  currentPageIndex?: number;
 }): Promise<TransactionWithId[] | undefined> => {
-  const maxResults = 100n;
-  const maxIterations = 10;
+  const pageSize = 100n;
+  const maxNumberOfPages = 10;
 
   try {
     // TODO: Decide what to do if we reach the maximum number of iterations.
-    if (currentIteration > maxIterations) {
+    if (currentPageIndex > maxNumberOfPages) {
       console.warn(
-        `Reached maximum limit of iterations(${maxIterations}). Stopping.`
+        `Reached maximum limit of iterations(${maxNumberOfPages}). Stopping.`
       );
       return allTransactions;
     }
@@ -31,8 +31,8 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
     const { transactions, oldestTxId } = await getTransactions({
       accountIdentifier: accountId,
       identity,
-      maxResults,
-      start,
+      maxResults: pageSize,
+      start: lastTransactionId,
     });
 
     const updatedTransactions = [...allTransactions, ...transactions];
@@ -47,9 +47,9 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
       return getAllTransactionsFromAccountAndIdentity({
         accountId,
         identity,
-        start: lastTx.id,
+        lastTransactionId: lastTx.id,
         allTransactions: updatedTransactions,
-        currentIteration: currentIteration + 1,
+        currentPageIndex: currentPageIndex + 1,
       });
     }
 
