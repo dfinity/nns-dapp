@@ -400,7 +400,7 @@ describe("Staking", () => {
     });
   });
 
-  describe.only("LosingRewardsBanner", () => {
+  describe("LosingRewardsBanner", () => {
     beforeEach(() => {
       neuronsStore.setNeurons({
         neurons: [
