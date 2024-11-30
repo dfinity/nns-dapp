@@ -17,7 +17,7 @@
 
   // Add the auth identity principal as hotkey
   const addCurrentUserToHotkey = async () => {
-    // This screen is only for hardware wallet.
+    // This screen is only for Ledger device.
     const { success } = await addHotkeyForHardwareWalletNeuron({
       neuronId,
       accountIdentifier: account.identifier,

@@ -268,7 +268,7 @@ export const querySnsLifecycle = async ({
 /**
  * Stake SNS neuron.
  *
- * param.fee is mandatory to ensure that it's show for hardware wallets.
+ * param.fee is mandatory to ensure that it's show for Ledger devices.
  * Otherwise, the fee would not show in the device and the user would not know how much they are paying.
  *
  * This als adds an extra layer of safety because we show the fee before the user confirms the transaction.

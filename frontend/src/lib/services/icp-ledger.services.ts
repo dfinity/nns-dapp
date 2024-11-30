@@ -73,7 +73,7 @@ export const registerHardwareWallet = async ({
     return;
   }
 
-  logWithTimestamp(`Register hardware wallet ${hashCode(name)}...`);
+  logWithTimestamp(`Register Ledger device ${hashCode(name)}...`);
 
   const identity: Identity = await getAuthenticatedIdentity();
 
@@ -85,7 +85,7 @@ export const registerHardwareWallet = async ({
       principal: ledgerIdentity.getPrincipal(),
     });
 
-    logWithTimestamp(`Register hardware wallet ${hashCode(name)} complete.`);
+    logWithTimestamp(`Register Ledger device ${hashCode(name)} complete.`);
 
     await syncAccounts();
   } catch (err: unknown) {

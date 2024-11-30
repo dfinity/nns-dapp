@@ -7,7 +7,7 @@ export enum LedgerConnectionState {
   INCORRECT_DEVICE,
 }
 
-// Errors throw by hardware wallet but not defined in LedgerError (https://github.com/zondax/ledger-icp)
+// Errors throw by Ledger device but not defined in LedgerError (https://github.com/zondax/ledger-icp)
 export enum ExtendedLedgerError {
   AppNotOpen = 28161,
   CannotFetchPublicKey = 65535,
