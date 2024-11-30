@@ -573,11 +573,11 @@ describe("TransactionModal", () => {
       expect(await form.getSourceAccounts()).toEqual([
         "Main",
         "test subaccount",
-        "hardware wallet account test",
+        "Ledger device account test",
       ]);
     });
 
-    it("should not show the hardware wallet account if skipHardwareWallets is true", async () => {
+    it("should not show the Ledger device account if skipHardwareWallets is true", async () => {
       const { container } = await renderTransactionModal({
         skipHardwareWallets: true,
         rootCanisterId: OWN_CANISTER_ID,

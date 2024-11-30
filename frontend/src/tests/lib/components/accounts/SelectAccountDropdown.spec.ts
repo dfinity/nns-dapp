@@ -55,7 +55,7 @@ describe("SelectAccountDropdown", () => {
     it("should render accounts as options", () => {
       const { container } = render(SelectAccountDropdown, { props });
 
-      // main + subaccounts + hardware wallets
+      // main + subaccounts + Ledger devices
       expect(container.querySelectorAll("option").length).toBe(
         1 + subAccounts.length + hardwareWallets.length
       );
@@ -69,7 +69,7 @@ describe("SelectAccountDropdown", () => {
       );
     });
 
-    it("should not render accounts hardware wallets", () => {
+    it("should not render accounts Ledger devices", () => {
       const { container } = render(SelectAccountDropdown, {
         props: {
           filterAccounts: (account) => !isAccountHardwareWallet(account),

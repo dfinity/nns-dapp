@@ -166,7 +166,7 @@ describe("NNSDapp", () => {
   });
 
   describe("NNSDapp.registerHardwareWallet", () => {
-    it("should register hardware wallet", async () => {
+    it("should register Ledger device", async () => {
       const service = mock<NNSDappService>();
       service.register_hardware_wallet.mockResolvedValue({ Ok: null });
 
@@ -196,7 +196,7 @@ describe("NNSDapp", () => {
       expect(call).rejects.toThrow(err);
     };
 
-    it("should throw register hardware wallet error not found", async () =>
+    it("should throw register Ledger device error not found", async () =>
       await testError(
         {
           AccountNotFound: null,
@@ -206,7 +206,7 @@ describe("NNSDapp", () => {
         )
       ));
 
-    it("should throw register hardware wallet error name too long", async () =>
+    it("should throw register Ledger device error name too long", async () =>
       await testError(
         {
           NameTooLong: null,
@@ -219,7 +219,7 @@ describe("NNSDapp", () => {
         )
       ));
 
-    it("should throw register hardware wallet error already registered", async () =>
+    it("should throw register Ledger device error already registered", async () =>
       await testError(
         {
           HardwareWalletAlreadyRegistered: null,
@@ -227,7 +227,7 @@ describe("NNSDapp", () => {
         new HardwareWalletAttachError("error__attach_wallet.already_registered")
       ));
 
-    it("should throw register hardware wallet error limit exceeded", async () =>
+    it("should throw register Ledger device error limit exceeded", async () =>
       await testError(
         {
           HardwareWalletLimitExceeded: null,

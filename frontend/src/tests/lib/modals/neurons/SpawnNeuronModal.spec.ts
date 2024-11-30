@@ -103,7 +103,7 @@ describe("SpawnNeuronModal", () => {
     expect(spawnNeuron).toBeCalled();
   });
 
-  it("should show only confirm screen for hardware wallet controlled neurons", async () => {
+  it("should show only confirm screen for Ledger device controlled neurons", async () => {
     const neuronHW = {
       ...mockNeuron,
       fullNeuron: {

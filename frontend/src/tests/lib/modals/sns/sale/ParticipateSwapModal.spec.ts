@@ -122,7 +122,7 @@ describe("ParticipateSwapModal", () => {
     expect(initiateSnsSaleParticipation).toBeCalledTimes(1);
   };
 
-  describe("when hardware wallet account is available", () => {
+  describe("when Ledger device account is available", () => {
     beforeEach(() => {
       setAccountsForTesting({
         main: mockMainAccount,
@@ -132,7 +132,7 @@ describe("ParticipateSwapModal", () => {
       });
     });
 
-    it("should not show hardware wallet account as selectable", async () => {
+    it("should not show Ledger device account as selectable", async () => {
       const po = await renderSwapModalPo();
       const form = po.getTransactionFormPo();
       expect(await form.getSourceAccounts()).toEqual([

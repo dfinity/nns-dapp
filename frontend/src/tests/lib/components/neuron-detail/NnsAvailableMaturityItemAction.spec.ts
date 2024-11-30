@@ -61,7 +61,7 @@ describe("NnsAvailableMaturityItemAction", () => {
     expect(await po.hasStakeButton()).toBe(true);
   });
 
-  it("should render buttons if controlled by attached hardware wallet", async () => {
+  it("should render buttons if controlled by attached Ledger device", async () => {
     setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],

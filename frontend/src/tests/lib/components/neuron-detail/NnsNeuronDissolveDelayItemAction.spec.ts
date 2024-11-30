@@ -116,7 +116,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(false);
   });
 
-  it("should render increase dissolve delay button if controlled by hardware wallet", async () => {
+  it("should render increase dissolve delay button if controlled by Ledger device", async () => {
     setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],

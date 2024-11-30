@@ -162,7 +162,7 @@ describe("NnsNeuronAdvancedSection", () => {
     ).toBeNull();
   });
 
-  it("should render not render join neurons' fund if user is a hotkey but controller is the attached hardware wallet", async () => {
+  it("should render not render join neurons' fund if user is a hotkey but controller is the attached Ledger device", async () => {
     setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],
@@ -193,7 +193,7 @@ describe("NnsNeuronAdvancedSection", () => {
     expect(await po.getJoinNeuronsFundCheckbox().isPresent()).toBe(false);
   });
 
-  it("should render split button but not join neurons' fund if neuron is controlled by hardware wallet", async () => {
+  it("should render split button but not join neurons' fund if neuron is controlled by Ledger device", async () => {
     setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],
