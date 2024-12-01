@@ -1,5 +1,6 @@
 import {
   FileSystemAccessError,
+  combineDatasetsToCsv,
   convertToCsv,
   generateCsvFileToSave,
   type CsvHeader,
@@ -143,6 +144,65 @@ describe("Export to Csv", () => {
     });
   });
 
+  describe("combineDatasetsToCsv", () => {
+    const headers: CsvHeader<TestPersonData>[] = [
+      { id: "name", label: "Name" },
+      { id: "age", label: "Age" },
+    ];
+
+    it("should handle empty datasets by rendering the headers and two empty spaces between them", () => {
+      const datasets = [{ data: [] }, { data: [] }];
+      const expected = "Name,Age\n\n\nName,Age";
+
+      expect(combineDatasetsToCsv({ datasets, headers })).toBe(expected);
+    });
+
+    it("should handle multiple datasets by rendering them and two empty spaces in between", () => {
+      const datasets = [
+        {
+          data: [
+            { name: "John", age: 30 },
+            { name: "Jane", age: 25 },
+          ],
+        },
+        {
+          data: [
+            { name: "Peter", age: 24 },
+            { name: "Mary", age: 28 },
+          ],
+        },
+      ];
+      const expected =
+        "Name,Age\nJohn,30\nJane,25\n\n\nName,Age\nPeter,24\nMary,28";
+
+      expect(combineDatasetsToCsv({ datasets, headers })).toBe(expected);
+    });
+
+    it("should handle multiple datasets with metadata", () => {
+      const datasets = [
+        {
+          data: [{ name: "John", age: 30 }],
+          metadata: [
+            { label: "Report Date", value: "2024-01-01" },
+            { label: "Department", value: "Sales" },
+          ],
+        },
+        {
+          data: [{ name: "Jane", age: 25 }],
+          metadata: [
+            { label: "Report Date", value: "2024-01-01" },
+            { label: "Department", value: "Marketing" },
+          ],
+        },
+      ];
+
+      const expected =
+        "Report Date,2024-01-01\nDepartment,Sales\n\n,,Name,Age\n,,John,30\n\n\nReport Date,2024-01-01\nDepartment,Marketing\n\n,,Name,Age\n,,Jane,25";
+
+      expect(combineDatasetsToCsv({ datasets, headers })).toBe(expected);
+    });
+  });
+
   describe("downloadCSV", () => {
     beforeEach(() => {
       vi.spyOn(console, "error").mockImplementation(() => {});
@@ -170,7 +230,7 @@ describe("Export to Csv", () => {
 
       it("should use File System Access API when available", async () => {
         await generateCsvFileToSave({
-          data: [],
+          datasets: [],
           headers: [],
           fileName: "test",
         });
@@ -200,7 +260,7 @@ describe("Export to Csv", () => {
         );
 
         await expect(
-          generateCsvFileToSave({ data: [], headers: [] })
+          generateCsvFileToSave({ datasets: [], headers: [] })
         ).resolves.not.toThrow();
       });
 
@@ -211,7 +271,7 @@ describe("Export to Csv", () => {
         );
 
         await expect(
-          generateCsvFileToSave({ data: [], headers: [] })
+          generateCsvFileToSave({ datasets: [], headers: [] })
         ).rejects.toThrow(FileSystemAccessError);
       });
     });
@@ -231,7 +291,7 @@ describe("Export to Csv", () => {
         vi.spyOn(document, "createElement").mockReturnValue(mockLink);
 
         await generateCsvFileToSave({
-          data: [],
+          datasets: [],
           headers: [],
           fileName: "test",
         });
@@ -247,7 +307,7 @@ describe("Export to Csv", () => {
         });
 
         await expect(
-          generateCsvFileToSave({ data: [], headers: [] })
+          generateCsvFileToSave({ datasets: [], headers: [] })
         ).rejects.toThrow(FileSystemAccessError);
       });
     });

@@ -5,6 +5,8 @@
     "icp": "ICP",
     "create": "Create",
     "filter": "Filter",
+    "filter_select_all": "Select all filters",
+    "filter_clear_all": "Clear all filters",
     "back": "Back",
     "confirm_yes": "Yes, I'm sure",
     "confirm_no": "Cancel",
@@ -360,6 +362,12 @@
     "create_as_public": "Create as a public neuron",
     "create_as_public_tooltip": "Public neurons reveal more information about themselves including how they vote on proposals.",
     "create_as_public_neuron_failure": "Making your neuron public has failed, so it was created as a private neuron. You can change neuron visibility at any time under \"Advanced Details & Settings\""
+  },
+  "losing_rewards_banner": {
+    "days_left_title": "$timeLeft left to confirm your neuron following",
+    "rewards_missing_title": "One or more of your neurons are missing voting rewards",
+    "description": "ICP neurons that are inactive for $period start losing voting rewards. In order to avoid losing rewards, vote manually, edit or confirm your following.",
+    "confirm": "Confirm Following"
   },
   "new_followee": {
     "title": "Enter New Followee",

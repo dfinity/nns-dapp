@@ -49,11 +49,13 @@
       <button
         class="text"
         data-tid="filter-modal-select-all"
+        aria-label={$i18n.core.filter_select_all}
         on:click={selectAll}>{$i18n.voting.check_all}</button
       >
       <button
         class="text"
         data-tid="filter-modal-clear"
+        aria-label={$i18n.core.filter_clear_all}
         on:click={clearSelection}>{$i18n.voting.uncheck_all}</button
       >
     </div>
@@ -77,7 +79,7 @@
       <button
         class="secondary"
         type="button"
-        aria-label="select-all-filters"
+        aria-label={$i18n.core.filter_select_all}
         data-tid="close"
         on:click={close}
       >
@@ -86,7 +88,7 @@
       <button
         class="primary"
         type="button"
-        aria-label="clear-filters"
+        aria-label={$i18n.core.filter_clear_all}
         on:click={filter}
         data-tid="apply-filters"
       >

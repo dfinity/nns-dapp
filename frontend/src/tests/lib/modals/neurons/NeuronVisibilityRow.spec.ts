@@ -97,14 +97,14 @@ describe("NeuronVisibilityRow", () => {
       tags: [],
       uncontrolledNeuronDetails: {
         type: "hardwareWallet",
-        text: "Hardware Wallet",
+        text: "Ledger Device",
       },
     };
 
     const { po } = renderComponent({ rowData });
 
     expect(await po.getUncontrolledNeuronDetailsText()).toEqual(
-      "Hardware Wallet"
+      "Ledger Device"
     );
   });
 

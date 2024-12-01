@@ -37,7 +37,7 @@ import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
-  // TODO: Support Hardware Wallets
+  // TODO: Support Ledger Devices
   return getAuthenticatedIdentity();
 };
 

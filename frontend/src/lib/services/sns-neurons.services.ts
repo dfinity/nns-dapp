@@ -210,7 +210,7 @@ export const getSnsNeuron = async ({
   });
 };
 
-// Implement when SNS neurons can be controlled with Hardware wallets
+// Implement when SNS neurons can be controlled with Ledger devices
 export const getSnsNeuronIdentity = (): Promise<Identity> =>
   getAuthenticatedIdentity();
 

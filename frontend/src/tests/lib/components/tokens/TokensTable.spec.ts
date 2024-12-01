@@ -154,7 +154,7 @@ describe("TokensTable", () => {
   });
 
   it("should render the subtitle if present", async () => {
-    const subtitle = "Hardware Wallet";
+    const subtitle = "Ledger Device";
     const token1 = createUserToken({
       universeId: OWN_CANISTER_ID,
       balance: TokenAmount.fromE8s({ amount: 314000000n, token: ICPToken }),

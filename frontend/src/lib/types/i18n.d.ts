@@ -8,6 +8,8 @@ interface I18nCore {
   icp: string;
   create: string;
   filter: string;
+  filter_select_all: string;
+  filter_clear_all: string;
   back: string;
   confirm_yes: string;
   confirm_no: string;
@@ -374,6 +376,13 @@ interface I18nNeurons {
   create_as_public: string;
   create_as_public_tooltip: string;
   create_as_public_neuron_failure: string;
+}
+
+interface I18nLosing_rewards_banner {
+  days_left_title: string;
+  rewards_missing_title: string;
+  description: string;
+  confirm: string;
 }
 
 interface I18nNew_followee {
@@ -1432,6 +1441,7 @@ interface I18n {
   neuron_types: I18nNeuron_types;
   staking: I18nStaking;
   neurons: I18nNeurons;
+  losing_rewards_banner: I18nLosing_rewards_banner;
   new_followee: I18nNew_followee;
   follow_neurons: I18nFollow_neurons;
   voting: I18nVoting;
