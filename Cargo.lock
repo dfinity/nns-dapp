@@ -170,7 +170,7 @@ dependencies = [
  "nom",
  "num-traits",
  "rusticata-macros",
- "thiserror",
+ "thiserror 1.0.69",
  "time",
 ]
 
@@ -182,7 +182,7 @@ checksum = "965c2d33e53cb6b267e148a4cb0760bc01f4904c1cd4bb4002a085bb016d1490"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
  "synstructure",
 ]
 
@@ -194,7 +194,7 @@ checksum = "7b18050c2cd6fe86c3a76584ef5e0baf286d038cda203eb6223df2cc413565f7"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -205,7 +205,7 @@ checksum = "721cae7de5c34fbb2acd27e21e6d2cf7b886dce0c27388d46c4e6c47ea4318dd"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -359,7 +359,7 @@ dependencies = [
  "proc-macro-crate",
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -473,9 +473,9 @@ checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 
 [[package]]
 name = "bytes"
-version = "1.8.0"
+version = "1.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9ac0150caa2ae65ca5bd83f25c7de183dea78d4d366469f148435e2acfbad0da"
+checksum = "325918d6fe32f23b19878fe4b34794ae41fc19ddbe53b10571a4874d44ffd39b"
 
 [[package]]
 name = "cached"
@@ -486,7 +486,7 @@ dependencies = [
  "hashbrown 0.14.5",
  "instant",
  "once_cell",
- "thiserror",
+ "thiserror 1.0.69",
 ]
 
 [[package]]
@@ -518,7 +518,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "stacker",
- "thiserror",
+ "thiserror 1.0.69",
 ]
 
 [[package]]
@@ -530,7 +530,7 @@ dependencies = [
  "lazy_static",
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -549,14 +549,14 @@ dependencies = [
  "logos",
  "num-bigint",
  "pretty",
- "thiserror",
+ "thiserror 1.0.69",
 ]
 
 [[package]]
 name = "cargo-platform"
-version = "0.1.8"
+version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "24b1f0365a6c6bb4020cd05806fd0d33c44d38046b8bd7f0e40814b9763cabfc"
+checksum = "e35af189006b9c0f00a064685c727031e3ed2d8020f7ba284d78cc2671bd36ea"
 dependencies = [
  "serde",
 ]
@@ -576,9 +576,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.2.1"
+version = "1.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fd9de9f2205d5ef3fd67e685b0df337994ddd4495e2a28d185500d0e1edfea47"
+checksum = "f34d93e62b03caf570cccc334cbc6c2fceca82f39211051345108adcba3eebdc"
 dependencies = [
  "shlex",
 ]
@@ -666,7 +666,7 @@ dependencies = [
  "heck 0.5.0",
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -871,13 +871,13 @@ checksum = "f46882e17999c6cc590af592290432be3bce0428cb0d5f8b6715e4dc7b383eb3"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
 name = "cycles-minting-canister"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "async-trait",
  "base64 0.13.1",
@@ -1006,13 +1006,13 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rustc_version",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
 name = "dfn_candid"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "dfn_core",
@@ -1024,7 +1024,7 @@ dependencies = [
 [[package]]
 name = "dfn_core"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-base-types",
  "on_wire",
@@ -1033,7 +1033,7 @@ dependencies = [
 [[package]]
 name = "dfn_http"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "dfn_candid",
@@ -1045,7 +1045,7 @@ dependencies = [
 [[package]]
 name = "dfn_http_metrics"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "dfn_candid",
  "dfn_core",
@@ -1058,7 +1058,7 @@ dependencies = [
 [[package]]
 name = "dfn_protobuf"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "on_wire",
  "prost",
@@ -1111,7 +1111,7 @@ checksum = "97369cbbc041bc366949bc74d34658d6cda5621039731c6310521892a3a20ae0"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -1219,12 +1219,12 @@ dependencies = [
 
 [[package]]
 name = "errno"
-version = "0.3.9"
+version = "0.3.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "534c5cf6194dfab3db3242765c03bbe257cf92f22b38f6bc0c58d59108a820ba"
+checksum = "33d852cb9b869c2a9b3df2f71a3074817f01e1844f839a144f5fcef059a4eb5d"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -1242,7 +1242,7 @@ checksum = "486f806e73c5707928240ddc295403b1b93c96a02038563881c4a2fd84b81ac4"
 [[package]]
 name = "fe-derive"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "hex",
  "num-bigint-dig",
@@ -1379,7 +1379,7 @@ checksum = "162ee34ebcb7c64a8abebc059ce0fee27c2262618d7b60ed8faf72fef13c3650"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -1506,9 +1506,9 @@ dependencies = [
 
 [[package]]
 name = "hashbrown"
-version = "0.15.1"
+version = "0.15.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3a9bfc1af68b1726ea47d3d5109de126281def866b33970e10fbab11b5dafab3"
+checksum = "bf151400ff0baff5465007dd2f3e717f3fe502074ca563069ce3a6629d07b289"
 
 [[package]]
 name = "heck"
@@ -1524,12 +1524,6 @@ name = "heck"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
-
-[[package]]
-name = "hermit-abi"
-version = "0.3.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d231dfb89cfffdbc30e7fc41579ed6066ad03abda9e567ccafae602b97ec5024"
 
 [[package]]
 name = "hex"
@@ -1590,7 +1584,7 @@ dependencies = [
 [[package]]
 name = "ic-base-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "byte-unit",
  "bytes",
@@ -1620,7 +1614,7 @@ dependencies = [
 [[package]]
 name = "ic-btc-replica-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "ic-btc-interface",
@@ -1633,7 +1627,7 @@ dependencies = [
 [[package]]
 name = "ic-canister-client-sender"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-base-types",
  "ic-crypto-ed25519",
@@ -1646,7 +1640,7 @@ dependencies = [
 [[package]]
 name = "ic-canister-log"
 version = "0.2.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "serde",
 ]
@@ -1654,7 +1648,7 @@ dependencies = [
 [[package]]
 name = "ic-canister-profiler"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-metrics-encoder",
  "ic0 0.18.11",
@@ -1663,7 +1657,7 @@ dependencies = [
 [[package]]
 name = "ic-canisters-http-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "dfn_candid",
@@ -1749,7 +1743,7 @@ dependencies = [
  "quote",
  "serde",
  "serde_tokenstream 0.2.2",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -1763,7 +1757,7 @@ dependencies = [
  "quote",
  "serde",
  "serde_tokenstream 0.2.2",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -1795,6 +1789,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "ic-certification"
+version = "2.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e64ee3d8b6e81b51f245716d3e0badb63c283c00f3c9fb5d5219afc30b5bf821"
+dependencies = [
+ "hex",
+ "serde",
+ "serde_bytes",
+ "sha2",
+]
+
+[[package]]
 name = "ic-certified-map"
 version = "0.3.2"
 source = "git+https://github.com/dfinity/cdk-rs?rev=58791941b72471e09e3d9e733f2a3d4d54e52b5a#58791941b72471e09e3d9e733f2a3d4d54e52b5a"
@@ -1818,21 +1824,21 @@ dependencies = [
 [[package]]
 name = "ic-crypto-ed25519"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "curve25519-dalek",
  "ed25519-dalek",
  "hkdf",
  "pem",
  "rand",
- "thiserror",
+ "thiserror 2.0.3",
  "zeroize",
 ]
 
 [[package]]
 name = "ic-crypto-getrandom-for-wasm"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "getrandom",
 ]
@@ -1840,7 +1846,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-basic-sig-der-utils"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "hex",
  "ic-types",
@@ -1850,7 +1856,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-basic-sig-ed25519"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "base64 0.13.1",
  "curve25519-dalek",
@@ -1872,7 +1878,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-bls12-381-type"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "hex",
  "ic_bls12_381",
@@ -1890,7 +1896,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-hmac"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-crypto-internal-sha2",
 ]
@@ -1898,7 +1904,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-multi-sig-bls12381"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "base64 0.13.1",
  "hex",
@@ -1917,7 +1923,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-seed"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "hex",
  "ic-crypto-sha2",
@@ -1930,7 +1936,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-sha2"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "sha2",
 ]
@@ -1938,7 +1944,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-threshold-sig-bls12381"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "base64 0.13.1",
  "cached",
@@ -1964,7 +1970,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-threshold-sig-canister-threshold-sig"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "curve25519-dalek",
  "fe-derive",
@@ -1994,7 +2000,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "arrayvec 0.7.6",
  "hex",
@@ -2004,14 +2010,14 @@ dependencies = [
  "serde_cbor",
  "strum",
  "strum_macros",
- "thiserror",
+ "thiserror 2.0.3",
  "zeroize",
 ]
 
 [[package]]
 name = "ic-crypto-node-key-validation"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "hex",
  "ic-base-types",
@@ -2029,7 +2035,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-secp256k1"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "hmac",
  "k256",
@@ -2038,6 +2044,7 @@ dependencies = [
  "pem",
  "rand",
  "rand_chacha",
+ "sha2",
  "simple_asn1",
  "zeroize",
 ]
@@ -2045,7 +2052,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-secrets-containers"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "serde",
  "zeroize",
@@ -2054,7 +2061,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-sha2"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-crypto-internal-sha2",
 ]
@@ -2062,7 +2069,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-tls-cert-validation"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "hex",
  "ic-crypto-internal-basic-sig-ed25519",
@@ -2075,20 +2082,20 @@ dependencies = [
 [[package]]
 name = "ic-crypto-tree-hash"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-crypto-internal-types",
  "ic-crypto-sha2",
  "ic-protobuf",
  "serde",
  "serde_bytes",
- "thiserror",
+ "thiserror 2.0.3",
 ]
 
 [[package]]
 name = "ic-crypto-utils-basic-sig"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-base-types",
  "ic-crypto-ed25519",
@@ -2098,7 +2105,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-utils-ni-dkg"
 version = "0.8.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-crypto-internal-types",
  "ic-protobuf",
@@ -2108,7 +2115,7 @@ dependencies = [
 [[package]]
 name = "ic-error-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-protobuf",
  "ic-utils",
@@ -2120,7 +2127,7 @@ dependencies = [
 [[package]]
 name = "ic-icrc1"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "ciborium",
@@ -2136,13 +2143,13 @@ dependencies = [
  "num-traits",
  "serde",
  "serde_bytes",
- "thiserror",
+ "thiserror 2.0.3",
 ]
 
 [[package]]
 name = "ic-icrc1-index-ng"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "ciborium",
@@ -2170,7 +2177,7 @@ dependencies = [
 [[package]]
 name = "ic-icrc1-ledger"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "async-trait",
  "candid",
@@ -2181,7 +2188,7 @@ dependencies = [
  "ic-canisters-http-types",
  "ic-cdk 0.16.0",
  "ic-cdk-macros 0.9.0",
- "ic-crypto-tree-hash",
+ "ic-certification",
  "ic-icrc1",
  "ic-icrc1-tokens-u64",
  "ic-ledger-canister-core",
@@ -2190,6 +2197,7 @@ dependencies = [
  "ic-metrics-encoder",
  "ic-stable-structures",
  "icrc-ledger-types",
+ "leb128",
  "num-traits",
  "serde",
  "serde_bytes",
@@ -2198,7 +2206,7 @@ dependencies = [
 [[package]]
 name = "ic-icrc1-tokens-u64"
 version = "0.1.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "ic-ledger-core",
@@ -2210,7 +2218,7 @@ dependencies = [
 [[package]]
 name = "ic-ledger-canister-core"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "async-trait",
  "candid",
@@ -2227,7 +2235,7 @@ dependencies = [
 [[package]]
 name = "ic-ledger-core"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "ic-ledger-hash-of",
@@ -2240,7 +2248,7 @@ dependencies = [
 [[package]]
 name = "ic-ledger-hash-of"
 version = "0.1.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "hex",
@@ -2250,12 +2258,12 @@ dependencies = [
 [[package]]
 name = "ic-limits"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 
 [[package]]
 name = "ic-management-canister-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2281,7 +2289,7 @@ checksum = "8b5c7628eac357aecda461130f8074468be5aa4d258a002032d82d817f79f1f8"
 [[package]]
 name = "ic-nervous-system-canisters"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "async-trait",
  "candid",
@@ -2298,7 +2306,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-clients"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "async-trait",
  "candid",
@@ -2321,12 +2329,12 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-collections-union-multi-map"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 
 [[package]]
 name = "ic-nervous-system-common"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "async-trait",
  "base64 0.13.1",
@@ -2361,12 +2369,12 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-common-build-metadata"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 
 [[package]]
 name = "ic-nervous-system-common-test-keys"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-base-types",
  "ic-canister-client-sender",
@@ -2379,12 +2387,12 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-common-validation"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 
 [[package]]
 name = "ic-nervous-system-governance"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-base-types",
  "ic-stable-structures",
@@ -2396,7 +2404,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-initial-supply"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "async-trait",
  "candid",
@@ -2410,7 +2418,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-linear-map"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "rust_decimal",
 ]
@@ -2418,12 +2426,12 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-lock"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 
 [[package]]
 name = "ic-nervous-system-proto"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "comparable",
@@ -2436,7 +2444,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-proxied-canister-calls-tracker"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-base-types",
 ]
@@ -2444,7 +2452,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-root"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "dfn_core",
@@ -2460,7 +2468,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-runtime"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "async-trait",
  "candid",
@@ -2473,17 +2481,17 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-string"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 
 [[package]]
 name = "ic-nervous-system-temporary"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 
 [[package]]
 name = "ic-neurons-fund"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-nervous-system-common",
  "lazy_static",
@@ -2496,7 +2504,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-common"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "comparable",
@@ -2522,7 +2530,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-constants"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-base-types",
  "maplit",
@@ -2531,7 +2539,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-governance"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "async-trait",
  "build-info",
@@ -2605,7 +2613,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-governance-api"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "bytes",
  "candid",
@@ -2633,7 +2641,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-governance-init"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "csv",
  "ic-base-types",
@@ -2650,12 +2658,12 @@ dependencies = [
 [[package]]
 name = "ic-nns-gtc-accounts"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 
 [[package]]
 name = "ic-nns-handler-root-interface"
 version = "0.1.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "async-trait",
  "candid",
@@ -2670,7 +2678,7 @@ dependencies = [
 [[package]]
 name = "ic-protobuf"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "bincode",
  "candid",
@@ -2684,18 +2692,18 @@ dependencies = [
 [[package]]
 name = "ic-registry-canister-api"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "ic-base-types",
  "serde",
- "thiserror",
+ "thiserror 2.0.3",
 ]
 
 [[package]]
 name = "ic-registry-keys"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2707,7 +2715,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-node-provider-rewards"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-base-types",
  "ic-protobuf",
@@ -2716,7 +2724,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-routing-table"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2727,7 +2735,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-subnet-features"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "ic-management-canister-types",
@@ -2738,7 +2746,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-subnet-type"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "ic-protobuf",
@@ -2750,7 +2758,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-transport"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2762,7 +2770,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "async-trait",
  "base64 0.13.1",
@@ -2825,7 +2833,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance-api"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "bytes",
  "candid",
@@ -2849,7 +2857,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance-proposal-criticality"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-nervous-system-proto",
 ]
@@ -2857,7 +2865,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance-proposals-amount-total-limit"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-sns-governance-token-valuation",
  "num-traits",
@@ -2868,7 +2876,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance-token-valuation"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "async-trait",
  "candid",
@@ -2890,7 +2898,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-init"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "base64 0.13.1",
  "candid",
@@ -2918,7 +2926,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-root"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "async-trait",
  "build-info",
@@ -2949,7 +2957,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-swap"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "async-trait",
  "build-info",
@@ -2989,7 +2997,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-swap-proto-library"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "comparable",
@@ -3004,7 +3012,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-wasm"
 version = "1.0.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "async-trait",
  "candid",
@@ -3040,9 +3048,9 @@ dependencies = [
 
 [[package]]
 name = "ic-stable-structures"
-version = "0.6.6"
+version = "0.6.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fcaf89c1bc326c72498bcc0cd954f2edf718c018e7c586d2193d701d3c9af29a"
+checksum = "b492c5a16455ae78623eaa12ead96dda6c69a83c535b1b00789f19b381c8a24c"
 dependencies = [
  "ic_principal",
 ]
@@ -3050,7 +3058,7 @@ dependencies = [
 [[package]]
 name = "ic-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "base64 0.13.1",
  "bincode",
@@ -3080,14 +3088,14 @@ dependencies = [
  "serde_with",
  "strum",
  "strum_macros",
- "thiserror",
+ "thiserror 2.0.3",
  "thousands",
 ]
 
 [[package]]
 name = "ic-utils"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "hex",
  "scoped_threadpool",
@@ -3098,7 +3106,7 @@ dependencies = [
 [[package]]
 name = "ic-validate-eq"
 version = "0.0.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "ic-validate-eq-derive",
 ]
@@ -3106,7 +3114,7 @@ dependencies = [
 [[package]]
 name = "ic-validate-eq-derive"
 version = "0.0.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3126,7 +3134,7 @@ dependencies = [
  "rustc-demangle",
  "serde",
  "serde_json",
- "thiserror",
+ "thiserror 1.0.69",
  "walrus",
 ]
 
@@ -3184,13 +3192,13 @@ dependencies = [
  "data-encoding",
  "serde",
  "sha2",
- "thiserror",
+ "thiserror 1.0.69",
 ]
 
 [[package]]
 name = "icp-ledger"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "comparable",
@@ -3219,7 +3227,7 @@ dependencies = [
 [[package]]
 name = "icrc-ledger-client"
 version = "0.1.2"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "async-trait",
  "candid",
@@ -3230,7 +3238,7 @@ dependencies = [
 [[package]]
 name = "icrc-ledger-types"
 version = "0.1.6"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "base32",
  "candid",
@@ -3363,7 +3371,7 @@ checksum = "1ec89e9337638ecdc08744df490b221a7399bf8d164eb52a665454e60e075ad6"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -3423,12 +3431,12 @@ dependencies = [
 
 [[package]]
 name = "indexmap"
-version = "2.6.0"
+version = "2.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "707907fe3c25f5424cce2cb7e1cbcafee6bdbe735ca90ef77c29e84591e5b9da"
+checksum = "62f822373a4fe84d4bb149bf54e584a7f4abec90e072ed49cda0edea5b95471f"
 dependencies = [
  "equivalent",
- "hashbrown 0.15.1",
+ "hashbrown 0.15.2",
  "serde",
 ]
 
@@ -3460,7 +3468,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1ea1dc4bf0fb4904ba83ffdb98af3d9c325274e92e6e295e4151e86c96363e04"
 dependencies = [
  "serde",
- "thiserror",
+ "thiserror 1.0.69",
 ]
 
 [[package]]
@@ -3492,16 +3500,17 @@ dependencies = [
 
 [[package]]
 name = "itoa"
-version = "1.0.13"
+version = "1.0.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "540654e97a3f4470a492cd30ff187bc95d89557a903a2bbf112e2fae98104ef2"
+checksum = "d75a2a4b1b190afb6f5425f10f6a8f959d2ea0b9c2b1d79553551850539e4674"
 
 [[package]]
 name = "js-sys"
-version = "0.3.72"
+version = "0.3.74"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6a88f1bda2bd75b0452a14784937d796722fdebfe50df998aeb3f0b7603019a9"
+checksum = "a865e038f7f6ed956f788f0d7d60c541fff74c7bd74272c5d4cf15c63743e705"
 dependencies = [
+ "once_cell",
  "wasm-bindgen",
 ]
 
@@ -3587,9 +3596,9 @@ checksum = "884e2677b40cc8c339eaefcb701c32ef1fd2493d71118dc0ca4b6a736c93bd67"
 
 [[package]]
 name = "libc"
-version = "0.2.164"
+version = "0.2.167"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "433bfe06b8c75da9b2e3fbea6e5329ff87748f0b144ef75306e674c3f6f7c13f"
+checksum = "09d6582e104315a817dff97f75133544b2e094ee22447d2acf4a74e189ba06fc"
 
 [[package]]
 name = "libflate"
@@ -3680,7 +3689,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "regex-syntax 0.6.29",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -3754,11 +3763,10 @@ dependencies = [
 
 [[package]]
 name = "mio"
-version = "1.0.2"
+version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "80e04d1dcff3aae0704555fe5fee3bcfaf3d1fdf8a7e521d5b9d2b42acb52cec"
+checksum = "2886843bf800fba2e3377cff24abf6379b4c4d5c6681eaf9ea5b0d15090450bd"
 dependencies = [
- "hermit-abi",
  "libc",
  "wasi",
  "windows-sys 0.52.0",
@@ -3787,7 +3795,7 @@ dependencies = [
  "cfg-if",
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -3946,7 +3954,7 @@ dependencies = [
 [[package]]
 name = "on_wire"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 
 [[package]]
 name = "once_cell"
@@ -4035,7 +4043,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "879952a81a83930934cbf1786752d6dedc3b1f29e8f8fb2ad1d0a36f377cf442"
 dependencies = [
  "memchr",
- "thiserror",
+ "thiserror 1.0.69",
  "ucd-trie",
 ]
 
@@ -4059,7 +4067,7 @@ dependencies = [
  "pest_meta",
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -4080,13 +4088,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b4c5cc86750666a3ed20bdaf5ca2a0344f9c67674cae0515bec2da16fbaa47db"
 dependencies = [
  "fixedbitset",
- "indexmap 2.6.0",
+ "indexmap 2.7.0",
 ]
 
 [[package]]
 name = "phantom_newtype"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "candid",
  "num-traits",
@@ -4212,7 +4220,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "64d1ec885c64d0457d564db4ec299b2dae3f9c02808b8ad9c3a089c591b18033"
 dependencies = [
  "proc-macro2",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -4370,7 +4378,7 @@ dependencies = [
  "prost",
  "prost-types",
  "regex",
- "syn 2.0.89",
+ "syn 2.0.90",
  "tempfile",
 ]
 
@@ -4384,7 +4392,7 @@ dependencies = [
  "itertools 0.13.0",
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -4502,7 +4510,7 @@ checksum = "ba009ff324d1fc1b900bd1fdb31564febe58a8ccc8a6fdbb93b543d33b13ca43"
 dependencies = [
  "getrandom",
  "libredox",
- "thiserror",
+ "thiserror 1.0.69",
 ]
 
 [[package]]
@@ -4543,7 +4551,7 @@ checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
 [[package]]
 name = "registry-canister"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2024-11-21_03-11-24.04-base-kernel#5d202894864f4db4a5a46f44422aebc80c3d321b"
+source = "git+https://github.com/dfinity/ic?rev=release-2024-11-28_03-15-revert-hashes-in-blocks#f9085dbe8d86dcca77b05adaee93d608498dae0b"
 dependencies = [
  "build-info",
  "build-info-build",
@@ -4813,7 +4821,7 @@ checksum = "ad1e866f866923f252f05c889987993144fb74e722403468a4ebd70c3cd756c0"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -4848,7 +4856,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "serde",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -4879,7 +4887,7 @@ version = "0.9.34+deprecated"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6a8b1a1a2ebf674015cc02edccce75287f1a0130d394307b36743c2f5d504b47"
 dependencies = [
- "indexmap 2.6.0",
+ "indexmap 2.7.0",
  "itoa",
  "ryu",
  "serde",
@@ -4936,7 +4944,7 @@ checksum = "adc4e5204eb1910f40f9cfa375f6f05b68c3abac4b6fd879c8ff5e7ae8a0a085"
 dependencies = [
  "num-bigint",
  "num-traits",
- "thiserror",
+ "thiserror 1.0.69",
  "time",
 ]
 
@@ -5007,9 +5015,9 @@ dependencies = [
 
 [[package]]
 name = "socket2"
-version = "0.5.7"
+version = "0.5.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ce305eb0b4296696835b71df73eb912e0f1ffd2556a501fcede6e0c50349191c"
+checksum = "c970269d99b64e60ec3bd6ad27270092a5394c4e309314b18ae3fe575695fbe8"
 dependencies = [
  "libc",
  "windows-sys 0.52.0",
@@ -5094,7 +5102,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rustversion",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -5116,9 +5124,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.89"
+version = "2.0.90"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "44d46482f1c1c87acd84dea20c1bf5ebff4c757009ed6bf19cfd36fb10e92c4e"
+checksum = "919d3b74a5dd0ccd15aeb8f93e7006bd9e14c295087c9896a110f490752bcf31"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -5133,7 +5141,7 @@ checksum = "c8af7666ab7b6390ab78131fb5b0fce11d6b7a6951602017c35fa82800708971"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -5198,7 +5206,16 @@ version = "1.0.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b6aaf5339b578ea85b50e080feb250a3e8ae8cfcdff9a461c9ec2904bc923f52"
 dependencies = [
- "thiserror-impl",
+ "thiserror-impl 1.0.69",
+]
+
+[[package]]
+name = "thiserror"
+version = "2.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c006c85c7651b3cf2ada4584faa36773bd07bac24acfb39f3c431b36d7e667aa"
+dependencies = [
+ "thiserror-impl 2.0.3",
 ]
 
 [[package]]
@@ -5209,7 +5226,18 @@ checksum = "4fee6c4efc90059e10f81e6d42c60a18f76588c3d74cb83a0b242a2b6c7504c1"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
+]
+
+[[package]]
+name = "thiserror-impl"
+version = "2.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f077553d607adc1caf65430528a576c757a71ed73944b66ebb58ef2bbd243568"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -5309,7 +5337,7 @@ checksum = "693d596312e88961bc67d7f1f97af8a70227d9f90c31bba5806eec004978d752"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -5324,7 +5352,7 @@ version = "0.22.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ae48d6208a266e853d946088ed816055e556cc6028c5e8e2b84d9fa5dd7c7f5"
 dependencies = [
- "indexmap 2.6.0",
+ "indexmap 2.7.0",
  "toml_datetime",
  "winnow",
 ]
@@ -5486,9 +5514,9 @@ checksum = "9c8d87e72b64a3b4db28d11ce29237c246188f4f51057d65a7eab63b7987e423"
 
 [[package]]
 name = "wasm-bindgen"
-version = "0.2.95"
+version = "0.2.97"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "128d1e363af62632b8eb57219c8fd7877144af57558fb2ef0368d0087bddeb2e"
+checksum = "d15e63b4482863c109d70a7b8706c1e364eb6ea449b201a76c5b89cedcec2d5c"
 dependencies = [
  "cfg-if",
  "once_cell",
@@ -5497,24 +5525,24 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-backend"
-version = "0.2.95"
+version = "0.2.97"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cb6dd4d3ca0ddffd1dd1c9c04f94b868c37ff5fac97c30b97cff2d74fce3a358"
+checksum = "8d36ef12e3aaca16ddd3f67922bc63e48e953f126de60bd33ccc0101ef9998cd"
 dependencies = [
  "bumpalo",
  "log",
  "once_cell",
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
  "wasm-bindgen-shared",
 ]
 
 [[package]]
 name = "wasm-bindgen-macro"
-version = "0.2.95"
+version = "0.2.97"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e79384be7f8f5a9dd5d7167216f022090cf1f9ec128e6e6a482a2cb5c5422c56"
+checksum = "705440e08b42d3e4b36de7d66c944be628d579796b8090bfa3471478a2260051"
 dependencies = [
  "quote",
  "wasm-bindgen-macro-support",
@@ -5522,22 +5550,22 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-macro-support"
-version = "0.2.95"
+version = "0.2.97"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "26c6ab57572f7a24a4985830b120de1594465e5d500f24afe89e16b4e833ef68"
+checksum = "98c9ae5a76e46f4deecd0f0255cc223cfa18dc9b261213b8aa0c7b36f61b3f1d"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
 
 [[package]]
 name = "wasm-bindgen-shared"
-version = "0.2.95"
+version = "0.2.97"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "65fc09f10666a9f147042251e0dda9c18f166ff7de300607007e96bdebc1068d"
+checksum = "6ee99da9c5ba11bd675621338ef6fa52296b76b83305e9b6e5c77d4c286d6d49"
 
 [[package]]
 name = "wasm-encoder"
@@ -5557,7 +5585,7 @@ dependencies = [
  "ahash 0.8.11",
  "bitflags",
  "hashbrown 0.14.5",
- "indexmap 2.6.0",
+ "indexmap 2.7.0",
  "semver",
  "serde",
 ]
@@ -5727,7 +5755,7 @@ dependencies = [
  "nom",
  "oid-registry",
  "rusticata-macros",
- "thiserror",
+ "thiserror 1.0.69",
  "time",
 ]
 
@@ -5783,7 +5811,7 @@ checksum = "2380878cad4ac9aac1e2435f3eb4020e8374b5f13c296cb75b4620ff8e229154"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
  "synstructure",
 ]
 
@@ -5805,7 +5833,7 @@ checksum = "fa4f8080344d4671fb4e831a13ad1e68092748387dfc4f55e356242fae12ce3e"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -5825,7 +5853,7 @@ checksum = "595eed982f7d355beb85837f651fa22e90b3c044842dc7f2c2842c086f295808"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
  "synstructure",
 ]
 
@@ -5846,7 +5874,7 @@ checksum = "ce36e65b0d2999d2aafac989fb249189a141aee1f53c612c1f37d72631959f69"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
 
 [[package]]
@@ -5868,5 +5896,5 @@ checksum = "6eafa6dfb17584ea3e2bd6e76e0cc15ad7af12b09abdd1ca55961bed9b1063c6"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.89",
+ "syn 2.0.90",
 ]
