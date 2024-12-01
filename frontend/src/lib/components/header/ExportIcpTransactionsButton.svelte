@@ -2,21 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { IconDown } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
-  import {
-    formatMaturity,
-    getStateInfo,
-    neuronAvailableMaturity,
-    neuronStake,
-    neuronStakedMaturity,
-  } from "$lib/utils/neuron.utils";
-  import {
-    ICPToken,
-    isNullish,
-    secondsToDuration,
-    TokenAmountV2,
-  } from "@dfinity/utils";
-  import { formatTokenV2 } from "$lib/utils/token.utils";
-  import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+  import { ICPToken, isNullish } from "@dfinity/utils";
   import {
     CsvGenerationError,
     FileSystemAccessError,
@@ -25,10 +11,8 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import {
     formatDateCompact,
-    getFutureDateFromDelayInSeconds,
     nanoSecondsToDateTime,
     nowInBigIntNanoSeconds,
-    secondsToDate,
   } from "$lib/utils/date.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
@@ -37,7 +21,10 @@
     type TransactionsAndAccounts,
   } from "$lib/services/export-data.services";
   import { SignIdentity } from "@dfinity/agent";
-  import { mapToSelfTransactions } from "$lib/utils/icp-transactions.utils";
+  import {
+    mapIcpTransaction,
+    mapToSelfTransactions,
+  } from "$lib/utils/icp-transactions.utils";
   import { neuronAccountsStore } from "$lib/derived/neurons.derived";
   import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
 
