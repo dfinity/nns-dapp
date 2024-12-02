@@ -11,6 +11,21 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 134332
+
+### Application
+
+#### Changed
+
+* Notify for unfinished canister top-ups from the frontend instead of the backend.
+* Reword "Hardware Wallet" to "Ledger device" in the UI.
+
+#### Fixed
+
+* Hide SNSes for which the aggregator doesn't have a lifecycle.
+
+### Operations
+
 ## Proposal 134254
 
 ### Application
