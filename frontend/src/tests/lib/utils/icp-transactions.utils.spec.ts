@@ -90,7 +90,7 @@ describe("icp-transactions.utils", () => {
           neuronAccounts: new Set<string>(),
           swapCanisterAccounts: new Set<string>(),
         })
-      ).toThrowError("Unknown transaction type Unknown");
+      ).toThrowError("Unknown transaction type {\"Unknown\":{}}");
     });
 
     it("should return transaction information", () => {

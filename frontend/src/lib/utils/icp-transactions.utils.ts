@@ -123,7 +123,7 @@ const getTransactionInformation = (
   }
   // Edge case, a transaction will have either "Approve", "Burn", "Mint" or "Transfer" data.
   if (data === undefined) {
-    return undefined;
+    throw new Error(`Unknown transaction type ${JSON.stringify(operation)}`);
   }
 
   return {
