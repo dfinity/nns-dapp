@@ -136,6 +136,68 @@ const getTransactionInformation = (
   };
 };
 
+export const mapIcpTransaction = ({
+  transaction,
+  accountIdentifier,
+  neuronAccounts,
+  swapCanisterAccounts,
+}: {
+  transaction: TransactionWithId;
+  accountIdentifier: string;
+  neuronAccounts: Set<string>;
+  swapCanisterAccounts: Set<string>;
+}) => {
+  const txInfo = getTransactionInformation(transaction.transaction.operation);
+  if (txInfo === undefined) {
+    throw new Error(
+      `Unknown transaction type ${
+        Object.keys(transaction.transaction.operation)[0]
+      }`
+    );
+  }
+
+  const { to, from, amount, fee } = txInfo;
+  const isSelfTransaction = isToSelf(transaction.transaction);
+  const isReceive = isSelfTransaction || from !== accountIdentifier;
+  const useFee = !isReceive;
+  const feeApplied = useFee && fee ? fee : 0n;
+
+  const type = getTransactionType({
+    transaction: transaction.transaction,
+    neuronAccounts,
+    swapCanisterAccounts,
+    isReceive,
+  });
+
+  const blockTimestampNanos = fromNullable(
+    transaction.transaction.timestamp
+  )?.timestamp_nanos;
+  const createdTimestampNanos = fromNullable(
+    transaction.transaction.created_at_time
+  )?.timestamp_nanos;
+  const timestampNanos = blockTimestampNanos ?? createdTimestampNanos;
+  const timestampMilliseconds = nonNullish(timestampNanos)
+    ? Number(timestampNanos) / NANO_SECONDS_IN_MILLISECOND
+    : undefined;
+  const timestamp = nonNullish(timestampMilliseconds)
+    ? new Date(timestampMilliseconds)
+    : undefined;
+
+  const tokenAmount = TokenAmountV2.fromUlps({
+    amount: amount + feeApplied,
+    token: ICPToken,
+  });
+
+  return {
+    isReceive,
+    type,
+    to,
+    from,
+    tokenAmount,
+    timestamp,
+  };
+};
+
 export const mapIcpTransactionToUi = ({
   transaction,
   accountIdentifier,
