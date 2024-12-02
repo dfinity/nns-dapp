@@ -24,18 +24,16 @@ export const transactionDisplayAmount = ({
 
 export const transactionName = ({
   type,
-  isReceive,
   i18n,
 }: {
   type: AccountTransactionType;
-  isReceive: boolean;
   i18n: I18n;
 }): string => {
   switch (type) {
     case AccountTransactionType.Send:
-      return isReceive
-        ? i18n.transaction_names.receive
-        : i18n.transaction_names.send;
+      return i18n.transaction_names.send;
+    case AccountTransactionType.Receive:
+      return i18n.transaction_names.receive;
     case AccountTransactionType.Approve:
       return i18n.transaction_names.approve;
     case AccountTransactionType.Burn:
