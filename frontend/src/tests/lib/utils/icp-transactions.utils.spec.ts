@@ -31,7 +31,7 @@ describe("icp-transactions.utils", () => {
       spender: [],
     },
   };
-  const defaultTokenAmountWithOutFee = TokenAmountV2.fromUlps({
+  const defaultTokenAmountWithoutFee = TokenAmountV2.fromUlps({
     amount: amount,
     token: ICPToken,
   });
@@ -134,7 +134,7 @@ describe("icp-transactions.utils", () => {
         ...defaultReportTransaction,
         type: "receive",
         to: from,
-        tokenAmount: defaultTokenAmountWithOutFee,
+        tokenAmount: defaultTokenAmountWithoutFee,
       };
 
       expect(
