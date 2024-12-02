@@ -1,3 +1,4 @@
+import { LosingRewardsBannerPo } from "$tests/page-objects/LosingRewardsBanner.page-object";
 import { NnsStakeNeuronModalPo } from "$tests/page-objects/NnsStakeNeuronModal.page-object";
 import { PageBannerPo } from "$tests/page-objects/PageBanner.page-object";
 import { ProjectsTablePo } from "$tests/page-objects/ProjectsTable.page-object";
@@ -18,6 +19,10 @@ export class StakingPo extends BasePageObject {
       element: this.root,
       testId: "staking-page-banner",
     });
+  }
+
+  getLosingRewardsBannerPo(): LosingRewardsBannerPo {
+    return LosingRewardsBannerPo.under(this.root);
   }
 
   getSignInPo(): SignInPo {
