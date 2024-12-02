@@ -83,7 +83,7 @@ describe("icp-transactions.utils", () => {
         amount: amount + fee,
         token: ICPToken,
       }),
-      timestamp: defaultTimestamp,
+      timestampNanos: BigInt(defaultTimestamp.getTime()) * 1_000_000n,
     };
     it("should throw an error if no transaction information is found", () => {
       const transaction = createTransaction({
@@ -250,7 +250,7 @@ describe("icp-transactions.utils", () => {
 
         const expectedIcpTransaction = {
           ...defaultReportTransaction,
-          timestamp: blockDate,
+          timestampNanos: blockTimestamps.timestamp_nanos,
         };
 
         expect(
@@ -272,7 +272,7 @@ describe("icp-transactions.utils", () => {
 
         const expectedIcpTransaction = {
           ...defaultReportTransaction,
-          timestamp: createdDate,
+          timestampNanos: createTimestamps.timestamp_nanos,
         };
 
         expect(

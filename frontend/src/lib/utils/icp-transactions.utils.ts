@@ -177,12 +177,6 @@ export const mapIcpTransactionToReport = ({
     transaction.transaction.created_at_time
   )?.timestamp_nanos;
   const timestampNanos = blockTimestampNanos ?? createdTimestampNanos;
-  const timestampMilliseconds = nonNullish(timestampNanos)
-    ? Number(timestampNanos) / NANO_SECONDS_IN_MILLISECOND
-    : undefined;
-  const timestamp = nonNullish(timestampMilliseconds)
-    ? new Date(timestampMilliseconds)
-    : undefined;
 
   const tokenAmount = TokenAmountV2.fromUlps({
     amount: amount + feeApplied,
@@ -194,7 +188,7 @@ export const mapIcpTransactionToReport = ({
     to,
     from,
     tokenAmount,
-    timestamp,
+    timestampNanos,
   };
 };
 
