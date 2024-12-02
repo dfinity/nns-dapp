@@ -161,7 +161,7 @@
     "date_label": "Export Date Time",
     "controller_id": "Controller Principal ID",
     "neuron_id": "Neuron ID",
-    "project": "Project",
+    "project": "Project Name",
     "symbol": "Symbol",
     "neuron_account_id": "Neuron Account ID",
     "stake": "Stake",
@@ -170,7 +170,15 @@
     "dissolve_delay": "Dissolve Delay",
     "dissolve_date": "Dissolve Date",
     "creation_date": "Creation Date",
-    "state": "State"
+    "state": "State",
+    "to": "To",
+    "from": "From",
+    "tx_type": "TX Type",
+    "amount": "Amount",
+    "timestampt": "Date Time",
+    "account_id": "Account ID",
+    "account_name": "Account Name",
+    "numer_of_transactions": "Transactions"
   },
   "export_error": {
     "csv_generation": "Failed to generate CSV file",

@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { IconDown } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
-  import { ICPToken, isNullish } from "@dfinity/utils";
+  import { ICPToken, isNullish, TokenAmountV2 } from "@dfinity/utils";
   import {
     CsvGenerationError,
     FileSystemAccessError,
@@ -21,12 +21,11 @@
     type TransactionsAndAccounts,
   } from "$lib/services/export-data.services";
   import { SignIdentity } from "@dfinity/agent";
-  import {
-    mapIcpTransaction,
-    mapToSelfTransactions,
-  } from "$lib/utils/icp-transactions.utils";
+  import { mapIcpTransaction } from "$lib/utils/icp-transactions.utils";
   import { neuronAccountsStore } from "$lib/derived/neurons.derived";
   import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
+  import { transactionName } from "$lib/utils/transactions.utils";
+  import { formatTokenV2 } from "$lib/utils/token.utils";
 
   const dispatcher = createEventDispatcher<{
     nnsExportIcpTransactionsCsvTriggered: void;
@@ -57,11 +56,13 @@
     }[];
   }[] => {
     return data.map(({ account, transactions }) => {
-      const selfTransactions = mapToSelfTransactions(transactions);
-
       swapCanisterAccountsStore = createSwapCanisterAccountsStore(
         identity?.getPrincipal()
       );
+      const amount = TokenAmountV2.fromUlps({
+        amount: account.balanceUlps,
+        token: ICPToken,
+      });
       return {
         metadata: [
           {
@@ -70,93 +71,57 @@
           },
           {
             label: "Name",
-            value: account.name ?? "Main",
+            value: account.name ?? $i18n.accounts.main,
           },
           {
-            label: "Ammount",
-            value: account.balanceUlps.toString(),
+            label: $i18n.export_csv_neurons.amount, 
+            value: formatTokenV2({
+              value: amount,
+              detailed: true,
+            }),
           },
           {
-            label: "Principal",
-            value: account.principal?.toText(),
+            label: $i18n.export_csv_neurons.controller_id,
+            value:
+              identity?.getPrincipal().toText() ?? $i18n.core.not_applicable,
           },
           {
             label: "Transactions",
             value: transactions.length.toString(),
           },
           {
-            label: "Export Date Time",
+            label: $i18n.export_csv_neurons.date_label,
             value: nanoSecondsToDateTime(nowInBigIntNanoSeconds()),
           },
         ],
-        data: selfTransactions.map(({ transaction, toSelfTransaction }) => {
-          const tx = mapIcpTransaction({
+        data: transactions.map((transaction) => {
+          const { to, from, type, tokenAmount, timestamp } = mapIcpTransaction({
             accountIdentifier: account.identifier,
             transaction,
-            toSelfTransaction,
             neuronAccounts,
             swapCanisterAccounts: $swapCanisterAccountsStore ?? new Set(),
-            i18n: $i18n,
           });
+
           return {
             id: transaction.id.toString(),
             project: ICPToken.name,
             symbol: ICPToken.symbol,
-            to: tx?.otherParty,
-            from: tx?.otherParty,
-            type: "type",
-            amount: tx?.tokenAmount,
-            timestamp: tx?.timestamp,
+            to,
+            from,
+            type: transactionName({ type, i18n: $i18n }),
+            amount: formatTokenV2({ value: tokenAmount, detailed: true }),
+            timestamp:
+              timestamp?.toLocaleDateString() ?? $i18n.core.not_applicable,
           };
         }),
       };
     });
   };
 
-  // const nnsNeuronToHumanReadableFormat = (neuron: NeuronInfo) => {
-  //   const controllerId = neuron.fullNeuron?.controller?.toString();
-  //   const neuronId = neuron.neuronId.toString();
-  //   const neuronAccountId = neuron.fullNeuron?.accountIdentifier.toString();
-  //   const stake = TokenAmountV2.fromUlps({
-  //     amount: neuronStake(neuron),
-  //     token: ICPToken,
-  //   });
-  //   const project = stake.token.name;
-  //   const symbol = stake.token.symbol;
-  //   const availableMaturity = neuronAvailableMaturity(neuron);
-  //   const stakedMaturity = neuronStakedMaturity(neuron);
-  //   const dissolveDelaySeconds = neuron.dissolveDelaySeconds;
-  //   const dissolveDate =
-  //     neuron.state === NeuronState.Dissolving
-  //       ? getFutureDateFromDelayInSeconds(neuron.dissolveDelaySeconds)
-  //       : null;
-  //   const creationDate = secondsToDate(Number(neuron.createdTimestampSeconds));
-
-  //   return {
-  //     controllerId,
-  //     project,
-  //     symbol,
-  //     neuronId,
-  //     neuronAccountId,
-  //     stake: formatTokenV2({
-  //       value: stake,
-  //       detailed: true,
-  //     }),
-  //     availableMaturity: formatMaturity(availableMaturity),
-  //     stakedMaturity: formatMaturity(stakedMaturity),
-  //     dissolveDelaySeconds: secondsToDuration({
-  //       seconds: dissolveDelaySeconds,
-  //       i18n: $i18n.time,
-  //     }),
-  //     dissolveDate: dissolveDate ?? $i18n.core.not_applicable,
-  //     creationDate,
-  //     state: $i18n.neuron_state[getStateInfo(neuron.state).textKey],
-  //   };
-  // };
-
   const exportIcpTransactions = async () => {
     // Button will only be shown if logged in
     if (!(identity instanceof SignIdentity)) return;
+
     try {
       const nnsAccounts = Object.values($nnsAccountsListStore).flat();
 
@@ -164,9 +129,7 @@
         accounts: nnsAccounts,
         identity,
       });
-      console.log(data);
       const datasets = buildDatasets(data);
-
       const fileName = `icp_transactions_export_${formatDateCompact(new Date())}`;
       await generateCsvFileToSave({
         datasets,

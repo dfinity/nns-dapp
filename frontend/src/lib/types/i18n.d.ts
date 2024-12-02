@@ -179,6 +179,14 @@ interface I18nExport_csv_neurons {
   dissolve_date: string;
   creation_date: string;
   state: string;
+  to: string;
+  from: string;
+  tx_type: string;
+  amount: string;
+  timestampt: string;
+  account_id: string;
+  account_name: string;
+  numer_of_transactions: string;
 }
 
 interface I18nExport_error {
