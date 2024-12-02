@@ -63,6 +63,9 @@
         amount: account.balanceUlps,
         token: ICPToken,
       });
+
+      console.log(transactions);
+
       return {
         metadata: [
           {
@@ -74,7 +77,7 @@
             value: account.name ?? $i18n.accounts.main,
           },
           {
-            label: $i18n.export_csv_neurons.amount, 
+            label: $i18n.export_csv_neurons.balance,
             value: formatTokenV2({
               value: amount,
               detailed: true,
@@ -95,12 +98,13 @@
           },
         ],
         data: transactions.map((transaction) => {
-          const { to, from, type, tokenAmount, timestamp } = mapIcpTransaction({
-            accountIdentifier: account.identifier,
-            transaction,
-            neuronAccounts,
-            swapCanisterAccounts: $swapCanisterAccountsStore ?? new Set(),
-          });
+          const { to, from, type, tokenAmount, timestampNanos } =
+            mapIcpTransaction({
+              accountIdentifier: account.identifier,
+              transaction,
+              neuronAccounts,
+              swapCanisterAccounts: $swapCanisterAccountsStore ?? new Set(),
+            });
 
           return {
             id: transaction.id.toString(),
@@ -111,7 +115,9 @@
             type: transactionName({ type, i18n: $i18n }),
             amount: formatTokenV2({ value: tokenAmount, detailed: true }),
             timestamp:
-              timestamp?.toLocaleDateString() ?? $i18n.core.not_applicable,
+              timestampNanos !== undefined
+                ? nanoSecondsToDateTime(timestampNanos)
+                : $i18n.core.not_applicable,
           };
         }),
       };
@@ -152,7 +158,7 @@
           },
           {
             id: "from",
-            label: $i18n.export_csv_neurons.from
+            label: $i18n.export_csv_neurons.from,
           },
           {
             id: "type",
