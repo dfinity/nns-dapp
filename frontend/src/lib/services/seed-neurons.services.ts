@@ -26,7 +26,7 @@ export const claimSeedNeurons = async () => {
   }
   if (hardwareWallet === undefined) {
     alert(
-      "No hardware wallet linked to this account. Please link your hardware wallet and try again."
+      "No Ledger device linked to this account. Please link your Ledger device and try again."
     );
     return;
   }

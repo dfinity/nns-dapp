@@ -151,7 +151,7 @@ export const getIdentityOfControllerByNeuronId = async (
   if (neuronIdentity === undefined) {
     throw new NotAuthorizedNeuronError();
   }
-  // `getAccountIdentityByPrincipal` returns the current user identity (because of `getIdentity`) if the account is not a hardware wallet.
+  // `getAccountIdentityByPrincipal` returns the current user identity (because of `getIdentity`) if the account is not a Ledger device.
   // If we enable visiting neurons which are not ours, we will need this service to throw `NotAuthorizedNeuronError`.
   if (isIdentityController({ neuron, identity: neuronIdentity })) {
     return neuronIdentity;
@@ -173,7 +173,7 @@ const getStakeNeuronPropsByAccount = ({
   fromSubAccount?: SubAccountArray;
 } => {
   if (isAccountHardwareWallet(account)) {
-    // The software of the hardware wallet cannot sign the call to the governance canister to claim the neuron.
+    // The software of the Ledger device cannot sign the call to the governance canister to claim the neuron.
     // Therefore we use an `AnonymousIdentity`.
     return {
       ledgerCanisterIdentity: accountIdentity,
@@ -503,7 +503,7 @@ export const simulateMergeNeurons = async ({
   }
 };
 
-// This service is used to add a "hotkey" - i.e. delegate the control of a neuron to NNS-dapp - to a neuron created with the hardware wallet.
+// This service is used to add a "hotkey" - i.e. delegate the control of a neuron to NNS-dapp - to a neuron created with the Ledger device.
 // It uses the auth identity - i.e. the identity of the current user - as principal of the new hotkey.
 // Once the neuron delegated, it adds it to the neuron store so that user can find this neuron in the "Neurons" tab as well
 // Note: it does not reload the all neurons store but "only" query (updated call) and push the newly attached neuron to the store

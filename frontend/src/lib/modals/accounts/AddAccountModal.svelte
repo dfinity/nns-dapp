@@ -45,7 +45,7 @@
   let steps: WizardSteps = [startStep, ...subAccountSteps];
 
   /**
-   * A store that contains the type of account that will be added (subaccount or hardware wallet) and addition data that can be used across multiple steps of the wizard.
+   * A store that contains the type of account that will be added (subaccount or Ledger device) and addition data that can be used across multiple steps of the wizard.
    */
   const addAccountStore = writable<AddAccountStore>({
     type: undefined,
@@ -55,7 +55,7 @@
   debugAddAccountStore(addAccountStore);
 
   const selectType = async (type: AccountType) => {
-    // Set the type in store and reset other values only if the new type is not the one that was previously used - e.g. user first select hardware wallet, entered a name, clicked continue, went twice back and go to subaccount
+    // Set the type in store and reset other values only if the new type is not the one that was previously used - e.g. user first select Ledger device, entered a name, clicked continue, went twice back and go to subaccount
     addAccountStore.update(({ type: previousType, hardwareWalletName }) => ({
       type,
       hardwareWalletName:
