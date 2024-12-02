@@ -19,6 +19,7 @@ type EnvironmentVars = {
   host: string;
   governanceCanisterId: string;
   identityServiceUrl: string;
+  icpSwapUrl: string;
   ledgerCanisterId: string;
   indexCanisterId: string;
   ownCanisterId: string;
@@ -37,6 +38,7 @@ const mandatoryEnvVarKeys: EnvironmentVars = {
   host: "",
   governanceCanisterId: "",
   identityServiceUrl: "",
+  icpSwapUrl: "",
   ledgerCanisterId: "",
   indexCanisterId: "",
   ownCanisterId: "",
@@ -128,6 +130,9 @@ const getBuildEnvVars = (): EnvironmentVars => {
     ),
     identityServiceUrl: convertEmtpyStringToUndefined(
       import.meta.env.VITE_IDENTITY_SERVICE_URL
+    ),
+    icpSwapUrl: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_ICP_SWAP_URL
     ),
     ledgerCanisterId: convertEmtpyStringToUndefined(
       import.meta.env.VITE_LEDGER_CANISTER_ID
