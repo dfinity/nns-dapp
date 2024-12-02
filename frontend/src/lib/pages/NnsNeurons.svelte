@@ -13,6 +13,8 @@
   import { tableNeuronsFromNeuronInfos } from "$lib/utils/neurons-table.utils";
   import { Spinner } from "@dfinity/gix-components";
   import { onMount } from "svelte";
+  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
+  import LosingRewardsBanner from "$lib/components/neurons/LosingRewardsBanner.svelte";
 
   let isLoading = false;
   $: isLoading = $neuronsStore.neurons === undefined;
@@ -34,9 +36,22 @@
   {#if isLoading}
     <Spinner />
   {:else if tableNeurons.length > 0}
-    <MakeNeuronsPublicBanner />
-    <NeuronsTable neurons={tableNeurons} />
+    <div class="container">
+      {#if $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION}
+        <LosingRewardsBanner />
+      {/if}
+      <MakeNeuronsPublicBanner />
+      <NeuronsTable neurons={tableNeurons} />
+    </div>
   {:else}
     <EmptyMessage>{$i18n.neurons.text}</EmptyMessage>
   {/if}
 </TestIdWrapper>
+
+<style lang="scss">
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+  }
+</style>

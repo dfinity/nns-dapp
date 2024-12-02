@@ -27,6 +27,8 @@
     type Token,
   } from "@dfinity/utils";
   import { get } from "svelte/store";
+  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
+  import LosingRewardsBanner from "$lib/components/neurons/LosingRewardsBanner.svelte";
 
   const getShowStakingBanner = ({
     isSignedIn,
@@ -155,6 +157,10 @@
           <p class="description" slot="description">{$i18n.staking.text}</p>
           <SignInGuard slot="actions" />
         </PageBanner>
+      {/if}
+
+      {#if $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION}
+        <LosingRewardsBanner />
       {/if}
 
       <ProjectsTable on:nnsStakeTokens={openStakingModal} />

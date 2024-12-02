@@ -1,7 +1,56 @@
 import { getTransactions } from "$lib/api/icp-index.api";
-import { type SignIdentity } from "@dfinity/agent";
+import type { Account } from "$lib/types/account";
+import { SignIdentity } from "@dfinity/agent";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
 import { isNullish } from "@dfinity/utils";
+
+export type TransactionsAndAccounts = {
+  account: Account;
+  transactions: TransactionWithId[];
+  error?: string;
+}[];
+
+export const getAccountTransactionsConcurrently = async ({
+  accounts,
+  identity,
+}: {
+  accounts: Account[];
+  identity: SignIdentity;
+}): Promise<TransactionsAndAccounts> => {
+  const accountPromises = accounts.map((account) =>
+    getAllTransactionsFromAccountAndIdentity({
+      accountId: account.identifier,
+      identity,
+    })
+  );
+
+  const results = await Promise.allSettled(accountPromises);
+
+  const accountsAndTransactions = results.map((result, index) => {
+    const account = accounts[index];
+    const baseAccountInfo = {
+      account: {
+        ...account,
+      },
+    };
+
+    if (result.status === "fulfilled") {
+      return {
+        ...baseAccountInfo,
+        transactions: result.value ?? [],
+      };
+    } else {
+      // TODO: At the moment, this path is not possible as getAllTransactionsFromAccountAndIdentity never throws an error.
+      return {
+        ...baseAccountInfo,
+        transactions: [],
+        error: result.reason?.message || "Failed to fetch transactions",
+      };
+    }
+  });
+
+  return accountsAndTransactions;
+};
 
 export const getAllTransactionsFromAccountAndIdentity = async ({
   accountId,

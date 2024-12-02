@@ -1,6 +1,7 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { NeuronsTablePo } from "$tests/page-objects/NeuronsTable.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { LosingRewardsBannerPo } from "./LosingRewardsBanner.page-object";
 import { MakeNeuronsPublicBannerPo } from "./MakeNeuronsPublicBanner.page-object";
 
 export class NnsNeuronsPo extends BasePageObject {
@@ -42,5 +43,9 @@ export class NnsNeuronsPo extends BasePageObject {
 
   getMakeNeuronsPublicBannerPo(): MakeNeuronsPublicBannerPo {
     return MakeNeuronsPublicBannerPo.under(this.root);
+  }
+
+  getLosingRewardsBannerPo(): LosingRewardsBannerPo {
+    return LosingRewardsBannerPo.under(this.root);
   }
 }
