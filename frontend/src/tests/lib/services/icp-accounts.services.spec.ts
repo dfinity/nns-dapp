@@ -870,7 +870,7 @@ describe("icp-accounts.services", () => {
       expect(expectedIdentity).toBe(mockIdentity);
     });
 
-    it("returns calls for hardware walleet identity if hardware wallet account", async () => {
+    it("returns calls for hardware walleet identity if Ledger device account", async () => {
       setAccountsForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
@@ -895,7 +895,7 @@ describe("icp-accounts.services", () => {
       expect(expectedIdentity).toBe(mockIdentity);
     });
 
-    it("returns calls for hardware walleet identity if hardware wallet account", async () => {
+    it("returns calls for hardware walleet identity if Ledger device account", async () => {
       setAccountsForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
@@ -908,7 +908,7 @@ describe("icp-accounts.services", () => {
       expect(getLedgerIdentityProxy).toBeCalled();
     });
 
-    it("returns null if no main account nor hardware wallet account", async () => {
+    it("returns null if no main account nor Ledger device account", async () => {
       setAccountsForTesting({
         main: mockMainAccount,
         hardwareWallets: [mockHardwareWalletAccount],

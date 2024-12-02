@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-11-21_03-11-24.04-base-kernel/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-11-28_03-15-revert-hashes-in-blocks/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -50,6 +50,8 @@ pub struct Follow {
     pub topic: i32,
     pub followees: Vec<NeuronId>,
 }
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct RefreshVotingPower {}
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ClaimOrRefreshNeuronFromAccount {
     pub controller: Option<Principal>,
@@ -153,6 +155,7 @@ pub enum Command {
     Spawn(Spawn),
     Split(Split),
     Follow(Follow),
+    RefreshVotingPower(RefreshVotingPower),
     ClaimOrRefresh(ClaimOrRefresh),
     Configure(Configure),
     RegisterVote(RegisterVote),
@@ -990,6 +993,8 @@ pub struct SpawnResponse {
     pub created_neuron_id: Option<NeuronId>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct RefreshVotingPowerResponse {}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct ClaimOrRefreshResponse {
     pub refreshed_neuron_id: Option<NeuronId>,
 }
@@ -1025,6 +1030,7 @@ pub enum Command1 {
     Spawn(SpawnResponse),
     Split(SpawnResponse),
     Follow(EmptyRecord),
+    RefreshVotingPower(RefreshVotingPowerResponse),
     ClaimOrRefresh(ClaimOrRefreshResponse),
     Configure(EmptyRecord),
     RegisterVote(EmptyRecord),

@@ -128,7 +128,7 @@ describe("icp-tokens-list-user.derived", () => {
       ]);
     });
 
-    it("should return hardware wallets, subaccounts and main", () => {
+    it("should return Ledger devices, subaccounts and main", () => {
       setAccountsForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],

@@ -22,24 +22,18 @@ export const transactionDisplayAmount = ({
   return amount;
 };
 
-/**
- * Note: We used to display the token symbol within the transaction labels that is why this function uses replacePlaceholders.
- * Although it was decided to not render such symbol anymore, we keep the code as it in case this would change in the future.
- */
 export const transactionName = ({
   type,
-  isReceive,
   i18n,
 }: {
   type: AccountTransactionType;
-  isReceive: boolean;
   i18n: I18n;
 }): string => {
   switch (type) {
     case AccountTransactionType.Send:
-      return isReceive
-        ? i18n.transaction_names.receive
-        : i18n.transaction_names.send;
+      return i18n.transaction_names.send;
+    case AccountTransactionType.Receive:
+      return i18n.transaction_names.receive;
     case AccountTransactionType.Approve:
       return i18n.transaction_names.approve;
     case AccountTransactionType.Burn:

@@ -135,7 +135,7 @@ describe("NnsNeuronCard", () => {
     expect(getByText(en.neurons.hotkey_control)).toBeInTheDocument();
   });
 
-  it("renders the hardware wallet label and not hotkey when neuron is controlled by hardware wallet", async () => {
+  it("renders the Ledger device label and not hotkey when neuron is controlled by Ledger device", async () => {
     setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],

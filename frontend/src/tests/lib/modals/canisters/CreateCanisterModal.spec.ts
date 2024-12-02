@@ -174,8 +174,8 @@ describe("CreateCanisterModal", () => {
     await testCreateCanister({ canisterName: "" });
   });
 
-  // We added the hardware wallet in the accountsStore subscribe mock above.
-  it("should not show hardware wallets in the accounts list", async () => {
+  // We added the Ledger device in the accountsStore subscribe mock above.
+  it("should not show Ledger devices in the accounts list", async () => {
     const { container, queryByText } = await renderModal({
       component: CreateCanisterModal,
     });

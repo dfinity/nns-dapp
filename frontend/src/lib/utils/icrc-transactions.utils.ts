@@ -101,9 +101,11 @@ export const getSortedTransactionsFromStore = ({
 const getIcrcTransactionType = ({
   transaction,
   governanceCanisterId,
+  isReceive,
 }: {
   transaction: IcrcTransaction;
   governanceCanisterId?: Principal;
+  isReceive: boolean;
 }): AccountTransactionType => {
   if (fromNullable(transaction.approve) !== undefined) {
     return AccountTransactionType.Approve;
@@ -123,6 +125,10 @@ const getIcrcTransactionType = ({
         return AccountTransactionType.StakeNeuron;
       }
       return AccountTransactionType.TopUpNeuron;
+    }
+    // Send/Receive is the default transaction type
+    if (isReceive) {
+      return AccountTransactionType.Receive;
     }
     return AccountTransactionType.Send;
   }
@@ -187,10 +193,6 @@ export const mapIcrcTransaction = ({
       return undefined;
     }
 
-    const type = getIcrcTransactionType({
-      transaction: transaction.transaction,
-      governanceCanisterId,
-    });
     const txInfo = getTransactionInformation(transaction.transaction);
     if (txInfo === undefined) {
       throw new Error(
@@ -202,9 +204,14 @@ export const mapIcrcTransaction = ({
     const useFee = !isReceive;
     const feeApplied = useFee && txInfo.fee !== undefined ? txInfo.fee : 0n;
 
+    const type = getIcrcTransactionType({
+      transaction: transaction.transaction,
+      governanceCanisterId,
+      isReceive,
+    });
+
     const headline = transactionName({
       type,
-      isReceive,
       i18n,
     });
     const otherParty = isReceive ? txInfo.from : txInfo.to;

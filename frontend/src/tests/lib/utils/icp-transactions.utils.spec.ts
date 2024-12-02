@@ -5,7 +5,7 @@ import {
 import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
 import type { UiTransaction } from "$lib/types/transaction";
 import {
-  mapIcpTransaction,
+  mapIcpTransactionToUi,
   mapToSelfTransactions,
   sortTransactionsByIdDescendingOrder,
 } from "$lib/utils/icp-transactions.utils";
@@ -69,7 +69,7 @@ describe("icp-transactions.utils", () => {
       memo,
     });
 
-  describe("mapIcpTransaction", () => {
+  describe("mapIcpTransactionToUi", () => {
     it("maps stake neuron transaction", () => {
       const transaction = createTransaction({
         operation: defaultTransferOperation,
@@ -81,7 +81,7 @@ describe("icp-transactions.utils", () => {
       };
 
       expect(
-        mapIcpTransaction({
+        mapIcpTransactionToUi({
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
@@ -103,7 +103,7 @@ describe("icp-transactions.utils", () => {
       };
 
       expect(
-        mapIcpTransaction({
+        mapIcpTransactionToUi({
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
@@ -125,7 +125,7 @@ describe("icp-transactions.utils", () => {
       };
 
       expect(
-        mapIcpTransaction({
+        mapIcpTransactionToUi({
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
@@ -147,7 +147,7 @@ describe("icp-transactions.utils", () => {
       };
 
       expect(
-        mapIcpTransaction({
+        mapIcpTransactionToUi({
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
@@ -168,7 +168,7 @@ describe("icp-transactions.utils", () => {
       };
 
       expect(
-        mapIcpTransaction({
+        mapIcpTransactionToUi({
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
@@ -195,7 +195,7 @@ describe("icp-transactions.utils", () => {
       };
 
       expect(
-        mapIcpTransaction({
+        mapIcpTransactionToUi({
           transaction,
           accountIdentifier: to,
           toSelfTransaction: false,
@@ -216,7 +216,7 @@ describe("icp-transactions.utils", () => {
       };
 
       expect(
-        mapIcpTransaction({
+        mapIcpTransactionToUi({
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
@@ -243,7 +243,7 @@ describe("icp-transactions.utils", () => {
       };
 
       expect(
-        mapIcpTransaction({
+        mapIcpTransactionToUi({
           transaction,
           accountIdentifier: to,
           toSelfTransaction: false,
@@ -279,7 +279,7 @@ describe("icp-transactions.utils", () => {
         };
 
         expect(
-          mapIcpTransaction({
+          mapIcpTransactionToUi({
             transaction,
             accountIdentifier: from,
             toSelfTransaction: false,
@@ -303,7 +303,7 @@ describe("icp-transactions.utils", () => {
         };
 
         expect(
-          mapIcpTransaction({
+          mapIcpTransactionToUi({
             transaction,
             accountIdentifier: from,
             toSelfTransaction: false,
@@ -332,7 +332,7 @@ describe("icp-transactions.utils", () => {
       };
 
       expect(
-        mapIcpTransaction({
+        mapIcpTransactionToUi({
           transaction,
           accountIdentifier: from,
           toSelfTransaction: true,
@@ -355,7 +355,7 @@ describe("icp-transactions.utils", () => {
       };
 
       expect(
-        mapIcpTransaction({
+        mapIcpTransactionToUi({
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
@@ -392,7 +392,7 @@ describe("icp-transactions.utils", () => {
       };
 
       expect(
-        mapIcpTransaction({
+        mapIcpTransactionToUi({
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
@@ -424,7 +424,7 @@ describe("icp-transactions.utils", () => {
       };
 
       expect(
-        mapIcpTransaction({
+        mapIcpTransactionToUi({
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
@@ -456,7 +456,7 @@ describe("icp-transactions.utils", () => {
       };
 
       expect(
-        mapIcpTransaction({
+        mapIcpTransactionToUi({
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,

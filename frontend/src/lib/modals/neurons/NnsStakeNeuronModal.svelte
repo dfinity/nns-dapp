@@ -129,7 +129,7 @@
   // binding from SetNnsDissolveDelay.
   $: updateDelayFromNeuron(newNeuron);
 
-  // If source account is a hardware wallet, ask user to add a hotkey
+  // If source account is a Ledger device, ask user to add a hotkey
   const extendWizardSteps = async () => {
     steps = [
       firstStep,

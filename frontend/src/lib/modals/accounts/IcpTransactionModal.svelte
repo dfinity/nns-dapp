@@ -55,8 +55,8 @@
 
     stopBusy("accounts");
 
-    // We close the modal in case of success or error if the selected source is not a hardware wallet.
-    // In case of hardware wallet, the error messages might contain interesting information for the user such as "your device is idle"
+    // We close the modal in case of success or error if the selected source is not a Ledger device.
+    // In case of Ledger device, the error messages might contain interesting information for the user such as "your device is idle"
     if (success || !isAccountHardwareWallet(sourceAccount)) {
       dispatcher("nnsClose");
     }

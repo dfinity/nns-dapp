@@ -76,7 +76,7 @@ describe("AddAccountModal", () => {
     );
   };
 
-  it("should be able to select new hardware wallet ", async () => {
+  it("should be able to select new Ledger device ", async () => {
     const renderResult = await renderModal({ component: AddAccountModal });
     await shouldNavigateHardwareWalletStep(renderResult);
   });

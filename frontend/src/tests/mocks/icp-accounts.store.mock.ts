@@ -39,7 +39,7 @@ export const mockHardwareWalletAccount: Account = {
     "646f4d2d6fcb6fab5ba1547647526b666553467ecb5cb28c8d9ddf451c8f4c21",
   balanceUlps: 123456789010000n,
   principal: hardwareWalletPrincipal,
-  name: "hardware wallet account test",
+  name: "Ledger device account test",
   type: "hardwareWallet",
 };
 

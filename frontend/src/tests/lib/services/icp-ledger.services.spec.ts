@@ -52,7 +52,7 @@ describe("icp-ledger.services", () => {
     );
   });
 
-  describe("connect hardware wallet", () => {
+  describe("connect Ledger device", () => {
     describe("success", () => {
       beforeEach(() => {
         vi.spyOn(LedgerIdentity, "create").mockImplementation(
@@ -114,7 +114,7 @@ describe("icp-ledger.services", () => {
     });
   });
 
-  describe("register hardware wallet", () => {
+  describe("register Ledger device", () => {
     const mockNNSDappCanister: MockNNSDappCanister = new MockNNSDappCanister();
 
     const ledgerIdentity = new MockLedgerIdentity();
@@ -362,7 +362,7 @@ describe("icp-ledger.services", () => {
         );
       });
 
-      it("should list neurons on hardware wallet", async () => {
+      it("should list neurons on Ledger device", async () => {
         const { neurons } = await listNeuronsHardwareWallet();
 
         expect(neurons).toEqual(mockNeurons);

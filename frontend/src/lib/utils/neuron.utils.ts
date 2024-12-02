@@ -393,7 +393,7 @@ export const isNeuronControllableByUser = ({
  *  OR
  *  2. The main account (same as user) is the controller
  *  OR
- *  3. The user's hardware wallet is the controller.
+ *  3. The user's Ledger device is the controller.
  *
  */
 export const isNeuronControllable = ({
@@ -563,11 +563,11 @@ const getNeuronVisibilityRowUncontrolledNeuronDetails = ({
 /**
  * An identity can manage the neurons' fund participation when one of the below is true:
  * - User is the controller.
- * - User is a hotkey, but a hardware wallet account is NOT the controller.
+ * - User is a hotkey, but a Ledger device account is NOT the controller.
  *
  * Technically, HW can manage SNS neurons, but we don't support it yet in the NNS Dapp.
  * That's why we want to avoid HW controlled neurons from participating in a swap.
- * Both joining the Neurons' Fund and participating in a swap is disabled for hardware wallets.
+ * Both joining the Neurons' Fund and participating in a swap is disabled for Ledger devices.
  */
 export const canUserManageNeuronFundParticipation = ({
   neuron,

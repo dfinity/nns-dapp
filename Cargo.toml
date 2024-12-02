@@ -14,23 +14,23 @@ ic-cdk = "0.17.0"
 ic-cdk-macros = "0.17.0"
 ic-cdk-timers = "0.11.0"
 
-cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-21_03-11-24.04-base-kernel" }
-dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-21_03-11-24.04-base-kernel" }
-dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-21_03-11-24.04-base-kernel" }
-dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-21_03-11-24.04-base-kernel" }
-ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-21_03-11-24.04-base-kernel" }
-ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-21_03-11-24.04-base-kernel" }
-ic-management-canister-types = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-21_03-11-24.04-base-kernel" }
-ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-21_03-11-24.04-base-kernel" }
-ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-21_03-11-24.04-base-kernel" }
-ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-21_03-11-24.04-base-kernel" }
-ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-21_03-11-24.04-base-kernel" }
-ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-21_03-11-24.04-base-kernel" }
-ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-21_03-11-24.04-base-kernel" }
-ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-21_03-11-24.04-base-kernel" }
-ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-21_03-11-24.04-base-kernel" }
-icp-ledger = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-21_03-11-24.04-base-kernel" }
-on_wire = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-21_03-11-24.04-base-kernel" }
+cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-28_03-15-revert-hashes-in-blocks" }
+dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-28_03-15-revert-hashes-in-blocks" }
+dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-28_03-15-revert-hashes-in-blocks" }
+dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-28_03-15-revert-hashes-in-blocks" }
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-28_03-15-revert-hashes-in-blocks" }
+ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-28_03-15-revert-hashes-in-blocks" }
+ic-management-canister-types = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-28_03-15-revert-hashes-in-blocks" }
+ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-28_03-15-revert-hashes-in-blocks" }
+ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-28_03-15-revert-hashes-in-blocks" }
+ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-28_03-15-revert-hashes-in-blocks" }
+ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-28_03-15-revert-hashes-in-blocks" }
+ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-28_03-15-revert-hashes-in-blocks" }
+ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-28_03-15-revert-hashes-in-blocks" }
+ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-28_03-15-revert-hashes-in-blocks" }
+ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-28_03-15-revert-hashes-in-blocks" }
+icp-ledger = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-28_03-15-revert-hashes-in-blocks" }
+on_wire = { git = "https://github.com/dfinity/ic", rev = "release-2024-11-28_03-15-revert-hashes-in-blocks" }
 
 [profile.release]
 lto = false

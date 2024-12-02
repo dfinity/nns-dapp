@@ -11,7 +11,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { getContext } from "svelte";
 
-  // Get the store for the neurons of the hardware wallet from the dedicated context
+  // Get the store for the neurons of the Ledger device from the dedicated context
   const context: WalletContext = getContext<WalletContext>(WALLET_CONTEXT_KEY);
   const { store }: WalletContext = context;
 
