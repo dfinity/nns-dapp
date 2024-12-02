@@ -148,7 +148,6 @@ impl TemplateEngine {
     /// assert_eq!(template_engine.populate("They say that <!--SUPERMAN--> is ${{SUPER-MAN}}"), "They say that Peter Parker is ${{SUPER-MAN}}", "Hyphens are not supported");
     /// assert_eq!(template_engine.populate("${{lowercase}}"), "${{lowercase}}", "Only uppercase, digits and underscore are valid");
     /// ```
-
     #[must_use]
     pub fn new(key_val_pairs: &[(String, String)]) -> Self {
         let args = key_val_pairs.iter().cloned().collect();

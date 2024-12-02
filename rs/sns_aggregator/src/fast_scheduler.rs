@@ -231,11 +231,7 @@ impl FastScheduler {
         // Ok, make sure that we are running when the sale starts.
         let now_seconds = time() / 1_000_000_000;
         // Already started, or starting soon?
-        let delay = if data_collection_start_seconds < now_seconds {
-            0
-        } else {
-            data_collection_start_seconds - now_seconds
-        };
+        let delay = data_collection_start_seconds.saturating_sub(now_seconds);
         Ok((data_collection_start_seconds, Duration::from_secs(delay)))
     }
 
