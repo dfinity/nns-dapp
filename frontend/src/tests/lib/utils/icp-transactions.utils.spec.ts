@@ -5,7 +5,7 @@ import {
 import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
 import type { UiTransaction } from "$lib/types/transaction";
 import {
-  mapIcpTransaction,
+  mapIcpTransactionToReport,
   mapIcpTransactionToUi,
   mapToSelfTransactions,
   sortTransactionsByIdDescendingOrder,
@@ -74,7 +74,7 @@ describe("icp-transactions.utils", () => {
       memo,
     });
 
-  describe("mapIcpTransaction", () => {
+  describe("mapIcpTransactionToReport", () => {
     it("should throw an error if no transaction information is found", () => {
       const transaction = createTransaction({
         operation: {
@@ -84,7 +84,7 @@ describe("icp-transactions.utils", () => {
       });
 
       expect(() =>
-        mapIcpTransaction({
+        mapIcpTransactionToReport({
           transaction,
           accountIdentifier: from,
           neuronAccounts: new Set<string>(),
@@ -98,7 +98,6 @@ describe("icp-transactions.utils", () => {
         operation: defaultTransferOperation,
       });
       const expectedIcpTransaction = {
-        isReceive: false,
         type: "send",
         to,
         from,
@@ -107,7 +106,7 @@ describe("icp-transactions.utils", () => {
       };
 
       expect(
-        mapIcpTransaction({
+        mapIcpTransactionToReport({
           transaction,
           accountIdentifier: from,
           neuronAccounts: new Set<string>(),
@@ -126,7 +125,6 @@ describe("icp-transactions.utils", () => {
         },
       });
       const expectedIcpTransaction = {
-        isReceive: true,
         type: "receive",
         to: from,
         from,
@@ -135,7 +133,7 @@ describe("icp-transactions.utils", () => {
       };
 
       expect(
-        mapIcpTransaction({
+        mapIcpTransactionToReport({
           transaction,
           accountIdentifier: from,
           neuronAccounts: new Set<string>(),
@@ -151,7 +149,6 @@ describe("icp-transactions.utils", () => {
           memo: 12345n,
         });
         const expectedIcpTransaction = {
-          isReceive: false,
           type: "stakeNeuron",
           to,
           from,
@@ -160,7 +157,7 @@ describe("icp-transactions.utils", () => {
         };
 
         expect(
-          mapIcpTransaction({
+          mapIcpTransactionToReport({
             transaction,
             accountIdentifier: from,
             neuronAccounts: new Set<string>([to]),
@@ -175,7 +172,6 @@ describe("icp-transactions.utils", () => {
           memo: 0n,
         });
         const expectedIcpTransaction = {
-          isReceive: false,
           type: "topUpNeuron",
           to,
           from,
@@ -184,7 +180,7 @@ describe("icp-transactions.utils", () => {
         };
 
         expect(
-          mapIcpTransaction({
+          mapIcpTransactionToReport({
             transaction,
             accountIdentifier: from,
             neuronAccounts: new Set<string>([to]),
@@ -199,7 +195,6 @@ describe("icp-transactions.utils", () => {
           memo: CREATE_CANISTER_MEMO,
         });
         const expectedIcpTransaction = {
-          isReceive: false,
           type: "createCanister",
           to,
           from,
@@ -208,7 +203,7 @@ describe("icp-transactions.utils", () => {
         };
 
         expect(
-          mapIcpTransaction({
+          mapIcpTransactionToReport({
             transaction,
             accountIdentifier: from,
             neuronAccounts: new Set<string>(),
@@ -223,7 +218,6 @@ describe("icp-transactions.utils", () => {
           memo: TOP_UP_CANISTER_MEMO,
         });
         const expectedIcpTransaction = {
-          isReceive: false,
           type: "topUpCanister",
           to,
           from,
@@ -232,7 +226,7 @@ describe("icp-transactions.utils", () => {
         };
 
         expect(
-          mapIcpTransaction({
+          mapIcpTransactionToReport({
             transaction,
             accountIdentifier: from,
             neuronAccounts: new Set<string>(),

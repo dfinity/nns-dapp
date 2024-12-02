@@ -137,7 +137,7 @@ const getTransactionInformation = (
   };
 };
 
-export const mapIcpTransaction = ({
+export const mapIcpTransactionToReport = ({
   transaction,
   accountIdentifier,
   neuronAccounts,
@@ -190,7 +190,6 @@ export const mapIcpTransaction = ({
   });
 
   return {
-    isReceive,
     type,
     to,
     from,
