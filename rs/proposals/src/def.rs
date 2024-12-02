@@ -321,6 +321,7 @@ pub type UpdateSubnetTypeArgs = cycles_minting_canister::UpdateSubnetTypeArgs;
 pub type ChangeSubnetTypeAssignmentArgs = cycles_minting_canister::ChangeSubnetTypeAssignmentArgs;
 
 /// Uses a `serde` field attribute to custom serialize the Nat candid type.
+#[allow(clippy::ref_option)]
 fn serialize_optional_nat<S>(nat: &Option<candid::Nat>, serializer: S) -> Result<S::Ok, S::Error>
 where
     S: serde::Serializer,
