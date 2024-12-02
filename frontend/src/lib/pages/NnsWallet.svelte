@@ -63,7 +63,7 @@
   } from "$lib/utils/accounts.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
-    mapIcpTransaction,
+    mapIcpTransactionToUi,
     mapToSelfTransactions,
     sortTransactionsByIdDescendingOrder,
   } from "$lib/utils/icp-transactions.utils";
@@ -185,7 +185,7 @@
         )
       )
         .map(({ transaction, toSelfTransaction }) =>
-          mapIcpTransaction({
+          mapIcpTransactionToUi({
             accountIdentifier: account.identifier,
             transaction,
             toSelfTransaction,

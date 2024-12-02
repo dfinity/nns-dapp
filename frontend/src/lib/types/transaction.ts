@@ -59,6 +59,7 @@ export enum AccountTransactionType {
   Burn = "burn",
   Mint = "mint",
   Send = "send",
+  Receive = "receive",
   StakeNeuron = "stakeNeuron",
   StakeNeuronNotification = "stakeNeuronNotification",
   TopUpNeuron = "topUpNeuron",

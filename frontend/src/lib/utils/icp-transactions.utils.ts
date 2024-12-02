@@ -58,10 +58,12 @@ const getTransactionType = ({
   transaction: { operation, memo },
   neuronAccounts,
   swapCanisterAccounts,
+  isReceive,
 }: {
   transaction: Transaction;
   neuronAccounts: Set<string>;
   swapCanisterAccounts: Set<string>;
+  isReceive: boolean;
 }): AccountTransactionType => {
   if ("Burn" in operation) {
     return AccountTransactionType.Burn;
@@ -92,7 +94,10 @@ const getTransactionType = ({
       : AccountTransactionType.TopUpNeuron;
   }
 
-  // Send is the default transaction type
+  // Send/Receive is the default transaction type
+  if (isReceive) {
+    return AccountTransactionType.Receive;
+  }
   return AccountTransactionType.Send;
 };
 
@@ -131,7 +136,7 @@ const getTransactionInformation = (
   };
 };
 
-export const mapIcpTransaction = ({
+export const mapIcpTransactionToUi = ({
   transaction,
   accountIdentifier,
   toSelfTransaction,
@@ -147,11 +152,6 @@ export const mapIcpTransaction = ({
   i18n: I18n;
 }): UiTransaction | undefined => {
   try {
-    const type = getTransactionType({
-      transaction: transaction.transaction,
-      neuronAccounts,
-      swapCanisterAccounts,
-    });
     const txInfo = getTransactionInformation(transaction.transaction.operation);
     if (txInfo === undefined) {
       throw new Error(
@@ -165,9 +165,15 @@ export const mapIcpTransaction = ({
     const useFee = !isReceive;
     const feeApplied = useFee && txInfo.fee !== undefined ? txInfo.fee : 0n;
 
+    const type = getTransactionType({
+      transaction: transaction.transaction,
+      neuronAccounts,
+      swapCanisterAccounts,
+      isReceive,
+    });
+
     const headline = transactionName({
       type,
-      isReceive,
       i18n,
     });
     const otherParty = isReceive ? txInfo.from : txInfo.to;
