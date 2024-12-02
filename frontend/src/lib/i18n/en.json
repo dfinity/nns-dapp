@@ -178,7 +178,8 @@
     "timestampt": "Date Time",
     "account_id": "Account ID",
     "account_name": "Account Name",
-    "numer_of_transactions": "Transactions"
+    "numer_of_transactions": "Transactions",
+    "transaction_id": "TX ID"
   },
   "export_error": {
     "csv_generation": "Failed to generate CSV file",

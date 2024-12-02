@@ -187,6 +187,7 @@ interface I18nExport_csv_neurons {
   account_id: string;
   account_name: string;
   numer_of_transactions: string;
+  transaction_id: string;
 }
 
 interface I18nExport_error {

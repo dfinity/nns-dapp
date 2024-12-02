@@ -66,11 +66,11 @@
       return {
         metadata: [
           {
-            label: "Account ID",
+            label: $i18n.export_csv_neurons.account_id,
             value: account.identifier,
           },
           {
-            label: "Name",
+            label: $i18n.export_csv_neurons.account_name,
             value: account.name ?? $i18n.accounts.main,
           },
           {
@@ -86,7 +86,7 @@
               identity?.getPrincipal().toText() ?? $i18n.core.not_applicable,
           },
           {
-            label: "Transactions",
+            label: $i18n.export_csv_neurons.numer_of_transactions,
             value: transactions.length.toString(),
           },
           {
@@ -136,7 +136,7 @@
         headers: [
           {
             id: "id",
-            label: $i18n.export_csv_neurons.stake,
+            label: $i18n.export_csv_neurons.transaction_id,
           },
           {
             id: "project",
@@ -148,19 +148,19 @@
           },
           {
             id: "to",
-            label: $i18n.export_csv_neurons.neuron_account_id,
+            label: $i18n.export_csv_neurons.to,
           },
           {
             id: "from",
-            label: $i18n.export_csv_neurons.controller_id,
+            label: $i18n.export_csv_neurons.from
           },
           {
             id: "type",
-            label: $i18n.export_csv_neurons.available_maturity,
+            label: $i18n.export_csv_neurons.tx_type,
           },
           {
             id: "amount",
-            label: $i18n.export_csv_neurons.staked_maturity,
+            label: $i18n.export_csv_neurons.amount,
           },
           {
             id: "timestamp",
