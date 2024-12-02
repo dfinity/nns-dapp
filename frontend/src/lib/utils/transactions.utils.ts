@@ -22,10 +22,6 @@ export const transactionDisplayAmount = ({
   return amount;
 };
 
-/**
- * Note: We used to display the token symbol within the transaction labels that is why this function uses replacePlaceholders.
- * Although it was decided to not render such symbol anymore, we keep the code as it in case this would change in the future.
- */
 export const transactionName = ({
   type,
   isReceive,
