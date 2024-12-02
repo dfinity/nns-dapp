@@ -58,7 +58,7 @@ const getTransactionType = ({
   transaction: { operation, memo },
   neuronAccounts,
   swapCanisterAccounts,
-  isReceive
+  isReceive,
 }: {
   transaction: Transaction;
   neuronAccounts: Set<string>;
@@ -169,12 +169,11 @@ export const mapIcpTransactionToUi = ({
       transaction: transaction.transaction,
       neuronAccounts,
       swapCanisterAccounts,
-      isReceive
+      isReceive,
     });
 
     const headline = transactionName({
       type,
-      isReceive,
       i18n,
     });
     const otherParty = isReceive ? txInfo.from : txInfo.to;
