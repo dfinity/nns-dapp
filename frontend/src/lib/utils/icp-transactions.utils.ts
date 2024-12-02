@@ -131,7 +131,7 @@ const getTransactionInformation = (
   };
 };
 
-export const mapIcpTransaction = ({
+export const mapIcpTransactionToUi = ({
   transaction,
   accountIdentifier,
   toSelfTransaction,
