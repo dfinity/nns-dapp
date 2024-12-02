@@ -5,6 +5,7 @@ import {
 import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
 import type { UiTransaction } from "$lib/types/transaction";
 import {
+  mapIcpTransaction,
   mapIcpTransactionToUi,
   mapToSelfTransactions,
   sortTransactionsByIdDescendingOrder,
@@ -68,6 +69,77 @@ describe("icp-transactions.utils", () => {
       operation,
       memo,
     });
+
+  describe("mapIcpTransaction", () => {
+    it("should throw an error if no transaction information is found", () => {
+      const transaction = createTransaction({
+        operation: {
+          // @ts-expect-error: Even though it is not possible our implementations handles it.
+          Unknown: {},
+        },
+      });
+
+      expect(() =>
+        mapIcpTransaction({
+          transaction,
+          accountIdentifier: from,
+          neuronAccounts: new Set<string>(),
+          swapCanisterAccounts: new Set<string>(),
+        })
+      ).toThrowError("Unknown transaction type Unknown");
+    });
+
+    it("should return transaction information", () => {
+      const transaction = createTransaction({
+        operation: defaultTransferOperation,
+      });
+      const expectedIcpTransaction = {
+        isReceive: false,
+        type: "send",
+        to,
+        from,
+        tokenAmount: defaultUiTransaction.tokenAmount,
+        timestamp: defaultTimestamp,
+      };
+
+      expect(
+        mapIcpTransaction({
+          transaction,
+          accountIdentifier: from,
+          neuronAccounts: new Set<string>(),
+          swapCanisterAccounts: new Set<string>(),
+        })
+      ).toEqual(expectedIcpTransaction);
+    });
+
+    it("sould identify receive transactions", () => {
+      const transaction = createTransaction({
+        operation: {
+          Transfer: {
+            ...defaultTransferOperation.Transfer,
+            to: from,
+          },
+        },
+      });
+      const expectedIcpTransaction = {
+        isReceive: true,
+        type: "send",
+        to,
+        from,
+        tokenAmount: defaultUiTransaction.tokenAmount,
+        timestamp: defaultTimestamp,
+      };
+
+      expect(
+        mapIcpTransaction({
+          transaction,
+          accountIdentifier: from,
+          neuronAccounts: new Set<string>(),
+          swapCanisterAccounts: new Set<string>(),
+        })
+      ).toEqual(expectedIcpTransaction);
+    });
+  });
 
   describe("mapIcpTransactionToUi", () => {
     it("maps stake neuron transaction", () => {
