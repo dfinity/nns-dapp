@@ -61,9 +61,9 @@
     findAccountOrDefaultToMain,
     isAccountHardwareWallet,
   } from "$lib/utils/accounts.utils";
-  import { remapIcpTransactionToUi } from "$lib/utils/i18n.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
-    mapIcpTransaction,
+    mapIcpTransactionToUi,
     mapToSelfTransactions,
     sortTransactionsByIdDescendingOrder,
   } from "$lib/utils/icp-transactions.utils";
@@ -185,7 +185,7 @@
         )
       )
         .map(({ transaction, toSelfTransaction }) =>
-          mapIcpTransaction({
+          mapIcpTransactionToUi({
             accountIdentifier: account.identifier,
             transaction,
             toSelfTransaction,
@@ -211,7 +211,7 @@
   const loadNextTransactions = async () => {
     if (nonNullish($selectedAccountStore.account)) {
       loadingTransactions = true;
-      await loadIcpAmapIcpTransactionToUitions(
+      await loadIcpAccountNextTransactions(
         $selectedAccountStore.account.identifier
       );
       loadingTransactions = false;
