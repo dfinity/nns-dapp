@@ -1,4 +1,4 @@
-import type { IcpSwapTicker } from "$lib/stores/icp-swap.store";
+import type { IcpSwapTicker } from "$lib/types/icp-swap";
 
 export const mockIcpSwapTicker: IcpSwapTicker = {
   ticker_id: "ne2vj-6yaaa-aaaag-qb3ia-cai",
