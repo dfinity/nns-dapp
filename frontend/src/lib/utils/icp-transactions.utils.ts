@@ -123,8 +123,9 @@ const getTransactionInformation = (
   }
   // Edge case, a transaction will have either "Approve", "Burn", "Mint" or "Transfer" data.
   if (data === undefined) {
-    throw new Error(`Unknown transaction type ${JSON.stringify(operation)}`);
+    return undefined;
   }
+
   return {
     from: "from" in data ? data.from : undefined,
     to: "to" in data ? data.to : undefined,
@@ -243,6 +244,7 @@ export const mapIcpTransactionToUi = ({
     const blockTimestampNanos = fromNullable(
       transaction.transaction.timestamp
     )?.timestamp_nanos;
+
     const createdTimestampNanos = fromNullable(
       transaction.transaction.created_at_time
     )?.timestamp_nanos;

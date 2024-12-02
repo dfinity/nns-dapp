@@ -31,6 +31,10 @@ describe("icp-transactions.utils", () => {
       spender: [],
     },
   };
+  const defaultTokenAmountWithOutFee = TokenAmountV2.fromUlps({
+    amount: amount,
+    token: ICPToken,
+  });
   const defaultUiTransaction: UiTransaction = {
     domKey: `${transactionId}-1`,
     isIncoming: false,
@@ -123,10 +127,10 @@ describe("icp-transactions.utils", () => {
       });
       const expectedIcpTransaction = {
         isReceive: true,
-        type: "send",
-        to,
+        type: "receive",
+        to: from,
         from,
-        tokenAmount: defaultUiTransaction.tokenAmount,
+        tokenAmount: defaultTokenAmountWithOutFee,
         timestamp: defaultTimestamp,
       };
 
@@ -138,6 +142,104 @@ describe("icp-transactions.utils", () => {
           swapCanisterAccounts: new Set<string>(),
         })
       ).toEqual(expectedIcpTransaction);
+    });
+
+    describe("should map to the correct transaction type", () => {
+      it("maps stake neuron transaction", () => {
+        const transaction = createTransaction({
+          operation: defaultTransferOperation,
+          memo: 12345n,
+        });
+        const expectedIcpTransaction = {
+          isReceive: false,
+          type: "stakeNeuron",
+          to,
+          from,
+          tokenAmount: defaultUiTransaction.tokenAmount,
+          timestamp: defaultTimestamp,
+        };
+
+        expect(
+          mapIcpTransaction({
+            transaction,
+            accountIdentifier: from,
+            neuronAccounts: new Set<string>([to]),
+            swapCanisterAccounts: new Set<string>(),
+          })
+        ).toEqual(expectedIcpTransaction);
+      });
+
+      it("maps top up neuron transaction", () => {
+        const transaction = createTransaction({
+          operation: defaultTransferOperation,
+          memo: 0n,
+        });
+        const expectedIcpTransaction = {
+          isReceive: false,
+          type: "topUpNeuron",
+          to,
+          from,
+          tokenAmount: defaultUiTransaction.tokenAmount,
+          timestamp: defaultTimestamp,
+        };
+
+        expect(
+          mapIcpTransaction({
+            transaction,
+            accountIdentifier: from,
+            neuronAccounts: new Set<string>([to]),
+            swapCanisterAccounts: new Set<string>(),
+          })
+        ).toEqual(expectedIcpTransaction);
+      });
+
+      it("maps create canister transaction", () => {
+        const transaction = createTransaction({
+          operation: defaultTransferOperation,
+          memo: CREATE_CANISTER_MEMO,
+        });
+        const expectedIcpTransaction = {
+          isReceive: false,
+          type: "createCanister",
+          to,
+          from,
+          tokenAmount: defaultUiTransaction.tokenAmount,
+          timestamp: defaultTimestamp,
+        };
+
+        expect(
+          mapIcpTransaction({
+            transaction,
+            accountIdentifier: from,
+            neuronAccounts: new Set<string>(),
+            swapCanisterAccounts: new Set<string>(),
+          })
+        ).toEqual(expectedIcpTransaction);
+      });
+
+      it("maps top up canister transaction", () => {
+        const transaction = createTransaction({
+          operation: defaultTransferOperation,
+          memo: TOP_UP_CANISTER_MEMO,
+        });
+        const expectedIcpTransaction = {
+          isReceive: false,
+          type: "topUpCanister",
+          to,
+          from,
+          tokenAmount: defaultUiTransaction.tokenAmount,
+          timestamp: defaultTimestamp,
+        };
+
+        expect(
+          mapIcpTransaction({
+            transaction,
+            accountIdentifier: from,
+            neuronAccounts: new Set<string>(),
+            swapCanisterAccounts: new Set<string>(),
+          })
+        ).toEqual(expectedIcpTransaction);
+      });
     });
   });
 
