@@ -90,7 +90,7 @@ describe("NeuronVisibilityRow", () => {
     expect(await po.getTags()).toEqual([]);
   });
 
-  it("should display uncontrolled neuron details for hardware wallet", async () => {
+  it("should display uncontrolled neuron details for Ledger device", async () => {
     const rowData: NeuronVisibilityRowData = {
       neuronId: BigInt(123).toString(),
       isPublic: false,

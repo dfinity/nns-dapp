@@ -15,7 +15,7 @@ describe("busy-services", () => {
     startBusySpy = vi.spyOn(busyStore, "startBusy").mockImplementation(vi.fn());
   });
 
-  it("call start busy without message if neuron is not controlled by hardware wallet", async () => {
+  it("call start busy without message if neuron is not controlled by Ledger device", async () => {
     setAccountsForTesting({
       main: mockMainAccount,
     });
@@ -35,7 +35,7 @@ describe("busy-services", () => {
     expect(startBusySpy).toBeCalledWith({ initiator });
   });
 
-  it("call start busy with message if neuron controlled by hardware wallet", async () => {
+  it("call start busy with message if neuron controlled by Ledger device", async () => {
     setAccountsForTesting({
       main: mockMainAccount,
       hardwareWallets: [mockHardwareWalletAccount],

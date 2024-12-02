@@ -321,7 +321,7 @@ describe("MergeNeuronsModal", () => {
     });
   });
 
-  describe("when mergeable neurons by hardware wallet", () => {
+  describe("when mergeable neurons by Ledger device", () => {
     const controller = mockHardwareWalletAccount.principal?.toText() as string;
     const mergeableNeuron1 = {
       neuronId: 10n,
@@ -356,7 +356,7 @@ describe("MergeNeuronsModal", () => {
     });
   });
 
-  describe("when neurons from main user and hardware wallet", () => {
+  describe("when neurons from main user and Ledger device", () => {
     const neuronHW = {
       neuronId: 10n,
       state: NeuronState.Locked,

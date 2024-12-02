@@ -409,7 +409,7 @@ describe("NnsStakeNeuronModal", () => {
     });
   });
 
-  describe("hardware wallet account selection", () => {
+  describe("Ledger device account selection", () => {
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [], certified: true });
       setAccountsForTesting({

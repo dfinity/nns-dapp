@@ -395,11 +395,11 @@ describe("accounts-utils", () => {
   });
 
   describe("isHardwareWallet", () => {
-    it("returns true if type hardware wallet", () => {
+    it("returns true if type Ledger device", () => {
       expect(isAccountHardwareWallet(mockHardwareWalletAccount)).toBeTruthy();
     });
 
-    it("returns false if type no hardware wallet", () => {
+    it("returns false if type no Ledger device", () => {
       expect(isAccountHardwareWallet(mockMainAccount)).toBe(false);
       expect(isAccountHardwareWallet(mockSubAccount)).toBe(false);
     });

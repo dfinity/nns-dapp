@@ -1002,7 +1002,7 @@ describe("NnsWallet", () => {
       );
     });
 
-    it("should display hardware wallet buttons", async () => {
+    it("should display Ledger device buttons", async () => {
       const po = await renderWallet(props);
       expect(await po.getListNeuronsButtonPo().isPresent()).toBe(true);
       expect(await po.getShowHardwareWalletButtonPo().isPresent()).toBe(true);

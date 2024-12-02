@@ -626,7 +626,7 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
     expect(onNnsCancel).toHaveBeenCalled();
   });
 
-  it("should display controlled hardware wallet, and hotkey uncontrolled neurons in uncontrollable neurons list", async () => {
+  it("should display controlled Ledger device, and hotkey uncontrolled neurons in uncontrollable neurons list", async () => {
     neuronsStore.setNeurons({
       neurons: [
         publicNeuron1,

@@ -89,7 +89,7 @@ describe("NnsNeuronStateItemAction", () => {
     expect(await po.getDissolveButtonPo().isPresent()).toBe(false);
   });
 
-  it("should render dissolve button if hardware wallet is the controller", async () => {
+  it("should render dissolve button if Ledger device is the controller", async () => {
     setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],

@@ -17,7 +17,7 @@ describe("HardwareWalletShowActionButton", () => {
     });
   });
 
-  it("should call show info on hardware wallet", async () => {
+  it("should call show info on Ledger device", async () => {
     const { getByRole } = render(HardwareWalletShowAction);
 
     fireEvent.click(getByRole("button"));

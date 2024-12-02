@@ -139,7 +139,7 @@ describe("NnsNeuronPublicVisibilityAction", () => {
     expect(await po.getButtonPo().isPresent()).toBe(false);
   });
 
-  it("should render button disabled with tooltip for hardware wallet controlled neurons", async () => {
+  it("should render button disabled with tooltip for Ledger device controlled neurons", async () => {
     const po = await renderComponent(hwControlledNeuron);
 
     expect(await po.getTitleText()).toBe("Private Neuron");

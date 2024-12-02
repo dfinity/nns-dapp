@@ -264,7 +264,7 @@ describe("neurons-services", () => {
       expect(newNeuronId).toEqual(mockNeuron.neuronId);
     });
 
-    it("should stake neuron from hardware wallet", async () => {
+    it("should stake neuron from Ledger device", async () => {
       const mockHardkwareWalletIdentity = {
         getPrincipal: () => mockHardwareWalletAccount.principal,
       } as unknown as Identity;

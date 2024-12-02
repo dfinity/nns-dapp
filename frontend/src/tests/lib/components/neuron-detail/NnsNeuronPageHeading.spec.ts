@@ -73,7 +73,7 @@ describe("NnsNeuronPageHeading", () => {
     expect(await po.getNeuronTags()).toEqual(["Neurons' fund"]);
   });
 
-  it("should render hotkey tag if user is a hotkey and not controlled by a hardware wallet", async () => {
+  it("should render hotkey tag if user is a hotkey and not controlled by a Ledger device", async () => {
     setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],
@@ -113,7 +113,7 @@ describe("NnsNeuronPageHeading", () => {
     ]);
   });
 
-  it("should render hardware wallet tag and not hotkey if neuron is controlled by a hardware wallet", async () => {
+  it("should render Ledger device tag and not hotkey if neuron is controlled by a Ledger device", async () => {
     setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],

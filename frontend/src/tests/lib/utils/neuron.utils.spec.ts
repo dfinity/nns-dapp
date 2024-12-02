@@ -948,7 +948,7 @@ describe("neuron-utils", () => {
       ).toBe(false);
     });
 
-    it("should return true if neuron controller is a hardware wallet", () => {
+    it("should return true if neuron controller is a Ledger device", () => {
       const accounts = {
         main: mockMainAccount,
         hardwareWallets: [mockHardwareWalletAccount],
@@ -1008,7 +1008,7 @@ describe("neuron-utils", () => {
       ).toBe(false);
     });
 
-    it("should return false if neuron controller is a hardware wallet", () => {
+    it("should return false if neuron controller is a Ledger device", () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
@@ -1059,7 +1059,7 @@ describe("neuron-utils", () => {
       );
     });
 
-    it("should return true if neuron controller is hardware wallet", () => {
+    it("should return true if neuron controller is Ledger device", () => {
       const accounts = {
         main: mockMainAccount,
         hardwareWallets: [mockHardwareWalletAccount],
@@ -1437,7 +1437,7 @@ describe("neuron-utils", () => {
     const ectTag = {
       text: "Early Contributor Token",
     } as NeuronTagData;
-    it("returns 'hotkey' if neuron is controllable by hotkey and hardware wallet is not the controller", () => {
+    it("returns 'hotkey' if neuron is controllable by hotkey and Ledger device is not the controller", () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
@@ -1456,7 +1456,7 @@ describe("neuron-utils", () => {
       ).toEqual([hotkeyTag]);
     });
 
-    it("returns 'hotkey' if neuron is controllable by hotkey and no hardware wallet is attached", () => {
+    it("returns 'hotkey' if neuron is controllable by hotkey and no Ledger device is attached", () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
@@ -1475,7 +1475,7 @@ describe("neuron-utils", () => {
       ).toEqual([hotkeyTag]);
     });
 
-    it("returns 'Ledger Device Controlled' if neuron is controllable by hotkey and hardware wallet is the controller", () => {
+    it("returns 'Ledger Device Controlled' if neuron is controllable by hotkey and Ledger device is the controller", () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
@@ -2810,7 +2810,7 @@ describe("neuron-utils", () => {
       ).toBe(false);
     });
 
-    it("should return true if user is hotkey and no hardware wallet is attached", () => {
+    it("should return true if user is hotkey and no Ledger device is attached", () => {
       const accounts: IcpAccountsStoreData = {
         main: identityMainAccount,
         subAccounts: [],
@@ -2833,7 +2833,7 @@ describe("neuron-utils", () => {
       ).toBe(true);
     });
 
-    it("should return false if user is hotkey and attached hardware wallet is controller", () => {
+    it("should return false if user is hotkey and attached Ledger device is controller", () => {
       const accounts: IcpAccountsStoreData = {
         main: identityMainAccount,
         subAccounts: [],
@@ -3139,7 +3139,7 @@ describe("neuron-utils", () => {
       expect(result.tags).toEqual(["Neurons' fund"]);
     });
 
-    it("should return hardware wallet details for hardware wallet controlled neuron", () => {
+    it("should return Ledger device details for Ledger device controlled neuron", () => {
       const neuron: NeuronInfo = {
         ...mockNeuron,
         fullNeuron: {
@@ -3228,7 +3228,7 @@ describe("neuron-utils", () => {
       expect(result.uncontrolledNeuronDetails).toBeUndefined();
     });
 
-    it("should not include stake for hardware wallet controlled neuron", () => {
+    it("should not include stake for Ledger device controlled neuron", () => {
       const stake = 200_000_000n;
       const neuron: NeuronInfo = {
         ...mockNeuron,
