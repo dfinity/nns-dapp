@@ -52,7 +52,6 @@ describe("transactions-utils", () => {
         expect(
           transactionName({
             type: key as AccountTransactionType,
-            isReceive: false,
             i18n: en,
           })
         ).toBe(en.transaction_names[key as AccountTransactionType]);
@@ -63,7 +62,6 @@ describe("transactions-utils", () => {
       expect(
         transactionName({
           type: AccountTransactionType.Send,
-          isReceive: true,
           i18n: en,
         })
       ).toBe(en.transaction_names.receive);
@@ -73,7 +71,6 @@ describe("transactions-utils", () => {
       expect(
         transactionName({
           type: "test" as AccountTransactionType,
-          isReceive: true,
           i18n: en,
         })
       ).toBe("test");
