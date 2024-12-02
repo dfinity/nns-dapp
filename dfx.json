@@ -289,6 +289,13 @@
           "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai"
         }
       }
+    },
+    "icp-swap": {
+      "url": {
+        "mainnet": "https://uvevg-iyaaa-aaaak-ac27q-cai.raw.ic0.app/",
+        "app": "https://uvevg-iyaaa-aaaak-ac27q-cai.raw.ic0.app/",
+        "beta": "https://uvevg-iyaaa-aaaak-ac27q-cai.raw.ic0.app/"
+      }
     }
   },
   "networks": {
