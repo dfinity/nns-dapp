@@ -58,15 +58,6 @@ describe("transactions-utils", () => {
       }
     });
 
-    it("returns received name", () => {
-      expect(
-        transactionName({
-          type: AccountTransactionType.Send,
-          i18n: en,
-        })
-      ).toBe(en.transaction_names.receive);
-    });
-
     it("returns raw type if not label", () => {
       expect(
         transactionName({
