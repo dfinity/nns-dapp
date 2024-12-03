@@ -9,11 +9,14 @@ export const FETCH_ROOT_KEY: boolean = envVars.fetchRootKey === "true";
 
 export const SNS_AGGREGATOR_CANISTER_URL = envVars.snsAggregatorUrl ?? "";
 
+export const ICP_SWAP_URL = envVars.icpSwapUrl ?? "";
+
 export interface FeatureFlags<T> {
   ENABLE_CKTESTBTC: T;
   DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: T;
   ENABLE_PERIODIC_FOLLOWING_CONFIRMATION: T;
   ENABLE_EXPORT_NEURONS_REPORT: T;
+  ENABLE_USD_VALUES: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;
@@ -23,6 +26,7 @@ export const defaultFeatureFlagValues: FeatureFlags<boolean> = {
   DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
   ENABLE_PERIODIC_FOLLOWING_CONFIRMATION: false,
   ENABLE_EXPORT_NEURONS_REPORT: false,
+  ENABLE_USD_VALUES: false,
   TEST_FLAG_EDITABLE: false,
   TEST_FLAG_NOT_EDITABLE: false,
 };

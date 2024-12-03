@@ -125,6 +125,7 @@ const getTransactionInformation = (
   if (data === undefined) {
     throw new Error(`Unknown transaction type ${JSON.stringify(operation)}`);
   }
+
   return {
     from: "from" in data ? data.from : undefined,
     to: "to" in data ? data.to : undefined,
@@ -136,7 +137,7 @@ const getTransactionInformation = (
   };
 };
 
-export const mapIcpTransaction = ({
+export const mapIcpTransactionToReport = ({
   transaction,
   accountIdentifier,
   neuronAccounts,
@@ -176,12 +177,6 @@ export const mapIcpTransaction = ({
     transaction.transaction.created_at_time
   )?.timestamp_nanos;
   const timestampNanos = blockTimestampNanos ?? createdTimestampNanos;
-  const timestampMilliseconds = nonNullish(timestampNanos)
-    ? Number(timestampNanos) / NANO_SECONDS_IN_MILLISECOND
-    : undefined;
-  const timestamp = nonNullish(timestampMilliseconds)
-    ? new Date(timestampMilliseconds)
-    : undefined;
 
   const tokenAmount = TokenAmountV2.fromUlps({
     amount: amount + feeApplied,
@@ -189,12 +184,11 @@ export const mapIcpTransaction = ({
   });
 
   return {
-    isReceive,
     type,
     to,
     from,
     tokenAmount,
-    timestamp,
+    timestampNanos,
   };
 };
 
@@ -243,6 +237,7 @@ export const mapIcpTransactionToUi = ({
     const blockTimestampNanos = fromNullable(
       transaction.transaction.timestamp
     )?.timestamp_nanos;
+
     const createdTimestampNanos = fromNullable(
       transaction.transaction.created_at_time
     )?.timestamp_nanos;

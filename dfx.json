@@ -289,6 +289,13 @@
           "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai"
         }
       }
+    },
+    "icp-swap": {
+      "url": {
+        "mainnet": "https://uvevg-iyaaa-aaaak-ac27q-cai.raw.ic0.app/",
+        "app": "https://uvevg-iyaaa-aaaak-ac27q-cai.raw.ic0.app/",
+        "beta": "https://uvevg-iyaaa-aaaak-ac27q-cai.raw.ic0.app/"
+      }
     }
   },
   "networks": {
@@ -417,7 +424,8 @@
           "ENABLE_CKTESTBTC": false,
           "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
           "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION": false,
-          "ENABLE_EXPORT_NEURONS_REPORT": false
+          "ENABLE_EXPORT_NEURONS_REPORT": false,
+          "ENABLE_USD_VALUES": false
         }
       }
     },
@@ -434,7 +442,7 @@
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2024-11-27",
         "IC_COMMIT_FOR_PROPOSALS": "release-2024-11-28_03-15-revert-hashes-in-blocks",
-        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-11-21_03-11-24.04-base-kernel"
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-11-28_03-15-revert-hashes-in-blocks"
       },
       "packtool": ""
     }

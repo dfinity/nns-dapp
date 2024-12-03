@@ -4,11 +4,14 @@ import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import * as snsApi from "$lib/api/sns.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Staking from "$lib/routes/Staking.svelte";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import { page } from "$mocks/$app/stores";
 import {
   mockIdentity,
@@ -16,7 +19,7 @@ import {
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { StakingPo } from "$tests/page-objects/Staking.page-object";
@@ -394,6 +397,42 @@ describe("Staking", () => {
       await form.enterAmount(snsMinimumStake);
       expect(await form.getAmountInputPo().hasError()).toBe(false);
       expect(await form.isContinueButtonEnabled()).toBe(true);
+    });
+  });
+
+  describe("LosingRewardsBanner", () => {
+    beforeEach(() => {
+      neuronsStore.setNeurons({
+        neurons: [
+          {
+            ...mockNeuron,
+            fullNeuron: {
+              ...mockFullNeuron,
+              votingPowerRefreshedTimestampSeconds: BigInt(
+                nowInSeconds() - SECONDS_IN_HALF_YEAR
+              ),
+            },
+          },
+        ],
+        certified: true,
+      });
+    });
+
+    it("should not display LosingRewardsBanner by default", async () => {
+      const po = await renderComponent();
+      // It should be behind the feature flag
+      expect(await po.getLosingRewardsBannerPo().isPresent()).toBe(false);
+    });
+
+    it("should display LosingRewardsBanner", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        true
+      );
+      const po = await renderComponent();
+
+      expect(await po.getLosingRewardsBannerPo().isPresent()).toBe(true);
+      expect(await po.getLosingRewardsBannerPo().isVisible()).toBe(true);
     });
   });
 });
