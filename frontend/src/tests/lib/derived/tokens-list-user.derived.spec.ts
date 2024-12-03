@@ -94,6 +94,7 @@ describe("tokens-list-user.derived", () => {
   });
   const tetrisTokenLoading: UserTokenLoading = {
     universeId: snsTetris.rootCanisterId,
+    ledgerCanisterId: snsTetris.ledgerCanisterId,
     title: snsTetris.projectName,
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/g3pce-2iaae/logo.png",
     balance: "loading",
@@ -122,6 +123,7 @@ describe("tokens-list-user.derived", () => {
   });
   const pacmanTokenLoading: UserTokenLoading = {
     universeId: snsPacman.rootCanisterId,
+    ledgerCanisterId: snsPacman.ledgerCanisterId,
     title: snsPacman.projectName,
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/f7crg-kabae/logo.png",
     balance: "loading",

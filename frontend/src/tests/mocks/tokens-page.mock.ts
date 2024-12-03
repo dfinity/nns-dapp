@@ -3,6 +3,7 @@ import CKETH_LOGO from "$lib/assets/ckETH.svg";
 import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
 import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
 import {
+  LEDGER_CANISTER_ID,
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
@@ -25,6 +26,7 @@ import { mockSnsToken, principal } from "./sns-projects.mock";
 
 export const icpTokenBase: UserTokenBase = {
   universeId: OWN_CANISTER_ID,
+  ledgerCanisterId: LEDGER_CANISTER_ID,
   title: "Internet Computer",
   logo: IC_LOGO_ROUNDED,
   actions: [],
@@ -48,18 +50,21 @@ const snsPackmanToken = {
 };
 export const ckBTCTokenBase: UserTokenBase = {
   universeId: CKBTC_UNIVERSE_CANISTER_ID,
+  ledgerCanisterId: CKBTC_UNIVERSE_CANISTER_ID,
   title: "ckBTC",
   logo: CKBTC_LOGO,
   actions: [],
 };
 export const ckETHTokenBase: UserTokenBase = {
   universeId: CKETH_UNIVERSE_CANISTER_ID,
+  ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,
   title: "ckETH",
   logo: CKETH_LOGO,
   actions: [],
 };
 export const ckTESTBTCTokenBase: UserTokenBase = {
   universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+  ledgerCanisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
   title: "ckTESTBTC",
   logo: CKTESTBTC_LOGO,
   actions: [],
@@ -68,6 +73,7 @@ export const ckTESTBTCTokenBase: UserTokenBase = {
 const snsHref = `/wallet/?u=${principal(0).toText()}`;
 export const userTokenPageMock: UserTokenData = {
   universeId: principal(0),
+  ledgerCanisterId: principal(1),
   title: "Test SNS",
   balance: TokenAmountV2.fromUlps({
     amount: 2160000000n,
@@ -104,6 +110,7 @@ export const userTokensPageMock: UserTokenData[] = [
   },
   {
     universeId: principal(0),
+    ledgerCanisterId: principal(2),
     title: "Test SNS",
     balance: TokenAmountV2.fromUlps({
       amount: 2160000000n,
@@ -121,6 +128,7 @@ export const userTokensPageMock: UserTokenData[] = [
   },
   {
     universeId: principal(1),
+    ledgerCanisterId: principal(3),
     title: "Test SNS 2",
     balance: TokenAmountV2.fromUlps({
       amount: 1180000000n,
@@ -159,6 +167,7 @@ export const createIcpUserToken = (params: Partial<UserTokenData> = {}) => ({
 
 export const defaultUserTokenLoading: UserTokenLoading = {
   universeId: principal(0),
+  ledgerCanisterId: principal(2),
   title: "Test SNS",
   balance: "loading",
   logo: "sns-logo.svg",

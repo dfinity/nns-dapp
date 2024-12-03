@@ -1,4 +1,7 @@
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import {
+  LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { UserTokenAction, type UserToken } from "$lib/types/tokens-page";
@@ -838,6 +841,7 @@ describe("token-utils", () => {
     };
     const userToken = (balanceUlps: bigint): UserToken => ({
       universeId: Principal.fromText(nnsUniverseMock.canisterId),
+      ledgerCanisterId: LEDGER_CANISTER_ID,
       title: "a title",
       subtitle: undefined,
       balance: TokenAmountV2.fromUlps({
