@@ -20,30 +20,30 @@ describe("icp-swap.services", () => {
       expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
     });
 
+    it("should only load tickers once", async () => {
+      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([
+        mockIcpSwapTicker,
+      ]);
+
+      expect(get(icpSwapTickersStore)).toBeUndefined();
+
+      await loadIcpSwapTickers();
+      await loadIcpSwapTickers();
+
+      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
+    });
+
     it("should not change the store when there is an error", async () => {
       vi.spyOn(console, "error").mockReturnValue();
 
       const error = new Error("Failed to fetch tickers");
-      vi.spyOn(icpSwapApi, "queryIcpSwapTickers")
-        .mockResolvedValueOnce([mockIcpSwapTicker])
-        .mockRejectedValueOnce(error);
+      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockRejectedValueOnce(error);
 
       expect(get(icpSwapTickersStore)).toBeUndefined();
 
       await loadIcpSwapTickers();
 
-      const expectedStoreData = [mockIcpSwapTicker];
-
-      expect(get(icpSwapTickersStore)).toEqual(expectedStoreData);
-      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
-      expect(console.error).toBeCalledTimes(0);
-
-      await loadIcpSwapTickers();
-
-      expect(get(icpSwapTickersStore)).toEqual(expectedStoreData);
-      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(2);
-      expect(console.error).toBeCalledWith(error);
-      expect(console.error).toBeCalledTimes(1);
+      expect(get(icpSwapTickersStore)).toBeUndefined();
     });
   });
 });
