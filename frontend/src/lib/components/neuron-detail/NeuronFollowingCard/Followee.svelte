@@ -10,7 +10,7 @@
   import type { NeuronInfo, Topic } from "@dfinity/nns";
 
   export let followee: FolloweesNeuron;
-  export let neuron: NeuronInfo | undefined;
+  export let neuron: NeuronInfo;
   export let isInteractive = true;
 
   // TODO: Align with `en.governance.json` "topics.[topic]"
