@@ -246,7 +246,6 @@ pub enum TransactionType {
     TransferFrom,
     StakeNeuronNotification,
     CreateCanister,
-    ParticipateSwap(CanisterId),
 }
 
 #[derive(Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
@@ -582,7 +581,7 @@ impl AccountsStore {
                     if let Some(principal) = self.try_get_principal(&from) {
                         let transaction_type =
                             Self::get_transaction_type(from, to, memo, &principal, default_transaction_type);
-                        self.process_transaction_type(transaction_type, principal, from, to, block_height);
+                        self.process_transaction_type(transaction_type, principal, block_height);
                     }
                 }
             }
@@ -930,24 +929,13 @@ impl AccountsStore {
         &mut self,
         transaction_type: TransactionType,
         principal: PrincipalId,
-        from: AccountIdentifier,
-        to: AccountIdentifier,
         block_height: BlockIndex,
     ) {
-        match transaction_type {
-            TransactionType::ParticipateSwap(swap_canister_id) => {
-                self.multi_part_transactions_processor.push(
-                    block_height,
-                    MultiPartTransactionToBeProcessed::ParticipateSwap(principal, from, to, swap_canister_id),
-                );
-            }
-            TransactionType::CreateCanister => {
-                self.multi_part_transactions_processor.push(
-                    block_height,
-                    MultiPartTransactionToBeProcessed::CreateCanisterV2(principal),
-                );
-            }
-            _ => {}
+        if transaction_type == TransactionType::CreateCanister {
+            self.multi_part_transactions_processor.push(
+                block_height,
+                MultiPartTransactionToBeProcessed::CreateCanisterV2(principal),
+            );
         };
     }
     fn assert_account_limit(&self) {
