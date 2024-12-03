@@ -1,6 +1,7 @@
 import { TagPo } from "$tests/page-objects/Tag.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import type { ButtonPo } from "./Button.page-object";
 
 export class FolloweePo extends BasePageObject {
   private static readonly TID = "followee-component";
@@ -11,6 +12,10 @@ export class FolloweePo extends BasePageObject {
 
   getTagPos(): Promise<TagPo[]> {
     return TagPo.allUnder(this.root);
+  }
+
+  getCopyButton(): ButtonPo {
+    return this.getButton("copy-component");
   }
 
   getName(): Promise<string> {
@@ -35,6 +40,6 @@ export class FolloweePo extends BasePageObject {
   }
 
   copy(): Promise<void> {
-    return this.getButton("copy-component").click();
+    return this.getCopyButton().click();
   }
 }
