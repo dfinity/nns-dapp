@@ -20,10 +20,6 @@ pub async fn run_periodic_tasks() {
                 // DO NOTHING
                 // Handling ParticipateSwap is not supported.
             }
-            // TODO: Remove StakeNeuron after a version has been released that
-            //       does not add StakeNeuron to the multi-part transaction
-            //       queue anymore.
-            MultiPartTransactionToBeProcessed::StakeNeuron(_principal, _memo) => {}
             MultiPartTransactionToBeProcessed::CreateCanisterV2(controller) => {
                 handle_create_canister_v2(block_height, controller).await;
             }

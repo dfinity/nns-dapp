@@ -1,7 +1,7 @@
 use candid::CandidType;
 use ic_base_types::{CanisterId, PrincipalId};
 use icp_ledger::AccountIdentifier;
-use icp_ledger::{BlockIndex, Memo};
+use icp_ledger::BlockIndex;
 use serde::Deserialize;
 use std::collections::VecDeque;
 
@@ -12,9 +12,6 @@ pub struct MultiPartTransactionsProcessor {
 
 #[derive(Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub enum MultiPartTransactionToBeProcessed {
-    // TODO: Remove StakeNeuron after a version has been released that does not
-    //       add StakeNeuron to the multi-part transaction queue anymore.
-    StakeNeuron(PrincipalId, Memo),
     CreateCanisterV2(PrincipalId),
     // TODO: Remove TopUpCanisterV2 after a version has been released that does
     //       not add TopUpCanisterV2 to the multi-part transaction queue
@@ -55,15 +52,14 @@ mod tests {
         let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
 
         for i in 0..10 {
-            processor.push(i, MultiPartTransactionToBeProcessed::StakeNeuron(principal, Memo(i)));
+            processor.push(i, MultiPartTransactionToBeProcessed::CreateCanisterV2(principal));
         }
 
         for i in 0..10 {
             let (block_height, to_be_processed) = processor.take_next().unwrap();
             assert_eq!(block_height, i);
-            if let MultiPartTransactionToBeProcessed::StakeNeuron(p, m) = to_be_processed {
+            if let MultiPartTransactionToBeProcessed::CreateCanisterV2(p) = to_be_processed {
                 assert_eq!(p, principal);
-                assert_eq!(m.0, i);
             }
         }
 
