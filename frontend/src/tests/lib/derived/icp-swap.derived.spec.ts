@@ -13,15 +13,12 @@ describe("icp-swap.derived", () => {
     });
 
     it("should be empty if there are no tickers", () => {
-      icpSwapTickersStore.set({ tickers: [], lastUpdateTimestampSeconds: 0 });
+      icpSwapTickersStore.set([]);
       expect(get(icpSwapUsdPricesStore)).toEqual({});
     });
 
     it("should be empty if there is no ckUSDC ticker", () => {
-      icpSwapTickersStore.set({
-        tickers: [mockIcpSwapTicker],
-        lastUpdateTimestampSeconds: 0,
-      });
+      icpSwapTickersStore.set([mockIcpSwapTicker]);
       expect(get(icpSwapUsdPricesStore)).toEqual({});
     });
 
@@ -34,10 +31,7 @@ describe("icp-swap.derived", () => {
         last_price: `${icpPriceInUsd}`,
       };
 
-      icpSwapTickersStore.set({
-        tickers: [ckusdcTicker],
-        lastUpdateTimestampSeconds: 0,
-      });
+      icpSwapTickersStore.set([ckusdcTicker]);
       expect(get(icpSwapUsdPricesStore)).toEqual({
         [LEDGER_CANISTER_ID.toText()]: icpPriceInUsd,
         [CKUSDC_LEDGER_CANISTER_ID.toText()]: 1,
@@ -60,10 +54,7 @@ describe("icp-swap.derived", () => {
         last_price: `${icpPriceInCketh}`,
       };
 
-      icpSwapTickersStore.set({
-        tickers: [ckusdcTicker, ckethTicker],
-        lastUpdateTimestampSeconds: 0,
-      });
+      icpSwapTickersStore.set([ckusdcTicker, ckethTicker]);
       expect(get(icpSwapUsdPricesStore)).toEqual({
         [LEDGER_CANISTER_ID.toText()]: icpPriceInUsd,
         [CKUSDC_LEDGER_CANISTER_ID.toText()]: 1,
@@ -88,10 +79,7 @@ describe("icp-swap.derived", () => {
         last_price: `${ckethPriceInUsd}`,
       };
 
-      icpSwapTickersStore.set({
-        tickers: [ckusdcTicker, ckethTicker],
-        lastUpdateTimestampSeconds: 0,
-      });
+      icpSwapTickersStore.set([ckusdcTicker, ckethTicker]);
       expect(get(icpSwapUsdPricesStore)).toEqual({
         [LEDGER_CANISTER_ID.toText()]: icpPriceInUsd,
         [CKUSDC_LEDGER_CANISTER_ID.toText()]: 1,

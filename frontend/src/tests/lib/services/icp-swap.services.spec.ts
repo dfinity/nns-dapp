@@ -5,12 +5,6 @@ import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { get } from "svelte/store";
 
 describe("icp-swap.services", () => {
-  const nowSeconds = 123456789;
-
-  beforeEach(() => {
-    vi.useFakeTimers().setSystemTime(nowSeconds * 1000);
-  });
-
   describe("loadIcpSwapTickers", () => {
     it("should load tickers into the store", async () => {
       vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([
@@ -21,10 +15,7 @@ describe("icp-swap.services", () => {
 
       await loadIcpSwapTickers();
 
-      expect(get(icpSwapTickersStore)).toEqual({
-        tickers: [mockIcpSwapTicker],
-        lastUpdateTimestampSeconds: nowSeconds,
-      });
+      expect(get(icpSwapTickersStore)).toEqual([mockIcpSwapTicker]);
 
       expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
     });
@@ -41,10 +32,7 @@ describe("icp-swap.services", () => {
 
       await loadIcpSwapTickers();
 
-      const expectedStoreData = {
-        tickers: [mockIcpSwapTicker],
-        lastUpdateTimestampSeconds: nowSeconds,
-      };
+      const expectedStoreData = [mockIcpSwapTicker];
 
       expect(get(icpSwapTickersStore)).toEqual(expectedStoreData);
       expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
