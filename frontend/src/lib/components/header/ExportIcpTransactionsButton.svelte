@@ -21,7 +21,7 @@
     type TransactionsAndAccounts,
   } from "$lib/services/export-data.services";
   import { SignIdentity } from "@dfinity/agent";
-  import { mapIcpTransaction } from "$lib/utils/icp-transactions.utils";
+  import { mapIcpTransactionToReport } from "$lib/utils/icp-transactions.utils";
   import { neuronAccountsStore } from "$lib/derived/neurons.derived";
   import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
   import { transactionName } from "$lib/utils/transactions.utils";
@@ -65,7 +65,6 @@
       });
 
       console.log(transactions);
-
       return {
         metadata: [
           {
@@ -99,7 +98,7 @@
         ],
         data: transactions.map((transaction) => {
           const { to, from, type, tokenAmount, timestampNanos } =
-            mapIcpTransaction({
+            mapIcpTransactionToReport({
               accountIdentifier: account.identifier,
               transaction,
               neuronAccounts,
