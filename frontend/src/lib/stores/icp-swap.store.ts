@@ -1,10 +1,7 @@
 import type { IcpSwapTicker } from "$lib/types/icp-swap";
 import { writable, type Readable } from "svelte/store";
 
-export interface IcpSwapTickersStoreData {
-  tickers: IcpSwapTicker[];
-  lastUpdateTimestampSeconds: number;
-}
+export type IcpSwapTickersStoreData = IcpSwapTicker[];
 
 export interface IcpSwapTickersStore
   extends Readable<IcpSwapTickersStoreData | undefined> {

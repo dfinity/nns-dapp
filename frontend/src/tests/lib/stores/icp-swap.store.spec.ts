@@ -20,14 +20,12 @@ describe("icp-swap.store", () => {
         base_currency: "ckUSDC",
       };
       const tickers = [ticker1, ticker2];
-      const now = new Date(2023, 11, 31).getTime() / 1000;
-      const data = { tickers, lastUpdateTimestampSeconds: now };
 
       expect(get(icpSwapTickersStore)).toBeUndefined();
 
-      icpSwapTickersStore.set(data);
+      icpSwapTickersStore.set(tickers);
 
-      expect(get(icpSwapTickersStore)).toEqual(data);
+      expect(get(icpSwapTickersStore)).toEqual(tickers);
     });
   });
 });
