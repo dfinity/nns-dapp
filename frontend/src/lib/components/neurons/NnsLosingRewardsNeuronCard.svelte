@@ -41,33 +41,48 @@
   noMargin
   ariaLabel={$i18n.losing_rewards_modal.goto_neuron}
 >
-  <div slot="start" class="title">
-    <h3 class="neuron-id" data-tid="neuron-id">
-      {neuron.neuronId}
-    </h3>
-    {#each neuronTags as tag}
-      <NeuronTag {tag} />
-    {/each}
-  </div>
-  <div class="icon-right" slot="end">
-    <IconRight />
-  </div>
-
-  {#if followees.length > 0}
-    <div class="frame">
-      {#each followees as followee}
-        <Followee {followee} {neuron} isInteractive={false} />
-      {/each}
+  <div class="wrapper">
+    <div class="header">
+      <div class="title">
+        <h3 class="neuron-id" data-tid="neuron-id">
+          {neuron.neuronId}
+        </h3>
+        {#each neuronTags as tag}
+          <NeuronTag {tag} />
+        {/each}
+      </div>
+      <div class="icon-right">
+        <IconRight />
+      </div>
     </div>
-  {:else}
-    <p class="no-following">{$i18n.losing_rewards_modal.no_following}</p>
-  {/if}
+
+    {#if followees.length > 0}
+      <div class="frame">
+        {#each followees as followee}
+          <Followee {followee} {neuron} isInteractive={false} />
+        {/each}
+      </div>
+    {:else}
+      <p class="no-following">{$i18n.losing_rewards_modal.no_following}</p>
+    {/if}
+  </div>
 </Card>
 
 <style lang="scss">
-  .title {
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+  }
+
+  .header {
     display: flex;
     align-items: center;
+  }
+
+  .title {
+    display: flex;
+    flex-grow: 1;
     flex-wrap: wrap;
     column-gap: var(--padding);
     row-gap: var(--padding-0_5x);
