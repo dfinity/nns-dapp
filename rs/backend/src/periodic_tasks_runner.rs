@@ -16,10 +16,6 @@ pub async fn run_periodic_tasks() {
     let maybe_transaction_to_process = with_state_mut(|s| s.accounts_store.try_take_next_transaction_to_process());
     if let Some((block_height, transaction_to_process)) = maybe_transaction_to_process {
         match transaction_to_process {
-            MultiPartTransactionToBeProcessed::ParticipateSwap(_principal, _from, _to, _swap_canister_id) => {
-                // DO NOTHING
-                // Handling ParticipateSwap is not supported.
-            }
             // TODO: Remove StakeNeuron after a version has been released that
             //       does not add StakeNeuron to the multi-part transaction
             //       queue anymore.
