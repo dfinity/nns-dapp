@@ -23,6 +23,7 @@ export enum UserTokenAction {
 
 export type UserTokenBase = {
   universeId: Principal;
+  ledgerCanisterId: Principal;
   title: string;
   subtitle?: string;
   logo: string;

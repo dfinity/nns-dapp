@@ -15,7 +15,10 @@ import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
-import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import {
+  ledgerCanisterIdMock,
+  rootCanisterIdMock,
+} from "$tests/mocks/sns.api.mock";
 import {
   ckBTCTokenBase,
   ckETHTokenBase,
@@ -32,6 +35,7 @@ describe("tokens-list-base.derived", () => {
   const snsTetrisToken = mockSnsToken;
   const snsTetris = {
     rootCanisterId: rootCanisterIdMock,
+    ledgerCanisterId: ledgerCanisterIdMock,
     projectName: "Tetris",
     lifecycle: SnsSwapLifecycle.Committed,
     tokenMetadata: snsTetrisToken,
@@ -42,6 +46,7 @@ describe("tokens-list-base.derived", () => {
   };
   const snsPacman = {
     rootCanisterId: principal(1),
+    ledgerCanisterId: principal(2),
     projectName: "Pacman",
     lifecycle: SnsSwapLifecycle.Committed,
     tokenMetadata: snsPackmanToken,
@@ -62,6 +67,7 @@ describe("tokens-list-base.derived", () => {
   const tetrisHref = `/wallet/?u=${snsTetris.rootCanisterId.toText()}`;
   const tetrisTokenLoading: UserTokenLoading = {
     universeId: snsTetris.rootCanisterId,
+    ledgerCanisterId: snsTetris.ledgerCanisterId,
     title: snsTetris.projectName,
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/g3pce-2iaae/logo.png",
     balance: "loading",
@@ -84,6 +90,7 @@ describe("tokens-list-base.derived", () => {
   const pacmanHref = `/wallet/?u=${snsPacman.rootCanisterId.toText()}`;
   const pacmanTokenLoading: UserTokenLoading = {
     universeId: snsPacman.rootCanisterId,
+    ledgerCanisterId: snsPacman.ledgerCanisterId,
     title: snsPacman.projectName,
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/f7crg-kabae/logo.png",
     balance: "loading",

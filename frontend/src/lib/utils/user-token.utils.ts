@@ -27,12 +27,16 @@ export const isUserTokenData = (
 
 export const toUserTokenFailed = (
   ledgerCanisterIdText: string
-): UserTokenFailed => ({
-  universeId: Principal.fromText(ledgerCanisterIdText),
-  // Title will be used for sorting.
-  title: ledgerCanisterIdText,
-  logo: UNKNOWN_LOGO,
-  balance: "failed",
-  domKey: ledgerCanisterIdText,
-  actions: [UserTokenAction.GoToDashboard, UserTokenAction.Remove],
-});
+): UserTokenFailed => {
+  const ledgerCanisterId = Principal.fromText(ledgerCanisterIdText);
+  return {
+    universeId: ledgerCanisterId,
+    ledgerCanisterId,
+    // Title will be used for sorting.
+    title: ledgerCanisterIdText,
+    logo: UNKNOWN_LOGO,
+    balance: "failed",
+    domKey: ledgerCanisterIdText,
+    actions: [UserTokenAction.GoToDashboard, UserTokenAction.Remove],
+  };
+};
