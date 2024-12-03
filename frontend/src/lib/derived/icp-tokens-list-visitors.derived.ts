@@ -1,4 +1,7 @@
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import {
+  LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
 import type { Universe } from "$lib/types/universe";
@@ -19,6 +22,7 @@ export const icpTokensListVisitors = derived<
   return [
     {
       universeId: Principal.fromText(nnsUniverse.canisterId),
+      ledgerCanisterId: LEDGER_CANISTER_ID,
       title: nnsUniverse.title,
       balance: new UnavailableTokenAmount(NNS_TOKEN_DATA),
       logo: nnsUniverse.logo,

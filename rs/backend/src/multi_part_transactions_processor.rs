@@ -1,6 +1,5 @@
 use candid::CandidType;
 use ic_base_types::{CanisterId, PrincipalId};
-use icp_ledger::AccountIdentifier;
 use icp_ledger::BlockIndex;
 use serde::Deserialize;
 use std::collections::VecDeque;
@@ -17,8 +16,6 @@ pub enum MultiPartTransactionToBeProcessed {
     //       not add TopUpCanisterV2 to the multi-part transaction queue
     //       anymore.
     TopUpCanisterV2(PrincipalId, CanisterId),
-    // ParticipateSwap(buyer_id, from, to, swap_canister_id)
-    ParticipateSwap(PrincipalId, AccountIdentifier, AccountIdentifier, CanisterId),
 }
 
 impl MultiPartTransactionsProcessor {

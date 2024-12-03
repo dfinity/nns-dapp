@@ -1,3 +1,4 @@
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import {
   icpAccountsStore,
@@ -30,6 +31,7 @@ const convertAccountToUserTokenData = ({
   if (isNullish(account)) {
     return {
       universeId: Principal.fromText(nnsUniverse.canisterId),
+      ledgerCanisterId: LEDGER_CANISTER_ID,
       title: i18nObj.accounts.main,
       balance: "loading",
       logo: nnsUniverse.logo,
@@ -50,6 +52,7 @@ const convertAccountToUserTokenData = ({
 
   return {
     universeId: Principal.fromText(nnsUniverse.canisterId),
+    ledgerCanisterId: LEDGER_CANISTER_ID,
     title,
     subtitle: subtitleMap[account.type],
     balance: TokenAmountV2.fromUlps({
