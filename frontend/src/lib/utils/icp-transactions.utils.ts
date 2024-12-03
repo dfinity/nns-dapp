@@ -125,6 +125,7 @@ const getTransactionInformation = (
   if (data === undefined) {
     throw new Error(`Unknown transaction type ${JSON.stringify(operation)}`);
   }
+
   return {
     from: "from" in data ? data.from : undefined,
     to: "to" in data ? data.to : undefined,
@@ -133,6 +134,61 @@ const getTransactionInformation = (
     // This is different than ICRC transactions, where thers is an `amount` field.
     amount: "amount" in data ? data.amount.e8s : 0n,
     fee: "fee" in data ? data.fee.e8s : 0n,
+  };
+};
+
+export const mapIcpTransactionToReport = ({
+  transaction,
+  accountIdentifier,
+  neuronAccounts,
+  swapCanisterAccounts,
+}: {
+  transaction: TransactionWithId;
+  accountIdentifier: string;
+  neuronAccounts: Set<string>;
+  swapCanisterAccounts: Set<string>;
+}) => {
+  const txInfo = getTransactionInformation(transaction.transaction.operation);
+  if (txInfo === undefined) {
+    throw new Error(
+      `Unknown transaction type ${
+        Object.keys(transaction.transaction.operation)[0]
+      }`
+    );
+  }
+
+  const { to, from, amount, fee } = txInfo;
+  const isSelfTransaction = isToSelf(transaction.transaction);
+  const isReceive = isSelfTransaction || from !== accountIdentifier;
+  const useFee = !isReceive;
+  const feeApplied = useFee && fee ? fee : 0n;
+
+  const type = getTransactionType({
+    transaction: transaction.transaction,
+    neuronAccounts,
+    swapCanisterAccounts,
+    isReceive,
+  });
+
+  const blockTimestampNanos = fromNullable(
+    transaction.transaction.timestamp
+  )?.timestamp_nanos;
+  const createdTimestampNanos = fromNullable(
+    transaction.transaction.created_at_time
+  )?.timestamp_nanos;
+  const timestampNanos = blockTimestampNanos ?? createdTimestampNanos;
+
+  const tokenAmount = TokenAmountV2.fromUlps({
+    amount: amount + feeApplied,
+    token: ICPToken,
+  });
+
+  return {
+    type,
+    to,
+    from,
+    tokenAmount,
+    timestampNanos,
   };
 };
 
@@ -181,6 +237,7 @@ export const mapIcpTransactionToUi = ({
     const blockTimestampNanos = fromNullable(
       transaction.transaction.timestamp
     )?.timestamp_nanos;
+
     const createdTimestampNanos = fromNullable(
       transaction.transaction.created_at_time
     )?.timestamp_nanos;

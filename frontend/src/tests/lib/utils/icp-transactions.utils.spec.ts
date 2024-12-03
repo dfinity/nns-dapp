@@ -5,6 +5,7 @@ import {
 import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
 import type { UiTransaction } from "$lib/types/transaction";
 import {
+  mapIcpTransactionToReport,
   mapIcpTransactionToUi,
   mapToSelfTransactions,
   sortTransactionsByIdDescendingOrder,
@@ -30,6 +31,10 @@ describe("icp-transactions.utils", () => {
       spender: [],
     },
   };
+  const defaultTokenAmountWithoutFee = TokenAmountV2.fromUlps({
+    amount: amount,
+    token: ICPToken,
+  });
   const defaultUiTransaction: UiTransaction = {
     domKey: `${transactionId}-1`,
     isIncoming: false,
@@ -68,6 +73,219 @@ describe("icp-transactions.utils", () => {
       operation,
       memo,
     });
+
+  describe("mapIcpTransactionToReport", () => {
+    const defaultReportTransaction = {
+      type: "send",
+      to,
+      from,
+      tokenAmount: TokenAmountV2.fromUlps({
+        amount: amount + fee,
+        token: ICPToken,
+      }),
+      timestampNanos: BigInt(defaultTimestamp.getTime()) * 1_000_000n,
+    };
+    it("should throw an error if no transaction information is found", () => {
+      const transaction = createTransaction({
+        operation: {
+          // @ts-expect-error: Even though it is not possible our implementations handles it.
+          Unknown: {},
+        },
+      });
+
+      expect(() =>
+        mapIcpTransactionToReport({
+          transaction,
+          accountIdentifier: from,
+          neuronAccounts: new Set<string>(),
+          swapCanisterAccounts: new Set<string>(),
+        })
+      ).toThrowError('Unknown transaction type {"Unknown":{}}');
+    });
+
+    it("should return transaction information", () => {
+      const transaction = createTransaction({
+        operation: defaultTransferOperation,
+      });
+      const expectedIcpTransaction = {
+        ...defaultReportTransaction,
+      };
+
+      expect(
+        mapIcpTransactionToReport({
+          transaction,
+          accountIdentifier: from,
+          neuronAccounts: new Set<string>(),
+          swapCanisterAccounts: new Set<string>(),
+        })
+      ).toEqual(expectedIcpTransaction);
+    });
+
+    it("sould identify receive transactions", () => {
+      const transaction = createTransaction({
+        operation: {
+          Transfer: {
+            ...defaultTransferOperation.Transfer,
+            to: from,
+          },
+        },
+      });
+      const expectedIcpTransaction = {
+        ...defaultReportTransaction,
+        type: "receive",
+        to: from,
+        tokenAmount: defaultTokenAmountWithoutFee,
+      };
+
+      expect(
+        mapIcpTransactionToReport({
+          transaction,
+          accountIdentifier: from,
+          neuronAccounts: new Set<string>(),
+          swapCanisterAccounts: new Set<string>(),
+        })
+      ).toEqual(expectedIcpTransaction);
+    });
+
+    describe("should map to the correct transaction type", () => {
+      it("maps stake neuron transaction", () => {
+        const transaction = createTransaction({
+          operation: defaultTransferOperation,
+          memo: 12345n,
+        });
+        const expectedIcpTransaction = {
+          ...defaultReportTransaction,
+          type: "stakeNeuron",
+        };
+
+        expect(
+          mapIcpTransactionToReport({
+            transaction,
+            accountIdentifier: from,
+            neuronAccounts: new Set<string>([to]),
+            swapCanisterAccounts: new Set<string>(),
+          })
+        ).toEqual(expectedIcpTransaction);
+      });
+
+      it("maps top up neuron transaction", () => {
+        const transaction = createTransaction({
+          operation: defaultTransferOperation,
+          memo: 0n,
+        });
+        const expectedIcpTransaction = {
+          ...defaultReportTransaction,
+          type: "topUpNeuron",
+        };
+
+        expect(
+          mapIcpTransactionToReport({
+            transaction,
+            accountIdentifier: from,
+            neuronAccounts: new Set<string>([to]),
+            swapCanisterAccounts: new Set<string>(),
+          })
+        ).toEqual(expectedIcpTransaction);
+      });
+
+      it("maps create canister transaction", () => {
+        const transaction = createTransaction({
+          operation: defaultTransferOperation,
+          memo: CREATE_CANISTER_MEMO,
+        });
+        const expectedIcpTransaction = {
+          ...defaultReportTransaction,
+          type: "createCanister",
+        };
+
+        expect(
+          mapIcpTransactionToReport({
+            transaction,
+            accountIdentifier: from,
+            neuronAccounts: new Set<string>(),
+            swapCanisterAccounts: new Set<string>(),
+          })
+        ).toEqual(expectedIcpTransaction);
+      });
+
+      it("maps top up canister transaction", () => {
+        const transaction = createTransaction({
+          operation: defaultTransferOperation,
+          memo: TOP_UP_CANISTER_MEMO,
+        });
+        const expectedIcpTransaction = {
+          ...defaultReportTransaction,
+          type: "topUpCanister",
+        };
+
+        expect(
+          mapIcpTransactionToReport({
+            transaction,
+            accountIdentifier: from,
+            neuronAccounts: new Set<string>(),
+            swapCanisterAccounts: new Set<string>(),
+          })
+        ).toEqual(expectedIcpTransaction);
+      });
+    });
+
+    describe("maps timestamps", () => {
+      const createdDate = new Date("2023-01-01T00:12:00.000Z");
+      const blockDate = new Date("2023-01-01T00:34:00.000Z");
+      const createTimestamps = {
+        timestamp_nanos:
+          BigInt(createdDate.getTime()) * BigInt(NANO_SECONDS_IN_MILLISECOND),
+      };
+      const blockTimestamps = {
+        timestamp_nanos:
+          BigInt(blockDate.getTime()) * BigInt(NANO_SECONDS_IN_MILLISECOND),
+      };
+
+      it("prefers block timestamp", () => {
+        const transaction = createTransaction({
+          operation: defaultTransferOperation,
+        });
+        transaction.transaction.created_at_time = [createTimestamps];
+        transaction.transaction.timestamp = [blockTimestamps];
+
+        const expectedIcpTransaction = {
+          ...defaultReportTransaction,
+          timestampNanos: blockTimestamps.timestamp_nanos,
+        };
+
+        expect(
+          mapIcpTransactionToReport({
+            transaction,
+            accountIdentifier: from,
+            neuronAccounts: new Set<string>(),
+            swapCanisterAccounts: new Set<string>(),
+          })
+        ).toEqual(expectedIcpTransaction);
+      });
+
+      it("falls back on created timestamps", () => {
+        const transaction = createTransaction({
+          operation: defaultTransferOperation,
+        });
+        transaction.transaction.created_at_time = [createTimestamps];
+        transaction.transaction.timestamp = [];
+
+        const expectedIcpTransaction = {
+          ...defaultReportTransaction,
+          timestampNanos: createTimestamps.timestamp_nanos,
+        };
+
+        expect(
+          mapIcpTransactionToReport({
+            transaction,
+            accountIdentifier: from,
+            neuronAccounts: new Set<string>(),
+            swapCanisterAccounts: new Set<string>(),
+          })
+        ).toEqual(expectedIcpTransaction);
+      });
+    });
+  });
 
   describe("mapIcpTransactionToUi", () => {
     it("maps stake neuron transaction", () => {
