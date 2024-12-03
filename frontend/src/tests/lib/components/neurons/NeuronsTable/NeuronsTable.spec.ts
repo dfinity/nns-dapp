@@ -484,7 +484,8 @@ describe("NeuronsTable", () => {
   });
 
   it("should render tags", async () => {
-    const tags = ["Neuron's fund", "Hotkey control"];
+    const tagTexts = ["Neuron's fund", "Hotkey control"];
+    const tags = tagTexts.map((text) => ({ text }));
     const po = renderComponent({
       neurons: [
         {
@@ -503,7 +504,7 @@ describe("NeuronsTable", () => {
     expect(await cell1.getTags()).toEqual([]);
     expect(await cell1.hasTagsElement()).toBe(false);
     const cell2 = rowPos[1].getNeuronIdCellPo();
-    expect(await cell2.getTags()).toEqual(tags);
+    expect(await cell2.getTags()).toEqual(tagTexts);
     expect(await cell2.hasTagsElement()).toBe(true);
   });
 

@@ -231,7 +231,7 @@ describe("neurons-table.utils", () => {
       expect(tableNeurons).toEqual([
         {
           ...defaultExpectedTableNeuron,
-          tags: ["Hotkey control"],
+          tags: [{ text: "Hotkey control" }],
         },
       ]);
     });
@@ -385,7 +385,7 @@ describe("neurons-table.utils", () => {
       expect(tableNeurons).toEqual([
         {
           ...expectedTableNeuron,
-          tags: ["Hotkey control"],
+          tags: [{ text: "Hotkey control" }],
         },
       ]);
     });
