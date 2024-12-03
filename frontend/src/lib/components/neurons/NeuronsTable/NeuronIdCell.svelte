@@ -2,7 +2,8 @@
   import Hash from "$lib/components/ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { TableNeuron } from "$lib/types/neurons-table";
-  import { IconPublicBadge, Tag, Tooltip } from "@dfinity/gix-components";
+  import { IconPublicBadge, Tooltip } from "@dfinity/gix-components";
+  import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
 
   export let rowData: TableNeuron;
 </script>
@@ -29,7 +30,7 @@
   {#if rowData.tags.length > 0}
     <span class="tags" data-tid="neuron-tags">
       {#each rowData.tags as tag}
-        <Tag testId="neuron-tag">{tag}</Tag>
+        <NeuronTag {tag} />
       {/each}
     </span>
   {/if}
