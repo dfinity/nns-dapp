@@ -26,6 +26,7 @@
   import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
   import { transactionName } from "$lib/utils/transactions.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
+    import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   const dispatcher = createEventDispatcher<{
     nnsExportIcpTransactionsCsvTriggered: void;
@@ -64,7 +65,6 @@
         token: ICPToken,
       });
 
-      console.log(transactions);
       return {
         metadata: [
           {
@@ -76,7 +76,9 @@
             value: account.name ?? $i18n.accounts.main,
           },
           {
-            label: $i18n.export_csv_neurons.balance,
+            label: replacePlaceholders($i18n.export_csv_neurons.balance, {
+              $tokenSymbol: ICPToken.symbol,
+            }),
             value: formatTokenV2({
               value: amount,
               detailed: true,
@@ -165,7 +167,9 @@
           },
           {
             id: "amount",
-            label: $i18n.export_csv_neurons.amount,
+            label: replacePlaceholders($i18n.export_csv_neurons.amount, {
+              $tokenSymbol: ICPToken.symbol,
+            }),
           },
           {
             id: "timestamp",
