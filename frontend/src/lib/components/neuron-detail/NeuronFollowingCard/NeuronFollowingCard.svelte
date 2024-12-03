@@ -14,6 +14,7 @@
   import Followee from "./Followee.svelte";
   import { KeyValuePairInfo } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
+  import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
 
   export let neuron: NeuronInfo;
@@ -42,10 +43,10 @@
     >
   </KeyValuePairInfo>
 
-  {#if followees.length > 0}
+  {#if followees.length > 0 && nonNullish(neuron)}
     <div class="frame">
       {#each followees as followee}
-        <Followee {followee} />
+        <Followee {followee} {neuron} />
       {/each}
     </div>
   {/if}
