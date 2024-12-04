@@ -23,6 +23,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 - Adds an override for the name and token.symbol values for abandoned SNS 
+- Position of abandoned SNSs
 
 #### Security
 

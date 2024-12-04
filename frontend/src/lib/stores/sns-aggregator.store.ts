@@ -93,7 +93,7 @@ const fixBrokenSnsMetadataBasedOnId = (
       return [
         name,
         {
-          Text: `${value.Text} (${override.tokenSymbol})`,
+          Text: `${hiddenCharacterToPushSnsToEndOfList}${value.Text} (${override.tokenSymbol})`,
         },
       ];
     }
