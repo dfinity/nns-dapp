@@ -3,6 +3,7 @@ import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
 import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { NeuronTagPo } from "./NeuronTag.page-object";
 
 export class NeuronVisibilityRowPo extends BasePageObject {
   private static readonly BASE_TID = "neuron-visibility-row-component";
@@ -31,9 +32,7 @@ export class NeuronVisibilityRowPo extends BasePageObject {
   }
 
   async getTags(): Promise<string[]> {
-    const tagElements = await this.root.querySelectorAll(
-      "[data-tid='neuron-tag']"
-    );
+    const tagElements = await NeuronTagPo.allUnder(this.root);
     return Promise.all(tagElements.map((el) => el.getText()));
   }
 

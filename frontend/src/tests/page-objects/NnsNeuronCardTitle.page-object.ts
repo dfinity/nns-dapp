@@ -1,5 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { NeuronTagPo } from "./NeuronTag.page-object";
 
 export class NnsNeuronCardTitlePo extends BasePageObject {
   private static readonly TID = "neuron-card-title";
@@ -13,7 +14,7 @@ export class NnsNeuronCardTitlePo extends BasePageObject {
   }
 
   async getNeuronTags(): Promise<string[]> {
-    const elements = await this.root.allByTestId("neuron-tag");
+    const elements = await NeuronTagPo.allUnder(this.root);
     return Promise.all(elements.map((tag) => tag.getText()));
   }
 }

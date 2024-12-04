@@ -1,6 +1,7 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { HashPo } from "$tests/page-objects/Hash.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { NeuronTagPo } from "./NeuronTag.page-object";
 import { TooltipPo } from "./Tooltip.page-object";
 
 export class NeuronIdCellPo extends BasePageObject {
@@ -22,8 +23,12 @@ export class NeuronIdCellPo extends BasePageObject {
     return this.root.byTestId("neuron-tags").isPresent();
   }
 
+  async getTagPos(): Promise<NeuronTagPo[]> {
+    return NeuronTagPo.allUnder(this.root.byTestId("neuron-tags"));
+  }
+
   async getTags(): Promise<string[]> {
-    const tagElements = await this.root.allByTestId("neuron-tag");
+    const tagElements = await this.getTagPos();
     return Promise.all(tagElements.map((el) => el.getText()));
   }
 

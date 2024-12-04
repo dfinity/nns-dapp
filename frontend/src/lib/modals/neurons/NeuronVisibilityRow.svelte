@@ -7,9 +7,9 @@
     IconKey,
     IconLedger,
     IconPublicBadge,
-    Tag,
     Tooltip,
   } from "@dfinity/gix-components";
+  import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
 
   const typeToIcon: {
     hardwareWallet: typeof IconLedger;
@@ -52,7 +52,7 @@
         {#if rowData.tags.length > 0}
           <span class="tags" data-tid="neuron-tags">
             {#each rowData.tags as tag}
-              <Tag testId="neuron-tag">{tag}</Tag>
+              <NeuronTag {tag} />
             {/each}
           </span>
         {/if}

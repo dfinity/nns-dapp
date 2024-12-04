@@ -515,7 +515,7 @@ export const createNeuronVisibilityRowData = ({
     tags: getNeuronTagsUnrelatedToController({
       neuron,
       i18n,
-    }).map(({ text }) => text),
+    }),
     uncontrolledNeuronDetails: getNeuronVisibilityRowUncontrolledNeuronDetails({
       neuron,
       identity,
