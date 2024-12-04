@@ -2,7 +2,7 @@ import * as icpIndexApi from "$lib/api/icp-index.api";
 import ExportIcpTransactionsButton from "$lib/components/header/ExportIcpTransactionsButton.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import * as toastsStore from "$lib/stores/toasts.store";
-import { generateCsvFileToSave } from "$lib/utils/export-to-csv.utils";
+import * as exportToCsv from "$lib/utils/export-to-csv.utils";
 import { mockPrincipal, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
@@ -17,15 +17,16 @@ vi.mock("$lib/api/icp-ledger.api");
 
 describe("ExportIcpTransactionsButton", () => {
   let spyGenerateCsvFileToSave;
+  let spyToastError;
 
   beforeEach(() => {
     vi.clearAllTimers();
 
-    // spyGenerateCsvFileToSave = vi
-    //   .spyOn(exportToCsv, "generateCsvFileToSave")
-    //   .mockImplementation(() => Promise.resolve());
-    vi.spyOn(toastsStore, "toastsError");
-    // vi.spyOn(console, "error").mockImplementation(() => {});
+    spyGenerateCsvFileToSave = vi
+      .spyOn(exportToCsv, "generateCsvFileToSave")
+      .mockImplementation(() => Promise.resolve());
+    spyToastError = vi.spyOn(toastsStore, "toastsError");
+    vi.spyOn(console, "error").mockImplementation(() => {});
 
     const mockDate = new Date("2023-10-14T00:00:00Z");
     vi.useFakeTimers();
@@ -50,9 +51,6 @@ describe("ExportIcpTransactionsButton", () => {
       balance: 0n,
       oldestTxId: 1n,
     });
-    vi.mock("$lib/utils/export-to-csv.utils", () => ({
-      generateCsvFileToSave: vi.fn().mockResolvedValue(undefined),
-    }));
   });
 
   const renderComponent = ({ onTrigger }: { onTrigger?: () => void } = {}) => {
@@ -78,17 +76,93 @@ describe("ExportIcpTransactionsButton", () => {
     const po = renderComponent();
 
     expect(await po.isDisabled()).toBe(false);
-    expect(generateCsvFileToSave).toBeCalledTimes(0);
+    expect(spyGenerateCsvFileToSave).toHaveBeenCalledTimes(0);
 
     await po.click();
     await tick();
 
     const expectedFileName = `icp_transactions_export_20231014`;
-    expect(generateCsvFileToSave).toBeCalledWith(
+    expect(spyGenerateCsvFileToSave).toHaveBeenCalledWith(
       expect.objectContaining({
         fileName: expectedFileName,
       })
     );
-    expect(generateCsvFileToSave).toHaveBeenCalledTimes(1);
+    expect(spyGenerateCsvFileToSave).toHaveBeenCalledTimes(1);
+  });
+
+  it("should dispatch nnsExportIcpTransactionsCsvTriggered event after click to close the menu", async () => {
+    const onTrigger = vi.fn();
+    const po = renderComponent({ onTrigger });
+
+    expect(onTrigger).toHaveBeenCalledTimes(0);
+
+    await po.click();
+    // Wait for the CSV generation to complete
+    await tick();
+    // Wait for the finally block to execute
+    await tick();
+    expect(onTrigger).toHaveBeenCalledTimes(1);
+  });
+
+  it("should show error toast when file system access fails", async () => {
+    vi.spyOn(exportToCsv, "generateCsvFileToSave").mockRejectedValueOnce(
+      new exportToCsv.FileSystemAccessError("File system access denied")
+    );
+
+    const po = renderComponent();
+
+    expect(spyToastError).toBeCalledTimes(0);
+
+    await po.click();
+    // Wait for the CSV generation to complete
+    await tick();
+    // Wait for the finally block to execute
+    await tick();
+
+    expect(spyToastError).toBeCalledWith({
+      labelKey: "export_error.file_system_access",
+    });
+    expect(spyToastError).toBeCalledTimes(1);
+  });
+
+  it("should show error toast when Csv generation fails", async () => {
+    vi.spyOn(exportToCsv, "generateCsvFileToSave").mockRejectedValueOnce(
+      new exportToCsv.CsvGenerationError("Csv generation failed")
+    );
+
+    const po = renderComponent();
+
+    expect(spyToastError).toBeCalledTimes(0);
+
+    await po.click();
+    // Wait for the CSV generation to complete
+    await tick();
+    // Wait for the finally block to execute
+    await tick();
+    
+    expect(spyToastError).toBeCalledWith({
+      labelKey: "export_error.csv_generation",
+    });
+    expect(spyToastError).toBeCalledTimes(1);
+  });
+
+  it("should show error toast when file saving fails", async () => {
+    vi.spyOn(exportToCsv, "generateCsvFileToSave").mockRejectedValueOnce(
+      new Error("Something wrong happened")
+    );
+
+    const po = renderComponent();
+
+    expect(spyToastError).toBeCalledTimes(0);
+    await po.click();
+
+    // Wait for the CSV generation to complete
+    await tick();
+    // Wait for the finally block to execute
+    await tick();
+    expect(spyToastError).toBeCalledWith({
+      labelKey: "export_error.neurons",
+    });
+    expect(spyToastError).toBeCalledTimes(1);
   });
 });
