@@ -68,6 +68,14 @@ export class TokensTableRowPo extends ResponsiveTableRowPo {
     return this.root.byTestId("unavailable-balance").isPresent();
   }
 
+  hasBalanceInUsd(): Promise<boolean> {
+    return this.isPresent("usd-value");
+  }
+
+  getBalanceInUsd(): Promise<string> {
+    return this.getText("usd-value");
+  }
+
   getFailedLedgerCanisterHashPo(): HashPo {
     return HashPo.under(this.root);
   }

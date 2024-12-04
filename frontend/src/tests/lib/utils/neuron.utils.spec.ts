@@ -3108,7 +3108,7 @@ describe("neuron-utils", () => {
         accounts: { main: mockMainAccount },
         i18n: en,
       });
-      expect(result.tags).toEqual(["Seed"]);
+      expect(result.tags).toEqual([{ text: "Seed" }]);
     });
 
     it("should create neuron visibility row data for an ECT neuron", () => {
@@ -3122,7 +3122,7 @@ describe("neuron-utils", () => {
         accounts: { main: mockMainAccount },
         i18n: en,
       });
-      expect(result.tags).toEqual(["Early Contributor Token"]);
+      expect(result.tags).toEqual([{ text: "Early Contributor Token" }]);
     });
 
     it("should create neuron visibility row data for a neuron in the community fund", () => {
@@ -3136,7 +3136,7 @@ describe("neuron-utils", () => {
         accounts: { main: mockMainAccount },
         i18n: en,
       });
-      expect(result.tags).toEqual(["Neurons' fund"]);
+      expect(result.tags).toEqual([{ text: "Neurons' fund" }]);
     });
 
     it("should return Ledger device details for Ledger device controlled neuron", () => {

@@ -70,7 +70,7 @@ describe("NeuronVisibilityRow", () => {
     const rowData: NeuronVisibilityRowData = {
       neuronId: BigInt(123).toString(),
       isPublic: false,
-      tags: ["Tag1", "Tag2"],
+      tags: [{ text: "Tag1" }, { text: "Tag2" }],
     };
 
     const { po } = renderComponent({ rowData });
@@ -155,7 +155,7 @@ describe("NeuronVisibilityRow", () => {
     const rowData: NeuronVisibilityRowData = {
       neuronId: BigInt(123).toString(),
       isPublic: false,
-      tags: ["First tag", "Second tag"],
+      tags: [{ text: "First tag" }, { text: "Second tag" }],
     };
 
     const { po } = renderComponent({ rowData });

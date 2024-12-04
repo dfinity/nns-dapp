@@ -1,4 +1,5 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
 import { failedExistentImportedTokenLedgerIdsStore } from "$lib/derived/imported-tokens.derived";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import {
@@ -17,14 +18,39 @@ import { tokensListBaseStore } from "./tokens-list-base.derived";
 import { tokensByUniverseIdStore } from "./tokens.derived";
 import { universesAccountsStore } from "./universes-accounts.derived";
 
+const getUsdValue = ({
+  balance,
+  ledgerCanisterId,
+  icpSwapUsdPrices,
+}: {
+  balance: TokenAmountV2;
+  ledgerCanisterId: string;
+  icpSwapUsdPrices: Record<string, number> | undefined;
+}): number | undefined => {
+  const balanceE8s = Number(balance.toE8s());
+  if (balanceE8s === 0) {
+    return 0;
+  }
+  if (isNullish(icpSwapUsdPrices)) {
+    return undefined;
+  }
+  const tokenUsdPrice = icpSwapUsdPrices[ledgerCanisterId];
+  if (isNullish(tokenUsdPrice)) {
+    return undefined;
+  }
+  return (balanceE8s * tokenUsdPrice) / 100_000_000;
+};
+
 const convertToUserTokenData = ({
   accounts,
   tokensByUniverse,
   baseTokenData,
+  icpSwapUsdPrices,
 }: {
   accounts: UniversesAccounts;
   tokensByUniverse: Record<string, IcrcTokenMetadata>;
   baseTokenData: UserTokenBase;
+  icpSwapUsdPrices: Record<string, number> | undefined;
 }): UserToken => {
   const token = tokensByUniverse[baseTokenData.universeId.toText()];
   const rowHref = isUniverseNns(baseTokenData.universeId)
@@ -61,6 +87,11 @@ const convertToUserTokenData = ({
     token,
     fee,
     balance,
+    balanceInUsd: getUsdValue({
+      balance,
+      ledgerCanisterId: baseTokenData.ledgerCanisterId.toText(),
+      icpSwapUsdPrices,
+    }),
     actions: [
       ...(baseTokenData.universeId.toText() === OWN_CANISTER_ID_TEXT
         ? [UserTokenAction.GoToDetail]
@@ -78,6 +109,7 @@ export const tokensListUserStore = derived<
     Readable<UniversesAccounts>,
     Readable<Record<string, IcrcTokenMetadata>>,
     Readable<Array<string>>,
+    Readable<Record<string, number> | undefined>,
   ],
   UserToken[]
 >(
@@ -86,13 +118,21 @@ export const tokensListUserStore = derived<
     universesAccountsStore,
     tokensByUniverseIdStore,
     failedExistentImportedTokenLedgerIdsStore,
+    icpSwapUsdPricesStore,
   ],
-  ([tokensList, accounts, tokensByUniverse, failedImportedTokenLedgerIds]) => [
+  ([
+    tokensList,
+    accounts,
+    tokensByUniverse,
+    failedImportedTokenLedgerIds,
+    icpSwapUsdPrices,
+  ]) => [
     ...tokensList.map((baseTokenData) =>
       convertToUserTokenData({
         baseTokenData,
         accounts,
         tokensByUniverse,
+        icpSwapUsdPrices,
       })
     ),
     ...failedImportedTokenLedgerIds.map(toUserTokenFailed),

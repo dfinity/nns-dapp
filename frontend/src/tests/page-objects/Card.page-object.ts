@@ -35,4 +35,8 @@ export class CardPo extends BasePageObject {
   async isButton(): Promise<boolean> {
     return (await this.root.getAttribute("role")) === "button";
   }
+
+  async getHref(): Promise<string> {
+    return await this.root.getAttribute("href");
+  }
 }

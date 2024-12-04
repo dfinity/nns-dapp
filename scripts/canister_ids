@@ -135,6 +135,8 @@ if [ "$command" = "import-from-index-html" ]; then
 
   identityServiceUrl="$(get_value_from_html data-identity-service-url "$tmp_index_html")"
   internetIdentity="$(canister_id_from_url "$identityServiceUrl")"
+  icpSwapUrl="$(get_value_from_html data-icp-swap-url "$tmp_index_html")"
+  icpSwap="$(canister_id_from_url "$icpSwapUrl")"
 
   snsAggregatorUrl="$(get_value_from_html data-sns-aggregator-url "$tmp_index_html")"
   snsAggregator="$(canister_id_from_url "$snsAggregatorUrl")"
@@ -162,6 +164,7 @@ if [ "$command" = "import-from-index-html" ]; then
     .ckusdc_ledger[$network] = $ckusdcLedger |
     .["nns-sns-wasm"][$network] = $snsWasm |
     .internet_identity[$network] = $internetIdentity |
+    .["icp-swap"][$network] = $icpSwap |
     .["nns-dapp"][$network] = $nnsDapp |
     .sns_aggregator[$network] = $snsAggregator' \
     --arg network "$NETWORK" \
@@ -175,6 +178,7 @@ if [ "$command" = "import-from-index-html" ]; then
     --arg ckusdcLedger "$ckusdcLedger" \
     --arg snsWasm "$snsWasm" \
     --arg internetIdentity "$internetIdentity" \
+    --arg icpSwap "$icpSwap" \
     --arg nnsDapp "$nnsDapp" \
     --arg snsAggregator "$snsAggregator" \
     "$JSON_FILE" >"$tmp_file"
