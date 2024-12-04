@@ -14,6 +14,7 @@
   import { START_REDUCING_VOTING_POWER_AFTER_SECONDS } from "$lib/constants/neurons.constants";
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import LosingRewardNeuronsModal from "$lib/modals/neurons/LosingRewardNeuronsModal.svelte";
 
   // The neurons in the store are sorted by the time they will lose rewards.
   let mostInactiveNeuron: NeuronInfo | undefined;
@@ -35,9 +36,7 @@
     ),
   });
 
-  const onConfirm = () => {
-    // TODO: Display the modal
-  };
+  let isModalVisible = false;
 </script>
 
 <TestIdWrapper testId="losing-rewards-banner-component">
@@ -47,10 +46,14 @@
         <IconInfo />
       </BannerIcon>
       <div slot="actions">
-        <button class="danger" on:click={onConfirm}
+        <button class="danger" on:click={() => (isModalVisible = true)}
           >{$i18n.losing_rewards_banner.confirm}</button
         >
       </div>
     </Banner>
+  {/if}
+
+  {#if isModalVisible}
+    <LosingRewardNeuronsModal on:nnsClose={() => (isModalVisible = false)} />
   {/if}
 </TestIdWrapper>
