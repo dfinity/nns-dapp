@@ -12,6 +12,7 @@ import {
   MIN_NEURON_STAKE,
 } from "$lib/constants/neurons.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
@@ -106,7 +107,6 @@ import {
 } from "@dfinity/nns";
 import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { overrideFeatureFlagsStore } from "../../../lib/stores/feature-flags.store";
 
 describe("neuron-utils", () => {
   beforeEach(() => {
