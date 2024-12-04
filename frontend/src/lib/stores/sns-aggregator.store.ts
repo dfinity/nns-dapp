@@ -43,12 +43,11 @@ export const snsAggregatorStore: SnsAggregatorStore = derived(
         nonNullish(sns.lifecycle) &&
         sns.lifecycle.lifecycle !== SnsSwapLifecycle.Aborted
     );
-    
+
     if (isNullish(data)) return { data: undefined };
 
     // TODO: Find a better way to fix broken SNS metadata. These transformations will be remove once we have a better solution.
-    const handledAbandonedSnsData =
-      data?.map(fixBrokenSnsMetadataBasedOnId);
+    const handledAbandonedSnsData = data?.map(fixBrokenSnsMetadataBasedOnId);
     const sortedAbandonesSnsData = sortedListBasedOnAbandoned(
       handledAbandonedSnsData
     );
