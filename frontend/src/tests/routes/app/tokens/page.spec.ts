@@ -1,4 +1,5 @@
 import * as ckBTCMinterApi from "$lib/api/ckbtc-minter.api";
+import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as importedTokensApi from "$lib/api/imported-tokens.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
@@ -17,6 +18,7 @@ import {
 } from "$lib/constants/ckusdc-canister-ids.constants";
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import {
   failedImportedTokenLedgerIdsStore,
   importedTokensStore,
@@ -38,6 +40,7 @@ import {
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { mockCkUSDCToken } from "$tests/mocks/tokens.mock";
@@ -523,6 +526,53 @@ describe("Tokens route", () => {
           );
         });
       });
+
+      it("should load ICP Swap tickers", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
+
+        const icpPrice = 10;
+
+        const tickers = [
+          {
+            ...mockIcpSwapTicker,
+            base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+            last_price: icpPrice,
+          },
+        ];
+        vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
+
+        expect(get(icpSwapTickersStore)).toBeUndefined();
+        expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
+
+        const po = await renderPage();
+
+        expect(get(icpSwapTickersStore)).toEqual(tickers);
+        expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
+
+        const tokensPagePo = po.getTokensPagePo();
+        const rowsPos = await tokensPagePo.getTokensTable().getRows();
+
+        expect(await rowsPos[0].getBalanceInUsd()).toEqual("$12.35");
+      });
+
+      it("should not load ICP Swap tickers without feature flag", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", false);
+
+        vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
+
+        expect(get(icpSwapTickersStore)).toBeUndefined();
+        expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
+
+        const po = await renderPage();
+
+        expect(get(icpSwapTickersStore)).toBeUndefined();
+        expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
+
+        const tokensPagePo = po.getTokensPagePo();
+        const rowsPos = await tokensPagePo.getTokensTable().getRows();
+
+        expect(await rowsPos[0].hasBalanceInUsd()).toBe(false);
+      });
     });
 
     describe("table sorting", () => {
@@ -992,6 +1042,20 @@ describe("Tokens route", () => {
         expect(await ckEthRow.getHref()).toEqual(
           `/wallet/?u=${CKETH_UNIVERSE_CANISTER_ID.toText()}`
         );
+      });
+
+      it("should not load ICP Swap tickers", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
+
+        vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
+
+        expect(get(icpSwapTickersStore)).toBeUndefined();
+        expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
+
+        await renderPage();
+
+        expect(get(icpSwapTickersStore)).toBeUndefined();
+        expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
       });
     });
   });
