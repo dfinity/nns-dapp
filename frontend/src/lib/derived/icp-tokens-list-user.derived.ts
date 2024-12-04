@@ -4,6 +4,7 @@ import {
   icpAccountsStore,
   type IcpAccountsStore,
 } from "$lib/derived/icp-accounts.derived";
+import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
 import { i18n } from "$lib/stores/i18n";
 import type { Account, AccountType } from "$lib/types/account";
 import { UserTokenAction, type UserToken } from "$lib/types/tokens-page";
@@ -15,14 +16,33 @@ import { isNullish, TokenAmountV2 } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import { nnsUniverseStore } from "./nns-universe.derived";
 
+const getUsdValue = ({
+  balance,
+  icpPrice,
+}: {
+  balance: TokenAmountV2;
+  icpPrice?: number;
+}): number | undefined => {
+  const balanceE8s = Number(balance.toE8s());
+  if (balanceE8s === 0) {
+    return 0;
+  }
+  if (isNullish(icpPrice)) {
+    return undefined;
+  }
+  return (balanceE8s * icpPrice) / 100_000_000;
+};
+
 const convertAccountToUserTokenData = ({
   nnsUniverse,
   i18nObj: i18nObj,
   account,
+  icpPrice,
 }: {
   nnsUniverse: Universe;
   i18nObj: I18n;
   account?: Account;
+  icpPrice?: number;
 }): UserToken => {
   const rowHref = buildWalletUrl({
     universe: nnsUniverse.canisterId.toString(),
@@ -50,14 +70,20 @@ const convertAccountToUserTokenData = ({
   const title: string =
     account.type === "main" ? i18nObj.accounts.main : (account.name ?? "");
 
+  const balance = TokenAmountV2.fromUlps({
+    amount: account.balanceUlps,
+    token: NNS_TOKEN_DATA,
+  });
+
   return {
     universeId: Principal.fromText(nnsUniverse.canisterId),
     ledgerCanisterId: LEDGER_CANISTER_ID,
     title,
     subtitle: subtitleMap[account.type],
-    balance: TokenAmountV2.fromUlps({
-      amount: account.balanceUlps,
-      token: NNS_TOKEN_DATA,
+    balance,
+    balanceInUsd: getUsdValue({
+      balance,
+      icpPrice,
     }),
     logo: nnsUniverse.logo,
     token: NNS_TOKEN_DATA,
@@ -73,23 +99,42 @@ const convertAccountToUserTokenData = ({
 };
 
 export const icpTokensListUser = derived<
-  [Readable<Universe>, IcpAccountsStore, Readable<I18n>],
+  [
+    Readable<Universe>,
+    IcpAccountsStore,
+    Readable<I18n>,
+    Readable<Record<string, number> | undefined>,
+  ],
   UserToken[]
 >(
-  [nnsUniverseStore, icpAccountsStore, i18n],
-  ([nnsUniverse, icpAccounts, i18nObj]) => [
-    convertAccountToUserTokenData({
-      nnsUniverse,
-      i18nObj,
-      account: icpAccounts.main,
-    }),
-    ...sortUserTokens([
-      ...(icpAccounts.subAccounts ?? []).map((account) =>
-        convertAccountToUserTokenData({ nnsUniverse, i18nObj, account })
-      ),
-      ...(icpAccounts.hardwareWallets ?? []).map((account) =>
-        convertAccountToUserTokenData({ nnsUniverse, i18nObj, account })
-      ),
-    ]),
-  ]
+  [nnsUniverseStore, icpAccountsStore, i18n, icpSwapUsdPricesStore],
+  ([nnsUniverse, icpAccounts, i18nObj, icpSwapUsdPrices]) => {
+    const icpPrice = icpSwapUsdPrices?.[LEDGER_CANISTER_ID.toText()];
+    return [
+      convertAccountToUserTokenData({
+        nnsUniverse,
+        i18nObj,
+        account: icpAccounts.main,
+        icpPrice,
+      }),
+      ...sortUserTokens([
+        ...(icpAccounts.subAccounts ?? []).map((account) =>
+          convertAccountToUserTokenData({
+            nnsUniverse,
+            i18nObj,
+            account,
+            icpPrice,
+          })
+        ),
+        ...(icpAccounts.hardwareWallets ?? []).map((account) =>
+          convertAccountToUserTokenData({
+            nnsUniverse,
+            i18nObj,
+            account,
+            icpPrice,
+          })
+        ),
+      ]),
+    ];
+  }
 );
