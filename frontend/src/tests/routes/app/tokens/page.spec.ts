@@ -530,13 +530,11 @@ describe("Tokens route", () => {
       it("should load ICP Swap tickers", async () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
 
-        const icpPrice = 10;
-
         const tickers = [
           {
             ...mockIcpSwapTicker,
             base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-            last_price: icpPrice,
+            last_price: "10.00",
           },
         ];
         vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
