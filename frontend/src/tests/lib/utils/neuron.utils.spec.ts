@@ -106,6 +106,7 @@ import {
 } from "@dfinity/nns";
 import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
+import { overrideFeatureFlagsStore } from "../../../lib/stores/feature-flags.store";
 
 describe("neuron-utils", () => {
   beforeEach(() => {
@@ -1434,6 +1435,10 @@ describe("neuron-utils", () => {
     const seedTag = {
       text: "Seed",
     } as NeuronTagData;
+    const missingRewardsTag = {
+      text: "Missing rewards",
+      status: "danger",
+    } as NeuronTagData;
     const ectTag = {
       text: "Early Contributor Token",
     } as NeuronTagData;
@@ -1648,6 +1653,50 @@ describe("neuron-utils", () => {
           i18n: en,
         })
       ).toEqual([seedTag, nfTag, hwTag]);
+    });
+
+    describe("Periodic confirmation tags", () => {
+      const losingRewardNeuron: NeuronInfo = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          votingPowerRefreshedTimestampSeconds: BigInt(
+            nowInSeconds() - SECONDS_IN_HALF_YEAR - 1
+          ),
+        },
+      };
+
+      it("returns 'Missing rewards' tag", () => {
+        overrideFeatureFlagsStore.setFlag(
+          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+          true
+        );
+
+        expect(
+          getNeuronTags({
+            neuron: losingRewardNeuron,
+            identity: mockIdentity,
+            accounts: accountsWithHW,
+            i18n: en,
+          })
+        ).toEqual([missingRewardsTag]);
+      });
+
+      it("returns no 'Missing rewards' tag without feature flag", () => {
+        overrideFeatureFlagsStore.setFlag(
+          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+          false
+        );
+
+        expect(
+          getNeuronTags({
+            neuron: losingRewardNeuron,
+            identity: mockIdentity,
+            accounts: accountsWithHW,
+            i18n: en,
+          })
+        ).toEqual([]);
+      });
     });
   });
 
