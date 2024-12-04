@@ -194,7 +194,7 @@ describe("sns-aggregator store", () => {
       expect(result.icrc1_metadata[3][1]).toEqual({ Text: "--- (CTS)" });
     });
 
-    it("should sort sns by temporal isAbandoded property", () => {
+    it("should sort sns by temporary isAbandoded property", () => {
       const data = [brokenSns, ...aggregatorMockSnsesDataDto];
       snsAggregatorIncludingAbortedProjectsStore.setData(data);
       expect(
