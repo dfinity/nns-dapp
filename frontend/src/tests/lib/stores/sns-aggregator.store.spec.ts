@@ -179,11 +179,12 @@ describe("sns-aggregator store", () => {
 
       const data = [brokenSns];
       snsAggregatorIncludingAbortedProjectsStore.setData(data);
-      expect(get(snsAggregatorIncludingAbortedProjectsStore).data[0].meta.name).toBe(
-        "---"
-      );
       expect(
-        get(snsAggregatorIncludingAbortedProjectsStore).data[0].icrc1_metadata[3][1]
+        get(snsAggregatorIncludingAbortedProjectsStore).data[0].meta.name
+      ).toBe("---");
+      expect(
+        get(snsAggregatorIncludingAbortedProjectsStore).data[0]
+          .icrc1_metadata[3][1]
       ).toEqual({ Text: "---" });
 
       const result = get(snsAggregatorStore).data[0];
