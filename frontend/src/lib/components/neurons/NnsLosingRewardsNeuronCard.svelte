@@ -36,7 +36,7 @@
 </script>
 
 <Card
-  testId="nns-neuron-card-component"
+  testId="nns-loosing-rewards-neuron-card-component"
   {href}
   noMargin
   ariaLabel={$i18n.losing_rewards_modal.goto_neuron}
