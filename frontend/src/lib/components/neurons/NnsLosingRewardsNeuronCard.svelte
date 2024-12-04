@@ -63,7 +63,9 @@
         {/each}
       </div>
     {:else}
-      <p class="no-following">{$i18n.losing_rewards_modal.no_following}</p>
+      <p data-tid="no-following" class="no-following">
+        {$i18n.losing_rewards_modal.no_following}
+      </p>
     {/if}
   </div>
 </Card>
