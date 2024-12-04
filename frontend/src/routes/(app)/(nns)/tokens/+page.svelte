@@ -24,9 +24,11 @@
   import Tokens from "$lib/pages/Tokens.svelte";
   import { updateBalance } from "$lib/services/ckbtc-minter.services";
   import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
+  import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { removeImportedTokens } from "$lib/services/imported-tokens.services";
   import { uncertifiedLoadSnsesAccountsBalances } from "$lib/services/sns-accounts-balance.services";
   import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
+  import { ENABLE_USD_VALUES } from "$lib/stores/feature-flags.store";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import type { Account } from "$lib/types/account";
   import { ActionType, type Action } from "$lib/types/actions";
@@ -169,6 +171,9 @@
   }
   $: if ($authSignedInStore) {
     loadIcrcTokenAccounts($icrcCanistersStore);
+  }
+  $: if ($authSignedInStore && $ENABLE_USD_VALUES) {
+    loadIcpSwapTickers();
   }
 
   type ModalType =
