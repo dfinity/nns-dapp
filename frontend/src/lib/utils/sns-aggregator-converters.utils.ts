@@ -504,13 +504,6 @@ const isValidSummary = (entry: PartialSummary): entry is SnsSummary =>
   nonNullish(entry.swapParams) &&
   nonNullish(entry.lifecycle);
 
-const brokenUniverses: Record<string, { name: string; tokenSymbol: string }> = {
-  "bd3sg-teaaa-aaaaa-qaaba-cai": {
-    name: "CYCLES_TRANSFER_STATION",
-    tokenSymbol: "CTS",
-  },
-};
-
 export const convertDtoToSnsSummary = ({
   canister_ids: {
     root_canister_id,
@@ -543,23 +536,6 @@ export const convertDtoToSnsSummary = ({
       : undefined,
     lifecycle: convertDtoToLifecycle(lifecycle),
   };
-  // const override = brokenUniverses[partialSummary.rootCanisterId.toText()];
-  // const metadata = partialSummary.metadata;
-
-  // if (!isNullish(metadata) && !isNullish(override)) {
-  //   partialSummary.metadata = {
-  //     ...metadata,
-  //     name: `${metadata.name} (formerly known as ${override.name})`,
-  //   };
-  // }
-  // const token = partialSummary.token;
-
-  // if (!isNullish(token) && !isNullish(override)) {
-  //   partialSummary.token = {
-  //     ...token,
-  //     symbol: `${token.symbol} (${override.tokenSymbol})`,
-  //   };
-  // }
 
   return isValidSummary(partialSummary)
     ? new SnsSummaryWrapper(partialSummary)

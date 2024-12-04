@@ -53,7 +53,8 @@ const brokenSnsOverrides: Record<
   string,
   { name: string; tokenSymbol: string }
 > = {
-  "bd3sg-teaaa-aaaaa-qaaba-cai": {
+  // Overrided for CYCLES_TRANSFER_STATION as discussed in https://dfinity.slack.com/archives/C039M7YS6F6/p1733302975333649
+  "ibahq-taaaa-aaaaq-aadna-cai": {
     name: "CYCLES_TRANSFER_STATION",
     tokenSymbol: "CTS",
   },

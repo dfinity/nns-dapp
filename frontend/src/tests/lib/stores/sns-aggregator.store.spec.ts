@@ -137,4 +137,35 @@ describe("sns-aggregator store", () => {
       expect(get(snsAggregatorStore).data).toEqual(nonAbortedData);
     });
   });
+
+  describe("brokenSnsOverrides", () => {
+    const withBrokenSns = ({
+      sns,
+      rootCanisterId,
+    }: {
+      sns: CachedSnsDto;
+      rootCanisterId: string;
+    }) => ({
+      ...sns,
+      list_sns_canisters: {
+        ...sns.list_sns_canisters,
+        root: rootCanisterId,
+      },
+    });
+
+    it("should override information for SNS with universeId ibahq-taaaa-aaaaq-aadna-cai", () => {
+      const brokenSns = withBrokenSns({
+        sns: aggregatorMockSnsesDataDto[0],
+        rootCanisterId: "ibahq-taaaa-aaaaq-aadna-cai",
+      });
+
+      const data = [brokenSns];
+      snsAggregatorIncludingAbortedProjectsStore.setData(data);
+      const result = get(snsAggregatorStore).data[0];
+      expect(result.meta.name).toBe(
+        "Dragginz (formerly CYCLES_TRANSFER_STATION)"
+      );
+      expect(result.icrc1_metadata[3][1]).toEqual({ Text: "DKP (CTS)" });
+    });
+  });
 });
