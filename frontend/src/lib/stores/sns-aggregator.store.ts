@@ -35,6 +35,8 @@ const initSnsAggreagatorStore =
 export const snsAggregatorIncludingAbortedProjectsStore =
   initSnsAggreagatorStore();
 
+const CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID = "ibahq-taaaa-aaaaq-aadna-cai";
+
 export const snsAggregatorStore: SnsAggregatorStore = derived(
   snsAggregatorIncludingAbortedProjectsStore,
   (store) => {
@@ -46,55 +48,52 @@ export const snsAggregatorStore: SnsAggregatorStore = derived(
 
     if (isNullish(data)) return { data: undefined };
 
-    // TODO: Find a better way to fix broken SNS metadata. These transformations will be remove once we have a better solution.
-    const handledAbandonedSnsData = data?.map(fixBrokenSnsMetadataBasedOnId);
-    const sortedAbandonesSnsData = sortedListBasedOnAbandoned(
-      handledAbandonedSnsData
+    const cts = data.find(
+      (sns) =>
+        sns.list_sns_canisters.root === CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID
     );
-    const cachedSnsData = sortedAbandonesSnsData.map(
-      ({ isAbandoned: _, ...sns }) => ({ ...sns })
+    if (isNullish(cts)) return { data };
+
+    const dataWithoutCts = data.filter(
+      (sns) =>
+        sns.list_sns_canisters.root !== CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID
     );
 
     return {
-      data: cachedSnsData,
+      data: [...dataWithoutCts, overrideCyclesTransferStation(cts)],
     };
   }
 );
 
-const brokenSnsOverrides: Record<
-  string,
-  { name: string; tokenSymbol: string }
-> = {
-  // Overrided for CYCLES_TRANSFER_STATION as discussed in https://dfinity.slack.com/archives/C039M7YS6F6/p1733302975333649
-  "ibahq-taaaa-aaaaq-aadna-cai": {
-    name: "CYCLES_TRANSFER_STATION",
-    tokenSymbol: "CTS",
-  },
-};
-
-const fixBrokenSnsMetadataBasedOnId = (
-  sns: CachedSnsDto
-): CachedSnsDto & { isAbandoned?: boolean } => {
-  const override = brokenSnsOverrides[sns.list_sns_canisters.root];
-
+const overrideCyclesTransferStation = (sns: CachedSnsDto): CachedSnsDto => {
   // Required for the tokens and staking routes as they apply their own sort logic
   const hiddenCharacterToPushSnsToEndOfList = "\u200B";
-  if (!nonNullish(override)) return sns;
+  const originalName = "CYCLES_TRANSFER_STATION";
+  const originalSymbol = "CTS";
+  let name = sns.meta.name;
+
+  if (name !== originalName) {
+    name = `${hiddenCharacterToPushSnsToEndOfList}${name} (formerly ${originalName})`;
+  }
+
   const newMeta = {
     ...sns.meta,
-    name: `${hiddenCharacterToPushSnsToEndOfList}${sns.meta.name} (formerly ${override.name})`,
+    name,
   };
 
   const newIcrc1Metadata = sns.icrc1_metadata.map<
     [string, CachedSnsTokenMetadataDto[0][1]]
   >(([name, value]) => {
     if (name === "icrc1:symbol" && "Text" in value) {
-      return [
-        name,
-        {
-          Text: `${hiddenCharacterToPushSnsToEndOfList}${value.Text} (${override.tokenSymbol})`,
-        },
-      ];
+      const symbol = value.Text;
+      if (symbol !== originalSymbol) {
+        return [
+          name,
+          {
+            Text: `${hiddenCharacterToPushSnsToEndOfList}${symbol} (${originalSymbol})`,
+          },
+        ];
+      }
     }
     return [name, value];
   });
@@ -103,18 +102,5 @@ const fixBrokenSnsMetadataBasedOnId = (
     ...sns,
     meta: { ...newMeta },
     icrc1_metadata: [...newIcrc1Metadata],
-    isAbandoned: true,
   };
 };
-
-// Required for the proposals route as it doesnt apply sort logic
-const sortedListBasedOnAbandoned = (
-  list: (CachedSnsDto & { isAbandoned?: boolean })[]
-) => [
-  ...list.sort((a, b) => {
-    if (a.isAbandoned && !b.isAbandoned) return 1;
-    if (!a.isAbandoned && b.isAbandoned) return -1;
-
-    return 0;
-  }),
-];
