@@ -26,7 +26,7 @@
   import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
   import { transactionName } from "$lib/utils/transactions.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
-    import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   const dispatcher = createEventDispatcher<{
     nnsExportIcpTransactionsCsvTriggered: void;
@@ -128,7 +128,6 @@
   const exportIcpTransactions = async () => {
     // Button will only be shown if logged in
     if (!(identity instanceof SignIdentity)) return;
-
     try {
       const nnsAccounts = Object.values($nnsAccountsListStore).flat();
 
@@ -201,7 +200,7 @@
 </script>
 
 <button
-  data-tid="export-neurons-button-component"
+  data-tid="export-icp-transactions-button-component"
   on:click={exportIcpTransactions}
   class="text"
   disabled={isDisabled}
