@@ -205,6 +205,7 @@ const cspConnectSrc = () => {
     "'self'",
     "${{HOST}}",
     "${{SNS_AGGREGATOR_URL}}",
+    "${{ICP_SWAP_URL}}",
     // TODO: solve with a worker
     // Used for the metrics of OC launch
     "https://2hx64-daaaa-aaaaq-aaana-cai.raw.icp0.io",
