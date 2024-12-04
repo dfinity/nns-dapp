@@ -73,7 +73,7 @@ export const tableNeuronsFromNeuronInfos = ({
         identity,
         accounts,
         i18n,
-      }).map(({ text }) => text),
+      }),
       isPublic: isPublicNeuron(neuronInfo),
     };
   });
@@ -115,7 +115,7 @@ export const tableNeuronsFromSnsNeurons = ({
         neuron: snsNeuron,
         identity,
         i18n,
-      }).map(({ text }) => text),
+      }),
       isPublic: false,
     };
   });

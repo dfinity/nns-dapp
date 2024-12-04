@@ -379,6 +379,10 @@
     "description": "ICP neurons that are inactive for $period start losing voting rewards. In order to avoid losing rewards, vote manually, edit or confirm your following.",
     "confirm": "Confirm Following"
   },
+  "losing_rewards_modal": {
+    "goto_neuron": "Go to neuron details",
+    "no_following": "This neuron has no following configured."
+  },
   "new_followee": {
     "title": "Enter New Followee",
     "placeholder": "Neuron Id",

@@ -51,6 +51,8 @@ export type UserTokenFailed = UserTokenBase & {
 
 export type UserTokenData = UserTokenBase & {
   balance: TokenAmountV2 | UnavailableTokenAmount;
+  // The above balance converted to USD, if price data is available.
+  balanceInUsd?: number;
   // Identifier of the account related to the row (only if the row represents one account, not multiple)
   accountIdentifier?: string;
   token: Token;

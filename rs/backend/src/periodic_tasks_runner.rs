@@ -16,10 +16,6 @@ pub async fn run_periodic_tasks() {
     let maybe_transaction_to_process = with_state_mut(|s| s.accounts_store.try_take_next_transaction_to_process());
     if let Some((block_height, transaction_to_process)) = maybe_transaction_to_process {
         match transaction_to_process {
-            // TODO: Remove StakeNeuron after a version has been released that
-            //       does not add StakeNeuron to the multi-part transaction
-            //       queue anymore.
-            MultiPartTransactionToBeProcessed::StakeNeuron(_principal, _memo) => {}
             MultiPartTransactionToBeProcessed::CreateCanisterV2(controller) => {
                 handle_create_canister_v2(block_height, controller).await;
             }

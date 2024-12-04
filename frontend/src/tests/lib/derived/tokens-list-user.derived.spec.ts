@@ -5,9 +5,11 @@ import {
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_LEDGER_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
 import { authStore } from "$lib/stores/auth.store";
+import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import {
@@ -27,6 +29,7 @@ import {
   mockCkETHToken,
 } from "$tests/mocks/cketh-accounts.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
@@ -365,6 +368,86 @@ describe("tokens-list-user.derived", () => {
         ckETHUserToken,
         tetrisUserToken,
         pacmanUserToken,
+      ]);
+    });
+
+    it("should include USD value if ICP Swap data is loaded", () => {
+      const tetrisBalance = 30;
+      const tetrisBalanceE8s = BigInt(tetrisBalance * 100_000_000);
+      const icpPrice = 10;
+      const tetrisPrice = 0.2;
+      const tetrisUsdBalance = tetrisBalance * tetrisPrice;
+
+      icpSwapTickersStore.set([
+        {
+          ...mockIcpSwapTicker,
+          base_id: snsTetris.ledgerCanisterId.toText(),
+          last_price: String(icpPrice / tetrisPrice),
+        },
+        {
+          ...mockIcpSwapTicker,
+          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+          last_price: String(icpPrice),
+        },
+      ]);
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [
+            {
+              ...mockSnsMainAccount,
+              balanceUlps: tetrisBalanceE8s,
+            },
+          ],
+          certified: true,
+        },
+        ledgerCanisterId: snsTetris.ledgerCanisterId,
+      });
+      expect(get(tokensListUserStore)).toEqual([
+        icpUserTokenLoading,
+        ckBTCTokenLoading,
+        ckTESTBTCTokenLoading,
+        ckETHTokenLoading,
+        {
+          ...tetrisUserToken,
+          balance: TokenAmountV2.fromUlps({
+            amount: tetrisBalanceE8s,
+            token: snsTetrisToken,
+          }),
+          balanceInUsd: tetrisUsdBalance,
+        },
+        pacmanTokenLoading,
+      ]);
+    });
+
+    it("should include USD value if ICP Swap data is not loaded but balance is 0", () => {
+      const tetrisBalanceE8s = 0n;
+
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [
+            {
+              ...mockSnsMainAccount,
+              balanceUlps: tetrisBalanceE8s,
+            },
+          ],
+          certified: true,
+        },
+        ledgerCanisterId: snsTetris.ledgerCanisterId,
+      });
+      expect(get(tokensListUserStore)).toEqual([
+        icpUserTokenLoading,
+        ckBTCTokenLoading,
+        ckTESTBTCTokenLoading,
+        ckETHTokenLoading,
+        {
+          ...tetrisUserToken,
+          balance: TokenAmountV2.fromUlps({
+            amount: tetrisBalanceE8s,
+            token: snsTetrisToken,
+          }),
+          balanceInUsd: 0,
+        },
+        pacmanTokenLoading,
       ]);
     });
   });
