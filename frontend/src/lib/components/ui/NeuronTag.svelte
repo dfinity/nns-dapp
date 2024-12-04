@@ -3,7 +3,7 @@
   import { Tag } from "@dfinity/gix-components";
 
   export let tag: NeuronTagData;
-  export let size: "medium" | "large" | undefined = undefined;
+  export let size: "medium" | "large" = "medium";
 </script>
 
 <Tag testId="neuron-tag-component" {size}>{tag.text}</Tag>
