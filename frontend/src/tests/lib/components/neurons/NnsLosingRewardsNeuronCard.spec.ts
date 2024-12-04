@@ -52,6 +52,8 @@ describe("NnsLosingRewardsNeuronCard", () => {
 
     const followeePos = await po.getFolloweePos();
 
+    expect(await po.hasNoFollowingMessage()).toEqual(false);
+
     expect(followeePos.length).toBe(2);
     expect(await followeePos[0].getName()).toEqual(`${followNeuronId1}`);
     expect(await followeePos[0].getTags()).toEqual([
@@ -60,5 +62,21 @@ describe("NnsLosingRewardsNeuronCard", () => {
     ]);
     expect(await followeePos[1].getName()).toEqual(`${followNeuronId2}`);
     expect(await followeePos[1].getTags()).toEqual(["Exchange Rate"]);
+  });
+
+  it("should display no following message", async () => {
+    const po = await renderComponent({
+      neuron: {
+        ...neuron,
+        fullNeuron: {
+          ...neuron.fullNeuron,
+          // no followees
+          followees: [],
+        },
+      },
+    });
+
+    expect((await po.getFolloweePos()).length).toBe(0);
+    expect(await po.hasNoFollowingMessage()).toEqual(true);
   });
 });

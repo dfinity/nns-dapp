@@ -22,4 +22,8 @@ export class NnsLosingRewardsNeuronCardPo extends CardPo {
   async getFolloweePos(): Promise<FolloweePo[]> {
     return FolloweePo.allUnder(this.root);
   }
+
+  async hasNoFollowingMessage(): Promise<boolean> {
+    return this.root.byTestId("no-following").isPresent();
+  }
 }
