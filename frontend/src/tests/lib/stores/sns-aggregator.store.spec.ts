@@ -210,7 +210,7 @@ describe("sns-aggregator store", () => {
       expect(result.meta.name).toBe(
         "\u200B--- (formerly CYCLES_TRANSFER_STATION)"
       );
-      expect(result.icrc1_metadata[3][1]).toEqual({ Text: "--- (CTS)" });
+      expect(result.icrc1_metadata[3][1]).toEqual({ Text: "\u200B--- (CTS)" });
     });
   });
 });
