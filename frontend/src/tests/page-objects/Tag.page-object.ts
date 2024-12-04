@@ -9,4 +9,8 @@ export class TagPo extends BasePageObject {
       (el) => new TagPo(el)
     );
   }
+
+  async isIntentStyleError(): Promise<boolean> {
+    return (await this.root.getClasses()).includes("error");
+  }
 }
