@@ -1,9 +1,11 @@
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import {
   icpAccountsStore,
   type IcpAccountsStore,
 } from "$lib/derived/icp-accounts.derived";
+import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
 import { i18n } from "$lib/stores/i18n";
 import type { Account, AccountType } from "$lib/types/account";
 import { UserTokenAction, type UserToken } from "$lib/types/tokens-page";
@@ -19,10 +21,12 @@ const convertAccountToUserTokenData = ({
   nnsUniverse,
   i18nObj: i18nObj,
   account,
+  icpPrice,
 }: {
   nnsUniverse: Universe;
   i18nObj: I18n;
   account?: Account;
+  icpPrice?: number;
 }): UserToken => {
   const rowHref = buildWalletUrl({
     universe: nnsUniverse.canisterId.toString(),
@@ -59,6 +63,8 @@ const convertAccountToUserTokenData = ({
       amount: account.balanceUlps,
       token: NNS_TOKEN_DATA,
     }),
+    balanceInUsd:
+      icpPrice && (Number(account.balanceUlps) / E8S_PER_ICP) * icpPrice,
     logo: nnsUniverse.logo,
     token: NNS_TOKEN_DATA,
     fee: TokenAmountV2.fromUlps({
@@ -73,23 +79,42 @@ const convertAccountToUserTokenData = ({
 };
 
 export const icpTokensListUser = derived<
-  [Readable<Universe>, IcpAccountsStore, Readable<I18n>],
+  [
+    Readable<Universe>,
+    IcpAccountsStore,
+    Readable<I18n>,
+    Readable<Record<string, number> | undefined>,
+  ],
   UserToken[]
 >(
-  [nnsUniverseStore, icpAccountsStore, i18n],
-  ([nnsUniverse, icpAccounts, i18nObj]) => [
-    convertAccountToUserTokenData({
-      nnsUniverse,
-      i18nObj,
-      account: icpAccounts.main,
-    }),
-    ...sortUserTokens([
-      ...(icpAccounts.subAccounts ?? []).map((account) =>
-        convertAccountToUserTokenData({ nnsUniverse, i18nObj, account })
-      ),
-      ...(icpAccounts.hardwareWallets ?? []).map((account) =>
-        convertAccountToUserTokenData({ nnsUniverse, i18nObj, account })
-      ),
-    ]),
-  ]
+  [nnsUniverseStore, icpAccountsStore, i18n, icpSwapUsdPricesStore],
+  ([nnsUniverse, icpAccounts, i18nObj, icpSwapUsdPrices]) => {
+    const icpPrice = icpSwapUsdPrices?.[LEDGER_CANISTER_ID.toText()];
+    return [
+      convertAccountToUserTokenData({
+        nnsUniverse,
+        i18nObj,
+        account: icpAccounts.main,
+        icpPrice,
+      }),
+      ...sortUserTokens([
+        ...(icpAccounts.subAccounts ?? []).map((account) =>
+          convertAccountToUserTokenData({
+            nnsUniverse,
+            i18nObj,
+            account,
+            icpPrice,
+          })
+        ),
+        ...(icpAccounts.hardwareWallets ?? []).map((account) =>
+          convertAccountToUserTokenData({
+            nnsUniverse,
+            i18nObj,
+            account,
+            icpPrice,
+          })
+        ),
+      ]),
+    ];
+  }
 );

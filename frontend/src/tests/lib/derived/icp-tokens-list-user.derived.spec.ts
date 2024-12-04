@@ -1,6 +1,9 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { icpTokensListUser } from "$lib/derived/icp-tokens-list-user.derived";
+import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import {
   UserTokenAction,
   type UserTokenData,
@@ -12,6 +15,7 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import {
   createIcpUserToken,
   icpTokenBase,
@@ -138,6 +142,66 @@ describe("icp-tokens-list-user.derived", () => {
         mainUserTokenData,
         subaccountUserTokenData(),
         hardwareWalletUserTokenData(),
+      ]);
+    });
+
+    it("should include balance in USD if ICP Swap data is loaded", () => {
+      const mainAccountBalance = 7;
+      const subAccountBalance = 5;
+      const hwAccountBalance = 3;
+      const icpPrice = 10;
+
+      icpSwapTickersStore.set([
+        {
+          ...mockIcpSwapTicker,
+          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+          last_price: String(icpPrice),
+        },
+      ]);
+
+      setAccountsForTesting({
+        main: {
+          ...mockMainAccount,
+          balanceUlps: BigInt(mainAccountBalance * E8S_PER_ICP),
+        },
+        subAccounts: [
+          {
+            ...mockSubAccount,
+            balanceUlps: BigInt(subAccountBalance * E8S_PER_ICP),
+          },
+        ],
+        hardwareWallets: [
+          {
+            ...mockHardwareWalletAccount,
+            balanceUlps: BigInt(hwAccountBalance * E8S_PER_ICP),
+          },
+        ],
+      });
+      expect(get(icpTokensListUser)).toEqual([
+        {
+          ...mainUserTokenData,
+          balance: TokenAmountV2.fromUlps({
+            amount: BigInt(mainAccountBalance * E8S_PER_ICP),
+            token: NNS_TOKEN_DATA,
+          }),
+          balanceInUsd: mainAccountBalance * icpPrice,
+        },
+        {
+          ...subaccountUserTokenData(),
+          balance: TokenAmountV2.fromUlps({
+            amount: BigInt(subAccountBalance * E8S_PER_ICP),
+            token: NNS_TOKEN_DATA,
+          }),
+          balanceInUsd: subAccountBalance * icpPrice,
+        },
+        {
+          ...hardwareWalletUserTokenData(),
+          balance: TokenAmountV2.fromUlps({
+            amount: BigInt(hwAccountBalance * E8S_PER_ICP),
+            token: NNS_TOKEN_DATA,
+          }),
+          balanceInUsd: hwAccountBalance * icpPrice,
+        },
       ]);
     });
 
