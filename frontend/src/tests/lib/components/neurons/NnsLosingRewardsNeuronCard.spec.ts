@@ -1,5 +1,5 @@
-import { OWN_CANISTER_ID_TEXT } from "$ib/constants/canister-ids.constants";
 import NnsLosingRewardsNeuronCard from "$lib/components/neurons/NnsLosingRewardsNeuronCard.svelte";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsLosingRewardsNeuronCardPo } from "$tests/page-objects/NnsLosingRewardsNeuronCard.page-object";
