@@ -1,0 +1,73 @@
+<script lang="ts">
+  import { i18n } from "$lib/stores/i18n";
+  import { Modal } from "@dfinity/gix-components";
+  import { createEventDispatcher } from "svelte";
+  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+  import { START_REDUCING_VOTING_POWER_AFTER_SECONDS } from "$lib/constants/neurons.constants";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { soonLosingRewardNeuronsStore } from "$lib/derived/neurons.derived";
+  import NnsLosingRewardsNeuronCard from "$lib/components/neurons/NnsLosingRewardsNeuronCard.svelte";
+
+  const dispatcher = createEventDispatcher();
+
+  const confirm = () => {
+    // TBD
+  };
+</script>
+
+<Modal on:nnsClose testId="losing-reward-neurons-modal-component">
+  <svelte:fragment slot="title">
+    {$i18n.losing_rewards_modal.title}
+  </svelte:fragment>
+
+  <div class="wrapper">
+    <p class="description">
+      {replacePlaceholders($i18n.losing_rewards_modal.description, {
+        $period: secondsToDissolveDelayDuration(
+          BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS)
+        ),
+      })}
+    </p>
+
+    <h3 class="label">{$i18n.losing_rewards_modal.label}</h3>
+    <ul class="cards">
+      {#each $soonLosingRewardNeuronsStore as neuron (neuron.neuronId)}
+        <li>
+          <NnsLosingRewardsNeuronCard {neuron} />
+        </li>
+      {/each}
+    </ul>
+    <div class="toolbar">
+      <button on:click={() => dispatcher("nnsClose")} class="secondary"
+        >{$i18n.core.cancel}</button
+      >
+      <button on:click={confirm} class="primary" data-tid="confirm-button"
+        >{$i18n.losing_rewards_modal.confirm}</button
+      >
+    </div>
+  </div>
+</Modal>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
+  .description {
+    margin: 0 0 var(--padding-3x);
+  }
+
+  .label {
+    margin-bottom: var(--padding);
+    @include fonts.standard(false);
+    color: var(--description-color);
+  }
+
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+    margin-bottom: var(--padding-3x);
+
+    padding: 0;
+    list-style-type: none;
+  }
+</style>
