@@ -253,6 +253,7 @@ jobs:
           	cketh_ledger
           	ckusdc_index
           	ckusdc_ledger
+          	icp-swap
           	internet_identity
           	nns-dapp
           	nns-index
