@@ -162,6 +162,7 @@ interface I18nHeader {
   main_icp_account_id: string;
   account_id_tooltip: string;
   export_neurons: string;
+  export_transactions: string;
 }
 
 interface I18nExport_csv_neurons {
@@ -185,10 +186,10 @@ interface I18nExport_csv_neurons {
   staked_maturity: string;
   state: string;
   symbol: string;
-  timestampt: string;
+  timestamp: string;
   to: string;
   transaction_id: string;
-  tx_type: string;
+  transaction_type: string;
 }
 
 interface I18nExport_error {

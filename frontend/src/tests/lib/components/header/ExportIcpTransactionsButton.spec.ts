@@ -139,7 +139,7 @@ describe("ExportIcpTransactionsButton", () => {
     await tick();
     // Wait for the finally block to execute
     await tick();
-    
+
     expect(spyToastError).toBeCalledWith({
       labelKey: "export_error.csv_generation",
     });

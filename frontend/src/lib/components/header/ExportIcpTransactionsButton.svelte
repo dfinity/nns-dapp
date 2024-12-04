@@ -162,7 +162,7 @@
           },
           {
             id: "type",
-            label: $i18n.export_csv_neurons.tx_type,
+            label: $i18n.export_csv_neurons.transaction_type,
           },
           {
             id: "amount",
@@ -172,7 +172,7 @@
           },
           {
             id: "timestamp",
-            label: $i18n.export_csv_neurons.creation_date,
+            label: $i18n.export_csv_neurons.timestamp,
           },
         ],
         fileName,
@@ -207,7 +207,7 @@
   aria-label={$i18n.header.export_neurons}
 >
   <IconDown />
-  Export ICP Transactions
+  {$i18n.header.export_transactions}
 </button>
 
 <style lang="scss">
