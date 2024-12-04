@@ -385,6 +385,11 @@ interface I18nLosing_rewards_banner {
   confirm: string;
 }
 
+interface I18nLosing_rewards_modal {
+  goto_neuron: string;
+  no_following: string;
+}
+
 interface I18nNew_followee {
   title: string;
   placeholder: string;
@@ -1442,6 +1447,7 @@ interface I18n {
   staking: I18nStaking;
   neurons: I18nNeurons;
   losing_rewards_banner: I18nLosing_rewards_banner;
+  losing_rewards_modal: I18nLosing_rewards_modal;
   new_followee: I18nNew_followee;
   follow_neurons: I18nFollow_neurons;
   voting: I18nVoting;

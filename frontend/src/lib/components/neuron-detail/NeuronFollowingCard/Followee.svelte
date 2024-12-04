@@ -36,14 +36,20 @@
   <TagsList {id}>
     <div class="neuron" slot="title">
       {#if isInteractive}
-        <button name="title" {id} class="text" on:click={openVotingHistory}>
+        <button
+          data-tid="title"
+          name="title"
+          {id}
+          class="text"
+          on:click={openVotingHistory}
+        >
           {name}
         </button>
         <div class="copy">
           <Copy value={followee.neuronId.toString()} />
         </div>
       {:else}
-        <span class="text">{name}</span>
+        <span data-tid="title" class="text">{name}</span>
       {/if}
     </div>
 
