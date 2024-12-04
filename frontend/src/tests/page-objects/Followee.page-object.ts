@@ -27,7 +27,7 @@ export class FolloweePo extends BasePageObject {
   }
 
   getName(): Promise<string> {
-    return this.root.byTestId("title").getText();
+    return this.getText("title");
   }
 
   async getTags(): Promise<string[]> {
