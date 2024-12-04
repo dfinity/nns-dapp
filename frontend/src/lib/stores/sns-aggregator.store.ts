@@ -37,18 +37,29 @@ export const snsAggregatorIncludingAbortedProjectsStore =
 
 export const snsAggregatorStore: SnsAggregatorStore = derived(
   snsAggregatorIncludingAbortedProjectsStore,
-  (store) => ({
-    data: store.data
-      ?.filter(
-        (sns) =>
-          nonNullish(sns.lifecycle) &&
-          sns.lifecycle.lifecycle !== SnsSwapLifecycle.Aborted
-      )
-      .map(fixBrokenSnsMetadataBasedOnId),
-  })
+  (store) => {
+    const data = store.data?.filter(
+      (sns) =>
+        nonNullish(sns.lifecycle) &&
+        sns.lifecycle.lifecycle !== SnsSwapLifecycle.Aborted
+    );
+
+    // TODO: Find a better way to fix broken SNS metadata. These transformations will be remove once we have a better solution.
+    const handledAbandonedSnsData =
+      data?.map(fixBrokenSnsMetadataBasedOnId) ?? [];
+    const sortedAbandonesSnsData = sortedListBasedOnAbandoned(
+      handledAbandonedSnsData
+    );
+    const cachedSnsData = sortedAbandonesSnsData.map(
+      ({ isAbandoned: _, ...sns }) => ({ ...sns })
+    );
+
+    return {
+      data: cachedSnsData,
+    };
+  }
 );
 
-// TODO: Find a better way to fix broken SNS metadata.
 const brokenSnsOverrides: Record<
   string,
   { name: string; tokenSymbol: string }
@@ -60,12 +71,17 @@ const brokenSnsOverrides: Record<
   },
 };
 
-const fixBrokenSnsMetadataBasedOnId = (sns: CachedSnsDto): CachedSnsDto => {
+const fixBrokenSnsMetadataBasedOnId = (
+  sns: CachedSnsDto
+): CachedSnsDto & { isAbandoned?: boolean } => {
   const override = brokenSnsOverrides[sns.list_sns_canisters.root];
+
+  // Required for the tokens and stakin routes
+  const hiddenCharacterToPushSnsToEndOfList = "\u200B";
   if (!nonNullish(override)) return sns;
   const newMeta = {
     ...sns.meta,
-    name: `${sns.meta.name} (formerly ${override.name})`,
+    name: `${hiddenCharacterToPushSnsToEndOfList}${sns.meta.name} (formerly ${override.name})`,
   };
 
   const newIcrc1Metadata = sns.icrc1_metadata.map<
@@ -86,5 +102,18 @@ const fixBrokenSnsMetadataBasedOnId = (sns: CachedSnsDto): CachedSnsDto => {
     ...sns,
     meta: { ...newMeta },
     icrc1_metadata: [...newIcrc1Metadata],
+    isAbandoned: true,
   };
 };
+
+// Required for the proposals route
+const sortedListBasedOnAbandoned = (
+  list: (CachedSnsDto & { isAbandoned?: boolean })[]
+) => [
+  ...list.sort((a, b) => {
+    if (a.isAbandoned && !b.isAbandoned) return 1;
+    if (!a.isAbandoned && b.isAbandoned) return -1;
+
+    return 0;
+  }),
+];
