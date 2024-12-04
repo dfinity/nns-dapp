@@ -76,7 +76,7 @@ const fixBrokenSnsMetadataBasedOnId = (
 ): CachedSnsDto & { isAbandoned?: boolean } => {
   const override = brokenSnsOverrides[sns.list_sns_canisters.root];
 
-  // Required for the tokens and stakin routes
+  // Required for the tokens and staking routes as they apply their own sort logic
   const hiddenCharacterToPushSnsToEndOfList = "\u200B";
   if (!nonNullish(override)) return sns;
   const newMeta = {
@@ -106,7 +106,7 @@ const fixBrokenSnsMetadataBasedOnId = (
   };
 };
 
-// Required for the proposals route
+// Required for the proposals route as it doesnt apply sort logic
 const sortedListBasedOnAbandoned = (
   list: (CachedSnsDto & { isAbandoned?: boolean })[]
 ) => [
