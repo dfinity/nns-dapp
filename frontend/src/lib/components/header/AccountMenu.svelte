@@ -44,6 +44,7 @@
         {#if $ENABLE_EXPORT_NEURONS_REPORT}
           <ExportNeuronsButton on:nnsExportNeuronsCsvTriggered={toggle} />
         {/if}
+
         <Logout on:nnsLogoutTriggered={toggle} />
       </div>
     </Popover>
