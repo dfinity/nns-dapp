@@ -10,6 +10,14 @@ export class FolloweePo extends BasePageObject {
     return new FolloweePo(element.byTestId(FolloweePo.TID));
   }
 
+  static async allUnder(element: PageObjectElement): Promise<FolloweePo[]> {
+    return Array.from(
+      (await element.allByTestId(FolloweePo.TID)).map(
+        (el) => new FolloweePo(el)
+      )
+    );
+  }
+
   getTagPos(): Promise<TagPo[]> {
     return TagPo.allUnder(this.root);
   }
@@ -19,7 +27,7 @@ export class FolloweePo extends BasePageObject {
   }
 
   getName(): Promise<string> {
-    return this.getButton().getText();
+    return this.root.byTestId("title").getText();
   }
 
   async getTags(): Promise<string[]> {
