@@ -154,8 +154,26 @@ describe("sns-aggregator store", () => {
     });
 
     it("should override information for SNS with rootCanisterId ibahq-taaaa-aaaaq-aadna-cai", () => {
+      const mockedSns = aggregatorMockSnsesDataDto[0];
       const brokenSns = withBrokenSns({
-        sns: aggregatorMockSnsesDataDto[0],
+        sns: {
+          ...mockedSns,
+          meta: {
+            ...mockedSns.meta,
+            name: "---",
+          },
+          icrc1_metadata: [...mockedSns.icrc1_metadata].map(([name, value]) => {
+            if (name === "icrc1:symbol" && "Text" in value) {
+              return [
+                name,
+                {
+                  Text: "---",
+                },
+              ];
+            }
+            return [name, value];
+          }),
+        },
         rootCanisterId: "ibahq-taaaa-aaaaq-aadna-cai",
       });
 
@@ -163,9 +181,9 @@ describe("sns-aggregator store", () => {
       snsAggregatorIncludingAbortedProjectsStore.setData(data);
       const result = get(snsAggregatorStore).data[0];
       expect(result.meta.name).toBe(
-        "Dragginz (formerly CYCLES_TRANSFER_STATION)"
+        "--- (formerly CYCLES_TRANSFER_STATION)"
       );
-      expect(result.icrc1_metadata[3][1]).toEqual({ Text: "DKP (CTS)" });
+      expect(result.icrc1_metadata[3][1]).toEqual({ Text: "--- (CTS)" });
     });
   });
 });
