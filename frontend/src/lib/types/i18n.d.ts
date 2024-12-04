@@ -317,6 +317,7 @@ interface I18nNeurons {
   create: string;
   community_fund: string;
   hotkey_control: string;
+  missing_rewards: string;
   hardware_wallet_control: string;
   amount_icp_stake: string;
   ic_stake: string;
