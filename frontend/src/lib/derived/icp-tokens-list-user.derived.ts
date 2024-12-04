@@ -1,5 +1,4 @@
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import {
   icpAccountsStore,
@@ -16,6 +15,23 @@ import { Principal } from "@dfinity/principal";
 import { isNullish, TokenAmountV2 } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import { nnsUniverseStore } from "./nns-universe.derived";
+
+const getUsdValue = ({
+  balance,
+  icpPrice,
+}: {
+  balance: TokenAmountV2;
+  icpPrice?: number;
+}): number | undefined => {
+  const balanceE8s = Number(balance.toE8s());
+  if (balanceE8s === 0) {
+    return 0;
+  }
+  if (isNullish(icpPrice)) {
+    return undefined;
+  }
+  return (balanceE8s * icpPrice) / 100_000_000;
+};
 
 const convertAccountToUserTokenData = ({
   nnsUniverse,
@@ -54,17 +70,21 @@ const convertAccountToUserTokenData = ({
   const title: string =
     account.type === "main" ? i18nObj.accounts.main : (account.name ?? "");
 
+  const balance = TokenAmountV2.fromUlps({
+    amount: account.balanceUlps,
+    token: NNS_TOKEN_DATA,
+  });
+
   return {
     universeId: Principal.fromText(nnsUniverse.canisterId),
     ledgerCanisterId: LEDGER_CANISTER_ID,
     title,
     subtitle: subtitleMap[account.type],
-    balance: TokenAmountV2.fromUlps({
-      amount: account.balanceUlps,
-      token: NNS_TOKEN_DATA,
+    balance,
+    balanceInUsd: getUsdValue({
+      balance,
+      icpPrice,
     }),
-    balanceInUsd:
-      icpPrice && (Number(account.balanceUlps) / E8S_PER_ICP) * icpPrice,
     logo: nnsUniverse.logo,
     token: NNS_TOKEN_DATA,
     fee: TokenAmountV2.fromUlps({

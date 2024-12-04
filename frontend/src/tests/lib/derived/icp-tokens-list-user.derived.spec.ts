@@ -205,6 +205,57 @@ describe("icp-tokens-list-user.derived", () => {
       ]);
     });
 
+    it("should include balance in USD if balance is 0 but ICP Swap data is not loaded", () => {
+      const mainAccountBalance = 0;
+      const subAccountBalance = 0;
+      const hwAccountBalance = 0;
+
+      setAccountsForTesting({
+        main: {
+          ...mockMainAccount,
+          balanceUlps: BigInt(mainAccountBalance * E8S_PER_ICP),
+        },
+        subAccounts: [
+          {
+            ...mockSubAccount,
+            balanceUlps: BigInt(subAccountBalance * E8S_PER_ICP),
+          },
+        ],
+        hardwareWallets: [
+          {
+            ...mockHardwareWalletAccount,
+            balanceUlps: BigInt(hwAccountBalance * E8S_PER_ICP),
+          },
+        ],
+      });
+      expect(get(icpTokensListUser)).toEqual([
+        {
+          ...mainUserTokenData,
+          balance: TokenAmountV2.fromUlps({
+            amount: BigInt(mainAccountBalance * E8S_PER_ICP),
+            token: NNS_TOKEN_DATA,
+          }),
+          balanceInUsd: mainAccountBalance,
+        },
+        {
+          ...subaccountUserTokenData(),
+          balance: TokenAmountV2.fromUlps({
+            amount: BigInt(subAccountBalance * E8S_PER_ICP),
+            token: NNS_TOKEN_DATA,
+          }),
+          balanceInUsd: subAccountBalance,
+        },
+        {
+          ...hardwareWalletUserTokenData(),
+          balance: TokenAmountV2.fromUlps({
+            amount: BigInt(hwAccountBalance * E8S_PER_ICP),
+            token: NNS_TOKEN_DATA,
+          }),
+          balanceInUsd: hwAccountBalance,
+        },
+      ]);
+    });
+
     it("should sort user tokens", () => {
       const subAccount1 = {
         ...mockSubAccount,
