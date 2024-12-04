@@ -67,7 +67,7 @@ const brokenSnsOverrides: Record<
 > = {
   // Overrided for CYCLES_TRANSFER_STATION as discussed in https://dfinity.slack.com/archives/C039M7YS6F6/p1733302975333649
   "ibahq-taaaa-aaaaq-aadna-cai": {
-    name: "CYCLES_TRANSFER_STATION",
+    name: "CYCLES-TRANSFER-STATION",
     tokenSymbol: "CTS",
   },
 };
@@ -92,7 +92,7 @@ const fixBrokenSnsMetadataBasedOnId = (
       return [
         name,
         {
-          Text: `${hiddenCharacterToPushSnsToEndOfList}${value.Text} (${override.tokenSymbol})`,
+          Text: `${value.Text} (${override.tokenSymbol})`,
         },
       ];
     }

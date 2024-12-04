@@ -189,9 +189,9 @@ describe("sns-aggregator store", () => {
 
       const result = get(snsAggregatorStore).data[0];
       expect(result.meta.name).toBe(
-        "\u200B--- (formerly CYCLES_TRANSFER_STATION)"
+        "\u200B--- (formerly CYCLES-TRANSFER-STATION)"
       );
-      expect(result.icrc1_metadata[3][1]).toEqual({ Text: "\u200B--- (CTS)" });
+      expect(result.icrc1_metadata[3][1]).toEqual({ Text: "--- (CTS)" });
     });
 
     it("should sort sns by temporal isAbandoded property", () => {
@@ -208,9 +208,9 @@ describe("sns-aggregator store", () => {
       const result =
         get(snsAggregatorStore).data[get(snsAggregatorStore).data.length - 1];
       expect(result.meta.name).toBe(
-        "\u200B--- (formerly CYCLES_TRANSFER_STATION)"
+        "\u200B--- (formerly CYCLES-TRANSFER-STATION)"
       );
-      expect(result.icrc1_metadata[3][1]).toEqual({ Text: "\u200B--- (CTS)" });
+      expect(result.icrc1_metadata[3][1]).toEqual({ Text: "--- (CTS)" });
     });
   });
 });
