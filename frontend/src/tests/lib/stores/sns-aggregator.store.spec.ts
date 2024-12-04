@@ -137,4 +137,59 @@ describe("sns-aggregator store", () => {
       expect(get(snsAggregatorStore).data).toEqual(nonAbortedData);
     });
   });
+
+  describe("brokenSnsOverrides", () => {
+    const withBrokenSns = ({
+      sns,
+      rootCanisterId,
+    }: {
+      sns: CachedSnsDto;
+      rootCanisterId: string;
+    }) => ({
+      ...sns,
+      list_sns_canisters: {
+        ...sns.list_sns_canisters,
+        root: rootCanisterId,
+      },
+    });
+
+    it("should override information for SNS with rootCanisterId ibahq-taaaa-aaaaq-aadna-cai", () => {
+      const mockedSns = aggregatorMockSnsesDataDto[0];
+      const brokenSns = withBrokenSns({
+        sns: {
+          ...mockedSns,
+          meta: {
+            ...mockedSns.meta,
+            name: "---",
+          },
+          icrc1_metadata: [...mockedSns.icrc1_metadata].map(([name, value]) => {
+            if (name === "icrc1:symbol" && "Text" in value) {
+              return [
+                name,
+                {
+                  Text: "---",
+                },
+              ];
+            }
+            return [name, value];
+          }),
+        },
+        rootCanisterId: "ibahq-taaaa-aaaaq-aadna-cai",
+      });
+
+      const data = [brokenSns];
+      snsAggregatorIncludingAbortedProjectsStore.setData(data);
+      expect(
+        get(snsAggregatorIncludingAbortedProjectsStore).data[0].meta.name
+      ).toBe("---");
+      expect(
+        get(snsAggregatorIncludingAbortedProjectsStore).data[0]
+          .icrc1_metadata[3][1]
+      ).toEqual({ Text: "---" });
+
+      const result = get(snsAggregatorStore).data[0];
+      expect(result.meta.name).toBe("--- (formerly CYCLES_TRANSFER_STATION)");
+      expect(result.icrc1_metadata[3][1]).toEqual({ Text: "--- (CTS)" });
+    });
+  });
 });
