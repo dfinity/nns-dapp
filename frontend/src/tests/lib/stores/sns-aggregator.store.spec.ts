@@ -153,30 +153,30 @@ describe("sns-aggregator store", () => {
       },
     });
 
-    it("should override information for SNS with rootCanisterId ibahq-taaaa-aaaaq-aadna-cai", () => {
-      const mockedSns = aggregatorMockSnsesDataDto[0];
-      const brokenSns = withBrokenSns({
-        sns: {
-          ...mockedSns,
-          meta: {
-            ...mockedSns.meta,
-            name: "---",
-          },
-          icrc1_metadata: [...mockedSns.icrc1_metadata].map(([name, value]) => {
-            if (name === "icrc1:symbol" && "Text" in value) {
-              return [
-                name,
-                {
-                  Text: "---",
-                },
-              ];
-            }
-            return [name, value];
-          }),
+    const mockedSns = aggregatorMockSnsesDataDto[0];
+    const brokenSns = withBrokenSns({
+      sns: {
+        ...mockedSns,
+        meta: {
+          ...mockedSns.meta,
+          name: "---",
         },
-        rootCanisterId: "ibahq-taaaa-aaaaq-aadna-cai",
-      });
+        icrc1_metadata: [...mockedSns.icrc1_metadata].map(([name, value]) => {
+          if (name === "icrc1:symbol" && "Text" in value) {
+            return [
+              name,
+              {
+                Text: "---",
+              },
+            ];
+          }
+          return [name, value];
+        }),
+      },
+      rootCanisterId: "ibahq-taaaa-aaaaq-aadna-cai",
+    });
 
+    it("should override information for SNS with rootCanisterId ibahq-taaaa-aaaaq-aadna-cai", () => {
       const data = [brokenSns];
       snsAggregatorIncludingAbortedProjectsStore.setData(data);
       expect(
@@ -188,7 +188,28 @@ describe("sns-aggregator store", () => {
       ).toEqual({ Text: "---" });
 
       const result = get(snsAggregatorStore).data[0];
-      expect(result.meta.name).toBe("--- (formerly CYCLES_TRANSFER_STATION)");
+      expect(result.meta.name).toBe(
+        "\u200B--- (formerly CYCLES-TRANSFER-STATION)"
+      );
+      expect(result.icrc1_metadata[3][1]).toEqual({ Text: "--- (CTS)" });
+    });
+
+    it("should sort sns by temporary isAbandoded property", () => {
+      const data = [brokenSns, ...aggregatorMockSnsesDataDto];
+      snsAggregatorIncludingAbortedProjectsStore.setData(data);
+      expect(
+        get(snsAggregatorIncludingAbortedProjectsStore).data[0].meta.name
+      ).toBe("---");
+      expect(
+        get(snsAggregatorIncludingAbortedProjectsStore).data[0]
+          .icrc1_metadata[3][1]
+      ).toEqual({ Text: "---" });
+
+      const result =
+        get(snsAggregatorStore).data[get(snsAggregatorStore).data.length - 1];
+      expect(result.meta.name).toBe(
+        "\u200B--- (formerly CYCLES-TRANSFER-STATION)"
+      );
       expect(result.icrc1_metadata[3][1]).toEqual({ Text: "--- (CTS)" });
     });
   });
