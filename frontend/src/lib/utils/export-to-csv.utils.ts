@@ -210,11 +210,9 @@ export const generateCsvFileToSave = async <T>({
   headers: CsvHeader<T>[];
   datasets: Dataset<T>[];
 }): Promise<void> => {
-  console.log("hi ");
   try {
     const csvContent = combineDatasetsToCsv({ datasets, headers });
 
-    console.log("hi ");
     const blob = new Blob([csvContent], {
       type: "text/csv;charset=utf-8;",
     });
