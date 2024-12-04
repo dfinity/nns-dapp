@@ -75,8 +75,6 @@ describe("ExportIcpTransactionsButton", () => {
   });
 
   it("should name the file with the date of the export", async () => {
-    vi.useRealTimers();
-
     const po = renderComponent();
 
     expect(await po.isDisabled()).toBe(false);
@@ -85,7 +83,7 @@ describe("ExportIcpTransactionsButton", () => {
     await po.click();
     await tick();
 
-    const expectedFileName = `icp_transactions_export_20241205`;
+    const expectedFileName = `icp_transactions_export_20231014`;
     expect(generateCsvFileToSave).toBeCalledWith(
       expect.objectContaining({
         fileName: expectedFileName,
