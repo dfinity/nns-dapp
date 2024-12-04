@@ -179,10 +179,15 @@ describe("sns-aggregator store", () => {
 
       const data = [brokenSns];
       snsAggregatorIncludingAbortedProjectsStore.setData(data);
-      const result = get(snsAggregatorStore).data[0];
-      expect(result.meta.name).toBe(
-        "--- (formerly CYCLES_TRANSFER_STATION)"
+      expect(get(snsAggregatorIncludingAbortedProjectsStore).data[0].meta.name).toBe(
+        "---"
       );
+      expect(
+        get(snsAggregatorIncludingAbortedProjectsStore).data[0].icrc1_metadata[3][1]
+      ).toEqual({ Text: "---" });
+
+      const result = get(snsAggregatorStore).data[0];
+      expect(result.meta.name).toBe("--- (formerly CYCLES_TRANSFER_STATION)");
       expect(result.icrc1_metadata[3][1]).toEqual({ Text: "--- (CTS)" });
     });
   });
