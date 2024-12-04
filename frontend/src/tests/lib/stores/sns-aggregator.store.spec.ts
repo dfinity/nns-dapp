@@ -153,7 +153,7 @@ describe("sns-aggregator store", () => {
       },
     });
 
-    it("should override information for SNS with universeId ibahq-taaaa-aaaaq-aadna-cai", () => {
+    it("should override information for SNS with rootCanisterId ibahq-taaaa-aaaaq-aadna-cai", () => {
       const brokenSns = withBrokenSns({
         sns: aggregatorMockSnsesDataDto[0],
         rootCanisterId: "ibahq-taaaa-aaaaq-aadna-cai",
