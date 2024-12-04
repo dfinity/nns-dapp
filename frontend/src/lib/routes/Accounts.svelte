@@ -8,7 +8,13 @@
   import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
   import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
   import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
+  import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
+  import { ENABLE_USD_VALUES } from "$lib/stores/feature-flags.store";
   import { Spinner } from "@dfinity/gix-components";
+
+  $: if ($ENABLE_USD_VALUES) {
+    loadIcpSwapTickers();
+  }
 
   $: {
     // For now, the Accounts page is enabled only for NNS
