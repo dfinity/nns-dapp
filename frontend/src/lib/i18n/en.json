@@ -373,6 +373,10 @@
   },
   "losing_rewards_modal": {
     "goto_neuron": "Go to neuron details",
+    "title": "Review your following for neurons",
+    "description": "ICP neurons that are inactive for $period start losing voting rewards. In order to avoid losing rewards, vote manually, edit or confirm your following.",
+    "label": "Neurons",
+    "confirm": "Confirm Following",
     "no_following": "This neuron has no following configured."
   },
   "new_followee": {

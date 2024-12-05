@@ -389,6 +389,10 @@ interface I18nLosing_rewards_banner {
 
 interface I18nLosing_rewards_modal {
   goto_neuron: string;
+  title: string;
+  description: string;
+  label: string;
+  confirm: string;
   no_following: string;
 }
 
