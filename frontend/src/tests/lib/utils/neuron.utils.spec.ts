@@ -12,6 +12,7 @@ import {
   MIN_NEURON_STAKE,
 } from "$lib/constants/neurons.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
@@ -1434,6 +1435,10 @@ describe("neuron-utils", () => {
     const seedTag = {
       text: "Seed",
     } as NeuronTagData;
+    const missingRewardsTag = {
+      text: "Missing rewards",
+      status: "danger",
+    } as NeuronTagData;
     const ectTag = {
       text: "Early Contributor Token",
     } as NeuronTagData;
@@ -1648,6 +1653,50 @@ describe("neuron-utils", () => {
           i18n: en,
         })
       ).toEqual([seedTag, nfTag, hwTag]);
+    });
+
+    describe("Periodic confirmation tags", () => {
+      const losingRewardNeuron: NeuronInfo = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          votingPowerRefreshedTimestampSeconds: BigInt(
+            nowInSeconds() - SECONDS_IN_HALF_YEAR - 1
+          ),
+        },
+      };
+
+      it("returns 'Missing rewards' tag", () => {
+        overrideFeatureFlagsStore.setFlag(
+          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+          true
+        );
+
+        expect(
+          getNeuronTags({
+            neuron: losingRewardNeuron,
+            identity: mockIdentity,
+            accounts: accountsWithHW,
+            i18n: en,
+          })
+        ).toEqual([missingRewardsTag]);
+      });
+
+      it("returns no 'Missing rewards' tag without feature flag", () => {
+        overrideFeatureFlagsStore.setFlag(
+          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+          false
+        );
+
+        expect(
+          getNeuronTags({
+            neuron: losingRewardNeuron,
+            identity: mockIdentity,
+            accounts: accountsWithHW,
+            i18n: en,
+          })
+        ).toEqual([]);
+      });
     });
   });
 
@@ -3108,7 +3157,7 @@ describe("neuron-utils", () => {
         accounts: { main: mockMainAccount },
         i18n: en,
       });
-      expect(result.tags).toEqual(["Seed"]);
+      expect(result.tags).toEqual([{ text: "Seed" }]);
     });
 
     it("should create neuron visibility row data for an ECT neuron", () => {
@@ -3122,7 +3171,7 @@ describe("neuron-utils", () => {
         accounts: { main: mockMainAccount },
         i18n: en,
       });
-      expect(result.tags).toEqual(["Early Contributor Token"]);
+      expect(result.tags).toEqual([{ text: "Early Contributor Token" }]);
     });
 
     it("should create neuron visibility row data for a neuron in the community fund", () => {
@@ -3136,7 +3185,7 @@ describe("neuron-utils", () => {
         accounts: { main: mockMainAccount },
         i18n: en,
       });
-      expect(result.tags).toEqual(["Neurons' fund"]);
+      expect(result.tags).toEqual([{ text: "Neurons' fund" }]);
     });
 
     it("should return Ledger device details for Ledger device controlled neuron", () => {

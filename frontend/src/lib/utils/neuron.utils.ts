@@ -21,6 +21,7 @@ import {
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
+import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { VoteRegistrationStoreData } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
@@ -61,6 +62,7 @@ import {
   nonNullish,
 } from "@dfinity/utils";
 import type { ComponentType } from "svelte";
+import { get } from "svelte/store";
 import {
   getAccountByPrincipal,
   isAccountHardwareWallet,
@@ -441,6 +443,7 @@ export const isHotKeyControllable = ({
 
 export type NeuronTagData = {
   text: string;
+  status?: "danger";
 };
 
 export const getNeuronTags = ({
@@ -489,6 +492,17 @@ const getNeuronTagsUnrelatedToController = ({
   if (hasJoinedCommunityFund(neuron)) {
     tags.push({ text: i18n.neurons.community_fund });
   }
+
+  if (
+    get(ENABLE_PERIODIC_FOLLOWING_CONFIRMATION) &&
+    isNeuronLosingRewards(neuron)
+  ) {
+    tags.push({
+      text: i18n.neurons.missing_rewards,
+      status: "danger",
+    });
+  }
+
   return tags;
 };
 
@@ -515,7 +529,7 @@ export const createNeuronVisibilityRowData = ({
     tags: getNeuronTagsUnrelatedToController({
       neuron,
       i18n,
-    }).map(({ text }) => text),
+    }),
     uncontrolledNeuronDetails: getNeuronVisibilityRowUncontrolledNeuronDetails({
       neuron,
       identity,

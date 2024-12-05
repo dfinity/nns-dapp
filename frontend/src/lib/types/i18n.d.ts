@@ -274,6 +274,7 @@ interface I18nAccounts {
   received_amount_notice: string;
   transaction_time: string;
   transaction_time_seconds: string;
+  token_price_source: string;
 }
 
 interface I18nNeuron_types {
@@ -317,6 +318,7 @@ interface I18nNeurons {
   create: string;
   community_fund: string;
   hotkey_control: string;
+  missing_rewards: string;
   hardware_wallet_control: string;
   amount_icp_stake: string;
   ic_stake: string;
@@ -383,6 +385,11 @@ interface I18nLosing_rewards_banner {
   rewards_missing_title: string;
   description: string;
   confirm: string;
+}
+
+interface I18nLosing_rewards_modal {
+  goto_neuron: string;
+  no_following: string;
 }
 
 interface I18nNew_followee {
@@ -1442,6 +1449,7 @@ interface I18n {
   staking: I18nStaking;
   neurons: I18nNeurons;
   losing_rewards_banner: I18nLosing_rewards_banner;
+  losing_rewards_modal: I18nLosing_rewards_modal;
   new_followee: I18nNew_followee;
   follow_neurons: I18nFollow_neurons;
   voting: I18nVoting;

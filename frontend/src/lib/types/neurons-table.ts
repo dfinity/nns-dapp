@@ -2,6 +2,7 @@ import type {
   ResponsiveTableColumn,
   ResponsiveTableOrder,
 } from "$lib/types/responsive-table";
+import type { NeuronTagData } from "$lib/utils/neuron.utils";
 import type { Comparator } from "$lib/utils/sort.utils";
 import type { NeuronState } from "@dfinity/nns";
 import type { TokenAmountV2 } from "@dfinity/utils";
@@ -15,7 +16,7 @@ export type TableNeuron = {
   stakedMaturity: bigint;
   dissolveDelaySeconds: bigint;
   state: NeuronState;
-  tags: string[];
+  tags: NeuronTagData[];
   isPublic: boolean;
 };
 

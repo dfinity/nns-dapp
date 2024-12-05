@@ -262,7 +262,8 @@
     "received_amount": "Received Amount",
     "received_amount_notice": "Received Amount *",
     "transaction_time": "Transaction Time",
-    "transaction_time_seconds": "Seconds"
+    "transaction_time_seconds": "Seconds",
+    "token_price_source": "Token prices are provided by ICPSwap."
   },
   "neuron_types": {
     "seed": "Seed",
@@ -303,6 +304,7 @@
     "create": "Create",
     "community_fund": "Neurons' fund",
     "hotkey_control": "Hotkey control",
+    "missing_rewards": "Missing rewards",
     "hardware_wallet_control": "Ledger Device Controlled",
     "amount_icp_stake": "$amount ICP Stake",
     "ic_stake": "$token staked",
@@ -368,6 +370,10 @@
     "rewards_missing_title": "One or more of your neurons are missing voting rewards",
     "description": "ICP neurons that are inactive for $period start losing voting rewards. In order to avoid losing rewards, vote manually, edit or confirm your following.",
     "confirm": "Confirm Following"
+  },
+  "losing_rewards_modal": {
+    "goto_neuron": "Go to neuron details",
+    "no_following": "This neuron has no following configured."
   },
   "new_followee": {
     "title": "Enter New Followee",

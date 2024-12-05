@@ -1,5 +1,4 @@
 <script lang="ts">
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import type { NeuronTagData } from "$lib/utils/neuron.utils";
   import { Tag } from "@dfinity/gix-components";
 
@@ -10,6 +9,5 @@
   $: intent = tag.status === "danger" ? "error" : "info";
 </script>
 
-<TestIdWrapper testId="neuron-tag">
-  <Tag {size} {intent}>{tag.text}</Tag>
-</TestIdWrapper>
+<Tag testId="neuron-tag-component" {size} {intent}>{tag.text}</Tag>
+
