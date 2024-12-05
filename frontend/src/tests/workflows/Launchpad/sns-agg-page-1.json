@@ -320,7 +320,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98205071663582060,
+    "icrc1_total_supply": 98205625621905220,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -843,7 +843,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100894224451006780,
+    "icrc1_total_supply": 100900495246482000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1374,6 +1374,14 @@
           }
         },
         {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1002,
           "name": "transfer DKP",
           "description": "transfer DKP from Catalyze",
@@ -1538,7 +1546,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50384594490521780,
+    "icrc1_total_supply": 50390095680116200,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1753,6 +1761,14 @@
           }
         },
         {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1000,
           "name": "commit_proposed_batch",
           "description": null,
@@ -1927,7 +1943,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9961346334426824,
+    "icrc1_total_supply": 9961349260568336,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2320,7 +2336,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10088713761391748,
+    "icrc1_total_supply": 10095855101312652,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -2709,7 +2725,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12633063912717414,
+    "icrc1_total_supply": 12647472446219800,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4144,7 +4160,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99727028842885550,
+    "icrc1_total_supply": 99715900534972980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

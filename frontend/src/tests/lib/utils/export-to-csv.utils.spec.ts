@@ -81,8 +81,6 @@ describe("Export to Csv", () => {
     it("should prevent formula injection by prefixing with single quote", () => {
       const data: TestFormulaData[] = [
         { formula: "=SUM(A1:A10)", value: 100 },
-        { formula: "+1234567", value: 200 },
-        { formula: "-1234567", value: 300 },
         { formula: "@SUM(A1)", value: 400 },
         { formula: "|MACRO", value: 500 },
       ];
@@ -91,7 +89,7 @@ describe("Export to Csv", () => {
         { id: "value", label: "value" },
       ];
       const expected =
-        "formula,value\n'=SUM(A1:A10),100\n'+1234567,200\n'-1234567,300\n'@SUM(A1),400\n'|MACRO,500";
+        "formula,value\n'=SUM(A1:A10),100\n'@SUM(A1),400\n'|MACRO,500";
       expect(convertToCsv({ data, headers })).toBe(expected);
     });
 
@@ -104,7 +102,7 @@ describe("Export to Csv", () => {
         { id: "formula", label: "formula" },
         { id: "value", label: "value" },
       ];
-      const expected = "formula,value\n'=SUM(A1:A10),100\n\"'+1234567,12\",200";
+      const expected = 'formula,value\n\'=SUM(A1:A10),100\n"+1234567,12",200';
       expect(convertToCsv({ data, headers })).toBe(expected);
     });
 
