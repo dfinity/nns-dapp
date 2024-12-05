@@ -10,4 +10,3 @@
 </script>
 
 <Tag testId="neuron-tag-component" {size} {intent}>{tag.text}</Tag>
-
