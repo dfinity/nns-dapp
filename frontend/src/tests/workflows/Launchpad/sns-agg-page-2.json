@@ -1473,7 +1473,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100809423498583300,
+    "icrc1_total_supply": 100940325398041180,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2884,6 +2884,14 @@
           }
         },
         {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 5000,
           "name": "Transfer SNS Treasury ckBTC",
           "description": "Transfer ckBTC from the SNS treasury",
@@ -3023,6 +3031,32 @@
               "target_canister_id": "oypg6-faaaa-aaaaq-aadza-cai",
               "validator_method_name": "validate_manage_neuron",
               "target_method_name": "manage_neuron"
+            }
+          }
+        },
+        {
+          "id": 6311,
+          "name": "DeVeFi:ICP/ckUSDT:Create Vector",
+          "description": "Creates a new vector",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "vxjx3-pqaaa-aaaal-qr7ua-cai",
+              "target_canister_id": "vxjx3-pqaaa-aaaal-qr7ua-cai",
+              "validator_method_name": "validate_create_vector",
+              "target_method_name": "create_vector"
+            }
+          }
+        },
+        {
+          "id": 7000,
+          "name": "Neuron Pylon: ICRC55 Command",
+          "description": "Manage vectors in the neuron pylon.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
+              "target_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
+              "validator_method_name": "icrc55_command_validate",
+              "target_method_name": "icrc55_command"
             }
           }
         }
@@ -3478,7 +3512,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100739732126354,
+    "icrc1_total_supply": 100741009397969,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -3884,7 +3918,8 @@
         "5ceyv-syaaa-aaaag-qc43q-cai",
         "ok64y-uiaaa-aaaag-qdcbq-cai",
         "iczfn-iiaaa-aaaan-qltcq-cai",
-        "7tvr6-fqaaa-aaaan-qmira-cai"
+        "7tvr6-fqaaa-aaaan-qmira-cai",
+        "edypu-bqaaa-aaaak-afknq-cai"
       ],
       "archives": ["h4f44-ayaaa-aaaaq-aacjq-cai"]
     },
@@ -4013,6 +4048,14 @@
           "id": 14,
           "name": "Manage dapp canister settings",
           "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -4231,7 +4274,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995571130980,
+    "icrc1_total_supply": 995570070980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7129,7 +7172,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20192100019379396,
+    "icrc1_total_supply": 20196590148632064,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9129,7 +9172,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25155570241837410,
+    "icrc1_total_supply": 25202470868927560,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -10592,7 +10635,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10042798960941862,
+    "icrc1_total_supply": 10043309077251156,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11135,7 +11178,10 @@
         "nscli-qiaaa-aaaaj-qa4pa-cai",
         "nvdn4-5qaaa-aaaaj-qa4pq-cai",
         "ijyxz-wyaaa-aaaaj-qa4qa-cai",
-        "2fvu6-tqaaa-aaaap-akksa-cai"
+        "2fvu6-tqaaa-aaaap-akksa-cai",
+        "ql553-iqaaa-aaaap-anuyq-cai",
+        "qc6wh-6yaaa-aaaap-anuza-cai",
+        "ocqzv-tyaaa-aaaar-qal4a-cai"
       ],
       "archives": ["apf7i-uiaaa-aaaaq-aac2q-cai"]
     },
@@ -11264,6 +11310,14 @@
           "id": 14,
           "name": "Manage dapp canister settings",
           "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -11806,7 +11860,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 102953897571531950,
+    "icrc1_total_supply": 103027274894831020,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -12201,6 +12255,14 @@
           }
         },
         {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1001,
           "name": "SetPoolAdmins",
           "description": null,
@@ -12249,6 +12311,32 @@
               "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
               "validator_method_name": "batchSetPoolAdminsValidate",
               "target_method_name": "batchSetPoolAdmins"
+            }
+          }
+        },
+        {
+          "id": 1005,
+          "name": "BatchAddPoolControllers",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7vygu-3yaaa-aaaag-qjxaq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "batchAddPoolControllersValidate",
+              "target_method_name": "batchAddPoolControllers"
+            }
+          }
+        },
+        {
+          "id": 1006,
+          "name": "BatchRemovePoolControllers",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7vygu-3yaaa-aaaag-qjxaq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "batchRemovePoolControllersValidate",
+              "target_method_name": "batchRemovePoolControllers"
             }
           }
         },
@@ -12912,7 +13000,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98686025863512240,
+    "icrc1_total_supply": 98691452623220830,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14085,7 +14173,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 100006569998576580,
+    "icrc1_total_supply": 100006586115079890,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14704,6 +14792,14 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
         }
       ]
     },
@@ -15257,7 +15353,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100063747854401570,
+    "icrc1_total_supply": 100066305464866060,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
