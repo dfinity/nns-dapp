@@ -3,10 +3,12 @@ import ExportIcpTransactionsButton from "$lib/components/header/ExportIcpTransac
 import { authStore } from "$lib/stores/auth.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import * as exportToCsv from "$lib/utils/export-to-csv.utils";
-import { mockPrincipal, setNoIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockSignInIdentity,
+  setNoIdentity,
+} from "$tests/mocks/auth.store.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
-import { MockLedgerIdentity } from "$tests/mocks/ledger.identity.mock";
 import { ExportIcpTransactionsButtonPo } from "$tests/page-objects/ExportIcpTransactionsButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
@@ -32,9 +34,6 @@ describe("ExportIcpTransactionsButton", () => {
     vi.useFakeTimers();
     vi.setSystemTime(mockDate);
 
-    const mockSignInIdentity = new MockLedgerIdentity({
-      principal: mockPrincipal,
-    });
     authStore.setForTesting(mockSignInIdentity);
 
     setAccountsForTesting({

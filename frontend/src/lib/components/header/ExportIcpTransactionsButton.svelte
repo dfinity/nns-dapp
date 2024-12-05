@@ -131,13 +131,12 @@
 
   const exportIcpTransactions = async () => {
     // Button will only be shown if logged in
-    if (!(identity instanceof SignIdentity)) return;
     try {
       const nnsAccounts = Object.values($nnsAccountsListStore).flat();
 
       const data = await getAccountTransactionsConcurrently({
         accounts: nnsAccounts,
-        identity,
+        identity: identity as SignIdentity,
       });
       const datasets = buildDatasets(data);
       const fileName = `icp_transactions_export_${formatDateCompact(new Date())}`;
