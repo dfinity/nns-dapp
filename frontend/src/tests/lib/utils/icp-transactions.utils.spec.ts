@@ -3,12 +3,8 @@ import {
   TOP_UP_CANISTER_MEMO,
 } from "$lib/constants/api.constants";
 import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
+import { type UiTransaction } from "$lib/types/transaction";
 import {
-  AccountTransactionType,
-  type UiTransaction,
-} from "$lib/types/transaction";
-import {
-  getTransactionSign,
   mapIcpTransactionToReport,
   mapIcpTransactionToUi,
   mapToSelfTransactions,
@@ -88,7 +84,9 @@ describe("icp-transactions.utils", () => {
         token: ICPToken,
       }),
       timestampNanos: BigInt(defaultTimestamp.getTime()) * 1_000_000n,
+      transactionDirection: "debit",
     };
+
     it("should throw an error if no transaction information is found", () => {
       const transaction = createTransaction({
         operation: {
@@ -139,6 +137,7 @@ describe("icp-transactions.utils", () => {
         type: "receive",
         to: from,
         tokenAmount: defaultTokenAmountWithoutFee,
+        transactionDirection: "credit",
       };
 
       expect(
@@ -759,47 +758,6 @@ describe("icp-transactions.utils", () => {
         secondTransaction,
         firstTransaction,
       ]);
-    });
-  });
-
-  describe("getTransactionSign", () => {
-    it("should return '+' for positive credit operations", () => {
-      expect(getTransactionSign(AccountTransactionType.Receive)).toEqual("+");
-      expect(getTransactionSign(AccountTransactionType.Mint)).toEqual("+");
-      expect(getTransactionSign(AccountTransactionType.RefundSwap)).toEqual(
-        "+"
-      );
-    });
-
-    it("should return '-' for debit operation types", () => {
-      expect(getTransactionSign(AccountTransactionType.Send)).toEqual("-");
-      expect(getTransactionSign(AccountTransactionType.Approve)).toEqual("-");
-      expect(getTransactionSign(AccountTransactionType.Burn)).toEqual("-");
-      expect(getTransactionSign(AccountTransactionType.CreateCanister)).toEqual(
-        "-"
-      );
-      expect(
-        getTransactionSign(AccountTransactionType.ParticipateSwap)
-      ).toEqual("-");
-
-      expect(getTransactionSign(AccountTransactionType.StakeNeuron)).toEqual(
-        "-"
-      );
-      expect(
-        getTransactionSign(AccountTransactionType.StakeNeuronNotification)
-      ).toEqual("-");
-      expect(getTransactionSign(AccountTransactionType.TopUpCanister)).toEqual(
-        "-"
-      );
-      expect(getTransactionSign(AccountTransactionType.TopUpNeuron)).toEqual(
-        "-"
-      );
-    });
-
-    it("should throw an error for unknown transaction types", () => {
-      expect(() =>
-        getTransactionSign("unknown" as AccountTransactionType)
-      ).toThrowError('Unknown transaction type "unknown"');
     });
   });
 });

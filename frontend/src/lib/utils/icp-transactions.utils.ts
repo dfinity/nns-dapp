@@ -160,6 +160,8 @@ export const mapIcpTransactionToReport = ({
   const { to, from, amount, fee } = txInfo;
   const isSelfTransaction = isToSelf(transaction.transaction);
   const isReceive = isSelfTransaction || from !== accountIdentifier;
+  const transactionDirection = isReceive ? "credit" : "debit";
+
   const useFee = !isReceive;
   const feeApplied = useFee && fee ? fee : 0n;
 
@@ -189,6 +191,7 @@ export const mapIcpTransactionToReport = ({
     from,
     tokenAmount,
     timestampNanos,
+    transactionDirection,
   };
 };
 
@@ -269,27 +272,4 @@ export const mapIcpTransactionToUi = ({
       err,
     });
   }
-};
-
-export const getTransactionSign = (type: AccountTransactionType) => {
-  const positiveTypes = [
-    AccountTransactionType.Receive,
-    AccountTransactionType.Mint,
-    AccountTransactionType.RefundSwap,
-  ];
-  const negativeTypes = [
-    AccountTransactionType.Send,
-    AccountTransactionType.Burn,
-    AccountTransactionType.Approve,
-    AccountTransactionType.ParticipateSwap,
-    AccountTransactionType.TopUpCanister,
-    AccountTransactionType.TopUpNeuron,
-    AccountTransactionType.StakeNeuron,
-    AccountTransactionType.CreateCanister,
-    AccountTransactionType.StakeNeuronNotification,
-  ];
-
-  if (positiveTypes.includes(type)) return "+";
-  if (negativeTypes.includes(type)) return "-";
-  throw new Error(`Unknown transaction type "${type}"`);
 };
