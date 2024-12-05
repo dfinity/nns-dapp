@@ -1,20 +1,16 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { TagPo } from "./Tag.page-object";
 
-export class NeuronTagPo extends BasePageObject {
-  private static readonly TID = "neuron-tag-component";
+export class NeuronTagPo extends TagPo {
+  private static readonly NeuronTagTID = "neuron-tag-component";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
+  static under(element: PageObjectElement): NeuronTagPo {
+    return new NeuronTagPo(element.byTestId(NeuronTagPo.NeuronTagTID));
   }
 
   static async allUnder(element: PageObjectElement): Promise<NeuronTagPo[]> {
-    return Array.from(await element.allByTestId(NeuronTagPo.TID)).map(
+    return Array.from(await element.allByTestId(NeuronTagPo.NeuronTagTID)).map(
       (el) => new NeuronTagPo(el)
     );
-  }
-
-  async isStatusDanger(): Promise<boolean> {
-    return (await this.root.getClasses()).includes("error");
   }
 }
