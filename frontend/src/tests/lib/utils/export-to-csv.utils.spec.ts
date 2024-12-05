@@ -102,7 +102,7 @@ describe("Export to Csv", () => {
         { id: "formula", label: "formula" },
         { id: "value", label: "value" },
       ];
-      const expected = "formula,value\n'=SUM(A1:A10),100\n\"+1234567,12\",200";
+      const expected = 'formula,value\n\'=SUM(A1:A10),100\n"+1234567,12",200';
       expect(convertToCsv({ data, headers })).toBe(expected);
     });
 
