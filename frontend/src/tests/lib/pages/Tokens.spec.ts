@@ -1,6 +1,7 @@
 import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import TokensPage from "$lib/pages/Tokens.svelte";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import type { UserTokenData } from "$lib/types/tokens-page";
@@ -287,5 +288,59 @@ describe("Tokens page", () => {
 
       expect(await po.getImportTokenModalPo().isPresent()).toBe(true);
     });
+  });
+
+  it("should not show total USD value banner when feature flag is disabled", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", false);
+
+    const po = renderPage(userTokensPageMock);
+
+    expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
+  });
+
+  it("should show total USD value banner when feature flag is enabled", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
+
+    const po = renderPage(userTokensPageMock);
+
+    expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
+  });
+
+  it("should show total USD value", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
+
+    const token1 = createUserToken({
+      universeId: principal(1),
+      balanceInUsd: 2,
+    });
+    const token2 = createUserToken({
+      universeId: principal(2),
+      balanceInUsd: 3,
+    });
+    const po = renderPage([token1, token2]);
+
+    expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
+    expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$5.00");
+  });
+
+  it("should ignore tokens with unknown balance in USD when adding up the total", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
+
+    const token1 = createUserToken({
+      universeId: principal(1),
+      balanceInUsd: 3,
+    });
+    const token2 = createUserToken({
+      universeId: principal(2),
+      balanceInUsd: undefined,
+    });
+    const token3 = createUserToken({
+      universeId: principal(3),
+      balanceInUsd: 5,
+    });
+    const po = renderPage([token1, token2, token3]);
+
+    expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
+    expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$8.00");
   });
 });
