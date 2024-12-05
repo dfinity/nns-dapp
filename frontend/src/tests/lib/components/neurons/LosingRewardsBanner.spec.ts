@@ -99,4 +99,16 @@ describe("LosingRewardsBanner", () => {
       "ICP neurons that are inactive for 6 months start losing voting rewards. In order to avoid losing rewards, vote manually, edit or confirm your following."
     );
   });
+
+  it("should open losing reward neurons modal", async () => {
+    neuronsStore.setNeurons({
+      neurons: [activeNeuron, in10DaysLosingRewardsNeuron],
+      certified: true,
+    });
+    const po = await renderComponent();
+
+    expect(await po.getLosingRewardNeuronsModalPo().isPresent()).toEqual(false);
+    await po.clickConfirm();
+    expect(await po.getLosingRewardNeuronsModalPo().isPresent()).toEqual(true);
+  });
 });
