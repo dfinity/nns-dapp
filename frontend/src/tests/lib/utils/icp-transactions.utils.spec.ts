@@ -3,8 +3,12 @@ import {
   TOP_UP_CANISTER_MEMO,
 } from "$lib/constants/api.constants";
 import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
-import type { UiTransaction } from "$lib/types/transaction";
 import {
+  AccountTransactionType,
+  type UiTransaction,
+} from "$lib/types/transaction";
+import {
+  getTransactionSymbol,
   mapIcpTransactionToReport,
   mapIcpTransactionToUi,
   mapToSelfTransactions,
@@ -755,6 +759,41 @@ describe("icp-transactions.utils", () => {
         secondTransaction,
         firstTransaction,
       ]);
+    });
+  });
+
+  describe("getTransactionSymbol", () => {
+    it("should return '+' for MINT and RECEIVE operations", () => {
+      expect(getTransactionSymbol(AccountTransactionType.Receive)).toEqual("+");
+      expect(getTransactionSymbol(AccountTransactionType.Mint)).toEqual("+");
+      expect(getTransactionSymbol(AccountTransactionType.RefundSwap)).toEqual(
+        "+"
+      );
+    });
+
+    it("should return '-' for rest of operation types", () => {
+      expect(getTransactionSymbol(AccountTransactionType.Send)).toEqual("-");
+      expect(getTransactionSymbol(AccountTransactionType.Approve)).toEqual("-");
+      expect(getTransactionSymbol(AccountTransactionType.Burn)).toEqual("-");
+      expect(
+        getTransactionSymbol(AccountTransactionType.CreateCanister)
+      ).toEqual("-");
+      expect(
+        getTransactionSymbol(AccountTransactionType.ParticipateSwap)
+      ).toEqual("-");
+
+      expect(getTransactionSymbol(AccountTransactionType.StakeNeuron)).toEqual(
+        "-"
+      );
+      expect(
+        getTransactionSymbol(AccountTransactionType.StakeNeuronNotification)
+      ).toEqual("-");
+      expect(
+        getTransactionSymbol(AccountTransactionType.TopUpCanister)
+      ).toEqual("-");
+      expect(getTransactionSymbol(AccountTransactionType.TopUpNeuron)).toEqual(
+        "-"
+      );
     });
   });
 });

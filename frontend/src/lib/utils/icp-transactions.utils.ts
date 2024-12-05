@@ -270,3 +270,14 @@ export const mapIcpTransactionToUi = ({
     });
   }
 };
+
+export const getTransactionSymbol = (type: AccountTransactionType) => {
+  const positiveTypes = [
+    AccountTransactionType.Receive,
+    AccountTransactionType.Mint,
+    AccountTransactionType.RefundSwap
+  ];
+
+  if (positiveTypes.includes(type)) return "+";
+  return "-";
+};
