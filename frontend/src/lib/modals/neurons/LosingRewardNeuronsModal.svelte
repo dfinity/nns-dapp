@@ -1,14 +1,18 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { Modal } from "@dfinity/gix-components";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
   import { START_REDUCING_VOTING_POWER_AFTER_SECONDS } from "$lib/constants/neurons.constants";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { soonLosingRewardNeuronsStore } from "$lib/derived/neurons.derived";
   import NnsLosingRewardsNeuronCard from "$lib/components/neurons/NnsLosingRewardsNeuronCard.svelte";
+  import { listKnownNeurons } from "$lib/services/known-neurons.services";
 
   const dispatcher = createEventDispatcher();
+
+  // Load KnownNeurons which are used in the FollowNnsTopicSections
+  onMount(() => listKnownNeurons());
 
   const confirm = () => {
     // TBD
