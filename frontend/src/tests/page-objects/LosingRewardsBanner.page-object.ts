@@ -1,6 +1,7 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { BannerPo } from "./Banner.page-object";
 import { BasePageObject } from "./base.page-object";
+import { LosingRewardNeuronsModalPo } from "./LosingRewardNeuronsModal.page-object";
 
 export class LosingRewardsBannerPo extends BasePageObject {
   private static readonly TID = "losing-rewards-banner-component";
@@ -13,6 +14,10 @@ export class LosingRewardsBannerPo extends BasePageObject {
 
   getBannerPo(): BannerPo {
     return BannerPo.under(this.root);
+  }
+
+  getLosingRewardNeuronsModalPo(): LosingRewardNeuronsModalPo {
+    return LosingRewardNeuronsModalPo.under(this.root);
   }
 
   async isVisible(): Promise<boolean> {
@@ -28,6 +33,6 @@ export class LosingRewardsBannerPo extends BasePageObject {
   }
 
   async clickConfirm(): Promise<void> {
-    // TBD
+    return this.getButton("confirm-button").click();
   }
 }

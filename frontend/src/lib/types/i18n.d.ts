@@ -274,6 +274,7 @@ interface I18nAccounts {
   received_amount_notice: string;
   transaction_time: string;
   transaction_time_seconds: string;
+  token_price_source: string;
 }
 
 interface I18nNeuron_types {
@@ -317,6 +318,7 @@ interface I18nNeurons {
   create: string;
   community_fund: string;
   hotkey_control: string;
+  missing_rewards: string;
   hardware_wallet_control: string;
   amount_icp_stake: string;
   ic_stake: string;
@@ -387,6 +389,10 @@ interface I18nLosing_rewards_banner {
 
 interface I18nLosing_rewards_modal {
   goto_neuron: string;
+  title: string;
+  description: string;
+  label: string;
+  confirm: string;
   no_following: string;
 }
 
