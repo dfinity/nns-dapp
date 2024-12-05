@@ -46,7 +46,10 @@
         <IconInfo />
       </BannerIcon>
       <div slot="actions">
-        <button class="danger" on:click={() => (isModalVisible = true)}
+        <button
+          data-tid="confirm-button"
+          class="danger"
+          on:click={() => (isModalVisible = true)}
           >{$i18n.losing_rewards_banner.confirm}</button
         >
       </div>
