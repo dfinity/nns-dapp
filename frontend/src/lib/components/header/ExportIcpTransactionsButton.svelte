@@ -27,7 +27,6 @@
   import { transactionName } from "$lib/utils/transactions.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { AccountTransactionType } from "$lib/types/transaction";
 
   const dispatcher = createEventDispatcher<{
     nnsExportIcpTransactionsCsvTriggered: void;
@@ -100,15 +99,20 @@
           },
         ],
         data: transactions.map((transaction) => {
-          const { to, from, type, tokenAmount, timestampNanos } =
-            mapIcpTransactionToReport({
-              accountIdentifier: account.identifier,
-              transaction,
-              neuronAccounts,
-              swapCanisterAccounts: $swapCanisterAccountsStore ?? new Set(),
-            });
-          const amountsSymbol =
-            type === AccountTransactionType.Receive ? "+" : "-";
+          const {
+            to,
+            from,
+            type,
+            tokenAmount,
+            timestampNanos,
+            transactionDirection,
+          } = mapIcpTransactionToReport({
+            accountIdentifier: account.identifier,
+            transaction,
+            neuronAccounts,
+            swapCanisterAccounts: $swapCanisterAccountsStore ?? new Set(),
+          });
+          const sign = transactionDirection === "credit" ? "+" : "-";
           const amount = formatTokenV2({ value: tokenAmount, detailed: true });
 
           return {
@@ -118,7 +122,7 @@
             to,
             from,
             type: transactionName({ type, i18n: $i18n }),
-            amount: `${amountsSymbol}${amount}`,
+            amount: `${sign}${amount}`,
             timestamp:
               timestampNanos !== undefined
                 ? nanoSecondsToDateTime(timestampNanos)
