@@ -303,6 +303,7 @@
     "create": "Create",
     "community_fund": "Neurons' fund",
     "hotkey_control": "Hotkey control",
+    "missing_rewards": "Missing rewards",
     "hardware_wallet_control": "Ledger Device Controlled",
     "amount_icp_stake": "$amount ICP Stake",
     "ic_stake": "$token staked",
