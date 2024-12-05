@@ -20,12 +20,12 @@ const escapeCsvValue = (value: unknown): string => {
 
   let stringValue = String(value);
 
-  const patternForSpecialCharacters = /[",\r\n=+-@|]/;
+  const patternForSpecialCharacters = /[",\r\n=@|]/;
   if (!patternForSpecialCharacters.test(stringValue)) {
     return stringValue;
   }
 
-  const formulaInjectionCharacters = "=+-@|";
+  const formulaInjectionCharacters = "=@|";
   const characterToBreakFormula = "'";
   if (formulaInjectionCharacters.includes(stringValue[0])) {
     stringValue = `${characterToBreakFormula}${stringValue}`;
