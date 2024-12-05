@@ -30,7 +30,7 @@ describe("ExportIcpTransactionsButton", () => {
 
     const mockDate = new Date("2023-10-14T00:00:00Z");
     vi.useFakeTimers();
-    vi.setSystemTime(new Date(mockDate));
+    vi.setSystemTime(mockDate);
 
     const mockSignInIdentity = new MockLedgerIdentity({
       principal: mockPrincipal,
@@ -112,7 +112,7 @@ describe("ExportIcpTransactionsButton", () => {
                 id: "1234",
                 project: "Internet Computer",
                 symbol: "ICP",
-                timestamp: "Jan 1, 2023 1:00 AM",
+                timestamp: "Jan 1, 2023 12:00 AM",
                 to: "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
                 type: "Sent",
               },
@@ -142,7 +142,7 @@ describe("ExportIcpTransactionsButton", () => {
               },
               {
                 label: "Export Date Time",
-                value: "Oct 14, 2023 2:00 AM",
+                value: "Oct 14, 2023 12:00 AM",
               },
             ],
           },
