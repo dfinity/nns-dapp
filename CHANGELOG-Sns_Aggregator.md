@@ -18,6 +18,8 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 ### Security
 
+## [Proposal 132124](https://dashboard.internetcomputer.org/proposal/132124)
+### Security
 - Decoding quota of 10,000 in the `http_request` method.
 
 ## [Proposal 129614](https://dashboard.internetcomputer.org/proposal/129614)
