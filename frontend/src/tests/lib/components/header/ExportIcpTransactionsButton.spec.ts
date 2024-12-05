@@ -91,7 +91,7 @@ describe("ExportIcpTransactionsButton", () => {
     expect(spyGenerateCsvFileToSave).toHaveBeenCalledTimes(1);
   });
 
-  it("should transform neuron data correctly", async () => {
+  it("should transform transaction data correctly", async () => {
     const po = renderComponent();
 
     expect(spyGenerateCsvFileToSave).toBeCalledTimes(0);
@@ -104,7 +104,7 @@ describe("ExportIcpTransactionsButton", () => {
         datasets: expect.arrayContaining([
           expect.objectContaining({
             data: expect.arrayContaining([
-              expect.objectContaining({
+              {
                 amount: "1.0001",
                 from: "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
                 id: "1234",
@@ -113,9 +113,9 @@ describe("ExportIcpTransactionsButton", () => {
                 timestamp: "Jan 1, 2023 1:00 AM",
                 to: "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
                 type: "Sent",
-              }),
+              },
             ]),
-            metadata: expect.arrayContaining([
+            metadata: [
               {
                 label: "Account ID",
                 value:
@@ -142,10 +142,10 @@ describe("ExportIcpTransactionsButton", () => {
                 label: "Export Date Time",
                 value: "Oct 14, 2023 2:00 AM",
               },
-            ]),
+            ],
           }),
         ]),
-        headers: expect.arrayContaining([
+        headers: [
           {
             id: "id",
             label: "TX ID",
@@ -178,7 +178,7 @@ describe("ExportIcpTransactionsButton", () => {
             id: "timestamp",
             label: "Date Time",
           },
-        ]),
+        ],
       })
     );
     expect(spyGenerateCsvFileToSave).toBeCalledTimes(1);
