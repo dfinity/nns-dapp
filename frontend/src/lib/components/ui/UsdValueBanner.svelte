@@ -25,7 +25,7 @@
     : absentValue;
 
   let icpAmount: number | undefined;
-  $: icpAmount = icpPrice && usdAmount && (usdAmount / icpPrice);
+  $: icpAmount = icpPrice && usdAmount && usdAmount / icpPrice;
 
   let icpAmountFormatted: string;
   $: icpAmountFormatted = nonNullish(icpAmount)
