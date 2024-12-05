@@ -262,7 +262,8 @@
     "received_amount": "Received Amount",
     "received_amount_notice": "Received Amount *",
     "transaction_time": "Transaction Time",
-    "transaction_time_seconds": "Seconds"
+    "transaction_time_seconds": "Seconds",
+    "token_price_source": "Token prices are provided by ICPSwap."
   },
   "neuron_types": {
     "seed": "Seed",
