@@ -149,6 +149,14 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
         }
       ]
     },
@@ -282,7 +290,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999976530394000,
+    "icrc1_total_supply": 799999974702594000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -515,6 +523,14 @@
           "id": 14,
           "name": "Manage dapp canister settings",
           "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1086,7 +1102,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10122996604514660,
+    "icrc1_total_supply": 10123995617739948,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1816,7 +1832,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 609501443320431,
+    "icrc1_total_supply": 610589962133969,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2037,6 +2053,14 @@
           }
         },
         {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1000,
           "name": "grant_permission",
           "description": "grant permission to asset canister",
@@ -2213,7 +2237,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 102799333699963400,
+    "icrc1_total_supply": 102895037362856290,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2862,7 +2886,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 926739866561743900,
+    "icrc1_total_supply": 926912399675751300,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
