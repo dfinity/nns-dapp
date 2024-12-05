@@ -8,7 +8,7 @@ import {
   type UiTransaction,
 } from "$lib/types/transaction";
 import {
-  getTransactionSymbol,
+  getTransactionSign,
   mapIcpTransactionToReport,
   mapIcpTransactionToUi,
   mapToSelfTransactions,
@@ -762,38 +762,44 @@ describe("icp-transactions.utils", () => {
     });
   });
 
-  describe("getTransactionSymbol", () => {
-    it("should return '+' for Receive, Mint and RefundSwap operations", () => {
-      expect(getTransactionSymbol(AccountTransactionType.Receive)).toEqual("+");
-      expect(getTransactionSymbol(AccountTransactionType.Mint)).toEqual("+");
-      expect(getTransactionSymbol(AccountTransactionType.RefundSwap)).toEqual(
+  describe("getTransactionSign", () => {
+    it("should return '+' for positive credit operations", () => {
+      expect(getTransactionSign(AccountTransactionType.Receive)).toEqual("+");
+      expect(getTransactionSign(AccountTransactionType.Mint)).toEqual("+");
+      expect(getTransactionSign(AccountTransactionType.RefundSwap)).toEqual(
         "+"
       );
     });
 
-    it("should return '-' for rest of operation types", () => {
-      expect(getTransactionSymbol(AccountTransactionType.Send)).toEqual("-");
-      expect(getTransactionSymbol(AccountTransactionType.Approve)).toEqual("-");
-      expect(getTransactionSymbol(AccountTransactionType.Burn)).toEqual("-");
+    it("should return '-' for debit operation types", () => {
+      expect(getTransactionSign(AccountTransactionType.Send)).toEqual("-");
+      expect(getTransactionSign(AccountTransactionType.Approve)).toEqual("-");
+      expect(getTransactionSign(AccountTransactionType.Burn)).toEqual("-");
+      expect(getTransactionSign(AccountTransactionType.CreateCanister)).toEqual(
+        "-"
+      );
       expect(
-        getTransactionSymbol(AccountTransactionType.CreateCanister)
-      ).toEqual("-");
-      expect(
-        getTransactionSymbol(AccountTransactionType.ParticipateSwap)
+        getTransactionSign(AccountTransactionType.ParticipateSwap)
       ).toEqual("-");
 
-      expect(getTransactionSymbol(AccountTransactionType.StakeNeuron)).toEqual(
+      expect(getTransactionSign(AccountTransactionType.StakeNeuron)).toEqual(
         "-"
       );
       expect(
-        getTransactionSymbol(AccountTransactionType.StakeNeuronNotification)
+        getTransactionSign(AccountTransactionType.StakeNeuronNotification)
       ).toEqual("-");
-      expect(
-        getTransactionSymbol(AccountTransactionType.TopUpCanister)
-      ).toEqual("-");
-      expect(getTransactionSymbol(AccountTransactionType.TopUpNeuron)).toEqual(
+      expect(getTransactionSign(AccountTransactionType.TopUpCanister)).toEqual(
         "-"
       );
+      expect(getTransactionSign(AccountTransactionType.TopUpNeuron)).toEqual(
+        "-"
+      );
+    });
+
+    it("should throw an error for unknown transaction types", () => {
+      expect(() =>
+        getTransactionSign("unknown" as AccountTransactionType)
+      ).toThrowError('Unknown transaction type "unknown"');
     });
   });
 });

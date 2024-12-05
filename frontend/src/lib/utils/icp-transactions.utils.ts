@@ -271,13 +271,25 @@ export const mapIcpTransactionToUi = ({
   }
 };
 
-export const getTransactionSymbol = (type: AccountTransactionType) => {
+export const getTransactionSign = (type: AccountTransactionType) => {
   const positiveTypes = [
     AccountTransactionType.Receive,
     AccountTransactionType.Mint,
     AccountTransactionType.RefundSwap,
   ];
+  const negativeTypes = [
+    AccountTransactionType.Send,
+    AccountTransactionType.Burn,
+    AccountTransactionType.Approve,
+    AccountTransactionType.ParticipateSwap,
+    AccountTransactionType.TopUpCanister,
+    AccountTransactionType.TopUpNeuron,
+    AccountTransactionType.StakeNeuron,
+    AccountTransactionType.CreateCanister,
+    AccountTransactionType.StakeNeuronNotification,
+  ];
 
   if (positiveTypes.includes(type)) return "+";
-  return "-";
+  if (negativeTypes.includes(type)) return "-";
+  throw new Error(`Unknown transaction type "${type}"`);
 };
