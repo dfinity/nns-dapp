@@ -763,7 +763,7 @@ describe("icp-transactions.utils", () => {
   });
 
   describe("getTransactionSymbol", () => {
-    it("should return '+' for MINT and RECEIVE operations", () => {
+    it("should return '+' for Receive, Mint and RefundSwap operations", () => {
       expect(getTransactionSymbol(AccountTransactionType.Receive)).toEqual("+");
       expect(getTransactionSymbol(AccountTransactionType.Mint)).toEqual("+");
       expect(getTransactionSymbol(AccountTransactionType.RefundSwap)).toEqual(
