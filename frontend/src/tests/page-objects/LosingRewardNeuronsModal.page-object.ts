@@ -14,4 +14,8 @@ export class LosingRewardNeuronsModalPo extends ModalPo {
   getNnsLosingRewardsNeuronCardPos(): Promise<NnsLosingRewardsNeuronCardPo[]> {
     return NnsLosingRewardsNeuronCardPo.allUnder(this.root);
   }
+
+  async clickCancel(): Promise<void> {
+    return this.getButton("cancel-button").click();
+  }
 }
