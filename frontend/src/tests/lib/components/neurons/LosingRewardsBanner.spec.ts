@@ -5,9 +5,7 @@ import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { LosingRewardsBannerPo } from "$tests/page-objects/LosingRewardsBanner.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { render } from "@testing-library/svelte";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { render } from "$tests/utils/svelte.test-utils";
 
 describe("LosingRewardsBanner", () => {
   const nowSeconds = nowInSeconds();
@@ -94,7 +92,7 @@ describe("LosingRewardsBanner", () => {
       certified: true,
     });
     const po = await renderComponent();
-    await runResolvedPromises();
+
     expect(await po.getText()).toBe(
       "ICP neurons that are inactive for 6 months start losing voting rewards. In order to avoid losing rewards, vote manually, edit or confirm your following."
     );
