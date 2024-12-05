@@ -58,6 +58,7 @@ export default defineConfig(
       globals: true,
       watch: false,
       setupFiles: ["./vitest.setup.ts"],
+      globalSetup: ["globalSetup.ts"],
       deps: {
         optimizer: {
           ssr: {
