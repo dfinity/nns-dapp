@@ -275,7 +275,7 @@ export const getTransactionSymbol = (type: AccountTransactionType) => {
   const positiveTypes = [
     AccountTransactionType.Receive,
     AccountTransactionType.Mint,
-    AccountTransactionType.RefundSwap
+    AccountTransactionType.RefundSwap,
   ];
 
   if (positiveTypes.includes(type)) return "+";
