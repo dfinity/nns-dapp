@@ -48,6 +48,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding);
+    align-items: flex-end;
 
     .usd-value {
       color: var(--text-description);

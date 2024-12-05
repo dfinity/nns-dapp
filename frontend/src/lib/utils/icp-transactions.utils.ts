@@ -160,6 +160,8 @@ export const mapIcpTransactionToReport = ({
   const { to, from, amount, fee } = txInfo;
   const isSelfTransaction = isToSelf(transaction.transaction);
   const isReceive = isSelfTransaction || from !== accountIdentifier;
+  const transactionDirection = isReceive ? "credit" : "debit";
+
   const useFee = !isReceive;
   const feeApplied = useFee && fee ? fee : 0n;
 
@@ -189,6 +191,7 @@ export const mapIcpTransactionToReport = ({
     from,
     tokenAmount,
     timestampNanos,
+    transactionDirection,
   };
 };
 
