@@ -62,7 +62,9 @@
         <div class="mobile-only">
           1 {$i18n.core.icp} = ${icpPriceFormatted}
         </div>
-        {$i18n.accounts.token_price_source}
+        <div>
+          {$i18n.accounts.token_price_source}
+        </div>
       </TooltipIcon>
     </div>
   </div>
