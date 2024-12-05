@@ -38,8 +38,10 @@
       {/each}
     </ul>
     <div class="toolbar">
-      <button on:click={() => dispatcher("nnsClose")} class="secondary"
-        >{$i18n.core.cancel}</button
+      <button
+        on:click={() => dispatcher("nnsClose")}
+        class="secondary"
+        data-tid="cancel-button">{$i18n.core.cancel}</button
       >
       <button on:click={confirm} class="primary" data-tid="confirm-button"
         >{$i18n.losing_rewards_modal.confirm}</button
