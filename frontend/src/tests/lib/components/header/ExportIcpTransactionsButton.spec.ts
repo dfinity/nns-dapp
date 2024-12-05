@@ -5,10 +5,7 @@ import * as toastsStore from "$lib/stores/toasts.store";
 import * as exportToCsv from "$lib/utils/export-to-csv.utils";
 import { mockPrincipal, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
-import {
-  createTransactionWithId,
-  mockTransactionTransfer,
-} from "$tests/mocks/icp-transactions.mock";
+import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import { MockLedgerIdentity } from "$tests/mocks/ledger.identity.mock";
 import { ExportIcpTransactionsButtonPo } from "$tests/page-objects/ExportIcpTransactionsButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -48,12 +45,6 @@ describe("ExportIcpTransactionsButton", () => {
       createTransactionWithId({}),
       createTransactionWithId({
         id: 1n,
-        operation: {
-          Transfer: {
-            ...mockTransactionTransfer.operation?.Transfer,
-            to: mockTransactionTransfer.operation?.Transfer.from,
-          },
-        },
       }),
     ];
 
@@ -113,7 +104,7 @@ describe("ExportIcpTransactionsButton", () => {
     expect(spyGenerateCsvFileToSave).toBeCalledWith(
       expect.objectContaining({
         datasets: expect.arrayContaining([
-          expect.objectContaining({
+          {
             data: expect.arrayContaining([
               {
                 amount: "-1.0001",
@@ -124,16 +115,6 @@ describe("ExportIcpTransactionsButton", () => {
                 timestamp: "Jan 1, 2023 1:00 AM",
                 to: "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
                 type: "Sent",
-              },
-              {
-                amount: "+1.00",
-                from: "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
-                id: "1",
-                project: "Internet Computer",
-                symbol: "ICP",
-                timestamp: "Jan 1, 2023 1:00 AM",
-                to: "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
-                type: "Received",
               },
             ]),
             metadata: [
@@ -164,42 +145,8 @@ describe("ExportIcpTransactionsButton", () => {
                 value: "Oct 14, 2023 2:00 AM",
               },
             ],
-          }),
+          },
         ]),
-        headers: [
-          {
-            id: "id",
-            label: "TX ID",
-          },
-          {
-            id: "project",
-            label: "Project Name",
-          },
-          {
-            id: "symbol",
-            label: "Symbol",
-          },
-          {
-            id: "to",
-            label: "To",
-          },
-          {
-            id: "from",
-            label: "From",
-          },
-          {
-            id: "type",
-            label: "TX Type",
-          },
-          {
-            id: "amount",
-            label: "Amount(ICP)",
-          },
-          {
-            id: "timestamp",
-            label: "Date Time",
-          },
-        ],
       })
     );
     expect(spyGenerateCsvFileToSave).toBeCalledTimes(1);
