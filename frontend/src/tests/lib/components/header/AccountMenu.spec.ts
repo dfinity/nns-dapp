@@ -171,7 +171,7 @@ describe("AccountMenu", () => {
         ).toBe(false);
       });
 
-      it("should show Export Icp Transactinos Report button if feature flag is on", async () => {
+      it("should show Export Icp Transactions Report button if feature flag is on", async () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", true);
         const { accountMenuPo } = renderComponent();
 
