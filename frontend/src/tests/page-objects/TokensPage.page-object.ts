@@ -1,4 +1,5 @@
 import { ImportTokenModalPo } from "$tests/page-objects/ImportTokenModal.page-object";
+import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { BackdropPo } from "./Backdrop.page-object";
@@ -12,6 +13,10 @@ export class TokensPagePo extends BasePageObject {
 
   static under(element: PageObjectElement): TokensPagePo {
     return new TokensPagePo(element.byTestId(TokensPagePo.TID));
+  }
+
+  getUsdValueBannerPo(): UsdValueBannerPo {
+    return UsdValueBannerPo.under(this.root);
   }
 
   getTokensTable(): TokensTablePo {
