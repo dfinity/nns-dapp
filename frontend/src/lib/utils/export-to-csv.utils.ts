@@ -1,4 +1,14 @@
-import { isNullish } from "@dfinity/utils";
+import type { TransactionResults } from "$lib/services/export-data.services";
+import {
+  nanoSecondsToDateTime,
+  nowInBigIntNanoSeconds,
+} from "$lib/utils/date.utils";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { mapIcpTransactionToReport } from "$lib/utils/icp-transactions.utils";
+import { formatTokenV2 } from "$lib/utils/token.utils";
+import { transactionName } from "$lib/utils/transactions.utils";
+import type { Principal } from "@dfinity/principal";
+import { ICPToken, TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
 
 type Metadata = {
   label: string;
@@ -240,4 +250,119 @@ export const generateCsvFileToSave = async <T>({
       }
     );
   }
+};
+
+export type TransactionsCsvData = {
+  id: string;
+  project: string;
+  symbol: string;
+  to: string | undefined;
+  from: string | undefined;
+  type: string;
+  amount: string;
+  timestamp: string;
+};
+
+export const buildTransactionsDatasets = ({
+  transactions,
+  i18n,
+  principal,
+  neuronAccounts,
+  swapCanisterAccounts,
+}: {
+  transactions: TransactionResults;
+  i18n: I18n;
+  principal: Principal;
+  neuronAccounts: Set<string>;
+  swapCanisterAccounts: Set<string>;
+}): CsvDataset<TransactionsCsvData>[] => {
+  return transactions.map(({ entity, transactions }) => {
+    const accountIdentifier = entity.identifier;
+    const amount = TokenAmountV2.fromUlps({
+      amount: entity.balance,
+      token: ICPToken,
+    });
+
+    const metadata = [
+      {
+        label: i18n.export_csv_neurons.account_id,
+        value: accountIdentifier,
+      },
+    ];
+
+    if (entity.type === "account") {
+      metadata.push({
+        label: i18n.export_csv_neurons.account_name,
+        value: entity.originalData.name ?? "Main",
+      });
+    }
+
+    if (entity.type === "neuron") {
+      metadata.push({
+        label: i18n.export_csv_neurons.neuron_id,
+        value: entity.originalData.neuronId.toString(),
+      });
+    }
+
+    metadata.push({
+      label: replacePlaceholders(i18n.export_csv_neurons.balance, {
+        $tokenSymbol: ICPToken.symbol,
+      }),
+      value: formatTokenV2({
+        value: amount,
+        detailed: true,
+      }),
+    });
+
+    metadata.push(
+      {
+        label: i18n.export_csv_neurons.controller_id,
+        value: principal.toText() ?? i18n.core.not_applicable,
+      },
+      {
+        label: i18n.export_csv_neurons.numer_of_transactions,
+        value: transactions.length.toString(),
+      },
+      {
+        label: i18n.export_csv_neurons.date_label,
+        value: nanoSecondsToDateTime(nowInBigIntNanoSeconds()),
+      }
+    );
+
+    return {
+      metadata,
+      data: transactions.map((transaction) => {
+        const {
+          to,
+          from,
+          type,
+          tokenAmount,
+          timestampNanos,
+          transactionDirection,
+        } = mapIcpTransactionToReport({
+          accountIdentifier,
+          transaction,
+          neuronAccounts,
+          swapCanisterAccounts,
+        });
+
+        const sign = transactionDirection === "credit" ? "+" : "-";
+        const amount = formatTokenV2({ value: tokenAmount, detailed: true });
+        const timestamp = nonNullish(timestampNanos)
+          ? nanoSecondsToDateTime(timestampNanos)
+          : i18n.core.not_applicable;
+
+        return {
+          id: transaction.id.toString(),
+          project: ICPToken.name,
+          symbol: ICPToken.symbol,
+          to,
+          from,
+          type: transactionName({ type, i18n }),
+          amount: `${sign}${amount}`,
+          timestamp,
+        };
+      }),
+    };
+  });
 };
