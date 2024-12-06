@@ -154,23 +154,34 @@
     "account_menu": "Open menu to access logout button",
     "main_icp_account_id": "Main ICP Account ID",
     "account_id_tooltip": "You can send ICP both to your principal ID and account ID, however some exchanges or wallets may not support transactions using a principal ID.",
-    "export_neurons": "Export Neurons Info"
+    "export_neurons": "Export Neurons Info",
+    "export_transactions": "Export ICP Transactions"
   },
   "export_csv_neurons": {
+    "account_id": "Account ID",
     "account_id_label": "NNS Account Principal ID",
-    "date_label": "Export Date Time",
-    "controller_id": "Controller Principal ID",
-    "neuron_id": "Neuron ID",
-    "project": "Project",
-    "symbol": "Symbol",
-    "neuron_account_id": "Neuron Account ID",
-    "stake": "Stake",
+    "account_name": "Account Name",
+    "amount": "Amount($tokenSymbol)",
     "available_maturity": "Available Maturity",
-    "staked_maturity": "Staked Maturity",
-    "dissolve_delay": "Dissolve Delay",
-    "dissolve_date": "Dissolve Date",
+    "balance": "Balance($tokenSymbol)",
+    "controller_id": "Controller Principal ID",
     "creation_date": "Creation Date",
-    "state": "State"
+    "date_label": "Export Date Time",
+    "dissolve_date": "Dissolve Date",
+    "dissolve_delay": "Dissolve Delay",
+    "from": "From",
+    "neuron_account_id": "Neuron Account ID",
+    "neuron_id": "Neuron ID",
+    "numer_of_transactions": "Transactions",
+    "project": "Project Name",
+    "stake": "Stake",
+    "staked_maturity": "Staked Maturity",
+    "state": "State",
+    "symbol": "Symbol",
+    "timestamp": "Date Time",
+    "to": "To",
+    "transaction_id": "TX ID",
+    "transaction_type": "TX Type"
   },
   "export_error": {
     "csv_generation": "Failed to generate CSV file",
@@ -373,6 +384,10 @@
   },
   "losing_rewards_modal": {
     "goto_neuron": "Go to neuron details",
+    "title": "Review your following for neurons",
+    "description": "ICP neurons that are inactive for $period start losing voting rewards. In order to avoid losing rewards, vote manually, edit or confirm your following.",
+    "label": "Neurons",
+    "confirm": "Confirm Following",
     "no_following": "This neuron has no following configured."
   },
   "new_followee": {

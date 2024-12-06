@@ -9,4 +9,12 @@ export class TagPo extends BasePageObject {
       (el) => new TagPo(el)
     );
   }
+
+  async isIntentError(): Promise<boolean> {
+    return (await this.root.getClasses()).includes("error");
+  }
+
+  async isSizeLarge(): Promise<boolean> {
+    return (await this.root.getClasses()).includes("tag--large");
+  }
 }

@@ -162,23 +162,34 @@ interface I18nHeader {
   main_icp_account_id: string;
   account_id_tooltip: string;
   export_neurons: string;
+  export_transactions: string;
 }
 
 interface I18nExport_csv_neurons {
+  account_id: string;
   account_id_label: string;
-  date_label: string;
-  controller_id: string;
-  neuron_id: string;
-  project: string;
-  symbol: string;
-  neuron_account_id: string;
-  stake: string;
+  account_name: string;
+  amount: string;
   available_maturity: string;
-  staked_maturity: string;
-  dissolve_delay: string;
-  dissolve_date: string;
+  balance: string;
+  controller_id: string;
   creation_date: string;
+  date_label: string;
+  dissolve_date: string;
+  dissolve_delay: string;
+  from: string;
+  neuron_account_id: string;
+  neuron_id: string;
+  numer_of_transactions: string;
+  project: string;
+  stake: string;
+  staked_maturity: string;
   state: string;
+  symbol: string;
+  timestamp: string;
+  to: string;
+  transaction_id: string;
+  transaction_type: string;
 }
 
 interface I18nExport_error {
@@ -389,6 +400,10 @@ interface I18nLosing_rewards_banner {
 
 interface I18nLosing_rewards_modal {
   goto_neuron: string;
+  title: string;
+  description: string;
+  label: string;
+  confirm: string;
   no_following: string;
 }
 
