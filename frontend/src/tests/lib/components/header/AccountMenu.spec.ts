@@ -160,6 +160,42 @@ describe("AccountMenu", () => {
           expect(await accountMenuPo.isOpen()).toBe(false);
         });
       });
+
+      it("should not show the Export ICP Transactions Report button if feature flag is off(by default)", async () => {
+        const { accountMenuPo } = renderComponent();
+
+        await accountMenuPo.openMenu();
+
+        expect(
+          await accountMenuPo.getExportIcpTransactionsButtonPo().isPresent()
+        ).toBe(false);
+      });
+
+      it("should show Export Icp Transactinos Report button if feature flag is on", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", true);
+        const { accountMenuPo } = renderComponent();
+
+        await accountMenuPo.openMenu();
+
+        expect(
+          await accountMenuPo.getExportIcpTransactionsButtonPo().isPresent()
+        ).toBe(true);
+      });
+
+      it("should close the menu once the Export Icp Transactions Report button is clicked", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", true);
+        const { accountMenuPo } = renderComponent();
+
+        expect(await accountMenuPo.isOpen()).toBe(false);
+
+        await accountMenuPo.openMenu();
+        expect(await accountMenuPo.isOpen()).toBe(true);
+
+        await accountMenuPo.getExportIcpTransactionsButtonPo().click();
+        await waitFor(async () => {
+          expect(await accountMenuPo.isOpen()).toBe(false);
+        });
+      });
     });
   });
 });
