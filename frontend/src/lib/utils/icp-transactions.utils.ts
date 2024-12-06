@@ -122,9 +122,7 @@ const getTransactionInformation = (
     data = operation.Transfer;
   }
   // Edge case, a transaction will have either "Approve", "Burn", "Mint" or "Transfer" data.
-  if (data === undefined) {
-    throw new Error(`Unknown transaction type ${JSON.stringify(operation)}`);
-  }
+  if (data === undefined) return undefined;
 
   return {
     from: "from" in data ? data.from : undefined,
@@ -151,9 +149,9 @@ export const mapIcpTransactionToReport = ({
   const txInfo = getTransactionInformation(transaction.transaction.operation);
   if (txInfo === undefined) {
     throw new Error(
-      `Unknown transaction type ${
+      `Unknown transaction type "${
         Object.keys(transaction.transaction.operation)[0]
-      }`
+      }"`
     );
   }
 
@@ -214,9 +212,9 @@ export const mapIcpTransactionToUi = ({
     const txInfo = getTransactionInformation(transaction.transaction.operation);
     if (txInfo === undefined) {
       throw new Error(
-        `Unknown transaction type ${
+        `Unknown transaction type "${
           Object.keys(transaction.transaction.operation)[0]
-        }`
+        }"`
       );
     }
     const isReceive =

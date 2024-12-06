@@ -3,6 +3,7 @@ import {
   TOP_UP_CANISTER_MEMO,
 } from "$lib/constants/api.constants";
 import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
+import * as toastsStore from "$lib/stores/toasts.store";
 import { type UiTransaction } from "$lib/types/transaction";
 import {
   mapIcpTransactionToReport,
@@ -102,7 +103,7 @@ describe("icp-transactions.utils", () => {
           neuronAccounts: new Set<string>(),
           swapCanisterAccounts: new Set<string>(),
         })
-      ).toThrowError('Unknown transaction type {"Unknown":{}}');
+      ).toThrowError('Unknown transaction type "Unknown"');
     });
 
     it("should return transaction information", () => {
@@ -291,6 +292,14 @@ describe("icp-transactions.utils", () => {
   });
 
   describe("mapIcpTransactionToUi", () => {
+    let spyToastError;
+
+    beforeEach(() => {
+      spyToastError = vi
+        .spyOn(toastsStore, "toastsError")
+        .mockImplementation(vi.fn());
+    });
+
     it("maps stake neuron transaction", () => {
       const transaction = createTransaction({
         operation: defaultTransferOperation,
@@ -473,6 +482,33 @@ describe("icp-transactions.utils", () => {
           i18n: en,
         })
       ).toEqual(expectedUiTransaction);
+    });
+
+    it("should show a toaster if no transaction information is found", () => {
+      const transaction = createTransaction({
+        operation: {
+          // @ts-expect-error: Even though it is not possible our implementations handles it.
+          Unknown: {},
+        },
+      });
+
+      expect(spyToastError).toBeCalledTimes(0);
+
+      mapIcpTransactionToUi({
+        transaction,
+        accountIdentifier: from,
+        toSelfTransaction: false,
+        neuronAccounts: new Set<string>([to]),
+        swapCanisterAccounts: new Set<string>(),
+        i18n: en,
+      });
+      expect(spyToastError).toBeCalledWith({
+        err: new Error('Unknown transaction type "Unknown"'),
+        labelKey: "error.transaction_data",
+        substitutions: {
+          $txId: "1234",
+        },
+      });
     });
 
     describe("maps timestamps", () => {
