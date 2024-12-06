@@ -368,7 +368,7 @@ describe("Export to Csv", () => {
               id: "1234",
               project: "Internet Computer",
               symbol: "ICP",
-              timestamp: "Jan 1, 2023 12:00 AM",
+              timestamp: "Jan 1, 2023 12:00 AM",
               to: "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
               type: "Received",
             },
@@ -380,7 +380,7 @@ describe("Export to Csv", () => {
             },
             {
               label: "Account Name",
-              value: "",
+              value: "Main",
             },
             {
               label: "Balance(ICP)",
@@ -393,11 +393,11 @@ describe("Export to Csv", () => {
             },
             {
               label: "Transactions",
-              value: "2",
+              value: "1",
             },
             {
               label: "Export Date Time",
-              value: "Oct 14, 2023 12:00 AM",
+              value: "Oct 14, 2023 12:00 AM",
             },
           ],
         },

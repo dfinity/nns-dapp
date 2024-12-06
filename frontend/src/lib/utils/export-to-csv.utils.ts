@@ -299,7 +299,7 @@ export const buildTransactionsDatasets = ({
 
     if (entity.type === "neuron") {
       metadata.push({
-        label: "Neuron ID",
+        label: i18n.export_csv_neurons.neuron_id,
         value: entity.originalData.neuronId.toString(),
       });
     }
