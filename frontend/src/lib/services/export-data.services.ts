@@ -2,7 +2,28 @@ import { getTransactions } from "$lib/api/icp-index.api";
 import type { Account } from "$lib/types/account";
 import { SignIdentity } from "@dfinity/agent";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
+import type { NeuronInfo } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
+
+type TransactionEntity =
+  | {
+      identifier: string;
+      balance: bigint;
+      type: "account";
+      originalData: Account;
+    }
+  | {
+      identifier: string;
+      balance: bigint;
+      type: "neuron";
+      originalData: NeuronInfo;
+    };
+
+export type TransactionResults = {
+  entity: TransactionEntity;
+  transactions: TransactionWithId[];
+  error?: string;
+}[];
 
 export type TransactionsAndAccounts = {
   account: Account;

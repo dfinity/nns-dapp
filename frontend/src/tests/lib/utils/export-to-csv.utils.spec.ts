@@ -1,10 +1,16 @@
 import {
   FileSystemAccessError,
+  buildTransactionsDatasets,
   combineDatasetsToCsv,
   convertToCsv,
   generateCsvFileToSave,
   type CsvHeader,
 } from "$lib/utils/export-to-csv.utils";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 
 type TestPersonData = { name: string; age: number };
 type TestFormulaData = { formula: string; value: number };
@@ -307,6 +313,120 @@ describe("Export to Csv", () => {
         await expect(
           generateCsvFileToSave({ datasets: [], headers: [] })
         ).rejects.toThrow(FileSystemAccessError);
+      });
+    });
+  });
+
+  describe("buildTransactionsDatasets", () => {
+    const transactions = [createTransactionWithId({})];
+
+    beforeEach(() => {
+      const mockDate = new Date("2023-10-14T00:00:00Z");
+      vi.useFakeTimers();
+      vi.setSystemTime(mockDate);
+    });
+
+    it("should return an empty array when no transactions are provided", () => {
+      expect(
+        buildTransactionsDatasets({
+          transactions: [],
+          i18n: en,
+          neuronAccounts: new Set(),
+          principal: mockPrincipal,
+          swapCanisterAccounts: new Set(),
+        })
+      ).toEqual([]);
+    });
+
+    it("should generate datasets for accounts transactions", () => {
+      const mockTransactions = [
+        {
+          entity: {
+            identifier: "1",
+            balance: 100n,
+            type: "account" as const,
+            originalData: mockMainAccount,
+          },
+          transactions,
+        },
+      ];
+
+      const datasets = buildTransactionsDatasets({
+        transactions: mockTransactions,
+        i18n: en,
+        neuronAccounts: new Set(),
+        principal: mockPrincipal,
+        swapCanisterAccounts: new Set(),
+      });
+
+      expect(datasets).toEqual([
+        {
+          data: [
+            {
+              amount: "+1.00",
+              from: "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
+              id: "1234",
+              project: "Internet Computer",
+              symbol: "ICP",
+              timestamp: "Jan 1, 2023 12:00 AM",
+              to: "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
+              type: "Received",
+            },
+          ],
+          metadata: [
+            {
+              label: "Account ID",
+              value: "1",
+            },
+            {
+              label: "Account Name",
+              value: "Main",
+            },
+            {
+              label: "Balance(ICP)",
+              value: "0.000001",
+            },
+            {
+              label: "Controller Principal ID",
+              value:
+                "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
+            },
+            {
+              label: "Transactions",
+              value: "1",
+            },
+            {
+              label: "Export Date Time",
+              value: "Oct 14, 2023 12:00 AM",
+            },
+          ],
+        },
+      ]);
+    });
+
+    it("should add neuron metadata when neurons transactions", () => {
+      const mockTransactions = [
+        {
+          entity: {
+            identifier: "1",
+            balance: 100n,
+            type: "neuron" as const,
+            originalData: mockNeuron,
+          },
+          transactions,
+        },
+      ];
+      const datasets = buildTransactionsDatasets({
+        transactions: mockTransactions,
+        i18n: en,
+        neuronAccounts: new Set(),
+        principal: mockPrincipal,
+        swapCanisterAccounts: new Set(),
+      });
+
+      expect(datasets[0].metadata[1]).toEqual({
+        label: "Neuron ID",
+        value: "1",
       });
     });
   });
