@@ -1,9 +1,13 @@
 import { clearCache } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { SECONDS_IN_DAY, SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
+import { AppPath } from "$lib/constants/routes.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import LosingRewardNeuronsModal from "$lib/modals/neurons/LosingRewardNeuronsModal.svelte";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
+import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { LosingRewardNeuronsModalPo } from "$tests/page-objects/LosingRewardNeuronsModal.page-object";
@@ -11,6 +15,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { nonNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("LosingRewardNeuronsModal", () => {
   const nowSeconds = nowInSeconds();
@@ -64,6 +69,11 @@ describe("LosingRewardNeuronsModal", () => {
       now: nowSeconds * 1000,
     });
 
+    page.mock({
+      routeId: AppPath.Staking,
+      data: { universe: OWN_CANISTER_ID_TEXT },
+    });
+
     vi.spyOn(governanceApi, "queryKnownNeurons").mockResolvedValue([]);
   });
 
@@ -97,6 +107,35 @@ describe("LosingRewardNeuronsModal", () => {
     expect(onClose).toHaveBeenCalledTimes(0);
     await po.clickCancel();
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("should navigate to the neuron details", async () => {
+    neuronsStore.setNeurons({
+      neurons: [losingRewardsNeuron],
+      certified: true,
+    });
+    const onClose = vi.fn();
+    const po = await renderComponent({
+      onClose,
+    });
+    const firstCards = (await po.getNnsLosingRewardsNeuronCardPos())[0];
+    expect(onClose).toHaveBeenCalledTimes(0);
+    expect(get(pageStore).path).toEqual("/staking");
+    expect(get(page).data).toEqual({ universe: OWN_CANISTER_ID_TEXT });
+    expect(firstCards).not.toEqual(undefined);
+    expect(await firstCards.getNeuronId()).toEqual(
+      losingRewardsNeuron.neuronId.toString()
+    );
+
+    await firstCards.click();
+    await runResolvedPromises();
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(get(pageStore).path).toEqual("/neuron");
+    expect(get(page).data).toEqual({
+      universe: OWN_CANISTER_ID_TEXT,
+      neuron: losingRewardsNeuron.neuronId.toString(),
+    });
   });
 
   it("should fetch known neurons", async () => {
