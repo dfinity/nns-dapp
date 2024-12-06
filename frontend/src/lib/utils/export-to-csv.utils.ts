@@ -262,6 +262,7 @@ export type TransactionsCsvData = {
   amount: string;
   timestamp: string;
 };
+
 export const buildTransactionsDatasets = ({
   transactions,
   i18n,
