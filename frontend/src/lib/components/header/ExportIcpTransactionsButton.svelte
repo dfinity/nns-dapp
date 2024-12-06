@@ -44,7 +44,7 @@
   );
   $: swapCanisterAccounts = $swapCanisterAccountsStore ?? new Set();
   $: neuronAccounts = $neuronAccountsStore;
-  $: nnsAccounts = Object.values($nnsAccountsListStore).flat();
+  $: nnsAccounts = $nnsAccountsListStore;
   $: isDisabled = isNullish(identity) || nnsAccounts.length === 0;
 
   const buildDatasets = (
