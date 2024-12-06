@@ -1,10 +1,10 @@
 import NnsLosingRewardsNeuronCard from "$lib/components/neurons/NnsLosingRewardsNeuronCard.svelte";
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsLosingRewardsNeuronCardPo } from "$tests/page-objects/NnsLosingRewardsNeuronCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { Topic, type NeuronInfo } from "@dfinity/nns";
+import { nonNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("NnsLosingRewardsNeuronCard", () => {
@@ -30,21 +30,37 @@ describe("NnsLosingRewardsNeuronCard", () => {
     },
   };
 
-  const renderComponent = (props) => {
-    const { container } = render(NnsLosingRewardsNeuronCard, {
-      props,
+  const renderComponent = ({
+    neuron,
+    onClick,
+  }: {
+    neuron: NeuronInfo;
+    onClick?: () => void;
+  }) => {
+    const { container, component } = render(NnsLosingRewardsNeuronCard, {
+      props: {
+        neuron,
+      },
     });
+
+    if (nonNullish(onClick)) {
+      component.$on("nnsClick", onClick);
+    }
+
     return NnsLosingRewardsNeuronCardPo.under(
       new JestPageObjectElement(container)
     );
   };
 
-  it("should render link", async () => {
-    const po = await renderComponent({ neuron });
+  it("should dispatch nnsClick", async () => {
+    const onClick = vi.fn();
+    const po = await renderComponent({ neuron, onClick });
 
-    expect(await po.getHref()).toEqual(
-      `/neuron/?u=${OWN_CANISTER_ID_TEXT}&neuron=${neuronId}`
-    );
+    expect(onClick).not.toHaveBeenCalled();
+
+    await po.click();
+
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 
   it("should render following", async () => {
