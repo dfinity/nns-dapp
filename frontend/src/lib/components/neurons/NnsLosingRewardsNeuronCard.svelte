@@ -1,7 +1,5 @@
 <script lang="ts">
   import { Card, IconRight } from "@dfinity/gix-components";
-  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-  import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import {
     followeesNeurons,
     getNeuronTags,
@@ -14,14 +12,11 @@
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { i18n } from "$lib/stores/i18n";
   import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
+  import { createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher<{ nnsClick: void }>();
 
   export let neuron: NeuronInfo;
-
-  let href: string;
-  $: href = buildNeuronUrl({
-    universe: OWN_CANISTER_ID_TEXT,
-    neuronId: neuron.neuronId,
-  });
 
   let neuronTags: NeuronTagData[];
   $: neuronTags = getNeuronTags({
@@ -37,9 +32,10 @@
 
 <Card
   testId="nns-loosing-rewards-neuron-card-component"
-  {href}
+  role="button"
   noMargin
   ariaLabel={$i18n.losing_rewards_modal.goto_neuron}
+  on:click={() => dispatch("nnsClick")}
 >
   <div class="wrapper">
     <div class="header">
