@@ -5,7 +5,7 @@ type Metadata = {
   value: string;
 };
 
-type Dataset<T> = {
+export type CsvDataset<T> = {
   data: T[];
   metadata?: Metadata[];
 };
@@ -165,7 +165,7 @@ export const combineDatasetsToCsv = <T>({
   headers,
 }: {
   headers: CsvHeader<T>[];
-  datasets: Dataset<T>[];
+  datasets: CsvDataset<T>[];
 }): string => {
   const csvParts: string[] = [];
   // A double empty line break requires 3 new lines
@@ -208,7 +208,7 @@ export const generateCsvFileToSave = async <T>({
   fileName?: string;
   description?: string;
   headers: CsvHeader<T>[];
-  datasets: Dataset<T>[];
+  datasets: CsvDataset<T>[];
 }): Promise<void> => {
   try {
     const csvContent = combineDatasetsToCsv({ datasets, headers });
