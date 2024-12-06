@@ -34,14 +34,16 @@
   let swapCanisterAccounts: Set<string>;
   let neuronAccounts: Set<string>;
   let nnsAccounts: Account[];
+  let nnsNeurons: NeuronInfo[];
   let swapCanisterAccountsStore: Readable<Set<string>> | undefined;
-  let nnsNeurons: NeuronInfo[] | undefined;
 
   $: identity = $authStore.identity;
   $: neuronAccounts = $neuronAccountsStore;
   $: nnsAccounts = $nnsAccountsListStore;
   $: nnsNeurons = $neuronsStore.neurons ?? [];
-  $: isDisabled = isNullish(identity) || nnsAccounts.length === 0;
+  $: isDisabled =
+    isNullish(identity) ||
+    (nnsAccounts.length === 0 && nnsNeurons.length === 0);
   $: swapCanisterAccountsStore = createSwapCanisterAccountsStore(
     identity?.getPrincipal()
   );
