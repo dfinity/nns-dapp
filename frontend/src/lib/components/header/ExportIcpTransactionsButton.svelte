@@ -35,6 +35,7 @@
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { Account } from "$lib/types/account";
+  import type { Readable } from "svelte/store";
 
   const dispatcher = createEventDispatcher<{
     nnsExportIcpTransactionsCsvTriggered: void;
@@ -45,13 +46,13 @@
   let swapCanisterAccounts: Set<string>;
   let neuronAccounts: Set<string>;
   let nnsAccounts: Account[];
+  let swapCanisterAccountsStore: Readable<Set<string>> | undefined;
 
   $: identity = $authStore.identity;
   $: neuronAccounts = $neuronAccountsStore;
   $: nnsAccounts = $nnsAccountsListStore;
   $: isDisabled = isNullish(identity) || nnsAccounts.length === 0;
-
-  const swapCanisterAccountsStore = createSwapCanisterAccountsStore(
+  $: swapCanisterAccountsStore = createSwapCanisterAccountsStore(
     identity?.getPrincipal()
   );
   $: swapCanisterAccounts = $swapCanisterAccountsStore ?? new Set();
