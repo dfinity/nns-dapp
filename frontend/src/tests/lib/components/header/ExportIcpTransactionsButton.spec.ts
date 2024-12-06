@@ -12,8 +12,8 @@ import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import { ExportIcpTransactionsButtonPo } from "$tests/page-objects/ExportIcpTransactionsButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
-import { tick } from "svelte";
 
 vi.mock("$lib/api/icp-ledger.api");
 
@@ -80,8 +80,7 @@ describe("ExportIcpTransactionsButton", () => {
     expect(spyGenerateCsvFileToSave).toHaveBeenCalledTimes(0);
 
     await po.click();
-    // Wait for getAccountTransactionsConcurrently to complete
-    await tick();
+    await runResolvedPromises();
 
     const expectedFileName = `icp_transactions_export_20231014`;
     expect(spyGenerateCsvFileToSave).toHaveBeenCalledWith(
@@ -97,8 +96,7 @@ describe("ExportIcpTransactionsButton", () => {
 
     expect(spyGenerateCsvFileToSave).toBeCalledTimes(0);
     await po.click();
-    // Wait for getAccountTransactionsConcurrently to complete
-    await tick();
+    await runResolvedPromises();
 
     expect(spyGenerateCsvFileToSave).toBeCalledWith(
       expect.objectContaining({
@@ -158,10 +156,7 @@ describe("ExportIcpTransactionsButton", () => {
     expect(onTrigger).toHaveBeenCalledTimes(0);
 
     await po.click();
-    // Wait for getAccountTransactionsConcurrently to complete
-    await tick();
-    // Wait for the csv generation to complete
-    await tick();
+    await runResolvedPromises();
     expect(onTrigger).toHaveBeenCalledTimes(1);
   });
 
@@ -175,10 +170,7 @@ describe("ExportIcpTransactionsButton", () => {
     expect(spyToastError).toBeCalledTimes(0);
 
     await po.click();
-    // Wait for getAccountTransactionsConcurrently to complete
-    await tick();
-    // Wait for the csv generation to complete
-    await tick();
+    await runResolvedPromises();
 
     expect(spyToastError).toBeCalledWith({
       labelKey: "export_error.file_system_access",
@@ -196,10 +188,7 @@ describe("ExportIcpTransactionsButton", () => {
     expect(spyToastError).toBeCalledTimes(0);
 
     await po.click();
-    // Wait for getAccountTransactionsConcurrently to complete
-    await tick();
-    // Wait for the csv generation to complete
-    await tick();
+    await runResolvedPromises();
 
     expect(spyToastError).toBeCalledWith({
       labelKey: "export_error.csv_generation",
@@ -216,11 +205,8 @@ describe("ExportIcpTransactionsButton", () => {
 
     expect(spyToastError).toBeCalledTimes(0);
     await po.click();
+    await runResolvedPromises();
 
-    // Wait for getAccountTransactionsConcurrently to complete
-    await tick();
-    // Wait for the csv generation to complete
-    await tick();
     expect(spyToastError).toBeCalledWith({
       labelKey: "export_error.neurons",
     });

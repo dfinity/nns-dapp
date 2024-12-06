@@ -2,7 +2,12 @@
   import { i18n } from "$lib/stores/i18n";
   import { IconDown } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
-  import { ICPToken, isNullish, TokenAmountV2 } from "@dfinity/utils";
+  import {
+    ICPToken,
+    isNullish,
+    nonNullish,
+    TokenAmountV2,
+  } from "@dfinity/utils";
   import {
     CsvGenerationError,
     FileSystemAccessError,
@@ -34,9 +39,13 @@
 
   let isDisabled = true;
   $: identity = $authStore.identity;
-  $: isDisabled = isNullish(identity);
+  const swapCanisterAccountsStore = createSwapCanisterAccountsStore(
+    identity?.getPrincipal()
+  );
+  $: swapCanisterAccounts = $swapCanisterAccountsStore ?? new Set();
   $: neuronAccounts = $neuronAccountsStore;
-  let swapCanisterAccountsStore;
+  $: nnsAccounts = Object.values($nnsAccountsListStore).flat();
+  $: isDisabled = isNullish(identity) || nnsAccounts.length === 0;
 
   const buildDatasets = (
     data: TransactionsAndAccounts
@@ -57,9 +66,6 @@
     }[];
   }[] => {
     return data.map(({ account, transactions }) => {
-      swapCanisterAccountsStore = createSwapCanisterAccountsStore(
-        identity?.getPrincipal()
-      );
       const amount = TokenAmountV2.fromUlps({
         amount: account.balanceUlps,
         token: ICPToken,
@@ -110,10 +116,14 @@
             accountIdentifier: account.identifier,
             transaction,
             neuronAccounts,
-            swapCanisterAccounts: $swapCanisterAccountsStore ?? new Set(),
+            swapCanisterAccounts,
           });
+
           const sign = transactionDirection === "credit" ? "+" : "-";
           const amount = formatTokenV2({ value: tokenAmount, detailed: true });
+          const timestamp = nonNullish(timestampNanos)
+            ? nanoSecondsToDateTime(timestampNanos)
+            : $i18n.core.not_applicable;
 
           return {
             id: transaction.id.toString(),
@@ -123,10 +133,7 @@
             from,
             type: transactionName({ type, i18n: $i18n }),
             amount: `${sign}${amount}`,
-            timestamp:
-              timestampNanos !== undefined
-                ? nanoSecondsToDateTime(timestampNanos)
-                : $i18n.core.not_applicable,
+            timestamp,
           };
         }),
       };
@@ -136,8 +143,6 @@
   const exportIcpTransactions = async () => {
     // Button will only be shown if logged in
     try {
-      const nnsAccounts = Object.values($nnsAccountsListStore).flat();
-
       const data = await getAccountTransactionsConcurrently({
         accounts: nnsAccounts,
         identity: identity as SignIdentity,
