@@ -17,6 +17,7 @@ import {
   ICPToken,
   TokenAmountV2,
   fromNullable,
+  isNullish,
   nonNullish,
 } from "@dfinity/utils";
 import { transactionName } from "./transactions.utils";
@@ -122,7 +123,7 @@ const getTransactionInformation = (
     data = operation.Transfer;
   }
   // Edge case, a transaction will have either "Approve", "Burn", "Mint" or "Transfer" data.
-  if (data === undefined) return undefined;
+  if (isNullish(data)) return undefined;
 
   return {
     from: "from" in data ? data.from : undefined,
@@ -147,7 +148,7 @@ export const mapIcpTransactionToReport = ({
   swapCanisterAccounts: Set<string>;
 }) => {
   const txInfo = getTransactionInformation(transaction.transaction.operation);
-  if (txInfo === undefined) {
+  if (isNullish(txInfo)) {
     throw new Error(
       `Unknown transaction type "${
         Object.keys(transaction.transaction.operation)[0]
@@ -210,7 +211,7 @@ export const mapIcpTransactionToUi = ({
 }): UiTransaction | undefined => {
   try {
     const txInfo = getTransactionInformation(transaction.transaction.operation);
-    if (txInfo === undefined) {
+    if (isNullish(txInfo)) {
       throw new Error(
         `Unknown transaction type "${
           Object.keys(transaction.transaction.operation)[0]

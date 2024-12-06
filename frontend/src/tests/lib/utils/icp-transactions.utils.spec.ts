@@ -502,6 +502,7 @@ describe("icp-transactions.utils", () => {
         swapCanisterAccounts: new Set<string>(),
         i18n: en,
       });
+      expect(spyToastError).toBeCalledTimes(1);
       expect(spyToastError).toBeCalledWith({
         err: new Error('Unknown transaction type "Unknown"'),
         labelKey: "error.transaction_data",
