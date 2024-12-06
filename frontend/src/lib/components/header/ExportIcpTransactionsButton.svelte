@@ -12,6 +12,8 @@
     CsvGenerationError,
     FileSystemAccessError,
     generateCsvFileToSave,
+    type CsvDataset,
+    type CsvHeader,
   } from "$lib/utils/export-to-csv.utils";
   import { toastsError } from "$lib/stores/toasts.store";
   import {
@@ -25,46 +27,49 @@
     getAccountTransactionsConcurrently,
     type TransactionsAndAccounts,
   } from "$lib/services/export-data.services";
-  import { SignIdentity } from "@dfinity/agent";
+  import { SignIdentity, type Identity } from "@dfinity/agent";
   import { mapIcpTransactionToReport } from "$lib/utils/icp-transactions.utils";
   import { neuronAccountsStore } from "$lib/derived/neurons.derived";
   import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
   import { transactionName } from "$lib/utils/transactions.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import type { Account } from "$lib/types/account";
 
   const dispatcher = createEventDispatcher<{
     nnsExportIcpTransactionsCsvTriggered: void;
   }>();
 
   let isDisabled = true;
+  let identity: Identity | null | undefined;
+  let swapCanisterAccounts: Set<string>;
+  let neuronAccounts: Set<string>;
+  let nnsAccounts: Account[];
+
   $: identity = $authStore.identity;
-  const swapCanisterAccountsStore = createSwapCanisterAccountsStore(
-    identity?.getPrincipal()
-  );
-  $: swapCanisterAccounts = $swapCanisterAccountsStore ?? new Set();
   $: neuronAccounts = $neuronAccountsStore;
   $: nnsAccounts = $nnsAccountsListStore;
   $: isDisabled = isNullish(identity) || nnsAccounts.length === 0;
 
+  const swapCanisterAccountsStore = createSwapCanisterAccountsStore(
+    identity?.getPrincipal()
+  );
+  $: swapCanisterAccounts = $swapCanisterAccountsStore ?? new Set();
+
+  type CsvData = {
+    id: string;
+    project: string;
+    symbol: string;
+    to: string | undefined;
+    from: string | undefined;
+    type: string;
+    amount: string;
+    timestamp: string;
+  };
+
   const buildDatasets = (
     data: TransactionsAndAccounts
-  ): {
-    data: {
-      id: string;
-      project: string;
-      symbol: string;
-      to: string | undefined;
-      from: string | undefined;
-      type: string;
-      amount: string;
-      timestamp: string;
-    }[];
-    metadata: {
-      label: string;
-      value: string;
-    }[];
-  }[] => {
+  ): CsvDataset<CsvData>[] => {
     return data.map(({ account, transactions }) => {
       const amount = TokenAmountV2.fromUlps({
         amount: account.balanceUlps,
@@ -141,52 +146,53 @@
   };
 
   const exportIcpTransactions = async () => {
-    // Button will only be shown if logged in
     try {
       const data = await getAccountTransactionsConcurrently({
         accounts: nnsAccounts,
         identity: identity as SignIdentity,
       });
       const datasets = buildDatasets(data);
+      const headers: CsvHeader<CsvData>[] = [
+        {
+          id: "id",
+          label: $i18n.export_csv_neurons.transaction_id,
+        },
+        {
+          id: "project",
+          label: $i18n.export_csv_neurons.project,
+        },
+        {
+          id: "symbol",
+          label: $i18n.export_csv_neurons.symbol,
+        },
+        {
+          id: "to",
+          label: $i18n.export_csv_neurons.to,
+        },
+        {
+          id: "from",
+          label: $i18n.export_csv_neurons.from,
+        },
+        {
+          id: "type",
+          label: $i18n.export_csv_neurons.transaction_type,
+        },
+        {
+          id: "amount",
+          label: replacePlaceholders($i18n.export_csv_neurons.amount, {
+            $tokenSymbol: ICPToken.symbol,
+          }),
+        },
+        {
+          id: "timestamp",
+          label: $i18n.export_csv_neurons.timestamp,
+        },
+      ];
       const fileName = `icp_transactions_export_${formatDateCompact(new Date())}`;
+
       await generateCsvFileToSave({
         datasets,
-        headers: [
-          {
-            id: "id",
-            label: $i18n.export_csv_neurons.transaction_id,
-          },
-          {
-            id: "project",
-            label: $i18n.export_csv_neurons.project,
-          },
-          {
-            id: "symbol",
-            label: $i18n.export_csv_neurons.symbol,
-          },
-          {
-            id: "to",
-            label: $i18n.export_csv_neurons.to,
-          },
-          {
-            id: "from",
-            label: $i18n.export_csv_neurons.from,
-          },
-          {
-            id: "type",
-            label: $i18n.export_csv_neurons.transaction_type,
-          },
-          {
-            id: "amount",
-            label: replacePlaceholders($i18n.export_csv_neurons.amount, {
-              $tokenSymbol: ICPToken.symbol,
-            }),
-          },
-          {
-            id: "timestamp",
-            label: $i18n.export_csv_neurons.timestamp,
-          },
-        ],
+        headers,
         fileName,
       });
     } catch (error) {
