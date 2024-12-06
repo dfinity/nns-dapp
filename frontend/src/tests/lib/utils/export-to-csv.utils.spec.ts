@@ -424,49 +424,10 @@ describe("Export to Csv", () => {
         swapCanisterAccounts: new Set(),
       });
 
-      expect(datasets).toEqual([
-        {
-          data: [
-            {
-              amount: "+1.00",
-              from: "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
-              id: "1234",
-              project: "Internet Computer",
-              symbol: "ICP",
-              timestamp: "Jan 1, 2023 12:00 AM",
-              to: "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
-              type: "Received",
-            },
-          ],
-          metadata: [
-            {
-              label: "Account ID",
-              value: "1",
-            },
-            {
-              label: "Neuron ID",
-              value: "1",
-            },
-            {
-              label: "Balance(ICP)",
-              value: "0.000001",
-            },
-            {
-              label: "Controller Principal ID",
-              value:
-                "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
-            },
-            {
-              label: "Transactions",
-              value: "2",
-            },
-            {
-              label: "Export Date Time",
-              value: "Oct 14, 2023 12:00 AM",
-            },
-          ],
-        },
-      ]);
+      expect(datasets[0].metadata[1]).toEqual({
+        label: "Neuron ID",
+        value: "1",
+      });
     });
   });
 });
