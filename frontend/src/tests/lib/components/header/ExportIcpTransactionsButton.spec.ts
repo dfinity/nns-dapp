@@ -1,12 +1,8 @@
 import * as icpIndexApi from "$lib/api/icp-index.api";
 import ExportIcpTransactionsButton from "$lib/components/header/ExportIcpTransactionsButton.svelte";
-import { authStore } from "$lib/stores/auth.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import * as exportToCsv from "$lib/utils/export-to-csv.utils";
-import {
-  mockSignInIdentity,
-  setNoIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import { ExportIcpTransactionsButtonPo } from "$tests/page-objects/ExportIcpTransactionsButton.page-object";
@@ -34,7 +30,7 @@ describe("ExportIcpTransactionsButton", () => {
     vi.useFakeTimers();
     vi.setSystemTime(mockDate);
 
-    authStore.setForTesting(mockSignInIdentity);
+    resetIdentity();
 
     setAccountsForTesting({
       ...mockAccountsStoreData,
