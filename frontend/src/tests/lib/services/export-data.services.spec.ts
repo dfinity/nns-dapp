@@ -5,7 +5,10 @@ import {
   mapAccountOrNeuronToTransactionEntity,
 } from "$lib/services/export-data.services";
 import { mockSignInIdentity } from "$tests/mocks/auth.store.mock";
-import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import {
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { SignIdentity } from "@dfinity/agent";
@@ -134,7 +137,7 @@ describe("export-data service", () => {
 
   describe("getAccountTransactionsConcurrently", () => {
     const mockIdentity = {} as unknown as SignIdentity;
-    const mockEntities = [mockMainAccount, mockNeuron];
+    const mockEntities = [mockMainAccount, mockSubAccount, mockNeuron];
 
     const mockTransactions = [
       createTransactionWithId({}),
@@ -145,6 +148,13 @@ describe("export-data service", () => {
       originalData: mockMainAccount,
       balance: mockMainAccount.balanceUlps,
       identifier: mockMainAccount.identifier,
+      type: "account",
+    };
+
+    const subAccountEntity = {
+      originalData: mockSubAccount,
+      balance: mockSubAccount.balanceUlps,
+      identifier: mockSubAccount.identifier,
       type: "account",
     };
 
@@ -165,9 +175,15 @@ describe("export-data service", () => {
       expect(spyGetTransactions).toHaveBeenCalledTimes(0);
     });
 
-    it("should map an Account to a generic entity", async () => {
+    it("should map the MainAccount to a generic entity", async () => {
       expect(mapAccountOrNeuronToTransactionEntity(mockMainAccount)).toEqual(
         mainAccountEntity
+      );
+    });
+
+    it("should map a SubAccount to a generic entity", async () => {
+      expect(mapAccountOrNeuronToTransactionEntity(mockSubAccount)).toEqual(
+        subAccountEntity
       );
     });
 
@@ -187,19 +203,52 @@ describe("export-data service", () => {
         identity: mockIdentity,
       });
 
-      expect(result).toHaveLength(2);
-      expect(spyGetTransactions).toHaveBeenCalledTimes(2);
+      expect(result).toHaveLength(3);
+      expect(spyGetTransactions).toHaveBeenCalledTimes(3);
 
       expect(result[0].entity).toEqual(mainAccountEntity);
       expect(result[0].transactions).toEqual(mockTransactions);
       expect(result[0].error).toBeUndefined();
 
-      expect(result[1].entity).toEqual(neuronEntity);
+      expect(result[1].entity).toEqual(subAccountEntity);
       expect(result[1].transactions).toEqual(mockTransactions);
       expect(result[1].error).toBeUndefined();
+
+      expect(result[2].entity).toEqual(neuronEntity);
+      expect(result[2].transactions).toEqual(mockTransactions);
+      expect(result[2].error).toBeUndefined();
     });
 
-    // TODO: To be implemented once getAllTransactionsFromAccountAndIdentity handles errors
-    it.skip("should handle failed transactions fetch for some accounts", async () => {});
+    // TODO: To be implemented once getAccountTransactionsConcurrently handles errors
+    it.skip("should handle failed transactions fetch for some accounts", async () => {
+      spyGetTransactions
+        .mockResolvedValueOnce({
+          transactions: mockTransactions,
+        })
+        .mockRejectedValueOnce(new Error("API Error"))
+        .mockResolvedValueOnce({
+          transactions: mockTransactions,
+        });
+
+      const result = await getAccountTransactionsConcurrently({
+        entities: mockEntities,
+        identity: mockIdentity,
+      });
+
+      expect(result).toHaveLength(3);
+      expect(spyGetTransactions).toHaveBeenCalledTimes(3);
+
+      expect(result[0].entity).toEqual(mainAccountEntity);
+      expect(result[0].transactions).toEqual(mockTransactions);
+      expect(result[0].error).toBeUndefined();
+
+      expect(result[1].entity).toEqual(subAccountEntity);
+      expect(result[1].transactions).toEqual([]);
+      expect(result[1].error).toBeDefined();
+
+      expect(result[2].entity).toEqual(neuronEntity);
+      expect(result[2].transactions).toEqual(mockTransactions);
+      expect(result[2].error).toBeUndefined();
+    });
   });
 });
