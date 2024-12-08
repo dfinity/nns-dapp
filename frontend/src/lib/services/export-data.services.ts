@@ -1,5 +1,6 @@
 import { getTransactions } from "$lib/api/icp-index.api";
 import type { Account } from "$lib/types/account";
+import { neuronStake } from "$lib/utils/neuron.utils";
 import { SignIdentity } from "@dfinity/agent";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
 import type { NeuronInfo } from "@dfinity/nns";
@@ -19,58 +20,78 @@ type TransactionEntity =
       originalData: NeuronInfo;
     };
 
+const accountToTransactionEntity = (account: Account): TransactionEntity => {
+  return {
+    identifier: account.identifier,
+    type: "account",
+    balance: account.balanceUlps,
+    originalData: account,
+  };
+};
+const neuronToTransactionEntity = (neuron: NeuronInfo): TransactionEntity => {
+  return {
+    identifier: neuron.fullNeuron?.accountIdentifier || "",
+    balance: neuronStake(neuron),
+    type: "neuron",
+    originalData: neuron,
+  };
+};
+export const mapAccountOrNeuronToTransactionEntity = (
+  entity: Account | NeuronInfo
+): TransactionEntity => {
+  if ("neuronId" in entity) {
+    return neuronToTransactionEntity(entity);
+  }
+  return accountToTransactionEntity(entity);
+};
+
 export type TransactionResults = {
   entity: TransactionEntity;
   transactions: TransactionWithId[];
   error?: string;
 }[];
 
-export type TransactionsAndAccounts = {
-  account: Account;
-  transactions: TransactionWithId[];
-  error?: string;
-}[];
-
 export const getAccountTransactionsConcurrently = async ({
-  accounts,
+  entities,
   identity,
 }: {
-  accounts: Account[];
+  entities: (Account | NeuronInfo)[];
   identity: SignIdentity;
-}): Promise<TransactionsAndAccounts> => {
-  const accountPromises = accounts.map((account) =>
+}): Promise<TransactionResults> => {
+  const transactionEntities = entities.map(
+    mapAccountOrNeuronToTransactionEntity
+  );
+
+  const transactionPromises = transactionEntities.map((entity) =>
     getAllTransactionsFromAccountAndIdentity({
-      accountId: account.identifier,
+      accountId: entity.identifier,
       identity,
     })
   );
 
-  const results = await Promise.allSettled(accountPromises);
+  const results = await Promise.allSettled(transactionPromises);
 
-  const accountsAndTransactions = results.map((result, index) => {
-    const account = accounts[index];
-    const baseAccountInfo = {
-      account: {
-        ...account,
-      },
+  const entitiesAndTransactions = results.map((result, index) => {
+    const entity = transactionEntities[index];
+    const baseInfo = {
+      entity,
     };
 
     if (result.status === "fulfilled") {
       return {
-        ...baseAccountInfo,
+        ...baseInfo,
         transactions: result.value ?? [],
       };
     } else {
-      // TODO: At the moment, this path is not possible as getAllTransactionsFromAccountAndIdentity never throws an error.
       return {
-        ...baseAccountInfo,
+        ...baseInfo,
         transactions: [],
         error: result.reason?.message || "Failed to fetch transactions",
       };
     }
   });
 
-  return accountsAndTransactions;
+  return entitiesAndTransactions;
 };
 
 export const getAllTransactionsFromAccountAndIdentity = async ({
