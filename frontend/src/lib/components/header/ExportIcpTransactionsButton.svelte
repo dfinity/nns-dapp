@@ -35,7 +35,7 @@
   let neuronAccounts: Set<string>;
   let nnsAccounts: Account[];
   let nnsNeurons: NeuronInfo[];
-  let swapCanisterAccountsStore: Readable<Set<string>> | undefined;
+  let swapCanisterAccountsStore: Readable<Set<string>>;
 
   $: identity = $authStore.identity;
   $: neuronAccounts = $neuronAccountsStore;
