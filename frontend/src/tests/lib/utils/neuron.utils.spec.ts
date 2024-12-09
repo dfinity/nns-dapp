@@ -1439,8 +1439,9 @@ describe("neuron-utils", () => {
       text: "Missing rewards",
       status: "danger",
     } as NeuronTagData;
+    const daysBeforeMissingRewardsSoon = 10;
     const missingRewardsSoonTag = {
-      text: "10 days to confirm",
+      text: `${daysBeforeMissingRewardsSoon} days to confirm`,
       status: "warning",
     } as NeuronTagData;
     const ectTag = {
@@ -1669,12 +1670,16 @@ describe("neuron-utils", () => {
           ),
         },
       };
+      const timestampSixMonthsAgoPlus10Days =
+        nowInSeconds() -
+        SECONDS_IN_HALF_YEAR +
+        daysBeforeMissingRewardsSoon * SECONDS_IN_DAY;
       const losingRewardSoonNeuron: NeuronInfo = {
         ...mockNeuron,
         fullNeuron: {
           ...mockNeuron.fullNeuron,
           votingPowerRefreshedTimestampSeconds: BigInt(
-            nowInSeconds() - SECONDS_IN_HALF_YEAR + 10 * SECONDS_IN_DAY
+            timestampSixMonthsAgoPlus10Days
           ),
         },
       };
