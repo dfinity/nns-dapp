@@ -1,5 +1,6 @@
 import {
   FileSystemAccessError,
+  buildNeuronsDatasets,
   buildTransactionsDatasets,
   combineDatasetsToCsv,
   convertToCsv,
@@ -16,6 +17,12 @@ type TestPersonData = { name: string; age: number };
 type TestFormulaData = { formula: string; value: number };
 
 describe("Export to Csv", () => {
+  beforeEach(() => {
+    const mockDate = new Date("2023-10-14T00:00:00Z");
+    vi.useFakeTimers();
+    vi.setSystemTime(mockDate);
+  });
+
   describe("convertToCSV", () => {
     it("should return an empty string when empty headers are provided", () => {
       const data = [];
@@ -320,12 +327,6 @@ describe("Export to Csv", () => {
   describe("buildTransactionsDatasets", () => {
     const transactions = [createTransactionWithId({})];
 
-    beforeEach(() => {
-      const mockDate = new Date("2023-10-14T00:00:00Z");
-      vi.useFakeTimers();
-      vi.setSystemTime(mockDate);
-    });
-
     it("should return an empty array when no transactions are provided", () => {
       expect(
         buildTransactionsDatasets({
@@ -428,6 +429,67 @@ describe("Export to Csv", () => {
         label: "Neuron ID",
         value: "1",
       });
+    });
+  });
+
+  describe("buildNeuronsDatasets", () => {
+    const expectedMetadata = [
+      {
+        label: "NNS Account Principal ID",
+        value:
+          "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
+      },
+      {
+        label: "Export Date Time",
+        value: "Oct 14, 2023 12:00 AM",
+      },
+    ];
+
+    it("should generate metadata an empty data when no neurons are provided", () => {
+      expect(
+        buildNeuronsDatasets({
+          neurons: [],
+          i18n: en,
+          nnsAccountPrincipal: mockPrincipal,
+        })
+      ).toEqual([
+        {
+          data: [],
+          metadata: expectedMetadata,
+        },
+      ]);
+    });
+
+    it("should generate datasets for neurons", () => {
+      const neurons = [mockNeuron];
+      const datasets = buildNeuronsDatasets({
+        neurons,
+        i18n: en,
+        nnsAccountPrincipal: mockPrincipal,
+      });
+
+      expect(datasets).toEqual([
+        {
+          data: [
+            {
+              availableMaturity: "0.0000001",
+              controllerId: "",
+              creationDate: "Jan 1, 1970",
+              dissolveDate: "N/A",
+              dissolveDelaySeconds: "3 hours, 5 minutes",
+              neuronAccountId:
+                "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
+              neuronId: "1",
+              project: "Internet Computer",
+              stake: "30.00",
+              stakedMaturity: "0",
+              state: "Locked",
+              symbol: "ICP",
+            },
+          ],
+          metadata: expectedMetadata,
+        },
+      ]);
     });
   });
 });
