@@ -331,6 +331,9 @@ describe("Tokens page", () => {
 
     expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
     expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$5.00");
+    expect(
+      await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
+    ).toBe(false);
   });
 
   it("should ignore tokens with unknown balance in USD when adding up the total", async () => {
@@ -352,5 +355,8 @@ describe("Tokens page", () => {
 
     expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
     expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$8.00");
+    expect(
+      await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
+    ).toBe(true);
   });
 });

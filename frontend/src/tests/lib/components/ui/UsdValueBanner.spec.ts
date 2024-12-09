@@ -7,8 +7,17 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 
 describe("UsdValueBanner", () => {
-  const renderComponent = (usdAmount: number) => {
-    const { container } = render(UsdValueBanner, { usdAmount });
+  const renderComponent = ({
+    usdAmount,
+    hasUnpricedTokens,
+  }: {
+    usdAmount: number;
+    hasUnpricedTokens: boolean;
+  }) => {
+    const { container } = render(UsdValueBanner, {
+      usdAmount,
+      hasUnpricedTokens,
+    });
     return UsdValueBannerPo.under(new JestPageObjectElement(container));
   };
 
@@ -28,14 +37,14 @@ describe("UsdValueBanner", () => {
 
     setIcpPrice(icpPrice);
 
-    const po = renderComponent(usdAmount);
+    const po = renderComponent({ usdAmount, hasUnpricedTokens: false });
 
     expect(await po.getPrimaryAmount()).toEqual("$50.00");
   });
 
   it("should display the USD amount as absent", async () => {
     const usdAmount = undefined;
-    const po = renderComponent(usdAmount);
+    const po = renderComponent({ usdAmount, hasUnpricedTokens: false });
 
     expect(await po.getPrimaryAmount()).toEqual("$-/-");
   });
@@ -46,14 +55,14 @@ describe("UsdValueBanner", () => {
 
     setIcpPrice(icpPrice);
 
-    const po = renderComponent(usdAmount);
+    const po = renderComponent({ usdAmount, hasUnpricedTokens: false });
 
     expect(await po.getSecondaryAmount()).toEqual("5.00 ICP");
   });
 
   it("should display the ICP amount as absent without exchange rates", async () => {
     const usdAmount = 50;
-    const po = renderComponent(usdAmount);
+    const po = renderComponent({ usdAmount, hasUnpricedTokens: false });
 
     expect(await po.getSecondaryAmount()).toEqual("-/- ICP");
   });
@@ -64,14 +73,14 @@ describe("UsdValueBanner", () => {
 
     setIcpPrice(icpPrice);
 
-    const po = renderComponent(usdAmount);
+    const po = renderComponent({ usdAmount, hasUnpricedTokens: false });
 
     expect(await po.getIcpPrice()).toEqual("10.00");
   });
 
   it("should display the ICP price as absent without exchange rates", async () => {
     const usdAmount = 50;
-    const po = renderComponent(usdAmount);
+    const po = renderComponent({ usdAmount, hasUnpricedTokens: false });
 
     expect(await po.getIcpPrice()).toEqual("-/-");
   });
@@ -82,9 +91,9 @@ describe("UsdValueBanner", () => {
 
     setIcpPrice(icpPrice);
 
-    const po = renderComponent(usdAmount);
+    const po = renderComponent({ usdAmount, hasUnpricedTokens: false });
 
-    expect(await po.getTooltipIconPo().getTooltipText()).toEqual(
+    expect(await po.getExchangeRateTooltipIconPo().getTooltipText()).toEqual(
       "1 ICP = $10.00 Token prices are provided by ICPSwap."
     );
   });
@@ -95,7 +104,7 @@ describe("UsdValueBanner", () => {
 
     setIcpPrice(icpPrice);
 
-    const po = renderComponent(usdAmount);
+    const po = renderComponent({ usdAmount, hasUnpricedTokens: false });
 
     expect(await po.hasError()).toBe(false);
   });
@@ -106,11 +115,39 @@ describe("UsdValueBanner", () => {
 
     setIcpPrice(icpPrice);
 
-    const po = renderComponent(usdAmount);
+    const po = renderComponent({ usdAmount, hasUnpricedTokens: false });
 
     expect(await po.hasError()).toBe(true);
-    expect(await po.getTooltipIconPo().getTooltipText()).toEqual(
+    expect(await po.getExchangeRateTooltipIconPo().getTooltipText()).toEqual(
       "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment."
+    );
+  });
+
+  it("should show a tooltip about unpriced tokens", async () => {
+    const hasUnpricedTokens = true;
+    const usdAmount = 50;
+    const icpPrice = 10;
+
+    setIcpPrice(icpPrice);
+
+    const po = renderComponent({ usdAmount, hasUnpricedTokens });
+
+    expect(await po.getTotalsTooltipIconPo().isPresent()).toBe(
+      hasUnpricedTokens
+    );
+  });
+
+  it("should not show a tooltip about unpriced tokens", async () => {
+    const hasUnpricedTokens = false;
+    const usdAmount = 50;
+    const icpPrice = 10;
+
+    setIcpPrice(icpPrice);
+
+    const po = renderComponent({ usdAmount, hasUnpricedTokens });
+
+    expect(await po.getTotalsTooltipIconPo().isPresent()).toBe(
+      hasUnpricedTokens
     );
   });
 });
