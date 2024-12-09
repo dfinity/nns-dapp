@@ -12,5 +12,6 @@ export const loadIcpSwapTickers = async (): Promise<void> => {
     icpSwapTickersStore.set(tickers);
   } catch (error) {
     console.error(error);
+    icpSwapTickersStore.set("error");
   }
 };

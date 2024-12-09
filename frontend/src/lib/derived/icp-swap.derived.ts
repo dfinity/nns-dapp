@@ -18,8 +18,8 @@ export type IcpSwapUsdPricesStore = Readable<IcpSwapUsdPricesStoreData>;
 export const icpSwapUsdPricesStore: IcpSwapUsdPricesStore = derived(
   icpSwapTickersStore,
   (tickers) => {
-    if (isNullish(tickers)) {
-      return undefined;
+    if (isNullish(tickers) || tickers === "error") {
+      return tickers;
     }
     // The contents of icpSwapTickersStore come from ICP Swap, so there's no
     // guarantee that it's format is as expected.

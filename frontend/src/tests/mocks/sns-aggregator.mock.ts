@@ -82,6 +82,7 @@ export const aggregatorSnsMockWith = ({
   tokenMetadata,
   index,
   nervousFunctions,
+  swapOpenTimestampSeconds,
   swapDueTimestampSeconds,
   nnsProposalId,
   totalTokenSupply,
@@ -105,6 +106,7 @@ export const aggregatorSnsMockWith = ({
   tokenMetadata?: Partial<IcrcTokenMetadata>;
   index?: number;
   nervousFunctions?: SnsNervousSystemFunction[];
+  swapOpenTimestampSeconds?: number;
   swapDueTimestampSeconds?: number;
   nnsProposalId?: number;
   totalTokenSupply?: bigint;
@@ -134,6 +136,7 @@ export const aggregatorSnsMockWith = ({
     swap: {
       ...aggregatorSnsMockDto.swap_state.swap,
       lifecycle,
+      decentralization_sale_open_timestamp_seconds: swapOpenTimestampSeconds,
       init: {
         ...aggregatorSnsMockDto.swap_state.swap.init,
         restricted_countries: nonNullish(restrictedCountries)
