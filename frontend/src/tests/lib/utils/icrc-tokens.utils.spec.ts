@@ -1,30 +1,20 @@
-import {
-  OWN_CANISTER_ID,
-  OWN_CANISTER_ID_TEXT,
-} from "$lib/constants/canister-ids.constants";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_LEDGER_CANISTER_ID,
   CKTESTBTC_LEDGER_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_LEDGER_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { CKUSDC_LEDGER_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
-import { tokensStore } from "$lib/stores/tokens.store";
 import {
-  fillTokensStoreFromAggregatorData,
   isImportantCkToken,
   mapOptionalToken,
 } from "$lib/utils/icrc-tokens.utils";
-import {
-  aggregatorSnsMockDto,
-  aggregatorTokenMock,
-} from "$tests/mocks/sns-aggregator.mock";
 import {
   mockQueryTokenResponse,
   mockSnsToken,
   principal,
 } from "$tests/mocks/sns-projects.mock";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
-import { get } from "svelte/store";
 
 describe("ICRC tokens utils", () => {
   describe("mapOptionalToken", () => {
@@ -73,31 +63,6 @@ describe("ICRC tokens utils", () => {
         decimals: 8,
         logo,
       });
-    });
-  });
-
-  describe("fillTokensStoreFromAggregatorData", () => {
-    it("should fill the tokens store with SNS tokens", () => {
-      expect(Object.keys(get(tokensStore))).toEqual([OWN_CANISTER_ID_TEXT]);
-      fillTokensStoreFromAggregatorData({
-        tokensStore,
-        aggregatorData: [aggregatorSnsMockDto],
-      });
-      const tokensStoreData = get(tokensStore);
-
-      expect(Object.keys(tokensStoreData)).toEqual([
-        OWN_CANISTER_ID_TEXT,
-        aggregatorSnsMockDto.canister_ids.root_canister_id,
-        aggregatorSnsMockDto.canister_ids.ledger_canister_id,
-      ]);
-      expect(
-        tokensStoreData[aggregatorSnsMockDto.canister_ids.ledger_canister_id]
-          .token
-      ).toEqual(aggregatorTokenMock);
-      expect(
-        tokensStoreData[aggregatorSnsMockDto.canister_ids.root_canister_id]
-          .token
-      ).toEqual(aggregatorTokenMock);
     });
   });
 
