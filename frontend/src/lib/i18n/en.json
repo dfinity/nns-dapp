@@ -785,7 +785,7 @@
   },
   "sns_launchpad": {
     "header": "Launchpad",
-    "committed_projects": "Launched",
+    "committed_projects": "Latest Launches",
     "no_committed_projects": "No launched projects so far.",
     "no_opening_soon_projects": "No projects opening soon.",
     "no_projects": "No projects for this state.",
