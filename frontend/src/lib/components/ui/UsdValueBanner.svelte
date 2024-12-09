@@ -8,6 +8,7 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let usdAmount: number | undefined;
+  export let hasUnpricedTokens: boolean;
 
   const absentValue = "-/-";
 
@@ -51,9 +52,16 @@
   </div>
   <div class="text-content">
     <div class="totals">
-      <h1 class="primary-amount" data-tid="primary-amount">
-        ${usdAmountFormatted}
-      </h1>
+      <div class="primary-amount-row">
+        <span class="primary-amount" data-tid="primary-amount">
+          ${usdAmountFormatted}
+        </span>
+        {#if hasPrices && hasUnpricedTokens}
+          <TooltipIcon>
+            {$i18n.accounts.unpriced_tokens_warning}
+          </TooltipIcon>
+        {/if}
+      </div>
       <div class="secondary-amount" data-tid="secondary-amount">
         {icpAmountFormatted}
         {$i18n.core.icp}
@@ -114,8 +122,15 @@
       justify-content: space-between;
 
       .totals {
-        .primary-amount {
-          margin: 0;
+        .primary-amount-row {
+          display: flex;
+          align-items: center;
+          gap: var(--padding-0_5x);
+
+          .primary-amount {
+            font-size: var(--font-size-h1);
+            font-weight: var(--font-weight-bold);
+          }
         }
         display: flex;
         flex-direction: column;
