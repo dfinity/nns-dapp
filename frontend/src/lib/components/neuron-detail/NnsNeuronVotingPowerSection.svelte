@@ -11,11 +11,13 @@
     neuronStake,
   } from "$lib/utils/neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
+  import NnsNeuronRewardStatusAction from "./NnsNeuronRewardStatusAction.svelte";
   import NnsNeuronDissolveDelayItemAction from "./NnsNeuronDissolveDelayItemAction.svelte";
   import NnsNeuronStateItemAction from "./NnsNeuronStateItemAction.svelte";
   import NnsStakeItemAction from "./NnsStakeItemAction.svelte";
   import { Html, Section } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
+  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
 
   export let neuron: NeuronInfo;
 
@@ -77,6 +79,9 @@
     <NnsStakeItemAction {neuron} />
     <NnsNeuronStateItemAction {neuron} />
     <NnsNeuronDissolveDelayItemAction {neuron} />
+    {#if ENABLE_PERIODIC_FOLLOWING_CONFIRMATION}
+      <NnsNeuronRewardStatusAction {neuron} />
+    {/if}
   </ul>
 </Section>
 
