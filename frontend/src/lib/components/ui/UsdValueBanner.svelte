@@ -5,7 +5,7 @@
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { i18n } from "$lib/stores/i18n";
   import { formatNumber } from "$lib/utils/format.utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let usdAmount: number | undefined;
 
@@ -17,7 +17,10 @@
     : absentValue;
 
   let icpPrice: number | undefined;
-  $: icpPrice = $icpSwapUsdPricesStore?.[LEDGER_CANISTER_ID.toText()];
+  $: icpPrice =
+    isNullish($icpSwapUsdPricesStore) || $icpSwapUsdPricesStore === "error"
+      ? undefined
+      : $icpSwapUsdPricesStore[LEDGER_CANISTER_ID.toText()];
 
   let icpPriceFormatted: string;
   $: icpPriceFormatted = nonNullish(icpPrice)

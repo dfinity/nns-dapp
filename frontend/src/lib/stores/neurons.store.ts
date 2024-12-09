@@ -8,7 +8,7 @@ export interface NeuronsStore {
 }
 
 /**
- * A store that contains the neurons that have a valid stake.
+ * A store that contains all the neurons.
  *
  * - setNeurons: replace the current list of neurons with a new list
  * - pushNeurons: append neurons to the current list of neurons. Notably useful when staking a new neuron.
