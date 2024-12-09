@@ -8,14 +8,29 @@
   import { soonLosingRewardNeuronsStore } from "$lib/derived/neurons.derived";
   import NnsLosingRewardsNeuronCard from "$lib/components/neurons/NnsLosingRewardsNeuronCard.svelte";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
+  import { goto } from "$app/navigation";
+  import { buildNeuronUrl } from "$lib/utils/navigation.utils";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+  import type { NeuronInfo } from "@dfinity/nns";
 
-  const dispatcher = createEventDispatcher();
+  const dispatcher = createEventDispatcher<{ nnsClose: void }>();
 
   // Load KnownNeurons which are used in the FollowNnsTopicSections
   onMount(() => listKnownNeurons());
 
   const confirm = () => {
     // TBD
+  };
+  const close = () => dispatcher("nnsClose");
+
+  const navigateToNeuronDetail = async (neuron: NeuronInfo) => {
+    close();
+    goto(
+      buildNeuronUrl({
+        universe: OWN_CANISTER_ID_TEXT,
+        neuronId: neuron.neuronId,
+      })
+    );
   };
 </script>
 
@@ -37,15 +52,16 @@
     <ul class="cards">
       {#each $soonLosingRewardNeuronsStore as neuron (neuron.neuronId)}
         <li>
-          <NnsLosingRewardsNeuronCard {neuron} />
+          <NnsLosingRewardsNeuronCard
+            {neuron}
+            on:nnsClick={() => navigateToNeuronDetail(neuron)}
+          />
         </li>
       {/each}
     </ul>
     <div class="toolbar">
-      <button
-        on:click={() => dispatcher("nnsClose")}
-        class="secondary"
-        data-tid="cancel-button">{$i18n.core.cancel}</button
+      <button on:click={close} class="secondary" data-tid="cancel-button"
+        >{$i18n.core.cancel}</button
       >
       <button on:click={confirm} class="primary" data-tid="confirm-button"
         >{$i18n.losing_rewards_modal.confirm}</button

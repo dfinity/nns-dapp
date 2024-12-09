@@ -16,13 +16,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+- Sorts launched projects in the Launchpad page from newest to oldest.
+
 #### Deprecated
 
 #### Removed
 
 #### Fixed
-
-- Handles abandoned SNSs by adding an override for the name and token.symbol values as well as sorting them down on the lists. 
 
 #### Security
 

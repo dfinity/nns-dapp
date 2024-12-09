@@ -26,6 +26,7 @@ export const setSnsProjects = (
     tokenMetadata?: Partial<IcrcTokenMetadata>;
     nervousFunctions?: SnsNervousSystemFunction[];
     swapDueTimestampSeconds?: number;
+    swapOpenTimestampSeconds?: number;
     nnsProposalId?: number;
     totalTokenSupply?: bigint;
     nervousSystemParameters?: CachedNervousSystemParametersDto;
@@ -51,6 +52,7 @@ export const setSnsProjects = (
       tokenMetadata: params.tokenMetadata,
       nervousFunctions: params.nervousFunctions,
       swapDueTimestampSeconds: params.swapDueTimestampSeconds,
+      swapOpenTimestampSeconds: params.swapOpenTimestampSeconds,
       nnsProposalId: params.nnsProposalId,
       totalTokenSupply: params.totalTokenSupply,
       nervousSystemParameters: params.nervousSystemParameters,
