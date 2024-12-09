@@ -1,5 +1,9 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
+import {
+  icpSwapUsdPricesStore,
+  type IcpSwapUsdPricesStore,
+  type IcpSwapUsdPricesStoreData,
+} from "$lib/derived/icp-swap.derived";
 import { failedExistentImportedTokenLedgerIdsStore } from "$lib/derived/imported-tokens.derived";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import {
@@ -11,7 +15,7 @@ import { sumAccounts } from "$lib/utils/accounts.utils";
 import { buildAccountsUrl, buildWalletUrl } from "$lib/utils/navigation.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
 import { toUserTokenFailed } from "$lib/utils/user-token.utils";
-import { TokenAmountV2, isNullish } from "@dfinity/utils";
+import { isNullish, TokenAmountV2 } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import type { UniversesAccounts } from "./accounts-list.derived";
 import { tokensListBaseStore } from "./tokens-list-base.derived";
@@ -25,13 +29,13 @@ const getUsdValue = ({
 }: {
   balance: TokenAmountV2;
   ledgerCanisterId: string;
-  icpSwapUsdPrices: Record<string, number> | undefined;
+  icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
 }): number | undefined => {
   const balanceE8s = Number(balance.toE8s());
   if (balanceE8s === 0) {
     return 0;
   }
-  if (isNullish(icpSwapUsdPrices)) {
+  if (isNullish(icpSwapUsdPrices) || icpSwapUsdPrices === "error") {
     return undefined;
   }
   const tokenUsdPrice = icpSwapUsdPrices[ledgerCanisterId];
@@ -50,7 +54,7 @@ const convertToUserTokenData = ({
   accounts: UniversesAccounts;
   tokensByUniverse: Record<string, IcrcTokenMetadata>;
   baseTokenData: UserTokenBase;
-  icpSwapUsdPrices: Record<string, number> | undefined;
+  icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
 }): UserToken => {
   const token = tokensByUniverse[baseTokenData.universeId.toText()];
   const rowHref = isUniverseNns(baseTokenData.universeId)
@@ -109,7 +113,7 @@ export const tokensListUserStore = derived<
     Readable<UniversesAccounts>,
     Readable<Record<string, IcrcTokenMetadata>>,
     Readable<Array<string>>,
-    Readable<Record<string, number> | undefined>,
+    IcpSwapUsdPricesStore,
   ],
   UserToken[]
 >(
