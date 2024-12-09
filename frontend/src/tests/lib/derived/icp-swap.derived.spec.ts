@@ -13,6 +13,12 @@ describe("icp-swap.derived", () => {
       expect(get(icpSwapUsdPricesStore)).toBeUndefined();
     });
 
+    it("should forward 'error' state", () => {
+      icpSwapTickersStore.set("error");
+
+      expect(get(icpSwapUsdPricesStore)).toBe("error");
+    });
+
     it("should be 'error' if tickers are not an array", () => {
       // This is theoretically possible because the tickers store content is
       // read from ICP Swap, which we have no control over.
