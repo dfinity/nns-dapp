@@ -12,6 +12,7 @@ import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 
 type TestPersonData = { name: string; age: number };
 type TestFormulaData = { formula: string; value: number };
@@ -445,7 +446,7 @@ describe("Export to Csv", () => {
       },
     ];
 
-    it("should generate metadata an empty data when no neurons are provided", () => {
+    it("should generate metadata and empty data when no neurons are provided", () => {
       expect(
         buildNeuronsDatasets({
           neurons: [],
@@ -461,9 +462,41 @@ describe("Export to Csv", () => {
     });
 
     it("should generate datasets for neurons", () => {
-      const neurons = [mockNeuron];
+      const createdTimestampSeconds = 1602339200n; // Oct 10, 2020
+      const mockLockedNeuron: NeuronInfo = {
+        ...mockNeuron,
+        neuronId: 10n,
+        state: NeuronState.Locked,
+        dissolveDelaySeconds: 100n,
+        createdTimestampSeconds,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: "controllerId",
+          cachedNeuronStake: 30_000_000n,
+          maturityE8sEquivalent: 100000n,
+          stakedMaturityE8sEquivalent: 200000000n,
+          neuronFees: 10000n,
+          accountIdentifier: "accountIdentifier",
+        },
+      };
+      const mockDissolvingNeuron: NeuronInfo = {
+        ...mockNeuron,
+        neuronId: 10n,
+        state: NeuronState.Dissolving,
+        dissolveDelaySeconds: 100n,
+        createdTimestampSeconds,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: "controllerId",
+          cachedNeuronStake: 30_000_000n,
+          maturityE8sEquivalent: 100000n,
+          stakedMaturityE8sEquivalent: 200000000n,
+          neuronFees: 10000n,
+          accountIdentifier: "accountIdentifier",
+        },
+      };
       const datasets = buildNeuronsDatasets({
-        neurons,
+        neurons: [mockLockedNeuron, mockDissolvingNeuron],
         i18n: en,
         nnsAccountPrincipal: mockPrincipal,
       });
@@ -472,18 +505,31 @@ describe("Export to Csv", () => {
         {
           data: [
             {
-              availableMaturity: "0.0000001",
-              controllerId: "",
-              creationDate: "Jan 1, 1970",
+              availableMaturity: "0.001",
+              controllerId: "controllerId",
+              creationDate: "Oct 10, 2020",
               dissolveDate: "N/A",
-              dissolveDelaySeconds: "3 hours, 5 minutes",
-              neuronAccountId:
-                "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
-              neuronId: "1",
+              dissolveDelaySeconds: "1 minute",
+              neuronAccountId: "accountIdentifier",
+              neuronId: "10",
               project: "Internet Computer",
-              stake: "30.00",
-              stakedMaturity: "0",
+              stake: "0.2999",
+              stakedMaturity: "2.00",
               state: "Locked",
+              symbol: "ICP",
+            },
+            {
+              availableMaturity: "0.001",
+              controllerId: "controllerId",
+              creationDate: "Oct 10, 2020",
+              dissolveDate: "Oct 14, 2023",
+              dissolveDelaySeconds: "1 minute",
+              neuronAccountId: "accountIdentifier",
+              neuronId: "10",
+              project: "Internet Computer",
+              stake: "0.2999",
+              stakedMaturity: "2.00",
+              state: "Dissolving",
               symbol: "ICP",
             },
           ],
