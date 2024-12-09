@@ -443,7 +443,7 @@ export const isHotKeyControllable = ({
 
 export type NeuronTagData = {
   text: string;
-  status?: "danger";
+  status?: "danger" | "warning";
 };
 
 export const getNeuronTags = ({
