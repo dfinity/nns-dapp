@@ -788,7 +788,6 @@ interface I18nNeuron_detail {
   amount_maturity: string;
   created: string;
   reward_status_active: string;
-  reward_status_active_description: string;
   reward_status_losing_soon: string;
   reward_status_losing_soon_description: string;
   reward_status_inactive: string;

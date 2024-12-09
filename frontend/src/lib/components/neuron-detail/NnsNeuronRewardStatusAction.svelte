@@ -1,7 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import {
-    getVotingPowerRefreshedTimestampSeconds,
     isNeuronLosingRewards,
     secondsUntilLosingRewards,
     shouldDisplayRewardLossNotification,
@@ -15,8 +14,6 @@
   import { type NeuronInfo } from "@dfinity/nns";
   import { secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { secondsToDate } from "$lib/utils/date.utils";
-  import { START_REDUCING_VOTING_POWER_AFTER_SECONDS } from "$lib/constants/neurons.constants";
 
   export let neuron: NeuronInfo;
 
@@ -42,15 +39,7 @@
         : $i18n.neuron_detail.reward_status_active;
   const getDescription = (neuron: NeuronInfo): string =>
     isLosingRewards
-      ? replacePlaceholders(
-          $i18n.neuron_detail.reward_status_inactive_description,
-          {
-            $date: secondsToDate(
-              Number(getVotingPowerRefreshedTimestampSeconds(neuron)) +
-                START_REDUCING_VOTING_POWER_AFTER_SECONDS
-            ),
-          }
-        )
+      ? $i18n.neuron_detail.reward_status_inactive_description
       : replacePlaceholders(
           $i18n.neuron_detail.reward_status_losing_soon_description,
           {
@@ -84,7 +73,7 @@
     {getDescription(neuron)}
   </span>
 
-  <!-- TODO(mstr): Add a button to confirm following. -->
+  <!-- TODO(mstr): Add a button to confirm a single following. -->
 </CommonItemAction>
 
 <style lang="scss">
