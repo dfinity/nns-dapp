@@ -1,10 +1,11 @@
 <script lang="ts">
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import HideZeroBalancesToggle from "$lib/components/tokens/TokensTable/HideZeroBalancesToggle.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
+  import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
+  import { ENABLE_USD_VALUES } from "$lib/stores/feature-flags.store";
   import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
@@ -12,11 +13,25 @@
   import type { UserToken } from "$lib/types/tokens-page";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
+  import { IconAccountsPage } from "@dfinity/gix-components";
   import { IconPlus, IconSettings, Tooltip } from "@dfinity/gix-components";
   import { Popover } from "@dfinity/gix-components";
-  import { TokenAmountV2, nonNullish } from "@dfinity/utils";
+  import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
 
   export let userTokensData: UserToken[];
+
+  const getUsdBalance = (token: UserToken) => {
+    if (!("balanceInUsd" in token) || isNullish(token.balanceInUsd)) {
+      return 0;
+    }
+    return token.balanceInUsd;
+  };
+
+  let totalBalanceInUsd: number;
+  $: totalBalanceInUsd = userTokensData.reduce(
+    (acc, token) => acc + getUsdBalance(token),
+    0
+  );
 
   let settingsButton: HTMLButtonElement | undefined;
   let settingsPopupVisible = false;
@@ -67,7 +82,13 @@
     ($importedTokensStore.importedTokens?.length ?? 0) >= MAX_IMPORTED_TOKENS;
 </script>
 
-<TestIdWrapper testId="tokens-page-component">
+<div class="wrapper" data-tid="tokens-page-component">
+  {#if $ENABLE_USD_VALUES}
+    <UsdValueBanner usdAmount={totalBalanceInUsd}>
+      <IconAccountsPage slot="icon" />
+    </UsdValueBanner>
+  {/if}
+
   <TokensTable
     userTokensData={shownTokensData}
     on:nnsAction
@@ -130,11 +151,17 @@
   {#if showImportTokenModal}
     <ImportTokenModal on:nnsClose={() => (showImportTokenModal = false)} />
   {/if}
-</TestIdWrapper>
+</div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/effect";
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+  }
 
   .settings-button {
     --content-color: var(--text-description);
