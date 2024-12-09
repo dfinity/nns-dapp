@@ -9,8 +9,6 @@
     CsvGenerationError,
     FileSystemAccessError,
     generateCsvFileToSave,
-    type CsvHeader,
-    type NeuronsCsvData,
   } from "$lib/utils/export-to-csv.utils";
   import { toastsError } from "$lib/stores/toasts.store";
   import { formatDateCompact } from "$lib/utils/date.utils";
@@ -34,66 +32,64 @@
     if (!nnsAccountPrincipal) return;
 
     try {
-      const datasets = buildNeuronsDatasets({
-        neurons,
-        nnsAccountPrincipal,
-        i18n: $i18n,
-      });
-      const headers: CsvHeader<NeuronsCsvData>[] = [
-        {
-          id: "neuronId",
-          label: $i18n.export_csv_neurons.neuron_id,
-        },
-        {
-          id: "project",
-          label: $i18n.export_csv_neurons.project,
-        },
-        {
-          id: "symbol",
-          label: $i18n.export_csv_neurons.symbol,
-        },
-        {
-          id: "neuronAccountId",
-          label: $i18n.export_csv_neurons.neuron_account_id,
-        },
-        {
-          id: "controllerId",
-          label: $i18n.export_csv_neurons.controller_id,
-        },
-        {
-          id: "stake",
-          label: $i18n.export_csv_neurons.stake,
-        },
-        {
-          id: "availableMaturity",
-          label: $i18n.export_csv_neurons.available_maturity,
-        },
-        {
-          id: "stakedMaturity",
-          label: $i18n.export_csv_neurons.staked_maturity,
-        },
-        {
-          id: "dissolveDelaySeconds",
-          label: $i18n.export_csv_neurons.dissolve_delay,
-        },
-        {
-          id: "dissolveDate",
-          label: $i18n.export_csv_neurons.dissolve_date,
-        },
-        {
-          id: "creationDate",
-          label: $i18n.export_csv_neurons.creation_date,
-        },
-        {
-          id: "state",
-          label: $i18n.export_csv_neurons.state,
-        },
-      ];
       const fileName = `neurons_export_${formatDateCompact(new Date())}`;
 
       await generateCsvFileToSave({
-        datasets,
-        headers,
+        datasets: buildNeuronsDatasets({
+          neurons,
+          nnsAccountPrincipal,
+          i18n: $i18n,
+        }),
+        headers: [
+          {
+            id: "neuronId",
+            label: $i18n.export_csv_neurons.neuron_id,
+          },
+          {
+            id: "project",
+            label: $i18n.export_csv_neurons.project,
+          },
+          {
+            id: "symbol",
+            label: $i18n.export_csv_neurons.symbol,
+          },
+          {
+            id: "neuronAccountId",
+            label: $i18n.export_csv_neurons.neuron_account_id,
+          },
+          {
+            id: "controllerId",
+            label: $i18n.export_csv_neurons.controller_id,
+          },
+          {
+            id: "stake",
+            label: $i18n.export_csv_neurons.stake,
+          },
+          {
+            id: "availableMaturity",
+            label: $i18n.export_csv_neurons.available_maturity,
+          },
+          {
+            id: "stakedMaturity",
+            label: $i18n.export_csv_neurons.staked_maturity,
+          },
+          {
+            id: "dissolveDelaySeconds",
+            label: $i18n.export_csv_neurons.dissolve_delay,
+          },
+          {
+            id: "dissolveDate",
+            label: $i18n.export_csv_neurons.dissolve_date,
+          },
+          {
+            id: "creationDate",
+            label: $i18n.export_csv_neurons.creation_date,
+          },
+          {
+            id: "state",
+            label: $i18n.export_csv_neurons.state,
+          },
+        ],
         fileName,
       });
     } catch (error) {
