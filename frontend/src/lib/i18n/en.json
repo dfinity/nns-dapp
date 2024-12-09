@@ -274,7 +274,8 @@
     "received_amount_notice": "Received Amount *",
     "transaction_time": "Transaction Time",
     "transaction_time_seconds": "Seconds",
-    "token_price_source": "Token prices are provided by ICPSwap."
+    "token_price_error": "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment.",
+    "token_price_source": "Token prices are in ckUSDC based on data provided by ICPSwap."
   },
   "neuron_types": {
     "seed": "Seed",
@@ -789,7 +790,7 @@
   },
   "sns_launchpad": {
     "header": "Launchpad",
-    "committed_projects": "Launched",
+    "committed_projects": "Latest Launches",
     "no_committed_projects": "No launched projects so far.",
     "no_opening_soon_projects": "No projects opening soon.",
     "no_projects": "No projects for this state.",

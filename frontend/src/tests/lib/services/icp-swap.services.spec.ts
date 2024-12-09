@@ -33,7 +33,7 @@ describe("icp-swap.services", () => {
       expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
     });
 
-    it("should not change the store when there is an error", async () => {
+    it("should set error state on store when there is an error", async () => {
       vi.spyOn(console, "error").mockReturnValue();
 
       const error = new Error("Failed to fetch tickers");
@@ -43,7 +43,7 @@ describe("icp-swap.services", () => {
 
       await loadIcpSwapTickers();
 
-      expect(get(icpSwapTickersStore)).toBeUndefined();
+      expect(get(icpSwapTickersStore)).toBe("error");
     });
   });
 });

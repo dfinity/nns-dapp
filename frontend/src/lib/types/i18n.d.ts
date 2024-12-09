@@ -285,6 +285,7 @@ interface I18nAccounts {
   received_amount_notice: string;
   transaction_time: string;
   transaction_time_seconds: string;
+  token_price_error: string;
   token_price_source: string;
 }
 

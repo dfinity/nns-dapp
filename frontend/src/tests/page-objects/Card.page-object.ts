@@ -39,4 +39,8 @@ export class CardPo extends BasePageObject {
   async getHref(): Promise<string> {
     return await this.root.getAttribute("href");
   }
+
+  async click(): Promise<void> {
+    return this.root.click();
+  }
 }
