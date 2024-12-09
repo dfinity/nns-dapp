@@ -1439,6 +1439,10 @@ describe("neuron-utils", () => {
       text: "Missing rewards",
       status: "danger",
     } as NeuronTagData;
+    const missingRewardsSoonTag = {
+      text: "10 days to confirm",
+      status: "warning",
+    } as NeuronTagData;
     const ectTag = {
       text: "Early Contributor Token",
     } as NeuronTagData;
@@ -1665,6 +1669,15 @@ describe("neuron-utils", () => {
           ),
         },
       };
+      const losingRewardSoonNeuron: NeuronInfo = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          votingPowerRefreshedTimestampSeconds: BigInt(
+            nowInSeconds() - SECONDS_IN_HALF_YEAR + 10 * SECONDS_IN_DAY
+          ),
+        },
+      };
 
       it("returns 'Missing rewards' tag", () => {
         overrideFeatureFlagsStore.setFlag(
@@ -1691,6 +1704,38 @@ describe("neuron-utils", () => {
         expect(
           getNeuronTags({
             neuron: losingRewardNeuron,
+            identity: mockIdentity,
+            accounts: accountsWithHW,
+            i18n: en,
+          })
+        ).toEqual([]);
+      });
+
+      it("returns 'Missing rewards soon' tag", () => {
+        overrideFeatureFlagsStore.setFlag(
+          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+          true
+        );
+
+        expect(
+          getNeuronTags({
+            neuron: losingRewardSoonNeuron,
+            identity: mockIdentity,
+            accounts: accountsWithHW,
+            i18n: en,
+          })
+        ).toEqual([missingRewardsSoonTag]);
+      });
+
+      it("returns no 'Missing rewards soon' tag without feature flag", () => {
+        overrideFeatureFlagsStore.setFlag(
+          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+          false
+        );
+
+        expect(
+          getNeuronTags({
+            neuron: losingRewardSoonNeuron,
             identity: mockIdentity,
             accounts: accountsWithHW,
             i18n: en,

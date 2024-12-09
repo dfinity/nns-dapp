@@ -16,6 +16,7 @@ describe("NeuronTag", () => {
 
     expect(await po.getText()).toEqual("test");
     expect(await po.isIntentError()).toEqual(false);
+    expect(await po.isIntentWarning()).toEqual(false);
     expect(await po.isSizeLarge()).toEqual(false);
   });
 
@@ -24,7 +25,17 @@ describe("NeuronTag", () => {
       props: { tag: { text: "test", status: "danger" } },
     });
 
+    expect(await po.isIntentWarning()).toEqual(false);
     expect(await po.isIntentError()).toEqual(true);
+  });
+
+  it("should render in warning status", async () => {
+    const po = renderComponent({
+      props: { tag: { text: "test", status: "warning" } },
+    });
+
+    expect(await po.isIntentError()).toEqual(false);
+    expect(await po.isIntentWarning()).toEqual(true);
   });
 
   it("should render large tag", async () => {
