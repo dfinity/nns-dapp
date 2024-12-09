@@ -41,19 +41,22 @@ describe("NnsNeuronRewardStatusAction", () => {
   });
 
   it("should render losing soon neuron state", async () => {
+    const tenDays = 10;
     const testNeuron = {
       ...mockNeuron,
       fullNeuron: {
         ...mockFullNeuron,
         votingPowerRefreshedTimestampSeconds: BigInt(
-          nowInSeconds() - SECONDS_IN_HALF_YEAR + 10 * SECONDS_IN_DAY
+          nowInSeconds() - SECONDS_IN_HALF_YEAR + tenDays * SECONDS_IN_DAY
         ),
       },
     };
     const po = renderComponent(testNeuron);
 
-    expect(await po.getTitle()).toBe("Losing rewards soon");
-    expect(await po.getDescription()).toBe("10 days to confirm following");
+    expect(await po.getTitle()).toBe("Missing rewards soon");
+    expect(await po.getDescription()).toBe(
+      `${tenDays} days to confirm following`
+    );
   });
 
   it("should render active neuron reward state", async () => {
@@ -69,6 +72,8 @@ describe("NnsNeuronRewardStatusAction", () => {
     const po = renderComponent(testNeuron);
 
     expect(await po.getTitle()).toBe("Inactive neuron");
-    expect(await po.getDescription()).toBe("Losing rewards since Jan 1, 2024");
+    expect(await po.getDescription()).toBe(
+      "Confirm following or vote manually to continue receiving rewards"
+    );
   });
 });
