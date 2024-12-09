@@ -24,4 +24,9 @@ export class UsdValueBannerPo extends BasePageObject {
   getIcpPrice(): Promise<string> {
     return this.getText("icp-price");
   }
+
+  async hasError(): Promise<boolean> {
+    const classNames = await this.root.getClasses();
+    return classNames.includes("has-error");
+  }
 }
