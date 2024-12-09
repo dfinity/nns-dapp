@@ -27,7 +27,7 @@
     return token.balanceInUsd;
   };
 
-  let totalBalanceInUsd: number | undefined;
+  let totalBalanceInUsd: number;
   $: totalBalanceInUsd = userTokensData.reduce(
     (acc, token) => acc + getUsdBalance(token),
     0
