@@ -1404,12 +1404,14 @@ describe("project-utils", () => {
 });
 
 describe("comparesByDecentralizationSaleOpenTimestamp", () => {
+  const initialValue = 1000n;
+
   it("should return -1 if the first project is newer", () => {
     const project1 = createMockSnsFullProject({
       rootCanisterId: rootCanisterIdMock,
       summaryParams: {
         lifecycle: SnsSwapLifecycle.Open,
-        swapOpenTimestampSeconds: BigInt(nowInSeconds() + 1),
+        swapOpenTimestampSeconds: initialValue + 1n,
       },
     });
 
@@ -1417,7 +1419,7 @@ describe("comparesByDecentralizationSaleOpenTimestamp", () => {
       rootCanisterId: rootCanisterIdMock,
       summaryParams: {
         lifecycle: SnsSwapLifecycle.Open,
-        swapOpenTimestampSeconds: BigInt(nowInSeconds()),
+        swapOpenTimestampSeconds: initialValue,
       },
     });
     expect(
@@ -1429,14 +1431,14 @@ describe("comparesByDecentralizationSaleOpenTimestamp", () => {
     const project1 = createMockSnsFullProject({
       rootCanisterId: rootCanisterIdMock,
       summaryParams: {
-        swapOpenTimestampSeconds: BigInt(nowInSeconds()),
+        swapOpenTimestampSeconds: initialValue,
       },
     });
 
     const project2 = createMockSnsFullProject({
       rootCanisterId: rootCanisterIdMock,
       summaryParams: {
-        swapOpenTimestampSeconds: BigInt(nowInSeconds() + 1),
+        swapOpenTimestampSeconds: initialValue + 1n,
       },
     });
     expect(
@@ -1448,7 +1450,7 @@ describe("comparesByDecentralizationSaleOpenTimestamp", () => {
     const project1 = createMockSnsFullProject({
       rootCanisterId: rootCanisterIdMock,
       summaryParams: {
-        swapOpenTimestampSeconds: BigInt(nowInSeconds()),
+        swapOpenTimestampSeconds: initialValue,
       },
     });
 

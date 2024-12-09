@@ -461,5 +461,5 @@ export const snsProjectDashboardUrl = (rootCanisterId: Principal): string =>
 
 export const comparesByDecentralizationSaleOpenTimestampDesc =
   createDescendingComparator((sns: SnsFullProject): number =>
-    Number(sns.summary.swap?.decentralization_sale_open_timestamp_seconds)
+    Number(sns.summary.swap?.decentralization_sale_open_timestamp_seconds ?? 0)
   );
