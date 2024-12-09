@@ -65,15 +65,7 @@ describe("Projects", () => {
     ];
 
     beforeEach(() => {
-      setSnsProjects(
-        mockProjects.map(
-          ({ lifecycle, swapOpenTimestampSeconds, projectName }) => ({
-            lifecycle,
-            swapOpenTimestampSeconds,
-            projectName,
-          })
-        )
-      );
+      setSnsProjects(mockProjects);
     });
 
     it("should render 'Open' projects sorted from newest to oldest", async () => {
@@ -83,9 +75,7 @@ describe("Projects", () => {
       });
       const projects = await po.getProjectCardPos();
 
-      expect(projects.length).toBe(
-        mockProjects.filter((p) => p.lifecycle === SnsSwapLifecycle.Open).length
-      );
+      expect(projects.length).toBe(2);
       expect(await projects[0].getProjectName()).toBe("Project Open 10");
       expect(await projects[1].getProjectName()).toBe("Project Open 1");
     });
@@ -97,10 +87,7 @@ describe("Projects", () => {
       });
       const projects = await po.getProjectCardPos();
 
-      expect(projects.length).toBe(
-        mockProjects.filter((p) => p.lifecycle === SnsSwapLifecycle.Adopted)
-          .length
-      );
+      expect(projects.length).toBe(2);
       expect(await projects[0].getProjectName()).toBe("Project Adopted 10");
       expect(await projects[1].getProjectName()).toBe("Project Adopted 1");
     });
@@ -112,10 +99,7 @@ describe("Projects", () => {
       });
       const projects = await po.getProjectCardPos();
 
-      expect(projects.length).toBe(
-        mockProjects.filter((p) => p.lifecycle === SnsSwapLifecycle.Committed)
-          .length
-      );
+      expect(projects.length).toBe(3);
       expect(await projects[0].getProjectName()).toBe("Project Committed 100");
       expect(await projects[1].getProjectName()).toBe("Project Committed 10");
       expect(await projects[2].getProjectName()).toBe("Project Committed 1");
