@@ -79,7 +79,7 @@
     <NnsStakeItemAction {neuron} />
     <NnsNeuronStateItemAction {neuron} />
     <NnsNeuronDissolveDelayItemAction {neuron} />
-    {#if ENABLE_PERIODIC_FOLLOWING_CONFIRMATION}
+    {#if $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION}
       <NnsNeuronRewardStatusAction {neuron} />
     {/if}
   </ul>
