@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-11-28_03-15-revert-hashes-in-blocks/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-12-06_03-16-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -397,6 +397,11 @@ pub struct RewardNodeProviders {
     pub rewards: Vec<RewardNodeProvider>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct VotingPowerEconomics {
+    pub start_reducing_voting_power_after_seconds: Option<u64>,
+    pub clear_following_after_seconds: Option<u64>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct Decimal {
     pub human_readable: Option<String>,
 }
@@ -416,6 +421,7 @@ pub struct NeuronsFundEconomics {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NetworkEconomics {
     pub neuron_minimum_stake_e8s: u64,
+    pub voting_power_economics: Option<VotingPowerEconomics>,
     pub max_proposals_to_keep_per_topic: u32,
     pub neuron_management_fee_per_proposal_e8s: u64,
     pub reject_cost_e8s: u64,
@@ -747,9 +753,11 @@ pub struct Neuron {
     pub recent_ballots: Vec<BallotInfo>,
     pub voting_power_refreshed_timestamp_seconds: Option<u64>,
     pub kyc_verified: bool,
+    pub potential_voting_power: Option<u64>,
     pub neuron_type: Option<i32>,
     pub not_for_profit: bool,
     pub maturity_e8s_equivalent: u64,
+    pub deciding_voting_power: Option<u64>,
     pub cached_neuron_stake_e8s: u64,
     pub created_timestamp_seconds: u64,
     pub auto_stake_maturity: Option<bool>,
@@ -824,7 +832,9 @@ pub struct NeuronInfo {
     pub dissolve_delay_seconds: u64,
     pub recent_ballots: Vec<BallotInfo>,
     pub voting_power_refreshed_timestamp_seconds: Option<u64>,
+    pub potential_voting_power: Option<u64>,
     pub neuron_type: Option<i32>,
+    pub deciding_voting_power: Option<u64>,
     pub created_timestamp_seconds: u64,
     pub state: i32,
     pub stake_e8s: u64,
