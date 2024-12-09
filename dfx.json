@@ -441,7 +441,7 @@
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2024-12-04",
-        "IC_COMMIT_FOR_PROPOSALS": "release-2024-11-28_03-15-revert-hashes-in-blocks",
+        "IC_COMMIT_FOR_PROPOSALS": "release-2024-12-06_03-16-base",
         "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2024-11-28_03-15-revert-hashes-in-blocks"
       },
       "packtool": ""
