@@ -14,6 +14,7 @@ import type {
 } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import type { StoreData } from "$lib/types/store";
+import { createDescendingComparator } from "$lib/utils/sort.utils";
 import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 import {
@@ -457,3 +458,8 @@ export const isCommitmentSplitWithNeuronsFund = (
 
 export const snsProjectDashboardUrl = (rootCanisterId: Principal): string =>
   `https://dashboard.internetcomputer.org/sns/${rootCanisterId.toText()}`;
+
+export const comparesByDecentralizationSaleOpenTimestampDesc =
+  createDescendingComparator((sns: SnsFullProject): number =>
+    Number(sns.summary.swap?.decentralization_sale_open_timestamp_seconds)
+  );
