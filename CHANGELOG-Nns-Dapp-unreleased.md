@@ -24,8 +24,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-- Handles abandoned SNSs by adding an override for the name and token.symbol values as well as sorting them down on the lists. 
-
 #### Security
 
 #### Not Published

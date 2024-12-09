@@ -11,6 +11,16 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 134397
+
+### Application
+
+#### Fixed
+
+- Handles abandoned SNSs by adding an override for the name and token.symbol values as well as sorting them down on the lists. 
+
+### Operations
+
 ## Proposal 134332
 
 ### Application

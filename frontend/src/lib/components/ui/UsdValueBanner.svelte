@@ -5,19 +5,27 @@
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { i18n } from "$lib/stores/i18n";
   import { formatNumber } from "$lib/utils/format.utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let usdAmount: number | undefined;
 
   const absentValue = "-/-";
 
+  let hasError: boolean;
+  $: hasError = $icpSwapUsdPricesStore === "error";
+
+  let hasPrices: boolean;
+  $: hasPrices = !hasError && nonNullish($icpSwapUsdPricesStore);
+
   let usdAmountFormatted: string;
-  $: usdAmountFormatted = nonNullish(usdAmount)
-    ? formatNumber(usdAmount)
-    : absentValue;
+  $: usdAmountFormatted =
+    nonNullish(usdAmount) && hasPrices ? formatNumber(usdAmount) : absentValue;
 
   let icpPrice: number | undefined;
-  $: icpPrice = $icpSwapUsdPricesStore?.[LEDGER_CANISTER_ID.toText()];
+  $: icpPrice =
+    isNullish($icpSwapUsdPricesStore) || $icpSwapUsdPricesStore === "error"
+      ? undefined
+      : $icpSwapUsdPricesStore[LEDGER_CANISTER_ID.toText()];
 
   let icpPriceFormatted: string;
   $: icpPriceFormatted = nonNullish(icpPrice)
@@ -33,7 +41,11 @@
     : absentValue;
 </script>
 
-<div class="wrapper" data-tid="usd-value-banner-component">
+<div
+  class="wrapper"
+  data-tid="usd-value-banner-component"
+  class:has-error={hasError}
+>
   <div class="table-banner-icon">
     <slot name="icon" />
   </div>
@@ -59,12 +71,16 @@
         >
       </span>
       <TooltipIcon>
-        <div class="mobile-only">
-          1 {$i18n.core.icp} = ${icpPriceFormatted}
-        </div>
-        <div>
-          {$i18n.accounts.token_price_source}
-        </div>
+        {#if hasError}
+          {$i18n.accounts.token_price_error}
+        {:else}
+          <div class="mobile-only">
+            1 {$i18n.core.icp} = ${icpPriceFormatted}
+          </div>
+          <div>
+            {$i18n.accounts.token_price_source}
+          </div>
+        {/if}
       </TooltipIcon>
     </div>
   </div>
@@ -115,6 +131,10 @@
           height: 20px;
         }
       }
+    }
+
+    &.has-error {
+      --tooltip-icon-color: var(--tag-failed-text);
     }
   }
 

@@ -19,6 +19,6 @@
   .wrapper {
     display: inline-flex;
     align-items: center;
-    color: var(--elements-icons);
+    color: var(--tooltip-icon-color, var(--elements-icons));
   }
 </style>
