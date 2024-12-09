@@ -85,7 +85,7 @@ describe("UsdValueBanner", () => {
     const po = renderComponent(usdAmount);
 
     expect(await po.getTooltipIconPo().getTooltipText()).toEqual(
-      "1 ICP = $10.00 Token prices are provided by ICPSwap."
+      "1 ICP = $10.00 Token prices are in ckUSDC based on data provided by ICPSwap."
     );
   });
 
