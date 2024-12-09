@@ -7,7 +7,10 @@ import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import { ExportIcpTransactionsButtonPo } from "$tests/page-objects/ExportIcpTransactionsButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
 
@@ -65,6 +68,12 @@ describe("ExportIcpTransactionsButton", () => {
 
   it("should be disabled when there is no identity", async () => {
     setNoIdentity();
+    const po = renderComponent();
+    expect(await po.isDisabled()).toBe(true);
+  });
+
+  it("should be disabled when there is no accounts nor neurons", async () => {
+    resetAccountsForTesting();
     const po = renderComponent();
     expect(await po.isDisabled()).toBe(true);
   });
