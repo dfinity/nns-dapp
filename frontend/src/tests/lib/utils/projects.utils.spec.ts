@@ -6,6 +6,7 @@ import { nowInSeconds } from "$lib/utils/date.utils";
 import {
   canUserParticipateToSwap,
   commitmentExceedsAmountLeft,
+  comparesByDecentralizationSaleOpenTimestampDesc,
   currentUserMaxCommitment,
   differentSummaries,
   durationTillSwapDeadline,
@@ -23,6 +24,7 @@ import {
 } from "$lib/utils/projects.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
+  createMockSnsFullProject,
   createSummary,
   createTransferableAmount,
   mockSnsFullProject,
@@ -33,6 +35,7 @@ import {
   principal,
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
@@ -1397,5 +1400,68 @@ describe("project-utils", () => {
         "https://dashboard.internetcomputer.org/sns/pin7y-wyaaa-aaaaa-aacpa-cai"
       );
     });
+  });
+});
+
+describe("comparesByDecentralizationSaleOpenTimestamp", () => {
+  const initialValue = 1000n;
+
+  it("should return -1 if the first project is newer", () => {
+    const project1 = createMockSnsFullProject({
+      rootCanisterId: rootCanisterIdMock,
+      summaryParams: {
+        lifecycle: SnsSwapLifecycle.Open,
+        swapOpenTimestampSeconds: initialValue + 1n,
+      },
+    });
+
+    const project2 = createMockSnsFullProject({
+      rootCanisterId: rootCanisterIdMock,
+      summaryParams: {
+        lifecycle: SnsSwapLifecycle.Open,
+        swapOpenTimestampSeconds: initialValue,
+      },
+    });
+    expect(
+      comparesByDecentralizationSaleOpenTimestampDesc(project1, project2)
+    ).toBe(-1);
+  });
+
+  it("should return 1 if the second project is newer", () => {
+    const project1 = createMockSnsFullProject({
+      rootCanisterId: rootCanisterIdMock,
+      summaryParams: {
+        swapOpenTimestampSeconds: initialValue,
+      },
+    });
+
+    const project2 = createMockSnsFullProject({
+      rootCanisterId: rootCanisterIdMock,
+      summaryParams: {
+        swapOpenTimestampSeconds: initialValue + 1n,
+      },
+    });
+    expect(
+      comparesByDecentralizationSaleOpenTimestampDesc(project1, project2)
+    ).toBe(1);
+  });
+
+  it("should return -1 if the second project is not defined", () => {
+    const project1 = createMockSnsFullProject({
+      rootCanisterId: rootCanisterIdMock,
+      summaryParams: {
+        swapOpenTimestampSeconds: initialValue,
+      },
+    });
+
+    const project2 = createMockSnsFullProject({
+      rootCanisterId: rootCanisterIdMock,
+      summaryParams: {
+        swapOpenTimestampSeconds: undefined,
+      },
+    });
+    expect(
+      comparesByDecentralizationSaleOpenTimestampDesc(project1, project2)
+    ).toBe(-1);
   });
 });
