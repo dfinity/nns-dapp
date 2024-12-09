@@ -24,6 +24,10 @@ describe("UsdValueBanner", () => {
 
   it("should display the USD amount", async () => {
     const usdAmount = 50;
+    const icpPrice = 10;
+
+    setIcpPrice(icpPrice);
+
     const po = renderComponent(usdAmount);
 
     expect(await po.getPrimaryAmount()).toEqual("$50.00");
@@ -82,6 +86,31 @@ describe("UsdValueBanner", () => {
 
     expect(await po.getTooltipIconPo().getTooltipText()).toEqual(
       "1 ICP = $10.00 Token prices are provided by ICPSwap."
+    );
+  });
+
+  it("should not have an error by default", async () => {
+    const usdAmount = 50;
+    const icpPrice = 10;
+
+    setIcpPrice(icpPrice);
+
+    const po = renderComponent(usdAmount);
+
+    expect(await po.hasError()).toBe(false);
+  });
+
+  it("should have an error without ICP price", async () => {
+    const usdAmount = 50;
+    const icpPrice = 0;
+
+    setIcpPrice(icpPrice);
+
+    const po = renderComponent(usdAmount);
+
+    expect(await po.hasError()).toBe(true);
+    expect(await po.getTooltipIconPo().getTooltipText()).toEqual(
+      "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment."
     );
   });
 });

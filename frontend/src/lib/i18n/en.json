@@ -274,6 +274,7 @@
     "received_amount_notice": "Received Amount *",
     "transaction_time": "Transaction Time",
     "transaction_time_seconds": "Seconds",
+    "token_price_error": "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment.",
     "token_price_source": "Token prices are provided by ICPSwap."
   },
   "neuron_types": {
