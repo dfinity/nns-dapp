@@ -9,8 +9,12 @@ export class UsdValueBannerPo extends BasePageObject {
     return new UsdValueBannerPo(element.byTestId(UsdValueBannerPo.TID));
   }
 
-  getTooltipIconPo(): TooltipIconPo {
-    return TooltipIconPo.under(this.root);
+  getTotalsTooltipIconPo(): TooltipIconPo {
+    return TooltipIconPo.under(this.root.querySelector(".totals"));
+  }
+
+  getExchangeRateTooltipIconPo(): TooltipIconPo {
+    return TooltipIconPo.under(this.root.querySelector(".exchange-rate"));
   }
 
   getPrimaryAmount(): Promise<string> {

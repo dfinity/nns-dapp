@@ -286,6 +286,7 @@ interface I18nAccounts {
   transaction_time: string;
   transaction_time_seconds: string;
   token_price_error: string;
+  unpriced_tokens_warning: string;
   token_price_source: string;
 }
 
