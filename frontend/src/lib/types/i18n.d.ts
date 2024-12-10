@@ -204,6 +204,7 @@ interface I18nReporting {
   neurons_description: string;
   transactions_title: string;
   transactions_description: string;
+  transactions_download: string;
 }
 
 interface I18nAuth {
