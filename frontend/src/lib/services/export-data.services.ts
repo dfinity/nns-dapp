@@ -107,7 +107,7 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
   allTransactions?: TransactionWithId[];
   currentPageIndex?: number;
 }): Promise<TransactionWithId[] | undefined> => {
-  const pageSize = 100n;
+  const pageSize = 1000n;
   const maxNumberOfPages = 10;
 
   try {
