@@ -246,22 +246,6 @@ describe("Wallet", () => {
         await po.getSnsWalletPo().getWalletPageHeadingPo().getBalanceInUsd()
       ).toBe("$7.50");
     });
-
-    it("should not load ICP Swap tickers without feature flag", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", false);
-
-      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
-
-      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
-
-      const po = renderComponent();
-      await runResolvedPromises();
-
-      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
-      expect(
-        await po.getSnsWalletPo().getWalletPageHeadingPo().hasBalanceInUsd()
-      ).toBe(false);
-    });
   });
 
   it("should render ckBTC wallet", () => {
