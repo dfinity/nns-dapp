@@ -10,7 +10,7 @@
     IconError,
     IconWarning,
   } from "@dfinity/gix-components";
-  import CommonItemAction from "../ui/CommonItemAction.svelte";
+  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
   import { type NeuronInfo } from "@dfinity/nns";
   import { secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
