@@ -1,11 +1,12 @@
 <script lang="ts">
   import { beforeNavigate } from "$app/navigation";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { i18n } from "$lib/stores/i18n";
   import { IconSettings } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
 
   const dispatcher = createEventDispatcher();
-  const linkToSettings = "/settings";
+  const linkToSettings = AppPath.Settings;
 
   beforeNavigate(() => dispatcher("nnsLink"));
 </script>
