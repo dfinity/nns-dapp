@@ -83,7 +83,7 @@
 
 <div class="wrapper" data-tid="accounts-body">
   {#if $ENABLE_USD_VALUES}
-    <UsdValueBanner usdAmount={totalBalanceInUsd}>
+    <UsdValueBanner usdAmount={totalBalanceInUsd} hasUnpricedTokens={false}>
       <IconAccountsPage slot="icon" />
     </UsdValueBanner>
   {/if}

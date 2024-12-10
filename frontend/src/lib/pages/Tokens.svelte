@@ -17,7 +17,7 @@
   import { IconAccountsPage } from "@dfinity/gix-components";
   import { IconPlus, IconSettings, Tooltip } from "@dfinity/gix-components";
   import { Popover } from "@dfinity/gix-components";
-  import { TokenAmountV2, nonNullish } from "@dfinity/utils";
+  import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
 
   export let userTokensData: UserToken[];
 

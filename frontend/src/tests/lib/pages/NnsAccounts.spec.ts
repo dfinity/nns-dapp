@@ -161,6 +161,9 @@ describe("NnsAccounts", () => {
 
       expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
       expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$50.00");
+      expect(
+        await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
+      ).toBe(false);
     });
   });
 
