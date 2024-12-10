@@ -1203,7 +1203,7 @@ export const isPublicNeuron = (neuronInfo: NeuronInfo): boolean => {
   return neuronInfo.visibility === NeuronVisibility.Public;
 };
 
-const getVotingPowerRefreshedTimestampSeconds = ({
+export const getVotingPowerRefreshedTimestampSeconds = ({
   fullNeuron,
 }: NeuronInfo): bigint =>
   // When the fullNeuron is not presented, we assume that the neuron is not losing rewards

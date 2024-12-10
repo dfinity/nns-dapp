@@ -1,5 +1,6 @@
 import NnsNeuronVotingPowerSection from "$lib/components/neuron-detail/NnsNeuronVotingPowerSection.svelte";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronVotingPowerSectionPo } from "$tests/page-objects/NnsNeuronVotingPowerSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -75,5 +76,25 @@ describe("NnsStakeItemAction", () => {
     expect(await po.hasStakeItemAction()).toBe(true);
     expect(await po.hasNeuronStateItemAction()).toBe(true);
     expect(await po.hasNeuronDissolveDelayItemAction()).toBe(true);
+  });
+
+  it("should render reward status item action when flag enabled", async () => {
+    overrideFeatureFlagsStore.setFlag(
+      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+      true
+    );
+    const po = renderComponent(mockNeuron);
+
+    expect(await po.getNnsNeuronRewardStatusActionPo().isPresent()).toBe(true);
+  });
+
+  it("should not render reward status item action when flag disabled", async () => {
+    overrideFeatureFlagsStore.setFlag(
+      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+      false
+    );
+    const po = renderComponent(mockNeuron);
+
+    expect(await po.getNnsNeuronRewardStatusActionPo().isPresent()).toBe(false);
   });
 });
