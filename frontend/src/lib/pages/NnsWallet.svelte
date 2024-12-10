@@ -22,6 +22,7 @@
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
+  import { neuronAccountsStore } from "$lib/derived/neurons.derived";
   import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
   import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
@@ -46,7 +47,6 @@
     icpTransactionsStore,
     type IcpTransactionsStoreData,
   } from "$lib/stores/icp-transactions.store";
-  import { neuronAccountsStore } from "$lib/derived/neurons.derived";
   import { toastsError } from "$lib/stores/toasts.store";
   import type { Account } from "$lib/types/account";
   import type { AccountIdentifierText } from "$lib/types/account";
@@ -370,6 +370,7 @@
             principal={isHardwareWallet
               ? $selectedAccountStore.account?.principal
               : undefined}
+            ledgerCanisterId={LEDGER_CANISTER_ID}
           >
             {#if isHardwareWallet}
               <HardwareWalletListNeuronsButton />

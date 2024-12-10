@@ -60,6 +60,7 @@ import {
   fromNullable,
   isNullish,
   nonNullish,
+  secondsToDuration,
 } from "@dfinity/utils";
 import type { ComponentType } from "svelte";
 import { get } from "svelte/store";
@@ -443,7 +444,7 @@ export const isHotKeyControllable = ({
 
 export type NeuronTagData = {
   text: string;
-  status?: "danger";
+  status?: "danger" | "warning";
 };
 
 export const getNeuronTags = ({
@@ -493,14 +494,23 @@ const getNeuronTagsUnrelatedToController = ({
     tags.push({ text: i18n.neurons.community_fund });
   }
 
-  if (
-    get(ENABLE_PERIODIC_FOLLOWING_CONFIRMATION) &&
-    isNeuronLosingRewards(neuron)
-  ) {
-    tags.push({
-      text: i18n.neurons.missing_rewards,
-      status: "danger",
-    });
+  if (get(ENABLE_PERIODIC_FOLLOWING_CONFIRMATION)) {
+    if (isNeuronLosingRewards(neuron)) {
+      tags.push({
+        text: i18n.neurons.missing_rewards,
+        status: "danger",
+      });
+    } else if (shouldDisplayRewardLossNotification(neuron)) {
+      tags.push({
+        text: replacePlaceholders(i18n.neurons.missing_rewards_soon, {
+          $timeLeft: secondsToDuration({
+            seconds: BigInt(secondsUntilLosingRewards(neuron)),
+            i18n: i18n.time,
+          }),
+        }),
+        status: "warning",
+      });
+    }
   }
 
   return tags;
@@ -1193,7 +1203,7 @@ export const isPublicNeuron = (neuronInfo: NeuronInfo): boolean => {
   return neuronInfo.visibility === NeuronVisibility.Public;
 };
 
-const getVotingPowerRefreshedTimestampSeconds = ({
+export const getVotingPowerRefreshedTimestampSeconds = ({
   fullNeuron,
 }: NeuronInfo): bigint =>
   // When the fullNeuron is not presented, we assume that the neuron is not losing rewards

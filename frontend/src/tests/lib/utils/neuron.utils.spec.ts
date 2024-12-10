@@ -1439,6 +1439,11 @@ describe("neuron-utils", () => {
       text: "Missing rewards",
       status: "danger",
     } as NeuronTagData;
+    const daysBeforeMissingRewardsSoon = 10;
+    const missingRewardsSoonTag = {
+      text: `${daysBeforeMissingRewardsSoon} days to confirm`,
+      status: "warning",
+    } as NeuronTagData;
     const ectTag = {
       text: "Early Contributor Token",
     } as NeuronTagData;
@@ -1665,6 +1670,19 @@ describe("neuron-utils", () => {
           ),
         },
       };
+      const timestampSixMonthsAgoPlus10Days =
+        nowInSeconds() -
+        SECONDS_IN_HALF_YEAR +
+        daysBeforeMissingRewardsSoon * SECONDS_IN_DAY;
+      const losingRewardSoonNeuron: NeuronInfo = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          votingPowerRefreshedTimestampSeconds: BigInt(
+            timestampSixMonthsAgoPlus10Days
+          ),
+        },
+      };
 
       it("returns 'Missing rewards' tag", () => {
         overrideFeatureFlagsStore.setFlag(
@@ -1691,6 +1709,38 @@ describe("neuron-utils", () => {
         expect(
           getNeuronTags({
             neuron: losingRewardNeuron,
+            identity: mockIdentity,
+            accounts: accountsWithHW,
+            i18n: en,
+          })
+        ).toEqual([]);
+      });
+
+      it("returns 'Missing rewards soon' tag", () => {
+        overrideFeatureFlagsStore.setFlag(
+          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+          true
+        );
+
+        expect(
+          getNeuronTags({
+            neuron: losingRewardSoonNeuron,
+            identity: mockIdentity,
+            accounts: accountsWithHW,
+            i18n: en,
+          })
+        ).toEqual([missingRewardsSoonTag]);
+      });
+
+      it("returns no 'Missing rewards soon' tag without feature flag", () => {
+        overrideFeatureFlagsStore.setFlag(
+          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+          false
+        );
+
+        expect(
+          getNeuronTags({
+            neuron: losingRewardSoonNeuron,
             identity: mockIdentity,
             accounts: accountsWithHW,
             i18n: en,

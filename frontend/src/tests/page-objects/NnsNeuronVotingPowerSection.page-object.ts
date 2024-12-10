@@ -3,6 +3,7 @@ import { NnsNeuronStateItemActionPo } from "$tests/page-objects/NnsNeuronStateIt
 import { StakeItemActionPo } from "$tests/page-objects/StakeItemAction.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { BasePageObject } from "./base.page-object";
+import { NnsNeuronRewardStatusActionPo } from "./NnsNeuronRewardStatusAction.page-object";
 
 export class NnsNeuronVotingPowerSectionPo extends BasePageObject {
   private static readonly TID = "nns-neuron-voting-power-section-component";
@@ -43,6 +44,10 @@ export class NnsNeuronVotingPowerSectionPo extends BasePageObject {
 
   getNeuronDissolveDelayItemActionPo(): NnsNeuronDissolveDelayItemActionPo {
     return NnsNeuronDissolveDelayItemActionPo.under(this.root);
+  }
+
+  getNnsNeuronRewardStatusActionPo(): NnsNeuronRewardStatusActionPo {
+    return NnsNeuronRewardStatusActionPo.under(this.root);
   }
 
   hasNeuronDissolveDelayItemAction(): Promise<boolean> {

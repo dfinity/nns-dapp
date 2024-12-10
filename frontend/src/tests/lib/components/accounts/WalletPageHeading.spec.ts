@@ -1,7 +1,13 @@
 import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { dispatchIntersecting } from "$lib/utils/events.utils";
 import en from "$tests/mocks/i18n.mock";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { Principal } from "@dfinity/principal";
@@ -19,20 +25,33 @@ describe("WalletPageHeading", () => {
     balance,
     accountName,
     principal,
+    ledgerCanisterId,
   }: {
     balance?: TokenAmountV2;
     accountName: string;
     principal?: Principal;
+    ledgerCanisterId?: Principal;
   }) => {
     const { container } = render(WalletPageHeading, {
       props: {
         balance,
         accountName,
         principal,
+        ledgerCanisterId: ledgerCanisterId ?? LEDGER_CANISTER_ID,
       },
     });
     return WalletPageHeadingPo.under(new JestPageObjectElement(container));
   };
+
+  beforeEach(() => {
+    icpSwapTickersStore.set([
+      {
+        ...mockIcpSwapTicker,
+        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+        last_price: "10.00",
+      },
+    ]);
+  });
 
   it("should render balance as title and no skeleton", async () => {
     const balance = TokenAmountV2.fromString({
@@ -99,6 +118,7 @@ describe("WalletPageHeading", () => {
         balance,
         accountName,
         principal: undefined,
+        ledgerCanisterId: LEDGER_CANISTER_ID,
       },
     });
 
@@ -134,5 +154,78 @@ describe("WalletPageHeading", () => {
       balance: undefined,
       accountName,
     });
+  });
+
+  it("should not display USD balance if feature flag is disabled", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", false);
+
+    const balance = TokenAmountV2.fromString({
+      amount: "1",
+      token: ICPToken,
+    }) as TokenAmountV2;
+    const po = renderComponent({ balance, accountName });
+
+    expect(await po.hasBalanceInUsd()).toBe(false);
+  });
+
+  it("should display USD balance if feature flag is enabled", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
+
+    const balance = TokenAmountV2.fromString({
+      amount: "3",
+      token: ICPToken,
+    }) as TokenAmountV2;
+    const po = renderComponent({ balance, accountName });
+
+    expect(await po.hasBalanceInUsd()).toBe(true);
+    expect(await po.getBalanceInUsd()).toBe("$30.00");
+    expect(await po.getTooltipIconPo().getTooltipText()).toBe(
+      "Token prices are in ckUSDC based on data provided by ICPSwap."
+    );
+  });
+
+  it("should error state when token prices failed to load", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
+
+    icpSwapTickersStore.set("error");
+
+    const balance = TokenAmountV2.fromString({
+      amount: "3",
+      token: ICPToken,
+    }) as TokenAmountV2;
+    const po = renderComponent({ balance, accountName });
+
+    expect(await po.hasBalanceInUsd()).toBe(true);
+    expect(await po.getBalanceInUsd()).toBe("$-/-");
+    expect(await po.getTooltipIconPo().getTooltipText()).toBe(
+      "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment."
+    );
+  });
+
+  it("should get token price based on ledger canister ID", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
+
+    const ledgerCanisterId = principal(3);
+
+    icpSwapTickersStore.set([
+      {
+        ...mockIcpSwapTicker,
+        base_id: ledgerCanisterId.toText(),
+        last_price: "2.00",
+      },
+      {
+        ...mockIcpSwapTicker,
+        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+        last_price: "10.00",
+      },
+    ]);
+
+    const balance = TokenAmountV2.fromString({
+      amount: "3",
+      token: ICPToken,
+    }) as TokenAmountV2;
+    const po = renderComponent({ balance, accountName, ledgerCanisterId });
+
+    expect(await po.getBalanceInUsd()).toBe("$15.00");
   });
 });

@@ -1,17 +1,17 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class ExportNeuronsButtonPo extends ButtonPo {
-  static readonly TID = "export-neurons-button-component";
+export class ReportingNeuronsButtonPo extends ButtonPo {
+  static readonly TID = "reporting-neurons-button-component";
 
   static under({
     element,
   }: {
     element: PageObjectElement;
-  }): ExportNeuronsButtonPo {
+  }): ReportingNeuronsButtonPo {
     return ButtonPo.under({
       element,
-      testId: ExportNeuronsButtonPo.TID,
+      testId: ReportingNeuronsButtonPo.TID,
     });
   }
 }

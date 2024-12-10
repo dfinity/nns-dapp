@@ -24,6 +24,14 @@
   let totalBalanceInUsd: number;
   $: totalBalanceInUsd = getTotalBalanceInUsd(userTokensData);
 
+  let hasUnpricedTokens: boolean;
+  $: hasUnpricedTokens = userTokensData.some(
+    (token) =>
+      token.balance instanceof TokenAmountV2 &&
+      token.balance.toUlps() > 0n &&
+      (!("balanceInUsd" in token) || isNullish(token.balanceInUsd))
+  );
+
   let settingsButton: HTMLButtonElement | undefined;
   let settingsPopupVisible = false;
 
@@ -75,7 +83,7 @@
 
 <div class="wrapper" data-tid="tokens-page-component">
   {#if $ENABLE_USD_VALUES}
-    <UsdValueBanner usdAmount={totalBalanceInUsd}>
+    <UsdValueBanner usdAmount={totalBalanceInUsd} {hasUnpricedTokens}>
       <IconAccountsPage slot="icon" />
     </UsdValueBanner>
   {/if}

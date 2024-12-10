@@ -146,7 +146,8 @@
     "launchpad": "Launchpad",
     "manage_ii": "Manage Internet Identity",
     "source_code": "Source Code",
-    "settings": "Settings"
+    "settings": "Settings",
+    "reporting": "Reporting"
   },
   "header": {
     "menu": "Open menu to access navigation options",
@@ -155,7 +156,7 @@
     "main_icp_account_id": "Main ICP Account ID",
     "account_id_tooltip": "You can send ICP both to your principal ID and account ID, however some exchanges or wallets may not support transactions using a principal ID.",
     "export_neurons": "Export Neurons Info",
-    "export_transactions": "Export ICP Transactions"
+    "export_transactions": "Export Transactions"
   },
   "export_csv_neurons": {
     "account_id": "Account ID",
@@ -187,6 +188,12 @@
     "csv_generation": "Failed to generate CSV file",
     "file_system_access": "Unable to save file. Please check your permissions.",
     "neurons": "There was an error exporting the neurons. Please try again."
+  },
+  "reporting": {
+    "neurons_title": "Neurons Portfolio",
+    "neurons_description": "Download a detailed CSV report of your neuron portfolio, which includes the stake, maturity, and neuron account ID for manual tracking and analysis.",
+    "transactions_title": "Transactions",
+    "transactions_description": "Download a detailed CSV report of your token transaction history. This report includes both regular token accounts and neurons, showing neuron staking and minting transactions for manual tracking and analysis."
   },
   "auth": {
     "login": "Sign in with Internet Identity",
@@ -275,7 +282,8 @@
     "transaction_time": "Transaction Time",
     "transaction_time_seconds": "Seconds",
     "token_price_error": "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment.",
-    "token_price_source": "Token prices are provided by ICPSwap."
+    "unpriced_tokens_warning": "Value may be inaccurate as some prices could not be fetched.",
+    "token_price_source": "Token prices are in ckUSDC based on data provided by ICPSwap."
   },
   "neuron_types": {
     "seed": "Seed",
@@ -317,6 +325,7 @@
     "community_fund": "Neurons' fund",
     "hotkey_control": "Hotkey control",
     "missing_rewards": "Missing rewards",
+    "missing_rewards_soon": "$timeLeft to confirm",
     "hardware_wallet_control": "Ledger Device Controlled",
     "amount_icp_stake": "$amount ICP Stake",
     "ic_stake": "$token staked",
@@ -758,6 +767,11 @@
     "dissolve_date": "Dissolve Date",
     "amount_maturity": "$amount maturity",
     "created": "Date Created",
+    "reward_status_active": "Active neuron",
+    "reward_status_losing_soon": "Missing rewards soon",
+    "reward_status_losing_soon_description": "$time to confirm following",
+    "reward_status_inactive": "Inactive neuron",
+    "reward_status_inactive_description": "Confirm following or vote manually to continue receiving rewards",
     "neuron_state_tooltip": "Your neuron can be locked, unlocked or dissolving. In a locked state, it is accruing age bonus, while its dissolve delay stays constant. If the neuron is in a dissolving state, its age bonus is set to 0, while dissolve delay decreases with time. After dissolve delay reaches 0, the neuron is unlocked, and $token held in it can be sent to any $token account.",
     "dissolve_delay_tooltip": "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and $token to be available again. If your neuron is dissolving, your $token will be available in $duration.",
     "neuron_stake_refreshed": "Your neuron's stake was refreshed successfully.",
@@ -785,7 +799,7 @@
   },
   "sns_launchpad": {
     "header": "Launchpad",
-    "committed_projects": "Launched",
+    "committed_projects": "Latest Launches",
     "no_committed_projects": "No launched projects so far.",
     "no_opening_soon_projects": "No projects opening soon.",
     "no_projects": "No projects for this state.",
@@ -990,6 +1004,10 @@
   "auth_accounts": {
     "title": "100% on-chain governance",
     "text": "Manage your ICP, ckBTC, and SNS governance tokens within the NNS wallet — hosted 100% on the Internet Computer blockchain. Transfer tokens, secure them with Ledger devices, or participate in governance to earn voting rewards."
+  },
+  "auth_report": {
+    "title": "Reporting",
+    "text": "Download a detailed CSV report of your neuron portfolio, which includes your stake, maturity, and neuron account ID for manual tracking and analysis, along with your ICP transactions."
   },
   "auth_neurons": {
     "title": "Earn staking rewards"
