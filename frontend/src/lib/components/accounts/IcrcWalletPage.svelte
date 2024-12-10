@@ -215,6 +215,7 @@
                   token,
                 })
               : undefined}
+            {ledgerCanisterId}
           >
             <slot name="header-actions" />
             <SignInGuard />

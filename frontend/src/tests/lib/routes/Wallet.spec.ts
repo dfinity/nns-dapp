@@ -1,6 +1,7 @@
 import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as governanceApi from "$lib/api/governance.api";
 import * as icpIndexApi from "$lib/api/icp-index.api";
+import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -8,9 +9,11 @@ import {
   CKETH_LEDGER_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
+import { CKUSDC_LEDGER_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Wallet from "$lib/routes/Wallet.svelte";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
@@ -25,6 +28,7 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockIcrcMainAccount } from "$tests/mocks/icrc-accounts.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
@@ -190,6 +194,73 @@ describe("Wallet", () => {
       expect(await po.getIcrcTokenTransactionModalPo().isPresent()).toBe(false);
       await po.getSnsWalletPo().clickSendButton();
       expect(await po.getIcrcTokenTransactionModalPo().isPresent()).toBe(true);
+    });
+
+    it("should not load ICP Swap tickers without feature flag", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", false);
+
+      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
+
+      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
+
+      const po = renderComponent();
+      await runResolvedPromises();
+
+      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
+      expect(
+        await po.getSnsWalletPo().getWalletPageHeadingPo().hasBalanceInUsd()
+      ).toBe(false);
+    });
+
+    it("should load ICP Swap tickers", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
+
+      const tickers = [
+        {
+          ...mockIcpSwapTicker,
+          base_id: mockSnsFullProject.summary.ledgerCanisterId.toText(),
+          last_price: "40.00",
+        },
+        {
+          ...mockIcpSwapTicker,
+          base_id: CKUSDC_LEDGER_CANISTER_ID.toText(),
+          last_price: "10.00",
+        },
+      ];
+      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
+
+      vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockReturnValue(
+        3_000_000_000n
+      );
+
+      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
+
+      const po = renderComponent();
+      await runResolvedPromises();
+
+      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
+      expect(
+        await po.getSnsWalletPo().getWalletPageHeadingPo().hasBalanceInUsd()
+      ).toBe(true);
+      expect(
+        await po.getSnsWalletPo().getWalletPageHeadingPo().getBalanceInUsd()
+      ).toBe("$7.50");
+    });
+
+    it("should not load ICP Swap tickers without feature flag", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", false);
+
+      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
+
+      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
+
+      const po = renderComponent();
+      await runResolvedPromises();
+
+      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
+      expect(
+        await po.getSnsWalletPo().getWalletPageHeadingPo().hasBalanceInUsd()
+      ).toBe(false);
     });
   });
 

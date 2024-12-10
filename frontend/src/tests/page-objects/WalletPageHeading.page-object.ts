@@ -3,6 +3,7 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import { AmountDisplayPo } from "./AmountDisplay.page-object";
 import { HashPo } from "./Hash.page-object";
 import { TooltipPo } from "./Tooltip.page-object";
+import { TooltipIconPo } from "./TooltipIcon.page-object";
 
 export class WalletPageHeadingPo extends BasePageObject {
   private static readonly TID = "wallet-page-heading-component";
@@ -28,6 +29,18 @@ export class WalletPageHeadingPo extends BasePageObject {
 
   getSubtitle(): Promise<string> {
     return this.getText("wallet-page-heading-subtitle");
+  }
+
+  hasBalanceInUsd(): Promise<boolean> {
+    return this.isPresent("usd-balance");
+  }
+
+  getBalanceInUsd(): Promise<string> {
+    return this.getText("usd-balance");
+  }
+
+  getTooltipIconPo(): TooltipIconPo {
+    return TooltipIconPo.under(this.root);
   }
 
   getPrincipal(): Promise<string> {
