@@ -7,7 +7,10 @@
   } from "$lib/derived/sns/sns-projects.derived";
   import { i18n } from "$lib/stores/i18n";
   import { isLoadingSnsProjectsStore } from "$lib/stores/sns.store";
-  import { filterProjectsStatus } from "$lib/utils/projects.utils";
+  import {
+    comparesByDecentralizationSaleOpenTimestampDesc,
+    filterProjectsStatus,
+  } from "$lib/utils/projects.utils";
   import ProjectCard from "./ProjectCard.svelte";
   import { Html } from "@dfinity/gix-components";
   import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -19,7 +22,7 @@
   $: projects = filterProjectsStatus({
     swapLifecycle: status,
     projects: $snsProjectsActivePadStore,
-  });
+  }).sort(comparesByDecentralizationSaleOpenTimestampDesc);
 
   let loading = false;
   $: loading = $isLoadingSnsProjectsStore;

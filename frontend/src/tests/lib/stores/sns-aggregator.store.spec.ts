@@ -176,6 +176,28 @@ describe("sns-aggregator store", () => {
       rootCanisterId: "ibahq-taaaa-aaaaq-aadna-cai",
     });
 
+    const fixedBrokenSns = withBrokenSns({
+      sns: {
+        ...mockedSns,
+        meta: {
+          ...mockedSns.meta,
+          name: "CYCLES-TRANSFER-STATION",
+        },
+        icrc1_metadata: [...mockedSns.icrc1_metadata].map(([name, value]) => {
+          if (name === "icrc1:symbol" && "Text" in value) {
+            return [
+              name,
+              {
+                Text: "CTS",
+              },
+            ];
+          }
+          return [name, value];
+        }),
+      },
+      rootCanisterId: "ibahq-taaaa-aaaaq-aadna-cai",
+    });
+
     it("should override information for SNS with rootCanisterId ibahq-taaaa-aaaaq-aadna-cai", () => {
       const data = [brokenSns];
       snsAggregatorIncludingAbortedProjectsStore.setData(data);
@@ -194,7 +216,7 @@ describe("sns-aggregator store", () => {
       expect(result.icrc1_metadata[3][1]).toEqual({ Text: "--- (CTS)" });
     });
 
-    it("should sort sns by temporary isAbandoded property", () => {
+    it("should send the CTS SNS to the bottom of the store", () => {
       const data = [brokenSns, ...aggregatorMockSnsesDataDto];
       snsAggregatorIncludingAbortedProjectsStore.setData(data);
       expect(
@@ -211,6 +233,23 @@ describe("sns-aggregator store", () => {
         "\u200B--- (formerly CYCLES-TRANSFER-STATION)"
       );
       expect(result.icrc1_metadata[3][1]).toEqual({ Text: "--- (CTS)" });
+    });
+
+    it("should not override CTS SNS if the metadata returns to its original value", () => {
+      const data = [fixedBrokenSns, ...aggregatorMockSnsesDataDto];
+      snsAggregatorIncludingAbortedProjectsStore.setData(data);
+      expect(
+        get(snsAggregatorIncludingAbortedProjectsStore).data[0].meta.name
+      ).toBe("CYCLES-TRANSFER-STATION");
+      expect(
+        get(snsAggregatorIncludingAbortedProjectsStore).data[0]
+          .icrc1_metadata[3][1]
+      ).toEqual({ Text: "CTS" });
+
+      const result =
+        get(snsAggregatorStore).data[get(snsAggregatorStore).data.length - 1];
+      expect(result.meta.name).toBe("CYCLES-TRANSFER-STATION");
+      expect(result.icrc1_metadata[3][1]).toEqual({ Text: "CTS" });
     });
   });
 });

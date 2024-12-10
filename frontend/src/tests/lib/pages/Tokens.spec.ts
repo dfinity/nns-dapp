@@ -1,11 +1,14 @@
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import TokensPage from "$lib/pages/Tokens.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
+import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import type { UserTokenData } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import {
   createIcpUserToken,
@@ -71,6 +74,13 @@ describe("Tokens page", () => {
     vi.useFakeTimers();
 
     importedTokensStore.set({ importedTokens: [], certified: true });
+    icpSwapTickersStore.set([
+      {
+        ...mockIcpSwapTicker,
+        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+        last_price: "10.00",
+      },
+    ]);
   });
 
   it("should render the tokens table", async () => {
@@ -321,6 +331,9 @@ describe("Tokens page", () => {
 
     expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
     expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$5.00");
+    expect(
+      await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
+    ).toBe(false);
   });
 
   it("should ignore tokens with unknown balance in USD when adding up the total", async () => {
@@ -342,5 +355,8 @@ describe("Tokens page", () => {
 
     expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
     expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$8.00");
+    expect(
+      await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
+    ).toBe(true);
   });
 });

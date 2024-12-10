@@ -9,8 +9,12 @@ export class UsdValueBannerPo extends BasePageObject {
     return new UsdValueBannerPo(element.byTestId(UsdValueBannerPo.TID));
   }
 
-  getTooltipIconPo(): TooltipIconPo {
-    return TooltipIconPo.under(this.root);
+  getTotalsTooltipIconPo(): TooltipIconPo {
+    return TooltipIconPo.under(this.root.querySelector(".totals"));
+  }
+
+  getExchangeRateTooltipIconPo(): TooltipIconPo {
+    return TooltipIconPo.under(this.root.querySelector(".exchange-rate"));
   }
 
   getPrimaryAmount(): Promise<string> {
@@ -23,5 +27,10 @@ export class UsdValueBannerPo extends BasePageObject {
 
   getIcpPrice(): Promise<string> {
     return this.getText("icp-price");
+  }
+
+  async hasError(): Promise<boolean> {
+    const classNames = await this.root.getClasses();
+    return classNames.includes("has-error");
   }
 }

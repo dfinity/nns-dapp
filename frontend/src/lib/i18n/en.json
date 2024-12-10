@@ -281,7 +281,9 @@
     "received_amount_notice": "Received Amount *",
     "transaction_time": "Transaction Time",
     "transaction_time_seconds": "Seconds",
-    "token_price_source": "Token prices are provided by ICPSwap."
+    "token_price_error": "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment.",
+    "unpriced_tokens_warning": "Value may be inaccurate as some prices could not be fetched.",
+    "token_price_source": "Token prices are in ckUSDC based on data provided by ICPSwap."
   },
   "neuron_types": {
     "seed": "Seed",
@@ -323,6 +325,7 @@
     "community_fund": "Neurons' fund",
     "hotkey_control": "Hotkey control",
     "missing_rewards": "Missing rewards",
+    "missing_rewards_soon": "$timeLeft to confirm",
     "hardware_wallet_control": "Ledger Device Controlled",
     "amount_icp_stake": "$amount ICP Stake",
     "ic_stake": "$token staked",
@@ -764,6 +767,11 @@
     "dissolve_date": "Dissolve Date",
     "amount_maturity": "$amount maturity",
     "created": "Date Created",
+    "reward_status_active": "Active neuron",
+    "reward_status_losing_soon": "Missing rewards soon",
+    "reward_status_losing_soon_description": "$time to confirm following",
+    "reward_status_inactive": "Inactive neuron",
+    "reward_status_inactive_description": "Confirm following or vote manually to continue receiving rewards",
     "neuron_state_tooltip": "Your neuron can be locked, unlocked or dissolving. In a locked state, it is accruing age bonus, while its dissolve delay stays constant. If the neuron is in a dissolving state, its age bonus is set to 0, while dissolve delay decreases with time. After dissolve delay reaches 0, the neuron is unlocked, and $token held in it can be sent to any $token account.",
     "dissolve_delay_tooltip": "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and $token to be available again. If your neuron is dissolving, your $token will be available in $duration.",
     "neuron_stake_refreshed": "Your neuron's stake was refreshed successfully.",
@@ -791,7 +799,7 @@
   },
   "sns_launchpad": {
     "header": "Launchpad",
-    "committed_projects": "Launched",
+    "committed_projects": "Latest Launches",
     "no_committed_projects": "No launched projects so far.",
     "no_opening_soon_projects": "No projects opening soon.",
     "no_projects": "No projects for this state.",

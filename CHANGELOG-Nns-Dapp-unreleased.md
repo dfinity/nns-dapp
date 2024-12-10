@@ -16,6 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+- Sorts launched projects in the Launchpad page from newest to oldest.
+
 #### Deprecated
 
 #### Removed

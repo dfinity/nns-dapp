@@ -293,6 +293,8 @@ interface I18nAccounts {
   received_amount_notice: string;
   transaction_time: string;
   transaction_time_seconds: string;
+  token_price_error: string;
+  unpriced_tokens_warning: string;
   token_price_source: string;
 }
 
@@ -338,6 +340,7 @@ interface I18nNeurons {
   community_fund: string;
   hotkey_control: string;
   missing_rewards: string;
+  missing_rewards_soon: string;
   hardware_wallet_control: string;
   amount_icp_stake: string;
   ic_stake: string;
@@ -795,6 +798,11 @@ interface I18nNeuron_detail {
   dissolve_date: string;
   amount_maturity: string;
   created: string;
+  reward_status_active: string;
+  reward_status_losing_soon: string;
+  reward_status_losing_soon_description: string;
+  reward_status_inactive: string;
+  reward_status_inactive_description: string;
   neuron_state_tooltip: string;
   dissolve_delay_tooltip: string;
   neuron_stake_refreshed: string;
