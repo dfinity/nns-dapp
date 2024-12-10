@@ -1,4 +1,4 @@
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-11-28_03-15-revert-hashes-in-blocks/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-12-06_03-16-base/rs/sns/governance/canister/governance.did>
 type Account = record {
   owner : opt principal;
   subaccount : opt Subaccount;
@@ -807,7 +807,10 @@ type UpgradeJournal = record {
   entries : vec UpgradeJournalEntry;
 };
 
-type GetUpgradeJournalRequest = record {};
+type GetUpgradeJournalRequest = record {
+  limit : opt nat64;
+  offset : opt nat64;
+};
 
 type GetUpgradeJournalResponse = record {
   upgrade_steps : opt Versions;
@@ -815,6 +818,7 @@ type GetUpgradeJournalResponse = record {
   target_version : opt Version;
   deployed_version : opt Version;
   upgrade_journal : opt UpgradeJournal;
+  upgrade_journal_entry_count: opt nat64;
 };
 
 service : (Governance) -> {

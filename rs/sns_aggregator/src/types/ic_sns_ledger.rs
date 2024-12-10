@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_ledger --out ic_sns_ledger.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-11-28_03-15-revert-hashes-in-blocks/rs/ledger_suite/icrc1/ledger/ledger.did>
+//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-12-06_03-16-base/rs/ledger_suite/icrc1/ledger/ledger.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -492,5 +492,8 @@ impl Service {
     }
     pub async fn icrc_3_supported_block_types(&self) -> CallResult<(Vec<Icrc3SupportedBlockTypesRetItem>,)> {
         ic_cdk::call(self.0, "icrc3_supported_block_types", ()).await
+    }
+    pub async fn is_ledger_ready(&self) -> CallResult<(bool,)> {
+        ic_cdk::call(self.0, "is_ledger_ready", ()).await
     }
 }
