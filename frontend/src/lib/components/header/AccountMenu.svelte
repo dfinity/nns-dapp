@@ -11,7 +11,6 @@
   import LoginIconOnly from "./LoginIconOnly.svelte";
   import Logout from "./Logout.svelte";
   import { IconUser, Popover } from "@dfinity/gix-components";
-  import ExportIcpTransactionsButton from "$lib/components/header/ExportIcpTransactionsButton.svelte";
   import LinkToReporting from "$lib/components/header/LinkToReporting.svelte";
 
   let visible = false;
@@ -47,10 +46,6 @@
           <LinkToReporting on:nnsLink={closeMenu} />
 
           <ExportNeuronsButton on:nnsExportNeuronsCsvTriggered={toggle} />
-
-          <ExportIcpTransactionsButton
-            on:nnsExportIcpTransactionsCsvTriggered={toggle}
-          />
         {/if}
 
         <Logout on:nnsLogoutTriggered={toggle} />

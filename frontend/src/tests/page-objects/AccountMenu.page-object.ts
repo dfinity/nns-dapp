@@ -1,6 +1,5 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
-import { ExportIcpTransactionsButtonPo } from "$tests/page-objects/ExportIcpTransactionsButton.page-object";
 import { ExportNeuronsButtonPo } from "$tests/page-objects/ExportNeuronsButton.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { AccountDetailsPo } from "./AccountDetails.page-object";
@@ -70,10 +69,6 @@ export class AccountMenuPo extends BasePageObject {
 
   getExportNeuronsButtonPo(): ExportNeuronsButtonPo {
     return ExportNeuronsButtonPo.under({ element: this.root });
-  }
-
-  getExportIcpTransactionsButtonPo(): ExportIcpTransactionsButtonPo {
-    return ExportIcpTransactionsButtonPo.under({ element: this.root });
   }
 
   getLinkToReportingPo(): LinkPo {
