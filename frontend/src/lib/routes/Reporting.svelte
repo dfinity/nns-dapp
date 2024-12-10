@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
@@ -25,9 +26,10 @@
       <p class="description">{$i18n.reporting.neurons_description}</p>
     </div>
     <Separator spacing="medium" />
-    <div>
+    <div class="wrapper">
       <h3>{$i18n.reporting.transactions_title}</h3>
       <p class="description">{$i18n.reporting.transactions_description}</p>
+      <ReportingTransactionsButton />
     </div>
   </main>
 </Island>
@@ -35,5 +37,11 @@
 <style lang="scss">
   main {
     padding: var(--padding-3x);
+  }
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-3x);
   }
 </style>
