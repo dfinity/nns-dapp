@@ -13,6 +13,7 @@ import {
   queryLastestRewardEvent,
   queryNeuron,
   queryNeurons,
+  refreshVotingPower,
   registerVote,
   removeHotkey,
   setFollowees,
@@ -34,6 +35,7 @@ import {
   type ApiQueryNeuronParams,
   type ApiQueryNeuronsParams,
   type ApiQueryParams,
+  type ApiRefreshVotingPowerParams,
   type ApiSetFolloweesParams,
   type ApiSpawnNeuronParams,
   type ApiSplitNeuronParams,
@@ -163,6 +165,9 @@ export const governanceApiService = {
   },
   disburse(params: ApiDisburseParams) {
     return clearCacheAfter(disburse(params));
+  },
+  refreshVotingPower(params: ApiRefreshVotingPowerParams) {
+    return clearCacheAfter(refreshVotingPower(params));
   },
   increaseDissolveDelay(params: ApiIncreaseDissolveDelayParams) {
     return clearCacheAfter(increaseDissolveDelay(params));
