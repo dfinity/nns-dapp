@@ -1,11 +1,12 @@
 <script lang="ts">
   import { beforeNavigate } from "$app/navigation";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { i18n } from "$lib/stores/i18n";
   import { IconDocument } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
 
   const dispatcher = createEventDispatcher();
-  const linkToReporting = "/reporting";
+  const linkToReporting = AppPath.Reporting;
 
   beforeNavigate(() => dispatcher("nnsLink"));
 </script>
