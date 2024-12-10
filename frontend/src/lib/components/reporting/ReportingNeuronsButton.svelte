@@ -115,7 +115,7 @@
 </script>
 
 <button
-  data-tid="export-neurons-button-component"
+  data-tid="reporting-neurons-button-component"
   on:click={exportNeurons}
   class="text"
   disabled={isDisabled}

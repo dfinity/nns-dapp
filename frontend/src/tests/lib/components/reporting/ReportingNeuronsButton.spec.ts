@@ -1,4 +1,4 @@
-import ExportNeuronsButton from "$lib/components/header/ExportNeuronsButton.svelte";
+import ReportingNeuronsButton from "$lib/components/reporting/ReportingNeuronsButton.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import * as toastsStore from "$lib/stores/toasts.store";
@@ -7,11 +7,11 @@ import * as exportToCsv from "$lib/utils/export-to-csv.utils";
 import { generateCsvFileToSave } from "$lib/utils/export-to-csv.utils";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { ExportNeuronsButtonPo } from "$tests/page-objects/ExportNeuronsButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { ReportingNeuronsButtonPo } from "$tests/page-objects/ReportingNeuronsButon.page-object";
 import { render } from "@testing-library/svelte";
 
-describe("ExportNeuronsButton", () => {
+describe("ReportingNeuronsButton", () => {
   beforeEach(() => {
     vi.clearAllTimers();
     vi.spyOn(exportToCsv, "generateCsvFileToSave").mockImplementation(vi.fn());
@@ -37,9 +37,9 @@ describe("ExportNeuronsButton", () => {
   });
 
   const renderComponent = ({ onTrigger }: { onTrigger?: () => void } = {}) => {
-    const { container, component } = render(ExportNeuronsButton);
+    const { container, component } = render(ReportingNeuronsButton);
 
-    const po = ExportNeuronsButtonPo.under({
+    const po = ReportingNeuronsButtonPo.under({
       element: new JestPageObjectElement(container),
     });
 

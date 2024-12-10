@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ReportingNeuronsButton from "$lib/components/reporting/ReportingNeuronsButton.svelte";
   import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { i18n } from "$lib/stores/i18n";
@@ -24,6 +25,7 @@
     <div>
       <h3>{$i18n.reporting.neurons_title}</h3>
       <p class="description">{$i18n.reporting.neurons_description}</p>
+      <ReportingNeuronsButton />
     </div>
     <Separator spacing="medium" />
     <div>
