@@ -26,7 +26,7 @@
       <p class="description">{$i18n.reporting.neurons_description}</p>
     </div>
     <Separator spacing="medium" />
-    <div class="wrapper">
+    <div>
       <h3>{$i18n.reporting.transactions_title}</h3>
       <p class="description">{$i18n.reporting.transactions_description}</p>
       <ReportingTransactionsButton />
@@ -37,11 +37,5 @@
 <style lang="scss">
   main {
     padding: var(--padding-3x);
-  }
-
-  .wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-3x);
   }
 </style>

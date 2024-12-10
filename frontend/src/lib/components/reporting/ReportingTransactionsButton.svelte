@@ -138,7 +138,7 @@
   aria-label={$i18n.header.export_neurons}
 >
   <IconDown />
-  {$i18n.reporting.transactions_title}
+  {$i18n.header.export_transactions}
 </button>
 
 <style lang="scss">
