@@ -1,5 +1,5 @@
 import * as icpIndexApi from "$lib/api/icp-index.api";
-import ExportIcpTransactionsButton from "$lib/components/header/ExportIcpTransactionsButton.svelte";
+import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
 import * as toastsStore from "$lib/stores/toasts.store";
 import * as exportToCsv from "$lib/utils/export-to-csv.utils";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
@@ -54,7 +54,7 @@ describe("ExportIcpTransactionsButton", () => {
   });
 
   const renderComponent = ({ onTrigger }: { onTrigger?: () => void } = {}) => {
-    const { container, component } = render(ExportIcpTransactionsButton);
+    const { container, component } = render(ReportingTransactionsButton);
 
     const po = ExportIcpTransactionsButtonPo.under({
       element: new JestPageObjectElement(container),
