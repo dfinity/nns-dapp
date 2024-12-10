@@ -12,6 +12,7 @@ import {
   queryLastestRewardEvent,
   queryNeuron,
   queryNeurons,
+  refreshVotingPower,
   registerVote,
   removeHotkey,
   setFollowees,
@@ -290,6 +291,37 @@ describe("neurons-api", () => {
         disburse({
           identity: mockIdentity,
           toAccountId: mockMainAccount.identifier,
+          neuronId: 10n,
+        });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("refresh voting power", () => {
+    it("refreshes voting power successfully", async () => {
+      mockGovernanceCanister.refreshVotingPower.mockImplementation(
+        vi.fn().mockResolvedValue(undefined)
+      );
+
+      await refreshVotingPower({
+        identity: mockIdentity,
+        neuronId: 10n,
+      });
+
+      expect(mockGovernanceCanister.refreshVotingPower).toBeCalledTimes(1);
+    });
+
+    it("throws error when refresh voting power fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.refreshVotingPower.mockImplementation(
+        vi.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        refreshVotingPower({
+          identity: mockIdentity,
           neuronId: 10n,
         });
       await expect(call).rejects.toThrow(error);
