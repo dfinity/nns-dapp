@@ -1,12 +1,16 @@
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import type { UserTokenData } from "$lib/types/tokens-page";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { createUserToken } from "$tests/mocks/tokens-page.mock";
 import { NnsAccountsPo } from "$tests/page-objects/NnsAccounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -35,6 +39,14 @@ describe("NnsAccounts", () => {
     vi.spyOn(nnsDappApi, "queryAccount").mockImplementation(async () => {
       return mockAccountDetails;
     });
+
+    icpSwapTickersStore.set([
+      {
+        ...mockIcpSwapTicker,
+        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+        last_price: "10.00",
+      },
+    ]);
   });
 
   describe("when tokens flag is enabled", () => {
@@ -98,6 +110,57 @@ describe("NnsAccounts", () => {
       });
       const po = renderComponent([mainTokenData, subaccountTokenData]);
       expect(await po.getAddAccountRowTabindex()).toBe("0");
+    });
+
+    it("should not show total USD value banner when feature flag is disabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", false);
+
+      const mainTokenData = createUserToken({
+        title: "Main",
+        balanceInUsd: 30.0,
+        rowHref: "/main",
+        domKey: "/main",
+      });
+
+      const po = renderComponent([mainTokenData]);
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
+    });
+
+    it("should show total USD value banner when feature flag is enabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
+
+      const mainTokenData = createUserToken({
+        title: "Main",
+        balanceInUsd: 30.0,
+        rowHref: "/main",
+        domKey: "/main",
+      });
+
+      const po = renderComponent([mainTokenData]);
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
+    });
+
+    it("should show total USD value", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
+
+      const mainTokenData = createUserToken({
+        title: "Main",
+        balanceInUsd: 30.0,
+        rowHref: "/main",
+        domKey: "/main",
+      });
+      const subaccountTokenData = createUserToken({
+        title: "Subaccount test",
+        balanceInUsd: 20.0,
+        rowHref: "/subaccount",
+        domKey: "/subaccount",
+      });
+      const po = renderComponent([mainTokenData, subaccountTokenData]);
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
+      expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$50.00");
     });
   });
 

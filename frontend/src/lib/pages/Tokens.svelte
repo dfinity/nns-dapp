@@ -13,25 +13,16 @@
   import type { UserToken } from "$lib/types/tokens-page";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
+  import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { IconAccountsPage } from "@dfinity/gix-components";
   import { IconPlus, IconSettings, Tooltip } from "@dfinity/gix-components";
   import { Popover } from "@dfinity/gix-components";
-  import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
+  import { TokenAmountV2, nonNullish } from "@dfinity/utils";
 
   export let userTokensData: UserToken[];
 
-  const getUsdBalance = (token: UserToken) => {
-    if (!("balanceInUsd" in token) || isNullish(token.balanceInUsd)) {
-      return 0;
-    }
-    return token.balanceInUsd;
-  };
-
   let totalBalanceInUsd: number;
-  $: totalBalanceInUsd = userTokensData.reduce(
-    (acc, token) => acc + getUsdBalance(token),
-    0
-  );
+  $: totalBalanceInUsd = getTotalBalanceInUsd(userTokensData);
 
   let settingsButton: HTMLButtonElement | undefined;
   let settingsPopupVisible = false;

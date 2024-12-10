@@ -13,6 +13,7 @@ import {
   formatTokenV2,
   formattedTransactionFeeICP,
   getMaxTransactionAmount,
+  getTotalBalanceInUsd,
   numberToE8s,
   numberToUlps,
   sortUserTokens,
@@ -22,8 +23,8 @@ import {
 } from "$lib/utils/token.utils";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
-import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
-import { icpTokenBase } from "$tests/mocks/tokens-page.mock";
+import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
+import { createUserToken, icpTokenBase } from "$tests/mocks/tokens-page.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { Principal } from "@dfinity/principal";
 import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
@@ -881,6 +882,38 @@ describe("token-utils", () => {
           token5,
         ])
       ).toEqual([token5, token3, token1, loadingUserToken, loadingUserToken]);
+    });
+  });
+
+  describe("getTotalBalanceInUsd", () => {
+    it("should add up USD balances", () => {
+      const token1 = createUserToken({
+        universeId: principal(1),
+        balanceInUsd: 2,
+      });
+      const token2 = createUserToken({
+        universeId: principal(2),
+        balanceInUsd: 3,
+      });
+
+      expect(getTotalBalanceInUsd([token1, token2])).toBe(5);
+    });
+
+    it("should ignore tokens with unknown balance in USD when adding up the total", () => {
+      const token1 = createUserToken({
+        universeId: principal(1),
+        balanceInUsd: 3,
+      });
+      const token2 = createUserToken({
+        universeId: principal(2),
+        balanceInUsd: undefined,
+      });
+      const token3 = createUserToken({
+        universeId: principal(3),
+        balanceInUsd: 5,
+      });
+
+      expect(getTotalBalanceInUsd([token1, token2, token3])).toBe(8);
     });
   });
 });

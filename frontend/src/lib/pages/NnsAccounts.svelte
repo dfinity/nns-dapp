@@ -1,18 +1,21 @@
 <script lang="ts">
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
+  import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import {
     cancelPollAccounts,
     loadBalance,
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
+  import { ENABLE_USD_VALUES } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
   import { ActionType, type Action } from "$lib/types/actions";
   import type { UserToken } from "$lib/types/tokens-page";
   import { findAccount } from "$lib/utils/accounts.utils";
   import { openAccountsModal } from "$lib/utils/modals.utils";
+  import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
+  import { IconAccountsPage } from "@dfinity/gix-components";
   import { IconAdd } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
   import { onDestroy, onMount } from "svelte";
@@ -26,6 +29,9 @@
   });
 
   export let userTokensData: UserToken[];
+
+  let totalBalanceInUsd: number;
+  $: totalBalanceInUsd = getTotalBalanceInUsd(userTokensData);
 
   const openAddAccountModal = () => {
     openAccountsModal({
@@ -75,7 +81,13 @@
   };
 </script>
 
-<TestIdWrapper testId="accounts-body">
+<div class="wrapper" data-tid="accounts-body">
+  {#if $ENABLE_USD_VALUES}
+    <UsdValueBanner usdAmount={totalBalanceInUsd}>
+      <IconAccountsPage slot="icon" />
+    </UsdValueBanner>
+  {/if}
+
   <TokensTable
     {userTokensData}
     firstColumnHeader={$i18n.tokens.accounts_header}
@@ -97,10 +109,16 @@
       >
     </div>
   </TokensTable>
-</TestIdWrapper>
+</div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+  }
 
   .add-account-row {
     @include interaction.tappable;
