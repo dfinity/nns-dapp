@@ -2,7 +2,7 @@ import * as gobernanceApi from "$lib/api/governance.api";
 import ReportingPage from "$lib/routes/Reporting.svelte";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import * as toastsStore from "$lib/stores/toasts.store";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ReportingPagePo } from "$tests/page-objects/ReportingPage.page-object";
@@ -48,12 +48,22 @@ describe("Reporting", () => {
       }));
   });
 
-  it("should reload neurons when identity changes", async () => {
+  it("should not call queryNeurons if there is no identity", async () => {
+    setNoIdentity();
+    // Wait for initial load
+    renderComponent();
+    await runResolvedPromises();
+
+    expect(spyQueryNeurons).toHaveBeenCalledTimes(0);
+  });
+
+  it("should call queryNeurons if there is an identity", async () => {
     // Wait for initial load
     renderComponent();
     await runResolvedPromises();
 
     expect(spyQueryNeurons).toHaveBeenCalledTimes(1);
+    expect(spyToastError).toHaveBeenCalledTimes(0);
   });
 
   it("should show a toast error if queryNeurons fails", async () => {
