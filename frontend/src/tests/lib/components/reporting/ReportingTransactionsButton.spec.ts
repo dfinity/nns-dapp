@@ -1,10 +1,19 @@
 import * as icpIndexApi from "$lib/api/icp-index.api";
 import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
+import * as exportDataService from "$lib/services/export-data.services";
 import * as toastsStore from "$lib/stores/toasts.store";
 import * as exportToCsv from "$lib/utils/export-to-csv.utils";
-import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
-import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
+import {
+  mockIdentity,
+  resetIdentity,
+  setNoIdentity,
+} from "$tests/mocks/auth.store.mock";
+import {
+  mockAccountsStoreData,
+  mockMainAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ReportingTransactionsButtonPo } from "$tests/page-objects/ReportingTransactionsButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import {
@@ -12,9 +21,11 @@ import {
   setAccountsForTesting,
 } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/icp-ledger.api");
+vi.mock("$lib/api/governance.api");
 
 describe("ReportingTransactionsButton", () => {
   let spyGenerateCsvFileToSave;
@@ -53,8 +64,13 @@ describe("ReportingTransactionsButton", () => {
     });
   });
 
-  const renderComponent = ({ onTrigger }: { onTrigger?: () => void } = {}) => {
-    const { container, component } = render(ReportingTransactionsButton);
+  const renderComponent = ({
+    onTrigger,
+    nnsNeurons,
+  }: { onTrigger?: () => void; nnsNeurons?: NeuronInfo[] } = {}) => {
+    const { container, component } = render(ReportingTransactionsButton, {
+      nnsNeurons: nnsNeurons ?? [],
+    });
 
     const po = ReportingTransactionsButtonPo.under({
       element: new JestPageObjectElement(container),
@@ -152,6 +168,33 @@ describe("ReportingTransactionsButton", () => {
       })
     );
     expect(spyGenerateCsvFileToSave).toBeCalledTimes(1);
+  });
+
+  it("should fetch transactions for accounts and neurons", async () => {
+    const spy = vi.spyOn(
+      exportDataService,
+      "getAccountTransactionsConcurrently"
+    );
+    resetAccountsForTesting();
+
+    setAccountsForTesting({
+      main: mockMainAccount,
+    });
+
+    const mockNeurons: NeuronInfo[] = [mockNeuron];
+    const po = renderComponent({ nnsNeurons: mockNeurons });
+
+    expect(spy).toBeCalledTimes(0);
+
+    await po.click();
+    await runResolvedPromises();
+
+    const expectation = [mockMainAccount, mockNeuron];
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith({
+      entities: expectation,
+      identity: mockIdentity,
+    });
   });
 
   it("should show error toast when file system access fails", async () => {
