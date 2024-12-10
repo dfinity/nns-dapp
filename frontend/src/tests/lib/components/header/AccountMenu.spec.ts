@@ -8,7 +8,7 @@ import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { AccountMenuPo } from "$tests/page-objects/AccountMenu.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 
 describe("AccountMenu", () => {
   const renderComponent = () => {
@@ -128,44 +128,6 @@ describe("AccountMenu", () => {
     describe("export feature flag", () => {
       beforeEach(() => {
         vi.spyOn(console, "error").mockImplementation(() => {});
-      });
-
-      it("should not show the Export Neurons Report button if feature flag is off(by default)", async () => {
-        const { accountMenuPo } = renderComponent();
-
-        await accountMenuPo.openMenu();
-
-        expect(await accountMenuPo.getExportNeuronsButtonPo().isPresent()).toBe(
-          false
-        );
-      });
-
-      it("should show the Export Neurons Report button if feature flag is on", async () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", true);
-        const { accountMenuPo } = renderComponent();
-
-        await accountMenuPo.openMenu();
-
-        expect(await accountMenuPo.getExportNeuronsButtonPo().isPresent()).toBe(
-          true
-        );
-      });
-
-      it("should close the menu once the Export Neurons Report button is clicked", async () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", true);
-        const { accountMenuPo } = renderComponent();
-
-        await accountMenuPo.openMenu();
-
-        expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(
-          true
-        );
-
-        await accountMenuPo.getExportNeuronsButtonPo().click();
-
-        await waitFor(async () => {
-          expect(await accountMenuPo.isOpen()).toBe(false);
-        });
       });
 
       it("should not show the LinkToReporting button if feature flag is off(by default", async () => {

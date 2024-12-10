@@ -1,6 +1,5 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import ExportNeuronsButton from "$lib/components/header/ExportNeuronsButton.svelte";
   import ManageInternetIdentityButton from "$lib/components/header/ManageInternetIdentityButton.svelte";
   import LinkToSettings from "$lib/components/header/LinkToSettings.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -44,8 +43,6 @@
 
         {#if $ENABLE_EXPORT_NEURONS_REPORT}
           <LinkToReporting on:nnsLink={closeMenu} />
-
-          <ExportNeuronsButton on:nnsExportNeuronsCsvTriggered={toggle} />
         {/if}
 
         <Logout on:nnsLogoutTriggered={toggle} />
