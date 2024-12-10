@@ -11,7 +11,7 @@
   import type { Identity } from "@dfinity/agent";
   import { Island } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { debounce } from "@dfinity/utils";
+  import { debounce, nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
 
   // Defer the title to avoid a visual glitch where the title moves from left to center in the header if navigation happens from Accounts page
@@ -26,17 +26,19 @@
   );
 
   let identity: Identity | null | undefined;
+  // TODO: It will be remove soon
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let neurons: NeuronInfo[] = [];
 
   $: identity = $authStore.identity;
 
-  const loadNeurons = async (id: typeof identity) => {
-    if (!id) return;
+  const loadNeurons = async (identity: Identity) => {
+    if (!identity) return;
 
     try {
       const data = await queryNeurons({
         certified: true,
-        identity: id,
+        identity: identity,
         includeEmptyNeurons: true,
       });
 
@@ -49,7 +51,7 @@
     }
   };
 
-  $: if (identity) {
+  $: if (nonNullish(identity)) {
     loadNeurons(identity);
   }
 </script>
