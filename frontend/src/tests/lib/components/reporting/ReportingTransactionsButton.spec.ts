@@ -5,7 +5,7 @@ import * as exportToCsv from "$lib/utils/export-to-csv.utils";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
-import { ExportIcpTransactionsButtonPo } from "$tests/page-objects/ExportIcpTransactionsButton.page-object";
+import { ReportingTransactionsButtonPo } from "$tests/page-objects/ReportingTransactionsButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import {
   resetAccountsForTesting,
@@ -56,7 +56,7 @@ describe("ExportIcpTransactionsButton", () => {
   const renderComponent = ({ onTrigger }: { onTrigger?: () => void } = {}) => {
     const { container, component } = render(ReportingTransactionsButton);
 
-    const po = ExportIcpTransactionsButtonPo.under({
+    const po = ReportingTransactionsButtonPo.under({
       element: new JestPageObjectElement(container),
     });
 
