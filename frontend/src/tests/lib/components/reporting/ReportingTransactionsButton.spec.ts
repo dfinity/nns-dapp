@@ -16,7 +16,7 @@ import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/icp-ledger.api");
 
-describe("ExportIcpTransactionsButton", () => {
+describe("ReportingTransactionsButton", () => {
   let spyGenerateCsvFileToSave;
   let spyToastError;
 
@@ -72,7 +72,7 @@ describe("ExportIcpTransactionsButton", () => {
     expect(await po.isDisabled()).toBe(true);
   });
 
-  it("should be disabled when there is no accounts nor neurons", async () => {
+  it("should be disabled when there are no accounts nor neurons", async () => {
     resetAccountsForTesting();
     const po = renderComponent();
     expect(await po.isDisabled()).toBe(true);

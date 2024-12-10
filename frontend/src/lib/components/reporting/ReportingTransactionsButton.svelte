@@ -1,8 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { IconDown } from "@dfinity/gix-components";
-  import { createEventDispatcher } from "svelte";
-  import { ICPToken, isNullish } from "@dfinity/utils";
+  import { IconDown, Spinner, stopBusy } from "@dfinity/gix-components";
+  import { ICPToken, isNullish, nonNullish } from "@dfinity/utils";
   import {
     buildTransactionsDatasets,
     CsvGenerationError,
@@ -20,27 +19,26 @@
   import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { Account } from "$lib/types/account";
-  import { neuronAccountsStore } from "$lib/derived/neurons.derived";
   import type { Readable } from "svelte/store";
-  import { neuronsStore } from "$lib/stores/neurons.store";
   import type { NeuronInfo } from "@dfinity/nns";
 
-  const dispatcher = createEventDispatcher<{
-    nnsExportIcpTransactionsCsvTriggered: void;
-  }>();
+  export let nnsNeurons: NeuronInfo[] = [];
 
   let isDisabled = true;
   let identity: Identity | null | undefined;
   let swapCanisterAccounts: Set<string>;
   let neuronAccounts: Set<string>;
   let nnsAccounts: Account[];
-  let nnsNeurons: NeuronInfo[];
   let swapCanisterAccountsStore: Readable<Set<string>>;
+  let loading = false;
 
   $: identity = $authStore.identity;
-  $: neuronAccounts = $neuronAccountsStore;
+  $: neuronAccounts = new Set(
+    nnsNeurons
+      .filter((neuron) => nonNullish(neuron.fullNeuron?.accountIdentifier))
+      .map((neuron) => neuron.fullNeuron!.accountIdentifier)
+  );
   $: nnsAccounts = $nnsAccountsListStore;
-  $: nnsNeurons = $neuronsStore.neurons ?? [];
   $: isDisabled =
     isNullish(identity) ||
     (nnsAccounts.length === 0 && nnsNeurons.length === 0);
@@ -51,6 +49,8 @@
 
   const exportIcpTransactions = async () => {
     try {
+      loading = true;
+
       // we are logged in to be able to interact with the button
       const signIdentity = identity as SignIdentity;
       const entities = [...nnsAccounts, ...nnsNeurons];
@@ -125,27 +125,35 @@
         });
       }
     } finally {
-      dispatcher("nnsExportIcpTransactionsCsvTriggered");
+      loading = false;
     }
   };
 </script>
 
-<button
-  data-tid="export-icp-transactions-button-component"
-  on:click={exportIcpTransactions}
-  class="text"
-  disabled={isDisabled}
-  aria-label={$i18n.header.export_neurons}
->
-  <IconDown />
-  {$i18n.header.export_transactions}
-</button>
+<div class="wrapper">
+  <button
+    data-tid="reporting-transactions-button-component"
+    on:click={exportIcpTransactions}
+    class="primary with-icon"
+    disabled={isDisabled || loading}
+    aria-label={$i18n.reporting.transactions_download}
+  >
+    <IconDown />
+    {$i18n.reporting.transactions_download}
+  </button>
+
+  {#if loading}
+    <div>
+      <Spinner inline size="tiny" />
+    </div>
+  {/if}
+</div>
 
 <style lang="scss">
-  @use "../../themes/mixins/account-menu";
-
-  button {
-    @include account-menu.button;
-    padding: 0;
+  .wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--padding-2x);
   }
 </style>
