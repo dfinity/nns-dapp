@@ -24,19 +24,21 @@
   $: isLosingRewardsSoon =
     !isLosingRewards && shouldDisplayRewardLossNotification(neuron);
 
-  const getIcon = (neuron: NeuronInfo) =>
-    isLosingRewards
-      ? IconError
-      : isLosingRewardsSoon
-        ? IconWarning
-        : // TODO(mstr): Replace with the filled version.
-          IconCheckCircle;
-  const getTitle = (neuron: NeuronInfo): string =>
-    isLosingRewards
-      ? $i18n.neuron_detail.reward_status_inactive
-      : isLosingRewardsSoon
-        ? $i18n.neuron_detail.reward_status_losing_soon
-        : $i18n.neuron_detail.reward_status_active;
+  let icon: typeof IconError | IconWarning | IconCheckCircle;
+  $: icon = isLosingRewards
+    ? IconError
+    : isLosingRewardsSoon
+      ? IconWarning
+      : // TODO(mstr): Replace with the filled version.
+        IconCheckCircle;
+
+  let title: string;
+  $: title = isLosingRewards
+    ? $i18n.neuron_detail.reward_status_inactive
+    : isLosingRewardsSoon
+      ? $i18n.neuron_detail.reward_status_losing_soon
+      : $i18n.neuron_detail.reward_status_active;
+
   const getDescription = (neuron: NeuronInfo): string =>
     isLosingRewards
       ? $i18n.neuron_detail.reward_status_inactive_description
@@ -58,10 +60,10 @@
     class:isLosingRewards
     class:isLosingRewardsSoon
   >
-    <svelte:component this={getIcon(neuron)} />
+    <svelte:component this={icon} />
   </span>
   <span slot="title" data-tid="state-title">
-    {getTitle(neuron)}
+    {title}
   </span>
 
   <span
