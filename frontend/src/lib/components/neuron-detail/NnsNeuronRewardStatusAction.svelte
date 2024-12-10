@@ -24,7 +24,7 @@
   $: isLosingRewardsSoon =
     !isLosingRewards && shouldDisplayRewardLossNotification(neuron);
 
-  let icon: typeof IconError | IconWarning | IconCheckCircle;
+  let icon: typeof IconError | typeof IconWarning | typeof IconCheckCircle;
   $: icon = isLosingRewards
     ? IconError
     : isLosingRewardsSoon
