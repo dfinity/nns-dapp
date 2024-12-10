@@ -83,6 +83,18 @@ describe("ReportingTransactionsButton", () => {
     return po;
   };
 
+  it("should be disabled when there is no identity", async () => {
+    setNoIdentity();
+    const po = renderComponent();
+    expect(await po.isDisabled()).toBe(true);
+  });
+
+  it("should be disabled when there are no accounts nor neurons", async () => {
+    resetAccountsForTesting();
+    const po = renderComponent();
+    expect(await po.isDisabled()).toBe(true);
+  });
+
   it("should name the file with the date of the export", async () => {
     const po = renderComponent();
 

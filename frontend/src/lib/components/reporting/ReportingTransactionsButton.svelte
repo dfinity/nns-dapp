@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { IconDown } from "@dfinity/gix-components";
-  import { ICPToken, nonNullish } from "@dfinity/utils";
+  import { IconDown, Spinner, stopBusy } from "@dfinity/gix-components";
+  import { ICPToken, isNullish, nonNullish } from "@dfinity/utils";
   import {
     buildTransactionsDatasets,
     CsvGenerationError,
@@ -24,6 +24,9 @@
   import { sortNeuronsByStake } from "$lib/utils/neuron.utils";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 
+  export let nnsNeurons: NeuronInfo[] = [];
+
+  let isDisabled = true;
   let identity: Identity | null | undefined;
   let swapCanisterAccounts: Set<string>;
   let nnsAccounts: Account[];
@@ -31,7 +34,15 @@
   let loading = false;
 
   $: identity = $authStore.identity;
+  $: neuronAccounts = new Set(
+    nnsNeurons
+      .filter((neuron) => nonNullish(neuron.fullNeuron?.accountIdentifier))
+      .map((neuron) => neuron.fullNeuron!.accountIdentifier)
+  );
   $: nnsAccounts = $nnsAccountsListStore;
+  $: isDisabled =
+    isNullish(identity) ||
+    (nnsAccounts.length === 0 && nnsNeurons.length === 0);
   $: swapCanisterAccountsStore = createSwapCanisterAccountsStore(
     identity?.getPrincipal()
   );
@@ -141,13 +152,30 @@
   };
 </script>
 
-<button
-  data-tid="reporting-transactions-button-component"
-  on:click={exportIcpTransactions}
-  class="primary with-icon"
-  disabled={loading}
-  aria-label={$i18n.reporting.transactions_download}
->
-  <IconDown />
-  {$i18n.reporting.transactions_download}
-</button>
+<div class="wrapper">
+  <button
+    data-tid="reporting-transactions-button-component"
+    on:click={exportIcpTransactions}
+    class="primary with-icon"
+    disabled={isDisabled || loading}
+    aria-label={$i18n.reporting.transactions_download}
+  >
+    <IconDown />
+    {$i18n.reporting.transactions_download}
+  </button>
+
+  {#if loading}
+    <div>
+      <Spinner inline size="tiny" />
+    </div>
+  {/if}
+</div>
+
+<style lang="scss">
+  .wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--padding-2x);
+  }
+</style>
