@@ -221,7 +221,7 @@ describe("Export to Csv", () => {
     });
 
     // TODO: Investigate the random issues with showSaveFilePicker.
-    describe.skip("Modern Browser (File System Access API)", () => {
+    describe("Modern Browser (File System Access API)", () => {
       let mockWritable;
       let mockHandle;
 
@@ -241,7 +241,22 @@ describe("Export to Csv", () => {
         );
       });
 
-      it("should use File System Access API when available", async () => {
+      it("should use Legacy Browser Link as feature is disabled", async () => {
+        URL.createObjectURL = vi.fn();
+        URL.revokeObjectURL = vi.fn();
+
+        await generateCsvFileToSave({
+          datasets: [],
+          headers: [],
+          fileName: "test",
+        });
+
+        expect(window.showSaveFilePicker).toHaveBeenCalledTimes(0);
+        expect(URL.createObjectURL).toHaveBeenCalledTimes(1);
+        expect(URL.revokeObjectURL).toHaveBeenCalledTimes(1);
+      });
+
+      it.skip("should use File System Access API when available", async () => {
         await generateCsvFileToSave({
           datasets: [],
           headers: [],
@@ -263,7 +278,7 @@ describe("Export to Csv", () => {
         expect(mockWritable.close).toHaveBeenCalledTimes(1);
       });
 
-      it("should gracefully handle user cancellation of save dialog", async () => {
+      it.skip("should gracefully handle user cancellation of save dialog", async () => {
         const abortError = new Error("User cancelled");
         abortError.name = "AbortError";
 
@@ -277,7 +292,7 @@ describe("Export to Csv", () => {
         ).resolves.not.toThrow();
       });
 
-      it("should throw FileSystemAccessError when modern API fails", async () => {
+      it.skip("should throw FileSystemAccessError when modern API fails", async () => {
         vi.stubGlobal(
           "showSaveFilePicker",
           vi.fn().mockRejectedValue(new Error("API Error"))
