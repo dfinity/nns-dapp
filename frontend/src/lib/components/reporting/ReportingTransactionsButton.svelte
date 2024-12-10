@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { IconDown, Spinner, stopBusy } from "@dfinity/gix-components";
+  import { IconDown, Spinner } from "@dfinity/gix-components";
   import { ICPToken, isNullish, nonNullish } from "@dfinity/utils";
   import {
     buildTransactionsDatasets,

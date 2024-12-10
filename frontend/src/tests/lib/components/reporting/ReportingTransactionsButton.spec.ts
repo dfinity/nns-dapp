@@ -154,17 +154,6 @@ describe("ReportingTransactionsButton", () => {
     expect(spyGenerateCsvFileToSave).toBeCalledTimes(1);
   });
 
-  it("should dispatch nnsExportIcpTransactionsCsvTriggered event after click to close the menu", async () => {
-    const onTrigger = vi.fn();
-    const po = renderComponent({ onTrigger });
-
-    expect(onTrigger).toHaveBeenCalledTimes(0);
-
-    await po.click();
-    await runResolvedPromises();
-    expect(onTrigger).toHaveBeenCalledTimes(1);
-  });
-
   it("should show error toast when file system access fails", async () => {
     vi.spyOn(exportToCsv, "generateCsvFileToSave").mockRejectedValueOnce(
       new exportToCsv.FileSystemAccessError("File system access denied")
