@@ -204,7 +204,18 @@ describe("AccountMenu", () => {
         });
       });
 
+      it("should not show the LinkToReporting button if feature flag is off(by default", async () => {
+        const { accountMenuPo } = renderComponent();
+        await accountMenuPo.openMenu();
+
+        expect(await accountMenuPo.getLinkToReportingPo().isPresent()).toBe(
+          false
+        );
+      });
+
       it("should display Reporting button link", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", true);
+
         const { accountMenuPo } = renderComponent();
         await accountMenuPo.openMenu();
 
@@ -214,6 +225,8 @@ describe("AccountMenu", () => {
       });
 
       it("should close popover on click on reporting", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", true);
+
         const { accountMenuPo, linkToReportingPo } = renderComponent();
         await accountMenuPo.openMenu();
 
