@@ -29,7 +29,7 @@ export const mockFullNeuron: Neuron = {
   followees: [],
   visibility: undefined,
   votingPowerRefreshedTimestampSeconds: 0n,
-  potentialVotingPower: 0n, 
+  potentialVotingPower: 0n,
   decidingVotingPower: 0n,
 };
 
