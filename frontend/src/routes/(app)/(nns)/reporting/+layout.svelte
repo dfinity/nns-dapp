@@ -3,8 +3,14 @@
   import Content from "$lib/components/layout/Content.svelte";
   import Layout from "$lib/components/layout/Layout.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { ENABLE_EXPORT_NEURONS_REPORT } from "$lib/stores/feature-flags.store";
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { nonNullish } from "@dfinity/utils";
+  import { onMount } from "svelte";
+
+  onMount(async () => {
+    if ($ENABLE_EXPORT_NEURONS_REPORT !== true) await goto(AppPath.Accounts);
+  });
 
   const back = async () => {
     if (nonNullish($referrerPathStore)) {
