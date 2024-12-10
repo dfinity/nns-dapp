@@ -153,6 +153,7 @@ interface I18nNavigation {
   manage_ii: string;
   source_code: string;
   settings: string;
+  reporting: string;
 }
 
 interface I18nHeader {
@@ -196,6 +197,13 @@ interface I18nExport_error {
   csv_generation: string;
   file_system_access: string;
   neurons: string;
+}
+
+interface I18nReporting {
+  neurons_title: string;
+  neurons_description: string;
+  transactions_title: string;
+  transactions_description: string;
 }
 
 interface I18nAuth {
@@ -1043,6 +1051,11 @@ interface I18nAuth_accounts {
   text: string;
 }
 
+interface I18nAuth_report {
+  title: string;
+  text: string;
+}
+
 interface I18nAuth_neurons {
   title: string;
 }
@@ -1466,6 +1479,7 @@ interface I18n {
   header: I18nHeader;
   export_csv_neurons: I18nExport_csv_neurons;
   export_error: I18nExport_error;
+  reporting: I18nReporting;
   auth: I18nAuth;
   accounts: I18nAccounts;
   neuron_types: I18nNeuron_types;
@@ -1501,6 +1515,7 @@ interface I18n {
   error__imported_tokens: I18nError__imported_tokens;
   error__sns: I18nError__sns;
   auth_accounts: I18nAuth_accounts;
+  auth_report: I18nAuth_report;
   auth_neurons: I18nAuth_neurons;
   auth_proposals: I18nAuth_proposals;
   auth_canisters: I18nAuth_canisters;
