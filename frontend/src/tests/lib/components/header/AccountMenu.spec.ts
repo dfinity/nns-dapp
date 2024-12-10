@@ -19,11 +19,18 @@ describe("AccountMenu", () => {
     );
     const canistersLinkPo = accountMenuPo.getCanistersLinkPo();
     const linkToSettingsPo = accountMenuPo.getLinkToSettingsPo();
+    const linkToReportingPo = accountMenuPo.getLinkToReportingPo();
 
     canistersLinkPo.root.addEventListener("click", mockLinkClickEvent);
     linkToSettingsPo.root.addEventListener("click", mockLinkClickEvent);
+    linkToReportingPo.root.addEventListener("click", mockLinkClickEvent);
 
-    return { accountMenuPo, canistersLinkPo, linkToSettingsPo };
+    return {
+      accountMenuPo,
+      canistersLinkPo,
+      linkToSettingsPo,
+      linkToReportingPo,
+    };
   };
 
   it("should be closed by default", async () => {
@@ -195,6 +202,40 @@ describe("AccountMenu", () => {
         await waitFor(async () => {
           expect(await accountMenuPo.isOpen()).toBe(false);
         });
+      });
+
+      it("should not show the LinkToReporting button if feature flag is off(by default", async () => {
+        const { accountMenuPo } = renderComponent();
+        await accountMenuPo.openMenu();
+
+        expect(await accountMenuPo.getLinkToReportingPo().isPresent()).toBe(
+          false
+        );
+      });
+
+      it("should display Reporting button link", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", true);
+
+        const { accountMenuPo } = renderComponent();
+        await accountMenuPo.openMenu();
+
+        expect(await accountMenuPo.getLinkToReportingPo().isPresent()).toBe(
+          true
+        );
+      });
+
+      it("should close popover on click on reporting", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", true);
+
+        const { accountMenuPo, linkToReportingPo } = renderComponent();
+        await accountMenuPo.openMenu();
+
+        await linkToReportingPo.click();
+
+        //wait for goto to be triggered
+        await runResolvedPromises();
+
+        expect(await accountMenuPo.isOpen()).toBe(false);
       });
     });
   });

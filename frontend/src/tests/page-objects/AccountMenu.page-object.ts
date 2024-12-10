@@ -75,4 +75,11 @@ export class AccountMenuPo extends BasePageObject {
   getExportIcpTransactionsButtonPo(): ExportIcpTransactionsButtonPo {
     return ExportIcpTransactionsButtonPo.under({ element: this.root });
   }
+
+  getLinkToReportingPo(): LinkPo {
+    return LinkPo.under({
+      element: this.root,
+      testId: "reporting",
+    });
+  }
 }
