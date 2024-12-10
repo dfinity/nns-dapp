@@ -109,8 +109,9 @@
             </TooltipIcon>
           </div>
           <div class="vertical-divider" />
-        <!-- prettier-ignore -->
-        {/if}<div class="account-name">
+          <!-- prettier-ignore -->
+        {/if}
+        <div class="account-name">
           {accountName}
         </div>
       </div>
