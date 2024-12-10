@@ -229,7 +229,7 @@ describe("Wallet", () => {
       ];
       vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
 
-      vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockReturnValue(
+      vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
         3_000_000_000n
       );
 
