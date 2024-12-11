@@ -402,19 +402,20 @@ interface I18nNeurons {
   create_as_public_neuron_failure: string;
 }
 
+interface I18nLosing_rewards {
+  description: string;
+  confirm: string;
+}
+
 interface I18nLosing_rewards_banner {
   days_left_title: string;
   rewards_missing_title: string;
-  description: string;
-  confirm: string;
 }
 
 interface I18nLosing_rewards_modal {
   goto_neuron: string;
   title: string;
-  description: string;
   label: string;
-  confirm: string;
   no_following: string;
 }
 
@@ -1485,6 +1486,7 @@ interface I18n {
   neuron_types: I18nNeuron_types;
   staking: I18nStaking;
   neurons: I18nNeurons;
+  losing_rewards: I18nLosing_rewards;
   losing_rewards_banner: I18nLosing_rewards_banner;
   losing_rewards_modal: I18nLosing_rewards_modal;
   new_followee: I18nNew_followee;
