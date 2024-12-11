@@ -46,7 +46,7 @@ describe("export-data service", () => {
       expect(spyGetTransactions).toHaveBeenCalledWith({
         accountIdentifier: mockAccountId,
         identity: mockSignInIdentity,
-        maxResults: 100n,
+        maxResults: 2000n,
         start: undefined,
       });
       expect(result).toEqual(mockTransactions);
@@ -82,13 +82,13 @@ describe("export-data service", () => {
       expect(spyGetTransactions).toHaveBeenNthCalledWith(1, {
         accountIdentifier: mockAccountId,
         identity: mockSignInIdentity,
-        maxResults: 100n,
+        maxResults: 2000n,
         start: undefined,
       });
       expect(spyGetTransactions).toHaveBeenNthCalledWith(2, {
         accountIdentifier: mockAccountId,
         identity: mockSignInIdentity,
-        maxResults: 100n,
+        maxResults: 2000n,
         start: 2n,
       });
     });
@@ -100,7 +100,7 @@ describe("export-data service", () => {
 
       spyGetTransactions.mockResolvedValue({
         transactions: mockTransactions,
-        oldestTxId: 100n,
+        oldestTxId: 2000n,
       });
 
       const result = await getAllTransactionsFromAccountAndIdentity({
@@ -121,7 +121,7 @@ describe("export-data service", () => {
       spyGetTransactions
         .mockResolvedValueOnce({
           transactions: firstBatch,
-          oldestTxId: 100n,
+          oldestTxId: 2000n,
         })
         .mockRejectedValueOnce(new Error("API Error"));
 

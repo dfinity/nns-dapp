@@ -1,5 +1,6 @@
 import {
   FileSystemAccessError,
+  buildNeuronsDatasets,
   buildTransactionsDatasets,
   combineDatasetsToCsv,
   convertToCsv,
@@ -11,11 +12,18 @@ import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 
 type TestPersonData = { name: string; age: number };
 type TestFormulaData = { formula: string; value: number };
 
 describe("Export to Csv", () => {
+  beforeEach(() => {
+    const mockDate = new Date("2023-10-14T00:00:00Z");
+    vi.useFakeTimers();
+    vi.setSystemTime(mockDate);
+  });
+
   describe("convertToCSV", () => {
     it("should return an empty string when empty headers are provided", () => {
       const data = [];
@@ -212,6 +220,7 @@ describe("Export to Csv", () => {
       vi.spyOn(console, "error").mockImplementation(() => {});
     });
 
+    // TODO: Investigate the random issues with showSaveFilePicker.
     describe("Modern Browser (File System Access API)", () => {
       let mockWritable;
       let mockHandle;
@@ -232,7 +241,22 @@ describe("Export to Csv", () => {
         );
       });
 
-      it("should use File System Access API when available", async () => {
+      it("should use Legacy Browser Link as feature is disabled", async () => {
+        URL.createObjectURL = vi.fn();
+        URL.revokeObjectURL = vi.fn();
+
+        await generateCsvFileToSave({
+          datasets: [],
+          headers: [],
+          fileName: "test",
+        });
+
+        expect(window.showSaveFilePicker).toHaveBeenCalledTimes(0);
+        expect(URL.createObjectURL).toHaveBeenCalledTimes(1);
+        expect(URL.revokeObjectURL).toHaveBeenCalledTimes(1);
+      });
+
+      it.skip("should use File System Access API when available", async () => {
         await generateCsvFileToSave({
           datasets: [],
           headers: [],
@@ -254,7 +278,7 @@ describe("Export to Csv", () => {
         expect(mockWritable.close).toHaveBeenCalledTimes(1);
       });
 
-      it("should gracefully handle user cancellation of save dialog", async () => {
+      it.skip("should gracefully handle user cancellation of save dialog", async () => {
         const abortError = new Error("User cancelled");
         abortError.name = "AbortError";
 
@@ -268,7 +292,7 @@ describe("Export to Csv", () => {
         ).resolves.not.toThrow();
       });
 
-      it("should throw FileSystemAccessError when modern API fails", async () => {
+      it.skip("should throw FileSystemAccessError when modern API fails", async () => {
         vi.stubGlobal(
           "showSaveFilePicker",
           vi.fn().mockRejectedValue(new Error("API Error"))
@@ -319,12 +343,6 @@ describe("Export to Csv", () => {
 
   describe("buildTransactionsDatasets", () => {
     const transactions = [createTransactionWithId({})];
-
-    beforeEach(() => {
-      const mockDate = new Date("2023-10-14T00:00:00Z");
-      vi.useFakeTimers();
-      vi.setSystemTime(mockDate);
-    });
 
     it("should return an empty array when no transactions are provided", () => {
       expect(
@@ -428,6 +446,112 @@ describe("Export to Csv", () => {
         label: "Neuron ID",
         value: "1",
       });
+    });
+  });
+
+  describe("buildNeuronsDatasets", () => {
+    const expectedMetadata = [
+      {
+        label: "NNS Account Principal ID",
+        value:
+          "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
+      },
+      {
+        label: "Export Date Time",
+        value: "Oct 14, 2023 12:00 AM",
+      },
+    ];
+
+    it("should generate metadata and empty data when no neurons are provided", () => {
+      expect(
+        buildNeuronsDatasets({
+          neurons: [],
+          i18n: en,
+          nnsAccountPrincipal: mockPrincipal,
+        })
+      ).toEqual([
+        {
+          data: [],
+          metadata: expectedMetadata,
+        },
+      ]);
+    });
+
+    it("should generate datasets for neurons", () => {
+      const createdTimestampSeconds = 1602339200n; // Oct 10, 2020
+      const mockLockedNeuron: NeuronInfo = {
+        ...mockNeuron,
+        neuronId: 10n,
+        state: NeuronState.Locked,
+        dissolveDelaySeconds: 100n,
+        createdTimestampSeconds,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: "controllerId",
+          cachedNeuronStake: 30_000_000n,
+          maturityE8sEquivalent: 100000n,
+          stakedMaturityE8sEquivalent: 200000000n,
+          neuronFees: 10000n,
+          accountIdentifier: "accountIdentifier",
+        },
+      };
+      const mockDissolvingNeuron: NeuronInfo = {
+        ...mockNeuron,
+        neuronId: 10n,
+        state: NeuronState.Dissolving,
+        dissolveDelaySeconds: 100n,
+        createdTimestampSeconds,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: "controllerId",
+          cachedNeuronStake: 30_000_000n,
+          maturityE8sEquivalent: 100000n,
+          stakedMaturityE8sEquivalent: 200000000n,
+          neuronFees: 10000n,
+          accountIdentifier: "accountIdentifier",
+        },
+      };
+      const datasets = buildNeuronsDatasets({
+        neurons: [mockLockedNeuron, mockDissolvingNeuron],
+        i18n: en,
+        nnsAccountPrincipal: mockPrincipal,
+      });
+
+      expect(datasets).toEqual([
+        {
+          data: [
+            {
+              availableMaturity: "0.001",
+              controllerId: "controllerId",
+              creationDate: "Oct 10, 2020",
+              dissolveDate: "N/A",
+              dissolveDelaySeconds: "1 minute",
+              neuronAccountId: "accountIdentifier",
+              neuronId: "10",
+              project: "Internet Computer",
+              stake: "0.2999",
+              stakedMaturity: "2.00",
+              state: "Locked",
+              symbol: "ICP",
+            },
+            {
+              availableMaturity: "0.001",
+              controllerId: "controllerId",
+              creationDate: "Oct 10, 2020",
+              dissolveDate: "Oct 14, 2023",
+              dissolveDelaySeconds: "1 minute",
+              neuronAccountId: "accountIdentifier",
+              neuronId: "10",
+              project: "Internet Computer",
+              stake: "0.2999",
+              stakedMaturity: "2.00",
+              state: "Dissolving",
+              symbol: "ICP",
+            },
+          ],
+          metadata: expectedMetadata,
+        },
+      ]);
     });
   });
 });

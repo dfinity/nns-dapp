@@ -1,6 +1,5 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import ExportNeuronsButton from "$lib/components/header/ExportNeuronsButton.svelte";
   import ManageInternetIdentityButton from "$lib/components/header/ManageInternetIdentityButton.svelte";
   import LinkToSettings from "$lib/components/header/LinkToSettings.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -11,7 +10,7 @@
   import LoginIconOnly from "./LoginIconOnly.svelte";
   import Logout from "./Logout.svelte";
   import { IconUser, Popover } from "@dfinity/gix-components";
-  import ExportIcpTransactionsButton from "$lib/components/header/ExportIcpTransactionsButton.svelte";
+  import LinkToReporting from "$lib/components/header/LinkToReporting.svelte";
 
   let visible = false;
   let button: HTMLButtonElement | undefined;
@@ -43,11 +42,7 @@
         <LinkToCanisters on:nnsLink={closeMenu} />
 
         {#if $ENABLE_EXPORT_NEURONS_REPORT}
-          <ExportNeuronsButton on:nnsExportNeuronsCsvTriggered={toggle} />
-
-          <ExportIcpTransactionsButton
-            on:nnsExportIcpTransactionsCsvTriggered={toggle}
-          />
+          <LinkToReporting on:nnsLink={closeMenu} />
         {/if}
 
         <Logout on:nnsLogoutTriggered={toggle} />

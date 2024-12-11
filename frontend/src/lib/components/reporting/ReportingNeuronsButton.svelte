@@ -3,35 +3,18 @@
   import { IconDown } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
   import { neuronsStore } from "$lib/stores/neurons.store";
+  import { isNullish } from "@dfinity/utils";
   import {
-    formatMaturity,
-    getStateInfo,
-    neuronAvailableMaturity,
-    neuronStake,
-    neuronStakedMaturity,
-  } from "$lib/utils/neuron.utils";
-  import {
-    ICPToken,
-    isNullish,
-    secondsToDuration,
-    TokenAmountV2,
-  } from "@dfinity/utils";
-  import { formatTokenV2 } from "$lib/utils/token.utils";
-  import { NeuronState, type NeuronInfo } from "@dfinity/nns";
-  import {
+    buildNeuronsDatasets,
     CsvGenerationError,
     FileSystemAccessError,
     generateCsvFileToSave,
   } from "$lib/utils/export-to-csv.utils";
   import { toastsError } from "$lib/stores/toasts.store";
-  import {
-    formatDateCompact,
-    getFutureDateFromDelayInSeconds,
-    nanoSecondsToDateTime,
-    nowInBigIntNanoSeconds,
-    secondsToDate,
-  } from "$lib/utils/date.utils";
+  import { formatDateCompact } from "$lib/utils/date.utils";
   import { authStore } from "$lib/stores/auth.store";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import type { Principal } from "@dfinity/principal";
 
   const dispatcher = createEventDispatcher<{
     nnsExportNeuronsCsvTriggered: void;
@@ -39,75 +22,24 @@
 
   let isDisabled = true;
   let neurons: NeuronInfo[] = [];
+  let nnsAccountPrincipal: Principal | null | undefined;
+
   $: neurons = $neuronsStore?.neurons ?? [];
-  $: nnsAccountPrincipal = $authStore.identity?.getPrincipal().toText();
+  $: nnsAccountPrincipal = $authStore.identity?.getPrincipal();
   $: isDisabled = neurons.length === 0 || isNullish(nnsAccountPrincipal);
-
-  const nnsNeuronToHumanReadableFormat = (neuron: NeuronInfo) => {
-    const controllerId = neuron.fullNeuron?.controller?.toString();
-    const neuronId = neuron.neuronId.toString();
-    const neuronAccountId = neuron.fullNeuron?.accountIdentifier.toString();
-    const stake = TokenAmountV2.fromUlps({
-      amount: neuronStake(neuron),
-      token: ICPToken,
-    });
-    const project = stake.token.name;
-    const symbol = stake.token.symbol;
-    const availableMaturity = neuronAvailableMaturity(neuron);
-    const stakedMaturity = neuronStakedMaturity(neuron);
-    const dissolveDelaySeconds = neuron.dissolveDelaySeconds;
-    const dissolveDate =
-      neuron.state === NeuronState.Dissolving
-        ? getFutureDateFromDelayInSeconds(neuron.dissolveDelaySeconds)
-        : null;
-    const creationDate = secondsToDate(Number(neuron.createdTimestampSeconds));
-
-    return {
-      controllerId,
-      project,
-      symbol,
-      neuronId,
-      neuronAccountId,
-      stake: formatTokenV2({
-        value: stake,
-        detailed: true,
-      }),
-      availableMaturity: formatMaturity(availableMaturity),
-      stakedMaturity: formatMaturity(stakedMaturity),
-      dissolveDelaySeconds: secondsToDuration({
-        seconds: dissolveDelaySeconds,
-        i18n: $i18n.time,
-      }),
-      dissolveDate: dissolveDate ?? $i18n.core.not_applicable,
-      creationDate,
-      state: $i18n.neuron_state[getStateInfo(neuron.state).textKey],
-    };
-  };
 
   const exportNeurons = async () => {
     if (!nnsAccountPrincipal) return;
 
     try {
-      const humanFriendlyContent = neurons.map(nnsNeuronToHumanReadableFormat);
       const fileName = `neurons_export_${formatDateCompact(new Date())}`;
-      const metadataDate = nanoSecondsToDateTime(nowInBigIntNanoSeconds());
 
       await generateCsvFileToSave({
-        datasets: [
-          {
-            data: humanFriendlyContent,
-            metadata: [
-              {
-                label: $i18n.export_csv_neurons.account_id_label,
-                value: nnsAccountPrincipal.toString(),
-              },
-              {
-                label: $i18n.export_csv_neurons.date_label,
-                value: metadataDate,
-              },
-            ],
-          },
-        ],
+        datasets: buildNeuronsDatasets({
+          neurons,
+          nnsAccountPrincipal,
+          i18n: $i18n,
+        }),
         headers: [
           {
             id: "neuronId",
@@ -183,7 +115,7 @@
 </script>
 
 <button
-  data-tid="export-neurons-button-component"
+  data-tid="reporting-neurons-button-component"
   on:click={exportNeurons}
   class="text"
   disabled={isDisabled}

@@ -1,4 +1,5 @@
 import { NnsAddAccountPo } from "$tests/page-objects/NnsAddAccount.page-object";
+import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { TokensTablePo } from "./TokensTable.page-object";
 import { BasePageObject } from "./base.page-object";
@@ -8,6 +9,10 @@ export class NnsAccountsPo extends BasePageObject {
 
   static under(element: PageObjectElement): NnsAccountsPo {
     return new NnsAccountsPo(element.byTestId(NnsAccountsPo.TID));
+  }
+
+  getUsdValueBannerPo(): UsdValueBannerPo {
+    return UsdValueBannerPo.under(this.root);
   }
 
   getTokensTablePo() {
