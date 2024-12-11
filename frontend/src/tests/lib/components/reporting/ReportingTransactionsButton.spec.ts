@@ -1,14 +1,10 @@
-import * as governanceApi from "$lib/api/governance.api";
+import * as gobernanceApi from "$lib/api/governance.api";
 import * as icpIndexApi from "$lib/api/icp-index.api";
 import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
 import * as exportDataService from "$lib/services/export-data.services";
 import * as toastsStore from "$lib/stores/toasts.store";
 import * as exportToCsv from "$lib/utils/export-to-csv.utils";
-import {
-  mockIdentity,
-  resetIdentity,
-  setNoIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountsStoreData,
   mockMainAccount,
@@ -44,7 +40,7 @@ describe("ReportingTransactionsButton", () => {
       .mockImplementation(() => Promise.resolve());
     spyToastError = vi.spyOn(toastsStore, "toastsError");
     spyQueryNeurons = vi
-      .spyOn(governanceApi, "queryNeurons")
+      .spyOn(gobernanceApi, "queryNeurons")
       .mockResolvedValue([]);
     spyExportDataService = vi.spyOn(
       exportDataService,
@@ -75,14 +71,8 @@ describe("ReportingTransactionsButton", () => {
     });
   });
 
-  const renderComponent = ({
-    onTrigger,
-    nnsNeurons,
-  }: { onTrigger?: () => void; nnsNeurons?: NeuronInfo[] } = {}) => {
-    const { container, component } = render(ReportingTransactionsButton, {
-      nnsNeurons: nnsNeurons ?? [],
-    });
-
+  const renderComponent = ({ onTrigger }: { onTrigger?: () => void } = {}) => {
+    const { container, component } = render(ReportingTransactionsButton);
     const po = ReportingTransactionsButtonPo.under({
       element: new JestPageObjectElement(container),
     });
@@ -92,18 +82,6 @@ describe("ReportingTransactionsButton", () => {
     }
     return po;
   };
-
-  it("should be disabled when there is no identity", async () => {
-    setNoIdentity();
-    const po = renderComponent();
-    expect(await po.isDisabled()).toBe(true);
-  });
-
-  it("should be disabled when there are no accounts nor neurons", async () => {
-    resetAccountsForTesting();
-    const po = renderComponent();
-    expect(await po.isDisabled()).toBe(true);
-  });
 
   it("should name the file with the date of the export", async () => {
     const po = renderComponent();
@@ -183,10 +161,6 @@ describe("ReportingTransactionsButton", () => {
   });
 
   it("should fetch transactions for accounts and neurons", async () => {
-    const spy = vi.spyOn(
-      exportDataService,
-      "getAccountTransactionsConcurrently"
-    );
     resetAccountsForTesting();
 
     setAccountsForTesting({
@@ -194,16 +168,58 @@ describe("ReportingTransactionsButton", () => {
     });
 
     const mockNeurons: NeuronInfo[] = [mockNeuron];
-    const po = renderComponent({ nnsNeurons: mockNeurons });
+    spyQueryNeurons.mockResolvedValue(mockNeurons);
 
-    expect(spy).toBeCalledTimes(0);
+    const po = renderComponent();
+
+    expect(spyExportDataService).toBeCalledTimes(0);
 
     await po.click();
     await runResolvedPromises();
 
     const expectation = [mockMainAccount, mockNeuron];
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenCalledWith({
+    expect(spyExportDataService).toHaveBeenCalledTimes(1);
+    expect(spyExportDataService).toHaveBeenCalledWith({
+      entities: expectation,
+      identity: mockIdentity,
+    });
+  });
+
+  it("should sort neurons by stake before fetching their transactions", async () => {
+    resetAccountsForTesting();
+
+    const mockLowMaturityNeuron: NeuronInfo = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        cachedNeuronStake: 1n,
+      },
+    };
+
+    const mockHighMaturityNeuron: NeuronInfo = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        cachedNeuronStake: 100n,
+      },
+    };
+
+    const mockNeurons: NeuronInfo[] = [
+      mockLowMaturityNeuron,
+      mockHighMaturityNeuron,
+    ];
+    spyQueryNeurons.mockResolvedValue(mockNeurons);
+
+    const po = renderComponent();
+
+    expect(spyExportDataService).toBeCalledTimes(0);
+
+    await po.click();
+    await runResolvedPromises();
+
+    const expectation = [mockHighMaturityNeuron, mockLowMaturityNeuron];
+    expect(spyExportDataService).toHaveBeenCalledTimes(1);
+    expect(spyExportDataService).toHaveBeenCalledWith({
       entities: expectation,
       identity: mockIdentity,
     });
