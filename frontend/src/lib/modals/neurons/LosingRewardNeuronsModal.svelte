@@ -41,7 +41,7 @@
 
   <div class="wrapper">
     <p class="description">
-      {replacePlaceholders($i18n.losing_rewards_modal.description, {
+      {replacePlaceholders($i18n.losing_rewards.description, {
         $period: secondsToDissolveDelayDuration(
           BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS)
         ),
@@ -64,7 +64,7 @@
         >{$i18n.core.cancel}</button
       >
       <button on:click={confirm} class="primary" data-tid="confirm-button"
-        >{$i18n.losing_rewards_modal.confirm}</button
+        >{$i18n.losing_rewards.confirm}</button
       >
     </div>
   </div>

@@ -29,7 +29,7 @@
             i18n: $i18n.time,
           }),
         });
-  const text = replacePlaceholders($i18n.losing_rewards_banner.description, {
+  const text = replacePlaceholders($i18n.losing_rewards.description, {
     // TODO(mstr): Rename to secondsToRoundedDuration
     $period: secondsToDissolveDelayDuration(
       BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS)
@@ -50,7 +50,7 @@
           data-tid="confirm-button"
           class="danger"
           on:click={() => (isModalVisible = true)}
-          >{$i18n.losing_rewards_banner.confirm}</button
+          >{$i18n.losing_rewards.confirm}</button
         >
       </div>
     </Banner>
