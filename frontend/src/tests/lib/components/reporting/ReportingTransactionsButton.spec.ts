@@ -2,9 +2,7 @@ import * as governanceApi from "$lib/api/governance.api";
 import * as icpIndexApi from "$lib/api/icp-index.api";
 import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
 import * as exportDataService from "$lib/services/export-data.services";
-import * as busyStore from "$lib/stores/busy.store";
 import * as toastsStore from "$lib/stores/toasts.store";
-
 import * as exportToCsv from "$lib/utils/export-to-csv.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -20,8 +18,10 @@ import {
   setAccountsForTesting,
 } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { busyStore } from "@dfinity/gix-components";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/governance.api");
@@ -297,23 +297,20 @@ describe("ReportingTransactionsButton", () => {
   });
 
   it("should call startBusy and stopBusy while exporting", async () => {
-    const spyStart = vi.spyOn(busyStore, "startBusy");
-    const spyStop = vi.spyOn(busyStore, "stopBusy");
     const po = renderComponent();
-
-    expect(spyStart).toBeCalledTimes(0);
-    expect(spyStop).toBeCalledTimes(0);
+    expect(get(busyStore)).toEqual([]);
 
     await po.click();
 
-    expect(spyStart).toBeCalledTimes(1);
-    expect(spyStart).toBeCalledWith({ initiator: "reporting-transactions" });
-    expect(spyStop).toBeCalledTimes(0);
+    expect(get(busyStore)).toEqual([
+      {
+        initiator: "reporting-transactions",
+        text: undefined,
+      },
+    ]);
 
     await runResolvedPromises();
 
-    expect(spyStart).toBeCalledTimes(1);
-    expect(spyStop).toBeCalledTimes(1);
-    expect(spyStop).toBeCalledWith("reporting-transactions");
+    expect(get(busyStore)).toEqual([]);
   });
 });

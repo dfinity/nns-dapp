@@ -1,6 +1,5 @@
 import * as gobernanceApi from "$lib/api/governance.api";
 import ReportingNeuronsButton from "$lib/components/reporting/ReportingNeuronsButton.svelte";
-import * as busyStore from "$lib/stores/busy.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import * as exportToCsv from "$lib/utils/export-to-csv.utils";
@@ -11,9 +10,10 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ReportingNeuronsButtonPo } from "$tests/page-objects/ReportingNeuronsButon.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { busyStore } from "@dfinity/gix-components";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-vi.mock("$lib/api/governance.api");
+import { get } from "svelte/store";
 
 vi.mock("$lib/api/governance.api");
 
@@ -226,19 +226,20 @@ describe("ReportingNeuronsButton", () => {
   });
 
   it("should call startBusy and stopBusy while exporting", async () => {
-    const spyStart = vi.spyOn(busyStore, "startBusy");
-    const spyStop = vi.spyOn(busyStore, "stopBusy");
     const po = renderComponent();
-
-    expect(spyStart).toBeCalledTimes(0);
-    expect(spyStop).toBeCalledTimes(0);
+    expect(get(busyStore)).toEqual([]);
 
     await po.click();
+
+    expect(get(busyStore)).toEqual([
+      {
+        initiator: "reporting-neurons",
+        text: undefined,
+      },
+    ]);
+
     await runResolvedPromises();
 
-    expect(spyStart).toBeCalledTimes(1);
-    expect(spyStart).toBeCalledWith({ initiator: "reporting-neurons" });
-    expect(spyStop).toBeCalledTimes(1);
-    expect(spyStop).toBeCalledWith("reporting-neurons");
+    expect(get(busyStore)).toEqual([]);
   });
 });
