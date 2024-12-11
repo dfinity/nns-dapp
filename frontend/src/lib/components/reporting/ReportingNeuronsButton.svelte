@@ -122,30 +122,19 @@
   };
 </script>
 
-<div class="wrapper">
-  <button
-    data-tid="reporting-neurons-button-component"
-    on:click={exportNeurons}
-    class="primary with-icon"
-    disabled={loading}
-    aria-label={$i18n.reporting.neurons_download}
-  >
-    <IconDown />
-    {$i18n.reporting.neurons_download}
-  </button>
-
+<button
+  data-tid="reporting-neurons-button-component"
+  on:click={exportNeurons}
+  class="primary with-icon"
+  disabled={loading}
+  aria-label={$i18n.reporting.neurons_download}
+>
   {#if loading}
     <div>
       <Spinner inline size="tiny" />
     </div>
+  {:else}
+    <IconDown />
   {/if}
-</div>
-
-<style lang="scss">
-  .wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: var(--padding-2x);
-  }
-</style>
+  {$i18n.reporting.neurons_download}
+</button>
