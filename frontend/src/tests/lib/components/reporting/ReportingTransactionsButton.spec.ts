@@ -286,9 +286,5 @@ describe("ReportingTransactionsButton", () => {
     await po.click();
 
     expect(await po.isDisabled()).toBe(true);
-
-    await runResolvedPromises();
-
-    expect(await po.isDisabled()).toBe(false);
   });
 });

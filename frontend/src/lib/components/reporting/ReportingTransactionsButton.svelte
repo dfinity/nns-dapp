@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { IconDown, Spinner } from "@dfinity/gix-components";
+  import { IconDown } from "@dfinity/gix-components";
   import { ICPToken, nonNullish } from "@dfinity/utils";
   import {
     buildTransactionsDatasets,
@@ -152,12 +152,6 @@
     <IconDown />
     {$i18n.reporting.transactions_download}
   </button>
-
-  {#if loading}
-    <div>
-      <Spinner inline size="tiny" />
-    </div>
-  {/if}
 </div>
 
 <style lang="scss">
