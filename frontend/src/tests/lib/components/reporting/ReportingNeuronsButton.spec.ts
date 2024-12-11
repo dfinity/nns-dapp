@@ -71,7 +71,7 @@ describe("ReportingNeuronsButton", () => {
     expect(generateCsvFileToSave).toBeCalledTimes(0);
 
     await po.click();
-    ReportingNeuronsButton;
+
     const expectedFileName = `neurons_export_20231014`;
     expect(generateCsvFileToSave).toBeCalledWith(
       expect.objectContaining({
