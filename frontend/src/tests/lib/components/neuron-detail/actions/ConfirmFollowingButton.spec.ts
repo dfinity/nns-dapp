@@ -54,7 +54,6 @@ describe("ConfirmFollowingButton", () => {
   });
 
   it("returns the refreshed neuron count", async () => {
-    // ignore console errors
     vi.spyOn(console, "error").mockReturnValue();
 
     neuronsStore.pushNeurons({ neurons, certified: true });
