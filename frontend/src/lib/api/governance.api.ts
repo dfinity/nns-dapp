@@ -173,6 +173,18 @@ export const disburse = async ({
   logWithTimestamp(`Disburse neuron (${hashCode(neuronId)}) complete.`);
 };
 
+export type ApiRefreshVotingPowerParams = ApiManageNeuronParams;
+export const refreshVotingPower = async ({
+  neuronId,
+  identity,
+}: ApiRefreshVotingPowerParams): Promise<void> => {
+  logWithTimestamp(`Refresh voting power (${hashCode(neuronId)}) call...`);
+  const { canister } = await governanceCanister({ identity });
+
+  await canister.refreshVotingPower({ neuronId });
+  logWithTimestamp(`Refresh voting power (${hashCode(neuronId)}) complete.`);
+};
+
 export type ApiStakeMaturityParams = ApiManageNeuronParams & {
   percentageToStake: number;
 };
