@@ -1,12 +1,12 @@
 import * as gobernanceApi from "$lib/api/governance.api";
 import ReportingNeuronsButton from "$lib/components/reporting/ReportingNeuronsButton.svelte";
-import * as authServices from "$lib/services/auth.services";
+import { authStore } from "$lib/stores/auth.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import * as exportToCsv from "$lib/utils/export-to-csv.utils";
 import * as exportToCsvUtils from "$lib/utils/export-to-csv.utils";
 import { generateCsvFileToSave } from "$lib/utils/export-to-csv.utils";
-import { createMockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ReportingNeuronsButtonPo } from "$tests/page-objects/ReportingNeuronsButon.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -15,7 +15,6 @@ import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/governance.api");
-const testIdentity = createMockIdentity(37373);
 
 describe("ReportingNeuronsButton", () => {
   let spyQueryNeurons;
@@ -23,6 +22,7 @@ describe("ReportingNeuronsButton", () => {
 
   beforeEach(() => {
     vi.clearAllTimers();
+    resetIdentity();
 
     vi.spyOn(exportToCsv, "generateCsvFileToSave").mockImplementation(vi.fn());
     vi.spyOn(toastsStore, "toastsError");
@@ -35,9 +35,7 @@ describe("ReportingNeuronsButton", () => {
     const mockDate = new Date("2023-10-14T00:00:00Z");
     vi.useFakeTimers();
     vi.setSystemTime(new Date(mockDate));
-    vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
-      testIdentity
-    );
+    authStore.setForTesting(mockIdentity);
 
     const neuronWithController = {
       ...mockNeuron,
@@ -71,6 +69,7 @@ describe("ReportingNeuronsButton", () => {
     expect(generateCsvFileToSave).toBeCalledTimes(0);
 
     await po.click();
+    await runResolvedPromises();
 
     const expectedFileName = `neurons_export_20231014`;
     expect(generateCsvFileToSave).toBeCalledWith(
@@ -127,7 +126,10 @@ describe("ReportingNeuronsButton", () => {
     const po = renderComponent();
 
     expect(generateCsvFileToSave).toBeCalledTimes(0);
+
     await po.click();
+    await runResolvedPromises();
+
     expect(generateCsvFileToSave).toBeCalledWith(
       expect.objectContaining({
         datasets: expect.arrayContaining([
