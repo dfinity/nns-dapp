@@ -41,6 +41,7 @@ import {
   resetAccountsForTesting,
   setAccountsForTesting,
 } from "$tests/utils/accounts.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { Identity } from "@dfinity/agent";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
@@ -136,6 +137,7 @@ describe("neurons-services", () => {
   let spyAutoStakeMaturity;
   let spyLeaveCommunityFund;
   let spyDisburse;
+  let spyRefreshVotingPower;
   let spyStakeMaturity;
   let spySpawnNeuron;
   let spyMergeNeurons;
@@ -193,6 +195,9 @@ describe("neurons-services", () => {
       .spyOn(api, "leaveCommunityFund")
       .mockResolvedValue();
     spyDisburse = vi.spyOn(api, "disburse").mockResolvedValue();
+    spyRefreshVotingPower = vi
+      .spyOn(api, "refreshVotingPower")
+      .mockResolvedValue();
     spyStakeMaturity = vi.spyOn(api, "stakeMaturity").mockResolvedValue();
     spySpawnNeuron = vi
       .spyOn(api, "spawnNeuron")
@@ -805,6 +810,102 @@ describe("neurons-services", () => {
       expectToastError(en.error.not_authorized_neuron_action);
       expect(spyDisburse).not.toBeCalled();
       expect(success).toBe(false);
+    });
+  });
+
+  describe("refreshVotingPowerForNeurons", () => {
+    const neuron1 = {
+      neuronId: 1n,
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        controller: testIdentity.getPrincipal().toText(),
+      },
+    };
+    const neuron2 = {
+      neuronId: 22n,
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        controller: testIdentity.getPrincipal().toText(),
+      },
+    };
+
+    it("should refresh voting state of the neuron", async () => {
+      const neurons = [neuron1, neuron2];
+      neuronsStore.pushNeurons({ neurons, certified: true });
+
+      expect(spyRefreshVotingPower).toBeCalledTimes(0);
+      const { successCount } = await services.refreshVotingPowerForNeurons({
+        neuronIds: [neuron1.neuronId, neuron2.neuronId],
+      });
+
+      expect(spyRefreshVotingPower).toBeCalledTimes(2);
+      expect(spyRefreshVotingPower).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        neuronId: neuron1.neuronId,
+      });
+      expect(spyRefreshVotingPower).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        neuronId: neuron2.neuronId,
+      });
+      expect(successCount).toBe(neurons.length);
+    });
+
+    it("should reload the neurons", async () => {
+      const neurons = [neuron1];
+      neuronsStore.pushNeurons({ neurons, certified: true });
+
+      let resolveRefreshVotingPower;
+      const spyRefreshVotingPower = vi
+        .spyOn(api, "refreshVotingPower")
+        .mockImplementation(
+          () => new Promise((resolve) => (resolveRefreshVotingPower = resolve))
+        );
+      const spyQueryNeurons = vi
+        .spyOn(api, "queryNeurons")
+        .mockResolvedValue(neurons);
+
+      services.refreshVotingPowerForNeurons({
+        neuronIds: [neuron1.neuronId],
+      });
+      await runResolvedPromises();
+
+      expect(spyRefreshVotingPower).toBeCalledTimes(1);
+      expect(spyQueryNeurons).toBeCalledTimes(0);
+
+      resolveRefreshVotingPower();
+      await runResolvedPromises();
+
+      expect(spyQueryNeurons).toBeCalledTimes(2);
+    });
+
+    it("should handle errors", async () => {
+      const testError = new Error("Test error");
+      const neurons = [neuron1, neuron2];
+      neuronsStore.pushNeurons({ neurons, certified: true });
+
+      const spyConsoleError = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => undefined);
+      const spyRefreshVotingPower = vi
+        .spyOn(api, "refreshVotingPower")
+        // First neuron fails, second succeeds
+        .mockRejectedValueOnce(testError)
+        .mockResolvedValueOnce();
+
+      const { successCount } = await services.refreshVotingPowerForNeurons({
+        neuronIds: [neuron1.neuronId, neuron2.neuronId],
+      });
+
+      expect(spyRefreshVotingPower).toBeCalledTimes(2);
+      expect(successCount).toBe(1);
+      expect(spyConsoleError).toBeCalledTimes(1);
+      expect(spyConsoleError).toBeCalledWith(
+        "Failed to refresh neuronId 1",
+        testError
+      );
+      expectToastError("An error occurred while confirming following.");
     });
   });
 
