@@ -243,9 +243,12 @@ export const generateCsvFileToSave = async <T>({
       type: "text/csv;charset=utf-8;",
     });
 
+    // TODO: Investigate the random issues with showSaveFilePicker.
+    const isShowSaveFilePickerEnabled = false;
     if (
       "showSaveFilePicker" in window &&
-      typeof window.showSaveFilePicker === "function"
+      typeof window.showSaveFilePicker === "function" &&
+      isShowSaveFilePickerEnabled
     ) {
       await saveFileWithPicker({ blob, fileName, description });
     } else {
