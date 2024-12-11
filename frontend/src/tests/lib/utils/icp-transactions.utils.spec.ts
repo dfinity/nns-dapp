@@ -673,7 +673,7 @@ describe("icp-transactions.utils", () => {
       });
       const expectedUiTransaction: UiTransaction = {
         ...defaultUiTransaction,
-        headline: "Sent",
+        headline: "Burn",
         tokenAmount: TokenAmountV2.fromUlps({
           amount,
           token: ICPToken,
@@ -704,7 +704,7 @@ describe("icp-transactions.utils", () => {
       });
       const expectedUiTransaction: UiTransaction = {
         ...defaultUiTransaction,
-        headline: "Received",
+        headline: "Mint",
         isIncoming: true,
         tokenAmount: TokenAmountV2.fromUlps({
           amount,

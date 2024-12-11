@@ -372,7 +372,7 @@ describe("icrc-transaction utils", () => {
       });
       expect(data).toEqual({
         domKey: "1234-1",
-        headline: "Sent",
+        headline: "Burn",
         isIncoming: false,
         isPending: false,
         otherParty: undefined,
