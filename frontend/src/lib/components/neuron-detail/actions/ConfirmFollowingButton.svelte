@@ -27,6 +27,6 @@
 <button
   on:click={onClick}
   class="secondary"
-  data-tid="confirm-losing-rewards-button-component"
+  data-tid="confirm-following-button-component"
   >{$i18n.losing_rewards.confirm}</button
 >
