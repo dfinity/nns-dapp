@@ -1,5 +1,6 @@
 import * as gobernanceApi from "$lib/api/governance.api";
 import ReportingNeuronsButton from "$lib/components/reporting/ReportingNeuronsButton.svelte";
+import * as busyStore from "$lib/stores/busy.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import * as exportToCsv from "$lib/utils/export-to-csv.utils";
@@ -222,5 +223,21 @@ describe("ReportingNeuronsButton", () => {
     await runResolvedPromises();
 
     expect(await po.isDisabled()).toBe(false);
+  });
+
+  it("should call startBusy and stopBusy while exporting", async () => {
+    const spyStart = vi.spyOn(busyStore, "startBusy");
+    const spyStop = vi.spyOn(busyStore, "stopBusy");
+    const po = renderComponent();
+
+    expect(spyStart).toBeCalledTimes(0);
+    expect(spyStop).toBeCalledTimes(0);
+
+    await po.click();
+
+    expect(spyStart).toBeCalledTimes(1);
+    expect(spyStart).toBeCalledWith({ initiator: "reporting-neurons" });
+    expect(spyStop).toBeCalledTimes(1);
+    expect(spyStop).toBeCalledWith("reporting-neurons");
   });
 });

@@ -14,6 +14,7 @@
   import { queryNeurons } from "$lib/api/governance.api";
   import { sortNeuronsByStake } from "$lib/utils/neuron.utils";
   import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
 
   let loading = false;
 
@@ -32,6 +33,7 @@
   const exportNeurons = async () => {
     try {
       loading = true;
+      startBusy({ initiator: "reporting-neurons" });
 
       // we are logged in to be able to interact with the button
       const signIdentity = await getAuthenticatedIdentity();
@@ -115,6 +117,7 @@
       }
     } finally {
       loading = false;
+      stopBusy("reporting-neurons");
     }
   };
 </script>

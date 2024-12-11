@@ -2,7 +2,9 @@ import * as governanceApi from "$lib/api/governance.api";
 import * as icpIndexApi from "$lib/api/icp-index.api";
 import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
 import * as exportDataService from "$lib/services/export-data.services";
+import * as busyStore from "$lib/stores/busy.store";
 import * as toastsStore from "$lib/stores/toasts.store";
+
 import * as exportToCsv from "$lib/utils/export-to-csv.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -292,5 +294,26 @@ describe("ReportingTransactionsButton", () => {
     await runResolvedPromises();
 
     expect(await po.isDisabled()).toBe(false);
+  });
+
+  it("should call startBusy and stopBusy while exporting", async () => {
+    const spyStart = vi.spyOn(busyStore, "startBusy");
+    const spyStop = vi.spyOn(busyStore, "stopBusy");
+    const po = renderComponent();
+
+    expect(spyStart).toBeCalledTimes(0);
+    expect(spyStop).toBeCalledTimes(0);
+
+    await po.click();
+
+    expect(spyStart).toBeCalledTimes(1);
+    expect(spyStart).toBeCalledWith({ initiator: "reporting-transactions" });
+    expect(spyStop).toBeCalledTimes(0);
+
+    await runResolvedPromises();
+
+    expect(spyStart).toBeCalledTimes(1);
+    expect(spyStop).toBeCalledTimes(1);
+    expect(spyStop).toBeCalledWith("reporting-transactions");
   });
 });
