@@ -205,6 +205,7 @@ interface I18nReporting {
   transactions_title: string;
   transactions_description: string;
   transactions_download: string;
+  busy_screen: string;
 }
 
 interface I18nAuth {

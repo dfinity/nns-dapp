@@ -234,7 +234,7 @@ describe("ReportingNeuronsButton", () => {
     expect(get(busyStore)).toEqual([
       {
         initiator: "reporting-neurons",
-        text: undefined,
+        text: "Generating report...",
       },
     ]);
 

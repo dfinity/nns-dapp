@@ -33,7 +33,10 @@
   const exportNeurons = async () => {
     try {
       loading = true;
-      startBusy({ initiator: "reporting-neurons" });
+      startBusy({
+        initiator: "reporting-neurons",
+        labelKey: "reporting.busy_screen",
+      });
 
       // we are logged in to be able to interact with the button
       const signIdentity = await getAuthenticatedIdentity();
