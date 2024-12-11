@@ -94,18 +94,25 @@ export const getAccountTransactionsConcurrently = async ({
   return entitiesAndTransactions;
 };
 
+type DateRange = {
+  from?: bigint;
+  to?: bigint;
+};
+
 export const getAllTransactionsFromAccountAndIdentity = async ({
   accountId,
   identity,
   lastTransactionId = undefined,
   allTransactions = [],
   currentPageIndex = 1,
+  range,
 }: {
   accountId: string;
   identity: SignIdentity;
   lastTransactionId?: bigint;
   allTransactions?: TransactionWithId[];
   currentPageIndex?: number;
+  range?: DateRange;
 }): Promise<TransactionWithId[] | undefined> => {
   // Based on
   //   https://github.com/dfinity/ic/blob/master/rs/ledger_suite/icp/index/src/lib.rs#L31
@@ -133,6 +140,19 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
 
     const updatedTransactions = [...allTransactions, ...transactions];
 
+    // Early return if we've gone past our date range. It assumes sorted transactions from newest to oldest.
+    const oldestTransactionInPageTimestamp = getTimestampFromTransaction(
+      transactions[transactions.length - 1]
+    );
+    if (range?.to && oldestTransactionInPageTimestamp) {
+      if (oldestTransactionInPageTimestamp < range.to) {
+        return filterTransactionsByRange(
+          [...allTransactions, ...transactions],
+          range
+        );
+      }
+    }
+
     // We consider it complete if we find the oldestTxId in the list of transactions or if oldestTxId is null.
     // The latter condition is necessary if the list of transactions is empty, which would otherwise return false.
     const completed =
@@ -146,12 +166,39 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
         lastTransactionId: lastTx.id,
         allTransactions: updatedTransactions,
         currentPageIndex: currentPageIndex + 1,
+        range,
       });
     }
 
-    return updatedTransactions;
+    return filterTransactionsByRange(updatedTransactions, range);
   } catch (error) {
     console.error("Error loading ICP account transactions:", error);
     return allTransactions;
   }
+};
+
+// Helper function to filter transactions by date range
+const filterTransactionsByRange = (
+  transactions: TransactionWithId[],
+  range?: DateRange
+): TransactionWithId[] => {
+  if (!range) return transactions;
+
+  return transactions.filter((tx) => {
+    const timestamp = getTimestampFromTransaction(tx);
+    if (timestamp === null) return false;
+    if (range.from && timestamp < range.from) {
+      return false;
+    }
+
+    if (range.to && timestamp > range.to) {
+      return false;
+    }
+
+    return true;
+  });
+};
+
+const getTimestampFromTransaction = (tx: TransactionWithId): bigint | null => {
+  return tx.transaction.created_at_time?.[0]?.timestamp_nanos || null;
 };
