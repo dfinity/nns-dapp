@@ -389,6 +389,7 @@
   },
   "losing_rewards": {
     "description": "ICP neurons that are inactive for $period start losing voting rewards. In order to avoid losing rewards, vote manually, edit or confirm your following.",
+    "confirming": "Confirming following. This may take a moment.",
     "confirm": "Confirm Following"
   },
   "losing_rewards_banner": {

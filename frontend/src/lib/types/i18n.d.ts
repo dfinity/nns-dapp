@@ -405,6 +405,7 @@ interface I18nNeurons {
 
 interface I18nLosing_rewards {
   description: string;
+  confirming: string;
   confirm: string;
 }
 
