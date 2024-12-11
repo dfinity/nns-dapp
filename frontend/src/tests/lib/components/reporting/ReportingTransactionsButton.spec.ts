@@ -179,8 +179,8 @@ describe("ReportingTransactionsButton", () => {
     await runResolvedPromises();
 
     const expectation = [mockMainAccount, mockNeuron];
-    expect(spyExportDataService).toHaveBeenCalledTimes(1);
     expect(spyQueryNeurons).toBeCalledTimes(1);
+    expect(spyExportDataService).toHaveBeenCalledTimes(1);
     expect(spyExportDataService).toHaveBeenCalledWith({
       entities: expectation,
       identity: mockIdentity,
