@@ -1,7 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { IconDown, Spinner } from "@dfinity/gix-components";
-  import { isNullish } from "@dfinity/utils";
   import {
     buildNeuronsDatasets,
     CsvGenerationError,
@@ -12,28 +11,41 @@
   import { formatDateCompact } from "$lib/utils/date.utils";
   import { authStore } from "$lib/stores/auth.store";
   import type { NeuronInfo } from "@dfinity/nns";
-  import type { Principal } from "@dfinity/principal";
+  import type { Identity, SignIdentity } from "@dfinity/agent";
+  import { queryNeurons } from "$lib/api/governance.api";
+  import { sortNeuronsByStake } from "$lib/utils/neuron.utils";
 
-  export let neurons: NeuronInfo[] = [];
-
-  let isDisabled = true;
-  let nnsAccountPrincipal: Principal | null | undefined;
+  let identity: Identity | null | undefined;
   let loading = false;
 
-  $: nnsAccountPrincipal = $authStore.identity?.getPrincipal();
-  $: isDisabled = neurons.length === 0 || isNullish(nnsAccountPrincipal);
+  $: identity = $authStore.identity;
+
+  const fetchAllNnsNeuronsAndSortThemByStake = async (
+    identity: Identity
+  ): Promise<NeuronInfo[]> => {
+    const data = await queryNeurons({
+      certified: true,
+      identity: identity,
+      includeEmptyNeurons: true,
+    });
+
+    return sortNeuronsByStake(data);
+  };
 
   const exportNeurons = async () => {
-    if (!nnsAccountPrincipal) return;
-    loading = true;
-
     try {
+      loading = true;
+
+      // we are logged in to be able to interact with the button
+      const signIdentity = identity as SignIdentity;
+
+      const neurons = await fetchAllNnsNeuronsAndSortThemByStake(signIdentity);
       const fileName = `neurons_export_${formatDateCompact(new Date())}`;
 
       await generateCsvFileToSave({
         datasets: buildNeuronsDatasets({
           neurons,
-          nnsAccountPrincipal,
+          nnsAccountPrincipal: signIdentity.getPrincipal(),
           i18n: $i18n,
         }),
         headers: [
@@ -115,7 +127,7 @@
     data-tid="reporting-neurons-button-component"
     on:click={exportNeurons}
     class="primary with-icon"
-    disabled={isDisabled || loading}
+    disabled={loading}
     aria-label={$i18n.reporting.neurons_download}
   >
     <IconDown />
