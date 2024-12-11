@@ -23,6 +23,7 @@
   import { queryNeurons } from "$lib/api/governance.api";
   import { sortNeuronsByStake } from "$lib/utils/neuron.utils";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
 
   let identity: Identity | null | undefined;
   let swapCanisterAccounts: Set<string>;
@@ -52,6 +53,7 @@
   const exportIcpTransactions = async () => {
     try {
       loading = true;
+      startBusy({ initiator: "reporting-transactions" });
 
       // we are logged in to be able to interact with the button
       const signIdentity = identity as SignIdentity;
@@ -137,6 +139,7 @@
       }
     } finally {
       loading = false;
+      stopBusy("reporting-transactions");
     }
   };
 </script>

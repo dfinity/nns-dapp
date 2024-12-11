@@ -109,8 +109,9 @@ import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("neuron-utils", () => {
+  const nowSeconds = nowInSeconds();
   beforeEach(() => {
-    vi.useFakeTimers().setSystemTime(Date.now());
+    vi.useFakeTimers().setSystemTime(nowSeconds * 1000);
     neuronsStore.setNeurons({ neurons: [], certified: true });
   });
 
@@ -435,7 +436,7 @@ describe("neuron-utils", () => {
     });
 
     it("returns dissolve date", () => {
-      const dissolveDate = BigInt(nowInSeconds() + SECONDS_IN_FOUR_YEARS);
+      const dissolveDate = BigInt(nowSeconds + SECONDS_IN_FOUR_YEARS);
       const neuron = {
         ...mockNeuron,
         state: NeuronState.Dissolving,
@@ -472,7 +473,7 @@ describe("neuron-utils", () => {
     });
 
     it("returns duration from today until dissolving time", () => {
-      const todayInSeconds = BigInt(nowInSeconds());
+      const todayInSeconds = BigInt(nowSeconds);
       const delayInSeconds = todayInSeconds + BigInt(SECONDS_IN_YEAR);
       const neuron = {
         ...mockNeuron,
@@ -1666,12 +1667,12 @@ describe("neuron-utils", () => {
         fullNeuron: {
           ...mockNeuron.fullNeuron,
           votingPowerRefreshedTimestampSeconds: BigInt(
-            nowInSeconds() - SECONDS_IN_HALF_YEAR - 1
+            nowSeconds - SECONDS_IN_HALF_YEAR - 1
           ),
         },
       };
       const timestampSixMonthsAgoPlus10Days =
-        nowInSeconds() -
+        nowSeconds -
         SECONDS_IN_HALF_YEAR +
         daysBeforeMissingRewardsSoon * SECONDS_IN_DAY;
       const losingRewardSoonNeuron: NeuronInfo = {
@@ -3387,7 +3388,7 @@ describe("neuron-utils", () => {
       fullNeuron: {
         ...mockFullNeuron,
         votingPowerRefreshedTimestampSeconds: BigInt(
-          nowInSeconds() - votingPowerRefreshedTimestampAgeSecs
+          nowSeconds - votingPowerRefreshedTimestampAgeSecs
         ),
       },
     });

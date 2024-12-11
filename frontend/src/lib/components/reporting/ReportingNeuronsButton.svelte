@@ -1,9 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { IconDown } from "@dfinity/gix-components";
-  import { createEventDispatcher } from "svelte";
-  import { neuronsStore } from "$lib/stores/neurons.store";
-  import { isNullish } from "@dfinity/utils";
   import {
     buildNeuronsDatasets,
     CsvGenerationError,
@@ -12,32 +9,42 @@
   } from "$lib/utils/export-to-csv.utils";
   import { toastsError } from "$lib/stores/toasts.store";
   import { formatDateCompact } from "$lib/utils/date.utils";
-  import { authStore } from "$lib/stores/auth.store";
   import type { NeuronInfo } from "@dfinity/nns";
-  import type { Principal } from "@dfinity/principal";
+  import type { Identity } from "@dfinity/agent";
+  import { queryNeurons } from "$lib/api/governance.api";
+  import { sortNeuronsByStake } from "$lib/utils/neuron.utils";
+  import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
 
-  const dispatcher = createEventDispatcher<{
-    nnsExportNeuronsCsvTriggered: void;
-  }>();
+  let loading = false;
 
-  let isDisabled = true;
-  let neurons: NeuronInfo[] = [];
-  let nnsAccountPrincipal: Principal | null | undefined;
+  const fetchAllNnsNeuronsAndSortThemByStake = async (
+    identity: Identity
+  ): Promise<NeuronInfo[]> => {
+    const data = await queryNeurons({
+      certified: true,
+      identity: identity,
+      includeEmptyNeurons: true,
+    });
 
-  $: neurons = $neuronsStore?.neurons ?? [];
-  $: nnsAccountPrincipal = $authStore.identity?.getPrincipal();
-  $: isDisabled = neurons.length === 0 || isNullish(nnsAccountPrincipal);
+    return sortNeuronsByStake(data);
+  };
 
   const exportNeurons = async () => {
-    if (!nnsAccountPrincipal) return;
-
     try {
+      loading = true;
+      startBusy({ initiator: "reporting-neurons" });
+
+      // we are logged in to be able to interact with the button
+      const signIdentity = await getAuthenticatedIdentity();
+
+      const neurons = await fetchAllNnsNeuronsAndSortThemByStake(signIdentity);
       const fileName = `neurons_export_${formatDateCompact(new Date())}`;
 
       await generateCsvFileToSave({
         datasets: buildNeuronsDatasets({
           neurons,
-          nnsAccountPrincipal,
+          nnsAccountPrincipal: signIdentity.getPrincipal(),
           i18n: $i18n,
         }),
         headers: [
@@ -109,7 +116,8 @@
         });
       }
     } finally {
-      dispatcher("nnsExportNeuronsCsvTriggered");
+      loading = false;
+      stopBusy("reporting-neurons");
     }
   };
 </script>
@@ -117,19 +125,10 @@
 <button
   data-tid="reporting-neurons-button-component"
   on:click={exportNeurons}
-  class="text"
-  disabled={isDisabled}
-  aria-label={$i18n.header.export_neurons}
+  class="primary with-icon"
+  disabled={loading}
+  aria-label={$i18n.reporting.neurons_download}
 >
   <IconDown />
-  {$i18n.header.export_neurons}
+  {$i18n.reporting.neurons_download}
 </button>
-
-<style lang="scss">
-  @use "../../themes/mixins/account-menu";
-
-  button {
-    @include account-menu.button;
-    padding: 0;
-  }
-</style>
