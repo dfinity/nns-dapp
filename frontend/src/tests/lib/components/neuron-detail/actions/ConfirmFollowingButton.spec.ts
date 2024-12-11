@@ -89,7 +89,10 @@ describe("ConfirmFollowingButton", () => {
     ]);
 
     resolveRefreshVotingPower();
+
+    // Wait for busy screen to hide
     await runResolvedPromises();
+    expect(get(busyStore)).toEqual([]);
 
     expect(spyQueryNeurons).toBeCalledTimes(2);
     expect(spyRefreshVotingPower).toBeCalledTimes(2);
