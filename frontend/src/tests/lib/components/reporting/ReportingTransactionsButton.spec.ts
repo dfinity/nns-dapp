@@ -296,7 +296,7 @@ describe("ReportingTransactionsButton", () => {
     expect(await po.isDisabled()).toBe(false);
   });
 
-  it("should call startBusy and stopBusy while exporting", async () => {
+  it("should show busy page while exporting", async () => {
     const po = renderComponent();
     expect(get(busyStore)).toEqual([]);
 

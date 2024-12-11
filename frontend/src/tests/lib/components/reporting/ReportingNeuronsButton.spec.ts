@@ -225,7 +225,7 @@ describe("ReportingNeuronsButton", () => {
     expect(await po.isDisabled()).toBe(false);
   });
 
-  it("should call startBusy and stopBusy while exporting", async () => {
+  it("should show busy page exporting", async () => {
     const po = renderComponent();
     expect(get(busyStore)).toEqual([]);
 
