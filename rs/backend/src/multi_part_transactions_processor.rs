@@ -51,9 +51,8 @@ mod tests {
         for i in 0..10 {
             let (block_height, to_be_processed) = processor.take_next().unwrap();
             assert_eq!(block_height, i);
-            if let MultiPartTransactionToBeProcessed::CreateCanisterV2(p) = to_be_processed {
-                assert_eq!(p, principal);
-            }
+            let MultiPartTransactionToBeProcessed::CreateCanisterV2(p) = to_be_processed;
+            assert_eq!(p, principal);
         }
 
         assert!(processor.take_next().is_none());
