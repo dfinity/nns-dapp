@@ -1,8 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { IconDown } from "@dfinity/gix-components";
-  import { createEventDispatcher } from "svelte";
-  import { neuronsStore } from "$lib/stores/neurons.store";
+  import { IconDown, Spinner } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
   import {
     buildNeuronsDatasets,
@@ -16,20 +14,18 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
 
-  const dispatcher = createEventDispatcher<{
-    nnsExportNeuronsCsvTriggered: void;
-  }>();
+  export let neurons: NeuronInfo[] = [];
 
   let isDisabled = true;
-  let neurons: NeuronInfo[] = [];
   let nnsAccountPrincipal: Principal | null | undefined;
+  let loading = false;
 
-  $: neurons = $neuronsStore?.neurons ?? [];
   $: nnsAccountPrincipal = $authStore.identity?.getPrincipal();
   $: isDisabled = neurons.length === 0 || isNullish(nnsAccountPrincipal);
 
   const exportNeurons = async () => {
     if (!nnsAccountPrincipal) return;
+    loading = true;
 
     try {
       const fileName = `neurons_export_${formatDateCompact(new Date())}`;
@@ -109,27 +105,35 @@
         });
       }
     } finally {
-      dispatcher("nnsExportNeuronsCsvTriggered");
+      loading = false;
     }
   };
 </script>
 
-<button
-  data-tid="reporting-neurons-button-component"
-  on:click={exportNeurons}
-  class="text"
-  disabled={isDisabled}
-  aria-label={$i18n.header.export_neurons}
->
-  <IconDown />
-  {$i18n.header.export_neurons}
-</button>
+<div class="wrapper">
+  <button
+    data-tid="reporting-neurons-button-component"
+    on:click={exportNeurons}
+    class="primary with-icon"
+    disabled={isDisabled || loading}
+    aria-label={$i18n.reporting.neurons_download}
+  >
+    <IconDown />
+    {$i18n.reporting.neurons_download}
+  </button>
+
+  {#if loading}
+    <div>
+      <Spinner inline size="tiny" />
+    </div>
+  {/if}
+</div>
 
 <style lang="scss">
-  @use "../../themes/mixins/account-menu";
-
-  button {
-    @include account-menu.button;
-    padding: 0;
+  .wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--padding-2x);
   }
 </style>
