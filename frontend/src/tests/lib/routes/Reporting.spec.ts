@@ -7,8 +7,6 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-vi.mock("$lib/api/governance.api");
-
 describe("Reporting", () => {
   beforeEach(() => {
     resetIdentity();
