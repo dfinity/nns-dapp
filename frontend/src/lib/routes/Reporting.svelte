@@ -31,7 +31,6 @@
     </div>
 
     <Separator spacing="medium" />
-
     <div class="wrapper">
       <div>
         <h3>{$i18n.reporting.transactions_title}</h3>
