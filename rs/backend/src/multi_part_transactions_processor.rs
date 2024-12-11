@@ -1,5 +1,5 @@
 use candid::CandidType;
-use ic_base_types::{CanisterId, PrincipalId};
+use ic_base_types::PrincipalId;
 use icp_ledger::BlockIndex;
 use serde::Deserialize;
 use std::collections::VecDeque;
@@ -12,10 +12,6 @@ pub struct MultiPartTransactionsProcessor {
 #[derive(Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub enum MultiPartTransactionToBeProcessed {
     CreateCanisterV2(PrincipalId),
-    // TODO: Remove TopUpCanisterV2 after a version has been released that does
-    //       not add TopUpCanisterV2 to the multi-part transaction queue
-    //       anymore.
-    TopUpCanisterV2(PrincipalId, CanisterId),
 }
 
 impl MultiPartTransactionsProcessor {
@@ -55,9 +51,8 @@ mod tests {
         for i in 0..10 {
             let (block_height, to_be_processed) = processor.take_next().unwrap();
             assert_eq!(block_height, i);
-            if let MultiPartTransactionToBeProcessed::CreateCanisterV2(p) = to_be_processed {
-                assert_eq!(p, principal);
-            }
+            let MultiPartTransactionToBeProcessed::CreateCanisterV2(p) = to_be_processed;
+            assert_eq!(p, principal);
         }
 
         assert!(processor.take_next().is_none());

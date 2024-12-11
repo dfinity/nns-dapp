@@ -19,10 +19,6 @@ pub async fn run_periodic_tasks() {
             MultiPartTransactionToBeProcessed::CreateCanisterV2(controller) => {
                 handle_create_canister_v2(block_height, controller).await;
             }
-            // TODO: Remove TopUpCanisterV2 after a version has been released
-            //       that does not add TopUpCanisterV2 to the multi-part
-            //       transaction queue anymore.
-            MultiPartTransactionToBeProcessed::TopUpCanisterV2(_principal, _canister_id) => {}
         }
     }
 }
