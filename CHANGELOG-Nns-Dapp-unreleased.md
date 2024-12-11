@@ -15,6 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 - Show USD values of tokens.
+- Reporting page for NNS Neurons and ICP transactions.
 
 #### Changed
 
