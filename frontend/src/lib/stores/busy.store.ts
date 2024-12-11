@@ -51,7 +51,9 @@ export type BusyStateInitiatorType =
   | "import-token-importing"
   | "import-token-removing"
   | "import-token-updating"
-  | "change-neuron-visibility";
+  | "change-neuron-visibility"
+  | "reporting-neurons"
+  | "reporting-transactions";
 
 export interface BusyState {
   initiator: BusyStateInitiatorType;

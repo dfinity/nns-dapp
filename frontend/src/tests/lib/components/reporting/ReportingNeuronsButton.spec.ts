@@ -10,8 +10,10 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ReportingNeuronsButtonPo } from "$tests/page-objects/ReportingNeuronsButon.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { busyStore } from "@dfinity/gix-components";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 vi.mock("$lib/api/governance.api");
 
@@ -221,5 +223,23 @@ describe("ReportingNeuronsButton", () => {
     await runResolvedPromises();
 
     expect(await po.isDisabled()).toBe(false);
+  });
+
+  it("should show busy page exporting", async () => {
+    const po = renderComponent();
+    expect(get(busyStore)).toEqual([]);
+
+    await po.click();
+
+    expect(get(busyStore)).toEqual([
+      {
+        initiator: "reporting-neurons",
+        text: undefined,
+      },
+    ]);
+
+    await runResolvedPromises();
+
+    expect(get(busyStore)).toEqual([]);
   });
 });
