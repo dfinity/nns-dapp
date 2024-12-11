@@ -22,15 +22,21 @@
 
 <Island>
   <main>
-    <div>
-      <h3>{$i18n.reporting.neurons_title}</h3>
-      <p class="description">{$i18n.reporting.neurons_description}</p>
+    <div class="wrapper">
+      <div>
+        <h3>{$i18n.reporting.neurons_title}</h3>
+        <p class="description">{$i18n.reporting.neurons_description}</p>
+      </div>
       <ReportingNeuronsButton />
     </div>
+
     <Separator spacing="medium" />
-    <div>
-      <h3>{$i18n.reporting.transactions_title}</h3>
-      <p class="description">{$i18n.reporting.transactions_description}</p>
+
+    <div class="wrapper">
+      <div>
+        <h3>{$i18n.reporting.transactions_title}</h3>
+        <p class="description">{$i18n.reporting.transactions_description}</p>
+      </div>
       <ReportingTransactionsButton />
     </div>
   </main>
@@ -39,5 +45,12 @@
 <style lang="scss">
   main {
     padding: var(--padding-3x);
+  }
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--padding-3x);
   }
 </style>

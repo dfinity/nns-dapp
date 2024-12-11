@@ -2,8 +2,8 @@ import ReportingPage from "$lib/routes/Reporting.svelte";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ReportingPagePo } from "$tests/page-objects/ReportingPage.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
