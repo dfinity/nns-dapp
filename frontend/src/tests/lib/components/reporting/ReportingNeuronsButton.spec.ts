@@ -234,6 +234,7 @@ describe("ReportingNeuronsButton", () => {
     expect(spyStop).toBeCalledTimes(0);
 
     await po.click();
+    await runResolvedPromises();
 
     expect(spyStart).toBeCalledTimes(1);
     expect(spyStart).toBeCalledWith({ initiator: "reporting-neurons" });
