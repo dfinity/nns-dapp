@@ -180,7 +180,6 @@ export const refreshVotingPower = async ({
 }: ApiRefreshVotingPowerParams): Promise<void> => {
   logWithTimestamp(`Refresh voting power (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
-  console.log("neuronId", neuronId);
 
   await canister.refreshVotingPower({ neuronId });
   logWithTimestamp(`Refresh voting power (${hashCode(neuronId)}) complete.`);
