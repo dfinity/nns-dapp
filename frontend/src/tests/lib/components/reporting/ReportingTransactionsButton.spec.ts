@@ -1,10 +1,16 @@
+import * as governanceApi from "$lib/api/governance.api";
 import * as icpIndexApi from "$lib/api/icp-index.api";
 import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
+import * as exportDataService from "$lib/services/export-data.services";
 import * as toastsStore from "$lib/stores/toasts.store";
 import * as exportToCsv from "$lib/utils/export-to-csv.utils";
-import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
-import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockAccountsStoreData,
+  mockMainAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ReportingTransactionsButtonPo } from "$tests/page-objects/ReportingTransactionsButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import {
@@ -12,28 +18,40 @@ import {
   setAccountsForTesting,
 } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/icp-ledger.api");
+vi.mock("$lib/api/governance.api");
 
-describe("ExportIcpTransactionsButton", () => {
+describe("ReportingTransactionsButton", () => {
   let spyGenerateCsvFileToSave;
   let spyToastError;
+  let spyQueryNeurons;
+  let spyExportDataService;
 
   beforeEach(() => {
     vi.clearAllTimers();
+    resetIdentity();
+    resetAccountsForTesting();
 
     spyGenerateCsvFileToSave = vi
       .spyOn(exportToCsv, "generateCsvFileToSave")
       .mockImplementation(() => Promise.resolve());
     spyToastError = vi.spyOn(toastsStore, "toastsError");
+    spyQueryNeurons = vi
+      .spyOn(governanceApi, "queryNeurons")
+      .mockResolvedValue([]);
+    spyExportDataService = vi.spyOn(
+      exportDataService,
+      "getAccountTransactionsConcurrently"
+    );
+
     vi.spyOn(console, "error").mockImplementation(() => {});
 
     const mockDate = new Date("2023-10-14T00:00:00Z");
     vi.useFakeTimers();
     vi.setSystemTime(mockDate);
-
-    resetIdentity();
 
     setAccountsForTesting({
       ...mockAccountsStoreData,
@@ -55,7 +73,6 @@ describe("ExportIcpTransactionsButton", () => {
 
   const renderComponent = ({ onTrigger }: { onTrigger?: () => void } = {}) => {
     const { container, component } = render(ReportingTransactionsButton);
-
     const po = ReportingTransactionsButtonPo.under({
       element: new JestPageObjectElement(container),
     });
@@ -65,18 +82,6 @@ describe("ExportIcpTransactionsButton", () => {
     }
     return po;
   };
-
-  it("should be disabled when there is no identity", async () => {
-    setNoIdentity();
-    const po = renderComponent();
-    expect(await po.isDisabled()).toBe(true);
-  });
-
-  it("should be disabled when there is no accounts nor neurons", async () => {
-    resetAccountsForTesting();
-    const po = renderComponent();
-    expect(await po.isDisabled()).toBe(true);
-  });
 
   it("should name the file with the date of the export", async () => {
     const po = renderComponent();
@@ -100,6 +105,7 @@ describe("ExportIcpTransactionsButton", () => {
     const po = renderComponent();
 
     expect(spyGenerateCsvFileToSave).toBeCalledTimes(0);
+
     await po.click();
     await runResolvedPromises();
 
@@ -154,15 +160,71 @@ describe("ExportIcpTransactionsButton", () => {
     expect(spyGenerateCsvFileToSave).toBeCalledTimes(1);
   });
 
-  it("should dispatch nnsExportIcpTransactionsCsvTriggered event after click to close the menu", async () => {
-    const onTrigger = vi.fn();
-    const po = renderComponent({ onTrigger });
+  it("should fetch transactions for accounts and neurons", async () => {
+    resetAccountsForTesting();
 
-    expect(onTrigger).toHaveBeenCalledTimes(0);
+    setAccountsForTesting({
+      main: mockMainAccount,
+    });
+
+    const mockNeurons: NeuronInfo[] = [mockNeuron];
+    spyQueryNeurons.mockResolvedValue(mockNeurons);
+
+    const po = renderComponent();
+
+    expect(spyExportDataService).toBeCalledTimes(0);
+    expect(spyQueryNeurons).toBeCalledTimes(0);
 
     await po.click();
     await runResolvedPromises();
-    expect(onTrigger).toHaveBeenCalledTimes(1);
+
+    const expectation = [mockMainAccount, mockNeuron];
+    expect(spyQueryNeurons).toBeCalledTimes(1);
+    expect(spyExportDataService).toHaveBeenCalledTimes(1);
+    expect(spyExportDataService).toHaveBeenCalledWith({
+      entities: expectation,
+      identity: mockIdentity,
+    });
+  });
+
+  it("should sort neurons by stake before fetching their transactions", async () => {
+    resetAccountsForTesting();
+
+    const mockLowMaturityNeuron: NeuronInfo = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        cachedNeuronStake: 1n,
+      },
+    };
+
+    const mockHighMaturityNeuron: NeuronInfo = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        cachedNeuronStake: 100n,
+      },
+    };
+
+    const mockNeurons: NeuronInfo[] = [
+      mockLowMaturityNeuron,
+      mockHighMaturityNeuron,
+    ];
+    spyQueryNeurons.mockResolvedValue(mockNeurons);
+
+    const po = renderComponent();
+
+    expect(spyExportDataService).toBeCalledTimes(0);
+
+    await po.click();
+    await runResolvedPromises();
+
+    const expectation = [mockHighMaturityNeuron, mockLowMaturityNeuron];
+    expect(spyExportDataService).toHaveBeenCalledTimes(1);
+    expect(spyExportDataService).toHaveBeenCalledWith({
+      entities: expectation,
+      identity: mockIdentity,
+    });
   });
 
   it("should show error toast when file system access fails", async () => {
@@ -216,5 +278,19 @@ describe("ExportIcpTransactionsButton", () => {
       labelKey: "export_error.neurons",
     });
     expect(spyToastError).toBeCalledTimes(1);
+  });
+
+  it("should disable the button while exporting", async () => {
+    const po = renderComponent();
+
+    expect(await po.isDisabled()).toBe(false);
+
+    await po.click();
+
+    expect(await po.isDisabled()).toBe(true);
+
+    await runResolvedPromises();
+
+    expect(await po.isDisabled()).toBe(false);
   });
 });

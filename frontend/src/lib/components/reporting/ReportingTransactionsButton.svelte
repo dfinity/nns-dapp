@@ -1,8 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { IconDown } from "@dfinity/gix-components";
-  import { createEventDispatcher } from "svelte";
-  import { ICPToken, isNullish } from "@dfinity/utils";
+  import { ICPToken, nonNullish } from "@dfinity/utils";
   import {
     buildTransactionsDatasets,
     CsvGenerationError,
@@ -14,45 +13,57 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { formatDateCompact } from "$lib/utils/date.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import { getAccountTransactionsConcurrently } from "$lib/services/export-data.services";
   import { SignIdentity, type Identity } from "@dfinity/agent";
   import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { Account } from "$lib/types/account";
-  import { neuronAccountsStore } from "$lib/derived/neurons.derived";
   import type { Readable } from "svelte/store";
-  import { neuronsStore } from "$lib/stores/neurons.store";
   import type { NeuronInfo } from "@dfinity/nns";
+  import { queryNeurons } from "$lib/api/governance.api";
+  import { sortNeuronsByStake } from "$lib/utils/neuron.utils";
+  import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 
-  const dispatcher = createEventDispatcher<{
-    nnsExportIcpTransactionsCsvTriggered: void;
-  }>();
-
-  let isDisabled = true;
   let identity: Identity | null | undefined;
   let swapCanisterAccounts: Set<string>;
-  let neuronAccounts: Set<string>;
   let nnsAccounts: Account[];
-  let nnsNeurons: NeuronInfo[];
   let swapCanisterAccountsStore: Readable<Set<string>>;
+  let loading = false;
 
   $: identity = $authStore.identity;
-  $: neuronAccounts = $neuronAccountsStore;
   $: nnsAccounts = $nnsAccountsListStore;
-  $: nnsNeurons = $neuronsStore.neurons ?? [];
-  $: isDisabled =
-    isNullish(identity) ||
-    (nnsAccounts.length === 0 && nnsNeurons.length === 0);
   $: swapCanisterAccountsStore = createSwapCanisterAccountsStore(
     identity?.getPrincipal()
   );
   $: swapCanisterAccounts = $swapCanisterAccountsStore ?? new Set();
 
+  const fetchAllNnsNeuronsAndSortThemByStake = async (
+    identity: Identity
+  ): Promise<NeuronInfo[]> => {
+    const data = await queryNeurons({
+      certified: true,
+      identity: identity,
+      includeEmptyNeurons: true,
+    });
+
+    return sortNeuronsByStake(data);
+  };
+
   const exportIcpTransactions = async () => {
     try {
+      loading = true;
+
       // we are logged in to be able to interact with the button
       const signIdentity = identity as SignIdentity;
+
+      const nnsNeurons =
+        await fetchAllNnsNeuronsAndSortThemByStake(signIdentity);
+      const neuronAccounts = new Set(
+        nnsNeurons
+          .filter((neuron) => nonNullish(neuron.fullNeuron?.accountIdentifier))
+          .map((neuron) => neuron.fullNeuron!.accountIdentifier)
+      );
+
       const entities = [...nnsAccounts, ...nnsNeurons];
       const transactions = await getAccountTransactionsConcurrently({
         entities,
@@ -125,27 +136,18 @@
         });
       }
     } finally {
-      dispatcher("nnsExportIcpTransactionsCsvTriggered");
+      loading = false;
     }
   };
 </script>
 
 <button
-  data-tid="export-icp-transactions-button-component"
+  data-tid="reporting-transactions-button-component"
   on:click={exportIcpTransactions}
-  class="text"
-  disabled={isDisabled}
-  aria-label={$i18n.header.export_neurons}
+  class="primary with-icon"
+  disabled={loading}
+  aria-label={$i18n.reporting.transactions_download}
 >
   <IconDown />
-  {$i18n.header.export_transactions}
+  {$i18n.reporting.transactions_download}
 </button>
-
-<style lang="scss">
-  @use "../../themes/mixins/account-menu";
-
-  button {
-    @include account-menu.button;
-    padding: 0;
-  }
-</style>

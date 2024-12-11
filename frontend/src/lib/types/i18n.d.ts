@@ -163,7 +163,6 @@ interface I18nHeader {
   main_icp_account_id: string;
   account_id_tooltip: string;
   export_neurons: string;
-  export_transactions: string;
 }
 
 interface I18nExport_csv_neurons {
@@ -204,6 +203,7 @@ interface I18nReporting {
   neurons_description: string;
   transactions_title: string;
   transactions_description: string;
+  transactions_download: string;
 }
 
 interface I18nAuth {
