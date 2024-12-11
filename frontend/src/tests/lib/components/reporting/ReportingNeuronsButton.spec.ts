@@ -12,6 +12,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
+vi.mock("$lib/api/governance.api");
 
 vi.mock("$lib/api/governance.api");
 
