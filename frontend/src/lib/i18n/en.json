@@ -130,7 +130,7 @@
     "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction.",
     "invalid_ledger_index_pair": "The provided index canister ID does not match the associated ledger canister ID.",
     "index_canister_validation": "An error occurred while validating the index canister ID. It appears that $indexCanister might not be a valid index canister ID.",
-    "refresh_voting_power": "An error occurred while confirming the following."
+    "refresh_voting_power": "An error occurred while confirming following."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired.",
