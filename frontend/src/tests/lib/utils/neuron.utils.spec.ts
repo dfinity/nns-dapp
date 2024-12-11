@@ -4,6 +4,7 @@ import {
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_HALF_YEAR,
   SECONDS_IN_HOUR,
+  SECONDS_IN_MONTH,
   SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
@@ -51,6 +52,7 @@ import {
   isNeuronControllable,
   isNeuronControllableByUser,
   isNeuronControlledByHardwareWallet,
+  isNeuronFollowingReset,
   isNeuronLosingRewards,
   isPublicNeuron,
   isSpawning,
@@ -3455,6 +3457,47 @@ describe("neuron-utils", () => {
           isNeuronLosingRewards(
             neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod - 1,
+            })
+          )
+        ).toBe(false);
+      });
+    });
+
+    describe("isNeuronFollowingReset", () => {
+      it("should return false by default", () => {
+        expect(
+          isNeuronFollowingReset({
+            ...mockNeuron,
+            fullNeuron: undefined,
+          })
+        ).toBe(false);
+      });
+
+      it("should return true after the followings have been reset", () => {
+        expect(
+          isNeuronFollowingReset(
+            neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod + SECONDS_IN_MONTH,
+            })
+          )
+        ).toBe(true);
+        expect(
+          isNeuronFollowingReset(
+            neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod + 2 * SECONDS_IN_MONTH,
+            })
+          )
+        ).toBe(true);
+      });
+
+      it("should return false", () => {
+        expect(
+          isNeuronFollowingReset(
+            neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod + SECONDS_IN_MONTH - 1,
             })
           )
         ).toBe(false);
