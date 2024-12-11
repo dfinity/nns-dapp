@@ -690,6 +690,43 @@ export const disburse = async ({
   }
 };
 
+export const refreshVotingPowerForNeurons = async ({
+  neuronIds,
+}: {
+  neuronIds: NeuronId[];
+}): Promise<{ successCount: number }> => {
+  const refreshNeuron = async (neuronId: NeuronId) => {
+    const identity: Identity =
+      await getIdentityOfControllerByNeuronId(neuronId);
+    return governanceApiService.refreshVotingPower({ neuronId, identity });
+  };
+
+  const responses = await Promise.allSettled(neuronIds.map(refreshNeuron));
+  let successCount = 0;
+  responses.forEach((r, i) => {
+    if (r.status === "rejected") {
+      console.error(`Failed to refresh neuronId ${neuronIds[i]}`, r.reason);
+    } else {
+      successCount++;
+    }
+  });
+
+  if (successCount > 0) {
+    await listNeurons();
+  }
+
+  if (successCount < neuronIds.length) {
+    // We display a generic error message if at least one neuron fails,
+    // as the updated neuron states will be reflected in the UI
+    // (e.g., the list of inactive neurons and their tags).
+    toastsError({
+      labelKey: "error.refresh_voting_power",
+    });
+  }
+
+  return { successCount };
+};
+
 export const stakeMaturity = async ({
   neuronId,
   percentageToStake,
