@@ -7,7 +7,7 @@
   export let neuronIds: bigint[];
 
   const dispatcher = createEventDispatcher<{
-    nnsDone: { successCount: number; totalCount: number };
+    nnsComplete: { successCount: number; totalCount: number };
   }>();
 
   const onClick = async () => {
@@ -20,7 +20,7 @@
     const { successCount } = await refreshVotingPowerForNeurons({ neuronIds });
 
     stopBusy("refresh-voting-power");
-    dispatcher("nnsDone", { successCount, totalCount });
+    dispatcher("nnsComplete", { successCount, totalCount });
   };
 </script>
 
