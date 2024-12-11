@@ -94,7 +94,6 @@
     use:onIntersection
   >
     <HeadingSubtitle testId="wallet-page-heading-subtitle">
-      <!-- prettier-ignore -->
       <div class="subtitle">
         {#if $ENABLE_USD_VALUES}
           <div class="usd-balance" class:icp-swap-has-error={icpSwapHasError}>
