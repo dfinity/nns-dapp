@@ -8,7 +8,7 @@ import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { AccountMenuPo } from "$tests/page-objects/AccountMenu.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 
 describe("AccountMenu", () => {
   const renderComponent = () => {
@@ -19,11 +19,18 @@ describe("AccountMenu", () => {
     );
     const canistersLinkPo = accountMenuPo.getCanistersLinkPo();
     const linkToSettingsPo = accountMenuPo.getLinkToSettingsPo();
+    const linkToReportingPo = accountMenuPo.getLinkToReportingPo();
 
     canistersLinkPo.root.addEventListener("click", mockLinkClickEvent);
     linkToSettingsPo.root.addEventListener("click", mockLinkClickEvent);
+    linkToReportingPo.root.addEventListener("click", mockLinkClickEvent);
 
-    return { accountMenuPo, canistersLinkPo, linkToSettingsPo };
+    return {
+      accountMenuPo,
+      canistersLinkPo,
+      linkToSettingsPo,
+      linkToReportingPo,
+    };
   };
 
   it("should be closed by default", async () => {
@@ -123,78 +130,38 @@ describe("AccountMenu", () => {
         vi.spyOn(console, "error").mockImplementation(() => {});
       });
 
-      it("should not show the Export Neurons Report button if feature flag is off(by default)", async () => {
+      it("should not show the LinkToReporting button if feature flag is off(by default", async () => {
         const { accountMenuPo } = renderComponent();
-
         await accountMenuPo.openMenu();
 
-        expect(await accountMenuPo.getExportNeuronsButtonPo().isPresent()).toBe(
+        expect(await accountMenuPo.getLinkToReportingPo().isPresent()).toBe(
           false
         );
       });
 
-      it("should show the Export Neurons Report button if feature flag is on", async () => {
+      it("should display Reporting button link", async () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", true);
-        const { accountMenuPo } = renderComponent();
 
+        const { accountMenuPo } = renderComponent();
         await accountMenuPo.openMenu();
 
-        expect(await accountMenuPo.getExportNeuronsButtonPo().isPresent()).toBe(
+        expect(await accountMenuPo.getLinkToReportingPo().isPresent()).toBe(
           true
         );
       });
 
-      it("should close the menu once the Export Neurons Report button is clicked", async () => {
+      it("should close popover on click on reporting", async () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", true);
-        const { accountMenuPo } = renderComponent();
 
+        const { accountMenuPo, linkToReportingPo } = renderComponent();
         await accountMenuPo.openMenu();
 
-        expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(
-          true
-        );
+        await linkToReportingPo.click();
 
-        await accountMenuPo.getExportNeuronsButtonPo().click();
-
-        await waitFor(async () => {
-          expect(await accountMenuPo.isOpen()).toBe(false);
-        });
-      });
-
-      it("should not show the Export ICP Transactions Report button if feature flag is off(by default)", async () => {
-        const { accountMenuPo } = renderComponent();
-
-        await accountMenuPo.openMenu();
-
-        expect(
-          await accountMenuPo.getExportIcpTransactionsButtonPo().isPresent()
-        ).toBe(false);
-      });
-
-      it("should show Export Icp Transactions Report button if feature flag is on", async () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", true);
-        const { accountMenuPo } = renderComponent();
-
-        await accountMenuPo.openMenu();
-
-        expect(
-          await accountMenuPo.getExportIcpTransactionsButtonPo().isPresent()
-        ).toBe(true);
-      });
-
-      it("should close the menu once the Export Icp Transactions Report button is clicked", async () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", true);
-        const { accountMenuPo } = renderComponent();
+        //wait for goto to be triggered
+        await runResolvedPromises();
 
         expect(await accountMenuPo.isOpen()).toBe(false);
-
-        await accountMenuPo.openMenu();
-        expect(await accountMenuPo.isOpen()).toBe(true);
-
-        await accountMenuPo.getExportIcpTransactionsButtonPo().click();
-        await waitFor(async () => {
-          expect(await accountMenuPo.isOpen()).toBe(false);
-        });
       });
     });
   });

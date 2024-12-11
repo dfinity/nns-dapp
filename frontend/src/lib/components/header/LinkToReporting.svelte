@@ -2,18 +2,18 @@
   import { beforeNavigate } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
   import { i18n } from "$lib/stores/i18n";
-  import { IconSettings } from "@dfinity/gix-components";
+  import { IconDocument } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
 
   const dispatcher = createEventDispatcher();
-  const linkToSettings = AppPath.Settings;
+  const linkToReporting = AppPath.Reporting;
 
   beforeNavigate(() => dispatcher("nnsLink"));
 </script>
 
-<a data-tid="settings" href={linkToSettings} class="text">
-  <IconSettings />
-  {$i18n.navigation.settings}
+<a data-tid="reporting" href={linkToReporting} class="text">
+  <IconDocument />
+  {$i18n.navigation.reporting}
 </a>
 
 <style lang="scss">

@@ -1,14 +1,30 @@
 import type { TransactionResults } from "$lib/services/export-data.services";
 import {
+  getFutureDateFromDelayInSeconds,
   nanoSecondsToDateTime,
   nowInBigIntNanoSeconds,
+  secondsToDate,
 } from "$lib/utils/date.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { mapIcpTransactionToReport } from "$lib/utils/icp-transactions.utils";
+import {
+  formatMaturity,
+  getStateInfo,
+  neuronAvailableMaturity,
+  neuronStake,
+  neuronStakedMaturity,
+} from "$lib/utils/neuron.utils";
 import { formatTokenV2 } from "$lib/utils/token.utils";
 import { transactionName } from "$lib/utils/transactions.utils";
+import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { ICPToken, TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
+import {
+  ICPToken,
+  TokenAmountV2,
+  isNullish,
+  nonNullish,
+  secondsToDuration,
+} from "@dfinity/utils";
 
 type Metadata = {
   label: string;
@@ -227,9 +243,12 @@ export const generateCsvFileToSave = async <T>({
       type: "text/csv;charset=utf-8;",
     });
 
+    // TODO: Investigate the random issues with showSaveFilePicker.
+    const isShowSaveFilePickerEnabled = false;
     if (
       "showSaveFilePicker" in window &&
-      typeof window.showSaveFilePicker === "function"
+      typeof window.showSaveFilePicker === "function" &&
+      isShowSaveFilePickerEnabled
     ) {
       await saveFileWithPicker({ blob, fileName, description });
     } else {
@@ -365,4 +384,78 @@ export const buildTransactionsDatasets = ({
       }),
     };
   });
+};
+
+export type NeuronsCsvData = {
+  controllerId: string;
+  project: string;
+  symbol: string;
+  neuronId: string;
+  neuronAccountId: string;
+  stake: string;
+  availableMaturity: string;
+  stakedMaturity: string;
+  dissolveDelaySeconds: string;
+  dissolveDate: string;
+  creationDate: string;
+  state: string;
+};
+
+export const buildNeuronsDatasets = ({
+  neurons,
+  i18n,
+  nnsAccountPrincipal,
+}: {
+  neurons: NeuronInfo[];
+  i18n: I18n;
+  nnsAccountPrincipal: Principal;
+}): CsvDataset<NeuronsCsvData>[] => {
+  const metadataDate = nanoSecondsToDateTime(nowInBigIntNanoSeconds());
+  const metadata = [
+    {
+      label: i18n.export_csv_neurons.account_id_label,
+      value: nnsAccountPrincipal.toText(),
+    },
+    {
+      label: i18n.export_csv_neurons.date_label,
+      value: metadataDate,
+    },
+  ];
+
+  const data = neurons.map((neuron) => {
+    const stake = TokenAmountV2.fromUlps({
+      amount: neuronStake(neuron),
+      token: ICPToken,
+    });
+    const availableMaturity = neuronAvailableMaturity(neuron);
+    const stakedMaturity = neuronStakedMaturity(neuron);
+    const dissolveDate =
+      neuron.state === NeuronState.Dissolving
+        ? getFutureDateFromDelayInSeconds(neuron.dissolveDelaySeconds)
+        : null;
+    const creationDate = secondsToDate(Number(neuron.createdTimestampSeconds));
+
+    return {
+      controllerId: neuron.fullNeuron?.controller?.toString() ?? "",
+      project: stake.token.name,
+      symbol: stake.token.symbol,
+      neuronId: neuron.neuronId.toString(),
+      neuronAccountId: neuron.fullNeuron?.accountIdentifier.toString() ?? "",
+      stake: formatTokenV2({
+        value: stake,
+        detailed: true,
+      }),
+      availableMaturity: formatMaturity(availableMaturity),
+      stakedMaturity: formatMaturity(stakedMaturity),
+      dissolveDelaySeconds: secondsToDuration({
+        seconds: neuron.dissolveDelaySeconds,
+        i18n: i18n.time,
+      }),
+      dissolveDate: dissolveDate ?? i18n.core.not_applicable,
+      creationDate,
+      state: i18n.neuron_state[getStateInfo(neuron.state).textKey],
+    };
+  });
+
+  return [{ metadata, data }];
 };

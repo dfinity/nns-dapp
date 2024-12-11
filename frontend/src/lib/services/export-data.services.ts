@@ -107,7 +107,12 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
   allTransactions?: TransactionWithId[];
   currentPageIndex?: number;
 }): Promise<TransactionWithId[] | undefined> => {
-  const pageSize = 100n;
+  // Based on
+  //   https://github.com/dfinity/ic/blob/master/rs/ledger_suite/icp/index/src/lib.rs#L31
+  //   https://github.com/dfinity/ic/blob/master/rs/ledger_suite/icp/index/src/main.rs#L593
+  //   https://github.com/dfinity/ic/blob/master/rs/ledger_suite/icp/src/lib.rs#L1237
+  //   https://github.com/dfinity/ic/blob/master/rs/ledger_suite/icp/src/lib.rs#L45
+  const pageSize = 2000n;
   const maxNumberOfPages = 10;
 
   try {
