@@ -9,9 +9,8 @@ export class ReportingNeuronsButtonPo extends ButtonPo {
   }: {
     element: PageObjectElement;
   }): ReportingNeuronsButtonPo {
-    return ButtonPo.under({
-      element,
-      testId: ReportingNeuronsButtonPo.TID,
-    });
+    return new ReportingNeuronsButtonPo(
+      element.byTestId(ReportingNeuronsButtonPo.TID)
+    );
   }
 }

@@ -18,8 +18,10 @@ import {
   setAccountsForTesting,
 } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { busyStore } from "@dfinity/gix-components";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/governance.api");
@@ -292,5 +294,23 @@ describe("ReportingTransactionsButton", () => {
     await runResolvedPromises();
 
     expect(await po.isDisabled()).toBe(false);
+  });
+
+  it("should show busy page while exporting", async () => {
+    const po = renderComponent();
+    expect(get(busyStore)).toEqual([]);
+
+    await po.click();
+
+    expect(get(busyStore)).toEqual([
+      {
+        initiator: "reporting-transactions",
+        text: undefined,
+      },
+    ]);
+
+    await runResolvedPromises();
+
+    expect(get(busyStore)).toEqual([]);
   });
 });
