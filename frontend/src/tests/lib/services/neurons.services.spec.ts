@@ -880,6 +880,28 @@ describe("neurons-services", () => {
       expect(spyQueryNeurons).toBeCalledTimes(2);
     });
 
+    it("should skip reloading the neurons when all of them fail.", async () => {
+      const neurons = [neuron1, neuron2];
+      neuronsStore.pushNeurons({ neurons, certified: true });
+
+      // All neurons fail
+      const spyRefreshVotingPower = vi
+        .spyOn(api, "refreshVotingPower")
+        .mockRejectedValue(undefined);
+      // ignore console errors
+      vi.spyOn(console, "error").mockReturnValue();
+      const spyQueryNeurons = vi
+        .spyOn(api, "queryNeurons")
+        .mockResolvedValue(neurons);
+
+      await services.refreshVotingPowerForNeurons({
+        neuronIds: [neuron1.neuronId, neuron2.neuronId],
+      });
+
+      expect(spyRefreshVotingPower).toBeCalledTimes(2);
+      expect(spyQueryNeurons).toBeCalledTimes(0);
+    });
+
     it("should handle errors", async () => {
       const testError = new Error("Test error");
       const neurons = [neuron1, neuron2];
