@@ -199,7 +199,6 @@ interface I18nExport_error {
 }
 
 interface I18nReporting {
-  fetching_neurons_error: string;
   neurons_title: string;
   neurons_description: string;
   transactions_title: string;
