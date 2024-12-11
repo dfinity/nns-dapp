@@ -9,16 +9,13 @@
   } from "$lib/utils/export-to-csv.utils";
   import { toastsError } from "$lib/stores/toasts.store";
   import { formatDateCompact } from "$lib/utils/date.utils";
-  import { authStore } from "$lib/stores/auth.store";
   import type { NeuronInfo } from "@dfinity/nns";
-  import type { Identity, SignIdentity } from "@dfinity/agent";
+  import type { Identity } from "@dfinity/agent";
   import { queryNeurons } from "$lib/api/governance.api";
   import { sortNeuronsByStake } from "$lib/utils/neuron.utils";
+  import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 
-  let identity: Identity | null | undefined;
   let loading = false;
-
-  $: identity = $authStore.identity;
 
   const fetchAllNnsNeuronsAndSortThemByStake = async (
     identity: Identity
@@ -37,7 +34,7 @@
       loading = true;
 
       // we are logged in to be able to interact with the button
-      const signIdentity = identity as SignIdentity;
+      const signIdentity = await getAuthenticatedIdentity();
 
       const neurons = await fetchAllNnsNeuronsAndSortThemByStake(signIdentity);
       const fileName = `neurons_export_${formatDateCompact(new Date())}`;
