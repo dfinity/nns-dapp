@@ -4,21 +4,33 @@ import { authStore } from "$lib/stores/auth.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import * as exportToCsv from "$lib/utils/export-to-csv.utils";
+import * as exportToCsvUtils from "$lib/utils/export-to-csv.utils";
 import { generateCsvFileToSave } from "$lib/utils/export-to-csv.utils";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ReportingNeuronsButtonPo } from "$tests/page-objects/ReportingNeuronsButon.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
+
 vi.mock("$lib/api/governance.api");
 
 describe("ReportingNeuronsButton", () => {
+  let spyQueryNeurons;
+  let spyBuildNeuronsDatasets;
+
   beforeEach(() => {
     vi.clearAllTimers();
+    resetIdentity();
 
     vi.spyOn(exportToCsv, "generateCsvFileToSave").mockImplementation(vi.fn());
     vi.spyOn(toastsStore, "toastsError");
     vi.spyOn(console, "error").mockImplementation(() => {});
+    spyBuildNeuronsDatasets = vi.spyOn(
+      exportToCsvUtils,
+      "buildNeuronsDatasets"
+    );
 
     const mockDate = new Date("2023-10-14T00:00:00Z");
     vi.useFakeTimers();
@@ -33,9 +45,9 @@ describe("ReportingNeuronsButton", () => {
       },
     };
 
-    vi.spyOn(gobernanceApi, "queryNeurons").mockResolvedValue([
-      neuronWithController,
-    ]);
+    spyQueryNeurons = vi
+      .spyOn(gobernanceApi, "queryNeurons")
+      .mockResolvedValue([neuronWithController]);
   });
 
   const renderComponent = ({ onTrigger }: { onTrigger?: () => void } = {}) => {
@@ -65,6 +77,46 @@ describe("ReportingNeuronsButton", () => {
       })
     );
     expect(generateCsvFileToSave).toBeCalledTimes(1);
+  });
+
+  it("should fetch neurons and sort them by stake", async () => {
+    const mockLowMaturityNeuron: NeuronInfo = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        cachedNeuronStake: 1n,
+      },
+    };
+
+    const mockHighMaturityNeuron: NeuronInfo = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        cachedNeuronStake: 100n,
+      },
+    };
+
+    const mockNeurons: NeuronInfo[] = [
+      mockLowMaturityNeuron,
+      mockHighMaturityNeuron,
+    ];
+
+    spyQueryNeurons.mockResolvedValue(mockNeurons);
+
+    const po = renderComponent();
+
+    expect(spyBuildNeuronsDatasets).toBeCalledTimes(0);
+
+    await po.click();
+    await runResolvedPromises();
+
+    const expectation = [mockHighMaturityNeuron, mockLowMaturityNeuron];
+    expect(spyBuildNeuronsDatasets).toHaveBeenCalledTimes(1);
+    expect(spyBuildNeuronsDatasets).toHaveBeenCalledWith(
+      expect.objectContaining({
+        neurons: expectation,
+      })
+    );
   });
 
   it("should transform neuron data correctly", async () => {
