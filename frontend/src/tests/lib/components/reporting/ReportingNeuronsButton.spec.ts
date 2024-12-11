@@ -105,12 +105,14 @@ describe("ReportingNeuronsButton", () => {
 
     const po = renderComponent();
 
+    expect(spyQueryNeurons).toBeCalledTimes(0);
     expect(spyBuildNeuronsDatasets).toBeCalledTimes(0);
 
     await po.click();
     await runResolvedPromises();
 
     const expectation = [mockHighMaturityNeuron, mockLowMaturityNeuron];
+    expect(spyQueryNeurons).toHaveBeenCalledTimes(1);
     expect(spyBuildNeuronsDatasets).toHaveBeenCalledTimes(1);
     expect(spyBuildNeuronsDatasets).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -194,5 +196,19 @@ describe("ReportingNeuronsButton", () => {
       labelKey: "export_error.neurons",
     });
     expect(toastsError).toBeCalledTimes(1);
+  });
+
+  it("should disable the button while exporting", async () => {
+    const po = renderComponent();
+
+    expect(await po.isDisabled()).toBe(false);
+
+    await po.click();
+
+    expect(await po.isDisabled()).toBe(true);
+
+    await runResolvedPromises();
+
+    expect(await po.isDisabled()).toBe(false);
   });
 });

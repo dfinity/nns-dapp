@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { IconDown, Spinner } from "@dfinity/gix-components";
+  import { IconDown } from "@dfinity/gix-components";
   import {
     buildNeuronsDatasets,
     CsvGenerationError,
@@ -129,12 +129,6 @@
   disabled={loading}
   aria-label={$i18n.reporting.neurons_download}
 >
-  {#if loading}
-    <div>
-      <Spinner inline size="tiny" />
-    </div>
-  {:else}
-    <IconDown />
-  {/if}
+  <IconDown />
   {$i18n.reporting.neurons_download}
 </button>
