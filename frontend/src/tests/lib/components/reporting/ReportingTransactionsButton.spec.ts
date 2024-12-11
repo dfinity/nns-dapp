@@ -277,4 +277,14 @@ describe("ReportingTransactionsButton", () => {
     });
     expect(spyToastError).toBeCalledTimes(1);
   });
+
+  it("should disable the button while exporting", async () => {
+    const po = renderComponent();
+
+    expect(await po.isDisabled()).toBe(false);
+
+    await po.click();
+
+    expect(await po.isDisabled()).toBe(true);
+  });
 });

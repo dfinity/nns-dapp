@@ -9,9 +9,8 @@ export class ReportingTransactionsButtonPo extends ButtonPo {
   }: {
     element: PageObjectElement;
   }): ReportingTransactionsButtonPo {
-    return ButtonPo.under({
-      element,
-      testId: ReportingTransactionsButtonPo.TID,
-    });
+    return new ReportingTransactionsButtonPo(
+      element.byTestId(ReportingTransactionsButtonPo.TID)
+    );
   }
 }
