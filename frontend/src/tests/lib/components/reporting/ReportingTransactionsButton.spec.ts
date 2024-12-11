@@ -1,4 +1,4 @@
-import * as gobernanceApi from "$lib/api/governance.api";
+import * as governanceApi from "$lib/api/governance.api";
 import * as icpIndexApi from "$lib/api/icp-index.api";
 import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
 import * as exportDataService from "$lib/services/export-data.services";
@@ -40,7 +40,7 @@ describe("ReportingTransactionsButton", () => {
       .mockImplementation(() => Promise.resolve());
     spyToastError = vi.spyOn(toastsStore, "toastsError");
     spyQueryNeurons = vi
-      .spyOn(gobernanceApi, "queryNeurons")
+      .spyOn(governanceApi, "queryNeurons")
       .mockResolvedValue([]);
     spyExportDataService = vi.spyOn(
       exportDataService,
@@ -173,12 +173,14 @@ describe("ReportingTransactionsButton", () => {
     const po = renderComponent();
 
     expect(spyExportDataService).toBeCalledTimes(0);
+    expect(spyQueryNeurons).toBeCalledTimes(0);
 
     await po.click();
     await runResolvedPromises();
 
     const expectation = [mockMainAccount, mockNeuron];
     expect(spyExportDataService).toHaveBeenCalledTimes(1);
+    expect(spyQueryNeurons).toBeCalledTimes(1);
     expect(spyExportDataService).toHaveBeenCalledWith({
       entities: expectation,
       identity: mockIdentity,
@@ -286,5 +288,9 @@ describe("ReportingTransactionsButton", () => {
     await po.click();
 
     expect(await po.isDisabled()).toBe(true);
+
+    await runResolvedPromises();
+
+    expect(await po.isDisabled()).toBe(false);
   });
 });

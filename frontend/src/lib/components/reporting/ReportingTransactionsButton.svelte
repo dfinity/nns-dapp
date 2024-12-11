@@ -141,24 +141,13 @@
   };
 </script>
 
-<div class="wrapper">
-  <button
-    data-tid="reporting-transactions-button-component"
-    on:click={exportIcpTransactions}
-    class="primary with-icon"
-    disabled={loading}
-    aria-label={$i18n.reporting.transactions_download}
-  >
-    <IconDown />
-    {$i18n.reporting.transactions_download}
-  </button>
-</div>
-
-<style lang="scss">
-  .wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: var(--padding-2x);
-  }
-</style>
+<button
+  data-tid="reporting-transactions-button-component"
+  on:click={exportIcpTransactions}
+  class="primary with-icon"
+  disabled={loading}
+  aria-label={$i18n.reporting.transactions_download}
+>
+  <IconDown />
+  {$i18n.reporting.transactions_download}
+</button>
