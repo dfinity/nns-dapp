@@ -27,7 +27,6 @@ describe("ConfirmFollowingButton", () => {
   }));
 
   let spyQueryNeurons;
-  let spyRefreshVotingPower;
 
   beforeEach(() => {
     resetIdentity();
@@ -35,9 +34,7 @@ describe("ConfirmFollowingButton", () => {
 
     neuronsStore.pushNeurons({ neurons, certified: true });
     spyQueryNeurons = vi.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
-    spyRefreshVotingPower = vi
-      .spyOn(api, "refreshVotingPower")
-      .mockResolvedValue();
+    vi.spyOn(api, "refreshVotingPower").mockResolvedValue();
   });
 
   const renderComponent = async ({ nnsComplete = undefined, ...props }) => {
