@@ -7,7 +7,7 @@
     shouldDisplayRewardLossNotification,
   } from "$lib/utils/neuron.utils";
   import {
-    IconCheckCircle,
+    IconCheckCircleFill,
     IconError,
     IconWarning,
   } from "@dfinity/gix-components";
@@ -29,14 +29,13 @@
   $: isLosingRewardsSoon =
     !isLosingRewards && shouldDisplayRewardLossNotification(neuron);
 
-  let icon: typeof IconError | typeof IconWarning | typeof IconCheckCircle;
+  let icon: typeof IconError | typeof IconWarning | typeof IconCheckCircleFill;
   $: icon =
     isFollowingReset || isLosingRewards
       ? IconError
       : isLosingRewardsSoon
         ? IconWarning
-        : // TODO(mstr): Replace with the filled version.
-          IconCheckCircle;
+        : IconCheckCircleFill;
 
   let title: string;
   $: title =
