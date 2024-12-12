@@ -94,7 +94,7 @@ describe("LosingRewardsBanner", () => {
     const po = await renderComponent();
 
     expect(await po.getText()).toBe(
-      "ICP neurons that are inactive for 6 months start losing voting rewards. In order to avoid losing rewards, vote manually, edit or confirm your following."
+      "ICP neurons that are inactive for 6 months start missing voting rewards. To avoid missing rewards, vote manually, edit, or confirm your following."
     );
   });
 

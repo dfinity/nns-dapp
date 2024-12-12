@@ -388,7 +388,7 @@
     "create_as_public_neuron_failure": "Making your neuron public has failed, so it was created as a private neuron. You can change neuron visibility at any time under \"Advanced Details & Settings\""
   },
   "losing_rewards": {
-    "description": "ICP neurons that are inactive for $period start losing voting rewards. In order to avoid losing rewards, vote manually, edit or confirm your following.",
+    "description": "ICP neurons that are inactive for $period start missing voting rewards. To avoid missing rewards, vote manually, edit, or confirm your following.",
     "confirming": "Confirming following. This may take a moment.",
     "confirm": "Confirm Following"
   },
@@ -400,7 +400,7 @@
     "goto_neuron": "Go to neuron details",
     "title": "Review your following for neurons",
     "label": "Neurons",
-    "no_following": "This neuron has no following configured."
+    "no_following": "This neuron has no following configured. You need to vote manually to earn voting rewards."
   },
   "new_followee": {
     "title": "Enter New Followee",
