@@ -27,7 +27,7 @@ describe("ReportingNeuronsButton", () => {
 
     vi.spyOn(exportToCsv, "generateCsvFileToSave").mockImplementation(vi.fn());
     vi.spyOn(toastsStore, "toastsError");
-    vi.spyOn(console, "error").mockImplementation(() => { });
+    vi.spyOn(console, "error").mockImplementation(() => {});
     spyBuildNeuronsDatasets = vi.spyOn(
       exportToCsvUtils,
       "buildNeuronsDatasets"
