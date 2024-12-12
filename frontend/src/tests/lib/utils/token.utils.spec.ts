@@ -14,6 +14,7 @@ import {
   formattedTransactionFeeICP,
   getMaxTransactionAmount,
   getTotalBalanceInUsd,
+  getUsdValue,
   numberToE8s,
   numberToUlps,
   sortUserTokens,
@@ -914,6 +915,35 @@ describe("token-utils", () => {
       });
 
       expect(getTotalBalanceInUsd([token1, token2, token3])).toBe(8);
+    });
+  });
+
+  describe("getUsdValue", () => {
+    it("should multiply the amount with the price", () => {
+      const amount = TokenAmountV2.fromNumber({
+        amount: 2,
+        token: ICPToken,
+      });
+      const tokenPrice = 3;
+      expect(getUsdValue({ amount, tokenPrice })).toBe(6);
+    });
+
+    it("should return undefined if tokenPrice is undefined", () => {
+      const amount = TokenAmountV2.fromNumber({
+        amount: 2,
+        token: ICPToken,
+      });
+      const tokenPrice = undefined;
+      expect(getUsdValue({ amount, tokenPrice })).toBe(undefined);
+    });
+
+    it("should return 0 if amount is 0, even if tokenPrice is undefined", () => {
+      const amount = TokenAmountV2.fromNumber({
+        amount: 0,
+        token: ICPToken,
+      });
+      const tokenPrice = undefined;
+      expect(getUsdValue({ amount, tokenPrice })).toBe(0);
     });
   });
 });

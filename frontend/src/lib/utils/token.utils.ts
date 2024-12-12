@@ -336,3 +336,20 @@ const getUsdBalance = (token: UserToken) => {
 
 export const getTotalBalanceInUsd = (tokens: UserToken[]): number =>
   tokens.reduce((acc, token) => acc + getUsdBalance(token), 0);
+
+export const getUsdValue = ({
+  amount,
+  tokenPrice,
+}: {
+  amount: TokenAmountV2;
+  tokenPrice?: number;
+}): number | undefined => {
+  const amountE8s = Number(amount.toE8s());
+  if (amountE8s === 0) {
+    return 0;
+  }
+  if (isNullish(tokenPrice)) {
+    return undefined;
+  }
+  return (amountE8s * tokenPrice) / 100_000_000;
+};
