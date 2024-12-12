@@ -49,7 +49,7 @@ describe("ReportingTransactionsButton", () => {
       "getAccountTransactionsConcurrently"
     );
 
-    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => { });
 
     const mockDate = new Date("2023-10-14T00:00:00Z");
     vi.useFakeTimers();
@@ -305,7 +305,7 @@ describe("ReportingTransactionsButton", () => {
     expect(get(busyStore)).toEqual([
       {
         initiator: "reporting-transactions",
-        text: "Generating report...",
+        text: "Generating report... This may take a moment",
       },
     ]);
 
