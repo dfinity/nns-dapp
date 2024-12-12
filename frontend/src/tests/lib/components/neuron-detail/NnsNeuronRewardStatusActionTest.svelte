@@ -1,5 +1,4 @@
 <script lang="ts">
-  import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
   import type {
     NnsNeuronContext,
     NnsNeuronStore,

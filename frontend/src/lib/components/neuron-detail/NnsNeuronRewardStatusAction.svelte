@@ -91,6 +91,7 @@
   {#if isFollowingReset}
     <FollowNeuronsButton />
   {/if}
+  <!-- TODO(mstr): Add a button to confirm a single following. -->
 </CommonItemAction>
 
 <style lang="scss">
