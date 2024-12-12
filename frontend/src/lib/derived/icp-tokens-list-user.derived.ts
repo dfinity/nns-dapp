@@ -13,28 +13,11 @@ import type { Account, AccountType } from "$lib/types/account";
 import { UserTokenAction, type UserToken } from "$lib/types/tokens-page";
 import type { Universe } from "$lib/types/universe";
 import { buildWalletUrl } from "$lib/utils/navigation.utils";
-import { sortUserTokens } from "$lib/utils/token.utils";
+import { getUsdValue, sortUserTokens } from "$lib/utils/token.utils";
 import { Principal } from "@dfinity/principal";
 import { isNullish, TokenAmountV2 } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import { nnsUniverseStore } from "./nns-universe.derived";
-
-const getUsdValue = ({
-  balance,
-  icpPrice,
-}: {
-  balance: TokenAmountV2;
-  icpPrice?: number;
-}): number | undefined => {
-  const balanceE8s = Number(balance.toE8s());
-  if (balanceE8s === 0) {
-    return 0;
-  }
-  if (isNullish(icpPrice)) {
-    return undefined;
-  }
-  return (balanceE8s * icpPrice) / 100_000_000;
-};
 
 const convertAccountToUserTokenData = ({
   nnsUniverse,
@@ -85,8 +68,8 @@ const convertAccountToUserTokenData = ({
     subtitle: subtitleMap[account.type],
     balance,
     balanceInUsd: getUsdValue({
-      balance,
-      icpPrice,
+      amount: balance,
+      tokenPrice: icpPrice,
     }),
     logo: nnsUniverse.logo,
     token: NNS_TOKEN_DATA,
