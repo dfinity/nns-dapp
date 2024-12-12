@@ -16,6 +16,9 @@
   import { secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import FollowNeuronsButton from "./actions/FollowNeuronsButton.svelte";
+  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+  import { START_REDUCING_VOTING_POWER_AFTER_SECONDS } from "$lib/constants/neurons.constants";
+  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -64,6 +67,12 @@
       }
     );
   };
+
+  const tooltipText = replacePlaceholders($i18n.losing_rewards.description, {
+    $period: secondsToDissolveDelayDuration(
+      BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS)
+    ),
+  });
 </script>
 
 <CommonItemAction testId="nns-neuron-reward-status-action-component">
@@ -77,6 +86,7 @@
   </span>
   <span slot="title" data-tid="state-title">
     {title}
+    <TooltipIcon text={tooltipText} tooltipId="neuron-reward-status-tooltip" />
   </span>
 
   <span
