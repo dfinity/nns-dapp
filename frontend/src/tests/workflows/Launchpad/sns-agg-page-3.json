@@ -1439,7 +1439,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 999807030000,
+    "icrc1_total_supply": 999803020000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1826,7 +1826,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 99999838860000,
+    "icrc1_total_supply": 99999834180000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2220,7 +2220,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041721529012236700,
+    "icrc1_total_supply": 1041715603958135200,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2337,7 +2337,8 @@
         "buwm7-7yaaa-aaaar-qagva-cai",
         "btxkl-saaaa-aaaar-qagvq-cai",
         "daijl-2yaaa-aaaar-qag3a-cai",
-        "iq4w5-2aaaa-aaaar-qahfq-cai"
+        "iq4w5-2aaaa-aaaar-qahfq-cai",
+        "zftzm-qqaaa-aaaam-adxfa-cai"
       ],
       "archives": ["i2f3v-jyaaa-aaaaq-aadpq-cai"]
     },
@@ -2466,6 +2467,14 @@
           "id": 14,
           "name": "Manage dapp canister settings",
           "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -2855,7 +2864,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11648066980982072,
+    "icrc1_total_supply": 11655088901371512,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -3386,11 +3395,11 @@
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
-      "neuron_minimum_stake_e8s": 10000000000,
+      "neuron_minimum_stake_e8s": 1e18,
       "max_neuron_age_for_age_bonus": 157788000,
       "initial_voting_period_seconds": 345600,
       "neuron_minimum_dissolve_delay_to_vote_seconds": 7890048,
-      "reject_cost_e8s": 50000000000,
+      "reject_cost_e8s": 1e18,
       "max_proposals_to_keep_per_action": 100,
       "wait_for_quiet_deadline_increase_seconds": 172800,
       "max_number_of_neurons": 200000,
@@ -3749,7 +3758,7 @@
       ]
     ],
     "icrc1_fee": [2808348672, 232830643],
-    "icrc1_total_supply": 2005936024740878,
+    "icrc1_total_supply": 2006865829196629,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 400000000,
@@ -4357,7 +4366,7 @@
       ]
     ],
     "icrc1_fee": [705032704, 1],
-    "icrc1_total_supply": 2415338342178971000,
+    "icrc1_total_supply": 2414259192154920400,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4596,6 +4605,19 @@
               "target_canister_id": "zwxjr-7aaaa-aaaap-qhodq-cai",
               "validator_method_name": "validate_project_vote_proposal",
               "target_method_name": "execute_project_vote_proposal"
+            }
+          }
+        },
+        {
+          "id": 24000,
+          "name": "Commit Frontend Canister Update",
+          "description": "Commit updated frontend canister with computed evidence",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "mnc6b-aaaaa-aaaap-qhnrq-cai",
+              "target_canister_id": "mnc6b-aaaaa-aaaap-qhnrq-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
             }
           }
         }
@@ -4896,7 +4918,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999999981650000,
+    "icrc1_total_supply": 1999999911100000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
@@ -8227,7 +8249,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100015266240226100,
+    "icrc1_total_supply": 100019008171550980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
