@@ -12,7 +12,7 @@
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import type { NeuronInfo } from "@dfinity/nns";
-  import ConfirmFollowingButton from "../../components/neuron-detail/actions/ConfirmFollowingButton.svelte";
+  import ConfirmFollowingButton from "$lib/components/neuron-detail/actions/ConfirmFollowingButton.svelte";
 
   const dispatcher = createEventDispatcher<{ nnsClose: void }>();
 
