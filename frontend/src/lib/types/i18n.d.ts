@@ -805,6 +805,7 @@ interface I18nNeuron_detail {
   reward_status_losing_soon_description: string;
   reward_status_inactive: string;
   reward_status_inactive_description: string;
+  reward_status_inactive_reset_description: string;
   neuron_state_tooltip: string;
   dissolve_delay_tooltip: string;
   neuron_stake_refreshed: string;
