@@ -1,4 +1,5 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { type IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
 import type { TableProject } from "$lib/types/staking";
 import type { Universe } from "$lib/types/universe";
 import { buildNeuronsUrl } from "$lib/utils/navigation.utils";
@@ -19,7 +20,8 @@ import {
   createDescendingComparator,
   mergeComparators,
 } from "$lib/utils/sort.utils";
-import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+import { UnavailableTokenAmount, getUsdValue } from "$lib/utils/token.utils";
+import { getLedgerCanisterIdFromUniverse } from "$lib/utils/universe.utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
 import {
@@ -140,11 +142,13 @@ export const getTableProjects = ({
   isSignedIn,
   nnsNeurons,
   snsNeurons,
+  icpSwapUsdPrices,
 }: {
   universes: Universe[];
   isSignedIn: boolean;
   nnsNeurons: NeuronInfo[] | undefined;
   snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
+  icpSwapUsdPrices?: IcpSwapUsdPricesStoreData;
 }): TableProject[] => {
   return universes.map((universe) => {
     const token =
@@ -165,6 +169,18 @@ export const getTableProjects = ({
         ? buildNeuronsUrl({ universe: universe.canisterId })
         : undefined;
     const universeId = universe.canisterId;
+    const ledgerCanisterId = getLedgerCanisterIdFromUniverse(universe);
+    const tokenPrice =
+      isNullish(icpSwapUsdPrices) || icpSwapUsdPrices === "error"
+        ? undefined
+        : icpSwapUsdPrices[ledgerCanisterId.toText()];
+    const stakeInUsd =
+      stake instanceof TokenAmountV2
+        ? getUsdValue({
+            amount: stake,
+            tokenPrice,
+          })
+        : undefined;
     return {
       rowHref,
       domKey: universeId,
@@ -174,6 +190,7 @@ export const getTableProjects = ({
       tokenSymbol: token.symbol,
       neuronCount,
       stake,
+      stakeInUsd,
       availableMaturity,
       stakedMaturity,
     };
