@@ -191,11 +191,11 @@
   "reporting": {
     "neurons_title": "NNS Neuron Portfolio",
     "neurons_description": "Download a detailed CSV report of your NNS neuron portfolio, which includes the stake, maturity, and neuron account IDs for manual tracking and analysis.",
-    "neurons_download": "Export Neurons Portfolio",
+    "neurons_download": "Export Neuron Portfolio",
     "transactions_title": "ICP Transactions",
-    "transactions_description": "Download a detailed CSV report of your ICP transaction history, including both regular token ICP accounts and NNS neurons showing neuron staking and minting transactions for manual tracking and analysis.",
+    "transactions_description": "Download a detailed CSV report of your ICP transaction history, including both regular ICP accounts and NNS neurons showing staking and minting transactions for manual tracking and analysis.",
     "transactions_download": "Export Transactions",
-    "busy_screen": "Generating report..."
+    "busy_screen": "Generating report... This may take a moment"
   },
   "auth": {
     "login": "Sign in with Internet Identity",

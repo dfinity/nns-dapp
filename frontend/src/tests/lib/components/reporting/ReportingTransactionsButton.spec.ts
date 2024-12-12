@@ -305,7 +305,7 @@ describe("ReportingTransactionsButton", () => {
     expect(get(busyStore)).toEqual([
       {
         initiator: "reporting-transactions",
-        text: "Generating report...",
+        text: "Generating report... This may take a moment",
       },
     ]);
 
