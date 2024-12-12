@@ -25,6 +25,7 @@ describe("LosingRewardNeuronsModal", () => {
     fullNeuron: {
       ...mockFullNeuron,
       votingPowerRefreshedTimestampSeconds: BigInt(nowSeconds),
+      controller: mockIdentity.getPrincipal().toText(),
     },
   };
   const in10DaysLosingRewardsNeuron = {
@@ -35,6 +36,7 @@ describe("LosingRewardNeuronsModal", () => {
       votingPowerRefreshedTimestampSeconds: BigInt(
         nowSeconds - SECONDS_IN_HALF_YEAR + 10 * SECONDS_IN_DAY
       ),
+      controller: mockIdentity.getPrincipal().toText(),
     },
   };
   const losingRewardsNeuron = {
@@ -45,8 +47,22 @@ describe("LosingRewardNeuronsModal", () => {
       votingPowerRefreshedTimestampSeconds: BigInt(
         nowSeconds - SECONDS_IN_HALF_YEAR
       ),
+      controller: mockIdentity.getPrincipal().toText(),
     },
   };
+  const neurons = [
+    activeNeuron,
+    in10DaysLosingRewardsNeuron,
+    losingRewardsNeuron,
+  ];
+  const refreshedNeurons = neurons.map((neuron) => ({
+    ...neuron,
+    fullNeuron: {
+      ...neuron.fullNeuron,
+      votingPowerRefreshedTimestampSeconds: BigInt(nowSeconds),
+    },
+  }));
+  let spyRefreshVotingPower;
 
   const renderComponent = ({ onClose }: { onClose?: () => void } = {}) => {
     const { container, component } = render(LosingRewardNeuronsModal);
@@ -75,11 +91,15 @@ describe("LosingRewardNeuronsModal", () => {
     });
 
     vi.spyOn(governanceApi, "queryKnownNeurons").mockResolvedValue([]);
+    vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue(refreshedNeurons);
+    spyRefreshVotingPower = vi
+      .spyOn(governanceApi, "refreshVotingPower")
+      .mockResolvedValue();
   });
 
   it("should not display active neurons", async () => {
     neuronsStore.setNeurons({
-      neurons: [activeNeuron, in10DaysLosingRewardsNeuron, losingRewardsNeuron],
+      neurons,
       certified: true,
     });
     const po = await renderComponent();
@@ -96,7 +116,7 @@ describe("LosingRewardNeuronsModal", () => {
 
   it("should dispatch on close", async () => {
     neuronsStore.setNeurons({
-      neurons: [activeNeuron, in10DaysLosingRewardsNeuron, losingRewardsNeuron],
+      neurons,
       certified: true,
     });
     const onClose = vi.fn();
@@ -107,6 +127,30 @@ describe("LosingRewardNeuronsModal", () => {
     expect(onClose).toHaveBeenCalledTimes(0);
     await po.clickCancel();
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("should confirm following", async () => {
+    neuronsStore.setNeurons({
+      neurons: [in10DaysLosingRewardsNeuron, losingRewardsNeuron],
+      certified: true,
+    });
+    const po = await renderComponent({});
+
+    expect((await po.getNnsLosingRewardsNeuronCardPos()).length).toEqual(2);
+
+    await po.clickConfirmFollowing();
+    await runResolvedPromises();
+    expect((await po.getNnsLosingRewardsNeuronCardPos()).length).toEqual(0);
+
+    expect(spyRefreshVotingPower).toHaveBeenCalledTimes(2);
+    expect(spyRefreshVotingPower).toHaveBeenCalledWith({
+      identity: mockIdentity,
+      neuronId: in10DaysLosingRewardsNeuron.neuronId,
+    });
+    expect(spyRefreshVotingPower).toHaveBeenCalledWith({
+      identity: mockIdentity,
+      neuronId: losingRewardsNeuron.neuronId,
+    });
   });
 
   it("should navigate to the neuron details", async () => {
@@ -143,7 +187,7 @@ describe("LosingRewardNeuronsModal", () => {
       .spyOn(governanceApi, "queryKnownNeurons")
       .mockResolvedValue([]);
     neuronsStore.setNeurons({
-      neurons: [activeNeuron, in10DaysLosingRewardsNeuron, losingRewardsNeuron],
+      neurons,
       certified: true,
     });
 
