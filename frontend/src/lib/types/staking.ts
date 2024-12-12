@@ -11,6 +11,7 @@ export type TableProject = {
   tokenSymbol: string;
   neuronCount: number | undefined;
   stake: TokenAmountV2 | UnavailableTokenAmount;
+  stakeInUsd: number | undefined;
   availableMaturity: bigint | undefined;
   stakedMaturity: bigint | undefined;
 };

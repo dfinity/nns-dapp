@@ -1,5 +1,8 @@
 import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import {
+  LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import type { Universe } from "$lib/types/universe";
 import { getTableProjects, sortTableProjects } from "$lib/utils/staking.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
@@ -52,6 +55,7 @@ describe("staking.utils", () => {
         amount: 0n,
         token: ICPToken,
       }),
+      stakeInUsd: 0.0,
       tokenSymbol: "ICP",
       availableMaturity: 0n,
       stakedMaturity: 0n,
@@ -68,6 +72,7 @@ describe("staking.utils", () => {
         amount: 0n,
         token: snsToken,
       }),
+      stakeInUsd: 0.0,
       tokenSymbol: snsTokenSymbol,
       availableMaturity: 0n,
       stakedMaturity: 0n,
@@ -117,6 +122,7 @@ describe("staking.utils", () => {
         snsNeurons: {
           [universeId2]: { neurons: [] },
         },
+        icpSwapUsdPrices: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -141,6 +147,7 @@ describe("staking.utils", () => {
         snsNeurons: {
           [snsUniverseId]: { neurons: [] },
         },
+        icpSwapUsdPrices: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -174,6 +181,7 @@ describe("staking.utils", () => {
         snsNeurons: {
           [universeId2]: { neurons: [] },
         },
+        icpSwapUsdPrices: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -198,6 +206,7 @@ describe("staking.utils", () => {
           nnsNeuronWithStake,
         ],
         snsNeurons: {},
+        icpSwapUsdPrices: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -209,6 +218,7 @@ describe("staking.utils", () => {
             amount: 3n * nnsNeuronWithStake.fullNeuron.cachedNeuronStake,
             token: ICPToken,
           }),
+          stakeInUsd: undefined,
         },
       ]);
     });
@@ -237,6 +247,7 @@ describe("staking.utils", () => {
         isSignedIn: true,
         nnsNeurons: [neuron1, neuron2],
         snsNeurons: {},
+        icpSwapUsdPrices: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -276,6 +287,7 @@ describe("staking.utils", () => {
         isSignedIn: true,
         nnsNeurons: [neuron1, neuron2],
         snsNeurons: {},
+        icpSwapUsdPrices: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -287,6 +299,7 @@ describe("staking.utils", () => {
             amount: 2n * stake,
             token: ICPToken,
           }),
+          stakeInUsd: undefined,
           stakedMaturity: maturity1 + maturity2,
         },
       ]);
@@ -302,6 +315,7 @@ describe("staking.utils", () => {
             neurons: [snsNeuronWithStake, snsNeuronWithStake],
           },
         },
+        icpSwapUsdPrices: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -313,6 +327,7 @@ describe("staking.utils", () => {
             amount: 2n * snsNeuronWithStake.cached_neuron_stake_e8s,
             token: snsToken,
           }),
+          stakeInUsd: undefined,
         },
       ]);
     });
@@ -341,6 +356,7 @@ describe("staking.utils", () => {
             neurons: [neuron1, neuron2],
           },
         },
+        icpSwapUsdPrices: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -378,6 +394,7 @@ describe("staking.utils", () => {
             neurons: [neuron1, neuron2],
           },
         },
+        icpSwapUsdPrices: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -389,7 +406,83 @@ describe("staking.utils", () => {
             amount: 2n * stake,
             token: snsToken,
           }),
+          stakeInUsd: undefined,
           stakedMaturity: maturity1 + maturity2,
+        },
+      ]);
+    });
+
+    it("should have stake in USD for NNS neuron", () => {
+      const stake = 200_000_000n;
+      const icpPrice = 10.0;
+      const expectedStakeInUsd = 20.0;
+
+      const nnsNeuron = {
+        ...nnsNeuronWithStake,
+        fullNeuron: {
+          ...nnsNeuronWithStake.fullNeuron,
+          cachedNeuronStake: stake,
+        },
+      };
+      const tableProjects = getTableProjects({
+        universes: [nnsUniverse],
+        isSignedIn: true,
+        nnsNeurons: [nnsNeuron],
+        snsNeurons: {},
+        icpSwapUsdPrices: {
+          [LEDGER_CANISTER_ID.toText()]: icpPrice,
+        },
+      });
+
+      expect(tableProjects).toEqual([
+        {
+          ...defaultExpectedNnsTableProject,
+          rowHref: nnsHref,
+          neuronCount: 1,
+          stake: TokenAmountV2.fromUlps({
+            amount: stake,
+            token: ICPToken,
+          }),
+          stakeInUsd: expectedStakeInUsd,
+        },
+      ]);
+    });
+
+    it("should have stake in USD for SNS neuron", () => {
+      const stake = 300_000_000n;
+      const tokenPrice = 0.1;
+      const expectedStakeInUsd = 0.3;
+
+      const snsNeuron = createMockSnsNeuron({
+        stake: stake,
+        maturity: 0n,
+        stakedMaturity: 0n,
+        id: [1],
+      });
+      const tableProjects = getTableProjects({
+        universes: [snsUniverse],
+        isSignedIn: true,
+        nnsNeurons: [],
+        snsNeurons: {
+          [universeId2]: {
+            neurons: [snsNeuron],
+          },
+        },
+        icpSwapUsdPrices: {
+          [snsUniverse.summary.ledgerCanisterId.toText()]: tokenPrice,
+        },
+      });
+
+      expect(tableProjects).toEqual([
+        {
+          ...defaultExpectedSnsTableProject,
+          rowHref: snsHref,
+          neuronCount: 1,
+          stake: TokenAmountV2.fromUlps({
+            amount: stake,
+            token: snsToken,
+          }),
+          stakeInUsd: expectedStakeInUsd,
         },
       ]);
     });
@@ -404,6 +497,7 @@ describe("staking.utils", () => {
           nnsNeuronWithoutStake,
         ],
         snsNeurons: {},
+        icpSwapUsdPrices: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -415,6 +509,7 @@ describe("staking.utils", () => {
             amount: nnsNeuronWithStake.fullNeuron.cachedNeuronStake,
             token: ICPToken,
           }),
+          stakeInUsd: undefined,
         },
       ]);
     });
@@ -434,6 +529,7 @@ describe("staking.utils", () => {
             ],
           },
         },
+        icpSwapUsdPrices: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -445,6 +541,7 @@ describe("staking.utils", () => {
             amount: snsNeuronWithStake.cached_neuron_stake_e8s,
             token: snsToken,
           }),
+          stakeInUsd: undefined,
         },
       ]);
     });
@@ -459,6 +556,7 @@ describe("staking.utils", () => {
             neurons: [],
           },
         },
+        icpSwapUsdPrices: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -466,6 +564,7 @@ describe("staking.utils", () => {
           ...defaultExpectedNnsTableProject,
           neuronCount: undefined,
           stake: new UnavailableTokenAmount(ICPToken),
+          stakeInUsd: undefined,
           availableMaturity: undefined,
           stakedMaturity: undefined,
         },
@@ -473,6 +572,7 @@ describe("staking.utils", () => {
           ...defaultExpectedSnsTableProject,
           neuronCount: undefined,
           stake: new UnavailableTokenAmount(snsToken),
+          stakeInUsd: undefined,
           availableMaturity: undefined,
           stakedMaturity: undefined,
         },
@@ -487,6 +587,7 @@ describe("staking.utils", () => {
         snsNeurons: {
           [universeId2]: undefined,
         },
+        icpSwapUsdPrices: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -494,6 +595,7 @@ describe("staking.utils", () => {
           ...defaultExpectedNnsTableProject,
           neuronCount: undefined,
           stake: new UnavailableTokenAmount(ICPToken),
+          stakeInUsd: undefined,
           availableMaturity: undefined,
           stakedMaturity: undefined,
         },
@@ -501,6 +603,7 @@ describe("staking.utils", () => {
           ...defaultExpectedSnsTableProject,
           neuronCount: undefined,
           stake: new UnavailableTokenAmount(snsToken),
+          stakeInUsd: undefined,
           availableMaturity: undefined,
           stakedMaturity: undefined,
         },
