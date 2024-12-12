@@ -1,4 +1,8 @@
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import {
+  LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
@@ -11,7 +15,7 @@ import type { SnsSummary } from "$lib/types/sns";
 import type { Universe } from "$lib/types/universe";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
@@ -83,3 +87,15 @@ export const createUniverse = (summary: SnsSummary): Universe => ({
   title: summary.metadata.name,
   logo: summary.metadata.logo,
 });
+
+export const getLedgerCanisterIdFromUniverse = (
+  universe: Universe
+): Principal => {
+  if (universe.canisterId === OWN_CANISTER_ID_TEXT) {
+    return LEDGER_CANISTER_ID;
+  }
+  if (nonNullish(universe.summary)) {
+    return universe.summary.ledgerCanisterId;
+  }
+  return Principal.fromText(universe.canisterId);
+};
