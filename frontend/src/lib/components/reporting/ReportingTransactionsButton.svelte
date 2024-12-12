@@ -53,7 +53,10 @@
   const exportIcpTransactions = async () => {
     try {
       loading = true;
-      startBusy({ initiator: "reporting-transactions" });
+      startBusy({
+        initiator: "reporting-transactions",
+        labelKey: "reporting.busy_screen",
+      });
 
       // we are logged in to be able to interact with the button
       const signIdentity = identity as SignIdentity;
