@@ -1,6 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import {
+    isNeuronFollowingReset,
     isNeuronLosingRewards,
     secondsUntilLosingRewards,
     shouldDisplayRewardLossNotification,
@@ -14,8 +15,12 @@
   import { type NeuronInfo } from "@dfinity/nns";
   import { secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import FollowNeuronsButton from "./actions/FollowNeuronsButton.svelte";
 
   export let neuron: NeuronInfo;
+
+  let isFollowingReset = false;
+  $: isFollowingReset = isNeuronFollowingReset(neuron);
 
   let isLosingRewards = false;
   $: isLosingRewards = isNeuronLosingRewards(neuron);
@@ -25,32 +30,40 @@
     !isLosingRewards && shouldDisplayRewardLossNotification(neuron);
 
   let icon: typeof IconError | typeof IconWarning | typeof IconCheckCircle;
-  $: icon = isLosingRewards
-    ? IconError
-    : isLosingRewardsSoon
-      ? IconWarning
-      : // TODO(mstr): Replace with the filled version.
-        IconCheckCircle;
+  $: icon =
+    isFollowingReset || isLosingRewards
+      ? IconError
+      : isLosingRewardsSoon
+        ? IconWarning
+        : // TODO(mstr): Replace with the filled version.
+          IconCheckCircle;
 
   let title: string;
-  $: title = isLosingRewards
-    ? $i18n.neuron_detail.reward_status_inactive
-    : isLosingRewardsSoon
-      ? $i18n.neuron_detail.reward_status_losing_soon
-      : $i18n.neuron_detail.reward_status_active;
+  $: title =
+    isFollowingReset || isLosingRewards
+      ? $i18n.neuron_detail.reward_status_inactive
+      : isLosingRewardsSoon
+        ? $i18n.neuron_detail.reward_status_losing_soon
+        : $i18n.neuron_detail.reward_status_active;
 
-  const getDescription = (neuron: NeuronInfo): string =>
-    isLosingRewards
-      ? $i18n.neuron_detail.reward_status_inactive_description
-      : replacePlaceholders(
-          $i18n.neuron_detail.reward_status_losing_soon_description,
-          {
-            $time: secondsToDuration({
-              seconds: BigInt(secondsUntilLosingRewards(neuron)),
-              i18n: $i18n.time,
-            }),
-          }
-        );
+  const getDescription = (neuron: NeuronInfo): string => {
+    if (isFollowingReset)
+      return $i18n.neuron_detail.reward_status_inactive_reset_description;
+
+    if (isLosingRewards)
+      return $i18n.neuron_detail.reward_status_inactive_description;
+
+    const timeUntilLoss = secondsToDuration({
+      seconds: BigInt(secondsUntilLosingRewards(neuron)),
+      i18n: $i18n.time,
+    });
+    return replacePlaceholders(
+      $i18n.neuron_detail.reward_status_losing_soon_description,
+      {
+        $time: timeUntilLoss,
+      }
+    );
+  };
 </script>
 
 <CommonItemAction testId="nns-neuron-reward-status-action-component">
@@ -75,6 +88,9 @@
     {getDescription(neuron)}
   </span>
 
+  {#if isFollowingReset}
+    <FollowNeuronsButton />
+  {/if}
   <!-- TODO(mstr): Add a button to confirm a single following. -->
 </CommonItemAction>
 

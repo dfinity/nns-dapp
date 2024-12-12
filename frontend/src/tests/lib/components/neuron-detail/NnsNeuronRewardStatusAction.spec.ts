@@ -1,15 +1,19 @@
-import NnsNeuronRewardStatusAction from "$lib/components/neuron-detail/NnsNeuronRewardStatusAction.svelte";
-import { SECONDS_IN_DAY, SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
+import {
+  SECONDS_IN_DAY,
+  SECONDS_IN_HALF_YEAR,
+  SECONDS_IN_MONTH,
+} from "$lib/constants/constants";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronRewardStatusActionPo } from "$tests/page-objects/NnsNeuronRewardStatusAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
+import NnsNeuronRewardStatusActionTest from "./NnsNeuronRewardStatusActionTest.svelte";
 
 describe("NnsNeuronRewardStatusAction", () => {
   const renderComponent = (neuron: NeuronInfo) => {
-    const { container } = render(NnsNeuronRewardStatusAction, {
+    const { container } = render(NnsNeuronRewardStatusActionTest, {
       props: {
         neuron,
       },
@@ -38,6 +42,7 @@ describe("NnsNeuronRewardStatusAction", () => {
     expect(await po.getDescription()).toBe(
       "182 days, 15 hours to confirm following"
     );
+    expect(await po.getFollowNeuronsButtonPo().isPresent()).toBe(false);
   });
 
   it("should render losing soon neuron state", async () => {
@@ -57,9 +62,10 @@ describe("NnsNeuronRewardStatusAction", () => {
     expect(await po.getDescription()).toBe(
       `${tenDays} days to confirm following`
     );
+    expect(await po.getFollowNeuronsButtonPo().isPresent()).toBe(false);
   });
 
-  it("should render active neuron reward state", async () => {
+  it("should render inactive neuron reward state", async () => {
     const testNeuron = {
       ...mockNeuron,
       fullNeuron: {
@@ -75,5 +81,25 @@ describe("NnsNeuronRewardStatusAction", () => {
     expect(await po.getDescription()).toBe(
       "Confirm following or vote manually to continue receiving rewards"
     );
+    expect(await po.getFollowNeuronsButtonPo().isPresent()).toBe(false);
+  });
+
+  it("should render inactive/reset following neuron reward state", async () => {
+    const testNeuron = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        votingPowerRefreshedTimestampSeconds: BigInt(
+          nowInSeconds() - SECONDS_IN_HALF_YEAR - SECONDS_IN_MONTH
+        ),
+      },
+    };
+    const po = renderComponent(testNeuron);
+
+    expect(await po.getTitle()).toBe("Inactive neuron");
+    expect(await po.getDescription()).toBe(
+      "Following has been reset. Confirm following or vote manually to continue receiving rewards"
+    );
+    expect(await po.getFollowNeuronsButtonPo().isPresent()).toBe(true);
   });
 });
