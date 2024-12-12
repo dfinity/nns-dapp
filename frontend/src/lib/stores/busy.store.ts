@@ -51,6 +51,7 @@ export type BusyStateInitiatorType =
   | "import-token-importing"
   | "import-token-removing"
   | "import-token-updating"
+  | "refresh-voting-power"
   | "change-neuron-visibility"
   | "reporting-neurons"
   | "reporting-transactions";
