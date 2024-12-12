@@ -75,7 +75,11 @@
   });
 </script>
 
-<CommonItemAction testId="nns-neuron-reward-status-action-component">
+<CommonItemAction
+  testId="nns-neuron-reward-status-action-component"
+  {tooltipText}
+  tooltipId="neuron-reward-status-icon"
+>
   <span
     slot="icon"
     class="icon"
@@ -86,7 +90,6 @@
   </span>
   <span slot="title" data-tid="state-title">
     {title}
-    <TooltipIcon text={tooltipText} tooltipId="neuron-reward-status-tooltip" />
   </span>
 
   <span
