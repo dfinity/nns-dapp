@@ -47,6 +47,14 @@ export class ProjectsTableRowPo extends ResponsiveTableRowPo {
     return this.getProjectStakeCellPo().getStake();
   }
 
+  getStakeInUsd(): Promise<string> {
+    return this.getProjectStakeCellPo().getStakeInUsd();
+  }
+
+  hasStakeInUsd(): Promise<boolean> {
+    return this.getProjectStakeCellPo().hasStakeInUsd();
+  }
+
   getNeuronCount(): Promise<string> {
     return this.getProjectNeuronsCellPo().getNeuronCount();
   }
