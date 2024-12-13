@@ -1,5 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { ConfirmFollowingButtonPo } from "./ConfirmFollowingButton.page-object";
 import { FollowNeuronsButtonPo } from "./FollowNeuronsButton.page-object";
 
 export class NnsNeuronRewardStatusActionPo extends BasePageObject {
@@ -17,6 +18,10 @@ export class NnsNeuronRewardStatusActionPo extends BasePageObject {
 
   getDescription(): Promise<string> {
     return this.getText("state-description");
+  }
+
+  getConfirmFollowingButtonPo(): ConfirmFollowingButtonPo {
+    return ConfirmFollowingButtonPo.under(this.root);
   }
 
   getFollowNeuronsButtonPo(): FollowNeuronsButtonPo {

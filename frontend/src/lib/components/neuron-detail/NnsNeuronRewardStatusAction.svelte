@@ -18,6 +18,7 @@
   import FollowNeuronsButton from "./actions/FollowNeuronsButton.svelte";
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
   import { START_REDUCING_VOTING_POWER_AFTER_SECONDS } from "$lib/constants/neurons.constants";
+  import ConfirmFollowingButton from "./actions/ConfirmFollowingButton.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -101,8 +102,9 @@
 
   {#if isFollowingReset}
     <FollowNeuronsButton />
+  {:else}
+    <ConfirmFollowingButton neuronIds={[neuron.neuronId]} />
   {/if}
-  <!-- TODO(mstr): Add a button to confirm a single following. -->
 </CommonItemAction>
 
 <style lang="scss">
