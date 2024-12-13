@@ -137,19 +137,19 @@ describe("reporting service", () => {
       expect(spyGetTransactions).toHaveBeenCalledTimes(2);
     });
 
-    it('should handle date range with only "from" specified', async () => {
+    it('should filter "from" the provided date', async () => {
       const mockTransactions = [
-        createTransactionWithId({
-          id: 1n,
-          timestamp: new Date("2023-01-01T00:00:00.000Z"),
-        }),
-        createTransactionWithId({
-          id: 2n,
-          timestamp: new Date("2022-12-31T00:00:00.000Z"),
-        }),
         createTransactionWithId({
           id: 3n,
           timestamp: new Date("2023-01-02T00:00:00.000Z"),
+        }),
+        createTransactionWithId({
+          id: 2n,
+          timestamp: new Date("2023-01-01T00:00:00.000Z"),
+        }),
+        createTransactionWithId({
+          id: 1n,
+          timestamp: new Date("2022-12-31T00:00:00.000Z"),
         }),
       ];
 
@@ -167,23 +167,23 @@ describe("reporting service", () => {
       });
 
       expect(result).toHaveLength(2);
-      expect(result).toEqual([mockTransactions[0], mockTransactions[2]]);
+      expect(result).toEqual([mockTransactions[1], mockTransactions[2]]);
       expect(spyGetTransactions).toHaveBeenCalledTimes(1);
     });
 
-    it('should handle date range with only "to" specified', async () => {
+    it('should filter "to" the provided date', async () => {
       const mockTransactions = [
-        createTransactionWithId({
-          id: 1n,
-          timestamp: new Date("2023-01-01T00:00:00.000Z"),
-        }),
-        createTransactionWithId({
-          id: 2n,
-          timestamp: new Date("2022-12-31T00:00:00.000Z"),
-        }),
         createTransactionWithId({
           id: 3n,
           timestamp: new Date("2023-01-02T00:00:00.000Z"),
+        }),
+        createTransactionWithId({
+          id: 2n,
+          timestamp: new Date("2023-01-01T00:00:00.000Z"),
+        }),
+        createTransactionWithId({
+          id: 1n,
+          timestamp: new Date("2022-12-31T00:00:00.000Z"),
         }),
       ];
 
@@ -230,8 +230,8 @@ describe("reporting service", () => {
         accountId: mockAccountId,
         identity: mockSignInIdentity,
         range: {
-          from: dateToNanoSeconds(new Date("2023-01-03T00:00:00.000Z")),
-          to: dateToNanoSeconds(new Date("2023-01-04T00:00:00.000Z")),
+          from: dateToNanoSeconds(new Date("2022-12-31T10:00:00.000Z")),
+          to: dateToNanoSeconds(new Date("2022-12-31T23:00:00.000Z")),
         },
       });
 
@@ -239,22 +239,22 @@ describe("reporting service", () => {
       expect(spyGetTransactions).toHaveBeenCalledTimes(1);
     });
 
-    it('should stop fetching early if transactions are older than "to" date', async () => {
+    it('should return early if the last transaction is in the current page is older than "to" date', async () => {
       const firstBatchOfMockTransactions = [
         createTransactionWithId({
           id: 1n,
-          timestamp: new Date("2023-01-01T00:00:00.000Z"),
+          timestamp: new Date("2023-01-02T00:00:00.000Z"),
         }),
         createTransactionWithId({
           id: 2n,
-          timestamp: new Date("2022-12-30T00:00:00.000Z"),
+          timestamp: new Date("2022-12-31T00:00:00.000Z"),
         }),
       ];
 
       const secondBatchOfMockTransactions = [
         createTransactionWithId({
           id: 3n,
-          timestamp: new Date("2023-01-02T00:00:00.000Z"),
+          timestamp: new Date("2022-12-30T00:00:00.000Z"),
         }),
       ];
 
@@ -272,13 +272,106 @@ describe("reporting service", () => {
         accountId: mockAccountId,
         identity: mockSignInIdentity,
         range: {
-          to: dateToNanoSeconds(new Date("2022-12-31T00:00:00.000Z")),
+          to: dateToNanoSeconds(new Date("2023-01-01T00:00:00.000Z")),
         },
       });
 
       expect(result).toHaveLength(1);
-      expect(result).toEqual([firstBatchOfMockTransactions[1]]);
+      expect(result).toEqual([firstBatchOfMockTransactions[0]]);
       expect(spyGetTransactions).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle a range with both "from" and "to" dates', async () => {
+      const firstBatchOfMockTransactions = [
+        createTransactionWithId({
+          id: 6n,
+          timestamp: new Date("2023-02-02T00:00:00.000Z"),
+        }),
+        createTransactionWithId({
+          id: 5n,
+          timestamp: new Date("2023-01-01T00:00:00.000Z"),
+        }),
+        createTransactionWithId({
+          id: 4n,
+          timestamp: new Date("2022-12-31T10:00:00.000Z"),
+        }),
+      ];
+      const secondBatchOfMockTransactions = [
+        createTransactionWithId({
+          id: 3n,
+          timestamp: new Date("2022-12-31T00:00:00.000Z"),
+        }),
+        createTransactionWithId({
+          id: 2n,
+          timestamp: new Date("2022-12-30T00:00:00.000Z"),
+        }),
+        createTransactionWithId({
+          id: 1n,
+          timestamp: new Date("2022-11-20T00:00:00.000Z"),
+        }),
+      ];
+      spyGetTransactions
+        .mockResolvedValueOnce({
+          transactions: firstBatchOfMockTransactions,
+          oldestTxId: 3n,
+        })
+        .mockResolvedValueOnce({
+          transactions: secondBatchOfMockTransactions,
+          oldestTxId: 3n,
+        });
+      const result = await getAllTransactionsFromAccountAndIdentity({
+        accountId: mockAccountId,
+        identity: mockSignInIdentity,
+        range: {
+          from: dateToNanoSeconds(new Date("2023-01-02T00:00:00.000Z")),
+          to: dateToNanoSeconds(new Date("2022-11-30T00:00:00.000Z")),
+        },
+      });
+      expect(result).toHaveLength(4);
+      expect(result).toEqual([
+        firstBatchOfMockTransactions[1],
+        firstBatchOfMockTransactions[2],
+        secondBatchOfMockTransactions[0],
+        secondBatchOfMockTransactions[1],
+      ]);
+      expect(spyGetTransactions).toHaveBeenCalledTimes(2);
+    });
+
+    it("should filter the transactions even if one call fails", async () => {
+      const firstBatchOfMockTransactions = [
+        createTransactionWithId({
+          id: 6n,
+          timestamp: new Date("2023-02-02T00:00:00.000Z"),
+        }),
+        createTransactionWithId({
+          id: 5n,
+          timestamp: new Date("2023-01-01T00:00:00.000Z"),
+        }),
+        createTransactionWithId({
+          id: 4n,
+          timestamp: new Date("2022-12-31T10:00:00.000Z"),
+        }),
+      ];
+      spyGetTransactions
+        .mockResolvedValueOnce({
+          transactions: firstBatchOfMockTransactions,
+          oldestTxId: 3n,
+        })
+        .mockRejectedValueOnce(new Error("API Error"));
+      const result = await getAllTransactionsFromAccountAndIdentity({
+        accountId: mockAccountId,
+        identity: mockSignInIdentity,
+        range: {
+          from: dateToNanoSeconds(new Date("2023-01-02T00:00:00.000Z")),
+          to: dateToNanoSeconds(new Date("2022-11-30T00:00:00.000Z")),
+        },
+      });
+      expect(result).toHaveLength(2);
+      expect(result).toEqual([
+        firstBatchOfMockTransactions[1],
+        firstBatchOfMockTransactions[2],
+      ]);
+      expect(spyGetTransactions).toHaveBeenCalledTimes(2);
     });
   });
 

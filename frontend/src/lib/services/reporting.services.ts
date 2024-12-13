@@ -4,7 +4,7 @@ import { neuronStake } from "$lib/utils/neuron.utils";
 import { SignIdentity } from "@dfinity/agent";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
 import type { NeuronInfo } from "@dfinity/nns";
-import { isNullish } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 
 type TransactionEntity =
   | {
@@ -128,7 +128,7 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
       console.warn(
         `Reached maximum limit of iterations(${maxNumberOfPages}). Stopping.`
       );
-      return allTransactions;
+      return filterTransactionsByRange(allTransactions, range);
     }
 
     const { transactions, oldestTxId } = await getTransactions({
@@ -144,8 +144,9 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
     const oldestTransactionInPageTimestamp = getTimestampFromTransaction(
       transactions[transactions.length - 1]
     );
-    if (range?.to && oldestTransactionInPageTimestamp) {
-      if (oldestTransactionInPageTimestamp < range.to) {
+    const to = range?.to;
+    if (nonNullish(to) && nonNullish(oldestTransactionInPageTimestamp)) {
+      if (oldestTransactionInPageTimestamp < to) {
         return filterTransactionsByRange(
           [...allTransactions, ...transactions],
           range
@@ -173,7 +174,7 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
     return filterTransactionsByRange(updatedTransactions, range);
   } catch (error) {
     console.error("Error loading ICP account transactions:", error);
-    return allTransactions;
+    return filterTransactionsByRange(allTransactions, range);
   }
 };
 
@@ -182,16 +183,18 @@ const filterTransactionsByRange = (
   transactions: TransactionWithId[],
   range?: DateRange
 ): TransactionWithId[] => {
-  if (!range) return transactions;
-
+  if (isNullish(range)) return transactions;
   return transactions.filter((tx) => {
     const timestamp = getTimestampFromTransaction(tx);
-    if (timestamp === null) return false;
-    if (range.from && timestamp < range.from) {
+    if (isNullish(timestamp)) return false;
+
+    const from = range.from;
+    if (nonNullish(from) && timestamp > from) {
       return false;
     }
 
-    if (range.to && timestamp > range.to) {
+    const to = range.to;
+    if (nonNullish(to) && timestamp < to) {
       return false;
     }
 
