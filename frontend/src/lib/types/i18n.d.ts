@@ -197,9 +197,9 @@ interface I18nReporting {
   to: string;
   transaction_id: string;
   transaction_type: string;
-  error_snscsv_generation: string;
-  error_snsfile_system_access: string;
-  error_snsneurons: string;
+  error_csv_generation: string;
+  error_file_system_access: string;
+  error_neurons: string;
 }
 
 interface I18nAuth {
