@@ -18,7 +18,6 @@
   import FollowNeuronsButton from "./actions/FollowNeuronsButton.svelte";
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
   import { START_REDUCING_VOTING_POWER_AFTER_SECONDS } from "$lib/constants/neurons.constants";
-  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
 
   export let neuron: NeuronInfo;
 
