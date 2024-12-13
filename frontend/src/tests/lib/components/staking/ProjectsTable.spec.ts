@@ -1,10 +1,15 @@
+import * as icpSwapApi from "$lib/api/icp-swap.api";
 import ProjectsTable from "$lib/components/staking/ProjectsTable.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
@@ -14,6 +19,7 @@ import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { nonNullish } from "@dfinity/utils";
+import { get } from "svelte/store";
 
 describe("ProjectsTable", () => {
   const snsTitle = "SNS-1";
@@ -443,6 +449,87 @@ describe("ProjectsTable", () => {
 
       await rowPos[1].click();
       expect(onNnsStakeTokens).not.toBeCalled();
+    });
+
+    it("should display stake in USD", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      const tickers = [
+        {
+          ...mockIcpSwapTicker,
+          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+          last_price: "10.00",
+        },
+      ];
+      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
+
+      neuronsStore.setNeurons({
+        neurons: [nnsNeuronWithStake],
+        certified: true,
+      });
+
+      expect(get(icpSwapTickersStore)).toBeUndefined();
+      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
+
+      const po = renderComponent();
+      await runResolvedPromises();
+
+      expect(get(icpSwapTickersStore)).toEqual(tickers);
+      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
+
+      const rowPos = await po.getProjectsTableRowPos();
+      expect(await rowPos[0].getStake()).toBe("1.00 ICP");
+      expect(await rowPos[0].getStakeInUsd()).toBe("$10.00");
+      expect(await rowPos[0].hasStakeInUsd()).toBe(true);
+    });
+
+    it("should not load ICP Swap tickers without feature flag", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
+
+      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
+
+      neuronsStore.setNeurons({
+        neurons: [nnsNeuronWithStake],
+        certified: true,
+      });
+
+      expect(get(icpSwapTickersStore)).toBeUndefined();
+      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
+
+      const po = renderComponent();
+      await runResolvedPromises();
+
+      expect(get(icpSwapTickersStore)).toBeUndefined();
+      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
+
+      const rowPos = await po.getProjectsTableRowPos();
+      expect(await rowPos[0].getStake()).toBe("1.00 ICP");
+      expect(await rowPos[0].hasStakeInUsd()).toBe(false);
+    });
+
+    it("should not load ICP Swap tickers when not signed in", async () => {
+      setNoIdentity();
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
+
+      neuronsStore.setNeurons({
+        neurons: [nnsNeuronWithStake],
+        certified: true,
+      });
+
+      expect(get(icpSwapTickersStore)).toBeUndefined();
+      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
+
+      const po = renderComponent();
+      await runResolvedPromises();
+
+      expect(get(icpSwapTickersStore)).toBeUndefined();
+      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
+
+      const rowPos = await po.getProjectsTableRowPos();
+      expect(await rowPos[0].getStake()).toBe("-/- ICP");
+      expect(await rowPos[0].getStakeInUsd()).toBe("$-/-");
     });
   });
 

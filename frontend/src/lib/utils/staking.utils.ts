@@ -148,7 +148,7 @@ export const getTableProjects = ({
   isSignedIn: boolean;
   nnsNeurons: NeuronInfo[] | undefined;
   snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
-  icpSwapUsdPrices?: IcpSwapUsdPricesStoreData;
+  icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
 }): TableProject[] => {
   return universes.map((universe) => {
     const token =

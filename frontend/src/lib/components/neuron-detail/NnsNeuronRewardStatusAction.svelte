@@ -7,7 +7,7 @@
     shouldDisplayRewardLossNotification,
   } from "$lib/utils/neuron.utils";
   import {
-    IconCheckCircle,
+    IconCheckCircleFill,
     IconError,
     IconWarning,
   } from "@dfinity/gix-components";
@@ -17,6 +17,8 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import FollowNeuronsButton from "./actions/FollowNeuronsButton.svelte";
   import ConfirmFollowingButton from "./actions/ConfirmFollowingButton.svelte";
+  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+  import { START_REDUCING_VOTING_POWER_AFTER_SECONDS } from "$lib/constants/neurons.constants";
 
   export let neuron: NeuronInfo;
 
@@ -30,14 +32,13 @@
   $: isLosingRewardsSoon =
     !isLosingRewards && shouldDisplayRewardLossNotification(neuron);
 
-  let icon: typeof IconError | typeof IconWarning | typeof IconCheckCircle;
+  let icon: typeof IconError | typeof IconWarning | typeof IconCheckCircleFill;
   $: icon =
     isFollowingReset || isLosingRewards
       ? IconError
       : isLosingRewardsSoon
         ? IconWarning
-        : // TODO(mstr): Replace with the filled version.
-          IconCheckCircle;
+        : IconCheckCircleFill;
 
   let title: string;
   $: title =
@@ -65,9 +66,19 @@
       }
     );
   };
+
+  const tooltipText = replacePlaceholders($i18n.losing_rewards.description, {
+    $period: secondsToDissolveDelayDuration(
+      BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS)
+    ),
+  });
 </script>
 
-<CommonItemAction testId="nns-neuron-reward-status-action-component">
+<CommonItemAction
+  testId="nns-neuron-reward-status-action-component"
+  {tooltipText}
+  tooltipId="neuron-reward-status-icon"
+>
   <span
     slot="icon"
     class="icon"
