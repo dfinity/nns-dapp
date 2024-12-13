@@ -1,7 +1,7 @@
 import NnsNeuronVotingPowerSection from "$lib/components/neuron-detail/NnsNeuronVotingPowerSection.svelte";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronVotingPowerSectionPo } from "$tests/page-objects/NnsNeuronVotingPowerSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { NeuronInfo } from "@dfinity/nns";
@@ -57,7 +57,45 @@ describe("NnsStakeItemAction", () => {
     );
   });
 
+  it("should render description with voting power explanation", async () => {
+    overrideFeatureFlagsStore.setFlag(
+      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+      false
+    );
+    const neuron: NeuronInfo = {
+      ...mockNeuron,
+      votingPower: 614000000n,
+      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
+    };
+    const po = renderComponent(neuron);
+
+    expect(await po.getGenericDescription()).toBe(
+      "voting_power = (staked_amount + staked_maturity) × (1 + age_bonus) × (1 + dissolve_delay_bonus)"
+    );
+  });
+
+  it("should render description with voting power explanation including activity multiplier", async () => {
+    overrideFeatureFlagsStore.setFlag(
+      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+      true
+    );
+    const neuron: NeuronInfo = {
+      ...mockNeuron,
+      votingPower: 614000000n,
+      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
+    };
+    const po = renderComponent(neuron);
+
+    expect(await po.getGenericDescription()).toBe(
+      "voting_power = (staked_amount + staked_maturity) × (1 + age_bonus) × (1 + dissolve_delay_bonus) × activity_multiplier"
+    );
+  });
+
   it("should render description with voting power calculation", async () => {
+    overrideFeatureFlagsStore.setFlag(
+      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+      false
+    );
     const neuron: NeuronInfo = {
       ...mockNeuron,
       votingPower: 614000000n,
@@ -67,6 +105,28 @@ describe("NnsStakeItemAction", () => {
 
     expect(await po.getDescription()).toBe(
       "voting_power = (30.00 + 0) × 1.00 × 1.06 = 6.14"
+    );
+  });
+
+  it("should render description with voting power calculation including activity multiplier", async () => {
+    overrideFeatureFlagsStore.setFlag(
+      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+      true
+    );
+    const neuron: NeuronInfo = {
+      ...mockNeuron,
+      votingPower: 614000000n,
+      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
+      fullNeuron: {
+        ...mockFullNeuron,
+        decidingVotingPower: 307000000n,
+        potentialVotingPower: 614000000n,
+      },
+    };
+    const po = renderComponent(neuron);
+
+    expect(await po.getDescription()).toBe(
+      "voting_power = (30.00 + 0) × 1.00 × 1.06 × 0.50 = 6.14"
     );
   });
 

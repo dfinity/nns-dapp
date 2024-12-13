@@ -42,7 +42,10 @@
       <p class="description">
         {$i18n.neuron_detail.calculated_as}
       </p>
-      <p class="description calculation">
+      <p
+        class="description calculation"
+        data-tid="voting-power-generic-description"
+      >
         {$ENABLE_PERIODIC_FOLLOWING_CONFIRMATION
           ? $i18n.neuron_detail
               .voting_power_section_calculation_generic_activity
