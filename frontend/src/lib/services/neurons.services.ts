@@ -690,18 +690,49 @@ export const disburse = async ({
   }
 };
 
+const refreshVotingPower = async (neuronId: NeuronId): Promise<void> => {
+  const neuron = getNeuronFromStore(neuronId);
+  const accounts = get(icpAccountsStore);
+
+  // Should not happen
+  if (isNullish(neuron)) throw new Error("No neuron in store");
+
+  const isHWControlled = isNeuronControlledByHardwareWallet({
+    neuron,
+    accounts,
+  });
+
+  if (isHWControlled) {
+    // This is a workaround for the Ledger device, because it does not support
+    // the governance canister version required for the `refreshVotingPower` call.
+    const identity: Identity = await getAuthenticatedIdentity();
+    // It doesn't matter which topic to use to confirm the current state of the neuron
+    // except NeuronManagement, which can only be handled by controllers.
+    const topic = Topic.Governance;
+    const followees =
+      followeesByTopic({
+        neuron,
+        topic,
+      }) ?? [];
+    await governanceApiService.setFollowees({
+      identity,
+      neuronId: neuron.neuronId,
+      topic,
+      followees,
+    });
+  } else {
+    const identity: Identity =
+      await getIdentityOfControllerByNeuronId(neuronId);
+    await governanceApiService.refreshVotingPower({ neuronId, identity });
+  }
+};
+
 export const refreshVotingPowerForNeurons = async ({
   neuronIds,
 }: {
   neuronIds: NeuronId[];
 }): Promise<{ successCount: number }> => {
-  const refreshNeuron = async (neuronId: NeuronId) => {
-    const identity: Identity =
-      await getIdentityOfControllerByNeuronId(neuronId);
-    return governanceApiService.refreshVotingPower({ neuronId, identity });
-  };
-
-  const responses = await Promise.allSettled(neuronIds.map(refreshNeuron));
+  const responses = await Promise.allSettled(neuronIds.map(refreshVotingPower));
   let successCount = 0;
   responses.forEach((r, i) => {
     if (r.status === "rejected") {
