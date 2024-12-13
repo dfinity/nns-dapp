@@ -3,7 +3,7 @@ import {
   getAccountTransactionsConcurrently,
   getAllTransactionsFromAccountAndIdentity,
   mapAccountOrNeuronToTransactionEntity,
-} from "$lib/services/export-data.services";
+} from "$lib/services/reporting.services";
 import { mockSignInIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockMainAccount,
@@ -15,7 +15,7 @@ import type { SignIdentity } from "@dfinity/agent";
 
 vi.mock("$lib/api/icp-ledger.api");
 
-describe("export-data service", () => {
+describe("reporting service", () => {
   const mockAccountId = "test-account-id";
   let spyGetTransactions;
 

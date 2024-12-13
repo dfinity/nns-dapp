@@ -1,4 +1,4 @@
-import type { TransactionResults } from "$lib/services/export-data.services";
+import type { TransactionResults } from "$lib/services/reporting.services";
 import {
   getFutureDateFromDelayInSeconds,
   nanoSecondsToDateTime,
@@ -304,27 +304,27 @@ export const buildTransactionsDatasets = ({
 
     const metadata = [
       {
-        label: i18n.export_csv_neurons.account_id,
+        label: i18n.reporting.account_id,
         value: accountIdentifier,
       },
     ];
 
     if (entity.type === "account") {
       metadata.push({
-        label: i18n.export_csv_neurons.account_name,
+        label: i18n.reporting.account_name,
         value: entity.originalData.name ?? "Main",
       });
     }
 
     if (entity.type === "neuron") {
       metadata.push({
-        label: i18n.export_csv_neurons.neuron_id,
+        label: i18n.reporting.neuron_id,
         value: entity.originalData.neuronId.toString(),
       });
     }
 
     metadata.push({
-      label: replacePlaceholders(i18n.export_csv_neurons.balance, {
+      label: replacePlaceholders(i18n.reporting.balance, {
         $tokenSymbol: ICPToken.symbol,
       }),
       value: formatTokenV2({
@@ -335,15 +335,15 @@ export const buildTransactionsDatasets = ({
 
     metadata.push(
       {
-        label: i18n.export_csv_neurons.controller_id,
+        label: i18n.reporting.controller_id,
         value: principal.toText() ?? i18n.core.not_applicable,
       },
       {
-        label: i18n.export_csv_neurons.numer_of_transactions,
+        label: i18n.reporting.numer_of_transactions,
         value: transactions.length.toString(),
       },
       {
-        label: i18n.export_csv_neurons.date_label,
+        label: i18n.reporting.date_label,
         value: nanoSecondsToDateTime(nowInBigIntNanoSeconds()),
       }
     );
@@ -413,11 +413,11 @@ export const buildNeuronsDatasets = ({
   const metadataDate = nanoSecondsToDateTime(nowInBigIntNanoSeconds());
   const metadata = [
     {
-      label: i18n.export_csv_neurons.account_id_label,
+      label: i18n.reporting.principal_account_id,
       value: nnsAccountPrincipal.toText(),
     },
     {
-      label: i18n.export_csv_neurons.date_label,
+      label: i18n.reporting.date_label,
       value: metadataDate,
     },
   ];

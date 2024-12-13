@@ -165,39 +165,6 @@ interface I18nHeader {
   account_id_tooltip: string;
 }
 
-interface I18nExport_csv_neurons {
-  account_id: string;
-  account_id_label: string;
-  account_name: string;
-  amount: string;
-  available_maturity: string;
-  balance: string;
-  controller_id: string;
-  creation_date: string;
-  date_label: string;
-  dissolve_date: string;
-  dissolve_delay: string;
-  from: string;
-  neuron_account_id: string;
-  neuron_id: string;
-  numer_of_transactions: string;
-  project: string;
-  stake: string;
-  staked_maturity: string;
-  state: string;
-  symbol: string;
-  timestamp: string;
-  to: string;
-  transaction_id: string;
-  transaction_type: string;
-}
-
-interface I18nExport_error {
-  csv_generation: string;
-  file_system_access: string;
-  neurons: string;
-}
-
 interface I18nReporting {
   neurons_title: string;
   neurons_description: string;
@@ -206,6 +173,33 @@ interface I18nReporting {
   transactions_description: string;
   transactions_download: string;
   busy_screen: string;
+  principal_account_id: string;
+  date_label: string;
+  neuron_id: string;
+  project: string;
+  symbol: string;
+  neuron_account_id: string;
+  controller_id: string;
+  stake: string;
+  available_maturity: string;
+  staked_maturity: string;
+  dissolve_delay: string;
+  dissolve_date: string;
+  creation_date: string;
+  state: string;
+  account_id: string;
+  account_name: string;
+  amount: string;
+  balance: string;
+  from: string;
+  numer_of_transactions: string;
+  timestamp: string;
+  to: string;
+  transaction_id: string;
+  transaction_type: string;
+  error_snscsv_generation: string;
+  error_snsfile_system_access: string;
+  error_snsneurons: string;
 }
 
 interface I18nAuth {
@@ -1482,8 +1476,6 @@ interface I18n {
   warning: I18nWarning;
   navigation: I18nNavigation;
   header: I18nHeader;
-  export_csv_neurons: I18nExport_csv_neurons;
-  export_error: I18nExport_error;
   reporting: I18nReporting;
   auth: I18nAuth;
   accounts: I18nAccounts;

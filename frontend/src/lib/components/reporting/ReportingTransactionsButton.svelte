@@ -9,11 +9,11 @@
     generateCsvFileToSave,
     type CsvHeader,
     type TransactionsCsvData,
-  } from "$lib/utils/export-to-csv.utils";
+  } from "$lib/utils/reporting.utils";
   import { toastsError } from "$lib/stores/toasts.store";
   import { formatDateCompact } from "$lib/utils/date.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { getAccountTransactionsConcurrently } from "$lib/services/export-data.services";
+  import { getAccountTransactionsConcurrently } from "$lib/services/reporting.services";
   import { SignIdentity, type Identity } from "@dfinity/agent";
   import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -84,37 +84,37 @@
       const headers: CsvHeader<TransactionsCsvData>[] = [
         {
           id: "id",
-          label: $i18n.export_csv_neurons.transaction_id,
+          label: $i18n.reporting.transaction_id,
         },
         {
           id: "project",
-          label: $i18n.export_csv_neurons.project,
+          label: $i18n.reporting.project,
         },
         {
           id: "symbol",
-          label: $i18n.export_csv_neurons.symbol,
+          label: $i18n.reporting.symbol,
         },
         {
           id: "to",
-          label: $i18n.export_csv_neurons.to,
+          label: $i18n.reporting.to,
         },
         {
           id: "from",
-          label: $i18n.export_csv_neurons.from,
+          label: $i18n.reporting.from,
         },
         {
           id: "type",
-          label: $i18n.export_csv_neurons.transaction_type,
+          label: $i18n.reporting.transaction_type,
         },
         {
           id: "amount",
-          label: replacePlaceholders($i18n.export_csv_neurons.amount, {
+          label: replacePlaceholders($i18n.reporting.amount, {
             $tokenSymbol: ICPToken.symbol,
           }),
         },
         {
           id: "timestamp",
-          label: $i18n.export_csv_neurons.timestamp,
+          label: $i18n.reporting.timestamp,
         },
       ];
       const fileName = `icp_transactions_export_${formatDateCompact(new Date())}`;
@@ -129,15 +129,15 @@
 
       if (error instanceof FileSystemAccessError) {
         toastsError({
-          labelKey: "export_error.file_system_access",
+          labelKey: "reporting.error_file_system_access",
         });
       } else if (error instanceof CsvGenerationError) {
         toastsError({
-          labelKey: "export_error.csv_generation",
+          labelKey: "reporting.error_csv_generation",
         });
       } else {
         toastsError({
-          labelKey: "export_error.neurons",
+          labelKey: "reporting.error_neurons",
         });
       }
     } finally {

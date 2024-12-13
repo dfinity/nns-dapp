@@ -1,9 +1,9 @@
 import * as governanceApi from "$lib/api/governance.api";
 import * as icpIndexApi from "$lib/api/icp-index.api";
 import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
-import * as exportDataService from "$lib/services/export-data.services";
+import * as exportDataService from "$lib/services/reporting.services";
 import * as toastsStore from "$lib/stores/toasts.store";
-import * as exportToCsv from "$lib/utils/export-to-csv.utils";
+import * as exportToCsv from "$lib/utils/reporting.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountsStoreData,
@@ -242,7 +242,7 @@ describe("ReportingTransactionsButton", () => {
     await runResolvedPromises();
 
     expect(spyToastError).toBeCalledWith({
-      labelKey: "export_error.file_system_access",
+      labelKey: "reporting.error_file_system_access",
     });
     expect(spyToastError).toBeCalledTimes(1);
   });
@@ -260,7 +260,7 @@ describe("ReportingTransactionsButton", () => {
     await runResolvedPromises();
 
     expect(spyToastError).toBeCalledWith({
-      labelKey: "export_error.csv_generation",
+      labelKey: "reporting.error_csv_generation",
     });
     expect(spyToastError).toBeCalledTimes(1);
   });
@@ -277,7 +277,7 @@ describe("ReportingTransactionsButton", () => {
     await runResolvedPromises();
 
     expect(spyToastError).toBeCalledWith({
-      labelKey: "export_error.neurons",
+      labelKey: "reporting.error_neurons",
     });
     expect(spyToastError).toBeCalledTimes(1);
   });
