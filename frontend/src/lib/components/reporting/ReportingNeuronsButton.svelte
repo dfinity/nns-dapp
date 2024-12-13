@@ -6,7 +6,7 @@
     CsvGenerationError,
     FileSystemAccessError,
     generateCsvFileToSave,
-  } from "$lib/utils/export-to-csv.utils";
+  } from "$lib/utils/reporting.utils";
   import { toastsError } from "$lib/stores/toasts.store";
   import { formatDateCompact } from "$lib/utils/date.utils";
   import type { NeuronInfo } from "@dfinity/nns";
@@ -53,51 +53,51 @@
         headers: [
           {
             id: "neuronId",
-            label: $i18n.export_csv_neurons.neuron_id,
+            label: $i18n.reporting.neuron_id,
           },
           {
             id: "project",
-            label: $i18n.export_csv_neurons.project,
+            label: $i18n.reporting.project,
           },
           {
             id: "symbol",
-            label: $i18n.export_csv_neurons.symbol,
+            label: $i18n.reporting.symbol,
           },
           {
             id: "neuronAccountId",
-            label: $i18n.export_csv_neurons.neuron_account_id,
+            label: $i18n.reporting.neuron_account_id,
           },
           {
             id: "controllerId",
-            label: $i18n.export_csv_neurons.controller_id,
+            label: $i18n.reporting.controller_id,
           },
           {
             id: "stake",
-            label: $i18n.export_csv_neurons.stake,
+            label: $i18n.reporting.stake,
           },
           {
             id: "availableMaturity",
-            label: $i18n.export_csv_neurons.available_maturity,
+            label: $i18n.reporting.available_maturity,
           },
           {
             id: "stakedMaturity",
-            label: $i18n.export_csv_neurons.staked_maturity,
+            label: $i18n.reporting.staked_maturity,
           },
           {
             id: "dissolveDelaySeconds",
-            label: $i18n.export_csv_neurons.dissolve_delay,
+            label: $i18n.reporting.dissolve_delay,
           },
           {
             id: "dissolveDate",
-            label: $i18n.export_csv_neurons.dissolve_date,
+            label: $i18n.reporting.dissolve_date,
           },
           {
             id: "creationDate",
-            label: $i18n.export_csv_neurons.creation_date,
+            label: $i18n.reporting.creation_date,
           },
           {
             id: "state",
-            label: $i18n.export_csv_neurons.state,
+            label: $i18n.reporting.state,
           },
         ],
         fileName,
@@ -107,15 +107,15 @@
 
       if (error instanceof FileSystemAccessError) {
         toastsError({
-          labelKey: "export_error.file_system_access",
+          labelKey: "reporting.error_file_system_access",
         });
       } else if (error instanceof CsvGenerationError) {
         toastsError({
-          labelKey: "export_error.csv_generation",
+          labelKey: "reporting.error_csv_generation",
         });
       } else {
         toastsError({
-          labelKey: "export_error.neurons",
+          labelKey: "reporting.error_neurons",
         });
       }
     } finally {

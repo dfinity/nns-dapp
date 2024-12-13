@@ -6,7 +6,7 @@ import {
   convertToCsv,
   generateCsvFileToSave,
   type CsvHeader,
-} from "$lib/utils/export-to-csv.utils";
+} from "$lib/utils/reporting.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
@@ -17,7 +17,7 @@ import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 type TestPersonData = { name: string; age: number };
 type TestFormulaData = { formula: string; value: number };
 
-describe("Export to Csv", () => {
+describe("reporting utils", () => {
   beforeEach(() => {
     const mockDate = new Date("2023-10-14T00:00:00Z");
     vi.useFakeTimers();

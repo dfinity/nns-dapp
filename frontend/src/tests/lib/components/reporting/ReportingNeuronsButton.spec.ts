@@ -2,9 +2,8 @@ import * as gobernanceApi from "$lib/api/governance.api";
 import ReportingNeuronsButton from "$lib/components/reporting/ReportingNeuronsButton.svelte";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import * as exportToCsv from "$lib/utils/export-to-csv.utils";
-import * as exportToCsvUtils from "$lib/utils/export-to-csv.utils";
-import { generateCsvFileToSave } from "$lib/utils/export-to-csv.utils";
+import * as exportToCsvUtils from "$lib/utils/reporting.utils";
+import { generateCsvFileToSave } from "$lib/utils/reporting.utils";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ReportingNeuronsButtonPo } from "$tests/page-objects/ReportingNeuronsButon.page-object";
@@ -25,7 +24,9 @@ describe("ReportingNeuronsButton", () => {
     vi.clearAllTimers();
     resetIdentity();
 
-    vi.spyOn(exportToCsv, "generateCsvFileToSave").mockImplementation(vi.fn());
+    vi.spyOn(exportToCsvUtils, "generateCsvFileToSave").mockImplementation(
+      vi.fn()
+    );
     vi.spyOn(toastsStore, "toastsError");
     vi.spyOn(console, "error").mockImplementation(() => {});
     spyBuildNeuronsDatasets = vi.spyOn(
@@ -158,8 +159,8 @@ describe("ReportingNeuronsButton", () => {
   });
 
   it("should show error toast when file system access fails", async () => {
-    vi.spyOn(exportToCsv, "generateCsvFileToSave").mockRejectedValueOnce(
-      new exportToCsv.FileSystemAccessError("File system access denied")
+    vi.spyOn(exportToCsvUtils, "generateCsvFileToSave").mockRejectedValueOnce(
+      new exportToCsvUtils.FileSystemAccessError("File system access denied")
     );
 
     const po = renderComponent();
@@ -170,14 +171,14 @@ describe("ReportingNeuronsButton", () => {
     await runResolvedPromises();
 
     expect(toastsError).toBeCalledWith({
-      labelKey: "export_error.file_system_access",
+      labelKey: "reporting.error_file_system_access",
     });
     expect(toastsError).toBeCalledTimes(1);
   });
 
   it("should show error toast when Csv generation fails", async () => {
-    vi.spyOn(exportToCsv, "generateCsvFileToSave").mockRejectedValueOnce(
-      new exportToCsv.CsvGenerationError("Csv generation failed")
+    vi.spyOn(exportToCsvUtils, "generateCsvFileToSave").mockRejectedValueOnce(
+      new exportToCsvUtils.CsvGenerationError("Csv generation failed")
     );
 
     const po = renderComponent();
@@ -188,13 +189,13 @@ describe("ReportingNeuronsButton", () => {
     await runResolvedPromises();
 
     expect(toastsError).toBeCalledWith({
-      labelKey: "export_error.csv_generation",
+      labelKey: "reporting.error_csv_generation",
     });
     expect(toastsError).toBeCalledTimes(1);
   });
 
   it("should show error toast when file saving fails", async () => {
-    vi.spyOn(exportToCsv, "generateCsvFileToSave").mockRejectedValueOnce(
+    vi.spyOn(exportToCsvUtils, "generateCsvFileToSave").mockRejectedValueOnce(
       new Error("Something wrong happened")
     );
 
@@ -206,7 +207,7 @@ describe("ReportingNeuronsButton", () => {
     await runResolvedPromises();
 
     expect(toastsError).toBeCalledWith({
-      labelKey: "export_error.neurons",
+      labelKey: "reporting.error_neurons",
     });
     expect(toastsError).toBeCalledTimes(1);
   });
