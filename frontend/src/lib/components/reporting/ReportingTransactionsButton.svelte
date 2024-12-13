@@ -137,7 +137,7 @@
         });
       } else {
         toastsError({
-          labelKey: "reporting.error_neurons",
+          labelKey: "reporting.error_transactions",
         });
       }
     } finally {

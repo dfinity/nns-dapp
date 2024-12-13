@@ -200,6 +200,7 @@ interface I18nReporting {
   error_csv_generation: string;
   error_file_system_access: string;
   error_neurons: string;
+  error_transactions: string;
 }
 
 interface I18nAuth {

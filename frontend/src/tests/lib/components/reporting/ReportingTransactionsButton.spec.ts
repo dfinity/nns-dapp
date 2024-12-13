@@ -277,7 +277,7 @@ describe("ReportingTransactionsButton", () => {
     await runResolvedPromises();
 
     expect(spyToastError).toBeCalledWith({
-      labelKey: "reporting.error_neurons",
+      labelKey: "reporting.error_transactions",
     });
     expect(spyToastError).toBeCalledTimes(1);
   });

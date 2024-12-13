@@ -17,7 +17,7 @@ import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 type TestPersonData = { name: string; age: number };
 type TestFormulaData = { formula: string; value: number };
 
-describe("Reporting utils", () => {
+describe("reporting utils", () => {
   beforeEach(() => {
     const mockDate = new Date("2023-10-14T00:00:00Z");
     vi.useFakeTimers();
