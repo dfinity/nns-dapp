@@ -75,3 +75,21 @@ export const joinWithOr = (text: string[]): string =>
   text.length > 1
     ? `${text.slice(0, -1).join(", ")} ${get(i18n).core.or} ${text.slice(-1)}`
     : text.join(", ");
+
+type DotPrefix<T extends string> = T extends "" ? "" : `.${T}`;
+
+type DotNestedKeys<T> = (
+  T extends object
+    ? {
+        [K in Exclude<
+          keyof T,
+          symbol
+        >]: `${K}${DotPrefix<DotNestedKeys<T[K]>>}`;
+      }[Exclude<keyof T, symbol>]
+    : ""
+) extends infer D
+  ? Extract<D, string>
+  : never;
+
+// Get all possible keys from I18n interface
+export type I18nKeys = DotNestedKeys<I18n>;
