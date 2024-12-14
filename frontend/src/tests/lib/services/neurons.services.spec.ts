@@ -852,6 +852,81 @@ describe("neurons-services", () => {
       expect(successCount).toBe(neurons.length);
     });
 
+    it("should use setFollowees to refresh voting state of the HW neuron", async () => {
+      const spySetFollowees = vi
+        .spyOn(api, "setFollowees")
+        .mockResolvedValue(undefined);
+      setAccountsForTesting({
+        main: mockMainAccount,
+        hardwareWallets: [mockHardwareWalletAccount],
+      });
+      const hwPrincipal = mockHardwareWalletAccount.principal.toText();
+      const ledgerNeuronNoFollowees = {
+        ...mockNeuron,
+        neuronId: 5_555n,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: hwPrincipal,
+          followees: [],
+        },
+      };
+      const testFollowee = [1_234n, 5_678n];
+      const ledgerNeuronWithFollowees = {
+        ...mockNeuron,
+        neuronId: 100_000n,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: hwPrincipal,
+          followees: [
+            { topic: Topic.Governance, followees: testFollowee },
+            { topic: Topic.NeuronManagement, followees: [1n, 2n, 3n] },
+          ],
+        },
+      };
+      const neurons = [
+        neuron1,
+        ledgerNeuronNoFollowees,
+        ledgerNeuronWithFollowees,
+      ];
+      neuronsStore.pushNeurons({
+        neurons,
+        certified: true,
+      });
+
+      expect(spyRefreshVotingPower).toBeCalledTimes(0);
+      expect(spySetFollowees).toBeCalledTimes(0);
+
+      const { successCount } = await services.refreshVotingPowerForNeurons({
+        neuronIds: [
+          ledgerNeuronNoFollowees.neuronId,
+          neuron2.neuronId,
+          ledgerNeuronWithFollowees.neuronId,
+        ],
+      });
+
+      expect(successCount).toBe(neurons.length);
+      // Controlled neuron
+      expect(spyRefreshVotingPower).toBeCalledTimes(1);
+      expect(spyRefreshVotingPower).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        neuronId: neuron1.neuronId,
+      });
+      // HW neurons
+      expect(spySetFollowees).toBeCalledTimes(2);
+      expect(spySetFollowees).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        neuronId: ledgerNeuronNoFollowees.neuronId,
+        followees: [],
+        topic: Topic.Governance,
+      });
+      expect(spySetFollowees).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        neuronId: ledgerNeuronWithFollowees.neuronId,
+        followees: testFollowee,
+        topic: Topic.Governance,
+      });
+    });
+
     it("should reload the neurons", async () => {
       const neurons = [neuron1];
       neuronsStore.pushNeurons({ neurons, certified: true });
@@ -925,6 +1000,60 @@ describe("neurons-services", () => {
       expect(spyConsoleError).toBeCalledTimes(1);
       expect(spyConsoleError).toBeCalledWith(
         "Failed to refresh neuronId 1",
+        testError
+      );
+      expectToastError("An error occurred while confirming following.");
+    });
+
+    it("should handle errors from controlled and HW neurons", async () => {
+      const testError = new Error("Test error");
+      const spyConsoleError = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => undefined);
+      const spySetFollowees = vi
+        .spyOn(api, "setFollowees")
+        .mockRejectedValueOnce(testError);
+      const spyRefreshVotingPower = vi
+        .spyOn(api, "refreshVotingPower")
+        .mockRejectedValue(testError);
+
+      setAccountsForTesting({
+        main: mockMainAccount,
+        hardwareWallets: [mockHardwareWalletAccount],
+      });
+      const hwPrincipal = mockHardwareWalletAccount.principal.toText();
+      const ledgerNeuron = {
+        ...mockNeuron,
+        neuronId: 5_555n,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: hwPrincipal,
+        },
+      };
+
+      const neurons = [ledgerNeuron, neuron1];
+      neuronsStore.pushNeurons({
+        neurons,
+        certified: true,
+      });
+
+      expect(spySetFollowees).toBeCalledTimes(0);
+      expect(spyRefreshVotingPower).toBeCalledTimes(0);
+
+      const { successCount } = await services.refreshVotingPowerForNeurons({
+        neuronIds: [ledgerNeuron.neuronId, neuron1.neuronId],
+      });
+
+      expect(successCount).toBe(0);
+      expect(spyRefreshVotingPower).toBeCalledTimes(1);
+      expect(spySetFollowees).toBeCalledTimes(1);
+      expect(spyConsoleError).toBeCalledTimes(2);
+      expect(spyConsoleError).toBeCalledWith(
+        "Failed to refresh neuronId 1",
+        testError
+      );
+      expect(spyConsoleError).toBeCalledWith(
+        "Failed to refresh neuronId 5555",
         testError
       );
       expectToastError("An error occurred while confirming following.");
