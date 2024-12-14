@@ -703,11 +703,11 @@ const refreshVotingPower = async (neuronId: NeuronId): Promise<void> => {
   });
 
   if (isHWControlled) {
-    // This is a workaround for the Ledger device, because it does not support
+    // This is a workaround for the Ledger device, because currently it does not support
     // the governance canister version required for the `refreshVotingPower` call.
     const identity: Identity = await getAuthenticatedIdentity();
     // It doesn't matter which topic to use to confirm the current state of the neuron
-    // except NeuronManagement, which can only be handled by controllers.
+    // (except NeuronManagement, which can only be handled by controllers).
     const topic = Topic.Governance;
     const followees =
       followeesByTopic({
