@@ -174,6 +174,7 @@ describe("LosingRewardsBanner", () => {
     await runResolvedPromises();
     await po.getLosingRewardNeuronsModalPo().clickConfirmFollowing();
     await runResolvedPromises();
+    vi.advanceTimersToNextFrame();
 
     expect(spyRefreshVotingPower).toBeCalledTimes(1);
     expect(spyConsoleError).toBeCalledTimes(1);
