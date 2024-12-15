@@ -47,8 +47,7 @@
         data-tid="voting-power-generic-description"
       >
         {$ENABLE_PERIODIC_FOLLOWING_CONFIRMATION
-          ? $i18n.neuron_detail
-              .voting_power_section_calculation_generic_activity
+          ? $i18n.neuron_detail.voting_power_section_calculation_generic_new
           : $i18n.neuron_detail.voting_power_section_calculation_generic}
       </p>
       <p class="description">
@@ -57,8 +56,7 @@
       <p class="description calculation" data-tid="voting-power-description">
         {replacePlaceholders(
           $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION
-            ? $i18n.neuron_detail
-                .voting_power_section_calculation_specific_activity
+            ? $i18n.neuron_detail.voting_power_section_calculation_specific_new
             : $i18n.neuron_detail.voting_power_section_calculation_specific,
           {
             $stake: formatTokenE8s({
