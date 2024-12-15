@@ -691,8 +691,10 @@ interface I18nNeuron_detail {
   voting_power_section_description_expanded_zero_nns: string;
   calculated_as: string;
   voting_power_section_calculation_generic: string;
+  voting_power_section_calculation_generic_new: string;
   this_neuron_calculation: string;
   voting_power_section_calculation_specific: string;
+  voting_power_section_calculation_specific_new: string;
   maturity_section_description: string;
   staked_description: string;
   nns_staked_maturity_tooltip: string;

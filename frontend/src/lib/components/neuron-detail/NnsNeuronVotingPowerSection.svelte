@@ -3,6 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
+    activityMultiplier,
     ageMultiplier,
     dissolveDelayMultiplier,
     formatVotingPower,
@@ -41,15 +42,22 @@
       <p class="description">
         {$i18n.neuron_detail.calculated_as}
       </p>
-      <p class="description calculation">
-        {$i18n.neuron_detail.voting_power_section_calculation_generic}
+      <p
+        class="description calculation"
+        data-tid="voting-power-generic-description"
+      >
+        {$ENABLE_PERIODIC_FOLLOWING_CONFIRMATION
+          ? $i18n.neuron_detail.voting_power_section_calculation_generic_new
+          : $i18n.neuron_detail.voting_power_section_calculation_generic}
       </p>
       <p class="description">
         {$i18n.neuron_detail.this_neuron_calculation}
       </p>
       <p class="description calculation" data-tid="voting-power-description">
         {replacePlaceholders(
-          $i18n.neuron_detail.voting_power_section_calculation_specific,
+          $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION
+            ? $i18n.neuron_detail.voting_power_section_calculation_specific_new
+            : $i18n.neuron_detail.voting_power_section_calculation_specific,
           {
             $stake: formatTokenE8s({
               value: neuronStake(neuron),
@@ -59,6 +67,7 @@
             $dissolveMultiplier: dissolveDelayMultiplier(
               neuron.dissolveDelaySeconds
             ).toFixed(2),
+            $activityMultiplier: activityMultiplier(neuron).toFixed(2),
             $votingPower: formatVotingPower(neuron.votingPower),
           }
         )}
