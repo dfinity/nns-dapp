@@ -78,24 +78,27 @@ export const joinWithOr = (text: string[]): string =>
 
 // Creates a dot-prefixed string type unless empty
 type DotPrefix<T extends string> = T extends "" ? "" : `.${T}`;
+type StringKeyOf<T> = Extract<keyof T, string>;
 
-// Recursively builds a union type of all possible object paths in dot notation:
-// 1. For each object level, takes all keys (excluding symbols)
-// 2. For each key, creates a string literal combining:
-//    - Current key name
-//    - Dot prefix
-//    - Recursively processes nested properties
-// Example:
-// { user: { name: string, settings: { theme: string } } }
-// Generates: "user" | "user.name" | "user.settings" | "user.settings.theme"
+// Recursively builds a union type of nested object paths in dot notation:
+// 1. Takes an object type T
+// 2. For each key K in T:
+//    - If T[K] is an object: creates path "K.nestedKey"
+//    - If T[K] is primitive: excludes it (never type)
+// 3. Combines all paths into a union type
+// 4. Uses 'extends infer D' pattern to:
+//    - Capture the resulting type
+//    - Extract only string literals from it
+//    - Filter out any non-string types
+// Example: { user: { name: string, settings: { theme: string } } }
+// Generates: "user.name" | "user.settings" | "user.settings.theme"
 type DotNestedKeys<T> = (
   T extends object
     ? {
-        [K in Exclude<
-          keyof T,
-          symbol
-        >]: `${K}${DotPrefix<DotNestedKeys<T[K]>>}`;
-      }[Exclude<keyof T, symbol>]
+        // First exclusion: In the mapped type, defines which keys to process
+        [K in StringKeyOf<T>]: `${K}${DotPrefix<DotNestedKeys<T[K]>>}`;
+        // Second exclusion: Indexes the resulting object type to create a union
+      }[StringKeyOf<T>]
     : ""
 ) extends infer D
   ? Extract<D, string>
