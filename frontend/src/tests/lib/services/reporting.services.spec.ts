@@ -116,15 +116,15 @@ describe("reporting service", () => {
     });
 
     it("should handle errors and return accumulated transactions", async () => {
-      const allTransactions = [
-        createTransactionWithId({ id: 1n }),
+      const firstBatch = [
+        createTransactionWithId({ id: 3n }),
         createTransactionWithId({ id: 2n }),
       ];
 
       spyGetTransactions
         .mockResolvedValueOnce({
-          transactions: allTransactions,
-          oldestTxId: 2000n,
+          transactions: firstBatch,
+          oldestTxId: 1n,
         })
         .mockRejectedValueOnce(new Error("API Error"));
 
@@ -133,7 +133,7 @@ describe("reporting service", () => {
         identity: mockSignInIdentity,
       });
 
-      expect(result).toEqual(allTransactions);
+      expect(result).toEqual(firstBatch);
       expect(spyGetTransactions).toHaveBeenCalledTimes(2);
     });
 
@@ -167,7 +167,7 @@ describe("reporting service", () => {
       });
 
       expect(result).toHaveLength(2);
-      expect(result).toEqual(allTransactions.slice(1, 3));
+      expect(result).toEqual(allTransactions.slice(1));
       expect(spyGetTransactions).toHaveBeenCalledTimes(1);
     });
 
@@ -209,15 +209,15 @@ describe("reporting service", () => {
       const allTransactions = [
         createTransactionWithId({
           id: 3n,
-          timestamp: new Date("2023-01-01T00:00:00.000Z"),
+          timestamp: new Date("2023-01-02T00:00:00.000Z"),
         }),
         createTransactionWithId({
           id: 2n,
-          timestamp: new Date("2022-12-31T00:00:00.000Z"),
+          timestamp: new Date("2022-12-30T00:00:00.000Z"),
         }),
         createTransactionWithId({
           id: 1n,
-          timestamp: new Date("2023-01-02T00:00:00.000Z"),
+          timestamp: new Date("2022-12-29T00:00:00.000Z"),
         }),
       ];
 
@@ -230,8 +230,8 @@ describe("reporting service", () => {
         accountId: mockAccountId,
         identity: mockSignInIdentity,
         range: {
-          from: dateToNanoSeconds(new Date("2022-12-31T10:00:00.000Z")),
-          to: dateToNanoSeconds(new Date("2022-12-31T23:00:00.000Z")),
+          from: dateToNanoSeconds(new Date("2023-01-01T00:00:00.000Z")),
+          to: dateToNanoSeconds(new Date("2022-12-31T00:00:00.000Z")),
         },
       });
 
@@ -242,7 +242,7 @@ describe("reporting service", () => {
     it('should return early if the last transaction is in the current page is older than "to" date', async () => {
       const allTransactions = [
         createTransactionWithId({
-          id: 1n,
+          id: 3n,
           timestamp: new Date("2023-01-02T00:00:00.000Z"),
         }),
         createTransactionWithId({
@@ -250,12 +250,12 @@ describe("reporting service", () => {
           timestamp: new Date("2022-12-31T00:00:00.000Z"),
         }),
         createTransactionWithId({
-          id: 3n,
+          id: 1n,
           timestamp: new Date("2022-12-30T00:00:00.000Z"),
         }),
       ];
       const firstBatchOfMockTransactions = allTransactions.slice(0, 2);
-      const secondBatchOfMockTransactions = allTransactions.slice(3);
+      const secondBatchOfMockTransactions = allTransactions.slice(2);
 
       spyGetTransactions
         .mockResolvedValueOnce({
@@ -276,7 +276,7 @@ describe("reporting service", () => {
       });
 
       expect(result).toHaveLength(1);
-      expect(result).toEqual([firstBatchOfMockTransactions[0]]);
+      expect(result).toEqual(allTransactions.slice(0, 1));
       expect(spyGetTransactions).toHaveBeenCalledTimes(1);
     });
 
