@@ -11,6 +11,21 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 134484
+
+### Application
+
+#### Added
+
+- Show USD values of tokens.
+- Reporting page for NNS Neurons and ICP transactions.
+
+#### Changed
+
+- Sorts launched projects in the Launchpad page from newest to oldest.
+
+### Operations
+
 ## Proposal 134397
 
 ### Application
