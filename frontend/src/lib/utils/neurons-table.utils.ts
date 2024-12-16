@@ -1,5 +1,9 @@
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import {
+  LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
+import { type IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
 import type {
   NeuronsTableColumnId,
   TableNeuron,
@@ -29,21 +33,25 @@ import {
   createDescendingComparator,
   mergeComparators,
 } from "$lib/utils/sort.utils";
+import { getUsdValue } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo } from "@dfinity/nns";
 import { NeuronState } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
-import { ICPToken, TokenAmountV2, type Token } from "@dfinity/utils";
+import { ICPToken, TokenAmountV2, isNullish, type Token } from "@dfinity/utils";
 
 export const tableNeuronsFromNeuronInfos = ({
   neuronInfos,
   identity,
   accounts,
+  icpSwapUsdPrices,
   i18n,
 }: {
   neuronInfos: NeuronInfo[];
   identity?: Identity | undefined | null;
   accounts: IcpAccountsStoreData;
+  icpSwapUsdPrices?: IcpSwapUsdPricesStoreData;
   i18n: I18n;
 }): TableNeuron[] => {
   return neuronInfos.map((neuronInfo) => {
@@ -56,14 +64,24 @@ export const tableNeuronsFromNeuronInfos = ({
           universe: OWN_CANISTER_ID_TEXT,
           neuronId,
         });
+    const stake = TokenAmountV2.fromUlps({
+      amount: neuronStake(neuronInfo),
+      token: ICPToken,
+    });
+    const icpPrice =
+      isNullish(icpSwapUsdPrices) || icpSwapUsdPrices === "error"
+        ? undefined
+        : icpSwapUsdPrices[LEDGER_CANISTER_ID.toText()];
+    const stakeInUsd = getUsdValue({
+      amount: stake,
+      tokenPrice: icpPrice,
+    });
     return {
       ...(rowHref && { rowHref }),
       domKey: neuronIdString,
       neuronId: neuronIdString,
-      stake: TokenAmountV2.fromUlps({
-        amount: neuronStake(neuronInfo),
-        token: ICPToken,
-      }),
+      stake,
+      stakeInUsd,
       availableMaturity: neuronAvailableMaturity(neuronInfo),
       stakedMaturity: neuronStakedMaturity(neuronInfo),
       dissolveDelaySeconds,
@@ -84,12 +102,16 @@ export const tableNeuronsFromSnsNeurons = ({
   universe,
   token,
   identity,
+  icpSwapUsdPrices,
+  ledgerCanisterId,
   i18n,
 }: {
   snsNeurons: SnsNeuron[];
   universe: UniverseCanisterIdText;
   token: Token;
   identity: Identity | undefined | null;
+  icpSwapUsdPrices?: IcpSwapUsdPricesStoreData;
+  ledgerCanisterId: Principal;
   i18n: I18n;
 }): TableNeuron[] => {
   return snsNeurons.map((snsNeuron) => {
@@ -99,14 +121,24 @@ export const tableNeuronsFromSnsNeurons = ({
       universe,
       neuronId: neuronIdString,
     });
+    const stake = TokenAmountV2.fromUlps({
+      amount: getSnsNeuronStake(snsNeuron),
+      token,
+    });
+    const tokenPrice =
+      isNullish(icpSwapUsdPrices) || icpSwapUsdPrices === "error"
+        ? undefined
+        : icpSwapUsdPrices[ledgerCanisterId.toText()];
+    const stakeInUsd = getUsdValue({
+      amount: stake,
+      tokenPrice,
+    });
     return {
       rowHref,
       domKey: neuronIdString,
       neuronId: neuronIdString,
-      stake: TokenAmountV2.fromUlps({
-        amount: getSnsNeuronStake(snsNeuron),
-        token,
-      }),
+      stake,
+      stakeInUsd,
       availableMaturity: getSnsNeuronAvailableMaturity(snsNeuron),
       stakedMaturity: getSnsNeuronStakedMaturity(snsNeuron),
       dissolveDelaySeconds,

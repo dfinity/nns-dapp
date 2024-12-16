@@ -115,6 +115,7 @@ export const mockTableNeuron: TableNeuron = {
     amount: 1n,
     token: ICPToken,
   }),
+  stakeInUsd: 10,
   availableMaturity: 0n,
   stakedMaturity: 0n,
   dissolveDelaySeconds: 1n,

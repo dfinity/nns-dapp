@@ -12,6 +12,7 @@ export type TableNeuron = {
   domKey: string;
   neuronId: string;
   stake: TokenAmountV2;
+  stakeInUsd: number | undefined;
   availableMaturity: bigint;
   stakedMaturity: bigint;
   dissolveDelaySeconds: bigint;
