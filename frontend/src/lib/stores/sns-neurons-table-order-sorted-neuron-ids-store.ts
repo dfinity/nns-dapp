@@ -29,6 +29,7 @@ const snsTableNeuronsToSortStore = derived(
           identity: $authStore.identity,
           i18n: $i18n,
           snsNeurons: $definedSnsNeuronStore,
+          ledgerCanisterId: summary.ledgerCanisterId,
         })
       : [];
     return tableNeurons.sort(compareById);
