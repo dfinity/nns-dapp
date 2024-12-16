@@ -76,8 +76,18 @@ export const joinWithOr = (text: string[]): string =>
     ? `${text.slice(0, -1).join(", ")} ${get(i18n).core.or} ${text.slice(-1)}`
     : text.join(", ");
 
+// Creates a dot-prefixed string type unless empty
 type DotPrefix<T extends string> = T extends "" ? "" : `.${T}`;
 
+// Recursively builds a union type of all possible object paths in dot notation:
+// 1. For each object level, takes all keys (excluding symbols)
+// 2. For each key, creates a string literal combining:
+//    - Current key name
+//    - Dot prefix
+//    - Recursively processes nested properties
+// Example:
+// { user: { name: string, settings: { theme: string } } }
+// Generates: "user" | "user.name" | "user.settings" | "user.settings.theme"
 type DotNestedKeys<T> = (
   T extends object
     ? {
@@ -91,5 +101,5 @@ type DotNestedKeys<T> = (
   ? Extract<D, string>
   : never;
 
-// Get all possible keys from I18n interface
+// Type containing all possible i18n keys in dot notation (e.g., "reporting.error_csv_generation")
 export type I18nKeys = DotNestedKeys<I18n>;
