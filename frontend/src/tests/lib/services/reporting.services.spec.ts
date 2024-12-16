@@ -137,40 +137,6 @@ describe("reporting service", () => {
       expect(spyGetTransactions).toHaveBeenCalledTimes(2);
     });
 
-    it('should filter "from" the provided date', async () => {
-      const allTransactions = [
-        createTransactionWithId({
-          id: 3n,
-          timestamp: new Date("2023-01-02T00:00:00.000Z"),
-        }),
-        createTransactionWithId({
-          id: 2n,
-          timestamp: new Date("2023-01-01T00:00:00.000Z"),
-        }),
-        createTransactionWithId({
-          id: 1n,
-          timestamp: new Date("2022-12-31T00:00:00.000Z"),
-        }),
-      ];
-
-      spyGetTransactions.mockResolvedValue({
-        transactions: allTransactions,
-        oldestTxId: 1n,
-      });
-
-      const result = await getAllTransactionsFromAccountAndIdentity({
-        accountId: mockAccountId,
-        identity: mockSignInIdentity,
-        range: {
-          from: dateToNanoSeconds(new Date("2023-01-01T00:00:00.000Z")),
-        },
-      });
-
-      expect(result).toHaveLength(2);
-      expect(result).toEqual(allTransactions.slice(1));
-      expect(spyGetTransactions).toHaveBeenCalledTimes(1);
-    });
-
     it('should filter "to" the provided date', async () => {
       const allTransactions = [
         createTransactionWithId({
@@ -197,6 +163,40 @@ describe("reporting service", () => {
         identity: mockSignInIdentity,
         range: {
           to: dateToNanoSeconds(new Date("2023-01-01T00:00:00.000Z")),
+        },
+      });
+
+      expect(result).toHaveLength(2);
+      expect(result).toEqual(allTransactions.slice(1));
+      expect(spyGetTransactions).toHaveBeenCalledTimes(1);
+    });
+
+    it('should filter "from" the provided date', async () => {
+      const allTransactions = [
+        createTransactionWithId({
+          id: 3n,
+          timestamp: new Date("2023-01-02T00:00:00.000Z"),
+        }),
+        createTransactionWithId({
+          id: 2n,
+          timestamp: new Date("2023-01-01T00:00:00.000Z"),
+        }),
+        createTransactionWithId({
+          id: 1n,
+          timestamp: new Date("2022-12-31T00:00:00.000Z"),
+        }),
+      ];
+
+      spyGetTransactions.mockResolvedValue({
+        transactions: allTransactions,
+        oldestTxId: 1n,
+      });
+
+      const result = await getAllTransactionsFromAccountAndIdentity({
+        accountId: mockAccountId,
+        identity: mockSignInIdentity,
+        range: {
+          from: dateToNanoSeconds(new Date("2023-01-01T00:00:00.000Z")),
         },
       });
 
@@ -230,8 +230,8 @@ describe("reporting service", () => {
         accountId: mockAccountId,
         identity: mockSignInIdentity,
         range: {
-          from: dateToNanoSeconds(new Date("2023-01-01T00:00:00.000Z")),
-          to: dateToNanoSeconds(new Date("2022-12-31T00:00:00.000Z")),
+          to: dateToNanoSeconds(new Date("2023-01-01T00:00:00.000Z")),
+          from: dateToNanoSeconds(new Date("2022-12-31T00:00:00.000Z")),
         },
       });
 
@@ -239,7 +239,7 @@ describe("reporting service", () => {
       expect(spyGetTransactions).toHaveBeenCalledTimes(1);
     });
 
-    it('should return early if the last transaction is in the current page is older than "to" date', async () => {
+    it('should return early if the last transaction is in the current page is older than "from" date', async () => {
       const allTransactions = [
         createTransactionWithId({
           id: 3n,
@@ -271,7 +271,7 @@ describe("reporting service", () => {
         accountId: mockAccountId,
         identity: mockSignInIdentity,
         range: {
-          to: dateToNanoSeconds(new Date("2023-01-01T00:00:00.000Z")),
+          from: dateToNanoSeconds(new Date("2023-01-01T00:00:00.000Z")),
         },
       });
 
@@ -324,8 +324,8 @@ describe("reporting service", () => {
         accountId: mockAccountId,
         identity: mockSignInIdentity,
         range: {
-          from: dateToNanoSeconds(new Date("2023-01-02T00:00:00.000Z")),
-          to: dateToNanoSeconds(new Date("2022-11-30T00:00:00.000Z")),
+          to: dateToNanoSeconds(new Date("2023-01-02T00:00:00.000Z")),
+          from: dateToNanoSeconds(new Date("2022-11-30T00:00:00.000Z")),
         },
       });
       expect(result).toHaveLength(4);
@@ -358,8 +358,8 @@ describe("reporting service", () => {
         accountId: mockAccountId,
         identity: mockSignInIdentity,
         range: {
-          from: dateToNanoSeconds(new Date("2023-01-02T00:00:00.000Z")),
-          to: dateToNanoSeconds(new Date("2022-11-30T00:00:00.000Z")),
+          to: dateToNanoSeconds(new Date("2023-01-02T00:00:00.000Z")),
+          from: dateToNanoSeconds(new Date("2022-11-30T00:00:00.000Z")),
         },
       });
       expect(result).toHaveLength(2);

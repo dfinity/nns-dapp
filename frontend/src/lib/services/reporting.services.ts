@@ -144,9 +144,9 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
     const oldestTransactionInPageTimestamp = getTimestampFromTransaction(
       transactions[transactions.length - 1]
     );
-    const to = range?.to;
-    if (nonNullish(to) && nonNullish(oldestTransactionInPageTimestamp)) {
-      if (oldestTransactionInPageTimestamp < to) {
+    const from = range?.from;
+    if (nonNullish(from) && nonNullish(oldestTransactionInPageTimestamp)) {
+      if (oldestTransactionInPageTimestamp < from) {
         return filterTransactionsByRange(updatedTransactions, range);
       }
     }
@@ -186,12 +186,12 @@ const filterTransactionsByRange = (
     if (isNullish(timestamp)) return false;
 
     const from = range.from;
-    if (nonNullish(from) && timestamp > from) {
+    if (nonNullish(from) && timestamp < from) {
       return false;
     }
 
     const to = range.to;
-    if (nonNullish(to) && timestamp < to) {
+    if (nonNullish(to) && timestamp > to) {
       return false;
     }
 
