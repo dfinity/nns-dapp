@@ -75,3 +75,35 @@ export const joinWithOr = (text: string[]): string =>
   text.length > 1
     ? `${text.slice(0, -1).join(", ")} ${get(i18n).core.or} ${text.slice(-1)}`
     : text.join(", ");
+
+// Creates a dot-prefixed string type unless empty
+type DotPrefix<T extends string> = T extends "" ? "" : `.${T}`;
+type StringKeyOf<T> = Extract<keyof T, string>;
+
+// Recursively builds a union type of nested object paths in dot notation:
+// 1. Takes an object type T
+// 2. For each key K in T:
+//    - If T[K] is an object: creates path "K.nestedKey"
+//    - If T[K] is primitive: excludes it (never type)
+// 3. Combines all paths into a union type
+// 4. Uses 'extends infer D' pattern to:
+//    - Capture the resulting type
+//    - Extract only string literals from it
+//    - Filter out any non-string types
+// Example: { user: { name: string, settings: { theme: string } } }
+// Allows: "user.name" | "user.settings.theme"
+// Excludes: "user" | "user.settings"
+type DotNestedKeys<T> = (
+  T extends object
+    ? {
+        // First exclusion: In the mapped type, defines which keys to process
+        [K in StringKeyOf<T>]: `${K}${DotPrefix<DotNestedKeys<T[K]>>}`;
+        // Second exclusion: Indexes the resulting object type to create a union
+      }[StringKeyOf<T>]
+    : ""
+) extends infer D
+  ? Extract<D, string>
+  : never;
+
+// Type containing all possible i18n keys in dot notation (e.g., "reporting.error_csv_generation")
+export type I18nKeys = DotNestedKeys<I18n>;
