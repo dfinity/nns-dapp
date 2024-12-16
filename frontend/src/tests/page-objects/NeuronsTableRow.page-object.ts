@@ -46,6 +46,14 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
     return this.getNeuronStakeCellPo().getStake();
   }
 
+  getStakeInUsd(): Promise<string> {
+    return this.getNeuronStakeCellPo().getStakeInUsd();
+  }
+
+  hasStakeInUsd(): Promise<boolean> {
+    return this.getNeuronStakeCellPo().hasStakeInUsd();
+  }
+
   // Stake without the currency symbol
   getStakeBalance(): Promise<string> {
     return this.getNeuronStakeCellPo().getStakeBalance();
