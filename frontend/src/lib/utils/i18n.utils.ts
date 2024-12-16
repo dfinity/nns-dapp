@@ -91,7 +91,8 @@ type StringKeyOf<T> = Extract<keyof T, string>;
 //    - Extract only string literals from it
 //    - Filter out any non-string types
 // Example: { user: { name: string, settings: { theme: string } } }
-// Generates: "user.name" | "user.settings" | "user.settings.theme"
+// Allows: "user.name" | "user.settings.theme"
+// Excludes: "user" | "user.settings"
 type DotNestedKeys<T> = (
   T extends object
     ? {
