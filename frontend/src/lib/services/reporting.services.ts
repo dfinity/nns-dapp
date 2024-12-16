@@ -147,10 +147,7 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
     const to = range?.to;
     if (nonNullish(to) && nonNullish(oldestTransactionInPageTimestamp)) {
       if (oldestTransactionInPageTimestamp < to) {
-        return filterTransactionsByRange(
-          [...allTransactions, ...transactions],
-          range
-        );
+        return filterTransactionsByRange(updatedTransactions, range);
       }
     }
 

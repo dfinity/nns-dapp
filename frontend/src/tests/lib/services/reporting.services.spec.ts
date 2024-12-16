@@ -116,14 +116,14 @@ describe("reporting service", () => {
     });
 
     it("should handle errors and return accumulated transactions", async () => {
-      const firstBatch = [
+      const allTransactions = [
         createTransactionWithId({ id: 1n }),
         createTransactionWithId({ id: 2n }),
       ];
 
       spyGetTransactions
         .mockResolvedValueOnce({
-          transactions: firstBatch,
+          transactions: allTransactions,
           oldestTxId: 2000n,
         })
         .mockRejectedValueOnce(new Error("API Error"));
@@ -133,12 +133,12 @@ describe("reporting service", () => {
         identity: mockSignInIdentity,
       });
 
-      expect(result).toEqual(firstBatch);
+      expect(result).toEqual(allTransactions);
       expect(spyGetTransactions).toHaveBeenCalledTimes(2);
     });
 
     it('should filter "from" the provided date', async () => {
-      const mockTransactions = [
+      const allTransactions = [
         createTransactionWithId({
           id: 3n,
           timestamp: new Date("2023-01-02T00:00:00.000Z"),
@@ -154,8 +154,8 @@ describe("reporting service", () => {
       ];
 
       spyGetTransactions.mockResolvedValue({
-        transactions: mockTransactions,
-        oldestTxId: 3n,
+        transactions: allTransactions,
+        oldestTxId: 1n,
       });
 
       const result = await getAllTransactionsFromAccountAndIdentity({
@@ -167,12 +167,12 @@ describe("reporting service", () => {
       });
 
       expect(result).toHaveLength(2);
-      expect(result).toEqual([mockTransactions[1], mockTransactions[2]]);
+      expect(result).toEqual(allTransactions.slice(1, 3));
       expect(spyGetTransactions).toHaveBeenCalledTimes(1);
     });
 
     it('should filter "to" the provided date', async () => {
-      const mockTransactions = [
+      const allTransactions = [
         createTransactionWithId({
           id: 3n,
           timestamp: new Date("2023-01-02T00:00:00.000Z"),
@@ -188,8 +188,8 @@ describe("reporting service", () => {
       ];
 
       spyGetTransactions.mockResolvedValue({
-        transactions: mockTransactions,
-        oldestTxId: 3n,
+        transactions: allTransactions,
+        oldestTxId: 1n,
       });
 
       const result = await getAllTransactionsFromAccountAndIdentity({
@@ -201,14 +201,14 @@ describe("reporting service", () => {
       });
 
       expect(result).toHaveLength(2);
-      expect(result).toEqual([mockTransactions[0], mockTransactions[1]]);
+      expect(result).toEqual(allTransactions.slice(0, 2));
       expect(spyGetTransactions).toHaveBeenCalledTimes(1);
     });
 
     it("should handle date range where no transactions match", async () => {
-      const mockTransactions = [
+      const allTransactions = [
         createTransactionWithId({
-          id: 1n,
+          id: 3n,
           timestamp: new Date("2023-01-01T00:00:00.000Z"),
         }),
         createTransactionWithId({
@@ -216,14 +216,14 @@ describe("reporting service", () => {
           timestamp: new Date("2022-12-31T00:00:00.000Z"),
         }),
         createTransactionWithId({
-          id: 3n,
+          id: 1n,
           timestamp: new Date("2023-01-02T00:00:00.000Z"),
         }),
       ];
 
       spyGetTransactions.mockResolvedValue({
-        transactions: mockTransactions,
-        oldestTxId: 3n,
+        transactions: allTransactions,
+        oldestTxId: 1n,
       });
 
       const result = await getAllTransactionsFromAccountAndIdentity({
@@ -240,7 +240,7 @@ describe("reporting service", () => {
     });
 
     it('should return early if the last transaction is in the current page is older than "to" date', async () => {
-      const firstBatchOfMockTransactions = [
+      const allTransactions = [
         createTransactionWithId({
           id: 1n,
           timestamp: new Date("2023-01-02T00:00:00.000Z"),
@@ -249,23 +249,22 @@ describe("reporting service", () => {
           id: 2n,
           timestamp: new Date("2022-12-31T00:00:00.000Z"),
         }),
-      ];
-
-      const secondBatchOfMockTransactions = [
         createTransactionWithId({
           id: 3n,
           timestamp: new Date("2022-12-30T00:00:00.000Z"),
         }),
       ];
+      const firstBatchOfMockTransactions = allTransactions.slice(0, 2);
+      const secondBatchOfMockTransactions = allTransactions.slice(3);
 
       spyGetTransactions
         .mockResolvedValueOnce({
           transactions: firstBatchOfMockTransactions,
-          oldestTxId: 3n,
+          oldestTxId: 1n,
         })
         .mockResolvedValueOnce({
-          transactions: [secondBatchOfMockTransactions],
-          oldestTxId: 3n,
+          transactions: secondBatchOfMockTransactions,
+          oldestTxId: 1n,
         });
 
       const result = await getAllTransactionsFromAccountAndIdentity({
@@ -282,7 +281,7 @@ describe("reporting service", () => {
     });
 
     it('should handle a range with both "from" and "to" dates', async () => {
-      const firstBatchOfMockTransactions = [
+      const allTransactions = [
         createTransactionWithId({
           id: 6n,
           timestamp: new Date("2023-02-02T00:00:00.000Z"),
@@ -295,8 +294,6 @@ describe("reporting service", () => {
           id: 4n,
           timestamp: new Date("2022-12-31T10:00:00.000Z"),
         }),
-      ];
-      const secondBatchOfMockTransactions = [
         createTransactionWithId({
           id: 3n,
           timestamp: new Date("2022-12-31T00:00:00.000Z"),
@@ -310,15 +307,19 @@ describe("reporting service", () => {
           timestamp: new Date("2022-11-20T00:00:00.000Z"),
         }),
       ];
+      const firstBatchOfMockTransactions = allTransactions.slice(0, 3);
+      const secondBatchOfMockTransactions = allTransactions.slice(3, 6);
+
       spyGetTransactions
         .mockResolvedValueOnce({
           transactions: firstBatchOfMockTransactions,
-          oldestTxId: 3n,
+          oldestTxId: 1n,
         })
         .mockResolvedValueOnce({
           transactions: secondBatchOfMockTransactions,
-          oldestTxId: 3n,
+          oldestTxId: 1n,
         });
+
       const result = await getAllTransactionsFromAccountAndIdentity({
         accountId: mockAccountId,
         identity: mockSignInIdentity,
@@ -328,12 +329,7 @@ describe("reporting service", () => {
         },
       });
       expect(result).toHaveLength(4);
-      expect(result).toEqual([
-        firstBatchOfMockTransactions[1],
-        firstBatchOfMockTransactions[2],
-        secondBatchOfMockTransactions[0],
-        secondBatchOfMockTransactions[1],
-      ]);
+      expect(result).toEqual(allTransactions.slice(1, -1));
       expect(spyGetTransactions).toHaveBeenCalledTimes(2);
     });
 
