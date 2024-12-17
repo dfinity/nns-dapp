@@ -1,17 +1,20 @@
-import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
-import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
-import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
 import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { rootCanisterIdMock, ledgerCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import {
+  ledgerCanisterIdMock,
+  rootCanisterIdMock,
+} from "$tests/mocks/sns.api.mock";
 import { SnsNeuronsPo } from "$tests/page-objects/SnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
