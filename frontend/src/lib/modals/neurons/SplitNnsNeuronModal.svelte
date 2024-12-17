@@ -1,4 +1,4 @@
-<script lang="ts" xmlns:svelte="http://www.w3.org/1999/html">
+<script lang="ts">
   import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
