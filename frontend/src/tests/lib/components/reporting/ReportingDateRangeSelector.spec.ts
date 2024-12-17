@@ -5,7 +5,7 @@ import { render } from "@testing-library/svelte";
 
 describe("ReportingDateRangeSelector", () => {
   const renderComponent = () => {
-    const { container } = render(ReportingDateRangeSelector);
+    const { container } = render(ReportingDateRangeSelector, { period: "all" });
     const po = ReportingDateRangeSelectorPo.under({
       element: new JestPageObjectElement(container),
     });

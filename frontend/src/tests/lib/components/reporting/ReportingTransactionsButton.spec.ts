@@ -170,7 +170,7 @@ describe("ReportingTransactionsButton", () => {
     expect(spyGenerateCsvFileToSave).toBeCalledTimes(1);
   });
 
-  it("should fetch transactions for accounts and neurons", async () => {
+  it("should all fetch transactions for accounts and neurons", async () => {
     resetAccountsForTesting();
 
     setAccountsForTesting({
