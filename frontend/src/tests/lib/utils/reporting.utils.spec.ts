@@ -3,9 +3,9 @@ import {
   buildNeuronsDatasets,
   buildTransactionsDatasets,
   combineDatasetsToCsv,
+  convertPeriodToNanosecondRange,
   convertToCsv,
   generateCsvFileToSave,
-  periodToDateRangeTimestamps,
   type CsvHeader,
 } from "$lib/utils/reporting.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -556,7 +556,7 @@ describe("reporting utils", () => {
     });
   });
 
-  describe("periodToDateRangeTimestamps", () => {
+  describe("convertPeriodToNanosecondRange", () => {
     const mockDate = new Date("2024-03-15T12:00:00Z");
     const NANOS_IN_MS = BigInt(1_000_000);
 
@@ -567,12 +567,12 @@ describe("reporting utils", () => {
     });
 
     it('returns empty object for "all" period', () => {
-      const result = periodToDateRangeTimestamps("all");
+      const result = convertPeriodToNanosecondRange("all");
       expect(result).toEqual({});
     });
 
     it('returns correct range for "last-year"', () => {
-      const result = periodToDateRangeTimestamps("last-year");
+      const result = convertPeriodToNanosecondRange("last-year");
 
       expect(result).toEqual({
         from: BigInt(new Date("2023-01-01T00:00:00Z").getTime()) * NANOS_IN_MS,
@@ -581,7 +581,7 @@ describe("reporting utils", () => {
     });
 
     it('returns correct range for "year-to-date"', () => {
-      const result = periodToDateRangeTimestamps("year-to-date");
+      const result = convertPeriodToNanosecondRange("year-to-date");
 
       expect(result).toEqual({
         from: BigInt(new Date("2024-01-01T00:00:00Z").getTime()) * NANOS_IN_MS,
