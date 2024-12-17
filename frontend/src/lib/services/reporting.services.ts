@@ -1,5 +1,6 @@
 import { getTransactions } from "$lib/api/icp-index.api";
 import type { Account } from "$lib/types/account";
+import type { TransactionsDateRange } from "$lib/types/reporting";
 import { neuronStake } from "$lib/utils/neuron.utils";
 import { SignIdentity } from "@dfinity/agent";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
@@ -94,11 +95,6 @@ export const getAccountTransactionsConcurrently = async ({
   return entitiesAndTransactions;
 };
 
-type DateRange = {
-  from?: bigint;
-  to?: bigint;
-};
-
 export const getAllTransactionsFromAccountAndIdentity = async ({
   accountId,
   identity,
@@ -112,7 +108,7 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
   lastTransactionId?: bigint;
   allTransactions?: TransactionWithId[];
   currentPageIndex?: number;
-  range?: DateRange;
+  range?: TransactionsDateRange;
 }): Promise<TransactionWithId[] | undefined> => {
   // Based on
   //   https://github.com/dfinity/ic/blob/master/rs/ledger_suite/icp/index/src/lib.rs#L31
@@ -178,7 +174,7 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
 // Helper function to filter transactions by date range
 const filterTransactionsByRange = (
   transactions: TransactionWithId[],
-  range?: DateRange
+  range?: TransactionsDateRange
 ): TransactionWithId[] => {
   if (isNullish(range)) return transactions;
   return transactions.filter((tx) => {
