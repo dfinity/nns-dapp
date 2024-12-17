@@ -465,7 +465,7 @@ export const buildNeuronsDatasets = ({
 };
 
 export const convertPeriodToNanosecondRange = (
-  period: ReportingDateRange
+  period: ReportingPeriod
 ): TransactionsDateRange => {
   const now = new Date();
   const currentYear = now.getFullYear();
