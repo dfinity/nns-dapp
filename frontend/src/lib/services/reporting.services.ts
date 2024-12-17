@@ -94,7 +94,7 @@ export const getAccountTransactionsConcurrently = async ({
   return entitiesAndTransactions;
 };
 
-type DateRange = {
+export type TransactionsDateRange = {
   from?: bigint;
   to?: bigint;
 };
@@ -112,7 +112,7 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
   lastTransactionId?: bigint;
   allTransactions?: TransactionWithId[];
   currentPageIndex?: number;
-  range?: DateRange;
+  range?: TransactionsDateRange;
 }): Promise<TransactionWithId[] | undefined> => {
   // Based on
   //   https://github.com/dfinity/ic/blob/master/rs/ledger_suite/icp/index/src/lib.rs#L31

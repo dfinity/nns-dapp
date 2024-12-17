@@ -1,4 +1,8 @@
-import type { TransactionResults } from "$lib/services/reporting.services";
+import type {
+  TransactionResults,
+  TransactionsDateRange,
+} from "$lib/services/reporting.services";
+import type { ReportingDateRange } from "$lib/types/reporting";
 import {
   getFutureDateFromDelayInSeconds,
   nanoSecondsToDateTime,
@@ -458,4 +462,28 @@ export const buildNeuronsDatasets = ({
   });
 
   return [{ metadata, data }];
+};
+
+export const periodToDateRangeTimestampts = (
+  period: ReportingDateRange
+): TransactionsDateRange => {
+  if (period === "all") return {};
+
+  const now = new Date();
+  const currentYear = now.getFullYear();
+
+  if (period === "last-year") {
+    return {
+      from: BigInt(new Date(currentYear - 1, 0, 1).getTime()),
+      to: BigInt(new Date(currentYear - 1, 11, 31, 23, 59, 59, 999).getTime()),
+    };
+  }
+
+  if (period === "year-to-date") {
+    return {
+      from: BigInt(new Date(currentYear, 0, 1).getTime()),
+    };
+  }
+
+  throw new Error(`Invalid period: ${period}`);
 };

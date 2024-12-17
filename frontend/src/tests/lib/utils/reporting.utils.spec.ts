@@ -5,6 +5,7 @@ import {
   combineDatasetsToCsv,
   convertToCsv,
   generateCsvFileToSave,
+  periodToDateRangeTimestampts,
   type CsvHeader,
 } from "$lib/utils/reporting.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -552,6 +553,45 @@ describe("reporting utils", () => {
           metadata: expectedMetadata,
         },
       ]);
+    });
+  });
+
+  describe("periodToDateRangeTimestampts", () => {
+    const mockDate = new Date("2024-03-15T12:00:00Z");
+
+    beforeEach(() => {
+      vi.clearAllTimers();
+      vi.useFakeTimers();
+      vi.setSystemTime(mockDate);
+    });
+
+    it('returns empty object for "all" period', () => {
+      const result = periodToDateRangeTimestampts("all");
+      expect(result).toEqual({});
+    });
+
+    it('returns correct range for "last-year"', () => {
+      const result = periodToDateRangeTimestampts("last-year");
+
+      expect(result).toEqual({
+        from: BigInt(new Date("2023-01-01T00:00:00Z").getTime()),
+        to: BigInt(new Date("2023-12-31T23:59:59.999Z").getTime()),
+      });
+    });
+
+    it('returns correct range for "year-to-date"', () => {
+      const result = periodToDateRangeTimestampts("year-to-date");
+
+      expect(result).toEqual({
+        from: BigInt(new Date("2024-01-01T00:00:00Z").getTime()),
+      });
+    });
+
+    it("throws error for invalid period", () => {
+      // @ts-expect-error Testing invalid input
+      expect(() => periodToDateRangeTimestampts("invalid-period")).toThrow(
+        "Invalid period: invalid-period"
+      );
     });
   });
 });
