@@ -1,11 +1,11 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import type { ReportingDateRange } from "$lib/types/reporting";
+  import type { ReportingPeriod } from "$lib/types/reporting";
   import ReportingTransactionsButton from "./ReportingTransactionsButton.svelte";
 
   // TODO: This will be hooked up in a follow up
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let selectedRange: ReportingDateRange = "all";
+  let selectedRange: ReportingPeriod = "all";
 </script>
 
 <div class="wrapper">

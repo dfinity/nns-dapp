@@ -1,6 +1,6 @@
-import type { TransactionResults } from "$lib/services/reporting.services";
 import type {
-  ReportingDateRange,
+  ReportingPeriod,
+  TransactionResults,
   TransactionsDateRange,
 } from "$lib/types/reporting";
 import {

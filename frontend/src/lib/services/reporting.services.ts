@@ -1,25 +1,15 @@
 import { getTransactions } from "$lib/api/icp-index.api";
 import type { Account } from "$lib/types/account";
-import type { TransactionsDateRange } from "$lib/types/reporting";
+import type {
+  TransactionEntity,
+  TransactionResults,
+  TransactionsDateRange,
+} from "$lib/types/reporting";
 import { neuronStake } from "$lib/utils/neuron.utils";
 import { SignIdentity } from "@dfinity/agent";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
 import type { NeuronInfo } from "@dfinity/nns";
 import { isNullish, nonNullish } from "@dfinity/utils";
-
-type TransactionEntity =
-  | {
-      identifier: string;
-      balance: bigint;
-      type: "account";
-      originalData: Account;
-    }
-  | {
-      identifier: string;
-      balance: bigint;
-      type: "neuron";
-      originalData: NeuronInfo;
-    };
 
 const accountToTransactionEntity = (account: Account): TransactionEntity => {
   return {
@@ -45,12 +35,6 @@ export const mapAccountOrNeuronToTransactionEntity = (
   }
   return accountToTransactionEntity(entity);
 };
-
-export type TransactionResults = {
-  entity: TransactionEntity;
-  transactions: TransactionWithId[];
-  error?: string;
-}[];
 
 export const getAccountTransactionsConcurrently = async ({
   entities,
@@ -171,7 +155,13 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
   }
 };
 
-// Helper function to filter transactions by date range
+/**
+ * Filters an array of transactions based on a timestamp range.
+ *
+ * @param transactions - Array of transactions to filter
+ * @param range - Optional time range with inclusive 'from' and exclusive 'to' timestamps in nanoseconds
+ * @returns Filtered array of transactions that fall within the specified range
+ */
 const filterTransactionsByRange = (
   transactions: TransactionWithId[],
   range?: TransactionsDateRange
