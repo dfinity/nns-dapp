@@ -1,6 +1,6 @@
 <script lang="ts">
   import ReportingNeuronsButton from "$lib/components/reporting/ReportingNeuronsButton.svelte";
-  import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
+  import ReportingTransactions from "$lib/components/reporting/ReportingTransactions.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
@@ -37,7 +37,7 @@
         <h3>{$i18n.reporting.transactions_title}</h3>
         <p class="description">{$i18n.reporting.transactions_description}</p>
       </div>
-      <ReportingTransactionsButton />
+      <ReportingTransactions />
     </div>
   </main>
 </Island>
