@@ -2,4 +2,4 @@
   import { onIntersection } from "$lib/directives/intersection.directives";
 </script>
 
-<div use:onIntersection />
+<div use:onIntersection></div>
