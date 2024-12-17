@@ -53,7 +53,7 @@
 
         <KeyValuePairInfo>
           <p slot="key" class="label">{$i18n.settings.your_session}</p>
-          <p slot="value" class="value session" data-tid="session-duration">
+          <div slot="value" class="value session" data-tid="session-duration">
             {#if nonNullish(remainingTimeMilliseconds)}
               {remainingTimeMilliseconds <= 0
                 ? "0"
@@ -64,7 +64,7 @@
             {:else}
               <div class="skeleton"><SkeletonText /></div>
             {/if}
-          </p>
+          </div>
 
           <svelte:fragment slot="info">
             {$i18n.settings.your_session_description}
