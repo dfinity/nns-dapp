@@ -178,7 +178,7 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
 // Helper function to filter transactions by date range
 const filterTransactionsByRange = (
   transactions: TransactionWithId[],
-  range?: DateRange
+  range?: TransactionsDateRange
 ): TransactionWithId[] => {
   if (isNullish(range)) return transactions;
   return transactions.filter((tx) => {
