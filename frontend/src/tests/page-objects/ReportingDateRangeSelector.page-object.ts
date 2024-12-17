@@ -14,10 +14,6 @@ export class ReportingDateRangeSelectorPo extends SimpleBasePageObject {
     );
   }
 
-  getLegend() {
-    return this.getElement().querySelector("legend").getText();
-  }
-
   getAllOptions() {
     return this.getElement().querySelectorAll('input[type="radio"]');
   }

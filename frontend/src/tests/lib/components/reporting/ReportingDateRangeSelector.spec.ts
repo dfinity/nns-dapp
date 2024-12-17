@@ -13,12 +13,6 @@ describe("ReportingDateRangeSelector", () => {
     return po;
   };
 
-  it("should render a title", async () => {
-    const po = renderComponent();
-    const title = await po.getLegend();
-    expect(title).toBeDefined();
-  });
-
   it("should render three options", async () => {
     const po = renderComponent();
 
