@@ -575,7 +575,7 @@ describe("reporting utils", () => {
 
       expect(result).toEqual({
         from: BigInt(new Date("2023-01-01T00:00:00Z").getTime()),
-        to: BigInt(new Date("2023-12-31T23:59:59.999Z").getTime()),
+        to: BigInt(new Date("2024-01-01T00:00:00Z").getTime()),
       });
     });
 
@@ -585,13 +585,6 @@ describe("reporting utils", () => {
       expect(result).toEqual({
         from: BigInt(new Date("2024-01-01T00:00:00Z").getTime()),
       });
-    });
-
-    it("throws error for invalid period", () => {
-      // @ts-expect-error Testing invalid input
-      expect(() => periodToDateRangeTimestampts("invalid-period")).toThrow(
-        "Invalid period: invalid-period"
-      );
     });
   });
 });

@@ -1,5 +1,6 @@
 import { getTransactions } from "$lib/api/icp-index.api";
 import type { Account } from "$lib/types/account";
+import type { TransactionsDateRange } from "$lib/types/reporting";
 import { neuronStake } from "$lib/utils/neuron.utils";
 import { SignIdentity } from "@dfinity/agent";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
@@ -92,11 +93,6 @@ export const getAccountTransactionsConcurrently = async ({
   });
 
   return entitiesAndTransactions;
-};
-
-export type TransactionsDateRange = {
-  from?: bigint;
-  to?: bigint;
 };
 
 export const getAllTransactionsFromAccountAndIdentity = async ({
