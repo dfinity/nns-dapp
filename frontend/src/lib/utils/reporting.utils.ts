@@ -1,4 +1,3 @@
-import type { TransactionResults } from "$lib/services/reporting.services";
 import type {
   ReportingPeriod,
   TransactionResults,
