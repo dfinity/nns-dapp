@@ -133,6 +133,9 @@ describe("NnsNeurons", () => {
 
       const po = await renderComponent();
 
+      // The neuron has a stake of 3 ICP.
+      // There are 11 USD in 1 ICP.
+      // So the stake is $33.
       const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
       expect(await rows[0].getStakeInUsd()).toBe("$33.00");
     });

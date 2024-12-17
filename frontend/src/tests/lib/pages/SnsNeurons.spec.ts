@@ -236,7 +236,7 @@ describe("SnsNeurons", () => {
       const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
       // We have a stake of 4 and 2 in the neurons.
       // There are 10 USD in 1 ICP and 100 SNS tokens in 1 ICP.
-      // So each token in $0.10.
+      // So each token is $0.10.
       expect(await rows[0].getStakeInUsd()).toBe("$0.40");
       expect(await rows[1].getStakeInUsd()).toBe("$0.20");
     });
