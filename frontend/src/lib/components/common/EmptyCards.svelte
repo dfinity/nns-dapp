@@ -4,19 +4,19 @@
 
 <div class="card-grid" data-tid="empty-cards-component">
   <Card disabled>
-    <div class="card-item" />
+    <div class="card-item"></div>
   </Card>
   <Card disabled>
-    <div class="card-item" />
+    <div class="card-item"></div>
   </Card>
   <Card disabled>
-    <div class="card-item" />
+    <div class="card-item"></div>
   </Card>
   <Card disabled>
-    <div class="card-item" />
+    <div class="card-item"></div>
   </Card>
   <Card disabled>
-    <div class="card-item" />
+    <div class="card-item"></div>
   </Card>
 </div>
 
