@@ -1,12 +1,15 @@
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronsPo } from "$tests/page-objects/NnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -105,6 +108,36 @@ describe("NnsNeurons", () => {
       // Spawning neuron without stake comes last.
       expect(await rows[2].getStake()).toBe("0 ICP");
       expect(await rows[2].hasGoToDetailButton()).toBe(false);
+    });
+
+    it("should provide USD prices", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([
+        {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            cachedNeuronStake: 300_000_000n,
+          },
+        },
+      ]);
+
+      icpSwapTickersStore.set([
+        {
+          ...mockIcpSwapTicker,
+          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+          last_price: "11.00",
+        },
+      ]);
+
+      const po = await renderComponent();
+
+      // The neuron has a stake of 3 ICP.
+      // There are 11 USD in 1 ICP.
+      // So the stake is $33.
+      const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+      expect(await rows[0].getStakeInUsd()).toBe("$33.00");
     });
   });
 

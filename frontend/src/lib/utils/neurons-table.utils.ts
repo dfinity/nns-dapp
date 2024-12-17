@@ -51,7 +51,7 @@ export const tableNeuronsFromNeuronInfos = ({
   neuronInfos: NeuronInfo[];
   identity?: Identity | undefined | null;
   accounts: IcpAccountsStoreData;
-  icpSwapUsdPrices?: IcpSwapUsdPricesStoreData;
+  icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
   i18n: I18n;
 }): TableNeuron[] => {
   return neuronInfos.map((neuronInfo) => {
@@ -110,7 +110,7 @@ export const tableNeuronsFromSnsNeurons = ({
   universe: UniverseCanisterIdText;
   token: Token;
   identity: Identity | undefined | null;
-  icpSwapUsdPrices?: IcpSwapUsdPricesStoreData;
+  icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
   ledgerCanisterId: Principal;
   i18n: I18n;
 }): TableNeuron[] => {

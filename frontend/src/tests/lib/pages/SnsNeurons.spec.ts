@@ -1,13 +1,20 @@
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
 import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import {
+  ledgerCanisterIdMock,
+  rootCanisterIdMock,
+} from "$tests/mocks/sns.api.mock";
 import { SnsNeuronsPo } from "$tests/page-objects/SnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
@@ -26,6 +33,7 @@ vi.mock("$lib/api/sns-ledger.api");
 
 describe("SnsNeurons", () => {
   const rootCanisterId = rootCanisterIdMock;
+  const ledgerCanisterId = ledgerCanisterIdMock;
   const neuron1Stake = 200_000_000n;
   const neuron1 = createMockSnsNeuron({
     id: [1, 2, 3],
@@ -59,6 +67,7 @@ describe("SnsNeurons", () => {
     setSnsProjects([
       {
         rootCanisterId,
+        ledgerCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
         projectName,
       },
@@ -204,6 +213,32 @@ describe("SnsNeurons", () => {
         controller: mockIdentity.getPrincipal(),
         identity: mockIdentity,
       });
+    });
+
+    it("should provide USD prices", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      icpSwapTickersStore.set([
+        {
+          ...mockIcpSwapTicker,
+          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+          last_price: "10.00",
+        },
+        {
+          ...mockIcpSwapTicker,
+          base_id: ledgerCanisterId.toText(),
+          last_price: "100.00",
+        },
+      ]);
+
+      const po = await renderComponent();
+
+      const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+      // We have a stake of 4 and 2 in the neurons.
+      // There are 10 USD in 1 ICP and 100 SNS tokens in 1 ICP.
+      // So each token is $0.10.
+      expect(await rows[0].getStakeInUsd()).toBe("$0.40");
+      expect(await rows[1].getStakeInUsd()).toBe("$0.20");
     });
   });
 
