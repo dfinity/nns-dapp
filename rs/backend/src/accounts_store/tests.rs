@@ -234,6 +234,23 @@ fn attach_canister_name_too_long() {
 }
 
 #[test]
+fn attach_canister_account_not_found() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+
+    let result = store.attach_canister(
+        principal,
+        AttachCanisterRequest {
+            name: "".to_string(),
+            canister_id,
+        },
+    );
+
+    assert!(matches!(result, AttachCanisterResponse::AccountNotFound));
+}
+
+#[test]
 fn attach_canister_canister_already_attached() {
     let mut store = setup_test_store();
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
