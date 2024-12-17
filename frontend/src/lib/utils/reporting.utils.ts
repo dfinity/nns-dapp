@@ -469,6 +469,8 @@ export const periodToDateRangeTimestampts = (
 ): TransactionsDateRange => {
   const now = new Date();
   const currentYear = now.getFullYear();
+  const toNanoseconds = (milliseconds: number): bigint =>
+    BigInt(milliseconds) * BigInt(1_000_000);
 
   switch (period) {
     case "all":
@@ -476,13 +478,13 @@ export const periodToDateRangeTimestampts = (
 
     case "last-year":
       return {
-        from: BigInt(new Date(currentYear - 1, 0, 1).getTime()),
-        to: BigInt(new Date(currentYear, 0, 1).getTime()),
+        from: toNanoseconds(new Date(currentYear - 1, 0, 1).getTime()),
+        to: toNanoseconds(new Date(currentYear, 0, 1).getTime()),
       };
 
     case "year-to-date":
       return {
-        from: BigInt(new Date(currentYear, 0, 1).getTime()),
+        from: toNanoseconds(new Date(currentYear, 0, 1).getTime()),
       };
   }
 };

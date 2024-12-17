@@ -558,6 +558,7 @@ describe("reporting utils", () => {
 
   describe("periodToDateRangeTimestampts", () => {
     const mockDate = new Date("2024-03-15T12:00:00Z");
+    const NANOS_IN_MS = BigInt(1_000_000);
 
     beforeEach(() => {
       vi.clearAllTimers();
@@ -574,8 +575,8 @@ describe("reporting utils", () => {
       const result = periodToDateRangeTimestampts("last-year");
 
       expect(result).toEqual({
-        from: BigInt(new Date("2023-01-01T00:00:00Z").getTime()),
-        to: BigInt(new Date("2024-01-01T00:00:00Z").getTime()),
+        from: BigInt(new Date("2023-01-01T00:00:00Z").getTime()) * NANOS_IN_MS,
+        to: BigInt(new Date("2024-01-01T00:00:00Z").getTime()) * NANOS_IN_MS,
       });
     });
 
@@ -583,7 +584,7 @@ describe("reporting utils", () => {
       const result = periodToDateRangeTimestampts("year-to-date");
 
       expect(result).toEqual({
-        from: BigInt(new Date("2024-01-01T00:00:00Z").getTime()),
+        from: BigInt(new Date("2024-01-01T00:00:00Z").getTime()) * NANOS_IN_MS,
       });
     });
   });
