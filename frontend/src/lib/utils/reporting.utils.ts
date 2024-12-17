@@ -464,7 +464,7 @@ export const buildNeuronsDatasets = ({
   return [{ metadata, data }];
 };
 
-export const periodToDateRangeTimestampts = (
+export const periodToDateRangeTimestamps = (
   period: ReportingDateRange
 ): TransactionsDateRange => {
   const now = new Date();
