@@ -43,7 +43,7 @@
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
   fieldset {
-    all: unset; // Reset all styles
+    all: unset;
 
     .wrapper {
       display: flex;
@@ -51,7 +51,7 @@
       gap: var(--padding-2x);
       border: none;
       padding: 0;
-      margin: 0; /* Add this to remove default margin */
+      margin: 0;
 
       legend {
         @include fonts.h5;
