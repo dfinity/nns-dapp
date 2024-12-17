@@ -192,7 +192,11 @@
     "error_csv_generation": "Failed to generate CSV file",
     "error_file_system_access": "Unable to save file. Please check your permissions.",
     "error_neurons": "There was an error exporting the neurons. Please try again.",
-    "error_transactions": "There was an error exporting the transactions. Please try again."
+    "error_transactions": "There was an error exporting the transactions. Please try again.",
+    "range_filter_title": "Reporting Date Range",
+    "range_filter_all": "All transactions",
+    "range_last_year": "Last year",
+    "range_year_to_date": "Year to date"
   },
   "auth": {
     "login": "Sign in with Internet Identity",
