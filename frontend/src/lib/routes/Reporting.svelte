@@ -32,13 +32,7 @@
 
     <Separator spacing="medium" />
 
-    <div class="wrapper">
-      <div>
-        <h3>{$i18n.reporting.transactions_title}</h3>
-        <p class="description">{$i18n.reporting.transactions_description}</p>
-      </div>
-      <ReportingTransactions />
-    </div>
+    <ReportingTransactions />
   </main>
 </Island>
 
