@@ -26,7 +26,7 @@
             class="actionable-status-badge"
             role="status"
             transition:scale={{ duration: 250, easing: cubicOut }}
-          />
+          ></div>
         </Tooltip>
       </div>
     {/if}

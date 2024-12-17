@@ -66,7 +66,7 @@
       {$i18n.ckbtc.receive_btc_title}
     </h4>
     <div class="content-cell-details info-section">
-      <p class="description">
+      <div class="description">
         {$i18n.ckbtc.ckbtc_buzz_words}
         {#if nonNullish(account)}
           <Html
@@ -88,7 +88,7 @@
             {/if}
           </a>.
         {/if}
-      </p>
+      </div>
     </div>
   </div>
 

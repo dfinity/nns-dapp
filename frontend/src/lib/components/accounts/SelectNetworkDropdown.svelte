@@ -59,7 +59,7 @@
   testId="select-network-dropdown"
 >
   <option disabled selected value={undefined} class="hidden"
-    ><span class="description">{$i18n.accounts.select_network}</span></option
+    >{$i18n.accounts.select_network}</option
   >
   <DropdownItem value={TransactionNetwork.ICP}
     >{$i18n.accounts.network_icp}</DropdownItem

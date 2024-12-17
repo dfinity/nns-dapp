@@ -13,5 +13,5 @@
   ledgerCanisterId={CKTESTBTC_LEDGER_CANISTER_ID}
   indexCanisterId={CKTESTBTC_INDEX_CANISTER_ID}
 >
-  <div data-tid="test-observer" />
+  <div data-tid="test-observer"></div>
 </IcrcWalletTransactionsObserver>

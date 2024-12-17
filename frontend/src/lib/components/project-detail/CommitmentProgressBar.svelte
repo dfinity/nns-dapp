@@ -39,7 +39,7 @@
             class="min-indicator"
             data-tid="commitment-min-indicator"
             style={`left: calc(${minIndicatorPosition}px);`}
-          />
+          ></span>
         </div>
       </div>
     {/if}
