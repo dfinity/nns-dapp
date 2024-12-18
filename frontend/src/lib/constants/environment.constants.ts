@@ -18,6 +18,7 @@ export interface FeatureFlags<T> {
   ENABLE_EXPORT_NEURONS_REPORT: T;
   ENABLE_USD_VALUES: T;
   ENABLE_USD_VALUES_FOR_NEURONS: T;
+  ENABLE_PORTFOLIO_PAGE: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;
@@ -29,6 +30,7 @@ export const defaultFeatureFlagValues: FeatureFlags<boolean> = {
   ENABLE_EXPORT_NEURONS_REPORT: false,
   ENABLE_USD_VALUES: false,
   ENABLE_USD_VALUES_FOR_NEURONS: false,
+  ENABLE_PORTFOLIO_PAGE: false,
   TEST_FLAG_EDITABLE: false,
   TEST_FLAG_NOT_EDITABLE: false,
 };
