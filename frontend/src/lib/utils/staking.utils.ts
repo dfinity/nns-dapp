@@ -1,5 +1,6 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { type IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
+import type { TableNeuron } from "$lib/types/neurons-table";
 import type { TableProject } from "$lib/types/staking";
 import type { Universe } from "$lib/types/universe";
 import { buildNeuronsUrl } from "$lib/utils/navigation.utils";
@@ -219,12 +220,13 @@ export const sortTableProjects = (projects: TableProject[]): TableProject[] => {
   );
 };
 
-const getUsdStake = (project: TableProject) => {
+const getUsdStake = (project: TableProject | TableNeuron) => {
   if (!("stakeInUsd" in project) || isNullish(project.stakeInUsd)) {
     return 0;
   }
   return project.stakeInUsd;
 };
 
-export const getTotalStakeInUsd = (projects: TableProject[]): number =>
-  projects.reduce((acc, project) => acc + getUsdStake(project), 0);
+export const getTotalStakeInUsd = (
+  projects: Array<TableProject | TableNeuron>
+): number => projects.reduce((acc, project) => acc + getUsdStake(project), 0);
