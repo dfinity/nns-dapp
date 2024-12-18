@@ -113,7 +113,7 @@
 </script>
 
 <div class="wrapper" data-tid="projects-table-component">
-  {#if $authSignedInStore && $ENABLE_USD_VALUES_FOR_NEURONS}
+  {#if $authSignedInStore && $ENABLE_USD_VALUES_FOR_NEURONS && totalStakeInUsd > 0}
     <UsdValueBanner usdAmount={totalStakeInUsd} {hasUnpricedTokens}>
       <IconNeuronsPage slot="icon" />
     </UsdValueBanner>

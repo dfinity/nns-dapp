@@ -55,6 +55,7 @@ describe("ProjectsTable", () => {
         },
       },
     ]);
+    vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
   });
 
   it("should render desktop headers", async () => {
@@ -534,10 +535,35 @@ describe("ProjectsTable", () => {
       expect(await rowPos[0].getStakeInUsd()).toBe("$-/-");
     });
 
+    it("should not show total USD value banner when the user has no neurons", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      neuronsStore.setNeurons({
+        neurons: [],
+        certified: true,
+      });
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [],
+        certified: true,
+      });
+
+      const po = renderComponent();
+      await runResolvedPromises();
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
+    });
+
     it("should not show total USD value banner when feature flag is disabled", async () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
 
+      neuronsStore.setNeurons({
+        neurons: [nnsNeuronWithStake],
+        certified: true,
+      });
+
       const po = renderComponent();
+      await runResolvedPromises();
 
       expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
     });
@@ -547,17 +573,9 @@ describe("ProjectsTable", () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
 
       const po = renderComponent();
+      await runResolvedPromises();
 
       expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
-    });
-
-    it("should show total USD value banner when feature flag is enabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
-      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
-      const po = renderComponent();
-
-      expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
     });
 
     it("should show total stake in USD", async () => {
@@ -587,6 +605,7 @@ describe("ProjectsTable", () => {
       ]);
 
       const po = renderComponent();
+      await runResolvedPromises();
 
       expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
       // The NNS neuron has a stake of 1 and the SNS neurons a stake of 2.
@@ -622,6 +641,7 @@ describe("ProjectsTable", () => {
       ]);
 
       const po = renderComponent();
+      await runResolvedPromises();
 
       expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
       expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$10.00");
