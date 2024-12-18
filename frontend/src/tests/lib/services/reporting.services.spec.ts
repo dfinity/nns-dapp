@@ -137,7 +137,7 @@ describe("reporting service", () => {
       expect(spyGetTransactions).toHaveBeenCalledTimes(2);
     });
 
-    it('should filter "to" the provided date', async () => {
+    it('should filter "to" the provided date excluding to', async () => {
       const allTransactions = [
         createTransactionWithId({
           id: 3n,
@@ -166,8 +166,8 @@ describe("reporting service", () => {
         },
       });
 
-      expect(result).toHaveLength(2);
-      expect(result).toEqual(allTransactions.slice(1));
+      expect(result).toHaveLength(1);
+      expect(result).toEqual(allTransactions.slice(2));
       expect(spyGetTransactions).toHaveBeenCalledTimes(1);
     });
 

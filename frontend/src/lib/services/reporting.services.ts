@@ -39,9 +39,11 @@ export const mapAccountOrNeuronToTransactionEntity = (
 export const getAccountTransactionsConcurrently = async ({
   entities,
   identity,
+  range,
 }: {
   entities: (Account | NeuronInfo)[];
   identity: SignIdentity;
+  range: TransactionsDateRange;
 }): Promise<TransactionResults> => {
   const transactionEntities = entities.map(
     mapAccountOrNeuronToTransactionEntity
@@ -51,6 +53,7 @@ export const getAccountTransactionsConcurrently = async ({
     getAllTransactionsFromAccountAndIdentity({
       accountId: entity.identifier,
       identity,
+      range,
     })
   );
 
@@ -177,7 +180,7 @@ const filterTransactionsByRange = (
     }
 
     const to = range.to;
-    if (nonNullish(to) && timestamp > to) {
+    if (nonNullish(to) && timestamp >= to) {
       return false;
     }
 
