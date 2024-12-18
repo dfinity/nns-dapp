@@ -542,6 +542,15 @@ describe("ProjectsTable", () => {
       expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
     });
 
+    it("should not show total USD value banner when not logged in", async () => {
+      setNoIdentity();
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      const po = renderComponent();
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
+    });
+
     it("should show total USD value banner when feature flag is enabled", async () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
 
