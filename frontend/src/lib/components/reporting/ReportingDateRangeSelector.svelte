@@ -1,11 +1,11 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import type { ReportingDateRange } from "$lib/types/reporting";
+  import type { ReportingPeriod } from "$lib/types/reporting";
 
-  let selectedRange: ReportingDateRange = "all";
+  let period: ReportingPeriod = "all";
 
   const options: Array<{
-    value: ReportingDateRange;
+    value: ReportingPeriod;
     label: string;
   }> = [
     { value: "all", label: $i18n.reporting.range_filter_all },
@@ -13,8 +13,8 @@
     { value: "year-to-date", label: $i18n.reporting.range_year_to_date },
   ];
 
-  function handleChange(value: ReportingDateRange) {
-    selectedRange = value;
+  function handleChange(value: ReportingPeriod) {
+    period = value;
   }
 </script>
 
@@ -28,8 +28,8 @@
             type="radio"
             name="dateRange"
             value={option.value}
-            checked={selectedRange === option.value}
-            aria-checked={selectedRange === option.value}
+            checked={period === option.value}
+            aria-checked={period === option.value}
             on:change={() => handleChange(option.value)}
           />
           <span class="label">{option.label}</span>

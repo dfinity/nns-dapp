@@ -1,6 +1,6 @@
-import type { TransactionResults } from "$lib/services/reporting.services";
 import type {
-  ReportingDateRange,
+  ReportingPeriod,
+  TransactionResults,
   TransactionsDateRange,
 } from "$lib/types/reporting";
 import {
@@ -465,7 +465,7 @@ export const buildNeuronsDatasets = ({
 };
 
 export const convertPeriodToNanosecondRange = (
-  period: ReportingDateRange
+  period: ReportingPeriod
 ): TransactionsDateRange => {
   const now = new Date();
   const currentYear = now.getFullYear();
