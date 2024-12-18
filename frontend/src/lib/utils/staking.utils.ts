@@ -218,3 +218,13 @@ export const sortTableProjects = (projects: TableProject[]): TableProject[] => {
     ])
   );
 };
+
+const getUsdStake = (project: TableProject) => {
+  if (!("stakeInUsd" in project) || isNullish(project.stakeInUsd)) {
+    return 0;
+  }
+  return project.stakeInUsd;
+};
+
+export const getTotalStakeInUsd = (projects: TableProject[]): number =>
+  projects.reduce((acc, project) => acc + getUsdStake(project), 0);
