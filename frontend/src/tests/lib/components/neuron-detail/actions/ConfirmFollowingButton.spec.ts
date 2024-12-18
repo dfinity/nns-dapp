@@ -5,7 +5,6 @@ import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { ConfirmFollowingButtonPo } from "$tests/page-objects/ConfirmFollowingButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore } from "@dfinity/gix-components";
 import { nonNullish } from "@dfinity/utils";
@@ -30,7 +29,6 @@ describe("ConfirmFollowingButton", () => {
 
   beforeEach(() => {
     resetIdentity();
-    allowLoggingInOneTestForDebugging();
 
     neuronsStore.pushNeurons({ neurons, certified: true });
     spyQueryNeurons = vi.spyOn(api, "queryNeurons").mockResolvedValue(neurons);

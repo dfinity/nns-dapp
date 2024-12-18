@@ -11,5 +11,5 @@
   ledgerCanisterId={CKTESTBTC_LEDGER_CANISTER_ID}
   {reload}
 >
-  <div data-tid="test-observer" />
+  <div data-tid="test-observer"></div>
 </IcrcBalancesObserver>

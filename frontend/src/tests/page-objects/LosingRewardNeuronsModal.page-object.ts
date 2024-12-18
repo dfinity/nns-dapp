@@ -1,5 +1,6 @@
 import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { ConfirmFollowingButtonPo } from "./ConfirmFollowingButton.page-object";
 import { NnsLosingRewardsNeuronCardPo } from "./NnsLosingRewardsNeuronCard.page-object";
 
 export class LosingRewardNeuronsModalPo extends ModalPo {
@@ -13,6 +14,14 @@ export class LosingRewardNeuronsModalPo extends ModalPo {
 
   getNnsLosingRewardsNeuronCardPos(): Promise<NnsLosingRewardsNeuronCardPo[]> {
     return NnsLosingRewardsNeuronCardPo.allUnder(this.root);
+  }
+
+  getConfirmFollowingButtonPo(): ConfirmFollowingButtonPo {
+    return ConfirmFollowingButtonPo.under(this.root);
+  }
+
+  async clickConfirmFollowing(): Promise<void> {
+    return this.getConfirmFollowingButtonPo().click();
   }
 
   async clickCancel(): Promise<void> {

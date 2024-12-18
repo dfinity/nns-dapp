@@ -22,6 +22,10 @@ export const mockTransactionTransfer: Transaction = {
   timestamp: [{ timestamp_nanos: 235n }],
 };
 
+export const dateToNanoSeconds = (date: Date): bigint => {
+  return BigInt(date.getTime()) * BigInt(NANO_SECONDS_IN_MILLISECOND);
+};
+
 const defaultTimestamp = new Date("2023-01-01T00:00:00.000Z");
 export const createTransactionWithId = ({
   memo,
@@ -35,8 +39,7 @@ export const createTransactionWithId = ({
   id?: bigint;
 }): TransactionWithId => {
   const timestampNanos = {
-    timestamp_nanos:
-      BigInt(timestamp.getTime()) * BigInt(NANO_SECONDS_IN_MILLISECOND),
+    timestamp_nanos: dateToNanoSeconds(timestamp),
   };
   return {
     id,

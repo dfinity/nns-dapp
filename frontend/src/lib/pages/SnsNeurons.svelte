@@ -2,6 +2,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import NeuronsTable from "$lib/components/neurons/NeuronsTable/NeuronsTable.svelte";
   import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
+  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import {
     snsOnlyProjectStore,
@@ -50,6 +51,8 @@
         identity: $authStore.identity,
         i18n: $i18n,
         snsNeurons: $definedSnsNeuronStore,
+        icpSwapUsdPrices: $icpSwapUsdPricesStore,
+        ledgerCanisterId: summary.ledgerCanisterId,
       })
     : [];
 

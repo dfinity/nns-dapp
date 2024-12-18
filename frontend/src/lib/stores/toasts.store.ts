@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { DEFAULT_TOAST_DURATION_MILLIS } from "$lib/constants/constants";
-import type { ToastMsg } from "$lib/types/toast";
+import type { ToastLabelKey, ToastMsg } from "$lib/types/toast";
 import { errorToString } from "$lib/utils/error.utils";
 import type { I18nSubstitutions } from "$lib/utils/i18n.utils";
 import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
@@ -48,7 +48,7 @@ export const toastsError = ({
   substitutions,
   renderAsHtml,
 }: {
-  labelKey: string;
+  labelKey: ToastLabelKey;
   err?: unknown;
   substitutions?: I18nSubstitutions;
   renderAsHtml?: boolean;

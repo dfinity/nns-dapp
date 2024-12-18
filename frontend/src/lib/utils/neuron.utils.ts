@@ -215,6 +215,17 @@ export const ageMultiplier = (ageSeconds: bigint): number =>
     amountForMaxBonus: SECONDS_IN_FOUR_YEARS,
   });
 
+export const activityMultiplier = ({ fullNeuron }: NeuronInfo) => {
+  const { decidingVotingPower = 0n, potentialVotingPower = 0n } =
+    fullNeuron ?? {};
+
+  if (potentialVotingPower === 0n || decidingVotingPower === 0n) {
+    return 0;
+  }
+
+  return Number(decidingVotingPower) / Number(potentialVotingPower);
+};
+
 // Calculates the bonus multiplier for an amount (such as dissolve delay or age)
 // which results in bonus eligibility which scales linearly from 1 to
 // `maxBonus`. For example for dissolve delay, the values

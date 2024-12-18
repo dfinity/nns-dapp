@@ -18,6 +18,10 @@ export class NnsNeuronVotingPowerSectionPo extends BasePageObject {
     return this.getText("voting-power");
   }
 
+  getGenericDescription(): Promise<string> {
+    return this.getText("voting-power-generic-description");
+  }
+
   getDescription(): Promise<string> {
     return this.getText("voting-power-description");
   }

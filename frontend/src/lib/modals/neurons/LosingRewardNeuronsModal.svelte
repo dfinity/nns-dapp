@@ -12,16 +12,23 @@
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import type { NeuronInfo } from "@dfinity/nns";
+  import ConfirmFollowingButton from "$lib/components/neuron-detail/actions/ConfirmFollowingButton.svelte";
 
   const dispatcher = createEventDispatcher<{ nnsClose: void }>();
 
   // Load KnownNeurons which are used in the FollowNnsTopicSections
   onMount(() => listKnownNeurons());
 
-  const confirm = () => {
-    // TBD
-  };
   const close = () => dispatcher("nnsClose");
+  const onConfirmed = ({
+    detail: { successCount, totalCount },
+  }: {
+    detail: { successCount: number; totalCount: number };
+  }) => {
+    if (successCount === totalCount) {
+      close();
+    }
+  };
 
   const navigateToNeuronDetail = async (neuron: NeuronInfo) => {
     close();
@@ -32,6 +39,9 @@
       })
     );
   };
+
+  let neuronIds: bigint[];
+  $: neuronIds = $soonLosingRewardNeuronsStore.map((neuron) => neuron.neuronId);
 </script>
 
 <Modal on:nnsClose testId="losing-reward-neurons-modal-component">
@@ -63,9 +73,7 @@
       <button on:click={close} class="secondary" data-tid="cancel-button"
         >{$i18n.core.cancel}</button
       >
-      <button on:click={confirm} class="primary" data-tid="confirm-button"
-        >{$i18n.losing_rewards.confirm}</button
-      >
+      <ConfirmFollowingButton {neuronIds} on:nnsComplete={onConfirmed} />
     </div>
   </div>
 </Modal>

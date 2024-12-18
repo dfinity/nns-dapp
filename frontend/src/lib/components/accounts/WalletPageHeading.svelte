@@ -108,7 +108,7 @@
               {/if}
             </TooltipIcon>
           </div>
-          <div class="vertical-divider" />
+          <div class="vertical-divider"></div>
         {/if}<div class="account-name">
           {accountName}
         </div>

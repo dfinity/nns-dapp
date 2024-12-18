@@ -18,6 +18,7 @@ import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
+  activityMultiplier,
   ageMultiplier,
   allHaveSameFollowees,
   ballotsWithDefinedProposal,
@@ -288,6 +289,67 @@ describe("neuron-utils", () => {
 
     it("returns expected multiplier for one year", () => {
       expect(ageMultiplier(BigInt(SECONDS_IN_YEAR))).toBe(1.0625);
+    });
+  });
+
+  describe("activityMultiplier", () => {
+    it("returns 0 when decidingVotingPower is 0", () => {
+      expect(
+        activityMultiplier({
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            decidingVotingPower: 0n,
+            potentialVotingPower: 0n,
+          },
+        })
+      ).toBe(0);
+    });
+
+    it("returns 0 when potentialVotingPower is 0", () => {
+      expect(
+        activityMultiplier({
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            decidingVotingPower: 100_000_000n,
+            potentialVotingPower: 0n,
+          },
+        })
+      ).toBe(0);
+    });
+
+    it("calculates the multiplier", () => {
+      expect(
+        activityMultiplier({
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            decidingVotingPower: 200_000_000n,
+            potentialVotingPower: 200_000_000n,
+          },
+        })
+      ).toBe(1);
+      expect(
+        activityMultiplier({
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            decidingVotingPower: 100_000_000n,
+            potentialVotingPower: 200_000_000n,
+          },
+        })
+      ).toBe(0.5);
+      expect(
+        activityMultiplier({
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            decidingVotingPower: 20_000n,
+            potentialVotingPower: 200_000_000n,
+          },
+        })
+      ).toBe(0.0001);
     });
   });
 

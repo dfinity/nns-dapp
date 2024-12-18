@@ -22,8 +22,10 @@
   >
 {:else if isUserTokenData(rowData)}
   {#if $ENABLE_USD_VALUES}
-    <AmountWithUsd amount={rowData.balance} amountInUsd={rowData.balanceInUsd}
-    ></AmountWithUsd>
+    <AmountWithUsd
+      amount={rowData.balance}
+      amountInUsd={rowData.balanceInUsd}
+    />
   {:else}
     <AmountDisplay singleLine amount={rowData.balance} />
   {/if}

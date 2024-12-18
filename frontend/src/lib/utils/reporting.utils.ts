@@ -1,4 +1,8 @@
 import type { TransactionResults } from "$lib/services/reporting.services";
+import type {
+  ReportingDateRange,
+  TransactionsDateRange,
+} from "$lib/types/reporting";
 import {
   getFutureDateFromDelayInSeconds,
   nanoSecondsToDateTime,
@@ -458,4 +462,29 @@ export const buildNeuronsDatasets = ({
   });
 
   return [{ metadata, data }];
+};
+
+export const convertPeriodToNanosecondRange = (
+  period: ReportingDateRange
+): TransactionsDateRange => {
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const toNanoseconds = (milliseconds: number): bigint =>
+    BigInt(milliseconds) * BigInt(1_000_000);
+
+  switch (period) {
+    case "all":
+      return {};
+
+    case "last-year":
+      return {
+        from: toNanoseconds(new Date(currentYear - 1, 0, 1).getTime()),
+        to: toNanoseconds(new Date(currentYear, 0, 1).getTime()),
+      };
+
+    case "year-to-date":
+      return {
+        from: toNanoseconds(new Date(currentYear, 0, 1).getTime()),
+      };
+  }
 };

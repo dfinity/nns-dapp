@@ -1,3 +1,4 @@
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import {
   compareByDissolveDelay,
@@ -16,17 +17,22 @@ import { mockNeuron, mockTableNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
 describe("neurons-table.utils", () => {
   const now = new Date("2022-01-01T15:26:47Z");
+  const icpPrice = 10;
 
   const makeStake = (amount: bigint) =>
     TokenAmountV2.fromUlps({
       amount,
       token: ICPToken,
     });
+
+  const makeUsdStake = (amount: bigint) =>
+    (Number(amount) * icpPrice) / 100_000_000;
 
   beforeEach(() => {
     vi.useFakeTimers().setSystemTime(now);
@@ -54,6 +60,7 @@ describe("neurons-table.utils", () => {
       domKey: "42",
       neuronId: "42",
       stake: makeStake(defaultStake),
+      stakeInUsd: makeUsdStake(defaultStake),
       availableMaturity: 0n,
       stakedMaturity: 0n,
       dissolveDelaySeconds: defaultDissolveDelaySeconds,
@@ -67,6 +74,9 @@ describe("neurons-table.utils", () => {
         neuronInfos,
         identity: mockIdentity,
         accounts: mockAccountsStoreData,
+        icpSwapUsdPrices: {
+          [LEDGER_CANISTER_ID.toText()]: icpPrice,
+        },
         i18n: en,
       });
 
@@ -105,6 +115,7 @@ describe("neurons-table.utils", () => {
           domKey: "42",
           neuronId: "42",
           stake: makeStake(stake1),
+          stakeInUsd: makeUsdStake(stake1),
         },
         {
           ...defaultExpectedTableNeuron,
@@ -112,6 +123,7 @@ describe("neurons-table.utils", () => {
           domKey: "342",
           neuronId: "342",
           stake: makeStake(stake2),
+          stakeInUsd: makeUsdStake(stake2),
         },
       ]);
     });
@@ -131,6 +143,7 @@ describe("neurons-table.utils", () => {
         {
           ...defaultExpectedTableNeuron,
           stake: makeStake(stake),
+          stakeInUsd: makeUsdStake(stake),
         },
       ]);
     });
@@ -190,6 +203,7 @@ describe("neurons-table.utils", () => {
           ...defaultExpectedTableNeuron,
           rowHref: undefined,
           stake: makeStake(0n),
+          stakeInUsd: 0,
           state: NeuronState.Spawning,
         },
       ]);
@@ -226,6 +240,9 @@ describe("neurons-table.utils", () => {
         neuronInfos: [hotkeyNeuronInfo],
         identity: mockIdentity,
         accounts: mockAccountsStoreData,
+        icpSwapUsdPrices: {
+          [LEDGER_CANISTER_ID.toText()]: icpPrice,
+        },
         i18n: en,
       });
       expect(tableNeurons).toEqual([
@@ -239,10 +256,12 @@ describe("neurons-table.utils", () => {
 
   describe("tableNeuronsFromSnsNeurons", () => {
     const snsUniverseIdText = "br5f7-7uaaa-aaaaa-qaaca-cai";
+    const ledgerCanisterId = Principal.fromText("wxkl4-qiqaa-2q");
     const neuronIdString = "123456789abcdef0";
     const neuronId = hexStringToBytes(neuronIdString);
     const stake = 300_000n;
     const dissolveDelaySeconds = 8640000n;
+    const snsTokenPrice = 0.25;
 
     const defaultCreateMockSnsNeuronParams = {
       id: neuronId,
@@ -261,11 +280,15 @@ describe("neurons-table.utils", () => {
         token: mockSnsToken,
       });
 
+    const makeSnsUsdStake = (amount: bigint) =>
+      (Number(amount) * snsTokenPrice) / 100_000_000;
+
     const expectedTableNeuron = {
       rowHref: "/neuron/?u=br5f7-7uaaa-aaaaa-qaaca-cai&neuron=123456789abcdef0",
       domKey: neuronIdString,
       neuronId: neuronIdString,
       stake: makeSnsStake(stake),
+      stakeInUsd: makeSnsUsdStake(stake),
       availableMaturity: 0n,
       stakedMaturity: 0n,
       dissolveDelaySeconds,
@@ -280,6 +303,10 @@ describe("neurons-table.utils", () => {
         universe: snsUniverseIdText,
         token: mockSnsToken,
         identity: mockIdentity,
+        icpSwapUsdPrices: {
+          [ledgerCanisterId.toText()]: snsTokenPrice,
+        },
+        ledgerCanisterId,
         i18n: en,
       });
 
