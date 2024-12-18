@@ -455,6 +455,46 @@ describe("reporting service", () => {
       expect(result[2].error).toBeUndefined();
     });
 
+    it("should fetch transactions for the specified period", async () => {
+      const allTransactions = [
+        createTransactionWithId({
+          id: 3n,
+          timestamp: new Date("2023-01-02T00:00:00.000Z"),
+        }),
+        createTransactionWithId({
+          id: 2n,
+          timestamp: new Date("2023-01-01T00:00:00.000Z"),
+        }),
+        createTransactionWithId({
+          id: 1n,
+          timestamp: new Date("2022-12-31T00:00:00.000Z"),
+        }),
+      ];
+      spyGetTransactions.mockResolvedValue({
+        transactions: allTransactions,
+        oldestTxId: 1n,
+      });
+
+      const beginningOfYear = dateToNanoSeconds(
+        new Date("2023-01-01T00:00:00.000Z")
+      );
+
+      const result = await getAccountTransactionsConcurrently({
+        entities: [mockMainAccount],
+        identity: mockIdentity,
+        range: {
+          from: beginningOfYear,
+        },
+      });
+
+      expect(result).toHaveLength(1);
+      expect(spyGetTransactions).toHaveBeenCalledTimes(1);
+
+      expect(result[0].entity).toEqual(mainAccountEntity);
+      expect(result[0].transactions).toEqual(allTransactions.slice(0, 2));
+      expect(result[0].error).toBeUndefined();
+    });
+
     // TODO: To be implemented once getAccountTransactionsConcurrently handles errors
     it.skip("should handle failed transactions fetch for some accounts", async () => {
       spyGetTransactions
