@@ -7,7 +7,13 @@
   import { snsCommittedProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
   import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
+  import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
+  import { ENABLE_USD_VALUES_FOR_NEURONS } from "$lib/stores/feature-flags.store";
   import { nonNullish } from "@dfinity/utils";
+
+  $: if ($ENABLE_USD_VALUES_FOR_NEURONS) {
+    loadIcpSwapTickers();
+  }
 </script>
 
 <TestIdWrapper testId="neurons-component">
