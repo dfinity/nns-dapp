@@ -4,6 +4,7 @@ import type {
   ApiQueryParams,
 } from "$lib/api/governance.api";
 import { queryAccountBalance } from "$lib/api/icp-ledger.api";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
@@ -200,7 +201,11 @@ export const addNeuronWith = ({
   neuronType,
   controller,
   stake,
-}: { identity?: Identity } & Partial<FakeNeuronParams>) => {
+  votingPowerRefreshedTimestampSeconds = nowInSeconds(),
+}: {
+  identity?: Identity;
+  votingPowerRefreshedTimestampSeconds?: bigint | number;
+} & Partial<FakeNeuronParams>) => {
   const neuron = { ...mockNeuron, fullNeuron: { ...mockNeuron.fullNeuron } };
   if (neuronId) {
     neuron.neuronId = neuronId;
@@ -215,6 +220,11 @@ export const addNeuronWith = ({
   }
   if (controller) {
     neuron.fullNeuron.controller = controller;
+  }
+  if (nonNullish(votingPowerRefreshedTimestampSeconds)) {
+    neuron.fullNeuron.votingPowerRefreshedTimestampSeconds = BigInt(
+      votingPowerRefreshedTimestampSeconds
+    );
   }
   if (nonNullish(getNeuron({ identity, neuronId: neuron.neuronId }))) {
     throw new Error(`A neuron with id ${neuron.neuronId} already exists`);

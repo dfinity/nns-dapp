@@ -38,12 +38,15 @@
     getNeuronById,
     isSpawning,
     neuronVoting,
+    shouldDisplayRewardLossNotification,
   } from "$lib/utils/neuron.utils";
   import { Island } from "@dfinity/gix-components";
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
   import { onMount, setContext } from "svelte";
   import { writable } from "svelte/store";
+  import ConfirmFollowingBanner from "$lib/components/neuron-detail/ConfirmFollowingBanner.svelte";
+  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
 
   export let neuronIdText: string | undefined | null;
 
@@ -147,6 +150,12 @@
   $: if (nonNullish(neuron)) {
     refreshNeuronIfNeeded(neuron);
   }
+
+  let isConfirmFollowingVisible = false;
+  $: isConfirmFollowingVisible =
+    $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION &&
+    nonNullish(neuron) &&
+    shouldDisplayRewardLossNotification(neuron);
 </script>
 
 <TestIdWrapper testId="nns-neuron-detail-component">
@@ -156,6 +165,11 @@
         {#if neuron && !inVotingProcess}
           <NnsNeuronPageHeader {neuron} />
           <NnsNeuronPageHeading {neuron} />
+
+          {#if isConfirmFollowingVisible}
+            <ConfirmFollowingBanner />
+          {/if}
+
           <Separator spacing="none" />
           <NnsNeuronVotingPowerSection {neuron} />
           <Separator spacing="none" />
