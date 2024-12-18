@@ -2,6 +2,7 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { AmountDisplayPo } from "./AmountDisplay.page-object";
 import { HashPo } from "./Hash.page-object";
+import { HeadingSubtitleWithUsdValuePo } from "./HeadingSubtitleWithUsdValue.page-object";
 import { TooltipPo } from "./Tooltip.page-object";
 import { TooltipIconPo } from "./TooltipIcon.page-object";
 
@@ -10,6 +11,10 @@ export class WalletPageHeadingPo extends BasePageObject {
 
   static under(element: PageObjectElement): WalletPageHeadingPo {
     return new WalletPageHeadingPo(element.byTestId(WalletPageHeadingPo.TID));
+  }
+
+  getHeadingSubtitleWithUsdValuePo(): HeadingSubtitleWithUsdValuePo {
+    return HeadingSubtitleWithUsdValuePo.under(this.root);
   }
 
   async getTitle(): Promise<string | null> {
@@ -32,15 +37,15 @@ export class WalletPageHeadingPo extends BasePageObject {
   }
 
   hasBalanceInUsd(): Promise<boolean> {
-    return this.isPresent("usd-balance");
+    return this.getHeadingSubtitleWithUsdValuePo().hasAmountInUsd();
   }
 
   getBalanceInUsd(): Promise<string> {
-    return this.getText("usd-balance");
+    return this.getHeadingSubtitleWithUsdValuePo().getAmountInUsd();
   }
 
   getTooltipIconPo(): TooltipIconPo {
-    return TooltipIconPo.under(this.root);
+    return this.getHeadingSubtitleWithUsdValuePo().getTooltipIconPo();
   }
 
   getPrincipal(): Promise<string> {
