@@ -7,6 +7,7 @@ import { NnsNeuronVotingPowerSectionPo } from "$tests/page-objects/NnsNeuronVoti
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { ConfirmFollowingBannerPo } from "./ConfirmFollowingBanner.page-object";
 import { NnsNeuronPageHeaderPo } from "./NnsNeuronPageHeader.page-object";
 
 export class NnsNeuronDetailPo extends BasePageObject {
@@ -67,6 +68,10 @@ export class NnsNeuronDetailPo extends BasePageObject {
 
   getUniverse(): Promise<string> {
     return this.getPageHeaderPo().getUniverse();
+  }
+
+  getConfirmFollowingBannerPo(): ConfirmFollowingBannerPo {
+    return ConfirmFollowingBannerPo.under(this.root);
   }
 
   getVotingPowerSectionPo(): NnsNeuronVotingPowerSectionPo {
