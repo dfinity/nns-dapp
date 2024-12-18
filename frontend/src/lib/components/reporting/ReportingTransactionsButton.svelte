@@ -4,6 +4,7 @@
   import { ICPToken, nonNullish } from "@dfinity/utils";
   import {
     buildTransactionsDatasets,
+    convertPeriodToNanosecondRange,
     CsvGenerationError,
     FileSystemAccessError,
     generateCsvFileToSave,
@@ -24,6 +25,9 @@
   import { sortNeuronsByStake } from "$lib/utils/neuron.utils";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import type { ReportingPeriod } from "$lib/types/reporting";
+
+  export let period: ReportingPeriod = "all";
 
   let identity: Identity | null | undefined;
   let swapCanisterAccounts: Set<string>;
@@ -70,9 +74,11 @@
       );
 
       const entities = [...nnsAccounts, ...nnsNeurons];
+      const range = convertPeriodToNanosecondRange(period);
       const transactions = await getAccountTransactionsConcurrently({
         entities,
         identity: signIdentity,
+        range,
       });
       const datasets = buildTransactionsDatasets({
         transactions,

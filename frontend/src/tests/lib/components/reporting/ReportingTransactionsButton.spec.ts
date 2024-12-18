@@ -3,6 +3,7 @@ import * as icpIndexApi from "$lib/api/icp-index.api";
 import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
 import * as exportDataService from "$lib/services/reporting.services";
 import * as toastsStore from "$lib/stores/toasts.store";
+import type { ReportingPeriod } from "$lib/types/reporting";
 import * as exportToCsv from "$lib/utils/reporting.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -73,8 +74,15 @@ describe("ReportingTransactionsButton", () => {
     });
   });
 
-  const renderComponent = ({ onTrigger }: { onTrigger?: () => void } = {}) => {
-    const { container, component } = render(ReportingTransactionsButton);
+  const renderComponent = (
+    {
+      onTrigger,
+      period,
+    }: { onTrigger?: () => void; period: ReportingPeriod } = { period: "all" }
+  ) => {
+    const { container, component } = render(ReportingTransactionsButton, {
+      period,
+    });
     const po = ReportingTransactionsButtonPo.under({
       element: new JestPageObjectElement(container),
     });
@@ -186,6 +194,7 @@ describe("ReportingTransactionsButton", () => {
     expect(spyExportDataService).toHaveBeenCalledWith({
       entities: expectation,
       identity: mockIdentity,
+      range: {},
     });
   });
 
@@ -226,6 +235,41 @@ describe("ReportingTransactionsButton", () => {
     expect(spyExportDataService).toHaveBeenCalledWith({
       entities: expectation,
       identity: mockIdentity,
+      range: {},
+    });
+  });
+
+  it("should fetch transactions filtered by period", async () => {
+    const beginningOfYear = new Date("2023-01-01T00:00:00Z");
+    const NANOS_IN_MS = BigInt(1_000_000);
+    const beginningOfYearInNanoseconds =
+      BigInt(beginningOfYear.getTime()) * NANOS_IN_MS;
+
+    resetAccountsForTesting();
+    setAccountsForTesting({
+      main: mockMainAccount,
+    });
+
+    const mockNeurons: NeuronInfo[] = [mockNeuron];
+    spyQueryNeurons.mockResolvedValue(mockNeurons);
+
+    const po = renderComponent({ period: "year-to-date" });
+
+    expect(spyExportDataService).toBeCalledTimes(0);
+    expect(spyQueryNeurons).toBeCalledTimes(0);
+
+    await po.click();
+    await runResolvedPromises();
+
+    const expectation = [mockMainAccount, mockNeuron];
+    expect(spyQueryNeurons).toBeCalledTimes(1);
+    expect(spyExportDataService).toHaveBeenCalledTimes(1);
+    expect(spyExportDataService).toHaveBeenCalledWith({
+      entities: expectation,
+      identity: mockIdentity,
+      range: {
+        from: beginningOfYearInNanoseconds,
+      },
     });
   });
 
