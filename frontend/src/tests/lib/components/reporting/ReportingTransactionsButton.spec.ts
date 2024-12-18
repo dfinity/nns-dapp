@@ -102,7 +102,7 @@ describe("ReportingTransactionsButton", () => {
     await po.click();
     await runResolvedPromises();
 
-    const expectedFileName = `icp_transactions_export_20231014`;
+    const expectedFileName = `icp_transactions_export_all_20231014`;
     expect(spyGenerateCsvFileToSave).toHaveBeenCalledWith(
       expect.objectContaining({
         fileName: expectedFileName,
@@ -170,7 +170,7 @@ describe("ReportingTransactionsButton", () => {
     expect(spyGenerateCsvFileToSave).toBeCalledTimes(1);
   });
 
-  it("should all fetch transactions for accounts and neurons", async () => {
+  it("should fetch transactions for accounts and neurons", async () => {
     resetAccountsForTesting();
 
     setAccountsForTesting({
@@ -260,6 +260,13 @@ describe("ReportingTransactionsButton", () => {
 
     await po.click();
     await runResolvedPromises();
+
+    const expectedFileName = `icp_transactions_export_year-to-date_20231014`;
+    expect(spyGenerateCsvFileToSave).toHaveBeenCalledWith(
+      expect.objectContaining({
+        fileName: expectedFileName,
+      })
+    );
 
     const expectation = [mockMainAccount, mockNeuron];
     expect(spyQueryNeurons).toBeCalledTimes(1);

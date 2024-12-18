@@ -8,7 +8,6 @@
     CsvGenerationError,
     FileSystemAccessError,
     generateCsvFileToSave,
-    periodToDateRangeTimestampts,
     type CsvHeader,
     type TransactionsCsvData,
   } from "$lib/utils/reporting.utils";
@@ -124,7 +123,7 @@
           label: $i18n.reporting.timestamp,
         },
       ];
-      const fileName = `icp_transactions_export_${formatDateCompact(new Date())}`;
+      const fileName = `icp_transactions_export_${period}_${formatDateCompact(new Date())}`;
 
       await generateCsvFileToSave({
         datasets,
