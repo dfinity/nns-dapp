@@ -395,6 +395,7 @@
     "confirm": "Confirm Following"
   },
   "losing_rewards_banner": {
+    "confirm_title": "Confirm following or vote manually to avoid missing rewards",
     "days_left_title": "$timeLeft left to confirm your neuron following",
     "rewards_missing_title": "One or more of your neurons are missing voting rewards"
   },

@@ -410,6 +410,7 @@ interface I18nLosing_rewards {
 }
 
 interface I18nLosing_rewards_banner {
+  confirm_title: string;
   days_left_title: string;
   rewards_missing_title: string;
 }
