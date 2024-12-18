@@ -139,6 +139,52 @@ describe("NnsNeurons", () => {
       const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
       expect(await rows[0].getStakeInUsd()).toBe("$33.00");
     });
+
+    it("should not show total USD value banner when feature flag is disabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
+
+      const po = await renderComponent();
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
+    });
+
+    it("should show total USD value banner when feature flag is enabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      const po = await renderComponent();
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
+    });
+
+    it("should show total stake in USD", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([
+        {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            cachedNeuronStake: 300_000_000n,
+          },
+        },
+      ]);
+
+      icpSwapTickersStore.set([
+        {
+          ...mockIcpSwapTicker,
+          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+          last_price: "11.00",
+        },
+      ]);
+
+      const po = await renderComponent();
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
+      expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$33.00");
+      expect(
+        await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
+      ).toBe(false);
+    });
   });
 
   describe("LosingRewardsBanner", () => {
