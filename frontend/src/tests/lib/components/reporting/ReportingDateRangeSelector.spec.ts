@@ -24,6 +24,10 @@ describe("ReportingDateRangeSelector", () => {
     return { po, component };
   };
 
+  const getComponentPropValue = (component, propName: string) => {
+    return component.$$.ctx[component.$$.props[propName]];
+  };
+
   it("should render the option provided as a prop", async () => {
     const { po } = renderComponent({ period: "last-year" });
 
@@ -64,12 +68,13 @@ describe("ReportingDateRangeSelector", () => {
     const { po, component } = renderComponent();
     const allOptions = await po.getAllOptions();
 
-    // Click the second option
-    await allOptions[1].click();
+    let currentValue = getComponentPropValue(component, "period");
+    expect(currentValue).toBe("all");
 
+    await allOptions[1].click();
     await tick();
 
-    const currentValue = component.$$.ctx[component.$$.props["period"]];
+    currentValue = getComponentPropValue(component, "period");
     expect(currentValue).toBe("last-year");
   });
 });
