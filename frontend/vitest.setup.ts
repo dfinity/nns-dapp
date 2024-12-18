@@ -84,6 +84,7 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_EXPORT_NEURONS_REPORT: false,
       ENABLE_USD_VALUES: false,
       ENABLE_USD_VALUES_FOR_NEURONS: false,
+      ENABLE_PORTFOLIO_PAGE: false,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
     }),
