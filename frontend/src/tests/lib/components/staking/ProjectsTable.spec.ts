@@ -24,6 +24,7 @@ import { get } from "svelte/store";
 describe("ProjectsTable", () => {
   const snsTitle = "SNS-1";
   const snsCanisterId = principal(1111);
+  const snsLedgerCanisterId = principal(1112);
   const snsTokenSymbol = "TOK";
 
   const renderComponent = ({ onNnsStakeTokens = null } = {}) => {
@@ -47,6 +48,7 @@ describe("ProjectsTable", () => {
       {
         projectName: snsTitle,
         rootCanisterId: snsCanisterId,
+        ledgerCanisterId: snsLedgerCanisterId,
         tokenMetadata: {
           ...mockSnsToken,
           symbol: snsTokenSymbol,
@@ -530,6 +532,95 @@ describe("ProjectsTable", () => {
       const rowPos = await po.getProjectsTableRowPos();
       expect(await rowPos[0].getStake()).toBe("-/- ICP");
       expect(await rowPos[0].getStakeInUsd()).toBe("$-/-");
+    });
+
+    it("should not show total USD value banner when feature flag is disabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
+
+      const po = renderComponent();
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
+    });
+
+    it("should show total USD value banner when feature flag is enabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
+      const po = renderComponent();
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
+    });
+
+    it("should show total stake in USD", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      neuronsStore.setNeurons({
+        neurons: [nnsNeuronWithStake],
+        certified: true,
+      });
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [snsNeuronWithStake],
+        certified: true,
+      });
+
+      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([
+        {
+          ...mockIcpSwapTicker,
+          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+          last_price: "10.00",
+        },
+        {
+          ...mockIcpSwapTicker,
+          base_id: snsLedgerCanisterId.toText(),
+          last_price: "100.00",
+        },
+      ]);
+
+      const po = renderComponent();
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
+      // The NNS neuron has a stake of 1 and the SNS neurons a stake of 2.
+      // There are 10 USD in 1 ICP and 100 SNS tokens in 1 ICP.
+      // So each SNS token is $0.10.
+      expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$10.20");
+
+      expect(
+        await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
+      ).toBe(false);
+    });
+
+    it("should ignore tokens with unknown balance in USD when adding up the total", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      neuronsStore.setNeurons({
+        neurons: [nnsNeuronWithStake],
+        certified: true,
+      });
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [snsNeuronWithStake],
+        certified: true,
+      });
+
+      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([
+        {
+          ...mockIcpSwapTicker,
+          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+          last_price: "10.00",
+        },
+        // SNS token price is missing.
+      ]);
+
+      const po = renderComponent();
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
+      expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$10.00");
+
+      // The tooltip indicates that some token prices are unknown.
+      expect(
+        await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
+      ).toBe(true);
     });
   });
 

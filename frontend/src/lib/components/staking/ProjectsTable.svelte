@@ -5,6 +5,7 @@
   import ProjectStakeCell from "$lib/components/staking/ProjectStakeCell.svelte";
   import ProjectTitleCell from "$lib/components/staking/ProjectTitleCell.svelte";
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
+  import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
@@ -16,8 +17,11 @@
   import type { ProjectsTableColumn, TableProject } from "$lib/types/staking";
   import {
     getTableProjects,
+    getTotalStakeInUsd,
     sortTableProjects,
   } from "$lib/utils/staking.utils";
+  import { IconNeuronsPage } from "@dfinity/gix-components";
+  import { TokenAmountV2, isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   $: if ($authSignedInStore && $ENABLE_USD_VALUES_FOR_NEURONS) {
@@ -84,6 +88,17 @@
   let sortedTableProjects: TableProject[];
   $: sortedTableProjects = sortTableProjects(tableProjects);
 
+  let totalStakeInUsd: number;
+  $: totalStakeInUsd = getTotalStakeInUsd(tableProjects);
+
+  let hasUnpricedTokens: boolean;
+  $: hasUnpricedTokens = tableProjects.some(
+    (project) =>
+      project.stake instanceof TokenAmountV2 &&
+      project.stake.toUlps() > 0n &&
+      (!("stakeInUsd" in project) || isNullish(project.stakeInUsd))
+  );
+
   const dispatcher = createEventDispatcher();
 
   const handleAction = ({
@@ -97,9 +112,24 @@
   };
 </script>
 
-<ResponsiveTable
-  testId="projects-table-component"
-  tableData={sortedTableProjects}
-  {columns}
-  on:nnsAction={handleAction}
-></ResponsiveTable>
+<div class="wrapper" data-tid="projects-table-component">
+  {#if $authSignedInStore && $ENABLE_USD_VALUES_FOR_NEURONS}
+    <UsdValueBanner usdAmount={totalStakeInUsd} {hasUnpricedTokens}>
+      <IconNeuronsPage slot="icon" />
+    </UsdValueBanner>
+  {/if}
+
+  <ResponsiveTable
+    tableData={sortedTableProjects}
+    {columns}
+    on:nnsAction={handleAction}
+  ></ResponsiveTable>
+</div>
+
+<style lang="scss">
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+  }
+</style>
