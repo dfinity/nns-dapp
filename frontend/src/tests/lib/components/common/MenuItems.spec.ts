@@ -271,17 +271,16 @@ describe("MenuItems", () => {
   });
 
   describe("portfolio", () => {
-    it("should not show the icon when the feature flag is off", () => {
+    it("should not show the icon when the feature flag is off", async () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_PORTFOLIO_PAGE", false);
-      const context = "portfolio";
-      const { queryByTestId } = render(MenuItems);
-      const link = queryByTestId(`menuitem-${context}`);
-      expect(link).not.toBeInTheDocument();
+      const po = renderComponent();
+      expect(await po.getPortfolioLinkPo().isPresent()).toBe(false);
     });
 
-    it("should show the icon when the feature flag is on", () => {
+    it("should show the icon when the feature flag is on", async () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_PORTFOLIO_PAGE", true);
-      shouldRenderMenuItem({ context: "portfolio", labelKey: "portfolio" });
+      const po = renderComponent();
+      expect(await po.getPortfolioLinkPo().isPresent()).toBe(true);
     });
   });
 });
