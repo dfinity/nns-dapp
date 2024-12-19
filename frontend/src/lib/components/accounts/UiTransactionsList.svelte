@@ -10,22 +10,28 @@
   export let transactions: UiTransaction[];
   export let loading: boolean;
   export let completed = false;
+
+  $: isEmpty = transactions.length === 0;
+
+  $: showSkeleton = loading && isEmpty;
+  $: showNoTransactions = !loading && isEmpty;
+  $: disabledInifiteScroll = loading || completed;
 </script>
 
 <div data-tid="transactions-list" class="container">
-  {#if transactions.length === 0 && !loading}
+  {#if showSkeleton}
+    <SkeletonCard cardType="info" />
+  {:else if showNoTransactions}
     <NoTransactions />
-  {:else if transactions.length === 0 && loading}
-    <SkeletonCard cardType="info" />
-    <SkeletonCard cardType="info" />
   {:else}
-    <InfiniteScroll on:nnsIntersect disabled={loading || completed}>
+    <InfiniteScroll on:nnsIntersect disabled={disabledInifiteScroll}>
       {#each transactions as transaction (transaction.domKey)}
         <div animate:flip={{ duration: 250 }}>
           <TransactionCard {transaction} />
         </div>
       {/each}
     </InfiniteScroll>
+
     {#if loading}
       <Spinner inline />
     {/if}
