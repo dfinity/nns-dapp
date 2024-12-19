@@ -7,7 +7,7 @@
     "build:csp": "node scripts/build.csp.mjs",
     "build:preload": "node scripts/build.preload.mjs",
     "build:post-process": "npm run build:csp",
-    "i18n": "node --experimental-json-modules scripts/i18n.types.js && prettier --write ./src/lib/types/i18n.d.ts",
+    "i18n": "node scripts/i18n.types.js && prettier --write ./src/lib/types/i18n.d.ts",
     "dev": "npm run i18n && vite dev",
     "build": "npm run i18n && tsc --noEmit && vite build && npm run build:post-process",
     "preview": "vite preview",
@@ -31,6 +31,7 @@
     "node": ">=22.0.0 <23.0.0"
   },
   "devDependencies": {
+    "@peculiar/webcrypto": "^1.5.0",
     "@playwright/test": "^1.47.1",
     "@rollup/plugin-inject": "^5.0.5",
     "@sveltejs/adapter-static": "^3.0.5",
@@ -39,6 +40,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/svelte": "^5.2.6",
     "@testing-library/user-event": "^14.5.2",
+    "@types/node": "^22.10.2",
     "@types/wicg-file-system-access": "^2023.10.5",
     "@typescript-eslint/eslint-plugin": "^6.8.0",
     "@typescript-eslint/parser": "^6.8.0",
