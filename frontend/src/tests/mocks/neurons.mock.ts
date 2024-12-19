@@ -44,6 +44,9 @@ export const createMockFullNeuron = (id: number | bigint) => {
 };
 
 export const mockNeuron: NeuronInfo = {
+  votingPowerRefreshedTimestampSeconds: 0n,
+  decidingVotingPower: 0n,
+  potentialVotingPower: 0n,
   neuronId: 1n,
   dissolveDelaySeconds: 11_111n,
   recentBallots: [],

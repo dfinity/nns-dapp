@@ -635,7 +635,7 @@ describe("sns-api", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "There is an existing participation started at Jan 1, 1970 12:00 AM. Completing that participation.",
+          text: "There is an existing participation started at Jan 1, 1970 12:00 AM. Completing that participation.",
         },
       ]);
       expect(ticketFromStore()?.ticket).toEqual(testTicket);

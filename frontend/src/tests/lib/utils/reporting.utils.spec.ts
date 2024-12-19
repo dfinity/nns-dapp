@@ -387,7 +387,7 @@ describe("reporting utils", () => {
               id: "1234",
               project: "Internet Computer",
               symbol: "ICP",
-              timestamp: "Jan 1, 2023 12:00 AM",
+              timestamp: "Jan 1, 2023 12:00 AM",
               to: "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
               type: "Received",
             },
@@ -416,7 +416,7 @@ describe("reporting utils", () => {
             },
             {
               label: "Export Date Time",
-              value: "Oct 14, 2023 12:00 AM",
+              value: "Oct 14, 2023 12:00 AM",
             },
           ],
         },
@@ -459,7 +459,7 @@ describe("reporting utils", () => {
       },
       {
         label: "Export Date Time",
-        value: "Oct 14, 2023 12:00 AM",
+        value: "Oct 14, 2023 12:00 AM",
       },
     ];
 
