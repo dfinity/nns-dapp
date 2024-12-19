@@ -13,8 +13,8 @@
 
   $: isEmpty = transactions.length === 0;
 
-  $: showSkeleton = loading && isEmpty;
-  $: showNoTransactions = !loading && isEmpty;
+  $: showSkeleton = isEmpty && loading;
+  $: showNoTransactions = isEmpty && !loading;
   $: disabledInifiteScroll = loading || completed;
 </script>
 
