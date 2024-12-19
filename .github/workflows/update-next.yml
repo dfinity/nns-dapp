@@ -27,8 +27,8 @@ jobs:
         with:
           node-version: 18
           registry-url: 'https://registry.npmjs.org'
-      - name: Install latest npm
-        run: npm install -g npm@latest
+      # - name: Install latest npm
+      #   run: npm install -g npm@latest
       - name: Update gix-components
         if: ${{ inputs.gix_components }}
         run: |
