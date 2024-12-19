@@ -37,7 +37,9 @@ describe("UiTransactionsList", () => {
       loading: true,
     });
 
-    expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
+    expect(await po.hasSkeleton()).toBe(true);
+    expect(await po.hasNoTransactions()).toBe(false);
+    expect(await po.hasSpinner()).toBe(false);
   });
 
   it("should display no-transactions message", async () => {
@@ -51,7 +53,9 @@ describe("UiTransactionsList", () => {
       completed: true,
     });
 
+    expect(await po.hasSkeleton()).toBe(false);
     expect(await po.hasNoTransactions()).toBe(true);
+    expect(await po.hasSpinner()).toBe(false);
   });
 
   it("should render transactions", async () => {
@@ -64,7 +68,24 @@ describe("UiTransactionsList", () => {
       completed: true,
     });
 
-    expect(await po.getTransactionCardPos()).toHaveLength(2);
+    expect(await po.hasSkeleton()).toBe(false);
     expect(await po.hasNoTransactions()).toBe(false);
+    expect(await po.hasSpinner()).toBe(false);
+    expect(await po.getTransactionCardPos()).toHaveLength(2);
+  });
+
+  it("should render spinner", async () => {
+    const po = renderComponent({
+      transactions: [
+        createMockUiTransaction({ domKey: "1-1" }),
+        createMockUiTransaction({ domKey: "2-1" }),
+      ],
+      loading: true,
+      completed: true,
+    });
+
+    expect(await po.hasSkeleton()).toBe(false);
+    expect(await po.hasNoTransactions()).toBe(false);
+    expect(await po.hasSpinner()).toBe(true);
   });
 });
