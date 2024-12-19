@@ -76,6 +76,9 @@
   let token: Token;
   $: token = $snsTokenSymbolSelectedStore as Token;
 
+  let ledgerCanisterId: Principal | undefined;
+  $: ledgerCanisterId = $selectedUniverseStore.summary?.ledgerCanisterId;
+
   let governanceCanisterId: Principal | undefined;
   $: governanceCanisterId =
     $selectedUniverseStore.summary?.governanceCanisterId;
@@ -193,6 +196,7 @@
           <SnsNeuronPageHeading
             {parameters}
             neuron={$selectedSnsNeuronStore.neuron}
+            {ledgerCanisterId}
           />
           <Separator spacing="none" />
           <SnsNeuronVotingPowerSection
