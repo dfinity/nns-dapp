@@ -31,6 +31,10 @@ export class MenuItemsPo extends BasePageObject {
     return this.click("menuitem-launchpad");
   }
 
+  clickPortfolio(): Promise<void> {
+    return this.click("menuitem-portfolio");
+  }
+
   getSourceCodeButtonPo(): LinkPo {
     return LinkPo.under({ element: this.root, testId: "source-code-link" });
   }

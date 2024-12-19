@@ -155,6 +155,7 @@ interface I18nNavigation {
   source_code: string;
   settings: string;
   reporting: string;
+  portfolio: string;
 }
 
 interface I18nHeader {
