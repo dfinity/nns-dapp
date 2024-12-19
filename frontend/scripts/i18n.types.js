@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { writeFileSync } from "fs";
-import en_governance from "../src/lib/i18n/en.governance.json" assert { type: "json" };
-import en from "../src/lib/i18n/en.json" assert { type: "json" };
+import en_governance from "../src/lib/i18n/en.governance.json" with { type: "json" };
+import en from "../src/lib/i18n/en.json" with { type: "json" };
 
 const mapKeys = (entries) =>
   Object.keys(entries).map((key) => {
