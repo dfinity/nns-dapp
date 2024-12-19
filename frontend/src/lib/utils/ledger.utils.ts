@@ -41,7 +41,7 @@ export const decodePublicKey = async ({
   }
 
   const publicKey: Secp256k1PublicKey = Secp256k1PublicKey.fromRaw(
-    new Uint8Array(responsePublicKey)
+    new Uint8Array(responsePublicKey).buffer
   );
 
   if (
@@ -132,7 +132,7 @@ export const decodeUpdateSignatures = async ({
 };
 
 const bufferToArrayBuffer = (buffer: Buffer): ArrayBuffer =>
-  buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+  buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer;
 
 // Check docs for more detais: https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-read-state
 // Quote: "Moreover, all paths with prefix /request_status/<request_id> must refer to the same request ID <request_id>."
