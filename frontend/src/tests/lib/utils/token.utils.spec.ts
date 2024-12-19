@@ -135,7 +135,7 @@ describe("token-utils", () => {
     // );
     expect(
       formatTokenE8s({ value: 111_100_000n, roundingMode: "ceil" })
-    ).toEqual("1.11");
+    ).toEqual("1.12");
   });
 
   describe("formatTokenV2", () => {
@@ -283,7 +283,7 @@ describe("token-utils", () => {
         // );
         expect(
           testFormat({ value: 111_100_000n, roundingMode: "ceil" })
-        ).toEqual("1.11");
+        ).toEqual("1.12");
       });
     });
 
