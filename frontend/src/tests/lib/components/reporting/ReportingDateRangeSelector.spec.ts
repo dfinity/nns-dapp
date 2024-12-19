@@ -17,9 +17,9 @@ describe("ReportingDateRangeSelector", () => {
       period,
     });
 
-    const po = ReportingDateRangeSelectorPo.under({
-      element: new JestPageObjectElement(container),
-    });
+    const po = ReportingDateRangeSelectorPo.under(
+      new JestPageObjectElement(container)
+    );
 
     return { po, component };
   };

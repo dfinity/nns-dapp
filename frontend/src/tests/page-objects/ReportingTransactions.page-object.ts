@@ -13,9 +13,7 @@ export class ReportingTransactionsPo extends BasePageObject {
   }
 
   getReportingDateRangeSelectorPo() {
-    return ReportingDateRangeSelectorPo.under({
-      element: this.root,
-    });
+    return ReportingDateRangeSelectorPo.under(this.root);
   }
 
   getReportingTransactionsButtonPo() {
