@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { ReportingPeriod } from "$lib/types/reporting";
 
-  let period: ReportingPeriod = "all";
+  export let period: ReportingPeriod = "all";
 
   const options: Array<{
     value: ReportingPeriod;
