@@ -40,8 +40,8 @@ const getTestAccountAgent = async (): Promise<Agent> => {
   const privateKey =
     "N3HB8Hh2PrWqhWH2Qqgr1vbU9T3gb1zgdBD8ZOdlQnVS7zC/nkEqaT1kSuvo4i3ldHWSkQZdw5I4LU5jOsDC6Q==";
   const identity = Ed25519KeyIdentity.fromKeyPair(
-    base64ToUInt8Array(publicKey),
-    base64ToUInt8Array(privateKey)
+    base64ToUInt8Array(publicKey) as unknown as ArrayBuffer,
+    base64ToUInt8Array(privateKey) as unknown as ArrayBuffer
   );
 
   const agent = await createAgentUtils({

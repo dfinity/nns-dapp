@@ -47,8 +47,6 @@ describe("SnsActiveDisbursementEntry", () => {
 
     const po = renderComponent(testActiveDisbursement);
 
-    expect((await po.getTimestamp()).replace(" ", " ")).toEqual(
-      "Sep 6, 2023 11:33 AM"
-    );
+    expect(await po.getTimestamp()).toEqual("Sep 6, 2023 11:33 AM");
   });
 });
