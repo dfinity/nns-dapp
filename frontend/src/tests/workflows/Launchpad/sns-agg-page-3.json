@@ -1439,7 +1439,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 999803020000,
+    "icrc1_total_supply": 999793990000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1826,7 +1826,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 99999834180000,
+    "icrc1_total_supply": 99999823150000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2220,7 +2220,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041715603958135200,
+    "icrc1_total_supply": 1041710272424046800,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2864,7 +2864,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11655088901371512,
+    "icrc1_total_supply": 11655153681778952,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4220,6 +4220,14 @@
           }
         },
         {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1000,
           "name": "Add a new custom SNS function set_canister_ids",
           "description": "Add a new custom SNS function to the old DOGMI SNS Token Swap Canister",
@@ -4366,7 +4374,7 @@
       ]
     ],
     "icrc1_fee": [705032704, 1],
-    "icrc1_total_supply": 2414259192154920400,
+    "icrc1_total_supply": 2394290282629033000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4918,7 +4926,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999999911100000,
+    "icrc1_total_supply": 1999999910050000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
@@ -8249,7 +8257,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100019008171550980,
+    "icrc1_total_supply": 100022036458562640,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
