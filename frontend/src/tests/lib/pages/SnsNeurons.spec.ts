@@ -240,6 +240,71 @@ describe("SnsNeurons", () => {
       expect(await rows[0].getStakeInUsd()).toBe("$0.40");
       expect(await rows[1].getStakeInUsd()).toBe("$0.20");
     });
+
+    it("should not show total USD value banner when feature flag is disabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
+
+      const po = await renderComponent();
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
+    });
+
+    it("should show total USD value banner when feature flag is enabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      const po = await renderComponent();
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
+    });
+
+    it("should show total stake in USD", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      icpSwapTickersStore.set([
+        {
+          ...mockIcpSwapTicker,
+          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+          last_price: "10.00",
+        },
+        {
+          ...mockIcpSwapTicker,
+          base_id: ledgerCanisterId.toText(),
+          last_price: "100.00",
+        },
+      ]);
+
+      const po = await renderComponent();
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
+      // We have a stake of 4 and 2 in the neurons, for a total of 6.
+      // There are 10 USD in 1 ICP and 100 SNS tokens in 1 ICP.
+      // So each token is $0.10.
+      expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$0.60");
+      expect(
+        await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
+      ).toBe(false);
+    });
+
+    it("should show absent total stake in USD if token price is unknown", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      icpSwapTickersStore.set([
+        {
+          ...mockIcpSwapTicker,
+          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+          last_price: "10.00",
+        },
+        // No price for the SNS token.
+      ]);
+
+      const po = await renderComponent();
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
+      expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$-/-");
+      expect(
+        await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
+      ).toBe(true);
+    });
   });
 
   describe("no neurons", () => {
