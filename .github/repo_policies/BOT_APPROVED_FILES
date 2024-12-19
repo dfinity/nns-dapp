@@ -2,25 +2,9 @@
 # This is to increase security and prevent accidentally updating files that shouldn't be changed by a bot
 
 Cargo.lock
-declarations/used_by_proposals/nns_governance/nns_governance.did
-declarations/used_by_proposals/nns_registry/nns_registry.did
-declarations/used_by_proposals/sns_wasm/sns_wasm.did
-declarations/used_by_sns_aggregator/sns_governance/sns_governance.did
-declarations/used_by_sns_aggregator/sns_ledger/sns_ledger.did
-declarations/used_by_sns_aggregator/sns_root/sns_root.did
-declarations/used_by_sns_aggregator/sns_swap/sns_swap.did
-declarations/used_by_sns_aggregator/sns_wasm/sns_wasm.did
+declarations/*/*/*.did
 dfx.json
 frontend/package-lock.json
-frontend/src/tests/workflows/Launchpad/sns-agg-page-0.json
-frontend/src/tests/workflows/Launchpad/sns-agg-page-1.json
-frontend/src/tests/workflows/Launchpad/sns-agg-page-2.json
-frontend/src/tests/workflows/Launchpad/sns-agg-page-3.json
-rs/proposals/src/canisters/nns_governance/api.rs
-rs/proposals/src/canisters/nns_registry/api.rs
-rs/proposals/src/canisters/sns_wasm/api.rs
-rs/sns_aggregator/src/types/ic_sns_governance.rs
-rs/sns_aggregator/src/types/ic_sns_ledger.rs
-rs/sns_aggregator/src/types/ic_sns_root.rs
-rs/sns_aggregator/src/types/ic_sns_swap.rs
-rs/sns_aggregator/src/types/ic_sns_wasm.rs
+frontend/src/tests/workflows/Launchpad/sns-agg-page-*.json
+rs/proposals/src/canisters/*/api.rs
+rs/sns_aggregator/src/types/*.rs
