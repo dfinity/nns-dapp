@@ -6,20 +6,14 @@ import { BasePageObject } from "./base.page-object";
 export class ReportingTransactionsPo extends BasePageObject {
   static readonly TID = "reporting-transactions-component";
 
-  static under({
-    element,
-  }: {
-    element: PageObjectElement;
-  }): ReportingTransactionsPo {
+  static under(element: PageObjectElement): ReportingTransactionsPo {
     return new ReportingTransactionsPo(
       element.byTestId(ReportingTransactionsPo.TID)
     );
   }
 
   getReportingDateRangeSelectorPo() {
-    return ReportingDateRangeSelectorPo.under({
-      element: this.root,
-    });
+    return ReportingDateRangeSelectorPo.under(this.root);
   }
 
   getReportingTransactionsButtonPo() {

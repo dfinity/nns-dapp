@@ -25,9 +25,9 @@ describe("ReportingTransactions", () => {
   const renderComponent = () => {
     const { container } = render(ReportingTransactions);
 
-    const po = ReportingTransactionsPo.under({
-      element: new JestPageObjectElement(container),
-    });
+    const po = ReportingTransactionsPo.under(
+      new JestPageObjectElement(container)
+    );
     return po;
   };
 

@@ -5,11 +5,7 @@ import { SimpleBasePageObject } from "./simple-base.page-object";
 export class ReportingDateRangeSelectorPo extends SimpleBasePageObject {
   static readonly TID = "reporting-data-range-selector-component";
 
-  static under({
-    element,
-  }: {
-    element: PageObjectElement;
-  }): ReportingDateRangeSelectorPo {
+  static under(element: PageObjectElement): ReportingDateRangeSelectorPo {
     return new ReportingDateRangeSelectorPo(
       element.byTestId(ReportingDateRangeSelectorPo.TID)
     );
