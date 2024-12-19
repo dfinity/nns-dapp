@@ -85,7 +85,7 @@ test("Test neuron details", async ({ page, context }) => {
     page,
     selectors: ['[data-tid="usd-value"]'],
     pattern: /\$[0-9.]+/,
-    replacements: ["$10.00"],
+    replacements: ["$150.00"],
   });
 
   await page.setViewportSize({
