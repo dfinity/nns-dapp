@@ -616,6 +616,14 @@ describe("ProjectsTable", () => {
       expect(
         await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
       ).toBe(false);
+      expect(
+        await po
+          .getUsdValueBannerPo()
+          .getExchangeRateTooltipIconPo()
+          .getTooltipText()
+      ).toBe(
+        "1 ICP = $10.00 Token prices are in ckUSDC based on data provided by ICPSwap."
+      );
     });
 
     it("should ignore tokens with unknown balance in USD when adding up the total", async () => {
@@ -650,6 +658,40 @@ describe("ProjectsTable", () => {
       expect(
         await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
       ).toBe(true);
+    });
+
+    it("should show total USD banner when tickers fail to load", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      neuronsStore.setNeurons({
+        neurons: [nnsNeuronWithStake],
+        certified: true,
+      });
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [snsNeuronWithStake],
+        certified: true,
+      });
+
+      const error = new Error("ICPSwap failed");
+      vi.spyOn(console, "error").mockReturnValue();
+      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockRejectedValue(error);
+
+      const po = renderComponent();
+      await runResolvedPromises();
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
+      expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$-/-");
+      expect(
+        await po
+          .getUsdValueBannerPo()
+          .getExchangeRateTooltipIconPo()
+          .getTooltipText()
+      ).toBe(
+        "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment."
+      );
+      expect(console.error).toBeCalledWith(error);
+      expect(console.error).toBeCalledTimes(1);
     });
   });
 
