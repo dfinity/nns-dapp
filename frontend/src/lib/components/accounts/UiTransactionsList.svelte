@@ -21,6 +21,7 @@
 <div data-tid="transactions-list" class="container">
   {#if showSkeleton}
     <SkeletonCard cardType="info" />
+    <SkeletonCard cardType="info" />
   {:else if showNoTransactions}
     <NoTransactions />
   {:else}
