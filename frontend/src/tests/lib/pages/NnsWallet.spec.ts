@@ -1026,7 +1026,6 @@ describe("NnsWallet", () => {
         true
       );
       const po = await renderWallet(props);
-      allowLoggingInOneTestForDebugging();
 
       expect(await po.getLedgerNeuronHotkeyWarningPo().isBannerVisible()).toBe(
         true
