@@ -848,7 +848,7 @@ describe("proposals-utils", () => {
     });
 
     it("should return neuron voting power if no ballot", () => {
-      const decidingVotingPower= 123_000_000n;
+      const decidingVotingPower = 123_000_000n;
       const proposal = {
         ...mockProposalInfo,
         ballots: [],
