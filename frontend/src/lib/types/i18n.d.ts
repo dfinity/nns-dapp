@@ -408,6 +408,7 @@ interface I18nLosing_rewards {
   description: string;
   confirming: string;
   confirm: string;
+  hw_hotkey_warning: string;
 }
 
 interface I18nLosing_rewards_banner {

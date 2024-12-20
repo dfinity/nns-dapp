@@ -393,7 +393,8 @@
   "losing_rewards": {
     "description": "ICP neurons that are inactive for $period start missing voting rewards. To avoid missing rewards, vote manually, edit, or confirm your following.",
     "confirming": "Confirming following. This may take a moment.",
-    "confirm": "Confirm Following"
+    "confirm": "Confirm Following",
+    "hw_hotkey_warning": "You may have neurons that are not added to the NNS dapp. If you want to view your neurons and get alerts in case they start missing voting rewards, you can add them by clicking <strong>Show Neurons > Add to NNS Dapp</strong>."
   },
   "losing_rewards_banner": {
     "confirm_title": "Confirm following or vote manually to avoid missing rewards",
