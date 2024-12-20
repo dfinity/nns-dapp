@@ -55,10 +55,10 @@ describe("NnsNeuronPageHeading", () => {
   });
 
   it("should render neuron's voting power", async () => {
-    const votingPower = 314_000_000n;
+    const decidingVotingPower = 314_000_000n;
     const po = renderComponent({
       ...mockNeuron,
-      votingPower,
+      decidingVotingPower,
       dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
     });
 
@@ -66,10 +66,10 @@ describe("NnsNeuronPageHeading", () => {
   });
 
   it("should render no voting power if neuron can't vote", async () => {
-    const votingPower = 314_000_000n;
+    const decidingVotingPower = 314_000_000n;
     const po = renderComponent({
       ...mockNeuron,
-      votingPower,
+      decidingVotingPower,
       dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE - 1),
     });
 
