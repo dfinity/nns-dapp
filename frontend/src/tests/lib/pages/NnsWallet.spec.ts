@@ -59,6 +59,8 @@ import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
 import AccountsTest from "./AccountsTest.svelte";
+import { overrideFeatureFlagsStore } from "../../../lib/stores/feature-flags.store";
+import { allowLoggingInOneTestForDebugging } from "../../utils/console.test-utils";
 
 vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/accounts.api");
@@ -406,6 +408,12 @@ describe("NnsWallet", () => {
       const po = await renderWallet(props);
 
       expect(await po.getWalletPageHeadingPo().getTitle()).toBe("4.32 ICP");
+    });
+
+    it("should not render Ledger neuron hotkey warning for not HW wallet", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_PERIODIC_FOLLOWING_CONFIRMATION", true);
+      const po = await renderWallet(props);
+      expect(await po.getLedgerNeuronHotkeyWarningPo().isBannerVisible()).toBe(false);
     });
 
     it("should reload balance on open", async () => {
@@ -1006,6 +1014,22 @@ describe("NnsWallet", () => {
       const po = await renderWallet(props);
       expect(await po.getListNeuronsButtonPo().isPresent()).toBe(true);
       expect(await po.getShowHardwareWalletButtonPo().isPresent()).toBe(true);
+    });
+
+    it("should display Ledger neuron hotkey warning", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_PERIODIC_FOLLOWING_CONFIRMATION", true);
+      const po = await renderWallet(props);
+      allowLoggingInOneTestForDebugging();
+
+      expect(await po.getLedgerNeuronHotkeyWarningPo().isBannerVisible()).toBe(true);
+    });
+
+    it("should not display Ledger neuron hotkey warning when feature flag off", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_PERIODIC_FOLLOWING_CONFIRMATION", false);
+      const po = await renderWallet(props);
+      allowLoggingInOneTestForDebugging();
+
+      expect(await po.getLedgerNeuronHotkeyWarningPo().isBannerVisible()).toBe(false);
     });
 
     describe("when there are staking transactions", () => {
