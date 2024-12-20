@@ -15,6 +15,7 @@
   } from "$lib/utils/navigation.utils";
   import SourceCodeButton from "./SourceCodeButton.svelte";
   import {
+    IconHome,
     IconNeurons,
     IconRocketLaunch,
     IconVote,
@@ -50,8 +51,7 @@
               paths: [AppPath.Portfolio],
             }),
             title: $i18n.navigation.portfolio,
-            // TODO: Fix this once we have new version of GIX
-            icon: IconWallet,
+            icon: IconHome,
           },
         ]
       : []),
