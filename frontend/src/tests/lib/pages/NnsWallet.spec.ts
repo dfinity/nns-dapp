@@ -14,6 +14,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import NnsWallet from "$lib/pages/NnsWallet.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpTransactionsStore } from "$lib/stores/icp-transactions.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
@@ -58,7 +59,6 @@ import { memoToNeuronAccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import AccountsTest from "./AccountsTest.svelte";
 
 vi.mock("$lib/api/nns-dapp.api");
