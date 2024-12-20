@@ -56,7 +56,7 @@
   <KeyValuePair testId="voting-power">
     <span class="label" slot="key">{$i18n.neurons.voting_power}</span>
     <span class="value" slot="value"
-      >{formatVotingPower(neuron.votingPower)}</span
+      >{formatVotingPower(neuron.decidingVotingPower ?? 0n)}</span
     >
   </KeyValuePair>
   <KeyValuePair testId="maturity">

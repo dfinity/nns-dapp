@@ -44,7 +44,7 @@
   <HeadingSubtitle slot="subtitle" testId="voting-power">
     {#if canVote}
       {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
-        $votingPower: formatVotingPower(neuron.votingPower),
+        $votingPower: formatVotingPower(neuron.decidingVotingPower ?? 0n),
       })}
     {:else}
       {$i18n.neuron_detail.voting_power_zero_subtitle}
