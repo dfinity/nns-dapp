@@ -11,7 +11,7 @@
   let isDismissed = browser
     ? Boolean(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? "false"))
     : false;
-  let isVisible: boolean = false;
+  let isVisible = false;
   $: isVisible = !isDismissed;
 
   function dismissBanner() {
