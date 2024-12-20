@@ -112,7 +112,8 @@ export const getStateInfo = (neuronState: NeuronState): StateInfo =>
 // TODO(mstr): Rename to neuronPotentialVotingPower
 /**
  * Calculation of the voting power of a neuron.
- * ! Ignores the neurons activity state (votingPowerRefreshedTimestampSeconds)
+ * 
+ * Note: this calculation ignores the neuron’s activity state (votingPowerRefreshedTimestampSeconds).
  *
  * If neuron's dissolve delay is less than 6 months, the voting power is 0.
  *
