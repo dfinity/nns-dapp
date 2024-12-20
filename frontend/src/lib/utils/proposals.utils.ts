@@ -148,7 +148,9 @@ export const getVotingPower = ({
   getVotingBallot({
     neuronId,
     proposalInfo: proposal,
-  })?.votingPower ?? decidingVotingPower ?? 0n;
+  })?.votingPower ??
+  decidingVotingPower ??
+  0n;
 
 export const selectedNeuronsVotingPower = ({
   neurons,
