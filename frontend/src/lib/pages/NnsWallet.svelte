@@ -76,6 +76,8 @@
   } from "@dfinity/utils";
   import { onDestroy, onMount, setContext } from "svelte";
   import { writable, type Readable } from "svelte/store";
+  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
+  import LedgerNeuronHotkeyWarning from "$lib/components/accounts/LedgerNeuronHotkeyWarning.svelte";
 
   $: if ($authSignedInStore) {
     pollAccounts();
@@ -380,6 +382,10 @@
             {/if}
             <SignInGuard />
           </WalletPageHeading>
+
+          {#if $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION && isHardwareWallet}
+            <LedgerNeuronHotkeyWarning />
+          {/if}
 
           <Separator spacing="none" />
 
