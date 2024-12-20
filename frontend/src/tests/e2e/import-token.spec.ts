@@ -44,6 +44,8 @@ test("Test imported tokens", async ({ page, context }) => {
   await formPo.getLedgerCanisterInputPo().typeText(testLedgerCanisterId);
   await formPo.getIndexCanisterInputPo().typeText(testIndexCanisterId);
 
+  await expect(page).toHaveScreenshot("import-form.png");
+
   await formPo.getSubmitButtonPo().click();
   await reviewPo.waitFor();
 
@@ -56,6 +58,8 @@ test("Test imported tokens", async ({ page, context }) => {
   expect(await reviewPo.getIndexCanisterIdPo().getCanisterIdText()).toBe(
     testIndexCanisterId
   );
+
+  await expect(page).toHaveScreenshot("import-review.png");
 
   step("First import / Import the token");
 
@@ -80,6 +84,8 @@ test("Test imported tokens", async ({ page, context }) => {
   await appPo.getTokensPo().getTokensPagePo().getTokensTable().waitFor();
 
   expect(await tokenNames()).toContain(TEST_TOKEN_NAME);
+
+  await expect(page).toHaveScreenshot("imported-token.png");
 
   step("The user can navigate to the imported token page");
 
@@ -124,6 +130,8 @@ test("Test imported tokens", async ({ page, context }) => {
   expect(
     await reviewPo.getIndexCanisterIdPo().getCanisterIdFallback().isPresent()
   ).toBe(true);
+
+  await expect(page).toHaveScreenshot("import-review-no-index.png");
 
   step("Second import / Import the token");
 
