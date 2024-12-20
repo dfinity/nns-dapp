@@ -252,14 +252,13 @@ describe("NnsNeuronCard", () => {
   it("renders voting power in `proposerNeuron` version", async () => {
     const { getByText } = render(NnsNeuronCard, {
       props: {
-        neuron: mockNeuron,
+        neuron: {
+          ...mockNeuron,
+          decidingVotingPower: 864_000_000n,
+        },
         proposerNeuron: true,
       },
     });
-    const votingValue = formatTokenE8s({
-      value: mockNeuron.votingPower,
-      detailed: true,
-    });
-    expect(getByText(votingValue)).toBeInTheDocument();
+    expect(getByText("8.64")).toBeInTheDocument();
   });
 });
