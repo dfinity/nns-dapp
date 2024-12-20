@@ -2,7 +2,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { page } from "$mocks/$app/stores";
-import AccountsLayout from "$routes/(app)/(home)/+layout.svelte";
+import HomeLayout from "$routes/(app)/(home)/+layout.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -19,7 +19,7 @@ describe("Home layout", () => {
   });
 
   it("should set title and header layout to 'Tokens'", () => {
-    render(AccountsLayout);
+    render(HomeLayout);
 
     expect(get(layoutTitleStore)).toEqual({
       title: en.navigation.tokens,
@@ -28,13 +28,13 @@ describe("Home layout", () => {
   });
 
   it("should not show the split content navigation", () => {
-    const { queryByTestId } = render(AccountsLayout);
+    const { queryByTestId } = render(HomeLayout);
 
     expect(queryByTestId("select-universe-nav-title")).not.toBeInTheDocument();
   });
 
   it("should render menu toggle button", () => {
-    const { queryByTestId } = render(AccountsLayout);
+    const { queryByTestId } = render(HomeLayout);
 
     expect(queryByTestId("menu-toggle")).toBeInTheDocument();
   });
@@ -43,7 +43,7 @@ describe("Home layout", () => {
     it("should show the Portfolio title", () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_PORTFOLIO_PAGE", true);
 
-      render(AccountsLayout);
+      render(HomeLayout);
 
       expect(get(layoutTitleStore)).toEqual({
         title: en.navigation.portfolio,
