@@ -168,7 +168,7 @@ interface VotingPowerParams {
 }
 
 // TODO(mstr): Rename to calculatePotentialNeuronVotingPower
-// Because it doesn't take into account the the NNS neuron's activity state.
+// Because it doesn't take into account the NNS neuron's activity state.
 /**
  * For now used only internally in this file.
  *
