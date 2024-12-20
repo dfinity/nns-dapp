@@ -1,16 +1,21 @@
 import * as agent from "$lib/api/agent.api";
 import * as icpLedgerApi from "$lib/api/icp-ledger.api";
+import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import NeuronDetail from "$lib/routes/NeuronDetail.svelte";
 import { loadSnsProjects } from "$lib/services/public/sns.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import * as fakeSnsAggregatorApi from "$tests/fakes/sns-aggregator-api.fake";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -22,6 +27,7 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/icp-ledger.api");
@@ -33,6 +39,7 @@ vi.mock("$lib/api/sns-ledger.api");
 vi.mock("$lib/api/sns.api");
 
 const testSnsCanisterId = Principal.fromHex("123321");
+const testSnsLedgerCanisterId = Principal.fromHex("923321");
 const testNnsNeuronId = mockNeuron.neuronId;
 
 const nnsProps = {
@@ -87,6 +94,7 @@ describe("NeuronDetail", () => {
     beforeEach(() => {
       fakeSnsAggregatorApi.addProjectWith({
         rootCanisterId: testSnsCanisterId.toText(),
+        ledgerCanisterId: testSnsLedgerCanisterId.toText(),
         lifecycle: SnsSwapLifecycle.Committed,
       });
       fakeSnsAggregatorApi.addProjectWith({
@@ -142,6 +150,64 @@ describe("NeuronDetail", () => {
       expect(await po.hasNnsNeuronDetailPo()).toBe(false);
       expect(await po.hasSnsNeuronDetailPo()).toBe(true);
       expect(await po.getSnsNeuronDetailPo().isContentLoaded()).toBe(true);
+    });
+
+    it("should load ICP Swap tickers", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+      await loadSnsProjects();
+
+      const tickers = [
+        {
+          ...mockIcpSwapTicker,
+          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+          last_price: "10.00",
+        },
+        {
+          ...mockIcpSwapTicker,
+          base_id: testSnsLedgerCanisterId.toText(),
+          last_price: "100.00",
+        },
+      ];
+      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
+
+      expect(get(icpSwapTickersStore)).toBeUndefined();
+      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
+
+      const { container } = render(NeuronDetail, { neuronId: testSnsNeuronId });
+      const po = NeuronDetailPo.under(new JestPageObjectElement(container));
+      await runResolvedPromises();
+
+      expect(get(icpSwapTickersStore)).toBe(tickers);
+      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
+
+      const headingPo = po.getSnsNeuronDetailPo().getSnsNeuronPageHeadingPo();
+
+      expect(await headingPo.hasBalanceInUsd()).toBe(true);
+      // For this test, the specific value doesn't matter.
+      // As long as there is an actual value, we know the ticker data made
+      // its way to the component.
+      expect(await headingPo.getBalanceInUsd()).toBe("$1.00");
+    });
+
+    it("should not load ICP Swap tickers without feature flag", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
+      await loadSnsProjects();
+
+      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
+
+      expect(get(icpSwapTickersStore)).toBeUndefined();
+      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
+
+      const { container } = render(NeuronDetail, { neuronId: testSnsNeuronId });
+      const po = NeuronDetailPo.under(new JestPageObjectElement(container));
+      await runResolvedPromises();
+
+      expect(get(icpSwapTickersStore)).toBeUndefined();
+      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
+
+      const headingPo = po.getSnsNeuronDetailPo().getSnsNeuronPageHeadingPo();
+
+      expect(await headingPo.hasBalanceInUsd()).toBe(false);
     });
   });
 });

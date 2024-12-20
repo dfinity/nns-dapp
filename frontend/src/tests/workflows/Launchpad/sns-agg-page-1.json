@@ -320,7 +320,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98205897256766300,
+    "icrc1_total_supply": 98206107728248980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -843,7 +843,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100916340486692510,
+    "icrc1_total_supply": 100939470926227070,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1546,7 +1546,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50391001230537090,
+    "icrc1_total_supply": 50406318997462024,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1943,7 +1943,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9961351087932912,
+    "icrc1_total_supply": 9961351916382816,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2173,6 +2173,14 @@
           }
         },
         {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1010,
           "name": "nuance_assets_commit_proposed_batch",
           "description": "Commit frontend canister assets via proposal",
@@ -2336,7 +2344,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10095947312877124,
+    "icrc1_total_supply": 10100368715331222,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -2725,7 +2733,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12650726185265496,
+    "icrc1_total_supply": 12653618568983172,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4160,7 +4168,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99704696326645550,
+    "icrc1_total_supply": 99691597898024370,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

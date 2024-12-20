@@ -46,6 +46,10 @@ export class MenuItemsPo extends BasePageObject {
     return GetTokensPo.under(this.root);
   }
 
+  getPortfolioLinkPo(): LinkPo {
+    return LinkPo.under({ element: this.root, testId: "menuitem-portfolio" });
+  }
+
   hasFooter(): Promise<boolean> {
     return this.isPresent("menu-footer");
   }

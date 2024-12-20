@@ -88,6 +88,11 @@
   let sortedTableProjects: TableProject[];
   $: sortedTableProjects = sortTableProjects(tableProjects);
 
+  let hasAnyNeurons: boolean;
+  $: hasAnyNeurons = tableProjects.some(
+    (project) => project.neuronCount ?? 0 > 0
+  );
+
   let totalStakeInUsd: number;
   $: totalStakeInUsd = getTotalStakeInUsd(tableProjects);
 
@@ -113,7 +118,7 @@
 </script>
 
 <div class="wrapper" data-tid="projects-table-component">
-  {#if $authSignedInStore && $ENABLE_USD_VALUES_FOR_NEURONS && totalStakeInUsd > 0}
+  {#if $authSignedInStore && $ENABLE_USD_VALUES_FOR_NEURONS && hasAnyNeurons}
     <UsdValueBanner usdAmount={totalStakeInUsd} {hasUnpricedTokens}>
       <IconNeuronsPage slot="icon" />
     </UsdValueBanner>

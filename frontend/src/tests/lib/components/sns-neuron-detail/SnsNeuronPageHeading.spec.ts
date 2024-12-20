@@ -1,17 +1,22 @@
 import SnsNeuronPageHeading from "$lib/components/sns-neuron-detail/SnsNeuronPageHeading.svelte";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import {
   SECONDS_IN_DAY,
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
 } from "$lib/constants/constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronPageHeadingPo } from "$tests/page-objects/SnsNeuronPageHeading.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
@@ -28,6 +33,7 @@ describe("SnsNeuronPageHeading", () => {
   const maxAgeForBonus = BigInt(SECONDS_IN_FOUR_YEARS);
   const maxAgeBonusMultiplier = 1.25;
   const maxAgeBonusPercentage = 100 * (maxAgeBonusMultiplier - 1);
+  const ledgerCanisterId = principal(555);
 
   const renderSnsNeuronCmp = (neuron: SnsNeuron) => {
     const { container } = render(SnsNeuronPageHeading, {
@@ -46,6 +52,7 @@ describe("SnsNeuronPageHeading", () => {
           ],
           max_age_bonus_percentage: [BigInt(maxAgeBonusPercentage)],
         },
+        ledgerCanisterId,
       },
     });
 
@@ -57,6 +64,19 @@ describe("SnsNeuronPageHeading", () => {
     // Make sure that nowInSeconds() returns a fixed value for the calculation
     // of the neuron age.
     vi.useFakeTimers();
+
+    icpSwapTickersStore.set([
+      {
+        ...mockIcpSwapTicker,
+        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+        last_price: "10.00",
+      },
+      {
+        ...mockIcpSwapTicker,
+        base_id: ledgerCanisterId.toText(),
+        last_price: "100.00",
+      },
+    ]);
   });
 
   it("should render the neuron's stake", async () => {
@@ -114,5 +134,30 @@ describe("SnsNeuronPageHeading", () => {
     const po = renderSnsNeuronCmp(neuron);
 
     expect(await po.hasHotkeyTag()).toBe(true);
+  });
+
+  it("should not display USD balance if feature flag is disabled", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
+
+    const stake = 300_000_000n;
+    const neuron = createMockSnsNeuron({
+      stake,
+    });
+    const po = renderSnsNeuronCmp(neuron);
+
+    expect(await po.hasBalanceInUsd()).toBe(false);
+  });
+
+  it("should display USD balance if feature flag is enabled", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+    const stake = 300_000_000n;
+    const neuron = createMockSnsNeuron({
+      stake,
+    });
+    const po = renderSnsNeuronCmp(neuron);
+
+    expect(await po.hasBalanceInUsd()).toBe(true);
+    expect(await po.getBalanceInUsd()).toBe("$0.30");
   });
 });

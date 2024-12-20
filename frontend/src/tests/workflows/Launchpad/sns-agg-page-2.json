@@ -1499,7 +1499,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100996551636270740,
+    "icrc1_total_supply": 101053631672510620,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3538,7 +3538,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100741516352634,
+    "icrc1_total_supply": 100742011262316,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4313,7 +4313,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995569306980,
+    "icrc1_total_supply": 995568393980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7219,7 +7219,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20198359506098944,
+    "icrc1_total_supply": 20199957826668268,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9228,7 +9228,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25206693834804576,
+    "icrc1_total_supply": 25214024973350890,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -9793,6 +9793,14 @@
           "id": 14,
           "name": "Manage dapp canister settings",
           "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -10691,7 +10699,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10044164211068284,
+    "icrc1_total_supply": 10050059232906212,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11237,14 +11245,15 @@
         "2fvu6-tqaaa-aaaap-akksa-cai",
         "ql553-iqaaa-aaaap-anuyq-cai",
         "qc6wh-6yaaa-aaaap-anuza-cai",
-        "ocqzv-tyaaa-aaaar-qal4a-cai"
+        "ocqzv-tyaaa-aaaar-qal4a-cai",
+        "2rgax-kyaaa-aaaap-anvba-cai"
       ],
       "archives": ["apf7i-uiaaa-aaaaq-aac2q-cai"]
     },
     "meta": {
       "url": "https://panda.fans",
-      "name": "ICPanda DAO",
-      "description": "A decentralized Panda meme brand built on the Internet Computer.\n",
+      "name": "ICPanda",
+      "description": "A technical panda fully running on the Internet Computer blockchain, building chain-native infrastructures and practical Web3 apps. About us: https://dmsg.net/panda",
       "logo": "/v1/sns/root/d7wvo-iiaaa-aaaaq-aacsq-cai/logo.png"
     },
     "parameters": {
@@ -11916,7 +11925,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 103121990792922610,
+    "icrc1_total_supply": 103278085075373300,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -13069,7 +13078,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98712522969426190,
+    "icrc1_total_supply": 98720733064453760,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -13577,8 +13586,8 @@
     },
     "meta": {
       "url": "https://yuku.app/",
-      "name": "Yuku DAO",
-      "description": "Yuku is a pioneering AI Web3 Platform featuring NFT Aggregator, 3D space, and AI Avatar integration, all governed by the decentralized Yuku DAO. Users can engage in immersive experiences within the 3D environment and interact with AI Avatars, marking a significant advancement in digital innovation.\n",
+      "name": "Yuku AI",
+      "description": "Yuku AI is a groundbreaking platform at the intersection of AI and Web3, empowering users with decentralized AI agents, immersive 3D spaces, and a dynamic marketplace for AI assets. By combining AI Agent DID, Social and Payment on-chain Protocols, Yuku AI enables seamless collaboration and innovation across digital and real-world ecosystems. It's not just a platform—it's a launchpad for the next era of AI-driven civilization.",
       "logo": "/v1/sns/root/cj5nf-5yaaa-aaaaq-aacxq-cai/logo.png"
     },
     "parameters": {
@@ -14250,7 +14259,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 100006604101217710,
+    "icrc1_total_supply": 100006871767524210,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15430,7 +15439,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100070574806156050,
+    "icrc1_total_supply": 100078362634060380,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
