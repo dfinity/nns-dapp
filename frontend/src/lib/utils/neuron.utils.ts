@@ -221,6 +221,7 @@ export const ageMultiplier = (ageSeconds: bigint): number =>
   });
 
 export const activityMultiplier = ({ fullNeuron }: NeuronInfo) => {
+  // TODO(mstr): use properties from the NeuronInfo
   const { decidingVotingPower = 0n, potentialVotingPower = 0n } =
     fullNeuron ?? {};
 
