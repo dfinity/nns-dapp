@@ -23,7 +23,7 @@
     title
     label={$i18n.neurons.voting_power}
     amount={TokenAmountV2.fromUlps({
-      amount: neuron.votingPower,
+      amount: neuron.decidingVotingPower ?? 0n,
       token: ICPToken,
     })}
     detailed
