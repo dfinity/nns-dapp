@@ -55,6 +55,7 @@ export const mockNeuron: NeuronInfo = {
   state: NeuronState.Locked,
   joinedCommunityFundTimestampSeconds: undefined,
   retrievedAtTimestampSeconds: 10n,
+  /** @deprecated */
   votingPower: 300_000_000n,
   ageSeconds: 100n,
   visibility: undefined,
