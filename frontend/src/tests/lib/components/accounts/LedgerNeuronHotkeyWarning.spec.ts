@@ -1,7 +1,7 @@
+import LedgerNeuronHotkeyWarning from "$lib/components/accounts/LedgerNeuronHotkeyWarning.svelte";
 import { LedgerNeuronHotkeyWarningPo } from "$tests/page-objects/LedgerNeuronHotkeyWarning.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
-import LedgerNeuronHotkeyWarning from "$lib/components/accounts/LedgerNeuronHotkeyWarning.svelte";
 
 describe("LedgerNeuronHotkeyWarning", () => {
   const localStorageKey = "isLedgerNeuronHotkeyWarningDisabled";
@@ -19,7 +19,7 @@ describe("LedgerNeuronHotkeyWarning", () => {
   it("should be shown when localStorageKey not set", async () => {
     const po = await renderComponent();
     expect(localStorage.getItem(localStorageKey)).toBeNull();
-    
+
     expect(await po.isBannerVisible()).toBe(true);
   });
 
@@ -29,7 +29,6 @@ describe("LedgerNeuronHotkeyWarning", () => {
 
     expect(await po.isBannerVisible()).toBe(false);
   });
-
 
   it("should be closable", async () => {
     const po = await renderComponent();
@@ -42,5 +41,4 @@ describe("LedgerNeuronHotkeyWarning", () => {
     expect(await po.isBannerVisible()).toBe(false);
     expect(localStorage.getItem(localStorageKey)).toEqual("true");
   });
-
 });
