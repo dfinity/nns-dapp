@@ -1,7 +1,7 @@
 <script lang="ts">
 </script>
 
-<article><slot /> </article>
+<article><slot /></article>
 
 <style lang="scss">
   article {

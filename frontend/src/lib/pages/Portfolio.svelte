@@ -1,13 +1,14 @@
 <script lang="ts">
   import Card from "$lib/components/portfolio/Card.svelte";
+  import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
 </script>
 
 <main>
   <div class="top">
     <Card>Card1</Card>
-    {#if $authSignedInStore}
-      <Card>Card2</Card>
+    {#if !$authSignedInStore}
+      <LoginCard />
     {/if}
   </div>
   <div class="content">
@@ -27,35 +28,25 @@
 
     @include media.min-width(large) {
       display: grid;
-      grid-template-rows: 150px 1fr;
+      grid-template-rows: auto 1fr;
       gap: var(--padding-3x);
       padding: var(--padding-3x);
     }
 
     .top {
       display: flex;
-      flex-direction: column;
+      flex-direction: column-reverse;
       gap: var(--padding-2x);
-
-      :global(:nth-child(1)) {
-        order: 1;
-      }
 
       @include media.min-width(large) {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
 
-        :global(:nth-child(1)) {
-          order: 0;
-        }
-
         &:has(:first-child:nth-last-child(1)) {
-          /* If only one card */
           grid-template-columns: 1fr;
         }
 
         &:has(:first-child:nth-last-child(2)) {
-          /* If two cards */
           grid-template-columns: 1fr 2fr;
         }
       }
