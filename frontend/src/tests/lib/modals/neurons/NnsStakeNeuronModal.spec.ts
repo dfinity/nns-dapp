@@ -14,6 +14,7 @@ import {
   stakeNeuron,
   updateDelay,
 } from "$lib/services/neurons.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -441,6 +442,34 @@ describe("NnsStakeNeuronModal", () => {
 
       expect(onClose).toBeCalledTimes(1);
       expect(addHotkeyForHardwareWalletNeuron).not.toBeCalled();
+    });
+
+    it("should display missing rewards warning when feature flag on", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        true
+      );
+      const po = await renderComponent({});
+      await createNeuron(po);
+
+      expect(await po.getAddUserToHotkeysPo().isPresent()).toBe(true);
+      expect(
+        await po.getAddUserToHotkeysPo().isMissingRewardsWarningVisible()
+      ).toBe(true);
+    });
+
+    it("should not display missing rewards warning when feature flag off", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        false
+      );
+      const po = await renderComponent({});
+      await createNeuron(po);
+
+      expect(await po.getAddUserToHotkeysPo().isPresent()).toBe(true);
+      expect(
+        await po.getAddUserToHotkeysPo().isMissingRewardsWarningVisible()
+      ).toBe(false);
     });
 
     it("should create neuron for hardwareWallet and add dissolve delay", async () => {

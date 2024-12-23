@@ -7,6 +7,7 @@
   import type { NeuronId } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import CalloutWarning from "$lib/components/common/CalloutWarning.svelte";
+  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
 
   export let account: Account;
   export let neuronId: NeuronId;
@@ -31,7 +32,9 @@
 </script>
 
 <div class="wrapper" data-tid="add-principal-to-hotkeys-modal">
-  <CalloutWarning htmlText={$i18n.losing_rewards.hw_create_neuron_warning} />
+  {#if $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION}
+    <CalloutWarning htmlText={$i18n.losing_rewards.hw_create_neuron_warning} />
+  {/if}
 
   <p class="description">{$i18n.neurons.add_user_as_hotkey_message}</p>
 
