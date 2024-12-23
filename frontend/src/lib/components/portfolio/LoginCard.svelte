@@ -39,6 +39,7 @@
       gap: var(--padding-3x);
       padding: var(--padding-3x) var(--padding-4x);
     }
+
     .content {
       h2,
       p {
@@ -50,6 +51,7 @@
       flex-direction: column;
       gap: var(--padding);
     }
+
     .icon {
       grid-area: icon;
       width: 80px;
@@ -60,6 +62,7 @@
         height: 144px;
       }
     }
+
     .action {
       grid-area: action;
       :global(button) {
