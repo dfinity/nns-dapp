@@ -10,7 +10,7 @@ resolver = "2"
 version = "2.0.98"
 
 [workspace.dependencies]
-ic-cdk = "0.17.0"
+ic-cdk = "0.17.1"
 ic-cdk-macros = "0.17.0"
 ic-cdk-timers = "0.11.0"
 
