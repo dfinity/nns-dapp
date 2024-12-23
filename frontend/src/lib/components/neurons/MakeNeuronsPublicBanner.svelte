@@ -97,7 +97,7 @@
   .banner {
     display: flex;
     align-items: center;
-    background: var(--input-background);
+    background-color: var(--banner-background);
     border-radius: var(--border-radius);
     padding: var(--padding) var(--padding-1_5x);
     gap: var(--padding-1_5x);
