@@ -14,9 +14,13 @@
 <LayoutList {title}>
   <Layout>
     <Content>
-      <IslandWidthMain>
+      {#if $ENABLE_PORTFOLIO_PAGE}
         <slot />
-      </IslandWidthMain>
+      {:else}
+        <IslandWidthMain>
+          <slot />
+        </IslandWidthMain>
+      {/if}
     </Content>
   </Layout>
 </LayoutList>
