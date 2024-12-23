@@ -32,7 +32,6 @@
     padding: var(--padding-2x);
 
     @include media.min-width(medium) {
-      grid-template-columns: auto 1fr;
       grid-template-areas:
         "icon content"
         "icon action";
