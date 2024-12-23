@@ -11,7 +11,7 @@ hex = "0.4.3"
 ic_principal = "0.1.1"
 serde = "1.0.209"
 serde_bytes = "0.11.15"
-serde_json = "1.0.127"
+serde_json = "1.0.134"
 
 cycles-minting-canister = { workspace = true }
 dfn_candid = { workspace = true }
