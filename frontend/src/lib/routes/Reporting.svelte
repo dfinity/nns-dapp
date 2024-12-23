@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ReportingNeuronsButton from "$lib/components/reporting/ReportingNeuronsButton.svelte";
+  import ReportingNeurons from "$lib/components/reporting/ReportingNeurons.svelte";
   import ReportingTransactions from "$lib/components/reporting/ReportingTransactions.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { i18n } from "$lib/stores/i18n";
@@ -22,16 +22,8 @@
 
 <Island>
   <main>
-    <div class="wrapper">
-      <div>
-        <h3>{$i18n.reporting.neurons_title}</h3>
-        <p class="description">{$i18n.reporting.neurons_description}</p>
-      </div>
-      <ReportingNeuronsButton />
-    </div>
-
+    <ReportingNeurons />
     <Separator spacing="medium" />
-
     <ReportingTransactions />
   </main>
 </Island>
@@ -39,12 +31,5 @@
 <style lang="scss">
   main {
     padding: var(--padding-3x);
-  }
-
-  .wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--padding-3x);
   }
 </style>
