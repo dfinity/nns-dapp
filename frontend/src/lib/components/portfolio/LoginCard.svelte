@@ -5,7 +5,7 @@
   import { IconAccountsPage } from "@dfinity/gix-components";
 </script>
 
-<Card>
+<Card testId="portfolio-login-card">
   <div class="wrapper">
     <div class="icon">
       <IconAccountsPage />
