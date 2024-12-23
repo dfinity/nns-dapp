@@ -7,7 +7,10 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import { proposalsPathStore } from "$lib/derived/paths.derived";
-  import { ENABLE_PORTFOLIO_PAGE } from "$lib/stores/feature-flags.store";
+  import {
+    ENABLE_PERIODIC_FOLLOWING_CONFIRMATION,
+    ENABLE_PORTFOLIO_PAGE,
+  } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import {
     ACTIONABLE_PROPOSALS_URL,
@@ -27,6 +30,7 @@
   import type { ComponentType } from "svelte";
   import { cubicIn, cubicOut } from "svelte/easing";
   import { scale } from "svelte/transition";
+  import NnsNeuronsMissingRewardsBadge from "$lib/components/neurons/NnsNeuronsMissingRewardsBadge.svelte";
 
   let routes: {
     context: string;
@@ -74,6 +78,9 @@
       }),
       title: $i18n.navigation.neurons,
       icon: IconNeurons,
+      statusIcon: $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION
+        ? NnsNeuronsMissingRewardsBadge
+        : undefined,
     },
     {
       context: "proposals",
