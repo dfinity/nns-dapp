@@ -102,7 +102,7 @@
     align-items: center;
     gap: var(--padding-2x);
 
-    background-color: var(--card-background-tint);
+    background-color: var(--banner-background);
     padding: var(--padding-2x);
     border-radius: var(--padding);
     border: 1.5px solid var(--card-border);
