@@ -1,4 +1,8 @@
-<article><slot /></article>
+<script lang="ts">
+  export let testId = "card";
+</script>
+
+<article data-tid={testId}><slot /></article>
 
 <style lang="scss">
   article {
