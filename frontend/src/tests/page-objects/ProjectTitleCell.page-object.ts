@@ -1,3 +1,4 @@
+import { NnsNeuronsMissingRewardsBadgePo } from "$tests/page-objects/NnsNeuronsMissingRewardsBadge.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -10,5 +11,9 @@ export class ProjectTitleCellPo extends BasePageObject {
 
   getProjectTitle(): Promise<string> {
     return this.getText("project-title");
+  }
+
+  getNnsNeuronsMissingRewardsBadgePo(): NnsNeuronsMissingRewardsBadgePo {
+    return NnsNeuronsMissingRewardsBadgePo.under(this.root);
   }
 }
