@@ -1,6 +1,7 @@
 import { ActionableProposalCountBadgePo } from "$tests/page-objects/ActionableProposalCountBadge.page-object";
 import { GetTokensPo } from "$tests/page-objects/GetTokens.page-object";
 import { LinkPo } from "$tests/page-objects/Link.page-object";
+import { NnsNeuronsMissingRewardsBadgePo } from "$tests/page-objects/NnsNeuronsMissingRewardsBadge.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -13,6 +14,10 @@ export class MenuItemsPo extends BasePageObject {
 
   getProposalsActionableCountBadgePo(): ActionableProposalCountBadgePo {
     return ActionableProposalCountBadgePo.under(this.root);
+  }
+
+  getNnsNeuronsMissingRewardsBadgePo(): NnsNeuronsMissingRewardsBadgePo {
+    return NnsNeuronsMissingRewardsBadgePo.under(this.root);
   }
 
   clickAccounts(): Promise<void> {
