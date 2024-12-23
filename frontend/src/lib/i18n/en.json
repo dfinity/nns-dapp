@@ -395,6 +395,7 @@
     "confirming": "Confirming following. This may take a moment.",
     "confirm": "Confirm Following",
     "badge_label": "Confirm following to avoid missing rewards",
+    "hw_create_neuron_warning": "It is recommended to <strong>Add Hotkey</strong> now, otherwise the NNS dapp will not be able to warn you if this neuron starts missing voting rewards due to inactivity.",
     "hw_hotkey_warning": "You may have neurons that are not added to the NNS dapp. If you want to view your neurons and get alerts in case they start missing voting rewards, you can add them by clicking <strong>Show Neurons > Add to NNS Dapp</strong>."
   },
   "losing_rewards_banner": {
