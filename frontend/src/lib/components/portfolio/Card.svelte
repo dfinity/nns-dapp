@@ -10,7 +10,6 @@
     transition:
       color var(--animation-time-normal),
       box-shadow var(--animation-time-normal);
-    /*  Designs define it as 16px */
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-2x);
   }
 </style>
