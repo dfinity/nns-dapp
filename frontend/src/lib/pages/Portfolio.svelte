@@ -6,10 +6,10 @@
 
 <main data-tid="portfolio-page-component">
   <div class="top" class:single-card={$authSignedInStore}>
-    <Card>Card1</Card>
     {#if !$authSignedInStore}
       <LoginCard />
     {/if}
+    <Card>Card1</Card>
   </div>
   <div class="content">
     <Card>Card3</Card>
@@ -34,13 +34,17 @@
     }
 
     .top {
-      display: flex;
-      flex-direction: column-reverse;
+      display: grid;
+      grid-template-columns: 1fr;
       gap: var(--padding-2x);
 
       @include media.min-width(large) {
         display: grid;
         grid-template-columns: 1fr 2fr;
+
+        > :global(article:first-of-type) {
+          order: 1;
+        }
 
         &.single-card {
           grid-template-columns: 1fr;
@@ -49,10 +53,9 @@
     }
 
     .content {
-      display: flex;
-      flex-direction: column;
-      gap: var(--padding-2x);
+      display: grid;
       grid-template-columns: 1fr;
+      gap: var(--padding-2x);
 
       @include media.min-width(large) {
         display: grid;
