@@ -30,5 +30,5 @@ ic-cdk-macros = { workspace = true }
 idl2json = "0.10.1"
 
 [dev-dependencies]
-anyhow = "1.0.86"
+anyhow = "1.0.95"
 pretty_assertions = "1.4.0"
