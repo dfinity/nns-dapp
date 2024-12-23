@@ -32,7 +32,7 @@
   <h3 slot="title">{$i18n.neurons.voting_power}</h3>
   <p slot="end" class="title-value" data-tid="voting-power">
     {#if canVote}
-      {formatVotingPower(neuron.votingPower)}
+      {formatVotingPower(neuron.decidingVotingPower ?? 0n)}
     {:else}
       {$i18n.neuron_detail.voting_power_zero}
     {/if}
@@ -68,7 +68,7 @@
               neuron.dissolveDelaySeconds
             ).toFixed(2),
             $activityMultiplier: activityMultiplier(neuron).toFixed(2),
-            $votingPower: formatVotingPower(neuron.votingPower),
+            $votingPower: formatVotingPower(neuron.decidingVotingPower ?? 0n),
           }
         )}
       </p>

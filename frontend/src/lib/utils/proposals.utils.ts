@@ -139,7 +139,7 @@ export const getVotingBallot = ({
 // We first check the voting power of the ballot from the proposal. Which is the voting power that was used to vote.
 // In the edge case that the proposal voting power is not present, then we show the neuron voting power.
 export const getVotingPower = ({
-  neuron: { neuronId, votingPower },
+  neuron: { neuronId, decidingVotingPower },
   proposal,
 }: {
   neuron: NeuronInfo;
@@ -148,7 +148,9 @@ export const getVotingPower = ({
   getVotingBallot({
     neuronId,
     proposalInfo: proposal,
-  })?.votingPower ?? votingPower;
+  })?.votingPower ??
+  decidingVotingPower ??
+  0n;
 
 export const selectedNeuronsVotingPower = ({
   neurons,
