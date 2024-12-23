@@ -6,6 +6,7 @@
   import { busy } from "@dfinity/gix-components";
   import type { NeuronId } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
+  import CalloutWarning from "$lib/components/common/CalloutWarning.svelte";
 
   export let account: Account;
   export let neuronId: NeuronId;
@@ -30,6 +31,8 @@
 </script>
 
 <div class="wrapper" data-tid="add-principal-to-hotkeys-modal">
+  <CalloutWarning htmlText={$i18n.losing_rewards.hw_create_neuron_warning} />
+
   <p class="description">{$i18n.neurons.add_user_as_hotkey_message}</p>
 
   <div>

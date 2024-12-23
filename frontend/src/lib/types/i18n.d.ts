@@ -409,6 +409,7 @@ interface I18nLosing_rewards {
   confirming: string;
   confirm: string;
   badge_label: string;
+  hw_create_neuron_warning: string;
   hw_hotkey_warning: string;
 }
 

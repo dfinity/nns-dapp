@@ -2,6 +2,7 @@
   import { Html, IconError } from "@dfinity/gix-components";
 
   export let htmlText: string;
+  // TODO(mstr): Use Banner component here instead of custom styling.
 </script>
 
 <article data-tid="callout-warning-component">
