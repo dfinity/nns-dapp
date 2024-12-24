@@ -20,7 +20,7 @@
   );
 </script>
 
-<Island>
+<Island testId="reporting-page">
   <main>
     <ReportingNeurons />
     <Separator spacing="medium" />
