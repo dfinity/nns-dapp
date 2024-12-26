@@ -1439,7 +1439,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 999793990000,
+    "icrc1_total_supply": 999761200000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1826,7 +1826,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 99999823150000,
+    "icrc1_total_supply": 99999816180000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2220,7 +2220,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041710272424046800,
+    "icrc1_total_supply": 1041707288521398100,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2338,7 +2338,8 @@
         "btxkl-saaaa-aaaar-qagvq-cai",
         "daijl-2yaaa-aaaar-qag3a-cai",
         "iq4w5-2aaaa-aaaar-qahfq-cai",
-        "zftzm-qqaaa-aaaam-adxfa-cai"
+        "zftzm-qqaaa-aaaam-adxfa-cai",
+        "n3i53-gyaaa-aaaam-acfaq-cai"
       ],
       "archives": ["i2f3v-jyaaa-aaaaq-aadpq-cai"]
     },
@@ -2499,7 +2500,7 @@
         "followees": []
       },
       "max_dissolve_delay_seconds": 94672800,
-      "max_dissolve_delay_bonus_percentage": 50,
+      "max_dissolve_delay_bonus_percentage": 100,
       "max_followees_per_function": 15,
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -2514,12 +2515,12 @@
       "max_number_of_neurons": 200000,
       "transaction_fee_e8s": 1000000,
       "max_number_of_proposals_with_ballots": 700,
-      "max_age_bonus_percentage": 25,
+      "max_age_bonus_percentage": 100,
       "neuron_grantable_permissions": {
         "permissions": [0, 1, 3, 4, 5, 6, 7, 8, 9]
       },
       "voting_rewards_parameters": {
-        "final_reward_rate_basis_points": 24,
+        "final_reward_rate_basis_points": 300,
         "initial_reward_rate_basis_points": 300,
         "reward_rate_transition_duration_seconds": 31557600,
         "round_duration_seconds": 86400
@@ -2864,7 +2865,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11655153681778952,
+    "icrc1_total_supply": 11656313169145326,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4086,7 +4087,8 @@
       "dapps": [
         "qu2gy-uqaaa-aaaal-qcv6a-cai",
         "kw5rk-raaaa-aaaai-qpfoa-cai",
-        "kr4x6-4yaaa-aaaai-qpfoq-cai"
+        "kr4x6-4yaaa-aaaai-qpfoq-cai",
+        "2hrv7-oaaaa-aaaai-ap7va-cai"
       ],
       "archives": ["mxu7p-2yaaa-aaaaq-aadvq-cai"]
     },
@@ -4374,7 +4376,7 @@
       ]
     ],
     "icrc1_fee": [705032704, 1],
-    "icrc1_total_supply": 2394290282629033000,
+    "icrc1_total_supply": 2364631664139904500,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4459,7 +4461,7 @@
       "index": "mqvz3-xaaaa-aaaaq-aadva-cai",
       "governance": "ntzq5-dyaaa-aaaaq-aadtq-cai",
       "dapps": ["zwxjr-7aaaa-aaaap-qhodq-cai", "mnc6b-aaaaa-aaaap-qhnrq-cai"],
-      "archives": []
+      "archives": ["odk23-7yaaa-aaaaq-aad3q-cai"]
     },
     "meta": {
       "url": "https://mnc6b-aaaaa-aaaap-qhnrq-cai.icp0.io/",
@@ -4926,7 +4928,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999999910050000,
+    "icrc1_total_supply": 1999999909290000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
@@ -7324,6 +7326,14 @@
           }
         },
         {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1234,
           "name": "Update kong frontend",
           "description": "Update the asset canister",
@@ -8257,7 +8267,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100022036458562640,
+    "icrc1_total_supply": 100028392639792300,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
