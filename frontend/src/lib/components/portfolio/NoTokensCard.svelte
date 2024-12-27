@@ -39,6 +39,12 @@
       max-width: 450px;
     }
 
+    @include media.min-width(medium) {
+      gap: var(--padding-4x);
+      padding: var(--padding-6x) var(--padding-4x);
+      max-width: 450px;
+    }
+
     .icon {
       width: 80px;
       height: 80px;

@@ -48,6 +48,7 @@
         height: 144px;
       }
     }
+
     .text {
       color: var(--text-description);
       p {
