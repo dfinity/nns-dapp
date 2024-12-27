@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { IconAccountsPage } from "@dfinity/gix-components";
+  import { IconNeuronsPage } from "@dfinity/gix-components";
   import Card from "./Card.svelte";
 
   export let primaryCard = false;
@@ -10,16 +10,13 @@
 <Card testId="no-neurons-card">
   <div class="wrapper">
     <div class="icon">
-      <IconAccountsPage />
+      <IconNeuronsPage />
     </div>
     <div class="text">
-      <p class="description">{$i18n.portfolio.no_neurons_card_description}</p>
+      <p>{$i18n.portfolio.no_neurons_card_description}</p>
     </div>
-    <a
-      {href}
-      class="button"
-      class:primary={primaryCard}
-      class:secondary={!primaryCard}>{$i18n.portfolio.no_neurons_card_button}</a
+    <a {href} class={`button disabled ${primaryCard ? "primary" : "secondary"}`}
+      >{$i18n.portfolio.no_neurons_card_button}</a
     >
   </div>
 </Card>
@@ -32,15 +29,20 @@
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: var(--padding-4x);
+    gap: var(--padding-2x);
 
-    padding: var(--padding-3x);
+    padding: var(--padding-2x);
     margin: 0 auto;
-    max-width: 400px;
     height: 100%;
     text-align: center;
+
+    @include media.min-width(medium) {
+      gap: var(--padding-4x);
+      padding: var(--padding-6x) var(--padding-4x);
+      max-width: 400px;
+    }
 
     .icon {
       width: 80px;
@@ -51,10 +53,11 @@
         height: 144px;
       }
     }
+
     .text {
+      color: var(--text-description);
       p {
         margin: 0;
-        margin-top: var(--padding);
       }
     }
   }

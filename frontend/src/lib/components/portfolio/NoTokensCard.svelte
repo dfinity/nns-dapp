@@ -12,8 +12,8 @@
       <IconAccountsPage />
     </div>
     <div class="text">
-      <h4>{$i18n.portfolio.no_tokens_card_title}</h4>
-      <p class="description">{$i18n.portfolio.no_tokens_card_description}</p>
+      <h5>{$i18n.portfolio.no_tokens_card_title}</h5>
+      <p>{$i18n.portfolio.no_tokens_card_description}</p>
     </div>
     <a {href} class="button primary">{$i18n.portfolio.no_tokens_card_button}</a>
   </div>
@@ -27,15 +27,20 @@
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    gap: var(--padding-4x);
+    gap: var(--padding-2x);
 
-    padding: var(--padding-3x);
+    padding: var(--padding-3x) var(--padding-2x);
     margin: 0 auto;
-    max-width: 450px;
     height: 100%;
     text-align: center;
+
+    @include media.min-width(medium) {
+      gap: var(--padding-4x);
+      padding: var(--padding-6x) var(--padding-4x);
+      max-width: 450px;
+    }
 
     .icon {
       width: 80px;
@@ -49,10 +54,16 @@
 
     .text {
       text-align: center;
-      h4,
+      color: var(--text-description);
+
+      h5,
       p {
         margin: 0;
         text-wrap: pretty;
+      }
+      h5 {
+        color: inherit;
+        font-weight: bold;
       }
       p {
         margin-top: var(--padding);

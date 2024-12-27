@@ -15,5 +15,6 @@
       color var(--animation-time-normal),
       box-shadow var(--animation-time-normal);
     border-radius: var(--border-radius-2x);
+    overflow: hidden;
   }
 </style>
