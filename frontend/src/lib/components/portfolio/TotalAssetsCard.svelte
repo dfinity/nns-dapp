@@ -9,7 +9,7 @@
   import { formatNumber } from "$lib/utils/format.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
 
-  export let usdAmount: number | undefined = 14500;
+  export let usdAmount: number | undefined;
   export let hasUnpricedTokens: boolean = false;
 
   let hasError: boolean;
