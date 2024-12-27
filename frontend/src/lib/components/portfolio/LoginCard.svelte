@@ -30,6 +30,7 @@
       "action action";
     gap: var(--padding-2x);
     padding: var(--padding-2x);
+    background-color: var(--card-background-tint);
 
     @include media.min-width(medium) {
       grid-template-areas:
