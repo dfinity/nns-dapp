@@ -1,7 +1,7 @@
 <script lang="ts">
+  import Card from "$lib/components/portfolio/Card.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { IconNeuronsPage } from "@dfinity/gix-components";
-  import Card from "./Card.svelte";
 
   export let primaryCard = false;
   const href = "/neurons";

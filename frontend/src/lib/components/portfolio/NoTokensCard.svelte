@@ -1,7 +1,7 @@
 <script lang="ts">
+  import Card from "$lib/components/portfolio/Card.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { IconAccountsPage } from "@dfinity/gix-components";
-  import Card from "./Card.svelte";
 
   const href = "/tokens";
 </script>
