@@ -111,6 +111,7 @@
     .content {
       display: grid;
       grid-template-columns: 1fr;
+      grid-template-rows: auto;
       gap: var(--padding-2x);
 
       @include media.min-width(large) {
