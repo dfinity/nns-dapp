@@ -2,14 +2,13 @@
   import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { i18n } from "$lib/stores/i18n";
   import { formatNumber } from "$lib/utils/format.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let hasError: boolean;
-
-  const absentValue = "-/-";
 
   let icpPrice: number | undefined;
   $: icpPrice =
@@ -20,7 +19,7 @@
   let icpPriceFormatted: string;
   $: icpPriceFormatted = nonNullish(icpPrice)
     ? formatNumber(icpPrice)
-    : absentValue;
+    : PRICE_NOT_AVAILABLE_PLACEHOLDER;
 </script>
 
 <div class="exchange-rate">

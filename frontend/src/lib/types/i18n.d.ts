@@ -1258,6 +1258,7 @@ interface I18nImport_token {
 interface I18nPortfolio {
   login_title: string;
   login_description: string;
+  total_assets_title: string;
   no_tokens_card_title: string;
   no_tokens_card_description: string;
   no_neurons_card_description: string;
