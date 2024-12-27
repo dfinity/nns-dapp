@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Card from "$lib/components/portfolio/Card.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NoNeuronsCard from "$lib/components/portfolio/NoNeuronsCard.svelte";
   import NoTokensCard from "$lib/components/portfolio/NoTokensCard.svelte";
+  import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
 </script>
 
@@ -11,7 +11,7 @@
     {#if !$authSignedInStore}
       <LoginCard />
     {/if}
-    <Card>Card1</Card>
+   <TotalAssetsCard />
   </div>
   <div class="content">
     <NoTokensCard />
