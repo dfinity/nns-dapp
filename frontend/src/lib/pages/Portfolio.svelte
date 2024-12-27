@@ -1,6 +1,8 @@
 <script lang="ts">
   import Card from "$lib/components/portfolio/Card.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
+  import NoNeuronsCard from "$lib/components/portfolio/NoNeuronsCard.svelte";
+  import NoTokensCard from "$lib/components/portfolio/NoTokensCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
 </script>
 
@@ -12,8 +14,8 @@
     <Card>Card1</Card>
   </div>
   <div class="content">
-    <Card>Card3</Card>
-    <Card>Card4</Card>
+    <NoTokensCard />
+    <NoNeuronsCard />
   </div>
 </main>
 
@@ -55,6 +57,7 @@
     .content {
       display: grid;
       grid-template-columns: 1fr;
+      grid-template-rows: auto;
       gap: var(--padding-2x);
 
       @include media.min-width(large) {
