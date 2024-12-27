@@ -15,7 +15,7 @@
     <div class="text">
       <p>{$i18n.portfolio.no_neurons_card_description}</p>
     </div>
-    <a {href} class={`button disabled ${primaryCard ? "primary" : "secondary"}`}
+    <a {href} class={`button ${primaryCard ? "primary" : "secondary"}`}
       >{$i18n.portfolio.no_neurons_card_button}</a
     >
   </div>
