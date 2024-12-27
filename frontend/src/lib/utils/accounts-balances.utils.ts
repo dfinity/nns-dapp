@@ -1,14 +1,14 @@
 import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
 import type { IcrcCanistersStoreData } from "$lib/derived/icrc-canisters.derived";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import { updateBalance } from "$lib/services/ckbtc-minter.services";
+import { uncertifiedLoadSnsesAccountsBalances } from "$lib/services/sns-accounts-balance.services";
+import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
 import type { Universe } from "$lib/types/universe";
 import { isArrayEmpty } from "$lib/utils/utils";
 import type { CanisterIdString } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
-import { updateBalance } from "./ckbtc-minter.services";
-import { uncertifiedLoadSnsesAccountsBalances } from "./sns-accounts-balance.services";
-import { uncertifiedLoadAccountsBalance } from "./wallet-uncertified-accounts.services";
 
 class BalanceFetchTracker {
   private static instance: BalanceFetchTracker;

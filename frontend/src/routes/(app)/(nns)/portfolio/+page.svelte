@@ -5,9 +5,9 @@
   import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
   import Portfolio from "$lib/pages/Portfolio.svelte";
-  import { balanceLoader } from "$lib/services/accounts-balances.services";
   import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
+  import { balanceLoader } from "$lib/utils/accounts-balances.utils";
   import { onMount } from "svelte";
 
   onMount(() => {
