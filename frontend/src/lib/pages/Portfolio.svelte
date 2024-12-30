@@ -4,6 +4,49 @@
   import NoTokensCard from "$lib/components/portfolio/NoTokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
+  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
+  import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
+  import { neuronsStore } from "$lib/stores/neurons.store";
+  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+  import type { TableProject } from "$lib/types/staking";
+  import type { UserToken } from "$lib/types/tokens-page";
+  import {
+    getTableProjects,
+    getTotalStakeInUsd,
+  } from "$lib/utils/staking.utils";
+  import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
+  import { TokenAmountV2, isNullish } from "@dfinity/utils";
+
+  let userTokensData: UserToken[];
+  $: userTokensData = $tokensListUserStore;
+
+  let totalTokenBalanceInUsd: number;
+  $: totalTokenBalanceInUsd = getTotalBalanceInUsd(userTokensData);
+
+  let hasUnpricedTokens: boolean;
+  $: hasUnpricedTokens = userTokensData.some(
+    (token) =>
+      token.balance instanceof TokenAmountV2 &&
+      token.balance.toUlps() > 0n &&
+      (!("balanceInUsd" in token) || isNullish(token.balanceInUsd))
+  );
+
+  let tableProjects: TableProject[];
+  $: tableProjects = getTableProjects({
+    universes: $selectableUniversesStore,
+    isSignedIn: $authSignedInStore,
+    nnsNeurons: $neuronsStore?.neurons,
+    snsNeurons: $snsNeuronsStore,
+    icpSwapUsdPrices: $icpSwapUsdPricesStore,
+  });
+
+  let totalStakedInUsd: number | undefined;
+  $: totalStakedInUsd = getTotalStakeInUsd(tableProjects);
+
+  let usdAmount: number;
+  $: usdAmount = totalTokenBalanceInUsd + totalStakedInUsd;
+  $: console.log(totalTokenBalanceInUsd, totalStakedInUsd);
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -11,7 +54,7 @@
     {#if !$authSignedInStore}
       <LoginCard />
     {/if}
-   <TotalAssetsCard />
+    <TotalAssetsCard {usdAmount} {hasUnpricedTokens} />
   </div>
   <div class="content">
     <NoTokensCard />

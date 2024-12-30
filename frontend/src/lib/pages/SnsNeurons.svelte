@@ -21,8 +21,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { tableNeuronsFromSnsNeurons } from "$lib/utils/neurons-table.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
-  import { IconNeuronsPage } from "@dfinity/gix-components";
-  import { Spinner } from "@dfinity/gix-components";
+  import { IconNeuronsPage, Spinner } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
 
