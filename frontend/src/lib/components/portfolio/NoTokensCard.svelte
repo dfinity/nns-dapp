@@ -17,7 +17,9 @@
       <h5>{$i18n.portfolio.no_tokens_card_title}</h5>
       <p>{$i18n.portfolio.no_tokens_card_description}</p>
     </div>
-    <a {href} class="button primary">{$i18n.portfolio.no_tokens_card_button}</a>
+    <a {href} data-sveltekit-preload-data="hover" class="button primary"
+      >{$i18n.portfolio.no_tokens_card_button}</a
+    >
   </div>
 </Card>
 
