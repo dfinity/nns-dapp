@@ -11,7 +11,7 @@ describe("Reporting page", () => {
     expect(queryByTestId("reporting-page")).toBeNull();
   });
 
-  it("should render transactions page if logged in", () => {
+  it("should render reporting page if logged in", () => {
     resetIdentity();
 
     const { queryByTestId } = render(ReportingPage);
