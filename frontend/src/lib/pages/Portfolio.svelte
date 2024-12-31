@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Card from "$lib/components/portfolio/Card.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NoNeuronsCard from "$lib/components/portfolio/NoNeuronsCard.svelte";
   import NoTokensCard from "$lib/components/portfolio/NoTokensCard.svelte";
@@ -56,7 +57,7 @@
 
 <main data-tid="portfolio-page-component">
   <div class="top" class:single-card={$authSignedInStore}>
-    {#if !$authSignedInStore}
+    {#if isNotSignedIn}
       <LoginCard />
     {/if}
     <UsdValueBanner
