@@ -10,15 +10,16 @@
   import { definedNeuronsStore } from "$lib/derived/neurons.derived";
   import { listNeurons } from "$lib/services/neurons.services";
   import { authStore } from "$lib/stores/auth.store";
-  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
-  import { ENABLE_USD_VALUES_FOR_NEURONS } from "$lib/stores/feature-flags.store";
+  import {
+    ENABLE_PERIODIC_FOLLOWING_CONFIRMATION,
+    ENABLE_USD_VALUES_FOR_NEURONS,
+  } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import type { TableNeuron } from "$lib/types/neurons-table";
   import { tableNeuronsFromNeuronInfos } from "$lib/utils/neurons-table.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
-  import { IconNeuronsPage } from "@dfinity/gix-components";
-  import { Spinner } from "@dfinity/gix-components";
+  import { IconNeuronsPage, Spinner } from "@dfinity/gix-components";
   import { onMount } from "svelte";
 
   let isLoading = false;

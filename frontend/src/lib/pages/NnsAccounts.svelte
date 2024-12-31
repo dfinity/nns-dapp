@@ -15,8 +15,7 @@
   import { findAccount } from "$lib/utils/accounts.utils";
   import { openAccountsModal } from "$lib/utils/modals.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
-  import { IconAccountsPage } from "@dfinity/gix-components";
-  import { IconAdd } from "@dfinity/gix-components";
+  import { IconAccountsPage, IconAdd } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
   import { onDestroy, onMount } from "svelte";
 

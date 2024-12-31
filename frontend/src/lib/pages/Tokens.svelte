@@ -14,9 +14,13 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
-  import { IconAccountsPage } from "@dfinity/gix-components";
-  import { IconPlus, IconSettings, Tooltip } from "@dfinity/gix-components";
-  import { Popover } from "@dfinity/gix-components";
+  import {
+    IconAccountsPage,
+    IconPlus,
+    IconSettings,
+    Popover,
+    Tooltip,
+  } from "@dfinity/gix-components";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
 
   export let userTokensData: UserToken[];

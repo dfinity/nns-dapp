@@ -1,10 +1,9 @@
 <script lang="ts">
   import Separator from "$lib/components/ui/Separator.svelte";
   import type { CardType } from "$lib/types/card";
+  import { Card, SkeletonText } from "@dfinity/gix-components";
   import CardInfo from "./CardInfo.svelte";
   import SkeletonCardContent from "./SkeletonCardContent.svelte";
-  import { Card } from "@dfinity/gix-components";
-  import { SkeletonText } from "@dfinity/gix-components";
 
   export let size: "small" | "medium" | "large" = "small";
   export let cardType: CardType = "card";

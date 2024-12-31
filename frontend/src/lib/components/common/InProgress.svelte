@@ -2,8 +2,11 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
   import { i18n } from "$lib/stores/i18n";
-  import { IconWarning } from "@dfinity/gix-components";
-  import { ProgressSteps, type ProgressStep } from "@dfinity/gix-components";
+  import {
+    IconWarning,
+    ProgressSteps,
+    type ProgressStep,
+  } from "@dfinity/gix-components";
 
   // The current step of the process that is in progress
   export let progressStep: string;

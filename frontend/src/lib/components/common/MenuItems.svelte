@@ -1,6 +1,7 @@
 <script lang="ts">
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
   import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
+  import NnsNeuronsMissingRewardsBadge from "$lib/components/neurons/NnsNeuronsMissingRewardsBadge.svelte";
   import ActionableProposalTotalCountBadge from "$lib/components/proposals/ActionableProposalTotalCountBadge.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -16,7 +17,6 @@
     ACTIONABLE_PROPOSALS_URL,
     isSelectedPath,
   } from "$lib/utils/navigation.utils";
-  import SourceCodeButton from "./SourceCodeButton.svelte";
   import {
     IconHome,
     IconNeurons,
@@ -25,12 +25,13 @@
     IconWallet,
     MenuItem,
     ThemeToggleButton,
+    layoutMenuOpen,
+    menuCollapsed,
   } from "@dfinity/gix-components";
-  import { layoutMenuOpen, menuCollapsed } from "@dfinity/gix-components";
   import type { ComponentType } from "svelte";
   import { cubicIn, cubicOut } from "svelte/easing";
   import { scale } from "svelte/transition";
-  import NnsNeuronsMissingRewardsBadge from "$lib/components/neurons/NnsNeuronsMissingRewardsBadge.svelte";
+  import SourceCodeButton from "./SourceCodeButton.svelte";
 
   let routes: {
     context: string;
