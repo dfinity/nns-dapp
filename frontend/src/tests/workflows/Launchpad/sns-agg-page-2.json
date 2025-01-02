@@ -1499,7 +1499,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 101117337997353970,
+    "icrc1_total_supply": 101160114228283760,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3539,7 +3539,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100742340173689,
+    "icrc1_total_supply": 100742867389576,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4314,7 +4314,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995567359980,
+    "icrc1_total_supply": 995566494980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7220,7 +7220,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20201160204828652,
+    "icrc1_total_supply": 20203524368904664,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9229,7 +9229,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25235946926703940,
+    "icrc1_total_supply": 25236955317462640,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -10700,7 +10700,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10051198945727172,
+    "icrc1_total_supply": 10051908873182628,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11634,6 +11634,19 @@
               "target_method_name": "admin_deploy_bucket"
             }
           }
+        },
+        {
+          "id": 1116,
+          "name": "`admin_remove_managers` function",
+          "description": "It is used to remove managers from the ic_cose_canister canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "n3bau-gaaaa-aaaaj-qa4oq-cai",
+              "target_canister_id": "n3bau-gaaaa-aaaaj-qa4oq-cai",
+              "validator_method_name": "validate2_admin_remove_managers",
+              "target_method_name": "admin_remove_managers"
+            }
+          }
         }
       ]
     },
@@ -11939,7 +11952,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 103399249216506080,
+    "icrc1_total_supply": 103416513103028960,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -13170,7 +13183,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98628408521108540,
+    "icrc1_total_supply": 98632619995427230,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14351,7 +14364,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 100006885403792930,
+    "icrc1_total_supply": 99906893088054190,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15531,7 +15544,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100079545297470880,
+    "icrc1_total_supply": 100079779083303570,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
