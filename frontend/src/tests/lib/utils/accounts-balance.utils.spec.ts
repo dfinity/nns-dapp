@@ -137,7 +137,7 @@ describe("accounts-balance utils", () => {
         await balanceLoader.loadSnsAccountsBalances([mockProject]);
 
         expect(uncertifiedLoadSnsesAccountsBalances).toHaveBeenCalledWith({
-          rootCanisterIds: mockProject.rootCanisterId,
+          rootCanisterIds: [mockProject.rootCanisterId],
           excludeRootCanisterIds: [],
         });
       });
