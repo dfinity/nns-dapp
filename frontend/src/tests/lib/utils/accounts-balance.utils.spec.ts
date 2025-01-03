@@ -134,14 +134,10 @@ describe("accounts-balance utils", () => {
           },
         });
 
-        const mockProjects = [mockProject];
-
-        await balanceLoader.loadSnsAccountsBalances(mockProjects);
+        await balanceLoader.loadSnsAccountsBalances([mockProject]);
 
         expect(uncertifiedLoadSnsesAccountsBalances).toHaveBeenCalledWith({
-          rootCanisterIds: mockProjects.map(
-            ({ rootCanisterId }) => rootCanisterId
-          ),
+          rootCanisterIds: mockProject.rootCanisterId,
           excludeRootCanisterIds: [],
         });
       });
@@ -165,7 +161,9 @@ describe("accounts-balance utils", () => {
     describe("loadCkBTCAccountsBalances", () => {
       it("should not call service if universes array is empty", async () => {
         await balanceLoader.loadCkBTCAccountsBalances([]);
-        expect(uncertifiedLoadAccountsBalance).not.toHaveBeenCalled();
+
+        expect(updateBalance).toHaveBeenCalledTimes(0);
+        expect(uncertifiedLoadAccountsBalance).toHaveBeenCalledTimes(0);
       });
 
       it("should call updateBalance for ckBTC universes", async () => {
@@ -174,6 +172,10 @@ describe("accounts-balance utils", () => {
 
         expect(updateBalance).toHaveBeenCalledTimes(1);
         expect(uncertifiedLoadAccountsBalance).toHaveBeenCalledTimes(1);
+        expect(uncertifiedLoadAccountsBalance).toHaveBeenCalledWith({
+          universeIds: [ckBtcUniverse.canisterId],
+          excludeUniverseIds: [],
+        });
       });
     });
 
@@ -193,6 +195,7 @@ describe("accounts-balance utils", () => {
 
         await balanceLoader.loadIcrcTokenAccounts(mockCanister);
 
+        expect(uncertifiedLoadAccountsBalance).toHaveBeenCalledTimes(1);
         expect(uncertifiedLoadAccountsBalance).toHaveBeenCalledWith({
           universeIds: Object.keys(mockCanister),
           excludeUniverseIds: [],
