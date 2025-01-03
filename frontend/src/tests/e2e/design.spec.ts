@@ -81,7 +81,7 @@ test.describe("Design", () => {
           page,
           selectors: ['[data-tid="tvl-metric"]'],
           pattern: /\$[0-9’]+/,
-          replacements: ["4’500’001’000"],
+          replacements: ["$4’500’001’000"],
         });
       }
 
