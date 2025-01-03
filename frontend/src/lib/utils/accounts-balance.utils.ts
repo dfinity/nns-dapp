@@ -10,7 +10,7 @@ import type { CanisterIdString } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 
-class BalanceFetchTracker {
+export class BalanceFetchTracker {
   private static instance: BalanceFetchTracker;
   private loadedBalances: Set<CanisterIdString> = new Set();
 
@@ -76,8 +76,9 @@ export const balanceLoader = {
     if (notLoadedCanisterIds.length === 0) return;
 
     /**
-     * Calling updateBalance because users are confused about when and how to call it and product required to add this additional call within this process.
-     * That way, when user navigates to the Tokens page, the call is also triggered.
+     * Calling updateBalance because users are confused about when and how to call it and product
+     * required to add this additional call within this process.
+     * That way, when user navigates to the Tokens or Portfolio page, the call is also triggered.
      *
      * There is also a "Check for incoming BTC" button in the Wallet page.
      */
@@ -85,6 +86,7 @@ export const balanceLoader = {
       if (!notLoadedCanisterIds.includes(universe.canisterId)) return;
 
       const ckBTCCanisters = CKBTC_ADDITIONAL_CANISTERS[universe.canisterId];
+
       if (nonNullish(ckBTCCanisters.minterCanisterId)) {
         updateBalance({
           universeId: Principal.fromText(universe.canisterId),
