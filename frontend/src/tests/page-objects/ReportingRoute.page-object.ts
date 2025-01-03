@@ -11,7 +11,7 @@ export class ReportingRoutePo extends BasePageObject {
   }
 
   getLoginButtonPo(): ButtonPo {
-    return ButtonPo.under({ element: this.root, testId: "login-button" });
+    return this.getButton("login-button");
   }
 
   getReportingPagePo(): ReportingPagePo {
