@@ -27,6 +27,12 @@ const createHotkeyNeuronsInOtherAccount = async ({
   await expect(page).toHaveTitle("Tokens / NNS Dapp");
   await signInWithNewUser({ page, context });
 
+  await setFeatureFlag({
+    page,
+    featureFlag: "ENABLE_USD_VALUES_FOR_NEURONS",
+    value: true,
+  });
+
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
   await appPo.getIcpTokens(21);
 
@@ -115,6 +121,28 @@ test("Test neurons table", async ({ page, context, browser }) => {
     pattern: /[0-9a-f]{7}...[0-9a-f]{7}/,
     replacements: replacementNeuronIds,
   });
+
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="icp-price"]'],
+    pattern: /[0-9.]+/,
+    replacements: ["10.00"],
+  });
+
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="usd-value"]'],
+    pattern: /\$[0-9.]+/,
+    replacements: ["$200.00", "$100.00", "$100.00", "$0.00"],
+  });
+
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="primary-amount"]'],
+    pattern: /\$[0-9.]+/,
+    replacements: ["$400.00"],
+  });
+
 
   await expect(page).toHaveScreenshot("desktop.png");
   await page.setViewportSize({ width: 480, height: 960 });
