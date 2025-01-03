@@ -1,15 +1,15 @@
 <script lang="ts">
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import {
-      getDeniedCountries,
-      getMaxNeuronsFundParticipation,
+    getDeniedCountries,
+    getMaxNeuronsFundParticipation,
   } from "$lib/getters/sns-summary";
   import { i18n } from "$lib/stores/i18n";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import type { CountryCode } from "$lib/types/location";
   import {
-      PROJECT_DETAIL_CONTEXT_KEY,
-      type ProjectDetailContext,
+    PROJECT_DETAIL_CONTEXT_KEY,
+    type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import { formatNumber } from "$lib/utils/format.utils";
