@@ -1,5 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { ButtonPo } from "./Button.page-object";
 import { ReportingPagePo } from "./ReportingPage.page-object";
 
 export class ReportingRoutePo extends BasePageObject {
@@ -9,8 +10,8 @@ export class ReportingRoutePo extends BasePageObject {
     return new ReportingRoutePo(element.byTestId(ReportingRoutePo.TID));
   }
 
-  getLoginButtonPo(): PageObjectElement {
-    return this.getElement("login-button");
+  getLoginButtonPo(): ButtonPo {
+    return ButtonPo.under({ element: this.root, testId: "login-button" });
   }
 
   getReportingPagePo(): ReportingPagePo {
