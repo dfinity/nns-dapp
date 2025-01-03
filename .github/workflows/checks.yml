@@ -302,7 +302,15 @@ jobs:
       - name: Download NNS-dapp CI wasm
         run: |
           MAIN_COMMIT="$(git ls-remote --refs https://github.com/dfinity/nns-dapp.git main | awk '{print $1}')"
-          scripts/nns-dapp/download-ci-wasm.test --commit "$MAIN_COMMIT"
+          LAST_COMMIT_TIMESTAMP="$(git log -1 --format=%ct "$MAIN_COMMIT")"
+          AGE_OF_LAST_COMMIT="$(( $(date +%s) - LAST_COMMIT_TIMESTAMP ))"
+          if [[ $AGE_OF_LAST_COMMIT -gt $((3 * 24 * 60 * 60 ]]; then
+            echo "The last commit to the main branch is over 3 days old so the
+            build artifact may have expired, which means we can't download it."
+            echo "We'll test again after the next commit."
+          else
+            scripts/nns-dapp/download-ci-wasm.test --commit "$MAIN_COMMIT"
+          fi
       - name: Test canister_ids tool
         run: scripts/canister_ids.test
       - name: Test release-sop script
