@@ -58,4 +58,8 @@ export class MenuItemsPo extends BasePageObject {
   hasFooter(): Promise<boolean> {
     return this.isPresent("menu-footer");
   }
+
+  getTvlMetric(): Promise<string> {
+    return this.getText("tvl-metric");
+  }
 }
