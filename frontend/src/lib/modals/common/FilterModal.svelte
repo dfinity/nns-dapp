@@ -1,8 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
-  import { Checkbox } from "@dfinity/gix-components";
-  import { Modal, Spinner } from "@dfinity/gix-components";
+  import { Checkbox, Modal, Spinner } from "@dfinity/gix-components";
   import type { ProposalStatus, Topic } from "@dfinity/nns";
   import type { SnsProposalDecisionStatus } from "@dfinity/sns";
   import { isNullish } from "@dfinity/utils";

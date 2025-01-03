@@ -16,8 +16,7 @@
     participateButtonStatus,
     type ParticipationButtonStatus,
   } from "$lib/utils/projects.utils";
-  import { BottomSheet } from "@dfinity/gix-components";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { BottomSheet, Tooltip } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
   import { nonNullish } from "@dfinity/utils";

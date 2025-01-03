@@ -8,13 +8,12 @@
   import { createIsSnsFinalizingStore } from "$lib/stores/sns-finalization-status.store";
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
-  import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
-  import { Card } from "@dfinity/gix-components";
-  import { Spinner } from "@dfinity/gix-components";
+  import { Card, Spinner } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
   import type { Readable } from "svelte/store";
+  import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
 
   export let project: SnsFullProject;
 
