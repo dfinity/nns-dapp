@@ -1,6 +1,5 @@
 import { createAgent } from "$lib/api/agent.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { DFINITY_NEURON, IC_NEURON } from "$lib/constants/api.constants";
 import { GOVERNANCE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
@@ -450,14 +449,6 @@ export const queryKnownNeurons = async ({
   const { canister } = await governanceCanister({ identity });
 
   const knownNeurons = await canister.listKnownNeurons(certified);
-
-  if (knownNeurons.find(({ id }) => id === DFINITY_NEURON.id) === undefined) {
-    knownNeurons.push(DFINITY_NEURON);
-  }
-
-  if (knownNeurons.find(({ id }) => id === IC_NEURON.id) === undefined) {
-    knownNeurons.push(IC_NEURON);
-  }
 
   logWithTimestamp(`Querying Known Neurons certified:${certified} complete.`);
   return knownNeurons;
