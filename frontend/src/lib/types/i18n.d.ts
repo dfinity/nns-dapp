@@ -1258,6 +1258,9 @@ interface I18nImport_token {
 interface I18nPortfolio {
   login_title: string;
   login_description: string;
+  no_tokens_card_title: string;
+  no_tokens_card_description: string;
+  no_tokens_card_button: string;
 }
 
 interface I18nNeuron_state {
