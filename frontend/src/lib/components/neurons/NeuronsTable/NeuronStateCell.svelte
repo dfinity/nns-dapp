@@ -2,8 +2,7 @@
   import { ICON_SIZE_SMALL_PIXELS } from "$lib/constants/layout.constants";
   import { i18n } from "$lib/stores/i18n";
   import type { TableNeuron } from "$lib/types/neurons-table";
-  import type { StateInfo } from "$lib/utils/neuron.utils";
-  import { getStateInfo } from "$lib/utils/neuron.utils";
+  import { getStateInfo, type StateInfo } from "$lib/utils/neuron.utils";
   import { Tooltip } from "@dfinity/gix-components";
   import { NeuronState } from "@dfinity/nns";
 

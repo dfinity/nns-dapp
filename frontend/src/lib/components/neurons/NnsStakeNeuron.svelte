@@ -18,8 +18,7 @@
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import { getMaxTransactionAmount } from "$lib/utils/token.utils";
   import { Checkbox, busy } from "@dfinity/gix-components";
-  import { ICPToken } from "@dfinity/utils";
-  import { isNullish } from "@dfinity/utils";
+  import { ICPToken, isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   export let account: Account | undefined;

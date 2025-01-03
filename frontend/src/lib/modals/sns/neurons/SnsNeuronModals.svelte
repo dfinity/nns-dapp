@@ -24,16 +24,21 @@
     SnsNeuronModalType,
   } from "$lib/types/sns-neuron-detail.modal";
   import { getSnsNeuronState } from "$lib/utils/sns-neuron.utils";
-  import AddPermissionsModal from "./AddPermissionsModal.svelte";
-  import type { E8s } from "@dfinity/nns";
-  import type { NeuronState } from "@dfinity/nns";
+  import type { E8s, NeuronState } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
-  import type { SnsNervousSystemParameters } from "@dfinity/sns";
-  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
-  import type { Token } from "@dfinity/utils";
-  import { fromDefinedNullable } from "@dfinity/utils";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import type {
+    SnsNervousSystemParameters,
+    SnsNeuron,
+    SnsNeuronId,
+  } from "@dfinity/sns";
+  import {
+    fromDefinedNullable,
+    isNullish,
+    nonNullish,
+    type Token,
+  } from "@dfinity/utils";
   import { getContext } from "svelte";
+  import AddPermissionsModal from "./AddPermissionsModal.svelte";
 
   // Modal events
 

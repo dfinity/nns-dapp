@@ -1,24 +1,23 @@
 <script lang="ts">
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import {
-    getDeniedCountries,
-    getMaxNeuronsFundParticipation,
+      getDeniedCountries,
+      getMaxNeuronsFundParticipation,
   } from "$lib/getters/sns-summary";
   import { i18n } from "$lib/stores/i18n";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import type { CountryCode } from "$lib/types/location";
   import {
-    PROJECT_DETAIL_CONTEXT_KEY,
-    type ProjectDetailContext,
+      PROJECT_DETAIL_CONTEXT_KEY,
+      type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import { formatNumber } from "$lib/utils/format.utils";
+  import { KeyValuePair } from "@dfinity/gix-components";
+  import { ICPToken, nonNullish, TokenAmountV2 } from "@dfinity/utils";
+  import { getContext } from "svelte";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import { KeyValuePair } from "@dfinity/gix-components";
-  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
-  import { nonNullish } from "@dfinity/utils";
-  import { getContext } from "svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

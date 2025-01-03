@@ -14,17 +14,16 @@
     type ProjectCommitmentSplit,
   } from "$lib/utils/projects.utils";
   import { swapSaleBuyerCount } from "$lib/utils/sns-swap.utils";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
   import {
     Html,
     KeyValuePair,
     KeyValuePairInfo,
   } from "@dfinity/gix-components";
-  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { ICPToken, nonNullish, TokenAmountV2 } from "@dfinity/utils";
   import { getContext } from "svelte";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
+  import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

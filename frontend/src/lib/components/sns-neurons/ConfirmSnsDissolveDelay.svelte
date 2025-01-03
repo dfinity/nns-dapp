@@ -13,10 +13,8 @@
   import { valueSpan } from "$lib/utils/utils";
   import { Html, busy } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
-  import type { SnsNervousSystemParameters } from "@dfinity/sns";
-  import type { SnsNeuron } from "@dfinity/sns";
-  import type { Token } from "@dfinity/utils";
-  import { secondsToDuration } from "@dfinity/utils";
+  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
+  import { secondsToDuration, type Token } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   export let rootCanisterId: Principal;

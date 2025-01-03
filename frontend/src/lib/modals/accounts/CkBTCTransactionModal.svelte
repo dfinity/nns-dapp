@@ -21,17 +21,19 @@
   import type { Account } from "$lib/types/account";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
-  import type { NewTransaction, TransactionInit } from "$lib/types/transaction";
-  import type { TransactionNetwork } from "$lib/types/transaction";
-  import type { ValidateAmountFn } from "$lib/types/transaction";
+  import type {
+    NewTransaction,
+    TransactionInit,
+    TransactionNetwork,
+    ValidateAmountFn,
+  } from "$lib/types/transaction";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { numberToE8s } from "$lib/utils/token.utils";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
   import type { WizardStep } from "@dfinity/gix-components";
-  import type { Token, TokenAmountV2 } from "@dfinity/utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { nonNullish, type Token, type TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   export let selectedAccount: Account | undefined = undefined;
