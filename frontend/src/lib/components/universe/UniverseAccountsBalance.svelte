@@ -4,8 +4,7 @@
   import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
   import type { Universe } from "$lib/types/universe";
   import { SkeletonText } from "@dfinity/gix-components";
-  import { TokenAmountV2, type Token } from "@dfinity/utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { nonNullish, TokenAmountV2, type Token } from "@dfinity/utils";
 
   export let universe: Universe;
 

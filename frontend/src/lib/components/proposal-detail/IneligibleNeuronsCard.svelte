@@ -5,8 +5,10 @@
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import type { IneligibleNeuronData } from "$lib/utils/neuron.utils";
-  import type { NeuronIneligibilityReason } from "$lib/utils/neuron.utils";
+  import type {
+    IneligibleNeuronData,
+    NeuronIneligibilityReason,
+  } from "$lib/utils/neuron.utils";
   import { nonNullish } from "@dfinity/utils";
 
   export let ineligibleNeurons: IneligibleNeuronData[] = [];

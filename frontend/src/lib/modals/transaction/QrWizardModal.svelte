@@ -8,8 +8,12 @@
     type WizardSteps,
   } from "@dfinity/gix-components";
   import { decodePayment } from "@dfinity/ledger-icrc";
-  import type { Token } from "@dfinity/utils";
-  import { assertNonNullish, isNullish, nonNullish } from "@dfinity/utils";
+  import {
+    assertNonNullish,
+    isNullish,
+    nonNullish,
+    type Token,
+  } from "@dfinity/utils";
 
   export let testId: string | undefined = undefined;
   export let steps: WizardSteps;

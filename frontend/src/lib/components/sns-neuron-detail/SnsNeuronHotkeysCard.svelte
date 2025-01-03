@@ -19,13 +19,16 @@
     canIdentityManageHotkeys,
     getSnsNeuronHotkeys,
   } from "$lib/utils/sns-neuron.utils";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
-  import AddSnsHotkeyButton from "./actions/AddSnsHotkeyButton.svelte";
   import { IconClose, IconWarning, Value } from "@dfinity/gix-components";
-  import type { SnsNervousSystemParameters } from "@dfinity/sns";
-  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+  import type {
+    SnsNervousSystemParameters,
+    SnsNeuron,
+    SnsNeuronId,
+  } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import AddSnsHotkeyButton from "./actions/AddSnsHotkeyButton.svelte";
 
   export let parameters: SnsNervousSystemParameters;
 

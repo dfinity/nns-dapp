@@ -5,8 +5,10 @@
   import TransactionSummary from "$lib/components/transaction/TransactionSummary.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
-  import type { NewTransaction } from "$lib/types/transaction";
-  import type { TransactionNetwork } from "$lib/types/transaction";
+  import type {
+    NewTransaction,
+    TransactionNetwork,
+  } from "$lib/types/transaction";
   import { busy } from "@dfinity/gix-components";
   import type { Token, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";

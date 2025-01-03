@@ -1,8 +1,10 @@
 <script lang="ts">
   import VoteConfirmationModal from "$lib/modals/proposals/VoteConfirmationModal.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
-  import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
+  import {
+    votingNeuronSelectStore,
+    type VoteRegistrationStoreEntry,
+  } from "$lib/stores/vote-registration.store";
   import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
   import { Spinner, busy } from "@dfinity/gix-components";
   import { Vote } from "@dfinity/nns";

@@ -13,14 +13,17 @@
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import SnsNeuronDissolveDelayItemAction from "./SnsNeuronDissolveDelayItemAction.svelte";
-  import SnsNeuronStateItemAction from "./SnsNeuronStateItemAction.svelte";
-  import SnsStakeItemAction from "./SnsStakeItemAction.svelte";
   import { Html, Section } from "@dfinity/gix-components";
   import { Principal } from "@dfinity/principal";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
-  import { secondsToDuration } from "@dfinity/utils";
-  import { fromDefinedNullable, type Token } from "@dfinity/utils";
+  import {
+    fromDefinedNullable,
+    secondsToDuration,
+    type Token,
+  } from "@dfinity/utils";
+  import SnsNeuronDissolveDelayItemAction from "./SnsNeuronDissolveDelayItemAction.svelte";
+  import SnsNeuronStateItemAction from "./SnsNeuronStateItemAction.svelte";
+  import SnsStakeItemAction from "./SnsStakeItemAction.svelte";
 
   export let parameters: SnsNervousSystemParameters;
   export let neuron: SnsNeuron;

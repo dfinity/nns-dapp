@@ -23,9 +23,9 @@
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import type {
     NewTransaction,
+    TransactionInit,
     ValidateAmountFn,
   } from "$lib/types/transaction";
-  import type { TransactionInit } from "$lib/types/transaction";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import {
     currentUserMaxCommitment,
@@ -37,8 +37,7 @@
     hasOpenTicketInProcess,
   } from "$lib/utils/sns.utils";
   import type { WizardStep } from "@dfinity/gix-components";
-  import { ICPToken, TokenAmount } from "@dfinity/utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { ICPToken, nonNullish, TokenAmount } from "@dfinity/utils";
   import {
     createEventDispatcher,
     getContext,

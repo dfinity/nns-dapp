@@ -37,14 +37,17 @@
     type SnsProposalDataMap,
   } from "$lib/utils/sns-proposals.utils";
   import { isUniverseNns } from "$lib/utils/universe.utils";
-  import { debugSnsProposalStore } from "../derived/debug.derived";
   import { SplitBlock } from "@dfinity/gix-components";
   import { Principal } from "@dfinity/principal";
-  import type { SnsNervousSystemFunction } from "@dfinity/sns";
-  import type { SnsProposalData, SnsProposalId } from "@dfinity/sns";
+  import type {
+    SnsNervousSystemFunction,
+    SnsProposalData,
+    SnsProposalId,
+  } from "@dfinity/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { tick } from "svelte";
   import type { Readable } from "svelte/store";
+  import { debugSnsProposalStore } from "../derived/debug.derived";
 
   export let proposalIdText: string | undefined | null = undefined;
 

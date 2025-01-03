@@ -7,18 +7,20 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     getSnsLockedTimeInSeconds,
+    getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
     getSnsNeuronState,
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
-  import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
   import type { NeuronState } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
-  import type { SnsNervousSystemParameters } from "@dfinity/sns";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import type { Token } from "@dfinity/utils";
-  import { TokenAmountV2, isNullish } from "@dfinity/utils";
-  import { fromDefinedNullable } from "@dfinity/utils";
+  import {
+    TokenAmountV2,
+    fromDefinedNullable,
+    isNullish,
+  } from "@dfinity/utils";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;

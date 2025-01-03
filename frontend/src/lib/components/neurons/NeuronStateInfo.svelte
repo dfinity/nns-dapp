@@ -1,8 +1,7 @@
 <script lang="ts">
   import { ICON_SIZE_SMALL_PIXELS } from "$lib/constants/layout.constants";
   import { i18n } from "$lib/stores/i18n";
-  import type { StateInfo } from "$lib/utils/neuron.utils";
-  import { getStateInfo } from "$lib/utils/neuron.utils";
+  import { getStateInfo, type StateInfo } from "$lib/utils/neuron.utils";
   import { keyOf } from "$lib/utils/utils";
   import type { NeuronState } from "@dfinity/nns";
 

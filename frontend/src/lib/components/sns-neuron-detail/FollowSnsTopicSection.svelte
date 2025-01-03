@@ -8,9 +8,10 @@
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
-  import { followeesByFunction } from "$lib/utils/sns-neuron.utils";
-  import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
-  import Hash from "../ui/Hash.svelte";
+  import {
+    followeesByFunction,
+    subaccountToHexString,
+  } from "$lib/utils/sns-neuron.utils";
   import { IconClose, Value } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import type {
@@ -20,6 +21,7 @@
   } from "@dfinity/sns";
   import { fromNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
+  import Hash from "../ui/Hash.svelte";
 
   export let neuron: SnsNeuron;
   export let rootCanisterId: Principal;

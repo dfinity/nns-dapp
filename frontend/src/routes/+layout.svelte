@@ -4,8 +4,7 @@
     initAuthWorker,
     type AuthWorker,
   } from "$lib/services/worker-auth.services";
-  import type { AuthStoreData } from "$lib/stores/auth.store";
-  import { authStore } from "$lib/stores/auth.store";
+  import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
   import { toastsClean } from "$lib/stores/toasts.store";
   import { onMount } from "svelte";
 

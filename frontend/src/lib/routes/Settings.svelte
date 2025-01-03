@@ -8,8 +8,7 @@
     KeyValuePairInfo,
     SkeletonText,
   } from "@dfinity/gix-components";
-  import { debounce, nonNullish } from "@dfinity/utils";
-  import { secondsToDuration } from "@dfinity/utils";
+  import { debounce, nonNullish, secondsToDuration } from "@dfinity/utils";
   import { onMount } from "svelte";
 
   let principalText = "";

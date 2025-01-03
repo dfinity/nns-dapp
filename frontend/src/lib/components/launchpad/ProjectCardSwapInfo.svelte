@@ -10,11 +10,14 @@
     durationTillSwapStart,
   } from "$lib/utils/projects.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
   import { SnsSwapLifecycle } from "@dfinity/sns";
-  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
-  import { nonNullish } from "@dfinity/utils";
-  import { secondsToDuration } from "@dfinity/utils";
+  import {
+    ICPToken,
+    nonNullish,
+    secondsToDuration,
+    TokenAmountV2,
+  } from "@dfinity/utils";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   export let project: SnsFullProject;
   // The data to know whether it's finalizing or not is not in the SnsFullProject.

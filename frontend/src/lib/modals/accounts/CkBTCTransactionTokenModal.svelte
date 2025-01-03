@@ -9,8 +9,7 @@
   import type { CkBTCTransactionModalData } from "$lib/types/ckbtc-accounts.modal";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import type { UniverseCanisterId } from "$lib/types/universe";
-  import type { TokenAmountV2 } from "@dfinity/utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { nonNullish, type TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   export let data: CkBTCTransactionModalData;

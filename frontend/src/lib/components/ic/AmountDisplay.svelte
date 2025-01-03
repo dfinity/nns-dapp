@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { UnavailableTokenAmount } from "$lib/utils/token.utils";
-  import { formatTokenV2 } from "$lib/utils/token.utils";
+  import {
+    formatTokenV2,
+    UnavailableTokenAmount,
+  } from "$lib/utils/token.utils";
   import { Copy } from "@dfinity/gix-components";
   import type { TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 

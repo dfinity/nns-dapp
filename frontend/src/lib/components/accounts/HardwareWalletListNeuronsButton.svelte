@@ -3,8 +3,10 @@
   import { authStore } from "$lib/stores/auth.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import type { WalletContext } from "$lib/types/wallet.context";
-  import { WALLET_CONTEXT_KEY } from "$lib/types/wallet.context";
+  import {
+    WALLET_CONTEXT_KEY,
+    type WalletContext,
+  } from "$lib/types/wallet.context";
   import { mapHardwareWalletNeuronInfo } from "$lib/utils/hardware-wallet-neurons.utils";
   import { openWalletModal } from "$lib/utils/modals.utils";
   import { busy } from "@dfinity/gix-components";
