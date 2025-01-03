@@ -12,7 +12,7 @@
     </div>
     <div class="content">
       <h2>{$i18n.portfolio.login_title}</h2>
-      <p>{$i18n.portfolio.login_description}</p>
+      <p class="description">{$i18n.portfolio.login_description}</p>
     </div>
     <div class="action">
       <SignIn />
