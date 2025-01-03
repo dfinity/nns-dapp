@@ -1,9 +1,11 @@
 <script lang="ts">
   import Card from "$lib/components/portfolio/Card.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { i18n } from "$lib/stores/i18n";
+  import { buildAccountsUrl } from "$lib/utils/navigation.utils";
   import { IconAccountsPage } from "@dfinity/gix-components";
 
-  const href = "/tokens";
+  const href = buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT });
 </script>
 
 <Card testId="no-tokens-card">
@@ -15,9 +17,7 @@
       <h5>{$i18n.portfolio.no_tokens_card_title}</h5>
       <p>{$i18n.portfolio.no_tokens_card_description}</p>
     </div>
-    <a {href} data-sveltekit-preload-data="hover" class="button primary"
-      >{$i18n.portfolio.no_tokens_card_button}</a
-    >
+    <a {href} class="button primary">{$i18n.portfolio.no_tokens_card_button}</a>
   </div>
 </Card>
 
