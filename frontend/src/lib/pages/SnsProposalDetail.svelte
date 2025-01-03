@@ -27,6 +27,7 @@
   import type { ProposalsNavigationId } from "$lib/types/proposals";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { buildProposalsUrl } from "$lib/utils/navigation.utils";
+  import { navigateToProposal } from "$lib/utils/proposals.utils";
   import {
     getUniversalProposalStatus,
     mapProposalInfo,
@@ -219,14 +220,6 @@
   const selectProposal = (id: ProposalsNavigationId) => {
     navigateToProposal({ ...id, actionable: $pageStore.actionable });
   };
-
-  function navigateToProposal(arg0: {
-    actionable: boolean;
-    proposalId: bigint;
-    universe: string;
-  }) {
-    throw new Error("Function not implemented.");
-  }
 </script>
 
 <TestIdWrapper testId="sns-proposal-details-grid">
