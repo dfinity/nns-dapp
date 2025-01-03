@@ -39,7 +39,6 @@
       gap: var(--padding-2x);
 
       @include media.min-width(large) {
-        display: grid;
         grid-template-columns: 1fr 2fr;
 
         > :global(article:first-of-type) {
@@ -58,8 +57,9 @@
       gap: var(--padding-2x);
 
       @include media.min-width(large) {
-        display: grid;
         grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: min-content;
+        align-items: stretch;
       }
     }
   }
