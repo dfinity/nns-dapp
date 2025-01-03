@@ -272,9 +272,6 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
-        #with:
-          # Needed to get the timestamp of the latest commit on main for "Download NNS-dapp CI wasm "
-          # fetch-depth: 0
       - name: Install tools on Linux
         run: |
           if command -v apt-get; then
@@ -309,8 +306,7 @@ jobs:
           LAST_COMMIT_TIMESTAMP="$(git log -1 --format=%ct "$MAIN_COMMIT")"
           AGE_OF_LAST_COMMIT="$(( $(date +%s) - LAST_COMMIT_TIMESTAMP ))"
           if [[ "$AGE_OF_LAST_COMMIT" -gt "$((3 * 24 * 60 * 60))" ]]; then
-            echo "The last commit to the main branch is over 3 days old so the
-            build artifact may have expired, which means we can't download it."
+            echo "The last commit to the main branch is over 3 days old so the build artifact may have expired, which means we can't download it."
             echo "We'll test again after the next commit."
           else
             scripts/nns-dapp/download-ci-wasm.test --commit "$MAIN_COMMIT"
