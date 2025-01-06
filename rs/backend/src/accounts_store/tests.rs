@@ -251,7 +251,61 @@ fn attach_canister_account_not_found() {
 }
 
 #[test]
-fn attach_canister_canister_already_attached() {
+fn attach_canister_canister_already_attached_with_name() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+
+    let result1 = store.attach_canister(
+        principal,
+        AttachCanisterRequest {
+            name: "ABC".to_string(),
+            canister_id,
+        },
+    );
+    let result2 = store.attach_canister(
+        principal,
+        AttachCanisterRequest {
+            name: "".to_string(),
+            canister_id,
+        },
+    );
+
+    assert!(matches!(result1, AttachCanisterResponse::Ok));
+    assert!(matches!(result2, AttachCanisterResponse::CanisterAlreadyAttached));
+}
+
+#[test]
+fn attach_canister_canister_already_attached_with_same_name() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+
+    let result1 = store.attach_canister(
+        principal,
+        AttachCanisterRequest {
+            name: "ABC".to_string(),
+            canister_id,
+        },
+    );
+    let result2 = store.attach_canister(
+        principal,
+        AttachCanisterRequest {
+            name: "ABC".to_string(),
+            canister_id,
+        },
+    );
+
+    assert!(matches!(result1, AttachCanisterResponse::Ok));
+    // It could have returned CanisterAlreadyAttached instead of actually
+    // returns NameAlreadyTaken, which is also true.
+    assert!(matches!(result2, AttachCanisterResponse::NameAlreadyTaken));
+}
+
+#[test]
+fn attach_canister_canister_already_attached_with_different_name() {
     let mut store = setup_test_store();
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
 
@@ -268,6 +322,32 @@ fn attach_canister_canister_already_attached() {
         principal,
         AttachCanisterRequest {
             name: "XYZ".to_string(),
+            canister_id,
+        },
+    );
+
+    assert!(matches!(result1, AttachCanisterResponse::Ok));
+    assert!(matches!(result2, AttachCanisterResponse::CanisterAlreadyAttached));
+}
+
+#[test]
+fn attach_canister_canister_already_attached_both_without_name() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+
+    let result1 = store.attach_canister(
+        principal,
+        AttachCanisterRequest {
+            name: "".to_string(),
+            canister_id,
+        },
+    );
+    let result2 = store.attach_canister(
+        principal,
+        AttachCanisterRequest {
+            name: "".to_string(),
             canister_id,
         },
     );

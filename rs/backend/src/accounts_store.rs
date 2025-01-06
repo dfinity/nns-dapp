@@ -635,20 +635,39 @@ impl AccountsStore {
             return AttachCanisterResponse::AccountNotFound;
         };
 
+        let mut new_canister = NamedCanister {
+            name: request.name,
+            canister_id: request.canister_id,
+        };
+
         let mut index_to_remove: Option<usize> = None;
-        for (index, c) in account.canisters.iter().enumerate() {
-            if !request.name.is_empty() && c.name == request.name {
+        for (index, existing_canister) in account.canisters.iter().enumerate() {
+            if !new_canister.name.is_empty() && existing_canister.name == new_canister.name {
                 return AttachCanisterResponse::NameAlreadyTaken;
             }
-            // The periodic_task_runner might attach the canister before this call.
-            // The canister attached by the periodic_task_runner has name `""`
-            if c.canister_id == request.canister_id {
-                if c.name.is_empty() && !request.name.is_empty() {
-                    index_to_remove = Some(index);
-                } else {
-                    return AttachCanisterResponse::CanisterAlreadyAttached;
-                    // Note: It might be nice to tell the user the name of the existing canister.
+            // The canister might already be attached.
+            // If the request is compatible with the existing canister, merge
+            // any existing information into the new canister.
+            if existing_canister.canister_id == new_canister.canister_id {
+                // We return CanisterAlreadyAttached if either the request is
+                // incompatible with the existing canister or this request
+                // doesn't add anything new.
+
+                if !existing_canister.name.is_empty() {
+                    if new_canister.name.is_empty() {
+                        new_canister.name.clone_from(&existing_canister.name);
+                    } else if existing_canister.name != new_canister.name {
+                        // Incompatible names.
+                        return AttachCanisterResponse::CanisterAlreadyAttached;
+                    }
                 }
+
+                if new_canister == *existing_canister {
+                    // Nothing new to add.
+                    return AttachCanisterResponse::CanisterAlreadyAttached;
+                }
+
+                index_to_remove = Some(index);
             }
         }
 
@@ -660,10 +679,7 @@ impl AccountsStore {
         if account.canisters.len() >= u8::MAX as usize {
             return AttachCanisterResponse::CanisterLimitExceeded;
         }
-        account.canisters.push(NamedCanister {
-            name: request.name,
-            canister_id: request.canister_id,
-        });
+        account.canisters.push(new_canister);
         account.canisters.sort();
 
         self.accounts_db.db_insert_account(&account_identifier, account);
@@ -681,10 +697,10 @@ impl AccountsStore {
                 }
 
                 if let Some(index) = Self::find_canister_index(&account, request.canister_id) {
-                    account.canisters.remove(index);
+                    let existing_canister = account.canisters.remove(index);
                     account.canisters.push(NamedCanister {
                         name: request.name,
-                        canister_id: request.canister_id,
+                        ..existing_canister
                     });
                     account.canisters.sort();
                     self.accounts_db.db_insert_account(&account_identifier, account);
