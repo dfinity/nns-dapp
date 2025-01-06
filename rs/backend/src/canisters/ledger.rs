@@ -31,7 +31,7 @@ pub async fn get_blocks(canister_id: CanisterId, from: BlockIndex, length: u32) 
         protobuf,
         GetBlocksArgs {
             start: from,
-            length: length as u64,
+            length: u64::from(length),
         },
     )
     .await
