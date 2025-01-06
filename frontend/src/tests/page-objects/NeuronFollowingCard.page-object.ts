@@ -2,7 +2,6 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { FolloweePo } from "./Followee.page-object";
 import { FollowNeuronsButtonPo } from "./FollowNeuronsButton.page-object";
-import { KeyValuePairInfoPo } from "./KeyValuePairInfo.page-object";
 
 export class NeuronFollowingCardPo extends BasePageObject {
   static readonly TID = "neuron-following-card-component";
@@ -11,13 +10,6 @@ export class NeuronFollowingCardPo extends BasePageObject {
     return new NeuronFollowingCardPo(
       element.byTestId(NeuronFollowingCardPo.TID)
     );
-  }
-
-  getKeyValuePairPo(): KeyValuePairInfoPo {
-    return KeyValuePairInfoPo.under({
-      element: this.root,
-      testId: "neuron-following",
-    });
   }
 
   getFollowNeuronsButtonPo(): FollowNeuronsButtonPo {
