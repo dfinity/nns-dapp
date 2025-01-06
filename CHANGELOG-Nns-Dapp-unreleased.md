@@ -15,6 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 - Reporting: Full period filter, year-to-date, and last year
+- Show USD values of neuron stakes.
 
 #### Changed
 
