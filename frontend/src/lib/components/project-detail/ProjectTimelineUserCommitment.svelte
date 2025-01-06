@@ -6,13 +6,12 @@
     durationTillSwapDeadline,
     durationTillSwapStart,
   } from "$lib/utils/projects.utils";
+  import { KeyValuePair, Value } from "@dfinity/gix-components";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { nonNullish, secondsToDuration, TokenAmount } from "@dfinity/utils";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import Separator from "../ui/Separator.svelte";
   import ProjectUserCommitmentLabel from "./ProjectUserCommitmentLabel.svelte";
-  import { KeyValuePair, Value } from "@dfinity/gix-components";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
-  import { TokenAmount, nonNullish } from "@dfinity/utils";
-  import { secondsToDuration } from "@dfinity/utils";
 
   export let myCommitment: TokenAmount | undefined;
   export let summary: SnsSummaryWrapper;

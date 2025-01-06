@@ -14,8 +14,7 @@
   import type { WizardStep } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNeuronId } from "@dfinity/sns";
-  import type { Token, TokenAmountV2 } from "@dfinity/utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { type Token, TokenAmountV2, nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   export let neuronId: SnsNeuronId;

@@ -13,12 +13,11 @@
   } from "$lib/types/project-detail.context";
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import { formatNumber } from "$lib/utils/format.utils";
+  import { KeyValuePair } from "@dfinity/gix-components";
+  import { ICPToken, nonNullish, TokenAmountV2 } from "@dfinity/utils";
+  import { getContext } from "svelte";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import { KeyValuePair } from "@dfinity/gix-components";
-  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
-  import { nonNullish } from "@dfinity/utils";
-  import { getContext } from "svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

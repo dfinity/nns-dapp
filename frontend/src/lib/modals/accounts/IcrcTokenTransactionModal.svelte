@@ -5,8 +5,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { Account } from "$lib/types/account";
-  import type { NewTransaction } from "$lib/types/transaction";
-  import type { TransactionInit } from "$lib/types/transaction";
+  import type { NewTransaction, TransactionInit } from "$lib/types/transaction";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { numberToUlps } from "$lib/utils/token.utils";
   import type { WizardStep } from "@dfinity/gix-components";

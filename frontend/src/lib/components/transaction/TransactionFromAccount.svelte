@@ -5,8 +5,7 @@
   import type { Account } from "$lib/types/account";
   import { KeyValuePair } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
-  import { TokenAmountV2, type Token } from "@dfinity/utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { nonNullish, TokenAmountV2, type Token } from "@dfinity/utils";
 
   export let rootCanisterId: Principal;
   export let canSelectSource: boolean;
