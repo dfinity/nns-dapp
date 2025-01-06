@@ -27,6 +27,12 @@ const createHotkeyNeuronsInOtherAccount = async ({
   await expect(page).toHaveTitle("Tokens / NNS Dapp");
   await signInWithNewUser({ page, context });
 
+  await setFeatureFlag({
+    page,
+    featureFlag: "ENABLE_USD_VALUES_FOR_NEURONS",
+    value: true,
+  });
+
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
   await appPo.getIcpTokens(21);
 
