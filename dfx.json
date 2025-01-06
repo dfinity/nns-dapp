@@ -426,7 +426,7 @@
           "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION": false,
           "ENABLE_EXPORT_NEURONS_REPORT": true,
           "ENABLE_USD_VALUES": true,
-          "ENABLE_USD_VALUES_FOR_NEURONS": false,
+          "ENABLE_USD_VALUES_FOR_NEURONS": true,
           "ENABLE_PORTFOLIO_PAGE": false
         }
       }
