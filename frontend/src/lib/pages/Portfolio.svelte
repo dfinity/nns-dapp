@@ -1,6 +1,7 @@
 <script lang="ts">
   import Card from "$lib/components/portfolio/Card.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
+  import NoNeuronsCard from "$lib/components/portfolio/NoNeuronsCard.svelte";
   import NoTokensCard from "$lib/components/portfolio/NoTokensCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
 </script>
@@ -14,7 +15,7 @@
   </div>
   <div class="content">
     <NoTokensCard />
-    <Card>Card4</Card>
+    <NoNeuronsCard />
   </div>
 </main>
 
