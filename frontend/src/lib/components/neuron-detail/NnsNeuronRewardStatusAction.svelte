@@ -101,7 +101,7 @@
   </span>
 
   {#if isFollowingReset}
-    <FollowNeuronsButton />
+    <FollowNeuronsButton variant="secondary" />
   {:else}
     <ConfirmFollowingButton neuronIds={[neuron.neuronId]} />
   {/if}
