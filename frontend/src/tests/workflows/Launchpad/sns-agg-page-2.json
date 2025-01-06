@@ -1499,7 +1499,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 101053631672510620,
+    "icrc1_total_supply": 101160114228283760,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2776,7 +2776,8 @@
         "u45jl-liaaa-aaaam-abppa-cai",
         "toj6n-haaaa-aaaal-qdika-cai",
         "wxer6-3yaaa-aaaal-qjnua-cai",
-        "eqtcs-jiaaa-aaaal-qdmia-cai"
+        "eqtcs-jiaaa-aaaal-qdmia-cai",
+        "6jvpj-sqaaa-aaaaj-azwnq-cai"
       ],
       "archives": ["fbysu-tqaaa-aaaaq-aacga-cai"]
     },
@@ -3538,7 +3539,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100742011262316,
+    "icrc1_total_supply": 100742867389576,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4313,7 +4314,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995568393980,
+    "icrc1_total_supply": 995566494980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7219,7 +7220,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20199957826668268,
+    "icrc1_total_supply": 20203524368904664,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9228,7 +9229,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25214024973350890,
+    "icrc1_total_supply": 25236955317462640,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -10699,7 +10700,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10050059232906212,
+    "icrc1_total_supply": 10051908873182628,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11620,6 +11621,32 @@
               "target_method_name": "admin_update_bucket_canister_settings"
             }
           }
+        },
+        {
+          "id": 1115,
+          "name": "`admin_deploy_bucket` function",
+          "description": "It is used to upgrade bucket canister WASM from the ic_oss_cluster canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
+              "target_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
+              "validator_method_name": "validate2_admin_deploy_bucket",
+              "target_method_name": "admin_deploy_bucket"
+            }
+          }
+        },
+        {
+          "id": 1116,
+          "name": "`admin_remove_managers` function",
+          "description": "It is used to remove managers from the ic_cose_canister canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "n3bau-gaaaa-aaaaj-qa4oq-cai",
+              "target_canister_id": "n3bau-gaaaa-aaaaj-qa4oq-cai",
+              "validator_method_name": "validate2_admin_remove_managers",
+              "target_method_name": "admin_remove_managers"
+            }
+          }
         }
       ]
     },
@@ -11925,7 +11952,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 103278085075373300,
+    "icrc1_total_supply": 103416513103028960,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -12419,6 +12446,45 @@
           }
         },
         {
+          "id": 1013,
+          "name": "BatchSetPoolLimitOrderAvailable",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7vygu-3yaaa-aaaag-qjxaq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "batchSetPoolLimitOrderAvailableValidate",
+              "target_method_name": "batchSetPoolLimitOrderAvailable"
+            }
+          }
+        },
+        {
+          "id": 1014,
+          "name": "BatchSetPoolAvailable",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7vygu-3yaaa-aaaag-qjxaq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "batchSetPoolAvailableValidate",
+              "target_method_name": "batchSetPoolAvailable"
+            }
+          }
+        },
+        {
+          "id": 1019,
+          "name": "UpgradePools",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7vygu-3yaaa-aaaag-qjxaq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "setUpgradePoolListValidate",
+              "target_method_name": "setUpgradePoolList"
+            }
+          }
+        },
+        {
           "id": 1101,
           "name": "RemovePool",
           "description": null,
@@ -12428,6 +12494,45 @@
               "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
               "validator_method_name": "removePoolValidate",
               "target_method_name": "removePool"
+            }
+          }
+        },
+        {
+          "id": 1104,
+          "name": "BatchRemovePool",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7vygu-3yaaa-aaaag-qjxaq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "batchRemovePoolsValidate",
+              "target_method_name": "batchRemovePools"
+            }
+          }
+        },
+        {
+          "id": 1106,
+          "name": "BatchClearRemovedPool",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7vygu-3yaaa-aaaag-qjxaq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "batchClearRemovedPoolValidate",
+              "target_method_name": "batchClearRemovedPool"
+            }
+          }
+        },
+        {
+          "id": 1201,
+          "name": "AddPoolInstallers",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "addPoolInstallersValidate",
+              "target_method_name": "addPoolInstallers"
             }
           }
         },
@@ -13078,7 +13183,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98720733064453760,
+    "icrc1_total_supply": 98632619995427230,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14259,7 +14364,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 100006871767524210,
+    "icrc1_total_supply": 99906893088054190,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15439,7 +15544,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100078362634060380,
+    "icrc1_total_supply": 100079779083303570,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

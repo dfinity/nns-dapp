@@ -30,6 +30,7 @@
       "action action";
     gap: var(--padding-2x);
     padding: var(--padding-2x);
+    background-color: var(--card-background-tint);
 
     @include media.min-width(medium) {
       grid-template-areas:
@@ -40,15 +41,19 @@
     }
 
     .content {
+      grid-area: content;
+      display: flex;
+      flex-direction: column;
+      gap: var(--padding);
+
       h2,
       p {
         margin: 0;
         padding: 0;
       }
-      grid-area: content;
-      display: flex;
-      flex-direction: column;
-      gap: var(--padding);
+      p {
+        color: var(--color-text-secondary);
+      }
     }
 
     .icon {

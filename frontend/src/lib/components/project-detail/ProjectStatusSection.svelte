@@ -5,14 +5,13 @@
   } from "$lib/types/project-detail.context";
   import type { SnsSwapCommitment } from "$lib/types/sns";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { ICPToken, TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
+  import { getContext } from "svelte";
   import ParticipateButton from "./ParticipateButton.svelte";
   import ProjectCommitment from "./ProjectCommitment.svelte";
   import ProjectStatus from "./ProjectStatus.svelte";
   import ProjectTimelineUserCommitment from "./ProjectTimelineUserCommitment.svelte";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
-  import { ICPToken, TokenAmount, nonNullish } from "@dfinity/utils";
-  import { isNullish } from "@dfinity/utils";
-  import { getContext } from "svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

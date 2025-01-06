@@ -9,14 +9,15 @@
   import { isValidInputAmount } from "$lib/utils/neuron.utils";
   import { getSnsNeuronStake } from "$lib/utils/sns-neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import { Modal, Value, busy } from "@dfinity/gix-components";
+  import { busy, Modal, Value } from "@dfinity/gix-components";
   import type { E8s } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
-  import type { SnsNervousSystemParameters } from "@dfinity/sns";
-  import type { SnsNeuron } from "@dfinity/sns";
-  import type { Token } from "@dfinity/utils";
-  import { TokenAmountV2 } from "@dfinity/utils";
-  import { fromDefinedNullable } from "@dfinity/utils";
+  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
+  import {
+    fromDefinedNullable,
+    TokenAmountV2,
+    type Token,
+  } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   export let rootCanisterId: Principal;

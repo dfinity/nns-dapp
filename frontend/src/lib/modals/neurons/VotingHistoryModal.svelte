@@ -5,10 +5,8 @@
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { Modal } from "@dfinity/gix-components";
-  import { Spinner } from "@dfinity/gix-components";
-  import type { NeuronId } from "@dfinity/nns";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import { Modal, Spinner } from "@dfinity/gix-components";
+  import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher, onMount } from "svelte";
 
   export let neuronId: NeuronId;

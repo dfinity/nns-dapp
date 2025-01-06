@@ -6,9 +6,8 @@
     MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER,
   } from "$lib/constants/proposals.constants";
   import { basisPointsToPercent } from "$lib/utils/utils";
+  import { ProposalRewardStatus, type ProposalInfo } from "@dfinity/nns";
   import VotesResults from "./VotesResults.svelte";
-  import type { ProposalInfo } from "@dfinity/nns";
-  import { ProposalRewardStatus } from "@dfinity/nns";
 
   export let proposalInfo: ProposalInfo;
 

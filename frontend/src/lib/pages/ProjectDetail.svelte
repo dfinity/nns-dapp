@@ -27,8 +27,10 @@
   import { loadUserCountry } from "$lib/services/user-country.services";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
-  import { snsSummariesStore } from "$lib/stores/sns.store";
-  import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
+  import {
+    snsSummariesStore,
+    snsSwapCommitmentsStore,
+  } from "$lib/stores/sns.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,

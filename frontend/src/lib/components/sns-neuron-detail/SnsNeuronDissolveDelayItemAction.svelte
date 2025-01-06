@@ -8,14 +8,13 @@
     getSnsNeuronState,
     hasPermissionToDissolve,
   } from "$lib/utils/sns-neuron.utils";
-  import DissolveDelayBonusText from "../neuron-detail/DissolveDelayBonusText.svelte";
-  import CommonItemAction from "../ui/CommonItemAction.svelte";
-  import IncreaseSnsDissolveDelayButton from "./actions/IncreaseSnsDissolveDelayButton.svelte";
   import { IconClockNoFill } from "@dfinity/gix-components";
   import { NeuronState } from "@dfinity/nns";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
-  import { fromNullable } from "@dfinity/utils";
-  import { secondsToDuration, type Token } from "@dfinity/utils";
+  import { fromNullable, secondsToDuration, type Token } from "@dfinity/utils";
+  import DissolveDelayBonusText from "../neuron-detail/DissolveDelayBonusText.svelte";
+  import CommonItemAction from "../ui/CommonItemAction.svelte";
+  import IncreaseSnsDissolveDelayButton from "./actions/IncreaseSnsDissolveDelayButton.svelte";
 
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;
