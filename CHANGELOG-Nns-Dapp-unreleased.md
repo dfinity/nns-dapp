@@ -22,6 +22,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+- Remove hardcoding of "DFINITY Foundation" and "Internet Computer Association" in the displayed list of known neurons.
+
 #### Fixed
 
 #### Security
