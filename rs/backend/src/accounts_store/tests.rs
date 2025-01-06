@@ -463,6 +463,38 @@ fn attach_canister_and_rename() {
 }
 
 #[test]
+fn rename_to_empty_name_succeeds() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+
+    let initial_name = "ABC".to_string();
+    store.attach_canister(
+        principal,
+        AttachCanisterRequest {
+            name: initial_name.clone(),
+            canister_id,
+        },
+    );
+
+    let canisters = store.get_canisters(principal);
+    assert_eq!(initial_name, canisters[0].name);
+
+    let final_name = "".to_string();
+    store.rename_canister(
+        principal,
+        RenameCanisterRequest {
+            name: final_name.clone(),
+            canister_id,
+        },
+    );
+
+    let canisters = store.get_canisters(principal);
+    assert_eq!(final_name, canisters[0].name);
+}
+
+#[test]
 fn rename_to_taken_name_fails() {
     let mut store = setup_test_store();
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
