@@ -110,7 +110,7 @@ describe("NnsNeuronRewardStatusAction", () => {
     );
     expect(await po.getConfirmFollowingButtonPo().isPresent()).toBe(false);
     expect(await po.getFollowNeuronsButtonPo().isPresent()).toBe(true);
-    expect(await po.getFollowNeuronsButtonPo().isButtonStyleSecondary()).toBe(
+    expect(await po.getFollowNeuronsButtonPo().isButtonVariantSecondary()).toBe(
       true
     );
   });

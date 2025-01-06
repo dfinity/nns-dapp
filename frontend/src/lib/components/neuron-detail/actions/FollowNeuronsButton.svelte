@@ -7,7 +7,7 @@
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { getContext } from "svelte";
 
-  export let buttonStyle: "primary" | "secondary" = "primary";
+  export let variant: "primary" | "secondary" = "primary";
 
   const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
@@ -16,7 +16,7 @@
 
 <button
   data-tid="follow-neurons-button-component"
-  class={buttonStyle}
+  class={variant}
   on:click={() =>
     openNnsNeuronModal({ type: "follow", data: { neuron: $store.neuron } })}
   >{$i18n.neuron_detail.follow_neurons}</button

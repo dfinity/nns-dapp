@@ -14,12 +14,12 @@ export class FollowNeuronsButtonPo extends ButtonPo {
     );
   }
 
-  async isButtonStylePrimary(): Promise<boolean> {
+  async isButtonVariantPrimary(): Promise<boolean> {
     const classes = await this.getClasses();
     return classes.includes("primary") && !classes.includes("secondary");
   }
 
-  async isButtonStyleSecondary(): Promise<boolean> {
+  async isButtonVariantSecondary(): Promise<boolean> {
     const classes = await this.getClasses();
     return classes.includes("secondary") && !classes.includes("primary");
   }
