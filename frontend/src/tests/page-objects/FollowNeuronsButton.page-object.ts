@@ -13,4 +13,12 @@ export class FollowNeuronsButtonPo extends ButtonPo {
       element.byTestId(FollowNeuronsButtonPo.TID)
     );
   }
+
+  async isButtonStylePrimary(): Promise<boolean> {
+    return (await this.getClasses()).includes("primary");
+  }
+
+  async isButtonStyleSecondary(): Promise<boolean> {
+    return (await this.getClasses()).includes("secondary");
+  }
 }

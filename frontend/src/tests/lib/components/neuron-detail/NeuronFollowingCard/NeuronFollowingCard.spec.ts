@@ -47,6 +47,9 @@ describe("NeuronFollowingCard", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getFollowNeuronsButtonPo().isPresent()).toEqual(true);
+    expect(await po.getFollowNeuronsButtonPo().isButtonStylePrimary()).toEqual(
+      true
+    );
   });
 
   it("should render followees", async () => {

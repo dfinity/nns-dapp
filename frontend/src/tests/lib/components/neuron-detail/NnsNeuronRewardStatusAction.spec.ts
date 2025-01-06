@@ -139,6 +139,9 @@ describe("NnsNeuronRewardStatusAction", () => {
     expect(spyRefreshVotingPower).toHaveBeenCalledTimes(0);
 
     expect(await po.getConfirmFollowingButtonPo().isPresent()).toBe(true);
+    expect(await po.getFollowNeuronsButtonPo().isButtonStyleSecondary()).toBe(
+      true
+    );
     await po.getConfirmFollowingButtonPo().click();
     await runResolvedPromises();
 
