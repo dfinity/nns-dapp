@@ -15,12 +15,15 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 - Reporting: Full period filter, year-to-date, and last year
+- Show USD values of neuron stakes.
 
 #### Changed
 
 #### Deprecated
 
 #### Removed
+
+- Remove hardcoding of "DFINITY Foundation" and "Internet Computer Association" in the displayed list of known neurons.
 
 #### Fixed
 

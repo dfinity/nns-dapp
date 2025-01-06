@@ -17,8 +17,12 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import type { Universe } from "$lib/types/universe";
   import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";
-  import { Dropdown, DropdownItem, Modal } from "@dfinity/gix-components";
-  import { Spinner } from "@dfinity/gix-components";
+  import {
+    Dropdown,
+    DropdownItem,
+    Modal,
+    Spinner,
+  } from "@dfinity/gix-components";
   import { Principal } from "@dfinity/principal";
   import { isNullish, nonNullish, type Token } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";

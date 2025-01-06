@@ -1,27 +1,31 @@
 import ReportingPage from "$routes/(app)/(nns)/reporting/+page.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
+import { ReportingRoutePo } from "$tests/page-objects/ReportingRoute.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("Reporting page", () => {
-  describe("not signed in", () => {
-    beforeEach(() => {
-      setNoIdentity();
-    });
+  const renderComponent = () => {
+    const { container } = render(ReportingPage);
+    const po = ReportingRoutePo.under(new JestPageObjectElement(container));
+    return po;
+  };
 
-    it("should render sign-in if not logged in", () => {
-      const { getByTestId } = render(ReportingPage);
+  it("should render sign-in if not logged in", async () => {
+    setNoIdentity();
 
-      expect(getByTestId("login-button")).not.toBeNull();
-    });
+    const po = renderComponent();
+
+    expect(await po.getLoginButtonPo().isPresent()).toBe(true);
+    expect(await po.getReportingPagePo().isPresent()).toBe(false);
   });
 
-  describe("signed in", () => {
-    beforeEach(() => {
-      resetIdentity();
-    });
+  it("should render reporting page if logged in", async () => {
+    resetIdentity();
 
-    // TODO: Once the ExportNeurons and ExportTransactions components are migrated to this new page
-    it.skip("should render generate neurons report section", () => {});
-    it.skip("should render generate transactions report section", () => {});
+    const po = renderComponent();
+
+    expect(await po.getLoginButtonPo().isPresent()).toBe(false);
+    expect(await po.getReportingPagePo().isPresent()).toBe(true);
   });
 });

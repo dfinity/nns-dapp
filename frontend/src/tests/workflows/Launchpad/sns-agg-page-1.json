@@ -320,7 +320,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98206107728248980,
+    "icrc1_total_supply": 98207600278005150,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -843,7 +843,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100939470926227070,
+    "icrc1_total_supply": 100962704321427940,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1546,7 +1546,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50406318997462024,
+    "icrc1_total_supply": 50425854044873180,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1628,7 +1628,7 @@
       "ledger": "rffwt-piaaa-aaaaq-aabqq-cai",
       "index": "rlh33-uyaaa-aaaaq-aabrq-cai",
       "governance": "rceqh-cqaaa-aaaaq-aabqa-cai",
-      "dapps": ["47222-6qaaa-aaaag-qcpwq-cai"],
+      "dapps": ["u5cd5-naaaa-aaaad-aaehq-cai"],
       "archives": ["qupim-xaaaa-aaaaq-aabva-cai"]
     },
     "meta": {
@@ -1943,7 +1943,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9961351916382816,
+    "icrc1_total_supply": 9961383933408368,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2344,7 +2344,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10100368715331222,
+    "icrc1_total_supply": 10107023280030600,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -2733,7 +2733,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12653618568983172,
+    "icrc1_total_supply": 12655611029030604,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4168,7 +4168,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99691597898024370,
+    "icrc1_total_supply": 99664648713837360,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

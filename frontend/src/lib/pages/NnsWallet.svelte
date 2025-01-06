@@ -3,6 +3,7 @@
   import IC_LOGO from "$lib/assets/icp.svg";
   import HardwareWalletListNeuronsButton from "$lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
   import HardwareWalletShowActionButton from "$lib/components/accounts/HardwareWalletShowActionButton.svelte";
+  import LedgerNeuronHotkeyWarning from "$lib/components/accounts/LedgerNeuronHotkeyWarning.svelte";
   import NoTransactions from "$lib/components/accounts/NoTransactions.svelte";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import RenameSubAccountButton from "$lib/components/accounts/RenameSubAccountButton.svelte";
@@ -41,6 +42,7 @@
     listNeurons,
   } from "$lib/services/neurons.services";
   import { authStore } from "$lib/stores/auth.store";
+  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
   import {
@@ -48,8 +50,7 @@
     type IcpTransactionsStoreData,
   } from "$lib/stores/icp-transactions.store";
   import { toastsError } from "$lib/stores/toasts.store";
-  import type { Account } from "$lib/types/account";
-  import type { AccountIdentifierText } from "$lib/types/account";
+  import type { Account, AccountIdentifierText } from "$lib/types/account";
   import type { UiTransaction } from "$lib/types/transaction";
   import {
     WALLET_CONTEXT_KEY,
@@ -76,8 +77,6 @@
   } from "@dfinity/utils";
   import { onDestroy, onMount, setContext } from "svelte";
   import { writable, type Readable } from "svelte/store";
-  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
-  import LedgerNeuronHotkeyWarning from "$lib/components/accounts/LedgerNeuronHotkeyWarning.svelte";
 
   $: if ($authSignedInStore) {
     pollAccounts();

@@ -290,7 +290,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999972695894000,
+    "icrc1_total_supply": 799999970076494000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -913,6 +913,19 @@
           }
         },
         {
+          "id": 7002,
+          "name": "Expand OpenChat onto a new subnet",
+          "description": "This will instruct the Registry to expand OpenChat onto a new subnet, allowing it to scale to many more users, groups and communities",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "cpi5u-yiaaa-aaaar-aqw5a-cai",
+              "target_canister_id": "cpi5u-yiaaa-aaaar-aqw5a-cai",
+              "validator_method_name": "expand_onto_subnet_validate",
+              "target_method_name": "expand_onto_subnet"
+            }
+          }
+        },
+        {
           "id": 8000,
           "name": "Stake NNS neuron",
           "description": "This will instruct the NeuronController canister to stake a new neuron with 1 ICP.\n\nSubsequent 'ManageNnsNeuron' and 'TransferFromTreasury' proposals can be made to update the neuron's configuration and increase its stake.",
@@ -1102,7 +1115,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10126606675058128,
+    "icrc1_total_supply": 10128698065277328,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1602,6 +1615,14 @@
           }
         },
         {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1000,
           "name": "grant_permission",
           "description": "grant permission to asset canister",
@@ -1832,7 +1853,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 610738689036004,
+    "icrc1_total_supply": 613277642676307,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2237,7 +2258,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 103061603034370640,
+    "icrc1_total_supply": 103162284924887440,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2894,7 +2915,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 927739933376233000,
+    "icrc1_total_supply": 928841737952602200,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

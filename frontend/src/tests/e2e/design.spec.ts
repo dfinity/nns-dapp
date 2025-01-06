@@ -73,6 +73,18 @@ test.describe("Design", () => {
         replacements: ["9.00"],
       });
 
+      // The governance metrics are only updated once a day so for the first 24h
+      // after a snapshot is created, the metrics might be different than what
+      // we expectand we need to replace them with the expected value.
+      if ((await appPo.getMenuItemsPo().getTvlMetric()) === "$99") {
+        await replaceContent({
+          page,
+          selectors: ['[data-tid="tvl-metric"]'],
+          pattern: /\$[0-9’]+/,
+          replacements: ["$4’500’001’000"],
+        });
+      }
+
       await expect(page).toHaveScreenshot();
     };
 

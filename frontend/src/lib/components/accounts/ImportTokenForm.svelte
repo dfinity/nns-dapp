@@ -4,8 +4,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { Html } from "@dfinity/gix-components";
-  import { IconOpenInNew } from "@dfinity/gix-components";
+  import { Html, IconOpenInNew } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
