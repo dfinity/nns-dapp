@@ -1,10 +1,11 @@
 <script lang="ts">
   import Card from "$lib/components/portfolio/Card.svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { i18n } from "$lib/stores/i18n";
   import { IconNeuronsPage } from "@dfinity/gix-components";
 
   export let primaryCard = false;
-  const href = "/staking";
+  const href = AppPath.Staking;
 </script>
 
 <Card testId="no-neurons-card">
