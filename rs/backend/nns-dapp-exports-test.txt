@@ -3,6 +3,7 @@ canister_heartbeat
 canister_init
 canister_post_upgrade
 canister_pre_upgrade
+canister_query __long_message_noop
 canister_query get_account
 canister_query get_canisters
 canister_query get_exceptional_transactions
