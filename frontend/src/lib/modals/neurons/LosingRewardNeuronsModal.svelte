@@ -5,7 +5,6 @@
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
   import { START_REDUCING_VOTING_POWER_AFTER_SECONDS } from "$lib/constants/neurons.constants";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { soonLosingRewardNeuronsStore } from "$lib/derived/neurons.derived";
   import NnsLosingRewardsNeuronCard from "$lib/components/neurons/NnsLosingRewardsNeuronCard.svelte";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
   import { goto } from "$app/navigation";
@@ -13,6 +12,9 @@
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import type { NeuronInfo } from "@dfinity/nns";
   import ConfirmFollowingButton from "$lib/components/neuron-detail/actions/ConfirmFollowingButton.svelte";
+
+  export let neurons: NeuronInfo[];
+  export let withNeuronNavigation = true;
 
   const dispatcher = createEventDispatcher<{ nnsClose: void }>();
 
@@ -41,7 +43,7 @@
   };
 
   let neuronIds: bigint[];
-  $: neuronIds = $soonLosingRewardNeuronsStore.map((neuron) => neuron.neuronId);
+  $: neuronIds = neurons.map(({ neuronId }) => neuronId);
 </script>
 
 <Modal on:nnsClose testId="losing-reward-neurons-modal-component">
@@ -60,10 +62,11 @@
 
     <h3 class="label">{$i18n.losing_rewards_modal.label}</h3>
     <ul class="cards">
-      {#each $soonLosingRewardNeuronsStore as neuron (neuron.neuronId)}
+      {#each neurons as neuron (neuron.neuronId)}
         <li>
           <NnsLosingRewardsNeuronCard
             {neuron}
+            clickable={withNeuronNavigation}
             on:nnsClick={() => navigateToNeuronDetail(neuron)}
           />
         </li>
