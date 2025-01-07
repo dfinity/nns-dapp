@@ -66,7 +66,6 @@
         <li>
           <NnsLosingRewardsNeuronCard
             {neuron}
-            clickable={withNeuronNavigation}
             on:nnsClick={() => navigateToNeuronDetail(neuron)}
           />
         </li>
