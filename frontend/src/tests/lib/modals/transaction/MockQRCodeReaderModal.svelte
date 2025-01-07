@@ -15,4 +15,4 @@
 </script>
 
 <input type="text" data-tid="mock-qr-input" on:input={handleInput} />
-<button data-tid="mock-qr-dispatch" on:click={handleClick}>Send dskloet</button>
+<button data-tid="mock-qr-dispatch" on:click={handleClick}>Send</button>
