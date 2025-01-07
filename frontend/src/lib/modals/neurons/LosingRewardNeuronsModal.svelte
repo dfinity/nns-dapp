@@ -14,7 +14,6 @@
   import ConfirmFollowingButton from "$lib/components/neuron-detail/actions/ConfirmFollowingButton.svelte";
 
   export let neurons: NeuronInfo[];
-  export let withNeuronNavigation = true;
 
   const dispatcher = createEventDispatcher<{ nnsClose: void }>();
 
