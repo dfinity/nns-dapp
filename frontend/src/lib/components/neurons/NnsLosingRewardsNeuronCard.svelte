@@ -17,6 +17,7 @@
   const dispatch = createEventDispatcher<{ nnsClick: void }>();
 
   export let neuron: NeuronInfo;
+  export let clickable = true;
 
   let neuronTags: NeuronTagData[];
   $: neuronTags = getNeuronTags({
@@ -32,10 +33,10 @@
 
 <Card
   testId="nns-loosing-rewards-neuron-card-component"
-  role="button"
+  role={clickable ? "button" : undefined}
   noMargin
   ariaLabel={$i18n.losing_rewards_modal.goto_neuron}
-  on:click={() => dispatch("nnsClick")}
+  on:click={() => clickable && dispatch("nnsClick")}
 >
   <div class="wrapper">
     <div class="header">
@@ -47,9 +48,11 @@
           <NeuronTag {tag} />
         {/each}
       </div>
-      <div class="icon-right">
-        <IconRight />
-      </div>
+      {#if clickable}
+        <div class="icon-right">
+          <IconRight />
+        </div>
+      {/if}
     </div>
 
     {#if followees.length > 0}
