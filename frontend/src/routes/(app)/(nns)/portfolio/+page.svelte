@@ -6,9 +6,9 @@
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
   import Portfolio from "$lib/pages/Portfolio.svelte";
   import {
-      loadAccountsBalances,
-      loadSnsAccountsBalances,
-      resetBalanceLoading,
+    loadAccountsBalances,
+    loadSnsAccountsBalances,
+    resetBalanceLoading,
   } from "$lib/services/accounts-balances.services";
   import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
