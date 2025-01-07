@@ -9,6 +9,7 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { ConfirmFollowingBannerPo } from "./ConfirmFollowingBanner.page-object";
 import { NnsNeuronPageHeaderPo } from "./NnsNeuronPageHeader.page-object";
+import { NnsNeuronRewardStatusActionPo } from "./NnsNeuronRewardStatusAction.page-object";
 
 export class NnsNeuronDetailPo extends BasePageObject {
   private static readonly TID = "nns-neuron-detail-component";
@@ -72,6 +73,10 @@ export class NnsNeuronDetailPo extends BasePageObject {
 
   getConfirmFollowingBannerPo(): ConfirmFollowingBannerPo {
     return ConfirmFollowingBannerPo.under(this.root);
+  }
+
+  getNnsNeuronRewardStatusActionPo(): NnsNeuronRewardStatusActionPo {
+    return NnsNeuronRewardStatusActionPo.under(this.root);
   }
 
   getVotingPowerSectionPo(): NnsNeuronVotingPowerSectionPo {
