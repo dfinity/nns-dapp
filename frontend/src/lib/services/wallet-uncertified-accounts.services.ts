@@ -10,22 +10,15 @@ import { loadAccounts, loadIcrcToken } from "./icrc-accounts.services";
  *
  * @param {universeIds: UniverseCanisterId[]; excludeUniverseIds: RootCanisterIdText[] | undefined} params
  * @param {UniverseCanisterId[]} params.universeIds The Icrc environment for which the balances should be loaded.
- * @param {RootCanisterIdText[] | undefined} params.excludeUniverseIds As the balance is also loaded by loadSnsAccounts() - to perform query and UPDATE call - this variable can be used to avoid to perform unnecessary query and per extension to override data in the balance store.
  */
 export const uncertifiedLoadAccountsBalance = async ({
   universeIds,
-  excludeUniverseIds = [],
 }: {
   universeIds: UniverseCanisterIdText[];
-  excludeUniverseIds?: UniverseCanisterIdText[] | undefined;
 }): Promise<void> => {
   const results: PromiseSettledResult<[void, void]>[] =
     await Promise.allSettled(
-      (
-        universeIds.filter(
-          (universeId) => !excludeUniverseIds.includes(universeId)
-        ) ?? []
-      ).map((universeId) =>
+      universeIds.map((universeId) =>
         Promise.all([
           loadAccounts({
             strategy: "query",
