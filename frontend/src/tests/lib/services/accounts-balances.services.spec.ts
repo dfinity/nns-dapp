@@ -1,6 +1,6 @@
 import {
   loadAccountsBalances,
-  loadSnsBalances,
+  loadSnsAccountsBalances,
   resetBalanceLoading,
 } from "$lib/services/accounts-balances.services";
 import * as snsBalanceServices from "$lib/services/sns-accounts-balance.services";
@@ -41,7 +41,7 @@ describe("accounts-balances services", () => {
 
   describe("loadSnsBalances", () => {
     it("should not call service if array is empty", async () => {
-      await loadSnsBalances([]);
+      await loadSnsAccountsBalances([]);
       expect(snsBalancesSpy).not.toHaveBeenCalled();
     });
 
@@ -49,7 +49,7 @@ describe("accounts-balances services", () => {
       const principal1 = Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai");
       const principal2 = Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai");
 
-      await loadSnsBalances([principal1, principal2]);
+      await loadSnsAccountsBalances([principal1, principal2]);
 
       expect(snsBalancesSpy).toHaveBeenCalledWith({
         rootCanisterIds: [principal1, principal2],
@@ -59,8 +59,8 @@ describe("accounts-balances services", () => {
     it("should not reload already loaded canister IDs", async () => {
       const principal1 = Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai");
 
-      await loadSnsBalances([principal1]);
-      await loadSnsBalances([principal1]);
+      await loadSnsAccountsBalances([principal1]);
+      await loadSnsAccountsBalances([principal1]);
 
       expect(snsBalancesSpy).toHaveBeenCalledTimes(1);
     });

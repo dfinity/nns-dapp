@@ -16,7 +16,7 @@ const getNotLoadedIds = (ids: CanisterIdString[]): CanisterIdString[] => {
   return notLoadedIds;
 };
 
-export const loadSnsBalances = async (
+export const loadSnsAccountsBalances = async (
   rootCanisterIds: Principal[]
 ): Promise<void> => {
   if (rootCanisterIds.length === 0) return;
