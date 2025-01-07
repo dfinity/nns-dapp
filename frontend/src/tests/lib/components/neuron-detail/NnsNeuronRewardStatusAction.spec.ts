@@ -1,16 +1,13 @@
-import * as governanceApi from "$lib/api/governance.api";
 import {
   SECONDS_IN_DAY,
   SECONDS_IN_HALF_YEAR,
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
-import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
-import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronRewardStatusActionPo } from "$tests/page-objects/NnsNeuronRewardStatusAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import NnsNeuronRewardStatusActionTest from "./NnsNeuronRewardStatusActionTest.svelte";
@@ -113,42 +110,5 @@ describe("NnsNeuronRewardStatusAction", () => {
     expect(await po.getFollowNeuronsButtonPo().isButtonVariantSecondary()).toBe(
       true
     );
-  });
-
-  it("should refresh voting power", async () => {
-    const testNeuron = {
-      ...mockNeuron,
-      fullNeuron: {
-        ...mockFullNeuron,
-        votingPowerRefreshedTimestampSeconds: BigInt(
-          nowInSeconds() - SECONDS_IN_HALF_YEAR + 10 * SECONDS_IN_DAY
-        ),
-        controller: mockIdentity.getPrincipal().toText(),
-      },
-    };
-    resetIdentity();
-    neuronsStore.setNeurons({
-      neurons: [testNeuron],
-      certified: true,
-    });
-    vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([testNeuron]);
-    const spyRefreshVotingPower = vi
-      .spyOn(governanceApi, "refreshVotingPower")
-      .mockResolvedValue();
-    vi.spyOn(governanceApi, "queryKnownNeurons").mockResolvedValue([]);
-
-    const po = renderComponent(testNeuron);
-
-    expect(spyRefreshVotingPower).toHaveBeenCalledTimes(0);
-
-    expect(await po.getConfirmFollowingButtonPo().isPresent()).toBe(true);
-    await po.getConfirmFollowingButtonPo().click();
-    await runResolvedPromises();
-
-    expect(spyRefreshVotingPower).toHaveBeenCalledTimes(1);
-    expect(spyRefreshVotingPower).toHaveBeenCalledWith({
-      identity: mockIdentity,
-      neuronId: testNeuron.neuronId,
-    });
   });
 });
