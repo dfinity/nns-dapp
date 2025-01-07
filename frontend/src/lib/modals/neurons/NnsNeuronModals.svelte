@@ -28,6 +28,7 @@
   import ChangeNeuronVisibilityModal from "./ChangeNeuronVisibilityModal.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
+  import LosingRewardNeuronsModal from "./LosingRewardNeuronsModal.svelte";
 
   let modal: NnsNeuronModal<NnsNeuronModalData> | undefined;
   const close = () => (modal = undefined);
@@ -107,6 +108,14 @@
       <ChangeNeuronVisibilityModal
         defaultSelectedNeuron={neuron}
         makePublic={!isPublicNeuron(neuron)}
+        on:nnsClose={close}
+      />
+    {/if}
+
+    {#if type === "confirm-following"}
+      <LosingRewardNeuronsModal
+        withNeuronNavigation={false}
+        neurons={[neuron]}
         on:nnsClose={close}
       />
     {/if}
