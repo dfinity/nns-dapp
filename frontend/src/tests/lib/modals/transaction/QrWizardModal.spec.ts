@@ -320,6 +320,49 @@ describe("QrWizardModal", () => {
     expect(getCurrentStep(component).name).toEqual("step1");
   });
 
+  it("scanQrCode() rejects 'dfinity' prefix for other token", async () => {
+    const identifier =
+      "97731a95e48d63106ede6e6a7c4937475f0a2a1ef0f42f46956a3e06f8e32ba7";
+    const paymentUri = `dfinity:${identifier}`;
+
+    const steps = [
+      {
+        title: "Step 1",
+        name: "step1",
+      },
+    ];
+
+    const { getByTestId, component } = render(QrWizardModal, { steps });
+
+    const qrPromise = scanQrCode({
+      component,
+      requiredToken: {
+        ...mockSnsToken,
+        symbol: "abc",
+      },
+    });
+    const qrPromiseResolved = vi.fn();
+    qrPromise.then(qrPromiseResolved);
+
+    await runResolvedPromises();
+
+    expect(getCurrentStep(component).name).toEqual("QRCode");
+
+    expect(qrPromiseResolved).not.toBeCalled();
+
+    fireEvent.input(getByTestId("mock-qr-input"), {
+      target: { value: paymentUri },
+    });
+    fireEvent.click(getByTestId("mock-qr-dispatch"));
+
+    await runResolvedPromises();
+
+    expect(qrPromiseResolved).toBeCalled();
+    expect(await qrPromise).toEqual({ result: "token_incompatible" });
+
+    expect(getCurrentStep(component).name).toEqual("step1");
+  });
+
   it("resolves scanQrCode() to 'canceled' when canceled", async () => {
     const steps = [
       {
