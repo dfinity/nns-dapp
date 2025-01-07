@@ -12,7 +12,6 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetMockedConstants } from "$tests/utils/mockable-constants.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
