@@ -78,6 +78,7 @@ pub fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
         let canister = NamedCanister {
             name: format!("canister_{account_index}_{canister_index}"),
             canister_id,
+            block_index: Some(123),
         };
         account.canisters.push(canister);
     }
@@ -152,6 +153,7 @@ impl AccountsStore {
                 let attach_canister_request = AttachCanisterRequest {
                     name: format!("canister_{toy_account_index}_{canister_index}"),
                     canister_id,
+                    block_index: Some(123),
                 };
                 self.attach_canister(account, attach_canister_request);
             }

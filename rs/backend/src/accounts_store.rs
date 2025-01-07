@@ -182,6 +182,7 @@ struct NamedHardwareWalletAccount {
 pub struct NamedCanister {
     name: String,
     canister_id: CanisterId,
+    block_index: Option<BlockIndex>,
 }
 
 impl NamedCanister {
@@ -319,6 +320,7 @@ pub struct HardwareWalletAccountDetails {
 pub struct AttachCanisterRequest {
     name: String,
     canister_id: CanisterId,
+    block_index: Option<BlockIndex>,
 }
 
 #[derive(CandidType)]
@@ -638,11 +640,15 @@ impl AccountsStore {
         let mut new_canister = NamedCanister {
             name: request.name,
             canister_id: request.canister_id,
+            block_index: request.block_index,
         };
 
         let mut index_to_remove: Option<usize> = None;
         for (index, existing_canister) in account.canisters.iter().enumerate() {
-            if !new_canister.name.is_empty() && existing_canister.name == new_canister.name {
+            if !new_canister.name.is_empty()
+                && existing_canister.name == new_canister.name
+                && existing_canister.canister_id != new_canister.canister_id
+            {
                 return AttachCanisterResponse::NameAlreadyTaken;
             }
             // The canister might already be attached.
@@ -658,6 +664,15 @@ impl AccountsStore {
                         new_canister.name.clone_from(&existing_canister.name);
                     } else if existing_canister.name != new_canister.name {
                         // Incompatible names.
+                        return AttachCanisterResponse::CanisterAlreadyAttached;
+                    }
+                }
+
+                if existing_canister.block_index.is_some() {
+                    if new_canister.block_index.is_none() {
+                        new_canister.block_index = existing_canister.block_index;
+                    } else if existing_canister.block_index != new_canister.block_index {
+                        // Incompatible block_index.
                         return AttachCanisterResponse::CanisterAlreadyAttached;
                     }
                 }
@@ -754,6 +769,7 @@ impl AccountsStore {
                 account.canisters.push(NamedCanister {
                     name: String::new(),
                     canister_id,
+                    block_index: None,
                 });
                 account.canisters.sort();
                 self.accounts_db.db_insert_account(&account_identifier, account);
