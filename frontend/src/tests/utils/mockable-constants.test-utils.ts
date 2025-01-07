@@ -1,6 +1,7 @@
 // Values used during unit testing for the constants in
 // frontend/src/lib/constants/mockable.constants.ts
 
+import { registerCleanupForTesting } from "$lib/utils/test-support.utils";
 import type * as mockableConstants from "$lib/constants/mockable.constants";
 
 type MockableConstantsKey = keyof typeof mockableConstants;
@@ -29,3 +30,5 @@ export const setDefaultTestConstants = (constants: MockableConstants) => {
   defaultTestConstants = constants;
   resetMockedConstants();
 };
+
+registerCleanupForTesting(resetMockedConstants);

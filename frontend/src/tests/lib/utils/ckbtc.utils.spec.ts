@@ -29,10 +29,6 @@ describe("ckbtc.utils", () => {
     },
   };
 
-  beforeEach(() => {
-    resetMockedConstants();
-  });
-
   it("should not throw error", () => {
     expect(() =>
       assertCkBTCUserInputAmount({

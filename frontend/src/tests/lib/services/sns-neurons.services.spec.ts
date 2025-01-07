@@ -93,7 +93,6 @@ describe("sns-neurons-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetMockedConstants();
     resetSnsProjects();
     vi.spyOn(console, "error").mockReturnValue(undefined);
   });

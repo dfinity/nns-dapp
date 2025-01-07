@@ -64,7 +64,6 @@ describe("MenuItems", () => {
   };
 
   beforeEach(() => {
-    resetMockedConstants();
     menuStore.resetForTesting();
     layoutMenuOpen.set(false);
     vi.useFakeTimers();
