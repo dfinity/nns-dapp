@@ -21,6 +21,7 @@ import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constant
 import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { ApiErrorKey } from "$lib/types/api.errors";
+import { getCanisterCreationCmcAccountIdentifierHex } from "$lib/utils/canisters.utils";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { poll, pollingLimit } from "$lib/utils/utils";
@@ -232,12 +233,8 @@ export const createCanister = async ({
 
   const { cmc, nnsDapp } = await canisters(identity);
   const principal = identity.getPrincipal();
-  const toSubAccount = principalToSubAccount(principal);
-  // To create a canister you need to send ICP to an account owned by the CMC, so that the CMC can burn those funds.
-  // To ensure everyone uses a unique address, the intended controller of the new canister is used to calculate the subaccount.
-  const recipient = AccountIdentifier.fromPrincipal({
-    principal: CYCLES_MINTING_CANISTER_ID,
-    subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
+  const recipientHex = getCanisterCreationCmcAccountIdentifierHex({
+    controller: principal,
   });
 
   const createdAt = nowInBigIntNanoSeconds();
@@ -245,7 +242,7 @@ export const createCanister = async ({
   const blockHeight = await sendICP({
     memo: CREATE_CANISTER_MEMO,
     identity,
-    to: recipient.toHex(),
+    to: recipientHex,
     amount,
     fromSubAccount,
     createdAt,
