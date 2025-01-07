@@ -5,6 +5,7 @@ import {
   canisterStatusToText,
   errorCanisterNameMessage,
   formatCyclesToTCycles,
+  getCanisterCreationCmcAccountIdentifierHex,
   getCanisterFromStore,
   isController,
   isUserController,
@@ -265,6 +266,27 @@ describe("canister-utils", () => {
           minimumCycles: 0.5,
         })
       ).toBeTruthy();
+    });
+  });
+
+  describe("getCanisterCreationCmcAccountIdentifierHex", () => {
+    it("should return the account identifier", () => {
+      const controller = Principal.fromText(
+        "efwjn-odjlf-7q4oi-62p6e-55cgt-opqxz-hwp7t-bp3d3-c2ykh-qrwth-6ae"
+      );
+      // The account identifier is created through hashing. It's not really
+      // useful to do the same hashing here in the test so we just test a
+      // hardcoded value.
+      // This value can be recreated as follows:
+      // CMC_CANISTER_ID="rkp4c-7iaaa-aaaaa-aaaca-cai"
+      // CONTROLLER="efwjn-odjlf-7q4oi-62p6e-55cgt-opqxz-hwp7t-bp3d3-c2ykh-qrwth-6ae"
+      // scripts/convert-id --input text --subaccount_format text --output account_identifier "$CMC_CANISTER_ID" "$CONTROLLER"
+      const expectedAccountId =
+        "c13de767ead7f7bfa4522847eab1385532e19ff1e79419c34f3999e1ca9be9a1";
+
+      expect(getCanisterCreationCmcAccountIdentifierHex({ controller })).toBe(
+        expectedAccountId
+      );
     });
   });
 });

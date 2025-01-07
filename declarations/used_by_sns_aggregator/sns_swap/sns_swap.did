@@ -1,4 +1,4 @@
-//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-12-06_03-16-base/rs/sns/swap/canister/swap.did>
+//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-03_03-07-base/rs/sns/swap/canister/swap.did>
 type BuyerState = record {
   icp : opt TransferableAmount;
   has_created_neuron_recipes : opt bool;
@@ -54,6 +54,7 @@ type DefiniteCanisterSettingsArgs = record {
   wasm_memory_limit : opt nat;
   memory_allocation : nat;
   compute_allocation : nat;
+  wasm_memory_threshold : opt nat;
 };
 
 type DerivedState = record {

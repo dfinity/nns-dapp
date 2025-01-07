@@ -83,7 +83,6 @@
 
     await uncertifiedLoadSnsesAccountsBalances({
       rootCanisterIds: notLoadedCanisterIds.map((id) => Principal.fromText(id)),
-      excludeRootCanisterIds: [],
     });
   };
 
@@ -146,7 +145,6 @@
 
     await uncertifiedLoadAccountsBalance({
       universeIds,
-      excludeUniverseIds: [],
     });
   };
 
@@ -157,7 +155,6 @@
     if (isSnsProject) {
       return uncertifiedLoadSnsesAccountsBalances({
         rootCanisterIds: [universeId],
-        excludeRootCanisterIds: [],
       });
     }
     return loadAccountsBalances([universeId.toText()]);

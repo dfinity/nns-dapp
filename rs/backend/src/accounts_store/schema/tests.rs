@@ -11,6 +11,7 @@ pub fn toy_canister(account_index: u64, canister_index: u64) -> NamedCanister {
     NamedCanister {
         name: format!("canister_{account_index}_{canister_index}"),
         canister_id,
+        block_index: Some(123),
     }
 }
 
