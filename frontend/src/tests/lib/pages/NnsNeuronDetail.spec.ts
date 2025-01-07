@@ -175,6 +175,57 @@ describe("NeuronDetail", () => {
 
       expect(await po.getConfirmFollowingBannerPo().isPresent()).toBe(false);
     });
+
+    it("should call refreshVotingPower", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        true
+      );
+      const testNeuron = fakeGovernanceApi.addNeuronWith({
+        neuronId,
+        votingPowerRefreshedTimestampSeconds:
+          nowInSeconds() - SECONDS_IN_HALF_YEAR - SECONDS_IN_DAY,
+        controller: mockIdentity.getPrincipal().toText(),
+      });
+
+      vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([testNeuron]);
+      const spyRefreshVotingPower = vi
+        .spyOn(governanceApi, "refreshVotingPower")
+        .mockResolvedValue();
+      vi.spyOn(governanceApi, "queryKnownNeurons").mockResolvedValue([]);
+
+      const po = await renderComponent(`${neuronId}`);
+
+      expect(
+        await po
+          .getNnsNeuronRewardStatusActionPo()
+          .getConfirmFollowingButtonPo()
+          .isPresent()
+      ).toBe(true);
+
+      expect(spyRefreshVotingPower).toHaveBeenCalledTimes(0);
+      // open modal
+      await po
+        .getNnsNeuronRewardStatusActionPo()
+        .getConfirmFollowingButtonPo()
+        .click();
+      await runResolvedPromises();
+
+      const modal = po.getNnsNeuronModalsPo().getLosingRewardNeuronsModalPo();
+      expect(await modal.isPresent()).toEqual(true);
+      const cards = await modal.getNnsLosingRewardsNeuronCardPos();
+      expect(cards.length).toEqual(1);
+      expect(await cards[0].getNeuronId()).toEqual(`${neuronId}`);
+
+      await modal.clickConfirmFollowing();
+      await runResolvedPromises();
+
+      expect(spyRefreshVotingPower).toHaveBeenCalledTimes(1);
+      expect(spyRefreshVotingPower).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        neuronId: testNeuron.neuronId,
+      });
+    });
   });
 
   it("should render nns project name", async () => {
