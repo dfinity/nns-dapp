@@ -57,6 +57,9 @@
   {/if}
 
   {#if isModalVisible}
-    <LosingRewardNeuronsModal on:nnsClose={() => (isModalVisible = false)} />
+    <LosingRewardNeuronsModal
+      neurons={$soonLosingRewardNeuronsStore}
+      on:nnsClose={() => (isModalVisible = false)}
+    />
   {/if}
 </TestIdWrapper>
