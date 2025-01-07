@@ -107,7 +107,7 @@ export const getCanisterCreationCmcAccountIdentifierHex = ({
   controller: Principal;
 }): string => {
   const subAccountBytes = principalToSubAccount(controller);
-  // To create a canister you need to send ICP to an account owned by the CMC, so that the CMC can burn those funds.
+  // To create a canister you need to send ICP to an account owned by the CMC, so that the CMC can burn those funds and generate cycles.
   // To ensure everyone uses a unique address, the intended controller of the new canister is used to calculate the subaccount.
   const accountId = AccountIdentifier.fromPrincipal({
     principal: CYCLES_MINTING_CANISTER_ID,
