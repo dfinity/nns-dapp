@@ -136,6 +136,24 @@ describe("LosingRewardsBanner", () => {
     expect(await po.getLosingRewardNeuronsModalPo().isPresent()).toEqual(true);
   });
 
+  it("should not display active neurons in the modal", async () => {
+    neuronsStore.setNeurons({
+      neurons: [activeNeuron, in10DaysLosingRewardsNeuron],
+      certified: true,
+    });
+    const po = await renderComponent();
+
+    await po.clickConfirm();
+    const cards = await po
+      .getLosingRewardNeuronsModalPo()
+      .getNnsLosingRewardsNeuronCardPos();
+
+    expect(cards.length).toEqual(1);
+    expect(await cards[0].getNeuronId()).toEqual(
+      `${in10DaysLosingRewardsNeuron.neuronId}`
+    );
+  });
+
   it("should close modal when all refreshed", async () => {
     const spyRefreshVotingPower = vi
       .spyOn(governanceApi, "refreshVotingPower")
@@ -149,10 +167,20 @@ describe("LosingRewardsBanner", () => {
     expect(await po.getLosingRewardNeuronsModalPo().isPresent()).toEqual(false);
     await po.clickConfirm();
     expect(await po.getLosingRewardNeuronsModalPo().isPresent()).toEqual(true);
+    expect(
+      await po
+        .getLosingRewardNeuronsModalPo()
+        .getNnsLosingRewardsNeuronCardPos()
+    ).toHaveLength(1);
 
     await po.getLosingRewardNeuronsModalPo().clickConfirmFollowing();
     await runResolvedPromises();
 
+    expect(
+      await po
+        .getLosingRewardNeuronsModalPo()
+        .getNnsLosingRewardsNeuronCardPos()
+    ).toHaveLength(0);
     vi.advanceTimersToNextFrame();
     expect(spyRefreshVotingPower).toBeCalledTimes(1);
     expect(await po.getLosingRewardNeuronsModalPo().isPresent()).toEqual(false);
