@@ -2,4 +2,4 @@
 //
 // Production code should use this function to register cleanup functions that
 // should be run before each test.
-export const registerCleanupForTesting = (cleanup: () => void) => {};
+export const registerCleanupForTesting = (_cleanup: () => void) => {};
