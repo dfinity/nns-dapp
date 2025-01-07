@@ -205,7 +205,7 @@ export const addNeuronWith = ({
 }: {
   identity?: Identity;
   votingPowerRefreshedTimestampSeconds?: bigint | number;
-} & Partial<FakeNeuronParams>) => {
+} & Partial<FakeNeuronParams>): NeuronInfo => {
   const neuron = { ...mockNeuron, fullNeuron: { ...mockNeuron.fullNeuron } };
   if (neuronId) {
     neuron.neuronId = neuronId;
@@ -230,6 +230,8 @@ export const addNeuronWith = ({
     throw new Error(`A neuron with id ${neuron.neuronId} already exists`);
   }
   getNeurons(identity).push(neuron);
+
+  return { ...neuron };
 };
 
 export const addNeurons = ({
