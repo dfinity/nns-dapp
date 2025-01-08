@@ -4,7 +4,6 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsLosingRewardsNeuronCardPo } from "$tests/page-objects/NnsLosingRewardsNeuronCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { Topic, type NeuronInfo } from "@dfinity/nns";
-import { nonNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("NnsLosingRewardsNeuronCard", () => {
@@ -37,15 +36,12 @@ describe("NnsLosingRewardsNeuronCard", () => {
     neuron: NeuronInfo;
     onClick?: () => void;
   }) => {
-    const { container, component } = render(NnsLosingRewardsNeuronCard, {
+    const { container } = render(NnsLosingRewardsNeuronCard, {
       props: {
         neuron,
+        onClick,
       },
     });
-
-    if (nonNullish(onClick)) {
-      component.$on("nnsClick", onClick);
-    }
 
     return NnsLosingRewardsNeuronCardPo.under(
       new JestPageObjectElement(container)
