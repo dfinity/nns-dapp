@@ -7,6 +7,7 @@ import { NnsAddMaturityModalPo } from "$tests/page-objects/NnsAddMaturityModal.p
 import { SpawnNeuronModalPo } from "$tests/page-objects/SpawnNeuronModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { LosingRewardNeuronsModalPo } from "./LosingRewardNeuronsModal.page-object";
 
 export class NnsNeuronModalsPo extends BasePageObject {
   private static readonly TID = "nns-neuron-modals-component";
@@ -41,5 +42,9 @@ export class NnsNeuronModalsPo extends BasePageObject {
 
   getSpawnNeuronModalPo(): SpawnNeuronModalPo {
     return SpawnNeuronModalPo.under(this.root);
+  }
+
+  getLosingRewardNeuronsModalPo(): LosingRewardNeuronsModalPo {
+    return LosingRewardNeuronsModalPo.under(this.root);
   }
 }

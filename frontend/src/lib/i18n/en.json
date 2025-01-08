@@ -405,8 +405,8 @@
   },
   "losing_rewards_modal": {
     "goto_neuron": "Go to neuron details",
-    "title": "Review your following for neurons",
-    "label": "Neurons",
+    "title": "Review following",
+    "label": "Neuron(s)",
     "no_following": "This neuron has no following configured. You need to vote manually to earn voting rewards."
   },
   "new_followee": {

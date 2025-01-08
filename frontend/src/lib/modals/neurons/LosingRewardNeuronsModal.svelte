@@ -14,6 +14,7 @@
   import ConfirmFollowingButton from "$lib/components/neuron-detail/actions/ConfirmFollowingButton.svelte";
 
   export let neurons: NeuronInfo[];
+  export let withNeuronNavigation = true;
 
   const dispatcher = createEventDispatcher<{ nnsClose: void }>();
 
@@ -65,7 +66,9 @@
         <li>
           <NnsLosingRewardsNeuronCard
             {neuron}
-            on:nnsClick={() => navigateToNeuronDetail(neuron)}
+            onClick={withNeuronNavigation
+              ? () => navigateToNeuronDetail(neuron)
+              : undefined}
           />
         </li>
       {/each}

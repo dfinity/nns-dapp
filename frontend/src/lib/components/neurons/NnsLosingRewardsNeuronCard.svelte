@@ -12,11 +12,13 @@
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { i18n } from "$lib/stores/i18n";
   import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
-  import { createEventDispatcher } from "svelte";
-
-  const dispatch = createEventDispatcher<{ nnsClick: void }>();
+  import { nonNullish } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;
+  export let onClick: (() => void) | undefined;
+
+  let isClickable: boolean;
+  $: isClickable = nonNullish(onClick);
 
   let neuronTags: NeuronTagData[];
   $: neuronTags = getNeuronTags({
@@ -32,10 +34,10 @@
 
 <Card
   testId="nns-loosing-rewards-neuron-card-component"
-  role="button"
+  role={isClickable ? "button" : undefined}
   noMargin
   ariaLabel={$i18n.losing_rewards_modal.goto_neuron}
-  on:click={() => dispatch("nnsClick")}
+  on:click={onClick}
 >
   <div class="wrapper">
     <div class="header">
@@ -47,9 +49,11 @@
           <NeuronTag {tag} />
         {/each}
       </div>
-      <div class="icon-right">
-        <IconRight />
-      </div>
+      {#if isClickable}
+        <div class="icon-right">
+          <IconRight />
+        </div>
+      {/if}
     </div>
 
     {#if followees.length > 0}

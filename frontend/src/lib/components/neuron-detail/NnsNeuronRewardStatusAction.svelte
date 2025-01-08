@@ -16,9 +16,9 @@
   import { secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import FollowNeuronsButton from "./actions/FollowNeuronsButton.svelte";
-  import ConfirmFollowingButton from "./actions/ConfirmFollowingButton.svelte";
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
   import { START_REDUCING_VOTING_POWER_AFTER_SECONDS } from "$lib/constants/neurons.constants";
+  import ConfirmFollowingActionButton from "$lib/components/neuron-detail/actions/ConfirmFollowingActionButton.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -103,7 +103,7 @@
   {#if isFollowingReset}
     <FollowNeuronsButton variant="secondary" />
   {:else}
-    <ConfirmFollowingButton neuronIds={[neuron.neuronId]} />
+    <ConfirmFollowingActionButton {neuron} />
   {/if}
 </CommonItemAction>
 
