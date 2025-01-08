@@ -11,18 +11,36 @@ describe("Portfolio page", () => {
     return PortfolioPagePo.under(new JestPageObjectElement(container));
   };
 
-  beforeEach(() => {
-    resetIdentity();
+  describe("when not logged in", () => {
+    beforeEach(() => {
+      setNoIdentity();
+    });
+
+    it("should display the login card when the user is not logged in", async () => {
+      const po = renderPage();
+      expect(await po.getLoginCard().isPresent()).toBe(true);
+    });
+
+    it("should show the NoTokensCard", async () => {
+      const po = renderPage();
+      expect(await po.getNoTokensCard().isPresent()).toBe(true);
+    });
+
+    it("should show the NoNeuronsCard with secondary action", async () => {
+      const po = renderPage();
+      expect(await po.getNoNeuronsCarPo().isPresent()).toBe(true);
+      expect(await po.getNoNeuronsCarPo().hasSecondaryAction()).toBe(true);
+    });
   });
 
-  it("should display the login card when the user is not logged in", async () => {
-    setNoIdentity();
-    const po = renderPage();
-    expect(await po.getLoginCard().isPresent()).toBe(true);
-  });
+  describe("when logged in", () => {
+    beforeEach(() => {
+      resetIdentity();
+    });
 
-  it("should not display the login card when the user is logged in", async () => {
-    const page = renderPage();
-    expect(await page.getLoginCard().isPresent()).toBe(false);
+    it("should not display the login card when the user is logged in", async () => {
+      const page = renderPage();
+      expect(await page.getLoginCard().isPresent()).toBe(false);
+    });
   });
 });
