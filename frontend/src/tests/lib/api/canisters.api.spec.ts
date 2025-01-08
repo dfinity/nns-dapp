@@ -228,7 +228,8 @@ describe("canisters-api", () => {
     });
 
     it("should make a transfer, notify and attach the canister", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(10n);
+      const blockIndex = 10n;
+      mockLedgerCanister.transfer.mockResolvedValue(blockIndex);
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
@@ -243,12 +244,14 @@ describe("canisters-api", () => {
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
         name: "",
         canisterId: mockCanisterDetails.id,
+        blockIndex,
       });
       expect(response).toEqual(mockCanisterDetails.id);
     });
 
     it("should attach the canister if name max length", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(10n);
+      const blockIndex = 10n;
+      mockLedgerCanister.transfer.mockResolvedValue(blockIndex);
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
@@ -263,6 +266,7 @@ describe("canisters-api", () => {
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
         name: longName,
         canisterId: mockCanisterDetails.id,
+        blockIndex,
       });
       expect(response).toEqual(mockCanisterDetails.id);
     });
@@ -283,7 +287,8 @@ describe("canisters-api", () => {
     });
 
     it("handles creating from subaccounts", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(10n);
+      const blockIndex = 10n;
+      mockLedgerCanister.transfer.mockResolvedValue(blockIndex);
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
@@ -315,6 +320,7 @@ describe("canisters-api", () => {
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
         name: "",
         canisterId: mockCanisterDetails.id,
+        blockIndex,
       });
       expect(response).toEqual(mockCanisterDetails.id);
     });

@@ -85,6 +85,7 @@ export const queryCanisterDetails = async ({
   return response;
 };
 
+// Attaches a canister that's not created by the user to the user account.
 export const attachCanister = async ({
   identity,
   name,
@@ -107,6 +108,8 @@ export const attachCanister = async ({
   await nnsDapp.attachCanister({
     name: name ?? "",
     canisterId,
+    // blockIndex is only specified for canisters created by the user.
+    blockIndex: undefined,
   });
 
   logWithTimestamp("Attaching canister call complete.");
@@ -266,6 +269,7 @@ export const createCanister = async ({
     await nnsDapp.attachCanister({
       name: name ?? "",
       canisterId,
+      blockIndex: blockHeight,
     });
   } catch (error: unknown) {
     // If the background task finishes earlier, we might get CanisterAlreadyAttachedError.

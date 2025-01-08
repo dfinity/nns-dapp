@@ -5,6 +5,7 @@ export const idlFactory = ({ IDL }) => {
   const AttachCanisterRequest = IDL.Record({
     name: IDL.Text,
     canister_id: IDL.Principal,
+    block_index: IDL.Opt(IDL.Nat64),
   });
   const AttachCanisterResponse = IDL.Variant({
     Ok: IDL.Null,
@@ -47,6 +48,7 @@ export const idlFactory = ({ IDL }) => {
   const CanisterDetails = IDL.Record({
     name: IDL.Text,
     canister_id: IDL.Principal,
+    block_index: IDL.Opt(IDL.Nat64),
   });
   const ImportedToken = IDL.Record({
     index_canister_id: IDL.Opt(IDL.Principal),

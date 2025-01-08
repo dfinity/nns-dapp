@@ -74,12 +74,18 @@ type CanisterDetails =
     record {
         name: text;
         canister_id: principal;
+        // The `block_index` that was passed to `notify_create_canister` if the
+        // canister was created by the user.
+        block_index: opt nat64;
     };
 
 type AttachCanisterRequest =
     record {
         name: text;
         canister_id: principal;
+        // The `block_index` that was passed to `notify_create_canister` if the
+        // canister was created by the user.
+        block_index: opt nat64;
     };
 
 type AttachCanisterResponse =
