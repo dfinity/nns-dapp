@@ -16,6 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 - Reporting: Full period filter, year-to-date, and last year
 - Show USD values of neuron stakes.
+- Display missing reward warnings in case of neuron inactivity.
 
 #### Changed
 
