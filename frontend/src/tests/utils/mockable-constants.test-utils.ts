@@ -2,6 +2,7 @@
 // frontend/src/lib/constants/mockable.constants.ts
 
 import type * as mockableConstants from "$lib/constants/mockable.constants";
+import { registerCleanupForTesting } from "$lib/utils/test-support.utils";
 
 type MockableConstantsKey = keyof typeof mockableConstants;
 type MockableConstants = { [K in MockableConstantsKey]: unknown };
@@ -19,7 +20,7 @@ export const mockedConstants: MockableConstants = {
   notForceCallStrategy: undefined,
 };
 
-export const resetMockedConstants = () => {
+const resetMockedConstants = () => {
   Object.keys(mockedConstants).forEach((key) => {
     mockedConstants[key] = defaultTestConstants[key];
   });
@@ -29,3 +30,5 @@ export const setDefaultTestConstants = (constants: MockableConstants) => {
   defaultTestConstants = constants;
   resetMockedConstants();
 };
+
+registerCleanupForTesting(resetMockedConstants);

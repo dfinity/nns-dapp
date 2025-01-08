@@ -7,10 +7,7 @@ import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
-import {
-  mockedConstants,
-  resetMockedConstants,
-} from "$tests/utils/mockable-constants.test-utils";
+import { mockedConstants } from "$tests/utils/mockable-constants.test-utils";
 
 describe("ckbtc.utils", () => {
   const RETRIEVE_BTC_MIN_AMOUNT = 100_000n;
@@ -28,10 +25,6 @@ describe("ckbtc.utils", () => {
       certified: true,
     },
   };
-
-  beforeEach(() => {
-    resetMockedConstants();
-  });
 
   it("should not throw error", () => {
     expect(() =>

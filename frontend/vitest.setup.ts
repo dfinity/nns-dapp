@@ -33,26 +33,34 @@ beforeEach(() => {
   vi.unstubAllGlobals();
 });
 
-// Reset every store before each test.
-const resetStoreFunctions = vi.hoisted(() => {
+const cleanupFunctions = vi.hoisted(() => {
   return [];
 });
 
+// Reset every store before each test.
 vi.mock("svelte/store", async (importOriginal) => {
   const svelteStoreModule = await importOriginal();
   return {
     ...svelteStoreModule,
     writable: <T>(initialValue, ...otherArgs) => {
       const store = svelteStoreModule.writable<T>(initialValue, ...otherArgs);
-      resetStoreFunctions.push(() => store.set(initialValue));
+      cleanupFunctions.push(() => store.set(initialValue));
       return store;
     },
   };
 });
 
+vi.mock("$lib/utils/test-support.utils", async () => {
+  return {
+    registerCleanupForTesting: (cleanup: () => void) => {
+      cleanupFunctions.push(cleanup);
+    },
+  };
+});
+
 beforeEach(() => {
-  for (const reset of resetStoreFunctions) {
-    reset();
+  for (const cleanup of cleanupFunctions) {
+    cleanup();
   }
 });
 
