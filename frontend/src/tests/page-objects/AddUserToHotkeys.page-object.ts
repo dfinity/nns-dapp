@@ -1,6 +1,6 @@
-import { CalloutWarningPo } from "$tests/page-objects/CalloutWarning.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { BannerPo } from "./Banner.page-object";
 
 export class AddUserToHotkeysPo extends BasePageObject {
   private static readonly TID = "add-principal-to-hotkeys-modal";
@@ -10,7 +10,7 @@ export class AddUserToHotkeysPo extends BasePageObject {
   }
 
   isMissingRewardsWarningVisible(): Promise<boolean> {
-    return CalloutWarningPo.under(this.root).isPresent();
+    return BannerPo.under(this.root).isPresent();
   }
 
   clickSkip(): Promise<void> {
