@@ -66,11 +66,19 @@ describe("LosingRewardNeuronsModal", () => {
   let spyRefreshVotingPower;
 
   const renderComponent = ({
-    onClose,
     neurons,
-  }: { onClose?: () => void; neurons?: NeuronInfo[] } = {}) => {
+    withNeuronNavigation,
+    onClose,
+  }: {
+    neurons?: NeuronInfo[];
+    withNeuronNavigation?: boolean;
+    onClose?: () => void;
+  } = {}) => {
     const { container, component } = render(LosingRewardNeuronsModal, {
-      props: { neurons },
+      props: {
+        neurons,
+        withNeuronNavigation,
+      },
     });
 
     if (nonNullish(onClose)) {
@@ -165,6 +173,24 @@ describe("LosingRewardNeuronsModal", () => {
       universe: OWN_CANISTER_ID_TEXT,
       neuron: losingRewardsNeuron.neuronId.toString(),
     });
+  });
+
+  it("should not navigate to the neuron details when withNeuronNavigation=false", async () => {
+    const onClose = vi.fn();
+    const po = await renderComponent({
+      onClose,
+      neurons: [losingRewardsNeuron],
+      withNeuronNavigation: false,
+    });
+    const firstCards = (await po.getNnsLosingRewardsNeuronCardPos())[0];
+    expect(get(pageStore).path).toEqual("/staking");
+    expect(firstCards).not.toEqual(undefined);
+
+    await firstCards.click();
+    await runResolvedPromises();
+
+    expect(onClose).toHaveBeenCalledTimes(0);
+    expect(get(pageStore).path).toEqual("/staking");
   });
 
   it("should fetch known neurons", async () => {
