@@ -1,3 +1,5 @@
+import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { NoNeuronsCardPo } from "./NoNeuronsCard.page-object";
 import { UsdValueBannerPo } from "./UsdValueBanner.page-object";
