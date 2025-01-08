@@ -14,14 +14,16 @@ import { writable, type Subscriber } from "svelte/store";
 import { mockIdentity } from "./auth.store.mock";
 
 export const mockCanisterId = Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai");
-export const mockCanister = {
+export const mockCanister: CanisterInfo = {
   name: "",
   canister_id: mockCanisterId,
+  block_index: [123n],
 };
 export const mockCanisters: CanisterInfo[] = [
   {
     name: "test1",
     canister_id: Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai"),
+    block_index: [123n],
   },
   mockCanister,
 ];

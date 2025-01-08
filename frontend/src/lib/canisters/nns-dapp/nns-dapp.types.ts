@@ -12,6 +12,7 @@ export type AccountIdentifierString = string;
 export interface AttachCanisterRequest {
   name: string;
   canister_id: Principal;
+  block_index: [] | [bigint];
 }
 export type AttachCanisterResponse =
   | { Ok: null }
@@ -22,6 +23,7 @@ export type AttachCanisterResponse =
 export interface CanisterDetails {
   name: string;
   canister_id: CanisterId;
+  block_index: [] | [bigint];
 }
 export type CanisterId = Principal;
 export type CreateSubAccountResponse =
