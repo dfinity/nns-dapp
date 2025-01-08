@@ -30,7 +30,6 @@ export const loadSnsBalances = async (
 
   await uncertifiedLoadSnsesAccountsBalances({
     rootCanisterIds: notLoadedIds.map((id) => Principal.fromText(id)),
-    excludeRootCanisterIds: [],
   });
 };
 
@@ -45,6 +44,5 @@ export const loadAccountsBalances = async (
 
   await uncertifiedLoadAccountsBalance({
     universeIds: notLoadedIds,
-    excludeUniverseIds: [],
   });
 };
