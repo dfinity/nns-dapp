@@ -20,7 +20,7 @@ export const mockedConstants: MockableConstants = {
   notForceCallStrategy: undefined,
 };
 
-export const resetMockedConstants = () => {
+const resetMockedConstants = () => {
   Object.keys(mockedConstants).forEach((key) => {
     mockedConstants[key] = defaultTestConstants[key];
   });
