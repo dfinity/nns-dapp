@@ -4,6 +4,32 @@
   import NoNeuronsCard from "$lib/components/portfolio/NoNeuronsCard.svelte";
   import NoTokensCard from "$lib/components/portfolio/NoTokensCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import type { UserToken } from "$lib/types/tokens-page";
+  import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
+  import { TokenAmountV2, isNullish } from "@dfinity/utils";
+
+  export let userTokensData: UserToken[];
+
+  let totalTokensBalanceInUsd: number;
+  $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokensData);
+
+  let hasUnpricedTokens: boolean;
+  $: hasUnpricedTokens = userTokensData.some(
+    (token) =>
+      token.balance instanceof TokenAmountV2 &&
+      token.balance.toUlps() > 0n &&
+      (!("balanceInUsd" in token) || isNullish(token.balanceInUsd))
+  );
+
+  let totalUsdAmount: number;
+  $: totalUsdAmount = $authSignedInStore ? totalTokensBalanceInUsd : undefined;
+
+  let isNotSignedIn: boolean;
+  $: isNotSignedIn = !$authSignedInStore;
+  let showNoTokensCard: boolean;
+  $: showNoTokensCard = isNotSignedIn || totalTokenBalanceInUsd === 0;
+  let showNoNeuronsCard: boolean;
+  $: showNoNeuronsCard = isNotSignedIn || totalStakedInUsd === 0;
 </script>
 
 <main data-tid="portfolio-page-component">
