@@ -22,6 +22,13 @@ jobs:
       - uses: actions/checkout@v4
       - name: Update the SNS aggregator response files
         run: scripts/nns-dapp/replace-sns-aggregator-response.sh
+      - name: Read Node.js version from .nvmrc
+        id: node-version
+        run: echo "NODE_VERSION=$(cat frontend/.nvmrc)" >> $GITHUB_ENV      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - name: Format the updated files
         run: scripts/fmt-frontend
       - name: Create Pull Request
