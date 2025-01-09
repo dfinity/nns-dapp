@@ -29,7 +29,7 @@ import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { mockCkUSDCToken } from "$tests/mocks/tokens.mock";
-import { PortfolioRoutePo } from "$tests/page-objects/PortfolioRoute.page-object copy";
+import { PortfolioRoutePo } from "$tests/page-objects/PortfolioRoute.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
