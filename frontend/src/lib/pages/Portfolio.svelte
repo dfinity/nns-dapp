@@ -26,16 +26,16 @@
   let totalStakedInUsd: number;
   $: totalStakedInUsd = getTotalStakeInUsd(tableProjects);
 
-  let hasUnpricedNeurons: boolean;
-  $: hasUnpricedNeurons = tableProjects.some(
+  let hasUnpricedStake: boolean;
+  $: hasUnpricedStake = tableProjects.some(
     (project) =>
       project.stake instanceof TokenAmountV2 &&
       project.stake.toUlps() > 0n &&
       (!("stakeInUsd" in project) || isNullish(project.stakeInUsd))
   );
 
-  let hasUnpricedTokensOrNeurons: boolean;
-  $: hasUnpricedTokensOrNeurons = hasUnpricedTokens || hasUnpricedNeurons;
+  let hasUnpricedTokensOrStake: boolean;
+  $: hasUnpricedTokensOrStake = hasUnpricedTokens || hasUnpricedStake;
 
   let totalUsdAmount: number | undefined;
   $: totalUsdAmount = $authSignedInStore
@@ -48,8 +48,7 @@
   let showNoNeuronsCard: boolean;
   $: showNoNeuronsCard = !$authSignedInStore || totalStakedInUsd === 0;
   let hasNoNeuronsCardAPrimaryAction: boolean;
-  $: hasNoNeuronsCardAPrimaryAction =
-    $authSignedInStore && totalTokensBalanceInUsd > 0;
+  $: hasNoNeuronsCardAPrimaryAction = !showNoTokensCard;
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -59,7 +58,7 @@
     {/if}
     <UsdValueBanner
       usdAmount={totalUsdAmount}
-      hasUnpricedTokens={hasUnpricedTokensOrNeurons}
+      hasUnpricedTokens={hasUnpricedTokensOrStake}
     />
   </div>
   <div class="content">
