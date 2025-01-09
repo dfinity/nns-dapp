@@ -137,6 +137,8 @@ describe("ActionableProposals", () => {
         await po.getActionableSnses().getActionableSnsProposalsPos()
       ).toHaveLength(0);
 
+      // NOTE: Projects are sorted by reverse order of number of actionable
+      // proposals.
       actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
         proposals: [snsProposal0],
@@ -155,20 +157,20 @@ describe("ActionableProposals", () => {
         await snsProposalsPos[0]
           .getUniverseWithActionableProposalsPo()
           .getTitle()
-      ).toEqual("Sns Project 0");
+      ).toEqual("Sns Project 1");
       const proposalCardPos0 = await snsProposalsPos[0].getProposalCardPos();
-      expect(proposalCardPos0.length).toEqual(1);
-      expect(await proposalCardPos0[0].getProposalId()).toEqual("ID: 11");
+      expect(proposalCardPos0.length).toEqual(2);
+      expect(await proposalCardPos0[0].getProposalId()).toEqual("ID: 22");
+      expect(await proposalCardPos0[1].getProposalId()).toEqual("ID: 33");
 
       expect(
         await snsProposalsPos[1]
           .getUniverseWithActionableProposalsPo()
           .getTitle()
-      ).toEqual("Sns Project 1");
+      ).toEqual("Sns Project 0");
       const proposalCardPos1 = await snsProposalsPos[1].getProposalCardPos();
-      expect(proposalCardPos1.length).toEqual(2);
-      expect(await proposalCardPos1[0].getProposalId()).toEqual("ID: 22");
-      expect(await proposalCardPos1[1].getProposalId()).toEqual("ID: 33");
+      expect(proposalCardPos1.length).toEqual(1);
+      expect(await proposalCardPos1[0].getProposalId()).toEqual("ID: 11");
     });
 
     it("should have actionable query parameter in card href", async () => {
