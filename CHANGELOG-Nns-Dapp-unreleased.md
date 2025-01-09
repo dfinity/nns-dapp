@@ -21,6 +21,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 - Allow `dfinity:` token prefix in QR code for ICP payment.
+- Sort projects on the Voting page based on actionable proposals and name.
 
 #### Deprecated
 
