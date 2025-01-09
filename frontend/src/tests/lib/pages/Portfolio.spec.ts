@@ -92,6 +92,7 @@ describe("Portfolio page", () => {
         const po = renderPage({ userTokensData: [token] });
 
         expect(await po.getNoTokensCard().isPresent()).toBe(false);
+        // There is one token with a balance of 2$
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$2.00");
       });
     });
@@ -112,6 +113,7 @@ describe("Portfolio page", () => {
         const po = renderPage({ tableProjects: [tableProject] });
 
         expect(await po.getNoNeuronsCarPo().isPresent()).toBe(false);
+        // There is one token with a balance of 2$
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$2.00");
       });
 
@@ -160,7 +162,7 @@ describe("Portfolio page", () => {
           tableProjects: [tableProject1, tableProject2],
         });
 
-        // There are three tokens with a balance of 5$ and 7$ and two projects with a staked balance of 2$ and 10.5$ -> 24.5$
+        // There are two tokens with a balance of 5$ and 7$, and two projects with a staked balance of 2$ and 10.5$ -> 24.5$
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe(
           "$24.50"
         );
