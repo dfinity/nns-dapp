@@ -105,6 +105,9 @@ describe("Portfolio page", () => {
         expect(await po.getUsdValueBannerPo().getSecondaryAmount()).toBe(
           "1.20 ICP"
         );
+        expect(
+          await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
+        ).toBe(false);
       });
 
       it("should ignore tokens with unknown balance in USD and display tooltip", async () => {
