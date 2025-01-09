@@ -12,6 +12,8 @@ import {
 } from "$lib/constants/ckusdc-canister-ids.constants";
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
+import { neuronsStore } from "$lib/stores/neurons.store";
+import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import PortfolioRoute from "$routes/(app)/(nns)/portfolio/+page.svelte";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -22,6 +24,8 @@ import {
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { mockCkUSDCToken } from "$tests/mocks/tokens.mock";
@@ -229,6 +233,31 @@ describe("Portfolio route", () => {
           last_price: "1.00",
         },
       ]);
+
+      const nnsNeuronStake = 1n * 100_000_000n; // 1ICP -> 10USD
+      const tetrisSnsNeuronStake = 20n * 10_000_000n; // 20Tetris -> 20USD
+
+      const nnsNeuronWithStake = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: nnsNeuronStake,
+        },
+      };
+      neuronsStore.setNeurons({
+        neurons: [nnsNeuronWithStake],
+        certified: true,
+      });
+
+      const snsNeuronWithStake = createMockSnsNeuron({
+        stake: tetrisSnsNeuronStake,
+      });
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: tetrisSNS.rootCanisterId,
+        neurons: [snsNeuronWithStake],
+        certified: true,
+      });
+
       const po = await renderPage();
       const portfolioPagePo = po.getPortfolioPagePo();
 
@@ -238,14 +267,16 @@ describe("Portfolio route", () => {
       // 1ETH -> $1000
       // 1USDC -> $1
       // 2Tetris -> $2
-      // Total: $202’003.00
+      // 1 ICP Neuron -> $10
+      // 1 Tetris Neuron -> $20
+      // Total: $202’033.00
       expect(
         await portfolioPagePo.getUsdValueBannerPo().getPrimaryAmount()
-      ).toBe("$202’003.00");
+      ).toBe("$202’033.00");
       // $1 -> 0.1ICP
       expect(
         await portfolioPagePo.getUsdValueBannerPo().getSecondaryAmount()
-      ).toBe("20’200.30 ICP");
+      ).toBe("20’203.30 ICP");
     });
   });
 });
