@@ -822,7 +822,7 @@
                 "intercept_icp_e8s": 4000000000000,
                 "from_direct_participation_icp_e8s": 13900384531313,
                 "slope_denominator": 365448521549985,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 6574394013474,
@@ -862,8 +862,8 @@
         "decentralization_sale_open_timestamp_seconds": 1735436700
       },
       "derived": {
-        "buyer_total_icp_e8s": 3459901612908,
-        "sns_tokens_per_icp": 7225.639
+        "buyer_total_icp_e8s": 3847309748022,
+        "sns_tokens_per_icp": 6498.047
       }
     },
     "icrc1_metadata": [
@@ -905,7 +905,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 1e17,
+    "icrc1_total_supply": 100000000000000000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1550,7 +1550,7 @@
               "intercept_icp_e8s": 4000000000000,
               "from_direct_participation_icp_e8s": 13900384531313,
               "slope_denominator": 365448521549985,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 6574394013474,
@@ -1572,12 +1572,12 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 7225.63916015625,
-      "buyer_total_icp_e8s": 3459901612908,
+      "sns_tokens_per_icp": 6498.046875,
+      "buyer_total_icp_e8s": 3847309748022,
       "cf_participant_count": 0,
-      "neurons_fund_participation_icp_e8s": 1114082372108,
-      "direct_participation_icp_e8s": 2345819240800,
-      "direct_participant_count": 125,
+      "neurons_fund_participation_icp_e8s": 1372032628623,
+      "direct_participation_icp_e8s": 2475277119399,
+      "direct_participant_count": 194,
       "cf_neuron_count": 0
     },
     "lifecycle": {
@@ -1807,7 +1807,7 @@
           "swap_start_timestamp_seconds": 1735679700,
           "swap_due_timestamp_seconds": 1736889300,
           "min_participants": 1,
-          "sns_token_e8s": 2e16,
+          "sns_token_e8s": 20000000000000000,
           "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "transaction_fee_e8s": 10000,
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
@@ -2393,7 +2393,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 13086776345355,
                 "slope_denominator": 359577925627968,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 8023396640288,
@@ -2422,7 +2422,7 @@
           "max_icp_e8s": 33023396640288,
           "swap_due_timestamp_seconds": 1736889300,
           "min_participants": 1,
-          "sns_token_e8s": 2e16,
+          "sns_token_e8s": 20000000000000000,
           "sale_delay_seconds": null,
           "max_participant_icp_e8s": 10000000000000,
           "min_direct_participation_icp_e8s": 5000000000000,
@@ -2433,8 +2433,8 @@
         "decentralization_sale_open_timestamp_seconds": 1735679700
       },
       "derived": {
-        "buyer_total_icp_e8s": 692047806865,
-        "sns_tokens_per_icp": 28899.738
+        "buyer_total_icp_e8s": 837656917400,
+        "sns_tokens_per_icp": 23876.123
       }
     },
     "icrc1_metadata": [
@@ -2476,7 +2476,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1e17,
+    "icrc1_total_supply": 100000000000000000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2487,7 +2487,7 @@
         "max_icp_e8s": 33023396640288,
         "swap_due_timestamp_seconds": 1736889300,
         "min_participants": 1,
-        "sns_token_e8s": 2e16,
+        "sns_token_e8s": 20000000000000000,
         "sale_delay_seconds": null,
         "max_participant_icp_e8s": 10000000000000,
         "min_direct_participation_icp_e8s": 5000000000000,
@@ -2515,7 +2515,7 @@
         "swap_start_timestamp_seconds": 1735679700,
         "swap_due_timestamp_seconds": 1736889300,
         "min_participants": 1,
-        "sns_token_e8s": 2e16,
+        "sns_token_e8s": 20000000000000000,
         "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
         "transaction_fee_e8s": 10000,
         "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
@@ -3101,7 +3101,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 13086776345355,
               "slope_denominator": 359577925627968,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 8023396640288,
@@ -3123,16 +3123,1570 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 28899.73828125,
-      "buyer_total_icp_e8s": 692047806865,
+      "sns_tokens_per_icp": 23876.123046875,
+      "buyer_total_icp_e8s": 837656917400,
       "cf_participant_count": 0,
       "neurons_fund_participation_icp_e8s": 0,
-      "direct_participation_icp_e8s": 692047806865,
-      "direct_participant_count": 69,
+      "direct_participation_icp_e8s": 837656917400,
+      "direct_participant_count": 176,
       "cf_neuron_count": 0
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1735679700,
+      "lifecycle": 2,
+      "decentralization_swap_termination_timestamp_seconds": null
+    }
+  },
+  {
+    "index": 42,
+    "canister_ids": {
+      "root_canister_id": "pww3s-sqaaa-aaaaq-aaedq-cai",
+      "governance_canister_id": "o3y74-5yaaa-aaaaq-aaeea-cai",
+      "index_canister_id": "os3ua-lqaaa-aaaaq-aaefq-cai",
+      "swap_canister_id": "ov2su-giaaa-aaaaq-aaefa-cai",
+      "ledger_canister_id": "o4zzi-qaaaa-aaaaq-aaeeq-cai"
+    },
+    "list_sns_canisters": {
+      "root": "pww3s-sqaaa-aaaaq-aaedq-cai",
+      "swap": "ov2su-giaaa-aaaaq-aaefa-cai",
+      "ledger": "o4zzi-qaaaa-aaaaq-aaeeq-cai",
+      "index": "os3ua-lqaaa-aaaaq-aaefq-cai",
+      "governance": "o3y74-5yaaa-aaaaq-aaeea-cai",
+      "dapps": ["52g6a-iaaaa-aaaam-acsza-cai", "4xi2o-hiaaa-aaaam-acs6q-cai"],
+      "archives": []
+    },
+    "meta": {
+      "url": "https://fomowell.com/",
+      "name": "FomoWell",
+      "description": "FomoWell is a fair launch platform for Web3 projects on the ICP blockchain.\n",
+      "logo": "/v1/sns/root/pww3s-sqaaa-aaaaq-aaedq-cai/logo.png"
+    },
+    "parameters": {
+      "reserved_ids": [],
+      "functions": [
+        {
+          "id": 0,
+          "name": "All non-critical topics",
+          "description": "Catch-all w.r.t to following for non-critical proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 6,
+          "name": "Execute nervous system function",
+          "description": "Proposal to execute a user-defined nervous system function, previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 7,
+          "name": "Upgrade SNS to next version",
+          "description": "Proposal to upgrade the WASM of a core SNS canister.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 8,
+          "name": "Manage SNS metadata",
+          "description": "Proposal to change the metadata associated with an SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 9,
+          "name": "Transfer SNS treasury funds",
+          "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 10,
+          "name": "Register dapp canisters",
+          "description": "Proposal to register a dapp canister with the SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 11,
+          "name": "Deregister Dapp Canisters",
+          "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 12,
+          "name": "Mint SNS tokens",
+          "description": "Proposal to mint SNS tokens to a specified recipient.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 13,
+          "name": "Manage ledger parameters",
+          "description": "Proposal to change some parameters in the ledger canister.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 14,
+          "name": "Manage dapp canister settings",
+          "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        }
+      ]
+    },
+    "nervous_system_parameters": {
+      "default_followees": {
+        "followees": []
+      },
+      "max_dissolve_delay_seconds": 94680576,
+      "max_dissolve_delay_bonus_percentage": 100,
+      "max_followees_per_function": 15,
+      "neuron_claimer_permissions": {
+        "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      },
+      "neuron_minimum_stake_e8s": 5000000000,
+      "max_neuron_age_for_age_bonus": 31560192,
+      "initial_voting_period_seconds": 345600,
+      "neuron_minimum_dissolve_delay_to_vote_seconds": 2630016,
+      "reject_cost_e8s": 100000000000,
+      "max_proposals_to_keep_per_action": 100,
+      "wait_for_quiet_deadline_increase_seconds": 86400,
+      "max_number_of_neurons": 200000,
+      "transaction_fee_e8s": 100000,
+      "max_number_of_proposals_with_ballots": 700,
+      "max_age_bonus_percentage": 25,
+      "neuron_grantable_permissions": {
+        "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      },
+      "voting_rewards_parameters": {
+        "final_reward_rate_basis_points": 100,
+        "initial_reward_rate_basis_points": 100,
+        "reward_rate_transition_duration_seconds": 63115200,
+        "round_duration_seconds": 86400
+      },
+      "maturity_modulation_disabled": false,
+      "max_number_of_principals_per_neuron": 5
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 2,
+        "init": {
+          "nns_proposal_id": 134661,
+          "sns_root_canister_id": "pww3s-sqaaa-aaaaq-aaedq-cai",
+          "neurons_fund_participation": true,
+          "min_participant_icp_e8s": 100000000,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 7890048,
+            "count": 3
+          },
+          "fallback_controller_principal_ids": [
+            "3noum-4ilzu-5zp6u-memkw-raekc-bmhge-oenil-6jaog-h4a7p-hlahe-iqe",
+            "fr23j-srvxy-b3cuh-qxzci-pry53-c73s4-2asih-4oubi-lo5zv-h3gne-4ae",
+            "jugku-nldvl-doy4j-7my4u-ju7fa-ssxnx-wpxhh-b2jyy-qnygi-lkx3b-yqe"
+          ],
+          "max_icp_e8s": null,
+          "neuron_minimum_stake_e8s": 5000000000,
+          "confirmation_text": "I confirm my understanding of the responsibilities and risks associated with participating in this token swap.\n",
+          "swap_start_timestamp_seconds": 1736043300,
+          "swap_due_timestamp_seconds": 1737252900,
+          "min_participants": 100,
+          "sns_token_e8s": 20000000000000000,
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "transaction_fee_e8s": 100000,
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_ledger_canister_id": "o4zzi-qaaaa-aaaaq-aaeeq-cai",
+          "neurons_fund_participation_constraints": {
+            "coefficient_intervals": [
+              {
+                "slope_numerator": 0,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 0,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 872472832535
+              },
+              {
+                "slope_numerator": 132519298247248,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 872472832535,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 877025455890
+              },
+              {
+                "slope_numerator": 239391187511237,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 877025455890,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 996863337574
+              },
+              {
+                "slope_numerator": 246556418388535,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 996863337574,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 996877655458
+              },
+              {
+                "slope_numerator": 253720307020310,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 996877655458,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 996997108334
+              },
+              {
+                "slope_numerator": 260873011434150,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 996997108334,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 996997505214
+              },
+              {
+                "slope_numerator": 268025678730305,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 996997505214,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 996997530612
+              },
+              {
+                "slope_numerator": 275178343651133,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 996997530612,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 996997567567
+              },
+              {
+                "slope_numerator": 282331005115778,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 996997567567,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 996997576840
+              },
+              {
+                "slope_numerator": 289483665713235,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 996997576840,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 998504156245
+              },
+              {
+                "slope_numerator": 296497389448763,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 998504156245,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 998504170762
+              },
+              {
+                "slope_numerator": 303511111864172,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 998504170762,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 998504400936
+              },
+              {
+                "slope_numerator": 310524813349300,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 998504400936,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 998504417760
+              },
+              {
+                "slope_numerator": 317538513304569,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 998504417760,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 998504434041
+              },
+              {
+                "slope_numerator": 324552211779334,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 998504434041,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 998504441775
+              },
+              {
+                "slope_numerator": 331565909550862,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 998504441775,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 998504637894
+              },
+              {
+                "slope_numerator": 338579589488845,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 998504637894,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 998504647527
+              },
+              {
+                "slope_numerator": 345593268550852,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 998504647527,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 1105897498409
+              },
+              {
+                "slope_numerator": 347940878298348,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1105897498409,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 1106091238084
+              },
+              {
+                "slope_numerator": 350284767911820,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1106091238084,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 1222536108080
+              },
+              {
+                "slope_numerator": 351330853250593,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1222536108080,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 1265193513241
+              },
+              {
+                "slope_numerator": 352152673975290,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1265193513241,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 1622622784835
+              },
+              {
+                "slope_numerator": 352345315235171,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1622622784835,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 1651909914748
+              },
+              {
+                "slope_numerator": 352521274933728,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1651909914748,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 1865830149706
+              },
+              {
+                "slope_numerator": 352619293501256,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1865830149706,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 1882991590810
+              },
+              {
+                "slope_numerator": 352713274743775,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1882991590810,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 1889725249634
+              },
+              {
+                "slope_numerator": 352805733312114,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1889725249634,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 2200805195846
+              },
+              {
+                "slope_numerator": 352853152253472,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2200805195846,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 2213870225581
+              },
+              {
+                "slope_numerator": 352899404634297,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2213870225581,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 2256694137313
+              },
+              {
+                "slope_numerator": 352942093780549,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2256694137313,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 2480387886347
+              },
+              {
+                "slope_numerator": 352971110647088,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2480387886347,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 2489262034004
+              },
+              {
+                "slope_numerator": 352999715377392,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2489262034004,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 2632245334325
+              },
+              {
+                "slope_numerator": 353022914883048,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2632245334325,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 2664481490821
+              },
+              {
+                "slope_numerator": 353045158824922,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2664481490821,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 2752384557253
+              },
+              {
+                "slope_numerator": 353065150987670,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2752384557253,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 2795632962765
+              },
+              {
+                "slope_numerator": 353084193605198,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2795632962765,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 2815707903839
+              },
+              {
+                "slope_numerator": 353102825568985,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2815707903839,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 2870273966779
+              },
+              {
+                "slope_numerator": 353120426955527,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2870273966779,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 2919479892651
+              },
+              {
+                "slope_numerator": 353137194257403,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2919479892651,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 2994724780308
+              },
+              {
+                "slope_numerator": 353152834141189,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2994724780308,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 2995014069010
+              },
+              {
+                "slope_numerator": 353168469999229,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2995014069010,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 3038680461935
+              },
+              {
+                "slope_numerator": 353183522661216,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3038680461935,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 3066033993630
+              },
+              {
+                "slope_numerator": 353198233342031,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3066033993630,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 3119086263617
+              },
+              {
+                "slope_numerator": 353212327115487,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3119086263617,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 3222325335386
+              },
+              {
+                "slope_numerator": 353225372850765,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3222325335386,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 3358090205412
+              },
+              {
+                "slope_numerator": 353237289032268,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3358090205412,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 3368226278359
+              },
+              {
+                "slope_numerator": 353249130411249,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3368226278359,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 3461592785350
+              },
+              {
+                "slope_numerator": 353260336124053,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3461592785350,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 3594038163391
+              },
+              {
+                "slope_numerator": 353270783985300,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3594038163391,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 3783939271457
+              },
+              {
+                "slope_numerator": 353280380496433,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3783939271457,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 3853799475951
+              },
+              {
+                "slope_numerator": 353289721258560,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3853799475951,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 3883859471185
+              },
+              {
+                "slope_numerator": 353298960322934,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3883859471185,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 4116505892134
+              },
+              {
+                "slope_numerator": 353307562424592,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4116505892134,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 4198769637437
+              },
+              {
+                "slope_numerator": 353315993818795,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4198769637437,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 4262136905165
+              },
+              {
+                "slope_numerator": 353324301312738,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4262136905165,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 4348165132684
+              },
+              {
+                "slope_numerator": 353332448226155,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4348165132684,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 4497452553024
+              },
+              {
+                "slope_numerator": 353340335597959,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4497452553024,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 4535886225623
+              },
+              {
+                "slope_numerator": 353348159782381,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4535886225623,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 4722242120755
+              },
+              {
+                "slope_numerator": 353355696606462,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4722242120755,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 4728821932969
+              },
+              {
+                "slope_numerator": 353363223826110,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4728821932969,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 5005483268611
+              },
+              {
+                "slope_numerator": 353370376824538,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5005483268611,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 5022318908628
+              },
+              {
+                "slope_numerator": 353377508782455,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5022318908628,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 5166784146633
+              },
+              {
+                "slope_numerator": 353384467525624,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5166784146633,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 5364109496433
+              },
+              {
+                "slope_numerator": 353391209198487,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5364109496433,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 5582891862948
+              },
+              {
+                "slope_numerator": 353397733412770,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5582891862948,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 5737607028412
+              },
+              {
+                "slope_numerator": 353404116856811,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5737607028412,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 6050114160675
+              },
+              {
+                "slope_numerator": 353410244487826,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 6050114160675,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 6521498446323
+              },
+              {
+                "slope_numerator": 353416046512137,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 6521498446323,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 6684624920222
+              },
+              {
+                "slope_numerator": 353421750008388,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 6684624920222,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 6754006244889
+              },
+              {
+                "slope_numerator": 353427413542807,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 6754006244889,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 6880902656733
+              },
+              {
+                "slope_numerator": 353433006813020,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 6880902656733,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 6995886691716
+              },
+              {
+                "slope_numerator": 353438539411378,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 6995886691716,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 7443104358250
+              },
+              {
+                "slope_numerator": 353443860324324,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 7443104358250,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 7466015816809
+              },
+              {
+                "slope_numerator": 353449171342364,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 7466015816809,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 7788280260987
+              },
+              {
+                "slope_numerator": 353454351891397,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 7788280260987,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 7949065363660
+              },
+              {
+                "slope_numerator": 353459473002529,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 7949065363660,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 8312212799595
+              },
+              {
+                "slope_numerator": 353464472186579,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 8312212799595,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 8454793988152
+              },
+              {
+                "slope_numerator": 353469427768241,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 8454793988152,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 9248833367737
+              },
+              {
+                "slope_numerator": 353474177921227,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 9248833367737,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 9513134323403
+              },
+              {
+                "slope_numerator": 353478871865273,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 9513134323403,
+                "slope_denominator": 354002835088317,
+                "to_direct_participation_icp_e8s": 18446744073709551615
+              }
+            ],
+            "max_neurons_fund_participation_icp_e8s": 7678146410688,
+            "min_direct_participation_threshold_icp_e8s": 2000000000000,
+            "ideal_matched_participation_function": {
+              "serialized_representation": "{\"t_1\":\"8313.289069687531174834011330\",\"t_2\":\"24939.867209062593524502033990\",\"t_3\":\"41566.445348437655874170056650\",\"t_4\":\"166265.78139375062349668022660\",\"cap\":\"83132.89069687531174834011330\"}"
+            }
+          },
+          "neurons_fund_participants": null,
+          "should_auto_finalize": true,
+          "max_participant_icp_e8s": 10000000000000,
+          "sns_governance_canister_id": "o3y74-5yaaa-aaaaq-aaeea-cai",
+          "min_direct_participation_icp_e8s": 2000000000000,
+          "restricted_countries": {
+            "iso_codes": [
+              "AF",
+              "BY",
+              "BA",
+              "BI",
+              "CF",
+              "KP",
+              "CD",
+              "CU",
+              "IR",
+              "IQ",
+              "LB",
+              "LY",
+              "ML",
+              "ME",
+              "MM",
+              "NI",
+              "RU",
+              "RS",
+              "SO",
+              "SD",
+              "SY",
+              "UA",
+              "VE",
+              "YE",
+              "ZW"
+            ]
+          },
+          "min_icp_e8s": null,
+          "max_direct_participation_icp_e8s": 10000000000000
+        },
+        "params": {
+          "min_participant_icp_e8s": 100000000,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 7890048,
+            "count": 3
+          },
+          "max_icp_e8s": 17678146410688,
+          "swap_due_timestamp_seconds": 1737252900,
+          "min_participants": 100,
+          "sns_token_e8s": 20000000000000000,
+          "sale_delay_seconds": null,
+          "max_participant_icp_e8s": 10000000000000,
+          "min_direct_participation_icp_e8s": 2000000000000,
+          "min_icp_e8s": 2000000000000,
+          "max_direct_participation_icp_e8s": 10000000000000
+        },
+        "open_sns_token_swap_proposal_id": 134661,
+        "decentralization_sale_open_timestamp_seconds": 1736043300
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 2264909050522,
+        "sns_tokens_per_icp": 8830.377
+      }
+    },
+    "icrc1_metadata": [
+      [
+        "icrc1:logo",
+        {
+          "Text": "data:image/png;base64,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"
+        }
+      ],
+      [
+        "icrc1:decimals",
+        {
+          "Nat": [8]
+        }
+      ],
+      [
+        "icrc1:name",
+        {
+          "Text": "FomoWell"
+        }
+      ],
+      [
+        "icrc1:symbol",
+        {
+          "Text": "WELL"
+        }
+      ],
+      [
+        "icrc1:fee",
+        {
+          "Nat": [100000]
+        }
+      ],
+      [
+        "icrc1:max_memo_length",
+        {
+          "Nat": [32]
+        }
+      ]
+    ],
+    "icrc1_fee": [100000],
+    "icrc1_total_supply": 100000000000000000,
+    "swap_params": {
+      "params": {
+        "min_participant_icp_e8s": 100000000,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 7890048,
+          "count": 3
+        },
+        "max_icp_e8s": 17678146410688,
+        "swap_due_timestamp_seconds": 1737252900,
+        "min_participants": 100,
+        "sns_token_e8s": 20000000000000000,
+        "sale_delay_seconds": null,
+        "max_participant_icp_e8s": 10000000000000,
+        "min_direct_participation_icp_e8s": 2000000000000,
+        "min_icp_e8s": 2000000000000,
+        "max_direct_participation_icp_e8s": 10000000000000
+      }
+    },
+    "init": {
+      "init": {
+        "nns_proposal_id": 134661,
+        "sns_root_canister_id": "pww3s-sqaaa-aaaaq-aaedq-cai",
+        "neurons_fund_participation": true,
+        "min_participant_icp_e8s": 100000000,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 7890048,
+          "count": 3
+        },
+        "fallback_controller_principal_ids": [
+          "3noum-4ilzu-5zp6u-memkw-raekc-bmhge-oenil-6jaog-h4a7p-hlahe-iqe",
+          "fr23j-srvxy-b3cuh-qxzci-pry53-c73s4-2asih-4oubi-lo5zv-h3gne-4ae",
+          "jugku-nldvl-doy4j-7my4u-ju7fa-ssxnx-wpxhh-b2jyy-qnygi-lkx3b-yqe"
+        ],
+        "max_icp_e8s": null,
+        "neuron_minimum_stake_e8s": 5000000000,
+        "confirmation_text": "I confirm my understanding of the responsibilities and risks associated with participating in this token swap.\n",
+        "swap_start_timestamp_seconds": 1736043300,
+        "swap_due_timestamp_seconds": 1737252900,
+        "min_participants": 100,
+        "sns_token_e8s": 20000000000000000,
+        "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+        "transaction_fee_e8s": 100000,
+        "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+        "sns_ledger_canister_id": "o4zzi-qaaaa-aaaaq-aaeeq-cai",
+        "neurons_fund_participation_constraints": {
+          "coefficient_intervals": [
+            {
+              "slope_numerator": 0,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 0,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 872472832535
+            },
+            {
+              "slope_numerator": 132519298247248,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 872472832535,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 877025455890
+            },
+            {
+              "slope_numerator": 239391187511237,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 877025455890,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 996863337574
+            },
+            {
+              "slope_numerator": 246556418388535,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 996863337574,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 996877655458
+            },
+            {
+              "slope_numerator": 253720307020310,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 996877655458,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 996997108334
+            },
+            {
+              "slope_numerator": 260873011434150,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 996997108334,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 996997505214
+            },
+            {
+              "slope_numerator": 268025678730305,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 996997505214,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 996997530612
+            },
+            {
+              "slope_numerator": 275178343651133,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 996997530612,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 996997567567
+            },
+            {
+              "slope_numerator": 282331005115778,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 996997567567,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 996997576840
+            },
+            {
+              "slope_numerator": 289483665713235,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 996997576840,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 998504156245
+            },
+            {
+              "slope_numerator": 296497389448763,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 998504156245,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 998504170762
+            },
+            {
+              "slope_numerator": 303511111864172,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 998504170762,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 998504400936
+            },
+            {
+              "slope_numerator": 310524813349300,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 998504400936,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 998504417760
+            },
+            {
+              "slope_numerator": 317538513304569,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 998504417760,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 998504434041
+            },
+            {
+              "slope_numerator": 324552211779334,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 998504434041,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 998504441775
+            },
+            {
+              "slope_numerator": 331565909550862,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 998504441775,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 998504637894
+            },
+            {
+              "slope_numerator": 338579589488845,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 998504637894,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 998504647527
+            },
+            {
+              "slope_numerator": 345593268550852,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 998504647527,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 1105897498409
+            },
+            {
+              "slope_numerator": 347940878298348,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1105897498409,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 1106091238084
+            },
+            {
+              "slope_numerator": 350284767911820,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1106091238084,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 1222536108080
+            },
+            {
+              "slope_numerator": 351330853250593,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1222536108080,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 1265193513241
+            },
+            {
+              "slope_numerator": 352152673975290,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1265193513241,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 1622622784835
+            },
+            {
+              "slope_numerator": 352345315235171,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1622622784835,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 1651909914748
+            },
+            {
+              "slope_numerator": 352521274933728,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1651909914748,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 1865830149706
+            },
+            {
+              "slope_numerator": 352619293501256,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1865830149706,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 1882991590810
+            },
+            {
+              "slope_numerator": 352713274743775,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1882991590810,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 1889725249634
+            },
+            {
+              "slope_numerator": 352805733312114,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1889725249634,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 2200805195846
+            },
+            {
+              "slope_numerator": 352853152253472,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2200805195846,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 2213870225581
+            },
+            {
+              "slope_numerator": 352899404634297,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2213870225581,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 2256694137313
+            },
+            {
+              "slope_numerator": 352942093780549,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2256694137313,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 2480387886347
+            },
+            {
+              "slope_numerator": 352971110647088,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2480387886347,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 2489262034004
+            },
+            {
+              "slope_numerator": 352999715377392,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2489262034004,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 2632245334325
+            },
+            {
+              "slope_numerator": 353022914883048,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2632245334325,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 2664481490821
+            },
+            {
+              "slope_numerator": 353045158824922,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2664481490821,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 2752384557253
+            },
+            {
+              "slope_numerator": 353065150987670,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2752384557253,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 2795632962765
+            },
+            {
+              "slope_numerator": 353084193605198,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2795632962765,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 2815707903839
+            },
+            {
+              "slope_numerator": 353102825568985,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2815707903839,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 2870273966779
+            },
+            {
+              "slope_numerator": 353120426955527,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2870273966779,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 2919479892651
+            },
+            {
+              "slope_numerator": 353137194257403,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2919479892651,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 2994724780308
+            },
+            {
+              "slope_numerator": 353152834141189,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2994724780308,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 2995014069010
+            },
+            {
+              "slope_numerator": 353168469999229,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2995014069010,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 3038680461935
+            },
+            {
+              "slope_numerator": 353183522661216,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3038680461935,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 3066033993630
+            },
+            {
+              "slope_numerator": 353198233342031,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3066033993630,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 3119086263617
+            },
+            {
+              "slope_numerator": 353212327115487,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3119086263617,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 3222325335386
+            },
+            {
+              "slope_numerator": 353225372850765,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3222325335386,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 3358090205412
+            },
+            {
+              "slope_numerator": 353237289032268,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3358090205412,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 3368226278359
+            },
+            {
+              "slope_numerator": 353249130411249,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3368226278359,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 3461592785350
+            },
+            {
+              "slope_numerator": 353260336124053,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3461592785350,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 3594038163391
+            },
+            {
+              "slope_numerator": 353270783985300,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3594038163391,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 3783939271457
+            },
+            {
+              "slope_numerator": 353280380496433,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3783939271457,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 3853799475951
+            },
+            {
+              "slope_numerator": 353289721258560,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3853799475951,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 3883859471185
+            },
+            {
+              "slope_numerator": 353298960322934,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3883859471185,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 4116505892134
+            },
+            {
+              "slope_numerator": 353307562424592,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4116505892134,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 4198769637437
+            },
+            {
+              "slope_numerator": 353315993818795,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4198769637437,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 4262136905165
+            },
+            {
+              "slope_numerator": 353324301312738,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4262136905165,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 4348165132684
+            },
+            {
+              "slope_numerator": 353332448226155,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4348165132684,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 4497452553024
+            },
+            {
+              "slope_numerator": 353340335597959,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4497452553024,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 4535886225623
+            },
+            {
+              "slope_numerator": 353348159782381,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4535886225623,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 4722242120755
+            },
+            {
+              "slope_numerator": 353355696606462,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4722242120755,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 4728821932969
+            },
+            {
+              "slope_numerator": 353363223826110,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4728821932969,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 5005483268611
+            },
+            {
+              "slope_numerator": 353370376824538,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5005483268611,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 5022318908628
+            },
+            {
+              "slope_numerator": 353377508782455,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5022318908628,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 5166784146633
+            },
+            {
+              "slope_numerator": 353384467525624,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5166784146633,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 5364109496433
+            },
+            {
+              "slope_numerator": 353391209198487,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5364109496433,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 5582891862948
+            },
+            {
+              "slope_numerator": 353397733412770,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5582891862948,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 5737607028412
+            },
+            {
+              "slope_numerator": 353404116856811,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5737607028412,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 6050114160675
+            },
+            {
+              "slope_numerator": 353410244487826,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 6050114160675,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 6521498446323
+            },
+            {
+              "slope_numerator": 353416046512137,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 6521498446323,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 6684624920222
+            },
+            {
+              "slope_numerator": 353421750008388,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 6684624920222,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 6754006244889
+            },
+            {
+              "slope_numerator": 353427413542807,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 6754006244889,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 6880902656733
+            },
+            {
+              "slope_numerator": 353433006813020,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 6880902656733,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 6995886691716
+            },
+            {
+              "slope_numerator": 353438539411378,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 6995886691716,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 7443104358250
+            },
+            {
+              "slope_numerator": 353443860324324,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 7443104358250,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 7466015816809
+            },
+            {
+              "slope_numerator": 353449171342364,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 7466015816809,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 7788280260987
+            },
+            {
+              "slope_numerator": 353454351891397,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 7788280260987,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 7949065363660
+            },
+            {
+              "slope_numerator": 353459473002529,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 7949065363660,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 8312212799595
+            },
+            {
+              "slope_numerator": 353464472186579,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 8312212799595,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 8454793988152
+            },
+            {
+              "slope_numerator": 353469427768241,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 8454793988152,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 9248833367737
+            },
+            {
+              "slope_numerator": 353474177921227,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 9248833367737,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 9513134323403
+            },
+            {
+              "slope_numerator": 353478871865273,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 9513134323403,
+              "slope_denominator": 354002835088317,
+              "to_direct_participation_icp_e8s": 18446744073709551615
+            }
+          ],
+          "max_neurons_fund_participation_icp_e8s": 7678146410688,
+          "min_direct_participation_threshold_icp_e8s": 2000000000000,
+          "ideal_matched_participation_function": {
+            "serialized_representation": "{\"t_1\":\"8313.289069687531174834011330\",\"t_2\":\"24939.867209062593524502033990\",\"t_3\":\"41566.445348437655874170056650\",\"t_4\":\"166265.78139375062349668022660\",\"cap\":\"83132.89069687531174834011330\"}"
+          }
+        },
+        "neurons_fund_participants": null,
+        "should_auto_finalize": true,
+        "max_participant_icp_e8s": 10000000000000,
+        "sns_governance_canister_id": "o3y74-5yaaa-aaaaq-aaeea-cai",
+        "min_direct_participation_icp_e8s": 2000000000000,
+        "restricted_countries": {
+          "iso_codes": [
+            "AF",
+            "BY",
+            "BA",
+            "BI",
+            "CF",
+            "KP",
+            "CD",
+            "CU",
+            "IR",
+            "IQ",
+            "LB",
+            "LY",
+            "ML",
+            "ME",
+            "MM",
+            "NI",
+            "RU",
+            "RS",
+            "SO",
+            "SD",
+            "SY",
+            "UA",
+            "VE",
+            "YE",
+            "ZW"
+          ]
+        },
+        "min_icp_e8s": null,
+        "max_direct_participation_icp_e8s": 10000000000000
+      }
+    },
+    "derived_state": {
+      "sns_tokens_per_icp": 8830.376953125,
+      "buyer_total_icp_e8s": 2264909050522,
+      "cf_participant_count": 0,
+      "neurons_fund_participation_icp_e8s": 378463742785,
+      "direct_participation_icp_e8s": 1886445307737,
+      "direct_participant_count": 189,
+      "cf_neuron_count": 0
+    },
+    "lifecycle": {
+      "decentralization_sale_open_timestamp_seconds": 1736043300,
       "lifecycle": 2,
       "decentralization_swap_termination_timestamp_seconds": null
     }
