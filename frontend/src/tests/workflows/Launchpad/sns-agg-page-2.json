@@ -1416,7 +1416,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 40912415750622,
                 "slope_denominator": 262824949935962,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 26262869760070,
@@ -1499,7 +1499,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 101160114228283760,
+    "icrc1_total_supply": 101227267563773942,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2718,7 +2718,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 40912415750622,
               "slope_denominator": 262824949935962,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 26262869760070,
@@ -3456,7 +3456,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 36519467832205,
                 "slope_denominator": 237923751739741,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 23723112487237,
@@ -3539,7 +3539,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100742867389576,
+    "icrc1_total_supply": 100743015649410,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -3890,7 +3890,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 36519467832205,
               "slope_denominator": 237923751739741,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 23723112487237,
@@ -4314,7 +4314,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995566494980,
+    "icrc1_total_supply": 995565440980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7110,7 +7110,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 46599274217624,
                 "slope_denominator": 282979308548553,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 28279922307231,
@@ -7220,7 +7220,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20203524368904664,
+    "icrc1_total_supply": 20204488860822830,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -8516,7 +8516,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 46599274217624,
               "slope_denominator": 282979308548553,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 28279922307231,
@@ -9146,7 +9146,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 42800529481250,
                 "slope_denominator": 256652167317491,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 25623390151244,
@@ -9229,7 +9229,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25236955317462640,
+    "icrc1_total_supply": 25238918876429080,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -9615,7 +9615,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 42800529481250,
               "slope_denominator": 256652167317491,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 25623390151244,
@@ -10592,7 +10592,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 11069990682527,
                 "slope_denominator": 248296626053228,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 7306736351998,
@@ -10700,7 +10700,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10051908873182628,
+    "icrc1_total_supply": 10053269013704089,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11156,7 +11156,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 11069990682527,
               "slope_denominator": 248296626053228,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 7306736351998,
@@ -11871,7 +11871,7 @@
                 "intercept_icp_e8s": 2000000000000,
                 "from_direct_participation_icp_e8s": 3666046805859,
                 "slope_denominator": 257600954816183,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 3975782274175,
@@ -11952,7 +11952,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 103416513103028960,
+    "icrc1_total_supply": 103429957008873656,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -12157,7 +12157,7 @@
               "intercept_icp_e8s": 2000000000000,
               "from_direct_participation_icp_e8s": 3666046805859,
               "slope_denominator": 257600954816183,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 3975782274175,
@@ -13100,7 +13100,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 10260777177913,
                 "slope_denominator": 254542688644933,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 7473761955801,
@@ -13183,7 +13183,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98632619995427230,
+    "icrc1_total_supply": 98643414179172707,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -13625,7 +13625,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 10260777177913,
               "slope_denominator": 254542688644933,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 7473761955801,
@@ -14281,7 +14281,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 13274424563693,
                 "slope_denominator": 250336400025685,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 7328638859966,
@@ -14327,12 +14327,6 @@
     },
     "icrc1_metadata": [
       [
-        "icrc1:logo",
-        {
-          "Text": "data:image/png;base64,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"
-        }
-      ],
-      [
         "icrc1:decimals",
         {
           "Nat": [8]
@@ -14341,7 +14335,7 @@
       [
         "icrc1:name",
         {
-          "Text": "Yuku DAO"
+          "Text": "Yuku AI"
         }
       ],
       [
@@ -14364,7 +14358,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99906893088054190,
+    "icrc1_total_supply": 99906970957159867,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14801,7 +14795,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 13274424563693,
               "slope_denominator": 250336400025685,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 7328638859966,
@@ -15445,7 +15439,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 8952005956801,
                 "slope_denominator": 257099668370747,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 6467280392480,
@@ -15544,7 +15538,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100079779083303570,
+    "icrc1_total_supply": 100091963287609929,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15979,7 +15973,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 8952005956801,
               "slope_denominator": 257099668370747,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 6467280392480,
