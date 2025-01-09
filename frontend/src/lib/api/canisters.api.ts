@@ -284,6 +284,52 @@ export const createCanister = async ({
   return canisterId;
 };
 
+// Creates a canister based on a transaction that was performed before.
+// Used in case the canister creation process is interrupted after ICP are
+// transferred to the CMC account.
+//
+// If we see a funding transaction for canister creation, but no canister it can
+// mean either of 2 things:
+// 1. The canister was not created.
+// 2. The canister was created but not attached to the user account.
+//
+// This function takes care of both cases because notifying the CMC will create
+// the canister if it doesn't exist, or return the same response as the first
+// time if it does exist. So in either case this will give us the canister ID so
+// that we can attach it to the user account.
+export const notifyAndAttachCanister = async ({
+  identity,
+  blockIndex,
+}: {
+  identity: Identity;
+  blockIndex: bigint;
+}): Promise<Principal> => {
+  logWithTimestamp("Notify and attach canister...");
+
+  const { cmc, nnsDapp } = await canisters(identity);
+
+  const controller = identity.getPrincipal();
+
+  const canisterId = await pollNotifyCreateCanister({
+    cmc,
+    controller,
+    blockHeight: blockIndex,
+  });
+
+  // Attach the canister to the user in the nns-dapp.
+  await nnsDapp.attachCanister({
+    // We don't know the name the user originally chose so they will have to
+    // rename it, if they want, after we recover the canister.
+    name: "",
+    canisterId,
+    blockIndex,
+  });
+
+  logWithTimestamp("Notify and attach canister complete.");
+
+  return canisterId;
+};
+
 // Polls CMC waiting for a reponse that is not a ProcessingError.
 const pollNotifyTopUpCanister = async ({
   cmc,
