@@ -20,16 +20,14 @@
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken } from "$lib/types/tokens-page";
   import { getTableProjects } from "$lib/utils/staking.utils";
-  import { onMount } from "svelte";
-
-  onMount(() => {
-    resetBalanceLoading();
-    loadCkBTCTokens();
-    loadIcpSwapTickers();
-  });
 
   let userTokensData: UserToken[] = [];
   let tableProjects: TableProject[] = [];
+
+  resetBalanceLoading();
+  // maybe I can get rid of it as this is load when calling the loadAccountsBalances
+  loadCkBTCTokens();
+  loadIcpSwapTickers();
 
   $: if ($authSignedInStore) {
     const ckBTCUniverseIds = $ckBTCUniversesStore.map(
@@ -38,6 +36,7 @@
     loadAccountsBalances(ckBTCUniverseIds);
 
     const icrcUniverseIds = Object.keys($icrcCanistersStore);
+
     loadAccountsBalances(icrcUniverseIds);
 
     const snsRootCanisterIds = $snsProjectsCommittedStore.map(
