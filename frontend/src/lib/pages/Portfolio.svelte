@@ -4,11 +4,14 @@
   import NoTokensCard from "$lib/components/portfolio/NoTokensCard.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import type { TableProject } from "$lib/types/staking";
   import type { UserToken } from "$lib/types/tokens-page";
+  import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
 
   export let userTokensData: UserToken[] = [];
+  export let tableProjects: TableProject[] = [];
 
   let totalTokensBalanceInUsd: number;
   $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokensData);
@@ -20,12 +23,35 @@
       token.balance.toUlps() > 0n &&
       (!("balanceInUsd" in token) || isNullish(token.balanceInUsd))
   );
+  let totalStakedInUsd: number;
+  $: totalStakedInUsd = getTotalStakeInUsd(tableProjects);
+
+  let hasUnpricedStake: boolean;
+  $: hasUnpricedStake = tableProjects.some(
+    (project) =>
+      project.stake instanceof TokenAmountV2 &&
+      project.stake.toUlps() > 0n &&
+      (!("stakeInUsd" in project) || isNullish(project.stakeInUsd))
+  );
+
+  let hasUnpricedTokensOrStake: boolean;
+  $: hasUnpricedTokensOrStake = hasUnpricedTokens || hasUnpricedStake;
 
   let totalUsdAmount: number | undefined;
-  $: totalUsdAmount = $authSignedInStore ? totalTokensBalanceInUsd : undefined;
+  $: totalUsdAmount = $authSignedInStore
+    ? totalTokensBalanceInUsd + totalStakedInUsd
+    : undefined;
 
   let showNoTokensCard: boolean;
   $: showNoTokensCard = !$authSignedInStore || totalTokensBalanceInUsd === 0;
+
+  let showNoNeuronsCard: boolean;
+  $: showNoNeuronsCard = !$authSignedInStore || totalStakedInUsd === 0;
+
+  // The Card should display a Primary Action when it is the only available option.
+  // This occurs when there are tokens but no stake.
+  let hasNoNeuronsCardAPrimaryAction: boolean;
+  $: hasNoNeuronsCardAPrimaryAction = !showNoTokensCard;
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -33,13 +59,18 @@
     {#if !$authSignedInStore}
       <LoginCard />
     {/if}
-    <UsdValueBanner usdAmount={totalUsdAmount} {hasUnpricedTokens} />
+    <UsdValueBanner
+      usdAmount={totalUsdAmount}
+      hasUnpricedTokens={hasUnpricedTokensOrStake}
+    />
   </div>
   <div class="content">
     {#if showNoTokensCard}
       <NoTokensCard />
     {/if}
-    <NoNeuronsCard />
+    {#if showNoNeuronsCard}
+      <NoNeuronsCard primaryCard={hasNoNeuronsCardAPrimaryAction} />
+    {/if}
   </div>
 </main>
 
