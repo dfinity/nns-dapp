@@ -1,14 +1,14 @@
 <script lang="ts">
-  import Card from "$lib/components/portfolio/Card.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NoNeuronsCard from "$lib/components/portfolio/NoNeuronsCard.svelte";
   import NoTokensCard from "$lib/components/portfolio/NoTokensCard.svelte";
+  import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { UserToken } from "$lib/types/tokens-page";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
 
-  export let userTokensData: UserToken[];
+  export let userTokensData: UserToken[] = [];
 
   let totalTokensBalanceInUsd: number;
   $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokensData);
@@ -21,15 +21,11 @@
       (!("balanceInUsd" in token) || isNullish(token.balanceInUsd))
   );
 
-  let totalUsdAmount: number;
+  let totalUsdAmount: number | undefined;
   $: totalUsdAmount = $authSignedInStore ? totalTokensBalanceInUsd : undefined;
 
-  let isNotSignedIn: boolean;
-  $: isNotSignedIn = !$authSignedInStore;
   let showNoTokensCard: boolean;
-  $: showNoTokensCard = isNotSignedIn || totalTokenBalanceInUsd === 0;
-  let showNoNeuronsCard: boolean;
-  $: showNoNeuronsCard = isNotSignedIn || totalStakedInUsd === 0;
+  $: showNoTokensCard = !$authSignedInStore || totalTokensBalanceInUsd === 0;
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -37,10 +33,12 @@
     {#if !$authSignedInStore}
       <LoginCard />
     {/if}
-    <Card>Card1</Card>
+    <UsdValueBanner usdAmount={totalUsdAmount} {hasUnpricedTokens} />
   </div>
   <div class="content">
-    <NoTokensCard />
+    {#if showNoTokensCard}
+      <NoTokensCard />
+    {/if}
     <NoNeuronsCard />
   </div>
 </main>

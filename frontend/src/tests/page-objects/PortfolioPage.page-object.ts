@@ -1,5 +1,6 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { NoNeuronsCardPo } from "./NoNeuronsCard.page-object";
+import { UsdValueBannerPo } from "./UsdValueBanner.page-object";
 import { BasePageObject } from "./base.page-object";
 
 export class PortfolioPagePo extends BasePageObject {
@@ -19,5 +20,9 @@ export class PortfolioPagePo extends BasePageObject {
 
   getNoNeuronsCarPo(): NoNeuronsCardPo {
     return NoNeuronsCardPo.under(this.root);
+  }
+
+  getUsdValueBannerPo(): UsdValueBannerPo {
+    return UsdValueBannerPo.under(this.root);
   }
 }
