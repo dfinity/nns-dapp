@@ -47,6 +47,9 @@
 
   let showNoNeuronsCard: boolean;
   $: showNoNeuronsCard = !$authSignedInStore || totalStakedInUsd === 0;
+
+  // The Card should display a Primary Action when it is the only available option.
+  // This occurs when there are tokens but no stake.
   let hasNoNeuronsCardAPrimaryAction: boolean;
   $: hasNoNeuronsCardAPrimaryAction = !showNoTokensCard;
 </script>
