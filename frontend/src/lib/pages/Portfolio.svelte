@@ -10,8 +10,8 @@
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
 
-  export let userTokensData: UserToken[] = [];
-  export let tableProjects: TableProject[] = [];
+  export let userTokensData: UserToken[];
+  export let tableProjects: TableProject[];
 
   let totalTokensBalanceInUsd: number;
   $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokensData);

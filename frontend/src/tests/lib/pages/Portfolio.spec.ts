@@ -13,15 +13,10 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("Portfolio page", () => {
-  const renderPage = (
-    {
-      userTokensData,
-      tableProjects,
-    }: { userTokensData?: UserToken[]; tableProjects?: TableProject[] } = {
-      userTokensData: [],
-      tableProjects: [],
-    }
-  ) => {
+  const renderPage = ({
+    userTokensData = [],
+    tableProjects = [],
+  }: { userTokensData?: UserToken[]; tableProjects?: TableProject[] } = {}) => {
     const { container } = render(Portfolio, {
       props: {
         userTokensData,
