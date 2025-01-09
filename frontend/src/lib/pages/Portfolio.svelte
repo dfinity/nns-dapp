@@ -23,7 +23,7 @@
       token.balance.toUlps() > 0n &&
       (!("balanceInUsd" in token) || isNullish(token.balanceInUsd))
   );
-  let totalStakedInUsd: number | undefined;
+  let totalStakedInUsd: number;
   $: totalStakedInUsd = getTotalStakeInUsd(tableProjects);
 
   let hasUnpricedNeurons: boolean;
