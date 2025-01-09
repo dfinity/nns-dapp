@@ -2,6 +2,7 @@ import * as api from "$lib/api/canisters.api";
 import * as icpIndexApi from "$lib/api/icp-index.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
+import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import * as authServices from "$lib/services/auth.services";
 import {
   addController,
@@ -11,6 +12,7 @@ import {
   getCanisterDetails,
   getIcpToCyclesExchangeRate,
   listCanisters,
+  notifyAndAttachCanisterIfNeeded,
   notifyTopUpIfNeeded,
   removeController,
   renameCanister,
@@ -18,6 +20,7 @@ import {
   updateSettings,
 } from "$lib/services/canisters.services";
 import { canistersStore } from "$lib/stores/canisters.store";
+import { getCanisterCreationCmcAccountIdentifierHex } from "$lib/utils/canisters.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
   mockGetIdentity,
@@ -27,6 +30,7 @@ import {
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import {
+  mockCanister,
   mockCanisterDetails,
   mockCanisterSettings,
   mockCanisters,
@@ -737,6 +741,128 @@ describe("canisters-services", () => {
 
       expect(spyConsoleError).toBeCalledTimes(1);
       expect(spyConsoleError).toBeCalledWith(error);
+    });
+  });
+
+  describe("notifyAndAttachCanisterIfNeeded", () => {
+    const createCanisterMemo = 0x41455243n;
+    const cmcAccountIdentifierHex = getCanisterCreationCmcAccountIdentifierHex({
+      controller: mockIdentity.getPrincipal(),
+    });
+    const blockIndex = 2255n;
+    const fundingTransaction = createTransactionWithId({
+      memo: createCanisterMemo,
+      id: blockIndex,
+      operation: {
+        Transfer: {
+          to: cmcAccountIdentifierHex,
+          fee: { e8s: 10_000n },
+          from: mockMainAccount.identifier,
+          amount: { e8s: 100_000_000n },
+          spender: [],
+        },
+      },
+    });
+    const attachedCanister: CanisterInfo = {
+      ...mockCanister,
+      block_index: [blockIndex],
+    };
+
+    beforeEach(() => {
+      vi.spyOn(api, "notifyAndAttachCanister").mockResolvedValue(undefined);
+    });
+
+    it("should notify and attach canister for funding transaction", async () => {
+      await notifyAndAttachCanisterIfNeeded({
+        transactions: [fundingTransaction],
+        canisters: [],
+      });
+
+      expect(api.notifyAndAttachCanister).toBeCalledWith({
+        blockIndex,
+        identity: mockIdentity,
+      });
+      expect(api.notifyAndAttachCanister).toBeCalledTimes(1);
+    });
+
+    it("should notify if canister with different block index is already attached", async () => {
+      await notifyAndAttachCanisterIfNeeded({
+        transactions: [fundingTransaction],
+        canisters: [
+          {
+            ...attachedCanister,
+            block_index: [blockIndex + 1n],
+          },
+        ],
+      });
+
+      expect(api.notifyAndAttachCanister).toBeCalledWith({
+        blockIndex,
+        identity: mockIdentity,
+      });
+      expect(api.notifyAndAttachCanister).toBeCalledTimes(1);
+    });
+
+    it("should notify for multiple canister creations", async () => {
+      const blockIndex2 = blockIndex + 1n;
+      const fundingTransaction2 = createTransactionWithId({
+        memo: createCanisterMemo,
+        id: blockIndex2,
+        operation: fundingTransaction.transaction.operation,
+      });
+
+      await notifyAndAttachCanisterIfNeeded({
+        transactions: [fundingTransaction2, fundingTransaction],
+        canisters: [],
+      });
+
+      expect(api.notifyAndAttachCanister).toBeCalledWith({
+        blockIndex,
+        identity: mockIdentity,
+      });
+      expect(api.notifyAndAttachCanister).toBeCalledWith({
+        blockIndex: blockIndex2,
+        identity: mockIdentity,
+      });
+      expect(api.notifyAndAttachCanister).toBeCalledTimes(2);
+    });
+
+    it("should not notify if canister is already attached", async () => {
+      await notifyAndAttachCanisterIfNeeded({
+        transactions: [fundingTransaction],
+        canisters: [attachedCanister],
+      });
+
+      expect(api.notifyAndAttachCanister).toBeCalledTimes(0);
+    });
+
+    it("should not notify if transaction has wrong memo", async () => {
+      const transaction = createTransactionWithId({
+        memo: createCanisterMemo + 1n,
+        id: blockIndex,
+        operation: fundingTransaction.transaction.operation,
+      });
+
+      await notifyAndAttachCanisterIfNeeded({
+        transactions: [transaction],
+        canisters: [],
+      });
+
+      expect(api.notifyAndAttachCanister).toBeCalledTimes(0);
+    });
+
+    it("should not notify for transaction not to CMC subaccount", async () => {
+      const transaction = createTransactionWithId({
+        memo: createCanisterMemo,
+        id: blockIndex,
+      });
+
+      await notifyAndAttachCanisterIfNeeded({
+        transactions: [transaction],
+        canisters: [],
+      });
+
+      expect(api.notifyAndAttachCanister).toBeCalledTimes(0);
     });
   });
 });

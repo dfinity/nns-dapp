@@ -3,6 +3,7 @@ import {
   createCanister as createCanisterApi,
   detachCanister as detachCanisterApi,
   getIcpToCyclesExchangeRate as getIcpToCyclesExchangeRateApi,
+  notifyAndAttachCanister,
   notifyTopUpCanister,
   queryCanisterDetails as queryCanisterDetailsApi,
   queryCanisters,
@@ -16,7 +17,10 @@ import type {
   CanisterSettings,
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { TOP_UP_CANISTER_MEMO } from "$lib/constants/api.constants";
+import {
+  CREATE_CANISTER_MEMO,
+  TOP_UP_CANISTER_MEMO,
+} from "$lib/constants/api.constants";
 import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
@@ -25,7 +29,10 @@ import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
-import { isController } from "$lib/utils/canisters.utils";
+import {
+  getCanisterCreationCmcAccountIdentifierHex,
+  isController,
+} from "$lib/utils/canisters.utils";
 import { isLastCall } from "$lib/utils/env.utils";
 import {
   mapCanisterErrorToToastMessage,
@@ -41,7 +48,9 @@ import type { Principal } from "@dfinity/principal";
 import {
   ICPToken,
   TokenAmountV2,
+  fromNullable,
   isNullish,
+  nonNullish,
   principalToSubAccount,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -406,5 +415,65 @@ export const getIcpToCyclesExchangeRate = async (): Promise<
       err,
     });
     return;
+  }
+};
+
+const getCanisterCreationBlockIndices = ({
+  controller,
+  transactions,
+}: {
+  controller: Principal;
+  transactions: TransactionWithId[];
+}): bigint[] => {
+  const cmcAccountIdentifier = getCanisterCreationCmcAccountIdentifierHex({
+    controller,
+  });
+  return transactions
+    .map(({ id: blockIndex, transaction }) => {
+      const { memo } = transaction;
+      if (memo !== CREATE_CANISTER_MEMO) {
+        return undefined;
+      }
+      if (
+        "Transfer" in transaction.operation &&
+        transaction.operation.Transfer.to === cmcAccountIdentifier
+      ) {
+        return blockIndex;
+      }
+    })
+    .filter(nonNullish);
+};
+
+export const notifyAndAttachCanisterIfNeeded = async ({
+  transactions,
+  canisters,
+}: {
+  transactions: TransactionWithId[];
+  canisters: CanisterInfo[];
+}): Promise<void> => {
+  const identity = await getAuthenticatedIdentity();
+  const controller = identity.getPrincipal();
+  const newBlockIndices = getCanisterCreationBlockIndices({
+    controller,
+    transactions,
+  });
+  const existingBlockIndices = new Set(
+    canisters
+      .map((canister) => fromNullable(canister.block_index))
+      .filter(nonNullish)
+  );
+
+  for (const blockIndex of newBlockIndices) {
+    if (existingBlockIndices.has(blockIndex)) {
+      continue;
+    }
+    // This may also trigger for canisters that were created before we stored
+    // the block_index of each canister. That will simply backfill the
+    // block_index for those canisters, preventing this from happening again in
+    // the future.
+    await notifyAndAttachCanister({
+      identity,
+      blockIndex,
+    });
   }
 };
