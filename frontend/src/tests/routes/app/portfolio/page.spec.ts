@@ -35,7 +35,6 @@ import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { AnonymousIdentity } from "@dfinity/agent";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -62,38 +61,6 @@ describe("Portfolio route", () => {
 
   beforeEach(() => {
     vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
-    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockImplementation(
-      async ({ canisterId }) => {
-        const tokenMap = {
-          [CKBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkBTCToken,
-          [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkTESTBTCToken,
-          [CKETH_UNIVERSE_CANISTER_ID.toText()]: mockCkETHToken,
-          [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: mockCkUSDCToken,
-        };
-        return tokenMap[canisterId.toText()];
-      }
-    );
-  });
-
-  it.skip("should load CkBTC tokens", async () => {
-    const identity = new AnonymousIdentity();
-
-    expect(icrcLedgerApi.queryIcrcToken).toBeCalledTimes(0);
-
-    await renderPage();
-
-    expect(icrcLedgerApi.queryIcrcToken).toBeCalledTimes(2);
-    expect(icrcLedgerApi.queryIcrcToken).toHaveBeenNthCalledWith(1, {
-      canisterId: CKBTC_UNIVERSE_CANISTER_ID,
-      certified: false,
-      identity,
-    });
-
-    expect(icrcLedgerApi.queryIcrcToken).toHaveBeenNthCalledWith(2, {
-      canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
-      certified: false,
-      identity,
-    });
   });
 
   it("should load ICP Swap tickers", async () => {
@@ -124,6 +91,18 @@ describe("Portfolio route", () => {
     beforeEach(() => {
       resetIdentity();
 
+      vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockImplementation(
+        async ({ canisterId }) => {
+          const tokenMap = {
+            [CKBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkBTCToken,
+            [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkTESTBTCToken,
+            [CKETH_UNIVERSE_CANISTER_ID.toText()]: mockCkETHToken,
+            [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: mockCkUSDCToken,
+          };
+          return tokenMap[canisterId.toText()];
+        }
+      );
+
       vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
         async ({ canisterId }) => {
           const balancesMap = {
@@ -150,6 +129,27 @@ describe("Portfolio route", () => {
       });
 
       setSnsProjects([tetrisSNS]);
+    });
+
+    it("should load all ckBtc tokens", async () => {
+      const identity = mockIdentity;
+
+      expect(icrcLedgerApi.queryIcrcToken).toBeCalledTimes(0);
+
+      await renderPage();
+
+      expect(icrcLedgerApi.queryIcrcToken).toBeCalledTimes(2);
+      expect(icrcLedgerApi.queryIcrcToken).toHaveBeenNthCalledWith(1, {
+        canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+        certified: false,
+        identity,
+      });
+
+      expect(icrcLedgerApi.queryIcrcToken).toHaveBeenNthCalledWith(2, {
+        canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+        certified: false,
+        identity,
+      });
     });
 
     it("should load all accounts balances for both ckBTC and icrc(ckETH, ckUSDC, Tetris(SNS token))", async () => {
@@ -205,7 +205,6 @@ describe("Portfolio route", () => {
       setAccountsForTesting({
         main: { ...mockMainAccount, balanceUlps: icpBalanceE8s },
       });
-      vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
       icpSwapTickersStore.set([
         {
           ...mockIcpSwapTicker,

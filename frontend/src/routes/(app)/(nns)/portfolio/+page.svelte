@@ -13,7 +13,6 @@
     loadSnsAccountsBalances,
     resetBalanceLoading,
   } from "$lib/services/accounts-balances.services";
-  import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
@@ -25,8 +24,6 @@
   let tableProjects: TableProject[] = [];
 
   resetBalanceLoading();
-  // maybe I can get rid of it as this is load when calling the loadAccountsBalances
-  loadCkBTCTokens();
   loadIcpSwapTickers();
 
   $: if ($authSignedInStore) {
