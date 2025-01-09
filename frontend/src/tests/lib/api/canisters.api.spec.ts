@@ -3,6 +3,7 @@ import {
   createCanister,
   detachCanister,
   getIcpToCyclesExchangeRate,
+  notifyAndAttachCanister,
   notifyTopUpCanister,
   queryCanisterDetails,
   queryCanisters,
@@ -26,6 +27,10 @@ import {
   mockCanisterSettings,
 } from "$tests/mocks/canisters.mock";
 import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "$tests/utils/timers.test-utils";
 import { CMCCanister, ProcessingError } from "@dfinity/cmc";
 import {
   AccountIdentifier,
@@ -220,13 +225,6 @@ describe("canisters-api", () => {
   });
 
   describe("createCanister", () => {
-    beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      vi.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
-      // Avoid to print errors during test
-      vi.spyOn(console, "log").mockImplementation(() => undefined);
-    });
-
     it("should make a transfer, notify and attach the canister", async () => {
       const blockIndex = 10n;
       mockLedgerCanister.transfer.mockResolvedValue(blockIndex);
@@ -277,13 +275,14 @@ describe("canisters-api", () => {
         .mockRejectedValueOnce(new ProcessingError())
         .mockResolvedValue(mockCanisterDetails.id);
 
-      const response = await createCanister({
+      const responsePromise = createCanister({
         identity: mockIdentity,
         amount: 300_000_000n,
         fee,
       });
+      await advanceTime();
       expect(mockCMCCanister.notifyCreateCanister).toHaveBeenCalledTimes(2);
-      expect(response).toEqual(mockCanisterDetails.id);
+      expect(await responsePromise).toEqual(mockCanisterDetails.id);
     });
 
     it("handles creating from subaccounts", async () => {
@@ -356,6 +355,73 @@ describe("canisters-api", () => {
       );
       expect(mockCMCCanister.notifyCreateCanister).not.toBeCalled();
       expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
+    });
+  });
+
+  describe("notifyAndAttachCanister", () => {
+    it("should notify the CMC and attach the canister", async () => {
+      const blockIndex = 10n;
+      mockCMCCanister.notifyCreateCanister.mockResolvedValue(
+        mockCanisterDetails.id
+      );
+
+      const response = await notifyAndAttachCanister({
+        identity: mockIdentity,
+        blockIndex,
+      });
+      expect(mockCMCCanister.notifyCreateCanister).toBeCalledWith({
+        block_index: blockIndex,
+        controller: mockIdentity.getPrincipal(),
+        settings: [],
+        subnet_selection: [],
+        subnet_type: [],
+      });
+      expect(mockCMCCanister.notifyCreateCanister).toBeCalledTimes(1);
+      expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
+        name: "",
+        canisterId: mockCanisterDetails.id,
+        blockIndex,
+      });
+      expect(response).toEqual(mockCanisterDetails.id);
+    });
+
+    it("should notify twice if the first call returns Processing", async () => {
+      const blockIndex = 10n;
+      mockCMCCanister.notifyCreateCanister
+        .mockRejectedValueOnce(new ProcessingError())
+        .mockResolvedValue(mockCanisterDetails.id);
+
+      const responsePromise = notifyAndAttachCanister({
+        identity: mockIdentity,
+        blockIndex,
+      });
+
+      await runResolvedPromises();
+      const expectedNotifyParams = {
+        block_index: blockIndex,
+        controller: mockIdentity.getPrincipal(),
+        settings: [],
+        subnet_selection: [],
+        subnet_type: [],
+      };
+      expect(mockCMCCanister.notifyCreateCanister).toBeCalledTimes(1);
+      expect(mockCMCCanister.notifyCreateCanister).toHaveBeenNthCalledWith(
+        1,
+        expectedNotifyParams
+      );
+      await advanceTime();
+
+      expect(mockCMCCanister.notifyCreateCanister).toBeCalledTimes(2);
+      expect(mockCMCCanister.notifyCreateCanister).toHaveBeenNthCalledWith(
+        2,
+        expectedNotifyParams
+      );
+      expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
+        name: "",
+        canisterId: mockCanisterDetails.id,
+        blockIndex,
+      });
+      expect(await responsePromise).toEqual(mockCanisterDetails.id);
     });
   });
 
