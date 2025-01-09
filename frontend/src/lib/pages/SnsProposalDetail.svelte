@@ -7,10 +7,8 @@
   import SnsProposalSystemInfoSection from "$lib/components/sns-proposals/SnsProposalSystemInfoSection.svelte";
   import SnsProposalVotingSection from "$lib/components/sns-proposals/SnsProposalVotingSection.svelte";
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
-  import {
-    actionableProposalsActiveStore,
-    actionableProposalsNavigationIdsStore,
-  } from "$lib/derived/actionable-proposals.derived";
+  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
+  import { actionableProposalsNavigationIdsStore } from "$lib/derived/actionable-universes.derived";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";

@@ -3,10 +3,8 @@
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { AppPath } from "$lib/constants/routes.constants";
-  import {
-    actionableProposalsActiveStore,
-    actionableProposalsNavigationIdsStore,
-  } from "$lib/derived/actionable-proposals.derived";
+  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
+  import { actionableProposalsNavigationIdsStore } from "$lib/derived/actionable-universes.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import { filteredProposals } from "$lib/derived/proposals.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";

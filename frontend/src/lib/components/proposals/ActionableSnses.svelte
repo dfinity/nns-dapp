@@ -4,7 +4,7 @@
   import {
     actionableSnsProposalsByUniverseStore,
     type ActionableSnsProposalsByUniverseData,
-  } from "$lib/derived/actionable-proposals.derived";
+  } from "$lib/derived/actionable-universes.derived";
 
   let actionableUniverses: ActionableSnsProposalsByUniverseData[] = [];
   $: actionableUniverses = $actionableSnsProposalsByUniverseStore.filter(
