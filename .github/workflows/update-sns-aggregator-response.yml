@@ -24,7 +24,7 @@ jobs:
         run: scripts/nns-dapp/replace-sns-aggregator-response.sh
       - name: Read Node.js version from .nvmrc
         id: node-version
-        run: echo "NODE_VERSION=$(cat frontend/.nvmrc)" >> $GITHUB_ENV      
+        run: echo "NODE_VERSION=$(cat frontend/.nvmrc)" >> $GITHUB_ENV
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
