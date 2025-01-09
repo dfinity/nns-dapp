@@ -60,9 +60,8 @@ jobs:
       - name: Notify Slack on failure
         # Since the this is a scheduled job, a failure won't be shown on any
         # PR status. To notify the team, we send a message to our Slack channel on failure.
-        # uses: dfinity/internet-identity/.github/actions/slack@release-2023-08-28
+        uses: dfinity/internet-identity/.github/actions/slack@release-2023-08-28
         if: ${{ failure() }}
-        run: echo "🤦‍♂️ SNS aggregator response update failed"
-        #with:
-          #WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          #MESSAGE: "SNS aggregator response update failed"
+        with:
+          WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          MESSAGE: "SNS aggregator response update failed"
