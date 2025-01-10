@@ -14,26 +14,29 @@
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import type { UserToken } from "$lib/types/tokens-page";
 
-  let userTokensData: UserToken[] = [];
-
   resetBalanceLoading();
   loadIcpSwapTickers();
+
+  let userTokensData: UserToken[] = [];
+  $: userTokensData = $tokensListUserStore;
 
   $: if ($authSignedInStore) {
     const ckBTCUniverseIds = $ckBTCUniversesStore.map(
       (universe) => universe.canisterId
     );
     loadAccountsBalances(ckBTCUniverseIds);
+  }
 
+  $: if ($authSignedInStore) {
     const icrcUniverseIds = Object.keys($icrcCanistersStore);
     loadAccountsBalances(icrcUniverseIds);
+  }
 
+  $: if ($authSignedInStore) {
     const snsRootCanisterIds = $snsProjectsCommittedStore.map(
       ({ rootCanisterId }) => rootCanisterId
     );
     loadSnsAccountsBalances(snsRootCanisterIds);
-
-    userTokensData = $tokensListUserStore;
   }
 </script>
 
