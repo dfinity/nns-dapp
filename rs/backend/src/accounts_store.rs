@@ -1,5 +1,4 @@
 //! User accounts and transactions.
-use crate::constants::MEMO_CREATE_CANISTER;
 use crate::multi_part_transactions_processor::{MultiPartTransactionToBeProcessed, MultiPartTransactionsProcessor};
 use crate::state::StableState;
 use crate::stats::Stats;
@@ -8,7 +7,6 @@ use dfn_candid::Candid;
 use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
-use ic_nns_constants::CYCLES_MINTING_CANISTER_ID;
 use ic_stable_structures::{storable::Bound, Storable};
 use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount};
 use itertools::Itertools;
@@ -835,21 +833,6 @@ impl AccountsStore {
         const CANISTER_NAME_MAX_LENGTH: usize = 24;
 
         name.len() <= CANISTER_NAME_MAX_LENGTH
-    }
-
-    #[allow(dead_code)]
-    fn is_create_canister_transaction(memo: Memo, to: &AccountIdentifier, principal: &PrincipalId) -> bool {
-        // Creating a canister involves sending ICP directly to an account controlled by the CMC, the NNS
-        // Dapp canister then notifies the CMC of the transfer.
-        if memo == MEMO_CREATE_CANISTER {
-            let subaccount = principal.into();
-            // Check if sent to CMC account for this principal
-            let expected_to = AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some(subaccount));
-            if *to == expected_to {
-                return true;
-            }
-        }
-        false
     }
 
     fn assert_account_limit(&self) {
