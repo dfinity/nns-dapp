@@ -10,7 +10,6 @@ use ic_base_types::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::CYCLES_MINTING_CANISTER_ID;
 use ic_stable_structures::{storable::Bound, Storable};
-use icp_ledger::Operation::{self, Approve, Burn, Mint, Transfer};
 use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
@@ -548,51 +547,6 @@ impl AccountsStore {
         }
     }
 
-    pub fn maybe_process_transaction(
-        &mut self,
-        transfer: &Operation,
-        memo: Memo,
-        block_height: BlockIndex,
-    ) -> Result<(), String> {
-        if let Some(block_height_synced_up_to) = self.get_block_height_synced_up_to() {
-            let expected_block_height = block_height_synced_up_to + 1;
-            if block_height != block_height_synced_up_to + 1 {
-                return Err(format!(
-                    "Expected block height {expected_block_height}. Got block height {block_height}",
-                ));
-            }
-        }
-
-        match *transfer {
-            Burn { .. } | Mint { .. } | Approve { .. } => {}
-            Transfer {
-                from,
-                to,
-                spender: _,
-                amount: _,
-                fee: _,
-            } => {
-                let default_transaction_type = if matches!(transfer, Transfer { .. }) {
-                    TransactionType::Transfer
-                } else {
-                    TransactionType::TransferFrom
-                };
-
-                if self.store_has_account(to) {
-                } else if self.store_has_account(from) {
-                    if let Some(principal) = self.try_get_principal(&from) {
-                        let _transaction_type =
-                            Self::get_transaction_type(from, to, memo, &principal, default_transaction_type);
-                    }
-                }
-            }
-        }
-
-        self.block_height_synced_up_to = Some(block_height);
-
-        Ok(())
-    }
-
     pub fn mark_ledger_sync_complete(&mut self) {
         self.last_ledger_sync_timestamp_nanos = u64::try_from(
             dfn_core::api::now()
@@ -856,11 +810,13 @@ impl AccountsStore {
             })
     }
 
+    #[allow(dead_code)]
     fn store_has_account(&mut self, account_identifier: AccountIdentifier) -> bool {
         self.accounts_db.db_get_account(&account_identifier.to_vec()).is_some()
             || self.hardware_wallets_and_sub_accounts.contains_key(&account_identifier)
     }
 
+    #[allow(dead_code)]
     fn try_get_principal(&self, account_identifier: &AccountIdentifier) -> Option<PrincipalId> {
         if let Some(account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
             account.principal
@@ -915,6 +871,7 @@ impl AccountsStore {
     }
 
     #[allow(clippy::too_many_arguments)]
+    #[allow(dead_code)]
     fn get_transaction_type(
         from: AccountIdentifier,
         to: AccountIdentifier,
@@ -937,6 +894,7 @@ impl AccountsStore {
         }
     }
 
+    #[allow(dead_code)]
     fn is_create_canister_transaction(memo: Memo, to: &AccountIdentifier, principal: &PrincipalId) -> bool {
         // Creating a canister involves sending ICP directly to an account controlled by the CMC, the NNS
         // Dapp canister then notifies the CMC of the transfer.

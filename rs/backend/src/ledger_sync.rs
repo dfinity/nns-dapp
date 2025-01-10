@@ -53,9 +53,8 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
             let store = &mut s.accounts_store;
             let blocks_count = u32::try_from(blocks.len())
                 .unwrap_or_else(|_| unreachable!("It will be a very long time before we have this many blocks"));
-            for (block_height, block) in blocks {
-                let transaction = block.transaction().into_owned();
-                store.maybe_process_transaction(&transaction.operation, transaction.memo, block_height)?;
+            for (_block_height, block) in blocks {
+                let _transaction = block.transaction().into_owned();
             }
             store.mark_ledger_sync_complete();
 
