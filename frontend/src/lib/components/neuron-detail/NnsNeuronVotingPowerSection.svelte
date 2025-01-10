@@ -30,7 +30,7 @@
 
 <Section testId="nns-neuron-voting-power-section-component">
   <KeyValuePairInfo slot="description">
-    <h3 class="" slot="key">{$i18n.neurons.voting_power}</h3>
+    <h3 slot="key">{$i18n.neurons.voting_power}</h3>
     <p slot="value" class="title-value" data-tid="voting-power">
       {#if canVote}
         {formatVotingPower(neuron.decidingVotingPower ?? 0n)}
