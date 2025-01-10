@@ -810,33 +810,6 @@ impl AccountsStore {
             })
     }
 
-    #[allow(dead_code)]
-    fn try_get_principal(&self, account_identifier: &AccountIdentifier) -> Option<PrincipalId> {
-        if let Some(account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
-            account.principal
-        } else {
-            match self.hardware_wallets_and_sub_accounts.get(account_identifier) {
-                Some(AccountWrapper::SubAccount(account_identifier, _)) => {
-                    let account = self.accounts_db
-                        .db_get_account
-                        (&account_identifier.to_vec())
-                        .unwrap_or_else(|| panic!("BROKEN STATE: Account identifier {account_identifier} exists in `hardware_wallets_and_sub_accounts`, but not in `accounts`."));
-                    account.principal
-                }
-                Some(AccountWrapper::HardwareWallet(linked_account_identifiers)) => linked_account_identifiers
-                    .iter()
-                    .filter_map(|account_identifier| self.accounts_db.db_get_account(&account_identifier.to_vec()))
-                    .find_map(|a| {
-                        a.hardware_wallet_accounts
-                            .iter()
-                            .find(|hw| *account_identifier == AccountIdentifier::from(hw.principal))
-                            .map(|hw| hw.principal)
-                    }),
-                None => None,
-            }
-        }
-    }
-
     fn link_hardware_wallet_to_account(
         &mut self,
         account_identifier: AccountIdentifier,
