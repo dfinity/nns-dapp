@@ -23,6 +23,7 @@ proposal is successful, the changes it released will be moved from this file to
 - Allow `dfinity:` token prefix in QR code for ICP payment.
 - Recover from interrupted canister creation in the frontend.
 - Sort projects on the Voting page based on actionable proposals and name.
+- Hide former Cycle-Transfer-Station SNS from Voting page.
 
 #### Deprecated
 

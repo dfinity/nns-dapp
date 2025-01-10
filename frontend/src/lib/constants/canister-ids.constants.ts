@@ -21,3 +21,7 @@ export const TVL_CANISTER_ID: Principal | undefined = nonNullish(
 )
   ? Principal.fromText(envVars?.tvlCanisterId)
   : undefined;
+
+// This project has been abandoned https://dfinity.slack.com/archives/C039M7YS6F6/p1733302975333649
+export const CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID =
+  "ibahq-taaaa-aaaaq-aadna-cai";
