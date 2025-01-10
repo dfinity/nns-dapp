@@ -2,6 +2,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
+  import { CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
@@ -30,11 +31,13 @@
   {/if}
 
   {#each $selectableUniversesStore as universe (universe.canisterId)}
-    <SelectUniverseCard
-      {universe}
-      {role}
-      selected={universe.canisterId === selectedUniverse}
-      on:click={() => dispatch("nnsSelectUniverse", universe.canisterId)}
-    />
+    {#if universe.canisterId !== CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID}
+      <SelectUniverseCard
+        {universe}
+        {role}
+        selected={universe.canisterId === selectedUniverse}
+        on:click={() => dispatch("nnsSelectUniverse", universe.canisterId)}
+      />
+    {/if}
   {/each}
 </TestIdWrapper>

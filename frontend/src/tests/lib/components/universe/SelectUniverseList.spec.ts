@@ -1,39 +1,25 @@
 import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svelte";
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import {
+  CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
-import {
-  mockProjectSubscribe,
-  mockSnsFullProject,
-  principal,
-} from "$tests/mocks/sns-projects.mock";
+import { mockSnsFullProject, principal } from "$tests/mocks/sns-projects.mock";
 import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
 
 describe("SelectUniverseList", () => {
   const projects = [
     {
-      ...mockSnsFullProject,
-      summary: mockSnsFullProject.summary.override({
-        metadata: {
-          ...mockSnsFullProject.summary.metadata,
-          name: "project name",
-        },
-      }),
+      projectName: "project name",
     },
     {
-      ...mockSnsFullProject,
-      rootCanisterId: principal(1),
-      summary: mockSnsFullProject.summary.override({
-        rootCanisterId: principal(1),
-        metadata: {
-          ...mockSnsFullProject.summary.metadata,
-          name: "another name",
-        },
-      }),
+      projectName: "another name",
     },
   ];
 
@@ -51,9 +37,7 @@ describe("SelectUniverseList", () => {
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
     });
 
-    vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
-      mockProjectSubscribe(projects)
-    );
+    setSnsProjects(projects);
   });
 
   it("should render universe cards", async () => {
@@ -131,6 +115,32 @@ describe("SelectUniverseList", () => {
       "Internet Computer",
       "another name",
       "project name",
+    ]);
+  });
+
+  it("should not render '----' fka Cycles Transfer Station", async () => {
+    setSnsProjects([
+      {
+        projectName: "----",
+        rootCanisterId: Principal.fromText(
+          CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID
+        ),
+      },
+    ]);
+
+    page.mock({
+      routeId: AppPath.Proposals,
+      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+    });
+
+    const po = renderComponent();
+
+    const cards = await po.getSelectUniverseCardPos();
+    const names = await Promise.all(cards.map((card) => card.getName()));
+
+    expect(names).toEqual([
+      "Internet Computer",
+      // No "----" card
     ]);
   });
 
