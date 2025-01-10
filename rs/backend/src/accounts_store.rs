@@ -811,12 +811,6 @@ impl AccountsStore {
     }
 
     #[allow(dead_code)]
-    fn store_has_account(&mut self, account_identifier: AccountIdentifier) -> bool {
-        self.accounts_db.db_get_account(&account_identifier.to_vec()).is_some()
-            || self.hardware_wallets_and_sub_accounts.contains_key(&account_identifier)
-    }
-
-    #[allow(dead_code)]
     fn try_get_principal(&self, account_identifier: &AccountIdentifier) -> Option<PrincipalId> {
         if let Some(account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
             account.principal
