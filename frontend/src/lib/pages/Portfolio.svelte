@@ -12,7 +12,6 @@
 
   export let userTokensData: UserToken[];
   export let tableProjects: TableProject[];
-
   let totalTokensBalanceInUsd: number;
   $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokensData);
 

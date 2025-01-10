@@ -1,5 +1,7 @@
 import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+
+import * as importedTokensApi from "$lib/api/imported-tokens.api";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
@@ -12,9 +14,12 @@ import {
 } from "$lib/constants/ckusdc-canister-ids.constants";
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
+import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import PortfolioRoute from "$routes/(app)/(nns)/portfolio/+page.svelte";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -35,6 +40,7 @@ import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -79,6 +85,21 @@ describe("Portfolio route", () => {
     const ckETHBalanceUlps = 1n * 100_000_000_000_000_000_000_000n; // 1ETH -> $1000
     const ckUSDCBalanceE8s = 1n * 1_000_000n; // 1USDC -> $1
     const tetrisBalanceE8s = 2n * 10_000_000n; // 2Tetris -> $2
+    const importedToken1BalanceE8s = 100n * 100_000n; // 100ZTOKEN1 -> $100
+
+    const importedToken1Id = Principal.fromText(
+      "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
+    );
+    const importedToken1Metadata = {
+      name: "ZTOKEN1",
+      symbol: "ZTOKEN1",
+      fee: 4_000n,
+      decimals: 6,
+    } as IcrcTokenMetadata;
+    const importedToken1Data: ImportedTokenData = {
+      ledgerCanisterId: importedToken1Id,
+      indexCanisterId: principal(111),
+    };
 
     const tetrisSNS = {
       rootCanisterId: rootCanisterIdMock,
@@ -98,6 +119,7 @@ describe("Portfolio route", () => {
             [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkTESTBTCToken,
             [CKETH_UNIVERSE_CANISTER_ID.toText()]: mockCkETHToken,
             [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: mockCkUSDCToken,
+            [importedToken1Id.toText()]: importedToken1Metadata,
           };
           return tokenMap[canisterId.toText()];
         }
@@ -111,6 +133,7 @@ describe("Portfolio route", () => {
             [CKETH_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
             [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: ckUSDCBalanceE8s,
             [tetrisSNS.ledgerCanisterId.toText()]: tetrisBalanceE8s,
+            [importedToken1Id.toText()]: importedToken1BalanceE8s,
           };
 
           return balancesMap[canisterId.toText()];
@@ -129,9 +152,27 @@ describe("Portfolio route", () => {
       });
 
       setSnsProjects([tetrisSNS]);
+
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
+        imported_tokens: [
+          {
+            ledger_canister_id: importedToken1Id,
+            index_canister_id: [],
+          },
+        ],
+      });
+
+      tokensStore.setToken({
+        canisterId: importedToken1Id,
+        token: importedToken1Metadata,
+      });
+      importedTokensStore.set({
+        importedTokens: [importedToken1Data],
+        certified: true,
+      });
     });
 
-    it("should load all ckBtc tokens", async () => {
+    it("should get ckBtc tokens", async () => {
       const identity = mockIdentity;
 
       expect(icrcLedgerApi.queryIcrcToken).toBeCalledTimes(0);
@@ -162,8 +203,8 @@ describe("Portfolio route", () => {
 
       await renderPage();
 
-      // Should be called 5 times total (2 ckBTC + 2 ICRC + 1 SNS)
-      expect(icrcLedgerApi.queryIcrcBalance).toBeCalledTimes(5);
+      // Should be called 5 times total (2 ckBTC + 2 ICRC + 1 ImportedToken + 1 SNS)
+      expect(icrcLedgerApi.queryIcrcBalance).toBeCalledTimes(6);
 
       expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenNthCalledWith(1, {
         canisterId: CKBTC_UNIVERSE_CANISTER_ID,
@@ -194,6 +235,13 @@ describe("Portfolio route", () => {
       });
 
       expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenNthCalledWith(5, {
+        canisterId: importedToken1Id,
+        certified: false,
+        identity,
+        account,
+      });
+
+      expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenNthCalledWith(6, {
         canisterId: tetrisSNS.ledgerCanisterId,
         certified: false,
         identity,
@@ -225,6 +273,11 @@ describe("Portfolio route", () => {
           ...mockIcpSwapTicker,
           base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
           last_price: "10.00",
+        },
+        {
+          ...mockIcpSwapTicker,
+          base_id: importedToken1Id.toText(),
+          last_price: "1.00",
         },
         {
           ...mockIcpSwapTicker,
@@ -265,17 +318,18 @@ describe("Portfolio route", () => {
       // 100ICP -> $1000
       // 1ETH -> $1000
       // 1USDC -> $1
+      // 100ZTOKEN1 -> $100
       // 2Tetris -> $2
       // 1 ICP Neuron -> $10
       // 1 Tetris Neuron -> $20
-      // Total: $202’033.00
+      // Total: $202’133.00
       expect(
         await portfolioPagePo.getUsdValueBannerPo().getPrimaryAmount()
-      ).toBe("$202’033.00");
+      ).toBe("$202’133.00");
       // $1 -> 0.1ICP
       expect(
         await portfolioPagePo.getUsdValueBannerPo().getSecondaryAmount()
-      ).toBe("20’203.30 ICP");
+      ).toBe("20’213.30 ICP");
     });
   });
 });
