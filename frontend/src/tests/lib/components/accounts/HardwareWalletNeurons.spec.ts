@@ -1,11 +1,11 @@
 import HardwareWalletNeurons from "$lib/components/accounts/HardwareWalletNeurons.svelte";
 import { formatTokenE8s } from "$lib/utils/token.utils";
+import HardwareWalletNeuronsTest from "$tests/lib/components/accounts/HardwareWalletNeuronsTest.svelte";
 import { mockNeuronStake } from "$tests/mocks/hardware-wallet-neurons.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { Neuron } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import HardwareWalletNeuronsTest from "$tests/lib/components/accounts/HardwareWalletNeuronsTest.svelte";
 
 describe("HardwareWalletNeurons", () => {
   const props = { testComponent: HardwareWalletNeurons };

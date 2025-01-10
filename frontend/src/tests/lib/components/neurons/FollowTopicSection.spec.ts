@@ -1,6 +1,6 @@
 import FollowTopicsSection from "$lib/components/neurons/FollowTopicSection.svelte";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import FollowTopicsSectionTest from "$tests/lib/components/neurons/FollowTopicSectionTest.svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("FollowTopicsSection", () => {
   const title = "title";

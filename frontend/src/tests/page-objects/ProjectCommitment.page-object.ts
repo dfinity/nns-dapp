@@ -1,8 +1,8 @@
+import { CommitmentProgressBarPo } from "$tests/page-objects/CommitmentProgressBarPo.page-object";
+import { KeyValuePairPo } from "$tests/page-objects/KeyValuePair.page-object";
 import { NfCommitmentProgressBarPo } from "$tests/page-objects/NfCommitmentProgressBarPo.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { CommitmentProgressBarPo } from "$tests/page-objects/CommitmentProgressBarPo.page-object";
-import { KeyValuePairPo } from "$tests/page-objects/KeyValuePair.page-object";
 
 export class ProjectCommitmentPo extends BasePageObject {
   private static readonly TID = "project-commitment-component";

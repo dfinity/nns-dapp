@@ -1,6 +1,6 @@
 import { CardPo } from "$tests/page-objects/Card.page-object";
-import type { PageObjectElement } from "$tests/types/page-object.types";
 import { ProjectCardSwapInfoPo } from "$tests/page-objects/ProjectCardSwapInfo.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class ProjectCardPo extends CardPo {
   private static readonly TID = "project-card-component";

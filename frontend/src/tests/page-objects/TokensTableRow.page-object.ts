@@ -1,11 +1,11 @@
-import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.page-object";
-import type { PageObjectElement } from "$tests/types/page-object.types";
-import { nonNullish } from "@dfinity/utils";
 import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { HashPo } from "$tests/page-objects/Hash.page-object";
 import { LinkToDashboardCanisterPo } from "$tests/page-objects/LinkToDashboardCanister.page-object";
+import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.page-object";
 import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
+import { nonNullish } from "@dfinity/utils";
 
 export type TokensTableRowData = {
   projectName: string;

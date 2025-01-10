@@ -1,7 +1,7 @@
+import { NeuronNavigationPo } from "$tests/page-objects/NeuronNavigation.page-object";
 import { UniverseSummaryPo } from "$tests/page-objects/UniverseSummary.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { NeuronNavigationPo } from "$tests/page-objects/NeuronNavigation.page-object";
 
 export class NnsNeuronPageHeaderPo extends BasePageObject {
   private static readonly TID = "nns-neuron-page-header-component";

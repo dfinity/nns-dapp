@@ -1,5 +1,5 @@
-import type { PageObjectElement } from "$tests/types/page-object.types";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class ResponsiveTableRowPo extends BasePageObject {
   static readonly TID = "responsive-table-row-component";

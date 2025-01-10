@@ -1,6 +1,6 @@
+import { DropdownPo } from "$tests/page-objects/Dropdown.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { DropdownPo } from "$tests/page-objects/Dropdown.page-object";
 
 export class GetTokensPo extends BasePageObject {
   static readonly TID = "get-tokens-component";

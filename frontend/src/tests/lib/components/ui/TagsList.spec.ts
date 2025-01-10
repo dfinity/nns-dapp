@@ -1,5 +1,5 @@
-import { render } from "@testing-library/svelte";
 import TagsListTest from "$tests/lib/components/ui/TagsListTest.svelte";
+import { render } from "@testing-library/svelte";
 
 describe("TagsList", () => {
   it("should render a ul", () => {

@@ -1,7 +1,7 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
-import type { PageObjectElement } from "$tests/types/page-object.types";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { ReportingPagePo } from "$tests/page-objects/ReportingPage.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class ReportingRoutePo extends BasePageObject {
   private static readonly TID = "reporting-route-component";

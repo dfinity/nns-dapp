@@ -1,6 +1,6 @@
+import { UniverseSummaryPo } from "$tests/page-objects/UniverseSummary.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { UniverseSummaryPo } from "$tests/page-objects/UniverseSummary.page-object";
 
 export class CanisterHeaderPo extends BasePageObject {
   private static readonly TID = "canister-page-header-component";

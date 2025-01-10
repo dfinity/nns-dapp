@@ -1,10 +1,10 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { CkBTCWalletPo } from "$tests/page-objects/CkBTCWallet.page-object";
-import { NnsWalletPo } from "$tests/page-objects/NnsWallet.page-object";
-import { SnsWalletPo } from "$tests/page-objects/SnsWallet.page-object";
-import type { PageObjectElement } from "$tests/types/page-object.types";
 import { IcrcTokenTransactionModalPo } from "$tests/page-objects/IcrcTokenTransactionModal.page-object";
 import { IcrcWalletPo } from "$tests/page-objects/IcrcWallet.page-object";
+import { NnsWalletPo } from "$tests/page-objects/NnsWallet.page-object";
+import { SnsWalletPo } from "$tests/page-objects/SnsWallet.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class WalletPo extends BasePageObject {
   private static readonly TID = "wallet-component";

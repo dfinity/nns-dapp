@@ -1,10 +1,10 @@
 import { AmountInputPo } from "$tests/page-objects/AmountInput.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
+import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 import { TransactionFromAccountPo } from "$tests/page-objects/TransactionFromAccount.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 
 export class NnsStakeNeuronPo extends BasePageObject {
   private static readonly TID = "nns-stake-neuron-component";

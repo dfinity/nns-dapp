@@ -1,7 +1,7 @@
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { TagPo } from "$tests/page-objects/Tag.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 
 export class FolloweePo extends BasePageObject {
   private static readonly TID = "followee-component";

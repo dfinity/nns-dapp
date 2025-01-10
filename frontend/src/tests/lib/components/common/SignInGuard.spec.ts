@@ -1,6 +1,6 @@
+import SignInGuardTest from "$tests/lib/components/common/SignInGuardTest.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { render } from "@testing-library/svelte";
-import SignInGuardTest from "$tests/lib/components/common/SignInGuardTest.svelte";
 
 describe("SignInGuard", () => {
   describe("not signed in", () => {

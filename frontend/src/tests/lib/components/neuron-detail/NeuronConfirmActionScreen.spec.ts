@@ -1,5 +1,5 @@
-import { fireEvent, render } from "@testing-library/svelte";
 import NeuronConfirmActionScreenTest from "$tests/lib/components/neuron-detail/NeuronConfirmActionScreenTest.svelte";
+import { fireEvent, render } from "@testing-library/svelte";
 
 describe("NeuronConfirmActionScreen", () => {
   it("should render main information", () => {

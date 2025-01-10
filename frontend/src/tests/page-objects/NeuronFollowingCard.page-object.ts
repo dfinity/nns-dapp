@@ -1,7 +1,7 @@
+import { FollowNeuronsButtonPo } from "$tests/page-objects/FollowNeuronsButton.page-object";
+import { FolloweePo } from "$tests/page-objects/Followee.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { FolloweePo } from "$tests/page-objects/Followee.page-object";
-import { FollowNeuronsButtonPo } from "$tests/page-objects/FollowNeuronsButton.page-object";
 
 export class NeuronFollowingCardPo extends BasePageObject {
   static readonly TID = "neuron-following-card-component";

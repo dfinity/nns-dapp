@@ -1,10 +1,10 @@
 import NnsStakedMaturityItemAction from "$lib/components/neuron-detail/NnsStakedMaturityItemAction.svelte";
+import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsStakedMaturityItemActionPo } from "$tests/page-objects/NnsStakedMaturityItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 
 describe("NnsStakedMaturityItemAction", () => {
   const renderComponent = (neuron: NeuronInfo) => {

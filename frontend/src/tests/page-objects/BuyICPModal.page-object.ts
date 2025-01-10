@@ -1,6 +1,6 @@
+import { HashPo } from "$tests/page-objects/Hash.page-object";
 import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { HashPo } from "$tests/page-objects/Hash.page-object";
 
 export class BuyICPModalPo extends ModalPo {
   private static readonly TID = "buy-icp-modal-component";

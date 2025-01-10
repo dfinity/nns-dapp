@@ -1,6 +1,6 @@
+import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 
 export class HeadingSubtitleWithUsdValuePo extends BasePageObject {
   private static readonly TID = "heading-subtitle-with-usd-value-component";

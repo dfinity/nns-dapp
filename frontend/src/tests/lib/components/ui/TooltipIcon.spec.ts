@@ -1,8 +1,8 @@
 import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+import TooltipIconTest from "$tests/lib/components/ui/TooltipIconTest.svelte";
 import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
-import TooltipIconTest from "$tests/lib/components/ui/TooltipIconTest.svelte";
 
 describe("TooltipIcon", () => {
   const text = "This is the text displayed in the tooltip";

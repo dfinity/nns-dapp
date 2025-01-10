@@ -2,6 +2,7 @@ import {
   startDissolving,
   stopDissolving,
 } from "$lib/services/sns-neurons.services";
+import DissolveSnsNeuronButtonTest from "$tests/lib/components/sns-neuron-detail/actions/DissolveSnsNeuronButtonTest.svelte";
 import en from "$tests/mocks/i18n.mock";
 import {
   createMockSnsNeuron,
@@ -9,7 +10,6 @@ import {
 } from "$tests/mocks/sns-neurons.mock";
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import DissolveSnsNeuronButtonTest from "$tests/lib/components/sns-neuron-detail/actions/DissolveSnsNeuronButtonTest.svelte";
 
 vi.mock("$lib/services/sns-neurons.services", () => {
   return {

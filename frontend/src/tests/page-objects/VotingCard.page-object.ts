@@ -1,9 +1,9 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { StakeNeuronToVotePo } from "$tests/page-objects/StakeNeuronToVote.page-object";
 import { VotingConfirmationToolbarPo } from "$tests/page-objects/VotingConfirmationToolbar.page-object";
+import { VotingNeuronSelectListPo } from "$tests/page-objects/VotingNeuronSelectList.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { VotingNeuronSelectListPo } from "$tests/page-objects/VotingNeuronSelectList.page-object";
 
 export class VotingCardPo extends BasePageObject {
   private static readonly TID = "voting-card-component";

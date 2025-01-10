@@ -1,9 +1,9 @@
+import { LosingRewardsBannerPo } from "$tests/page-objects/LosingRewardsBanner.page-object";
+import { MakeNeuronsPublicBannerPo } from "$tests/page-objects/MakeNeuronsPublicBanner.page-object";
 import { NeuronsTablePo } from "$tests/page-objects/NeuronsTable.page-object";
 import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { LosingRewardsBannerPo } from "$tests/page-objects/LosingRewardsBanner.page-object";
-import { MakeNeuronsPublicBannerPo } from "$tests/page-objects/MakeNeuronsPublicBanner.page-object";
 
 export class NnsNeuronsPo extends BasePageObject {
   private static readonly TID = "nns-neurons-component";

@@ -1,6 +1,6 @@
+import ControllersCard from "$tests/lib/components/canister-detail/ControllersCardTest.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
-import ControllersCard from "$tests/lib/components/canister-detail/ControllersCardTest.svelte";
 
 describe("ControllersCard", () => {
   it("renders title", () => {

@@ -1,10 +1,10 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
-import type { PageObjectElement } from "$tests/types/page-object.types";
 import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
 import { HashPo } from "$tests/page-objects/Hash.page-object";
 import { HeadingSubtitleWithUsdValuePo } from "$tests/page-objects/HeadingSubtitleWithUsdValue.page-object";
 import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class WalletPageHeadingPo extends BasePageObject {
   private static readonly TID = "wallet-page-heading-component";

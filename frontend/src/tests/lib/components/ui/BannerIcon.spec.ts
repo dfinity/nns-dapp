@@ -1,7 +1,7 @@
+import BannerIconTest from "$tests/lib/components/ui/BannerIconTest.svelte";
 import { BannerIconPo } from "$tests/page-objects/BannerIcon.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import BannerIconTest from "$tests/lib/components/ui/BannerIconTest.svelte";
 
 describe("BannerIcon", () => {
   const renderComponent = (props?: unknown) => {

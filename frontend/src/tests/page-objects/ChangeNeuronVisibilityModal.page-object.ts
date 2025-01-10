@@ -1,7 +1,7 @@
-import { ModalPo } from "$tests/page-objects/Modal.page-object";
-import type { PageObjectElement } from "$tests/types/page-object.types";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { ChangeBulkNeuronVisibilityFormPo } from "$tests/page-objects/ChangeBulkNeuronVisibilityForm.page-object";
+import { ModalPo } from "$tests/page-objects/Modal.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class ChangeNeuronVisibilityModalPo extends ModalPo {
   private static readonly TID = "change-neuron-visibility-modal";

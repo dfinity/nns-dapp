@@ -4,6 +4,7 @@ import {
   getIcpToCyclesExchangeRate,
   topUpCanister,
 } from "$lib/services/canisters.services";
+import AddCyclesModalTest from "$tests/lib/modals/canisters/AddCyclesModalTest.svelte";
 import { mockCanister } from "$tests/mocks/canisters.mock";
 import {
   mockAccountsStoreSubscribe,
@@ -18,7 +19,6 @@ import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import AddCyclesModalTest from "$tests/lib/modals/canisters/AddCyclesModalTest.svelte";
 
 describe("AddCyclesModal", () => {
   const reloadDetails = vi.fn();

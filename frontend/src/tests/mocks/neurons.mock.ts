@@ -1,10 +1,10 @@
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { TableNeuron } from "$lib/types/neurons-table";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import type { KnownNeuron, Neuron, NeuronInfo } from "@dfinity/nns";
 import { NeuronState } from "@dfinity/nns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
 
 export const mockFullNeuron: Neuron = {
   id: 1n,

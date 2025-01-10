@@ -1,6 +1,7 @@
 import IncreaseSnsDissolveDelayButton from "$lib/components/sns-neuron-detail/actions/IncreaseSnsDissolveDelayButton.svelte";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
+import SnsNeuronContextTest from "$tests/lib/components/sns-neuron-detail/SnsNeuronContextTest.svelte";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   createMockSnsNeuron,
@@ -13,7 +14,6 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import { SnsSwapLifecycle, type SnsNeuron } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
-import SnsNeuronContextTest from "$tests/lib/components/sns-neuron-detail/SnsNeuronContextTest.svelte";
 
 // Avoid triggering the api call to not have to mock the api layer. Not needed for this test.
 vi.mock("$lib/services/sns-parameters.services");

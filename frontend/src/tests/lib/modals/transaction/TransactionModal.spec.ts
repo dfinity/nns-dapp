@@ -5,6 +5,7 @@ import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import type { ValidateAmountFn } from "$lib/types/transaction";
 import { formatTokenE8s } from "$lib/utils/token.utils";
+import TransactionModalTest from "$tests/lib/modals/transaction/TransactionModalTest.svelte";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockHardwareWalletAccount,
@@ -29,7 +30,6 @@ import {
   type RenderResult,
 } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import TransactionModalTest from "$tests/lib/modals/transaction/TransactionModalTest.svelte";
 
 describe("TransactionModal", () => {
   const renderTransactionModal = ({

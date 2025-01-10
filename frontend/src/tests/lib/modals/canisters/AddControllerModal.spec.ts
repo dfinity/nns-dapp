@@ -1,9 +1,9 @@
 import * as canistersServices from "$lib/services/canisters.services";
 import { addController } from "$lib/services/canisters.services";
+import AddControllerModal from "$tests/lib/modals/canisters/AddControllerModalTest.svelte";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import AddControllerModal from "$tests/lib/modals/canisters/AddControllerModalTest.svelte";
 
 describe("AddControllerModal", () => {
   const reloadMock = vi.fn();

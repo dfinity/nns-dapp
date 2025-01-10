@@ -1,7 +1,7 @@
-import { ModalPo } from "$tests/page-objects/Modal.page-object";
-import type { PageObjectElement } from "$tests/types/page-object.types";
 import { ConfirmFollowingButtonPo } from "$tests/page-objects/ConfirmFollowingButton.page-object";
+import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import { NnsLosingRewardsNeuronCardPo } from "$tests/page-objects/NnsLosingRewardsNeuronCard.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class LosingRewardNeuronsModalPo extends ModalPo {
   static readonly TID = "losing-reward-neurons-modal-component";

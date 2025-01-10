@@ -1,8 +1,8 @@
-import type { PageObjectElement } from "$tests/types/page-object.types";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
 import { NeuronVisibilityRowPo } from "$tests/page-objects/NeuronVisibilityRow.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class ChangeBulkNeuronVisibilityFormPo extends BasePageObject {
   private static readonly TID = "change-bulk-visibility-component";

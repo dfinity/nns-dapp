@@ -1,5 +1,6 @@
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { neuronsStore } from "$lib/stores/neurons.store";
+import ProposalVotingSectionTest from "$tests/lib/components/proposal-detail/ProposalVotingSectionTest.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
@@ -11,7 +12,6 @@ import {
   type NeuronInfo,
 } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import ProposalVotingSectionTest from "$tests/lib/components/proposal-detail/ProposalVotingSectionTest.svelte";
 
 describe("ProposalVotingSection", () => {
   const neuronIds = [111, 222].map(BigInt);

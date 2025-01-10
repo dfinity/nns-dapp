@@ -1,7 +1,7 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
-import type { PageObjectElement } from "$tests/types/page-object.types";
 import { ConfirmFollowingActionButtonPo } from "$tests/page-objects/ConfirmFollowingActionButton.page-object";
 import { FollowNeuronsButtonPo } from "$tests/page-objects/FollowNeuronsButton.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class NnsNeuronRewardStatusActionPo extends BasePageObject {
   private static readonly TID = "nns-neuron-reward-status-action-component";

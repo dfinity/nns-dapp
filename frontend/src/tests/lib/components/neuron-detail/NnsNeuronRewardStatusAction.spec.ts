@@ -4,13 +4,13 @@ import {
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
 import { nowInSeconds } from "$lib/utils/date.utils";
+import NnsNeuronRewardStatusActionTest from "$tests/lib/components/neuron-detail/NnsNeuronRewardStatusActionTest.svelte";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronRewardStatusActionPo } from "$tests/page-objects/NnsNeuronRewardStatusAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import NnsNeuronRewardStatusActionTest from "$tests/lib/components/neuron-detail/NnsNeuronRewardStatusActionTest.svelte";
 
 describe("NnsNeuronRewardStatusAction", () => {
   const renderComponent = (neuron: NeuronInfo) => {

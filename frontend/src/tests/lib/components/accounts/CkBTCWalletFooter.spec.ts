@@ -5,6 +5,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
+import CkBTCWalletContextTest from "$tests/lib/components/accounts/CkBTCWalletContextTest.svelte";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockBTCAddressTestnet,
@@ -17,7 +18,6 @@ import {
 } from "$tests/mocks/tokens.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import CkBTCWalletContextTest from "$tests/lib/components/accounts/CkBTCWalletContextTest.svelte";
 
 vi.mock("$lib/api/ckbtc-minter.api");
 

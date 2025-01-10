@@ -1,4 +1,5 @@
 import type { ProposalsStore } from "$lib/stores/proposals.store";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { ProposalInfo } from "@dfinity/nns";
 import {
   ProposalRewardStatus,
@@ -8,7 +9,6 @@ import {
   type Ballot,
 } from "@dfinity/nns";
 import type { Subscriber } from "svelte/store";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
 
 export const deadlineTimestampSeconds = BigInt(
   Math.round(new Date().getTime() / 1000 + 10000)

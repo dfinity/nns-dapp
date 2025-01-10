@@ -13,6 +13,7 @@ import {
   type SelectedProposalContext,
   type SelectedProposalStore,
 } from "$lib/types/selected-proposal.context";
+import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
@@ -26,7 +27,6 @@ import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";
 import { mock } from "vitest-mock-extended";
-import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 
 describe("VotingCard", () => {
   const neuronIds = [111, 222].map(BigInt);

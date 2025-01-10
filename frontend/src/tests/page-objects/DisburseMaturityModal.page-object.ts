@@ -1,8 +1,8 @@
 import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import { NeuronConfirmActionScreenPo } from "$tests/page-objects/NeuronConfirmActionScreen.page-object";
 import { NeuronSelectPercentagePo } from "$tests/page-objects/NeuronSelectPercentage.page-object";
-import type { PageObjectElement } from "$tests/types/page-object.types";
 import { SelectDestinationAddressPo } from "$tests/page-objects/SelectDestinationAddress.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class DisburseMaturityModalPo extends ModalPo {
   private static readonly TID = "disburse-maturity-modal-component";

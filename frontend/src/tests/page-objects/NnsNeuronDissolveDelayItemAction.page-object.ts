@@ -1,7 +1,7 @@
+import { DissolveDelayBonusTextPo } from "$tests/page-objects/DissolveDelayBonusText.page-object";
 import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { DissolveDelayBonusTextPo } from "$tests/page-objects/DissolveDelayBonusText.page-object";
 
 export class NnsNeuronDissolveDelayItemActionPo extends BasePageObject {
   private static readonly TID =
