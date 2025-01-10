@@ -72,12 +72,12 @@ describe("Portfolio route", () => {
   });
 
   describe("when logged in", () => {
-    const icpBalanceE8s = 100n * 100_000_000n; // 100ICP -> $1000
-    const ckBTCBalanceE8s = 1n * 100_000_000n; // 1BTC -> $100_000
-    const ckETHBalanceUlps = 1n * 100_000_000_000_000_000n; // 1ETH -> $1000
-    const ckUSDCBalanceE8s = 1n * 1_000_000n; // 1USDC -> $1
-    const tetrisBalanceE8s = 2n * 10_000_000n; // 2Tetris -> $2
-    const importedToken1BalanceE8s = 100n * 100_000n; // 100ZTOKEN1 -> $100
+    const icpBalanceE8s = 100n * 100_000_000n; // 100ICP(1ICP==10$) -> $1000
+    const ckBTCBalanceE8s = 1n * 100_000_000n; // 1BTC(1BTC==10_000ICP) -> $100_000
+    const ckETHBalanceUlps = 1n * 100_000_000_000_000_000n; // 1ETH(1ETH=100ICP) -> $1000
+    const tetrisBalanceE8s = 2n * 100_000_000n; // 2Tetris(1Tetris==1ICP) -> $20
+    const importedToken1BalanceE6s = 100n * 1_000_000n; // 100ZTOKEN1(1ZTOKEN1==1ICP) -> $1000
+    const ckUSDCBalanceE6s = 1n * 1_000_000n; // 1USDC -> $1
 
     const importedToken1Id = Principal.fromText(
       "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
@@ -97,7 +97,7 @@ describe("Portfolio route", () => {
       rootCanisterId: rootCanisterIdMock,
       ledgerCanisterId: principal(2),
       projectName: "Tetris",
-      tokenMetadata: mockSnsToken,
+      tokenMetadata: { ...mockSnsToken, decimals: 8 },
       lifecycle: SnsSwapLifecycle.Committed,
     };
 
@@ -123,9 +123,9 @@ describe("Portfolio route", () => {
             [CKBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
             [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
             [CKETH_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
-            [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: ckUSDCBalanceE8s,
+            [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: ckUSDCBalanceE6s,
             [tetrisSNS.ledgerCanisterId.toText()]: tetrisBalanceE8s,
-            [importedToken1Id.toText()]: importedToken1BalanceE8s,
+            [importedToken1Id.toText()]: importedToken1BalanceE6s,
           };
 
           return balancesMap[canisterId.toText()];
@@ -286,16 +286,17 @@ describe("Portfolio route", () => {
       // 100ICP -> $1000
       // 1ETH -> $1000
       // 1USDC -> $1
-      // 100ZTOKEN1 -> $100
-      // 2Tetris -> $2
-      // Total: $202’103.00
+      // 100ZTOKEN1 -> $1000
+      // 2Tetris -> $20
+      // --------------------
+      // Total: $203’021.00
       expect(
         await portfolioPagePo.getUsdValueBannerPo().getPrimaryAmount()
-      ).toBe("$202’103.00");
+      ).toBe("$203’021.00");
       // $1 -> 0.1ICP
       expect(
         await portfolioPagePo.getUsdValueBannerPo().getSecondaryAmount()
-      ).toBe("20’210.30 ICP");
+      ).toBe("20’302.10 ICP");
     });
   });
 });
