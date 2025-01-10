@@ -5,10 +5,12 @@
 export class CustomEventForTesting<T> extends CustomEvent<T> {
   public readonly type: string;
   public readonly detail: T;
+  public readonly bubbles: boolean | undefined;
 
   constructor(type: string, options?: CustomEventInit<T>) {
     super(type, options);
     this.type = type;
     this.detail = options?.detail;
+    this.bubbles = options?.bubbles;
   }
 }
