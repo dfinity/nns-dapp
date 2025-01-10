@@ -46,7 +46,6 @@ jobs:
         uses: actions/checkout@v4
       - name: Checks for the presence of relative imports
         run: ./scripts/check-relative-imports
-        working-directory: ./frontend
   spelling:
     runs-on: ubuntu-20.04
     steps:
