@@ -7,7 +7,7 @@
     WALLET_CONTEXT_KEY,
     type WalletContext,
   } from "$lib/types/wallet.context";
-  import TextInputForm from "../common/TextInputForm.svelte";
+  import TextInputForm from "$lib/components/common/TextInputForm.svelte";
   import { busy } from "@dfinity/gix-components";
   import { createEventDispatcher, getContext } from "svelte";
 

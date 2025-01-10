@@ -8,12 +8,12 @@ import type { AuthStoreData } from "$lib/stores/auth.store";
 import type { CanistersStore } from "$lib/stores/canisters.store";
 import { i18n } from "$lib/stores/i18n";
 import type { CanisterId } from "$lib/types/canister";
+import { formatNumber } from "$lib/utils/format.utils";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";
 import { nonNullish, principalToSubAccount } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { formatNumber } from "./format.utils";
-import { replacePlaceholders } from "./i18n.utils";
 
 export const getCanisterFromStore = ({
   canisterId,

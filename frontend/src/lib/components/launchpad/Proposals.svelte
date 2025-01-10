@@ -6,7 +6,7 @@
     openSnsProposalsStore,
     snsProposalsStoreIsLoading,
   } from "$lib/stores/sns.store";
-  import NnsProposalCard from "../proposals/NnsProposalCard.svelte";
+  import NnsProposalCard from "$lib/components/proposals/NnsProposalCard.svelte";
   import { onMount } from "svelte";
 
   let loading = false;

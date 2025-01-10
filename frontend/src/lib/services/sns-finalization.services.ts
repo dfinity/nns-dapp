@@ -1,5 +1,6 @@
 import { queryFinalizationStatus } from "$lib/api/sns-sale.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
+import { queryAndUpdate } from "$lib/services/utils.services";
 import { getOrCreateSnsFinalizationStatusStore } from "$lib/stores/sns-finalization-status.store";
 import { snsSummariesStore } from "$lib/stores/sns.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -11,7 +12,6 @@ import {
 } from "@dfinity/sns";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { queryAndUpdate } from "./utils.services";
 
 export const loadSnsFinalizationStatus = async ({
   rootCanisterId,

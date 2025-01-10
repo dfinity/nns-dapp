@@ -7,11 +7,11 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { filteredActionableProposals } from "$lib/derived/proposals.derived";
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-  import ListLoader from "./ListLoader.svelte";
-  import LoadingProposals from "./LoadingProposals.svelte";
-  import NnsProposalCard from "./NnsProposalCard.svelte";
-  import NnsProposalsFilters from "./NnsProposalsFilters.svelte";
-  import NoProposals from "./NoProposals.svelte";
+  import ListLoader from "$lib/components/proposals/ListLoader.svelte";
+  import LoadingProposals from "$lib/components/proposals/LoadingProposals.svelte";
+  import NnsProposalCard from "$lib/components/proposals/NnsProposalCard.svelte";
+  import NnsProposalsFilters from "$lib/components/proposals/NnsProposalsFilters.svelte";
+  import NoProposals from "$lib/components/proposals/NoProposals.svelte";
   import { InfiniteScroll } from "@dfinity/gix-components";
   import type { ProposalInfo } from "@dfinity/nns";
   import { isNullish } from "@dfinity/utils";

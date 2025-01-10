@@ -10,7 +10,7 @@
     hasAutoStakeMaturityOn,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
-  import AutoStakeMaturity from "./AutoStakeMaturity.svelte";
+  import AutoStakeMaturity from "$lib/components/neuron-detail/actions/AutoStakeMaturity.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { getContext } from "svelte";
 

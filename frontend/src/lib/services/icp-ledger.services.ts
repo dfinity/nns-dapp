@@ -2,6 +2,8 @@ import { queryNeurons } from "$lib/api/governance.api";
 import { nnsDappCanister } from "$lib/api/nns-dapp.api";
 import { LedgerConnectionState } from "$lib/constants/ledger.constants";
 import { LedgerIdentity } from "$lib/identities/ledger.identity";
+import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import { syncAccounts } from "$lib/services/icp-accounts.services";
 import { i18n } from "$lib/stores/i18n";
 import { toastsError } from "$lib/stores/toasts.store";
 import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
@@ -13,8 +15,6 @@ import type { Identity } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "@dfinity/ledger-icp";
 import type { NeuronInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { getAuthenticatedIdentity } from "./auth.services";
-import { syncAccounts } from "./icp-accounts.services";
 
 export interface ConnectToHardwareWalletParams {
   connectionState: LedgerConnectionState;

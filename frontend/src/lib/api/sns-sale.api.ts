@@ -1,4 +1,5 @@
 import { createAgent } from "$lib/api/agent.api";
+import { wrapper } from "$lib/api/sns-wrapper.api";
 import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { isMethodNotSupportedError } from "$lib/utils/error.utils";
@@ -11,7 +12,6 @@ import type {
 } from "@dfinity/sns";
 import { SnsSwapCanister } from "@dfinity/sns";
 import { toNullable } from "@dfinity/utils";
-import { wrapper } from "./sns-wrapper.api";
 
 export const getOpenTicket = async ({
   identity,

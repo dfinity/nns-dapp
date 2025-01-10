@@ -9,9 +9,9 @@
   import { KeyValuePair, Value } from "@dfinity/gix-components";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { nonNullish, secondsToDuration, TokenAmount } from "@dfinity/utils";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import Separator from "../ui/Separator.svelte";
-  import ProjectUserCommitmentLabel from "./ProjectUserCommitmentLabel.svelte";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
+  import ProjectUserCommitmentLabel from "$lib/components/project-detail/ProjectUserCommitmentLabel.svelte";
 
   export let myCommitment: TokenAmount | undefined;
   export let summary: SnsSummaryWrapper;

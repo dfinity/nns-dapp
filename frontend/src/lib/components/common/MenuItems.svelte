@@ -31,7 +31,7 @@
   import type { ComponentType } from "svelte";
   import { cubicIn, cubicOut } from "svelte/easing";
   import { scale } from "svelte/transition";
-  import SourceCodeButton from "./SourceCodeButton.svelte";
+  import SourceCodeButton from "$lib/components/common/SourceCodeButton.svelte";
 
   let routes: {
     context: string;

@@ -21,9 +21,9 @@
     secondsToDuration,
     type Token,
   } from "@dfinity/utils";
-  import SnsNeuronDissolveDelayItemAction from "./SnsNeuronDissolveDelayItemAction.svelte";
-  import SnsNeuronStateItemAction from "./SnsNeuronStateItemAction.svelte";
-  import SnsStakeItemAction from "./SnsStakeItemAction.svelte";
+  import SnsNeuronDissolveDelayItemAction from "$lib/components/sns-neuron-detail/SnsNeuronDissolveDelayItemAction.svelte";
+  import SnsNeuronStateItemAction from "$lib/components/sns-neuron-detail/SnsNeuronStateItemAction.svelte";
+  import SnsStakeItemAction from "$lib/components/sns-neuron-detail/SnsStakeItemAction.svelte";
 
   export let parameters: SnsNervousSystemParameters;
   export let neuron: SnsNeuron;

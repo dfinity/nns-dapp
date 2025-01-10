@@ -11,8 +11,8 @@
     getAccountsByRootCanister,
     invalidAddress,
   } from "$lib/utils/accounts.utils";
-  import AddressInput from "./AddressInput.svelte";
-  import SelectAccountDropdown from "./SelectAccountDropdown.svelte";
+  import AddressInput from "$lib/components/accounts/AddressInput.svelte";
+  import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
   import { Toggle } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";

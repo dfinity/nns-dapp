@@ -1,8 +1,8 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import type { ReportingPeriod } from "$lib/types/reporting";
-  import ReportingDateRangeSelector from "./ReportingDateRangeSelector.svelte";
-  import ReportingTransactionsButton from "./ReportingTransactionsButton.svelte";
+  import ReportingDateRangeSelector from "$lib/components/reporting/ReportingDateRangeSelector.svelte";
+  import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
 
   let period: ReportingPeriod = "all";
 </script>

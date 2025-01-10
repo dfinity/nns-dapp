@@ -8,7 +8,7 @@
     TransactionIconType,
     UiTransaction,
   } from "$lib/types/transaction";
-  import TransactionIcon from "./TransactionIcon.svelte";
+  import TransactionIcon from "$lib/components/accounts/TransactionIcon.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
   import {
     nonNullish,

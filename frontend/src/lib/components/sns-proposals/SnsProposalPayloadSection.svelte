@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import ProposalSummary from "../proposal-detail/ProposalSummary.svelte";
+  import ProposalSummary from "$lib/components/proposal-detail/ProposalSummary.svelte";
   import type { SnsProposalData } from "@dfinity/sns";
   import { fromNullable, nonNullish } from "@dfinity/utils";
 

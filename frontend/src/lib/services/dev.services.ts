@@ -8,14 +8,14 @@ import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.cons
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import { syncAccounts } from "$lib/services/icp-accounts.services";
+import { loadAccounts } from "$lib/services/icrc-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import { numberToUlps } from "$lib/utils/token.utils";
 import type { Principal } from "@dfinity/principal";
 import { ICPToken, nonNullish, type Token } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { syncAccounts } from "./icp-accounts.services";
-import { loadAccounts } from "./icrc-accounts.services";
 
 const getMainAccount = async (): Promise<Account> => {
   const { main }: IcpAccountsStoreData = get(icpAccountsStore);

@@ -15,9 +15,9 @@
     hasPermissionToVote,
     type SnsFolloweesByNeuron,
   } from "$lib/utils/sns-neuron.utils";
-  import SkeletonFollowees from "../ui/SkeletonFollowees.svelte";
-  import SnsFollowee from "./SnsFollowee.svelte";
-  import FollowSnsNeuronsButton from "./actions/FollowSnsNeuronsButton.svelte";
+  import SkeletonFollowees from "$lib/components/ui/SkeletonFollowees.svelte";
+  import SnsFollowee from "$lib/components/sns-neuron-detail/SnsFollowee.svelte";
+  import FollowSnsNeuronsButton from "$lib/components/sns-neuron-detail/actions/FollowSnsNeuronsButton.svelte";
   import { KeyValuePairInfo } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";

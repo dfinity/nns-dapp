@@ -6,7 +6,7 @@
   import { topicsToFollow } from "$lib/utils/neuron.utils";
   import type { NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
   import { onMount } from "svelte";
-  import FollowNnsTopicSection from "./FollowNnsTopicSection.svelte";
+  import FollowNnsTopicSection from "$lib/components/neurons/FollowNnsTopicSection.svelte";
 
   export let neuronId: NeuronId;
 

@@ -7,6 +7,7 @@ import {
   type IcrcCanistersStore,
   type IcrcCanistersStoreData,
 } from "$lib/derived/icrc-canisters.derived";
+import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
 import { pageStore, type Page } from "$lib/derived/page.derived";
 import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 import { ENABLE_CKTESTBTC } from "$lib/stores/feature-flags.store";
@@ -20,7 +21,6 @@ import {
 import { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
-import { nnsUniverseStore } from "./nns-universe.derived";
 
 /**
  * In Neurons or ultimately in Voting screen, user can select the "universe" - e.g. display Neurons of Nns or a particular Sns

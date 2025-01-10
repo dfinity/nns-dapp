@@ -15,7 +15,7 @@
     type Token,
     type TokenAmountV2,
   } from "@dfinity/utils";
-  import VestingTooltipWrapper from "../VestingTooltipWrapper.svelte";
+  import VestingTooltipWrapper from "$lib/components/sns-neuron-detail/VestingTooltipWrapper.svelte";
 
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;

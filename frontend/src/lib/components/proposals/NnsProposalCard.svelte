@@ -6,7 +6,7 @@
     getUniversalProposalStatus,
     mapProposalInfo,
   } from "$lib/utils/proposals.utils";
-  import ProposalCard from "./ProposalCard.svelte";
+  import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
   import type { NeuronId, ProposalId, ProposalInfo } from "@dfinity/nns";
 
   export let proposalInfo: ProposalInfo;

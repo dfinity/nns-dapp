@@ -3,7 +3,7 @@
   import { proposalPayloadsStore } from "$lib/stores/proposals.store";
   import { getNnsFunctionKey } from "$lib/utils/proposals.utils";
   import type { Proposal, ProposalId } from "@dfinity/nns";
-  import ProposalProposerPayloadEntry from "./ProposalProposerPayloadEntry.svelte";
+  import ProposalProposerPayloadEntry from "$lib/components/proposal-detail/ProposalProposerPayloadEntry.svelte";
 
   export let proposalId: ProposalId | undefined;
   export let proposal: Proposal | undefined;

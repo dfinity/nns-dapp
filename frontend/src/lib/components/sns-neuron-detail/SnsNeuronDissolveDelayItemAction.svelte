@@ -12,9 +12,9 @@
   import { NeuronState } from "@dfinity/nns";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import { fromNullable, secondsToDuration, type Token } from "@dfinity/utils";
-  import DissolveDelayBonusText from "../neuron-detail/DissolveDelayBonusText.svelte";
-  import CommonItemAction from "../ui/CommonItemAction.svelte";
-  import IncreaseSnsDissolveDelayButton from "./actions/IncreaseSnsDissolveDelayButton.svelte";
+  import DissolveDelayBonusText from "$lib/components/neuron-detail/DissolveDelayBonusText.svelte";
+  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
+  import IncreaseSnsDissolveDelayButton from "$lib/components/sns-neuron-detail/actions/IncreaseSnsDissolveDelayButton.svelte";
 
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;

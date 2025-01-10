@@ -12,7 +12,7 @@
     CompactNeuronInfo,
     IneligibleNeuronData,
   } from "$lib/utils/neuron.utils";
-  import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
+  import VotingConfirmationToolbar from "$lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
   import { BottomSheet } from "@dfinity/gix-components";
 
   export let hasNeurons: boolean;

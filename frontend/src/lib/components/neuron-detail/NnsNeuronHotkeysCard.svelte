@@ -12,7 +12,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsShow } from "$lib/stores/toasts.store";
   import { isNeuronControllable } from "$lib/utils/neuron.utils";
-  import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
+  import AddHotkeyButton from "$lib/components/neuron-detail/actions/AddHotkeyButton.svelte";
   import { IconClose, IconWarning, Value } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
 

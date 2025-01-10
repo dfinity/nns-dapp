@@ -10,7 +10,7 @@
   import { proposalsFiltersStore } from "$lib/stores/proposals.store";
   import type { ProposalsFilterModalProps } from "$lib/types/proposals";
   import { enumsExclude } from "$lib/utils/enum.utils";
-  import FiltersWrapper from "./FiltersWrapper.svelte";
+  import FiltersWrapper from "$lib/components/proposals/FiltersWrapper.svelte";
   import { ProposalStatus, Topic } from "@dfinity/nns";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;

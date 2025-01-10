@@ -6,8 +6,8 @@
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
-  import AddCanisterControllerButton from "./AddCanisterControllerButton.svelte";
-  import RemoveCanisterControllerButton from "./RemoveCanisterControllerButton.svelte";
+  import AddCanisterControllerButton from "$lib/components/canister-detail/AddCanisterControllerButton.svelte";
+  import RemoveCanisterControllerButton from "$lib/components/canister-detail/RemoveCanisterControllerButton.svelte";
   import { Value } from "@dfinity/gix-components";
   import { getContext } from "svelte";
 

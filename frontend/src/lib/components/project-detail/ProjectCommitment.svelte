@@ -21,9 +21,9 @@
   } from "@dfinity/gix-components";
   import { ICPToken, nonNullish, TokenAmountV2 } from "@dfinity/utils";
   import { getContext } from "svelte";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import CommitmentProgressBar from "$lib/components/project-detail/CommitmentProgressBar.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

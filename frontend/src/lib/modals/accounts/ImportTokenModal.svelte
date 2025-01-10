@@ -16,7 +16,7 @@
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import { isSnsLedgerCanisterId } from "$lib/utils/sns.utils";
-  import { LEDGER_CANISTER_ID } from "../../constants/canister-ids.constants";
+  import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import {
     WizardModal,
     type WizardStep,

@@ -1,8 +1,8 @@
 import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
 import { loadActionableSnsProposals } from "$lib/services/actionable-sns-proposals.services";
+import { initAccounts } from "$lib/services/icp-accounts.services";
 import { loadImportedTokens } from "$lib/services/imported-tokens.services";
-import { initAccounts } from "./icp-accounts.services";
-import { loadSnsProjects } from "./public/sns.services";
+import { loadSnsProjects } from "$lib/services/public/sns.services";
 
 export const initAppPrivateData = async (): Promise<void> => {
   const initNns: Promise<void>[] = [initAccounts()];

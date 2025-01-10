@@ -20,12 +20,12 @@
     mapProposalInfo,
     navigateToProposal,
   } from "$lib/utils/proposals.utils";
-  import NnsProposalProposerActionsEntry from "./NnsProposalProposerActionsEntry.svelte";
-  import NnsProposalProposerPayloadEntry from "./NnsProposalProposerPayloadEntry.svelte";
-  import NnsProposalSummarySection from "./NnsProposalSummarySection.svelte";
-  import ProposalNavigation from "./ProposalNavigation.svelte";
-  import ProposalSystemInfoSection from "./ProposalSystemInfoSection.svelte";
-  import ProposalVotingSection from "./ProposalVotingSection.svelte";
+  import NnsProposalProposerActionsEntry from "$lib/components/proposal-detail/NnsProposalProposerActionsEntry.svelte";
+  import NnsProposalProposerPayloadEntry from "$lib/components/proposal-detail/NnsProposalProposerPayloadEntry.svelte";
+  import NnsProposalSummarySection from "$lib/components/proposal-detail/NnsProposalSummarySection.svelte";
+  import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
+  import ProposalSystemInfoSection from "$lib/components/proposal-detail/ProposalSystemInfoSection.svelte";
+  import ProposalVotingSection from "$lib/components/proposal-detail/ProposalVotingSection.svelte";
   import { SplitBlock } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";

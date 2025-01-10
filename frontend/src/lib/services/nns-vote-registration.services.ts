@@ -1,6 +1,9 @@
 import { governanceApiService } from "$lib/api-services/governance.api-service";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
+import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import { listNeurons } from "$lib/services/neurons.services";
+import { loadProposal } from "$lib/services/public/proposals.services";
 import {
   manageVotesRegistration,
   processRegisterVoteErrors,
@@ -16,9 +19,6 @@ import type { Identity } from "@dfinity/agent";
 import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { getAuthenticatedIdentity } from "./auth.services";
-import { listNeurons } from "./neurons.services";
-import { loadProposal } from "./public/proposals.services";
 
 /**
  * Makes multiple registerVote calls (1 per neuronId).

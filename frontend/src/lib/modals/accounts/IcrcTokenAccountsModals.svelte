@@ -1,6 +1,6 @@
 <script lang="ts">
+  import IcrcTokenTransactionModal from "$lib/modals/accounts/IcrcTokenTransactionModal.svelte";
   import type { IcrcTokenModalProps } from "$lib/types/icrc-accounts.modal";
-  import IcrcTokenTransactionModal from "./IcrcTokenTransactionModal.svelte";
   import { TokenAmountV2 } from "@dfinity/utils";
 
   let modal: IcrcTokenModalProps | undefined = undefined;

@@ -4,7 +4,7 @@
   import type { Universe } from "$lib/types/universe";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import UniverseLogo from "../universe/UniverseLogo.svelte";
+  import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import { ItemAction } from "@dfinity/gix-components";
   import type { Token } from "@dfinity/utils";
 

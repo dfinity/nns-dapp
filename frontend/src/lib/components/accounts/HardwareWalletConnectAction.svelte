@@ -3,7 +3,7 @@
   import type { LedgerIdentity } from "$lib/identities/ledger.identity";
   import { connectToHardwareWalletProxy } from "$lib/proxy/icp-ledger.services.proxy";
   import { i18n } from "$lib/stores/i18n";
-  import HardwareWalletInfo from "./HardwareWalletInfo.svelte";
+  import HardwareWalletInfo from "$lib/components/accounts/HardwareWalletInfo.svelte";
   import { Spinner } from "@dfinity/gix-components";
 
   export let connectionState: LedgerConnectionState =

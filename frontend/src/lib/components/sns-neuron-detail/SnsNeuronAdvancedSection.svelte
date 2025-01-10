@@ -7,11 +7,11 @@
     getSnsNeuronIdAsHexString,
     hasPermissionToSplit,
   } from "$lib/utils/sns-neuron.utils";
-  import SnsNeuronAge from "../sns-neurons/SnsNeuronAge.svelte";
-  import Hash from "../ui/Hash.svelte";
-  import SnsNeuronVestingPeriodRemaining from "./SnsNeuronVestingPeriodRemaining.svelte";
-  import SnsAutoStakeMaturity from "./actions/SnsAutoStakeMaturity.svelte";
-  import SplitSnsNeuronButton from "./actions/SplitSnsNeuronButton.svelte";
+  import SnsNeuronAge from "$lib/components/sns-neurons/SnsNeuronAge.svelte";
+  import Hash from "$lib/components/ui/Hash.svelte";
+  import SnsNeuronVestingPeriodRemaining from "$lib/components/sns-neuron-detail/SnsNeuronVestingPeriodRemaining.svelte";
+  import SnsAutoStakeMaturity from "$lib/components/sns-neuron-detail/actions/SnsAutoStakeMaturity.svelte";
+  import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
   import { KeyValuePair, Section } from "@dfinity/gix-components";
   import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
   import type { Principal } from "@dfinity/principal";

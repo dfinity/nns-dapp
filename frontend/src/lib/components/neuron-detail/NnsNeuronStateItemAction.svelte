@@ -10,10 +10,10 @@
     type StateInfo,
   } from "$lib/utils/neuron.utils";
   import { keyOf } from "$lib/utils/utils";
-  import CommonItemAction from "../ui/CommonItemAction.svelte";
-  import AgeBonusText from "./AgeBonusText.svelte";
-  import DisburseButton from "./actions/DisburseButton.svelte";
-  import DissolveActionButton from "./actions/DissolveActionButton.svelte";
+  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
+  import AgeBonusText from "$lib/components/neuron-detail/AgeBonusText.svelte";
+  import DisburseButton from "$lib/components/neuron-detail/actions/DisburseButton.svelte";
+  import DissolveActionButton from "$lib/components/neuron-detail/actions/DissolveActionButton.svelte";
   import { NeuronState, type NeuronInfo } from "@dfinity/nns";
   import { ICPToken } from "@dfinity/utils";
 

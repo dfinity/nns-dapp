@@ -21,7 +21,7 @@
   } from "@dfinity/sns";
   import { fromNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
-  import Hash from "../ui/Hash.svelte";
+  import Hash from "$lib/components/ui/Hash.svelte";
 
   export let neuron: SnsNeuron;
   export let rootCanisterId: Principal;

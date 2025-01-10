@@ -6,7 +6,7 @@
   import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isCriticalProposal } from "$lib/utils/sns-proposals.utils";
-  import ProposalContentCell from "./ProposalContentCell.svelte";
+  import ProposalContentCell from "$lib/components/proposal-detail/ProposalContentCell.svelte";
   import { Html } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 

@@ -11,7 +11,7 @@
     comparesByDecentralizationSaleOpenTimestampDesc,
     filterProjectsStatus,
   } from "$lib/utils/projects.utils";
-  import ProjectCard from "./ProjectCard.svelte";
+  import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
   import { Html } from "@dfinity/gix-components";
   import { SnsSwapLifecycle } from "@dfinity/sns";
 

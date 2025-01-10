@@ -1,4 +1,5 @@
 import { createAgent } from "$lib/api/agent.api";
+import { ledgerCanister as getLedgerCanister } from "$lib/api/icp-ledger.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { GOVERNANCE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
@@ -20,7 +21,6 @@ import {
   type RewardEvent,
 } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { ledgerCanister as getLedgerCanister } from "./icp-ledger.api";
 
 /**
  * COMMON TYPES

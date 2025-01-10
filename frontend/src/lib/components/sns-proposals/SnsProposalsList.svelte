@@ -6,10 +6,10 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import type { SnsProposalActionableData } from "$lib/derived/sns/sns-filtered-actionable-proposals.derived";
-  import ListLoader from "../proposals/ListLoader.svelte";
-  import LoadingProposals from "../proposals/LoadingProposals.svelte";
-  import NoProposals from "../proposals/NoProposals.svelte";
-  import SnsProposalsFilters from "./SnsProposalsFilters.svelte";
+  import ListLoader from "$lib/components/proposals/ListLoader.svelte";
+  import LoadingProposals from "$lib/components/proposals/LoadingProposals.svelte";
+  import NoProposals from "$lib/components/proposals/NoProposals.svelte";
+  import SnsProposalsFilters from "$lib/components/sns-proposals/SnsProposalsFilters.svelte";
   import { InfiniteScroll } from "@dfinity/gix-components";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import { fromNullable, isNullish } from "@dfinity/utils";

@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { Universe } from "$lib/types/universe";
-  import PageHeader from "../common/PageHeader.svelte";
-  import IdentifierHash from "../ui/IdentifierHash.svelte";
-  import UniverseSummary from "../universe/UniverseSummary.svelte";
+  import PageHeader from "$lib/components/common/PageHeader.svelte";
+  import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
+  import UniverseSummary from "$lib/components/universe/UniverseSummary.svelte";
   import { nonNullish } from "@dfinity/utils";
 
   export let universe: Universe;

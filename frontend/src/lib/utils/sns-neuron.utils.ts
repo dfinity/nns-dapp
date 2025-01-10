@@ -5,6 +5,7 @@ import {
   MAX_NEURONS_SUBACCOUNTS,
 } from "$lib/constants/sns-neurons.constants";
 import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import {
   bonusMultiplier,
   votingPower,
@@ -13,7 +14,9 @@ import {
   type NeuronIneligibilityReason,
   type NeuronTagData,
 } from "$lib/utils/neuron.utils";
+import { ballotVotingPower } from "$lib/utils/sns-proposals.utils";
 import { formatTokenE8s } from "$lib/utils/token.utils";
+import { bytesToHexString } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, Vote, type E8s, type NeuronInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
@@ -33,9 +36,6 @@ import {
   isNullish,
   nonNullish,
 } from "@dfinity/utils";
-import { nowInSeconds } from "./date.utils";
-import { ballotVotingPower } from "./sns-proposals.utils";
-import { bytesToHexString } from "./utils";
 
 export const sortSnsNeuronsByStake = (neurons: SnsNeuron[]): SnsNeuron[] =>
   [...neurons].sort((a, b) =>

@@ -45,7 +45,7 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { tick } from "svelte";
   import type { Readable } from "svelte/store";
-  import { debugSnsProposalStore } from "../derived/debug.derived";
+  import { debugSnsProposalStore } from "$lib/derived/debug.derived";
 
   export let proposalIdText: string | undefined | null = undefined;
 

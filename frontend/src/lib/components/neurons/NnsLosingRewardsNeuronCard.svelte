@@ -6,7 +6,7 @@
     type FolloweesNeuron,
     type NeuronTagData,
   } from "$lib/utils/neuron.utils";
-  import Followee from "../neuron-detail/NeuronFollowingCard/Followee.svelte";
+  import Followee from "$lib/components/neuron-detail/NeuronFollowingCard/Followee.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";

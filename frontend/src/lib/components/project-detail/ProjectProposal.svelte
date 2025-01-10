@@ -5,7 +5,7 @@
   import type { SnsSummary } from "$lib/types/sns";
   import type { ProposalId, ProposalInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
-  import NnsProposalCard from "../proposals/NnsProposalCard.svelte";
+  import NnsProposalCard from "$lib/components/proposals/NnsProposalCard.svelte";
 
   export let summary: SnsSummary;
 

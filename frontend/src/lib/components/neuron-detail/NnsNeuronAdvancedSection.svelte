@@ -10,12 +10,12 @@
     isNeuronControllable,
     maturityLastDistribution,
   } from "$lib/utils/neuron.utils";
-  import NnsNeuronAge from "../neurons/NnsNeuronAge.svelte";
-  import Hash from "../ui/Hash.svelte";
-  import NnsNeuronPublicVisibilityAction from "./NnsNeuronPublicVisibilityAction.svelte";
-  import JoinCommunityFundCheckbox from "./actions/JoinCommunityFundCheckbox.svelte";
-  import NnsAutoStakeMaturity from "./actions/NnsAutoStakeMaturity.svelte";
-  import SplitNnsNeuronButton from "./actions/SplitNnsNeuronButton.svelte";
+  import NnsNeuronAge from "$lib/components/neurons/NnsNeuronAge.svelte";
+  import Hash from "$lib/components/ui/Hash.svelte";
+  import NnsNeuronPublicVisibilityAction from "$lib/components/neuron-detail/NnsNeuronPublicVisibilityAction.svelte";
+  import JoinCommunityFundCheckbox from "$lib/components/neuron-detail/actions/JoinCommunityFundCheckbox.svelte";
+  import NnsAutoStakeMaturity from "$lib/components/neuron-detail/actions/NnsAutoStakeMaturity.svelte";
+  import SplitNnsNeuronButton from "$lib/components/neuron-detail/actions/SplitNnsNeuronButton.svelte";
   import {
     Html,
     KeyValuePair,

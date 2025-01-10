@@ -27,8 +27,8 @@
   } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
-  import AddSnsHotkeyButton from "./actions/AddSnsHotkeyButton.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import AddSnsHotkeyButton from "$lib/components/sns-neuron-detail/actions/AddSnsHotkeyButton.svelte";
 
   export let parameters: SnsNervousSystemParameters;
 

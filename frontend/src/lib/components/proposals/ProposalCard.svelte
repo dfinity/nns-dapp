@@ -5,7 +5,7 @@
   import type { UniversalProposalStatus } from "$lib/types/proposals";
   import { nowInSeconds } from "$lib/utils/date.utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
-  import Countdown from "./Countdown.svelte";
+  import Countdown from "$lib/components/proposals/Countdown.svelte";
   import {
     Card,
     IconChat,

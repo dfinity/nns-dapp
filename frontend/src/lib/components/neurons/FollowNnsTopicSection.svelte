@@ -11,7 +11,7 @@
     getTopicSubtitle,
     getTopicTitle,
   } from "$lib/utils/neuron.utils";
-  import FollowTopicSection from "./FollowTopicSection.svelte";
+  import FollowTopicSection from "$lib/components/neurons/FollowTopicSection.svelte";
   import { IconClose, Value } from "@dfinity/gix-components";
   import type { NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
 

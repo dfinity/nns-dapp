@@ -5,6 +5,7 @@
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
   import AddMaturityModal from "$lib/modals/sns/neurons/AddMaturityModal.svelte";
+  import AddPermissionsModal from "$lib/modals/sns/neurons/AddPermissionsModal.svelte";
   import AddSnsHotkeyModal from "$lib/modals/sns/neurons/AddSnsHotkeyModal.svelte";
   import DissolveSnsNeuronModal from "$lib/modals/sns/neurons/DissolveSnsNeuronModal.svelte";
   import FollowSnsNeuronsModal from "$lib/modals/sns/neurons/FollowSnsNeuronsModal.svelte";
@@ -38,7 +39,6 @@
     type Token,
   } from "@dfinity/utils";
   import { getContext } from "svelte";
-  import AddPermissionsModal from "./AddPermissionsModal.svelte";
 
   // Modal events
 

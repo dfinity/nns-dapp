@@ -13,10 +13,10 @@
     neuronStake,
     type NeuronTagData,
   } from "$lib/utils/neuron.utils";
-  import HeadingSubtitle from "../common/HeadingSubtitle.svelte";
-  import HeadingSubtitleWithUsdValue from "../common/HeadingSubtitleWithUsdValue.svelte";
-  import PageHeading from "../common/PageHeading.svelte";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
+  import HeadingSubtitle from "$lib/components/common/HeadingSubtitle.svelte";
+  import HeadingSubtitleWithUsdValue from "$lib/components/common/HeadingSubtitleWithUsdValue.svelte";
+  import PageHeading from "$lib/components/common/PageHeading.svelte";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 

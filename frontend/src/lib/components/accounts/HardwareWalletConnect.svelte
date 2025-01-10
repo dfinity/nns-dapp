@@ -9,7 +9,7 @@
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
   } from "$lib/types/add-account.context";
-  import HardwareWalletConnectAction from "./HardwareWalletConnectAction.svelte";
+  import HardwareWalletConnectAction from "$lib/components/accounts/HardwareWalletConnectAction.svelte";
   import { busy } from "@dfinity/gix-components";
   import { createEventDispatcher, getContext } from "svelte";
 

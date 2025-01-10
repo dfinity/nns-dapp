@@ -17,7 +17,7 @@
     secondsToDuration,
     TokenAmountV2,
   } from "@dfinity/utils";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let project: SnsFullProject;
   // The data to know whether it's finalizing or not is not in the SnsFullProject.

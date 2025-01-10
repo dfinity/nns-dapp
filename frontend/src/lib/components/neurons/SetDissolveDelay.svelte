@@ -5,7 +5,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { valueSpan } from "$lib/utils/utils";
-  import RangeDissolveDelay from "./RangeDissolveDelay.svelte";
+  import RangeDissolveDelay from "$lib/components/neurons/RangeDissolveDelay.svelte";
   import { Html } from "@dfinity/gix-components";
   import type { NeuronState } from "@dfinity/nns";
   import { nonNullish, type TokenAmountV2 } from "@dfinity/utils";

@@ -4,7 +4,7 @@
    */
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import GetTokensModal from "./GetTokensModal.svelte";
+  import GetTokensModal from "$lib/components/ic/GetTokensModal.svelte";
   import { IconAccountBalance } from "@dfinity/gix-components";
 
   let visible = false;

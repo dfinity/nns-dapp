@@ -1,3 +1,4 @@
+import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import {
   hasValidStake,
@@ -6,7 +7,6 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import { derived, type Readable } from "svelte/store";
-import { selectedUniverseIdStore } from "../selected-universe.derived";
 
 export const definedSnsNeuronStore: Readable<SnsNeuron[]> = derived(
   [snsNeuronsStore, selectedUniverseIdStore],

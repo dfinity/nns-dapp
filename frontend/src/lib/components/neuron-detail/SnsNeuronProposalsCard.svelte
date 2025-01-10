@@ -4,7 +4,7 @@
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
-  import NeuronProposalsCard from "./NeuronProposalsCard.svelte";
+  import NeuronProposalsCard from "$lib/components/neuron-detail/NeuronProposalsCard.svelte";
   import { getContext } from "svelte";
 
   const { store }: SelectedSnsNeuronContext =

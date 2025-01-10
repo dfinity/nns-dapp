@@ -1,6 +1,7 @@
 import {
   estimateFee as estimateFeeAPI,
   getBTCAddress as getBTCAddressAPI,
+  retrieveBtcStatusV2ByAccount,
   updateBalance as updateBalanceAPI,
 } from "$lib/api/ckbtc-minter.api";
 import { WALLET_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/wallet.constants";
@@ -30,7 +31,6 @@ import {
 } from "@dfinity/ckbtc";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { retrieveBtcStatusV2ByAccount } from "../api/ckbtc-minter.api";
 
 const getBTCAddress = async (minterCanisterId: CanisterId): Promise<string> => {
   const identity = await getAuthenticatedIdentity();

@@ -6,7 +6,7 @@
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
   } from "$lib/types/add-account.context";
-  import TextInputForm from "../common/TextInputForm.svelte";
+  import TextInputForm from "$lib/components/common/TextInputForm.svelte";
   import { busy } from "@dfinity/gix-components";
   import { createEventDispatcher, getContext } from "svelte";
 

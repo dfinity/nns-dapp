@@ -11,9 +11,9 @@
     hasPermissionToDissolve,
   } from "$lib/utils/sns-neuron.utils";
   import { keyOf } from "$lib/utils/utils";
-  import AgeBonusText from "../neuron-detail/AgeBonusText.svelte";
-  import DisburseSnsButton from "./actions/DisburseSnsButton.svelte";
-  import DissolveSnsNeuronButton from "./actions/DissolveSnsNeuronButton.svelte";
+  import AgeBonusText from "$lib/components/neuron-detail/AgeBonusText.svelte";
+  import DisburseSnsButton from "$lib/components/sns-neuron-detail/actions/DisburseSnsButton.svelte";
+  import DissolveSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/DissolveSnsNeuronButton.svelte";
   import { NeuronState } from "@dfinity/nns";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import type { Token } from "@dfinity/utils";

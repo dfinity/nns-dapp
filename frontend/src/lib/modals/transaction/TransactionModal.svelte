@@ -4,15 +4,15 @@
   import TransactionForm from "$lib/components/transaction/TransactionForm.svelte";
   import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
   import TransactionReview from "$lib/components/transaction/TransactionReview.svelte";
+  import QrWizardModal from "$lib/modals/transaction/QrWizardModal.svelte";
   import type { Account } from "$lib/types/account";
   import type { QrResponse } from "$lib/types/qr-wizard-modal";
   import type {
     TransactionInit,
     TransactionNetwork,
+    TransactionSelectDestinationMethods,
     ValidateAmountFn,
   } from "$lib/types/transaction";
-  import type { TransactionSelectDestinationMethods } from "$lib/types/transaction";
-  import QrWizardModal from "./QrWizardModal.svelte";
   import type {
     WizardModal,
     WizardStep,
@@ -21,11 +21,12 @@
   import type { Principal } from "@dfinity/principal";
   import {
     ICPToken,
+    isNullish,
+    nonNullish,
     TokenAmount,
     TokenAmountV2,
     type Token,
   } from "@dfinity/utils";
-  import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let testId = "transaction-modal-component";
   export let transactionInit: TransactionInit = {};

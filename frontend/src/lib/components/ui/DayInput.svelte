@@ -2,7 +2,7 @@
   import MaxButton from "$lib/components/common/MaxButton.svelte";
   import MinButton from "$lib/components/common/MinButton.svelte";
   import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
-  import InputWithError from "./InputWithError.svelte";
+  import InputWithError from "$lib/components/ui/InputWithError.svelte";
 
   export let seconds: number;
   export let disabled: boolean = false;

@@ -6,7 +6,7 @@
     getAccountByRootCanister,
     getAccountsByRootCanister,
   } from "$lib/utils/accounts.utils";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { Dropdown, DropdownItem, Spinner } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { isNullish } from "@dfinity/utils";

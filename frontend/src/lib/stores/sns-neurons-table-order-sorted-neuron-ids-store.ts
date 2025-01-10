@@ -4,6 +4,7 @@ import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.d
 import { definedSnsNeuronStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
 import { authStore } from "$lib/stores/auth.store";
 import { i18n } from "$lib/stores/i18n";
+import { neuronsTableOrderStore } from "$lib/stores/neurons-table.store";
 import { getSortedNeuronIds } from "$lib/utils/neurons-table-order-sorted-neuron-ids-store.utils";
 import {
   compareById,
@@ -11,7 +12,6 @@ import {
 } from "$lib/utils/neurons-table.utils";
 import { nonNullish } from "@dfinity/utils";
 import { derived } from "svelte/store";
-import { neuronsTableOrderStore } from "./neurons-table.store";
 
 const snsTableNeuronsToSortStore = derived(
   [

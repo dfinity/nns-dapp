@@ -6,10 +6,10 @@
     formattedMaturity,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
-  import CommonItemAction from "../ui/CommonItemAction.svelte";
-  import TooltipIcon from "../ui/TooltipIcon.svelte";
-  import NnsStakeMaturityButton from "./actions/NnsStakeMaturityButton.svelte";
-  import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
+  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
+  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+  import NnsStakeMaturityButton from "$lib/components/neuron-detail/actions/NnsStakeMaturityButton.svelte";
+  import SpawnNeuronButton from "$lib/components/neuron-detail/actions/SpawnNeuronButton.svelte";
   import { IconExpandCircleDown } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
 

@@ -1,7 +1,7 @@
+import { nnsDappCanister } from "$lib/api/nns-dapp.api";
 import type { AccountIdentifierString } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
-import { nnsDappCanister } from "./nns-dapp.api";
 
 export const createSubAccount = async ({
   name,

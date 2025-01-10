@@ -8,10 +8,10 @@
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { ICPToken, TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
-  import ParticipateButton from "./ParticipateButton.svelte";
-  import ProjectCommitment from "./ProjectCommitment.svelte";
-  import ProjectStatus from "./ProjectStatus.svelte";
-  import ProjectTimelineUserCommitment from "./ProjectTimelineUserCommitment.svelte";
+  import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
+  import ProjectCommitment from "$lib/components/project-detail/ProjectCommitment.svelte";
+  import ProjectStatus from "$lib/components/project-detail/ProjectStatus.svelte";
+  import ProjectTimelineUserCommitment from "$lib/components/project-detail/ProjectTimelineUserCommitment.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

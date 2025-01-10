@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import ProposalSummary from "./ProposalSummary.svelte";
+  import ProposalSummary from "$lib/components/proposal-detail/ProposalSummary.svelte";
 
   export let title: string | undefined;
   export let summary: string | undefined;

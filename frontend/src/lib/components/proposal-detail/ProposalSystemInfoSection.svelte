@@ -3,8 +3,8 @@
   import { secondsToDateTime } from "$lib/utils/date.utils";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import type { NeuronId, ProposalId, ProposalInfo } from "@dfinity/nns";
-  import ProposalSystemInfoEntry from "./ProposalSystemInfoEntry.svelte";
-  import ProposalSystemInfoProposerEntry from "./ProposalSystemInfoProposerEntry.svelte";
+  import ProposalSystemInfoEntry from "$lib/components/proposal-detail/ProposalSystemInfoEntry.svelte";
+  import ProposalSystemInfoProposerEntry from "$lib/components/proposal-detail/ProposalSystemInfoProposerEntry.svelte";
 
   export let proposalInfo: ProposalInfo;
 

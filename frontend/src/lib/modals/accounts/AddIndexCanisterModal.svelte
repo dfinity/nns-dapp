@@ -4,7 +4,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-  import { addIndexCanister } from "../../services/imported-tokens.services";
+  import { addIndexCanister } from "$lib/services/imported-tokens.services";
   import { Modal } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { isNullish } from "@dfinity/utils";

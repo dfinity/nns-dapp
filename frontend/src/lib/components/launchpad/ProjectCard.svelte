@@ -13,7 +13,7 @@
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
   import type { Readable } from "svelte/store";
-  import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
+  import ProjectCardSwapInfo from "$lib/components/launchpad/ProjectCardSwapInfo.svelte";
 
   export let project: SnsFullProject;
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
-  import CardInfo from "../ui/CardInfo.svelte";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
 
   const openAddMaturityModal = async () => {
     openSnsNeuronModal({ type: "dev-add-maturity" });

@@ -7,7 +7,7 @@
   } from "$lib/constants/proposals.constants";
   import { basisPointsToPercent } from "$lib/utils/utils";
   import { ProposalRewardStatus, type ProposalInfo } from "@dfinity/nns";
-  import VotesResults from "./VotesResults.svelte";
+  import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
 
   export let proposalInfo: ProposalInfo;
 

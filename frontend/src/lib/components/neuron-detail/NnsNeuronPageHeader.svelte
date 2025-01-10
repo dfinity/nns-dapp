@@ -5,11 +5,11 @@
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import type { IntersectingDetail } from "$lib/types/intersection.types";
-  import PageHeader from "../common/PageHeader.svelte";
-  import IdentifierHash from "../ui/IdentifierHash.svelte";
-  import UniverseSummary from "../universe/UniverseSummary.svelte";
+  import PageHeader from "$lib/components/common/PageHeader.svelte";
+  import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
+  import UniverseSummary from "$lib/components/universe/UniverseSummary.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
-  import NeuronNavigation from "./NeuronNavigation.svelte";
+  import NeuronNavigation from "$lib/components/neuron-detail/NeuronNavigation.svelte";
   import { neuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/neurons-table-order-sorted-neuron-ids-store";
 
   export let neuron: NeuronInfo;

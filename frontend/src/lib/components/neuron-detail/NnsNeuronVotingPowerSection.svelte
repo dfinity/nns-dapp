@@ -12,11 +12,11 @@
     neuronStake,
   } from "$lib/utils/neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import NnsNeuronRewardStatusAction from "./NnsNeuronRewardStatusAction.svelte";
-  import NnsNeuronDissolveDelayItemAction from "./NnsNeuronDissolveDelayItemAction.svelte";
-  import NnsNeuronStateItemAction from "./NnsNeuronStateItemAction.svelte";
-  import NnsStakeItemAction from "./NnsStakeItemAction.svelte";
-  import { Html, KeyValuePairInfo, Section } from "@dfinity/gix-components";
+  import NnsNeuronRewardStatusAction from "$lib/components/neuron-detail/NnsNeuronRewardStatusAction.svelte";
+  import NnsNeuronDissolveDelayItemAction from "$lib/components/neuron-detail/NnsNeuronDissolveDelayItemAction.svelte";
+  import NnsNeuronStateItemAction from "$lib/components/neuron-detail/NnsNeuronStateItemAction.svelte";
+  import NnsStakeItemAction from "$lib/components/neuron-detail/NnsStakeItemAction.svelte";
+  import { Html, Section } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
 

@@ -23,6 +23,8 @@ import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
+import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import { queryAndUpdate } from "$lib/services/utils.services";
 import {
   icpAccountBalancesStore,
   type IcpAccountBalancesStoreData,
@@ -55,8 +57,6 @@ import { TxCreatedInFutureError, TxTooOldError } from "@dfinity/ledger-icp";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { ICPToken, TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { getAuthenticatedIdentity } from "./auth.services";
-import { queryAndUpdate } from "./utils.services";
 
 type AccountStoresData = {
   accountDetailsData: IcpAccountDetailsStoreData;

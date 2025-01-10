@@ -9,7 +9,7 @@
     mapNeuronIds,
     type MergeableNeuron,
   } from "$lib/utils/neuron.utils";
-  import NnsNeuronCard from "./NnsNeuronCard.svelte";
+  import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
   import { Tooltip } from "@dfinity/gix-components";
   import type { NeuronId } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";

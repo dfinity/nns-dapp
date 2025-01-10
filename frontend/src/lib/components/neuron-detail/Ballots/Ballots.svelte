@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { ballotsWithDefinedProposal } from "$lib/utils/neuron.utils";
-  import BallotSummary from "./BallotSummary.svelte";
+  import BallotSummary from "$lib/components/neuron-detail/Ballots/BallotSummary.svelte";
   import { InfiniteScroll } from "@dfinity/gix-components";
   import type { BallotInfo, NeuronInfo } from "@dfinity/nns";
   import { debounce } from "@dfinity/utils";

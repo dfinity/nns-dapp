@@ -3,7 +3,7 @@
     proposalActionData,
     proposalFirstActionKey,
   } from "$lib/utils/proposals.utils";
-  import ProposalProposerActionsEntry from "./ProposalProposerActionsEntry.svelte";
+  import ProposalProposerActionsEntry from "$lib/components/proposal-detail/ProposalProposerActionsEntry.svelte";
   import type { Proposal } from "@dfinity/nns";
 
   export let proposal: Proposal | undefined;

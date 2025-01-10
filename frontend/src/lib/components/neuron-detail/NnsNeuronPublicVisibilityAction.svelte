@@ -6,8 +6,8 @@
     isNeuronControlledByHardwareWallet,
     isPublicNeuron,
   } from "$lib/utils/neuron.utils";
-  import CommonItemAction from "../ui/CommonItemAction.svelte";
-  import NnsChangeNeuronVisibilityButton from "./actions/NnsChangeNeuronVisibilityButton.svelte";
+  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
+  import NnsChangeNeuronVisibilityButton from "$lib/components/neuron-detail/actions/NnsChangeNeuronVisibilityButton.svelte";
   import { IconPublicBadge, Tooltip } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
 
