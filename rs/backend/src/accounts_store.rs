@@ -581,9 +581,8 @@ impl AccountsStore {
                 if self.store_has_account(to) {
                 } else if self.store_has_account(from) {
                     if let Some(principal) = self.try_get_principal(&from) {
-                        let transaction_type =
+                        let _transaction_type =
                             Self::get_transaction_type(from, to, memo, &principal, default_transaction_type);
-                        self.process_transaction_type(transaction_type, principal, block_height);
                     }
                 }
             }
@@ -952,19 +951,6 @@ impl AccountsStore {
         false
     }
 
-    /// Certain transaction types require additional processing (Stake Neuron, Create Canister,
-    /// etc). Each time we detect one of these transaction types we need to add the details to the
-    /// `multi_part_transactions_processor` which will work through the required actions in the
-    /// background.
-    #[allow(clippy::too_many_arguments)]
-    #[allow(clippy::unused_self)]
-    fn process_transaction_type(
-        &mut self,
-        _transaction_type: TransactionType,
-        _principal: PrincipalId,
-        _block_height: BlockIndex,
-    ) {
-    }
     fn assert_account_limit(&self) {
         let db_accounts_len = self.accounts_db.db_accounts_len();
         assert!(
