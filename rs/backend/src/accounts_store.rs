@@ -837,30 +837,6 @@ impl AccountsStore {
         name.len() <= CANISTER_NAME_MAX_LENGTH
     }
 
-    #[allow(clippy::too_many_arguments)]
-    #[allow(dead_code)]
-    fn get_transaction_type(
-        from: AccountIdentifier,
-        to: AccountIdentifier,
-        memo: Memo,
-        principal: &PrincipalId,
-        default_transaction_type: TransactionType,
-    ) -> TransactionType {
-        // In case of the edge case that it's a transaction to itself
-        // use the default value passed when the function is called
-        if from == to {
-            default_transaction_type
-        } else if memo.0 > 0 {
-            if Self::is_create_canister_transaction(memo, &to, principal) {
-                TransactionType::CreateCanister
-            } else {
-                default_transaction_type
-            }
-        } else {
-            default_transaction_type
-        }
-    }
-
     #[allow(dead_code)]
     fn is_create_canister_transaction(memo: Memo, to: &AccountIdentifier, principal: &PrincipalId) -> bool {
         // Creating a canister involves sending ICP directly to an account controlled by the CMC, the NNS
