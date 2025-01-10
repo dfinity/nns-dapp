@@ -4,6 +4,7 @@ import {
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
 import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
+import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import {
@@ -22,7 +23,6 @@ import {
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
 describe("NnsNeuronAdvancedSection", () => {
   const nowInSeconds = new Date("Jul 20, 2023 8:53 AM").getTime() / 1000;

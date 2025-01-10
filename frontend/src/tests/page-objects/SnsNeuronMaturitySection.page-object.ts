@@ -1,7 +1,7 @@
+import { SnsAvailableMaturityItemActionPo } from "$tests/page-objects/SnsAvailableMaturityItemAction.page-object";
+import { SnsStakedMaturityItemActionPo } from "$tests/page-objects/SnsStakedMaturityItemAction.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { SnsAvailableMaturityItemActionPo } from "./SnsAvailableMaturityItemAction.page-object";
-import { SnsStakedMaturityItemActionPo } from "./SnsStakedMaturityItemAction.page-object";
 
 export class SnsNeuronMaturitySectionPo extends BasePageObject {
   private static readonly TID = "sns-neuron-maturity-section-component";

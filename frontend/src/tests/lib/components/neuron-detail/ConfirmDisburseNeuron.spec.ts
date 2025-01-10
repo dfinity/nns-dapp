@@ -1,8 +1,8 @@
 import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
+import ConfirmDisburseNeuronTest from "$tests/lib/components/neuron-detail/ConfirmDisburseNeuronTest.svelte";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
-import ConfirmDisburseNeuronTest from "./ConfirmDisburseNeuronTest.svelte";
 
 vi.mock("$lib/services/neurons.services", () => {
   return {

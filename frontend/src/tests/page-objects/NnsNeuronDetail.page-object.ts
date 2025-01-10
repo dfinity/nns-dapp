@@ -1,15 +1,15 @@
+import { ConfirmFollowingBannerPo } from "$tests/page-objects/ConfirmFollowingBanner.page-object";
 import { NnsNeuronAdvancedSectionPo } from "$tests/page-objects/NnsNeuronAdvancedSection.page-object";
 import { NnsNeuronHotkeysCardPo } from "$tests/page-objects/NnsNeuronHotkeysCard.page-object";
 import { NnsNeuronMaturitySectionPo } from "$tests/page-objects/NnsNeuronMaturitySection.page-object";
 import { NnsNeuronModalsPo } from "$tests/page-objects/NnsNeuronModals.page-object";
+import { NnsNeuronPageHeaderPo } from "$tests/page-objects/NnsNeuronPageHeader.page-object";
+import { NnsNeuronRewardStatusActionPo } from "$tests/page-objects/NnsNeuronRewardStatusAction.page-object";
 import { NnsNeuronTestnetFunctionsCardPo } from "$tests/page-objects/NnsNeuronTestnetFunctionsCard.page-object";
 import { NnsNeuronVotingPowerSectionPo } from "$tests/page-objects/NnsNeuronVotingPowerSection.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { ConfirmFollowingBannerPo } from "./ConfirmFollowingBanner.page-object";
-import { NnsNeuronPageHeaderPo } from "./NnsNeuronPageHeader.page-object";
-import { NnsNeuronRewardStatusActionPo } from "./NnsNeuronRewardStatusAction.page-object";
 
 export class NnsNeuronDetailPo extends BasePageObject {
   private static readonly TID = "nns-neuron-detail-component";

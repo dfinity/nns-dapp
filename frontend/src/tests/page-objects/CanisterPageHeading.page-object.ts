@@ -1,6 +1,6 @@
+import { CanisterHeadingTitlePo } from "$tests/page-objects/CanisterHeadingTitle.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { CanisterHeadingTitlePo } from "./CanisterHeadingTitle.page-object";
 
 export class CanisterPageHeadingPo extends BasePageObject {
   private static readonly TID = "canister-page-heading-component";

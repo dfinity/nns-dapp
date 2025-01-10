@@ -20,9 +20,9 @@ import {
   type UserTokenLoading,
 } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
+import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { TokenAmountV2, nonNullish } from "@dfinity/utils";
-import { mockCkBTCToken } from "./ckbtc-accounts.mock";
-import { mockSnsToken, principal } from "./sns-projects.mock";
 
 export const icpTokenBase: UserTokenBase = {
   universeId: OWN_CANISTER_ID,

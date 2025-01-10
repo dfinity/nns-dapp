@@ -10,6 +10,7 @@ import {
   type UserTokenLoading,
 } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+import TokensTableTest from "$tests/lib/components/tokens/TokensTableTest.svelte";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   createUserToken,
@@ -21,7 +22,6 @@ import { createActionEvent } from "$tests/utils/actions.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import type { Mock } from "vitest";
-import TokensTableTest from "./TokensTableTest.svelte";
 
 describe("TokensTable", () => {
   const renderTable = ({

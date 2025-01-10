@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { LedgerCanister } from "@dfinity/ledger-icp";
 import type {
   ListProposalsRequest,
@@ -9,7 +10,6 @@ import type {
 } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { mockNeuron } from "./neurons.mock";
 
 // eslint-disable-next-line
 // @ts-ignore: test file

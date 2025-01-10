@@ -7,6 +7,7 @@ import type { ProjectNeuronStore } from "$lib/stores/sns-neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import { convertNervousSystemParameters } from "$lib/utils/sns-aggregator-converters.utils";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { NeuronState, type NeuronId } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
@@ -25,7 +26,6 @@ import {
   nonNullish,
 } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
-import { mockIdentity, mockPrincipal } from "./auth.store.mock";
 
 export const mockSnsNeuronTimestampSeconds = 3600 * 24 * 6;
 

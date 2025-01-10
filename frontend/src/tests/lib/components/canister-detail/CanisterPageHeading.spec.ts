@@ -74,7 +74,7 @@ describe("CanisterHeadingTitle", () => {
     await po.clickUnlink();
     expect(eventListener).toHaveBeenCalledTimes(1);
     const $event = new CustomEvent("nnsCanisterDetailModal", {
-      detail: { type: "unlink", canisterId },
+      detail: { type: "unlink", data: { canisterId } },
       bubbles: true,
     });
     expect(eventListener).toHaveBeenCalledWith($event);

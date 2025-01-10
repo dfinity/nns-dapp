@@ -1,10 +1,10 @@
 import * as dispatchEvents from "$lib/utils/events.utils";
+import IntersectionTest from "$tests/lib/directives/IntersectionTest.svelte";
 import {
   IntersectionObserverActive,
   mockIntersectionObserverIsIntersecting,
 } from "$tests/mocks/infinitescroll.mock";
 import { render } from "@testing-library/svelte";
-import IntersectionTest from "./IntersectionTest.svelte";
 
 describe("IntersectionDirectives", () => {
   let spy;

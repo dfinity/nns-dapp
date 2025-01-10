@@ -2,9 +2,9 @@ import type { FiatCurrency } from "$lib/canisters/tvl/tvl.types";
 import type { MetricsCallback } from "$lib/services/public/worker-metrics.services";
 import * as workerMetricsServices from "$lib/services/public/worker-metrics.services";
 import { metricsStore } from "$lib/stores/metrics.store";
+import TotalValueLockedTest from "$tests/lib/components/metrics/TotalValueLockedTest.svelte";
 import { nonNullish } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
-import TotalValueLockedTest from "./TotalValueLockedTest.svelte";
 
 let metricsCallback: MetricsCallback | undefined;
 

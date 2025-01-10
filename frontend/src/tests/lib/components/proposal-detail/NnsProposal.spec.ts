@@ -7,6 +7,7 @@ import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposal
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { referrerPathStore } from "$lib/stores/routes.store";
 import { page } from "$mocks/$app/stores";
+import NnsProposalTest from "$tests/lib/components/proposal-detail/NnsProposalTest.svelte";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   generateMockProposals,
@@ -27,7 +28,6 @@ import {
 } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import NnsProposalTest from "./NnsProposalTest.svelte";
 
 vi.mock("$lib/api/nns-dapp.api");
 

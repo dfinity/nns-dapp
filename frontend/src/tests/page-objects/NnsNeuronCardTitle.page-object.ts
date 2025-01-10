@@ -1,6 +1,6 @@
+import { NeuronTagPo } from "$tests/page-objects/NeuronTag.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { NeuronTagPo } from "./NeuronTag.page-object";
 
 export class NnsNeuronCardTitlePo extends BasePageObject {
   private static readonly TID = "neuron-card-title";

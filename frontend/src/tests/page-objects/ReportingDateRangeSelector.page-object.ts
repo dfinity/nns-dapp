@@ -1,6 +1,6 @@
 import type { ReportingPeriod } from "$lib/types/reporting";
+import { SimpleBasePageObject } from "$tests/page-objects/simple-base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { SimpleBasePageObject } from "./simple-base.page-object";
 
 export class ReportingDateRangeSelectorPo extends SimpleBasePageObject {
   static readonly TID = "reporting-data-range-selector-component";
