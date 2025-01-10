@@ -21,9 +21,6 @@
   resetBalanceLoading();
   loadIcpSwapTickers();
 
-  let userTokensData: UserToken[] = [];
-  let tableProjects: TableProject[] = [];
-
   $: if ($authSignedInStore) {
     const ckBTCUniverseIds = $ckBTCUniversesStore.map(
       (universe) => universe.canisterId
