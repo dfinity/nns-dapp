@@ -15,6 +15,8 @@ import {
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+import { neuronsStore } from "$lib/stores/neurons.store";
+import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
@@ -27,6 +29,8 @@ import {
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { mockCkUSDCToken } from "$tests/mocks/tokens.mock";
@@ -78,6 +82,9 @@ describe("Portfolio route", () => {
     const tetrisBalanceE8s = 2n * 100_000_000n; // 2Tetris(1Tetris==1ICP) -> $20
     const importedToken1BalanceE6s = 100n * 1_000_000n; // 100ZTOKEN1(1ZTOKEN1==1ICP) -> $1000
     const ckUSDCBalanceE6s = 1n * 1_000_000n; // 1USDC -> $1
+
+    const nnsNeuronStake = 1n * 100_000_000n; // 1ICP -> $10
+    const tetrisSnsNeuronStake = 20n * 100_000_000n; // 20Tetris -> $200
 
     const importedToken1Id = Principal.fromText(
       "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
@@ -278,6 +285,27 @@ describe("Portfolio route", () => {
         },
       ]);
 
+      const nnsNeuronWithStake = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: nnsNeuronStake,
+        },
+      };
+      neuronsStore.setNeurons({
+        neurons: [nnsNeuronWithStake],
+        certified: true,
+      });
+
+      const snsNeuronWithStake = createMockSnsNeuron({
+        stake: tetrisSnsNeuronStake,
+      });
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: tetrisSNS.rootCanisterId,
+        neurons: [snsNeuronWithStake],
+        certified: true,
+      });
+
       const po = await renderPage();
       const portfolioPagePo = po.getPortfolioPagePo();
 
@@ -288,15 +316,17 @@ describe("Portfolio route", () => {
       // 1USDC -> $1
       // 100ZTOKEN1 -> $1000
       // 2Tetris -> $20
+      // 1ICP Neuron -> 10$
+      // 20Tetris Neuron -> 200$
       // --------------------
-      // Total: $203’021.00
+      // Total: $203’231.00
       expect(
         await portfolioPagePo.getUsdValueBannerPo().getPrimaryAmount()
-      ).toBe("$203’021.00");
+      ).toBe("$203’231.00");
       // $1 -> 0.1ICP
       expect(
         await portfolioPagePo.getUsdValueBannerPo().getSecondaryAmount()
-      ).toBe("20’302.10 ICP");
+      ).toBe("20’323.10 ICP");
     });
   });
 });
