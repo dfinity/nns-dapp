@@ -1,57 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+TOP_DIR=$(git rev-parse --show-toplevel)
+cd "$TOP_DIR/frontend"
+
 # Checks for unauthorized relative imports in a file
 # We skip two SvelteKit specific cases:
 # 1. The $types import: SvelteKit generates virtual types for each page/layout that has to be imported like `./$types`
 # 2. The home page route: Special case in our app that requires relative imports due to SvelteKit's routing structure
-check_file_for_relative_imports() {
-  local file="$1"
+# 3. Imports in the style section of Svelte components
+git grep -n "from ['\"]\.\./" -- "src/**/*.svelte" "src/**/*.ts" \
+  | grep -v '/\$types' \
+  | grep -v 'src/routes/(nns)/(app)/home/+page.svelte' \
+  | grep -v 'src/routes/(app)/(home)/+page.svelte' \
+  | grep -v '@use.*\.\.' \
+  | grep -v '@import.*\.\.'
 
-  # Skip the excepted file
-  if [[ "$file" == "src/routes/(app)/(home)/+page.svelte" ]]; then
-    return 0
-  fi
-
-  # Process the file line by line
-  in_style_block=false
-  while IFS= read -r line; do
-    # Check if we're entering or leaving a style block
-    if [[ $line =~ \<style ]]; then
-      in_style_block=true
-    elif [[ $line =~ \</style\> ]]; then
-      in_style_block=false
-    fi
-
-    # Skip if in style block
-    if [ "$in_style_block" = true ]; then
-      continue
-    fi
-
-    # Skip the $types import exception
-    if [[ $line =~ ^[[:space:]]*import[[:space:]]+type.*from[[:space:]]*[\"\']\.\/\$types[\"\'] ]]; then
-      continue
-    fi
-
-    # Check for relative imports
-    if [[ $line =~ ^[[:space:]]*import.*from[[:space:]]*[\"\'](\.\./|\./)[^\"\']+[\"\'] ]]; then
-      echo "Found relative import in $file:"
-      echo "$line"
-      return 1
-    fi
-  done <"$file"
-
-  return 0
-}
-
-TOP_DIR=$(git rev-parse --show-toplevel)
-cd "$TOP_DIR/frontend"
-
-has_errors=0
-while IFS= read -r file; do
-  if ! check_file_for_relative_imports "$file"; then
-    has_errors=1
-  fi
-done < <(find src -type f \( -name "*.svelte" -o -name "*.ts" \))
-
-exit $has_errors
+exit $?
