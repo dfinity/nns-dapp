@@ -83,8 +83,8 @@ describe("Portfolio route", () => {
     const importedToken1BalanceE6s = 100n * 1_000_000n; // 100ZTOKEN1(1ZTOKEN1==1ICP) -> $1000
     const ckUSDCBalanceE6s = 1n * 1_000_000n; // 1USDC -> $1
 
-    const nnsNeuronStake = 1n * 100_000_000n; // 1ICP -> 10USD
-    const tetrisSnsNeuronStake = 20n * 100_000_000n; // 20Tetris -> 20USD
+    const nnsNeuronStake = 1n * 100_000_000n; // 1ICP -> $10
+    const tetrisSnsNeuronStake = 20n * 100_000_000n; // 20Tetris -> $200
 
     const importedToken1Id = Principal.fromText(
       "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
