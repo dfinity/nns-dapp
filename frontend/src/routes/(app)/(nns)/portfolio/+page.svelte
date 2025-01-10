@@ -12,13 +12,9 @@
     resetBalanceLoading,
   } from "$lib/services/accounts-balances.services";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
-  import type { UserToken } from "$lib/types/tokens-page";
 
   resetBalanceLoading();
   loadIcpSwapTickers();
-
-  let userTokensData: UserToken[] = [];
-  $: userTokensData = $tokensListUserStore;
 
   $: if ($authSignedInStore) {
     const ckBTCUniverseIds = $ckBTCUniversesStore.map(
@@ -41,5 +37,5 @@
 </script>
 
 <TestIdWrapper testId="portfolio-route-component"
-  ><Portfolio {userTokensData} /></TestIdWrapper
+  ><Portfolio userTokensData={$tokensListUserStore} /></TestIdWrapper
 >

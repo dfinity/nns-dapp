@@ -41,10 +41,6 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-vi.mock("$lib/api/sns-ledger.api");
-vi.mock("$lib/api/icrc-ledger.api");
-vi.mock("$lib/api/ckbtc-minter.api");
-
 describe("Portfolio route", () => {
   const renderPage = async () => {
     const { container } = render(PortfolioRoute);
@@ -77,8 +73,8 @@ describe("Portfolio route", () => {
 
   describe("when logged in", () => {
     const icpBalanceE8s = 100n * 100_000_000n; // 100ICP -> $1000
-    const ckBTCBalanceE8s = 1n * 100_000_000_000_000_000n; // 1BTC -> $100_000
-    const ckETHBalanceUlps = 1n * 100_000_000_000_000_000_000_000n; // 1ETH -> $1000
+    const ckBTCBalanceE8s = 1n * 100_000_000n; // 1BTC -> $100_000
+    const ckETHBalanceUlps = 1n * 100_000_000_000_000_000n; // 1ETH -> $1000
     const ckUSDCBalanceE8s = 1n * 1_000_000n; // 1USDC -> $1
     const tetrisBalanceE8s = 2n * 10_000_000n; // 2Tetris -> $2
     const importedToken1BalanceE8s = 100n * 100_000n; // 100ZTOKEN1 -> $100
@@ -253,17 +249,17 @@ describe("Portfolio route", () => {
         {
           ...mockIcpSwapTicker,
           base_id: CKBTC_UNIVERSE_CANISTER_ID.toText(),
-          last_price: "100000.00",
+          last_price: "0.0001",
         },
         {
           ...mockIcpSwapTicker,
           base_id: CKTESTBTC_UNIVERSE_CANISTER_ID.toText(),
-          last_price: "100000.00",
+          last_price: "0.0001",
         },
         {
           ...mockIcpSwapTicker,
           base_id: CKETH_UNIVERSE_CANISTER_ID.toText(),
-          last_price: "1000.00",
+          last_price: "0.001",
         },
         {
           ...mockIcpSwapTicker,
