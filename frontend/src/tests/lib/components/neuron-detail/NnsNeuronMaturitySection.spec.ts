@@ -4,7 +4,7 @@ import { NnsNeuronMaturitySectionPo } from "$tests/page-objects/NnsNeuronMaturit
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
+import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 
 describe("NnsNeuronMaturitySection", () => {
   const renderComponent = (neuron: NeuronInfo) => {

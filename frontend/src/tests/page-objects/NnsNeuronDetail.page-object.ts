@@ -7,9 +7,9 @@ import { NnsNeuronVotingPowerSectionPo } from "$tests/page-objects/NnsNeuronVoti
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { ConfirmFollowingBannerPo } from "./ConfirmFollowingBanner.page-object";
-import { NnsNeuronPageHeaderPo } from "./NnsNeuronPageHeader.page-object";
-import { NnsNeuronRewardStatusActionPo } from "./NnsNeuronRewardStatusAction.page-object";
+import { ConfirmFollowingBannerPo } from "$tests/page-objects/ConfirmFollowingBanner.page-object";
+import { NnsNeuronPageHeaderPo } from "$tests/page-objects/NnsNeuronPageHeader.page-object";
+import { NnsNeuronRewardStatusActionPo } from "$tests/page-objects/NnsNeuronRewardStatusAction.page-object";
 
 export class NnsNeuronDetailPo extends BasePageObject {
   private static readonly TID = "nns-neuron-detail-component";

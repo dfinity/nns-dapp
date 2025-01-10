@@ -3,7 +3,7 @@ import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
 import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { NeuronTagPo } from "./NeuronTag.page-object";
+import { NeuronTagPo } from "$tests/page-objects/NeuronTag.page-object";
 
 export class NeuronVisibilityRowPo extends BasePageObject {
   private static readonly BASE_TID = "neuron-visibility-row-component";

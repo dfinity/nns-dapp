@@ -1,8 +1,8 @@
 import { NnsAddAccountPo } from "$tests/page-objects/NnsAddAccount.page-object";
 import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { TokensTablePo } from "./TokensTable.page-object";
-import { BasePageObject } from "./base.page-object";
+import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 
 export class NnsAccountsPo extends BasePageObject {
   private static readonly TID = "accounts-body";

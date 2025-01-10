@@ -10,7 +10,7 @@ import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle, type SnsNervousSystemFunction } from "@dfinity/sns";
 import { fromNullable, nonNullish } from "@dfinity/utils";
-import { mockQueryTokenResponse } from "./sns-projects.mock";
+import { mockQueryTokenResponse } from "$tests/mocks/sns-projects.mock";
 
 export const aggregatorMockSnsesDataDto: CachedSnsDto[] = tenAggregatedSnses;
 

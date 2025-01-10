@@ -21,7 +21,7 @@ import { createActionEvent } from "$tests/utils/actions.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import type { Mock } from "vitest";
-import TokensTableTest from "./TokensTableTest.svelte";
+import TokensTableTest from "$tests/lib/components/tokens/TokensTableTest.svelte";
 
 describe("TokensTable", () => {
   const renderTable = ({

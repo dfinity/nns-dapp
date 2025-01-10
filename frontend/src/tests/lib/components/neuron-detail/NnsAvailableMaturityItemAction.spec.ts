@@ -14,7 +14,7 @@ import {
 } from "$tests/utils/accounts.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
+import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 
 describe("NnsAvailableMaturityItemAction", () => {
   const renderComponent = (neuron: NeuronInfo) => {

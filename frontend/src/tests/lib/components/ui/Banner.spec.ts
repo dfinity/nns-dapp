@@ -1,7 +1,7 @@
 import { BannerPo } from "$tests/page-objects/Banner.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import BannerTest from "./BannerTest.svelte";
+import BannerTest from "$tests/lib/components/ui/BannerTest.svelte";
 
 describe("Banner", () => {
   const renderComponent = ({

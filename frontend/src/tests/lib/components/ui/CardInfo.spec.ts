@@ -1,6 +1,6 @@
 import CardInfo from "$lib/components/ui/CardInfo.svelte";
 import { render } from "@testing-library/svelte";
-import CardInfoTest from "./CardInfoTest.svelte";
+import CardInfoTest from "$tests/lib/components/ui/CardInfoTest.svelte";
 
 describe("CardInfo", () => {
   it("should render an article", () => {

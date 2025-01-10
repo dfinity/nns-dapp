@@ -17,7 +17,7 @@ import {
 } from "$tests/mocks/tokens.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import CkBTCWalletContextTest from "./CkBTCWalletContextTest.svelte";
+import CkBTCWalletContextTest from "$tests/lib/components/accounts/CkBTCWalletContextTest.svelte";
 
 vi.mock("$lib/api/ckbtc-minter.api");
 

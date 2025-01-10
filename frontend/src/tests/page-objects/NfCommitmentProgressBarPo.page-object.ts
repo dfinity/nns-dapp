@@ -1,5 +1,5 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { BasePageObject } from "./base.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 
 export class NfCommitmentProgressBarPo extends BasePageObject {
   private static TID = "nf-commitment-progress-bar-component";

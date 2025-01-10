@@ -3,9 +3,9 @@ import { SkeletonDetailsPo } from "$tests/page-objects/SkeletonDetails.page-obje
 import { SnsProposalSystemInfoSectionPo } from "$tests/page-objects/SnsProposalSystemInfoSection.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { ProposalSummarySectionPo } from "./ProposalSummarySection.page-object";
-import { SnsProposalPayloadSectionPo } from "./SnsProposalPayloadSection.page-object";
-import { SnsProposalVotingSectionPo } from "./SnsProposalVotingSection.page-object";
+import { ProposalSummarySectionPo } from "$tests/page-objects/ProposalSummarySection.page-object";
+import { SnsProposalPayloadSectionPo } from "$tests/page-objects/SnsProposalPayloadSection.page-object";
+import { SnsProposalVotingSectionPo } from "$tests/page-objects/SnsProposalVotingSection.page-object";
 
 export class SnsProposalDetailPo extends BasePageObject {
   private static readonly TID = "sns-proposal-details-grid";

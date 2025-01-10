@@ -7,7 +7,7 @@ import en from "$tests/mocks/i18n.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
 import { SvelteComponent, tick } from "svelte";
-import WarningsTest from "./WarningsTest.svelte";
+import WarningsTest from "$tests/lib/components/warnings/WarningsTest.svelte";
 
 let metricsCallback: MetricsCallback | undefined;
 

@@ -4,7 +4,7 @@ import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { fireEvent, render } from "@testing-library/svelte";
-import NeuronContextTest from "../NeuronContextTest.svelte";
+import NeuronContextTest from "$tests/lib/components/neuron-detail/NeuronContextTest.svelte";
 
 describe("DisburseButton", () => {
   it("renders title", () => {

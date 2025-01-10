@@ -1,7 +1,7 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { NoNeuronsCardPo } from "./NoNeuronsCard.page-object";
-import { UsdValueBannerPo } from "./UsdValueBanner.page-object";
-import { BasePageObject } from "./base.page-object";
+import { NoNeuronsCardPo } from "$tests/page-objects/NoNeuronsCard.page-object";
+import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 
 export class PortfolioPagePo extends BasePageObject {
   private static readonly TID = "portfolio-page-component";

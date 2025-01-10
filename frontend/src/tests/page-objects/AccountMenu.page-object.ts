@@ -1,8 +1,8 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { AccountDetailsPo } from "./AccountDetails.page-object";
-import { LinkPo } from "./Link.page-object";
+import { AccountDetailsPo } from "$tests/page-objects/AccountDetails.page-object";
+import { LinkPo } from "$tests/page-objects/Link.page-object";
 
 export class AccountMenuPo extends BasePageObject {
   private static readonly TID = "account-menu-component";

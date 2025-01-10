@@ -3,7 +3,7 @@ import { removeController } from "$lib/services/canisters.services";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import RemoveCanisterControllerButton from "./RemoveCanisterControllerButtonTest.svelte";
+import RemoveCanisterControllerButton from "$tests/lib/components/canister-detail/RemoveCanisterControllerButtonTest.svelte";
 
 describe("RemoveCanisterControllerButton", () => {
   const controller = "ryjl3-tyaaa-aaaaa-aaaba-cai";

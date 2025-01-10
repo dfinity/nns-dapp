@@ -1,7 +1,7 @@
 import en from "$tests/mocks/i18n.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import PrincipalInputTest from "./PrincipalInputTest.svelte";
+import PrincipalInputTest from "$tests/lib/components/ui/PrincipalInputTest.svelte";
 
 describe("PrincipalInput", () => {
   const props = {

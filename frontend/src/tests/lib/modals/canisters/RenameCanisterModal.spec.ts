@@ -7,7 +7,7 @@ import { RenameCanisterModalPo } from "$tests/page-objects/RenameCanisterModal.p
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
-import RenameCanisterModalTest from "./RenameCanisterModalTest.svelte";
+import RenameCanisterModalTest from "$tests/lib/modals/canisters/RenameCanisterModalTest.svelte";
 
 vi.mock("$lib/api/canisters.api");
 

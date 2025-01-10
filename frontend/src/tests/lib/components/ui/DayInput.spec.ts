@@ -3,7 +3,7 @@ import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import en from "$tests/mocks/i18n.mock";
 import { fireEvent, render } from "@testing-library/svelte";
 import { tick } from "svelte";
-import DayInputTest from "./DayInputTest.svelte";
+import DayInputTest from "$tests/lib/components/ui/DayInputTest.svelte";
 
 describe("DayInput", () => {
   const defaultProps = {

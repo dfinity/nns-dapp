@@ -5,7 +5,7 @@ import { SnsStakedMaturityItemActionPo } from "$tests/page-objects/SnsStakedMatu
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import NeuronContextActionsTest from "./SnsNeuronContextTest.svelte";
+import NeuronContextActionsTest from "$tests/lib/components/sns-neuron-detail/SnsNeuronContextTest.svelte";
 
 describe("SnsStakedMaturityItemAction", () => {
   const renderComponent = (neuron: SnsNeuron) => {

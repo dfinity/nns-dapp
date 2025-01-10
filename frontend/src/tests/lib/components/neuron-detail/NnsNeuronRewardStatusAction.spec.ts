@@ -10,7 +10,7 @@ import { NnsNeuronRewardStatusActionPo } from "$tests/page-objects/NnsNeuronRewa
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import NnsNeuronRewardStatusActionTest from "./NnsNeuronRewardStatusActionTest.svelte";
+import NnsNeuronRewardStatusActionTest from "$tests/lib/components/neuron-detail/NnsNeuronRewardStatusActionTest.svelte";
 
 describe("NnsNeuronRewardStatusAction", () => {
   const renderComponent = (neuron: NeuronInfo) => {

@@ -1,6 +1,6 @@
 import FilterModal from "$lib/modals/common/FilterModal.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
-import FilterModalTest from "./FilterModalTest.svelte";
+import FilterModalTest from "$tests/lib/modals/common/FilterModalTest.svelte";
 
 describe("FilterModal", () => {
   const filters = [

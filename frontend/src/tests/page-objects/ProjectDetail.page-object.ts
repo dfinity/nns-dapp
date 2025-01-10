@@ -4,7 +4,7 @@ import { ProjectMetadataSectionPo } from "$tests/page-objects/ProjectMetadataSec
 import { ProjectStatusSectionPo } from "$tests/page-objects/ProjectStatusSection.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import type { ButtonPo } from "./Button.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 
 export class ProjectDetailPo extends BasePageObject {
   private static readonly TID = "project-detail-component";

@@ -3,7 +3,7 @@ import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { fireEvent, render } from "@testing-library/svelte";
-import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
+import SnsNeuronContextTest from "$tests/lib/components/sns-neuron-detail/SnsNeuronContextTest.svelte";
 
 describe("AddSnsHotkeyButton", () => {
   const renderCard = () =>

@@ -5,7 +5,7 @@ import en from "$tests/mocks/i18n.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import AddAccountTest from "./AddAccountTest.svelte";
+import AddAccountTest from "$tests/lib/components/accounts/AddAccountTest.svelte";
 
 describe("AddAccountType", () => {
   const props = { testComponent: AddAccountType };

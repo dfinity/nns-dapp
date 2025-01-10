@@ -4,7 +4,7 @@ import type {
   Transaction,
   TransactionWithId,
 } from "@dfinity/ledger-icp";
-import { mockMainAccount, mockSubAccount } from "./icp-accounts.store.mock";
+import { mockMainAccount, mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 
 export const mockTransactionTransfer: Transaction = {
   memo: 0n,

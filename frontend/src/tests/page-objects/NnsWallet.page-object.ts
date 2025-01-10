@@ -6,8 +6,8 @@ import { WalletPageHeaderPo } from "$tests/page-objects/WalletPageHeader.page-ob
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { LedgerNeuronHotkeyWarningPo } from "./LedgerNeuronHotkeyWarning.page-object";
-import { UiTransactionsListPo } from "./UiTransactionsList.page-object";
+import { LedgerNeuronHotkeyWarningPo } from "$tests/page-objects/LedgerNeuronHotkeyWarning.page-object";
+import { UiTransactionsListPo } from "$tests/page-objects/UiTransactionsList.page-object";
 
 export class NnsWalletPo extends BasePageObject {
   private static readonly TID = "nns-wallet-component";

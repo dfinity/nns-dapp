@@ -4,7 +4,7 @@ import * as workerMetricsServices from "$lib/services/public/worker-metrics.serv
 import { metricsStore } from "$lib/stores/metrics.store";
 import { nonNullish } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
-import TotalValueLockedTest from "./TotalValueLockedTest.svelte";
+import TotalValueLockedTest from "$tests/lib/components/metrics/TotalValueLockedTest.svelte";
 
 let metricsCallback: MetricsCallback | undefined;
 

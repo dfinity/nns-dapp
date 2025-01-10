@@ -2,7 +2,7 @@ import NnsStakeMaturityButton from "$lib/components/neuron-detail/actions/NnsSta
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
+import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 
 describe("NnsStakeMaturityButton", () => {
   it("should open stake maturity modal", async () => {

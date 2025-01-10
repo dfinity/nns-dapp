@@ -1,7 +1,7 @@
 import type { DeployedSns } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { SnsCanisterStatus } from "@dfinity/sns";
-import { principal } from "./sns-projects.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 
 export const mockSnsCanisterIdText = "pin7y-wyaaa-aaaaa-aacpa-cai";
 export const mockSnsCanisterId = Principal.fromText(mockSnsCanisterIdText);

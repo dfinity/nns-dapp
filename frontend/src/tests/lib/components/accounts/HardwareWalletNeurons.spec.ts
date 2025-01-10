@@ -5,7 +5,7 @@ import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { Neuron } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import HardwareWalletNeuronsTest from "./HardwareWalletNeuronsTest.svelte";
+import HardwareWalletNeuronsTest from "$tests/lib/components/accounts/HardwareWalletNeuronsTest.svelte";
 
 describe("HardwareWalletNeurons", () => {
   const props = { testComponent: HardwareWalletNeurons };

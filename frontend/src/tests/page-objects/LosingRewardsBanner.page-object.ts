@@ -1,7 +1,7 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { BannerPo } from "./Banner.page-object";
-import { BasePageObject } from "./base.page-object";
-import { LosingRewardNeuronsModalPo } from "./LosingRewardNeuronsModal.page-object";
+import { BannerPo } from "$tests/page-objects/Banner.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { LosingRewardNeuronsModalPo } from "$tests/page-objects/LosingRewardNeuronsModal.page-object";
 
 export class LosingRewardsBannerPo extends BasePageObject {
   private static readonly TID = "losing-rewards-banner-component";

@@ -1,7 +1,7 @@
 import { InProgressPo } from "$tests/page-objects/InProgress.page-object";
 import { TransactionModalBasePo } from "$tests/page-objects/TransactionModal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { TransactionFormItemNetworkPo } from "./TransactionFormItemNetwor.page-object";
+import { TransactionFormItemNetworkPo } from "$tests/page-objects/TransactionFormItemNetwor.page-object";
 
 export class CkBTCTransactionModalPo extends TransactionModalBasePo {
   private static readonly TID = "ckbtc-transaction-modal-component";

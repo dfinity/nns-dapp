@@ -5,7 +5,7 @@ import { VotingHistoryModalPo } from "$tests/page-objects/VotingHistoryModal.pag
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { Topic } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import FolloweeTest from "./FolloweeTest.svelte";
+import FolloweeTest from "$tests/lib/components/neuron-detail/NeuronFollowingCard/FolloweeTest.svelte";
 
 describe("Followee", () => {
   let copySpy;

@@ -1,6 +1,6 @@
 import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
 import { Vote, type Action, type ProposalInfo } from "@dfinity/nns";
-import { deadlineTimestampSeconds } from "./proposals.store.mock";
+import { deadlineTimestampSeconds } from "$tests/mocks/proposals.store.mock";
 
 /**
  * Generate mock proposals with autoincremented "id".

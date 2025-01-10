@@ -1,9 +1,9 @@
 import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { ButtonPo } from "./Button.page-object";
-import { LinkPo } from "./Link.page-object";
-import { TooltipPo } from "./Tooltip.page-object";
+import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { LinkPo } from "$tests/page-objects/Link.page-object";
+import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 
 export class NnsNeuronPublicVisibilityActionPo extends BasePageObject {
   private static readonly TID = "nns-neuron-public-visibility-action-component";

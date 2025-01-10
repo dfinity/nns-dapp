@@ -1,6 +1,6 @@
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { render } from "@testing-library/svelte";
-import SignedInOnlyTest from "./SignedInOnlyTest.svelte";
+import SignedInOnlyTest from "$tests/lib/components/common/SignedInOnlyTest.svelte";
 
 describe("SignedInOnly", () => {
   describe("not signed in", () => {

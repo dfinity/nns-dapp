@@ -1,7 +1,7 @@
 import * as canistersServices from "$lib/services/canisters.services";
 import { detachCanister } from "$lib/services/canisters.services";
 import { fireEvent, render } from "@testing-library/svelte";
-import UnlinkActionButtonTest from "./UnlinkActionButtonTest.svelte";
+import UnlinkActionButtonTest from "$tests/lib/components/canister-detail/UnlinkActionButtonTest.svelte";
 
 describe("DissolveActionButton", () => {
   beforeEach(() => {

@@ -7,7 +7,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
+import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 
 describe("NnsAutoStakeMaturity", () => {
   beforeEach(() => {

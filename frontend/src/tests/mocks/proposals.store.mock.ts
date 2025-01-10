@@ -8,7 +8,7 @@ import {
   type Ballot,
 } from "@dfinity/nns";
 import type { Subscriber } from "svelte/store";
-import { mockNeuron } from "./neurons.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 
 export const deadlineTimestampSeconds = BigInt(
   Math.round(new Date().getTime() / 1000 + 10000)

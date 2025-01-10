@@ -25,7 +25,7 @@ import {
   nonNullish,
 } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
-import { mockIdentity, mockPrincipal } from "./auth.store.mock";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 
 export const mockSnsNeuronTimestampSeconds = 3600 * 24 * 6;
 

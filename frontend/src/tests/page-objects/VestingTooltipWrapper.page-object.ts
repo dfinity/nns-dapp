@@ -1,6 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { TooltipPo } from "./Tooltip.page-object";
+import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 
 export class VestingTooltipWrapperPo extends BasePageObject {
   private static readonly TID = "sns-neuron-vesting-tooltip-component";

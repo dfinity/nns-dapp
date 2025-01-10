@@ -10,7 +10,7 @@ import { toastsStore } from "@dfinity/gix-components";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
+import SnsNeuronContextTest from "$tests/lib/components/sns-neuron-detail/SnsNeuronContextTest.svelte";
 
 describe("SnsAutoStakeMaturity", () => {
   beforeEach(() => {

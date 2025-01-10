@@ -15,8 +15,8 @@ import {
   mockCkETHToken,
 } from "$tests/mocks/cketh-accounts.mock";
 import type { Subscriber } from "svelte/store";
-import { mockCkBTCToken } from "./ckbtc-accounts.mock";
-import { mockSnsFullProject, mockSnsToken } from "./sns-projects.mock";
+import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
+import { mockSnsFullProject, mockSnsToken } from "$tests/mocks/sns-projects.mock";
 
 export const mockCkUSDCToken: IcrcTokenMetadata = {
   name: "ckUSDC",

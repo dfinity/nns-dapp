@@ -7,7 +7,7 @@ import { WalletPageHeaderPo } from "$tests/page-objects/WalletPageHeader.page-ob
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { AddIndexCanisterModalPo } from "./AddIndexCanisterModal.page-object";
+import { AddIndexCanisterModalPo } from "$tests/page-objects/AddIndexCanisterModal.page-object";
 
 export class IcrcWalletPo extends BasePageObject {
   private static readonly TID = "icrc-wallet-component";

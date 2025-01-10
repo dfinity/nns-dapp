@@ -2,7 +2,7 @@ import BitcoinFeeDisplay from "$lib/components/accounts/BitcoinFeeDisplay.svelte
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
-import BitcoinFeeDisplayTest from "./BitcoinFeeDisplayTest.svelte";
+import BitcoinFeeDisplayTest from "$tests/lib/components/accounts/BitcoinFeeDisplayTest.svelte";
 
 describe("BitcoinFeeDisplay", () => {
   const testId = "bitcoin-estimated-fee-display";

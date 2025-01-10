@@ -15,7 +15,7 @@ import type { RenderResult } from "@testing-library/svelte";
 import { render } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
-import { rootCanisterIdMock } from "./sns.api.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 
 export const renderContextWrapper = <T>({
   Component,

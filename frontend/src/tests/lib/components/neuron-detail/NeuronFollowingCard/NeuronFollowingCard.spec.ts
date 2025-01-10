@@ -6,7 +6,7 @@ import { NeuronFollowingCardPo } from "$tests/page-objects/NeuronFollowingCard.p
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { Topic, type NeuronInfo } from "@dfinity/nns";
-import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
+import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 
 vi.mock("$lib/services/known-neurons.services", () => {
   return {

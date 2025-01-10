@@ -2,7 +2,7 @@ import { mockUniverse } from "$tests/mocks/sns-projects.mock";
 import { UniverseWithActionableProposalsPo } from "$tests/page-objects/UniverseWithActionableProposals.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import UniverseWithActionableProposalsTest from "./UniverseWithActionableProposalsTest.svelte";
+import UniverseWithActionableProposalsTest from "$tests/lib/components/proposals/UniverseWithActionableProposalsTest.svelte";
 
 describe("UniverseWithActionableProposals", () => {
   const renderComponent = (props) => {

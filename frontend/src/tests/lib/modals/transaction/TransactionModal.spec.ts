@@ -29,7 +29,7 @@ import {
   type RenderResult,
 } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import TransactionModalTest from "./TransactionModalTest.svelte";
+import TransactionModalTest from "$tests/lib/modals/transaction/TransactionModalTest.svelte";
 
 describe("TransactionModal", () => {
   const renderTransactionModal = ({

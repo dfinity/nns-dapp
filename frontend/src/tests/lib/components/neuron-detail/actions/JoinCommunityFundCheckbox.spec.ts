@@ -2,7 +2,7 @@ import JoinCommunityFundCheckbox from "$lib/components/neuron-detail/actions/Joi
 import { toggleCommunityFund } from "$lib/services/neurons.services";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, render } from "@testing-library/svelte";
-import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
+import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 
 vi.mock("$lib/services/neurons.services", () => {
   return {

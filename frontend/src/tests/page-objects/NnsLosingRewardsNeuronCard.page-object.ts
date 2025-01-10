@@ -1,6 +1,6 @@
 import { CardPo } from "$tests/page-objects/Card.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { FolloweePo } from "./Followee.page-object";
+import { FolloweePo } from "$tests/page-objects/Followee.page-object";
 
 export class NnsLosingRewardsNeuronCardPo extends CardPo {
   private static readonly TID = "nns-loosing-rewards-neuron-card-component";

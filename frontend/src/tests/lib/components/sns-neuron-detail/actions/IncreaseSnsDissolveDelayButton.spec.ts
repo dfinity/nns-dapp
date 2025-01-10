@@ -13,7 +13,7 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import { SnsSwapLifecycle, type SnsNeuron } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
-import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
+import SnsNeuronContextTest from "$tests/lib/components/sns-neuron-detail/SnsNeuronContextTest.svelte";
 
 // Avoid triggering the api call to not have to mock the api layer. Not needed for this test.
 vi.mock("$lib/services/sns-parameters.services");

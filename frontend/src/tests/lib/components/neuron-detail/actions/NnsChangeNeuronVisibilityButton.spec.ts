@@ -5,7 +5,7 @@ import { ChangeNeuronVisibilityModalPo } from "$tests/page-objects/ChangeNeuronV
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronVisibility } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
+import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 
 describe("NnsChangeNeuronVisibilityButton", () => {
   const renderComponentAndModal = ({

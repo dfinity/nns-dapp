@@ -1,12 +1,12 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { CkBTCReceiveModalPo } from "./CkBTCReceiveModal.page-object";
-import { CkBTCTransactionModalPo } from "./CkBTCTransactionModal.page-object";
-import { IcrcTokenTransactionModalPo } from "./IcrcTokenTransactionModal.page-object";
-import { ImportTokenRemoveConfirmationPo } from "./ImportTokenRemoveConfirmation.page-object";
-import { ReceiveModalPo } from "./ReceiveModal.page-object";
-import { SignInTokensPagePo } from "./SignInTokens.page-object";
-import { TokensPagePo } from "./TokensPage.page-object";
+import { CkBTCReceiveModalPo } from "$tests/page-objects/CkBTCReceiveModal.page-object";
+import { CkBTCTransactionModalPo } from "$tests/page-objects/CkBTCTransactionModal.page-object";
+import { IcrcTokenTransactionModalPo } from "$tests/page-objects/IcrcTokenTransactionModal.page-object";
+import { ImportTokenRemoveConfirmationPo } from "$tests/page-objects/ImportTokenRemoveConfirmation.page-object";
+import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
+import { SignInTokensPagePo } from "$tests/page-objects/SignInTokens.page-object";
+import { TokensPagePo } from "$tests/page-objects/TokensPage.page-object";
 
 export class TokensRoutePo extends BasePageObject {
   private static readonly TID = "tokens-route-component";

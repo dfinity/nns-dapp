@@ -63,7 +63,7 @@ import { memoToNeuronAccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
-import AccountsTest from "./AccountsTest.svelte";
+import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
 
 vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/accounts.api");

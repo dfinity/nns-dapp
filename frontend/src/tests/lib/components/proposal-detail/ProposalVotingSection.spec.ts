@@ -11,7 +11,7 @@ import {
   type NeuronInfo,
 } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import ProposalVotingSectionTest from "./ProposalVotingSectionTest.svelte";
+import ProposalVotingSectionTest from "$tests/lib/components/proposal-detail/ProposalVotingSectionTest.svelte";
 
 describe("ProposalVotingSection", () => {
   const neuronIds = [111, 222].map(BigInt);

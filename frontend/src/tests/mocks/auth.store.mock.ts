@@ -2,7 +2,7 @@ import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
 import type { Identity, SignIdentity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
-import en from "./i18n.mock";
+import en from "$tests/mocks/i18n.mock";
 
 export const mockPrincipalText =
   "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe";

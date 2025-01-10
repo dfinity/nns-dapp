@@ -1,6 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { TokensTablePo } from "./TokensTable.page-object";
+import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
 
 export class SignInAccountsPo extends BasePageObject {
   static readonly TID = "accounts-landing-page";

@@ -26,7 +26,7 @@ import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";
 import { mock } from "vitest-mock-extended";
-import ContextWrapperTest from "../../ContextWrapperTest.svelte";
+import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 
 describe("VotingCard", () => {
   const neuronIds = [111, 222].map(BigInt);
