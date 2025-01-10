@@ -1,8 +1,8 @@
+import AdditionalInfoFormTest from "$tests/lib/components/sale/AdditionalInfoFormTest.svelte";
 import { AdditionalInfoFormPo } from "$tests/page-objects/AdditionalInfoForm.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 import { get, writable, type Writable } from "svelte/store";
-import AdditionalInfoFormTest from "./AdditionalInfoFormTest.svelte";
 
 const renderComponent = ({
   conditionsToAccept,

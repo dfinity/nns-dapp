@@ -15,6 +15,7 @@ import {
 import { navigating, page } from "./__mocks__/$app/stores";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
+import { CustomEventForTesting } from "./src/tests/utils/custom-event.test-utils";
 import {
   mockedConstants,
   setDefaultTestConstants,
@@ -31,6 +32,8 @@ beforeEach(() => {
 
   // Resets/restores any global objects(eg. window, document, Date, ) that were stubbed/mocked during testing
   vi.unstubAllGlobals();
+
+  vi.stubGlobal("CustomEvent", CustomEventForTesting);
 });
 
 const cleanupFunctions = vi.hoisted(() => {

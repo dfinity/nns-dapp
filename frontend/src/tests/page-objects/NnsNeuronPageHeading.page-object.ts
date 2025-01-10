@@ -1,8 +1,8 @@
 import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
+import { HeadingSubtitleWithUsdValuePo } from "$tests/page-objects/HeadingSubtitleWithUsdValue.page-object";
+import { NeuronTagPo } from "$tests/page-objects/NeuronTag.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { HeadingSubtitleWithUsdValuePo } from "./HeadingSubtitleWithUsdValue.page-object";
-import { NeuronTagPo } from "./NeuronTag.page-object";
 
 export class NnsNeuronPageHeadingPo extends BasePageObject {
   private static readonly TID = "nns-neuron-page-heading-component";

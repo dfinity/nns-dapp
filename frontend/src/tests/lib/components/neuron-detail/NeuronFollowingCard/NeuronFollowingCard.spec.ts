@@ -1,12 +1,12 @@
 import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
 import { listKnownNeurons } from "$lib/services/known-neurons.services";
+import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronFollowingCardPo } from "$tests/page-objects/NeuronFollowingCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { Topic, type NeuronInfo } from "@dfinity/nns";
-import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 vi.mock("$lib/services/known-neurons.services", () => {
   return {

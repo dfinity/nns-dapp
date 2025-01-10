@@ -1,5 +1,5 @@
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { BasePageObject } from "./base.page-object";
 
 export class CommitmentProgressBarPo extends BasePageObject {
   private static TID = "commitment-progress-bar-component";

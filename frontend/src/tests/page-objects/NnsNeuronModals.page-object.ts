@@ -3,11 +3,11 @@ import { DisburseNnsNeuronModalPo } from "$tests/page-objects/DisburseNnsNeuronM
 import { DissolveActionButtonModalPo } from "$tests/page-objects/DissolveActionButtonModal.page-object";
 import { IncreaseNeuronStakeModalPo } from "$tests/page-objects/IncreaseNeuronStakeModal.page-object";
 import { JoinCommunityFundModalPo } from "$tests/page-objects/JoinCommunityFundModal.page-object";
+import { LosingRewardNeuronsModalPo } from "$tests/page-objects/LosingRewardNeuronsModal.page-object";
 import { NnsAddMaturityModalPo } from "$tests/page-objects/NnsAddMaturityModal.page-object";
 import { SpawnNeuronModalPo } from "$tests/page-objects/SpawnNeuronModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { LosingRewardNeuronsModalPo } from "./LosingRewardNeuronsModal.page-object";
 
 export class NnsNeuronModalsPo extends BasePageObject {
   private static readonly TID = "nns-neuron-modals-component";

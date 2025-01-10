@@ -1,9 +1,9 @@
 import type { GetTransactionsResponse } from "$lib/api/icp-index.api";
 import type { UiTransaction } from "$lib/types/transaction";
+import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
 import { TokenAmount } from "@dfinity/utils";
-import { mockSubAccount } from "./icp-accounts.store.mock";
-import { mockSnsToken } from "./sns-projects.mock";
 
 export const createMockUiTransaction = ({
   domKey = "123-1",

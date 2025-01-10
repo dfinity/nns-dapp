@@ -1,9 +1,9 @@
 import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
+import { HashPo } from "$tests/page-objects/Hash.page-object";
+import { NnsNeuronAgePo } from "$tests/page-objects/NnsNeuronAge.page-object";
+import { NnsNeuronPublicVisibilityActionPo } from "$tests/page-objects/NnsNeuronPublicVisibilityAction.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { HashPo } from "./Hash.page-object";
-import { NnsNeuronAgePo } from "./NnsNeuronAge.page-object";
-import { NnsNeuronPublicVisibilityActionPo } from "./NnsNeuronPublicVisibilityAction.page-object";
 
 export class NnsNeuronAdvancedSectionPo extends BasePageObject {
   private static readonly TID = "nns-neuron-advanced-section-component";

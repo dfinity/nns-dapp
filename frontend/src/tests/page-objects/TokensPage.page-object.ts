@@ -1,12 +1,12 @@
+import { BackdropPo } from "$tests/page-objects/Backdrop.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { HideZeroBalancesTogglePo } from "$tests/page-objects/HideZeroBalancesToggle.page-object";
 import { ImportTokenModalPo } from "$tests/page-objects/ImportTokenModal.page-object";
+import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
+import type { TokensTableRowData } from "$tests/page-objects/TokensTableRow.page-object";
 import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { BackdropPo } from "./Backdrop.page-object";
-import type { ButtonPo } from "./Button.page-object";
-import { HideZeroBalancesTogglePo } from "./HideZeroBalancesToggle.page-object";
-import { TokensTablePo } from "./TokensTable.page-object";
-import type { TokensTableRowData } from "./TokensTableRow.page-object";
 
 export class TokensPagePo extends BasePageObject {
   private static readonly TID = "tokens-page-component";
