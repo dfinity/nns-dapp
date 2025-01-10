@@ -1,15 +1,15 @@
 <script lang="ts">
+  import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
   import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
-  import { i18n } from "$lib/stores/i18n";
   import { definedNeuronsStore } from "$lib/derived/neurons.derived";
+  import { i18n } from "$lib/stores/i18n";
   import { translate } from "$lib/utils/i18n.utils";
   import {
     mapMergeableNeurons,
     mapNeuronIds,
     type MergeableNeuron,
   } from "$lib/utils/neuron.utils";
-  import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
   import { Tooltip } from "@dfinity/gix-components";
   import type { NeuronId } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";

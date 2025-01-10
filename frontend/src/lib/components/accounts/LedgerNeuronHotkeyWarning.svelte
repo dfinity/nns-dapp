@@ -1,10 +1,10 @@
 <script lang="ts">
   import { browser } from "$app/environment";
-  import { i18n } from "$lib/stores/i18n";
-  import { IconInfo } from "@dfinity/gix-components";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Banner from "$lib/components/ui/Banner.svelte";
   import BannerIcon from "$lib/components/ui/BannerIcon.svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { IconInfo } from "@dfinity/gix-components";
 
   const LOCAL_STORAGE_KEY = "isLedgerNeuronHotkeyWarningDisabled";
 

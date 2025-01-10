@@ -1,4 +1,6 @@
 <script lang="ts">
+  import NnsChangeNeuronVisibilityButton from "$lib/components/neuron-detail/actions/NnsChangeNeuronVisibilityButton.svelte";
+  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { i18n } from "$lib/stores/i18n";
   import {
@@ -6,8 +8,6 @@
     isNeuronControlledByHardwareWallet,
     isPublicNeuron,
   } from "$lib/utils/neuron.utils";
-  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
-  import NnsChangeNeuronVisibilityButton from "$lib/components/neuron-detail/actions/NnsChangeNeuronVisibilityButton.svelte";
   import { IconPublicBadge, Tooltip } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
 

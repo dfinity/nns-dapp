@@ -1,4 +1,5 @@
 <script lang="ts">
+  import AutoStakeMaturity from "$lib/components/neuron-detail/actions/AutoStakeMaturity.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { authStore } from "$lib/stores/auth.store";
   import {
@@ -10,7 +11,6 @@
     hasAutoStakeMaturityOn,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
-  import AutoStakeMaturity from "$lib/components/neuron-detail/actions/AutoStakeMaturity.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { getContext } from "svelte";
 

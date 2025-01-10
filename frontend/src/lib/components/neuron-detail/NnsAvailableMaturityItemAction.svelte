@@ -1,4 +1,8 @@
 <script lang="ts">
+  import NnsStakeMaturityButton from "$lib/components/neuron-detail/actions/NnsStakeMaturityButton.svelte";
+  import SpawnNeuronButton from "$lib/components/neuron-detail/actions/SpawnNeuronButton.svelte";
+  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
+  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
@@ -6,10 +10,6 @@
     formattedMaturity,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
-  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
-  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
-  import NnsStakeMaturityButton from "$lib/components/neuron-detail/actions/NnsStakeMaturityButton.svelte";
-  import SpawnNeuronButton from "$lib/components/neuron-detail/actions/SpawnNeuronButton.svelte";
   import { IconExpandCircleDown } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
 

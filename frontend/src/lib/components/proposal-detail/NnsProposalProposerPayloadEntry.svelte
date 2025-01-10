@@ -1,9 +1,9 @@
 <script lang="ts">
+  import ProposalProposerPayloadEntry from "$lib/components/proposal-detail/ProposalProposerPayloadEntry.svelte";
   import { loadProposalPayload } from "$lib/services/public/proposals.services";
   import { proposalPayloadsStore } from "$lib/stores/proposals.store";
   import { getNnsFunctionKey } from "$lib/utils/proposals.utils";
   import type { Proposal, ProposalId } from "@dfinity/nns";
-  import ProposalProposerPayloadEntry from "$lib/components/proposal-detail/ProposalProposerPayloadEntry.svelte";
 
   export let proposalId: ProposalId | undefined;
   export let proposal: Proposal | undefined;

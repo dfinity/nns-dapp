@@ -2,14 +2,14 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ActionableProposalsEmpty from "$lib/components/proposals/ActionableProposalsEmpty.svelte";
   import ActionableProposalsSignIn from "$lib/components/proposals/ActionableProposalsSignIn.svelte";
-  import SnsProposalCard from "$lib/components/sns-proposals/SnsProposalCard.svelte";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { pageStore } from "$lib/derived/page.derived";
-  import type { SnsProposalActionableData } from "$lib/derived/sns/sns-filtered-actionable-proposals.derived";
   import ListLoader from "$lib/components/proposals/ListLoader.svelte";
   import LoadingProposals from "$lib/components/proposals/LoadingProposals.svelte";
   import NoProposals from "$lib/components/proposals/NoProposals.svelte";
+  import SnsProposalCard from "$lib/components/sns-proposals/SnsProposalCard.svelte";
   import SnsProposalsFilters from "$lib/components/sns-proposals/SnsProposalsFilters.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { pageStore } from "$lib/derived/page.derived";
+  import type { SnsProposalActionableData } from "$lib/derived/sns/sns-filtered-actionable-proposals.derived";
   import { InfiniteScroll } from "@dfinity/gix-components";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import { fromNullable, isNullish } from "@dfinity/utils";

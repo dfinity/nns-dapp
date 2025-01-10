@@ -1,6 +1,7 @@
 <script lang="ts">
   // Tested in EditFollowNeurons.spec.ts
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import FollowTopicSection from "$lib/components/neurons/FollowTopicSection.svelte";
   import NewFolloweeModal from "$lib/modals/neurons/NewFolloweeModal.svelte";
   import { removeFollowee } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -11,7 +12,6 @@
     getTopicSubtitle,
     getTopicTitle,
   } from "$lib/utils/neuron.utils";
-  import FollowTopicSection from "$lib/components/neurons/FollowTopicSection.svelte";
   import { IconClose, Value } from "@dfinity/gix-components";
   import type { NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
 

@@ -1,9 +1,9 @@
 <script lang="ts">
+  import SnsAvailableMaturityItemAction from "$lib/components/sns-neuron-detail/SnsAvailableMaturityItemAction.svelte";
+  import SnsStakedMaturityItemAction from "$lib/components/sns-neuron-detail/SnsStakedMaturityItemAction.svelte";
   import SnsViewActiveDisbursementsItemAction from "$lib/components/sns-neuron-detail/SnsViewActiveDisbursementsItemAction.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { formattedTotalMaturity } from "$lib/utils/sns-neuron.utils";
-  import SnsAvailableMaturityItemAction from "$lib/components/sns-neuron-detail/SnsAvailableMaturityItemAction.svelte";
-  import SnsStakedMaturityItemAction from "$lib/components/sns-neuron-detail/SnsStakedMaturityItemAction.svelte";
   import { Section } from "@dfinity/gix-components";
   import type { SnsNeuron } from "@dfinity/sns";
   import type { Token, TokenAmountV2 } from "@dfinity/utils";

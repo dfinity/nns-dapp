@@ -1,4 +1,5 @@
 <script lang="ts">
+  import NnsNeuronDetailCard from "$lib/components/neurons/NnsNeuronDetailCard.svelte";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
   import { startBusyNeuron } from "$lib/services/busy.services";
@@ -10,7 +11,6 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import NnsNeuronDetailCard from "$lib/components/neurons/NnsNeuronDetailCard.svelte";
   import { Html, busy } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { isNullish } from "@dfinity/utils";

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import VestingTooltipWrapper from "$lib/components/sns-neuron-detail/VestingTooltipWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
@@ -15,7 +16,6 @@
     type Token,
     type TokenAmountV2,
   } from "@dfinity/utils";
-  import VestingTooltipWrapper from "$lib/components/sns-neuron-detail/VestingTooltipWrapper.svelte";
 
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import NnsProposalCard from "$lib/components/proposals/NnsProposalCard.svelte";
   import SkeletonProposalCard from "$lib/components/ui/SkeletonProposalCard.svelte";
   import { loadProposalsSnsCF } from "$lib/services/public/sns.services";
   import { i18n } from "$lib/stores/i18n";
@@ -6,7 +7,6 @@
     openSnsProposalsStore,
     snsProposalsStoreIsLoading,
   } from "$lib/stores/sns.store";
-  import NnsProposalCard from "$lib/components/proposals/NnsProposalCard.svelte";
   import { onMount } from "svelte";
 
   let loading = false;

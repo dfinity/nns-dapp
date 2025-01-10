@@ -1,16 +1,16 @@
 <script lang="ts">
+  import PageHeader from "$lib/components/common/PageHeader.svelte";
+  import NeuronNavigation from "$lib/components/neuron-detail/NeuronNavigation.svelte";
+  import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
+  import UniverseSummary from "$lib/components/universe/UniverseSummary.svelte";
   import { MAX_NEURON_ID_DIGITS } from "$lib/constants/neurons.constants";
   import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
   import { onIntersection } from "$lib/directives/intersection.directives";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
-  import type { IntersectingDetail } from "$lib/types/intersection.types";
-  import PageHeader from "$lib/components/common/PageHeader.svelte";
-  import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
-  import UniverseSummary from "$lib/components/universe/UniverseSummary.svelte";
-  import type { NeuronInfo } from "@dfinity/nns";
-  import NeuronNavigation from "$lib/components/neuron-detail/NeuronNavigation.svelte";
   import { neuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/neurons-table-order-sorted-neuron-ids-store";
+  import type { IntersectingDetail } from "$lib/types/intersection.types";
+  import type { NeuronInfo } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;
 

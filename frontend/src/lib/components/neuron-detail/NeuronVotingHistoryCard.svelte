@@ -1,7 +1,7 @@
 <script lang="ts">
+  import Ballots from "$lib/components/neuron-detail/Ballots/Ballots.svelte";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import Ballots from "$lib/components/neuron-detail/Ballots/Ballots.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;

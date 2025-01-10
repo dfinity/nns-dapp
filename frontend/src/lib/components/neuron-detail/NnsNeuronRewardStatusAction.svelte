@@ -1,5 +1,11 @@
 <script lang="ts">
+  import ConfirmFollowingActionButton from "$lib/components/neuron-detail/actions/ConfirmFollowingActionButton.svelte";
+  import FollowNeuronsButton from "$lib/components/neuron-detail/actions/FollowNeuronsButton.svelte";
+  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
+  import { START_REDUCING_VOTING_POWER_AFTER_SECONDS } from "$lib/constants/neurons.constants";
   import { i18n } from "$lib/stores/i18n";
+  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     isNeuronFollowingReset,
     isNeuronLosingRewards,
@@ -11,14 +17,8 @@
     IconError,
     IconWarning,
   } from "@dfinity/gix-components";
-  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
   import { type NeuronInfo } from "@dfinity/nns";
   import { secondsToDuration } from "@dfinity/utils";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import FollowNeuronsButton from "$lib/components/neuron-detail/actions/FollowNeuronsButton.svelte";
-  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
-  import { START_REDUCING_VOTING_POWER_AFTER_SECONDS } from "$lib/constants/neurons.constants";
-  import ConfirmFollowingActionButton from "$lib/components/neuron-detail/actions/ConfirmFollowingActionButton.svelte";
 
   export let neuron: NeuronInfo;
 

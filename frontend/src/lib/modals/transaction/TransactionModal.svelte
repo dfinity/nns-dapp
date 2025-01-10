@@ -21,10 +21,10 @@
   import type { Principal } from "@dfinity/principal";
   import {
     ICPToken,
-    isNullish,
-    nonNullish,
     TokenAmount,
     TokenAmountV2,
+    isNullish,
+    nonNullish,
     type Token,
   } from "@dfinity/utils";
 

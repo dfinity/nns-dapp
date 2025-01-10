@@ -1,5 +1,6 @@
 <script lang="ts">
   import FollowTopicSection from "$lib/components/neurons/FollowTopicSection.svelte";
+  import Hash from "$lib/components/ui/Hash.svelte";
   import NewSnsFolloweeModal from "$lib/modals/sns/neurons/NewSnsFolloweeModal.svelte";
   import { removeFollowee } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -21,7 +22,6 @@
   } from "@dfinity/sns";
   import { fromNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
-  import Hash from "$lib/components/ui/Hash.svelte";
 
   export let neuron: SnsNeuron;
   export let rootCanisterId: Principal;

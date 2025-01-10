@@ -1,4 +1,7 @@
 <script lang="ts">
+  import DissolveDelayBonusText from "$lib/components/neuron-detail/DissolveDelayBonusText.svelte";
+  import IncreaseDissolveDelayButton from "$lib/components/neuron-detail/actions/IncreaseDissolveDelayButton.svelte";
+  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { authStore } from "$lib/stores/auth.store";
@@ -10,9 +13,6 @@
     getSpawningTimeInSeconds,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
-  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
-  import DissolveDelayBonusText from "$lib/components/neuron-detail/DissolveDelayBonusText.svelte";
-  import IncreaseDissolveDelayButton from "$lib/components/neuron-detail/actions/IncreaseDissolveDelayButton.svelte";
   import { IconClockNoFill } from "@dfinity/gix-components";
   import { NeuronState, type NeuronInfo } from "@dfinity/nns";
   import { ICPToken, secondsToDuration } from "@dfinity/utils";

@@ -1,10 +1,10 @@
 <script lang="ts">
+  import NeuronProposalsCard from "$lib/components/neuron-detail/NeuronProposalsCard.svelte";
   import { makeDummyProposals } from "$lib/services/sns-neurons.services";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
-  import NeuronProposalsCard from "$lib/components/neuron-detail/NeuronProposalsCard.svelte";
   import { getContext } from "svelte";
 
   const { store }: SelectedSnsNeuronContext =

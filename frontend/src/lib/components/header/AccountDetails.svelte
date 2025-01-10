@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
-  import { authStore } from "$lib/stores/auth.store";
-  import { i18n } from "$lib/stores/i18n";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
   import { nonNullish } from "@dfinity/utils";
 
   let principalId: string | undefined;

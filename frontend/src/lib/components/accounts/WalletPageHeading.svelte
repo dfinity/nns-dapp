@@ -1,4 +1,9 @@
 <script lang="ts">
+  import HeadingSubtitle from "$lib/components/common/HeadingSubtitle.svelte";
+  import HeadingSubtitleWithUsdValue from "$lib/components/common/HeadingSubtitleWithUsdValue.svelte";
+  import PageHeading from "$lib/components/common/PageHeading.svelte";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
   import { onIntersection } from "$lib/directives/intersection.directives";
   import { ENABLE_USD_VALUES } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
@@ -6,11 +11,6 @@
   import type { IntersectingDetail } from "$lib/types/intersection.types";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
-  import HeadingSubtitle from "$lib/components/common/HeadingSubtitle.svelte";
-  import HeadingSubtitleWithUsdValue from "$lib/components/common/HeadingSubtitleWithUsdValue.svelte";
-  import PageHeading from "$lib/components/common/PageHeading.svelte";
-  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
   import { Tooltip } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { isNullish, nonNullish, type TokenAmountV2 } from "@dfinity/utils";

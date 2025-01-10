@@ -1,4 +1,5 @@
 <script lang="ts">
+  import FollowNnsTopicSection from "$lib/components/neurons/FollowNnsTopicSection.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { definedNeuronsStore } from "$lib/derived/neurons.derived";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
@@ -6,7 +7,6 @@
   import { topicsToFollow } from "$lib/utils/neuron.utils";
   import type { NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
   import { onMount } from "svelte";
-  import FollowNnsTopicSection from "$lib/components/neurons/FollowNnsTopicSection.svelte";
 
   export let neuronId: NeuronId;
 

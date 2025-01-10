@@ -1,16 +1,16 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import ManageInternetIdentityButton from "$lib/components/header/ManageInternetIdentityButton.svelte";
+  import AccountDetails from "$lib/components/header/AccountDetails.svelte";
+  import LinkToCanisters from "$lib/components/header/LinkToCanisters.svelte";
+  import LinkToReporting from "$lib/components/header/LinkToReporting.svelte";
   import LinkToSettings from "$lib/components/header/LinkToSettings.svelte";
+  import LoginIconOnly from "$lib/components/header/LoginIconOnly.svelte";
+  import Logout from "$lib/components/header/Logout.svelte";
+  import ManageInternetIdentityButton from "$lib/components/header/ManageInternetIdentityButton.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { ENABLE_EXPORT_NEURONS_REPORT } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
-  import AccountDetails from "$lib/components/header/AccountDetails.svelte";
-  import LinkToCanisters from "$lib/components/header/LinkToCanisters.svelte";
-  import LoginIconOnly from "$lib/components/header/LoginIconOnly.svelte";
-  import Logout from "$lib/components/header/Logout.svelte";
   import { IconUser, Popover } from "@dfinity/gix-components";
-  import LinkToReporting from "$lib/components/header/LinkToReporting.svelte";
 
   let visible = false;
   let button: HTMLButtonElement | undefined;

@@ -1,8 +1,8 @@
 <script lang="ts">
   import MaxButton from "$lib/components/common/MaxButton.svelte";
+  import InputWithError from "$lib/components/ui/InputWithError.svelte";
   import { ICP_DISPLAYED_DECIMALS_DETAILED } from "$lib/constants/icp.constants";
   import { i18n } from "$lib/stores/i18n";
-  import InputWithError from "$lib/components/ui/InputWithError.svelte";
   import { isNullish, type Token } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 

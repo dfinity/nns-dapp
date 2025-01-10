@@ -1,4 +1,5 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
@@ -6,7 +7,6 @@
     getAccountByRootCanister,
     getAccountsByRootCanister,
   } from "$lib/utils/accounts.utils";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { Dropdown, DropdownItem, Spinner } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { isNullish } from "@dfinity/utils";

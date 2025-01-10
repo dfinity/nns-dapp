@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
   import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { formatCyclesToTCycles } from "$lib/utils/canisters.utils";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 

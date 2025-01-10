@@ -1,4 +1,5 @@
 <script lang="ts">
+  import HardwareWalletConnectAction from "$lib/components/accounts/HardwareWalletConnectAction.svelte";
   import { LedgerConnectionState } from "$lib/constants/ledger.constants";
   import type { LedgerIdentity } from "$lib/identities/ledger.identity";
   import { registerHardwareWalletProxy } from "$lib/proxy/icp-ledger.services.proxy";
@@ -9,7 +10,6 @@
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
   } from "$lib/types/add-account.context";
-  import HardwareWalletConnectAction from "$lib/components/accounts/HardwareWalletConnectAction.svelte";
   import { busy } from "@dfinity/gix-components";
   import { createEventDispatcher, getContext } from "svelte";
 

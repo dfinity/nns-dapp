@@ -1,4 +1,8 @@
 <script lang="ts">
+  import HeadingSubtitle from "$lib/components/common/HeadingSubtitle.svelte";
+  import HeadingSubtitleWithUsdValue from "$lib/components/common/HeadingSubtitleWithUsdValue.svelte";
+  import PageHeading from "$lib/components/common/PageHeading.svelte";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
   import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
@@ -13,10 +17,6 @@
     neuronStake,
     type NeuronTagData,
   } from "$lib/utils/neuron.utils";
-  import HeadingSubtitle from "$lib/components/common/HeadingSubtitle.svelte";
-  import HeadingSubtitleWithUsdValue from "$lib/components/common/HeadingSubtitleWithUsdValue.svelte";
-  import PageHeading from "$lib/components/common/PageHeading.svelte";
-  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 

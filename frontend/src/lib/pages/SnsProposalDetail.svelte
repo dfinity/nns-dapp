@@ -10,6 +10,7 @@
   import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
   import { actionableProposalsNavigationIdsStore } from "$lib/derived/actionable-universes.derived";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { debugSnsProposalStore } from "$lib/derived/debug.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
@@ -45,7 +46,6 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { tick } from "svelte";
   import type { Readable } from "svelte/store";
-  import { debugSnsProposalStore } from "$lib/derived/debug.derived";
 
   export let proposalIdText: string | undefined | null = undefined;
 

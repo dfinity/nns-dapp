@@ -1,10 +1,10 @@
 <script lang="ts">
   import IncreaseStakeButton from "$lib/components/neuron-detail/actions/IncreaseStakeButton.svelte";
+  import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Universe } from "$lib/types/universe";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import { ItemAction } from "@dfinity/gix-components";
   import type { Token } from "@dfinity/utils";
 

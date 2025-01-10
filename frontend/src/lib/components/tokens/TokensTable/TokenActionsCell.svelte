@@ -1,4 +1,9 @@
 <script lang="ts">
+  import GoToDashboardButton from "$lib/components/tokens/TokensTable/actions/GoToDashboardButton.svelte";
+  import GoToDetailIcon from "$lib/components/tokens/TokensTable/actions/GoToDetailIcon.svelte";
+  import ReceiveButton from "$lib/components/tokens/TokensTable/actions/ReceiveButton.svelte";
+  import RemoveButton from "$lib/components/tokens/TokensTable/actions/RemoveButton.svelte";
+  import SendButton from "$lib/components/tokens/TokensTable/actions/SendButton.svelte";
   import {
     UserTokenAction,
     type UserTokenData,
@@ -6,11 +11,6 @@
     type UserTokenLoading,
   } from "$lib/types/tokens-page";
   import { isUserTokenLoading } from "$lib/utils/user-token.utils";
-  import GoToDashboardButton from "$lib/components/tokens/TokensTable/actions/GoToDashboardButton.svelte";
-  import GoToDetailIcon from "$lib/components/tokens/TokensTable/actions/GoToDetailIcon.svelte";
-  import ReceiveButton from "$lib/components/tokens/TokensTable/actions/ReceiveButton.svelte";
-  import RemoveButton from "$lib/components/tokens/TokensTable/actions/RemoveButton.svelte";
-  import SendButton from "$lib/components/tokens/TokensTable/actions/SendButton.svelte";
   import { nonNullish } from "@dfinity/utils";
   import type { ComponentType, SvelteComponent } from "svelte";
 

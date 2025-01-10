@@ -1,4 +1,5 @@
 <script lang="ts">
+  import TextInputForm from "$lib/components/common/TextInputForm.svelte";
   import { renameSubAccount } from "$lib/services/icp-accounts.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
@@ -7,7 +8,6 @@
     WALLET_CONTEXT_KEY,
     type WalletContext,
   } from "$lib/types/wallet.context";
-  import TextInputForm from "$lib/components/common/TextInputForm.svelte";
   import { busy } from "@dfinity/gix-components";
   import { createEventDispatcher, getContext } from "svelte";
 
