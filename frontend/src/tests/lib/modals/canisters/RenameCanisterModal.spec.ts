@@ -1,13 +1,13 @@
 import * as canisterApi from "$lib/api/canisters.api";
 import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import { authStore } from "$lib/stores/auth.store";
+import RenameCanisterModalTest from "$tests/lib/modals/canisters/RenameCanisterModalTest.svelte";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId, mockCanisters } from "$tests/mocks/canisters.mock";
 import { RenameCanisterModalPo } from "$tests/page-objects/RenameCanisterModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
-import RenameCanisterModalTest from "./RenameCanisterModalTest.svelte";
 
 vi.mock("$lib/api/canisters.api");
 

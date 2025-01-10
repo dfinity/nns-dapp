@@ -1,7 +1,7 @@
+import { BannerIconPo } from "$tests/page-objects/BannerIcon.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { BannerIconPo } from "./BannerIcon.page-object";
-import type { ButtonPo } from "./Button.page-object";
 
 export class BannerPo extends BasePageObject {
   private static readonly TID = "banner-component";

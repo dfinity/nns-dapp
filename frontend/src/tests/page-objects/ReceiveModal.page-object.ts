@@ -1,7 +1,7 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { ModalPo } from "$tests/page-objects/Modal.page-object";
+import { SelectAccountDropdownPo } from "$tests/page-objects/SelectAccountDropdown.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { SelectAccountDropdownPo } from "./SelectAccountDropdown.page-object";
 
 export class ReceiveModalPo extends ModalPo {
   private static readonly TID = "receive-modal";

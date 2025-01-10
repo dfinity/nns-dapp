@@ -1,5 +1,5 @@
 // This import needs to be at the top for the mock to work:
-import MockQRCodeReaderModal from "./MockQRCodeReaderModal.svelte";
+import MockQRCodeReaderModal from "$tests/lib/modals/transaction/MockQRCodeReaderModal.svelte";
 
 import QrWizardModal from "$lib/modals/transaction/QrWizardModal.svelte";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";

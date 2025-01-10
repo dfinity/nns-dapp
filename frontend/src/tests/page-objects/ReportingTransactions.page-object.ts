@@ -1,7 +1,7 @@
+import { ReportingDateRangeSelectorPo } from "$tests/page-objects/ReportingDateRangeSelector.page-object";
+import { ReportingTransactionsButtonPo } from "$tests/page-objects/ReportingTransactionsButton.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { ReportingDateRangeSelectorPo } from "./ReportingDateRangeSelector.page-object";
-import { ReportingTransactionsButtonPo } from "./ReportingTransactionsButton.page-object";
-import { BasePageObject } from "./base.page-object";
 
 export class ReportingTransactionsPo extends BasePageObject {
   static readonly TID = "reporting-transactions-component";

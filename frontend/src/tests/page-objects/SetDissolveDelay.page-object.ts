@@ -1,8 +1,8 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { InputWithErrorPo } from "$tests/page-objects/InputWithError.page-object";
+import { RangeDissolveDelayPo } from "$tests/page-objects/RangeDissolveDelay.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { RangeDissolveDelayPo } from "./RangeDissolveDelay.page-object";
 
 export class SetDissolveDelayPo extends BasePageObject {
   private static readonly TID = "set-dissolve-delay-component";

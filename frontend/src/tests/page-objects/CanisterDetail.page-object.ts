@@ -1,9 +1,9 @@
 import { AddCyclesModalPo } from "$tests/page-objects/AddCyclesModal.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { CanisterPageHeadingPo } from "$tests/page-objects/CanisterPageHeading.page-object";
+import { RenameCanisterModalPo } from "$tests/page-objects/RenameCanisterModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import type { ButtonPo } from "./Button.page-object";
-import { CanisterPageHeadingPo } from "./CanisterPageHeading.page-object";
-import { RenameCanisterModalPo } from "./RenameCanisterModal.page-object";
 
 export class CanisterDetailPo extends BasePageObject {
   private static readonly TID = "canister-detail-component";

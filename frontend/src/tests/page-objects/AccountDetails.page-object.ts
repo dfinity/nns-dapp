@@ -1,7 +1,7 @@
+import { IdentifierHashPo } from "$tests/page-objects/IdentifierHash.page-object";
+import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { IdentifierHashPo } from "./IdentifierHash.page-object";
-import { TooltipIconPo } from "./TooltipIcon.page-object";
 
 export class AccountDetailsPo extends BasePageObject {
   private static readonly TID = "account-details-component";

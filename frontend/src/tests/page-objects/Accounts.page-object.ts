@@ -1,11 +1,11 @@
+import { AddAccountModalPo } from "$tests/page-objects/AddAccountModal.page-object";
+import { BuyICPModalPo } from "$tests/page-objects/BuyICPModal.page-object";
+import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.page-object";
 import { NnsAccountsPo } from "$tests/page-objects/NnsAccounts.page-object";
 import { NnsAccountsFooterPo } from "$tests/page-objects/NnsAccountsFooter.page-object";
+import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { AddAccountModalPo } from "./AddAccountModal.page-object";
-import { BuyICPModalPo } from "./BuyICPModal.page-object";
-import { IcpTransactionModalPo } from "./IcpTransactionModal.page-object";
-import { ReceiveModalPo } from "./ReceiveModal.page-object";
 
 export class AccountsPo extends BasePageObject {
   private static readonly TID = "accounts-component";
