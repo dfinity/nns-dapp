@@ -327,7 +327,7 @@ export const sortUserTokens = (tokens: UserToken[]): UserToken[] => [
   ...tokens.filter(({ balance }) => !(balance instanceof TokenAmountV2)),
 ];
 
-const getUsdBalance = (token: UserToken) => {
+export const getUsdBalance = (token: UserToken) => {
   if (!("balanceInUsd" in token) || isNullish(token.balanceInUsd)) {
     return 0;
   }

@@ -2,6 +2,8 @@
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NoNeuronsCard from "$lib/components/portfolio/NoNeuronsCard.svelte";
   import NoTokensCard from "$lib/components/portfolio/NoTokensCard.svelte";
+  import TokensCard from "$lib/components/portfolio/TokensCard.svelte";
+  import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { TableProject } from "$lib/types/staking";
@@ -63,10 +65,19 @@
       usdAmount={totalUsdAmount}
       hasUnpricedTokens={hasUnpricedTokensOrStake}
     />
+    <TotalAssetsCard
+      usdAmount={totalUsdAmount}
+      hasUnpricedTokens={hasUnpricedTokensOrStake}
+    />
   </div>
   <div class="content">
     {#if showNoTokensCard}
       <NoTokensCard />
+    {:else}
+      <TokensCard
+        userTokens={userTokensData}
+        usdAmount={totalTokensBalanceInUsd}
+      />
     {/if}
     {#if showNoNeuronsCard}
       <NoNeuronsCard primaryCard={hasNoNeuronsCardAPrimaryAction} />
