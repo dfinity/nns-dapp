@@ -9,6 +9,7 @@ import {
   NotFoundError,
 } from "$lib/types/neurons.errors";
 import type { ToastMsg } from "$lib/types/toast";
+import { translate, type I18nSubstitutions } from "$lib/utils/i18n.utils";
 import { InvalidaTransactionError, RefundedError } from "@dfinity/cmc";
 import {
   InsufficientFundsError,
@@ -23,7 +24,6 @@ import {
 } from "@dfinity/nns";
 import { SnsGovernanceError, UnsupportedMethodError } from "@dfinity/sns";
 import { InvalidPercentageError, nonNullish } from "@dfinity/utils";
-import { translate, type I18nSubstitutions } from "./i18n.utils";
 
 export const errorToString = (err?: unknown): string | undefined => {
   const text =

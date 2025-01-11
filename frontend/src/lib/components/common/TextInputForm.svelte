@@ -1,5 +1,5 @@
 <script lang="ts">
-  import InputWithError from "../ui/InputWithError.svelte";
+  import InputWithError from "$lib/components/ui/InputWithError.svelte";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 

@@ -30,7 +30,19 @@ import type {
   NeuronVisibilityRowData,
   UncontrolledNeuronDetailsData,
 } from "$lib/types/neuron-visibility-row";
+import { daysToSeconds, nowInSeconds } from "$lib/utils/date.utils";
+import {
+  formatNumber,
+  shortenWithMiddleEllipsis,
+} from "$lib/utils/format.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { getVotingBallot, getVotingPower } from "$lib/utils/proposals.utils";
+import {
+  createAscendingComparator,
+  mergeComparators,
+} from "$lib/utils/sort.utils";
+import { formatTokenE8s, numberToUlps } from "$lib/utils/token.utils";
+import { isDefined } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
@@ -69,12 +81,6 @@ import {
   getAccountByPrincipal,
   isAccountHardwareWallet,
 } from "./accounts.utils";
-import { daysToSeconds, nowInSeconds } from "./date.utils";
-import { formatNumber, shortenWithMiddleEllipsis } from "./format.utils";
-import { getVotingBallot, getVotingPower } from "./proposals.utils";
-import { createAscendingComparator, mergeComparators } from "./sort.utils";
-import { formatTokenE8s, numberToUlps } from "./token.utils";
-import { isDefined } from "./utils";
 
 export type StateInfo = {
   Icon?: ComponentType;

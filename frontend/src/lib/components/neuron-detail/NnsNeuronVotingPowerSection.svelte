@@ -1,5 +1,10 @@
 <script lang="ts">
+  import NnsNeuronDissolveDelayItemAction from "$lib/components/neuron-detail/NnsNeuronDissolveDelayItemAction.svelte";
+  import NnsNeuronRewardStatusAction from "$lib/components/neuron-detail/NnsNeuronRewardStatusAction.svelte";
+  import NnsNeuronStateItemAction from "$lib/components/neuron-detail/NnsNeuronStateItemAction.svelte";
+  import NnsStakeItemAction from "$lib/components/neuron-detail/NnsStakeItemAction.svelte";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
+  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
@@ -12,13 +17,8 @@
     neuronStake,
   } from "$lib/utils/neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import NnsNeuronRewardStatusAction from "./NnsNeuronRewardStatusAction.svelte";
-  import NnsNeuronDissolveDelayItemAction from "./NnsNeuronDissolveDelayItemAction.svelte";
-  import NnsNeuronStateItemAction from "./NnsNeuronStateItemAction.svelte";
-  import NnsStakeItemAction from "./NnsStakeItemAction.svelte";
   import { Html, KeyValuePairInfo, Section } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
 
   export let neuron: NeuronInfo;
 

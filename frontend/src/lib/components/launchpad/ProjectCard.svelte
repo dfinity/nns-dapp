@@ -1,5 +1,6 @@
 <script lang="ts">
   import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
+  import ProjectCardSwapInfo from "$lib/components/launchpad/ProjectCardSwapInfo.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
@@ -13,7 +14,6 @@
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
   import type { Readable } from "svelte/store";
-  import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
 
   export let project: SnsFullProject;
 

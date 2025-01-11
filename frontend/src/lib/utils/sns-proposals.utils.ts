@@ -11,13 +11,14 @@ import type {
   UniversalProposalStatus,
   VotingNeuron,
 } from "$lib/types/proposals";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import {
   isSnsGenericNervousSystemFunction,
   isSnsNativeNervousSystemFunction,
 } from "$lib/utils/sns.utils";
-import { basisPointsToPercent } from "$lib/utils/utils";
+import { basisPointsToPercent, keyOfOptional } from "$lib/utils/utils";
 import { Vote } from "@dfinity/nns";
 import type {
   SnsAction,
@@ -42,8 +43,6 @@ import {
   nonNullish,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { nowInSeconds } from "./date.utils";
-import { keyOfOptional } from "./utils";
 
 export type SnsProposalDataMap = {
   // Mapped directly from SnsProposalData directly

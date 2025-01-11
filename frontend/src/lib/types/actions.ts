@@ -1,4 +1,4 @@
-import type { UserTokenData } from "./tokens-page";
+import type { UserTokenData } from "$lib/types/tokens-page";
 
 export enum ActionType {
   Send = "send",

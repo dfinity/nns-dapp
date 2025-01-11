@@ -2,17 +2,21 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import AddHotkeyModal from "$lib/modals/neurons/AddHotkeyModal.svelte";
+  import ChangeNeuronVisibilityModal from "$lib/modals/neurons/ChangeNeuronVisibilityModal.svelte";
   import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
   import DissolveActionButtonModal from "$lib/modals/neurons/DissolveActionButtonModal.svelte";
   import FollowNeuronsModal from "$lib/modals/neurons/FollowNeuronsModal.svelte";
   import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
   import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
   import JoinCommunityFundModal from "$lib/modals/neurons/JoinCommunityFundModal.svelte";
+  import LosingRewardNeuronsModal from "$lib/modals/neurons/LosingRewardNeuronsModal.svelte";
   import NnsAutoStakeMaturityModal from "$lib/modals/neurons/NnsAutoStakeMaturityModal.svelte";
   import NnsStakeMaturityModal from "$lib/modals/neurons/NnsStakeMaturityModal.svelte";
   import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
   import SplitNeuronModal from "$lib/modals/neurons/SplitNnsNeuronModal.svelte";
+  import UpdateVotingPowerRefreshedModal from "$lib/modals/neurons/UpdateVotingPowerRefreshedModal.svelte";
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
+  import NnsAddMaturityModal from "$lib/modals/sns/neurons/NnsAddMaturityModal.svelte";
   import type {
     NnsNeuronModal,
     NnsNeuronModalData,
@@ -23,12 +27,8 @@
     isPublicNeuron,
     type FolloweesNeuron,
   } from "$lib/utils/neuron.utils";
-  import NnsAddMaturityModal from "../sns/neurons/NnsAddMaturityModal.svelte";
-  import UpdateVotingPowerRefreshedModal from "$lib/modals/neurons/UpdateVotingPowerRefreshedModal.svelte";
-  import ChangeNeuronVisibilityModal from "./ChangeNeuronVisibilityModal.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
-  import LosingRewardNeuronsModal from "./LosingRewardNeuronsModal.svelte";
 
   let modal: NnsNeuronModal<NnsNeuronModalData> | undefined;
   const close = () => (modal = undefined);

@@ -1,6 +1,6 @@
+import { snsAggregatorDerived } from "$lib/derived/sns-aggregator.derived";
 import type { RootCanisterIdText } from "$lib/types/sns";
 import { type Readable } from "svelte/store";
-import { snsAggregatorDerived } from "./sns-aggregator.derived";
 
 interface ProjectTotalSupplyData {
   totalSupply: bigint;

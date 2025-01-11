@@ -1,3 +1,4 @@
+import { wrapper } from "$lib/api/sns-wrapper.api";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
@@ -12,7 +13,6 @@ import type {
   SnsProposalId,
   SnsVote,
 } from "@dfinity/sns";
-import { wrapper } from "./sns-wrapper.api";
 
 export const querySnsNeurons = async ({
   identity,

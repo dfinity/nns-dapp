@@ -1,7 +1,7 @@
+import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
+import { CanisterStatus } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterStatusResponse } from "@dfinity/ic-management";
 import type { Principal } from "@dfinity/principal";
-import type { CanisterDetails } from "./ic-management.canister.types";
-import { CanisterStatus } from "./ic-management.canister.types";
 
 const getCanisterStatus = (
   status:

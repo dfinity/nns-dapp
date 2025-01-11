@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
   import { pageStore } from "$lib/derived/page.derived";
   import type { UniversalProposalStatus } from "$lib/types/proposals";
   import { buildProposalUrl } from "$lib/utils/navigation.utils";
@@ -6,7 +7,6 @@
     getUniversalProposalStatus,
     mapProposalInfo,
   } from "$lib/utils/proposals.utils";
-  import ProposalCard from "./ProposalCard.svelte";
   import type { NeuronId, ProposalId, ProposalInfo } from "@dfinity/nns";
 
   export let proposalInfo: ProposalInfo;

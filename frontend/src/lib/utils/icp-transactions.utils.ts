@@ -8,6 +8,7 @@ import {
   AccountTransactionType,
   type UiTransaction,
 } from "$lib/types/transaction";
+import { transactionName } from "$lib/utils/transactions.utils";
 import type {
   Operation,
   Transaction,
@@ -20,7 +21,6 @@ import {
   isNullish,
   nonNullish,
 } from "@dfinity/utils";
-import { transactionName } from "./transactions.utils";
 
 const isToSelf = (transaction: Transaction): boolean => {
   if ("Transfer" in transaction.operation) {

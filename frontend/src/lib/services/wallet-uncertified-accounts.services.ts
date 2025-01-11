@@ -1,7 +1,10 @@
+import {
+  loadAccounts,
+  loadIcrcToken,
+} from "$lib/services/icrc-accounts.services";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { Principal } from "@dfinity/principal";
-import { loadAccounts, loadIcrcToken } from "./icrc-accounts.services";
 
 /**
  * Load Icrc accounts balances and token

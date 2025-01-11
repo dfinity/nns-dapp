@@ -18,6 +18,12 @@ import { definedNeuronsStore } from "$lib/derived/neurons.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
+import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import { assertLedgerVersion } from "$lib/services/icp-ledger.services";
+import {
+  queryAndUpdate,
+  type QueryAndUpdateStrategy,
+} from "$lib/services/utils.services";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -69,15 +75,12 @@ import {
 import { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { getAuthenticatedIdentity } from "./auth.services";
 import {
   getAccountIdentity,
   getAccountIdentityByPrincipal,
   loadBalance,
   transferICP,
 } from "./icp-accounts.services";
-import { assertLedgerVersion } from "./icp-ledger.services";
-import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 const getIdentityAndNeuronHelper = async (
   neuronId: NeuronId

@@ -1,8 +1,8 @@
 import { AppPath } from "$lib/constants/routes.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import { i18n } from "$lib/stores/i18n";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
 import { derived } from "svelte/store";
-import { pageStore } from "./page.derived";
 
 export const titleTokenSelectorStore = derived(
   [i18n, pageStore],

@@ -1,6 +1,6 @@
 <script lang="ts">
+  import SkeletonLogo from "$lib/components/ui/SkeletonLogo.svelte";
   import { Card, SkeletonText } from "@dfinity/gix-components";
-  import SkeletonLogo from "./SkeletonLogo.svelte";
 </script>
 
 <Card testId="skeleton-card">

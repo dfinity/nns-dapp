@@ -5,7 +5,12 @@ import {
 } from "$lib/api/sns.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
+import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { getLoadedSnsAggregatorData } from "$lib/services/public/sns.services";
+import {
+  queryAndUpdate,
+  type QueryAndUpdateStrategy,
+} from "$lib/services/utils.services";
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
@@ -22,8 +27,6 @@ import type {
 } from "@dfinity/sns";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { getAuthenticatedIdentity } from "./auth.services";
-import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 /**
  * Loads the user commitments for all projects.

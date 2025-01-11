@@ -1,5 +1,5 @@
 <script>
-  import SkeletonCard from "../ui/SkeletonCard.svelte";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
 </script>
 

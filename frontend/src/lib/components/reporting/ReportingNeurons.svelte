@@ -1,6 +1,6 @@
 <script lang="ts">
+  import ReportingNeuronsButton from "$lib/components/reporting/ReportingNeuronsButton.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import ReportingNeuronsButton from "./ReportingNeuronsButton.svelte";
 </script>
 
 <div class="wrapper">

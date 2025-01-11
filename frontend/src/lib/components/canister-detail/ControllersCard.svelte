@@ -1,13 +1,13 @@
 <script lang="ts">
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
+  import AddCanisterControllerButton from "$lib/components/canister-detail/AddCanisterControllerButton.svelte";
+  import RemoveCanisterControllerButton from "$lib/components/canister-detail/RemoveCanisterControllerButton.svelte";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import { i18n } from "$lib/stores/i18n";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
-  import AddCanisterControllerButton from "./AddCanisterControllerButton.svelte";
-  import RemoveCanisterControllerButton from "./RemoveCanisterControllerButton.svelte";
   import { Value } from "@dfinity/gix-components";
   import { getContext } from "svelte";
 

@@ -1,7 +1,9 @@
 import { addHotkey } from "$lib/api/governance.api";
 import type { FeatureKey } from "$lib/constants/environment.constants";
 import { initDebugStore } from "$lib/derived/debug.derived";
+import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { listNeurons, removeFollowee } from "$lib/services/neurons.services";
+import { claimSeedNeurons } from "$lib/services/seed-neurons.services";
 import {
   EDITABLE_FEATURE_FLAGS,
   overrideFeatureFlagsStore,
@@ -14,8 +16,6 @@ import { enumKeys } from "$lib/utils/enum.utils";
 import { followeesByTopic } from "$lib/utils/neuron.utils";
 import { Topic, type NeuronId } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { getAuthenticatedIdentity } from "../services/auth.services";
-import { claimSeedNeurons } from "../services/seed-neurons.services";
 
 /**
  * coo - original as object -> console

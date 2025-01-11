@@ -6,6 +6,8 @@ import {
   notifyPaymentFailure as notifyPaymentFailureApi,
 } from "$lib/api/sns-sale.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { DEFAULT_TOAST_DURATION_MILLIS } from "$lib/constants/constants";
+import { SALE_PARTICIPATION_RETRY_SECONDS } from "$lib/constants/sns.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 import {
@@ -15,6 +17,7 @@ import {
 import { getConditionsToAccept } from "$lib/getters/sns-summary";
 import { getCurrentIdentity } from "$lib/services/auth.services";
 import { loadBalance } from "$lib/services/icp-accounts.services";
+import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import {
   toastsError,
   toastsHide,
@@ -26,6 +29,8 @@ import { ApiErrorKey } from "$lib/types/api.errors";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { SaleStep } from "$lib/types/sale";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
+import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { validParticipation } from "$lib/utils/projects.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
@@ -33,6 +38,7 @@ import {
   getSwapCanisterAccount,
   isInternalRefreshBuyerTokensError,
 } from "$lib/utils/sns.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import {
   cancelPoll,
   poll,
@@ -70,12 +76,6 @@ import {
   nonNullish,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
-import { SALE_PARTICIPATION_RETRY_SECONDS } from "../constants/sns.constants";
-import { snsTicketsStore } from "../stores/sns-tickets.store";
-import { nanoSecondsToDateTime } from "../utils/date.utils";
-import { logWithTimestamp } from "../utils/dev.utils";
-import { formatTokenE8s } from "../utils/token.utils";
 
 let toastId: symbol | undefined;
 export const hidePollingToast = (): void => {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
 </script>
 

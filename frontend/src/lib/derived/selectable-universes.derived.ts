@@ -9,6 +9,7 @@ import {
   type IcrcCanistersStoreData,
 } from "$lib/derived/icrc-canisters.derived";
 import { pageStore, type Page } from "$lib/derived/page.derived";
+import { universesStore } from "$lib/derived/universes.derived";
 import type { Universe } from "$lib/types/universe";
 import {
   createAscendingComparator,
@@ -18,7 +19,6 @@ import {
 import { isAllTokensPath, isUniverseCkBTC } from "$lib/utils/universe.utils";
 import { isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
-import { universesStore } from "./universes.derived";
 
 type UniverseWithActionableProposalCount = {
   universe: Universe;

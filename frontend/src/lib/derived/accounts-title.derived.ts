@@ -1,10 +1,10 @@
+import { pageStore, type Page } from "$lib/derived/page.derived";
 import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
 import { i18n } from "$lib/stores/i18n";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
-import { pageStore, type Page } from "./page.derived";
 
 export const accountsTitleStore = derived<
   [Readable<Page>, Readable<Record<string, IcrcTokenMetadata>>, Readable<I18n>],

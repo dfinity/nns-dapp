@@ -1,7 +1,7 @@
+import { neuronsStore } from "$lib/stores/neurons.store";
 import type { NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
-import { neuronsStore } from "../stores/neurons.store";
 import {
   hasValidStake,
   shouldDisplayRewardLossNotification,

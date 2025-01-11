@@ -1,5 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import AddSnsHotkeyButton from "$lib/components/sns-neuron-detail/actions/AddSnsHotkeyButton.svelte";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
@@ -27,8 +29,6 @@
   } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
-  import AddSnsHotkeyButton from "./actions/AddSnsHotkeyButton.svelte";
 
   export let parameters: SnsNervousSystemParameters;
 

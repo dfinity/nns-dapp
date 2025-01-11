@@ -1,7 +1,7 @@
+import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import type { TokenAmountV2 } from "@dfinity/utils";
 import type { Writable } from "svelte/store";
-import type { SnsSwapCommitment } from "./sns";
 
 /**
  * SnsSummary or SnsSwapCommitment is a valid project

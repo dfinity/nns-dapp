@@ -24,6 +24,8 @@ import type {
   CachedVotingRewardsParametersDto,
 } from "$lib/types/sns-aggregator";
 import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
+import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
+import { isPngAsset } from "$lib/utils/utils";
 import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import type {
@@ -44,8 +46,6 @@ import {
   nonNullish,
   toNullable,
 } from "@dfinity/utils";
-import { mapOptionalToken } from "./icrc-tokens.utils";
-import { isPngAsset } from "./utils";
 
 export const aggregatorCanisterLogoPath = (rootCanisterId: string) =>
   `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}/sns/root/${rootCanisterId}/logo.png`;

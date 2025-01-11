@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Followee from "$lib/components/neuron-detail/NeuronFollowingCard/Followee.svelte";
+  import FollowNeuronsButton from "$lib/components/neuron-detail/actions/FollowNeuronsButton.svelte";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
@@ -10,8 +12,6 @@
     isNeuronControllable,
     type FolloweesNeuron,
   } from "$lib/utils/neuron.utils";
-  import FollowNeuronsButton from "../actions/FollowNeuronsButton.svelte";
-  import Followee from "./Followee.svelte";
   import { KeyValuePairInfo } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";

@@ -1,3 +1,5 @@
+import { tokensListBaseStore } from "$lib/derived/tokens-list-base.derived";
+import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import {
   UserTokenAction,
@@ -9,8 +11,6 @@ import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
 import { TokenAmountV2, isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
-import { tokensListBaseStore } from "./tokens-list-base.derived";
-import { tokensByUniverseIdStore } from "./tokens.derived";
 
 const convertToUserToken = ({
   tokenBaseData,
