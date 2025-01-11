@@ -17,7 +17,7 @@
     neuronStake,
   } from "$lib/utils/neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import { Html, Section } from "@dfinity/gix-components";
+  import { Html, KeyValuePairInfo, Section } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;
