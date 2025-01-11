@@ -1,14 +1,17 @@
 <script lang="ts">
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Card from "$lib/components/portfolio/Card.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import type { UserToken } from "$lib/types/tokens-page";
   import { formatNumber } from "$lib/utils/format.utils";
-  import { getUsdBalance } from "$lib/utils/token.utils";
+  import {
+    compareTokensForPortfolioPage,
+    getTokenBalanceOrZero,
+  } from "$lib/utils/tokens-table.utils";
   import { isUserTokenData } from "$lib/utils/user-token.utils";
   import { IconAccountsPage, IconRight } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
 
   export let userTokens: UserToken[];
   export let usdAmount: number;
@@ -21,23 +24,17 @@
     : PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
   const TOP_TOKENS_TO_SHOW = 4;
-
   $: topTokens = userTokens
     .filter(isUserTokenData)
-    .sort((a, b) => {
-      // If token is ICP, it should come first
-      if (a.token.symbol === "ICP") return -1;
-      if (b.token.symbol === "ICP") return 1;
-      // For non-ICP tokens, sort by USD balance
-      return getUsdBalance(b) - getUsdBalance(a);
-    })
+    .filter((token) => getTokenBalanceOrZero(token) > 0)
+    .sort(compareTokensForPortfolioPage())
     .slice(0, TOP_TOKENS_TO_SHOW)
     .map((token) => ({
       title: token.title,
       logo: token.logo,
       symbol: token.token.symbol,
       balance: token.balance,
-      balanceInUsd: getUsdBalance(token),
+      balanceInUsd: token.balanceInUsd,
     }));
 </script>
 
