@@ -12,14 +12,14 @@
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
 
-  export let userTokensData: UserToken[];
+  export let userTokens: UserToken[];
   export let tableProjects: TableProject[];
 
   let totalTokensBalanceInUsd: number;
-  $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokensData);
+  $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokens);
 
   let hasUnpricedTokens: boolean;
-  $: hasUnpricedTokens = userTokensData.some(
+  $: hasUnpricedTokens = userTokens.some(
     (token) =>
       token.balance instanceof TokenAmountV2 &&
       token.balance.toUlps() > 0n &&
@@ -45,7 +45,7 @@
     : undefined;
 
   let showNoTokensCard: boolean;
-  $: showNoTokensCard = !$authSignedInStore || totalTokensBalanceInUsd === 0;
+  $: showNoTokensCard = $authSignedInStore && totalTokensBalanceInUsd === 0;
 
   let showNoNeuronsCard: boolean;
   $: showNoNeuronsCard = !$authSignedInStore || totalStakedInUsd === 0;
@@ -74,10 +74,7 @@
     {#if showNoTokensCard}
       <NoTokensCard />
     {:else}
-      <TokensCard
-        userTokens={userTokensData}
-        usdAmount={totalTokensBalanceInUsd}
-      />
+      <TokensCard {userTokens} usdAmount={totalTokensBalanceInUsd} />
     {/if}
     {#if showNoNeuronsCard}
       <NoNeuronsCard primaryCard={hasNoNeuronsCardAPrimaryAction} />

@@ -3,11 +3,13 @@
   import Card from "$lib/components/portfolio/Card.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { UserToken } from "$lib/types/tokens-page";
   import { formatNumber } from "$lib/utils/format.utils";
+  import { mergeComparators } from "$lib/utils/sort.utils";
   import {
-    compareTokensForPortfolioPage,
-    getTokenBalanceOrZero,
+    compareTokensIcpFirst,
+    compareTokensWithBalance,
   } from "$lib/utils/tokens-table.utils";
   import { isUserTokenData } from "$lib/utils/user-token.utils";
   import { IconAccountsPage, IconRight } from "@dfinity/gix-components";
@@ -19,22 +21,21 @@
   const href = AppPath.Tokens;
 
   let usdAmountFormatted: string;
-  $: usdAmountFormatted = nonNullish(usdAmount)
-    ? formatNumber(usdAmount)
-    : PRICE_NOT_AVAILABLE_PLACEHOLDER;
+  $: usdAmountFormatted =
+    nonNullish(usdAmount) && $authSignedInStore
+      ? formatNumber(usdAmount)
+      : PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
   const TOP_TOKENS_TO_SHOW = 4;
   $: topTokens = userTokens
     .filter(isUserTokenData)
-    .filter((token) => getTokenBalanceOrZero(token) > 0)
-    .sort(compareTokensForPortfolioPage())
+    .sort(mergeComparators([compareTokensIcpFirst, compareTokensWithBalance]))
     .slice(0, TOP_TOKENS_TO_SHOW)
     .map((token) => ({
       title: token.title,
       logo: token.logo,
-      symbol: token.token.symbol,
       balance: token.balance,
-      balanceInUsd: token.balanceInUsd,
+      balanceInUsd: token.balanceInUsd ?? 0,
     }));
 </script>
 
@@ -61,7 +62,7 @@
       <div class="tokens-header">
         <span>Top Tokens Held</span>
         <span class="mobile-only justify-end">Balance</span>
-        <span class="desktop-only">Value Native</span>
+        <span class="desktop-only justify-end">Value Native</span>
         <span class="desktop-only justify-end">Value $</span>
       </div>
 
@@ -80,7 +81,7 @@
               <AmountDisplay singleLine amount={token.balance} />
             </div>
 
-            <div class="desktop-only">
+            <div class="desktop-only justify-end text-right">
               <AmountDisplay singleLine amount={token.balance} />
             </div>
             <div class="token-usd desktop-only justify-end">
@@ -152,7 +153,7 @@
         padding: 0 var(--padding-2x);
 
         @include media.min-width(medium) {
-          grid-template-columns: 2fr 1fr 1fr;
+          grid-template-columns: 1fr 1fr 1fr;
         }
       }
 
@@ -177,7 +178,7 @@
           }
 
           @include media.min-width(medium) {
-            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
           }
 
           .token-info {

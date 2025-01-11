@@ -2,9 +2,9 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { IMPORTANT_CK_TOKEN_IDS } from "$lib/constants/tokens.constants";
 import type { UserToken } from "$lib/types/tokens-page";
 import {
-  createAscendingComparator,
-  createDescendingComparator,
-  mergeComparators,
+    createAscendingComparator,
+    createDescendingComparator,
+    mergeComparators,
 } from "$lib/utils/sort.utils";
 import { isUserTokenFailed } from "$lib/utils/user-token.utils";
 import { TokenAmountV2 } from "@dfinity/utils";
@@ -63,6 +63,3 @@ export const compareTokensForTokensTable = ({
     compareTokensByImportance,
     compareTokensAlphabetically,
   ]);
-
-export const compareTokensForPortfolioPage = () =>
-  mergeComparators([compareTokensIcpFirst, compareTokensWithBalance]);
