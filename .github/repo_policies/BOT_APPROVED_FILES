@@ -2,6 +2,7 @@
 # This is to increase security and prevent accidentally updating files that shouldn't be changed by a bot
 
 Cargo.lock
+Cargo.toml
 declarations/*/*/*.did
 dfx.json
 frontend/package-lock.json
