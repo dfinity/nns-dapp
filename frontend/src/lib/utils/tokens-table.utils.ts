@@ -20,7 +20,7 @@ export const compareFailedTokensLast = createAscendingComparator(
   (token: UserToken) => isUserTokenFailed(token)
 );
 
-export const compareTokensWithBalance = createDescendingComparator(
+export const compareTokensByBalance = createDescendingComparator(
   (token: UserToken) => getTokenBalanceOrZero(token) > 0n
 );
 
