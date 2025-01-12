@@ -24,10 +24,10 @@ export type TokenWithRequiredBalance = UserTokenData &
 /**
  * Filters and sorts user tokens based on specific criteria:
  * - Always prioritizes ICP token first
- * - Sorts remaining tokens by USD balance in descending order
+ * - Sorts remaining tokens by USD balance
  * - Sorts remaining tokens by importance
  * - Limits the number of returned tokens to maxTokensToShow
- * - When user is signed in, filters out tokens with zero balance as we show only tokens with guaranteed balance
+ * - When isSigned true, filters out tokens with zero balance as we show only tokens with guaranteed balance
  */
 export const getTopTokens = ({
   userTokens,
