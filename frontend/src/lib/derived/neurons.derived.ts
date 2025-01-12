@@ -1,13 +1,13 @@
 import { neuronsStore } from "$lib/stores/neurons.store";
-import type { NeuronInfo } from "@dfinity/nns";
-import { nonNullish } from "@dfinity/utils";
-import { derived, type Readable } from "svelte/store";
 import {
   hasValidStake,
   shouldDisplayRewardLossNotification,
   sortNeuronsByStake,
   sortNeuronsByVotingPowerRefreshedTimeout,
-} from "../utils/neuron.utils";
+} from "$lib/utils/neuron.utils";
+import type { NeuronInfo } from "@dfinity/nns";
+import { nonNullish } from "@dfinity/utils";
+import { derived, type Readable } from "svelte/store";
 
 export const definedNeuronsStore: Readable<NeuronInfo[]> = derived(
   neuronsStore,
