@@ -219,15 +219,19 @@
 
       .info-row {
         display: flex;
-        flex-grow: 1;
         justify-content: center;
-        gap: var(--padding-2x);
         align-items: center;
+        gap: var(--padding-2x);
+        flex-grow: 1;
+
+        max-width: 90%;
+        margin: 0 auto;
 
         .icon {
-          width: 50px;
+          min-width: 50px;
           height: 50px;
         }
+
         .message {
           font-size: 0.875rem;
           color: var(--text-description);
