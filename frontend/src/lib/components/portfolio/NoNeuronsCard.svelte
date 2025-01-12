@@ -36,10 +36,11 @@
     height: 100%;
     text-align: center;
     @include media.min-width(medium) {
-      gap: var(--padding-4x);
-      padding: var(--padding-6x) var(--padding-4x);
+      gap: auto;
+      padding: var(--padding-4x);
       max-width: 400px;
     }
+
     .icon {
       width: 80px;
       height: 80px;

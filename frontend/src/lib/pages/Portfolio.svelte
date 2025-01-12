@@ -123,8 +123,7 @@
 
       @include media.min-width(large) {
         grid-template-columns: repeat(2, 1fr);
-        grid-auto-rows: min-content;
-        align-items: stretch;
+        grid-auto-rows: minmax(345px, min-content);
       }
     }
   }

@@ -4,12 +4,13 @@
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import type { UserToken } from "$lib/types/tokens-page";
+  import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
   import { formatNumber } from "$lib/utils/format.utils";
   import { mergeComparators } from "$lib/utils/sort.utils";
   import {
     compareTokensIcpFirst,
     compareTokensWithBalance,
+    getTokenBalanceOrZero,
   } from "$lib/utils/tokens-table.utils";
   import { isUserTokenData } from "$lib/utils/user-token.utils";
   import { IconAccountsPage, IconRight } from "@dfinity/gix-components";
@@ -18,7 +19,24 @@
   export let userTokens: UserToken[];
   export let usdAmount: number;
 
+  const TOP_TOKENS_TO_SHOW = 4;
   const href = AppPath.Tokens;
+
+  type TokenWithRequiredBalance = UserTokenData &
+    Required<Pick<UserTokenData, "balanceInUsd">>;
+  let topTokens: TokenWithRequiredBalance[];
+  $: topTokens = userTokens
+    .filter(isUserTokenData)
+    .sort(mergeComparators([compareTokensIcpFirst, compareTokensWithBalance]))
+    .slice(0, TOP_TOKENS_TO_SHOW)
+    .map((token) => ({
+      ...token,
+      balanceInUsd: token?.balanceInUsd ?? 0,
+    }));
+
+  $: if ($authSignedInStore) {
+    topTokens = topTokens.filter((token) => getTokenBalanceOrZero(token) > 0);
+  }
 
   let usdAmountFormatted: string;
   $: usdAmountFormatted =
@@ -26,17 +44,8 @@
       ? formatNumber(usdAmount)
       : PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
-  const TOP_TOKENS_TO_SHOW = 4;
-  $: topTokens = userTokens
-    .filter(isUserTokenData)
-    .sort(mergeComparators([compareTokensIcpFirst, compareTokensWithBalance]))
-    .slice(0, TOP_TOKENS_TO_SHOW)
-    .map((token) => ({
-      title: token.title,
-      logo: token.logo,
-      balance: token.balance,
-      balanceInUsd: token.balanceInUsd ?? 0,
-    }));
+  let showInfoRow: boolean;
+  $: showInfoRow = topTokens.length > 0 && topTokens.length < 3;
 </script>
 
 <Card>
@@ -47,7 +56,7 @@
           <IconAccountsPage />
         </div>
         <div class="text-content">
-          <h5>Total Token Balance</h5>
+          <h5 class="title">Total Token Balance</h5>
           <span class="amount" data-tid="amount">
             ${usdAmountFormatted}
           </span>
@@ -89,6 +98,17 @@
             </div>
           </div>
         {/each}
+        {#if showInfoRow}
+          <div class="info-row desktop-only">
+            <div class="icon">
+              <IconAccountsPage />
+            </div>
+            <div class="message">
+              Store your tokens safely and invest into the future with the
+              Internet Computer, IC, landscape.
+            </div>
+          </div>
+        {/if}
       </div>
     </div>
   </div>
@@ -123,7 +143,7 @@
           flex-direction: column;
           gap: var(--padding-0_5x);
 
-          h5 {
+          .title {
             font-size: 0.875rem;
             font-weight: bold;
             color: var(--text-description);
@@ -160,7 +180,6 @@
       .tokens-list {
         display: flex;
         flex-direction: column;
-        gap: var(--padding-1_5x);
         background-color: var(--card-background);
         flex-grow: 1;
 
@@ -169,8 +188,7 @@
           grid-template-columns: 1fr 1fr;
           justify-content: space-between;
           align-items: center;
-          padding: var(--padding-2x);
-          flex-grow: 1;
+          padding: var(--padding-3x) var(--padding-2x);
 
           border-bottom: 1px solid var(--neutral-100);
           &:last-child {
@@ -209,11 +227,35 @@
           }
         }
       }
+
+      .info-row {
+        display: flex;
+        flex-grow: 1;
+        justify-content: center;
+        gap: var(--padding-2x);
+        align-items: center;
+
+        .icon {
+          width: 50px;
+          height: 50px;
+        }
+        .message {
+          font-size: 0.875rem;
+          color: var(--text-description);
+          max-width: 400px;
+        }
+      }
     }
 
     /* Utilities */
     .desktop-only {
-      display: none;
+      display: none !important;
+    }
+
+    @include media.min-width(large) {
+      .desktop-only {
+        display: flex !important;
+      }
     }
 
     @include media.min-width(medium) {

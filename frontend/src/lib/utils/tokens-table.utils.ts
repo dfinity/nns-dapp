@@ -9,7 +9,7 @@ import {
 import { isUserTokenFailed } from "$lib/utils/user-token.utils";
 import { TokenAmountV2 } from "@dfinity/utils";
 
-const getTokenBalanceOrZero = (token: UserToken) =>
+export const getTokenBalanceOrZero = (token: UserToken) =>
   token.balance instanceof TokenAmountV2 ? token.balance.toUlps() : 0n;
 
 export const compareTokensIcpFirst = createDescendingComparator(
