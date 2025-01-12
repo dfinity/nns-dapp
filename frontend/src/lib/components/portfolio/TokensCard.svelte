@@ -4,15 +4,12 @@
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
+  import type { UserToken } from "$lib/types/tokens-page";
   import { formatNumber } from "$lib/utils/format.utils";
-  import { mergeComparators } from "$lib/utils/sort.utils";
   import {
-    compareTokensIcpFirst,
-    compareTokensWithBalance,
-    getTokenBalanceOrZero,
-  } from "$lib/utils/tokens-table.utils";
-  import { isUserTokenData } from "$lib/utils/user-token.utils";
+    getTopTokens,
+    type TokenWithRequiredBalance,
+  } from "$lib/utils/portfolio.utils";
   import { IconAccountsPage, IconRight } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
@@ -22,21 +19,12 @@
   const TOP_TOKENS_TO_SHOW = 4;
   const href = AppPath.Tokens;
 
-  type TokenWithRequiredBalance = UserTokenData &
-    Required<Pick<UserTokenData, "balanceInUsd">>;
   let topTokens: TokenWithRequiredBalance[];
-  $: topTokens = userTokens
-    .filter(isUserTokenData)
-    .sort(mergeComparators([compareTokensIcpFirst, compareTokensWithBalance]))
-    .slice(0, TOP_TOKENS_TO_SHOW)
-    .map((token) => ({
-      ...token,
-      balanceInUsd: token?.balanceInUsd ?? 0,
-    }));
-
-  $: if ($authSignedInStore) {
-    topTokens = topTokens.filter((token) => getTokenBalanceOrZero(token) > 0);
-  }
+  $: topTokens = getTopTokens({
+    userTokens,
+    maxTokensToShow: TOP_TOKENS_TO_SHOW,
+    isSignedIn: $authSignedInStore,
+  });
 
   let usdAmountFormatted: string;
   $: usdAmountFormatted =
@@ -44,6 +32,7 @@
       ? formatNumber(usdAmount)
       : PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
+  // TODO: This also depends on the number of projects
   let showInfoRow: boolean;
   $: showInfoRow = topTokens.length > 0 && topTokens.length < 3;
 </script>
@@ -65,14 +54,14 @@
       <a class="button secondary mobile-only" {href}>
         <IconRight />
       </a>
-      <a class="button secondary desktop-only" {href}>View tokens</a>
+      <a class="button secondary tablet-up" {href}>View tokens</a>
     </div>
     <div class="body">
       <div class="tokens-header">
         <span>Top Tokens Held</span>
         <span class="mobile-only justify-end">Balance</span>
-        <span class="desktop-only justify-end">Value Native</span>
-        <span class="desktop-only justify-end">Value $</span>
+        <span class="tablet-up justify-end">Value Native</span>
+        <span class="tablet-up justify-end">Value $</span>
       </div>
 
       <div class="tokens-list">
@@ -83,17 +72,17 @@
               <span class="token-name">{token.title}</span>
             </div>
 
-            <div class="mobile-only token-balance justify-end text-right">
+            <div class="token-balance mobile-only justify-end text-right">
               <div class="token-usd">
                 ${formatNumber(token.balanceInUsd)}
               </div>
               <AmountDisplay singleLine amount={token.balance} />
             </div>
 
-            <div class="desktop-only justify-end text-right">
+            <div class="tablet-up justify-end text-right">
               <AmountDisplay singleLine amount={token.balance} />
             </div>
-            <div class="token-usd desktop-only justify-end">
+            <div class="token-usd tablet-up justify-end">
               ${formatNumber(token.balanceInUsd)}
             </div>
           </div>
@@ -248,8 +237,19 @@
     }
 
     /* Utilities */
+
+    .tablet-up,
     .desktop-only {
       display: none !important;
+    }
+
+    @include media.min-width(medium) {
+      .mobile-only {
+        display: none;
+      }
+      .tablet-up {
+        display: flex !important;
+      }
     }
 
     @include media.min-width(large) {
@@ -258,14 +258,6 @@
       }
     }
 
-    @include media.min-width(medium) {
-      .desktop-only {
-        display: flex;
-      }
-      .mobile-only {
-        display: none;
-      }
-    }
     .text-right {
       text-align: right;
     }
