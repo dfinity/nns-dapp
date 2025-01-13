@@ -18,13 +18,13 @@ import { definedNeuronsStore } from "$lib/derived/neurons.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
-import { authStore } from "$lib/stores/auth.store";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { assertLedgerVersion } from "$lib/services/icp-ledger.services";
 import {
   queryAndUpdate,
   type QueryAndUpdateStrategy,
 } from "$lib/services/utils.services";
+import { authStore } from "$lib/stores/auth.store";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
