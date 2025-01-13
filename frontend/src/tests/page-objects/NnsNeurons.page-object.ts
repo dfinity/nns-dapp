@@ -1,5 +1,4 @@
 import { LosingRewardsBannerPo } from "$tests/page-objects/LosingRewardsBanner.page-object";
-import { MakeNeuronsPublicBannerPo } from "$tests/page-objects/MakeNeuronsPublicBanner.page-object";
 import { NeuronsTablePo } from "$tests/page-objects/NeuronsTable.page-object";
 import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -44,10 +43,6 @@ export class NnsNeuronsPo extends BasePageObject {
 
   hasSpinner(): Promise<boolean> {
     return this.isPresent("spinner");
-  }
-
-  getMakeNeuronsPublicBannerPo(): MakeNeuronsPublicBannerPo {
-    return MakeNeuronsPublicBannerPo.under(this.root);
   }
 
   getLosingRewardsBannerPo(): LosingRewardsBannerPo {

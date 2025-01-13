@@ -50,7 +50,6 @@
       {#if $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION}
         <LosingRewardsBanner />
       {/if}
-      <MakeNeuronsPublicBanner />
       {#if $ENABLE_USD_VALUES_FOR_NEURONS}
         <UsdValueBanner usdAmount={totalStakeInUsd} hasUnpricedTokens={false}>
           <IconNeuronsPage slot="icon" />

@@ -244,11 +244,6 @@ describe("NnsNeurons", () => {
         privateControlledNeuron,
       ]);
     });
-    it("should render makeNeuronsPublicBanner", async () => {
-      const po = await renderComponent();
-
-      expect(await po.getMakeNeuronsPublicBannerPo().isPresent()).toBe(true);
-    });
   });
 
   describe("no neurons", () => {
