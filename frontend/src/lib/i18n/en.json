@@ -1194,6 +1194,13 @@
     "no_tokens_card_description": "Vote on project and protocol developments and earn rewards - Ready to get started?",
     "no_tokens_card_button": "Buy ICP",
     "no_neurons_card_description": "Take part in voting for development decisions on SNS projects and earn rewards - start staking your neurons",
-    "no_neurons_card_button": "Start Staking"
+    "no_neurons_card_button": "Start Staking",
+    "tokens_card_title": "Total Token Balance",
+    "tokens_card_link": "View tokens",
+    "tokens_card_list_first_column": "Top Tokens Held",
+    "tokens_card_list_second_column_mobile": "Balance",
+    "tokens_card_list_second_column": "Value Native",
+    "tokens_card_list_third_column": "Value $",
+    "tokens_card_info_row": "Store your tokens safely and invest into the future with the Internet Computer, IC, landscape."
   }
 }
