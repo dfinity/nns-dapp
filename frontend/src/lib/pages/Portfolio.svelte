@@ -7,7 +7,8 @@
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { TableProject } from "$lib/types/staking";
-  import type { UserToken } from "$lib/types/tokens-page";
+  import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
+  import { getTopTokens } from "$lib/utils/portfolio.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
@@ -54,6 +55,12 @@
   // This occurs when there are tokens but no stake.
   let hasNoNeuronsCardAPrimaryAction: boolean;
   $: hasNoNeuronsCardAPrimaryAction = !showNoTokensCard;
+
+  let topTokens: UserTokenData[];
+  $: topTokens = getTopTokens({
+    userTokens,
+    isSignedIn: $authSignedInStore,
+  });
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -74,7 +81,7 @@
     {#if showNoTokensCard}
       <NoTokensCard />
     {:else}
-      <TokensCard {userTokens} usdAmount={totalTokensBalanceInUsd} />
+      <TokensCard {topTokens} usdAmount={totalTokensBalanceInUsd} />
     {/if}
     {#if showNoNeuronsCard}
       <NoNeuronsCard primaryCard={hasNoNeuronsCardAPrimaryAction} />

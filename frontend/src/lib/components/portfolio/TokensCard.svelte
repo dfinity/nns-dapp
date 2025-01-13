@@ -4,40 +4,27 @@
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import type { UserToken } from "$lib/types/tokens-page";
+  import { i18n } from "$lib/stores/i18n";
+  import type { UserTokenData } from "$lib/types/tokens-page";
   import { formatNumber } from "$lib/utils/format.utils";
-  import {
-    getTopTokens,
-    type TokenWithRequiredBalance,
-  } from "$lib/utils/portfolio.utils";
   import { IconAccountsPage, IconRight } from "@dfinity/gix-components";
-  import { nonNullish } from "@dfinity/utils";
 
-  export let userTokens: UserToken[];
+  export let topTokens: UserTokenData[];
   export let usdAmount: number;
 
-  const TOP_TOKENS_TO_SHOW = 4;
   const href = AppPath.Tokens;
 
-  let topTokens: TokenWithRequiredBalance[];
-  $: topTokens = getTopTokens({
-    userTokens,
-    maxTokensToShow: TOP_TOKENS_TO_SHOW,
-    isSignedIn: $authSignedInStore,
-  });
-
   let usdAmountFormatted: string;
-  $: usdAmountFormatted =
-    nonNullish(usdAmount) && $authSignedInStore
-      ? formatNumber(usdAmount)
-      : PRICE_NOT_AVAILABLE_PLACEHOLDER;
+  $: usdAmountFormatted = $authSignedInStore
+    ? formatNumber(usdAmount)
+    : PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
-  // TODO: This also depends on the number of projects
+  // TODO: This will also depend on the number of projects
   let showInfoRow: boolean;
   $: showInfoRow = topTokens.length > 0 && topTokens.length < 3;
 </script>
 
-<Card>
+<Card testId="tokens-card">
   <div class="wrapper">
     <div class="header">
       <div class="header-wrapper">
@@ -45,7 +32,7 @@
           <IconAccountsPage />
         </div>
         <div class="text-content">
-          <h5 class="title">Total Token Balance</h5>
+          <h5 class="title">{$i18n.portfolio.tokens_card_title}</h5>
           <span class="amount" data-tid="amount">
             ${usdAmountFormatted}
           </span>
@@ -54,27 +41,37 @@
       <a class="button secondary mobile-only" {href}>
         <IconRight />
       </a>
-      <a class="button secondary tablet-up" {href}>View tokens</a>
+      <a class="button secondary tablet-up" {href}
+        >{$i18n.portfolio.tokens_card_link}</a
+      >
     </div>
     <div class="body">
       <div class="tokens-header">
-        <span>Top Tokens Held</span>
-        <span class="mobile-only justify-end">Balance</span>
-        <span class="tablet-up justify-end">Value Native</span>
-        <span class="tablet-up justify-end">Value $</span>
+        <span>{$i18n.portfolio.tokens_card_list_first_column}</span>
+        <span class="mobile-only justify-end"
+          >{$i18n.portfolio.tokens_card_list_second_column_mobile}</span
+        >
+        <span class="tablet-up justify-end"
+          >{$i18n.portfolio.tokens_card_list_second_column}</span
+        >
+        <span class="tablet-up justify-end"
+          >{$i18n.portfolio.tokens_card_list_third_column}</span
+        >
       </div>
 
       <div class="tokens-list">
         {#each topTokens as token}
-          <div class="token-row">
+          <div class="token-row" data-tid="token-card-row">
             <div class="token-info">
               <img src={token.logo} alt={token.title} class="token-icon" />
-              <span class="token-name">{token.title}</span>
+              <span class="token-name" data-tid="token-title"
+                >{token.title}</span
+              >
             </div>
 
-            <div class="token-balance mobile-only justify-end text-right">
-              <div class="token-usd">
-                ${formatNumber(token.balanceInUsd)}
+            <div class="mobile-only justify-end text-right">
+              <div>
+                ${formatNumber(token?.balanceInUsd ?? 0)}
               </div>
               <AmountDisplay singleLine amount={token.balance} />
             </div>
@@ -82,19 +79,18 @@
             <div class="tablet-up justify-end text-right">
               <AmountDisplay singleLine amount={token.balance} />
             </div>
-            <div class="token-usd tablet-up justify-end">
-              ${formatNumber(token.balanceInUsd)}
+            <div class="tablet-up justify-end" data-tid="token-balance">
+              ${formatNumber(token?.balanceInUsd ?? 0)}
             </div>
           </div>
         {/each}
         {#if showInfoRow}
-          <div class="info-row desktop-only">
+          <div class="info-row desktop-only" data-tid="info-row">
             <div class="icon">
               <IconAccountsPage />
             </div>
             <div class="message">
-              Store your tokens safely and invest into the future with the
-              Internet Computer, IC, landscape.
+              {$i18n.portfolio.tokens_card_info_row}
             </div>
           </div>
         {/if}
@@ -199,19 +195,9 @@
               border-radius: 50%;
             }
 
+            // TODO: Styling for the token row
             .token-name {
               font-weight: 500;
-            }
-
-            .token-value,
-            .token-usd {
-              /* font-variant-numeric: tabular-nums; */
-            }
-
-            .token-value {
-            }
-
-            .token-usd {
             }
           }
         }
@@ -241,7 +227,6 @@
     }
 
     /* Utilities */
-
     .tablet-up,
     .desktop-only {
       display: none !important;
