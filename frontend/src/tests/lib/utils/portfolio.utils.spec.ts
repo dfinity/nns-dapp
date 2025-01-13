@@ -32,7 +32,7 @@ describe("Portfolio utils", () => {
       balanceInUsd: 0,
     });
 
-    it("should filter out non UserTokenData", () => {
+    it("should exclude non-UserTokenData tokens", () => {
       const tokens: UserToken[] = [
         mockIcpToken,
         mockOtherToken,
@@ -41,16 +41,13 @@ describe("Portfolio utils", () => {
         mockNonUserToken,
       ];
 
-      const result = getTopTokens({
-        userTokens: tokens,
-        maxTokensToShow: 10,
-      });
+      const result = getTopTokens({ userTokens: tokens });
 
       expect(result).toHaveLength(4);
       expect(result).not.toContainEqual(mockNonUserToken);
     });
 
-    it("should limit output to maxTokensToShow", () => {
+    it("should respect the result limit", () => {
       const tokens: UserToken[] = [
         mockIcpToken,
         mockOtherToken,
@@ -60,13 +57,13 @@ describe("Portfolio utils", () => {
       ];
       const result = getTopTokens({
         userTokens: tokens,
-        maxTokensToShow: 3,
+        maxResults: 3,
       });
 
       expect(result).toHaveLength(3);
     });
 
-    it("should prioritize ICP token, then important tokens, then rest", () => {
+    it("should order tokens: ICP first, then ckBTC/ckUSDC, then others", () => {
       const tokens: UserToken[] = [
         mockOtherToken,
         mockCkUSDCToken,
@@ -74,12 +71,8 @@ describe("Portfolio utils", () => {
         mockNonUserToken,
         mockIcpToken,
       ];
-      const result = getTopTokens({
-        userTokens: tokens,
-        maxTokensToShow: 10,
-      });
+      const result = getTopTokens({ userTokens: tokens });
 
-      expect(result).toHaveLength(4);
       expect(result).toEqual([
         mockIcpToken,
         mockCkBTCToken,
@@ -88,7 +81,7 @@ describe("Portfolio utils", () => {
       ]);
     });
 
-    describe("when sign in", () => {
+    describe("when signed in", () => {
       const mockIcpToken = createIcpUserToken({
         balanceInUsd: 100,
       });
@@ -113,7 +106,7 @@ describe("Portfolio utils", () => {
         balanceInUsd: 0,
       });
 
-      it("should filter out zero balance tokens", () => {
+      it("should exclude tokens with zero balance", () => {
         const tokens: UserToken[] = [
           mockZeroBalanceUserTokenData,
           mockOtherToken,
@@ -124,7 +117,6 @@ describe("Portfolio utils", () => {
         ];
         const result = getTopTokens({
           userTokens: tokens,
-          maxTokensToShow: 6,
           isSignedIn: true,
         });
 
@@ -132,7 +124,7 @@ describe("Portfolio utils", () => {
         expect(result).not.toContainEqual(mockZeroBalanceUserTokenData);
       });
 
-      it("should prioritize ICP token, then sort by balance", () => {
+      it("should order tokens: ICP first, then by descending USD balance", () => {
         const tokens: UserToken[] = [
           mockOtherToken,
           mockCkUSDCToken,
@@ -143,17 +135,29 @@ describe("Portfolio utils", () => {
         ];
         const result = getTopTokens({
           userTokens: tokens,
-          maxTokensToShow: 10,
           isSignedIn: true,
         });
 
-        expect(result).toHaveLength(4);
         expect(result).toEqual([
-          mockIcpToken,
-          mockOtherToken,
-          mockCkUSDCToken,
-          mockCkBTCToken,
+          mockIcpToken, // 100$
+          mockOtherToken, // 2000$
+          mockCkUSDCToken, // 1000$
+          mockCkBTCToken, // 10$
         ]);
+      });
+
+      it("should return empty array when all tokens have zero balance", () => {
+        const mockIcpToken = createIcpUserToken({ balanceInUsd: 0 });
+        const tokens: UserToken[] = [
+          mockZeroBalanceUserTokenData,
+          mockIcpToken,
+        ];
+        const result = getTopTokens({
+          userTokens: tokens,
+          isSignedIn: true,
+        });
+
+        expect(result).toHaveLength(0);
       });
     });
   });

@@ -31,17 +31,17 @@ export type TokenWithRequiredBalance = UserTokenData &
  */
 export const getTopTokens = ({
   userTokens,
-  maxTokensToShow,
+  maxResults = 4,
   isSignedIn = false,
 }: {
   userTokens: UserToken[];
-  maxTokensToShow: number;
+  maxResults?: number;
   isSignedIn?: boolean;
 }): TokenWithRequiredBalance[] => {
   const topTokens = userTokens
     .filter(isUserTokenData)
     .sort(compareTokens)
-    .slice(0, maxTokensToShow)
+    .slice(0, maxResults)
     .map((token) => ({
       ...token,
       balanceInUsd: token?.balanceInUsd ?? 0,
