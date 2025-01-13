@@ -1,7 +1,6 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import LosingRewardsBanner from "$lib/components/neurons/LosingRewardsBanner.svelte";
-  import MakeNeuronsPublicBanner from "$lib/components/neurons/MakeNeuronsPublicBanner.svelte";
   import NeuronsTable from "$lib/components/neurons/NeuronsTable/NeuronsTable.svelte";
   import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
@@ -50,7 +49,6 @@
       {#if $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION}
         <LosingRewardsBanner />
       {/if}
-      <MakeNeuronsPublicBanner />
       {#if $ENABLE_USD_VALUES_FOR_NEURONS}
         <UsdValueBanner usdAmount={totalStakeInUsd} hasUnpricedTokens={false}>
           <IconNeuronsPage slot="icon" />

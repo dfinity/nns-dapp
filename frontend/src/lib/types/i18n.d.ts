@@ -396,9 +396,6 @@ interface I18nNeurons {
   public_neuron_description: string;
   private_neuron_description: string;
   learn_more: string;
-  make_neurons_public_banner_title: string;
-  make_neurons_public_banner_description: string;
-  make_neurons_public_action_text: string;
   create_as_public: string;
   create_as_public_tooltip: string;
   create_as_public_neuron_failure: string;
