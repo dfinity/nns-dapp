@@ -60,7 +60,7 @@
       </div>
 
       <div class="tokens-list">
-        {#each topTokens as token}
+        {#each topTokens as token (token.domKey)}
           <div class="token-row" data-tid="token-card-row">
             <div class="token-info">
               <img src={token.logo} alt={token.title} class="token-icon" />
