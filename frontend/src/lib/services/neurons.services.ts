@@ -24,6 +24,7 @@ import {
   queryAndUpdate,
   type QueryAndUpdateStrategy,
 } from "$lib/services/utils.services";
+import { authStore } from "$lib/stores/auth.store";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -704,10 +705,14 @@ const refreshVotingPower = async (neuronId: NeuronId): Promise<void> => {
     neuron,
     accounts,
   });
+  const isHotkeyControlled = isHotKeyControllable({
+    neuron,
+    identity: get(authStore).identity,
+  });
 
-  if (isHWControlled) {
-    // This is a workaround for the Ledger device, because currently it does not support
-    // the governance canister version required for the `refreshVotingPower` call.
+  if (isHWControlled || isHotkeyControlled) {
+    // This is a workaround for Ledger device neurons and hotkey neurons
+    // because the `refreshVotingPower` API does not currently support them.
     const identity: Identity = await getAuthenticatedIdentity();
     // It doesn't matter which topic to use to confirm the current state of the neuron
     // (except NeuronManagement, which can only be handled by controllers).

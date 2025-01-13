@@ -33,6 +33,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Fixed "Confirm following" for non-HW hotkey neurons.
+
 #### Security
 
 #### Not Published
