@@ -1,8 +1,13 @@
+import type { TableProject } from "$lib/types/staking";
 import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
 import {
   createDescendingComparator,
   mergeComparators,
 } from "$lib/utils/sort.utils";
+import {
+  compareByProjectTitle,
+  compareIcpFirst,
+} from "$lib/utils/staking.utils";
 import {
   compareTokensByImportance,
   compareTokensIcpFirst,
@@ -44,4 +49,30 @@ export const getTopTokens = ({
   if (!isSignedIn) return topTokens;
 
   return topTokens.filter((token) => token?.balanceInUsd ?? 0 > 0);
+};
+
+const compareProjectsByUsdBalance = createDescendingComparator(
+  (project: TableProject) => project?.stakeInUsd ?? 0 > 0
+);
+
+const compareProjects = mergeComparators([
+  compareIcpFirst,
+  compareProjectsByUsdBalance,
+  compareByProjectTitle,
+]);
+
+export const getTopProjects = ({
+  projects,
+  maxResults = 4,
+  isSignedIn = false,
+}: {
+  projects: TableProject[];
+  maxResults?: number;
+  isSignedIn?: boolean;
+}): TableProject[] => {
+  const topProjects = projects.sort(compareProjects).slice(0, maxResults);
+
+  if (!isSignedIn) return topProjects;
+
+  return topProjects.filter((project) => project?.stakeInUsd ?? 0 > 0);
 };

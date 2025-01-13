@@ -2,13 +2,14 @@
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NoNeuronsCard from "$lib/components/portfolio/NoNeuronsCard.svelte";
   import NoTokensCard from "$lib/components/portfolio/NoTokensCard.svelte";
+  import ProjectsCard from "$lib/components/portfolio/ProjectsCard.svelte";
   import TokensCard from "$lib/components/portfolio/TokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
-  import { getTopTokens } from "$lib/utils/portfolio.utils";
+  import { getTopProjects, getTopTokens } from "$lib/utils/portfolio.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
@@ -49,7 +50,7 @@
   $: showNoTokensCard = $authSignedInStore && totalTokensBalanceInUsd === 0;
 
   let showNoNeuronsCard: boolean;
-  $: showNoNeuronsCard = !$authSignedInStore || totalStakedInUsd === 0;
+  $: showNoNeuronsCard = $authSignedInStore && totalStakedInUsd === 0;
 
   // The Card should display a Primary Action when it is the only available option.
   // This occurs when there are tokens but no stake.
@@ -59,6 +60,12 @@
   let topTokens: UserTokenData[];
   $: topTokens = getTopTokens({
     userTokens,
+    isSignedIn: $authSignedInStore,
+  });
+
+  let topProjects: TableProject[];
+  $: topProjects = getTopProjects({
+    projects: tableProjects,
     isSignedIn: $authSignedInStore,
   });
 </script>
@@ -85,6 +92,8 @@
     {/if}
     {#if showNoNeuronsCard}
       <NoNeuronsCard primaryCard={hasNoNeuronsCardAPrimaryAction} />
+    {:else}
+      <ProjectsCard {topProjects} usdAmount={totalStakedInUsd} />
     {/if}
   </div>
 </main>

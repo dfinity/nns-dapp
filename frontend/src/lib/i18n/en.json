@@ -1202,6 +1202,13 @@
     "tokens_card_list_second_column": "Value Native",
     "tokens_card_list_third_column": "Value $",
     "tokens_card_info_row": "Store your tokens safely and invest into the future with the Internet Computer, IC, landscape.",
+    "projects_card_title": "Total Staking Balance",
+    "projects_card_link": "Stake neurons",
+    "projects_card_list_first_column": "Top Staked Neurons",
+    "projects_card_list_second_column_mobile": "Balance",
+    "projects_card_list_second_column": "Maturity",
+    "projects_card_list_third_column": "Staked",
+    "projects_card_info_row": "Optimize voting power and earn rewards by increasing your staked neurons.",
     "total_assets_title": "Total Holdings"
   }
 }

@@ -198,7 +198,7 @@ export const getTableProjects = ({
   });
 };
 
-const compareIcpFirst = createDescendingComparator(
+export const compareIcpFirst = createDescendingComparator(
   (project: TableProject) => project.universeId === OWN_CANISTER_ID_TEXT
 );
 
@@ -206,7 +206,7 @@ const comparePositiveNeuronsFirst = createDescendingComparator(
   (project: TableProject) => (project.neuronCount ?? 0) > 0
 );
 
-const compareByProjectTitle = createAscendingComparator(
+export const compareByProjectTitle = createAscendingComparator(
   (project: TableProject) => project.title.toLowerCase()
 );
 
