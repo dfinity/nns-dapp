@@ -696,20 +696,23 @@ export const disburse = async ({
 
 const refreshVotingPower = async (neuronId: NeuronId): Promise<void> => {
   const neuron = getNeuronFromStore(neuronId);
+  const accounts = get(icpAccountsStore);
 
   // Should not happen
   if (isNullish(neuron)) throw new Error("No neuron in store");
 
+  const isHWControlled = isNeuronControlledByHardwareWallet({
+    neuron,
+    accounts,
+  });
   const isHotkeyControlled = isHotKeyControllable({
     neuron,
     identity: get(authStore).identity,
   });
 
-  if (isHotkeyControlled) {
-    // This is a workaround for the hotkey controlled neurons because the API
-    // `refreshVotingPower` does not work for them.
-    // This also covers the Ledger device neurons which are hotkey controlled
-    // (currently the `refreshVotingPower` api is no supported by the ledger devices)
+  if (isHWControlled || isHotkeyControlled) {
+    // This is a workaround for Ledger device neurons and hotkey neurons
+    // because the `refreshVotingPower` API does not currently support them.
     const identity: Identity = await getAuthenticatedIdentity();
     // It doesn't matter which topic to use to confirm the current state of the neuron
     // (except NeuronManagement, which can only be handled by controllers).
