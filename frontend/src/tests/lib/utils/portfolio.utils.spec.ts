@@ -13,23 +13,18 @@ describe("Portfolio utils", () => {
   describe("getTopTokens", () => {
     const mockNonUserToken = createUserTokenLoading();
 
-    const mockIcpToken = createIcpUserToken({
-      balanceInUsd: 0,
-    });
+    const mockIcpToken = createIcpUserToken({});
 
     const mockCkBTCToken = createUserToken({
       universeId: CKBTC_UNIVERSE_CANISTER_ID,
-      balanceInUsd: 0,
     });
 
     const mockCkUSDCToken = createUserToken({
       universeId: CKUSDC_UNIVERSE_CANISTER_ID,
-      balanceInUsd: 0,
     });
 
     const mockOtherToken = createUserToken({
       universeId: principal(1),
-      balanceInUsd: 0,
     });
 
     it("should exclude non-UserTokenData tokens", () => {
