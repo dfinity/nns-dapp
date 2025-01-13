@@ -5,7 +5,6 @@
   import ProjectsCard from "$lib/components/portfolio/ProjectsCard.svelte";
   import TokensCard from "$lib/components/portfolio/TokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
-  import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
@@ -75,10 +74,10 @@
     {#if !$authSignedInStore}
       <LoginCard />
     {/if}
-    <UsdValueBanner
+    <!-- <UsdValueBanner
       usdAmount={totalUsdAmount}
       hasUnpricedTokens={hasUnpricedTokensOrStake}
-    />
+    /> -->
     <TotalAssetsCard
       usdAmount={totalUsdAmount}
       hasUnpricedTokens={hasUnpricedTokensOrStake}

@@ -70,7 +70,7 @@
             </div>
 
             <div class="mobile-only justify-end text-right">
-              <div>
+              <div class="tabular-nums">
                 ${formatNumber(token?.balanceInUsd ?? 0)}
               </div>
               <AmountDisplay singleLine amount={token.balance} />
@@ -79,7 +79,10 @@
             <div class="tablet-up justify-end text-right">
               <AmountDisplay singleLine amount={token.balance} />
             </div>
-            <div class="tablet-up justify-end" data-tid="token-balance">
+            <div
+              class="tablet-up justify-end tabular-nums"
+              data-tid="token-balance"
+            >
               ${formatNumber(token?.balanceInUsd ?? 0)}
             </div>
           </div>
@@ -252,6 +255,9 @@
     }
     .justify-end {
       justify-self: end;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
     }
   }
 </style>

@@ -74,13 +74,17 @@
             </div>
 
             <div class="tablet-up justify-end text-right">
-              <MaturityWithTooltip
-                availableMaturity={project?.availableMaturity ?? 0n}
-                stakedMaturity={project?.stakedMaturity ?? 0n}
-              />
+              {#if project?.availableMaturity ?? 0n > 0n}
+                <MaturityWithTooltip
+                  availableMaturity={project?.availableMaturity ?? 0n}
+                  stakedMaturity={project?.stakedMaturity ?? 0n}
+                />
+              {:else}
+                -/-
+              {/if}
             </div>
 
-            <div class="justify-end text-right">
+            <div class="stake justify-end text-right">
               <div>
                 ${formatNumber(project?.stakeInUsd ?? 0)}
               </div>
