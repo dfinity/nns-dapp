@@ -19,8 +19,6 @@ const compareTokens = mergeComparators([
   compareTokensByImportance,
 ]);
 
-export type TokenWithRequiredBalance = UserTokenData &
-  Required<Pick<UserTokenData, "balanceInUsd">>;
 /**
  * Filters and sorts user tokens based on specific criteria:
  * - Always prioritizes ICP token first
@@ -37,17 +35,13 @@ export const getTopTokens = ({
   userTokens: UserToken[];
   maxResults?: number;
   isSignedIn?: boolean;
-}): TokenWithRequiredBalance[] => {
+}): UserTokenData[] => {
   const topTokens = userTokens
     .filter(isUserTokenData)
     .sort(compareTokens)
-    .slice(0, maxResults)
-    .map((token) => ({
-      ...token,
-      balanceInUsd: token?.balanceInUsd ?? 0,
-    }));
+    .slice(0, maxResults);
 
   if (!isSignedIn) return topTokens;
 
-  return topTokens.filter((token) => token.balanceInUsd > 0);
+  return topTokens.filter((token) => token?.balanceInUsd ?? 0 > 0);
 };
