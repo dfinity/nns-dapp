@@ -1,6 +1,6 @@
 <script lang="ts">
+  import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import type { Universe } from "$lib/types/universe";
-  import UniverseLogo from "./UniverseLogo.svelte";
 
   export let universe: Universe;
 </script>

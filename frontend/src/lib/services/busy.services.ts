@@ -1,9 +1,9 @@
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+import { getNeuronFromStore } from "$lib/services/neurons.services";
 import { startBusy, type BusyStateInitiatorType } from "$lib/stores/busy.store";
 import { isNeuronControlledByHardwareWallet } from "$lib/utils/neuron.utils";
 import type { NeuronId } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { getNeuronFromStore } from "./neurons.services";
 
 export const startBusyNeuron = ({
   neuronId,

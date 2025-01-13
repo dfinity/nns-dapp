@@ -1,4 +1,5 @@
 <script lang="ts">
+  import TransactionIcon from "$lib/components/accounts/TransactionIcon.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import ColumnRow from "$lib/components/ui/ColumnRow.svelte";
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
@@ -8,7 +9,6 @@
     TransactionIconType,
     UiTransaction,
   } from "$lib/types/transaction";
-  import TransactionIcon from "./TransactionIcon.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
   import {
     nonNullish,

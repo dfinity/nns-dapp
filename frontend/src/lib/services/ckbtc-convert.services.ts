@@ -1,11 +1,18 @@
+import { retrieveBtcWithApproval } from "$lib/api/ckbtc-minter.api";
+import { approveTransfer } from "$lib/api/icrc-ledger.api";
 import { NANO_SECONDS_IN_MINUTE } from "$lib/constants/constants";
+import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import type { IcrcTransferTokensUserParams } from "$lib/services/icrc-accounts.services";
 import { loadAccounts as loadWalletAccounts } from "$lib/services/icrc-accounts.services";
+import { loadIcrcAccountTransactions } from "$lib/services/icrc-transactions.services";
+import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import type { CanisterId } from "$lib/types/canister";
 import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
+import { numberToE8s } from "$lib/utils/token.utils";
 import {
   MinterAlreadyProcessingError,
   MinterAmountTooLowError,
@@ -15,13 +22,6 @@ import {
   MinterTemporaryUnavailableError,
 } from "@dfinity/ckbtc";
 import { nonNullish } from "@dfinity/utils";
-import { retrieveBtcWithApproval } from "../api/ckbtc-minter.api";
-import { approveTransfer } from "../api/icrc-ledger.api";
-import { toastsError } from "../stores/toasts.store";
-import { numberToE8s } from "../utils/token.utils";
-import { getAuthenticatedIdentity } from "./auth.services";
-import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
-import { loadIcrcAccountTransactions } from "./icrc-transactions.services";
 
 export type ConvertCkBTCToBtcParams = {
   destinationAddress: string;

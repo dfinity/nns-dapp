@@ -1,9 +1,9 @@
 <script lang="ts">
+  import HeadingSubtitle from "$lib/components/common/HeadingSubtitle.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { i18n } from "$lib/stores/i18n";
   import { formatNumber } from "$lib/utils/format.utils";
-  import HeadingSubtitle from "../common/HeadingSubtitle.svelte";
   import type { Principal } from "@dfinity/principal";
   import { nonNullish, type TokenAmountV2 } from "@dfinity/utils";
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import HardwareWalletNeuronAddHotkeyButton from "$lib/components/accounts/HardwareWalletNeuronAddHotkeyButton.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type {
     HardwareWalletNeuronInfo,
@@ -6,7 +7,6 @@
   } from "$lib/types/wallet.context";
   import { WALLET_CONTEXT_KEY } from "$lib/types/wallet.context";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import HardwareWalletNeuronAddHotkeyButton from "./HardwareWalletNeuronAddHotkeyButton.svelte";
   import { getContext } from "svelte";
 
   const context: WalletContext = getContext<WalletContext>(WALLET_CONTEXT_KEY);

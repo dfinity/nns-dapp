@@ -24,6 +24,12 @@ import {
 import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
+import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import {
+  getAccountIdentity,
+  loadBalance,
+} from "$lib/services/icp-accounts.services";
+import { queryAndUpdate } from "$lib/services/utils.services";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
@@ -54,9 +60,6 @@ import {
   principalToSubAccount,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { getAuthenticatedIdentity } from "./auth.services";
-import { getAccountIdentity, loadBalance } from "./icp-accounts.services";
-import { queryAndUpdate } from "./utils.services";
 
 export const listCanisters = async ({
   clearBeforeQuery,

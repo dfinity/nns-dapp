@@ -8,6 +8,7 @@ import {
   icpSwapUsdPricesStore,
   type IcpSwapUsdPricesStore,
 } from "$lib/derived/icp-swap.derived";
+import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
 import { i18n } from "$lib/stores/i18n";
 import type { Account, AccountType } from "$lib/types/account";
 import { UserTokenAction, type UserToken } from "$lib/types/tokens-page";
@@ -17,7 +18,6 @@ import { getUsdValue, sortUserTokens } from "$lib/utils/token.utils";
 import { Principal } from "@dfinity/principal";
 import { isNullish, TokenAmountV2 } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
-import { nnsUniverseStore } from "./nns-universe.derived";
 
 const convertAccountToUserTokenData = ({
   nnsUniverse,

@@ -1,10 +1,14 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
 import {
   icpSwapUsdPricesStore,
   type IcpSwapUsdPricesStore,
   type IcpSwapUsdPricesStoreData,
 } from "$lib/derived/icp-swap.derived";
 import { failedExistentImportedTokenLedgerIdsStore } from "$lib/derived/imported-tokens.derived";
+import { tokensListBaseStore } from "$lib/derived/tokens-list-base.derived";
+import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
+import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import {
   UserTokenAction,
@@ -17,10 +21,6 @@ import { isUniverseNns } from "$lib/utils/universe.utils";
 import { toUserTokenFailed } from "$lib/utils/user-token.utils";
 import { isNullish, TokenAmountV2 } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
-import type { UniversesAccounts } from "./accounts-list.derived";
-import { tokensListBaseStore } from "./tokens-list-base.derived";
-import { tokensByUniverseIdStore } from "./tokens.derived";
-import { universesAccountsStore } from "./universes-accounts.derived";
 
 const getUsdValue = ({
   balance,

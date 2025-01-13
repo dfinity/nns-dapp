@@ -1,7 +1,7 @@
 <script lang="ts">
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import { unlockNeuron } from "$lib/services/nns-neurons-dev.services";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
-  import CardInfo from "../ui/CardInfo.svelte";
   import { Spinner } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
 

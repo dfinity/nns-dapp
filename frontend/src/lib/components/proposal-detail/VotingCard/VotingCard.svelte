@@ -4,6 +4,7 @@
   import StakeNeuronToVote from "$lib/components/proposal-detail/VotingCard/StakeNeuronToVote.svelte";
   import VotableNeuronList from "$lib/components/proposal-detail/VotingCard/VotableNeuronList.svelte";
   import VotedNeuronList from "$lib/components/proposal-detail/VotingCard/VotedNeuronList.svelte";
+  import VotingConfirmationToolbar from "$lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { i18n } from "$lib/stores/i18n";
@@ -12,7 +13,6 @@
     CompactNeuronInfo,
     IneligibleNeuronData,
   } from "$lib/utils/neuron.utils";
-  import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
   import { BottomSheet } from "@dfinity/gix-components";
 
   export let hasNeurons: boolean;

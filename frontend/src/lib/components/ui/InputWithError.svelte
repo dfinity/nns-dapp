@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Input from "./Input.svelte";
+  import Input from "$lib/components/ui/Input.svelte";
   import { IconInfo } from "@dfinity/gix-components";
 
   // Same props as Input

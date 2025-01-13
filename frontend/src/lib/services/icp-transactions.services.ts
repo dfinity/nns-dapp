@@ -1,12 +1,12 @@
 import { getTransactions } from "$lib/api/icp-index.api";
 import { DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { getCurrentIdentity } from "$lib/services/auth.services";
 import { icpTransactionsStore } from "$lib/stores/icp-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { toToastError } from "$lib/utils/error.utils";
 import { sortTransactionsByIdDescendingOrder } from "$lib/utils/icp-transactions.utils";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { getCurrentIdentity } from "./auth.services";
 
 export interface LoadIcrcAccountTransactionsParams {
   accountIdentifier: string;

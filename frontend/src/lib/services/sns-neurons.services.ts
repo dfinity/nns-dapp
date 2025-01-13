@@ -25,6 +25,9 @@ import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { snsTokensByRootCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
 import { loadActionableProposalsForSns } from "$lib/services/actionable-sns-proposals.services";
+import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
+import { queryAndUpdate } from "$lib/services/utils.services";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
@@ -60,9 +63,6 @@ import {
   nonNullish,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { getAuthenticatedIdentity } from "./auth.services";
-import { loadSnsAccounts } from "./sns-accounts.services";
-import { queryAndUpdate } from "./utils.services";
 
 /**
  * Loads sns neurons in store.

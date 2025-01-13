@@ -1,7 +1,7 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { isVesting, vestingInSeconds } from "$lib/utils/sns-neuron.utils";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
   import type { SnsNeuron } from "@dfinity/sns";
   import { secondsToDuration } from "@dfinity/utils";

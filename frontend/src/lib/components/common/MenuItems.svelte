@@ -1,4 +1,5 @@
 <script lang="ts">
+  import SourceCodeButton from "$lib/components/common/SourceCodeButton.svelte";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
   import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
   import NnsNeuronsMissingRewardsBadge from "$lib/components/neurons/NnsNeuronsMissingRewardsBadge.svelte";
@@ -31,7 +32,6 @@
   import type { ComponentType } from "svelte";
   import { cubicIn, cubicOut } from "svelte/easing";
   import { scale } from "svelte/transition";
-  import SourceCodeButton from "./SourceCodeButton.svelte";
 
   let routes: {
     context: string;

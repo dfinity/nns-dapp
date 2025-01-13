@@ -1,9 +1,9 @@
 <script lang="ts">
+  import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
   import {
     getDissolvingTimeInSeconds,
     getSpawningTimeInSeconds,
   } from "$lib/utils/neuron.utils";
-  import NeuronStateRemainingTime from "./NeuronStateRemainingTime.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;

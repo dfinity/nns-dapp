@@ -1,6 +1,6 @@
+import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { RootCanisterId } from "$lib/types/sns";
-import { loadSnsAccounts } from "./sns-accounts.services";
 
 /**
  * Load Sns projects accounts balances.

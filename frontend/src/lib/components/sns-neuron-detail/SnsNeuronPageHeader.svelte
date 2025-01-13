@@ -1,8 +1,13 @@
 <script lang="ts">
+  import PageHeader from "$lib/components/common/PageHeader.svelte";
+  import NeuronNavigation from "$lib/components/neuron-detail/NeuronNavigation.svelte";
+  import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
+  import UniverseSummary from "$lib/components/universe/UniverseSummary.svelte";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { onIntersection } from "$lib/directives/intersection.directives";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
+  import { snsNeuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/sns-neurons-table-order-sorted-neuron-ids-store";
   import type { IntersectingDetail } from "$lib/types/intersection.types";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
@@ -10,14 +15,9 @@
   } from "$lib/types/sns-neuron-detail.context";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-  import PageHeader from "../common/PageHeader.svelte";
-  import IdentifierHash from "../ui/IdentifierHash.svelte";
-  import UniverseSummary from "../universe/UniverseSummary.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import { isNullish, nonNullish, type Token } from "@dfinity/utils";
   import { getContext } from "svelte";
-  import NeuronNavigation from "../neuron-detail/NeuronNavigation.svelte";
-  import { snsNeuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/sns-neurons-table-order-sorted-neuron-ids-store";
 
   export let token: Token;
 

@@ -8,7 +8,12 @@ import type {
   VotingNeuron,
 } from "$lib/types/proposals";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
+import { nowInSeconds } from "$lib/utils/date.utils";
+import { errorToString } from "$lib/utils/error.utils";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { buildProposalUrl } from "$lib/utils/navigation.utils";
+import { toNnsVote } from "$lib/utils/sns-proposals.utils";
+import { isDefined, keyOf, keyOfOptional } from "$lib/utils/utils";
 import type {
   Ballot,
   ExecuteNnsFunction,
@@ -29,11 +34,6 @@ import {
 import type { SnsVote } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { nowInSeconds } from "./date.utils";
-import { errorToString } from "./error.utils";
-import { replacePlaceholders } from "./i18n.utils";
-import { toNnsVote } from "./sns-proposals.utils";
-import { isDefined, keyOf, keyOfOptional } from "./utils";
 
 export const lastProposalId = (
   proposalInfos: ProposalInfo[]

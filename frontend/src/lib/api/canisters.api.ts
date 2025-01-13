@@ -1,4 +1,6 @@
 import { createAgent } from "$lib/api/agent.api";
+import { sendICP } from "$lib/api/icp-ledger.api";
+import { nnsDappCanister } from "$lib/api/nns-dapp.api";
 import { ICManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
 import type {
   CanisterDetails,
@@ -30,8 +32,6 @@ import { CMCCanister, ProcessingError, type Cycles } from "@dfinity/cmc";
 import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
 import type { Principal } from "@dfinity/principal";
 import { nonNullish, principalToSubAccount } from "@dfinity/utils";
-import { sendICP } from "./icp-ledger.api";
-import { nnsDappCanister } from "./nns-dapp.api";
 
 // This way, TS understands that if it's invalid, then the name is a string
 type LongName = string;

@@ -1,12 +1,12 @@
 <script lang="ts">
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
+  import Hash from "$lib/components/ui/Hash.svelte";
+  import TagsList from "$lib/components/ui/TagsList.svelte";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
-  import CardInfo from "../ui/CardInfo.svelte";
-  import Hash from "../ui/Hash.svelte";
-  import TagsList from "../ui/TagsList.svelte";
   import { Tag } from "@dfinity/gix-components";
   import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
   import { getContext } from "svelte";

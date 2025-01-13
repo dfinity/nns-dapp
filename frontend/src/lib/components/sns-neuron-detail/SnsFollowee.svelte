@@ -1,8 +1,8 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import Hash from "$lib/components/ui/Hash.svelte";
+  import TagsList from "$lib/components/ui/TagsList.svelte";
   import type { SnsFolloweesByNeuron } from "$lib/utils/sns-neuron.utils";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
-  import Hash from "../ui/Hash.svelte";
-  import TagsList from "../ui/TagsList.svelte";
   import { Tag } from "@dfinity/gix-components";
 
   export let followee: SnsFolloweesByNeuron;

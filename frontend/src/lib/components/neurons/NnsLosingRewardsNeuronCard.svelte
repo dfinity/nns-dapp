@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { Card, IconRight } from "@dfinity/gix-components";
+  import Followee from "$lib/components/neuron-detail/NeuronFollowingCard/Followee.svelte";
+  import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
   import {
     followeesNeurons,
     getNeuronTags,
     type FolloweesNeuron,
     type NeuronTagData,
   } from "$lib/utils/neuron.utils";
-  import Followee from "../neuron-detail/NeuronFollowingCard/Followee.svelte";
+  import { Card, IconRight } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { authStore } from "$lib/stores/auth.store";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
-  import { i18n } from "$lib/stores/i18n";
-  import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
   import { nonNullish } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;

@@ -3,8 +3,8 @@
    * Transfer ICP to current principal. For test purpose only and only available on "testnet" too.
    */
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import GetTokensModal from "$lib/components/ic/GetTokensModal.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import GetTokensModal from "./GetTokensModal.svelte";
   import { IconAccountBalance } from "@dfinity/gix-components";
 
   let visible = false;

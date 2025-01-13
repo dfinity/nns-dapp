@@ -1,6 +1,6 @@
+import type { Account } from "$lib/types/account";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { Principal } from "@dfinity/principal";
-import type { Account } from "./account";
-import type { IcrcTokenMetadata } from "./icrc";
 
 // TODO: https://dfinity.atlassian.net/browse/GIX-2150 to be refactored:
 // 1. Integrate those types in accounts.modal.ts

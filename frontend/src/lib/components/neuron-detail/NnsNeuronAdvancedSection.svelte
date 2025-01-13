@@ -1,4 +1,10 @@
 <script lang="ts">
+  import NnsNeuronPublicVisibilityAction from "$lib/components/neuron-detail/NnsNeuronPublicVisibilityAction.svelte";
+  import JoinCommunityFundCheckbox from "$lib/components/neuron-detail/actions/JoinCommunityFundCheckbox.svelte";
+  import NnsAutoStakeMaturity from "$lib/components/neuron-detail/actions/NnsAutoStakeMaturity.svelte";
+  import SplitNnsNeuronButton from "$lib/components/neuron-detail/actions/SplitNnsNeuronButton.svelte";
+  import NnsNeuronAge from "$lib/components/neurons/NnsNeuronAge.svelte";
+  import Hash from "$lib/components/ui/Hash.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
@@ -10,12 +16,6 @@
     isNeuronControllable,
     maturityLastDistribution,
   } from "$lib/utils/neuron.utils";
-  import NnsNeuronAge from "../neurons/NnsNeuronAge.svelte";
-  import Hash from "../ui/Hash.svelte";
-  import NnsNeuronPublicVisibilityAction from "./NnsNeuronPublicVisibilityAction.svelte";
-  import JoinCommunityFundCheckbox from "./actions/JoinCommunityFundCheckbox.svelte";
-  import NnsAutoStakeMaturity from "./actions/NnsAutoStakeMaturity.svelte";
-  import SplitNnsNeuronButton from "./actions/SplitNnsNeuronButton.svelte";
   import {
     Html,
     KeyValuePair,

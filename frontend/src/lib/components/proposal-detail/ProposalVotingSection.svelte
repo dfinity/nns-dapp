@@ -1,4 +1,5 @@
 <script lang="ts">
+  import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
   import NnsVotingCard from "$lib/components/proposal-detail/VotingCard/NnsVotingCard.svelte";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import {
@@ -7,7 +8,6 @@
   } from "$lib/constants/proposals.constants";
   import { basisPointsToPercent } from "$lib/utils/utils";
   import { ProposalRewardStatus, type ProposalInfo } from "@dfinity/nns";
-  import VotesResults from "./VotesResults.svelte";
 
   export let proposalInfo: ProposalInfo;
 

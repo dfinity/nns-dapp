@@ -1,3 +1,4 @@
+import { createAgent } from "$lib/api/agent.api";
 import { HOST } from "$lib/constants/environment.constants";
 import type { Agent, Identity } from "@dfinity/agent";
 import {
@@ -7,7 +8,6 @@ import {
 } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { fromNullable } from "@dfinity/utils";
-import { createAgent } from "./agent.api";
 
 export interface GetTransactionsParams {
   identity: Identity;

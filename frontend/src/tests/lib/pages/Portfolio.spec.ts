@@ -15,7 +15,7 @@ import { render } from "@testing-library/svelte";
 describe("Portfolio page", () => {
   const renderPage = ({
     userTokensData = [],
-    tableProjects,
+    tableProjects = [],
   }: { userTokensData?: UserToken[]; tableProjects?: TableProject[] } = {}) => {
     const { container } = render(Portfolio, {
       props: {

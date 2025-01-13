@@ -10,6 +10,7 @@ import type { ImportedTokens } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import { queryAndUpdate } from "$lib/services/utils.services";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import {
   failedImportedTokenLedgerIdsStore,
@@ -25,7 +26,6 @@ import {
 import type { Principal } from "@dfinity/principal";
 import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { queryAndUpdate } from "./utils.services";
 
 /** Load imported tokens from the `nns-dapp` backend and update the `importedTokensStore` store.
  * - Displays an error toast if the operation fails.

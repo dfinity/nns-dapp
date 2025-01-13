@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import AddHotkeyButton from "$lib/components/neuron-detail/actions/AddHotkeyButton.svelte";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -12,7 +13,6 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsShow } from "$lib/stores/toasts.store";
   import { isNeuronControllable } from "$lib/utils/neuron.utils";
-  import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
   import { IconClose, IconWarning, Value } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
 

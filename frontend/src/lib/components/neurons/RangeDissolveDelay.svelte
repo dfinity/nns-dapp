@@ -1,8 +1,8 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { daysToDuration, secondsToDays } from "$lib/utils/date.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
   import { ProgressBar } from "@dfinity/gix-components";
 
   export let delayInSeconds: number;

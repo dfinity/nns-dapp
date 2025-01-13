@@ -1,5 +1,5 @@
 <script lang="ts">
-  import TooltipIcon from "./TooltipIcon.svelte";
+  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { ItemAction } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 

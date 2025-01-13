@@ -1,3 +1,4 @@
+import { wrapper, wrappers } from "$lib/api/sns-wrapper.api";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type {
   QueryRootCanisterId,
@@ -16,7 +17,6 @@ import type {
   SnsSwapBuyerState,
   SnsWrapper,
 } from "@dfinity/sns";
-import { wrapper, wrappers } from "./sns-wrapper.api";
 
 export const queryAllSnsMetadata = async ({
   identity,

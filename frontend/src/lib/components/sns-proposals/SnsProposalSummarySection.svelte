@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ProposalSummarySection from "../proposal-detail/ProposalSummarySection.svelte";
+  import ProposalSummarySection from "$lib/components/proposal-detail/ProposalSummarySection.svelte";
   import type { SnsProposalData } from "@dfinity/sns";
   import { fromNullable, nonNullish } from "@dfinity/utils";
 

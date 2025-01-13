@@ -9,6 +9,7 @@ import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { sumAmounts } from "$lib/utils/token.utils";
 import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
+import { isUniverseNns } from "$lib/utils/universe.utils";
 import { BtcNetwork, parseBtcAddress, type BtcAddress } from "@dfinity/ckbtc";
 import {
   AccountIdentifier,
@@ -18,7 +19,6 @@ import {
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
-import { isUniverseNns } from "./universe.utils";
 
 /*
  * Returns the principal's main or hardware account
