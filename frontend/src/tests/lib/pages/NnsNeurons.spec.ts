@@ -8,14 +8,12 @@ import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
-import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronsPo } from "$tests/page-objects/NnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { NeuronState, NeuronVisibility } from "@dfinity/nns";
+import { NeuronState } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 
@@ -218,31 +216,6 @@ describe("NnsNeurons", () => {
 
       expect(await po.getLosingRewardsBannerPo().isPresent()).toBe(true);
       expect(await po.getLosingRewardsBannerPo().isVisible()).toBe(true);
-    });
-  });
-
-  describe("MakeNeuronsVisibilityBanner", () => {
-    const privateControlledNeuron = {
-      ...mockNeuron,
-      visibility: NeuronVisibility.Private,
-      fullNeuron: {
-        ...mockNeuron.fullNeuron,
-        controller: mockMainAccount.principal.toText(),
-      },
-    };
-    beforeEach(() => {
-      vi.useFakeTimers();
-      vi.setSystemTime(new Date("2024-01-01"));
-      vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
-        mockIdentity
-      );
-      setAccountsForTesting({
-        main: mockMainAccount,
-        hardwareWallets: [],
-      });
-      vi.spyOn(api, "queryNeurons").mockResolvedValue([
-        privateControlledNeuron,
-      ]);
     });
   });
 
