@@ -44,7 +44,7 @@ describe("Portfolio page", () => {
       expect(await po.getNoTokensCard().isPresent()).toBe(true);
     });
 
-    it("should show the NoNeuronsCard with secondary action", async () => {
+    it("should show the NoProjectsCardPo with secondary action", async () => {
       const po = renderPage();
 
       expect(await po.getNoNeuronsCarPo().isPresent()).toBe(true);
@@ -91,7 +91,7 @@ describe("Portfolio page", () => {
       });
     });
 
-    describe("NoNeuronsCard", () => {
+    describe("NoProjectsCard", () => {
       it("should display the card when the total balance is zero", async () => {
         const po = renderPage();
 
