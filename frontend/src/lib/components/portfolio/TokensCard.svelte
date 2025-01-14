@@ -81,10 +81,10 @@
         {#each topTokens as token (token.domKey)}
           <div class="token-row" data-tid="token-card-row" role="row">
             <div class="token-info" role="cell">
-              <Logo src={token.logo} alt={token.title} size="medium" framed />
-              <span class="token-name" data-tid="token-title"
-                >{token.title}</span
-              >
+              <div>
+                <Logo src={token.logo} alt={token.title} size="medium" framed />
+              </div>
+              <span data-tid="token-title">{token.title}</span>
             </div>
 
             <div
@@ -192,8 +192,8 @@
           display: grid;
           grid-template-columns: 1fr 1fr;
           grid-template-areas:
-            "info balance"
-            "info usd";
+            "info usd"
+            "info balance";
           @include media.min-width(medium) {
             grid-template-columns: 1fr 1fr 1fr;
             grid-template-areas: "info balance usd";
@@ -202,10 +202,7 @@
           align-items: center;
           padding: var(--padding-3x) var(--padding-2x);
 
-          border-bottom: 1px solid var(--neutral-100);
-          &:last-child {
-            border-bottom: none;
-          }
+          border-top: 1px solid var(--elements-divider);
 
           .token-info {
             grid-area: info;
@@ -222,11 +219,15 @@
 
           .token-native-balance {
             grid-area: balance;
+
+            font-size: 0.75rem;
+            @include media.min-width(medium) {
+              font-size: var(--font-size-standard);
+            }
           }
 
           .token-usd-balance {
             grid-area: usd;
-            font-variant-numeric: tabular-nums;
           }
         }
       }
