@@ -1749,7 +1749,7 @@ describe("neuron-utils", () => {
         },
       };
 
-      it.only("returns 'XX days to confirm' tag", () => {
+      it("returns 'XX days to confirm' tag", () => {
         overrideFeatureFlagsStore.setFlag(
           "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
           true
