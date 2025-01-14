@@ -15,8 +15,12 @@ class TokensCardRowPo extends BasePageObject {
     return this.getText("token-title");
   }
 
-  getTokenBalance(): Promise<string> {
-    return this.getText("token-balance");
+  getTokenNativeBalance(): Promise<string> {
+    return this.getText("token-native-balance");
+  }
+
+  getTokenUsdBalance(): Promise<string> {
+    return this.getText("token-usd-balance");
   }
 }
 
@@ -44,9 +48,15 @@ export class TokensCardPo extends BasePageObject {
     return Promise.all(rowsPos.map((po) => po.getTokenTitle()));
   }
 
-  async getTokensBalances(): Promise<string[]> {
+  async getTokensUsdBalances(): Promise<string[]> {
     const rows = await this.getRows();
 
-    return Promise.all(rows.map((row) => row.getTokenBalance()));
+    return Promise.all(rows.map((row) => row.getTokenUsdBalance()));
+  }
+
+  async getTokensNativeBalances(): Promise<string[]> {
+    const rows = await this.getRows();
+
+    return Promise.all(rows.map((row) => row.getTokenNativeBalance()));
   }
 }

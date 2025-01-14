@@ -1,6 +1,8 @@
 import TokensCard from "$lib/components/portfolio/TokensCard.svelte";
 import type { UserTokenData } from "$lib/types/tokens-page";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
+import { mockCkBTCToken as CkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
+import { mockCkETHToken as CkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import {
   ckBTCTokenBase,
   ckETHTokenBase,
@@ -9,6 +11,7 @@ import {
 } from "$tests/mocks/tokens-page.mock";
 import { TokensCardPo } from "$tests/page-objects/TokensCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("TokensCard", () => {
@@ -57,7 +60,7 @@ describe("TokensCard", () => {
         usdAmount: 0,
       });
       const titles = await po.getTokensTitles();
-      const balances = await po.getTokensBalances();
+      const balances = await po.getTokensUsdBalances();
 
       expect(titles.length).toBe(3);
       expect(titles).toEqual(["Internet Computer", "ckBTC", "ckETH"]);
@@ -70,12 +73,24 @@ describe("TokensCard", () => {
   describe("when signed in", () => {
     const mockIcpToken = createIcpUserToken();
     mockIcpToken.balanceInUsd = 100;
+    mockIcpToken.balance = TokenAmountV2.fromUlps({
+      amount: 2160000000n,
+      token: ICPToken,
+    });
 
     const mockCkBTCToken = createUserToken(ckBTCTokenBase);
     mockCkBTCToken.balanceInUsd = 200;
+    mockCkBTCToken.balance = TokenAmountV2.fromUlps({
+      amount: 2160000000n,
+      token: CkBTCToken,
+    });
 
     const mockCkETHToken = createUserToken(ckETHTokenBase);
     mockCkETHToken.balanceInUsd = 300;
+    mockCkETHToken.balance = TokenAmountV2.fromUlps({
+      amount: 21600000000000000000n,
+      token: CkETHToken,
+    });
 
     const mockTokens = [
       mockIcpToken,
@@ -102,13 +117,21 @@ describe("TokensCard", () => {
         usdAmount: 600,
       });
       const titles = await po.getTokensTitles();
-      const balances = await po.getTokensBalances();
+      const usdBalances = await po.getTokensUsdBalances();
+      const nativeBalances = await po.getTokensNativeBalances();
 
       expect(titles.length).toBe(3);
       expect(titles).toEqual(["Internet Computer", "ckBTC", "ckETH"]);
 
-      expect(balances.length).toBe(3);
-      expect(balances).toEqual(["$100.00", "$200.00", "$300.00"]);
+      expect(usdBalances.length).toBe(3);
+      expect(usdBalances).toEqual(["$100.00", "$200.00", "$300.00"]);
+
+      expect(nativeBalances.length).toBe(3);
+      expect(nativeBalances).toEqual([
+        "21.60 ICP",
+        "21.60 ckBTC",
+        "21.60 ckETH",
+      ]);
     });
 
     it("should not show info row when tokens length is 3 or more", async () => {
@@ -117,13 +140,21 @@ describe("TokensCard", () => {
         usdAmount: 600,
       });
       const titles = await po.getTokensTitles();
-      const balances = await po.getTokensBalances();
+      const balances = await po.getTokensUsdBalances();
+      const nativeBalances = await po.getTokensNativeBalances();
 
       expect(titles.length).toBe(3);
       expect(titles).toEqual(["Internet Computer", "ckBTC", "ckETH"]);
 
       expect(balances.length).toBe(3);
       expect(balances).toEqual(["$100.00", "$200.00", "$300.00"]);
+
+      expect(nativeBalances.length).toBe(3);
+      expect(nativeBalances).toEqual([
+        "21.60 ICP",
+        "21.60 ckBTC",
+        "21.60 ckETH",
+      ]);
 
       expect(await po.getInfoRow().isPresent()).toBe(false);
     });
@@ -135,13 +166,17 @@ describe("TokensCard", () => {
       });
 
       const titles = await po.getTokensTitles();
-      const balances = await po.getTokensBalances();
+      const balances = await po.getTokensUsdBalances();
+      const nativeBalances = await po.getTokensNativeBalances();
 
       expect(titles.length).toBe(1);
       expect(titles).toEqual(["Internet Computer"]);
 
       expect(balances.length).toBe(1);
       expect(balances).toEqual(["$100.00"]);
+
+      expect(nativeBalances.length).toBe(1);
+      expect(nativeBalances).toEqual(["21.60 ICP"]);
 
       expect(await po.getInfoRow().isPresent()).toBe(true);
     });
@@ -153,13 +188,17 @@ describe("TokensCard", () => {
       });
 
       const titles = await po.getTokensTitles();
-      const balances = await po.getTokensBalances();
+      const balances = await po.getTokensUsdBalances();
+      const nativeBalances = await po.getTokensNativeBalances();
 
       expect(titles.length).toBe(2);
       expect(titles).toEqual(["Internet Computer", "ckBTC"]);
 
       expect(balances.length).toBe(2);
       expect(balances).toEqual(["$100.00", "$200.00"]);
+
+      expect(nativeBalances.length).toBe(2);
+      expect(nativeBalances).toEqual(["21.60 ICP", "21.60 ckBTC"]);
 
       expect(await po.getInfoRow().isPresent()).toBe(true);
     });

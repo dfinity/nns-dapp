@@ -91,12 +91,16 @@
               >
             </div>
 
-            <div class="token-balance" data-tid="balance" role="cell">
+            <div
+              class="token-native-balance"
+              data-tid="token-native-balance"
+              role="cell"
+            >
               <AmountDisplay singleLine amount={token.balance} />
             </div>
             <div
-              class="token-usd-amount"
-              data-tid="token-balance"
+              class="token-usd-balance"
+              data-tid="token-usd-balance"
               role="cell"
               aria-label={`${token.title} USD: ${token?.balanceInUsd ?? 0}`}
             >
@@ -219,17 +223,17 @@
             }
           }
 
-          .token-balance,
-          .token-usd-amount {
+          .token-native-balance,
+          .token-usd-balance {
             justify-self: end;
             text-align: right;
           }
 
-          .token-balance {
+          .token-native-balance {
             grid-area: balance;
           }
 
-          .token-usd-amount {
+          .token-usd-balance {
             grid-area: usd;
             font-variant-numeric: tabular-nums;
           }
