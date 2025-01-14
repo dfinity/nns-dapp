@@ -38,12 +38,14 @@
           </span>
         </div>
       </div>
-      <a class="button secondary mobile-only" {href}>
-        <IconRight />
+      <a class="button secondary" {href}>
+        <span class="mobile-only">
+          <IconRight />
+        </span>
+        <span class="tablet-up">
+          {$i18n.portfolio.tokens_card_link}
+        </span>
       </a>
-      <a class="button secondary tablet-up" {href}
-        >{$i18n.portfolio.tokens_card_link}</a
-      >
     </div>
     <div class="body">
       <div class="tokens-header">
@@ -69,17 +71,22 @@
               >
             </div>
 
-            <div class="mobile-only justify-end text-right">
-              <div>
+            <div
+              class="mobile-only justify-end text-right"
+              data-tid="mobile-balalance"
+            >
+              <div class="tabular-nums">
                 ${formatNumber(token?.balanceInUsd ?? 0)}
               </div>
               <AmountDisplay singleLine amount={token.balance} />
             </div>
-
-            <div class="tablet-up justify-end text-right">
+            <div class="tablet-up justify-end text-right" data-tid="balalance">
               <AmountDisplay singleLine amount={token.balance} />
             </div>
-            <div class="tablet-up justify-end" data-tid="token-balance">
+            <div
+              class="tablet-up justify-end tabular-nums"
+              data-tid="token-balance"
+            >
               ${formatNumber(token?.balanceInUsd ?? 0)}
             </div>
           </div>
@@ -252,6 +259,9 @@
     }
     .justify-end {
       justify-self: end;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
     }
   }
 </style>
