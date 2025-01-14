@@ -503,6 +503,11 @@ export const getNeuronTags = ({
 /**
  * Converts seconds to a human-readable duration for missing rewards tag.
  * Uses more detailed format when the duration is < 7 days.
+ * Examples:
+ * - 7d 23h — `7 days to confirm`
+ * - 7d 11h — `7 days to confirm`
+ * - 7d 1h — `7 days to confirm`
+ * - 6d 2h — `6 days, 2 hours to confirm`
  */
 const secondsToMissingRewardsDuration = ({
   seconds,
