@@ -1788,13 +1788,13 @@ describe("neuron-utils", () => {
 
         expect(
           testTag({
-            secondsToConfirm: SECONDS_IN_DAY * 10,
+            secondsToConfirm: SECONDS_IN_DAY * 10 + 10 * 60 * 60,
             expectedText: "10 days to confirm",
           })
         );
         expect(
           testTag({
-            secondsToConfirm: SECONDS_IN_DAY * 7,
+            secondsToConfirm: SECONDS_IN_DAY * 7 + 23 * 60 * 60,
             expectedText: "7 days to confirm",
           })
         );
