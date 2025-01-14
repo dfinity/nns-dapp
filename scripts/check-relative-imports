@@ -10,8 +10,11 @@ cd "$TOP_DIR/frontend"
 # 2. The home page route: Special case in our app that requires relative imports due to SvelteKit's routing structure
 # 3. Imports in the style section of Svelte components
 if git grep -n "from ['\"]\.\./" -- "src/**/*.svelte" "src/**/*.ts" |
+  # 1. Skip $types imports
   grep -v "/\$types" |
+  # 2. Skip home page route
   grep -v "src/routes/(app)/(home)/+page.svelte" |
+  # 3. Skip style section imports
   grep -v "@use.*\.\." |
   grep -v "@import.*\.\."; then
   exit 1
