@@ -51,7 +51,7 @@
   // The Card should display a Primary Action when it is the only available option.
   // This occurs when there are tokens but no stake.
   let hasNoProjectsCardAPrimaryAction: boolean;
-  $: hasNoProjectsCardAPrimaryAction:= !showNoTokensCard;
+  $: hasNoProjectsCardAPrimaryAction = !showNoTokensCard;
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -69,7 +69,7 @@
       <NoTokensCard />
     {/if}
     {#if showNoProjectsCard}
-      <NoProjectsCard primaryCard={hasNoProjectsCardAPrimaryAction: />
+      <NoProjectsCard primaryCard={hasNoProjectsCardAPrimaryAction} />
     {/if}
   </div>
 </main>
