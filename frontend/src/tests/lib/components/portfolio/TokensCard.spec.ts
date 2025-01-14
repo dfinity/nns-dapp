@@ -26,10 +26,6 @@ describe("TokensCard", () => {
     return TokensCardPo.under(new JestPageObjectElement(container));
   };
 
-  beforeEach(() => {
-    resetIdentity();
-  });
-
   describe("when not signed in", () => {
     const mockIcpToken = createIcpUserToken();
     const mockCkBTCToken = createUserToken(ckBTCTokenBase);

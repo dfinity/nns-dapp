@@ -8,6 +8,7 @@
   import type { UserTokenData } from "$lib/types/tokens-page";
   import { formatNumber } from "$lib/utils/format.utils";
   import { IconAccountsPage, IconRight } from "@dfinity/gix-components";
+  import Logo from "../ui/Logo.svelte";
 
   export let topTokens: UserTokenData[];
   export let usdAmount: number;
@@ -80,12 +81,7 @@
         {#each topTokens as token (token.domKey)}
           <div class="token-row" data-tid="token-card-row" role="row">
             <div class="token-info" role="cell">
-              <img
-                src={token.logo}
-                alt={token.title}
-                class="token-icon"
-                aria-hidden="true"
-              />
+              <Logo src={token.logo} alt={token.title} size="medium" framed />
               <span class="token-name" data-tid="token-title"
                 >{token.title}</span
               >
@@ -216,11 +212,6 @@
             display: flex;
             align-items: center;
             gap: var(--padding);
-
-            .token-icon {
-              width: 24px;
-              height: 24px;
-            }
           }
 
           .token-native-balance,
