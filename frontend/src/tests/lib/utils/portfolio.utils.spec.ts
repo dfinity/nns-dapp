@@ -159,25 +159,28 @@ describe("Portfolio utils", () => {
     const mockIcpProject: TableProject = {
       ...mockTableProject,
       title: "Internet Computer",
-      stakeInUsd: 100,
+      stakeInUsd: 0,
     };
 
     const mockProject1: TableProject = {
       ...mockTableProject,
       title: "Alpha Project",
-      stakeInUsd: 50,
+      stakeInUsd: 0,
+      universeId: "1",
     };
 
     const mockProject2: TableProject = {
       ...mockTableProject,
       title: "Beta Project",
-      stakeInUsd: 25,
+      stakeInUsd: 0,
+      universeId: "2",
     };
 
     const mockProject3: TableProject = {
       ...mockTableProject,
       title: "Gamma Project",
-      stakeInUsd: 10,
+      stakeInUsd: 0,
+      universeId: "3",
     };
 
     it("should respect the result limit", () => {
@@ -226,24 +229,28 @@ describe("Portfolio utils", () => {
         ...mockTableProject,
         title: "Alpha Project",
         stakeInUsd: 2000,
+        universeId: "1",
       };
 
       const mockProject2: TableProject = {
         ...mockTableProject,
         title: "Beta Project",
         stakeInUsd: 1000,
+        universeId: "2",
       };
 
       const mockProject3: TableProject = {
         ...mockTableProject,
         title: "Gamma Project",
         stakeInUsd: 10,
+        universeId: "3",
       };
 
       const mockZeroStakeProject: TableProject = {
         ...mockTableProject,
         title: "Zero Stake Project",
         stakeInUsd: 0,
+        universeId: "4",
       };
 
       it("should exclude projects with zero stake", () => {

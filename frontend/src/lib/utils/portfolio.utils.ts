@@ -80,7 +80,7 @@ export const getTopProjects = ({
   maxResults?: number;
   isSignedIn?: boolean;
 }): TableProject[] => {
-  const topProjects = projects.sort(compareProjects).slice(0, maxResults);
+  const topProjects = [...projects].sort(compareProjects).slice(0, maxResults);
 
   if (!isSignedIn) return topProjects;
 
