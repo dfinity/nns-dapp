@@ -37,6 +37,15 @@ jobs:
                   git diff
                   exit 1
           }
+  relative-imports:
+    runs-on: ubuntu-20.04
+    env:
+      DFX_NETWORK: mainnet
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Checks for the presence of relative imports
+        run: ./scripts/check-relative-imports
   spelling:
     runs-on: ubuntu-20.04
     steps:
