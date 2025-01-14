@@ -178,10 +178,7 @@
           align-items: center;
           padding: var(--padding-3x) var(--padding-2x);
 
-          border-bottom: 1px solid var(--neutral-100);
-          &:last-child {
-            border-bottom: none;
-          }
+          border-top: 1px solid var(--elements-divider); // IMPORTANT
 
           @include media.min-width(medium) {
             grid-template-columns: 1fr 1fr 1fr;
@@ -257,7 +254,7 @@
       justify-self: end;
     }
     .tabular-nums {
-      font-variant-numeric: tabular-nums;
+      /* font-variant-numeric: tabular-nums; */
     }
   }
 </style>

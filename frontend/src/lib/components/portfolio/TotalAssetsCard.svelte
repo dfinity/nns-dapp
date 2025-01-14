@@ -47,7 +47,7 @@
       <div class="totals">
         <div class="primary-amount-row">
           <span class="primary-amount" data-tid="primary-amount">
-            ${usdAmountFormatted}
+            $ {usdAmountFormatted}
           </span>
           {#if hasPrices && hasUnpricedTokens}
             <TooltipIcon>
@@ -90,11 +90,12 @@
     .pricing {
       display: flex;
       justify-content: space-between;
-      align-content: center;
+      align-content: flex-end;
 
       .totals {
         display: flex;
         flex-direction: column;
+        gap: var(--padding);
 
         .primary-amount {
           font-size: 1.875rem; // 32px
