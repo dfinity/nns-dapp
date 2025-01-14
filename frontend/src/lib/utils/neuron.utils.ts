@@ -500,6 +500,24 @@ export const getNeuronTags = ({
   return tags;
 };
 
+/**
+ * Converts seconds to a human-readable duration for missing rewards tag.
+ * Uses more detailed format when the duration is < 7 days.
+ */
+const secondsToMissingRewardsDuration = ({
+  seconds,
+  i18n,
+}: {
+  seconds: bigint;
+  i18n: I18n;
+}): string => {
+  const days = Math.floor(Number(seconds) / SECONDS_IN_DAY);
+  return secondsToDuration({
+    seconds: days < 7 ? seconds : BigInt(days * SECONDS_IN_DAY),
+    i18n: i18n.time,
+  });
+};
+
 const getNeuronTagsUnrelatedToController = ({
   neuron,
   i18n,
@@ -528,9 +546,9 @@ const getNeuronTagsUnrelatedToController = ({
     } else if (shouldDisplayRewardLossNotification(neuron)) {
       tags.push({
         text: replacePlaceholders(i18n.neurons.missing_rewards_soon, {
-          $timeLeft: secondsToDuration({
+          $timeLeft: secondsToMissingRewardsDuration({
             seconds: BigInt(secondsUntilLosingRewards(neuron)),
-            i18n: i18n.time,
+            i18n,
           }),
         }),
         status: "warning",
