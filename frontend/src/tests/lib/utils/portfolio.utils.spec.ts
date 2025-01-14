@@ -1,28 +1,26 @@
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import type { TableProject } from "$lib/types/staking";
 import type { UserToken } from "$lib/types/tokens-page";
-import { getTopTokens } from "$lib/utils/portfolio.utils";
+import { getTopProjects, getTopTokens } from "$lib/utils/portfolio.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { mockTableProject } from "$tests/mocks/staking.mock";
 import {
-  createIcpUserToken,
-  createUserToken,
-  createUserTokenLoading,
+    createIcpUserToken,
+    createUserToken,
+    createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
 
 describe("Portfolio utils", () => {
   describe("getTopTokens", () => {
     const mockNonUserToken = createUserTokenLoading();
-
-    const mockIcpToken = createIcpUserToken({});
-
+    const mockIcpToken = createIcpUserToken();
     const mockCkBTCToken = createUserToken({
       universeId: CKBTC_UNIVERSE_CANISTER_ID,
     });
-
     const mockCkUSDCToken = createUserToken({
       universeId: CKUSDC_UNIVERSE_CANISTER_ID,
     });
-
     const mockOtherToken = createUserToken({
       universeId: principal(1),
     });
@@ -149,6 +147,155 @@ describe("Portfolio utils", () => {
         ];
         const result = getTopTokens({
           userTokens: tokens,
+          isSignedIn: true,
+        });
+
+        expect(result).toHaveLength(0);
+      });
+    });
+  });
+
+  describe("getTopProjects", () => {
+    const mockIcpProject: TableProject = {
+      ...mockTableProject,
+      title: "Internet Computer",
+      stakeInUsd: 100,
+    };
+
+    const mockProject1: TableProject = {
+      ...mockTableProject,
+      title: "Alpha Project",
+      stakeInUsd: 50,
+    };
+
+    const mockProject2: TableProject = {
+      ...mockTableProject,
+      title: "Beta Project",
+      stakeInUsd: 25,
+    };
+
+    const mockProject3: TableProject = {
+      ...mockTableProject,
+      title: "Gamma Project",
+      stakeInUsd: 10,
+    };
+
+    it("should respect the result limit", () => {
+      const projects = [
+        mockIcpProject,
+        mockProject1,
+        mockProject2,
+        mockProject3,
+      ];
+
+      const result = getTopProjects({
+        projects,
+        maxResults: 2,
+      });
+
+      expect(result).toHaveLength(2);
+      expect(result).toEqual([mockIcpProject, mockProject1]);
+    });
+
+    it("should order projects: ICP first, then by project title value", () => {
+      const projects = [
+        mockProject2,
+        mockProject3,
+        mockProject1,
+        mockIcpProject,
+      ];
+
+      const result = getTopProjects({ projects });
+
+      expect(result).toEqual([
+        mockIcpProject,
+        mockProject1,
+        mockProject2,
+        mockProject3,
+      ]);
+    });
+
+    describe("when signed in", () => {
+      const mockIcpProject: TableProject = {
+        ...mockTableProject,
+        title: "Internet Computer",
+        stakeInUsd: 100,
+      };
+
+      const mockProject1: TableProject = {
+        ...mockTableProject,
+        title: "Alpha Project",
+        stakeInUsd: 2000,
+      };
+
+      const mockProject2: TableProject = {
+        ...mockTableProject,
+        title: "Beta Project",
+        stakeInUsd: 1000,
+      };
+
+      const mockProject3: TableProject = {
+        ...mockTableProject,
+        title: "Gamma Project",
+        stakeInUsd: 10,
+      };
+
+      const mockZeroStakeProject: TableProject = {
+        ...mockTableProject,
+        title: "Zero Stake Project",
+        stakeInUsd: 0,
+      };
+
+      it("should exclude projects with zero stake", () => {
+        const projects = [
+          mockZeroStakeProject,
+          mockProject1,
+          mockProject2,
+          mockProject3,
+          mockIcpProject,
+        ];
+
+        const result = getTopProjects({
+          projects,
+          isSignedIn: true,
+        });
+
+        expect(result).toHaveLength(4);
+        expect(result).not.toContainEqual(mockZeroStakeProject);
+      });
+
+      it("should order projects: ICP first, then by descending USD stake", () => {
+        const projects = [
+          mockProject3,
+          mockProject2,
+          mockProject1,
+          mockZeroStakeProject,
+          mockIcpProject,
+        ];
+
+        const result = getTopProjects({
+          projects,
+          isSignedIn: true,
+        });
+
+        expect(result).toEqual([
+          mockIcpProject, // ICP first, 100$
+          mockProject1, // 2000$
+          mockProject2, // 1000$
+          mockProject3, // 10$
+        ]);
+      });
+
+      it("should return empty array when all projects have zero stake", () => {
+        const zeroIcpProject: TableProject = {
+          ...mockTableProject,
+          stakeInUsd: 0,
+        };
+
+        const projects = [mockZeroStakeProject, zeroIcpProject];
+
+        const result = getTopProjects({
+          projects,
           isSignedIn: true,
         });
 
