@@ -6,9 +6,9 @@ import { getTopProjects, getTopTokens } from "$lib/utils/portfolio.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockTableProject } from "$tests/mocks/staking.mock";
 import {
-    createIcpUserToken,
-    createUserToken,
-    createUserTokenLoading,
+  createIcpUserToken,
+  createUserToken,
+  createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
 
 describe("Portfolio utils", () => {
