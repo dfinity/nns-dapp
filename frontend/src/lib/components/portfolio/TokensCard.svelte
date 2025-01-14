@@ -25,20 +25,32 @@
 </script>
 
 <Card testId="tokens-card">
-  <div class="wrapper">
+  <div
+    class="wrapper"
+    role="region"
+    aria-label={$i18n.portfolio.tokens_card_title}
+  >
     <div class="header">
       <div class="header-wrapper">
-        <div class="icon">
+        <div class="icon" aria-hidden="true">
           <IconAccountsPage />
         </div>
         <div class="text-content">
           <h5 class="title">{$i18n.portfolio.tokens_card_title}</h5>
-          <span class="amount" data-tid="amount">
+          <p
+            class="amount"
+            data-tid="amount"
+            aria-label={`${$i18n.portfolio.tokens_card_title}: ${usdAmount}`}
+          >
             ${usdAmountFormatted}
-          </span>
+          </p>
         </div>
       </div>
-      <a class="button secondary" {href}>
+      <a
+        {href}
+        class="button secondary"
+        aria-label={$i18n.portfolio.tokens_card_link}
+      >
         <span class="mobile-only">
           <IconRight />
         </span>
@@ -47,53 +59,54 @@
         </span>
       </a>
     </div>
-    <div class="body">
-      <div class="tokens-header">
-        <span>{$i18n.portfolio.tokens_card_list_first_column}</span>
-        <span class="mobile-only justify-end"
+    <div class="body" role="table">
+      <div class="tokens-header" role="row">
+        <span role="columnheader"
+          >{$i18n.portfolio.tokens_card_list_first_column}</span
+        >
+
+        <span class="mobile-only justify-end" role="columnheader"
           >{$i18n.portfolio.tokens_card_list_second_column_mobile}</span
         >
-        <span class="tablet-up justify-end"
+        <span class="tablet-up justify-end" role="columnheader"
           >{$i18n.portfolio.tokens_card_list_second_column}</span
         >
-        <span class="tablet-up justify-end"
+        <span class="tablet-up justify-end" role="columnheader"
           >{$i18n.portfolio.tokens_card_list_third_column}</span
         >
       </div>
 
-      <div class="tokens-list">
+      <div class="tokens-list" role="rowgroup">
         {#each topTokens as token (token.domKey)}
-          <div class="token-row" data-tid="token-card-row">
-            <div class="token-info">
-              <img src={token.logo} alt={token.title} class="token-icon" />
+          <div class="token-row" data-tid="token-card-row" role="row">
+            <div class="token-info" role="cell">
+              <img
+                src={token.logo}
+                alt={token.title}
+                class="token-icon"
+                aria-hidden="true"
+              />
               <span class="token-name" data-tid="token-title"
                 >{token.title}</span
               >
             </div>
 
-            <div
-              class="mobile-only justify-end text-right"
-              data-tid="mobile-balalance"
-            >
-              <div class="tabular-nums">
-                ${formatNumber(token?.balanceInUsd ?? 0)}
-              </div>
-              <AmountDisplay singleLine amount={token.balance} />
-            </div>
-            <div class="tablet-up justify-end text-right" data-tid="balalance">
+            <div class="token-balance" data-tid="balance" role="cell">
               <AmountDisplay singleLine amount={token.balance} />
             </div>
             <div
-              class="tablet-up justify-end tabular-nums"
+              class="token-usd-amount"
               data-tid="token-balance"
+              role="cell"
+              aria-label={`${token.title} USD: ${token?.balanceInUsd ?? 0}`}
             >
               ${formatNumber(token?.balanceInUsd ?? 0)}
             </div>
           </div>
         {/each}
         {#if showInfoRow}
-          <div class="info-row desktop-only" data-tid="info-row">
-            <div class="icon">
+          <div class="info-row desktop-only" role="note" data-tid="info-row">
+            <div class="icon" aria-hidden="true">
               <IconAccountsPage />
             </div>
             <div class="message">
@@ -178,7 +191,14 @@
         .token-row {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          justify-content: space-between;
+          grid-template-areas:
+            "info balance"
+            "info usd";
+          @include media.min-width(medium) {
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-areas: "info balance usd";
+          }
+
           align-items: center;
           padding: var(--padding-3x) var(--padding-2x);
 
@@ -187,11 +207,8 @@
             border-bottom: none;
           }
 
-          @include media.min-width(medium) {
-            grid-template-columns: 1fr 1fr 1fr;
-          }
-
           .token-info {
+            grid-area: info;
             display: flex;
             align-items: center;
             gap: var(--padding);
@@ -199,13 +216,22 @@
             .token-icon {
               width: 24px;
               height: 24px;
-              border-radius: 50%;
             }
+          }
 
-            // TODO: Styling for the token row
-            .token-name {
-              font-weight: 500;
-            }
+          .token-balance,
+          .token-usd-amount {
+            justify-self: end;
+            text-align: right;
+          }
+
+          .token-balance {
+            grid-area: balance;
+          }
+
+          .token-usd-amount {
+            grid-area: usd;
+            font-variant-numeric: tabular-nums;
           }
         }
       }
@@ -254,14 +280,8 @@
       }
     }
 
-    .text-right {
-      text-align: right;
-    }
     .justify-end {
       justify-self: end;
-    }
-    .tabular-nums {
-      font-variant-numeric: tabular-nums;
     }
   }
 </style>
