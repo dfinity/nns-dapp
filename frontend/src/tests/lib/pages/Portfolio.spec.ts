@@ -77,6 +77,7 @@ describe("Portfolio page", () => {
         const po = renderPage();
 
         expect(await po.getNoTokensCard().isPresent()).toBe(true);
+        expect(await po.getTokensCardPo().isPresent()).toBe(false);
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$0.00");
       });
 
@@ -88,6 +89,7 @@ describe("Portfolio page", () => {
         const po = renderPage({ userTokensData: [token] });
 
         expect(await po.getNoTokensCard().isPresent()).toBe(false);
+        expect(await po.getTokensCardPo().isPresent()).toBe(true);
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$2.00");
       });
     });
@@ -149,6 +151,8 @@ describe("Portfolio page", () => {
         const usdBalances = await tokensCardPo.getTokensUsdBalances();
         const nativeBalances = await tokensCardPo.getTokensNativeBalances();
 
+        expect(await po.getNoTokensCard().isPresent()).toBe(false);
+
         expect(titles.length).toBe(4);
         expect(titles).toEqual(["Token5", "Token4", "Token3", "Token2"]);
 
@@ -180,6 +184,8 @@ describe("Portfolio page", () => {
         const titles = await tokensCardPo.getTokensTitles();
         const usdBalances = await tokensCardPo.getTokensUsdBalances();
         const nativeBalances = await tokensCardPo.getTokensNativeBalances();
+
+        expect(await po.getNoTokensCard().isPresent()).toBe(false);
 
         expect(titles.length).toBe(2);
         expect(titles).toEqual(["Token2", "Token1"]);
