@@ -1,6 +1,6 @@
 <script lang="ts">
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
-  import NoNeuronsCard from "$lib/components/portfolio/NoNeuronsCard.svelte";
+  import NoProjectsCard from "$lib/components/portfolio/NoProjectsCard.svelte";
   import NoTokensCard from "$lib/components/portfolio/NoTokensCard.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -45,13 +45,13 @@
   let showNoTokensCard: boolean;
   $: showNoTokensCard = !$authSignedInStore || totalTokensBalanceInUsd === 0;
 
-  let showNoNeuronsCard: boolean;
-  $: showNoNeuronsCard = !$authSignedInStore || totalStakedInUsd === 0;
+  let showNoProjectsCard: boolean;
+  $: showNoProjectsCard = !$authSignedInStore || totalStakedInUsd === 0;
 
   // The Card should display a Primary Action when it is the only available option.
   // This occurs when there are tokens but no stake.
-  let hasNoNeuronsCardAPrimaryAction: boolean;
-  $: hasNoNeuronsCardAPrimaryAction = !showNoTokensCard;
+  let hasNoProjectsCardAPrimaryAction: boolean;
+  $: hasNoProjectsCardAPrimaryAction = !showNoTokensCard;
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -68,8 +68,8 @@
     {#if showNoTokensCard}
       <NoTokensCard />
     {/if}
-    {#if showNoNeuronsCard}
-      <NoNeuronsCard primaryCard={hasNoNeuronsCardAPrimaryAction} />
+    {#if showNoProjectsCard}
+      <NoProjectsCard primaryCard={hasNoProjectsCardAPrimaryAction} />
     {/if}
   </div>
 </main>
