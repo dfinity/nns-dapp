@@ -10,7 +10,7 @@ import {
   importedTokensStore,
 } from "$lib/stores/imported-tokens.store";
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
-import { networkEconomicsParametersStore } from "$lib/stores/network-economics.store";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import {
   proposalPayloadsStore,
@@ -124,7 +124,7 @@ export const initDebugStore = () =>
       defaultIcrcCanistersStore,
       importedTokensStore,
       failedImportedTokenLedgerIdsStore,
-      networkEconomicsParametersStore,
+      networkEconomicsStore,
     ],
     ([
       $busyStore,
