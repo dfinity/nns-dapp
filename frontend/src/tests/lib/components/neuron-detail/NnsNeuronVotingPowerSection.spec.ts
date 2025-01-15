@@ -165,7 +165,7 @@ describe("NnsStakeItemAction", () => {
     expect(await po.getNnsNeuronRewardStatusActionPo().isPresent()).toBe(false);
   });
 
-  it("should render voting power w/o extra styling when not reduced voting power", async () => {
+  it("should render voting power w/o extra class when not reduced voting power", async () => {
     overrideFeatureFlagsStore.setFlag(
       "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
       true
@@ -186,7 +186,7 @@ describe("NnsStakeItemAction", () => {
     expect(await po.isReducedVotingPowerStyle()).toBe(false);
   });
 
-  it("should render voting power in red when reduced voting power", async () => {
+  it("should render voting power with isReducedVotingPower class when reduced voting power", async () => {
     overrideFeatureFlagsStore.setFlag(
       "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
       true
