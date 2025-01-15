@@ -15,16 +15,22 @@ export interface NetworkEconomicsStore
  * A store that contains the [network economics parameters](https://github.com/dfinity/ic/blob/d90e934eb440c730d44d9d9b1ece2cc3f9505d05/rs/nns/governance/proto/ic_nns_governance/pb/v1/governance.proto#L1847).
  */
 const initNetworkEconomicsParametersStore = () => {
-  const { subscribe, set } = writable<NetworkEconomicsStoreData>({
+  const initialStoreData: NetworkEconomicsStoreData = {
     parameters: undefined,
     certified: undefined,
-  });
+  };
+  const { subscribe, set } =
+    writable<NetworkEconomicsStoreData>(initialStoreData);
 
   return {
     subscribe,
 
     setParameters(parameters: NetworkEconomicsStoreData) {
       set(parameters);
+    },
+
+    reset() {
+      set(initialStoreData);
     },
   };
 };
