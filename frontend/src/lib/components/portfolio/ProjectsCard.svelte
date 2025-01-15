@@ -22,7 +22,9 @@
     ? formatNumber(usdAmount)
     : PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
-  const numberOfTopProjects = topProjects.length;
+  let numberOfTopProjects: number;
+  $: numberOfTopProjects = topProjects.length;
+
   let showInfoRow: boolean;
   $: showInfoRow = numberOfTopTokens - numberOfTopProjects > 0;
 </script>

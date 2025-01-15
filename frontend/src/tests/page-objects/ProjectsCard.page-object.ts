@@ -1,7 +1,7 @@
+import { MaturityWithTooltipPo } from "$tests/page-objects/MaturityWithTooltip.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { nonNullish } from "@dfinity/utils";
-import { MaturityWithTooltipPo } from "./MaturityWithTooltip.page-object";
 
 class ProjectsCardRoPo extends BasePageObject {
   private static readonly TID = "project-card-row";
