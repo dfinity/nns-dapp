@@ -5,11 +5,12 @@ import type { TableProject } from "$lib/types/staking";
 import type { UserToken } from "$lib/types/tokens-page";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
-import { principal } from "$tests/mocks/sns-projects.mock";
+import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { mockTableProject } from "$tests/mocks/staking.mock";
 import { createUserToken } from "$tests/mocks/tokens-page.mock";
 import { PortfolioPagePo } from "$tests/page-objects/PortfolioPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("Portfolio page", () => {
@@ -88,6 +89,108 @@ describe("Portfolio page", () => {
 
         expect(await po.getNoTokensCard().isPresent()).toBe(false);
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$2.00");
+      });
+    });
+
+    describe("TokensCard", () => {
+      const token1 = createUserToken({
+        balanceInUsd: 100,
+        rowHref: "/tokens/1",
+        title: "Token1",
+        balance: TokenAmountV2.fromUlps({
+          amount: 2160000000n,
+          token: mockToken,
+        }),
+      });
+      const token2 = createUserToken({
+        balanceInUsd: 200,
+        rowHref: "/tokens/2",
+        title: "Token2",
+        balance: TokenAmountV2.fromUlps({
+          amount: 2160000000n,
+          token: mockToken,
+        }),
+      });
+      const token3 = createUserToken({
+        balanceInUsd: 300,
+        rowHref: "/tokens/3",
+        title: "Token3",
+        balance: TokenAmountV2.fromUlps({
+          amount: 2160000000n,
+          token: mockToken,
+        }),
+      });
+      const token4 = createUserToken({
+        balanceInUsd: 400,
+        rowHref: "/tokens/4",
+        title: "Token4",
+        balance: TokenAmountV2.fromUlps({
+          amount: 2160000000n,
+          token: mockToken,
+        }),
+      });
+      const token5 = createUserToken({
+        balanceInUsd: 500,
+        rowHref: "/tokens/5",
+        title: "Token5",
+        balance: TokenAmountV2.fromUlps({
+          amount: 2160000000n,
+          token: mockToken,
+        }),
+      });
+
+      it("should display the top four tokens by balanceInUsd", async () => {
+        const po = renderPage({
+          userTokensData: [token1, token2, token3, token4, token5],
+        });
+        const tokensCardPo = po.getTokensCardPo();
+
+        const titles = await tokensCardPo.getTokensTitles();
+        const usdBalances = await tokensCardPo.getTokensUsdBalances();
+        const nativeBalances = await tokensCardPo.getTokensNativeBalances();
+
+        expect(titles.length).toBe(4);
+        expect(titles).toEqual(["Token5", "Token4", "Token3", "Token2"]);
+
+        expect(usdBalances.length).toBe(4);
+        expect(usdBalances).toEqual([
+          "$500.00",
+          "$400.00",
+          "$300.00",
+          "$200.00",
+        ]);
+
+        expect(nativeBalances.length).toBe(4);
+        expect(nativeBalances).toEqual([
+          "21.60 TET",
+          "21.60 TET",
+          "21.60 TET",
+          "21.60 TET",
+        ]);
+
+        expect(await tokensCardPo.getInfoRow().isPresent()).toBe(false);
+      });
+
+      it("should display the the information row when less then three tokens", async () => {
+        const po = renderPage({
+          userTokensData: [token1, token2],
+        });
+        const tokensCardPo = po.getTokensCardPo();
+
+        const titles = await tokensCardPo.getTokensTitles();
+        const usdBalances = await tokensCardPo.getTokensUsdBalances();
+        const nativeBalances = await tokensCardPo.getTokensNativeBalances();
+
+        expect(titles.length).toBe(2);
+        expect(titles).toEqual(["Token2", "Token1"]);
+
+        expect(usdBalances.length).toBe(2);
+        expect(usdBalances).toEqual(["$200.00", "$100.00"]);
+
+        expect(nativeBalances.length).toBe(2);
+        expect(nativeBalances).toEqual(["21.60 TET", "21.60 TET"]);
+
+        expect(await tokensCardPo.getInfoRow().isPresent()).toBe(true);
       });
     });
 

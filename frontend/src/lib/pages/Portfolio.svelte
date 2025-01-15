@@ -2,10 +2,12 @@
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NoProjectsCard from "$lib/components/portfolio/NoProjectsCard.svelte";
   import NoTokensCard from "$lib/components/portfolio/NoTokensCard.svelte";
+  import TokensCard from "$lib/components/portfolio/TokensCard.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { TableProject } from "$lib/types/staking";
-  import type { UserToken } from "$lib/types/tokens-page";
+  import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
+  import { getTopTokens } from "$lib/utils/portfolio.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
@@ -52,6 +54,12 @@
   // This occurs when there are tokens but no stake.
   let hasNoProjectsCardAPrimaryAction: boolean;
   $: hasNoProjectsCardAPrimaryAction = !showNoTokensCard;
+
+  let topTokens: UserTokenData[];
+  $: topTokens = getTopTokens({
+    userTokens: userTokensData,
+    isSignedIn: $authSignedInStore,
+  });
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -67,6 +75,8 @@
   <div class="content">
     {#if showNoTokensCard}
       <NoTokensCard />
+    {:else}
+      <TokensCard {topTokens} usdAmount={totalTokensBalanceInUsd} />
     {/if}
     {#if showNoProjectsCard}
       <NoProjectsCard primaryCard={hasNoProjectsCardAPrimaryAction} />
