@@ -1749,6 +1749,75 @@ describe("neuron-utils", () => {
         },
       };
 
+      it("returns 'XX days to confirm' tag", () => {
+        overrideFeatureFlagsStore.setFlag(
+          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+          true
+        );
+        const testTag = ({
+          secondsToConfirm,
+          expectedText,
+        }: {
+          secondsToConfirm: number;
+          expectedText: string;
+        }) =>
+          expect(
+            getNeuronTags({
+              neuron: {
+                ...mockNeuron,
+                votingPowerRefreshedTimestampSeconds: BigInt(
+                  nowSeconds - SECONDS_IN_HALF_YEAR + secondsToConfirm
+                ),
+                fullNeuron: {
+                  ...mockNeuron.fullNeuron,
+                  votingPowerRefreshedTimestampSeconds: BigInt(
+                    nowSeconds - SECONDS_IN_HALF_YEAR + secondsToConfirm
+                  ),
+                },
+              } as NeuronInfo,
+              identity: mockIdentity,
+              accounts: accountsWithHW,
+              i18n: en,
+            })
+          ).toEqual([
+            {
+              text: expectedText,
+              status: "warning",
+            },
+          ]);
+
+        expect(
+          testTag({
+            secondsToConfirm: SECONDS_IN_DAY * 10 + 10 * 60 * 60,
+            expectedText: "10 days to confirm",
+          })
+        );
+        expect(
+          testTag({
+            secondsToConfirm: SECONDS_IN_DAY * 7 + 23 * 60 * 60,
+            expectedText: "7 days to confirm",
+          })
+        );
+        expect(
+          testTag({
+            secondsToConfirm: SECONDS_IN_DAY * 6 + 23 * 60 * 60,
+            expectedText: "6 days, 23 hours to confirm",
+          })
+        );
+        expect(
+          testTag({
+            secondsToConfirm: SECONDS_IN_DAY * 1,
+            expectedText: "1 day to confirm",
+          })
+        );
+        expect(
+          testTag({
+            secondsToConfirm: 3 * 60 * 60 + 60,
+            expectedText: "3 hours, 1 minute to confirm",
+          })
+        );
+      });
+
       it("returns 'Missing rewards' tag", () => {
         overrideFeatureFlagsStore.setFlag(
           "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
