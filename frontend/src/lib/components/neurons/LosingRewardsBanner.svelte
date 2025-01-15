@@ -11,10 +11,10 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { nonNullish, secondsToDuration } from "@dfinity/utils";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { START_REDUCING_VOTING_POWER_AFTER_SECONDS } from "$lib/constants/neurons.constants";
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import LosingRewardNeuronsModal from "$lib/modals/neurons/LosingRewardNeuronsModal.svelte";
+  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 
   // The neurons in the store are sorted by the time they will lose rewards.
   let mostInactiveNeuron: NeuronInfo | undefined;
@@ -29,19 +29,20 @@
             i18n: $i18n.time,
           }),
         });
-  const text = replacePlaceholders($i18n.losing_rewards.description, {
-    // TODO(mstr): Rename to secondsToRoundedDuration
-    $period: secondsToDissolveDelayDuration(
-      BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS)
-    ),
-  });
 
   let isModalVisible = false;
 </script>
 
 <TestIdWrapper testId="losing-rewards-banner-component">
-  {#if nonNullish(mostInactiveNeuron)}
-    <Banner title={getTitle(mostInactiveNeuron)} {text}>
+  {#if nonNullish(mostInactiveNeuron) && nonNullish($startReducingVotingPowerAfterSecondsStore)}
+    <Banner
+      title={getTitle(mostInactiveNeuron)}
+      text={replacePlaceholders($i18n.losing_rewards.description, {
+        $period: secondsToDissolveDelayDuration(
+          $startReducingVotingPowerAfterSecondsStore
+        ),
+      })}
+    >
       <BannerIcon slot="icon" status="error">
         <IconInfo />
       </BannerIcon>
