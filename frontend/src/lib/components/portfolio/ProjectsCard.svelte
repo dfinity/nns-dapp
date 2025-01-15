@@ -1,4 +1,5 @@
 <script lang="ts">
+  import MaturityWithTooltip from "$lib/components/neurons/MaturityWithTooltip.svelte";
   import Card from "$lib/components/portfolio/Card.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
@@ -10,7 +11,6 @@
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { IconNeuronsPage, IconRight } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
-  import MaturityWithTooltip from "../neurons/MaturityWithTooltip.svelte";
 
   export let topProjects: TableProject[];
   export let usdAmount: number;
