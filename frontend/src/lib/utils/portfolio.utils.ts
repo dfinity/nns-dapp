@@ -68,19 +68,19 @@ const compareProjects = mergeComparators([
  * - Always prioritizes ICP project first
  * - Sorts remaining projects by USD stake value
  * - Sorts remaining projects by title alphabetically
- * - Limits the number of returned projects to maxResults
+ * - Limits the number of returned projects to MAX_NUMBER_OF_ITEMS
  * - When isSignedIn true, filters out projects with zero stake as we show only projects with guaranteed stake
  */
 export const getTopProjects = ({
   projects,
-  maxResults = MAX_NUMBER_OF_ITEMS,
   isSignedIn = false,
 }: {
   projects: TableProject[];
-  maxResults?: number;
   isSignedIn?: boolean;
 }): TableProject[] => {
-  const topProjects = [...projects].sort(compareProjects).slice(0, maxResults);
+  const topProjects = [...projects]
+    .sort(compareProjects)
+    .slice(0, MAX_NUMBER_OF_ITEMS);
 
   if (!isSignedIn) return topProjects;
 

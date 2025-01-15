@@ -164,40 +164,52 @@ describe("Portfolio utils", () => {
 
     const mockProject1: TableProject = {
       ...mockTableProject,
-      title: "Alpha Project",
+      title: "A Project",
       stakeInUsd: 0,
       universeId: "1",
     };
 
     const mockProject2: TableProject = {
       ...mockTableProject,
-      title: "Beta Project",
+      title: "B Project",
       stakeInUsd: 0,
       universeId: "2",
     };
 
     const mockProject3: TableProject = {
       ...mockTableProject,
-      title: "Gamma Project",
+      title: "C Project",
       stakeInUsd: 0,
       universeId: "3",
     };
 
-    it("should respect the result limit", () => {
+    const mockProject4: TableProject = {
+      ...mockTableProject,
+      title: "D Project",
+      stakeInUsd: 0,
+      universeId: "4",
+    };
+
+    it("should respect the result limit of MAX_NUMBER_OF_ITEMS(4)", () => {
       const projects = [
         mockIcpProject,
         mockProject1,
         mockProject2,
         mockProject3,
+        mockProject4,
       ];
 
       const result = getTopProjects({
         projects,
-        maxResults: 2,
       });
 
-      expect(result).toHaveLength(2);
-      expect(result).toEqual([mockIcpProject, mockProject1]);
+      expect(result).toHaveLength(4);
+      expect(result).toEqual([
+        mockIcpProject,
+        mockProject1,
+        mockProject2,
+        mockProject3,
+      ]);
     });
 
     it("should order projects: ICP first, then by project title value", () => {
