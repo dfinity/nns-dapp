@@ -1,6 +1,7 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Card from "$lib/components/portfolio/Card.svelte";
+  import Logo from "$lib/components/ui/Logo.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -8,7 +9,6 @@
   import type { UserTokenData } from "$lib/types/tokens-page";
   import { formatNumber } from "$lib/utils/format.utils";
   import { IconAccountsPage, IconRight } from "@dfinity/gix-components";
-  import Logo from "../ui/Logo.svelte";
 
   export let topTokens: UserTokenData[];
   export let usdAmount: number;
