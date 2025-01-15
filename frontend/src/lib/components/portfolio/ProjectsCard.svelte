@@ -14,6 +14,7 @@
 
   export let topProjects: TableProject[];
   export let usdAmount: number;
+  export let numberOfTopTokens: number;
 
   const href = AppPath.Staking;
   let usdAmountFormatted: string;
@@ -21,9 +22,9 @@
     ? formatNumber(usdAmount)
     : PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
-  // TODO: This will also depend on the number of tokens
+  const numberOfTopProjects = topProjects.length;
   let showInfoRow: boolean;
-  $: showInfoRow = topProjects.length > 0 && topProjects.length <= 3;
+  $: showInfoRow = numberOfTopTokens - numberOfTopProjects > 0;
 </script>
 
 <Card testId="projects-card">
@@ -90,7 +91,7 @@
                   framed
                 />
               </div>
-              <span data-tid="title">{project.title}</span>
+              <span data-tid="project-title">{project.title}</span>
             </div>
 
             <div class="maturity" data-tid="project-maturity" role="cell">
@@ -104,27 +105,27 @@
               {/if}
             </div>
             <div
-              class="usd-balance"
-              data-tid="project-usd-balance"
+              class="staked-usd"
+              data-tid="project-staked-usd"
               role="cell"
               aria-label={`${project.title} USD: ${project?.stakeInUsd ?? 0}`}
             >
               ${formatNumber(project?.stakeInUsd ?? 0)}
             </div>
-            {#if project.stake instanceof TokenAmountV2}
-              <div
-                class="native-balance"
-                data-tid="project-native-balance"
-                role="cell"
-                aria-label={`${project.title} D: ${project?.stakeInUsd ?? 0}`}
-              >
-                {formatTokenV2({
-                  value: project.stake,
-                  detailed: true,
-                })}
-                {project.stake.token.symbol}
-              </div>
-            {/if}
+            <div
+              class="staked-native"
+              data-tid="project-staked-native"
+              role="cell"
+              aria-label={`${project.title} D: ${project?.stakeInUsd ?? 0}`}
+            >
+              {project.stake instanceof TokenAmountV2
+                ? formatTokenV2({
+                    value: project.stake,
+                    detailed: true,
+                  })
+                : PRICE_NOT_AVAILABLE_PLACEHOLDER}
+              {project.stake.token.symbol}
+            </div>
           </div>
         {/each}
         {#if showInfoRow}
@@ -239,8 +240,8 @@
           }
 
           .maturity,
-          .native-balance,
-          .usd-balance {
+          .staked-usd,
+          .staked-native {
             justify-self: end;
             text-align: right;
           }
@@ -256,7 +257,11 @@
             }
           }
 
-          .native-balance {
+          .staked-usd {
+            grid-area: usd;
+          }
+
+          .staked-native {
             display: none;
             grid-area: native;
             font-size: 0.875rem;
@@ -265,10 +270,6 @@
             @include media.min-width(medium) {
               display: block;
             }
-          }
-
-          .usd-balance {
-            grid-area: usd;
           }
         }
       }

@@ -1,8 +1,10 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { nonNullish } from "@dfinity/utils";
+import { MaturityWithTooltipPo } from "./MaturityWithTooltip.page-object";
 
 class ProjectsCardRoPo extends BasePageObject {
-  private static readonly TID = "card-row";
+  private static readonly TID = "project-card-row";
 
   static async allUnder(
     element: PageObjectElement
@@ -12,23 +14,31 @@ class ProjectsCardRoPo extends BasePageObject {
   }
 
   getTokenTitle(): Promise<string> {
-    return this.getText("token-title");
+    return this.getText("project-title");
   }
 
-  getTokenNativeBalance(): Promise<string> {
-    return this.getText("token-native-balance");
+  async getProjectMaturity(): Promise<string> {
+    const maturityWithTooltipPo = MaturityWithTooltipPo.under(this.root);
+    const totalMaturity = await maturityWithTooltipPo.getTotalMaturity();
+
+    if (nonNullish(totalMaturity)) return totalMaturity;
+    return this.getText("project-maturity");
   }
 
-  getTokenUsdBalance(): Promise<string> {
-    return this.getText("token-usd-balance");
+  getProjectStakeInUsd(): Promise<string> {
+    return this.getText("project-staked-usd");
+  }
+
+  getProjectStakeInNativeCurrency(): Promise<string> {
+    return this.getText("project-staked-native");
   }
 }
 
-export class TokensCardPo extends BasePageObject {
-  private static readonly TID = "tokens-card";
+export class ProjectsCardPo extends BasePageObject {
+  private static readonly TID = "projects-card";
 
-  static under(element: PageObjectElement): TokensCardPo {
-    return new TokensCardPo(element.byTestId(TokensCardPo.TID));
+  static under(element: PageObjectElement): ProjectsCardPo {
+    return new ProjectsCardPo(element.byTestId(ProjectsCardPo.TID));
   }
 
   async getRows(): Promise<ProjectsCardRoPo[]> {
@@ -43,20 +53,25 @@ export class TokensCardPo extends BasePageObject {
     return this.getElement("info-row");
   }
 
-  async getTokensTitles(): Promise<string[]> {
+  async getProjectsTitle(): Promise<string[]> {
     const rowsPos = await this.getRows();
     return Promise.all(rowsPos.map((po) => po.getTokenTitle()));
   }
 
-  async getTokensUsdBalances(): Promise<string[]> {
+  async getProjectsMaturity(): Promise<string[]> {
     const rows = await this.getRows();
-
-    return Promise.all(rows.map((row) => row.getTokenUsdBalance()));
+    return Promise.all(rows.map((row) => row.getProjectMaturity()));
   }
 
-  async getTokensNativeBalances(): Promise<string[]> {
+  async getProjectsStakeInUsd(): Promise<string[]> {
     const rows = await this.getRows();
+    return Promise.all(rows.map((row) => row.getProjectStakeInUsd()));
+  }
 
-    return Promise.all(rows.map((row) => row.getTokenNativeBalance()));
+  async getProjectsStakeInNativeCurrency(): Promise<string[]> {
+    const rows = await this.getRows();
+    return Promise.all(
+      rows.map((row) => row.getProjectStakeInNativeCurrency())
+    );
   }
 }

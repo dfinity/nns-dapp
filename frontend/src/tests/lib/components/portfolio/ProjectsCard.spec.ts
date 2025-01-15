@@ -1,99 +1,169 @@
 import ProjectsCard from "$lib/components/portfolio/ProjectsCard.svelte";
+import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import type { TableProject } from "$lib/types/staking";
-import type { UserTokenData } from "$lib/types/tokens-page";
+import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
-import { mockCkBTCToken as CkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
-import { mockCkETHToken as CkETHToken } from "$tests/mocks/cketh-accounts.mock";
-import {
-  ckBTCTokenBase,
-  ckETHTokenBase,
-  createIcpUserToken,
-  createUserToken,
-} from "$tests/mocks/tokens-page.mock";
-import { TokensCardPo } from "$tests/page-objects/TokensCard.page-object";
+import { mockToken } from "$tests/mocks/sns-projects.mock";
+import { mockTableProject } from "$tests/mocks/staking.mock";
+import { ProjectsCardPo } from "$tests/page-objects/ProjectsCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("ProjectsCard", () => {
-  const renderComponent = (props: {
-    topProjects: TableProject[];
-    usdAmount: number;
-  }) => {
+  const renderComponent = ({
+    topProjects = [],
+    usdAmount = 0,
+    numberOfTopTokens = 0,
+  }: {
+    topProjects?: TableProject[];
+    usdAmount?: number;
+    numberOfTopTokens?: number;
+  } = {}) => {
     const { container } = render(ProjectsCard, {
-      props,
+      props: {
+        topProjects,
+        usdAmount,
+        numberOfTopTokens,
+      },
     });
 
-    return TokensCardPo.under(new JestPageObjectElement(container));
+    return ProjectsCardPo.under(new JestPageObjectElement(container));
   };
 
   describe("when not signed in", () => {
-    const mockIcpToken = createIcpUserToken();
-    const mockCkBTCToken = createUserToken(ckBTCTokenBase);
-    const mockCkETHToken = createUserToken(ckETHTokenBase);
+    const icpProject: TableProject = {
+      ...mockTableProject,
+      stakeInUsd: undefined,
+      domKey: "/staking/icp",
+      stake: new UnavailableTokenAmount(NNS_TOKEN_DATA),
+    };
+    const tableProject1: TableProject = {
+      ...mockTableProject,
+      title: "Project 1",
+      stakeInUsd: undefined,
+      domKey: "/staking/1",
+      stake: new UnavailableTokenAmount(mockToken),
+    };
+    const tableProject2: TableProject = {
+      ...mockTableProject,
+      title: "Project 2",
+      stakeInUsd: undefined,
+      domKey: "/staking/2",
+      stake: new UnavailableTokenAmount(mockToken),
+    };
 
-    const mockTokens = [
-      mockIcpToken,
-      mockCkBTCToken,
-      mockCkETHToken,
-    ] as UserTokenData[];
+    const tableProject3: TableProject = {
+      ...mockTableProject,
+      title: "Project 3",
+      stakeInUsd: undefined,
+      domKey: "/staking/3",
+      stake: new UnavailableTokenAmount(mockToken),
+    };
+
+    const mockProjects: TableProject[] = [
+      icpProject,
+      tableProject1,
+      tableProject2,
+      tableProject3,
+    ];
 
     beforeEach(() => {
       setNoIdentity();
     });
 
     it("should show placeholder balance", async () => {
-      const po = renderComponent({
-        topTokens: mockTokens,
-        usdAmount: 0,
-      });
+      const po = renderComponent();
 
       expect(await po.getAmount()).toBe("$-/-");
     });
 
-    it("should show list of tokens with name and balance", async () => {
+    it("should list of tokens with placeholders", async () => {
       const po = renderComponent({
-        topTokens: mockTokens,
-        usdAmount: 0,
+        topProjects: mockProjects,
       });
-      const titles = await po.getTokensTitles();
-      const balances = await po.getTokensUsdBalances();
+      const titles = await po.getProjectsTitle();
+      const maturities = await po.getProjectsMaturity();
+      const stakesInUsd = await po.getProjectsStakeInUsd();
+      const stakesInNativeCurrency =
+        await po.getProjectsStakeInNativeCurrency();
 
-      expect(titles.length).toBe(3);
-      expect(titles).toEqual(["Internet Computer", "ckBTC", "ckETH"]);
+      expect(titles.length).toBe(4);
+      expect(titles).toEqual([
+        "Internet Computer",
+        "Project 1",
+        "Project 2",
+        "Project 3",
+      ]);
 
-      expect(balances.length).toBe(3);
-      expect(balances).toEqual(["$0.00", "$0.00", "$0.00"]);
+      expect(maturities.length).toBe(4);
+      expect(maturities).toEqual(["-/-", "-/-", "-/-", "-/-"]);
+
+      expect(stakesInUsd.length).toBe(4);
+      expect(stakesInUsd).toEqual(["$0.00", "$0.00", "$0.00", "$0.00"]);
+
+      expect(stakesInNativeCurrency.length).toBe(4);
+      expect(stakesInNativeCurrency).toEqual([
+        "-/- ICP",
+        "-/- TET",
+        "-/- TET",
+        "-/- TET",
+      ]);
+
+      expect(await po.getInfoRow().isPresent()).toBe(false);
     });
   });
 
   describe("when signed in", () => {
-    const mockIcpToken = createIcpUserToken();
-    mockIcpToken.balanceInUsd = 100;
-    mockIcpToken.balance = TokenAmountV2.fromUlps({
-      amount: 2160000000n,
-      token: ICPToken,
-    });
+    const icpProject: TableProject = {
+      ...mockTableProject,
+      stakeInUsd: 100,
+      domKey: "/staking/icp",
+      stake: TokenAmountV2.fromUlps({
+        amount: 1000_000n,
+        token: ICPToken,
+      }),
+      availableMaturity: 1_000_000_000n,
+      stakedMaturity: 1_000_000_000n,
+    };
+    const tableProject1: TableProject = {
+      ...mockTableProject,
+      title: "Project 1",
+      stakeInUsd: 200,
+      domKey: "/staking/1",
+      stake: TokenAmountV2.fromUlps({
+        amount: 1000_000n,
+        token: mockToken,
+      }),
+    };
+    const tableProject2: TableProject = {
+      ...mockTableProject,
+      title: "Project 2",
+      stakeInUsd: 300,
+      domKey: "/staking/2",
+      stake: TokenAmountV2.fromUlps({
+        amount: 1000_000n,
+        token: mockToken,
+      }),
+    };
 
-    const mockCkBTCToken = createUserToken(ckBTCTokenBase);
-    mockCkBTCToken.balanceInUsd = 200;
-    mockCkBTCToken.balance = TokenAmountV2.fromUlps({
-      amount: 2160000000n,
-      token: CkBTCToken,
-    });
+    const tableProject3: TableProject = {
+      ...mockTableProject,
+      title: "Project 3",
+      stakeInUsd: 400,
+      domKey: "/staking/3",
+      stake: TokenAmountV2.fromUlps({
+        amount: 1000_000n,
+        token: mockToken,
+      }),
+    };
 
-    const mockCkETHToken = createUserToken(ckETHTokenBase);
-    mockCkETHToken.balanceInUsd = 300;
-    mockCkETHToken.balance = TokenAmountV2.fromUlps({
-      amount: 21600000000000000000n,
-      token: CkETHToken,
-    });
-
-    const mockTokens = [
-      mockIcpToken,
-      mockCkBTCToken,
-      mockCkETHToken,
-    ] as UserTokenData[];
+    const mockProjects: TableProject[] = [
+      icpProject,
+      tableProject1,
+      tableProject2,
+      tableProject3,
+    ];
 
     beforeEach(() => {
       resetIdentity();
@@ -101,101 +171,127 @@ describe("ProjectsCard", () => {
 
     it("should show the usd amount", async () => {
       const po = renderComponent({
-        topTokens: mockTokens,
-        usdAmount: 600,
+        usdAmount: 5000,
       });
 
-      expect(await po.getAmount()).toBe("$600.00");
+      expect(await po.getAmount()).toBe("$5’000.00");
     });
 
-    it("should show all the tokens with their balance", async () => {
+    it("should show all the projects with their maturity, staked in usd and staked in native currency", async () => {
       const po = renderComponent({
-        topTokens: mockTokens,
-        usdAmount: 600,
+        topProjects: mockProjects,
       });
-      const titles = await po.getTokensTitles();
-      const usdBalances = await po.getTokensUsdBalances();
-      const nativeBalances = await po.getTokensNativeBalances();
 
-      expect(titles.length).toBe(3);
-      expect(titles).toEqual(["Internet Computer", "ckBTC", "ckETH"]);
+      const titles = await po.getProjectsTitle();
+      const maturities = await po.getProjectsMaturity();
+      const stakesInUsd = await po.getProjectsStakeInUsd();
+      const stakesInNativeCurrency =
+        await po.getProjectsStakeInNativeCurrency();
 
-      expect(usdBalances.length).toBe(3);
-      expect(usdBalances).toEqual(["$100.00", "$200.00", "$300.00"]);
+      expect(titles.length).toBe(4);
+      expect(titles).toEqual([
+        "Internet Computer",
+        "Project 1",
+        "Project 2",
+        "Project 3",
+      ]);
 
-      expect(nativeBalances.length).toBe(3);
-      expect(nativeBalances).toEqual([
-        "21.60 ICP",
-        "21.60 ckBTC",
-        "21.60 ckETH",
+      expect(maturities.length).toBe(4);
+      expect(maturities).toEqual(["20.00", "0", "0", "0"]);
+
+      expect(stakesInUsd.length).toBe(4);
+      expect(stakesInUsd).toEqual(["$100.00", "$200.00", "$300.00", "$400.00"]);
+
+      expect(stakesInNativeCurrency.length).toBe(4);
+      expect(stakesInNativeCurrency).toEqual([
+        "0.01 ICP",
+        "0.01 TET",
+        "0.01 TET",
+        "0.01 TET",
       ]);
     });
 
-    it("should not show info row when tokens length is 3 or more", async () => {
+    it("should not show info row when numberOfTopTokens is the same as the number of topProjects", async () => {
       const po = renderComponent({
-        topTokens: mockTokens.slice(0, 3),
-        usdAmount: 600,
+        topProjects: mockProjects.slice(0, 3),
+        numberOfTopTokens: 3,
       });
-      const titles = await po.getTokensTitles();
-      const balances = await po.getTokensUsdBalances();
-      const nativeBalances = await po.getTokensNativeBalances();
+
+      const titles = await po.getProjectsTitle();
+      const maturities = await po.getProjectsMaturity();
+      const stakesInUsd = await po.getProjectsStakeInUsd();
+      const stakesInNativeCurrency =
+        await po.getProjectsStakeInNativeCurrency();
 
       expect(titles.length).toBe(3);
-      expect(titles).toEqual(["Internet Computer", "ckBTC", "ckETH"]);
+      expect(titles).toEqual(["Internet Computer", "Project 1", "Project 2"]);
 
-      expect(balances.length).toBe(3);
-      expect(balances).toEqual(["$100.00", "$200.00", "$300.00"]);
+      expect(maturities.length).toBe(3);
+      expect(maturities).toEqual(["20.00", "0", "0"]);
 
-      expect(nativeBalances.length).toBe(3);
-      expect(nativeBalances).toEqual([
-        "21.60 ICP",
-        "21.60 ckBTC",
-        "21.60 ckETH",
+      expect(stakesInUsd.length).toBe(3);
+      expect(stakesInUsd).toEqual(["$100.00", "$200.00", "$300.00"]);
+
+      expect(stakesInNativeCurrency.length).toBe(3);
+      expect(stakesInNativeCurrency).toEqual([
+        "0.01 ICP",
+        "0.01 TET",
+        "0.01 TET",
       ]);
 
       expect(await po.getInfoRow().isPresent()).toBe(false);
     });
 
-    it("should show info row when tokens length is 1", async () => {
+    it("should not show info row when the number of topProjects is less than numberOfTopTokens like 1", async () => {
       const po = renderComponent({
-        topTokens: mockTokens.slice(0, 1),
-        usdAmount: 100,
+        topProjects: mockProjects.slice(0, 2),
+        numberOfTopTokens: 4,
       });
 
-      const titles = await po.getTokensTitles();
-      const balances = await po.getTokensUsdBalances();
-      const nativeBalances = await po.getTokensNativeBalances();
+      const titles = await po.getProjectsTitle();
+      const maturities = await po.getProjectsMaturity();
+      const stakesInUsd = await po.getProjectsStakeInUsd();
+      const stakesInNativeCurrency =
+        await po.getProjectsStakeInNativeCurrency();
 
-      expect(titles.length).toBe(1);
-      expect(titles).toEqual(["Internet Computer"]);
+      expect(titles.length).toBe(2);
+      expect(titles).toEqual(["Internet Computer", "Project 1"]);
 
-      expect(balances.length).toBe(1);
-      expect(balances).toEqual(["$100.00"]);
+      expect(maturities.length).toBe(2);
+      expect(maturities).toEqual(["20.00", "0"]);
 
-      expect(nativeBalances.length).toBe(1);
-      expect(nativeBalances).toEqual(["21.60 ICP"]);
+      expect(stakesInUsd.length).toBe(2);
+      expect(stakesInUsd).toEqual(["$100.00", "$200.00"]);
+
+      expect(stakesInNativeCurrency.length).toBe(2);
+      expect(stakesInNativeCurrency).toEqual(["0.01 ICP", "0.01 TET"]);
 
       expect(await po.getInfoRow().isPresent()).toBe(true);
     });
 
-    it("should show info row when tokens length is 2", async () => {
+    it("should not show info row when the number of topProjects is less than numberOfTopTokens like 2", async () => {
       const po = renderComponent({
-        topTokens: mockTokens.slice(0, 2),
-        usdAmount: 300,
+        topProjects: mockProjects.slice(0, 1),
+        numberOfTopTokens: 3,
       });
 
-      const titles = await po.getTokensTitles();
-      const balances = await po.getTokensUsdBalances();
-      const nativeBalances = await po.getTokensNativeBalances();
+      const titles = await po.getProjectsTitle();
+      const maturities = await po.getProjectsMaturity();
+      const stakesInUsd = await po.getProjectsStakeInUsd();
+      const stakesInNativeCurrency =
+        await po.getProjectsStakeInNativeCurrency();
 
-      expect(titles.length).toBe(2);
-      expect(titles).toEqual(["Internet Computer", "ckBTC"]);
+      expect(titles.length).toBe(1);
+      expect(titles).toEqual(["Internet Computer"]);
 
-      expect(balances.length).toBe(2);
-      expect(balances).toEqual(["$100.00", "$200.00"]);
+      expect(maturities.length).toBe(1);
+      expect(maturities).toEqual(["20.00"]);
 
-      expect(nativeBalances.length).toBe(2);
-      expect(nativeBalances).toEqual(["21.60 ICP", "21.60 ckBTC"]);
+      expect(stakesInUsd.length).toBe(1);
+      expect(stakesInUsd).toEqual(["$100.00"]);
+
+      expect(stakesInNativeCurrency.length).toBe(1);
+      expect(stakesInNativeCurrency).toEqual(["0.01 ICP"]);
 
       expect(await po.getInfoRow().isPresent()).toBe(true);
     });
