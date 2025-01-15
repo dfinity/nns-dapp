@@ -175,7 +175,7 @@ describe("Portfolio page", () => {
         expect(await tokensCardPo.getInfoRow().isPresent()).toBe(false);
       });
 
-      it("should display the the information row when less then three tokens", async () => {
+      it("should display the information row when less then three tokens", async () => {
         const po = renderPage({
           userTokensData: [token1, token2],
         });
