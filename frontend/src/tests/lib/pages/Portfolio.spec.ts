@@ -15,12 +15,12 @@ import { render } from "@testing-library/svelte";
 
 describe("Portfolio page", () => {
   const renderPage = ({
-    userTokensData = [],
+    userTokens = [],
     tableProjects = [],
-  }: { userTokensData?: UserToken[]; tableProjects?: TableProject[] } = {}) => {
+  }: { userTokens?: UserToken[]; tableProjects?: TableProject[] } = {}) => {
     const { container } = render(Portfolio, {
       props: {
-        userTokensData,
+        userTokens,
         tableProjects,
       },
     });
@@ -91,7 +91,7 @@ describe("Portfolio page", () => {
           universeId: principal(1),
           balanceInUsd: 2,
         });
-        const po = renderPage({ userTokensData: [token] });
+        const po = renderPage({ userTokens: [token] });
 
         expect(await po.getNoTokensCard().isPresent()).toBe(false);
         expect(await po.getTokensCardPo().isPresent()).toBe(true);
@@ -148,7 +148,7 @@ describe("Portfolio page", () => {
 
       it("should display the top four tokens by balanceInUsd", async () => {
         const po = renderPage({
-          userTokensData: [token1, token2, token3, token4, token5],
+          userTokens: [token1, token2, token3, token4, token5],
         });
         const tokensCardPo = po.getTokensCardPo();
 
@@ -182,7 +182,7 @@ describe("Portfolio page", () => {
 
       it("should display the information row when less then three tokens", async () => {
         const po = renderPage({
-          userTokensData: [token1, token2],
+          userTokens: [token1, token2],
         });
         const tokensCardPo = po.getTokensCardPo();
 
@@ -229,7 +229,7 @@ describe("Portfolio page", () => {
           universeId: principal(1),
           balanceInUsd: 2,
         });
-        const po = renderPage({ userTokensData: [token] });
+        const po = renderPage({ userTokens: [token] });
 
         expect(await po.getNoNeuronsCarPo().isPresent()).toBe(true);
         expect(await po.getNoNeuronsCarPo().hasPrimaryAction()).toBe(true);
@@ -277,7 +277,7 @@ describe("Portfolio page", () => {
 
       it("should display total assets", async () => {
         const po = renderPage({
-          userTokensData: [token1, token2],
+          userTokens: [token1, token2],
           tableProjects: [tableProject1, tableProject2],
         });
 
@@ -295,7 +295,7 @@ describe("Portfolio page", () => {
       });
 
       it("should ignore tokens with unknown balance in USD and display tooltip", async () => {
-        const po = renderPage({ userTokensData: [token1, token2, token3] });
+        const po = renderPage({ userTokens: [token1, token2, token3] });
 
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe(
           "$12.00"

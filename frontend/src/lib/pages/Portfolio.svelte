@@ -12,14 +12,14 @@
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
 
-  export let userTokensData: UserToken[];
+  export let userTokens: UserToken[];
   export let tableProjects: TableProject[];
 
   let totalTokensBalanceInUsd: number;
-  $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokensData);
+  $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokens);
 
   let hasUnpricedTokens: boolean;
-  $: hasUnpricedTokens = userTokensData.some(
+  $: hasUnpricedTokens = userTokens.some(
     (token) =>
       token.balance instanceof TokenAmountV2 &&
       token.balance.toUlps() > 0n &&
@@ -57,7 +57,7 @@
 
   let topTokens: UserTokenData[];
   $: topTokens = getTopTokens({
-    userTokens: userTokensData,
+    userTokens: userTokens,
     isSignedIn: $authSignedInStore,
   });
 </script>
