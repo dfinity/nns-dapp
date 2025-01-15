@@ -45,7 +45,7 @@
     : undefined;
 
   let showNoTokensCard: boolean;
-  $: showNoTokensCard = !$authSignedInStore || totalTokensBalanceInUsd === 0;
+  $: showNoTokensCard = $authSignedInStore && totalTokensBalanceInUsd === 0;
 
   let showNoProjectsCard: boolean;
   $: showNoProjectsCard = !$authSignedInStore || totalStakedInUsd === 0;
