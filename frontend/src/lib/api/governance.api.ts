@@ -9,6 +9,7 @@ import type { Agent, Identity } from "@dfinity/agent";
 import type {
   E8s,
   KnownNeuron,
+  NetworkEconomics,
   NeuronId,
   NeuronInfo,
   ProposalId,
@@ -592,4 +593,24 @@ export const changeNeuronVisibility = async ({
   logWithTimestamp(
     `Visibility change complete for ${neuronIds.length} neurons. IDs: ${neuronIds.join(", ")}. New visibility: ${visibility}`
   );
+};
+
+export const getNetworkEconomicsParameters = async ({
+  identity,
+  certified,
+}: ApiQueryParams): Promise<NetworkEconomics> => {
+  logWithTimestamp(
+    `Getting network economics parameters call certified: ${certified}...`
+  );
+
+  const { canister: governance } = await governanceCanister({ identity });
+  const response = await governance.getNetworkEconomicsParameters({
+    certified,
+  });
+
+  logWithTimestamp(
+    `Getting network economics parameters call certified: ${certified} complete.`
+  );
+
+  return response;
 };
