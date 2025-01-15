@@ -26,12 +26,21 @@
   let canVote: boolean;
   $: canVote =
     neuron.dissolveDelaySeconds >= BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);
+
+  let isReducedVotingPower = false;
+  $: isReducedVotingPower =
+    (neuron.decidingVotingPower ?? 0n) < (neuron.potentialVotingPower ?? 0n);
 </script>
 
 <Section testId="nns-neuron-voting-power-section-component">
   <KeyValuePairInfo slot="description">
     <h3 slot="key">{$i18n.neurons.voting_power}</h3>
-    <p slot="value" class="title-value" data-tid="voting-power">
+    <p
+      slot="value"
+      class="title-value"
+      class:isReducedVotingPower
+      data-tid="voting-power"
+    >
       {#if canVote}
         {formatVotingPower(neuron.decidingVotingPower ?? 0n)}
       {:else}
@@ -111,6 +120,10 @@
 
   .title-value {
     font-size: var(--font-size-h3);
+
+    &.isReducedVotingPower {
+      color: var(--negative-emphasis);
+    }
   }
 
   .content {

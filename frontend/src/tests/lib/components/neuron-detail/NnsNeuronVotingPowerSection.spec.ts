@@ -164,4 +164,46 @@ describe("NnsStakeItemAction", () => {
 
     expect(await po.getNnsNeuronRewardStatusActionPo().isPresent()).toBe(false);
   });
+
+  it("should render voting power w/o extra class when not reduced voting power", async () => {
+    overrideFeatureFlagsStore.setFlag(
+      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+      true
+    );
+    const neuron: NeuronInfo = {
+      ...mockNeuron,
+      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
+      decidingVotingPower: 614000000n,
+      potentialVotingPower: 614000000n,
+      fullNeuron: {
+        ...mockFullNeuron,
+        decidingVotingPower: 614000000n,
+        potentialVotingPower: 614000000n,
+      },
+    };
+    const po = renderComponent(neuron);
+
+    expect(await po.isReducedVotingPowerStyle()).toBe(false);
+  });
+
+  it("should render voting power with isReducedVotingPower class when reduced voting power", async () => {
+    overrideFeatureFlagsStore.setFlag(
+      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+      true
+    );
+    const neuron: NeuronInfo = {
+      ...mockNeuron,
+      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
+      decidingVotingPower: 307000000n,
+      potentialVotingPower: 614000000n,
+      fullNeuron: {
+        ...mockFullNeuron,
+        decidingVotingPower: 307000000n,
+        potentialVotingPower: 614000000n,
+      },
+    };
+    const po = renderComponent(neuron);
+
+    expect(await po.isReducedVotingPowerStyle()).toBe(true);
+  });
 });

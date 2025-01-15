@@ -61,4 +61,10 @@ export class NnsNeuronVotingPowerSectionPo extends BasePageObject {
   clickDisburse(): Promise<void> {
     return this.getNeuronStateItemActionPo().clickDisburse();
   }
+
+  async isReducedVotingPowerStyle(): Promise<boolean> {
+    return (await this.root.byTestId("voting-power").getClasses()).includes(
+      "isReducedVotingPower"
+    );
+  }
 }
