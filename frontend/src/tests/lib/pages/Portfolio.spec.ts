@@ -241,24 +241,36 @@ describe("Portfolio page", () => {
     });
 
     describe("UsdValueBanner", () => {
-      it("should display total assets", async () => {
-        const token1 = createUserToken({
-          universeId: principal(1),
-          balanceInUsd: 5,
-        });
-        const token2 = createUserToken({
-          universeId: principal(1),
-          balanceInUsd: 7,
-        });
+      const token1 = createUserToken({
+        universeId: principal(1),
+        balanceInUsd: 5,
+        rowHref: "/token/1",
+      });
+      const token2 = createUserToken({
+        universeId: principal(1),
+        balanceInUsd: 7,
+        rowHref: "/token/2",
+      });
+      const token3 = createUserToken({
+        universeId: principal(1),
+        balanceInUsd: undefined,
+        rowHref: "/token/3",
+      });
 
-        const tableProject1: TableProject = {
-          ...mockTableProject,
-          stakeInUsd: 2,
-        };
-        const tableProject2: TableProject = {
-          ...mockTableProject,
-          stakeInUsd: 10.5,
-        };
+      const tableProject1: TableProject = {
+        ...mockTableProject,
+        stakeInUsd: 2,
+      };
+      const tableProject2: TableProject = {
+        ...mockTableProject,
+        stakeInUsd: 10.5,
+      };
+      const tableProject3: TableProject = {
+        ...mockTableProject,
+        stakeInUsd: undefined,
+      };
+
+      it("should display total assets", async () => {
         const po = renderPage({
           userTokensData: [token1, token2],
           tableProjects: [tableProject1, tableProject2],
@@ -278,18 +290,6 @@ describe("Portfolio page", () => {
       });
 
       it("should ignore tokens with unknown balance in USD and display tooltip", async () => {
-        const token1 = createUserToken({
-          universeId: principal(1),
-          balanceInUsd: 5,
-        });
-        const token2 = createUserToken({
-          universeId: principal(1),
-          balanceInUsd: 7,
-        });
-        const token3 = createUserToken({
-          universeId: principal(1),
-          balanceInUsd: undefined,
-        });
         const po = renderPage({ userTokensData: [token1, token2, token3] });
 
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe(
@@ -304,18 +304,6 @@ describe("Portfolio page", () => {
       });
 
       it("should ignore neurons with unknown balance in USD and display tooltip", async () => {
-        const tableProject1: TableProject = {
-          ...mockTableProject,
-          stakeInUsd: 2,
-        };
-        const tableProject2: TableProject = {
-          ...mockTableProject,
-          stakeInUsd: 10.5,
-        };
-        const tableProject3: TableProject = {
-          ...mockTableProject,
-          stakeInUsd: undefined,
-        };
         const po = renderPage({
           tableProjects: [tableProject1, tableProject2, tableProject3],
         });
