@@ -92,7 +92,11 @@
     {#if showNoNeuronsCard}
       <NoNeuronsCard primaryCard={hasNoNeuronsCardAPrimaryAction} />
     {:else}
-      <ProjectsCard {topProjects} usdAmount={totalStakedInUsd} />
+      <ProjectsCard
+        {topProjects}
+        usdAmount={totalStakedInUsd}
+        numberOfTopTokens={topTokens.length}
+      />
     {/if}
   </div>
 </main>

@@ -1,104 +1,144 @@
 <script lang="ts">
+  import MaturityWithTooltip from "$lib/components/neurons/MaturityWithTooltip.svelte";
   import Card from "$lib/components/portfolio/Card.svelte";
+  import Logo from "$lib/components/ui/Logo.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { TableProject } from "$lib/types/staking";
   import { formatNumber } from "$lib/utils/format.utils";
-  import {
-    IconAccountsPage,
-    IconNeuronsPage,
-    IconRight,
-  } from "@dfinity/gix-components";
-  import MaturityWithTooltip from "../neurons/MaturityWithTooltip.svelte";
+  import { formatTokenV2 } from "$lib/utils/token.utils";
+  import { IconNeuronsPage, IconRight } from "@dfinity/gix-components";
+  import { TokenAmountV2 } from "@dfinity/utils";
 
   export let topProjects: TableProject[];
   export let usdAmount: number;
+  export let numberOfTopTokens: number;
 
   const href = AppPath.Staking;
-
   let usdAmountFormatted: string;
   $: usdAmountFormatted = $authSignedInStore
     ? formatNumber(usdAmount)
     : PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
-  // TODO: This will also depend on the number of tokens
+  let numberOfTopProjects: number;
+  $: numberOfTopProjects = topProjects.length;
+
   let showInfoRow: boolean;
-  $: showInfoRow = topProjects.length > 0 && topProjects.length < 3;
+  $: showInfoRow = numberOfTopTokens - numberOfTopProjects > 0;
 </script>
 
-<Card testId="tokens-card">
-  <div class="wrapper">
+<Card testId="projects-card">
+  <div
+    class="wrapper"
+    role="region"
+    aria-label={$i18n.portfolio.projects_card_title}
+  >
     <div class="header">
       <div class="header-wrapper">
-        <div class="icon">
+        <div class="icon" aria-hidden="true">
           <IconNeuronsPage />
         </div>
         <div class="text-content">
           <h5 class="title">{$i18n.portfolio.projects_card_title}</h5>
-          <span class="amount" data-tid="amount">
+          <p
+            class="amount"
+            data-tid="amount"
+            aria-label={`${$i18n.portfolio.projects_card_title}: ${usdAmount}`}
+          >
             ${usdAmountFormatted}
-          </span>
+          </p>
         </div>
       </div>
-      <a class="button secondary mobile-only" {href}>
-        <IconRight />
-      </a>
-      <a class="button secondary tablet-up" {href}
-        >{$i18n.portfolio.projects_card_link}</a
+      <a
+        {href}
+        class="button secondary"
+        aria-label={$i18n.portfolio.projects_card_link}
       >
+        <span class="mobile-only">
+          <IconRight />
+        </span>
+        <span class="tablet-up">
+          {$i18n.portfolio.projects_card_link}
+        </span>
+      </a>
     </div>
-    <div class="body">
-      <div class="tokens-header">
-        <span>{$i18n.portfolio.projects_card_list_first_column}</span>
-        <span class="mobile-only justify-end"
+    <div class="body" role="table">
+      <div class="header" role="row">
+        <span role="columnheader"
           >{$i18n.portfolio.projects_card_list_first_column}</span
         >
-        <span class="tablet-up justify-end"
+
+        <span class="mobile-only justify-end" role="columnheader"
+          >{$i18n.portfolio.projects_card_list_second_column_mobile}</span
+        >
+        <span class="tablet-up justify-end" role="columnheader"
           >{$i18n.portfolio.projects_card_list_second_column}</span
         >
-        <span class="tablet-up justify-end"
+        <span class="tablet-up justify-end" role="columnheader"
           >{$i18n.portfolio.projects_card_list_third_column}</span
         >
       </div>
 
-      <div class="tokens-list">
+      <div class="list" role="rowgroup">
         {#each topProjects as project (project.domKey)}
-          <div class="token-row" data-tid="token-card-row">
-            <div class="token-info">
-              <img src={project.logo} alt={project.title} class="token-icon" />
-              <span class="token-name" data-tid="token-title"
-                >{project.title}</span
-              >
+          <div class="row" data-tid="project-card-row" role="row">
+            <div class="info" role="cell">
+              <div>
+                <Logo
+                  src={project.logo}
+                  alt={project.title}
+                  size="medium"
+                  framed
+                />
+              </div>
+              <span data-tid="project-title">{project.title}</span>
             </div>
 
-            <div class="tablet-up justify-end text-right">
-              {#if project?.availableMaturity ?? 0n > 0n}
+            <div class="maturity" data-tid="project-maturity" role="cell">
+              {#if $authSignedInStore}
                 <MaturityWithTooltip
                   availableMaturity={project?.availableMaturity ?? 0n}
                   stakedMaturity={project?.stakedMaturity ?? 0n}
                 />
               {:else}
-                -/-
+                {PRICE_NOT_AVAILABLE_PLACEHOLDER}
               {/if}
             </div>
-
-            <div class="stake justify-end text-right">
-              <div>
-                ${formatNumber(project?.stakeInUsd ?? 0)}
-              </div>
-              <!-- <AmountDisplay singleLine amount={project.stake} /> -->
+            <div
+              class="staked-usd"
+              data-tid="project-staked-usd"
+              role="cell"
+              aria-label={`${project.title} USD: ${project?.stakeInUsd ?? 0}`}
+            >
+              ${formatNumber(project?.stakeInUsd ?? 0)}
+            </div>
+            <div
+              class="staked-native"
+              data-tid="project-staked-native"
+              role="cell"
+              aria-label={`${project.title} D: ${project?.stakeInUsd ?? 0}`}
+            >
+              {project.stake instanceof TokenAmountV2
+                ? formatTokenV2({
+                    value: project.stake,
+                    detailed: true,
+                  })
+                : PRICE_NOT_AVAILABLE_PLACEHOLDER}
+              {project.stake.token.symbol}
             </div>
           </div>
         {/each}
         {#if showInfoRow}
-          <div class="info-row desktop-only" data-tid="info-row">
-            <div class="icon">
-              <IconAccountsPage />
-            </div>
-            <div class="message">
-              {$i18n.portfolio.projects_card_info_row}
+          <div class="info-row desktop-only" role="note" data-tid="info-row">
+            <div class="content">
+              <div class="icon" aria-hidden="true">
+                <IconNeuronsPage />
+              </div>
+              <div class="message">
+                {$i18n.portfolio.projects_card_info_row}
+              </div>
             </div>
           </div>
         {/if}
@@ -156,7 +196,7 @@
       gap: var(--padding);
       flex-grow: 1;
 
-      .tokens-header {
+      .header {
         display: grid;
         grid-template-columns: 1fr 1fr;
         justify-content: space-between;
@@ -170,66 +210,95 @@
         }
       }
 
-      .tokens-list {
+      .list {
         display: flex;
         flex-direction: column;
         background-color: var(--card-background);
         flex-grow: 1;
 
-        .token-row {
+        .row {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          justify-content: space-between;
+          grid-template-areas:
+            "info usd"
+            "info maturity";
+          @include media.min-width(medium) {
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-areas:
+              "info maturity usd"
+              "info maturity native";
+          }
+
           align-items: center;
           padding: var(--padding-3x) var(--padding-2x);
 
-          border-bottom: 1px solid var(--neutral-100);
-          &:last-child {
-            border-bottom: none;
-          }
+          border-top: 1px solid var(--elements-divider);
 
-          @include media.min-width(medium) {
-            grid-template-columns: 1fr 1fr 1fr;
-          }
-
-          .token-info {
+          .info {
+            grid-area: info;
             display: flex;
             align-items: center;
             gap: var(--padding);
+          }
 
-            .token-icon {
-              width: 24px;
-              height: 24px;
-              border-radius: 50%;
+          .maturity,
+          .staked-usd,
+          .staked-native {
+            justify-self: end;
+            text-align: right;
+          }
+
+          .maturity {
+            grid-area: maturity;
+            font-size: 0.875rem;
+            color: var(--text-description);
+
+            @include media.min-width(medium) {
+              font-size: var(--font-size-standard);
+              color: var(--text-primary);
             }
+          }
 
-            // TODO: Styling for the token row
-            .token-name {
-              font-weight: 500;
+          .staked-usd {
+            grid-area: usd;
+          }
+
+          .staked-native {
+            display: none;
+            grid-area: native;
+            font-size: 0.875rem;
+            color: var(--text-description);
+
+            @include media.min-width(medium) {
+              display: block;
             }
           }
         }
       }
 
       .info-row {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: var(--padding-2x);
         flex-grow: 1;
+        border-top: 1px solid var(--elements-divider);
 
-        max-width: 90%;
-        margin: 0 auto;
+        .content {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: var(--padding-2x);
+          padding: var(--padding-1_5x) 0;
 
-        .icon {
-          min-width: 50px;
-          height: 50px;
-        }
+          max-width: 90%;
+          margin: 0 auto;
+          .icon {
+            min-width: 50px;
+            height: 50px;
+          }
 
-        .message {
-          font-size: 0.875rem;
-          color: var(--text-description);
-          max-width: 400px;
+          .message {
+            font-size: 0.875rem;
+            color: var(--text-description);
+            max-width: 400px;
+          }
         }
       }
     }
@@ -255,9 +324,6 @@
       }
     }
 
-    .text-right {
-      text-align: right;
-    }
     .justify-end {
       justify-self: end;
     }
