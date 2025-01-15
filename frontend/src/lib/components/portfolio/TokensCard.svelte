@@ -106,11 +106,13 @@
         {/each}
         {#if showInfoRow}
           <div class="info-row desktop-only" role="note" data-tid="info-row">
-            <div class="icon" aria-hidden="true">
-              <IconAccountsPage />
-            </div>
-            <div class="message">
-              {$i18n.portfolio.tokens_card_info_row}
+            <div class="content">
+              <div class="icon" aria-hidden="true">
+                <IconAccountsPage />
+              </div>
+              <div class="message">
+                {$i18n.portfolio.tokens_card_info_row}
+              </div>
             </div>
           </div>
         {/if}
@@ -233,24 +235,29 @@
       }
 
       .info-row {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: var(--padding-2x);
         flex-grow: 1;
+        border-top: 1px solid var(--elements-divider);
 
-        max-width: 90%;
-        margin: 0 auto;
+        .content {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: var(--padding-2x);
+          padding: var(--padding-1_5x) 0;
 
-        .icon {
-          min-width: 50px;
-          height: 50px;
-        }
+          max-width: 90%;
+          margin: 0 auto;
 
-        .message {
-          font-size: 0.875rem;
-          color: var(--text-description);
-          max-width: 400px;
+          .icon {
+            min-width: 50px;
+            height: 50px;
+          }
+
+          .message {
+            font-size: 0.875rem;
+            color: var(--text-description);
+            max-width: 400px;
+          }
         }
       }
     }
