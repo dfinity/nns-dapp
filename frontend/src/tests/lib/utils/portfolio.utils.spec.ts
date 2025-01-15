@@ -50,10 +50,9 @@ describe("Portfolio utils", () => {
       ];
       const result = getTopTokens({
         userTokens: tokens,
-        maxResults: 3,
       });
 
-      expect(result).toHaveLength(3);
+      expect(result).toHaveLength(4);
     });
 
     it("should order tokens: ICP first, then ckBTC/ckUSDC, then others", () => {

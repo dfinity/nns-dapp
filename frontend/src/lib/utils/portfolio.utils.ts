@@ -31,22 +31,20 @@ const compareTokens = mergeComparators([
  * - Always prioritizes ICP token first
  * - Sorts remaining tokens by USD balance
  * - Sorts remaining tokens by importance
- * - Limits the number of returned tokens to maxTokensToShow
+ * - Limits the number of returned tokens to MAX_NUMBER_OF_ITEMS
  * - When isSigned true, filters out tokens with zero balance as we show only tokens with guaranteed balance
  */
 export const getTopTokens = ({
   userTokens,
-  maxResults = MAX_NUMBER_OF_ITEMS,
   isSignedIn = false,
 }: {
   userTokens: UserToken[];
-  maxResults?: number;
   isSignedIn?: boolean;
 }): UserTokenData[] => {
   const topTokens = userTokens
     .filter(isUserTokenData)
     .sort(compareTokens)
-    .slice(0, maxResults);
+    .slice(0, MAX_NUMBER_OF_ITEMS);
 
   if (!isSignedIn) return topTokens;
 
