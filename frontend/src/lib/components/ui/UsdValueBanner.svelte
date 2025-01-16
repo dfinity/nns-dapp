@@ -1,11 +1,11 @@
 <script lang="ts">
+  import IcpExchangeRate from "$lib/components/ui/IcpExchangeRate.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { i18n } from "$lib/stores/i18n";
   import { formatNumber } from "$lib/utils/format.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import IcpExchangeRate from "./IcpExchangeRate.svelte";
 
   export let usdAmount: number | undefined;
   export let hasUnpricedTokens: boolean;
