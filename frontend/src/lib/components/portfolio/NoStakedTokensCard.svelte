@@ -8,7 +8,7 @@
   const href = AppPath.Staking;
 </script>
 
-<Card testId="no-neurons-card">
+<Card testId="no-staked-tokens-card">
   <div class="wrapper">
     <div class="icon">
       <IconNeuronsPage />

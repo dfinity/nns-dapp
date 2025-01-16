@@ -1,7 +1,7 @@
 <script lang="ts">
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
-  import NoTokensStakedCard from "$lib/components/portfolio/NoTokensStakedCard.svelte";
+  import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
   import TokensCard from "$lib/components/portfolio/TokensCard.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -44,16 +44,16 @@
     ? totalTokensBalanceInUsd + totalStakedInUsd
     : undefined;
 
-  let showNoTokensHeldCard: boolean;
-  $: showNoTokensHeldCard = $authSignedInStore && totalTokensBalanceInUsd === 0;
+  let showNoHeldTokensCard: boolean;
+  $: showNoHeldTokensCard = $authSignedInStore && totalTokensBalanceInUsd === 0;
 
-  let showNoTokensStakedCard: boolean;
-  $: showNoTokensStakedCard = !$authSignedInStore || totalStakedInUsd === 0;
+  let showNoStakedTokensCard: boolean;
+  $: showNoStakedTokensCard = !$authSignedInStore || totalStakedInUsd === 0;
 
   // The Card should display a Primary Action when it is the only available option.
   // This occurs when there are tokens but no stake.
-  let hasNoTokensStakedCardAPrimaryAction: boolean;
-  $: hasNoTokensStakedCardAPrimaryAction = !showNoTokensHeldCard;
+  let hasNoStakedTokensCardAPrimaryAction: boolean;
+  $: hasNoStakedTokensCardAPrimaryAction = !showNoHeldTokensCard;
 
   let topHeldTokens: UserTokenData[];
   $: topHeldTokens = getTopTokens({
@@ -73,13 +73,13 @@
     />
   </div>
   <div class="content">
-    {#if showNoTokensHeldCard}
+    {#if showNoHeldTokensCard}
       <NoHeldTokensCard />
     {:else}
       <TokensCard {topHeldTokens} usdAmount={totalTokensBalanceInUsd} />
     {/if}
-    {#if showNoTokensStakedCard}
-      <NoTokensStakedCard primaryCard={hasNoTokensStakedCardAPrimaryAction} />
+    {#if showNoStakedTokensCard}
+      <NoStakedTokensCard primaryCard={hasNoStakedTokensCardAPrimaryAction} />
     {/if}
   </div>
 </main>

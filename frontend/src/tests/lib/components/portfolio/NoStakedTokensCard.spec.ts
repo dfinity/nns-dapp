@@ -1,12 +1,12 @@
-import NoTokensStakedCard from "$lib/components/portfolio/NoTokensStakedCard.svelte";
-import { NoTokesStakedCardPo } from "$tests/page-objects/NoProjectsCard.page-object";
+import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
+import { NoStakedTokensCardPo } from "$tests/page-objects/NoProjectsCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
-describe("NoTokensStakedCard", () => {
+describe("NoStakedTokensCard", () => {
   const renderComponent = (props = {}) => {
-    const { container } = render(NoTokensStakedCard, props);
-    return NoTokesStakedCardPo.under(new JestPageObjectElement(container));
+    const { container } = render(NoStakedTokensCard, props);
+    return NoStakedTokensCardPo.under(new JestPageObjectElement(container));
   };
 
   it("should render secondary button styling by default", async () => {

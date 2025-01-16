@@ -52,9 +52,9 @@ describe("Portfolio page", () => {
     it("should show the NoProjectsCardPo with secondary action", async () => {
       const po = renderPage();
 
-      expect(await po.getNoNeuronsCarPo().isPresent()).toBe(true);
+      expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(true);
       // TODO: This will change once the ProjectsCard is introduced
-      // expect(await po.getNoNeuronsCarPo().hasSecondaryAction()).toBe(true);
+      // expect(await po.getNoStakedTokensCarPo().hasSecondaryAction()).toBe(true);
     });
   });
 
@@ -209,7 +209,7 @@ describe("Portfolio page", () => {
       it("should display the card when the total balance is zero", async () => {
         const po = renderPage();
 
-        expect(await po.getNoNeuronsCarPo().isPresent()).toBe(true);
+        expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(true);
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$0.00");
       });
 
@@ -220,7 +220,7 @@ describe("Portfolio page", () => {
         };
         const po = renderPage({ tableProjects: [tableProject] });
 
-        expect(await po.getNoNeuronsCarPo().isPresent()).toBe(false);
+        expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(false);
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$2.00");
       });
 
@@ -231,16 +231,18 @@ describe("Portfolio page", () => {
         });
         const po = renderPage({ userTokens: [token] });
 
-        expect(await po.getNoNeuronsCarPo().isPresent()).toBe(true);
-        expect(await po.getNoNeuronsCarPo().hasPrimaryAction()).toBe(true);
+        expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(true);
+        expect(await po.getNoStakedTokensCarPo().hasPrimaryAction()).toBe(true);
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$2.00");
       });
 
       it("should not display a primary action when the neurons accounts balance is zero and the tokens balance is also zero", async () => {
         const po = renderPage();
 
-        expect(await po.getNoNeuronsCarPo().isPresent()).toBe(true);
-        expect(await po.getNoNeuronsCarPo().hasPrimaryAction()).toBe(false);
+        expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(true);
+        expect(await po.getNoStakedTokensCarPo().hasPrimaryAction()).toBe(
+          false
+        );
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$0.00");
       });
     });
