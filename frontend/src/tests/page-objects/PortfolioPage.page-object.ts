@@ -1,7 +1,7 @@
-import { NoStakedTokensCardPo } from "$tests/page-objects/NoProjectsCard.page-object";
 import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { NoStakedTokensCardPo } from "./NoStakedTokensCard.page-object";
 import { TokensCardPo } from "./TokensCard.page-object";
 
 export class PortfolioPagePo extends BasePageObject {

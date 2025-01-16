@@ -49,11 +49,11 @@ describe("Portfolio page", () => {
       expect(await tokensCardPo.getInfoRow().isPresent()).toBe(false);
     });
 
-    it("should show the NoProjectsCardPo with secondary action", async () => {
+    it("should show the NoStakedTokensCard with secondary action", async () => {
       const po = renderPage();
 
       expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(true);
-      // TODO: This will change once the ProjectsCard is introduced
+      // TODO: This will change once the StakedTokensCard is introduced
       // expect(await po.getNoStakedTokensCarPo().hasSecondaryAction()).toBe(true);
     });
   });
@@ -205,7 +205,7 @@ describe("Portfolio page", () => {
       });
     });
 
-    describe("NoProjectsCard", () => {
+    describe("NoStakedTokensCard", () => {
       it("should display the card when the total balance is zero", async () => {
         const po = renderPage();
 

@@ -1,5 +1,5 @@
 import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
-import { NoStakedTokensCardPo } from "$tests/page-objects/NoProjectsCard.page-object";
+import { NoStakedTokensCardPo } from "$tests/page-objects/NoStakedTokensCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
