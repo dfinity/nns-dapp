@@ -216,13 +216,13 @@
             gap: var(--padding);
           }
 
-          .native-balance,
-          .usd-balance {
+          .balance-native,
+          .balance-usd {
             justify-self: end;
             text-align: right;
           }
 
-          .native-balance {
+          .balance-native {
             grid-area: balance;
 
             font-size: 0.75rem;
@@ -231,7 +231,7 @@
             }
           }
 
-          .usd-balance {
+          .balance-usd {
             grid-area: usd;
           }
         }
