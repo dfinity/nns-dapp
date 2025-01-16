@@ -1208,6 +1208,7 @@
     "staked_tokens_card_list_second_column_mobile": "Balance $/Maturity",
     "staked_tokens_card_list_second_column": "Maturity",
     "staked_tokens_card_list_third_column": "Staked",
-    "staked_tokens_card_info_row": "Optimize voting power and earn rewards by increasing your staked neurons."
+    "staked_tokens_card_info_row": "Optimize voting power and earn rewards by increasing your staked neurons.",
+    "total_assets_title": "Total Holdings"
   }
 }
