@@ -21,4 +21,9 @@ export class IcpExchangeRatePo extends BasePageObject {
     const tooltipIconPo = this.getTooltipIconPo();
     return tooltipIconPo.getTooltipText();
   }
+
+  async hasError(): Promise<boolean> {
+    const classNames = await this.root.getClasses();
+    return classNames.includes("has-error");
+  }
 }
