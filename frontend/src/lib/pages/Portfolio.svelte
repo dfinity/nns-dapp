@@ -1,8 +1,8 @@
 <script lang="ts">
+  import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
-  import TokensCard from "$lib/components/portfolio/TokensCard.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { TableProject } from "$lib/types/staking";
@@ -76,7 +76,7 @@
     {#if showNoHeldTokensCard}
       <NoHeldTokensCard />
     {:else}
-      <TokensCard {topHeldTokens} usdAmount={totalTokensBalanceInUsd} />
+      <HeldTokensCard {topHeldTokens} usdAmount={totalTokensBalanceInUsd} />
     {/if}
     {#if showNoStakedTokensCard}
       <NoStakedTokensCard primaryCard={hasNoStakedTokensCardAPrimaryAction} />

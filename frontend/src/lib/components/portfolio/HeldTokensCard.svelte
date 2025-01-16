@@ -25,7 +25,7 @@
   $: showInfoRow = topHeldTokens.length > 0 && topHeldTokens.length < 3;
 </script>
 
-<Card testId="tokens-card">
+<Card testId="held-tokens-card">
   <div
     class="wrapper"
     role="region"
@@ -61,7 +61,7 @@
       </a>
     </div>
     <div class="body" role="table">
-      <div class="tokens-header" role="row">
+      <div class="header" role="row">
         <span role="columnheader"
           >{$i18n.portfolio.tokens_card_list_first_column}</span
         >
@@ -77,10 +77,10 @@
         >
       </div>
 
-      <div class="tokens-list" role="rowgroup">
+      <div class="list" role="rowgroup">
         {#each topHeldTokens as topHeldToken (topHeldToken.domKey)}
-          <div class="token-row" data-tid="token-card-row" role="row">
-            <div class="token-info" role="cell">
+          <div class="row" data-tid="held-token-card-row" role="row">
+            <div class="info" role="cell">
               <div>
                 <Logo
                   src={topHeldToken.logo}
@@ -89,19 +89,19 @@
                   framed
                 />
               </div>
-              <span data-tid="token-title">{topHeldToken.title}</span>
+              <span data-tid="title">{topHeldToken.title}</span>
             </div>
 
             <div
-              class="token-native-balance"
-              data-tid="token-native-balance"
+              class="balance-native"
+              data-tid="balance-in-native"
               role="cell"
             >
               <AmountDisplay singleLine amount={topHeldToken.balance} />
             </div>
             <div
-              class="token-usd-balance"
-              data-tid="token-usd-balance"
+              class="balance-usd"
+              data-tid="balance-in-usd"
               role="cell"
               aria-label={`${topHeldToken.title} USD: ${topHeldToken?.balanceInUsd ?? 0}`}
             >
@@ -173,7 +173,7 @@
       gap: var(--padding);
       flex-grow: 1;
 
-      .tokens-header {
+      .header {
         display: grid;
         grid-template-columns: 1fr 1fr;
         justify-content: space-between;
@@ -187,13 +187,13 @@
         }
       }
 
-      .tokens-list {
+      .list {
         display: flex;
         flex-direction: column;
         background-color: var(--card-background);
         flex-grow: 1;
 
-        .token-row {
+        .row {
           display: grid;
           grid-template-columns: 1fr 1fr;
           grid-template-areas:
@@ -209,20 +209,20 @@
 
           border-top: 1px solid var(--elements-divider);
 
-          .token-info {
+          .info {
             grid-area: info;
             display: flex;
             align-items: center;
             gap: var(--padding);
           }
 
-          .token-native-balance,
-          .token-usd-balance {
+          .native-balance,
+          .usd-balance {
             justify-self: end;
             text-align: right;
           }
 
-          .token-native-balance {
+          .native-balance {
             grid-area: balance;
 
             font-size: 0.75rem;
@@ -231,7 +231,7 @@
             }
           }
 
-          .token-usd-balance {
+          .usd-balance {
             grid-area: usd;
           }
         }

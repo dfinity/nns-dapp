@@ -1,4 +1,4 @@
-import TokensCard from "$lib/components/portfolio/TokensCard.svelte";
+import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
 import type { UserTokenData } from "$lib/types/tokens-page";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCToken as CkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
@@ -9,21 +9,21 @@ import {
   createIcpUserToken,
   createUserToken,
 } from "$tests/mocks/tokens-page.mock";
-import { TokensCardPo } from "$tests/page-objects/TokensCard.page-object";
+import { HeldTokensCardPo } from "$tests/page-objects/HeldTokensCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
-describe("TokensCard", () => {
+describe("HeldTokensCard", () => {
   const renderComponent = (props: {
     topHeldTokens: UserTokenData[];
     usdAmount: number;
   }) => {
-    const { container } = render(TokensCard, {
+    const { container } = render(HeldTokensCard, {
       props,
     });
 
-    return TokensCardPo.under(new JestPageObjectElement(container));
+    return HeldTokensCardPo.under(new JestPageObjectElement(container));
   };
 
   describe("when not signed in", () => {
@@ -55,8 +55,8 @@ describe("TokensCard", () => {
         topHeldTokens: mockTokens,
         usdAmount: 0,
       });
-      const titles = await po.getTokensTitles();
-      const balances = await po.getTokensUsdBalances();
+      const titles = await po.getHeldTokensTitles();
+      const balances = await po.getHeldTokensBalanceInUsd();
 
       expect(titles.length).toBe(3);
       expect(titles).toEqual(["Internet Computer", "ckBTC", "ckETH"]);
@@ -112,9 +112,9 @@ describe("TokensCard", () => {
         topHeldTokens: mockTokens,
         usdAmount: 600,
       });
-      const titles = await po.getTokensTitles();
-      const usdBalances = await po.getTokensUsdBalances();
-      const nativeBalances = await po.getTokensNativeBalances();
+      const titles = await po.getHeldTokensTitles();
+      const usdBalances = await po.getHeldTokensBalanceInUsd();
+      const nativeBalances = await po.getHeldTokensBalanceInNativeCurrency();
 
       expect(titles.length).toBe(3);
       expect(titles).toEqual(["Internet Computer", "ckBTC", "ckETH"]);
@@ -135,9 +135,9 @@ describe("TokensCard", () => {
         topHeldTokens: mockTokens.slice(0, 3),
         usdAmount: 600,
       });
-      const titles = await po.getTokensTitles();
-      const balances = await po.getTokensUsdBalances();
-      const nativeBalances = await po.getTokensNativeBalances();
+      const titles = await po.getHeldTokensTitles();
+      const balances = await po.getHeldTokensBalanceInUsd();
+      const nativeBalances = await po.getHeldTokensBalanceInNativeCurrency();
 
       expect(titles.length).toBe(3);
       expect(titles).toEqual(["Internet Computer", "ckBTC", "ckETH"]);
@@ -161,9 +161,9 @@ describe("TokensCard", () => {
         usdAmount: 100,
       });
 
-      const titles = await po.getTokensTitles();
-      const balances = await po.getTokensUsdBalances();
-      const nativeBalances = await po.getTokensNativeBalances();
+      const titles = await po.getHeldTokensTitles();
+      const balances = await po.getHeldTokensBalanceInUsd();
+      const nativeBalances = await po.getHeldTokensBalanceInNativeCurrency();
 
       expect(titles.length).toBe(1);
       expect(titles).toEqual(["Internet Computer"]);
@@ -183,9 +183,9 @@ describe("TokensCard", () => {
         usdAmount: 300,
       });
 
-      const titles = await po.getTokensTitles();
-      const balances = await po.getTokensUsdBalances();
-      const nativeBalances = await po.getTokensNativeBalances();
+      const titles = await po.getHeldTokensTitles();
+      const balances = await po.getHeldTokensBalanceInUsd();
+      const nativeBalances = await po.getHeldTokensBalanceInNativeCurrency();
 
       expect(titles.length).toBe(2);
       expect(titles).toEqual(["Internet Computer", "ckBTC"]);

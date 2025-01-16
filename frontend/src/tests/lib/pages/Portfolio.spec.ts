@@ -42,7 +42,7 @@ describe("Portfolio page", () => {
     it("should show the TokensCard default data", async () => {
       const po = renderPage();
 
-      const tokensCardPo = po.getTokensCardPo();
+      const tokensCardPo = po.getHeldTokensCardPo();
 
       expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
       expect(await tokensCardPo.isPresent()).toBe(true);
@@ -82,7 +82,7 @@ describe("Portfolio page", () => {
         const po = renderPage();
 
         expect(await po.getNoHeldTokensCard().isPresent()).toBe(true);
-        expect(await po.getTokensCardPo().isPresent()).toBe(false);
+        expect(await po.getHeldTokensCardPo().isPresent()).toBe(false);
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$0.00");
       });
 
@@ -94,7 +94,7 @@ describe("Portfolio page", () => {
         const po = renderPage({ userTokens: [token] });
 
         expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
-        expect(await po.getTokensCardPo().isPresent()).toBe(true);
+        expect(await po.getHeldTokensCardPo().isPresent()).toBe(true);
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$2.00");
       });
     });
@@ -150,11 +150,12 @@ describe("Portfolio page", () => {
         const po = renderPage({
           userTokens: [token1, token2, token3, token4, token5],
         });
-        const tokensCardPo = po.getTokensCardPo();
+        const tokensCardPo = po.getHeldTokensCardPo();
 
-        const titles = await tokensCardPo.getTokensTitles();
-        const usdBalances = await tokensCardPo.getTokensUsdBalances();
-        const nativeBalances = await tokensCardPo.getTokensNativeBalances();
+        const titles = await tokensCardPo.getHeldTokensTitles();
+        const usdBalances = await tokensCardPo.getHeldTokensBalanceInUsd();
+        const nativeBalances =
+          await tokensCardPo.getHeldTokensBalanceInNativeCurrency();
 
         expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
 
@@ -184,11 +185,12 @@ describe("Portfolio page", () => {
         const po = renderPage({
           userTokens: [token1, token2],
         });
-        const tokensCardPo = po.getTokensCardPo();
+        const tokensCardPo = po.getHeldTokensCardPo();
 
-        const titles = await tokensCardPo.getTokensTitles();
-        const usdBalances = await tokensCardPo.getTokensUsdBalances();
-        const nativeBalances = await tokensCardPo.getTokensNativeBalances();
+        const titles = await tokensCardPo.getHeldTokensTitles();
+        const usdBalances = await tokensCardPo.getHeldTokensBalanceInUsd();
+        const nativeBalances =
+          await tokensCardPo.getHeldTokensBalanceInNativeCurrency();
 
         expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
 
