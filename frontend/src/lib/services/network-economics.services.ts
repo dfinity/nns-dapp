@@ -5,16 +5,17 @@ import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 export const loadNetworkEconomicsParameters = async (): Promise<void> => {
   try {
     const identity = await getAuthenticatedIdentity();
+    const certified = true;
     const parameters = await governanceApiService.getNetworkEconomicsParameters(
       {
         identity,
-        certified: true,
+        certified,
       }
     );
 
     networkEconomicsStore.setParameters({
       parameters,
-      certified: true,
+      certified,
     });
   } catch (error) {
     console.error(error);
