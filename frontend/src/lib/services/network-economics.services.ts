@@ -1,6 +1,6 @@
-import { governanceApiService } from "../api-services/governance.api-service";
-import { networkEconomicsStore } from "../stores/network-economics.store";
-import { getAuthenticatedIdentity } from "./auth.services";
+import { governanceApiService } from "$lib/api-services/governance.api-service";
+import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 
 export const loadNetworkEconomicsParameters = async (): Promise<void> => {
   try {
