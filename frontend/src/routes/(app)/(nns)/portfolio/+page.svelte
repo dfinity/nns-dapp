@@ -54,7 +54,7 @@
 
 <TestIdWrapper testId="portfolio-route-component"
   ><Portfolio
-    userTokensData={userTokens}
+    {userTokens}
     tableProjects={getTableProjects({
       universes: $selectableUniversesStore,
       isSignedIn: $authSignedInStore,

@@ -15,12 +15,12 @@ import { render } from "@testing-library/svelte";
 
 describe("Portfolio page", () => {
   const renderPage = ({
-    userTokensData = [],
+    userTokens = [],
     tableProjects = [],
-  }: { userTokensData?: UserToken[]; tableProjects?: TableProject[] } = {}) => {
+  }: { userTokens?: UserToken[]; tableProjects?: TableProject[] } = {}) => {
     const { container } = render(Portfolio, {
       props: {
-        userTokensData,
+        userTokens,
         tableProjects,
       },
     });
@@ -42,19 +42,19 @@ describe("Portfolio page", () => {
     it("should show the TokensCard default data", async () => {
       const po = renderPage();
 
-      const tokensCardPo = po.getTokensCardPo();
+      const tokensCardPo = po.getHeldTokensCardPo();
 
-      expect(await po.getNoTokensCard().isPresent()).toBe(false);
+      expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
       expect(await tokensCardPo.isPresent()).toBe(true);
       expect(await tokensCardPo.getInfoRow().isPresent()).toBe(false);
     });
 
-    it("should show the NoProjectsCardPo with secondary action", async () => {
+    it("should show the NoStakedTokensCard with secondary action", async () => {
       const po = renderPage();
 
-      expect(await po.getNoNeuronsCarPo().isPresent()).toBe(true);
-      // TODO: This will change once the ProjectsCard is introduced
-      // expect(await po.getNoNeuronsCarPo().hasSecondaryAction()).toBe(true);
+      expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(true);
+      // TODO: This will change once the StakedTokensCard is introduced
+      // expect(await po.getNoStakedTokensCarPo().hasSecondaryAction()).toBe(true);
     });
   });
 
@@ -81,8 +81,8 @@ describe("Portfolio page", () => {
       it("should display the card when the tokens accounts balance is zero", async () => {
         const po = renderPage();
 
-        expect(await po.getNoTokensCard().isPresent()).toBe(true);
-        expect(await po.getTokensCardPo().isPresent()).toBe(false);
+        expect(await po.getNoHeldTokensCard().isPresent()).toBe(true);
+        expect(await po.getHeldTokensCardPo().isPresent()).toBe(false);
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$0.00");
       });
 
@@ -91,10 +91,10 @@ describe("Portfolio page", () => {
           universeId: principal(1),
           balanceInUsd: 2,
         });
-        const po = renderPage({ userTokensData: [token] });
+        const po = renderPage({ userTokens: [token] });
 
-        expect(await po.getNoTokensCard().isPresent()).toBe(false);
-        expect(await po.getTokensCardPo().isPresent()).toBe(true);
+        expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
+        expect(await po.getHeldTokensCardPo().isPresent()).toBe(true);
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$2.00");
       });
     });
@@ -148,15 +148,16 @@ describe("Portfolio page", () => {
 
       it("should display the top four tokens by balanceInUsd", async () => {
         const po = renderPage({
-          userTokensData: [token1, token2, token3, token4, token5],
+          userTokens: [token1, token2, token3, token4, token5],
         });
-        const tokensCardPo = po.getTokensCardPo();
+        const tokensCardPo = po.getHeldTokensCardPo();
 
-        const titles = await tokensCardPo.getTokensTitles();
-        const usdBalances = await tokensCardPo.getTokensUsdBalances();
-        const nativeBalances = await tokensCardPo.getTokensNativeBalances();
+        const titles = await tokensCardPo.getHeldTokensTitles();
+        const usdBalances = await tokensCardPo.getHeldTokensBalanceInUsd();
+        const nativeBalances =
+          await tokensCardPo.getHeldTokensBalanceInNativeCurrency();
 
-        expect(await po.getNoTokensCard().isPresent()).toBe(false);
+        expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
 
         expect(titles.length).toBe(4);
         expect(titles).toEqual(["Token5", "Token4", "Token3", "Token2"]);
@@ -182,15 +183,16 @@ describe("Portfolio page", () => {
 
       it("should display the information row when less then three tokens", async () => {
         const po = renderPage({
-          userTokensData: [token1, token2],
+          userTokens: [token1, token2],
         });
-        const tokensCardPo = po.getTokensCardPo();
+        const tokensCardPo = po.getHeldTokensCardPo();
 
-        const titles = await tokensCardPo.getTokensTitles();
-        const usdBalances = await tokensCardPo.getTokensUsdBalances();
-        const nativeBalances = await tokensCardPo.getTokensNativeBalances();
+        const titles = await tokensCardPo.getHeldTokensTitles();
+        const usdBalances = await tokensCardPo.getHeldTokensBalanceInUsd();
+        const nativeBalances =
+          await tokensCardPo.getHeldTokensBalanceInNativeCurrency();
 
-        expect(await po.getNoTokensCard().isPresent()).toBe(false);
+        expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
 
         expect(titles.length).toBe(2);
         expect(titles).toEqual(["Token2", "Token1"]);
@@ -205,11 +207,11 @@ describe("Portfolio page", () => {
       });
     });
 
-    describe("NoProjectsCard", () => {
+    describe("NoStakedTokensCard", () => {
       it("should display the card when the total balance is zero", async () => {
         const po = renderPage();
 
-        expect(await po.getNoNeuronsCarPo().isPresent()).toBe(true);
+        expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(true);
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$0.00");
       });
 
@@ -220,7 +222,7 @@ describe("Portfolio page", () => {
         };
         const po = renderPage({ tableProjects: [tableProject] });
 
-        expect(await po.getNoNeuronsCarPo().isPresent()).toBe(false);
+        expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(false);
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$2.00");
       });
 
@@ -229,18 +231,20 @@ describe("Portfolio page", () => {
           universeId: principal(1),
           balanceInUsd: 2,
         });
-        const po = renderPage({ userTokensData: [token] });
+        const po = renderPage({ userTokens: [token] });
 
-        expect(await po.getNoNeuronsCarPo().isPresent()).toBe(true);
-        expect(await po.getNoNeuronsCarPo().hasPrimaryAction()).toBe(true);
+        expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(true);
+        expect(await po.getNoStakedTokensCarPo().hasPrimaryAction()).toBe(true);
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$2.00");
       });
 
       it("should not display a primary action when the neurons accounts balance is zero and the tokens balance is also zero", async () => {
         const po = renderPage();
 
-        expect(await po.getNoNeuronsCarPo().isPresent()).toBe(true);
-        expect(await po.getNoNeuronsCarPo().hasPrimaryAction()).toBe(false);
+        expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(true);
+        expect(await po.getNoStakedTokensCarPo().hasPrimaryAction()).toBe(
+          false
+        );
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$0.00");
       });
     });
@@ -277,7 +281,7 @@ describe("Portfolio page", () => {
 
       it("should display total assets", async () => {
         const po = renderPage({
-          userTokensData: [token1, token2],
+          userTokens: [token1, token2],
           tableProjects: [tableProject1, tableProject2],
         });
 
@@ -295,7 +299,7 @@ describe("Portfolio page", () => {
       });
 
       it("should ignore tokens with unknown balance in USD and display tooltip", async () => {
-        const po = renderPage({ userTokensData: [token1, token2, token3] });
+        const po = renderPage({ userTokens: [token1, token2, token3] });
 
         expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe(
           "$12.00"

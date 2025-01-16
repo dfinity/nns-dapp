@@ -25,18 +25,18 @@
   let numberOfTopStakedTokens: number;
   $: numberOfTopStakedTokens = topStakedTokens.length;
 
-  // Show an informational row when there are fewer projects than tokens.
+  // Show an informational row when there are fewer staked tokens than held tokens.
   // This ensures both cards have consistent heights by filling empty space
   // with a message instead of leaving blank space.
   let showInfoRow: boolean;
   $: showInfoRow = numberOfTopHeldTokens - numberOfTopStakedTokens > 0;
 </script>
 
-<Card testId="projects-card">
+<Card testId="staked-tokens-card">
   <div
     class="wrapper"
     role="region"
-    aria-label={$i18n.portfolio.projects_card_title}
+    aria-label={$i18n.portfolio.staked_tokens_card_title}
   >
     <div class="header">
       <div class="header-wrapper">
@@ -44,11 +44,11 @@
           <IconNeuronsPage />
         </div>
         <div class="text-content">
-          <h5 class="title">{$i18n.portfolio.projects_card_title}</h5>
+          <h5 class="title">{$i18n.portfolio.staked_tokens_card_title}</h5>
           <p
             class="amount"
             data-tid="amount"
-            aria-label={`${$i18n.portfolio.projects_card_title}: ${usdAmount}`}
+            aria-label={`${$i18n.portfolio.staked_tokens_card_title}: ${usdAmount}`}
           >
             ${usdAmountFormatted}
           </p>
@@ -57,36 +57,36 @@
       <a
         {href}
         class="button secondary"
-        aria-label={$i18n.portfolio.projects_card_link}
+        aria-label={$i18n.portfolio.staked_tokens_card_link}
       >
         <span class="mobile-only">
           <IconRight />
         </span>
         <span class="tablet-up">
-          {$i18n.portfolio.projects_card_link}
+          {$i18n.portfolio.staked_tokens_card_link}
         </span>
       </a>
     </div>
     <div class="body" role="table">
       <div class="header" role="row">
         <span role="columnheader"
-          >{$i18n.portfolio.projects_card_list_first_column}</span
+          >{$i18n.portfolio.staked_tokens_card_list_first_column}</span
         >
 
         <span class="mobile-only justify-end" role="columnheader"
-          >{$i18n.portfolio.projects_card_list_second_column_mobile}</span
+          >{$i18n.portfolio.staked_tokens_card_list_second_column_mobile}</span
         >
         <span class="tablet-up justify-end" role="columnheader"
-          >{$i18n.portfolio.projects_card_list_second_column}</span
+          >{$i18n.portfolio.staked_tokens_card_list_second_column}</span
         >
         <span class="tablet-up justify-end" role="columnheader"
-          >{$i18n.portfolio.projects_card_list_third_column}</span
+          >{$i18n.portfolio.staked_tokens_card_list_third_column}</span
         >
       </div>
 
       <div class="list" role="rowgroup">
         {#each topStakedTokens as stakedToken (stakedToken.domKey)}
-          <div class="row" data-tid="project-card-row" role="row">
+          <div class="row" data-tid="staked-tokens-card-row" role="row">
             <div class="info" role="cell">
               <div>
                 <Logo
@@ -96,10 +96,10 @@
                   framed
                 />
               </div>
-              <span data-tid="project-title">{stakedToken.title}</span>
+              <span data-tid="title">{stakedToken.title}</span>
             </div>
 
-            <div class="maturity" data-tid="project-maturity" role="cell">
+            <div class="maturity" data-tid="maturity" role="cell">
               {#if $authSignedInStore}
                 <MaturityWithTooltip
                   availableMaturity={stakedToken?.availableMaturity ?? 0n}
@@ -110,16 +110,16 @@
               {/if}
             </div>
             <div
-              class="staked-usd"
-              data-tid="project-staked-usd"
+              class="stake-usd"
+              data-tid="stake-in-usd"
               role="cell"
               aria-label={`${stakedToken.title} USD: ${stakedToken?.stakeInUsd ?? 0}`}
             >
               ${formatNumber(stakedToken?.stakeInUsd ?? 0)}
             </div>
             <div
-              class="staked-native"
-              data-tid="project-staked-native"
+              class="stake-native"
+              data-tid="stake-in-native"
               role="cell"
               aria-label={`${stakedToken.title} D: ${stakedToken?.stakeInUsd ?? 0}`}
             >
@@ -140,7 +140,7 @@
                 <IconNeuronsPage />
               </div>
               <div class="message">
-                {$i18n.portfolio.projects_card_info_row}
+                {$i18n.portfolio.staked_tokens_card_info_row}
               </div>
             </div>
           </div>
@@ -244,8 +244,8 @@
           }
 
           .maturity,
-          .staked-usd,
-          .staked-native {
+          .stake-usd,
+          .stake-native {
             justify-self: end;
             text-align: right;
           }
@@ -261,11 +261,11 @@
             }
           }
 
-          .staked-usd {
+          .stake-usd {
             grid-area: usd;
           }
 
-          .staked-native {
+          .stake-native {
             display: none;
             grid-area: native;
             font-size: 0.875rem;
