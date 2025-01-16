@@ -25,6 +25,9 @@
   let numberOfTopProjects: number;
   $: numberOfTopProjects = topProjects.length;
 
+  // Show an informational row when there are fewer projects than tokens.
+  // This ensures both cards have consistent heights by filling empty space
+  // with a message instead of leaving blank space.
   let showInfoRow: boolean;
   $: showInfoRow = numberOfTopTokens - numberOfTopProjects > 0;
 </script>
@@ -199,7 +202,6 @@
       .header {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        justify-content: space-between;
 
         font-size: 0.875rem;
         color: var(--text-description);
