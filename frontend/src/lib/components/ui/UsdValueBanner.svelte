@@ -1,5 +1,5 @@
 <script lang="ts">
-  import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
+  import IcpExchangeRate from "$lib/components/ui/IcpExchangeRate.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
@@ -28,11 +28,6 @@
       ? undefined
       : $icpSwapUsdPricesStore[LEDGER_CANISTER_ID.toText()];
 
-  let icpPriceFormatted: string;
-  $: icpPriceFormatted = nonNullish(icpPrice)
-    ? formatNumber(icpPrice)
-    : absentValue;
-
   let icpAmount: number | undefined;
   $: icpAmount = icpPrice && usdAmount && usdAmount / icpPrice;
 
@@ -42,11 +37,7 @@
     : absentValue;
 </script>
 
-<div
-  class="wrapper"
-  data-tid="usd-value-banner-component"
-  class:has-error={hasError}
->
+<div class="wrapper" data-tid="usd-value-banner-component">
   <div class="table-banner-icon">
     <slot name="icon" />
   </div>
@@ -67,29 +58,7 @@
         {$i18n.core.icp}
       </div>
     </div>
-    <div class="exchange-rate">
-      <img
-        src={IC_LOGO_ROUNDED}
-        alt={$i18n.auth.ic_logo}
-        class="icp-icon desktop-only"
-      />
-      <span class="desktop-only">
-        1 {$i18n.core.icp} = $<span data-tid="icp-price"
-          >{icpPriceFormatted}</span
-        >
-      </span>
-      <TooltipIcon>
-        {#if hasError}
-          {$i18n.accounts.token_price_error}
-        {:else}
-          <div class="mobile-only">
-            1 {$i18n.core.icp} = ${icpPriceFormatted}
-          </div><div>
-            {$i18n.accounts.token_price_source}
-          </div>
-        {/if}
-      </TooltipIcon>
-    </div>
+    <IcpExchangeRate {icpPrice} {hasError} {absentValue} />
   </div>
 </div>
 
@@ -134,34 +103,6 @@
         display: flex;
         flex-direction: column;
       }
-
-      .exchange-rate {
-        display: flex;
-        align-items: center;
-        gap: var(--padding-0_5x);
-
-        .icp-icon {
-          width: 20px;
-          height: 20px;
-        }
-      }
-    }
-
-    &.has-error {
-      --tooltip-icon-color: var(--tag-failed-text);
-    }
-  }
-
-  .desktop-only {
-    display: none;
-  }
-
-  @include media.min-width(medium) {
-    .desktop-only {
-      display: initial;
-    }
-    .mobile-only {
-      display: none;
     }
   }
 </style>
