@@ -6,6 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { formatNumber } from "$lib/utils/format.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
+  import IcpExchangeRate from "./IcpExchangeRate.svelte";
 
   export let usdAmount: number | undefined;
   export let hasUnpricedTokens: boolean;
