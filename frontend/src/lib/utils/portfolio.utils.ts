@@ -34,7 +34,7 @@ const compareTokens = mergeComparators([
  * - Limits the number of returned tokens to MAX_NUMBER_OF_ITEMS
  * - When isSigned true, filters out tokens with zero balance as we show only tokens with guaranteed balance
  */
-export const getTopTokens = ({
+export const getTopHeldTokens = ({
   userTokens,
   isSignedIn = false,
 }: {
@@ -69,7 +69,7 @@ const compareProjects = mergeComparators([
  * - Limits the number of returned projects to MAX_NUMBER_OF_ITEMS
  * - When isSignedIn true, filters out projects with zero stake as we show only projects with guaranteed stake
  */
-export const getTopProjects = ({
+export const getTopStakedTokens = ({
   projects,
   isSignedIn = false,
 }: {

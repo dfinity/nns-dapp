@@ -7,7 +7,7 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
-  import { getTopTokens } from "$lib/utils/portfolio.utils";
+  import { getTopHeldTokens } from "$lib/utils/portfolio.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
@@ -56,7 +56,7 @@
   $: hasNoStakedTokensCardAPrimaryAction = !showNoHeldTokensCard;
 
   let topHeldTokens: UserTokenData[];
-  $: topHeldTokens = getTopTokens({
+  $: topHeldTokens = getTopHeldTokens({
     userTokens: userTokens,
     isSignedIn: $authSignedInStore,
   });
