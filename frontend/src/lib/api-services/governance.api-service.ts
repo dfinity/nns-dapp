@@ -5,6 +5,7 @@ import {
   claimOrRefreshNeuron,
   claimOrRefreshNeuronByMemo,
   disburse,
+  getNetworkEconomicsParameters,
   increaseDissolveDelay,
   joinCommunityFund,
   leaveCommunityFund,
@@ -148,6 +149,9 @@ export const governanceApiService = {
       principalText: params.identity.getPrincipal().toText(),
     };
     return neuronsCache.neurons;
+  },
+  getNetworkEconomicsParameters(params: ApiQueryParams) {
+    return getNetworkEconomicsParameters(params);
   },
 
   // Action calls
