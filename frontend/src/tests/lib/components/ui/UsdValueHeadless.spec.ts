@@ -10,13 +10,16 @@ describe("UsdValueHeadless", () => {
   const renderComponent = ({
     usdAmount,
     hasUnpricedTokens,
+    absentValue,
   }: {
     usdAmount: number;
     hasUnpricedTokens: boolean;
+    absentValue?: string;
   }) => {
     const { container } = render(UsdValueHeadlessTest, {
       usdAmount,
       hasUnpricedTokens,
+      absentValue,
     });
 
     return UsdValueHeadlessPo.under(new JestPageObjectElement(container));
@@ -31,6 +34,35 @@ describe("UsdValueHeadless", () => {
       },
     ]);
   };
+
+  it("should handle undefined usdAmount", async () => {
+    setIcpPrice(100);
+
+    const po = renderComponent({
+      usdAmount: undefined,
+      hasUnpricedTokens: false,
+    });
+
+    expect(await po.getUsdAmountFormatted()).toBe("-/-");
+    expect(await po.getIcpAmountFormatted()).toBe("-/-");
+    expect(await po.getHasError()).toBe("false");
+    expect(await po.getHasPricesAndUnpricedTokens()).toBe("false");
+  });
+
+  it("should handle override absent value", async () => {
+    setIcpPrice(100);
+
+    const po = renderComponent({
+      usdAmount: undefined,
+      hasUnpricedTokens: false,
+      absentValue: "N/A",
+    });
+
+    expect(await po.getUsdAmountFormatted()).toBe("N/A");
+    expect(await po.getIcpAmountFormatted()).toBe("N/A");
+    expect(await po.getHasError()).toBe("false");
+    expect(await po.getHasPricesAndUnpricedTokens()).toBe("false");
+  });
 
   it("should display formatted values when prices are available", async () => {
     setIcpPrice(100);
@@ -72,20 +104,6 @@ describe("UsdValueHeadless", () => {
     expect(await po.getIcpAmountFormatted()).toBe("10.00");
     expect(await po.getHasError()).toBe("false");
     expect(await po.getHasPricesAndUnpricedTokens()).toBe("true");
-  });
-
-  it("should handle undefined usdAmount", async () => {
-    setIcpPrice(100);
-
-    const po = renderComponent({
-      usdAmount: undefined,
-      hasUnpricedTokens: false,
-    });
-
-    expect(await po.getUsdAmountFormatted()).toBe("-/-");
-    expect(await po.getIcpAmountFormatted()).toBe("-/-");
-    expect(await po.getHasError()).toBe("false");
-    expect(await po.getHasPricesAndUnpricedTokens()).toBe("false");
   });
 
   it("should handle price updates", async () => {

@@ -7,6 +7,7 @@
 
   export let usdAmount: number | undefined;
   export let hasUnpricedTokens: boolean = false;
+  export let absentValue: string = PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
   let hasError: boolean;
   $: hasError = $icpSwapUsdPricesStore === "error";
@@ -19,9 +20,7 @@
 
   let usdAmountFormatted: string;
   $: usdAmountFormatted =
-    nonNullish(usdAmount) && hasPrices
-      ? formatNumber(usdAmount)
-      : PRICE_NOT_AVAILABLE_PLACEHOLDER;
+    nonNullish(usdAmount) && hasPrices ? formatNumber(usdAmount) : absentValue;
 
   let icpPrice: number | undefined;
   $: icpPrice =
@@ -35,7 +34,7 @@
   let icpAmountFormatted: string;
   $: icpAmountFormatted = nonNullish(icpAmount)
     ? formatNumber(icpAmount)
-    : PRICE_NOT_AVAILABLE_PLACEHOLDER;
+    : absentValue;
 </script>
 
 <slot
