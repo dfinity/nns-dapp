@@ -10,7 +10,7 @@
   import { formatNumber } from "$lib/utils/format.utils";
   import { IconAccountsPage, IconRight } from "@dfinity/gix-components";
 
-  export let topTokens: UserTokenData[];
+  export let topHeldTokens: UserTokenData[];
   export let usdAmount: number;
 
   const href = AppPath.Tokens;
@@ -22,7 +22,7 @@
 
   // TODO: This will also depend on the number of projects
   let showInfoRow: boolean;
-  $: showInfoRow = topTokens.length > 0 && topTokens.length < 3;
+  $: showInfoRow = topHeldTokens.length > 0 && topHeldTokens.length < 3;
 </script>
 
 <Card testId="tokens-card">
@@ -78,13 +78,18 @@
       </div>
 
       <div class="tokens-list" role="rowgroup">
-        {#each topTokens as token (token.domKey)}
+        {#each topHeldTokens as topHeldToken (topHeldToken.domKey)}
           <div class="token-row" data-tid="token-card-row" role="row">
             <div class="token-info" role="cell">
               <div>
-                <Logo src={token.logo} alt={token.title} size="medium" framed />
+                <Logo
+                  src={topHeldToken.logo}
+                  alt={topHeldToken.title}
+                  size="medium"
+                  framed
+                />
               </div>
-              <span data-tid="token-title">{token.title}</span>
+              <span data-tid="token-title">{topHeldToken.title}</span>
             </div>
 
             <div
@@ -92,15 +97,15 @@
               data-tid="token-native-balance"
               role="cell"
             >
-              <AmountDisplay singleLine amount={token.balance} />
+              <AmountDisplay singleLine amount={topHeldToken.balance} />
             </div>
             <div
               class="token-usd-balance"
               data-tid="token-usd-balance"
               role="cell"
-              aria-label={`${token.title} USD: ${token?.balanceInUsd ?? 0}`}
+              aria-label={`${topHeldToken.title} USD: ${topHeldToken?.balanceInUsd ?? 0}`}
             >
-              ${formatNumber(token?.balanceInUsd ?? 0)}
+              ${formatNumber(topHeldToken?.balanceInUsd ?? 0)}
             </div>
           </div>
         {/each}

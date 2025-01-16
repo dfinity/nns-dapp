@@ -55,8 +55,8 @@
   let hasNoProjectsCardAPrimaryAction: boolean;
   $: hasNoProjectsCardAPrimaryAction = !showNoTokensCard;
 
-  let topTokens: UserTokenData[];
-  $: topTokens = getTopTokens({
+  let topHeldTokens: UserTokenData[];
+  $: topHeldTokens = getTopTokens({
     userTokens: userTokens,
     isSignedIn: $authSignedInStore,
   });
@@ -76,7 +76,7 @@
     {#if showNoTokensCard}
       <NoTokensCard />
     {:else}
-      <TokensCard {topTokens} usdAmount={totalTokensBalanceInUsd} />
+      <TokensCard {topHeldTokens} usdAmount={totalTokensBalanceInUsd} />
     {/if}
     {#if showNoProjectsCard}
       <NoProjectsCard primaryCard={hasNoProjectsCardAPrimaryAction} />

@@ -16,7 +16,7 @@ import { render } from "@testing-library/svelte";
 
 describe("TokensCard", () => {
   const renderComponent = (props: {
-    topTokens: UserTokenData[];
+    topHeldTokens: UserTokenData[];
     usdAmount: number;
   }) => {
     const { container } = render(TokensCard, {
@@ -43,7 +43,7 @@ describe("TokensCard", () => {
 
     it("should show placeholder balance", async () => {
       const po = renderComponent({
-        topTokens: mockTokens,
+        topHeldTokens: mockTokens,
         usdAmount: 0,
       });
 
@@ -52,7 +52,7 @@ describe("TokensCard", () => {
 
     it("should show list of tokens with name and balance", async () => {
       const po = renderComponent({
-        topTokens: mockTokens,
+        topHeldTokens: mockTokens,
         usdAmount: 0,
       });
       const titles = await po.getTokensTitles();
@@ -100,7 +100,7 @@ describe("TokensCard", () => {
 
     it("should show the usd amount", async () => {
       const po = renderComponent({
-        topTokens: mockTokens,
+        topHeldTokens: mockTokens,
         usdAmount: 600,
       });
 
@@ -109,7 +109,7 @@ describe("TokensCard", () => {
 
     it("should show all the tokens with their balance", async () => {
       const po = renderComponent({
-        topTokens: mockTokens,
+        topHeldTokens: mockTokens,
         usdAmount: 600,
       });
       const titles = await po.getTokensTitles();
@@ -132,7 +132,7 @@ describe("TokensCard", () => {
 
     it("should not show info row when tokens length is 3 or more", async () => {
       const po = renderComponent({
-        topTokens: mockTokens.slice(0, 3),
+        topHeldTokens: mockTokens.slice(0, 3),
         usdAmount: 600,
       });
       const titles = await po.getTokensTitles();
@@ -157,7 +157,7 @@ describe("TokensCard", () => {
 
     it("should show info row when tokens length is 1", async () => {
       const po = renderComponent({
-        topTokens: mockTokens.slice(0, 1),
+        topHeldTokens: mockTokens.slice(0, 1),
         usdAmount: 100,
       });
 
@@ -179,7 +179,7 @@ describe("TokensCard", () => {
 
     it("should show info row when tokens length is 2", async () => {
       const po = renderComponent({
-        topTokens: mockTokens.slice(0, 2),
+        topHeldTokens: mockTokens.slice(0, 2),
         usdAmount: 300,
       });
 
