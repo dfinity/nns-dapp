@@ -15,8 +15,8 @@ export class PortfolioPagePo extends BasePageObject {
     return this.getElement("portfolio-login-card");
   }
 
-  getNoTokensCard(): PageObjectElement {
-    return this.getElement("no-tokens-card");
+  getNoHeldTokensCard(): PageObjectElement {
+    return this.getElement("no-held-tokens-card");
   }
 
   getNoNeuronsCarPo(): NoTokesStakedCardPo {

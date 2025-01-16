@@ -1,6 +1,6 @@
 <script lang="ts">
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
-  import NoTokensHeldCard from "$lib/components/portfolio/NoTokensHeldCard.svelte";
+  import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoTokensStakedCard from "$lib/components/portfolio/NoTokensStakedCard.svelte";
   import TokensCard from "$lib/components/portfolio/TokensCard.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
@@ -74,7 +74,7 @@
   </div>
   <div class="content">
     {#if showNoTokensHeldCard}
-      <NoTokensHeldCard />
+      <NoHeldTokensCard />
     {:else}
       <TokensCard {topHeldTokens} usdAmount={totalTokensBalanceInUsd} />
     {/if}

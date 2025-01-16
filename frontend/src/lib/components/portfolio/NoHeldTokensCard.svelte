@@ -8,7 +8,7 @@
   const href = buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT });
 </script>
 
-<Card testId="no-tokens-card">
+<Card testId="no-held-tokens-card">
   <div class="wrapper">
     <div class="icon">
       <IconAccountsPage />
