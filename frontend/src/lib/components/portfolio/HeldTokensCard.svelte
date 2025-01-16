@@ -29,7 +29,7 @@
   <div
     class="wrapper"
     role="region"
-    aria-label={$i18n.portfolio.tokens_card_title}
+    aria-label={$i18n.portfolio.held_tokens_card_title}
   >
     <div class="header">
       <div class="header-wrapper">
@@ -37,11 +37,11 @@
           <IconAccountsPage />
         </div>
         <div class="text-content">
-          <h5 class="title">{$i18n.portfolio.tokens_card_title}</h5>
+          <h5 class="title">{$i18n.portfolio.held_tokens_card_title}</h5>
           <p
             class="amount"
             data-tid="amount"
-            aria-label={`${$i18n.portfolio.tokens_card_title}: ${usdAmount}`}
+            aria-label={`${$i18n.portfolio.held_tokens_card_title}: ${usdAmount}`}
           >
             ${usdAmountFormatted}
           </p>
@@ -50,30 +50,30 @@
       <a
         {href}
         class="button secondary"
-        aria-label={$i18n.portfolio.tokens_card_link}
+        aria-label={$i18n.portfolio.held_tokens_card_link}
       >
         <span class="mobile-only">
           <IconRight />
         </span>
         <span class="tablet-up">
-          {$i18n.portfolio.tokens_card_link}
+          {$i18n.portfolio.held_tokens_card_link}
         </span>
       </a>
     </div>
     <div class="body" role="table">
       <div class="header" role="row">
         <span role="columnheader"
-          >{$i18n.portfolio.tokens_card_list_first_column}</span
+          >{$i18n.portfolio.held_tokens_card_list_first_column}</span
         >
 
         <span class="mobile-only justify-end" role="columnheader"
-          >{$i18n.portfolio.tokens_card_list_second_column_mobile}</span
+          >{$i18n.portfolio.held_tokens_card_list_second_column_mobile}</span
         >
         <span class="tablet-up justify-end" role="columnheader"
-          >{$i18n.portfolio.tokens_card_list_second_column}</span
+          >{$i18n.portfolio.held_tokens_card_list_second_column}</span
         >
         <span class="tablet-up justify-end" role="columnheader"
-          >{$i18n.portfolio.tokens_card_list_third_column}</span
+          >{$i18n.portfolio.held_tokens_card_list_third_column}</span
         >
       </div>
 
@@ -115,7 +115,7 @@
               <IconAccountsPage />
             </div>
             <div class="message">
-              {$i18n.portfolio.tokens_card_info_row}
+              {$i18n.portfolio.held_tokens_card_info_row}
             </div>
           </div>
         {/if}
