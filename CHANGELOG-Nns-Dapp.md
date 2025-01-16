@@ -11,6 +11,34 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 134787
+
+### Application
+
+#### Added
+
+- Reporting: Full period filter, year-to-date, and last year
+- Show USD values of neuron stakes.
+- Display missing reward warnings in case of neuron inactivity.
+
+#### Changed
+
+- Allow `dfinity:` token prefix in QR code for ICP payment.
+- Recover from interrupted canister creation in the frontend.
+- Sort projects on the Voting page based on actionable proposals and name.
+- Hide former Cycle-Transfer-Station SNS from Voting page.
+
+#### Removed
+
+- Remove hardcoding of "DFINITY Foundation" and "Internet Computer Association" in the displayed list of known neurons.
+- Remove "Make neurons public" banner.
+
+#### Fixed
+
+- Fixed "Confirm following" for non-HW hotkey neurons.
+
+### Operations
+
 ## Proposal 134484
 
 ### Application
