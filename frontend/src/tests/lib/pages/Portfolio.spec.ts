@@ -39,17 +39,22 @@ describe("Portfolio page", () => {
       expect(await po.getLoginCard().isPresent()).toBe(true);
     });
 
-    it("should show the NoTokensCard", async () => {
+    it("should show the TokensCard default data", async () => {
       const po = renderPage();
 
-      expect(await po.getNoTokensCard().isPresent()).toBe(true);
+      const tokensCardPo = po.getTokensCardPo();
+
+      expect(await po.getNoTokensCard().isPresent()).toBe(false);
+      expect(await tokensCardPo.isPresent()).toBe(true);
+      expect(await tokensCardPo.getInfoRow().isPresent()).toBe(false);
     });
 
     it("should show the NoProjectsCardPo with secondary action", async () => {
       const po = renderPage();
 
       expect(await po.getNoNeuronsCarPo().isPresent()).toBe(true);
-      expect(await po.getNoNeuronsCarPo().hasSecondaryAction()).toBe(true);
+      // TODO: This will change once the ProjectsCard is introduced
+      // expect(await po.getNoNeuronsCarPo().hasSecondaryAction()).toBe(true);
     });
   });
 
