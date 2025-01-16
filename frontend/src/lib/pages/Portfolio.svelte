@@ -1,7 +1,7 @@
 <script lang="ts">
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
-  import NoProjectsCard from "$lib/components/portfolio/NoProjectsCard.svelte";
   import NoTokensHeldCard from "$lib/components/portfolio/NoTokensHeldCard.svelte";
+  import NoTokensStakedCard from "$lib/components/portfolio/NoTokensStakedCard.svelte";
   import TokensCard from "$lib/components/portfolio/TokensCard.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -44,16 +44,16 @@
     ? totalTokensBalanceInUsd + totalStakedInUsd
     : undefined;
 
-  let showNoTokensCard: boolean;
-  $: showNoTokensCard = $authSignedInStore && totalTokensBalanceInUsd === 0;
+  let showNoTokensHeldCard: boolean;
+  $: showNoTokensHeldCard = $authSignedInStore && totalTokensBalanceInUsd === 0;
 
-  let showNoProjectsCard: boolean;
-  $: showNoProjectsCard = !$authSignedInStore || totalStakedInUsd === 0;
+  let showNoTokensStakedCard: boolean;
+  $: showNoTokensStakedCard = !$authSignedInStore || totalStakedInUsd === 0;
 
   // The Card should display a Primary Action when it is the only available option.
   // This occurs when there are tokens but no stake.
-  let hasNoProjectsCardAPrimaryAction: boolean;
-  $: hasNoProjectsCardAPrimaryAction = !showNoTokensCard;
+  let hasNoTokensStakedCardAPrimaryAction: boolean;
+  $: hasNoTokensStakedCardAPrimaryAction = !showNoTokensHeldCard;
 
   let topHeldTokens: UserTokenData[];
   $: topHeldTokens = getTopTokens({
@@ -73,13 +73,13 @@
     />
   </div>
   <div class="content">
-    {#if showNoTokensCard}
+    {#if showNoTokensHeldCard}
       <NoTokensHeldCard />
     {:else}
       <TokensCard {topHeldTokens} usdAmount={totalTokensBalanceInUsd} />
     {/if}
-    {#if showNoProjectsCard}
-      <NoProjectsCard primaryCard={hasNoProjectsCardAPrimaryAction} />
+    {#if showNoTokensStakedCard}
+      <NoTokensStakedCard primaryCard={hasNoTokensStakedCardAPrimaryAction} />
     {/if}
   </div>
 </main>

@@ -1,11 +1,11 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class NoProjectsCardPo extends BasePageObject {
+export class NoTokesStakedCardPo extends BasePageObject {
   private static readonly TID = "no-neurons-card";
 
-  static under(element: PageObjectElement): NoProjectsCardPo {
-    return new NoProjectsCardPo(element.byTestId(NoProjectsCardPo.TID));
+  static under(element: PageObjectElement): NoTokesStakedCardPo {
+    return new NoTokesStakedCardPo(element.byTestId(NoTokesStakedCardPo.TID));
   }
 
   async hasPrimaryAction(): Promise<boolean> {
