@@ -12,9 +12,9 @@
   import { IconNeuronsPage, IconRight } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
 
-  export let topProjects: TableProject[];
+  export let topStakedTokens: TableProject[];
   export let usdAmount: number;
-  export let numberOfTopTokens: number;
+  export let numberOfTopHeldTokens: number;
 
   const href = AppPath.Staking;
   let usdAmountFormatted: string;
@@ -22,14 +22,14 @@
     ? formatNumber(usdAmount)
     : PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
-  let numberOfTopProjects: number;
-  $: numberOfTopProjects = topProjects.length;
+  let numberOfTopStakedTokens: number;
+  $: numberOfTopStakedTokens = topStakedTokens.length;
 
   // Show an informational row when there are fewer projects than tokens.
   // This ensures both cards have consistent heights by filling empty space
   // with a message instead of leaving blank space.
   let showInfoRow: boolean;
-  $: showInfoRow = numberOfTopTokens - numberOfTopProjects > 0;
+  $: showInfoRow = numberOfTopHeldTokens - numberOfTopStakedTokens > 0;
 </script>
 
 <Card testId="projects-card">
@@ -85,25 +85,25 @@
       </div>
 
       <div class="list" role="rowgroup">
-        {#each topProjects as project (project.domKey)}
+        {#each topStakedTokens as stakedToken (stakedToken.domKey)}
           <div class="row" data-tid="project-card-row" role="row">
             <div class="info" role="cell">
               <div>
                 <Logo
-                  src={project.logo}
-                  alt={project.title}
+                  src={stakedToken.logo}
+                  alt={stakedToken.title}
                   size="medium"
                   framed
                 />
               </div>
-              <span data-tid="project-title">{project.title}</span>
+              <span data-tid="project-title">{stakedToken.title}</span>
             </div>
 
             <div class="maturity" data-tid="project-maturity" role="cell">
               {#if $authSignedInStore}
                 <MaturityWithTooltip
-                  availableMaturity={project?.availableMaturity ?? 0n}
-                  stakedMaturity={project?.stakedMaturity ?? 0n}
+                  availableMaturity={stakedToken?.availableMaturity ?? 0n}
+                  stakedMaturity={stakedToken?.stakedMaturity ?? 0n}
                 />
               {:else}
                 {PRICE_NOT_AVAILABLE_PLACEHOLDER}
@@ -113,23 +113,23 @@
               class="staked-usd"
               data-tid="project-staked-usd"
               role="cell"
-              aria-label={`${project.title} USD: ${project?.stakeInUsd ?? 0}`}
+              aria-label={`${stakedToken.title} USD: ${stakedToken?.stakeInUsd ?? 0}`}
             >
-              ${formatNumber(project?.stakeInUsd ?? 0)}
+              ${formatNumber(stakedToken?.stakeInUsd ?? 0)}
             </div>
             <div
               class="staked-native"
               data-tid="project-staked-native"
               role="cell"
-              aria-label={`${project.title} D: ${project?.stakeInUsd ?? 0}`}
+              aria-label={`${stakedToken.title} D: ${stakedToken?.stakeInUsd ?? 0}`}
             >
-              {project.stake instanceof TokenAmountV2
+              {stakedToken.stake instanceof TokenAmountV2
                 ? formatTokenV2({
-                    value: project.stake,
+                    value: stakedToken.stake,
                     detailed: true,
                   })
                 : PRICE_NOT_AVAILABLE_PLACEHOLDER}
-              {project.stake.token.symbol}
+              {stakedToken.stake.token.symbol}
             </div>
           </div>
         {/each}

@@ -12,19 +12,19 @@ import { render } from "@testing-library/svelte";
 
 describe("ProjectsCard", () => {
   const renderComponent = ({
-    topProjects = [],
+    topStakedTokens = [],
     usdAmount = 0,
-    numberOfTopTokens = 0,
+    numberOfTopHeldTokens = 0,
   }: {
-    topProjects?: TableProject[];
+    topStakedTokens?: TableProject[];
     usdAmount?: number;
-    numberOfTopTokens?: number;
+    numberOfTopHeldTokens?: number;
   } = {}) => {
     const { container } = render(ProjectsCard, {
       props: {
-        topProjects,
+        topStakedTokens,
         usdAmount,
-        numberOfTopTokens,
+        numberOfTopHeldTokens,
       },
     });
 
@@ -80,7 +80,7 @@ describe("ProjectsCard", () => {
 
     it("should list of tokens with placeholders", async () => {
       const po = renderComponent({
-        topProjects: mockProjects,
+        topStakedTokens: mockProjects,
       });
       const titles = await po.getProjectsTitle();
       const maturities = await po.getProjectsMaturity();
@@ -179,7 +179,7 @@ describe("ProjectsCard", () => {
 
     it("should show all the projects with their maturity, staked in usd and staked in native currency", async () => {
       const po = renderComponent({
-        topProjects: mockProjects,
+        topStakedTokens: mockProjects,
       });
 
       const titles = await po.getProjectsTitle();
@@ -211,10 +211,10 @@ describe("ProjectsCard", () => {
       ]);
     });
 
-    it("should not show info row when numberOfTopTokens is the same as the number of topProjects", async () => {
+    it("should not show info row when numberOfTopHeldTokens is the same as the number of topStakedTokens", async () => {
       const po = renderComponent({
-        topProjects: mockProjects.slice(0, 3),
-        numberOfTopTokens: 3,
+        topStakedTokens: mockProjects.slice(0, 3),
+        numberOfTopHeldTokens: 3,
       });
 
       const titles = await po.getProjectsTitle();
@@ -242,10 +242,10 @@ describe("ProjectsCard", () => {
       expect(await po.getInfoRow().isPresent()).toBe(false);
     });
 
-    it("should not show info row when the number of topProjects is less than numberOfTopTokens like 1", async () => {
+    it("should not show info row when the number of topStakedTokens is less than numberOfTopHeldTokens like 1", async () => {
       const po = renderComponent({
-        topProjects: mockProjects.slice(0, 2),
-        numberOfTopTokens: 4,
+        topStakedTokens: mockProjects.slice(0, 2),
+        numberOfTopHeldTokens: 4,
       });
 
       const titles = await po.getProjectsTitle();
@@ -269,10 +269,10 @@ describe("ProjectsCard", () => {
       expect(await po.getInfoRow().isPresent()).toBe(true);
     });
 
-    it("should not show info row when the number of topProjects is less than numberOfTopTokens like 2", async () => {
+    it("should not show info row when the number of topStakedTokens is less than numberOfTopHeldTokens like 2", async () => {
       const po = renderComponent({
-        topProjects: mockProjects.slice(0, 1),
-        numberOfTopTokens: 3,
+        topStakedTokens: mockProjects.slice(0, 1),
+        numberOfTopHeldTokens: 3,
       });
 
       const titles = await po.getProjectsTitle();
