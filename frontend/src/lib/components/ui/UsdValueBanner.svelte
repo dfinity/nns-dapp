@@ -1,8 +1,8 @@
 <script lang="ts">
   import IcpExchangeRate from "$lib/components/ui/IcpExchangeRate.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+  import UsdValueHeadless from "$lib/components/ui/UsdValueHeadless.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import UsdValueHeadless from "./UsdValueHeadless.svelte";
 
   export let usdAmount: number | undefined;
   export let hasUnpricedTokens: boolean;
