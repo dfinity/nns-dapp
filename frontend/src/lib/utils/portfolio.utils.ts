@@ -91,7 +91,7 @@ export const getTopStakedTokens = ({
  * with a message instead of leaving a blank space.
  * Rules for showing the info row:
  * 1. When the other card has more tokens than the current card
- * 2. When the other card is empty (has 0 tokens)
+ * 2. When the other card is empty (has 0 tokens) AND current card has fewer than 4 tokens
  * 3. When both cards have fewer than 3 tokens (for visual balance)
  */
 export const shouldShowInfoRow = ({
@@ -103,7 +103,7 @@ export const shouldShowInfoRow = ({
 }) => {
   return (
     otherCardNumberOfTokens - currentCardNumberOfTokens > 0 ||
-    otherCardNumberOfTokens === 0 ||
+    (otherCardNumberOfTokens === 0 && currentCardNumberOfTokens < 4) ||
     (currentCardNumberOfTokens < 3 && otherCardNumberOfTokens < 3)
   );
 };
