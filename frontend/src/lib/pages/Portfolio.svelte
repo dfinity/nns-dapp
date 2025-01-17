@@ -3,11 +3,15 @@
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
+  import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
-  import { getTopHeldTokens } from "$lib/utils/portfolio.utils";
+  import {
+    getTopHeldTokens,
+    getTopStakedTokens,
+  } from "$lib/utils/portfolio.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
@@ -48,7 +52,7 @@
   $: showNoHeldTokensCard = $authSignedInStore && totalTokensBalanceInUsd === 0;
 
   let showNoStakedTokensCard: boolean;
-  $: showNoStakedTokensCard = !$authSignedInStore || totalStakedInUsd === 0;
+  $: showNoStakedTokensCard = $authSignedInStore && totalStakedInUsd === 0;
 
   // The Card should display a Primary Action when it is the only available option.
   // This occurs when there are tokens but no stake.
@@ -58,6 +62,12 @@
   let topHeldTokens: UserTokenData[];
   $: topHeldTokens = getTopHeldTokens({
     userTokens: userTokens,
+    isSignedIn: $authSignedInStore,
+  });
+
+  let topStakedTokens: TableProject[];
+  $: topStakedTokens = getTopStakedTokens({
+    projects: tableProjects,
     isSignedIn: $authSignedInStore,
   });
 </script>
@@ -80,6 +90,12 @@
     {/if}
     {#if showNoStakedTokensCard}
       <NoStakedTokensCard primaryCard={hasNoStakedTokensCardAPrimaryAction} />
+    {:else}
+      <StakedTokensCard
+        {topStakedTokens}
+        usdAmount={totalStakedInUsd}
+        numberOfTopHeldTokens={topHeldTokens.length}
+      />
     {/if}
   </div>
 </main>
