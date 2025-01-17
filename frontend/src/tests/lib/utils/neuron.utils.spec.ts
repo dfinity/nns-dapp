@@ -3635,6 +3635,17 @@ describe("neuron-utils", () => {
         ).toBe(false);
       });
 
+      it("should return false w/o voting economics", () => {
+        expect(
+          isNeuronLosingRewards({
+            startReducingVotingPowerAfterSeconds: undefined,
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod,
+            }),
+          })
+        ).toBe(false);
+      });
+
       it("should return true after the reward loss has started", () => {
         expect(
           isNeuronLosingRewards({
@@ -3676,6 +3687,29 @@ describe("neuron-utils", () => {
               ...mockNeuron,
               fullNeuron: undefined,
             },
+          })
+        ).toBe(false);
+      });
+
+      it("should return false w/o voting economics", () => {
+        expect(
+          isNeuronFollowingReset({
+            startReducingVotingPowerAfterSeconds: undefined,
+            clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod + SECONDS_IN_MONTH,
+            }),
+          })
+        ).toBe(false);
+        expect(
+          isNeuronFollowingReset({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            clearFollowingAfterSeconds: undefined,
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod + SECONDS_IN_MONTH,
+            }),
           })
         ).toBe(false);
       });
@@ -3749,6 +3783,18 @@ describe("neuron-utils", () => {
             }),
           })
         ).toBe(true);
+      });
+
+      it("should return false w/o voting economics", () => {
+        expect(
+          shouldDisplayRewardLossNotification({
+            startReducingVotingPowerAfterSeconds: undefined,
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod - notificationPeriod,
+            }),
+          })
+        ).toBe(false);
       });
 
       it("should return false before notification period", () => {
