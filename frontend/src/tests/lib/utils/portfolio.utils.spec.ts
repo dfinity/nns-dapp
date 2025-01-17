@@ -2,7 +2,10 @@ import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.co
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import type { TableProject } from "$lib/types/staking";
 import type { UserToken } from "$lib/types/tokens-page";
-import { getTopProjects, getTopTokens } from "$lib/utils/portfolio.utils";
+import {
+  getTopHeldTokens,
+  getTopStakedTokens,
+} from "$lib/utils/portfolio.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockTableProject } from "$tests/mocks/staking.mock";
 import {
@@ -34,7 +37,7 @@ describe("Portfolio utils", () => {
         mockNonUserToken,
       ];
 
-      const result = getTopTokens({ userTokens: tokens });
+      const result = getTopHeldTokens({ userTokens: tokens });
 
       expect(result).toHaveLength(4);
       expect(result).not.toContainEqual(mockNonUserToken);
@@ -48,12 +51,11 @@ describe("Portfolio utils", () => {
         mockCkBTCToken,
         mockNonUserToken,
       ];
-      const result = getTopTokens({
+      const result = getTopHeldTokens({
         userTokens: tokens,
-        maxResults: 3,
       });
 
-      expect(result).toHaveLength(3);
+      expect(result).toHaveLength(4);
     });
 
     it("should order tokens: ICP first, then ckBTC/ckUSDC, then others", () => {
@@ -64,7 +66,7 @@ describe("Portfolio utils", () => {
         mockNonUserToken,
         mockIcpToken,
       ];
-      const result = getTopTokens({ userTokens: tokens });
+      const result = getTopHeldTokens({ userTokens: tokens });
 
       expect(result).toEqual([
         mockIcpToken,
@@ -108,7 +110,7 @@ describe("Portfolio utils", () => {
           mockNonUserToken,
           mockIcpToken,
         ];
-        const result = getTopTokens({
+        const result = getTopHeldTokens({
           userTokens: tokens,
           isSignedIn: true,
         });
@@ -126,7 +128,7 @@ describe("Portfolio utils", () => {
           mockZeroBalanceUserTokenData,
           mockIcpToken,
         ];
-        const result = getTopTokens({
+        const result = getTopHeldTokens({
           userTokens: tokens,
           isSignedIn: true,
         });
@@ -145,7 +147,7 @@ describe("Portfolio utils", () => {
           mockZeroBalanceUserTokenData,
           mockIcpToken,
         ];
-        const result = getTopTokens({
+        const result = getTopHeldTokens({
           userTokens: tokens,
           isSignedIn: true,
         });
@@ -199,7 +201,7 @@ describe("Portfolio utils", () => {
         mockProject4,
       ];
 
-      const result = getTopProjects({
+      const result = getTopStakedTokens({
         projects,
       });
 
@@ -220,7 +222,7 @@ describe("Portfolio utils", () => {
         mockIcpProject,
       ];
 
-      const result = getTopProjects({ projects });
+      const result = getTopStakedTokens({ projects });
 
       expect(result).toEqual([
         mockIcpProject,
@@ -274,7 +276,7 @@ describe("Portfolio utils", () => {
           mockIcpProject,
         ];
 
-        const result = getTopProjects({
+        const result = getTopStakedTokens({
           projects,
           isSignedIn: true,
         });
@@ -292,7 +294,7 @@ describe("Portfolio utils", () => {
           mockIcpProject,
         ];
 
-        const result = getTopProjects({
+        const result = getTopStakedTokens({
           projects,
           isSignedIn: true,
         });
@@ -313,7 +315,7 @@ describe("Portfolio utils", () => {
 
         const projects = [mockZeroStakeProject, zeroIcpProject];
 
-        const result = getTopProjects({
+        const result = getTopStakedTokens({
           projects,
           isSignedIn: true,
         });

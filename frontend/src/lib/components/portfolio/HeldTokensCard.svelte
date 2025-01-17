@@ -10,7 +10,7 @@
   import { formatNumber } from "$lib/utils/format.utils";
   import { IconAccountsPage, IconRight } from "@dfinity/gix-components";
 
-  export let topTokens: UserTokenData[];
+  export let topHeldTokens: UserTokenData[];
   export let usdAmount: number;
 
   const href = AppPath.Tokens;
@@ -22,14 +22,14 @@
 
   // TODO: This will also depend on the number of projects
   let showInfoRow: boolean;
-  $: showInfoRow = topTokens.length > 0 && topTokens.length < 3;
+  $: showInfoRow = topHeldTokens.length > 0 && topHeldTokens.length < 3;
 </script>
 
-<Card testId="tokens-card">
+<Card testId="held-tokens-card">
   <div
     class="wrapper"
     role="region"
-    aria-label={$i18n.portfolio.tokens_card_title}
+    aria-label={$i18n.portfolio.held_tokens_card_title}
   >
     <div class="header">
       <div class="header-wrapper">
@@ -37,11 +37,11 @@
           <IconAccountsPage />
         </div>
         <div class="text-content">
-          <h5 class="title">{$i18n.portfolio.tokens_card_title}</h5>
+          <h5 class="title">{$i18n.portfolio.held_tokens_card_title}</h5>
           <p
             class="amount"
             data-tid="amount"
-            aria-label={`${$i18n.portfolio.tokens_card_title}: ${usdAmount}`}
+            aria-label={`${$i18n.portfolio.held_tokens_card_title}: ${usdAmount}`}
           >
             ${usdAmountFormatted}
           </p>
@@ -50,57 +50,62 @@
       <a
         {href}
         class="button secondary"
-        aria-label={$i18n.portfolio.tokens_card_link}
+        aria-label={$i18n.portfolio.held_tokens_card_link}
       >
         <span class="mobile-only">
           <IconRight />
         </span>
         <span class="tablet-up">
-          {$i18n.portfolio.tokens_card_link}
+          {$i18n.portfolio.held_tokens_card_link}
         </span>
       </a>
     </div>
     <div class="body" role="table">
-      <div class="tokens-header" role="row">
+      <div class="header" role="row">
         <span role="columnheader"
-          >{$i18n.portfolio.tokens_card_list_first_column}</span
+          >{$i18n.portfolio.held_tokens_card_list_first_column}</span
         >
 
         <span class="mobile-only justify-end" role="columnheader"
-          >{$i18n.portfolio.tokens_card_list_second_column_mobile}</span
+          >{$i18n.portfolio.held_tokens_card_list_second_column_mobile}</span
         >
         <span class="tablet-up justify-end" role="columnheader"
-          >{$i18n.portfolio.tokens_card_list_second_column}</span
+          >{$i18n.portfolio.held_tokens_card_list_second_column}</span
         >
         <span class="tablet-up justify-end" role="columnheader"
-          >{$i18n.portfolio.tokens_card_list_third_column}</span
+          >{$i18n.portfolio.held_tokens_card_list_third_column}</span
         >
       </div>
 
-      <div class="tokens-list" role="rowgroup">
-        {#each topTokens as token (token.domKey)}
-          <div class="token-row" data-tid="token-card-row" role="row">
-            <div class="token-info" role="cell">
+      <div class="list" role="rowgroup">
+        {#each topHeldTokens as topHeldToken (topHeldToken.domKey)}
+          <div class="row" data-tid="held-token-card-row" role="row">
+            <div class="info" role="cell">
               <div>
-                <Logo src={token.logo} alt={token.title} size="medium" framed />
+                <Logo
+                  src={topHeldToken.logo}
+                  alt={topHeldToken.title}
+                  size="medium"
+                  framed
+                />
               </div>
-              <span data-tid="token-title">{token.title}</span>
+              <span data-tid="title">{topHeldToken.title}</span>
             </div>
 
             <div
-              class="token-native-balance"
-              data-tid="token-native-balance"
+              class="balance-native"
+              data-tid="balance-in-native"
               role="cell"
             >
-              <AmountDisplay singleLine amount={token.balance} />
+              <AmountDisplay singleLine amount={topHeldToken.balance} />
             </div>
             <div
-              class="token-usd-balance"
-              data-tid="token-usd-balance"
+              class="balance-usd"
+              data-tid="balance-in-usd"
               role="cell"
-              aria-label={`${token.title} USD: ${token?.balanceInUsd ?? 0}`}
+              aria-label={`${topHeldToken.title} USD: ${topHeldToken?.balanceInUsd ?? 0}`}
             >
-              ${formatNumber(token?.balanceInUsd ?? 0)}
+              ${formatNumber(topHeldToken?.balanceInUsd ?? 0)}
             </div>
           </div>
         {/each}
@@ -110,7 +115,7 @@
               <IconAccountsPage />
             </div>
             <div class="message">
-              {$i18n.portfolio.tokens_card_info_row}
+              {$i18n.portfolio.held_tokens_card_info_row}
             </div>
           </div>
         {/if}
@@ -168,7 +173,7 @@
       gap: var(--padding);
       flex-grow: 1;
 
-      .tokens-header {
+      .header {
         display: grid;
         grid-template-columns: 1fr 1fr;
         justify-content: space-between;
@@ -182,13 +187,13 @@
         }
       }
 
-      .tokens-list {
+      .list {
         display: flex;
         flex-direction: column;
         background-color: var(--card-background);
         flex-grow: 1;
 
-        .token-row {
+        .row {
           display: grid;
           grid-template-columns: 1fr 1fr;
           grid-template-areas:
@@ -204,20 +209,20 @@
 
           border-top: 1px solid var(--elements-divider);
 
-          .token-info {
+          .info {
             grid-area: info;
             display: flex;
             align-items: center;
             gap: var(--padding);
           }
 
-          .token-native-balance,
-          .token-usd-balance {
+          .balance-native,
+          .balance-usd {
             justify-self: end;
             text-align: right;
           }
 
-          .token-native-balance {
+          .balance-native {
             grid-area: balance;
 
             font-size: 0.75rem;
@@ -226,7 +231,7 @@
             }
           }
 
-          .token-usd-balance {
+          .balance-usd {
             grid-area: usd;
           }
         }

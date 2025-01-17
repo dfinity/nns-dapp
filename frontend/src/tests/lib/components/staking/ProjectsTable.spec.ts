@@ -617,10 +617,7 @@ describe("ProjectsTable", () => {
         await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
       ).toBe(false);
       expect(
-        await po
-          .getUsdValueBannerPo()
-          .getExchangeRateTooltipIconPo()
-          .getTooltipText()
+        await po.getUsdValueBannerPo().getIcpExchangeRatePo().getTooltipText()
       ).toBe(
         "1 ICP = $10.00 Token prices are in ckUSDC based on data provided by ICPSwap."
       );
@@ -683,10 +680,7 @@ describe("ProjectsTable", () => {
       expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
       expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$-/-");
       expect(
-        await po
-          .getUsdValueBannerPo()
-          .getExchangeRateTooltipIconPo()
-          .getTooltipText()
+        await po.getUsdValueBannerPo().getIcpExchangeRatePo().getTooltipText()
       ).toBe(
         "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment."
       );

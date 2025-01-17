@@ -12,6 +12,7 @@ import {
   CKUSDC_LEDGER_CANISTER_ID,
   CKUSDC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckusdc-canister-ids.constants";
+import { getAnonymousIdentity } from "$lib/services/auth.services";
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
@@ -60,9 +61,42 @@ describe("Portfolio route", () => {
       last_price: "10.00",
     },
   ];
+  const importedToken1Id = Principal.fromText(
+    "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
+  );
+  const importedToken1Metadata = {
+    name: "ZTOKEN1",
+    symbol: "ZTOKEN1",
+    fee: 4_000n,
+    decimals: 6,
+  } as IcrcTokenMetadata;
 
   beforeEach(() => {
     vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
+
+    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockImplementation(
+      async ({ canisterId }) => {
+        const tokenMap = {
+          [CKBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkBTCToken,
+          [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkTESTBTCToken,
+          [CKETH_UNIVERSE_CANISTER_ID.toText()]: mockCkETHToken,
+          [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: mockCkUSDCToken,
+          [importedToken1Id.toText()]: importedToken1Metadata,
+        };
+        return tokenMap[canisterId.toText()];
+      }
+    );
+
+    setCkETHCanisters();
+    // TODO: Copy setCkETHCanisters aproach to set the canisters for CKUSDC
+    defaultIcrcCanistersStore.setCanisters({
+      ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
+      indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
+    });
+    tokensStore.setToken({
+      canisterId: CKUSDC_UNIVERSE_CANISTER_ID,
+      token: mockCkUSDCToken,
+    });
   });
 
   it("should load ICP Swap tickers", async () => {
@@ -73,6 +107,59 @@ describe("Portfolio route", () => {
 
     expect(get(icpSwapTickersStore)).toEqual(tickers);
     expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
+  });
+
+  it("should get ckBtc tokens", async () => {
+    const identity = getAnonymousIdentity();
+
+    expect(icrcLedgerApi.queryIcrcToken).toBeCalledTimes(0);
+
+    await renderPage();
+
+    expect(icrcLedgerApi.queryIcrcToken).toBeCalledTimes(2);
+    expect(icrcLedgerApi.queryIcrcToken).toHaveBeenNthCalledWith(1, {
+      canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+      certified: false,
+      identity,
+    });
+
+    expect(icrcLedgerApi.queryIcrcToken).toHaveBeenNthCalledWith(2, {
+      canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+      certified: false,
+      identity,
+    });
+  });
+
+  it("should render the Portfolio page with visitor data", async () => {
+    const po = await renderPage();
+    const portfolioPagePo = po.getPortfolioPagePo();
+    const tokensCardPo = portfolioPagePo.getHeldTokensCardPo();
+
+    const titles = await tokensCardPo.getHeldTokensTitles();
+    const usdBalances = await tokensCardPo.getHeldTokensBalanceInUsd();
+    const nativeBalances =
+      await tokensCardPo.getHeldTokensBalanceInNativeCurrency();
+
+    expect(await portfolioPagePo.getUsdValueBannerPo().getPrimaryAmount()).toBe(
+      "$-/-"
+    );
+    expect(
+      await portfolioPagePo.getUsdValueBannerPo().getSecondaryAmount()
+    ).toBe("-/- ICP");
+
+    expect(titles.length).toBe(4);
+    expect(titles).toEqual(["Internet Computer", "ckBTC", "ckETH", "ckUSDC"]);
+
+    expect(usdBalances.length).toBe(4);
+    expect(usdBalances).toEqual(["$0.00", "$0.00", "$0.00", "$0.00"]);
+
+    expect(nativeBalances.length).toBe(4);
+    expect(nativeBalances).toEqual([
+      "-/- ICP",
+      "-/- ckBTC",
+      "-/- ckETH",
+      "-/- ckUSDC",
+    ]);
   });
 
   describe("when logged in", () => {
@@ -86,15 +173,6 @@ describe("Portfolio route", () => {
     const nnsNeuronStake = 1n * 100_000_000n; // 1ICP -> $10
     const tetrisSnsNeuronStake = 20n * 100_000_000n; // 20Tetris -> $200
 
-    const importedToken1Id = Principal.fromText(
-      "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
-    );
-    const importedToken1Metadata = {
-      name: "ZTOKEN1",
-      symbol: "ZTOKEN1",
-      fee: 4_000n,
-      decimals: 6,
-    } as IcrcTokenMetadata;
     const importedToken1Data: ImportedTokenData = {
       ledgerCanisterId: importedToken1Id,
       indexCanisterId: principal(111),
@@ -111,19 +189,6 @@ describe("Portfolio route", () => {
     beforeEach(() => {
       resetIdentity();
 
-      vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockImplementation(
-        async ({ canisterId }) => {
-          const tokenMap = {
-            [CKBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkBTCToken,
-            [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkTESTBTCToken,
-            [CKETH_UNIVERSE_CANISTER_ID.toText()]: mockCkETHToken,
-            [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: mockCkUSDCToken,
-            [importedToken1Id.toText()]: importedToken1Metadata,
-          };
-          return tokenMap[canisterId.toText()];
-        }
-      );
-
       vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
         async ({ canisterId }) => {
           const balancesMap = {
@@ -138,17 +203,6 @@ describe("Portfolio route", () => {
           return balancesMap[canisterId.toText()];
         }
       );
-
-      setCkETHCanisters();
-      // TODO: Copy setCkETHCanisters aproach to set the canisters for CKUSDC
-      defaultIcrcCanistersStore.setCanisters({
-        ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
-        indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
-      });
-      tokensStore.setToken({
-        canisterId: CKUSDC_UNIVERSE_CANISTER_ID,
-        token: mockCkUSDCToken,
-      });
 
       setSnsProjects([tetrisSNS]);
 
@@ -168,27 +222,6 @@ describe("Portfolio route", () => {
       importedTokensStore.set({
         importedTokens: [importedToken1Data],
         certified: true,
-      });
-    });
-
-    it("should get ckBtc tokens", async () => {
-      const identity = mockIdentity;
-
-      expect(icrcLedgerApi.queryIcrcToken).toBeCalledTimes(0);
-
-      await renderPage();
-
-      expect(icrcLedgerApi.queryIcrcToken).toBeCalledTimes(2);
-      expect(icrcLedgerApi.queryIcrcToken).toHaveBeenNthCalledWith(1, {
-        canisterId: CKBTC_UNIVERSE_CANISTER_ID,
-        certified: false,
-        identity,
-      });
-
-      expect(icrcLedgerApi.queryIcrcToken).toHaveBeenNthCalledWith(2, {
-        canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
-        certified: false,
-        identity,
       });
     });
 

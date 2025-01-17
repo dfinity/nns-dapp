@@ -1,23 +1,24 @@
 <script lang="ts">
   import Card from "$lib/components/portfolio/Card.svelte";
-  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { i18n } from "$lib/stores/i18n";
-  import { buildAccountsUrl } from "$lib/utils/navigation.utils";
-  import { IconAccountsPage } from "@dfinity/gix-components";
+  import { IconNeuronsPage } from "@dfinity/gix-components";
 
-  const href = buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT });
+  export let primaryCard = false;
+  const href = AppPath.Staking;
 </script>
 
-<Card testId="no-tokens-card">
+<Card testId="no-staked-tokens-card">
   <div class="wrapper">
     <div class="icon">
-      <IconAccountsPage />
+      <IconNeuronsPage />
     </div>
     <div class="text">
-      <h5>{$i18n.portfolio.no_tokens_card_title}</h5>
-      <p>{$i18n.portfolio.no_tokens_card_description}</p>
+      <p>{$i18n.portfolio.no_neurons_card_description}</p>
     </div>
-    <a {href} class="button primary">{$i18n.portfolio.no_tokens_card_button}</a>
+    <a {href} class={`button ${primaryCard ? "primary" : "secondary"}`}
+      >{$i18n.portfolio.no_neurons_card_button}</a
+    >
   </div>
 </Card>
 
@@ -27,18 +28,18 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     gap: var(--padding-2x);
-    padding: var(--padding-3x) var(--padding-2x);
+    padding: var(--padding-2x);
     margin: 0 auto;
     height: 100%;
+    text-align: center;
     @include media.min-width(medium) {
       gap: var(--padding-4x);
       padding: var(--padding-6x) var(--padding-4x);
-      max-width: 450px;
+      max-width: 400px;
     }
-
     .icon {
       width: 80px;
       height: 80px;
@@ -47,26 +48,10 @@
         height: 144px;
       }
     }
-
     .text {
-      text-align: center;
       color: var(--text-description);
-
-      h5,
       p {
         margin: 0;
-        padding: 0;
-        color: inherit;
-      }
-
-      h5 {
-        font-weight: bold;
-        text-wrap: pretty;
-      }
-
-      p {
-        margin-top: var(--padding);
-        text-wrap: balance;
       }
     }
   }
