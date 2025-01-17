@@ -870,9 +870,12 @@ describe("neurons-api", () => {
       const call = () =>
         getNetworkEconomicsParameters({
           identity: mockIdentity,
-          certified: true,
+          certified: false,
         });
       await expect(call).rejects.toThrow(error);
+      expect(
+        mockGovernanceCanister.getNetworkEconomicsParameters
+      ).toHaveBeenCalledWith({ certified: false });
     });
   });
 });

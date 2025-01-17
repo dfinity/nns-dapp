@@ -1260,13 +1260,21 @@ interface I18nPortfolio {
   no_tokens_card_button: string;
   no_neurons_card_description: string;
   no_neurons_card_button: string;
-  tokens_card_title: string;
-  tokens_card_link: string;
-  tokens_card_list_first_column: string;
-  tokens_card_list_second_column_mobile: string;
-  tokens_card_list_second_column: string;
-  tokens_card_list_third_column: string;
-  tokens_card_info_row: string;
+  held_tokens_card_title: string;
+  held_tokens_card_link: string;
+  held_tokens_card_list_first_column: string;
+  held_tokens_card_list_second_column_mobile: string;
+  held_tokens_card_list_second_column: string;
+  held_tokens_card_list_third_column: string;
+  held_tokens_card_info_row: string;
+  staked_tokens_card_title: string;
+  staked_tokens_card_link: string;
+  staked_tokens_card_list_first_column: string;
+  staked_tokens_card_list_second_column_mobile: string;
+  staked_tokens_card_list_second_column: string;
+  staked_tokens_card_list_third_column: string;
+  staked_tokens_card_info_row: string;
+  total_assets_title: string;
 }
 
 interface I18nNeuron_state {

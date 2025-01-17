@@ -1,25 +1,29 @@
 <script lang="ts">
+  import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
-  import NoProjectsCard from "$lib/components/portfolio/NoProjectsCard.svelte";
-  import NoTokensCard from "$lib/components/portfolio/NoTokensCard.svelte";
-  import TokensCard from "$lib/components/portfolio/TokensCard.svelte";
+  import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
+  import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
+  import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
-  import { getTopTokens } from "$lib/utils/portfolio.utils";
+  import {
+    getTopHeldTokens,
+    getTopStakedTokens,
+  } from "$lib/utils/portfolio.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
 
-  export let userTokensData: UserToken[];
+  export let userTokens: UserToken[];
   export let tableProjects: TableProject[];
 
   let totalTokensBalanceInUsd: number;
-  $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokensData);
+  $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokens);
 
   let hasUnpricedTokens: boolean;
-  $: hasUnpricedTokens = userTokensData.some(
+  $: hasUnpricedTokens = userTokens.some(
     (token) =>
       token.balance instanceof TokenAmountV2 &&
       token.balance.toUlps() > 0n &&
@@ -44,20 +48,26 @@
     ? totalTokensBalanceInUsd + totalStakedInUsd
     : undefined;
 
-  let showNoTokensCard: boolean;
-  $: showNoTokensCard = $authSignedInStore && totalTokensBalanceInUsd === 0;
+  let showNoHeldTokensCard: boolean;
+  $: showNoHeldTokensCard = $authSignedInStore && totalTokensBalanceInUsd === 0;
 
-  let showNoProjectsCard: boolean;
-  $: showNoProjectsCard = !$authSignedInStore || totalStakedInUsd === 0;
+  let showNoStakedTokensCard: boolean;
+  $: showNoStakedTokensCard = $authSignedInStore && totalStakedInUsd === 0;
 
   // The Card should display a Primary Action when it is the only available option.
   // This occurs when there are tokens but no stake.
-  let hasNoProjectsCardAPrimaryAction: boolean;
-  $: hasNoProjectsCardAPrimaryAction = !showNoTokensCard;
+  let hasNoStakedTokensCardAPrimaryAction: boolean;
+  $: hasNoStakedTokensCardAPrimaryAction = !showNoHeldTokensCard;
 
-  let topTokens: UserTokenData[];
-  $: topTokens = getTopTokens({
-    userTokens: userTokensData,
+  let topHeldTokens: UserTokenData[];
+  $: topHeldTokens = getTopHeldTokens({
+    userTokens: userTokens,
+    isSignedIn: $authSignedInStore,
+  });
+
+  let topStakedTokens: TableProject[];
+  $: topStakedTokens = getTopStakedTokens({
+    projects: tableProjects,
     isSignedIn: $authSignedInStore,
   });
 </script>
@@ -73,13 +83,19 @@
     />
   </div>
   <div class="content">
-    {#if showNoTokensCard}
-      <NoTokensCard />
+    {#if showNoHeldTokensCard}
+      <NoHeldTokensCard />
     {:else}
-      <TokensCard {topTokens} usdAmount={totalTokensBalanceInUsd} />
+      <HeldTokensCard {topHeldTokens} usdAmount={totalTokensBalanceInUsd} />
     {/if}
-    {#if showNoProjectsCard}
-      <NoProjectsCard primaryCard={hasNoProjectsCardAPrimaryAction} />
+    {#if showNoStakedTokensCard}
+      <NoStakedTokensCard primaryCard={hasNoStakedTokensCardAPrimaryAction} />
+    {:else}
+      <StakedTokensCard
+        {topStakedTokens}
+        usdAmount={totalStakedInUsd}
+        numberOfTopHeldTokens={topHeldTokens.length}
+      />
     {/if}
   </div>
 </main>

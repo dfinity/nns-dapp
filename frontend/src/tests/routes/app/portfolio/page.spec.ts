@@ -133,11 +133,12 @@ describe("Portfolio route", () => {
   it("should render the Portfolio page with visitor data", async () => {
     const po = await renderPage();
     const portfolioPagePo = po.getPortfolioPagePo();
-    const tokensCardPo = portfolioPagePo.getTokensCardPo();
+    const tokensCardPo = portfolioPagePo.getHeldTokensCardPo();
 
-    const titles = await tokensCardPo.getTokensTitles();
-    const usdBalances = await tokensCardPo.getTokensUsdBalances();
-    const nativeBalances = await tokensCardPo.getTokensNativeBalances();
+    const titles = await tokensCardPo.getHeldTokensTitles();
+    const usdBalances = await tokensCardPo.getHeldTokensBalanceInUsd();
+    const nativeBalances =
+      await tokensCardPo.getHeldTokensBalanceInNativeCurrency();
 
     expect(await portfolioPagePo.getUsdValueBannerPo().getPrimaryAmount()).toBe(
       "$-/-"
