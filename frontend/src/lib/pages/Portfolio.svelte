@@ -86,7 +86,11 @@
     {#if showNoHeldTokensCard}
       <NoHeldTokensCard />
     {:else}
-      <HeldTokensCard {topHeldTokens} usdAmount={totalTokensBalanceInUsd} />
+      <HeldTokensCard
+        {topHeldTokens}
+        usdAmount={totalTokensBalanceInUsd}
+        numberOfTopStakedTokens={topStakedTokens.length}
+      />
     {/if}
     {#if showNoStakedTokensCard}
       <NoStakedTokensCard primaryCard={hasNoStakedTokensCardAPrimaryAction} />

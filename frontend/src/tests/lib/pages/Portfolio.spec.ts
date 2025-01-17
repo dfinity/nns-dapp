@@ -1,14 +1,21 @@
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import Portfolio from "$lib/pages/Portfolio.svelte";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import type { TableProject } from "$lib/types/staking";
-import type { UserToken } from "$lib/types/tokens-page";
+import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { mockTableProject } from "$tests/mocks/staking.mock";
-import { createUserToken } from "$tests/mocks/tokens-page.mock";
+import {
+  ckBTCTokenBase,
+  ckETHTokenBase,
+  ckTESTBTCTokenBase,
+  createIcpUserToken,
+  createUserToken,
+} from "$tests/mocks/tokens-page.mock";
 import { PortfolioPagePo } from "$tests/page-objects/PortfolioPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
@@ -30,6 +37,54 @@ describe("Portfolio page", () => {
   };
 
   describe("when not logged in", () => {
+    const mockIcpToken = createIcpUserToken();
+    const mockCkBTCToken = createUserToken(ckBTCTokenBase);
+    const mockCkTESTBTCToken = createUserToken(ckTESTBTCTokenBase);
+    const mockCkETHToken = createUserToken(ckETHTokenBase);
+
+    const mockTokens = [
+      mockIcpToken,
+      mockCkBTCToken,
+      mockCkTESTBTCToken,
+      mockCkETHToken,
+    ] as UserTokenData[];
+
+    const icpProject: TableProject = {
+      ...mockTableProject,
+      stakeInUsd: undefined,
+      domKey: "/staking/icp",
+      stake: new UnavailableTokenAmount(NNS_TOKEN_DATA),
+    };
+    const tableProject1: TableProject = {
+      ...mockTableProject,
+      title: "Project 1",
+      stakeInUsd: undefined,
+      domKey: "/staking/1",
+      stake: new UnavailableTokenAmount(mockToken),
+    };
+    const tableProject2: TableProject = {
+      ...mockTableProject,
+      title: "Project 2",
+      stakeInUsd: undefined,
+      domKey: "/staking/2",
+      stake: new UnavailableTokenAmount(mockToken),
+    };
+
+    const tableProject3: TableProject = {
+      ...mockTableProject,
+      title: "Project 3",
+      stakeInUsd: undefined,
+      domKey: "/staking/3",
+      stake: new UnavailableTokenAmount(mockToken),
+    };
+
+    const mockTableProjects: TableProject[] = [
+      icpProject,
+      tableProject1,
+      tableProject2,
+      tableProject3,
+    ];
+
     beforeEach(() => {
       setNoIdentity();
     });
@@ -40,23 +95,22 @@ describe("Portfolio page", () => {
       expect(await po.getLoginCard().isPresent()).toBe(true);
     });
 
-    it("should show the HeldTokensCard default data", async () => {
-      const po = renderPage();
+    it("should show both cards with default data", async () => {
+      const po = renderPage({
+        tableProjects: mockTableProjects,
+        userTokens: mockTokens,
+      });
 
-      const tokensCardPo = po.getHeldTokensCardPo();
-
-      expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
-      expect(await tokensCardPo.isPresent()).toBe(true);
-      expect(await tokensCardPo.getInfoRow().isPresent()).toBe(false);
-    });
-
-    it("should show the StakedTokensCard default data", async () => {
-      const po = renderPage();
-
+      const heldTokensCardPo = po.getHeldTokensCardPo();
       const stakedTokensCardPo = po.getStakedTokensCardPo();
 
+      expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
       expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(false);
+
+      expect(await heldTokensCardPo.isPresent()).toBe(true);
       expect(await stakedTokensCardPo.isPresent()).toBe(true);
+
+      expect(await heldTokensCardPo.getInfoRow().isPresent()).toBe(false);
       expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(false);
     });
   });
