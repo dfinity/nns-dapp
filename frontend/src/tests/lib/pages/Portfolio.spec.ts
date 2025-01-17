@@ -187,7 +187,9 @@ describe("Portfolio page", () => {
 
         expect(await po.getNoHeldTokensCard().isPresent()).toBe(true);
         expect(await po.getHeldTokensCardPo().isPresent()).toBe(false);
-        expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$0.00");
+        expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
+          "$0.00"
+        );
       });
 
       it("should not display the card when the tokens accounts balance is not zero", async () => {
@@ -199,7 +201,9 @@ describe("Portfolio page", () => {
 
         expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
         expect(await po.getHeldTokensCardPo().isPresent()).toBe(true);
-        expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$2.00");
+        expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
+          "$2.00"
+        );
       });
     });
 
@@ -354,7 +358,9 @@ describe("Portfolio page", () => {
         const po = renderPage();
 
         expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(true);
-        expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$0.00");
+        expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
+          "$0.00"
+        );
       });
 
       it("should not display the card when the neurons accounts balance is not zero", async () => {
@@ -365,7 +371,9 @@ describe("Portfolio page", () => {
         const po = renderPage({ tableProjects: [tableProject] });
 
         expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(false);
-        expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$2.00");
+        expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
+          "$2.00"
+        );
       });
 
       it("should display a primary action when the neurons accounts balance is zero and the tokens balance is not zero", async () => {
@@ -377,7 +385,9 @@ describe("Portfolio page", () => {
 
         expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(true);
         expect(await po.getNoStakedTokensCarPo().hasPrimaryAction()).toBe(true);
-        expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$2.00");
+        expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
+          "$2.00"
+        );
       });
 
       it("should not display a primary action when the neurons accounts balance is zero and the tokens balance is also zero", async () => {
@@ -387,86 +397,66 @@ describe("Portfolio page", () => {
         expect(await po.getNoStakedTokensCarPo().hasPrimaryAction()).toBe(
           false
         );
-        expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$0.00");
+        expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
+          "$0.00"
+        );
       });
     });
 
-    describe("UsdValueBanner", () => {
-      const token1 = createUserToken({
-        universeId: principal(1),
-        balanceInUsd: 5,
-      });
-      const token2 = createUserToken({
-        universeId: principal(2),
-        balanceInUsd: 7,
-      });
-      const token3 = createUserToken({
-        universeId: principal(3),
-        balanceInUsd: undefined,
-      });
-
-      const tableProject1: TableProject = {
-        ...mockTableProject,
-        stakeInUsd: 2,
-        domKey: "/project/1",
-      };
-      const tableProject2: TableProject = {
-        ...mockTableProject,
-        stakeInUsd: 10.5,
-        domKey: "/project/2",
-      };
-      const tableProject3: TableProject = {
-        ...mockTableProject,
-        stakeInUsd: undefined,
-        domKey: "/project/3",
-      };
-
+    describe("TotalAssetsCard", () => {
       it("should display total assets", async () => {
         const po = renderPage({
           userTokens: [token1, token2],
-          tableProjects: [tableProject1, tableProject2],
+          tableProjects: [icpProject, tableProject1],
         });
 
-        // There are two tokens with a balance of 5$ and 7$, and two projects with a staked balance of 2$ and 10.5$ -> 24.5$
-        expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe(
-          "$24.50"
+        // There are two tokens with a balance of 100$ and 200$, and two projects with a staked balance of 100$ and 200$ -> 600$
+        expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
+          "$600.00"
         );
         // 1ICP == 10$
-        expect(await po.getUsdValueBannerPo().getSecondaryAmount()).toBe(
-          "2.45 ICP"
+        expect(await po.getTotalAssetsCardPo().getSecondaryAmount()).toBe(
+          "60.00 ICP"
         );
         expect(
-          await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
+          await po.getTotalAssetsCardPo().getTotalsTooltipIconPo().isPresent()
         ).toBe(false);
       });
 
-      it("should ignore tokens with unknown balance in USD and display tooltip", async () => {
-        const po = renderPage({ userTokens: [token1, token2, token3] });
+      it("should ignore held tokens with unknown balance in USD and display tooltip", async () => {
+        const tokenNoBalance = createUserToken({
+          balanceInUsd: undefined,
+        });
+        const po = renderPage({ userTokens: [token1, token2, tokenNoBalance] });
 
-        expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe(
-          "$12.00"
+        expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
+          "$300.00"
         );
-        expect(await po.getUsdValueBannerPo().getSecondaryAmount()).toBe(
-          "1.20 ICP"
+        expect(await po.getTotalAssetsCardPo().getSecondaryAmount()).toBe(
+          "30.00 ICP"
         );
         expect(
-          await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
+          await po.getTotalAssetsCardPo().getTotalsTooltipIconPo().isPresent()
         ).toBe(true);
       });
 
-      it("should ignore neurons with unknown balance in USD and display tooltip", async () => {
+      it("should ignore staked tokens with unknown balance in USD and display tooltip", async () => {
+        const projectNoBalance: TableProject = {
+          ...mockTableProject,
+          stakeInUsd: undefined,
+        };
         const po = renderPage({
-          tableProjects: [tableProject1, tableProject2, tableProject3],
+          tableProjects: [tableProject1, tableProject2, projectNoBalance],
         });
 
-        expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe(
-          "$12.50"
+        expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
+          "$500.00"
         );
-        expect(await po.getUsdValueBannerPo().getSecondaryAmount()).toBe(
-          "1.25 ICP"
+        expect(await po.getTotalAssetsCardPo().getSecondaryAmount()).toBe(
+          "50.00 ICP"
         );
         expect(
-          await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
+          await po.getTotalAssetsCardPo().getTotalsTooltipIconPo().isPresent()
         ).toBe(true);
       });
     });
