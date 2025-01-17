@@ -18,19 +18,36 @@
   } from "@dfinity/gix-components";
   import { type NeuronInfo } from "@dfinity/nns";
   import { nonNullish, secondsToDuration } from "@dfinity/utils";
-  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
+  import {
+    clearFollowingAfterSecondsStore,
+    startReducingVotingPowerAfterSecondsStore,
+  } from "$lib/derived/network-economics.derived";
 
   export let neuron: NeuronInfo;
 
   let isFollowingReset = false;
-  $: isFollowingReset = isNeuronFollowingReset(neuron);
+  $: isFollowingReset = isNeuronFollowingReset({
+    neuron,
+    startReducingVotingPowerAfterSeconds:
+      $startReducingVotingPowerAfterSecondsStore,
+    clearFollowingAfterSeconds: $clearFollowingAfterSecondsStore,
+  });
 
   let isLosingRewards = false;
-  $: isLosingRewards = isNeuronLosingRewards(neuron);
+  $: isLosingRewards = isNeuronLosingRewards({
+    neuron,
+    startReducingVotingPowerAfterSeconds:
+      $startReducingVotingPowerAfterSecondsStore,
+  });
 
   let isLosingRewardsSoon = false;
   $: isLosingRewardsSoon =
-    !isLosingRewards && shouldDisplayRewardLossNotification(neuron);
+    !isLosingRewards &&
+    shouldDisplayRewardLossNotification({
+      neuron,
+      startReducingVotingPowerAfterSeconds:
+        $startReducingVotingPowerAfterSecondsStore,
+    });
 
   let icon: typeof IconError | typeof IconWarning | typeof IconCheckCircleFill;
   $: icon =
@@ -48,7 +65,13 @@
         ? $i18n.neuron_detail.reward_status_losing_soon
         : $i18n.neuron_detail.reward_status_active;
 
-  const getDescription = (neuron: NeuronInfo): string => {
+  const getDescription = ({
+    neuron,
+    startReducingVotingPowerAfterSeconds,
+  }: {
+    neuron: NeuronInfo;
+    startReducingVotingPowerAfterSeconds: bigint;
+  }): string => {
     if (isFollowingReset)
       return $i18n.neuron_detail.reward_status_inactive_reset_description;
 
@@ -56,7 +79,12 @@
       return $i18n.neuron_detail.reward_status_inactive_description;
 
     const timeUntilLoss = secondsToDuration({
-      seconds: BigInt(secondsUntilLosingRewards(neuron)),
+      seconds: BigInt(
+        secondsUntilLosingRewards({
+          neuron,
+          startReducingVotingPowerAfterSeconds,
+        })
+      ),
       i18n: $i18n.time,
     });
     return replacePlaceholders(
@@ -68,7 +96,7 @@
   };
 </script>
 
-{#if nonNullish($startReducingVotingPowerAfterSecondsStore)}
+{#if nonNullish($startReducingVotingPowerAfterSecondsStore) && nonNullish($clearFollowingAfterSecondsStore)}
   <CommonItemAction
     testId="nns-neuron-reward-status-action-component"
     tooltipText={replacePlaceholders($i18n.losing_rewards.description, {
@@ -96,7 +124,11 @@
       class:negative={isLosingRewards || isLosingRewardsSoon}
       data-tid="state-description"
     >
-      {getDescription(neuron)}
+      {getDescription({
+        neuron,
+        startReducingVotingPowerAfterSeconds:
+          $startReducingVotingPowerAfterSecondsStore,
+      })}
     </span>
 
     {#if isFollowingReset}

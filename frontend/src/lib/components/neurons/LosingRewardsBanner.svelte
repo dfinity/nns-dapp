@@ -20,12 +20,23 @@
   let mostInactiveNeuron: NeuronInfo | undefined;
   $: mostInactiveNeuron = $soonLosingRewardNeuronsStore[0];
 
-  const getTitle = (neuron: NeuronInfo) =>
-    isNeuronLosingRewards(neuron)
+  const getTitle = ({
+    neuron,
+    startReducingVotingPowerAfterSeconds,
+  }: {
+    neuron: NeuronInfo;
+    startReducingVotingPowerAfterSeconds: bigint;
+  }) =>
+    isNeuronLosingRewards({ neuron, startReducingVotingPowerAfterSeconds })
       ? $i18n.losing_rewards_banner.rewards_missing_title
       : replacePlaceholders($i18n.losing_rewards_banner.days_left_title, {
           $timeLeft: secondsToDuration({
-            seconds: BigInt(secondsUntilLosingRewards(neuron)),
+            seconds: BigInt(
+              secondsUntilLosingRewards({
+                neuron,
+                startReducingVotingPowerAfterSeconds,
+              })
+            ),
             i18n: $i18n.time,
           }),
         });
@@ -36,7 +47,11 @@
 <TestIdWrapper testId="losing-rewards-banner-component">
   {#if nonNullish(mostInactiveNeuron) && nonNullish($startReducingVotingPowerAfterSecondsStore)}
     <Banner
-      title={getTitle(mostInactiveNeuron)}
+      title={getTitle({
+        neuron: mostInactiveNeuron,
+        startReducingVotingPowerAfterSeconds:
+          $startReducingVotingPowerAfterSecondsStore,
+      })}
       text={replacePlaceholders($i18n.losing_rewards.description, {
         $period: secondsToDissolveDelayDuration(
           $startReducingVotingPowerAfterSecondsStore

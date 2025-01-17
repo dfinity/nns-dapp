@@ -47,6 +47,7 @@
   import { writable } from "svelte/store";
   import ConfirmFollowingBanner from "$lib/components/neuron-detail/ConfirmFollowingBanner.svelte";
   import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
+  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 
   export let neuronIdText: string | undefined | null;
 
@@ -153,9 +154,14 @@
 
   let isConfirmFollowingVisible = false;
   $: isConfirmFollowingVisible =
+    nonNullish($startReducingVotingPowerAfterSecondsStore) &&
     $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION &&
     nonNullish(neuron) &&
-    shouldDisplayRewardLossNotification(neuron);
+    shouldDisplayRewardLossNotification({
+      neuron,
+      startReducingVotingPowerAfterSeconds:
+        $startReducingVotingPowerAfterSecondsStore,
+    });
 </script>
 
 <TestIdWrapper testId="nns-neuron-detail-component">
