@@ -1,7 +1,9 @@
 import NnsNeuronVotingPowerSection from "$lib/components/neuron-detail/NnsNeuronVotingPowerSection.svelte";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronVotingPowerSectionPo } from "$tests/page-objects/NnsNeuronVotingPowerSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -21,6 +23,13 @@ describe("NnsStakeItemAction", () => {
       new JestPageObjectElement(container)
     );
   };
+
+  beforeEach(() => {
+    networkEconomicsStore.setParameters({
+      parameters: mockNetworkEconomics,
+      certified: true,
+    });
+  });
 
   it("should render voting power", async () => {
     const neuron: NeuronInfo = {
@@ -153,6 +162,20 @@ describe("NnsStakeItemAction", () => {
     const po = renderComponent(mockNeuron);
 
     expect(await po.getNnsNeuronRewardStatusActionPo().isPresent()).toBe(true);
+  });
+
+  it("should note render reward status item action when not network economics available", async () => {
+    networkEconomicsStore.setParameters({
+      parameters: undefined,
+      certified: undefined,
+    });
+    overrideFeatureFlagsStore.setFlag(
+      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+      true
+    );
+    const po = renderComponent(mockNeuron);
+
+    expect(await po.getNnsNeuronRewardStatusActionPo().isPresent()).toBe(false);
   });
 
   it("should not render reward status item action when flag disabled", async () => {
