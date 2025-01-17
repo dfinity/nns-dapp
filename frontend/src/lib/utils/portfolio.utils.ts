@@ -84,3 +84,24 @@ export const getTopStakedTokens = ({
 
   return topProjects.filter((project) => project?.stakeInUsd ?? 0 > 0);
 };
+
+/**
+ * Determines whether to show an info row in a card based on specific display rules.
+ * Rules for showing the info row:
+ * 1. When the other card has more tokens than the current card
+ * 2. When the other card is empty (has 0 tokens)
+ * 3. When both cards have fewer than 3 tokens (for visual balance)
+ */
+export const shouldShowInfoRow = ({
+  currentCardTokens,
+  otherCardTokens,
+}: {
+  currentCardTokens: number;
+  otherCardTokens: number;
+}) => {
+  return (
+    otherCardTokens - currentCardTokens > 0 ||
+    otherCardTokens === 0 ||
+    (currentCardTokens < 3 && otherCardTokens < 3)
+  );
+};
