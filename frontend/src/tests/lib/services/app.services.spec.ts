@@ -1,5 +1,6 @@
 import { clearSnsAggregatorCache } from "$lib/api-services/sns-aggregator.api-service";
 import * as agent from "$lib/api/agent.api";
+import * as governanceApi from "$lib/api/governance.api";
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import * as actionableProposalsServices from "$lib/services/actionable-proposals.services";
@@ -7,8 +8,9 @@ import * as actionableSnsProposalsServices from "$lib/services/actionable-sns-pr
 import { initAppPrivateData } from "$lib/services/app.services";
 import * as importedTokensServices from "$lib/services/imported-tokens.services";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
@@ -132,6 +134,23 @@ describe("app-services", () => {
     expect(spyLoadImportedTokens).toHaveBeenCalledTimes(1);
     expect(spyLoadImportedTokens).toHaveBeenCalledWith({
       ignoreAccountNotFoundError: true,
+    });
+  });
+
+  it("should load network economics", async () => {
+    const spyGetNetworkEconomicsParameters = vi
+      .spyOn(governanceApi, "getNetworkEconomicsParameters")
+      .mockResolvedValue(mockNetworkEconomics);
+
+    expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledTimes(0);
+
+    initAppPrivateData();
+    await runResolvedPromises();
+
+    expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledTimes(1);
+    expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledWith({
+      identity: mockIdentity,
+      certified: true,
     });
   });
 });
