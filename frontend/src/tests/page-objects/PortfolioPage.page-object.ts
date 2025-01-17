@@ -3,6 +3,7 @@ import { NoStakedTokensCardPo } from "$tests/page-objects/NoStakedTokensCard.pag
 import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { StakedTokensCardPo } from "./StakedTokensCard.page-object";
 
 export class PortfolioPagePo extends BasePageObject {
   private static readonly TID = "portfolio-page-component";
@@ -29,5 +30,9 @@ export class PortfolioPagePo extends BasePageObject {
 
   getHeldTokensCardPo(): HeldTokensCardPo {
     return HeldTokensCardPo.under(this.root);
+  }
+
+  getStakedTokensCardPo(): StakedTokensCardPo {
+    return StakedTokensCardPo.under(this.root);
   }
 }
