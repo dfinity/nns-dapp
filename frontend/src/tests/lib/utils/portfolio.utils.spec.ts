@@ -3,16 +3,16 @@ import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.
 import type { TableProject } from "$lib/types/staking";
 import type { UserToken } from "$lib/types/tokens-page";
 import {
-    getTopHeldTokens,
-    getTopStakedTokens,
-    shouldShowInfoRow,
+  getTopHeldTokens,
+  getTopStakedTokens,
+  shouldShowInfoRow,
 } from "$lib/utils/portfolio.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockTableProject } from "$tests/mocks/staking.mock";
 import {
-    createIcpUserToken,
-    createUserToken,
-    createUserTokenLoading,
+  createIcpUserToken,
+  createUserToken,
+  createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
 
 describe("Portfolio utils", () => {
@@ -335,7 +335,6 @@ describe("Portfolio utils", () => {
         })
       ).toBe(true);
     });
-
 
     it("should show info row when other card is empty and current card has less than 4 tokens", () => {
       expect(
