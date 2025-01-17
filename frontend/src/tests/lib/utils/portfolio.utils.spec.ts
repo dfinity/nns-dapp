@@ -330,8 +330,8 @@ describe("Portfolio utils", () => {
     it("should show info row when other card has more tokens", () => {
       expect(
         shouldShowInfoRow({
-          currentCardTokens: 1,
-          otherCardTokens: 4,
+          currentCardNumberOfTokens: 1,
+          otherCardNumberOfTokens: 4,
         })
       ).toBe(true);
     });
@@ -339,8 +339,8 @@ describe("Portfolio utils", () => {
     it("should show info row when other card is empty", () => {
       expect(
         shouldShowInfoRow({
-          currentCardTokens: 2,
-          otherCardTokens: 0,
+          currentCardNumberOfTokens: 2,
+          otherCardNumberOfTokens: 0,
         })
       ).toBe(true);
     });
@@ -348,15 +348,15 @@ describe("Portfolio utils", () => {
     it("should show info row when both cards have fewer than 3 tokens", () => {
       expect(
         shouldShowInfoRow({
-          currentCardTokens: 2,
-          otherCardTokens: 2,
+          currentCardNumberOfTokens: 2,
+          otherCardNumberOfTokens: 2,
         })
       ).toBe(true);
 
       expect(
         shouldShowInfoRow({
-          currentCardTokens: 1,
-          otherCardTokens: 2,
+          currentCardNumberOfTokens: 1,
+          otherCardNumberOfTokens: 2,
         })
       ).toBe(true);
     });
@@ -364,15 +364,15 @@ describe("Portfolio utils", () => {
     it("should not show info row when both cards have 3 or more tokens", () => {
       expect(
         shouldShowInfoRow({
-          currentCardTokens: 3,
-          otherCardTokens: 3,
+          currentCardNumberOfTokens: 3,
+          otherCardNumberOfTokens: 3,
         })
       ).toBe(false);
 
       expect(
         shouldShowInfoRow({
-          currentCardTokens: 4,
-          otherCardTokens: 3,
+          currentCardNumberOfTokens: 4,
+          otherCardNumberOfTokens: 3,
         })
       ).toBe(false);
     });

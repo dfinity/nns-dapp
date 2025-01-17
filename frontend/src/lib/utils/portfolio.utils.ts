@@ -87,21 +87,23 @@ export const getTopStakedTokens = ({
 
 /**
  * Determines whether to show an info row in a card based on specific display rules.
+ * This ensures both cards have consistent heights by filling empty space
+ * with a message instead of leaving a blank space.
  * Rules for showing the info row:
  * 1. When the other card has more tokens than the current card
  * 2. When the other card is empty (has 0 tokens)
  * 3. When both cards have fewer than 3 tokens (for visual balance)
  */
 export const shouldShowInfoRow = ({
-  currentCardTokens,
-  otherCardTokens,
+  currentCardNumberOfTokens,
+  otherCardNumberOfTokens,
 }: {
-  currentCardTokens: number;
-  otherCardTokens: number;
+  currentCardNumberOfTokens: number;
+  otherCardNumberOfTokens: number;
 }) => {
   return (
-    otherCardTokens - currentCardTokens > 0 ||
-    otherCardTokens === 0 ||
-    (currentCardTokens < 3 && otherCardTokens < 3)
+    otherCardNumberOfTokens - currentCardNumberOfTokens > 0 ||
+    otherCardNumberOfTokens === 0 ||
+    (currentCardNumberOfTokens < 3 && otherCardNumberOfTokens < 3)
   );
 };
