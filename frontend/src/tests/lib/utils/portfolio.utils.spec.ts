@@ -5,6 +5,7 @@ import type { UserToken } from "$lib/types/tokens-page";
 import {
   getTopHeldTokens,
   getTopStakedTokens,
+  shouldShowInfoRow,
 } from "$lib/utils/portfolio.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockTableProject } from "$tests/mocks/staking.mock";
@@ -322,6 +323,79 @@ describe("Portfolio utils", () => {
 
         expect(result).toHaveLength(0);
       });
+    });
+  });
+
+  describe("shouldShowInfoRow", () => {
+    it("should show info row when other card has more tokens", () => {
+      expect(
+        shouldShowInfoRow({
+          currentCardNumberOfTokens: 1,
+          otherCardNumberOfTokens: 4,
+        })
+      ).toBe(true);
+    });
+
+    it("should show info row when other card is empty and current card has less than 4 tokens", () => {
+      expect(
+        shouldShowInfoRow({
+          currentCardNumberOfTokens: 2,
+          otherCardNumberOfTokens: 0,
+        })
+      ).toBe(true);
+
+      expect(
+        shouldShowInfoRow({
+          currentCardNumberOfTokens: 3,
+          otherCardNumberOfTokens: 0,
+        })
+      ).toBe(true);
+
+      expect(
+        shouldShowInfoRow({
+          currentCardNumberOfTokens: 4,
+          otherCardNumberOfTokens: 0,
+        })
+      ).toBe(false);
+
+      expect(
+        shouldShowInfoRow({
+          currentCardNumberOfTokens: 5,
+          otherCardNumberOfTokens: 0,
+        })
+      ).toBe(false);
+    });
+
+    it("should show info row when both cards have fewer than 3 tokens", () => {
+      expect(
+        shouldShowInfoRow({
+          currentCardNumberOfTokens: 2,
+          otherCardNumberOfTokens: 2,
+        })
+      ).toBe(true);
+
+      expect(
+        shouldShowInfoRow({
+          currentCardNumberOfTokens: 1,
+          otherCardNumberOfTokens: 2,
+        })
+      ).toBe(true);
+    });
+
+    it("should not show info row when both cards have 3 or more tokens", () => {
+      expect(
+        shouldShowInfoRow({
+          currentCardNumberOfTokens: 3,
+          otherCardNumberOfTokens: 3,
+        })
+      ).toBe(false);
+
+      expect(
+        shouldShowInfoRow({
+          currentCardNumberOfTokens: 4,
+          otherCardNumberOfTokens: 3,
+        })
+      ).toBe(false);
     });
   });
 });
