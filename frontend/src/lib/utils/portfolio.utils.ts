@@ -102,7 +102,7 @@ export const shouldShowInfoRow = ({
   otherCardNumberOfTokens: number;
 }) => {
   return (
-    otherCardNumberOfTokens - currentCardNumberOfTokens > 0 ||
+    otherCardNumberOfTokens > currentCardNumberOfTokens ||
     (otherCardNumberOfTokens === 0 && currentCardNumberOfTokens < 4) ||
     (currentCardNumberOfTokens < 3 && otherCardNumberOfTokens < 3)
   );
