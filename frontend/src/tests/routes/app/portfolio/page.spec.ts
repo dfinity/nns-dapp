@@ -140,11 +140,11 @@ describe("Portfolio route", () => {
     const nativeBalances =
       await tokensCardPo.getHeldTokensBalanceInNativeCurrency();
 
-    expect(await portfolioPagePo.getUsdValueBannerPo().getPrimaryAmount()).toBe(
-      "$-/-"
-    );
     expect(
-      await portfolioPagePo.getUsdValueBannerPo().getSecondaryAmount()
+      await portfolioPagePo.getTotalAssetsCardPo().getPrimaryAmount()
+    ).toBe("$-/-");
+    expect(
+      await portfolioPagePo.getTotalAssetsCardPo().getSecondaryAmount()
     ).toBe("-/- ICP");
 
     expect(titles.length).toBe(4);
@@ -354,12 +354,72 @@ describe("Portfolio route", () => {
       // --------------------
       // Total: $203’231.00
       expect(
-        await portfolioPagePo.getUsdValueBannerPo().getPrimaryAmount()
+        await portfolioPagePo.getTotalAssetsCardPo().getPrimaryAmount()
       ).toBe("$203’231.00");
       // $1 -> 0.1ICP
       expect(
-        await portfolioPagePo.getUsdValueBannerPo().getSecondaryAmount()
+        await portfolioPagePo.getTotalAssetsCardPo().getSecondaryAmount()
       ).toBe("20’323.10 ICP");
+
+      const heldTokensCardPo = portfolioPagePo.getHeldTokensCardPo();
+      const heldTokensTitles = await heldTokensCardPo.getHeldTokensTitles();
+      const heldTokensBalanceInUsdBalance =
+        await heldTokensCardPo.getHeldTokensBalanceInUsd();
+      const heldTokensBalanceInNativeBalance =
+        await heldTokensCardPo.getHeldTokensBalanceInNativeCurrency();
+
+      expect(heldTokensTitles.length).toBe(4);
+      expect(heldTokensTitles).toEqual([
+        "Internet Computer",
+        "ckBTC",
+        "ckTESTBTC",
+        "ckETH",
+      ]);
+
+      expect(heldTokensBalanceInUsdBalance.length).toBe(4);
+      expect(heldTokensBalanceInUsdBalance).toEqual([
+        "$1’000.00",
+        "$100’000.00",
+        "$100’000.00",
+        "$1’000.00",
+      ]);
+
+      expect(heldTokensBalanceInNativeBalance.length).toBe(4);
+      expect(heldTokensBalanceInNativeBalance).toEqual([
+        "100.00 ICP",
+        "1.00 ckBTC",
+        "1.00 ckTESTBTC",
+        "0.10 ckETH",
+      ]);
+
+      expect(await heldTokensCardPo.getInfoRow().isVisible()).toBe(false);
+
+      const stakedTokensCardPo = portfolioPagePo.getStakedTokensCardPo();
+      const stakedTokensTitles =
+        await stakedTokensCardPo.getStakedTokensTitle();
+      const stakedTokensMaturities =
+        await stakedTokensCardPo.getStakedTokensMaturity();
+      const stakedTokensStakeInUsd =
+        await stakedTokensCardPo.getStakedTokensStakeInUsd();
+      const stakedTokensStakeInNativeCurrency =
+        await stakedTokensCardPo.getStakedTokensStakeInNativeCurrency();
+
+      expect(stakedTokensTitles.length).toBe(2);
+      expect(stakedTokensTitles).toEqual(["Internet Computer", "Tetris"]);
+
+      expect(stakedTokensMaturities.length).toBe(2);
+      expect(stakedTokensMaturities).toEqual(["0", "2.00"]);
+
+      expect(stakedTokensStakeInUsd.length).toBe(2);
+      expect(stakedTokensStakeInUsd).toEqual(["$10.00", "$200.00"]);
+
+      expect(stakedTokensStakeInNativeCurrency.length).toBe(2);
+      expect(stakedTokensStakeInNativeCurrency).toEqual([
+        "1.00 ICP",
+        "20.00 TST",
+      ]);
+
+      expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(true);
     });
   });
 });
