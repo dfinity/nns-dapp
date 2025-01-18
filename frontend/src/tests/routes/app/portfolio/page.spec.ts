@@ -363,7 +363,7 @@ describe("Portfolio route", () => {
 
       const heldTokensCardPo = portfolioPagePo.getHeldTokensCardPo();
       const heldTokensTitles = await heldTokensCardPo.getHeldTokensTitles();
-      const heldTokensBalanceInusdBalance =
+      const heldTokensBalanceInUsdBalance =
         await heldTokensCardPo.getHeldTokensBalanceInUsd();
       const heldTokensBalanceInNativeBalance =
         await heldTokensCardPo.getHeldTokensBalanceInNativeCurrency();
@@ -376,8 +376,8 @@ describe("Portfolio route", () => {
         "ckETH",
       ]);
 
-      expect(heldTokensBalanceInusdBalance.length).toBe(4);
-      expect(heldTokensBalanceInusdBalance).toEqual([
+      expect(heldTokensBalanceInUsdBalance.length).toBe(4);
+      expect(heldTokensBalanceInUsdBalance).toEqual([
         "$1’000.00",
         "$100’000.00",
         "$100’000.00",
