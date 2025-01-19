@@ -136,6 +136,16 @@ export class NnsNeuronDetailPo extends BasePageObject {
       .addMaturity(amount);
   }
 
+  async updateVotingPowerRefreshedTimestamp(timestamp: number): Promise<void> {
+    await this.getNnsNeuronTestnetFunctionsCardPo().clickUpdateVotingPowerRefreshedTimestamp();
+    await this.getNnsNeuronModalsPo()
+      .getUpdateVotingPowerRefreshedModalPo()
+      .waitFor();
+    await this.getNnsNeuronModalsPo()
+      .getUpdateVotingPowerRefreshedModalPo()
+      .updateTimestampSeconds(timestamp);
+  }
+
   async spawnNeuron({ percentage }: { percentage: number }): Promise<void> {
     await this.getMaturitySectionPo()
       .getAvailableMaturityItemActionPo()

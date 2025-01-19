@@ -13,4 +13,8 @@ export class NnsNeuronTestnetFunctionsCardPo extends BasePageObject {
   clickAddMaturity(): Promise<void> {
     return this.click("add-maturity-button");
   }
+
+  clickUpdateVotingPowerRefreshedTimestamp(): Promise<void> {
+    return this.click("update-voting-power-refreshed-button");
+  }
 }
