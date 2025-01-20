@@ -1,12 +1,5 @@
 import type { NNSDappCanisterOptions } from "$lib/canisters/nns-dapp/nns-dapp.canister.types";
 import { idlFactory as certifiedIdlFactory } from "$lib/canisters/nns-dapp/nns-dapp.certified.idl";
-import type { NNSDappService } from "$lib/canisters/nns-dapp/nns-dapp.idl";
-import { idlFactory } from "$lib/canisters/nns-dapp/nns-dapp.idl";
-import { Actor } from "@dfinity/agent";
-import { AccountIdentifier } from "@dfinity/ledger-icp";
-import type { ProposalId } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
-import { nonNullish, toNullable } from "@dfinity/utils";
 import {
   AccountNotFoundError,
   CanisterAlreadyAttachedError,
@@ -21,7 +14,9 @@ import {
   SubAccountLimitExceededError,
   TooManyImportedTokensError,
   UnknownProposalPayloadError,
-} from "./nns-dapp.errors";
+} from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import type { NNSDappService } from "$lib/canisters/nns-dapp/nns-dapp.idl";
+import { idlFactory } from "$lib/canisters/nns-dapp/nns-dapp.idl";
 import type {
   AccountDetails,
   CanisterDetails,
@@ -34,7 +29,12 @@ import type {
   RenameSubAccountRequest,
   RenameSubAccountResponse,
   SubAccountDetails,
-} from "./nns-dapp.types";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { Actor } from "@dfinity/agent";
+import { AccountIdentifier } from "@dfinity/ledger-icp";
+import type { ProposalId } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
+import { nonNullish, toNullable } from "@dfinity/utils";
 
 export class NNSDappCanister {
   private constructor(

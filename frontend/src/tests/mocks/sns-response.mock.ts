@@ -1,5 +1,19 @@
 import type { SnsSummarySwap } from "$lib/types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
+import {
+  mockDerived,
+  mockInit,
+  mockQueryMetadataResponse,
+  mockQueryTokenResponse,
+  principal,
+  summaryForLifecycle,
+} from "$tests/mocks/sns-projects.mock";
+import {
+  governanceCanisterIdMock,
+  indexCanisterIdMock,
+  ledgerCanisterIdMock,
+  swapCanisterIdMock,
+} from "$tests/mocks/sns.api.mock";
 import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import type {
@@ -8,20 +22,6 @@ import type {
   SnsSwapLifecycle,
 } from "@dfinity/sns";
 import { nonNullish, toNullable } from "@dfinity/utils";
-import {
-  mockDerived,
-  mockInit,
-  mockQueryMetadataResponse,
-  mockQueryTokenResponse,
-  principal,
-  summaryForLifecycle,
-} from "./sns-projects.mock";
-import {
-  governanceCanisterIdMock,
-  indexCanisterIdMock,
-  ledgerCanisterIdMock,
-  swapCanisterIdMock,
-} from "./sns.api.mock";
 
 const swapToQuerySwap = (swap: SnsSummarySwap): [SnsSwap] => [
   {

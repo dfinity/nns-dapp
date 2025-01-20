@@ -1,7 +1,7 @@
+import { IcpExchangeRatePo } from "$tests/page-objects/IcpExchangeRate.page-object";
 import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { IcpExchangeRatePo } from "./IcpExchangeRate.page-object";
 
 export class UsdValueBannerPo extends BasePageObject {
   private static readonly TID = "usd-value-banner-component";

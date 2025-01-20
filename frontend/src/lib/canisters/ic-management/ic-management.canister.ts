@@ -1,4 +1,8 @@
 import { toCanisterDetails } from "$lib/canisters/ic-management/converters";
+import type {
+  CanisterDetails,
+  CanisterSettings,
+} from "$lib/canisters/ic-management/ic-management.canister.types";
 import { mapError } from "$lib/canisters/ic-management/ic-management.errors";
 import type { ICManagementCanisterOptions } from "@dfinity/ic-management";
 import {
@@ -6,10 +10,6 @@ import {
   type CanisterStatusResponse,
 } from "@dfinity/ic-management";
 import type { Principal } from "@dfinity/principal";
-import type {
-  CanisterDetails,
-  CanisterSettings,
-} from "./ic-management.canister.types";
 
 /**
  * The ICManagementCanister was initially implemented here, but it has since been moved to ic-js and packaged as a standalone library.

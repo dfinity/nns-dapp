@@ -4,12 +4,12 @@ import type {
   RegisterHardwareWalletRequest,
   SubAccountDetails,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { AccountIdentifier } from "@dfinity/ledger-icp";
 import {
   mockAccountDetails,
   mockMainAccount,
   mockSubAccountDetails,
-} from "./icp-accounts.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
+import { AccountIdentifier } from "@dfinity/ledger-icp";
 
 // eslint-disable-next-line
 // @ts-ignore: test file
