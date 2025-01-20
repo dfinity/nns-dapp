@@ -91,7 +91,7 @@
               {heldToken.balance instanceof TokenAmountV2
                 ? formatTokenV2({
                     value: heldToken.balance,
-                    detailed: true,
+                    detailed: false,
                   })
                 : PRICE_NOT_AVAILABLE_PLACEHOLDER}
               <span class="symbol">

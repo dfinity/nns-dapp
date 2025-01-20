@@ -110,7 +110,7 @@
               {stakedToken.stake instanceof TokenAmountV2
                 ? formatTokenV2({
                     value: stakedToken.stake,
-                    detailed: true,
+                    detailed: false,
                   })
                 : PRICE_NOT_AVAILABLE_PLACEHOLDER}
               {stakedToken.stake.token.symbol}
