@@ -9,7 +9,7 @@ cd "$TOP_DIR/frontend"
 # 1. The $types import: SvelteKit generates virtual types for each page/layout that has to be imported like `./$types`
 # 2. The home page route: Special case in our app that requires relative imports due to SvelteKit's routing structure
 # 3. Imports in the style section of Svelte components
-if git grep -n "from ['\"]\.\./" -- "src/**/*.svelte" "src/**/*.ts" |
+if git grep -n "from ['\"]\." -- "src/**/*.svelte" "src/**/*.ts" |
   # 1. Skip $types imports
   grep -v "/\$types" |
   # 2. Skip home page route
