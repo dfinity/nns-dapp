@@ -207,7 +207,7 @@ describe("StakedTokensCard", () => {
         "0.01 ICP",
         "0.01 TET",
         "0.01 TET",
-        "0.011 TET",
+        "0.01 TET",
       ]);
     });
 
