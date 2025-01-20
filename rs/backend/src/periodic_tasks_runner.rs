@@ -1,5 +1,4 @@
 use crate::canisters::cmc;
-use crate::ledger_sync;
 use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use crate::state::with_state_mut;
 use cycles_minting_canister::{NotifyCreateCanister, NotifyError};
@@ -7,8 +6,6 @@ use dfn_core::api::{CanisterId, PrincipalId};
 use icp_ledger::BlockIndex;
 
 pub async fn run_periodic_tasks() {
-    ledger_sync::sync_transactions().await;
-
     with_state_mut(|state| {
         state.performance.increment_periodic_tasks_run();
     });
