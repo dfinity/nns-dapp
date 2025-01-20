@@ -23,6 +23,9 @@ test("Test periodic confirmation", async ({ page, context }) => {
     .getStakingPo()
     .stakeFirstNnsNeuron({ amount: 10, dissolveDelayDays: "max" });
 
+  const losingRewardsBannerPo = appPo.getStakingPo().getLosingRewardsBannerPo();
+  expect(await losingRewardsBannerPo.isVisible()).toBe(false);
+
   const neuronIds = await appPo.getNeuronsPo().getNnsNeuronsPo().getNeuronIds();
   const neuronDetail = appPo.getNeuronDetailPo().getNnsNeuronDetailPo();
   await appPo.goToNeuronDetails(neuronIds[0]);
@@ -34,7 +37,6 @@ test("Test periodic confirmation", async ({ page, context }) => {
 
   step("Review missing rewards banner");
   await appPo.goToStaking();
-  const losingRewardsBannerPo = appPo.getStakingPo().getLosingRewardsBannerPo();
   expect(await losingRewardsBannerPo.isVisible()).toBe(true);
 
   step("Confirm following");
