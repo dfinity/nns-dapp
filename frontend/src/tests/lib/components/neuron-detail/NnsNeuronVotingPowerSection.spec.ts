@@ -164,7 +164,7 @@ describe("NnsStakeItemAction", () => {
     expect(await po.getNnsNeuronRewardStatusActionPo().isPresent()).toBe(true);
   });
 
-  it("should note render reward status item action when not network economics available", async () => {
+  it("should not render reward status item action when not network economics available", async () => {
     networkEconomicsStore.setParameters({
       parameters: undefined,
       certified: undefined,
