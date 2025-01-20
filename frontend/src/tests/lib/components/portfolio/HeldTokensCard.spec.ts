@@ -135,7 +135,7 @@ describe("HeldTokensCard", () => {
       expect(nativeBalances).toEqual([
         "21.60 ICP",
         "21.60 ckBTC",
-        "21.606 ckETH",
+        "21.61 ckETH",
       ]);
     });
 
@@ -159,7 +159,7 @@ describe("HeldTokensCard", () => {
       expect(nativeBalances).toEqual([
         "21.60 ICP",
         "21.60 ckBTC",
-        "21.606 ckETH",
+        "21.61 ckETH",
       ]);
 
       expect(await po.getInfoRow().isPresent()).toBe(false);
