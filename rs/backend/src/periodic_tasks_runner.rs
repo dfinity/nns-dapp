@@ -5,21 +5,7 @@ use cycles_minting_canister::{NotifyCreateCanister, NotifyError};
 use dfn_core::api::{CanisterId, PrincipalId};
 use icp_ledger::BlockIndex;
 
-pub async fn run_periodic_tasks() {
-    with_state_mut(|state| {
-        state.performance.increment_periodic_tasks_run();
-    });
-
-    let maybe_transaction_to_process = with_state_mut(|s| s.accounts_store.try_take_next_transaction_to_process());
-    if let Some((block_height, transaction_to_process)) = maybe_transaction_to_process {
-        match transaction_to_process {
-            MultiPartTransactionToBeProcessed::CreateCanisterV2(controller) => {
-                handle_create_canister_v2(block_height, controller).await;
-            }
-        }
-    }
-}
-
+#[allow(dead_code)]
 async fn handle_create_canister_v2(block_height: BlockIndex, controller: PrincipalId) {
     match create_canister_v2(block_height, controller).await {
         Ok(Ok(canister_id)) => with_state_mut(|s| {

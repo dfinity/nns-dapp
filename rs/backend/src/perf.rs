@@ -62,6 +62,7 @@ impl PerformanceCounts {
         stats.periodic_tasks_count = self.periodic_tasks_count;
     }
 
+    #[allow(dead_code)]
     pub fn increment_periodic_tasks_run(&mut self) {
         self.periodic_tasks_count = Some(self.periodic_tasks_count.unwrap_or(0) + 1);
     }

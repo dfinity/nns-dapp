@@ -15,10 +15,12 @@ pub enum MultiPartTransactionToBeProcessed {
 }
 
 impl MultiPartTransactionsProcessor {
+    #[allow(dead_code)]
     pub fn push(&mut self, block_height: BlockIndex, transaction_to_be_processed: MultiPartTransactionToBeProcessed) {
         self.queue.push_back((block_height, transaction_to_be_processed));
     }
 
+    #[allow(dead_code)]
     #[must_use]
     pub fn take_next(&mut self) -> Option<(BlockIndex, MultiPartTransactionToBeProcessed)> {
         self.queue.pop_front()

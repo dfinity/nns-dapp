@@ -688,6 +688,7 @@ impl AccountsStore {
 
     // We skip the checks here since in this scenario we must store the canister otherwise the user
     // won't be able to retrieve its Id.
+    #[allow(dead_code)]
     pub fn attach_newly_created_canister(&mut self, principal: PrincipalId, canister_id: CanisterId) {
         let account_identifier = AccountIdentifier::from(principal).to_vec();
 
@@ -735,10 +736,12 @@ impl AccountsStore {
         GetImportedTokensResponse::Ok(account.imported_tokens.unwrap_or_default())
     }
 
+    #[allow(dead_code)]
     pub fn try_take_next_transaction_to_process(&mut self) -> Option<(BlockIndex, MultiPartTransactionToBeProcessed)> {
         self.multi_part_transactions_processor.take_next()
     }
 
+    #[allow(dead_code)]
     pub fn enqueue_multi_part_transaction(
         &mut self,
         block_height: BlockIndex,
