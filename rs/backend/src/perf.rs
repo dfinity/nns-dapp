@@ -65,6 +65,7 @@ impl PerformanceCounts {
     /// The maximum number of exceptional transaction IDs we store.
     const MAX_EXCEPTIONAL_TRANSACTIONS: usize = 1000;
     /// Saves an exceptional transaction ID
+    #[allow(dead_code)]
     pub fn record_exceptional_transaction_id(&mut self, transaction_id: u64) {
         if self.exceptional_transactions.is_none() {
             self.exceptional_transactions = Some(VecDeque::new());

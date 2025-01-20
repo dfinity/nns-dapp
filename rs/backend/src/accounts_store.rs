@@ -545,29 +545,6 @@ impl AccountsStore {
         }
     }
 
-    pub fn mark_ledger_sync_complete(&mut self) {
-        self.last_ledger_sync_timestamp_nanos = u64::try_from(
-            dfn_core::api::now()
-                .duration_since(SystemTime::UNIX_EPOCH)
-                .unwrap_or_else(|err| unreachable!("The current time is well after the Unix epoch. Error: {err}"))
-                .as_nanos(),
-        )
-        .unwrap_or_else(|_| unreachable!("Not impossible, but centuries in the future"));
-    }
-
-    /// Initializes the `block_height_synced_up_to` value.
-    ///
-    /// # Panics
-    /// - Panics if the `block_height_synced_up_to` value has already been initialized.
-    pub fn init_block_height_synced_up_to(&mut self, block_height: BlockIndex) {
-        assert!(
-            self.block_height_synced_up_to.is_none(),
-            "This can only be called to initialize the 'block_height_synced_up_to' value"
-        );
-
-        self.block_height_synced_up_to = Some(block_height);
-    }
-
     fn find_canister_index(account: &Account, canister_id: CanisterId) -> Option<usize> {
         account
             .canisters
@@ -756,11 +733,6 @@ impl AccountsStore {
         };
 
         GetImportedTokensResponse::Ok(account.imported_tokens.unwrap_or_default())
-    }
-
-    #[must_use]
-    pub fn get_block_height_synced_up_to(&self) -> Option<BlockIndex> {
-        self.block_height_synced_up_to
     }
 
     pub fn try_take_next_transaction_to_process(&mut self) -> Option<(BlockIndex, MultiPartTransactionToBeProcessed)> {

@@ -1163,10 +1163,6 @@ fn get_stats() {
 
     store.get_stats(&mut stats);
     assert_eq!(2, stats.hardware_wallet_accounts_count);
-
-    store.mark_ledger_sync_complete();
-    store.get_stats(&mut stats);
-    assert!(stats.seconds_since_last_ledger_sync < 10);
 }
 
 /// Tests that `get_histogram()` returns correct values.

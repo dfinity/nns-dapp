@@ -9,6 +9,7 @@ use icp_ledger::protobuf::{
 };
 use icp_ledger::{BlockIndex, GetBlocksArgs};
 
+#[allow(dead_code)]
 pub async fn tip_of_chain() -> Result<BlockIndex, String> {
     let response: TipOfChainResponsePb =
         dfn_core::call(LEDGER_CANISTER_ID, "tip_of_chain_pb", protobuf, TipOfChainRequestPb {})
@@ -18,6 +19,7 @@ pub async fn tip_of_chain() -> Result<BlockIndex, String> {
     Ok(response.chain_length.map(|c| c.height).unwrap_or_default())
 }
 
+#[allow(dead_code)]
 pub async fn get_archive_index() -> Result<ArchiveIndexResponsePb, String> {
     dfn_core::call(LEDGER_CANISTER_ID, "get_archive_index_pb", protobuf, ())
         .await
