@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
   import { IconRight } from "@dfinity/gix-components";
 
   export let usdAmount: number;
   export let usdAmountFormatted: string;
   export let href: string;
+  export let title: string;
+  export let linkText: string;
 </script>
 
 <div class="header">
@@ -13,12 +14,8 @@
       <slot name="icon" />
     </div>
     <div class="text-content">
-      <h5 class="title">{$i18n.portfolio.held_tokens_card_title}</h5>
-      <p
-        class="amount"
-        data-tid="amount"
-        aria-label={`${$i18n.portfolio.held_tokens_card_title}: ${usdAmount}`}
-      >
+      <h5 class="title">{title}</h5>
+      <p class="amount" data-tid="amount" aria-label={`${title}: ${usdAmount}`}>
         ${usdAmountFormatted}
       </p>
     </div>
@@ -26,13 +23,12 @@
   <a
     {href}
     class="button link"
-    aria-label={$i18n.portfolio.held_tokens_card_link}
   >
     <span class="icon">
       <IconRight />
     </span>
     <span class="text">
-      {$i18n.portfolio.held_tokens_card_link}
+      {linkText}
     </span>
   </a>
 </div>
