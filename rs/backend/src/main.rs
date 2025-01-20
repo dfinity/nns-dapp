@@ -33,7 +33,6 @@ mod constants;
 mod metrics_encoder;
 mod multi_part_transactions_processor;
 mod perf;
-mod periodic_tasks_runner;
 mod spawn;
 mod state;
 mod stats;
