@@ -8,6 +8,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { TableProject } from "$lib/types/staking";
   import { formatNumber } from "$lib/utils/format.utils";
+  import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { IconNeuronsPage, IconRight } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
@@ -25,11 +26,11 @@
   let numberOfTopStakedTokens: number;
   $: numberOfTopStakedTokens = topStakedTokens.length;
 
-  // Show an informational row when there are fewer staked tokens than held tokens.
-  // This ensures both cards have consistent heights by filling empty space
-  // with a message instead of leaving blank space.
   let showInfoRow: boolean;
-  $: showInfoRow = numberOfTopHeldTokens - numberOfTopStakedTokens > 0;
+  $: showInfoRow = shouldShowInfoRow({
+    currentCardNumberOfTokens: numberOfTopStakedTokens,
+    otherCardNumberOfTokens: numberOfTopHeldTokens,
+  });
 </script>
 
 <Card testId="staked-tokens-card">
@@ -287,7 +288,7 @@
           justify-content: center;
           align-items: center;
           gap: var(--padding-2x);
-          padding: var(--padding-1_5x) 0;
+          padding: var(--padding-2x) 0;
 
           max-width: 90%;
           margin: 0 auto;
