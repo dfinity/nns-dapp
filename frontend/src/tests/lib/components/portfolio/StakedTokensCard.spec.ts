@@ -153,7 +153,7 @@ describe("StakedTokensCard", () => {
       stakeInUsd: 400,
       domKey: "/staking/3",
       stake: TokenAmountV2.fromUlps({
-        amount: 1000_000n,
+        amount: 1100_000n,
         token: mockToken,
       }),
     };
@@ -207,7 +207,7 @@ describe("StakedTokensCard", () => {
         "0.01 ICP",
         "0.01 TET",
         "0.01 TET",
-        "0.01 TET",
+        "0.011 TET",
       ]);
     });
 
