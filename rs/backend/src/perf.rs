@@ -62,20 +62,6 @@ impl PerformanceCounts {
         stats.periodic_tasks_count = self.periodic_tasks_count;
     }
 
-    /// The maximum number of exceptional transaction IDs we store.
-    const MAX_EXCEPTIONAL_TRANSACTIONS: usize = 1000;
-    /// Saves an exceptional transaction ID
-    #[allow(dead_code)]
-    pub fn record_exceptional_transaction_id(&mut self, transaction_id: u64) {
-        if self.exceptional_transactions.is_none() {
-            self.exceptional_transactions = Some(VecDeque::new());
-        }
-        if let Some(exceptional_transactions) = &mut self.exceptional_transactions {
-            exceptional_transactions.push_front(transaction_id);
-            exceptional_transactions.truncate(Self::MAX_EXCEPTIONAL_TRANSACTIONS);
-        }
-    }
-
     pub fn increment_periodic_tasks_run(&mut self) {
         self.periodic_tasks_count = Some(self.periodic_tasks_count.unwrap_or(0) + 1);
     }
