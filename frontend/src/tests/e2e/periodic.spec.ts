@@ -39,6 +39,8 @@ test("Test periodic confirmation", async ({ page, context }) => {
 
   step("Review missing rewards banner");
   await appPo.goToStaking();
+  // The test is flaky whithout this wait
+  await losingRewardsBannerPo.getBannerPo().waitFor();
   expect(await losingRewardsBannerPo.isVisible()).toBe(true);
 
   step("Confirm following");
