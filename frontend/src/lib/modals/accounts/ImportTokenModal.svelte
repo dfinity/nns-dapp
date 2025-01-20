@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
   import ImportTokenForm from "$lib/components/accounts/ImportTokenForm.svelte";
   import ImportTokenReview from "$lib/components/accounts/ImportTokenReview.svelte";
   import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
@@ -22,7 +23,7 @@
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import { Principal } from "@dfinity/principal";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
   import { get } from "svelte/store";
@@ -50,6 +51,19 @@
   let ledgerCanisterId: Principal | undefined;
   let indexCanisterId: Principal | undefined;
   let tokenMetaData: IcrcTokenMetadata | undefined;
+
+  $: {
+    const ledgerId = $page.url.searchParams.get("import-ledger-id");
+    if (nonNullish(ledgerId)) {
+      ledgerCanisterId = Principal.fromText(ledgerId);
+    }
+  }
+  $: {
+    const indexId = $page.url.searchParams.get("import-index-id");
+    if (nonNullish(indexId)) {
+      indexCanisterId = Principal.fromText(indexId);
+    }
+  }
 
   const getTokenMetaData = async (
     ledgerCanisterId: Principal
@@ -185,6 +199,7 @@
 >
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
 
+  <!-- {#if $authSignedInStore} -->
   {#if currentStep?.name === STEP_FORM}
     <ImportTokenForm
       bind:ledgerCanisterId
@@ -202,4 +217,9 @@
       on:nnsConfirm={onConfirm}
     />
   {/if}
+  <!-- {:else}
+    <IconAccountsPage />
+    <p class="description">Please </p>
+    <SignIn />
+  {/if} -->
 </WizardModal>

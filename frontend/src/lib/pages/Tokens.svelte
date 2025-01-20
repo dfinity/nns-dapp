@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { page } from "$app/stores";
   import HideZeroBalancesToggle from "$lib/components/tokens/TokensTable/HideZeroBalancesToggle.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
@@ -83,6 +84,11 @@
   let maximumImportedTokensReached = false;
   $: maximumImportedTokensReached =
     ($importedTokensStore.importedTokens?.length ?? 0) >= MAX_IMPORTED_TOKENS;
+
+  let hasImportedTokenLedgerCanisterId = false;
+  $: hasImportedTokenLedgerCanisterId = nonNullish(
+    $page.url.searchParams.get("import-ledger-id")
+  );
 </script>
 
 <div class="wrapper" data-tid="tokens-page-component">
@@ -151,7 +157,7 @@
     <HideZeroBalancesToggle />
   </Popover>
 
-  {#if showImportTokenModal}
+  {#if showImportTokenModal || hasImportedTokenLedgerCanisterId}
     <ImportTokenModal on:nnsClose={() => (showImportTokenModal = false)} />
   {/if}
 </div>
