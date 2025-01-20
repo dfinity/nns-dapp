@@ -22,6 +22,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Improved the display of date range options in the mobile view of the Reporting page.
+
 #### Security
 
 #### Not Published
