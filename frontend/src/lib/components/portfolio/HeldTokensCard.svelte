@@ -10,7 +10,7 @@
   import { formatNumber } from "$lib/utils/format.utils";
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
-  import { IconAccountsPage, IconRight } from "@dfinity/gix-components";
+  import { IconAccountsPage } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
 
   export let topHeldTokens: UserTokenData[];

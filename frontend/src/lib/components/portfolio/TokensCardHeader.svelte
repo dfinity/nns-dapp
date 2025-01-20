@@ -23,7 +23,11 @@
       </p>
     </div>
   </div>
-  <a {href} class="link" aria-label={$i18n.portfolio.held_tokens_card_link}>
+  <a
+    {href}
+    class="button link"
+    aria-label={$i18n.portfolio.held_tokens_card_link}
+  >
     <span class="icon">
       <IconRight />
     </span>
@@ -72,19 +76,11 @@
     }
 
     .link {
-      @include button.secondary;
+      /* @include button.secondary; */
 
       width: 35px;
       height: 35px;
       border-radius: 50%;
-
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-
-      box-sizing: border-box;
-
-      text-decoration: none;
 
       @include media.min-width(medium) {
         height: auto;
@@ -95,7 +91,6 @@
 
       .icon {
         display: flex;
-
         @include media.min-width(medium) {
           display: none;
         }
