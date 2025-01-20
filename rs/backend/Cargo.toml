@@ -6,7 +6,7 @@ edition = "2021"
 
 [dependencies]
 base64 = "0.22.1"
-candid = "0.10.10"
+candid = "0.10.12"
 flate2 = "1.0.30"
 hex = "0.4.3"
 itertools = "0.14.0"

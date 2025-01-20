@@ -10,7 +10,7 @@ crate-type = ["cdylib"]
 [dependencies]
 anyhow = "1.0.95"
 base64 = "0.22.1"
-candid = "0.10.10"
+candid = "0.10.12"
 dfn_candid = { workspace = true }
 dfn_core = { workspace = true }
 # This next candid is 0.9.0_beta code that fixes serde Nat but has other issues.  Keep checking until the issues are fixed.
