@@ -48,7 +48,7 @@
       linkText={$i18n.portfolio.staked_tokens_card_link}
     >
       <svelte:fragment slot="icon">
-        <IconStakedTokens />
+        <IconNeuronsPage />
       </svelte:fragment>
     </TokensCardHeader>
     <div class="body" role="table">
@@ -121,7 +121,7 @@
           <div class="info-row desktop-only" role="note" data-tid="info-row">
             <div class="content">
               <div class="icon" aria-hidden="true">
-                <IconNeuronsPage />
+                <IconStakedTokens />
               </div>
               <div class="message">
                 {$i18n.portfolio.staked_tokens_card_info_row}
