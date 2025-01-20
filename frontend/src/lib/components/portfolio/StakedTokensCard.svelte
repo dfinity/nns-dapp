@@ -11,7 +11,7 @@
   import { formatNumber } from "$lib/utils/format.utils";
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
-  import { IconNeuronsPage } from "@dfinity/gix-components";
+  import { IconNeuronsPage, IconStakedTokens } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
 
   export let topStakedTokens: TableProject[];
@@ -48,7 +48,7 @@
       linkText={$i18n.portfolio.staked_tokens_card_link}
     >
       <svelte:fragment slot="icon">
-        <IconNeuronsPage />
+        <IconStakedTokens />
       </svelte:fragment>
     </TokensCardHeader>
     <div class="body" role="table">

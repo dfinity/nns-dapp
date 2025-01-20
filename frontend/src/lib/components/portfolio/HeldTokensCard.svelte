@@ -10,7 +10,7 @@
   import { formatNumber } from "$lib/utils/format.utils";
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
-  import { IconAccountsPage } from "@dfinity/gix-components";
+  import { IconAccountsPage, IconHeldTokens } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
 
   export let topHeldTokens: UserTokenData[];
@@ -48,7 +48,7 @@
       linkText={$i18n.portfolio.held_tokens_card_link}
     >
       <svelte:fragment slot="icon">
-        <IconAccountsPage />
+        <IconHeldTokens />
       </svelte:fragment>
     </TokensCardHeader>
     <div class="body" role="table">
