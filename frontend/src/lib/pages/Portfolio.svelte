@@ -4,7 +4,7 @@
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
-  import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
+  import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
@@ -77,7 +77,7 @@
     {#if !$authSignedInStore}
       <LoginCard />
     {/if}
-    <UsdValueBanner
+    <TotalAssetsCard
       usdAmount={totalUsdAmount}
       hasUnpricedTokens={hasUnpricedTokensOrStake}
     />
@@ -86,7 +86,11 @@
     {#if showNoHeldTokensCard}
       <NoHeldTokensCard />
     {:else}
-      <HeldTokensCard {topHeldTokens} usdAmount={totalTokensBalanceInUsd} />
+      <HeldTokensCard
+        {topHeldTokens}
+        usdAmount={totalTokensBalanceInUsd}
+        numberOfTopStakedTokens={topStakedTokens.length}
+      />
     {/if}
     {#if showNoStakedTokensCard}
       <NoStakedTokensCard primaryCard={hasNoStakedTokensCardAPrimaryAction} />
@@ -141,8 +145,7 @@
 
       @include media.min-width(large) {
         grid-template-columns: repeat(2, 1fr);
-        grid-auto-rows: min-content;
-        align-items: stretch;
+        grid-auto-rows: minmax(345px, min-content);
       }
     }
   }

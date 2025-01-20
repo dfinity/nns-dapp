@@ -1,6 +1,6 @@
 import { HeldTokensCardPo } from "$tests/page-objects/HeldTokensCard.page-object";
 import { NoStakedTokensCardPo } from "$tests/page-objects/NoStakedTokensCard.page-object";
-import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
+import { TotalAssetsCardPo } from "$tests/page-objects/TotalAssetsCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { StakedTokensCardPo } from "./StakedTokensCard.page-object";
@@ -24,8 +24,8 @@ export class PortfolioPagePo extends BasePageObject {
     return NoStakedTokensCardPo.under(this.root);
   }
 
-  getUsdValueBannerPo(): UsdValueBannerPo {
-    return UsdValueBannerPo.under(this.root);
+  getTotalAssetsCardPo(): TotalAssetsCardPo {
+    return TotalAssetsCardPo.under(this.root);
   }
 
   getHeldTokensCardPo(): HeldTokensCardPo {

@@ -56,17 +56,17 @@
     &.has-error {
       --tooltip-icon-color: var(--tag-failed-text);
     }
+  }
 
+  .desktop-only {
+    display: none;
+  }
+  @include media.min-width(medium) {
     .desktop-only {
-      display: none;
+      display: flex;
     }
-    @include media.min-width(medium) {
-      .desktop-only {
-        display: flex;
-      }
-      .mobile-only {
-        display: none;
-      }
+    .mobile-only {
+      display: none;
     }
   }
 </style>
