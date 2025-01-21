@@ -11,13 +11,16 @@ describe("UsdValueBanner", () => {
   const renderComponent = ({
     usdAmount,
     hasUnpricedTokens,
+    isLoading,
   }: {
     usdAmount: number;
-    hasUnpricedTokens: boolean;
+    hasUnpricedTokens?: boolean;
+    isLoading?: boolean;
   }) => {
     const { container } = render(TotalAssetsCard, {
       usdAmount,
       hasUnpricedTokens,
+      isLoading,
     });
     return TotalAssetsCardPo.under(new JestPageObjectElement(container));
   };
@@ -148,5 +151,22 @@ describe("UsdValueBanner", () => {
     expect(await po.getTotalsTooltipIconPo().isPresent()).toBe(
       hasUnpricedTokens
     );
+  });
+
+  it("should show a spinner instead of the USD price and placeholder text for the ICP when isLoading is true", async () => {
+    const usdAmount = undefined;
+    const icpPrice = 10;
+    const isLoading = true;
+
+    setIcpPrice(icpPrice);
+
+    const po = renderComponent({
+      usdAmount,
+      isLoading,
+    });
+
+    expect(await po.hasSpinner()).toEqual(true);
+    expect(await po.getPrimaryAmount()).toBeNull();
+    expect(await po.getSecondaryAmount()).toEqual("-/- ICP");
   });
 });

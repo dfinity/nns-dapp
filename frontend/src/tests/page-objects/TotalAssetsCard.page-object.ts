@@ -30,6 +30,10 @@ export class TotalAssetsCardPo extends BasePageObject {
     return this.getText("icp-price");
   }
 
+  hasSpinner(): Promise<boolean> {
+    return this.isPresent("spinner");
+  }
+
   async hasError(): Promise<boolean> {
     return this.getIcpExchangeRatePo().hasError();
   }
