@@ -111,6 +111,7 @@ const getNeuronAggregateInfo = ({
   stake: TokenAmountV2 | UnavailableTokenAmount;
   availableMaturity: bigint | undefined;
   stakedMaturity: bigint | undefined;
+  isStakeLoading: boolean;
 } => {
   if (!isSignedIn) {
     const stake = new UnavailableTokenAmount(token);
@@ -119,6 +120,7 @@ const getNeuronAggregateInfo = ({
       stake,
       availableMaturity: undefined,
       stakedMaturity: undefined,
+      isStakeLoading: false,
     };
   }
   const { neuronCount, stake, availableMaturity, stakedMaturity } =
@@ -135,6 +137,7 @@ const getNeuronAggregateInfo = ({
         }),
     availableMaturity,
     stakedMaturity,
+    isStakeLoading: isNullish(stake),
   };
 };
 
@@ -157,14 +160,19 @@ export const getTableProjects = ({
         ? ICPToken
         : // If the universe is an SNS universe then the summary is non-nullish.
           asNonNullish(universe.summary).token;
-    const { neuronCount, stake, availableMaturity, stakedMaturity } =
-      getNeuronAggregateInfo({
-        isSignedIn,
-        universe,
-        token,
-        nnsNeurons,
-        snsNeurons,
-      });
+    const {
+      neuronCount,
+      stake,
+      availableMaturity,
+      stakedMaturity,
+      isStakeLoading,
+    } = getNeuronAggregateInfo({
+      isSignedIn,
+      universe,
+      token,
+      nnsNeurons,
+      snsNeurons,
+    });
     const rowHref =
       nonNullish(neuronCount) && neuronCount > 0
         ? buildNeuronsUrl({ universe: universe.canisterId })
@@ -194,6 +202,7 @@ export const getTableProjects = ({
       stakeInUsd,
       availableMaturity,
       stakedMaturity,
+      isStakeLoading,
     };
   });
 };

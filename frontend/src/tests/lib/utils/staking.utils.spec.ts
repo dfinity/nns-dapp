@@ -63,6 +63,7 @@ describe("staking.utils", () => {
       tokenSymbol: "ICP",
       availableMaturity: 0n,
       stakedMaturity: 0n,
+      isStakeLoading: false,
     };
 
     const defaultExpectedSnsTableProject = {
@@ -80,6 +81,7 @@ describe("staking.utils", () => {
       tokenSymbol: snsTokenSymbol,
       availableMaturity: 0n,
       stakedMaturity: 0n,
+      isStakeLoading: false,
     };
 
     const nnsNeuronWithStake = {
@@ -602,6 +604,7 @@ describe("staking.utils", () => {
           stakeInUsd: undefined,
           availableMaturity: undefined,
           stakedMaturity: undefined,
+          isStakeLoading: true,
         },
         {
           ...defaultExpectedSnsTableProject,
@@ -610,6 +613,7 @@ describe("staking.utils", () => {
           stakeInUsd: undefined,
           availableMaturity: undefined,
           stakedMaturity: undefined,
+          isStakeLoading: true,
         },
       ]);
     });
