@@ -27,6 +27,10 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
   import { get } from "svelte/store";
+  import {
+    importTokenIndexIdQueryParameterStore,
+    importTokenLedgerIdQueryParameterStore,
+  } from "$lib/derived/tokens.derived";
 
   let currentStep: WizardStep | undefined = undefined;
 
@@ -53,13 +57,13 @@
   let tokenMetaData: IcrcTokenMetadata | undefined;
 
   $: {
-    const ledgerId = $page.url.searchParams.get("import-ledger-id");
+    const ledgerId = $importTokenLedgerIdQueryParameterStore;
     if (nonNullish(ledgerId)) {
       ledgerCanisterId = Principal.fromText(ledgerId);
     }
   }
   $: {
-    const indexId = $page.url.searchParams.get("import-index-id");
+    const indexId = $importTokenIndexIdQueryParameterStore;
     if (nonNullish(indexId)) {
       indexCanisterId = Principal.fromText(indexId);
     }
@@ -199,7 +203,6 @@
 >
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
 
-  <!-- {#if $authSignedInStore} -->
   {#if currentStep?.name === STEP_FORM}
     <ImportTokenForm
       bind:ledgerCanisterId
@@ -217,9 +220,4 @@
       on:nnsConfirm={onConfirm}
     />
   {/if}
-  <!-- {:else}
-    <IconAccountsPage />
-    <p class="description">Please </p>
-    <SignIn />
-  {/if} -->
 </WizardModal>

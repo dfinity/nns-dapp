@@ -23,6 +23,7 @@
     Tooltip,
   } from "@dfinity/gix-components";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
+  import { importTokenLedgerIdQueryParameterStore } from "$lib/derived/tokens.derived";
 
   export let userTokensData: UserToken[];
 
@@ -84,11 +85,6 @@
   let maximumImportedTokensReached = false;
   $: maximumImportedTokensReached =
     ($importedTokensStore.importedTokens?.length ?? 0) >= MAX_IMPORTED_TOKENS;
-
-  let hasImportedTokenLedgerCanisterId = false;
-  $: hasImportedTokenLedgerCanisterId = nonNullish(
-    $page.url.searchParams.get("import-ledger-id")
-  );
 </script>
 
 <div class="wrapper" data-tid="tokens-page-component">
@@ -157,7 +153,7 @@
     <HideZeroBalancesToggle />
   </Popover>
 
-  {#if showImportTokenModal || hasImportedTokenLedgerCanisterId}
+  {#if showImportTokenModal || nonNullish($importTokenLedgerIdQueryParameterStore)}
     <ImportTokenModal on:nnsClose={() => (showImportTokenModal = false)} />
   {/if}
 </div>

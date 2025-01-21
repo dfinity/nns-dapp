@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { page } from "$app/stores";
   import SignIn from "$lib/components/common/SignIn.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
   import { i18n } from "$lib/stores/i18n";
@@ -8,14 +7,16 @@
   import { nonNullish } from "@dfinity/utils";
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { importTokenLedgerIdQueryParameterStore } from "$lib/derived/tokens.derived";
 
   export let userTokensData: UserToken[];
 
-  // Make a derived store out of it
+  // Since there are two ImportTokenModals on both Tokens and SignInTokens pages,
+  // we need to hide this modal after a successful sign-in to
+  // prevent it from blocking this component’s destruction.
   let showImportTokenModal = false;
   $: showImportTokenModal =
-    nonNullish($page.url.searchParams.get("import-ledger-id")) &&
-    !$authSignedInStore;
+    !$authSignedInStore && nonNullish($importTokenLedgerIdQueryParameterStore);
 </script>
 
 <div class="content" data-tid="sign-in-tokens-page-component">
