@@ -1,7 +1,12 @@
+import { page } from "$app/stores";
 import {
   LEDGER_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
+import {
+  IMPORT_TOKEN_INDEX_ID_QUERY_PARAM,
+  IMPORT_TOKEN_LEDGER_ID_QUERY_PARAM,
+} from "$lib/constants/routes.constants";
 import {
   snsTokensByLedgerCanisterIdStore,
   snsTokensByRootCanisterIdStore,
@@ -44,3 +49,13 @@ export const tokensByLedgerCanisterIdStore: Readable<
     };
   }
 );
+
+export const importTokenLedgerIdQueryParameterStore: Readable<string | null> =
+  derived(page, ($page) =>
+    $page.url.searchParams.get(IMPORT_TOKEN_LEDGER_ID_QUERY_PARAM)
+  );
+
+export const importTokenIndexIdQueryParameterStore: Readable<string | null> =
+  derived(page, ($page) =>
+    $page.url.searchParams.get(IMPORT_TOKEN_INDEX_ID_QUERY_PARAM)
+  );
