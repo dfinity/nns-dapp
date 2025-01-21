@@ -1,6 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { TooltipIconPo } from "./TooltipIcon.page-object";
 
 export class IcpExchangeRatePo extends BasePageObject {
   private static readonly TID = "icp-exchange-rate-component";

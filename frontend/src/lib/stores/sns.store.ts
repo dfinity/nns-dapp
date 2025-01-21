@@ -1,3 +1,17 @@
+import {
+  snsAggregatorStore,
+  type SnsAggregatorStore,
+} from "$lib/stores/sns-aggregator.store";
+import {
+  snsDerivedStateStore,
+  type SnsDerivedStateData,
+  type SnsDerivedStateStore,
+} from "$lib/stores/sns-derived-state.store";
+import {
+  snsLifecycleStore,
+  type SnsLifecycleData,
+  type SnsLifecycleStore,
+} from "$lib/stores/sns-lifecycle.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { convertDtoToSnsSummary } from "$lib/utils/sns-aggregator-converters.utils";
@@ -13,20 +27,6 @@ import {
   nonNullish,
 } from "@dfinity/utils";
 import { derived, writable, type Readable } from "svelte/store";
-import {
-  snsAggregatorStore,
-  type SnsAggregatorStore,
-} from "./sns-aggregator.store";
-import {
-  snsDerivedStateStore,
-  type SnsDerivedStateData,
-  type SnsDerivedStateStore,
-} from "./sns-derived-state.store";
-import {
-  snsLifecycleStore,
-  type SnsLifecycleData,
-  type SnsLifecycleStore,
-} from "./sns-lifecycle.store";
 
 // ************** Proposals for Launchpad **************
 

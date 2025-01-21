@@ -1,4 +1,4 @@
-//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-03_03-07-base/rs/ledger_suite/icrc1/ledger/ledger.did>
+//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-16_16-18-base/rs/ledger_suite/icrc1/ledger/ledger.did>
 type BlockIndex = nat;
 type Subaccount = blob;
 // Number of nanoseconds since the UNIX epoch in UTC timezone.
@@ -108,8 +108,6 @@ type InitArgs = record {
     metadata : vec record { text; MetadataValue };
     initial_balances : vec record { Account; nat };
     feature_flags : opt FeatureFlags;
-    maximum_number_of_accounts : opt nat64;
-    accounts_overflow_trim_quantity : opt nat64;
     archive_options : record {
         num_blocks_to_archive : nat64;
         max_transactions_per_response : opt nat64;
@@ -145,7 +143,6 @@ type UpgradeArgs = record {
     change_fee_collector : opt ChangeFeeCollector;
     max_memo_length : opt nat16;
     feature_flags : opt FeatureFlags;
-    accounts_overflow_trim_quantity: opt nat64;
     change_archive_options : opt ChangeArchiveOptions;
 };
 

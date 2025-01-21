@@ -41,6 +41,7 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   fieldset {
     all: unset;
@@ -59,7 +60,11 @@
 
       div {
         display: flex;
+        flex-direction: column;
         gap: var(--padding-3x);
+        @include media.min-width(medium) {
+          flex-direction: row;
+        }
 
         .radio-option {
           display: flex;

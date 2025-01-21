@@ -15,12 +15,21 @@ import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("HeldTokensCard", () => {
-  const renderComponent = (props: {
-    topHeldTokens: UserTokenData[];
-    usdAmount: number;
+  const renderComponent = ({
+    topHeldTokens = [],
+    usdAmount = 0,
+    numberOfTopStakedTokens = 0,
+  }: {
+    topHeldTokens?: UserTokenData[];
+    usdAmount?: number;
+    numberOfTopStakedTokens?: number;
   }) => {
     const { container } = render(HeldTokensCard, {
-      props,
+      props: {
+        topHeldTokens,
+        usdAmount,
+        numberOfTopStakedTokens,
+      },
     });
 
     return HeldTokensCardPo.under(new JestPageObjectElement(container));
@@ -84,7 +93,7 @@ describe("HeldTokensCard", () => {
     const mockCkETHToken = createUserToken(ckETHTokenBase);
     mockCkETHToken.balanceInUsd = 300;
     mockCkETHToken.balance = TokenAmountV2.fromUlps({
-      amount: 21600000000000000000n,
+      amount: 21606000000000000000n,
       token: CkETHToken,
     });
 
@@ -126,14 +135,15 @@ describe("HeldTokensCard", () => {
       expect(nativeBalances).toEqual([
         "21.60 ICP",
         "21.60 ckBTC",
-        "21.60 ckETH",
+        "21.61 ckETH",
       ]);
     });
 
-    it("should not show info row when tokens length is 3 or more", async () => {
+    it("should not show info row when numberOfTopHeldTokens is the same as the number of topStakedTokens", async () => {
       const po = renderComponent({
         topHeldTokens: mockTokens.slice(0, 3),
         usdAmount: 600,
+        numberOfTopStakedTokens: 3,
       });
       const titles = await po.getHeldTokensTitles();
       const balances = await po.getHeldTokensBalanceInUsd();
@@ -149,7 +159,7 @@ describe("HeldTokensCard", () => {
       expect(nativeBalances).toEqual([
         "21.60 ICP",
         "21.60 ckBTC",
-        "21.60 ckETH",
+        "21.61 ckETH",
       ]);
 
       expect(await po.getInfoRow().isPresent()).toBe(false);

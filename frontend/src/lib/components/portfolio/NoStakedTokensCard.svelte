@@ -2,7 +2,7 @@
   import Card from "$lib/components/portfolio/Card.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { i18n } from "$lib/stores/i18n";
-  import { IconNeuronsPage } from "@dfinity/gix-components";
+  import { IconStakedTokens } from "@dfinity/gix-components";
 
   export let primaryCard = false;
   const href = AppPath.Staking;
@@ -11,7 +11,7 @@
 <Card testId="no-staked-tokens-card">
   <div class="wrapper">
     <div class="icon">
-      <IconNeuronsPage />
+      <IconStakedTokens />
     </div>
     <div class="text">
       <p>{$i18n.portfolio.no_neurons_card_description}</p>

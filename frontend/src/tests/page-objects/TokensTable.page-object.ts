@@ -1,10 +1,10 @@
 import { ResponsiveTablePo } from "$tests/page-objects/ResponsiveTable.page-object";
-import type { PageObjectElement } from "$tests/types/page-object.types";
-import { isNullish } from "@dfinity/utils";
 import {
   TokensTableRowPo,
   type TokensTableRowData,
-} from "./TokensTableRow.page-object";
+} from "$tests/page-objects/TokensTableRow.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
+import { isNullish } from "@dfinity/utils";
 
 export class TokensTablePo extends ResponsiveTablePo {
   private static readonly TID = "tokens-table-component";
