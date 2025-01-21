@@ -9,7 +9,7 @@ describe("ImportTokenForm", () => {
   const renderComponent = (props: {
     ledgerCanisterId: Principal | undefined;
     indexCanisterId: Principal | undefined;
-    mode?: "add-index" | undefined;
+    addIndexCanisterMode?: boolean | undefined;
   }) => {
     const { container, component } = render(ImportTokenForm, {
       props,
@@ -163,7 +163,7 @@ describe("ImportTokenForm", () => {
     const { po } = renderComponent({
       ledgerCanisterId,
       indexCanisterId: undefined,
-      mode: "add-index",
+      addIndexCanisterMode: true,
     });
 
     expect(await po.getLedgerCanisterInputPo().isPresent()).toEqual(false);

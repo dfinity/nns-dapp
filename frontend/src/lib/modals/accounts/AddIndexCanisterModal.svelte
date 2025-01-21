@@ -60,7 +60,7 @@
     >{$i18n.import_token.add_index_canister}</svelte:fragment
   >
   <ImportTokenForm
-    mode="add-index"
+    addIndexCanisterMode
     bind:ledgerCanisterId
     bind:indexCanisterId
     on:nnsClose
