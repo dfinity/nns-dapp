@@ -2,7 +2,7 @@
   import Card from "$lib/components/portfolio/Card.svelte";
 </script>
 
-<Card testId="skeleton-card">
+<Card testId="skeleton-tokens-card">
   <div class="wrapper">
     <div class="header">
       <div class="header-wrapper">
@@ -23,7 +23,7 @@
       </div>
 
       <div class="list">
-        {#each Array(3) as _, i (i)}
+        {#each Array(4) as _, i (i)}
           <div class="row">
             <div class="info">
               <div class="logo-skeleton skeleton" />
