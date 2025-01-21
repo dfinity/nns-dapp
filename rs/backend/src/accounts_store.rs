@@ -1,5 +1,5 @@
 //! User accounts and transactions.
-use crate::multi_part_transactions_processor::{MultiPartTransactionToBeProcessed, MultiPartTransactionsProcessor};
+use crate::multi_part_transactions_processor::MultiPartTransactionsProcessor;
 use crate::state::StableState;
 use crate::stats::Stats;
 use candid::CandidType;
@@ -686,26 +686,6 @@ impl AccountsStore {
         }
     }
 
-    // We skip the checks here since in this scenario we must store the canister otherwise the user
-    // won't be able to retrieve its Id.
-    #[allow(dead_code)]
-    pub fn attach_newly_created_canister(&mut self, principal: PrincipalId, canister_id: CanisterId) {
-        let account_identifier = AccountIdentifier::from(principal).to_vec();
-
-        if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier) {
-            // We only attach if it doesn't already exist
-            if Self::find_canister_index(&account, canister_id).is_none() {
-                account.canisters.push(NamedCanister {
-                    name: String::new(),
-                    canister_id,
-                    block_index: None,
-                });
-                account.canisters.sort();
-                self.accounts_db.db_insert_account(&account_identifier, account);
-            }
-        }
-    }
-
     pub fn set_imported_tokens(
         &mut self,
         caller: PrincipalId,
@@ -734,20 +714,6 @@ impl AccountsStore {
         };
 
         GetImportedTokensResponse::Ok(account.imported_tokens.unwrap_or_default())
-    }
-
-    #[allow(dead_code)]
-    pub fn try_take_next_transaction_to_process(&mut self) -> Option<(BlockIndex, MultiPartTransactionToBeProcessed)> {
-        self.multi_part_transactions_processor.take_next()
-    }
-
-    #[allow(dead_code)]
-    pub fn enqueue_multi_part_transaction(
-        &mut self,
-        block_height: BlockIndex,
-        transaction: MultiPartTransactionToBeProcessed,
-    ) {
-        self.multi_part_transactions_processor.push(block_height, transaction);
     }
 
     pub fn get_stats(&self, stats: &mut Stats) {
