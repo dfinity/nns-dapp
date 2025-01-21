@@ -31,6 +31,7 @@
     importTokenLedgerIdQueryParameterStore,
   } from "$lib/derived/tokens.derived";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   let currentStep: WizardStep | undefined = undefined;
 
@@ -65,6 +66,8 @@
         labelKey: "error__imported_tokens.invalid_canister_id",
         substitutions: { $canisterId: canisterIdText },
       });
+      close();
+      goto(AppPath.Tokens);
       return false;
     }
   };
@@ -229,7 +232,7 @@
         importedTokens: $importedTokensStore.importedTokens,
       });
       if (success) {
-        dispatch("nnsClose");
+        close();
         goto(
           buildWalletUrl({
             universe: ledgerCanisterId.toText(),
@@ -240,6 +243,8 @@
       stopBusy("import-token-importing");
     }
   };
+
+  const close = () => dispatch("nnsClose");
 </script>
 
 <WizardModal
@@ -247,7 +252,11 @@
   {steps}
   bind:currentStep
   bind:this={modal}
-  on:nnsClose
+  on:nnsClose={() => {
+    close();
+    // Navigate on close to clear all query parameters.
+    goto(AppPath.Tokens);
+  }}
 >
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
 
