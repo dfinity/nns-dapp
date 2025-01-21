@@ -7,7 +7,8 @@
   import { nonNullish } from "@dfinity/utils";
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { importTokenLedgerIdQueryParameterStore } from "$lib/derived/tokens.derived";
+  import { ENABLE_IMPORT_TOKEN_BY_URL } from "$lib/stores/feature-flags.store";
+  import { pageStore } from "$lib/derived/page.derived";
 
   export let userTokensData: UserToken[];
 
@@ -16,7 +17,7 @@
   // prevent it from blocking this component’s destruction.
   let showImportTokenModal = false;
   $: showImportTokenModal =
-    !$authSignedInStore && nonNullish($importTokenLedgerIdQueryParameterStore);
+    !$authSignedInStore && nonNullish($pageStore.importTokenLedgerId);
 </script>
 
 <div class="content" data-tid="sign-in-tokens-page-component">
@@ -33,7 +34,7 @@
     firstColumnHeader={$i18n.tokens.projects_header}
   />
 
-  {#if showImportTokenModal}
+  {#if showImportTokenModal && $ENABLE_IMPORT_TOKEN_BY_URL}
     <ImportTokenModal on:nnsClose={() => (showImportTokenModal = false)} />
   {/if}
 </div>

@@ -23,7 +23,7 @@
     Tooltip,
   } from "@dfinity/gix-components";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
-  import { importTokenLedgerIdQueryParameterStore } from "$lib/derived/tokens.derived";
+  import { pageStore } from "$lib/derived/page.derived";
 
   export let userTokensData: UserToken[];
 
@@ -153,7 +153,7 @@
     <HideZeroBalancesToggle />
   </Popover>
 
-  {#if showImportTokenModal || nonNullish($importTokenLedgerIdQueryParameterStore)}
+  {#if showImportTokenModal || nonNullish($pageStore.importTokenLedgerId)}
     <ImportTokenModal on:nnsClose={() => (showImportTokenModal = false)} />
   {/if}
 </div>
