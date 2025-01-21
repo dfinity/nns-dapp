@@ -16,6 +16,7 @@
   export let topHeldTokens: UserTokenData[];
   export let usdAmount: number;
   export let numberOfTopStakedTokens: number;
+  export let isLoading: boolean = false;
 
   const href = AppPath.Tokens;
 
@@ -44,6 +45,7 @@
       {href}
       {usdAmount}
       {usdAmountFormatted}
+      {isLoading}
       title={$i18n.portfolio.held_tokens_card_title}
       linkText={$i18n.portfolio.held_tokens_card_link}
     >

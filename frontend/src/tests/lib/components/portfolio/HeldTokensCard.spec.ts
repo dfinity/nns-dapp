@@ -19,16 +19,19 @@ describe("HeldTokensCard", () => {
     topHeldTokens = [],
     usdAmount = 0,
     numberOfTopStakedTokens = 0,
+    isLoading = false,
   }: {
     topHeldTokens?: UserTokenData[];
     usdAmount?: number;
     numberOfTopStakedTokens?: number;
+    isLoading?: boolean;
   }) => {
     const { container } = render(HeldTokensCard, {
       props: {
         topHeldTokens,
         usdAmount,
         numberOfTopStakedTokens,
+        isLoading,
       },
     });
 
@@ -54,9 +57,22 @@ describe("HeldTokensCard", () => {
       const po = renderComponent({
         topHeldTokens: mockTokens,
         usdAmount: 0,
+        isLoading: false,
       });
 
       expect(await po.getAmount()).toBe("$-/-");
+      expect(await po.hasSpinner()).toBe(false);
+    });
+
+    it("should show a spinner instead of placeholder balance", async () => {
+      const po = renderComponent({
+        topHeldTokens: mockTokens,
+        usdAmount: 0,
+        isLoading: true,
+      });
+
+      expect(await po.getAmount()).toBeNull();
+      expect(await po.hasSpinner()).toBe(true);
     });
 
     it("should show list of tokens with name and balance", async () => {

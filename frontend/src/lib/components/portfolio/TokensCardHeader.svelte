@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { IconRight } from "@dfinity/gix-components";
+  import { IconRight, Spinner } from "@dfinity/gix-components";
 
   export let usdAmount: number;
   export let usdAmountFormatted: string;
   export let href: string;
   export let title: string;
   export let linkText: string;
+  export let isLoading: boolean = false;
 </script>
 
 <div class="header">
@@ -15,9 +16,19 @@
     </div>
     <div class="text-content">
       <h5 class="title">{title}</h5>
-      <p class="amount" data-tid="amount" aria-label={`${title}: ${usdAmount}`}>
-        ${usdAmountFormatted}
-      </p>
+      {#if !isLoading}
+        <p
+          class="amount"
+          data-tid="amount"
+          aria-label={`${title}: ${usdAmount}`}
+        >
+          ${usdAmountFormatted}
+        </p>
+      {:else}
+        <div>
+          <Spinner inline size="small" />
+        </div>
+      {/if}
     </div>
   </div>
   <a {href} class="button link" aria-label={linkText}>

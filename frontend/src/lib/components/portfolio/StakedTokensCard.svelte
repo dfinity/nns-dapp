@@ -17,6 +17,7 @@
   export let topStakedTokens: TableProject[];
   export let usdAmount: number;
   export let numberOfTopHeldTokens: number;
+  export let isLoading: boolean;
 
   const href = AppPath.Staking;
   let usdAmountFormatted: string;
@@ -44,6 +45,7 @@
       {href}
       {usdAmount}
       {usdAmountFormatted}
+      {isLoading}
       title={$i18n.portfolio.staked_tokens_card_title}
       linkText={$i18n.portfolio.staked_tokens_card_link}
     >
