@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_root --out ic_sns_root.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-12-06_03-16-base/rs/sns/root/canister/root.did>
+//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-16_16-18-base/rs/sns/root/canister/root.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -56,6 +56,7 @@ pub enum LogVisibility {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DefiniteCanisterSettings {
     pub freezing_threshold: Option<candid::Nat>,
+    pub wasm_memory_threshold: Option<candid::Nat>,
     pub controllers: Vec<Principal>,
     pub reserved_cycles_limit: Option<candid::Nat>,
     pub log_visibility: Option<LogVisibility>,
@@ -83,12 +84,19 @@ pub enum CanisterInstallMode {
     Install,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ChunkedCanisterWasm {
+    pub wasm_module_hash: serde_bytes::ByteBuf,
+    pub chunk_hashes_list: Vec<serde_bytes::ByteBuf>,
+    pub store_canister_id: Principal,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ChangeCanisterRequest {
     pub arg: serde_bytes::ByteBuf,
     pub wasm_module: serde_bytes::ByteBuf,
     pub stop_before_installing: bool,
     pub mode: CanisterInstallMode,
     pub canister_id: Principal,
+    pub chunked_canister_wasm: Option<ChunkedCanisterWasm>,
     pub memory_allocation: Option<candid::Nat>,
     pub compute_allocation: Option<candid::Nat>,
 }
@@ -99,6 +107,7 @@ pub struct GetSnsCanistersSummaryRequest {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DefiniteCanisterSettingsArgs {
     pub freezing_threshold: candid::Nat,
+    pub wasm_memory_threshold: Option<candid::Nat>,
     pub controllers: Vec<Principal>,
     pub wasm_memory_limit: Option<candid::Nat>,
     pub memory_allocation: candid::Nat,
@@ -149,6 +158,7 @@ pub struct ListSnsCanistersResponse {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ManageDappCanisterSettingsRequest {
     pub freezing_threshold: Option<u64>,
+    pub wasm_memory_threshold: Option<u64>,
     pub canister_ids: Vec<Principal>,
     pub reserved_cycles_limit: Option<u64>,
     pub log_visibility: Option<i32>,
