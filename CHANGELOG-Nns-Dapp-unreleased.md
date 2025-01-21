@@ -16,7 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-- Change the usd value icon in the token pages
+- Change the USD value icon in the token pages
 
 #### Deprecated
 
