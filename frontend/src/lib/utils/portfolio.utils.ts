@@ -1,3 +1,4 @@
+import { CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import type { TableProject } from "$lib/types/staking";
 import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
 import {
@@ -15,6 +16,12 @@ import {
 import { isUserTokenData } from "$lib/utils/user-token.utils";
 
 const MAX_NUMBER_OF_ITEMS = 4;
+
+const filterCyclesTransferStation = ({
+  universeId,
+}: {
+  universeId: string;
+}): boolean => CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID !== universeId;
 
 const compareTokensByUsdBalance = createDescendingComparator(
   (token: UserTokenData) => token?.balanceInUsd ?? 0 > 0
@@ -43,6 +50,9 @@ export const getTopHeldTokens = ({
 }): UserTokenData[] => {
   const topTokens = userTokens
     .filter(isUserTokenData)
+    .filter(({ universeId }) =>
+      filterCyclesTransferStation({ universeId: universeId.toText() })
+    )
     .sort(compareTokens)
     .slice(0, MAX_NUMBER_OF_ITEMS);
 
@@ -77,6 +87,7 @@ export const getTopStakedTokens = ({
   isSignedIn?: boolean;
 }): TableProject[] => {
   const topProjects = [...projects]
+    .filter(filterCyclesTransferStation)
     .sort(compareProjects)
     .slice(0, MAX_NUMBER_OF_ITEMS);
 
