@@ -1,6 +1,5 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { page } from "$app/stores";
   import ImportTokenForm from "$lib/components/accounts/ImportTokenForm.svelte";
   import ImportTokenReview from "$lib/components/accounts/ImportTokenReview.svelte";
   import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
@@ -12,7 +11,7 @@
   import { DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-  import { toastsError } from "$lib/stores/toasts.store";
+  import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
@@ -31,6 +30,7 @@
     importTokenIndexIdQueryParameterStore,
     importTokenLedgerIdQueryParameterStore,
   } from "$lib/derived/tokens.derived";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   let currentStep: WizardStep | undefined = undefined;
 
@@ -56,17 +56,39 @@
   let indexCanisterId: Principal | undefined;
   let tokenMetaData: IcrcTokenMetadata | undefined;
 
+  const validateCanisterIdText = (canisterIdText: string): boolean => {
+    try {
+      return Boolean(Principal.fromText(canisterIdText));
+    } catch (err) {
+      console.error(err);
+      toastsError({
+        labelKey: "error__imported_tokens.invalid_canister_id",
+        substitutions: { $canisterId: canisterIdText },
+      });
+      return false;
+    }
+  };
   $: {
     const ledgerId = $importTokenLedgerIdQueryParameterStore;
-    if (nonNullish(ledgerId)) {
+    if (nonNullish(ledgerId) && validateCanisterIdText(ledgerId)) {
       ledgerCanisterId = Principal.fromText(ledgerId);
     }
   }
   $: {
     const indexId = $importTokenIndexIdQueryParameterStore;
-    if (nonNullish(indexId)) {
+    if (nonNullish(indexId) && validateCanisterIdText(indexId)) {
       indexCanisterId = Principal.fromText(indexId);
     }
+  }
+  let isAutoSubmitDone = false;
+  $: if (
+    $authSignedInStore &&
+    !isAutoSubmitDone &&
+    // Wait for the imported tokens to be loaded (for successful validation).
+    nonNullish($importedTokensStore?.importedTokens)
+  ) {
+    isAutoSubmitDone = true;
+    onSubmit();
   }
 
   const getTokenMetaData = async (
@@ -80,6 +102,29 @@
         err,
       });
     }
+  };
+  const checkAlreadyImported = (ledgerCanisterId: Principal): boolean => {
+    if (
+      isImportedToken({
+        ledgerCanisterId,
+        importedTokens: $importedTokensStore?.importedTokens,
+      })
+    ) {
+      toastsShow({
+        level: "warn",
+        labelKey: "error__imported_tokens.is_duplication",
+      });
+
+      goto(
+        buildWalletUrl({
+          universe: ledgerCanisterId.toText(),
+        })
+      );
+
+      return false;
+    }
+
+    return true;
   };
   const validateLedgerCanister = (
     ledgerCanisterId: Principal
@@ -129,6 +174,9 @@
       return;
     }
 
+    if (!checkAlreadyImported(ledgerCanisterId)) {
+      return;
+    }
     const { errorLabelKey } = validateLedgerCanister(ledgerCanisterId);
     if (nonNullish(errorLabelKey)) {
       toastsError({
