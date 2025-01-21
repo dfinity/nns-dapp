@@ -957,18 +957,13 @@ impl AccountsStore {
     /// `multi_part_transactions_processor` which will work through the required actions in the
     /// background.
     #[allow(clippy::too_many_arguments)]
+    #[allow(clippy::unused_self)]
     fn process_transaction_type(
         &mut self,
-        transaction_type: TransactionType,
-        principal: PrincipalId,
-        block_height: BlockIndex,
+        _transaction_type: TransactionType,
+        _principal: PrincipalId,
+        _block_height: BlockIndex,
     ) {
-        if transaction_type == TransactionType::CreateCanister {
-            self.multi_part_transactions_processor.push(
-                block_height,
-                MultiPartTransactionToBeProcessed::CreateCanisterV2(principal),
-            );
-        };
     }
     fn assert_account_limit(&self) {
         let db_accounts_len = self.accounts_db.db_accounts_len();

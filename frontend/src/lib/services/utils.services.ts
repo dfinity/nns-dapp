@@ -1,10 +1,10 @@
-import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { Identity } from "@dfinity/agent";
 import {
   getAnonymousIdentity,
   getAuthenticatedIdentity,
   getCurrentIdentity,
-} from "./auth.services";
+} from "$lib/services/auth.services";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
+import type { Identity } from "@dfinity/agent";
 
 export type QueryAndUpdateOnResponse<R> = (options: {
   certified: boolean;

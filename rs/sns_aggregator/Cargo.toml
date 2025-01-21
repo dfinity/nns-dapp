@@ -27,7 +27,7 @@ serde = "1.0.217"
 serde_bytes = "0.11.15"
 serde_cbor = "0.11.2"
 serde_derive = "1.0.126"
-serde_json = "1.0.134"
+serde_json = "1.0.137"
 sha2 = "0.10.8"
 
 [dev-dependencies]

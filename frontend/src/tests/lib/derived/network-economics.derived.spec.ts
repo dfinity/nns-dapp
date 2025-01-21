@@ -1,4 +1,8 @@
 import {
+  SECONDS_IN_HALF_YEAR,
+  SECONDS_IN_MONTH,
+} from "$lib/constants/constants";
+import {
   clearFollowingAfterSecondsStore,
   startReducingVotingPowerAfterSecondsStore,
 } from "$lib/derived/network-economics.derived";
@@ -15,7 +19,9 @@ describe("network-economics-derived", () => {
       certified: true,
     });
 
-    expect(get(startReducingVotingPowerAfterSecondsStore)).toEqual(15778800n);
+    expect(get(startReducingVotingPowerAfterSecondsStore)).toEqual(
+      BigInt(SECONDS_IN_HALF_YEAR)
+    );
   });
 
   it("should return start reducing voting power", () => {
@@ -26,6 +32,8 @@ describe("network-economics-derived", () => {
       certified: true,
     });
 
-    expect(get(clearFollowingAfterSecondsStore)).toEqual(2629800n);
+    expect(get(clearFollowingAfterSecondsStore)).toEqual(
+      BigInt(SECONDS_IN_MONTH)
+    );
   });
 });

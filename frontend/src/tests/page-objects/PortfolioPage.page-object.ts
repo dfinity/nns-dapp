@@ -1,9 +1,9 @@
 import { HeldTokensCardPo } from "$tests/page-objects/HeldTokensCard.page-object";
 import { NoStakedTokensCardPo } from "$tests/page-objects/NoStakedTokensCard.page-object";
+import { StakedTokensCardPo } from "$tests/page-objects/StakedTokensCard.page-object";
 import { TotalAssetsCardPo } from "$tests/page-objects/TotalAssetsCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { StakedTokensCardPo } from "./StakedTokensCard.page-object";
 
 export class PortfolioPagePo extends BasePageObject {
   private static readonly TID = "portfolio-page-component";

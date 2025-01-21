@@ -93,7 +93,7 @@ describe("HeldTokensCard", () => {
     const mockCkETHToken = createUserToken(ckETHTokenBase);
     mockCkETHToken.balanceInUsd = 300;
     mockCkETHToken.balance = TokenAmountV2.fromUlps({
-      amount: 21600000000000000000n,
+      amount: 21606000000000000000n,
       token: CkETHToken,
     });
 
@@ -135,7 +135,7 @@ describe("HeldTokensCard", () => {
       expect(nativeBalances).toEqual([
         "21.60 ICP",
         "21.60 ckBTC",
-        "21.60 ckETH",
+        "21.61 ckETH",
       ]);
     });
 
@@ -159,7 +159,7 @@ describe("HeldTokensCard", () => {
       expect(nativeBalances).toEqual([
         "21.60 ICP",
         "21.60 ckBTC",
-        "21.60 ckETH",
+        "21.61 ckETH",
       ]);
 
       expect(await po.getInfoRow().isPresent()).toBe(false);

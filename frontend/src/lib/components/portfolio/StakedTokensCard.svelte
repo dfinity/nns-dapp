@@ -1,6 +1,7 @@
 <script lang="ts">
   import MaturityWithTooltip from "$lib/components/neurons/MaturityWithTooltip.svelte";
   import Card from "$lib/components/portfolio/Card.svelte";
+  import TokensCardHeader from "$lib/components/portfolio/TokensCardHeader.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -10,7 +11,7 @@
   import { formatNumber } from "$lib/utils/format.utils";
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
-  import { IconNeuronsPage, IconRight } from "@dfinity/gix-components";
+  import { IconNeuronsPage, IconStakedTokens } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
 
   export let topStakedTokens: TableProject[];
@@ -39,35 +40,17 @@
     role="region"
     aria-label={$i18n.portfolio.staked_tokens_card_title}
   >
-    <div class="header">
-      <div class="header-wrapper">
-        <div class="icon" aria-hidden="true">
-          <IconNeuronsPage />
-        </div>
-        <div class="text-content">
-          <h5 class="title">{$i18n.portfolio.staked_tokens_card_title}</h5>
-          <p
-            class="amount"
-            data-tid="amount"
-            aria-label={`${$i18n.portfolio.staked_tokens_card_title}: ${usdAmount}`}
-          >
-            ${usdAmountFormatted}
-          </p>
-        </div>
-      </div>
-      <a
-        {href}
-        class="button secondary"
-        aria-label={$i18n.portfolio.staked_tokens_card_link}
-      >
-        <span class="mobile-only">
-          <IconRight />
-        </span>
-        <span class="tablet-up">
-          {$i18n.portfolio.staked_tokens_card_link}
-        </span>
-      </a>
-    </div>
+    <TokensCardHeader
+      {href}
+      {usdAmount}
+      {usdAmountFormatted}
+      title={$i18n.portfolio.staked_tokens_card_title}
+      linkText={$i18n.portfolio.staked_tokens_card_link}
+    >
+      <svelte:fragment slot="icon">
+        <IconNeuronsPage />
+      </svelte:fragment>
+    </TokensCardHeader>
     <div class="body" role="table">
       <div class="header" role="row">
         <span role="columnheader"
@@ -127,7 +110,7 @@
               {stakedToken.stake instanceof TokenAmountV2
                 ? formatTokenV2({
                     value: stakedToken.stake,
-                    detailed: true,
+                    detailed: false,
                   })
                 : PRICE_NOT_AVAILABLE_PLACEHOLDER}
               {stakedToken.stake.token.symbol}
@@ -138,7 +121,7 @@
           <div class="info-row desktop-only" role="note" data-tid="info-row">
             <div class="content">
               <div class="icon" aria-hidden="true">
-                <IconNeuronsPage />
+                <IconStakedTokens />
               </div>
               <div class="message">
                 {$i18n.portfolio.staked_tokens_card_info_row}
@@ -158,41 +141,6 @@
     flex-direction: column;
     height: 100%;
     background-color: var(--card-background-tint);
-
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: var(--padding-3x) var(--padding-2x);
-
-      .header-wrapper {
-        display: flex;
-        align-items: flex-start;
-        gap: var(--padding-2x);
-
-        .icon {
-          width: 50px;
-          height: 50px;
-        }
-
-        .text-content {
-          display: flex;
-          flex-direction: column;
-          gap: var(--padding-0_5x);
-
-          .title {
-            font-size: 0.875rem;
-            font-weight: bold;
-            color: var(--text-description);
-            margin: 0;
-            padding: 0;
-          }
-          .amount {
-            font-size: 1.5rem;
-          }
-        }
-      }
-    }
 
     .body {
       display: flex;

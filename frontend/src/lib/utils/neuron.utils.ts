@@ -28,6 +28,10 @@ import type {
   NeuronVisibilityRowData,
   UncontrolledNeuronDetailsData,
 } from "$lib/types/neuron-visibility-row";
+import {
+  getAccountByPrincipal,
+  isAccountHardwareWallet,
+} from "$lib/utils/accounts.utils";
 import { daysToSeconds, nowInSeconds } from "$lib/utils/date.utils";
 import {
   formatNumber,
@@ -75,10 +79,6 @@ import {
 } from "@dfinity/utils";
 import type { ComponentType } from "svelte";
 import { get } from "svelte/store";
-import {
-  getAccountByPrincipal,
-  isAccountHardwareWallet,
-} from "./accounts.utils";
 
 export type StateInfo = {
   Icon?: ComponentType;
