@@ -11,7 +11,7 @@
   import { formatNumber } from "$lib/utils/format.utils";
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
-  import { IconNeuronsPage } from "@dfinity/gix-components";
+  import { IconNeuronsPage, IconStakedTokens } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
 
   export let topStakedTokens: TableProject[];
@@ -121,7 +121,7 @@
           <div class="info-row desktop-only" role="note" data-tid="info-row">
             <div class="content">
               <div class="icon" aria-hidden="true">
-                <IconNeuronsPage />
+                <IconStakedTokens />
               </div>
               <div class="message">
                 {$i18n.portfolio.staked_tokens_card_info_row}
