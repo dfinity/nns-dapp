@@ -16,13 +16,12 @@ import {
 import { isUserTokenData } from "$lib/utils/user-token.utils";
 
 const MAX_NUMBER_OF_ITEMS = 4;
-const SPECIAL_CANISTER_IDS = [CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID];
 
-const filterSpecialCanister = ({
+const filterCyclesTransferStation = ({
   universeId,
 }: {
   universeId: string;
-}): boolean => !SPECIAL_CANISTER_IDS.includes(universeId);
+}): boolean => CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID !== universeId;
 
 const compareTokensByUsdBalance = createDescendingComparator(
   (token: UserTokenData) => token?.balanceInUsd ?? 0 > 0
@@ -52,7 +51,7 @@ export const getTopHeldTokens = ({
   const topTokens = userTokens
     .filter(isUserTokenData)
     .filter(({ universeId }) =>
-      filterSpecialCanister({ universeId: universeId.toText() })
+      filterCyclesTransferStation({ universeId: universeId.toText() })
     )
     .sort(compareTokens)
     .slice(0, MAX_NUMBER_OF_ITEMS);
@@ -88,7 +87,7 @@ export const getTopStakedTokens = ({
   isSignedIn?: boolean;
 }): TableProject[] => {
   const topProjects = [...projects]
-    .filter(filterSpecialCanister)
+    .filter(filterCyclesTransferStation)
     .sort(compareProjects)
     .slice(0, MAX_NUMBER_OF_ITEMS);
 

@@ -158,27 +158,22 @@ describe("Portfolio utils", () => {
         expect(result).toHaveLength(0);
       });
 
-      it("should filter special tokens", () => {
+      it("should filter CTS token", () => {
         const mockIcpToken = createIcpUserToken({ balanceInUsd: 1000 });
-        const mockSpecialProjectThatShouldBeFilteredOut = createUserToken({
+        const mockCSTProject = createUserToken({
           universeId: Principal.fromText(
             CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID
           ),
           balanceInUsd: 0,
         });
-        const tokens: UserToken[] = [
-          mockSpecialProjectThatShouldBeFilteredOut,
-          mockIcpToken,
-        ];
+        const tokens: UserToken[] = [mockCSTProject, mockIcpToken];
         const result = getTopHeldTokens({
           userTokens: tokens,
           isSignedIn: true,
         });
 
         expect(result).toHaveLength(1);
-        expect(result).not.toContainEqual(
-          mockSpecialProjectThatShouldBeFilteredOut
-        );
+        expect(result).not.toContainEqual(mockCSTProject);
       });
     });
   });
@@ -349,17 +344,14 @@ describe("Portfolio utils", () => {
         expect(result).toHaveLength(0);
       });
 
-      it("should filter special projects", () => {
-        const mockSpecialProjectThatShouldBeFilteredOut: TableProject = {
+      it("should filter CTS project", () => {
+        const mockCTSProject: TableProject = {
           ...mockTableProject,
           stakeInUsd: 1000,
           universeId: CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID,
         };
 
-        const projects = [
-          mockSpecialProjectThatShouldBeFilteredOut,
-          mockIcpProject,
-        ];
+        const projects = [mockCTSProject, mockIcpProject];
 
         const result = getTopStakedTokens({
           projects,
@@ -367,9 +359,7 @@ describe("Portfolio utils", () => {
         });
 
         expect(result).toHaveLength(1);
-        expect(result).not.toContainEqual(
-          mockSpecialProjectThatShouldBeFilteredOut
-        );
+        expect(result).not.toContainEqual(mockCTSProject);
       });
     });
   });
