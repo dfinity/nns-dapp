@@ -98,6 +98,7 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_PORTFOLIO_PAGE: false,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
+      ENABLE_IMPORT_TOKEN_BY_URL: false,
     }),
     fetchRootKey: "false",
     host: "https://icp-api.io",
