@@ -153,8 +153,8 @@ describe("UsdValueBanner", () => {
     );
   });
 
-  it("should show a spinner instead of the USD price and placeholder text for the ICP when isLoading is true", async () => {
-    const usdAmount = undefined;
+  it("should show a spinner instead of the USD price and a placeholder text for the ICP", async () => {
+    const usdAmount = 100;
     const icpPrice = 10;
     const isLoading = true;
 
@@ -168,5 +168,21 @@ describe("UsdValueBanner", () => {
     expect(await po.hasSpinner()).toEqual(true);
     expect(await po.getPrimaryAmount()).toBeNull();
     expect(await po.getSecondaryAmount()).toEqual("-/- ICP");
+  });
+
+  it("should not show a spinner", async () => {
+    const usdAmount = 100;
+    const icpPrice = 10;
+    const isLoading = false;
+
+    setIcpPrice(icpPrice);
+
+    const po = renderComponent({
+      usdAmount,
+      isLoading,
+    });
+
+    expect(await po.hasSpinner()).toEqual(false);
+    expect(await po.getPrimaryAmount()).toEqual("$100.00");
   });
 });
