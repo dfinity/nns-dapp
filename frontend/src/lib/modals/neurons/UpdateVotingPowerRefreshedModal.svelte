@@ -82,7 +82,11 @@
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
-<Modal role="alert" on:nnsClose>
+<Modal
+  role="alert"
+  on:nnsClose
+  testId="update-voting-power-refreshed-modal-component"
+>
   <span slot="title">Voting Power Refreshed Timestamp</span>
 
   <form
@@ -112,6 +116,7 @@
       <span class="label">Value in seconds</span>
 
       <Input
+        testId="update-voting-power-refreshed-seconds-input"
         placeholderLabelKey="core.amount"
         name="seconds"
         inputType="number"
@@ -123,8 +128,8 @@
   </form>
 
   <button
-    data-tid="confirm-add-maturity-button"
-    form="get-maturity-form"
+    data-tid="confirm-update-voting-power-refreshed-button"
+    form="dev-update-voting-power-refreshed"
     class="primary"
     slot="footer"
     disabled={isNullish(toBigInt(secondsValue)) || updating}
