@@ -1,7 +1,6 @@
 use super::histogram::AccountsStoreHistogram;
 use super::*;
 use crate::accounts_store::toy_data::{toy_account, ToyAccountSize};
-use icp_ledger::Tokens;
 use pretty_assertions::assert_eq;
 use std::str::FromStr;
 
@@ -529,49 +528,6 @@ fn attach_canister_substitutes_absent_block_index() {
     let canisters = store.get_canisters(principal);
     assert_eq!(block_index, canisters[0].block_index);
     assert!(matches!(result, AttachCanisterResponse::Ok));
-}
-
-#[test]
-fn attach_newly_created_canister_attaches_if_not_present() {
-    let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
-
-    let canisters = store.get_canisters(principal);
-    assert_eq!(canisters.len(), 0);
-
-    store.attach_newly_created_canister(principal, canister_id);
-
-    let final_canisters = store.get_canisters(principal);
-    assert_eq!(final_canisters.len(), 1);
-}
-
-#[test]
-fn attach_newly_created_canister_does_not_attach_if_present() {
-    let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
-
-    let name = "XYZ";
-    store.attach_canister(
-        principal,
-        AttachCanisterRequest {
-            name: name.to_string(),
-            canister_id,
-            block_index: None,
-        },
-    );
-
-    let canisters = store.get_canisters(principal);
-    assert_eq!(canisters.len(), 1);
-
-    store.attach_newly_created_canister(principal, canister_id);
-
-    let final_canisters = store.get_canisters(principal);
-    assert_eq!(final_canisters.len(), 1);
-    assert_eq!(final_canisters[0].name, name);
 }
 
 #[test]
@@ -1110,7 +1066,6 @@ pub(crate) fn assert_initial_test_store_stats_are_correct(stats: &Stats) {
     assert_eq!(2, stats.accounts_count);
     assert_eq!(0, stats.sub_accounts_count);
     assert_eq!(0, stats.hardware_wallet_accounts_count);
-    assert_eq!(3, stats.block_height_synced_up_to.unwrap());
     assert!(stats.seconds_since_last_ledger_sync > 1_000_000_000);
 }
 
@@ -1165,10 +1120,6 @@ fn get_stats() {
 
     store.get_stats(&mut stats);
     assert_eq!(2, stats.hardware_wallet_accounts_count);
-
-    store.mark_ledger_sync_complete();
-    store.get_stats(&mut stats);
-    assert!(stats.seconds_since_last_ledger_sync < 10);
 }
 
 /// Tests that `get_histogram()` returns correct values.
@@ -1290,43 +1241,9 @@ fn get_histogram() {
 pub(crate) fn setup_test_store() -> AccountsStore {
     let principal1 = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let principal2 = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
-    let account_identifier1 = AccountIdentifier::from(principal1);
-    let account_identifier2 = AccountIdentifier::from(principal2);
     let mut store = AccountsStore::default();
     store.add_account(principal1);
     store.add_account(principal2);
-    {
-        let transfer = Mint {
-            amount: Tokens::from_e8s(1_000_000_000),
-            to: account_identifier1,
-        };
-        store.maybe_process_transaction(&transfer, Memo(0), 0).unwrap();
-    }
-    {
-        let transfer = Mint {
-            amount: Tokens::from_e8s(1_000_000_000),
-            to: account_identifier1,
-        };
-        store.maybe_process_transaction(&transfer, Memo(0), 1).unwrap();
-    }
-    {
-        let transfer = Burn {
-            amount: Tokens::from_e8s(500_000_000),
-            from: account_identifier1,
-            spender: None,
-        };
-        store.maybe_process_transaction(&transfer, Memo(0), 2).unwrap();
-    }
-    {
-        let transfer = Transfer {
-            amount: Tokens::from_e8s(300_000_000),
-            fee: Tokens::from_e8s(1_000),
-            spender: None,
-            from: account_identifier1,
-            to: account_identifier2,
-        };
-        store.maybe_process_transaction(&transfer, Memo(0), 3).unwrap();
-    }
     store
 }
 

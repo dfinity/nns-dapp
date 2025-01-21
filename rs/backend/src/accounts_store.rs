@@ -1,6 +1,5 @@
 //! User accounts and transactions.
-use crate::constants::MEMO_CREATE_CANISTER;
-use crate::multi_part_transactions_processor::{MultiPartTransactionToBeProcessed, MultiPartTransactionsProcessor};
+use crate::multi_part_transactions_processor::MultiPartTransactionsProcessor;
 use crate::state::StableState;
 use crate::stats::Stats;
 use candid::CandidType;
@@ -8,9 +7,7 @@ use dfn_candid::Candid;
 use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
-use ic_nns_constants::CYCLES_MINTING_CANISTER_ID;
 use ic_stable_structures::{storable::Bound, Storable};
-use icp_ledger::Operation::{self, Approve, Burn, Mint, Transfer};
 use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
@@ -548,75 +545,6 @@ impl AccountsStore {
         }
     }
 
-    pub fn maybe_process_transaction(
-        &mut self,
-        transfer: &Operation,
-        memo: Memo,
-        block_height: BlockIndex,
-    ) -> Result<(), String> {
-        if let Some(block_height_synced_up_to) = self.get_block_height_synced_up_to() {
-            let expected_block_height = block_height_synced_up_to + 1;
-            if block_height != block_height_synced_up_to + 1 {
-                return Err(format!(
-                    "Expected block height {expected_block_height}. Got block height {block_height}",
-                ));
-            }
-        }
-
-        match *transfer {
-            Burn { .. } | Mint { .. } | Approve { .. } => {}
-            Transfer {
-                from,
-                to,
-                spender: _,
-                amount: _,
-                fee: _,
-            } => {
-                let default_transaction_type = if matches!(transfer, Transfer { .. }) {
-                    TransactionType::Transfer
-                } else {
-                    TransactionType::TransferFrom
-                };
-
-                if self.store_has_account(to) {
-                } else if self.store_has_account(from) {
-                    if let Some(principal) = self.try_get_principal(&from) {
-                        let transaction_type =
-                            Self::get_transaction_type(from, to, memo, &principal, default_transaction_type);
-                        self.process_transaction_type(transaction_type, principal, block_height);
-                    }
-                }
-            }
-        }
-
-        self.block_height_synced_up_to = Some(block_height);
-
-        Ok(())
-    }
-
-    pub fn mark_ledger_sync_complete(&mut self) {
-        self.last_ledger_sync_timestamp_nanos = u64::try_from(
-            dfn_core::api::now()
-                .duration_since(SystemTime::UNIX_EPOCH)
-                .unwrap_or_else(|err| unreachable!("The current time is well after the Unix epoch. Error: {err}"))
-                .as_nanos(),
-        )
-        .unwrap_or_else(|_| unreachable!("Not impossible, but centuries in the future"));
-    }
-
-    /// Initializes the `block_height_synced_up_to` value.
-    ///
-    /// # Panics
-    /// - Panics if the `block_height_synced_up_to` value has already been initialized.
-    pub fn init_block_height_synced_up_to(&mut self, block_height: BlockIndex) {
-        assert!(
-            self.block_height_synced_up_to.is_none(),
-            "This can only be called to initialize the 'block_height_synced_up_to' value"
-        );
-
-        self.block_height_synced_up_to = Some(block_height);
-    }
-
     fn find_canister_index(account: &Account, canister_id: CanisterId) -> Option<usize> {
         account
             .canisters
@@ -758,25 +686,6 @@ impl AccountsStore {
         }
     }
 
-    // We skip the checks here since in this scenario we must store the canister otherwise the user
-    // won't be able to retrieve its Id.
-    pub fn attach_newly_created_canister(&mut self, principal: PrincipalId, canister_id: CanisterId) {
-        let account_identifier = AccountIdentifier::from(principal).to_vec();
-
-        if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier) {
-            // We only attach if it doesn't already exist
-            if Self::find_canister_index(&account, canister_id).is_none() {
-                account.canisters.push(NamedCanister {
-                    name: String::new(),
-                    canister_id,
-                    block_index: None,
-                });
-                account.canisters.sort();
-                self.accounts_db.db_insert_account(&account_identifier, account);
-            }
-        }
-    }
-
     pub fn set_imported_tokens(
         &mut self,
         caller: PrincipalId,
@@ -805,23 +714,6 @@ impl AccountsStore {
         };
 
         GetImportedTokensResponse::Ok(account.imported_tokens.unwrap_or_default())
-    }
-
-    #[must_use]
-    pub fn get_block_height_synced_up_to(&self) -> Option<BlockIndex> {
-        self.block_height_synced_up_to
-    }
-
-    pub fn try_take_next_transaction_to_process(&mut self) -> Option<(BlockIndex, MultiPartTransactionToBeProcessed)> {
-        self.multi_part_transactions_processor.take_next()
-    }
-
-    pub fn enqueue_multi_part_transaction(
-        &mut self,
-        block_height: BlockIndex,
-        transaction: MultiPartTransactionToBeProcessed,
-    ) {
-        self.multi_part_transactions_processor.push(block_height, transaction);
     }
 
     pub fn get_stats(&self, stats: &mut Stats) {
@@ -857,37 +749,6 @@ impl AccountsStore {
             })
     }
 
-    fn store_has_account(&mut self, account_identifier: AccountIdentifier) -> bool {
-        self.accounts_db.db_get_account(&account_identifier.to_vec()).is_some()
-            || self.hardware_wallets_and_sub_accounts.contains_key(&account_identifier)
-    }
-
-    fn try_get_principal(&self, account_identifier: &AccountIdentifier) -> Option<PrincipalId> {
-        if let Some(account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
-            account.principal
-        } else {
-            match self.hardware_wallets_and_sub_accounts.get(account_identifier) {
-                Some(AccountWrapper::SubAccount(account_identifier, _)) => {
-                    let account = self.accounts_db
-                        .db_get_account
-                        (&account_identifier.to_vec())
-                        .unwrap_or_else(|| panic!("BROKEN STATE: Account identifier {account_identifier} exists in `hardware_wallets_and_sub_accounts`, but not in `accounts`."));
-                    account.principal
-                }
-                Some(AccountWrapper::HardwareWallet(linked_account_identifiers)) => linked_account_identifiers
-                    .iter()
-                    .filter_map(|account_identifier| self.accounts_db.db_get_account(&account_identifier.to_vec()))
-                    .find_map(|a| {
-                        a.hardware_wallet_accounts
-                            .iter()
-                            .find(|hw| *account_identifier == AccountIdentifier::from(hw.principal))
-                            .map(|hw| hw.principal)
-                    }),
-                None => None,
-            }
-        }
-    }
-
     fn link_hardware_wallet_to_account(
         &mut self,
         account_identifier: AccountIdentifier,
@@ -915,56 +776,6 @@ impl AccountsStore {
         name.len() <= CANISTER_NAME_MAX_LENGTH
     }
 
-    #[allow(clippy::too_many_arguments)]
-    fn get_transaction_type(
-        from: AccountIdentifier,
-        to: AccountIdentifier,
-        memo: Memo,
-        principal: &PrincipalId,
-        default_transaction_type: TransactionType,
-    ) -> TransactionType {
-        // In case of the edge case that it's a transaction to itself
-        // use the default value passed when the function is called
-        if from == to {
-            default_transaction_type
-        } else if memo.0 > 0 {
-            if Self::is_create_canister_transaction(memo, &to, principal) {
-                TransactionType::CreateCanister
-            } else {
-                default_transaction_type
-            }
-        } else {
-            default_transaction_type
-        }
-    }
-
-    fn is_create_canister_transaction(memo: Memo, to: &AccountIdentifier, principal: &PrincipalId) -> bool {
-        // Creating a canister involves sending ICP directly to an account controlled by the CMC, the NNS
-        // Dapp canister then notifies the CMC of the transfer.
-        if memo == MEMO_CREATE_CANISTER {
-            let subaccount = principal.into();
-            // Check if sent to CMC account for this principal
-            let expected_to = AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some(subaccount));
-            if *to == expected_to {
-                return true;
-            }
-        }
-        false
-    }
-
-    /// Certain transaction types require additional processing (Stake Neuron, Create Canister,
-    /// etc). Each time we detect one of these transaction types we need to add the details to the
-    /// `multi_part_transactions_processor` which will work through the required actions in the
-    /// background.
-    #[allow(clippy::too_many_arguments)]
-    #[allow(clippy::unused_self)]
-    fn process_transaction_type(
-        &mut self,
-        _transaction_type: TransactionType,
-        _principal: PrincipalId,
-        _block_height: BlockIndex,
-    ) {
-    }
     fn assert_account_limit(&self) {
         let db_accounts_len = self.accounts_db.db_accounts_len();
         assert!(
