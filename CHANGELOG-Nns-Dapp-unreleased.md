@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 - Change the USD value icon in the token pages
+- Proceed with rollout of re-enabling of certification of certain calls from `10%` to `30%`.
 
 #### Deprecated
 
