@@ -15,14 +15,15 @@
 
   export let ledgerCanisterId: Principal | undefined = undefined;
   export let indexCanisterId: Principal | undefined = undefined;
-  export let addIndexCanisterMode: boolean = false;
+  export let mode: "add-index" = "add-index";
 
   const dispatch = createEventDispatcher();
 
   let isSubmitDisabled = true;
-  $: isSubmitDisabled = addIndexCanisterMode
-    ? isNullish(indexCanisterId)
-    : isNullish(ledgerCanisterId);
+  $: isSubmitDisabled =
+    mode === "add-index"
+      ? isNullish(indexCanisterId)
+      : isNullish(ledgerCanisterId);
 </script>
 
 <TestIdWrapper testId="import-token-form-component">
@@ -41,7 +42,7 @@
   <form
     on:submit|preventDefault={() => $authSignedInStore && dispatch("nnsSubmit")}
   >
-    {#if addIndexCanisterMode}
+    {#if mode === "add-index"}
       <ImportTokenCanisterId
         testId="ledger-canister-id-view"
         label={$i18n.import_token.ledger_label}
@@ -53,7 +54,7 @@
         placeholderLabelKey="import_token.placeholder"
         name="ledger-canister-id"
         testId="ledger-canister-id"
-        disabled={addIndexCanisterMode}
+        disabled={mode === "add-index"}
       >
         <svelte:fragment slot="label"
           >{$i18n.import_token.ledger_label}</svelte:fragment
@@ -63,14 +64,14 @@
 
     <PrincipalInput
       bind:principal={indexCanisterId}
-      required={addIndexCanisterMode}
+      required={mode === "add-index"}
       placeholderLabelKey="import_token.placeholder"
       name="index-canister-id"
       testId="index-canister-id"
     >
       <Html
         slot="label"
-        text={addIndexCanisterMode
+        text={mode === "add-index"
           ? $i18n.import_token.index_label
           : $i18n.import_token.index_label_optional}
       />
@@ -80,7 +81,7 @@
       <Html text={$i18n.import_token.index_canister_description} />
     </p>
 
-    {#if !addIndexCanisterMode && $authSignedInStore}
+    {#if mode !== "add-index" && $authSignedInStore}
       <CalloutWarning htmlText={$i18n.import_token.warning} />
     {/if}
 
@@ -109,7 +110,7 @@
           type="submit"
           disabled={isSubmitDisabled}
         >
-          {addIndexCanisterMode ? $i18n.core.add : $i18n.core.next}
+          {mode === "add-index" ? $i18n.core.add : $i18n.core.next}
         </button>
       {:else}
         <SignIn />
