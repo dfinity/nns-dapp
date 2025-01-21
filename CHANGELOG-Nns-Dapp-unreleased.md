@@ -21,6 +21,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 - Remove canister creation fallback from backend canister.
+- Stop processing ICP transactions in the nns-dapp canister.
 
 #### Fixed
 
