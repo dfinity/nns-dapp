@@ -12,6 +12,7 @@ impl AccountsDbAsProxy {
 
     /// Determines whether a migration is in progress.
     #[must_use]
+    #[allow(dead_code)]
     pub fn migration_in_progress(&self) -> bool {
         self.migration.is_some()
     }

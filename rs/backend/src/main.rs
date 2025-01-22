@@ -304,15 +304,6 @@ pub fn get_histogram_impl() -> AccountsStoreHistogram {
     with_state(|state| state.accounts_store.get_histogram())
 }
 
-/// Executes on every block height and is used to run background processes.
-#[export_name = "canister_heartbeat"]
-pub fn canister_heartbeat() {
-    let migration_in_progress = with_state_mut(|s| s.accounts_store.migration_in_progress());
-    if migration_in_progress {
-        dfn_core::api::futures::spawn(call_step_migration_with_retries());
-    }
-}
-
 /// Steps the migration.
 #[export_name = "canister_update step_migration"]
 pub fn step_migration() {
@@ -332,11 +323,13 @@ fn step_migration_impl(step_size: u32) {
 }
 
 /// Calls `step_migration()` without panicking and rolling back if anything goes wrong.
+#[allow(dead_code)]
 async fn call_step_migration(step_size: u32) -> Result<(), (RejectionCode, String)> {
     ic_cdk::api::call::call(ic_cdk::id(), "step_migration", (step_size,)).await
 }
 
 /// Calls step migration, dropping the step size to 1 on failure.
+#[allow(dead_code)]
 async fn call_step_migration_with_retries() {
     for step_size in [AccountsDbAsProxy::MIGRATION_STEP_SIZE, 1] {
         if let Err((code, msg)) = call_step_migration(step_size).await {
