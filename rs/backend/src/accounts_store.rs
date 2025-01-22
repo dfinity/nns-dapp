@@ -360,6 +360,7 @@ pub enum DetachCanisterResponse {
 impl AccountsStore {
     /// Determines whether a migration is being performed.
     #[must_use]
+    #[allow(dead_code)]
     pub fn migration_in_progress(&self) -> bool {
         self.accounts_db.migration_in_progress()
     }
