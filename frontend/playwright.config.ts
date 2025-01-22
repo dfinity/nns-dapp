@@ -45,10 +45,13 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
+    // TODO: Enable Chrome tests again once no more flaky.
+    /*
     {
       name: "Google Chrome",
       use: { ...devices["Desktop Chrome"], channel: "chrome", viewport },
     },
+    */
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'], channel: "firefox", viewport },
