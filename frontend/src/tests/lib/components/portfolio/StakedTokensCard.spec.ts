@@ -15,16 +15,19 @@ describe("StakedTokensCard", () => {
     topStakedTokens = [],
     usdAmount = 0,
     numberOfTopHeldTokens = 0,
+    isLoading = false,
   }: {
     topStakedTokens?: TableProject[];
     usdAmount?: number;
     numberOfTopHeldTokens?: number;
+    isLoading?: boolean;
   } = {}) => {
     const { container } = render(StakedTokensCard, {
       props: {
         topStakedTokens,
         usdAmount,
         numberOfTopHeldTokens,
+        isLoading,
       },
     });
 
@@ -76,6 +79,16 @@ describe("StakedTokensCard", () => {
       const po = renderComponent();
 
       expect(await po.getAmount()).toBe("$-/-");
+      expect(await po.hasSpinner()).toEqual(false);
+    });
+
+    it("should show placeholder balance", async () => {
+      const po = renderComponent({
+        isLoading: true,
+      });
+
+      expect(await po.getAmount()).toBeNull();
+      expect(await po.hasSpinner()).toEqual(true);
     });
 
     it("should list of tokens with placeholders", async () => {

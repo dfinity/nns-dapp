@@ -17,7 +17,7 @@
   export let topStakedTokens: TableProject[];
   export let usdAmount: number;
   export let numberOfTopHeldTokens: number;
-  export let isLoading: boolean;
+  export let isLoading: boolean = false;
 
   const href = AppPath.Staking;
   let usdAmountFormatted: string;

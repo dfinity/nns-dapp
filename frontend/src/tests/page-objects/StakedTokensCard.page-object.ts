@@ -53,6 +53,10 @@ export class StakedTokensCardPo extends BasePageObject {
     return this.getElement("info-row");
   }
 
+  hasSpinner(): Promise<boolean> {
+    return this.isPresent("spinner");
+  }
+
   async getStakedTokensTitle(): Promise<string[]> {
     const rowsPos = await this.getRows();
     return Promise.all(rowsPos.map((po) => po.getStakedTokenTitle()));

@@ -16,19 +16,13 @@
     </div>
     <div class="text-content">
       <h5 class="title">{title}</h5>
-      {#if !isLoading}
-        <p
-          class="amount"
-          data-tid="amount"
-          aria-label={`${title}: ${usdAmount}`}
-        >
+      <p class="amount" data-tid="amount" aria-label={`${title}: ${usdAmount}`}>
+        {#if !isLoading}
           ${usdAmountFormatted}
-        </p>
-      {:else}
-        <div>
+        {:else}
           <Spinner inline size="small" />
-        </div>
-      {/if}
+        {/if}
+      </p>
     </div>
   </div>
   <a {href} class="button link" aria-label={linkText}>
@@ -74,6 +68,7 @@
         }
         .amount {
           font-size: 1.5rem;
+          align-self: flex-start;
         }
       }
     }
