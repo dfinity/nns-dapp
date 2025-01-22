@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- New portfolio page with information about the user's holdings and their value.
+
 #### Changed
 
 - Change the USD value icon in the token pages
