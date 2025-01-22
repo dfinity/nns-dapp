@@ -14,7 +14,7 @@
   const toBigInt = (value: number | undefined): bigint | undefined => {
     try {
       if (value !== undefined) return BigInt(value);
-    } finally {
+    } catch (err) {
       // Do nothing
     }
     return undefined;
