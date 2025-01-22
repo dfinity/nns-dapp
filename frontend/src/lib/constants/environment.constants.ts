@@ -22,6 +22,7 @@ export interface FeatureFlags<T> {
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;
+  ENABLE_IMPORT_TOKEN_BY_URL: T;
 }
 export const defaultFeatureFlagValues: FeatureFlags<boolean> = {
   ENABLE_CKTESTBTC: false,
@@ -33,6 +34,7 @@ export const defaultFeatureFlagValues: FeatureFlags<boolean> = {
   ENABLE_PORTFOLIO_PAGE: false,
   TEST_FLAG_EDITABLE: false,
   TEST_FLAG_NOT_EDITABLE: false,
+  ENABLE_IMPORT_TOKEN_BY_URL: false,
 };
 
 export type FeatureKey = keyof FeatureFlags<boolean>;
