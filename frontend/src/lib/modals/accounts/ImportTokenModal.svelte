@@ -26,12 +26,9 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
   import { get } from "svelte/store";
-  import {
-    importTokenIndexIdQueryParameterStore,
-    importTokenLedgerIdQueryParameterStore,
-  } from "$lib/derived/tokens.derived";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { pageStore } from "$lib/derived/page.derived";
 
   let currentStep: WizardStep | undefined = undefined;
 
@@ -72,13 +69,13 @@
     }
   };
   $: {
-    const ledgerId = $importTokenLedgerIdQueryParameterStore;
+    const ledgerId = $pageStore.importTokenLedgerId;
     if (nonNullish(ledgerId) && validateCanisterIdText(ledgerId)) {
       ledgerCanisterId = Principal.fromText(ledgerId);
     }
   }
   $: {
-    const indexId = $importTokenIndexIdQueryParameterStore;
+    const indexId = $pageStore.importTokenIndexId;
     if (nonNullish(indexId) && validateCanisterIdText(indexId)) {
       indexCanisterId = Principal.fromText(indexId);
     }
