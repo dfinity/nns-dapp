@@ -467,6 +467,20 @@ describe("Portfolio page", () => {
           "$0.00"
         );
       });
+
+      it("should not display a primary action when the staked tokens card loads before the held tokens card", async () => {
+        const loadingToken = createUserTokenLoading({});
+
+        const po = renderPage({
+          userTokens: [loadingToken],
+          tableProjects: [],
+        });
+
+        expect(await po.getNoStakedTokensCarPo().isPresent()).toEqual(true);
+        expect(await po.getNoStakedTokensCarPo().hasPrimaryAction()).toEqual(
+          false
+        );
+      });
     });
 
     describe("TotalAssetsCard", () => {

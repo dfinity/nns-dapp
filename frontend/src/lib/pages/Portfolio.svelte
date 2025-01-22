@@ -90,7 +90,7 @@
   // This helps guide users to stake their tokens when possible
   let hasNoStakedTokensCardAPrimaryAction: boolean;
   $: hasNoStakedTokensCardAPrimaryAction =
-    stakedTokensCard === "empty" && heldTokensCard !== "empty";
+    stakedTokensCard === "empty" && heldTokensCard === "full";
 
   // Global loading state that tracks if either held or staked tokens are loading
   // TotalAssetsCard will show this if either held or staked are loading
