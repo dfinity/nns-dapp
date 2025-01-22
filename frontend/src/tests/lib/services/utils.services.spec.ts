@@ -30,6 +30,7 @@ describe("api-utils", () => {
             onError,
             identityType: "current",
             strategy: "query_and_update",
+            logMessage: "test-log",
           });
 
         expect(call).rejects.toThrowError();
@@ -48,6 +49,7 @@ describe("api-utils", () => {
           onLoad,
           onError,
           identityType: "current",
+          logMessage: "test-log",
         });
 
         expect(onLoad).toHaveBeenCalledTimes(1);
@@ -75,6 +77,7 @@ describe("api-utils", () => {
           request,
           onLoad,
           onError,
+          logMessage: "test-log",
         });
 
         expect(request).toHaveBeenCalledTimes(2);
@@ -103,6 +106,7 @@ describe("api-utils", () => {
           request,
           onLoad,
           onError,
+          logMessage: "test-log",
         });
 
         await tick();
@@ -125,6 +129,7 @@ describe("api-utils", () => {
         await queryAndUpdate<number, unknown>({
           request,
           onLoad,
+          logMessage: "test-log",
         });
 
         expect(requestCertified.sort()).toEqual([false, true]);
@@ -144,6 +149,7 @@ describe("api-utils", () => {
           request,
           onLoad,
           strategy: "query",
+          logMessage: "test-log",
         });
 
         expect(requestCertified.sort()).toEqual([false]);
@@ -169,6 +175,7 @@ describe("api-utils", () => {
           request,
           onLoad,
           strategy: "update",
+          logMessage: "test-log",
         });
 
         expect(requestCertified.sort()).toEqual([true]);
@@ -191,6 +198,7 @@ describe("api-utils", () => {
           request,
           onLoad,
           onError,
+          logMessage: "test-log",
         });
 
         expect(onLoad).not.toBeCalled();
@@ -226,6 +234,7 @@ describe("api-utils", () => {
           request,
           onLoad,
           onError,
+          logMessage: "test-log",
         });
         await runResolvedPromises();
 
@@ -263,6 +272,7 @@ describe("api-utils", () => {
           request,
           onLoad,
           onError,
+          logMessage: "test-log",
         });
         await runResolvedPromises();
 
@@ -305,6 +315,7 @@ describe("api-utils", () => {
         await queryAndUpdate<number, unknown>({
           request,
           onLoad,
+          logMessage: "test-log",
         });
         expect(updateDone).toBeTruthy();
         expect(queryDone).toBe(false);
