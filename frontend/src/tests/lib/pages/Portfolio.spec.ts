@@ -122,7 +122,8 @@ describe("Portfolio page", () => {
       });
 
       expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(false);
-      expect(await po.getNumberOfSkeletonCards()).toEqual(0);
+      expect(await po.getHeldTokensSkeletonCard().isPresent()).toEqual(false);
+      expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(false);
     });
   });
 
@@ -540,9 +541,12 @@ describe("Portfolio page", () => {
         });
 
         expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(true);
-        expect(await po.getNumberOfSkeletonCards()).toEqual(2);
-        expect(await po.getHeldTokensCardPo().isPresent()).toBe(false);
-        expect(await po.getStakedTokensCardPo().isPresent()).toBe(false);
+        expect(await po.getHeldTokensSkeletonCard().isPresent()).toEqual(true);
+        expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(
+          true
+        );
+        expect(await po.getHeldTokensCardPo().isPresent()).toEqual(false);
+        expect(await po.getStakedTokensCardPo().isPresent()).toEqual(false);
 
         const loadedToken = createUserToken({
           balanceInUsd: 100,
@@ -554,9 +558,12 @@ describe("Portfolio page", () => {
         });
 
         expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(true);
-        expect(await po.getNumberOfSkeletonCards()).toEqual(1);
-        expect(await po.getHeldTokensCardPo().isPresent()).toBe(true);
-        expect(await po.getStakedTokensCardPo().isPresent()).toBe(false);
+        expect(await po.getHeldTokensSkeletonCard().isPresent()).toEqual(false);
+        expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(
+          true
+        );
+        expect(await po.getHeldTokensCardPo().isPresent()).toEqual(true);
+        expect(await po.getStakedTokensCardPo().isPresent()).toEqual(false);
 
         const loadedProject: TableProject = {
           ...mockTableProject,
@@ -570,9 +577,12 @@ describe("Portfolio page", () => {
         });
 
         expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(false);
-        expect(await po.getNumberOfSkeletonCards()).toEqual(0);
-        expect(await po.getHeldTokensCardPo().isPresent()).toBe(true);
-        expect(await po.getStakedTokensCardPo().isPresent()).toBe(true);
+        expect(await po.getHeldTokensSkeletonCard().isPresent()).toEqual(false);
+        expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(
+          false
+        );
+        expect(await po.getHeldTokensCardPo().isPresent()).toEqual(true);
+        expect(await po.getStakedTokensCardPo().isPresent()).toEqual(true);
       });
     });
   });

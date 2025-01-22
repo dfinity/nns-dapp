@@ -123,7 +123,7 @@
   </div>
   <div class="content">
     {#if heldTokensCard === "skeleton"}
-      <SkeletonTokensCard />
+      <SkeletonTokensCard testId="held-tokens-skeleton-card" />
     {:else if heldTokensCard === "empty"}
       <NoHeldTokensCard />
     {:else}
@@ -135,7 +135,7 @@
     {/if}
 
     {#if stakedTokensCard === "skeleton"}
-      <SkeletonTokensCard />
+      <SkeletonTokensCard testId="staked-tokens-skeleton-card" />
     {:else if stakedTokensCard === "empty"}
       <NoStakedTokensCard primaryCard={hasNoStakedTokensCardAPrimaryAction} />
     {:else}
