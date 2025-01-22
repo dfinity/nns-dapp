@@ -14,15 +14,20 @@ export interface Page {
   universe: string;
   actionable: boolean;
   path: AppPath | null;
+  importTokenLedgerId?: string;
+  importTokenIndexId?: string;
 }
 
 export const pageStore = derived<Readable<PageType>, Page>(
   page,
   ({ data, route: { id: routeId } }) => {
-    const { universe, actionable } = data;
+    const { universe, actionable, importTokenLedgerId, importTokenIndexId } =
+      data;
     return {
       universe: universe ?? OWN_CANISTER_ID_TEXT,
       actionable,
+      importTokenLedgerId,
+      importTokenIndexId,
       path: routeId ? pathForRouteId(routeId) : null,
     };
   }
