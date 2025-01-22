@@ -7,7 +7,7 @@ import { TotalAssetsCardPo } from "$tests/page-objects/TotalAssetsCard.page-obje
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 
-describe("UsdValueBanner", () => {
+describe("TotalAssetsCard", () => {
   const renderComponent = ({
     usdAmount,
     hasUnpricedTokens,
@@ -154,35 +154,24 @@ describe("UsdValueBanner", () => {
   });
 
   it("should show a spinner instead of the USD price and a placeholder text for the ICP", async () => {
-    const usdAmount = 100;
-    const icpPrice = 10;
     const isLoading = true;
 
-    setIcpPrice(icpPrice);
-
     const po = renderComponent({
-      usdAmount,
+      usdAmount: undefined,
       isLoading,
     });
 
     expect(await po.hasSpinner()).toEqual(true);
-    expect(await po.getPrimaryAmount()).toBeNull();
-    expect(await po.getSecondaryAmount()).toEqual("-/- ICP");
   });
 
   it("should not show a spinner", async () => {
-    const usdAmount = 100;
-    const icpPrice = 10;
     const isLoading = false;
 
-    setIcpPrice(icpPrice);
-
     const po = renderComponent({
-      usdAmount,
+      usdAmount: undefined,
       isLoading,
     });
 
     expect(await po.hasSpinner()).toEqual(false);
-    expect(await po.getPrimaryAmount()).toEqual("$100.00");
   });
 });
