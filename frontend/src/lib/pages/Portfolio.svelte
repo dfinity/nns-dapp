@@ -17,7 +17,7 @@
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
 
-  export let userTokens: UserToken[];
+  export let userTokens: UserToken[] = [];
   export let tableProjects: TableProject[];
 
   let totalTokensBalanceInUsd: number;
@@ -58,7 +58,10 @@
   // - 'full': Shows card with data (or when user is not signed in, visitor data)
   // - 'loading': Shows skeleton while data is being fetched
   // - 'empty': Shows empty state when user has no tokens
-  let heldTokensCard: "empty" | "loading" | "full";
+  type TokensCardStatus = "empty" | "loading" | "full";
+
+
+  let heldTokensCard: TokensCardStatus;
   $: heldTokensCard = !$authSignedInStore
     ? "full"
     : areHeldTokensLoading
@@ -67,6 +70,7 @@
         ? "empty"
         : "full";
 
+
   let areStakedTokensLoading: boolean;
   $: areStakedTokensLoading = tableProjects.some(
     (project) => project.isStakeLoading
@@ -74,12 +78,12 @@
 
   // Determines the display state of the staked tokens card
   // Similar logic to heldTokensCard but for staked tokens
-  let stakedTokensCard: "empty" | "loading" | "full";
+  let stakedTokensCard: TokensCardStatus;
   $: stakedTokensCard = !$authSignedInStore
     ? "full"
-    : areHeldTokensLoading
+    : areStakedTokensLoading
       ? "loading"
-      : totalTokensBalanceInUsd === 0
+      : totalStakedInUsd === 0
         ? "empty"
         : "full";
 
@@ -87,7 +91,8 @@
   // Primary action is shown when there are tokens but no stakes
   // This helps guide users to stake their tokens when possible
   let hasNoStakedTokensCardAPrimaryAction: boolean;
-  $: hasNoStakedTokensCardAPrimaryAction = stakedTokensCard !== "empty";
+  $: hasNoStakedTokensCardAPrimaryAction =
+    stakedTokensCard === "empty" && heldTokensCard !== "empty";
 
   // Global loading state that tracks if either held or staked tokens are loading
   // TotalAssetsCard will show this if either held or staked are loading
@@ -121,7 +126,7 @@
   <div class="content">
     {#if heldTokensCard === "loading"}
       <SkeletonTokensCard />
-    {:else if stakedTokensCard === "empty"}
+    {:else if heldTokensCard === "empty"}
       <NoHeldTokensCard />
     {:else}
       <HeldTokensCard

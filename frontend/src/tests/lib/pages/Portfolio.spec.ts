@@ -527,10 +527,8 @@ describe("Portfolio page", () => {
     });
 
     describe("Loading States", () => {
-      it("should show skeleton when tokens are loading", async () => {
-        // First render with loading state
+      it("should show loading states while tokens are loading", async () => {
         const loadingToken = createUserTokenLoading({});
-
         const loadingProject: TableProject = {
           ...mockTableProject,
           isStakeLoading: true,
