@@ -33,10 +33,7 @@ export const updateVotingPowerRefreshedTimestamp = async ({
       identity,
     });
 
-    // TODO: Switch to `await getAndLoadNeuron(neuron.neuronId);`
-    // after adding the voting_power_refreshed_timestamp_seconds field
-    // to ic-js/oldListNeuronsCertifiedService.
-    await listNeurons();
+    await getAndLoadNeuron(neuron.neuronId);
 
     toastsSuccess({
       labelKey: "neuron_detail.update_neuron_success",
