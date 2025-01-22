@@ -1066,7 +1066,6 @@ pub(crate) fn assert_initial_test_store_stats_are_correct(stats: &Stats) {
     assert_eq!(2, stats.accounts_count);
     assert_eq!(0, stats.sub_accounts_count);
     assert_eq!(0, stats.hardware_wallet_accounts_count);
-    assert!(stats.seconds_since_last_ledger_sync > 1_000_000_000);
 }
 
 /// The stats test should reject an empty response when we know that there is data in the accounts store.
