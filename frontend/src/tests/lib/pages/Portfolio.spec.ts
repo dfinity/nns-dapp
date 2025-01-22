@@ -15,6 +15,7 @@ import {
   ckTESTBTCTokenBase,
   createIcpUserToken,
   createUserToken,
+  createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
 import { PortfolioPagePo } from "$tests/page-objects/PortfolioPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -112,6 +113,16 @@ describe("Portfolio page", () => {
 
       expect(await heldTokensCardPo.getInfoRow().isPresent()).toBe(false);
       expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(false);
+    });
+
+    it("should not show any loading state", async () => {
+      const po = renderPage({
+        tableProjects: mockTableProjects,
+        userTokens: mockTokens,
+      });
+
+      expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(false);
+      expect(await po.getNumberOfSkeletonCards()).toEqual(0);
     });
   });
 
@@ -512,6 +523,58 @@ describe("Portfolio page", () => {
         expect(
           await po.getTotalAssetsCardPo().getTotalsTooltipIconPo().isPresent()
         ).toBe(true);
+      });
+    });
+
+    describe("Loading States", () => {
+      it("should show skeleton when tokens are loading", async () => {
+        // First render with loading state
+        const loadingToken = createUserTokenLoading({});
+
+        const loadingProject: TableProject = {
+          ...mockTableProject,
+          isStakeLoading: true,
+        };
+
+        let po = renderPage({
+          userTokens: [loadingToken],
+          tableProjects: [loadingProject],
+        });
+
+        expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(true);
+        expect(await po.getNumberOfSkeletonCards()).toEqual(2);
+        expect(await po.getHeldTokensCardPo().isPresent()).toBe(false);
+        expect(await po.getStakedTokensCardPo().isPresent()).toBe(false);
+
+        const loadedToken = createUserToken({
+          balanceInUsd: 100,
+          universeId: principal(1),
+        });
+        po = renderPage({
+          userTokens: [loadedToken],
+          tableProjects: [loadingProject],
+        });
+
+        expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(true);
+        expect(await po.getNumberOfSkeletonCards()).toEqual(1);
+        expect(await po.getHeldTokensCardPo().isPresent()).toBe(true);
+        expect(await po.getStakedTokensCardPo().isPresent()).toBe(false);
+
+        const loadedProject: TableProject = {
+          ...mockTableProject,
+          stakeInUsd: 100,
+          isStakeLoading: false,
+        };
+
+        po = renderPage({
+          userTokens: [loadedToken],
+          tableProjects: [loadedProject],
+        });
+
+        expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(false);
+        expect(await po.getNumberOfSkeletonCards()).toEqual(0);
+        expect(await po.getHeldTokensCardPo().isPresent()).toBe(true);
+        expect(await po.getStakedTokensCardPo().isPresent()).toBe(true);
       });
     });
   });

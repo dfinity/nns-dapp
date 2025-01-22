@@ -35,4 +35,9 @@ export class PortfolioPagePo extends BasePageObject {
   getStakedTokensCardPo(): StakedTokensCardPo {
     return StakedTokensCardPo.under(this.root);
   }
+
+  async getNumberOfSkeletonCards(): Promise<number> {
+    const skeletons = await this.root.allByTestId("skeleton-tokens-card");
+    return skeletons.length;
+  }
 }
