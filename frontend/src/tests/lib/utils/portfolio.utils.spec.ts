@@ -1,3 +1,4 @@
+import { CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import type { TableProject } from "$lib/types/staking";
@@ -14,6 +15,7 @@ import {
   createUserToken,
   createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
+import { Principal } from "@dfinity/principal";
 
 describe("Portfolio utils", () => {
   describe("getTopTokens", () => {
@@ -154,6 +156,24 @@ describe("Portfolio utils", () => {
         });
 
         expect(result).toHaveLength(0);
+      });
+
+      it("should filter CTS token", () => {
+        const mockIcpToken = createIcpUserToken({ balanceInUsd: 1000 });
+        const mockCSTProject = createUserToken({
+          universeId: Principal.fromText(
+            CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID
+          ),
+          balanceInUsd: 0,
+        });
+        const tokens: UserToken[] = [mockCSTProject, mockIcpToken];
+        const result = getTopHeldTokens({
+          userTokens: tokens,
+          isSignedIn: true,
+        });
+
+        expect(result).toHaveLength(1);
+        expect(result).not.toContainEqual(mockCSTProject);
       });
     });
   });
@@ -322,6 +342,24 @@ describe("Portfolio utils", () => {
         });
 
         expect(result).toHaveLength(0);
+      });
+
+      it("should filter CTS project", () => {
+        const mockCTSProject: TableProject = {
+          ...mockTableProject,
+          stakeInUsd: 1000,
+          universeId: CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID,
+        };
+
+        const projects = [mockCTSProject, mockIcpProject];
+
+        const result = getTopStakedTokens({
+          projects,
+          isSignedIn: true,
+        });
+
+        expect(result).toHaveLength(1);
+        expect(result).not.toContainEqual(mockCTSProject);
       });
     });
   });

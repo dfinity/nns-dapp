@@ -66,5 +66,6 @@ export const loadCkBTCInfo = async ({
 
       handleError?.();
     },
+    logMessage: "loadCkBTCInfo",
   });
 };

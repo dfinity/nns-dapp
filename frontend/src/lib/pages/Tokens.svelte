@@ -15,7 +15,7 @@
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import {
-    IconAccountsPage,
+    IconHeldTokens,
     IconPlus,
     IconSettings,
     Popover,
@@ -88,7 +88,7 @@
 <div class="wrapper" data-tid="tokens-page-component">
   {#if $ENABLE_USD_VALUES}
     <UsdValueBanner usdAmount={totalBalanceInUsd} {hasUnpricedTokens}>
-      <IconAccountsPage slot="icon" />
+      <IconHeldTokens slot="icon" />
     </UsdValueBanner>
   {/if}
 

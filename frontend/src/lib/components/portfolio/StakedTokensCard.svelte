@@ -57,7 +57,7 @@
           >{$i18n.portfolio.staked_tokens_card_list_first_column}</span
         >
 
-        <span class="mobile-only justify-end" role="columnheader"
+        <span class="mobile-only justify-end text-right" role="columnheader"
           >{$i18n.portfolio.staked_tokens_card_list_second_column_mobile}</span
         >
         <span class="tablet-up justify-end" role="columnheader"
@@ -277,6 +277,10 @@
 
     .justify-end {
       justify-self: end;
+    }
+
+    .text-right {
+      text-align: right;
     }
   }
 </style>
