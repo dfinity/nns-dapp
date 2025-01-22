@@ -155,20 +155,27 @@ describe("TotalAssetsCard", () => {
 
   it("should show a spinner instead of the USD price and a placeholder text for the ICP", async () => {
     const isLoading = true;
+    const usdAmount = undefined;
+    const hasUnpricedTokens = true;
 
     const po = renderComponent({
-      usdAmount: undefined,
+      usdAmount,
       isLoading,
+      hasUnpricedTokens,
     });
 
     expect(await po.hasSpinner()).toEqual(true);
+    expect(await po.getPrimaryAmount()).toBeNull();
+    expect(await po.getSecondaryAmount()).toEqual("-/- ICP");
+    expect(await po.getTotalsTooltipIconPo().isPresent()).toBe(false);
   });
 
   it("should not show a spinner", async () => {
     const isLoading = false;
+    const usdAmount = undefined;
 
     const po = renderComponent({
-      usdAmount: undefined,
+      usdAmount,
       isLoading,
     });
 
