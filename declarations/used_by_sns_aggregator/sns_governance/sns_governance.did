@@ -1,4 +1,4 @@
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-03_03-07-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-16_16-18-base/rs/sns/governance/canister/governance.did>
 type Account = record {
   owner : opt principal;
   subaccount : opt Subaccount;
@@ -712,8 +712,15 @@ type PendingVersion = record {
   target_version : opt Version;
 };
 
+type ChunkedCanisterWasm = record {
+  wasm_module_hash : blob;
+  store_canister_id : opt principal;
+  chunk_hashes_list : vec blob;
+};
+
 type UpgradeSnsControlledCanister = record {
   new_canister_wasm : blob;
+  chunked_canister_wasm : opt ChunkedCanisterWasm;
   mode : opt int32;
   canister_id : opt principal;
   canister_upgrade_arg : opt blob;

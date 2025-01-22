@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-12-06_03-16-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-16_16-18-base/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -289,6 +289,7 @@ pub struct Tally {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ManageDappCanisterSettings {
     pub freezing_threshold: Option<u64>,
+    pub wasm_memory_threshold: Option<u64>,
     pub canister_ids: Vec<Principal>,
     pub reserved_cycles_limit: Option<u64>,
     pub log_visibility: Option<i32>,
@@ -309,10 +310,17 @@ pub struct TransferSnsTreasuryFunds {
     pub amount_e8s: u64,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ChunkedCanisterWasm {
+    pub wasm_module_hash: serde_bytes::ByteBuf,
+    pub chunk_hashes_list: Vec<serde_bytes::ByteBuf>,
+    pub store_canister_id: Option<Principal>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct UpgradeSnsControlledCanister {
     pub new_canister_wasm: serde_bytes::ByteBuf,
     pub mode: Option<i32>,
     pub canister_id: Option<Principal>,
+    pub chunked_canister_wasm: Option<ChunkedCanisterWasm>,
     pub canister_upgrade_arg: Option<serde_bytes::ByteBuf>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -693,6 +701,7 @@ pub enum CanisterStatusType {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DefiniteCanisterSettingsArgs {
     pub freezing_threshold: candid::Nat,
+    pub wasm_memory_threshold: Option<candid::Nat>,
     pub controllers: Vec<Principal>,
     pub wasm_memory_limit: Option<candid::Nat>,
     pub memory_allocation: candid::Nat,

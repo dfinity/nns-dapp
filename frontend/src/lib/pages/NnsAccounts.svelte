@@ -15,7 +15,7 @@
   import { findAccount } from "$lib/utils/accounts.utils";
   import { openAccountsModal } from "$lib/utils/modals.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
-  import { IconAccountsPage, IconAdd } from "@dfinity/gix-components";
+  import { IconAdd, IconHeldTokens } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
   import { onDestroy, onMount } from "svelte";
 
@@ -83,7 +83,7 @@
 <div class="wrapper" data-tid="accounts-body">
   {#if $ENABLE_USD_VALUES}
     <UsdValueBanner usdAmount={totalBalanceInUsd} hasUnpricedTokens={false}>
-      <IconAccountsPage slot="icon" />
+      <IconHeldTokens slot="icon" />
     </UsdValueBanner>
   {/if}
 

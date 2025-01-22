@@ -7,17 +7,20 @@ import { TotalAssetsCardPo } from "$tests/page-objects/TotalAssetsCard.page-obje
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 
-describe("UsdValueBanner", () => {
+describe("TotalAssetsCard", () => {
   const renderComponent = ({
     usdAmount,
     hasUnpricedTokens,
+    isLoading,
   }: {
     usdAmount: number;
-    hasUnpricedTokens: boolean;
+    hasUnpricedTokens?: boolean;
+    isLoading?: boolean;
   }) => {
     const { container } = render(TotalAssetsCard, {
       usdAmount,
       hasUnpricedTokens,
+      isLoading,
     });
     return TotalAssetsCardPo.under(new JestPageObjectElement(container));
   };
@@ -148,5 +151,34 @@ describe("UsdValueBanner", () => {
     expect(await po.getTotalsTooltipIconPo().isPresent()).toBe(
       hasUnpricedTokens
     );
+  });
+
+  it("should show a spinner instead of the USD price and a placeholder text for the ICP", async () => {
+    const isLoading = true;
+    const usdAmount = undefined;
+    const hasUnpricedTokens = true;
+
+    const po = renderComponent({
+      usdAmount,
+      isLoading,
+      hasUnpricedTokens,
+    });
+
+    expect(await po.hasSpinner()).toEqual(true);
+    expect(await po.getPrimaryAmount()).toBeNull();
+    expect(await po.getSecondaryAmount()).toEqual("-/- ICP");
+    expect(await po.getTotalsTooltipIconPo().isPresent()).toBe(false);
+  });
+
+  it("should not show a spinner", async () => {
+    const isLoading = false;
+    const usdAmount = undefined;
+
+    const po = renderComponent({
+      usdAmount,
+      isLoading,
+    });
+
+    expect(await po.hasSpinner()).toEqual(false);
   });
 });

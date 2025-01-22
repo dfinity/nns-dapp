@@ -40,5 +40,5 @@ export const PROPOSAL_PARAM = "proposal";
 export const ACCOUNT_PARAM = "account";
 export const ACTIONABLE_PROPOSALS_PARAM = "actionable";
 
-export const IMPORT_TOKEN_LEDGER_ID_QUERY_PARAM = "import-ledger-id";
-export const IMPORT_TOKEN_INDEX_ID_QUERY_PARAM = "import-index-id";
+export const IMPORT_TOKEN_LEDGER_ID_PARAM = "import-ledger-id";
+export const IMPORT_TOKEN_INDEX_ID_PARAM = "import-index-id";

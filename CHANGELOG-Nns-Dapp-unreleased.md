@@ -16,11 +16,19 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+- Change the USD value icon in the token pages
+- Proceed with rollout of re-enabling of certification of certain calls from `10%` to `30%`.
+
 #### Deprecated
 
 #### Removed
 
+- Remove canister creation fallback from backend canister.
+- Stop processing ICP transactions in the nns-dapp canister.
+
 #### Fixed
+
+- Improved the display of date range options in the mobile view of the Reporting page.
 
 #### Security
 

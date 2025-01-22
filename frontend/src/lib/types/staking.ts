@@ -14,6 +14,7 @@ export type TableProject = {
   stakeInUsd: number | undefined;
   availableMaturity: bigint | undefined;
   stakedMaturity: bigint | undefined;
+  isStakeLoading?: boolean;
 };
 
 export type ProjectsTableColumn = ResponsiveTableColumn<TableProject>;

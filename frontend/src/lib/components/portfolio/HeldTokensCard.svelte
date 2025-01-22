@@ -1,5 +1,6 @@
 <script lang="ts">
   import Card from "$lib/components/portfolio/Card.svelte";
+  import TokensCardHeader from "$lib/components/portfolio/TokensCardHeader.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -9,7 +10,7 @@
   import { formatNumber } from "$lib/utils/format.utils";
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
-  import { IconAccountsPage, IconRight } from "@dfinity/gix-components";
+  import { IconAccountsPage, IconHeldTokens } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
 
   export let topHeldTokens: UserTokenData[];
@@ -39,35 +40,17 @@
     role="region"
     aria-label={$i18n.portfolio.held_tokens_card_title}
   >
-    <div class="header">
-      <div class="header-wrapper">
-        <div class="icon" aria-hidden="true">
-          <IconAccountsPage />
-        </div>
-        <div class="text-content">
-          <h5 class="title">{$i18n.portfolio.held_tokens_card_title}</h5>
-          <p
-            class="amount"
-            data-tid="amount"
-            aria-label={`${$i18n.portfolio.held_tokens_card_title}: ${usdAmount}`}
-          >
-            ${usdAmountFormatted}
-          </p>
-        </div>
-      </div>
-      <a
-        {href}
-        class="button secondary"
-        aria-label={$i18n.portfolio.held_tokens_card_link}
-      >
-        <span class="mobile-only">
-          <IconRight />
-        </span>
-        <span class="tablet-up">
-          {$i18n.portfolio.held_tokens_card_link}
-        </span>
-      </a>
-    </div>
+    <TokensCardHeader
+      {href}
+      {usdAmount}
+      {usdAmountFormatted}
+      title={$i18n.portfolio.held_tokens_card_title}
+      linkText={$i18n.portfolio.held_tokens_card_link}
+    >
+      <svelte:fragment slot="icon">
+        <IconHeldTokens />
+      </svelte:fragment>
+    </TokensCardHeader>
     <div class="body" role="table">
       <div class="header" role="row">
         <span role="columnheader"
@@ -108,7 +91,7 @@
               {heldToken.balance instanceof TokenAmountV2
                 ? formatTokenV2({
                     value: heldToken.balance,
-                    detailed: true,
+                    detailed: false,
                   })
                 : PRICE_NOT_AVAILABLE_PLACEHOLDER}
               <span class="symbol">
@@ -144,46 +127,12 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+
   .wrapper {
     display: flex;
     flex-direction: column;
     height: 100%;
     background-color: var(--card-background-tint);
-
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: var(--padding-3x) var(--padding-2x);
-
-      .header-wrapper {
-        display: flex;
-        align-items: flex-start;
-        gap: var(--padding-2x);
-
-        .icon {
-          width: 50px;
-          height: 50px;
-        }
-
-        .text-content {
-          display: flex;
-          flex-direction: column;
-          gap: var(--padding-0_5x);
-
-          .title {
-            font-size: 0.875rem;
-            font-weight: bold;
-            color: var(--text-description);
-            margin: 0;
-            padding: 0;
-          }
-          .amount {
-            font-size: 1.5rem;
-          }
-        }
-      }
-    }
 
     .body {
       display: flex;

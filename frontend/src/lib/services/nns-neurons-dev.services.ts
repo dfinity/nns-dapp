@@ -1,6 +1,6 @@
 import { updateNeuron } from "$lib/api/governace-test.api";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
-import { getAndLoadNeuron, listNeurons } from "$lib/services/neurons.services";
+import { getAndLoadNeuron } from "$lib/services/neurons.services";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { E8s, Neuron, NeuronInfo } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
@@ -33,10 +33,7 @@ export const updateVotingPowerRefreshedTimestamp = async ({
       identity,
     });
 
-    // TODO: Switch to `await getAndLoadNeuron(neuron.neuronId);`
-    // after adding the voting_power_refreshed_timestamp_seconds field
-    // to ic-js/oldListNeuronsCertifiedService.
-    await listNeurons();
+    await getAndLoadNeuron(neuron.neuronId);
 
     toastsSuccess({
       labelKey: "neuron_detail.update_neuron_success",

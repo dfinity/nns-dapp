@@ -3,10 +3,13 @@
   import IcpExchangeRate from "$lib/components/ui/IcpExchangeRate.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import UsdValueHeadless from "$lib/components/ui/UsdValueHeadless.svelte";
+  import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { i18n } from "$lib/stores/i18n";
+  import { Spinner } from "@dfinity/gix-components";
 
   export let usdAmount: number | undefined;
   export let hasUnpricedTokens: boolean = false;
+  export let isLoading: boolean = false;
 </script>
 
 <UsdValueHeadless
@@ -24,17 +27,27 @@
       <div class="pricing">
         <div class="totals">
           <div class="primary-amount-row">
-            <span class="primary-amount" data-tid="primary-amount">
-              ${usdAmountFormatted}
-            </span>
-            {#if hasPricesAndUnpricedTokens}
-              <TooltipIcon>
-                {$i18n.accounts.unpriced_tokens_warning}
-              </TooltipIcon>
+            {#if !isLoading}
+              <span class="primary-amount" data-tid="primary-amount">
+                ${usdAmountFormatted}
+              </span>
+              {#if hasPricesAndUnpricedTokens}
+                <TooltipIcon>
+                  {$i18n.accounts.unpriced_tokens_warning}
+                </TooltipIcon>
+              {/if}
+            {:else}
+              <div>
+                <Spinner inline size="small" />
+              </div>
             {/if}
           </div>
           <div class="secondary-amount" data-tid="secondary-amount">
-            {icpAmountFormatted}
+            {#if !isLoading}
+              {icpAmountFormatted}
+            {:else}
+              {PRICE_NOT_AVAILABLE_PLACEHOLDER}
+            {/if}
             {$i18n.core.icp}
           </div>
         </div>
@@ -77,15 +90,22 @@
         flex-direction: column;
         gap: var(--padding);
 
-        .primary-amount {
-          font-size: 1.875rem; // 32px
+        .primary-amount-row {
+          display: flex;
+          gap: var(--padding);
 
-          @include media.min-width(medium) {
-            font-size: 2.5rem; // 40px
+          min-height: 45px;
+
+          .primary-amount {
+            font-size: 1.875rem; // 32px
+
+            @include media.min-width(medium) {
+              font-size: 2.5rem; // 40px
+            }
           }
-        }
-        .secondary-amount {
-          color: var(--text-description);
+          .secondary-amount {
+            color: var(--text-description);
+          }
         }
       }
     }

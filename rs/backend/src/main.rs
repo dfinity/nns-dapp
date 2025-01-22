@@ -8,7 +8,6 @@ use crate::accounts_store::{
 use crate::arguments::{set_canister_arguments, CanisterArguments};
 use crate::assets::{hash_bytes, insert_asset, Asset};
 use crate::perf::PerformanceCount;
-use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{init_state, restore_state, save_state, with_state, with_state_mut, StableState};
 use crate::tvl::TvlResponse;
 use candid::candid_method;
@@ -31,11 +30,9 @@ mod arguments;
 mod assets;
 mod canisters;
 mod constants;
-mod ledger_sync;
 mod metrics_encoder;
 mod multi_part_transactions_processor;
 mod perf;
-mod periodic_tasks_runner;
 mod spawn;
 mod state;
 mod stats;
@@ -308,16 +305,8 @@ pub fn get_histogram_impl() -> AccountsStoreHistogram {
 }
 
 /// Executes on every block height and is used to run background processes.
-///
-/// These background processes include:
-/// - Sync transactions from the ledger
-/// - Process any queued 'multi-part' actions (e.g. staking a neuron or topping up a canister)
-/// - Prune old transactions if memory usage is too high
 #[export_name = "canister_heartbeat"]
 pub fn canister_heartbeat() {
-    let future = run_periodic_tasks();
-
-    dfn_core::api::futures::spawn(future);
     let migration_in_progress = with_state_mut(|s| s.accounts_store.migration_in_progress());
     if migration_in_progress {
         dfn_core::api::futures::spawn(call_step_migration_with_retries());

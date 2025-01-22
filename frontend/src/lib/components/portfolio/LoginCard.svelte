@@ -2,13 +2,13 @@
   import SignIn from "$lib/components/common/SignIn.svelte";
   import Card from "$lib/components/portfolio/Card.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { IconAccountsPage } from "@dfinity/gix-components";
+  import { IconUserLogin } from "@dfinity/gix-components";
 </script>
 
 <Card testId="portfolio-login-card">
   <div class="wrapper">
     <div class="icon">
-      <IconAccountsPage />
+      <IconUserLogin />
     </div>
     <div class="content">
       <h2>{$i18n.portfolio.login_title}</h2>

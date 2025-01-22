@@ -19,6 +19,12 @@ import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import {
+  getAccountIdentity,
+  getAccountIdentityByPrincipal,
+  loadBalance,
+  transferICP,
+} from "$lib/services/icp-accounts.services";
 import { assertLedgerVersion } from "$lib/services/icp-ledger.services";
 import {
   queryAndUpdate,
@@ -76,12 +82,6 @@ import {
 import { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import {
-  getAccountIdentity,
-  getAccountIdentityByPrincipal,
-  loadBalance,
-  transferICP,
-} from "./icp-accounts.services";
 
 const getIdentityAndNeuronHelper = async (
   neuronId: NeuronId
@@ -309,6 +309,7 @@ export const listNeurons = async ({
         err: error,
       });
     },
+    logMessage: "listNeurons",
   });
 };
 
@@ -1017,6 +1018,7 @@ export const loadNeuron = ({
       }
       catchError(error);
     },
+    logMessage: "loadNeuron",
   });
 };
 
