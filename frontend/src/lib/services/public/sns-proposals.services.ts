@@ -177,6 +177,7 @@ export const loadSnsProposals = async ({
         err,
       });
     },
+    logMessage: "loadSnsProposals",
   });
 };
 
@@ -225,5 +226,6 @@ export const getSnsProposalById = async ({
       });
       handleError?.(err);
     },
+    logMessage: "getSnsProposalById",
   });
 };

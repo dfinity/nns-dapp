@@ -309,6 +309,7 @@ export const listNeurons = async ({
         err: error,
       });
     },
+    logMessage: "listNeurons",
   });
 };
 
@@ -1017,6 +1018,7 @@ export const loadNeuron = ({
       }
       catchError(error);
     },
+    logMessage: "loadNeuron",
   });
 };
 

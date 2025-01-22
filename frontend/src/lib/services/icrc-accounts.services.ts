@@ -119,6 +119,7 @@ export const loadIcrcToken = ({
       // Hide unproven data
       tokensStore.resetUniverse(ledgerCanisterId);
     },
+    logMessage: "loadIcrcToken",
   });
 };
 

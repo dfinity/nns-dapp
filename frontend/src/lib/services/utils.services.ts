@@ -43,7 +43,7 @@ export const queryAndUpdate = async <R, E>({
 }: {
   request: (options: { certified: boolean; identity: Identity }) => Promise<R>;
   onLoad: QueryAndUpdateOnResponse<R>;
-  logMessage?: string;
+  logMessage: string;
   onError?: QueryAndUpdateOnError<E>;
   strategy?: QueryAndUpdateStrategy;
   identityType?: QueryAndUpdateIdentity;
@@ -77,7 +77,7 @@ export const queryAndUpdate = async <R, E>({
     if (currentStrategy !== "query_and_update") {
       return;
     }
-    logPrefix = logPrefix ?? `[${lastIndex++}] ${logMessage ?? ""}`;
+    logPrefix = logPrefix ?? `[${lastIndex++}] ${logMessage}`;
     logWithTimestamp(`${logPrefix} calls${postfix}`);
   };
 
