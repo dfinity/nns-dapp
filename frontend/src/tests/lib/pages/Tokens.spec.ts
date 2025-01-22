@@ -1,5 +1,7 @@
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import TokensPage from "$lib/pages/Tokens.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
@@ -8,6 +10,7 @@ import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import type { UserTokenData } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+import { page } from "$mocks/$app/stores";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import {
@@ -297,6 +300,44 @@ describe("Tokens page", () => {
       await po.getImportTokenButtonPo().click();
 
       expect(await po.getImportTokenModalPo().isPresent()).toBe(true);
+    });
+
+    describe("when ENABLE_IMPORT_TOKEN_BY_URL disabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", false);
+      });
+
+      it("doesn't open import token modal when ledger canister id in URL", async () => {
+        page.mock({
+          routeId: AppPath.Tokens,
+          data: {
+            universe: OWN_CANISTER_ID_TEXT,
+            importTokenLedgerId: principal(1).toText(),
+          },
+        });
+        const po = renderPage([positiveBalance, zeroBalance]);
+
+        expect(await po.getImportTokenModalPo().isPresent()).toBe(false);
+      });
+    });
+
+    describe("when ENABLE_IMPORT_TOKEN_BY_URL enabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", true);
+      });
+
+      it("opens import token modal when ledger canister id in URL", async () => {
+        page.mock({
+          routeId: AppPath.Tokens,
+          data: {
+            universe: OWN_CANISTER_ID_TEXT,
+            importTokenLedgerId: principal(1).toText(),
+          },
+        });
+        const po = renderPage([positiveBalance, zeroBalance]);
+
+        expect(await po.getImportTokenModalPo().isPresent()).toBe(true);
+      });
     });
   });
 
