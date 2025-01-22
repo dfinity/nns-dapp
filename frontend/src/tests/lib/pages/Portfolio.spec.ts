@@ -535,6 +535,7 @@ describe("Portfolio page", () => {
           isStakeLoading: true,
         };
 
+        // Test Case 1: Initial loading state - both tokens and projects loading
         let po = renderPage({
           userTokens: [loadingToken],
           tableProjects: [loadingProject],
@@ -552,6 +553,8 @@ describe("Portfolio page", () => {
           balanceInUsd: 100,
           universeId: principal(1),
         });
+
+        // Test Case 2: Partial loading state - tokens loaded, projects still loading
         po = renderPage({
           userTokens: [loadedToken],
           tableProjects: [loadingProject],
@@ -571,6 +574,21 @@ describe("Portfolio page", () => {
           isStakeLoading: false,
         };
 
+        // Test Case 3: Partial loading state - projects loaded, tokens still loading
+        po = renderPage({
+          userTokens: [loadingToken],
+          tableProjects: [loadedProject],
+        });
+
+        expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(true);
+        expect(await po.getHeldTokensSkeletonCard().isPresent()).toEqual(true);
+        expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(
+          false
+        );
+        expect(await po.getHeldTokensCardPo().isPresent()).toEqual(false);
+        expect(await po.getStakedTokensCardPo().isPresent()).toEqual(true);
+
+        // Test Case 4: Fully loaded state - both tokens and projects loaded
         po = renderPage({
           userTokens: [loadedToken],
           tableProjects: [loadedProject],
