@@ -542,15 +542,25 @@ describe("Portfolio page", () => {
     });
 
     describe("Loading States", () => {
-      it("should show loading states while tokens are loading", async () => {
-        const loadingToken = createUserTokenLoading({});
-        const loadingProject: TableProject = {
-          ...mockTableProject,
-          isStakeLoading: true,
-        };
+      const loadingToken = createUserTokenLoading({});
+      const loadingProject: TableProject = {
+        ...mockTableProject,
+        isStakeLoading: true,
+      };
 
-        // Test Case 1: Initial loading state - both tokens and projects loading
-        let po = renderPage({
+      const loadedToken = createUserToken({
+        balanceInUsd: 100,
+        universeId: principal(1),
+      });
+
+      const loadedProject: TableProject = {
+        ...mockTableProject,
+        stakeInUsd: 100,
+        isStakeLoading: false,
+      };
+
+      it("should show the inital loading state - both tokens and projects loading", async () => {
+        const po = renderPage({
           userTokens: [loadingToken],
           tableProjects: [loadingProject],
         });
@@ -562,14 +572,15 @@ describe("Portfolio page", () => {
         );
         expect(await po.getHeldTokensCardPo().isPresent()).toEqual(false);
         expect(await po.getStakedTokensCardPo().isPresent()).toEqual(false);
+      });
 
+      it("should show a partial loading state - tokens loaded, projects still loading", async () => {
         const loadedToken = createUserToken({
           balanceInUsd: 100,
           universeId: principal(1),
         });
 
-        // Test Case 2: Partial loading state - tokens loaded, projects still loading
-        po = renderPage({
+        const po = renderPage({
           userTokens: [loadedToken],
           tableProjects: [loadingProject],
         });
@@ -581,15 +592,11 @@ describe("Portfolio page", () => {
         );
         expect(await po.getHeldTokensCardPo().isPresent()).toEqual(true);
         expect(await po.getStakedTokensCardPo().isPresent()).toEqual(false);
+      });
 
-        const loadedProject: TableProject = {
-          ...mockTableProject,
-          stakeInUsd: 100,
-          isStakeLoading: false,
-        };
-
-        // Test Case 3: Partial loading state - projects loaded, tokens still loading
-        po = renderPage({
+      it("should show a partial loading state - projects loaded, tokens still loading", async () => {
+        // Test Case 3:
+        const po = renderPage({
           userTokens: [loadingToken],
           tableProjects: [loadedProject],
         });
@@ -601,9 +608,10 @@ describe("Portfolio page", () => {
         );
         expect(await po.getHeldTokensCardPo().isPresent()).toEqual(false);
         expect(await po.getStakedTokensCardPo().isPresent()).toEqual(true);
+      });
 
-        // Test Case 4: Fully loaded state - both tokens and projects loaded
-        po = renderPage({
+      it("should show a fully loaded state - both tokens and projects loaded", async () => {
+        const po = renderPage({
           userTokens: [loadedToken],
           tableProjects: [loadedProject],
         });
