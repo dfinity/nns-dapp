@@ -30,6 +30,8 @@ use schema::{
 // the limit.
 const ACCOUNT_LIMIT: u64 = 300_000;
 
+const MAX_SUB_ACCOUNT_ID: u8 = u8::MAX;
+
 // Conservatively limit the number of imported tokens to prevent using too much memory.
 // Can be revisited if users find this too restrictive.
 const MAX_IMPORTED_TOKENS: i32 = 20;
@@ -253,7 +255,7 @@ pub struct NeuronDetails {
     neuron_id: Option<NeuronId>,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Debug, PartialEq)]
 pub enum CreateSubAccountResponse {
     Ok(SubAccountDetails),
     AccountNotFound,
@@ -298,7 +300,7 @@ pub struct AccountDetails {
     pub hardware_wallet_accounts: Vec<HardwareWalletAccountDetails>,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Debug, PartialEq)]
 pub struct SubAccountDetails {
     name: String,
     sub_account: Subaccount,
@@ -441,23 +443,24 @@ impl AccountsStore {
         if !Self::validate_account_name(&sub_account_name) {
             CreateSubAccountResponse::NameTooLong
         } else if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
-            let response = if let Some(sub_account_id) = (1..u8::MAX).find(|i| !account.sub_accounts.contains_key(i)) {
-                let sub_account = convert_byte_to_sub_account(sub_account_id);
-                let sub_account_identifier = AccountIdentifier::new(caller, Some(sub_account));
-                let named_sub_account = NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
+            let response =
+                if let Some(sub_account_id) = (1..MAX_SUB_ACCOUNT_ID).find(|i| !account.sub_accounts.contains_key(i)) {
+                    let sub_account = convert_byte_to_sub_account(sub_account_id);
+                    let sub_account_identifier = AccountIdentifier::new(caller, Some(sub_account));
+                    let named_sub_account = NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
 
-                account.sub_accounts.insert(sub_account_id, named_sub_account);
-                self.accounts_db
-                    .db_insert_account(&account_identifier.to_vec(), account);
+                    account.sub_accounts.insert(sub_account_id, named_sub_account);
+                    self.accounts_db
+                        .db_insert_account(&account_identifier.to_vec(), account);
 
-                CreateSubAccountResponse::Ok(SubAccountDetails {
-                    name: sub_account_name,
-                    sub_account,
-                    account_identifier: sub_account_identifier,
-                })
-            } else {
-                CreateSubAccountResponse::SubAccountLimitExceeded
-            };
+                    CreateSubAccountResponse::Ok(SubAccountDetails {
+                        name: sub_account_name,
+                        sub_account,
+                        account_identifier: sub_account_identifier,
+                    })
+                } else {
+                    CreateSubAccountResponse::SubAccountLimitExceeded
+                };
 
             if let CreateSubAccountResponse::Ok(SubAccountDetails {
                 name: _,
