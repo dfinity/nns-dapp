@@ -12,8 +12,6 @@ import { pageStore } from "$lib/derived/page.derived";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import { cancelPollGetOpenTicket } from "$lib/services/sns-sale.services";
 import { getOrCreateSnsFinalizationStatusStore } from "$lib/stores/sns-finalization-status.store";
-import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
-import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { userCountryStore } from "$lib/stores/user-country.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
@@ -86,8 +84,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
   beforeEach(() => {
     resetSnsProjects();
     snsSwapCommitmentsStore.reset();
-    snsSwapMetricsStore.reset();
-    snsTicketsStore.reset();
     userCountryStore.set(NOT_LOADED);
 
     vi.clearAllTimers();

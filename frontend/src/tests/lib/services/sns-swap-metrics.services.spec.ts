@@ -6,10 +6,6 @@ import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
 describe("sns-swap-metrics", () => {
-  beforeEach(() => {
-    snsSwapMetricsStore.reset();
-  });
-
   describe("loadSnsSwapMetrics", () => {
     const rootCanisterId = mockPrincipal;
     const swapCanisterId = Principal.fromText("aaaaa-aa");

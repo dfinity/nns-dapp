@@ -133,7 +133,6 @@ describe("sns-api", () => {
 
     vi.useFakeTimers();
 
-    snsTicketsStore.reset();
     resetAccountsForTesting();
 
     vi.spyOn(agentApi, "createAgent").mockImplementation(async () =>
@@ -189,10 +188,6 @@ describe("sns-api", () => {
   });
 
   describe("loadOpenTicket", () => {
-    beforeEach(() => {
-      snsTicketsStore.reset();
-    });
-
     describe("when polling is enabled", () => {
       beforeEach(() => {
         vi.clearAllTimers();
