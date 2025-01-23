@@ -3,6 +3,7 @@
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
+  import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -16,7 +17,7 @@
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
 
-  export let userTokens: UserToken[];
+  export let userTokens: UserToken[] = [];
   export let tableProjects: TableProject[];
 
   let totalTokensBalanceInUsd: number;
@@ -48,16 +49,53 @@
     ? totalTokensBalanceInUsd + totalStakedInUsd
     : undefined;
 
-  let showNoHeldTokensCard: boolean;
-  $: showNoHeldTokensCard = $authSignedInStore && totalTokensBalanceInUsd === 0;
+  let areHeldTokensLoading: boolean;
+  $: areHeldTokensLoading = userTokens.some(
+    (token) => token.balance === "loading"
+  );
 
-  let showNoStakedTokensCard: boolean;
-  $: showNoStakedTokensCard = $authSignedInStore && totalStakedInUsd === 0;
+  // Determines the display state of the held tokens card
+  // - 'full': Shows card with data (or when user is not signed in, visitor data)
+  // - 'loading': Shows skeleton while data is being fetched
+  // - 'empty': Shows empty state when user has no tokens
+  type TokensCardType = "empty" | "skeleton" | "full";
 
-  // The Card should display a Primary Action when it is the only available option.
-  // This occurs when there are tokens but no stake.
+  let heldTokensCard: TokensCardType;
+  $: heldTokensCard = !$authSignedInStore
+    ? "full"
+    : areHeldTokensLoading
+      ? "skeleton"
+      : totalTokensBalanceInUsd === 0
+        ? "empty"
+        : "full";
+
+  let areStakedTokensLoading: boolean;
+  $: areStakedTokensLoading = tableProjects.some(
+    (project) => project.isStakeLoading
+  );
+
+  // Determines the display state of the staked tokens card
+  // Similar logic to heldTokensCard but for staked tokens
+  let stakedTokensCard: TokensCardType;
+  $: stakedTokensCard = !$authSignedInStore
+    ? "full"
+    : areStakedTokensLoading
+      ? "skeleton"
+      : totalStakedInUsd === 0
+        ? "empty"
+        : "full";
+
+  // Controls whether the staked tokens card should show a primary action
+  // Primary action is shown when there are tokens but no stakes
+  // This helps guide users to stake their tokens when possible
   let hasNoStakedTokensCardAPrimaryAction: boolean;
-  $: hasNoStakedTokensCardAPrimaryAction = !showNoHeldTokensCard;
+  $: hasNoStakedTokensCardAPrimaryAction =
+    stakedTokensCard === "empty" && heldTokensCard === "full";
+
+  // Global loading state that tracks if either held or staked tokens are loading
+  // TotalAssetsCard will show this if either held or staked are loading
+  let isSomethingLoading: boolean;
+  $: isSomethingLoading = areHeldTokensLoading || areStakedTokensLoading;
 
   let topHeldTokens: UserTokenData[];
   $: topHeldTokens = getTopHeldTokens({
@@ -80,10 +118,13 @@
     <TotalAssetsCard
       usdAmount={totalUsdAmount}
       hasUnpricedTokens={hasUnpricedTokensOrStake}
+      isLoading={isSomethingLoading}
     />
   </div>
   <div class="content">
-    {#if showNoHeldTokensCard}
+    {#if heldTokensCard === "skeleton"}
+      <SkeletonTokensCard testId="held-tokens-skeleton-card" />
+    {:else if heldTokensCard === "empty"}
       <NoHeldTokensCard />
     {:else}
       <HeldTokensCard
@@ -92,7 +133,10 @@
         numberOfTopStakedTokens={topStakedTokens.length}
       />
     {/if}
-    {#if showNoStakedTokensCard}
+
+    {#if stakedTokensCard === "skeleton"}
+      <SkeletonTokensCard testId="staked-tokens-skeleton-card" />
+    {:else if stakedTokensCard === "empty"}
       <NoStakedTokensCard primaryCard={hasNoStakedTokensCardAPrimaryAction} />
     {:else}
       <StakedTokensCard

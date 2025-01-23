@@ -35,4 +35,12 @@ export class PortfolioPagePo extends BasePageObject {
   getStakedTokensCardPo(): StakedTokensCardPo {
     return StakedTokensCardPo.under(this.root);
   }
+
+  getHeldTokensSkeletonCard(): PageObjectElement {
+    return this.getElement("held-tokens-skeleton-card");
+  }
+
+  getStakedTokensSkeletonCard(): PageObjectElement {
+    return this.getElement("staked-tokens-skeleton-card");
+  }
 }
