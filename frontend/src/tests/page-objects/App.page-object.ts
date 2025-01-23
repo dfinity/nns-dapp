@@ -22,6 +22,7 @@ import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { isNullish } from "@dfinity/utils";
 import { expect } from "@playwright/test";
+import { PortfolioRoutePo } from "./PortfolioRoute.page-object";
 
 export class AppPo extends BasePageObject {
   getSignInPo(): SignInPo {
@@ -38,6 +39,10 @@ export class AppPo extends BasePageObject {
 
   getSignInAccountsPo(): SignInAccountsPo {
     return SignInAccountsPo.under(this.root);
+  }
+
+  getPortfolioPo(): PortfolioRoutePo {
+    return PortfolioRoutePo.under(this.root);
   }
 
   getTokensPo(): TokensRoutePo {
