@@ -11,10 +11,6 @@ describe("BitcoinKYTFee", () => {
     universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
   };
 
-  beforeEach(() => {
-    ckBTCInfoStore.reset();
-  });
-
   describe("display fee", () => {
     const result = 789n;
 

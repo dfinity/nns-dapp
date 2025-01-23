@@ -60,8 +60,6 @@ describe("CkBTCTransactionList", () => {
   };
 
   beforeEach(() => {
-    ckbtcPendingUtxosStore.reset();
-    ckbtcRetrieveBtcStatusesStore.reset();
     vi.useFakeTimers().setSystemTime(new Date());
   });
 

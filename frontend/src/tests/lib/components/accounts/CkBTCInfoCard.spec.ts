@@ -37,8 +37,6 @@ describe("CkBTCInfoCard", () => {
 
   beforeEach(() => {
     resetIdentity();
-    bitcoinAddressStore.reset();
-    ckBTCInfoStore.reset();
 
     page.mock({
       data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
