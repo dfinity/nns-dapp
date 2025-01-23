@@ -12,12 +12,15 @@ import { expect, test } from "@playwright/test";
 
 test("Test proposals", async ({ page, context }) => {
   await page.goto("/");
+  await expect(page).toHaveTitle(/.*\s\/\sNNS Dapp/);
+
   await setFeatureFlag({
     page,
     featureFlag: "ENABLE_PORTFOLIO_PAGE",
     value: true,
   });
 
+  await page.reload();
   await expect(page).toHaveTitle("Portfolio / NNS Dapp");
   await signInWithNewUser({ page, context });
 

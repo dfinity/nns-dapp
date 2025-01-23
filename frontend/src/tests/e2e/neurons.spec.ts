@@ -11,12 +11,15 @@ import { expect, test } from "@playwright/test";
 
 test("Test neuron voting", async ({ page, context }) => {
   await page.goto("/");
+  await expect(page).toHaveTitle(/.*\s\/\sNNS Dapp/);
+
   await setFeatureFlag({
     page,
     featureFlag: "ENABLE_PORTFOLIO_PAGE",
     value: true,
   });
 
+  await page.reload();
   await expect(page).toHaveTitle("Portfolio / NNS Dapp");
   await signInWithNewUser({ page, context });
 

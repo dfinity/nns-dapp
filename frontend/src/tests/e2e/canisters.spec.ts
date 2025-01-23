@@ -9,6 +9,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test canisters", async ({ page, context }) => {
   await page.goto("/");
+  await expect(page).toHaveTitle(/.*\s\/\sNNS Dapp/);
 
   await setFeatureFlag({
     page,
@@ -16,6 +17,7 @@ test("Test canisters", async ({ page, context }) => {
     value: true,
   });
 
+  await page.reload();
   await expect(page).toHaveTitle("Portfolio / NNS Dapp");
   await signInWithNewUser({ page, context });
 

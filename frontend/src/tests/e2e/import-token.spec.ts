@@ -15,11 +15,15 @@ test("Test imported tokens", async ({ page, context }) => {
   const testIndexCanisterId = await dfxCanisterId("ckred_index");
 
   await page.goto("/");
+  await expect(page).toHaveTitle(/.*\s\/\sNNS Dapp/);
+
   await setFeatureFlag({
     page,
     featureFlag: "ENABLE_PORTFOLIO_PAGE",
     value: true,
   });
+
+  await page.reload();
   await expect(page).toHaveTitle("Portfolio / NNS Dapp");
   await signInWithNewUser({ page, context });
 
