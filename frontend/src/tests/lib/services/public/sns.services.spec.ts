@@ -104,7 +104,6 @@ describe("SNS public services", () => {
 
   describe("loadSnsProjects", () => {
     beforeEach(() => {
-      snsAggregatorIncludingAbortedProjectsStore.reset();
       clearWrapperCache();
       resetIdentity();
     });

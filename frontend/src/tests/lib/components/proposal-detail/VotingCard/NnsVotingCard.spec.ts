@@ -4,10 +4,7 @@ import * as proposalsApi from "$lib/api/proposals.api";
 import NnsVotingCard from "$lib/components/proposal-detail/VotingCard/NnsVotingCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import {
-  voteRegistrationStore,
-  votingNeuronSelectStore,
-} from "$lib/stores/vote-registration.store";
+import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 import {
   SELECTED_PROPOSAL_CONTEXT_KEY,
   type SelectedProposalContext,
@@ -72,8 +69,6 @@ describe("VotingCard", () => {
   };
 
   beforeEach(() => {
-    voteRegistrationStore.reset();
-
     neuronsStore.setNeurons({ neurons: [], certified: true });
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
     resetIdentity();

@@ -1,4 +1,3 @@
-import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import { queryProposal } from "$lib/api/proposals.api";
@@ -45,7 +44,6 @@ let resolveUncertifiedPromise;
 
 describe("Proposal detail page when not logged in user", () => {
   beforeEach(() => {
-    resetNeuronsApiService();
     resolveCertifiedPromise = undefined;
     resolveUncertifiedPromise = undefined;
     // we don't display actionable proposals for non-logged in users
