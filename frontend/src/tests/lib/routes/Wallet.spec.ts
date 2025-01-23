@@ -94,7 +94,6 @@ describe("Wallet", () => {
   const importedTokenId = principal(123);
   beforeEach(() => {
     resetIdentity();
-    importedTokensStore.reset();
     setCkETHCanisters();
     setSnsProjects([
       {

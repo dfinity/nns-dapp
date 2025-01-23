@@ -47,8 +47,6 @@ describe("icrc-accounts-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    importedTokensStore.reset();
-    failedImportedTokenLedgerIdsStore.reset();
     resetSnsProjects();
 
     vi.spyOn(ledgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
