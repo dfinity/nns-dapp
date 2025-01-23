@@ -9,6 +9,7 @@ import { LaunchpadPo } from "$tests/page-objects/Launchpad.page-object";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
+import { PortfolioRoutePo } from "$tests/page-objects/PortfolioRoute.page-object";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
 import { ProposalDetailPo } from "$tests/page-objects/ProposalDetail.page-object";
 import { ProposalsPo } from "$tests/page-objects/Proposals.page-object";
@@ -38,6 +39,10 @@ export class AppPo extends BasePageObject {
 
   getSignInAccountsPo(): SignInAccountsPo {
     return SignInAccountsPo.under(this.root);
+  }
+
+  getPortfolioPo(): PortfolioRoutePo {
+    return PortfolioRoutePo.under(this.root);
   }
 
   getTokensPo(): TokensRoutePo {
