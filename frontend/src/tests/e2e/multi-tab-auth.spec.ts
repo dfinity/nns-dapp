@@ -48,7 +48,7 @@ test("Test multi-tab auth", async ({ page: page1, context }) => {
   await expectSignedInAccountsPage(appPo2);
 
   // When signed in, the landing page shows the tokens page.
-  await page1.goto("/");
+  await page1.goto("/accounts");
   await expectSignedInTokensPage(appPo1);
 
   await step("Sign out");
