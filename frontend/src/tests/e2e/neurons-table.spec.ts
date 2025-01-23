@@ -1,10 +1,10 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import {
-    replaceContent,
-    setFeatureFlag,
-    signInWithNewUser,
-    step,
+  replaceContent,
+  setFeatureFlag,
+  signInWithNewUser,
+  step,
 } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
@@ -25,10 +25,10 @@ const createHotkeyNeuronsInOtherAccount = async ({
   const context = await browser.newContext();
   const page = await context.newPage();
   await setFeatureFlag({
-        page,
-        featureFlag: "ENABLE_PORTFOLIO_PAGE",
-        value: true,
-      });
+    page,
+    featureFlag: "ENABLE_PORTFOLIO_PAGE",
+    value: true,
+  });
 
   await page.goto("/");
   await expect(page).toHaveTitle("Portfolio / NNS Dapp");
