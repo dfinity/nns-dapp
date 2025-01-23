@@ -25,8 +25,6 @@ describe("snsFilteredActionableProposalsStore", () => {
   };
 
   beforeEach(() => {
-    snsProposalsStore.reset();
-
     const decisionStatus = [
       {
         id: "1",

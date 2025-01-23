@@ -14,9 +14,6 @@ describe("sns-filters services", () => {
     get(snsFiltersStore)[mockPrincipal.toText()];
 
   describe("loadSnsFilters", () => {
-    beforeEach(() => {
-      snsFiltersStore.reset();
-    });
     it("should load the sns decision status filters store but not Unspecified", async () => {
       expect(getFiltersStoreData()?.decisionStatus).toBeUndefined();
       await loadSnsFilters({

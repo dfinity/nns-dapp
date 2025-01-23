@@ -52,10 +52,6 @@ describe("sns-filters store", () => {
   );
 
   describe("snsFiltersStore", () => {
-    beforeEach(() => {
-      snsFiltersStore.reset();
-    });
-
     it("should setDecisionStatus in different projects", () => {
       snsFiltersStore.setDecisionStatus({ rootCanisterId, decisionStatus });
 
@@ -206,10 +202,6 @@ describe("sns-filters store", () => {
   });
 
   describe("snsSelectedFiltersStore", () => {
-    beforeEach(() => {
-      snsFiltersStore.reset();
-    });
-
     it("should return the selected decision status filters", () => {
       // Project rootCanisterId
       snsFiltersStore.setDecisionStatus({
