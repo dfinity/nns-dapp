@@ -1,7 +1,4 @@
-import {
-  governanceApiService,
-  resetNeuronsApiService,
-} from "$lib/api-services/governance.api-service";
+import { governanceApiService } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
 import {
   createMockIdentity,
@@ -154,10 +151,6 @@ const shouldInvalidateCacheOnFailure = async <P, R>({
 
 describe("neurons api-service", () => {
   const neuronId = 12n;
-
-  beforeEach(() => {
-    resetNeuronsApiService();
-  });
 
   // Read calls
 
