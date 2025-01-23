@@ -5,6 +5,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { getNeuronTags, type NeuronTagData } from "$lib/utils/neuron.utils";
   import type { NeuronInfo } from "@dfinity/nns";
+  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 
   export let neuron: NeuronInfo;
   export let tagName: "p" | "h3" = "p";
@@ -15,6 +16,8 @@
     identity: $authStore.identity,
     accounts: $icpAccountsStore,
     i18n: $i18n,
+    startReducingVotingPowerAfterSeconds:
+      $startReducingVotingPowerAfterSecondsStore,
   });
 </script>
 
