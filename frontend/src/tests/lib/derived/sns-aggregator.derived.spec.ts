@@ -4,10 +4,6 @@ import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { get } from "svelte/store";
 
 describe("snsAggregatorDerived", () => {
-  beforeEach(() => {
-    snsAggregatorIncludingAbortedProjectsStore.reset();
-  });
-
   it("should create a derived store", () => {
     const rootCanisterId = "3uikt-kqsgq-aaaaa-aaaaa-cai";
     const ledgerCanisterId = "zjv33-2isgu-aaaaa-aaaaa-cai";

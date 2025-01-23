@@ -16,10 +16,6 @@ describe("sns swap canisters accounts store", () => {
     },
   };
 
-  beforeEach(() => {
-    snsAggregatorIncludingAbortedProjectsStore.reset();
-  });
-
   it("should convert swap canisters to accounts for a given controller", () => {
     snsAggregatorIncludingAbortedProjectsStore.setData([aggregatorData]);
 

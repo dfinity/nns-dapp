@@ -9,10 +9,6 @@ import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("sns-aggregator store", () => {
-  beforeEach(() => {
-    snsAggregatorIncludingAbortedProjectsStore.reset();
-  });
-
   describe("snsAggregatorIncludingAbortedProjectsStore", () => {
     it("should set aggregator data", () => {
       snsAggregatorIncludingAbortedProjectsStore.setData(
