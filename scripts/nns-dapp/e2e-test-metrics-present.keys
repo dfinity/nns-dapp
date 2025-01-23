@@ -1,10 +1,6 @@
 accounts_count
-exceptional_transactions_count
 hardware_wallet_accounts_count
-neurons_topped_up_count
 nns_dapp_migration_countdown
 nns_dapp_stable_memory_size_gib
 nns_dapp_wasm_memory_size_gib
-periodic_tasks_count
-seconds_since_last_ledger_sync
 sub_accounts_count

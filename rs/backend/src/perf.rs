@@ -54,12 +54,6 @@ impl PerformanceCounts {
     /// Note: The `exceptional_transactions_count` saturates at `u32::MAX`, in the very unlikely event that we reach that limit.
     pub fn get_stats(&self, stats: &mut Stats) {
         stats.performance_counts = self.instruction_counts.iter().cloned().collect();
-        stats.exceptional_transactions_count = Some(
-            self.exceptional_transactions
-                .as_ref()
-                .map_or(0, |x| u32::try_from(x.len()).unwrap_or(u32::MAX)),
-        );
-        stats.periodic_tasks_count = self.periodic_tasks_count;
     }
 
     /// Generates sample data for use in tests
