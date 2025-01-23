@@ -79,7 +79,7 @@ export const signInWithNewUser = async ({
   await step("Running the main test");
 };
 
-export const setFeatureFlag = ({
+export const setFeatureFlag = async ({
   page,
   featureFlag,
   value,
@@ -87,13 +87,18 @@ export const setFeatureFlag = ({
   page: Page;
   featureFlag: FeatureKey;
   value: boolean;
-}) =>
-  page.evaluate(
+}) => {
+  // Wait for feature flags to be available
+  await page.waitForFunction(
+    () => (window as any).__featureFlags !== undefined
+  );
+
+  return page.evaluate(
     ({ featureFlag, value }) =>
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       (window as any).__featureFlags[featureFlag]["overrideWith"](value),
     { featureFlag, value }
   );
+};
 
 // Finds elements matching any of the selectors and replaces their
 // `innerHTML` content with any of the `replacements`, if the current content

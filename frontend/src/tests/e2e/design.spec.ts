@@ -26,12 +26,12 @@ test.describe("Design", () => {
   });
 
   test("App loading spinner is removed", async ({ page }) => {
+    await page.goto("/");
     await setFeatureFlag({
       page,
       featureFlag: "ENABLE_PORTFOLIO_PAGE",
       value: true,
     });
-    await page.goto("/");
     await expect(page).toHaveTitle("Portfolio / NNS Dapp");
 
     // Wait for the button to make sure the app is loaded
@@ -49,16 +49,19 @@ test.describe("Design", () => {
 
     test.beforeAll(async ({ browser }) => {
       page = await browser.newPage();
+      await page.goto("/");
       await setFeatureFlag({
         page,
         featureFlag: "ENABLE_PORTFOLIO_PAGE",
         value: true,
       });
 
-      await page.goto("/");
       await expect(page).toHaveTitle("Portfolio / NNS Dapp");
 
       await signInWithNewUser({ page, context: browser.contexts()[0] });
+
+      await page.goto("/tokens");
+      await expect(page).toHaveTitle("Tokens / NNS Dapp");
     });
 
     test.afterAll(async () => {

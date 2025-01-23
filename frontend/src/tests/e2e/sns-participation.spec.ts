@@ -9,12 +9,13 @@ import {
 import { expect, test } from "@playwright/test";
 
 test("Test SNS participation", async ({ page, context }) => {
+  await page.goto("/");
   await setFeatureFlag({
     page,
     featureFlag: "ENABLE_PORTFOLIO_PAGE",
     value: true,
   });
-  await page.goto("/");
+
   await expect(page).toHaveTitle("Portfolio / NNS Dapp");
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);

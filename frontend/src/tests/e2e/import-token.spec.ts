@@ -14,14 +14,17 @@ test("Test imported tokens", async ({ page, context }) => {
   const testLedgerCanisterId = await dfxCanisterId("ckred_ledger");
   const testIndexCanisterId = await dfxCanisterId("ckred_index");
 
+  await page.goto("/");
   await setFeatureFlag({
     page,
     featureFlag: "ENABLE_PORTFOLIO_PAGE",
     value: true,
   });
-  await page.goto("/tokens");
   await expect(page).toHaveTitle("Portfolio / NNS Dapp");
   await signInWithNewUser({ page, context });
+
+  await page.goto("/tokens");
+  await expect(page).toHaveTitle("Tokens / NNS Dapp");
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
