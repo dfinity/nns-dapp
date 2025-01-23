@@ -47,8 +47,6 @@ pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
     accounts_db: schema::proxy::AccountsDbAsProxy,
     hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
-    // pending_transactions: HashMap<(from, to), (TransactionType, timestamp_ms_since_epoch)>
-    pending_transactions: HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
 
     block_height_synced_up_to: Option<BlockIndex>,
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
@@ -78,10 +76,9 @@ impl fmt::Debug for AccountsStore {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "AccountsStore{{accounts_db: {:?}, hardware_wallets_and_sub_accounts: HashMap[{:?}], pending_transactions: HashMap[{:?}], block_height_synced_up_to: {:?}, multi_part_transactions_processor: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
+            "AccountsStore{{accounts_db: {:?}, hardware_wallets_and_sub_accounts: HashMap[{:?}], block_height_synced_up_to: {:?}, multi_part_transactions_processor: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
             self.accounts_db,
             self.hardware_wallets_and_sub_accounts.len(),
-            self.pending_transactions.len(),
             self.block_height_synced_up_to,
             self.multi_part_transactions_processor,
             self.accounts_db_stats,
@@ -234,17 +231,6 @@ pub enum SetImportedTokensResponse {
 pub enum GetImportedTokensResponse {
     Ok(ImportedTokens),
     AccountNotFound,
-}
-
-#[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
-pub enum TransactionType {
-    Burn,
-    Mint,
-    Transfer,
-    Approve,
-    TransferFrom,
-    StakeNeuronNotification,
-    CreateCanister,
 }
 
 #[derive(Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
@@ -780,8 +766,9 @@ impl StableState for AccountsStore {
         Candid((
             empty_accounts,
             &self.hardware_wallets_and_sub_accounts,
-            // TODO: Remove pending_transactions
-            HashMap::<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>::new(),
+            // Pending transactions are unused but we need to encode them for
+            // backwards compatibility.
+            HashMap::<(AccountIdentifier, AccountIdentifier), candid::Empty>::new(),
             // Transactions are unused but we need to encode them for backwards
             // compatibility.
             VecDeque::<candid::Empty>::new(),
@@ -805,7 +792,7 @@ impl StableState for AccountsStore {
             // map on the heap. So we don't need to decode them here.
             _accounts,
             mut hardware_wallets_and_sub_accounts,
-            pending_transactions,
+            _pending_transactions,
             // Transactions are unused but we need to decode something for backwards
             // compatibility.
             _transactions,
@@ -818,7 +805,7 @@ impl StableState for AccountsStore {
         ): (
             candid::Reserved,
             HashMap<AccountIdentifier, AccountWrapper>,
-            HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
+            candid::Reserved,
             candid::Reserved,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockIndex>,
@@ -847,7 +834,6 @@ impl StableState for AccountsStore {
             // State::from(Partitions) so it doesn't matter what we set here.
             accounts_db: AccountsDbAsProxy::default(),
             hardware_wallets_and_sub_accounts,
-            pending_transactions,
             block_height_synced_up_to,
             multi_part_transactions_processor,
             accounts_db_stats,
