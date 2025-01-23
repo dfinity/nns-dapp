@@ -89,10 +89,10 @@ export const setFeatureFlag = async ({
   value: boolean;
 }) => {
   // Wait for feature flags to be available
-  await page.waitForFunction(
+  await page.waitForFunction(function () {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    () => (window as any).__featureFlags !== undefined
-  );
+    return (window as any).__featureFlags !== undefined;
+  });
 
   return page.evaluate(
     ({ featureFlag, value }) =>
