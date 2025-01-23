@@ -1,7 +1,9 @@
 import NnsNeuronVotingPowerSection from "$lib/components/neuron-detail/NnsNeuronVotingPowerSection.svelte";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronVotingPowerSectionPo } from "$tests/page-objects/NnsNeuronVotingPowerSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -150,6 +152,10 @@ describe("NnsStakeItemAction", () => {
       "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
       true
     );
+    networkEconomicsStore.setParameters({
+      parameters: mockNetworkEconomics,
+      certified: true,
+    });
     const po = renderComponent(mockNeuron);
 
     expect(await po.getNnsNeuronRewardStatusActionPo().isPresent()).toBe(true);
