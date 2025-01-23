@@ -1,6 +1,10 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { replaceContent, signInWithNewUser } from "$tests/utils/e2e.test-utils";
+import {
+    replaceContent,
+    setFeatureFlag,
+    signInWithNewUser,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test, type Page } from "@playwright/test";
 
 test.describe("Design", () => {
@@ -22,8 +26,13 @@ test.describe("Design", () => {
   });
 
   test("App loading spinner is removed", async ({ page }) => {
+    await setFeatureFlag({
+      page,
+      featureFlag: "ENABLE_PORTFOLIO_PAGE",
+      value: true,
+    });
     await page.goto("/");
-    await expect(page).toHaveTitle("Tokens / NNS Dapp");
+    await expect(page).toHaveTitle("Portfolio / NNS Dapp");
 
     // Wait for the button to make sure the app is loaded
     await page.locator("[data-tid=login-button]").waitFor();
@@ -40,9 +49,14 @@ test.describe("Design", () => {
 
     test.beforeAll(async ({ browser }) => {
       page = await browser.newPage();
+      await setFeatureFlag({
+        page,
+        featureFlag: "ENABLE_PORTFOLIO_PAGE",
+        value: true,
+      });
 
       await page.goto("/");
-      await expect(page).toHaveTitle("Tokens / NNS Dapp");
+      await expect(page).toHaveTitle("Portfolio / NNS Dapp");
 
       await signInWithNewUser({ page, context: browser.contexts()[0] });
     });
