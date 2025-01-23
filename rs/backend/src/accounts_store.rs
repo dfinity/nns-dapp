@@ -441,45 +441,36 @@ impl AccountsStore {
         let account_identifier = AccountIdentifier::from(caller);
 
         if !Self::validate_account_name(&sub_account_name) {
-            CreateSubAccountResponse::NameTooLong
-        } else if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
-            let response =
-                if let Some(sub_account_id) = (1..MAX_SUB_ACCOUNT_ID).find(|i| !account.sub_accounts.contains_key(i)) {
-                    let sub_account = convert_byte_to_sub_account(sub_account_id);
-                    let sub_account_identifier = AccountIdentifier::new(caller, Some(sub_account));
-                    let named_sub_account = NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
-
-                    account.sub_accounts.insert(sub_account_id, named_sub_account);
-                    self.accounts_db
-                        .db_insert_account(&account_identifier.to_vec(), account);
-
-                    CreateSubAccountResponse::Ok(SubAccountDetails {
-                        name: sub_account_name,
-                        sub_account,
-                        account_identifier: sub_account_identifier,
-                    })
-                } else {
-                    CreateSubAccountResponse::SubAccountLimitExceeded
-                };
-
-            if let CreateSubAccountResponse::Ok(SubAccountDetails {
-                name: _,
-                sub_account,
-                account_identifier: sub_account_identifier,
-            }) = response
-            {
-                let sub_account_id = sub_account.0[31];
-                self.hardware_wallets_and_sub_accounts.insert(
-                    sub_account_identifier,
-                    AccountWrapper::SubAccount(account_identifier, sub_account_id),
-                );
-                self.accounts_db_stats.sub_accounts_count += 1;
-            }
-
-            response
-        } else {
-            CreateSubAccountResponse::AccountNotFound
+            return CreateSubAccountResponse::NameTooLong;
         }
+
+        let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) else {
+            return CreateSubAccountResponse::AccountNotFound;
+        };
+
+        let Some(sub_account_id) = (1..MAX_SUB_ACCOUNT_ID).find(|i| !account.sub_accounts.contains_key(i)) else {
+            return CreateSubAccountResponse::SubAccountLimitExceeded;
+        };
+
+        let sub_account = convert_byte_to_sub_account(sub_account_id);
+        let sub_account_identifier = AccountIdentifier::new(caller, Some(sub_account));
+        let named_sub_account = NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
+
+        account.sub_accounts.insert(sub_account_id, named_sub_account);
+        self.accounts_db
+            .db_insert_account(&account_identifier.to_vec(), account);
+
+        self.hardware_wallets_and_sub_accounts.insert(
+            sub_account_identifier,
+            AccountWrapper::SubAccount(account_identifier, sub_account_id),
+        );
+        self.accounts_db_stats.sub_accounts_count += 1;
+
+        CreateSubAccountResponse::Ok(SubAccountDetails {
+            name: sub_account_name,
+            sub_account,
+            account_identifier: sub_account_identifier,
+        })
     }
 
     pub fn rename_sub_account(
