@@ -1,5 +1,4 @@
 canister_global_timer
-canister_heartbeat
 canister_init
 canister_post_upgrade
 canister_pre_upgrade

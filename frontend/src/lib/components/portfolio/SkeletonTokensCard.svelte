@@ -1,8 +1,10 @@
 <script lang="ts">
   import Card from "$lib/components/portfolio/Card.svelte";
+
+  export let testId: string;
 </script>
 
-<Card testId="skeleton-tokens-card">
+<Card {testId}>
   <div class="wrapper">
     <div class="header">
       <div class="header-wrapper">

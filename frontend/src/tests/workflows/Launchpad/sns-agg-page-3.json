@@ -1124,7 +1124,11 @@
       "ledger": "k45jy-aiaaa-aaaaq-aadcq-cai",
       "index": "ks7eq-3yaaa-aaaaq-aaddq-cai",
       "governance": "k34pm-nqaaa-aaaaq-aadca-cai",
-      "dapps": ["2uktw-yiaaa-aaaah-adwxq-cai", "2tlvc-vqaaa-aaaah-adwxa-cai"],
+      "dapps": [
+        "2uktw-yiaaa-aaaah-adwxq-cai",
+        "2tlvc-vqaaa-aaaah-adwxa-cai",
+        "oeee4-qaaaa-aaaak-qaaeq-cai"
+      ],
       "archives": ["j6iuh-qyaaa-aaaaq-aadjq-cai"]
     },
     "meta": {
@@ -1433,7 +1437,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 6104931921574517,
+    "icrc1_total_supply": 5755350594896445,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1820,7 +1824,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 99999801070000,
+    "icrc1_total_supply": 99999798940000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2214,7 +2218,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041696717166047031,
+    "icrc1_total_supply": 1041693669101204390,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2859,7 +2863,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11658666034766401,
+    "icrc1_total_supply": 11659724676644008,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4370,7 +4374,7 @@
       ]
     ],
     "icrc1_fee": [705032704, 1],
-    "icrc1_total_supply": 2346254157087070354,
+    "icrc1_total_supply": 2340848301633445833,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4922,7 +4926,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999999886690000,
+    "icrc1_total_supply": 1999999866900000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
@@ -8261,7 +8265,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100057993519181730,
+    "icrc1_total_supply": 100104032102712429,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
