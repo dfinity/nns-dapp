@@ -1258,6 +1258,7 @@ export const getVotingPowerRefreshedTimestampSeconds = ({
   // to avoid unnecessary notifications.
   fullNeuron?.votingPowerRefreshedTimestampSeconds ?? BigInt(nowInSeconds());
 
+// @deprecated
 export const secondsUntilLosingRewards = (neuron: NeuronInfo): number => {
   const rewardLossStart =
     Number(getVotingPowerRefreshedTimestampSeconds(neuron)) +
@@ -1265,6 +1266,7 @@ export const secondsUntilLosingRewards = (neuron: NeuronInfo): number => {
   return rewardLossStart - nowInSeconds();
 };
 
+// @deprecated
 export const isNeuronFollowingReset = (neuron: NeuronInfo): boolean => {
   const neuronFollowingResetTimestampSeconds =
     Number(getVotingPowerRefreshedTimestampSeconds(neuron)) +
@@ -1273,12 +1275,86 @@ export const isNeuronFollowingReset = (neuron: NeuronInfo): boolean => {
   return nowInSeconds() >= neuronFollowingResetTimestampSeconds;
 };
 
+// @deprecated
 export const isNeuronLosingRewards = (neuron: NeuronInfo): boolean =>
   secondsUntilLosingRewards(neuron) <= 0;
 
 // e.g. "Neuron will start losing rewards in 30 days"
+// @deprecated
 export const shouldDisplayRewardLossNotification = (
   neuron: NeuronInfo
 ): boolean =>
   secondsUntilLosingRewards(neuron) <=
   daysToSeconds(NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS);
+
+export const secondsUntilLosingRewardsVPE = ({
+  neuron,
+  startReducingVotingPowerAfterSeconds,
+}: {
+  neuron: NeuronInfo;
+  startReducingVotingPowerAfterSeconds: bigint;
+}): number => {
+  const rewardLossStart = Number(
+    getVotingPowerRefreshedTimestampSeconds(neuron) +
+      startReducingVotingPowerAfterSeconds
+  );
+  return rewardLossStart - nowInSeconds();
+};
+
+/** If the voting power economics are not available,
+ *  we assume that the neuron's following is not reset. */
+export const isNeuronFollowingResetVPE = ({
+  neuron,
+  startReducingVotingPowerAfterSeconds,
+  clearFollowingAfterSeconds,
+}: {
+  neuron: NeuronInfo;
+  startReducingVotingPowerAfterSeconds: bigint | undefined;
+  clearFollowingAfterSeconds: bigint | undefined;
+}): boolean => {
+  if (
+    isNullish(startReducingVotingPowerAfterSeconds) ||
+    isNullish(clearFollowingAfterSeconds)
+  ) {
+    return false;
+  }
+  const neuronFollowingResetTimestampSeconds =
+    getVotingPowerRefreshedTimestampSeconds(neuron) +
+    startReducingVotingPowerAfterSeconds +
+    clearFollowingAfterSeconds;
+  return nowInSeconds() >= neuronFollowingResetTimestampSeconds;
+};
+
+/** If the voting power economics are not available,
+ *  we assume that the neuron is not losing rewards. */
+export const isNeuronLosingRewardsVPE = ({
+  neuron,
+  startReducingVotingPowerAfterSeconds,
+}: {
+  neuron: NeuronInfo;
+  startReducingVotingPowerAfterSeconds: bigint | undefined;
+}): boolean =>
+  isNullish(startReducingVotingPowerAfterSeconds)
+    ? false
+    : secondsUntilLosingRewardsVPE({
+        neuron,
+        startReducingVotingPowerAfterSeconds,
+      }) <= 0;
+
+/**
+ * e.g. "Neuron will start losing rewards in 30 days"
+ * If the voting power economics are not available,
+ * we assume that the neuron is not losing rewards. */
+export const shouldDisplayRewardLossNotificationVPE = ({
+  neuron,
+  startReducingVotingPowerAfterSeconds,
+}: {
+  neuron: NeuronInfo;
+  startReducingVotingPowerAfterSeconds: bigint | undefined;
+}): boolean =>
+  isNullish(startReducingVotingPowerAfterSeconds)
+    ? false
+    : secondsUntilLosingRewardsVPE({
+        neuron,
+        startReducingVotingPowerAfterSeconds,
+      }) <= daysToSeconds(NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS);
