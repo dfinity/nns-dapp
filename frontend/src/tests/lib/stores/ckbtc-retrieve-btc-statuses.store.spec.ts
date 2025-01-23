@@ -3,10 +3,6 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
 
 describe("ckBTC retrieve BTC statuses store", () => {
-  beforeEach(() => {
-    ckbtcRetrieveBtcStatusesStore.reset();
-  });
-
   const ckbtcUniverseId = principal(0);
   const cktestbtcUniverseId = principal(1);
 

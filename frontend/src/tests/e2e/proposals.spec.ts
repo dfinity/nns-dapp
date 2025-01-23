@@ -2,14 +2,30 @@ import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import { createDummyProposal } from "$tests/utils/e2e.nns-proposals.test-utils";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  setFeatureFlag,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { ProposalStatus, Topic } from "@dfinity/nns";
 import { expect, test } from "@playwright/test";
 
 test("Test proposals", async ({ page, context }) => {
   await page.goto("/");
-  await expect(page).toHaveTitle("Tokens / NNS Dapp");
+  await expect(page).toHaveTitle(/.*\s\/\sNNS Dapp/);
+
+  await setFeatureFlag({
+    page,
+    featureFlag: "ENABLE_PORTFOLIO_PAGE",
+    value: true,
+  });
+
+  await page.reload();
+  await expect(page).toHaveTitle("Portfolio / NNS Dapp");
   await signInWithNewUser({ page, context });
+
+  await page.goto("/tokens");
+  await expect(page).toHaveTitle("Tokens / NNS Dapp");
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);

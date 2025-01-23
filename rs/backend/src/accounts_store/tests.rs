@@ -18,14 +18,75 @@ fn create_sub_account() {
 
     store.create_sub_account(principal, "AAA".to_string());
     store.create_sub_account(principal, "BBB".to_string());
-    store.create_sub_account(principal, "CCC".to_string());
+    // Name of max allowed length (24):
+    store.create_sub_account(principal, "CDEFGHIJKLMNOPQRSTUVWXYZ".to_string());
 
     let sub_accounts = store.get_account(principal).unwrap().sub_accounts;
 
     assert_eq!(3, sub_accounts.len());
     assert_eq!("AAA", sub_accounts[0].name);
     assert_eq!("BBB", sub_accounts[1].name);
-    assert_eq!("CCC", sub_accounts[2].name);
+    assert_eq!("CDEFGHIJKLMNOPQRSTUVWXYZ", sub_accounts[2].name);
+}
+
+#[test]
+fn create_sub_account_response() {
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let mut store = setup_test_store();
+
+    let response = store.create_sub_account(principal, "AAA".to_string());
+    let CreateSubAccountResponse::Ok(response_details) = response else {
+        panic!("Expected Ok response, got {:?}", response);
+    };
+
+    let sub_accounts = store.get_account(principal).unwrap().sub_accounts;
+
+    assert_eq!(1, sub_accounts.len());
+    assert_eq!(sub_accounts[0].name, response_details.name);
+    assert_eq!(sub_accounts[0].account_identifier, response_details.account_identifier);
+}
+
+#[test]
+fn create_sub_account_name_too_long() {
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let mut store = setup_test_store();
+
+    let response = store.create_sub_account(principal, "ABCDEFGHIJKLMNOPQRSTUVWXY".to_string());
+
+    assert_eq!(CreateSubAccountResponse::NameTooLong, response);
+
+    let sub_accounts = store.get_account(principal).unwrap().sub_accounts;
+    assert_eq!(0, sub_accounts.len());
+}
+
+#[test]
+fn create_sub_account_limit_exceeded() {
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let mut store = setup_test_store();
+
+    const MAX_SUB_ACCOUNTS_PER_ACCOUNT: usize = 254;
+
+    for _ in 0..MAX_SUB_ACCOUNTS_PER_ACCOUNT {
+        let response = store.create_sub_account(principal, "AAA".to_string());
+        assert!(matches!(response, CreateSubAccountResponse::Ok(_)));
+    }
+
+    let response = store.create_sub_account(principal, "AAA".to_string());
+
+    assert_eq!(CreateSubAccountResponse::SubAccountLimitExceeded, response);
+
+    let sub_accounts = store.get_account(principal).unwrap().sub_accounts;
+    assert_eq!(MAX_SUB_ACCOUNTS_PER_ACCOUNT, sub_accounts.len());
+}
+
+#[test]
+fn create_sub_account_account_not_found() {
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    let mut store = setup_test_store();
+
+    let response = store.create_sub_account(principal, "AAA".to_string());
+
+    assert_eq!(CreateSubAccountResponse::AccountNotFound, response);
 }
 
 #[test]

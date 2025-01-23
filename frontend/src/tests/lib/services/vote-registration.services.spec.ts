@@ -74,7 +74,6 @@ describe("vote-registration-services", () => {
 
   beforeEach(() => {
     // Cleanup:
-    voteRegistrationStore.reset();
     proposalsStore.resetForTesting();
     resetIdentity();
 

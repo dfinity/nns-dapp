@@ -7,8 +7,6 @@ import { get } from "svelte/store";
 
 describe("bitcoin-store", () => {
   describe("Bitcoin address store", () => {
-    beforeEach(() => bitcoinAddressStore.reset());
-
     const data = {
       identifier: mockCkBTCMainAccount.identifier,
       btcAddress: mockBTCAddressTestnet,

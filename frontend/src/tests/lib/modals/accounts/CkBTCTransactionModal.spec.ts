@@ -84,7 +84,6 @@ describe("CkBTCTransactionModal", () => {
 
   beforeEach(() => {
     vi.useFakeTimers();
-    ckBTCInfoStore.reset();
 
     vi.mocked(transferTokens).mockResolvedValue({ blockIndex: undefined });
     resetIdentity();

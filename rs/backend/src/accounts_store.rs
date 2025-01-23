@@ -30,6 +30,8 @@ use schema::{
 // the limit.
 const ACCOUNT_LIMIT: u64 = 300_000;
 
+const MAX_SUB_ACCOUNT_ID: u8 = u8::MAX - 1;
+
 // Conservatively limit the number of imported tokens to prevent using too much memory.
 // Can be revisited if users find this too restrictive.
 const MAX_IMPORTED_TOKENS: i32 = 20;
@@ -45,8 +47,6 @@ pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
     accounts_db: schema::proxy::AccountsDbAsProxy,
     hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
-    // pending_transactions: HashMap<(from, to), (TransactionType, timestamp_ms_since_epoch)>
-    pending_transactions: HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
 
     block_height_synced_up_to: Option<BlockIndex>,
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
@@ -76,10 +76,9 @@ impl fmt::Debug for AccountsStore {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "AccountsStore{{accounts_db: {:?}, hardware_wallets_and_sub_accounts: HashMap[{:?}], pending_transactions: HashMap[{:?}], block_height_synced_up_to: {:?}, multi_part_transactions_processor: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
+            "AccountsStore{{accounts_db: {:?}, hardware_wallets_and_sub_accounts: HashMap[{:?}], block_height_synced_up_to: {:?}, multi_part_transactions_processor: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
             self.accounts_db,
             self.hardware_wallets_and_sub_accounts.len(),
-            self.pending_transactions.len(),
             self.block_height_synced_up_to,
             self.multi_part_transactions_processor,
             self.accounts_db_stats,
@@ -234,17 +233,6 @@ pub enum GetImportedTokensResponse {
     AccountNotFound,
 }
 
-#[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
-pub enum TransactionType {
-    Burn,
-    Mint,
-    Transfer,
-    Approve,
-    TransferFrom,
-    StakeNeuronNotification,
-    CreateCanister,
-}
-
 #[derive(Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub struct NeuronDetails {
     account_identifier: AccountIdentifier,
@@ -253,7 +241,7 @@ pub struct NeuronDetails {
     neuron_id: Option<NeuronId>,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Debug, PartialEq)]
 pub enum CreateSubAccountResponse {
     Ok(SubAccountDetails),
     AccountNotFound,
@@ -298,7 +286,7 @@ pub struct AccountDetails {
     pub hardware_wallet_accounts: Vec<HardwareWalletAccountDetails>,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Debug, PartialEq)]
 pub struct SubAccountDetails {
     name: String,
     sub_account: Subaccount,
@@ -439,44 +427,36 @@ impl AccountsStore {
         let account_identifier = AccountIdentifier::from(caller);
 
         if !Self::validate_account_name(&sub_account_name) {
-            CreateSubAccountResponse::NameTooLong
-        } else if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
-            let response = if let Some(sub_account_id) = (1..u8::MAX).find(|i| !account.sub_accounts.contains_key(i)) {
-                let sub_account = convert_byte_to_sub_account(sub_account_id);
-                let sub_account_identifier = AccountIdentifier::new(caller, Some(sub_account));
-                let named_sub_account = NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
-
-                account.sub_accounts.insert(sub_account_id, named_sub_account);
-                self.accounts_db
-                    .db_insert_account(&account_identifier.to_vec(), account);
-
-                CreateSubAccountResponse::Ok(SubAccountDetails {
-                    name: sub_account_name,
-                    sub_account,
-                    account_identifier: sub_account_identifier,
-                })
-            } else {
-                CreateSubAccountResponse::SubAccountLimitExceeded
-            };
-
-            if let CreateSubAccountResponse::Ok(SubAccountDetails {
-                name: _,
-                sub_account,
-                account_identifier: sub_account_identifier,
-            }) = response
-            {
-                let sub_account_id = sub_account.0[31];
-                self.hardware_wallets_and_sub_accounts.insert(
-                    sub_account_identifier,
-                    AccountWrapper::SubAccount(account_identifier, sub_account_id),
-                );
-                self.accounts_db_stats.sub_accounts_count += 1;
-            }
-
-            response
-        } else {
-            CreateSubAccountResponse::AccountNotFound
+            return CreateSubAccountResponse::NameTooLong;
         }
+
+        let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) else {
+            return CreateSubAccountResponse::AccountNotFound;
+        };
+
+        let Some(sub_account_id) = (1..=MAX_SUB_ACCOUNT_ID).find(|i| !account.sub_accounts.contains_key(i)) else {
+            return CreateSubAccountResponse::SubAccountLimitExceeded;
+        };
+
+        let sub_account = convert_byte_to_sub_account(sub_account_id);
+        let sub_account_identifier = AccountIdentifier::new(caller, Some(sub_account));
+        let named_sub_account = NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
+
+        account.sub_accounts.insert(sub_account_id, named_sub_account);
+        self.accounts_db
+            .db_insert_account(&account_identifier.to_vec(), account);
+
+        self.hardware_wallets_and_sub_accounts.insert(
+            sub_account_identifier,
+            AccountWrapper::SubAccount(account_identifier, sub_account_id),
+        );
+        self.accounts_db_stats.sub_accounts_count += 1;
+
+        CreateSubAccountResponse::Ok(SubAccountDetails {
+            name: sub_account_name,
+            sub_account,
+            account_identifier: sub_account_identifier,
+        })
     }
 
     pub fn rename_sub_account(
@@ -777,8 +757,9 @@ impl StableState for AccountsStore {
         Candid((
             empty_accounts,
             &self.hardware_wallets_and_sub_accounts,
-            // TODO: Remove pending_transactions
-            HashMap::<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>::new(),
+            // Pending transactions are unused but we need to encode them for
+            // backwards compatibility.
+            HashMap::<(AccountIdentifier, AccountIdentifier), candid::Empty>::new(),
             // Transactions are unused but we need to encode them for backwards
             // compatibility.
             VecDeque::<candid::Empty>::new(),
@@ -802,7 +783,7 @@ impl StableState for AccountsStore {
             // map on the heap. So we don't need to decode them here.
             _accounts,
             mut hardware_wallets_and_sub_accounts,
-            pending_transactions,
+            _pending_transactions,
             // Transactions are unused but we need to decode something for backwards
             // compatibility.
             _transactions,
@@ -815,7 +796,7 @@ impl StableState for AccountsStore {
         ): (
             candid::Reserved,
             HashMap<AccountIdentifier, AccountWrapper>,
-            HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
+            candid::Reserved,
             candid::Reserved,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockIndex>,
@@ -844,7 +825,6 @@ impl StableState for AccountsStore {
             // State::from(Partitions) so it doesn't matter what we set here.
             accounts_db: AccountsDbAsProxy::default(),
             hardware_wallets_and_sub_accounts,
-            pending_transactions,
             block_height_synced_up_to,
             multi_part_transactions_processor,
             accounts_db_stats,

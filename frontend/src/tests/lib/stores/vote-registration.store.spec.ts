@@ -19,10 +19,6 @@ describe("voting-store", () => {
     proposalIdString: "2",
   };
 
-  beforeEach(() => {
-    voteRegistrationStore.reset();
-  });
-
   describe("voteRegistrationStore", () => {
     it("should set voting items", () => {
       voteRegistrationStore.add({ ...voteA, canisterId: OWN_CANISTER_ID });

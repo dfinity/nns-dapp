@@ -1,4 +1,3 @@
-import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import { mergeNeurons } from "$lib/api/governance.api";
 import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
@@ -47,7 +46,6 @@ describe("MergeNeuronsModal", () => {
       testIdentity
     );
     resetAccountsForTesting();
-    resetNeuronsApiService();
   });
 
   const selectAndTestTwoNeurons = async ({ po, neurons }) => {
