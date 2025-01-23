@@ -14,7 +14,7 @@ use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::borrow::Cow;
 use std::cmp::Ordering;
-use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
+use std::collections::{BTreeMap, HashMap, VecDeque};
 use std::fmt;
 use std::ops::RangeBounds;
 
@@ -46,7 +46,6 @@ const MAX_IMPORTED_TOKENS: i32 = 20;
 pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
     accounts_db: schema::proxy::AccountsDbAsProxy,
-    hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
 
     block_height_synced_up_to: Option<BlockIndex>,
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
@@ -76,9 +75,8 @@ impl fmt::Debug for AccountsStore {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "AccountsStore{{accounts_db: {:?}, hardware_wallets_and_sub_accounts: HashMap[{:?}], block_height_synced_up_to: {:?}, multi_part_transactions_processor: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
+            "AccountsStore{{accounts_db: {:?}, block_height_synced_up_to: {:?}, multi_part_transactions_processor: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
             self.accounts_db,
-            self.hardware_wallets_and_sub_accounts.len(),
             self.block_height_synced_up_to,
             self.multi_part_transactions_processor,
             self.accounts_db_stats,
@@ -446,10 +444,6 @@ impl AccountsStore {
         self.accounts_db
             .db_insert_account(&account_identifier.to_vec(), account);
 
-        self.hardware_wallets_and_sub_accounts.insert(
-            sub_account_identifier,
-            AccountWrapper::SubAccount(account_identifier, sub_account_id),
-        );
         self.accounts_db_stats.sub_accounts_count += 1;
 
         CreateSubAccountResponse::Ok(SubAccountDetails {
@@ -495,8 +489,6 @@ impl AccountsStore {
         if !Self::validate_account_name(&request.name) {
             RegisterHardwareWalletResponse::NameTooLong
         } else if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()).clone() {
-            let hardware_wallet_account_identifier = AccountIdentifier::from(request.principal);
-
             if account.hardware_wallet_accounts.len() == (u8::MAX as usize) {
                 RegisterHardwareWalletResponse::HardwareWalletLimitExceeded
             } else if account
@@ -517,7 +509,6 @@ impl AccountsStore {
                     .db_insert_account(&account_identifier.to_vec(), account);
 
                 self.accounts_db_stats.hardware_wallet_accounts_count += 1;
-                self.link_hardware_wallet_to_account(account_identifier, hardware_wallet_account_identifier);
                 RegisterHardwareWalletResponse::Ok
             }
         } else {
@@ -713,21 +704,6 @@ impl AccountsStore {
             })
     }
 
-    fn link_hardware_wallet_to_account(
-        &mut self,
-        account_identifier: AccountIdentifier,
-        hardware_wallet_account_identifier: AccountIdentifier,
-    ) {
-        self.hardware_wallets_and_sub_accounts
-            .entry(hardware_wallet_account_identifier)
-            .and_modify(|account_wrapper| {
-                if let AccountWrapper::HardwareWallet(account_identifiers) = account_wrapper {
-                    account_identifiers.push(account_identifier);
-                }
-            })
-            .or_insert_with(|| AccountWrapper::HardwareWallet(vec![account_identifier]));
-    }
-
     fn validate_account_name(name: &str) -> bool {
         const ACCOUNT_NAME_MAX_LENGTH: usize = 24;
 
@@ -756,7 +732,11 @@ impl StableState for AccountsStore {
         let empty_accounts = BTreeMap::<Vec<u8>, candid::Empty>::new();
         Candid((
             empty_accounts,
-            &self.hardware_wallets_and_sub_accounts,
+            // hardware_wallets_and_sub_accounts is unused but we need to encode
+            // it for backwards compatibility.
+            // TODO: Change AccountWrapper to candid::Empty after we've
+            // deployed to mainnet.
+            HashMap::<AccountIdentifier, AccountWrapper>::new(),
             // Pending transactions are unused but we need to encode them for
             // backwards compatibility.
             HashMap::<(AccountIdentifier, AccountIdentifier), candid::Empty>::new(),
@@ -782,7 +762,7 @@ impl StableState for AccountsStore {
             // Accounts are now in stable structures and no longer in a simple
             // map on the heap. So we don't need to decode them here.
             _accounts,
-            mut hardware_wallets_and_sub_accounts,
+            _hardware_wallets_and_sub_accounts,
             _pending_transactions,
             // Transactions are unused but we need to decode something for backwards
             // compatibility.
@@ -795,6 +775,10 @@ impl StableState for AccountsStore {
             accounts_db_stats_maybe,
         ): (
             candid::Reserved,
+            // TODO: Change to candid:Reserved and remove AccountWrapper after
+            // we've deployed to mainnet. If we do it now, decoding will break
+            // because of the skip quota. The decoder will think there is an
+            // attack with a lot of unnecessary data in a request.
             HashMap<AccountIdentifier, AccountWrapper>,
             candid::Reserved,
             candid::Reserved,
@@ -806,14 +790,6 @@ impl StableState for AccountsStore {
             Option<AccountsDbStats>,
         ) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
-        // Remove duplicate links between hardware wallets and user accounts
-        for hw_or_sub in hardware_wallets_and_sub_accounts.values_mut() {
-            if let AccountWrapper::HardwareWallet(ids) = hw_or_sub {
-                let mut unique = HashSet::new();
-                ids.retain(|id| unique.insert(*id));
-            }
-        }
-
         let accounts_db_stats_recomputed_on_upgrade = IgnoreEq(Some(accounts_db_stats_maybe.is_none()));
         let Some(accounts_db_stats) = accounts_db_stats_maybe else {
             return Err("Accounts DB stats should be present since the stable structures migration.".to_string());
@@ -824,7 +800,6 @@ impl StableState for AccountsStore {
             // will be replaced with an AccountsDbAsUnboundedStableBTreeMap in
             // State::from(Partitions) so it doesn't matter what we set here.
             accounts_db: AccountsDbAsProxy::default(),
-            hardware_wallets_and_sub_accounts,
             block_height_synced_up_to,
             multi_part_transactions_processor,
             accounts_db_stats,
