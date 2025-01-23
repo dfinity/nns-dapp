@@ -3,10 +3,6 @@ import { get } from "svelte/store";
 
 describe("checked-neurons.store", () => {
   describe("checkedNeuronSubaccountsStore", () => {
-    beforeEach(() => {
-      checkedNeuronSubaccountsStore.reset();
-    });
-
     it("should initially be empty", () => {
       expect(get(checkedNeuronSubaccountsStore)).toEqual({});
     });

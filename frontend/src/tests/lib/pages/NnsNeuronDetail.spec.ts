@@ -5,7 +5,6 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { SECONDS_IN_DAY, SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
 import * as knownNeuronsServices from "$lib/services/known-neurons.services";
-import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -46,8 +45,6 @@ describe("NeuronDetail", () => {
     // Ensure the API is called after the first request.
     clearCache();
 
-    voteRegistrationStore.reset();
-    checkedNeuronSubaccountsStore.reset();
     fakeGovernanceApi.addNeuronWith({ neuronId, stake: neuronStake });
     fakeGovernanceApi.addNeuronWith({ neuronId: 1234n });
     fakeGovernanceApi.setLatestRewardEvent({
