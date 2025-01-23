@@ -1,4 +1,3 @@
-import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
 import * as icpLedgerApi from "$lib/api/icp-ledger.api";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
@@ -158,7 +157,6 @@ describe("neurons-services", () => {
     spyConsoleError = vi.spyOn(console, "error");
     resetAccountsForTesting();
     resetAccountIdentity();
-    resetNeuronsApiService();
 
     vi.spyOn(icpAccountsServices, "loadBalance").mockReturnValue(undefined);
     vi.spyOn(icpAccountsServices, "transferICP").mockResolvedValue({

@@ -12,10 +12,6 @@ describe("sns lifecycle store", () => {
     lifecycle: [SnsSwapLifecycle.Committed],
   };
 
-  beforeEach(() => {
-    snsLifecycleStore.reset();
-  });
-
   it("should create a store for a given root canister id and store lifecycle", () => {
     const rootCanisterId = principal(0);
 

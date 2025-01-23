@@ -31,12 +31,6 @@ import {
 import { get } from "svelte/store";
 
 describe("sns.store", () => {
-  beforeEach(() => {
-    snsAggregatorIncludingAbortedProjectsStore.reset();
-    snsDerivedStateStore.reset();
-    snsLifecycleStore.reset();
-  });
-
   describe("snsSwapStatesStore", () => {
     it("should store swap states", () => {
       const swapCommitment = mockSnsSwapCommitment(

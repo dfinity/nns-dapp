@@ -12,10 +12,6 @@ import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
 describe("SNS Parameters store", () => {
-  beforeEach(() => {
-    snsAggregatorIncludingAbortedProjectsStore.reset();
-  });
-
   describe("snsParametersStore", () => {
     it("should set parameters for a project", () => {
       snsAggregatorIncludingAbortedProjectsStore.setData([

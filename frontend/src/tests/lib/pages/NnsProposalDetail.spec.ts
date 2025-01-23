@@ -1,4 +1,3 @@
-import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
@@ -55,7 +54,6 @@ describe("NnsProposalDetail", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetNeuronsApiService();
     vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue(testNeurons);
 
     actionableProposalsSegmentStore.set("all");

@@ -64,7 +64,9 @@ fn create_sub_account_limit_exceeded() {
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let mut store = setup_test_store();
 
-    for _ in 1..MAX_SUB_ACCOUNT_ID {
+    const MAX_SUB_ACCOUNTS_PER_ACCOUNT: usize = 254;
+
+    for _ in 0..MAX_SUB_ACCOUNTS_PER_ACCOUNT {
         let response = store.create_sub_account(principal, "AAA".to_string());
         assert!(matches!(response, CreateSubAccountResponse::Ok(_)));
     }
@@ -74,7 +76,7 @@ fn create_sub_account_limit_exceeded() {
     assert_eq!(CreateSubAccountResponse::SubAccountLimitExceeded, response);
 
     let sub_accounts = store.get_account(principal).unwrap().sub_accounts;
-    assert_eq!((MAX_SUB_ACCOUNT_ID - 1) as usize, sub_accounts.len());
+    assert_eq!(MAX_SUB_ACCOUNTS_PER_ACCOUNT, sub_accounts.len());
 }
 
 #[test]

@@ -30,7 +30,7 @@ use schema::{
 // the limit.
 const ACCOUNT_LIMIT: u64 = 300_000;
 
-const MAX_SUB_ACCOUNT_ID: u8 = u8::MAX;
+const MAX_SUB_ACCOUNT_ID: u8 = u8::MAX - 1;
 
 // Conservatively limit the number of imported tokens to prevent using too much memory.
 // Can be revisited if users find this too restrictive.
@@ -434,7 +434,7 @@ impl AccountsStore {
             return CreateSubAccountResponse::AccountNotFound;
         };
 
-        let Some(sub_account_id) = (1..MAX_SUB_ACCOUNT_ID).find(|i| !account.sub_accounts.contains_key(i)) else {
+        let Some(sub_account_id) = (1..=MAX_SUB_ACCOUNT_ID).find(|i| !account.sub_accounts.contains_key(i)) else {
             return CreateSubAccountResponse::SubAccountLimitExceeded;
         };
 
