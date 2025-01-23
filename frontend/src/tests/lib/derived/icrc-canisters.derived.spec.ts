@@ -13,11 +13,6 @@ describe("icrcCanistersStore", () => {
   const ledgerCanisterId2 = principal(2);
   const ledgerCanisterId3 = principal(3);
 
-  beforeEach(() => {
-    importedTokensStore.reset();
-    failedImportedTokenLedgerIdsStore.reset();
-  });
-
   it("returns empty object when no icrc tokens are present", () => {
     expect(get(icrcCanistersStore)).toEqual({});
   });

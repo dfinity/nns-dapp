@@ -20,11 +20,6 @@ describe("imported tokens derived stores", () => {
     indexCanisterId: undefined,
   };
 
-  beforeEach(() => {
-    importedTokensStore.reset();
-    failedImportedTokenLedgerIdsStore.reset();
-  });
-
   describe("failedExistentImportedTokenLedgerIdsStore", () => {
     it("should contain failed imported tokens", () => {
       expect(get(failedExistentImportedTokenLedgerIdsStore)).toEqual([]);

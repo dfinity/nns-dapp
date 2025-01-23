@@ -117,7 +117,6 @@ describe("IcrcWallet", () => {
     vi.useRealTimers();
     resetIdentity();
     busyStore.resetForTesting();
-    importedTokensStore.reset();
 
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
