@@ -53,6 +53,7 @@
           $startReducingVotingPowerAfterSecondsStore,
       })}
       text={replacePlaceholders($i18n.losing_rewards.description, {
+        // TODO(mstr): Rename to secondsToRoundedDuration
         $period: secondsToDissolveDelayDuration(
           $startReducingVotingPowerAfterSecondsStore
         ),
