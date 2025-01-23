@@ -1,3 +1,4 @@
+import * as governanceApiService from "$lib/api-services/governance.api-service";
 import { createAgent } from "$lib/api/agent.api";
 import { GOVERNANCE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
@@ -26,6 +27,7 @@ export const updateNeuron = async ({
   const canister = await governanceTestCanister(identity);
 
   await canister.updateNeuron(neuron);
+  governanceApiService.clearCache();
 
   return;
 };

@@ -290,7 +290,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999967454494000,
+    "icrc1_total_supply": 799999965962794000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -374,9 +374,9 @@
       "governance": "2jvtu-yqaaa-aaaaq-aaama-cai",
       "dapps": [
         "6hsbt-vqaaa-aaaaf-aaafq-cai",
-        "4glvk-ryaaa-aaaaf-aaaia-cai",
+        "62rh2-kiaaa-aaaaf-bmy5q-cai",
         "s4yi7-yiaaa-aaaar-qacpq-cai",
-        "4ijyc-kiaaa-aaaaf-aaaja-cai",
+        "nafek-diaaa-aaaar-qalxa-cai",
         "3vlw6-fiaaa-aaaaf-aaa3a-cai",
         "rturd-qaaaa-aaaaf-aabaq-cai",
         "gonut-hqaaa-aaaaf-aby7a-cai",
@@ -385,17 +385,14 @@
         "r2pvs-tyaaa-aaaar-ajcwq-cai",
         "cpi5u-yiaaa-aaaar-aqw5a-cai",
         "tktqu-nyaaa-aaaar-qackq-cai",
-        "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+        "jodzs-iqaaa-aaaar-qamqa-cai",
         "lxq5i-mqaaa-aaaaf-bih7q-cai",
         "6ofpc-2aaaa-aaaaf-biibq-cai",
         "6klfq-niaaa-aaaar-qadbq-cai",
         "64dy3-wqaaa-aaaaf-biicq-cai",
         "2notu-qyaaa-aaaar-qaeha-cai",
         "2kpva-5aaaa-aaaar-qaehq-cai",
-        "zi2i7-nqaaa-aaaar-qaemq-cai",
-        "62rh2-kiaaa-aaaaf-bmy5q-cai",
-        "nafek-diaaa-aaaar-qalxa-cai",
-        "jodzs-iqaaa-aaaar-qamqa-cai"
+        "zi2i7-nqaaa-aaaar-qaemq-cai"
       ],
       "archives": ["2sqpr-ciaaa-aaaaq-aaaoq-cai"]
     },
@@ -1129,7 +1126,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10135766784681869,
+    "icrc1_total_supply": 10136049403065566,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1867,7 +1864,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 613338334713507,
+    "icrc1_total_supply": 614708238673287,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2272,7 +2269,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 103167832592336429,
+    "icrc1_total_supply": 103336229221612443,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2929,7 +2926,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 929014618490304445,
+    "icrc1_total_supply": 929066722374789820,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

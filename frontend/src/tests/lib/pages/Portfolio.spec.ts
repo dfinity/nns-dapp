@@ -15,6 +15,7 @@ import {
   ckTESTBTCTokenBase,
   createIcpUserToken,
   createUserToken,
+  createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
 import { PortfolioPagePo } from "$tests/page-objects/PortfolioPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -112,6 +113,17 @@ describe("Portfolio page", () => {
 
       expect(await heldTokensCardPo.getInfoRow().isPresent()).toBe(false);
       expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(false);
+    });
+
+    it("should not show any loading state", async () => {
+      const po = renderPage({
+        tableProjects: mockTableProjects,
+        userTokens: mockTokens,
+      });
+
+      expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(false);
+      expect(await po.getHeldTokensSkeletonCard().isPresent()).toEqual(false);
+      expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(false);
     });
   });
 
@@ -455,6 +467,20 @@ describe("Portfolio page", () => {
           "$0.00"
         );
       });
+
+      it("should not display a primary action when the staked tokens card loads before the held tokens card", async () => {
+        const loadingToken = createUserTokenLoading({});
+
+        const po = renderPage({
+          userTokens: [loadingToken],
+          tableProjects: [],
+        });
+
+        expect(await po.getNoStakedTokensCarPo().isPresent()).toEqual(true);
+        expect(await po.getNoStakedTokensCarPo().hasPrimaryAction()).toEqual(
+          false
+        );
+      });
     });
 
     describe("TotalAssetsCard", () => {
@@ -512,6 +538,85 @@ describe("Portfolio page", () => {
         expect(
           await po.getTotalAssetsCardPo().getTotalsTooltipIconPo().isPresent()
         ).toBe(true);
+      });
+    });
+
+    describe("Loading States", () => {
+      const loadingToken = createUserTokenLoading({});
+      const loadingProject: TableProject = {
+        ...mockTableProject,
+        isStakeLoading: true,
+      };
+
+      const loadedToken = createUserToken({
+        balanceInUsd: 100,
+        universeId: principal(1),
+      });
+
+      const loadedProject: TableProject = {
+        ...mockTableProject,
+        stakeInUsd: 100,
+        isStakeLoading: false,
+      };
+
+      it("should show the inital loading state - both tokens and projects loading", async () => {
+        const po = renderPage({
+          userTokens: [loadingToken],
+          tableProjects: [loadingProject],
+        });
+
+        expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(true);
+        expect(await po.getHeldTokensSkeletonCard().isPresent()).toEqual(true);
+        expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(
+          true
+        );
+        expect(await po.getHeldTokensCardPo().isPresent()).toEqual(false);
+        expect(await po.getStakedTokensCardPo().isPresent()).toEqual(false);
+      });
+
+      it("should show a partial loading state - tokens loaded, projects still loading", async () => {
+        const po = renderPage({
+          userTokens: [loadedToken],
+          tableProjects: [loadingProject],
+        });
+
+        expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(true);
+        expect(await po.getHeldTokensSkeletonCard().isPresent()).toEqual(false);
+        expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(
+          true
+        );
+        expect(await po.getHeldTokensCardPo().isPresent()).toEqual(true);
+        expect(await po.getStakedTokensCardPo().isPresent()).toEqual(false);
+      });
+
+      it("should show a partial loading state - projects loaded, tokens still loading", async () => {
+        const po = renderPage({
+          userTokens: [loadingToken],
+          tableProjects: [loadedProject],
+        });
+
+        expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(true);
+        expect(await po.getHeldTokensSkeletonCard().isPresent()).toEqual(true);
+        expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(
+          false
+        );
+        expect(await po.getHeldTokensCardPo().isPresent()).toEqual(false);
+        expect(await po.getStakedTokensCardPo().isPresent()).toEqual(true);
+      });
+
+      it("should show a fully loaded state - both tokens and projects loaded", async () => {
+        const po = renderPage({
+          userTokens: [loadedToken],
+          tableProjects: [loadedProject],
+        });
+
+        expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(false);
+        expect(await po.getHeldTokensSkeletonCard().isPresent()).toEqual(false);
+        expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(
+          false
+        );
+        expect(await po.getHeldTokensCardPo().isPresent()).toEqual(true);
+        expect(await po.getStakedTokensCardPo().isPresent()).toEqual(true);
       });
     });
   });

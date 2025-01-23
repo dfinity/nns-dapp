@@ -17,7 +17,6 @@ use std::cmp::Ordering;
 use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use std::fmt;
 use std::ops::RangeBounds;
-use std::time::{Duration, SystemTime};
 
 pub mod constructors;
 pub mod histogram;
@@ -360,6 +359,7 @@ pub enum DetachCanisterResponse {
 impl AccountsStore {
     /// Determines whether a migration is being performed.
     #[must_use]
+    #[allow(dead_code)]
     pub fn migration_in_progress(&self) -> bool {
         self.accounts_db.migration_in_progress()
     }
@@ -717,25 +717,9 @@ impl AccountsStore {
     }
 
     pub fn get_stats(&self, stats: &mut Stats) {
-        let timestamp_now_nanos = u64::try_from(
-            dfn_core::api::now()
-                .duration_since(SystemTime::UNIX_EPOCH)
-                .unwrap_or_else(|err| unreachable!("Hey, we are back in the sixties!  Seriously, if we get here, the system time is before the Unix epoch.  This should be impossible.  Error: {err}"))
-                .as_nanos(),
-        )
-        .unwrap_or_else(|_| {
-            unreachable!("Well, this could kill us if the code is still running in 500 years.  Not impossible.")
-        });
-        let duration_since_last_sync =
-            Duration::from_nanos(timestamp_now_nanos - self.last_ledger_sync_timestamp_nanos);
-
         stats.accounts_count = self.accounts_db.db_accounts_len();
         stats.sub_accounts_count = self.accounts_db_stats.sub_accounts_count;
         stats.hardware_wallet_accounts_count = self.accounts_db_stats.hardware_wallet_accounts_count;
-        stats.block_height_synced_up_to = self.block_height_synced_up_to;
-        stats.seconds_since_last_ledger_sync = duration_since_last_sync.as_secs();
-        stats.neurons_topped_up_count = self.neurons_topped_up_count;
-        stats.transactions_to_process_queue_length = self.multi_part_transactions_processor.get_queue_length();
         stats.migration_countdown = Some(self.accounts_db.migration_countdown());
         stats.accounts_db_stats_recomputed_on_upgrade = self.accounts_db_stats_recomputed_on_upgrade.0;
     }
