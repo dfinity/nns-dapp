@@ -575,11 +575,6 @@ describe("Portfolio page", () => {
       });
 
       it("should show a partial loading state - tokens loaded, projects still loading", async () => {
-        const loadedToken = createUserToken({
-          balanceInUsd: 100,
-          universeId: principal(1),
-        });
-
         const po = renderPage({
           userTokens: [loadedToken],
           tableProjects: [loadingProject],
@@ -595,7 +590,6 @@ describe("Portfolio page", () => {
       });
 
       it("should show a partial loading state - projects loaded, tokens still loading", async () => {
-        // Test Case 3:
         const po = renderPage({
           userTokens: [loadingToken],
           tableProjects: [loadedProject],
