@@ -90,11 +90,13 @@ export const setFeatureFlag = async ({
 }) => {
   // Wait for feature flags to be available
   await page.waitForFunction(
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     () => (window as any).__featureFlags !== undefined
   );
 
   return page.evaluate(
     ({ featureFlag, value }) =>
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       (window as any).__featureFlags[featureFlag]["overrideWith"](value),
     { featureFlag, value }
   );
