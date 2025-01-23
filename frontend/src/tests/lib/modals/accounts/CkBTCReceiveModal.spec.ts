@@ -38,8 +38,6 @@ describe("BtcCkBTCReceiveModal", () => {
 
   beforeEach(() => {
     resetIdentity();
-    bitcoinAddressStore.reset();
-    ckBTCInfoStore.reset();
     page.reset();
   });
 
@@ -88,8 +86,6 @@ describe("BtcCkBTCReceiveModal", () => {
   describe("with btc", () => {
     describe("without BTC address", () => {
       beforeEach(() => {
-        bitcoinAddressStore.reset();
-
         vi.spyOn(minterApi, "getBTCAddress").mockResolvedValue(undefined);
       });
 
