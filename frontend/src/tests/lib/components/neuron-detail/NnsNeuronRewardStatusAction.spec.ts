@@ -3,9 +3,11 @@ import {
   SECONDS_IN_HALF_YEAR,
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import NnsNeuronRewardStatusActionTest from "$tests/lib/components/neuron-detail/NnsNeuronRewardStatusActionTest.svelte";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronRewardStatusActionPo } from "$tests/page-objects/NnsNeuronRewardStatusAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -27,6 +29,11 @@ describe("NnsNeuronRewardStatusAction", () => {
 
   beforeEach(() => {
     vi.useFakeTimers().setSystemTime("2024-01-01");
+
+    networkEconomicsStore.setParameters({
+      parameters: mockNetworkEconomics,
+      certified: true,
+    });
   });
 
   it("should render active neuron state", async () => {
@@ -45,6 +52,20 @@ describe("NnsNeuronRewardStatusAction", () => {
     );
     expect(await po.getConfirmFollowingButtonPo().isPresent()).toBe(true);
     expect(await po.getFollowNeuronsButtonPo().isPresent()).toBe(false);
+  });
+
+  it("should not render active neuron state w/o voting power economics params", async () => {
+    const testNeuron = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        votingPowerRefreshedTimestampSeconds: BigInt(nowInSeconds()),
+      },
+    };
+    networkEconomicsStore.reset();
+    const po = renderComponent(testNeuron);
+
+    expect(await po.isPresent()).toBe(false);
   });
 
   it("should render losing soon neuron state", async () => {

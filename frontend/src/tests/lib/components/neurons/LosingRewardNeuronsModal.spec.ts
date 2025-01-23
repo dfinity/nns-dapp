@@ -5,10 +5,12 @@ import { SECONDS_IN_DAY, SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import LosingRewardNeuronsModal from "$lib/modals/neurons/LosingRewardNeuronsModal.svelte";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { LosingRewardNeuronsModalPo } from "$tests/page-objects/LosingRewardNeuronsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -109,6 +111,20 @@ describe("LosingRewardNeuronsModal", () => {
     spyRefreshVotingPower = vi
       .spyOn(governanceApi, "refreshVotingPower")
       .mockResolvedValue();
+
+    networkEconomicsStore.setParameters({
+      parameters: mockNetworkEconomics,
+      certified: true,
+    });
+  });
+
+  it("should be not rendered w/o voting power economics", async () => {
+    networkEconomicsStore.reset();
+    const po = await renderComponent({
+      neurons,
+    });
+
+    expect(await po.isPresent()).toBe(false);
   });
 
   it("should dispatch on close", async () => {

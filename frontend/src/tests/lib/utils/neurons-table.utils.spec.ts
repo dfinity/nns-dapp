@@ -78,6 +78,7 @@ describe("neurons-table.utils", () => {
           [LEDGER_CANISTER_ID.toText()]: icpPrice,
         },
         i18n: en,
+        startReducingVotingPowerAfterSeconds: undefined,
       });
 
     it("should convert default neuronInfo to tableNeuron", () => {
@@ -244,6 +245,7 @@ describe("neurons-table.utils", () => {
           [LEDGER_CANISTER_ID.toText()]: icpPrice,
         },
         i18n: en,
+        startReducingVotingPowerAfterSeconds: undefined,
       });
       expect(tableNeurons).toEqual([
         {

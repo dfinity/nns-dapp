@@ -14,6 +14,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
+  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 
   export let defaultSelectedNeuron: NeuronInfo | null = null;
   export let makePublic: boolean;
@@ -126,6 +127,8 @@
                   identity: $authStore.identity,
                   accounts: $icpAccountsStore,
                   i18n: $i18n,
+                  startReducingVotingPowerAfterSeconds:
+                    $startReducingVotingPowerAfterSecondsStore,
                 })}
                 checked={isNeuronSelected(n)}
                 on:nnsChange={() => handleCheckboxChange(n)}
@@ -153,6 +156,8 @@
                   identity: $authStore.identity,
                   accounts: $icpAccountsStore,
                   i18n: $i18n,
+                  startReducingVotingPowerAfterSeconds:
+                    $startReducingVotingPowerAfterSecondsStore,
                 })}
                 disabled
               />

@@ -5,8 +5,10 @@ import {
   soonLosingRewardNeuronsStore,
   sortedNeuronStore,
 } from "$lib/derived/neurons.derived";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { NeuronInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
@@ -147,6 +149,13 @@ describe("neurons-derived", () => {
       },
     };
 
+    beforeEach(() => {
+      networkEconomicsStore.setParameters({
+        parameters: mockNetworkEconomics,
+        certified: true,
+      });
+    });
+
     it("should return empty list when no neurons", () => {
       neuronsStore.setNeurons({
         neurons: [],
@@ -158,6 +167,18 @@ describe("neurons-derived", () => {
     it("should include only neurons that will soon losing its rewards", () => {
       neuronsStore.setNeurons({
         neurons: [neuron3, freshNeuron, neuron2, neuron1],
+        certified: true,
+      });
+      expect(get(soonLosingRewardNeuronsStore)).toEqual([
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
+    });
+
+    it("should return empty list when no network economics parameters", () => {
+      neuronsStore.setNeurons({
+        neurons: [neuron3, neuron2, neuron1],
         certified: true,
       });
       expect(get(soonLosingRewardNeuronsStore)).toEqual([

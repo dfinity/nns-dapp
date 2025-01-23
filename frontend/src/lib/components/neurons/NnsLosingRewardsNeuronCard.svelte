@@ -13,6 +13,7 @@
   import { Card, IconRight } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
+  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 
   export let neuron: NeuronInfo;
   export let onClick: (() => void) | undefined;
@@ -26,6 +27,8 @@
     identity: $authStore.identity,
     accounts: $icpAccountsStore,
     i18n: $i18n,
+    startReducingVotingPowerAfterSeconds:
+      $startReducingVotingPowerAfterSecondsStore,
   });
 
   let followees: FolloweesNeuron[];

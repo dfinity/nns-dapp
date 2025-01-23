@@ -869,8 +869,8 @@ describe("neurons-api", () => {
 
       const call = () =>
         getNetworkEconomicsParameters({
+          identity: mockIdentity,
           certified: false,
-          identity,
         });
       await expect(call).rejects.toThrow(error);
       expect(
