@@ -1,4 +1,3 @@
-import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import { queryProposals } from "$lib/api/proposals.api";
@@ -28,8 +27,6 @@ describe('NnsProposals when "all proposals" selected', () => {
     DEFAULT_PROPOSALS_FILTERS;
 
   beforeEach(() => {
-    resetNeuronsApiService();
-
     actionableProposalsSegmentStore.set("all");
 
     vi.spyOn(proposalsApi, "queryProposals").mockResolvedValue([proposal]);

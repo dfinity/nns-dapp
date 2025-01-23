@@ -1,4 +1,3 @@
-import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
@@ -49,7 +48,6 @@ describe("NnsProposals", () => {
 
   beforeEach(() => {
     proposalsStore.resetForTesting();
-    resetNeuronsApiService();
     proposalsFiltersStore.reset();
     actionableProposalsSegmentStore.resetForTesting();
 

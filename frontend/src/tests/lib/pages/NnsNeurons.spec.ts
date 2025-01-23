@@ -1,4 +1,3 @@
-import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
@@ -30,10 +29,6 @@ describe("NnsNeurons", () => {
       maturityE8sEquivalent: 0n,
     },
   };
-
-  beforeEach(() => {
-    resetNeuronsApiService();
-  });
 
   const renderComponent = async () => {
     const { container } = render(NnsNeurons);
