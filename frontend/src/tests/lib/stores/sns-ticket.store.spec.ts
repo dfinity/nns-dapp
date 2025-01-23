@@ -11,8 +11,6 @@ describe("snsTicketsStore", () => {
     owner: mockPrincipal,
   });
 
-  beforeEach(() => snsTicketsStore.reset());
-
   it("should set ticket", () => {
     snsTicketsStore.setTicket({
       rootCanisterId: mockPrincipal,

@@ -33,7 +33,6 @@ describe("ParticipateButton", () => {
   describe("signed in", () => {
     beforeEach(() => {
       resetIdentity();
-      snsTicketsStore.reset();
       userCountryStore.set(NOT_LOADED);
     });
 
