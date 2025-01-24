@@ -1,10 +1,15 @@
+import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import ChangeBulkNeuronVisibilityForm from "$lib/modals/neurons/ChangeBulkNeuronVisibilityForm.svelte";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockFullNeuron } from "$tests/mocks/neurons.mock";
 import { ChangeBulkNeuronVisibilityFormPo } from "$tests/page-objects/ChangeBulkNeuronVisibilityForm.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -559,6 +564,37 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
       hwPublicNeuron.neuronId.toString(),
       hotkeyPublicNeuron.neuronId.toString(),
     ]);
+  });
+
+  it("should display 'Missing rewards' tag", async () => {
+    overrideFeatureFlagsStore.setFlag(
+      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+      true
+    );
+    networkEconomicsStore.setParameters({
+      parameters: mockNetworkEconomics,
+      certified: true,
+    });
+    const losingRewardNeuron: NeuronInfo = createMockNeuron({
+      id: 10305070n,
+      visibility: NeuronVisibility.Public,
+    });
+    losingRewardNeuron.fullNeuron.votingPowerRefreshedTimestampSeconds = BigInt(
+      nowInSeconds() - SECONDS_IN_YEAR
+    );
+    neuronsStore.setNeurons({
+      neurons: [losingRewardNeuron],
+      certified: true,
+    });
+
+    const po = renderComponent({
+      makePublic: false,
+    });
+    const publicNeuronRowPo = po.getControllableNeuronVisibilityRowPo(
+      losingRewardNeuron.neuronId.toString()
+    );
+
+    expect(await publicNeuronRowPo.getTags()).toEqual(["Missing rewards"]);
   });
 
   it("should handle loading state correctly", async () => {

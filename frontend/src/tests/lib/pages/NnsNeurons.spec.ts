@@ -1,13 +1,18 @@
 import * as api from "$lib/api/governance.api";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
-import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
+import {
+  SECONDS_IN_HALF_YEAR,
+  SECONDS_IN_YEAR,
+} from "$lib/constants/constants";
 import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronsPo } from "$tests/page-objects/NnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -177,6 +182,33 @@ describe("NnsNeurons", () => {
       expect(
         await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
       ).toBe(false);
+    });
+
+    it("should display `Missing rewards` tag", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        true
+      );
+      networkEconomicsStore.setParameters({
+        parameters: mockNetworkEconomics,
+        certified: true,
+      });
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([
+        {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            votingPowerRefreshedTimestampSeconds: BigInt(
+              nowInSeconds() - SECONDS_IN_YEAR
+            ),
+          },
+        },
+      ]);
+
+      const po = await renderComponent();
+      const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+      expect(await rows[0].getTags()).toEqual(["Missing rewards"]);
     });
   });
 
