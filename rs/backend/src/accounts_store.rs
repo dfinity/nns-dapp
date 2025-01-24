@@ -6,9 +6,8 @@ use candid::CandidType;
 use dfn_candid::Candid;
 use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
-use ic_nns_common::types::NeuronId;
 use ic_stable_structures::{storable::Bound, Storable};
-use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount};
+use icp_ledger::{AccountIdentifier, BlockIndex, Subaccount};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
@@ -229,14 +228,6 @@ pub enum SetImportedTokensResponse {
 pub enum GetImportedTokensResponse {
     Ok(ImportedTokens),
     AccountNotFound,
-}
-
-#[derive(Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
-pub struct NeuronDetails {
-    account_identifier: AccountIdentifier,
-    principal: PrincipalId,
-    memo: Memo,
-    neuron_id: Option<NeuronId>,
 }
 
 #[derive(CandidType, Debug, PartialEq)]
@@ -782,7 +773,7 @@ impl StableState for AccountsStore {
             HashMap<AccountIdentifier, AccountWrapper>,
             candid::Reserved,
             candid::Reserved,
-            HashMap<AccountIdentifier, NeuronDetails>,
+            candid::Reserved,
             Option<BlockIndex>,
             MultiPartTransactionsProcessor,
             u64,
