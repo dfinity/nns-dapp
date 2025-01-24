@@ -31,6 +31,15 @@ export const compareTokensWithBalanceOrImportedFirst = ({
       importedTokenIds.has(token.universeId.toText())
   );
 
+export const compareTokensIsImported = ({
+  importedTokenIds,
+}: {
+  importedTokenIds: Set<string>;
+}) =>
+  createDescendingComparator((token: UserToken) =>
+    importedTokenIds.has(token.universeId.toText())
+  );
+
 // These tokens should be placed before others (but after ICP)
 // because they have significance within the Internet Computer ecosystem and deserve to be highlighted.
 // Where the fixed order maps to a descending order in the market cap of the underlying native tokens.
@@ -46,6 +55,34 @@ export const compareTokensByImportance = createDescendingComparator(
 export const compareTokensAlphabetically = createAscendingComparator(
   ({ title }: UserToken) => title.toLowerCase()
 );
+
+export const compareTokensByUsdBalance = createDescendingComparator(
+  (token: UserToken) =>
+    "balanceInUsd" in token ? (token.balanceInUsd ?? 0) : 0
+);
+
+export const compareTokenHasBalance = createDescendingComparator(
+  (token: UserToken) =>
+    token.balance instanceof TokenAmountV2 && token.balance.toUlps() > 0n
+);
+
+// This is used when clicking the "Balance" header, but in addition to sorting
+// by balance, it has a number of tie breakers.
+// Note that it tries to sort by USD balance but also sorts tokens with balance
+// above tokens without balance if there is no exchange rate for that token.
+export const compareTokensByBalance = ({
+  importedTokenIds,
+}: {
+  importedTokenIds: Set<string>;
+}) =>
+  mergeComparators([
+    compareTokensByUsdBalance,
+    compareTokenHasBalance,
+    compareTokensIcpFirst,
+    compareTokensByImportance,
+    compareTokensIsImported({ importedTokenIds }),
+    compareFailedTokensLast,
+  ]);
 
 export const compareTokensForTokensTable = ({
   importedTokenIds,
