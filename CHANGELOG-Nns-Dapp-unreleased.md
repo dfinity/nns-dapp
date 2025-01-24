@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Portfolio dashboard with holdings and staked value.
+
 #### Changed
 
 - Change the USD value icon in the token pages
