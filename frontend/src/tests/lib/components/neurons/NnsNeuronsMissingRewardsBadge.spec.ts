@@ -1,8 +1,10 @@
 import NnsNeuronsMissingRewardsBadge from "$lib/components/neurons/NnsNeuronsMissingRewardsBadge.svelte";
 import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronsMissingRewardsBadgePo } from "$tests/page-objects/NnsNeuronsMissingRewardsBadge.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -40,6 +42,10 @@ describe("NnsNeuronsMissingRewardsBadge", () => {
   beforeEach(() => {
     vi.useFakeTimers({
       now: nowSeconds * 1000,
+    });
+    networkEconomicsStore.setParameters({
+      parameters: mockNetworkEconomics,
+      certified: true,
     });
   });
 
