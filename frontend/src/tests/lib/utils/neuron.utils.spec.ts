@@ -55,7 +55,6 @@ import {
   isNeuronControlledByHardwareWallet,
   isNeuronFollowingReset,
   isNeuronFollowingResetVPE,
-  isNeuronLosingRewards,
   isNeuronLosingRewardsVPE,
   isPublicNeuron,
   isSpawning,
@@ -3618,44 +3617,6 @@ describe("neuron-utils", () => {
             })
           )
         ).toBe(0);
-      });
-    });
-
-    describe("isNeuronLosingRewards", () => {
-      it("should return false by default", () => {
-        expect(
-          isNeuronLosingRewards({
-            ...mockNeuron,
-            fullNeuron: undefined,
-          })
-        ).toBe(false);
-      });
-
-      it("should return true after the reward loss has started", () => {
-        expect(
-          isNeuronLosingRewards(
-            neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod,
-            })
-          )
-        ).toBe(true);
-        expect(
-          isNeuronLosingRewards(
-            neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod + 1,
-            })
-          )
-        ).toBe(true);
-      });
-
-      it("should return false", () => {
-        expect(
-          isNeuronLosingRewards(
-            neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod - 1,
-            })
-          )
-        ).toBe(false);
       });
     });
 

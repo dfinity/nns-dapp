@@ -1306,10 +1306,6 @@ export const isNeuronFollowingReset = (neuron: NeuronInfo): boolean => {
   return nowInSeconds() >= neuronFollowingResetTimestampSeconds;
 };
 
-// @deprecated
-export const isNeuronLosingRewards = (neuron: NeuronInfo): boolean =>
-  secondsUntilLosingRewards(neuron) <= 0;
-
 // e.g. "Neuron will start losing rewards in 30 days"
 // @deprecated
 export const shouldDisplayRewardLossNotification = (
