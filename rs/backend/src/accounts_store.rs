@@ -48,7 +48,6 @@ pub struct AccountsStore {
     accounts_db: schema::proxy::AccountsDbAsProxy,
 
     block_height_synced_up_to: Option<BlockIndex>,
-    multi_part_transactions_processor: MultiPartTransactionsProcessor,
     accounts_db_stats: AccountsDbStats,
     accounts_db_stats_recomputed_on_upgrade: IgnoreEq<Option<bool>>,
     last_ledger_sync_timestamp_nanos: u64,
@@ -75,10 +74,9 @@ impl fmt::Debug for AccountsStore {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "AccountsStore{{accounts_db: {:?}, block_height_synced_up_to: {:?}, multi_part_transactions_processor: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
+            "AccountsStore{{accounts_db: {:?}, block_height_synced_up_to: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
             self.accounts_db,
             self.block_height_synced_up_to,
-            self.multi_part_transactions_processor,
             self.accounts_db_stats,
             self.last_ledger_sync_timestamp_nanos,
             self.neurons_topped_up_count,
@@ -747,7 +745,11 @@ impl StableState for AccountsStore {
             // backwards compatibility.
             HashMap::<AccountIdentifier, candid::Empty>::new(),
             &self.block_height_synced_up_to,
-            &self.multi_part_transactions_processor,
+            // multi_part_transactions_processor is unused but we need to encode
+            // it for backwards compatibility.
+            // TODO: Change to an arbitrary value after we've deployed to
+            // mainnet. Then remove the MultiPartTransactionsProcessor.
+            MultiPartTransactionsProcessor::default(),
             &self.last_ledger_sync_timestamp_nanos,
             &self.neurons_topped_up_count,
             Some(&self.accounts_db_stats),
@@ -769,7 +771,7 @@ impl StableState for AccountsStore {
             _transactions,
             _neuron_accounts,
             block_height_synced_up_to,
-            multi_part_transactions_processor,
+            _multi_part_transactions_processor,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
             accounts_db_stats_maybe,
@@ -784,7 +786,7 @@ impl StableState for AccountsStore {
             candid::Reserved,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockIndex>,
-            MultiPartTransactionsProcessor,
+            candid::Reserved,
             u64,
             u64,
             Option<AccountsDbStats>,
@@ -801,7 +803,6 @@ impl StableState for AccountsStore {
             // State::from(Partitions) so it doesn't matter what we set here.
             accounts_db: AccountsDbAsProxy::default(),
             block_height_synced_up_to,
-            multi_part_transactions_processor,
             accounts_db_stats,
             accounts_db_stats_recomputed_on_upgrade,
             last_ledger_sync_timestamp_nanos,
