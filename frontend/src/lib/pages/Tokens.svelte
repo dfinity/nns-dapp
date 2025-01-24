@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { page } from "$app/stores";
   import HideZeroBalancesToggle from "$lib/components/tokens/TokensTable/HideZeroBalancesToggle.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
