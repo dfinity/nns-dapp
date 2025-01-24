@@ -1,5 +1,10 @@
 import NnsLosingRewardsNeuronCard from "$lib/components/neurons/NnsLosingRewardsNeuronCard.svelte";
+import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsLosingRewardsNeuronCardPo } from "$tests/page-objects/NnsLosingRewardsNeuronCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -26,6 +31,9 @@ describe("NnsLosingRewardsNeuronCard", () => {
           followees: [followNeuronId1],
         },
       ],
+      votingPowerRefreshedTimestampSeconds: BigInt(
+        nowInSeconds() - SECONDS_IN_YEAR
+      ),
     },
   };
 
@@ -57,6 +65,20 @@ describe("NnsLosingRewardsNeuronCard", () => {
     await po.click();
 
     expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("should render 'Missing rewards' tag", async () => {
+    overrideFeatureFlagsStore.setFlag(
+      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+      true
+    );
+    networkEconomicsStore.setParameters({
+      parameters: mockNetworkEconomics,
+      certified: true,
+    });
+
+    const po = await renderComponent({ neuron });
+    expect(await po.getNeuronTags()).toEqual(["Missing rewards"]);
   });
 
   it("should render following", async () => {

@@ -20,6 +20,7 @@
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { IconNeuronsPage, Spinner } from "@dfinity/gix-components";
   import { onMount } from "svelte";
+  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 
   let isLoading = false;
   $: isLoading = $neuronsStore.neurons === undefined;
@@ -35,6 +36,8 @@
     i18n: $i18n,
     neuronInfos: $definedNeuronsStore,
     icpSwapUsdPrices: $icpSwapUsdPricesStore,
+    startReducingVotingPowerAfterSeconds:
+      $startReducingVotingPowerAfterSecondsStore,
   });
 
   let totalStakeInUsd: number;

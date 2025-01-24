@@ -477,15 +477,23 @@ export const getNeuronTags = ({
   identity,
   accounts,
   i18n,
+  startReducingVotingPowerAfterSeconds,
 }: {
   neuron: NeuronInfo;
   identity?: Identity | null;
   accounts: IcpAccountsStoreData;
   i18n: I18n;
+  startReducingVotingPowerAfterSeconds: bigint | undefined;
 }): NeuronTagData[] => {
   const tags: NeuronTagData[] = [];
 
-  tags.push(...getNeuronTagsUnrelatedToController({ neuron, i18n }));
+  tags.push(
+    ...getNeuronTagsUnrelatedToController({
+      neuron,
+      i18n,
+      startReducingVotingPowerAfterSeconds,
+    })
+  );
 
   const isHWControlled = isNeuronControlledByHardwareWallet({
     neuron,
@@ -526,9 +534,11 @@ const secondsToMissingRewardsDuration = ({
 const getNeuronTagsUnrelatedToController = ({
   neuron,
   i18n,
+  startReducingVotingPowerAfterSeconds,
 }: {
   neuron: NeuronInfo;
   i18n: I18n;
+  startReducingVotingPowerAfterSeconds: bigint | undefined;
 }): NeuronTagData[] => {
   const tags: NeuronTagData[] = [];
 
@@ -542,17 +552,33 @@ const getNeuronTagsUnrelatedToController = ({
     tags.push({ text: i18n.neurons.community_fund });
   }
 
-  if (get(ENABLE_PERIODIC_FOLLOWING_CONFIRMATION)) {
-    if (isNeuronLosingRewards(neuron)) {
+  // Skip the "missing rewards" tag when voting power economics not available
+  if (
+    nonNullish(startReducingVotingPowerAfterSeconds) &&
+    get(ENABLE_PERIODIC_FOLLOWING_CONFIRMATION)
+  ) {
+    if (
+      isNeuronLosingRewardsVPE({ neuron, startReducingVotingPowerAfterSeconds })
+    ) {
       tags.push({
         text: i18n.neurons.missing_rewards,
         status: "danger",
       });
-    } else if (shouldDisplayRewardLossNotification(neuron)) {
+    } else if (
+      shouldDisplayRewardLossNotificationVPE({
+        neuron,
+        startReducingVotingPowerAfterSeconds,
+      })
+    ) {
       tags.push({
         text: replacePlaceholders(i18n.neurons.missing_rewards_soon, {
           $timeLeft: secondsToMissingRewardsDuration({
-            seconds: BigInt(secondsUntilLosingRewards(neuron)),
+            seconds: BigInt(
+              secondsUntilLosingRewardsVPE({
+                neuron,
+                startReducingVotingPowerAfterSeconds,
+              })
+            ),
             i18n,
           }),
         }),
@@ -569,11 +595,15 @@ export const createNeuronVisibilityRowData = ({
   identity,
   accounts,
   i18n,
+  startReducingVotingPowerAfterSeconds,
 }: {
   neuron: NeuronInfo;
   identity?: Identity | null;
   accounts: IcpAccountsStoreData;
   i18n: I18n;
+  // The function should work w/o voting power economics to not block the visibility functionality.
+  // In this case only the "Missing Rewards" tag will be missing.
+  startReducingVotingPowerAfterSeconds: bigint | undefined;
 }): NeuronVisibilityRowData => {
   return {
     neuronId: neuron.neuronId.toString(),
@@ -587,6 +617,7 @@ export const createNeuronVisibilityRowData = ({
     tags: getNeuronTagsUnrelatedToController({
       neuron,
       i18n,
+      startReducingVotingPowerAfterSeconds,
     }),
     uncontrolledNeuronDetails: getNeuronVisibilityRowUncontrolledNeuronDetails({
       neuron,
