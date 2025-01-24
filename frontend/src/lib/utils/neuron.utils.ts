@@ -10,7 +10,6 @@ import {
   E8S_PER_ICP,
 } from "$lib/constants/icp.constants";
 import {
-  CLEAR_FOLLOWING_AFTER_SECONDS,
   MATURITY_MODULATION_VARIANCE_PERCENTAGE,
   MAX_AGE_BONUS,
   MAX_DISSOLVE_DELAY_BONUS,
@@ -1295,15 +1294,6 @@ export const secondsUntilLosingRewards = (neuron: NeuronInfo): number => {
     Number(getVotingPowerRefreshedTimestampSeconds(neuron)) +
     START_REDUCING_VOTING_POWER_AFTER_SECONDS;
   return rewardLossStart - nowInSeconds();
-};
-
-// @deprecated
-export const isNeuronFollowingReset = (neuron: NeuronInfo): boolean => {
-  const neuronFollowingResetTimestampSeconds =
-    Number(getVotingPowerRefreshedTimestampSeconds(neuron)) +
-    START_REDUCING_VOTING_POWER_AFTER_SECONDS +
-    CLEAR_FOLLOWING_AFTER_SECONDS;
-  return nowInSeconds() >= neuronFollowingResetTimestampSeconds;
 };
 
 // e.g. "Neuron will start losing rewards in 30 days"

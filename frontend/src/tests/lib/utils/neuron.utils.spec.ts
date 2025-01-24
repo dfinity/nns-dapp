@@ -53,7 +53,6 @@ import {
   isNeuronControllable,
   isNeuronControllableByUser,
   isNeuronControlledByHardwareWallet,
-  isNeuronFollowingReset,
   isNeuronFollowingResetVPE,
   isNeuronLosingRewardsVPE,
   isPublicNeuron,
@@ -3617,47 +3616,6 @@ describe("neuron-utils", () => {
             })
           )
         ).toBe(0);
-      });
-    });
-
-    describe("isNeuronFollowingReset", () => {
-      it("should return false by default", () => {
-        expect(
-          isNeuronFollowingReset({
-            ...mockNeuron,
-            fullNeuron: undefined,
-          })
-        ).toBe(false);
-      });
-
-      it("should return true after the followings have been reset", () => {
-        expect(
-          isNeuronFollowingReset(
-            neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs:
-                losingRewardsPeriod + SECONDS_IN_MONTH,
-            })
-          )
-        ).toBe(true);
-        expect(
-          isNeuronFollowingReset(
-            neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs:
-                losingRewardsPeriod + 2 * SECONDS_IN_MONTH,
-            })
-          )
-        ).toBe(true);
-      });
-
-      it("should return false", () => {
-        expect(
-          isNeuronFollowingReset(
-            neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs:
-                losingRewardsPeriod + SECONDS_IN_MONTH - 1,
-            })
-          )
-        ).toBe(false);
       });
     });
 
