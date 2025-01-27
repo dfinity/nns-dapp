@@ -34,10 +34,9 @@ describe("AddControllerModal", () => {
     const principalString = "aaaaa-aa";
     const onClose = vi.fn();
 
-    const { container, queryByTestId } =
-      await renderAddControllerModal({
-        nnsClose: onClose,
-      });
+    const { container, queryByTestId } = await renderAddControllerModal({
+      nnsClose: onClose,
+    });
 
     const inputElement = container.querySelector("input[type='text']");
     expect(inputElement).not.toBeNull();

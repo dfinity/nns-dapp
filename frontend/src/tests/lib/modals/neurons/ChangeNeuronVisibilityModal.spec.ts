@@ -79,7 +79,7 @@ describe("ChangeNeuronVisibilityModal", () => {
   const renderComponent = async (neuron = mockNeuron) => {
     const nnsClose = vi.fn();
 
-    const { container, component } = await renderModal({
+    const { container } = await renderModal({
       component: ChangeNeuronVisibilityModal,
       props: {
         defaultSelectedNeuron: neuron,

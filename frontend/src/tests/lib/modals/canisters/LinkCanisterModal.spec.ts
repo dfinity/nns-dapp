@@ -45,7 +45,7 @@ describe("LinkCanisterModal", () => {
   it("should attach a canister by id and close modal", async () => {
     const onClose = vi.fn();
 
-    const { queryByTestId, container, component } = await renderModal({
+    const { queryByTestId, container } = await renderModal({
       component: LinkCanisterModal,
       events: {
         nnsClose: onClose,

@@ -8,10 +8,10 @@ import {
   mockKnownNeuron,
   mockNeuron,
 } from "$tests/mocks/neurons.mock";
+import { render } from "$tests/utils/svelte.test-utils";
 import { Topic } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor } from "@testing-library/svelte";
-import { render } from "$tests/utils/svelte.test-utils";
 
 vi.mock("$lib/services/neurons.services", () => {
   return {
@@ -62,8 +62,8 @@ describe("NewFolloweeModal", () => {
     const { container } = render(NewFolloweeModal, {
       props: { neuron: mockNeuron, topic: Topic.Unspecified },
       events: {
-        nnsClose: onClose
-      }
+        nnsClose: onClose,
+      },
     });
 
     const inputElement: HTMLInputElement | null = container.querySelector(
@@ -120,8 +120,8 @@ describe("NewFolloweeModal", () => {
     const { queryAllByTestId } = render(NewFolloweeModal, {
       props: { neuron: mockNeuron, topic: Topic.Unspecified },
       events: {
-        nnsClose: onClose
-      }
+        nnsClose: onClose,
+      },
     });
 
     const knownNeuronElements = queryAllByTestId("known-neuron-item");
@@ -148,8 +148,8 @@ describe("NewFolloweeModal", () => {
     const { queryByTestId } = render(NewFolloweeModal, {
       props: { neuron: followingNeuron, topic: Topic.Unspecified },
       events: {
-        nnsClose: onClose
-      }
+        nnsClose: onClose,
+      },
     });
 
     const knownNeuronElement = queryByTestId(

@@ -107,8 +107,8 @@ describe("AddCyclesModal", () => {
       component: AddCyclesModalTest,
       props,
       events: {
-        nnsClose: done
-      }
+        nnsClose: done,
+      },
     });
     // Wait for the onMount to load the conversion rate
     await waitFor(() => expect(getIcpToCyclesExchangeRate).toBeCalled());

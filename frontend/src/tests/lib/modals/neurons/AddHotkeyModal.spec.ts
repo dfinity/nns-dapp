@@ -14,12 +14,13 @@ vi.mock("$lib/services/neurons.services", () => {
 });
 
 describe("AddHotkeyModal", () => {
-  const renderAddHotkeyModal = async (events?: Record<string, ($event: CustomEvent) => void>): Promise<
-    RenderResult<SvelteComponent>
-  > => {
+  const renderAddHotkeyModal = async (
+    events?: Record<string, ($event: CustomEvent) => void>
+  ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: AddHotkeyModal,
       props: { neuron: mockNeuron },
+      events
     });
   };
 
@@ -82,10 +83,9 @@ describe("AddHotkeyModal", () => {
     const principalString = "aaaaa-aa";
     const onClose = vi.fn();
 
-    const { container, queryByTestId } =
-      await renderAddHotkeyModal({
-        nnsClose: onClose
-      });
+    const { container, queryByTestId } = await renderAddHotkeyModal({
+      nnsClose: onClose,
+    });
 
     const inputElement = container.querySelector("input[type='text']");
     expect(inputElement).not.toBeNull();

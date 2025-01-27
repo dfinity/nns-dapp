@@ -184,7 +184,7 @@ describe("TransactionModal", () => {
     it("should trigger close on cancel", async () => {
       const onClose = vi.fn();
 
-      const { getByTestId, component } = await renderTransactionModal({
+      const { getByTestId } = await renderTransactionModal({
         rootCanisterId: OWN_CANISTER_ID,
         events: {
           nnsClose: onClose,
@@ -467,13 +467,12 @@ describe("TransactionModal", () => {
     it("should move to the last step and trigger nnsSubmit event", async () => {
       const onSubmit = vi.fn();
 
-      const { getByTestId, container } =
-        await renderTransactionModal({
-          rootCanisterId: mockPrincipal,
-          events: {
-            nnsSubmit: onSubmit
-          }
-        });
+      const { getByTestId, container } = await renderTransactionModal({
+        rootCanisterId: mockPrincipal,
+        events: {
+          nnsSubmit: onSubmit,
+        },
+      });
 
       const participateButton = getByTestId("transaction-button-next");
       expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
