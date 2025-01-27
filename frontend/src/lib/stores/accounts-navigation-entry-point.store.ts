@@ -12,4 +12,4 @@ const initTokensTableOrderStore = () => {
   };
 };
 
-export const accountsNavigationEntryPoint = initTokensTableOrderStore();
+export const accountsNavigationEntryPointStore = initTokensTableOrderStore();
