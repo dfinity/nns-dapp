@@ -452,7 +452,7 @@ describe("ImportTokenModal", () => {
     expect(get(pageStore).path).toEqual(AppPath.Tokens);
   });
 
-  describe.only("Import token by URL", () => {
+  describe("Import token by URL", () => {
     beforeEach(() => {
       page.mock({
         routeId: AppPath.Tokens,
@@ -513,6 +513,29 @@ describe("ImportTokenModal", () => {
           },
         ],
       });
+    });
+
+    it("does not auto validate when feature flag disabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", false);
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
+        imported_tokens: [],
+      });
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue();
+
+      importedTokensStore.set({
+        importedTokens: [],
+        certified: true,
+      });
+
+      const po = renderComponent();
+      const formPo = po.getImportTokenFormPo();
+      const reviewPo = po.getImportTokenReviewPo();
+
+      await runResolvedPromises();
+
+      // Should stay as form step
+      expect(await formPo.isPresent()).toEqual(true);
+      expect(await reviewPo.isPresent()).toEqual(false);
     });
 
     it("should wait for imported tokens to be loaded before validation", async () => {

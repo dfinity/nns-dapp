@@ -8,7 +8,10 @@
   import { matchLedgerIndexPair } from "$lib/services/icrc-index.services";
   import { addImportedToken } from "$lib/services/imported-tokens.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING } from "$lib/stores/feature-flags.store";
+  import {
+    DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING,
+    ENABLE_IMPORT_TOKEN_BY_URL,
+  } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
@@ -26,7 +29,6 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
   import { get } from "svelte/store";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
 
@@ -82,7 +84,7 @@
   }
   let isAutoSubmitDone = false;
   $: if (
-    $authSignedInStore &&
+    $ENABLE_IMPORT_TOKEN_BY_URL &&
     !isAutoSubmitDone &&
     // Wait for the imported tokens to be loaded (for successful validation).
     nonNullish($importedTokensStore?.importedTokens)
