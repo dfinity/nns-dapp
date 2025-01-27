@@ -17,14 +17,16 @@ describe("ImportTokenReview", () => {
     indexCanisterId: Principal | undefined;
     tokenMetaData: IcrcTokenMetadata;
   }) => {
-    const { container, component } = render(ImportTokenReview, {
-      props,
-    });
-
-    const onConfirm = vi.fn();
-    component.$on("nnsConfirm", onConfirm);
     const onBack = vi.fn();
-    component.$on("nnsBack", onBack);
+    const onConfirm = vi.fn();
+
+    const { container } = render(ImportTokenReview, {
+      props,
+      events: {
+        nnsConfirm: onConfirm,
+        nnsBack: onBack,
+      },
+    });
 
     return {
       po: ImportTokenReviewPo.under(new JestPageObjectElement(container)),

@@ -5,6 +5,7 @@ import { ImportTokenRemoveConfirmationPo } from "$tests/page-objects/ImportToken
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import type { Principal } from "@dfinity/principal";
+import { nonNullish } from "@dfinity/utils";
 
 describe("ImportTokenRemoveConfirmation", () => {
   const ledgerCanisterId = principal(1);
@@ -24,15 +25,14 @@ describe("ImportTokenRemoveConfirmation", () => {
     onClose?: () => void;
     onConfirm?: () => void;
   }) => {
-    const { container, component } = render(ImportTokenRemoveConfirmation, {
+    const { container } = render(ImportTokenRemoveConfirmation, {
       props: { tokenToRemove },
+      events: {
+        ...(nonNullish(onClose) && { nnsClose: onClose }),
+        ...(nonNullish(onConfirm) && { nnsConfirm: onConfirm }),
+      },
     });
-    if (onClose) {
-      component.$on("nnsClose", onClose);
-    }
-    if (onConfirm) {
-      component.$on("nnsConfirm", onConfirm);
-    }
+
     return ImportTokenRemoveConfirmationPo.under(
       new JestPageObjectElement(container)
     );

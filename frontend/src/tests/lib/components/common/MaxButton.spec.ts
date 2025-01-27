@@ -1,4 +1,5 @@
 import MaxButton from "$lib/components/common/MaxButton.svelte";
+import { render as renderUtils } from "$tests/utils/svelte.test-utils";
 import { fireEvent, render } from "@testing-library/svelte";
 
 describe("MaxButton", () => {
@@ -14,8 +15,12 @@ describe("MaxButton", () => {
 
   it("should trigger on click event", () =>
     new Promise<void>((done) => {
-      const { container, component } = render(MaxButton);
-      component.$on("click", () => done());
+      const { container } = renderUtils(MaxButton, {
+        props: {},
+        events: {
+          click: () => done(),
+        },
+      });
       const buttonElement = container.querySelector("button");
       buttonElement && fireEvent.click(buttonElement);
     }));

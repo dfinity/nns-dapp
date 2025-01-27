@@ -6,7 +6,7 @@ import {
 import { NnsDestinationAddressPo } from "$tests/page-objects/NnsDestinationAddress.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import { render } from "@testing-library/svelte";
+import { render as renderUtils } from "$tests/utils/svelte.test-utils";
 import type { Mock } from "vitest";
 
 describe("NnsDestinationAddress", () => {
@@ -36,10 +36,15 @@ describe("NnsDestinationAddress", () => {
   });
 
   const renderComponent = () => {
-    const { container, component } = render(NnsDestinationAddress);
-    component.$on("nnsAddress", (event) => {
-      onAccountSelectedSpy(event.detail);
+    const { container } = renderUtils(NnsDestinationAddress, {
+      props: {},
+      events: {
+        nnsAddress: (event) => {
+          onAccountSelectedSpy(event.detail);
+        },
+      },
     });
+
     return NnsDestinationAddressPo.under(new JestPageObjectElement(container));
   };
 
